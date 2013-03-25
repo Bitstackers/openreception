@@ -14,31 +14,19 @@
 */
 
 /**
- * The Bob client. Helping receptionists do their work every day.
+ * This is a library ontainening all the storage classes.
  */
+library storage;
+
 import 'dart:async';
-import 'dart:html';
 import 'dart:uri';
+import 'dart:html';
+import 'dart:json' as json;
 
-import 'classes/call_handler.dart';
-import 'classes/common.dart';
-import 'classes/configuration.dart';
-import 'classes/environment.dart';
-import 'classes/keyboardhandler.dart';
-import 'classes/logger.dart';
-import 'classes/storage.dart';
+import 'common.dart';
+import 'configuration.dart';
+import 'logger.dart';
+import 'model.dart';
+import 'protocol.dart' as protocol;
 
-/**
- * Instantiates all the [view] objects and gets Bob going.
- */
-void main() {
-  log.info('Welcome to Bob.');
-
-  Future<bool> configLoaded = fetchConfig();
-
-  configLoaded.then((_) {
-    log.info('Bob configuration loaded.');
-    initializeCallHandler();
-  }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
-
-}
+part 'storage.organization.dart';

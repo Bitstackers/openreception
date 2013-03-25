@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="components" href="xcontextswitcher.html">
+    <link rel="components" href="xwelcomemessage.html">
+    <link rel="components" href="xagentinfo.html">
+    <link rel="components" href="xcompanyinfo.html">
+    <link rel="components" href="xfoo.html">
+  </head>
+<body>
+  <element name="x-bob" constructor="Bob" extends="span" apply-author-styles>
+    <template>
+      <template instantiate="if configurationLoaded">
+        <div id="rootview">
+          <x-context-switcher id="contextswitcher"></x-context-switcher>
+
+          <section id="contextmain">
+            <x-welcome-message id="welcomemessage"></x-welcome-message>
+            <x-agent-info id="agentinfo"></x-agent-info>
+            <x-company-info id="companyinfo"></x-company-info>
+          </section>
+
+          <section id="contextcompany" class="hidden">
+            <x-foo>
+              This is Foo on button 2
+            </x-foo>
+          </section>
+
+          <section id="contextmessages" class="hidden">
+            <x-foo>
+              More Foo, now on button 3
+            </x-foo>
+          </section>
+
+          <section id="contextmessages2" class="hidden">
+            <x-foo>
+              More Foo, now on button 4
+            </x-foo>
+          </section>
+        </div>
+      </template>
+    </template>
+
+    <script type="application/dart" src="xbob.dart"></script>
+  </element>
+</body>
+</html>

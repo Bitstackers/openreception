@@ -12,33 +12,36 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+part of model;
 
 /**
- * The Bob client. Helping receptionists do their work every day.
+ * TODO comment, write this when the class have more to it, then a simple map.
  */
-import 'dart:async';
-import 'dart:html';
-import 'dart:uri';
+class Organization{
+  Map _json;
+  //Map get json => _json;
 
-import 'classes/call_handler.dart';
-import 'classes/common.dart';
-import 'classes/configuration.dart';
-import 'classes/environment.dart';
-import 'classes/keyboardhandler.dart';
-import 'classes/logger.dart';
-import 'classes/storage.dart';
+  List _contacts;
+  List get contacts => _contacts;
 
-/**
- * Instantiates all the [view] objects and gets Bob going.
- */
-void main() {
-  log.info('Welcome to Bob.');
+  Map _orgInfo;
+  Map get orgInfo => _orgInfo;
 
-  Future<bool> configLoaded = fetchConfig();
+  Organization(Map json) {
+    _json = new Map.from(json);
 
-  configLoaded.then((_) {
-    log.info('Bob configuration loaded.');
-    initializeCallHandler();
-  }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
+    _contacts = json['contacts'];
 
+    json.remove('contacts');
+    _orgInfo = json;
+  }
+
+  Organization._null() {
+    _orgInfo = null;
+    _contacts = null;
+  }
+
+  String toString() => _json.toString();
 }
+
+Organization nullOrganization = new Organization._null();

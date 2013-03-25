@@ -12,33 +12,14 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+part of model;
 
 /**
- * The Bob client. Helping receptionists do their work every day.
+ * TODO comment.
  */
-import 'dart:async';
-import 'dart:html';
-import 'dart:uri';
+class OrganizationList{
+  Map _json;
+  Map get json => _json;
 
-import 'classes/call_handler.dart';
-import 'classes/common.dart';
-import 'classes/configuration.dart';
-import 'classes/environment.dart';
-import 'classes/keyboardhandler.dart';
-import 'classes/logger.dart';
-import 'classes/storage.dart';
-
-/**
- * Instantiates all the [view] objects and gets Bob going.
- */
-void main() {
-  log.info('Welcome to Bob.');
-
-  Future<bool> configLoaded = fetchConfig();
-
-  configLoaded.then((_) {
-    log.info('Bob configuration loaded.');
-    initializeCallHandler();
-  }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
-
+  OrganizationList(this._json);
 }

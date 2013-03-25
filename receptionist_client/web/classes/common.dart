@@ -12,33 +12,23 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
-
 /**
- * The Bob client. Helping receptionists do their work every day.
+ * A collection of common typedefs and exceptions for Bob.
  */
-import 'dart:async';
-import 'dart:html';
-import 'dart:uri';
+library Common;
 
-import 'classes/call_handler.dart';
-import 'classes/common.dart';
-import 'classes/configuration.dart';
-import 'classes/environment.dart';
-import 'classes/keyboardhandler.dart';
-import 'classes/logger.dart';
-import 'classes/storage.dart';
+import 'model.dart';
 
-/**
- * Instantiates all the [view] objects and gets Bob going.
- */
-void main() {
-  log.info('Welcome to Bob.');
+typedef void Subscriber(Map json);
+typedef void Callback();
+typedef void OrganizationSubscriber (Organization organization);
+typedef void OrganizationListSubscriber (OrganizationList organizationList);
+typedef void CallSubscriber (Call call);
 
-  Future<bool> configLoaded = fetchConfig();
+class TimeoutException implements Exception {
+  final String message;
 
-  configLoaded.then((_) {
-    log.info('Bob configuration loaded.');
-    initializeCallHandler();
-  }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
+  const TimeoutException(this.message);
 
+  String toString() => message;
 }

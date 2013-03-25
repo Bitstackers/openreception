@@ -14,31 +14,12 @@
 */
 
 /**
- * The Bob client. Helping receptionists do their work every day.
+ * Library containing various utility methods.
  */
-import 'dart:async';
-import 'dart:html';
-import 'dart:uri';
-
-import 'classes/call_handler.dart';
-import 'classes/common.dart';
-import 'classes/configuration.dart';
-import 'classes/environment.dart';
-import 'classes/keyboardhandler.dart';
-import 'classes/logger.dart';
-import 'classes/storage.dart';
+library utilities;
 
 /**
- * Instantiates all the [view] objects and gets Bob going.
+ * Parses a String to a bool.
+ * TODO remove when Dart gets it.
  */
-void main() {
-  log.info('Welcome to Bob.');
-
-  Future<bool> configLoaded = fetchConfig();
-
-  configLoaded.then((_) {
-    log.info('Bob configuration loaded.');
-    initializeCallHandler();
-  }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
-
-}
+bool parseBool (String s) => s != null && s.toLowerCase() == 'true';
