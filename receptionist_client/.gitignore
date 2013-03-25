@@ -1,8 +1,9 @@
 # Don't track pubspec.lock
 pubspec.lock
 
-# Don't track .settings
+# Don't track .settings and .buildlog
 .settings
+.buildlog
 
 # Don't track out/
 out/
