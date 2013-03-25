@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+<body>
+  <element name="x-box-with-header" constructor="BoxWithHeader" extends="span" apply-author-styles>
+    <style scoped>
+      .outerbox {
+        background-color: #fafafa;
+        border: solid 1px #999;
+        border-radius: 5px;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .content {
+        font-size: 1em;
+        padding: 10px;
+        overflow: auto;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      .headline {
+        background-color: #dedede;
+        border-radius: 5px 5px 0px 0px;
+        color: #777;
+        font-size: 1em;
+        font-weight: bold;
+        padding: 5px 10px;
+      }
+    </style>
+
+    <template>
+      <div class="outerbox">
+        <h1 class="headline">
+          <content select=".header"></content>
+        </h1>
+        <div class="content">
+          <content select=".body"></content>
+        </div>
+      </div>
+    </template>
+
+    <script type="application/dart" src="xboxwithheader.dart"></script>
+  </element>
+</body>
+</html>

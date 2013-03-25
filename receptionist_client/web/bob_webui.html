@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bob</title>
+    <link rel="stylesheet" href="css/bob_webui.css">
+
+    <link rel="components" href="components/xcontextswitcher.html">
+    <link rel="components" href="components/xwelcomemessage.html">
+    <link rel="components" href="components/xagentinfo.html">
+    <link rel="components" href="components/xcompanyinfo.html">
+    <link rel="components" href="components/xfoo.html">
+  </head>
+  <body>
+    <div id="rootview">
+      <x-context-switcher id="contextswitcher"></x-context-switcher>
+
+      <section id="contextmain">
+        <x-welcome-message id="welcomemessage"></x-welcome-message>
+        <x-agent-info id="agentinfo"></x-agent-info>
+        <x-company-info id="companyinfo"></x-company-info>
+      </section>
+
+      <section id="contextcompany" class="hidden">
+        <x-foo>
+          This is Foo on button 2
+        </x-foo>
+      </section>
+
+      <section id="contextmessages" class="hidden">
+        <x-foo>
+          More Foo, now on button 3
+        </x-foo>
+      </section>
+
+      <section id="contextmessages2" class="hidden">
+        <x-foo>
+          More Foo, now on button 4
+        </x-foo>
+      </section>
+    </div>
+
+    <script type="application/dart" src="bob_webui.dart"></script>
+    <script src="packages/browser/dart.js"></script>
+  </body>
+</html>

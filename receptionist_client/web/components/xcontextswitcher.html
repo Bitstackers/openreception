@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <link rel="components" href="xcontextswitcherbutton.html">
+</head>
+<body>
+  <element name="x-context-switcher" constructor="ContextSwitcher" extends="ul" apply-author-styles>
+    <style scoped>
+      .default {
+        margin: 7px auto;
+        width: 80%;
+      }
+    </style>
+
+    <template>
+      <template iterate="section in sections">
+        <li class="default">
+          <x-context-switcher-button section="{{section}}"></x-context-switcher-button>
+        </li>
+      </template>
+    </template>
+
+    <script type="application/dart" src="xcontextswitcher.dart"></script>
+  </element>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="components" href="xboxwithheader.html">
+  </head>
+<body>
+  <element name="x-agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
+    <template>
+      <x-box-with-header>
+        <span class="header">
+          AgentInfo Header
+        </span>
+        <span class="body">
+          AgentInfo Content
+        </span>
+      </x-box-with-header>
+    </template>
+
+    <script type="application/dart" src="xagentinfo.dart"></script>
+  </element>
+</body>
+</html>

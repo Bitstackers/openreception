@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+<body>
+  <element name="x-box" constructor="Box" extends="span" apply-author-styles>
+    <style scoped>
+      .outerbox {
+        background-color: #fafafa;
+        border: solid 1px #999;
+        border-radius: 5px;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .content {
+        font-size: 1.5em;
+        padding: 10px;
+        overflow: auto;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <template>
+      <div class="outerbox">
+        <div class="content">
+          <content select=".body"></content>
+        </div>
+      </div>
+    </template>
+
+    <script type="application/dart" src="xbox.dart"></script>
+  </element>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+<body>
+  <element name="x-context-switcher-button" constructor="ContextSwitcherButton" extends="button" apply-author-styles>
+    <style scoped>
+      .default {
+        background-color: #ddd;
+        width: 100%;
+      }
+
+      .active,
+      .default:hover {
+        background-color: blue;
+      }
+    </style>
+
+    <template>
+      <button disabled="{{_disabled}}" class="default {{_active}}" on-click="activate()">{{section.id}}</button>
+    </template>
+
+    <script type="application/dart" src="xcontextswitcherbutton.dart"></script>
+  </element>
+</body>
+</html>

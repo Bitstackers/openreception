@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+<body>
+  <element name="x-foo" constructor="Foo" extends="div" apply-author-styles>
+    <style scoped>
+      x-foo {
+        position: absolute;
+        top: 0%;
+        left: 4%;
+      }
+    </style>
+
+    <template>
+      <span>
+        <content></content>: {{clicks}}
+      </span>
+      <button on-click="increment()">
+        Click me
+      </button>
+    </template>
+
+    <script type="application/dart" src="xfoo.dart"></script>
+  </element>
+</body>
+</html>
