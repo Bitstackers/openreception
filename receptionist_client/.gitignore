@@ -1,0 +1,29 @@
+# Don't track pubspec.lock
+pubspec.lock
+
+# Don't track .settings
+.settings
+
+# Don't track out/
+out/
+
+# Don't track packages
+packages
+
+# Don't track docs, generate them.
+src/dart/docs
+
+# Don't track the auto generated javascript files.
+src/dart/bob.dart.js*
+
+# Don't track deploy and build files
+deploy
+lib/dart-sdk
+lib/dist
+
+# Do not track emacs temporary and backup files
+\#*#
+*~
+
+# Do not track Nano temporary files
+.#*#
