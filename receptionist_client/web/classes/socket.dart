@@ -108,7 +108,7 @@ class Socket{
   void _onError (event) {
     log.critical(event.toString());
 
-    _errorStream.sink({'error': 'Error on connection'});
+    _errorStream.sink.add({'error': 'Error on connection'});
   }
 
   /**
@@ -118,7 +118,7 @@ class Socket{
 
   void _onMessage(MessageEvent event) {
     log.info('Notification message: ${event.data}');
-    _messageStream.sink(json.parse(event.data));
+    _messageStream.sink.add(json.parse(event.data));
   }
 
   /**

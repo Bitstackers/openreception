@@ -24,17 +24,13 @@ import 'dart:json' as json;
 import 'dart:uri';
 
 import 'package:logging/logging.dart';
-import 'package:web_ui/web_ui.dart';
 
 import 'common.dart';
 import 'logger.dart';
 
-final configuration = new Configuration();
-
 /**
  * Access to configuration parameters provided by Alice.
  */
-@observable
 class Configuration {
   static Configuration _instance;
   static const String _CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
@@ -222,3 +218,5 @@ Future<bool> fetchConfig() {
 
   return completer.future;
 }
+
+final configuration = new Configuration();

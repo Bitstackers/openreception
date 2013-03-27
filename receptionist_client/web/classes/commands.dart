@@ -81,6 +81,7 @@ void hangupCall(int callId){
     })
     ..onError((){
       //TODO Do something
+      log.error('There was an error with hangup. Callid: ${callId}');
     })
     ..send();
 }

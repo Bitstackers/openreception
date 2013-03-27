@@ -1,11 +1,26 @@
+/*                                Bob
+                   Copyright (C) 2012-, AdaHeads K/S
+
+  This is free software;  you can redistribute it and/or modify it
+  under terms of the  GNU General Public License  as published by the
+  Free Software  Foundation;  either version 3,  or (at your  option) any
+  later version. This library is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  You should have received a copy of the GNU General Public License and
+  a copy of the GCC Runtime Library Exception along with this program;
+  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  <http://www.gnu.org/licenses/>.
+*/
+
 part of protocol;
 
 /**
- * TODO Comment
+ * Protocol class to make the request for agent state.
  */
 class AgentState extends Protocol{
   /**
-   * TODO Comment
+   * Contructor to make a request to __get__ information about an agent,
    */
   AgentState.Get(int agentId){
     assert(configuration.loaded);
@@ -27,7 +42,7 @@ class AgentState extends Protocol{
   }
 
   /**
-   * TODO Comment
+   * Contructor to make a request to __set__ information about an agent,
    */
   AgentState.Set(String state, int agentId){
     assert(configuration.loaded);
@@ -56,7 +71,7 @@ class AgentState extends Protocol{
   }
 
   /**
-   * TODO Comment
+   * If the request gives a 200 Ok status code.
    */
   void onSuccess(void onData(String response)){
     assert(_request != null);
@@ -70,7 +85,7 @@ class AgentState extends Protocol{
   }
 
   /**
-   * TODO Comment
+   * if the request gives anything else but a 200 Ok back.
    */
   void onError(void onData()){
     assert(_request != null);

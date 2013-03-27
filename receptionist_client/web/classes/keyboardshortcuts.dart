@@ -13,27 +13,33 @@
   <http://www.gnu.org/licenses/>.
 */
 
-part of model;
+part of keyboard;
 
-/**
- * TODO comment, write this when the class have more to it, then a simple map.
- */
-class Call{
-  Map _call;
-  Map get content => _call;
+class KeyboardShortcuts{
+  Map<int, Callback> _collection = new Map<int, Callback>();
 
   /**
-   * TODO comment
+   * Adds the callback with the [key]. Overwrites if allready present.
    */
-  Call(Map json) {
-    _call = json;
+  void add(int key, Callback callback){
+    _collection[key] = callback;
   }
 
-  Call._null() {
-    _call = null;
+  /**
+   * Removes key if present.
+   */
+  void remove (int key){
+    _collection.remove(key);
   }
 
-  String toString() => _call.toString();
+  /**
+   * Calls the callback at the [key] if present.
+   */
+  bool callIfPresent(int key){
+    if (_collection.containsKey(key)){
+      _collection[key]();
+      return true;
+    }
+    return false;
+  }
 }
-
-final Call nullCall = new Call._null();
