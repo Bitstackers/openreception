@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="components" href="xboxwithheader.html">
+  </head>
+<body>
+  <element name="x-local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
+    <template>
+      <x-box-with-header>
+        <span class="header">
+          LocalQueue Header
+        </span>
+        <span class="body">
+          LocalQueue Content
+        </span>
+      </x-box-with-header>
+    </template>
+
+    <script type="application/dart" src="xlocalqueue.dart"></script>
+  </element>
+</body>
+</html>

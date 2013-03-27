@@ -35,6 +35,14 @@ body {
   width: 96%;
 }
 
+#contactinfo {
+  position: absolute;
+  top: 57%;
+  left: 4%;
+  height: 43%;
+  width: 36%;
+}
+
 #contextswitcher {
   position: absolute;
   top: 0%;
@@ -48,6 +56,30 @@ body {
   border-bottom: solid 1px #999;
   border-radius: 0px 5px 5px 0px;
   list-style-type: none;
+}
+
+#globalqueue {
+  position: absolute;
+  top: 57%;
+  left: 78%;
+  height: 26%;
+  width: 22%;
+}
+
+#localqueue {
+  position: absolute;
+  top: 85%;
+  left: 78%;
+  height: 15%;
+  width: 22%;
+}
+
+#sendmessage {
+  position: absolute;
+  top: 57%;
+  left: 41%;
+  height: 43%;
+  width: 36%;
 }
 
 #welcomemessage {

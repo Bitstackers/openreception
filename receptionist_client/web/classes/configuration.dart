@@ -29,6 +29,8 @@ import 'package:web_ui/web_ui.dart';
 import 'common.dart';
 import 'logger.dart';
 
+final configuration = new Configuration();
+
 /**
  * Access to configuration parameters provided by Alice.
  */
@@ -220,5 +222,3 @@ Future<bool> fetchConfig() {
 
   return completer.future;
 }
-
-final configuration = new Configuration();

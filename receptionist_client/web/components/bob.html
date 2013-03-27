@@ -6,6 +6,10 @@
     <link rel="components" href="xwelcomemessage.html">
     <link rel="components" href="xagentinfo.html">
     <link rel="components" href="xcompanyinfo.html">
+    <link rel="components" href="xcontactinfo.html">
+    <link rel="components" href="xsendmessage.html">
+    <link rel="components" href="xglobalqueue.html">
+    <link rel="components" href="xlocalqueue.html">
     <link rel="components" href="xfoo.html">
   </head>
 <body>
@@ -14,6 +18,7 @@
       <template instantiate="if !configuration.loaded">
         <h1>Loading configuration</h1>
       </template>
+
       <template instantiate="if configuration.loaded">
         <div id="rootview">
           <x-context-switcher id="contextswitcher"></x-context-switcher>
@@ -22,6 +27,10 @@
             <x-welcome-message id="welcomemessage"></x-welcome-message>
             <x-agent-info id="agentinfo"></x-agent-info>
             <x-company-info id="companyinfo"></x-company-info>
+            <x-contact-info id="contactinfo"></x-contact-info>
+            <x-send-message id="sendmessage"></x-send-message>
+            <x-global-queue id="globalqueue"></x-global-queue>
+            <x-local-queue id="localqueue"></x-local-queue>
           </section>
 
           <section id="contextcompany" class="hidden">

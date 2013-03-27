@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="components" href="xboxwithheader.html">
+  </head>
+<body>
+  <element name="x-send-message" constructor="SendMessage" extends="span" apply-author-styles>
+    <template>
+      <x-box-with-header>
+        <span class="header">
+          SendMessage Header
+        </span>
+        <span class="body">
+          SendMessage Content
+        </span>
+      </x-box-with-header>
+    </template>
+
+    <script type="application/dart" src="xsendmessage.dart"></script>
+  </element>
+</body>
+</html>

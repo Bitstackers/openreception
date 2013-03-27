@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="components" href="xboxwithheader.html">
+  </head>
+<body>
+  <element name="x-contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
+    <template>
+      <x-box-with-header>
+        <span class="header">
+          ContactInfo Header
+        </span>
+        <span class="body">
+          ContactInfo Content
+        </span>
+      </x-box-with-header>
+    </template>
+
+    <script type="application/dart" src="xcontactinfo.dart"></script>
+  </element>
+</body>
+</html>

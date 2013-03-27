@@ -17,16 +17,10 @@
  * The Bob client. Helping receptionists do their work every day.
  */
 import 'dart:async';
-import 'dart:html';
-import 'dart:uri';
 
 import 'classes/call_handler.dart';
-import 'classes/common.dart';
 import 'classes/configuration.dart';
-import 'classes/environment.dart';
-import 'classes/keyboardhandler.dart';
 import 'classes/logger.dart';
-import 'classes/storage.dart';
 
 /**
  * Instantiates all the [view] objects and gets Bob going.
