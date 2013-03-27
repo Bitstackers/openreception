@@ -3,16 +3,17 @@
 <html>
   <head>
     <link rel="components" href="xboxwithheader.html">
+    <link rel="components" href="xcompanyselector.html">
   </head>
 <body>
-  <element name="x-company-info" constructor="CompanyInfo" extends="span" apply-author-styles>
+  <element name="x-company-info" constructor="CompanyInfo" apply-author-styles>
     <template>
       <x-box-with-header>
         <span class="header">
           CompanyInfo Header
         </span>
         <span class="body">
-          CompanyInfo Content
+          <x-company-selector></x-company-selector>
         </span>
       </x-box-with-header>
     </template>
