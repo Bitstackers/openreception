@@ -9,9 +9,12 @@
     <link rel="components" href="xfoo.html">
   </head>
 <body>
-  <element name="x-bob" constructor="Bob" extends="span" apply-author-styles>
+  <element name="bob" constructor="Bob" extends="span" apply-author-styles>
     <template>
-      <template instantiate="if configurationLoaded">
+      <template instantiate="if !configuration.loaded">
+        <h1>Loading configuration</h1>
+      </template>
+      <template instantiate="if configuration.loaded">
         <div id="rootview">
           <x-context-switcher id="contextswitcher"></x-context-switcher>
 
@@ -42,7 +45,7 @@
       </template>
     </template>
 
-    <script type="application/dart" src="xbob.dart"></script>
+    <script type="application/dart" src="bob.dart"></script>
   </element>
 </body>
 </html>

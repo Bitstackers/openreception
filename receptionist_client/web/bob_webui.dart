@@ -37,7 +37,7 @@ void main() {
   Future<bool> configLoaded = fetchConfig();
 
   configLoaded.then((_) {
-    log.info('Bob configuration loaded.');
+    log.info('configuration loaded.');
     initializeCallHandler();
   }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
 
