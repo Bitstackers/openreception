@@ -13,9 +13,9 @@
     <link rel="components" href="xfoo.html">
   </head>
 <body>
-  <element name="x-bob" constructor="Bob" extends="div" apply-author-styles>
+  <element name="bob" constructor="Bob" extends="div" apply-author-styles>
     <template>
-      <template instantiate="if configurationLoaded">
+      <template instantiate="if configuration.loaded">
         <x-context-switcher id="contextswitcher"></x-context-switcher>
 
         <section id="contextmain">
