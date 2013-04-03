@@ -5,7 +5,7 @@
   <link rel="components" href="xcontextswitcherbutton.html">
 </head>
 <body>
-  <element name="x-context-switcher" constructor="ContextSwitcher" extends="div" apply-author-styles>
+  <element name="x-context-switcher" constructor="ContextSwitcher" extends="ul" apply-author-styles>
     <style scoped>
       x-context-switcher {
         background-color: #fafafa;
@@ -23,13 +23,11 @@
     </style>
 
     <template>
-      <ul>
-        <template iterate="section in sectionList">
-          <li class="item">
-            <x-context-switcher-button section="{{section}}"></x-context-switcher-button>
-          </li>
-        </template>
-      </ul>
+      <template iterate="section in sectionList">
+        <li class="item">
+          <x-context-switcher-button section="{{section}}"></x-context-switcher-button>
+        </li>
+      </template>
     </template>
 
     <script type="application/dart" src="xcontextswitcher.dart"></script>

@@ -13,7 +13,7 @@
     <link rel="components" href="xfoo.html">
   </head>
 <body>
-  <element name="bob" constructor="Bob" extends="div" apply-author-styles>
+  <element name="app" constructor="App" extends="div" apply-author-styles>
     <template>
       <template instantiate="if configuration.loaded">
         <x-context-switcher id="contextswitcher"></x-context-switcher>
@@ -44,7 +44,7 @@
       </template>
     </template>
 
-    <script type="application/dart" src="bob.dart"></script>
+    <script type="application/dart" src="app.dart"></script>
   </element>
 </body>
 </html>
