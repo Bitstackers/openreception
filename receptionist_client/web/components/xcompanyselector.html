@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<html>
+ <body>
+  <element name="x-company-selector" constructor="CompanySelector" extends="select" apply-author-styles>
+    <template>
+      <template iterate="number in numbers">
+        <option>{{number}}</option>
+      </template>
+    </template>
+
+    <script type="application/dart" src="xcompanyselector.dart"></script>
+  </element>
+</body>
+</html>

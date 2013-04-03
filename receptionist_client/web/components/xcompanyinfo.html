@@ -3,6 +3,7 @@
 <html>
   <head>
     <link rel="components" href="xboxwithheader.html">
+    <link rel="components" href="xcompanyselector.html">
   </head>
 <body>
   <element name="x-company-info" constructor="CompanyInfo" extends="span" apply-author-styles>
@@ -12,7 +13,7 @@
           CompanyInfo Header
         </span>
         <span class="body">
-          CompanyInfo Content
+          <select is="x-company-selector"></select>
         </span>
       </x-box-with-header>
     </template>
