@@ -3,22 +3,21 @@
 <html>
   <head>
     <link rel="components" href="xboxwithheader.html">
-    <link rel="components" href="xcompanyselector.html">
   </head>
 <body>
-  <element name="x-company-info" constructor="CompanyInfo" apply-author-styles>
+  <element name="x-send-message" constructor="SendMessage" apply-author-styles>
     <template>
       <x-box-with-header>
         <span class="header">
-          CompanyInfo Header
+          SendMessage Header
         </span>
         <span class="body">
-          <select is="x-company-selector"></select>
+          SendMessage Content
         </span>
       </x-box-with-header>
     </template>
 
-    <script type="application/dart" src="xcompanyinfo.dart"></script>
+    <script type="application/dart" src="xsendmessage.dart"></script>
   </element>
 </body>
 </html>

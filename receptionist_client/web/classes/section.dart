@@ -4,8 +4,6 @@ import 'dart:async';
 import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
-List<Section> sectionList = <Section>[];
-
 final StreamController _sectionActivationStream = new StreamController<int>.broadcast();
 
 /**
@@ -21,8 +19,6 @@ class Section {
 
   Section(Element this.element) {
     assert(element != null);
-
-    sectionList.add(this);
 
     isActive = element.classes.contains('hidden') ? false : true;
 

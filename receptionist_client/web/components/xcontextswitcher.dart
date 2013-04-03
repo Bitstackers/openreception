@@ -3,12 +3,13 @@ import 'package:web_ui/web_ui.dart';
 
 import '../classes/section.dart';
 
+@observable
 class ContextSwitcher extends WebComponent {
   List<Section> sectionList = <Section>[];
 
   void inserted() {
     for (var elem in queryAll('section')..where((v) => v.id.startsWith('context'))) {
-      sectionList.add(new Section(elem));
+      this.sectionList.add(new Section(elem));
     }
   }
 }

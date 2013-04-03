@@ -14,7 +14,7 @@
 */
 
 /**
- * TODO comment
+ * Library to manage keyboardshortcuts.
  */
 library keyboard;
 
@@ -23,10 +23,82 @@ import 'dart:html';
 import 'common.dart';
 import 'logger.dart';
 
+part 'keyboardshortcuts.dart';
+
 /**
- * TODO comment
+ * The one and only [keyboardhandler].
+ */
+final Keyboardhandler keyboardHandler = new Keyboardhandler._internal();
+
+/**
+ * Class to handler keyboard events, and activate the right keyboardshortcuts.
  */
 class Keyboardhandler{
+  /**
+   * Global shortcuts are always active.
+   */
+  KeyboardShortcuts global;
+
+  /**
+   * TODO Comment
+   */
+  KeyboardShortcuts context;
+
+  /**
+   * TODO Comment
+   */
+  KeyboardShortcuts widget;
+
+  int _locked = null;
+
+  /**
+   * Private constructor to make sure there is only one instance of it.
+   */
+  Keyboardhandler._internal() {
+    log.debug('keyboardHanlder Initialized');
+
+    window.onKeyDown.listen(_keyDown);
+    window.onKeyUp.listen(_keyUp);
+  }
+
+  void _keyDown(KeyboardEvent event) {
+    var key = new KeyEvent(event);
+
+    if (_locked == null) {
+      if (key.ctrlKey && key.altKey) {
+        int keyCode = key.keyCode;
+
+        log.debug('${keyCode} - Ctrl and Alt Down');
+
+        if (widget != null && widget.callIfPresent(keyCode)) {
+          _locked = keyCode;
+
+        }else if(context != null && context.callIfPresent(keyCode)) {
+          _locked = keyCode;
+
+        }else if(global != null && global.callIfPresent(keyCode)) {
+          log.debug('Global Keyboard ${key.keyCode}');
+          _locked = keyCode;
+        }
+      }
+    }
+  }
+
+  void _keyUp(KeyboardEvent event) {
+    var key = new KeyEvent(event);
+
+    if (_locked == key.keyCode){
+      _locked = null;
+    }
+  }
+}
+
+/**
+ * Contains keyboardskeys for making keyboardshortcuts.
+ */
+class Keys{
+  static const int UP = 38;
+  static const int DOWN = 40;
   static const int A = 65;
   static const int B = 66;
   static const int C = 67;
@@ -53,69 +125,4 @@ class Keyboardhandler{
   static const int X = 88;
   static const int Y = 89;
   static const int Z = 90;
-
-  /**
-   * TODO Comment
-   */
-  Map<int, Callback> global = new Map<int, Callback>();
-
-  /**
-   * TODO Comment
-   */
-  Map<int, Callback> context = new Map<int, Callback>();
-
-  /**
-   * TODO Comment
-   */
-  Map<int, Callback> widget = new Map<int, Callback>();
-
-  int _locked = null;
-  /**
-   * TODO Comment constructor.
-   */
-  Keyboardhandler() {
-    log.debug('keyboardHanlder Initialized');
-
-    window.onKeyDown.listen(_keyDown);
-    window.onKeyUp.listen(_keyUp);
-  }
-
-  void _keyDown(KeyboardEvent event) {
-    var key = new KeyEvent(event);
-    log.debug('Down');
-
-    if (_locked == null) {
-      if (key.ctrlKey && key.altKey) {
-        int keyCode = key.keyCode;
-
-        if (widget.containsKey(keyCode)) {
-          _locked = keyCode;
-          Callback callback = widget[keyCode];
-          callback();
-
-        }else if(context.containsKey(keyCode)) {
-          _locked = keyCode;
-          Callback callback = context[keyCode];
-          callback();
-
-        }else if(global.containsKey(keyCode)) {
-          log.debug('Global Keyboard ${key.keyCode}');
-          _locked = keyCode;
-          Callback callback = global[keyCode];
-          callback();
-        }
-      }
-    }
-  }
-
-  void _keyUp(KeyboardEvent event) {
-    var key = new KeyEvent(event);
-    log.debug('${key.keyCode} - Up');
-
-    if (_locked == key.keyCode){
-      _locked = null;
-    }
-  }
 }
-
-final Keyboardhandler keyboardhandler = new Keyboardhandler();

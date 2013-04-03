@@ -45,7 +45,8 @@ class Notification {
       throw new Exception('I used to be a Socket, but then i took an arrow to the knee.');
     }
     _socket.onMessage.listen(_onMessage);
-    //TODO add panic handler for onError.
+    //TODO make better panichandler for onError.
+    _socket.onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
   }
 
   /**
@@ -59,6 +60,8 @@ class Notification {
   }
 
   void _onMessage(Map json) {
+    log.debug(json.toString());
+
     if (!json.containsKey('notification')) {
       log.critical('does not contains notification');
       return;
@@ -78,11 +81,11 @@ class Notification {
   }
 
   void _persistentNotification(Map json) {
-    log.info('persistent notification');
+    log.info('persistent');
   }
 
   void _nonPersistentNotification(Map json) {
-    log.info('nonpersistent notification');
+    log.info('nonpersistent');
 
     if (!json.containsKey('event')) {
       log.critical('nonPersistensNotification did not have a event field.');

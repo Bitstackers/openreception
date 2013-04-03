@@ -1,27 +1,42 @@
+/*                                Bob
+                   Copyright (C) 2012-, AdaHeads K/S
+
+  This is free software;  you can redistribute it and/or modify it
+  under terms of the  GNU General Public License  as published by the
+  Free Software  Foundation;  either version 3,  or (at your  option) any
+  later version. This library is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  You should have received a copy of the GNU General Public License and
+  a copy of the GCC Runtime Library Exception along with this program;
+  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  <http://www.gnu.org/licenses/>.
+*/
+
 part of protocol;
 
 /**
- * TODO Comment.
+ * Class to send log messages to the server,
  */
 class Log extends Protocol {
   String _payload;
 
   /**
-   * TODO Comment
+   * Sends logmessage on the INFO interface.
    */
   Log.Info(String message) {
     _Log(message, configuration.serverLogInterfaceInfo);
   }
 
   /**
-   * TODO Comment
+   * Sends logmessage on the ERROR interface.
    */
   Log.Error(String message) {
     _Log(message, configuration.serverLogInterfaceError);
   }
 
   /**
-   * TODO Comment
+   * Sends logmessage on the CRITICAL interface.
    */
   Log.Critical(String message) {
     _Log(message, configuration.serverLogInterfaceCritical);
@@ -61,9 +76,8 @@ class Log extends Protocol {
 
   /**
    * TODO Comment
-   * TODO find better function type.
    */
-  void onError(void onData()) {
+  void onError(Callback onData) {
     assert(_request != null);
     assert(_notSent);
 

@@ -35,19 +35,44 @@ body {
   width: 96%;
 }
 
+#contactinfo {
+  position: absolute;
+  top: 57%;
+  left: 4%;
+  height: 43%;
+  width: 36%;
+}
+
 #contextswitcher {
   position: absolute;
   top: 0%;
   left: 0%;
   height: 100%;
   width: 3%;
+}
 
-  background-color: #fafafa;
-  border-top: solid 1px #999;
-  border-right: solid 1px #999;
-  border-bottom: solid 1px #999;
-  border-radius: 0px 5px 5px 0px;
-  list-style-type: none;
+#globalqueue {
+  position: absolute;
+  top: 57%;
+  left: 78%;
+  height: 26%;
+  width: 22%;
+}
+
+#localqueue {
+  position: absolute;
+  top: 85%;
+  left: 78%;
+  height: 15%;
+  width: 22%;
+}
+
+#sendmessage {
+  position: absolute;
+  top: 57%;
+  left: 41%;
+  height: 43%;
+  width: 36%;
 }
 
 #welcomemessage {

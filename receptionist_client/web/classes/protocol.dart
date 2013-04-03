@@ -24,11 +24,13 @@ import 'dart:uri';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
+import 'common.dart';
 import 'configuration.dart';
 import 'logger.dart';
 
 part 'protocol.agent.dart';
 part 'protocol.call.dart';
+part 'protocol.debug.dart';
 part 'protocol.log.dart';
 part 'protocol.message.dart';
 part 'protocol.organization.dart';
