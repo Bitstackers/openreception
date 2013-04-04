@@ -1,4 +1,15 @@
 import 'dart:html';
+
 import 'package:web_ui/web_ui.dart';
 
-class ContactInfo extends WebComponent {}
+import '../classes/environment.dart';
+import '../classes/model.dart';
+
+@observable
+class ContactInfo extends WebComponent {
+  Organization organization = nullOrganization;
+
+  void created() {
+    environment.onOrganizationChange.listen((value) => organization = value);
+  }
+}

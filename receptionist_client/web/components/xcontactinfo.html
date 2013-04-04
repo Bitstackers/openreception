@@ -12,7 +12,9 @@
           ContactInfo Header
         </span>
         <span class="body">
-          ContactInfo Content
+          <template iterate="contact in organization.contacts">
+            {{contact}}
+          </template>
         </span>
       </x-box-with-header>
     </template>

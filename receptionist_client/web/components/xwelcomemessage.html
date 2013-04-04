@@ -9,7 +9,9 @@
     <template>
       <x-box>
         <span class="body">
-          WelcomeMessage
+          <template instantiate="if organization.id != null">
+            {{organization.greeting}}
+          </template>
         </span>
       </x-box>
     </template>

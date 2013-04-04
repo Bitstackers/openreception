@@ -14,34 +14,31 @@
 */
 part of model;
 
+final Organization nullOrganization = new Organization._null();
+
 /**
- * TODO comment, write this when the class have more to it, then a simple map.
+ * TODO comment
  */
 class Organization{
-  Map _json;
-  //Map get json => _json;
+  ContactList _contactlist = nullContactList;
+  ContactList get contacts => _contactlist;
 
-  List _contacts;
-  List get contacts => _contacts;
-
-  Map _orgInfo;
-  Map get orgInfo => _orgInfo;
+  int id;
+  String name;
+  String greeting;
 
   Organization(Map json) {
-    _json = new Map.from(json);
+    if(json.containsKey('contacts')) {
+      _contactlist = new ContactList(json['contacts']);
+      json.remove('contacts');
+    }
 
-    _contacts = json['contacts'];
-
-    json.remove('contacts');
-    _orgInfo = json;
+    id = json['organization_id'];
+    name = json['full_name'];
+    greeting = json['greeting'];
   }
 
-  Organization._null() {
-    _orgInfo = null;
-    _contacts = null;
-  }
+  Organization._null();
 
-  String toString() => _json.toString();
+  String toString() => '${name}-${id}';
 }
-
-Organization nullOrganization = new Organization._null();

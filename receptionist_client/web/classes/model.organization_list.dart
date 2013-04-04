@@ -14,12 +14,19 @@
 */
 part of model;
 
+final OrganizationList nullOrganizationList = new OrganizationList._null();
+
 /**
  * TODO comment.
  */
-class OrganizationList{
-  Map _json;
-  Map get json => _json;
+class OrganizationList extends Iterable<Organization>{
+  List<Organization> _list = new List<Organization>();
 
-  OrganizationList(this._json);
+  OrganizationList.fromMap(Map json) {
+    json['organization_list'].forEach((json) => _list.add(new Organization(json)));
+  }
+
+  OrganizationList._null();
+
+  Iterator<Organization> get iterator => new ListIterator<Organization>(_list);
 }

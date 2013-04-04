@@ -15,6 +15,10 @@
 <body>
   <element name="app" constructor="App" extends="div" apply-author-styles>
     <template>
+      <template instantiate="if !configuration.loaded">
+        <h1>Loading application....</h1>
+      </template>
+
       <template instantiate="if configuration.loaded">
         <x-context-switcher id="contextswitcher"></x-context-switcher>
 
@@ -22,6 +26,10 @@
           <x-welcome-message id="welcomemessage"></x-welcome-message>
           <x-agent-info id="agentinfo"></x-agent-info>
           <x-company-info id="companyinfo"></x-company-info>
+          <x-contact-info id="contactinfo"></x-contact-info>
+          <x-send-message id="sendmessage"></x-send-message>
+          <x-global-queue id="globalqueue"></x-global-queue>
+          <x-local-queue id="localqueue"></x-local-queue>
         </section>
 
         <section id="contextcompany" class="hidden">

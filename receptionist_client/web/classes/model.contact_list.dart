@@ -12,16 +12,21 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+part of model;
+
+final ContactList nullContactList = new ContactList._null();
 
 /**
- * Model Library.
+ * TODO comment.
  */
-library model;
+class ContactList extends Iterable<Contact>{
+  List<Contact> _list = new List<Contact>();
 
-import 'common.dart';
+  ContactList(List contacts) {
+    contacts.forEach((json) => _list.add(new Contact(json)));
+  }
 
-part 'model.call.dart';
-part 'model.contact.dart';
-part 'model.contact_list.dart';
-part 'model.organization.dart';
-part 'model.organization_list.dart';
+  ContactList._null();
+
+  Iterator<Contact> get iterator => new ListIterator<Contact>(_list);
+}

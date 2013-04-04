@@ -12,16 +12,25 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+part of model;
+
+final Contact nullContact = new Contact._null();
 
 /**
- * Model Library.
+ * TODO comment
  */
-library model;
+class Contact{
+  int id;
+  bool isHuman;
+  String name;
 
-import 'common.dart';
+  Contact(Map json) {
+    id = json['contact_id'];
+    isHuman = json['is_human'];
+    name = json['full_name'];
+  }
 
-part 'model.call.dart';
-part 'model.contact.dart';
-part 'model.contact_list.dart';
-part 'model.organization.dart';
-part 'model.organization_list.dart';
+  Contact._null();
+
+  String toString() => '${name}-${id}-${isHuman}';
+}

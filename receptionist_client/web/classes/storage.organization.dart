@@ -37,11 +37,8 @@ class Storage_Organization{
       log.debug('${id} is not cached');
       new protocol.Organization.get(id)
           ..onSuccess((text) {
-            var organizationJson = json.parse(text);
-            //TODO Should not read information directly from json. Read from org.
-            int id = organizationJson['organization_id'];
-            var org = new Organization(organizationJson);
-            _cache[id] = org;
+            var org = new Organization(json.parse(text));
+            _cache[org.id] = org;
             onComplete(org);
           })
           ..onNotFound((){
@@ -60,8 +57,7 @@ class Storage_Organization{
   void getList(OrganizationListSubscriber onComplete) {
     new protocol.OrganizationList()
         ..onSuccess((text) {
-          var res = new OrganizationList(json.parse(text));
-          onComplete(res);
+          onComplete(new OrganizationList.fromMap(json.parse(text)));
         })
         ..onError(() {
           //TODO Do something.

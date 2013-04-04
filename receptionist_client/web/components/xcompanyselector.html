@@ -4,8 +4,9 @@
  <body>
   <element name="x-company-selector" constructor="CompanySelector" extends="select" apply-author-styles>
     <template>
-      <template iterate="number in numbers">
-        <option>{{number}}</option>
+      <option disabled="disabled" selected="selected">{{defaultOptionText}}</option>
+      <template iterate="org in organizationList" on-change="_selection($event)">
+        <option value="{{org.id.toString()}}">{{org.name}}</option>
       </template>
     </template>
 

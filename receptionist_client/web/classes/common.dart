@@ -32,3 +32,44 @@ class TimeoutException implements Exception {
 
   String toString() => message;
 }
+
+/**
+ * A generic List iterator.
+ *
+ * Implement by extending Iterable and adding an Iterator getter:
+ *
+ * class Foo extends Iterable<T>{
+ *   List<T> _list = new List<T>();
+ *
+ *   // stuff
+ *
+ *   Iterator get iterator => new ListIterator<T>(_list);
+ * }
+ *
+ * Foo can now be used in for (var X in Foo) loops.
+ */
+class ListIterator<E> implements Iterator<E> {
+  List<E> _container;
+  E       _current;
+  int     _position = -1;
+
+  ListIterator(this._container);
+
+  bool moveNext() {
+    var newPosition = _position + 1;
+
+    if (newPosition < _container.length) {
+      _current = _container.elementAt(newPosition);
+      _position = newPosition;
+
+      return true;
+    }
+
+    _position = _container.length;
+    _current = null;
+
+    return false;
+  }
+
+  E get current => _current;
+}

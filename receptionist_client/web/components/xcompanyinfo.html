@@ -14,6 +14,11 @@
         </span>
         <span class="body">
           <select is="x-company-selector"></select>
+          <div id="tempdump" style="margin-top: 10px;">
+            <template instantiate="if organization.id != null">
+              {{organization.name}}-{{organization.id}}
+            </template>
+          </div>
         </span>
       </x-box-with-header>
     </template>

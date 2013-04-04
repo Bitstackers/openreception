@@ -39,17 +39,11 @@ class Environment{
   /*
      Organization
   */
-  var organizationStream = new StreamController<Organization>.broadcast();
+  var _organizationStream = new StreamController<Organization>.broadcast();
+  Stream<Organization> get onOrganizationChange => _organizationStream.stream;
 
   Organization _organization;
   Organization get organization => _organization;
-
-  /**
-   * Subscribe to organization changes.
-   */
-  void onOrganizationChange(OrganizationSubscriber subscriber){
-    organizationStream.stream.listen(subscriber);
-  }
 
  /**
   * Replaces this environments organization with [organization].
@@ -58,10 +52,11 @@ class Environment{
     if (organization == _organization) {
       return;
     }
+
     _organization = organization;
-    log.info('The current organization is changed to: ${organization.toString()}');
+    log.info('Environment organization is changed to: ${organization.toString()}');
     //dispatch the new organization.
-    organizationStream.sink.add(organization);
+    _organizationStream.sink.add(organization);
   }
 
   /*
