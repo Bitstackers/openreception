@@ -2,20 +2,19 @@ library section;
 
 import 'dart:async';
 import 'dart:html';
-import 'package:web_ui/web_ui.dart';
 
-final StreamController _sectionActivationStream = new StreamController<int>.broadcast();
+final StreamController<String> _sectionActivationStream = new StreamController<String>.broadcast();
 
 /**
  * A [Section] is a container for some content. A [Section] can be active or
  * inactive, defined by the [isActive] property.
  */
-@observable
 class Section {
   Element element;
   bool isActive = false;
 
-  int get id => this.hashCode;
+  String get id => element.id;
+  Stream get stream => _sectionActivationStream.stream;
 
   Section(Element this.element) {
     assert(element != null);
@@ -25,8 +24,8 @@ class Section {
     _sectionActivationStream.stream.listen(_toggle);
   }
 
-  void _toggle(int sectionID) {
-    if (sectionID == id) {
+  void _toggle(String sectionId) {
+    if (sectionId == id) {
       isActive = true;
       element.classes.remove('hidden');
     } else if (isActive) {

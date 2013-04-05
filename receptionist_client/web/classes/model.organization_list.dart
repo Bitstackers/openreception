@@ -20,7 +20,7 @@ final OrganizationList nullOrganizationList = new OrganizationList._null();
  * TODO comment.
  */
 class OrganizationList extends Iterable<Organization>{
-  List<Organization> _list = new List<Organization>();
+  List<Organization> _list = <Organization>[];
 
   OrganizationList.fromMap(Map json) {
     json['organization_list'].forEach((json) => _list.add(new Organization(json)));

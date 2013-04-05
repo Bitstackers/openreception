@@ -9,8 +9,12 @@ class ContextSwitcher extends WebComponent {
   List<Section> sectionList = <Section>[];
 
   void inserted() {
-    for (var elem in queryAll('section')..where((v) => v.id.startsWith('context'))) {
+    for (var elem in queryAll('x-context')) {
       this.sectionList.add(new Section(elem));
     }
+  }
+
+  void foo(String context) {
+    print('foo from contextswitcher ${context}');
   }
 }

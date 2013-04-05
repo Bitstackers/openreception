@@ -5,18 +5,33 @@
   <element name="x-context-switcher-button" constructor="ContextSwitcherButton" extends="span" apply-author-styles>
     <style scoped>
       .default {
-        background-color: #ddd;
+        position: relative;
+        background-color: inherit;
         width: 100%;
+        border: none;
       }
 
-      .active,
-      .default:hover {
-        background-color: blue;
+      .alert {
+        padding: 0px;
+        margin: 0px;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+        background-color: red;
+        font-weight: bold;
+        font-size: 1.25em;
+        color: white;
       }
     </style>
 
     <template>
-      <button disabled="{{_disabled}}" class="default {{_active}}" on-click="activate()">{{section.id}}</button>
+      <button disabled="{{disabled}}" class="default" on-click="activate()">
+        <img style="height: 100%" src="{{icon}}">
+        <div class="alert hidden">!</div>
+      </button>
     </template>
 
     <script type="application/dart" src="xcontextswitcherbutton.dart"></script>

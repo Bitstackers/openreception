@@ -20,7 +20,7 @@ final ContactList nullContactList = new ContactList._null();
  * TODO comment.
  */
 class ContactList extends Iterable<Contact>{
-  List<Contact> _list = new List<Contact>();
+  List<Contact> _list = <Contact>[];
 
   ContactList(List contacts) {
     contacts.forEach((json) => _list.add(new Contact(json)));

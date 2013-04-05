@@ -16,7 +16,7 @@ class CompanySelector extends WebComponent {
   }
 
   void inserted() {
-    host.onChange.listen(_selection);
+    _root.onChange.listen(_selection);
   }
 
   void _selection(Event event) {
