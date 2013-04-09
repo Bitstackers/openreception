@@ -3,20 +3,15 @@
 <html>
 <body>
   <element name="x-foo" constructor="Foo" extends="div" apply-author-styles>
-    <style scoped>
-      x-foo {
-        position: absolute;
-        top: 0%;
-        left: 4%;
-      }
-    </style>
-
     <template>
       <span>
-        <content></content>: {{clicks}}
+        <content></content> {{contextid}}
       </span>
-      <button on-click="increment()">
-        Click me
+      <button on-click="increaseAlert()">
+        Increase
+      </button>
+      <button on-click="decreaseAlert()">
+        Decrease
       </button>
     </template>
 

@@ -20,21 +20,58 @@ library environment;
 
 import 'dart:async';
 
+import 'package:web_ui/web_ui.dart';
+
 import 'common.dart';
+import 'context.dart';
 import 'logger.dart';
 import 'model.dart';
 
+/**
+ * Environment singletons.
+ */
+final _ContextList contextList = new _ContextList();
+final _Environment environment = new _Environment();
 
 /**
- * Singleton pattern. Reference to the one and only object.
+ * The application contexts. Contexts can be added and the list can be iterated,
+ * but contexts cannot be removed or the list cleared.
  */
-final Environment environment = new Environment._internal();
+class _ContextList extends Iterable<Context>{
+  List<Context> list = toObservable(new List<Context>());
+
+  _ContextList();
+
+  void add(Context context) {
+    list.add(context);
+  }
+
+  void decreaseAlert(String contextId) {
+    list.forEach((context) {
+      if (contextId == context.id) {
+        context.decreaseAlert();
+      }
+    });
+  }
+
+  void increaseAlert(String contextId) {
+    list.forEach((context) {
+      if (contextId == context.id) {
+        context.increaseAlert();
+      }
+    });
+  }
+
+  Iterator<Context> get iterator => new GenericListIterator<Context>(list);
+}
 
 /**
- * A class that contains the selected organization
+ * Environment data. This contains data that is shared across the entire
+ * application, such as the currently active organization, current active call
+ * and similar.
  */
-class Environment{
-  Environment._internal();
+class _Environment{
+  _Environment();
 
   /*
      Organization

@@ -29,13 +29,14 @@ import 'package:web_ui/web_ui.dart';
 import 'common.dart';
 import 'logger.dart';
 
+final _Configuration configuration = new _Configuration();
+
 /**
  * Access to configuration parameters provided by Alice.
  */
 @observable
-class Configuration {
-  static Configuration _instance;
-  static const String _CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
+class _Configuration {
+  const String _CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
 
   bool _loaded = false;
   bool get loaded => _loaded;
@@ -68,28 +69,20 @@ class Configuration {
   String get standardGreeting => _standardGreeting;
 
   /**
-   * Factory for the Configuration singleton.
+   * Constructor
    */
-  factory Configuration() {
+  _Configuration() {
     var configUri = new Uri(_CONFIGURATION_URL);
 
-    // TODO Why does it have to be Absolute? couldn't it have a fragment to
-    //      indicate the company, or type of user. I just find it a strange restricting.
-    assert(configUri.isAbsolute);
-
-    if(_instance == null) {
-      _instance = new Configuration._internal(configUri);
-    }
-    return _instance;
-  }
-
-  Configuration._internal(Uri URI) {
-    HttpRequest.request(URI.toString())
-        ..then(_onComplete,
-               onError: (AsyncError error) => log.debug('Configuration request error'))
+    HttpRequest.request(configUri.toString())
+    ..then(_onComplete,
+        onError: (AsyncError error) => log.debug('Configuration request error'))
         .catchError((error) => log.critical('configuration exception ${error.runtimeType.toString()}'));
   }
 
+  /**
+   * TODO comment
+   */
   void _onComplete(HttpRequest req) {
     switch(req.status) {
       case 200:
@@ -220,5 +213,3 @@ Future<bool> fetchConfig() {
 
   return completer.future;
 }
-
-final configuration = new Configuration();

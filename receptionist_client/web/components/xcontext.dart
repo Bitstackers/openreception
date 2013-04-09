@@ -1,9 +1,14 @@
+import 'dart:async';
 import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-class Context extends WebComponent {
+import '../classes/context.dart';
+import '../classes/environment.dart' as env;
+
+class XContext extends WebComponent {
   void inserted() {
-    query('x-context-switcher').xtag.foo(this.id);
+    // Make the environment aware of your existence.
+    env.contextList.add(new Context(this));
   }
 }

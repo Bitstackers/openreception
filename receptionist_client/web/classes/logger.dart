@@ -27,6 +27,8 @@ import 'package:logging/logging.dart';
 import 'configuration.dart';
 import 'protocol.dart' as protocol;
 
+final Log log = new Log._internal();
+
 /**
  * [Log] is a class to manage the logging system.
  */
@@ -100,5 +102,3 @@ class Log{
     }
   }
 }
-
-final Log log = new Log._internal();

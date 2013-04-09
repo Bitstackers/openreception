@@ -6,11 +6,17 @@
   </head>
 <body>
   <element name="x-welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
+    <style scoped>
+      .greeting {
+        font-size: 1.5em;
+      }
+    </style>
+
     <template>
       <x-box>
         <span class="body">
           <template instantiate="if organization.id != null">
-            {{organization.greeting}}
+            <span class="greeting">{{organization.greeting}}</span>
           </template>
         </span>
       </x-box>

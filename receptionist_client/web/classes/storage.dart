@@ -30,3 +30,4 @@ import 'model.dart';
 import 'protocol.dart' as protocol;
 
 part 'storage.organization.dart';
+part 'storage.organization_list.dart';

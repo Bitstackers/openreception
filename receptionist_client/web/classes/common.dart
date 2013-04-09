@@ -12,8 +12,9 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+
 /**
- * A collection of common typedefs and exceptions for Bob.
+ * A collection of common typedefs, methods, classes and exceptions for Bob.
  */
 library Common;
 
@@ -48,12 +49,12 @@ class TimeoutException implements Exception {
  *
  * Foo can now be used in for (var X in Foo) loops.
  */
-class ListIterator<E> implements Iterator<E> {
+class GenericListIterator<E> implements Iterator<E> {
   List<E> _container;
   E       _current;
   int     _position = -1;
 
-  ListIterator(this._container);
+  GenericListIterator(this._container);
 
   bool moveNext() {
     var newPosition = _position + 1;

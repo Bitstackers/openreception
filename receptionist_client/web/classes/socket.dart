@@ -61,7 +61,6 @@ class _ConnectionManager{
 
 final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
 
-
 /**
  * A generic Websocket, that reconnects itself.
  */

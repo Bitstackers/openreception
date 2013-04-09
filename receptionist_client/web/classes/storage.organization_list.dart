@@ -13,27 +13,28 @@
   <http://www.gnu.org/licenses/>.
 */
 
-part of model;
+part of storage;
 
-final Call nullCall = new Call._null();
+final _StorageOrganizationList storageOrganizationList = new _StorageOrganizationList();
 
 /**
- * TODO comment, write this when the class have more to it, then a simple map.
+ * Storage class for the Organization List object.
  */
-class Call{
-  Map _call;
-  Map get content => _call;
+class _StorageOrganizationList{
+  _StorageOrganization_List();
 
   /**
-   * TODO comment
+   * Get the organization list from Alice.
    */
-  Call(Map json) {
-    _call = json;
+  void get(OrganizationListSubscriber onComplete) {
+    new protocol.OrganizationList()
+        ..onSuccess((text) {
+          onComplete(new OrganizationList.fromMap(json.parse(text)));
+        })
+        ..onError(() {
+          //TODO Do something.
+        })
+        ..send();
   }
-
-  Call._null() {
-    _call = null;
-  }
-
-  String toString() => _call.toString();
 }
+

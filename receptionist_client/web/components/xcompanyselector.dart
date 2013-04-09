@@ -8,20 +8,21 @@ import '../classes/storage.dart';
 
 @observable
 class CompanySelector extends WebComponent {
-  OrganizationList organizationList = nullOrganizationList;
   String defaultOptionText = 'vælg virksomhed';
+  OrganizationList organizationList = nullOrganizationList;
 
   void created() {
-    storageOrganization.getList((list) => organizationList = list);
+    storageOrganizationList.get((list) => organizationList = list);
   }
 
   void inserted() {
-    _root.onChange.listen(_selection);
+    this.onChange.listen(_selection);
   }
 
   void _selection(Event event) {
     var e = event.target as SelectElement;
+
     storageOrganization.get(int.parse(e.value),
-        (org) => environment.setOrganization(org));
+                            (org) => environment.setOrganization(org));
   }
 }

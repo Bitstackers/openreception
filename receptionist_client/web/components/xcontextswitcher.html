@@ -17,15 +17,15 @@
       }
 
       .item {
-        margin: 15px auto;
+        margin: 0px auto;
         width: 70%;
       }
     </style>
 
     <template>
-      <template iterate="section in sectionList">
+      <template iterate="context in env.contextList">
         <li class="item">
-          <x-context-switcher-button section="{{section}}"></x-context-switcher-button>
+          <x-context-switcher-button context="{{context}}"></x-context-switcher-button>
         </li>
       </template>
     </template>

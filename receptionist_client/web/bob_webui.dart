@@ -23,7 +23,7 @@ import 'classes/configuration.dart';
 import 'classes/logger.dart';
 
 /**
- * Instantiates all the [view] objects and gets Bob going.
+ * Get Bob going as soon as the configuration is loaded.
  */
 void main() {
   log.info('Welcome to Bob.');

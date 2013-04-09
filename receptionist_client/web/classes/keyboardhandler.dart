@@ -28,12 +28,12 @@ part 'keyboardshortcuts.dart';
 /**
  * The one and only [keyboardhandler].
  */
-final Keyboardhandler keyboardHandler = new Keyboardhandler._internal();
+final _Keyboardhandler keyboardHandler = new _Keyboardhandler();
 
 /**
  * Class to handler keyboard events, and activate the right keyboardshortcuts.
  */
-class Keyboardhandler{
+class _Keyboardhandler{
   /**
    * Global shortcuts are always active.
    */
@@ -54,13 +54,16 @@ class Keyboardhandler{
   /**
    * Private constructor to make sure there is only one instance of it.
    */
-  Keyboardhandler._internal() {
+  Keyboardhandler() {
     log.debug('keyboardHanlder Initialized');
 
     window.onKeyDown.listen(_keyDown);
     window.onKeyUp.listen(_keyUp);
   }
 
+  /**
+   * TODO comment
+   */
   void _keyDown(KeyboardEvent event) {
     var key = new KeyEvent(event);
 
@@ -84,6 +87,9 @@ class Keyboardhandler{
     }
   }
 
+  /**
+   * TODO comment
+   */
   void _keyUp(KeyboardEvent event) {
     var key = new KeyEvent(event);
 
@@ -96,7 +102,7 @@ class Keyboardhandler{
 /**
  * Contains keyboardskeys for making keyboardshortcuts.
  */
-class Keys{
+class _Keys{
   static const int UP = 38;
   static const int DOWN = 40;
   static const int A = 65;

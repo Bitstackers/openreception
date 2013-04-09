@@ -15,19 +15,19 @@
 
 part of storage;
 
-final Storage_Organization storageOrganization = new Storage_Organization._internal();
+final _StorageOrganization storageOrganization = new _StorageOrganization();
 
 /**
  * Storage class for Organization objects.
  */
-class Storage_Organization{
-  Storage_Organization._internal();
-
+class _StorageOrganization{
   //TODO Make it possible to invalidate cached items.
   var _cache = new Map<int, Organization>();
 
+  _StorageOrganization();
+
   /**
-   * Gets an organization by [id] from alice if there is no cache of it.
+   * Fetch an organization by [id] from Alice if there is no cache of it.
    */
   void get(int id, OrganizationSubscriber onComplete) {
     if (_cache.containsKey(id)) {
@@ -49,19 +49,5 @@ class Storage_Organization{
           })
           ..send();
     }
-  }
-
-  /**
-   * Get the organization list from alice.
-   */
-  void getList(OrganizationListSubscriber onComplete) {
-    new protocol.OrganizationList()
-        ..onSuccess((text) {
-          onComplete(new OrganizationList.fromMap(json.parse(text)));
-        })
-        ..onError(() {
-          //TODO Do something.
-        })
-        ..send();
   }
 }

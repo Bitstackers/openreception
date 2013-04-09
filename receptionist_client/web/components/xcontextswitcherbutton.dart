@@ -2,65 +2,60 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-import '../classes/section.dart';
+import '../classes/context.dart';
 
 @observable
 class ContextSwitcherButton extends WebComponent {
-  ButtonElement button;
-  bool disabled;
-  String icon;
-  String iconActive;
-  String iconPassive;
-  ImageElement img;
-  Section section;
+  Context context;
+  String alertIcon = '../icons/contextalert.svg'; // ???? path here? yuk!
+
+  DivElement _alertDiv;
+  ImageElement _alertImg;
+  ButtonElement _button;
+  ImageElement _img;
+  String _iconActive;
+  String _iconPassive;
+
+  String get alertMode => context.alertMode ? '' : 'hidden';
+  bool get disabled => context.isActive;
+  String get icon => context.isActive ? _iconActive : _iconPassive;
 
   void inserted() {
-    section.stream.listen(_toggle);
+    _button = this.query('button');
+    _img = _button.query('img');
+    _alertDiv = _button.query('div');
+    _alertImg = _alertDiv.query('img');
 
-    button = this.query('button');
-    img = button.query('img');
-
-    disabled = section.isActive;
+    _iconActive = '../icons/${context.id}_active.svg'; // ???? path here? yuk!
+    _iconPassive = '../icons/${context.id}.svg';       // ???? path here? yuk!
 
     /*
-     * TODO fix these paths so they are centralized somewhere sensible.
+     * We take advantage of the fact that disabled buttons ignore mouse-over/out
+     * events, so it's perfectly fine to just blindly set the src attribute
+     * of the button image element, as the currently active button (which is then
+     * disabled) does not emit any events.
      */
-    iconActive = '../icons/${section.id}_active.svg';
-    iconPassive = '../icons/${section.id}.svg';
-
-    icon = section.isActive ? iconActive : iconPassive;
-
-    button.onMouseOver.listen((_) => icon = iconActive);
-    button.onMouseOut.listen((_) => icon = iconPassive);
+    _button.onMouseOver.listen((_) => _img.src = _iconActive);
+    _button.onMouseOut.listen((_) =>  _img.src = _iconPassive);
 
     _resize();
     window.onResize.listen((_) => _resize());
   }
 
   void _resize() {
-    /*
-     * TODO do we _require_ square buttons? Setting img width to button width
-     * will only give us square buttons if the img src was square in the first
-     * place. For square buttons we can do this
-     *
-     *    button.style.height = '${button.client.width}px';
-     *
-     * else just leave it was it is now.
-     */
-    img.style.width = '${button.client.width}px';
-  }
+    num newSize = _button.client.width / 2;
+    num margin = newSize / 1.5;
 
-  void _toggle(String sectionId) {
-    if (sectionId == section.id) {
-      icon = iconActive;
-      disabled = true;
-    } else {
-      icon = iconPassive;
-      disabled = false;
-    }
+    _button.style.marginTop = '${margin}px';
+    _button.style.marginBottom = '${margin}px';
+
+    _alertDiv.style.width = '${newSize}px';
+    _alertDiv.style.height = '${newSize}px';
+    _alertImg.style.height = '${newSize}px';
+    _alertImg.style.width = '${newSize}px';
   }
 
   void activate() {
-    section.activate();
+    context.activate();
   }
 }

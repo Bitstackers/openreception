@@ -2,19 +2,6 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-import '../classes/section.dart';
+import '../classes/environment.dart' as env;
 
-@observable
-class ContextSwitcher extends WebComponent {
-  List<Section> sectionList = <Section>[];
-
-  void inserted() {
-    for (var elem in queryAll('x-context')) {
-      this.sectionList.add(new Section(elem));
-    }
-  }
-
-  void foo(String context) {
-    print('foo from contextswitcher ${context}');
-  }
-}
+class ContextSwitcher extends WebComponent {}

@@ -7,7 +7,7 @@ class BoxWithHeader extends WebComponent {
   DivElement body;
   DivElement outer;
 
-  inserted() {
+  void inserted() {
     outer = this.query('div');
     header = outer.query('h1');
     body = outer.query('div');

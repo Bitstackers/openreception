@@ -27,14 +27,16 @@ import 'logger.dart';
 import 'socket.dart';
 import 'utilities.dart';
 
+final _Notification notification = new _Notification();
+
 /**
  * A Class to handle all the notifications from Alice.
  */
-class Notification {
+class _Notification {
   var _eventHandlers = new Map<String, StreamController<Map>>();
   Socket _socket;
 
-  Notification._internal() {
+  _Notification() {
     assert(configuration.loaded);
 
     Uri url = configuration.notificationSocketInterface;
@@ -101,5 +103,3 @@ class Notification {
     }
   }
 }
-
-final notification = new Notification._internal();
