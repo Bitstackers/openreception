@@ -12,7 +12,7 @@ out/
 packages
 
 # Don't track docs, generate them.
-src/dart/docs
+web/classes/docs
 
 # Don't track the auto generated javascript files.
 src/dart/bob.dart.js*
