@@ -54,7 +54,7 @@ class _Keyboardhandler{
   /**
    * Private constructor to make sure there is only one instance of it.
    */
-  Keyboardhandler() {
+  _Keyboardhandler() {
     log.debug('keyboardHanlder Initialized');
 
     window.onKeyDown.listen(_keyDown);
@@ -102,9 +102,14 @@ class _Keyboardhandler{
 /**
  * Contains keyboardskeys for making keyboardshortcuts.
  */
-class _Keys{
+class Keys{
   static const int UP = 38;
   static const int DOWN = 40;
+  static const int ZERO = 48;
+  static const int ONE = 49;
+  static const int TWO = 50;
+  static const int THREE = 51;
+  static const int FOUR = 52;
   static const int A = 65;
   static const int B = 66;
   static const int C = 67;

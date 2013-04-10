@@ -117,7 +117,7 @@ class CallQueue extends Protocol{
   /**
    * TODO Comment
    */
-  void onEmptyList(Callback onData){
+  void onEmptyQueue(Callback onData){
     assert(_request != null);
     assert(_notSent);
 

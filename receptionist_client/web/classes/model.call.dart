@@ -24,11 +24,15 @@ class Call{
   Map _call;
   Map get content => _call;
 
+  int id;
   /**
    * TODO comment
    */
   Call(Map json) {
     _call = json;
+
+    //TODO Parsing should not be necessary when the json is stabile.
+    id = int.parse(json['id']);
   }
 
   Call._null() {
