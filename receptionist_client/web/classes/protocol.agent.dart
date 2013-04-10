@@ -106,11 +106,11 @@ class AgentState extends Protocol{
 }
 
 /**
- *
+ * Protocol class to make a request for a list of Agents.
  */
 class AgentList extends Protocol {
   /**
-   * TODO comment
+   * Make a request for the list of agents.
    */
   AgentList(){
     assert(configuration.loaded);
@@ -124,7 +124,7 @@ class AgentList extends Protocol {
   }
 
   /**
-   * TODO comment
+   * The request returns a list of agents.
    */
   void onSuccess(Subscriber onData){
     assert(_request != null);
@@ -138,7 +138,7 @@ class AgentList extends Protocol {
   }
 
   /**
-   * TODO comment
+   * When there happens a error in the request.
    */
   void onError(Callback onData){
     assert(_request != null);
