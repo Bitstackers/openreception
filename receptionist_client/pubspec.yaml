@@ -5,3 +5,4 @@ dependencies:
   browser: any
   web_ui: any
   logging: any
+  meta: any
