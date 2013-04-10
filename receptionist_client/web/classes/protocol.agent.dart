@@ -104,3 +104,56 @@ class AgentState extends Protocol{
     });
   }
 }
+
+/**
+ *
+ */
+class AgentList extends Protocol {
+  /**
+   * TODO comment
+   */
+  AgentList(){
+    assert(configuration.loaded);
+
+    var base = configuration.aliceBaseUrl.toString();
+    var path = '/agent/list';
+
+    _url = _buildUrl(base, path);
+    _request = new HttpRequest()
+        ..open(GET, _url);
+  }
+
+  /**
+   * TODO comment
+   */
+  void onSuccess(Subscriber onData){
+    assert(_request != null);
+    assert(_notSent);
+
+    _request.onLoad.listen((_){
+      if (_request.status == 200){
+        onData(json.parse(_request.responseText));
+      }
+    });
+  }
+
+  /**
+   * TODO comment
+   */
+  void onError(Callback onData){
+    assert(_request != null);
+    assert(_notSent);
+
+    _request.onError.listen((_) {
+      log.critical(_errorLogMessage('Protocol AgentList failed.'));
+      onData();
+    });
+
+    _request.onLoad.listen((_) {
+      if (_request.status != 200){
+        log.critical(_errorLogMessage('Protocol AgentList failed.'));
+        onData();
+      }
+    });
+  }
+}
