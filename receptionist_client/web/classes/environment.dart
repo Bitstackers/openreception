@@ -121,6 +121,9 @@ class _Environment{
     _call = call;
     log.info('The current call is changed to: ${call.toString()}');
     //dispatch the new call.
+    if (_call != null && _call != nullCall){
+      log.user('Du fik opkaldet: ${_call.toString()}');
+    }
     callStream.sink.add(call);
   }
 }

@@ -68,6 +68,9 @@ class _Configuration {
   String _standardGreeting;
   String get standardGreeting => _standardGreeting;
 
+  int _userLogSizeLimit = 100000;
+  int get userLogSizeLimit => _userLogSizeLimit;
+
   /**
    * Constructor
    */

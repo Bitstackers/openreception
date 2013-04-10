@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="components" href="xbox.html">
+  </head>
+  <body>
+    <element name="x-logbox" constructor="LogBox" extends="span" apply-author-styles>
+    <template>
+      <x-box>
+        <span class="body">
+          Template Repeat
+          <table border="1">
+            <tr template repeat="record in messages">
+              <td><p>{{record.time}}</p></td>
+              <td><p>{{record.message}}</p></td>
+            </tr>
+          </table>
+        </span>
+      </x-box>
+    </template>
+
+    <script type="application/dart" src="xlogbox.dart"></script>
+  </element>
+  </body>
+</html>

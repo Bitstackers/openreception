@@ -130,10 +130,27 @@ class AgentList extends Protocol {
     assert(_request != null);
     assert(_notSent);
 
+    //"idle | busy | paused | logged out | ???"
+    final Map TestData =
+      {"Agents" :
+        [
+         {"id": 1, "state": "idle"},
+         {"id": 2, "state": "idle"},
+         {"id": 3, "state": "busy"},
+         {"id": 4, "state": "idle"},
+         {"id": 5, "state": "idle"},
+         {"id": 6, "state": "busy"},
+         {"id": 8, "state": "idle"},
+         {"id": 10, "state": "paused"},
+         {"id": 11, "state": "paused"},
+         {"id": 13, "state": "logged out"}
+        ]}; //Idle[1,2,4,5,8], Busy[3,6], Paused[10, 11], Logged out[13]
+
     _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(json.parse(_request.responseText));
-      }
+      onData(TestData);
+//      if (_request.status == 200){
+//        onData(json.parse(_request.responseText));
+//      }
     });
   }
 
@@ -146,13 +163,13 @@ class AgentList extends Protocol {
 
     _request.onError.listen((_) {
       log.critical(_errorLogMessage('Protocol AgentList failed.'));
-      onData();
+      //onData();
     });
 
     _request.onLoad.listen((_) {
       if (_request.status != 200){
         log.critical(_errorLogMessage('Protocol AgentList failed.'));
-        onData();
+        //onData();
       }
     });
   }
