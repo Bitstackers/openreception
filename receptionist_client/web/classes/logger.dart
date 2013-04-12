@@ -18,14 +18,18 @@
  */
 library logger;
 
+import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
 import 'dart:uri';
 
 import 'package:logging/logging.dart';
 
+import 'common.dart';
 import 'configuration.dart';
 import 'protocol.dart' as protocol;
+
+part 'userlogrecord.dart';
 
 final Log log = new Log._internal();
 
@@ -101,4 +105,16 @@ class Log{
       }
     }
   }
+
+  /**
+   * Lets other components listen on the log.
+   */
+  void user(String message){
+    var log = new UserlogRecord(message);
+    _userlog.sink.add(log);
+  }
+
+  final StreamController<UserlogRecord> _userlog = new StreamController<UserlogRecord>();
+
+  Stream<UserlogRecord> get onUserlogMessage => _userlog.stream;
 }

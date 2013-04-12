@@ -104,3 +104,73 @@ class AgentState extends Protocol{
     });
   }
 }
+
+/**
+ * Protocol class to make a request for a list of Agents.
+ */
+class AgentList extends Protocol {
+  /**
+   * Make a request for the list of agents.
+   */
+  AgentList(){
+    assert(configuration.loaded);
+
+    var base = configuration.aliceBaseUrl.toString();
+    var path = '/agent/list';
+
+    _url = _buildUrl(base, path);
+    _request = new HttpRequest()
+        ..open(GET, _url);
+  }
+
+  /**
+   * The request returns a list of agents.
+   */
+  void onSuccess(Subscriber onData){
+    assert(_request != null);
+    assert(_notSent);
+
+    //"idle | busy | paused | logged out | ???"
+    final Map TestData =
+      {"Agents" :
+        [
+         {"id": 1, "state": "idle"},
+         {"id": 2, "state": "idle"},
+         {"id": 3, "state": "busy"},
+         {"id": 4, "state": "idle"},
+         {"id": 5, "state": "idle"},
+         {"id": 6, "state": "busy"},
+         {"id": 8, "state": "idle"},
+         {"id": 10, "state": "paused"},
+         {"id": 11, "state": "paused"},
+         {"id": 13, "state": "logged out"}
+        ]}; //Idle[1,2,4,5,8], Busy[3,6], Paused[10, 11], Logged out[13]
+
+    _request.onLoad.listen((_){
+      onData(TestData);
+//      if (_request.status == 200){
+//        onData(json.parse(_request.responseText));
+//      }
+    });
+  }
+
+  /**
+   * When there happens a error in the request.
+   */
+  void onError(Callback onData){
+    assert(_request != null);
+    assert(_notSent);
+
+    _request.onError.listen((_) {
+      log.critical(_errorLogMessage('Protocol AgentList failed.'));
+      //onData();
+    });
+
+    _request.onLoad.listen((_) {
+      if (_request.status != 200){
+        log.critical(_errorLogMessage('Protocol AgentList failed.'));
+        //onData();
+      }
+    });
+  }
+}

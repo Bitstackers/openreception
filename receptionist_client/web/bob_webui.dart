@@ -33,6 +33,7 @@ import 'classes/environment.dart';
  */
 void main() {
   log.info('Welcome to Bob.');
+  log.user('Velkommen fra Bob.');
 
   Future<bool> configLoaded = fetchConfig();
 
@@ -40,8 +41,6 @@ void main() {
     log.info('configuration loaded.');
     initializeCallHandler();
 
-    //TESTING 2013-04-10
-    _setupGlobalShortcuts();
   }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
 
 }
