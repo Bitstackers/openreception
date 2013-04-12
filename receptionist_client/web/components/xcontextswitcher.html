@@ -24,12 +24,10 @@
     </style>
 
     <template>
-      <ul class="default">
-        <template iterate="context in env.contextList">
-          <li class="item">
-            <x-context-switcher-button context="{{context}}"></x-context-switcher-button>
-          </li>
-        </template>
+      <ul template iterate="context in env.contextList" class="default">
+        <li class="item">
+          <x-context-switcher-button context="{{context}}"></x-context-switcher-button>
+        </li>
       </ul>
     </template>
 
