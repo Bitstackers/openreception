@@ -7,31 +7,14 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="35"
    height="35"
-   id="svg7206">
+   id="svg9289">
   <defs
-     id="defs7208">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect15718-3-56" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect15724-6-7" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect15726-7-7" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect15744-5-4" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect15746-3-0" />
-  </defs>
+     id="defs9291" />
   <metadata
-     id="metadata7211">
+     id="metadata9294">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -43,61 +26,47 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(-319.63175,-509.40223)"
+     transform="translate(-341.75827,-601.16985)"
      id="layer1">
     <g
-       transform="translate(158.94425,-9.2852739)"
-       id="g7762">
+       transform="translate(183.29858,83.986991)"
+       id="g9260">
       <rect
-         width="34.485916"
-         height="34.48592"
-         x="160.94173"
-         y="518.93549"
-         id="rect4006"
-         style="fill:none;stroke:#ffffff;stroke-width:0.514081;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         width="35"
+         height="35"
+         x="158.45969"
+         y="517.18286"
+         id="rect9212"
+         style="fill:none;stroke:none" />
       <g
-         transform="translate(-0.02597025,-0.01215918)"
-         id="g7750">
-        <path
-           d="m 165.58234,544.64354 25.25663,0 0,0.70583 -25.25663,0 z"
-           id="path42627"
-           style="color:#000000;fill:none;stroke:#cccccc;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           d="m 165.58234,539.54122 25.25663,0 0,0.70582 -25.25663,0 z"
-           id="path42629"
-           style="color:#000000;fill:none;stroke:#cccccc;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           d="m 181.01252,541.96865 0,8.15658 c 0,0 -4.37773,-0.0119 -4.45283,0 l 0,-8.61043 z"
-           id="path42631"
-           style="fill:#cccccc;fill-opacity:1;stroke:#ffffff;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none" />
-        <path
-           d="m 165.58234,534.43889 25.25663,0 0,0.70582 -25.25663,0 z"
-           id="path42633"
-           style="color:#000000;fill:none;stroke:#cccccc;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           d="m 175.1586,533.26884 0,16.85239 c 0,0 -4.37502,-0.0145 -4.45012,0 l 0,-17.4116 z"
-           id="path42635"
-           style="fill:#cccccc;fill-opacity:1;stroke:#ffffff;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none" />
-        <path
-           d="m 165.58234,529.33657 25.25663,0 0,0.70582 -25.25663,0 z"
-           id="path42637"
-           style="color:#000000;fill:none;stroke:#cccccc;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           d="m 186.86336,527.55007 0,22.57006 c 0,0 -4.37429,-0.0179 -4.4493,0 l 0,-23.03709 z"
-           id="path42639"
-           style="fill:#cccccc;fill-opacity:1;stroke:#ffffff;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none" />
-        <path
-           d="m 165.58234,549.74587 25.25663,0 0,0.70582 -25.25663,0 z"
-           id="path42641"
-           style="color:#000000;fill:none;stroke:#cccccc;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           d="m 165.58234,524.23424 25.25663,0 0,0.70582 -25.25663,0 z"
-           id="path42643"
-           style="color:#000000;fill:none;stroke:#cccccc;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           d="m 165.58234,550.42737 0,-28.49785 0.69919,0 0,28.49785 z"
-           id="path42645"
-           style="color:#000000;fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#cccccc;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         id="g9252">
+        <rect
+           width="30.232903"
+           height="26.356384"
+           ry="0.57310319"
+           x="160.84323"
+           y="521.50464"
+           id="rect9216"
+           style="fill:none;stroke:#cdcdcd;stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <g
+           id="g9246">
+          <path
+             d="m 166.69749,535.98451 0,6.24817"
+             id="path9220"
+             style="fill:none;stroke:#cdcdcd;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          <path
+             d="m 172.87228,530.22389 0,12.00879"
+             id="path9222"
+             style="fill:none;stroke:#cdcdcd;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          <path
+             d="m 179.04707,534.52133 0,7.71135"
+             id="path9224"
+             style="fill:none;stroke:#cdcdcd;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          <path
+             d="m 185.22186,527.74355 0,14.48913"
+             id="path9226"
+             style="fill:none;stroke:#cdcdcd;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
       </g>
     </g>
   </g>
