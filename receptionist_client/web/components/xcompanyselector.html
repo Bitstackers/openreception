@@ -2,18 +2,15 @@
 
 <html>
  <body>
-  <element name="x-company-selector" constructor="CompanySelector" extends="select" apply-author-styles>
-    <!--
-      TODO fix this to extend a <span> instead of a <select>. We're currently
-      forced to extend the select because web_ui cannot handle an iterating template
-      inside a select element and since we must have a default option, we cannot
-      use the inline <select iterate="..."> method.
-    -->
+  <element name="x-company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
     <template>
-      <option disabled="disabled" selected="selected">{{defaultOptionText}}</option>
-      <template iterate="org in organizationList" on-change="_selection($event)">
+      <!--<select on-change="_selection($event)">
+        <option disabled="disabled" selected="selected">{{defaultOptionText}}</option>
+        <option template repeat="org in organizationList" value="{{org.id.toString()}}">{{org.name}}</option>
+      </select>-->
+      <select template iterate="org in organizationList" on-change="_selection($event)">
         <option value="{{org.id.toString()}}">{{org.name}}</option>
-      </template>
+      </select>
     </template>
 
     <script type="application/dart" src="xcompanyselector.dart"></script>
