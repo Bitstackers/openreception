@@ -10,6 +10,14 @@ body {
   font-weight: normal;
 }
 
+/*
+  This rule disables the dotted line Firefox adds to the latest clicked button
+  element.
+*/
+button::-moz-focus-inner {
+  border: 0;
+}
+
 #curtains {
   position: absolute;
   background-color: inherit;
@@ -131,6 +139,28 @@ body {
   Context Statistics and contained elements
 */
 #contextstatistics {
+  position: absolute;
+  top: 0%;
+  left: 4%;
+  height: 100%;
+  width: 96%;
+}
+
+/*
+  Context Voicemail and contained elements
+*/
+#contextvoicemails {
+  position: absolute;
+  top: 0%;
+  left: 4%;
+  height: 100%;
+  width: 96%;
+}
+
+/*
+  Context Phone and contained elements
+*/
+#contextphone {
   position: absolute;
   top: 0%;
   left: 4%;
