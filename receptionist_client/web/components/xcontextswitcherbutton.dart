@@ -11,6 +11,7 @@ class ContextSwitcherButton extends WebComponent {
   ImageElement _alertImg;
   ButtonElement _button;
   ImageElement _iconActive;
+  ImageElement _iconPassive;
 
   String get alertMode => context.alertMode ? '' : 'hidden';
   bool get disabled => context.isActive;
@@ -19,6 +20,7 @@ class ContextSwitcherButton extends WebComponent {
   void inserted() {
     _button = this.query('button');
     _iconActive = _button.query('[name="buttonactiveimage"]');
+    _iconPassive = _button.query('[name="buttonpassiveimage"]');
     _alertImg = _button.query('[name="buttonalertimage"]');
 
     /*
@@ -34,18 +36,33 @@ class ContextSwitcherButton extends WebComponent {
     window.onResize.listen((_) => _resize());
   }
 
+  /**
+   * Resize the button and all the contained images.
+   */
   void _resize() {
-    num newSize = _button.client.width / 2;
-    num margin = newSize / 1.5;
+    num buttonWidth = _button.client.width;
 
-    _button.style.height = '${_button.client.width}px';
-    _button.style.marginTop = '${margin}px';
-    _button.style.marginBottom = '${margin}px';
+    num alertSize = buttonWidth / 2;
+    num buttonMargin = buttonWidth / 3;
 
-    _alertImg.style.height = '${newSize}px';
-    _alertImg.style.width = '${newSize}px';
+    _button.style.height = '${buttonWidth}px';
+
+    _button.style.marginTop = '${buttonMargin}px';
+    _button.style.marginBottom = '${buttonMargin}px';
+
+    _iconActive.style.height = '${buttonWidth}px';
+    _iconActive.style.width = '${buttonWidth}px';
+
+    _iconPassive.style.height = '${buttonWidth}px';
+    _iconPassive.style.width = '${buttonWidth}px';
+
+    _alertImg.style.height = '${alertSize}px';
+    _alertImg.style.width = '${alertSize}px';
   }
 
+  /**
+   * Activate the context associated with the button.
+   */
   void activate() {
     context.activate();
   }

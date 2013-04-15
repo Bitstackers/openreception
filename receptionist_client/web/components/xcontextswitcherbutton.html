@@ -13,15 +13,8 @@
         margin-bottom: 10px;
       }
 
+      .alert,
       .buttonface {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-      }
-
-      .alert {
         position: absolute;
         top: 0;
         left: 0;
@@ -30,7 +23,7 @@
 
     <template>
       <button disabled="{{disabled}}" class="default" on-click="activate()">
-        <img class="buttonface" src="../icons/{{context.id}}.svg">
+        <img name="buttonpassiveimage" class="buttonface" src="../icons/{{context.id}}.svg">
         <img name="buttonactiveimage" class="buttonface {{hidden}}" src="../icons/{{context.id}}_active.svg">
         <img name="buttonalertimage" class="alert {{alertMode}}" src="../icons/contextalert.svg">
       </button>
