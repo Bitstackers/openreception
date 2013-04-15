@@ -1,36 +1,33 @@
 <!DOCTYPE html>
 
 <html>
-<body>
-  <element name="x-box" constructor="Box" extends="span" apply-author-styles>
-    <style scoped>
-      .outerbox {
-        background-color: #fafafa;
-        border: solid 2px #ddd;
-        border-radius: 5px;
-        height: 100%;
-        overflow: auto;
-        font-size: 1em;
-      }
+  <body>
+    <element name="x-box" constructor="Box" extends="span" apply-author-styles>
+      <style scoped>
+        .outerbox {
+          height: 100%;
+          background-color: #fafafa;
+          border: solid 2px #ddd;
+          border-radius: 5px;
+          overflow: auto;
+        }
 
-      .content {
-        padding: 10px;
-        overflow: auto;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-      }
-    </style>
+        .content {
+          position: relative;
+          height: 100%;
+          overflow: auto;
+        }
+      </style>
 
-    <template>
-      <div class="outerbox">
-        <div class="content">
-          <content select=".body"></content>
+      <template>
+        <div class="outerbox">
+          <div class="content">
+            <content select="[name=boxcontent]"></content>
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <script type="application/dart" src="xbox.dart"></script>
-  </element>
-</body>
+      <script type="application/dart" src="xbox.dart"></script>
+    </element>
+  </body>
 </html>

@@ -4,25 +4,35 @@
   <head>
     <link rel="components" href="xbox.html">
   </head>
-<body>
-  <element name="x-welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
-    <style scoped>
-      .greeting {
-        font-size: 1.5em;
-      }
-    </style>
+  <body>
+    <element name="x-welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
+      <style scoped>
+        .container {
+          margin: 10px;
+          height: -moz-calc(100% - 20px);
+          height: -webkit-calc(100% - 20px);
+          width: -moz-calc(100% - 20px);
+          width: -webkit-calc(100% - 20px);
+          overflow: auto;
+          border: solid 1px red;
+        }
 
-    <template>
-      <x-box>
-        <span class="body">
-          <template instantiate="if organization.id != null">
-            <span class="greeting">{{organization.greeting}}</span>
-          </template>
-        </span>
-      </x-box>
-    </template>
+        .greeting {
+          font-size: 1.5em;
+        }
+      </style>
 
-    <script type="application/dart" src="xwelcomemessage.dart"></script>
-  </element>
-</body>
+      <template>
+        <x-box>
+          <div name="boxcontent" class="container">
+            <template instantiate="if organization.id != null">
+              <span class="greeting">{{organization.greeting}}</span>
+            </template>
+          </div>
+        </x-box>
+      </template>
+
+      <script type="application/dart" src="xwelcomemessage.dart"></script>
+    </element>
+  </body>
 </html>

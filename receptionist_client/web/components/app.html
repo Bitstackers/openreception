@@ -14,57 +14,57 @@
     <link rel="components" href="xfoo.html">
     <link rel="components" href="xlogbox.html">
   </head>
-<body>
-  <element name="app" constructor="App" extends="div" apply-author-styles>
-    <template>
-      <template instantiate="if !configuration.loaded">
-        <h1>Loading application....</h1>
+  <body>
+    <element name="app" constructor="App" extends="div" apply-author-styles>
+      <template>
+        <template instantiate="if !configuration.loaded">
+          <h1>Loading application....</h1>
+        </template>
+
+        <template instantiate="if configuration.loaded">
+          <x-context-switcher id="contextswitcher"></x-context-switcher>
+
+          <x-context id="contexthome">
+            <x-welcome-message id="welcomemessage"></x-welcome-message>
+            <x-agent-info id="agentinfo"></x-agent-info>
+            <x-company-info id="companyinfo"></x-company-info>
+            <x-contact-info id="contactinfo"></x-contact-info>
+            <x-send-message id="sendmessage"></x-send-message>
+            <x-global-queue id="globalqueue"></x-global-queue>
+            <x-local-queue id="localqueue"></x-local-queue>
+          </x-context>
+
+          <x-context id="contextmessages" class="hidden">
+            <x-foo contextid="contextmessages">
+              Set alert level for
+            </x-foo>
+          </x-context>
+
+          <x-context id="contextlog" class="hidden">
+            <x-logbox id="logbox"></x-logbox>
+          </x-context>
+
+          <x-context id="contextstatistics" class="hidden">
+            <x-foo contextid="contextstatistics">
+              Set alert level for
+            </x-foo>
+          </x-context>
+
+          <x-context id="contextphone" class="hidden">
+            <x-foo contextid="contextphone">
+              Set alert level for
+            </x-foo>
+          </x-context>
+
+          <x-context id="contextvoicemails" class="hidden">
+            <x-foo contextid="contextvoicemails">
+              Set alert level for
+            </x-foo>
+          </x-context>
+        </template>
       </template>
 
-      <template instantiate="if configuration.loaded">
-        <x-context-switcher id="contextswitcher"></x-context-switcher>
-
-        <x-context id="contexthome">
-          <x-welcome-message id="welcomemessage"></x-welcome-message>
-          <x-agent-info id="agentinfo"></x-agent-info>
-          <x-company-info id="companyinfo"></x-company-info>
-          <x-contact-info id="contactinfo"></x-contact-info>
-          <x-send-message id="sendmessage"></x-send-message>
-          <x-global-queue id="globalqueue"></x-global-queue>
-          <x-local-queue id="localqueue"></x-local-queue>
-        </x-context>
-
-        <x-context id="contextmessages" class="hidden">
-          <x-foo contextid="contextmessages">
-            Set alert level for
-          </x-foo>
-        </x-context>
-
-        <x-context id="contextlog" class="hidden">
-          <x-logbox id="logbox"></x-logbox>
-        </x-context>
-
-        <x-context id="contextstatistics" class="hidden">
-          <x-foo contextid="contextstatistics">
-            Set alert level for
-          </x-foo>
-        </x-context>
-
-        <x-context id="contextphone" class="hidden">
-          <x-foo contextid="contextphone">
-            Set alert level for
-          </x-foo>
-        </x-context>
-
-        <x-context id="contextvoicemails" class="hidden">
-          <x-foo contextid="contextvoicemails">
-            Set alert level for
-          </x-foo>
-        </x-context>
-      </template>
-    </template>
-
-    <script type="application/dart" src="app.dart"></script>
-  </element>
-</body>
+      <script type="application/dart" src="app.dart"></script>
+    </element>
+  </body>
 </html>

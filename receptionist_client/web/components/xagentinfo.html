@@ -4,46 +4,44 @@
   <head>
     <link rel="components" href="xbox.html">
   </head>
-<body>
-  <element name="x-agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
-    <style scoped>
-      .container {
-        position: absolute;
-        height: -moz-calc(100% - 20px);
-        height: -webkit-calc(100% - 20px);
-        width: -moz-calc(100% - 22px); /* why 22? Weird.. */
-        width: -webkit-calc(100% - 22px);
-        border: solid 1px red;
-        box-sizing: border-box;
-      }
+  <body>
+    <element name="x-agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
+      <style scoped>
+        .container {
+          margin: 10px;
+          height: -moz-calc(100% - 20px);
+          height: -webkit-calc(100% - 20px);
+          width: -moz-calc(100% - 20px);
+          width: -webkit-calc(100% - 20px);
+          overflow: auto;
+          border: solid 1px red;
+        }
 
-      .one {
-        /*left: 0%;
-        width: 33%;*/
-      }
+        .one {
+          /*left: 0%;
+          width: 33%;*/
+        }
 
-      .two {
-        /*left: 33%;
-        width: 33%;*/
-      }
+        .two {
+          /*left: 33%;
+          width: 33%;*/
+        }
 
-      .three {
-        /*left: 66%;
-        width: 33%;*/
-      }
-    </style>
+        .three {
+          /*left: 66%;
+          width: 33%;*/
+        }
+      </style>
 
-    <template>
-      <x-box>
-        <span class="body">
-          <div class="container">
+      <template>
+        <x-box>
+          <div name="boxcontent" class="container">
             Online: {{numOnline}} Active: {{numActive}} Busy: {{numBusy}}
           </div>
-        </span>
-      </x-box>
-    </template>
+        </x-box>
+      </template>
 
-    <script type="application/dart" src="xagentinfo.dart"></script>
-  </element>
-</body>
+      <script type="application/dart" src="xagentinfo.dart"></script>
+    </element>
+  </body>
 </html>

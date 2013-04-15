@@ -1,6 +1,9 @@
 * {
   margin: 0;
   padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
@@ -52,9 +55,9 @@ button::-moz-focus-inner {
 #contexthome {
   position: absolute;
   top: 0%;
-  left: 4%;
+  left: 3.5%;
   height: 100%;
-  width: 96%;
+  width: 96.5%;
 }
 
 #welcomemessage {
@@ -67,15 +70,15 @@ button::-moz-focus-inner {
 
 #agentinfo {
   position: absolute;
-  left: 75%;
+  left: 74.5%;
   top: 0%;
   height: 6%;
-  width: 25%;
+  width: 25.5%;
 }
 
 #companyinfo {
   position: absolute;
-  top: 8%;
+  top: 7%;
   left: 0%;
   height: 45%;
   width: 100%;
@@ -83,34 +86,34 @@ button::-moz-focus-inner {
 
 #contactinfo {
   position: absolute;
-  top: 55%;
+  top: 53%;
   left: 0%;
-  height: 45%;
-  width: 38%;
+  height: 47%;
+  width: 39%;
 }
 
 #sendmessage {
   position: absolute;
-  top: 55%;
-  left: 39%;
-  height: 45%;
-  width: 38%;
+  top: 53%;
+  left: 39.5%;
+  height: 47%;
+  width: 37.5%;
 }
 
 #globalqueue {
   position: absolute;
-  top: 55%;
-  left: 78%;
-  height: 27%;
-  width: 22%;
+  top: 53%;
+  left: 77.5%;
+  height: 30%;
+  width: 22.5%;
 }
 
 #localqueue {
   position: absolute;
   top: 84%;
-  left: 78%;
+  left: 77.5%;
   height: 16%;
-  width: 22%;
+  width: 22.5%;
 }
 
 /*
