@@ -23,7 +23,7 @@ import 'configuration.dart';
 import 'environment.dart';
 import 'logger.dart';
 import 'protocol.dart' as protocol;
-import 'storage.dart';
+import 'storage.dart' as storage;
 
 /**
  * Sends a request to Alice, to pickup the call for this Agent.
@@ -63,7 +63,7 @@ void _pickupCallSuccess(String text) {
     log.critical('The call had no organization_id. ${text}');
   }
   var orgId = response['organization_id'];
-  storageOrganization.get(orgId,(org) =>
+  storage.storageOrganization.get(orgId,(org) =>
       environment.setOrganization((org != null) ? org : environment.organization));
 }
 

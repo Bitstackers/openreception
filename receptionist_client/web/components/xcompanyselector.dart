@@ -3,16 +3,16 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/environment.dart';
-import '../classes/model.dart';
-import '../classes/storage.dart';
+import '../classes/model.dart' as model;
+import '../classes/storage.dart' as storage;
 
 @observable
 class CompanySelector extends WebComponent {
   String defaultOptionText = 'vælg virksomhed';
-  OrganizationList organizationList = nullOrganizationList;
+  model.OrganizationList organizationList = model.nullOrganizationList;
 
   void created() {
-    storageOrganizationList.get((list) => organizationList = list);
+    storage.OrganizationList.get((list) => organizationList = list);
   }
 
   void inserted() {
@@ -22,7 +22,7 @@ class CompanySelector extends WebComponent {
   void _selection(Event event) {
     var e = event.target as SelectElement;
 
-    storageOrganization.get(int.parse(e.value),
+    storage.Organization.get(int.parse(e.value),
                             (org) => environment.setOrganization(org));
   }
 }

@@ -4,7 +4,7 @@ import 'package:web_ui/web_ui.dart';
 
 import '../classes/logger.dart';
 import '../classes/notification.dart' as notify;
-import '../classes/protocol.dart';
+import '../classes/protocol.dart' as protocol;
 
 @observable
 class AgentInfo extends WebComponent {
@@ -73,7 +73,7 @@ class AgentInfo extends WebComponent {
   void _initialSetup() {
     int online = 0, Active = 0, Busy = 0;
 
-    new AgentList()
+    new protocol.AgentList()
       ..onSuccess((data) {
         log.debug(data.toString());
         for (var agent in data['Agents']){

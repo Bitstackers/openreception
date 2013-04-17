@@ -18,13 +18,13 @@
  */
 library Common;
 
-import 'model.dart';
+import 'model.dart' as model;
 
 typedef void Subscriber(Map json);
 typedef void Callback();
-typedef void OrganizationSubscriber (Organization organization);
-typedef void OrganizationListSubscriber (OrganizationList organizationList);
-typedef void CallSubscriber (Call call);
+typedef void OrganizationSubscriber (model.Organization organization);
+typedef void OrganizationListSubscriber (model.OrganizationList organizationList);
+typedef void CallSubscriber (model.Call call);
 
 class TimeoutException implements Exception {
   final String message;

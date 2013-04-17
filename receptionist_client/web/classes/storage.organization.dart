@@ -15,12 +15,12 @@
 
 part of storage;
 
-final _StorageOrganization storageOrganization = new _StorageOrganization();
+final _Organization Organization = new _Organization();
 
 /**
  * Storage class for Organization objects.
  */
-class _StorageOrganization{
+class _Organization{
   //TODO Make it possible to invalidate cached items.
   var _cache = new Map<int, model.Organization>();
 

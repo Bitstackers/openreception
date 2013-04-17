@@ -6,13 +6,13 @@ import 'package:web_ui/web_ui.dart';
 import '../classes/commands.dart';
 import '../classes/environment.dart';
 import '../classes/logger.dart';
-import '../classes/model.dart';
+import '../classes/model.dart' as model;
 import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 @observable
 class GlobalQueue extends WebComponent {
-  List<Call> calls = toObservable(new List<Call>());
+  List<model.Call> calls = toObservable(new List<model.Call>());
 
   bool pickupButtonDisabled = false;
   bool hangupButtonDisabled = true;
@@ -48,13 +48,13 @@ class GlobalQueue extends WebComponent {
   }
 
   void _queueJoin(Map json) {
-    var call = new Call(json['call']);
+    var call = new model.Call(json['call']);
 
     calls.add(call);
   }
 
   void _queueLeave(Map json) {
-    var call = new Call(json['call']);
+    var call = new model.Call(json['call']);
     //Find the call and removes it from the calls list.
     for (var c in calls) {
       if (c.id == call.id) {
@@ -65,9 +65,9 @@ class GlobalQueue extends WebComponent {
   }
 
   void _callChange(Call call){
-    pickupButtonDisabled = !(call == null || call == nullCall);
-    hangupButtonDisabled = call == null || call == nullCall;
-    holdButtonDisabled = call == null || call == nullCall;
+    pickupButtonDisabled = !(call == null || call == model.nullCall);
+    hangupButtonDisabled = call == null || call == model.nullCall;
+    holdButtonDisabled = call == null || call == model.nullCall;
   }
 
   void pickupcallHandler(Event e) {
