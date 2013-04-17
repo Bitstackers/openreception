@@ -15,7 +15,7 @@ class ContextSwitcherButton extends WebComponent {
 
   String get alertMode => context.alertMode ? '' : 'hidden';
   bool get disabled => context.isActive;
-  String get hidden => context.isActive ? '' : 'hidden';
+  String get classHidden => context.isActive ? '' : 'hidden';
 
   void inserted() {
     _button = this.query('button');

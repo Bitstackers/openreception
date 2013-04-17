@@ -31,8 +31,45 @@ import 'model.dart' as model;
 /**
  * Environment singletons.
  */
+final _Call call = new _Call();
 final _ContextList contextList = new _ContextList();
-final _Environment environment = new _Environment();
+final _Organization organization = new _Organization();
+
+/**
+ * TODO comment
+ */
+class _Call{
+  StreamController _stream = new StreamController<model.Call>();
+  Stream<model.Call> _onChange;
+
+  model.Call _call = model.nullCall;
+  model.Call get current => _call;
+
+  /**
+   * Subscribe to call changes.
+   */
+  Stream<model.Call> get onChange => _onChange;
+
+  _Call(){
+    _onChange = _stream.stream.asBroadcastStream();
+  }
+
+ /**
+  * Replaces this environments call with [call].
+  */
+  void set(model.Call call) {
+    if (call == _call) {
+      return;
+    }
+    _call = call;
+    log.info('The current call is changed to: ${call.toString()}');
+    //dispatch the new call.
+    if (_call != null && _call != model.nullCall){
+      log.user('Du fik opkaldet: ${_call.toString()}');
+    }
+    _stream.sink.add(call);
+  }
+}
 
 /**
  * The application contexts. Contexts can be added and the list can be iterated,
@@ -67,32 +104,25 @@ class _ContextList extends IterableBase<Context>{
 }
 
 /**
- * Environment data. This contains data that is shared across the entire
- * application, such as the currently active organization, current active call
- * and similar.
+ * TODO comment
  */
-//TODO Partion this into multiple classes.
-class _Environment{
-  _Environment(){
-    _onOrganizationChange = _organizationStream.stream.asBroadcastStream();
-    _onCallChange = callStream.stream.asBroadcastStream();
+class _Organization{
+  StreamController _stream = new StreamController<model.Organization>();
+  Stream<model.Organization> _onChange;
+
+  Stream<model.Organization> get onChange => _onChange;
+
+  model.Organization _organization = model.nullOrganization;
+  model.Organization get current => _organization;
+
+  _Organization(){
+    _onChange = _stream.stream.asBroadcastStream();
   }
 
-  /*
-     Organization
-  */
-  StreamController _organizationStream = new StreamController<model.Organization>();
-  Stream<model.Organization> _onOrganizationChange;
-
-  Stream<model.Organization> get onOrganizationChange => _onOrganizationChange;
-
-  model.Organization _organization;
-  model.Organization get organization => _organization;
-
- /**
-  * Replaces this environments organization with [organization].
-  */
-  void setOrganization(model.Organization organization) {
+  /**
+   * Replaces this environments organization with [organization].
+   */
+  void set(model.Organization organization) {
     if (organization == _organization) {
       return;
     }
@@ -100,37 +130,6 @@ class _Environment{
     _organization = organization;
     log.info('Environment organization is changed to: ${organization.toString()}');
     //dispatch the new organization.
-    _organizationStream.sink.add(organization);
-  }
-
-  /*
-     Call
-  */
-  StreamController callStream = new StreamController<model.Call>();
-  Stream<model.Call> _onCallChange;
-
-  model.Call _call;
-  model.Call get call => _call;
-
-  /**
-   * Subscribe to call changes.
-   */
-  Stream<model.Call> get onCallChange => _onCallChange;
-
-
- /**
-  * Replaces this environments call with [call].
-  */
-  void setCall(model.Call call) {
-    if (call == _call) {
-      return;
-    }
-    _call = call;
-    log.info('The current call is changed to: ${call.toString()}');
-    //dispatch the new call.
-    if (_call != null && _call != model.nullCall){
-      log.user('Du fik opkaldet: ${_call.toString()}');
-    }
-    callStream.sink.add(call);
+    _stream.sink.add(organization);
   }
 }

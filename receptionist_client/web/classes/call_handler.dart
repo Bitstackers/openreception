@@ -16,7 +16,7 @@
 library call_handler;
 
 import 'configuration.dart';
-import 'environment.dart';
+import 'environment.dart' as environment;
 import 'logger.dart';
 import 'model.dart' as model;
 import 'notification.dart' as notify;
@@ -32,7 +32,7 @@ void _callPickupEventHandler(Map json) {
   if (int.parse(call.content['assigned_to']) == configuration.agentID) {
     //it's to me! :D :D
     log.info('Call pickup for this agent.');
-    environment.setCall(call);
+    environment.call.set(call);
   }else{
     //somebody else got a call. :(
     log.debug('Somebody else got a call.');
@@ -42,8 +42,8 @@ void _callPickupEventHandler(Map json) {
 void _callHangupEventHandler(Map json) {
   var call = json['call'];
   //TODO We don't need no Int.parse here. Well.. Server sends it as string.
-  if (environment.call != null && int.parse(call['id']) == int.parse(environment.call.content['id'])) {
+  if (environment.call != null && int.parse(call['id']) == environment.call.current.id) {
     log.info('The current call hangup');
-    environment.setCall(model.nullCall);
+    environment.call.set(model.nullCall);
   }
 }

@@ -4,7 +4,7 @@ import 'dart:json' as json;
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/commands.dart';
-import '../classes/environment.dart';
+import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/notification.dart' as notify;
@@ -29,7 +29,7 @@ class GlobalQueue extends WebComponent {
           var callsjson = json.parse(text);
           log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
           for (var call in callsjson['calls']) {
-            calls.add(new Call(call));
+            calls.add(new model.Call(call));
           }
         })
         ..onEmptyQueue((){
@@ -44,7 +44,7 @@ class GlobalQueue extends WebComponent {
   void _registrateSubscribers() {
     notify.notification.addEventHandler('queue_join', _queueJoin);
     notify.notification.addEventHandler('queue_leave', _queueLeave);
-    environment.onCallChange.listen(_callChange);
+    environment.call.onChange.listen(_callChange);
   }
 
   void _queueJoin(Map json) {
@@ -64,7 +64,7 @@ class GlobalQueue extends WebComponent {
     }
   }
 
-  void _callChange(Call call){
+  void _callChange(model.Call call){
     pickupButtonDisabled = !(call == null || call == model.nullCall);
     hangupButtonDisabled = call == null || call == model.nullCall;
     holdButtonDisabled = call == null || call == model.nullCall;
@@ -88,11 +88,11 @@ class GlobalQueue extends WebComponent {
 
   void hangupcallHandler() {
     log.debug('hangupcallHandler');
-    hangupCall(environment.call.id);
+    hangupCall(environment.call.current.id);
   }
 
   void holdcallHandler() {
     log.debug('holdcallHandler');
-    hangupCall(environment.call.id);
+    hangupCall(environment.call.current.id);
   }
 }

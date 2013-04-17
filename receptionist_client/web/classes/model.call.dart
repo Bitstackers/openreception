@@ -24,7 +24,7 @@ class Call{
   Map _call;
   Map get content => _call;
 
-  int id;
+  int id = -1;
   /**
    * TODO comment
    */

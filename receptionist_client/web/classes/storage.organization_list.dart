@@ -15,13 +15,13 @@
 
 part of storage;
 
-final _StorageOrganizationList storageOrganizationList = new _StorageOrganizationList();
+final _OrganizationList organizationList = new _OrganizationList();
 
 /**
  * Storage class for the Organization List object.
  */
-class _StorageOrganizationList{
-  _StorageOrganization_List();
+class _OrganizationList{
+  _OrganizationList();
 
   /**
    * Get the organization list from Alice.

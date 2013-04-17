@@ -23,9 +23,9 @@ class Organization{
   ContactList _contactlist = nullContactList;
   ContactList get contacts => _contactlist;
 
-  int id;
-  String name;
-  String greeting;
+  int id = -1;
+  String name = "";
+  String greeting = "";
 
   Organization(Map json) {
     if(json.containsKey('contacts')) {

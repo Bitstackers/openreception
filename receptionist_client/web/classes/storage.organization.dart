@@ -15,7 +15,7 @@
 
 part of storage;
 
-final _Organization Organization = new _Organization();
+final _Organization organization = new _Organization();
 
 /**
  * Storage class for Organization objects.
@@ -24,7 +24,7 @@ class _Organization{
   //TODO Make it possible to invalidate cached items.
   var _cache = new Map<int, model.Organization>();
 
-  _StorageOrganization();
+  _Organization();
 
   /**
    * Fetch an organization by [id] from Alice if there is no cache of it.

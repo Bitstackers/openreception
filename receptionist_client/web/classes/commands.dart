@@ -20,7 +20,7 @@ import 'dart:html';
 import 'dart:json' as json;
 
 import 'configuration.dart';
-import 'environment.dart';
+import 'environment.dart' as environment;
 import 'logger.dart';
 import 'protocol.dart' as protocol;
 import 'storage.dart' as storage;
@@ -63,8 +63,8 @@ void _pickupCallSuccess(String text) {
     log.critical('The call had no organization_id. ${text}');
   }
   var orgId = response['organization_id'];
-  storage.storageOrganization.get(orgId,(org) =>
-      environment.setOrganization((org != null) ? org : environment.organization));
+  storage.organization.get(orgId,(org) =>
+      environment.organization.set((org != null) ? org : environment.organization));
 }
 
 //TODO check up on the documentation. Today 20 feb 2013. did it wrongly say:
