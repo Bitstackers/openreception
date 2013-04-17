@@ -28,5 +28,5 @@ class ContactList extends IterableBase<Contact>{
 
   ContactList._null();
 
-  Iterator<Contact> get iterator => new GenericListIterator<Contact>(_list);
+  Iterator<Contact> get iterator => _list.iterator;
 }

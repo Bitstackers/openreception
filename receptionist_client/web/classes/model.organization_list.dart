@@ -28,5 +28,5 @@ class OrganizationList extends IterableBase<Organization>{
 
   OrganizationList._null();
 
-  Iterator<Organization> get iterator => new GenericListIterator<Organization>(_list);
+  Iterator<Organization> get iterator => _list.iterator;
 }
