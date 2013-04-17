@@ -27,7 +27,6 @@ import 'classes/logger.dart';
 import 'classes/context.dart';
 import 'classes/environment.dart';
 
-
 /**
  * Get Bob going as soon as the configuration is loaded.
  */
@@ -40,8 +39,9 @@ void main() {
   configLoaded.then((_) {
     log.info('configuration loaded.');
     initializeCallHandler();
-
+    _setupGlobalShortcuts();
   }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
+
 }
 
 void _setupGlobalShortcuts(){
