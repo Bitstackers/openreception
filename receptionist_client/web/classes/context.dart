@@ -5,7 +5,8 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-final StreamController<Context> _contextActivationStream = new StreamController<Context>.broadcast();
+final StreamController<Context> _contextActivationStream = new StreamController<Context>();
+final Stream<Context> _onChange = _contextActivationStream.stream.asBroadcastStream();
 
 /**
  * A [Context] is a container for some content. A [Context] can be active or
@@ -20,14 +21,13 @@ class Context {
 
   bool get alertMode => alertCounter > 0;
   String get id => _element.id;
-  Stream get stream => _contextActivationStream.stream;
 
   Context(Element this._element) {
     assert(_element != null);
 
     isActive = _element.classes.contains('hidden') ? false : true;
 
-    _contextActivationStream.stream.listen(_toggle);
+    _onChange.listen(_toggle);
   }
 
   void _toggle(Context context) {

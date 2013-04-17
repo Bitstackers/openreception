@@ -42,7 +42,6 @@ void main() {
     initializeCallHandler();
 
   }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
-
 }
 
 void _setupGlobalShortcuts(){

@@ -79,8 +79,11 @@ class _Configuration {
 
     HttpRequest.request(configUri.toString())
     ..then(_onComplete,
-        onError: (AsyncError error) => log.debug('Configuration request error'))
-        .catchError((error) => log.critical('configuration exception ${error.runtimeType.toString()}'));
+        onError: (error){
+          log.debug('Configuration request error');
+          log.critical('Configuration onError. ToStirng():${error} of type: ${error.runtimeType.toString()}');
+        })
+        .catchError((error) => log.critical('configuration exception. of type: ${error.runtimeType.toString()}'));
   }
 
   /**

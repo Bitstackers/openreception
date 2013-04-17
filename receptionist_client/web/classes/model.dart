@@ -18,6 +18,8 @@
  */
 library model;
 
+import 'dart:collection';
+
 import 'common.dart';
 
 part 'model.call.dart';

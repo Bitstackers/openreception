@@ -19,13 +19,14 @@
 library environment;
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:web_ui/web_ui.dart';
 
 import 'common.dart';
 import 'context.dart';
 import 'logger.dart';
-import 'model.dart';
+import 'model.dart' as model;
 
 /**
  * Environment singletons.
@@ -37,7 +38,7 @@ final _Environment environment = new _Environment();
  * The application contexts. Contexts can be added and the list can be iterated,
  * but contexts cannot be removed or the list cleared.
  */
-class _ContextList extends Iterable<Context>{
+class _ContextList extends IterableBase<Context>{
   List<Context> list = toObservable(new List<Context>());
 
   _ContextList();
@@ -70,22 +71,28 @@ class _ContextList extends Iterable<Context>{
  * application, such as the currently active organization, current active call
  * and similar.
  */
+//TODO Partion this into multiple classes.
 class _Environment{
-  _Environment();
+  _Environment(){
+    _onOrganizationChange = _organizationStream.stream.asBroadcastStream();
+    _onCallChange = callStream.stream.asBroadcastStream();
+  }
 
   /*
      Organization
   */
-  var _organizationStream = new StreamController<Organization>.broadcast();
-  Stream<Organization> get onOrganizationChange => _organizationStream.stream;
+  StreamController _organizationStream = new StreamController<model.Organization>();
+  Stream<model.Organization> _onOrganizationChange;
 
-  Organization _organization;
-  Organization get organization => _organization;
+  Stream<model.Organization> get onOrganizationChange => _onOrganizationChange;
+
+  model.Organization _organization;
+  model.Organization get organization => _organization;
 
  /**
   * Replaces this environments organization with [organization].
   */
-  void setOrganization(Organization organization) {
+  void setOrganization(model.Organization organization) {
     if (organization == _organization) {
       return;
     }
@@ -99,29 +106,29 @@ class _Environment{
   /*
      Call
   */
-  var callStream = new StreamController<Call>.broadcast();
+  StreamController callStream = new StreamController<model.Call>();
+  Stream<model.Call> _onCallChange;
 
-  Call _call;
-  Call get call => _call;
+  model.Call _call;
+  model.Call get call => _call;
 
   /**
    * Subscribe to call changes.
    */
-  void onCallChange(CallSubscriber subscriber){
-    callStream.stream.listen(subscriber);
-  }
+  Stream<model.Call> get onCallChange => _onCallChange;
+
 
  /**
   * Replaces this environments call with [call].
   */
-  void setCall(Call call) {
+  void setCall(model.Call call) {
     if (call == _call) {
       return;
     }
     _call = call;
     log.info('The current call is changed to: ${call.toString()}');
     //dispatch the new call.
-    if (_call != null && _call != nullCall){
+    if (_call != null && _call != model.nullCall){
       log.user('Du fik opkaldet: ${_call.toString()}');
     }
     callStream.sink.add(call);

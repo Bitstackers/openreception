@@ -29,7 +29,7 @@ class _StorageOrganizationList{
   void get(OrganizationListSubscriber onComplete) {
     new protocol.OrganizationList()
         ..onSuccess((text) {
-          onComplete(new OrganizationList.fromMap(json.parse(text)));
+          onComplete(new model.OrganizationList.fromMap(json.parse(text)));
         })
         ..onError(() {
           //TODO Do something.

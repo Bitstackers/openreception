@@ -66,8 +66,8 @@ final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
  */
 class Socket{
   WebSocket _channel;
-  var _messageStream = new StreamController<Map>.broadcast();
-  var _errorStream = new StreamController<Map>.broadcast();
+  var _messageStream = new StreamController<Map>();
+  var _errorStream = new StreamController<Map>();
   final String _url;
 
   int _connectTicks = 0;
@@ -113,7 +113,7 @@ class Socket{
   /**
    * returns [errorStream] for subscribers.
    */
-  Stream<Map> get onError => _errorStream.stream;
+  Stream<Map> get onError => _errorStream.stream.asBroadcastStream();
 
   void _onMessage(MessageEvent event) {
     log.info('Notification message: ${event.data}');
@@ -123,7 +123,7 @@ class Socket{
   /**
    * returns [messageStream] for subscribers.
    */
-  Stream<Map> get onMessage => _messageStream.stream;
+  Stream<Map> get onMessage => _messageStream.stream.asBroadcastStream();
 
   void _reconnect() => _connector();
 

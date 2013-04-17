@@ -53,12 +53,13 @@ class _Notification {
 
   /**
    * Adds subscribers for an event with the specified [eventName].
+   * TODO Should this be a getter property instead????.
    */
   void addEventHandler(String eventName, Subscriber subscriber) {
     if (!_eventHandlers.containsKey(eventName)) {
-      _eventHandlers[eventName] = new StreamController<Map>.broadcast();
+      _eventHandlers[eventName] = new StreamController<Map>();
     }
-    _eventHandlers[eventName].stream.listen(subscriber);
+    _eventHandlers[eventName].stream.asBroadcastStream().listen(subscriber);
   }
 
   void _onMessage(Map json) {

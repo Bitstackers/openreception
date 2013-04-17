@@ -22,7 +22,7 @@ final _StorageOrganization storageOrganization = new _StorageOrganization();
  */
 class _StorageOrganization{
   //TODO Make it possible to invalidate cached items.
-  var _cache = new Map<int, Organization>();
+  var _cache = new Map<int, model.Organization>();
 
   _StorageOrganization();
 
@@ -37,7 +37,7 @@ class _StorageOrganization{
       log.debug('${id} is not cached');
       new protocol.Organization.get(id)
           ..onSuccess((text) {
-            var org = new Organization(json.parse(text));
+            var org = new model.Organization(json.parse(text));
             _cache[org.id] = org;
             onComplete(org);
           })

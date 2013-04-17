@@ -19,7 +19,7 @@ final OrganizationList nullOrganizationList = new OrganizationList._null();
 /**
  * TODO comment.
  */
-class OrganizationList extends Iterable<Organization>{
+class OrganizationList extends IterableBase<Organization>{
   List<Organization> _list = <Organization>[];
 
   OrganizationList.fromMap(Map json) {

@@ -44,7 +44,7 @@ class GlobalQueue extends WebComponent {
   void _registrateSubscribers() {
     notify.notification.addEventHandler('queue_join', _queueJoin);
     notify.notification.addEventHandler('queue_leave', _queueLeave);
-    environment.onCallChange(_callChange);
+    environment.onCallChange.listen(_callChange);
   }
 
   void _queueJoin(Map json) {

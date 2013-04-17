@@ -19,7 +19,7 @@ final ContactList nullContactList = new ContactList._null();
 /**
  * TODO comment.
  */
-class ContactList extends Iterable<Contact>{
+class ContactList extends IterableBase<Contact>{
   List<Contact> _list = <Contact>[];
 
   ContactList(List contacts) {
