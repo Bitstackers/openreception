@@ -8,35 +8,90 @@
     <element name="x-agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
       <style scoped>
         .container {
-          margin: 10px;
-          height: -moz-calc(100% - 20px);
-          height: -webkit-calc(100% - 20px);
-          width: -moz-calc(100% - 20px);
-          width: -webkit-calc(100% - 20px);
-          overflow: auto;
-          border: solid 1px red;
+          position: relative;
+          height: 100%;
+          width: 100%;
+          border-radius: 5px;
+          overflow: hidden;
         }
 
-        .one {
-          /*left: 0%;
-          width: 33%;*/
+        .total {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          height: 100%;
         }
 
-        .two {
-          /*left: 33%;
-          width: 33%;*/
+        .active {
+          position: absolute;
+          top: 0px;
+          height: 100%;
         }
 
-        .three {
-          /*left: 66%;
-          width: 33%;*/
+        .sleep {
+          position: absolute;
+          top: 0px;
+          height: 100%;
+        }
+
+        .face {
+          position: absolute;
+          top: 0px;
+          height: 100%;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+        }
+
+        .number {
+          color: #666;
+          font-size: 200%;
+          font-weight: bold;
         }
       </style>
 
       <template>
         <x-box>
           <div name="boxcontent" class="container">
-            Online: {{numOnline}} Active: {{numActive}} Busy: {{numBusy}}
+            <!--Online: {{numOnline}} Active: {{numActive}} Busy: {{numBusy}}-->
+            <div name="total" class="total">
+              <table>
+                <tr>
+                  <td>
+                    <img src="../icons/agentstotal.svg">
+                  </td>
+                  <td>
+                    <span class="number">99</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div name="active" class="active">
+              <table>
+                <tr>
+                  <td>
+                    <img src="../icons/agentsactive.svg">
+                  </td>
+                  <td>
+                    <span class="number">88</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div name="sleep" class="sleep">
+              <table>
+                <tr>
+                  <td>
+                    <img src="../icons/agentssleep.svg">
+                  </td>
+                  <td>
+                    <span class="number">11</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div name="face" class="face">
+              <img src="../images/face.jpg">
+            </div>
           </div>
         </x-box>
       </template>
