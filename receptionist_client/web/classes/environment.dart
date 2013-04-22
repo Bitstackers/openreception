@@ -106,6 +106,7 @@ class _ContextList extends IterableBase<Context>{
 /**
  * TODO comment
  */
+@observable
 class _Organization{
   StreamController _stream = new StreamController<model.Organization>();
   Stream<model.Organization> _onChange;
