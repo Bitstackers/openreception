@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="35"
+   height="35"
+   id="svg7206">
+  <defs
+     id="defs7208">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect15718-3-56" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect15724-6-7" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect15726-7-7" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect15744-5-4" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect15746-3-0" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect8109" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect8105" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect8102" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect8099" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect8096" />
+  </defs>
+  <metadata
+     id="metadata7211">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-228.50161,-541.09227)"
+     id="layer1">
+    <g
+       transform="translate(6.7828575,76.717274)"
+       id="g8119">
+      <rect
+         width="34.485916"
+         height="34.48592"
+         x="221.96571"
+         y="464.62723"
+         id="rect8071"
+         style="fill:none;stroke:#ffffff;stroke-width:0.514081;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <g
+         id="g8111">
+        <path
+           d="m 231.08857,473.60203 15.82118,0"
+           id="path8075"
+           style="fill:#cccccc;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.07237434px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           d="m 227.72123,468.48179 c 7.51024,0.0227 22.90036,0.031 22.90036,0.031 0.51473,4.2e-4 0.9982,0.36732 0.99831,0.83085 l 0.0111,25.00663 c 2.2e-4,0.46384 -0.34383,0.84201 -0.85823,0.84345 l -22.98804,0.0651 c -0.51462,8.3e-4 -1.00532,-0.44132 -0.99831,-0.83106 0.12651,-7.05519 0.0389,-17.2658 0.0779,-25.10656 0,-0.36587 0.41414,-0.84098 0.85822,-0.83964 z"
+           id="path8077"
+           style="fill:none;stroke:#4d4d4d;stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           d="m 231.08857,477.7361 15.82118,0"
+           id="path8079"
+           style="fill:#cccccc;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.07237434px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           d="m 231.08857,481.87016 15.82118,0"
+           id="path8081"
+           style="fill:#cccccc;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.07237434px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           d="m 231.08857,486.00423 15.82118,0"
+           id="path8083"
+           style="fill:#cccccc;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.07237434px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           d="m 231.08857,490.13828 15.82118,0"
+           id="path8085"
+           style="fill:#cccccc;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.07237434px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1" />
+      </g>
+    </g>
+  </g>
+</svg>
