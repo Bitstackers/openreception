@@ -4,9 +4,19 @@
  <body>
   <element name="x-company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
     <template>
-      <select template iterate="org in organizationList" on-change="_selection($event)">
-        <option value="{{org.id.toString()}}" selected="{{currentOrgId == org.id.toString()}}">{{org.name}}</option>
+      <select on-change="_selection($event)">
+        <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
+          {{defaultOptionText}}
+        </option>
+        <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{currentOrgId == org.id.toString()}}">
+          {{org.name}}
+        </option>
       </select>
+
+      <!-- TEST CODE START -->
+      <button on-click="reset()">reset</button>
+      <button on-click="responsum()">Responsum</button>
+      <!-- TEST CODE END -->
     </template>
 
     <script type="application/dart" src="xcompanyselector.dart"></script>
