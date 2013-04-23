@@ -13,25 +13,32 @@
           width: 100%;
           border-radius: 5px;
           overflow: hidden;
+
+          font-size: 0.8em;
         }
 
-        .total {
-          position: absolute;
-          top: 0px;
-          left: 0px;
-          height: 100%;
-        }
-
-        .active {
-          position: absolute;
-          top: 0px;
-          height: 100%;
-        }
-
+        .total,
+        .active,
         .sleep {
           position: absolute;
           top: 0px;
           height: 100%;
+          background-repeat:no-repeat;
+          background-position: 80% center;
+          background-size: auto 70%;
+        }
+
+        .total {
+          left: 0px;
+          background-image: url('../web/images/agentstotal.svg');
+        }
+
+        .active {
+          background-image: url('../web/images/agentsactive.svg');
+        }
+
+        .sleep {
+          background-image: url('../web/images/agentssleep.svg');
         }
 
         .face {
@@ -43,10 +50,13 @@
         }
 
         .number {
-          color: #666;
-          font-size: 200%;
+          position: relative;
+          top: 25%;
+          left: 8%;
+          font-size: 2em;
           font-weight: bold;
         }
+
       </style>
 
       <template>
@@ -54,40 +64,13 @@
           <div name="boxcontent" class="container">
             <!--Online: {{numOnline}} Active: {{numActive}} Busy: {{numBusy}}-->
             <div name="total" class="total">
-              <table>
-                <tr>
-                  <td>
-                    <img src="../images/agentstotal.svg">
-                  </td>
-                  <td>
-                    <span class="number">99</span>
-                  </td>
-                </tr>
-              </table>
+              <span class="number">99</span>
             </div>
             <div name="active" class="active">
-              <table>
-                <tr>
-                  <td>
-                    <img src="../images/agentsactive.svg">
-                  </td>
-                  <td>
-                    <span class="number">88</span>
-                  </td>
-                </tr>
-              </table>
+              <span class="number">88</span>
             </div>
             <div name="sleep" class="sleep">
-              <table>
-                <tr>
-                  <td>
-                    <img src="../images/agentssleep.svg">
-                  </td>
-                  <td>
-                    <span class="number">11</span>
-                  </td>
-                </tr>
-              </table>
+              <span class="number">11</span>
             </div>
             <div name="face" class="face">
               <img src="../images/face.jpg">
