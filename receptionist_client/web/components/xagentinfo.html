@@ -13,67 +13,33 @@
           width: 100%;
           border-radius: 5px;
           overflow: hidden;
-
-          font-size: 0.8em;
-        }
-
-        .total,
-        .active,
-        .sleep {
-          position: absolute;
-          top: 0px;
-          height: 100%;
-          background-repeat:no-repeat;
-          background-position: 80% center;
-          background-size: auto 70%;
-        }
-
-        .total {
-          left: 0px;
-          background-image: url('../web/images/agentstotal.svg');
-        }
-
-        .active {
-          background-image: url('../web/images/agentsactive.svg');
-        }
-
-        .sleep {
-          background-image: url('../web/images/agentssleep.svg');
+          font-size: 1.1em;
         }
 
         .face {
           position: absolute;
           top: 0px;
           height: 100%;
-          border-top-right-radius: 5px;
-          border-bottom-right-radius: 5px;
+          padding: 5px;
         }
-
-        .number {
-          position: relative;
-          top: 25%;
-          left: 8%;
-          font-size: 2em;
-          font-weight: bold;
-        }
-
       </style>
 
       <template>
         <x-box>
           <div name="boxcontent" class="container">
             <!--Online: {{numOnline}} Active: {{numActive}} Busy: {{numBusy}}-->
-            <div name="total" class="total">
-              <span class="number">99</span>
-            </div>
-            <div name="active" class="active">
-              <span class="number">88</span>
-            </div>
-            <div name="sleep" class="sleep">
-              <span class="number">11</span>
-            </div>
+            <table>
+              <tr>
+                <td>{{active}}</td>
+                <td>: {{activeLabel}}</td>
+              </tr>
+              <tr>
+                <td>{{paused}}</td>
+                <td>: {{pausedLabel}}</td>
+              </tr>
+            </table>
             <div name="face" class="face">
-              <img src="../images/face.jpg">
+              <img style="border: solid 2px #aaa; border-radius: 5px; height: 100%; width: 100%" src="{{faceURL}}">
             </div>
           </div>
         </x-box>
