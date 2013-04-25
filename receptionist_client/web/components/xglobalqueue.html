@@ -29,10 +29,8 @@
             <button on-click="pickupnextcallHandler()" disabled="{{pickupButtonDisabled}}">Pickup Next Call</button>
             <button on-click="hangupcallHandler()" disabled="{{hangupButtonDisabled}}">Hangup</button>
             <button on-click="holdcallHandler()" disabled="{{holdButtonDisabled}}">Hold</button>
-            <ul>
-              <template iterate="call in calls">
-                <li on-click="pickupcallHandler($event)" value="{{call.id}}"> Callid: {{call.id}} </li>
-              </template>
+            <ul template iterate="call in calls">
+              <li on-click="pickupcallHandler($event)" value="{{call.id}}"> Callid: {{call.id}} </li>
             </ul>
           </div>
         </x-box-with-header>

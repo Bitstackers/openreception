@@ -11,8 +11,6 @@ class CompanySelector extends WebComponent {
   const String defaultOptionText = 'vælg virksomhed';
   model.OrganizationList organizationList = model.nullOrganizationList;
 
-  String get currentOrgId => environment.organization.current.id.toString();
-
   void created() {
     storage.organizationList.get((list) => organizationList = list);
   }
@@ -22,14 +20,4 @@ class CompanySelector extends WebComponent {
     storage.organization.get(int.parse(e.value),
                              (org) => environment.organization.set(org));
   }
-
-  //  TEST CODE START
-  void reset() {
-    environment.organization.set(model.nullOrganization);
-  }
-
-  void responsum() {
-    storage.organization.get(3, (org) => environment.organization.set(org));
-  }
-  //  TEST CODE END
 }

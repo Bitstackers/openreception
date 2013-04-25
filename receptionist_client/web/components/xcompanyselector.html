@@ -8,15 +8,10 @@
         <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
           {{defaultOptionText}}
         </option>
-        <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{currentOrgId == org.id.toString()}}">
+        <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{org.id == environment.organization.current.id}}">
           {{org.name}}
         </option>
       </select>
-
-      <!-- TEST CODE START -->
-      <button on-click="reset()">reset</button>
-      <button on-click="responsum()">Responsum</button>
-      <!-- TEST CODE END -->
     </template>
 
     <script type="application/dart" src="xcompanyselector.dart"></script>
