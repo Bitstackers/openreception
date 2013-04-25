@@ -44,6 +44,12 @@ class AgentInfo extends WebComponent {
 
     table.style.marginLeft = '${marginLeft}px';
     table.style.marginTop = '${marginTop}px';
+
+    if (divParent.client.width < 150) {
+      divFace.classes.add('hidden');
+    } else {
+      divFace.classes.remove('hidden');
+    }
   }
 
   void _initialSetup() {
