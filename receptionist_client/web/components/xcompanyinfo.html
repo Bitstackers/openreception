@@ -32,7 +32,7 @@
           <div name="boxcontent" class="container">
             <x-company-selector></x-company-selector>
             <div id="tempdump" style="margin-top: 10px;">
-              <template instantiate="if organization.id != null">
+              <template instantiate="if organization != model.nullOrganization">
                 {{organization.name}}-{{organization.id}}
               </template>
             </div>
