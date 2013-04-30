@@ -12,10 +12,12 @@ class LogBox extends WebComponent {
   void inserted() {
     log.onUserlogMessage.listen((record) {
       messages.insert(0, record);
+      // TODO: change messages to a Queue or ListQueue as soon as support for
+      // for these are added to web_ui toObservable().
 
       while (messages.length > configuration.userLogSizeLimit){
         messages.removeLast();
       }
-    }); //???? Can this be right? insert at index... why not AddFirst. Am i blind?
+    });
   }
 }

@@ -22,7 +22,7 @@
     </style>
 
     <template>
-      <button disabled="{{disabled}}" class="default" on-click="activate()">
+      <button disabled="{{disabled}}" class="default" on-click="_activate()">
         <img name="buttonpassiveimage" class="buttonface" src="../images/{{context.id}}.svg">
         <img name="buttonactiveimage" class="buttonface {{classHidden}}" src="../images/{{context.id}}_active.svg">
         <img name="buttonalertimage" class="alert {{alertMode}}" src="../images/contextalert.svg">

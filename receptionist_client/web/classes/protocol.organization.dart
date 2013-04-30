@@ -24,11 +24,11 @@ class Organization extends Protocol {
   Organization.get(int organizationId) {
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/organization';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/organization';
 
-    var fragments = new List<String>()
-        ..add('org_id=${organizationId}');
+    List<String> fragments = new List<String>()
+                                ..add('org_id=${organizationId}');
 
     _url = _buildUrl(base, path, fragments);
     _request = new HttpRequest()
@@ -37,14 +37,21 @@ class Organization extends Protocol {
 
   /**
    * TODO Comment
+   * TODO find better function type.
    */
-  void onSuccess(void onData(String responseText)) {
+  void onError(Callback onData) {
     assert(_request != null);
     assert(_notSent);
 
-    _request.onLoad.listen((_) {
-      if (_request.status == 200) {
-        onData(_request.responseText);
+    _request.onError.listen((e){
+      log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
+      onData();
+    });
+
+    _request.onLoad.listen((e){
+      if (_request.status != 200 && _request.status != 404) {
+        log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
+        onData();
       }
     });
   }
@@ -66,21 +73,14 @@ class Organization extends Protocol {
 
   /**
    * TODO Comment
-   * TODO find better function type.
    */
-  void onError(Callback onData) {
+  void onSuccess(void onData(String responseText)) {
     assert(_request != null);
     assert(_notSent);
 
-    _request.onError.listen((e){
-      log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
-      onData();
-    });
-
-    _request.onLoad.listen((e){
-      if (_request.status != 200 && _request.status != 404) {
-        log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
-        onData();
+    _request.onLoad.listen((_) {
+      if (_request.status == 200) {
+        onData(_request.responseText);
       }
     });
   }

@@ -6,10 +6,10 @@ import '../classes/environment.dart' as environment;
 import '../classes/model.dart' as model;
 import '../classes/storage.dart' as storage;
 
-@observable
 class CompanySelector extends WebComponent {
+  @observable model.OrganizationList organizationList = model.nullOrganizationList;
+
   const String defaultOptionText = 'vælg virksomhed';
-  model.OrganizationList organizationList = model.nullOrganizationList;
 
   void created() {
     storage.organizationList.get((list) => organizationList = list);

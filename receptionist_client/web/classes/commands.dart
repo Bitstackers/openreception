@@ -30,8 +30,9 @@ import 'storage.dart' as storage;
  *
  * If successful it then sets the environment to the call.
  */
-void pickupCall(int id){
+void pickupCall(int id) {
   log.info('Sending request to pickup ${id.toString()}');
+
   new protocol.PickupCall(configuration.agentID, callId: id.toString())
       ..onSuccess(_pickupCallSuccess)
       ..onNoCall((){
@@ -43,8 +44,9 @@ void pickupCall(int id){
       ..send();
 }
 
-void pickupNextCall(){
+void pickupNextCall() {
   log.info('Sending request to pickup the next call');
+
   new protocol.PickupCall(configuration.agentID)
     ..onSuccess(_pickupCallSuccess)
     ..onNoCall((){
@@ -58,13 +60,17 @@ void pickupNextCall(){
 
 void _pickupCallSuccess(String text) {
   log.info('pickupCall:${text}');
-  var response = json.parse(text);
+
+  Map response = json.parse(text);
+
   if (!response.containsKey('organization_id')) {
     log.critical('The call had no organization_id. ${text}');
   }
-  var orgId = response['organization_id'];
-  storage.organization.get(orgId,(org) =>
-      environment.organization.set((org != null) ? org : environment.organization));
+
+  int orgId = response['organization_id'];
+
+  storage.organization.get(orgId,
+                           (org) => environment.organization.set((org != null) ? org : environment.organization));
 }
 
 //TODO check up on the documentation. Today 20 feb 2013. did it wrongly say:

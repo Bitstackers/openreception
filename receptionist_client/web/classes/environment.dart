@@ -39,18 +39,14 @@ final _Organization organization = new _Organization();
  * TODO comment
  */
 class _Call{
-  StreamController _stream = new StreamController<model.Call>();
-  Stream<model.Call> _onChange;
-
   model.Call _call = model.nullCall;
-  model.Call get current => _call;
+  Stream<model.Call> _onChange;
+  StreamController _stream = new StreamController<model.Call>();
 
-  /**
-   * Subscribe to call changes.
-   */
+  model.Call         get current  => _call;
   Stream<model.Call> get onChange => _onChange;
 
-  _Call(){
+  _Call() {
     _onChange = _stream.stream.asBroadcastStream();
   }
 
@@ -61,12 +57,15 @@ class _Call{
     if (call == _call) {
       return;
     }
+
     _call = call;
+
     log.info('The current call is changed to: ${call.toString()}');
-    //dispatch the new call.
+
     if (_call != null && _call != model.nullCall){
       log.user('Du fik opkaldet: ${_call.toString()}');
     }
+
     _stream.sink.add(call);
   }
 }
@@ -77,6 +76,8 @@ class _Call{
  */
 class _ContextList extends IterableBase<Context>{
   List<Context> _list = toObservable(new List<Context>());
+
+  Iterator<Context> get iterator => _list.iterator;
 
   _ContextList();
 
@@ -99,22 +100,19 @@ class _ContextList extends IterableBase<Context>{
       }
     }
   }
-
-  Iterator<Context> get iterator => _list.iterator;
 }
 
 /**
  * TODO comment
  */
-@observable
 class _Organization{
-  StreamController _stream = new StreamController<model.Organization>();
+  @observable model.Organization _organization = model.nullOrganization;
+
   Stream<model.Organization> _onChange;
+  StreamController<model.Organization> _stream = new StreamController<model.Organization>();
 
+  model.Organization         get current  => _organization;
   Stream<model.Organization> get onChange => _onChange;
-
-  model.Organization _organization = model.nullOrganization;
-  model.Organization get current => _organization;
 
   _Organization(){
     _onChange = _stream.stream.asBroadcastStream();

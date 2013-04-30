@@ -5,29 +5,29 @@ import 'package:web_ui/web_ui.dart';
 import '../classes/logger.dart';
 import '../classes/protocol.dart' as protocol;
 
-@observable
 class AgentInfo extends WebComponent {
-  int active = 0;
-  String activeLabel = 'aktive';
-  String faceURL = '../images/face.jpg';
-  int paused = 0;
-  String pausedLabel = 'pause';
+  @observable int active = 0;
+  @observable int paused = 0;
 
-  DivElement divParent;
-  DivElement divFace;
+  String       activeLabel = 'aktive';
+  DivElement   divFace;
+  DivElement   divParent;
+  String       faceURL     = '../images/face.jpg';
+  String       pausedLabel = 'pause';
   TableElement table;
 
   void inserted(){
+    _queryElements();
+    _registerEventListeners();
+    _resize();
+    _initialSetup();
+    _registerSubscribers();
+  }
+
+  void _queryElements() {
     divParent = this.query('[name="boxcontent"]');
     table = divParent.query('table');
-
     divFace = this.query('[name="face"]');
-
-    _initialSetup();
-    _registrateSubscribers();
-
-    _resize();
-    window.onResize.listen((_) => _resize());
   }
 
   void _resize() {
@@ -74,7 +74,11 @@ class AgentInfo extends WebComponent {
       ..send();
   }
 
-  void _registrateSubscribers(){
+  void _registerEventListeners() {
+    window.onResize.listen((_) => _resize());
+  }
+
+  void _registerSubscribers(){
     //When the time comes, that alice can handle agents.
     // Subscribe to AgentStatus changes, so this panel can be updated.
   }

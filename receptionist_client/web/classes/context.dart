@@ -12,15 +12,14 @@ final Stream<Context> _onChange = _contextActivationStream.stream.asBroadcastStr
  * A [Context] is a container for some content. A [Context] can be active or
  * inactive, defined by the [isActive] property.
  */
-@observable
 class Context {
-  int alertCounter = 0;
-  bool isActive = false;
+  @observable int alertCounter = 0;
+  @observable bool isActive = false;
 
   Element _element;
 
-  bool get alertMode => alertCounter > 0;
-  String get id => _element.id;
+  bool   get alertMode => alertCounter > 0;
+  String get id        => _element.id;
 
   Context(Element this._element) {
     assert(_element != null);
