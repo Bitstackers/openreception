@@ -30,24 +30,28 @@ class _Organization{
   /**
    * Fetch an organization by [id] from Alice if there is no cache of it.
    */
-  void get(int id, OrganizationSubscriber onComplete) {
+  void get(int id, OrganizationSubscriber onComplete, {Callback onError}) {
     if (_cache.containsKey(id)) {
       onComplete(_cache[id]);
     }else{
       log.debug('${id} is not cached');
 
       new protocol.Organization.get(id)
-          ..onSuccess((text) {
-            model.Organization org = new model.Organization(json.parse(text));
-            _cache[org.id] = org;
-            onComplete(org);
-          })
-          ..onNotFound((){
-            //TODO Do something.
+          ..onResponse((protocol.Response response) {
+            switch(response.status) {
+              case protocol.Response.OK:
+                model.Organization org = new model.Organization(response.data);
+                _cache[org.id] = org;
+                onComplete(org);
+                break;
 
-          })
-          ..onError((){
-            //TODO Do something.
+              case protocol.Response.NOTFOUND:
+                onComplete(model.nullOrganization);
+                break;
+
+              default:
+                onError();
+            }
           })
           ..send();
     }

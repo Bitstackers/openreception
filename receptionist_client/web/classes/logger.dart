@@ -90,17 +90,29 @@ class Log{
 
       if (serverLogLevel > Level.INFO && serverLogLevel <= Level.SEVERE) {
         new protocol.Log.Error(text)
-          ..onError(() => print('CRITICAL server logging error'))
+          ..onResponse((protocol.Response response) {
+            if (response.status == protocol.Response.ERROR) {
+              print('CRITICAL server logging error: ${response.data}');
+            }
+          })
           ..send();
 
       }else if (serverLogLevel > Level.SEVERE) {
         new protocol.Log.Critical(text)
-          ..onError(() => print('CRITICAL server logging error'))
+          ..onResponse((protocol.Response response) {
+            if (response.status == protocol.Response.ERROR) {
+              print('CRITICAL server logging error: ${response.data}');
+            }
+          })
           ..send();
 
       }else{
         new protocol.Log.Info(text)
-          ..onError(() => print('CRITICAL server logging error'))
+          ..onResponse((protocol.Response response){
+            if (response.status == protocol.Response.ERROR){
+              print('CRITICAL server logging error: ${response.data}');
+            }
+          })
           ..send();
       }
     }

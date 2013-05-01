@@ -74,19 +74,31 @@ class Log extends Protocol {
     }
   }
 
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData) {
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
 
-    _request.onError.listen((_) => onData());
-
     _request.onLoad.listen((_) {
-      if (_request.status != 204){
-        onData();
+      switch(_request.status) {
+        case 204:
+          // We do not care about success.
+          break;
+
+        case 400:
+          _logError();
+          Map data = parseJson(_request.responseText);
+          callback(new Response(Response.ERROR, data));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }

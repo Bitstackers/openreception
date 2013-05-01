@@ -24,18 +24,23 @@ class GlobalQueue extends WebComponent {
 
   void _initialFill() {
     new protocol.CallQueue()
-        ..onSuccess((text){
-          var callsjson = json.parse(text);
-          log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
-          for (var call in callsjson['calls']) {
-            calls.add(new model.Call(call));
+        ..onResponse((protocol.Response response){
+          switch(response.status){
+            case protocol.Response.OK:
+              var callsjson = response.data;
+              log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
+              for (var call in callsjson['calls']) {
+                calls.add(new model.Call(call));
+              }
+              break;
+
+            case protocol.Response.NOTFOUND:
+              log.debug('Initial Filling of callqueue. Request returned empty.');
+              break;
+
+            default:
+              //TODO do something.
           }
-        })
-        ..onEmptyQueue((){
-          log.debug('Initial Filling of callqueue. Request returned empty.');
-        })
-        ..onError((){
-          //TODO Do Something.
         })
         ..send();
   }

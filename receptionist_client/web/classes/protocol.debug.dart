@@ -25,45 +25,38 @@ class PeerList extends Protocol{
   PeerList(){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/debug/peer/list';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/debug/peer/list';
 
     _url = _buildUrl(base, path);
     _request = new HttpRequest()
         ..open(GET, _url);
   }
 
-  /**
-   * TODO comment
-   */
-  void onSuccess(void onData(String responseText)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol PeerList failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 204){
-        log.critical(_errorLogMessage('Protocol PeerList failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -78,45 +71,38 @@ class ChannelList extends Protocol{
   ChannelList(){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/debug/channel/list';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/debug/channel/list';
 
     _url = _buildUrl(base, path);
     _request = new HttpRequest()
         ..open(GET, _url);
   }
 
-  /**
-   * TODO comment
-   */
-  void onSuccess(void onData(String responseText)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol ChannelList failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 204){
-        log.critical(_errorLogMessage('Protocol ChannelList failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }

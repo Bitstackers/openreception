@@ -39,7 +39,7 @@ void main() {
   configLoaded.then((_) {
     log.info('configuration loaded.');
     initializeCallHandler();
-    _setupGlobalShortcuts();
+    //_setupGlobalShortcuts();
   }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
 
 }

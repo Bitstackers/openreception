@@ -34,12 +34,15 @@ void pickupCall(int id) {
   log.info('Sending request to pickup ${id.toString()}');
 
   new protocol.PickupCall(configuration.agentID, callId: id.toString())
-      ..onSuccess(_pickupCallSuccess)
-      ..onNoCall((){
-        //TODO Do something
-      })
-      ..onError((){
-        //Todo Do something
+      ..onResponse((protocol.Response response){
+        switch (response.status){
+          case protocol.Response.OK:
+            _pickupCallSuccess(response.data);
+            break;
+
+          default:
+            //TODO do something.
+        }
       })
       ..send();
 }
@@ -48,29 +51,30 @@ void pickupNextCall() {
   log.info('Sending request to pickup the next call');
 
   new protocol.PickupCall(configuration.agentID)
-    ..onSuccess(_pickupCallSuccess)
-    ..onNoCall((){
-      //TODO Do Something
-    })
-    ..onError((){
-      //TODO Do Something
+    ..onResponse((protocol.Response response){
+      switch (response.status){
+        case protocol.Response.OK:
+          _pickupCallSuccess(response.data);
+          break;
+
+        default:
+          //TODO do something.
+      }
     })
     ..send();
 }
 
-void _pickupCallSuccess(String text) {
-  log.info('pickupCall:${text}');
-
-  Map response = json.parse(text);
+void _pickupCallSuccess(Map response) {
+  log.info('pickupCall: ${response}');
 
   if (!response.containsKey('organization_id')) {
-    log.critical('The call had no organization_id. ${text}');
+    log.critical('The call had no organization_id: ${response}');
   }
 
   int orgId = response['organization_id'];
 
-  storage.organization.get(orgId,
-                           (org) => environment.organization.set((org != null) ? org : environment.organization));
+  storage.organization.get(orgId, (org) => environment.organization.set(org),
+      onError:() => log.critical('Pickup call. Could not fetch organization.'));
 }
 
 //TODO check up on the documentation. Today 20 feb 2013. did it wrongly say:
@@ -79,16 +83,19 @@ void _pickupCallSuccess(String text) {
 void hangupCall(int callId){
   log.debug('The command hangupCall is called with callid: ${callId}');
   new protocol.HangupCall(callId:callId.toString())
-    ..onSuccess((text){
-      log.debug('Hangup call: ${callId} successed');
-    })
-    ..onNoCall((){
-      //TODO Do Something
-      log.debug('There ware no call with id: ${callId} to hangup.');
-    })
-    ..onError((){
-      //TODO Do something
-      log.error('There was an error with hangup. Callid: ${callId}');
+    ..onResponse((protocol.Response response) {
+      switch(response.status){
+        case protocol.Response.OK:
+          log.debug('Hangup call: ${callId} successed');
+          break;
+
+        case protocol.Response.NOTFOUND:
+          log.debug('There were no call to hangup with Callid: ${callId}');
+          break;
+
+        default:
+          log.error('There were an error with hangup. Callid: ${callId}');
+      }
     })
     ..send();
 }
@@ -119,22 +126,22 @@ void originateCall(String address, int type){
   }
 
   originateCallRequest
-      ..onSuccess((text) {
-        //TODO Do something
-      })
-      ..onError((){
-        //TODO Do Something
+      ..onResponse((protocol.Response response) {
+        switch(response.status) {
+          default:
+            //TODO Do something.
+        }
       })
       ..send();
 }
 
 void transferCall(int callId){
   new protocol.TransferCall(callId)
-      ..onSuccess((text) {
-        //TODO Do Something.
-      })
-      ..onError(() {
-        //TODO Do Something.
+      ..onResponse((protocol.Response response) {
+        switch(response.status) {
+          default:
+            //TODO Do something.
+        }
       })
       ..send();
 }
@@ -144,12 +151,19 @@ void transferCall(int callId){
  */
 void holdCall(int callId){
   new protocol.HoldCall(callId)
-    ..onSuccess((text){
-      log.debug('The request to hold call: ${callId} succeeded');
+    ..onResponse((protocol.Response response) {
+      switch(response.status) {
+        case protocol.Response.OK:
+          log.debug('The request to hold call: ${callId} succeeded');
+          break;
+
+        case protocol.Response.NOTFOUND:
+          log.info('There is no call with id: ${callId} to hold.');
+          break;
+
+        default:
+          //TODO Do something.
+      }
     })
-    ..onNoCall((){
-      log.info('There is no call with id: ${callId} to hold.');
-    })
-    ..onError((){})
     ..send();
 }

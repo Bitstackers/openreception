@@ -25,9 +25,9 @@ class AgentState extends Protocol{
   AgentState.Get(int agentId){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/agent/state';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/agent/state';
+    List<String> fragments = new List<String>();
 
     if (agentId == null){
       log.critical('Protocol.AgentState.Get: agentId is null');
@@ -47,9 +47,9 @@ class AgentState extends Protocol{
   AgentState.Set(String state, int agentId){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/agent/state';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/agent/state';
+    List<String> fragments = new List<String>();
 
     if (agentId == null){
       log.critical('Protocol.AgentState.Set: agentId is null');
@@ -70,37 +70,34 @@ class AgentState extends Protocol{
         ..open(POST, _url);
   }
 
-  /**
-   * If the request gives a 200 Ok status code.
-   */
-  void onSuccess(void onData(String response)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * if the request gives anything else but a 200 Ok back.
-   */
-  void onError(void onData()){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol AgentState failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 204){
-        log.critical(_errorLogMessage('Protocol AgentState failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -115,62 +112,55 @@ class AgentList extends Protocol {
   AgentList(){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/agent/list';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/agent/list';
 
     _url = _buildUrl(base, path);
     _request = new HttpRequest()
         ..open(GET, _url);
   }
 
-  /**
-   * The request returns a list of agents.
-   */
-  void onSuccess(Subscriber onData){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    //"idle | busy | paused | logged out | ???"
-    final Map TestData =
-      {"Agents" :
-        [
-         {"id": 1, "state": "idle"},
-         {"id": 2, "state": "idle"},
-         {"id": 3, "state": "busy"},
-         {"id": 4, "state": "idle"},
-         {"id": 5, "state": "idle"},
-         {"id": 6, "state": "busy"},
-         {"id": 8, "state": "idle"},
-         {"id": 10, "state": "paused"},
-         {"id": 11, "state": "paused"},
-         {"id": 13, "state": "logged out"}
-        ]};
-
-    _request.onLoad.listen((_){
-      onData(TestData);
-//      if (_request.status == 200){
-//        onData(json.parse(_request.responseText));
-//      }
-    });
-  }
-
-  /**
-   * When there happens a error in the request.
-   */
-  void onError(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol AgentList failed.'));
-      //onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200){
-        log.critical(_errorLogMessage('Protocol AgentList failed.'));
-        //onData();
-      }
+      //"idle | busy | paused | logged out | ???"
+      final Map testData =
+        {"Agents" :
+          [
+           {"id": 1, "state": "idle"},
+           {"id": 2, "state": "idle"},
+           {"id": 3, "state": "busy"},
+           {"id": 4, "state": "idle"},
+           {"id": 5, "state": "idle"},
+           {"id": 6, "state": "busy"},
+           {"id": 8, "state": "idle"},
+           {"id": 10, "state": "paused"},
+           {"id": 11, "state": "paused"},
+           {"id": 13, "state": "logged out"}
+           ]};
+      callback(new Response(Response.ERROR, testData));
+
+//      switch(_request.status) {
+//        case 200:
+//          Map data = parseJson(_request.responseText);
+//          if (data != null) {
+//            callback(new Response(Response.OK, data));
+//          } else {
+//            callback(new Response(Response.ERROR, data));
+//          }
+//          break;
+//
+//        default:
+//          _logError();
+//          callback(new Response(Response.ERROR, null));
+//      }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }

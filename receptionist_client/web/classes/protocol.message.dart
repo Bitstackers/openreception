@@ -27,8 +27,8 @@ class Message extends Protocol{
   Message(int cmId, String message){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/message/send';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/message/send';
 
     if (cmId == null){
       log.critical('Protocol.Message: cmId is null');
@@ -48,34 +48,30 @@ class Message extends Protocol{
     _payload = 'cm_id=${cmId}&msg=${encodeUriComponent(message)}';
   }
 
-  void onSuccess(void onData(String responseText)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
 
     _request.onLoad.listen((_) {
-      if (_request.status == 204){
-        onData(_request.responseText);
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
     });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
 
     _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol Message failed.'));
-      onData();
-    });
-
-    _request.onLoad.listen((_) {
-      if (_request.status != 204){
-        log.critical(_errorLogMessage('Protocol Message failed.'));
-        onData();
-      }
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 

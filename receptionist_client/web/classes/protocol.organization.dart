@@ -35,53 +35,34 @@ class Organization extends Protocol {
         ..open(GET, _url);
   }
 
-  /**
-   * TODO Comment
-   * TODO find better function type.
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((e){
-      log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
-      onData();
-    });
-
-    _request.onLoad.listen((e){
-      if (_request.status != 200 && _request.status != 404) {
-        log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
-        onData();
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onNotFound(Callback onData) {
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
 
     _request.onLoad.listen((_) {
-      if (_request.status == 404) {
-        log.error('Protocol Organization. Status: [${_request.status}] URL: ${_url}');
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
     });
-  }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String responseText)) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_) {
-      if (_request.status == 200) {
-        onData(_request.responseText);
-      }
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -90,8 +71,8 @@ class Organization extends Protocol {
  * TODO Comment
  */
 class OrganizationList extends Protocol {
-  static const String MINI = 'mini';
-  static const String MIDI = 'midi';
+  const String MINI = 'mini';
+  const String MIDI = 'midi';
 
   /**
    * Todo Comment
@@ -100,9 +81,9 @@ class OrganizationList extends Protocol {
     assert(configuration.loaded);
     assert(view == MINI || view == MIDI);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/organization/list';
-    var fragments = new List<String>()
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/organization/list';
+    List<String> fragments = new List<String>()
         ..add('view=${view}');
 
     _url = _buildUrl(base, path, fragments);
@@ -110,38 +91,30 @@ class OrganizationList extends Protocol {
         ..open(GET, _url);
   }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String responseText)) {
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
 
     _request.onLoad.listen((_) {
-      if (_request.status == 200) {
-        onData(_request.responseText);
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
     });
-  }
 
-  /**
-   * TODO Comment
-   * TODO find better function type.
-   */
-  void onError(void onData()) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((e){
-      log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
-      onData();
-    });
-
-    _request.onLoad.listen((e){
-      if (_request.status != 200) {
-        log.critical('Protocol Organization failed. Status: [${_request.status}] URL: ${_url}');
-        onData();
-      }
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }

@@ -18,66 +18,48 @@ part of protocol;
 /**
  * Class to get a list of every active call.
  */
-class CallList extends Protocol{
+class CallList extends Protocol {
   /**
    * TODO Comment
    */
-  CallList(){
+  CallList() {
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/list';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/list';
 
     _url = _buildUrl(base, path);
     _request = new HttpRequest()
         ..open(GET, _url);
   }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String Text)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * If there are no call in the system.
-   */
-  void onEmptyList(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 204){
-        onData();
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol CallList failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 204){
-        log.critical(_errorLogMessage('Protocol CallList failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+        case 204:
+          callback(new Response(Response.OK, {}));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -92,59 +74,42 @@ class CallQueue extends Protocol{
   CallQueue(){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/queue';
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/queue';
 
     _url = _buildUrl(base, path);
     _request = new HttpRequest()
         ..open(GET, _url);
   }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String Text)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onEmptyQueue(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 204){
-        onData();
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol CallQueue failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 204){
-        log.critical(_errorLogMessage('Protocol CallQueue failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 204:
+          callback(new Response(Response.OK, {}));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -160,9 +125,9 @@ class HangupCall extends Protocol{
   HangupCall({String callId}){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/hangup';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/hangup';
+    List<String> fragments = new List<String>();
 
     if (callId != null && !callId.isEmpty){
       fragments.add('call_id=${callId}');
@@ -173,51 +138,33 @@ class HangupCall extends Protocol{
         ..open(POST, _url);
   }
 
-  /**
-   * TODO comment
-   */
-  void onSuccess(void onData(String responseText)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * If there are no call to hangup.
-   */
-  void onNoCall(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 404){
-        onData();
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol HangupCall failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 404){
-        log.critical(_errorLogMessage('Protocol HangupCall failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -233,9 +180,9 @@ class HoldCall extends Protocol{
   HoldCall(int callId){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/hold';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/hold';
+    List<String> fragments = new List<String>();
 
     if (callId == null){
       log.critical('Protocol.HoldCall: callId is null');
@@ -249,51 +196,34 @@ class HoldCall extends Protocol{
         ..open(POST, _url);
   }
 
-  /**
-   * TODO comment
-   */
-  void onSuccess(void onData(String responseText)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onNoCall(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 400){
-        onData();
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol HoldCall failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 400){
-        log.critical(_errorLogMessage('Protocol HoldCall failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -307,12 +237,12 @@ class OriginateCall extends Protocol{
   /**
    * TODO Comment
    */
-  OriginateCall(int agentId,{ int cmId, String pstnNumber, String sip}){
+  OriginateCall(int agentId, {int cmId, String pstnNumber, String sip}) {
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/originate';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/originate';
+    List<String> fragments = new List<String>();
 
     if (agentId == null){
       log.critical('Protocol.OriginateCall: agentId is null');
@@ -338,37 +268,25 @@ class OriginateCall extends Protocol{
         ..open(POST, _url);
   }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String Text)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol OriginateCall failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200){
-        log.critical(_errorLogMessage('Protocol OriginateCall failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          callback(new Response(Response.OK, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -385,9 +303,9 @@ class PickupCall extends Protocol{
   PickupCall(int AgentId, {String callId}){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/pickup';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/pickup';
+    List<String> fragments = new List<String>();
 
     if (AgentId == null){
       log.critical('Protocol.PickupCall: AgentId is null');
@@ -405,51 +323,34 @@ class PickupCall extends Protocol{
         ..open(POST, _url);
   }
 
-  /**
-   * TODO comment
-   */
-  void onSuccess(void onData(String responseText)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onNoCall(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 204){
-        onData();
-      }
-    });
-  }
-
-  /**
-   * TODO comment
-   */
-  void onError(Callback onData) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol pickupCall failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200 && _request.status != 204){
-        log.critical(_errorLogMessage('Protocol pickupCall failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -465,9 +366,9 @@ class StatusCall extends Protocol{
   StatusCall(int callId){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/state';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/state';
+    List<String> fragments = new List<String>();
 
     if (callId == null){
       log.critical('Protocol.StatusCall: callId is null');
@@ -481,37 +382,34 @@ class StatusCall extends Protocol{
         ..open(GET, _url);
   }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String Text)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol StatusCall failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200){
-        log.critical(_errorLogMessage('Protocol StatusCall failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }
@@ -527,9 +425,9 @@ class TransferCall extends Protocol{
   TransferCall(int callId){
     assert(configuration.loaded);
 
-    var base = configuration.aliceBaseUrl.toString();
-    var path = '/call/transfer';
-    var fragments = new List<String>();
+    String base = configuration.aliceBaseUrl.toString();
+    String path = '/call/transfer';
+    List<String> fragments = new List<String>();
 
     if (callId == null){
       log.critical('Protocol.TransferCall: callId is null');
@@ -542,37 +440,34 @@ class TransferCall extends Protocol{
         ..open(GET, _url);
   }
 
-  /**
-   * TODO Comment
-   */
-  void onSuccess(void onData(String Text)){
+  void onResponse(responseCallback callback) {
     assert(_request != null);
     assert(_notSent);
-
-    _request.onLoad.listen((_){
-      if (_request.status == 200){
-        onData(_request.responseText);
-      }
-    });
-  }
-
-  /**
-   * TODO Comment
-   */
-  void onError(Callback onData){
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onError.listen((_) {
-      log.critical(_errorLogMessage('Protocol TransferCall failed.'));
-      onData();
-    });
 
     _request.onLoad.listen((_) {
-      if (_request.status != 200){
-        log.critical(_errorLogMessage('Protocol TransferCall failed.'));
-        onData();
+      switch(_request.status) {
+        case 200:
+          Map data = parseJson(_request.responseText);
+          if (data != null) {
+            callback(new Response(Response.OK, data));
+          } else {
+            callback(new Response(Response.ERROR, data));
+          }
+          break;
+
+        case 404:
+          callback(new Response(Response.NOTFOUND, null));
+          break;
+
+        default:
+          _logError();
+          callback(new Response(Response.ERROR, null));
       }
+    });
+
+    _request.onError.listen((_) {
+      _logError();
+      callback(new Response(Response.ERROR, null));
     });
   }
 }

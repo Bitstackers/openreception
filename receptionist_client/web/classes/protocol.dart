@@ -72,12 +72,36 @@ abstract class Protocol {
     return '${url}${SB.toString()}';
   }
 
-  String _errorLogMessage([String text]){
-    if (text != null){
-      return '${text} Status: [${_request.status}] URL: ${_url}';
-    }else{
-      return 'Protocol ${this.runtimeType.toString()} failed. Status: [${_request.status}] URL: ${_url}';
+  /**
+   * Validates and parses String in JSON format to a Map.
+   */
+  Map parseJson(String responseText) {
+    try {
+      return json.parse(responseText);
+    } catch(e) {
+      log.critical('Protocol.toJSON exception: ${e}');
+      return null;
     }
-
   }
+
+  void _logError() {
+    log.critical('Protocol.${this.runtimeType} failed. Status: [${_request.status}] URL: ${_url}');
+  }
+
+  void onResponse(responseCallback callback);
+}
+
+/**
+ * TODO comment.
+ * Something about response from the protocol.
+ */
+class Response {
+  static const int OK = 0;
+  static const int ERROR = -1;
+  static const int NOTFOUND = 1;
+
+  Map data;
+  int status;
+
+  Response(this.status, this.data);
 }

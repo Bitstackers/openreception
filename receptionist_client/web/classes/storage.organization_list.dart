@@ -26,13 +26,17 @@ class _OrganizationList{
   /**
    * Get the organization list from Alice.
    */
-  void get(OrganizationListSubscriber onComplete) {
+  void get(OrganizationListSubscriber onComplete, {Callback onError}) {
     new protocol.OrganizationList()
-        ..onSuccess((text) {
-          onComplete(new model.OrganizationList.fromMap(json.parse(text)));
-        })
-        ..onError(() {
-          //TODO Do something.
+        ..onResponse((protocol.Response response) {
+          switch(response.status){
+            case protocol.Response.OK:
+              onComplete(new model.OrganizationList.fromMap(response.data));
+              break;
+
+            default:
+              onError();
+          }
         })
         ..send();
   }

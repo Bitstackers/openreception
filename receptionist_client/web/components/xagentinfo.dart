@@ -54,22 +54,24 @@ class AgentInfo extends WebComponent {
 
   void _initialSetup() {
     new protocol.AgentList()
-      ..onSuccess((data) {
-        log.debug(data.toString());
-        for (var agent in data['Agents']){
-          switch(agent["state"]){
-            case "busy":
-            case "idle":
-              active++;
-              break;
-            case "paused":
-              paused++;
-              break;
-          }
+      ..onResponse((protocol.Response response){
+        switch(response.status){
+          case protocol.Response.OK:
+            for (var agent in response.data['Agents']){
+              switch(agent["state"]){
+                case "busy":
+                case "idle":
+                  active++;
+                  break;
+                case "paused":
+                  paused++;
+                  break;
+              }
+            }
+            break;
+          default:
+          //TODO How to handle this?
         }
-      })
-      ..onError(() {
-
       })
       ..send();
   }
