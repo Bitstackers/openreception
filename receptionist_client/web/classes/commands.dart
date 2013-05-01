@@ -22,6 +22,7 @@ import 'dart:json' as json;
 import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'logger.dart';
+import 'model.dart' as model;
 import 'protocol.dart' as protocol;
 import 'storage.dart' as storage;
 
@@ -87,6 +88,7 @@ void hangupCall(int callId){
       switch(response.status){
         case protocol.Response.OK:
           log.debug('Hangup call: ${callId} successed');
+          environment.organization.set(model.nullOrganization);
           break;
 
         case protocol.Response.NOTFOUND:
