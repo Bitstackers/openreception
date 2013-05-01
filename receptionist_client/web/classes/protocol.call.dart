@@ -98,7 +98,7 @@ class CallQueue extends Protocol{
           break;
 
         case 204:
-          callback(new Response(Response.OK, {}));
+          callback(new Response(Response.NOTFOUND, {}));
           break;
 
         default:

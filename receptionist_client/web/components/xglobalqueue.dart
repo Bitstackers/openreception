@@ -27,7 +27,7 @@ class GlobalQueue extends WebComponent {
         ..onResponse((protocol.Response response){
           switch(response.status){
             case protocol.Response.OK:
-              var callsjson = response.data;
+              Map callsjson = response.data;
               log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
               for (var call in callsjson['calls']) {
                 calls.add(new model.Call(call));

@@ -71,8 +71,8 @@ class Organization extends Protocol {
  * TODO Comment
  */
 class OrganizationList extends Protocol {
-  const String MINI = 'mini';
-  const String MIDI = 'midi';
+  static const String MINI = 'mini';
+  static const String MIDI = 'midi';
 
   /**
    * Todo Comment
