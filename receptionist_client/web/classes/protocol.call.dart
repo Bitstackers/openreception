@@ -294,27 +294,27 @@ class OriginateCall extends Protocol{
 /**
  * Sends a request to pickup a call.
  */
-class PickupCall extends Protocol{
+class PickupCall extends Protocol {
   /**
    * Sends a call based on the [callId], if present, to the agent with [AgentId].
    * If no callId is specified, then the next call in line will be dispatched
    * to the agent.
    */
-  PickupCall(int AgentId, {String callId}){
+  PickupCall(int AgentId, {String callId}) {
     assert(configuration.loaded);
 
     String base = configuration.aliceBaseUrl.toString();
     String path = '/call/pickup';
     List<String> fragments = new List<String>();
 
-    if (AgentId == null){
+    if (AgentId == null) {
       log.critical('Protocol.PickupCall: AgentId is null');
       throw new Exception();
     }
 
     fragments.add('agent_id=${AgentId}');
 
-    if (callId != null && !callId.isEmpty){
+    if (callId != null && !callId.isEmpty) {
       fragments.add('call_id=${callId}');
     }
 
