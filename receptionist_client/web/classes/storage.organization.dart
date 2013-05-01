@@ -19,10 +19,11 @@ final _Organization organization = new _Organization();
 
 /**
  * Storage class for Organization objects.
+ *
+ * TODO Make it possible to invalidate cached items.
  */
 class _Organization{
-  //TODO Make it possible to invalidate cached items.
-  var _cache = new Map<int, model.Organization>();
+  Map<int, model.Organization> _cache = new Map<int, model.Organization>();
 
   _Organization();
 
@@ -32,17 +33,18 @@ class _Organization{
   void get(int id, OrganizationSubscriber onComplete) {
     if (_cache.containsKey(id)) {
       onComplete(_cache[id]);
-
     }else{
       log.debug('${id} is not cached');
+
       new protocol.Organization.get(id)
           ..onSuccess((text) {
-            var org = new model.Organization(json.parse(text));
+            model.Organization org = new model.Organization(json.parse(text));
             _cache[org.id] = org;
             onComplete(org);
           })
           ..onNotFound((){
             //TODO Do something.
+
           })
           ..onError((){
             //TODO Do something.

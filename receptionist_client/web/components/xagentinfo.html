@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <link rel="components" href="xbox.html">
+    <link rel="import" href="xbox.html">
   </head>
   <body>
     <element name="x-agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
@@ -13,84 +13,32 @@
           width: 100%;
           border-radius: 5px;
           overflow: hidden;
-        }
-
-        .total {
-          position: absolute;
-          top: 0px;
-          left: 0px;
-          height: 100%;
-        }
-
-        .active {
-          position: absolute;
-          top: 0px;
-          height: 100%;
-        }
-
-        .sleep {
-          position: absolute;
-          top: 0px;
-          height: 100%;
+          font-size: 1.1em;
         }
 
         .face {
           position: absolute;
           top: 0px;
           height: 100%;
-          border-top-right-radius: 5px;
-          border-bottom-right-radius: 5px;
-        }
-
-        .number {
-          color: #666;
-          font-size: 200%;
-          font-weight: bold;
+          padding: 5px;
         }
       </style>
 
       <template>
         <x-box>
           <div name="boxcontent" class="container">
-            <!--Online: {{numOnline}} Active: {{numActive}} Busy: {{numBusy}}-->
-            <div name="total" class="total">
-              <table>
-                <tr>
-                  <td>
-                    <img src="../icons/agentstotal.svg">
-                  </td>
-                  <td>
-                    <span class="number">99</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div name="active" class="active">
-              <table>
-                <tr>
-                  <td>
-                    <img src="../icons/agentsactive.svg">
-                  </td>
-                  <td>
-                    <span class="number">88</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div name="sleep" class="sleep">
-              <table>
-                <tr>
-                  <td>
-                    <img src="../icons/agentssleep.svg">
-                  </td>
-                  <td>
-                    <span class="number">11</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
+            <table>
+              <tr>
+                <td>{{active}}</td>
+                <td>: {{activeLabel}}</td>
+              </tr>
+              <tr>
+                <td>{{paused}}</td>
+                <td>: {{pausedLabel}}</td>
+              </tr>
+            </table>
             <div name="face" class="face">
-              <img src="../images/face.jpg">
+              <img style="border: solid 2px #aaa; border-radius: 5px; height: 100%; width: 100%" src="{{faceURL}}">
             </div>
           </div>
         </x-box>

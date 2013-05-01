@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <link rel="components" href="xboxwithheader.html">
-    <link rel="components" href="xcompanyselector.html">
+    <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="xcompanyselector.html">
   </head>
   <body>
     <element name="x-company-info" constructor="CompanyInfo" extends="span" apply-author-styles>
@@ -17,10 +17,6 @@
           overflow: auto;
           border: solid 1px red;
         }
-
-        .greeting {
-          font-size: 1.5em;
-        }
       </style>
 
       <template>
@@ -32,8 +28,8 @@
           <div name="boxcontent" class="container">
             <x-company-selector></x-company-selector>
             <div id="tempdump" style="margin-top: 10px;">
-              <template instantiate="if organization.id != null">
-                {{organization.name}}-{{organization.id}}
+              <template instantiate="if environment.organization.current != model.nullOrganization">
+                {{environment.organization.current.name}}-{{environment.organization.current.id}}
               </template>
             </div>
           </div>

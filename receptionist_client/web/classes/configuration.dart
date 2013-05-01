@@ -34,41 +34,32 @@ final _Configuration configuration = new _Configuration();
 /**
  * Access to configuration parameters provided by Alice.
  */
-@observable
 class _Configuration {
+  @observable bool _loaded = false;
+
   const String _CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
 
-  bool _loaded = false;
-  bool get loaded => _loaded;
-
   int _agentID;
-  int get agentID => _agentID;
-
   Uri _aliceBaseUrl;
-  Uri get aliceBaseUrl => _aliceBaseUrl;
-
   Uri _notificationSocketInterface;
-  Uri get notificationSocketInterface => _notificationSocketInterface;
-
   int _notificationSocketReconnectInterval;
-  int get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
-
   Level _serverLogLevel = Level.OFF;
-  Level get serverLogLevel => _serverLogLevel;
-
   Uri _serverLogInterfaceCritical;
-  Uri get serverLogInterfaceCritical => _serverLogInterfaceCritical;
-
   Uri _serverLogInterfaceError;
-  Uri get serverLogInterfaceError => _serverLogInterfaceError;
-
   Uri _serverLogInterfaceInfo;
-  Uri get serverLogInterfaceInfo => _serverLogInterfaceInfo;
-
   String _standardGreeting;
-  String get standardGreeting => _standardGreeting;
-
   int _userLogSizeLimit = 100000;
+
+  int get agentID => _agentID;
+  Uri get aliceBaseUrl => _aliceBaseUrl;
+  bool get loaded => _loaded;
+  Uri get notificationSocketInterface => _notificationSocketInterface;
+  int get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
+  Level get serverLogLevel => _serverLogLevel;
+  Uri get serverLogInterfaceCritical => _serverLogInterfaceCritical;
+  Uri get serverLogInterfaceError => _serverLogInterfaceError;
+  Uri get serverLogInterfaceInfo => _serverLogInterfaceInfo;
+  String get standardGreeting => _standardGreeting;
   int get userLogSizeLimit => _userLogSizeLimit;
 
   /**
@@ -103,14 +94,16 @@ class _Configuration {
   /**
    * Parse and validate the configuration JSON from Alice.
    */
-  void _parseConfiguration(Map json){
+  void _parseConfiguration(Map json) {
     _agentID = _intValue (json, 'agentID', 0);
     _aliceBaseUrl = new Uri(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
 
     Map notificationSocketMap = json['notificationSocket'];
-    _notificationSocketReconnectInterval = _intValue(notificationSocketMap, 'reconnectInterval', 1000);
-    _notificationSocketInterface =
-        new Uri(_stringValue(notificationSocketMap, 'interface', 'ws://alice.adaheads.com:4242/notifications'));
+    _notificationSocketReconnectInterval = _intValue(notificationSocketMap,
+                                                     'reconnectInterval', 1000);
+    _notificationSocketInterface = new Uri(_stringValue(notificationSocketMap,
+                                           'interface',
+                                           'ws://alice.adaheads.com:4242/notifications'));
 
     Map serverLogMap = json['serverLog'];
     switch (serverLogMap['level'].toLowerCase()){
@@ -190,10 +183,10 @@ class _Configuration {
 /**
  * Fetch the configuration.
  *
- * Completes when [Configuration.loaded] is true.
+ * Completes when [configuration.loaded] is true.
  */
 Future<bool> fetchConfig() {
-  var completer = new Completer();
+  Completer completer = new Completer();
 
   if (configuration.loaded) {
     completer.complete(true);

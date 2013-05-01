@@ -10,17 +10,16 @@ import '../classes/model.dart' as model;
 import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
-@observable
 class GlobalQueue extends WebComponent {
-  List<model.Call> calls = toObservable(new List<model.Call>());
+  @observable bool pickupButtonDisabled = false;
+  @observable bool hangupButtonDisabled = true;
+  @observable bool holdButtonDisabled   = true;
 
-  bool pickupButtonDisabled = false;
-  bool hangupButtonDisabled = true;
-  bool holdButtonDisabled = true;
+  List<model.Call> calls = toObservable(new List<model.Call>());
 
   void inserted(){
     _initialFill();
-    _registrateSubscribers();
+    _registerSubscribers();
   }
 
   void _initialFill() {
@@ -41,7 +40,7 @@ class GlobalQueue extends WebComponent {
         ..send();
   }
 
-  void _registrateSubscribers() {
+  void _registerSubscribers() {
     notify.notification.addEventHandler('queue_join', _queueJoin);
     notify.notification.addEventHandler('queue_leave', _queueLeave);
     environment.call.onChange.listen(_callChange);

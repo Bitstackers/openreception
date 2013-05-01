@@ -4,7 +4,6 @@ import 'package:web_ui/web_ui.dart';
 
 import '../classes/environment.dart';
 
-@observable
 class Foo extends WebComponent {
   String contextid;
 

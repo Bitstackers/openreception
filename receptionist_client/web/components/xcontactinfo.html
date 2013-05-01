@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <link rel="components" href="xboxwithheader.html">
+    <link rel="import" href="xboxwithheader.html">
   </head>
   <body>
     <element name="x-contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
@@ -25,7 +25,7 @@
           </span>
 
           <div name="boxcontent" class="container">
-            <template iterate="contact in organization.contacts">
+            <template iterate="contact in environment.organization.current.contacts">
               {{contact}}
             </template>
           </div>

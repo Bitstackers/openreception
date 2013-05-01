@@ -5,14 +5,13 @@
   <element name="x-company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
     <template>
       <select on-change="_selection($event)">
-        <option disabled="disabled" selected="selected">{{defaultOptionText}}</option>
-        <option template repeat="org in organizationList" value="{{org.id.toString()}}">{{org.name}}</option>
+        <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
+          {{defaultOptionText}}
+        </option>
+        <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{org.id == environment.organization.current.id}}">
+          {{org.name}}
+        </option>
       </select>
-      <!--
-      <select template iterate="org in organizationList" on-change="_selection($event)">
-        <option value="{{org.id.toString()}}">{{org.name}}</option>
-      </select>
-      -->
     </template>
 
     <script type="application/dart" src="xcompanyselector.dart"></script>

@@ -65,15 +65,15 @@ button::-moz-focus-inner {
   left: 0%;
   top: 0%;
   height: 6%;
-  width: 74%;
+  width: 89.5%;
 }
 
 #agentinfo {
   position: absolute;
-  left: 74.5%;
+  left: 90%;
   top: 0%;
   height: 6%;
-  width: 25.5%;
+  width: 10%;
 }
 
 #companyinfo {

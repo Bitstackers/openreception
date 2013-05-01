@@ -26,7 +26,7 @@ import 'logger.dart';
 part 'keyboardshortcuts.dart';
 
 /**
- * The one and only [keyboardhandler].
+ * The one and only [keyboardHandler].
  */
 final _Keyboardhandler keyboardHandler = new _Keyboardhandler();
 

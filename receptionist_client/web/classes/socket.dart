@@ -38,19 +38,19 @@ class _ConnectionManager{
   _ConnectionManager(Duration reconnectInterval) {
     new Timer.periodic  (reconnectInterval,(timer) {
       for (var connection in connections) {
-        if (connection.dead){
+        if (connection.dead) {
 
           if (connection._connectTicks == 0) {
             log.critical('${connection.toString()} is dead');
             connection._reconnect();
             connection._connectTicks += 1;
 
-          } else if(connection._connectTicks > MAX_TICKS) {
+          } else if (connection._connectTicks > MAX_TICKS) {
             log.critical('${connection.toString()} is timedout');
             connection._connectTicks = 0;
             connection._reconnect();
 
-          }else {
+          } else {
             connection._connectTicks += 1;
           }
         }
@@ -66,8 +66,8 @@ final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
  */
 class Socket{
   WebSocket _channel;
-  var _messageStream = new StreamController<Map>();
-  var _errorStream = new StreamController<Map>();
+  StreamController<Map> _messageStream = new StreamController<Map>();
+  StreamController<Map> _errorStream = new StreamController<Map>();
   final String _url;
 
   int _connectTicks = 0;
@@ -111,7 +111,7 @@ class Socket{
   }
 
   /**
-   * returns [errorStream] for subscribers.
+   * returns [_errorStream] for subscribers.
    */
   Stream<Map> get onError => _errorStream.stream.asBroadcastStream();
 
@@ -121,7 +121,7 @@ class Socket{
   }
 
   /**
-   * returns [messageStream] for subscribers.
+   * returns [_messageStream] for subscribers.
    */
   Stream<Map> get onMessage => _messageStream.stream.asBroadcastStream();
 
