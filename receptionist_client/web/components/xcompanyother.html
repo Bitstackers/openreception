@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="import" href="xboxwithheader.html">
+  </head>
+  <body>
+    <element name="x-company-other" constructor="CompanyOther" extends="span" apply-author-styles>
+      <style scoped>
+
+      </style>
+
+      <template>
+        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+          <span name="boxheader">
+            Andet
+          </span>
+
+          <div name="boxcontent" class="companyinfominibox">
+            TH-nummer: 3348 8220
+          </div>
+        </x-box-with-header>
+      </template>
+
+      <script type="application/dart" src="xcompanyother.dart"></script>
+    </element>
+  </body>
+</html>

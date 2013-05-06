@@ -32,6 +32,11 @@ button::-moz-focus-inner {
   z-index: -100;
 }
 
+.hideborder {
+  border: none;
+  border-radius: 0px;
+}
+
 #rootview {
   position: absolute;
   height: -moz-calc(100% - 20px);
@@ -50,39 +55,175 @@ button::-moz-focus-inner {
 }
 
 /*
-  Context Home and contained elements
+  Context Home
 */
 #contexthome {
   position: absolute;
   top: 0%;
-  left: 3.5%;
+  left: 4%;
   height: 100%;
-  width: 96.5%;
+  width: 96%;
 }
 
-#welcomemessage {
+/*#welcomemessage {
   position: absolute;
   left: 0%;
   top: 0%;
   height: 6%;
   width: 89.5%;
-}
+}*/
 
-#agentinfo {
+/*#agentinfo {
   position: absolute;
   left: 90%;
   top: 0%;
   height: 6%;
   width: 10%;
-}
+}*/
 
-#companyinfo {
+/* The company info box and associated widgets */
+
+/*#companyinfo {
   position: absolute;
   top: 7%;
   left: 0%;
   height: 45%;
-  width: 100%;
+  width: 33%;
+  border: solid 1px red;
+}*/
+
+.minibox {
+  margin: 0px;
+  height: 100%;
+  width: -webkit-calct (100% - 10px);
+  width: -moz-calc (100% - 10px);
+  overflow: auto;
+  font-size: 0.9em;
 }
+
+/*
+#companyselector {
+  position: absolute;
+  top: 11%;
+  left: 0.5%;
+  height: 2%;
+  width: 33%;
+}
+
+#companyevents {
+  position: absolute;
+  top: 14.5%;
+  left: 0.5%;
+  height: 17%;
+  width: 33%;
+}
+
+#companyhandling {
+  position: absolute;
+  top: 33%;
+  left: 0.5%;
+  height: 18%;
+  width: 33%;
+}
+*/
+
+/*#companyopeninghours {
+  position: absolute;
+  top: 11%;
+  left: 34.5%;
+  height: 9%;
+  width: 21%;
+}*/
+
+#companysalescalls {
+  position: absolute;
+  top: 21.5%;
+  left: 34.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companyproduct {
+  position: absolute;
+  top: 32%;
+  left: 34.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companycustomertype {
+  position: absolute;
+  top: 42.5%;
+  left: 34.5%;
+  height: 8.5%;
+  width: 21%;
+}
+
+#companytelephonenumbers {
+  position: absolute;
+  top: 11%;
+  left: 56.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companyaddresses {
+  position: absolute;
+  top: 21.5%;
+  left: 56.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companyalternatenames {
+  position: absolute;
+  top: 32%;
+  left: 56.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companybankinginformation {
+  position: absolute;
+  top: 42.5%;
+  left: 56.5%;
+  height: 8.5%;
+  width: 21%;
+}
+
+#companyemailaddresses {
+  position: absolute;
+  top: 11%;
+  left: 78.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companywebsites {
+  position: absolute;
+  top: 21.5%;
+  left: 78.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companyregistrationnumber {
+  position: absolute;
+  top: 32%;
+  left: 78.5%;
+  height: 9%;
+  width: 21%;
+}
+
+#companyother {
+  position: absolute;
+  top: 42.5%;
+  left: 78.5%;
+  height: 8.5%;
+  width: 21%;
+}
+
+/* The contact info box and associated widgets */
 
 #contactinfo {
   position: absolute;
@@ -92,6 +233,8 @@ button::-moz-focus-inner {
   width: 39%;
 }
 
+/* The send message box and associated widgets */
+
 #sendmessage {
   position: absolute;
   top: 53%;
@@ -100,6 +243,8 @@ button::-moz-focus-inner {
   width: 37.5%;
 }
 
+/* The global queue box and associated widgets */
+
 #globalqueue {
   position: absolute;
   top: 53%;
@@ -107,6 +252,8 @@ button::-moz-focus-inner {
   height: 30%;
   width: 22.5%;
 }
+
+/* The local queue box and associated widgets */
 
 #localqueue {
   position: absolute;

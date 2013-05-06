@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="import" href="xboxwithheader.html">
+  </head>
+  <body>
+    <element name="x-company-opening-hours" constructor="CompanyOpeningHours" extends="span" apply-author-styles>
+      <style scoped>
+        .placing {
+          position: absolute;
+          left: 34%;
+          top: 8%;
+          height: 9%;
+          width: 21%;
+        }
+      </style>
+
+      <template>
+        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+          <span name="boxheader">
+            {{headline}}
+          </span>
+
+          <div name="boxcontent" class="minibox">
+            Man-tor 0800-1700, fre 0800-1630
+          </div>
+        </x-box-with-header>
+      </template>
+
+      <script type="application/dart" src="xcompanyopeninghours.dart"></script>
+    </element>
+  </body>
+</html>

@@ -7,6 +7,14 @@
   <body>
     <element name="x-welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
       <style scoped>
+        .placing {
+          position: absolute;
+          left: 0%;
+          top: 0%;
+          height: 6%;
+          width: 89%;
+        }
+
         .container {
           display: table;
           height: -moz-calc(100% - 20px);
@@ -24,7 +32,7 @@
       </style>
 
       <template>
-        <x-box>
+        <x-box class="placing">
           <div name="boxcontent" class="container">
             <template instantiate="if environment.organization.current != model.nullOrganization">
               <span class="cell">{{environment.organization.current.greeting}}</span>

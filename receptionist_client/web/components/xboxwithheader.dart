@@ -4,9 +4,14 @@ import 'package:web_ui/web_ui.dart';
 
 class BoxWithHeader extends WebComponent {
   DivElement body;
-  String headerfontsize = '1.0em';
+  bool chrome = true;
   HeadingElement header;
+  String headerfontsize = '1.0em';
+  String headerpadding = '5px 10px';
   DivElement outer;
+
+  String get headlineChrome => chrome ? _css['.headline_chrome'] : _css['.headline_nochrome'];
+  String get outerboxChrome => chrome ? '' : 'hideborder';
 
   void inserted() {
     _queryElements();
@@ -31,5 +36,6 @@ class BoxWithHeader extends WebComponent {
 
   void _styling() {
     header.style.fontSize = headerfontsize;
+    header.style.padding = headerpadding;
   }
 }

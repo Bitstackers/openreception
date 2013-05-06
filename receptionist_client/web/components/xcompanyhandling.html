@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="import" href="xboxwithheader.html">
+  </head>
+  <body>
+    <element name="x-company-handling" constructor="CompanyHandling" extends="span" apply-author-styles>
+      <style scoped>
+        .placing {
+          position: absolute;
+          left: 0%;
+          top: 32%;
+          height: 18%;
+          width: 33%;
+        }
+
+        .container {
+          height: 100%;
+          width: 100%;
+          overflow: auto;
+        }
+      </style>
+
+      <template>
+        <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+          <span name="boxheader">
+            CompanyHandling
+          </span>
+
+          <div name="boxcontent" class="container">
+            company handling content
+          </div>
+        </x-box-with-header>
+      </template>
+
+      <script type="application/dart" src="xcompanyhandling.dart"></script>
+    </element>
+  </body>
+</html>

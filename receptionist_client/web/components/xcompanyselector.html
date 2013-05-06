@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 
 <html>
- <body>
-  <element name="x-company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
-    <template>
-      <select on-change="_selection($event)">
-        <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
-          {{defaultOptionText}}
-        </option>
-        <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{org.id == environment.organization.current.id}}">
-          {{org.name}}
-        </option>
-      </select>
-    </template>
+  <head>
+    <link rel="import" href="xbox.html">
+  </head>
+  <body>
+    <element name="x-company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
+      <style scoped>
+        .placing {
+          position: absolute;
+          left: 0%;
+          top: 8%;
+          height: 3%;
+          width: 33%;
+        }
 
-    <script type="application/dart" src="xcompanyselector.dart"></script>
-  </element>
-</body>
+        .default {
+          width: 100%;
+          height: 100%;
+          font-size: 1.2em;
+        }
+      </style>
+
+      <template>
+        <x-box chrome="{{false}}" class="placing">
+          <div name="boxcontent" style="height: 100%;">
+            <select class="default" on-change="_selection($event)">
+              <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
+                {{defaultOptionText}}
+              </option>
+              <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{org.id == environment.organization.current.id}}">
+                {{org.name}}
+              </option>
+            </select>
+          </div>
+        </x-box>
+      </template>
+
+      <script type="application/dart" src="xcompanyselector.dart"></script>
+    </element>
+  </body>
 </html>

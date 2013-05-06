@@ -13,21 +13,26 @@
         }
 
         .content {
-          position: relative;
           overflow: auto;
         }
 
         .headline {
-          background-color: #dedede;
-          color: #777;
+          color: #444;
           font-weight: bold;
-          padding: 5px 10px;
+        }
+
+        .headline_chrome {
+          background-color: #dedede;
+        }
+
+        .headline_nochrome {
+          background-color: inherit;
         }
       </style>
 
       <template>
-        <div class="outerbox">
-          <h1 class="headline">
+        <div class="outerbox {{outerboxChrome}}">
+          <h1 class="headline {{headlineChrome}}">
             <content select="[name=boxheader]"></content>
           </h1>
           <div class="content">

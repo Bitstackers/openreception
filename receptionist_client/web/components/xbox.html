@@ -13,14 +13,13 @@
         }
 
         .content {
-          position: relative;
           height: 100%;
           overflow: auto;
         }
       </style>
 
       <template>
-        <div class="outerbox">
+        <div class="outerbox {{outerboxChrome}}">
           <div class="content">
             <content select="[name=boxcontent]"></content>
           </div>

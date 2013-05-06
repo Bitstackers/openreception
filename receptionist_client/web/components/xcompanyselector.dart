@@ -17,7 +17,10 @@ class CompanySelector extends WebComponent {
 
   void _selection(Event event) {
     var e = event.target as SelectElement;
-    storage.organization.get(int.parse(e.value),
-                             (org) => environment.organization.set(org));
+
+    if (e.value != '') {
+      storage.organization.get(int.parse(e.value),
+                               (org) => environment.organization.set(org));
+    }
   }
 }

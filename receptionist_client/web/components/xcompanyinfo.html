@@ -3,35 +3,29 @@
 <html>
   <head>
     <link rel="import" href="xboxwithheader.html">
-    <link rel="import" href="xcompanyselector.html">
   </head>
   <body>
     <element name="x-company-info" constructor="CompanyInfo" extends="span" apply-author-styles>
       <style scoped>
         .container {
-          margin: 10px;
-          height: -moz-calc(100% - 20px);
-          height: -webkit-calc(100% - 20px);
-          width: -moz-calc(100% - 20px);
-          width: -webkit-calc(100% - 20px);
+          height: 100%;
+          width: 100%;
           overflow: auto;
-          border: solid 1px red;
         }
       </style>
 
       <template>
-        <x-box-with-header>
+        <x-box-with-header chrome="{{false}}">
           <span name="boxheader">
             CompanyInfo Header
           </span>
 
           <div name="boxcontent" class="container">
-            <x-company-selector></x-company-selector>
-            <div id="tempdump" style="margin-top: 10px;">
+            <!--<div id="tempdump" style="margin-top: 10px;">
               <template instantiate="if environment.organization.current != model.nullOrganization">
                 {{environment.organization.current.name}}-{{environment.organization.current.id}}
               </template>
-            </div>
+            </div>-->
           </div>
         </x-box-with-header>
       </template>
