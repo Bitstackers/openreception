@@ -7,16 +7,22 @@
   <body>
     <element name="x-company-other" constructor="CompanyOther" extends="span" apply-author-styles>
       <style scoped>
-
+        .placing {
+          position: absolute;
+          left: 79%;
+          top: 41%;
+          height: 9%;
+          width: 21%;
+        }
       </style>
 
       <template>
-        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
             Andet
           </span>
 
-          <div name="boxcontent" class="companyinfominibox">
+          <div name="boxcontent" class="minibox">
             TH-nummer: 3348 8220
           </div>
         </x-box-with-header>

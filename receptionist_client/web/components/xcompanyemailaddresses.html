@@ -7,16 +7,22 @@
   <body>
     <element name="x-company-email-addresses" constructor="CompanyEmailAddresses" extends="span" apply-author-styles>
       <style scoped>
-
+        .placing {
+          position: absolute;
+          left: 79%;
+          top: 8%;
+          height: 9%;
+          width: 21%;
+        }
       </style>
 
       <template>
-        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
             Emailadresser
           </span>
 
-          <div name="boxcontent" class="companyinfominibox">
+          <div name="boxcontent" class="minibox">
             info@responsum.dk
           </div>
         </x-box-with-header>

@@ -7,16 +7,22 @@
   <body>
     <element name="x-company-telephone-numbers" constructor="CompanyTelephoneNumbers" extends="span" apply-author-styles>
       <style scoped>
-
+        .placing {
+          position: absolute;
+          left: 57%;
+          top: 8%;
+          height: 9%;
+          width: 21%;
+        }
       </style>
 
       <template>
-        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+        <x-box-with-header chrome="{{true}}" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
             Hovednumre
           </span>
 
-          <div name="boxcontent" class="companyinfominibox">
+          <div name="boxcontent" class="minibox">
             +45 8832 9100
           </div>
         </x-box-with-header>

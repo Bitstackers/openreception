@@ -7,6 +7,14 @@
   <body>
     <element name="x-local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
       <style scoped>
+        .placing {
+          position: absolute;
+          top: 84%;
+          left: 78.5%;
+          height: 16%;
+          width: 21.5%;
+        }
+
         .container {
           margin: 10px;
           height: -moz-calc(100% - 20px);
@@ -19,7 +27,7 @@
       </style>
 
       <template>
-        <x-box-with-header>
+        <x-box-with-header class="placing">
           <span name="boxheader" class="header">
             LocalQueue Header
           </span>

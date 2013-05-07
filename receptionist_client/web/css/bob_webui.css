@@ -21,11 +21,28 @@ button::-moz-focus-inner {
   border: 0;
 }
 
+#rootview {
+  position: absolute;
+  height: -moz-calc(100% - 20px);
+  height: -webkit-calc(100% - 20px);
+  width: -moz-calc(100% - 10px);
+  width: -webkit-calc(100% - 10px);
+  margin: 10px 10px 10px 0px;
+}
+
 #curtains {
   position: absolute;
   background-color: inherit;
   width: 100%;
   height: 100%;
+}
+
+#contextswitcher {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  height: 100%;
+  width: 3%;
 }
 
 .hidden {
@@ -37,21 +54,13 @@ button::-moz-focus-inner {
   border-radius: 0px;
 }
 
-#rootview {
-  position: absolute;
-  height: -moz-calc(100% - 20px);
-  height: -webkit-calc(100% - 20px);
-  width: -moz-calc(100% - 10px);
-  width: -webkit-calc(100% - 10px);
-  margin: 10px 10px 10px 0px;
-}
-
-#contextswitcher {
-  position: absolute;
-  top: 0%;
-  left: 0%;
+.minibox {
+  margin: 0px;
   height: 100%;
-  width: 3%;
+  width: -webkit-calct (100% - 10px);
+  width: -moz-calc (100% - 10px);
+  overflow: auto;
+  font-size: 0.9em;
 }
 
 /*
@@ -63,204 +72,6 @@ button::-moz-focus-inner {
   left: 4%;
   height: 100%;
   width: 96%;
-}
-
-/*#welcomemessage {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  height: 6%;
-  width: 89.5%;
-}*/
-
-/*#agentinfo {
-  position: absolute;
-  left: 90%;
-  top: 0%;
-  height: 6%;
-  width: 10%;
-}*/
-
-/* The company info box and associated widgets */
-
-/*#companyinfo {
-  position: absolute;
-  top: 7%;
-  left: 0%;
-  height: 45%;
-  width: 33%;
-  border: solid 1px red;
-}*/
-
-.minibox {
-  margin: 0px;
-  height: 100%;
-  width: -webkit-calct (100% - 10px);
-  width: -moz-calc (100% - 10px);
-  overflow: auto;
-  font-size: 0.9em;
-}
-
-/*
-#companyselector {
-  position: absolute;
-  top: 11%;
-  left: 0.5%;
-  height: 2%;
-  width: 33%;
-}
-
-#companyevents {
-  position: absolute;
-  top: 14.5%;
-  left: 0.5%;
-  height: 17%;
-  width: 33%;
-}
-
-#companyhandling {
-  position: absolute;
-  top: 33%;
-  left: 0.5%;
-  height: 18%;
-  width: 33%;
-}
-*/
-
-/*#companyopeninghours {
-  position: absolute;
-  top: 11%;
-  left: 34.5%;
-  height: 9%;
-  width: 21%;
-}*/
-
-#companysalescalls {
-  position: absolute;
-  top: 21.5%;
-  left: 34.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companyproduct {
-  position: absolute;
-  top: 32%;
-  left: 34.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companycustomertype {
-  position: absolute;
-  top: 42.5%;
-  left: 34.5%;
-  height: 8.5%;
-  width: 21%;
-}
-
-#companytelephonenumbers {
-  position: absolute;
-  top: 11%;
-  left: 56.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companyaddresses {
-  position: absolute;
-  top: 21.5%;
-  left: 56.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companyalternatenames {
-  position: absolute;
-  top: 32%;
-  left: 56.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companybankinginformation {
-  position: absolute;
-  top: 42.5%;
-  left: 56.5%;
-  height: 8.5%;
-  width: 21%;
-}
-
-#companyemailaddresses {
-  position: absolute;
-  top: 11%;
-  left: 78.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companywebsites {
-  position: absolute;
-  top: 21.5%;
-  left: 78.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companyregistrationnumber {
-  position: absolute;
-  top: 32%;
-  left: 78.5%;
-  height: 9%;
-  width: 21%;
-}
-
-#companyother {
-  position: absolute;
-  top: 42.5%;
-  left: 78.5%;
-  height: 8.5%;
-  width: 21%;
-}
-
-/* The contact info box and associated widgets */
-
-#contactinfo {
-  position: absolute;
-  top: 53%;
-  left: 0%;
-  height: 47%;
-  width: 39%;
-}
-
-/* The send message box and associated widgets */
-
-#sendmessage {
-  position: absolute;
-  top: 53%;
-  left: 39.5%;
-  height: 47%;
-  width: 37.5%;
-}
-
-/* The global queue box and associated widgets */
-
-#globalqueue {
-  position: absolute;
-  top: 53%;
-  left: 77.5%;
-  height: 30%;
-  width: 22.5%;
-}
-
-/* The local queue box and associated widgets */
-
-#localqueue {
-  position: absolute;
-  top: 84%;
-  left: 77.5%;
-  height: 16%;
-  width: 22.5%;
 }
 
 /*
