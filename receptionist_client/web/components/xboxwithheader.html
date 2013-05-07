@@ -17,22 +17,15 @@
         }
 
         .headline {
+          background-color: #dedede;
           color: #444;
           font-weight: bold;
-        }
-
-        .headline_chrome {
-          background-color: #dedede;
-        }
-
-        .headline_nochrome {
-          background-color: inherit;
         }
       </style>
 
       <template>
-        <div class="outerbox {{outerboxChrome}}">
-          <h1 class="headline {{headlineChrome}}">
+        <div class="outerbox">
+          <h1 class="headline">
             <content select="[name=boxheader]"></content>
           </h1>
           <div class="content">
