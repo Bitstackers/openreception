@@ -17,104 +17,94 @@ part of protocol;
 /**
  * TODO Comment
  */
-class Organization extends Protocol {
-  /**
-   * Todo Comment
-   */
-  Organization.get(int organizationId) {
-    assert(configuration.loaded);
+Future<Response> getOrganization(int id){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/organization';
+  final completer = new Completer<Response>();
 
-    List<String> fragments = new List<String>()
-                                ..add('org_id=${organizationId}');
+  HttpRequest request;
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(GET, _url);
-  }
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/organization';
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  List<String> fragments = new List<String>()
+      ..add('org_id=${id}');
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
-        case 200:
-          Map data = parseJson(_request.responseText);
-          if (data != null) {
-            callback(new Response(Response.OK, data));
-          } else {
-            callback(new Response(Response.ERROR, data));
-          }
-          break;
+  String url = _buildUrl(base, path, fragments);
 
-        case 404:
-          callback(new Response(Response.NOTFOUND, null));
-          break;
+  request = new HttpRequest()
+      ..open(GET, url)
+      ..onLoad.listen((val) {
+        switch(request.status) {
+          case 200:
+            Map data = _parseJson(request.responseText);
+            if (data != null) {
+              completer.complete(new Response(Response.OK, data));
+            } else {
+              completer.complete(new Response(Response.ERROR, data));
+            }
+            break;
 
-        default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
-      }
-    });
+          case 404:
+            completer.complete(new Response(Response.NOTFOUND, null));
+            break;
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e) {
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send();
+
+  return completer.future;
 }
+
+const String MINI = 'mini';
+const String MIDI = 'midi';
 
 /**
  * TODO Comment
  */
-class OrganizationList extends Protocol {
-  static const String MINI = 'mini';
-  static const String MIDI = 'midi';
+Future<Response> getOrganizationList({String view: MINI}){
+  assert(configuration.loaded);
+  assert(view == MINI || view == MIDI);
 
-  /**
-   * Todo Comment
-   */
-  OrganizationList({String view: MINI}) {
-    assert(configuration.loaded);
-    assert(view == MINI || view == MIDI);
+  final completer = new Completer<Response>();
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/organization/list';
-    List<String> fragments = new List<String>()
-        ..add('view=${view}');
+  HttpRequest request;
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(GET, _url);
-  }
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/organization/list';
+  List<String> fragments = new List<String>()
+      ..add('view=${view}');
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  String url = _buildUrl(base, path, fragments);
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
-        case 200:
-          Map data = parseJson(_request.responseText);
-          if (data != null) {
-            callback(new Response(Response.OK, data));
-          } else {
-            callback(new Response(Response.ERROR, data));
-          }
-          break;
+  request = new HttpRequest()
+      ..open(GET, url)
+      ..onLoad.listen((val) {
+        switch(request.status) {
+          case 200:
+            Map data = _parseJson(request.responseText);
+            if (data != null) {
+              completer.complete(new Response(Response.OK, data));
+            } else {
+              completer.complete(new Response(Response.ERROR, data));
+            }
+            break;
 
-        default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
-      }
-    });
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e) {
+        _logError(request, url);completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send();
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+  return completer.future;
 }

@@ -33,11 +33,9 @@ class _Organization{
   void get(int id, OrganizationSubscriber onComplete, {Callback onError}) {
     if (_cache.containsKey(id)) {
       onComplete(_cache[id]);
-    }else{
-      log.debug('${id} is not cached');
-
-      new protocol.Organization.get(id)
-          ..onResponse((protocol.Response response) {
+    } else {
+      protocol.getOrganization(id)
+        .then((protocol.Response response) {
             switch(response.status) {
               case protocol.Response.OK:
                 model.Organization org = new model.Organization(response.data);
@@ -52,8 +50,10 @@ class _Organization{
               default:
                 onError();
             }
-          })
-          ..send();
+        })
+        .catchError((_) {
+          log.error('Storage organization. Protocol getOrganization gave an error.');
+        });
     }
   }
 }

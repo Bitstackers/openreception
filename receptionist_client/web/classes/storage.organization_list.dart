@@ -27,18 +27,33 @@ class _OrganizationList{
    * Get the organization list from Alice.
    */
   void get(OrganizationListSubscriber onComplete, {Callback onError}) {
-    new protocol.OrganizationList()
-        ..onResponse((protocol.Response response) {
-          switch(response.status){
-            case protocol.Response.OK:
+//    new protocol.OrganizationList()
+//        ..onResponse((protocol.Response response) {
+//          switch(response.status){
+//            case protocol.Response.OK:
+//              onComplete(new model.OrganizationList.fromMap(response.data));
+//              break;
+//
+//            default:
+//              onError();
+//          }
+//        })
+//        ..send();
+
+    protocol.getOrganizationList()
+      .then((protocol.Response response) {
+        switch(response.status){
+          case protocol.Response.OK:
               onComplete(new model.OrganizationList.fromMap(response.data));
               break;
 
             default:
               onError();
           }
-        })
-        ..send();
+      })
+      .catchError((e) {
+        log.error('Storage OrganizationList got and error from protocol.');
+      });
   }
 }
 
