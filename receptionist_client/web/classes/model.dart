@@ -20,6 +20,8 @@ library model;
 
 import 'dart:collection';
 
+import 'package:intl/intl.dart';
+
 import 'common.dart';
 
 part 'model.call.dart';

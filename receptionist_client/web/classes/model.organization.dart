@@ -17,11 +17,36 @@ part of model;
 final Organization nullOrganization = new Organization._null();
 
 class Event{
-  DateTime start;
-  DateTime stop;
+  DateTime _start;
+  DateTime _stop;
   String content;
 
-  Event(this.start, this.stop, this.content);
+  String get start => _formatTimestamp(_start);
+  String get stop => _formatTimestamp(_stop);
+
+  Event(DateTime this._start, DateTime this._stop, String this.content);
+
+  /**
+   * Format the [DateTime] [stamp] timestamp into a string. If [stamp] is today
+   * then return hour:minute, else return hour:minute day/month.
+   */
+  String _formatTimestamp(DateTime stamp) {
+    StringBuffer output = new StringBuffer();
+    DateTime now = new DateTime.now();
+    String hourMinute = new DateFormat.Hm().format(stamp);
+
+    output.write(new DateFormat.Hm().format(stamp).toString());
+
+    if (new DateFormat.Md().format(stamp) != new DateFormat.Md().format(now)) {
+      String day = new DateFormat.d().format(stamp);
+      String month = new DateFormat.M().format(stamp);
+      String dayMonth = '${day}/${month}';
+
+      output.write(' ${dayMonth}');
+    }
+
+    return output.toString();
+  }
 }
 
 /**
@@ -46,8 +71,9 @@ class Organization{
     name = json['full_name'];
     greeting = json['greeting'];
 
-    events.add(new Event(new DateTime.now(), new DateTime.now(), 'foo'));
-    events.add(new Event(new DateTime.now(), new DateTime.now(), 'bar'));
+    events.add(new Event(new DateTime.now().add(new Duration(hours: 2)), new DateTime.now().add(new Duration(hours: 4)), 'Salgsmøde'));
+    events.add(new Event(new DateTime.now(), new DateTime.now().add(new Duration(hours: 1, days: 1)), 'Kursus'));
+    events.add(new Event(new DateTime.now().add(new Duration(hours: 1)), new DateTime.now().add(new Duration(hours: 3)), 'Ombygning'));
   }
 
   Organization._null();
