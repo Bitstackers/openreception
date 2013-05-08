@@ -4,8 +4,9 @@ import 'package:web_ui/web_ui.dart';
 
 class BoxWithHeader extends WebComponent {
   DivElement body;
-  String headerfontsize = '1.0em';
   HeadingElement header;
+  String headerfontsize = '1.0em';
+  String headerpadding = '5px 10px';
   DivElement outer;
 
   void inserted() {
@@ -31,5 +32,6 @@ class BoxWithHeader extends WebComponent {
 
   void _styling() {
     header.style.fontSize = headerfontsize;
+    header.style.padding = headerpadding;
   }
 }

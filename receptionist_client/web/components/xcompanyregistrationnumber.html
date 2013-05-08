@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="import" href="xboxwithheader.html">
+  </head>
+  <body>
+    <element name="x-company-registration-number" constructor="CompanyRegistrationNumber" extends="span" apply-author-styles>
+      <style scoped>
+        .placing {
+          position: absolute;
+          left: 79%;
+          top: 30%;
+          height: 9%;
+          width: 21%;
+        }
+      </style>
+
+      <template>
+        <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+          <span name="boxheader">
+            CVR
+          </span>
+
+          <div name="boxcontent" class="minibox">
+            1611 7994
+          </div>
+        </x-box-with-header>
+      </template>
+
+      <script type="application/dart" src="xcompanyregistrationnumber.dart"></script>
+    </element>
+  </body>
+</html>

@@ -16,6 +16,14 @@ part of model;
 
 final Organization nullOrganization = new Organization._null();
 
+class Event{
+  DateTime start;
+  DateTime stop;
+  String content;
+
+  Event(this.start, this.stop, this.content);
+}
+
 /**
  * TODO comment
  */
@@ -23,9 +31,10 @@ class Organization{
   ContactList _contactlist = nullContactList;
   ContactList get contacts => _contactlist;
 
+  List<Event> events = new List<Event>();
+  String greeting = "";
   int id = -1;
   String name = "";
-  String greeting = "";
 
   Organization(Map json) {
     if(json.containsKey('contacts')) {
@@ -36,6 +45,9 @@ class Organization{
     id = json['organization_id'];
     name = json['full_name'];
     greeting = json['greeting'];
+
+    events.add(new Event(new DateTime.now(), new DateTime.now(), 'foo'));
+    events.add(new Event(new DateTime.now(), new DateTime.now(), 'bar'));
   }
 
   Organization._null();

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="import" href="xboxwithheader.html">
+  </head>
+  <body>
+    <element name="x-company-addresses" constructor="CompanyAddresses" extends="span" apply-author-styles>
+      <style scoped>
+        .placing {
+          position: absolute;
+          left: 57%;
+          top: 19%;
+          height: 9%;
+          width: 21%;
+        }
+      </style>
+
+      <template>
+        <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+          <span name="boxheader">
+            Adresser
+          </span>
+
+          <div name="boxcontent" class="minibox">
+            <template instantiate="if environment.organization.current != model.nullOrganization">
+              {{environment.organization.current.name}}-{{environment.organization.current.id}}
+            </template>
+          </div>
+        </x-box-with-header>
+      </template>
+
+      <script type="application/dart" src="xcompanyaddresses.dart"></script>
+    </element>
+  </body>
+</html>

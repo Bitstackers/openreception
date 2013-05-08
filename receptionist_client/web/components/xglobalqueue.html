@@ -7,6 +7,14 @@
   <body>
     <element name="x-global-queue" constructor="GlobalQueue" extends="span" apply-author-styles>
       <style scoped>
+        .placing {
+          position: absolute;
+          top: 52%;
+          left: 78.5%;
+          height: 30%;
+          width: 21.5%;
+        }
+
         .container {
           margin: 10px;
           height: -moz-calc(100% - 20px);
@@ -14,12 +22,12 @@
           width: -moz-calc(100% - 20px);
           width: -webkit-calc(100% - 20px);
           overflow: auto;
-          border: solid 1px red;
+          /*border: solid 1px red;*/
         }
       </style>
 
       <template>
-        <x-box-with-header>
+        <x-box-with-header class="placing">
           <span name="boxheader" class="header">
             GlobalQueue Header
           </span>

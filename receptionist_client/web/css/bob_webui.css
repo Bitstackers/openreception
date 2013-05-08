@@ -21,17 +21,6 @@ button::-moz-focus-inner {
   border: 0;
 }
 
-#curtains {
-  position: absolute;
-  background-color: inherit;
-  width: 100%;
-  height: 100%;
-}
-
-.hidden {
-  z-index: -100;
-}
-
 #rootview {
   position: absolute;
   height: -moz-calc(100% - 20px);
@@ -39,6 +28,13 @@ button::-moz-focus-inner {
   width: -moz-calc(100% - 10px);
   width: -webkit-calc(100% - 10px);
   margin: 10px 10px 10px 0px;
+}
+
+#curtains {
+  position: absolute;
+  background-color: inherit;
+  width: 100%;
+  height: 100%;
 }
 
 #contextswitcher {
@@ -49,71 +45,33 @@ button::-moz-focus-inner {
   width: 3%;
 }
 
+.hidden {
+  z-index: -100;
+}
+
+.hideborder {
+  border: none;
+  border-radius: 0px;
+}
+
+.minibox {
+  margin: 0px;
+  height: 100%;
+  width: -webkit-calct (100% - 10px);
+  width: -moz-calc (100% - 10px);
+  overflow: auto;
+  font-size: 0.9em;
+}
+
 /*
-  Context Home and contained elements
+  Context Home
 */
 #contexthome {
   position: absolute;
   top: 0%;
-  left: 3.5%;
+  left: 4%;
   height: 100%;
-  width: 96.5%;
-}
-
-#welcomemessage {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  height: 6%;
-  width: 89.5%;
-}
-
-#agentinfo {
-  position: absolute;
-  left: 90%;
-  top: 0%;
-  height: 6%;
-  width: 10%;
-}
-
-#companyinfo {
-  position: absolute;
-  top: 7%;
-  left: 0%;
-  height: 45%;
-  width: 100%;
-}
-
-#contactinfo {
-  position: absolute;
-  top: 53%;
-  left: 0%;
-  height: 47%;
-  width: 39%;
-}
-
-#sendmessage {
-  position: absolute;
-  top: 53%;
-  left: 39.5%;
-  height: 47%;
-  width: 37.5%;
-}
-
-#globalqueue {
-  position: absolute;
-  top: 53%;
-  left: 77.5%;
-  height: 30%;
-  width: 22.5%;
-}
-
-#localqueue {
-  position: absolute;
-  top: 84%;
-  left: 77.5%;
-  height: 16%;
-  width: 22.5%;
+  width: 96%;
 }
 
 /*
