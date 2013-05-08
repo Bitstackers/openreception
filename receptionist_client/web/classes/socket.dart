@@ -97,6 +97,10 @@ class Socket{
     _channel.onMessage.listen(_onMessage);
     _channel.onError.listen(_onError);
     _channel.onClose.listen(_onError);
+
+    window.onUnload.listen((_){
+      _channel.close();
+    });
   }
 
   /**
