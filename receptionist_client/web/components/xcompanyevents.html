@@ -19,6 +19,15 @@
           height: 100%;
           width: 100%;
           overflow: auto;
+          font-size: 0.9em;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
+        }
+
+        .no-zebra li:nth-of-type(even) {
+          background-color: transparent;
         }
       </style>
 
@@ -29,7 +38,45 @@
           </span>
 
           <div name="boxcontent" class="container">
-            company events content
+            <ul class="zebra" style="list-style-type: none;">
+              <li template repeat="event in environment.organization.current.events">
+                {{event.content}}
+              </li>
+              <!--<li style="padding: 5px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="width: 60%; vertical-align: top">
+                      Aftale 1. Her sker der en masse ting og sager med tekster og mayhaps en liste af en art?
+                      <ul class="no-zebra" style="list-style-type: disc; margin: 10px 0px 10px 20px;">
+                        <li>foo</li>
+                        <li>bar</li>
+                      </ul>
+                      Og til sidst en footer..
+                    <td>
+                    <td style="width: 40%; text-align: right; vertical-align: top">
+                      10:00 - 14:00
+                    <td>
+                  </tr>
+                </table>
+              </li>
+              <li>
+                <table style="width: 100%; border: solid 1px red; margin: 0px">
+                  <tr>
+                    <td>
+                      Aftale 2
+                    <td>
+                    <td>
+                      10:00 15.01.13
+                    <td>
+                    <td>
+                      14:00 15.01.13
+                    <td>
+                  </tr>
+                </table>
+              </li>
+              <li>Aftale 3</li>
+              <li>Aftale 4</li>-->
+            </ul>
           </div>
         </x-box-with-header>
       </template>
