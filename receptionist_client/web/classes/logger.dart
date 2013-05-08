@@ -88,32 +88,39 @@ class Log{
     if (configuration.serverLogLevel <= record.level) {
       String text = '${record.sequenceNumber} ${record.message}';
 
-      if (serverLogLevel > Level.INFO && serverLogLevel <= Level.SEVERE) {
-        new protocol.Log.Error(text)
-          ..onResponse((protocol.Response response) {
-            if (response.status == protocol.Response.ERROR) {
+      if (record.level > Level.INFO && record.level <= Level.SEVERE) {
+        protocol.logError(text)
+          .then((protocol.Response response) {
+            if (response.status != protocol.Response.OK) {
               print('CRITICAL server logging error: ${response.data}');
             }
           })
-          ..send();
+          .catchError((e) {
+            print('CRITICAL server logging error: ${e.toString()}');
+          });
 
-      }else if (serverLogLevel > Level.SEVERE) {
-        new protocol.Log.Critical(text)
-          ..onResponse((protocol.Response response) {
-            if (response.status == protocol.Response.ERROR) {
-              print('CRITICAL server logging error: ${response.data}');
-            }
-          })
-          ..send();
+      } else if (record.level > Level.SEVERE) {
+        protocol.logCritical(text)
+          .then((protocol.Response response) {
+          if (response.status != protocol.Response.OK) {
+            print('CRITICAL server logging error: ${response.data}');
+          }
+        })
+        .catchError((e) {
+          print('CRITICAL server logging error: ${e.toString()}');
+        });
 
-      }else{
-        new protocol.Log.Info(text)
-          ..onResponse((protocol.Response response){
-            if (response.status == protocol.Response.ERROR){
-              print('CRITICAL server logging error: ${response.data}');
-            }
-          })
-          ..send();
+      } else {
+        protocol.logInfo(text)
+          .then((protocol.Response response) {
+          if (response.status != protocol.Response.OK) {
+            print('CRITICAL server logging error: ${response.data}');
+          }
+        })
+        .catchError((e) {
+          print('CRITICAL server logging error: ${e.toString()}');
+        });
+
       }
     }
   }

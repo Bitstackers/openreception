@@ -18,71 +18,52 @@ part of protocol;
 /**
  * TODO Comment
  */
-class Message extends Protocol{
-  String _payload;
+Future<Response> sendMessage(int cmId, String message) {
+  assert(configuration.loaded);
 
-  /**
-   * TODO Comment
-   */
-  Message(int cmId, String message){
-    assert(configuration.loaded);
+  final completer = new Completer<Response>();
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/message/send';
+  HttpRequest request;
 
-    if (cmId == null){
-      log.critical('Protocol.Message: cmId is null');
-      throw new Exception();
-    }
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/message/send';
 
-    if (message == null){
-      log.critical('Protocol.Message: message is null');
-      throw new Exception();
-    }
-
-    _url = _buildUrl(base, path);
-    _request = new HttpRequest()
-      ..open(POST, _url)
-      ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    _payload = 'cm_id=${cmId}&msg=${encodeUriComponent(message)}';
+  if (cmId == null){
+    log.critical('Protocol.Message: cmId is null');
+    throw new Exception();
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
-        case 200:
-          Map data = parseJson(_request.responseText);
-          if (data != null) {
-            callback(new Response(Response.OK, data));
-          } else {
-            callback(new Response(Response.ERROR, data));
-          }
-          break;
-
-        default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
-      }
-    });
-
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
+  if (message == null){
+    log.critical('Protocol.Message: message is null');
+    throw new Exception();
   }
 
-  /**
-   * TODO Comment
-   */
-  @override
-  void send() {
-    if (_notSent) {
-      _request.send(_payload);
-      _notSent = false;
+  String url = _buildUrl(base, path);
+  String payload = 'cm_id=${cmId}&msg=${encodeUriComponent(message)}';
+
+  request = new HttpRequest()
+  ..open(POST, url)
+  ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+  ..onLoad.listen((_) {
+    switch(request.status) {
+      case 200:
+        Map data = _parseJson(request.responseText);
+        if (data != null) {
+          completer.complete(new Response(Response.OK, data));
+        } else {
+          completer.complete(new Response(Response.ERROR, data));
+        }
+        break;
+
+      default:
+        completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
     }
-  }
+  })
+  ..onError.listen((e){
+    _logError(request, url);
+    completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+  })
+  ..send(payload);
+
+  return completer.future;
 }
