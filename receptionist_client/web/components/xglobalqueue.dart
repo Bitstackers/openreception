@@ -23,8 +23,8 @@ class GlobalQueue extends WebComponent {
   }
 
   void _initialFill() {
-    new protocol.CallQueue()
-        ..onResponse((protocol.Response response){
+    protocol.callQueue()
+        .then((protocol.Response response){
           switch(response.status){
             case protocol.Response.OK:
               Map callsjson = response.data;
@@ -41,8 +41,7 @@ class GlobalQueue extends WebComponent {
             default:
               //TODO do something.
           }
-        })
-        ..send();
+        });
   }
 
   void _registerSubscribers() {

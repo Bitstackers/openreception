@@ -53,12 +53,12 @@ class AgentInfo extends WebComponent {
   }
 
   void _initialSetup() {
-    new protocol.AgentList()
-      ..onResponse((protocol.Response response){
-        switch(response.status){
+    protocol.agentList()
+    .then((protocol.Response response) {
+        switch(response.status) {
           case protocol.Response.OK:
-            for (var agent in response.data['Agents']){
-              switch(agent["state"]){
+            for (var agent in response.data['Agents']) {
+              switch(agent["state"]) {
                 case "busy":
                 case "idle":
                   active++;
@@ -73,7 +73,9 @@ class AgentInfo extends WebComponent {
           //TODO How to handle this?
         }
       })
-      ..send();
+      .catchError((e) {
+        log.critical('xagent Error: ${e.toString()}');
+      });
   }
 
   void _registerEventListeners() {

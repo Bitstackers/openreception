@@ -16,216 +16,196 @@
 part of protocol;
 
 /**
- * Class to get a list of every active call.
+ * Gets a list of every active call.
  */
-class CallList extends Protocol {
-  /**
-   * TODO Comment
-   */
-  CallList() {
-    assert(configuration.loaded);
+Future<Response> callList(){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/list';
+  final completer = new Completer<Response>();
 
-    _url = _buildUrl(base, path);
-    _request = new HttpRequest()
-        ..open(GET, _url);
-  }
+  HttpRequest request;
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/list';
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path);
+  request = new HttpRequest()
+    ..open(GET, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
         case 204:
-          callback(new Response(Response.OK, {}));
+          completer.complete(new Response(Response.OK, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
  * Gives a list of calls that are waiting in a queue.
  */
-class CallQueue extends Protocol{
-  /**
-   * TODO Comment
-   */
-  CallQueue(){
-    assert(configuration.loaded);
+Future<Response> callQueue(){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/queue';
+  final completer = new Completer<Response>();
 
-    _url = _buildUrl(base, path);
-    _request = new HttpRequest()
-        ..open(GET, _url);
-  }
+  HttpRequest request;
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/queue';
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path);
+  request = new HttpRequest()
+    ..open(GET, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
-
         case 204:
-          callback(new Response(Response.NOTFOUND, {}));
+          completer.complete(new Response(Response.NOTFOUND, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
  * TODO FiX doc or code. Doc says that call_id is optional, Alice says that it's not. 20 Feb 2013
  * Makes a request to hangup a call.
  */
-class HangupCall extends Protocol{
-  /**
-   * Hangups a call based on it's [callId].
-   */
-  HangupCall({String callId}){
-    assert(configuration.loaded);
+Future<Response> hangupCall({String callId}){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/hangup';
-    List<String> fragments = new List<String>();
+  final completer = new Completer<Response>();
 
-    if (callId != null && !callId.isEmpty){
-      fragments.add('call_id=${callId}');
-    }
+  HttpRequest request;
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(POST, _url);
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/hangup';
+
+  List<String> fragments = new List<String>();
+
+  if (callId != null && !callId.isEmpty){
+    fragments.add('call_id=${callId}');
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
-        case 404:
-          callback(new Response(Response.NOTFOUND, null));
+        case 204:
+          completer.complete(new Response(Response.NOTFOUND, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
  * TODO Check up on Docs. It says nothing about call_id. 2013-02-27 Thomas P.
  * Sets the call OnHold or park it, if the ask Asterisk.
  */
-class HoldCall extends Protocol{
-  /**
-   * TODO comment
-   */
-  HoldCall(int callId){
-    assert(configuration.loaded);
+Future<Response> holdCall(int callId){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/hold';
-    List<String> fragments = new List<String>();
+  final completer = new Completer<Response>();
 
-    if (callId == null){
-      log.critical('Protocol.HoldCall: callId is null');
-      throw new Exception();
-    }
+  HttpRequest request;
 
-    fragments.add('call_id=${callId}');
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/hold';
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(POST, _url);
+  List<String> fragments = new List<String>();
+
+  if (callId == null){
+    log.critical('Protocol.HoldCall: callId is null');
+    throw new Exception();
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  fragments.add('call_id=${callId}');
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
-
-        case 404:
-          callback(new Response(Response.NOTFOUND, null));
+        case 204:
+          completer.complete(new Response(Response.NOTFOUND, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
@@ -233,241 +213,223 @@ class HoldCall extends Protocol{
  *
  * Sends a request to make a new call.
  */
-class OriginateCall extends Protocol{
-  /**
-   * TODO Comment
-   */
-  OriginateCall(int agentId, {int cmId, String pstnNumber, String sip}) {
-    assert(configuration.loaded);
+Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String sip}){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/originate';
-    List<String> fragments = new List<String>();
+  final completer = new Completer<Response>();
 
-    if (agentId == null){
-      log.critical('Protocol.OriginateCall: agentId is null');
-      throw new Exception();
-    }
+  HttpRequest request;
 
-    fragments.add('agent_id=${agentId}');
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/originate';
+  List<String> fragments = new List<String>();
 
-    if (?cmId && cmId != null){
-      fragments.add('cm_id=${cmId}');
-    }
-
-    if (?pstnNumber && pstnNumber != null){
-      fragments.add('pstn_number=${pstnNumber}');
-    }
-
-    if (?sip && sip != null && !sip.isEmpty){
-      fragments.add('sip=${sip}');
-    }
-
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(POST, _url);
+  if (agentId == null){
+    log.critical('Protocol.OriginateCall: agentId is null');
+    throw new Exception();
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  fragments.add('agent_id=${agentId}');
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  if (?cmId && cmId != null){
+    fragments.add('cm_id=${cmId}');
+  }
+
+  if (?pstnNumber && pstnNumber != null){
+    fragments.add('pstn_number=${pstnNumber}');
+  }
+
+  if (?sip && sip != null && !sip.isEmpty){
+    fragments.add('sip=${sip}');
+  }
+
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          callback(new Response(Response.OK, null));
-          break;
-
-        default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
-      }
-    });
-
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
-}
-
-/**
- * Sends a request to pickup a call.
- */
-class PickupCall extends Protocol {
-  /**
-   * Sends a call based on the [callId], if present, to the agent with [AgentId].
-   * If no callId is specified, then the next call in line will be dispatched
-   * to the agent.
-   */
-  PickupCall(int AgentId, {String callId}) {
-    assert(configuration.loaded);
-
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/pickup';
-    List<String> fragments = new List<String>();
-
-    if (AgentId == null) {
-      log.critical('Protocol.PickupCall: AgentId is null');
-      throw new Exception();
-    }
-
-    fragments.add('agent_id=${AgentId}');
-
-    if (callId != null && !callId.isEmpty) {
-      fragments.add('call_id=${callId}');
-    }
-
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(POST, _url);
-  }
-
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
-        case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
 
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+    })
+    ..send();
+
+  return completer.future;
+}
+
+/**
+ * Sends a call based on the [callId], if present, to the agent with [AgentId].
+ * If no callId is specified, then the next call in line will be dispatched
+ * to the agent.
+ */
+Future<Response> pickupCall(int AgentId, {String callId}){
+  assert(configuration.loaded);
+
+  final completer = new Completer<Response>();
+
+  HttpRequest request;
+
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/pickup';
+  List<String> fragments = new List<String>();
+
+  if (AgentId == null) {
+    log.critical('Protocol.PickupCall: AgentId is null');
+    throw new Exception();
+  }
+
+  fragments.add('agent_id=${AgentId}');
+
+  if (callId != null && !callId.isEmpty) {
+    fragments.add('call_id=${callId}');
+  }
+
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          if (data != null) {
+            completer.complete(new Response(Response.OK, data));
+          } else {
+            completer.complete(new Response(Response.ERROR, data));
+          }
+          break;
         case 404:
-          callback(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response(Response.NOTFOUND, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
  * TODO Not implemented in Alice, as fare as i can see. 2013-02-27 Thomas P.
  * Gives the status of a call.
  */
-class StatusCall extends Protocol{
-  /**
-   * Gives the status of a call based on the [callId].
-   */
-  StatusCall(int callId){
-    assert(configuration.loaded);
+Future<Response> statusCall(int callId){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/state';
-    List<String> fragments = new List<String>();
+  final completer = new Completer<Response>();
 
-    if (callId == null){
-      log.critical('Protocol.StatusCall: callId is null');
-      throw new Exception();
-    }
+  HttpRequest request;
 
-    fragments.add('call_id=${callId}');
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/state';
+  List<String> fragments = new List<String>();
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(GET, _url);
+  if (callId == null){
+    log.critical('Protocol.StatusCall: callId is null');
+    throw new Exception();
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  fragments.add('call_id=${callId}');
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
-
         case 404:
-          callback(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response(Response.NOTFOUND, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
  * TODO write better comment.
  * Sends a request to transfer a call.
  */
-class TransferCall extends Protocol{
-  /**
-   * TODO Comment
-   */
-  TransferCall(int callId){
-    assert(configuration.loaded);
+Future<Response> transferCall(int callId){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/call/transfer';
-    List<String> fragments = new List<String>();
+  final completer = new Completer<Response>();
 
-    if (callId == null){
-      log.critical('Protocol.TransferCall: callId is null');
-    }
+  HttpRequest request;
 
-    fragments.add('source=${callId}');
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/call/transfer';
+  List<String> fragments = new List<String>();
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(GET, _url);
+  if (callId == null){
+    log.critical('Protocol.TransferCall: callId is null');
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  fragments.add('source=${callId}');
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
-
         case 404:
-          callback(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response(Response.NOTFOUND, {}));
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }

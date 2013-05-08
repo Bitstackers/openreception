@@ -18,91 +18,81 @@ part of protocol;
 /**
  * Gives a list of peers.
  */
-class PeerList extends Protocol{
-  /**
-   * TODO Comment
-   */
-  PeerList(){
-    assert(configuration.loaded);
+Future<Response> peerList(){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/debug/peer/list';
+  final completer = new Completer<Response>();
 
-    _url = _buildUrl(base, path);
-    _request = new HttpRequest()
-        ..open(GET, _url);
-  }
+  HttpRequest request;
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/debug/peer/list';
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path);
+  request = new HttpRequest()
+    ..open(GET, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }
 
 /**
  * Gives a list of every channel in the PBX.
  */
-class ChannelList extends Protocol{
-  /**
-   * TODO Comment
-   */
-  ChannelList(){
-    assert(configuration.loaded);
+Future<Response> channelList(){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/debug/channel/list';
+  final completer = new Completer<Response>();
 
-    _url = _buildUrl(base, path);
-    _request = new HttpRequest()
-        ..open(GET, _url);
-  }
+  HttpRequest request;
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/debug/channel/list';
 
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
+  String url = _buildUrl(base, path);
+  request = new HttpRequest()
+    ..open(GET, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
         case 200:
-          Map data = parseJson(_request.responseText);
+          Map data = _parseJson(request.responseText);
           if (data != null) {
-            callback(new Response(Response.OK, data));
+            completer.complete(new Response(Response.OK, data));
           } else {
-            callback(new Response(Response.ERROR, data));
+            completer.complete(new Response(Response.ERROR, data));
           }
           break;
 
         default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
       }
-    });
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+    })
+    ..send();
+
+  return completer.future;
 }

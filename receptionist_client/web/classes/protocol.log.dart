@@ -15,90 +15,61 @@
 
 part of protocol;
 
-/**
- * Class to send log messages to the server,
- */
-class Log extends Protocol {
-  String _payload;
+Future<Response> logInfo(String message){
+  return _log(message, configuration.serverLogInterfaceInfo);
+}
 
-  /**
-   * Sends logmessage on the INFO interface.
-   */
-  Log.Info(String message) {
-    _Log(message, configuration.serverLogInterfaceInfo);
+Future<Response> logError(String message){
+  return _log(message, configuration.serverLogInterfaceError);
+}
+
+Future<Response> logCritical(String message){
+  return _log(message, configuration.serverLogInterfaceCritical);
+}
+
+Future<Response> _log(String message, Uri url){
+  assert(configuration.loaded);
+
+  final completer = new Completer<Response>();
+
+  HttpRequest request;
+
+  if (message == null){
+    log.critical('Protocol.Log: message is null');
+    throw new Exception();
   }
 
-  /**
-   * Sends logmessage on the ERROR interface.
-   */
-  Log.Error(String message) {
-    _Log(message, configuration.serverLogInterfaceError);
+  if (url == null){
+    log.critical('Protocol.Log: url is null');
+    throw new Exception();
   }
 
-  /**
-   * Sends logmessage on the CRITICAL interface.
-   */
-  Log.Critical(String message) {
-    _Log(message, configuration.serverLogInterfaceCritical);
-  }
+  String payload = 'msg=${encodeUriComponent(message)}';
 
-  _Log(String message, Uri url) {
-    assert(configuration.loaded);
+  request = new HttpRequest()
+      ..open(POST, url.toString())
+      ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+      ..onLoad.listen((_) {
+        switch(request.status) {
+          case 204:
+            // We do not care about success.
+            break;
 
-    if (message == null){
-      log.critical('Protocol.Log: message is null');
-      throw new Exception();
-    }
+          case 400:
+            _logError();
+            Map data = _parseJson(request.responseText);
+            completer.complete(new Response(Response.ERROR, data));
+            break;
 
-    if (url == null){
-      log.critical('Protocol.Log: url is null');
-      throw new Exception();
-    }
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e) {
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send(payload);
 
-    _url = url.toString();
-    _request = new HttpRequest()
-      ..open(POST, _url)
-      ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    _payload = 'msg=${encodeUriComponent(message)}';
-  }
-
-  /**
-   * TODO Comment
-   */
-  @override
-  void send() {
-    if (_notSent) {
-      _request.send(_payload);
-      _notSent = false;
-    }
-  }
-
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
-        case 204:
-          // We do not care about success.
-          break;
-
-        case 400:
-          _logError();
-          Map data = parseJson(_request.responseText);
-          callback(new Response(Response.ERROR, data));
-          break;
-
-        default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
-      }
-    });
-
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+  return completer.future;
 }

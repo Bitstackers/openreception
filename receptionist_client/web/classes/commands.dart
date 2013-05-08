@@ -34,8 +34,8 @@ import 'storage.dart' as storage;
 void pickupCall(int id) {
   log.info('Sending request to pickup ${id.toString()}');
 
-  new protocol.PickupCall(configuration.agentID, callId: id.toString())
-      ..onResponse((protocol.Response response){
+  protocol.pickupCall(configuration.agentID, callId: id.toString())
+      .then((protocol.Response response){
         switch (response.status){
           case protocol.Response.OK:
             _pickupCallSuccess(response.data);
@@ -44,15 +44,14 @@ void pickupCall(int id) {
           default:
             //TODO do something.
         }
-      })
-      ..send();
+      });
 }
 
 void pickupNextCall() {
   log.info('Sending request to pickup the next call');
 
-  new protocol.PickupCall(configuration.agentID)
-    ..onResponse((protocol.Response response){
+  protocol.pickupCall(configuration.agentID)
+    .then((protocol.Response response){
       switch (response.status){
         case protocol.Response.OK:
           _pickupCallSuccess(response.data);
@@ -61,8 +60,7 @@ void pickupNextCall() {
         default:
           //TODO do something.
       }
-    })
-    ..send();
+    });
 }
 
 void _pickupCallSuccess(Map response) {
@@ -83,8 +81,8 @@ void _pickupCallSuccess(Map response) {
 //The call_id was not optional.
 void hangupCall(int callId){
   log.debug('The command hangupCall is called with callid: ${callId}');
-  new protocol.HangupCall(callId:callId.toString())
-    ..onResponse((protocol.Response response) {
+  protocol.hangupCall(callId:callId.toString())
+    .then((protocol.Response response) {
       switch(response.status){
         case protocol.Response.OK:
           log.debug('Hangup call: ${callId} successed');
@@ -98,8 +96,7 @@ void hangupCall(int callId){
         default:
           log.error('There were an error with hangup. Callid: ${callId}');
       }
-    })
-    ..send();
+    });
 }
 
 const CONTACTID_TYPE = 1;
@@ -107,19 +104,19 @@ const PSTN_TYPE = 2;
 const SIP_TYPE = 3;
 void originateCall(String address, int type){
   int agentId = configuration.agentID;
-  protocol.OriginateCall originateCallRequest;
+  Future<protocol.Response> originateCallRequest;
 
   switch(type){
     case CONTACTID_TYPE:
-      originateCallRequest = new protocol.OriginateCall(agentId, cmId: int.parse(address));
+      originateCallRequest = protocol.originateCall(agentId, cmId: int.parse(address));
       break;
 
     case PSTN_TYPE:
-      originateCallRequest = new protocol.OriginateCall(agentId, pstnNumber: address);
+      originateCallRequest = protocol.originateCall(agentId, pstnNumber: address);
       break;
 
     case SIP_TYPE:
-      originateCallRequest = new protocol.OriginateCall(agentId, sip: address);
+      originateCallRequest = protocol.originateCall(agentId, sip: address);
       break;
 
     default:
@@ -128,32 +125,30 @@ void originateCall(String address, int type){
   }
 
   originateCallRequest
-      ..onResponse((protocol.Response response) {
+      .then((protocol.Response response) {
         switch(response.status) {
           default:
             //TODO Do something.
         }
-      })
-      ..send();
+      });
 }
 
 void transferCall(int callId){
-  new protocol.TransferCall(callId)
-      ..onResponse((protocol.Response response) {
+  protocol.transferCall(callId)
+      .then((protocol.Response response) {
         switch(response.status) {
           default:
             //TODO Do something.
         }
-      })
-      ..send();
+      });
 }
 
 /**
  * TODO comment
  */
 void holdCall(int callId){
-  new protocol.HoldCall(callId)
-    ..onResponse((protocol.Response response) {
+  protocol.holdCall(callId)
+    .then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
           log.debug('The request to hold call: ${callId} succeeded');
@@ -166,6 +161,5 @@ void holdCall(int callId){
         default:
           //TODO Do something.
       }
-    })
-    ..send();
+    });
 }

@@ -101,7 +101,7 @@ Future<Response> getOrganizationList({String view: MINI}){
         }
       })
       ..onError.listen((e) {
-        _logError(request, url);completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        _logError(request, url);
         completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
       })
       ..send();

@@ -16,151 +16,163 @@
 part of protocol;
 
 /**
- * Protocol class to make the request for agent state.
+ * TODO Comment
  */
-class AgentState extends Protocol{
-  /**
-   * Contructor to make a request to __get__ information about an agent,
-   */
-  AgentState.Get(int agentId){
-    assert(configuration.loaded);
+Future<Response> getAgentState(int agentId){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/agent/state';
-    List<String> fragments = new List<String>();
+  final completer = new Completer<Response>();
 
-    if (agentId == null){
-      log.critical('Protocol.AgentState.Get: agentId is null');
-      throw new Exception();
-    }
+  HttpRequest request;
 
-    fragments.add('agent_id=${agentId}');
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/agent/state';
+  List<String> fragments = new List<String>();
 
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(GET, _url);
+  if (agentId == null){
+    log.critical('Protocol.getAgentState: agentId is null');
+    throw new Exception();
   }
 
-  /**
-   * Contructor to make a request to __set__ information about an agent,
-   */
-  AgentState.Set(String state, int agentId){
-    assert(configuration.loaded);
+  fragments.add('agent_id=${agentId}');
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/agent/state';
-    List<String> fragments = new List<String>();
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+      ..open(GET, url)
+      ..onLoad.listen((_) {
+        switch(request.status) {
+          case 200:
+            Map data = _parseJson(request.responseText);
+            if (data != null) {
+              completer.complete(new Response(Response.OK, data));
+            } else {
+              completer.complete(new Response(Response.ERROR, data));
+            }
+            break;
 
-    if (agentId == null){
-      log.critical('Protocol.AgentState.Set: agentId is null');
-      throw new Exception();
-    }
+          case 404:
+            completer.complete(new Response(Response.NOTFOUND, null));
+            break;
 
-    if (state == null){
-      log.critical('Protocol.AgentState.Set: state is null');
-      throw new Exception();
-    }
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e){
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send();
 
-    fragments.add('new_state=${state}');
-    fragments.add('agent_id=${agentId}');
-
-
-    _url = _buildUrl(base, path, fragments);
-    _request = new HttpRequest()
-        ..open(POST, _url);
-  }
-
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
-
-    _request.onLoad.listen((_) {
-      switch(_request.status) {
-        case 200:
-          Map data = parseJson(_request.responseText);
-          if (data != null) {
-            callback(new Response(Response.OK, data));
-          } else {
-            callback(new Response(Response.ERROR, data));
-          }
-          break;
-
-        case 404:
-          callback(new Response(Response.NOTFOUND, null));
-          break;
-
-        default:
-          _logError();
-          callback(new Response(Response.ERROR, null));
-      }
-    });
-
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+  return completer.future;
 }
 
 /**
- * Protocol class to make a request for a list of Agents.
+ * TODO Comment
  */
-class AgentList extends Protocol {
-  /**
-   * Make a request for the list of agents.
-   */
-  AgentList(){
-    assert(configuration.loaded);
+Future<Response> setAgentState(int agentId){
+  assert(configuration.loaded);
 
-    String base = configuration.aliceBaseUrl.toString();
-    String path = '/agent/list';
+  final completer = new Completer<Response>();
 
-    _url = _buildUrl(base, path);
-    _request = new HttpRequest()
-        ..open(GET, _url);
+  HttpRequest request;
+
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/agent/state';
+  List<String> fragments = new List<String>();
+
+  if (agentId == null){
+    log.critical('Protocol.setAgentState: agentId is null');
+    throw new Exception();
   }
 
-  void onResponse(responseCallback callback) {
-    assert(_request != null);
-    assert(_notSent);
+  fragments.add('agent_id=${agentId}');
 
-    _request.onLoad.listen((_) {
-      //"idle | busy | paused | logged out | ???"
-      final Map testData =
-        {"Agents" :
-          [
-           {"id": 1, "state": "idle"},
-           {"id": 2, "state": "idle"},
-           {"id": 3, "state": "busy"},
-           {"id": 4, "state": "idle"},
-           {"id": 5, "state": "idle"},
-           {"id": 6, "state": "busy"},
-           {"id": 8, "state": "idle"},
-           {"id": 10, "state": "paused"},
-           {"id": 11, "state": "paused"},
-           {"id": 13, "state": "logged out"}
-           ]};
-      callback(new Response(Response.ERROR, testData));
+  String url = _buildUrl(base, path, fragments);
+  request = new HttpRequest()
+      ..open(POST, url)
+      ..onLoad.listen((_) {
+        switch(request.status) {
+          case 200:
+            Map data = _parseJson(request.responseText);
+            if (data != null) {
+              completer.complete(new Response(Response.OK, data));
+            } else {
+              completer.complete(new Response(Response.ERROR, data));
+            }
+            break;
 
-//      switch(_request.status) {
-//        case 200:
-//          Map data = parseJson(_request.responseText);
-//          if (data != null) {
-//            callback(new Response(Response.OK, data));
-//          } else {
-//            callback(new Response(Response.ERROR, data));
-//          }
-//          break;
-//
-//        default:
-//          _logError();
-//          callback(new Response(Response.ERROR, null));
-//      }
-    });
+          case 404:
+            completer.complete(new Response(Response.NOTFOUND, null));
+            break;
 
-    _request.onError.listen((_) {
-      _logError();
-      callback(new Response(Response.ERROR, null));
-    });
-  }
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e){
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send();
+
+  return completer.future;
+}
+
+/**
+ * Sends a request for a list of agents.
+ */
+Future<Response> agentList(){
+  assert(configuration.loaded);
+
+  final completer = new Completer<Response>();
+
+  HttpRequest request;
+
+  String base = configuration.aliceBaseUrl.toString();
+  String path = '/agent/list';
+
+  String url = _buildUrl(base, path);
+  request = new HttpRequest()
+      ..open(GET, url)
+      ..onLoad.listen((_) {
+        switch(request.status) {
+          case 200:
+            Map data = _parseJson(request.responseText);
+            if (data != null) {
+              completer.complete(new Response(Response.OK, data));
+            } else {
+              completer.complete(new Response(Response.ERROR, data));
+            }
+            break;
+
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e){
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      });
+      //..send();  //TODO Remove this when alice is ready.
+
+  //"idle | busy | paused | logged out | ???"
+  final Map testData =
+    {"Agents" :
+      [
+       {"id": 1, "state": "idle"},
+       {"id": 2, "state": "idle"},
+       {"id": 3, "state": "busy"},
+       {"id": 4, "state": "idle"},
+       {"id": 5, "state": "idle"},
+       {"id": 6, "state": "busy"},
+       {"id": 8, "state": "idle"},
+       {"id": 10, "state": "paused"},
+       {"id": 11, "state": "paused"},
+       {"id": 13, "state": "logged out"}
+       ]};
+
+  completer.complete(new Response(Response.OK, testData));
+
+  return completer.future;
 }
