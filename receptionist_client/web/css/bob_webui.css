@@ -49,11 +49,6 @@ button::-moz-focus-inner {
   z-index: -100;
 }
 
-.hideborder {
-  border: none;
-  border-radius: 0px;
-}
-
 .minibox {
   margin: 0px;
   height: 100%;
