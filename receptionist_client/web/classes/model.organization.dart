@@ -35,15 +35,16 @@ class Event{
     DateTime now = new DateTime.now();
     String hourMinute = new DateFormat.Hm().format(stamp);
 
-    output.write(new DateFormat.Hm().format(stamp).toString());
-
-    if (new DateFormat.Md().format(stamp) != new DateFormat.Md().format(now)) {
+    if (new DateFormat.yMd().format(stamp) != new DateFormat.yMd().format(now)) {
       String day = new DateFormat.d().format(stamp);
       String month = new DateFormat.M().format(stamp);
-      String dayMonth = '${day}/${month}';
+      String year = new DateFormat.y().format(stamp);
+      String dayMonth = '${day}/${month}/${year.substring(2)}';
 
-      output.write(' ${dayMonth}');
+      output.write('${dayMonth} ');
     }
+
+    output.write(hourMinute);
 
     return output.toString();
   }
@@ -71,9 +72,11 @@ class Organization{
     name = json['full_name'];
     greeting = json['greeting'];
 
+    // Add some dummy events and sort them
     events.add(new Event(new DateTime.now().add(new Duration(hours: 2)), new DateTime.now().add(new Duration(hours: 4)), 'Salgsmøde'));
     events.add(new Event(new DateTime.now(), new DateTime.now().add(new Duration(hours: 1, days: 1)), 'Kursus'));
-    events.add(new Event(new DateTime.now().add(new Duration(hours: 1)), new DateTime.now().add(new Duration(hours: 3)), 'Ombygning'));
+    events.add(new Event(new DateTime.now().add(new Duration(days: 1)), new DateTime.now().add(new Duration(days: 300, hours: 3)), 'Ombygning'));
+    events.sort((a, b) => a._start.compareTo(b._start));
   }
 
   Organization._null();
