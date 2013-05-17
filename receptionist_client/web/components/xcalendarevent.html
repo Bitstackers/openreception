@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+  <body>
+    <element name="x-calendar-event" constructor="CalendarEvent" extends="span" apply-author-styles>
+      <style>
+        .eventtable {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .eventcontent {
+          vertical-align: top;
+        }
+
+        .eventtimestamp {
+          text-align: right;
+          vertical-align: top;
+          font-weight: bold;
+        }
+
+        .notactive {
+          color: #aaa;
+          font-weight: normal;
+        }
+      </style>
+
+      <template>
+        <table class="eventtable">
+          <tbody>
+            <tr>
+              <td class="eventcontent">
+                {{event.content}}
+              <td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="eventtimestamp {{notactive}}">
+                {{event.start}} - {{event.stop}}
+              <td>
+            </tr>
+          </tfoot>
+        </table>
+      </template>
+
+      <script type="application/dart" src="xcalendarevent.dart"></script>
+    </element>
+  </body>
+</html>

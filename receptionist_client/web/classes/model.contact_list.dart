@@ -12,6 +12,7 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+
 part of model;
 
 final ContactList nullContactList = new ContactList._null();
@@ -24,6 +25,7 @@ class ContactList extends IterableBase<Contact>{
 
   ContactList(List contacts) {
     contacts.forEach((json) => _list.add(new Contact(json)));
+    _list.sort((a, b) => a.name.compareTo(b.name));
   }
 
   ContactList._null();

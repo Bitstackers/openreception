@@ -25,6 +25,8 @@ import 'package:intl/intl.dart';
 import 'common.dart';
 
 part 'model.call.dart';
+part 'model.calendar_event.dart';
+part 'model.calendar_event_list.dart';
 part 'model.contact.dart';
 part 'model.contact_list.dart';
 part 'model.organization.dart';

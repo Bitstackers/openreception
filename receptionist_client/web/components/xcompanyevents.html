@@ -3,6 +3,7 @@
 <html>
   <head>
     <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="xcalendarevent.html">
   </head>
   <body>
     <element name="x-company-events" constructor="CompanyEvents" extends="span" apply-author-styles>
@@ -34,20 +35,8 @@
           background-color: #eee;
         }
 
-        .eventtable {
-          width: 100%;
-          border-collapse: collapse;
-        }
-
-        .eventcontent {
-          width: 65%;
-          vertical-align: top;
-        }
-
-        .eventtimestamp {
-          width: 35%;
-          text-align: right;
-          vertical-align: top;
+        .active {
+          border-left: solid 3px red;
         }
       </style>
 
@@ -58,19 +47,17 @@
           </span>
 
           <div name="boxcontent" class="container">
-            <ul class="zebra">
-              <li template repeat="event in environment.organization.current.events">
-                <table class="eventtable">
-                  <tr>
-                    <td class="eventcontent">
-                      {{event.content}}
-                    <td>
-                    <td class="eventtimestamp">
-                      {{event.start}} - {{event.stop}}
-                    <td>
-                  </tr>
-                </table>
-              </li>
+            <ul template iterate="event in environment.organization.current.calendarEvents" class="zebra">
+              <template instantiate="if event.active">
+                <li class="active">
+                  <x-calendar-event event="{{event}}"></x-calendar-event>
+                </li>
+              </template>
+              <template instantiate="if !event.active">
+                <li>
+                  <x-calendar-event event="{{event}}"></x-calendar-event>
+                </li>
+              </template>
             </ul>
           </div>
         </x-box-with-header>

@@ -12,43 +12,10 @@
   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   <http://www.gnu.org/licenses/>.
 */
+
 part of model;
 
 final Organization nullOrganization = new Organization._null();
-
-class Event{
-  DateTime _start;
-  DateTime _stop;
-  String content;
-
-  String get start => _formatTimestamp(_start);
-  String get stop => _formatTimestamp(_stop);
-
-  Event(DateTime this._start, DateTime this._stop, String this.content);
-
-  /**
-   * Format the [DateTime] [stamp] timestamp into a string. If [stamp] is today
-   * then return hour:minute, else return hour:minute day/month.
-   */
-  String _formatTimestamp(DateTime stamp) {
-    StringBuffer output = new StringBuffer();
-    DateTime now = new DateTime.now();
-    String hourMinute = new DateFormat.Hm().format(stamp);
-
-    if (new DateFormat.yMd().format(stamp) != new DateFormat.yMd().format(now)) {
-      String day = new DateFormat.d().format(stamp);
-      String month = new DateFormat.M().format(stamp);
-      String year = new DateFormat.y().format(stamp);
-      String dayMonth = '${day}/${month}/${year.substring(2)}';
-
-      output.write('${dayMonth} ');
-    }
-
-    output.write(hourMinute);
-
-    return output.toString();
-  }
-}
 
 /**
  * TODO comment
@@ -57,7 +24,9 @@ class Organization{
   ContactList _contactlist = nullContactList;
   ContactList get contacts => _contactlist;
 
-  List<Event> events = new List<Event>();
+  CalendarEventList _calendarEventList = nullCalendarEventList;
+  CalendarEventList get calendarEvents => _calendarEventList;
+
   String greeting = "";
   int id = -1;
   String name = "";
@@ -72,11 +41,12 @@ class Organization{
     name = json['full_name'];
     greeting = json['greeting'];
 
-    // Add some dummy events and sort them
-    events.add(new Event(new DateTime.now().add(new Duration(hours: 2)), new DateTime.now().add(new Duration(hours: 4)), 'Salgsmøde'));
-    events.add(new Event(new DateTime.now(), new DateTime.now().add(new Duration(hours: 1, days: 1)), 'Kursus'));
-    events.add(new Event(new DateTime.now().add(new Duration(days: 1)), new DateTime.now().add(new Duration(days: 300, hours: 3)), 'Ombygning'));
-    events.sort((a, b) => a._start.compareTo(b._start));
+    // Add some dummy calendar events
+    List tempEvents = new List();
+    tempEvents.add({'start':'2014-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
+    tempEvents.add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'Salgsmøde'});
+    tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'Kursus'});
+    _calendarEventList = new CalendarEventList(tempEvents);
   }
 
   Organization._null();

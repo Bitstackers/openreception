@@ -15,23 +15,20 @@
 
 part of model;
 
-final Contact nullContact = new Contact._null();
+final CalendarEventList nullCalendarEventList = new CalendarEventList._null();
 
 /**
- * TODO comment
+ * TODO comment.
  */
-class Contact{
-  int id;
-  bool isHuman;
-  String name;
+class CalendarEventList extends IterableBase<CalendarEvent>{
+  List<CalendarEvent> _list = <CalendarEvent>[];
 
-  Contact(Map json) {
-    id = json['contact_id'];
-    isHuman = json['is_human'];
-    name = json['full_name'];
+  CalendarEventList(List events) {
+    events.forEach((json) => _list.add(new CalendarEvent.fromJson(json)));
+    _list.sort((a, b) => a._start.compareTo(b._start));
   }
 
-  Contact._null();
+  CalendarEventList._null();
 
-  String toString() => '${name}-${id}-${isHuman}';
+  Iterator<CalendarEvent> get iterator => _list.iterator;
 }
