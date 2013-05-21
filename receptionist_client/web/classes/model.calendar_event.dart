@@ -36,14 +36,10 @@ class CalendarEvent{
     _stop = DateTime.parse(json['stop']);
     content = json['content'];
 
-    try {
-      active = now == _start || now == _stop;
+    active = now == _start || now == _stop;
 
-      if (!active && (now.isAfter(_start) && now.isBefore(_stop))) {
-        active = true;
-      }
-    } catch(e) {
-      print(e);
+    if (!active && (now.isAfter(_start) && now.isBefore(_stop))) {
+      active = true;
     }
   }
 
