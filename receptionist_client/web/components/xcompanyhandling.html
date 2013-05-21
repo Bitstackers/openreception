@@ -20,16 +20,30 @@
           width: 100%;
           overflow: auto;
         }
+
+        .zebra {
+          list-style-type: none;
+        }
+
+        .zebra li {
+          padding: 5px;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
+        }
       </style>
 
       <template>
         <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
-            CompanyHandling
+            {{title}}
           </span>
 
           <div name="boxcontent" class="container">
-            company handling content
+            <ul template iterate="handling in environment.organization.current.handlingList" class="zebra">
+              <li>{{handling}}</li>
+            </ul>
           </div>
         </x-box-with-header>
       </template>

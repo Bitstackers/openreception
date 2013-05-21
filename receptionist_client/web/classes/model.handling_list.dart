@@ -13,23 +13,22 @@
   <http://www.gnu.org/licenses/>.
 */
 
+part of model;
+
+final HandlingList nullHandlingList = new HandlingList._null();
+
 /**
- * Model Library.
+ * TODO comment.
  */
-library model;
+class HandlingList extends IterableBase<Handling>{
+  List<Handling> _list = <Handling>[];
 
-import 'dart:collection';
+  HandlingList(List handlings) {
+    handlings.forEach((json) => _list.add(new Handling.fromJson(json)));
+    _list.sort();
+  }
 
-import 'package:intl/intl.dart';
+  HandlingList._null();
 
-import 'common.dart';
-
-part 'model.call.dart';
-part 'model.calendar_event.dart';
-part 'model.calendar_event_list.dart';
-part 'model.contact.dart';
-part 'model.contact_list.dart';
-part 'model.handling.dart';
-part 'model.handling_list.dart';
-part 'model.organization.dart';
-part 'model.organization_list.dart';
+  Iterator<Handling> get iterator => _list.iterator;
+}

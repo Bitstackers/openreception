@@ -13,23 +13,23 @@
   <http://www.gnu.org/licenses/>.
 */
 
+part of model;
+
 /**
- * Model Library.
+ * TODO comment
  */
-library model;
+class Handling implements Comparable{
+  String value;
+  int priority;
 
-import 'dart:collection';
+  Handling(String this.value, int this.priority);
 
-import 'package:intl/intl.dart';
+  Handling.fromJson(Map json) {
+    this.value = json['value'];
+    this.priority = json['priority'];
+  }
 
-import 'common.dart';
+  int compareTo(Handling other) => priority - other.priority;
 
-part 'model.call.dart';
-part 'model.calendar_event.dart';
-part 'model.calendar_event_list.dart';
-part 'model.contact.dart';
-part 'model.contact_list.dart';
-part 'model.handling.dart';
-part 'model.handling_list.dart';
-part 'model.organization.dart';
-part 'model.organization_list.dart';
+  String toString() => value;
+}
