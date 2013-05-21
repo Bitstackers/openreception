@@ -17,10 +17,11 @@
           text-align: right;
           vertical-align: top;
           font-weight: bold;
+          padding-top: 5px;
         }
 
         .notactive {
-          color: #aaa;
+          color: #999;
           font-weight: normal;
         }
       </style>
@@ -29,7 +30,7 @@
         <table class="eventtable">
           <tbody>
             <tr>
-              <td class="eventcontent">
+              <td class="eventcontent {{notactive}}">
                 {{event.content}}
               <td>
             </tr>
