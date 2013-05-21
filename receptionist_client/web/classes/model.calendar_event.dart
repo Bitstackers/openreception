@@ -18,23 +18,23 @@ part of model;
 /**
  * TODO comment
  */
-class CalendarEvent{
+class CalendarEvent implements Comparable{
+  String _content;
   DateTime _start;
   DateTime _stop;
   bool active =false;
-  String content;
 
   String get start => _formatTimestamp(_start);
   String get stop => _formatTimestamp(_stop);
 
-  CalendarEvent(DateTime this._start, DateTime this._stop, String this.content);
+  CalendarEvent(DateTime this._start, DateTime this._stop, String this._content);
 
   CalendarEvent.fromJson(Map json) {
     DateTime now = new DateTime.now();
 
     _start = DateTime.parse(json['start']);
     _stop = DateTime.parse(json['stop']);
-    content = json['content'];
+    _content = json['content'];
 
     active = now == _start || now == _stop;
 
@@ -69,4 +69,14 @@ class CalendarEvent{
 
     return output.toString();
   }
+
+  int compareTo(CalendarEvent other) {
+    if(_start.isAtSameMomentAs(other._start)) {
+      return 0;
+    }
+
+    return _start.isBefore(other._start) ? -1 : 1;
+  }
+
+  String toString() => _content;
 }

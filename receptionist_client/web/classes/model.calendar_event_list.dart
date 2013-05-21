@@ -25,7 +25,7 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
 
   CalendarEventList(List events) {
     events.forEach((json) => _list.add(new CalendarEvent.fromJson(json)));
-    _list.sort((a, b) => a._start.compareTo(b._start));
+    _list.sort();
   }
 
   CalendarEventList._null();
