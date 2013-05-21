@@ -20,18 +20,27 @@ final Organization nullOrganization = new Organization._null();
 /**
  * TODO comment
  */
-class Organization{
+class Organization implements Comparable{
   ContactList _contactlist = nullContactList;
   ContactList get contacts => _contactlist;
 
   CalendarEventList _calendarEventList = nullCalendarEventList;
   CalendarEventList get calendarEvents => _calendarEventList;
 
+  HandlingList _handlingList = nullHandlingList;
+  HandlingList get handlingList => _handlingList;
+
   String greeting = "";
   int id = -1;
   String name = "";
 
   Organization(Map json) {
+    if(json.containsKey('handlings')) {
+      _handlingList = new HandlingList(json['handlings']);
+    } else {
+      // Log bad json?
+    }
+
     if(json.containsKey('contacts')) {
       _contactlist = new ContactList(json['contacts']);
       json.remove('contacts');
@@ -43,13 +52,15 @@ class Organization{
 
     // Add some dummy calendar events
     List tempEvents = new List();
-    tempEvents.add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
     tempEvents.add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'Salgsmøde'});
     tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'Kursus'});
+    tempEvents.add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
     _calendarEventList = new CalendarEventList(tempEvents);
   }
 
   Organization._null();
+
+  int compareTo(Organization other) => name.compareTo(other.name);
 
   String toString() => '${name}-${id}';
 }

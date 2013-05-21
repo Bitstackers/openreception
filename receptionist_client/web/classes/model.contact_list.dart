@@ -25,7 +25,7 @@ class ContactList extends IterableBase<Contact>{
 
   ContactList(List contacts) {
     contacts.forEach((json) => _list.add(new Contact(json)));
-    _list.sort((a, b) => a.name.compareTo(b.name));
+    _list.sort();
   }
 
   ContactList._null();

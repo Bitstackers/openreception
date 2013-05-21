@@ -20,7 +20,7 @@ final Contact nullContact = new Contact._null();
 /**
  * TODO comment
  */
-class Contact{
+class Contact implements Comparable{
   int id;
   bool isHuman;
   String name;
@@ -32,6 +32,8 @@ class Contact{
   }
 
   Contact._null();
+
+  int compareTo(Contact other) => name.compareTo(other.name);
 
   String toString() => '${name}-${id}-${isHuman}';
 }

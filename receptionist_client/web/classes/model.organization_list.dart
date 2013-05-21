@@ -25,7 +25,7 @@ class OrganizationList extends IterableBase<Organization>{
 
   OrganizationList.fromMap(Map json) {
     json['organization_list'].forEach((json) => _list.add(new Organization(json)));
-    _list.sort((a, b) => a.name.compareTo(b.name));
+    _list.sort();
   }
 
   OrganizationList._null();
