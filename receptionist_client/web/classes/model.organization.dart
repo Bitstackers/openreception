@@ -27,16 +27,21 @@ class Organization implements Comparable{
   CalendarEventList _calendarEventList = nullCalendarEventList;
   CalendarEventList get calendarEvents => _calendarEventList;
 
-  HandlingList _handlingList = nullHandlingList;
-  HandlingList get handlingList => _handlingList;
+  MiniboxList _handlingList = nullMiniboxList;
+  MiniboxList get handlingList => _handlingList;
 
+  String crapcallHandling = '';
+  String customerType = '';
   String greeting = "";
   int id = -1;
   String name = "";
+  String openingHours = '';
+  String product = '';
+  String telephoneNumbers = '';
 
   Organization(Map json) {
     if(json.containsKey('handlings')) {
-      _handlingList = new HandlingList(json['handlings']);
+      _handlingList = new MiniboxList(json['handlings']);
     } else {
       // Log bad json?
     }
@@ -46,9 +51,14 @@ class Organization implements Comparable{
       json.remove('contacts');
     }
 
+    crapcallHandling = json['crapcallhandling'];
+    customerType = json['customertype'];
+    greeting = json['greeting'];
     id = json['organization_id'];
     name = json['full_name'];
-    greeting = json['greeting'];
+    openingHours = json['openinghours'];
+    product = json['product'];
+    telephoneNumbers = json['telephonenumbers'];
 
     // Add some dummy calendar events
     List tempEvents = new List();

@@ -31,5 +31,7 @@ part 'model.contact.dart';
 part 'model.contact_list.dart';
 part 'model.handling.dart';
 part 'model.handling_list.dart';
+part 'model.minibox_list_item.dart';
+part 'model.minibox_list.dart';
 part 'model.organization.dart';
 part 'model.organization_list.dart';

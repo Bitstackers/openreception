@@ -14,16 +14,20 @@
           height: 9%;
           width: 21%;
         }
+
+        .container {
+          padding: 5px;
+        }
       </style>
 
       <template>
         <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
-            Produktbeskrivelse
+            {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox">
-            Vi er en ekstern receptionsservice.
+          <div name="boxcontent" class="minibox container">
+            {{environment.organization.current.product}}
           </div>
         </x-box-with-header>
       </template>

@@ -14,6 +14,10 @@
           height: 9%;
           width: 21%;
         }
+
+        .container {
+          padding: 5px;
+        }
       </style>
 
       <template>
@@ -22,8 +26,8 @@
             {{headline}}
           </span>
 
-          <div name="boxcontent" class="minibox">
-            Afvis.
+          <div name="boxcontent" class="minibox container">
+            {{environment.organization.current.crapcallHandling}}
           </div>
         </x-box-with-header>
       </template>
