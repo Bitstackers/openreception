@@ -6,5 +6,5 @@ import '../classes/environment.dart' as environment;
 import '../classes/model.dart' as model;
 
 class CompanySalesCalls extends WebComponent {
-  String headline = 'Sælgere / Analyser';
+  String title = 'Sælgere / Analyser';
 }

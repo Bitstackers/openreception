@@ -16,18 +16,34 @@
         }
 
         .container {
-          padding: 5px;
+          height: 100%;
+          width: 100%;
+          overflow: auto;
+        }
+
+        .zebra {
+          list-style-type: none;
+        }
+
+        .zebra li {
+          padding: 4px;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
         }
       </style>
 
       <template>
         <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
-            {{headline}}
+            {{title}}
           </span>
 
           <div name="boxcontent" class="minibox container">
-            {{environment.organization.current.crapcallHandling}}
+            <ul template iterate="value in environment.organization.current.crapcallHandlingList" class="zebra">
+              <li>{{value}}</li>
+            </ul>
           </div>
         </x-box-with-header>
       </template>

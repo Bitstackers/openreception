@@ -27,36 +27,50 @@ class Organization implements Comparable{
   CalendarEventList _calendarEventList = nullCalendarEventList;
   CalendarEventList get calendarEvents => _calendarEventList;
 
+  MiniboxList _crapcallHandlingList = nullMiniboxList;
+  MiniboxList get crapcallHandlingList => _crapcallHandlingList;
+
   MiniboxList _handlingList = nullMiniboxList;
   MiniboxList get handlingList => _handlingList;
 
-  String crapcallHandling = '';
+  MiniboxList _openingHoursList = nullMiniboxList;
+  MiniboxList get openingHoursList => _openingHoursList;
+
   String customerType = '';
   String greeting = "";
   int id = -1;
   String name = "";
-  String openingHours = '';
   String product = '';
   String telephoneNumbers = '';
 
   Organization(Map json) {
+    if(json.containsKey('contacts')) {
+      _contactlist = new ContactList(json['contacts']);
+      json.remove('contacts');
+    }
+
+    if(json.containsKey('crapcallhandling')) {
+      _crapcallHandlingList = new MiniboxList(json['crapcallhandling']);
+    } else {
+      // Log bad json?
+    }
+
     if(json.containsKey('handlings')) {
       _handlingList = new MiniboxList(json['handlings']);
     } else {
       // Log bad json?
     }
 
-    if(json.containsKey('contacts')) {
-      _contactlist = new ContactList(json['contacts']);
-      json.remove('contacts');
+    if(json.containsKey('openinghours')) {
+      _openingHoursList = new MiniboxList(json['openinghours']);
+    } else {
+      // Log bad json?
     }
 
-    crapcallHandling = json['crapcallhandling'];
     customerType = json['customertype'];
     greeting = json['greeting'];
     id = json['organization_id'];
     name = json['full_name'];
-    openingHours = json['openinghours'];
     product = json['product'];
     telephoneNumbers = json['telephonenumbers'];
 

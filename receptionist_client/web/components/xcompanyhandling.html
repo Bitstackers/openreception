@@ -41,8 +41,8 @@
           </span>
 
           <div name="boxcontent" class="container">
-            <ul template iterate="handling in environment.organization.current.handlingList" class="zebra">
-              <li>{{handling}}</li>
+            <ul template iterate="value in environment.organization.current.handlingList" class="zebra">
+              <li>{{value}}</li>
             </ul>
           </div>
         </x-box-with-header>
