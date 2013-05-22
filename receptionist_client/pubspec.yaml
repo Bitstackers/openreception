@@ -1,9 +1,9 @@
 name: bob_webui
 description: A sample WebUI application
 dependencies:
+  browser: any
   intl: any
   js: any
-  browser: any
-  web_ui: any
   logging: any
   meta: any
+  web_ui: any
