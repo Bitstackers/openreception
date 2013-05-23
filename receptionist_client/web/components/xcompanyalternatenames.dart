@@ -2,4 +2,9 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-class CompanyAlternateNames extends WebComponent {}
+import '../classes/environment.dart' as environment;
+import '../classes/model.dart' as model;
+
+class CompanyAlternateNames extends WebComponent {
+  String title = 'Alternative firmanavne';
+}

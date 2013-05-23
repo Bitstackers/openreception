@@ -16,7 +16,21 @@
         }
 
         .container {
-          padding: 5px;
+          height: 100%;
+          width: 100%;
+          overflow: auto;
+        }
+
+        .zebra {
+          list-style-type: none;
+        }
+
+        .zebra li {
+          padding: 4px;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
         }
       </style>
 
@@ -27,7 +41,9 @@
           </span>
 
           <div name="boxcontent" class="minibox container">
-            {{environment.organization.current.telephoneNumbers}}
+            <ul template iterate="value in environment.organization.current.telephoneNumberList" class="zebra">
+              <li>{{value}}</li>
+            </ul>
           </div>
         </x-box-with-header>
       </template>

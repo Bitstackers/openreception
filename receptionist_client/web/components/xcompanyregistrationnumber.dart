@@ -2,4 +2,9 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-class CompanyRegistrationNumber extends WebComponent {}
+import '../classes/environment.dart' as environment;
+import '../classes/model.dart' as model;
+
+class CompanyRegistrationNumber extends WebComponent {
+  String title = 'CVR';
+}

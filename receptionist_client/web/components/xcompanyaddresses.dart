@@ -5,4 +5,6 @@ import 'package:web_ui/web_ui.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/model.dart' as model;
 
-class CompanyAddresses extends WebComponent {}
+class CompanyAddresses extends WebComponent {
+  String title = 'Adresser';
+}

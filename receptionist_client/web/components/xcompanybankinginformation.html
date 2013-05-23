@@ -14,16 +14,36 @@
           height: 9%;
           width: 21%;
         }
+
+        .container {
+          height: 100%;
+          width: 100%;
+          overflow: auto;
+        }
+
+        .zebra {
+          list-style-type: none;
+        }
+
+        .zebra li {
+          padding: 4px;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
+        }
       </style>
 
       <template>
         <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
-            Bankoplysninger
+            {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox">
-            Danske Bank, reg.nr. 6565, kontonr.: 154 455 584 128
+          <div name="boxcontent" class="minibox containers">
+            <ul template iterate="value in environment.organization.current.bankingInformationList" class="zebra">
+              <li>{{value}}</li>
+            </ul>
           </div>
         </x-box-with-header>
       </template>

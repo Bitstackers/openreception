@@ -2,4 +2,9 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-class CompanyWebsites extends WebComponent {}
+import '../classes/environment.dart' as environment;
+import '../classes/model.dart' as model;
+
+class CompanyWebsites extends WebComponent {
+  String title = 'Web-sider';
+}
