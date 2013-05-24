@@ -21,6 +21,9 @@ final Contact nullContact = new Contact._null();
  * TODO comment
  */
 class Contact implements Comparable{
+  CalendarEventList _calendarEventList = nullCalendarEventList;
+  CalendarEventList get calendarEventList => _calendarEventList;
+
   int id;
   bool isHuman;
   String name;
@@ -29,6 +32,12 @@ class Contact implements Comparable{
     id = json['contact_id'];
     isHuman = json['is_human'];
     name = json['full_name'];
+
+    // Add some dummy calendar events
+    List tempEvents = new List();
+    tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus I Shanghai. Tjekker sin email.'});
+    tempEvents.add({'start':'2013-05-01 08:00:00', 'stop':'2014-02-07 17:00:00', 'content':'${id} Jordomrejse'});
+    _calendarEventList = new CalendarEventList(tempEvents);
   }
 
   Contact._null();

@@ -30,5 +30,19 @@ class ContactList extends IterableBase<Contact>{
 
   ContactList._null();
 
+  Contact get first {
+    return _list.length > 0 ? _list.first : nullContact;
+  }
+
+  Contact getContact(int id) {
+    for(Contact contact in _list) {
+      if(id == contact.id) {
+        return contact;
+      }
+    }
+
+    return nullContact;
+  }
+
   Iterator<Contact> get iterator => _list.iterator;
 }

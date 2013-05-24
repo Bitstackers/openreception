@@ -3,6 +3,7 @@
 <html>
   <head>
     <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="xcalendarevent.html">
   </head>
   <body>
     <element name="x-contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
@@ -24,7 +25,7 @@
         .container {
           height: 100%;
           width: 100%;
-          overflow: hidden;
+          overflow: auto;
         }
 
         .datacolumn {
@@ -103,6 +104,10 @@
         .zebraeven li:nth-of-type(even) {
           background-color: #eee;
         }
+
+        .active {
+          border-left: solid 3px red;
+        }
       </style>
 
       <template>
@@ -120,12 +125,17 @@
               </template>
 
               <ul template iterate="value in environment.organization.current.contactList" class="zebra">
-                <li>{{value.name}}</li>
+                <template instantiate="if value == contact">
+                  <li class="active" id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
+                </template>
+                <template instantiate="if value != contact">
+                  <li id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
+                </template>
               </ul>
             </div>
 
             <div class="datacolumn">
-              <template instantiate="if environment.organization.current.contactList != model.nullContactList">
+              <template instantiate="if contact != model.nullContact">
                 <div class="calendarbox">
                   <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                     <span name="boxheader">
@@ -133,8 +143,17 @@
                     </span>
 
                     <div name="boxcontent" class="minibox container">
-                      <ul template iterate="value in environment.organization.current.addressList" class="zebraeven">
-                        <li>{{value}}</li>
+                      <ul template iterate="value in contact.calendarEventList" class="zebraeven">
+                        <template instantiate="if value.active">
+                          <li class="active">
+                            <x-calendar-event event="{{value}}"></x-calendar-event>
+                          </li>
+                        </template>
+                        <template instantiate="if !value.active">
+                          <li>
+                            <x-calendar-event event="{{value}}"></x-calendar-event>
+                          </li>
+                        </template>
                       </ul>
                     </div>
                   </x-box-with-header>
@@ -146,7 +165,7 @@
                       <td>
                         <h5>Arbejdstider</h5>
                         <div>
-                          Mandag - torsdag 0800-1600, fredag 0800-1400.
+                          {{contact.name}}
                         </div>
                       </td>
                       <td>
@@ -200,7 +219,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <h5>Diverse</h5>
+                        <h5>Info</h5>
                         <div>
                           Ting og sager.
                         </div>
