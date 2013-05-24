@@ -120,9 +120,9 @@ class Organization implements Comparable{
 
     // Add some dummy calendar events
     List tempEvents = new List();
-    tempEvents.add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'Salgsmøde'});
-    tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'Kursus'});
-    tempEvents.add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
+    tempEvents.add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'${id} Salgsmøde'});
+    tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus'});
+    tempEvents.add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'${id} Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
     _calendarEventList = new CalendarEventList(tempEvents);
   }
 
