@@ -105,18 +105,13 @@ class _ContextList extends IterableBase<Context>{
 /**
  * TODO comment
  */
+@observable
 class _Organization{
-  @observable model.Organization _organization = model.nullOrganization;
+  model.Organization _organization = model.nullOrganization;
 
-  Stream<model.Organization> _onChange;
-  StreamController<model.Organization> _stream = new StreamController<model.Organization>();
+  model.Organization get current  => _organization;
 
-  model.Organization         get current  => _organization;
-  Stream<model.Organization> get onChange => _onChange;
-
-  _Organization(){
-    _onChange = _stream.stream.asBroadcastStream();
-  }
+  _Organization();
 
   /**
    * Replaces this environments organization with [organization].
@@ -128,7 +123,5 @@ class _Organization{
 
     _organization = organization;
     log.info('Environment organization is changed to: ${organization.toString()}');
-    //dispatch the new organization.
-    _stream.sink.add(organization);
   }
 }
