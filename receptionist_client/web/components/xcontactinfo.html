@@ -15,27 +15,207 @@
           width: 45%;
         }
 
+        .calendarbox {
+          width: 100%;
+          padding: 10px;
+          height: 150px;
+        }
+
         .container {
-          margin: 10px;
-          height: -moz-calc(100% - 20px);
-          height: -webkit-calc(100% - 20px);
-          width: -moz-calc(100% - 20px);
-          width: -webkit-calc(100% - 20px);
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+        }
+
+        .datacolumn {
+          height: 100%;
+          width: 59.9%;
+          float: right;
+        }
+
+        .infobox {
+          height: -webkit-calc(100% - 150px);
+          height: -moz-calc(100% - 150px);
           overflow: auto;
-          /*border: solid 1px red;*/
+          padding: 10px;
+        }
+
+        .infobox h5 {
+          font-size: 0.9em;
+        }
+
+        .infobox table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.9em;
+        }
+
+        .infobox td {
+          width: 50%;
+          padding: 5px;
+          vertical-align: top;
+        }
+
+        .infobox td div {
+          padding-left: 2px;
+        }
+
+        .listcolumn {
+          height: 100%;
+          width: 39.9%;
+          float: left;
+        }
+
+        .listcolumn ul {
+          height: -webkit-calc(100% - 50px);
+          height: -moz-calc(100% - 50px);
+          overflow: auto;
+        }
+
+        .search {
+          width: 100%;
+          height: 30px;
+          border: solid 2px #ccc;
+          padding: 3px;
+          font-size: 1.1em;
+          border-radius: 3px;
+        }
+
+        .searchbox {
+          width: 100%;
+          padding: 10px;
+        }
+
+        .zebra,
+        .zebraeven {
+          list-style-type: none;
+        }
+
+        .zebra li,
+        .zebraeven li {
+          padding: 5px;
+        }
+
+        .zebra li:nth-of-type(odd) {
+          background-color: #eee;
+        }
+
+        .zebraeven li:nth-of-type(even) {
+          background-color: #eee;
         }
       </style>
 
       <template>
         <x-box-with-header class="placing">
           <span name="boxheader" class="header">
-            ContactInfo Header
+            {{title}}
           </span>
 
           <div name="boxcontent" class="container">
-            <template iterate="contact in environment.organization.current.contactList">
-              {{contact}}
-            </template>
+            <div class="listcolumn">
+              <template instantiate="if environment.organization.current.contactList != model.nullContactList">
+                <div class="searchbox">
+                  <input class="search" type="search" placeholder="{{placeholder}}"/>
+                </div>
+              </template>
+
+              <ul template iterate="value in environment.organization.current.contactList" class="zebra">
+                <li>{{value.name}}</li>
+              </ul>
+            </div>
+
+            <div class="datacolumn">
+              <template instantiate="if environment.organization.current.contactList != model.nullContactList">
+                <div class="calendarbox">
+                  <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+                    <span name="boxheader">
+                      {{calendarTitle}}
+                    </span>
+
+                    <div name="boxcontent" class="minibox container">
+                      <ul template iterate="value in environment.organization.current.addressList" class="zebraeven">
+                        <li>{{value}}</li>
+                      </ul>
+                    </div>
+                  </x-box-with-header>
+                </div>
+
+                <div class="infobox">
+                  <table>
+                    <tr>
+                      <td>
+                        <h5>Arbejdstider</h5>
+                        <div>
+                          Mandag - torsdag 0800-1600, fredag 0800-1400.
+                        </div>
+                      </td>
+                      <td>
+                        <h5>Kald</h5>
+                        <div>
+                          Omstil/Email. Hvis hendes far (Per) ringer, så stil til mobil.
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5>Stilling</h5>
+                        <div>
+                          Kreditorbogholder
+                        </div>
+                      </td>
+                      <td>
+                        <h5>Ansvar</h5>
+                        <div>
+                          Kreditorregnskab, frokostordning.
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5>Afdeling</h5>
+                        <div>
+                          Bogholderi
+                        </div>
+                      </td>
+                      <td>
+                        <h5>Telefon</h5>
+                        <div>
+                          23345656
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5>Relationer</h5>
+                        <div>
+                          Hun er gift med Morten Groenbaek. Hendes far hedder Per. Han er dement.
+                        </div>
+                      </td>
+                      <td>
+                        <h5>Email</h5>
+                        <div>
+                          janne@sublim.dk
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5>Diverse</h5>
+                        <div>
+                          Ting og sager.
+                        </div>
+                      </td>
+                      <td>
+                        <h5>Backup</h5>
+                        <div>
+                          Jens Hansen og Hans Jensen.
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </template>
+            </div>
           </div>
         </x-box-with-header>
       </template>
