@@ -65,94 +65,50 @@ class Organization implements Comparable{
   String product = '';
 
   Organization(Map json) {
-    try {
-      if(json.containsKey('addresses')) {
-        _addressList = new MiniboxList(json['addresses']);
-      } else {
-        // Log bad json? Check it somewhere else?
-      }
-    } catch(e) {
-      print('addresses ${e}');
+    if(json.containsKey('addresses')) {
+      _addressList = new MiniboxList(json['addresses']);
+    } else {
+      // Log bad json? Check schema somewhere else?
     }
 
-    try {
-      if(json.containsKey('alternatenames')) {
-        _alternateNameList = new MiniboxList(json['alternatenames']);
-      }
-    } catch(e) {
-      print('alternatenames ${e}');
+    if(json.containsKey('alternatenames')) {
+      _alternateNameList = new MiniboxList(json['alternatenames']);
     }
 
-    try {
-      if(json.containsKey('bankinginformation')) {
-        _bankingInformationList = new MiniboxList(json['bankinginformation']);
-      }
-    } catch(e) {
-      print('alternatenames ${e}');
+    if(json.containsKey('bankinginformation')) {
+      _bankingInformationList = new MiniboxList(json['bankinginformation']);
     }
 
-    try {
-      if(json.containsKey('contacts')) {
-        _contactList = new ContactList(json['contacts']);
-      }
-    } catch(e) {
-      print('contacts ${e}');
+    if(json.containsKey('contacts')) {
+      _contactList = new ContactList(json['contacts']);
     }
 
-    try {
-      if(json.containsKey('crapcallhandling')) {
-        _crapcallHandlingList = new MiniboxList(json['crapcallhandling']);
-      }
-    } catch(e) {
-      print('crapcallhandling ${e}');
+    if(json.containsKey('crapcallhandling')) {
+      _crapcallHandlingList = new MiniboxList(json['crapcallhandling']);
     }
 
-    try {
-      if(json.containsKey('emailaddresses')) {
-        _emailAddressList = new MiniboxList(json['emailaddresses']);
-      }
-    } catch(e) {
-      print('emailaddresses ${e}');
+    if(json.containsKey('emailaddresses')) {
+      _emailAddressList = new MiniboxList(json['emailaddresses']);
     }
 
-    try {
-      if(json.containsKey('handlings')) {
-        _handlingList = new MiniboxList(json['handlings']);
-      }
-    } catch(e) {
-      print('handlings ${e}');
+    if(json.containsKey('handlings')) {
+      _handlingList = new MiniboxList(json['handlings']);
     }
 
-    try {
-      if(json.containsKey('openinghours')) {
-        _openingHoursList = new MiniboxList(json['openinghours']);
-      }
-    } catch(e) {
-      print('openinghours ${e}');
+    if(json.containsKey('openinghours')) {
+      _openingHoursList = new MiniboxList(json['openinghours']);
     }
 
-    try {
-      if(json.containsKey('registrationnumbers')) {
-        _registrationNumberList = new MiniboxList(json['registrationnumbers']);
-      }
-    } catch(e) {
-      print('openinghours ${e}');
+    if(json.containsKey('registrationnumbers')) {
+      _registrationNumberList = new MiniboxList(json['registrationnumbers']);
     }
 
-    try {
-      if(json.containsKey('telephonenumbers')) {
-        _telephoneNumberList = new MiniboxList(json['telephonenumbers']);
-      }
-    } catch(e) {
-      print('telephonenumbers ${e}');
+    if(json.containsKey('telephonenumbers')) {
+      _telephoneNumberList = new MiniboxList(json['telephonenumbers']);
     }
 
-    try {
-      if(json.containsKey('websites')) {
-        _websiteList = new MiniboxList(json['websites']);
-      }
-    } catch(e) {
-      print('websites ${e}');
+    if(json.containsKey('websites')) {
+      _websiteList = new MiniboxList(json['websites']);
     }
 
     customerType = json['customertype'];
