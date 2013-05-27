@@ -61,6 +61,10 @@
           padding-left: 2px;
         }
 
+        .infobox td div ul {
+          list-style-type: none;
+        }
+
         .listcolumn {
           height: 100%;
           width: 39.9%;
@@ -165,13 +169,17 @@
                       <td>
                         <h5>Arbejdstider</h5>
                         <div>
-                          {{contact.name}}
+                          <ul template iterate="value in contact.workHoursList">
+                            <li>{{value}}</li>
+                          </ul>
                         </div>
                       </td>
                       <td>
                         <h5>Kald</h5>
                         <div>
-                          Omstil/Email. Hvis hendes far (Per) ringer, så stil til mobil.
+                          <ul template iterate="value in contact.handlingList">
+                            <li>{{value}}</li>
+                          </ul>
                         </div>
                       </td>
                     </tr>
@@ -179,13 +187,13 @@
                       <td>
                         <h5>Stilling</h5>
                         <div>
-                          Kreditorbogholder
+                          {{contact.position}}
                         </div>
                       </td>
                       <td>
                         <h5>Ansvar</h5>
                         <div>
-                          Kreditorregnskab, frokostordning.
+                          {{contact.responsibility}}
                         </div>
                       </td>
                     </tr>
@@ -193,13 +201,15 @@
                       <td>
                         <h5>Afdeling</h5>
                         <div>
-                          Bogholderi
+                          {{contact.department}}
                         </div>
                       </td>
                       <td>
                         <h5>Telefon</h5>
                         <div>
-                          23345656
+                          <ul template iterate="value in contact.telephoneNumberList">
+                            <li>{{value}}</li>
+                          </ul>
                         </div>
                       </td>
                     </tr>
@@ -207,13 +217,15 @@
                       <td>
                         <h5>Relationer</h5>
                         <div>
-                          Hun er gift med Morten Groenbaek. Hendes far hedder Per. Han er dement.
+                          {{contact.relations}}
                         </div>
                       </td>
                       <td>
                         <h5>Email</h5>
                         <div>
-                          janne@sublim.dk
+                          <ul template iterate="value in contact.emailAddressList">
+                            <li>{{value}}</li>
+                          </ul>
                         </div>
                       </td>
                     </tr>
@@ -221,13 +233,15 @@
                       <td>
                         <h5>Info</h5>
                         <div>
-                          Ting og sager.
+                          {{contact.info}}
                         </div>
                       </td>
                       <td>
                         <h5>Backup</h5>
                         <div>
-                          Jens Hansen og Hans Jensen.
+                          <ul template iterate="value in contact.backupList">
+                            <li>{{value}}</li>
+                          </ul>
                         </div>
                       </td>
                     </tr>

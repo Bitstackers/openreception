@@ -12,29 +12,14 @@ class ContactInfo extends WebComponent {
 
   @observable model.Contact contact = model.nullContact;
 
-  void inserted() {
-    //_queryElements();
-    //_registerEventListeners();
-    //_resize();
+  void created() {
     _registerObservers();
-  }
-
-  void _queryElements() {
-
-  }
-
-  void _registerEventListeners() {
-    window.onResize.listen((_) => _resize());
   }
 
   void _registerObservers() {
     observe(() => environment.organization, (_) {
       contact = environment.organization.current.contactList.first;
     });
-  }
-
-  void _resize() {
-    //this.query('[name="foo"]').style.height = '70%';
   }
 
   void select(Event event) {
