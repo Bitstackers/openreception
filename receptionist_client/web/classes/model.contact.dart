@@ -24,14 +24,66 @@ class Contact implements Comparable{
   CalendarEventList _calendarEventList = nullCalendarEventList;
   CalendarEventList get calendarEventList => _calendarEventList;
 
+  MiniboxList _backupList = nullMiniboxList;
+  MiniboxList get backupList => _backupList;
+
+  MiniboxList _emailAddressList = nullMiniboxList;
+  MiniboxList get emailAddressList => _emailAddressList;
+
+  MiniboxList _handlingList = nullMiniboxList;
+  MiniboxList get handlingList => _handlingList;
+
+  MiniboxList _telephoneNumberList = nullMiniboxList;
+  MiniboxList get telephoneNumberList => _telephoneNumberList;
+
+  MiniboxList _workHoursList = nullMiniboxList;
+  MiniboxList get workHoursList => _workHoursList;
+
+  String department = '';
   int id;
+  String info = '';
   bool isHuman;
-  String name;
+  String name = '';
+  String position = '';
+  String relations = '';
+  String responsibility = '';
 
   Contact(Map json) {
     id = json['contact_id'];
     isHuman = json['is_human'];
     name = json['full_name'];
+
+    if(json.containsKey('attributes')) {
+      Map attributes = json['attributes'][0];
+
+      if(attributes.containsKey('backup')) {
+        _backupList = new MiniboxList(attributes['backup']);
+      } else {
+        // Log bad json? Check schema somewhere else?
+      }
+
+      if(attributes.containsKey('emailaddresses')) {
+        _emailAddressList = new MiniboxList(attributes['emailaddresses']);
+      }
+
+      if(attributes.containsKey('handling')) {
+        _handlingList = new MiniboxList(attributes['handling']);
+      }
+
+      if(attributes.containsKey('telephonenumbers')) {
+        _telephoneNumberList = new MiniboxList(attributes['telephonenumbers']);
+      }
+
+      if(attributes.containsKey('workhours')) {
+        _workHoursList = new MiniboxList(attributes['workhours']);
+      }
+
+      department = attributes['department'];
+      info = attributes['info'];
+      position = attributes['position'];
+      relations = attributes['relations'];
+      responsibility = attributes['responsibility'];
+    }
 
     // Add some dummy calendar events
     List tempEvents = new List();
