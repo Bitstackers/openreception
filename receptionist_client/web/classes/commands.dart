@@ -31,10 +31,10 @@ import 'storage.dart' as storage;
  *
  * If successful it then sets the environment to the call.
  */
-void pickupCall(int id) {
-  log.info('Sending request to pickup ${id.toString()}');
+void pickupCall(model.Call call) {
+  log.info('Sending request to pickup ${call.id.toString()}');
 
-  protocol.pickupCall(configuration.agentID, callId: id.toString())
+  protocol.pickupCall(configuration.agentID, callId: call.id.toString())
       .then((protocol.Response response){
         switch (response.status){
           case protocol.Response.OK:
@@ -79,22 +79,22 @@ void _pickupCallSuccess(Map response) {
 //TODO check up on the documentation. Today 20 feb 2013. did it wrongly say:
 //     POST /call/hangup[?call_id=<call_id>]
 //The call_id was not optional.
-void hangupCall(int callId){
-  log.debug('The command hangupCall is called with callid: ${callId}');
-  protocol.hangupCall(callId:callId.toString())
+void hangupCall(model.Call call){
+  log.debug('The command hangupCall is called with callid: ${call.id}');
+  protocol.hangupCall(callId:call.id.toString())
     .then((protocol.Response response) {
       switch(response.status){
         case protocol.Response.OK:
-          log.debug('Hangup call: ${callId} successed');
+          log.debug('Hangup call: ${call.id} successed');
           environment.organization.set(model.nullOrganization);
           break;
 
         case protocol.Response.NOTFOUND:
-          log.debug('There were no call to hangup with Callid: ${callId}');
+          log.debug('There were no call to hangup with Callid: ${call.id}');
           break;
 
         default:
-          log.error('There were an error with hangup. Callid: ${callId}');
+          log.error('There were an error with hangup. Callid: ${call.id}');
       }
     });
 }
