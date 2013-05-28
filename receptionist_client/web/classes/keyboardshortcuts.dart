@@ -16,7 +16,7 @@
 part of keyboard;
 
 class KeyboardShortcuts{
-  Map<int, Callback> _collection = <int, Callback>{};
+  Map<int, Callback> _collection = new Map<int, Callback>();
 
   /**
    * Adds the callback with the [key]. Overwrites if allready present.

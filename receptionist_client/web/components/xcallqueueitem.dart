@@ -19,6 +19,6 @@ class CallQueueItem extends WebComponent {
 
   void pickupcallHandler() {
     log.debug('pickupcallHandler');
-    command.pickupCall(call.id);
+    command.pickupCall(call);
   }
 }
