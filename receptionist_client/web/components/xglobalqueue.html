@@ -3,6 +3,7 @@
 <html>
   <head>
     <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="xcallqueueitem.html">
   </head>
   <body>
     <element name="x-global-queue" constructor="GlobalQueue" extends="span" apply-author-styles>
@@ -10,35 +11,42 @@
         .placing {
           position: absolute;
           top: 52%;
-          left: 78.5%;
+          left: 79%;
           height: 30%;
-          width: 21.5%;
+          width: 21%;
         }
 
         .container {
-          margin: 10px;
-          height: -moz-calc(100% - 20px);
-          height: -webkit-calc(100% - 20px);
-          width: -moz-calc(100% - 20px);
-          width: -webkit-calc(100% - 20px);
+          height: 100%;
+          width: 100%;
           overflow: auto;
-          /*border: solid 1px red;*/
+          font-size: 0.9em;
+        }
+
+        .zebra {
+          list-style-type: none;
+          width: 100%;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
         }
       </style>
 
       <template>
         <x-box-with-header class="placing">
           <span name="boxheader" class="header">
-            GlobalQueue Header
+            {{title}}
+            <span style="float: right">
+              <button on-click="pickupnextcallHandler()" disabled="{{pickupButtonDisabled}}">Pickup</button>
+              <button on-click="hangupcallHandler()" disabled="{{hangupButtonDisabled}}">Hangup</button>
+              <button on-click="holdcallHandler()" disabled="{{holdButtonDisabled}}">Hold</button>
+            </span>
           </span>
 
           <div name="boxcontent" class="container">
-            GlobalQueue Content
-            <button on-click="pickupnextcallHandler()" disabled="{{pickupButtonDisabled}}">Pickup Next Call</button>
-            <button on-click="hangupcallHandler()" disabled="{{hangupButtonDisabled}}">Hangup</button>
-            <button on-click="holdcallHandler()" disabled="{{holdButtonDisabled}}">Hold</button>
-            <ul template iterate="call in calls">
-              <li on-click="pickupcallHandler($event)" value="{{call.id}}"> Callid: {{call.id}} </li>
+            <ul template iterate="call in calls" class="zebra">
+              <x-call-queue-item call="{{call}}"></x-call-queue-item>
             </ul>
           </div>
         </x-box-with-header>

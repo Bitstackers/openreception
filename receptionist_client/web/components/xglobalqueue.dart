@@ -1,9 +1,10 @@
 import 'dart:html';
 import 'dart:json' as json;
 
+import 'package:intl/intl.dart';
 import 'package:web_ui/web_ui.dart';
 
-import '../classes/commands.dart';
+import '../classes/commands.dart' as command;
 import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
@@ -11,37 +12,44 @@ import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 class GlobalQueue extends WebComponent {
+  String title = 'Global kø';
   @observable bool pickupButtonDisabled = false;
   @observable bool hangupButtonDisabled = true;
   @observable bool holdButtonDisabled   = true;
 
-  List<model.Call> calls = toObservable(new List<model.Call>());
+  List<model.Call> calls = toObservable(<model.Call>[]);
 
-  void inserted(){
+  void created() {
     _initialFill();
     _registerSubscribers();
   }
 
   void _initialFill() {
-    protocol.callQueue()
-        .then((protocol.Response response){
-          switch(response.status){
-            case protocol.Response.OK:
-              Map callsjson = response.data;
-              log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
-              for (var call in callsjson['calls']) {
-                calls.add(new model.Call(call));
-              }
-              break;
-
-            case protocol.Response.NOTFOUND:
-              log.debug('Initial Filling of callqueue. Request returned empty.');
-              break;
-
-            default:
-              //TODO do something.
+    protocol.callQueue().then((protocol.Response response) {
+      switch(response.status){
+        case protocol.Response.OK:
+          Map callsjson = response.data;
+          log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
+          for (var call in callsjson['calls']) {
+            calls.add(new model.Call(call));
           }
-        });
+          break;
+
+        case protocol.Response.NOTFOUND:
+          log.debug('Initial Filling of callqueue. Request returned empty.');
+          break;
+
+        default:
+          //TODO do something.
+      }
+    });
+
+    // dummy calls
+    calls.add(new model.Call({'id':'2','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
+    calls.add(new model.Call({'id':'3','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:5)))}'}));
+    calls.add(new model.Call({'id':'1','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:12)))}'}));
+
+    calls.sort();
   }
 
   void _registerSubscribers() {
@@ -51,9 +59,9 @@ class GlobalQueue extends WebComponent {
   }
 
   void _queueJoin(Map json) {
-    var call = new model.Call(json['call']);
-
-    calls.add(call);
+    calls.add(new model.Call(json['call']));
+    // Should we sort again, or can we expect that calls joining the queue are
+    // always younger then the calls already in the queue?
   }
 
   void _queueLeave(Map json) {
@@ -73,29 +81,18 @@ class GlobalQueue extends WebComponent {
     holdButtonDisabled = call == null || call == model.nullCall;
   }
 
-  void pickupcallHandler(Event e) {
-    log.debug('pickupcallHandler');
-    var element = e.target as LIElement;
-    //if for some strange reason the element is not a LIElement.
-    if (element == null){
-      log.error('pickupcallHandler is called but the target was null');
-    }
-    var callId = element.value;
-    pickupCall(callId);
-  }
-
   void pickupnextcallHandler() {
     log.debug('pickupnextcallHandler');
-    pickupNextCall();
+    command.pickupNextCall();
   }
 
   void hangupcallHandler() {
     log.debug('hangupcallHandler');
-    hangupCall(environment.call.current.id);
+    command.hangupCall(environment.call.current);
   }
 
   void holdcallHandler() {
     log.debug('holdcallHandler');
-    hangupCall(environment.call.current.id);
+    command.hangupCall(environment.call.current);
   }
 }

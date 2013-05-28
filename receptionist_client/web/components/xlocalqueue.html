@@ -3,6 +3,7 @@
 <html>
   <head>
     <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="xcallqueueitem.html">
   </head>
   <body>
     <element name="x-local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
@@ -10,30 +11,38 @@
         .placing {
           position: absolute;
           top: 84%;
-          left: 78.5%;
+          left: 79%;
           height: 16%;
-          width: 21.5%;
+          width: 21%;
         }
 
         .container {
-          margin: 10px;
-          height: -moz-calc(100% - 20px);
-          height: -webkit-calc(100% - 20px);
-          width: -moz-calc(100% - 20px);
-          width: -webkit-calc(100% - 20px);
+          height: 100%;
+          width: 100%;
           overflow: auto;
-          /*border: solid 1px red;*/
+          font-size: 0.9em;
+        }
+
+        .zebra {
+          list-style-type: none;
+          width: 100%;
+        }
+
+        .zebra li:nth-of-type(even) {
+          background-color: #eee;
         }
       </style>
 
       <template>
         <x-box-with-header class="placing">
           <span name="boxheader" class="header">
-            LocalQueue Header
+            {{title}}
           </span>
 
           <div name="boxcontent" class="container">
-            LocalQueue Content
+            <ul template iterate="call in calls" class="zebra">
+              <x-call-queue-item call="{{call}}"></x-call-queue-item>
+            </ul>
           </div>
         </x-box-with-header>
       </template>

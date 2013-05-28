@@ -20,7 +20,8 @@ final Call nullCall = new Call._null();
 /**
  * TODO comment, write this when the class have more to it, then a simple map.
  */
-class Call{
+class Call implements Comparable {
+  DateTime start;
   Map _call;
   Map get content => _call;
 
@@ -33,11 +34,15 @@ class Call{
 
     //TODO Parsing should not be necessary when the json is stabile.
     id = int.parse(json['id']);
+    start = DateTime.parse(json['start']);
   }
 
   Call._null() {
     _call = null;
+    start = new DateTime.now();
   }
+
+  int compareTo(Call other) => start.compareTo(other.start);
 
   String toString() => _call.toString();
 }
