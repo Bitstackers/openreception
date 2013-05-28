@@ -22,40 +22,17 @@ final Organization nullOrganization = new Organization._null();
  */
 class Organization implements Comparable{
   MiniboxList _addressList = nullMiniboxList;
-  MiniboxList get addressList => _addressList;
-
   MiniboxList _alternateNameList = nullMiniboxList;
-  MiniboxList get alternateNameList => _alternateNameList;
-
   MiniboxList _bankingInformationList = nullMiniboxList;
-  MiniboxList get bankingInformationList => _bankingInformationList;
-
   ContactList _contactList = nullContactList;
-  ContactList get contactList => _contactList;
-
   CalendarEventList _calendarEventList = nullCalendarEventList;
-  CalendarEventList get calendarEventList => _calendarEventList;
-
   MiniboxList _crapcallHandlingList = nullMiniboxList;
-  MiniboxList get crapcallHandlingList => _crapcallHandlingList;
-
   MiniboxList _emailAddressList = nullMiniboxList;
-  MiniboxList get emailAddressList => _emailAddressList;
-
   MiniboxList _handlingList = nullMiniboxList;
-  MiniboxList get handlingList => _handlingList;
-
   MiniboxList _openingHoursList = nullMiniboxList;
-  MiniboxList get openingHoursList => _openingHoursList;
-
   MiniboxList _registrationNumberList = nullMiniboxList;
-  MiniboxList get registrationNumberList => _registrationNumberList;
-
   MiniboxList _telephoneNumberList = nullMiniboxList;
-  MiniboxList get telephoneNumberList => _telephoneNumberList;
-
   MiniboxList _websiteList = nullMiniboxList;
-  MiniboxList get websiteList => _websiteList;
 
   String customerType = '';
   String greeting = '';
@@ -63,6 +40,19 @@ class Organization implements Comparable{
   String name = '';
   String other = '';
   String product = '';
+
+  MiniboxList       get addressList => _addressList;
+  MiniboxList       get alternateNameList => _alternateNameList;
+  MiniboxList       get bankingInformationList => _bankingInformationList;
+  ContactList       get contactList => _contactList;
+  CalendarEventList get calendarEventList => _calendarEventList;
+  MiniboxList       get crapcallHandlingList => _crapcallHandlingList;
+  MiniboxList       get emailAddressList => _emailAddressList;
+  MiniboxList       get handlingList => _handlingList;
+  MiniboxList       get openingHoursList => _openingHoursList;
+  MiniboxList       get registrationNumberList => _registrationNumberList;
+  MiniboxList       get telephoneNumberList => _telephoneNumberList;
+  MiniboxList       get websiteList => _websiteList;
 
   Organization(Map json) {
     if(json.containsKey('addresses')) {

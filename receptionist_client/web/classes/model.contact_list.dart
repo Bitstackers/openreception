@@ -28,11 +28,10 @@ class ContactList extends IterableBase<Contact>{
     _list.sort();
   }
 
-  ContactList._null();
+  Contact           get first => _list.length > 0 ? _list.first : nullContact;
+  Iterator<Contact> get iterator => _list.iterator;
 
-  Contact get first {
-    return _list.length > 0 ? _list.first : nullContact;
-  }
+  ContactList._null();
 
   Contact getContact(int id) {
     for(Contact contact in _list) {
@@ -43,6 +42,4 @@ class ContactList extends IterableBase<Contact>{
 
     return nullContact;
   }
-
-  Iterator<Contact> get iterator => _list.iterator;
 }

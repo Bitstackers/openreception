@@ -12,12 +12,12 @@ import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 class GlobalQueue extends WebComponent {
-  String title = 'Global kø';
-  @observable bool pickupButtonDisabled = false;
+  List<model.Call> calls = toObservable(<model.Call>[]);
   @observable bool hangupButtonDisabled = true;
   @observable bool holdButtonDisabled   = true;
+  @observable bool pickupButtonDisabled = false;
 
-  List<model.Call> calls = toObservable(<model.Call>[]);
+  String title = 'Global kø';
 
   void created() {
     _initialFill();

@@ -10,9 +10,9 @@ import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 class LocalQueue extends WebComponent {
-  String title = 'Lokal kø';
-
   List<model.Call> calls = toObservable(<model.Call>[]);
+
+  String title = 'Lokal kø';
 
   void created() {
     _initialFill();

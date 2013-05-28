@@ -50,17 +50,17 @@ class _Configuration {
   String _standardGreeting;
   int _userLogSizeLimit = 100000;
 
-  int get agentID => _agentID;
-  Uri get aliceBaseUrl => _aliceBaseUrl;
-  bool get loaded => _loaded;
-  Uri get notificationSocketInterface => _notificationSocketInterface;
-  int get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
-  Level get serverLogLevel => _serverLogLevel;
-  Uri get serverLogInterfaceCritical => _serverLogInterfaceCritical;
-  Uri get serverLogInterfaceError => _serverLogInterfaceError;
-  Uri get serverLogInterfaceInfo => _serverLogInterfaceInfo;
+  int    get agentID => _agentID;
+  Uri    get aliceBaseUrl => _aliceBaseUrl;
+  bool   get loaded => _loaded;
+  Uri    get notificationSocketInterface => _notificationSocketInterface;
+  int    get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
+  Level  get serverLogLevel => _serverLogLevel;
+  Uri    get serverLogInterfaceCritical => _serverLogInterfaceCritical;
+  Uri    get serverLogInterfaceError => _serverLogInterfaceError;
+  Uri    get serverLogInterfaceInfo => _serverLogInterfaceInfo;
   String get standardGreeting => _standardGreeting;
-  int get userLogSizeLimit => _userLogSizeLimit;
+  int    get userLogSizeLimit => _userLogSizeLimit;
 
   /**
    * Constructor

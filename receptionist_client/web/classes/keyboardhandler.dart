@@ -32,27 +32,19 @@ final _Keyboardhandler keyboardHandler = new _Keyboardhandler();
 
 /**
  * Class to handler keyboard events, and activate the right keyboardshortcuts.
+ *
+ * [global] shortcuts are always active.
+ *
  */
 class _Keyboardhandler{
-  /**
-   * Global shortcuts are always active.
-   */
-  KeyboardShortcuts global;
-
-  /**
-   * TODO Comment
-   */
-  KeyboardShortcuts context;
-
-  /**
-   * TODO Comment
-   */
-  KeyboardShortcuts widget;
-
   int _locked = null;
 
+  KeyboardShortcuts context;
+  KeyboardShortcuts global;
+  KeyboardShortcuts widget;
+
   /**
-   * Private constructor to make sure there is only one instance of it.
+   * TODO comment
    */
   _Keyboardhandler() {
     log.debug('keyboardHanlder Initialized');

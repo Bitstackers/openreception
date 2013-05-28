@@ -75,7 +75,7 @@ class _Call{
  * but contexts cannot be removed or the list cleared.
  */
 class _ContextList extends IterableBase<Context>{
-  List<Context> _list = toObservable(new List<Context>());
+  List<Context> _list = toObservable(<Context>[]);
 
   Iterator<Context> get iterator => _list.iterator;
 
@@ -87,7 +87,7 @@ class _ContextList extends IterableBase<Context>{
 
   void decreaseAlert(String contextId) {
     for (var context in _list) {
-      if (contextId == context.id) { // ???? Master Joda. 2 == context.id
+      if (context.id == contextId) {
         context.decreaseAlert();
       }
     }
@@ -95,7 +95,7 @@ class _ContextList extends IterableBase<Context>{
 
   void increaseAlert(String contextId) {
     for (var context in _list) {
-      if (contextId == context.id) {
+      if (context.id == contextId) {
         context.increaseAlert();
       }
     }

@@ -21,11 +21,13 @@ final Call nullCall = new Call._null();
  * TODO comment, write this when the class have more to it, then a simple map.
  */
 class Call implements Comparable {
-  DateTime start;
   Map _call;
-  Map get content => _call;
 
   int id = -1;
+  DateTime start;
+
+  Map get content => _call;
+
   /**
    * TODO comment
    */

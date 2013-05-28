@@ -37,7 +37,6 @@ final Log log = new Log._internal();
  * [Log] is a class to manage the logging system.
  */
 class Log{
-  final Logger _logger = new Logger("Bob");
   /**
    * Loglevels that represent the levels on the server side.
    */
@@ -45,6 +44,11 @@ class Log{
   static const INFO = const Level('Info', 800);
   static const ERROR = const Level('Error', 1000);
   static const CRITICAL = const Level('Critical', 1200);
+
+  final Logger _logger = new Logger("Bob");
+  final StreamController<UserlogRecord> _userlog = new StreamController<UserlogRecord>();
+
+  Stream<UserlogRecord> get onUserlogMessage => _userlog.stream;
 
   Log._internal() {
     _logger.onRecord.listen(_logSubscriber);
@@ -132,8 +136,4 @@ class Log{
     var log = new UserlogRecord(message);
     _userlog.sink.add(log);
   }
-
-  final StreamController<UserlogRecord> _userlog = new StreamController<UserlogRecord>();
-
-  Stream<UserlogRecord> get onUserlogMessage => _userlog.stream;
 }

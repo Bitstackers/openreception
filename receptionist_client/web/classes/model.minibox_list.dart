@@ -20,12 +20,12 @@ final MiniboxList nullMiniboxList = new MiniboxList._null();
 class MiniboxList extends IterableBase<MiniboxListItem>{
   List<MiniboxListItem> _list = <MiniboxListItem>[];
 
+  Iterator<MiniboxListItem> get iterator => _list.iterator;
+
   MiniboxList(List list) {
     list.forEach((json) => _list.add(new MiniboxListItem.fromJson(json)));
     _list.sort();
   }
 
   MiniboxList._null();
-
-  Iterator<MiniboxListItem> get iterator => _list.iterator;
 }

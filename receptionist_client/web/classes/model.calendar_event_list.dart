@@ -23,12 +23,12 @@ final CalendarEventList nullCalendarEventList = new CalendarEventList._null();
 class CalendarEventList extends IterableBase<CalendarEvent>{
   List<CalendarEvent> _list = <CalendarEvent>[];
 
+  Iterator<CalendarEvent> get iterator => _list.iterator;
+
   CalendarEventList(List events) {
     events.forEach((json) => _list.add(new CalendarEvent.fromJson(json)));
     _list.sort();
   }
 
   CalendarEventList._null();
-
-  Iterator<CalendarEvent> get iterator => _list.iterator;
 }

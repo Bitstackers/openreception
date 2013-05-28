@@ -21,23 +21,12 @@ final Contact nullContact = new Contact._null();
  * TODO comment
  */
 class Contact implements Comparable{
-  CalendarEventList _calendarEventList = nullCalendarEventList;
-  CalendarEventList get calendarEventList => _calendarEventList;
-
   MiniboxList _backupList = nullMiniboxList;
-  MiniboxList get backupList => _backupList;
-
+  CalendarEventList _calendarEventList = nullCalendarEventList;
   MiniboxList _emailAddressList = nullMiniboxList;
-  MiniboxList get emailAddressList => _emailAddressList;
-
   MiniboxList _handlingList = nullMiniboxList;
-  MiniboxList get handlingList => _handlingList;
-
   MiniboxList _telephoneNumberList = nullMiniboxList;
-  MiniboxList get telephoneNumberList => _telephoneNumberList;
-
   MiniboxList _workHoursList = nullMiniboxList;
-  MiniboxList get workHoursList => _workHoursList;
 
   String department = '';
   int id;
@@ -47,6 +36,13 @@ class Contact implements Comparable{
   String position = '';
   String relations = '';
   String responsibility = '';
+
+  MiniboxList       get backupList => _backupList;
+  CalendarEventList get calendarEventList => _calendarEventList;
+  MiniboxList       get emailAddressList => _emailAddressList;
+  MiniboxList       get handlingList => _handlingList;
+  MiniboxList       get telephoneNumberList => _telephoneNumberList;
+  MiniboxList       get workHoursList => _workHoursList;
 
   Contact(Map json) {
     id = json['contact_id'];
