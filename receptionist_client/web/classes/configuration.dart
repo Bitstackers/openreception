@@ -66,15 +66,9 @@ class _Configuration {
    * Constructor
    */
   _Configuration() {
-    var configUri = new Uri(_CONFIGURATION_URL);
-
-    HttpRequest.request(configUri.toString())
-    ..then(_onComplete,
-        onError: (error){
-          log.debug('Configuration request error');
-          log.critical('Configuration onError. ToStirng():${error} of type: ${error.runtimeType.toString()}');
-        })
-        .catchError((error) => log.critical('configuration exception. of type: ${error.runtimeType.toString()}'));
+    HttpRequest.request(_CONFIGURATION_URL)
+      .then(_onComplete)
+      .catchError(_onError);
   }
 
   /**
@@ -86,9 +80,17 @@ class _Configuration {
         _parseConfiguration(json.parse(req.responseText)['dart']);
         _loaded = true;
         break;
+
       default:
-        log.critical('/Configuration request failed with ${req.status}:${req.statusText}');
+        log.critical('Configuration ERROR ${_CONFIGURATION_URL} - ${req.status} - ${req.statusText}');
     }
+  }
+
+  /**
+   * TODO comment
+   */
+  void _onError(Object error) {
+    log.critical('Configuration ERROR ${error} - ${error.runtimeType.toString()}');
   }
 
   /**
@@ -122,12 +124,13 @@ class _Configuration {
         break;
     }
 
-    var criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
-    var errorPath = _stringValue(serverLogMap['interface'], 'error', '/log/error');
-    var infoPath = _stringValue(serverLogMap['interface'], 'info', '/log/info');
-
+    String criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
     _serverLogInterfaceCritical = new Uri('${aliceBaseUrl}${criticalPath}');
+
+    String errorPath = _stringValue(serverLogMap['interface'], 'error', '/log/error');
     _serverLogInterfaceError = new Uri('${aliceBaseUrl}${errorPath}');
+
+    String infoPath = _stringValue(serverLogMap['interface'], 'info', '/log/info');
     _serverLogInterfaceInfo = new Uri('${aliceBaseUrl}${infoPath}');
 
     _standardGreeting = _stringValue(json, 'standardGreeting', 'Velkommen til...');

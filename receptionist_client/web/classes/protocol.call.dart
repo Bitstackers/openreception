@@ -104,10 +104,9 @@ Future<Response> callQueue(){
 }
 
 /**
- * TODO FiX doc or code. Doc says that call_id is optional, Alice says that it's not. 20 Feb 2013
- * Makes a request to hangup a call.
+ * TODO comment
  */
-Future<Response> hangupCall({String callId}){
+Future<Response> hangupCall(model.Call call){
   assert(configuration.loaded);
 
   final completer = new Completer<Response>();
@@ -119,9 +118,7 @@ Future<Response> hangupCall({String callId}){
 
   List<String> fragments = new List<String>();
 
-  if (callId != null && !callId.isEmpty){
-    fragments.add('call_id=${callId}');
-  }
+  fragments.add('call_id=${call.id}');
 
   String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()

@@ -54,19 +54,16 @@ class _Call{
   * Replaces this environments call with [call].
   */
   void set(model.Call call) {
-    if (call == _call) {
-      return;
+    if (call != _call) {
+      _call = call;
+      log.info('Current Call ${call}');
+
+      _stream.sink.add(call);
+
+      if (_call != null && _call != model.nullCall){
+        log.user('Call answered ${_call.toString()}');
+      }
     }
-
-    _call = call;
-
-    log.info('The current call is changed to: ${call.toString()}');
-
-    if (_call != null && _call != model.nullCall){
-      log.user('Du fik opkaldet: ${_call.toString()}');
-    }
-
-    _stream.sink.add(call);
   }
 }
 
@@ -81,9 +78,7 @@ class _ContextList extends IterableBase<Context>{
 
   _ContextList();
 
-  void add(Context context) {
-    _list.add(context);
-  }
+  void add(Context context) => _list.add(context);
 
   void decreaseAlert(String contextId) {
     for (var context in _list) {
@@ -117,11 +112,9 @@ class _Organization{
    * Replaces this environments organization with [organization].
    */
   void set(model.Organization organization) {
-    if (organization == _organization) {
-      return;
+    if (organization != _organization) {
+      _organization = organization;
+      log.info('Current Organization ${organization}');
     }
-
-    _organization = organization;
-    log.info('Environment organization is changed to: ${organization.toString()}');
   }
 }

@@ -33,7 +33,7 @@ final _Notification notification = new _Notification();
  * A Class to handle all the notifications from Alice.
  */
 class _Notification {
-  var _eventHandlers = new Map<String, StreamController<Map>>();
+  Map<String, StreamController<Map>> _eventHandlers = new Map<String, StreamController<Map>>();
   Socket _socket;
 
   _Notification() {
@@ -42,13 +42,15 @@ class _Notification {
     Uri url = configuration.notificationSocketInterface;
     int reconnetInterval = configuration.notificationSocketReconnectInterval;
 
-    _socket = new Socket(url);
-    if (_socket == null){
-      throw new Exception('I used to be a Socket, but then i took an arrow to the knee.');
+    try {
+      _socket = new Socket(url);
+
+      _socket.onMessage.listen(_onMessage);
+      //TODO make better panichandler for onError.
+      _socket.onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
+    } catch(e) {
+      log.critical('_Notification() ERROR ${e}');
     }
-    _socket.onMessage.listen(_onMessage);
-    //TODO make better panichandler for onError.
-    _socket.onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
   }
 
   /**

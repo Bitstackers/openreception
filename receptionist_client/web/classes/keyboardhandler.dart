@@ -47,7 +47,7 @@ class _Keyboardhandler{
    * TODO comment
    */
   _Keyboardhandler() {
-    log.debug('keyboardHanlder Initialized');
+    log.debug('KeyboardHandler Initialized');
 
     window.onKeyDown.listen(_keyDown);
     window.onKeyUp.listen(_keyUp);
@@ -57,7 +57,7 @@ class _Keyboardhandler{
    * TODO comment
    */
   void _keyDown(KeyboardEvent event) {
-    var key = new KeyEvent(event);
+    KeyEvent key = new KeyEvent(event);
 
     if (_locked == null) {
       if (key.ctrlKey && key.altKey) {
@@ -83,7 +83,7 @@ class _Keyboardhandler{
    * TODO comment
    */
   void _keyUp(KeyboardEvent event) {
-    var key = new KeyEvent(event);
+    KeyEvent key = new KeyEvent(event);
 
     if (_locked == key.keyCode){
       _locked = null;

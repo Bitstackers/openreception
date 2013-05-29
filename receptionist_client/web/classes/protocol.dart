@@ -28,6 +28,7 @@ import 'package:meta/meta.dart';
 import 'common.dart';
 import 'configuration.dart';
 import 'logger.dart';
+import 'model.dart' as model;
 
 part 'protocol.agent.dart';
 part 'protocol.call.dart';
@@ -76,59 +77,59 @@ void _logError(HttpRequest request, String url) {
  * Class to contains the basics about a Protocol element,
  *  like [_url], and the HttpRequest [_request].
  */
-abstract class Protocol {
-  const String GET = "GET";
-  const String POST = "POST";
-
-  String _url;
-  HttpRequest _request;
-  bool _notSent = true;
-
-  /**
-   * Sends the request.
-   */
-  void send(){
-    if (_notSent) {
-      _request.send();
-      _notSent = false;
-    }
-  }
-
-  /**
-   * Makes a complete url from [base], [path] and the [fragments].
-   * Output: base + path + ? + fragment[0] + & + fragment[1] ...
-   */
-  String _buildUrl(String base, String path, [List<String> fragments]){
-    var SB = new StringBuffer();
-    var url = '${base}${path}';
-
-    if (?fragments && fragments != null && !fragments.isEmpty){
-      SB.write('?${fragments.first}');
-      fragments.skip(1).forEach((fragment) => SB.write('&${fragment}'));
-    }
-
-    log.debug('buildurl: ${url}${SB.toString()}');
-    return '${url}${SB.toString()}';
-  }
-
-  /**
-   * Validates and parses String in JSON format to a Map.
-   */
-  Map parseJson(String responseText) {
-    try {
-      return json.parse(responseText);
-    } catch(e) {
-      log.critical('Protocol.toJSON exception: ${e}');
-      return null;
-    }
-  }
-
-  void _logError() {
-    log.critical('Protocol.${this.runtimeType} failed. Status: [${_request.status}] URL: ${_url}');
-  }
-
-  void onResponse(responseCallback callback);
-}
+//abstract class Protocol {
+//  const String GET = "GET";
+//  const String POST = "POST";
+//
+//  String _url;
+//  HttpRequest _request;
+//  bool _notSent = true;
+//
+//  /**
+//   * Sends the request.
+//   */
+//  void send(){
+//    if (_notSent) {
+//      _request.send();
+//      _notSent = false;
+//    }
+//  }
+//
+//  /**
+//   * Makes a complete url from [base], [path] and the [fragments].
+//   * Output: base + path + ? + fragment[0] + & + fragment[1] ...
+//   */
+//  String _buildUrl(String base, String path, [List<String> fragments]){
+//    var SB = new StringBuffer();
+//    var url = '${base}${path}';
+//
+//    if (?fragments && fragments != null && !fragments.isEmpty){
+//      SB.write('?${fragments.first}');
+//      fragments.skip(1).forEach((fragment) => SB.write('&${fragment}'));
+//    }
+//
+//    log.debug('buildurl: ${url}${SB.toString()}');
+//    return '${url}${SB.toString()}';
+//  }
+//
+//  /**
+//   * Validates and parses String in JSON format to a Map.
+//   */
+//  Map parseJson(String responseText) {
+//    try {
+//      return json.parse(responseText);
+//    } catch(e) {
+//      log.critical('Protocol.toJSON exception: ${e}');
+//      return null;
+//    }
+//  }
+//
+//  void _logError() {
+//    log.critical('Protocol.${this.runtimeType} failed. Status: [${_request.status}] URL: ${_url}');
+//  }
+//
+//  void onResponse(responseCallback callback);
+//}
 
 /**
  * TODO comment.

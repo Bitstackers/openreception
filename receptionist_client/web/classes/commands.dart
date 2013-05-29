@@ -43,6 +43,10 @@ void hangupCall(model.Call call) {
     switch(response.status){
       case protocol.Response.OK:
         log.debug('hangupCall OK ${call.id}');
+
+        // Obviously we don't want to reset the organization on every hangup, but for
+        // now this is here to remind us to do _something_ on hangup. I suspect
+        // resetting to nullOrganization will become annoying when the time comes.  :D
         environment.organization.set(model.nullOrganization);
         break;
 

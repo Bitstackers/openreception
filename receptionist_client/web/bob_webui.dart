@@ -40,7 +40,7 @@ void main() {
     log.info('configuration loaded.');
     initializeCallHandler();
     _setupGlobalShortcuts();
-  }).catchError((error) => log.critical('Bob main exception: ${error.toString()}'));
+  }).catchError((error) => log.critical('Bob main exception: ${error}'));
 
 }
 

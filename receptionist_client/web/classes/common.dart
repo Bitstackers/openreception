@@ -26,7 +26,6 @@ typedef void responseCallback(protocol.Response response);
 typedef void Callback();
 typedef void OrganizationSubscriber (model.Organization organization);
 typedef void OrganizationListSubscriber (model.OrganizationList organizationList);
-typedef void CallSubscriber (model.Call call);
 
 class TimeoutException implements Exception {
   final String message;

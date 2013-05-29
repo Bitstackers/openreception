@@ -26,6 +26,8 @@ import 'dart:uri';
 import 'common.dart';
 import 'logger.dart';
 
+final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
+
 class _ConnectionManager{
   var connections = new List<Socket>();
   const MAX_TICKS = 3;
@@ -38,8 +40,7 @@ class _ConnectionManager{
   _ConnectionManager(Duration reconnectInterval) {
     new Timer.periodic  (reconnectInterval,(timer) {
       for (var connection in connections) {
-        if (connection.dead) {
-
+        if (connection.isDead) {
           if (connection._connectTicks == 0) {
             log.critical('${connection.toString()} is dead');
             connection._reconnect();
@@ -59,40 +60,46 @@ class _ConnectionManager{
   }
 }
 
-final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
-
 /**
  * A generic Websocket, that reconnects itself.
  */
 class Socket{
   WebSocket _channel;
-  StreamController<Map> _messageStream = new StreamController<Map>();
-  StreamController<Map> _errorStream = new StreamController<Map>();
-  final String _url;
-
   int _connectTicks = 0;
+  StreamController<Map> _errorStream = new StreamController<Map>();
+  StreamController<Map> _messageStream = new StreamController<Map>();
+  final Uri _url;
+
+  bool get isDead => _channel == null || _channel.readyState != WebSocket.OPEN;
+  Stream<Map> get onError => _errorStream.stream.asBroadcastStream();
+  Stream<Map> get onMessage => _messageStream.stream.asBroadcastStream();
+
+  /**
+   * Open a websocket on [url].
+   *
+   * Throws an [Exception] if [url] is not an absolute URL.
+   */
+  factory Socket(Uri url){
+    if (url.isAbsolute) {
+      Socket socket = new Socket._internal(url);
+
+      socket._connectTicks = 1;
+      _connectionManager.addConnection(socket);
+
+      return socket;
+    } else {
+      log.critical('Socket ERROR BAD URL ${url.toString()}');
+      throw new Exception('Socket() ERROR BAD URL');
+    }
+  }
 
   Socket._internal(this._url){
     _connector();
   }
 
-  /**
-   * Open a websocket on [url].
-   */
-  factory Socket(Uri url){
-    if (url.isAbsolute) {
-      var socket = new Socket._internal(url.toString());
-      socket._connectTicks = 1;
-      _connectionManager.addConnection(socket);
-      return socket;
-    } else {
-      log.critical('${url.toString()} is not valid.');
-    }
-  }
-
   void _connector() {
     log.info('Opening websocket on ${_url}');
-    _channel = new WebSocket(_url);
+    _channel = new WebSocket(_url.toString());
     _channel.onOpen.listen((_) => _connectTicks = 0);
     _channel.onMessage.listen(_onMessage);
     _channel.onError.listen(_onError);
@@ -103,35 +110,17 @@ class Socket{
     });
   }
 
-  /**
-   * Checks if the socket is dead.
-   */
-  bool get dead => _channel == null || _channel.readyState != WebSocket.OPEN;
-
   void _onError (event) {
     log.critical(event.toString());
-
     _errorStream.sink.add({'error': 'Error on connection'});
   }
-
-  /**
-   * returns [_errorStream] for subscribers.
-   */
-  Stream<Map> get onError => _errorStream.stream.asBroadcastStream();
 
   void _onMessage(MessageEvent event) {
     log.info('Notification message: ${event.data}');
     _messageStream.sink.add(json.parse(event.data));
   }
 
-  /**
-   * returns [_messageStream] for subscribers.
-   */
-  Stream<Map> get onMessage => _messageStream.stream.asBroadcastStream();
-
   void _reconnect() => _connector();
 
-  String toString() {
-    return _url;
-  }
+  String toString() => _url.toString();
 }
