@@ -26,83 +26,60 @@ import 'model.dart' as model;
 import 'protocol.dart' as protocol;
 import 'storage.dart' as storage;
 
-/**
- * Sends a request to Alice, to pickup the call for this Agent.
- *
- * If successful it then sets the environment to the call.
- */
-void pickupCall(model.Call call) {
-  log.info('Sending request to pickup ${call.id.toString()}');
-
-  protocol.pickupCall(configuration.agentID, callId: call.id.toString())
-      .then((protocol.Response response){
-        switch (response.status){
-          case protocol.Response.OK:
-            _pickupCallSuccess(response.data);
-            break;
-
-          default:
-            //TODO do something.
-        }
-      });
-}
-
-void pickupNextCall() {
-  log.info('Sending request to pickup the next call');
-
-  protocol.pickupCall(configuration.agentID)
-    .then((protocol.Response response){
-      switch (response.status){
-        case protocol.Response.OK:
-          _pickupCallSuccess(response.data);
-          break;
-
-        default:
-          //TODO do something.
-      }
-    });
-}
-
-void _pickupCallSuccess(Map response) {
-  log.info('pickupCall: ${response}');
-
-  if (!response.containsKey('organization_id')) {
-    log.critical('The call had no organization_id: ${response}');
-  }
-
-  int orgId = response['organization_id'];
-
-  storage.organization.get(orgId, (org) => environment.organization.set(org),
-      onError:() => log.critical('Pickup call. Could not fetch organization.'));
-}
+const CONTACTID_TYPE = 1;
+const PSTN_TYPE = 2;
+const SIP_TYPE = 3;
 
 //TODO check up on the documentation. Today 20 feb 2013. did it wrongly say:
 //     POST /call/hangup[?call_id=<call_id>]
 //The call_id was not optional.
-void hangupCall(model.Call call){
-  log.debug('The command hangupCall is called with callid: ${call.id}');
-  protocol.hangupCall(callId:call.id.toString())
-    .then((protocol.Response response) {
-      switch(response.status){
-        case protocol.Response.OK:
-          log.debug('Hangup call: ${call.id} successed');
-          environment.organization.set(model.nullOrganization);
-          break;
+/**
+ * TODO comment
+ */
+void hangupCall(model.Call call) {
+  log.debug('hangupCall ${call.id}');
 
-        case protocol.Response.NOTFOUND:
-          log.debug('There were no call to hangup with Callid: ${call.id}');
-          break;
+  protocol.hangupCall(call).then((protocol.Response response) {
+    switch(response.status){
+      case protocol.Response.OK:
+        log.debug('hangupCall OK ${call.id}');
+        environment.organization.set(model.nullOrganization);
+        break;
 
-        default:
-          log.error('There were an error with hangup. Callid: ${call.id}');
-      }
-    });
+      case protocol.Response.NOTFOUND:
+        log.debug('hangupCall NOT FOUND ${call.id}');
+        break;
+
+      default:
+        log.error('hangupCall ERROR ${call.id}');
+    }
+  });
 }
 
-const CONTACTID_TYPE = 1;
-const PSTN_TYPE = 2;
-const SIP_TYPE = 3;
-void originateCall(String address, int type){
+/**
+ * TODO comment
+ */
+void holdCall(int callId) {
+  protocol.holdCall(callId).then((protocol.Response response) {
+    switch(response.status) {
+      case protocol.Response.OK:
+        log.debug('holdCall OK ${callId}');
+        break;
+
+      case protocol.Response.NOTFOUND:
+        log.info('holdCall NOT FOUND  ${callId}');
+        break;
+
+      default:
+        //TODO Do something.
+    }
+  });
+}
+
+/**
+ * TODO comment
+ */
+void originateCall(String address, int type) {
   int agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
 
@@ -120,46 +97,83 @@ void originateCall(String address, int type){
       break;
 
     default:
-      log.error('Invalid originate type: ${type}');
+      log.error('originateCall INVALID TYPE ${type}');
       return;
   }
 
-  originateCallRequest
-      .then((protocol.Response response) {
-        switch(response.status) {
-          default:
-            //TODO Do something.
-        }
-      });
+  originateCallRequest.then((protocol.Response response) {
+    switch(response.status) {
+      default:
+        //TODO Do something.
+    }
+  });
 }
 
-void transferCall(int callId){
-  protocol.transferCall(callId)
-      .then((protocol.Response response) {
-        switch(response.status) {
-          default:
-            //TODO Do something.
-        }
-      });
+/**
+ * Sends a request to Alice, to pickup the call for this Agent.
+ *
+ * If successful it then sets the environment to the call.
+ */
+void pickupCall(model.Call call) {
+  log.debug('pickupCall ${call.id}');
+
+  protocol.pickupCall(configuration.agentID, callId: call.id.toString()).then((protocol.Response response) {
+    switch (response.status){
+      case protocol.Response.OK:
+        log.debug('pickupCall OK ${call.id}');
+        _pickupCallSuccess(response.data);
+        break;
+
+      default:
+        //TODO do something.
+    }
+  });
 }
 
 /**
  * TODO comment
  */
-void holdCall(int callId){
-  protocol.holdCall(callId)
-    .then((protocol.Response response) {
-      switch(response.status) {
-        case protocol.Response.OK:
-          log.debug('The request to hold call: ${callId} succeeded');
-          break;
+void _pickupCallSuccess(Map response) {
+  log.info('pickupCall: ${response}');
 
-        case protocol.Response.NOTFOUND:
-          log.info('There is no call with id: ${callId} to hold.');
-          break;
+  if (response.containsKey('organization_id')) {
+    int orgId = response['organization_id'];
 
-        default:
-          //TODO Do something.
-      }
-    });
+    storage.organization.get(orgId, (org) => environment.organization.set(org),
+        onError:() => log.critical('pickupCall->storage.organization.get ERROR ${orgId}'));
+  } else {
+    log.critical('pickupCall NO organizatio_id KEY FOUND ${response}');
+    environment.organization.set(model.nullOrganization);
+  }
+}
+
+/**
+ * TODO comment
+ */
+void pickupNextCall() {
+  log.debug('pickupNextCall'); // TODO append agent information
+
+  protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
+    switch (response.status){
+      case protocol.Response.OK:
+        log.debug('pickupNextCall OK'); // TODO append agent information
+        _pickupCallSuccess(response.data);
+        break;
+
+      default:
+        //TODO do something.
+    }
+  });
+}
+
+/**
+ * TODO comment
+ */
+void transferCall(int callId) {
+  protocol.transferCall(callId).then((protocol.Response response) {
+    switch(response.status) {
+      default:
+        //TODO Do something.
+    }
+  });
 }
