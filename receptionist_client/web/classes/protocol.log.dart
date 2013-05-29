@@ -56,7 +56,7 @@ Future<Response> _log(String message, Uri url){
             break;
 
           case 400:
-            _logError();
+            _logError(request, url.toString());
             Map data = _parseJson(request.responseText);
             completer.complete(new Response(Response.ERROR, data));
             break;
@@ -66,7 +66,7 @@ Future<Response> _log(String message, Uri url){
         }
       })
       ..onError.listen((e) {
-        _logError(request, url);
+        _logError(request, url.toString());
         completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
       })
       ..send(payload);

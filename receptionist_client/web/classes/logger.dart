@@ -87,9 +87,9 @@ class Log{
    * Sends log message to Alice.
    */
   _serverLog(LogRecord record) {
-    var serverLogLevel = configuration.serverLogLevel;
+    Level serverLogLevel = configuration.serverLogLevel;
 
-    if (configuration.serverLogLevel <= record.level) {
+    if (serverLogLevel <= record.level) {
       String text = '${record.sequenceNumber} ${record.message}';
 
       if (record.level > Level.INFO && record.level <= Level.SEVERE) {
