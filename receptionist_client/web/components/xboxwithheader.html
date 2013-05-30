@@ -3,7 +3,7 @@
 <html>
   <body>
     <element name="x-box-with-header" constructor="BoxWithHeader" extends="span" apply-author-styles>
-      <style scoped>
+      <style>
         .outerbox {
           height: 100%;
           background-color: #fafafa;
@@ -21,10 +21,14 @@
           color: #444;
           font-weight: bold;
         }
+
+        .focusborder {
+          border: solid 2px red;
+        }
       </style>
 
       <template>
-        <div class="outerbox">
+        <div class="outerbox {{focusborder}}">
           <h1 class="headline">
             <content select="[name=boxheader]"></content>
           </h1>

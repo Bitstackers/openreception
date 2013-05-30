@@ -35,6 +35,8 @@ final _Call call = new _Call();
 final _ContextList contextList = new _ContextList();
 final _Organization organization = new _Organization();
 
+@observable String widgetFocus = '';
+
 /**
  * TODO comment
  */

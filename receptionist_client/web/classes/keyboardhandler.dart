@@ -18,81 +18,14 @@
  */
 library keyboard;
 
+import 'dart:async';
 import 'dart:html';
-
-import 'common.dart';
 import 'logger.dart';
 
-part 'keyboardshortcuts.dart';
+final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
 /**
- * The one and only [keyboardHandler].
- */
-final _Keyboardhandler keyboardHandler = new _Keyboardhandler();
-
-/**
- * Class to handler keyboard events, and activate the right keyboardshortcuts.
- *
- * [global] shortcuts are always active.
- *
- */
-class _Keyboardhandler{
-  int _locked = null;
-
-  KeyboardShortcuts context;
-  KeyboardShortcuts global;
-  KeyboardShortcuts widget;
-
-  /**
-   * TODO comment
-   */
-  _Keyboardhandler() {
-    log.debug('KeyboardHandler Initialized');
-
-    window.onKeyDown.listen(_keyDown);
-    window.onKeyUp.listen(_keyUp);
-  }
-
-  /**
-   * TODO comment
-   */
-  void _keyDown(KeyboardEvent event) {
-    KeyEvent key = new KeyEvent(event);
-
-    if (_locked == null) {
-      if (key.ctrlKey && key.altKey) {
-        int keyCode = key.keyCode;
-
-        log.debug('${keyCode} - Ctrl and Alt Down');
-
-        if (widget != null && widget.callIfPresent(keyCode)) {
-          _locked = keyCode;
-
-        }else if(context != null && context.callIfPresent(keyCode)) {
-          _locked = keyCode;
-
-        }else if(global != null && global.callIfPresent(keyCode)) {
-          log.debug('Global Keyboard ${key.keyCode}');
-          _locked = keyCode;
-        }
-      }
-    }
-  }
-
-  /**
-   * TODO comment
-   */
-  void _keyUp(KeyboardEvent event) {
-    KeyEvent key = new KeyEvent(event);
-
-    if (_locked == key.keyCode){
-      _locked = null;
-    }
-  }
-}
-
-/**
- * Contains keyboardskeys for making keyboardshortcuts.
+ * [Keys] is a simple mapping between constant literals and integer key codes.
  */
 class Keys{
   static const int UP = 38;
@@ -102,6 +35,10 @@ class Keys{
   static const int TWO = 50;
   static const int THREE = 51;
   static const int FOUR = 52;
+  static const int FIVE = 53;
+  static const int SIX = 54;
+  static const int SEVEN = 55;
+  static const int EIGHT = 56;
   static const int A = 65;
   static const int B = 66;
   static const int C = 67;
@@ -128,4 +65,108 @@ class Keys{
   static const int X = 88;
   static const int Y = 89;
   static const int Z = 90;
+}
+
+/**
+ * [_KeyboardHandler] handles sinking of keycodes on associated streams. User of
+ * this class may subscribe to these streams using the [onKeyName] method.
+ *
+ * Using this class guarantees that only ONE key event at a time is processed.
+ *
+ * NOTE: It is up to the users of this class to decide whether to react on a
+ * key events or not. This class merely dump the keycodes of fired key events on
+ * a stream.
+ */
+class _KeyboardHandler{
+  Map<int, String> _keyToName = new Map<int, String>();
+  Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
+  Map<String, Stream<int>> _StreamMap = new Map<String, Stream<int>>();
+  int _locked = null;
+
+  /**
+   * Initialize (setup named streams) and setup listeners for key events.
+   */
+  _KeyboardHandler() {
+    _initialize();
+
+    window.onKeyDown.listen(_keyDown);
+    window.onKeyUp.listen(_keyUp);
+
+    log.debug('KeyboardHandler ready');
+  }
+
+  /**
+   * Setup all the keys and their associated streams.
+   */
+  void _initialize() {
+    _keyToName[Keys.ONE]   = 'contexthome';
+    _keyToName[Keys.TWO]   = 'contextmessages';
+    _keyToName[Keys.THREE] = 'contextlog';
+    _keyToName[Keys.FOUR]  = 'contextstatistics';
+    _keyToName[Keys.FIVE]  = 'contextphone';
+    _keyToName[Keys.SIX]   = 'contextvoicemails';
+    _keyToName[Keys.SEVEN] = 'companyevents';
+    _keyToName[Keys.EIGHT] = 'companyhandling';
+    _keyToName[Keys.UP]    = 'arrowUp';
+    _keyToName[Keys.DOWN]  = 'arrowDown';
+
+    _keyToName.forEach((key, value) {
+      _StreamControllerMap[value] = new StreamController<int>();
+      _StreamMap[value] = _StreamControllerMap[value].stream.asBroadcastStream();
+    });
+  }
+
+  /**
+   * Sink a keyCode on a stream if proper conditions are met, ie. the keyCode
+   * has a stream associated and the proper contol keys are pressed.
+   *
+   * If the proper conditions are met, a keyCode is emitted on the stream and
+   * the class is then locked until a matching keyUp event has been fired. See
+   * [_keyUp].
+   */
+  void _keyDown(KeyboardEvent event) {
+    KeyEvent key = new KeyEvent(event);
+
+    if (_locked == null && (key.ctrlKey && key.altKey)) {
+      int keyCode = key.keyCode;
+
+      if(_keyToName.containsKey(keyCode)) {
+        _locked = keyCode;
+        _StreamControllerMap[_keyToName[keyCode]].sink.add(keyCode);
+        log.debug('Sinking key ${_keyToName[keyCode]}');
+      }
+    }
+  }
+
+  /**
+   * Unlocks the [_KeyboardHandler] class if the keyUp event match the keyCode
+   * that was used to lock the class in the first place.
+   */
+  void _keyUp(KeyboardEvent event) {
+    KeyEvent key = new KeyEvent(event);
+
+    if (_locked == key.keyCode){
+      _locked = null;
+    }
+  }
+
+  /**
+   * If [keyName] exists, return a broadcast stream. Else return null.
+   *
+   * User of this method should take care to handle null returns. Example:
+   *
+   *  try {
+   *    keyboardHandler.onKeyName(id).listen(_keyPress);
+   *  } catch(e) {
+   *    // handle null return.
+   *  }
+   */
+  Stream<int> onKeyName(String keyName) {
+    if (_StreamMap.containsKey(keyName)) {
+      return _StreamMap[keyName];
+    }
+
+    log.critical('Keyboardhandler onKeyName ERROR no key ${keyName}');
+    return null;
+  }
 }

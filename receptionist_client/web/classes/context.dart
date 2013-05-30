@@ -20,6 +20,8 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
+import 'keyboardhandler.dart';
+
 final StreamController<Context> _contextActivationStream = new StreamController<Context>();
 final Stream<Context> _onChange = _contextActivationStream.stream.asBroadcastStream();
 
@@ -36,14 +38,51 @@ class Context {
   bool   get alertMode => alertCounter > 0;
   String get id        => _element.id;
 
+  /**
+   * A [Context] is a top-level GUI container. It represents a collection of 0
+   * or more widgets that are hidden/unhidden depending on the activation state
+   * of the [Context].
+   */
   Context(Element this._element) {
     assert(_element != null);
 
     isActive = _element.classes.contains('hidden') ? false : true;
 
     _onChange.listen(_toggle);
+
+    keyboardHandler.onKeyName(id).listen(_keyPress);
   }
 
+  /**
+   * Activate this [Context].
+   */
+  void activate() => _contextActivationStream.sink.add(this);
+
+  /**
+   * Decrease the alert level for this [Context].
+   */
+  void decreaseAlert() {
+    if (alertCounter > 0) {
+      alertCounter--;
+    }
+  }
+
+
+  /**
+   * Increase the alert level for this [Context].
+   */
+  void increaseAlert() {
+    alertCounter++;
+  }
+
+  /**
+   * Activate this [Context] when the [id] keyboardshortcut fires.
+   */
+  void _keyPress(int keyCode) => activate();
+
+  /**
+   * Toogle this [Context] on/off.
+   */
   void _toggle(Context context) {
     if (context == this) {
       isActive = true;
@@ -53,8 +92,4 @@ class Context {
       _element.classes.add('hidden');
     }
   }
-
-  void activate() => _contextActivationStream.sink.add(this);
-  void decreaseAlert() => alertCounter > 0 ? alertCounter-- : null;
-  void increaseAlert() => alertCounter++;
 }

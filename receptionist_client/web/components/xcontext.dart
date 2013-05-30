@@ -7,7 +7,7 @@ import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
 
 class XContext extends WebComponent {
-  void inserted() {
+  void created() {
     environment.contextList.add(new Context(this));
   }
 }
