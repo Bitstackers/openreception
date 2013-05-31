@@ -29,12 +29,14 @@ class AgentInfo extends WebComponent {
   String       pausedLabel = 'pause';
   TableElement table;
 
+  void created() {
+    _initialSetup();
+    _registerEventListeners();
+  }
+
   void inserted(){
     _queryElements();
-    _registerEventListeners();
     _resize();
-    _initialSetup();
-    _registerSubscribers();
   }
 
   void _queryElements() {
@@ -66,37 +68,32 @@ class AgentInfo extends WebComponent {
   }
 
   void _initialSetup() {
-    protocol.agentList()
-    .then((protocol.Response response) {
-        switch(response.status) {
-          case protocol.Response.OK:
-            for (var agent in response.data['Agents']) {
-              switch(agent["state"]) {
-                case "busy":
-                case "idle":
-                  active++;
-                  break;
-                case "paused":
-                  paused++;
-                  break;
-              }
+    protocol.agentList().then((protocol.Response response) {
+      switch(response.status) {
+        case protocol.Response.OK:
+          for (var agent in response.data['Agents']) {
+            switch(agent["state"]) {
+              case "busy":
+              case "idle":
+                active++;
+                break;
+              case "paused":
+                paused++;
+                break;
             }
-            break;
-          default:
-          //TODO How to handle this?
-        }
-      })
-      .catchError((e) {
-        log.critical('xagent Error: ${e.toString()}');
-      });
+          }
+          break;
+
+        default:
+        //TODO How to handle this?
+      }
+    })
+    .catchError((e) {
+      log.critical('AgentInfo ERROR ${e.toString()}');
+    });
   }
 
   void _registerEventListeners() {
     window.onResize.listen((_) => _resize());
-  }
-
-  void _registerSubscribers(){
-    //When the time comes, that alice can handle agents.
-    // Subscribe to AgentStatus changes, so this panel can be updated.
   }
 }

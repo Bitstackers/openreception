@@ -23,32 +23,24 @@ import 'context.dart';
 import 'logger.dart';
 import 'model.dart' as model;
 
-/**
- * Environment singletons.
- */
-final _Call call = new _Call();
-final _ContextList contextList = new _ContextList();
-final _Organization organization = new _Organization();
-
-/**
- *
- */
 @observable String activeWidget = '';
+
+final _Call         call         = new _Call();
+final _ContextList  contextList  = new _ContextList();
+final _Organization organization = new _Organization();
 
 /**
  * The currently active call.
  */
 class _Call{
   model.Call _call = model.nullCall;
-  Stream<model.Call> _onChange;
-  StreamController _stream = new StreamController<model.Call>();
 
-  model.Call         get current  => _call;
-  Stream<model.Call> get onChange => _onChange;
+  model.Call get current => _call;
 
-  _Call() {
-    _onChange = _stream.stream.asBroadcastStream();
-  }
+  /**
+   * _Call constructor.
+   */
+  _Call();
 
  /**
   * Replaces this environments call with [call].
@@ -58,8 +50,6 @@ class _Call{
       _call = call;
       log.info('Current Call ${call}');
 
-      _stream.sink.add(call);
-
       if (_call != null && _call != model.nullCall){
         log.user('Call answered ${_call.toString()}');
       }
@@ -68,16 +58,22 @@ class _Call{
 }
 
 /**
- * The application contexts.
+ * A list of the application contexts.
  */
 class _ContextList extends IterableBase<Context>{
-  List<Context> _list = toObservable(<Context>[]);
-  Map<String, Context> _map = new Map<String, Context>();
+  List<Context>        _list = toObservable(<Context>[]);
+  Map<String, Context> _map  = new Map<String, Context>();
 
   Iterator<Context> get iterator => _list.iterator;
 
+  /**
+   * _ContextList constructor.
+   */
   _ContextList();
 
+  /**
+   * Add [context] to the [_ContextList].
+   */
   void add(Context context) {
     // We store the context twice. This is for fast lookup, so we don't have to
     // loop the list to find a context based on its id.
@@ -85,12 +81,18 @@ class _ContextList extends IterableBase<Context>{
     _map[context.id] = context;
   }
 
+  /**
+   * Decrease alert level for the [id] [Context].
+   */
   void decreaseAlert(String id) {
     if (_map.containsKey(id)) {
       _map[id].decreaseAlert();
     }
   }
 
+  /**
+   * Return the [id] [Context].
+   */
   Context get(String id) {
     if(_map.containsKey(id)) {
       return _map[id];
@@ -99,6 +101,9 @@ class _ContextList extends IterableBase<Context>{
     return null;
   }
 
+  /**
+   * Increase alert level for the [id] [Context].
+   */
   void increaseAlert(String id) {
     if (_map.containsKey(id)) {
       _map[id].increaseAlert();
@@ -115,10 +120,13 @@ class _Organization{
 
   model.Organization get current  => _organization;
 
+  /**
+   * Organization constructor.
+   */
   _Organization();
 
   /**
-   * Replaces this environments organization with [organization].
+   * Set the environment [Organization] to [organization].
    */
   void set(model.Organization organization) {
     if (organization != _organization) {
