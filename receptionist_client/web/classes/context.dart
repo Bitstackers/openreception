@@ -1,16 +1,14 @@
-/*                                Bob
+/*                     This file is part of Bob
                    Copyright (C) 2012-, AdaHeads K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
   Free Software  Foundation;  either version 3,  or (at your  option) any
-  later version. This library is distributed in the hope that it will be
+  later version. This software is distributed in the hope that it will be
   useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  You should have received a copy of the GNU General Public License and
-  a copy of the GCC Runtime Library Exception along with this program;
-  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
-  <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License along with
+  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
 library context;
@@ -26,8 +24,17 @@ final StreamController<Context> _contextActivationStream = new StreamController<
 final Stream<Context> _onChange = _contextActivationStream.stream.asBroadcastStream();
 
 /**
- * A [Context] is a container for some content. A [Context] can be active or
- * inactive, defined by the [isActive] property.
+ * A [Context] is a top-level GUI container. It represents a collection of 0
+ * or more widgets that are hidden/unhidden depending on the [isActive] state
+ * of the [Context].
+*
+ * A [Context] activates itself if data is read on the [KeyboardHandler]
+ * stream named [Context.id].
+ *
+ * A [Context] can be set in alert by calling [increaseAlert()] and alerts can
+ * be negated by [decreaseAlert()]. The alert system is a simple counter, so
+ * 3 calls to [increaseAlert()] puts the [Context] alert counter at 3, meaning
+ * 3 calls to [decreaseAlert()] is required to move the [Context] out of alert.
  */
 class Context {
   @observable int alertCounter = 0;
@@ -39,8 +46,8 @@ class Context {
   String get id        => _element.id;
 
   /**
-   * A [Context] is a top-level GUI container. It represents a collection of 0
-   * or more widgets that are hidden/unhidden depending on the activation state
+   * [Context] constructor. Takes a DOM element as from where it derives its [id]
+   * and on which the .hidden class is toggled according to the activation state
    * of the [Context].
    */
   Context(Element this._element) {
@@ -48,15 +55,15 @@ class Context {
 
     isActive = _element.classes.contains('hidden') ? false : true;
 
-    _onChange.listen(_toggle);
-
-    keyboardHandler.onKeyName(id).listen(_keyPress);
+    _registerEventListeners();
   }
 
   /**
    * Activate this [Context].
    */
-  void activate() => _contextActivationStream.sink.add(this);
+  void activate() {
+    _contextActivationStream.sink.add(this);
+  }
 
   /**
    * Decrease the alert level for this [Context].
@@ -76,12 +83,13 @@ class Context {
   }
 
   /**
-   * Activate this [Context] when the [id] keyboardshortcut fires.
-   */
-  void _keyPress(int keyCode) => activate();
-
-  /**
-   * Toogle this [Context] on/off.
+   * Toogle this [Context] ON/OFF.
+   *
+   * Toggling ON means removing the .hidden class from the [Context] DOM element
+   * (see the constructor comment) and setting [isActive] to true.
+   *
+   * Toggline OFF means adding the .hidden class from the [Context] DOM element
+   * (see the constructor comment) and setting [isActive] to false.
    */
   void _toggle(Context context) {
     if (context == this) {
@@ -91,5 +99,16 @@ class Context {
       isActive = false;
       _element.classes.add('hidden');
     }
+  }
+
+  /**
+   * Registers the event listeners needed by the [Context].
+   */
+  void _registerEventListeners() {
+    // Keep track of which Context is active.
+    _onChange.listen(_toggle);
+
+    // Keep track of keyboardshortcuts.
+    keyboardHandler.onKeyName(id).listen((_) => activate());
   }
 }

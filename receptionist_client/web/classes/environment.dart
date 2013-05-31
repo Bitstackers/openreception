@@ -1,21 +1,16 @@
-/*                                Bob
+/*                     This file is part of Bob
                    Copyright (C) 2012-, AdaHeads K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
   Free Software  Foundation;  either version 3,  or (at your  option) any
-  later version. This library is distributed in the hope that it will be
+  later version. This software is distributed in the hope that it will be
   useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  You should have received a copy of the GNU General Public License and
-  a copy of the GCC Runtime Library Exception along with this program;
-  see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
-  <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License along with
+  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-/**
- * Contains the current state of Bob.
- */
 library environment;
 
 import 'dart:async';
@@ -35,10 +30,13 @@ final _Call call = new _Call();
 final _ContextList contextList = new _ContextList();
 final _Organization organization = new _Organization();
 
-@observable String widgetFocus = '';
+/**
+ *
+ */
+@observable String activeWidget = '';
 
 /**
- * TODO comment
+ * The currently active call.
  */
 class _Call{
   model.Call _call = model.nullCall;
@@ -70,37 +68,46 @@ class _Call{
 }
 
 /**
- * The application contexts. Contexts can be added and the list can be iterated,
- * but contexts cannot be removed or the list cleared.
+ * The application contexts.
  */
 class _ContextList extends IterableBase<Context>{
   List<Context> _list = toObservable(<Context>[]);
+  Map<String, Context> _map = new Map<String, Context>();
 
   Iterator<Context> get iterator => _list.iterator;
 
   _ContextList();
 
-  void add(Context context) => _list.add(context);
+  void add(Context context) {
+    // We store the context twice. This is for fast lookup, so we don't have to
+    // loop the list to find a context based on its id.
+    _list.add(context);
+    _map[context.id] = context;
+  }
 
-  void decreaseAlert(String contextId) {
-    for (var context in _list) {
-      if (context.id == contextId) {
-        context.decreaseAlert();
-      }
+  void decreaseAlert(String id) {
+    if (_map.containsKey(id)) {
+      _map[id].decreaseAlert();
     }
   }
 
-  void increaseAlert(String contextId) {
-    for (var context in _list) {
-      if (context.id == contextId) {
-        context.increaseAlert();
-      }
+  Context get(String id) {
+    if(_map.containsKey(id)) {
+      return _map[id];
+    }
+
+    return null;
+  }
+
+  void increaseAlert(String id) {
+    if (_map.containsKey(id)) {
+      _map[id].increaseAlert();
     }
   }
 }
 
 /**
- * TODO comment
+ * The currently active organization.
  */
 @observable
 class _Organization{
