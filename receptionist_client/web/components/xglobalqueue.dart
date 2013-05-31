@@ -44,7 +44,7 @@ class GlobalQueue extends WebComponent {
           Map callsjson = response.data;
           log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
           for (var call in callsjson['calls']) {
-            calls.add(new model.Call(call));
+            calls.add(new model.Call.fromJson(call));
           }
           break;
 
@@ -58,9 +58,9 @@ class GlobalQueue extends WebComponent {
     });
 
     // dummy calls
-    calls.add(new model.Call({'id':'2','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
-    calls.add(new model.Call({'id':'3','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:5)))}'}));
-    calls.add(new model.Call({'id':'1','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:12)))}'}));
+    calls.add(new model.Call.fromJson({'id':'2','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
+    calls.add(new model.Call.fromJson({'id':'3','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:5)))}'}));
+    calls.add(new model.Call.fromJson({'id':'1','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:12)))}'}));
 
     calls.sort();
   }
@@ -71,13 +71,13 @@ class GlobalQueue extends WebComponent {
   }
 
   void _queueJoin(Map json) {
-    calls.add(new model.Call(json['call']));
+    calls.add(new model.Call.fromJson(json['call']));
     // Should we sort again, or can we expect that calls joining the queue are
     // always younger then the calls already in the queue?
   }
 
   void _queueLeave(Map json) {
-    var call = new model.Call(json['call']);
+    var call = new model.Call.fromJson(json['call']);
     //Find the call and removes it from the calls list.
     for (var c in calls) {
       if (c.id == call.id) {

@@ -16,9 +16,7 @@
  */
 import 'dart:async';
 
-import 'classes/call_handler.dart';
 import 'classes/configuration.dart';
-import 'classes/keyboardhandler.dart';
 import 'classes/logger.dart';
 
 /**
@@ -30,7 +28,6 @@ void main() {
 
   fetchConfig().then((_) {
     log.info('Configuration loaded.');
-    initializeCallHandler();
   }).catchError((error) => log.critical('Bob main exception: ${error}'));
 
 }

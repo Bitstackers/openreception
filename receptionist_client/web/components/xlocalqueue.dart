@@ -33,8 +33,8 @@ class LocalQueue extends WebComponent {
 
   void _initialFill() {
     // dummy calls
-    calls.add(new model.Call({'id':'43','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
-    calls.add(new model.Call({'id':'42','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:27)))}'}));
+    calls.add(new model.Call.fromJson({'id':'43','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
+    calls.add(new model.Call.fromJson({'id':'42','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:27)))}'}));
 
     calls.sort();
   }

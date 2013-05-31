@@ -19,9 +19,11 @@ import 'dart:collection';
 import 'package:web_ui/web_ui.dart';
 
 import 'common.dart';
+import 'configuration.dart';
 import 'context.dart';
 import 'logger.dart';
 import 'model.dart' as model;
+import 'notification.dart' as notify;
 
 @observable String activeWidget = '';
 
@@ -40,7 +42,31 @@ class _Call{
   /**
    * _Call constructor.
    */
-  _Call();
+  _Call() {
+    notify.notification.addEventHandler('call_pickup', _callPickupEventHandler);
+    notify.notification.addEventHandler('call_hangup', _callHangupEventHandler);
+  }
+
+  void _callPickupEventHandler(Map json) {
+    model.Call call = new model.Call.fromJson(json['call']);
+
+    // TODO obviously the agent ID should not come from configuration. This is a
+    // temporary hack as long as Alice is oblivious to login/session.
+    if (call.assignedAgent == configuration.agentID) {
+      set(call);
+    }else{
+      log.info('Agent ${call.assignedAgent} answered call ${call.id}');
+    }
+  }
+
+  void _callHangupEventHandler(Map json) {
+    model.Call call = new model.Call.fromJson(json['call']);
+
+    if (call.id == _call.id) {
+      log.info('Hangup call ${call.id}');
+      set(model.nullCall);
+    }
+  }
 
  /**
   * Replaces this environments call with [call].

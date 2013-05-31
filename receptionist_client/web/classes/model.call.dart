@@ -16,33 +16,47 @@ part of model;
 final Call nullCall = new Call._null();
 
 /**
- * TODO comment, write this when the class have more to it, then a simple map.
+ * A call.
  */
 class Call implements Comparable {
-  Map _call;
+  int      _assignedAgent;
+  int      _id;
+  DateTime _start;
 
-  int id = -1;
-  DateTime start;
-
-  Map get content => _call;
+  int      get assignedAgent => _assignedAgent;
+  int      get id            => _id;
+  DateTime get start         => _start;
 
   /**
-   * TODO comment
+   * Call constructor.
    */
-  Call(Map json) {
-    _call = json;
+  Call.fromJson(Map json) {
+    log.debug('Call.fromJson ${json}');
 
-    //TODO Parsing should not be necessary when the json is stabile.
-    id = int.parse(json['id']);
-    start = DateTime.parse(json['start']);
+    if(json.containsKey('assigned_to')) {
+      _assignedAgent = int.parse(json['assigned_to']);
+    }
+
+    _id = int.parse(json['id']);
+    _start = DateTime.parse(json['start']);
   }
 
+  /**
+   * Call constructor.
+   */
   Call._null() {
-    _call = null;
-    start = new DateTime.now();
+    _assignedAgent = null;
+    _id = null;
+    _start = new DateTime.now();
   }
 
-  int compareTo(Call other) => start.compareTo(other.start);
+  /**
+   * Enables a [Call] to sort itself compared to other calls.
+   */
+  int compareTo(Call other) => _start.compareTo(other._start);
 
-  String toString() => _call.toString();
+  /**
+   * [Call] as String, for debug/log purposes.
+   */
+  String toString() => 'Call ${_id} - ${_start}';
 }
