@@ -18,6 +18,7 @@ import 'dart:collection';
 import 'package:intl/intl.dart';
 
 import 'common.dart';
+import 'logger.dart';
 
 part 'model.call.dart';
 part 'model.calendar_event.dart';
