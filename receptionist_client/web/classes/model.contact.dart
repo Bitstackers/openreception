@@ -19,21 +19,20 @@ final Contact nullContact = new Contact._null();
  * A Contact
  */
 class Contact implements Comparable{
-  MiniboxList _backupList = nullMiniboxList;
-  CalendarEventList _calendarEventList = nullCalendarEventList;
-  MiniboxList _emailAddressList = nullMiniboxList;
-  MiniboxList _handlingList = nullMiniboxList;
-  MiniboxList _telephoneNumberList = nullMiniboxList;
-  MiniboxList _workHoursList = nullMiniboxList;
-
-  String department = '';
-  int id;
-  String info = '';
-  bool isHuman;
-  String name = '';
-  String position = '';
-  String relations = '';
-  String responsibility = '';
+  MiniboxList       _backupList          = nullMiniboxList;
+  CalendarEventList _calendarEventList   = nullCalendarEventList;
+  String            department           = '';
+  MiniboxList       _emailAddressList    = nullMiniboxList;
+  MiniboxList       _handlingList        = nullMiniboxList;
+  int               id;
+  String            info                 = '';
+  bool              isHuman;
+  String            name                 = '';
+  String            position             = '';
+  String            relations            = '';
+  String            responsibility       = '';
+  MiniboxList       _telephoneNumberList = nullMiniboxList;
+  MiniboxList       _workHoursList       = nullMiniboxList;
 
   MiniboxList       get backupList => _backupList;
   CalendarEventList get calendarEventList => _calendarEventList;
@@ -42,7 +41,10 @@ class Contact implements Comparable{
   MiniboxList       get telephoneNumberList => _telephoneNumberList;
   MiniboxList       get workHoursList => _workHoursList;
 
-  Contact(Map json) {
+  /**
+   * Contact constructor.
+   */
+  Contact.fromJson(Map json) {
     id = json['contact_id'];
     isHuman = json['is_human'];
     name = json['full_name'];
@@ -86,7 +88,13 @@ class Contact implements Comparable{
     _calendarEventList = new CalendarEventList(tempEvents);
   }
 
-  Contact._null();
+  /**
+   * Contact constructor.
+   */
+  Contact._null() {
+    id = null;
+    isHuman = null;
+  }
 
   int compareTo(Contact other) => name.compareTo(other.name);
 

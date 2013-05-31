@@ -22,7 +22,7 @@ class ContactList extends IterableBase<Contact>{
   List<Contact> _list = <Contact>[];
 
   ContactList(List contacts) {
-    contacts.forEach((json) => _list.add(new Contact(json)));
+    contacts.forEach((json) => _list.add(new Contact.fromJson(json)));
     _list.sort();
   }
 
