@@ -23,43 +23,43 @@ final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
  * [Keys] is a simple mapping between constant literals and integer key codes.
  */
 class Keys{
-  static const int UP = 38;
-  static const int DOWN = 40;
-  static const int ZERO = 48;
-  static const int ONE = 49;
-  static const int TWO = 50;
+  static const int UP    = 38;
+  static const int DOWN  = 40;
+  static const int ZERO  = 48;
+  static const int ONE   = 49;
+  static const int TWO   = 50;
   static const int THREE = 51;
-  static const int FOUR = 52;
-  static const int FIVE = 53;
-  static const int SIX = 54;
+  static const int FOUR  = 52;
+  static const int FIVE  = 53;
+  static const int SIX   = 54;
   static const int SEVEN = 55;
   static const int EIGHT = 56;
-  static const int A = 65;
-  static const int B = 66;
-  static const int C = 67;
-  static const int D = 68;
-  static const int E = 69;
-  static const int F = 70;
-  static const int G = 71;
-  static const int H = 72;
-  static const int I = 73;
-  static const int J = 74;
-  static const int K = 75;
-  static const int L = 76;
-  static const int M = 77;
-  static const int N = 78;
-  static const int O = 79;
-  static const int P = 80;
-  static const int Q = 81;
-  static const int R = 82;
-  static const int S = 83;
-  static const int T = 84;
-  static const int U = 85;
-  static const int V = 86;
-  static const int W = 87;
-  static const int X = 88;
-  static const int Y = 89;
-  static const int Z = 90;
+  static const int A     = 65;
+  static const int B     = 66;
+  static const int C     = 67;
+  static const int D     = 68;
+  static const int E     = 69;
+  static const int F     = 70;
+  static const int G     = 71;
+  static const int H     = 72;
+  static const int I     = 73;
+  static const int J     = 74;
+  static const int K     = 75;
+  static const int L     = 76;
+  static const int M     = 77;
+  static const int N     = 78;
+  static const int O     = 79;
+  static const int P     = 80;
+  static const int Q     = 81;
+  static const int R     = 82;
+  static const int S     = 83;
+  static const int T     = 84;
+  static const int U     = 85;
+  static const int V     = 86;
+  static const int W     = 87;
+  static const int X     = 88;
+  static const int Y     = 89;
+  static const int Z     = 90;
 }
 
 /**
@@ -73,10 +73,10 @@ class Keys{
  * a stream.
  */
 class _KeyboardHandler{
-  Map<int, String> _keyToName = new Map<int, String>();
+  Map<int, String>                   _keyToName           = new Map<int, String>();
   Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
-  Map<String, Stream<int>> _StreamMap = new Map<String, Stream<int>>();
-  int _locked = null;
+  Map<String, Stream<int>>           _StreamMap           = new Map<String, Stream<int>>();
+  int                                _locked              = null;
 
   /**
    * Initialize (setup named streams) and setup listeners for key events.
