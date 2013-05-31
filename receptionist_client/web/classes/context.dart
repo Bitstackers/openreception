@@ -75,7 +75,6 @@ class Context {
     }
   }
 
-
   /**
    * Increase the alert level for this [Context].
    */
