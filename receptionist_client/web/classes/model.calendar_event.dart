@@ -17,11 +17,10 @@ part of model;
  * A calendar event.
  */
 class CalendarEvent implements Comparable{
-  String _content;
+  bool      active = false;
+  String   _content;
   DateTime _start;
   DateTime _stop;
-
-  bool active = false;
 
   String get start => _formatTimestamp(_start);
   String get stop  => _formatTimestamp(_stop);
