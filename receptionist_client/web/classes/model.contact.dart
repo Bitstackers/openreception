@@ -16,7 +16,7 @@ part of model;
 final Contact nullContact = new Contact._null();
 
 /**
- * TODO comment
+ * A Contact
  */
 class Contact implements Comparable{
   MiniboxList _backupList = nullMiniboxList;
