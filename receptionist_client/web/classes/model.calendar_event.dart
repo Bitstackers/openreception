@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO comment
+ * A calendar event.
  */
 class CalendarEvent implements Comparable{
   String _content;
@@ -24,10 +24,11 @@ class CalendarEvent implements Comparable{
   bool active = false;
 
   String get start => _formatTimestamp(_start);
-  String get stop => _formatTimestamp(_stop);
+  String get stop  => _formatTimestamp(_stop);
 
-  CalendarEvent(DateTime this._start, DateTime this._stop, String this._content);
-
+  /**
+   * CalendarEvent constructor.
+   */
   CalendarEvent.fromJson(Map json) {
     DateTime now = new DateTime.now();
 
