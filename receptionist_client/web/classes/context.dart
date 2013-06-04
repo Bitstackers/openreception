@@ -28,8 +28,10 @@ final Stream<Context> _onChange = _contextActivationStream.stream.asBroadcastStr
  * or more widgets that are hidden/unhidden depending on the [isActive] state
  * of the [Context].
 *
- * A [Context] activates itself if data is read on the [KeyboardHandler]
- * stream named [Context.id].
+ * A [Context] can be activated by calling the [activate()] method. Activating
+ * one [Context] automatically deactivates every other [Context]. A [Context]
+ * listens for data on the [KeyboardHandler] stream named [Context.id] and
+ * activates itself if an event is detected.
  *
  * A [Context] can be set in alert by calling [increaseAlert()] and alerts can
  * be negated by [decreaseAlert()]. The alert system is a simple counter, so
