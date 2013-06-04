@@ -22,6 +22,10 @@ typedef void Callback();
 typedef void OrganizationSubscriber (model.Organization organization);
 typedef void OrganizationListSubscriber (model.OrganizationList organizationList);
 
+/**
+ * A simple timeout exception. MUST be used wherever we throw exceptions due
+ * to timeout issues.
+ */
 class TimeoutException implements Exception {
   final String message;
 
