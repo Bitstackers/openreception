@@ -24,50 +24,52 @@ import 'package:web_ui/web_ui.dart';
 import 'common.dart';
 import 'logger.dart';
 
+const String CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
+
 final _Configuration configuration = new _Configuration();
 
 /**
- * Access to configuration parameters provided by Alice.
+ * _Configuration gives access to configuration parameters provided by Alice.
  */
 class _Configuration {
   @observable bool _loaded = false;
 
-  const String _CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
-
-  int _agentID;
-  Uri _aliceBaseUrl;
-  Uri _notificationSocketInterface;
-  int _notificationSocketReconnectInterval;
-  Level _serverLogLevel = Level.OFF;
-  Uri _serverLogInterfaceCritical;
-  Uri _serverLogInterfaceError;
-  Uri _serverLogInterfaceInfo;
+  int    _agentID;
+  Uri    _aliceBaseUrl;
+  Uri    _notificationSocketInterface;
+  int    _notificationSocketReconnectInterval;
+  Level  _serverLogLevel = Level.OFF;
+  Uri    _serverLogInterfaceCritical;
+  Uri    _serverLogInterfaceError;
+  Uri    _serverLogInterfaceInfo;
   String _standardGreeting;
-  int _userLogSizeLimit = 100000;
+  int    _userLogSizeLimit = 100000;
 
-  int    get agentID => _agentID;
-  Uri    get aliceBaseUrl => _aliceBaseUrl;
-  bool   get loaded => _loaded;
-  Uri    get notificationSocketInterface => _notificationSocketInterface;
+  int    get agentID =>                             _agentID;
+  Uri    get aliceBaseUrl =>                        _aliceBaseUrl;
+  bool   get loaded =>                              _loaded;
+  Uri    get notificationSocketInterface =>         _notificationSocketInterface;
   int    get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
-  Level  get serverLogLevel => _serverLogLevel;
-  Uri    get serverLogInterfaceCritical => _serverLogInterfaceCritical;
-  Uri    get serverLogInterfaceError => _serverLogInterfaceError;
-  Uri    get serverLogInterfaceInfo => _serverLogInterfaceInfo;
-  String get standardGreeting => _standardGreeting;
-  int    get userLogSizeLimit => _userLogSizeLimit;
+  Level  get serverLogLevel =>                      _serverLogLevel;
+  Uri    get serverLogInterfaceCritical =>          _serverLogInterfaceCritical;
+  Uri    get serverLogInterfaceError =>             _serverLogInterfaceError;
+  Uri    get serverLogInterfaceInfo =>              _serverLogInterfaceInfo;
+  String get standardGreeting =>                    _standardGreeting;
+  int    get userLogSizeLimit =>                    _userLogSizeLimit;
 
   /**
-   * Constructor
+   * [_Configuration] constructor. Initialize the object with the values from
+   * [CONFIGURATION_URL]. Logs a critical error if the request fails.
    */
   _Configuration() {
-    HttpRequest.request(_CONFIGURATION_URL)
+    HttpRequest.request(CONFIGURATION_URL)
       .then(_onComplete)
-      .catchError(_onError);
+      .catchError((error) => log.critical('Configuration ERROR ${error} - ${error.runtimeType.toString()}'));
   }
 
   /**
-   * TODO comment
+   * If [req] status is 200 OK then parse the [req] responseText as JSON and set
+   * [loaded] to true, else log an error.
    */
   void _onComplete(HttpRequest req) {
     switch(req.status) {
@@ -77,22 +79,15 @@ class _Configuration {
         break;
 
       default:
-        log.critical('Configuration ERROR ${_CONFIGURATION_URL} - ${req.status} - ${req.statusText}');
+        log.critical('Configuration ERROR ${CONFIGURATION_URL} - ${req.status} - ${req.statusText}');
     }
-  }
-
-  /**
-   * TODO comment
-   */
-  void _onError(Object error) {
-    log.critical('Configuration ERROR ${error} - ${error.runtimeType.toString()}');
   }
 
   /**
    * Parse and validate the configuration JSON from Alice.
    */
   void _parseConfiguration(Map json) {
-    _agentID = _intValue (json, 'agentID', 0);
+    _agentID = _intValue(json, 'agentID', 0);
     _aliceBaseUrl = new Uri(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
 
     Map notificationSocketMap = json['notificationSocket'];
@@ -107,16 +102,18 @@ class _Configuration {
       case 'info':
         _serverLogLevel = Log.INFO;
         break;
+
       case 'error':
         _serverLogLevel = Log.ERROR;
         break;
+
       case 'critical':
         _serverLogLevel = Log.CRITICAL;
         break;
+
       default:
         _serverLogLevel = Level.INFO;
-        log.error('Configuration logLevel had the invalid value: ${json['serverLogLevel']}');
-        break;
+        log.error('Configuration serverLog.level INVALID ${serverLogMap['level']}');
     }
 
     String criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
@@ -141,7 +138,7 @@ class _Configuration {
     if ((configMap.containsKey(key)) && (configMap[key] is bool)) {
       return configMap[key];
     } else {
-      log.critical('Configuration parameter ${key} does not validate as bool');
+      log.error('Configuration ERROR ${key} is not a bool');
       return defaultValue;
     }
   }
@@ -156,7 +153,7 @@ class _Configuration {
     if ((configMap.containsKey(key)) && (configMap[key] is int)) {
       return configMap[key];
     } else {
-      log.critical('Configuration parameter ${key} does not validate as int');
+      log.error('Configuration ERROR ${key} is not an int');
       return defaultValue;
     }
   }
@@ -166,33 +163,32 @@ class _Configuration {
    *
    * If [key] is found in [configMap] and the value is a String, return the found String.
    * if [key] is not found or does not validate as a String, return [defaultValue].
-   * Note that [defaultValue] is also returned if the found String is empty.
+   *
+   * NOTE: The [defaultValue] is returned if the found String is empty.
    */
   String _stringValue (Map configMap, String key, String defaultValue) {
     if ((configMap.containsKey(key)) && (configMap[key] is String)) {
       return (configMap[key].trim().isEmpty) ? defaultValue : configMap[key];
     } else {
-      log.critical('Configuration parameter ${key} does not validate as String');
+      log.error('Configuration ERROR ${key} is not a String');
       return defaultValue;
     }
   }
 }
 
 /**
- * Fetch the configuration.
- *
+ * Check if [configuration] has been properly initialized with data.
  * Completes when [configuration.loaded] is true.
  */
 Future<bool> fetchConfig() {
-  Completer completer = new Completer();
+  Completer      completer  = new Completer();
+  int            count      = 0;
+  final Duration repeatTime = new Duration(seconds: 1);
+  final Duration maxWait    = new Duration(seconds: 5);
 
   if (configuration.loaded) {
     completer.complete(true);
   } else {
-    final Duration repeatTime = new Duration(milliseconds: 5);
-    final Duration maxWait = new Duration(milliseconds: 3000);
-    var count = 0;
-
     new Timer.periodic(repeatTime, (timer) {
       count += 1;
       if (configuration.loaded) {
@@ -200,10 +196,9 @@ Future<bool> fetchConfig() {
         completer.complete(true);
       }
 
-      if (count >= maxWait.inMilliseconds/repeatTime.inMilliseconds) {
+      if (count >= maxWait.inSeconds/repeatTime.inSeconds) {
        timer.cancel();
-       completer.completeError(
-           new TimeoutException("Could not fetch configuration."));
+       completer.completeError(new TimeoutException('Fetch config timeout ${CONFIGURATION_URL}'));
      }
     });
   }
