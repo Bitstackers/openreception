@@ -48,13 +48,12 @@ class CalendarEvent implements Comparable{
    * [stamp] is in another year than now.
    */
   String _formatTimestamp(DateTime stamp) {
-    StringBuffer output = new StringBuffer();
-    DateTime now = new DateTime.now();
-
-    String hourMinute = new DateFormat.Hm().format(stamp);
-    String day = new DateFormat.d().format(stamp);
-    String month = new DateFormat.M().format(stamp);
-    String year = new DateFormat.y().format(stamp);
+    String       day        = new DateFormat.d().format(stamp);
+    String       hourMinute = new DateFormat.Hm().format(stamp);
+    String       month      = new DateFormat.M().format(stamp);
+    DateTime     now        = new DateTime.now();
+    StringBuffer output     = new StringBuffer();
+    String       year       = new DateFormat.y().format(stamp);
 
     if (new DateFormat.yMd().format(stamp) != new DateFormat.yMd().format(now)) {
       output.write('${day}/${month}');
@@ -69,6 +68,9 @@ class CalendarEvent implements Comparable{
     return output.toString();
   }
 
+  /**
+   * Enables a [CalendarEvent] to sort itself compared to other calendar events.
+   */
   int compareTo(CalendarEvent other) {
     if(_start.isAtSameMomentAs(other._start)) {
       return 0;
@@ -77,5 +79,8 @@ class CalendarEvent implements Comparable{
     return _start.isBefore(other._start) ? -1 : 1;
   }
 
+  /**
+   * [CalendarEvent] as String, for debug/log purposes.
+   */
   String toString() => _content;
 }
