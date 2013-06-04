@@ -16,21 +16,30 @@ part of model;
 final ContactList nullContactList = new ContactList._null();
 
 /**
- * TODO comment.
+ * A list of [Contact] objects.
  */
 class ContactList extends IterableBase<Contact>{
   List<Contact> _list = <Contact>[];
 
+  Contact           get first    => _list.length > 0 ? _list.first : nullContact;
+  Iterator<Contact> get iterator => _list.iterator;
+
+  /**
+   * ContactList constructor.
+   */
   ContactList(List contacts) {
     contacts.forEach((json) => _list.add(new Contact.fromJson(json)));
     _list.sort();
   }
 
-  Contact           get first => _list.length > 0 ? _list.first : nullContact;
-  Iterator<Contact> get iterator => _list.iterator;
-
+  /**
+   * ContactList constructor.
+   */
   ContactList._null();
 
+  /**
+   * Return the [id] [Contact].
+   */
   Contact getContact(int id) {
     for(Contact contact in _list) {
       if(id == contact.id) {
