@@ -23,11 +23,8 @@ import 'classes/logger.dart';
  * Get Bob going as soon as the configuration is loaded.
  */
 void main() {
-  log.info('Welcome to Bob.');
-  log.user('Velkommen fra Bob.');
-
   fetchConfig().then((_) {
-    log.info('Configuration loaded.');
+    log.info('Bob is ready to serve. Welcome!', toUserLog: true);
   }).catchError((error) => log.critical('Bob main exception: ${error}'));
 
 }
