@@ -43,10 +43,13 @@ class _Call{
    * _Call constructor.
    */
   _Call() {
-    notify.notification.addEventHandler('call_pickup', _callPickupEventHandler);
-    notify.notification.addEventHandler('call_hangup', _callHangupEventHandler);
+    _registerEventListeners();
   }
 
+  /**
+   * Set the currently active [Call] when a call_pickup notification is received
+   * and the assigned agent match the logged in agent.
+   */
   void _callPickupEventHandler(Map json) {
     model.Call call = new model.Call.fromJson(json['call']);
 
@@ -59,6 +62,10 @@ class _Call{
     }
   }
 
+  /**
+   * Hangup the currently active [Call] when a call_hangup notification is
+   * received.
+   */
   void _callHangupEventHandler(Map json) {
     model.Call call = new model.Call.fromJson(json['call']);
 
@@ -68,8 +75,16 @@ class _Call{
     }
   }
 
+  /**
+   * Registers event listeners.
+   */
+  void _registerEventListeners() {
+    notify.notification.addEventHandler('call_pickup', _callPickupEventHandler);
+    notify.notification.addEventHandler('call_hangup', _callHangupEventHandler);
+  }
+
  /**
-  * Replaces this environments call with [call].
+  * Set the currently active [call].
   */
   void set(model.Call call) {
     if (call != _call) {
@@ -77,7 +92,7 @@ class _Call{
       log.info('Current Call ${call}');
 
       if (_call != null && _call != model.nullCall){
-        log.user('Call answered ${_call.toString()}');
+        log.info('Call answered ${_call.toString()}, dumpToUser: true');
       }
     }
   }
