@@ -84,9 +84,7 @@ class _KeyboardHandler{
    */
   _KeyboardHandler() {
     _initialize();
-
-    window.onKeyDown.listen(_keyDown);
-    window.onKeyUp.listen(_keyUp);
+    _registerEventListeners();
 
     log.debug('KeyboardHandler ready');
   }
@@ -164,5 +162,13 @@ class _KeyboardHandler{
 
     log.critical('Keyboardhandler onKeyName ERROR no key ${keyName}');
     return null;
+  }
+
+  /**
+   * Registers the event listeners.
+   */
+  void _registerEventListeners() {
+    window.onKeyDown.listen(_keyDown);
+    window.onKeyUp.listen(_keyUp);
   }
 }
