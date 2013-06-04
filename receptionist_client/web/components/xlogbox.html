@@ -23,8 +23,9 @@
           <div name="boxcontent" class="container">
             <table border="1">
               <tr template repeat="record in messages">
-                <td><p>{{record.time}}</p></td>
-                <td><p>{{record.message}}</p></td>
+                <td>{{record.time}}</td>
+                <td>{{record.level.name}}</td>
+                <td>{{record.message}}</td>
               </tr>
             </table>
           </div>

@@ -20,10 +20,10 @@ import '../classes/configuration.dart';
 import '../classes/logger.dart';
 
 class LogBox extends WebComponent {
-  List<UserlogRecord> messages = toObservable(new List<UserlogRecord>());
+  List<LogRecord> messages = toObservable(new List<LogRecord>());
 
-  void inserted() {
-    log.onUserlogMessage.listen((record) {
+  void created() {
+    log.userLogStream.listen((LogRecord record) {
       messages.insert(0, record);
       // TODO: change messages to a Queue or ListQueue as soon as support for
       // for these are added to web_ui toObservable().
