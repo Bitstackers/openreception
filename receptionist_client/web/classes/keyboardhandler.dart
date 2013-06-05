@@ -79,7 +79,7 @@ class _KeyboardHandler{
   int                                _locked              = null;
 
   /**
-   * KeyboardHandler constructor.
+   * [KeyboardHandler] constructor.
    * Initialize (setup named streams) and setup listeners for key events.
    */
   _KeyboardHandler() {

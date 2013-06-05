@@ -31,14 +31,14 @@ class Call implements Comparable {
    * Call constructor.
    */
   Call.fromJson(Map json) {
-    log.debug('Call.fromJson ${json}');
-
     if(json.containsKey('assigned_to')) {
       _assignedAgent = int.parse(json['assigned_to']);
     }
 
     _id = int.parse(json['id']);
     _start = DateTime.parse(json['start']);
+
+    log.debug('Call.fromJson ${json}');
   }
 
   /**

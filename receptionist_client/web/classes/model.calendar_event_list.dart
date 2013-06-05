@@ -16,17 +16,24 @@ part of model;
 final CalendarEventList nullCalendarEventList = new CalendarEventList._null();
 
 /**
- * TODO comment.
+ * A list of [CalendarEvent] objects.
  */
 class CalendarEventList extends IterableBase<CalendarEvent>{
   List<CalendarEvent> _list = <CalendarEvent>[];
 
   Iterator<CalendarEvent> get iterator => _list.iterator;
 
-  CalendarEventList(List events) {
+  /**
+   * [CalendarEventList] constructor. The [events] list is expected to contain
+   * maps that can be given directly to [CalendarEvent.fromJson].
+   */
+  CalendarEventList(List<Map> events) {
     events.forEach((json) => _list.add(new CalendarEvent.fromJson(json)));
     _list.sort();
   }
 
+  /**
+   * [CalendarEventList] constructor.
+   */
   CalendarEventList._null();
 }

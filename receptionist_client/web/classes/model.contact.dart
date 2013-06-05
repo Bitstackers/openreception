@@ -42,7 +42,16 @@ class Contact implements Comparable{
   MiniboxList       get workHoursList => _workHoursList;
 
   /**
-   * Contact constructor.
+   * Contact constructor. Expects a map with the following format:
+   *
+   *  {
+   *    'contact_id' : int,
+   *    'is_human'   : bool,
+   *    'full_name'  : String,
+   *    'attributes' : {
+   *
+   *
+   *  TODO GET THIS DONE!
    */
   Contact.fromJson(Map json) {
     id = json['contact_id'];
@@ -54,8 +63,6 @@ class Contact implements Comparable{
 
       if(attributes.containsKey('backup')) {
         _backupList = new MiniboxList(attributes['backup']);
-      } else {
-        // Log bad json? Check schema somewhere else?
       }
 
       if(attributes.containsKey('emailaddresses')) {
@@ -96,7 +103,13 @@ class Contact implements Comparable{
     isHuman = null;
   }
 
+  /**
+   * Enables a [Contact] to sort itself compared to other contacts.
+   */
   int compareTo(Contact other) => name.compareTo(other.name);
 
+  /**
+   * [Contact] as String, for debug/log purposes.
+   */
   String toString() => '${name}-${id}-${isHuman}';
 }
