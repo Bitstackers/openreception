@@ -16,7 +16,6 @@ library configuration;
 import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
-import 'dart:uri';
 
 import 'package:logging/logging.dart';
 import 'package:web_ui/web_ui.dart';
@@ -88,14 +87,14 @@ class _Configuration {
    */
   void _parseConfiguration(Map json) {
     _agentID = _intValue(json, 'agentID', 0);
-    _aliceBaseUrl = new Uri(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
+    _aliceBaseUrl = Uri.parse(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
 
     Map notificationSocketMap = json['notificationSocket'];
     _notificationSocketReconnectInterval = _intValue(notificationSocketMap,
                                                      'reconnectInterval', 1000);
-    _notificationSocketInterface = new Uri(_stringValue(notificationSocketMap,
-                                           'interface',
-                                           'ws://alice.adaheads.com:4242/notifications'));
+    _notificationSocketInterface = Uri.parse(_stringValue(notificationSocketMap,
+                                             'interface',
+                                             'ws://alice.adaheads.com:4242/notifications'));
 
     Map serverLogMap = json['serverLog'];
     switch (serverLogMap['level'].toLowerCase()){
@@ -117,13 +116,13 @@ class _Configuration {
     }
 
     String criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
-    _serverLogInterfaceCritical = new Uri('${aliceBaseUrl}${criticalPath}');
+    _serverLogInterfaceCritical = Uri.parse('${aliceBaseUrl}${criticalPath}');
 
     String errorPath = _stringValue(serverLogMap['interface'], 'error', '/log/error');
-    _serverLogInterfaceError = new Uri('${aliceBaseUrl}${errorPath}');
+    _serverLogInterfaceError = Uri.parse('${aliceBaseUrl}${errorPath}');
 
     String infoPath = _stringValue(serverLogMap['interface'], 'info', '/log/info');
-    _serverLogInterfaceInfo = new Uri('${aliceBaseUrl}${infoPath}');
+    _serverLogInterfaceInfo = Uri.parse('${aliceBaseUrl}${infoPath}');
 
     _standardGreeting = _stringValue(json, 'standardGreeting', 'Velkommen til...');
   }

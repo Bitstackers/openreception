@@ -14,7 +14,6 @@
 library notification;
 
 import 'dart:async';
-import 'dart:uri';
 
 import 'common.dart';
 import 'configuration.dart';

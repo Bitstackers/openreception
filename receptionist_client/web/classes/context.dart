@@ -72,8 +72,8 @@ class Context {
    * Decrease the alert level for this [Context].
    */
   void decreaseAlert() {
-    if (alertCounter > 0) {
-      alertCounter--;
+    if (_alertCounter > 0) {
+      _alertCounter--;
     }
   }
 
@@ -81,7 +81,7 @@ class Context {
    * Increase the alert level for this [Context].
    */
   void increaseAlert() {
-    alertCounter++;
+    _alertCounter++;
   }
 
   /**

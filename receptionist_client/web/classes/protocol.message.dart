@@ -37,7 +37,7 @@ Future<Response> sendMessage(int cmId, String message) {
   }
 
   String url = _buildUrl(base, path);
-  String payload = 'cm_id=${cmId}&msg=${encodeUriComponent(message)}';
+  String payload = 'cm_id=${cmId}&msg=${Uri.encodeComponent(message)}';
 
   request = new HttpRequest()
   ..open(POST, url)

@@ -14,7 +14,6 @@
 library storage;
 
 import 'dart:async';
-import 'dart:uri';
 import 'dart:html';
 import 'dart:json' as json;
 

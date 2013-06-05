@@ -16,7 +16,6 @@ library logger;
 import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
-import 'dart:uri';
 
 import 'package:logging/logging.dart';
 

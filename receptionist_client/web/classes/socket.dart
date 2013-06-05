@@ -16,7 +16,6 @@ library socket;
 import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
-import 'dart:uri';
 
 import 'common.dart';
 import 'logger.dart';

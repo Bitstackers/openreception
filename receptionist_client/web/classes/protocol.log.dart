@@ -42,7 +42,7 @@ Future<Response> _log(String message, Uri url){
     throw new Exception();
   }
 
-  String payload = 'msg=${encodeUriComponent(message)}';
+  String payload = 'msg=${Uri.encodeComponent(message)}';
 
   request = new HttpRequest()
       ..open(POST, url.toString())
