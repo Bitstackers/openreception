@@ -4,7 +4,7 @@
   <body>
     <element name="box-with-header" constructor="BoxWithHeader" extends="span" apply-author-styles>
       <style>
-        .outerbox {
+        .box-with-header-outer {
           height: 100%;
           background-color: #fafafa;
           border: solid 2px #ddd;
@@ -12,27 +12,27 @@
           overflow: auto;
         }
 
-        .content {
+        .box-with-header-content {
           overflow: auto;
         }
 
-        .headline {
+        .box-with-header-headline {
           background-color: #dedede;
           color: #444;
           font-weight: bold;
         }
 
-        .focusborder {
+        .box-with-header-focusborder {
           border: solid 2px red;
         }
       </style>
 
       <template>
-        <div class="outerbox {{focusborder}}">
-          <h1 class="headline">
+        <div class="box-with-header-outer {{focusborder}}">
+          <h1 class="box-with-header-headline">
             <content select="[name=boxheader]"></content>
           </h1>
-          <div class="content">
+          <div class="box-with-header-content">
             <content select="[name=boxcontent]"></content>
           </div>
         </div>

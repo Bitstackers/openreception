@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="log-box" constructor="LogBox" extends="span" apply-author-styles>
-      <style scoped>
-        .container {
+      <style>
+        .log-box-container {
           margin: 10px;
           height: -moz-calc(100% - 20px);
           height: -webkit-calc(100% - 20px);
@@ -20,7 +20,7 @@
 
       <template>
         <box>
-          <div name="boxcontent" class="container">
+          <div name="boxcontent" class="log-box-container">
             <table border="1">
               <tr template repeat="record in messages">
                 <td>{{record.time}}</td>

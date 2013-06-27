@@ -7,8 +7,8 @@
   </head>
   <body>
     <element name="local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .local-queue-placing {
           position: absolute;
           top: 84%;
           left: 79%;
@@ -16,31 +16,31 @@
           width: 21%;
         }
 
-        .container {
+        .local-queue-container {
           height: 100%;
           width: 100%;
           overflow: auto;
           font-size: 0.9em;
         }
 
-        .zebra {
+        .local-queue-zebra {
           list-style-type: none;
           width: 100%;
         }
 
-        .zebra li:nth-of-type(even) {
+        .local-queue-zebra li:nth-of-type(even) {
           background-color: #eee;
         }
       </style>
 
       <template>
-        <box-with-header class="placing">
-          <span name="boxheader" class="header">
+        <box-with-header class="local-queue-placing">
+          <span name="boxheader">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="container">
-            <ul template iterate="call in calls" class="zebra">
+          <div name="boxcontent" class="local-queue-container">
+            <ul template iterate="call in calls" class="local-queue-zebra">
               <call-queue-item call="{{call}}"></call-queue-item>
             </ul>
           </div>

@@ -4,19 +4,19 @@
   <body>
     <element name="call-queue-item" constructor="CallQueueItem" extends="li" apply-author-styles>
       <style>
-        .default {
+        .call-queue-item-default {
           padding: 5px;
         }
 
-        .seconds {
+        .call-queue-item-seconds {
           float: right;
         }
       </style>
 
       <template>
-        <div on-click="pickupcallHandler()" class="default">
+        <div on-click="pickupcallHandler()" class="call-queue-item-default">
           <span>Call ID : {{call.id}}</span>
-          <span class="seconds">{{age}}</span>
+          <span class="call-queue-item-seconds">{{age}}</span>
         </div>
       </template>
 

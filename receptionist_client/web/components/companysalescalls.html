@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="company-sales-calls" constructor="CompanySalesCalls" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .company-sales-calls-placing {
           position: absolute;
           left: 35%;
           top: 19%;
@@ -15,33 +15,33 @@
           width: 21%;
         }
 
-        .container {
+        .company-sales-calls-container {
           height: 100%;
           width: 100%;
           overflow: auto;
         }
 
-        .zebra {
+        .company-sales-calls-zebra {
           list-style-type: none;
         }
 
-        .zebra li {
+        .company-sales-calls-zebra li {
           padding: 4px;
         }
 
-        .zebra li:nth-of-type(even) {
+        .company-sales-calls-zebra li:nth-of-type(even) {
           background-color: #eee;
         }
       </style>
 
       <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-sales-calls-placing">
           <span name="boxheader">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox container">
-            <ul template iterate="value in environment.organization.current.crapcallHandlingList" class="zebra">
+          <div name="boxcontent" class="minibox company-sales-calls-container">
+            <ul template iterate="value in environment.organization.current.crapcallHandlingList" class="company-sales-calls-zebra">
               <li>{{value}}</li>
             </ul>
           </div>

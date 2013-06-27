@@ -4,40 +4,40 @@
   <body>
     <element name="calendar-event" constructor="CalendarEvent" extends="span" apply-author-styles>
       <style>
-        .eventtable {
+        .calendar-event-table {
           width: 100%;
           border-collapse: collapse;
         }
 
-        .eventcontent {
+        .calendar-event-content {
           vertical-align: top;
         }
 
-        .eventtimestamp {
+        .calendar-event-timestamp {
           text-align: right;
           vertical-align: top;
           font-weight: bold;
           padding-top: 5px;
         }
 
-        .notactive {
+        .calendar-event-notactive {
           color: #999;
           font-weight: normal;
         }
       </style>
 
       <template>
-        <table class="eventtable">
+        <table class="calendar-event-table">
           <tbody>
             <tr>
-              <td class="eventcontent {{notactive}}">
+              <td class="calendar-event-content {{notactive}}">
                 {{event}}
               <td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
-              <td class="eventtimestamp {{notactive}}">
+              <td class="calendar-event-timestamp {{notactive}}">
                 {{event.start}} - {{event.stop}}
               <td>
             </tr>

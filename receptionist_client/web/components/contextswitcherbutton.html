@@ -3,8 +3,8 @@
 <html>
 <body>
   <element name="context-switcher-button" constructor="ContextSwitcherButton" extends="span" apply-author-styles>
-    <style scoped>
-      .default {
+    <style>
+      .context-switcher-button-default {
         position: relative;
         width: 100%;
         background-color: inherit;
@@ -13,8 +13,8 @@
         margin-bottom: 10px;
       }
 
-      .alert,
-      .buttonface {
+      .context-switcher-button-alert,
+      .context-switcher-button-buttonface {
         position: absolute;
         top: 0;
         left: 0;
@@ -22,10 +22,10 @@
     </style>
 
     <template>
-      <button disabled="{{disabled}}" class="default" on-click="_activate()">
-        <img name="buttonpassiveimage" class="buttonface" src="../images/{{context.id}}.svg">
-        <img name="buttonactiveimage" class="buttonface {{classHidden}}" src="../images/{{context.id}}_active.svg">
-        <img name="buttonalertimage" class="alert {{alertMode}}" src="../images/contextalert.svg">
+      <button disabled="{{disabled}}" class="context-switcher-button-default" on-click="_activate()">
+        <img name="buttonpassiveimage" class="context-switcher-button-buttonface" src="../images/{{context.id}}.svg">
+        <img name="buttonactiveimage" class="context-switcher-button-buttonface {{classHidden}}" src="../images/{{context.id}}_active.svg">
+        <img name="buttonalertimage" class="context-switcher-button-alert {{alertMode}}" src="../images/contextalert.svg">
       </button>
     </template>
 

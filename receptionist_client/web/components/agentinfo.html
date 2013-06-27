@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .agent-info-placing {
           position: absolute;
           left: 90%;
           top: 0%;
@@ -15,7 +15,7 @@
           width: 10%;
         }
 
-        .container {
+        .agent-info-container {
           position: relative;
           height: 100%;
           width: 100%;
@@ -24,7 +24,7 @@
           font-size: 1.1em;
         }
 
-        .face {
+        .agent-info-face {
           position: absolute;
           top: 0px;
           height: 100%;
@@ -33,8 +33,8 @@
       </style>
 
       <template>
-        <box class="placing">
-          <div name="boxcontent" class="container">
+        <box class="agent-info-placing">
+          <div name="boxcontent" class="agent-info-container">
             <table>
               <tr>
                 <td>{{active}}</td>
@@ -45,7 +45,7 @@
                 <td>: {{pausedLabel}}</td>
               </tr>
             </table>
-            <div name="face" class="face">
+            <div name="face" class="agent-info-face">
               <img style="border: solid 2px #aaa; border-radius: 5px; height: 100%; width: 100%" src="{{faceURL}}">
             </div>
           </div>

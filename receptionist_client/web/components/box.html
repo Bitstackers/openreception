@@ -3,8 +3,8 @@
 <html>
   <body>
     <element name="box" constructor="Box" extends="span" apply-author-styles>
-      <style scoped>
-        .outerbox {
+      <style>
+        .box-outer {
           height: 100%;
           background-color: #fafafa;
           border: solid 2px #ddd;
@@ -12,15 +12,15 @@
           overflow: auto;
         }
 
-        .content {
+        .box-content {
           height: 100%;
           overflow: auto;
         }
       </style>
 
       <template>
-        <div class="outerbox" style="{{noChrome}}">
-          <div class="content">
+        <div class="box-outer" style="{{noChrome}}">
+          <div class="box-content">
             <content select="[name=boxcontent]"></content>
           </div>
         </div>

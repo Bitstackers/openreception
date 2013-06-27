@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="company-alternate-names" constructor="CompanyAlternateNames" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .company-alternate-names-placing {
           position: absolute;
           left: 57%;
           top: 30%;
@@ -15,33 +15,33 @@
           width: 21%;
         }
 
-        .container {
+        .company-alternate-names-container {
           height: 100%;
           width: 100%;
           overflow: auto;
         }
 
-        .zebra {
+        .company-alternate-names-zebra {
           list-style-type: none;
         }
 
-        .zebra li {
+        .company-alternate-names-zebra li {
           padding: 4px;
         }
 
-        .zebra li:nth-of-type(even) {
+        .company-alternate-names-zebra li:nth-of-type(even) {
           background-color: #eee;
         }
       </style>
 
       <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-alternate-names-placing">
           <span name="boxheader">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox container">
-            <ul template iterate="value in environment.organization.current.alternateNameList" class="zebra">
+          <div name="boxcontent" class="minibox company-alternate-names-container">
+            <ul template iterate="value in environment.organization.current.alternateNameList" class="company-alternate-names-zebra">
               <li>{{value}}</li>
             </ul>
           </div>

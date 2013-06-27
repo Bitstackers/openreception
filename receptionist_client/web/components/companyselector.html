@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .company-selector-placing {
           position: absolute;
           left: 0%;
           top: 8%;
@@ -15,7 +15,7 @@
           width: 34%;
         }
 
-        .default {
+        .company-selector-default {
           width: 100%;
           height: 100%;
           font-size: 1.2em;
@@ -23,9 +23,9 @@
       </style>
 
       <template>
-        <box chrome="{{false}}" class="placing">
+        <box chrome="{{false}}" class="company-selector-placing">
           <div name="boxcontent" style="height: 100%;">
-            <select class="default" on-change="_selection($event)">
+            <select class="company-selector-default" on-change="_selection($event)">
               <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
                 {{defaultOptionText}}
               </option>

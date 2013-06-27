@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="company-product" constructor="CompanyProduct" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .company-product-placing {
           position: absolute;
           left: 35%;
           top: 30%;
@@ -15,18 +15,18 @@
           width: 21%;
         }
 
-        .container {
+        .company-product-container {
           padding: 5px;
         }
       </style>
 
       <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-product-placing">
           <span name="boxheader">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox container">
+          <div name="boxcontent" class="minibox company-product-container">
             {{environment.organization.current.product}}
           </div>
         </box-with-header>

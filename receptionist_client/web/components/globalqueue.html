@@ -7,8 +7,8 @@
   </head>
   <body>
     <element name="global-queue" constructor="GlobalQueue" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .global-queue-placing {
           position: absolute;
           top: 52%;
           left: 79%;
@@ -16,25 +16,25 @@
           width: 21%;
         }
 
-        .container {
+        .global-queue-container {
           height: 100%;
           width: 100%;
           overflow: auto;
           font-size: 0.9em;
         }
 
-        .zebra {
+        .global-queue-zebra {
           list-style-type: none;
           width: 100%;
         }
 
-        .zebra li:nth-of-type(even) {
+        .global-queue-zebra li:nth-of-type(even) {
           background-color: #eee;
         }
       </style>
 
       <template>
-        <box-with-header class="placing">
+        <box-with-header class="global-queue-placing">
           <span name="boxheader" class="header">
             {{title}}
             <span style="float: right">
@@ -45,7 +45,7 @@
           </span>
 
           <div name="boxcontent" class="container">
-            <ul template iterate="call in calls" class="zebra">
+            <ul template iterate="call in calls" class="global-queue-zebra">
               <call-queue-item call="{{call}}"></call-queue-item>
             </ul>
           </div>

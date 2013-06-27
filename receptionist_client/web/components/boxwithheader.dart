@@ -26,7 +26,7 @@ class BoxWithHeader extends WebComponent {
   DivElement outer;
   String focuson = '';
 
-  String get focusborder => (focuson != '' && environment.activeWidget == focuson) ? 'focusborder' : '';
+  String get focusborder => (focuson != '' && environment.activeWidget == focuson) ? 'box-with-header-focusborder' : '';
 
   void inserted() {
     _queryElements();

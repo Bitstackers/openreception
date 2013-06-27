@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="company-opening-hours" constructor="CompanyOpeningHours" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .company-opening-hours-placing {
           position: absolute;
           left: 35%;
           top: 8%;
@@ -15,33 +15,33 @@
           width: 21%;
         }
 
-        .container {
+        .company-opening-hours-container {
           height: 100%;
           width: 100%;
           overflow: auto;
         }
 
-        .zebra {
+        .company-opening-hours-zebra {
           list-style-type: none;
         }
 
-        .zebra li {
+        .company-opening-hours-zebra li {
           padding: 4px;
         }
 
-        .zebra li:nth-of-type(even) {
+        .company-opening-hours-zebra li:nth-of-type(even) {
           background-color: #eee;
         }
       </style>
 
       <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-opening-hours-placing">
           <span name="boxheader">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox container">
-            <ul template iterate="value in environment.organization.current.openingHoursList" class="zebra">
+          <div name="boxcontent" class="minibox company-opening-hours-container">
+            <ul template iterate="value in environment.organization.current.openingHoursList" class="company-opening-hours-zebra">
               <li>{{value}}</li>
             </ul>
           </div>

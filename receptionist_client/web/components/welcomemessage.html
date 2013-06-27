@@ -6,8 +6,8 @@
   </head>
   <body>
     <element name="welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+      <style>
+        .welcome-message-placing {
           position: absolute;
           left: 0%;
           top: 0%;
@@ -15,7 +15,7 @@
           width: 89%;
         }
 
-        .container {
+        .welcome-message-container {
           display: table;
           height: -moz-calc(100% - 20px);
           height: -webkit-calc(100% - 20px);
@@ -25,17 +25,17 @@
           font-size: 1.5em;
         }
 
-        .cell {
+        .welcome-message-cell {
           display: table-cell;
           vertical-align: middle;
         }
       </style>
 
       <template>
-        <box class="placing">
-          <div name="boxcontent" class="container">
+        <box class="welcome-message-placing">
+          <div name="boxcontent" class="welcome-message-container">
             <template instantiate="if environment.organization.current != model.nullOrganization">
-              <span class="cell">{{environment.organization.current.greeting}}</span>
+              <span class="welcome-message-cell">{{environment.organization.current.greeting}}</span>
             </template>
           </div>
         </box>

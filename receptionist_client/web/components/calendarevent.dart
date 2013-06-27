@@ -20,5 +20,5 @@ import '../classes/model.dart' as model;
 class CalendarEvent extends WebComponent {
   model.CalendarEvent event;
 
-  String get notactive => event.active ? '' : 'notactive';
+  String get notactive => event.active ? '' : 'calendar-event-notactive';
 }
