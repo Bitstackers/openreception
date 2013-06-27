@@ -22,7 +22,7 @@ import '../classes/storage.dart' as storage;
 class CompanySelector extends WebComponent {
   @observable model.OrganizationList organizationList = model.nullOrganizationList;
 
-  const String defaultOptionText = 'vælg virksomhed';
+  final String defaultOptionText = 'vælg virksomhed';
 
   void created() {
     storage.organizationList.get((list) => organizationList = list);
