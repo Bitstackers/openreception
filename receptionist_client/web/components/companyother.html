@@ -2,14 +2,14 @@
 
 <html>
   <head>
-    <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="boxwithheader.html">
   </head>
   <body>
-    <element name="x-company-customer-type" constructor="CompanyCustomerType" extends="span" apply-author-styles>
+    <element name="company-other" constructor="CompanyOther" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
-          left: 35%;
+          left: 79%;
           top: 41%;
           height: 9%;
           width: 21%;
@@ -21,18 +21,18 @@
       </style>
 
       <template>
-        <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
             {{title}}
           </span>
 
           <div name="boxcontent" class="minibox container">
-            {{environment.organization.current.customerType}}
+            {{environment.organization.current.other}}
           </div>
-        </x-box-with-header>
+        </box-with-header>
       </template>
 
-      <script type="application/dart" src="xcompanycustomertype.dart"></script>
+      <script type="application/dart" src="companyother.dart"></script>
     </element>
   </body>
 </html>

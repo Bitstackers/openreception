@@ -2,10 +2,10 @@
 
 <html>
   <head>
-    <link rel="import" href="xbox.html">
+    <link rel="import" href="box.html">
   </head>
   <body>
-    <element name="x-company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
+    <element name="company-selector" constructor="CompanySelector" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
@@ -23,7 +23,7 @@
       </style>
 
       <template>
-        <x-box chrome="{{false}}" class="placing">
+        <box chrome="{{false}}" class="placing">
           <div name="boxcontent" style="height: 100%;">
             <select class="default" on-change="_selection($event)">
               <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
@@ -34,10 +34,10 @@
               </option>
             </select>
           </div>
-        </x-box>
+        </box>
       </template>
 
-      <script type="application/dart" src="xcompanyselector.dart"></script>
+      <script type="application/dart" src="companyselector.dart"></script>
     </element>
   </body>
 </html>

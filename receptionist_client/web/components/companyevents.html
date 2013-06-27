@@ -2,11 +2,11 @@
 
 <html>
   <head>
-    <link rel="import" href="xboxwithheader.html">
-    <link rel="import" href="xcalendarevent.html">
+    <link rel="import" href="boxwithheader.html">
+    <link rel="import" href="calendarevent.html">
   </head>
   <body>
-    <element name="x-company-events" constructor="CompanyEvents" extends="span" apply-author-styles>
+    <element name="company-events" constructor="CompanyEvents" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
@@ -41,7 +41,7 @@
       </style>
 
       <template>
-        <x-box-with-header focuson="companyevents" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header focuson="companyevents" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
             {{title}}
           </span>
@@ -50,20 +50,20 @@
             <ul template iterate="event in environment.organization.current.calendarEventList" class="zebra">
               <template instantiate="if event.active">
                 <li class="active">
-                  <x-calendar-event event="{{event}}"></x-calendar-event>
+                  <calendar-event event="{{event}}"></calendar-event>
                 </li>
               </template>
               <template instantiate="if !event.active">
                 <li>
-                  <x-calendar-event event="{{event}}"></x-calendar-event>
+                  <calendar-event event="{{event}}"></calendar-event>
                 </li>
               </template>
             </ul>
           </div>
-        </x-box-with-header>
+        </box-with-header>
       </template>
 
-      <script type="application/dart" src="xcompanyevents.dart"></script>
+      <script type="application/dart" src="companyevents.dart"></script>
     </element>
   </body>
 </html>

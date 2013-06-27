@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <link rel="import" href="xboxwithheader.html">
-    <link rel="import" href="xcalendarevent.html">
+    <link rel="import" href="boxwithheader.html">
+    <link rel="import" href="calendarevent.html">
   </head>
   <body>
     <element name="contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
@@ -115,7 +115,7 @@
       </style>
 
       <template>
-        <x-box-with-header class="contact-info-placing">
+        <box-with-header class="contact-info-placing">
           <span name="boxheader" class="header">
             {{title}}
           </span>
@@ -141,7 +141,7 @@
             <div class="contact-info-datacolumn">
               <template instantiate="if contact != model.nullContact">
                 <div class="contact-info-calendarbox">
-                  <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+                  <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                     <span name="boxheader">
                       {{calendarTitle}}
                     </span>
@@ -150,17 +150,17 @@
                       <ul template iterate="value in contact.calendarEventList" class="contact-info-zebraeven">
                         <template instantiate="if value.active">
                           <li class="contact-info-active">
-                            <x-calendar-event event="{{value}}"></x-calendar-event>
+                            <calendar-event event="{{value}}"></calendar-event>
                           </li>
                         </template>
                         <template instantiate="if !value.active">
                           <li>
-                            <x-calendar-event event="{{value}}"></x-calendar-event>
+                            <calendar-event event="{{value}}"></calendar-event>
                           </li>
                         </template>
                       </ul>
                     </div>
-                  </x-box-with-header>
+                  </box-with-header>
                 </div>
 
                 <div class="contact-info-infobox">
@@ -250,7 +250,7 @@
               </template>
             </div>
           </div>
-        </x-box-with-header>
+        </box-with-header>
       </template>
 
       <script type="application/dart" src="contactinfo.dart"></script>

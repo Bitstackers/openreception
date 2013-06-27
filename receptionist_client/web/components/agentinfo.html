@@ -2,10 +2,10 @@
 
 <html>
   <head>
-    <link rel="import" href="xbox.html">
+    <link rel="import" href="box.html">
   </head>
   <body>
-    <element name="x-agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
+    <element name="agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
@@ -33,7 +33,7 @@
       </style>
 
       <template>
-        <x-box class="placing">
+        <box class="placing">
           <div name="boxcontent" class="container">
             <table>
               <tr>
@@ -49,10 +49,10 @@
               <img style="border: solid 2px #aaa; border-radius: 5px; height: 100%; width: 100%" src="{{faceURL}}">
             </div>
           </div>
-        </x-box>
+        </box>
       </template>
 
-      <script type="application/dart" src="xagentinfo.dart"></script>
+      <script type="application/dart" src="agentinfo.dart"></script>
     </element>
   </body>
 </html>

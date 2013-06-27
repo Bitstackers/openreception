@@ -2,10 +2,10 @@
 
 <html>
   <head>
-    <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="boxwithheader.html">
   </head>
   <body>
-    <element name="x-send-message" constructor="SendMessage" extends="span" apply-author-styles>
+    <element name="send-message" constructor="SendMessage" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
@@ -27,7 +27,7 @@
       </style>
 
       <template>
-        <x-box-with-header class="placing">
+        <box-with-header class="placing">
           <span name="boxheader" class="header">
             SendMessage Header
           </span>
@@ -35,10 +35,10 @@
           <div name="boxcontent" class="container">
             SendMessage Content
           </div>
-        </x-box-with-header>
+        </box-with-header>
       </template>
 
-      <script type="application/dart" src="xsendmessage.dart"></script>
+      <script type="application/dart" src="sendmessage.dart"></script>
     </element>
   </body>
 </html>

@@ -2,15 +2,15 @@
 
 <html>
   <head>
-    <link rel="import" href="xboxwithheader.html">
+    <link rel="import" href="boxwithheader.html">
   </head>
   <body>
-    <element name="x-company-banking-information" constructor="CompanyBankingInformation" extends="span" apply-author-styles>
+    <element name="company-email-addresses" constructor="CompanyEmailAddresses" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
-          left: 57%;
-          top: 41%;
+          left: 79%;
+          top: 8%;
           height: 9%;
           width: 21%;
         }
@@ -35,20 +35,20 @@
       </style>
 
       <template>
-        <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
+        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="placing">
           <span name="boxheader">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="minibox containers">
-            <ul template iterate="value in environment.organization.current.bankingInformationList" class="zebra">
+          <div name="boxcontent" class="minibox container">
+            <ul template iterate="value in environment.organization.current.emailAddressList" class="zebra">
               <li>{{value}}</li>
             </ul>
           </div>
-        </x-box-with-header>
+        </box-with-header>
       </template>
 
-      <script type="application/dart" src="xcompanybankinginformation.dart"></script>
+      <script type="application/dart" src="companyemailaddresses.dart"></script>
     </element>
   </body>
 </html>

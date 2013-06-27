@@ -2,10 +2,10 @@
 
 <html>
   <head>
-    <link rel="import" href="xbox.html">
+    <link rel="import" href="box.html">
   </head>
   <body>
-    <element name="x-logbox" constructor="LogBox" extends="span" apply-author-styles>
+    <element name="log-box" constructor="LogBox" extends="span" apply-author-styles>
       <style scoped>
         .container {
           margin: 10px;
@@ -19,7 +19,7 @@
       </style>
 
       <template>
-        <x-box>
+        <box>
           <div name="boxcontent" class="container">
             <table border="1">
               <tr template repeat="record in messages">
@@ -29,10 +29,10 @@
               </tr>
             </table>
           </div>
-        </x-box>
+        </box>
       </template>
 
-      <script type="application/dart" src="xlogbox.dart"></script>
+      <script type="application/dart" src="logbox.dart"></script>
     </element>
   </body>
 </html>

@@ -11,10 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+import 'dart:async';
 import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-import '../classes/configuration.dart';
+import '../classes/context.dart';
+import '../classes/environment.dart' as environment;
 
-class App extends WebComponent {}
+class BobContext extends WebComponent {
+  void created() {
+    environment.contextList.add(new Context(this));
+  }
+}

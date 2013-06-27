@@ -2,11 +2,11 @@
 
 <html>
   <head>
-    <link rel="import" href="xboxwithheader.html">
-    <link rel="import" href="xcallqueueitem.html">
+    <link rel="import" href="boxwithheader.html">
+    <link rel="import" href="callqueueitem.html">
   </head>
   <body>
-    <element name="x-local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
+    <element name="local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
@@ -34,20 +34,20 @@
       </style>
 
       <template>
-        <x-box-with-header class="placing">
+        <box-with-header class="placing">
           <span name="boxheader" class="header">
             {{title}}
           </span>
 
           <div name="boxcontent" class="container">
             <ul template iterate="call in calls" class="zebra">
-              <x-call-queue-item call="{{call}}"></x-call-queue-item>
+              <call-queue-item call="{{call}}"></call-queue-item>
             </ul>
           </div>
-        </x-box-with-header>
+        </box-with-header>
       </template>
 
-      <script type="application/dart" src="xlocalqueue.dart"></script>
+      <script type="application/dart" src="localqueue.dart"></script>
     </element>
   </body>
 </html>

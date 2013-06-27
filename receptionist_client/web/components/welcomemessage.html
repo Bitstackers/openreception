@@ -2,10 +2,10 @@
 
 <html>
   <head>
-    <link rel="import" href="xbox.html">
+    <link rel="import" href="box.html">
   </head>
   <body>
-    <element name="x-welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
+    <element name="welcome-message" constructor="WelcomeMessage" extends="span" apply-author-styles>
       <style scoped>
         .placing {
           position: absolute;
@@ -32,16 +32,16 @@
       </style>
 
       <template>
-        <x-box class="placing">
+        <box class="placing">
           <div name="boxcontent" class="container">
             <template instantiate="if environment.organization.current != model.nullOrganization">
               <span class="cell">{{environment.organization.current.greeting}}</span>
             </template>
           </div>
-        </x-box>
+        </box>
       </template>
 
-      <script type="application/dart" src="xwelcomemessage.dart"></script>
+      <script type="application/dart" src="welcomemessage.dart"></script>
     </element>
   </body>
 </html>
