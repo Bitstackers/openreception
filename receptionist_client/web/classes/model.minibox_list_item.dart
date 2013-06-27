@@ -13,18 +13,35 @@
 
 part of model;
 
+/**
+ * A MiniboxListItem consists of a String [value] and an int [priority]. In the
+ * case of the [priority] 1 is considered more important than 2.
+ */
 class MiniboxListItem implements Comparable{
+  int    priority;
   String value;
-  int priority;
 
-  MiniboxListItem(String this.value, int this.priority);
-
+  /**
+   * MiniboxListItem constructor. Expects a map with the following format:
+   *
+   *  {
+   *    'priority' : int,
+   *    'value'    : String
+   *  }
+   *
+   */
   MiniboxListItem.fromJson(Map json) {
     this.value = json['value'];
     this.priority = json['priority'];
   }
 
+  /**
+   * Enables a [MiniboxListItem] to sort itself compared to other items.
+   */
   int compareTo(MiniboxListItem other) => priority - other.priority;
 
-  String toString() => value;
+  /**
+   * [MiniboxListItem] as String, for debug/log purposes.
+   */
+  String toString() => '${value}:${priority}';
 }

@@ -15,15 +15,24 @@ part of model;
 
 final MiniboxList nullMiniboxList = new MiniboxList._null();
 
+/**
+ * A list of [MiniboxListItem] objects.
+ */
 class MiniboxList extends IterableBase<MiniboxListItem>{
   List<MiniboxListItem> _list = <MiniboxListItem>[];
 
   Iterator<MiniboxListItem> get iterator => _list.iterator;
 
+  /**
+   * [MiniboxList] constructor.
+   */
   MiniboxList(List list) {
     list.forEach((json) => _list.add(new MiniboxListItem.fromJson(json)));
     _list.sort();
   }
 
+  /**
+   * [MiniboxList] null constructor.
+   */
   MiniboxList._null();
 }

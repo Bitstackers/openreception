@@ -33,7 +33,7 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
   }
 
   /**
-   * [CalendarEventList] constructor.
+   * [CalendarEventList] null constructor.
    */
   CalendarEventList._null();
 }

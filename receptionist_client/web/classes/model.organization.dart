@@ -52,6 +52,83 @@ class Organization implements Comparable{
   MiniboxList       get telephoneNumberList => _telephoneNumberList;
   MiniboxList       get websiteList => _websiteList;
 
+  /**
+   * [Organization] constructor. Expects a map in the following format:
+   *
+   *  {
+   *    "full_name": String,
+   *    "customertype": String,
+   *    "addresses": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "organization_id": int,
+   *    "crapcallhandling": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "greeting": String,
+   *    "websites": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "telephonenumbers": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "product": String,
+   *    "handlings": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      },
+   *    ],
+   *    "emailaddresses": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "alternatenames": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "other": String,
+   *    "bankinginformation": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "uri": String,
+   *    "contacts": [....],
+   *    "openinghours": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ],
+   *    "registrationnumbers": [
+   *      {
+   *        "priority": int,
+   *        "value": String
+   *      }, ....
+   *    ]
+   *  }
+   *
+   * TODO Obviously the above map format should be in the docs/wiki, as it is
+   * also highly relevant to Alice.
+   */
   Organization(Map json) {
     if(json.containsKey('addresses')) {
       _addressList = new MiniboxList(json['addresses']);

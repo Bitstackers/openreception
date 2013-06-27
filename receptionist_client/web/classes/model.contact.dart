@@ -42,16 +42,60 @@ class Contact implements Comparable{
   MiniboxList       get workHoursList => _workHoursList;
 
   /**
-   * Contact constructor. Expects a map with the following format:
+   * [Contact] constructor. Expects a map in the following format:
    *
    *  {
-   *    'contact_id' : int,
-   *    'is_human'   : bool,
-   *    'full_name'  : String,
-   *    'attributes' : {
+   *    "full_name": String,
+   *    "attributes": [
+   *      {
+   *        "relations": String,
+   *        "workhours": [
+   *          {
+   *            "priority": int,
+   *            "value": String
+   *          }, ....
+   *        ],
+   *        "department": String,
+   *        "organization_id": int,
+   *        "handling": [
+   *          {
+   *            "priority": int,
+   *            "value": String
+   *          }, ....
+   *        ],
+   *        "telephonenumbers": [
+   *          {
+   *            "priority": int,
+   *            "value": String
+   *          }, ....
+   *        ],
+   *        "responsibility": String,
+   *        "emailaddresses": [
+   *          {
+   *            "priority": int,
+   *            "value": String
+   *          }, ....
+   *        ],
+   *        "info": String,
+   *        "position": String,
+   *        "backup": [
+   *          {
+   *            "priority": int,
+   *            "value": String
+   *          }, ....
+   *        ],
+   *        "tags": [
+   *          String, ....
+   *        ],
+   *        "contact_id": int
+   *      }
+   *    ],
+   *    "is_human": bool,
+   *    "contact_id": int
+   *  }
    *
-   *
-   *  TODO GET THIS DONE!
+   * TODO Obviously the above map format should be in the docs/wiki, as it is
+   * also highly relevant to Alice.
    */
   Contact.fromJson(Map json) {
     id = json['contact_id'];
@@ -96,7 +140,7 @@ class Contact implements Comparable{
   }
 
   /**
-   * Contact constructor.
+   * [Contact] null constructor.
    */
   Contact._null() {
     id = null;

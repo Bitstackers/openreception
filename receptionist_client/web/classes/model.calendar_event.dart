@@ -26,7 +26,19 @@ class CalendarEvent implements Comparable{
   String get stop  => _formatTimestamp(_stop);
 
   /**
-   * CalendarEvent constructor.
+   * [CalendarEvent] constructor. Expects a map in the following format:
+   *
+   *  {
+   *    'start'   : DateTime String,
+   *    'stop'    : DateTime String,
+   *    'content' : String
+   *  }
+   *
+   *  'start' and 'stop' MUST be in a format that can be parsed by the
+   *  [DateTime.parse] method. 'content' is the actual event description.
+   *
+   * TODO Obviously the above map format should be in the docs/wiki, as it is
+   * also highly relevant to Alice.
    */
   CalendarEvent.fromJson(Map json) {
     DateTime now = new DateTime.now();

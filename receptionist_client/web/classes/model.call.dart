@@ -28,7 +28,20 @@ class Call implements Comparable {
   DateTime get start         => _start;
 
   /**
-   * Call constructor.
+   * [Call] constructor. Expects a map in the following format:
+   *
+   *  {
+   *    'assigned_to' : String,
+   *    'id'          : String,
+   *    'start'       : DateTime String
+   *  }
+   *
+   * 'assigned_to' is the String agent ID. 'id' is the ID of the call.'start'
+   * is a timestamp of when the call was started. It MUST be in a format that
+   * can be parsed by the [DateTime.parse] method.
+   *
+   * TODO Obviously the above map format should be in the docs/wiki, as it is
+   * also highly relevant to Alice.
    */
   Call.fromJson(Map json) {
     if(json.containsKey('assigned_to')) {
@@ -42,7 +55,7 @@ class Call implements Comparable {
   }
 
   /**
-   * Call constructor.
+   * [Call] null constructor.
    */
   Call._null() {
     _assignedAgent = null;

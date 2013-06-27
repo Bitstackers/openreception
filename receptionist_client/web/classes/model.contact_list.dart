@@ -33,7 +33,7 @@ class ContactList extends IterableBase<Contact>{
   }
 
   /**
-   * ContactList constructor.
+   * ContactList null constructor.
    */
   ContactList._null();
 
