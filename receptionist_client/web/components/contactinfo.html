@@ -6,9 +6,9 @@
     <link rel="import" href="xcalendarevent.html">
   </head>
   <body>
-    <element name="x-contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
-      <style scoped>
-        .placing {
+    <element name="contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
+      <style>
+        .contact-info-placing {
           position: absolute;
           top: 52%;
           left: 0%;
@@ -16,68 +16,68 @@
           width: 45%;
         }
 
-        .calendarbox {
+        .contact-info-calendarbox {
           width: 100%;
           padding: 10px;
           height: 150px;
         }
 
-        .container {
+        .contact-info-container {
           height: 100%;
           width: 100%;
           overflow: auto;
         }
 
-        .datacolumn {
+        .contact-info-datacolumn {
           height: 100%;
           width: 59.9%;
           float: right;
         }
 
-        .infobox {
+        .contact-info-infobox {
           height: -webkit-calc(100% - 150px);
           height: -moz-calc(100% - 150px);
           overflow: auto;
           padding: 10px;
         }
 
-        .infobox h5 {
+        .contact-info-infobox h5 {
           font-size: 0.9em;
         }
 
-        .infobox table {
+        .contact-info-infobox table {
           width: 100%;
           border-collapse: collapse;
           font-size: 0.9em;
         }
 
-        .infobox td {
+        .contact-info-infobox td {
           width: 50%;
           padding: 5px;
           vertical-align: top;
         }
 
-        .infobox td div {
+        .contact-info-infobox td div {
           padding-left: 2px;
         }
 
-        .infobox td div ul {
+        .contact-info-infobox td div ul {
           list-style-type: none;
         }
 
-        .listcolumn {
+        .contact-info-listcolumn {
           height: 100%;
           width: 39.9%;
           float: left;
         }
 
-        .listcolumn ul {
+        .contact-info-listcolumn ul {
           height: -webkit-calc(100% - 50px);
           height: -moz-calc(100% - 50px);
           overflow: auto;
         }
 
-        .search {
+        .contact-info-search {
           width: 100%;
           height: 30px;
           border: solid 2px #ccc;
@@ -86,51 +86,51 @@
           border-radius: 3px;
         }
 
-        .searchbox {
+        .contact-info-searchbox {
           width: 100%;
           padding: 10px;
         }
 
-        .zebra,
-        .zebraeven {
+        .contact-info-zebra,
+        .contact-info-zebraeven {
           list-style-type: none;
         }
 
-        .zebra li,
-        .zebraeven li {
+        .contact-info-zebra li,
+        .contact-info-zebraeven li {
           padding: 5px;
         }
 
-        .zebra li:nth-of-type(odd) {
+        .contact-info-zebra li:nth-of-type(odd) {
           background-color: #eee;
         }
 
-        .zebraeven li:nth-of-type(even) {
+        .contact-info-zebraeven li:nth-of-type(even) {
           background-color: #eee;
         }
 
-        .active {
+        .contact-info-active {
           border-left: solid 3px red;
         }
       </style>
 
       <template>
-        <x-box-with-header class="placing">
+        <x-box-with-header class="contact-info-placing">
           <span name="boxheader" class="header">
             {{title}}
           </span>
 
-          <div name="boxcontent" class="container">
-            <div class="listcolumn">
+          <div name="boxcontent" class="contact-info-container">
+            <div class="contact-info-listcolumn">
               <template instantiate="if environment.organization.current.contactList != model.nullContactList">
-                <div class="searchbox">
-                  <input class="search" type="search" placeholder="{{placeholder}}"/>
+                <div class="contact-info-searchbox">
+                  <input class="contact-info-search" type="search" placeholder="{{placeholder}}"/>
                 </div>
               </template>
 
-              <ul template iterate="value in environment.organization.current.contactList" class="zebra">
+              <ul template iterate="value in environment.organization.current.contactList" class="contact-info-zebra">
                 <template instantiate="if value == contact">
-                  <li class="active" id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
+                  <li class="contact-info-active" id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
                 </template>
                 <template instantiate="if value != contact">
                   <li id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
@@ -138,18 +138,18 @@
               </ul>
             </div>
 
-            <div class="datacolumn">
+            <div class="contact-info-datacolumn">
               <template instantiate="if contact != model.nullContact">
-                <div class="calendarbox">
+                <div class="contact-info-calendarbox">
                   <x-box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                     <span name="boxheader">
                       {{calendarTitle}}
                     </span>
 
-                    <div name="boxcontent" class="minibox container">
-                      <ul template iterate="value in contact.calendarEventList" class="zebraeven">
+                    <div name="boxcontent" class="minibox contact-info-container">
+                      <ul template iterate="value in contact.calendarEventList" class="contact-info-zebraeven">
                         <template instantiate="if value.active">
-                          <li class="active">
+                          <li class="contact-info-active">
                             <x-calendar-event event="{{value}}"></x-calendar-event>
                           </li>
                         </template>
@@ -163,7 +163,7 @@
                   </x-box-with-header>
                 </div>
 
-                <div class="infobox">
+                <div class="contact-info-infobox">
                   <table>
                     <tr>
                       <td>
@@ -253,7 +253,7 @@
         </x-box-with-header>
       </template>
 
-      <script type="application/dart" src="xcontactinfo.dart"></script>
+      <script type="application/dart" src="contactinfo.dart"></script>
     </element>
   </body>
 </html>
