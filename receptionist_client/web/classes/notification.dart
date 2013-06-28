@@ -54,9 +54,9 @@ class _Notification {
    */
   void addEventHandler(String eventName, Subscriber subscriber) {
     if (!_eventHandlers.containsKey(eventName)) {
-      _eventHandlers[eventName] = new StreamController<Map>();
+      _eventHandlers[eventName] = new StreamController<Map>.broadcast();
     }
-    _eventHandlers[eventName].stream.asBroadcastStream().listen(subscriber);
+    _eventHandlers[eventName].stream.listen(subscriber);
   }
 
   void _onMessage(Map json) {

@@ -20,8 +20,8 @@ import 'package:web_ui/web_ui.dart';
 
 import 'keyboardhandler.dart';
 
-final StreamController<Context> _contextActivationStream = new StreamController<Context>();
-final Stream<Context> _onChange = _contextActivationStream.stream.asBroadcastStream();
+final StreamController<Context> _contextActivationStream = new StreamController<Context>.broadcast();
+final Stream<Context> _onChange = _contextActivationStream.stream;
 
 /**
  * A [Context] is a top-level GUI container. It represents a collection of 0

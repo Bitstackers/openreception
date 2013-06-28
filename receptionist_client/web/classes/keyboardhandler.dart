@@ -105,8 +105,8 @@ class _KeyboardHandler{
     _keyToName[Keys.DOWN]  = 'arrowDown';
 
     _keyToName.forEach((key, value) {
-      _StreamControllerMap[value] = new StreamController<int>();
-      _StreamMap[value] = _StreamControllerMap[value].stream.asBroadcastStream();
+      _StreamControllerMap[value] = new StreamController<int>.broadcast();
+      _StreamMap[value] = _StreamControllerMap[value].stream;
     });
   }
 

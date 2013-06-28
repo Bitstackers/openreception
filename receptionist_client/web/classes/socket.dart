@@ -60,13 +60,13 @@ class _ConnectionManager{
 class Socket{
   WebSocket _channel;
   int _connectTicks = 0;
-  StreamController<Map> _errorStream = new StreamController<Map>();
-  StreamController<Map> _messageStream = new StreamController<Map>();
+  StreamController<Map> _errorStream = new StreamController<Map>.broadcast();
+  StreamController<Map> _messageStream = new StreamController<Map>.broadcast();
   final Uri _url;
 
   bool get isDead => _channel == null || _channel.readyState != WebSocket.OPEN;
-  Stream<Map> get onError => _errorStream.stream.asBroadcastStream();
-  Stream<Map> get onMessage => _messageStream.stream.asBroadcastStream();
+  Stream<Map> get onError => _errorStream.stream;
+  Stream<Map> get onMessage => _messageStream.stream;
 
   /**
    * Open a websocket on [url].
