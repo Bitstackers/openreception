@@ -79,8 +79,8 @@ class _Call{
    * Registers event listeners.
    */
   void _registerEventListeners() {
-    notify.notification.addEventHandler('call_pickup', _callPickupEventHandler);
-    notify.notification.addEventHandler('call_hangup', _callHangupEventHandler);
+    notify.notification.callHangup.listen((json) => _callHangupEventHandler(json));
+    notify.notification.callPickup.listen((json) => _callPickupEventHandler(json));
   }
 
  /**

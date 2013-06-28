@@ -15,7 +15,6 @@ library notification;
 
 import 'dart:async';
 
-import 'common.dart';
 import 'configuration.dart';
 import 'logger.dart';
 import 'socket.dart';
@@ -27,8 +26,16 @@ final _Notification notification = new _Notification();
  * A Class to handle all the notifications from Alice.
  */
 class _Notification {
-  Map<String, StreamController<Map>> _eventHandlers = new Map<String, StreamController<Map>>();
-  Socket _socket;
+  Socket                             _socket;
+  Map<String, StreamController<Map>> _Streams = {'call_hangup':new StreamController<Map>.broadcast(),
+                                                 'call_pickup':new StreamController<Map>.broadcast(),
+                                                 'queue_join' :new StreamController<Map>.broadcast(),
+                                                 'queue_leave':new StreamController<Map>.broadcast()};
+
+  Stream<Map> get callHangup => _Streams['call_hangup'].stream;
+  Stream<Map> get callPickup => _Streams['call_pickup'].stream;
+  Stream<Map> get queueJoin  => _Streams['queue_join'].stream;
+  Stream<Map> get queueLeave => _Streams['queue_leave'].stream;
 
   /**
    * [_Notification] constructor.
@@ -48,17 +55,6 @@ class _Notification {
     }
   }
 
-  /**
-   * Adds subscribers for an event with the specified [eventName].
-   * TODO Should this be a getter property instead????.
-   */
-  void addEventHandler(String eventName, Subscriber subscriber) {
-    if (!_eventHandlers.containsKey(eventName)) {
-      _eventHandlers[eventName] = new StreamController<Map>.broadcast();
-    }
-    _eventHandlers[eventName].stream.listen(subscriber);
-  }
-
   void _onMessage(Map json) {
     log.debug(json.toString());
 
@@ -72,7 +68,7 @@ class _Notification {
       log.critical('does not contains persistent');
       return;
     }
-    //Is it a persistent event or not.
+
     if (parseBool(notificationMap['persistent'])) {
       _persistentNotification(notificationMap);
     }else{
@@ -93,8 +89,8 @@ class _Notification {
     var eventName = json['event'];
     log.info('notification with event: ${eventName}');
 
-    if (_eventHandlers.containsKey(eventName)) {
-      _eventHandlers[eventName].sink.add(json);
+    if (_Streams.containsKey(eventName)) {
+      _Streams[eventName].sink.add(json);
     }else{
       log.error('Unhandled event: ${eventName}');
       log.debug(json.toString());
