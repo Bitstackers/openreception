@@ -16,7 +16,7 @@ part of model;
 final Organization nullOrganization = new Organization._null();
 
 /**
- * TODO comment
+ * An [Organization]. Sorting organizations is done based on [name].
  */
 class Organization implements Comparable{
   MiniboxList _addressList = nullMiniboxList;
@@ -55,145 +55,77 @@ class Organization implements Comparable{
   /**
    * [Organization] constructor. Expects a map in the following format:
    *
+   * intString JSON object =
+   *  {
+   *    "priority": int,
+   *    "value": String
+   *  }
+   *
    *  {
    *    "full_name": String,
    *    "customertype": String,
-   *    "addresses": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
+   *    "addresses": [>= 0 intString objects],
    *    "organization_id": int,
-   *    "crapcallhandling": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
+   *    "crapcallhandling": [>= 0 intString objects],
    *    "greeting": String,
-   *    "websites": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
-   *    "telephonenumbers": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
+   *    "websites": [>= 0 intString objects],
+   *    "telephonenumbers": [>= 0 intString objects],
    *    "product": String,
-   *    "handlings": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      },
-   *    ],
-   *    "emailaddresses": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
-   *    "alternatenames": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
+   *    "handlings": [>= 0 intString objects],
+   *    "emailaddresses": [>= 0 intString objects],
+   *    "alternatenames": [>= 0 intString objects],
    *    "other": String,
-   *    "bankinginformation": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
+   *    "bankinginformation": [>= 0 intString objects],
    *    "uri": String,
-   *    "contacts": [....],
-   *    "openinghours": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ],
-   *    "registrationnumbers": [
-   *      {
-   *        "priority": int,
-   *        "value": String
-   *      }, ....
-   *    ]
+   *    "contacts": [>= 0 Contact JSON objects],
+   *    "openinghours": [>= 0 intString objects],
+   *    "registrationnumbers": [>= 0 intString objects]
    *  }
    *
    * TODO Obviously the above map format should be in the docs/wiki, as it is
    * also highly relevant to Alice.
    */
-  Organization(Map json) {
-    if(json.containsKey('addresses')) {
-      _addressList = new MiniboxList(json['addresses']);
-    } else {
-      // Log bad json? Check schema somewhere else?
-    }
-
-    if(json.containsKey('alternatenames')) {
-      _alternateNameList = new MiniboxList(json['alternatenames']);
-    }
-
-    if(json.containsKey('bankinginformation')) {
-      _bankingInformationList = new MiniboxList(json['bankinginformation']);
-    }
-
-    if(json.containsKey('contacts')) {
-      _contactList = new ContactList(json['contacts']);
-    }
-
-    if(json.containsKey('crapcallhandling')) {
-      _crapcallHandlingList = new MiniboxList(json['crapcallhandling']);
-    }
-
-    if(json.containsKey('emailaddresses')) {
-      _emailAddressList = new MiniboxList(json['emailaddresses']);
-    }
-
-    if(json.containsKey('handlings')) {
-      _handlingList = new MiniboxList(json['handlings']);
-    }
-
-    if(json.containsKey('openinghours')) {
-      _openingHoursList = new MiniboxList(json['openinghours']);
-    }
-
-    if(json.containsKey('registrationnumbers')) {
-      _registrationNumberList = new MiniboxList(json['registrationnumbers']);
-    }
-
-    if(json.containsKey('telephonenumbers')) {
-      _telephoneNumberList = new MiniboxList(json['telephonenumbers']);
-    }
-
-    if(json.containsKey('websites')) {
-      _websiteList = new MiniboxList(json['websites']);
-    }
+  Organization.fromJson(Map json) {
+    _addressList            = new MiniboxList.fromJson(json, 'addresses');
+    _alternateNameList      = new MiniboxList.fromJson(json, 'alternatenames');
+    _bankingInformationList = new MiniboxList.fromJson(json, 'bankinginformation');
+    _contactList            = new ContactList.fromJson(json, 'contacts');
+    _crapcallHandlingList   = new MiniboxList.fromJson(json, 'crapcallhandling');
+    _emailAddressList       = new MiniboxList.fromJson(json, 'emailaddresses');
+    _handlingList           = new MiniboxList.fromJson(json, 'handlings');
+    _openingHoursList       = new MiniboxList.fromJson(json, 'openinghours');
+    _registrationNumberList = new MiniboxList.fromJson(json, 'registrationnumbers');
+    _telephoneNumberList    = new MiniboxList.fromJson(json, 'telephonenumbers');
+    _websiteList            = new MiniboxList.fromJson(json, 'websites');
 
     customerType = json['customertype'];
-    greeting = json['greeting'];
-    id = json['organization_id'];
-    name = json['full_name'];
-    other = json['other'];
-    product = json['product'];
+    greeting     = json['greeting'];
+    id           = json['organization_id'];
+    name         = json['full_name'];
+    other        = json['other'];
+    product      = json['product'];
 
-    // Add some dummy calendar events
-    List tempEvents = new List();
-    tempEvents.add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'${id} Salgsmøde'});
-    tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus'});
-    tempEvents.add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'${id} Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
-    _calendarEventList = new CalendarEventList(tempEvents);
+    // Adding some dummy calendar events
+    Map foo = new Map();
+    foo['calendar_events'] = new List();
+    foo['calendar_events'].add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'${id} Salgsmøde'});
+    foo['calendar_events'].add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus'});
+    foo['calendar_events'].add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'${id} Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
+    _calendarEventList = new CalendarEventList.fromJson(foo, 'calendar_events');
   }
 
+  /**
+   * [Organization] null constructor.
+   */
   Organization._null();
 
+  /**
+   * Enables an [Organization] to sort itself compared to other organizations.
+   */
   int compareTo(Organization other) => name.compareTo(other.name);
 
+  /**
+   * [Organization] as String, for debug/log purposes.
+   */
   String toString() => '${name}-${id}';
 }

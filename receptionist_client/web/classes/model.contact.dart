@@ -16,7 +16,7 @@ part of model;
 final Contact nullContact = new Contact._null();
 
 /**
- * A Contact
+ * A [Contact] object. Sorting contacts is done based on [name].
  */
 class Contact implements Comparable{
   MiniboxList       _backupList          = nullMiniboxList;
@@ -44,49 +44,29 @@ class Contact implements Comparable{
   /**
    * [Contact] constructor. Expects a map in the following format:
    *
+   * intString JSON object =
+   *  {
+   *    "priority": int,
+   *    "value": String
+   *  }
+   *
+   * Contact JSON object =
    *  {
    *    "full_name": String,
    *    "attributes": [
    *      {
    *        "relations": String,
-   *        "workhours": [
-   *          {
-   *            "priority": int,
-   *            "value": String
-   *          }, ....
-   *        ],
+   *        "workhours": [>= 0 intString objects],
    *        "department": String,
    *        "organization_id": int,
-   *        "handling": [
-   *          {
-   *            "priority": int,
-   *            "value": String
-   *          }, ....
-   *        ],
-   *        "telephonenumbers": [
-   *          {
-   *            "priority": int,
-   *            "value": String
-   *          }, ....
-   *        ],
+   *        "handling": [>= 0 intString objects],
+   *        "telephonenumbers": [>= 0 intString objects],
    *        "responsibility": String,
-   *        "emailaddresses": [
-   *          {
-   *            "priority": int,
-   *            "value": String
-   *          }, ....
-   *        ],
+   *        "emailaddresses": [>= 0 intString objects],
    *        "info": String,
    *        "position": String,
-   *        "backup": [
-   *          {
-   *            "priority": int,
-   *            "value": String
-   *          }, ....
-   *        ],
-   *        "tags": [
-   *          String, ....
-   *        ],
+   *        "backup": [>= 0 intString objects],
+   *        "tags": [>= 0 Strings],
    *        "contact_id": int
    *      }
    *    ],
@@ -105,38 +85,25 @@ class Contact implements Comparable{
     if(json.containsKey('attributes')) {
       Map attributes = json['attributes'][0];
 
-      if(attributes.containsKey('backup')) {
-        _backupList = new MiniboxList(attributes['backup']);
-      }
+      _backupList          = new MiniboxList.fromJson(json, 'backup');
+      _emailAddressList    = new MiniboxList.fromJson(json, 'emailaddresses');
+      _handlingList        = new MiniboxList.fromJson(json, 'handling');
+      _telephoneNumberList = new MiniboxList.fromJson(json, 'telephonenumbers');
+      _workHoursList       = new MiniboxList.fromJson(json, 'workhours');
 
-      if(attributes.containsKey('emailaddresses')) {
-        _emailAddressList = new MiniboxList(attributes['emailaddresses']);
-      }
-
-      if(attributes.containsKey('handling')) {
-        _handlingList = new MiniboxList(attributes['handling']);
-      }
-
-      if(attributes.containsKey('telephonenumbers')) {
-        _telephoneNumberList = new MiniboxList(attributes['telephonenumbers']);
-      }
-
-      if(attributes.containsKey('workhours')) {
-        _workHoursList = new MiniboxList(attributes['workhours']);
-      }
-
-      department = attributes['department'];
-      info = attributes['info'];
-      position = attributes['position'];
-      relations = attributes['relations'];
+      department     = attributes['department'];
+      info           = attributes['info'];
+      position       = attributes['position'];
+      relations      = attributes['relations'];
       responsibility = attributes['responsibility'];
     }
 
-    // Add some dummy calendar events
-    List tempEvents = new List();
-    tempEvents.add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus I Shanghai. Tjekker sin email.'});
-    tempEvents.add({'start':'2013-05-01 08:00:00', 'stop':'2014-02-07 17:00:00', 'content':'${id} Jordomrejse'});
-    _calendarEventList = new CalendarEventList(tempEvents);
+    // Adding some dummy calendar events
+    Map foo = new Map();
+    foo['calendar_events'] = new List();
+    foo['calendar_events'].add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus I Shanghai. Tjekker sin email.'});
+    foo['calendar_events'].add({'start':'2013-05-01 08:00:00', 'stop':'2014-02-07 17:00:00', 'content':'${id} Jordomrejse'});
+    _calendarEventList = new CalendarEventList.fromJson(foo, 'calendar_events');
   }
 
   /**

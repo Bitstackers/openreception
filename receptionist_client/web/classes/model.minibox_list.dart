@@ -24,11 +24,14 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
   Iterator<MiniboxListItem> get iterator => _list.iterator;
 
   /**
-   * [MiniboxList] constructor.
+   * [MiniboxList] constructor. Builds a list of [MiniboxListItem] objects from
+   * the contents of json[key].
    */
-  MiniboxList(List list) {
-    list.forEach((json) => _list.add(new MiniboxListItem.fromJson(json)));
-    _list.sort();
+  MiniboxList.fromJson(Map json, String key) {
+    if (json.containsKey(key)) {
+      json[key].forEach((item) => _list.add(new MiniboxListItem.fromJson(item)));
+      _list.sort();
+    }
   }
 
   /**

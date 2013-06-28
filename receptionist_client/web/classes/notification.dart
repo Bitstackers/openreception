@@ -30,6 +30,9 @@ class _Notification {
   Map<String, StreamController<Map>> _eventHandlers = new Map<String, StreamController<Map>>();
   Socket _socket;
 
+  /**
+   * [_Notification] constructor.
+   */
   _Notification() {
     assert(configuration.loaded);
 
@@ -38,9 +41,7 @@ class _Notification {
 
     try {
       _socket = new Socket(url);
-
       _socket.onMessage.listen(_onMessage);
-      //TODO make better panichandler for onError.
       _socket.onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
     } catch(e) {
       log.critical('_Notification() ERROR ${e}');

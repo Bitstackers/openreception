@@ -16,17 +16,26 @@ part of model;
 final OrganizationList nullOrganizationList = new OrganizationList._null();
 
 /**
- * TODO comment.
+ * A list of [Organization] objects.
  */
 class OrganizationList extends IterableBase<Organization>{
   List<Organization> _list = <Organization>[];
 
-  OrganizationList.fromMap(Map json) {
-    json['organization_list'].forEach((json) => _list.add(new Organization(json)));
-    _list.sort();
+  Iterator<Organization> get iterator => _list.iterator;
+
+  /**
+   * [OrganizationList] constructor. Builds a list of [Organization] objects
+   * from the contents of json[key].
+   */
+  OrganizationList.fromJson(Map json, String key) {
+    if (json.containsKey(key)) {
+      json[key].forEach((item) => _list.add(new Organization.fromJson(item)));
+      _list.sort();
+    }
   }
 
+  /**
+   * [OrganizationList] null constructor.
+   */
   OrganizationList._null();
-
-  Iterator<Organization> get iterator => _list.iterator;
 }

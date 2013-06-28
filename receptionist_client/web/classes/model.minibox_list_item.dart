@@ -43,5 +43,5 @@ class MiniboxListItem implements Comparable{
   /**
    * [MiniboxListItem] as String, for debug/log purposes.
    */
-  String toString() => '${value}:${priority}';
+  String toString() => value;
 }

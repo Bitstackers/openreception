@@ -42,7 +42,7 @@ class _OrganizationList{
       .then((protocol.Response response) {
         switch(response.status){
           case protocol.Response.OK:
-              onComplete(new model.OrganizationList.fromMap(response.data));
+              onComplete(new model.OrganizationList.fromJson(response.data, 'organization_list'));
               break;
 
             default:

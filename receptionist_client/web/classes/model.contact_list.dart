@@ -25,20 +25,23 @@ class ContactList extends IterableBase<Contact>{
   Iterator<Contact> get iterator => _list.iterator;
 
   /**
-   * ContactList constructor.
+   * [ContactList] constructor. Builds a list of [Contact] objects from the
+   * contents of json[key].
    */
-  ContactList(List contacts) {
-    contacts.forEach((json) => _list.add(new Contact.fromJson(json)));
-    _list.sort();
+  ContactList.fromJson(Map json, String key) {
+    if (json.containsKey(key)) {
+      json[key].forEach((item) => _list.add(new Contact.fromJson(item)));
+      _list.sort();
+    }
   }
 
   /**
-   * ContactList null constructor.
+   * [ContactList] null constructor.
    */
   ContactList._null();
 
   /**
-   * Return the [id] [Contact].
+   * Return the [id] [Contact] or [nullContact] if [id] does not exist.
    */
   Contact getContact(int id) {
     for(Contact contact in _list) {

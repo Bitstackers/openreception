@@ -36,7 +36,7 @@ class _Organization{
         .then((protocol.Response response) {
             switch(response.status) {
               case protocol.Response.OK:
-                model.Organization org = new model.Organization(response.data);
+                model.Organization org = new model.Organization.fromJson(response.data);
                 _cache[org.id] = org;
                 onComplete(org);
                 break;

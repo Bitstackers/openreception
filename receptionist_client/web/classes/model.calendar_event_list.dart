@@ -24,12 +24,14 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
   Iterator<CalendarEvent> get iterator => _list.iterator;
 
   /**
-   * [CalendarEventList] constructor. The [events] list is expected to contain
-   * maps that can be given directly to [CalendarEvent.fromJson].
+   * [CalendarEventList] constructor. Builds a list of [CalendarEvent] objects
+   * from the contents of json[key].
    */
-  CalendarEventList(List<Map> events) {
-    events.forEach((json) => _list.add(new CalendarEvent.fromJson(json)));
-    _list.sort();
+  CalendarEventList.fromJson(Map json, String key) {
+    if (json.containsKey(key)) {
+      json[key].forEach((item) => _list.add(new CalendarEvent.fromJson(item)));
+      _list.sort();
+    }
   }
 
   /**
