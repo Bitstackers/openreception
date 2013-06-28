@@ -226,15 +226,15 @@ Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String
 
   fragments.add('agent_id=${agentId}');
 
-  if (?cmId && cmId != null){
+  if (cmId != null){
     fragments.add('cm_id=${cmId}');
   }
 
-  if (?pstnNumber && pstnNumber != null){
+  if (pstnNumber != null && !pstnNumber.isEmpty){
     fragments.add('pstn_number=${pstnNumber}');
   }
 
-  if (?sip && sip != null && !sip.isEmpty){
+  if (sip != null && !sip.isEmpty){
     fragments.add('sip=${sip}');
   }
 
