@@ -27,10 +27,8 @@ class _ConnectionManager{
   final              MAX_TICKS   = 3;
 
   /**
-   * Adds a connection to the list of managed connections.
+   * _ConnectioManager constructor.
    */
-  void addConnection(Socket socket) => connections.add(socket);
-
   _ConnectionManager(Duration reconnectInterval) {
     new Timer.periodic  (reconnectInterval,(timer) {
       for (var connection in connections) {
@@ -52,20 +50,25 @@ class _ConnectionManager{
       }
     });
   }
+
+  /**
+   * Adds a connection to the list of managed connections.
+   */
+  void addConnection(Socket socket) => connections.add(socket);
 }
 
 /**
  * A generic Websocket, that reconnects itself.
  */
 class Socket{
-  WebSocket _channel;
-  int _connectTicks = 0;
-  StreamController<Map> _errorStream = new StreamController<Map>.broadcast();
+  WebSocket             _channel;
+  int                   _connectTicks  = 0;
+  StreamController<Map> _errorStream   = new StreamController<Map>.broadcast();
   StreamController<Map> _messageStream = new StreamController<Map>.broadcast();
-  final Uri _url;
+  final Uri             _url;
 
-  bool get isDead => _channel == null || _channel.readyState != WebSocket.OPEN;
-  Stream<Map> get onError => _errorStream.stream;
+  bool        get isDead    => _channel == null || _channel.readyState != WebSocket.OPEN;
+  Stream<Map> get onError   => _errorStream.stream;
   Stream<Map> get onMessage => _messageStream.stream;
 
   /**
