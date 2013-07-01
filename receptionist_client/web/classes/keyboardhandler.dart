@@ -112,7 +112,7 @@ class _KeyboardHandler{
 
   /**
    * Sink a keyCode on a stream if proper conditions are met, ie. the keyCode
-   * has a stream associated and the proper contol keys are pressed.
+   * has a stream associated and the proper control keys are pressed.
    *
    * If the proper conditions are met, a keyCode is emitted on the stream and
    * the class is then locked until a matching keyUp event has been fired. See
