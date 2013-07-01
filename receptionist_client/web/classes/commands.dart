@@ -52,6 +52,8 @@ void hangupCall(model.Call call) {
       default:
         log.error('Hangup call ERROR ${call.id}');
     }
+  }).catchError((error) {
+    // TODO do something
   });
 }
 
@@ -74,6 +76,8 @@ void holdCall(int callId) {
       default:
         log.error('Hold call ERROR ${callId}');
     }
+  }).catchError((error) {
+    // TODO do something
   });
 }
 
@@ -109,6 +113,8 @@ void originateCall(String address, int type) {
       default:
         //TODO Do something.
     }
+  }).catchError((error) {
+    // TODO do something
   });
 }
 
@@ -128,8 +134,10 @@ void pickupCall(model.Call call) {
         break;
 
       default:
-        log.error('Pickup call ERROR ${call.id}');
+        log.error('commands.pickupCall ERROR protocol.pickupCall failed with${call.id}');
     }
+  }).catchError((error) {
+    log.error('commands.pickupCall ERROR protocol.pickupCall failed with ${error}');
   });
 }
 
@@ -144,11 +152,19 @@ void _pickupCallSuccess(protocol.Response response) {
   if (json.containsKey('organization_id')) {
     int orgId = json['organization_id'];
 
-    storage.organization.get(orgId, (org) => environment.organization.set(org),
-        onError:() => log.critical('Pickup call ORGANIZATION NOT FOUND ${orgId}'));
+    storage.getOrganization(orgId).then((model.Organization org) {
+      environment.organization.set(org);
+
+      if(org == model.nullOrganization) {
+        log.error('commands.pickupCall NOT FOUND organization ${orgId}');
+      }
+    }).catchError((error) {
+      environment.organization.set(model.nullOrganization);
+      log.critical('commands.pickupCall ERROR failed with with ${error}');
+    });
   } else {
     environment.organization.set(model.nullOrganization);
-    log.critical('Pickup call MISSING organization_id KEY ${json}');
+    log.critical('commands.pickupCall ERROR missing organization_id in ${json}');
   }
 }
 
@@ -168,6 +184,8 @@ void pickupNextCall() {
       default:
         log.error('Pickup next call ERROR ${response.data['call_id']}');
     }
+  }).catchError((error) {
+    // TODO do something
   });
 }
 
@@ -180,5 +198,7 @@ void transferCall(int callId) {
       default:
         //TODO Do something.
     }
+  }).catchError((error) {
+    // TOO do something
   });
 }

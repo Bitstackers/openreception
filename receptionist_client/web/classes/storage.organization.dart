@@ -13,45 +13,42 @@
 
 part of storage;
 
-final _Organization organization = new _Organization();
+Map<int, model.Organization> _organizationCache = new Map<int, model.Organization>();
 
 /**
- * Storage class for Organization objects.
+ * Get the [id] [Organization].
  *
- * TODO Make it possible to invalidate cached items.
+ * Completes with
+ *  On success   : the [id] [Organization]
+ *  On not found : a [nullOrganization]
+ *  On error     : an error message.
  */
-class _Organization{
-  Map<int, model.Organization> _cache = new Map<int, model.Organization>();
+Future<model.Organization> getOrganization(int id) {
+  final Completer completer = new Completer<model.Organization>();
 
-  _Organization();
+  if (_organizationCache.containsKey(id)) {
+    completer.complete(_organizationCache[id]);
+  } else {
+    protocol.getOrganization(id).then((protocol.Response response) {
+      switch(response.status) {
+        case protocol.Response.OK:
+          model.Organization org = new model.Organization.fromJson(response.data);
+          _organizationCache[org.id] = org;
+          completer.complete(org);
+          break;
 
-  /**
-   * Fetch an organization by [id] from Alice if there is no cache of it.
-   */
-  void get(int id, OrganizationSubscriber onComplete, {Callback onError}) {
-    if (_cache.containsKey(id)) {
-      onComplete(_cache[id]);
-    } else {
-      protocol.getOrganization(id)
-        .then((protocol.Response response) {
-            switch(response.status) {
-              case protocol.Response.OK:
-                model.Organization org = new model.Organization.fromJson(response.data);
-                _cache[org.id] = org;
-                onComplete(org);
-                break;
+        case protocol.Response.NOTFOUND:
+          completer.complete(model.nullOrganization);
+          break;
 
-              case protocol.Response.NOTFOUND:
-                onComplete(model.nullOrganization);
-                break;
-
-              default:
-                onError();
-            }
-        })
-        .catchError((_) {
-          log.error('Storage organization. Protocol getOrganization gave an error.');
-        });
-    }
+        default:
+          completer.completeError('storage.getOrganization ERROR failed with ${response}');
+      }
+    })
+    .catchError((error) {
+      completer.completeError('storage.getOrganization ERROR protocol.getOrganization failed with ${error}');
+    });
   }
+
+  return completer.future;
 }

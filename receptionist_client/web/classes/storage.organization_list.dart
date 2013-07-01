@@ -13,45 +13,29 @@
 
 part of storage;
 
-final _OrganizationList organizationList = new _OrganizationList();
-
 /**
- * Storage class for the Organization List object.
+ * Get the [OrganizationList].
+ *
+ * Completes with
+ *  On success : the [OrganizationList]
+ *  On error   : an error message
  */
-class _OrganizationList{
-  _OrganizationList();
+Future<model.OrganizationList> getOrganizationList() {
+  final Completer completer = new Completer<model.OrganizationList>();
 
-  /**
-   * Get the organization list from Alice.
-   */
-  void get(OrganizationListSubscriber onComplete, {Callback onError}) {
-//    new protocol.OrganizationList()
-//        ..onResponse((protocol.Response response) {
-//          switch(response.status){
-//            case protocol.Response.OK:
-//              onComplete(new model.OrganizationList.fromMap(response.data));
-//              break;
-//
-//            default:
-//              onError();
-//          }
-//        })
-//        ..send();
+  protocol.getOrganizationList().then((protocol.Response response) {
+    switch(response.status){
+      case protocol.Response.OK:
+        completer.complete(new model.OrganizationList.fromJson(response.data, 'organization_list'));
+        break;
 
-    protocol.getOrganizationList()
-      .then((protocol.Response response) {
-        switch(response.status){
-          case protocol.Response.OK:
-              onComplete(new model.OrganizationList.fromJson(response.data, 'organization_list'));
-              break;
+      default:
+        completer.completeError('storage.getOrganizationList ERROR failed with ${response}');
+    }
+  })
+  .catchError((error) {
+    completer.completeError('storage.getOrganizationList ERROR protocol.getOrganizationList failed with ${error}');
+  });
 
-            default:
-              onError();
-          }
-      })
-      .catchError((e) {
-        log.error('Storage OrganizationList got and error from protocol.');
-      });
-  }
+  return completer.future;
 }
-

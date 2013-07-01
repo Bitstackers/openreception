@@ -14,30 +14,26 @@
 part of protocol;
 
 /**
- * Gives a list of peers.
+ * Get a list of peers.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response> peerList(){
-  assert(configuration.loaded);
+  final String    base      = configuration.aliceBaseUrl.toString();
+  final Completer completer = new Completer<Response>();
+  final String    path      = '/debug/peer/list';
+  HttpRequest     request;
+  final String    url       = _buildUrl(base, path);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/debug/peer/list';
-
-  String url = _buildUrl(base, path);
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
 
         default:
@@ -47,7 +43,6 @@ Future<Response> peerList(){
     ..onError.listen((e) {
       _logError(request, url);
       completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-
     })
     ..send();
 
@@ -55,30 +50,26 @@ Future<Response> peerList(){
 }
 
 /**
- * Gives a list of every channel in the PBX.
+ * Get a list of PBX channels.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response> channelList(){
-  assert(configuration.loaded);
+  final String    base      = configuration.aliceBaseUrl.toString();
+  final Completer completer = new Completer<Response>();
+  final String    path      = '/debug/channel/list';
+  HttpRequest     request;
+  final String    url       = _buildUrl(base, path);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/debug/channel/list';
-
-  String url = _buildUrl(base, path);
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
 
         default:
@@ -88,7 +79,6 @@ Future<Response> channelList(){
     ..onError.listen((e) {
       _logError(request, url);
       completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-
     })
     ..send();
 

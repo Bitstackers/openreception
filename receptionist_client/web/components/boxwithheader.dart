@@ -19,12 +19,12 @@ import '../classes/keyboardhandler.dart';
 import '../classes/environment.dart' as environment;
 
 class BoxWithHeader extends WebComponent {
-  DivElement body;
+  DivElement     body;
   HeadingElement header;
-  String headerfontsize = '1.0em';
-  String headerpadding = '5px 10px';
-  DivElement outer;
-  String focuson = '';
+  String         headerfontsize = '1.0em';
+  String         headerpadding  = '5px 10px';
+  DivElement     outer;
+  String         focuson        = '';
 
   String get focusborder => (focuson != '' && environment.activeWidget == focuson) ? 'box-with-header-focusborder' : '';
 

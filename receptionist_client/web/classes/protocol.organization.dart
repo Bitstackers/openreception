@@ -14,22 +14,25 @@
 part of protocol;
 
 /**
- * TODO Comment
+ * Get the [id] organization JSON data.
+ *
+ * Completes with
+ *  On success   : [Response] object with status OK (data)
+ *  On not found : [Response] object with status NOTFOUND (no data)
+ *  on error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> getOrganization(int id){
-  assert(configuration.loaded);
+Future<Response> getOrganization(int id) {
+  assert(id != null);
 
-  final completer = new Completer<Response>();
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/organization';
+  HttpRequest        request;
+  String             url;
 
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/organization';
-
-  List<String> fragments = new List<String>()
-      ..add('org_id=${id}');
-
-  String url = _buildUrl(base, path, fragments);
+  fragments.add('org_id=${id}');
+  url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
       ..open(GET, url)
@@ -37,11 +40,7 @@ Future<Response> getOrganization(int id){
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            if (data != null) {
-              completer.complete(new Response(Response.OK, data));
-            } else {
-              completer.complete(new Response(Response.ERROR, data));
-            }
+            completer.complete(new Response(Response.OK, data));
             break;
 
           case 404:
@@ -65,22 +64,24 @@ const String MINI = 'mini';
 const String MIDI = 'midi';
 
 /**
- * TODO Comment
+ * Get the organization list JSON data.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (data)
+ *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response> getOrganizationList({String view: MINI}){
-  assert(configuration.loaded);
   assert(view == MINI || view == MIDI);
 
-  final completer = new Completer<Response>();
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/organization/list';
+  HttpRequest        request;
+  String             url;
 
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/organization/list';
-  List<String> fragments = new List<String>()
-      ..add('view=${view}');
-
-  String url = _buildUrl(base, path, fragments);
+  fragments.add('view=${view}');
+  url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
       ..open(GET, url)
@@ -88,11 +89,7 @@ Future<Response> getOrganizationList({String view: MINI}){
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            if (data != null) {
-              completer.complete(new Response(Response.OK, data));
-            } else {
-              completer.complete(new Response(Response.ERROR, data));
-            }
+            completer.complete(new Response(Response.OK, data));
             break;
 
           default:

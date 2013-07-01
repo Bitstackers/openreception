@@ -14,11 +14,7 @@
 library storage;
 
 import 'dart:async';
-import 'dart:html';
-import 'dart:json' as json;
 
-import 'common.dart';
-import 'configuration.dart';
 import 'logger.dart';
 import 'model.dart' as model;
 import 'protocol.dart' as protocol;

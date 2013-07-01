@@ -14,19 +14,19 @@
 part of protocol;
 
 /**
- * Gets a list of every active call.
+ * Get a list of every active call.
+ *
+ * Completes with:
+ *  On success: [Response] object with status OK
+ *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
 Future<Response> callList(){
-  assert(configuration.loaded);
+  final String    base      = configuration.aliceBaseUrl.toString();
+  final Completer completer = new Completer<Response>();
+  final String    path      = '/call/list';
+  HttpRequest     request;
+  final String    url       = _buildUrl(base, path);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/list';
-
-  String url = _buildUrl(base, path);
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_){
@@ -58,19 +58,15 @@ Future<Response> callList(){
 }
 
 /**
- * Gives a list of calls that are waiting in a queue.
+ * Get a list of waiting calls.
  */
 Future<Response> callQueue(){
-  assert(configuration.loaded);
+  final String    base      = configuration.aliceBaseUrl.toString();
+  final Completer completer = new Completer<Response>();
+  final String    path      = '/call/queue';
+  HttpRequest     request;
+  final String    url       = _buildUrl(base, path);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/queue';
-
-  String url = _buildUrl(base, path);
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_){
@@ -102,23 +98,19 @@ Future<Response> callQueue(){
 }
 
 /**
- * TODO comment
+ * Hangup [call].
  */
 Future<Response> hangupCall(model.Call call){
-  assert(configuration.loaded);
-
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/hangup';
-
-  List<String> fragments = new List<String>();
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/call/hangup';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('call_id=${call.id}');
+  url = _buildUrl(base, path, fragments);
 
-  String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_){
@@ -154,25 +146,18 @@ Future<Response> hangupCall(model.Call call){
  * Sets the call OnHold or park it, if the ask Asterisk.
  */
 Future<Response> holdCall(int callId){
-  assert(configuration.loaded);
+  assert(callId != null);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/hold';
-
-  List<String> fragments = new List<String>();
-
-  if (callId == null){
-    log.critical('Protocol.HoldCall: callId is null');
-    throw new Exception();
-  }
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/call/hold';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('call_id=${callId}');
+  url = _buildUrl(base, path, fragments);
 
-  String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_){
@@ -209,20 +194,14 @@ Future<Response> holdCall(int callId){
  * Sends a request to make a new call.
  */
 Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String sip}){
-  assert(configuration.loaded);
+  assert(agentId != null);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/originate';
-  List<String> fragments = new List<String>();
-
-  if (agentId == null){
-    log.critical('Protocol.OriginateCall: agentId is null');
-    throw new Exception();
-  }
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/call/originate';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('agent_id=${agentId}');
 
@@ -238,7 +217,8 @@ Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String
     fragments.add('sip=${sip}');
   }
 
-  String url = _buildUrl(base, path, fragments);
+  url = _buildUrl(base, path, fragments);
+
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_){
@@ -271,29 +251,24 @@ Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String
  * If no callId is specified, then the next call in line will be dispatched
  * to the agent.
  */
-Future<Response> pickupCall(int AgentId, {String callId}){
-  assert(configuration.loaded);
+Future<Response> pickupCall(int agentId, {String callId}){
+  assert(agentId != null);
 
-  final completer = new Completer<Response>();
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path = '/call/pickup';
+  HttpRequest        request;
+  String             url;
 
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/pickup';
-  List<String> fragments = new List<String>();
-
-  if (AgentId == null) {
-    log.critical('Protocol.PickupCall: AgentId is null');
-    throw new Exception();
-  }
-
-  fragments.add('agent_id=${AgentId}');
+  fragments.add('agent_id=${agentId}');
 
   if (callId != null && !callId.isEmpty) {
     fragments.add('call_id=${callId}');
   }
 
-  String url = _buildUrl(base, path, fragments);
+  url = _buildUrl(base, path, fragments);
+
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_){
@@ -325,28 +300,22 @@ Future<Response> pickupCall(int AgentId, {String callId}){
 }
 
 /**
- * TODO Not implemented in Alice, as fare as i can see. 2013-02-27 Thomas P.
+ * TODO Not implemented in Alice, as far as i can see. 2013-02-27 Thomas P.
  * Gives the status of a call.
  */
 Future<Response> statusCall(int callId){
-  assert(configuration.loaded);
+  assert(callId != null);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/state';
-  List<String> fragments = new List<String>();
-
-  if (callId == null){
-    log.critical('Protocol.StatusCall: callId is null');
-    throw new Exception();
-  }
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/call/state';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('call_id=${callId}');
+  url = _buildUrl(base, path, fragments);
 
-  String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_){
@@ -378,27 +347,21 @@ Future<Response> statusCall(int callId){
 }
 
 /**
- * TODO write better comment.
  * Sends a request to transfer a call.
  */
 Future<Response> transferCall(int callId){
-  assert(configuration.loaded);
+  assert(callId != null);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/call/transfer';
-  List<String> fragments = new List<String>();
-
-  if (callId == null){
-    log.critical('Protocol.TransferCall: callId is null');
-  }
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/call/transfer';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('source=${callId}');
+  url = _buildUrl(base, path, fragments);
 
-  String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_){

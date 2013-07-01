@@ -16,6 +16,7 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/environment.dart' as environment;
+import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/storage.dart' as storage;
 
@@ -25,15 +26,22 @@ class CompanySelector extends WebComponent {
   final String defaultOptionText = 'vælg virksomhed';
 
   void created() {
-    storage.organizationList.get((list) => organizationList = list);
+    storage.getOrganizationList().then((model.OrganizationList list) {
+      organizationList = list;
+    }).catchError((error) {
+      log.error('CompanySelector ERROR storage.getOrganizationList failed with ${error}');
+    });
   }
 
   void _selection(Event event) {
     var e = event.target as SelectElement;
 
     if (e.value != '') {
-      storage.organization.get(int.parse(e.value),
-                               (org) => environment.organization.set(org));
+      storage.getOrganization(int.parse(e.value)).then((model.Organization org) {
+        environment.organization.set(org);
+      }).catchError((error) {
+        log.error('CompanySelector ERROR storage.getOrganization failed with ${error}');
+      });
     }
   }
 }

@@ -55,6 +55,8 @@ class GlobalQueue extends WebComponent {
         default:
           //TODO do something.
       }
+    }).catchError((error) {
+      // TODO do something
     });
 
     // dummy calls

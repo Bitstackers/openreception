@@ -20,8 +20,8 @@ import '../classes/model.dart' as model;
 
 class ContactInfo extends WebComponent {
   String calendarTitle = 'Kalender';
-  String placeholder = 'søg...';
-  String title = 'Medarbejdere';
+  String placeholder   = 'søg...';
+  String title         = 'Medarbejdere';
 
   @observable model.Contact contact = model.nullContact;
 

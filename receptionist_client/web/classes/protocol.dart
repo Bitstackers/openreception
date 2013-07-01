@@ -51,6 +51,11 @@ class Response {
 
   Response(this.status, this.data);
   Response.error(this.status, this.statusText);
+
+  /**
+   * [Response] as String, for debug/log purposes.
+   */
+  String toString() => '${status} ${statusText}';
 }
 
 /**
@@ -58,8 +63,8 @@ class Response {
  * Output: base + path + ? + fragment[0] + & + fragment[1] ...
  */
 String _buildUrl(String base, String path, [List<String> fragments]){
-  var SB = new StringBuffer();
-  var url = '${base}${path}';
+  final StringBuffer SB  = new StringBuffer();
+  final String       url = '${base}${path}';
 
   if (fragments != null && !fragments.isEmpty){
     SB.write('?${fragments.first}');
@@ -82,6 +87,9 @@ Map _parseJson(String responseText) {
   }
 }
 
+/**
+ * Log [request] and [url] to [log.critical]
+ */
 void _logError(HttpRequest request, String url) {
   log.critical('Protocol failed. Status: [${request.status}] URL: ${url}');
 }

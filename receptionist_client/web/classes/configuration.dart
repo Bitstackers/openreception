@@ -86,17 +86,20 @@ class _Configuration {
    * Parse and validate the configuration JSON from Alice.
    */
   void _parseConfiguration(Map json) {
-    _agentID = _intValue(json, 'agentID', 0);
-    _aliceBaseUrl = Uri.parse(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
+    String    criticalPath;
+    String    errorPath;
+    String    infoPath;
+    final Map notificationSocketMap = json['notificationSocket'];
+    final Map serverLogMap = json['serverLog'];
 
-    Map notificationSocketMap = json['notificationSocket'];
+    _agentID      = _intValue(json, 'agentID', 0);
+    _aliceBaseUrl = Uri.parse(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
     _notificationSocketReconnectInterval = _intValue(notificationSocketMap,
-                                                     'reconnectInterval', 1000);
+                                                    'reconnectInterval', 1000);
     _notificationSocketInterface = Uri.parse(_stringValue(notificationSocketMap,
                                              'interface',
                                              'ws://alice.adaheads.com:4242/notifications'));
 
-    Map serverLogMap = json['serverLog'];
     switch (serverLogMap['level'].toLowerCase()){
       case 'info':
         _serverLogLevel = Log.INFO;
@@ -115,13 +118,13 @@ class _Configuration {
         log.error('Configuration serverLog.level INVALID ${serverLogMap['level']}');
     }
 
-    String criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
+    criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
     _serverLogInterfaceCritical = Uri.parse('${aliceBaseUrl}${criticalPath}');
 
-    String errorPath = _stringValue(serverLogMap['interface'], 'error', '/log/error');
+    errorPath = _stringValue(serverLogMap['interface'], 'error', '/log/error');
     _serverLogInterfaceError = Uri.parse('${aliceBaseUrl}${errorPath}');
 
-    String infoPath = _stringValue(serverLogMap['interface'], 'info', '/log/info');
+    infoPath = _stringValue(serverLogMap['interface'], 'info', '/log/info');
     _serverLogInterfaceInfo = Uri.parse('${aliceBaseUrl}${infoPath}');
 
     _standardGreeting = _stringValue(json, 'standardGreeting', 'Velkommen til...');
@@ -180,10 +183,10 @@ class _Configuration {
  * Completes when [configuration.loaded] is true.
  */
 Future<bool> fetchConfig() {
-  Completer      completer  = new Completer();
-  int            count      = 0;
-  final Duration repeatTime = new Duration(seconds: 1);
-  final Duration maxWait    = new Duration(seconds: 5);
+  final Completer completer  = new Completer();
+  int             count      = 0;
+  final Duration  repeatTime = new Duration(seconds: 1);
+  final Duration  maxWait    = new Duration(seconds: 5);
 
   if (configuration.loaded) {
     completer.complete(true);

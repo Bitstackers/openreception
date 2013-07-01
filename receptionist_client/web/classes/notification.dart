@@ -23,7 +23,7 @@ import 'utilities.dart';
 final _Notification notification = new _Notification();
 
 /**
- * A Class to handle all the notifications from Alice.
+ * A Class to handle all the WebSocket notifications coming from Alice.
  */
 class _Notification {
   Socket                             _socket;
@@ -41,10 +41,7 @@ class _Notification {
    * [_Notification] constructor.
    */
   _Notification() {
-    assert(configuration.loaded);
-
-    Uri url = configuration.notificationSocketInterface;
-    int reconnetInterval = configuration.notificationSocketReconnectInterval;
+    final Uri url = configuration.notificationSocketInterface;
 
     try {
       _socket = new Socket(url);
@@ -55,6 +52,10 @@ class _Notification {
     }
   }
 
+  /**
+   * Handles all notifications from from Alice, and dispatches them according to
+   * their persistence status.
+   */
   void _onMessage(Map json) {
     log.debug(json.toString());
 
@@ -76,10 +77,16 @@ class _Notification {
     }
   }
 
+  /**
+   * Handles persistent notifications.
+   */
   void _persistentNotification(Map json) {
     log.info('persistent');
   }
 
+  /**
+   * Handles non-persistent notifications.
+   */
   void _nonPersistentNotification(Map json) {
     log.info('nonpersistent');
 

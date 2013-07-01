@@ -23,8 +23,8 @@ import 'logger.dart';
 final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
 
 class _ConnectionManager{
-  List<Socket> connections = new List<Socket>();
-  final        MAX_TICKS   = 3;
+  final List<Socket> connections = <Socket>[];
+  final              MAX_TICKS   = 3;
 
   /**
    * Adds a connection to the list of managed connections.

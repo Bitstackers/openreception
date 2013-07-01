@@ -14,38 +14,33 @@
 part of protocol;
 
 /**
- * TODO Comment
+ * Get state for [agentId].
+ *
+ * Completes with
+ *  On success   : [Response] object with status OK (data)
+ *  On not found : [Response] object with status NOTFOUND (no data)
+ *  On error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response> getAgentState(int agentId){
-  assert(configuration.loaded);
+  assert(agentId != null);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/agent/state';
-  List<String> fragments = new List<String>();
-
-  if (agentId == null){
-    log.critical('Protocol.getAgentState: agentId is null');
-    throw new Exception();
-  }
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/agent/state';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('agent_id=${agentId}');
+  url = _buildUrl(base, path, fragments);
 
-  String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()
       ..open(GET, url)
       ..onLoad.listen((_) {
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            if (data != null) {
-              completer.complete(new Response(Response.OK, data));
-            } else {
-              completer.complete(new Response(Response.ERROR, data));
-            }
+            completer.complete(new Response(Response.OK, data));
             break;
 
           case 404:
@@ -66,38 +61,33 @@ Future<Response> getAgentState(int agentId){
 }
 
 /**
- * TODO Comment
+ * Set state for [agentId].
+ *
+ * Completes with
+ *  On success   : [Response] object with status OK (data)
+ *  On not found : [Response] object with status NOTFOUND (no data)
+ *  On error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response> setAgentState(int agentId){
-  assert(configuration.loaded);
+  assert(agentId != null);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/agent/state';
-  List<String> fragments = new List<String>();
-
-  if (agentId == null){
-    log.critical('Protocol.setAgentState: agentId is null');
-    throw new Exception();
-  }
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/agent/state';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('agent_id=${agentId}');
+  url = _buildUrl(base, path, fragments);
 
-  String url = _buildUrl(base, path, fragments);
   request = new HttpRequest()
       ..open(POST, url)
       ..onLoad.listen((_) {
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            if (data != null) {
-              completer.complete(new Response(Response.OK, data));
-            } else {
-              completer.complete(new Response(Response.ERROR, data));
-            }
+            completer.complete(new Response(Response.OK, data));
             break;
 
           case 404:
@@ -118,30 +108,26 @@ Future<Response> setAgentState(int agentId){
 }
 
 /**
- * Sends a request for a list of agents.
+ * Get a list of agents.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response> agentList(){
-  assert(configuration.loaded);
+  final String    base      = configuration.aliceBaseUrl.toString();
+  final Completer completer = new Completer<Response>();
+  final String    path      = '/agent/list';
+  HttpRequest     request;
+  final String    url       = _buildUrl(base, path);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/agent/list';
-
-  String url = _buildUrl(base, path);
   request = new HttpRequest()
       ..open(GET, url)
       ..onLoad.listen((_) {
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            if (data != null) {
-              completer.complete(new Response(Response.OK, data));
-            } else {
-              completer.complete(new Response(Response.ERROR, data));
-            }
+            completer.complete(new Response(Response.OK, data));
             break;
 
           default:
@@ -152,23 +138,21 @@ Future<Response> agentList(){
         _logError(request, url);
         completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
       });
-      //..send();  //TODO Remove this when alice is ready.
+      //..send();  // TODO Remove this when alice is ready.
 
+  // Some testing data.
   //"idle | busy | paused | logged out | ???"
   final Map testData =
-    {"Agents" :
-      [
-       {"id": 1, "state": "idle"},
-       {"id": 2, "state": "idle"},
-       {"id": 3, "state": "busy"},
-       {"id": 4, "state": "idle"},
-       {"id": 5, "state": "idle"},
-       {"id": 6, "state": "busy"},
-       {"id": 8, "state": "idle"},
-       {"id": 10, "state": "paused"},
-       {"id": 11, "state": "paused"},
-       {"id": 13, "state": "logged out"}
-       ]};
+    {"Agents":[{"id": 1, "state": "idle"},
+               {"id": 2, "state": "idle"},
+               {"id": 3, "state": "busy"},
+               {"id": 4, "state": "idle"},
+               {"id": 5, "state": "idle"},
+               {"id": 6, "state": "busy"},
+               {"id": 8, "state": "idle"},
+               {"id": 10, "state": "paused"},
+               {"id": 11, "state": "paused"},
+               {"id": 13, "state": "logged out"}]};
 
   completer.complete(new Response(Response.OK, testData));
 

@@ -13,15 +13,6 @@
 
 library Common;
 
-import 'model.dart' as model;
-import 'protocol.dart' as protocol;
-
-typedef void Subscriber(Map json);
-typedef void responseCallback(protocol.Response response);
-typedef void Callback();
-typedef void OrganizationSubscriber (model.Organization organization);
-typedef void OrganizationListSubscriber (model.OrganizationList organizationList);
-
 /**
  * A simple timeout exception. MUST be used wherever we throw exceptions due
  * to timeout issues.

@@ -23,7 +23,7 @@ import '../classes/model.dart' as model;
 
 class CompanyEvents extends WebComponent {
   Context context;
-  String title = 'Kalender';
+  String  title = 'Kalender';
 
   created() {
     _registerEventListeners();

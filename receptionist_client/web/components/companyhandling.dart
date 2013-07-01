@@ -22,7 +22,7 @@ import '../classes/model.dart' as model;
 
 class CompanyHandling extends WebComponent {
   Context context;
-  String title = 'Håndtering';
+  String  title = 'Håndtering';
 
   created() {
     _registerEventListeners();

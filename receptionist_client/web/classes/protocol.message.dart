@@ -14,30 +14,22 @@
 part of protocol;
 
 /**
- * TODO Comment
+ * Send [message] to [cmId].
+ *
+ * Completes with
+ *  On success : [Response] object with status OK
+ *  On error   : [Response] object with status ERROR or CRITICALERROR
  */
 Future<Response> sendMessage(int cmId, String message) {
-  assert(configuration.loaded);
+  assert(cmId != null);
+  assert(message.isNotEmpty);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  String base = configuration.aliceBaseUrl.toString();
-  String path = '/message/send';
-
-  if (cmId == null){
-    log.critical('Protocol.Message: cmId is null');
-    throw new Exception();
-  }
-
-  if (message == null){
-    log.critical('Protocol.Message: message is null');
-    throw new Exception();
-  }
-
-  String url = _buildUrl(base, path);
-  String payload = 'cm_id=${cmId}&msg=${Uri.encodeComponent(message)}';
+  final String    base      = configuration.aliceBaseUrl.toString();
+  final Completer completer = new Completer<Response>();
+  final String    path      = '/message/send';
+  final String    payload   = 'cm_id=${cmId}&msg=${Uri.encodeComponent(message)}';
+  HttpRequest     request;
+  final String    url       = _buildUrl(base, path);
 
   request = new HttpRequest()
   ..open(POST, url)

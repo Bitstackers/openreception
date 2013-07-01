@@ -13,36 +13,53 @@
 
 part of protocol;
 
-Future<Response> logInfo(String message){
+/**
+ * Log [message] to the Info stream.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (no data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
+ */
+Future<Response> logInfo(String message) {
   return _log(message, configuration.serverLogInterfaceInfo);
 }
 
-Future<Response> logError(String message){
+/**
+ * Log [message] to the Error stream.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (no data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
+ */
+Future<Response> logError(String message) {
   return _log(message, configuration.serverLogInterfaceError);
 }
 
-Future<Response> logCritical(String message){
+/**
+ * Log [message] to the Critical stream.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (no data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
+ */
+Future<Response> logCritical(String message) {
   return _log(message, configuration.serverLogInterfaceCritical);
 }
 
-Future<Response> _log(String message, Uri url){
-  assert(configuration.loaded);
+/**
+ * Send [message] to [url].
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (no data)
+ *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
+ */
+Future<Response> _log(String message, Uri url) {
+  assert(message.isNotEmpty);
+  assert(url.isAbsolute);
 
-  final completer = new Completer<Response>();
-
-  HttpRequest request;
-
-  if (message == null){
-    log.critical('Protocol.Log: message is null');
-    throw new Exception();
-  }
-
-  if (url == null){
-    log.critical('Protocol.Log: url is null');
-    throw new Exception();
-  }
-
-  String payload = 'msg=${Uri.encodeComponent(message)}';
+  final Completer completer = new Completer<Response>();
+  HttpRequest     request;
+  final String    payload   = 'msg=${Uri.encodeComponent(message)}';
 
   request = new HttpRequest()
       ..open(POST, url.toString())
@@ -50,7 +67,7 @@ Future<Response> _log(String message, Uri url){
       ..onLoad.listen((_) {
         switch(request.status) {
           case 204:
-            // We do not care about success.
+            completer.complete(new Response(Response.OK, null));
             break;
 
           case 400:

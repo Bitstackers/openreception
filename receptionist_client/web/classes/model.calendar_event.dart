@@ -41,7 +41,7 @@ class CalendarEvent implements Comparable{
    * also highly relevant to Alice.
    */
   CalendarEvent.fromJson(Map json) {
-    DateTime now = new DateTime.now();
+    final DateTime now = new DateTime.now();
 
     _start = DateTime.parse(json['start']);
     _stop = DateTime.parse(json['stop']);
@@ -60,12 +60,12 @@ class CalendarEvent implements Comparable{
    * [stamp] is in another year than now.
    */
   String _formatTimestamp(DateTime stamp) {
-    String       day        = new DateFormat.d().format(stamp);
-    String       hourMinute = new DateFormat.Hm().format(stamp);
-    String       month      = new DateFormat.M().format(stamp);
-    DateTime     now        = new DateTime.now();
-    StringBuffer output     = new StringBuffer();
-    String       year       = new DateFormat.y().format(stamp);
+    final String       day        = new DateFormat.d().format(stamp);
+    final String       hourMinute = new DateFormat.Hm().format(stamp);
+    final String       month      = new DateFormat.M().format(stamp);
+    final DateTime     now        = new DateTime.now();
+    final StringBuffer output     = new StringBuffer();
+    final String       year       = new DateFormat.y().format(stamp);
 
     if (new DateFormat.yMd().format(stamp) != new DateFormat.yMd().format(now)) {
       output.write('${day}/${month}');
