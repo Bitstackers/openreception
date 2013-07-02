@@ -63,6 +63,9 @@ class Response {
  * Output: base + path + ? + fragment[0] + & + fragment[1] ...
  */
 String _buildUrl(String base, String path, [List<String> fragments]){
+  assert(base != null);
+  assert(path != null);
+
   final StringBuffer SB  = new StringBuffer();
   final String       url = '${base}${path}';
 

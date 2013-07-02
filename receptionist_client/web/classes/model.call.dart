@@ -20,11 +20,11 @@ final Call nullCall = new Call._null();
  */
 class Call implements Comparable {
   int      _assignedAgent;
-  int      _id;
+  String      _id;
   DateTime _start;
 
   int      get assignedAgent => _assignedAgent;
-  int      get id            => _id;
+  String   get id            => _id;
   DateTime get start         => _start;
 
   /**
@@ -44,14 +44,14 @@ class Call implements Comparable {
    * also highly relevant to Alice.
    */
   Call.fromJson(Map json) {
-    if(json.containsKey('assigned_to')) {
+    log.debug('Call.fromJson ${json}');
+    if(json.containsKey('assigned_to') && json['assigned_to'] != null) {
       _assignedAgent = int.parse(json['assigned_to']);
     }
 
-    _id = int.parse(json['id']);
-    _start = DateTime.parse(json['start']);
-
-    log.debug('Call.fromJson ${json}');
+    _id = json['id'];
+    //_start = DateTime.parse(json['arrival_time']);
+    _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time'])*1000);
   }
 
   /**

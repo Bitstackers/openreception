@@ -22,6 +22,7 @@ import 'package:logging/logging.dart';
 import 'common.dart';
 import 'configuration.dart';
 import 'protocol.dart' as protocol;
+import 'socket.dart';
 
 final Log log = new Log._internal();
 
@@ -47,6 +48,7 @@ class Log{
 
   final Logger _logger  = new Logger("System");
   final Logger _ulogger = new Logger("User");
+  StreamSubscription<LogRecord> _logStream;
 
   Stream<LogRecord> get userLogStream => _ulogger.onRecord;
 
@@ -60,6 +62,13 @@ class Log{
     _ulogger.parent.level = Level.ALL;
 
     _registerEventListeners();
+    connectionToAlice.listen((bool status){
+      if (!status){
+        _logStream.pause();
+      }else{
+        _logStream.resume();
+      }
+    });
   }
 
   /**
@@ -116,7 +125,7 @@ class Log{
    * Registers event listeners.
    */
   _registerEventListeners() {
-    _logger.onRecord.listen(_logSubscriber);
+    _logStream = _logger.onRecord.listen(_logSubscriber);
     _ulogger.onRecord.listen(_logSubscriber);
   }
 
@@ -132,31 +141,31 @@ class Log{
       if (record.level > Level.INFO && record.level <= Level.SEVERE) {
         protocol.logError(text).then((protocol.Response response) {
           if (response.status != protocol.Response.OK) {
-            print('CRITICAL server logging error: ${response.data}');
+            print(record.level.name + ' server logging error: ${response.data}');
           }
         })
         .catchError((e) {
-          print('CRITICAL server logging error: ${e.toString()}');
+          print(record.level.name + ' server logging error: ${e.toString()}');
         });
 
       } else if (record.level > Level.SEVERE) {
         protocol.logCritical(text).then((protocol.Response response) {
           if (response.status != protocol.Response.OK) {
-            print('CRITICAL server logging error: ${response.data}');
+            print(record.level.name + ' server logging error: ${response.data}');
           }
         })
         .catchError((e) {
-          print('CRITICAL server logging error: ${e.toString()}');
+          print(record.level.name + ' server logging error: ${e.toString()}');
         });
 
       } else {
         protocol.logInfo(text).then((protocol.Response response) {
           if (response.status != protocol.Response.OK) {
-            print('CRITICAL server logging error: ${response.data}');
+            print(record.level.name + ' server logging error: ${response.data}');
           }
         })
         .catchError((e) {
-          print('CRITICAL server logging error: ${e.toString()}');
+          print(record.level.name + ' server logging error: ${e.toString()}');
         });
       }
     }

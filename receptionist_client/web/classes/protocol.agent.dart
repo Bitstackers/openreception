@@ -143,13 +143,13 @@ Future<Response> agentList(){
   // Some testing data.
   //"idle | busy | paused | logged out | ???"
   final Map testData =
-    {"Agents":[{"id": 1, "state": "idle"},
-               {"id": 2, "state": "idle"},
-               {"id": 3, "state": "busy"},
-               {"id": 4, "state": "idle"},
-               {"id": 5, "state": "idle"},
-               {"id": 6, "state": "busy"},
-               {"id": 8, "state": "idle"},
+    {"Agents":[{"id": 1,  "state": "idle"},
+               {"id": 2,  "state": "idle"},
+               {"id": 3,  "state": "busy"},
+               {"id": 4,  "state": "idle"},
+               {"id": 5,  "state": "idle"},
+               {"id": 6,  "state": "busy"},
+               {"id": 8,  "state": "idle"},
                {"id": 10, "state": "paused"},
                {"id": 11, "state": "paused"},
                {"id": 13, "state": "logged out"}]};

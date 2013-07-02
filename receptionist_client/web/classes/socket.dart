@@ -18,51 +18,21 @@ import 'dart:html';
 import 'dart:json' as json;
 
 import 'common.dart';
+import 'environment.dart';
 import 'logger.dart';
 
-final _connectionManager = new _ConnectionManager(new Duration(seconds: 1));
-
-class _ConnectionManager{
-  final List<Socket> connections = <Socket>[];
-  final              MAX_TICKS   = 3;
-
-  /**
-   * _ConnectioManager constructor.
-   */
-  _ConnectionManager(Duration reconnectInterval) {
-    new Timer.periodic  (reconnectInterval,(timer) {
-      for (var connection in connections) {
-        if (connection.isDead) {
-          if (connection._connectTicks == 0) {
-            log.critical('${connection.toString()} is dead');
-            connection._reconnect();
-            connection._connectTicks += 1;
-
-          } else if (connection._connectTicks > MAX_TICKS) {
-            log.critical('${connection.toString()} is timedout');
-            connection._connectTicks = 0;
-            connection._reconnect();
-
-          } else {
-            connection._connectTicks += 1;
-          }
-        }
-      }
-    });
-  }
-
-  /**
-   * Adds a connection to the list of managed connections.
-   */
-  void addConnection(Socket socket) => connections.add(socket);
-}
+final StreamController<bool> _connectionToAlice = new StreamController<bool>.broadcast();
+Stream<bool> get connectionToAlice => _connectionToAlice.stream;
 
 /**
  * A generic Websocket, that reconnects itself.
  */
 class Socket{
   WebSocket             _channel;
-  int                   _connectTicks  = 0;
+  bool plannedClosed      = false;
+  bool reconnectScheduled = false;
+  int  baseRetrySeconds   = 2;
+  int  retrySeconds;
   StreamController<Map> _errorStream   = new StreamController<Map>.broadcast();
   StreamController<Map> _messageStream = new StreamController<Map>.broadcast();
   final Uri             _url;
@@ -76,12 +46,14 @@ class Socket{
    *
    * Throws an [Exception] if [url] is not an absolute URL.
    */
-  factory Socket(Uri url){
+  factory Socket(Uri url, [int retrySeconds = 2]){
     if (url.isAbsolute) {
       Socket socket = new Socket._internal(url);
-
-      socket._connectTicks = 1;
-      _connectionManager.addConnection(socket);
+      if (retrySeconds != null){
+        socket.baseRetrySeconds = retrySeconds;
+        socket.retrySeconds = retrySeconds;
+      }
+      socket._connector();
 
       return socket;
     } else {
@@ -90,26 +62,36 @@ class Socket{
     }
   }
 
-  Socket._internal(this._url){
-    _connector();
-  }
+  Socket._internal(this._url){}
 
   void _connector() {
     log.info('Opening websocket on ${_url}');
+    reconnectScheduled = false;
     _channel = new WebSocket(_url.toString());
-    _channel.onOpen.listen((_) => _connectTicks = 0);
     _channel.onMessage.listen(_onMessage);
     _channel.onError.listen(_onError);
     _channel.onClose.listen(_onError);
-
+    _channel.onOpen.listen(_onOpen);
     window.onUnload.listen((_){
+      plannedClosed = true;
       _channel.close();
     });
   }
 
+  void _onOpen(event) {
+    _connectionToAlice.sink.add(true);
+    if (baseRetrySeconds != retrySeconds){
+      retrySeconds = baseRetrySeconds;
+    }
+  }
+
   void _onError (event) {
-    log.critical(event.toString());
-    _errorStream.sink.add({'error': 'Error on connection'});
+    if(!plannedClosed){
+      _connectionToAlice.sink.add(false);
+      log.critical('Socket onError: ' + event.toString());
+      _errorStream.sink.add({'error': 'Error on connection'});
+      _reconnect();
+    }
   }
 
   void _onMessage(MessageEvent event) {
@@ -117,7 +99,15 @@ class Socket{
     _messageStream.sink.add(json.parse(event.data));
   }
 
-  void _reconnect() => _connector();
+  void _reconnect() {
+    if (!reconnectScheduled){
+      new Timer(new Duration(seconds:baseRetrySeconds),
+          () { retrySeconds = retrySeconds*2;
+               _connector();
+      });
+    }
+    reconnectScheduled = true;
+  }
 
   String toString() => _url.toString();
 }

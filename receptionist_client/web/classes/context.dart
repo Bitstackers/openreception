@@ -39,14 +39,14 @@ final Stream<Context> _onChange = _contextActivationStream.stream;
  * 3 calls to [decreaseAlert()] is required to move the [Context] out of alert.
  */
 class Context {
-  @observable int _alertCounter = 0;
-  @observable bool isActive = false;
+  @observable int  _alertCounter = 0;
+  @observable bool isActive      = false;
 
   Element _element;
 
   int    get alertCounter => _alertCounter;
-  bool   get alertMode => alertCounter > 0;
-  String get id        => _element.id;
+  bool   get alertMode    => alertCounter > 0;
+  String get id           => _element.id;
 
   /**
    * [Context] constructor. Takes a DOM element as from where it derives its [id]

@@ -19,18 +19,18 @@ final Organization nullOrganization = new Organization._null();
  * An [Organization]. Sorting organizations is done based on [name].
  */
 class Organization implements Comparable{
-  MiniboxList _addressList = nullMiniboxList;
-  MiniboxList _alternateNameList = nullMiniboxList;
-  MiniboxList _bankingInformationList = nullMiniboxList;
-  ContactList _contactList = nullContactList;
-  CalendarEventList _calendarEventList = nullCalendarEventList;
-  MiniboxList _crapcallHandlingList = nullMiniboxList;
-  MiniboxList _emailAddressList = nullMiniboxList;
-  MiniboxList _handlingList = nullMiniboxList;
-  MiniboxList _openingHoursList = nullMiniboxList;
-  MiniboxList _registrationNumberList = nullMiniboxList;
-  MiniboxList _telephoneNumberList = nullMiniboxList;
-  MiniboxList _websiteList = nullMiniboxList;
+  MiniboxList _addressList              = nullMiniboxList;
+  MiniboxList _alternateNameList        = nullMiniboxList;
+  MiniboxList _bankingInformationList   = nullMiniboxList;
+  ContactList _contactList              = nullContactList;
+  CalendarEventList _calendarEventList  = nullCalendarEventList;
+  MiniboxList _crapcallHandlingList     = nullMiniboxList;
+  MiniboxList _emailAddressList         = nullMiniboxList;
+  MiniboxList _handlingList             = nullMiniboxList;
+  MiniboxList _openingHoursList         = nullMiniboxList;
+  MiniboxList _registrationNumberList   = nullMiniboxList;
+  MiniboxList _telephoneNumberList      = nullMiniboxList;
+  MiniboxList _websiteList              = nullMiniboxList;
 
   String customerType = '';
   String greeting = '';

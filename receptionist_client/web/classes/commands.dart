@@ -29,7 +29,7 @@ const PSTN_TYPE      = 2;
 const SIP_TYPE       = 3;
 
 /**
- * Hangup the [model.Call] [call].
+ * Hangup the [call].
  */
 void hangupCall(model.Call call) {
   log.debug('Hangup call ${call.id}');
@@ -58,23 +58,23 @@ void hangupCall(model.Call call) {
 }
 
 /**
- * Put the [callId] call on hold.
+ * Put the [call] on hold.
  */
-void holdCall(int callId) {
-  log.debug('Hold call ${callId}');
+void holdCall(model.Call call) {
+  log.debug('Hold call ${call}');
 
-  protocol.holdCall(callId).then((protocol.Response response) {
+  protocol.holdCall(call).then((protocol.Response response) {
     switch(response.status) {
       case protocol.Response.OK:
-        log.debug('Hold call OK ${callId}');
+        log.debug('Hold call OK ${call}');
         break;
 
       case protocol.Response.NOTFOUND:
-        log.debug('Hold call NOT FOUND  ${callId}');
+        log.debug('Hold call NOT FOUND  ${call}');
         break;
 
       default:
-        log.error('Hold call ERROR ${callId}');
+        log.error('Hold call ERROR ${call}');
     }
   }).catchError((error) {
     // TODO do something
@@ -126,7 +126,7 @@ void originateCall(String address, int type) {
 void pickupCall(model.Call call) {
   log.debug('Pickup call ${call.id}');
 
-  protocol.pickupCall(configuration.agentID, callId: call.id.toString()).then((protocol.Response response) {
+  protocol.pickupCall(configuration.agentID, call: call).then((protocol.Response response) {
     switch (response.status){
       case protocol.Response.OK:
         _pickupCallSuccess(response);
@@ -190,15 +190,15 @@ void pickupNextCall() {
 }
 
 /**
- * Transfer [callId] call.
+ * Transfer [call] call.
  */
-void transferCall(int callId) {
-  protocol.transferCall(callId).then((protocol.Response response) {
+void transferCall(model.Call call) {
+  protocol.transferCall(call).then((protocol.Response response) {
     switch(response.status) {
       default:
         //TODO Do something.
     }
   }).catchError((error) {
-    // TOO do something
+    // TODO do something
   });
 }

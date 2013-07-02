@@ -145,8 +145,8 @@ Future<Response> hangupCall(model.Call call){
  * TODO Check up on Docs. It says nothing about call_id. 2013-02-27 Thomas P.
  * Sets the call OnHold or park it, if the ask Asterisk.
  */
-Future<Response> holdCall(int callId){
-  assert(callId != null);
+Future<Response> holdCall(model.Call call){
+  assert(call != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
@@ -155,7 +155,7 @@ Future<Response> holdCall(int callId){
   HttpRequest        request;
   String             url;
 
-  fragments.add('call_id=${callId}');
+  fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
@@ -251,7 +251,7 @@ Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String
  * If no callId is specified, then the next call in line will be dispatched
  * to the agent.
  */
-Future<Response> pickupCall(int agentId, {String callId}){
+Future<Response> pickupCall(int agentId, {model.Call call}){
   assert(agentId != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -263,8 +263,8 @@ Future<Response> pickupCall(int agentId, {String callId}){
 
   fragments.add('agent_id=${agentId}');
 
-  if (callId != null && !callId.isEmpty) {
-    fragments.add('call_id=${callId}');
+  if (call != null && !call.id != null) {
+    fragments.add('call_id=${call.id}');
   }
 
   url = _buildUrl(base, path, fragments);
@@ -303,8 +303,8 @@ Future<Response> pickupCall(int agentId, {String callId}){
  * TODO Not implemented in Alice, as far as i can see. 2013-02-27 Thomas P.
  * Gives the status of a call.
  */
-Future<Response> statusCall(int callId){
-  assert(callId != null);
+Future<Response> statusCall(model.Call call){
+  assert(call != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
@@ -313,7 +313,7 @@ Future<Response> statusCall(int callId){
   HttpRequest        request;
   String             url;
 
-  fragments.add('call_id=${callId}');
+  fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
@@ -349,8 +349,8 @@ Future<Response> statusCall(int callId){
 /**
  * Sends a request to transfer a call.
  */
-Future<Response> transferCall(int callId){
-  assert(callId != null);
+Future<Response> transferCall(model.Call call){
+  assert(call != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
@@ -359,7 +359,7 @@ Future<Response> transferCall(int callId){
   HttpRequest        request;
   String             url;
 
-  fragments.add('source=${callId}');
+  fragments.add('source=${call.id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()

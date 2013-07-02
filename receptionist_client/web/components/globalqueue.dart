@@ -60,10 +60,12 @@ class GlobalQueue extends WebComponent {
     });
 
     // dummy calls
-    calls.add(new model.Call.fromJson({'id':'2','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
-    calls.add(new model.Call.fromJson({'id':'3','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:5)))}'}));
-    calls.add(new model.Call.fromJson({'id':'1','start':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:12)))}'}));
-
+    //calls.add(new model.Call.fromJson({'id':'3','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:5)))}'}));
+    //calls.add(new model.Call.fromJson({'id':'2','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
+    //calls.add(new model.Call.fromJson({'id':'1','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:12)))}'}));
+    calls.add(new model.Call.fromJson({'id':'3','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:5)).millisecondsSinceEpoch/1000).toInt()}'}));
+    calls.add(new model.Call.fromJson({'id':'2','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch/1000).toInt()}'}));
+    calls.add(new model.Call.fromJson({'id':'1','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:12)).millisecondsSinceEpoch/1000).toInt()}'}));
     calls.sort();
   }
 
@@ -79,6 +81,7 @@ class GlobalQueue extends WebComponent {
   }
 
   void _queueLeave(Map json) {
+    log.debug('QueueLeave: ' + json.toString());
     var call = new model.Call.fromJson(json['call']);
     //Find the call and removes it from the calls list.
     for (var c in calls) {
