@@ -34,7 +34,7 @@ final _Configuration configuration = new _Configuration();
 class _Configuration {
   @observable bool _loaded = false;
 
-  int    _agentID;
+  String _agentID;
   Uri    _aliceBaseUrl;
   Uri    _notificationSocketInterface;
   int    _notificationSocketReconnectInterval;
@@ -45,7 +45,7 @@ class _Configuration {
   String _standardGreeting;
   int    _userLogSizeLimit = 100000;
 
-  int    get agentID =>                             _agentID;
+  String get agentID =>                             _agentID;
   Uri    get aliceBaseUrl =>                        _aliceBaseUrl;
   bool   get loaded =>                              _loaded;
   Uri    get notificationSocketInterface =>         _notificationSocketInterface;
@@ -74,7 +74,8 @@ class _Configuration {
   void _onComplete(HttpRequest req) {
     switch(req.status) {
       case 200:
-        _parseConfiguration(json.parse(req.responseText)['dart']);
+        log.debug('config: ' + req.responseText);
+        _parseConfiguration(json.parse(req.responseText));
         _loaded = true;
         break;
 
@@ -93,7 +94,7 @@ class _Configuration {
     final Map notificationSocketMap = json['notificationSocket'];
     final Map serverLogMap = json['serverLog'];
 
-    _agentID      = _intValue(json, 'agentID', 0);
+    _agentID      = _stringValue(json, 'agentID', '0');
     _aliceBaseUrl = Uri.parse(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
     _notificationSocketReconnectInterval = _intValue(notificationSocketMap,
                                                     'reconnectInterval', 1000);
@@ -173,7 +174,7 @@ class _Configuration {
     if ((configMap.containsKey(key)) && (configMap[key] is String)) {
       return (configMap[key].trim().isEmpty) ? defaultValue : configMap[key];
     } else {
-      log.error('Configuration ERROR ${key} is not a String');
+      log.error("Configuration ERROR ${key} is not a String, it's a ${configMap[key].runtimeType.toString()}");
       return defaultValue;
     }
   }
