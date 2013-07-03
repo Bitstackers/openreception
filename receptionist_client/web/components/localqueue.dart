@@ -39,5 +39,32 @@ class LocalQueue extends WebComponent {
     calls.add(new model.Call.fromJson({'id':'42','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:27)).millisecondsSinceEpoch/1000).toInt()}'}));
 
     calls.sort();
+
+    notify.notification.callPark.listen((json) => _callParkEventHandler(json));
+    notify.notification.queueLeave.listen((json) => _queueLeaveEventHandler(json));
+  }
+
+
+  /**
+   * Sends the parked call to the localqueue.
+   */
+  void _callParkEventHandler(Map json){
+    model.Call call = new model.Call.fromJson(json['call']);
+
+    calls.add(call);
+  }
+
+  /**
+   * If a call from the local queue leaves.
+   */
+  void _queueLeaveEventHandler(Map json){
+    var call = new model.Call.fromJson(json['call']);
+    //Find the call and removes it from the calls list.
+    for (var c in calls) {
+      if (c.id == call.id) {
+        calls.remove(c);
+        break;
+      }
+    }
   }
 }

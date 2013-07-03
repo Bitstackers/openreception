@@ -30,12 +30,14 @@ class _Notification {
   Map<String, StreamController<Map>> _Streams = {'call_hangup':new StreamController<Map>.broadcast(),
                                                  'call_pickup':new StreamController<Map>.broadcast(),
                                                  'queue_join' :new StreamController<Map>.broadcast(),
-                                                 'queue_leave':new StreamController<Map>.broadcast()};
+                                                 'queue_leave':new StreamController<Map>.broadcast(),
+                                                 'call_park'  :new StreamController<Map>.broadcast()};
 
   Stream<Map> get callHangup => _Streams['call_hangup'].stream;
   Stream<Map> get callPickup => _Streams['call_pickup'].stream;
   Stream<Map> get queueJoin  => _Streams['queue_join'].stream;
   Stream<Map> get queueLeave => _Streams['queue_leave'].stream;
+  Stream<Map> get callPark => _Streams['call_park'].stream;
 
   /**
    * [_Notification] constructor.
