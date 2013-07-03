@@ -24,6 +24,7 @@ import 'context.dart';
 import 'logger.dart';
 import 'model.dart' as model;
 import 'notification.dart' as notify;
+import 'storage.dart' as storage;
 
 @observable String activeWidget = '';
 
@@ -47,6 +48,19 @@ class _Call{
   }
 
   /**
+   * Hangup the currently active [Call] when a call_hangup notification is
+   * received.
+   */
+  void _callHangupEventHandler(Map json) {
+    model.Call call = new model.Call.fromJson(json['call']);
+
+    if (call.id == _call.id) {
+      log.info('Hangup call ${call.id}');
+      set(model.nullCall);
+    }
+  }
+
+  /**
    * Set the currently active [Call] when a call_pickup notification is received
    * and the assigned agent match the logged in agent.
    */
@@ -57,21 +71,15 @@ class _Call{
     // temporary hack as long as Alice is oblivious to login/session.
     if (call.assignedAgent == configuration.agentID) {
       set(call);
+      if (call.organizationId != null){
+        storage.getOrganization(call.organizationId).then((org){
+          if (org != null && org != model.nullOrganization){
+            organization.set(org);
+          }
+        });
+      }
     }else{
       log.info('Agent ${call.assignedAgent} answered call ${call.id}');
-    }
-  }
-
-  /**
-   * Hangup the currently active [Call] when a call_hangup notification is
-   * received.
-   */
-  void _callHangupEventHandler(Map json) {
-    model.Call call = new model.Call.fromJson(json['call']);
-
-    if (call.id == _call.id) {
-      log.info('Hangup call ${call.id}');
-      set(model.nullCall);
     }
   }
 

@@ -19,13 +19,15 @@ final Call nullCall = new Call._null();
  * A call.
  */
 class Call implements Comparable {
-  int      _assignedAgent;
-  String      _id;
+  String   _assignedAgent;
+  String   _id;
   DateTime _start;
+  int      _organizationId;
 
-  int      get assignedAgent => _assignedAgent;
-  String   get id            => _id;
-  DateTime get start         => _start;
+  String   get assignedAgent  => _assignedAgent;
+  String   get id             => _id;
+  DateTime get start          => _start;
+  int      get organizationId => _organizationId;
 
   /**
    * [Call] constructor. Expects a map in the following format:
@@ -46,7 +48,11 @@ class Call implements Comparable {
   Call.fromJson(Map json) {
     log.debug('Call.fromJson ${json}');
     if(json.containsKey('assigned_to') && json['assigned_to'] != null) {
-      _assignedAgent = int.parse(json['assigned_to']);
+      _assignedAgent = json['assigned_to'];
+    }
+
+    if(json.containsKey('organization_id') && json['organization_id'] != null) {
+      _organizationId = json['organization_id'];
     }
 
     _id = json['id'];
