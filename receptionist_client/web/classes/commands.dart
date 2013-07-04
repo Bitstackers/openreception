@@ -42,7 +42,8 @@ void hangupCall(model.Call call) {
         // Obviously we don't want to reset the organization on every hangup, but for
         // now this is here to remind us to do _something_ on hangup. I suspect
         // resetting to nullOrganization will become annoying when the time comes.  :D
-        environment.organization.set(model.nullOrganization);
+        environment.organization = model.nullOrganization;
+        log.info('commands.hangupCall updated environment.organization to nullOrganization');
         break;
 
       case protocol.Response.NOTFOUND:
@@ -153,17 +154,18 @@ void _pickupCallSuccess(protocol.Response response) {
     int orgId = json['organization_id'];
 
     storage.getOrganization(orgId).then((model.Organization org) {
-      environment.organization.set(org);
+      environment.organization = org;
+      log.info('commands._pickupCallSuccess updated environment.organization to ${org}');
 
       if(org == model.nullOrganization) {
         log.error('commands.pickupCall NOT FOUND organization ${orgId}');
       }
     }).catchError((error) {
-      environment.organization.set(model.nullOrganization);
+      environment.organization = model.nullOrganization;
       log.critical('commands.pickupCall ERROR failed with with ${error}');
     });
   } else {
-    environment.organization.set(model.nullOrganization);
+    environment.organization = model.nullOrganization;
     log.critical('commands.pickupCall ERROR missing organization_id in ${json}');
   }
 }

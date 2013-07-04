@@ -122,13 +122,13 @@
 
           <div name="boxcontent" class="contact-info-container">
             <div class="contact-info-listcolumn">
-              <template instantiate="if environment.organization.current.contactList != model.nullContactList">
+              <template instantiate="if environment.organization.contactList != model.nullContactList">
                 <div class="contact-info-searchbox">
                   <input class="contact-info-search" type="search" placeholder="{{placeholder}}"/>
                 </div>
               </template>
 
-              <ul template iterate="value in environment.organization.current.contactList" class="contact-info-zebra">
+              <ul template iterate="value in environment.organization.contactList" class="contact-info-zebra">
                 <template instantiate="if value == contact">
                   <li class="contact-info-active" id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
                 </template>

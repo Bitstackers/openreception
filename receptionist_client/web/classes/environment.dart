@@ -26,11 +26,12 @@ import 'model.dart' as model;
 import 'notification.dart' as notify;
 import 'storage.dart' as storage;
 
-@observable String activeWidget = '';
+@observable String                 activeWidget     = '';
+@observable model.Organization     organization     = model.nullOrganization;
+@observable model.OrganizationList organizationList = model.nullOrganizationList;
 
 final _Call         call         = new _Call();
 final _ContextList  contextList  = new _ContextList();
-final _Organization organization = new _Organization();
 
 /**
  * The currently active call.
@@ -74,7 +75,7 @@ class _Call{
       if (call.organizationId != null){
         storage.getOrganization(call.organizationId).then((org){
           if (org != null && org != model.nullOrganization){
-            organization.set(org);
+            organization = org;
           }
         });
       }
@@ -131,15 +132,6 @@ class _ContextList extends IterableBase<Context>{
   }
 
   /**
-   * Decrease alert level for the [id] [Context].
-   */
-  void decreaseAlert(String id) {
-    if (_map.containsKey(id)) {
-      _map[id].decreaseAlert();
-    }
-  }
-
-  /**
    * Return the [id] [Context].
    */
   Context get(String id) {
@@ -148,39 +140,5 @@ class _ContextList extends IterableBase<Context>{
     }
 
     return null;
-  }
-
-  /**
-   * Increase alert level for the [id] [Context].
-   */
-  void increaseAlert(String id) {
-    if (_map.containsKey(id)) {
-      _map[id].increaseAlert();
-    }
-  }
-}
-
-/**
- * The currently active organization.
- */
-@observable
-class _Organization{
-  model.Organization _organization = model.nullOrganization;
-
-  model.Organization get current  => _organization;
-
-  /**
-   * Organization constructor.
-   */
-  _Organization();
-
-  /**
-   * Set the environment [Organization] to [organization].
-   */
-  void set(model.Organization organization) {
-    if (organization != _organization) {
-      _organization = organization;
-      log.info('Current Organization ${organization}');
-    }
   }
 }

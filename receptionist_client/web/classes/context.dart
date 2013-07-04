@@ -49,7 +49,7 @@ class Context {
   String get id           => _element.id;
 
   /**
-   * [Context] constructor. Takes a DOM element as from where it derives its [id]
+   * [Context] constructor. Takes a DOM element from where it derives its [id]
    * and on which the .hidden class is toggled according to the activation state
    * of the [Context].
    */

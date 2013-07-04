@@ -5,12 +5,12 @@
   <element name="x-foo" constructor="Foo" extends="span" apply-author-styles>
     <template>
       <span>
-        <content></content> {{contextid}}
+        <content></content> {{context.id}}
       </span>
-      <button on-click="increaseAlert()">
+      <button on-click="context.increaseAlert()">
         Increase
       </button>
-      <button on-click="decreaseAlert()">
+      <button on-click="context.decreaseAlert()">
         Decrease
       </button>
     </template>

@@ -34,8 +34,8 @@
       <template>
         <box class="welcome-message-placing">
           <div name="boxcontent" class="welcome-message-container">
-            <template instantiate="if environment.organization.current != model.nullOrganization">
-              <span class="welcome-message-cell">{{environment.organization.current.greeting}}</span>
+            <template instantiate="if environment.organization != model.nullOrganization">
+              <span class="welcome-message-cell">{{environment.organization.greeting}}</span>
             </template>
           </div>
         </box>

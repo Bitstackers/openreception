@@ -47,7 +47,7 @@
           </span>
 
           <div name="boxcontent" class="company-events-container">
-            <ul template iterate="event in environment.organization.current.calendarEventList" class="company-events-zebra">
+            <ul template iterate="event in environment.organization.calendarEventList" class="company-events-zebra">
               <template instantiate="if event.active">
                 <li class="company-events-active">
                   <calendar-event event="{{event}}"></calendar-event>

@@ -26,10 +26,10 @@
         <box chrome="{{false}}" class="company-selector-placing">
           <div name="boxcontent" style="height: 100%;">
             <select class="company-selector-default" on-change="_selection($event)">
-              <option disabled selected="{{environment.organization.current == model.nullOrganization}}">
+              <option disabled selected="{{environment.organization == model.nullOrganization}}">
                 {{defaultOptionText}}
               </option>
-              <option template repeat="org in organizationList" value="{{org.id.toString()}}" selected="{{org.id == environment.organization.current.id}}">
+              <option template repeat="org in environment.organizationList" value="{{org.id.toString()}}" selected="{{org.id == environment.organization.id}}">
                 {{org.name}}
               </option>
             </select>

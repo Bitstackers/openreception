@@ -31,12 +31,14 @@ class ContactInfo extends WebComponent {
 
   void _registerObservers() {
     observe(() => environment.organization, (_) {
-      contact = environment.organization.current.contactList.first;
+//      contact = environment.organization.current.contactList.first;
+      contact = environment.organization.contactList.first;
     });
   }
 
   void select(Event event) {
     int id = int.parse((event.target as LIElement).id.split('_').last);
-    contact = environment.organization.current.contactList.getContact(id);
+//    contact = environment.organization.current.contactList.getContact(id);
+    contact = environment.organization.contactList.getContact(id);
   }
 }

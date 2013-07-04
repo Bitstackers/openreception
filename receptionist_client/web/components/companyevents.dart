@@ -50,7 +50,7 @@ class CompanyEvents extends WebComponent {
   }
 
   void foo(int keyCode) {
-    if(environment.organization.current != model.nullOrganization) {
+    if(environment.organization != model.nullOrganization) {
 //      this.query('ul').tabIndex = 0;  This works for focus, but is somewhat ugly.
 //      this.query('ul').focus();
 

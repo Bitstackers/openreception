@@ -21,13 +21,11 @@ import '../classes/model.dart' as model;
 import '../classes/storage.dart' as storage;
 
 class CompanySelector extends WebComponent {
-  @observable model.OrganizationList organizationList = model.nullOrganizationList;
-
   final String defaultOptionText = 'vælg virksomhed';
 
   void created() {
     storage.getOrganizationList().then((model.OrganizationList list) {
-      organizationList = list;
+      environment.organizationList = list;
     }).catchError((error) {
       log.error('CompanySelector ERROR storage.getOrganizationList failed with ${error}');
     });
@@ -38,7 +36,8 @@ class CompanySelector extends WebComponent {
 
     if (e.value != '') {
       storage.getOrganization(int.parse(e.value)).then((model.Organization org) {
-        environment.organization.set(org);
+        environment.organization = org;
+        log.info('CompanySelector updated environment.organization to ${org}');
       }).catchError((error) {
         log.error('CompanySelector ERROR storage.getOrganization failed with ${error}');
       });

@@ -15,16 +15,13 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
-import '../classes/environment.dart';
+import '../classes/context.dart';
+import '../classes/environment.dart' as environment;
 
 class Foo extends WebComponent {
-  String contextid;
+  Context context;
 
-  void increaseAlert() {
-    contextList.increaseAlert(contextid);
-  }
-
-  void decreaseAlert() {
-    contextList.decreaseAlert(contextid);
+  void inserted() {
+    context = environment.contextList.get(this.parent.id);
   }
 }
