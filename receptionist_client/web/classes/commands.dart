@@ -85,7 +85,7 @@ void holdCall(model.Call call) {
  * Originate [type] call to [address].
  */
 void originateCall(String address, int type) {
-  int agentId = configuration.agentID;
+  String agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
 
   log.debug('Originate call ${address} (type: ${type})');

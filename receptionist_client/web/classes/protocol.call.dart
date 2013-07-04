@@ -193,8 +193,8 @@ Future<Response> holdCall(model.Call call){
  *
  * Sends a request to make a new call.
  */
-Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String sip}){
-  assert(agentId != null);
+Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, String sip}){
+  assert(agentId.isNotEmpty);
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
@@ -251,8 +251,8 @@ Future<Response> originateCall(int agentId, {int cmId, String pstnNumber, String
  * If no callId is specified, then the next call in line will be dispatched
  * to the agent.
  */
-Future<Response> pickupCall(int agentId, {model.Call call}){
-  assert(agentId != null);
+Future<Response> pickupCall(String agentId, {model.Call call}){
+  assert(agentId.isNotEmpty);
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
