@@ -27,7 +27,7 @@ class CompanySelector extends WebComponent {
     storage.getOrganizationList().then((model.OrganizationList list) {
       environment.organizationList = list;
     }).catchError((error) {
-      log.error('CompanySelector ERROR storage.getOrganizationList failed with ${error}');
+      log.error('CompanySelector.created storage.getOrganizationList failed with ${error}');
     });
   }
 
@@ -37,9 +37,12 @@ class CompanySelector extends WebComponent {
     if (e.value != '') {
       storage.getOrganization(int.parse(e.value)).then((model.Organization org) {
         environment.organization = org;
-        log.info('CompanySelector updated environment.organization to ${org}');
+        environment.contact = org.contactList.first;
+
+        log.debug('CompanySelector._selection updated environment.organization to ${org}');
+        log.debug('CompanySelector._selection updated environment.contact to ${org.contactList.first}');
       }).catchError((error) {
-        log.error('CompanySelector ERROR storage.getOrganization failed with ${error}');
+        log.error('CompanySelector._selection storage.getOrganization failed with ${error}');
       });
     }
   }

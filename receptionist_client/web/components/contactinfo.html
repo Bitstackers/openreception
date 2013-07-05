@@ -129,17 +129,17 @@
               </template>
 
               <ul template iterate="value in environment.organization.contactList" class="contact-info-zebra">
-                <template instantiate="if value == contact">
-                  <li class="contact-info-active" id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
+                <template instantiate="if value == environment.contact">
+                  <li class="contact-info-active" id="contactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
                 </template>
-                <template instantiate="if value != contact">
-                  <li id="xcontactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
+                <template instantiate="if value != environment.contact">
+                  <li id="contactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
                 </template>
               </ul>
             </div>
 
             <div class="contact-info-datacolumn">
-              <template instantiate="if contact != model.nullContact">
+              <template instantiate="if environment.contact != model.nullContact">
                 <div class="contact-info-calendarbox">
                   <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                     <span name="boxheader">
@@ -147,7 +147,7 @@
                     </span>
 
                     <div name="boxcontent" class="minibox contact-info-container">
-                      <ul template iterate="value in contact.calendarEventList" class="contact-info-zebraeven">
+                      <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven">
                         <template instantiate="if value.active">
                           <li class="contact-info-active">
                             <calendar-event event="{{value}}"></calendar-event>
@@ -169,7 +169,7 @@
                       <td>
                         <h5>Arbejdstider</h5>
                         <div>
-                          <ul template iterate="value in contact.workHoursList">
+                          <ul template iterate="value in environment.contact.workHoursList">
                             <li>{{value}}</li>
                           </ul>
                         </div>
@@ -177,7 +177,7 @@
                       <td>
                         <h5>Kald</h5>
                         <div>
-                          <ul template iterate="value in contact.handlingList">
+                          <ul template iterate="value in environment.contact.handlingList">
                             <li>{{value}}</li>
                           </ul>
                         </div>
@@ -187,13 +187,13 @@
                       <td>
                         <h5>Stilling</h5>
                         <div>
-                          {{contact.position}}
+                          {{environment.contact.position}}
                         </div>
                       </td>
                       <td>
                         <h5>Ansvar</h5>
                         <div>
-                          {{contact.responsibility}}
+                          {{environment.contact.responsibility}}
                         </div>
                       </td>
                     </tr>
@@ -201,13 +201,13 @@
                       <td>
                         <h5>Afdeling</h5>
                         <div>
-                          {{contact.department}}
+                          {{environment.contact.department}}
                         </div>
                       </td>
                       <td>
                         <h5>Telefon</h5>
                         <div>
-                          <ul template iterate="value in contact.telephoneNumberList">
+                          <ul template iterate="value in environment.contact.telephoneNumberList">
                             <li>{{value}}</li>
                           </ul>
                         </div>
@@ -217,13 +217,13 @@
                       <td>
                         <h5>Relationer</h5>
                         <div>
-                          {{contact.relations}}
+                          {{environment.contact.relations}}
                         </div>
                       </td>
                       <td>
                         <h5>Email</h5>
                         <div>
-                          <ul template iterate="value in contact.emailAddressList">
+                          <ul template iterate="value in environment.contact.emailAddressList">
                             <li>{{value}}</li>
                           </ul>
                         </div>
@@ -233,13 +233,13 @@
                       <td>
                         <h5>Info</h5>
                         <div>
-                          {{contact.info}}
+                          {{environment.contact.info}}
                         </div>
                       </td>
                       <td>
                         <h5>Backup</h5>
                         <div>
-                          <ul template iterate="value in contact.backupList">
+                          <ul template iterate="value in environment.contact.backupList">
                             <li>{{value}}</li>
                           </ul>
                         </div>

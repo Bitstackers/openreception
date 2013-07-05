@@ -16,6 +16,7 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/environment.dart' as environment;
+import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
 class ContactInfo extends WebComponent {
@@ -23,22 +24,10 @@ class ContactInfo extends WebComponent {
   String placeholder   = 'søg...';
   String title         = 'Medarbejdere';
 
-  @observable model.Contact contact = model.nullContact;
-
-  void created() {
-    _registerObservers();
-  }
-
-  void _registerObservers() {
-    observe(() => environment.organization, (_) {
-//      contact = environment.organization.current.contactList.first;
-      contact = environment.organization.contactList.first;
-    });
-  }
-
   void select(Event event) {
     int id = int.parse((event.target as LIElement).id.split('_').last);
-//    contact = environment.organization.current.contactList.getContact(id);
-    contact = environment.organization.contactList.getContact(id);
+    environment.contact = environment.organization.contactList.getContact(id);
+
+    log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');
   }
 }

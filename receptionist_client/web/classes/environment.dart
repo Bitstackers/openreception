@@ -27,6 +27,7 @@ import 'notification.dart' as notify;
 import 'storage.dart' as storage;
 
 @observable String                 activeWidget     = '';
+@observable model.Contact          contact          = model.nullContact;
 @observable model.Organization     organization     = model.nullOrganization;
 @observable model.OrganizationList organizationList = model.nullOrganizationList;
 
