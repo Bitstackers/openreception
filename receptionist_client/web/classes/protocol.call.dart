@@ -33,14 +33,11 @@ Future<Response> callList(){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
+
         case 204:
-          completer.complete(new Response(Response.OK, {}));
+          completer.complete(new Response(Response.OK, null));
           break;
 
         default:
@@ -73,14 +70,11 @@ Future<Response> callQueue(){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
+
         case 204:
-          completer.complete(new Response(Response.NOTFOUND, {}));
+          completer.complete(new Response(Response.NOTFOUND, null));
           break;
 
         default:
@@ -113,65 +107,15 @@ Future<Response> hangupCall(model.Call call){
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
-          break;
-        case 204:
-          completer.complete(new Response(Response.NOTFOUND, {}));
+          completer.complete(new Response(Response.OK, data));
           break;
 
-        default:
-          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
-      }
-    })
-    ..onError.listen((e) {
-      _logError(request, url);
-      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-
-    })
-    ..send();
-
-  return completer.future;
-}
-
-/**
- * TODO Check up on Docs. It says nothing about call_id. 2013-02-27 Thomas P.
- * Sets the call OnHold or park it, if the ask Asterisk.
- */
-Future<Response> holdCall(model.Call call){
-  assert(call != null);
-
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
-  final String       path      = '/call/hold';
-  HttpRequest        request;
-  String             url;
-
-  fragments.add('call_id=${call.id}');
-  url = _buildUrl(base, path, fragments);
-
-  request = new HttpRequest()
-    ..open(POST, url)
-    ..onLoad.listen((_){
-      switch(request.status) {
-        case 200:
-          Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
-          break;
-        case 204:
-          completer.complete(new Response(Response.NOTFOUND, {}));
+        case 404:
+          completer.complete(new Response(Response.NOTFOUND, null));
           break;
 
         default:
@@ -225,11 +169,51 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
+          break;
+
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+    })
+    ..send();
+
+  return completer.future;
+}
+
+/**
+ * Park [call].
+ * TODO Check up on Docs. It says nothing about call_id. 2013-02-27 Thomas P.
+ */
+Future<Response> parkCall(model.Call call){
+  assert(call != null);
+
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = <String>[];
+  final String       path      = '/call/park';
+  HttpRequest        request;
+  String             url;
+
+  fragments.add('call_id=${call.id}');
+  url = _buildUrl(base, path, fragments);
+
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_){
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          completer.complete(new Response(Response.OK, data));
+          break;
+
+        case 404:
+          completer.complete(new Response(Response.NOTFOUND, null));
           break;
 
         default:
@@ -275,14 +259,11 @@ Future<Response> pickupCall(String agentId, {model.Call call}){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
-        case 404:
-          completer.complete(new Response(Response.NOTFOUND, {}));
+
+        case 204:
+          completer.complete(new Response(Response.NOTFOUND, null));
           break;
 
         default:
@@ -322,12 +303,9 @@ Future<Response> statusCall(model.Call call){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
+
         case 404:
           completer.complete(new Response(Response.NOTFOUND, {}));
           break;
@@ -368,14 +346,11 @@ Future<Response> transferCall(model.Call call){
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          if (data != null) {
-            completer.complete(new Response(Response.OK, data));
-          } else {
-            completer.complete(new Response(Response.ERROR, data));
-          }
+          completer.complete(new Response(Response.OK, data));
           break;
+
         case 404:
-          completer.complete(new Response(Response.NOTFOUND, {}));
+          completer.complete(new Response(Response.NOTFOUND, null));
           break;
 
         default:

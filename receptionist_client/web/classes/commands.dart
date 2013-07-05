@@ -32,12 +32,10 @@ const SIP_TYPE       = 3;
  * Hangup the [call].
  */
 void hangupCall(model.Call call) {
-  log.debug('Hangup call ${call.id}');
-
   protocol.hangupCall(call).then((protocol.Response response) {
     switch(response.status){
       case protocol.Response.OK:
-        log.debug('Hangup call OK ${call.id}');
+        log.info('commands.hangupCall OK ${call}');
 
         // Obviously we don't want to reset the organization on every hangup, but for
         // now this is here to remind us to do _something_ on hangup. I suspect
@@ -50,38 +48,14 @@ void hangupCall(model.Call call) {
         break;
 
       case protocol.Response.NOTFOUND:
-        log.debug('Hangup call NOT FOUND ${call.id}');
+        log.info('commands.hangupCall NOT FOUND ${call}');
         break;
 
       default:
-        log.error('Hangup call ERROR ${call.id}');
+        log.critical('commands.hangupCall ${call} failed with illegal response ${response}');
     }
   }).catchError((error) {
-    // TODO do something
-  });
-}
-
-/**
- * Put the [call] on hold.
- */
-void holdCall(model.Call call) {
-  log.debug('Hold call ${call}');
-
-  protocol.holdCall(call).then((protocol.Response response) {
-    switch(response.status) {
-      case protocol.Response.OK:
-        log.debug('Hold call OK ${call}');
-        break;
-
-      case protocol.Response.NOTFOUND:
-        log.debug('Hold call NOT FOUND  ${call}');
-        break;
-
-      default:
-        log.error('Hold call ERROR ${call}');
-    }
-  }).catchError((error) {
-    // TODO do something
+    log.critical('commands.hangupCall ${call} protocol.hangupCall failed with ${error}');
   });
 }
 
@@ -91,8 +65,6 @@ void holdCall(model.Call call) {
 void originateCall(String address, int type) {
   String agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
-
-  log.debug('Originate call ${address} (type: ${type})');
 
   switch(type){
     case CONTACTID_TYPE:
@@ -108,17 +80,43 @@ void originateCall(String address, int type) {
       break;
 
     default:
-      log.error('Originate call INVALID TYPE ${type}');
+      log.error('commands.originateCall INVALID TYPE ${type}');
       return;
   }
 
   originateCallRequest.then((protocol.Response response) {
     switch(response.status) {
+      case protocol.Response.OK:
+        log.info('commands.originateCall OK ${address} (type: ${type})');
+        break;
+
       default:
-        //TODO Do something.
+        log.critical('commands.originateCall ${address} (type: ${type}) failed with illegal response ${response}');
     }
   }).catchError((error) {
-    // TODO do something
+    log.critical('commands.originateCall ${address} (type: ${type}) protocol.originateCall failed with ${error}');
+  });
+}
+
+/**
+ * Park [call].
+ */
+void parkCall(model.Call call) {
+  protocol.parkCall(call).then((protocol.Response response) {
+    switch(response.status) {
+      case protocol.Response.OK:
+        log.info('commands.parkCall OK ${call}');
+        break;
+
+      case protocol.Response.NOTFOUND:
+        log.info('commands.parkCall NOT FOUND ${call}');
+        break;
+
+      default:
+        log.critical('commands.parkCall ${call} failed with illegal response ${response}');
+    }
+  }).catchError((error) {
+    log.critical('commands.parkCall ${call} protocol.parkCall failed with ${error}');
   });
 }
 
@@ -126,20 +124,22 @@ void originateCall(String address, int type) {
  * Pickup the [model.Call] [call]
  */
 void pickupCall(model.Call call) {
-  log.debug('Pickup call ${call.id}');
-
   protocol.pickupCall(configuration.agentID, call: call).then((protocol.Response response) {
     switch (response.status){
       case protocol.Response.OK:
+        log.info('commands.pickupCall OK ${call}');
         _pickupCallSuccess(response);
-        log.debug('Pickup call OK ${call.id}');
+        break;
+
+      case protocol.Response.NOTFOUND:
+        log.info('commands.pickupCall NOT FOUND ${call}');
         break;
 
       default:
-        log.error('commands.pickupCall ERROR protocol.pickupCall failed with${call.id}');
+        log.critical('commands.pickupCall ${call} failed with illegal response ${response}');
     }
   }).catchError((error) {
-    log.error('commands.pickupCall ERROR protocol.pickupCall failed with ${error}');
+    log.critical('commands.pickupCall ${call} protocol.pickupCall failed with ${error}');
   });
 }
 
@@ -181,20 +181,22 @@ void _pickupCallSuccess(protocol.Response response) {
  * Pickup the next available call.
  */
 void pickupNextCall() {
-  log.debug('Pickup next call');
-
   protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
     switch (response.status){
       case protocol.Response.OK:
+        log.info('commands.pickupNextCall OK ${response.data['call_id']}');
         _pickupCallSuccess(response);
-        log.debug('Pickup next call OK ${response.data['call_id']}');
+        break;
+
+      case protocol.Response.NOTFOUND:
+        log.info('commands.pickupNextCall no calls found');
         break;
 
       default:
-        log.error('Pickup next call ERROR ${response.data['call_id']}');
+        log.critical('commands.pickupNextCall failed with illegal response ${response}');
     }
   }).catchError((error) {
-    // TODO do something
+    log.critical('commands.pickupNextCall protocol.pickupCall failed with ${error}');
   });
 }
 
@@ -204,10 +206,18 @@ void pickupNextCall() {
 void transferCall(model.Call call) {
   protocol.transferCall(call).then((protocol.Response response) {
     switch(response.status) {
+      case protocol.Response.OK:
+        log.info('commands.transferCall OK ${call}');
+        break;
+
+      case protocol.Response.NOTFOUND:
+        log.info('commands.transferCall NOT FOUND ${call}');
+        break;
+
       default:
-        //TODO Do something.
+        log.critical('commands.transferCall ${call} failed with illegal response ${response}');
     }
   }).catchError((error) {
-    // TODO do something
+    log.critical('commands.transferCall ${call} protocol.transferCall failed with ${error}');
   });
 }
