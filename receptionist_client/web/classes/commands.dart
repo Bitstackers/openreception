@@ -124,8 +124,6 @@ void originateCall(String address, int type) {
 
 /**
  * Pickup the [model.Call] [call]
- *
- * If successful set environment organization.
  */
 void pickupCall(model.Call call) {
   log.debug('Pickup call ${call.id}');
@@ -146,9 +144,8 @@ void pickupCall(model.Call call) {
 }
 
 /**
- * Set environment.organization.current to the [model.Organization] found in
- * the [response]. If [response] does not contain a valid organization_id, then
- * log the error and set environment.organization.current to [model.nullOrganization].
+ * Update [environment.organization] and [environment.contact] according to the
+ * [model.Organization] found in the [response].
  */
 void _pickupCallSuccess(protocol.Response response) {
   Map json = response.data;
@@ -157,21 +154,26 @@ void _pickupCallSuccess(protocol.Response response) {
     int orgId = json['organization_id'];
 
     storage.getOrganization(orgId).then((model.Organization org) {
+      if(org == model.nullOrganization) {
+        log.info('commands._pickupCallSuccess NOT FOUND organization ${orgId}');
+      }
+
       environment.organization = org;
       environment.contact = org.contactList.first;
 
       log.debug('commands._pickupCallSuccess updated environment.organization to ${org}');
       log.debug('commands._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
-      if(org == model.nullOrganization) {
-        log.error('commands.pickupCall NOT FOUND organization ${orgId}');
-      }
     }).catchError((error) {
       environment.organization = model.nullOrganization;
-      log.critical('commands.pickupCall ERROR failed with with ${error}');
+      environment.contact = model.nullContact;
+
+      log.critical('commands._pickupCallSuccess storage.getOrganization failed with with ${error}');
     });
   } else {
     environment.organization = model.nullOrganization;
-    log.critical('commands.pickupCall ERROR missing organization_id in ${json}');
+    environment.contact = model.nullContact;
+
+    log.critical('commands._pickupCallSuccess missing organization_id in ${json}');
   }
 }
 

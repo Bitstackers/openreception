@@ -26,24 +26,34 @@ class CompanySelector extends WebComponent {
   void created() {
     storage.getOrganizationList().then((model.OrganizationList list) {
       environment.organizationList = list;
+
+      log.debug('CompanySelector.created updated environment.organizationList');
     }).catchError((error) {
-      log.error('CompanySelector.created storage.getOrganizationList failed with ${error}');
+      log.critical('CompanySelector.created storage.getOrganizationList failed with ${error}');
     });
   }
 
   void _selection(Event event) {
-    var e = event.target as SelectElement;
+    int id = int.parse((event.target as SelectElement).value);
 
-    if (e.value != '') {
-      storage.getOrganization(int.parse(e.value)).then((model.Organization org) {
+    if (id != null) {
+      storage.getOrganization(id).then((model.Organization org) {
         environment.organization = org;
         environment.contact = org.contactList.first;
 
         log.debug('CompanySelector._selection updated environment.organization to ${org}');
         log.debug('CompanySelector._selection updated environment.contact to ${org.contactList.first}');
       }).catchError((error) {
-        log.error('CompanySelector._selection storage.getOrganization failed with ${error}');
+        environment.organization = model.nullOrganization;
+        environment.contact = model.nullContact;
+
+        log.critical('CompanySelector._selection storage.getOrganization failed with with ${error}');
       });
+    } else {
+      environment.organization = model.nullOrganization;
+      environment.contact = model.nullContact;
+
+      log.critical('CompanySelector._selection storage.getOrganization SelectElement has no value');
     }
   }
 }
