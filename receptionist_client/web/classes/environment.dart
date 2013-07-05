@@ -18,13 +18,9 @@ import 'dart:collection';
 
 import 'package:web_ui/web_ui.dart';
 
-import 'common.dart';
-import 'configuration.dart';
 import 'context.dart';
 import 'logger.dart';
 import 'model.dart' as model;
-import 'notification.dart' as notify;
-import 'storage.dart' as storage;
 
 @observable String                 activeWidget     = '';
 @observable model.Call             call             = model.nullCall;
