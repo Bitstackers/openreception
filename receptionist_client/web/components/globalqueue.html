@@ -38,9 +38,9 @@
           <span name="boxheader" class="header">
             {{title}}
             <span style="float: right">
-              <button on-click="pickupnextcallHandler()" disabled="{{environment.call.current != model.nullCall}}">Pickup</button>
-              <button on-click="hangupcallHandler()" disabled="{{environment.call.current == model.nullCall}}">Hangup</button>
-              <button on-click="holdcallHandler()" disabled="{{environment.call.current == model.nullCall}}">Hold</button>
+              <button on-click="pickupnextcallHandler()" disabled="{{environment.call != model.nullCall}}">Pickup</button>
+              <button on-click="hangupcallHandler()" disabled="{{environment.call == model.nullCall}}">Hangup</button>
+              <button on-click="holdcallHandler()" disabled="{{environment.call == model.nullCall}}">Hold</button>
             </span>
           </span>
 

@@ -105,11 +105,11 @@ class GlobalQueue extends WebComponent {
 
   void hangupcallHandler() {
     log.debug('hangupcallHandler');
-    command.hangupCall(environment.call.current);
+    command.hangupCall(environment.call);
   }
 
   void holdcallHandler() {
     log.debug('holdcallHandler');
-    command.hangupCall(environment.call.current);
+    command.hangupCall(environment.call);
   }
 }

@@ -27,86 +27,12 @@ import 'notification.dart' as notify;
 import 'storage.dart' as storage;
 
 @observable String                 activeWidget     = '';
+@observable model.Call             call             = model.nullCall;
 @observable model.Contact          contact          = model.nullContact;
 @observable model.Organization     organization     = model.nullOrganization;
 @observable model.OrganizationList organizationList = model.nullOrganizationList;
 
-final _Call         call         = new _Call();
 final _ContextList  contextList  = new _ContextList();
-
-/**
- * The currently active call.
- */
-class _Call{
-  model.Call _call = model.nullCall;
-
-  model.Call get current => _call;
-
-  /**
-   * _Call constructor.
-   */
-  _Call() {
-    _registerEventListeners();
-  }
-
-  /**
-   * Hangup the currently active [Call] when a call_hangup notification is
-   * received.
-   */
-  void _callHangupEventHandler(Map json) {
-    model.Call call = new model.Call.fromJson(json['call']);
-
-    if (call.id == _call.id) {
-      log.info('Hangup call ${call.id}');
-      set(model.nullCall);
-    }
-  }
-
-  /**
-   * Set the currently active [Call] when a call_pickup notification is received
-   * and the assigned agent match the logged in agent.
-   */
-  void _callPickupEventHandler(Map json) {
-    model.Call call = new model.Call.fromJson(json['call']);
-
-    // TODO obviously the agent ID should not come from configuration. This is a
-    // temporary hack as long as Alice is oblivious to login/session.
-    if (call.assignedAgent == configuration.agentID) {
-      set(call);
-      if (call.organizationId != null){
-        storage.getOrganization(call.organizationId).then((org){
-          if (org != null && org != model.nullOrganization){
-            organization = org;
-          }
-        });
-      }
-    }else{
-      log.info('Agent ${call.assignedAgent} answered call ${call.id}');
-    }
-  }
-
-  /**
-   * Registers event listeners.
-   */
-  void _registerEventListeners() {
-    notify.notification.callHangup.listen((json) => _callHangupEventHandler(json));
-    notify.notification.callPickup.listen((json) => _callPickupEventHandler(json));
-  }
-
- /**
-  * Set the currently active [call].
-  */
-  void set(model.Call call) {
-    if (call != _call) {
-      _call = call;
-      log.info('Current Call ${call}');
-
-      if (_call != null && _call != model.nullCall){
-        log.info('Call answered ${_call.toString()}, dumpToUser: true');
-      }
-    }
-  }
-}
 
 /**
  * A list of the application contexts.
@@ -130,6 +56,8 @@ class _ContextList extends IterableBase<Context>{
     // loop the list to find a context based on its id.
     _list.add(context);
     _map[context.id] = context;
+
+    log.debug('_ContextList.add ${context.id}');
   }
 
   /**

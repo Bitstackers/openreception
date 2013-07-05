@@ -63,7 +63,7 @@ class _Configuration {
   _Configuration() {
     HttpRequest.request(CONFIGURATION_URL)
       .then(_onComplete)
-      .catchError((error) => log.critical('Configuration ERROR ${error} - ${error.runtimeType.toString()}'));
+      .catchError((error) => log.critical('_Configuration() failed with ${error}'));
   }
 
   /**
@@ -79,7 +79,7 @@ class _Configuration {
         break;
 
       default:
-        log.critical('Configuration ERROR ${CONFIGURATION_URL} - ${req.status} - ${req.statusText}');
+        log.critical('_Configuration._onComplete failed ${CONFIGURATION_URL}-${req.status}-${req.statusText}');
     }
   }
 
@@ -87,6 +87,8 @@ class _Configuration {
    * Parse and validate the configuration JSON from Alice.
    */
   void _parseConfiguration(Map json) {
+    log.debug('_Configuration._parseConfiguration ${json}');
+
     String    criticalPath;
     String    errorPath;
     String    infoPath;
@@ -116,7 +118,7 @@ class _Configuration {
 
       default:
         _serverLogLevel = Level.INFO;
-        log.error('Configuration serverLog.level INVALID ${serverLogMap['level']}');
+        log.error('_Configuration._parseConfiguration INVALID level ${serverLogMap['level']} - defaulting to Level.INFO');
     }
 
     criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
@@ -141,7 +143,7 @@ class _Configuration {
     if ((configMap.containsKey(key)) && (configMap[key] is bool)) {
       return configMap[key];
     } else {
-      log.error('Configuration ERROR ${key} is not a bool');
+      log.error('_Configuration._boolValue ${key} is not a bool');
       return defaultValue;
     }
   }
@@ -156,7 +158,7 @@ class _Configuration {
     if ((configMap.containsKey(key)) && (configMap[key] is int)) {
       return configMap[key];
     } else {
-      log.error('Configuration ERROR ${key} is not an int');
+      log.error('_Configuration._intValue ${key} is not an int');
       return defaultValue;
     }
   }
@@ -173,7 +175,7 @@ class _Configuration {
     if ((configMap.containsKey(key)) && (configMap[key] is String)) {
       return (configMap[key].trim().isEmpty) ? defaultValue : configMap[key];
     } else {
-      log.error("Configuration ERROR ${key} is not a String, it's a ${configMap[key].runtimeType.toString()}");
+      log.error("_Configuration._stringValue ${key} is not a String");
       return defaultValue;
     }
   }

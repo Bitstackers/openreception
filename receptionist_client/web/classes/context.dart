@@ -19,6 +19,7 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import 'keyboardhandler.dart';
+import 'logger.dart';
 
 final StreamController<Context> _contextActivationStream = new StreamController<Context>.broadcast();
 final Stream<Context> _onChange = _contextActivationStream.stream;
@@ -74,6 +75,7 @@ class Context {
   void decreaseAlert() {
     if (_alertCounter > 0) {
       _alertCounter--;
+      log.debug('Context.decreaseAlert - ${id} level now at ${alertCounter}');
     }
   }
 
@@ -82,6 +84,7 @@ class Context {
    */
   void increaseAlert() {
     _alertCounter++;
+    log.debug('Context.increaseAlert - ${id} level now at ${alertCounter}');
   }
 
   /**
@@ -97,6 +100,7 @@ class Context {
     if (context == this) {
       isActive = true;
       _element.classes.remove('hidden');
+      log.debug('Context._toggle activating ${this.id}');
     } else if (isActive) {
       isActive = false;
       _element.classes.add('hidden');

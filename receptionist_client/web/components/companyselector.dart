@@ -47,7 +47,7 @@ class CompanySelector extends WebComponent {
         environment.organization = model.nullOrganization;
         environment.contact = model.nullContact;
 
-        log.critical('CompanySelector._selection storage.getOrganization failed with with ${error}');
+        log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
       });
     } else {
       environment.organization = model.nullOrganization;

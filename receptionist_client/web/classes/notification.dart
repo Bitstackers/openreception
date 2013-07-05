@@ -16,8 +16,11 @@ library notification;
 import 'dart:async';
 
 import 'configuration.dart';
+import 'environment.dart' as environment;
 import 'logger.dart';
+import 'model.dart' as model;
 import 'socket.dart';
+import 'storage.dart' as storage;
 import 'utilities.dart';
 
 final _Notification notification = new _Notification();
@@ -46,11 +49,33 @@ class _Notification {
     final Uri url = configuration.notificationSocketInterface;
 
     try {
-      _socket = new Socket(url);
-      _socket.onMessage.listen(_onMessage);
-      _socket.onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
+      _socket = new Socket(url)
+          ..onMessage.listen(_onMessage)
+          ..onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
     } catch(e) {
       log.critical('_Notification() ERROR ${e}');
+    }
+
+    _registerEventListeners();
+  }
+
+  /**
+   * Handles non-persistent notifications.
+   */
+  void _nonPersistentNotification(Map json) {
+    log.info('nonpersistent');
+
+    if (!json.containsKey('event')) {
+      log.critical('nonPersistensNotification did not have a event field.');
+    }
+    var eventName = json['event'];
+    log.info('notification with event: ${eventName}');
+
+    if (_Streams.containsKey(eventName)) {
+      _Streams[eventName].sink.add(json);
+    }else{
+      log.error('Unhandled event: ${eventName}');
+      log.debug(json.toString());
     }
   }
 
@@ -87,22 +112,65 @@ class _Notification {
   }
 
   /**
-   * Handles non-persistent notifications.
+   * Register event listeners.
    */
-  void _nonPersistentNotification(Map json) {
-    log.info('nonpersistent');
+  void _registerEventListeners() {
+    callHangup.listen((json) => _callHangupEventHandler(json));
+    callPickup.listen((json) => _callPickupEventHandler(json));
+  }
+}
 
-    if (!json.containsKey('event')) {
-      log.critical('nonPersistensNotification did not have a event field.');
-    }
-    var eventName = json['event'];
-    log.info('notification with event: ${eventName}');
+/**
+ * Hangup [environment.call] when a call_hangup notification that matches
+ * [environment.call] is received on the notification socket.
+ */
+void _callHangupEventHandler(Map json) {
+  log.debug('notification._callHangupEventHandler received ${json}');
 
-    if (_Streams.containsKey(eventName)) {
-      _Streams[eventName].sink.add(json);
-    }else{
-      log.error('Unhandled event: ${eventName}');
-      log.debug(json.toString());
+  model.Call call = new model.Call.fromJson(json['call']);
+
+  if (call.id == environment.call.id) {
+    environment.call = model.nullCall;
+    environment.organization = model.nullOrganization;
+    environment.contact = model.nullContact;
+
+    log.info('notification._callHangupEventHandler hangup call ${call}');
+  }
+}
+
+/**
+ * Set [environment.call]] when a call_pickup notification is received on the
+ * notification socket and the assigned agent match the logged in agent.
+ */
+void _callPickupEventHandler(Map json) {
+  log.debug('notification._callPickupEventHandler received ${json}');
+
+  model.Call call = new model.Call.fromJson(json['call']);
+
+  // TODO obviously the agent ID should not come from configuration. This is a
+  // temporary hack as long as Alice is oblivious to login/session.
+  if (call.assignedAgent == configuration.agentID) {
+    environment.call = call;
+
+    log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
+
+    if (call.organizationId != null) {
+      storage.getOrganization(call.organizationId).then((org) {
+        environment.organization = org;
+        environment.contact = environment.organization.contactList.first;
+
+        log.debug('notification._callPickupEventHandler updated environment.organization to ${org}');
+        log.debug('notification._callPickupEventHandler updated environment.contact to ${org.contactList.first}');
+      }).catchError((error) {
+        environment.organization = model.nullOrganization;
+        environment.contact = model.nullContact;
+
+        log.critical('notification._callPickupEventHandler storage.getOrganization failed with ${error}');
+      });
+    } else {
+      log.error('notification._callPickupEventHandler call ${call} missing organizationId');
     }
   }
+
+  log.info('notification._callPickupEventHandler call ${call} assigned to agent ${call.assignedAgent}', toUserLog: true);
 }
