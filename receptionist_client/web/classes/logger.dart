@@ -22,7 +22,7 @@ import 'package:logging/logging.dart';
 import 'common.dart';
 import 'configuration.dart';
 import 'protocol.dart' as protocol;
-import 'socket.dart';
+import 'socket.dart' as socket;
 
 final Log log = new Log._internal();
 
@@ -37,7 +37,7 @@ final Log log = new Log._internal();
  * Users of [Log] can listen for select log records on the [userLogStream]. See
  * [info()], [error()] and [critical()] for more information.
  */
-class Log{
+class Log {
   /**
    * Loglevels that represent the levels on the server side.
    */
@@ -62,13 +62,6 @@ class Log{
     _ulogger.parent.level = Level.ALL;
 
     _registerEventListeners();
-    connectionToAlice.listen((bool status){
-      if (!status){
-        _logStream.pause();
-      }else{
-        _logStream.resume();
-      }
-    });
   }
 
   /**
@@ -125,6 +118,14 @@ class Log{
    * Registers event listeners.
    */
   _registerEventListeners() {
+    socket.connectedToAlice.listen((bool status) {
+      if (!status && !_logStream.isPaused){
+        _logStream.pause();
+      } else {
+        _logStream.resume();
+      }
+    });
+
     _logStream = _logger.onRecord.listen(_logSubscriber);
     _ulogger.onRecord.listen(_logSubscriber);
   }
@@ -133,9 +134,7 @@ class Log{
    * Sends the log [record] to Alice.
    */
   _serverLog(LogRecord record) {
-    Level serverLogLevel = configuration.serverLogLevel;
-
-    if (serverLogLevel <= record.level) {
+    if (configuration.serverLogLevel <= record.level) {
       String text = '${record.loggerName} - ${record.sequenceNumber} - ${record.message}';
 
       if (record.level > Level.INFO && record.level <= Level.SEVERE) {

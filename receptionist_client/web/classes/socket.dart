@@ -18,96 +18,101 @@ import 'dart:html';
 import 'dart:json' as json;
 
 import 'common.dart';
+import 'configuration.dart';
 import 'environment.dart';
 import 'logger.dart';
 
-final StreamController<bool> _connectionToAlice = new StreamController<bool>.broadcast();
-Stream<bool> get connectionToAlice => _connectionToAlice.stream;
+final StreamController<bool> _connectedToAlice = new StreamController<bool>.broadcast();
+Stream<bool> get connectedToAlice => _connectedToAlice.stream;
 
 /**
- * A generic Websocket, that reconnects itself.
+ * The Socket singleton handles the WebSocket connection to Alice.
  */
-class Socket{
+class Socket {
   WebSocket             _channel;
-  bool plannedClosed      = false;
-  bool reconnectScheduled = false;
-  int  baseRetrySeconds   = 2;
-  int  retrySeconds;
-  StreamController<Map> _errorStream   = new StreamController<Map>.broadcast();
-  StreamController<Map> _messageStream = new StreamController<Map>.broadcast();
-  final Uri             _url;
+  static Socket         _instance;
+  bool                  _intendedClose      = false;
+  StreamController<Map> _messageStream      = new StreamController<Map>.broadcast();
+  bool                  _reconnectScheduled = false;
+  Duration              _reconnectInterval  = configuration.notificationSocketReconnectInterval;
+  Uri                   _url                = configuration.notificationSocketInterface;
 
   bool        get isDead    => _channel == null || _channel.readyState != WebSocket.OPEN;
-  Stream<Map> get onError   => _errorStream.stream;
   Stream<Map> get onMessage => _messageStream.stream;
 
   /**
-   * Open a websocket on [url].
+   * Socket constructor.
    *
-   * Throws an [Exception] if [url] is not an absolute URL.
+   * Opens a websocket on [configuration.notificationSocketInterface].
+   *
+   * Will try to re-connect at interval [configuration.notificationSocketReconnectInterval]
+   * if the connection fails.
    */
-  factory Socket(Uri url, [int retrySeconds = 2]){
-    if (url.isAbsolute) {
-      Socket socket = new Socket._internal(url);
-      if (retrySeconds != null){
-        socket.baseRetrySeconds = retrySeconds;
-        socket.retrySeconds = retrySeconds;
-      }
-      socket._connector();
-
-      return socket;
-    } else {
-      log.critical('Socket ERROR BAD URL ${url.toString()}');
-      throw new Exception('Socket() ERROR BAD URL');
+  factory Socket() {
+    if (_instance == null) {
+      _instance = new Socket._internal();
     }
+
+    return _instance;
   }
 
-  Socket._internal(this._url){}
-
-  void _connector() {
-    log.info('Opening websocket on ${_url}');
-    reconnectScheduled = false;
-    _channel = new WebSocket(_url.toString());
-    _channel.onMessage.listen(_onMessage);
-    _channel.onError.listen(_onError);
-    _channel.onClose.listen(_onError);
-    _channel.onOpen.listen(_onOpen);
-    window.onUnload.listen((_){
-      plannedClosed = true;
-      _channel.close();
-    });
+  /**
+   * Socket constructor.
+   */
+  Socket._internal() {
+    _registerEventListeners();
+    _connect();
   }
 
-  void _onOpen(event) {
-    _connectionToAlice.sink.add(true);
-    if (baseRetrySeconds != retrySeconds){
-      retrySeconds = baseRetrySeconds;
-    }
+  void _connect() {
+    log.info('Socket._connect ${_url}');
+
+    _reconnectScheduled = false;
+
+    _channel = new WebSocket(_url.toString())
+        ..onMessage.listen(_onMessage)
+        ..onError.listen(_onError)
+        ..onClose.listen(_onError)
+        ..onOpen.listen(_onOpen);
   }
 
-  void _onError (event) {
-    if(!plannedClosed){
-      _connectionToAlice.sink.add(false);
-      log.critical('Socket onError: ' + event.toString());
-      _errorStream.sink.add({'error': 'Error on connection'});
+  void _onOpen(Event event) => _connectedToAlice.sink.add(true);
+
+  void _onError (Event event) {
+    if(!_intendedClose) {
+      log.error('Socket._onError ${event}');
+      _connectedToAlice.sink.add(false);
       _reconnect();
     }
   }
 
   void _onMessage(MessageEvent event) {
-    log.info('Notification message: ${event.data}');
-    _messageStream.sink.add(json.parse(event.data));
+    try {
+      Map notificationEvent = json.parse(event.data);
+      _messageStream.sink.add(notificationEvent);
+    } on FormatException {
+      log.error('Socket._onMessage bad MessageEvent ${event.data}');
+    } catch(e) {
+      log.error('Socket._onMessage exception ${e}');
+    }
   }
 
   void _reconnect() {
-    if (!reconnectScheduled){
-      new Timer(new Duration(seconds:baseRetrySeconds),
-          () { retrySeconds = retrySeconds*2;
-               _connector();
-      });
+    if (!_reconnectScheduled) {
+      new Timer(_reconnectInterval, () => _connect());
     }
-    reconnectScheduled = true;
+    _reconnectScheduled = true;
   }
 
-  String toString() => _url.toString();
+  /**
+   * Registers event listeners.
+   */
+  _registerEventListeners() {
+    window.onUnload.listen((_) {
+      _intendedClose = true;
+      _channel.close();
+    });
+  }
+
+  String toString() => configuration.notificationSocketInterface.toString();
 }

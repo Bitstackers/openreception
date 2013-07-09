@@ -40,21 +40,14 @@ class _Notification {
   Stream<Map> get callPickup => _Streams['call_pickup'].stream;
   Stream<Map> get queueJoin  => _Streams['queue_join'].stream;
   Stream<Map> get queueLeave => _Streams['queue_leave'].stream;
-  Stream<Map> get callPark => _Streams['call_park'].stream;
+  Stream<Map> get callPark   => _Streams['call_park'].stream;
 
   /**
    * [_Notification] constructor.
    */
   _Notification() {
-    final Uri url = configuration.notificationSocketInterface;
-
-    try {
-      _socket = new Socket(url)
-          ..onMessage.listen(_onMessage)
-          ..onError.listen((e) => log.error('notification socket error: ${e.toString()}'));
-    } catch(e) {
-      log.critical('_Notification() ERROR ${e}');
-    }
+    _socket = new Socket()
+        ..onMessage.listen(_onMessage);
 
     _registerEventListeners();
   }
