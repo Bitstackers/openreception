@@ -33,7 +33,7 @@ final _ContextList  contextList  = new _ContextList();
 /**
  * A list of the application contexts.
  */
-class _ContextList extends IterableBase<Context>{
+class _ContextList extends IterableBase<Context> {
   List<Context>        _list = toObservable(<Context>[]);
   Map<String, Context> _map  = new Map<String, Context>();
 
@@ -53,7 +53,7 @@ class _ContextList extends IterableBase<Context>{
     _list.add(context);
     _map[context.id] = context;
 
-    log.debug('_ContextList.add ${context.id}');
+    log.debug('environment._ContextList.add ${context.id}');
   }
 
   /**

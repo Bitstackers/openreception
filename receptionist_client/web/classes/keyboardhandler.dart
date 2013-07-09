@@ -22,7 +22,7 @@ final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 /**
  * [Keys] is a simple mapping between constant literals and integer key codes.
  */
-class Keys{
+class Keys {
   static const int UP    = 38;
   static const int DOWN  = 40;
   static const int ZERO  = 48;
@@ -72,7 +72,7 @@ class Keys{
  * key events or not. This class merely dump the keycodes of fired key events on
  * a stream.
  */
-class _KeyboardHandler{
+class _KeyboardHandler {
   Map<int, String>                   _keyToName           = new Map<int, String>();
   Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
   Map<String, Stream<int>>           _StreamMap           = new Map<String, Stream<int>>();
@@ -85,8 +85,6 @@ class _KeyboardHandler{
   _KeyboardHandler() {
     _initialize();
     _registerEventListeners();
-
-    log.debug('KeyboardHandler ready');
   }
 
   /**
