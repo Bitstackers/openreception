@@ -33,28 +33,28 @@ final _Configuration configuration = new _Configuration();
 class _Configuration {
   @observable bool _loaded = false;
 
-  String _agentID;
-  Uri    _aliceBaseUrl;
-  Uri    _notificationSocketInterface;
-  int    _notificationSocketReconnectInterval;
-  Level  _serverLogLevel = Level.OFF;
-  Uri    _serverLogInterfaceCritical;
-  Uri    _serverLogInterfaceError;
-  Uri    _serverLogInterfaceInfo;
-  String _standardGreeting;
-  int    _userLogSizeLimit = 100000;
+  String   _agentID;
+  Uri      _aliceBaseUrl;
+  Uri      _notificationSocketInterface;
+  Duration _notificationSocketReconnectInterval;
+  Level    _serverLogLevel = Level.OFF;
+  Uri      _serverLogInterfaceCritical;
+  Uri      _serverLogInterfaceError;
+  Uri      _serverLogInterfaceInfo;
+  String   _standardGreeting;
+  int      _userLogSizeLimit = 100000;
 
-  String get agentID =>                             _agentID;
-  Uri    get aliceBaseUrl =>                        _aliceBaseUrl;
-  bool   get loaded =>                              _loaded;
-  Uri    get notificationSocketInterface =>         _notificationSocketInterface;
-  int    get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
-  Level  get serverLogLevel =>                      _serverLogLevel;
-  Uri    get serverLogInterfaceCritical =>          _serverLogInterfaceCritical;
-  Uri    get serverLogInterfaceError =>             _serverLogInterfaceError;
-  Uri    get serverLogInterfaceInfo =>              _serverLogInterfaceInfo;
-  String get standardGreeting =>                    _standardGreeting;
-  int    get userLogSizeLimit =>                    _userLogSizeLimit;
+  String   get agentID =>                             _agentID;
+  Uri      get aliceBaseUrl =>                        _aliceBaseUrl;
+  bool     get loaded =>                              _loaded;
+  Uri      get notificationSocketInterface =>         _notificationSocketInterface;
+  Duration get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
+  Level    get serverLogLevel =>                      _serverLogLevel;
+  Uri      get serverLogInterfaceCritical =>          _serverLogInterfaceCritical;
+  Uri      get serverLogInterfaceError =>             _serverLogInterfaceError;
+  Uri      get serverLogInterfaceInfo =>              _serverLogInterfaceInfo;
+  String   get standardGreeting =>                    _standardGreeting;
+  int      get userLogSizeLimit =>                    _userLogSizeLimit;
 
   /**
    * [_Configuration] constructor. Initialize the object with the values from
@@ -73,7 +73,6 @@ class _Configuration {
   void _onComplete(HttpRequest req) {
     switch(req.status) {
       case 200:
-        log.debug('config: ' + req.responseText);
         _parseConfiguration(json.parse(req.responseText));
         _loaded = true;
         break;
@@ -97,8 +96,13 @@ class _Configuration {
 
     _agentID      = _stringValue(json, 'agentID', '0');
     _aliceBaseUrl = Uri.parse(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
-    _notificationSocketReconnectInterval = _intValue(notificationSocketMap,
-                                                    'reconnectInterval', 1000);
+
+    if (notificationSocketMap['reconnectInterval'] is int && notificationSocketMap['reconnectInterval'] >= 1000) {
+      _notificationSocketReconnectInterval =  new Duration(milliseconds: notificationSocketMap['reconnectInterval']);
+    } else {
+      notificationSocketMap['reconnectInterval'] = new Duration(seconds: 2);
+    }
+
     _notificationSocketInterface = Uri.parse(_stringValue(notificationSocketMap,
                                              'interface',
                                              'ws://alice.adaheads.com:4242/notifications'));
@@ -134,7 +138,7 @@ class _Configuration {
   }
 
   /**
-   * Return a bool from [configMap] or [defaultValue].
+   * Return a Duration from [configMap] or [defaultValue].
    *
    * If [key] is found in [configMap] and the value is a bool, return the found bool.
    * if [key] is not found or does not validate as a bool, return [defaultValue].
