@@ -16,5 +16,21 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 class SendMessage extends WebComponent {
-  String title = 'Besked';
+  String cellphone               = '';
+  String company                 = '';
+  String localno                 = '';
+  String name                    = '';
+  String placeholderCellphone    = 'Mobil';
+  String placeholderCompany      = 'Firmanavn';
+  String placeholderLocalno      = 'Lokalnummer';
+  String placeholderName         = 'Navn';
+  String placeholderPhone        = 'Telefon';
+  String placeholderSearch       = 'Søg...';
+  String placeholderSearchResult = 'Ingen data fundet';
+  String placeholderText         = 'Besked';
+  String phone                   = '';
+  String search                  = '';
+  String searchResult            = '';
+  String text                    = '';
+  String title                   = 'Besked';
 }
