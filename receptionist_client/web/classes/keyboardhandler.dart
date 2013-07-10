@@ -75,7 +75,6 @@ class Keys {
 class _KeyboardHandler {
   Map<int, String>                   _keyToName           = new Map<int, String>();
   Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
-  Map<String, Stream<int>>           _StreamMap           = new Map<String, Stream<int>>();
   int                                _locked              = null;
 
   /**
@@ -104,7 +103,6 @@ class _KeyboardHandler {
 
     _keyToName.forEach((key, value) {
       _StreamControllerMap[value] = new StreamController<int>.broadcast();
-      _StreamMap[value] = _StreamControllerMap[value].stream;
     });
   }
 
@@ -125,7 +123,8 @@ class _KeyboardHandler {
       if(_keyToName.containsKey(keyCode)) {
         _locked = keyCode;
         _StreamControllerMap[_keyToName[keyCode]].sink.add(keyCode);
-        log.debug('Sinking key ${_keyToName[keyCode]}');
+
+        log.debug('Sinking key ${keyCode}:${_keyToName[keyCode]}');
       }
     }
   }
@@ -154,11 +153,11 @@ class _KeyboardHandler {
    *  }
    */
   Stream<int> onKeyName(String keyName) {
-    if (_StreamMap.containsKey(keyName)) {
-      return _StreamMap[keyName];
+    if (_StreamControllerMap.containsKey(keyName)) {
+      return _StreamControllerMap[keyName].stream;
     }
 
-    log.critical('Keyboardhandler onKeyName ERROR no key ${keyName}');
+    log.critical('_Keyboardhandler.onKeyName no key ${keyName}');
     return null;
   }
 
