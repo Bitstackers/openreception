@@ -64,6 +64,9 @@ class Socket {
     _connect();
   }
 
+  /**
+   * Create and connect the WebSocket.
+   */
   void _connect() {
     log.info('Socket._connect ${_url}');
 
@@ -76,16 +79,30 @@ class Socket {
         ..onOpen.listen(_onOpen);
   }
 
+  /**
+   * Sink boolean true to the _connectedToAlice stream when the _channel
+   * WebSocket is connected.
+   */
   void _onOpen(Event event) => _connectedToAlice.sink.add(true);
 
+  /**
+   * Sink boolean false to the _connectedToAlice stream when the _channel
+   * WebSocket disconnects and then try to reconnect.
+   */
   void _onError (Event event) {
     if(!_intendedClose) {
       log.error('Socket._onError ${event}');
+
       _connectedToAlice.sink.add(false);
       _reconnect();
     }
   }
 
+  /**
+   * Is called on every message received on the _channel WebSocket. Valid
+   * messages, ie. stuff that can be parsed into a map, are sinked to the
+   * _messageStream stream.
+   */
   void _onMessage(MessageEvent event) {
     try {
       Map notificationEvent = json.parse(event.data);
@@ -97,6 +114,10 @@ class Socket {
     }
   }
 
+  /**
+   * Try to connect the _channel WebSocket. This is done once every
+   * _reconnectInterval until the WebSocket is connected.
+   */
   void _reconnect() {
     if (!_reconnectScheduled) {
       new Timer(_reconnectInterval, () => _connect());
@@ -113,6 +134,4 @@ class Socket {
       _channel.close();
     });
   }
-
-  String toString() => configuration.notificationSocketInterface.toString();
 }
