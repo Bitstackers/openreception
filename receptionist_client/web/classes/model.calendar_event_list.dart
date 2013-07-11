@@ -27,11 +27,24 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
    * [CalendarEventList] constructor. Builds a list of [CalendarEvent] objects
    * from the contents of json[key].
    */
-  CalendarEventList.fromJson(Map json, String key) {
+  factory CalendarEventList.fromJson(Map json, String key) {
+    CalendarEventList calendarEventList;
+
     if (json.containsKey(key)) {
-      json[key].forEach((item) => _list.add(new CalendarEvent.fromJson(item)));
-      _list.sort();
+      calendarEventList = new CalendarEventList._internal(json[key]);
+    } else {
+      calendarEventList = nullCalendarEventList;
     }
+
+    return calendarEventList;
+  }
+
+  /**
+   * [CalendarEventList] internal constructor.
+   */
+  CalendarEventList._internal(List list) {
+    list.forEach((item) => _list.add(new CalendarEvent.fromJson(item)));
+    _list.sort();
   }
 
   /**

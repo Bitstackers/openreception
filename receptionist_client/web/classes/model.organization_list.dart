@@ -27,11 +27,24 @@ class OrganizationList extends IterableBase<Organization>{
    * [OrganizationList] constructor. Builds a list of [Organization] objects
    * from the contents of json[key].
    */
-  OrganizationList.fromJson(Map json, String key) {
-    if (json.containsKey(key)) {
-      json[key].forEach((item) => _list.add(new Organization.fromJson(item)));
-      _list.sort();
+  factory OrganizationList.fromJson(Map json, String key) {
+    OrganizationList organizationList;
+
+    if (json.containsKey(key) && json[key] is List) {
+      organizationList = new OrganizationList._internal(json[key]);
+    } else {
+      organizationList = nullOrganizationList;
     }
+
+    return organizationList;
+  }
+
+  /**
+   * [OrganizationList] internal constructor.
+   */
+  OrganizationList._internal(List list) {
+    list.forEach((item) => _list.add(new Organization.fromJson(item)));
+    _list.sort();
   }
 
   /**
