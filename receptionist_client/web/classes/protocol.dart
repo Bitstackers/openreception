@@ -74,7 +74,7 @@ String _buildUrl(String base, String path, [List<String> fragments]){
     fragments.skip(1).forEach((fragment) => SB.write('&${fragment}'));
   }
 
-  log.debug('buildurl: ${url}${SB.toString()}');
+  log.debug('protocol._buildUrl ${url}${SB.toString()}');
   return '${url}${SB.toString()}';
 }
 
