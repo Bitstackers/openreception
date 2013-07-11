@@ -85,11 +85,11 @@ class Contact implements Comparable{
     if(json.containsKey('attributes')) {
       Map attributes = json['attributes'][0];
 
-      _backupList          = new MiniboxList.fromJson(json, 'backup');
-      _emailAddressList    = new MiniboxList.fromJson(json, 'emailaddresses');
-      _handlingList        = new MiniboxList.fromJson(json, 'handling');
-      _telephoneNumberList = new MiniboxList.fromJson(json, 'telephonenumbers');
-      _workHoursList       = new MiniboxList.fromJson(json, 'workhours');
+      _backupList          = new MiniboxList.fromJson(attributes, 'backup');
+      _emailAddressList    = new MiniboxList.fromJson(attributes, 'emailaddresses');
+      _handlingList        = new MiniboxList.fromJson(attributes, 'handling');
+      _telephoneNumberList = new MiniboxList.fromJson(attributes, 'telephonenumbers');
+      _workHoursList       = new MiniboxList.fromJson(attributes, 'workhours');
 
       department     = attributes['department'];
       info           = attributes['info'];
