@@ -34,22 +34,26 @@ class CompanySelector extends WebComponent {
   }
 
   void _selection(Event event) {
-    int id = int.parse((event.target as SelectElement).value);
+    try {
+      int id = int.parse((event.target as SelectElement).value);
 
-    if (id != null) {
-      storage.getOrganization(id).then((model.Organization org) {
-        environment.organization = org;
-        environment.contact = org.contactList.first;
+      if (id != null) {
+        storage.getOrganization(id).then((model.Organization org) {
+          environment.organization = org;
+          environment.contact = org.contactList.first;
 
-        log.debug('CompanySelector._selection updated environment.organization to ${org}');
-        log.debug('CompanySelector._selection updated environment.contact to ${org.contactList.first}');
-      }).catchError((error) {
-        environment.organization = model.nullOrganization;
-        environment.contact = model.nullContact;
+          log.debug('CompanySelector._selection updated environment.organization to ${environment.organization}');
+          log.debug('CompanySelector._selection updated environment.contact to ${environment.contact}');
+        }).catchError((error) {
+          environment.organization = model.nullOrganization;
+          environment.contact = model.nullContact;
 
-        log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
-      });
-    } else {
+          log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
+        });
+      } else {
+        throw new Exception();
+      }
+    } catch(e) {
       environment.organization = model.nullOrganization;
       environment.contact = model.nullContact;
 
