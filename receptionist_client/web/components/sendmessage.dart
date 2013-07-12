@@ -15,22 +15,42 @@ import 'dart:html';
 
 import 'package:web_ui/web_ui.dart';
 
+import '../classes/environment.dart' as environment;
+import '../classes/model.dart' as model;
+
 class SendMessage extends WebComponent {
-  String cellphone               = '';
-  String company                 = '';
-  String localno                 = '';
-  String name                    = '';
-  String placeholderCellphone    = 'Mobil';
-  String placeholderCompany      = 'Firmanavn';
-  String placeholderLocalno      = 'Lokalnummer';
-  String placeholderName         = 'Navn';
-  String placeholderPhone        = 'Telefon';
-  String placeholderSearch       = 'Søg...';
-  String placeholderSearchResult = 'Ingen data fundet';
-  String placeholderText         = 'Besked';
-  String phone                   = '';
-  String search                  = '';
-  String searchResult            = '';
-  String text                    = '';
-  String title                   = 'Besked';
+  @observable bool   callsBack               = true;
+  final String       cancelButtonLabel       = 'Annuller';
+  @observable String cellphone               = '';
+  @observable String company                 = '';
+  List<String>       contactList             = toObservable(new List<String>());
+  @observable bool   emergency               = false;
+  @observable bool   hasCalled               = false;
+  @observable String localno                 = '';
+  @observable String name                    = '';
+  final String       placeholderCellphone    = 'Mobil';
+  final String       placeholderCompany      = 'Firmanavn';
+  final String       placeholderLocalno      = 'Lokalnummer';
+  final String       placeholderName         = 'Navn';
+  final String       placeholderPhone        = 'Telefon';
+  final String       placeholderSearch       = 'Søg...';
+  final String       placeholderSearchResult = 'Ingen data fundet';
+  final String       placeholderText         = 'Besked';
+  @observable bool   pleaseCall              = false;
+  @observable String phone                   = '';
+  final String       recipientList           = 'Modtagere';
+  final String       saveButtonLabel         = 'Gem';
+  @observable String search                  = '';
+  @observable String searchResult            = '';
+  final String       sendButtonLabel         = 'Send';
+  @observable String text                    = '';
+  @observable String title                   = 'Besked';
+
+  created() {
+    contactList.add('Thomas');
+    contactList.add('Trine');
+    contactList.add('Foo');
+    contactList.add('Bar');
+    contactList.add('Foo Bar');
+  }
 }

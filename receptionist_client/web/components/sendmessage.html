@@ -89,15 +89,29 @@
           width: 40%;
         }
 
-        .send-message-checkbox {
-          width: 20px;
-          height: 20px;
-        }
-
         .send-message-checkbox-label {
           position: absolute;
           top: 2px;
           margin-left: 2%;
+        }
+
+        .send-message-checkbox-container input[type="checkbox"] {
+          display:none;
+        }
+
+        .send-message-checkbox-container input[type="checkbox"] + label span {
+          height: 20px;
+          width: 20px;
+          border: solid 2px #ccc;
+          border-radius: 3px;
+          cursor:pointer;
+          display: inline-block;
+          margin: -2px 5px 0 0;
+          vertical-align: middle;
+        }
+
+        .send-message-checkbox-container input[type="checkbox"]:checked + label span {
+          background-color: green;
         }
 
         .send-message-pleasecall {top: 63%;}
@@ -111,12 +125,36 @@
           left: 45%;
           height: 26%;
           width: 55%;
+        }
+
+        .send-message-recipient-list {
+          height: 100%;
+          width: 100%;
           border: solid 1px red;
         }
 
         .send-message-button-container {
           position: absolute;
           top: 92%;
+        }
+
+        .send-message-button-container button {
+          background-color: #fafafa;
+          border: solid 2px #ccc;
+          border-radius: 3px;
+          font-size: 1em;
+          margin: 0px 10px 0px 0px;
+          padding: 5px 0px;
+          width: 75px;
+        }
+
+        .send-message-button-container button:hover {
+          border: solid 2px #bbb;
+          border-radius: 3px;
+          font-size: 1em;
+          background-color: #eee;
+          padding: 5px;
+          cursor: pointer;
         }
       </style>
 
@@ -127,44 +165,61 @@
           </span>
 
           <div name="boxcontent" class="send-message-container">
-            <input class="send-message-searchbox send-message-field" type="search" value="{{search}}" placeholder="{{placeholderSearch}}"/>
-            <input class="send-message-search-result send-message-field" value="{{searchResult}}" placeholder="{{placeholderSearchResult}}" readonly/>
+            <template instantiate="if environment.contact != model.nullContact">
+              <input class="send-message-searchbox send-message-field" type="search" bind-value="search" placeholder="{{placeholderSearch}}"/>
+              <input class="send-message-search-result send-message-field" bind-value="searchResult" placeholder="{{placeholderSearchResult}}" readonly/>
 
-            <input class="send-message-name send-message-field" value="{{name}}" placeholder="{{placeholderName}}"/>
-            <input class="send-message-company send-message-field" value="{{company}}" placeholder="{{placeholderCompany}}"/>
+              <input class="send-message-name send-message-field" bind-value="name" placeholder="{{placeholderName}}"/>
+              <input class="send-message-company send-message-field" bind-value="company" placeholder="{{placeholderCompany}}"/>
 
-            <input class="send-message-phone send-message-field" value="{{phone}}" placeholder="{{placeholderPhone}}"/>
-            <input class="send-message-cellphone send-message-field" value="{{cellphone}}" placeholder="{{placeholderCellphone}}"/>
-            <input class="send-message-localno send-message-field" value="{{localno}}" placeholder="{{placeholderLocalno}}"/>
+              <input class="send-message-phone send-message-field" bind-value="phone" placeholder="{{placeholderPhone}}"/>
+              <input class="send-message-cellphone send-message-field" bind-value="cellphone" placeholder="{{placeholderCellphone}}"/>
+              <input class="send-message-localno send-message-field" bind-value="localno" placeholder="{{placeholderLocalno}}"/>
 
-            <textarea style="resize: none" class="send-message-text send-message-field" placeholder="{{placeholderText}}">{{text}}</textarea>
+              <textarea style="resize: none" class="send-message-text send-message-field" bind-value="text" placeholder="{{placeholderText}}"></textarea>
 
-            <div class="send-message-checkbox-container send-message-pleasecall">
-              <input class="send-message-checkbox" id="send-message-checkbox1" type="checkbox"/>
-              <label class="send-message-checkbox-label" for="send-message-checkbox1">Ring venligst</label>
-            </div>
-            <div class="send-message-checkbox-container send-message-callsback">
-              <input class="send-message-checkbox" id="send-message-checkbox2" type="checkbox"/>
-              <label class="send-message-checkbox-label" for="send-message-checkbox2">Kunder ringer selv tilbage</label>
-            </div>
-            <div class="send-message-checkbox-container send-message-hascalled">
-              <input class="send-message-checkbox" id="send-message-checkbox3" type="checkbox"/>
-              <label class="send-message-checkbox-label" for="send-message-checkbox3">Har ringet</label>
-            </div>
-            <div class="send-message-checkbox-container send-message-emergency">
-              <input class="send-message-checkbox" id="send-message-checkbox4" type="checkbox"/>
-              <label class="send-message-checkbox-label" for="send-message-checkbox4">Haster</label>
-            </div>
+              <div class="send-message-checkbox-container send-message-pleasecall">
+                <input bind-checked="pleaseCall" id="send-message-checkbox1" type="checkbox"/>
+                <label class="send-message-checkbox-label" for="send-message-checkbox1"><span></span>Ring venligst</label>
+              </div>
+              <div class="send-message-checkbox-container send-message-callsback">
+                <input bind-checked="callsBack" id="send-message-checkbox2" type="checkbox"/>
+                <label class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
+              </div>
+              <div class="send-message-checkbox-container send-message-hascalled">
+                <input bind-checked="hasCalled" id="send-message-checkbox3" type="checkbox"/>
+                <label class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
+              </div>
+              <div class="send-message-checkbox-container send-message-emergency">
+                <input class="send-message-checkbox" bind-checked="emergency" id="send-message-checkbox4" type="checkbox"/>
+                <label class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
+              </div>
 
-            <div class="send-message-recipient-container">
-              Liste af modtagere...
-            </div>
+              <div class="send-message-recipient-container">
+                <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+                  <span name="boxheader">
+                    {{recipientList}}
+                  </span>
 
-            <div class="send-message-button-container">
-              <button>Annuller</button>
-              <button>Gem</button>
-              <button>Send</button>
-            </div>
+                  <div name="boxcontent" class="minibox send-message-recipient-list">
+                    <span style="font-weight: bold">{{contactList.first}}</span>
+                    <ul>
+                      <template iterate="value in contactList.skip(1)">
+                        <li style="padding: 5px;">
+                          {{value}}
+                        </li>
+                      </template>
+                    </ul>
+                  </div>
+                </box-with-header>
+              </div>
+
+              <div class="send-message-button-container">
+                <button on-click="">{{cancelButtonLabel}}</button>
+                <button on-click="">{{saveButtonLabel}}</button>
+                <button on-click="">{{sendButtonLabel}}</button>
+              </div>
+            </template>
           </div>
         </box-with-header>
       </template>
