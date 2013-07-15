@@ -31,8 +31,10 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
     MiniboxList miniboxList = nullMiniboxList;
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('MiniboxList.fromJson ${key} - ${json[key]}');
+      log.debug('model.MiniboxList.fromJson ${key} - ${json[key]}');
       miniboxList = new MiniboxList._internal(json[key]);
+    } else {
+      log.critical('model.MiniboxList.fromJson bad data. Key: ${key}, Map: ${json}');
     }
 
     return miniboxList;

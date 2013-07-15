@@ -19,7 +19,7 @@ final ContactList nullContactList = new ContactList._null();
  * A list of [Contact] objects.
  */
 class ContactList extends IterableBase<Contact>{
-  List<Contact> _list = <Contact>[];
+  List<Contact> _list = new List<Contact>();
 
   Contact           get first    => _list.length > 0 ? _list.first : nullContact;
   Iterator<Contact> get iterator => _list.iterator;
@@ -33,7 +33,10 @@ class ContactList extends IterableBase<Contact>{
     ContactList contactList = nullContactList;
 
     if (json.containsKey(key) && json[key] is List) {
+      log.debug('model.ContactList.fromJson ${key} - ${json[key]}');
       contactList = new ContactList._internal(json[key]);
+    } else {
+      log.critical('model.ContactList.fromJson bad data. Key: ${key}, Map: ${json}');
     }
 
     return contactList;

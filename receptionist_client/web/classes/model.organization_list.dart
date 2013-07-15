@@ -32,6 +32,8 @@ class OrganizationList extends IterableBase<Organization>{
 
     if (json.containsKey(key) && json[key] is List) {
       organizationList = new OrganizationList._internal(json[key]);
+    } else {
+      log.critical('model.OrganizationList.fromJson bad data. Key: ${key}, Map: ${json}');
     }
 
     return organizationList;
