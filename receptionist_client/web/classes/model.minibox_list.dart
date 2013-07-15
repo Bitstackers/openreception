@@ -19,7 +19,7 @@ final MiniboxList nullMiniboxList = new MiniboxList._null();
  * A list of [MiniboxListItem] objects.
  */
 class MiniboxList extends IterableBase<MiniboxListItem>{
-  List<MiniboxListItem> _list = <MiniboxListItem>[];
+  List<MiniboxListItem> _list = new List<MiniboxListItem>();
 
   Iterator<MiniboxListItem> get iterator => _list.iterator;
 
