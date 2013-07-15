@@ -28,12 +28,10 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
    * from the contents of json[key].
    */
   factory CalendarEventList.fromJson(Map json, String key) {
-    CalendarEventList calendarEventList;
+    CalendarEventList calendarEventList = nullCalendarEventList;
 
     if (json.containsKey(key)) {
       calendarEventList = new CalendarEventList._internal(json[key]);
-    } else {
-      calendarEventList = nullCalendarEventList;
     }
 
     return calendarEventList;

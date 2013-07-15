@@ -19,7 +19,7 @@ final OrganizationList nullOrganizationList = new OrganizationList._null();
  * A list of [Organization] objects.
  */
 class OrganizationList extends IterableBase<Organization>{
-  List<Organization> _list = <Organization>[];
+  List<Organization> _list = new List<Organization>();
 
   Iterator<Organization> get iterator => _list.iterator;
 
@@ -28,12 +28,10 @@ class OrganizationList extends IterableBase<Organization>{
    * from the contents of json[key].
    */
   factory OrganizationList.fromJson(Map json, String key) {
-    OrganizationList organizationList;
+    OrganizationList organizationList = nullOrganizationList;
 
     if (json.containsKey(key) && json[key] is List) {
       organizationList = new OrganizationList._internal(json[key]);
-    } else {
-      organizationList = nullOrganizationList;
     }
 
     return organizationList;

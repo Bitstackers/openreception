@@ -28,13 +28,11 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
    * the contents of json[key].
    */
   factory MiniboxList.fromJson(Map json, String key) {
-    MiniboxList miniboxList;
+    MiniboxList miniboxList = nullMiniboxList;
 
     if (json.containsKey(key) && json[key] is List) {
       log.debug('MiniboxList.fromJson ${key} - ${json[key]}');
       miniboxList = new MiniboxList._internal(json[key]);
-    } else {
-      miniboxList = nullMiniboxList;
     }
 
     return miniboxList;

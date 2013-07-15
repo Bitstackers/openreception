@@ -30,12 +30,10 @@ class ContactList extends IterableBase<Contact>{
    * Return null
    */
   factory ContactList.fromJson(Map json, String key) {
-    ContactList contactList;
+    ContactList contactList = nullContactList;
 
     if (json.containsKey(key) && json[key] is List) {
       contactList = new ContactList._internal(json[key]);
-    } else {
-      contactList = nullContactList;
     }
 
     return contactList;
