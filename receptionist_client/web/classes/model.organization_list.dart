@@ -16,15 +16,15 @@ part of model;
 final OrganizationList nullOrganizationList = new OrganizationList._null();
 
 /**
- * A list of [Organization] objects.
+ * A list of [BasicOrganization] objects.
  */
-class OrganizationList extends IterableBase<Organization>{
-  List<Organization> _list = new List<Organization>();
+class OrganizationList extends IterableBase<BasicOrganization>{
+  List<BasicOrganization> _list = new List<BasicOrganization>();
 
-  Iterator<Organization> get iterator => _list.iterator;
+  Iterator<BasicOrganization> get iterator => _list.iterator;
 
   /**
-   * [OrganizationList] constructor. Builds a list of [Organization] objects
+   * [OrganizationList] constructor. Builds a list of [BasicOrganization] objects
    * from the contents of json[key].
    */
   factory OrganizationList.fromJson(Map json, String key) {
@@ -44,7 +44,7 @@ class OrganizationList extends IterableBase<Organization>{
    * [OrganizationList] internal constructor.
    */
   OrganizationList._internal(List list) {
-    list.forEach((item) => _list.add(new Organization.fromJson(item)));
+    list.forEach((item) => _list.add(new BasicOrganization.fromJson(item)));
     _list.sort();
   }
 
