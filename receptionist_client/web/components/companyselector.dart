@@ -34,30 +34,28 @@ class CompanySelector extends WebComponent {
   }
 
   void _selection(Event event) {
+    SelectElement element = event.target;
+
     try {
-      int id = int.parse((event.target as SelectElement).value);
+      int id = int.parse(element.value);
 
-      if (id != null) {
-        storage.getOrganization(id).then((model.Organization org) {
-          environment.organization = org;
-          environment.contact = org.contactList.first;
+      storage.getOrganization(id).then((model.Organization org) {
+        environment.organization = org;
+        environment.contact = org.contactList.first;
 
-          log.debug('CompanySelector._selection updated environment.organization to ${environment.organization}');
-          log.debug('CompanySelector._selection updated environment.contact to ${environment.contact}');
-        }).catchError((error) {
-          environment.organization = model.nullOrganization;
-          environment.contact = model.nullContact;
+        log.debug('CompanySelector._selection updated environment.organization to ${environment.organization}');
+        log.debug('CompanySelector._selection updated environment.contact to ${environment.contact}');
+      }).catchError((error) {
+        environment.organization = model.nullOrganization;
+        environment.contact = model.nullContact;
 
-          log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
-        });
-      } else {
-        throw new Exception();
-      }
-    } catch(e) {
+        log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
+      });
+    } on FormatException {
       environment.organization = model.nullOrganization;
       environment.contact = model.nullContact;
 
-      log.critical('CompanySelector._selection storage.getOrganization SelectElement has no value');
+      log.critical('CompanySelector._selection storage.getOrganization SelectElement has bad value: ${element.value}');
     }
   }
 }
