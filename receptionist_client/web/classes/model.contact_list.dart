@@ -27,7 +27,6 @@ class ContactList extends IterableBase<Contact>{
   /**
    * [ContactList] constructor. Builds a list of [Contact] objects from the
    * contents of json[key].
-   * Return null
    */
   factory ContactList.fromJson(Map json, String key) {
     ContactList contactList = nullContactList;

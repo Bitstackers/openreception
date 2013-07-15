@@ -58,6 +58,7 @@ class LocalQueue extends WebComponent {
    * If a call from the local queue leaves.
    */
   void _queueLeaveEventHandler(Map json){
+    log.debug('localqueue._queueLeaveEventHandler ${json}');
     var call = new model.Call.fromJson(json['call']);
     //Find the call and removes it from the calls list.
     for (var c in calls) {

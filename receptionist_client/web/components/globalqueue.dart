@@ -25,16 +25,13 @@ import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 class GlobalQueue extends WebComponent {
-  List<model.Call> calls = toObservable(<model.Call>[]);
-  @observable bool hangupButtonDisabled = true;
-  @observable bool holdButtonDisabled   = true;
-  @observable bool pickupButtonDisabled = false;
-
-  String title = 'Global kø';
+  @observable bool   hangupButtonDisabled = true;
+  @observable bool   holdButtonDisabled   = true;
+  @observable bool   pickupButtonDisabled = false;
+  final       String title                = 'Global kø';
 
   void created() {
     _initialFill();
-    _registerSubscribers();
   }
 
   void _initialFill() {
@@ -42,54 +39,18 @@ class GlobalQueue extends WebComponent {
       switch(response.status){
         case protocol.Response.OK:
           Map callsjson = response.data;
-          log.debug('Initial filling of call queue gave ${callsjson['calls'].length} calls');
-          for (var call in callsjson['calls']) {
-            calls.add(new model.Call.fromJson(call));
-          }
-          break;
-
-        case protocol.Response.NOTFOUND:
-          log.debug('Initial Filling of callqueue. Request returned empty.');
+          environment.callQueue = new model.CallList.fromJson(callsjson, 'calls');
+          log.debug('GlobalQueue._initialFill updated environment.callQueue');
           break;
 
         default:
-          //TODO do something.
+          environment.callQueue = new model.CallList();
+          log.debug('GlobalQueue._initialFill updated environment.callQueue with empty list');
       }
     }).catchError((error) {
-      // TODO do something
+      environment.callQueue = new model.CallList();
+      log.critical('GlobalQueue._initialFill protocol.callQueue failed with ${error}');
     });
-
-    // dummy calls
-    //calls.add(new model.Call.fromJson({'id':'3','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:5)))}'}));
-    //calls.add(new model.Call.fromJson({'id':'2','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
-    //calls.add(new model.Call.fromJson({'id':'1','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:12)))}'}));
-    calls.add(new model.Call.fromJson({'id':'3','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:5)).millisecondsSinceEpoch/1000).toInt()}'}));
-    calls.add(new model.Call.fromJson({'id':'2','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch/1000).toInt()}'}));
-    calls.add(new model.Call.fromJson({'id':'1','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:12)).millisecondsSinceEpoch/1000).toInt()}'}));
-    calls.sort();
-  }
-
-  void _registerSubscribers() {
-    notify.notification.queueJoin.listen((json) => _queueJoin(json));
-    notify.notification.queueLeave.listen((json) => _queueLeave(json));
-  }
-
-  void _queueJoin(Map json) {
-    calls.add(new model.Call.fromJson(json['call']));
-    // Should we sort again, or can we expect that calls joining the queue are
-    // always younger then the calls already in the queue?
-  }
-
-  void _queueLeave(Map json) {
-    log.debug('QueueLeave: ' + json.toString());
-    var call = new model.Call.fromJson(json['call']);
-    //Find the call and removes it from the calls list.
-    for (var c in calls) {
-      if (c.id == call.id) {
-        calls.remove(c);
-        break;
-      }
-    }
   }
 
   void _callChange(model.Call call){

@@ -16,11 +16,13 @@ library model;
 import 'dart:collection';
 
 import 'package:intl/intl.dart';
+import 'package:web_ui/web_ui.dart';
 
 import 'common.dart';
 import 'logger.dart';
 
 part 'model.call.dart';
+part 'model.call_list.dart';
 part 'model.calendar_event.dart';
 part 'model.calendar_event_list.dart';
 part 'model.contact.dart';

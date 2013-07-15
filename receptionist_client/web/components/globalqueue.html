@@ -45,7 +45,7 @@
           </span>
 
           <div name="boxcontent" class="container">
-            <ul template iterate="call in calls" class="global-queue-zebra">
+            <ul template iterate="call in environment.callQueue" class="global-queue-zebra">
               <call-queue-item call="{{call}}"></call-queue-item>
             </ul>
           </div>
