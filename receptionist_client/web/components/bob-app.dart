@@ -16,6 +16,7 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/configuration.dart';
+import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
 
 class BobApp extends WebComponent {

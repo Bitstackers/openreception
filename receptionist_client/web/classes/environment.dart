@@ -23,6 +23,7 @@ import 'logger.dart';
 import 'model.dart' as model;
 
 @observable String                 activeWidget     = '';
+@observable int                    bobReady         = 0;
 @observable model.Call             call             = model.nullCall;
 @observable model.CallList         callQueue        = new model.CallList();
 @observable model.CallList         localCallQueue   = new model.CallList();

@@ -34,6 +34,8 @@ Future<bool> repeatCheck(boolFunc check, int maxRepeat, Duration repeatTime, {St
   assert(maxRepeat >= 0);
   assert(repeatTime.inMilliseconds > 0);
 
+  print('PRINTING common.repeatCheck is started');
+
   final Completer completer = new Completer();
         int       count     = 0;
 

@@ -31,6 +31,15 @@
   <body>
     <element name="bob-app" constructor="BobApp" extends="div" apply-author-styles>
       <template>
+        <template instantiate="if environment.bobReady == 0">
+          <h1>Loading application....</h1>
+        </template>
+
+        <template instantiate="if environment.bobReady == -1">
+          <h1>DisasterMode!!!!!!</h1>
+        </template>
+
+        <template instantiate="if environment.bobReady == 1">
           <context-switcher id="contextswitcher"></context-switcher>
 
           <bob-context id="contexthome">
@@ -84,8 +93,8 @@
               Set alert level for
             </x-foo>
           </bob-context>
+        </template>
       </template>
-
       <script type="application/dart" src="bob-app.dart"></script>
     </element>
   </body>

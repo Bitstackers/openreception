@@ -19,7 +19,7 @@ import 'dart:json' as json;
 
 import 'common.dart';
 import 'configuration.dart';
-import 'environment.dart';
+import 'environment.dart' as environment;
 import 'logger.dart';
 
 final StreamController<bool> _connectedToAlice = new StreamController<bool>.broadcast();
@@ -73,6 +73,7 @@ class Socket {
     _reconnectScheduled = false;
     String url = _url.toString();
     //url = 'ws://alice.adaheads.com:4242/Wrong';
+    //url = 'ws://alice.adaheads.com';
     _channel = new WebSocket(url)
         ..onMessage.listen(_onMessage)
         ..onError.listen(_onError)
@@ -85,7 +86,8 @@ class Socket {
    * WebSocket is connected.
    */
   void _onOpen(Event event) {
-    log.debug('Socket readystate is: ${_channel.readyState} is that open? ${_channel.readyState == WebSocket.OPEN}');
+    log.debug('Socket onOPEN readystate is: ${_channel.readyState} is that open? ${_channel.readyState == WebSocket.OPEN}');
+    environment.bobReady = 1;
     _connectedToAlice.sink.add(true);
   }
 
@@ -96,7 +98,7 @@ class Socket {
   void _onError (Event event) {
     if(!_intendedClose) {
       log.error('Socket._onError ${event}');
-
+      environment.bobReady = -1;
       _connectedToAlice.sink.add(false);
       _reconnect();
     }
