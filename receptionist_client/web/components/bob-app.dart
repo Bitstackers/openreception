@@ -16,5 +16,10 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/configuration.dart';
+import '../classes/logger.dart';
 
-class BobApp extends WebComponent {}
+class BobApp extends WebComponent {
+  void inserted() {
+    log.info('Bob is ready to serve. Welcome!', toUserLog: true);
+  }
+}

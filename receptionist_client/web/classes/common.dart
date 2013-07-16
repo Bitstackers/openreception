@@ -13,6 +13,8 @@
 
 library Common;
 
+import 'dart:async';
+
 /**
  * A simple timeout exception. MUST be used wherever we throw exceptions due
  * to timeout issues.
@@ -23,4 +25,32 @@ class TimeoutException implements Exception {
   const TimeoutException(this.message);
 
   String toString() => message;
+}
+
+typedef bool boolFunc ();
+
+Future<bool> repeatCheck(boolFunc check, int maxRepeat, Duration repeatTime, {String timeoutMessage}) {
+  assert(maxRepeat != null);
+  assert(maxRepeat >= 0);
+  assert(repeatTime.inMilliseconds > 0);
+
+  final Completer completer = new Completer();
+        int       count     = 0;
+
+  if (check()) {
+    completer.complete(true);
+  } else {
+    new Timer.periodic(repeatTime, (timer) {
+      count += 1;
+      if (check()) {
+        timer.cancel();
+        completer.complete(true);
+      } else if (count > maxRepeat) {
+        timer.cancel();
+        completer.completeError(new TimeoutException(timeoutMessage));
+      }
+    });
+  }
+
+  return completer.future;
 }

@@ -37,8 +37,8 @@ class Socket {
   Duration              _reconnectInterval  = configuration.notificationSocketReconnectInterval;
   Uri                   _url                = configuration.notificationSocketInterface;
 
-  bool        get isDead    => _channel == null || _channel.readyState != WebSocket.OPEN;
-  Stream<Map> get onMessage => _messageStream.stream;
+  bool        get isConnected => _channel != null && _channel.readyState == WebSocket.OPEN;
+  Stream<Map> get onMessage   => _messageStream.stream;
 
   /**
    * Socket constructor.
@@ -71,8 +71,9 @@ class Socket {
     log.info('Socket._connect ${_url}');
 
     _reconnectScheduled = false;
-
-    _channel = new WebSocket(_url.toString())
+    String url = _url.toString();
+    //url = 'ws://alice.adaheads.com:4242/Wrong';
+    _channel = new WebSocket(url)
         ..onMessage.listen(_onMessage)
         ..onError.listen(_onError)
         ..onClose.listen(_onError)
@@ -83,7 +84,10 @@ class Socket {
    * Sink boolean true to the _connectedToAlice stream when the _channel
    * WebSocket is connected.
    */
-  void _onOpen(Event event) => _connectedToAlice.sink.add(true);
+  void _onOpen(Event event) {
+    log.debug('Socket readystate is: ${_channel.readyState} is that open? ${_channel.readyState == WebSocket.OPEN}');
+    _connectedToAlice.sink.add(true);
+  }
 
   /**
    * Sink boolean false to the _connectedToAlice stream when the _channel

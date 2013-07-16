@@ -36,11 +36,11 @@ class _Notification {
                                                  'queue_leave':new StreamController<Map>.broadcast(),
                                                  'call_park'  :new StreamController<Map>.broadcast()};
 
-  Stream<Map> get callHangup => _Streams['call_hangup'].stream;
-  Stream<Map> get callPickup => _Streams['call_pickup'].stream;
-  Stream<Map> get queueJoin  => _Streams['queue_join'].stream;
-  Stream<Map> get queueLeave => _Streams['queue_leave'].stream;
-  Stream<Map> get callPark   => _Streams['call_park'].stream;
+  Stream<Map> get callHangup  => _Streams['call_hangup'].stream;
+  Stream<Map> get callPickup  => _Streams['call_pickup'].stream;
+  Stream<Map> get queueJoin   => _Streams['queue_join'].stream;
+  Stream<Map> get queueLeave  => _Streams['queue_leave'].stream;
+  Stream<Map> get callPark    => _Streams['call_park'].stream;
 
   /**
    * [_Notification] constructor.
@@ -51,6 +51,8 @@ class _Notification {
 
     _registerEventListeners();
   }
+
+  bool isConnected() => _socket.isConnected;
 
   /**
    * Handles non-persistent notifications.

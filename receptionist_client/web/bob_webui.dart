@@ -18,17 +18,21 @@ import 'dart:async';
 
 import 'package:web_ui/web_ui.dart';
 
+import 'classes/common.dart';
 import 'classes/configuration.dart';
 import 'classes/logger.dart';
+import 'classes/notification.dart';
 
 @observable bool bobReady = false;
+
+Future _configurationCheck() => repeatCheck(configuration.isLoaded, 20, new Duration(milliseconds: 50), timeoutMessage: 'configuration.isLoaded is false');
+Future _notificationCheck() => repeatCheck(notification.isConnected, 20, new Duration(milliseconds: 50), timeoutMessage: 'notification.isConnected is false');
 
 /**
  * Get Bob going as soon as the configuration is loaded.
  */
 void main() {
-  fetchConfig().then((_) {
-    bobReady = true;
-    log.info('Bob is ready to serve. Welcome!', toUserLog: true);
-  }).catchError((error) => log.critical('Bob main exception: ${error}'));
+  _configurationCheck().then((_) => _notificationCheck())
+                       .then((_) => bobReady = true)
+                       .catchError((error) => log.critical('Bob main exception: ${error}'));
 }

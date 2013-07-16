@@ -46,7 +46,6 @@ class _Configuration {
 
   String   get agentID =>                             _agentID;
   Uri      get aliceBaseUrl =>                        _aliceBaseUrl;
-  bool     get loaded =>                              _loaded;
   Uri      get notificationSocketInterface =>         _notificationSocketInterface;
   Duration get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
   Level    get serverLogLevel =>                      _serverLogLevel;
@@ -63,8 +62,13 @@ class _Configuration {
   _Configuration() {
     HttpRequest.request(CONFIGURATION_URL)
       .then(_onComplete)
-      .catchError((error) => log.critical('_Configuration() failed with ${error}'));
+      .catchError((error) => log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}'));
   }
+
+  /**
+   * Is the configuration loaded.
+   */
+  bool isLoaded() => _loaded;
 
   /**
    * If [req] status is 200 OK then parse the [req] responseText as JSON and set
@@ -183,34 +187,4 @@ class _Configuration {
       return defaultValue;
     }
   }
-}
-
-/**
- * Check if [configuration] has been properly initialized with data.
- * Completes when [configuration.loaded] is true.
- */
-Future<bool> fetchConfig() {
-  final Completer completer  = new Completer();
-  int             count      = 0;
-  final Duration  repeatTime = new Duration(seconds: 1);
-  final Duration  maxWait    = new Duration(seconds: 5);
-
-  if (configuration.loaded) {
-    completer.complete(true);
-  } else {
-    new Timer.periodic(repeatTime, (timer) {
-      count += 1;
-      if (configuration.loaded) {
-        timer.cancel();
-        completer.complete(true);
-      }
-
-      if (count >= maxWait.inSeconds/repeatTime.inSeconds) {
-       timer.cancel();
-       completer.completeError(new TimeoutException('Fetch config timeout ${CONFIGURATION_URL}'));
-     }
-    });
-  }
-
-  return completer.future;
 }
