@@ -13,8 +13,6 @@
 
 part of model;
 
-final MiniboxList nullMiniboxList = new MiniboxList._null();
-
 /**
  * A list of [MiniboxListItem] objects.
  */
@@ -28,13 +26,13 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
    * the contents of json[key].
    */
   factory MiniboxList.fromJson(Map json, String key) {
-    MiniboxList miniboxList = nullMiniboxList;
+    MiniboxList miniboxList = new MiniboxList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.MiniboxList.fromJson ${key} - ${json[key]}');
-      miniboxList = new MiniboxList._internal(json[key]);
+      log.debug('model.MiniboxList.fromJson key: ${key} list: ${json[key]}');
+      miniboxList = new MiniboxList._fromList(json[key]);
     } else {
-      log.critical('model.MiniboxList.fromJson bad data. Key: ${key}, Map: ${json}');
+      log.critical('model.MiniboxList.fromJson bad data key: ${key} map: ${json}');
     }
 
     return miniboxList;
@@ -43,13 +41,13 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
   /**
    * [MiniboxList] internal constructor.
    */
-  MiniboxList._internal(List list) {
+  MiniboxList._fromList(List<Map> list) {
     list.forEach((item) => _list.add(new MiniboxListItem.fromJson(item)));
     _list.sort();
   }
 
   /**
-   * [MiniboxList] null constructor.
+   * [MiniboxList] constructor.
    */
-  MiniboxList._null();
+  MiniboxList();
 }

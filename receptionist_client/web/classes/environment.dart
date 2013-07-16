@@ -27,7 +27,7 @@ import 'model.dart' as model;
 @observable model.CallList         callQueue        = new model.CallList();
 @observable model.Contact          contact          = model.nullContact;
 @observable model.Organization     organization     = model.nullOrganization;
-@observable model.OrganizationList organizationList = model.nullOrganizationList;
+@observable model.OrganizationList organizationList = new model.OrganizationList();
 
 final _ContextList  contextList  = new _ContextList();
 

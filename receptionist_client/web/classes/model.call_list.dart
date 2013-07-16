@@ -34,10 +34,10 @@ class CallList extends IterableBase<Call>{
     CallList callList = new CallList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.CallList.fromJson ${key} - ${json[key]}');
+      log.debug('model.CallList.fromJson key: ${key} list: ${json[key]}');
       callList = new CallList._fromList(json[key]);
     } else {
-      log.critical('model.CallList.fromJson bad data. Key: ${key}, Map: ${json}');
+      log.critical('model.CallList.fromJson bad data key: ${key} map: ${json}');
     }
 
     return callList;
@@ -46,7 +46,7 @@ class CallList extends IterableBase<Call>{
   /**
    * [CallList] Constructor.
    */
-  CallList._fromList(List list) {
+  CallList._fromList(List<Map> list) {
     list.forEach((item) => _list.add(new Call.fromJson(item)));
     _list.sort();
 

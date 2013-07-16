@@ -13,8 +13,6 @@
 
 part of model;
 
-final ContactList nullContactList = new ContactList._null();
-
 /**
  * A list of [Contact] objects.
  */
@@ -25,36 +23,36 @@ class ContactList extends IterableBase<Contact>{
   Iterator<Contact> get iterator => _list.iterator;
 
   /**
+   * [ContactList] constructor.
+   */
+  ContactList();
+
+  /**
    * [ContactList] constructor. Builds a list of [Contact] objects from the
    * contents of json[key].
    */
   factory ContactList.fromJson(Map json, String key) {
-    ContactList contactList = nullContactList;
+    ContactList contactList = new ContactList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.ContactList.fromJson ${key} - ${json[key]}');
-      contactList = new ContactList._internal(json[key]);
+      log.debug('model.ContactList.fromJson key: ${key} list: ${json[key]}');
+      contactList = new ContactList._fromList(json[key]);
     } else {
-      log.critical('model.ContactList.fromJson bad data. Key: ${key}, Map: ${json}');
+      log.critical('model.ContactList.fromJson bad data key: ${key} map: ${json}');
     }
 
     return contactList;
   }
 
   /**
-   * [ContactList] internal constructor.
+   * [ContactList] from list constructor.
    */
-  ContactList._internal(List list) {
+  ContactList._fromList(List<Map> list) {
     list.forEach((item) => _list.add(new Contact.fromJson(item)));
     _list.sort();
 
     log.debug('ContactList._internal build ContactList from ${list}');
   }
-
-  /**
-   * [ContactList] null constructor.
-   */
-  ContactList._null();
 
   /**
    * Return the [id] [Contact] or [nullContact] if [id] does not exist.

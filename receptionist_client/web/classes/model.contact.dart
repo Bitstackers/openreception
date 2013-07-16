@@ -19,11 +19,11 @@ final Contact nullContact = new Contact._null();
  * A [Contact] object. Sorting contacts is done based on [name].
  */
 class Contact implements Comparable{
-  MiniboxList       _backupList          = nullMiniboxList;
-  CalendarEventList _calendarEventList   = nullCalendarEventList;
+  MiniboxList       _backupList          = new MiniboxList();
+  CalendarEventList _calendarEventList   = new CalendarEventList();
   String            department           = '';
-  MiniboxList       _emailAddressList    = nullMiniboxList;
-  MiniboxList       _handlingList        = nullMiniboxList;
+  MiniboxList       _emailAddressList    = new MiniboxList();
+  MiniboxList       _handlingList        = new MiniboxList();
   int               id;
   String            info                 = '';
   bool              isHuman;
@@ -31,15 +31,15 @@ class Contact implements Comparable{
   String            position             = '';
   String            relations            = '';
   String            responsibility       = '';
-  MiniboxList       _telephoneNumberList = nullMiniboxList;
-  MiniboxList       _workHoursList       = nullMiniboxList;
+  MiniboxList       _telephoneNumberList = new MiniboxList();
+  MiniboxList       _workHoursList       = new MiniboxList();
 
-  MiniboxList       get backupList => _backupList;
-  CalendarEventList get calendarEventList => _calendarEventList;
-  MiniboxList       get emailAddressList => _emailAddressList;
-  MiniboxList       get handlingList => _handlingList;
+  MiniboxList       get backupList          => _backupList;
+  CalendarEventList get calendarEventList   => _calendarEventList;
+  MiniboxList       get emailAddressList    => _emailAddressList;
+  MiniboxList       get handlingList        => _handlingList;
   MiniboxList       get telephoneNumberList => _telephoneNumberList;
-  MiniboxList       get workHoursList => _workHoursList;
+  MiniboxList       get workHoursList       => _workHoursList;
 
   /**
    * [Contact] constructor. Expects a map in the following format:

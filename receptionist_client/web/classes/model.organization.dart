@@ -65,22 +65,22 @@ class BasicOrganization implements Comparable{
  * An [Organization]. Sorting organizations is done based on [name].
  */
 class Organization extends BasicOrganization{
-  MiniboxList       _addressList            = nullMiniboxList;
-  MiniboxList       _alternateNameList      = nullMiniboxList;
-  MiniboxList       _bankingInformationList = nullMiniboxList;
-  CalendarEventList _calendarEventList      = nullCalendarEventList;
-  ContactList       _contactList            = nullContactList;
+  MiniboxList       _addressList            = new MiniboxList();
+  MiniboxList       _alternateNameList      = new MiniboxList();
+  MiniboxList       _bankingInformationList = new MiniboxList();
+  CalendarEventList _calendarEventList      = new CalendarEventList();
+  ContactList       _contactList            = new ContactList();
   String            _customerType           = '';
-  MiniboxList       _crapcallHandlingList   = nullMiniboxList;
-  MiniboxList       _emailAddressList       = nullMiniboxList;
+  MiniboxList       _crapcallHandlingList   = new MiniboxList();
+  MiniboxList       _emailAddressList       = new MiniboxList();
   String            _greeting               = '';
-  MiniboxList       _handlingList           = nullMiniboxList;
-  MiniboxList       _openingHoursList       = nullMiniboxList;
+  MiniboxList       _handlingList           = new MiniboxList();
+  MiniboxList       _openingHoursList       = new MiniboxList();
   String            _other                  = '';
   String            _product                = '';
-  MiniboxList       _registrationNumberList = nullMiniboxList;
-  MiniboxList       _telephoneNumberList    = nullMiniboxList;
-  MiniboxList       _websiteList            = nullMiniboxList;
+  MiniboxList       _registrationNumberList = new MiniboxList();
+  MiniboxList       _telephoneNumberList    = new MiniboxList();
+  MiniboxList       _websiteList            = new MiniboxList();
 
   MiniboxList       get addressList            => _addressList;
   MiniboxList       get alternateNameList      => _alternateNameList;

@@ -13,8 +13,6 @@
 
 part of model;
 
-final OrganizationList nullOrganizationList = new OrganizationList._null();
-
 /**
  * A list of [BasicOrganization] objects.
  */
@@ -24,32 +22,32 @@ class OrganizationList extends IterableBase<BasicOrganization>{
   Iterator<BasicOrganization> get iterator => _list.iterator;
 
   /**
+   * [OrganizationList] constructor.
+   */
+  OrganizationList();
+
+  /**
    * [OrganizationList] constructor. Builds a list of [BasicOrganization] objects
    * from the contents of json[key].
    */
   factory OrganizationList.fromJson(Map json, String key) {
-    OrganizationList organizationList = nullOrganizationList;
+    OrganizationList organizationList = new OrganizationList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.OrganizationList.fromJson ${key} - ${json[key]}');
-      organizationList = new OrganizationList._internal(json[key]);
+      log.debug('model.OrganizationList.fromJson key: ${key} list: ${json[key]}');
+      organizationList = new OrganizationList._fromList(json[key]);
     } else {
-      log.critical('model.OrganizationList.fromJson bad data. Key: ${key}, Map: ${json}');
+      log.critical('model.OrganizationList.fromJson bad data key: ${key} map: ${json}');
     }
 
     return organizationList;
   }
 
   /**
-   * [OrganizationList] internal constructor.
+   * [OrganizationList] from list constructor.
    */
-  OrganizationList._internal(List list) {
+  OrganizationList._fromList(List<Map> list) {
     list.forEach((item) => _list.add(new BasicOrganization.fromJson(item)));
     _list.sort();
   }
-
-  /**
-   * [OrganizationList] null constructor.
-   */
-  OrganizationList._null();
 }
