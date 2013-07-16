@@ -122,15 +122,27 @@
         .send-message-recipient-container {
           position: absolute;
           top: 63%;
-          left: 45%;
-          height: 26%;
-          width: 55%;
+          left: 48%;
+          height: 36%;
+          width: 52%;
         }
 
         .send-message-recipient-list {
           height: 100%;
           width: 100%;
           border: solid 1px red;
+        }
+
+        .send-message-recipient-list ul {
+          height: 80%;
+          list-style-type: none;
+          border: solid 1px blue;
+          overflow: auto;
+        }
+
+        .send-message-recipient-select {
+          height: 20%;
+          border: solid 1px green;
         }
 
         .send-message-button-container {
@@ -202,14 +214,14 @@
                   </span>
 
                   <div name="boxcontent" class="minibox send-message-recipient-list">
-                    <span style="font-weight: bold">{{contactList.first}}</span>
-                    <ul>
-                      <template iterate="value in contactList.skip(1)">
-                        <li style="padding: 5px;">
-                          {{value}}
-                        </li>
-                      </template>
+                    <ul template iterate="value in contactList">
+                      <li style="padding: 5px;">
+                        {{value}}
+                      </li>
                     </ul>
+                    <div  class="send-message-recipient-select">
+                      select more recipient
+                    </div>
                   </div>
                 </box-with-header>
               </div>
