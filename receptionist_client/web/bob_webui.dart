@@ -16,8 +16,12 @@
  */
 import 'dart:async';
 
+import 'package:web_ui/web_ui.dart';
+
 import 'classes/configuration.dart';
 import 'classes/logger.dart';
+
+@observable bool bobReady = false;
 
 /**
  * Get Bob going as soon as the configuration is loaded.
@@ -25,6 +29,10 @@ import 'classes/logger.dart';
 void main() {
   fetchConfig().then((_) {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);
+    log.debug('Stand back, Bob is about to start.');
+    log.debug('Here he comes....');
+    log.debug('Ladies and gentlemen, please join me in a warm round of applause for Bob!!!');
+    log.debug('---------------------------------------------------------');
+    bobReady = true;
   }).catchError((error) => log.critical('Bob main exception: ${error}'));
-
 }

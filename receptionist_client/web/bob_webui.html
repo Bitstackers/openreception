@@ -9,7 +9,14 @@
   </head>
   <body>
     <div id="curtains"><!-- We hide stuff behind these curtains --></div>
-    <bob-app id="rootview"></bob-app>
+
+    <template instantiate="if !bobReady">
+      <h1>Loading application....</h1>
+    </template>
+
+    <template instantiate="if bobReady">
+      <bob-app id="rootview"></bob-app>
+    </template>
 
     <script type="application/dart" src="bob_webui.dart"></script>
     <script src="packages/browser/dart.js"></script>
