@@ -20,7 +20,7 @@ import '../classes/configuration.dart';
 import '../classes/logger.dart';
 
 class LogBox extends WebComponent {
-  List<LogRecord> messages = toObservable(<LogRecord>[]);
+  List<LogRecord> messages = toObservable(new List<LogRecord>());
 
   void created() {
     log.userLogStream.listen((LogRecord record) {

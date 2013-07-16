@@ -26,7 +26,7 @@ Future<Response> getOrganization(int id) {
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/organization';
   HttpRequest        request;
   String             url;
@@ -75,7 +75,7 @@ Future<Response> getOrganizationList({String view: MINI}){
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/organization/list';
   HttpRequest        request;
   String             url;
