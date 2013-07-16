@@ -16,41 +16,88 @@ part of model;
 final Organization nullOrganization = new Organization._null();
 
 /**
+ * A [BasicOrganization] does only contains [id], [name] and [uri].
+ */
+class BasicOrganization implements Comparable{
+  int    _id   = -1;
+  String _name = '';
+  String _uri  = '';
+
+  int    get id   => _id;
+  String get name => _name;
+  String get uri  => _uri;
+
+  /**
+   * [BasicOrganization] constructor. Expects a map in the following format:
+   *
+   *  {
+   *    "full_name": String,
+   *    "organization_id": int,
+   *    "uri": String
+   *  }
+   *
+   * TODO Obviously the above map format should be in the docs/wiki, as it is
+   * also highly relevant to Alice.
+   */
+  BasicOrganization.fromJson(Map json) {
+    _id   = json['organization_id'];
+    _name = json['full_name'];
+    _uri  = json['uri'];
+  }
+
+  /**
+   * [BasicOrganization] null constructor.
+   */
+  BasicOrganization._null();
+
+  /**
+   * Enables a [BasicOrganization] to sort itself based on its [name].
+   */
+  int compareTo(BasicOrganization other) => name.compareTo(other.name);
+
+  /**
+   * [Organization] as String, for debug/log purposes.
+   */
+  String toString() => '${name}-${id}';
+}
+
+/**
  * An [Organization]. Sorting organizations is done based on [name].
  */
-class Organization implements Comparable{
-  MiniboxList _addressList              = nullMiniboxList;
-  MiniboxList _alternateNameList        = nullMiniboxList;
-  MiniboxList _bankingInformationList   = nullMiniboxList;
-  ContactList _contactList              = nullContactList;
-  CalendarEventList _calendarEventList  = nullCalendarEventList;
-  MiniboxList _crapcallHandlingList     = nullMiniboxList;
-  MiniboxList _emailAddressList         = nullMiniboxList;
-  MiniboxList _handlingList             = nullMiniboxList;
-  MiniboxList _openingHoursList         = nullMiniboxList;
-  MiniboxList _registrationNumberList   = nullMiniboxList;
-  MiniboxList _telephoneNumberList      = nullMiniboxList;
-  MiniboxList _websiteList              = nullMiniboxList;
+class Organization extends BasicOrganization{
+  MiniboxList       _addressList            = nullMiniboxList;
+  MiniboxList       _alternateNameList      = nullMiniboxList;
+  MiniboxList       _bankingInformationList = nullMiniboxList;
+  CalendarEventList _calendarEventList      = nullCalendarEventList;
+  ContactList       _contactList            = nullContactList;
+  String            _customerType           = '';
+  MiniboxList       _crapcallHandlingList   = nullMiniboxList;
+  MiniboxList       _emailAddressList       = nullMiniboxList;
+  String            _greeting               = '';
+  MiniboxList       _handlingList           = nullMiniboxList;
+  MiniboxList       _openingHoursList       = nullMiniboxList;
+  String            _other                  = '';
+  String            _product                = '';
+  MiniboxList       _registrationNumberList = nullMiniboxList;
+  MiniboxList       _telephoneNumberList    = nullMiniboxList;
+  MiniboxList       _websiteList            = nullMiniboxList;
 
-  String customerType = '';
-  String greeting = '';
-  int id = -1;
-  String name = '';
-  String other = '';
-  String product = '';
-
-  MiniboxList       get addressList => _addressList;
-  MiniboxList       get alternateNameList => _alternateNameList;
+  MiniboxList       get addressList            => _addressList;
+  MiniboxList       get alternateNameList      => _alternateNameList;
   MiniboxList       get bankingInformationList => _bankingInformationList;
-  ContactList       get contactList => _contactList;
-  CalendarEventList get calendarEventList => _calendarEventList;
-  MiniboxList       get crapcallHandlingList => _crapcallHandlingList;
-  MiniboxList       get emailAddressList => _emailAddressList;
-  MiniboxList       get handlingList => _handlingList;
-  MiniboxList       get openingHoursList => _openingHoursList;
+  ContactList       get contactList            => _contactList;
+  CalendarEventList get calendarEventList      => _calendarEventList;
+  MiniboxList       get crapcallHandlingList   => _crapcallHandlingList;
+  String            get customerType           => _customerType;
+  MiniboxList       get emailAddressList       => _emailAddressList;
+  String            get greeting               => _greeting;
+  MiniboxList       get handlingList           => _handlingList;
+  MiniboxList       get openingHoursList       => _openingHoursList;
+  String            get other                  => _other;
+  String            get product                => _product;
   MiniboxList       get registrationNumberList => _registrationNumberList;
-  MiniboxList       get telephoneNumberList => _telephoneNumberList;
-  MiniboxList       get websiteList => _websiteList;
+  MiniboxList       get telephoneNumberList    => _telephoneNumberList;
+  MiniboxList       get websiteList            => _websiteList;
 
   /**
    * [Organization] constructor. Expects a map in the following format:
@@ -85,25 +132,22 @@ class Organization implements Comparable{
    * TODO Obviously the above map format should be in the docs/wiki, as it is
    * also highly relevant to Alice.
    */
-  Organization.fromJson(Map json) {
+  Organization.fromJson(Map json) : super.fromJson(json) {
     _addressList            = new MiniboxList.fromJson(json, 'addresses');
     _alternateNameList      = new MiniboxList.fromJson(json, 'alternatenames');
     _bankingInformationList = new MiniboxList.fromJson(json, 'bankinginformation');
     _contactList            = new ContactList.fromJson(json, 'contacts');
     _crapcallHandlingList   = new MiniboxList.fromJson(json, 'crapcallhandling');
+    _customerType           = json['customertype'];
     _emailAddressList       = new MiniboxList.fromJson(json, 'emailaddresses');
+    _greeting               = json['greeting'];
     _handlingList           = new MiniboxList.fromJson(json, 'handlings');
     _openingHoursList       = new MiniboxList.fromJson(json, 'openinghours');
+    _other                  = json['other'];
+    _product                = json['product'];
     _registrationNumberList = new MiniboxList.fromJson(json, 'registrationnumbers');
     _telephoneNumberList    = new MiniboxList.fromJson(json, 'telephonenumbers');
     _websiteList            = new MiniboxList.fromJson(json, 'websites');
-
-    customerType = json['customertype'];
-    greeting     = json['greeting'];
-    id           = json['organization_id'];
-    name         = json['full_name'];
-    other        = json['other'];
-    product      = json['product'];
 
     // Adding some dummy calendar events
     Map foo = new Map();
@@ -117,15 +161,5 @@ class Organization implements Comparable{
   /**
    * [Organization] null constructor.
    */
-  Organization._null();
-
-  /**
-   * Enables an [Organization] to sort itself compared to other organizations.
-   */
-  int compareTo(Organization other) => name.compareTo(other.name);
-
-  /**
-   * [Organization] as String, for debug/log purposes.
-   */
-  String toString() => '${name}-${id}';
+  Organization._null() : super._null();
 }

@@ -19,7 +19,7 @@ final MiniboxList nullMiniboxList = new MiniboxList._null();
  * A list of [MiniboxListItem] objects.
  */
 class MiniboxList extends IterableBase<MiniboxListItem>{
-  List<MiniboxListItem> _list = <MiniboxListItem>[];
+  List<MiniboxListItem> _list = new List<MiniboxListItem>();
 
   Iterator<MiniboxListItem> get iterator => _list.iterator;
 
@@ -28,13 +28,13 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
    * the contents of json[key].
    */
   factory MiniboxList.fromJson(Map json, String key) {
-    MiniboxList miniboxList;
+    MiniboxList miniboxList = nullMiniboxList;
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('MiniboxList.fromJson ${key} - ${json[key]}');
+      log.debug('model.MiniboxList.fromJson ${key} - ${json[key]}');
       miniboxList = new MiniboxList._internal(json[key]);
     } else {
-      miniboxList = nullMiniboxList;
+      log.critical('model.MiniboxList.fromJson bad data. Key: ${key}, Map: ${json}');
     }
 
     return miniboxList;

@@ -24,6 +24,7 @@ import 'model.dart' as model;
 
 @observable String                 activeWidget     = '';
 @observable model.Call             call             = model.nullCall;
+@observable model.CallList         callQueue        = new model.CallList();
 @observable model.Contact          contact          = model.nullContact;
 @observable model.Organization     organization     = model.nullOrganization;
 @observable model.OrganizationList organizationList = model.nullOrganizationList;
@@ -34,7 +35,7 @@ final _ContextList  contextList  = new _ContextList();
  * A list of the application contexts.
  */
 class _ContextList extends IterableBase<Context> {
-  List<Context>        _list = toObservable(<Context>[]);
+  List<Context>        _list = toObservable(new List<Context>());
   Map<String, Context> _map  = new Map<String, Context>();
 
   Iterator<Context> get iterator => _list.iterator;

@@ -56,13 +56,13 @@ class _Notification {
    * Handles non-persistent notifications.
    */
   void _nonPersistentNotification(Map json) {
-    log.info('nonpersistent');
+    log.debug('nonpersistent');
 
     if (!json.containsKey('event')) {
       log.critical('nonPersistensNotification did not have a event field.');
     }
-    var eventName = json['event'];
-    log.info('notification with event: ${eventName}');
+    String eventName = json['event'];
+    log.debug('notification with event: ${eventName}');
 
     if (_Streams.containsKey(eventName)) {
       _Streams[eventName].sink.add(json);
@@ -77,13 +77,13 @@ class _Notification {
    * their persistence status.
    */
   void _onMessage(Map json) {
-    log.debug(json.toString());
+    log.debug('notification._onMessage ${json}');
 
     if (!json.containsKey('notification')) {
       log.critical('does not contains notification');
       return;
     }
-    var notificationMap = json['notification'];
+    Map notificationMap = json['notification'];
 
     if (!notificationMap.containsKey('persistent')) {
       log.critical('does not contains persistent');
@@ -108,8 +108,10 @@ class _Notification {
    * Register event listeners.
    */
   void _registerEventListeners() {
-    callHangup.listen((json) => _callHangupEventHandler(json));
-    callPickup.listen((json) => _callPickupEventHandler(json));
+    callHangup.listen((Map json) => _callHangupEventHandler(json));
+    callPickup.listen((Map json) => _callPickupEventHandler(json));
+    queueJoin.listen((Map json) => _queueJoinEventHandler(json));
+    queueLeave.listen((Map json) => _queueLeaveEventHandler(json));
   }
 }
 
@@ -166,4 +168,23 @@ void _callPickupEventHandler(Map json) {
   }
 
   log.info('notification._callPickupEventHandler call ${call} assigned to agent ${call.assignedAgent}', toUserLog: true);
+}
+
+/**
+ * Handles queue_join events.
+ */
+void _queueJoinEventHandler(Map json) {
+  log.debug('notification._queueJoinEventHandler event: ${json}');
+  environment.callQueue.addCall(new model.Call.fromJson(json['call']));
+  // Should we sort again, or can we expect that calls joining the queue are
+  // always younger then the calls already in the queue?
+}
+
+/**
+ * Handles queue_leave events.
+ */
+void _queueLeaveEventHandler(Map json) {
+  log.debug('notification._queueLeaveEventHandler event: ${json}');
+  final model.Call call = new model.Call.fromJson(json['call']);
+  environment.callQueue.removeCall(call);
 }

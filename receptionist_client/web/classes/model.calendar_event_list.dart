@@ -19,7 +19,7 @@ final CalendarEventList nullCalendarEventList = new CalendarEventList._null();
  * A list of [CalendarEvent] objects.
  */
 class CalendarEventList extends IterableBase<CalendarEvent>{
-  List<CalendarEvent> _list = <CalendarEvent>[];
+  List<CalendarEvent> _list = new List<CalendarEvent>();
 
   Iterator<CalendarEvent> get iterator => _list.iterator;
 
@@ -28,12 +28,13 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
    * from the contents of json[key].
    */
   factory CalendarEventList.fromJson(Map json, String key) {
-    CalendarEventList calendarEventList;
+    CalendarEventList calendarEventList = nullCalendarEventList;
 
-    if (json.containsKey(key)) {
+    if (json.containsKey(key) && json[key] is List) {
+      log.debug('model.CalendarEventList.fromJson ${key} - ${json[key]}');
       calendarEventList = new CalendarEventList._internal(json[key]);
     } else {
-      calendarEventList = nullCalendarEventList;
+      log.critical('model.CalendarEventList.fromJson bad data. Key: ${key}, Map: ${json}');
     }
 
     return calendarEventList;
