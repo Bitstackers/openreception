@@ -16,6 +16,7 @@ import 'dart:html';
 import 'package:intl/intl.dart';
 import 'package:web_ui/web_ui.dart';
 
+import '../classes/configuration.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
@@ -23,8 +24,6 @@ import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 class LocalQueue extends WebComponent {
-  List<model.Call> calls = toObservable(<model.Call>[]);
-
   String title = 'Lokal kø';
 
   void created() {
@@ -32,40 +31,22 @@ class LocalQueue extends WebComponent {
   }
 
   void _initialFill() {
-    // dummy calls
-    //calls.add(new model.Call.fromJson({'id':'43','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now())}'}));
-    //calls.add(new model.Call.fromJson({'id':'42','arrival_time':'${new DateFormat("y-MM-dd kk:mm:ss").format(new DateTime.now().subtract(new Duration(seconds:27)))}'}));
-    calls.add(new model.Call.fromJson({'id':'43','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch/1000).toInt()}'}));
-    calls.add(new model.Call.fromJson({'id':'42','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:27)).millisecondsSinceEpoch/1000).toInt()}'}));
+    protocol.callLocalList(configuration.agentID).then((protocol.Response response) {
+      switch(response.status){
+        case protocol.Response.OK:
+          Map callsjson = response.data;
+          environment.localCallQueue = new model.CallList.fromJson(callsjson, 'calls');
 
-    calls.sort();
+          log.debug('LocalQueue._initialFill updated environment.localCallQueue');
+          break;
 
-    notify.notification.callPark.listen((json) => _callParkEventHandler(json));
-    notify.notification.queueLeave.listen((json) => _queueLeaveEventHandler(json));
-  }
-
-
-  /**
-   * Sends the parked call to the localqueue.
-   */
-  void _callParkEventHandler(Map json){
-    model.Call call = new model.Call.fromJson(json['call']);
-
-    calls.add(call);
-  }
-
-  /**
-   * If a call from the local queue leaves.
-   */
-  void _queueLeaveEventHandler(Map json){
-    log.debug('localqueue._queueLeaveEventHandler ${json}');
-    var call = new model.Call.fromJson(json['call']);
-    //Find the call and removes it from the calls list.
-    for (var c in calls) {
-      if (c.id == call.id) {
-        calls.remove(c);
-        break;
+        default:
+          environment.localCallQueue = new model.CallList();
+          log.debug('LocalQueue._initialFill updated environment.localCallQueue with empty list');
       }
-    }
+    }).catchError((error) {
+      environment.localCallQueue = new model.CallList();
+      log.critical('LocalQueue._initialFill protocol.callLocalList failed with ${error}');
+    });
   }
 }

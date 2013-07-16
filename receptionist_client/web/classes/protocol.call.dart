@@ -91,13 +91,49 @@ Future<Response> callQueue(){
   return completer.future;
 }
 
+Future<Response> callLocalList(String agentId){
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer    completer = new Completer<Response>();
+  final List<String> fragments = new List<String>();
+  final String       path      = '/call/localList';
+  HttpRequest        request;
+  String             url;
+
+  fragments.add('agent_id=${agentId}');
+  url = _buildUrl(base, path, fragments);
+
+//Dummy Data
+  Map data = {};
+  List calls = new List();
+  calls.add({'id':'42','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch/1000).toInt()}'});
+  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 23)).millisecondsSinceEpoch/1000).toInt()}'});
+  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 28)).millisecondsSinceEpoch/1000).toInt()}'});
+  data['calls'] = calls;
+
+  request = new HttpRequest()
+  ..open(POST, url)
+    ..onLoad.listen((_) {
+      completer.complete(new Response(Response.OK, data));
+    })
+    ..onError.listen((e) {
+      //_logError(request, url);
+      //completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+      //TODO Still in testing, make the interface in Alice.
+      completer.complete(new Response(Response.OK, data));
+    })
+    ..send();
+
+  return completer.future;
+}
+
 /**
  * Hangup [call].
  */
 Future<Response> hangupCall(model.Call call){
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/call/hangup';
   HttpRequest        request;
   String             url;
@@ -142,7 +178,7 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/call/originate';
   HttpRequest        request;
   String             url;
@@ -195,7 +231,7 @@ Future<Response> parkCall(model.Call call){
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/call/park';
   HttpRequest        request;
   String             url;
@@ -240,14 +276,14 @@ Future<Response> pickupCall(String agentId, {model.Call call}){
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path = '/call/pickup';
   HttpRequest        request;
   String             url;
 
   fragments.add('agent_id=${agentId}');
 
-  if (call != null && !call.id != null) {
+  if (call != null && call.id != null) {
     fragments.add('call_id=${call.id}');
   }
 
@@ -289,7 +325,7 @@ Future<Response> statusCall(model.Call call){
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/call/state';
   HttpRequest        request;
   String             url;
@@ -332,7 +368,7 @@ Future<Response> transferCall(model.Call call){
 
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
+  final List<String> fragments = new List<String>();
   final String       path      = '/call/transfer';
   HttpRequest        request;
   String             url;

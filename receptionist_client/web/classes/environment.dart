@@ -25,6 +25,7 @@ import 'model.dart' as model;
 @observable String                 activeWidget     = '';
 @observable model.Call             call             = model.nullCall;
 @observable model.CallList         callQueue        = new model.CallList();
+@observable model.CallList         localCallQueue   = new model.CallList();
 @observable model.Contact          contact          = model.nullContact;
 @observable model.Organization     organization     = model.nullOrganization;
 @observable model.OrganizationList organizationList = new model.OrganizationList();

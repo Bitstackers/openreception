@@ -40,7 +40,7 @@
           </span>
 
           <div name="boxcontent" class="local-queue-container">
-            <ul template iterate="call in calls" class="local-queue-zebra">
+            <ul template iterate="call in environment.localCallQueue" class="local-queue-zebra">
               <call-queue-item call="{{call}}"></call-queue-item>
             </ul>
           </div>

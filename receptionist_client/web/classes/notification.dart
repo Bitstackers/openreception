@@ -66,7 +66,7 @@ class _Notification {
 
     if (_Streams.containsKey(eventName)) {
       _Streams[eventName].sink.add(json);
-    }else{
+    } else {
       log.error('Unhandled event: ${eventName}');
       log.debug(json.toString());
     }
@@ -92,7 +92,7 @@ class _Notification {
 
     if (parseBool(notificationMap['persistent'])) {
       _persistentNotification(notificationMap);
-    }else{
+    } else {
       _nonPersistentNotification(notificationMap);
     }
   }
@@ -112,6 +112,7 @@ class _Notification {
     callPickup.listen((Map json) => _callPickupEventHandler(json));
     queueJoin.listen((Map json) => _queueJoinEventHandler(json));
     queueLeave.listen((Map json) => _queueLeaveEventHandler(json));
+    callPark.listen((Map json) => _callParkEventHandler(json));
   }
 }
 
@@ -187,4 +188,14 @@ void _queueLeaveEventHandler(Map json) {
   log.debug('notification._queueLeaveEventHandler event: ${json}');
   final model.Call call = new model.Call.fromJson(json['call']);
   environment.callQueue.removeCall(call);
+  environment.localCallQueue.removeCall(call);
+}
+
+/**
+ * Sends the parked call to the localqueue.
+ */
+void _callParkEventHandler(Map json){
+  model.Call call = new model.Call.fromJson(json['call']);
+
+  environment.localCallQueue.addCall(call);
 }
