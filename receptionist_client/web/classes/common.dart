@@ -29,6 +29,10 @@ class TimeoutException implements Exception {
 
 typedef bool boolFunc ();
 
+/**
+ * Repeats asking [check] every [repeatTime], at a maximum of [maxRepeat] times, if not [maxRepeat] is zero.
+ * If [maxRepeat] is exceded then a [TimeoutException] is raised with [timeoutMessage].
+ */
 Future<bool> repeatCheck(boolFunc check, int maxRepeat, Duration repeatTime, {String timeoutMessage}) {
   assert(maxRepeat != null);
   assert(maxRepeat >= 0);
@@ -47,7 +51,7 @@ Future<bool> repeatCheck(boolFunc check, int maxRepeat, Duration repeatTime, {St
       if (check()) {
         timer.cancel();
         completer.complete(true);
-      } else if (count > maxRepeat) {
+      } else if (count > maxRepeat && maxRepeat != 0) {
         timer.cancel();
         completer.completeError(new TimeoutException(timeoutMessage));
       }

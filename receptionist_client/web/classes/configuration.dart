@@ -22,6 +22,7 @@ import 'package:web_ui/web_ui.dart';
 
 import 'common.dart';
 import 'logger.dart';
+import 'state.dart';
 
 const String CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
 
@@ -60,9 +61,19 @@ class _Configuration {
    * [CONFIGURATION_URL]. Logs a critical error if the request fails.
    */
   _Configuration() {
-    HttpRequest.request(CONFIGURATION_URL)
-      .then(_onComplete)
-      .catchError((error) => log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}'));
+    fetch();
+  }
+
+  void fetch(){
+    if(!isLoaded()){
+      HttpRequest.request(CONFIGURATION_URL)
+        .then(_onComplete)
+        .catchError((error) {
+          log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
+          state.update('configuration', State.ERROR);
+          new Timer(new Duration(seconds:5),() => fetch());
+        });
+    }
   }
 
   /**
@@ -79,10 +90,12 @@ class _Configuration {
       case 200:
         _parseConfiguration(json.parse(req.responseText));
         _loaded = true;
+        state.update('configuration', State.OK);
         break;
 
       default:
         log.critical('_Configuration._onComplete failed ${CONFIGURATION_URL}-${req.status}-${req.statusText}');
+        state.update('configuration', State.ERROR);
     }
   }
 

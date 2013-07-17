@@ -23,6 +23,7 @@ import 'common.dart';
 import 'configuration.dart';
 import 'protocol.dart' as protocol;
 import 'socket.dart' as socket;
+import 'state.dart';
 
 final Log log = new Log._internal();
 
@@ -118,8 +119,8 @@ class Log {
    * Registers event listeners.
    */
   _registerEventListeners() {
-    socket.connectedToAlice.listen((bool status) {
-      if (!status && !_logStream.isPaused){
+    state.stream.listen((int state){
+      if (state != State.OK && !_logStream.isPaused){
         _logStream.pause();
       } else {
         _logStream.resume();

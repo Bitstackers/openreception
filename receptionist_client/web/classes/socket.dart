@@ -21,9 +21,7 @@ import 'common.dart';
 import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'logger.dart';
-
-final StreamController<bool> _connectedToAlice = new StreamController<bool>.broadcast();
-Stream<bool> get connectedToAlice => _connectedToAlice.stream;
+import 'state.dart';
 
 /**
  * The Socket singleton handles the WebSocket connection to Alice.
@@ -31,7 +29,6 @@ Stream<bool> get connectedToAlice => _connectedToAlice.stream;
 class Socket {
   WebSocket             _channel;
   static Socket         _instance;
-  bool                  _intendedClose      = false;
   StreamController<Map> _messageStream      = new StreamController<Map>.broadcast();
   bool                  _reconnectScheduled = false;
   Duration              _reconnectInterval  = configuration.notificationSocketReconnectInterval;
@@ -86,9 +83,8 @@ class Socket {
    * WebSocket is connected.
    */
   void _onOpen(Event event) {
-    log.debug('Socket onOPEN readystate is: ${_channel.readyState} is that open? ${_channel.readyState == WebSocket.OPEN}');
-    environment.bobReady = 1;
-    _connectedToAlice.sink.add(true);
+    log.debug('socket,_onOpen Open');
+    state.update('socket', State.OK);
   }
 
   /**
@@ -96,10 +92,9 @@ class Socket {
    * WebSocket disconnects and then try to reconnect.
    */
   void _onError (Event event) {
-    if(!_intendedClose) {
+    if(!state.scheduledShutdown) {
       log.error('Socket._onError ${event}');
-      environment.bobReady = -1;
-      _connectedToAlice.sink.add(false);
+      state.update('socket', State.ERROR);
       _reconnect();
     }
   }
@@ -136,7 +131,7 @@ class Socket {
    */
   _registerEventListeners() {
     window.onUnload.listen((_) {
-      _intendedClose = true;
+      state.scheduleShutdown();
       _channel.close();
     });
   }

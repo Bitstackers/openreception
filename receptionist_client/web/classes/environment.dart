@@ -21,9 +21,9 @@ import 'package:web_ui/web_ui.dart';
 import 'context.dart';
 import 'logger.dart';
 import 'model.dart' as model;
+import 'state.dart';
 
 @observable String                 activeWidget     = '';
-@observable int                    bobReady         = 0;
 @observable model.Call             call             = model.nullCall;
 @observable model.CallList         callQueue        = new model.CallList();
 @observable model.CallList         localCallQueue   = new model.CallList();
@@ -45,7 +45,14 @@ class _ContextList extends IterableBase<Context> {
   /**
    * _ContextList constructor.
    */
-  _ContextList();
+  _ContextList() {
+     state.stream.listen((int status){
+       if (status == State.ERROR){
+         _list = toObservable(new List<Context>());
+         _map  = new Map<String, Context>();
+       }
+     });
+  }
 
   /**
    * Add [context] to the [_ContextList].

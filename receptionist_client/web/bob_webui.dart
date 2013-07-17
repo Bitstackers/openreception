@@ -24,17 +24,16 @@ import 'classes/environment.dart' as environment;
 import 'classes/logger.dart';
 import 'classes/notification.dart';
 
-Future _configurationCheck() => repeatCheck(configuration.isLoaded, 20, new Duration(milliseconds: 50), timeoutMessage: 'configuration.isLoaded is false');
-Future _notificationCheck() => repeatCheck(notification.isConnected, 20, new Duration(milliseconds: 100), timeoutMessage: 'notification.isConnected is false');
+Future _configurationCheck() => repeatCheck(configuration.isLoaded, 0, new Duration(milliseconds: 50), timeoutMessage: 'configuration.isLoaded is false');
+Future _notificationCheck() => repeatCheck(notification.isConnected, 0, new Duration(milliseconds: 100), timeoutMessage: 'notification.isConnected is false');
 
 /**
  * Get Bob going as soon as the configuration is loaded.
  */
 void main() {
   _configurationCheck().then((_) => _notificationCheck())
-                       .then((_) => environment.bobReady = 1)
+                       .then((_) => log.debug('Main Everything seems to work!'))
                        .catchError((error) {
-                         environment.bobReady = -1;
                          log.critical('Bob main exception: ${error}');
                        });
 }
