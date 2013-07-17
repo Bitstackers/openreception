@@ -37,10 +37,9 @@ final _ContextList  contextList  = new _ContextList();
  * A list of the application contexts.
  */
 class _ContextList extends IterableBase<Context> {
-  List<Context>        _list = toObservable(new List<Context>());
-  Map<String, Context> _map  = new Map<String, Context>();
+  LinkedHashMap<String, Context> _map  = new LinkedHashMap<String, Context>();
 
-  Iterator<Context> get iterator => _list.iterator;
+  Iterator<Context> get iterator => new MapIterator<String, Context>(_map);
 
   /**
    * _ContextList constructor.
@@ -48,8 +47,7 @@ class _ContextList extends IterableBase<Context> {
   _ContextList() {
      state.stream.listen((int status){
        if (status == State.ERROR){
-         _list = toObservable(new List<Context>());
-         _map  = new Map<String, Context>();
+         _map = new LinkedHashMap<String, Context>();
        }
      });
   }
@@ -58,9 +56,6 @@ class _ContextList extends IterableBase<Context> {
    * Add [context] to the [_ContextList].
    */
   void add(Context context) {
-    // We store the context twice. This is for fast lookup, so we don't have to
-    // loop the list to find a context based on its id.
-    _list.add(context);
     _map[context.id] = context;
 
     log.debug('environment._ContextList.add ${context.id}');
@@ -75,5 +70,36 @@ class _ContextList extends IterableBase<Context> {
     }
 
     return null;
+  }
+}
+
+/**
+ * Iterator for [Map].
+ */
+class MapIterator<T_Key, T_Value> extends Iterator<T_Value> {
+  Iterator<T_Key> keys;
+  Map<T_Key, T_Value> map;
+
+  MapIterator(this.map) {
+    keys = map.keys.iterator;
+  }
+
+  /**
+   * Returns the current element.
+   * Return null if the iterator has not yet been moved to the first element, or if the iterator has been moved after the last element of the Iterable.
+   */
+  T_Value get current {
+    if (keys.current != null) {
+      return map[keys.current];
+    }
+    return null;
+  }
+
+  /**
+   * Moves to the next element. Returns true if current contains the next element. Returns false, if no element was left.
+   * It is safe to invoke moveNext even when the iterator is already positioned after the last element. In this case moveNext has no effect.
+   */
+  bool moveNext() {
+    return keys.moveNext();
   }
 }
