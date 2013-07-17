@@ -3,6 +3,8 @@
 <html>
   <head>
     <link rel="import" href="bob-context.html">
+    <link rel="import" href="bob-disaster.html">
+    <link rel="import" href="bob-loading.html">
     <link rel="import" href="contextswitcher.html">
     <link rel="import" href="welcomemessage.html">
     <link rel="import" href="agentinfo.html">
@@ -32,11 +34,11 @@
     <element name="bob-app" constructor="BobApp" extends="div" apply-author-styles>
       <template>
         <template instantiate="if environment.bobReady == 0">
-          <h1>Loading application....</h1>
+          <bob-loading></bob-loading>
         </template>
 
         <template instantiate="if environment.bobReady == -1">
-          <h1>DisasterMode!!!!!!</h1>
+          <bob-disaster></bob-disaster>
         </template>
 
         <template instantiate="if environment.bobReady == 1">
