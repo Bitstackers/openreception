@@ -10,6 +10,7 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
+
 library state;
 
 import 'dart:async';
@@ -18,65 +19,151 @@ import 'package:web_ui/web_ui.dart';
 
 import 'logger.dart';
 
-final State state = new State();
+const int _ERROR   = -1;
+const int _UNKNOWN = 0;
+const int _OK      = 1;
 
-class State {
-  static const int ERROR   = -1;
-  static const int UNKNOWN = 0;
-  static const int OK      = 1;
+final       StreamController<BobState> _stream    = new StreamController<BobState>.broadcast();
+@observable BobState                   _state     = new BobState();
 
-              int                   _config            = UNKNOWN;
-  final       StreamController<int> _stream            = new StreamController<int>.broadcast();
-              bool                  _scheduledShutdown = false;
-  @observable int                   _value             = UNKNOWN;
-              int                   _websocket         = UNKNOWN;
+Stream<BobState> get stateUpdates => _stream.stream;
+BobState         get state        => _state;
 
-  Stream<int> get stream            => _stream.stream;
-  bool        get scheduledShutdown => _scheduledShutdown;
-  int         get value             => _value;
+/**
+ * Describes the state of bob.
+ */
+@observable
+class BobState {
+  bool _immutable         = false;
+  int  _config            = _UNKNOWN;
+  int  _logger            = _UNKNOWN;
+  bool _scheduledShutdown = false;
+  int  _websocket         = _UNKNOWN;
+
+  bool get isConfigurationError => _config == _ERROR;
+  bool get isError              => _getOverallState() == _ERROR;
+  bool get isOK                 => _getOverallState() == _OK;
+  bool get isUnknown            => _getOverallState() == _UNKNOWN;
+  bool get isScheduledShutdown  => _scheduledShutdown;
+  bool get isWebsocketError     => _websocket == _ERROR;
 
   /**
-   * Gives a overall state
+   * Clones myself.
    */
-  int _getOverallState(){
-    if (_scheduledShutdown == false) {
-      if (_config == OK && _websocket == OK) {
-        return OK;
-
-      } else if (_config == ERROR || _websocket == ERROR) {
-        return ERROR;
-
-      } else {
-        return UNKNOWN;
-      }
-    } else {
-      return OK;
-    }
+  BobState _clone() {
+    return new BobState()
+      .._immutable = true
+      .._config    = _config
+      .._logger    = _logger
+      .._websocket = _websocket;
   }
 
   /**
-   * Updates the state of Bob.
+   * Update configuration state to OK
    */
-  void update(String name, int state){
-    if (name == 'configuration') {
-      _config = state;
-    } else if (name == 'socket') {
-      log.debug('state socket updated!');
-      _websocket = state;
+  void configurationOK() {
+    if (_immutable) {
+      throw new Exception('configurationOK not allowed. Bobstate is immutable');
     }
 
-    int newValue = _getOverallState();
-    if (newValue != _value){
-      log.debug('State updated before: ${_value} after: ${newValue}');
-      _stream.sink.add(newValue);
+    _config = _OK;
+    _update();
+  }
+
+  /**
+   * Update configuration state to error
+   */
+  void configurationError() {
+    if (_immutable) {
+      throw new Exception('configurationError not allowed. Bobstate is immutable');
     }
-    _value = newValue;
+
+    _config = _ERROR;
+    _update();
+  }
+
+  /**
+   * Gives an overall state
+   */
+  int _getOverallState(){
+    if (!_scheduledShutdown) {
+      if (_config == _OK && _logger == _OK && _websocket == _OK) {
+        return _OK;
+
+      } else if (_config == _ERROR || _logger == _ERROR || _websocket == _ERROR) {
+        return _ERROR;
+
+      } else {
+        return _UNKNOWN;
+      }
+    } else {
+      return _OK;
+    }
+  }
+
+  void loggerError() {
+    if (_immutable) {
+      throw new Exception('loggerError not allowed. Bobstate is immutable');
+    }
+
+    _logger = _ERROR;
+    _update();
+  }
+
+  void loggerOK() {
+    if (_immutable) {
+      throw new Exception('loggerOK not allowed. Bobstate is immutable');
+    }
+
+    _logger = _OK;
+    _update();
   }
 
   /**
    * Signal that a shutdown is coming.
    */
   void scheduleShutdown() {
+    if (_immutable) {
+      throw new Exception('scheduleShutdown not allowed. Bobstate is immutable');
+    }
+
     _scheduledShutdown = true;
+    _update();
+  }
+
+  String toString() {
+    return 'BobState configuration: ${_config} websocket: ${_websocket} overall: ${_getOverallState()}';
+  }
+
+  /**
+   * Update websocket state to OK
+   */
+  void websocketOK() {
+    if (_immutable) {
+      throw new Exception('websocketOK not allowed. Bobstate is immutable');
+    }
+
+    _websocket = _OK;
+    _update();
+  }
+
+  /**
+   * Update websocket state to error
+   */
+  void websocketError() {
+    if (_immutable) {
+      throw new Exception('websocketError not allowed. Bobstate is immutable');
+    }
+
+    _websocket = _ERROR;
+    _update();
+  }
+
+  /**
+   * Updates the overall statevalue for Bob.
+   */
+  void _update() {
+    log.debug('State updated ${this}');
+    _stream.sink.add(_clone());
   }
 }

@@ -33,15 +33,15 @@
   <body>
     <element name="bob-app" constructor="BobApp" extends="div" apply-author-styles>
       <template>
-        <template instantiate="if state.value == State.UNKNOWN">
+        <template instantiate="if state.isUnknown">
           <bob-loading></bob-loading>
         </template>
 
-        <template instantiate="if state.value == State.ERROR">
+        <template instantiate="if state.isError">
           <bob-disaster></bob-disaster>
         </template>
 
-        <template instantiate="if state.value == State.OK">
+        <template instantiate="if state.isOK">
           <context-switcher id="contextswitcher"></context-switcher>
 
           <bob-context id="contexthome">

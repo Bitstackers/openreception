@@ -18,6 +18,7 @@ import 'dart:collection';
 
 import 'package:web_ui/web_ui.dart';
 
+import 'common.dart';
 import 'context.dart';
 import 'logger.dart';
 import 'model.dart' as model;
@@ -31,7 +32,7 @@ import 'state.dart';
 @observable model.Organization     organization     = model.nullOrganization;
 @observable model.OrganizationList organizationList = new model.OrganizationList();
 
-final _ContextList  contextList  = new _ContextList();
+final _ContextList contextList  = new _ContextList();
 
 /**
  * A list of the application contexts.
@@ -45,8 +46,8 @@ class _ContextList extends IterableBase<Context> {
    * _ContextList constructor.
    */
   _ContextList() {
-     state.stream.listen((int status){
-       if (status == State.ERROR){
+    stateUpdates.listen((BobState state) {
+       if (state.isError){
          _map = new LinkedHashMap<String, Context>();
        }
      });
@@ -70,36 +71,5 @@ class _ContextList extends IterableBase<Context> {
     }
 
     return null;
-  }
-}
-
-/**
- * Iterator for [Map].
- */
-class MapIterator<T_Key, T_Value> extends Iterator<T_Value> {
-  Iterator<T_Key> keys;
-  Map<T_Key, T_Value> map;
-
-  MapIterator(this.map) {
-    keys = map.keys.iterator;
-  }
-
-  /**
-   * Returns the current element.
-   * Return null if the iterator has not yet been moved to the first element, or if the iterator has been moved after the last element of the Iterable.
-   */
-  T_Value get current {
-    if (keys.current != null) {
-      return map[keys.current];
-    }
-    return null;
-  }
-
-  /**
-   * Moves to the next element. Returns true if current contains the next element. Returns false, if no element was left.
-   * It is safe to invoke moveNext even when the iterator is already positioned after the last element. In this case moveNext has no effect.
-   */
-  bool moveNext() {
-    return keys.moveNext();
   }
 }

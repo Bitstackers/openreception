@@ -22,7 +22,9 @@ import 'classes/common.dart';
 import 'classes/configuration.dart';
 import 'classes/environment.dart' as environment;
 import 'classes/logger.dart';
+import 'classes/model.dart' as model;
 import 'classes/notification.dart';
+import 'classes/state.dart';
 
 Future _configurationCheck() => repeatCheck(configuration.isLoaded, 0, new Duration(milliseconds: 50), timeoutMessage: 'configuration.isLoaded is false');
 Future _notificationCheck() => repeatCheck(notification.isConnected, 0, new Duration(milliseconds: 100), timeoutMessage: 'notification.isConnected is false');
@@ -32,7 +34,7 @@ Future _notificationCheck() => repeatCheck(notification.isConnected, 0, new Dura
  */
 void main() {
   _configurationCheck().then((_) => _notificationCheck())
-                       .then((_) => log.debug('Main Everything seems to work!'))
+                       .then((_) => log.info('Main Everything seems to work!'))
                        .catchError((error) {
                          log.critical('Bob main exception: ${error}');
                        });

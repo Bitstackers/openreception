@@ -65,8 +65,9 @@ class Socket {
    * Create and connect the WebSocket.
    */
   void _connect() {
-    log.info('Socket._connect ${_url}');
-
+    if (!state.isWebsocketError) {
+      log.info('Socket._connect ${_url}');
+    }
     _reconnectScheduled = false;
     String url = _url.toString();
     //url = 'ws://alice.adaheads.com:4242/Wrong';
@@ -83,8 +84,8 @@ class Socket {
    * WebSocket is connected.
    */
   void _onOpen(Event event) {
-    log.debug('socket,_onOpen Open');
-    state.update('socket', State.OK);
+    log.debug('socket._onOpen');
+    state.websocketOK();
   }
 
   /**
@@ -92,9 +93,11 @@ class Socket {
    * WebSocket disconnects and then try to reconnect.
    */
   void _onError (Event event) {
-    if(!state.scheduledShutdown) {
-      log.error('Socket._onError ${event}');
-      state.update('socket', State.ERROR);
+    if(!state.isScheduledShutdown) {
+      if (!state.isWebsocketError) {
+        state.websocketError();
+        log.critical('Socket Lost connecting. Tring to connect.');
+      }
       _reconnect();
     }
   }

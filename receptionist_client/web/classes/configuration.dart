@@ -64,13 +64,15 @@ class _Configuration {
     fetch();
   }
 
-  void fetch(){
-    if(!isLoaded()){
+  void fetch() {
+    if(!isLoaded()) {
       HttpRequest.request(CONFIGURATION_URL)
         .then(_onComplete)
         .catchError((error) {
-          log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
-          state.update('configuration', State.ERROR);
+          if (!state.isConfigurationError) {
+            log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
+            state.configurationError();
+          }
           new Timer(new Duration(seconds:5),() => fetch());
         });
     }
@@ -90,12 +92,14 @@ class _Configuration {
       case 200:
         _parseConfiguration(json.parse(req.responseText));
         _loaded = true;
-        state.update('configuration', State.OK);
+        state.configurationOK();
         break;
 
       default:
-        log.critical('_Configuration._onComplete failed ${CONFIGURATION_URL}-${req.status}-${req.statusText}');
-        state.update('configuration', State.ERROR);
+        if (!state.isConfigurationError) {
+          log.critical('_Configuration._onComplete failed ${CONFIGURATION_URL}-${req.status}-${req.statusText}');
+          state.configurationError();
+        }
     }
   }
 

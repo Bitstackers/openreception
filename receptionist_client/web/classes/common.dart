@@ -38,8 +38,6 @@ Future<bool> repeatCheck(boolFunc check, int maxRepeat, Duration repeatTime, {St
   assert(maxRepeat >= 0);
   assert(repeatTime.inMilliseconds > 0);
 
-  print('PRINTING common.repeatCheck is started');
-
   final Completer completer = new Completer();
         int       count     = 0;
 
@@ -59,4 +57,38 @@ Future<bool> repeatCheck(boolFunc check, int maxRepeat, Duration repeatTime, {St
   }
 
   return completer.future;
+}
+
+/**
+ * Iterator for [Map].
+ */
+class MapIterator<T_Key, T_Value> extends Iterator<T_Value> {
+  Iterator<T_Key> keys;
+  Map<T_Key, T_Value> map;
+
+  MapIterator(this.map) {
+    keys = map.keys.iterator;
+  }
+
+  /**
+   * Returns the current element.
+   * Return null if the iterator has not yet been moved to the first element,
+   * or if the iterator has been moved after the last element of the Iterable.
+   */
+  T_Value get current {
+    if (keys.current != null) {
+      return map[keys.current];
+    }
+    return null;
+  }
+
+  /**
+   * Moves to the next element. Returns true if current contains the next element.
+   * Returns false, if no element was left.
+   * It is safe to invoke moveNext even when the iterator is already positioned
+   * after the last element. In this case moveNext has no effect.
+   */
+  bool moveNext() {
+    return keys.moveNext();
+  }
 }

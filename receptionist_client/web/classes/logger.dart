@@ -42,14 +42,15 @@ class Log {
   /**
    * Loglevels that represent the levels on the server side.
    */
-  static const Level DEBUG = const Level('Debug', 300);
-  static const Level INFO = const Level('Info', 800);
-  static const Level ERROR = const Level('Error', 1000);
+  static const Level DEBUG    = const Level('Debug', 300);
+  static const Level INFO     = const Level('Info', 800);
+  static const Level ERROR    = const Level('Error', 1000);
   static const Level CRITICAL = const Level('Critical', 1200);
 
-  final Logger _logger  = new Logger("System");
-  final Logger _ulogger = new Logger("User");
-  StreamSubscription<LogRecord> _logStream;
+  final Logger                  _logger            = new Logger("System");
+  final Logger                  _ulogger           = new Logger("User");
+  StreamSubscription<LogRecord> _consoleLogStream;
+  StreamSubscription<LogRecord> _serverLogStream;
 
   Stream<LogRecord> get userLogStream => _ulogger.onRecord;
 
@@ -110,8 +111,11 @@ class Log {
   /**
    * Writes [record] to the console and then sends it to Alice.
    */
-  void _logSubscriber(LogRecord record) {
-    print('${record.loggerName} - ${record.sequenceNumber} - ${record.level.name} - ${record.message}');
+  void _consoleLogSubscriber(LogRecord record) {
+    print('${new DateTime.now()} ${record.loggerName} - ${record.sequenceNumber} - ${record.level.name} - ${record.message}');
+  }
+
+  void _serverLogSubscriber(LogRecord record) {
     _serverLog(record);
   }
 
@@ -119,16 +123,57 @@ class Log {
    * Registers event listeners.
    */
   _registerEventListeners() {
-    state.stream.listen((int state){
-      if (state != State.OK && !_logStream.isPaused){
-        _logStream.pause();
-      } else {
-        _logStream.resume();
-      }
-    });
+    _consoleLogStream = _logger.onRecord.listen(_consoleLogSubscriber);
 
-    _logStream = _logger.onRecord.listen(_logSubscriber);
-    _ulogger.onRecord.listen(_logSubscriber);
+    _serverLogStream = _logger.onRecord.listen(_serverLogSubscriber);
+    _pauseServerStream();
+
+    _ulogger.onRecord.listen(_consoleLogSubscriber);
+  }
+
+  /**
+   * Pauses server stream.
+   */
+  void _pauseServerStream() {
+    if (!_serverLogStream.isPaused) {
+      _serverLogStream.pause();
+      connect();
+    }
+  }
+
+  /**
+   * Resumes server stream.
+   */
+  void _resumeServerStream() {
+    if(_serverLogStream.isPaused) {
+      _serverLogStream.resume();
+    }
+  }
+
+  /**
+   * Tests if there is a connecting to alice.
+   */
+  void connect() {
+    if (configuration.isLoaded()) {
+      String browserInfo = window.navigator.userAgent;
+      Duration retryTime = new Duration(seconds: 3);
+
+      protocol.logInfo('Logger connecting from ${browserInfo}').then((protocol.Response response) {
+        if (response.status == protocol.Response.OK) {
+          _resumeServerStream();
+          state.loggerOK();
+        } else {
+          new Timer(retryTime, connect);
+          state.loggerError();
+        }
+      }).catchError((e) {
+        new Timer(retryTime, connect);
+        state.loggerError();
+        print('${new DateTime.now()} Logger.connect failed with ${e}');
+      });
+    } else {
+      new Timer(new Duration(milliseconds: 100), connect);
+    }
   }
 
   /**
@@ -141,31 +186,55 @@ class Log {
       if (record.level > Level.INFO && record.level <= Level.SEVERE) {
         protocol.logError(text).then((protocol.Response response) {
           if (response.status != protocol.Response.OK) {
-            print(record.level.name + ' server logging error: ${response.data}');
+            String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
+            print(message);
+            _pauseServerStream();
+            critical('Retransmitting: ${message}');
+          } else if(response.status == protocol.Response.OK){
+            _resumeServerStream();
           }
         })
         .catchError((e) {
-          print(record.level.name + ' server logging error: ${e.toString()}');
+          String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
+          print(message);
+          _pauseServerStream();
+          critical('Retransmitting: ${message}');
         });
 
       } else if (record.level > Level.SEVERE) {
         protocol.logCritical(text).then((protocol.Response response) {
           if (response.status != protocol.Response.OK) {
-            print(record.level.name + ' server logging error: ${response.data}');
+            String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
+            print(message);
+            _pauseServerStream();
+            critical('Retransmitting: ${message}');
+          } else if(response.status == protocol.Response.OK){
+            _resumeServerStream();
           }
         })
         .catchError((e) {
-          print(record.level.name + ' server logging error: ${e.toString()}');
+          String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
+          print(message);
+          _pauseServerStream();
+          critical('Retransmitting: ${message}');
         });
 
       } else {
         protocol.logInfo(text).then((protocol.Response response) {
           if (response.status != protocol.Response.OK) {
-            print(record.level.name + ' server logging error: ${response.data}');
+            String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
+            print(message);
+            _pauseServerStream();
+            critical('Retransmitting: ${message}');
+          } else if(response.status == protocol.Response.OK){
+            _resumeServerStream();
           }
         })
         .catchError((e) {
-          print(record.level.name + ' server logging error: ${e.toString()}');
+          String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
+          print(message);
+          _pauseServerStream();
+          critical('Retransmitting: ${message}');
         });
       }
     }
