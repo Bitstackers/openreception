@@ -60,17 +60,19 @@ class _Notification {
   void _nonPersistentNotification(Map json) {
     log.debug('nonpersistent');
 
-    if (!json.containsKey('event')) {
-      log.critical('nonPersistensNotification did not have a event field.');
-    }
-    String eventName = json['event'];
-    log.debug('notification with event: ${eventName}');
+    if(json.containsKey('event')) {
+      String eventName = json['event'];
+      log.debug('notification with event: ${eventName}');
 
-    if (_Streams.containsKey(eventName)) {
-      _Streams[eventName].sink.add(json);
+      if (_Streams.containsKey(eventName)) {
+        _Streams[eventName].sink.add(json);
+
+      } else {
+        log.error('Unhandled event: ${eventName}');
+        log.debug(json.toString());
+      }
     } else {
-      log.error('Unhandled event: ${eventName}');
-      log.debug(json.toString());
+      log.critical('nonPersistensNotification did not have a event field.');
     }
   }
 
@@ -79,23 +81,20 @@ class _Notification {
    * their persistence status.
    */
   void _onMessage(Map json) {
-    log.debug('notification._onMessage ${json}');
-
-    if (!json.containsKey('notification')) {
-      log.critical('does not contains notification');
-      return;
-    }
-    Map notificationMap = json['notification'];
-
-    if (!notificationMap.containsKey('persistent')) {
-      log.critical('does not contains persistent');
-      return;
-    }
-
-    if (parseBool(notificationMap['persistent'])) {
-      _persistentNotification(notificationMap);
+    log.debug('Notification._onMessage ${json}');
+    if (json.containsKey('notification')) {
+      Map notificationMap = json['notification'];
+      if (notificationMap.containsKey('persistent')) {
+        if (parseBool(notificationMap['persistent'])) {
+          _persistentNotification(notificationMap);
+        } else {
+          _nonPersistentNotification(notificationMap);
+        }
+      } else {
+        log.error('Notification._onMessage Does not contains persistent.');
+      }
     } else {
-      _nonPersistentNotification(notificationMap);
+      log.critical('Notification._onMessage Does not contains notification.');
     }
   }
 
@@ -103,7 +102,7 @@ class _Notification {
    * Handles persistent notifications.
    */
   void _persistentNotification(Map json) {
-    log.info('persistent');
+    log.debug('Notification._persistentNotification');
   }
 
   /**

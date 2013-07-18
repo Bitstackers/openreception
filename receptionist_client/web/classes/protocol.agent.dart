@@ -152,6 +152,7 @@ Future<Response<Map>> agentList() {
                {"id": 8,  "state": "idle"},
                {"id": 10, "state": "paused"},
                {"id": 11, "state": "paused"},
+               {"id": 12, "state": "paused"},
                {"id": 13, "state": "logged out"}]};
 
   completer.complete(new Response(Response.OK, testData));

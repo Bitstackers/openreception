@@ -24,12 +24,13 @@ part of protocol;
 Future<Response<model.Organization>> getOrganization(int id) {
   assert(id != null);
 
-  final String                                   base      = configuration.aliceBaseUrl.toString();
-  final Completer<Response<model.Organization>>  completer = new Completer<Response<model.Organization>>();
-  final List<String>                             fragments = new List<String>();
-  final String                                   path      = '/organization';
-  HttpRequest                                    request;
-  String                                         url;
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<model.Organization>> completer =
+      new Completer<Response<model.Organization>>();
+  final List<String> fragments = new List<String>();
+  final String       path      = '/organization';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('org_id=${id}');
   url = _buildUrl(base, path, fragments);
@@ -73,12 +74,13 @@ const String MIDI = 'midi';
 Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}) {
   assert(view == MINI || view == MIDI);
 
-  final String                                      base      = configuration.aliceBaseUrl.toString();
-  final Completer<Response<model.OrganizationList>> completer = new Completer<Response<model.OrganizationList>>();
-  final List<String>                                fragments = new List<String>();
-  final String                                      path      = '/organization/list';
-  HttpRequest                                       request;
-  String                                            url;
+  final String       base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<model.OrganizationList>> completer =
+      new Completer<Response<model.OrganizationList>>();
+  final List<String> fragments = new List<String>();
+  final String       path      = '/organization/list';
+  HttpRequest        request;
+  String             url;
 
   fragments.add('view=${view}');
   url = _buildUrl(base, path, fragments);
