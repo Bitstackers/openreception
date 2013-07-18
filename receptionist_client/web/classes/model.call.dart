@@ -75,6 +75,117 @@ class Call implements Comparable {
   int compareTo(Call other) => _start.compareTo(other._start);
 
   /**
+   * Hangup the [call].
+   */
+  void hangup() {
+    protocol.hangupCall(this).then((protocol.Response response) {
+      switch(response.status) {
+        case protocol.Response.OK:
+          log.debug('model.Call.hangup OK ${this}');
+
+          // Obviously we don't want to reset the organization on every hangup, but for
+          // now this is here to remind us to do _something_ on hangup. I suspect
+          // resetting to nullOrganization will become annoying when the time comes.  :D
+          environment.organization = nullOrganization;
+          environment.contact = nullContact;
+
+          log.debug('model.Call.hangup updated environment.organization to nullOrganization');
+          log.debug('model.Call.hangup updated environment.contact to nullContact');
+          break;
+
+        case protocol.Response.NOTFOUND:
+          log.debug('model.Call.hangup NOT FOUND ${this}');
+          break;
+
+        default:
+          log.critical('model.Call.hangup ${this} failed with illegal response ${response}');
+      }
+    }).catchError((error) {
+      log.critical('model.Call.hangup ${this} protocol.hangupCall failed with ${error}');
+    });
+  }
+
+  /**
+   * Park call.
+   */
+  void park() {
+    protocol.parkCall(this).then((protocol.Response response) {
+      switch(response.status) {
+        case protocol.Response.OK:
+          log.info('model.Call.park OK ${this}');
+          break;
+
+        case protocol.Response.NOTFOUND:
+          log.info('model.Call.park NOT FOUND ${this}');
+          break;
+
+        default:
+          log.critical('model.Call.park ${this} failed with illegal response ${response}');
+      }
+    }).catchError((error) {
+      log.critical('model.Call.park ${this} protocol.parkCall failed with ${error}');
+    });
+  }
+
+  /**
+   * Pickup call.
+   */
+  void pickup() {
+    protocol.pickupCall(configuration.agentID, call: this).then((protocol.Response response) {
+      switch (response.status) {
+        case protocol.Response.OK:
+          log.debug('model.Call.pickup OK ${this}');
+          _pickupCallSuccess(response);
+          break;
+
+        case protocol.Response.NOTFOUND:
+          log.debug('model.Call.pickupCall NOT FOUND ${this}');
+          break;
+
+        default:
+          log.critical('model.Call.pickupCall ${this} failed with illegal response ${response}');
+      }
+    }).catchError((error) {
+      log.critical('model.Call.pickupCall ${this} protocol.pickupCall failed with ${error}');
+    });
+  }
+
+  /**
+   * Update [environment.organization] and [environment.contact] according to the
+   * [model.Organization] found in the [response].
+   */
+  void _pickupCallSuccess(protocol.Response response) {
+    Map json = response.data;
+
+    if (json.containsKey('organization_id')) {
+      int orgId = json['organization_id'];
+
+      storage.getOrganization(orgId).then((Organization org) {
+        if(org == nullOrganization) {
+          log.error('model.Call._pickupCallSuccess NOT FOUND organization ${orgId}');
+        }
+
+        environment.organization = org;
+        environment.contact = org.contactList.first;
+
+        log.debug('model.Call._pickupCallSuccess updated environment.organization to ${org}');
+        log.debug('model.Call._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
+
+      }).catchError((error) {
+        environment.organization = nullOrganization;
+        environment.contact = nullContact;
+
+        log.critical('model.Call._pickupCallSuccess storage.getOrganization failed with with ${error}');
+      });
+    } else {
+      environment.organization = nullOrganization;
+      environment.contact = nullContact;
+
+      log.critical('model.Call._pickupCallSuccess missing organization_id in ${json}');
+    }
+  }
+
+  /**
    * [Call] as String, for debug/log purposes.
    */
   String toString() => 'Call ${_id} - ${_start}';

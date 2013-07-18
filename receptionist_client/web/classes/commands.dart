@@ -29,37 +29,6 @@ const PSTN_TYPE      = 2;
 const SIP_TYPE       = 3;
 
 /**
- * Hangup the [call].
- */
-void hangupCall(model.Call call) {
-  protocol.hangupCall(call).then((protocol.Response response) {
-    switch(response.status) {
-      case protocol.Response.OK:
-        log.info('commands.hangupCall OK ${call}');
-
-        // Obviously we don't want to reset the organization on every hangup, but for
-        // now this is here to remind us to do _something_ on hangup. I suspect
-        // resetting to nullOrganization will become annoying when the time comes.  :D
-        environment.organization = model.nullOrganization;
-        environment.contact = model.nullContact;
-
-        log.debug('commands.hangupCall updated environment.organization to nullOrganization');
-        log.debug('commands.hangupCall updated environment.contact to nullContact');
-        break;
-
-      case protocol.Response.NOTFOUND:
-        log.info('commands.hangupCall NOT FOUND ${call}');
-        break;
-
-      default:
-        log.critical('commands.hangupCall ${call} failed with illegal response ${response}');
-    }
-  }).catchError((error) {
-    log.critical('commands.hangupCall ${call} protocol.hangupCall failed with ${error}');
-  });
-}
-
-/**
  * Originate [type] call to [address].
  */
 void originateCall(String address, int type) {
@@ -99,47 +68,25 @@ void originateCall(String address, int type) {
 }
 
 /**
- * Park [call].
+ * Pickup the next available call.
  */
-void parkCall(model.Call call) {
-  protocol.parkCall(call).then((protocol.Response response) {
-    switch(response.status) {
-      case protocol.Response.OK:
-        log.info('commands.parkCall OK ${call}');
-        break;
-
-      case protocol.Response.NOTFOUND:
-        log.info('commands.parkCall NOT FOUND ${call}');
-        break;
-
-      default:
-        log.critical('commands.parkCall ${call} failed with illegal response ${response}');
-    }
-  }).catchError((error) {
-    log.critical('commands.parkCall ${call} protocol.parkCall failed with ${error}');
-  });
-}
-
-/**
- * Pickup the [model.Call] [call]
- */
-void pickupCall(model.Call call) {
-  protocol.pickupCall(configuration.agentID, call: call).then((protocol.Response response) {
+void pickupNextCall() {
+  protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
     switch (response.status) {
       case protocol.Response.OK:
-        log.info('commands.pickupCall OK ${call}');
+        log.info('commands.pickupNextCall OK ${response.data['call_id']}');
         _pickupCallSuccess(response);
         break;
 
       case protocol.Response.NOTFOUND:
-        log.info('commands.pickupCall NOT FOUND ${call}');
+        log.info('commands.pickupNextCall no calls found');
         break;
 
       default:
-        log.critical('commands.pickupCall ${call} failed with illegal response ${response}');
+        log.critical('commands.pickupNextCall failed with illegal response ${response}');
     }
   }).catchError((error) {
-    log.critical('commands.pickupCall ${call} protocol.pickupCall failed with ${error}');
+    log.critical('commands.pickupNextCall protocol.pickupCall failed with ${error}');
   });
 }
 
@@ -179,46 +126,23 @@ void _pickupCallSuccess(protocol.Response response) {
 }
 
 /**
- * Pickup the next available call.
+ * Bridges two calls.
  */
-void pickupNextCall() {
-  protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
-    switch (response.status) {
-      case protocol.Response.OK:
-        log.info('commands.pickupNextCall OK ${response.data['call_id']}');
-        _pickupCallSuccess(response);
-        break;
-
-      case protocol.Response.NOTFOUND:
-        log.info('commands.pickupNextCall no calls found');
-        break;
-
-      default:
-        log.critical('commands.pickupNextCall failed with illegal response ${response}');
-    }
-  }).catchError((error) {
-    log.critical('commands.pickupNextCall protocol.pickupCall failed with ${error}');
-  });
-}
-
-/**
- * Transfer [call] call.
- */
-void transferCall(model.Call call) {
-  protocol.transferCall(call).then((protocol.Response response) {
-    switch(response.status) {
-      case protocol.Response.OK:
-        log.info('commands.transferCall OK ${call}');
-        break;
-
-      case protocol.Response.NOTFOUND:
-        log.info('commands.transferCall NOT FOUND ${call}');
-        break;
-
-      default:
-        log.critical('commands.transferCall ${call} failed with illegal response ${response}');
-    }
-  }).catchError((error) {
-    log.critical('commands.transferCall ${call} protocol.transferCall failed with ${error}');
-  });
+void bridgeCall(model.Call a, model.Call b) {
+//  protocol.transferCall(call).then((protocol.Response response) {
+//    switch(response.status) {
+//      case protocol.Response.OK:
+//        log.info('commands.transferCall OK ${call}');
+//        break;
+//
+//      case protocol.Response.NOTFOUND:
+//        log.info('commands.transferCall NOT FOUND ${call}');
+//        break;
+//
+//      default:
+//        log.critical('commands.transferCall ${call} failed with illegal response ${response}');
+//    }
+//  }).catchError((error) {
+//    log.critical('commands.transferCall ${call} protocol.transferCall failed with ${error}');
+//  });
 }
