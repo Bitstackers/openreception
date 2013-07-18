@@ -39,13 +39,13 @@ const String POST = "POST";
  * TODO comment.
  * Something about response from the protocol.
  */
-class Response {
+class Response<T> {
   static const int CRITICALERROR = -2;
   static const int ERROR = -1;
   static const int OK = 0;
   static const int NOTFOUND = 1;
 
-  Map data;
+  T data;
   int status;
   String statusText;
 
@@ -85,7 +85,7 @@ Map _parseJson(String responseText) {
   try {
     return json.parse(responseText);
   } catch(e) {
-    log.critical('Protocol.toJSON exception: ${e}');
+    log.critical('protocol._parseJson exception: ${e}');
     return null;
   }
 }
