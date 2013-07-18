@@ -20,7 +20,7 @@ part of protocol;
  *  On success : [Response] object with status OK (data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> peerList(){
+Future<Response> peerList() {
   final String    base      = configuration.aliceBaseUrl.toString();
   final Completer completer = new Completer<Response>();
   final String    path      = '/debug/peer/list';
@@ -29,7 +29,7 @@ Future<Response> peerList(){
 
   request = new HttpRequest()
     ..open(GET, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -56,7 +56,7 @@ Future<Response> peerList(){
  *  On success : [Response] object with status OK (data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> channelList(){
+Future<Response> channelList() {
   final String    base      = configuration.aliceBaseUrl.toString();
   final Completer completer = new Completer<Response>();
   final String    path      = '/debug/channel/list';
@@ -65,7 +65,7 @@ Future<Response> channelList(){
 
   request = new HttpRequest()
     ..open(GET, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);

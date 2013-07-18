@@ -136,7 +136,7 @@ class _KeyboardHandler {
   void _keyUp(KeyboardEvent event) {
     KeyEvent key = new KeyEvent(event);
 
-    if (_locked == key.keyCode){
+    if (_locked == key.keyCode) {
       _locked = null;
     }
   }

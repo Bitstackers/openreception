@@ -47,7 +47,7 @@ class _ContextList extends IterableBase<Context> {
    */
   _ContextList() {
     stateUpdates.listen((BobState state) {
-       if (state.isError){
+       if (state.isError) {
          _map = new LinkedHashMap<String, Context>();
        }
      });

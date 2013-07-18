@@ -49,7 +49,7 @@ Future<Response> sendMessage(int cmId, String message) {
         completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
     }
   })
-  ..onError.listen((e){
+  ..onError.listen((e) {
     _logError(request, url);
     completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
   })

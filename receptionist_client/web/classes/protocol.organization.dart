@@ -70,7 +70,7 @@ const String MIDI = 'midi';
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> getOrganizationList({String view: MINI}){
+Future<Response> getOrganizationList({String view: MINI}) {
   assert(view == MINI || view == MIDI);
 
   final String       base      = configuration.aliceBaseUrl.toString();

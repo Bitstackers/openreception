@@ -198,7 +198,7 @@ void _queueLeaveEventHandler(Map json) {
 /**
  * Sends the parked call to the localqueue.
  */
-void _callParkEventHandler(Map json){
+void _callParkEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
 
   environment.localCallQueue.addCall(call);

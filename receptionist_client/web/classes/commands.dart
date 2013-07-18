@@ -20,9 +20,9 @@ import 'dart:json' as json;
 import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'logger.dart';
-import 'model.dart' as model;
-import 'protocol.dart' as protocol;
-import 'storage.dart' as storage;
+import 'model.dart'       as model;
+import 'protocol.dart'    as protocol;
+import 'storage.dart'     as storage;
 
 const CONTACTID_TYPE = 1;
 const PSTN_TYPE      = 2;
@@ -33,7 +33,7 @@ const SIP_TYPE       = 3;
  */
 void hangupCall(model.Call call) {
   protocol.hangupCall(call).then((protocol.Response response) {
-    switch(response.status){
+    switch(response.status) {
       case protocol.Response.OK:
         log.info('commands.hangupCall OK ${call}');
 
@@ -66,7 +66,7 @@ void originateCall(String address, int type) {
   String agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
 
-  switch(type){
+  switch(type) {
     case CONTACTID_TYPE:
       originateCallRequest = protocol.originateCall(agentId, cmId: int.parse(address));
       break;
@@ -125,7 +125,7 @@ void parkCall(model.Call call) {
  */
 void pickupCall(model.Call call) {
   protocol.pickupCall(configuration.agentID, call: call).then((protocol.Response response) {
-    switch (response.status){
+    switch (response.status) {
       case protocol.Response.OK:
         log.info('commands.pickupCall OK ${call}');
         _pickupCallSuccess(response);
@@ -163,6 +163,7 @@ void _pickupCallSuccess(protocol.Response response) {
 
       log.debug('commands._pickupCallSuccess updated environment.organization to ${org}');
       log.debug('commands._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
+
     }).catchError((error) {
       environment.organization = model.nullOrganization;
       environment.contact = model.nullContact;
@@ -182,7 +183,7 @@ void _pickupCallSuccess(protocol.Response response) {
  */
 void pickupNextCall() {
   protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
-    switch (response.status){
+    switch (response.status) {
       case protocol.Response.OK:
         log.info('commands.pickupNextCall OK ${response.data['call_id']}');
         _pickupCallSuccess(response);

@@ -36,7 +36,7 @@ class GlobalQueue extends WebComponent {
 
   void _initialFill() {
     protocol.callQueue().then((protocol.Response response) {
-      switch(response.status){
+      switch(response.status) {
         case protocol.Response.OK:
           Map callsjson = response.data;
           environment.callQueue = new model.CallList.fromJson(callsjson, 'calls');
@@ -53,7 +53,7 @@ class GlobalQueue extends WebComponent {
     });
   }
 
-  void _callChange(model.Call call){
+  void _callChange(model.Call call) {
     pickupButtonDisabled = !(call == null || call == model.nullCall);
     hangupButtonDisabled = call == null || call == model.nullCall;
     holdButtonDisabled = call == null || call == model.nullCall;

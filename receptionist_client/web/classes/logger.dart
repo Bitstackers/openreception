@@ -214,7 +214,7 @@ class Log {
   void _serverLogResponseHandler(protocol.Response response, LogRecord record, String text) {
     if (response.status != protocol.Response.OK) {
       _serverLogError(record, response, text);
-    } else if(response.status == protocol.Response.OK){
+    } else if(response.status == protocol.Response.OK) {
       _resumeServerStream();
     }
   }

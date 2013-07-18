@@ -20,7 +20,7 @@ part of protocol;
  *  On success: [Response] object with status OK
  *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
-Future<Response> callList(){
+Future<Response> callList() {
   final String    base      = configuration.aliceBaseUrl.toString();
   final Completer completer = new Completer<Response>();
   final String    path      = '/call/list';
@@ -29,7 +29,7 @@ Future<Response> callList(){
 
   request = new HttpRequest()
     ..open(GET, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -57,7 +57,7 @@ Future<Response> callList(){
 /**
  * Get a list of waiting calls.
  */
-Future<Response> callQueue(){
+Future<Response> callQueue() {
   final String    base      = configuration.aliceBaseUrl.toString();
   final Completer completer = new Completer<Response>();
   final String    path      = '/call/queue';
@@ -66,7 +66,7 @@ Future<Response> callQueue(){
 
   request = new HttpRequest()
     ..open(GET, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -91,7 +91,7 @@ Future<Response> callQueue(){
   return completer.future;
 }
 
-Future<Response> callLocalList(String agentId){
+Future<Response> callLocalList(String agentId) {
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
   final List<String> fragments = new List<String>();
@@ -130,7 +130,7 @@ Future<Response> callLocalList(String agentId){
 /**
  * Hangup [call].
  */
-Future<Response> hangupCall(model.Call call){
+Future<Response> hangupCall(model.Call call) {
   final String       base      = configuration.aliceBaseUrl.toString();
   final Completer    completer = new Completer<Response>();
   final List<String> fragments = new List<String>();
@@ -173,7 +173,7 @@ Future<Response> hangupCall(model.Call call){
  *
  * Sends a request to make a new call.
  */
-Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, String sip}){
+Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, String sip}) {
   assert(agentId.isNotEmpty);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -189,7 +189,7 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
     fragments.add('cm_id=${cmId}');
   }
 
-  if (pstnNumber != null && !pstnNumber.isEmpty){
+  if (pstnNumber != null && !pstnNumber.isEmpty) {
     fragments.add('pstn_number=${pstnNumber}');
   }
 
@@ -201,7 +201,7 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -226,7 +226,7 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
  * Park [call].
  * TODO Check up on Docs. It says nothing about call_id. 2013-02-27 Thomas P.
  */
-Future<Response> parkCall(model.Call call){
+Future<Response> parkCall(model.Call call) {
   assert(call != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -241,7 +241,7 @@ Future<Response> parkCall(model.Call call){
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -271,7 +271,7 @@ Future<Response> parkCall(model.Call call){
  * If no callId is specified, then the next call in line will be dispatched
  * to the agent.
  */
-Future<Response> pickupCall(String agentId, {model.Call call}){
+Future<Response> pickupCall(String agentId, {model.Call call}) {
   assert(agentId.isNotEmpty);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -291,7 +291,7 @@ Future<Response> pickupCall(String agentId, {model.Call call}){
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -320,7 +320,7 @@ Future<Response> pickupCall(String agentId, {model.Call call}){
  * TODO Not implemented in Alice, as far as i can see. 2013-02-27 Thomas P.
  * Gives the status of a call.
  */
-Future<Response> statusCall(model.Call call){
+Future<Response> statusCall(model.Call call) {
   assert(call != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -335,7 +335,7 @@ Future<Response> statusCall(model.Call call){
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -363,7 +363,7 @@ Future<Response> statusCall(model.Call call){
 /**
  * Sends a request to transfer a call.
  */
-Future<Response> transferCall(model.Call call){
+Future<Response> transferCall(model.Call call) {
   assert(call != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -378,7 +378,7 @@ Future<Response> transferCall(model.Call call){
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..onLoad.listen((_){
+    ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);

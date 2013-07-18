@@ -24,7 +24,7 @@ Future<model.OrganizationList> getOrganizationList() {
   final Completer completer = new Completer<model.OrganizationList>();
 
   protocol.getOrganizationList().then((protocol.Response response) {
-    switch(response.status){
+    switch(response.status) {
       case protocol.Response.OK:
         completer.complete(new model.OrganizationList.fromJson(response.data, 'organization_list'));
         break;

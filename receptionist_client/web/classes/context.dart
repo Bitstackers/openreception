@@ -101,6 +101,7 @@ class Context {
       isActive = true;
       _element.classes.remove('hidden');
       log.debug('Context._toggle activating ${this.id}');
+
     } else if (isActive) {
       isActive = false;
       _element.classes.add('hidden');

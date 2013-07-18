@@ -85,7 +85,7 @@ class BobState {
   /**
    * Gives an overall state
    */
-  int _getOverallState(){
+  int _getOverallState() {
     if (!_scheduledShutdown) {
       if (_config == _OK && _logger == _OK && _websocket == _OK) {
         return _OK;

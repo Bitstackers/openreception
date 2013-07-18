@@ -28,7 +28,7 @@ class LogBox extends WebComponent {
       // TODO: change messages to a Queue or ListQueue as soon as support for
       // for these are added to web_ui toObservable().
 
-      while (messages.length > configuration.userLogSizeLimit){
+      while (messages.length > configuration.userLogSizeLimit) {
         messages.removeLast();
       }
     });

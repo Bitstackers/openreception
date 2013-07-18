@@ -24,11 +24,11 @@ class CompanyHandling extends WebComponent {
   Context context;
   String  title = 'Håndtering';
 
-  created() {
+  void created() {
     _registerEventListeners();
   }
 
-  inserted() {
+  void inserted() {
     // Get the context we belong to. As all contexts currently only have one
     // layer of widgets, we can just ask for the widgets parent.id. If we ever
     // get to a point where a widget is a child of a widget and not of a context

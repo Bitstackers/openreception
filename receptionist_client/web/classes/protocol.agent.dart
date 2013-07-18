@@ -21,7 +21,7 @@ part of protocol;
  *  On not found : [Response] object with status NOTFOUND (no data)
  *  On error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> getAgentState(int agentId){
+Future<Response> getAgentState(int agentId) {
   assert(agentId != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -51,7 +51,7 @@ Future<Response> getAgentState(int agentId){
             completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
         }
       })
-      ..onError.listen((e){
+      ..onError.listen((e) {
         _logError(request, url);
         completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
       })
@@ -68,7 +68,7 @@ Future<Response> getAgentState(int agentId){
  *  On not found : [Response] object with status NOTFOUND (no data)
  *  On error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> setAgentState(int agentId){
+Future<Response> setAgentState(int agentId) {
   assert(agentId != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
@@ -98,7 +98,7 @@ Future<Response> setAgentState(int agentId){
             completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
         }
       })
-      ..onError.listen((e){
+      ..onError.listen((e) {
         _logError(request, url);
         completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
       })
@@ -114,7 +114,7 @@ Future<Response> setAgentState(int agentId){
  *  On success : [Response] object with status OK (data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> agentList(){
+Future<Response> agentList() {
   final String    base      = configuration.aliceBaseUrl.toString();
   final Completer completer = new Completer<Response>();
   final String    path      = '/agent/list';
@@ -134,7 +134,7 @@ Future<Response> agentList(){
             completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
         }
       })
-      ..onError.listen((e){
+      ..onError.listen((e) {
         _logError(request, url);
         completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
       });

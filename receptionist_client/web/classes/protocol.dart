@@ -62,14 +62,14 @@ class Response {
  * Makes a complete url from [base], [path] and the [fragments].
  * Output: base + path + ? + fragment[0] + & + fragment[1] ...
  */
-String _buildUrl(String base, String path, [List<String> fragments]){
+String _buildUrl(String base, String path, [List<String> fragments]) {
   assert(base != null);
   assert(path != null);
 
   final StringBuffer SB  = new StringBuffer();
   final String       url = '${base}${path}';
 
-  if (fragments != null && !fragments.isEmpty){
+  if (fragments != null && !fragments.isEmpty) {
     SB.write('?${fragments.first}');
     fragments.skip(1).forEach((fragment) => SB.write('&${fragment}'));
   }

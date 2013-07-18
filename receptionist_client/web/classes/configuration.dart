@@ -128,7 +128,7 @@ class _Configuration {
                                              'interface',
                                              'ws://alice.adaheads.com:4242/notifications'));
 
-    switch (serverLogMap['level'].toLowerCase()){
+    switch (serverLogMap['level'].toLowerCase()) {
       case 'info':
         _serverLogLevel = Log.INFO;
         break;
@@ -167,6 +167,7 @@ class _Configuration {
   bool _boolValue (Map configMap, String key, bool defaultValue) {
     if ((configMap.containsKey(key)) && (configMap[key] is bool)) {
       return configMap[key];
+
     } else {
       log.error('_Configuration._boolValue ${key} is not a bool');
       return defaultValue;
@@ -182,6 +183,7 @@ class _Configuration {
   int _intValue (Map configMap, String key, int defaultValue) {
     if ((configMap.containsKey(key)) && (configMap[key] is int)) {
       return configMap[key];
+
     } else {
       log.error('_Configuration._intValue ${key} is not an int');
       return defaultValue;
@@ -199,6 +201,7 @@ class _Configuration {
   String _stringValue (Map configMap, String key, String defaultValue) {
     if ((configMap.containsKey(key)) && (configMap[key] is String)) {
       return (configMap[key].trim().isEmpty) ? defaultValue : configMap[key];
+
     } else {
       log.error("_Configuration._stringValue ${key} is not a String");
       return defaultValue;

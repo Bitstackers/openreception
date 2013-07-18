@@ -34,7 +34,7 @@ class AgentInfo extends WebComponent {
     _registerEventListeners();
   }
 
-  void inserted(){
+  void inserted() {
     _queryElements();
     _resize();
   }
