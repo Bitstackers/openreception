@@ -66,16 +66,16 @@ String _buildUrl(String base, String path, [List<String> fragments]) {
   assert(base != null);
   assert(path != null);
 
-  final StringBuffer SB  = new StringBuffer();
+  final StringBuffer buffer  = new StringBuffer();
   final String       url = '${base}${path}';
 
   if (fragments != null && !fragments.isEmpty) {
-    SB.write('?${fragments.first}');
-    fragments.skip(1).forEach((fragment) => SB.write('&${fragment}'));
+    buffer.write('?${fragments.first}');
+    fragments.skip(1).forEach((fragment) => buffer.write('&${fragment}'));
   }
 
-  log.debug('protocol._buildUrl ${url}${SB.toString()}');
-  return '${url}${SB.toString()}';
+  log.debug('protocol._buildUrl ${url}${buffer.toString()}');
+  return '${url}${buffer.toString()}';
 }
 
 /**

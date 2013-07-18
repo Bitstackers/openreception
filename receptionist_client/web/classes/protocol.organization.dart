@@ -73,12 +73,12 @@ const String MIDI = 'midi';
 Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}) {
   assert(view == MINI || view == MIDI);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response<model.OrganizationList>>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/organization/list';
-  HttpRequest        request;
-  String             url;
+  final String                                      base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<model.OrganizationList>> completer = new Completer<Response<model.OrganizationList>>();
+  final List<String>                                fragments = new List<String>();
+  final String                                      path      = '/organization/list';
+  HttpRequest                                       request;
+  String                                            url;
 
   fragments.add('view=${view}');
   url = _buildUrl(base, path, fragments);

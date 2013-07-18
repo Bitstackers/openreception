@@ -20,12 +20,12 @@ part of protocol;
  *  On success: [Response] object with status OK
  *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
-Future<Response> callList() {
-  final String    base      = configuration.aliceBaseUrl.toString();
-  final Completer completer = new Completer<Response>();
-  final String    path      = '/call/list';
-  HttpRequest     request;
-  final String    url       = _buildUrl(base, path);
+Future<Response<Map>> callList() {
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/call/list';
+  HttpRequest                    request;
+  final String                   url       = _buildUrl(base, path);
 
   request = new HttpRequest()
     ..open(GET, url)
@@ -33,11 +33,11 @@ Future<Response> callList() {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 204:
-          completer.complete(new Response(Response.OK, null));
+          completer.complete(new Response<Map>(Response.OK, null));
           break;
 
         default:
@@ -58,11 +58,11 @@ Future<Response> callList() {
  * Get a list of waiting calls.
  */
 Future<Response> callQueue() {
-  final String    base      = configuration.aliceBaseUrl.toString();
-  final Completer completer = new Completer<Response>();
-  final String    path      = '/call/queue';
-  HttpRequest     request;
-  final String    url       = _buildUrl(base, path);
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/call/queue';
+  HttpRequest                    request;
+  final String                   url       = _buildUrl(base, path);
 
   request = new HttpRequest()
     ..open(GET, url)
@@ -70,11 +70,11 @@ Future<Response> callQueue() {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 204:
-          completer.complete(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response<Map>(Response.NOTFOUND, null));
           break;
 
         default:
@@ -91,36 +91,35 @@ Future<Response> callQueue() {
   return completer.future;
 }
 
-Future<Response> callLocalList(String agentId) {
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/call/localList';
-  HttpRequest        request;
-  String             url;
+Future<Response<model.CallList>> callLocalList(String agentId) {
+  final String                               base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<model.CallList>>  completer = new Completer<Response<model.CallList>>();
+  final List<String>                         fragments = new List<String>();
+  final String                               path      = '/call/localList';
+  HttpRequest                                request;
+  String                                     url;
 
   fragments.add('agent_id=${agentId}');
   url = _buildUrl(base, path, fragments);
 
 //Dummy Data
-  Map data = {};
+  Map dummyData = new Map();;
   List calls = new List();
   calls.add({'id':'42','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch/1000).toInt()}'});
-  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 23)).millisecondsSinceEpoch/1000).toInt()}'});
-  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 28)).millisecondsSinceEpoch/1000).toInt()}'});
-  data['calls'] = calls;
+  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch/1000).toInt()}'});
+  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch/1000).toInt()}'});
+  dummyData['calls'] = calls;
+  model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
+  completer.complete(new Response<model.CallList>(Response.OK, data));
 
   request = new HttpRequest()
   ..open(POST, url)
     ..onLoad.listen((_) {
-      completer.complete(new Response(Response.OK, data));
+      //completer.complete(new Response<model.CallList>(Response.OK, data));
     })
     ..onError.listen((e) {
       //_logError(request, url);
       //completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-
-      //TODO Still in testing, make the interface in Alice.
-      completer.complete(new Response(Response.OK, data));
     })
     ..send();
 
@@ -130,13 +129,13 @@ Future<Response> callLocalList(String agentId) {
 /**
  * Hangup [call].
  */
-Future<Response> hangupCall(model.Call call) {
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/call/hangup';
-  HttpRequest        request;
-  String             url;
+Future<Response<Map>> hangupCall(model.Call call) {
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/hangup';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
@@ -147,11 +146,11 @@ Future<Response> hangupCall(model.Call call) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 404:
-          completer.complete(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response<Map>(Response.NOTFOUND, null));
           break;
 
         default:
@@ -173,15 +172,15 @@ Future<Response> hangupCall(model.Call call) {
  *
  * Sends a request to make a new call.
  */
-Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, String sip}) {
+Future<Response<Map>> originateCall(String agentId, {int cmId, String pstnNumber, String sip}) {
   assert(agentId.isNotEmpty);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/call/originate';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/originate';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('agent_id=${agentId}');
 
@@ -205,7 +204,7 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         default:
@@ -226,15 +225,15 @@ Future<Response> originateCall(String agentId, {int cmId, String pstnNumber, Str
  * Park [call].
  * TODO Check up on Docs. It says nothing about call_id. 2013-02-27 Thomas P.
  */
-Future<Response> parkCall(model.Call call) {
+Future<Response<Map>> parkCall(model.Call call) {
   assert(call != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/call/park';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/park';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
@@ -245,11 +244,11 @@ Future<Response> parkCall(model.Call call) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 404:
-          completer.complete(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response<Map>(Response.NOTFOUND, null));
           break;
 
         default:
@@ -271,15 +270,15 @@ Future<Response> parkCall(model.Call call) {
  * If no callId is specified, then the next call in line will be dispatched
  * to the agent.
  */
-Future<Response> pickupCall(String agentId, {model.Call call}) {
+Future<Response<Map>> pickupCall(String agentId, {model.Call call}) {
   assert(agentId.isNotEmpty);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path = '/call/pickup';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/pickup';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('agent_id=${agentId}');
 
@@ -295,11 +294,11 @@ Future<Response> pickupCall(String agentId, {model.Call call}) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 204:
-          completer.complete(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response<Map>(Response.NOTFOUND, null));
           break;
 
         default:
@@ -320,15 +319,15 @@ Future<Response> pickupCall(String agentId, {model.Call call}) {
  * TODO Not implemented in Alice, as far as i can see. 2013-02-27 Thomas P.
  * Gives the status of a call.
  */
-Future<Response> statusCall(model.Call call) {
+Future<Response<Map>> statusCall(model.Call call) {
   assert(call != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/call/state';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/state';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
@@ -339,11 +338,11 @@ Future<Response> statusCall(model.Call call) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 404:
-          completer.complete(new Response(Response.NOTFOUND, {}));
+          completer.complete(new Response<Map>(Response.NOTFOUND, {}));
           break;
 
         default:
@@ -363,15 +362,15 @@ Future<Response> statusCall(model.Call call) {
 /**
  * Sends a request to transfer a call.
  */
-Future<Response> transferCall(model.Call call) {
+Future<Response<Map>> transferCall(model.Call call) {
   assert(call != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/call/transfer';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/transfer';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('source=${call.id}');
   url = _buildUrl(base, path, fragments);
@@ -382,11 +381,11 @@ Future<Response> transferCall(model.Call call) {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         case 404:
-          completer.complete(new Response(Response.NOTFOUND, null));
+          completer.complete(new Response<Map>(Response.NOTFOUND, null));
           break;
 
         default:
