@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
 
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'common.dart';
@@ -42,9 +43,9 @@ class Log {
   /**
    * Loglevels that represent the levels on the server side.
    */
-  static const Level DEBUG    = const Level('Debug', 300);
-  static const Level INFO     = const Level('Info', 800);
-  static const Level ERROR    = const Level('Error', 1000);
+  static const Level DEBUG    = const Level('Debug'   ,  300);
+  static const Level INFO     = const Level('Info'    ,  800);
+  static const Level ERROR    = const Level('Error'   , 1000);
   static const Level CRITICAL = const Level('Critical', 1200);
 
   final Logger                  _logger            = new Logger("System");
@@ -58,7 +59,8 @@ class Log {
    * [Log] constructor.
    */
   Log._internal() {
-    hierarchicalLoggingEnabled = true; // we need this to keep things sane.
+    // we need this to keep things sane.
+    hierarchicalLoggingEnabled = true;
 
     _logger.parent.level = Level.ALL;
     _ulogger.parent.level = Level.ALL;
@@ -82,7 +84,7 @@ class Log {
    * Log [message] with level [DEBUG]. DEBUG level messages are only logged to
    * console.
    */
-  void debug (String message) => print('DEBUG - ${message}');
+  void debug (String message) => print('DEBUG ${new DateFormat.Hms().format(new DateTime.now())} - ${message}');
 
   /**
    * Log [message] with level [ERROR]. If [toUserLog] is true then [message]
@@ -112,11 +114,7 @@ class Log {
    * Writes [record] to the console and then sends it to Alice.
    */
   void _consoleLogSubscriber(LogRecord record) {
-    print('${new DateTime.now()} ${record.loggerName} - ${record.sequenceNumber} - ${record.level.name} - ${record.message}');
-  }
-
-  void _serverLogSubscriber(LogRecord record) {
-    _serverLog(record);
+    print('${record.loggerName} ${new DateFormat.Hms().format(new DateTime.now())} - ${record.sequenceNumber} - ${record.level.name} - ${record.message}');
   }
 
   /**
@@ -125,7 +123,7 @@ class Log {
   _registerEventListeners() {
     _consoleLogStream = _logger.onRecord.listen(_consoleLogSubscriber);
 
-    _serverLogStream = _logger.onRecord.listen(_serverLogSubscriber);
+    _serverLogStream = _logger.onRecord.listen(_serverLog);
     _pauseServerStream();
 
     _ulogger.onRecord.listen(_consoleLogSubscriber);
@@ -185,58 +183,59 @@ class Log {
 
       if (record.level > Level.INFO && record.level <= Level.SEVERE) {
         protocol.logError(text).then((protocol.Response response) {
-          if (response.status != protocol.Response.OK) {
-            String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
-            print(message);
-            _pauseServerStream();
-            critical('Retransmitting: ${message}');
-          } else if(response.status == protocol.Response.OK){
-            _resumeServerStream();
-          }
+          _serverLogResponseHandler(response, record, text);
         })
         .catchError((e) {
-          String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
-          print(message);
-          _pauseServerStream();
-          critical('Retransmitting: ${message}');
+          _serverLogException(record, e, text);
         });
 
       } else if (record.level > Level.SEVERE) {
         protocol.logCritical(text).then((protocol.Response response) {
-          if (response.status != protocol.Response.OK) {
-            String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
-            print(message);
-            _pauseServerStream();
-            critical('Retransmitting: ${message}');
-          } else if(response.status == protocol.Response.OK){
-            _resumeServerStream();
-          }
+          _serverLogResponseHandler(response, record, text);
         })
         .catchError((e) {
-          String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
-          print(message);
-          _pauseServerStream();
-          critical('Retransmitting: ${message}');
+          _serverLogException(record, e, text);
         });
 
       } else {
         protocol.logInfo(text).then((protocol.Response response) {
-          if (response.status != protocol.Response.OK) {
-            String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
-            print(message);
-            _pauseServerStream();
-            critical('Retransmitting: ${message}');
-          } else if(response.status == protocol.Response.OK){
-            _resumeServerStream();
-          }
+          _serverLogResponseHandler(response, record, text);
         })
         .catchError((e) {
-          String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
-          print(message);
-          _pauseServerStream();
-          critical('Retransmitting: ${message}');
+          _serverLogException(record, e, text);
         });
       }
     }
+  }
+
+  /**
+   * Handle the response from the server connect request.
+   */
+  void _serverLogResponseHandler(protocol.Response response, LogRecord record, String text) {
+    if (response.status != protocol.Response.OK) {
+      _serverLogError(record, response, text);
+    } else if(response.status == protocol.Response.OK){
+      _resumeServerStream();
+    }
+  }
+
+  /**
+   * TODO comment
+   */
+  void _serverLogException(LogRecord record, e, String text) {
+    String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${e} Message: ${text}';
+    print(message);
+    _pauseServerStream();
+    critical('Retransmitting: ${message}');
+  }
+
+  /**
+   * TODO comment
+   */
+  void _serverLogError(LogRecord record, protocol.Response response, String text) {
+    String message = '${record.sequenceNumber} ${record.level.name} server logging error: ${response.data} Message: ${text}';
+    print(message);
+    _pauseServerStream();
+    critical('Retransmitting: ${message}');
   }
 }
