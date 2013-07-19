@@ -16,6 +16,7 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 
 import '../classes/environment.dart' as environment;
+import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
 class SendMessage extends WebComponent {
@@ -23,11 +24,11 @@ class SendMessage extends WebComponent {
   final String       cancelButtonLabel       = 'Annuller';
   @observable String cellphone               = '';
   @observable String company                 = '';
-  List<String>       contactList             = toObservable(new List<String>());
   @observable bool   emergency               = false;
   @observable bool   hasCalled               = false;
   @observable String localno                 = '';
   @observable String name                    = '';
+  @observable String phone                   = '';
   final String       placeholderCellphone    = 'Mobil';
   final String       placeholderCompany      = 'Firmanavn';
   final String       placeholderLocalno      = 'Lokalnummer';
@@ -37,20 +38,48 @@ class SendMessage extends WebComponent {
   final String       placeholderSearchResult = 'Ingen data fundet';
   final String       placeholderText         = 'Besked';
   @observable bool   pleaseCall              = false;
-  @observable String phone                   = '';
-  final String       recipientList           = 'Modtagere';
   final String       saveButtonLabel         = 'Gem';
   @observable String search                  = '';
   @observable String searchResult            = '';
   final String       sendButtonLabel         = 'Send';
   @observable String text                    = '';
-  @observable String title                   = 'Besked';
 
-  created() {
-    contactList.add('Thomas');
-    contactList.add('Trine');
-    contactList.add('Foo');
-    contactList.add('Bar');
-    contactList.add('Foo Bar');
+  String calendarTitle = 'Kalender';
+  String placeholder   = 'søg...';
+  String title         = 'Besked';
+
+  void select(Event event) {
+    int id = int.parse((event.target as LIElement).id.split('_').last);
+    environment.contact = environment.organization.contactList.getContact(id);
+
+    log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');
   }
+
+
+
+
+
+//  List<String>       contactList             = toObservable(new List<String>());
+
+
+
+
+
+
+
+
+//  final String       recipientList           = 'Modtagere';
+
+
+
+
+
+//
+//  created() {
+//    contactList.add('Thomas');
+//    contactList.add('Trine');
+//    contactList.add('Foo');
+//    contactList.add('Bar');
+//    contactList.add('Foo Bar');
+//  }
 }

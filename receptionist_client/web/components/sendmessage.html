@@ -3,6 +3,8 @@
 <html>
   <head>
     <link rel="import" href="boxwithheader.html">
+    <link rel="import" href="calendarevent.html">
+    <link rel="import" href="send-message-recipients.html">
   </head>
   <body>
     <element name="send-message" constructor="SendMessage" extends="span" apply-author-styles>
@@ -16,12 +18,14 @@
         }
 
         .send-message-container {
-          position: relative;
           margin: 10px;
           height: -moz-calc(100% - 20px);
           height: -webkit-calc(100% - 20px);
           width: -moz-calc(100% - 20px);
           width: -webkit-calc(100% - 20px);
+
+          /*height: 100%;
+          width: 100%;*/
           overflow: auto;
         }
 
@@ -30,6 +34,7 @@
           border: solid 2px #ccc;
           border-radius: 3px;
           font-size: 1.1em;
+          margin: 0px;
         }
 
         input.send-message-field {
@@ -43,37 +48,40 @@
           font-size: 1.2em;
         }
 
-        .send-message-searchbox {width: 25%;}
-
-        .send-message-search-result {
-          left: 27%;
-          width: 73%;
+        .send-message-searchbox {
+          width: 25%;
         }
 
-        .send-message-company {
-          top: 10%;
-          left: 51%;
-          width: 49%;
+        .send-message-search-result {
+          left: 25%;
+          width: 71%;
         }
 
         .send-message-name {
-          top: 10%;
+          top: 15%;
           width: 49%;
         }
 
+        .send-message-company {
+          top: 15%;
+          left: 50%;
+          width: 49%;
+          float: right;
+        }
+
         .send-message-phone {
-          top: 20%;
+          top: 22%;
           width: 35%;
         }
 
         .send-message-cellphone {
-          top: 20%;
+          top: 22%;
           left: 37%;
           width: 35%;
         }
 
         .send-message-localno {
-          top: 20%;
+          top: 22%;
           left: 74%;
           width: 26%;
         }
@@ -119,32 +127,6 @@
         .send-message-hascalled {top: 77%;}
         .send-message-emergency {top: 84%;}
 
-        .send-message-recipient-container {
-          position: absolute;
-          top: 63%;
-          left: 48%;
-          height: 36%;
-          width: 52%;
-        }
-
-        .send-message-recipient-list {
-          height: 100%;
-          width: 100%;
-          border: solid 1px red;
-        }
-
-        .send-message-recipient-list ul {
-          height: 80%;
-          list-style-type: none;
-          border: solid 1px blue;
-          overflow: auto;
-        }
-
-        .send-message-recipient-select {
-          height: 20%;
-          border: solid 1px green;
-        }
-
         .send-message-button-container {
           position: absolute;
           top: 92%;
@@ -168,6 +150,15 @@
           padding: 5px;
           cursor: pointer;
         }
+
+        .send-message-recipient-container {
+          position: absolute;
+          top: 60%;
+          left: 50%;
+          width: 50%;
+          padding: 10px;
+          height: 20%;
+        }
       </style>
 
       <template>
@@ -177,61 +168,63 @@
           </span>
 
           <div name="boxcontent" class="send-message-container">
-            <template instantiate="if environment.contact != model.nullContact">
-              <input class="send-message-searchbox send-message-field" type="search" bind-value="search" placeholder="{{placeholderSearch}}"/>
-              <input class="send-message-search-result send-message-field" bind-value="searchResult" placeholder="{{placeholderSearchResult}}" readonly/>
+            <input class="send-message-searchbox send-message-field" type="search" bind-value="search" placeholder="{{placeholderSearch}}"/>
+            <input class="send-message-search-result send-message-field" bind-value="searchResult" placeholder="{{placeholderSearchResult}}" readonly/>
 
-              <input class="send-message-name send-message-field" bind-value="name" placeholder="{{placeholderName}}"/>
-              <input class="send-message-company send-message-field" bind-value="company" placeholder="{{placeholderCompany}}"/>
+            <input class="send-message-name send-message-field" bind-value="name" placeholder="{{placeholderName}}"/>
+            <input class="send-message-company send-message-field" bind-value="company" placeholder="{{placeholderCompany}}"/>
 
-              <input class="send-message-phone send-message-field" bind-value="phone" placeholder="{{placeholderPhone}}"/>
-              <input class="send-message-cellphone send-message-field" bind-value="cellphone" placeholder="{{placeholderCellphone}}"/>
-              <input class="send-message-localno send-message-field" bind-value="localno" placeholder="{{placeholderLocalno}}"/>
+            <input class="send-message-phone send-message-field" bind-value="phone" placeholder="{{placeholderPhone}}"/>
+            <input class="send-message-cellphone send-message-field" bind-value="cellphone" placeholder="{{placeholderCellphone}}"/>
+            <input class="send-message-localno send-message-field" bind-value="localno" placeholder="{{placeholderLocalno}}"/>
 
-              <textarea style="resize: none" class="send-message-text send-message-field" bind-value="text" placeholder="{{placeholderText}}"></textarea>
+            <textarea style="resize: none" class="send-message-text send-message-field" bind-value="text" placeholder="{{placeholderText}}"></textarea>
 
-              <div class="send-message-checkbox-container send-message-pleasecall">
-                <input bind-checked="pleaseCall" id="send-message-checkbox1" type="checkbox"/>
-                <label class="send-message-checkbox-label" for="send-message-checkbox1"><span></span>Ring venligst</label>
-              </div>
+            <div class="send-message-checkbox-container send-message-pleasecall">
+              <input bind-checked="pleaseCall" id="send-message-checkbox1" type="checkbox"/>
+              <label class="send-message-checkbox-label" for="send-message-checkbox1"><span></span>Ring venligst</label>
+            </div>
               <div class="send-message-checkbox-container send-message-callsback">
-                <input bind-checked="callsBack" id="send-message-checkbox2" type="checkbox"/>
-                <label class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
-              </div>
+              <input bind-checked="callsBack" id="send-message-checkbox2" type="checkbox"/>
+            <label class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
+            </div>
               <div class="send-message-checkbox-container send-message-hascalled">
-                <input bind-checked="hasCalled" id="send-message-checkbox3" type="checkbox"/>
-                <label class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
-              </div>
-              <div class="send-message-checkbox-container send-message-emergency">
-                <input class="send-message-checkbox" bind-checked="emergency" id="send-message-checkbox4" type="checkbox"/>
-                <label class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
-              </div>
+              <input bind-checked="hasCalled" id="send-message-checkbox3" type="checkbox"/>
+            <label class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
+            </div>
+            <div class="send-message-checkbox-container send-message-emergency">
+              <input class="send-message-checkbox" bind-checked="emergency" id="send-message-checkbox4" type="checkbox"/>
+              <label class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
+            </div>
 
-              <div class="send-message-recipient-container">
-                <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
-                  <span name="boxheader">
-                    {{recipientList}}
-                  </span>
+            <div class="send-message-button-container">
+              <button on-click="">{{cancelButtonLabel}}</button>
+              <button on-click="">{{saveButtonLabel}}</button>
+              <button on-click="">{{sendButtonLabel}}</button>
+            </div>
 
-                  <div name="boxcontent" class="minibox send-message-recipient-list">
-                    <ul template iterate="value in contactList">
-                      <li style="padding: 5px;">
-                        {{value}}
+            <div class="send-message-recipient-container">
+              <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+                <span name="boxheader">
+                  {{calendarTitle}}
+                </span>
+
+                <div name="boxcontent" class="minibox contact-info-container2">
+                  <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
+                    <template instantiate="if value.active">
+                      <li class="contact-info-active2">
+                        <calendar-event event="{{value}}"></calendar-event>
                       </li>
-                    </ul>
-                    <div  class="send-message-recipient-select">
-                      select more recipient
-                    </div>
-                  </div>
-                </box-with-header>
-              </div>
-
-              <div class="send-message-button-container">
-                <button on-click="">{{cancelButtonLabel}}</button>
-                <button on-click="">{{saveButtonLabel}}</button>
-                <button on-click="">{{sendButtonLabel}}</button>
-              </div>
-            </template>
+                    </template>
+                    <template instantiate="if !value.active">
+                      <li>
+                        <calendar-event event="{{value}}"></calendar-event>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+              </box-with-header>
+            </div>
           </div>
         </box-with-header>
       </template>
