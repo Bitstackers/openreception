@@ -56,7 +56,7 @@ void originateCall(String address, int type) {
   originateCallRequest.then((protocol.Response response) {
     switch(response.status) {
       case protocol.Response.OK:
-        log.info('commands.originateCall OK ${address} (type: ${type})');
+        log.debug('commands.originateCall OK ${address} (type: ${type})');
         break;
 
       default:
@@ -74,12 +74,12 @@ void pickupNextCall() {
   protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
     switch (response.status) {
       case protocol.Response.OK:
-        log.info('commands.pickupNextCall OK ${response.data['call_id']}');
+        log.debug('commands.pickupNextCall OK ${response.data['call_id']}');
         _pickupCallSuccess(response);
         break;
 
       case protocol.Response.NOTFOUND:
-        log.info('commands.pickupNextCall no calls found');
+        log.debug('commands.pickupNextCall no calls found');
         break;
 
       default:
@@ -102,7 +102,7 @@ void _pickupCallSuccess(protocol.Response response) {
 
     storage.getOrganization(orgId).then((model.Organization org) {
       if(org == model.nullOrganization) {
-        log.info('commands._pickupCallSuccess NOT FOUND organization ${orgId}');
+        log.debug('commands._pickupCallSuccess NOT FOUND organization ${orgId}');
       }
 
       environment.organization = org;

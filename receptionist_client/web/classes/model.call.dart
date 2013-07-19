@@ -112,11 +112,11 @@ class Call implements Comparable {
     protocol.parkCall(this).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
-          log.info('model.Call.park OK ${this}');
+          log.debug('model.Call.park OK ${this}');
           break;
 
         case protocol.Response.NOTFOUND:
-          log.info('model.Call.park NOT FOUND ${this}');
+          log.debug('model.Call.park NOT FOUND ${this}');
           break;
 
         default:

@@ -34,7 +34,7 @@ Future _notificationCheck() => repeatCheck(notification.isConnected, 0, new Dura
  */
 void main() {
   _configurationCheck().then((_) => _notificationCheck())
-                       .then((_) => log.info('Main Everything seems to work!'))
+                       .then((_) => log.debug('Main Everything seems to work!'))
                        .catchError((error) {
                          log.critical('Bob main exception: ${error}');
                        });
