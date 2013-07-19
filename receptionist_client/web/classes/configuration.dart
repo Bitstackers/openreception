@@ -169,7 +169,7 @@ class _Configuration {
       return configMap[key];
 
     } else {
-      log.error('_Configuration._boolValue ${key} is not a bool');
+      log.error('_Configuration._boolValue ${key} is not a bool, its ${configMap[key].runtimeType}');
       return defaultValue;
     }
   }
@@ -185,7 +185,7 @@ class _Configuration {
       return configMap[key];
 
     } else {
-      log.error('_Configuration._intValue ${key} is not an int');
+      log.error('_Configuration._intValue ${key} is not an int, its ${configMap[key].runtimeType}');
       return defaultValue;
     }
   }
@@ -203,7 +203,7 @@ class _Configuration {
       return (configMap[key].trim().isEmpty) ? defaultValue : configMap[key];
 
     } else {
-      log.error("_Configuration._stringValue ${key} is not a String");
+      log.error("_Configuration._stringValue ${key} is not a String, its ${configMap[key].runtimeType}");
       return defaultValue;
     }
   }
