@@ -66,7 +66,7 @@ class Socket {
    */
   void _connect() {
     if (!state.isWebsocketError) {
-      log.info('Socket._connect ${_url}');
+      log.debug('Socket._connect ${_url}');
     }
     _reconnectScheduled = false;
     String url = _url.toString();

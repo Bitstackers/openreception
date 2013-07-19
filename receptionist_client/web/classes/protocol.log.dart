@@ -20,7 +20,7 @@ part of protocol;
  *  On success : [Response] object with status OK (no data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> logInfo(String message) {
+Future<Response<Map>> logInfo(String message) {
   return _log(message, configuration.serverLogInterfaceInfo);
 }
 
@@ -31,7 +31,7 @@ Future<Response> logInfo(String message) {
  *  On success : [Response] object with status OK (no data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> logError(String message) {
+Future<Response<Map>> logError(String message) {
   return _log(message, configuration.serverLogInterfaceError);
 }
 
@@ -42,7 +42,7 @@ Future<Response> logError(String message) {
  *  On success : [Response] object with status OK (no data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> logCritical(String message) {
+Future<Response<Map>> logCritical(String message) {
   return _log(message, configuration.serverLogInterfaceCritical);
 }
 
@@ -53,13 +53,13 @@ Future<Response> logCritical(String message) {
  *  On success : [Response] object with status OK (no data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> _log(String message, Uri url) {
+Future<Response<Map>> _log(String message, Uri url) {
   assert(message.isNotEmpty);
   assert(url.isAbsolute);
 
-  final Completer completer = new Completer<Response>();
-  HttpRequest     request;
-  final String    payload   = 'msg=${Uri.encodeComponent(message)}';
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  HttpRequest                    request;
+  final String                   payload   = 'msg=${Uri.encodeComponent(message)}';
 
   request = new HttpRequest()
       ..open(POST, url.toString())
@@ -67,12 +67,12 @@ Future<Response> _log(String message, Uri url) {
       ..onLoad.listen((_) {
         switch(request.status) {
           case 204:
-            completer.complete(new Response(Response.OK, null));
+            completer.complete(new Response<Map>(Response.OK, null));
             break;
 
           case 400:
             Map data = _parseJson(request.responseText);
-            completer.complete(new Response(Response.ERROR, data));
+            completer.complete(new Response<Map>(Response.ERROR, data));
             break;
 
           default:

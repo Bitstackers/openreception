@@ -20,12 +20,12 @@ part of protocol;
  *  On success : [Response] object with status OK (data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> peerList() {
-  final String    base      = configuration.aliceBaseUrl.toString();
-  final Completer completer = new Completer<Response>();
-  final String    path      = '/debug/peer/list';
-  HttpRequest     request;
-  final String    url       = _buildUrl(base, path);
+Future<Response<Map>> peerList() {
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/debug/peer/list';
+  HttpRequest                    request;
+  final String                   url       = _buildUrl(base, path);
 
   request = new HttpRequest()
     ..open(GET, url)
@@ -33,7 +33,7 @@ Future<Response> peerList() {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         default:
@@ -56,12 +56,12 @@ Future<Response> peerList() {
  *  On success : [Response] object with status OK (data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> channelList() {
-  final String    base      = configuration.aliceBaseUrl.toString();
-  final Completer completer = new Completer<Response>();
-  final String    path      = '/debug/channel/list';
-  HttpRequest     request;
-  final String    url       = _buildUrl(base, path);
+Future<Response<Map>> channelList() {
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/debug/channel/list';
+  HttpRequest                    request;
+  final String                   url       = _buildUrl(base, path);
 
   request = new HttpRequest()
     ..open(GET, url)
@@ -69,7 +69,7 @@ Future<Response> channelList() {
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
           break;
 
         default:

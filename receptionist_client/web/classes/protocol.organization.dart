@@ -21,11 +21,12 @@ part of protocol;
  *  On not found : [Response] object with status NOTFOUND (no data)
  *  on error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> getOrganization(int id) {
+Future<Response<model.Organization>> getOrganization(int id) {
   assert(id != null);
 
   final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
+  final Completer<Response<model.Organization>> completer =
+      new Completer<Response<model.Organization>>();
   final List<String> fragments = new List<String>();
   final String       path      = '/organization';
   HttpRequest        request;
@@ -39,12 +40,12 @@ Future<Response> getOrganization(int id) {
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
-            Map data = _parseJson(request.responseText);
-            completer.complete(new Response(Response.OK, data));
+            model.Organization data = new model.Organization.fromJson(_parseJson(request.responseText));
+            completer.complete(new Response<model.Organization>(Response.OK, data));
             break;
 
           case 404:
-            completer.complete(new Response(Response.NOTFOUND, null));
+            completer.complete(new Response<model.Organization>(Response.NOTFOUND, model.nullOrganization));
             break;
 
           default:
@@ -70,11 +71,12 @@ const String MIDI = 'midi';
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> getOrganizationList({String view: MINI}) {
+Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}) {
   assert(view == MINI || view == MIDI);
 
   final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
+  final Completer<Response<model.OrganizationList>> completer =
+      new Completer<Response<model.OrganizationList>>();
   final List<String> fragments = new List<String>();
   final String       path      = '/organization/list';
   HttpRequest        request;
@@ -88,8 +90,8 @@ Future<Response> getOrganizationList({String view: MINI}) {
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
-            Map data = _parseJson(request.responseText);
-            completer.complete(new Response(Response.OK, data));
+            model.OrganizationList data = new model.OrganizationList.fromJson(_parseJson(request.responseText), 'organization_list');
+            completer.complete(new Response<model.OrganizationList>(Response.OK, data));
             break;
 
           default:

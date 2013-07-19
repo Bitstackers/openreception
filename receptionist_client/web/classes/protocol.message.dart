@@ -20,16 +20,16 @@ part of protocol;
  *  On success : [Response] object with status OK
  *  On error   : [Response] object with status ERROR or CRITICALERROR
  */
-Future<Response> sendMessage(int cmId, String message) {
+Future<Response<Map>> sendMessage(int cmId, String message) {
   assert(cmId != null);
   assert(message.isNotEmpty);
 
-  final String    base      = configuration.aliceBaseUrl.toString();
-  final Completer completer = new Completer<Response>();
-  final String    path      = '/message/send';
-  final String    payload   = 'cm_id=${cmId}&msg=${Uri.encodeComponent(message)}';
-  HttpRequest     request;
-  final String    url       = _buildUrl(base, path);
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/message/send';
+  final String                   payload   = 'cm_id=${cmId}&msg=${Uri.encodeComponent(message)}';
+  HttpRequest                    request;
+  final String                   url       = _buildUrl(base, path);
 
   request = new HttpRequest()
   ..open(POST, url)
@@ -39,9 +39,9 @@ Future<Response> sendMessage(int cmId, String message) {
       case 200:
         Map data = _parseJson(request.responseText);
         if (data != null) {
-          completer.complete(new Response(Response.OK, data));
+          completer.complete(new Response<Map>(Response.OK, data));
         } else {
-          completer.complete(new Response(Response.ERROR, data));
+          completer.complete(new Response<Map>(Response.ERROR, data));
         }
         break;
 

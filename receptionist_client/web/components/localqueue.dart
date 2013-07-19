@@ -34,8 +34,7 @@ class LocalQueue extends WebComponent {
     protocol.callLocalList(configuration.agentID).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
-          Map callsjson = response.data;
-          environment.localCallQueue = new model.CallList.fromJson(callsjson, 'calls');
+          environment.localCallQueue = response.data;
 
           log.debug('LocalQueue._initialFill updated environment.localCallQueue');
           break;

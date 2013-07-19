@@ -25,9 +25,9 @@ class BobDisaster extends WebComponent {
     new Timer.periodic(new Duration(milliseconds: 1000), (Timer timer) {
       if (state.isOK) {
         timer.cancel();
-        log.info('This is not the disaster you are looking for.');
+        log.debug('This is not the disaster you are looking for.');
       } else {
-        log.info('DISASTER MODE TESTING');
+        log.debug('DISASTER MODE TESTING');
       }
     });
   }

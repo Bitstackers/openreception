@@ -39,13 +39,13 @@ const String POST = "POST";
  * TODO comment.
  * Something about response from the protocol.
  */
-class Response {
+class Response<T> {
   static const int CRITICALERROR = -2;
   static const int ERROR = -1;
   static const int OK = 0;
   static const int NOTFOUND = 1;
 
-  Map data;
+  T data;
   int status;
   String statusText;
 
@@ -66,16 +66,16 @@ String _buildUrl(String base, String path, [List<String> fragments]) {
   assert(base != null);
   assert(path != null);
 
-  final StringBuffer SB  = new StringBuffer();
+  final StringBuffer buffer  = new StringBuffer();
   final String       url = '${base}${path}';
 
   if (fragments != null && !fragments.isEmpty) {
-    SB.write('?${fragments.first}');
-    fragments.skip(1).forEach((fragment) => SB.write('&${fragment}'));
+    buffer.write('?${fragments.first}');
+    fragments.skip(1).forEach((fragment) => buffer.write('&${fragment}'));
   }
 
-  log.debug('protocol._buildUrl ${url}${SB.toString()}');
-  return '${url}${SB.toString()}';
+  log.debug('protocol._buildUrl ${url}${buffer.toString()}');
+  return '${url}${buffer.toString()}';
 }
 
 /**
@@ -85,7 +85,7 @@ Map _parseJson(String responseText) {
   try {
     return json.parse(responseText);
   } catch(e) {
-    log.critical('Protocol.toJSON exception: ${e}');
+    log.critical('protocol._parseJson exception: ${e}');
     return null;
   }
 }

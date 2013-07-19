@@ -21,15 +21,15 @@ part of protocol;
  *  On not found : [Response] object with status NOTFOUND (no data)
  *  On error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> getAgentState(int agentId) {
+Future<Response<Map>> getAgentState(int agentId) {
   assert(agentId != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
-  final String       path      = '/agent/state';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/agent/state';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('agent_id=${agentId}');
   url = _buildUrl(base, path, fragments);
@@ -40,11 +40,11 @@ Future<Response> getAgentState(int agentId) {
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            completer.complete(new Response(Response.OK, data));
+            completer.complete(new Response<Map>(Response.OK, data));
             break;
 
           case 404:
-            completer.complete(new Response(Response.NOTFOUND, null));
+            completer.complete(new Response<Map>(Response.NOTFOUND, null));
             break;
 
           default:
@@ -68,15 +68,15 @@ Future<Response> getAgentState(int agentId) {
  *  On not found : [Response] object with status NOTFOUND (no data)
  *  On error     : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> setAgentState(int agentId) {
+Future<Response<Map>> setAgentState(int agentId) {
   assert(agentId != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
-  final Completer    completer = new Completer<Response>();
-  final List<String> fragments = <String>[];
-  final String       path      = '/agent/state';
-  HttpRequest        request;
-  String             url;
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/agent/state';
+  HttpRequest                    request;
+  String                         url;
 
   fragments.add('agent_id=${agentId}');
   url = _buildUrl(base, path, fragments);
@@ -87,11 +87,11 @@ Future<Response> setAgentState(int agentId) {
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            completer.complete(new Response(Response.OK, data));
+            completer.complete(new Response<Map>(Response.OK, data));
             break;
 
           case 404:
-            completer.complete(new Response(Response.NOTFOUND, null));
+            completer.complete(new Response<Map>(Response.NOTFOUND, null));
             break;
 
           default:
@@ -114,12 +114,12 @@ Future<Response> setAgentState(int agentId) {
  *  On success : [Response] object with status OK (data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response> agentList() {
-  final String    base      = configuration.aliceBaseUrl.toString();
-  final Completer completer = new Completer<Response>();
-  final String    path      = '/agent/list';
-  HttpRequest     request;
-  final String    url       = _buildUrl(base, path);
+Future<Response<Map>> agentList() {
+  final String                   base      = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/agent/list';
+  HttpRequest                    request;
+  final String                   url       = _buildUrl(base, path);
 
   request = new HttpRequest()
       ..open(GET, url)
@@ -127,7 +127,7 @@ Future<Response> agentList() {
         switch(request.status) {
           case 200:
             Map data = _parseJson(request.responseText);
-            completer.complete(new Response(Response.OK, data));
+            completer.complete(new Response<Map>(Response.OK, data));
             break;
 
           default:
@@ -152,6 +152,7 @@ Future<Response> agentList() {
                {"id": 8,  "state": "idle"},
                {"id": 10, "state": "paused"},
                {"id": 11, "state": "paused"},
+               {"id": 12, "state": "paused"},
                {"id": 13, "state": "logged out"}]};
 
   completer.complete(new Response(Response.OK, testData));

@@ -30,5 +30,5 @@ class CallQueueItem extends WebComponent {
     new Timer.periodic(new Duration(seconds:1), (_) => age++);
   }
 
-  void pickupcallHandler() => command.pickupCall(call);
+  void pickupcallHandler() => call.pickup();
 }

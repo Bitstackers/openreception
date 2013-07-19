@@ -32,7 +32,7 @@ Future<model.Organization> getOrganization(int id) {
     protocol.getOrganization(id).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
-          model.Organization org = new model.Organization.fromJson(response.data);
+          model.Organization org = response.data;
           _organizationCache[org.id] = org;
           completer.complete(org);
           break;
