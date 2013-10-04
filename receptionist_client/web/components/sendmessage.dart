@@ -38,15 +38,13 @@ class SendMessage extends WebComponent {
   final String       placeholderSearchResult = 'Ingen data fundet';
   final String       placeholderText         = 'Besked';
   @observable bool   pleaseCall              = false;
+  final String       recipientTitle          = 'Modtagere';
   final String       saveButtonLabel         = 'Gem';
   @observable String search                  = '';
   @observable String searchResult            = '';
   final String       sendButtonLabel         = 'Send';
   @observable String text                    = '';
-
-  String calendarTitle = 'Kalender';
-  String placeholder   = 'søg...';
-  String title         = 'Besked';
+  final String       title                   = 'Besked';
 
   void select(Event event) {
     int id = int.parse((event.target as LIElement).id.split('_').last);

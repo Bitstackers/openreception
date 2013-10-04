@@ -53,43 +53,42 @@
         }
 
         .send-message-search-result {
-          left: 25%;
-          width: 71%;
+          left: 29%;
+          width: 69%;
         }
 
         .send-message-name {
-          top: 15%;
-          width: 49%;
+          top: 15.5%;
+          width: 46%;
         }
 
         .send-message-company {
-          top: 15%;
+          top: 15.5%;
           left: 50%;
-          width: 49%;
-          float: right;
+          width: 48%;
         }
 
         .send-message-phone {
-          top: 22%;
-          width: 35%;
+          top: 23%;
+          width: 34%;
         }
 
         .send-message-cellphone {
-          top: 22%;
-          left: 37%;
-          width: 35%;
+          top: 23%;
+          left: 38%;
+          width: 34%;
         }
 
         .send-message-localno {
-          top: 22%;
+          top: 23%;
           left: 74%;
-          width: 26%;
+          width: 24%;
         }
 
         .send-message-text {
-          top: 30%;
+          top: 31%;
           height: 30%;
-          width: 100%;
+          width: 96%;
         }
 
         .send-message-checkbox-container {
@@ -129,7 +128,7 @@
 
         .send-message-button-container {
           position: absolute;
-          top: 92%;
+          top: 91.2%;
         }
 
         .send-message-button-container button {
@@ -153,11 +152,11 @@
 
         .send-message-recipient-container {
           position: absolute;
-          top: 60%;
-          left: 50%;
-          width: 50%;
+          top: 61.5%;
+          left: 46%;
+          width: 53.5%;
           padding: 10px;
-          height: 20%;
+          height: 38%;
         }
       </style>
 
@@ -206,11 +205,16 @@
             <div class="send-message-recipient-container">
               <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                 <span name="boxheader">
-                  {{calendarTitle}}
+                  {{recipientTitle}}
                 </span>
 
-                <div name="boxcontent" class="minibox contact-info-container2">
-                  <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
+                <div name="boxcontent" class="minibox">
+                  <ul>
+                    <li>Thomas</li>
+                    <li>Trine</li>
+                    <li>Steen</li>
+                  </ul>
+                  <!--<ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
                     <template instantiate="if value.active">
                       <li class="contact-info-active2">
                         <calendar-event event="{{value}}"></calendar-event>
@@ -221,7 +225,7 @@
                         <calendar-event event="{{value}}"></calendar-event>
                       </li>
                     </template>
-                  </ul>
+                  </ul>-->
                 </div>
               </box-with-header>
             </div>
