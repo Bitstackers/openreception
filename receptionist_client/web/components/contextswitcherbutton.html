@@ -1,5 +1,38 @@
 <!DOCTYPE html>
 
+<polymer-element name="context-switcher-button" attributes="context">
+  <template>
+     <style>
+      .context-switcher-button-default {
+        position: relative;
+        width: 100%;
+        background-color: inherit;
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .context-switcher-button-alert,
+      .context-switcher-button-buttonface {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .context-switcher-button-default img:hover {
+        cursor: pointer;
+      }
+    </style> 
+      <button disabled="{{disabled}}" class="context-switcher-button-default" on-click="_activate()">
+        <img name="buttonpassiveimage" class="context-switcher-button-buttonface" src="../images/{{context.id}}.svg">
+        <img name="buttonactiveimage" class="context-switcher-button-buttonface {{classHidden}}" src="../images/{{context.id}}_active.svg">
+        <img name="buttonalertimage" class="context-switcher-button-alert {{alertMode}}" src="../images/contextalert.svg">
+      </button>
+  </template>
+  <script type="application/dart" src="contextswitcherbutton.dart"></script>
+</polymer-element>
+
+<!-- 
 <html>
 <body>
   <element name="context-switcher-button" constructor="ContextSwitcherButton" extends="span" apply-author-styles>
@@ -37,3 +70,4 @@
   </element>
 </body>
 </html>
+-->

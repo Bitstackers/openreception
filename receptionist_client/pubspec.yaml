@@ -2,8 +2,10 @@ name: bob_webui
 description: A sample WebUI application
 dependencies:
   browser: any
+  event_bus: any
   intl: any
   js: any
   logging: any
   meta: any
+  polymer: any
   web_ui: any

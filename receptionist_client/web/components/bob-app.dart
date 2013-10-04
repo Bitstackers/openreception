@@ -11,16 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+import 'package:polymer/polymer.dart';
 
-import 'package:web_ui/web_ui.dart';
-
-import '../classes/configuration.dart';
+import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/state.dart';
 
-class BobApp extends WebComponent {
+@CustomTag('bob-app')
+class BobApp extends PolymerElement with ObservableMixin {
+  @observable BobState state;
+  
   void inserted() {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);
+    event.bus.on(event.stateUpdated).listen((BobState value) => state = value);
   }
 }

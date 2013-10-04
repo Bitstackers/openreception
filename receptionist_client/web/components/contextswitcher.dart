@@ -11,11 +11,34 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+//import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
-import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 
-class ContextSwitcher extends WebComponent {}
+//@CustomTag('context-switcher')
+//class ContextSwitcher extends PolymerElement {
+//  void created(){
+//    print('contextswitcher created');
+//  }
+//}
+
+@CustomTag('context-switcher')
+class ContextSwitcher extends PolymerElement with ObservableMixin {
+  @observable environment.ContextList contextList;
+  
+  void created() {
+    super.created();
+    print('contextswitcher created');
+    
+    event.bus.on(event.contextListUpdated).listen((environment.ContextList list) {
+      contextList = list;
+    });
+  }
+  
+  void inserted(){
+    print("context switcher inserted");
+  }
+}

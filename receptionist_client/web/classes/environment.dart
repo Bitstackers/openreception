@@ -20,6 +20,7 @@ import 'package:web_ui/web_ui.dart';
 
 import 'common.dart';
 import 'context.dart';
+import 'events.dart' as event;
 import 'logger.dart';
 import 'model.dart' as model;
 import 'state.dart';
@@ -32,12 +33,12 @@ import 'state.dart';
 @observable model.Organization     organization     = model.nullOrganization;
 @observable model.OrganizationList organizationList = new model.OrganizationList();
 
-final _ContextList contextList  = new _ContextList();
+final ContextList contextList  = new ContextList._internal();
 
 /**
  * A list of the application contexts.
  */
-class _ContextList extends IterableBase<Context> {
+class ContextList extends IterableBase<Context> {
   LinkedHashMap<String, Context> _map  = new LinkedHashMap<String, Context>();
 
   Iterator<Context> get iterator => new MapIterator<String, Context>(_map);
@@ -45,8 +46,8 @@ class _ContextList extends IterableBase<Context> {
   /**
    * _ContextList constructor.
    */
-  _ContextList() {
-    stateUpdates.listen((BobState state) {
+  ContextList._internal() {
+    event.bus.on(event.stateUpdated).listen((BobState state) {
        if (state.isError) {
          _map = new LinkedHashMap<String, Context>();
        }
@@ -58,7 +59,7 @@ class _ContextList extends IterableBase<Context> {
    */
   void add(Context context) {
     _map[context.id] = context;
-
+    event.bus.fire(event.contextListUpdated, this);
     log.debug('environment._ContextList.add ${context.id}');
   }
 

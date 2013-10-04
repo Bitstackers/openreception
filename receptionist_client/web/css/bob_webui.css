@@ -37,6 +37,20 @@ button::-moz-focus-inner {
   height: 100%;
 }
 
+.hidden {
+  z-index: -100;
+}
+
+.minibox {
+  margin: 0px;
+  height: 100%;
+  width: -webkit-calc(100% - 10px);
+  width: -moz-calc(100% - 10px);
+  overflow: auto;
+  font-size: 0.9em;
+}
+
+/*
 #contextswitcher {
   position: absolute;
   top: 0%;
@@ -45,22 +59,6 @@ button::-moz-focus-inner {
   width: 3%;
 }
 
-.hidden {
-  z-index: -100;
-}
-
-.minibox {
-  margin: 0px;
-  height: 100%;
-  width: -webkit-calc (100% - 10px);
-  width: -moz-calc (100% - 10px);
-  overflow: auto;
-  font-size: 0.9em;
-}
-
-/*
-  Context Home
-*/
 #contexthome {
   position: absolute;
   top: 0%;
@@ -68,6 +66,7 @@ button::-moz-focus-inner {
   height: 100%;
   width: 96%;
 }
+*/
 
 /*
   Context Messages and contained elements

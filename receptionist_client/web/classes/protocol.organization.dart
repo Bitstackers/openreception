@@ -40,6 +40,7 @@ Future<Response<model.Organization>> getOrganization(int id) {
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
+            log.debug('protocol.getOrganization json: ${request.responseText}'); //TODO remove.
             model.Organization data = new model.Organization.fromJson(_parseJson(request.responseText));
             completer.complete(new Response<model.Organization>(Response.OK, data));
             break;

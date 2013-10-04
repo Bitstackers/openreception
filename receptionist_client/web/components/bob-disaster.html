@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-
-<html>
-<body>
-  <element name="bob-disaster" constructor="BobDisaster" extends="span" apply-author-styles>
-    <template>
+<polymer-element name="bob-disaster">
+  <template>
+    <!-- <style>
+      div { font-size: 24pt; }
+    </style> -->  
       <h1>
         {{text}}
       </h1>
-    </template>
-
-    <script type="application/dart" src="bob-disaster.dart"></script>
-  </element>
-</body>
-</html>
+  </template>
+  <script type="application/dart" src="bob-disaster.dart"></script>
+</polymer-element>

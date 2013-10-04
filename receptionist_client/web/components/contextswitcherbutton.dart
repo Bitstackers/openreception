@@ -13,25 +13,45 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+
 
 import '../classes/context.dart';
 
-class ContextSwitcherButton extends WebComponent {
+import 'package:polymer/polymer.dart';
+
+@CustomTag('context-switcher-button')
+class ContextSwitcherButton extends PolymerElement with ObservableMixin {
   Context       context;
   ImageElement  _alertImg;
   ButtonElement _button;
   ImageElement  _iconActive;
   ImageElement  _iconPassive;
+  bool _isCreated = false;
+  @observable String alertMode = '';
+  @observable bool   disabled = true;
 
-  @observable String get alertMode   => context.alertMode ? '' : 'hidden';
-  @observable bool   get disabled    => context.isActive;
-  @observable String get classHidden => context.isActive ? '' : 'hidden';
-
+  void created() {
+    super.created();
+    print('ContextSwitcherButton created: $context');
+  }
+  
   void inserted() {
+    if(_isCreated == false) {
+      context.alertUpdated.listen((Context value) {
+        alertMode = value.alertMode ? '' : 'hidden';
+      });
+      
+      context.activeUpdated.listen((Context value) {
+        disabled = value.isActive;
+      });
+      
+      _isCreated = true;
+    }
+    print('ContextSwitcherButton inserted: $context');
     _queryElements();
     _registerEventListeners();
     _resize();
+    disabled = false;
   }
 
   /**

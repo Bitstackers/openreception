@@ -15,25 +15,24 @@ library state;
 
 import 'dart:async';
 
-import 'package:web_ui/web_ui.dart';
+//import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
+import 'events.dart' as event;
 import 'logger.dart';
 
 const int _ERROR   = -1;
 const int _UNKNOWN = 0;
 const int _OK      = 1;
 
-final       StreamController<BobState> _stream    = new StreamController<BobState>.broadcast();
-@observable BobState                   _state     = new BobState();
+BobState _state = new BobState();
 
-Stream<BobState> get stateUpdates => _stream.stream;
-BobState         get state        => _state;
+BobState get state => _state;
 
 /**
  * Describes the state of bob.
  */
-@observable
-class BobState {
+class BobState {  
   bool _immutable         = false;
   int  _config            = _UNKNOWN;
   int  _logger            = _UNKNOWN;
@@ -164,6 +163,6 @@ class BobState {
    */
   void _update() {
     log.debug('State updated ${this}');
-    _stream.sink.add(_clone());
+    event.bus.fire(event.stateUpdated, _clone());
   }
 }

@@ -11,24 +11,9 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:async';
+import 'package:polymer/polymer.dart';
 
-import 'package:web_ui/web_ui.dart';
-
-import '../classes/logger.dart';
-import '../classes/state.dart';
-
-class BobDisaster extends WebComponent {
+@CustomTag('bob-disaster')
+class BobDisaster extends PolymerElement {
   final String text = "We're in disaster mode...";
-
-  void created() {
-    new Timer.periodic(new Duration(milliseconds: 1000), (Timer timer) {
-      if (state.isOK) {
-        timer.cancel();
-        log.debug('This is not the disaster you are looking for.');
-      } else {
-        log.debug('DISASTER MODE TESTING');
-      }
-    });
-  }
 }

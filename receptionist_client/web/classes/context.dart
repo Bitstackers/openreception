@@ -16,6 +16,7 @@ library context;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:event_bus/event_bus.dart';
 import 'package:web_ui/web_ui.dart';
 
 import 'keyboardhandler.dart';
@@ -40,8 +41,15 @@ final Stream<Context> _onChange = _contextActivationStream.stream;
  * 3 calls to [decreaseAlert()] is required to move the [Context] out of alert.
  */
 class Context {
-  @observable int  _alertCounter = 0;
-  @observable bool isActive      = false;
+  final EventType<Context> _alertUpdated = new EventType<Context>();
+  final EventType<Context> _activeUpdated = new EventType<Context>();
+  
+  EventBus _bus = new EventBus();
+  Stream<Context> get alertUpdated => _bus.on(_alertUpdated);
+  Stream<Context> get activeUpdated => _bus.on(_activeUpdated);
+  
+  int  _alertCounter = 0;
+  bool isActive      = false;
 
   Element _element;
 
@@ -75,6 +83,7 @@ class Context {
   void decreaseAlert() {
     if (_alertCounter > 0) {
       _alertCounter--;
+      _bus.fire(_alertUpdated, this);
       log.debug('Context.decreaseAlert - ${id} level now at ${alertCounter}');
     }
   }
@@ -84,6 +93,7 @@ class Context {
    */
   void increaseAlert() {
     _alertCounter++;
+    _bus.fire(_alertUpdated, this);
     log.debug('Context.increaseAlert - ${id} level now at ${alertCounter}');
   }
 
@@ -99,11 +109,13 @@ class Context {
   void _toggle(Context context) {
     if (context == this) {
       isActive = true;
+      _bus.fire(_activeUpdated, this);
       _element.classes.remove('hidden');
       log.debug('Context._toggle activating ${this.id}');
 
     } else if (isActive) {
       isActive = false;
+      _bus.fire(_activeUpdated, this);
       _element.classes.add('hidden');
     }
   }

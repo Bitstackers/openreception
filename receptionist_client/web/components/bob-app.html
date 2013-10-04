@@ -1,11 +1,63 @@
 <!DOCTYPE html>
-
 <html>
-  <head>
+  <head>  
     <link rel="import" href="bob-context.html">
     <link rel="import" href="bob-disaster.html">
     <link rel="import" href="bob-loading.html">
     <link rel="import" href="contextswitcher.html">
+  </head>
+  
+  <body>
+    <polymer-element name="bob-app">
+      <template>    
+        <style>
+          #contextswitcher {
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            height: 100%;
+            width: 3%;
+          }
+          
+          #contexthome {
+            position: absolute;
+            top: 0%;
+            left: 4%;
+            height: 100%;
+            width: 96%;
+          }
+        </style> 
+           
+        <div>    
+          <template if="{{state.isUnknown}}">
+            <bob-loading></bob-loading>
+          </template>
+          
+          <template if="{{state.isError}}">
+            <bob-disaster></bob-disaster>
+          </template>
+          
+          <template if="{{state.isOK}}">
+            <context-switcher id="contextswitcher"></context-switcher>
+          
+            <bob-context id="contexthome">
+              <h1>HomeContext</h1>
+            </bob-context>
+             
+          </template>
+        </div>
+      </template>
+      <script type="application/dart" src="bob-app.dart"></script>
+    </polymer-element>
+  </body>
+</html>
+
+ <!--
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <!-- 
     <link rel="import" href="welcomemessage.html">
     <link rel="import" href="agentinfo.html">
     <link rel="import" href="companyselector.html">
@@ -28,21 +80,13 @@
     <link rel="import" href="globalqueue.html">
     <link rel="import" href="localqueue.html">
     <link rel="import" href="xfoo.html">
-    <link rel="import" href="logbox.html">
+    <link rel="import" href="logbox.html"> 
+    
   </head>
   <body>
     <element name="bob-app" constructor="BobApp" extends="div" apply-author-styles>
       <template>
-        <template instantiate="if state.isUnknown">
-          <bob-loading></bob-loading>
-        </template>
-
-        <template instantiate="if state.isError">
-          <bob-disaster></bob-disaster>
-        </template>
-
         <template instantiate="if state.isOK">
-          <context-switcher id="contextswitcher"></context-switcher>
 
           <bob-context id="contexthome">
             <welcome-message></welcome-message>
@@ -99,5 +143,7 @@
       </template>
       <script type="application/dart" src="bob-app.dart"></script>
     </element>
+    
   </body>
 </html>
+-->

@@ -11,8 +11,9 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
-class BobLoading extends WebComponent {
+@CustomTag('bob-loading')
+class BobLoading extends PolymerElement {
   final String text = 'Loading application....';
 }

@@ -11,16 +11,19 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:async';
-import 'dart:html';
-
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
 
-class BobContext extends WebComponent {
+@CustomTag('bob-context')
+class BobContext extends PolymerElement {
   void created() {
+    super.created();
     environment.contextList.add(new Context(this));
+  }
+  
+  void inserted() {
+    print('BobContext Inserted');
   }
 }

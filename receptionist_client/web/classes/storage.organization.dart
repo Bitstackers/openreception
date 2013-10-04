@@ -29,7 +29,7 @@ Future<model.Organization> getOrganization(int id) {
   if (_organizationCache.containsKey(id)) {
     completer.complete(_organizationCache[id]);
   } else {
-    protocol.getOrganization(id).then((protocol.Response response) {
+    protocol.getOrganization(id).then((protocol.Response<model.Organization> response) {
       switch(response.status) {
         case protocol.Response.OK:
           model.Organization org = response.data;
