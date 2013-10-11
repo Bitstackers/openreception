@@ -3,38 +3,29 @@
   <head>
     <link rel="import" href="contextswitcherbutton.html">
   </head>
-  
   <body>
     <polymer-element name="context-switcher">
       <template>
+        <style>        
+          .context-switcher-default {
+            height: 100%;
+            background-color: #fafafa;
+            border-top: solid 2px #ddd;
+            border-right: solid 2px #ddd;
+            border-bottom: solid 2px #ddd;
+            border-radius: 0px 5px 5px 0px;
+            list-style-type: none;
+          }
+      
+          .context-switcher-item {
+            margin: 0px auto;
+            width: 70%;
+          }
+        </style>
         
-        <style>
-        * {
-          margin: 0;
-          padding: 0;
-          -webkit-box-sizing: border-box;
-          -moz-box-sizing: border-box;
-          box-sizing: border-box;
-        }
-        
-        .context-switcher-default {
-          height: 100%;
-          background-color: #fafafa;
-          border-top: solid 2px #ddd;
-          border-right: solid 2px #ddd;
-          border-bottom: solid 2px #ddd;
-          border-radius: 0px 5px 5px 0px;
-          list-style-type: none;
-        }
-    
-        .context-switcher-item {
-          margin: 0px auto;
-          width: 70%;
-        }
-      </style>
         <ul class="context-switcher-default"> 
           <template repeat="{{context in contextList}}">
-            <li>
+            <li class="context-switcher-item">
               <context-switcher-button context="{{context}}"></context-switcher-button>
             </li>
           </template>

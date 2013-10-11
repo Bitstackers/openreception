@@ -43,11 +43,11 @@ final Stream<Context> _onChange = _contextActivationStream.stream;
 class Context {
   final EventType<Context> _alertUpdated = new EventType<Context>();
   final EventType<Context> _activeUpdated = new EventType<Context>();
-  
+
   EventBus _bus = new EventBus();
   Stream<Context> get alertUpdated => _bus.on(_alertUpdated);
   Stream<Context> get activeUpdated => _bus.on(_activeUpdated);
-  
+
   int  _alertCounter = 0;
   bool isActive      = false;
 
@@ -74,7 +74,9 @@ class Context {
    * Activate this [Context].
    */
   void activate() {
-    _contextActivationStream.sink.add(this);
+    if(!isActive) {
+      _contextActivationStream.sink.add(this);
+    }
   }
 
   /**

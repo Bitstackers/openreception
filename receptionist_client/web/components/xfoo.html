@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-
-<html>
-<body>
-  <element name="x-foo" constructor="Foo" extends="span" apply-author-styles>
-    <template>
+<polymer-element name="x-foo">
+  <template>
+    <span>
       <span>
-        <content></content> {{context.id}}
+        <content></content> {{contextid}}
       </span>
-      <button on-click="context.increaseAlert()">
+      <button on-click="increaseAlert">
         Increase
       </button>
-      <button on-click="context.decreaseAlert()">
+      <button on-click="decreaseAlert">
         Decrease
       </button>
-    </template>
+    </span>
+  </template>
 
-    <script type="application/dart" src="xfoo.dart"></script>
-  </element>
-</body>
-</html>
+  <script type="application/dart" src="xfoo.dart"></script>
+</polymer-element>

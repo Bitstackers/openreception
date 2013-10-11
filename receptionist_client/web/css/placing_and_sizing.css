@@ -50,7 +50,6 @@ button::-moz-focus-inner {
   font-size: 0.9em;
 }
 
-/*
 #contextswitcher {
   position: absolute;
   top: 0%;
@@ -66,7 +65,7 @@ button::-moz-focus-inner {
   height: 100%;
   width: 96%;
 }
-*/
+
 
 /*
   Context Messages and contained elements

@@ -5,29 +5,11 @@
     <link rel="import" href="bob-disaster.html">
     <link rel="import" href="bob-loading.html">
     <link rel="import" href="contextswitcher.html">
+    <link rel="import" href="xfoo.html">
   </head>
-  
   <body>
     <polymer-element name="bob-app">
-      <template>    
-        <style>
-          #contextswitcher {
-            position: absolute;
-            top: 0%;
-            left: 0%;
-            height: 100%;
-            width: 3%;
-          }
-          
-          #contexthome {
-            position: absolute;
-            top: 0%;
-            left: 4%;
-            height: 100%;
-            width: 96%;
-          }
-        </style> 
-           
+      <template>
         <div>    
           <template if="{{state.isUnknown}}">
             <bob-loading></bob-loading>
@@ -43,7 +25,37 @@
             <bob-context id="contexthome">
               <h1>HomeContext</h1>
             </bob-context>
+            
+            <bob-context id="contextmessages" class="hidden">
+              <x-foo>
+                Set alert level for
+              </x-foo>
+            </bob-context>
              
+            <bob-context id="contextlog" class="hidden">
+              <!-- <log-box></log-box> -->
+              <x-foo>
+                Set alert level for
+              </x-foo>
+            </bob-context>
+            
+            <bob-context id="contextstatistics" class="hidden">
+              <x-foo>
+                Set alert level for
+              </x-foo>
+            </bob-context>
+  
+            <bob-context id="contextphone" class="hidden">
+              <x-foo>
+                Set alert level for
+              </x-foo>
+            </bob-context>
+  
+            <bob-context id="contextvoicemails" class="hidden">
+              <x-foo>
+                Set alert level for
+              </x-foo>
+            </bob-context>
           </template>
         </div>
       </template>

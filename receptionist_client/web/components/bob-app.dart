@@ -18,8 +18,10 @@ import '../classes/logger.dart';
 import '../classes/state.dart';
 
 @CustomTag('bob-app')
-class BobApp extends PolymerElement with ObservableMixin {
+class BobApp extends PolymerElement {
   @observable BobState state;
+
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   
   void inserted() {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);

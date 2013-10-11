@@ -13,59 +13,57 @@
 
 import 'dart:html';
 
-
+import 'package:polymer/polymer.dart';
 
 import '../classes/context.dart';
 
-import 'package:polymer/polymer.dart';
-
 @CustomTag('context-switcher-button')
-class ContextSwitcherButton extends PolymerElement with ObservableMixin {
-  Context       context;
-  ImageElement  _alertImg;
-  ButtonElement _button;
-  ImageElement  _iconActive;
-  ImageElement  _iconPassive;
-  bool _isCreated = false;
-  @observable String alertMode = '';
-  @observable bool   disabled = true;
+class ContextSwitcherButton extends PolymerElement {
+  @observable String        activeImagePath  = '';
+              ImageElement  _alertImg;
+  @observable String        alertMode        = 'hidden';
+              ButtonElement _button;
+  @observable String        classHidden      = '';
+  @published  Context       context;
+  @observable bool          enabled          = false;
+              ImageElement  _iconActive;
+              ImageElement  _iconPassive;
+              bool          _isCreated       = false;
+  @observable String        passiveImagePath = '';
 
-  void created() {
-    super.created();
-    print('ContextSwitcherButton created: $context');
-  }
-  
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
+
   void inserted() {
-    if(_isCreated == false) {
-      context.alertUpdated.listen((Context value) {
-        alertMode = value.alertMode ? '' : 'hidden';
-      });
-      
-      context.activeUpdated.listen((Context value) {
-        disabled = value.isActive;
-      });
-      
+    if(!_isCreated) {
+      enabled = context.isActive;
+      classHidden = enabled ? '' : 'hidden';
+
+      activeImagePath = 'images/${context.id}_active.svg';
+      passiveImagePath = 'images/${context.id}.svg';
+
+      _queryElements();
+      _registerEventListeners();
+
       _isCreated = true;
     }
-    print('ContextSwitcherButton inserted: $context');
-    _queryElements();
-    _registerEventListeners();
+
     _resize();
-    disabled = false;
   }
 
   /**
    * Activate the context associated with the button.
    */
   void _activate() {
-    context.activate();
+    if(!context.isActive) {
+      context.activate();
+    }
   }
 
   void _queryElements() {
-    _button = this.query('button');
-    _iconActive = _button.query('[name="buttonactiveimage"]');
-    _iconPassive = _button.query('[name="buttonpassiveimage"]');
-    _alertImg = _button.query('[name="buttonalertimage"]');
+    _button = getShadowRoot('context-switcher-button').query('button');
+    _iconActive = _button.query('[name="button_active_image"]');
+    _iconPassive = _button.query('[name="button_passive_image"]');
+    _alertImg = _button.query('[name="button_alert_image"]');
   }
 
   void _registerEventListeners() {
@@ -79,6 +77,15 @@ class ContextSwitcherButton extends PolymerElement with ObservableMixin {
     _button.onMouseOut.listen((_) => _iconActive.classes.add('hidden'));
 
     window.onResize.listen((_) => _resize());
+
+    context.alertUpdated.listen((Context value) {
+      alertMode = value.alertMode ? '' : 'hidden';
+    });
+
+    context.activeUpdated.listen((Context value) {
+      enabled = value.isActive;
+      classHidden = enabled ? '' : 'hidden';
+    });
   }
 
   /**

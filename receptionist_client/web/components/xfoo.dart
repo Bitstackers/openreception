@@ -13,15 +13,30 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
 
-class Foo extends WebComponent {
-  Context context;
+@CustomTag('x-foo')
+class Foo extends PolymerElement {
+              Context _context;
+  @observable String  contextid = 'bar';
+              bool    isCreated = false;
 
   void inserted() {
-    context = environment.contextList.get(this.parent.id);
+    if(!isCreated) {
+      _context = environment.contextList.get(this.parent.id);
+      contextid = _context.id;
+      isCreated = true;
+    }
+  }
+
+  void increaseAlert() {
+    _context.increaseAlert();
+  }
+
+  void decreaseAlert() {
+    _context.decreaseAlert();
   }
 }
