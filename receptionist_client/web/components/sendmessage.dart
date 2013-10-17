@@ -13,13 +13,14 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
-class SendMessage extends WebComponent {
+@CustomTag('send-message')
+class SendMessage extends PolymerElement {
   @observable bool   callsBack               = true;
   final String       cancelButtonLabel       = 'Annuller';
   @observable String cellphone               = '';
@@ -46,8 +47,8 @@ class SendMessage extends WebComponent {
   @observable String text                    = '';
   final String       title                   = 'Besked';
 
-  void select(Event event) {
-    int id = int.parse((event.target as LIElement).id.split('_').last);
+  void select(Event e, var detail, Node target) {
+    int id = int.parse((target as LIElement).id.split('_').last);
     environment.contact = environment.organization.contactList.getContact(id);
 
     log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');

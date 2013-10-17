@@ -13,15 +13,16 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/environment.dart' as environment;
 import '../classes/model.dart' as model;
 
-class SendMessageRecipients extends WebComponent {
+@CustomTag('send-message-recipients')
+class SendMessageRecipients extends PolymerElement {
   String title = 'Modtagere';
 
   void inserted() {
-    print(this.query('.box-with-header-outer').parent.clientHeight);
+    print(getShadowRoot('send-message-recipients').query('.box-with-header-outer').parent.clientHeight);
   }
 }

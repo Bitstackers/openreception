@@ -20,6 +20,7 @@
   <link rel="import" href="contextswitcher.html">
   <link rel="import" href="companytelephonenumbers.html">
   <link rel="import" href="companywebsites.html">
+  <link rel="import" href="sendmessage.html">
   <link rel="import" href="welcomemessage.html">
   <link rel="import" href="xfoo.html">
   
@@ -56,6 +57,7 @@
           <company-other></company-other>
           
           <contact-info></contact-info>
+          <send-message></send-message>
         </bob-context>
         
         <bob-context id="contextmessages" class="hidden">
@@ -100,7 +102,6 @@
 <html>
   <head>
   <!-- 
-    <link rel="import" href="sendmessage.html">
     <link rel="import" href="globalqueue.html">
     <link rel="import" href="localqueue.html">
     <link rel="import" href="xfoo.html">
@@ -113,7 +114,6 @@
         <template instantiate="if state.isOK">
 
           <bob-context id="contexthome">
-            <send-message></send-message>
             <global-queue></global-queue>
             <local-queue></local-queue>
           </bob-context>

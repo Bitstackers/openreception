@@ -1,59 +1,52 @@
-<!DOCTYPE html>
+<polymer-element name="send-message-recipients">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .send-message-recipients-placing {
+        position: absolute;
+        top: 83%;
+        left: 61%;
+        height: 15.5%;
+        width: 16%;
+      }
+  
+      .send-message-recipients-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        border: solid 1px red;
+      }
+  
+      /*.send-message-recipient-list {
+        height: 100%;
+        width: 100%;
+        border: solid 1px red;
+      }
+  
+      .send-message-recipient-list ul {
+        height: 80%;
+        list-style-type: none;
+        border: solid 1px blue;
+        overflow: auto;
+      }
+  
+      .send-message-recipient-select {
+        height: 20%;
+        border: solid 1px green;
+      }*/
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="send-message-recipients-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="send-message-recipients" constructor="SendMessageRecipients" extends="span" apply-author-styles>
-      <style>
-        .send-message-recipients-placing {
-          position: absolute;
-          top: 83%;
-          left: 61%;
-          height: 15.5%;
-          width: 16%;
-        }
+      <div name="boxcontent" class="minibox send-message-recipients-container">
+        {{title}}
+      </div>
+    </box-with-header>
+  </template>
 
-        .send-message-recipients-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-          border: solid 1px red;
-        }
-
-        /*.send-message-recipient-list {
-          height: 100%;
-          width: 100%;
-          border: solid 1px red;
-        }
-
-        .send-message-recipient-list ul {
-          height: 80%;
-          list-style-type: none;
-          border: solid 1px blue;
-          overflow: auto;
-        }
-
-        .send-message-recipient-select {
-          height: 20%;
-          border: solid 1px green;
-        }*/
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="send-message-recipients-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox send-message-recipients-container">
-            {{title}}
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="send-message-recipients.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="send-message-recipients.dart"></script>
+</polymer-element>
