@@ -25,13 +25,31 @@ import 'logger.dart';
 import 'model.dart' as model;
 import 'state.dart';
 
-@observable String                 activeWidget     = '';
+String     _activeWidget = '';
+String get activeWidget => _activeWidget;
+void   set activeWidget(String widget) {
+  _activeWidget = widget;
+  event.bus.fire(event.activeWidgetChanged, widget);
+}
+
 @observable model.Call             call             = model.nullCall;
 @observable model.CallList         callQueue        = new model.CallList();
 @observable model.CallList         localCallQueue   = new model.CallList();
 @observable model.Contact          contact          = model.nullContact;
-@observable model.Organization     organization     = model.nullOrganization;
-@observable model.OrganizationList organizationList = new model.OrganizationList();
+
+model.Organization     _organization = model.nullOrganization;
+model.Organization get organization  => _organization;
+void               set organization(model.Organization organization) {
+  _organization = organization;
+  event.bus.fire(event.organizationChanged, organization);
+}
+
+model.OrganizationList     _organizationList = new model.OrganizationList();
+model.OrganizationList get organizationList  => _organizationList;
+void                   set organizationList(model.OrganizationList organizationList) {
+  _organizationList = organizationList;
+  event.bus.fire(event.organizationListChanged, organizationList);
+}
 
 final ContextList contextList  = new ContextList._internal();
 

@@ -1,69 +1,62 @@
-<!DOCTYPE html>
+<polymer-element name="company-events">
+  <link rel="import" href="boxwithheader.html">
+  <link rel="import" href="calendarevent.html">
+  
+  <style>
+    .company-events-placing {
+      position: absolute;
+      left: 0%;
+      top: 13%;
+      height: 17%;
+      width: 34%;
+    }
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-    <link rel="import" href="calendarevent.html">
-  </head>
-  <body>
-    <element name="company-events" constructor="CompanyEvents" extends="span" apply-author-styles>
-      <style>
-        .company-events-placing {
-          position: absolute;
-          left: 0%;
-          top: 13%;
-          height: 17%;
-          width: 34%;
-        }
+    .company-events-container {
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+      font-size: 0.9em;
+    }
 
-        .company-events-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-          font-size: 0.9em;
-        }
+    .company-events-zebra {
+      list-style-type: none;
+    }
 
-        .company-events-zebra {
-          list-style-type: none;
-        }
+    .company-events-zebra li {
+      padding: 5px;
+    }
 
-        .company-events-zebra li {
-          padding: 5px;
-        }
+    .company-events-zebra li:nth-of-type(even) {
+      background-color: #eee;
+    }
 
-        .company-events-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
+    .company-events-active {
+      border-left: solid 3px red;
+    }
+  </style>
 
-        .company-events-active {
-          border-left: solid 3px red;
-        }
-      </style>
+  <template>
+    <box-with-header focuson="companyevents" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-events-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-      <template>
-        <box-with-header focuson="companyevents" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-events-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
+      <div name="boxcontent" class="company-events-container">
+        <ul template iterate="event in environment.organization.calendarEventList" class="company-events-zebra">
+          <template instantiate="if event.active">
+            <li class="company-events-active">
+              <calendar-event event="{{event}}"></calendar-event>
+            </li>
+          </template>
+          <template instantiate="if !event.active">
+            <li>
+              <calendar-event event="{{event}}"></calendar-event>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-          <div name="boxcontent" class="company-events-container">
-            <ul template iterate="event in environment.organization.calendarEventList" class="company-events-zebra">
-              <template instantiate="if event.active">
-                <li class="company-events-active">
-                  <calendar-event event="{{event}}"></calendar-event>
-                </li>
-              </template>
-              <template instantiate="if !event.active">
-                <li>
-                  <calendar-event event="{{event}}"></calendar-event>
-                </li>
-              </template>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companyevents.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companyevents.dart"></script>
+</polymer-element>

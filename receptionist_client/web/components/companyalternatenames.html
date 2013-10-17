@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-alternate-names">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-alternate-names-placing {
+        position: absolute;
+        left: 57%;
+        top: 30%;
+        height: 9%;
+        width: 21%;
+      }
+    
+      .company-alternate-names-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+    
+      .company-alternate-names-zebra {
+        list-style-type: none;
+      }
+    
+      .company-alternate-names-zebra li {
+        padding: 4px;
+      }
+    
+      .company-alternate-names-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-alternate-names-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-alternate-names" constructor="CompanyAlternateNames" extends="span" apply-author-styles>
-      <style>
-        .company-alternate-names-placing {
-          position: absolute;
-          left: 57%;
-          top: 30%;
-          height: 9%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="minibox company-alternate-names-container">
+        <ul template iterate="value in organization.alternateNameList" class="company-alternate-names-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-alternate-names-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
-
-        .company-alternate-names-zebra {
-          list-style-type: none;
-        }
-
-        .company-alternate-names-zebra li {
-          padding: 4px;
-        }
-
-        .company-alternate-names-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-alternate-names-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-alternate-names-container">
-            <ul template iterate="value in environment.organization.alternateNameList" class="company-alternate-names-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companyalternatenames.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companyalternatenames.dart"></script>
+</polymer-element>

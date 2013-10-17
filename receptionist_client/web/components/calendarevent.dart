@@ -11,14 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/model.dart' as model;
 
-class CalendarEvent extends WebComponent {
+@CustomTag('company-event')
+class CalendarEvent extends PolymerElement {
   model.CalendarEvent event;
 
-  String get notactive => event.active ? '' : 'calendar-event-notactive';
+  @observable String notactive = '';
+
+  void inserted() {
+    notactive = event.active ? '' : 'calendar-event-notactive';
+  }
 }

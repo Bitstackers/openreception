@@ -11,19 +11,29 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+import 'dart:async';
+
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/storage.dart' as storage;
 
-class CompanySelector extends WebComponent {
+@CustomTag('company-selector')
+class CompanySelector extends PolymerElement {
   final String defaultOptionText = 'vælg virksomhed';
+  @observable model.Organization organization = model.nullOrganization;
+  @observable model.OrganizationList organizationList = new model.OrganizationList();
+  model.Organization nullOrganization = model.nullOrganization;
 
   void created() {
+    super.created();
+    _registerEventHandlers();
+
     storage.getOrganizationList().then((model.OrganizationList list) {
       environment.organizationList = list;
 
@@ -33,8 +43,8 @@ class CompanySelector extends WebComponent {
     });
   }
 
-  void _selection(Event event) {
-    SelectElement element = event.target;
+  void selection(Event e, var detail, Node target) {
+    SelectElement element = target;
 
     try {
       int id = int.parse(element.value);
@@ -57,5 +67,15 @@ class CompanySelector extends WebComponent {
 
       log.critical('CompanySelector._selection storage.getOrganization SelectElement has bad value: ${element.value}');
     }
+  }
+
+  void _registerEventHandlers() {
+    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
+      this.organization = organization;
+    });
+
+    event.bus.on(event.organizationListChanged).listen((model.OrganizationList organizationList) {
+      this.organizationList = organizationList;
+    });
   }
 }

@@ -22,8 +22,4 @@ class BobContext extends PolymerElement {
     super.created();
     environment.contextList.add(new Context(this));
   }
-  
-  void inserted() {
-    print('BobContext Inserted');
-  }
 }

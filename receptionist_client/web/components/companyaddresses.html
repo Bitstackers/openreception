@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-addresses">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-addresses-placing {
+        position: absolute;
+        left: 57%;
+        top: 19%;
+        height: 9%;
+        width: 21%;
+      }
+  
+      .company-addresses-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+  
+      .company-addresses-zebra {
+        list-style-type: none;
+      }
+  
+      .company-addresses-zebra li {
+        padding: 4px;
+      }
+  
+      .company-addresses-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-addresses-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-addresses" constructor="CompanyAddresses" extends="span" apply-author-styles>
-      <style>
-        .company-addresses-placing {
-          position: absolute;
-          left: 57%;
-          top: 19%;
-          height: 9%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="minibox company-addresses-container">
+        <ul template iterate="value in organization.addressList" class="company-addresses-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-addresses-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
-
-        .company-addresses-zebra {
-          list-style-type: none;
-        }
-
-        .company-addresses-zebra li {
-          padding: 4px;
-        }
-
-        .company-addresses-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-addresses-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-addresses-container">
-            <ul template iterate="value in environment.organization.addressList" class="company-addresses-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companyaddresses.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companyaddresses.dart"></script>
+</polymer-element>

@@ -1,41 +1,34 @@
-<!DOCTYPE html>
+<polymer-element name="company-product">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-product-placing {
+        position: absolute;
+        left: 35%;
+        top: 30%;
+        height: 9%;
+        width: 21%;
+      }
+  
+      .company-product-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        padding: 5px;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-product-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-product" constructor="CompanyProduct" extends="span" apply-author-styles>
-      <style>
-        .company-product-placing {
-          position: absolute;
-          left: 35%;
-          top: 30%;
-          height: 9%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="minibox company-product-container">
+        {{organization.product}}
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-product-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-          padding: 5px;
-        }
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-product-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-product-container">
-            {{environment.organization.product}}
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companyproduct.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companyproduct.dart"></script>
+</polymer-element>

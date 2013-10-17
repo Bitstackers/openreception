@@ -1,58 +1,51 @@
-<!DOCTYPE html>
-
-<html>
-  <head>
-    <link rel="import" href="box.html">
-  </head>
-  <body>
-    <element name="agent-info" constructor="AgentInfo" extends="span" apply-author-styles>
-      <style>
-        .agent-info-placing {
-          position: absolute;
-          left: 90%;
-          top: 0%;
-          height: 6%;
-          width: 10%;
-        }
-
-        .agent-info-container {
-          position: relative;
-          height: 100%;
-          width: 100%;
-          border-radius: 5px;
-          overflow: hidden;
-          font-size: 1.1em;
-        }
-
-        .agent-info-face {
-          position: absolute;
-          top: 0px;
-          height: 100%;
-          padding: 5px;
-        }
-      </style>
-
-      <template>
-        <box class="agent-info-placing">
-          <div name="boxcontent" class="agent-info-container">
-            <table>
-              <tr>
-                <td>{{active}}</td>
-                <td>: {{activeLabel}}</td>
-              </tr>
-              <tr>
-                <td>{{paused}}</td>
-                <td>: {{pausedLabel}}</td>
-              </tr>
-            </table>
-            <div name="face" class="agent-info-face">
-              <img style="border: solid 2px #aaa; border-radius: 5px; height: 100%; width: 100%" src="{{faceURL}}">
-            </div>
-          </div>
-        </box>
-      </template>
-
-      <script type="application/dart" src="agentinfo.dart"></script>
-    </element>
-  </body>
-</html>
+<polymer-element name="agent-info">
+  <link rel="import" href="bobbox.html">
+  
+  <template>
+    <style>
+      .agent-info-placing {
+        position: absolute;
+        left: 90%;
+        top: 0%;
+        height: 6%;
+        width: 10%;
+      }
+  
+      .agent-info-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        border-radius: 5px;
+        overflow: hidden;
+        font-size: 1.1em;
+      }
+  
+      .agent-info-face {
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        padding: 5px;
+      }
+    </style>
+    
+    <bob-box class="agent-info-placing">
+      <div name="boxcontent" class="agent-info-container">
+        <table>
+          <tr>
+            <td>{{active}}</td>
+            <td>: {{activeLabel}}</td>
+          </tr>
+          <tr>
+            <td>{{paused}}</td>
+            <td>: {{pausedLabel}}</td>
+          </tr>
+        </table>
+        <div name="face" class="agent-info-face">
+          <img style="border: solid 2px #aaa; border-radius: 5px; height: 100%; width: 100%" src="{{faceURL}}">
+        </div>
+      </div>
+    </bob-box>
+  </template>
+  
+  <script type="application/dart" src="agentinfo.dart"></script>
+</polymer-element>

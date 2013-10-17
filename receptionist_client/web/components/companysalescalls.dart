@@ -13,11 +13,21 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
-class CompanySalesCalls extends WebComponent {
+@CustomTag('company-sales-calls')
+class CompanySalesCalls extends PolymerElement {
   String title = 'Sælgere / Analyser';
+  @observable model.Organization organization = model.nullOrganization;
+
+  void created() {
+    super.created();
+    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
+      this.organization = organization;
+    });
+  }
 }

@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-banking-information">
+  <link rel="import" href="boxwithheader.html">
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-banking-information" constructor="CompanyBankingInformation" extends="span" apply-author-styles>
-      <style>
-        .company-banking-information-placing {
-          position: absolute;
-          left: 57%;
-          top: 41%;
-          height: 9%;
-          width: 21%;
-        }
+  <template>
+    <style>
+      .company-banking-information-placing {
+        position: absolute;
+        left: 57%;
+        top: 41%;
+        height: 9%;
+        width: 21%;
+      }
+  
+      .company-banking-information-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+  
+      .company-banking-information-zebra {
+        list-style-type: none;
+      }
+  
+      .company-banking-information-zebra li {
+        padding: 4px;
+      }
+  
+      .company-banking-information-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-banking-information-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-        .company-banking-information-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
+      <div name="boxcontent" class="minibox company-banking-information-container">
+        <ul template iterate="value in environment.organization.bankingInformationList" class="company-banking-information-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-banking-information-zebra {
-          list-style-type: none;
-        }
-
-        .company-banking-information-zebra li {
-          padding: 4px;
-        }
-
-        .company-banking-information-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-banking-information-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-banking-information-container">
-            <ul template iterate="value in environment.organization.bankingInformationList" class="company-banking-information-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companybankinginformation.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companybankinginformation.dart"></script>
+</polymer-element>

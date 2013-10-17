@@ -13,20 +13,22 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
-import '../classes/keyboardhandler.dart';
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart'      as event;
 
-class BoxWithHeader extends WebComponent {
-  DivElement     body;
-  HeadingElement header;
-  String         headerfontsize = '1.0em';
-  String         headerpadding  = '5px 10px';
-  DivElement     outer;
-  String         focuson        = '';
+@CustomTag('box-with-header')
+class BoxWithHeader extends PolymerElement {
+              DivElement     body;
+              HeadingElement header;
+  @published  String         headerfontsize = '1.0em';
+  @published  String         headerpadding  = '5px 10px';
+              DivElement     outer;
+              String         focuson        = '';
+  @observable String         focusborder    = '';
 
-  String get focusborder => (focuson != '' && environment.activeWidget == focuson) ? 'box-with-header-focusborder' : '';
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
 
   void inserted() {
     _queryElements();
@@ -36,13 +38,17 @@ class BoxWithHeader extends WebComponent {
   }
 
   void _queryElements() {
-    outer = this.query('div');
+    outer = getShadowRoot('box-with-header').query('div');
     header = outer.query('h1');
     body = outer.query('div');
   }
 
   void _registerEventListeners() {
     window.onResize.listen((_) => _resize());
+
+    event.bus.on(event.activeWidgetChanged).listen((String activeWidget){
+      focusborder = (focuson != '' && activeWidget == focuson) ? 'box-with-header-focusborder' : '';
+    });
   }
 
   void _resize() {

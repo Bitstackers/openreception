@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-websites">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-websites-placing {
+        position: absolute;
+        left: 79%;
+        top: 19%;
+        height: 9%;
+        width: 21%;
+      }
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-websites" constructor="CompanyWebsites" extends="span" apply-author-styles>
-      <style>
-        .company-websites-placing {
-          position: absolute;
-          left: 79%;
-          top: 19%;
-          height: 9%;
-          width: 21%;
-        }
+      .company-websites-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
 
-        .company-websites-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
+      .company-websites-zebra {
+        list-style-type: none;
+      }
 
-        .company-websites-zebra {
-          list-style-type: none;
-        }
+      .company-websites-zebra li {
+        padding: 4px;
+      }
 
-        .company-websites-zebra li {
-          padding: 4px;
-        }
+      .company-websites-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-websites-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-        .company-websites-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
+      <div name="boxcontent" class="minibox company-websites-container">
+        <ul template iterate="value in organization.websiteList" class="company-websites-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-websites-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-websites-container">
-            <ul template iterate="value in environment.organization.websiteList" class="company-websites-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companywebsites.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companywebsites.dart"></script>
+</polymer-element>

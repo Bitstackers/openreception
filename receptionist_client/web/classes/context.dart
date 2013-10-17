@@ -17,13 +17,10 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:event_bus/event_bus.dart';
-import 'package:web_ui/web_ui.dart';
 
+import 'events.dart' as event;
 import 'keyboardhandler.dart';
 import 'logger.dart';
-
-final StreamController<Context> _contextActivationStream = new StreamController<Context>.broadcast();
-final Stream<Context> _onChange = _contextActivationStream.stream;
 
 /**
  * A [Context] is a top-level GUI container. It represents a collection of 0
@@ -75,7 +72,7 @@ class Context {
    */
   void activate() {
     if(!isActive) {
-      _contextActivationStream.sink.add(this);
+      event.bus.fire(event.activeContextChanged, this);
     }
   }
 
@@ -127,7 +124,8 @@ class Context {
    */
   void _registerEventListeners() {
     // Keep track of which Context is active.
-    _onChange.listen(_toggle);
+    //_onChange.listen(_toggle);
+    event.bus.on(event.activeContextChanged).listen(_toggle);
 
     // Keep track of keyboardshortcuts.
     keyboardHandler.onKeyName(id).listen((_) => activate());

@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-handling">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-handling-placing {
+        position: absolute;
+        left: 0%;
+        top: 32%;
+        height: 18%;
+        width: 34%;
+      }
+  
+      .company-handling-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+  
+      .company-handling-zebra {
+        list-style-type: none;
+      }
+  
+      .company-handling-zebra li {
+        padding: 5px;
+      }
+  
+      .company-handling-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header focuson="companyhandling" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-handling-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-handling" constructor="CompanyHandling" extends="span" apply-author-styles>
-      <style>
-        .company-handling-placing {
-          position: absolute;
-          left: 0%;
-          top: 32%;
-          height: 18%;
-          width: 34%;
-        }
+      <div name="boxcontent" class="company-handling-container">
+        <ul template iterate="value in organization.handlingList" class="company-handling-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-handling-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
-
-        .company-handling-zebra {
-          list-style-type: none;
-        }
-
-        .company-handling-zebra li {
-          padding: 5px;
-        }
-
-        .company-handling-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header focuson="companyhandling" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-handling-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="company-handling-container">
-            <ul template iterate="value in environment.organization.handlingList" class="company-handling-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companyhandling.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companyhandling.dart"></script>
+</polymer-element>

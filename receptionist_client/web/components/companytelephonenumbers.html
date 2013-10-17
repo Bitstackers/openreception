@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-telephone-numbers">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-telephone-numbers-placing {
+        position: absolute;
+        left: 57%;
+        top: 8%;
+        height: 9%;
+        width: 21%;
+      }
+  
+      .company-telephone-numbers-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+  
+      .company-telephone-numbers-zebra {
+        list-style-type: none;
+      }
+  
+      .company-telephone-numbers-zebra li {
+        padding: 4px;
+      }
+  
+      .company-telephone-numbers-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-telephone-numbers-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-telephone-numbers" constructor="CompanyTelephoneNumbers" extends="span" apply-author-styles>
-      <style>
-        .company-telephone-numbers-placing {
-          position: absolute;
-          left: 57%;
-          top: 8%;
-          height: 9%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="minibox company-telephone-numbers-container">
+        <ul template iterate="value in organization.telephoneNumberList" class="company-telephone-numbers-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-telephone-numbers-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
-
-        .company-telephone-numbers-zebra {
-          list-style-type: none;
-        }
-
-        .company-telephone-numbers-zebra li {
-          padding: 4px;
-        }
-
-        .company-telephone-numbers-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-telephone-numbers-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-telephone-numbers-container">
-            <ul template iterate="value in environment.organization.telephoneNumberList" class="company-telephone-numbers-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companytelephonenumbers.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companytelephonenumbers.dart"></script>
+</polymer-element>

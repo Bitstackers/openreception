@@ -1,54 +1,47 @@
-<!DOCTYPE html>
+<polymer-element name="company-registration-number">
+  <link rel="import" href="boxwithheader.html">
+  
+  <template>
+    <style>
+      .company-registration-number-placing {
+        position: absolute;
+        left: 79%;
+        top: 30%;
+        height: 9%;
+        width: 21%;
+      }
+  
+      .company-registration-number-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+  
+      .company-registration-number-zebra {
+        list-style-type: none;
+      }
+  
+      .company-registration-number-zebra li {
+        padding: 4px;
+      }
+  
+      .company-registration-number-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-registration-number-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-  </head>
-  <body>
-    <element name="company-registration-number" constructor="CompanyRegistrationNumber" extends="span" apply-author-styles>
-      <style>
-        .company-registration-number-placing {
-          position: absolute;
-          left: 79%;
-          top: 30%;
-          height: 9%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="minibox company-registration-number-container">
+        <ul template iterate="value in organization.registrationNumberList" class="company-registration-number-zebra">
+          <li>{{value}}</li>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .company-registration-number-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
-
-        .company-registration-number-zebra {
-          list-style-type: none;
-        }
-
-        .company-registration-number-zebra li {
-          padding: 4px;
-        }
-
-        .company-registration-number-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-registration-number-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="minibox company-registration-number-container">
-            <ul template iterate="value in environment.organization.registrationNumberList" class="company-registration-number-zebra">
-              <li>{{value}}</li>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="companyregistrationnumber.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="companyregistrationnumber.dart"></script>
+</polymer-element>

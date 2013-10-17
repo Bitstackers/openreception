@@ -11,11 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
-class Box extends WebComponent {
-  bool chrome = true;
+@CustomTag('bob-box')
+class Box extends PolymerElement {
+  @published bool chrome = true;
 
-  Map get noChrome => chrome ? {} : {'border' : '0px', 'border-radius' : '0px'};
+  void inserted() {
+    if(!chrome) {
+      this.style.border = '0';
+      this.style.borderRadius = '0';
+    }
+  }
 }

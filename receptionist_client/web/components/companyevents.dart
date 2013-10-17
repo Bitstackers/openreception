@@ -14,18 +14,20 @@
 import 'dart:async';
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/keyboardhandler.dart';
 import '../classes/model.dart' as model;
 
-class CompanyEvents extends WebComponent {
+@CustomTag('company-events')
+class CompanyEvents extends PolymerElement {
   Context context;
   String  title = 'Kalender';
 
   void created() {
+    super.created();
     _registerEventListeners();
   }
 

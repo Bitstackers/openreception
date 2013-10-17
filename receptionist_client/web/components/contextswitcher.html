@@ -1,61 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <link rel="import" href="contextswitcherbutton.html">
-  </head>
-  <body>
-    <polymer-element name="context-switcher">
-      <template>
-        <style>        
-          .context-switcher-default {
-            height: 100%;
-            background-color: #fafafa;
-            border-top: solid 2px #ddd;
-            border-right: solid 2px #ddd;
-            border-bottom: solid 2px #ddd;
-            border-radius: 0px 5px 5px 0px;
-            list-style-type: none;
-          }
-      
-          .context-switcher-item {
-            margin: 0px auto;
-            width: 70%;
-          }
-        </style>
-        
-        <ul class="context-switcher-default"> 
-          <template repeat="{{context in contextList}}">
-            <li class="context-switcher-item">
-              <context-switcher-button context="{{context}}"></context-switcher-button>
-            </li>
-          </template>
-        </ul>
-        
-          <!-- <ul template iterate="context in environment.contextList" class="context-switcher-default">
-            <li class="context-switcher-item">
-              <context-switcher-button context="{{context}}"></context-switcher-button>
-            </li>
-          </ul>
-           -->
-      </template>
-      <script type="application/dart" src="contextswitcher.dart"></script>
-    </polymer-element>
-  </body>
-</html>
-
-
-
-
-<!-- 
-<!DOCTYPE html>
-
-<html>
-<head>
-  <link rel="import" href="contextswitcherbutton.html">
-</head>
-<body>
-  <element name="context-switcher" constructor="ContextSwitcher" extends="span" apply-author-styles>
-    <style>
+<polymer-element name="context-switcher">
+  <template>
+    <style>        
       .context-switcher-default {
         height: 100%;
         background-color: #fafafa;
@@ -65,23 +10,53 @@
         border-radius: 0px 5px 5px 0px;
         list-style-type: none;
       }
-
+  
       .context-switcher-item {
         margin: 0px auto;
         width: 70%;
       }
     </style>
-
-    <template>
-      <ul template iterate="context in environment.contextList" class="context-switcher-default">
+    
+    <ul class="context-switcher-default"> 
+      <template repeat="{{context in contextList}}">
         <li class="context-switcher-item">
           <context-switcher-button context="{{context}}"></context-switcher-button>
         </li>
-      </ul>
-    </template>
+      </template>
+    </ul>
+  </template>
+  <script type="application/dart" src="contextswitcher.dart"></script>
+</polymer-element>
 
-    <script type="application/dart" src="contextswitcher.dart"></script>
-  </element>
-</body>
-</html>
- -->
+<polymer-element name="context-switcher-button">
+  <template>
+     <style>
+      .context-switcher-button-default {
+        position: relative;
+        width: 100%;
+        background-color: inherit;
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .context-switcher-button-alert,
+      .context-switcher-button-buttonface {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .context-switcher-button-default img:hover {
+        cursor: pointer;
+      }
+    </style> 
+    
+    <button disabled="disabled" class="context-switcher-button-default" on-click="_activate">
+      <img name="button_passive_image" class="context-switcher-button-buttonface" src="{{passiveImagePath}}">
+      <img name="button_active_image" class="context-switcher-button-buttonface {{classHidden}}" src="{{activeImagePath}}">
+      <img name="button_alert_image" class="context-switcher-button-alert {{alertMode}}" src="../images/contextalert.svg">
+    </button>
+  </template>
+  <script type="application/dart" src="contextswitcher.dart"></script>
+</polymer-element>

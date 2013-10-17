@@ -1,51 +1,45 @@
-<!DOCTYPE html>
+<polymer-element name="calendar-event">
+  <template>
+    <style>
+      .calendar-event-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+    
+      .calendar-event-content {
+        vertical-align: top;
+      }
+    
+      .calendar-event-timestamp {
+        text-align: right;
+        vertical-align: top;
+        font-weight: bold;
+        padding-top: 5px;
+      }
+    
+      .calendar-event-notactive {
+        color: #999;
+        font-weight: normal;
+      }
+    </style>
+  
+    <table class="calendar-event-table">
+      <tbody>
+        <tr>
+          <td class="calendar-event-content {{notactive}}">
+            {{event}}
+          <td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="calendar-event-timestamp {{notactive}}">
+            {{event.start}} - {{event.stop}}
+          <td>
+        </tr>
+      </tfoot>
+    </table>
+  </template>
 
-<html>
-  <body>
-    <element name="calendar-event" constructor="CalendarEvent" extends="span" apply-author-styles>
-      <style>
-        .calendar-event-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-
-        .calendar-event-content {
-          vertical-align: top;
-        }
-
-        .calendar-event-timestamp {
-          text-align: right;
-          vertical-align: top;
-          font-weight: bold;
-          padding-top: 5px;
-        }
-
-        .calendar-event-notactive {
-          color: #999;
-          font-weight: normal;
-        }
-      </style>
-
-      <template>
-        <table class="calendar-event-table">
-          <tbody>
-            <tr>
-              <td class="calendar-event-content {{notactive}}">
-                {{event}}
-              <td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td class="calendar-event-timestamp {{notactive}}">
-                {{event.start}} - {{event.stop}}
-              <td>
-            </tr>
-          </tfoot>
-        </table>
-      </template>
-
-      <script type="application/dart" src="calendarevent.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="calendarevent.dart"></script>
+</polymer-element>

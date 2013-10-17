@@ -13,18 +13,22 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/keyboardhandler.dart';
 import '../classes/model.dart' as model;
 
-class CompanyHandling extends WebComponent {
+@CustomTag('company-handling')
+class CompanyHandling extends PolymerElement {
   Context context;
   String  title = 'Håndtering';
+  @observable model.Organization organization = model.nullOrganization;
 
   void created() {
+    super.created();
     _registerEventListeners();
   }
 
@@ -45,6 +49,10 @@ class CompanyHandling extends WebComponent {
       if (context.isActive) {
         environment.activeWidget = 'companyhandling';
       }
+    });
+
+    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
+      this.organization = organization;
     });
   }
 }

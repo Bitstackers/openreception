@@ -11,13 +11,20 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+import 'package:polymer/polymer.dart';
 
-import 'package:web_ui/web_ui.dart';
-
-import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
-class CompanyEmailAddresses extends WebComponent {
+@CustomTag('company-email-addresses')
+class CompanyEmailAddresses extends PolymerElement {
   String title = 'Emailadresser';
+  @observable model.Organization organization = model.nullOrganization;
+
+  void created() {
+    super.created();
+    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
+      this.organization = organization;
+    });
+  }
 }

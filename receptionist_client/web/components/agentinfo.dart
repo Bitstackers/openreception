@@ -13,23 +13,27 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/logger.dart';
 import '../classes/protocol.dart' as protocol;
 
-class AgentInfo extends WebComponent {
+@CustomTag('agent-info')
+class AgentInfo extends PolymerElement {
   @observable int active = 0;
   @observable int paused = 0;
 
   String       activeLabel = 'aktive';
   DivElement   divFace;
   DivElement   divParent;
-  String       faceURL     = '../images/face.jpg';
+  String       faceURL     = 'images/face.jpg';
   String       pausedLabel = 'pause';
   TableElement table;
 
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
+
   void created() {
+    super.created();
     _initialSetup();
     _registerEventListeners();
   }
@@ -40,9 +44,9 @@ class AgentInfo extends WebComponent {
   }
 
   void _queryElements() {
-    divParent = this.query('[name="boxcontent"]');
+    divParent = getShadowRoot('agent-info').query('[name="boxcontent"]');
     table = divParent.query('table');
-    divFace = this.query('[name="face"]');
+    divFace = getShadowRoot('agent-info').query('[name="face"]');
   }
 
   void _resize() {

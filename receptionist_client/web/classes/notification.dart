@@ -156,7 +156,7 @@ void _callPickupEventHandler(Map json) {
     if (call.organizationId != null) {
       storage.getOrganization(call.organizationId).then((org) {
         environment.organization = org;
-        environment.contact = environment.organization.contactList.first;
+        environment.contact = org.contactList.first;
 
         log.debug('notification._callPickupEventHandler updated environment.organization to ${org}');
         log.debug('notification._callPickupEventHandler updated environment.contact to ${org.contactList.first}');

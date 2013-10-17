@@ -11,11 +11,24 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+import 'package:polymer/polymer.dart';
 
-import 'package:web_ui/web_ui.dart';
-
-import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
-class WelcomeMessage extends WebComponent {}
+@CustomTag('welcome-message')
+class WelcomeMessage extends PolymerElement {
+  @observable String message = '';
+
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
+
+  void inserted() {
+    event.bus.on(event.organizationChanged).listen((model.Organization organization){
+      if(organization != null && organization != model.nullOrganization) {
+        message = organization.greeting;
+      }else{
+        message = '';
+      }
+    });
+  }
+}
