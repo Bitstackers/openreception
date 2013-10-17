@@ -203,6 +203,6 @@ void _queueLeaveEventHandler(Map json) {
  */
 void _callParkEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
-
-  environment.localCallQueue.addCall(call);
+  event.bus.fire(event.localCallQueueAdd, call);
+  //environment.localCallQueue.addCall(call);
 }

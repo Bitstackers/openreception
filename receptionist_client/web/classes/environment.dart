@@ -32,7 +32,7 @@ void   set activeWidget(String widget) {
 
 @observable model.Call             call             = model.nullCall;
 //@observable model.CallList         callQueue        = new model.CallList();
-@observable model.CallList         localCallQueue   = new model.CallList();
+//@observable model.CallList         localCallQueue   = new model.CallList();
 
 model.Contact     _contact = model.nullContact;
 model.Contact get contact  => _contact;

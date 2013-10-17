@@ -14,37 +14,53 @@
 import 'dart:html';
 
 import 'package:intl/intl.dart';
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/configuration.dart';
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
-class LocalQueue extends WebComponent {
+@CustomTag('local-queue')
+class LocalQueue extends PolymerElement {
   String title = 'Lokal kø';
 
+  @observable model.CallList localCallQueue = new model.CallList();
+
   void created() {
+    super.created();
+    registerEventListerns();
     _initialFill();
+  }
+
+  void registerEventListerns() {
+    event.bus.on(event.localCallQueueAdd).listen((model.Call call) {
+      localCallQueue.addCall(call);
+    });
+
+    event.bus.on(event.callQueueRemove).listen((model.Call call) {
+      localCallQueue.removeCall(call);
+    });
   }
 
   void _initialFill() {
     protocol.callLocalList(configuration.agentID).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
-          environment.localCallQueue = response.data;
+          localCallQueue = response.data;
 
           log.debug('LocalQueue._initialFill updated environment.localCallQueue');
           break;
 
         default:
-          environment.localCallQueue = new model.CallList();
+          localCallQueue = new model.CallList();
           log.debug('LocalQueue._initialFill updated environment.localCallQueue with empty list');
       }
     }).catchError((error) {
-      environment.localCallQueue = new model.CallList();
+      localCallQueue = new model.CallList();
       log.critical('LocalQueue._initialFill protocol.callLocalList failed with ${error}');
     });
   }

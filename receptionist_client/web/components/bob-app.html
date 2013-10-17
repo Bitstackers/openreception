@@ -21,6 +21,7 @@
   <link rel="import" href="companytelephonenumbers.html">
   <link rel="import" href="companywebsites.html">
   <link rel="import" href="globalqueue.html">
+  <link rel="import" href="localqueue.html">
   <link rel="import" href="sendmessage.html">
   <link rel="import" href="welcomemessage.html">
   <link rel="import" href="xfoo.html">
@@ -60,6 +61,7 @@
           <contact-info></contact-info>
           <send-message></send-message>
           <global-queue></global-queue>
+          <local-queue></local-queue>
         </bob-context>
         
         <bob-context id="contextmessages" class="hidden">
@@ -104,7 +106,6 @@
 <html>
   <head>
   <!-- 
-    <link rel="import" href="localqueue.html">
     <link rel="import" href="xfoo.html">
     <link rel="import" href="logbox.html"> 
     
@@ -115,7 +116,6 @@
         <template instantiate="if state.isOK">
 
           <bob-context id="contexthome">
-            <local-queue></local-queue>
           </bob-context>
 
           <bob-context id="contextmessages" class="hidden">

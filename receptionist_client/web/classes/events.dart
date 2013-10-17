@@ -14,6 +14,7 @@ final EventType<model.Call> callQueueAdd = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove = new EventType<model.Call>();
 final EventType<model.Contact> contactChanged = new EventType<model.Contact>();
 final EventType<environment.ContextList> contextListUpdated = new EventType<environment.ContextList>();
+final EventType<model.Call> localCallQueueAdd = new EventType<model.Call>();
 final EventType<model.Organization> organizationChanged = new EventType<model.Organization>();
 final EventType<model.OrganizationList> organizationListChanged = new EventType<model.OrganizationList>();
 final EventType<BobState> stateUpdated = new EventType<BobState>();

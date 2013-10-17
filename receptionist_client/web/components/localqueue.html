@@ -1,53 +1,46 @@
-<!DOCTYPE html>
+<polymer-element name="local-queue">
+  <link rel="import" href="boxwithheader.html">
+  <link rel="import" href="callqueueitem.html">
+  
+  <template>
+    <style>
+      .local-queue-placing {
+        position: absolute;
+        top: 84%;
+        left: 79%;
+        height: 16%;
+        width: 21%;
+      }
+  
+      .local-queue-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        font-size: 0.9em;
+      }
+  
+      .local-queue-zebra {
+        list-style-type: none;
+        width: 100%;
+      }
+  
+      .local-queue-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header class="local-queue-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-    <link rel="import" href="callqueueitem.html">
-  </head>
-  <body>
-    <element name="local-queue" constructor="LocalQueue" extends="span" apply-author-styles>
-      <style>
-        .local-queue-placing {
-          position: absolute;
-          top: 84%;
-          left: 79%;
-          height: 16%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="local-queue-container">
+        <ul template iterate="call in environment.localCallQueue" class="local-queue-zebra">
+          <call-queue-item call="{{call}}"></call-queue-item>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .local-queue-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-          font-size: 0.9em;
-        }
-
-        .local-queue-zebra {
-          list-style-type: none;
-          width: 100%;
-        }
-
-        .local-queue-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header class="local-queue-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="local-queue-container">
-            <ul template iterate="call in environment.localCallQueue" class="local-queue-zebra">
-              <call-queue-item call="{{call}}"></call-queue-item>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="localqueue.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="localqueue.dart"></script>
+</polymer-element>
