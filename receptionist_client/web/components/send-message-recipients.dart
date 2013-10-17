@@ -20,6 +20,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('send-message-recipients')
 class SendMessageRecipients extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   String title = 'Modtagere';
 
   void inserted() {

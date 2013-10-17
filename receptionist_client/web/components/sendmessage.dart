@@ -21,6 +21,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('send-message')
 class SendMessage extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   @observable bool   callsBack               = true;
   final String       cancelButtonLabel       = 'Annuller';
   @observable String cellphone               = '';
