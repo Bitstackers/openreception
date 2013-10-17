@@ -15,7 +15,6 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
-import '../classes/environment.dart' as environment;
 import '../classes/events.dart'      as event;
 
 @CustomTag('box-with-header')

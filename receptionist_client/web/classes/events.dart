@@ -9,6 +9,7 @@ import 'state.dart';
 
 final EventType<Context> activeContextChanged = new EventType<Context>();
 final EventType<String> activeWidgetChanged = new EventType<String>();
+final EventType<model.Contact> contactChanged = new EventType<model.Contact>();
 final EventType<environment.ContextList> contextListUpdated = new EventType<environment.ContextList>();
 final EventType<model.Organization> organizationChanged = new EventType<model.Organization>();
 final EventType<model.OrganizationList> organizationListChanged = new EventType<model.OrganizationList>();

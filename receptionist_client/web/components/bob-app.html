@@ -3,6 +3,7 @@
   <link rel="import" href="bob-context.html">
   <link rel="import" href="bob-disaster.html">
   <link rel="import" href="bob-loading.html">
+  <link rel="import" href="contactinfo.html">
   <link rel="import" href="companyaddresses.html">
   <link rel="import" href="companyalternatenames.html">
   <link rel="import" href="companybankinginformation.html">
@@ -53,6 +54,8 @@
           <company-websites></company-websites>
           <company-registration-number></company-registration-number>
           <company-other></company-other>
+          
+          <contact-info></contact-info>
         </bob-context>
         
         <bob-context id="contextmessages" class="hidden">
@@ -97,7 +100,6 @@
 <html>
   <head>
   <!-- 
-    <link rel="import" href="contactinfo.html">
     <link rel="import" href="sendmessage.html">
     <link rel="import" href="globalqueue.html">
     <link rel="import" href="localqueue.html">
@@ -111,7 +113,6 @@
         <template instantiate="if state.isOK">
 
           <bob-context id="contexthome">
-            <contact-info></contact-info>
             <send-message></send-message>
             <global-queue></global-queue>
             <local-queue></local-queue>

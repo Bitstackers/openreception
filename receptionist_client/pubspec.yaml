@@ -8,3 +8,4 @@ dependencies:
   logging: any
   meta: any
   polymer: any
+  web_ui: any

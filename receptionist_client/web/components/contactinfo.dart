@@ -13,19 +13,40 @@
 
 import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
-class ContactInfo extends WebComponent {
+@CustomTag('contact-info')
+class ContactInfo extends PolymerElement {
   String calendarTitle = 'Kalender';
   String placeholder   = 'søg...';
   String title         = 'Medarbejdere';
 
-  void select(Event event) {
-    int id = int.parse((event.target as LIElement).id.split('_').last);
+  @observable model.Contact contact = model.nullContact;
+  @observable model.Organization organization = model.nullOrganization;
+  model.Contact nullContact = model.nullContact;
+
+  void created() {
+    super.created();
+    registerEventListerns();
+  }
+
+  void registerEventListerns() {
+    event.bus.on(event.contactChanged).listen((model.Contact contact) {
+      this.contact = contact;
+    });
+
+    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
+      this.organization = organization;
+    });
+  }
+
+  void select(Event e, var detail, Node target) {
+    int id = int.parse((target as LIElement).id.split('_').last);
     environment.contact = environment.organization.contactList.getContact(id);
 
     log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');

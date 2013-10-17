@@ -1,259 +1,265 @@
-<!DOCTYPE html>
+<polymer-element name="contact-info">
+  <link rel="import" href="boxwithheader.html">
+  <link rel="import" href="calendarevent.html">
+  
+  <template>
+    <style>
+      .contact-info-placing {
+        position: absolute;
+        top: 52%;
+        left: 0%;
+        height: 48%;
+        width: 45%;
+      }
+  
+      .contact-info-calendarbox {
+        width: 100%;
+        padding: 10px;
+        height: 150px;
+      }
+  
+      .contact-info-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+  
+      .contact-info-datacolumn {
+        height: 100%;
+        width: 59.9%;
+        float: right;
+      }
+  
+      .contact-info-infobox {
+        height: -webkit-calc(100% - 150px);
+        height: -moz-calc(100% - 150px);
+        overflow: auto;
+        padding: 10px;
+      }
+  
+      .contact-info-infobox h5 {
+        font-size: 0.9em;
+      }
+  
+      .contact-info-infobox table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9em;
+      }
+  
+      .contact-info-infobox td {
+        width: 50%;
+        padding: 5px;
+        vertical-align: top;
+      }
+  
+      .contact-info-infobox td div {
+        padding-left: 2px;
+      }
+  
+      .contact-info-infobox td div ul {
+        list-style-type: none;
+      }
+  
+      .contact-info-listcolumn {
+        height: 100%;
+        width: 39.9%;
+        float: left;
+      }
+  
+      .contact-info-listcolumn ul {
+        height: -webkit-calc(100% - 50px);
+        height: -moz-calc(100% - 50px);
+        overflow: auto;
+      }
+  
+      .contact-info-search {
+        width: 100%;
+        height: 30px;
+        border: solid 2px #ccc;
+        padding: 3px;
+        font-size: 1.1em;
+        border-radius: 3px;
+      }
+  
+      .contact-info-searchbox {
+        width: 100%;
+        padding: 10px;
+      }
+  
+      .contact-info-zebra,
+      .contact-info-zebraeven {
+        list-style-type: none;
+      }
+  
+      .contact-info-zebra li,
+      .contact-info-zebraeven li {
+        padding: 5px;
+      }
+  
+      .contact-info-zebra li:nth-of-type(odd) {
+        background-color: #eee;
+      }
+  
+      .contact-info-zebraeven li:nth-of-type(even) {
+        background-color: #eee;
+      }
+  
+      .contact-info-active {
+        border-left: solid 3px red;
+      }
+    </style>
+    
+    <box-with-header class="contact-info-placing">
+      <span name="boxheader">
+        {{title}}
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-    <link rel="import" href="calendarevent.html">
-  </head>
-  <body>
-    <element name="contact-info" constructor="ContactInfo" extends="span" apply-author-styles>
-      <style>
-        .contact-info-placing {
-          position: absolute;
-          top: 52%;
-          left: 0%;
-          height: 48%;
-          width: 45%;
-        }
+      <div name="boxcontent" class="contact-info-container">
+        <div class="contact-info-listcolumn">
+          <div class="contact-info-searchbox">
+            <input class="contact-info-search" type="search" disabled="{{contact == nullContact}}" placeholder="{{placeholder}}"/>
+          </div>
 
-        .contact-info-calendarbox {
-          width: 100%;
-          padding: 10px;
-          height: 150px;
-        }
-
-        .contact-info-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-        }
-
-        .contact-info-datacolumn {
-          height: 100%;
-          width: 59.9%;
-          float: right;
-        }
-
-        .contact-info-infobox {
-          height: -webkit-calc(100% - 150px);
-          height: -moz-calc(100% - 150px);
-          overflow: auto;
-          padding: 10px;
-        }
-
-        .contact-info-infobox h5 {
-          font-size: 0.9em;
-        }
-
-        .contact-info-infobox table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.9em;
-        }
-
-        .contact-info-infobox td {
-          width: 50%;
-          padding: 5px;
-          vertical-align: top;
-        }
-
-        .contact-info-infobox td div {
-          padding-left: 2px;
-        }
-
-        .contact-info-infobox td div ul {
-          list-style-type: none;
-        }
-
-        .contact-info-listcolumn {
-          height: 100%;
-          width: 39.9%;
-          float: left;
-        }
-
-        .contact-info-listcolumn ul {
-          height: -webkit-calc(100% - 50px);
-          height: -moz-calc(100% - 50px);
-          overflow: auto;
-        }
-
-        .contact-info-search {
-          width: 100%;
-          height: 30px;
-          border: solid 2px #ccc;
-          padding: 3px;
-          font-size: 1.1em;
-          border-radius: 3px;
-        }
-
-        .contact-info-searchbox {
-          width: 100%;
-          padding: 10px;
-        }
-
-        .contact-info-zebra,
-        .contact-info-zebraeven {
-          list-style-type: none;
-        }
-
-        .contact-info-zebra li,
-        .contact-info-zebraeven li {
-          padding: 5px;
-        }
-
-        .contact-info-zebra li:nth-of-type(odd) {
-          background-color: #eee;
-        }
-
-        .contact-info-zebraeven li:nth-of-type(even) {
-          background-color: #eee;
-        }
-
-        .contact-info-active {
-          border-left: solid 3px red;
-        }
-      </style>
-
-      <template>
-        <box-with-header class="contact-info-placing">
-          <span name="boxheader">
-            {{title}}
-          </span>
-
-          <div name="boxcontent" class="contact-info-container">
-            <div class="contact-info-listcolumn">
-              <template instantiate="if environment.contact != model.nullContact">
-                <div class="contact-info-searchbox">
-                  <input class="contact-info-search" type="search" placeholder="{{placeholder}}"/>
-                </div>
+          <ul class="contact-info-zebra">
+            <template repeat="{{value in organization.contactList}}"> 
+              <template if="{{value == contact}}">
+                <li class="contact-info-active" id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
               </template>
+              
+              <template if="{{value != contact}}">
+                <li id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
+              </template>
+            </template>
+          </ul>
+        </div>
 
-              <ul template iterate="value in environment.organization.contactList" class="contact-info-zebra">
-                <template instantiate="if value == environment.contact">
-                  <li class="contact-info-active" id="contactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
-                </template>
-                <template instantiate="if value != environment.contact">
-                  <li id="contactinfo_contactid_{{value.id}}" on-click="select($event)">{{value.name}}</li>
-                </template>
-              </ul>
+        <div class="contact-info-datacolumn">
+          <template if="{{contact != nullContact}}">
+            <div class="contact-info-calendarbox">
+              <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+                <span name="boxheader">
+                  {{calendarTitle}}
+                </span>
+
+                <div name="boxcontent" class="minibox contact-info-container">
+                  <ul class="contact-info-zebraeven">
+                    <template repeat="{{value in contact.calendarEventList}}"> 
+                      <template if="{{value.active}}">
+                        <li class="contact-info-active">
+                          <calendar-event event="{{value}}"></calendar-event>
+                        </li>
+                      </template>
+                      <template if="{{!value.active}}">
+                        <li>
+                          <calendar-event event="{{value}}"></calendar-event>
+                        </li>
+                      </template>
+                    </template>
+                  </ul>
+                </div>
+              </box-with-header>
             </div>
 
-            <div class="contact-info-datacolumn">
-              <template instantiate="if environment.contact != model.nullContact">
-                <div class="contact-info-calendarbox">
-                  <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
-                    <span name="boxheader">
-                      {{calendarTitle}}
-                    </span>
-
-                    <div name="boxcontent" class="minibox contact-info-container">
-                      <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven">
-                        <template instantiate="if value.active">
-                          <li class="contact-info-active">
-                            <calendar-event event="{{value}}"></calendar-event>
-                          </li>
-                        </template>
-                        <template instantiate="if !value.active">
-                          <li>
-                            <calendar-event event="{{value}}"></calendar-event>
-                          </li>
+            <div class="contact-info-infobox">
+              <table>
+                <tr>
+                  <td>
+                    <h5>Arbejdstider</h5>
+                    <div>
+                      <ul>
+                        <template repeat="{{value in contact.workHoursList}}">
+                          <li>{{value}}</li>
                         </template>
                       </ul>
                     </div>
-                  </box-with-header>
-                </div>
-
-                <div class="contact-info-infobox">
-                  <table>
-                    <tr>
-                      <td>
-                        <h5>Arbejdstider</h5>
-                        <div>
-                          <ul template iterate="value in environment.contact.workHoursList">
-                            <li>{{value}}</li>
-                          </ul>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>Kald</h5>
-                        <div>
-                          <ul template iterate="value in environment.contact.handlingList">
-                            <li>{{value}}</li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <h5>Stilling</h5>
-                        <div>
-                          {{environment.contact.position}}
-                        </div>
-                      </td>
-                      <td>
-                        <h5>Ansvar</h5>
-                        <div>
-                          {{environment.contact.responsibility}}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <h5>Afdeling</h5>
-                        <div>
-                          {{environment.contact.department}}
-                        </div>
-                      </td>
-                      <td>
-                        <h5>Telefon</h5>
-                        <div>
-                          <ul template iterate="value in environment.contact.telephoneNumberList">
-                            <li>{{value}}</li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <h5>Relationer</h5>
-                        <div>
-                          {{environment.contact.relations}}
-                        </div>
-                      </td>
-                      <td>
-                        <h5>Email</h5>
-                        <div>
-                          <ul template iterate="value in environment.contact.emailAddressList">
-                            <li>{{value}}</li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <h5>Info</h5>
-                        <div>
-                          {{environment.contact.info}}
-                        </div>
-                      </td>
-                      <td>
-                        <h5>Backup</h5>
-                        <div>
-                          <ul template iterate="value in environment.contact.backupList">
-                            <li>{{value}}</li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-              </template>
+                  </td>
+                  <td>
+                    <h5>Kald</h5>
+                    <div>
+                      <ul>
+                        <template repeat="{{value in contact.handlingList}}">
+                          <li>{{value}}</li>
+                        </template>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h5>Stilling</h5>
+                    <div>
+                      {{contact.position}}
+                    </div>
+                  </td>
+                  <td>
+                    <h5>Ansvar</h5>
+                    <div>
+                      {{contact.responsibility}}
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h5>Afdeling</h5>
+                    <div>
+                      {{contact.department}}
+                    </div>
+                  </td>
+                  <td>
+                    <h5>Telefon</h5>
+                    <div>
+                      <ul>
+                        <template repeat="{{value in contact.telephoneNumberList}}">
+                          <li>{{value}}</li>
+                        </template>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h5>Relationer</h5>
+                    <div>
+                      {{contact.relations}}
+                    </div>
+                  </td>
+                  <td>
+                    <h5>Email</h5>
+                    <div>
+                      <ul>
+                        <template repeat="{{value in contact.emailAddressList}}">
+                          <li>{{value}}</li>
+                        </template>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h5>Info</h5>
+                    <div>
+                      {{contact.info}}
+                    </div>
+                  </td>
+                  <td>
+                    <h5>Backup</h5>
+                    <div>
+                      <ul>
+                        <template repeat="{{value in contact.backupList}}">
+                          <li>{{value}}</li>
+                        </template>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </div>
-          </div>
-        </box-with-header>
-      </template>
+          </template>
+        </div>
+      </div>
+    </box-with-header>
+  </template>
 
-      <script type="application/dart" src="contactinfo.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="contactinfo.dart"></script>
+</polymer-element>

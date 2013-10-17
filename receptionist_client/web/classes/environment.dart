@@ -16,8 +16,6 @@ library environment;
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:web_ui/web_ui.dart';
-
 import 'common.dart';
 import 'context.dart';
 import 'events.dart' as event;
@@ -35,7 +33,13 @@ void   set activeWidget(String widget) {
 @observable model.Call             call             = model.nullCall;
 @observable model.CallList         callQueue        = new model.CallList();
 @observable model.CallList         localCallQueue   = new model.CallList();
-@observable model.Contact          contact          = model.nullContact;
+
+model.Contact     _contact = model.nullContact;
+model.Contact get contact  => _contact;
+void          set contact(model.Contact contact) {
+  _contact = contact;
+  event.bus.fire(event.contactChanged, contact);
+}
 
 model.Organization     _organization = model.nullOrganization;
 model.Organization get organization  => _organization;
