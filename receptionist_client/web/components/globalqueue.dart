@@ -12,26 +12,49 @@
 */
 
 import 'dart:html';
-import 'dart:json' as json;
 
 import 'package:intl/intl.dart';
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/commands.dart' as command;
 import '../classes/environment.dart' as environment;
+import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
-class GlobalQueue extends WebComponent {
+@CustomTag('global-queue')
+class GlobalQueue extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
+
   @observable bool   hangupButtonDisabled = true;
   @observable bool   holdButtonDisabled   = true;
   @observable bool   pickupButtonDisabled = false;
   final       String title                = 'Global kø';
 
+  @observable model.Call call = model.nullCall;
+  model.Call nullCall = model.nullCall;
+  model.CallList callQueue;
+
   void created() {
+    super.created();
+    registerEventListerns();
     _initialFill();
+  }
+
+  void registerEventListerns() {
+    event.bus.on(event.callChanged).listen((model.Call call) {
+      this.call = call;
+    });
+
+    event.bus.on(event.callQueueAdd).listen((model.Call call) {
+      callQueue.addCall(call);
+    });
+
+    event.bus.on(event.callQueueRemove).listen((model.Call call) {
+      callQueue.removeCall(call);
+    });
   }
 
   void _initialFill() {
@@ -39,16 +62,16 @@ class GlobalQueue extends WebComponent {
       switch(response.status) {
         case protocol.Response.OK:
           Map callsjson = response.data;
-          environment.callQueue = new model.CallList.fromJson(callsjson, 'calls');
+          callQueue = new model.CallList.fromJson(callsjson, 'calls');
           log.debug('GlobalQueue._initialFill updated environment.callQueue');
           break;
 
         default:
-          environment.callQueue = new model.CallList();
+          callQueue = new model.CallList();
           log.debug('GlobalQueue._initialFill updated environment.callQueue with empty list');
       }
     }).catchError((error) {
-      environment.callQueue = new model.CallList();
+      callQueue = new model.CallList();
       log.critical('GlobalQueue._initialFill protocol.callQueue failed with ${error}');
     });
   }

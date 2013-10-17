@@ -1,58 +1,53 @@
-<!DOCTYPE html>
+<polymer-element name="global-queue">
+  <link rel="import" href="boxwithheader.html">
+  <link rel="import" href="callqueueitem.html">
+ 
+  <template>
+     <style>
+      .global-queue-placing {
+        position: absolute;
+        top: 52%;
+        left: 79%;
+        height: 30%;
+        width: 21%;
+      }
+  
+      .global-queue-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        font-size: 0.9em;
+      }
+  
+      .global-queue-zebra {
+        list-style-type: none;
+        width: 100%;
+      }
+  
+      .global-queue-zebra li:nth-of-type(even) {
+        background-color: #eee;
+      }
+    </style>
+    
+    <box-with-header class="global-queue-placing">
+      <span name="boxheader" class="header">
+        {{title}}
+        <span style="float: right">
+          <button on-click="pickupnextcallHandler" disabled="{{call != nullCall}}">Pickup</button>
+          <button on-click="hangupcallHandler" disabled="{{call == nullCall}}">Hangup</button>
+          <button on-click="holdcallHandler" disabled="{{call == nullCall}}">Hold</button>
+        </span>
+      </span>
 
-<html>
-  <head>
-    <link rel="import" href="boxwithheader.html">
-    <link rel="import" href="callqueueitem.html">
-  </head>
-  <body>
-    <element name="global-queue" constructor="GlobalQueue" extends="span" apply-author-styles>
-      <style>
-        .global-queue-placing {
-          position: absolute;
-          top: 52%;
-          left: 79%;
-          height: 30%;
-          width: 21%;
-        }
+      <div name="boxcontent" class="container">
+        <ul class="global-queue-zebra">
+          <template repeat="{{call in callQueue}}">
+            <call-queue-item call="{{call}}"></call-queue-item>
+          </template>
+        </ul>
+      </div>
+    </box-with-header>
+  </template>
 
-        .global-queue-container {
-          height: 100%;
-          width: 100%;
-          overflow: auto;
-          font-size: 0.9em;
-        }
-
-        .global-queue-zebra {
-          list-style-type: none;
-          width: 100%;
-        }
-
-        .global-queue-zebra li:nth-of-type(even) {
-          background-color: #eee;
-        }
-      </style>
-
-      <template>
-        <box-with-header class="global-queue-placing">
-          <span name="boxheader" class="header">
-            {{title}}
-            <span style="float: right">
-              <button on-click="pickupnextcallHandler()" disabled="{{environment.call != model.nullCall}}">Pickup</button>
-              <button on-click="hangupcallHandler()" disabled="{{environment.call == model.nullCall}}">Hangup</button>
-              <button on-click="holdcallHandler()" disabled="{{environment.call == model.nullCall}}">Hold</button>
-            </span>
-          </span>
-
-          <div name="boxcontent" class="container">
-            <ul template iterate="call in environment.callQueue" class="global-queue-zebra">
-              <call-queue-item call="{{call}}"></call-queue-item>
-            </ul>
-          </div>
-        </box-with-header>
-      </template>
-
-      <script type="application/dart" src="globalqueue.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="globalqueue.dart"></script>
+</polymer-element>

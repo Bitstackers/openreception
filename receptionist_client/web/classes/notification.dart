@@ -17,6 +17,7 @@ import 'dart:async';
 
 import 'configuration.dart';
 import 'environment.dart' as environment;
+import 'events.dart' as event;
 import 'logger.dart';
 import 'model.dart' as model;
 import 'socket.dart';
@@ -179,7 +180,9 @@ void _callPickupEventHandler(Map json) {
  */
 void _queueJoinEventHandler(Map json) {
   log.debug('notification._queueJoinEventHandler event: ${json}');
-  environment.callQueue.addCall(new model.Call.fromJson(json['call']));
+  final model.Call call = new model.Call.fromJson(json['call']);
+  //environment.callQueue.addCall(call);
+  event.bus.fire(event.callQueueAdd, call);
   // Should we sort again, or can we expect that calls joining the queue are
   // always younger then the calls already in the queue?
 }
@@ -190,8 +193,9 @@ void _queueJoinEventHandler(Map json) {
 void _queueLeaveEventHandler(Map json) {
   log.debug('notification._queueLeaveEventHandler event: ${json}');
   final model.Call call = new model.Call.fromJson(json['call']);
-  environment.callQueue.removeCall(call);
-  environment.localCallQueue.removeCall(call);
+  //environment.callQueue.removeCall(call);
+  //environment.localCallQueue.removeCall(call);
+  event.bus.fire(event.callQueueRemove, call);
 }
 
 /**
