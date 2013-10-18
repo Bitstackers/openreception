@@ -13,11 +13,6 @@
 
 library state;
 
-import 'dart:async';
-
-//import 'package:web_ui/web_ui.dart';
-import 'package:polymer/polymer.dart';
-
 import 'events.dart' as event;
 import 'logger.dart';
 
@@ -32,7 +27,7 @@ BobState get state => _state;
 /**
  * Describes the state of bob.
  */
-class BobState {  
+class BobState {
   bool _immutable         = false;
   int  _config            = _UNKNOWN;
   int  _logger            = _UNKNOWN;

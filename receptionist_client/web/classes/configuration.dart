@@ -15,12 +15,11 @@ library configuration;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:json' as json;
+import 'dart:convert';
 
 import 'package:logging/logging.dart';
 import 'package:web_ui/web_ui.dart';
 
-import 'common.dart';
 import 'logger.dart';
 import 'state.dart';
 
@@ -90,7 +89,7 @@ class _Configuration {
   void _onComplete(HttpRequest req) {
     switch(req.status) {
       case 200:
-        _parseConfiguration(json.parse(req.responseText));
+        _parseConfiguration(JSON.decode(req.responseText));
         _loaded = true;
         state.configurationOK();
         break;

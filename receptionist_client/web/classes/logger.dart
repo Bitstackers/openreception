@@ -15,15 +15,12 @@ library logger;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:json' as json;
 
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
-import 'common.dart';
 import 'configuration.dart';
 import 'protocol.dart' as protocol;
-import 'socket.dart' as socket;
 import 'state.dart';
 
 final Log log = new Log._internal();

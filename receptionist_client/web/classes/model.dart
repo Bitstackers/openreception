@@ -19,7 +19,6 @@ import 'package:intl/intl.dart';
 import 'package:web_ui/web_ui.dart';
 
 import 'configuration.dart';
-import 'common.dart';
 import 'environment.dart' as environment;
 import 'logger.dart';
 import 'protocol.dart' as protocol;

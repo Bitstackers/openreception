@@ -11,8 +11,6 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:collection';
-
 import 'package:logging/logging.dart';
 import 'package:polymer/polymer.dart';
 

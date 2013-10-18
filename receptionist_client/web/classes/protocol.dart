@@ -17,10 +17,6 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
 
-import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
-
-import 'common.dart';
 import 'configuration.dart';
 import 'logger.dart';
 import 'model.dart' as model;

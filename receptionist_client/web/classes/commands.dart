@@ -14,7 +14,6 @@
 library commands;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'configuration.dart';
 import 'environment.dart' as environment;

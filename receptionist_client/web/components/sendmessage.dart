@@ -18,7 +18,6 @@ import 'package:polymer/polymer.dart';
 import '../classes/common.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
-import '../classes/model.dart' as model;
 
 @CustomTag('send-message')
 class SendMessage extends PolymerElement with ApplyAuthorStyle {

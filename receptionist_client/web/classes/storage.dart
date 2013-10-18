@@ -15,7 +15,6 @@ library storage;
 
 import 'dart:async';
 
-import 'logger.dart';
 import 'model.dart' as model;
 import 'protocol.dart' as protocol;
 

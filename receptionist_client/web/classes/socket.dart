@@ -15,11 +15,9 @@ library socket;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:json' as json;
+import 'dart:convert';
 
-import 'common.dart';
 import 'configuration.dart';
-import 'environment.dart' as environment;
 import 'logger.dart';
 import 'state.dart';
 
@@ -109,7 +107,7 @@ class Socket {
    */
   void _onMessage(MessageEvent event) {
     try {
-      Map notificationEvent = json.parse(event.data);
+      Map notificationEvent = JSON.decode(event.data);
       _messageStream.sink.add(notificationEvent);
     } on FormatException {
       log.error('Socket._onMessage bad MessageEvent ${event.data}');
