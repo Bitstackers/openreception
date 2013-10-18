@@ -35,7 +35,7 @@ class GlobalQueue extends PolymerElement {
 
   @observable model.Call call = model.nullCall;
   model.Call nullCall = model.nullCall;
-  model.CallList callQueue;
+  @observable model.CallList callQueue;
 
   void created() {
     super.created();
@@ -62,7 +62,7 @@ class GlobalQueue extends PolymerElement {
       switch(response.status) {
         case protocol.Response.OK:
           Map callsjson = response.data;
-          callQueue = new model.CallList.fromJson(callsjson, 'calls');
+          callQueue = toObservable(new model.CallList.fromJson(callsjson, 'calls'));
           log.debug('GlobalQueue._initialFill updated environment.callQueue');
           break;
 
@@ -89,11 +89,11 @@ class GlobalQueue extends PolymerElement {
 
   void hangupcallHandler() {
     log.debug('GlobalQueue.hangupcallHandler');
-    environment.call.hangup();
+    call.hangup();
   }
 
   void holdcallHandler() {
     log.debug('GlobalQueue.holdcallHandler');
-    environment.call.park();
+    call.park();
   }
 }

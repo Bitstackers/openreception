@@ -14,15 +14,17 @@
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
 import '../classes/configuration.dart';
 import '../classes/logger.dart';
 
-class LogBox extends WebComponent {
+@CustomTag('log-box')
+class LogBox extends PolymerElement {
   List<LogRecord> messages = toObservable(new List<LogRecord>());
 
   void created() {
+    super.created();
     log.userLogStream.listen((LogRecord record) {
       messages.insert(0, record);
       // TODO: change messages to a Queue or ListQueue as soon as support for

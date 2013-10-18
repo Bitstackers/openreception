@@ -18,6 +18,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('company-customer-type')
 class CompanyCustomerType extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   String title = 'Kundetype';
   @observable model.Organization organization = model.nullOrganization;
 
