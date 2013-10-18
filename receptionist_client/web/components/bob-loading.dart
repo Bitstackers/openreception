@@ -15,5 +15,6 @@ import 'package:polymer/polymer.dart';
 
 @CustomTag('bob-loading')
 class BobLoading extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   final String text = 'Loading application....';
 }

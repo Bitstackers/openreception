@@ -19,6 +19,7 @@ import '../classes/events.dart'      as event;
 
 @CustomTag('box-with-header')
 class BoxWithHeader extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
               DivElement     body;
               HeadingElement header;
   @published  String         headerfontsize = '1.0em';
@@ -26,8 +27,6 @@ class BoxWithHeader extends PolymerElement {
               DivElement     outer;
               String         focuson        = '';
   @observable String         focusborder    = '';
-
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
 
   void inserted() {
     _queryElements();

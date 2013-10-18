@@ -22,6 +22,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('contact-info')
 class ContactInfo extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   String calendarTitle = 'Kalender';
   String placeholder   = 'søg...';
   String title         = 'Medarbejdere';

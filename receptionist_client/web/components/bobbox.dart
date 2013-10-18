@@ -15,6 +15,7 @@ import 'package:polymer/polymer.dart';
 
 @CustomTag('bob-box')
 class Box extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   @published bool chrome = true;
 
   void inserted() {

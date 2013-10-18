@@ -23,6 +23,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('company-handling')
 class CompanyHandling extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   Context context;
   String  title = 'Håndtering';
   @observable model.Organization organization = model.nullOrganization;

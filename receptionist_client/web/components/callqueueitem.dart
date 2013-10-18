@@ -21,6 +21,7 @@ import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
 class CallQueueItem extends WebComponent {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   model.Call call = model.nullCall;
 
   @observable int age = 0;

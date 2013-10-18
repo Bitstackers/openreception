@@ -18,9 +18,8 @@ import '../classes/model.dart' as model;
 
 @CustomTag('welcome-message')
 class WelcomeMessage extends PolymerElement {
-  @observable String message = '';
-
   bool get applyAuthorStyles => true; //Applies external css styling to component.
+  @observable String message = '';
 
   void inserted() {
     event.bus.on(event.organizationChanged).listen((model.Organization organization){

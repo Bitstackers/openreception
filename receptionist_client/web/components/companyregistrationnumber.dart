@@ -18,6 +18,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('company-registration-number')
 class CompanyRegistrationNumber extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   String title = 'CVR';
   @observable model.Organization organization = model.nullOrganization;
 

@@ -21,6 +21,7 @@ import '../classes/logger.dart';
 
 @CustomTag('log-box')
 class LogBox extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   List<LogRecord> messages = toObservable(new List<LogRecord>());
 
   void created() {

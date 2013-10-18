@@ -18,6 +18,7 @@ import '../classes/environment.dart' as environment;
 
 @CustomTag('bob-context')
 class BobContext extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   void created() {
     super.created();
     environment.contextList.add(new Context(this));

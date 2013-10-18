@@ -21,9 +21,8 @@ import '../classes/events.dart' as event;
 
 @CustomTag('context-switcher')
 class ContextSwitcher extends PolymerElement {
-  @observable environment.ContextList contextList;
-
   bool get applyAuthorStyles => true; //Applies external css styling to component.
+  @observable environment.ContextList contextList;
 
   void created() {
     super.created();

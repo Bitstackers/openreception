@@ -17,6 +17,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('company-event')
 class CalendarEvent extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   model.CalendarEvent event;
 
   @observable String notactive = '';

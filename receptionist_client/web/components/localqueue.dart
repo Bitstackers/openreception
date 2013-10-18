@@ -26,6 +26,7 @@ import '../classes/protocol.dart' as protocol;
 
 @CustomTag('local-queue')
 class LocalQueue extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   String title = 'Lokal kø';
 
   @observable model.CallList localCallQueue = new model.CallList();

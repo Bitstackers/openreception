@@ -25,6 +25,7 @@ import '../classes/storage.dart' as storage;
 
 @CustomTag('company-selector')
 class CompanySelector extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   final String defaultOptionText = 'vælg virksomhed';
   @observable model.Organization organization = model.nullOrganization;
   @observable model.OrganizationList organizationList = new model.OrganizationList();

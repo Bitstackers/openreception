@@ -15,5 +15,6 @@ import 'package:polymer/polymer.dart';
 
 @CustomTag('bob-disaster')
 class BobDisaster extends PolymerElement {
+  bool get applyAuthorStyles => true; //Applies external css styling to component.
   final String text = "We're in disaster mode...";
 }
