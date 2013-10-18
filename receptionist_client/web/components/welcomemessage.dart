@@ -13,21 +13,16 @@
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
 @CustomTag('welcome-message')
-class WelcomeMessage extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class WelcomeMessage extends PolymerElement with ApplyAuthorStyle {
   @observable String message = '';
 
   void inserted() {
-    event.bus.on(event.organizationChanged).listen((model.Organization organization){
-      if(organization != null && organization != model.nullOrganization) {
-        message = organization.greeting;
-      }else{
-        message = '';
-      }
-    });
+    event.bus.on(event.organizationChanged)
+      .listen((model.Organization org) => message = org != model.nullOrganization ? org.greeting : '');
   }
 }

@@ -15,50 +15,61 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/events.dart' as event;
 
 @CustomTag('context-switcher')
-class ContextSwitcher extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class ContextSwitcher extends PolymerElement with ApplyAuthorStyle {
   @observable environment.ContextList contextList;
 
   void created() {
     super.created();
 
-    event.bus.on(event.contextListUpdated).listen((environment.ContextList list) {
-      contextList = list;
-    });
+    event.bus.on(event.contextListUpdated)
+      .listen((environment.ContextList list) => contextList = list);
   }
 }
 
 @CustomTag('context-switcher-button')
-class ContextSwitcherButton extends PolymerElement {
+class ContextSwitcherButton extends PolymerElement with ApplyAuthorStyle {
   @observable String        activeImagePath  = '';
               ImageElement  _alertImg;
   @observable String        alertMode        = 'hidden';
               ButtonElement _button;
   @observable String        classHidden      = '';
   @published  Context       context;
-  @observable bool          enabled          = false;
+  @observable bool          disabled         = false;
               ImageElement  _iconActive;
               ImageElement  _iconPassive;
               bool          _isCreated       = false;
   @observable String        passiveImagePath = '';
 
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+  void created() {
+    super.created();
+
+    _queryElements();
+    _registerEventListeners();
+  }
 
   void inserted() {
     if(!_isCreated) {
-      enabled = context.isActive;
-      classHidden = enabled ? '' : 'hidden';
+      // Context is first available in inserted(). DON'T MOVE TO CREATED()!
+      context.alertUpdated.listen((Context value) {
+        alertMode = value.alertMode ? '' : 'hidden';
+      });
+
+      context.activeUpdated.listen((Context value) {
+        disabled = value.isActive;
+        classHidden = disabled ? '' : 'hidden';
+      });
+
+      disabled = context.isActive;
+      classHidden = disabled ? '' : 'hidden';
 
       activeImagePath = 'images/${context.id}_active.svg';
       passiveImagePath = 'images/${context.id}.svg';
-
-      _queryElements();
-      _registerEventListeners();
 
       _isCreated = true;
     }
@@ -89,19 +100,11 @@ class ContextSwitcherButton extends PolymerElement {
      * iconActive element, as we can never remove nor add the hidden class on
      * the currently active button, because it has also been disabled.
      */
+
     _button.onMouseOver.listen((_) => _iconActive.classes.remove('hidden'));
     _button.onMouseOut.listen((_) => _iconActive.classes.add('hidden'));
 
     window.onResize.listen((_) => _resize());
-
-    context.alertUpdated.listen((Context value) {
-      alertMode = value.alertMode ? '' : 'hidden';
-    });
-
-    context.activeUpdated.listen((Context value) {
-      enabled = value.isActive;
-      classHidden = enabled ? '' : 'hidden';
-    });
   }
 
   /**

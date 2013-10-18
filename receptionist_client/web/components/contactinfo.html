@@ -123,6 +123,8 @@
 
           <ul class="contact-info-zebra">
             <template repeat="{{value in organization.contactList}}"> 
+              <li class="{{getInfoClass(value)}}" id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
+            <!-- 
               <template if="{{value == contact}}">
                 <li class="contact-info-active" id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
               </template>
@@ -130,6 +132,7 @@
               <template if="{{value != contact}}">
                 <li id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
               </template>
+               -->
             </template>
           </ul>
         </div>
@@ -144,17 +147,10 @@
 
                 <div name="boxcontent" class="minibox contact-info-container">
                   <ul class="contact-info-zebraeven">
-                    <template repeat="{{value in contact.calendarEventList}}"> 
-                      <template if="{{value.active}}">
-                        <li class="contact-info-active">
-                          <calendar-event event="{{value}}"></calendar-event>
-                        </li>
-                      </template>
-                      <template if="{{!value.active}}">
-                        <li>
-                          <calendar-event event="{{value}}"></calendar-event>
-                        </li>
-                      </template>
+                    <template repeat="{{event in contact.calendarEventList}}">
+                      <li class="{{getClass(event)}}">
+                        <calendar-event event="{{event}}"></calendar-event>
+                      </li>
                     </template>
                   </ul>
                 </div>

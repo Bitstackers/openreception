@@ -12,19 +12,16 @@
 */
 
 import 'dart:async';
-import 'dart:html';
 
-import 'package:web_ui/web_ui.dart';
+import 'package:polymer/polymer.dart';
 
-import '../classes/commands.dart' as command;
-import '../classes/logger.dart';
+import '../classes/common.dart';
 import '../classes/model.dart' as model;
 
-class CallQueueItem extends WebComponent {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  model.Call call = model.nullCall;
-
-  @observable int age = 0;
+@CustomTag('call-queue-item')
+class CallQueueItem extends PolymerElement with ApplyAuthorStyle {
+  @observable int        age  = 0;
+  @published  model.Call call = model.nullCall;
 
   void inserted() {
     age = new DateTime.now().difference(call.start).inSeconds.ceil();

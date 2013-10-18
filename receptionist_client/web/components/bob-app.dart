@@ -13,16 +13,15 @@
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/state.dart';
 
 @CustomTag('bob-app')
-class BobApp extends PolymerElement {
+class BobApp extends PolymerElement with ApplyAuthorStyle {
   @observable BobState state;
 
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  
   void inserted() {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);
     event.bus.on(event.stateUpdated).listen((BobState value) => state = value);

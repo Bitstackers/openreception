@@ -15,11 +15,12 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/logger.dart';
 import '../classes/protocol.dart' as protocol;
 
 @CustomTag('agent-info')
-class AgentInfo extends PolymerElement {
+class AgentInfo extends PolymerElement with ApplyAuthorStyle {
   @observable int active = 0;
   @observable int paused = 0;
 
@@ -29,8 +30,6 @@ class AgentInfo extends PolymerElement {
   String       faceURL     = 'images/face.jpg';
   String       pausedLabel = 'pause';
   TableElement table;
-
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
 
   void created() {
     super.created();

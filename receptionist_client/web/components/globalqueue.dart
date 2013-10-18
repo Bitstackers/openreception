@@ -11,31 +11,24 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-
-import 'package:intl/intl.dart';
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/commands.dart' as command;
-import '../classes/environment.dart' as environment;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
-import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 @CustomTag('global-queue')
-class GlobalQueue extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-
-  @observable bool   hangupButtonDisabled = true;
-  @observable bool   holdButtonDisabled   = true;
-  @observable bool   pickupButtonDisabled = false;
-  final       String title                = 'Global kø';
-
-  @observable model.Call call = model.nullCall;
-  model.Call nullCall = model.nullCall;
+class GlobalQueue extends PolymerElement with ApplyAuthorStyle {
+  @observable model.Call     call                 = model.nullCall;
   @observable model.CallList callQueue;
+  @observable bool           hangupButtonDisabled = true;
+  @observable bool           holdButtonDisabled   = true;
+              model.Call     nullCall             = model.nullCall;
+  @observable bool           pickupButtonDisabled = false;
+  final       String         title                = 'Global kø';
 
   void created() {
     super.created();
@@ -44,17 +37,14 @@ class GlobalQueue extends PolymerElement {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.callChanged).listen((model.Call call) {
-      this.call = call;
-    });
+    event.bus.on(event.callChanged)
+      .listen((model.Call value) => call = value);
 
-    event.bus.on(event.callQueueAdd).listen((model.Call call) {
-      callQueue.addCall(call);
-    });
+    event.bus.on(event.callQueueAdd)
+      .listen((model.Call call) => callQueue.addCall(call));
 
-    event.bus.on(event.callQueueRemove).listen((model.Call call) {
-      callQueue.removeCall(call);
-    });
+    event.bus.on(event.callQueueRemove)
+      .listen((model.Call call) => callQueue.removeCall(call));
   }
 
   void _initialFill() {
@@ -62,13 +52,13 @@ class GlobalQueue extends PolymerElement {
       switch(response.status) {
         case protocol.Response.OK:
           Map callsjson = response.data;
-          callQueue = toObservable(new model.CallList.fromJson(callsjson, 'calls'));
-          log.debug('GlobalQueue._initialFill updated environment.callQueue');
+          callQueue = new model.CallList.fromJson(callsjson, 'calls');
+          log.debug('GlobalQueue._initialFill updated callQueue');
           break;
 
         default:
           callQueue = new model.CallList();
-          log.debug('GlobalQueue._initialFill updated environment.callQueue with empty list');
+          log.debug('GlobalQueue._initialFill updated callQueue with empty list');
       }
     }).catchError((error) {
       callQueue = new model.CallList();

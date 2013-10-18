@@ -11,19 +11,11 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-
 import 'package:polymer/polymer.dart';
 
-import '../classes/environment.dart' as environment;
-import '../classes/model.dart' as model;
+import '../classes/common.dart';
 
 @CustomTag('send-message-recipients')
-class SendMessageRecipients extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class SendMessageRecipients extends PolymerElement with ApplyAuthorStyle {
   String title = 'Modtagere';
-
-  void inserted() {
-    print(getShadowRoot('send-message-recipients').query('.box-with-header-outer').parent.clientHeight);
-  }
 }

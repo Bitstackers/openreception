@@ -15,12 +15,12 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/context.dart';
 import '../classes/environment.dart' as environment;
 
 @CustomTag('x-foo')
-class Foo extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class Foo extends PolymerElement with ApplyAuthorStyle {
               Context _context;
   @observable String  contextid = 'bar';
               bool    isCreated = false;

@@ -15,13 +15,13 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
 @CustomTag('send-message')
-class SendMessage extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class SendMessage extends PolymerElement with ApplyAuthorStyle {
   @observable bool   callsBack               = true;
   final String       cancelButtonLabel       = 'Annuller';
   @observable String cellphone               = '';
@@ -50,36 +50,8 @@ class SendMessage extends PolymerElement {
 
   void select(Event e, var detail, Node target) {
     int id = int.parse((target as LIElement).id.split('_').last);
-    environment.contact = environment.organization.contactList.getContact(id);
+    //environment.contact = environment.organization.contactList.getContact(id);
 
     log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');
   }
-
-
-
-
-
-//  List<String>       contactList             = toObservable(new List<String>());
-
-
-
-
-
-
-
-
-//  final String       recipientList           = 'Modtagere';
-
-
-
-
-
-//
-//  created() {
-//    contactList.add('Thomas');
-//    contactList.add('Trine');
-//    contactList.add('Foo');
-//    contactList.add('Bar');
-//    contactList.add('Foo Bar');
-//  }
 }

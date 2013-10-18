@@ -36,8 +36,10 @@
       </span>
 
       <div name="boxcontent" class="minibox company-email-addresses-container">
-        <ul template iterate="value in organization.emailAddressList" class="company-email-addresses-zebra">
-          <li>{{value}}</li>
+        <ul class="company-email-addresses-zebra">
+          <template repeat="{{value in organization.emailAddressList}}">
+            <li>{{value}}</li>
+          </template>
         </ul>
       </div>
     </box-with-header>

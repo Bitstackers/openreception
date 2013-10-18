@@ -15,17 +15,15 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
-import '../classes/events.dart'      as event;
+import '../classes/common.dart';
 
 @CustomTag('box-with-header')
-class BoxWithHeader extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class BoxWithHeader extends PolymerElement with ApplyAuthorStyle {
               DivElement     body;
               HeadingElement header;
   @published  String         headerfontsize = '1.0em';
   @published  String         headerpadding  = '5px 10px';
               DivElement     outer;
-              String         focuson        = '';
   @observable String         focusborder    = '';
 
   void inserted() {
@@ -43,10 +41,6 @@ class BoxWithHeader extends PolymerElement {
 
   void _registerEventListeners() {
     window.onResize.listen((_) => _resize());
-
-    event.bus.on(event.activeWidgetChanged).listen((String activeWidget){
-      focusborder = (focuson != '' && activeWidget == focuson) ? 'box-with-header-focusborder' : '';
-    });
   }
 
   void _resize() {

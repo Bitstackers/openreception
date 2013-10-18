@@ -30,14 +30,16 @@
       }
     </style>
     
-    <box-with-header focuson="companyhandling" headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-handling-placing">
+    <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px" class="company-handling-placing">
       <span name="boxheader">
         {{title}}
       </span>
 
       <div name="boxcontent" class="company-handling-container">
-        <ul template iterate="value in organization.handlingList" class="company-handling-zebra">
-          <li>{{value}}</li>
+        <ul class="company-handling-zebra">
+          <template repeat="{{value in organization.handlingList}}"> 
+            <li>{{value}}</li>
+          </template>
         </ul>
       </div>
     </box-with-header>

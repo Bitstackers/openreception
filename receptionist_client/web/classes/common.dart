@@ -92,3 +92,10 @@ class MapIterator<T_Key, T_Value> extends Iterator<T_Value> {
     return keys.moveNext();
   }
 }
+
+/**
+ * Applies external css styling to Polymer component.
+ */
+class ApplyAuthorStyle {
+  bool get applyAuthorStyles => true;
+}

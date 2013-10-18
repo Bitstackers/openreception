@@ -57,6 +57,7 @@ class Call implements Comparable {
 
     _id = json['id'];
     //_start = DateTime.parse(json['arrival_time']);
+    log.debug('Model.call Call.fromJson: ${json['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time'])*1000)}');
     _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time'])*1000);
   }
 

@@ -15,21 +15,20 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/environment.dart' as environment;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 
 @CustomTag('contact-info')
-class ContactInfo extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  String calendarTitle = 'Kalender';
-  String placeholder   = 'søg...';
-  String title         = 'Medarbejdere';
-
-  @observable model.Contact contact = model.nullContact;
+class ContactInfo extends PolymerElement with ApplyAuthorStyle {
+              String calendarTitle            = 'Kalender';
+  @observable model.Contact contact           = model.nullContact;
+              model.Contact nullContact       = model.nullContact;
   @observable model.Organization organization = model.nullOrganization;
-  model.Contact nullContact = model.nullContact;
+              String placeholder              = 'søg...';
+              String title                    = 'Medarbejdere';
 
   void created() {
     super.created();
@@ -37,19 +36,17 @@ class ContactInfo extends PolymerElement {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.contactChanged).listen((model.Contact contact) {
-      this.contact = contact;
-    });
-
-    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
-      this.organization = organization;
-    });
+    event.bus.on(event.contactChanged).listen((model.Contact value) => contact = value);
+    event.bus.on(event.organizationChanged).listen((model.Organization value) => organization = value);
   }
 
-  void select(Event e, var detail, Node target) {
+  void select(Event _, var __, Node target) {
     int id = int.parse((target as LIElement).id.split('_').last);
     environment.contact = environment.organization.contactList.getContact(id);
 
     log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');
   }
+
+  String getClass(model.CalendarEvent event) => event.active ? 'company-events-active' : '';
+  String getInfoClass(model.Contact value) => contact == value ? 'contact-info-active' : '';
 }

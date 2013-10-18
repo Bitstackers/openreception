@@ -1,26 +1,20 @@
-<!DOCTYPE html>
+<polymer-element name="call-queue-item">
+  <style>
+    .call-queue-item-default {
+      padding: 5px;
+    }
 
-<html>
-  <body>
-    <element name="call-queue-item" constructor="CallQueueItem" extends="li" apply-author-styles>
-      <style>
-        .call-queue-item-default {
-          padding: 5px;
-        }
+    .call-queue-item-seconds {
+      float: right;
+    }
+  </style>
 
-        .call-queue-item-seconds {
-          float: right;
-        }
-      </style>
+  <template>
+    <div on-click="pickupcallHandler()" class="call-queue-item-default">
+      <span>Call ID : {{call.id}}</span>
+      <span class="call-queue-item-seconds">{{age}}</span>
+    </div>
+  </template>
 
-      <template>
-        <div on-click="pickupcallHandler()" class="call-queue-item-default">
-          <span>Call ID : {{call.id}}</span>
-          <span class="call-queue-item-seconds">{{age}}</span>
-        </div>
-      </template>
-
-      <script type="application/dart" src="callqueueitem.dart"></script>
-    </element>
-  </body>
-</html>
+  <script type="application/dart" src="callqueueitem.dart"></script>
+</polymer-element>

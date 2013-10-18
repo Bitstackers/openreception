@@ -13,19 +13,19 @@
 
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
 @CustomTag('company-customer-type')
-class CompanyCustomerType extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  String title = 'Kundetype';
+class CompanyCustomerType extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
+              String             title        = 'Kundetype';
 
   void created() {
     super.created();
-    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
-      this.organization = organization;
+    event.bus.on(event.organizationChanged).listen((model.Organization org) {
+      organization = org;
     });
   }
 }

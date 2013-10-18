@@ -1,5 +1,5 @@
 <polymer-element name="log-box">
-  <link rel="import" href="box.html">
+  <link rel="import" href="bobbox.html">
 
   <template>
     <style>
@@ -14,7 +14,7 @@
       }
     </style>
     
-    <box>
+    <bob-box>
       <div name="boxcontent" class="log-box-container">
         <table>
           <template repeat="{{record in messages}}"> 
@@ -26,7 +26,7 @@
           </template>
         </table>
       </div>
-    </box>
+    </bob-box>
   </template>
 
   <script type="application/dart" src="logbox.dart"></script>

@@ -11,17 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+import 'dart:collection';
 
 import 'package:logging/logging.dart';
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/configuration.dart';
 import '../classes/logger.dart';
 
 @CustomTag('log-box')
-class LogBox extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
+class LogBox extends PolymerElement with ApplyAuthorStyle {
   List<LogRecord> messages = toObservable(new List<LogRecord>());
 
   void created() {
@@ -29,7 +29,7 @@ class LogBox extends PolymerElement {
     log.userLogStream.listen((LogRecord record) {
       messages.insert(0, record);
       // TODO: change messages to a Queue or ListQueue as soon as support for
-      // for these are added to web_ui toObservable().
+      // for these are added to polymer toObservable(). Go patch it Thomas Løcke
 
       while (messages.length > configuration.userLogSizeLimit) {
         messages.removeLast();

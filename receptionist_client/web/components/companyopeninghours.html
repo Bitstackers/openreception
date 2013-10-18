@@ -35,8 +35,10 @@
       </span>
 
       <div name="boxcontent" class="minibox company-opening-hours-container">
-        <ul template iterate="value in organization.openingHoursList" class="company-opening-hours-zebra">
-          <li>{{value}}</li>
+        <ul class="company-opening-hours-zebra">
+          <template repeat="{{value in organization.openingHoursList}}"> 
+            <li>{{value}}</li>
+          </template>
         </ul>
       </div>
     </box-with-header>

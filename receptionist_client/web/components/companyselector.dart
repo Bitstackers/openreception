@@ -17,30 +17,32 @@ import 'dart:html';
 
 import 'package:polymer/polymer.dart';
 
-import '../classes/environment.dart' as environment;
+import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/storage.dart' as storage;
 
 @CustomTag('company-selector')
-class CompanySelector extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  final String defaultOptionText = 'vælg virksomhed';
-  @observable model.Organization organization = model.nullOrganization;
-  @observable model.OrganizationList organizationList = new model.OrganizationList();
-  model.Organization nullOrganization = model.nullOrganization;
+class CompanySelector extends PolymerElement with ApplyAuthorStyle {
+  final       String                 defaultOptionText = 'vælg virksomhed';
+              model.Organization     nullOrganization  = model.nullOrganization;
+  @observable model.Organization     organization      = model.nullOrganization;
+  @observable model.OrganizationList organizationList  = new model.OrganizationList();
 
   void created() {
     super.created();
     _registerEventHandlers();
+    _initialFill();
+  }
 
+  void _initialFill() {
     storage.getOrganizationList().then((model.OrganizationList list) {
-      environment.organizationList = list;
+      organizationList = list;
 
-      log.debug('CompanySelector.created updated environment.organizationList');
+      log.debug('CompanySelector._initialFill updated organizationList');
     }).catchError((error) {
-      log.critical('CompanySelector.created storage.getOrganizationList failed with ${error}');
+      log.critical('CompanySelector._initialFill storage.getOrganizationList failed with ${error}');
     });
   }
 
@@ -51,32 +53,32 @@ class CompanySelector extends PolymerElement {
       int id = int.parse(element.value);
 
       storage.getOrganization(id).then((model.Organization org) {
-        environment.organization = org;
-        environment.contact = org.contactList.first;
+        event.bus.fire(event.organizationChanged, org);
+        event.bus.fire(event.contactChanged, org.contactList.first);
 
-        log.debug('CompanySelector._selection updated environment.organization to ${environment.organization}');
-        log.debug('CompanySelector._selection updated environment.contact to ${environment.contact}');
+        log.debug('CompanySelector._selection updated organization to ${organization}');
+        log.debug('CompanySelector._selection updated contact to ${org.contactList.first}');
       }).catchError((error) {
-        environment.organization = model.nullOrganization;
-        environment.contact = model.nullContact;
+        event.bus.fire(event.organizationChanged, model.nullOrganization);
+        event.bus.fire(event.contactChanged, model.nullContact);
 
         log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
       });
     } on FormatException {
-      environment.organization = model.nullOrganization;
-      environment.contact = model.nullContact;
+      event.bus.fire(event.organizationChanged, model.nullOrganization);
+      event.bus.fire(event.contactChanged, model.nullContact);
 
       log.critical('CompanySelector._selection storage.getOrganization SelectElement has bad value: ${element.value}');
     }
   }
 
   void _registerEventHandlers() {
-    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
-      this.organization = organization;
+    event.bus.on(event.organizationChanged).listen((model.Organization org) {
+      organization = org;
     });
 
-    event.bus.on(event.organizationListChanged).listen((model.OrganizationList organizationList) {
-      this.organizationList = organizationList;
+    event.bus.on(event.organizationListChanged).listen((model.OrganizationList list) {
+      organizationList = list;
     });
   }
 }

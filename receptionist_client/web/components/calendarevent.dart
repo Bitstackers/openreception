@@ -15,11 +15,11 @@ import 'package:polymer/polymer.dart';
 
 import '../classes/model.dart' as model;
 
-@CustomTag('company-event')
-class CalendarEvent extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  model.CalendarEvent event;
+import '../classes/common.dart';
 
+@CustomTag('calendar-event')
+class CalendarEvent extends PolymerElement with ApplyAuthorStyle {
+  @published model.CalendarEvent event;
   @observable String notactive = '';
 
   void inserted() {

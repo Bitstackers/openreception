@@ -11,25 +11,19 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-
-import 'package:intl/intl.dart';
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/configuration.dart';
-import '../classes/environment.dart' as environment;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
-import '../classes/notification.dart' as notify;
 import '../classes/protocol.dart' as protocol;
 
 @CustomTag('local-queue')
-class LocalQueue extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  String title = 'Lokal kø';
-
+class LocalQueue extends PolymerElement with ApplyAuthorStyle {
   @observable model.CallList localCallQueue = new model.CallList();
+              String         title          = 'Lokal kø';
 
   void created() {
     super.created();
@@ -38,13 +32,11 @@ class LocalQueue extends PolymerElement {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.localCallQueueAdd).listen((model.Call call) {
-      localCallQueue.addCall(call);
-    });
+    event.bus.on(event.localCallQueueAdd)
+      .listen((model.Call call) => localCallQueue.addCall(call));
 
-    event.bus.on(event.callQueueRemove).listen((model.Call call) {
-      localCallQueue.removeCall(call);
-    });
+    event.bus.on(event.callQueueRemove)
+      .listen((model.Call call) => localCallQueue.removeCall(call));
   }
 
   void _initialFill() {

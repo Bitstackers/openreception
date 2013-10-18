@@ -67,6 +67,26 @@ Future<Response> callQueue() {
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_) {
+      Map data = {'calls': [
+                        {'assigned_to': '',
+                          'organization_id': 1,
+                          'id': 'callid_1',
+                          'arrival_time': '1382099801'},
+                          {'assigned_to': '',
+                            'organization_id': 2,
+                            'id': 'callid_2',
+                            'arrival_time': '1382099831'},
+                            {'assigned_to': '',
+                              'organization_id': 1,
+                              'id': 'callid_3',
+                              'arrival_time': '1382099821'}
+
+                            ]};
+          log.debug('protocol.call.dart callQueue is sending out fake data.');
+
+          completer.complete(new Response<Map>(Response.OK, data));
+        return;
+
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
@@ -105,9 +125,9 @@ Future<Response<model.CallList>> callLocalList(String agentId) {
 //Dummy Data
   Map dummyData = new Map();;
   List calls = new List();
-  calls.add({'id':'42','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch/1000).toInt()}'});
-  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch/1000).toInt()}'});
-  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch/1000).toInt()}'});
+  calls.add({'id':'42','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
   dummyData['calls'] = calls;
   model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
   completer.complete(new Response<model.CallList>(Response.OK, data));

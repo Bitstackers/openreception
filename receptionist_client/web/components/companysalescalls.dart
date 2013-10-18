@@ -11,24 +11,21 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-
 import 'package:polymer/polymer.dart';
 
-import '../classes/environment.dart' as environment;
+import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
 @CustomTag('company-sales-calls')
-class CompanySalesCalls extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  String title = 'Sælgere / Analyser';
+class CompanySalesCalls extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
+              String             title        = 'Sælgere / Analyser';
 
   void created() {
     super.created();
-    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
-      this.organization = organization;
+    event.bus.on(event.organizationChanged).listen((model.Organization org) {
+      organization = org;
     });
   }
 }

@@ -30,7 +30,8 @@ void   set activeWidget(String widget) {
   event.bus.fire(event.activeWidgetChanged, widget);
 }
 
-@observable model.Call             call             = model.nullCall;
+//@observable
+model.Call             call             = model.nullCall;
 //@observable model.CallList         callQueue        = new model.CallList();
 //@observable model.CallList         localCallQueue   = new model.CallList();
 

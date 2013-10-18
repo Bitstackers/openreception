@@ -11,53 +11,31 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:async';
-import 'dart:html';
-
 import 'package:polymer/polymer.dart';
 
+import '../classes/common.dart';
 import '../classes/context.dart';
-import '../classes/environment.dart' as environment;
-import '../classes/keyboardhandler.dart';
+import '../classes/events.dart' as event;
 import '../classes/model.dart' as model;
 
 @CustomTag('company-events')
-class CompanyEvents extends PolymerElement {
-  bool get applyAuthorStyles => true; //Applies external css styling to component.
-  Context context;
-  String  title = 'Kalender';
+class CompanyEvents extends PolymerElement with ApplyAuthorStyle {
+              Context            context;
+  @observable model.Organization organization = model.nullOrganization;
+              String             title        = 'Kalender';
 
   void created() {
     super.created();
     _registerEventListeners();
   }
 
-  void inserted() {
-    // Get the context we belong to. As all contexts currently only have one
-    // layer of widgets, we can just ask for the widgets parent.id. If we ever
-    // get to a point where a widget is a child of a widget and not of a context
-    // then we will have to do some more advanced searching to find our the
-    // context we belong to.
-    //
-    // We do this in inserted() because the contextList has not yet been
-    // populated in created().
-    context = environment.contextList.get(this.parent.id);
-  }
-
   void _registerEventListeners() {
-    keyboardHandler.onKeyName('companyevents').listen((_) {
-      if (context.isActive) {
-        environment.activeWidget = 'companyevents';
-      }
+    event.bus.on(event.organizationChanged).listen((model.Organization org) {
+      organization = org;
     });
   }
 
-  void foo(int keyCode) {
-    if(environment.organization != model.nullOrganization) {
-//      this.query('ul').tabIndex = 0;  This works for focus, but is somewhat ugly.
-//      this.query('ul').focus();
-
-      print('arrowUp');
-    }
+  String getClass(model.CalendarEvent event) {
+    return event.active ? 'company-events-active' : '';
   }
 }
