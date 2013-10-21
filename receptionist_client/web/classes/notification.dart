@@ -15,6 +15,8 @@ library notification;
 
 import 'dart:async';
 
+import 'package:event_bus/event_bus.dart';
+
 import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'events.dart' as event;
@@ -30,18 +32,20 @@ final _Notification notification = new _Notification();
  * A Class to handle all the WebSocket notifications coming from Alice.
  */
 class _Notification {
-  Socket                             _socket;
-  Map<String, StreamController<Map>> _Streams = {'call_hangup':new StreamController<Map>.broadcast(),
-                                                 'call_pickup':new StreamController<Map>.broadcast(),
-                                                 'queue_join' :new StreamController<Map>.broadcast(),
-                                                 'queue_leave':new StreamController<Map>.broadcast(),
-                                                 'call_park'  :new StreamController<Map>.broadcast()};
+  static final EventType<Map> callHangup = new EventType<Map>();
+  static final EventType<Map> callPickup = new EventType<Map>();
+  static final EventType<Map> queueJoin  = new EventType<Map>();
+  static final EventType<Map> queueLeave = new EventType<Map>();
+  static final EventType<Map> callPark   = new EventType<Map>();
 
-  Stream<Map> get callHangup  => _Streams['call_hangup'].stream;
-  Stream<Map> get callPickup  => _Streams['call_pickup'].stream;
-  Stream<Map> get queueJoin   => _Streams['queue_join'].stream;
-  Stream<Map> get queueLeave  => _Streams['queue_leave'].stream;
-  Stream<Map> get callPark    => _Streams['call_park'].stream;
+  Socket _socket;
+
+  Map<String, EventType<Map>> _events =
+    {'call_hangup': callHangup,
+     'call_pickup':callPickup,
+     'queue_join':queueJoin,
+     'queue_leave':queueLeave,
+     'call_park':callPark};
 
   /**
    * [_Notification] constructor.
@@ -65,8 +69,8 @@ class _Notification {
       String eventName = json['event'];
       log.debug('notification with event: ${eventName}');
 
-      if (_Streams.containsKey(eventName)) {
-        _Streams[eventName].sink.add(json);
+      if (_events.containsKey(eventName)) {
+        event.bus.fire(_events[eventName], json);
 
       } else {
         log.error('Unhandled event: ${eventName}');
@@ -110,11 +114,12 @@ class _Notification {
    * Register event listeners.
    */
   void _registerEventListeners() {
-    callHangup.listen((Map json) => _callHangupEventHandler(json));
-    callPickup.listen((Map json) => _callPickupEventHandler(json));
-    queueJoin.listen((Map json) => _queueJoinEventHandler(json));
-    queueLeave.listen((Map json) => _queueLeaveEventHandler(json));
-    callPark.listen((Map json) => _callParkEventHandler(json));
+    event.bus
+    ..on(callHangup).listen((Map json) => _callHangupEventHandler(json))
+    ..on(callPickup).listen((Map json) => _callPickupEventHandler(json))
+    ..on(queueJoin) .listen((Map json) => _queueJoinEventHandler(json))
+    ..on(queueLeave).listen((Map json) => _queueLeaveEventHandler(json))
+    ..on(callPark)  .listen((Map json) => _callParkEventHandler(json));
   }
 }
 
