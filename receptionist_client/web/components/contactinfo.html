@@ -118,11 +118,11 @@
       <div name="boxcontent" class="contact-info-container">
         <div class="contact-info-listcolumn">
           <div class="contact-info-searchbox">
-            <input class="contact-info-search" type="search" disabled="{{contact == nullContact}}" placeholder="{{placeholder}}"/>
+            <input class="contact-info-search" type="search" disabled?="{{contact == nullContact}}" placeholder="{{placeholder}}"/>
           </div>
 
           <ul class="contact-info-zebra">
-            <template repeat="{{value in organization.contactList}}"> 
+            <template repeat="{{value in organization.contactList}}" watch="{{contact}}"> 
               <li class="{{getInfoClass(value)}}" id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
             <!-- 
               <template if="{{value == contact}}">

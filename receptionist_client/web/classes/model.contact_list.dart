@@ -58,6 +58,7 @@ class ContactList extends IterableBase<Contact>{
    * Return the [id] [Contact] or [nullContact] if [id] does not exist.
    */
   Contact getContact(int id) {
+    log.debug('ContactList.getContact' + _list.fold('', (acc, item) => '${acc}, ${item}'));
     for(Contact contact in _list) {
       if(id == contact.id) {
         return contact;

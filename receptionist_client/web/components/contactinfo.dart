@@ -16,7 +16,6 @@ import 'dart:html';
 import 'package:polymer/polymer.dart';
 
 import '../classes/common.dart';
-import '../classes/environment.dart' as environment;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
@@ -36,17 +35,25 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.contactChanged).listen((model.Contact value) => contact = value);
     event.bus.on(event.organizationChanged).listen((model.Organization value) => organization = value);
+    event.bus.on(event.contactChanged).listen((model.Contact value) {
+      contact = value;
+      //Now that a new contact is selected, we need to rerender the contact list.
+      notifyProperty(this, #organization);
+    });
   }
 
   void select(Event _, var __, Node target) {
     int id = int.parse((target as LIElement).id.split('_').last);
-    environment.contact = environment.organization.contactList.getContact(id);
+    var contact = organization.contactList.getContact(id);
+    event.bus.fire(event.contactChanged, contact);
 
-    log.debug('ContactInfo.select updated environment.contact to ${environment.contact}');
+    log.debug('ContactInfo.select on id: ${id} updated contact to ${contact}');
   }
 
   String getClass(model.CalendarEvent event) => event.active ? 'company-events-active' : '';
-  String getInfoClass(model.Contact value) => contact == value ? 'contact-info-active' : '';
+  String getInfoClass(model.Contact value) {
+    log.debug('ContactInfo - infoClass value: ${value}');
+    return contact == value ? 'contact-info-active' : '';
+  }
 }

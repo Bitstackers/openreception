@@ -101,7 +101,7 @@ class Contact implements Comparable{
     // Adding some dummy calendar events
     Map foo = new Map();
     foo['calendar_events'] = new List();
-    foo['calendar_events'].add({'start':'2013-05-01 08:00:00', 'stop':'2014-02-07 17:00:01', 'content':'${id} Jordomrejse2'});
+    foo['calendar_events'].add({'start':'2013-11-01 08:00:00', 'stop':'2014-04-07 17:00:01', 'content':'${id} Måneomrejse'});
     foo['calendar_events'].add({'start':'2013-05-01 08:00:00', 'stop':'2014-02-07 17:00:00', 'content':'${id} Jordomrejse'});
     foo['calendar_events'].add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus I Shanghai. Tjekker sin email.'});
     _calendarEventList = new CalendarEventList.fromJson(foo, 'calendar_events');

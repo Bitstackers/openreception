@@ -72,14 +72,16 @@ Future<Response> callQueue() {
                           'organization_id': 1,
                           'id': 'callid_1',
                           'arrival_time': '1382099801'},
-                          {'assigned_to': '',
-                            'organization_id': 2,
-                            'id': 'callid_2',
-                            'arrival_time': '1382099831'},
-                            {'assigned_to': '',
-                              'organization_id': 1,
-                              'id': 'callid_3',
-                              'arrival_time': '1382099821'}
+
+                         {'assigned_to': '',
+                          'organization_id': 2,
+                          'id': 'callid_2',
+                          'arrival_time': '1382099831'},
+
+                         {'assigned_to': '',
+                          'organization_id': 1,
+                          'id': 'callid_3',
+                          'arrival_time': '1382099821'}
 
                             ]};
           log.debug('protocol.call.dart callQueue is sending out fake data.');
