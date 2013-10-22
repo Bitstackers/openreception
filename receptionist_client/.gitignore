@@ -15,7 +15,7 @@ packages
 web/classes/docs
 
 # Don't track the auto generated javascript files.
-src/dart/bob.dart.js*
+web/dart/bob.dart.js*
 
 # Don't track deploy and build files
 deploy
