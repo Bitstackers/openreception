@@ -42,10 +42,10 @@ class _Notification {
 
   Map<String, EventType<Map>> _events =
     {'call_hangup': callHangup,
-     'call_pickup':callPickup,
-     'queue_join':queueJoin,
-     'queue_leave':queueLeave,
-     'call_park':callPark};
+     'call_pickup': callPickup,
+     'queue_join' : queueJoin,
+     'queue_leave': queueLeave,
+     'call_park'  : callPark};
 
   /**
    * [_Notification] constructor.

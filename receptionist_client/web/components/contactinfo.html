@@ -72,7 +72,11 @@
         height: -moz-calc(100% - 50px);
         overflow: auto;
       }
-  
+      
+      .contact-info-listcolumn ul li {
+        overflow: hidden;
+      }
+      
       .contact-info-search {
         width: 100%;
         height: 30px;
@@ -118,27 +122,16 @@
       <div name="boxcontent" class="contact-info-container">
         <div class="contact-info-listcolumn">
           <div class="contact-info-searchbox">
-            <input class="contact-info-search" type="search" disabled?="{{contact == nullContact}}" placeholder="{{placeholder}}"/>
+            <input class="contact-info-search" type="search" disabled?="{{organization == nullOrganization}}" placeholder="{{placeholder}}" value="{{search}}"/>
           </div>
 
-          <ul class="contact-info-zebra">
-            <template repeat="{{value in organization.contactList}}" watch="{{contact}}"> 
-              <li class="{{getInfoClass(value)}}" id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
-            <!-- 
-              <template if="{{value == contact}}">
-                <li class="contact-info-active" id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
-              </template>
-              
-              <template if="{{value != contact}}">
-                <li id="contactinfo_contactid_{{value.id}}" on-click="select">{{value.name}}</li>
-              </template>
-               -->
-            </template>
+          <ul id="ulcontactlist" class="contact-info-zebra">
+            <!-- Contact List, filled from component class. -->
           </ul>
         </div>
 
         <div class="contact-info-datacolumn">
-          <template if="{{contact != nullContact}}">
+         <!--  <template if="{{contact != nullContact}}">  -->
             <div class="contact-info-calendarbox">
               <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                 <span name="boxheader">
@@ -251,11 +244,25 @@
                 </tr>
               </table>
             </div>
-          </template>
+          <!-- </template>  -->
         </div>
       </div>
     </box-with-header>
   </template>
 
+  <script type="application/dart" src="contactinfo.dart"></script>
+</polymer-element>
+
+<polymer-element name="contact-list-item">
+  <template>
+    <style>
+      .contact-info-active {
+        border-left: solid 3px red;
+      }
+    </style>
+  
+    <span class="{{activeClass}}" on-click="select">{{contact}}</span>
+  </template>
+  
   <script type="application/dart" src="contactinfo.dart"></script>
 </polymer-element>

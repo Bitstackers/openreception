@@ -54,19 +54,15 @@ class CompanySelector extends PolymerElement with ApplyAuthorStyle {
 
       storage.getOrganization(id).then((model.Organization org) {
         event.bus.fire(event.organizationChanged, org);
-        event.bus.fire(event.contactChanged, org.contactList.first);
 
         log.debug('CompanySelector._selection updated organization to ${organization}');
-        log.debug('CompanySelector._selection updated contact to ${org.contactList.first}');
       }).catchError((error) {
         event.bus.fire(event.organizationChanged, model.nullOrganization);
-        event.bus.fire(event.contactChanged, model.nullContact);
 
         log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
       });
     } on FormatException {
       event.bus.fire(event.organizationChanged, model.nullOrganization);
-      event.bus.fire(event.contactChanged, model.nullContact);
 
       log.critical('CompanySelector._selection storage.getOrganization SelectElement has bad value: ${element.value}');
     }

@@ -31,6 +31,7 @@ class Contact implements Comparable{
   String            position             = '';
   String            relations            = '';
   String            responsibility       = '';
+  List<String>      _tags                = new List<String>();
   MiniboxList       _telephoneNumberList = new MiniboxList();
   MiniboxList       _workHoursList       = new MiniboxList();
 
@@ -38,6 +39,7 @@ class Contact implements Comparable{
   CalendarEventList get calendarEventList   => _calendarEventList;
   MiniboxList       get emailAddressList    => _emailAddressList;
   MiniboxList       get handlingList        => _handlingList;
+  List<String>      get tags                => _tags;
   MiniboxList       get telephoneNumberList => _telephoneNumberList;
   MiniboxList       get workHoursList       => _workHoursList;
 
@@ -96,6 +98,10 @@ class Contact implements Comparable{
       position       = attributes['position'];
       relations      = attributes['relations'];
       responsibility = attributes['responsibility'];
+
+      if(attributes.containsKey('tags')) {
+        _tags = attributes['tags'];
+      }
     }
 
     // Adding some dummy calendar events
