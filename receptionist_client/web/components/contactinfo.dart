@@ -31,7 +31,7 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
   @observable  model.Organization  organization        = model.nullOrganization;
   @observable  List<model.Contact> filteredContactList = toObservable([]);
                String              placeholder         = 'søg...';
-  @observable  String              search              = '';
+               String              search              = '';
                String              title               = 'Medarbejdere';
 
   void created() {
@@ -44,9 +44,13 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
       ..onScroll.listen((Event event) => scrolling(event));
   }
 
+  void onkeyup(Event _, var __, InputElement target) {
+    search = target.value;
+    _performSearch();
+  }
+
   void _performSearch() {
     model.Contact _selectedContact;
-    log.debug('Thomas Changed: ${search}');
     //Clear filtered list
     filteredContactList.clear();
 
@@ -91,7 +95,7 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
       }
       return termIndex >= terms.length;
     }
-    //TODO Tags list not handlingList
+
     return value.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
            value.tags.any((tag) => tag.toLowerCase().contains(searchTerm.toLowerCase()));
   }
@@ -167,31 +171,5 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
   String getInfoClass(model.Contact value) {
     log.debug('ContactInfo - infoClass value: ${value}');
     return contact == value ? 'contact-info-active' : '';
-  }
-}
-
-
-@CustomTag('contact-list-item')
-class ContactListItem extends PolymerElement with ApplyAuthorStyle {
-  @published model.Contact contact;
-  @observable String activeClass;
-
-  void created() {
-    super.created();
-    event.bus.on(event.contactChanged).listen((model.Contact value) {
-      activeClass = contact == value ? 'contact-info-active' : '';
-    });
-  }
-
-  void inserted() {
-    //log.debug('list item ---- ${contact}');
-//    if(contact == _selectedContact) {
-//      activeClass = 'contact-info-active';
-//    }
-  }
-
-  void select(Event _, var __, Node target) {
-    event.bus.fire(event.contactChanged, contact);
-    log.debug('ContactInfo.select updated contact to ${contact}');
   }
 }

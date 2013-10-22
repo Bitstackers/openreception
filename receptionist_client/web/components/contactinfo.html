@@ -122,7 +122,11 @@
       <div name="boxcontent" class="contact-info-container">
         <div class="contact-info-listcolumn">
           <div class="contact-info-searchbox">
-            <input class="contact-info-search" type="search" disabled?="{{organization == nullOrganization}}" placeholder="{{placeholder}}" value="{{search}}"/>
+            <input class="contact-info-search" 
+                   type="search" 
+                   disabled?="{{organization == nullOrganization}}" 
+                   placeholder="{{placeholder}}" 
+                   on-keyup="onkeyup"/>
           </div>
 
           <ul id="ulcontactlist" class="contact-info-zebra">
@@ -131,138 +135,122 @@
         </div>
 
         <div class="contact-info-datacolumn">
-         <!--  <template if="{{contact != nullContact}}">  -->
-            <div class="contact-info-calendarbox">
-              <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
-                <span name="boxheader">
-                  {{calendarTitle}}
-                </span>
+          <div class="contact-info-calendarbox">
+            <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+              <span name="boxheader">
+                {{calendarTitle}}
+              </span>
 
-                <div name="boxcontent" class="minibox contact-info-container">
-                  <ul class="contact-info-zebraeven">
-                    <template repeat="{{event in contact.calendarEventList}}">
-                      <li class="{{getClass(event)}}">
-                        <calendar-event event="{{event}}"></calendar-event>
-                      </li>
-                    </template>
-                  </ul>
-                </div>
-              </box-with-header>
-            </div>
+              <div name="boxcontent" class="minibox contact-info-container">
+                <ul class="contact-info-zebraeven">
+                  <template repeat="{{event in contact.calendarEventList}}">
+                    <li class="{{getClass(event)}}">
+                      <calendar-event event="{{event}}"></calendar-event>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </box-with-header>
+          </div>
 
-            <div class="contact-info-infobox">
-              <table>
-                <tr>
-                  <td>
-                    <h5>Arbejdstider</h5>
-                    <div>
-                      <ul>
-                        <template repeat="{{value in contact.workHoursList}}">
-                          <li>{{value}}</li>
-                        </template>
-                      </ul>
-                    </div>
-                  </td>
-                  <td>
-                    <h5>Kald</h5>
-                    <div>
-                      <ul>
-                        <template repeat="{{value in contact.handlingList}}">
-                          <li>{{value}}</li>
-                        </template>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Stilling</h5>
-                    <div>
-                      {{contact.position}}
-                    </div>
-                  </td>
-                  <td>
-                    <h5>Ansvar</h5>
-                    <div>
-                      {{contact.responsibility}}
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Afdeling</h5>
-                    <div>
-                      {{contact.department}}
-                    </div>
-                  </td>
-                  <td>
-                    <h5>Telefon</h5>
-                    <div>
-                      <ul>
-                        <template repeat="{{value in contact.telephoneNumberList}}">
-                          <li>{{value}}</li>
-                        </template>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Relationer</h5>
-                    <div>
-                      {{contact.relations}}
-                    </div>
-                  </td>
-                  <td>
-                    <h5>Email</h5>
-                    <div>
-                      <ul>
-                        <template repeat="{{value in contact.emailAddressList}}">
-                          <li>{{value}}</li>
-                        </template>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Info</h5>
-                    <div>
-                      {{contact.info}}
-                    </div>
-                  </td>
-                  <td>
-                    <h5>Backup</h5>
-                    <div>
-                      <ul>
-                        <template repeat="{{value in contact.backupList}}">
-                          <li>{{value}}</li>
-                        </template>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          <!-- </template>  -->
+          <div class="contact-info-infobox">
+            <table>
+              <tr>
+                <td>
+                  <h5>Arbejdstider</h5>
+                  <div>
+                    <ul>
+                      <template repeat="{{value in contact.workHoursList}}">
+                        <li>{{value}}</li>
+                      </template>
+                    </ul>
+                  </div>
+                </td>
+                <td>
+                  <h5>Kald</h5>
+                  <div>
+                    <ul>
+                      <template repeat="{{value in contact.handlingList}}">
+                        <li>{{value}}</li>
+                      </template>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Stilling</h5>
+                  <div>
+                    {{contact.position}}
+                  </div>
+                </td>
+                <td>
+                  <h5>Ansvar</h5>
+                  <div>
+                    {{contact.responsibility}}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Afdeling</h5>
+                  <div>
+                    {{contact.department}}
+                  </div>
+                </td>
+                <td>
+                  <h5>Telefon</h5>
+                  <div>
+                    <ul>
+                      <template repeat="{{value in contact.telephoneNumberList}}">
+                        <li>{{value}}</li>
+                      </template>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Relationer</h5>
+                  <div>
+                    {{contact.relations}}
+                  </div>
+                </td>
+                <td>
+                  <h5>Email</h5>
+                  <div>
+                    <ul>
+                      <template repeat="{{value in contact.emailAddressList}}">
+                        <li>{{value}}</li>
+                      </template>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Info</h5>
+                  <div>
+                    {{contact.info}}
+                  </div>
+                </td>
+                <td>
+                  <h5>Backup</h5>
+                  <div>
+                    <ul>
+                      <template repeat="{{value in contact.backupList}}">
+                        <li>{{value}}</li>
+                      </template>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </box-with-header>
   </template>
 
-  <script type="application/dart" src="contactinfo.dart"></script>
-</polymer-element>
-
-<polymer-element name="contact-list-item">
-  <template>
-    <style>
-      .contact-info-active {
-        border-left: solid 3px red;
-      }
-    </style>
-  
-    <span class="{{activeClass}}" on-click="select">{{contact}}</span>
-  </template>
-  
   <script type="application/dart" src="contactinfo.dart"></script>
 </polymer-element>

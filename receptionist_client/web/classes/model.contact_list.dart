@@ -37,7 +37,7 @@ class ContactList extends IterableBase<Contact>{
     //XXX ??? TODO FIXME TESTING TEST WARNING ERROR
     if (json.containsKey(key) && json[key] is List) {
       Random rand = new Random();
-      int limit = 6;
+      int limit = 60;
       var attr = [{'backup':[{'priority':1, 'value':'backup'}],
                    'emailaddresses':[{'priority':1, 'value':'emailaddresses'}],
                    'handling':[{'priority':1, 'value':'handling'}],
