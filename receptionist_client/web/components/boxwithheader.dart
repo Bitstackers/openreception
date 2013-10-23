@@ -26,7 +26,9 @@ class BoxWithHeader extends PolymerElement with ApplyAuthorStyle {
               DivElement     outer;
   @observable String         focusborder    = '';
 
-  void inserted() {
+  BoxWithHeader.created() : super.created() {}
+
+  void enteredView() {
     _queryElements();
     _registerEventListeners();
     _styling();
@@ -34,9 +36,9 @@ class BoxWithHeader extends PolymerElement with ApplyAuthorStyle {
   }
 
   void _queryElements() {
-    outer = getShadowRoot('box-with-header').query('div');
-    header = outer.query('h1');
-    body = outer.query('div');
+    outer = getShadowRoot('box-with-header').querySelector('div');
+    header = outer.querySelector('h1');
+    body = outer.querySelector('div');
   }
 
   void _registerEventListeners() {

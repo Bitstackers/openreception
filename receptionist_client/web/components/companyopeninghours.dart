@@ -22,8 +22,7 @@ class CompanyOpeningHours extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Åbningstider';
 
-  void created() {
-    super.created();
+  CompanyOpeningHours.created() : super.created() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
     });

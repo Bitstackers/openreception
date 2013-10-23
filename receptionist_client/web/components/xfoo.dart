@@ -25,7 +25,9 @@ class Foo extends PolymerElement with ApplyAuthorStyle {
   @observable String  contextid = 'bar';
               bool    isCreated = false;
 
-  void inserted() {
+  Foo.created() : super.created() {}
+
+  void enteredView() {
     if(!isCreated) {
       _context = environment.contextList.get(this.parent.id);
       contextid = _context.id;

@@ -18,4 +18,6 @@ import '../classes/common.dart';
 @CustomTag('bob-loading')
 class BobLoading extends PolymerElement with ApplyAuthorStyle {
   final String text = 'Loading application....';
+
+  BobLoading.created() : super.created() {}
 }

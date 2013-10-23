@@ -22,7 +22,9 @@ class CalendarEvent extends PolymerElement with ApplyAuthorStyle {
   @published model.CalendarEvent event;
   @observable String notactive = '';
 
-  void inserted() {
+  CalendarEvent.created() : super.created() {}
+
+  void enteredView() {
     notactive = event.active ? '' : 'calendar-event-notactive';
   }
 }

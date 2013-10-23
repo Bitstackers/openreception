@@ -24,8 +24,7 @@ class CompanyEvents extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Kalender';
 
-  void created() {
-    super.created();
+  CompanyEvents.created() : super.created() {
     _registerEventListeners();
   }
 

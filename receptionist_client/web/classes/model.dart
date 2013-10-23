@@ -14,7 +14,7 @@
 library model;
 
 import 'dart:collection';
-import 'dart:math';
+import 'dart:math' hide log;
 
 import 'package:intl/intl.dart';
 import 'package:web_ui/web_ui.dart';

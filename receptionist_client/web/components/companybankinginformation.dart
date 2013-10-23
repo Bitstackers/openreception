@@ -22,8 +22,7 @@ class CompanyBankingInformation extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Bankoplysninger';
 
-  void created() {
-    super.created();
+  CompanyBankingInformation.created() : super.created() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
     });

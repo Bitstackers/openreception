@@ -23,6 +23,7 @@ import 'events.dart' as event;
 import 'logger.dart';
 import 'model.dart' as model;
 import 'socket.dart';
+import 'state.dart';
 import 'storage.dart' as storage;
 import 'utilities.dart';
 
@@ -51,10 +52,18 @@ class _Notification {
    * [_Notification] constructor.
    */
   _Notification() {
+    log.debug('_Notification Constructor.');
+    event.bus.on(event.stateUpdated).listen((BobState s){
+      if(s.isConfigurationOK) {
+        initialize();
+      }
+    });
+    _registerEventListeners();
+  }
+
+  void initialize() {
     _socket = new Socket()
         ..onMessage.listen(_onMessage);
-
-    _registerEventListeners();
   }
 
   bool isConnected() => _socket.isConnected;

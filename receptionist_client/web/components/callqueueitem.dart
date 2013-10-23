@@ -23,7 +23,9 @@ class CallQueueItem extends PolymerElement with ApplyAuthorStyle {
   @observable int        age  = 0;
   @published  model.Call call = model.nullCall;
 
-  void inserted() {
+  CallQueueItem.created() : super.created() {}
+
+  void enteredView() {
     age = new DateTime.now().difference(call.start).inSeconds.ceil();
     new Timer.periodic(new Duration(seconds:1), (_) => age++);
   }

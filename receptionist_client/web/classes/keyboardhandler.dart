@@ -115,7 +115,7 @@ class _KeyboardHandler {
    * [_keyUp].
    */
   void _keyDown(KeyboardEvent event) {
-    KeyEvent key = new KeyEvent(event);
+    KeyEvent key = new KeyEvent.wrap(event);
 
     if (_locked == null && (key.ctrlKey && key.altKey)) {
       int keyCode = key.keyCode;
@@ -134,7 +134,7 @@ class _KeyboardHandler {
    * that was used to lock the class in the first place.
    */
   void _keyUp(KeyboardEvent event) {
-    KeyEvent key = new KeyEvent(event);
+    KeyEvent key = new KeyEvent.wrap(event);
 
     if (_locked == key.keyCode) {
       _locked = null;

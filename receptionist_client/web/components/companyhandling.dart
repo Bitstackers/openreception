@@ -24,8 +24,7 @@ class CompanyHandling extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Håndtering';
 
-  void created() {
-    super.created();
+  CompanyHandling.created() : super.created() {
     _registerEventListeners();
   }
 

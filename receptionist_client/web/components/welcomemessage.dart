@@ -21,7 +21,9 @@ import '../classes/model.dart' as model;
 class WelcomeMessage extends PolymerElement with ApplyAuthorStyle {
   @observable String message = '';
 
-  void inserted() {
+  WelcomeMessage.created() : super.created() {}
+
+  void enteredView() {
     event.bus.on(event.organizationChanged)
       .listen((model.Organization org) => message = org != model.nullOrganization ? org.greeting : '');
   }

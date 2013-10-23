@@ -33,15 +33,24 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
                String              placeholder         = 'søg...';
                String              search              = '';
                String              title               = 'Medarbejdere';
-
-  void created() {
-    super.created();
+  //Make all necessary changes (add FooElement.created constructor, inserted/removed -> enteredView/leftView).
+  ContactInfo.created() : super.created() {
     registerEventListeners();
 
-    onPropertyChange(this, #search, _performSearch);
-    displayedContactList = getShadowRoot('contact-info').query('#ulcontactlist')
-        //TODO Why does onscroll not work
-      ..onScroll.listen((Event event) => scrolling(event));
+//    displayedContactList = this.query('#ulcontactlist')
+//        //TODO Why does onscroll not work
+//      ..onScroll.listen((Event event) => scrolling(event));
+  }
+
+  void enteredView() {
+    print('--------------2--------------2--------------2---------------------------');
+    print('This: ${this}');
+    print('getShadowRoot("contact-info"): ${getShadowRoot('contact-info')}');
+    print('shadowRoot: ${shadowRoot}');
+    print('this.\$["ulcontactlist"]: ${this.$["ulcontactlist"]}');
+    print('this.\$["#ulcontactlist"]: ${this.$["#ulcontactlist"]}');
+    print('querySelector: ${querySelector('#ulcontactlist')}');
+    displayedContactList = getShadowRoot("contact-info").querySelector('#ulcontactlist');
   }
 
   void onkeyup(Event _, var __, InputElement target) {

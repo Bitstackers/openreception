@@ -34,6 +34,7 @@ class BobState {
   bool _scheduledShutdown = false;
   int  _websocket         = _UNKNOWN;
 
+  bool get isConfigurationOK    => _config == _OK;
   bool get isConfigurationError => _config == _ERROR;
   bool get isError              => _getOverallState() == _ERROR;
   bool get isOK                 => _getOverallState() == _OK;

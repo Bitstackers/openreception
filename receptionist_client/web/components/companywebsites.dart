@@ -22,8 +22,7 @@ class CompanyWebsites extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Web-sider';
 
-  void created() {
-    super.created();
+  CompanyWebsites.created() : super.created() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
     });

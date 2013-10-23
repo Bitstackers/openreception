@@ -22,8 +22,7 @@ class CompanyCustomerType extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Kundetype';
 
-  void created() {
-    super.created();
+  CompanyCustomerType.created() : super.created() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
     });

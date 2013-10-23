@@ -22,8 +22,7 @@ import '../classes/logger.dart';
 class LogBox extends PolymerElement with ApplyAuthorStyle {
   List<LogRecord> messages = toObservable(new List<LogRecord>());
 
-  void created() {
-    super.created();
+  LogBox.created() : super.created() {
     log.userLogStream.listen((LogRecord record) {
       messages.insert(0, record);
       // TODO: change messages to a Queue or ListQueue as soon as support for

@@ -18,4 +18,6 @@ import '../classes/common.dart';
 @CustomTag('bob-disaster')
 class BobDisaster extends PolymerElement with ApplyAuthorStyle {
   final String text = "We're in disaster mode...";
+
+  BobDisaster.created() : super.created() {}
 }

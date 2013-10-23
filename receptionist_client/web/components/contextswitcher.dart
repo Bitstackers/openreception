@@ -24,9 +24,7 @@ import '../classes/events.dart' as event;
 class ContextSwitcher extends PolymerElement with ApplyAuthorStyle {
   @observable environment.ContextList contextList;
 
-  void created() {
-    super.created();
-
+  ContextSwitcher.created() : super.created() {
     event.bus.on(event.contextListUpdated)
       .listen((environment.ContextList list) => contextList = list);
   }
@@ -46,15 +44,15 @@ class ContextSwitcherButton extends PolymerElement with ApplyAuthorStyle {
               bool          _isCreated       = false;
   @observable String        passiveImagePath = '';
 
-  void created() {
-    super.created();
+  ContextSwitcherButton.created() : super.created() {
 
-    _queryElements();
-    _registerEventListeners();
   }
 
-  void inserted() {
+  void enteredView() {
     if(!_isCreated) {
+      _queryElements();
+      _registerEventListeners();
+
       // Context is first available in inserted(). DON'T MOVE TO CREATED()!
       context.alertUpdated.listen((Context value) {
         alertMode = value.alertMode ? '' : 'hidden';
@@ -87,10 +85,10 @@ class ContextSwitcherButton extends PolymerElement with ApplyAuthorStyle {
   }
 
   void _queryElements() {
-    _button = getShadowRoot('context-switcher-button').query('button');
-    _iconActive = _button.query('[name="button_active_image"]');
-    _iconPassive = _button.query('[name="button_passive_image"]');
-    _alertImg = _button.query('[name="button_alert_image"]');
+    _button = getShadowRoot('context-switcher-button').querySelector('button');
+    _iconActive = _button.querySelector('[name="button_active_image"]');
+    _iconPassive = _button.querySelector('[name="button_passive_image"]');
+    _alertImg = _button.querySelector('[name="button_alert_image"]');
   }
 
   void _registerEventListeners() {

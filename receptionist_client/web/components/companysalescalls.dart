@@ -22,8 +22,7 @@ class CompanySalesCalls extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization organization = model.nullOrganization;
               String             title        = 'Sælgere / Analyser';
 
-  void created() {
-    super.created();
+  CompanySalesCalls.created() : super.created() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
     });

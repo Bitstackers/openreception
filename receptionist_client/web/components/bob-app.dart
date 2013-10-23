@@ -22,7 +22,9 @@ import '../classes/state.dart';
 class BobApp extends PolymerElement with ApplyAuthorStyle {
   @observable BobState state;
 
-  void inserted() {
+  BobApp.created() : super.created() {}
+
+  void enteredView() {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);
     event.bus.on(event.stateUpdated).listen((BobState value) => state = value);
   }

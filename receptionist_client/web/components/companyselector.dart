@@ -30,8 +30,7 @@ class CompanySelector extends PolymerElement with ApplyAuthorStyle {
   @observable model.Organization     organization      = model.nullOrganization;
   @observable model.OrganizationList organizationList  = new model.OrganizationList();
 
-  void created() {
-    super.created();
+  CompanySelector.created() : super.created() {
     _registerEventHandlers();
     _initialFill();
   }

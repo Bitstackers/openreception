@@ -31,21 +31,21 @@ class AgentInfo extends PolymerElement with ApplyAuthorStyle {
   String       pausedLabel = 'pause';
   TableElement table;
 
-  void created() {
-    super.created();
+  AgentInfo.created() : super.created(){
     _initialSetup();
+  }
+
+  void enteredView() {
+    _queryElements();
+    _resize();
+
     _registerEventListeners();
   }
 
-  void inserted() {
-    _queryElements();
-    _resize();
-  }
-
   void _queryElements() {
-    divParent = getShadowRoot('agent-info').query('[name="boxcontent"]');
-    table = divParent.query('table');
-    divFace = getShadowRoot('agent-info').query('[name="face"]');
+    divParent = getShadowRoot('agent-info').querySelector('[name="boxcontent"]');
+    table = divParent.querySelector('table');
+    divFace = getShadowRoot('agent-info').querySelector('[name="face"]');
   }
 
   void _resize() {

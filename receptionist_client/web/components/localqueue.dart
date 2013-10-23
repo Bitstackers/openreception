@@ -25,8 +25,7 @@ class LocalQueue extends PolymerElement with ApplyAuthorStyle {
   @observable model.CallList localCallQueue = new model.CallList();
               String         title          = 'Lokal kø';
 
-  void created() {
-    super.created();
+  LocalQueue.created() : super.created() {
     registerEventListerns();
     _initialFill();
   }

@@ -16,7 +16,9 @@
  */
 import 'dart:async';
 
-import 'classes/common.dart'; 
+import 'package:polymer/polymer.dart';
+
+import 'classes/common.dart';
 import 'classes/configuration.dart';
 import 'classes/logger.dart';
 import 'classes/notification.dart';
@@ -27,7 +29,8 @@ Future _notificationCheck() => repeatCheck(notification.isConnected, 0, new Dura
 /**
  * Get Bob going as soon as the configuration is loaded.
  */
-void main() {  
+@initMethod
+void bobInitialize() {
   _configurationCheck().then((_) => _notificationCheck())
                        .then((_) => log.debug('Main Everything seems to work!'))
                        .catchError((error) {

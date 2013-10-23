@@ -30,8 +30,7 @@ class GlobalQueue extends PolymerElement with ApplyAuthorStyle {
   @observable bool           pickupButtonDisabled = false;
   final       String         title                = 'Global kø';
 
-  void created() {
-    super.created();
+  GlobalQueue.created() : super.created() {
     registerEventListerns();
     _initialFill();
   }

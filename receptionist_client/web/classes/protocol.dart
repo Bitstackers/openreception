@@ -15,7 +15,7 @@ library protocol;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:json' as json;
+import 'dart:convert';
 
 import 'configuration.dart';
 import 'logger.dart';
@@ -79,7 +79,7 @@ String _buildUrl(String base, String path, [List<String> fragments]) {
  */
 Map _parseJson(String responseText) {
   try {
-    return json.parse(responseText);
+    return JSON.decode(responseText);
   } catch(e) {
     log.critical('protocol._parseJson exception: ${e}');
     return null;

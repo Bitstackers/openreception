@@ -19,7 +19,9 @@ import '../classes/common.dart';
 class Box extends PolymerElement with ApplyAuthorStyle {
   @published bool chrome = true;
 
-  void inserted() {
+  Box.created() : super.created() {}
+
+  void enteredView() {
     if(!chrome) {
       this.style.border = '0';
       this.style.borderRadius = '0';

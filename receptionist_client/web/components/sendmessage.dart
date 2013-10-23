@@ -47,6 +47,8 @@ class SendMessage extends PolymerElement with ApplyAuthorStyle {
   @observable String text                    = '';
   final String       title                   = 'Besked';
 
+  SendMessage.created() : super.created() {}
+
   void select(Event e, var detail, Node target) {
     int id = int.parse((target as LIElement).id.split('_').last);
     //environment.contact = environment.organization.contactList.getContact(id);

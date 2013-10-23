@@ -18,4 +18,6 @@ import '../classes/common.dart';
 @CustomTag('send-message-recipients')
 class SendMessageRecipients extends PolymerElement with ApplyAuthorStyle {
   String title = 'Modtagere';
+
+  SendMessageRecipients.created() : super.created() {}
 }

@@ -19,8 +19,7 @@ import '../classes/environment.dart' as environment;
 
 @CustomTag('bob-context')
 class BobContext extends PolymerElement with ApplyAuthorStyle {
-  void created() {
-    super.created();
+  BobContext.created() : super.created() {
     environment.contextList.add(new Context(this));
   }
 }
