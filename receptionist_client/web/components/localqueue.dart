@@ -33,7 +33,7 @@ class LocalQueue extends PolymerElement with ApplyAuthorStyle {
       _initialFill();
     } else {
       StreamSubscription subscription;
-      subscription = event.bus.on(event.stateUpdated).listen((BobState value) {
+      subscription = event.bus.on(event.stateUpdated).listen((State value) {
         if(value.isConfigurationOK) {
           _initialFill();
         }

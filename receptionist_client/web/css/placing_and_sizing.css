@@ -21,7 +21,9 @@ button::-moz-focus-inner {
   border: 0;
 }
 
-#rootview {
+#bobloading,
+#bobdisaster,
+#bobactive {
   position: absolute;
   height: -moz-calc(100% - 20px);
   height: -webkit-calc(100% - 20px);

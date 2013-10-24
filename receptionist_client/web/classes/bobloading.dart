@@ -11,26 +11,21 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library model;
+library BobLoading;
 
-import 'dart:collection';
-import 'dart:math' hide log;
+import 'dart:html';
 
-import 'package:intl/intl.dart';
+import 'events.dart' as event;
+import 'state.dart';
 
-import 'configuration.dart';
-import 'environment.dart' as environment;
-import 'logger.dart';
-import 'protocol.dart' as protocol;
-import 'storage.dart' as storage;
+class BobLoading {
+  DivElement element;
 
-part 'model.call.dart';
-part 'model.call_list.dart';
-part 'model.calendar_event.dart';
-part 'model.calendar_event_list.dart';
-part 'model.contact.dart';
-part 'model.contact_list.dart';
-part 'model.minibox_list_item.dart';
-part 'model.minibox_list.dart';
-part 'model.organization.dart';
-part 'model.organization_list.dart';
+  BobLoading(DivElement this.element) {
+    assert(element != null);
+
+    event.bus.on(event.stateUpdated).listen((State value) {
+      element.classes.toggle('hidden', !value.isUnknown);
+    });
+  }
+}

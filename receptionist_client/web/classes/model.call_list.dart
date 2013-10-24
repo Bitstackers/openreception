@@ -17,7 +17,7 @@ part of model;
  * A list of [Call] objects.
  */
 class CallList extends IterableBase<Call>{
-  List<Call> _list = toObservable(new List<Call>());
+  List<Call> _list = new List<Call>();
 
   /**
    * Iterator.

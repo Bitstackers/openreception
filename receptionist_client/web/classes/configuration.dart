@@ -18,7 +18,6 @@ import 'dart:html';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:web_ui/web_ui.dart';
 
 import 'logger.dart';
 import 'state.dart';
@@ -31,7 +30,7 @@ final _Configuration configuration = new _Configuration();
  * _Configuration gives access to configuration parameters provided by Alice.
  */
 class _Configuration {
-  @observable bool _loaded = false;
+  bool _loaded = false;
 
   String   _agentID;
   Uri      _aliceBaseUrl;
@@ -59,11 +58,9 @@ class _Configuration {
    * [_Configuration] constructor. Initialize the object with the values from
    * [CONFIGURATION_URL]. Logs a critical error if the request fails.
    */
-  _Configuration() {
-    fetch();
-  }
+  _Configuration();
 
-  void fetch() {
+  void initialize() {
     if(!isLoaded()) {
       HttpRequest.request(CONFIGURATION_URL)
         .then(_onComplete)
@@ -72,7 +69,7 @@ class _Configuration {
             log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
             state.configurationError();
           }
-          new Timer(new Duration(seconds:5),() => fetch());
+          new Timer(new Duration(seconds:5),() => initialize());
         });
     }
   }

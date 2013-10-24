@@ -51,29 +51,16 @@ class _Notification {
   /**
    * [_Notification] constructor.
    */
-  _Notification() {
-    log.debug('_Notification Constructor.');
+  _Notification();
 
-    if(state.isConfigurationOK)  {
-      initialize();
-    } else {
-      StreamSubscription subscription;
-      subscription = event.bus.on(event.stateUpdated).listen((BobState value) {
-        if(value.isConfigurationOK) {
-          initialize();
-          subscription.cancel();
-        }
-      });
-    }
-
-
+  void initialize() {
     _registerEventListeners();
   }
 
-  void initialize() {
-    log.debug('Notification is asking up a websocket');
+  void makeSocket() {
+    assert(state.isConfigurationOK);
     _socket = new Socket()
-        ..onMessage.listen(_onMessage);
+      ..onMessage.listen(_onMessage);
   }
 
   bool isConnected() => _socket.isConnected;
@@ -139,6 +126,14 @@ class _Notification {
     ..on(queueJoin) .listen((Map json) => _queueJoinEventHandler(json))
     ..on(queueLeave).listen((Map json) => _queueLeaveEventHandler(json))
     ..on(callPark)  .listen((Map json) => _callParkEventHandler(json));
+
+    StreamSubscription subscription;
+    subscription = event.bus.on(event.stateUpdated).listen((State value) {
+      if(value.isConfigurationOK) {
+        makeSocket();
+        subscription.cancel();
+      }
+    });
   }
 }
 

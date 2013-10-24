@@ -11,19 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
-
-import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/notification.dart';
 import '../classes/state.dart';
 
-@CustomTag('bob-app')
-class BobApp extends PolymerElement with ApplyAuthorStyle {
-  @observable BobState state;
+class BobApp {
+  State state;
 
-  BobApp.created() : super.created() {
+  BobApp.created(){
     //TODO HACK ????? FIXME WARNING
     //I need this call, because notification is lazy loaded.
     notification;
@@ -31,7 +27,7 @@ class BobApp extends PolymerElement with ApplyAuthorStyle {
 
   void enteredView() {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);
-    event.bus.on(event.stateUpdated).listen((BobState value) {
+    event.bus.on(event.stateUpdated).listen((State value) {
       log.debug('BobApp Got a state update: ${value}');
       state = value;
     });

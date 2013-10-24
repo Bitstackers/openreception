@@ -20,14 +20,14 @@ const int _ERROR   = -1;
 const int _UNKNOWN = 0;
 const int _OK      = 1;
 
-BobState _state = new BobState();
+State _state = new State();
 
-BobState get state => _state;
+State get state => _state;
 
 /**
  * Describes the state of bob.
  */
-class BobState {
+class State {
   bool _immutable         = false;
   int  _config            = _UNKNOWN;
   int  _logger            = _UNKNOWN;
@@ -45,8 +45,8 @@ class BobState {
   /**
    * Clones myself.
    */
-  BobState _clone() {
-    return new BobState()
+  State _clone() {
+    return new State()
       .._immutable = true
       .._config    = _config
       .._logger    = _logger

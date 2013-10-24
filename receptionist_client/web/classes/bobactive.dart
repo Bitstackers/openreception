@@ -11,26 +11,30 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library model;
+library BobActive;
 
-import 'dart:collection';
-import 'dart:math' hide log;
+import 'dart:html';
 
-import 'package:intl/intl.dart';
+import 'context.dart';
+import 'events.dart' as event;
+import 'state.dart';
+import '../components/contextswitcher.dart';
 
-import 'configuration.dart';
-import 'environment.dart' as environment;
-import 'logger.dart';
-import 'protocol.dart' as protocol;
-import 'storage.dart' as storage;
+class BobActive {
+  DivElement element;
 
-part 'model.call.dart';
-part 'model.call_list.dart';
-part 'model.calendar_event.dart';
-part 'model.calendar_event_list.dart';
-part 'model.contact.dart';
-part 'model.contact_list.dart';
-part 'model.minibox_list_item.dart';
-part 'model.minibox_list.dart';
-part 'model.organization.dart';
-part 'model.organization_list.dart';
+  BobActive(DivElement this.element) {
+    assert(element != null);
+
+    event.bus.on(event.stateUpdated).listen((State value) {
+      element.classes.toggle('hidden', !value.isOK);
+    });
+
+    new ContextSwitcher(querySelector('#contextswitcher'), registerContexts());
+  }
+
+  List<Context> registerContexts() {
+    return querySelectorAll('#bobactive > section')
+        .map((section) => new Context(section)).toList(growable: false);
+  }
+}

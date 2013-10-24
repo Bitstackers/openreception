@@ -37,13 +37,12 @@ import 'logger.dart';
  * 3 calls to [increaseAlert()] puts the [Context] alert counter at 3, meaning
  * 3 calls to [decreaseAlert()] is required to move the [Context] out of alert.
  */
-class Context {
-  final EventType<Context> _alertUpdated = new EventType<Context>();
-  final EventType<Context> _activeUpdated = new EventType<Context>();
 
+final EventType<int> alertUpdated = new EventType<int>();
+
+class Context {
   EventBus _bus = new EventBus();
-  Stream<Context> get alertUpdated => _bus.on(_alertUpdated);
-  Stream<Context> get activeUpdated => _bus.on(_activeUpdated);
+  EventBus get bus => _bus;
 
   int  _alertCounter = 0;
   bool isActive      = false;
@@ -82,7 +81,7 @@ class Context {
   void decreaseAlert() {
     if (_alertCounter > 0) {
       _alertCounter--;
-      _bus.fire(_alertUpdated, this);
+      _bus.fire(alertUpdated, _alertCounter);
       log.debug('Context.decreaseAlert - ${id} level now at ${alertCounter}');
     }
   }
@@ -92,7 +91,7 @@ class Context {
    */
   void increaseAlert() {
     _alertCounter++;
-    _bus.fire(_alertUpdated, this);
+    _bus.fire(alertUpdated, _alertCounter);
     log.debug('Context.increaseAlert - ${id} level now at ${alertCounter}');
   }
 
@@ -108,13 +107,11 @@ class Context {
   void _toggle(Context context) {
     if (context == this) {
       isActive = true;
-      _bus.fire(_activeUpdated, this);
       _element.classes.remove('hidden');
       log.debug('Context._toggle activating ${this.id}');
 
     } else if (isActive) {
       isActive = false;
-      _bus.fire(_activeUpdated, this);
       _element.classes.add('hidden');
     }
   }

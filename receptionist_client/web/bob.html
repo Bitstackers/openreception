@@ -4,16 +4,42 @@
     <meta charset="utf-8">
     <title>Bob</title>
     
+    <link rel="stylesheet" href="css/contextswitcher.css?v=1">
     <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
-    
-    <link rel="import" href="components/bob-app.html">   
-    <script type="application/dart" src="packages/polymer/init.dart"></script>
-    <script src="packages/browser/dart.js"></script>
   </head>
   <body>
-    <div id="curtains"><!--We hide stuff behind these curtains--></div>  
-    <bob-app id="rootview"></bob-app>
+    <div id="curtains"><!--We hide stuff behind these curtains--></div>
+    <div id="bobloading" style="position: absolute;">Loading</div> 
+    <div id="bobdisaster" style="position: absolute;" class="hidden">Disaster</div> 
+    <div id="bobactive" class="hidden">
+      <ul id="contextswitcher">      
+      </ul>
     
+      <section id="contexthome">
+        <p>contexthome</p>
+      </section>
+      
+      <section id="contextmessages" class="hidden">
+        <p>contextmessages</p>
+      </section>
+      
+      <section id="contextlog" class="hidden">
+        <p>contextlog</p>
+      </section>
+      
+      <section id="contextstatistics" class="hidden">
+        <p>contextstatistics</p>
+      </section>
+      
+      <section id="contextphone" class="hidden">
+        <p>contextphone</p>
+      </section>
+      
+      <section id="contextvoicemails" class="hidden">
+        <p>contextvoicemails</p>
+      </section>
+    </div>
     <script type="application/dart" src="bob.dart"></script>
+    <script src="packages/browser/dart.js"></script>
   </body>
 </html>
