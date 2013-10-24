@@ -19,7 +19,7 @@ import '../classes/model.dart' as model;
 
 @CustomTag('welcome-message')
 class WelcomeMessage extends PolymerElement with ApplyAuthorStyle {
-  @observable String message = '';
+  @observable String message = 'Default welcome message';
 
   WelcomeMessage.created() : super.created() {}
 

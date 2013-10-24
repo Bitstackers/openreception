@@ -10,6 +10,7 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
+import 'dart:async';
 
 import 'package:polymer/polymer.dart';
 
@@ -19,6 +20,7 @@ import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
 import '../classes/protocol.dart' as protocol;
+import '../classes/state.dart';
 
 @CustomTag('global-queue')
 class GlobalQueue extends PolymerElement with ApplyAuthorStyle {
@@ -32,7 +34,16 @@ class GlobalQueue extends PolymerElement with ApplyAuthorStyle {
 
   GlobalQueue.created() : super.created() {
     registerEventListerns();
-    _initialFill();
+    if(state.isConfigurationOK) {
+      _initialFill();
+    } else {
+      StreamSubscription subscription;
+      subscription = event.bus.on(event.stateUpdated).listen((BobState value) {
+        if(value.isConfigurationOK) {
+          _initialFill();
+        }
+      });
+    }
   }
 
   void registerEventListerns() {

@@ -16,16 +16,24 @@ import 'package:polymer/polymer.dart';
 import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
+import '../classes/notification.dart';
 import '../classes/state.dart';
 
 @CustomTag('bob-app')
 class BobApp extends PolymerElement with ApplyAuthorStyle {
   @observable BobState state;
 
-  BobApp.created() : super.created() {}
+  BobApp.created() : super.created() {
+    //TODO HACK ????? FIXME WARNING
+    //I need this call, because notification is lazy loaded.
+    notification;
+  }
 
   void enteredView() {
     log.info('Bob is ready to serve. Welcome!', toUserLog: true);
-    event.bus.on(event.stateUpdated).listen((BobState value) => state = value);
+    event.bus.on(event.stateUpdated).listen((BobState value) {
+      log.debug('BobApp Got a state update: ${value}');
+      state = value;
+    });
   }
 }

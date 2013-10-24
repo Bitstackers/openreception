@@ -21,6 +21,7 @@ import '../classes/common.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../classes/model.dart' as model;
+import '../classes/state.dart';
 import '../classes/storage.dart' as storage;
 
 @CustomTag('company-selector')
@@ -32,7 +33,18 @@ class CompanySelector extends PolymerElement with ApplyAuthorStyle {
 
   CompanySelector.created() : super.created() {
     _registerEventHandlers();
-    _initialFill();
+    if(state.isConfigurationOK) {
+      _initialFill();
+    } else {
+      StreamSubscription subscription;
+      subscription = event.bus.on(event.stateUpdated).listen((BobState value) {
+        if(value.isConfigurationOK) {
+          _initialFill();
+          subscription.cancel();
+        }
+      });
+    }
+
   }
 
   void _initialFill() {

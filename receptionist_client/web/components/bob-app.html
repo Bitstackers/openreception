@@ -28,7 +28,7 @@
   <link rel="import" href="xfoo.html">
   
   <template>
-    <div>    
+    <div>
       <template if="{{state.isUnknown}}">
         <bob-loading></bob-loading>
       </template>
@@ -44,7 +44,7 @@
           <welcome-message></welcome-message>
           <agent-info></agent-info>
           <company-selector></company-selector>
-          <company-events></company-events>
+          <company-events></company-events> 
           <company-handling></company-handling>
           <company-opening-hours></company-opening-hours>
           <company-sales-calls></company-sales-calls>
@@ -63,6 +63,7 @@
           <send-message></send-message>
           <global-queue></global-queue>
           <local-queue></local-queue>
+          
         </bob-context>
         
         <bob-context id="contextmessages" class="hidden">
@@ -94,6 +95,7 @@
         </bob-context>
       </template>
     </div>
+    
   </template>
   <script type="application/dart" src="bob-app.dart"></script>
 </polymer-element>

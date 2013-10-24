@@ -36,7 +36,13 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
   //Make all necessary changes (add FooElement.created constructor, inserted/removed -> enteredView/leftView).
   ContactInfo.created() : super.created() {
     registerEventListeners();
-
+    print('--------------1--------------1--------------1---------------------------');
+    print('This: ${this}');
+    print('getShadowRoot("contact-info"): ${getShadowRoot('contact-info')}');
+    print('shadowRoot: ${shadowRoot}');
+    print('this.\$["ulcontactlist"]: ${$["ulcontactlist"]}');
+    print('this.\$["#ulcontactlist"]: ${$["#ulcontactlist"]}');
+    print('querySelector: ${querySelector('#ulcontactlist')}');
 //    displayedContactList = this.query('#ulcontactlist')
 //        //TODO Why does onscroll not work
 //      ..onScroll.listen((Event event) => scrolling(event));
@@ -47,8 +53,8 @@ class ContactInfo extends PolymerElement with ApplyAuthorStyle {
     print('This: ${this}');
     print('getShadowRoot("contact-info"): ${getShadowRoot('contact-info')}');
     print('shadowRoot: ${shadowRoot}');
-    print('this.\$["ulcontactlist"]: ${this.$["ulcontactlist"]}');
-    print('this.\$["#ulcontactlist"]: ${this.$["#ulcontactlist"]}');
+    print('this.\$["ulcontactlist"]: ${$["ulcontactlist"]}');
+    print('this.\$["#ulcontactlist"]: ${$["#ulcontactlist"]}');
     print('querySelector: ${querySelector('#ulcontactlist')}');
     displayedContactList = getShadowRoot("contact-info").querySelector('#ulcontactlist');
   }

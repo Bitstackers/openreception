@@ -29,8 +29,8 @@ class Socket {
   static Socket         _instance;
   StreamController<Map> _messageStream      = new StreamController<Map>.broadcast();
   bool                  _reconnectScheduled = false;
-  Duration              _reconnectInterval  = configuration.notificationSocketReconnectInterval;
-  Uri                   _url                = configuration.notificationSocketInterface;
+  Duration              _reconnectInterval;
+  Uri                   _url;
 
   bool        get isConnected => _channel != null && _channel.readyState == WebSocket.OPEN;
   Stream<Map> get onMessage   => _messageStream.stream;
@@ -55,6 +55,8 @@ class Socket {
    * Socket constructor.
    */
   Socket._internal() {
+    _reconnectInterval  = configuration.notificationSocketReconnectInterval;
+    _url                = configuration.notificationSocketInterface;
     _registerEventListeners();
     _connect();
   }
@@ -70,6 +72,7 @@ class Socket {
     String url = _url.toString();
     //url = 'ws://alice.adaheads.com:4242/Wrong';
     //url = 'ws://alice.adaheads.com';
+    log.debug('Socket Opening a websocket on url: ${url}');
     _channel = new WebSocket(url)
         ..onMessage.listen(_onMessage)
         ..onError.listen(_onError)
@@ -122,6 +125,7 @@ class Socket {
    */
   void _reconnect() {
     if (!_reconnectScheduled) {
+      log.info('Socket Websocket is going to reconnect in ${_reconnectInterval}');
       new Timer(_reconnectInterval, () => _connect());
     }
     _reconnectScheduled = true;

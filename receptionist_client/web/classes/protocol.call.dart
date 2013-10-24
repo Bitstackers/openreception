@@ -134,16 +134,16 @@ Future<Response<model.CallList>> callLocalList(String agentId) {
   model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
   completer.complete(new Response<model.CallList>(Response.OK, data));
 
-  request = new HttpRequest()
-  ..open(POST, url)
-    ..onLoad.listen((_) {
-      //completer.complete(new Response<model.CallList>(Response.OK, data));
-    })
-    ..onError.listen((e) {
-      //_logError(request, url);
-      //completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-    })
-    ..send();
+//  request = new HttpRequest()
+//  ..open(POST, url)
+//    ..onLoad.listen((_) {
+//      //completer.complete(new Response<model.CallList>(Response.OK, data));
+//    })
+//    ..onError.listen((e) {
+//      //_logError(request, url);
+//      //completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+//    })
+//    ..send();
 
   return completer.future;
 }

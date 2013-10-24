@@ -53,15 +53,25 @@ class _Notification {
    */
   _Notification() {
     log.debug('_Notification Constructor.');
-    event.bus.on(event.stateUpdated).listen((BobState s){
-      if(s.isConfigurationOK) {
-        initialize();
-      }
-    });
+
+    if(state.isConfigurationOK)  {
+      initialize();
+    } else {
+      StreamSubscription subscription;
+      subscription = event.bus.on(event.stateUpdated).listen((BobState value) {
+        if(value.isConfigurationOK) {
+          initialize();
+          subscription.cancel();
+        }
+      });
+    }
+
+
     _registerEventListeners();
   }
 
   void initialize() {
+    log.debug('Notification is asking up a websocket');
     _socket = new Socket()
         ..onMessage.listen(_onMessage);
   }
