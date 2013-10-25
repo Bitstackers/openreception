@@ -4,19 +4,27 @@
     <meta charset="utf-8">
     <title>Bob</title>
     
+    <link rel="stylesheet" href="css/agentinfo.css?v=1">
     <link rel="stylesheet" href="css/contextswitcher.css?v=1">
     <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
+    <link rel="stylesheet" href="css/welcomemessage.css?v=1">
+    <link rel="stylesheet" href="css/companyselector.css?v=1">
+    <link rel="stylesheet" href="css/companyevents.css?v=1">
+    <link rel="stylesheet" href="css/box.css?v=1">
+    
   </head>
   <body>
     <div id="curtains"><!--We hide stuff behind these curtains--></div>
     <div id="bobloading" style="position: absolute;">Loading</div> 
     <div id="bobdisaster" style="position: absolute;" class="hidden">Disaster</div> 
     <div id="bobactive" class="hidden">
-      <ul id="contextswitcher">      
-      </ul>
+      <ul id="contextswitcher"></ul>
     
       <section id="contexthome">
-        <p>contexthome</p>
+        <div id="welcomemessage"></div>
+        <div id="agentinfo"></div>
+        <div id="companyselector"></div>
+        <div id="companyevents"></div>
       </section>
       
       <section id="contextmessages" class="hidden">

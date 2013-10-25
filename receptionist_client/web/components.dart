@@ -11,23 +11,22 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-class CalendarEvent {
-  model.CalendarEvent event;
-  String notactive = '';
+library components;
 
-  CalendarEvent() {
-    String html = '''
-      <h1 class="box-with-header-headline">
-        <content select="[name=boxheader]"></content>
-      </h1>
-      <div class="box-with-header-content">
-        <content select="[name=boxcontent]"></content>
-      </div>
-    ''';
+import 'dart:async';
+import 'dart:html';
 
-  }
+import 'classes/context.dart';
+import 'classes/events.dart' as event;
+import 'classes/logger.dart';
+import 'classes/model.dart' as model;
+import 'classes/protocol.dart' as protocol;
+import 'classes/state.dart';
+import 'classes/storage.dart' as storage;
 
-  void enteredView() {
-    notactive = event.active ? '' : 'calendar-event-notactive';
-  }
-}
+part 'components/agentinfo.dart';
+part 'components/boxwithheader.dart';
+part 'components/companyevents.dart';
+part 'components/companyselector.dart';
+part 'components/contextswitcher.dart';
+part 'components/welcomemessage.dart';

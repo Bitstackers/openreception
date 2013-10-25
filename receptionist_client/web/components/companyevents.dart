@@ -11,20 +11,32 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/context.dart';
-import '../classes/events.dart' as event;
-import '../classes/model.dart' as model;
+class CompanyEvents {
+  Context            context;
+  model.Organization organization = model.nullOrganization;
+  String             title        = 'Kalender';
+  DivElement element;
+  SpanElement header;
+  Box box;
 
-@CustomTag('company-events')
-class CompanyEvents extends PolymerElement with ApplyAuthorStyle {
-              Context            context;
-  @observable model.Organization organization = model.nullOrganization;
-              String             title        = 'Kalender';
+  CompanyEvents(DivElement this.element) {
+    String html = '''
+      <ul class="company-events-container">
+        <li> calendar-event event="{{event}}" calendar-event </li>
+        <li> calendar-event event="{{event}}" calendar-event </li>
+        <li> calendar-event event="{{event}}" calendar-event </li>
+      </ul>
+    ''';
 
-  CompanyEvents.created() : super.created() {
+    header = new SpanElement()
+      ..text = title;
+
+    var frag = new DocumentFragment.html(html);
+
+    box = new Box.withHeader(element, header, frag.children.first);
+
     _registerEventListeners();
   }
 

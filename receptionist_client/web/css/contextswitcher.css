@@ -1,5 +1,9 @@
 #contextswitcher {
+  position: absolute;
+  top: 0%;
+  left: 0%;
   height: 100%;
+  width: 3%;
   background-color: #fafafa;
   border-top: solid 2px #ddd;
   border-right: solid 2px #ddd;

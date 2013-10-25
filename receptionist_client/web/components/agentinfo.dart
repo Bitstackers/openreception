@@ -11,66 +11,78 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+part of components;
 
-import 'package:polymer/polymer.dart';
+class AgentInfo {
+  int              active      = 0;
+  String           activeLabel = 'aktive';
+  TableCellElement activeTD;
+  Box              box;
+  DivElement       divFace;
+  DivElement       divParent;
+  DivElement       element;
+  String           faceURL     = 'images/face.jpg';
+  int              paused      = 0;
+  String           pausedLabel = 'pause';
+  TableCellElement pausedTD;
+  TableElement     table;
 
-import '../classes/common.dart';
-import '../classes/logger.dart';
-import '../classes/protocol.dart' as protocol;
+  AgentInfo(DivElement this.element) {
+    String html = '''
+      <div class="agent-info-container">
+        <table>
+          <tr>
+            <td></td>
+            <td>: ${activeLabel}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>: ${pausedLabel}</td>
+          </tr>
+        </table>
+        <div class="agent-info-face">
+          <img src="${faceURL}">
+        </div>
+      </div>
+    ''';
 
-@CustomTag('agent-info')
-class AgentInfo extends PolymerElement with ApplyAuthorStyle {
-  @observable int active = 0;
-  @observable int paused = 0;
-
-  String       activeLabel = 'aktive';
-  DivElement   divFace;
-  DivElement   divParent;
-  String       faceURL     = 'images/face.jpg';
-  String       pausedLabel = 'pause';
-  TableElement table;
-
-  AgentInfo.created() : super.created(){
-    _initialSetup();
-  }
-
-  void enteredView() {
-    _queryElements();
-    _resize();
-
-    _registerEventListeners();
-  }
-
-  void _queryElements() {
-    divParent = getShadowRoot('agent-info').querySelector('[name="boxcontent"]');
+    divParent = new DocumentFragment.html(html).querySelector('.agent-info-container');
     table = divParent.querySelector('table');
-    divFace = getShadowRoot('agent-info').querySelector('[name="face"]');
+    divFace = divParent.querySelector('.agent-info-face');
+
+    List<TableCellElement> tds = table.querySelectorAll('td');
+    activeTD = tds[0];
+    pausedTD = tds[2];
+
+    box = new Box.noChrome(element, divParent);
+
+    initialSetup();
+
+    registerEventListeners();
+    resize();
   }
 
-  void _resize() {
-    divFace.style.left = '${divParent.client.width - divParent.client.height}px';
-    divFace.style.width = '${divParent.client.height}px';
+  void resize() {
+    divFace.style
+      ..left = '${divParent.client.width - divParent.client.height}px'
+      ..width = '${divParent.client.height}px';
 
-    num marginLeft = (divParent.client.height - table.client.height) / 1.5;
-    num marginTop = (divParent.client.height - table.client.height) / 2;
+    double marginLeft = (divParent.client.height - table.client.height) / 1.5;
+    double marginTop = (divParent.client.height - table.client.height) / 2;
 
-    if (marginLeft < 1) {
-      marginLeft = 0;
-      marginTop = 0;
+    if (marginLeft < 1.0) {
+      marginLeft = 0.0;
+      marginTop = 0.0;
     }
 
-    table.style.marginLeft = '${marginLeft}px';
-    table.style.marginTop = '${marginTop}px';
+    table.style
+      ..marginLeft = '${marginLeft}px'
+      ..marginTop = '${marginTop}px';
 
-    if (divParent.client.width < 150) {
-      divFace.classes.add('hidden');
-    } else {
-      divFace.classes.remove('hidden');
-    }
+    divFace.classes.toggle('hidden', divParent.client.width < 150);
   }
 
-  void _initialSetup() {
+  void initialSetup() {
     protocol.agentList().then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
@@ -91,12 +103,16 @@ class AgentInfo extends PolymerElement with ApplyAuthorStyle {
         //TODO How to handle this?
       }
     })
-    .catchError((e) {
-      log.critical('AgentInfo ERROR ${e.toString()}');
-    });
+    .catchError((error) => log.critical('AgentInfo ERROR ${error.toString()}'))
+    .whenComplete(updateCounters);
   }
 
-  void _registerEventListeners() {
-    window.onResize.listen((_) => _resize());
+  void registerEventListeners() {
+    window.onResize.listen((_) => resize());
+  }
+
+  void updateCounters() {
+    activeTD.text = active.toString();
+    pausedTD.text = paused.toString();
   }
 }

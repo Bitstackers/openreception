@@ -1,0 +1,30 @@
+#agentinfo {
+  position: absolute;
+  left: 90%;
+  top: 0%;
+  height: 6%;
+  width: 10%;
+}
+
+#agentinfo .agent-info-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 1.1em;
+}
+
+#agentinfo .agent-info-face {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  padding: 5px;
+}
+
+#agentinfo .agent-info-face > img {
+  border: solid 2px #aaa; 
+  border-radius: 5px; 
+  height: 100%; 
+  width: 100%;
+}

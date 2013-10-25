@@ -11,34 +11,38 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
+part of components;
 
-import 'package:polymer/polymer.dart';
+class Box {
+  DivElement element;
+  HeadingElement header;
+  DivElement body;
 
-import '../classes/common.dart';
-
-@CustomTag('box-with-header')
-class BoxWithHeader extends PolymerElement with ApplyAuthorStyle {
-              DivElement     body;
-              HeadingElement header;
-  @published  String         headerfontsize = '1.0em';
-  @published  String         headerpadding  = '5px 10px';
-              DivElement     outer;
-  @observable String         focusborder    = '';
-
-  BoxWithHeader.created() : super.created() {}
-
-  void enteredView() {
-    _queryElements();
-    _registerEventListeners();
-    _styling();
-    _resize();
+  Box.noChrome(DivElement this.element, Element bodyContent) {
+    element
+      ..children.add(bodyContent)
+      ..classes.add('no-chrome');
   }
 
-  void _queryElements() {
-    outer = getShadowRoot('box-with-header').querySelector('div');
-    header = outer.querySelector('h1');
-    body = outer.querySelector('div');
+  Box.withHeader(DivElement this.element, Element headerContent, Element bodyContent) {
+    String html = '''
+      <h1 class="box-with-header-headline box-with-header-medium">
+      </h1>
+      <div class="box-with-header-content">
+      </div>
+    ''';
+
+    element.children.addAll(new DocumentFragment.html(html).children);
+    element.classes.add('box-with-header-outer');
+
+    header = element.querySelector('.box-with-header-headline');
+    body = element.querySelector('.box-with-header-content');
+
+    header.children.add(headerContent);
+    body.children.add(bodyContent);
+
+    _registerEventListeners();
+    _resize();
   }
 
   void _registerEventListeners() {
@@ -46,11 +50,6 @@ class BoxWithHeader extends PolymerElement with ApplyAuthorStyle {
   }
 
   void _resize() {
-    body.style.height = '${outer.client.height - header.client.height}px';
-  }
-
-  void _styling() {
-    header.style.fontSize = headerfontsize;
-    header.style.padding = headerpadding;
+    body.style.height = '${element.client.height - header.client.height}px';
   }
 }

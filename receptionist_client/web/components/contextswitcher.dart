@@ -11,28 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library ContextSwitcher;
-
-import 'dart:html';
-
-import '../classes/context.dart';
-import '../classes/events.dart' as event;
+part of components;
 
 class ContextSwitcher {
-  UListElement element;
+  UListElement                 element;
   List<_ContextSwitcherButton> buttons = new List<_ContextSwitcherButton>();
 
   ContextSwitcher(UListElement this.element, List<Context> contexts) {
-    print(element);
-    generateButtons(contexts);
-  }
-
-  void generateButtons(List<Context> list) {
-    for(var context in list) {
+    for(var context in contexts) {
       LIElement contextElement = new LIElement();
       element.children.add(contextElement);
       buttons.add(new _ContextSwitcherButton(contextElement, context));
-    }
+    };
   }
 }
 
@@ -45,16 +35,22 @@ class _ContextSwitcherButton {
   Context       context;
 
   _ContextSwitcherButton(LIElement this.element, Context this.context) {
-    iconPassive = new ImageElement(src: 'images/${context.id}.svg');
-    iconActive = new ImageElement(src: 'images/${context.id}_active.svg');
-    alertImg = new ImageElement(src: 'images/contextalert.svg')
-      ..classes.add('hidden');
+    String html = '''
+      <button id="${context.id}_switcherbutton">
+        <img id="${context.id}_passive_icon" src="images/${context.id}.svg"></img>
+        <img id="${context.id}_active_icon" src="images/${context.id}_active.svg"></img>
+        <img id="${context.id}_alert_icon" src="images/contextalert.svg" class="hidden"></img>
+      </button>
+    ''';
 
-    button = new ButtonElement()
+    button = new DocumentFragment.html(html).querySelector('#${context.id}_switcherbutton')
       ..onClick.listen(clicked)
-      ..children.addAll([iconPassive, iconActive, alertImg])
       ..onMouseOver.listen((_) => iconActive.classes.toggle('hidden', false))
       ..onMouseOut.listen((_) => iconActive.classes.toggle('hidden', true));
+
+    iconPassive = button.querySelector('#${context.id}_passive_icon');
+    iconActive = button.querySelector('#${context.id}_active_icon');
+    alertImg = button.querySelector('#${context.id}_alert_icon');
 
     if(context.isActive) {
       button.disabled = true;

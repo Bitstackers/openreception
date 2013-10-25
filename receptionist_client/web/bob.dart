@@ -36,21 +36,31 @@
 //                       });
 //}
 
+import 'dart:async';
 import 'dart:html';
 
 import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
 import 'classes/configuration.dart';
+import 'classes/events.dart' as event;
 import 'classes/notification.dart';
+import 'classes/state.dart';
 
 void main() {
-  var bobActive = new BobActive(querySelector('#bobactive'));
-  var bobDisaster = new BobDisaster(querySelector('#bobdisaster'));
-  var bobLoading = new BobLoading(querySelector('#bobloading'));
-
   notification.initialize();
   configuration.initialize();
+
+  new BobLoading(querySelector('#bobloading'));
+
+  StreamSubscription subscription;
+  subscription = event.bus.on(event.stateUpdated).listen((State value){
+    if(value.isConfigurationOK) {
+      new BobActive(querySelector('#bobactive'));
+      new BobDisaster(querySelector('#bobdisaster'));
+      subscription.cancel();
+    }
+  });
 }
 
 

@@ -11,20 +11,27 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/events.dart' as event;
-import '../classes/model.dart' as model;
+class WelcomeMessage {
+  Box         box;
+  DivElement  container;
+  DivElement  element;
+  SpanElement message;
 
-@CustomTag('welcome-message')
-class WelcomeMessage extends PolymerElement with ApplyAuthorStyle {
-  @observable String message = 'Default welcome message';
+  WelcomeMessage(DivElement this.element) {
+    String html = '''
+      <div>
+        <span></span>
+      </div>
+    ''';
 
-  WelcomeMessage.created() : super.created() {}
+    container = new DocumentFragment.html(html).querySelector('div');
+    message = container.querySelector('div > span');
 
-  void enteredView() {
+    box = new Box.noChrome(element, container);
+
     event.bus.on(event.organizationChanged)
-      .listen((model.Organization org) => message = org != model.nullOrganization ? org.greeting : '');
+      .listen((model.Organization org) => message.text = org != model.nullOrganization ? org.greeting : '');
   }
 }

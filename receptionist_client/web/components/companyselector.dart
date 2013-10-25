@@ -11,70 +11,76 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:async';
+part of components;
 
-import 'dart:html';
-
-import 'package:polymer/polymer.dart';
-
-import '../classes/common.dart';
-import '../classes/events.dart' as event;
-import '../classes/logger.dart';
-import '../classes/model.dart' as model;
-import '../classes/state.dart';
-import '../classes/storage.dart' as storage;
-
-@CustomTag('company-selector')
-class CompanySelector extends PolymerElement with ApplyAuthorStyle {
+class CompanySelector {
   final       String                 defaultOptionText = 'vælg virksomhed';
               model.Organization     nullOrganization  = model.nullOrganization;
-  @observable model.Organization     organization      = model.nullOrganization;
-  @observable model.OrganizationList organizationList  = new model.OrganizationList();
+  model.Organization     organization      = model.nullOrganization;
+  model.OrganizationList organizationList  = new model.OrganizationList();
+  DivElement element;
+  SelectElement select;
 
-  CompanySelector.created() : super.created() {
+  CompanySelector(DivElement this.element) {
+    select = new SelectElement()
+      ..onChange.listen(selection);
+    element.children.add(select);
+
     _registerEventHandlers();
-    if(state.isConfigurationOK) {
-      _initialFill();
-    } else {
-      StreamSubscription subscription;
-      subscription = event.bus.on(event.stateUpdated).listen((State value) {
-        if(value.isConfigurationOK) {
-          _initialFill();
-          subscription.cancel();
-        }
-      });
-    }
-
+    _initialFill();
   }
 
   void _initialFill() {
-    storage.getOrganizationList().then((model.OrganizationList list) {
-      organizationList = list;
-
-      log.debug('CompanySelector._initialFill updated organizationList');
-    }).catchError((error) {
-      log.critical('CompanySelector._initialFill storage.getOrganizationList failed with ${error}');
-    });
+    storage.getOrganizationList()
+      .then((model.OrganizationList list) => organizationList = list)
+      .catchError((error) => log.critical('CompanySelector._initialFill storage.getOrganizationList failed with ${error}'))
+      .whenComplete(render);
   }
 
-  void selection(Event e, var detail, Node target) {
-    SelectElement element = target;
+  void render() {
+    List<OptionElement> options = new List<OptionElement>()
+        ..add(new OptionElement()
+        ..disabled = true
+        ..text = 'Vælg Virksomhed'
+        ..selected = organization.id == model.nullOrganization.id);
+
+    if(organizationList != null) {
+      for(model.BasicOrganization value in organizationList) {
+        options.add(new OptionElement()
+                      ..text = '${value.name}'
+                      ..selected = organization.id == value.id
+                      ..value = value.id.toString());
+      }
+    }
+
+    select.children
+      ..clear()
+      ..addAll(options);
+  }
+
+  void updateSelected() {
+    for(OptionElement option in select.children) {
+      option.selected = option.value == organization.id.toString();
+    }
+  }
+
+  void selection(Event e) {
+    SelectElement element = e.target;
 
     try {
       int id = int.parse(element.value);
 
       storage.getOrganization(id).then((model.Organization org) {
         event.bus.fire(event.organizationChanged, org);
-
         log.debug('CompanySelector._selection updated organization to ${organization}');
+
       }).catchError((error) {
         event.bus.fire(event.organizationChanged, model.nullOrganization);
-
         log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
+
       });
     } on FormatException {
       event.bus.fire(event.organizationChanged, model.nullOrganization);
-
       log.critical('CompanySelector._selection storage.getOrganization SelectElement has bad value: ${element.value}');
     }
   }
@@ -82,10 +88,13 @@ class CompanySelector extends PolymerElement with ApplyAuthorStyle {
   void _registerEventHandlers() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
+      updateSelected();
     });
 
     event.bus.on(event.organizationListChanged).listen((model.OrganizationList list) {
+      //TODO if the interface is busy/receptionist working on a company, This is not the option you are looking for.
       organizationList = list;
+      render();
     });
   }
 }

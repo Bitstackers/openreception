@@ -18,7 +18,7 @@ import 'dart:html';
 import 'context.dart';
 import 'events.dart' as event;
 import 'state.dart';
-import '../components/contextswitcher.dart';
+import '../components.dart';
 
 class BobActive {
   DivElement element;
@@ -26,11 +26,13 @@ class BobActive {
   BobActive(DivElement this.element) {
     assert(element != null);
 
-    event.bus.on(event.stateUpdated).listen((State value) {
-      element.classes.toggle('hidden', !value.isOK);
-    });
+    event.bus.on(event.stateUpdated).listen((State value) => element.classes.toggle('hidden', !value.isOK));
 
     new ContextSwitcher(querySelector('#contextswitcher'), registerContexts());
+    new WelcomeMessage(querySelector('#welcomemessage'));
+    new AgentInfo(querySelector('#agentinfo'));
+    new CompanySelector(querySelector('#companyselector'));
+    new CompanyEvents(querySelector('#companyevents'));
   }
 
   List<Context> registerContexts() {
