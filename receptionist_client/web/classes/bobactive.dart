@@ -48,6 +48,8 @@ class BobActive {
     new CompanyOther(querySelector('#companyother'));
 
     new ContactInfo(querySelector('#contactinfo'));
+    new SendMessage(querySelector('#sendmessage'));
+    new GlobalQueue(querySelector('#globalqueue'));
   }
 
   List<Context> registerContexts() {

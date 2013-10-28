@@ -14,7 +14,7 @@
 part of components;
 
 class CompanyOther {
-  SpanElement        body;
+  DivElement        body;
   Box                box;
   DivElement         element;
   SpanElement        header;
@@ -25,9 +25,8 @@ class CompanyOther {
     element.classes.add('minibox');
 
     //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
-    body = new SpanElement()
-      ..style.padding = '5px'
-      ..style.display = 'block';
+    body = new DivElement()
+      ..style.padding = '5px';
 
     header = new SpanElement()
       ..text = title;

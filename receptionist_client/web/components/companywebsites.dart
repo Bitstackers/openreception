@@ -25,11 +25,8 @@ class CompanyWebsites {
   CompanyWebsites(DivElement this.element) {
     element.classes.add('minibox');
 
-    var html = '''
-        <ul class="zebra"></ul>
-    ''';
-
-    ul = new DocumentFragment.html(html).querySelector('.zebra');
+    ul = new UListElement()
+      ..classes.add('zebra');
 
     header = new SpanElement()
       ..text = title;

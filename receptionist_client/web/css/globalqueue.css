@@ -1,0 +1,34 @@
+/*
+.global-queue-placing {
+  position: absolute;
+  top: 52%;
+  left: 79%;
+  height: 30%;
+  width: 21%;
+}
+
+.global-queue-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.9em;
+} */
+
+#globalqueue {
+  position: absolute;
+  top: 52%;
+  left: 79%;
+  height: 30%;
+  width: 21%;
+  overflow: auto;
+  font-size: 0.9em;
+}
+
+.global-queue-zebra {
+  list-style-type: none;
+  width: 100%;
+}
+
+.global-queue-zebra li:nth-of-type(even) {
+  background-color: #eee;
+}

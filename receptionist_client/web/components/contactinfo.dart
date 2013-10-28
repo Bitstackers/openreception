@@ -31,15 +31,14 @@ class ContactInfo {
                String              title                = 'Medarbejdere';
 
   ContactInfo(DivElement this.element) {
-    var html = '''
+    String html = '''
       <div class="contact-info-container">
         <div class="contact-info-listcolumn">
           <div class="contact-info-searchbox">
             <input class="contact-info-search" 
                    type="search" 
                    disabled?="{{organization == nullOrganization}}" 
-                   placeholder="{{placeholder}}" 
-                   on-keyup="onkeyup"/>
+                   placeholder="${placeholder}"/>
           </div>
   
           <ul id="ulcontactlist" class="contact-info-zebra">
@@ -57,6 +56,8 @@ class ContactInfo {
     searchBox = body.querySelector('.contact-info-search')
       ..onKeyUp.listen(onkeyup)
       ..onScroll.listen(scrolling);
+
+    box = new Box.withHeader(element, header, body);
 
     registerEventListeners();
 //    displayedContactList = this.query('#ulcontactlist')
@@ -174,10 +175,14 @@ class ContactInfo {
   void registerEventListeners() {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
-      _performSearch();
+      if(value != nullOrganization) {
+        _performSearch();
+      }
     });
 
-    event.bus.on(event.contactChanged).listen((model.Contact value) => contact = value);
+    event.bus.on(event.contactChanged).listen((model.Contact value) {
+      contact = value;
+    });
   }
 
   void select(Event _, var __, Node target) {

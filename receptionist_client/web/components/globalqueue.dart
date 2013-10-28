@@ -10,40 +10,43 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
-import 'dart:async';
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/commands.dart' as command;
-import '../classes/events.dart' as event;
-import '../classes/logger.dart';
-import '../classes/model.dart' as model;
-import '../classes/protocol.dart' as protocol;
-import '../classes/state.dart';
-
-@CustomTag('global-queue')
-class GlobalQueue extends PolymerElement with ApplyAuthorStyle {
-  @observable model.Call     call                 = model.nullCall;
-  @observable model.CallList callQueue;
-  @observable bool           hangupButtonDisabled = true;
-  @observable bool           holdButtonDisabled   = true;
+class GlobalQueue {
+  Box box;
+   model.Call     call                 = model.nullCall;
+   model.CallList callQueue;
+   DivElement element;
+   bool           hangupButtonDisabled = true;
+   SpanElement header;
+   bool           holdButtonDisabled   = true;
               model.Call     nullCall             = model.nullCall;
-  @observable bool           pickupButtonDisabled = false;
+   bool           pickupButtonDisabled = false;
   final       String         title                = 'Global kø';
+  UListElement ul;
 
-  GlobalQueue.created() : super.created() {
+  GlobalQueue(DivElement this.element) {
+    String headerHtml = '''
+      <span class="header">
+        ${title}
+        <span style="float: right">
+          <button on-click="pickupnextcallHandler">Pickup</button>
+          <button on-click="hangupcallHandler">Hangup</button>
+          <button on-click="holdcallHandler">Hold</button>
+        </span>
+      </span>
+    ''';
+
+    header = new DocumentFragment.html(headerHtml).querySelector('.header');
+
+    ul = new UListElement()
+      ..classes.add('zebra');
+
+    box = new Box.withHeader(element, header, ul);
+
     registerEventListerns();
-    if(state.isConfigurationOK) {
-      _initialFill();
-    } else {
-      StreamSubscription subscription;
-      subscription = event.bus.on(event.stateUpdated).listen((State value) {
-        if(value.isConfigurationOK) {
-          _initialFill();
-        }
-      });
-    }
+    _initialFill();
   }
 
   void registerEventListerns() {

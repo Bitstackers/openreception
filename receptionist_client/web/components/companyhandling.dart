@@ -15,7 +15,6 @@ part of components;
 
 class CompanyHandling {
   Box                box;
-  DivElement         body;
   Context            context;
   DivElement         element;
   SpanElement        header;
@@ -24,21 +23,13 @@ class CompanyHandling {
   String             title        = 'Håndtering';
 
   CompanyHandling(DivElement this.element) {
-    var html = '''
-      <div class="company-handling-container">
-        <ul class="zebra">
-        </ul>
-      </div>
-    ''';
-
-    var frag = new DocumentFragment.html(html);
-    body = frag.querySelector('.company-handling-container');
-    ul = body.querySelector('.zebra');
+    ul = new UListElement()
+      ..classes.add('zebra');
 
     header = new SpanElement()
       ..text = title;
 
-    box = new Box.withHeader(element, header, body);
+    box = new Box.withHeader(element, header, ul);
     _registerEventListeners();
   }
 

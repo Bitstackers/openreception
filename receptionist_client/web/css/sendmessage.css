@@ -1,0 +1,146 @@
+#sendmessage { /* .send-message-placing { */
+  position: absolute;
+  top: 52%;
+  left: 46%;
+  height: 48%;
+  width: 32%;
+}
+
+.send-message-container {
+  margin: 10px;
+  height: -moz-calc(100% - 20px);
+  height: -webkit-calc(100% - 20px);
+  width: -moz-calc(100% - 20px);
+  width: -webkit-calc(100% - 20px);
+  overflow: auto;
+}
+
+.send-message-field {
+  position: absolute;
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  font-size: 1.1em;
+  margin: 0px;
+}
+
+input.send-message-field {
+  height: 30px;
+  padding: 3px;
+}
+
+textarea.send-message-field {
+  height: 30%;
+  padding: 5px;
+  font-size: 1.2em;
+}
+
+.send-message-searchbox {
+  width: 25%;
+}
+
+.send-message-search-result {
+  left: 29%;
+  width: 69%;
+}
+
+.send-message-name {
+  top: 15.5%;
+  width: 46%;
+}
+
+.send-message-company {
+  top: 15.5%;
+  left: 50%;
+  width: 48%;
+}
+
+.send-message-phone {
+  top: 23%;
+  width: 34%;
+}
+
+.send-message-cellphone {
+  top: 23%;
+  left: 38%;
+  width: 34%;
+}
+
+.send-message-localno {
+  top: 23%;
+  left: 74%;
+  width: 24%;
+}
+
+.send-message-text {
+  top: 31%;
+  height: 30%;
+  width: 96%;
+}
+
+.send-message-checkbox-container {
+  position: absolute;
+  width: 40%;
+}
+
+.send-message-checkbox-label {
+  position: absolute;
+  top: 2px;
+  margin-left: 2%;
+}
+
+.send-message-checkbox-container input[type="checkbox"] {
+  display:none;
+}
+
+.send-message-checkbox-container input[type="checkbox"] + label span {
+  height: 20px;
+  width: 20px;
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  cursor:pointer;
+  display: inline-block;
+  margin: -2px 5px 0 0;
+  vertical-align: middle;
+}
+
+.send-message-checkbox-container input[type="checkbox"]:checked + label span {
+  background-color: green;
+}
+
+.send-message-pleasecall {top: 63%;}
+.send-message-callsback {top: 70%;}
+.send-message-hascalled {top: 77%;}
+.send-message-emergency {top: 84%;}
+
+.send-message-button-container {
+  position: absolute;
+  top: 91.2%;
+}
+
+.send-message-button-container button {
+  background-color: #fafafa;
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+  margin: 0px 10px 0px 0px;
+  padding: 5px 0px;
+  width: 75px;
+}
+
+.send-message-button-container button:hover {
+  border: solid 2px #bbb;
+  border-radius: 3px;
+  font-size: 1em;
+  background-color: #eee;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.send-message-recipient-container {
+  position: absolute;
+  top: 61.5%;
+  left: 46%;
+  width: 53.5%;
+  padding: 10px;
+  height: 38%;
+}

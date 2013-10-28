@@ -15,7 +15,6 @@ part of components;
 
 class CompanyOpeningHours {
   Box                box;
-  //DivElement         body;
   Context            context;
   DivElement         element;
   SpanElement        header;
@@ -26,14 +25,8 @@ class CompanyOpeningHours {
   CompanyOpeningHours(DivElement this.element) {
     element.classes.add('minibox');
 
-    var html = '''
-      <!--<div class="minibox company-opening-hours-container"> -->
-        <ul class="zebra"></ul>
-      <!-- </div> -->
-    ''';
-
-    //body = new DocumentFragment.html(html).querySelector('.company-opening-hours-container');
-    ul = new DocumentFragment.html(html).querySelector('.zebra');
+    ul = new UListElement()
+      ..classes.add('zebra');
 
     header = new SpanElement()
       ..text = title;

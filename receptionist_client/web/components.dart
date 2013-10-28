@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:html';
 
 import 'classes/context.dart';
+import 'classes/commands.dart' as command;
 import 'classes/events.dart' as event;
 import 'classes/logger.dart';
 import 'classes/model.dart' as model;
@@ -43,4 +44,6 @@ part 'components/companytelephonenumbers.dart';
 part 'components/companywebsites.dart';
 part 'components/contactinfo.dart';
 part 'components/contextswitcher.dart';
+part 'components/globalqueue.dart';
+part 'components/sendmessage.dart';
 part 'components/welcomemessage.dart';

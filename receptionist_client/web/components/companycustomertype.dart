@@ -25,7 +25,8 @@ class CompanyCustomerType {
     element.classes.add('minibox');
 
     //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
-    body = new DivElement();
+    body = new DivElement()
+      ..style.padding = '5px';
 
     header = new SpanElement()
       ..text = title;
