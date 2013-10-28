@@ -11,20 +11,47 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/events.dart' as event;
-import '../classes/model.dart' as model;
+class CompanyOpeningHours {
+  Box                box;
+  //DivElement         body;
+  Context            context;
+  DivElement         element;
+  SpanElement        header;
+  model.Organization organization = model.nullOrganization;
+  UListElement       ul;
+  String             title        = 'Åbningstider';
 
-@CustomTag('company-opening-hours')
-class CompanyOpeningHours extends PolymerElement with ApplyAuthorStyle {
-  @observable model.Organization organization = model.nullOrganization;
-              String             title        = 'Åbningstider';
+  CompanyOpeningHours(DivElement this.element) {
+    element.classes.add('minibox');
 
-  CompanyOpeningHours.created() : super.created() {
+    var html = '''
+      <!--<div class="minibox company-opening-hours-container"> -->
+        <ul class="zebra"></ul>
+      <!-- </div> -->
+    ''';
+
+    //body = new DocumentFragment.html(html).querySelector('.company-opening-hours-container');
+    ul = new DocumentFragment.html(html).querySelector('.zebra');
+
+    header = new SpanElement()
+      ..text = title;
+
+    box = new Box.withHeader(element, header, ul);
+
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
+      render();
     });
+  }
+
+  void render() {
+    ul.children.clear();
+
+    for(var value in organization.openingHoursList) {
+      ul.children.add(new LIElement()
+                        ..text = value.value);
+    }
   }
 }

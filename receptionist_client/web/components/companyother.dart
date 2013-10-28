@@ -11,20 +11,32 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/events.dart' as event;
-import '../classes/model.dart' as model;
+class CompanyOther {
+  SpanElement        body;
+  Box                box;
+  DivElement         element;
+  SpanElement        header;
+  model.Organization organization = model.nullOrganization;
+  String             title        = 'Andet';
 
-@CustomTag('company-other')
-class CompanyOther extends PolymerElement with ApplyAuthorStyle {
-  @observable model.Organization organization = model.nullOrganization;
-              String             title        = 'Andet';
+  CompanyOther(DivElement this.element) {
+    element.classes.add('minibox');
 
-  CompanyOther.created() : super.created() {
-    event.bus.on(event.organizationChanged).listen((model.Organization org) {
-      organization = org;
+    //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
+    body = new SpanElement()
+      ..style.padding = '5px'
+      ..style.display = 'block';
+
+    header = new SpanElement()
+      ..text = title;
+
+    box = new Box.withHeader(element, header, body);
+
+    event.bus.on(event.organizationChanged).listen((model.Organization value) {
+      organization = value;
+      body.text = value.product;
     });
   }
 }

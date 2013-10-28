@@ -68,7 +68,6 @@ class ContactList extends IterableBase<Contact>{
     //TESTING END
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.ContactList.fromJson key: ${key} list: ${json[key]}');
       contactList = new ContactList._fromList(json[key]);
     } else {
       log.critical('model.ContactList.fromJson bad data key: ${key} map: ${json}');

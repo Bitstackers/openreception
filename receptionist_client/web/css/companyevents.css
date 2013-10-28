@@ -14,14 +14,6 @@
   list-style-type: none;
 }
 
-.company-events-container > li {
-  padding: 5px;
-}
-
-.company-events-container > li:nth-of-type(even) {
-  background-color: #eee;
-}
-
 .company-events-active {
   border-left: solid 3px red;
 }

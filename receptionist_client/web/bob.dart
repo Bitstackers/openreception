@@ -47,17 +47,21 @@ import 'classes/events.dart' as event;
 import 'classes/notification.dart';
 import 'classes/state.dart';
 
+BobActive bobActive;
+BobLoading bobLoading;
+BobDisaster bobDiaster;
+
 void main() {
   notification.initialize();
   configuration.initialize();
 
-  new BobLoading(querySelector('#bobloading'));
+  bobLoading = new BobLoading(querySelector('#bobloading'));
+  bobDiaster = new BobDisaster(querySelector('#bobdisaster'));
 
   StreamSubscription subscription;
   subscription = event.bus.on(event.stateUpdated).listen((State value){
     if(value.isConfigurationOK) {
-      new BobActive(querySelector('#bobactive'));
-      new BobDisaster(querySelector('#bobdisaster'));
+      bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
     }
   });

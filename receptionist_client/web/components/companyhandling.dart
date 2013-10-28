@@ -11,26 +11,50 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/context.dart';
-import '../classes/events.dart' as event;
-import '../classes/model.dart' as model;
+class CompanyHandling {
+  Box                box;
+  DivElement         body;
+  Context            context;
+  DivElement         element;
+  SpanElement        header;
+  model.Organization organization = model.nullOrganization;
+  UListElement       ul;
+  String             title        = 'Håndtering';
 
-@CustomTag('company-handling')
-class CompanyHandling extends PolymerElement with ApplyAuthorStyle {
-              Context            context;
-  @observable model.Organization organization = model.nullOrganization;
-              String             title        = 'Håndtering';
+  CompanyHandling(DivElement this.element) {
+    var html = '''
+      <div class="company-handling-container">
+        <ul class="zebra">
+        </ul>
+      </div>
+    ''';
 
-  CompanyHandling.created() : super.created() {
+    var frag = new DocumentFragment.html(html);
+    body = frag.querySelector('.company-handling-container');
+    ul = body.querySelector('.zebra');
+
+    header = new SpanElement()
+      ..text = title;
+
+    box = new Box.withHeader(element, header, body);
     _registerEventListeners();
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization org) {
-      organization = org;
+    event.bus.on(event.organizationChanged).listen((model.Organization value) {
+      organization = value;
+      render();
     });
+  }
+
+  void render() {
+    ul.children.clear();
+
+    for(var value in organization.handlingList) {
+      ul.children.add(new LIElement()
+                        ..text = value.value);
+    }
   }
 }

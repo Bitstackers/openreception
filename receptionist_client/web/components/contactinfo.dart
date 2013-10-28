@@ -11,55 +11,61 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:async';
-import 'dart:html';
+part of components;
 
-import 'package:polymer/polymer.dart';
-
-import '../classes/common.dart';
-import '../classes/events.dart' as event;
-import '../classes/logger.dart';
-import '../classes/model.dart' as model;
-
-@CustomTag('contact-info')
-class ContactInfo extends PolymerElement with ApplyAuthorStyle {
-               String              calendarTitle       = 'Kalender';
-  @observable  model.Contact       contact             = model.nullContact;
+class ContactInfo {
+               DivElement          body;
+               Box                 box;
+               String              calendarTitle        = 'Kalender';
+               model.Contact       contact              = model.nullContact;
                UListElement        displayedContactList;
-  static const int                 incrementSteps      = 20;
-               model.Organization  nullOrganization    = model.nullOrganization;
-  @observable  model.Organization  organization        = model.nullOrganization;
-  @observable  List<model.Contact> filteredContactList = toObservable([]);
-               String              placeholder         = 'søg...';
-               String              search              = '';
-               String              title               = 'Medarbejdere';
-  //Make all necessary changes (add FooElement.created constructor, inserted/removed -> enteredView/leftView).
-  ContactInfo.created() : super.created() {
+               DivElement          element;
+               SpanElement         header;
+  static const int                 incrementSteps       = 20;
+               InputElement        searchBox;
+               model.Organization  nullOrganization     = model.nullOrganization;
+               model.Organization  organization         = model.nullOrganization;
+               List<model.Contact> filteredContactList  = new List<model.Contact>();
+               String              placeholder          = 'søg...';
+               String              search               = '';
+               String              title                = 'Medarbejdere';
+
+  ContactInfo(DivElement this.element) {
+    var html = '''
+      <div class="contact-info-container">
+        <div class="contact-info-listcolumn">
+          <div class="contact-info-searchbox">
+            <input class="contact-info-search" 
+                   type="search" 
+                   disabled?="{{organization == nullOrganization}}" 
+                   placeholder="{{placeholder}}" 
+                   on-keyup="onkeyup"/>
+          </div>
+  
+          <ul id="ulcontactlist" class="contact-info-zebra">
+            <!-- Contact List, filled from component class. -->
+          </ul>
+        </div>
+      </div>
+    ''';
+
+    header = new SpanElement()
+      ..text = title;
+
+    body = new DocumentFragment.html(html).querySelector('.contact-info-container');
+    displayedContactList = body.querySelector('#ulcontactlist');
+    searchBox = body.querySelector('.contact-info-search')
+      ..onKeyUp.listen(onkeyup)
+      ..onScroll.listen(scrolling);
+
     registerEventListeners();
-    print('--------------1--------------1--------------1---------------------------');
-    print('This: ${this}');
-    print('getShadowRoot("contact-info"): ${getShadowRoot('contact-info')}');
-    print('shadowRoot: ${shadowRoot}');
-    print('this.\$["ulcontactlist"]: ${$["ulcontactlist"]}');
-    print('this.\$["#ulcontactlist"]: ${$["#ulcontactlist"]}');
-    print('querySelector: ${querySelector('#ulcontactlist')}');
 //    displayedContactList = this.query('#ulcontactlist')
 //        //TODO Why does onscroll not work
 //      ..onScroll.listen((Event event) => scrolling(event));
   }
 
-  void enteredView() {
-    print('--------------2--------------2--------------2---------------------------');
-    print('This: ${this}');
-    print('getShadowRoot("contact-info"): ${getShadowRoot('contact-info')}');
-    print('shadowRoot: ${shadowRoot}');
-    print('this.\$["ulcontactlist"]: ${$["ulcontactlist"]}');
-    print('this.\$["#ulcontactlist"]: ${$["#ulcontactlist"]}');
-    print('querySelector: ${querySelector('#ulcontactlist')}');
-    displayedContactList = getShadowRoot("contact-info").querySelector('#ulcontactlist');
-  }
-
-  void onkeyup(Event _, var __, InputElement target) {
+  void onkeyup(Event e) {
+    InputElement target = e.target;
     search = target.value;
     _performSearch();
   }

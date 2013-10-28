@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * A list of [MiniboxListItem] objects.
+ * A sortedlist of [MiniboxListItem] objects based on priority.
  */
 class MiniboxList extends IterableBase<MiniboxListItem>{
   List<MiniboxListItem> _list = new List<MiniboxListItem>();
@@ -29,7 +29,6 @@ class MiniboxList extends IterableBase<MiniboxListItem>{
     MiniboxList miniboxList = new MiniboxList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.MiniboxList.fromJson key: ${key} list: ${json[key]}');
       miniboxList = new MiniboxList._fromList(json[key]);
     } else {
       log.critical('model.MiniboxList.fromJson bad data key: ${key} map: ${json}');

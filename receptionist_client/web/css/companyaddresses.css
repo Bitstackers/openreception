@@ -1,0 +1,22 @@
+/*.company-addresses-placing {
+  position: absolute;
+  left: 57%;
+  top: 19%;
+  height: 9%;
+  width: 21%;
+}
+
+.company-addresses-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}*/
+
+#companyaddresses {
+  position: absolute;
+  left: 57%;
+  top: 19%;
+  height: 9%;
+  width: 21%;
+  overflow: auto;
+}

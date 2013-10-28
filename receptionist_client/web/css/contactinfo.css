@@ -1,0 +1,108 @@
+.contact-info-placing {
+  position: absolute;
+  top: 52%;
+  left: 0%;
+  height: 48%;
+  width: 45%;
+}
+
+.contact-info-calendarbox {
+  width: 100%;
+  padding: 10px;
+  height: 150px;
+}
+
+.contact-info-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.contact-info-datacolumn {
+  height: 100%;
+  width: 59.9%;
+  float: right;
+}
+
+.contact-info-infobox {
+  height: -webkit-calc(100% - 150px);
+  height: -moz-calc(100% - 150px);
+  overflow: auto;
+  padding: 10px;
+}
+
+.contact-info-infobox h5 {
+  font-size: 0.9em;
+}
+
+.contact-info-infobox table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.contact-info-infobox td {
+  width: 50%;
+  padding: 5px;
+  vertical-align: top;
+}
+
+.contact-info-infobox td div {
+  padding-left: 2px;
+}
+
+.contact-info-infobox td div ul {
+  list-style-type: none;
+}
+
+.contact-info-listcolumn {
+  height: 100%;
+  width: 39.9%;
+  float: left;
+}
+
+.contact-info-listcolumn ul {
+  height: -webkit-calc(100% - 50px);
+  height: -moz-calc(100% - 50px);
+  overflow: auto;
+}
+
+.contact-info-listcolumn ul li {
+  overflow: hidden;
+}
+
+.contact-info-search {
+  width: 100%;
+  height: 30px;
+  border: solid 2px #ccc;
+  padding: 3px;
+  font-size: 1.1em;
+  border-radius: 3px;
+}
+
+.contact-info-searchbox {
+  width: 100%;
+  padding: 10px;
+}
+
+.contact-info-zebra,
+.contact-info-zebraeven {
+  list-style-type: none;
+}
+
+.contact-info-zebra li,
+.contact-info-zebraeven li {
+  padding: 5px;
+}
+
+.contact-info-zebra li:nth-of-type(odd) {
+  background-color: #eee;
+}
+
+.contact-info-zebraeven li:nth-of-type(even) {
+  background-color: #eee;
+}
+
+.contact-info-active {
+  border-left: solid 3px red;
+}

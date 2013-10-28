@@ -14,16 +14,16 @@
 part of components;
 
 class CompanyEvents {
+  Box                box;
   Context            context;
+  DivElement         element;
+  SpanElement        header;
   model.Organization organization = model.nullOrganization;
   String             title        = 'Kalender';
-  DivElement element;
-  SpanElement header;
-  Box box;
 
   CompanyEvents(DivElement this.element) {
     String html = '''
-      <ul class="company-events-container">
+      <ul class="company-events-container zebra">
         <li> calendar-event event="{{event}}" calendar-event </li>
         <li> calendar-event event="{{event}}" calendar-event </li>
         <li> calendar-event event="{{event}}" calendar-event </li>

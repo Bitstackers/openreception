@@ -1,0 +1,25 @@
+/*
+.company-telephone-numbers-placing {
+  position: absolute;
+  left: 57%;
+  top: 8%;
+  height: 9%;
+  width: 21%;
+}
+
+.company-telephone-numbers-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+*/
+
+#companytelephonenumbers {
+  position: absolute;
+  left: 57%;
+  top: 8%;
+  height: 9%;
+  width: 21%;
+  overflow: auto;
+}
+      

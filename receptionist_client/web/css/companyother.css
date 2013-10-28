@@ -1,0 +1,25 @@
+/*
+.company-other-placing {
+  position: absolute;
+  left: 79%;
+  top: 41%;
+  height: 9%;
+  width: 21%;
+}
+
+.company-other-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 5px;
+}
+*/
+
+#companyother {
+  position: absolute;
+  left: 79%;
+  top: 41%;
+  height: 9%;
+  width: 21%;
+  overflow: auto;
+}

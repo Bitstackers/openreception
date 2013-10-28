@@ -33,6 +33,21 @@ class BobActive {
     new AgentInfo(querySelector('#agentinfo'));
     new CompanySelector(querySelector('#companyselector'));
     new CompanyEvents(querySelector('#companyevents'));
+    new CompanyHandling(querySelector('#companyhandling'));
+    new CompanyOpeningHours(querySelector('#companyopeninghours'));
+    new CompanySalesCalls(querySelector('#companysalescalls'));
+    new CompanyProduct(querySelector('#companyproduct'));
+    new CompanyCustomerType(querySelector('#companycustomertype'));
+    new CompanyTelephoneNumbers(querySelector('#companytelephonenumbers'));
+    new CompanyAddresses(querySelector('#companyaddresses'));
+    new CompanyAlternateNames(querySelector('#companyalternatenames'));
+    new CompanyBankingInformation(querySelector('#companybankinginformation'));
+    new CompanyEmailAddresses(querySelector('#companyemailaddresses'));
+    new CompanyWebsites(querySelector('#companywebsites'));
+    new CompanyRegistrationNumber(querySelector('#companyregistrationnumber'));
+    new CompanyOther(querySelector('#companyother'));
+
+    new ContactInfo(querySelector('#contactinfo'));
   }
 
   List<Context> registerContexts() {

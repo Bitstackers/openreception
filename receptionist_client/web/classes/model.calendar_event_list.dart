@@ -34,7 +34,6 @@ class CalendarEventList extends IterableBase<CalendarEvent>{
     CalendarEventList calendarEventList = new CalendarEventList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.CalendarEventList.fromJson key: ${key} list: ${json[key]}');
       calendarEventList = new CalendarEventList._fromList(json[key]);
     } else {
       log.critical('model.CalendarEventList.fromJson bad data key: ${key} map: ${json}');

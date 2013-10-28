@@ -11,20 +11,43 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/events.dart' as event;
-import '../classes/model.dart' as model;
+class CompanyAlternateNames {
+  Box                box;
+  Context            context;
+  DivElement         element;
+  SpanElement        header;
+  model.Organization organization = model.nullOrganization;
+  UListElement       ul;
+  String             title        = 'Alternative firmanavne';
 
-@CustomTag('company-alternate-names')
-class CompanyAlternateNames extends PolymerElement with ApplyAuthorStyle {
-  @observable model.Organization organization = model.nullOrganization;
-              String             title        = 'Alternative firmanavne';
+  CompanyAlternateNames(DivElement this.element) {
+    element.classes.add('minibox');
 
-  CompanyAlternateNames.created() : super.created() {
-    event.bus.on(event.organizationChanged).listen((model.Organization org) {
-      organization = org;
+    var html = '''
+        <ul class="zebra"></ul>
+    ''';
+
+    ul = new DocumentFragment.html(html).querySelector('.zebra');
+
+    header = new SpanElement()
+      ..text = title;
+
+    box = new Box.withHeader(element, header, ul);
+
+    event.bus.on(event.organizationChanged).listen((model.Organization value) {
+      organization = value;
+      render();
     });
+  }
+
+  void render() {
+    ul.children.clear();
+
+    for(var value in organization.alternateNameList) {
+      ul.children.add(new LIElement()
+                        ..text = value.value);
+    }
   }
 }
