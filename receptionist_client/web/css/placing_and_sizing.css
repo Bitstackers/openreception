@@ -44,11 +44,6 @@ button::-moz-focus-inner {
 }
 
 .minibox {
-  margin: 0px;
-  height: 100%;
-  width: -webkit-calc(100% - 10px);
-  width: -moz-calc(100% - 10px);
-  overflow: auto;
   font-size: 0.9em;
 }
 

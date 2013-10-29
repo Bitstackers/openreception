@@ -24,7 +24,8 @@ class LocalQueue {
     SpanElement header = new SpanElement()
       ..text = title;
 
-    ul = new UListElement();
+    ul = new UListElement()
+      ..classes.add('zebra');
 
     box = new Box.withHeader(element, header, ul);
 
@@ -45,7 +46,7 @@ class LocalQueue {
       switch(response.status) {
         case protocol.Response.OK:
           localCallQueue = response.data;
-
+          render();
           log.debug('LocalQueue._initialFill updated environment.localCallQueue');
           break;
 
@@ -57,5 +58,14 @@ class LocalQueue {
       localCallQueue = new model.CallList();
       log.critical('LocalQueue._initialFill protocol.callLocalList failed with ${error}');
     });
+  }
+
+  void render() {
+    ul.children.clear();
+
+    for(var call in localCallQueue) {
+      ul.children.add(new LIElement()
+        ..text = call.toString());
+    }
   }
 }

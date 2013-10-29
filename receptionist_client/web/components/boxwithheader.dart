@@ -25,6 +25,7 @@ class Box {
   }
 
   Box.withHeader(DivElement this.element, Element headerContent, Element bodyContent) {
+    print('[${element.id}] ${bodyContent.clientHeight}');
     String html = '''
       <h1 class="box-with-header-headline box-with-header-medium">
       </h1>
@@ -50,6 +51,7 @@ class Box {
   }
 
   void _resize() {
+    print('BOX.WITHHEADER: [${element.className} / ${element.id}] ${element.client.height} - ${header.client.height}px');
     body.style.height = '${element.client.height - header.client.height}px';
   }
 }

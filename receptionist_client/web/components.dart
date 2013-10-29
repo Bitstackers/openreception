@@ -43,9 +43,14 @@ part 'components/companysalescalls.dart';
 part 'components/companyselector.dart';
 part 'components/companytelephonenumbers.dart';
 part 'components/companywebsites.dart';
-part 'components/contactinfo.dart';
 part 'components/contextswitcher.dart';
 part 'components/globalqueue.dart';
 part 'components/localqueue.dart';
 part 'components/sendmessage.dart';
 part 'components/welcomemessage.dart';
+
+part 'components/contactinfo.dart';
+part 'components/contactinfocolumn.dart';
+part 'components/contactinfosearch.dart';
+part 'components/contactinfocalendar.dart';
+part 'components/contactinfodata.dart';

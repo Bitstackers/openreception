@@ -20,33 +20,59 @@ class CompanyEvents {
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   String             title        = 'Kalender';
+  UListElement       ul;
 
   CompanyEvents(DivElement this.element) {
-    String html = '''
-      <ul class="company-events-container zebra">
-        <li> calendar-event event="{{event}}" calendar-event </li>
-        <li> calendar-event event="{{event}}" calendar-event </li>
-        <li> calendar-event event="{{event}}" calendar-event </li>
-      </ul>
-    ''';
+    element.classes.add('company-events-container');
+
+    ul = new UListElement()
+      ..classes.add('zebra');
 
     header = new SpanElement()
       ..text = title;
 
-    var frag = new DocumentFragment.html(html);
-
-    box = new Box.withHeader(element, header, frag.children.first);
+    box = new Box.withHeader(element, header, ul);
 
     _registerEventListeners();
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization org) {
-      organization = org;
+    event.bus.on(event.organizationChanged).listen((model.Organization value) {
+      organization = value;
+      render();
     });
   }
 
   String getClass(model.CalendarEvent event) {
     return event.active ? 'company-events-active' : '';
+  }
+
+  void render() {
+    ul.children.clear();
+
+    for(var event in organization.calendarEventList) {
+      String html = '''
+        <li class="${event.active ? 'company-events-active': ''}">
+          <table class="calendar-event-table">
+            <tbody>
+              <tr>
+                <td class="calendar-event-content ${event.active ? '' : 'calendar-event-notactive'}">
+                  ${event}
+                <td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="calendar-event-timestamp ${event.active ? '' : 'calendar-event-notactive'}">
+                  ${event.start} - ${event.stop}
+                <td>
+              </tr>
+            </tfoot>
+          </table>
+        </li>
+      ''';
+
+      ul.children.add(new DocumentFragment.html(html).children.first);
+    }
   }
 }

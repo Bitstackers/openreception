@@ -14,8 +14,9 @@
 class CalendarEvent {
   model.CalendarEvent event;
   String notactive = '';
+  UListElement ul;
 
-  CalendarEvent() {
+  CalendarEvent(UListElement this.ul) {
     String html = '''
       <h1 class="box-with-header-headline">
         <content select="[name=boxheader]"></content>
@@ -24,6 +25,7 @@ class CalendarEvent {
         <content select="[name=boxcontent]"></content>
       </div>
     ''';
+
 
   }
 

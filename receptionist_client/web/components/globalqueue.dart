@@ -68,10 +68,16 @@ class GlobalQueue {
       .listen((model.Call value) => call = value);
 
     event.bus.on(event.callQueueAdd)
-      .listen((model.Call call) => callQueue.addCall(call));
+      .listen((model.Call call) {
+        callQueue.addCall(call);
+        render();
+      });
 
     event.bus.on(event.callQueueRemove)
-      .listen((model.Call call) => callQueue.removeCall(call));
+      .listen((model.Call call) {
+        callQueue.removeCall(call);
+        render();
+      });
   }
 
   void _initialFill() {
@@ -80,6 +86,7 @@ class GlobalQueue {
         case protocol.Response.OK:
           Map callsjson = response.data;
           callQueue = new model.CallList.fromJson(callsjson, 'calls');
+          render();
           log.debug('GlobalQueue._initialFill updated callQueue');
           break;
 
@@ -112,5 +119,14 @@ class GlobalQueue {
   void holdcallHandler() {
     log.debug('GlobalQueue.holdcallHandler');
     call.park();
+  }
+
+  void render() {
+    ul.children.clear();
+
+    for(var call in callQueue) {
+      ul.children.add(new LIElement()
+        ..text = call.toString());
+    }
   }
 }
