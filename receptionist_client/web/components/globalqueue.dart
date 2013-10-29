@@ -26,19 +26,33 @@ class GlobalQueue {
   final       String         title                = 'Global kø';
   UListElement ul;
 
+  // Temporary
+  ButtonElement pickupnextcallbutton;
+  ButtonElement hangupcallButton;
+  ButtonElement holdcallButton;
+
   GlobalQueue(DivElement this.element) {
     String headerHtml = '''
       <span class="header">
         ${title}
         <span style="float: right">
-          <button on-click="pickupnextcallHandler">Pickup</button>
-          <button on-click="hangupcallHandler">Hangup</button>
-          <button on-click="holdcallHandler">Hold</button>
+          <button id="pickupnextcallbutton">Pickup</button>
+          <button id="hangupcallButton">Hangup</button>
+          <button id="holdcallButton">Hold</button>
         </span>
       </span>
     ''';
 
     header = new DocumentFragment.html(headerHtml).querySelector('.header');
+
+    pickupnextcallbutton = header.querySelector('#pickupnextcallbutton')
+      ..onClick.listen((_) => pickupnextcallHandler());
+
+    hangupcallButton = header.querySelector('#hangupcallButton')
+      ..onClick.listen((_) => hangupcallHandler());
+
+    holdcallButton = header.querySelector('#holdcallButton')
+      ..onClick.listen((_) => holdcallHandler());
 
     ul = new UListElement()
       ..classes.add('zebra');

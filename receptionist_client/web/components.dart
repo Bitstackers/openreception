@@ -16,6 +16,7 @@ library components;
 import 'dart:async';
 import 'dart:html';
 
+import 'classes/configuration.dart';
 import 'classes/context.dart';
 import 'classes/commands.dart' as command;
 import 'classes/events.dart' as event;
@@ -45,5 +46,6 @@ part 'components/companywebsites.dart';
 part 'components/contactinfo.dart';
 part 'components/contextswitcher.dart';
 part 'components/globalqueue.dart';
+part 'components/localqueue.dart';
 part 'components/sendmessage.dart';
 part 'components/welcomemessage.dart';

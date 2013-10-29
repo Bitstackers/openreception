@@ -50,6 +50,7 @@ class BobActive {
     new ContactInfo(querySelector('#contactinfo'));
     new SendMessage(querySelector('#sendmessage'));
     new GlobalQueue(querySelector('#globalqueue'));
+    new LocalQueue(querySelector('#localqueue'));
   }
 
   List<Context> registerContexts() {

@@ -1,0 +1,26 @@
+/*
+.local-queue-placing {
+  position: absolute;
+  top: 84%;
+  left: 79%;
+  height: 16%;
+  width: 21%;
+}
+
+.local-queue-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.9em;
+}
+*/
+
+#localqueue {
+  position: absolute;
+  top: 84%;
+  left: 79%;
+  height: 16%;
+  width: 21%;
+  overflow: auto;
+  font-size: 0.9em;
+}

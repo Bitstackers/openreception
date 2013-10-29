@@ -42,7 +42,8 @@ class CompanySelector {
         ..add(new OptionElement()
         ..disabled = true
         ..text = 'Vælg Virksomhed'
-        ..selected = organization.id == model.nullOrganization.id);
+        ..selected = organization.id == model.nullOrganization.id
+        ..value = model.nullOrganization.id.toString());
 
     if(organizationList != null) {
       for(model.BasicOrganization value in organizationList) {

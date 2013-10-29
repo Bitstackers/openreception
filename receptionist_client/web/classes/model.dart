@@ -20,6 +20,7 @@ import 'package:intl/intl.dart';
 
 import 'configuration.dart';
 import 'environment.dart' as environment;
+import 'events.dart' as event;
 import 'logger.dart';
 import 'protocol.dart' as protocol;
 import 'storage.dart' as storage;

@@ -10,35 +10,26 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
-import 'dart:async';
 
-import 'package:polymer/polymer.dart';
+part of components;
 
-import '../classes/common.dart';
-import '../classes/configuration.dart';
-import '../classes/events.dart' as event;
-import '../classes/logger.dart';
-import '../classes/model.dart' as model;
-import '../classes/protocol.dart' as protocol;
-import '../classes/state.dart';
+class LocalQueue {
+  Box box;
+  DivElement element;
+  model.CallList localCallQueue = new model.CallList();
+  String         title          = 'Lokal kø';
+  UListElement ul;
 
-@CustomTag('local-queue')
-class LocalQueue extends PolymerElement with ApplyAuthorStyle {
-  @observable model.CallList localCallQueue = new model.CallList();
-              String         title          = 'Lokal kø';
+  LocalQueue(DivElement this.element) {
+    SpanElement header = new SpanElement()
+      ..text = title;
 
-  LocalQueue.created() : super.created() {
+    ul = new UListElement();
+
+    box = new Box.withHeader(element, header, ul);
+
     registerEventListerns();
-    if(state.isConfigurationOK) {
-      _initialFill();
-    } else {
-      StreamSubscription subscription;
-      subscription = event.bus.on(event.stateUpdated).listen((State value) {
-        if(value.isConfigurationOK) {
-          _initialFill();
-        }
-      });
-    }
+    _initialFill();
   }
 
   void registerEventListerns() {

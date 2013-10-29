@@ -87,8 +87,8 @@ class Call implements Comparable {
           // Obviously we don't want to reset the organization on every hangup, but for
           // now this is here to remind us to do _something_ on hangup. I suspect
           // resetting to nullOrganization will become annoying when the time comes.  :D
-          environment.organization = nullOrganization;
-          environment.contact = nullContact;
+          event.bus.fire(event.organizationChanged, nullOrganization);
+          event.bus.fire(event.contactChanged, nullContact);
 
           log.debug('model.Call.hangup updated environment.organization to nullOrganization');
           log.debug('model.Call.hangup updated environment.contact to nullContact');
