@@ -46,6 +46,14 @@ class Box {
     _resize();
   }
 
+  Box.withHeaderStatic(DivElement this.element, HeadingElement this.header, DivElement this.body) {
+    element.classes.add('box-with-header-outer');
+    header.classes.addAll(['box-with-header-headline','box-with-header-medium']);
+    body.classes.add('box-with-header-content');
+    _registerEventListeners();
+    _resize();
+  }
+
   void _registerEventListeners() {
     window.onResize.listen((_) => _resize());
   }

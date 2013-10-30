@@ -35,14 +35,6 @@ class ContactInfo {
   ContactInfoData data;
 
   ContactInfo(DivElement this.element) {
-    var contactinfo_search = querySelector('#contactinfo_search');
-    var contactinfo_calendar = querySelector('#contactinfo_search');
-    var contactinfo_data = querySelector('#contactinfo_search');
-
-    search = new ContactInfoSearch(contactinfo_search);
-    calendar = new ContactInfoCalendar(contactinfo_calendar);
-    data = new ContactInfoData(contactinfo_data);
-
 //    String html = '''
 //      <div class="contact-info-container">
 //        <div class="contact-info-listcolumn">
@@ -69,11 +61,22 @@ class ContactInfo {
     //  ..disabled = true
     //  ..onKeyUp.listen(onkeyup);
 
-
     header = new SpanElement()
-      ..text = title;
+    ..text = title;
+
+    HeadingElement contactInfoHeader = querySelector('#contactinfohead')
+        ..children.add(header);
+
+    DivElement contactinfo_search = querySelector('#contactinfo_search');
+    DivElement contactinfo_calendar = querySelector('#contactinfo_calendar');
+    DivElement contactinfo_data = querySelector('#contactinfo_data');
+
+    search = new ContactInfoSearch(contactinfo_search);
+    calendar = new ContactInfoCalendar(contactinfo_calendar);
+    data = new ContactInfoData(contactinfo_data);
+
     body = querySelector('#contactinfobody');
-    //box = new Box.withHeader(element, header, body);
+    box = new Box.withHeaderStatic(element, contactInfoHeader, body);
 
     //infoColumn = new ContactInfoColumn(body.querySelector('.contact-info-datacolumn'));
 

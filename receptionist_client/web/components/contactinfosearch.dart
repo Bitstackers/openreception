@@ -1,7 +1,6 @@
 part of components;
 
 class ContactInfoSearch {
-               DivElement          body;
                model.Contact       contact              = model.nullContact;
                UListElement        displayedContactList;
                DivElement          element;
@@ -13,28 +12,26 @@ class ContactInfoSearch {
 
   ContactInfoSearch(DivElement this.element) {
     String html = '''
-      <div class="contact-info-listcolumn">
         <div class="contact-info-searchbox">
           <input class="contact-info-search" 
                  type="search"  
                  placeholder="${placeholder}"/>
         </div>
   
-        <ul id="ulcontactlist" class="contact-info-zebra">
+        <ul id="contactlist" class="contact-info-zebra">
           <!-- Contact List, filled from component class. -->
         </ul>
-      </div>
     ''';
 
-    body = new DocumentFragment.html(html).querySelector('.contact-info-listcolumn');
-    searchBox = body.querySelector('.contact-info-search') as InputElement
+    var frag = new DocumentFragment.html(html);
+    searchBox = frag.querySelector('.contact-info-search') as InputElement
       ..disabled = true
       ..onKeyUp.listen(onkeyup);
 
-    displayedContactList = body.querySelector('#ulcontactlist')
+    displayedContactList = frag.querySelector('#contactlist')
         ..onScroll.listen(scrolling);
 
-    element.children.add(body);
+    element.children.addAll(frag.children);
 
     registerEventListeners();
   }

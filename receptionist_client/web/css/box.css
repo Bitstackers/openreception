@@ -3,7 +3,7 @@
   background-color: #fafafa;
   border: solid 2px #ddd;
   border-radius: 5px;
-  overflow: auto;
+  /* overflow: auto; */
 }
 
 .box-with-header-content {

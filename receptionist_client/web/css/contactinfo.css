@@ -6,12 +6,33 @@
   width: 45%;
 }
 
-#contactinfo_calendar {
+#contactinfo_search {
   position: absolute;
   top: 6%;
+  left: 0%;
+  width: 40%;
+  height: 350px;
+}
+
+#contactinfo_calendar {
+  position: absolute;
+  top: 5.5%;
   left: 40.5%;
   width: 59%;
   height: 150px;
+}
+
+#contactinfo_data {
+  position: absolute;
+  top: 180px;
+  left: 40.5%;
+  width: 59%;
+  height: 150px;
+}
+
+#contactlist {
+  height: 75%;
+  overflow: auto;
 }
 
 .contact-info-calendarbox {

@@ -22,13 +22,13 @@ class ContactInfoData {
             <td>
               <h5>Arbejdstider</h5>
               <div>
-                <ul id="contactWorkHoursList"></ul>
+                <ul id="contactWorkHoursList" class="zebra"></ul>
               </div>
             </td>
             <td>
               <h5>Kald</h5>
               <div>
-                <ul id="contactHandlingList"></ul>
+                <ul id="contactHandlingList" class="zebra"></ul>
               </div>
             </td>
           </tr>
@@ -50,7 +50,7 @@ class ContactInfoData {
             <td>
               <h5>Telefon</h5>
               <div>
-                <ul id="contactTelephoneNumberList"></ul>
+                <ul id="contactTelephoneNumberList" class="zebra"></ul>
               </div>
             </td>
           </tr>
@@ -62,7 +62,7 @@ class ContactInfoData {
             <td>
               <h5>Email</h5>
               <div>
-                <ul id="contactEmailAddressList"></ul>
+                <ul id="contactEmailAddressList" class="zebra"></ul>
               </div>
             </td>
           </tr>
@@ -74,7 +74,7 @@ class ContactInfoData {
             <td>
               <h5>Backup</h5>
               <div>
-                <ul id="contactBackupList"></ul>
+                <ul id="contactBackupList" class="zebra"></ul>
               </div>
             </td>
           </tr>
