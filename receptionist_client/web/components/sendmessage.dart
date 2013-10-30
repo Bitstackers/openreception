@@ -112,8 +112,20 @@ class SendMessage {
       </div>
     ''';
 
-    body = new DocumentFragment.html(html).querySelector('.send-message-container');
+    body = querySelector('.send-message-container');
 
+    var cancelButton = body.querySelector('#sendMessageCancel')
+        ..text = cancelButtonLabel
+        ..onClick.listen(cancelClick);
+    
+    var draftButton = body.querySelector('#sendMessageDraft')
+        ..text = saveButtonLabel
+        ..onClick.listen(draftClick);
+    
+    var sendButton = body.querySelector('#sendMessageSend')
+        ..text = sendButtonLabel
+        ..onClick.listen(sendClick);
+    
     header = new SpanElement()
       ..text = title;
 
@@ -126,5 +138,17 @@ class SendMessage {
     //environment.contact = environment.organization.contactList.getContact(id);
 
     log.debug('ContactInfo.select updated environment.contact to \${environment.contact}');
+  }
+  
+  void cancelClick(_) {
+    log.debug('SendMessage Cancel Button pressed');
+  }
+  
+  void draftClick(_) {
+    log.debug('SendMessage Draft Button pressed');
+  }
+  
+  void sendClick(_) {
+    log.debug('SendMessage Send Button pressed');
   }
 }

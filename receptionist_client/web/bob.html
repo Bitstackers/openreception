@@ -67,7 +67,75 @@
             <div id="contactinfo_data"></div>
           </div>
         </div>
-        <div id="sendmessage"> <!-- Make the content for the box here. --> </div>
+        
+        <div id="sendmessage"> <!-- Make the content for the box here. --> 
+          <h1 id="sendmessagehead"></h1>
+          <div class="send-message-container">
+            <input class="send-message-searchbox send-message-field" type="search"/>
+            <input class="send-message-search-result send-message-field" readonly/>
+    
+            <input class="send-message-name send-message-field"/>
+            <input class="send-message-company send-message-field"/>
+    
+            <input class="send-message-phone send-message-field"/>
+            <input class="send-message-cellphone send-message-field"/>
+            <input class="send-message-localno send-message-field"/>
+    
+            <textarea style="resize: none;" class="send-message-text send-message-field"></textarea>
+    
+            <div class="send-message-checkbox-container send-message-pleasecall">
+              <input id="send-message-checkbox1" type="checkbox"/>
+              <label class="send-message-checkbox-label" for="send-message-checkbox1"><span></span>Ring venligst</label>
+            </div>
+              <div class="send-message-checkbox-container send-message-callsback">
+              <input id="send-message-checkbox2" type="checkbox"/>
+            <label class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
+            </div>
+              <div class="send-message-checkbox-container send-message-hascalled">
+              <input id="send-message-checkbox3" type="checkbox"/>
+            <label class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
+            </div>
+            <div class="send-message-checkbox-container send-message-emergency">
+              <input class="send-message-checkbox" id="send-message-checkbox4" type="checkbox"/>
+              <label class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
+            </div>
+    
+            <div class="send-message-button-container">
+              <button id="sendMessageCancel"></button>
+              <button id="sendMessageDraft"></button>
+              <button id="sendMessageSend"></button>
+            </div>
+    
+            <div class="send-message-recipient-container">
+              <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
+                <span name="boxheader">
+                  {{recipientTitle}}
+                </span>
+    
+                <div name="boxcontent" class="minibox">
+                  <ul>
+                    <li>Thomas</li>
+                    <li>Trine</li>
+                    <li>Steen</li>
+                  </ul>
+                  <!--<ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
+                    <template instantiate="if value.active">
+                      <li class="contact-info-active2">
+                        <calendar-event event="{{value}}"></calendar-event>
+                      </li>
+                    </template>
+                    <template instantiate="if !value.active">
+                      <li>
+                        <calendar-event event="{{value}}"></calendar-event>
+                      </li>
+                    </template>
+                  </ul>-->
+                </div>
+              </box-with-header>
+            </div>
+          </div>
+        </div>
+        
         <div id="globalqueue"></div>
         <div id="localqueue"></div>
       </section>
