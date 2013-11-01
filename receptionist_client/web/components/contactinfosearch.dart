@@ -87,11 +87,10 @@ class ContactInfoSearch {
     if(filteredContactList.isNotEmpty) {
       _selectedContact = filteredContactList.first;
       _showMoreElements(incrementSteps);
-      activeContact(_selectedContact);
     } else {
       _selectedContact = model.nullContact;
     }
-    event.bus.fire(event.contactChanged, _selectedContact);
+    activeContact(_selectedContact);
   }
 
   void registerEventListeners() {

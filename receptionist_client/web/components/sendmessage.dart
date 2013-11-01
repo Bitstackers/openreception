@@ -14,19 +14,7 @@
 part of components;
 
 class SendMessage {
-  DivElement body;
-  Box box;
-   bool   callsBack               = true;
-  final String       cancelButtonLabel       = 'Annuller';
-   String cellphone               = '';
-   String company                 = '';
-  DivElement element;
-   bool   emergency               = false;
-   bool   hasCalled               = false;
-  SpanElement header;
-   String localno                 = '';
-   String name                    = '';
-   String phone                   = '';
+  /* Unused Variables
   final String       placeholderCellphone    = 'Mobil';
   final String       placeholderCompany      = 'Firmanavn';
   final String       placeholderLocalno      = 'Lokalnummer';
@@ -35,16 +23,46 @@ class SendMessage {
   final String       placeholderSearch       = 'Søg...';
   final String       placeholderSearchResult = 'Ingen data fundet';
   final String       placeholderText         = 'Besked';
-   bool   pleaseCall              = false;
   final String       recipientTitle          = 'Modtagere';
-  final String       saveButtonLabel         = 'Gem';
-   String search                  = '';
-   String searchResult            = '';
-  final String       sendButtonLabel         = 'Send';
-   String text                    = '';
-  final String       title                   = 'Besked';
+  String localno                 = '';
+  String name                    = '';
+  String phone                   = '';
+  bool   pleaseCall              = false;
+  bool   emergency               = false;
+  bool   hasCalled               = false;
+  String cellphone               = '';
+  String company                 = '';
+  bool   callsBack               = true;
+  String search                  = '';
+  String searchResult            = '';
+  String text                    = '';
+   */
+
+        DivElement  body;
+        Box         box;
+  final String      cancelButtonLabel = 'Annuller';
+        DivElement  element;
+        SpanElement header;
+  final String      saveButtonLabel   = 'Gem';
+  final String      sendButtonLabel   = 'Send';
+  final String      title             = 'Besked';
+
+  InputElement sendmessagesearchbox;
+  InputElement sendmessagesearchresult;
+  InputElement sendmessagename;
+  InputElement sendmessagecompany;
+  InputElement sendmessagephone;
+  InputElement sendmessagecellphone;
+  InputElement sendmessagelocalno;
+  TextAreaElement sendmessagetext;
+
+  InputElement checkbox1;
+  InputElement checkbox2;
+  InputElement checkbox3;
+  InputElement checkbox4;
 
   SendMessage(DivElement this.element) {
+    /*
     String html = '''
       <div class="send-message-container">
         <input class="send-message-searchbox send-message-field" type="search" placeholder="${placeholderSearch}"/>
@@ -111,43 +129,58 @@ class SendMessage {
         </div>
       </div>
     ''';
+    */
 
     body = querySelector('.send-message-container');
 
-    var cancelButton = body.querySelector('#sendMessageCancel')
-        ..text = cancelButtonLabel
-        ..onClick.listen(cancelClick);
-    
-    var draftButton = body.querySelector('#sendMessageDraft')
-        ..text = saveButtonLabel
-        ..onClick.listen(draftClick);
-    
-    var sendButton = body.querySelector('#sendMessageSend')
-        ..text = sendButtonLabel
-        ..onClick.listen(sendClick);
-    
     header = new SpanElement()
       ..text = title;
 
     box = new Box.withHeader(element, header, body);
 
+    sendmessagesearchbox    = body.querySelector('#sendmessagesearchbox');
+    sendmessagesearchresult = body.querySelector('#sendmessagesearchresult');
+    sendmessagename         = body.querySelector('#sendmessagename');
+    sendmessagecompany      = body.querySelector('#sendmessagecompany');
+    sendmessagephone        = body.querySelector('#sendmessagephone');
+    sendmessagecellphone    = body.querySelector('#sendmessagecellphone');
+    sendmessagelocalno      = body.querySelector('#sendmessagelocalno');
+    sendmessagetext         = body.querySelector('#sendmessagetext');
+
+    checkbox1 = body.querySelector('#send-message-checkbox1');
+    checkbox2 = body.querySelector('#send-message-checkbox2');
+    checkbox3 = body.querySelector('#send-message-checkbox3');
+    checkbox4 = body.querySelector('#send-message-checkbox4');
+
+    var cancelButton = body.querySelector('#sendmessagecancel')
+        ..text = cancelButtonLabel
+        ..onClick.listen(cancelClick);
+
+    var draftButton = body.querySelector('#sendmessagedraft')
+        ..text = saveButtonLabel
+        ..onClick.listen(draftClick);
+
+    var sendButton = body.querySelector('#sendmessagesend')
+        ..text = sendButtonLabel
+        ..onClick.listen(sendClick);
+
+   registerEventListeners();
   }
 
-  void select(Event e, var detail, Node target) {
-    int id = int.parse((target as LIElement).id.split('_').last);
-    //environment.contact = environment.organization.contactList.getContact(id);
-
-    log.debug('ContactInfo.select updated environment.contact to \${environment.contact}');
+  void registerEventListeners() {
+    event.bus.on(event.contactChanged).listen((model.Contact contact) {
+      sendmessagename.value = 'Test: ${contact.name}';
+    });
   }
-  
+
   void cancelClick(_) {
     log.debug('SendMessage Cancel Button pressed');
   }
-  
+
   void draftClick(_) {
     log.debug('SendMessage Draft Button pressed');
   }
-  
+
   void sendClick(_) {
     log.debug('SendMessage Send Button pressed');
   }

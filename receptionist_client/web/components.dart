@@ -28,6 +28,7 @@ import 'classes/storage.dart' as storage;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';
+part 'components/callqueueitem.dart';
 part 'components/companyaddresses.dart';
 part 'components/companyalternatenames.dart';
 part 'components/companybankinginformation.dart';

@@ -8,7 +8,7 @@
 
 #contactinfo_search {
   position: absolute;
-  top: 6%;
+  top: 3%;
   left: 0%;
   width: 40%;
   height: 350px;
@@ -31,7 +31,7 @@
 }
 
 #contactlist {
-  height: 75%;
+  height: 110%;
   overflow: auto;
 }
 

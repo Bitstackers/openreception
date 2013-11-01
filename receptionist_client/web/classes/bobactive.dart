@@ -23,6 +23,8 @@ import '../components.dart';
 class BobActive {
   DivElement element;
 
+  SendMessage sendMessage;
+
   BobActive(DivElement this.element) {
     assert(element != null);
 
@@ -48,7 +50,7 @@ class BobActive {
     new CompanyOther(querySelector('#companyother'));
 
     new ContactInfo(querySelector('#contactinfo'));
-    new SendMessage(querySelector('#sendmessage'));
+    sendMessage = new SendMessage(querySelector('#sendmessage'));
     new GlobalQueue(querySelector('#globalqueue'));
     new LocalQueue(querySelector('#localqueue'));
   }

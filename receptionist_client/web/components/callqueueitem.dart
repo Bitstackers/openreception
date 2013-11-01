@@ -11,24 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:async';
+part of components;
 
-import 'package:polymer/polymer.dart';
+class CallQueueItem {
+  int        age  = 0;
+  model.Call _call = model.nullCall;
+  model.Call get call => _call;
 
-import '../classes/common.dart';
-import '../classes/model.dart' as model;
+  CallQueueItem(model.Call this._call) {
 
-@CustomTag('call-queue-item')
-class CallQueueItem extends PolymerElement with ApplyAuthorStyle {
-  @observable int        age  = 0;
-  @published  model.Call call = model.nullCall;
-
-  CallQueueItem.created() : super.created() {}
-
-  void enteredView() {
     age = new DateTime.now().difference(call.start).inSeconds.ceil();
     new Timer.periodic(new Duration(seconds:1), (_) => age++);
   }
 
-  void pickupcallHandler() => call.pickup();
+  void pickupcall() => call.pickup();
 }

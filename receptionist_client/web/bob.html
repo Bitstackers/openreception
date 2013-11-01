@@ -69,19 +69,18 @@
         </div>
         
         <div id="sendmessage"> <!-- Make the content for the box here. --> 
-          <h1 id="sendmessagehead"></h1>
           <div class="send-message-container">
-            <input class="send-message-searchbox send-message-field" type="search"/>
-            <input class="send-message-search-result send-message-field" readonly/>
+            <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search"/>
+            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly/>
     
-            <input class="send-message-name send-message-field"/>
-            <input class="send-message-company send-message-field"/>
+            <input id="sendmessagename" class="send-message-name send-message-field" placeholder="Navn"/>
+            <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn"/>
     
-            <input class="send-message-phone send-message-field"/>
-            <input class="send-message-cellphone send-message-field"/>
-            <input class="send-message-localno send-message-field"/>
+            <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon"/>
+            <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil"/>
+            <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer"/>
     
-            <textarea style="resize: none;" class="send-message-text send-message-field"></textarea>
+            <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="Besked"></textarea>
     
             <div class="send-message-checkbox-container send-message-pleasecall">
               <input id="send-message-checkbox1" type="checkbox"/>
@@ -101,12 +100,14 @@
             </div>
     
             <div class="send-message-button-container">
-              <button id="sendMessageCancel"></button>
-              <button id="sendMessageDraft"></button>
-              <button id="sendMessageSend"></button>
+              <button id="sendmessagecancel"></button>
+              <button id="sendmessagedraft"></button>
+              <button id="sendmessagesend"></button>
             </div>
     
-            <div class="send-message-recipient-container">
+            <div class="send-message-recipient-container box-with-header-outer">
+              This box is intentionally left blank
+            <!--
               <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
                 <span name="boxheader">
                   {{recipientTitle}}
@@ -118,7 +119,7 @@
                     <li>Trine</li>
                     <li>Steen</li>
                   </ul>
-                  <!--<ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
+                  <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
                     <template instantiate="if value.active">
                       <li class="contact-info-active2">
                         <calendar-event event="{{value}}"></calendar-event>
@@ -129,9 +130,10 @@
                         <calendar-event event="{{value}}"></calendar-event>
                       </li>
                     </template>
-                  </ul>-->
+                  </ul>
                 </div>
               </box-with-header>
+              -->
             </div>
           </div>
         </div>

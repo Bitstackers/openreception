@@ -35,7 +35,7 @@ class GlobalQueue {
     String headerHtml = '''
       <span class="header">
         ${title}
-        <span style="float: right">
+        <span>
           <button id="pickupnextcallbutton">Pickup</button>
           <button id="hangupcallButton">Hangup</button>
           <button id="holdcallButton">Hold</button>
