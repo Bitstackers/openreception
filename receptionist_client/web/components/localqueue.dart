@@ -16,7 +16,7 @@ part of components;
 class LocalQueue {
   Box box;
   DivElement element;
-  model.CallList localCallQueue = new model.CallList();
+  List<CallQueueItem> callQueue = new List<CallQueueItem>();
   String         title          = 'Lokal kø';
   UListElement ul;
 
@@ -35,37 +35,49 @@ class LocalQueue {
 
   void registerEventListerns() {
     event.bus.on(event.localCallQueueAdd)
-      .listen((model.Call call) => localCallQueue.addCall(call));
+      .listen((model.Call call) => addCall(call));
 
     event.bus.on(event.callQueueRemove)
-      .listen((model.Call call) => localCallQueue.removeCall(call));
+      .listen((model.Call call) => removeCall(call));
   }
 
   void _initialFill() {
     protocol.callLocalList(configuration.agentID).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
-          localCallQueue = response.data;
-          render();
+          model.CallList initialCallQueue = response.data;
+          for(var call in initialCallQueue) {
+            addCall(call);
+          }
           log.debug('LocalQueue._initialFill updated environment.localCallQueue');
           break;
 
         default:
-          localCallQueue = new model.CallList();
           log.debug('LocalQueue._initialFill updated environment.localCallQueue with empty list');
       }
     }).catchError((error) {
-      localCallQueue = new model.CallList();
       log.critical('LocalQueue._initialFill protocol.callLocalList failed with ${error}');
     });
   }
 
-  void render() {
-    ul.children.clear();
+  void addCall(model.Call call) {
+    var queueItem = new CallQueueItem(call);
+    callQueue.add(queueItem);
+    ul.children.add(queueItem.element);
+  }
 
-    for(var call in localCallQueue) {
-      ul.children.add(new LIElement()
-        ..text = call.toString());
+  void removeCall(model.Call call) {
+    CallQueueItem queueItem;
+    for(CallQueueItem callItem in callQueue) {
+      if(callItem.call == call) {
+        queueItem = callItem;
+        break;
+      }
+    }
+
+    if(queueItem != null) {
+      ul.children.remove(queueItem.element);
+      callQueue.remove(queueItem);
     }
   }
 }

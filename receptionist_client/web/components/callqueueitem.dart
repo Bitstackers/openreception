@@ -14,15 +14,32 @@
 part of components;
 
 class CallQueueItem {
-  int        age  = 0;
+  int         age  = 0;
+  SpanElement ageElement;
   model.Call _call = model.nullCall;
+  LIElement   element;
+
   model.Call get call => _call;
 
   CallQueueItem(model.Call this._call) {
-
     age = new DateTime.now().difference(call.start).inSeconds.ceil();
-    new Timer.periodic(new Duration(seconds:1), (_) => age++);
+    String html = '''
+      <li class="call-queue-item-default">
+        <span>Call ID : ${call.id}</span>
+        <span class="call-queue-item-seconds">${age}</span>
+      </li>
+    ''';
+
+    element = new DocumentFragment.html(html).querySelector('.call-queue-item-default');
+    ageElement = element.querySelector('.call-queue-item-seconds');
+
+    new Timer.periodic(new Duration(seconds:1), (_) {
+      age += 1;
+      ageElement.text = age.toString();
+    });
+
+    element.onClick.listen(pickupcall);
   }
 
-  void pickupcall() => call.pickup();
+  void pickupcall(_) => call.pickup();
 }

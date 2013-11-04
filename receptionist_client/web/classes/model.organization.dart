@@ -154,7 +154,7 @@ class Organization extends BasicOrganization{
     foo['calendar_events'] = new List();
     foo['calendar_events'].add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'${id} Salgsmøde'});
     foo['calendar_events'].add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus'});
-    foo['calendar_events'].add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'${id} Ombygning af bygning der er alt for varm, og derfor ikke virker efter hensigten'});
+    foo['calendar_events'].add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'${id} Kunde besøg (tilbage fredag d. 5 maj) Haster: Stil til Peter Fredriksen von finddongdingleong. Der var en gagn en lille dreng som skulle ned til heksen for at hente sine kager.'});
     _calendarEventList = new CalendarEventList.fromJson(foo, 'calendar_events');
   }
 

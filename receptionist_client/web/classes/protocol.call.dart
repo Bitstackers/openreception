@@ -57,7 +57,7 @@ Future<Response<Map>> callList() {
 /**
  * Get a list of waiting calls.
  */
-Future<Response> callQueue() {
+Future<Response<Map>> callQueue() {
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final String                   path      = '/call/queue';
@@ -67,41 +67,47 @@ Future<Response> callQueue() {
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_) {
-      Map data = {'calls': [
-                        {'assigned_to': '',
-                          'organization_id': 1,
-                          'id': 'callid_1',
-                          'arrival_time': '1382099801'},
+//      Map data = {'calls': [
+//                        {'assigned_to': '',
+//                          'organization_id': 1,
+//                          'id': 'callid_1',
+//                          'arrival_time': '1382099801'},
+//
+//                         {'assigned_to': '',
+//                          'organization_id': 2,
+//                          'id': 'callid_2',
+//                          'arrival_time': '1382099831'},
+//
+//                         {'assigned_to': '',
+//                          'organization_id': 1,
+//                          'id': 'callid_3',
+//                          'arrival_time': '1382099821'}
+//
+//                            ]};
+      Map data = new Map();
+      List calls = new List();
+      calls.add({'id':'31','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:  3)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+      calls.add({'id':'27','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 15)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+      calls.add({'id':'11','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+      data['calls'] = calls;
+      log.debug('protocol.call.dart callQueue is sending out fake data.');
 
-                         {'assigned_to': '',
-                          'organization_id': 2,
-                          'id': 'callid_2',
-                          'arrival_time': '1382099831'},
+      completer.complete(new Response<Map>(Response.OK, data));
+      return;
 
-                         {'assigned_to': '',
-                          'organization_id': 1,
-                          'id': 'callid_3',
-                          'arrival_time': '1382099821'}
-
-                            ]};
-          log.debug('protocol.call.dart callQueue is sending out fake data.');
-
-          completer.complete(new Response<Map>(Response.OK, data));
-        return;
-
-      switch(request.status) {
-        case 200:
-          Map data = _parseJson(request.responseText);
-          completer.complete(new Response<Map>(Response.OK, data));
-          break;
-
-        case 204:
-          completer.complete(new Response<Map>(Response.NOTFOUND, null));
-          break;
-
-        default:
-          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
-      }
+//      switch(request.status) {
+//        case 200:
+//          Map data = _parseJson(request.responseText);
+//          completer.complete(new Response<Map>(Response.OK, data));
+//          break;
+//
+//        case 204:
+//          completer.complete(new Response<Map>(Response.NOTFOUND, null));
+//          break;
+//
+//        default:
+//          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+//      }
     })
     ..onError.listen((e) {
       _logError(request, url);
@@ -125,11 +131,11 @@ Future<Response<model.CallList>> callLocalList(String agentId) {
   url = _buildUrl(base, path, fragments);
 
 //Dummy Data
-  Map dummyData = new Map();;
+  Map dummyData = new Map();
   List calls = new List();
-  calls.add({'id':'42','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-  calls.add({'id':'43','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+  calls.add({'id':'40','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+  calls.add({'id':'55','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+  calls.add({'id':'63','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
   dummyData['calls'] = calls;
   model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
   completer.complete(new Response<model.CallList>(Response.OK, data));

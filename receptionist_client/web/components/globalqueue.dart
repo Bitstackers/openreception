@@ -14,17 +14,13 @@
 part of components;
 
 class GlobalQueue {
-  Box box;
-   model.Call     call                 = model.nullCall;
-   model.CallList callQueue;
-   DivElement element;
-   bool           hangupButtonDisabled = true;
-   SpanElement header;
-   bool           holdButtonDisabled   = true;
-              model.Call     nullCall             = model.nullCall;
-   bool           pickupButtonDisabled = false;
-  final       String         title                = 'Global kø';
-  UListElement ul;
+        Box            box;
+        model.Call     call      = model.nullCall;
+        List<CallQueueItem> callQueue = new List<CallQueueItem>();
+        DivElement     element;
+        SpanElement    header;
+  final String         title     = 'Global kø';
+        UListElement   ul;
 
   // Temporary
   ButtonElement pickupnextcallbutton;
@@ -69,14 +65,12 @@ class GlobalQueue {
 
     event.bus.on(event.callQueueAdd)
       .listen((model.Call call) {
-        callQueue.addCall(call);
-        render();
+        addCall(call);
       });
 
     event.bus.on(event.callQueueRemove)
       .listen((model.Call call) {
-        callQueue.removeCall(call);
-        render();
+        removeCall(call);
       });
   }
 
@@ -85,25 +79,25 @@ class GlobalQueue {
       switch(response.status) {
         case protocol.Response.OK:
           Map callsjson = response.data;
-          callQueue = new model.CallList.fromJson(callsjson, 'calls');
-          render();
+          model.CallList initialCallQueue = new model.CallList.fromJson(callsjson, 'calls');
+          for(var call in initialCallQueue) {
+            addCall(call);
+          }
           log.debug('GlobalQueue._initialFill updated callQueue');
           break;
 
         default:
-          callQueue = new model.CallList();
           log.debug('GlobalQueue._initialFill updated callQueue with empty list');
       }
     }).catchError((error) {
-      callQueue = new model.CallList();
       log.critical('GlobalQueue._initialFill protocol.callQueue failed with ${error}');
     });
   }
 
   void _callChange(model.Call call) {
-    pickupButtonDisabled = !(call == null || call == model.nullCall);
-    hangupButtonDisabled = call == null || call == model.nullCall;
-    holdButtonDisabled = call == null || call == model.nullCall;
+    pickupnextcallbutton.disabled = !(call == null || call == model.nullCall);
+    hangupcallButton.disabled = call == null || call == model.nullCall;
+    holdcallButton.disabled = call == null || call == model.nullCall;
   }
 
   void pickupnextcallHandler() {
@@ -121,12 +115,24 @@ class GlobalQueue {
     call.park();
   }
 
-  void render() {
-    ul.children.clear();
+  void addCall(model.Call call) {
+    var queueItem = new CallQueueItem(call);
+    callQueue.add(queueItem);
+    ul.children.add(queueItem.element);
+  }
 
-    for(var call in callQueue) {
-      ul.children.add(new LIElement()
-        ..text = call.toString());
+  void removeCall(model.Call call) {
+    CallQueueItem queueItem;
+    for(CallQueueItem callItem in callQueue) {
+      if(callItem.call == call) {
+        queueItem = callItem;
+        break;
+      }
+    }
+
+    if(queueItem != null) {
+      ul.children.remove(queueItem.element);
+      callQueue.remove(queueItem);
     }
   }
 }
