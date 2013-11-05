@@ -13,6 +13,7 @@
 /* RAW COPY-PASTE*/
 /* @group Base */
 .chosen-container {
+  width: 100%;
   position: relative;
   display: inline-block;
   vertical-align: middle;
@@ -173,6 +174,7 @@
 .chosen-container .chosen-results li.active-result {
   display: list-item;
   cursor: pointer;
+  margin-bottom: 1px;
 }
 .chosen-container .chosen-results li.disabled-result {
   display: list-item;

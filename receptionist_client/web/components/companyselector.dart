@@ -15,91 +15,70 @@ part of components;
 
 class CompanySelector {
   final String                 organizationSearchPlaceholder = 'Søg efter en virksomhed';
-        model.Organization     organization      = model.nullOrganization;
         model.OrganizationList organizationList  = new model.OrganizationList();
         DivElement             element;
 
         InputElement searchBox;
         UListElement resultsList;
         SpanElement companyselectortext;
-        DivElement companydropdown;
         bool withDropDown = false;
-        List<LIElement> ulOrganizationList = new List<LIElement>();
-
-        LIElement selectedLi;
+        List<LIElement> list = new List<LIElement>();
+        DivElement container;
         LIElement highlightedLi;
 
   CompanySelector(DivElement this.element) {
-    element.classes.addAll(['chosen-container','chosen-container-single']);
-
     String html = '''
-      <a class="chosen-single" tabindex="-1">
-        <span id="companyselectortext"></span>
-        <div><b></b></div>
-      </a>
-      <div class="chosen-drop">
-        <div class="chosen-search">
-          <input type="text" autocomplete="off"></input>
-        </div>
-        <ul class="chosen-results"></ul>
+      <div class="chosen-container chosen-container-single">
+        <a class="chosen-single" tabindex="-1">
+          <span id="companyselectortext"></span>
+          <div><b></b></div>
+        </a>
+        <div class="chosen-drop">
+          <div class="chosen-search">
+            <input type="text" autocomplete="off"></input>
+          </div>
+          <ul class="chosen-results"></ul>
       <div>
+      </div>
     ''';
 
-    DocumentFragment frag = new DocumentFragment.html(html);
-    companyselectortext = frag.querySelector('#companyselectortext');
-    companydropdown = frag.querySelector('.chosen-drop');
-    searchBox = companydropdown.querySelector('.chosen-search > input');
-    resultsList = companydropdown.querySelector('.chosen-results');
-    element.children.addAll(frag.children);
+    container           = new DocumentFragment.html(html).querySelector('.chosen-container');
+    companyselectortext = container                      .querySelector('#companyselectortext');
+    searchBox           = container                      .querySelector('.chosen-search > input');
+    resultsList         = container                      .querySelector('.chosen-results');
+    element.children.add(container);
 
     companyselectortext.text = organizationSearchPlaceholder;
 
     initialFill();
     registerEventHandlers();
+
+    new Future.delayed(new Duration(seconds: 10), () {
+      storage.getOrganization(1).then((org) {
+        event.bus.fire(event.organizationChanged, org);
+      });
+    });
   }
 
   void activateDropDown() {
-    if(!withDropDown) {
-      element.classes.add('chosen-with-drop');
-      withDropDown = true;
-    }
-  }
-
-  void activateElement() {
-    element.classes.toggle('chosen-container-active', true);
+    container.classes.add('chosen-with-drop');
+    withDropDown = true;
   }
 
   void clearSelection() {
     companyselectortext.text = organizationSearchPlaceholder;
+    event.bus.fire(event.organizationChanged, model.nullOrganization);
   }
 
   void deactivateDropDown() {
-    //print('deactiveDropDown');
-    if(withDropDown) {
-      element.classes.remove('chosen-with-drop');
-      withDropDown = false;
-    }
+    container.classes.remove('chosen-with-drop');
+    withDropDown = false;
   }
 
-  void deactivateElement() {
-    element.classes.toggle('chosen-container-active', false);
-  }
-
-  void highlightElement(LIElement li) {
-    print('highlightElement()');
-    if(highlightedLi != null) {
-      highlightedLi.classes.toggle('highlighted', false);
-    }
-
-    if(li != null) {
-      li.classes.toggle('highlighted', true);
-    }
-
-    highlightedLi = li;
-    fixScroll();
-  }
-
-  void fixScroll() {
+  /**
+   * Adjust the scollbar to keep the highlighted list element visible.
+   */
+  void makeElementVisible() {
     if(highlightedLi != null) {
       if(highlightedLi.offsetTop < resultsList.scrollTop) {
         resultsList.scrollTop = highlightedLi.offsetTop;
@@ -110,24 +89,27 @@ class CompanySelector {
     }
   }
 
+  void highlightElement(LIElement li) {
+    if(highlightedLi != null) {
+      highlightedLi.classes.remove('highlighted');
+    }
+
+    if(li != null) {
+      li.classes.add('highlighted');
+      highlightedLi = li;
+    }
+
+    makeElementVisible();
+  }
+
   void initialFill() {
     storage.getOrganizationList()
       .then((model.OrganizationList list) => organizationList = list)
       .catchError((error) => log.critical('CompanySelector._initialFill storage.getOrganizationList failed with ${error}'))
       .whenComplete(() {
         updateSourceList();
-        preformSearch(searchBox.value);
+        performSearch(searchBox.value);
       });
-  }
-
-  bool isChildOf(Element child, Element parent) {
-    if(child.parent == parent) {
-      return true;
-    } else if(child.parent != null) {
-      return isChildOf(child.parent, parent);
-    } else {
-      return false;
-    }
   }
 
   void nextElement() {
@@ -135,7 +117,6 @@ class CompanySelector {
       activateDropDown();
     } else {
       LIElement newHighlight = highlightedLi.nextElementSibling;
-      print('nextElement: ${newHighlight}');
       if(newHighlight != null) {
         highlightElement(newHighlight);
       }
@@ -143,32 +124,30 @@ class CompanySelector {
   }
 
   /**
-   * Makes a new liste filtered base on [searchText], and highlights the right element.
+   * Populates the [resultList] based on [searchText] and highlights an element.
    */
-  void preformSearch(String searchText) {
+  void performSearch(String searchText) {
     resultsList.children.clear();
-    for(var liOrganization in ulOrganizationList) {
-      String organizationName = liOrganization.attributes['originalname'];
+    for(var li in list) {
+      String name = li.attributes['data-originalname'];
+
       if(searchText.isEmpty) {
-        resultsList.children.add(liOrganization
-            ..innerHtml = organizationName);
+        resultsList.children.add(li..innerHtml = name);
 
-      } else if(organizationName.toLowerCase().contains(searchText.toLowerCase())) {
-        int matchIndex = organizationName.toLowerCase().indexOf(searchText.toLowerCase());
-        String before = organizationName.substring(0, matchIndex);
-        String match = organizationName.substring(matchIndex, matchIndex + searchText.length);
-        String after = organizationName.substring(matchIndex + searchText.length, organizationName.length);
+      } else if(name.toLowerCase().contains(searchText.toLowerCase())) {
+        int matchIndex = name.toLowerCase().indexOf(searchText.toLowerCase());
+        String before  = name.substring(0, matchIndex);
+        String match   = name.substring(matchIndex, matchIndex + searchText.length);
+        String after   = name.substring(matchIndex + searchText.length, name.length);
 
-        String html = '${before}<em>${match}</em>${after}';
-        resultsList.children.add(liOrganization
-            ..innerHtml = html);
+        resultsList.children.add(li..innerHtml = '${before}<em>${match}</em>${after}');
       }
     }
 
     if(!resultsList.children.contains(highlightedLi) && resultsList.children.isNotEmpty) {
       highlightElement(resultsList.children.first);
     } else {
-      fixScroll();
+      makeElementVisible();
     }
   }
 
@@ -184,88 +163,93 @@ class CompanySelector {
   }
 
   void registerEventHandlers() {
-    event.bus.on(event.organizationChanged).listen((model.Organization org) {
-      organization = org;
-      //updateSelected();
-    });
-
-    event.bus.on(event.organizationListChanged).listen((model.OrganizationList list) {
-      organizationList = list;
+    event.bus.on(event.organizationChanged).listen((model.Organization organization) {
+      if(organization == model.nullOrganization) {
+        deactivateDropDown();
+        searchBox.value = '';
+        companyselectortext.text = organizationSearchPlaceholder;
+      } else {
+        for(LIElement li in list) {
+          if(li.value == organization.id) {
+            highlightElement(li);
+            deactivateDropDown();
+            searchBox.value = '';
+            companyselectortext.text = organization.name;
+            break;
+          }
+        }
+      }
     });
 
     searchBox.onKeyDown.listen((KeyboardEvent event) {
-      int UP = 38, DOWN = 40;
       KeyEvent key = new KeyEvent.wrap(event);
 
-      if(key.keyCode == UP) {
-        previousElement();
-        event.preventDefault();
+      switch(key.keyCode) {
+        case Keys.UP:
+          event.preventDefault();
+          previousElement();
+          break;
 
-      } else if(key.keyCode == DOWN) {
-        nextElement();
-        event.preventDefault();
+        case Keys.DOWN:
+          event.preventDefault();
+          nextElement();
+          break;
       }
     });
 
     searchBox.onKeyUp.listen((KeyboardEvent event) {
-      int TAB = 9, ENTER = 13, SHIFT = 16, CTRL = 17, ALT = 18, ESC = 27;
       KeyEvent key = new KeyEvent.wrap(event);
 
-      if(key.keyCode == ESC) {
-        if(withDropDown) {
-          deactivateDropDown();
-        } else {
-          clearSelection();
-        }
-      } else if(key.keyCode == TAB   ||
-                key.keyCode == SHIFT ||
-                key.keyCode == CTRL  ||
-                key.keyCode == ALT) {
-        //NOTHING
-      } else if(key.keyCode == ENTER) {
-        takeSelected();
+      switch(key.keyCode) {
+        case Keys.ESC:
+          if(withDropDown) {
+            deactivateDropDown();
+          } else {
+            clearSelection();
+          }
+          break;
 
-      } else {
-        preformSearch(searchBox.value);
-        activateDropDown();
+        case Keys.ENTER:
+          activateSelectedOrganization(highlightedLi);
+          break;
+
+        case Keys.TAB:
+        case Keys.SHIFT:
+        case Keys.CTRL:
+        case Keys.ALT:
+          break;
+
+        default:
+          performSearch(searchBox.value);
+          activateDropDown();
       }
     });
 
     searchBox.onClick.listen((e) {
-      preformSearch(searchBox.value);
+      performSearch(searchBox.value);
     });
 
     searchBox.onFocus.listen((e) {
-      print('CompanySelector searchBox onFocus');
-      activateElement();
+      container.classes.add('chosen-container-active');
     });
 
     searchBox.onBlur.listen((FocusEvent e) {
-      print('searchBox onBlur');
-      print('relatedTarget: ${e.relatedTarget}');
-
-//      if(e.relatedTarget != null && e.relatedTarget is AnchorElement){
-//        AnchorElement relatedTarget = e.relatedTarget;
-//        if(relatedTarget.classes.contains('chosen-single')) {
-//          searchBox.focus();
-//        }
-      if(e.relatedTarget != null && isChildOf(e.relatedTarget, element)) {
-        print('------------------------------------------------------------');
+      if(e.relatedTarget != null && isChildOf(e.relatedTarget, container)) {
         searchBox.focus();
       } else {
-        deactivateElement();
+        searchBox.value = '';
+        performSearch('');
+        container.classes.remove('chosen-container-active');
         deactivateDropDown();
       }
     });
 
-    element.querySelector('.chosen-single')
-      ..onMouseDown.listen((e) {
-        print('CompanySelector chosen-single.onClick');
+    container.querySelector('.chosen-single')
+      ..onMouseDown.listen((_) {
         if(withDropDown) {
-          print('CompanySelector chosen-single.onClick DEACTIVATE');
           deactivateDropDown();
         } else {
-          activateElement();
+          container.classes.add('chosen-container-active');
           activateDropDown();
           searchBox.focus();
         }
@@ -273,46 +257,35 @@ class CompanySelector {
   }
 
   /**
-   * Takes the highlighted element, and collapses the dropdown.
+   * Make the highlighted element, the selected, and tell rest of bob about it.
    */
-  void takeSelected() {
-    selectedLi = highlightedLi;
-    companyselectortext.text = selectedLi.attributes['originalname'];
+  void activateSelectedOrganization(LIElement li) {
+    companyselectortext.text = li.attributes['data-originalname'];
+
     deactivateDropDown();
     searchBox.value = '';
-    preformSearch('');
+    performSearch('');
 
-    //var basicOrganization = organizationList.firstWhere((bOrg) => bOrg.id == selectedLi.value, orElse: null);
-    storage.getOrganization(selectedLi.value)
-      .then((model.Organization organization) {
-        event.bus.fire(event.organizationChanged, organization);
-      })
-      .catchError((e) {
-        log.error('CompanySelector: The company selected was not found');
-      });
+    storage.getOrganization(li.value)
+      .then((model.Organization value) => event.bus.fire(event.organizationChanged, value))
+      .catchError((_) => log.error('CompanySelector: The company selected was not found'));
   }
 
   void updateSourceList() {
-    ulOrganizationList.clear();
     for(var org in organizationList) {
-      LIElement myLi = new LIElement();
-      myLi
+      LIElement myLi;
+      myLi = new LIElement()
         ..classes.add('active-result')
         ..value = org.id
-        ..attributes['originalname'] = org.name
+        ..attributes['data-originalname'] = org.name
+        ..onMouseOver.listen((_) => highlightElement(myLi))
         ..onMouseDown.listen((_) {
-          print('CLICK ${org.id}');
-          takeSelected();
-          activateElement();
-          new Future(searchBox.focus);
-          //TODO Select this company.
-        })
-        ..onMouseOver.listen((_) {
-          print('Mouse over ${myLi.value}');
-          highlightElement(myLi);
-        })
-        ..style.marginBottom = '1px';
-      ulOrganizationList.add(myLi);
+            activateSelectedOrganization(myLi);
+            container.classes.add('chosen-container-active');
+            new Future(searchBox.focus);
+          });
+
+      list.add(myLi);
     }
   }
 }

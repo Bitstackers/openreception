@@ -23,6 +23,12 @@ final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
  * [Keys] is a simple mapping between constant literals and integer key codes.
  */
 class Keys {
+  static const int TAB   =  9;
+  static const int ENTER = 13;
+  static const int SHIFT = 16;
+  static const int CTRL  = 17;
+  static const int ALT   = 18;
+  static const int ESC   = 27;
   static const int UP    = 38;
   static const int DOWN  = 40;
   static const int ZERO  = 48;

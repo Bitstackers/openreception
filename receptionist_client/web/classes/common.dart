@@ -14,6 +14,7 @@
 library Common;
 
 import 'dart:async';
+import 'dart:html';
 
 /**
  * A simple timeout exception. MUST be used wherever we throw exceptions due
@@ -25,6 +26,19 @@ class TimeoutException implements Exception {
   const TimeoutException(this.message);
 
   String toString() => message;
+}
+
+/**
+ * Returns true if [child] is in [parent]s DOM tree.
+ */
+bool isChildOf(Element child, Element parent) {
+  if(child == null) {
+    return false;
+  } else if(child.parent == parent) {
+    return true;
+  } else {
+    return isChildOf(child.parent, parent);
+  }
 }
 
 typedef bool boolFunc ();

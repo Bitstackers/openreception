@@ -3,7 +3,6 @@ library events;
 import 'package:event_bus/event_bus.dart';
 
 import 'context.dart';
-import 'environment.dart' as environment;
 import 'model.dart' as model;
 import 'state.dart';
 
@@ -15,7 +14,6 @@ final EventType<model.Call> callQueueRemove = new EventType<model.Call>();
 final EventType<model.Contact> contactChanged = new EventType<model.Contact>();
 final EventType<model.Call> localCallQueueAdd = new EventType<model.Call>();
 final EventType<model.Organization> organizationChanged = new EventType<model.Organization>();
-final EventType<model.OrganizationList> organizationListChanged = new EventType<model.OrganizationList>();
 final EventType<State> stateUpdated = new EventType<State>();
 
 EventBus _bus = new EventBus();
