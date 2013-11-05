@@ -26,15 +26,15 @@ class CompanySelector {
         bool withDropDown = false;
         List<LIElement> ulOrganizationList = new List<LIElement>();
 
-        int selectedItemIndex = -1;
-        int highlightedIndex = -1;
+        LIElement selectedLi;
+        LIElement highlightedLi;
 
   CompanySelector(DivElement this.element) {
     element.classes.addAll(['chosen-container','chosen-container-single']);
 
     String html = '''
       <a class="chosen-single" tabindex="-1">
-        <span id="companyselectortext">${organizationSearchPlaceholder}</span>
+        <span id="companyselectortext"></span>
         <div><b></b></div>
       </a>
       <div class="chosen-drop">
@@ -52,18 +52,20 @@ class CompanySelector {
     resultsList = companydropdown.querySelector('.chosen-results');
     element.children.addAll(frag.children);
 
-    registerEventHandlers();
+    companyselectortext.text = organizationSearchPlaceholder;
+
     initialFill();
+    registerEventHandlers();
   }
 
-  void activeDropDown() {
+  void activateDropDown() {
     if(!withDropDown) {
       element.classes.add('chosen-with-drop');
       withDropDown = true;
     }
   }
 
-  void activeElement() {
+  void activateElement() {
     element.classes.toggle('chosen-container-active', true);
   }
 
@@ -71,38 +73,40 @@ class CompanySelector {
     companyselectortext.text = organizationSearchPlaceholder;
   }
 
-  void deactiveDropDown() {
+  void deactivateDropDown() {
+    //print('deactiveDropDown');
     if(withDropDown) {
       element.classes.remove('chosen-with-drop');
       withDropDown = false;
     }
   }
 
-  void deactiveElement() {
+  void deactivateElement() {
     element.classes.toggle('chosen-container-active', false);
   }
 
-  void highlightElement() {
-    int elementIndex = 0;
-    bool found = false;
-    for(LIElement item in resultsList.children) {
-      if(elementIndex == highlightedIndex) {
-        if(item.offsetTop < resultsList.scrollTop) {
-          resultsList.scrollTop = item.offsetTop;
-
-        } else if(resultsList.scrollTop + resultsList.clientHeight - item.clientHeight <= item.offsetTop) {
-          resultsList.scrollTop = item.offsetTop + item.clientHeight - resultsList.clientHeight;
-        }
-        found = true;
-      }
-      item.classes.toggle('highlighted', elementIndex == highlightedIndex);
-      elementIndex += 1;
+  void highlightElement(LIElement li) {
+    print('highlightElement()');
+    if(highlightedLi != null) {
+      highlightedLi.classes.toggle('highlighted', false);
     }
 
-    if(found == false) {
-      resultsList.children.first.classes.toggle('highlighted', true);
-      resultsList.scrollTop = 0;
-      highlightedIndex = int.parse(resultsList.children.first.attributes['index']);
+    if(li != null) {
+      li.classes.toggle('highlighted', true);
+    }
+
+    highlightedLi = li;
+    fixScroll();
+  }
+
+  void fixScroll() {
+    if(highlightedLi != null) {
+      if(highlightedLi.offsetTop < resultsList.scrollTop) {
+        resultsList.scrollTop = highlightedLi.offsetTop;
+
+      } else if(resultsList.scrollTop + resultsList.clientHeight - highlightedLi.clientHeight <= highlightedLi.offsetTop) {
+        resultsList.scrollTop = highlightedLi.offsetTop + highlightedLi.clientHeight - resultsList.clientHeight;
+      }
     }
   }
 
@@ -116,41 +120,66 @@ class CompanySelector {
       });
   }
 
-  void nextElement() {
-    if(!withDropDown) {
-      activeDropDown();
-    } else if(highlightedIndex < resultsList.children.length -1) {
-      highlightedIndex += 1;
-      highlightElement();
+  bool isChildOf(Element child, Element parent) {
+    if(child.parent == parent) {
+      return true;
+    } else if(child.parent != null) {
+      return isChildOf(child.parent, parent);
+    } else {
+      return false;
     }
   }
 
+  void nextElement() {
+    if(!withDropDown) {
+      activateDropDown();
+    } else {
+      LIElement newHighlight = highlightedLi.nextElementSibling;
+      print('nextElement: ${newHighlight}');
+      if(newHighlight != null) {
+        highlightElement(newHighlight);
+      }
+    }
+  }
+
+  /**
+   * Makes a new liste filtered base on [searchText], and highlights the right element.
+   */
   void preformSearch(String searchText) {
     resultsList.children.clear();
     for(var liOrganization in ulOrganizationList) {
-      model.BasicOrganization organization = organizationList.elementAt(int.parse(liOrganization.attributes['index']));
+      String organizationName = liOrganization.attributes['originalname'];
       if(searchText.isEmpty) {
         resultsList.children.add(liOrganization
-            ..innerHtml = organization.name);
+            ..innerHtml = organizationName);
 
-      } else if(liOrganization.text.toLowerCase().contains(searchText.toLowerCase())) {
-        List<Match> matches = organization.name.toLowerCase().allMatches(searchText.toLowerCase());
-        for(var m in matches) {
-          print(m.start);
-        }
-        String html = organization.name.replaceAll(searchText, '<em>${searchText}</em>');
+      } else if(organizationName.toLowerCase().contains(searchText.toLowerCase())) {
+        int matchIndex = organizationName.toLowerCase().indexOf(searchText.toLowerCase());
+        String before = organizationName.substring(0, matchIndex);
+        String match = organizationName.substring(matchIndex, matchIndex + searchText.length);
+        String after = organizationName.substring(matchIndex + searchText.length, organizationName.length);
+
+        String html = '${before}<em>${match}</em>${after}';
         resultsList.children.add(liOrganization
             ..innerHtml = html);
       }
+    }
+
+    if(!resultsList.children.contains(highlightedLi) && resultsList.children.isNotEmpty) {
+      highlightElement(resultsList.children.first);
+    } else {
+      fixScroll();
     }
   }
 
   void previousElement() {
     if(!withDropDown) {
-      activeDropDown();
-    } else if(highlightedIndex > 0) {
-      highlightedIndex -= 1;
-      highlightElement();
+      activateDropDown();
+    } else {
+      LIElement newHighlight = highlightedLi.previousElementSibling;
+      if(newHighlight != null) {
+        highlightElement(newHighlight);
+      }
     }
   }
 
@@ -184,7 +213,7 @@ class CompanySelector {
 
       if(key.keyCode == ESC) {
         if(withDropDown) {
-          deactiveDropDown();
+          deactivateDropDown();
         } else {
           clearSelection();
         }
@@ -198,8 +227,7 @@ class CompanySelector {
 
       } else {
         preformSearch(searchBox.value);
-        highlightElement();
-        activeDropDown();
+        activateDropDown();
       }
     });
 
@@ -209,79 +237,82 @@ class CompanySelector {
 
     searchBox.onFocus.listen((e) {
       print('CompanySelector searchBox onFocus');
-      activeElement();
+      activateElement();
     });
 
-    searchBox.onBlur.listen((e) {
-      print('CompanySelector onBlur');
-      deactiveElement();
-      deactiveDropDown();
+    searchBox.onBlur.listen((FocusEvent e) {
+      print('searchBox onBlur');
+      print('relatedTarget: ${e.relatedTarget}');
+
+//      if(e.relatedTarget != null && e.relatedTarget is AnchorElement){
+//        AnchorElement relatedTarget = e.relatedTarget;
+//        if(relatedTarget.classes.contains('chosen-single')) {
+//          searchBox.focus();
+//        }
+      if(e.relatedTarget != null && isChildOf(e.relatedTarget, element)) {
+        print('------------------------------------------------------------');
+        searchBox.focus();
+      } else {
+        deactivateElement();
+        deactivateDropDown();
+      }
     });
 
     element.querySelector('.chosen-single')
-      ..onClick.listen((e) {
+      ..onMouseDown.listen((e) {
         print('CompanySelector chosen-single.onClick');
-        activeDropDown();
-        highlightElement();
-        searchBox.focus();
+        if(withDropDown) {
+          print('CompanySelector chosen-single.onClick DEACTIVATE');
+          deactivateDropDown();
+        } else {
+          activateElement();
+          activateDropDown();
+          searchBox.focus();
+        }
       });
   }
 
-  void selection(Event e) {
-    SelectElement element = e.target;
-
-    try {
-      int id = int.parse(element.value);
-
-      storage.getOrganization(id).then((model.Organization org) {
-        event.bus.fire(event.organizationChanged, org);
-        log.debug('CompanySelector._selection updated organization to ${organization}');
-
-      }).catchError((error) {
-        event.bus.fire(event.organizationChanged, model.nullOrganization);
-        log.critical('CompanySelector._selection storage.getOrganization failed with ${error}');
-
-      });
-    } on FormatException {
-      event.bus.fire(event.organizationChanged, model.nullOrganization);
-      log.critical('CompanySelector._selection storage.getOrganization SelectElement has bad value: ${element.value}');
-    }
-  }
-
+  /**
+   * Takes the highlighted element, and collapses the dropdown.
+   */
   void takeSelected() {
-    int elementIndex = 0;
-    for(LIElement item in resultsList.children) {
-      if(elementIndex == highlightedIndex) {
-        selectedItemIndex = highlightedIndex;
-        companyselectortext.text = item.text;
-        deactiveDropDown();
-        break;
-      }
-      elementIndex += 1;
-    }
+    selectedLi = highlightedLi;
+    companyselectortext.text = selectedLi.attributes['originalname'];
+    deactivateDropDown();
+    searchBox.value = '';
+    preformSearch('');
+
+    //var basicOrganization = organizationList.firstWhere((bOrg) => bOrg.id == selectedLi.value, orElse: null);
+    storage.getOrganization(selectedLi.value)
+      .then((model.Organization organization) {
+        event.bus.fire(event.organizationChanged, organization);
+      })
+      .catchError((e) {
+        log.error('CompanySelector: The company selected was not found');
+      });
   }
 
   void updateSourceList() {
     ulOrganizationList.clear();
-    int index = 0;
     for(var org in organizationList) {
-      var myIndex = index;
-      ulOrganizationList.add(new LIElement()
+      LIElement myLi = new LIElement();
+      myLi
         ..classes.add('active-result')
         ..value = org.id
-        ..attributes['index'] = index.toString()
-        ..onClick.listen((_) {
-          highlightedIndex = myIndex;
+        ..attributes['originalname'] = org.name
+        ..onMouseDown.listen((_) {
+          print('CLICK ${org.id}');
           takeSelected();
+          activateElement();
+          new Future(searchBox.focus);
           //TODO Select this company.
         })
         ..onMouseOver.listen((_) {
-          print('Mouse over ${myIndex}');
-          highlightedIndex = myIndex;
-          highlightElement();
+          print('Mouse over ${myLi.value}');
+          highlightElement(myLi);
         })
-      );
-      index += 1;
+        ..style.marginBottom = '1px';
+      ulOrganizationList.add(myLi);
     }
   }
 }
