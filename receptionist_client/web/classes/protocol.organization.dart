@@ -91,7 +91,12 @@ Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
-            model.OrganizationList data = new model.OrganizationList.fromJson(_parseJson(request.responseText), 'organization_list');
+            var response = _parseJson(request.responseText);
+            //TODO REMOVE BEFORE FRIDAY 8 Nov. TESTING ONLY
+            for(int i = 5; i < 100; i++) {
+              response['organization_list'].add({"organization_id": i, "full_name": 'EvilCorp${i}', "uri": 'EvilCorp${i}'});
+            }
+            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organization_list');
             completer.complete(new Response<model.OrganizationList>(Response.OK, data));
             break;
 
