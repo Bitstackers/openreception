@@ -52,12 +52,6 @@ class CompanySelector {
 
     initialFill();
     registerEventHandlers();
-
-    new Future.delayed(new Duration(seconds: 10), () {
-      storage.getOrganization(1).then((org) {
-        event.bus.fire(event.organizationChanged, org);
-      });
-    });
   }
 
   void activateDropDown() {
