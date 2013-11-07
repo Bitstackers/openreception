@@ -17,25 +17,56 @@ class CompanyOpeningHours {
   Box                box;
   Context            context;
   DivElement         element;
+  bool               hasFocus = false;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   UListElement       ul;
   String             title        = 'Åbningstider';
 
+
   CompanyOpeningHours(DivElement this.element) {
     element.classes.add('minibox');
 
     ul = new UListElement()
-      ..classes.add('zebra');
+      ..classes.add('zebra')
+      ..id = 'company-opening-hours-list'
+      ..tabIndex = getTabIndex('company-opening-hours-list');
 
     header = new SpanElement()
       ..text = title;
 
     box = new Box.withHeader(element, header, ul);
 
+
+
+    registerEventListeners();
+  }
+
+  void registerEventListeners() {
     event.bus.on(event.organizationChanged).listen((model.Organization org) {
       organization = org;
       render();
+    });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.old == ul.id) {
+        hasFocus = false;
+        element.classes.remove(focusClassName);
+      }
+
+      if(value.current == ul.id) {
+        hasFocus = true;
+        element.classes.add(focusClassName);
+        ul.focus();
+      }
+    });
+
+    ul.onFocus.listen((_) {
+      setFocus(ul.id);
+    });
+
+    element.onClick.listen((_) {
+      setFocus(ul.id);
     });
   }
 

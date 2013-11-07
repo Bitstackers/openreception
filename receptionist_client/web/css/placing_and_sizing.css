@@ -66,3 +66,7 @@ button::-moz-focus-inner {
   height: 100%;
   width: 96%;
 }
+
+.focus {
+  border: 2px solid red !important;
+}

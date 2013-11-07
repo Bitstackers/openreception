@@ -14,17 +14,19 @@
 part of components;
 
 class CompanySelector {
+        SpanElement            companyselectortext;
+        DivElement             container;
+        DivElement             element;
+        bool                   hasFocus = false;
+        LIElement              highlightedLi;
+        List<LIElement>        list = new List<LIElement>();
   final String                 organizationSearchPlaceholder = 'Søg efter en virksomhed';
         model.OrganizationList organizationList  = new model.OrganizationList();
-        DivElement             element;
+        UListElement           resultsList;
+        InputElement           searchBox;
+        bool                   withDropDown = false;
 
-        InputElement searchBox;
-        UListElement resultsList;
-        SpanElement companyselectortext;
-        bool withDropDown = false;
-        List<LIElement> list = new List<LIElement>();
-        DivElement container;
-        LIElement highlightedLi;
+        int tabIndex = 1;
 
   CompanySelector(DivElement this.element) {
     String html = '''
@@ -35,7 +37,7 @@ class CompanySelector {
         </a>
         <div class="chosen-drop">
           <div class="chosen-search">
-            <input type="text" autocomplete="off"></input>
+            <input id="company-selector-searchbar" type="text" autocomplete="off"></input>
           </div>
           <ul class="chosen-results"></ul>
       <div>
@@ -57,6 +59,14 @@ class CompanySelector {
   void activateDropDown() {
     container.classes.add('chosen-with-drop');
     withDropDown = true;
+  }
+
+  void activateTab() {
+    searchBox.tabIndex = getTabIndex('company-selector-searchbar');
+  }
+
+  void deactivateTab() {
+    searchBox.tabIndex = -1;
   }
 
   void clearSelection() {
@@ -185,6 +195,7 @@ class CompanySelector {
           break;
 
         case Keys.DOWN:
+          print('COMPANY KEYBOARD');
           event.preventDefault();
           nextElement();
           break;
@@ -225,11 +236,15 @@ class CompanySelector {
 
     searchBox.onFocus.listen((e) {
       container.classes.add('chosen-container-active');
+      if(!hasFocus) {
+        setFocus(element.id);
+      }
     });
 
     searchBox.onBlur.listen((FocusEvent e) {
       if(e.relatedTarget != null && isChildOf(e.relatedTarget, container)) {
         searchBox.focus();
+
       } else {
         searchBox.value = '';
         performSearch('');
@@ -248,6 +263,16 @@ class CompanySelector {
           searchBox.focus();
         }
       });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.current == element.id && !hasFocus) {
+        hasFocus = true;
+        searchBox.focus();
+
+      } else if(value.current != element.id) {
+        hasFocus = false;
+      }
+    });
   }
 
   /**

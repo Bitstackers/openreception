@@ -12,17 +12,14 @@
 */
 
 import 'package:logging/logging.dart';
-import 'package:polymer/polymer.dart';
 
-import '../classes/common.dart';
 import '../classes/configuration.dart';
 import '../classes/logger.dart';
 
-@CustomTag('log-box')
-class LogBox extends PolymerElement with ApplyAuthorStyle {
-  List<LogRecord> messages = toObservable(new List<LogRecord>());
+class LogBox {
+  List<LogRecord> messages = new List<LogRecord>();
 
-  LogBox.created() : super.created() {
+  LogBox() {
     log.userLogStream.listen((LogRecord record) {
       messages.insert(0, record);
       // TODO: change messages to a Queue or ListQueue as soon as support for

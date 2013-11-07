@@ -22,11 +22,15 @@ class CompanyEvents {
   String             title        = 'Kalender';
   UListElement       ul;
 
+  bool hasFocus = false;
+
   CompanyEvents(DivElement this.element) {
     element.classes.add('company-events-container');
 
     ul = new UListElement()
-      ..classes.add('zebra');
+      ..id = 'company_events_list'
+      ..classes.add('zebra')
+      ..tabIndex = getTabIndex('company_events_list');
 
     header = new SpanElement()
       ..text = title;
@@ -40,6 +44,27 @@ class CompanyEvents {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
       render();
+    });
+
+    ul.onFocus.listen((_) {
+      setFocus(ul.id);
+    });
+
+    element.onClick.listen((_) {
+      setFocus(ul.id);
+    });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if (value.old == ul.id) {
+        hasFocus = false;
+        element.classes.remove(focusClassName);
+      }
+
+      if(value.current == ul.id) {
+        hasFocus = true;
+        element.classes.add(focusClassName);
+        ul.focus();
+      }
     });
   }
 

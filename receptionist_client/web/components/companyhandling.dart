@@ -17,6 +17,7 @@ class CompanyHandling {
   Box                box;
   Context            context;
   DivElement         element;
+  bool               hasFocus = false;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   UListElement       ul;
@@ -24,7 +25,9 @@ class CompanyHandling {
 
   CompanyHandling(DivElement this.element) {
     ul = new UListElement()
-      ..classes.add('zebra');
+      ..id = 'company_handling_list'
+      ..classes.add('zebra')
+      ..tabIndex = getTabIndex('company_handling_list');
 
     header = new SpanElement()
       ..text = title;
@@ -37,6 +40,29 @@ class CompanyHandling {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
       render();
+    });
+
+    ul.onFocus.listen((_) {
+      if(!hasFocus) {
+        setFocus(ul.id);
+      }
+    });
+
+    element.onClick.listen((_) {
+      setFocus(ul.id);
+    });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.old == ul.id) {
+        hasFocus = false;
+        element.classes.remove(focusClassName);
+      }
+
+      if(value.current == ul.id) {
+        hasFocus = true;
+        element.classes.add(focusClassName);
+        ul.focus();
+      }
     });
   }
 

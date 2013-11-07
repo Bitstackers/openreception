@@ -18,7 +18,9 @@ class GlobalQueue {
         model.Call     call      = model.nullCall;
         List<CallQueueItem> callQueue = new List<CallQueueItem>();
         DivElement     element;
+        bool           hasFocus = false;
         SpanElement    header;
+        SpanElement    headerText;
   final String         title     = 'Global kø';
         UListElement   ul;
 
@@ -30,7 +32,7 @@ class GlobalQueue {
   GlobalQueue(DivElement this.element) {
     String headerHtml = '''
       <span class="header">
-        ${title}
+        <span></span>        
         <span>
           <button id="pickupnextcallbutton">Pickup</button>
           <button id="hangupcallButton">Hangup</button>
@@ -42,16 +44,23 @@ class GlobalQueue {
     header = new DocumentFragment.html(headerHtml).querySelector('.header');
 
     pickupnextcallbutton = header.querySelector('#pickupnextcallbutton')
-      ..onClick.listen((_) => pickupnextcallHandler());
+      ..onClick.listen((_) => pickupnextcallHandler())
+      ..tabIndex = -1;
 
     hangupcallButton = header.querySelector('#hangupcallButton')
-      ..onClick.listen((_) => hangupcallHandler());
+      ..onClick.listen((_) => hangupcallHandler())
+      ..tabIndex = -1;
 
     holdcallButton = header.querySelector('#holdcallButton')
-      ..onClick.listen((_) => holdcallHandler());
+      ..onClick.listen((_) => holdcallHandler())
+      ..tabIndex = -1;
+
+    headerText = header.querySelector('span');
 
     ul = new UListElement()
-      ..classes.add('zebra');
+      ..classes.add('zebra')
+      ..id = 'global-queue-list'
+      ..tabIndex = getTabIndex('global-queue-list');
 
     box = new Box.withHeader(element, header, ul);
 
@@ -60,18 +69,30 @@ class GlobalQueue {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.callChanged)
-      .listen((model.Call value) => call = value);
+    event.bus.on(event.callChanged).listen((model.Call value) => call = value);
+    event.bus.on(event.callQueueAdd).listen((model.Call call) => addCall(call));
+    event.bus.on(event.callQueueRemove).listen((model.Call call) => removeCall(call));
 
-    event.bus.on(event.callQueueAdd)
-      .listen((model.Call call) {
-        addCall(call);
-      });
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.old == ul.id) {
+        hasFocus = false;
+        element.classes.remove(focusClassName);
+      }
 
-    event.bus.on(event.callQueueRemove)
-      .listen((model.Call call) {
-        removeCall(call);
-      });
+      if(value.current == ul.id) {
+        hasFocus = true;
+        element.classes.add(focusClassName);
+        ul.focus();
+      }
+    });
+
+    ul.onFocus.listen((_) {
+      setFocus(ul.id);
+    });
+
+    element.onClick.listen((_) {
+      setFocus(ul.id);
+    });
   }
 
   void _initialFill() {
@@ -89,6 +110,7 @@ class GlobalQueue {
         default:
           log.debug('GlobalQueue._initialFill updated callQueue with empty list');
       }
+      updateHeaderText();
     }).catchError((error) {
       log.critical('GlobalQueue._initialFill protocol.callQueue failed with ${error}');
     });
@@ -119,6 +141,7 @@ class GlobalQueue {
     var queueItem = new CallQueueItem(call);
     callQueue.add(queueItem);
     ul.children.add(queueItem.element);
+    updateHeaderText();
   }
 
   void removeCall(model.Call call) {
@@ -133,6 +156,11 @@ class GlobalQueue {
     if(queueItem != null) {
       ul.children.remove(queueItem.element);
       callQueue.remove(queueItem);
+      updateHeaderText();
     }
+  }
+
+  void updateHeaderText() {
+    headerText.text = '${title} (${callQueue.length})';
   }
 }

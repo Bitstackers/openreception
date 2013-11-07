@@ -10,10 +10,12 @@ class ContactInfoSearch {
                String              placeholder          = 'Søg...';
                InputElement        searchBox;
 
+  bool hasFocus = false;
+
   ContactInfoSearch(DivElement this.element) {
     String html = '''
         <div class="contact-info-searchbox">
-          <input class="contact-info-search" 
+          <input id="contact-info-searchbar" 
                  type="search"  
                  placeholder="${placeholder}"/>
         </div>
@@ -24,9 +26,10 @@ class ContactInfoSearch {
     ''';
 
     var frag = new DocumentFragment.html(html);
-    searchBox = frag.querySelector('.contact-info-search') as InputElement
+    searchBox = frag.querySelector('#contact-info-searchbar') as InputElement
       ..disabled = true
-      ..onKeyUp.listen(onkeyup);
+      ..onKeyUp.listen(onkeyup)
+      ..tabIndex = getTabIndex('contact-info-searchbar');
 
     displayedContactList = frag.querySelector('#contactlist')
         ..onScroll.listen(scrolling);
@@ -104,6 +107,27 @@ class ContactInfoSearch {
 
     event.bus.on(event.contactChanged).listen((model.Contact value) {
       contact = value;
+    });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.old == searchBox.id) {
+        hasFocus = false;
+        //TODO HACK FIXME ??? THOMAS LØCKE
+        element.parent.parent.classes.remove(focusClassName);
+      }
+
+      if(value.current == searchBox.id) {
+        hasFocus = true;
+        searchBox.focus();
+        //TODO HACK FIXME ??? THOMAS LØCKE
+        element.parent.parent.classes.add(focusClassName);
+      }
+    });
+
+    searchBox.onFocus.listen((_) {
+      if(!hasFocus) {
+        setFocus(searchBox.id);
+      }
     });
   }
 

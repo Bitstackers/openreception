@@ -15,8 +15,9 @@ part of components;
 
 class LocalQueue {
   Box box;
-  DivElement element;
   List<CallQueueItem> callQueue = new List<CallQueueItem>();
+  DivElement element;
+  bool               hasFocus = false;
   String         title          = 'Lokal kø';
   UListElement ul;
 
@@ -25,7 +26,9 @@ class LocalQueue {
       ..text = title;
 
     ul = new UListElement()
-      ..classes.add('zebra');
+      ..classes.add('zebra')
+      ..id = 'local-queue-list'
+      ..tabIndex = getTabIndex('local-queue-list');
 
     box = new Box.withHeader(element, header, ul);
 
@@ -39,6 +42,27 @@ class LocalQueue {
 
     event.bus.on(event.callQueueRemove)
       .listen((model.Call call) => removeCall(call));
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.old == ul.id) {
+        hasFocus = false;
+        element.classes.remove(focusClassName);
+      }
+
+      if(value.current == ul.id) {
+        hasFocus = true;
+        element.classes.add(focusClassName);
+        ul.focus();
+      }
+    });
+
+    ul.onFocus.listen((_) {
+      setFocus(ul.id);
+    });
+
+    element.onClick.listen((_) {
+      setFocus(ul.id);
+    });
   }
 
   void _initialFill() {

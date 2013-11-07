@@ -20,12 +20,12 @@ import 'classes/configuration.dart';
 import 'classes/context.dart';
 import 'classes/commands.dart' as command;
 import 'classes/common.dart';
+import 'classes/focus.dart';
 import 'classes/events.dart' as event;
 import 'classes/keyboardhandler.dart';
 import 'classes/logger.dart';
 import 'classes/model.dart' as model;
 import 'classes/protocol.dart' as protocol;
-import 'classes/state.dart';
 import 'classes/storage.dart' as storage;
 
 part 'components/agentinfo.dart';
@@ -53,7 +53,8 @@ part 'components/sendmessage.dart';
 part 'components/welcomemessage.dart';
 
 part 'components/contactinfo.dart';
-part 'components/contactinfocolumn.dart';
 part 'components/contactinfosearch.dart';
 part 'components/contactinfocalendar.dart';
 part 'components/contactinfodata.dart';
+
+String focusClassName = 'focus';

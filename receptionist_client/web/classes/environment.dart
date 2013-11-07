@@ -13,15 +13,15 @@
 
 library environment;
 
-import 'dart:async';
-import 'dart:collection';
+//import 'dart:async';
+//import 'dart:collection';
 
-import 'common.dart';
-import 'context.dart';
+//import 'common.dart';
+//import 'context.dart';
 import 'events.dart' as event;
-import 'logger.dart';
+//import 'logger.dart';
 import 'model.dart' as model;
-import 'state.dart';
+//import 'state.dart';
 
 String     _activeWidget = '';
 String get activeWidget => _activeWidget;
@@ -53,5 +53,4 @@ model.OrganizationList     _organizationList = new model.OrganizationList();
 model.OrganizationList get organizationList  => _organizationList;
 void                   set organizationList(model.OrganizationList organizationList) {
   _organizationList = organizationList;
-  event.bus.fire(event.organizationListChanged, organizationList);
 }

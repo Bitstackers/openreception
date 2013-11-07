@@ -12,11 +12,11 @@
 */
 
 class CalendarEvent {
-  model.CalendarEvent event;
+//  model.CalendarEvent event;
   String notactive = '';
-  UListElement ul;
+//  UListElement ul;
 
-  CalendarEvent(UListElement this.ul) {
+  CalendarEvent() { //UListElement this.ul
     String html = '''
       <h1 class="box-with-header-headline">
         <content select="[name=boxheader]"></content>
@@ -30,6 +30,6 @@ class CalendarEvent {
   }
 
   void enteredView() {
-    notactive = event.active ? '' : 'calendar-event-notactive';
+//    notactive = event.active ? '' : 'calendar-event-notactive';
   }
 }

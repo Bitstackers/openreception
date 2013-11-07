@@ -1,25 +1,22 @@
 import 'dart:html';
 
-import 'package:polymer/polymer.dart';
-
-import '../classes/common.dart';
+//import '../classes/common.dart';
 import '../classes/context.dart';
 
-@CustomTag('context-switcher-button')
-class ContextSwitcherButton extends PolymerElement with ApplyAuthorStyle {
-  @observable String        activeImagePath  = '';
+class ContextSwitcherButton {
+   String        activeImagePath  = '';
               ImageElement  _alertImg;
-  @observable String        alertMode        = 'hidden';
+   String        alertMode        = 'hidden';
               ButtonElement _button;
-  @observable String        classHidden      = '';
-  @published  Context       context;
-  @observable bool          disabled         = false;
+   String        classHidden      = '';
+    Context       context;
+   bool          disabled         = false;
               ImageElement  _iconActive;
               ImageElement  _iconPassive;
               bool          _isCreated       = false;
-  @observable String        passiveImagePath = '';
+   String        passiveImagePath = '';
 
-  ContextSwitcherButton.created() : super.created() {}
+  ContextSwitcherButton() {}
 
   void enteredView() {
     if(!_isCreated) {
@@ -27,14 +24,14 @@ class ContextSwitcherButton extends PolymerElement with ApplyAuthorStyle {
       _registerEventListeners();
 
       // Context is first available in inserted(). DON'T MOVE TO CREATED()!
-      context.alertUpdated.listen((Context value) {
-        alertMode = value.alertMode ? '' : 'hidden';
-      });
-
-      context.activeUpdated.listen((Context value) {
-        disabled = value.isActive;
-        classHidden = disabled ? '' : 'hidden';
-      });
+//      context.alertUpdated.listen((Context value) {
+//        alertMode = value.alertMode ? '' : 'hidden';
+//      });
+//
+//      context.activeUpdated.listen((Context value) {
+//        disabled = value.isActive;
+//        classHidden = disabled ? '' : 'hidden';
+//      });
 
       disabled = context.isActive;
       classHidden = disabled ? '' : 'hidden';
@@ -58,10 +55,10 @@ class ContextSwitcherButton extends PolymerElement with ApplyAuthorStyle {
   }
 
   void _queryElements() {
-    _button = getShadowRoot('context-switcher-button').querySelector('button');
-    _iconActive = _button.querySelector('[name="button_active_image"]');
-    _iconPassive = _button.querySelector('[name="button_passive_image"]');
-    _alertImg = _button.querySelector('[name="button_alert_image"]');
+//    _button = getShadowRoot('context-switcher-button').querySelector('button');
+//    _iconActive = _button.querySelector('[name="button_active_image"]');
+//    _iconPassive = _button.querySelector('[name="button_passive_image"]');
+//    _alertImg = _button.querySelector('[name="button_alert_image"]');
   }
 
   void _registerEventListeners() {

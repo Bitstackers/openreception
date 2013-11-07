@@ -11,13 +11,8 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'package:polymer/polymer.dart';
-
-import '../classes/common.dart';
-
-@CustomTag('send-message-recipients')
-class SendMessageRecipients extends PolymerElement with ApplyAuthorStyle {
+class SendMessageRecipients {
   String title = 'Modtagere';
 
-  SendMessageRecipients.created() : super.created() {}
+  SendMessageRecipients() {}
 }

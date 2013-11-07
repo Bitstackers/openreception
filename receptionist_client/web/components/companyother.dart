@@ -17,6 +17,7 @@ class CompanyOther {
   DivElement        body;
   Box                box;
   DivElement         element;
+  bool               hasFocus = false;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   String             title        = 'Andet';
@@ -26,16 +27,43 @@ class CompanyOther {
 
     //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
     body = new DivElement()
-      ..style.padding = '5px';
+      ..style.padding = '5px'
+      ..id = 'company-other-body'
+      ..tabIndex = getTabIndex('company-other-body');
 
     header = new SpanElement()
       ..text = title;
 
     box = new Box.withHeader(element, header, body);
 
+    registerEventListeners();
+  }
+
+  void registerEventListeners() {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
       body.text = value.product;
+    });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(value.old == body.id) {
+        hasFocus = false;
+        element.classes.remove(focusClassName);
+      }
+
+      if(value.current == body.id) {
+        hasFocus = true;
+        element.classes.add(focusClassName);
+        body.focus();
+      }
+    });
+
+    body.onFocus.listen((_) {
+      setFocus(body.id);
+    });
+
+    element.onClick.listen((_) {
+      setFocus(body.id);
     });
   }
 }

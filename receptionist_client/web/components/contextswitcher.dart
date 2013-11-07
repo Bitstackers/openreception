@@ -36,7 +36,7 @@ class _ContextSwitcherButton {
 
   _ContextSwitcherButton(LIElement this.element, Context this.context) {
     String html = '''
-      <button id="${context.id}_switcherbutton">
+      <button id="${context.id}_switcherbutton" tabindex="-1">
         <img id="${context.id}_passive_icon" src="images/${context.id}.svg"></img>
         <img id="${context.id}_active_icon" src="images/${context.id}_active.svg"></img>
         <img id="${context.id}_alert_icon" src="images/contextalert.svg" class="hidden"></img>

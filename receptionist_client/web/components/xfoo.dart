@@ -11,25 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-import 'dart:html';
-
-import 'package:polymer/polymer.dart';
-
-import '../classes/common.dart';
 import '../classes/context.dart';
-import '../classes/environment.dart' as environment;
 
-@CustomTag('x-foo')
-class Foo extends PolymerElement with ApplyAuthorStyle {
+class Foo {
               Context _context;
-  @observable String  contextid = 'bar';
+   String  contextid = 'bar';
               bool    isCreated = false;
 
-  Foo.created() : super.created() {}
+  Foo() {}
 
   void enteredView() {
     if(!isCreated) {
-      _context = environment.contextList.get(this.parent.id);
+//      _context = environment.contextList.get(this.parent.id);
       contextid = _context.id;
       isCreated = true;
     }

@@ -61,76 +61,13 @@ class SendMessage {
   InputElement checkbox3;
   InputElement checkbox4;
 
+  bool hasFocus = false;
+
+  ButtonElement cancelButton;
+  ButtonElement draftButton;
+  ButtonElement sendButton;
+
   SendMessage(DivElement this.element) {
-    /*
-    String html = '''
-      <div class="send-message-container">
-        <input class="send-message-searchbox send-message-field" type="search" placeholder="${placeholderSearch}"/>
-        <input class="send-message-search-result send-message-field" placeholder="${placeholderSearchResult}" readonly/>
-
-        <input class="send-message-name send-message-field" placeholder="${placeholderName}"/>
-        <input class="send-message-company send-message-field" placeholder="${placeholderCompany}"/>
-
-        <input class="send-message-phone send-message-field" placeholder="${placeholderPhone}"/>
-        <input class="send-message-cellphone send-message-field" placeholder="${placeholderCellphone}"/>
-        <input class="send-message-localno send-message-field" placeholder="${placeholderLocalno}"/>
-
-        <textarea style="resize: none" class="send-message-text send-message-field" placeholder="${placeholderText}"></textarea>
-
-        <div class="send-message-checkbox-container send-message-pleasecall">
-          <input checked?="{{pleaseCall}}" id="send-message-checkbox1" type="checkbox"/>
-          <label class="send-message-checkbox-label" for="send-message-checkbox1"><span></span>Ring venligst</label>
-        </div>
-          <div class="send-message-checkbox-container send-message-callsback">
-          <input checked?="{{callsBack}}" id="send-message-checkbox2" type="checkbox"/>
-        <label class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
-        </div>
-          <div class="send-message-checkbox-container send-message-hascalled">
-          <input checked?="{{hasCalled}}" id="send-message-checkbox3" type="checkbox"/>
-        <label class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
-        </div>
-        <div class="send-message-checkbox-container send-message-emergency">
-          <input class="send-message-checkbox" checked="{{emergency}}" id="send-message-checkbox4" type="checkbox"/>
-          <label class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
-        </div>
-
-        <div class="send-message-button-container">
-          <button on-click="">${cancelButtonLabel}</button>
-          <button on-click="">${saveButtonLabel}</button>
-          <button on-click="">${sendButtonLabel}</button>
-        </div>
-
-        <div class="send-message-recipient-container">
-          <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
-            <span name="boxheader">
-              {{recipientTitle}}
-            </span>
-
-            <div name="boxcontent" class="minibox">
-              <ul>
-                <li>Thomas</li>
-                <li>Trine</li>
-                <li>Steen</li>
-              </ul>
-              <!--<ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
-                <template instantiate="if value.active">
-                  <li class="contact-info-active2">
-                    <calendar-event event="{{value}}"></calendar-event>
-                  </li>
-                </template>
-                <template instantiate="if !value.active">
-                  <li>
-                    <calendar-event event="{{value}}"></calendar-event>
-                  </li>
-                </template>
-              </ul>-->
-            </div>
-          </box-with-header>
-        </div>
-      </div>
-    ''';
-    */
-
     body = querySelector('.send-message-container');
 
     header = new SpanElement()
@@ -138,39 +75,93 @@ class SendMessage {
 
     box = new Box.withHeader(element, header, body);
 
-    sendmessagesearchbox    = body.querySelector('#sendmessagesearchbox');
-    sendmessagesearchresult = body.querySelector('#sendmessagesearchresult');
-    sendmessagename         = body.querySelector('#sendmessagename');
-    sendmessagecompany      = body.querySelector('#sendmessagecompany');
-    sendmessagephone        = body.querySelector('#sendmessagephone');
-    sendmessagecellphone    = body.querySelector('#sendmessagecellphone');
-    sendmessagelocalno      = body.querySelector('#sendmessagelocalno');
-    sendmessagetext         = body.querySelector('#sendmessagetext');
+    sendmessagesearchbox    = body.querySelector('#sendmessagesearchbox')
+        ..tabIndex = getTabIndex('sendmessagesearchbox');
+    sendmessagesearchresult = body.querySelector('#sendmessagesearchresult')
+        ..tabIndex = getTabIndex('sendmessagesearchresult');
+    sendmessagename         = body.querySelector('#sendmessagename')
+        ..tabIndex = getTabIndex('sendmessagename');
+    sendmessagecompany      = body.querySelector('#sendmessagecompany')
+        ..tabIndex = getTabIndex('sendmessagecompany');
+    sendmessagephone        = body.querySelector('#sendmessagephone')
+        ..tabIndex = getTabIndex('sendmessagephone');
+    sendmessagecellphone    = body.querySelector('#sendmessagecellphone')
+        ..tabIndex = getTabIndex('sendmessagecellphone');
+    sendmessagelocalno      = body.querySelector('#sendmessagelocalno')
+        ..tabIndex = getTabIndex('sendmessagelocalno');
+    sendmessagetext         = body.querySelector('#sendmessagetext')
+        ..tabIndex = getTabIndex('sendmessagetext');
 
-    checkbox1 = body.querySelector('#send-message-checkbox1');
-    checkbox2 = body.querySelector('#send-message-checkbox2');
-    checkbox3 = body.querySelector('#send-message-checkbox3');
-    checkbox4 = body.querySelector('#send-message-checkbox4');
+    checkbox1 = body.querySelector('#send-message-checkbox1')
+        ..tabIndex = getTabIndex('send-message-checkbox1');
+    checkbox2 = body.querySelector('#send-message-checkbox2')
+        ..tabIndex = getTabIndex('send-message-checkbox2');
+    checkbox3 = body.querySelector('#send-message-checkbox3')
+        ..tabIndex = getTabIndex('send-message-checkbox3');
+    checkbox4 = body.querySelector('#send-message-checkbox4')
+        ..tabIndex = getTabIndex('send-message-checkbox4');
 
-    var cancelButton = body.querySelector('#sendmessagecancel')
+    cancelButton = body.querySelector('#sendmessagecancel')
         ..text = cancelButtonLabel
-        ..onClick.listen(cancelClick);
+        ..onClick.listen(cancelClick)
+        ..tabIndex = getTabIndex('sendmessagecancel');
 
-    var draftButton = body.querySelector('#sendmessagedraft')
+    draftButton = body.querySelector('#sendmessagedraft')
         ..text = saveButtonLabel
-        ..onClick.listen(draftClick);
+        ..onClick.listen(draftClick)
+        ..tabIndex = getTabIndex('sendmessagedraft');
 
-    var sendButton = body.querySelector('#sendmessagesend')
+    sendButton = body.querySelector('#sendmessagesend')
         ..text = sendButtonLabel
-        ..onClick.listen(sendClick);
+        ..onClick.listen(sendClick)
+        ..tabIndex = getTabIndex('sendmessagesend');
 
    registerEventListeners();
   }
 
   void registerEventListeners() {
+    List<Element> focusElements =
+        [sendmessagesearchbox,
+         sendmessagesearchresult,
+         sendmessagename,
+         sendmessagecompany,
+         sendmessagephone,
+         sendmessagecellphone,
+         sendmessagelocalno,
+         sendmessagetext,
+         checkbox1,
+         checkbox2,
+         checkbox3,
+         checkbox4,
+         cancelButton,
+         draftButton,
+         sendButton];
+
+    element.onClick.listen((_) {
+      if(!hasFocus) {
+        setFocus(sendmessagetext.id);
+      }
+    });
+
     event.bus.on(event.contactChanged).listen((model.Contact contact) {
       sendmessagename.value = 'Test: ${contact.name}';
     });
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(focusElements.any((e) => e.id == value.old)) {
+        element.classes.remove(focusClassName);
+        hasFocus = false;
+      }
+
+      Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
+      if(focusedElement != null) {
+        element.classes.add(focusClassName);
+        hasFocus = true;
+        focusedElement.focus();
+      }
+    });
+
+    focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
   }
 
   void cancelClick(_) {
