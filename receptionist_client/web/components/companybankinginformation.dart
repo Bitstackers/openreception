@@ -15,7 +15,7 @@ part of components;
 
 class CompanyBankingInformation {
   Box                box;
-  Context            context;
+  String             contextId;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -23,13 +23,12 @@ class CompanyBankingInformation {
   UListElement       ul;
   String             title        = 'Bankoplysninger';
 
-  CompanyBankingInformation(DivElement this.element) {
+  CompanyBankingInformation(DivElement this.element, String this.contextId) {
     element.classes.add('minibox');
 
     ul = new UListElement()
       ..classes.add('zebra')
-      ..id = 'company-banking-info-list'
-      ..tabIndex = getTabIndex('company-banking-info-list');
+      ..id = 'company-banking-info-list';
 
     header = new SpanElement()
       ..text = title;
@@ -37,6 +36,10 @@ class CompanyBankingInformation {
     box = new Box.withHeader(element, header, ul);
 
     registerEventListeners();
+  }
+
+  void tabToggle(bool state) {
+    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void registerEventListeners() {
@@ -65,6 +68,8 @@ class CompanyBankingInformation {
     element.onClick.listen((_) {
       setFocus(ul.id);
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void render() {

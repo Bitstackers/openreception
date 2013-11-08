@@ -5,19 +5,19 @@ class ContactInfoCalendar {
   UListElement  calendarBody;
   String        calendarTitle = 'Kalender';
   model.Contact contact;
+  String        contextId;
   DivElement    element;
 
   bool hasFocus = false;
 
-  ContactInfoCalendar(DivElement this.element) {
+  ContactInfoCalendar(DivElement this.element, String this.contextId) {
     SpanElement calendarHeader = new SpanElement()
       ..classes.add('boxheader')
       ..text = calendarTitle;
 
     calendarBody = new UListElement()
       ..classes.addAll(['contact-info-container', 'zebra'])
-      ..id = 'contact-calendar'
-      ..tabIndex = getTabIndex('contact-calendar');
+      ..id = 'contact-calendar';
 
     box = new Box.withHeader(element, calendarHeader, calendarBody);
 
@@ -27,6 +27,10 @@ class ContactInfoCalendar {
     });
 
     _registerEventListeners();
+  }
+
+  void tabToggle(bool state) {
+    calendarBody.tabIndex = state ? getTabIndex(calendarBody.id) : -1;
   }
 
   void _registerEventListeners() {
@@ -50,6 +54,8 @@ class ContactInfoCalendar {
         calendarBody.focus();
       }
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void render() {

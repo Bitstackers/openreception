@@ -44,12 +44,16 @@ import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
+import 'classes/logger.dart';
 import 'classes/notification.dart';
+import 'classes/protocol.dart' as protocol;
 import 'classes/state.dart';
 
 BobActive bobActive;
 BobLoading bobLoading;
 BobDisaster bobDiaster;
+
+int userId = 1;
 
 void main() {
   notification.initialize();
@@ -59,10 +63,20 @@ void main() {
   bobDiaster = new BobDisaster(querySelector('#bobdisaster'));
 
   StreamSubscription subscription;
-  subscription = event.bus.on(event.stateUpdated).listen((State value){
+  subscription = event.bus.on(event.stateUpdated).listen((State value) {
     if(value.isConfigurationOK) {
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
+
+      protocol.login(userId).then((protocol.Response<Map> value) {
+        if(value.status == protocol.Response.OK) {
+          print('------- Success Logged in---------');
+        } else {
+          log.error('Bob.dart Did not log in.');
+        }
+      }).catchError((e) {
+        log.error('Bob.dart: CatchError $e');
+      });
     }
   });
 }

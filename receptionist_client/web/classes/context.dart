@@ -71,7 +71,7 @@ class Context {
    */
   void activate() {
     if(!isActive) {
-      event.bus.fire(event.activeContextChanged, this);
+      event.bus.fire(event.activeContextChanged, this.id);
     }
   }
 
@@ -104,8 +104,8 @@ class Context {
    * Toggline OFF means adding the .hidden class from the [Context] DOM element
    * (see the constructor comment) and setting [isActive] to false.
    */
-  void _toggle(Context context) {
-    if (context == this) {
+  void _toggle(String contextId) {
+    if (contextId == this.id) {
       isActive = true;
       _element.classes.remove('hidden');
       log.debug('Context._toggle activating ${this.id}');

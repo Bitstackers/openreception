@@ -2,6 +2,7 @@ part of components;
 
 class ContactInfoSearch {
                model.Contact       contact              = model.nullContact;
+               String              contextId;
                UListElement        displayedContactList;
                DivElement          element;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
@@ -12,7 +13,7 @@ class ContactInfoSearch {
 
   bool hasFocus = false;
 
-  ContactInfoSearch(DivElement this.element) {
+  ContactInfoSearch(DivElement this.element, String this.contextId) {
     String html = '''
         <div class="contact-info-searchbox">
           <input id="contact-info-searchbar" 
@@ -28,8 +29,7 @@ class ContactInfoSearch {
     var frag = new DocumentFragment.html(html);
     searchBox = frag.querySelector('#contact-info-searchbar') as InputElement
       ..disabled = true
-      ..onKeyUp.listen(onkeyup)
-      ..tabIndex = getTabIndex('contact-info-searchbar');
+      ..onKeyUp.listen(onkeyup);
 
     displayedContactList = frag.querySelector('#contactlist')
         ..onScroll.listen(scrolling);
@@ -45,6 +45,10 @@ class ContactInfoSearch {
     }
 
     event.bus.fire(event.contactChanged, contact);
+  }
+
+  void tabToggle(bool state) {
+    searchBox.tabIndex = state ? getTabIndex(searchBox.id) : -1;
   }
 
   void _clearDisplayedContactList() {
@@ -129,6 +133,8 @@ class ContactInfoSearch {
         setFocus(searchBox.id);
       }
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void scrolling(Event _) {

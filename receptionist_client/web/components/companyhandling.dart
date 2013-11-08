@@ -15,7 +15,7 @@ part of components;
 
 class CompanyHandling {
   Box                box;
-  Context            context;
+  String             contextId;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -23,17 +23,20 @@ class CompanyHandling {
   UListElement       ul;
   String             title        = 'Håndtering';
 
-  CompanyHandling(DivElement this.element) {
+  CompanyHandling(DivElement this.element, String this.contextId) {
     ul = new UListElement()
       ..id = 'company_handling_list'
-      ..classes.add('zebra')
-      ..tabIndex = getTabIndex('company_handling_list');
+      ..classes.add('zebra');
 
     header = new SpanElement()
       ..text = title;
 
     box = new Box.withHeader(element, header, ul);
     _registerEventListeners();
+  }
+
+  void tabToggle(bool state) {
+    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void _registerEventListeners() {
@@ -64,6 +67,8 @@ class CompanyHandling {
         ul.focus();
       }
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void render() {

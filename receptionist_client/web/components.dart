@@ -57,4 +57,4 @@ part 'components/contactinfosearch.dart';
 part 'components/contactinfocalendar.dart';
 part 'components/contactinfodata.dart';
 
-String focusClassName = 'focus';
+part 'components/constants.dart';

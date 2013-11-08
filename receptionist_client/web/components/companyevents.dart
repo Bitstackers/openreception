@@ -15,7 +15,7 @@ part of components;
 
 class CompanyEvents {
   Box                box;
-  Context            context;
+  String             contextId;
   DivElement         element;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
@@ -24,13 +24,12 @@ class CompanyEvents {
 
   bool hasFocus = false;
 
-  CompanyEvents(DivElement this.element) {
+  CompanyEvents(DivElement this.element, String this.contextId) {
     element.classes.add('company-events-container');
 
     ul = new UListElement()
       ..id = 'company_events_list'
-      ..classes.add('zebra')
-      ..tabIndex = getTabIndex('company_events_list');
+      ..classes.add('zebra');
 
     header = new SpanElement()
       ..text = title;
@@ -38,6 +37,10 @@ class CompanyEvents {
     box = new Box.withHeader(element, header, ul);
 
     _registerEventListeners();
+  }
+
+  void tabToggle(bool state) {
+    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void _registerEventListeners() {
@@ -66,6 +69,8 @@ class CompanyEvents {
         ul.focus();
       }
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   String getClass(model.CalendarEvent event) {

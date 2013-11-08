@@ -20,7 +20,7 @@ import 'focus.dart';
 import 'model.dart' as model;
 import 'state.dart';
 
-final EventType<Context> activeContextChanged           = new EventType<Context>();
+final EventType<String> activeContextChanged            = new EventType<String>();
 final EventType<String> activeWidgetChanged             = new EventType<String>();
 final EventType<model.Call> callChanged                 = new EventType<model.Call>();
 final EventType<model.Call> callQueueAdd                = new EventType<model.Call>();

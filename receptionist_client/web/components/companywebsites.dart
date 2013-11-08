@@ -15,7 +15,7 @@ part of components;
 
 class CompanyWebsites {
   Box                box;
-  Context            context;
+  String             contextId;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -23,13 +23,12 @@ class CompanyWebsites {
   UListElement       ul;
   String             title        = 'Web-sider';
 
-  CompanyWebsites(DivElement this.element) {
+  CompanyWebsites(DivElement this.element, String this.contextId) {
     element.classes.add('minibox');
 
     ul = new UListElement()
       ..classes.add('zebra')
-      ..id = 'company-websites-list'
-      ..tabIndex = getTabIndex('company-websites-list');
+      ..id = 'company-websites-list';
 
     header = new SpanElement()
       ..text = title;
@@ -37,6 +36,10 @@ class CompanyWebsites {
     box = new Box.withHeader(element, header, ul);
 
     registerEventListeners();
+  }
+
+  void tabToggle(bool state) {
+    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void registerEventListeners() {
@@ -65,6 +68,8 @@ class CompanyWebsites {
     element.onClick.listen((_) {
       setFocus(ul.id);
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void render() {

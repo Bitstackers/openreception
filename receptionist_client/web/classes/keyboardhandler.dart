@@ -107,6 +107,14 @@ class _KeyboardHandler {
     _keyToName[Keys.UP]    = 'arrowUp';
     _keyToName[Keys.DOWN]  = 'arrowDown';
 
+    _keyToName[Keys.C]     = 'companyselector';
+    _keyToName[Keys.E]     = 'companyevents';
+    _keyToName[Keys.H]     = 'companyhandling';
+    _keyToName[Keys.O]     = 'contactinfosearch';
+    _keyToName[Keys.K]     = 'contactcalendar';
+    _keyToName[Keys.T]     = 'sendmessagetelephone';
+    _keyToName[Keys.L]     = 'companyproduct';
+
     _keyToName.forEach((key, value) {
       _StreamControllerMap[value] = new StreamController<int>.broadcast();
     });
@@ -133,6 +141,11 @@ class _KeyboardHandler {
         log.debug('Sinking key ${keyCode}:${_keyToName[keyCode]}');
       }
     }
+
+//    if(key.ctrlKey && key.keyCode == Keys.R) {
+//      event.preventDefault();
+//      _StreamControllerMap['companyselector'].sink.add(key.keyCode);
+//    }
   }
 
   /**

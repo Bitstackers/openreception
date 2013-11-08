@@ -73,7 +73,7 @@ class _ContextSwitcherButton {
   void registerEventListeners() {
     window.onResize.listen((_) => resize());
 
-    event.bus.on(event.activeContextChanged).listen((Context _) {
+    event.bus.on(event.activeContextChanged).listen((String _) {
       iconActive.classes.toggle('hidden', !context.isActive);
       button.disabled = context.isActive;
     });

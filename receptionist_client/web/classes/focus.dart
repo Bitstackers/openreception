@@ -18,7 +18,8 @@ import 'logger.dart';
 
 String _currentFocusId = '';
 Map<String, int> _tabIndexes =
-  {'company_events_list':               2,
+  {'company-selector-searchbar':        1,
+   'company_events_list':               2,
    'company_handling_list':             3,
    'contact-info-searchbar':            4,
    'contact-calendar':                  6,
@@ -42,7 +43,7 @@ Map<String, int> _tabIndexes =
    'company-product-body':             27,
    'company-customertype-body':        28,
    'company-telephonenumbers-list':    29,
-   'company-adresses-list':            30,
+   'company-addresses-list':           30,
    'company-alternate-names-list':     31,
    'company-banking-info-list':        32,
    'company-email-addresses-list':     33,

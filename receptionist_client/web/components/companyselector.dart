@@ -16,6 +16,7 @@ part of components;
 class CompanySelector {
         SpanElement            companyselectortext;
         DivElement             container;
+        String                 contextId;
         DivElement             element;
         bool                   hasFocus = false;
         LIElement              highlightedLi;
@@ -28,7 +29,7 @@ class CompanySelector {
 
         int tabIndex = 1;
 
-  CompanySelector(DivElement this.element) {
+  CompanySelector(DivElement this.element, String this.contextId) {
     String html = '''
       <div class="chosen-container chosen-container-single">
         <a class="chosen-single" tabindex="-1">
@@ -61,12 +62,8 @@ class CompanySelector {
     withDropDown = true;
   }
 
-  void activateTab() {
-    searchBox.tabIndex = getTabIndex('company-selector-searchbar');
-  }
-
-  void deactivateTab() {
-    searchBox.tabIndex = -1;
+  void tabToggle(bool state) {
+    searchBox.tabIndex = state ? getTabIndex(searchBox.id) : -1;
   }
 
   void clearSelection() {
@@ -172,6 +169,7 @@ class CompanySelector {
         deactivateDropDown();
         searchBox.value = '';
         companyselectortext.text = organizationSearchPlaceholder;
+
       } else {
         for(LIElement li in list) {
           if(li.value == organization.id) {
@@ -237,7 +235,7 @@ class CompanySelector {
     searchBox.onFocus.listen((e) {
       container.classes.add('chosen-container-active');
       if(!hasFocus) {
-        setFocus(element.id);
+        setFocus(searchBox.id);
       }
     });
 
@@ -265,7 +263,7 @@ class CompanySelector {
       });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if(value.current == element.id && !hasFocus) {
+      if(value.current == searchBox.id && !hasFocus) {
         hasFocus = true;
         searchBox.focus();
 
@@ -273,6 +271,8 @@ class CompanySelector {
         hasFocus = false;
       }
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   /**

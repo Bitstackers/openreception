@@ -41,6 +41,7 @@ class SendMessage {
         DivElement  body;
         Box         box;
   final String      cancelButtonLabel = 'Annuller';
+        String      contextId;
         DivElement  element;
         SpanElement header;
   final String      saveButtonLabel   = 'Gem';
@@ -67,7 +68,9 @@ class SendMessage {
   ButtonElement draftButton;
   ButtonElement sendButton;
 
-  SendMessage(DivElement this.element) {
+  List<Element> focusElements;
+
+  SendMessage(DivElement this.element, String this.contextId) {
     body = querySelector('.send-message-container');
 
     header = new SpanElement()
@@ -75,68 +78,55 @@ class SendMessage {
 
     box = new Box.withHeader(element, header, body);
 
-    sendmessagesearchbox    = body.querySelector('#sendmessagesearchbox')
-        ..tabIndex = getTabIndex('sendmessagesearchbox');
-    sendmessagesearchresult = body.querySelector('#sendmessagesearchresult')
-        ..tabIndex = getTabIndex('sendmessagesearchresult');
-    sendmessagename         = body.querySelector('#sendmessagename')
-        ..tabIndex = getTabIndex('sendmessagename');
-    sendmessagecompany      = body.querySelector('#sendmessagecompany')
-        ..tabIndex = getTabIndex('sendmessagecompany');
-    sendmessagephone        = body.querySelector('#sendmessagephone')
-        ..tabIndex = getTabIndex('sendmessagephone');
-    sendmessagecellphone    = body.querySelector('#sendmessagecellphone')
-        ..tabIndex = getTabIndex('sendmessagecellphone');
-    sendmessagelocalno      = body.querySelector('#sendmessagelocalno')
-        ..tabIndex = getTabIndex('sendmessagelocalno');
-    sendmessagetext         = body.querySelector('#sendmessagetext')
-        ..tabIndex = getTabIndex('sendmessagetext');
+    sendmessagesearchbox    = body.querySelector('#sendmessagesearchbox');
+    sendmessagesearchresult = body.querySelector('#sendmessagesearchresult');
+    sendmessagename         = body.querySelector('#sendmessagename');
+    sendmessagecompany      = body.querySelector('#sendmessagecompany');
+    sendmessagephone        = body.querySelector('#sendmessagephone');
+    sendmessagecellphone    = body.querySelector('#sendmessagecellphone');
+    sendmessagelocalno      = body.querySelector('#sendmessagelocalno');
+    sendmessagetext         = body.querySelector('#sendmessagetext');
 
-    checkbox1 = body.querySelector('#send-message-checkbox1')
-        ..tabIndex = getTabIndex('send-message-checkbox1');
-    checkbox2 = body.querySelector('#send-message-checkbox2')
-        ..tabIndex = getTabIndex('send-message-checkbox2');
-    checkbox3 = body.querySelector('#send-message-checkbox3')
-        ..tabIndex = getTabIndex('send-message-checkbox3');
-    checkbox4 = body.querySelector('#send-message-checkbox4')
-        ..tabIndex = getTabIndex('send-message-checkbox4');
+    checkbox1 = body.querySelector('#send-message-checkbox1');
+    checkbox2 = body.querySelector('#send-message-checkbox2');
+    checkbox3 = body.querySelector('#send-message-checkbox3');
+    checkbox4 = body.querySelector('#send-message-checkbox4');
 
     cancelButton = body.querySelector('#sendmessagecancel')
         ..text = cancelButtonLabel
-        ..onClick.listen(cancelClick)
-        ..tabIndex = getTabIndex('sendmessagecancel');
+        ..onClick.listen(cancelClick);
 
     draftButton = body.querySelector('#sendmessagedraft')
         ..text = saveButtonLabel
-        ..onClick.listen(draftClick)
-        ..tabIndex = getTabIndex('sendmessagedraft');
+        ..onClick.listen(draftClick);
 
     sendButton = body.querySelector('#sendmessagesend')
         ..text = sendButtonLabel
-        ..onClick.listen(sendClick)
-        ..tabIndex = getTabIndex('sendmessagesend');
+        ..onClick.listen(sendClick);
+
+   focusElements =
+       [sendmessagesearchbox,
+        sendmessagesearchresult,
+        sendmessagename,
+        sendmessagecompany,
+        sendmessagephone,
+        sendmessagecellphone,
+        sendmessagelocalno,
+        sendmessagetext,
+        checkbox1,
+        checkbox2,
+        checkbox3,
+        checkbox4,
+        cancelButton,
+        draftButton,
+        sendButton];
 
    registerEventListeners();
   }
 
-  void registerEventListeners() {
-    List<Element> focusElements =
-        [sendmessagesearchbox,
-         sendmessagesearchresult,
-         sendmessagename,
-         sendmessagecompany,
-         sendmessagephone,
-         sendmessagecellphone,
-         sendmessagelocalno,
-         sendmessagetext,
-         checkbox1,
-         checkbox2,
-         checkbox3,
-         checkbox4,
-         cancelButton,
-         draftButton,
-         sendButton];
+  void tabToggle(bool state) => focusElements.forEach((e) => e.tabIndex = state ? getTabIndex(e.id) : -1);
 
+  void registerEventListeners() {
     element.onClick.listen((_) {
       if(!hasFocus) {
         setFocus(sendmessagetext.id);
@@ -162,6 +152,8 @@ class SendMessage {
     });
 
     focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void cancelClick(_) {

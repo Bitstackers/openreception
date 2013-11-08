@@ -17,6 +17,7 @@ class GlobalQueue {
         Box            box;
         model.Call     call      = model.nullCall;
         List<CallQueueItem> callQueue = new List<CallQueueItem>();
+        String         contextId;
         DivElement     element;
         bool           hasFocus = false;
         SpanElement    header;
@@ -29,7 +30,7 @@ class GlobalQueue {
   ButtonElement hangupcallButton;
   ButtonElement holdcallButton;
 
-  GlobalQueue(DivElement this.element) {
+  GlobalQueue(DivElement this.element, String this.contextId) {
     String headerHtml = '''
       <span class="header">
         <span></span>        
@@ -59,13 +60,16 @@ class GlobalQueue {
 
     ul = new UListElement()
       ..classes.add('zebra')
-      ..id = 'global-queue-list'
-      ..tabIndex = getTabIndex('global-queue-list');
+      ..id = 'global-queue-list';
 
     box = new Box.withHeader(element, header, ul);
 
     registerEventListerns();
     _initialFill();
+  }
+
+  void tabToggle(bool state) {
+    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void registerEventListerns() {
@@ -93,6 +97,8 @@ class GlobalQueue {
     element.onClick.listen((_) {
       setFocus(ul.id);
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void _initialFill() {

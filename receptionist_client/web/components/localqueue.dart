@@ -16,24 +16,28 @@ part of components;
 class LocalQueue {
   Box box;
   List<CallQueueItem> callQueue = new List<CallQueueItem>();
+  String contextId;
   DivElement element;
   bool               hasFocus = false;
   String         title          = 'Lokal kø';
   UListElement ul;
 
-  LocalQueue(DivElement this.element) {
+  LocalQueue(DivElement this.element, String this.contextId) {
     SpanElement header = new SpanElement()
       ..text = title;
 
     ul = new UListElement()
       ..classes.add('zebra')
-      ..id = 'local-queue-list'
-      ..tabIndex = getTabIndex('local-queue-list');
+      ..id = 'local-queue-list';
 
     box = new Box.withHeader(element, header, ul);
 
     registerEventListerns();
     _initialFill();
+  }
+
+  void tabToggle(bool state) {
+    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void registerEventListerns() {
@@ -63,6 +67,8 @@ class LocalQueue {
     element.onClick.listen((_) {
       setFocus(ul.id);
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 
   void _initialFill() {

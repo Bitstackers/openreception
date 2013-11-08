@@ -14,22 +14,22 @@
 part of components;
 
 class CompanyCustomerType {
-  DivElement        body;
+  DivElement         body;
   Box                box;
+  String             contextId;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   String             title        = 'Kundetype';
 
-  CompanyCustomerType(DivElement this.element) {
+  CompanyCustomerType(DivElement this.element, String this.contextId) {
     element.classes.add('minibox');
 
     //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
     body = new DivElement()
       ..style.padding = '5px'
-      ..id = 'company-customertype-body'
-      ..tabIndex = getTabIndex('company-customertype-body');
+      ..id = 'company-customertype-body';
 
     header = new SpanElement()
       ..text = title;
@@ -37,6 +37,10 @@ class CompanyCustomerType {
     box = new Box.withHeader(element, header, body);
 
     registerEventListeners();
+  }
+
+  void tabToggle(bool state) {
+    body.tabIndex = state ? getTabIndex(body.id) : -1;
   }
 
   void registerEventListeners() {
@@ -65,5 +69,7 @@ class CompanyCustomerType {
     element.onClick.listen((_) {
       setFocus(body.id);
     });
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
   }
 }
