@@ -71,8 +71,8 @@ class BobActive {
     companyHandling          = new CompanyHandling(querySelector('#companyhandling'), home);
     companyOpeningHours      = new CompanyOpeningHours(querySelector('#companyopeninghours'), home);
     companySalesCalls        = new CompanySalesCalls(querySelector('#companysalescalls'), home);
-    companyProduct           = new CompanyProduct(querySelector('#companyproduct'), messages);
-    companyCustomerType      = new CompanyCustomerType(querySelector('#companycustomertype'), messages);
+    companyProduct           = new CompanyProduct(querySelector('#companyproduct'), home);
+    companyCustomerType      = new CompanyCustomerType(querySelector('#companycustomertype'), home);
     companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#companytelephonenumbers'), home);
     companyAddresses         = new CompanyAddresses(querySelector('#companyaddresses'), home);
     companyAlternateNames    = new CompanyAlternateNames(querySelector('#companyalternatenames'), home);
@@ -133,12 +133,12 @@ class BobActive {
 
     keyboardHandler.onKeyName('companyproduct').listen((_) {
       setFocus('company-product-body');
-      event.bus.fire(event.activeContextChanged, CONTEXTMESSAGES);
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('companycustomertype').listen((_) {
       setFocus('company-customertype-body');
-      event.bus.fire(event.activeContextChanged, CONTEXTMESSAGES);
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
   }
 }
