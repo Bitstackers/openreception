@@ -19,6 +19,7 @@ import 'dart:html';
 import 'package:event_bus/event_bus.dart';
 
 import 'events.dart' as event;
+import 'focus.dart';
 import 'keyboardhandler.dart';
 import 'logger.dart';
 
@@ -44,8 +45,10 @@ class Context {
   EventBus _bus = new EventBus();
   EventBus get bus => _bus;
 
-  int  _alertCounter = 0;
-  bool isActive      = false;
+  int          _alertCounter = 0;
+  List<String> focusId       = new List<String>();
+  bool         isActive      = false;
+  String       lastFocusId   = '';
 
   Element _element;
 
@@ -109,6 +112,7 @@ class Context {
       isActive = true;
       _element.classes.remove('hidden');
       log.debug('Context._toggle activating ${this.id}');
+      setFocus(lastFocusId);
 
     } else if (isActive) {
       isActive = false;
@@ -126,5 +130,19 @@ class Context {
 
     // Keep track of keyboardshortcuts.
     keyboardHandler.onKeyName(id).listen((_) => activate());
+
+    event.bus.on(event.focusChanged).listen((Focus value) {
+      if(focusId.contains(value.current)) {
+        lastFocusId = value.current;
+      }
+    });
+  }
+
+  void registerFocusElement(String id) {
+    if(focusId.contains(id)) {
+      log.error('Context registerFocusElement. The id is already registered: ${id}');
+    } else {
+      focusId.add(id);
+    }
   }
 }

@@ -5,12 +5,12 @@ class ContactInfoCalendar {
   UListElement  calendarBody;
   String        calendarTitle = 'Kalender';
   model.Contact contact;
-  String        contextId;
+  Context       context;
   DivElement    element;
 
   bool hasFocus = false;
 
-  ContactInfoCalendar(DivElement this.element, String this.contextId) {
+  ContactInfoCalendar(DivElement this.element, Context this.context) {
     SpanElement calendarHeader = new SpanElement()
       ..classes.add('boxheader')
       ..text = calendarTitle;
@@ -55,7 +55,9 @@ class ContactInfoCalendar {
       }
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(calendarBody.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void render() {

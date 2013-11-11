@@ -16,7 +16,7 @@ part of components;
 class CompanySelector {
         SpanElement            companyselectortext;
         DivElement             container;
-        String                 contextId;
+        Context                context;
         DivElement             element;
         bool                   hasFocus = false;
         LIElement              highlightedLi;
@@ -29,7 +29,7 @@ class CompanySelector {
 
         int tabIndex = 1;
 
-  CompanySelector(DivElement this.element, String this.contextId) {
+  CompanySelector(DivElement this.element, Context this.context) {
     String html = '''
       <div class="chosen-container chosen-container-single">
         <a class="chosen-single" tabindex="-1">
@@ -272,7 +272,9 @@ class CompanySelector {
       }
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(searchBox.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   /**

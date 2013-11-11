@@ -49,57 +49,96 @@ class BobActive {
   GlobalQueue globalQueue;
   LocalQueue localQueue;
 
+  Context home;
+  Context messages;
+  Context log;
+  Context statistics;
+  Context phone;
+  Context voicemails;
+
   BobActive(DivElement this.element) {
     assert(element != null);
 
     event.bus.on(event.stateUpdated).listen((State value) => element.classes.toggle('hidden', !value.isOK));
 
-    contextSwitcher = new ContextSwitcher(querySelector('#contextswitcher'), registerContexts());
-    welcomeMessage = new WelcomeMessage(querySelector('#welcomemessage'));
-    agentInfo = new AgentInfo(querySelector('#agentinfo'));
-    companySelector = new CompanySelector(querySelector('#companyselector'), CONTEXTHOME);
-    companyEvents = new CompanyEvents(querySelector('#companyevents'), CONTEXTHOME);
-    companyHandling = new CompanyHandling(querySelector('#companyhandling'), CONTEXTHOME);
-    companyOpeningHours = new CompanyOpeningHours(querySelector('#companyopeninghours'), CONTEXTHOME);
-    companySalesCalls = new CompanySalesCalls(querySelector('#companysalescalls'), CONTEXTHOME);
-    companyProduct = new CompanyProduct(querySelector('#companyproduct'), CONTEXTMESSAGES);
-    companyCustomerType = new CompanyCustomerType(querySelector('#companycustomertype'), CONTEXTHOME);
-    companyTelephoneNumbers = new CompanyTelephoneNumbers(querySelector('#companytelephonenumbers'), CONTEXTHOME);
-    companyAddresses = new CompanyAddresses(querySelector('#companyaddresses'), CONTEXTHOME);
-    companyAlternateNames = new CompanyAlternateNames(querySelector('#companyalternatenames'), CONTEXTHOME);
-    companyBankingInfomation = new CompanyBankingInformation(querySelector('#companybankinginformation'), CONTEXTHOME);
-    companyEmailAddresses = new CompanyEmailAddresses(querySelector('#companyemailaddresses'), CONTEXTHOME);
-    companyWebsites = new CompanyWebsites(querySelector('#companywebsites'), CONTEXTHOME);
-    compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#companyregistrationnumber'), CONTEXTHOME);
-    companyOther = new CompanyOther(querySelector('#companyother'), CONTEXTHOME);
+    registerContexts();
 
-    contactInfo = new ContactInfo(querySelector('#contactinfo'), CONTEXTHOME);
-    sendMessage = new SendMessage(querySelector('#sendmessage'), CONTEXTHOME);
-    globalQueue = new GlobalQueue(querySelector('#globalqueue'), CONTEXTHOME);
-    localQueue = new LocalQueue(querySelector('#localqueue'), CONTEXTHOME);
+    contextSwitcher          = new ContextSwitcher(querySelector('#contextswitcher'), [home, messages, log, statistics, phone, voicemails]);
+    welcomeMessage           = new WelcomeMessage(querySelector('#welcomemessage'));
+    agentInfo                = new AgentInfo(querySelector('#agentinfo'));
+    companySelector          = new CompanySelector(querySelector('#companyselector'), home);
+    companyEvents            = new CompanyEvents(querySelector('#companyevents'), home);
+    companyHandling          = new CompanyHandling(querySelector('#companyhandling'), home);
+    companyOpeningHours      = new CompanyOpeningHours(querySelector('#companyopeninghours'), home);
+    companySalesCalls        = new CompanySalesCalls(querySelector('#companysalescalls'), home);
+    companyProduct           = new CompanyProduct(querySelector('#companyproduct'), messages);
+    companyCustomerType      = new CompanyCustomerType(querySelector('#companycustomertype'), messages);
+    companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#companytelephonenumbers'), home);
+    companyAddresses         = new CompanyAddresses(querySelector('#companyaddresses'), home);
+    companyAlternateNames    = new CompanyAlternateNames(querySelector('#companyalternatenames'), home);
+    companyBankingInfomation = new CompanyBankingInformation(querySelector('#companybankinginformation'), home);
+    companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#companyemailaddresses'), home);
+    companyWebsites          = new CompanyWebsites(querySelector('#companywebsites'), home);
+    compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#companyregistrationnumber'), home);
+    companyOther             = new CompanyOther(querySelector('#companyother'), home);
+
+    contactInfo = new ContactInfo(querySelector('#contactinfo'), home);
+    sendMessage = new SendMessage(querySelector('#sendmessage'), home);
+    globalQueue = new GlobalQueue(querySelector('#globalqueue'), home);
+    localQueue  = new LocalQueue(querySelector('#localqueue'), home);
 
     setupKeyboardShortcuts();
     event.bus.fire(event.activeContextChanged, CONTEXTHOME);
   }
 
-  List<Context> registerContexts() {
-    return querySelectorAll('#bobactive > section')
-        .map((HtmlElement section) => new Context(section)).toList(growable: false);
+  void registerContexts() {
+    home = new Context(querySelector('#contexthome'));
+    messages = new Context(querySelector('#contextmessages'));
+    log = new Context(querySelector('#contextlog'));
+    statistics = new Context(querySelector('#contextstatistics'));
+    phone = new Context(querySelector('#contextphone'));
+    voicemails = new Context(querySelector('#contextvoicemails'));
   }
 
   void setupKeyboardShortcuts() {
-    keyboardHandler.onKeyName('companyselector').listen((_) => setFocus('company-selector-searchbar'));
-    keyboardHandler.onKeyName('companyevents').listen((_) => setFocus('company_events_list'));
-    keyboardHandler.onKeyName('companyhandling').listen((_) => setFocus('company_handling_list'));
-    keyboardHandler.onKeyName('contactinfosearch').listen((_) => setFocus('contact-info-searchbar'));
-    keyboardHandler.onKeyName('contactcalendar').listen((_) => setFocus('contact-calendar'));
+    keyboardHandler.onKeyName('companyselector').listen((_) {
+      setFocus('company-selector-searchbar');
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    });
+
+    keyboardHandler.onKeyName('companyevents').listen((_) {
+      setFocus('company_events_list');
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    });
+
+    keyboardHandler.onKeyName('companyhandling').listen((_) {
+      setFocus('company_handling_list');
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    });
+
+    keyboardHandler.onKeyName('contactinfosearch').listen((_) {
+      setFocus('contact-info-searchbar');
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    });
+
+    keyboardHandler.onKeyName('contactcalendar').listen((_) {
+      setFocus('contact-calendar');
+      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    });
+
     keyboardHandler.onKeyName('sendmessagetelephone').listen((_) {
       setFocus('sendmessagephone');
       event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
+
     keyboardHandler.onKeyName('companyproduct').listen((_) {
       setFocus('company-product-body');
       event.bus.fire(event.activeContextChanged, CONTEXTMESSAGES);
-      });
+    });
+
+    keyboardHandler.onKeyName('companycustomertype').listen((_) {
+      setFocus('company-customertype-body');
+      event.bus.fire(event.activeContextChanged, CONTEXTMESSAGES);
+    });
   }
 }

@@ -2,7 +2,7 @@ part of components;
 
 class ContactInfoSearch {
                model.Contact       contact              = model.nullContact;
-               String              contextId;
+               Context             context;
                UListElement        displayedContactList;
                DivElement          element;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
@@ -13,7 +13,7 @@ class ContactInfoSearch {
 
   bool hasFocus = false;
 
-  ContactInfoSearch(DivElement this.element, String this.contextId) {
+  ContactInfoSearch(DivElement this.element, Context this.context) {
     String html = '''
         <div class="contact-info-searchbox">
           <input id="contact-info-searchbar" 
@@ -134,7 +134,9 @@ class ContactInfoSearch {
       }
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(searchBox.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void scrolling(Event _) {

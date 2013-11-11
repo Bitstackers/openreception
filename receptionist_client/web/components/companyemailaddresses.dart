@@ -15,7 +15,7 @@ part of components;
 
 class CompanyEmailAddresses {
   Box                box;
-  String             contextId;
+  Context            context;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -23,7 +23,7 @@ class CompanyEmailAddresses {
   UListElement       ul;
   String             title        = 'Emailadresser';
 
-  CompanyEmailAddresses(DivElement this.element, String this.contextId) {
+  CompanyEmailAddresses(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
 
     ul = new UListElement()
@@ -69,7 +69,9 @@ class CompanyEmailAddresses {
       setFocus(ul.id);
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(ul.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void render() {

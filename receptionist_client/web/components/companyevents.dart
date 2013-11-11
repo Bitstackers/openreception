@@ -15,7 +15,7 @@ part of components;
 
 class CompanyEvents {
   Box                box;
-  String             contextId;
+  Context            context;
   DivElement         element;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
@@ -24,7 +24,7 @@ class CompanyEvents {
 
   bool hasFocus = false;
 
-  CompanyEvents(DivElement this.element, String this.contextId) {
+  CompanyEvents(DivElement this.element, Context this.context) {
     element.classes.add('company-events-container');
 
     ul = new UListElement()
@@ -70,7 +70,9 @@ class CompanyEvents {
       }
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(ul.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   String getClass(model.CalendarEvent event) {

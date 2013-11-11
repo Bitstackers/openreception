@@ -16,14 +16,14 @@ part of components;
 class CompanyCustomerType {
   DivElement         body;
   Box                box;
-  String             contextId;
+  Context            context;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   String             title        = 'Kundetype';
 
-  CompanyCustomerType(DivElement this.element, String this.contextId) {
+  CompanyCustomerType(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
 
     //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
@@ -70,6 +70,8 @@ class CompanyCustomerType {
       setFocus(body.id);
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(body.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 }

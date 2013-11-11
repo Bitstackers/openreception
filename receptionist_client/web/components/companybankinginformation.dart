@@ -15,7 +15,7 @@ part of components;
 
 class CompanyBankingInformation {
   Box                box;
-  String             contextId;
+  Context            context;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -23,7 +23,7 @@ class CompanyBankingInformation {
   UListElement       ul;
   String             title        = 'Bankoplysninger';
 
-  CompanyBankingInformation(DivElement this.element, String this.contextId) {
+  CompanyBankingInformation(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
 
     ul = new UListElement()
@@ -69,7 +69,9 @@ class CompanyBankingInformation {
       setFocus(ul.id);
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(ul.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void render() {

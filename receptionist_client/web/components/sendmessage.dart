@@ -41,7 +41,7 @@ class SendMessage {
         DivElement  body;
         Box         box;
   final String      cancelButtonLabel = 'Annuller';
-        String      contextId;
+        Context     context;
         DivElement  element;
         SpanElement header;
   final String      saveButtonLabel   = 'Gem';
@@ -70,7 +70,7 @@ class SendMessage {
 
   List<Element> focusElements;
 
-  SendMessage(DivElement this.element, String this.contextId) {
+  SendMessage(DivElement this.element, Context this.context) {
     body = querySelector('.send-message-container');
 
     header = new SpanElement()
@@ -151,9 +151,12 @@ class SendMessage {
       }
     });
 
-    focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
+    focusElements.forEach((e) {
+      e.onFocus.listen((_) => setFocus(e.id));
+      context.registerFocusElement(e.id);
+    });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void cancelClick(_) {

@@ -17,7 +17,7 @@ class ContactInfo {
                DivElement          body;
                Box                 box;
                model.Contact       contact              = model.nullContact;
-               String              contextId;
+               Context             context;
                UListElement        displayedContactList;
                DivElement          element;
                SpanElement         header;
@@ -33,7 +33,7 @@ class ContactInfo {
   ContactInfoCalendar calendar;
   ContactInfoData data;
 
-  ContactInfo(DivElement this.element, String this.contextId) {
+  ContactInfo(DivElement this.element, Context this.context) {
     header = new SpanElement()
     ..text = title;
 
@@ -44,8 +44,8 @@ class ContactInfo {
     DivElement contactinfo_calendar = querySelector('#contactinfo_calendar');
     DivElement contactinfo_data = querySelector('#contactinfo_data');
 
-    search = new ContactInfoSearch(contactinfo_search, contextId);
-    calendar = new ContactInfoCalendar(contactinfo_calendar, contextId);
+    search = new ContactInfoSearch(contactinfo_search, context);
+    calendar = new ContactInfoCalendar(contactinfo_calendar, context);
     data = new ContactInfoData(contactinfo_data);
 
     body = querySelector('#contactinfobody');

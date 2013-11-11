@@ -114,6 +114,7 @@ class _KeyboardHandler {
     _keyToName[Keys.K]     = 'contactcalendar';
     _keyToName[Keys.T]     = 'sendmessagetelephone';
     _keyToName[Keys.L]     = 'companyproduct';
+    _keyToName[Keys.Y]     = 'companycustomertype';
 
     _keyToName.forEach((key, value) {
       _StreamControllerMap[value] = new StreamController<int>.broadcast();

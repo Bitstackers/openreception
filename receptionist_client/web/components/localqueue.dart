@@ -16,13 +16,13 @@ part of components;
 class LocalQueue {
   Box box;
   List<CallQueueItem> callQueue = new List<CallQueueItem>();
-  String contextId;
+  Context context;
   DivElement element;
   bool               hasFocus = false;
   String         title          = 'Lokal kø';
   UListElement ul;
 
-  LocalQueue(DivElement this.element, String this.contextId) {
+  LocalQueue(DivElement this.element, Context this.context) {
     SpanElement header = new SpanElement()
       ..text = title;
 
@@ -68,7 +68,9 @@ class LocalQueue {
       setFocus(ul.id);
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(ul.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void _initialFill() {

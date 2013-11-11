@@ -15,7 +15,7 @@ part of components;
 
 class CompanyAlternateNames {
   Box                box;
-  String            contextId;
+  Context            context;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -23,7 +23,7 @@ class CompanyAlternateNames {
   UListElement       ul;
   String             title        = 'Alternative firmanavne';
 
-  CompanyAlternateNames(DivElement this.element, String this.contextId) {
+  CompanyAlternateNames(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
 
     ul = new UListElement()
@@ -69,7 +69,9 @@ class CompanyAlternateNames {
       setFocus(ul.id);
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(ul.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void render() {

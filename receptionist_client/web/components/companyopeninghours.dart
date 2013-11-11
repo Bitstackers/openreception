@@ -15,7 +15,7 @@ part of components;
 
 class CompanyOpeningHours {
   Box                box;
-  String             contextId;
+  Context            context;
   DivElement         element;
   bool               hasFocus = false;
   SpanElement        header;
@@ -24,7 +24,7 @@ class CompanyOpeningHours {
   String             title        = 'Åbningstider';
 
 
-  CompanyOpeningHours(DivElement this.element, String this.contextId) {
+  CompanyOpeningHours(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
 
     ul = new UListElement()
@@ -70,7 +70,9 @@ class CompanyOpeningHours {
       setFocus(ul.id);
     });
 
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(contextId == value));
+    context.registerFocusElement(ul.id);
+
+    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void render() {
