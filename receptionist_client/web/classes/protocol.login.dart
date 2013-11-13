@@ -33,6 +33,7 @@ Future<Response<Map>> login(int userId) {
 
   request = new HttpRequest()
     ..open(GET, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:

@@ -29,6 +29,7 @@ Future<Response<Map>> callList() {
 
   request = new HttpRequest()
     ..open(GET, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -66,6 +67,7 @@ Future<Response<Map>> callQueue() {
 
   request = new HttpRequest()
     ..open(GET, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
 //      Map data = {'calls': [
 //                        {'assigned_to': '',
@@ -142,6 +144,7 @@ Future<Response<model.CallList>> callLocalList(String agentId) {
 
 //  request = new HttpRequest()
 //  ..open(POST, url)
+//  ..withCredentials = true
 //    ..onLoad.listen((_) {
 //      //completer.complete(new Response<model.CallList>(Response.OK, data));
 //    })
@@ -170,6 +173,7 @@ Future<Response<Map>> hangupCall(model.Call call) {
 
   request = new HttpRequest()
     ..open(POST, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -228,6 +232,7 @@ Future<Response<Map>> originateCall(String agentId, {int cmId, String pstnNumber
 
   request = new HttpRequest()
     ..open(POST, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -268,6 +273,7 @@ Future<Response<Map>> parkCall(model.Call call) {
 
   request = new HttpRequest()
     ..open(POST, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -318,6 +324,7 @@ Future<Response<Map>> pickupCall(String agentId, {model.Call call}) {
 
   request = new HttpRequest()
     ..open(POST, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -362,6 +369,7 @@ Future<Response<Map>> statusCall(model.Call call) {
 
   request = new HttpRequest()
     ..open(POST, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -405,6 +413,7 @@ Future<Response<Map>> transferCall(model.Call call) {
 
   request = new HttpRequest()
     ..open(POST, url)
+    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
