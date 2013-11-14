@@ -86,30 +86,30 @@ Future<Response<Map>> callQueue() {
 //                          'arrival_time': '1382099821'}
 //
 //                            ]};
-      Map data = new Map();
-      List calls = new List();
-      calls.add({'id':'31','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:  3)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-      calls.add({'id':'27','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 15)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-      calls.add({'id':'11','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-      data['calls'] = calls;
-      log.debug('protocol.call.dart callQueue is sending out fake data.');
+//      Map data = new Map();
+//      List calls = new List();
+//      calls.add({'id':'31','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:  3)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//      calls.add({'id':'27','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 15)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//      calls.add({'id':'11','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//      data['calls'] = calls;
+//      log.debug('protocol.call.dart callQueue is sending out fake data.');
 
-      completer.complete(new Response<Map>(Response.OK, data));
-      return;
+//      completer.complete(new Response<Map>(Response.OK, data));
+//      return;
 
-//      switch(request.status) {
-//        case 200:
-//          Map data = _parseJson(request.responseText);
-//          completer.complete(new Response<Map>(Response.OK, data));
-//          break;
-//
-//        case 204:
-//          completer.complete(new Response<Map>(Response.NOTFOUND, null));
-//          break;
-//
-//        default:
-//          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
-//      }
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          completer.complete(new Response<Map>(Response.OK, data));
+          break;
+
+        case 204:
+          completer.complete(new Response<Map>(Response.NOTFOUND, null));
+          break;
+
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
     })
     ..onError.listen((e) {
       _logError(request, url);
@@ -124,35 +124,36 @@ Future<Response<Map>> callQueue() {
 Future<Response<model.CallList>> callLocalList(String agentId) {
   final String                               base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<model.CallList>>  completer = new Completer<Response<model.CallList>>();
-  final List<String>                         fragments = new List<String>();
   final String                               path      = '/call/localList';
   HttpRequest                                request;
   String                                     url;
 
-  fragments.add('agent_id=${agentId}');
-  url = _buildUrl(base, path, fragments);
+  url = _buildUrl(base, path);
 
 //Dummy Data
-  Map dummyData = new Map();
-  List calls = new List();
-  calls.add({'id':'40','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-  calls.add({'id':'55','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-  calls.add({'id':'63','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-  dummyData['calls'] = calls;
-  model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
-  completer.complete(new Response<model.CallList>(Response.OK, data));
+//  Map dummyData = new Map();
+//  List calls = new List();
+//  calls.add({'id':'40','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//  calls.add({'id':'55','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//  calls.add({'id':'63','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//  dummyData['calls'] = calls;
+//  model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
+//  completer.complete(new Response<model.CallList>(Response.OK, data));
 
-//  request = new HttpRequest()
-//  ..open(POST, url)
-//  ..withCredentials = true
-//    ..onLoad.listen((_) {
-//      //completer.complete(new Response<model.CallList>(Response.OK, data));
-//    })
-//    ..onError.listen((e) {
-//      //_logError(request, url);
-//      //completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-//    })
-//    ..send();
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..withCredentials = true
+    ..onLoad.listen((_) {
+      print('----- ${request.responseText}');
+      Map data = _parseJson(request.responseText);
+      model.CallList list = new model.CallList.fromJson(data, 'calls');
+      completer.complete(new Response<model.CallList>(Response.OK, list));
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+    })
+    ..send();
 
   return completer.future;
 }
@@ -304,17 +305,13 @@ Future<Response<Map>> parkCall(model.Call call) {
  * If no callId is specified, then the next call in line will be dispatched
  * to the agent.
  */
-Future<Response<Map>> pickupCall(String agentId, {model.Call call}) {
-  assert(agentId.isNotEmpty);
-
+Future<Response<Map>> pickupCall({model.Call call}) {
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/pickup';
   HttpRequest                    request;
   String                         url;
-
-  fragments.add('agent_id=${agentId}');
 
   if (call != null && call.id != null) {
     fragments.add('call_id=${call.id}');

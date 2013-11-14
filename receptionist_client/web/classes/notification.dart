@@ -169,20 +169,23 @@ void _callPickupEventHandler(Map json) {
   // temporary hack as long as Alice is oblivious to login/session.
   if (call.assignedAgent == configuration.agentID) {
     log.info('Picked up call ${call}', toUserLog: true);
-    environment.call = call;
+    event.bus.fire(event.callChanged, call);
+//    environment.call = call;
 
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
     if (call.organizationId != null) {
       storage.getOrganization(call.organizationId).then((org) {
-        environment.organization = org;
-        environment.contact = org.contactList.first;
+        event.bus.fire(event.organizationChanged, org);
+//        environment.organization = org;
+//        environment.contact = org.contactList.first;
 
         log.debug('notification._callPickupEventHandler updated environment.organization to ${org}');
         log.debug('notification._callPickupEventHandler updated environment.contact to ${org.contactList.first}');
       }).catchError((error) {
-        environment.organization = model.nullOrganization;
-        environment.contact = model.nullContact;
+        event.bus.fire(event.organizationChanged, model.nullOrganization);
+//        environment.organization = model.nullOrganization;
+//        environment.contact = model.nullContact;
 
         log.critical('notification._callPickupEventHandler storage.getOrganization failed with ${error}');
       });

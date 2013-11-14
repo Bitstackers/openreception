@@ -33,7 +33,7 @@ class LocalQueue {
     box = new Box.withHeader(element, header, ul);
 
     registerEventListerns();
-    _initialFill();
+    //_initialFill();
   }
 
   void tabToggle(bool state) {
@@ -101,7 +101,7 @@ class LocalQueue {
   void removeCall(model.Call call) {
     CallQueueItem queueItem;
     for(CallQueueItem callItem in callQueue) {
-      if(callItem.call == call) {
+      if(callItem.call.id == call.id) {
         queueItem = callItem;
         break;
       }

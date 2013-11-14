@@ -155,7 +155,7 @@ class GlobalQueue {
   void removeCall(model.Call call) {
     CallQueueItem queueItem;
     for(CallQueueItem callItem in callQueue) {
-      if(callItem.call == call) {
+      if(callItem.call.id == call.id) {
         queueItem = callItem;
         break;
       }

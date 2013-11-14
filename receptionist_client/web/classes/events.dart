@@ -15,7 +15,6 @@ library events;
 
 import 'package:event_bus/event_bus.dart';
 
-import 'context.dart';
 import 'focus.dart';
 import 'model.dart' as model;
 import 'state.dart';

@@ -69,7 +69,7 @@ void originateCall(String address, int type) {
  * Pickup the next available call.
  */
 void pickupNextCall() {
-  protocol.pickupCall(configuration.agentID).then((protocol.Response response) {
+  protocol.pickupCall().then((protocol.Response response) {
     switch (response.status) {
       case protocol.Response.OK:
         log.debug('commands.pickupNextCall OK ${response.data['call_id']}');

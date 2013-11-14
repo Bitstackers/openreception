@@ -132,7 +132,7 @@ class Call implements Comparable {
    * Pickup call.
    */
   void pickup() {
-    protocol.pickupCall(configuration.agentID, call: this).then((protocol.Response response) {
+    protocol.pickupCall(call: this).then((protocol.Response response) {
       switch (response.status) {
         case protocol.Response.OK:
           log.debug('model.Call.pickup OK ${this}');

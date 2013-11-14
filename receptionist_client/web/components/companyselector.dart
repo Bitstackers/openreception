@@ -117,6 +117,7 @@ class CompanySelector {
     if(!withDropDown) {
       activateDropDown();
     } else {
+      if(highlightedLi == null) return;
       LIElement newHighlight = highlightedLi.nextElementSibling;
       if(newHighlight != null) {
         highlightElement(newHighlight);
@@ -281,6 +282,7 @@ class CompanySelector {
    * Make the highlighted element, the selected, and tell rest of bob about it.
    */
   void activateSelectedOrganization(LIElement li) {
+    if(li == null) return;
     companyselectortext.text = li.attributes['data-originalname'];
 
     deactivateDropDown();
