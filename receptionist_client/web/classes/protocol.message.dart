@@ -33,6 +33,7 @@ Future<Response<Map>> sendMessage(int cmId, String message) {
 
   request = new HttpRequest()
   ..open(POST, url)
+  ..withCredentials = true
   ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
   ..onLoad.listen((_) {
     switch(request.status) {

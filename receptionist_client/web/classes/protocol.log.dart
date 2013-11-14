@@ -63,6 +63,7 @@ Future<Response<Map>> _log(String message, Uri url) {
 
   request = new HttpRequest()
       ..open(POST, url.toString())
+      ..withCredentials = true
       ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
       ..onLoad.listen((_) {
         switch(request.status) {
