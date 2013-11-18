@@ -20,16 +20,29 @@ part of protocol;
  *  On success : [Response] object with status OK
  *  On error   : [Response] object with status ERROR or CRITICALERROR
  */
-Future<Response<Map>> sendMessage(int cmId, String message) {
-  assert(cmId != null);
+
+/**
+ * POST /message/send?[to=<contact_id>@<organization_id>{,<contact_id>@<organization_id>}&]
+                      [cc=<contact_id>@<organization_id>{,<contact_id>@<organization_id>}&]
+                      [bcc=<contact_id>@<organization_id>{,<contact_id>@<organization_id>}&]
+                      message=<message>
+ */
+Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) {
+  assert(to != null);
   assert(message.isNotEmpty);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
-  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
-  final String                   path      = '/message/send';
-  final String                   payload   = 'cm_id=${cmId}&msg=${Uri.encodeComponent(message)}';
+  final String                   base       = configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer  = new Completer<Response<Map>>();
+  final String                   path       = '/message/send';
+
+  final String                   toPayload  = 'to=${to.map((i) => 'cid@oid').join(',')}';
+  final String                   ccPayload  = cc != null && cc.isNotEmpty ? 'cc=${to.map((i) => 'cid@oid').join(',')}' : '';
+  final String                   bccPayload = bcc != null && bcc.isNotEmpty ? 'bcc=${to.map((i) => 'cid@oid').join(',')}' : '';
+  final String                   recepients = [toPayload, ccPayload, bccPayload].where((s) => s.isNotEmpty).join('&');
+  final String                   payload    = '${recepients}&msg=${Uri.encodeComponent(message)}';
+
   HttpRequest                    request;
-  final String                   url       = _buildUrl(base, path);
+  final String                   url        = _buildUrl(base, path);
 
   request = new HttpRequest()
   ..open(POST, url)

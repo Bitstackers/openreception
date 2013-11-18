@@ -134,7 +134,11 @@ class SendMessage {
     });
 
     event.bus.on(event.contactChanged).listen((model.Contact contact) {
-      sendmessagename.value = 'Test: ${contact.name}';
+      //sendmessagename.value = 'Test: ${contact.name}';
+    });
+
+    event.bus.on(event.callChanged).listen((model.Call value){
+      sendmessagephone.value = '${value.id}';
     });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
@@ -169,5 +173,24 @@ class SendMessage {
 
   void sendClick(_) {
     log.debug('SendMessage Send Button pressed');
+    String completeMessage = '''
+      Goddag
+      Vi har taget imod en besked fra ${sendmessagename.value}
+      Det er i forbindelse med virksomheden ${sendmessagecompany.value}
+      Hans mobile nummer er ${sendmessagecellphone.value}
+      og hvis du vil fange ham på hans fastnet nummer, skal du bare ringe til ${sendmessagephone.value}
+      for ikke at glemme at han også oplyste sit lokalnummer ${sendmessagelocalno.value}
+      Han ville bare gerne lige fortælle
+      ${sendmessagetext.value}
+      
+      [${checkbox1.checked ? 'X': ' '}] Ring venligst 
+      [${checkbox2.checked ? 'X': ' '}] Ringer selv tilbage
+      [${checkbox3.checked ? 'X': ' '}] Har ringet
+      [${checkbox4.checked ? 'X': ' '}] Haster
+
+      Fortsat god dag ønskes du fra agent ${configuration.agentID}
+    ''';
+
+    protocol.sendMessage(completeMessage, ['8@1']);
   }
 }

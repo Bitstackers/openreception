@@ -28,11 +28,9 @@ class ContactInfoSearch {
 
     var frag = new DocumentFragment.html(html);
     searchBox = frag.querySelector('#contact-info-searchbar') as InputElement
-      ..disabled = true
-      ..onKeyUp.listen(onkeyup);
+      ..disabled = true;
 
-    displayedContactList = frag.querySelector('#contactlist')
-        ..onScroll.listen(scrolling);
+    displayedContactList = frag.querySelector('#contactlist');
 
     element.children.addAll(frag.children);
 
@@ -71,10 +69,50 @@ class ContactInfoSearch {
       ..value = contact.id
       ..onClick.listen(contactClick);
 
+  void onkeydown(KeyboardEvent e) {
+    if(e.keyCode == Keys.DOWN) {
+      for(LIElement li in displayedContactList.children) {
+        if(li.classes.contains('contact-info-active')) {
+          LIElement next = li.nextElementSibling;
+          if(next != null) {
+            li.classes.remove('contact-info-active');
+            next.classes.add('contact-info-active');
+            int contactId = next.value;
+            model.Contact con = organization.contactList.getContact(contactId);
+            if(con != null) {
+              event.bus.fire(event.contactChanged, con);
+            }
+          }
+          break;
+        }
+      }
+      e.preventDefault();
+    } else if(e.keyCode == Keys.UP) {
+      for(LIElement li in displayedContactList.children) {
+        if(li.classes.contains('contact-info-active')) {
+          LIElement previous = li.previousElementSibling;
+          if(previous != null) {
+            li.classes.remove('contact-info-active');
+            previous.classes.add('contact-info-active');
+            int contactId = previous.value;
+            model.Contact con = organization.contactList.getContact(contactId);
+            if(con != null) {
+              event.bus.fire(event.contactChanged, con);
+            }
+          }
+          break;
+        }
+      }
+      e.preventDefault();
+    }
+  }
 
-  void onkeyup(Event e) {
-    InputElement target = e.target as InputElement;
-    _performSearch(target.value);
+  void onkeyup(KeyboardEvent e) {
+    if(e.keyCode == Keys.DOWN || e.keyCode == Keys.UP) {
+      //NOTHING
+    } else {
+      _performSearch(searchBox.value);
+    }
   }
 
   void _performSearch(String search) {
@@ -104,9 +142,10 @@ class ContactInfoSearch {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
       searchBox.disabled = value == model.nullOrganization;
-      if(value != model.nullOrganization) {
-        _performSearch(searchBox.value);
+      if(value == model.nullOrganization) {
+        searchBox.value = '';
       }
+      _performSearch(searchBox.value);
     });
 
     event.bus.on(event.contactChanged).listen((model.Contact value) {
@@ -133,6 +172,13 @@ class ContactInfoSearch {
         setFocus(searchBox.id);
       }
     });
+
+    searchBox
+     ..onKeyUp.listen(onkeyup)
+     ..onKeyDown.listen(onkeydown);
+
+
+    displayedContactList.onScroll.listen(scrolling);
 
     context.registerFocusElement(searchBox.id);
 
