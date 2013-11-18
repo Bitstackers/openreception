@@ -39,14 +39,14 @@ model.Contact     _contact = model.nullContact;
 model.Contact get contact  => _contact;
 void          set contact(model.Contact contact) {
   _contact = contact;
-  event.bus.fire(event.contactChanged, contact);
+//  event.bus.fire(event.contactChanged, contact);
 }
 
 model.Organization     _organization = model.nullOrganization;
 model.Organization get organization  => _organization;
 void               set organization(model.Organization organization) {
   _organization = organization;
-  event.bus.fire(event.organizationChanged, organization);
+//  event.bus.fire(event.organizationChanged, organization);
 }
 
 model.OrganizationList     _organizationList = new model.OrganizationList();

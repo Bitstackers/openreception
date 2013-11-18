@@ -142,7 +142,7 @@ class _Notification {
  * [environment.call] is received on the notification socket.
  */
 void _callHangupEventHandler(Map json) {
-  log.debug('notification._callHangupEventHandler received ${json}');
+  log.debug('notification._callHangupEventHandler');
 
   model.Call call = new model.Call.fromJson(json['call']);
 
@@ -150,8 +150,7 @@ void _callHangupEventHandler(Map json) {
     log.info('Call hangup ${call}', toUserLog: true);
     environment.call = model.nullCall;
     environment.organization = model.nullOrganization;
-    environment.contact = model.nullContact;
-
+    
     log.info('notification._callHangupEventHandler hangup call ${call}');
   }
 }
@@ -170,7 +169,7 @@ void _callPickupEventHandler(Map json) {
   if (call.assignedAgent == configuration.agentID) {
     log.info('Picked up call ${call}', toUserLog: true);
     event.bus.fire(event.callChanged, call);
-//    environment.call = call;
+    environment.call = call;
 
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
@@ -207,6 +206,13 @@ void _queueJoinEventHandler(Map json) {
   event.bus.fire(event.callQueueAdd, call);
   // Should we sort again, or can we expect that calls joining the queue are
   // always younger then the calls already in the queue?
+  
+  //TODO HACK ??? FIXME
+  //As of new when a call is parked, it doesn't sendt a callpark event, instead it just joins another fifo, which results in a queueJoin notification event.
+  if(call.id == environment.call.id) {
+    environment.call = model.nullCall;
+    event.bus.fire(event.callChanged, environment.call);
+  }
 }
 
 /**

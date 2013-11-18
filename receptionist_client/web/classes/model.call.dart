@@ -79,6 +79,7 @@ class Call implements Comparable {
    * Hangup the [call].
    */
   void hangup() {
+    assert(this != nullCall);
     protocol.hangupCall(this).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
@@ -110,6 +111,7 @@ class Call implements Comparable {
    * Park call.
    */
   void park() {
+    assert(this != nullCall);
     protocol.parkCall(this).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
@@ -132,23 +134,28 @@ class Call implements Comparable {
    * Pickup call.
    */
   void pickup() {
-    protocol.pickupCall(call: this).then((protocol.Response response) {
-      switch (response.status) {
-        case protocol.Response.OK:
-          log.debug('model.Call.pickup OK ${this}');
-          _pickupCallSuccess(response);
-          break;
+    assert(this != nullCall);
+    if(environment.call == nullCall) {
+      protocol.pickupCall(call: this).then((protocol.Response response) {
+        switch (response.status) {
+          case protocol.Response.OK:
+            log.debug('model.Call.pickup OK ${this}');
+            _pickupCallSuccess(response);
+            break;
 
-        case protocol.Response.NOTFOUND:
-          log.debug('model.Call.pickupCall NOT FOUND ${this}');
-          break;
+          case protocol.Response.NOTFOUND:
+            log.debug('model.Call.pickupCall NOT FOUND ${this}');
+            break;
 
-        default:
-          log.critical('model.Call.pickupCall ${this} failed with illegal response ${response}');
-      }
-    }).catchError((error) {
-      log.critical('model.Call.pickupCall ${this} protocol.pickupCall failed with ${error}');
-    });
+          default:
+            log.critical('model.Call.pickupCall ${this} failed with illegal response ${response}');
+        }
+      }).catchError((error) {
+        log.critical('model.Call.pickupCall ${this} protocol.pickupCall failed with ${error}');
+      });
+    } else {
+      protocol.transferCall(this);
+    }
   }
 
   /**
