@@ -397,6 +397,7 @@ Future<Response<Map>> statusCall(model.Call call) {
  */
 Future<Response<Map>> transferCall(model.Call call) {
   assert(call != null);
+  assert(call != model.nullCall);
 
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();

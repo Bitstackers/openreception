@@ -92,11 +92,11 @@ class BobActive {
   }
 
   void registerContexts() {
-    home = new Context(querySelector('#contexthome'));
-    messages = new Context(querySelector('#contextmessages'));
-    log = new Context(querySelector('#contextlog'));
+    home       = new Context(querySelector('#contexthome'));
+    messages   = new Context(querySelector('#contextmessages'));
+    log        = new Context(querySelector('#contextlog'));
     statistics = new Context(querySelector('#contextstatistics'));
-    phone = new Context(querySelector('#contextphone'));
+    phone      = new Context(querySelector('#contextphone'));
     voicemails = new Context(querySelector('#contextvoicemails'));
   }
 
