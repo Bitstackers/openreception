@@ -45,10 +45,6 @@ class ContactInfoSearch {
     event.bus.fire(event.contactChanged, contact);
   }
 
-  void tabToggle(bool state) {
-    searchBox.tabIndex = state ? getTabIndex(searchBox.id) : -1;
-  }
-
   void _clearDisplayedContactList() {
     displayedContactList
       ..children.clear()
@@ -180,9 +176,7 @@ class ContactInfoSearch {
 
     displayedContactList.onScroll.listen(scrolling);
 
-    context.registerFocusElement(searchBox.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
+    context.registerFocusElement(searchBox);
   }
 
   void scrolling(Event _) {

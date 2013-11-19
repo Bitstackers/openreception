@@ -82,10 +82,10 @@ class BobActive {
     companyWebsites          = new CompanyWebsites(querySelector('#companywebsites'), home);
     compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#companyregistrationnumber'), home);
     companyOther             = new CompanyOther(querySelector('#companyother'), home);
-    contactInfo = new ContactInfo(querySelector('#contactinfo'), home);
-    sendMessage = new SendMessage(querySelector('#sendmessage'), home);
-    globalQueue = new GlobalQueue(querySelector('#globalqueue'), home);
-    localQueue  = new LocalQueue(querySelector('#localqueue'), home);
+    contactInfo              = new ContactInfo(querySelector('#contactinfo'), home);
+    sendMessage              = new SendMessage(querySelector('#sendmessage'), home);
+    globalQueue              = new GlobalQueue(querySelector('#globalqueue'), home);
+    localQueue               = new LocalQueue(querySelector('#localqueue'), home);
 
     logBox = new LogBox(querySelector('#logbox'));
 
@@ -105,42 +105,34 @@ class BobActive {
   void setupKeyboardShortcuts() {
     keyboardHandler.onKeyName('companyselector').listen((_) {
       setFocus('company-selector-searchbar');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('companyevents').listen((_) {
       setFocus('company_events_list');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('companyhandling').listen((_) {
       setFocus('company_handling_list');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('contactinfosearch').listen((_) {
       setFocus('contact-info-searchbar');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('contactcalendar').listen((_) {
       setFocus('contact-calendar');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('sendmessagetelephone').listen((_) {
       setFocus('sendmessagephone');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('companyproduct').listen((_) {
       setFocus('company-product-body');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
 
     keyboardHandler.onKeyName('companycustomertype').listen((_) {
       setFocus('company-customertype-body');
-      event.bus.fire(event.activeContextChanged, CONTEXTHOME);
     });
   }
 }

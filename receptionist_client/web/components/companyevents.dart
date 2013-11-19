@@ -39,10 +39,6 @@ class CompanyEvents {
     _registerEventListeners();
   }
 
-  void tabToggle(bool state) {
-    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
-  }
-
   void _registerEventListeners() {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
@@ -58,21 +54,10 @@ class CompanyEvents {
     });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if (value.old == ul.id) {
-        hasFocus = false;
-        element.classes.remove(focusClassName);
-      }
-
-      if(value.current == ul.id) {
-        hasFocus = true;
-        element.classes.add(focusClassName);
-        ul.focus();
-      }
+      hasFocus = handleFocusChange(value, [ul], element);
     });
 
-    context.registerFocusElement(ul.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
+    context.registerFocusElement(ul);
   }
 
   String getClass(model.CalendarEvent event) {

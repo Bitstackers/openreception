@@ -17,7 +17,7 @@ class CompanyHandling {
   Box                box;
   Context            context;
   DivElement         element;
-  bool               hasFocus = false;
+  bool               hasFocus     = false;
   SpanElement        header;
   model.Organization organization = model.nullOrganization;
   UListElement       ul;
@@ -32,11 +32,10 @@ class CompanyHandling {
       ..text = title;
 
     box = new Box.withHeader(element, header, ul);
-    _registerEventListeners();
-  }
 
-  void tabToggle(bool state) {
-    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
+    context.registerFocusElement(ul);
+
+    _registerEventListeners();
   }
 
   void _registerEventListeners() {
@@ -56,21 +55,8 @@ class CompanyHandling {
     });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if(value.old == ul.id) {
-        hasFocus = false;
-        element.classes.remove(focusClassName);
-      }
-
-      if(value.current == ul.id) {
-        hasFocus = true;
-        element.classes.add(focusClassName);
-        ul.focus();
-      }
+      hasFocus = handleFocusChange(value, [ul], element);
     });
-
-    context.registerFocusElement(ul.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void render() {

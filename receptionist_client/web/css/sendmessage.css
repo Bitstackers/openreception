@@ -80,6 +80,17 @@ textarea.send-message-field {
 .send-message-checkbox-container {
   position: absolute;
   width: 40%;
+  cursor:pointer;
+}
+
+.send-message-checkbox-container > div {
+  height: 20px;
+  width: 20px;
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  display: inline-block;
+  margin: -2px 5px 0 0;
+  vertical-align: middle;
 }
 
 .send-message-checkbox-label {
@@ -88,22 +99,7 @@ textarea.send-message-field {
   margin-left: 2%;
 }
 
-.send-message-checkbox-container input[type="checkbox"] {
-  display:none;
-}
-
-.send-message-checkbox-container input[type="checkbox"] + label span {
-  height: 20px;
-  width: 20px;
-  border: solid 2px #ccc;
-  border-radius: 3px;
-  cursor:pointer;
-  display: inline-block;
-  margin: -2px 5px 0 0;
-  vertical-align: middle;
-}
-
-.send-message-checkbox-container input[type="checkbox"]:checked + label span {
+.send-message-checkbox-checked {
   background-color: green;
 }
 

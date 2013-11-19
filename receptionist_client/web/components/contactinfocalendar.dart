@@ -29,10 +29,6 @@ class ContactInfoCalendar {
     _registerEventListeners();
   }
 
-  void tabToggle(bool state) {
-    calendarBody.tabIndex = state ? getTabIndex(calendarBody.id) : -1;
-  }
-
   void _registerEventListeners() {
     calendarBody.onFocus.listen((_) {
       setFocus(calendarBody.id);
@@ -55,9 +51,7 @@ class ContactInfoCalendar {
       }
     });
 
-    context.registerFocusElement(calendarBody.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
+    context.registerFocusElement(calendarBody);
   }
 
   void render() {

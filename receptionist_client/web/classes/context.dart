@@ -45,10 +45,10 @@ class Context {
   EventBus _bus = new EventBus();
   EventBus get bus => _bus;
 
-  int          _alertCounter = 0;
-  List<String> focusId       = new List<String>();
-  bool         isActive      = false;
-  String       lastFocusId   = '';
+  int                _alertCounter = 0;
+  Map<String, Element> focusElements = new Map<String, Element>();
+  bool               isActive      = false;
+  String             lastFocusId   = '';
 
   Element _element;
 
@@ -112,11 +112,13 @@ class Context {
       isActive = true;
       _element.classes.remove('hidden');
       log.debug('Context._toggle activating ${this.id}');
+      focusElements.forEach((_, e) => e.tabIndex = getTabIndex(e.id));
       setFocus(lastFocusId);
 
     } else if (isActive) {
       isActive = false;
       _element.classes.add('hidden');
+      focusElements.forEach((_, e) => e.tabIndex = -1);
     }
   }
 
@@ -132,17 +134,18 @@ class Context {
     keyboardHandler.onKeyName(id).listen((_) => activate());
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if(focusId.contains(value.current)) {
+      if(focusElements.containsKey(value.current)) {
         lastFocusId = value.current;
+        activate();
       }
     });
   }
 
-  void registerFocusElement(String id) {
-    if(focusId.contains(id)) {
-      log.error('Context registerFocusElement. The id is already registered: ${id}');
+  void registerFocusElement(Element element) {
+    if(focusElements.containsKey(element.id)) {
+      log.error('Context registerFocusElement. The element is already registered: ${element.id}');
     } else {
-      focusId.add(id);
+      focusElements[element.id] = element;
     }
   }
 }

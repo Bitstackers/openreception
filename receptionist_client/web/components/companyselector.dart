@@ -62,10 +62,6 @@ class CompanySelector {
     withDropDown = true;
   }
 
-  void tabToggle(bool state) {
-    searchBox.tabIndex = state ? getTabIndex(searchBox.id) : -1;
-  }
-
   void clearSelection() {
     companyselectortext.text = organizationSearchPlaceholder;
     event.bus.fire(event.organizationChanged, model.nullOrganization);
@@ -273,9 +269,7 @@ class CompanySelector {
       }
     });
 
-    context.registerFocusElement(searchBox.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
+    context.registerFocusElement(searchBox);
   }
 
   /**

@@ -38,10 +38,6 @@ class CompanyRegistrationNumber {
     registerEventListeners();
   }
 
-  void tabToggle(bool state) {
-    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
-  }
-
   void registerEventListeners() {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
       organization = value;
@@ -49,16 +45,7 @@ class CompanyRegistrationNumber {
     });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if(value.old == ul.id) {
-        hasFocus = false;
-        element.classes.remove(focusClassName);
-      }
-
-      if(value.current == ul.id) {
-        hasFocus = true;
-        element.classes.add(focusClassName);
-        ul.focus();
-      }
+      hasFocus = handleFocusChange(value, [ul], element);
     });
 
     ul.onFocus.listen((_) {
@@ -69,9 +56,7 @@ class CompanyRegistrationNumber {
       setFocus(ul.id);
     });
 
-    context.registerFocusElement(ul.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
+    context.registerFocusElement(ul);
   }
 
   void render() {

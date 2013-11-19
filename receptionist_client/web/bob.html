@@ -82,23 +82,41 @@
             <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer"/>
     
             <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="Besked"></textarea>
-    
+            
+            <div class="send-message-checkbox-container send-message-pleasecall" tabindex="16">
+              <div id="send-message-checkbox1" tabindex="17"></div>
+              <span>Ring venligst</span>
+            </div> 
+            <div class="send-message-checkbox-container send-message-callsback">
+              <div id="send-message-checkbox2"></div>
+              <span>Ringer selv tilbage</span>
+            </div>   
+            <div class="send-message-checkbox-container send-message-hascalled">
+              <div id="send-message-checkbox3"></div>
+              <span>Har ringet</span>
+            </div>  
+            <div class="send-message-checkbox-container send-message-emergency">
+              <div id="send-message-checkbox4"></div>
+              <span>Haster</span>
+            </div>    
+            <!-- 
             <div class="send-message-checkbox-container send-message-pleasecall">
               <input id="send-message-checkbox1" type="checkbox"/>
               <label class="send-message-checkbox-label" for="send-message-checkbox1"><span></span>Ring venligst</label>
             </div>
-              <div class="send-message-checkbox-container send-message-callsback">
+            <div class="send-message-checkbox-container send-message-callsback">
               <input id="send-message-checkbox2" type="checkbox"/>
-            <label class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
+              <label id="send-message-checkbox2_label" class="send-message-checkbox-label" for="send-message-checkbox2"><span></span>Ringer selv tilbage</label>
             </div>
-              <div class="send-message-checkbox-container send-message-hascalled">
+            <div class="send-message-checkbox-container send-message-hascalled">
               <input id="send-message-checkbox3" type="checkbox"/>
-            <label class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
+              <label id="send-message-checkbox3_label" class="send-message-checkbox-label" for="send-message-checkbox3"><span></span>Har ringet</label>
             </div>
             <div class="send-message-checkbox-container send-message-emergency">
-              <input class="send-message-checkbox" id="send-message-checkbox4" type="checkbox"/>
-              <label class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
-            </div>
+              <input id="send-message-checkbox4" class="send-message-checkbox" type="checkbox"/>
+              <label id="send-message-checkbox4_label" class="send-message-checkbox-label" for="send-message-checkbox4"><span></span>Haster</label>
+            </div> 
+            -->
     
             <div class="send-message-button-container">
               <button id="sendmessagecancel"></button>

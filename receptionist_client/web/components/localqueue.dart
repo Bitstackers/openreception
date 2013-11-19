@@ -32,12 +32,10 @@ class LocalQueue {
 
     box = new Box.withHeader(element, header, ul);
 
+    context.registerFocusElement(ul);
+
     registerEventListerns();
     //_initialFill();
-  }
-
-  void tabToggle(bool state) {
-    ul.tabIndex = state ? getTabIndex(ul.id) : -1;
   }
 
   void registerEventListerns() {
@@ -48,16 +46,7 @@ class LocalQueue {
       .listen((model.Call call) => removeCall(call));
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if(value.old == ul.id) {
-        hasFocus = false;
-        element.classes.remove(focusClassName);
-      }
-
-      if(value.current == ul.id) {
-        hasFocus = true;
-        element.classes.add(focusClassName);
-        ul.focus();
-      }
+      hasFocus = handleFocusChange(value, [ul], element);
     });
 
     ul.onFocus.listen((_) {
@@ -67,10 +56,6 @@ class LocalQueue {
     element.onClick.listen((_) {
       setFocus(ul.id);
     });
-
-    context.registerFocusElement(ul.id);
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
   }
 
   void _initialFill() {

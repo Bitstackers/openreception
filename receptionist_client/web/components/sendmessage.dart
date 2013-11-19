@@ -87,10 +87,10 @@ class SendMessage {
     sendmessagelocalno      = body.querySelector('#sendmessagelocalno');
     sendmessagetext         = body.querySelector('#sendmessagetext');
 
-    checkbox1 = body.querySelector('#send-message-checkbox1');
-    checkbox2 = body.querySelector('#send-message-checkbox2');
-    checkbox3 = body.querySelector('#send-message-checkbox3');
-    checkbox4 = body.querySelector('#send-message-checkbox4');
+//    checkbox1 = body.querySelector('#send-message-checkbox1');
+//    checkbox2 = body.querySelector('#send-message-checkbox2');
+//    checkbox3 = body.querySelector('#send-message-checkbox3');
+//    checkbox4 = body.querySelector('#send-message-checkbox4');
 
     cancelButton = body.querySelector('#sendmessagecancel')
         ..text = cancelButtonLabel
@@ -113,18 +113,18 @@ class SendMessage {
         sendmessagecellphone,
         sendmessagelocalno,
         sendmessagetext,
-        checkbox1,
-        checkbox2,
-        checkbox3,
-        checkbox4,
+//        checkbox1,
+//        checkbox2,
+//        checkbox3,
+//        checkbox4,
         cancelButton,
         draftButton,
         sendButton];
 
+   focusElements.forEach((e) => context.registerFocusElement(e));
+
    registerEventListeners();
   }
-
-  void tabToggle(bool state) => focusElements.forEach((e) => e.tabIndex = state ? getTabIndex(e.id) : -1);
 
   void registerEventListeners() {
     element.onClick.listen((_) {
@@ -142,25 +142,10 @@ class SendMessage {
     });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
-      if(focusElements.any((e) => e.id == value.old)) {
-        element.classes.remove(focusClassName);
-        hasFocus = false;
-      }
+      hasFocus = handleFocusChange(value, focusElements, element);
+      });
 
-      Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
-      if(focusedElement != null) {
-        element.classes.add(focusClassName);
-        hasFocus = true;
-        focusedElement.focus();
-      }
-    });
-
-    focusElements.forEach((e) {
-      e.onFocus.listen((_) => setFocus(e.id));
-      context.registerFocusElement(e.id);
-    });
-
-    event.bus.on(event.activeContextChanged).listen((String value) => tabToggle(context.id == value));
+    focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
   }
 
   void cancelClick(_) {

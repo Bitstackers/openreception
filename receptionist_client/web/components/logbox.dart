@@ -33,8 +33,7 @@ class LogBox {
   void registerEventListeners() {
     log.userLogStream.listen((LogRecord record) {
       push(record);
-      // TODO: change messages to a Queue or ListQueue as soon as support for
-      // for these are added to polymer toObservable(). Go patch it Thomas Løcke
+      // TODO: change messages to a Queue or ListQueue
 
       while (messages.length > configuration.userLogSizeLimit) {
         pop();
