@@ -44,10 +44,11 @@ class BobActive {
   CompanyRegistrationNumber compayRegistrationNumber;
   CompanyOther companyOther;
   ContactInfo contactInfo;
-
   SendMessage sendMessage;
   GlobalQueue globalQueue;
   LocalQueue localQueue;
+
+  LogBox logBox;
 
   Context home;
   Context messages;
@@ -81,11 +82,12 @@ class BobActive {
     companyWebsites          = new CompanyWebsites(querySelector('#companywebsites'), home);
     compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#companyregistrationnumber'), home);
     companyOther             = new CompanyOther(querySelector('#companyother'), home);
-
     contactInfo = new ContactInfo(querySelector('#contactinfo'), home);
     sendMessage = new SendMessage(querySelector('#sendmessage'), home);
     globalQueue = new GlobalQueue(querySelector('#globalqueue'), home);
     localQueue  = new LocalQueue(querySelector('#localqueue'), home);
+
+    logBox = new LogBox(querySelector('#logbox'));
 
     setupKeyboardShortcuts();
     event.bus.fire(event.activeContextChanged, CONTEXTHOME);

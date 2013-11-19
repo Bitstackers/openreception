@@ -16,6 +16,8 @@ library components;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:logging/logging.dart';
+
 import 'classes/configuration.dart';
 import 'classes/context.dart';
 import 'classes/commands.dart' as command;
@@ -58,3 +60,5 @@ part 'components/contactinfocalendar.dart';
 part 'components/contactinfodata.dart';
 
 part 'components/constants.dart';
+
+part 'components/logbox.dart';

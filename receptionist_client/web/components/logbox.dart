@@ -10,24 +10,52 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
-
-import 'package:logging/logging.dart';
-
-import '../classes/configuration.dart';
-import '../classes/logger.dart';
+part of components;
 
 class LogBox {
   List<LogRecord> messages = new List<LogRecord>();
+  TableElement table;
+  DivElement element;
 
-  LogBox() {
+  LogBox(DivElement this.element) {
+
+    table = new TableElement()
+      ..children.add(new TableRowElement()
+        ..innerHtml = '''
+          <th>Tidspunkt</th>
+          <th>Niveau</th>
+          <th>Besked</th>
+        ''');
+    element.children.add(table);
+    registerEventListeners();
+  }
+
+  void registerEventListeners() {
     log.userLogStream.listen((LogRecord record) {
-      messages.insert(0, record);
+      push(record);
       // TODO: change messages to a Queue or ListQueue as soon as support for
       // for these are added to polymer toObservable(). Go patch it Thomas Løcke
 
       while (messages.length > configuration.userLogSizeLimit) {
-        messages.removeLast();
+        pop();
       }
     });
   }
+
+  void push(LogRecord record) {
+    messages.insert(0, record);
+    //TODO Tried with HereDoc but it didn't work
+    TableRowElement tr = new TableRowElement();
+    tr.children
+      ..add(new TableCellElement()..text = record.time.toString())
+      ..add(new TableCellElement()..text = record.level.name)
+      ..add(new TableCellElement()..text = record.message);
+    table.children.insert(1, tr);
+  }
+
+  void pop() {
+    messages.removeLast();
+    table.children.removeLast();
+  }
+
 }
