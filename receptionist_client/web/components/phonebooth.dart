@@ -19,10 +19,20 @@ class Phonebooth {
 
   void registerEventListeners() {
     call.onClick.listen((_) {
-      String dialStrig = inputField.value;
-      protocol.originateCall(dialStrig).then((protocol.Response<Map> response) {
-        print('phonebooth: ${response.data.toString()}');
-      });
+      dial();
+    });
+
+    inputField.onKeyUp.listen((KeyboardEvent event) {
+      if(event.keyCode == Keys.ENTER) {
+        dial();
+      }
+    });
+  }
+
+  void dial() {
+    String dialStrig = inputField.value;
+    protocol.originateCall(dialStrig).then((protocol.Response<Map> response) {
+      print('phonebooth: ${response.data.toString()}');
     });
   }
 }
