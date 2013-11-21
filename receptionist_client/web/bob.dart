@@ -70,7 +70,7 @@ void main() {
 
       protocol.login(userId).then((protocol.Response<Map> value) {
         if(value.status == protocol.Response.OK) {
-          print('------- Success Logged in---------');
+          log.debug('Bob.dart ------- Success Logged in---------');
         } else {
           log.error('Bob.dart Did not log in.');
         }

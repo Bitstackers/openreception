@@ -63,6 +63,8 @@ part 'components/constants.dart';
 
 part 'components/logbox.dart';
 
+part 'components/phonebooth.dart';
+
 bool handleFocusChange(Focus value, List<Element> focusElements, Element highlightElement) {
   Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
   highlightElement.classes.toggle(focusClassName, focusedElement != null);

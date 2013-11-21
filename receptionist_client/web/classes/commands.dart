@@ -33,23 +33,23 @@ void originateCall(String address, int type) {
   String agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
 
-  switch(type) {
-    case CONTACTID_TYPE:
-      originateCallRequest = protocol.originateCall(agentId, cmId: int.parse(address));
-      break;
-
-    case PSTN_TYPE:
-      originateCallRequest = protocol.originateCall(agentId, pstnNumber: address);
-      break;
-
-    case SIP_TYPE:
-      originateCallRequest = protocol.originateCall(agentId, sip: address);
-      break;
-
-    default:
-      log.error('commands.originateCall INVALID TYPE ${type}');
-      return;
-  }
+//  switch(type) {
+//    case CONTACTID_TYPE:
+//      originateCallRequest = protocol.originateCall(agentId, cmId: int.parse(address));
+//      break;
+//
+//    case PSTN_TYPE:
+//      originateCallRequest = protocol.originateCall(agentId, pstnNumber: address);
+//      break;
+//
+//    case SIP_TYPE:
+//      originateCallRequest = protocol.originateCall(agentId, sip: address);
+//      break;
+//
+//    default:
+//      log.error('commands.originateCall INVALID TYPE ${type}');
+//      return;
+//  }
 
   originateCallRequest.then((protocol.Response response) {
     switch(response.status) {

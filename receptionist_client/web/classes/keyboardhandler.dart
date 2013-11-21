@@ -29,6 +29,7 @@ class Keys {
   static const int CTRL  = 17;
   static const int ALT   = 18;
   static const int ESC   = 27;
+  static const int SPACE = 32;
   static const int UP    = 38;
   static const int DOWN  = 40;
   static const int ZERO  = 48;

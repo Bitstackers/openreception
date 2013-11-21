@@ -131,7 +131,7 @@ class GlobalQueue {
   }
 
   void addCall(model.Call call) {
-    var queueItem = new CallQueueItem(call);
+    CallQueueItem queueItem = new CallQueueItem(call);
     callQueue.add(queueItem);
     ul.children.add(queueItem.element);
     updateHeaderText();

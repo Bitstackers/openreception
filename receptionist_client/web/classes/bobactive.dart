@@ -50,6 +50,8 @@ class BobActive {
 
   LogBox logBox;
 
+  Phonebooth phonebooth;
+
   Context home;
   Context messages;
   Context log;
@@ -88,6 +90,8 @@ class BobActive {
     localQueue               = new LocalQueue(querySelector('#localqueue'), home);
 
     logBox = new LogBox(querySelector('#logbox'));
+
+    phonebooth = new Phonebooth(querySelector('#phonebooth'));
 
     setupKeyboardShortcuts();
     event.bus.fire(event.activeContextChanged, CONTEXTHOME);

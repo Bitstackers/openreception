@@ -205,8 +205,9 @@ Future<Response<Map>> hangupCall(model.Call call) {
  *
  * Sends a request to make a new call.
  */
-Future<Response<Map>> originateCall(String agentId, {int cmId, String pstnNumber, String sip}) {
-  assert(agentId.isNotEmpty);
+Future<Response<Map>> originateCall(String extension) {
+  assert(extension != null);
+  assert(extension.isNotEmpty);
 
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
@@ -215,18 +216,8 @@ Future<Response<Map>> originateCall(String agentId, {int cmId, String pstnNumber
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('agent_id=${agentId}');
-
-  if (cmId != null){
-    fragments.add('cm_id=${cmId}');
-  }
-
-  if (pstnNumber != null && !pstnNumber.isEmpty) {
-    fragments.add('pstn_number=${pstnNumber}');
-  }
-
-  if (sip != null && !sip.isEmpty){
-    fragments.add('sip=${sip}');
+  if (extension != null && extension.isNotEmpty){
+    fragments.add('extension=${extension}');
   }
 
   url = _buildUrl(base, path, fragments);
