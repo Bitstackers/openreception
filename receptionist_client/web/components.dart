@@ -65,6 +65,8 @@ part 'components/logbox.dart';
 
 part 'components/phonebooth.dart';
 
+typedef void onCallQueueClick(MouseEvent event, CallQueueItem queueItem);
+
 bool handleFocusChange(Focus value, List<Element> focusElements, Element highlightElement) {
   Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
   highlightElement.classes.toggle(focusClassName, focusedElement != null);
@@ -74,3 +76,5 @@ bool handleFocusChange(Focus value, List<Element> focusElements, Element highlig
 
   return focusedElement != null;
 }
+
+

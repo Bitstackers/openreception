@@ -386,9 +386,9 @@ Future<Response<Map>> statusCall(model.Call call) {
 /**
  * Sends a request to transfer a call.
  */
-Future<Response<Map>> transferCall(model.Call call) {
-  assert(call != null);
-  assert(call != model.nullCall);
+Future<Response<Map>> transferCall(model.Call source, [model.Call destination]) {
+  assert(source != null);
+  assert(source != model.nullCall);
 
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
@@ -397,7 +397,7 @@ Future<Response<Map>> transferCall(model.Call call) {
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('source=${call.id}');
+  fragments.add('source=${source.id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()

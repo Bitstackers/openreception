@@ -15,6 +15,7 @@ part of components;
 
 class LocalQueue {
   Box box;
+  model.Call call = model.nullCall;
   List<CallQueueItem> callQueue = new List<CallQueueItem>();
   Context context;
   DivElement element;
@@ -39,11 +40,9 @@ class LocalQueue {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.localCallQueueAdd)
-      .listen((model.Call call) => addCall(call));
-
-    event.bus.on(event.callQueueRemove)
-      .listen((model.Call call) => removeCall(call));
+    event.bus.on(event.localCallQueueAdd).listen(addCall);
+    event.bus.on(event.localCallQueueRemove).listen(removeCall);
+    event.bus.on(event.callChanged).listen((model.Call value) => call = value);
 
     event.bus.on(event.focusChanged).listen((Focus value) {
       hasFocus = handleFocusChange(value, [ul], element);
@@ -78,9 +77,22 @@ class LocalQueue {
   }
 
   void addCall(model.Call call) {
-    CallQueueItem queueItem = new CallQueueItem(call);
+    CallQueueItem queueItem = new CallQueueItem(call, clickHandler)
+      ..age = 0;
     callQueue.add(queueItem);
     ul.children.add(queueItem.element);
+
+    context.increaseAlert();
+  }
+
+  void clickHandler(MouseEvent event, CallQueueItem queueItem) {
+    if(call == null || call == model.nullCall) {
+      queueItem.call.pickup();
+    } else {
+      log.debug('localqueue: clickHandler: Transfering. Got call ${call}');
+      protocol.transferCall(queueItem.call);
+      log.error('Fordi du allerede har et kald igennem, bliver opkaldet her, stillet videre til den du snakker med.', toUserLog: true);
+    }
   }
 
   void removeCall(model.Call call) {
@@ -93,6 +105,7 @@ class LocalQueue {
     }
 
     if(queueItem != null) {
+      context.decreaseAlert();
       ul.children.remove(queueItem.element);
       callQueue.remove(queueItem);
     }

@@ -21,7 +21,7 @@ class CallQueueItem {
 
   model.Call get call => _call;
 
-  CallQueueItem(model.Call this._call) {
+  CallQueueItem(model.Call this._call, onCallQueueClick clickHandler) {
     age = new DateTime.now().difference(call.start).inSeconds.ceil();
     String html = '''
       <li class="call-queue-item-default">
@@ -38,8 +38,6 @@ class CallQueueItem {
       ageElement.text = age.toString();
     });
 
-    element.onClick.listen(pickupcall);
+    element.onClick.listen((e) => clickHandler(e, this));
   }
-
-  void pickupcall(_) => call.pickup();
 }

@@ -38,6 +38,7 @@ class _Notification {
   static final EventType<Map> queueJoin  = new EventType<Map>();
   static final EventType<Map> queueLeave = new EventType<Map>();
   static final EventType<Map> callPark   = new EventType<Map>();
+  static final EventType<Map> callUnpark = new EventType<Map>();
 
   Socket _socket;
 
@@ -46,7 +47,8 @@ class _Notification {
      'call_pickup': callPickup,
      'queue_join' : queueJoin,
      'queue_leave': queueLeave,
-     'call_park'  : callPark};
+     'call_park'  : callPark,
+     'call_unpark': callUnpark};
 
   /**
    * [_Notification] constructor.
@@ -125,7 +127,8 @@ class _Notification {
     ..on(callPickup).listen((Map json) => _callPickupEventHandler(json))
     ..on(queueJoin) .listen((Map json) => _queueJoinEventHandler(json))
     ..on(queueLeave).listen((Map json) => _queueLeaveEventHandler(json))
-    ..on(callPark)  .listen((Map json) => _callParkEventHandler(json));
+    ..on(callPark)  .listen((Map json) => _callParkEventHandler(json))
+    ..on(callUnpark).listen((Map json) => _callUnparkEventHandler(json));
 
     StreamSubscription subscription;
     subscription = event.bus.on(event.stateUpdated).listen((State value) {
@@ -148,10 +151,8 @@ void _callHangupEventHandler(Map json) {
 
   if (call.id == environment.call.id) {
     log.info('Call hangup ${call}', toUserLog: true);
-    environment.call = model.nullCall;
-    environment.organization = model.nullOrganization;
-    
     log.info('notification._callHangupEventHandler hangup call ${call}');
+    event.bus.fire(event.callChanged, call);
   }
 }
 
@@ -176,17 +177,10 @@ void _callPickupEventHandler(Map json) {
     if (call.organizationId != null) {
       storage.getOrganization(call.organizationId).then((org) {
         event.bus.fire(event.organizationChanged, org);
-//        environment.organization = org;
-//        environment.contact = org.contactList.first;
 
-        log.debug('notification._callPickupEventHandler updated environment.organization to ${org}');
-        log.debug('notification._callPickupEventHandler updated environment.contact to ${org.contactList.first}');
       }).catchError((error) {
-        event.bus.fire(event.organizationChanged, model.nullOrganization);
-//        environment.organization = model.nullOrganization;
-//        environment.contact = model.nullContact;
-
         log.critical('notification._callPickupEventHandler storage.getOrganization failed with ${error}');
+        event.bus.fire(event.organizationChanged, model.nullOrganization);
       });
     } else {
       log.error('notification._callPickupEventHandler call ${call} missing organizationId');
@@ -202,17 +196,7 @@ void _callPickupEventHandler(Map json) {
 void _queueJoinEventHandler(Map json) {
   log.debug('notification._queueJoinEventHandler event: ${json}');
   final model.Call call = new model.Call.fromJson(json['call']);
-  //environment.callQueue.addCall(call);
   event.bus.fire(event.callQueueAdd, call);
-  // Should we sort again, or can we expect that calls joining the queue are
-  // always younger then the calls already in the queue?
-  
-  //TODO HACK ??? FIXME
-  //As of new when a call is parked, it doesn't sendt a callpark event, instead it just joins another fifo, which results in a queueJoin notification event.
-  if(call.id == environment.call.id) {
-    environment.call = model.nullCall;
-    event.bus.fire(event.callChanged, environment.call);
-  }
 }
 
 /**
@@ -221,8 +205,6 @@ void _queueJoinEventHandler(Map json) {
 void _queueLeaveEventHandler(Map json) {
   log.debug('notification._queueLeaveEventHandler event: ${json}');
   final model.Call call = new model.Call.fromJson(json['call']);
-  //environment.callQueue.removeCall(call);
-  //environment.localCallQueue.removeCall(call);
   event.bus.fire(event.callQueueRemove, call);
 }
 
@@ -231,6 +213,13 @@ void _queueLeaveEventHandler(Map json) {
  */
 void _callParkEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
-  event.bus.fire(event.localCallQueueAdd, call);
-  //environment.localCallQueue.addCall(call);
+  if(call.assignedAgent == configuration.agentID) {
+    event.bus.fire(event.localCallQueueAdd, call);
+    event.bus.fire(event.callChanged, model.nullCall);
+  }
+}
+
+void _callUnparkEventHandler(Map json) {
+  model.Call call = new model.Call.fromJson(json['call']);
+  event.bus.fire(event.localCallQueueRemove, call);
 }

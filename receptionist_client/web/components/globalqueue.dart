@@ -131,10 +131,18 @@ class GlobalQueue {
   }
 
   void addCall(model.Call call) {
-    CallQueueItem queueItem = new CallQueueItem(call);
+    CallQueueItem queueItem = new CallQueueItem(call, clickHandler);
     callQueue.add(queueItem);
     ul.children.add(queueItem.element);
     updateHeaderText();
+  }
+
+  void clickHandler(MouseEvent event, CallQueueItem queueItem) {
+    if(call == null || call == model.nullCall) {
+      queueItem.call.pickup();
+    } else {
+      log.error('Du prøver at tage et nyt kald, selv om du har en igennem.', toUserLog: true);
+    }
   }
 
   void removeCall(model.Call call) {

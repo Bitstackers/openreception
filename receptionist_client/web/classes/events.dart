@@ -27,6 +27,7 @@ final EventType<model.Call> callQueueRemove             = new EventType<model.Ca
 final EventType<model.Contact> contactChanged           = new EventType<model.Contact>();
 final EventType<Focus> focusChanged                     = new EventType<Focus>();
 final EventType<model.Call> localCallQueueAdd           = new EventType<model.Call>();
+final EventType<model.Call> localCallQueueRemove        = new EventType<model.Call>();
 final EventType<model.Organization> organizationChanged = new EventType<model.Organization>();
 final EventType<State> stateUpdated                     = new EventType<State>();
 
