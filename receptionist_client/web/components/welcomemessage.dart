@@ -33,5 +33,9 @@ class WelcomeMessage {
 
     event.bus.on(event.organizationChanged)
       .listen((model.Organization org) => message.text = org != model.nullOrganization ? org.greeting : '');
+
+    event.bus.on(event.callChanged).listen((model.Call value) {
+      element.classes.toggle('welcome-message-active-call', value != model.nullCall);
+    });
   }
 }

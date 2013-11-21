@@ -17,3 +17,7 @@
   display: table-cell;
   vertical-align: middle;
 }
+
+.welcome-message-active-call {
+  background-color: lightgreen !important;
+}
