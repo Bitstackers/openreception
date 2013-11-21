@@ -140,3 +140,7 @@ textarea.send-message-field {
   padding: 10px;
   height: 38%;
 }
+
+#send-message-recipient-list {
+  list-style-type: none;  
+}

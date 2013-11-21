@@ -72,6 +72,8 @@ class SendMessage {
   ButtonElement draftButton;
   ButtonElement sendButton;
 
+  UListElement recipientsList;
+
   List<Element> focusElements;
 
   SendMessage(DivElement this.element, Context this.context) {
@@ -108,22 +110,24 @@ class SendMessage {
         ..text = sendButtonLabel
         ..onClick.listen(sendClick);
 
-   focusElements =
-       [sendmessagesearchbox,
-        sendmessagesearchresult,
-        sendmessagename,
-        sendmessagecompany,
-        sendmessagephone,
-        sendmessagecellphone,
-        sendmessagelocalno,
-        sendmessagetext,
-        checkbox1,
-        checkbox2,
-        checkbox3,
-        checkbox4,
-        cancelButton,
-        draftButton,
-        sendButton];
+    recipientsList = querySelector('#send-message-recipient-list');
+
+    focusElements =
+        [sendmessagesearchbox,
+         sendmessagesearchresult,
+         sendmessagename,
+         sendmessagecompany,
+         sendmessagephone,
+         sendmessagecellphone,
+         sendmessagelocalno,
+         sendmessagetext,
+         checkbox1,
+         checkbox2,
+         checkbox3,
+         checkbox4,
+         cancelButton,
+         draftButton,
+         sendButton];
 
    focusElements.forEach((e) => context.registerFocusElement(e));
 
@@ -138,7 +142,10 @@ class SendMessage {
     });
 
     event.bus.on(event.contactChanged).listen((model.Contact contact) {
-      //sendmessagename.value = 'Test: ${contact.name}';
+      //TODO I know this not right.
+      recipientsList.children.clear();
+      recipientsList.children.addAll(
+        contact.emailAddressList.map((c) => new LIElement()..text = c.value));
     });
 
     event.bus.on(event.callChanged).listen((model.Call value){
