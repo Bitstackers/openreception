@@ -209,7 +209,7 @@ class SendMessage {
         break;
       case 3:
         if(shouldBe != null) {
-          checkbox2Checked = shouldBe;
+          checkbox3Checked = shouldBe;
         } else {
           checkbox3Checked = !checkbox3Checked;
         }
@@ -217,7 +217,7 @@ class SendMessage {
         break;
       case 4:
         if(shouldBe != null) {
-          checkbox2Checked = shouldBe;
+          checkbox4Checked = shouldBe;
         } else {
           checkbox4Checked = !checkbox4Checked;
         }
