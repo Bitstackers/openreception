@@ -152,7 +152,7 @@ void _callHangupEventHandler(Map json) {
   if (call.id == environment.call.id) {
     log.info('Call hangup ${call}', toUserLog: true);
     log.info('notification._callHangupEventHandler hangup call ${call}');
-    event.bus.fire(event.callChanged, call);
+    event.bus.fire(event.callChanged, model.nullCall);
   }
 }
 
