@@ -47,6 +47,10 @@ class SendMessage {
   final String      saveButtonLabel   = 'Gem';
   final String      sendButtonLabel   = 'Send';
   final String      title             = 'Besked';
+        bool checkbox1Checked = false,
+             checkbox2Checked = false,
+             checkbox3Checked = false,
+             checkbox4Checked = false;
 
   InputElement sendmessagesearchbox;
   InputElement sendmessagesearchresult;
@@ -57,10 +61,10 @@ class SendMessage {
   InputElement sendmessagelocalno;
   TextAreaElement sendmessagetext;
 
-  InputElement checkbox1;
-  InputElement checkbox2;
-  InputElement checkbox3;
-  InputElement checkbox4;
+  DivElement checkbox1;
+  DivElement checkbox2;
+  DivElement checkbox3;
+  DivElement checkbox4;
 
   bool hasFocus = false;
 
@@ -87,10 +91,10 @@ class SendMessage {
     sendmessagelocalno      = body.querySelector('#sendmessagelocalno');
     sendmessagetext         = body.querySelector('#sendmessagetext');
 
-//    checkbox1 = body.querySelector('#send-message-checkbox1');
-//    checkbox2 = body.querySelector('#send-message-checkbox2');
-//    checkbox3 = body.querySelector('#send-message-checkbox3');
-//    checkbox4 = body.querySelector('#send-message-checkbox4');
+    checkbox1 = body.querySelector('#send-message-checkbox1');
+    checkbox2 = body.querySelector('#send-message-checkbox2');
+    checkbox3 = body.querySelector('#send-message-checkbox3');
+    checkbox4 = body.querySelector('#send-message-checkbox4');
 
     cancelButton = body.querySelector('#sendmessagecancel')
         ..text = cancelButtonLabel
@@ -113,10 +117,10 @@ class SendMessage {
         sendmessagecellphone,
         sendmessagelocalno,
         sendmessagetext,
-//        checkbox1,
-//        checkbox2,
-//        checkbox3,
-//        checkbox4,
+        checkbox1,
+        checkbox2,
+        checkbox3,
+        checkbox4,
         cancelButton,
         draftButton,
         sendButton];
@@ -146,6 +150,75 @@ class SendMessage {
       });
 
     focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
+
+    checkbox1.onKeyUp.listen((KeyboardEvent event) {
+      if(event.keyCode == Keys.SPACE) {
+        toggle(1);
+      }
+    });
+
+    checkbox2.onKeyUp.listen((KeyboardEvent event) {
+      if(event.keyCode == Keys.SPACE) {
+        toggle(2);
+      }
+    });
+
+    checkbox3.onKeyUp.listen((KeyboardEvent event) {
+      if(event.keyCode == Keys.SPACE) {
+        toggle(3);
+      }
+    });
+
+    checkbox4.onKeyUp.listen((KeyboardEvent event) {
+      if(event.keyCode == Keys.SPACE) {
+        toggle(4);
+      }
+    });
+
+    checkbox1.parent.onClick.listen((_) => toggle(1));
+    checkbox2.parent.onClick.listen((_) => toggle(2));
+    checkbox3.parent.onClick.listen((_) => toggle(3));
+    checkbox4.parent.onClick.listen((_) => toggle(4));
+  }
+
+  void toggle(int number, {bool shouldBe}) {
+    String checkedClass = 'send-message-checkbox-checked';
+    switch(number){
+      case 1:
+        if(shouldBe != null) {
+          checkbox1Checked = shouldBe;
+        } else {
+          checkbox1Checked = !checkbox1Checked;
+        }
+        checkbox1.classes.toggle(checkedClass, checkbox1Checked);
+        break;
+      case 2:
+        if(shouldBe != null) {
+          checkbox2Checked = shouldBe;
+        } else {
+          checkbox2Checked = !checkbox2Checked;
+        }
+        checkbox2.classes.toggle(checkedClass, checkbox2Checked);
+        break;
+      case 3:
+        if(shouldBe != null) {
+          checkbox2Checked = shouldBe;
+        } else {
+          checkbox3Checked = !checkbox3Checked;
+        }
+        checkbox3.classes.toggle(checkedClass, checkbox3Checked);
+        break;
+      case 4:
+        if(shouldBe != null) {
+          checkbox2Checked = shouldBe;
+        } else {
+          checkbox4Checked = !checkbox4Checked;
+        }
+        checkbox4.classes.toggle(checkedClass, checkbox4Checked);
+        break;
+      default:
+        log.error('sendmessage: toggle: The given number: ${number} is not accounted for');
+    }
   }
 
   void cancelClick(_) {
@@ -168,10 +241,10 @@ class SendMessage {
       Han ville bare gerne lige fortælle
       ${sendmessagetext.value}
       
-      [${checkbox1.checked ? 'X': ' '}] Ring venligst 
-      [${checkbox2.checked ? 'X': ' '}] Ringer selv tilbage
-      [${checkbox3.checked ? 'X': ' '}] Har ringet
-      [${checkbox4.checked ? 'X': ' '}] Haster
+      [${checkbox1Checked ? 'X': ' '}] Ring venligst 
+      [${checkbox2Checked ? 'X': ' '}] Ringer selv tilbage
+      [${checkbox3Checked ? 'X': ' '}] Har ringet
+      [${checkbox4Checked ? 'X': ' '}] Haster
 
       Fortsat god dag ønskes du fra agent ${configuration.agentID}
     ''';
