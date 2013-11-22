@@ -48,6 +48,8 @@ class BobActive {
   GlobalQueue globalQueue;
   LocalQueue localQueue;
 
+  MessageSearch messagecontext;
+
   LogBox logBox;
 
   Phonebooth phonebooth;
@@ -88,6 +90,8 @@ class BobActive {
     sendMessage              = new SendMessage(querySelector('#sendmessage'), home);
     globalQueue              = new GlobalQueue(querySelector('#globalqueue'), home);
     localQueue               = new LocalQueue(querySelector('#localqueue'), home);
+
+    messagecontext = new MessageSearch(querySelector('#message-search'));
 
     logBox = new LogBox(querySelector('#logbox'));
 

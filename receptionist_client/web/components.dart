@@ -61,6 +61,8 @@ part 'components/contactinfodata.dart';
 
 part 'components/constants.dart';
 
+part 'components/messagecontext.dart';
+
 part 'components/logbox.dart';
 
 part 'components/phonebooth.dart';

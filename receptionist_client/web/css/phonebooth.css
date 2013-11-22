@@ -1,0 +1,47 @@
+#phonebooth {
+  position: absolute;
+  left: 40%;
+  top: 30%;
+  height: 18%;
+  width: 13%;
+  overflow: auto
+}
+
+#phonebooth-company {
+  margin-top: 15px;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
+  
+  height: 32px;
+  width: 160px;
+  text-align:center;
+  
+  border-radius: 4px;
+}
+
+#phonebooth-numberfield {
+  margin-top: 15px;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
+  
+  height: 32px;
+  width: 160px;
+  text-align:center;
+  
+  border-radius: 4px;
+}
+
+#phonebooth-button {
+  margin-top: 15px;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
+  
+  height: 32px;
+  width: 160px;
+  background-color: white;
+  border: solid 2px #ddd;
+  border-radius: 4px;
+}

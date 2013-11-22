@@ -1,18 +1,36 @@
 part of components;
 
 class Phonebooth {
-  DivElement element;
+  Box box;
   ButtonElement call;
+  DivElement container;
+  DivElement element;
+  SpanElement header;
   InputElement inputField;
 
+  final String headerText = 'Telefon';
+  final String dialButtonText = 'Ring op';
+  final String dialFieldPlaceholder = 'Indtast nummer';
+  final String companyPlaceholder = 'Virksomhed';
+
   Phonebooth(DivElement this.element) {
-    call = new ButtonElement()
-      ..text = 'Ring op';
+    header = new SpanElement()
+      ..text = headerText;
 
-    inputField = new TextInputElement()
-      ..placeholder = 'Indtask telefon nummer';
+    String html = '''
+    <div>
+      <input id="phonebooth-company" type="text" placeholder="${companyPlaceholder}" value="Adaheads" readonly></input>
+      <input id="phonebooth-numberfield" type="search" placeholder="${dialFieldPlaceholder}"></input>
+      <button id="phonebooth-button">${dialButtonText}</button>
+    <div>
+    ''';
 
-    element.children.addAll([inputField, call]);
+    container = new DocumentFragment.html(html).querySelector('div');
+
+    inputField = container.querySelector('#phonebooth-numberfield');
+    call = container.querySelector('#phonebooth-button');
+
+    box = new Box.withHeader(element, header, container);
 
     registerEventListeners();
   }
@@ -22,7 +40,7 @@ class Phonebooth {
       dial();
     });
 
-    inputField.onKeyUp.listen((KeyboardEvent event) {
+    inputField.onKeyDown.listen((KeyboardEvent event) {
       if(event.keyCode == Keys.ENTER) {
         dial();
       }

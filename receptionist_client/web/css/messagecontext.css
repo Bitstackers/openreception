@@ -1,0 +1,8 @@
+#message-search {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  height: 40%;
+  width: 30%;
+  overflow: auto
+}
