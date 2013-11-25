@@ -53,7 +53,6 @@ part 'components/globalqueue.dart';
 part 'components/localqueue.dart';
 part 'components/sendmessage.dart';
 part 'components/welcomemessage.dart';
-
 part 'components/contactinfo.dart';
 part 'components/contactinfosearch.dart';
 part 'components/contactinfocalendar.dart';
@@ -66,6 +65,8 @@ part 'components/messagecontext.dart';
 part 'components/logbox.dart';
 
 part 'components/phonebooth.dart';
+
+part 'components/searchcomponent.dart';
 
 typedef void onCallQueueClick(MouseEvent event, CallQueueItem queueItem);
 
