@@ -10,7 +10,7 @@ class MessageOverview {
       <table>
         <thead>
           <tr>
-            <th> <input type="checkbox"> </th>
+            <th> <input type="checkbox" tabindex="-1"> </th>
             <th> Tidspunkt </th>
             <th> Agent </th>
             <th> Opkalder </th>

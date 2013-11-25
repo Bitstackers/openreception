@@ -56,7 +56,11 @@ Map<String, int> _tabIndexes =
    'message-search-agent-searchbar':    1,
    'message-search-type-searchbar':     2,
    'message-search-company-searchbar':  3,
-   'message-search-contact-searchbar':  4};
+   'message-search-contact-searchbar':  4,
+   'message-search-print':              5,
+   'message-search-resend':             6,
+
+   'phonebooth-company-searchbar':      1};
 
 int getTabIndex (String id) {
   if(_tabIndexes.containsKey(id)) {

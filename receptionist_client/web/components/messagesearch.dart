@@ -30,8 +30,8 @@ class MessageSearch{
         <div id="message-search-company"></div>
         <div id="message-search-contact"></div>
         
-        <button>Print</button>
-        <button>Gensend valgte</button>
+        <button id="message-search-print">Print</button>
+        <button id="message-search-resend">Gensend valgte</button>
       </div>
     ''';
 
@@ -73,6 +73,10 @@ class MessageSearch{
         return contact.name.toLowerCase().contains(searchText.toLowerCase());
       }
       ..selectedElementChanged = searchParametersChanged;
+
+
+    _context.registerFocusElement(body.querySelector('#message-search-print'));
+    _context.registerFocusElement(body.querySelector('#message-search-resend'));
   }
 
   String companyListElementToString(model.BasicOrganization org, String searchText) {

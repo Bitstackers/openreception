@@ -50,6 +50,9 @@ class Phonebooth {
 
     box = new Box.withHeader(element, header, container);
 
+    context.registerFocusElement(inputField);
+    context.registerFocusElement(call);
+
     registerEventListeners();
   }
 

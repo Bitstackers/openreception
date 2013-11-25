@@ -146,6 +146,7 @@ class Context {
       log.error('Context registerFocusElement. The element is already registered: ${element.id}');
     } else {
       focusElements[element.id] = element;
+      element.tabIndex = -1;
     }
   }
 }
