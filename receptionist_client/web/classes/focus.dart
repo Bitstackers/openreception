@@ -51,7 +51,12 @@ Map<String, int> _tabIndexes =
    'company-registration-number-list': 35,
    'company-other-body':               36,
    'global-queue-list':                37,
-   'local-queue-list':                 38};
+   'local-queue-list':                 38,
+
+   'message-search-agent-searchbar':    1,
+   'message-search-type-searchbar':     2,
+   'message-search-company-searchbar':  3,
+   'message-search-contact-searchbar':  4};
 
 int getTabIndex (String id) {
   if(_tabIndexes.containsKey(id)) {

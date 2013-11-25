@@ -91,7 +91,7 @@ class BobActive {
     globalQueue              = new GlobalQueue(querySelector('#globalqueue'), home);
     localQueue               = new LocalQueue(querySelector('#localqueue'), home);
 
-    messagecontext = new MessageSearch(querySelector('#message-search'));
+    messagecontext = new MessageSearch(querySelector('#message-search'), messages);
 
     logBox = new LogBox(querySelector('#logbox'));
 
