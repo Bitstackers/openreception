@@ -40,34 +40,34 @@ class MessageSearch{
     box = new Box.withHeader(element, header, body);
 
     agentSearch = new SearchComponent<String>(body.querySelector('#message-search-agent'), _context, 'message-search-agent-searchbar')
-      ..searchPlaceholder = 'Agent'
+      ..searchPlaceholder = 'Agent...'
       ..updateSourceList(['Trine', 'Thomas', 'Kim'])
       ..selectedElementChanged = searchParametersChanged;
 
     typeSearch = new SearchComponent<String>(body.querySelector('#message-search-type'), _context, 'message-search-type-searchbar')
-      ..searchPlaceholder = 'Type'
+      ..searchPlaceholder = 'Type...'
       ..updateSourceList(['Sendte', 'Gemte', 'Kladder'])
       ..selectedElementChanged = searchParametersChanged;
 
     companySearch = new SearchComponent<model.BasicOrganization>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
-      ..searchPlaceholder = 'Virksomhed'
+      ..searchPlaceholder = 'Virksomheder...'
       ..selectedElementChanged = (model.BasicOrganization element) {
         storage.getOrganization(element.id).then((model.Organization value) {
+          searchParametersChanged(value);
           contactSearch.updateSourceList(value.contactList.toList(growable: false));
         });
       }
       ..searchFilter = (model.BasicOrganization org, String searchText) {
         return org.name.toLowerCase().contains(searchText.toLowerCase());
       }
-      ..listElementToString = companyListElementToString
-      ..selectedElementChanged = searchParametersChanged;
+      ..listElementToString = companyListElementToString;
 
       storage.getOrganizationList().then((model.OrganizationList list) {
         companySearch.updateSourceList(list.toList(growable: false));
       });
 
     contactSearch = new SearchComponent<model.Contact>(body.querySelector('#message-search-contact'), _context, 'message-search-contact-searchbar')
-      ..searchPlaceholder = 'Medarbejdere'
+      ..searchPlaceholder = 'Medarbejdere...'
       ..listElementToString = contactListElementToString
       ..searchFilter = (model.Contact contact, String searchText) {
         return contact.name.toLowerCase().contains(searchText.toLowerCase());
