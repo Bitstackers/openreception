@@ -12,7 +12,7 @@ class CompanySelector {
       ..whenClearSelection = whenClearSelection
       ..listElementToString = listElementToString
       ..searchFilter = searchFilter
-      ..elementSelected = elementSelected;
+      ..selectedElementChanged = elementSelected;
 
     initialFill();
     registerEventlisteners();

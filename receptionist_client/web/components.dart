@@ -60,7 +60,8 @@ part 'components/contactinfodata.dart';
 
 part 'components/constants.dart';
 
-part 'components/messagecontext.dart';
+part 'components/messagesearch.dart';
+part 'components/messageoverview.dart';
 
 part 'components/logbox.dart';
 

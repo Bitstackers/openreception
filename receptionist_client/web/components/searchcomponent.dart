@@ -49,10 +49,10 @@ class SearchComponent<T> {
   /**
    * When a element gets selected.
    */
-  ElementInvokation<T> _elementSelected = print;
-  void set elementSelected(ElementInvokation<T> function) {
+  ElementInvokation<T> _selectedElementChanged = print;
+  void set selectedElementChanged(ElementInvokation<T> function) {
     if(function != null) {
-      _elementSelected = function;
+      _selectedElementChanged = function;
     }
   }
 
@@ -329,7 +329,7 @@ class SearchComponent<T> {
     _searchBox.value = '';
     performSearch('');
 
-    _elementSelected(dataElement);
+    _selectedElementChanged(dataElement);
   }
 
   void updateSourceList(List<T> newList) {

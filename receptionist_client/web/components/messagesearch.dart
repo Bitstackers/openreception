@@ -25,17 +25,10 @@ class MessageSearch{
 
     String html = '''
       <div class="message-search-box">
-        <div id="message-search-agent">
-        </div>
-
-        <div id="message-search-type">
-        </div>
-
-        <div id="message-search-company">
-        </div>
-
-        <div id="message-search-contact">
-        </div>
+        <div id="message-search-agent"></div>
+        <div id="message-search-type"></div>
+        <div id="message-search-company"></div>
+        <div id="message-search-contact"></div>
         
         <button>Print</button>
         <button>Gensend valgte</button>
@@ -48,15 +41,17 @@ class MessageSearch{
 
     agentSearch = new SearchComponent<String>(body.querySelector('#message-search-agent'), _context, 'message-search-agent-searchbar')
       ..searchPlaceholder = 'Agent'
-      ..updateSourceList(['Trine', 'Thomas', 'Kim']);
+      ..updateSourceList(['Trine', 'Thomas', 'Kim'])
+      ..selectedElementChanged = searchParametersChanged;
 
     typeSearch = new SearchComponent<String>(body.querySelector('#message-search-type'), _context, 'message-search-type-searchbar')
       ..searchPlaceholder = 'Type'
-      ..updateSourceList(['Sendte', 'Gemte', 'Kladder']);
+      ..updateSourceList(['Sendte', 'Gemte', 'Kladder'])
+      ..selectedElementChanged = searchParametersChanged;
 
     companySearch = new SearchComponent<model.BasicOrganization>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomhed'
-      ..elementSelected = (model.BasicOrganization element) {
+      ..selectedElementChanged = (model.BasicOrganization element) {
         storage.getOrganization(element.id).then((model.Organization value) {
           contactSearch.updateSourceList(value.contactList.toList(growable: false));
         });
@@ -64,7 +59,8 @@ class MessageSearch{
       ..searchFilter = (model.BasicOrganization org, String searchText) {
         return org.name.toLowerCase().contains(searchText.toLowerCase());
       }
-      ..listElementToString = companyListElementToString;
+      ..listElementToString = companyListElementToString
+      ..selectedElementChanged = searchParametersChanged;
 
       storage.getOrganizationList().then((model.OrganizationList list) {
         companySearch.updateSourceList(list.toList(growable: false));
@@ -75,7 +71,8 @@ class MessageSearch{
       ..listElementToString = contactListElementToString
       ..searchFilter = (model.Contact contact, String searchText) {
         return contact.name.toLowerCase().contains(searchText.toLowerCase());
-      };
+      }
+      ..selectedElementChanged = searchParametersChanged;
   }
 
   String companyListElementToString(model.BasicOrganization org, String searchText) {
@@ -102,5 +99,9 @@ class MessageSearch{
       String after   = text.substring(matchIndex + searchText.length, text.length);
       return '${before}<em>${match}</em>${after}';
     }
+  }
+
+  void searchParametersChanged(_) {
+    log.debug('messagesearch. The search parameters have changed.');
   }
 }
