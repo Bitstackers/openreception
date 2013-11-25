@@ -2,8 +2,8 @@
   position: absolute;
   left: 40%;
   top: 30%;
-  height: 18%;
-  width: 13%;
+  height: 35%;
+  width: 20%;
   overflow: auto
 }
 
@@ -14,7 +14,7 @@
   display:block;
   
   height: 32px;
-  width: 160px;
+  width: 96%;
   text-align:center;
   
   border-radius: 4px;
@@ -27,7 +27,7 @@
   display:block;
   
   height: 32px;
-  width: 160px;
+  width: 96%;
   text-align:center;
   
   border-radius: 4px;
@@ -40,7 +40,7 @@
   display:block;
   
   height: 32px;
-  width: 160px;
+  width: 96%;
   background-color: white;
   border: solid 2px #ddd;
   border-radius: 4px;

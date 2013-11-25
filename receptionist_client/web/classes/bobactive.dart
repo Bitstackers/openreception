@@ -97,7 +97,7 @@ class BobActive {
 
     logBox = new LogBox(querySelector('#logbox'));
 
-    phonebooth = new Phonebooth(querySelector('#phonebooth'));
+    phonebooth = new Phonebooth(querySelector('#phonebooth'), phone);
 
     setupKeyboardShortcuts();
     event.bus.fire(event.activeContextChanged, CONTEXTHOME);
