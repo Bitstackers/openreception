@@ -20,11 +20,13 @@ final Call nullCall = new Call._null();
  */
 class Call implements Comparable {
   String   _assignedAgent;
+  String   _bLeg;
   String   _id;
   DateTime _start;
   int      _organizationId;
 
   String   get assignedAgent  => _assignedAgent;
+  String   get bLeg          => _bLeg;
   String   get id             => _id;
   DateTime get start          => _start;
   int      get organizationId => _organizationId;
@@ -53,6 +55,10 @@ class Call implements Comparable {
 
     if(json.containsKey('organization_id') && json['organization_id'] != null) {
       _organizationId = json['organization_id'];
+    }
+
+    if(json.containsKey('b_leg')) {
+      _bLeg = json['b_leg'];
     }
 
     _id = json['id'];
