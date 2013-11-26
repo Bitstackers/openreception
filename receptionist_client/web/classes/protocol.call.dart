@@ -386,7 +386,7 @@ Future<Response<Map>> statusCall(model.Call call) {
 /**
  * Sends a request to transfer a call.
  */
-Future<Response<Map>> transferCall(model.Call source, [model.Call destination]) {
+Future<Response<Map>> transferCall(String source, String destination) {
   assert(source != null);
   assert(source != model.nullCall);
 
@@ -397,7 +397,8 @@ Future<Response<Map>> transferCall(model.Call source, [model.Call destination]) 
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('source=${source.id}');
+  fragments.add('source=${source}');
+  fragments.add('destination=${destination}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()

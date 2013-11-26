@@ -22,12 +22,14 @@ class Call implements Comparable {
   String   _assignedAgent;
   String   _bLeg;
   String   _id;
+  bool     _inbound;
   DateTime _start;
   int      _organizationId;
 
   String   get assignedAgent  => _assignedAgent;
-  String   get bLeg          => _bLeg;
+  String   get bLeg           => _bLeg;
   String   get id             => _id;
+  bool     get inbound        => _inbound;
   DateTime get start          => _start;
   int      get organizationId => _organizationId;
 
@@ -59,6 +61,10 @@ class Call implements Comparable {
 
     if(json.containsKey('b_leg')) {
       _bLeg = json['b_leg'];
+    }
+
+    if(json.containsKey('inbound')) {
+      _inbound = json['inbound'];
     }
 
     _id = json['id'];

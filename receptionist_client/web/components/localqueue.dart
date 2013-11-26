@@ -90,8 +90,8 @@ class LocalQueue {
       queueItem.call.pickup();
     } else {
       log.debug('localqueue: clickHandler: Transfering. Got call ${call}');
-      protocol.transferCall(queueItem.call);
-      log.error('Fordi du allerede har et kald igennem, bliver opkaldet her, stillet videre til den du snakker med.', toUserLog: true);
+      protocol.transferCall(call.bLeg, queueItem.call.id);
+      log.error('Fordi du allerede har et kald igennem, bliver opkaldet, stillet videre til den du snakker med. ${queueItem.call}', toUserLog: true);
     }
   }
 
