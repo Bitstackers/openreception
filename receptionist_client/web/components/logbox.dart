@@ -13,20 +13,22 @@
 part of components;
 
 class LogBox {
+  Box             box;
+  DivElement      element;
   List<LogRecord> messages = new List<LogRecord>();
-  TableElement table;
-  DivElement element;
+  TableElement    table;
 
   LogBox(DivElement this.element) {
 
     table = new TableElement()
       ..children.add(new TableRowElement()
         ..innerHtml = '''
-          <th>Tidspunkt</th>
-          <th>Niveau</th>
-          <th>Besked</th>
+          <th class="logbox-time-header">Tidspunkt</th>
+          <th class="logbox-level-header">Niveau</th>
+          <th align="left">Besked</th>
         ''');
-    element.children.add(table);
+
+    box = new Box.noChrome(element, table);
     registerEventListeners();
   }
 
@@ -43,18 +45,21 @@ class LogBox {
 
   void push(LogRecord record) {
     messages.insert(0, record);
-    //TODO Tried with HereDoc but it didn't work
     TableRowElement tr = new TableRowElement();
     tr.children
-      ..add(new TableCellElement()..text = record.time.toString())
-      ..add(new TableCellElement()..text = record.level.name)
+      ..add(new TableCellElement()
+              ..text = new DateFormat('dd MMM - HH:mm:ss').format(record.time)
+              ..attributes['align'] = 'center')
+      ..add(new TableCellElement()
+              ..text = record.level.name
+              ..attributes['align'] = 'center')
       ..add(new TableCellElement()..text = record.message);
     table.children.insert(1, tr);
   }
 
-  void pop() {
-    messages.removeLast();
+  LogRecord pop() {
     table.children.removeLast();
+    return messages.removeLast();
   }
 
 }

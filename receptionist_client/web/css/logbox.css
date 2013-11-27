@@ -1,0 +1,11 @@
+#logbox table{
+  width: 100%;
+}
+
+.logbox-time-header {
+  width: 8%;
+}
+
+.logbox-level-header {
+  width: 4%;
+}
