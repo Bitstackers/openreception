@@ -71,3 +71,17 @@ Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) 
 
   return completer.future;
 }
+
+Future<Response<Map>> getMessages() {
+  return new Future<Response<Map>>(() {
+    Map data = {'messages': [{
+      'time': 1385546113,
+      'message': 'Ring på 12340001. Det handler om hans cycle.',
+      'statuc': 'send',
+      'caller': 'Bent guldimund',
+      'agent': 'James bond',
+      'methode': 'Email'
+    }]};
+    return new Response<Map>(Response.OK, data);
+  });
+}
