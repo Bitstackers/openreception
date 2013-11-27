@@ -24,7 +24,7 @@ class Phonebooth {
     <div>
       <div id="phonebooth-company"></div>
       <input id="phonebooth-numberfield" type="search" placeholder="${dialFieldPlaceholder}"></input>
-      <button id="phonebooth-button">${dialButtonText}</button>
+      <button id="phonebooth-button" disabled="disabled">${dialButtonText}</button>
     <div>
     ''';
 
@@ -59,20 +59,33 @@ class Phonebooth {
   void registerEventListeners() {
     call.onClick.listen((_) {
       dial();
+      inputField.value = '';
     });
 
     inputField.onKeyDown.listen((KeyboardEvent event) {
       if(event.keyCode == Keys.ENTER) {
         dial();
+        inputField.value = '';
       }
     });
   }
 
   void dial() {
-    String dialStrig = inputField.value;
-    protocol.originateCall(dialStrig).then((protocol.Response<Map> response) {
-      print('phonebooth: ${response.data.toString()}');
-    });
+    if(organizationSelected != model.nullOrganization) {
+      String dialStrig = inputField.value;
+      protocol.originateCall(dialStrig).then((protocol.Response<Map> response) {
+        if(response.status == protocol.Response.OK) {
+          log.info('Ringede op til ${dialStrig}', toUserLog: true);
+          log.info('Agent ${configuration.agentID} called ${dialStrig}');
+        } else {
+          log.info('Forsøgte at ringe op til ${dialStrig} men fejlede', toUserLog: true);
+          log.info('Agent ${configuration.agentID} called ${dialStrig} but failed. ${response.statusText}');
+        }
+      });
+
+    } else {
+      log.debug('phonebooth. There is no organization selected.');
+    }
   }
 
   String companyListElementToString(model.BasicOrganization org, String searchText) {
