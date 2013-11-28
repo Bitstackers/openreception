@@ -27,7 +27,7 @@ class MessageOverview {
 
     table = new DocumentFragment.html(html).querySelector('table');
     tableBody = table.querySelector('tbody');
-
+    table.querySelector('input').onClick.listen(headerCheckboxChange);
     box = new Box.noChrome(element, table);
     initialFill();
   }
@@ -46,11 +46,25 @@ class MessageOverview {
   TableRowElement makeRow(Map message) {
     return new TableRowElement()
       ..children.addAll(
-        [new TableCellElement()..children.add(new CheckboxInputElement())..style.textAlign = 'center',
+        [new TableCellElement()..children.add(new CheckboxInputElement())..style.textAlign = 'center'..onClick.listen((_) => messageCheckboxClick(message)),
          new TableCellElement()..text = message['time'].toString()..style.textAlign = 'center',
          new TableCellElement()..text = message['agent'],
          new TableCellElement()..text = message['caller'],
          new TableCellElement()..text = message['status'],
          new TableCellElement()..text = message['methode']..style.textAlign = 'center']);
+  }
+
+  void headerCheckboxChange(Event event) {
+    CheckboxInputElement target = event.target;
+    bool checked = target.checked;
+
+    for(TableRowElement item in table.children.skip(1).first.children) {
+      InputElement e = item.children.first.children.first;
+      e.checked = checked;
+    }
+  }
+
+  void messageCheckboxClick(Map message) {
+
   }
 }

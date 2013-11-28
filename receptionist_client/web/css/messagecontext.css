@@ -26,3 +26,7 @@
 #messageoverview > table {
   width: 100%
 }
+
+#messageoverview > table tr:nth-of-type(even) {
+  background-color: #eee;
+}
