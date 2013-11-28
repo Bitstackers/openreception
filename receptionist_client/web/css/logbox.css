@@ -9,3 +9,11 @@
 .logbox-level-header {
   width: 4%;
 }
+
+.logbox-message-header {
+  text-align:left;
+}
+
+.logbox-row:nth-of-type(even) {
+  background-color: #eee;
+}

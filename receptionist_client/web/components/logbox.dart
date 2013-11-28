@@ -25,7 +25,7 @@ class LogBox {
         ..innerHtml = '''
           <th class="logbox-time-header">Tidspunkt</th>
           <th class="logbox-level-header">Niveau</th>
-          <th>Besked</th>
+          <th class="logbox-message-header">Besked</th>
         ''');
 
     box = new Box.noChrome(element, table);
@@ -46,13 +46,14 @@ class LogBox {
   void push(LogRecord record) {
     messages.insert(0, record);
     TableRowElement tr = new TableRowElement();
+    tr.classes.add('logbox-row');
     tr.children
       ..add(new TableCellElement()
               ..text = new DateFormat('dd MMM - HH:mm:ss').format(record.time)
               ..style.textAlign = 'center')
       ..add(new TableCellElement()
               ..text = record.level.name
-              ..attributes['align'] = 'center')
+              ..style.textAlign = 'center')
       ..add(new TableCellElement()..text = record.message);
     table.children.insert(1, tr);
   }
