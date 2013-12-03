@@ -150,7 +150,7 @@ void _callHangupEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
 
   if (call.id == environment.call.id) {
-    log.info('Call hangup ${call}', toUserLog: true);
+    log.info('Opkald lagt på. ${call}', toUserLog: true);
     log.info('notification._callHangupEventHandler hangup ${call}');
     event.bus.fire(event.callChanged, model.nullCall);
   }
@@ -168,7 +168,7 @@ void _callPickupEventHandler(Map json) {
   // TODO obviously the agent ID should not come from configuration. This is a
   // temporary hack as long as Alice is oblivious to login/session.
   if (call.assignedAgent == configuration.agentID) {
-    log.info('Picked up call ${call}', toUserLog: true);
+    log.info('Tog kald. ${call}', toUserLog: true);
     event.bus.fire(event.callChanged, call);
     environment.call = call;
 
@@ -187,7 +187,7 @@ void _callPickupEventHandler(Map json) {
     }
   }
 
-  log.info('notification._callPickupEventHandler call ${call} assigned to agent ${call.assignedAgent}', toUserLog: true);
+  log.info('Opkald ${call} tildelt til agent ${call.assignedAgent}', toUserLog: true);
 }
 
 /**

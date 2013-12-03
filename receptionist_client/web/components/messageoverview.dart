@@ -46,7 +46,7 @@ class MessageOverview {
   TableRowElement makeRow(Map message) {
     return new TableRowElement()
       ..children.addAll(
-        [new TableCellElement()..children.add(new CheckboxInputElement())..style.textAlign = 'center'..onClick.listen((_) => messageCheckboxClick(message)),
+        [new TableCellElement()..children.add(new CheckboxInputElement()..tabIndex = -1)..style.textAlign = 'center'..onClick.listen((_) => messageCheckboxClick(message)),
          new TableCellElement()..text = message['time'].toString()..style.textAlign = 'center',
          new TableCellElement()..text = message['agent'],
          new TableCellElement()..text = message['caller'],
