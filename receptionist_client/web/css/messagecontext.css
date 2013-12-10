@@ -27,6 +27,34 @@
   width: 100%
 }
 
+#messageoverview > table > thead {
+  background-color: #ddd;
+}
+
 #messageoverview > table tr:nth-of-type(even) {
   background-color: #eee;
+}
+
+#message-overview-header-checkbox {
+  width: 2%;  
+}
+
+#message-overview-header-Timestamp {
+  width: 13%;  
+}
+
+#message-overview-header-agent {
+  width: 15%;  
+}
+
+#message-overview-header-caller {
+  width: 39%;  
+}
+
+#message-overview-header-status {
+  width: 10%;  
+}
+
+#message-overview-header-methode {
+  width: 10%;  
 }

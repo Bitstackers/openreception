@@ -104,11 +104,14 @@ class BobActive {
   }
 
   void registerContexts() {
-    home       = new Context(querySelector('#contexthome'));
-    messages   = new Context(querySelector('#contextmessages'));
+    home       = new Context(querySelector('#contexthome'))
+      ..lastFocusId = 'company-selector-searchbar';
+    messages   = new Context(querySelector('#contextmessages'))
+      ..lastFocusId = 'message-search-agent-searchbar';
     log        = new Context(querySelector('#contextlog'));
     statistics = new Context(querySelector('#contextstatistics'));
-    phone      = new Context(querySelector('#contextphone'));
+    phone      = new Context(querySelector('#contextphone'))
+      ..lastFocusId = 'phonebooth-company-searchbar';
     voicemails = new Context(querySelector('#contextvoicemails'));
   }
 

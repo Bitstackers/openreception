@@ -16,6 +16,10 @@ library Common;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:intl/intl.dart';
+
+final DateFormat dateFormat = new DateFormat('dd MMM - HH:mm:ss');
+
 /**
  * A simple timeout exception. MUST be used wherever we throw exceptions due
  * to timeout issues.

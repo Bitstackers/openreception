@@ -14,7 +14,7 @@
 part of protocol;
 
 /**
- * Get a list of every active call.
+ * Sends a request to login
  *
  * Completes with:
  *  On success: [Response] object with status OK
@@ -34,6 +34,45 @@ Future<Response<Map>> login(int userId) {
   request = new HttpRequest()
     ..open(GET, url)
     ..withCredentials = true
+    ..onLoad.listen((_) {
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          completer.complete(new Response<Map>(Response.OK, data));
+          break;
+
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+    })
+    ..send();
+
+  return completer.future;
+}
+
+/**
+ * Get a list of every user.
+ *
+ * Completes with:
+ *  On success: [Response] object with status OK
+ *  On error  : [Response] object with status ERROR or CRITICALERROR
+ */
+Future<Response<Map>> userslist() {
+  final String                   base      = 'http://alice.adaheads.com:4242';//configuration.aliceBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/users/list';
+  HttpRequest                    request;
+  String                         url;
+
+  url = _buildUrl(base, path);
+
+  request = new HttpRequest()
+    ..open(GET, url)
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:

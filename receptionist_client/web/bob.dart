@@ -42,6 +42,7 @@ import 'dart:html';
 import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
+import 'classes/boblogin.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
 import 'classes/logger.dart';
@@ -50,14 +51,18 @@ import 'classes/protocol.dart' as protocol;
 import 'classes/state.dart';
 
 BobActive bobActive;
-BobLoading bobLoading;
 BobDisaster bobDiaster;
+BobLoading bobLoading;
+BobLogin boblogin;
 
 int userId = 1;
 
 void main() {
-  notification.initialize();
-  configuration.initialize();
+
+  boblogin = new BobLogin(querySelector('#boblogin'));
+
+  //notification.initialize();
+  //configuration.initialize();
 
   bobLoading = new BobLoading(querySelector('#bobloading'));
   bobDiaster = new BobDisaster(querySelector('#bobdisaster'));
@@ -67,16 +72,6 @@ void main() {
     if(value.isConfigurationOK) {
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
-
-      protocol.login(userId).then((protocol.Response<Map> value) {
-        if(value.status == protocol.Response.OK) {
-          log.debug('Bob.dart ------- Success Logged in---------');
-        } else {
-          log.error('Bob.dart Did not log in.');
-        }
-      }).catchError((e) {
-        log.error('Bob.dart: CatchError $e');
-      });
     }
   });
 }

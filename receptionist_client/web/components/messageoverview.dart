@@ -9,15 +9,15 @@ class MessageOverview {
 
   MessageOverview(DivElement this.element, Context this.context) {
     String html = '''
-      <table>
+      <table cellpadding="0" cellspacing="0">
         <thead>
           <tr>
-            <th> <input type="checkbox" tabindex="-1"> </th>
-            <th> Tidspunkt </th>
-            <th> Agent </th>
-            <th> Opkalder </th>
-            <th> Status </th>
-            <th> Metode </th>
+            <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
+            <th id="message-overview-header-Timestamp"> Tidspunkt </th>
+            <th id="message-overview-header-agent"> Agent </th>
+            <th id="message-overview-header-caller"> Opkalder </th>
+            <th id="message-overview-header-status"> Status </th>
+            <th id="message-overview-header-methode"> Metode </th>
           </tr>
         </thead>
         <tbody>
@@ -44,12 +44,16 @@ class MessageOverview {
   }
 
   TableRowElement makeRow(Map message) {
+    String time = dateFormat.format(new DateTime.fromMillisecondsSinceEpoch(message['time'] * 1000));
     return new TableRowElement()
       ..children.addAll(
         [new TableCellElement()..children.add(new CheckboxInputElement()..tabIndex = -1)..style.textAlign = 'center'..onClick.listen((_) => messageCheckboxClick(message)),
-         new TableCellElement()..text = message['time'].toString()..style.textAlign = 'center',
-         new TableCellElement()..text = message['agent'],
-         new TableCellElement()..text = message['caller'],
+         new TableCellElement()..text = time
+                               ..style.textAlign = 'center',
+         new TableCellElement()..text = message['agent']
+                               ..style.paddingLeft = '3px',
+         new TableCellElement()..text = message['caller']
+                               ..style.paddingLeft = '3px',
          new TableCellElement()..text = message['status'],
          new TableCellElement()..text = message['methode']..style.textAlign = 'center']);
   }

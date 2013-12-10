@@ -77,28 +77,28 @@ Future<Response<Map>> getMessages() {
     Map data = {'messages': [{
       'time': 1385546113,
       'message': 'Ring på 12340001. Det handler om hans cycle.',
-      'statuc': 'sendt',
+      'status': 'sendt',
       'caller': 'Bent guldimund',
       'agent': 'James bond',
       'methode': 'e-mail'
-    },{
+    }, {
       'time': 1385546112,
       'message': 'Ring på 12340002. Det handler om hans grill.',
-      'statuc': 'sendt',
+      'status': 'sendt',
       'caller': 'Hans honningkage',
       'agent': 'Svend bent',
       'methode': 'Sms'
-    },{
+    }, {
       'time': 1385546110,
       'message': 'Ring på 12340001. Det handler om hans Hund.',
-      'statuc': 'sender',
+      'status': 'sender',
       'caller': 'Alice from wonderland',
       'agent': 'George Gearløs',
       'methode': 'Sms'
-    },{
+    }, {
       'time': 1385546110,
       'message': 'Ring på 12340001. Det handler om hans blå skur.',
-      'statuc': 'sendt',
+      'status': 'sendt',
       'caller': 'Doktor hvem',
       'agent': 'Thomas Løcke',
       'methode': 'e-mail'

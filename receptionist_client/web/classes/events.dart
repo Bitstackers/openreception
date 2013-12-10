@@ -15,6 +15,7 @@ library events;
 
 import 'package:event_bus/event_bus.dart';
 
+import '../components.dart';
 import 'focus.dart';
 import 'model.dart' as model;
 import 'state.dart';
@@ -25,6 +26,7 @@ final EventType<model.Call> callChanged                 = new EventType<model.Ca
 final EventType<model.Call> callQueueAdd                = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove             = new EventType<model.Call>();
 final EventType<model.Contact> contactChanged           = new EventType<model.Contact>();
+final EventType<MessageSearchFilter> messageSearchFilterChanged = new EventType<MessageSearchFilter>();
 final EventType<Focus> focusChanged                     = new EventType<Focus>();
 final EventType<model.Call> localCallQueueAdd           = new EventType<model.Call>();
 final EventType<model.Call> localCallQueueRemove        = new EventType<model.Call>();

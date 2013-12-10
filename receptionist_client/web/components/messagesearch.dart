@@ -17,6 +17,11 @@ class MessageSearch{
   SearchComponent<model.BasicOrganization> companySearch;
   SearchComponent<model.Contact> contactSearch;
 
+  String selectedAgent;
+  String selectedType;
+  model.BasicOrganization selectedCompany = model.nullOrganization;
+  model.Contact selectedContact = model.nullContact;
+
   String headerText = 'Søgning';
   MessageSearch(DivElement this.element, Context this._context) {
     assert(element != null);
@@ -41,19 +46,28 @@ class MessageSearch{
 
     agentSearch = new SearchComponent<String>(body.querySelector('#message-search-agent'), _context, 'message-search-agent-searchbar')
       ..searchPlaceholder = 'Agent...'
-      ..updateSourceList(['Trine', 'Thomas', 'Kim'])
-      ..selectedElementChanged = searchParametersChanged;
+      ..updateSourceList(['Alle', 'Trine', 'Thomas', 'Kim'])
+      ..selectElement('Alle')
+      ..selectedElementChanged = (String text) {
+        selectedAgent = text;
+        searchParametersChanged();
+    };
 
     typeSearch = new SearchComponent<String>(body.querySelector('#message-search-type'), _context, 'message-search-type-searchbar')
       ..searchPlaceholder = 'Type...'
-      ..updateSourceList(['Sendte', 'Gemte', 'Kladder'])
-      ..selectedElementChanged = searchParametersChanged;
+      ..updateSourceList(['Alle', 'Sendte', 'Gemte', 'Kladder'])
+      ..selectElement('Alle')
+      ..selectedElementChanged = (String text) {
+        selectedType = text;
+        searchParametersChanged();
+      };
 
     companySearch = new SearchComponent<model.BasicOrganization>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
       ..selectedElementChanged = (model.BasicOrganization element) {
         storage.getOrganization(element.id).then((model.Organization value) {
-          searchParametersChanged(value);
+          selectedCompany = value;
+          searchParametersChanged();
           contactSearch.updateSourceList(value.contactList.toList(growable: false));
         });
       }
@@ -72,8 +86,10 @@ class MessageSearch{
       ..searchFilter = (model.Contact contact, String searchText) {
         return contact.name.toLowerCase().contains(searchText.toLowerCase());
       }
-      ..selectedElementChanged = searchParametersChanged;
-
+      ..selectedElementChanged = (model.Contact contact) {
+        selectedContact = contact;
+        searchParametersChanged();
+      };
 
     _context.registerFocusElement(body.querySelector('#message-search-print'));
     _context.registerFocusElement(body.querySelector('#message-search-resend'));
@@ -105,7 +121,9 @@ class MessageSearch{
     }
   }
 
-  void searchParametersChanged(_) {
+  void searchParametersChanged() {
     log.debug('messagesearch. The search parameters have changed.');
+    event.bus.fire(event.messageSearchFilterChanged,
+        new MessageSearchFilter(selectedAgent, selectedType, selectedCompany, selectedContact));
   }
 }

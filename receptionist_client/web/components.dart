@@ -82,4 +82,12 @@ bool handleFocusChange(Focus value, List<Element> focusElements, Element highlig
   return focusedElement != null;
 }
 
+class MessageSearchFilter {
+  String agent;
+  String type;
+  model.BasicOrganization company;
+  model.Contact contact;
+
+  MessageSearchFilter(this.agent, this.type, this.company, this.contact);
+}
 

@@ -49,7 +49,7 @@ class LogBox {
     tr.classes.add('logbox-row');
     tr.children
       ..add(new TableCellElement()
-              ..text = new DateFormat('dd MMM - HH:mm:ss').format(record.time)
+              ..text = dateFormat.format(record.time)
               ..style.textAlign = 'center')
       ..add(new TableCellElement()
               ..text = record.level.name
