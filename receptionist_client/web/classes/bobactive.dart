@@ -19,6 +19,7 @@ import 'context.dart';
 import 'events.dart' as event;
 import 'focus.dart';
 import 'keyboardhandler.dart';
+import 'logger.dart';
 import 'state.dart';
 import '../components.dart';
 
@@ -57,7 +58,7 @@ class BobActive {
 
   Context home;
   Context messages;
-  Context log;
+  Context logContext;
   Context statistics;
   Context phone;
   Context voicemails;
@@ -65,11 +66,14 @@ class BobActive {
   BobActive(DivElement this.element) {
     assert(element != null);
 
-    event.bus.on(event.stateUpdated).listen((State value) => element.classes.toggle('hidden', !value.isOK));
+    event.bus.on(event.stateUpdated).listen((State value) {
+      element.classes.toggle('hidden', !value.isOK);
+      log.debug('BobActive. stateUpdated: $value');
+    });
 
     registerContexts();
 
-    contextSwitcher          = new ContextSwitcher(querySelector('#contextswitcher'), [home, messages, log, statistics, phone, voicemails]);
+    contextSwitcher          = new ContextSwitcher(querySelector('#contextswitcher'), [home, messages, logContext, statistics, phone, voicemails]);
     welcomeMessage           = new WelcomeMessage(querySelector('#welcomemessage'));
     agentInfo                = new AgentInfo(querySelector('#agentinfo'));
     companySelector          = new CompanySelector(querySelector('#companyselector'), home);
@@ -108,7 +112,7 @@ class BobActive {
       ..lastFocusId = 'company-selector-searchbar';
     messages   = new Context(querySelector('#contextmessages'))
       ..lastFocusId = 'message-search-agent-searchbar';
-    log        = new Context(querySelector('#contextlog'));
+    logContext        = new Context(querySelector('#contextlog'));
     statistics = new Context(querySelector('#contextstatistics'));
     phone      = new Context(querySelector('#contextphone'))
       ..lastFocusId = 'phonebooth-company-searchbar';
@@ -132,20 +136,17 @@ class BobActive {
       setFocus('contact-info-searchbar');
     });
 
-    keyboardHandler.onKeyName('contactcalendar').listen((_) {
-      setFocus('contact-calendar');
-    });
-
     keyboardHandler.onKeyName('sendmessagetelephone').listen((_) {
       setFocus('sendmessagephone');
     });
 
-    keyboardHandler.onKeyName('companyproduct').listen((_) {
-      setFocus('company-product-body');
+    keyboardHandler.onKeyName('messagefield').listen((_) {
+      setFocus('sendmessagetext');
     });
 
     keyboardHandler.onKeyName('companycustomertype').listen((_) {
       setFocus('company-customertype-body');
     });
+
   }
 }

@@ -108,13 +108,18 @@ class _KeyboardHandler {
     _keyToName[Keys.UP]    = 'arrowUp';
     _keyToName[Keys.DOWN]  = 'arrowDown';
 
+    _keyToName[Keys.A]     = 'cancelmessage';
     _keyToName[Keys.C]     = 'companyselector';
     _keyToName[Keys.E]     = 'companyevents';
-    _keyToName[Keys.H]     = 'companyhandling';
-    _keyToName[Keys.O]     = 'contactinfosearch';
-    _keyToName[Keys.K]     = 'contactcalendar';
+    _keyToName[Keys.G]     = 'savemessage';
+    _keyToName[Keys.H]     = 'hangupcall';
+    _keyToName[Keys.K]     = 'parkcall';
+    _keyToName[Keys.L]     = 'selectedContactCall';
+    _keyToName[Keys.M]     = 'messagefield';
+    _keyToName[Keys.P]     = 'pickupcall';
+    _keyToName[Keys.R]     = 'contactinfosearch';
+    _keyToName[Keys.S]     = 'sendmessage';
     _keyToName[Keys.T]     = 'sendmessagetelephone';
-    _keyToName[Keys.L]     = 'companyproduct';
     _keyToName[Keys.Y]     = 'companycustomertype';
 
     _keyToName.forEach((key, value) {
@@ -133,7 +138,8 @@ class _KeyboardHandler {
   void _keyDown(KeyboardEvent event) {
     KeyEvent key = new KeyEvent.wrap(event);
 
-    if (_locked == null && (key.ctrlKey && key.altKey)) {
+    if (_locked == null && (/*key.ctrlKey &&*/ key.altKey)) {
+      event.preventDefault();
       int keyCode = key.keyCode;
 
       if(_keyToName.containsKey(keyCode)) {

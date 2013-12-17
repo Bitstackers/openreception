@@ -21,6 +21,7 @@ part of protocol;
  *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
 Future<Response<Map>> login(int userId) {
+  //TODO
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
@@ -63,7 +64,8 @@ Future<Response<Map>> login(int userId) {
  *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
 Future<Response<Map>> userslist() {
-  final String                   base      = 'http://alice.adaheads.com:4242';//configuration.aliceBaseUrl.toString();
+  //TODO
+  final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final String                   path      = '/users/list';
   HttpRequest                    request;

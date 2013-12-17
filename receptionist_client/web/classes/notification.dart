@@ -130,13 +130,18 @@ class _Notification {
     ..on(callPark)  .listen((Map json) => _callParkEventHandler(json))
     ..on(callUnpark).listen((Map json) => _callUnparkEventHandler(json));
 
-    StreamSubscription subscription;
-    subscription = event.bus.on(event.stateUpdated).listen((State value) {
-      if(value.isConfigurationOK) {
-        makeSocket();
-        subscription.cancel();
-      }
-    });
+    if(configuration != null && configuration.isLoaded()) {
+      makeSocket();
+
+    } else {
+      StreamSubscription subscription;
+      subscription = event.bus.on(event.stateUpdated).listen((State value) {
+        if(value.isConfigurationOK) {
+          makeSocket();
+          subscription.cancel();
+        }
+      });
+    }
   }
 }
 

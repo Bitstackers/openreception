@@ -43,6 +43,7 @@ Future<Response<Map>> getAgentState(int agentId) {
             Map data = _parseJson(request.responseText);
             completer.complete(new Response<Map>(Response.OK, data));
             break;
+          case 403:
 
           case 404:
             completer.complete(new Response<Map>(Response.NOTFOUND, null));

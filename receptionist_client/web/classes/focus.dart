@@ -75,7 +75,6 @@ int getTabIndex (String id) {
 
 void setFocus(String newFocusId) {
   if(newFocusId != _currentFocusId) {
-    log.debug('Focus: current: [${_currentFocusId}], new: [${newFocusId}]');
     var focusEvent = new Focus(_currentFocusId, newFocusId);
     _currentFocusId = newFocusId;
     event.bus.fire(event.focusChanged, focusEvent);

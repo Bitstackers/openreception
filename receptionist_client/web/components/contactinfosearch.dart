@@ -173,8 +173,15 @@ class ContactInfoSearch {
      ..onKeyUp.listen(onkeyup)
      ..onKeyDown.listen(onkeydown);
 
-
     displayedContactList.onScroll.listen(scrolling);
+
+    keyboardHandler.onKeyName('selectedContactCall').listen((_) {
+      if (contact != model.nullContact) {
+        if (contact.telephoneNumberList.isNotEmpty) {
+          //TODO call contact;
+        }
+      }
+    });
 
     context.registerFocusElement(searchBox);
   }

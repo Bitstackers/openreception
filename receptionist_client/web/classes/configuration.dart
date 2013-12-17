@@ -56,6 +56,11 @@ class _Configuration {
   int      get userLogSizeLimit =>                    _userLogSizeLimit;
 
   /**
+   * Is the configuration loaded.
+   */
+  bool isLoaded() => _loaded;
+
+  /**
    * [_Configuration] constructor. Initialize the object with the values from
    * [CONFIGURATION_URL]. Logs a critical error if the request fails.
    */
@@ -70,15 +75,10 @@ class _Configuration {
             log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
             state.configurationError();
           }
-          new Timer(new Duration(seconds:5),() => initialize());
+          new Future.delayed(new Duration(seconds:5),() => initialize());
         });
     }
   }
-
-  /**
-   * Is the configuration loaded.
-   */
-  bool isLoaded() => _loaded;
 
   /**
    * If [req] status is 200 OK then parse the [req] responseText as JSON and set
