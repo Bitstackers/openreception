@@ -18,22 +18,22 @@ part 'http/deleteorganization.dart';
 part 'http/getorganizationlist.dart';
 part 'http/invalidateorganization.dart';
 
-final Pattern getOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
-final Pattern deleteOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
-final Pattern createOrganizationUrl = new UrlPattern('/organization');
-final Pattern updateOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
-final Pattern getOrganizationListUrl = new UrlPattern('/organization/list');
+final Pattern getOrganizationUrl        = new UrlPattern(r'/organization/(\d)*');
+final Pattern deleteOrganizationUrl     = new UrlPattern(r'/organization/(\d)*');
+final Pattern createOrganizationUrl     = new UrlPattern('/organization');
+final Pattern updateOrganizationUrl     = new UrlPattern(r'/organization/(\d)*');
+final Pattern getOrganizationListUrl    = new UrlPattern('/organization/list');
 final Pattern invalidateOrganizationUrl = new UrlPattern(r'/organization/invalidate/(\d)*');
 
 void setupRoutes(HttpServer server) {
   Router router = new Router(server)
-  ..serve(getOrganizationUrl, method: 'GET').listen(getOrg)
-  ..serve(deleteOrganizationUrl, method: 'DELETE').listen(deleteOrg)
-  ..serve(createOrganizationUrl, method: 'POST').listen(createOrg)
-  ..serve(updateOrganizationUrl, method: 'PUT').listen(updateOrg)
-  ..serve(getOrganizationListUrl, method: 'GET').listen(getOrgList)
-  ..serve(invalidateOrganizationUrl, method: 'POST').listen(invalidateOrg)
-  ..defaultStream.listen(page404);
+    ..serve(getOrganizationUrl, method: 'GET').listen(getOrg)
+    ..serve(deleteOrganizationUrl, method: 'DELETE').listen(deleteOrg)
+    ..serve(createOrganizationUrl, method: 'POST').listen(createOrg)
+    ..serve(updateOrganizationUrl, method: 'PUT').listen(updateOrg)
+    ..serve(getOrganizationListUrl, method: 'GET').listen(getOrgList)
+    ..serve(invalidateOrganizationUrl, method: 'POST').listen(invalidateOrg)
+    ..defaultStream.listen(page404);
 }
 
 Future<String> extractContent(HttpRequest request) {
