@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 
+import '../lib/cache.dart' as cache;
 import '../lib/common.dart';
 import '../lib/configuration.dart';
 import '../lib/db.dart';
@@ -23,6 +24,7 @@ void main(List<String> args) {
     }else{
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => cache.check())
         .then((_) => startDatabase())
         .then((_) => startHttp())
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
