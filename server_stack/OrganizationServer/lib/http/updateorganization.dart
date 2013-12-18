@@ -11,7 +11,9 @@ void updateOrg(HttpRequest request) {
     bool enabled = data['enabled'];
 
     db.updateOrganization(id, full_name, uri, attributes, enabled).then((Map value) {
-      writeAndClose(request, JSON.encode(value));
+      cache.removeOrganization(id).whenComplete(() {
+        writeAndClose(request, JSON.encode(value));
+      });
     });
   });
 }

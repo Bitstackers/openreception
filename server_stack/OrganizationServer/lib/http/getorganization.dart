@@ -10,9 +10,12 @@ void getOrg(HttpRequest request) {
       db.getOrganization(id).then((Map value) {
         String org = JSON.encode(value);
 
-        cache.saveOrganization(id, org)
-          .then((_) => writeAndClose(request, org));
-
+        if(value.isEmpty) {
+          writeAndClose(request, org);
+        } else {
+          cache.saveOrganization(id, org)
+            .then((_) => writeAndClose(request, org));
+        }
       }).catchError((error) => serverError(request, error.toString()));
     }
   });

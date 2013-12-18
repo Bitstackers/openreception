@@ -26,7 +26,7 @@ Future<String> loadOrganization(int id) {
   return completer.future;
 }
 
-Future saveOrganization(int id, String text) {
+Future<bool> saveOrganization(int id, String text) {
   Completer completer = new Completer();
   String path = '${config.cache}org/$id.json';
 
@@ -42,7 +42,7 @@ Future saveOrganization(int id, String text) {
   return completer.future;
 }
 
-Future removeOrganization(int id) {
+Future<bool> removeOrganization(int id) {
   Completer completer = new Completer();
   String path = '${config.cache}org/$id.json';
   File file = new File(path);

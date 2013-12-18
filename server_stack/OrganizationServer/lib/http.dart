@@ -23,7 +23,7 @@ final Pattern deleteOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
 final Pattern createOrganizationUrl = new UrlPattern('/organization');
 final Pattern updateOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
 final Pattern getOrganizationListUrl = new UrlPattern('/organization/list');
-final Pattern invalidateOrganizationUrl = new UrlPattern('/organization/invalidate/(\d)*');
+final Pattern invalidateOrganizationUrl = new UrlPattern(r'/organization/invalidate/(\d)*');
 
 void setupRoutes(HttpServer server) {
   Router router = new Router(server)
@@ -44,7 +44,7 @@ Future<String> extractContent(HttpRequest request) {
     completeRawContent.addAll(data);
   }, onError: (error) => completer.completeError(error),
      onDone: () {
-    String content = ASCII.decode(completeRawContent);
+    String content = UTF8.decode(completeRawContent);
     completer.complete(content);
   }, cancelOnError: true);
 
