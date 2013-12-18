@@ -17,7 +17,8 @@ Future<String> loadOrganization(int id) {
   file.readAsString().then((String text) {
     completer.complete(text);
 
-  }).catchError((_) {
+  }).catchError((error) {
+    log(error.toString());
     completer.complete(null);
   });
 
@@ -47,7 +48,10 @@ Future removeOrganization(int id) {
 
   file.delete()
     .then((_) => completer.complete(true))
-    .catchError((_) => completer.complete(false));
+    .catchError((error) {
+      log(error.toString());
+      completer.complete(false);
+    });
 
   return completer.future;
 }
