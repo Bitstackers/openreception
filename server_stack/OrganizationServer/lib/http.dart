@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
+import 'cache.dart' as cache;
 import 'common.dart';
 import 'configuration.dart';
 import 'db.dart' as db;
@@ -15,12 +16,14 @@ part 'http/updateorganization.dart';
 part 'http/createorganization.dart';
 part 'http/deleteorganization.dart';
 part 'http/getorganizationlist.dart';
+part 'http/invalidateorganization.dart';
 
 final Pattern getOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
 final Pattern deleteOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
 final Pattern createOrganizationUrl = new UrlPattern('/organization');
 final Pattern updateOrganizationUrl = new UrlPattern(r'/organization/(\d)*');
 final Pattern getOrganizationListUrl = new UrlPattern('/organization/list');
+final Pattern invalidateOrganizationUrl = new UrlPattern('/organization/invalidate/(\d)*');
 
 void setupRoutes(HttpServer server) {
   Router router = new Router(server)
@@ -29,6 +32,7 @@ void setupRoutes(HttpServer server) {
   ..serve(createOrganizationUrl, method: 'POST').listen(createOrg)
   ..serve(updateOrganizationUrl, method: 'PUT').listen(updateOrg)
   ..serve(getOrganizationListUrl, method: 'GET').listen(getOrgList)
+  ..serve(invalidateOrganizationUrl, method: 'POST').listen(invalidateOrg)
   ..defaultStream.listen(page404);
 }
 

@@ -58,7 +58,6 @@ class Configuration {
 
     return file.readAsString().then((String data) {
       Map config = JSON.decode(data);
-      print(config);
 
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
@@ -123,17 +122,14 @@ class Configuration {
 
   void _outputConfig() {
     print('''
-      httpport:   $httpport
-      dbuser:     $dbuser
-      dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('').first +
-          dbpassword.split('').skip(1).take(dbpassword.length-2).map((_) => '*').join('') +
-          dbpassword.substring(dbpassword.length -1) : ''}
-      dbhost:     $dbhost
-      dbport:     $dbport
-      dbname:     $dbname
-    ''');
-
-    print('Outputting Config file');
+httpport:   $httpport
+dbuser:     $dbuser
+dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('').first +
+    dbpassword.split('').skip(1).take(dbpassword.length-2).map((_) => '*').join('') +
+    dbpassword.substring(dbpassword.length -1) : ''}
+dbhost:     $dbhost
+dbport:     $dbport
+dbname:     $dbname''');
   }
 
   Future whenLoaded() {
