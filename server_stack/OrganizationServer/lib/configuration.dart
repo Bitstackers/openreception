@@ -21,6 +21,7 @@ class Configuration {
   String     _dbhost     = 'localhost';
   int        _dbport     = 5432;
   String     _dbname;
+  String     _cache;
 
   String get configfile => _configfile;
   int    get httpport   => _httpport;
@@ -29,6 +30,7 @@ class Configuration {
   String get dbhost     => _dbhost;
   int    get dbport     => _dbport;
   String get dbname     => _dbname;
+  String get cache      => _cache;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -82,6 +84,10 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
+
+      if(config.containsKey('cache')) {
+        _cache = config['cache'];
+      }
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -112,6 +118,10 @@ class Configuration {
 
       if(hasArgument('dbname')) {
         _dbname = _args['dbname'];
+      }
+
+      if(hasArgument('cache')) {
+        _cache = _args['cache'];
       }
 
     }).catchError((error) {

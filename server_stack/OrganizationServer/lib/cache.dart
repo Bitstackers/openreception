@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'common.dart';
+import 'configuration.dart';
 
 /**
  * Loads a organization from cache.
@@ -11,7 +12,7 @@ import 'common.dart';
  */
 Future<String> loadOrganization(int id) {
   Completer completer = new Completer();
-  String path = '/dev/shm/org/$id.json';
+  String path = '${config.cache}org/$id.json';
   File file = new File(path);
 
   file.readAsString().then((String text) {
@@ -27,7 +28,7 @@ Future<String> loadOrganization(int id) {
 
 Future saveOrganization(int id, String text) {
   Completer completer = new Completer();
-  String path = '/dev/shm/org/$id.json';
+  String path = '${config.cache}org/$id.json';
 
   File file = new File(path);
 
@@ -43,7 +44,7 @@ Future saveOrganization(int id, String text) {
 
 Future removeOrganization(int id) {
   Completer completer = new Completer();
-  String path = '/dev/shm/org/$id.json';
+  String path = '${config.cache}org/$id.json';
   File file = new File(path);
 
   file.delete()
