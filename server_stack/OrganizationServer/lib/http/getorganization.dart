@@ -11,6 +11,7 @@ void getOrg(HttpRequest request) {
         String org = JSON.encode(value);
 
         if(value.isEmpty) {
+          request.response.statusCode = 404;
           writeAndClose(request, org);
         } else {
           cache.saveOrganization(id, org)

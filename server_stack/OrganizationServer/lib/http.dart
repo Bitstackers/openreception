@@ -23,7 +23,7 @@ final Pattern deleteOrganizationUrl     = new UrlPattern(r'/organization/(\d)*')
 final Pattern createOrganizationUrl     = new UrlPattern('/organization');
 final Pattern updateOrganizationUrl     = new UrlPattern(r'/organization/(\d)*');
 final Pattern getOrganizationListUrl    = new UrlPattern('/organization/list');
-final Pattern invalidateOrganizationUrl = new UrlPattern(r'/organization/invalidate/(\d)*');
+final Pattern invalidateOrganizationUrl = new UrlPattern(r'/organization/(\d)*/invalidate');
 
 void setupRoutes(HttpServer server) {
   Router router = new Router(server)

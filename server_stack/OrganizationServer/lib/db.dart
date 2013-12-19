@@ -20,7 +20,7 @@ Pool   _pool;
 
 Future startDatabase() {
   _connectString = 'postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}';
-  print(_connectString);
+
   _pool          = new Pool(_connectString, min: 1, max: 2);
   return _pool.start().then((_) => _testConnection());
 }

@@ -76,7 +76,7 @@ Future check() {
 }
 
 Future _makeCacheStructure() {
-  String path = '${config.cache}/org/';
+  String path = '${config.cache}org/';
   Directory dir = new Directory(path);
   return dir.create();
 }
