@@ -20,7 +20,7 @@ Future<Map> getOrganization(int id) {
           {'id'        : row.id,
            'full_name' : row.full_name,
            'uri'       : row.uri,
-           'attributes': JSON.decode(row.attributes),
+           'attributes': row.attributes == null ? {} : JSON.decode(row.attributes),
            'enabled'   : row.enabled};
       }
 

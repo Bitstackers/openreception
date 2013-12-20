@@ -13,7 +13,7 @@ Future<Map> createOrganization(String full_name, String uri, Map attributes, boo
     Map parameters =
       {'full_name' : full_name,
        'uri'       : uri,
-       'attributes': JSON.encode(attributes),
+       'attributes': attributes == null ? '{}' : JSON.encode(attributes),
        'enabled'   : enabled};
 
     conn.query(sql, parameters).toList().then((rows) {

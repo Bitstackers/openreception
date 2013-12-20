@@ -14,7 +14,7 @@ Future<Map> updateOrganization(int id, String full_name, String uri, Map attribu
       {'id'        : id,
        'full_name' : full_name,
        'uri'       : uri,
-       'attributes': JSON.encode(attributes),
+       'attributes': attributes == null ? '{}' : JSON.encode(attributes),
        'enabled'   : enabled};
 
     conn.execute(sql, parameters).then((rowsAffected) {
