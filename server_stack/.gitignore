@@ -2,3 +2,16 @@
 packages
 .project
 pubspec.lock
+
+# Don't track config.json
+config.json
+
+# Don't track out/
+out/
+
+# Do not track emacs temporary and backup files
+\#*#
+*~
+
+# Do not track Nano temporary files
+.#*#
