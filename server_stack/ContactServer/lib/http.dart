@@ -16,8 +16,8 @@ part 'http/getcontactlist.dart';
 part 'http/invalidatecontact.dart';
 
 final Pattern invalidateContactUrl             = new UrlPattern(r'/contact/(\d)*/invalidate');
-final Pattern getOrganizationContactUrl        = new UrlPattern(r'/organization/(\d)*/contact/(\d)*');
-final Pattern getOrganizationContactListUrl    = new UrlPattern(r'/organization/(\d)*/contact/list');
+final Pattern getOrganizationContactUrl        = new UrlPattern(r'/contact/(\d)*/organization/(\d)*');
+final Pattern getOrganizationContactListUrl    = new UrlPattern(r'/contact/list/organization/(\d)*');
 
 void setupRoutes(HttpServer server) {
   Router router = new Router(server)
