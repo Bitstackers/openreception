@@ -6,7 +6,8 @@ Future<Map> createOrganization(String full_name, String uri, Map attributes, boo
   _pool.connect().then((Connection conn) {
     String sql = '''
       INSERT INTO organizations (full_name, uri, attributes, enabled)
-      VALUES (@full_name, @uri, @attributes, @enabled);
+      VALUES (@full_name, @uri, @attributes, @enabled)
+      RETURNING id;
     ''';
 
     Map parameters =
@@ -15,8 +16,12 @@ Future<Map> createOrganization(String full_name, String uri, Map attributes, boo
        'attributes': JSON.encode(attributes),
        'enabled'   : enabled};
 
-    conn.execute(sql, parameters).then((rowsAffected) {
-      completer.complete({'rowsAffected': rowsAffected});
+    conn.query(sql, parameters).toList().then((rows) {
+      Map data = {};
+      if (rows.length == 1) {
+        data = {'id': rows.first.id};
+      }
+      completer.complete(data);
     }).catchError((err) => completer.completeError(err))
       .whenComplete(() => conn.close());
 

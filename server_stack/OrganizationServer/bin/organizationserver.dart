@@ -21,7 +21,7 @@ void main(List<String> args) {
 
     if(showHelp()) {
       print(parser.getUsage());
-    }else{
+    } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
         .then((_) => cache.check())

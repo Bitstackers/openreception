@@ -4,25 +4,25 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import 'cache.dart' as cache;
 import 'common.dart';
 import 'configuration.dart';
 import 'db.dart' as db;
 
 import 'package:route/server.dart';
 
-part 'http/getcontact.dart';
-part 'http/getcontactlist.dart';
-part 'http/invalidatecontact.dart';
+part 'http/getdraft.dart';
+part 'http/getmessagelist.dart';
+part 'http/sendmessage.dart';
 
-final Pattern invalidateContactUrl             = new UrlPattern(r'/contact/(\d)*/invalidate');
-final Pattern getOrganizationContactUrl        = new UrlPattern(r'/organization/(\d)*/contact/(\d)*');
-final Pattern getOrganizationContactListUrl    = new UrlPattern(r'/organization/(\d)*/contact/list');
+final Pattern getMessageDraftUrl = new UrlPattern(r'/message/drafts');
+final Pattern getMessageListUrl = new UrlPattern(r'/message/list');
+final Pattern getMessageSendUrl = new UrlPattern(r'/message/send');
 
 void setupRoutes(HttpServer server) {
   Router router = new Router(server)
-    ..serve(getOrganizationContactUrl, method: 'GET').listen(getContact)
-    ..serve(getOrganizationContactListUrl, method: 'GET').listen(getOrgList)
+    ..serve(getMessageDraftUrl, method: 'GET').listen(getMessageDrafts)
+    ..serve(getMessageListUrl, method: 'GET').listen(getMessageList)
+    ..serve(getMessageSendUrl, method: 'POST').listen(sendMessage)
     ..defaultStream.listen(page404);
 }
 

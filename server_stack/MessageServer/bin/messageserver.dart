@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 
-import '../lib/cache.dart' as cache;
 import '../lib/common.dart';
 import '../lib/configuration.dart';
 import '../lib/db.dart';
@@ -24,7 +23,6 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        .then((_) => cache.check())
         .then((_) => startDatabase())
         .then((_) => startHttp())
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
@@ -51,7 +49,6 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('dbhost',          help: 'The database host. Defaults to localhost');
   parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
   parser.addOption('dbname',          help: 'The database name');
-  parser.addOption('cache',           help: 'The location for cache');
 
   parsedArgs = parser.parse(arguments);
 }

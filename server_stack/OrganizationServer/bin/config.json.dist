@@ -1,0 +1,9 @@
+{
+    "httpport": 8080,
+    "dbuser": "user",
+    "dbpassword": "Secret",
+    "dbhost": "localhost",
+    "dbport": 5432,
+    "dbname": "dbname",
+    "cache": "/dev/shm/"
+}

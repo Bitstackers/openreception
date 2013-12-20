@@ -9,8 +9,9 @@ import 'configuration.dart';
 import 'package:postgresql/postgresql_pool.dart';
 import 'package:postgresql/postgresql.dart';
 
-part 'db/getorganizationcontact.dart';
-part 'db/getorganizationcontactlist.dart';
+part 'db/getdraft.dart';
+part 'db/getmessagelist.dart';
+part 'db/sendmessage.dart';
 
 String _connectString;
 Pool   _pool;

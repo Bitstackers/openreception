@@ -17,13 +17,13 @@ WHERE orgcon.organization_id = @orgid AND orgcon.contact_id = @contactid''';
       if(rows.length == 1) {
         var row = rows.first;
         data =
-          {'organization_id'        : row.organization_id,
-           'contact_id' : row.contact_id,
-           'wants_messages'       : row.wants_messages,
-           'attributes': JSON.decode(row.attributes),
-           'enabled'   : row.enabled,
-           'full_name':row.full_name,
-           'contact_type': row.contact_type};
+          {'organization_id' : row.organization_id,
+           'contact_id'      : row.contact_id,
+           'wants_messages'  : row.wants_messages,
+           'attributes'      : JSON.decode(row.attributes),
+           'enabled'         : row.enabled,
+           'full_name'       : row.full_name,
+           'contact_type'    : row.contact_type};
       }
 
       completer.complete(data);

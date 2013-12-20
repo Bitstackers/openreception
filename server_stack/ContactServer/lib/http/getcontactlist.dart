@@ -1,7 +1,9 @@
 part of http;
 
 void getOrgList(HttpRequest request) {
-  db.getOrganizationList().then((Map value) {
+  int orgId = int.parse(request.uri.pathSegments.elementAt(1));
+  
+  db.getOrganizationContactList(orgId).then((Map value) {
     writeAndClose(request, JSON.encode(value));
-  });
+  }).catchError((error) => serverError(request, error));
 }
