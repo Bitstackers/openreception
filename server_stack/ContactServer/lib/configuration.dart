@@ -86,7 +86,11 @@ class Configuration {
       }
 
       if(config.containsKey('cache')) {
-        _cache = config['cache'];
+        if(config['cache'].endsWith('/')) {
+          _cache = config['cache'];
+        } else {
+          _cache = '${config['cache']}/';
+        }
       }
     })
     .catchError((err) {
@@ -121,7 +125,11 @@ class Configuration {
       }
 
       if(hasArgument('cache')) {
-        _cache = _args['cache'];
+        if(_args['cache'].endsWith('/')) {
+          _cache = _args['cache'];
+        } else {
+          _cache = '${_args['cache']}/';
+        }
       }
 
     }).catchError((error) {
