@@ -1,6 +1,6 @@
 part of db;
 
-Future<Map> getContactsToMessagesList(List<String> contacts) {
+Future<Map> getContactsToMessagesList(List<String> contacts, int orgId) {
   Completer completer = new Completer();
 
   _pool.connect().then((Connection conn) {

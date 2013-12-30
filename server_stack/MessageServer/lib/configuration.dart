@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'common.dart';
+import '../../Shared/common.dart';
 
 import 'package:args/args.dart';
 

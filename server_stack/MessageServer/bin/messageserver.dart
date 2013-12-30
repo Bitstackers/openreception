@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'dart:async';
 
-import '../lib/common.dart';
+import '../../Shared/common.dart';
 import '../lib/configuration.dart';
 import '../lib/db.dart';
-import '../lib/http.dart';
+import '../lib/router.dart' as router;
+import '../../Shared/httpserver.dart' as http;
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
@@ -24,7 +25,7 @@ void main(List<String> args) {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
         .then((_) => startDatabase())
-        .then((_) => startHttp())
+        .then((_) => http.start(config.httpport, router.setup))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch(e) {

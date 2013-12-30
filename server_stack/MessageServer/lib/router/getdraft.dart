@@ -1,4 +1,4 @@
-part of http;
+part of router;
 
 void getMessageDrafts(HttpRequest request) {
   db.getDraft().then((Map data) {
