@@ -1,4 +1,4 @@
-part of http;
+part of router;
 
 void getOrgList(HttpRequest request) {
   db.getOrganizationList().then((Map value) {

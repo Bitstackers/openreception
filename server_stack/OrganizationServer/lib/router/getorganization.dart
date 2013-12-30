@@ -1,4 +1,4 @@
-part of http;
+part of router;
 
 void getOrg(HttpRequest request) {
   int id = int.parse(request.uri.pathSegments.elementAt(1));

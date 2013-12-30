@@ -3,7 +3,7 @@ library cache;
 import 'dart:async';
 import 'dart:io';
 
-import 'common.dart';
+import '../../Shared/common.dart';
 import 'configuration.dart';
 
 /**
