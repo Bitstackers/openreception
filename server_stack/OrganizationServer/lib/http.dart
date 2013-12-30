@@ -73,16 +73,24 @@ void startHttp() {
 }
 
 void writeAndClose(HttpRequest request, String text) {
+  String time = new DateTime.now().toString();
+  
   StringBuffer sb        = new StringBuffer();
   final String logPrefix = request.response.statusCode == 200 ? 'Access' : 'Error';
 
   sb.write('${logPrefix} - ');
   sb.write('${request.uri} - ');
-  sb.write('${request.connectionInfo.remoteAddress} - ');
+  
+  if(request.connectionInfo != null) {
+    sb.write('${request.connectionInfo.remoteAddress} - ');
+  } else {
+    sb.write('Unknown remote address - ');
+  }
+  
   sb.write(request.response.statusCode);
 
   log(sb.toString());
-
+  
   request.response
     ..write(text)
     ..close();
