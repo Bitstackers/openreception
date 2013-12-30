@@ -1,8 +1,9 @@
-part of http;
+part of router;
 
 void getContact(HttpRequest request) {
   int orgId = int.parse(request.uri.pathSegments.elementAt(1));
   int contactId = int.parse(request.uri.pathSegments.elementAt(3));
+  
   cache.loadContact(orgId, contactId).then((String org) {
     if(org != null) {
       writeAndClose(request, org);
@@ -12,6 +13,7 @@ void getContact(HttpRequest request) {
         String contact = JSON.encode(value);
 
         if(value.isEmpty) {
+          request.response.statusCode = HttpStatus.NOT_FOUND;
           writeAndClose(request, contact);
         } else {
           cache.saveContact(orgId, contactId, contact)

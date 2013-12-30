@@ -3,7 +3,7 @@ library db;
 import 'dart:async';
 import 'dart:convert';
 
-import 'common.dart';
+import '../../Shared/common.dart';
 import 'configuration.dart';
 
 import 'package:postgresql/postgresql_pool.dart';

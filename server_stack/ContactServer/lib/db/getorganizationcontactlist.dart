@@ -14,7 +14,6 @@ WHERE orgcon.organization_id = @orgid''';
     conn.query(sql, parameters).toList().then((rows) {
       List contacts = new List();
       for(var row in rows) {
-        print(row);
         Map contact =
           {'organization_id' : row.organization_id,
            'contact_id'      : row.contact_id,
