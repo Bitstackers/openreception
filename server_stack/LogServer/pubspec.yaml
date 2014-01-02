@@ -1,0 +1,8 @@
+name: LogServer
+description: A sample command-line application
+dependencies:
+  args: any
+  intl: any
+  path: any
+  postgresql: any
+  route: any
