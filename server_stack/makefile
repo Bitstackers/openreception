@@ -1,4 +1,4 @@
-all: organization contact
+all: organization contact log
 
 organization: outfolder
 	cd OrganizationServer/ && pub get && pub upgrade
@@ -7,6 +7,11 @@ organization: outfolder
 contact: outfolder
 	cd ContactServer/ && pub get && pub upgrade
 	dart2js --output-type=dart --checked --terse --verbose --out=out/ContactServer.dart --categories=Server ContactServer/bin/contactserver.dart
+
+log: outfolder
+	cd LogServer/ && pub get && pub upgrade
+	dart2js --output-type=dart --checked --terse --verbose --out=out/LogServer.dart --categories=Server LogServer/bin/logserver.dart
+
 
 outfolder:
 	-mkdir out
