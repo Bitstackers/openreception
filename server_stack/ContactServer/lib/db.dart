@@ -12,6 +12,7 @@ import 'package:postgresql/postgresql.dart';
 part 'db/getorganizationcontact.dart';
 part 'db/getorganizationcontactlist.dart';
 part 'db/getphone.dart';
+part 'db/getcalendar.dart';
 
 String _connectString;
 Pool   _pool;
