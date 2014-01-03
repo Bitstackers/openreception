@@ -6,6 +6,34 @@ import 'dart:io';
 
 import 'common.dart';
 
+Future<bool> authFilter(HttpRequest request) {
+  if(request.uri.queryParameters.containsKey('token')) {
+    String host = 'auth.adaheads.com';
+    int port = 80;
+    String path = 'token/${request.uri.queryParameters['token']}';
+    HttpClient client = new HttpClient();
+    return client.open('GET', host, port, path).then((HttpClientRequest clientRequest) {
+      
+      return clientRequest.close();
+    }).then((HttpClientResponse clientResponse) {
+      //Response from the server
+      if(clientResponse.statusCode == 200) {
+        return true;
+        
+      } else {
+        request.response.statusCode = HttpStatus.UNAUTHORIZED;
+        writeAndClose(request, '');
+        return false;
+      }
+    });
+    
+  } else {
+    request.response.statusCode = HttpStatus.UNAUTHORIZED;
+    writeAndClose(request, '');
+    return new Future(() => false);
+  }
+}
+
 Future<String> extractContent(HttpRequest request) {
   Completer completer = new Completer();
   List<int> completeRawContent = new List<int>();
