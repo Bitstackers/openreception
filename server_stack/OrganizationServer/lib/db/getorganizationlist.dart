@@ -5,7 +5,7 @@ Future<Map> getOrganizationList() {
 
   _pool.connect().then((Connection conn) {
     String sql = '''
-      SELECT id, full_name, uri, enabled
+      SELECT id, full_name, uri, enabled, attributes
       FROM organizations
     ''';
 
@@ -16,7 +16,8 @@ Future<Map> getOrganizationList() {
           {'organization_id' : row.id,
            'full_name'       : row.full_name,
            'uri'             : row.uri,
-           'enabled'         : row.enabled};
+           'enabled'         : row.enabled,
+           'attributes'      : JSON.decode (row.attributes)};
         organizations.add(organization);
       }
 
