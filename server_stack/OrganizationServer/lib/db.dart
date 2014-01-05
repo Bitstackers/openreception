@@ -10,6 +10,7 @@ import 'package:postgresql/postgresql_pool.dart';
 import 'package:postgresql/postgresql.dart';
 
 part 'db/getorganization.dart';
+part 'db/getcalendar.dart';
 part 'db/createorganization.dart';
 part 'db/deleteorganization.dart';
 part 'db/updateorganization.dart';
