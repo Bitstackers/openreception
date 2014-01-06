@@ -6,6 +6,13 @@ import 'dart:io';
 
 import 'common.dart';
 
+void addCorsHeaders(HttpResponse res) {
+  res.headers
+    ..add("Access-Control-Allow-Origin", "*")
+    ..add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    ..add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+}
+
 Future<bool> authFilter(HttpRequest request) {
   if(request.uri.queryParameters.containsKey('token')) {
     String host = 'auth.adaheads.com';
@@ -50,6 +57,8 @@ Future<String> extractContent(HttpRequest request) {
 }
 
 void page404(HttpRequest request) {
+  addCorsHeaders(request.response);
+  
   log('404: ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write("Not Found");

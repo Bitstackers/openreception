@@ -1,6 +1,8 @@
 part of router;
 
 void updateOrg(HttpRequest request) {
+  addCorsHeaders(request.response);
+  
   int id = int.parse(request.uri.pathSegments.elementAt(1));
 
   extractContent(request).then((String content) {

@@ -1,6 +1,8 @@
 part of router;
 
 void deleteOrg(HttpRequest request) {
+  addCorsHeaders(request.response);
+  
   int id = int.parse(request.uri.pathSegments.elementAt(1));
 
   db.deleteOrganization(id).then((Map value) {

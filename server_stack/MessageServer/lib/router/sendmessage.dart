@@ -1,6 +1,8 @@
 part of router;
 
 void sendMessage(HttpRequest request) {
+  addCorsHeaders(request.response);
+  
   extractContent(request).then((String content) {
     Map data;
     

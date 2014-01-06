@@ -8,8 +8,8 @@ import 'cache.dart' as cache;
 import 'db.dart' as db;
 import '../../Shared/httpserver.dart';
 
-import 'package:route/server.dart';
 import 'package:route/pattern.dart';
+import 'package:route/server.dart';
 
 part 'router/getorganization.dart';
 part 'router/getcalendar.dart';
@@ -19,15 +19,15 @@ part 'router/deleteorganization.dart';
 part 'router/getorganizationlist.dart';
 part 'router/invalidateorganization.dart';
 
-final Pattern organizationIdUrl               = new UrlPattern(r'/organization/(\d)+');
+final Pattern organizationIdUrl               = new UrlPattern(r'/organization/(\d+)');
 final Pattern organizationUrl                 = new UrlPattern(r'/organization');
-final Pattern invalidateOrganizationUrl       = new UrlPattern(r'/organization/(\d)+/invalidate');
-final Pattern getOrganizationCalendarListUrl  = new UrlPattern(r'/organization/(\d)+/calendar');
+final Pattern invalidateOrganizationUrl       = new UrlPattern(r'/organization/(\d+)/invalidate');
+final Pattern getOrganizationCalendarListUrl  = new UrlPattern(r'/organization/(\d+)/calendar');
 final List<Pattern> allUniqueUrls = [organizationIdUrl, organizationUrl, invalidateOrganizationUrl, getOrganizationCalendarListUrl];
 
 void setup(HttpServer server) {
   Router router = new Router(server)
-    //..filter(matchAny(allUniqueUrls), authFilter)
+    ..filter(matchAny(allUniqueUrls), authFilter)
     ..serve(organizationIdUrl, method: 'GET').listen(getOrg)
     ..serve(organizationIdUrl, method: 'DELETE').listen(deleteOrg)
     ..serve(organizationUrl,   method: 'POST').listen(createOrg)

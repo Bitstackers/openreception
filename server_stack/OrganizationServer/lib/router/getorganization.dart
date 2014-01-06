@@ -1,7 +1,6 @@
 part of router;
 
 void getOrg(HttpRequest request) {
-
   addCorsHeaders(request.response);
   
   int id = int.parse(request.uri.pathSegments.elementAt(1));
@@ -23,10 +22,4 @@ void getOrg(HttpRequest request) {
       }).catchError((error) => serverError(request, error.toString()));
     }
   });
-}
-
-void addCorsHeaders(HttpResponse res) {
-  res.headers.add("Access-Control-Allow-Origin", "*, ");
-  res.headers.add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 }

@@ -1,6 +1,7 @@
 part of router;
 
 void getPhone(HttpRequest request) {
+  addCorsHeaders(request.response);
   int phoneId = int.parse(request.uri.pathSegments.elementAt(1));  
   
   db.getPhone(phoneId).then((Map value) {

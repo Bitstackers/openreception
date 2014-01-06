@@ -17,6 +17,8 @@ void logCritical(HttpRequest request) {
 }
 
 void _log(HttpRequest request, String level) {
+  addCorsHeaders(request.response);
+  
   extractContent(request).then((String text) {
     DateFormat dateFormat = new DateFormat('yyyy-mm-dd HH:mm:ss');
     String time = dateFormat.format(new DateTime.now());
