@@ -20,7 +20,7 @@ Future<Map> getOrganizationList() {
         organizations.add(organization);
       }
       
-      return {'organizations':organizations};
+      return {'organization_list':organizations};
     }).whenComplete(() => conn.close());
   });
 }
