@@ -1,8 +1,6 @@
 part of router;
 
 void getOrg(HttpRequest request) {
-  addCorsHeaders(request.response);
-  
   int id = int.parse(request.uri.pathSegments.elementAt(1));
   cache.loadOrganization(id).then((String org) {
     if(org != null) {

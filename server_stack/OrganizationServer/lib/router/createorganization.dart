@@ -1,8 +1,6 @@
 part of router;
 
 void createOrg(HttpRequest request) {
-  addCorsHeaders(request.response);
-  
   extractContent(request).then((String content) {
     Map data = JSON.decode(content);
     String full_name = data['full_name'];
