@@ -9,7 +9,7 @@ import 'common.dart';
 void addCorsHeaders(HttpResponse res) {
   res.headers
     ..add("Access-Control-Allow-Origin", "*")
-    ..add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    ..add("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
     ..add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 }
 
@@ -18,6 +18,7 @@ Future<bool> authFilter(HttpRequest request) {
     String host = 'auth.adaheads.com';
     int port = 80;
     String path = 'token/${request.uri.queryParameters['token']}';
+
     HttpClient client = new HttpClient();
     return client.open('GET', host, port, path).then((HttpClientRequest clientRequest) {
       
@@ -32,6 +33,9 @@ Future<bool> authFilter(HttpRequest request) {
         writeAndClose(request, '');
         return false;
       }
+    }).catchError((error) {
+      log('Auth failed: $error');
+      return false;
     });
     
   } else {
@@ -81,6 +85,8 @@ void start(int port, void setupRoutes(HttpServer server)) {
   }
 }
 
+final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');
+
 void writeAndClose(HttpRequest request, String text) {
   String time = new DateTime.now().toString();
   
@@ -99,6 +105,9 @@ void writeAndClose(HttpRequest request, String text) {
   sb.write(request.response.statusCode);
   log(sb.toString());
   
+  addCorsHeaders(request.response);
+  request.response.headers.contentType = JSON_MIME_TYPE;
+
   request.response
     ..write(text)
     ..close();
