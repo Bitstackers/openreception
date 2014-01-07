@@ -18,10 +18,11 @@ WHERE orgcon.organization_id = @orgid''';
           {'organization_id' : row.organization_id,
            'contact_id'      : row.contact_id,
            'wants_messages'  : row.wants_messages,
-           'attributes'      : row.attributes == null ? {} : JSON.decode(row.attributes),
            'enabled'         : row.enabled,
            'full_name'       : row.full_name,
            'contact_type'    : row.contact_type};
+
+        JSON.decode(row.attributes).forEach((key, value) => contact.putIfAbsent(key, () => value));
         contacts.add(contact);
       }
 

@@ -20,8 +20,12 @@ Future<Map> getOrganization(int id) {
           {'id'        : row.id,
            'full_name' : row.full_name,
            'uri'       : row.uri,
-           'attributes': row.attributes == null ? {} : JSON.decode(row.attributes),
            'enabled'   : row.enabled};
+        
+        Map attributes = JSON.decode(row.attributes);
+        attributes.keys
+          .where((key) => !data.containsKey(key))
+          .forEach((key) => data[key] = attributes[key]);
       }
 
       completer.complete(data);
