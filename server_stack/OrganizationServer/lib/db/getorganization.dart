@@ -20,10 +20,7 @@ Future<Map> getOrganization(int id) {
            'uri'       : row.uri,
            'enabled'   : row.enabled};
         
-        Map attributes = JSON.decode(row.attributes);
-        attributes.keys
-          .where((key) => !data.containsKey(key))
-          .forEach((key) => data[key] = attributes[key]);
+        JSON.decode(row.attributes).forEach((key, value) => data.putIfAbsent(key, () => value));
       }
 
       return data;
