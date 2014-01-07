@@ -1,9 +1,7 @@
 part of db;
 
 Future<Map> getOrganizationContactCalendarList(int organizationId, int contactId) {
-  Completer completer = new Completer();
-
-  _pool.connect().then((Connection conn) {
+  return _pool.connect().then((Connection conn) {
     String sql = '''
 SELECT cal.id, cal.start, cal.stop, cal.message
 FROM calendar_events cal join contact_calendar con on cal.id = con.event_id
@@ -12,7 +10,7 @@ WHERE con.organization_id = @orgid AND con.contact_id = @contactid''';
     Map parameters = {'orgid' : organizationId,
                       'contactid': contactId};
 
-    conn.query(sql, parameters).toList().then((rows) {
+    return conn.query(sql, parameters).toList().then((rows) {
       List contacts = new List();
       for(var row in rows) {
         Map contact =
@@ -25,16 +23,13 @@ WHERE con.organization_id = @orgid AND con.contact_id = @contactid''';
 
       Map data = {'CalendarEvents': contacts};
 
-      completer.complete(data);
+      return data;
     }).catchError((err) { 
       log('conn.query Failed. $err');
-      completer.completeError(err);
-    })
-      .whenComplete(() => conn.close());
+      throw err;
+    }).whenComplete(() => conn.close());
   }).catchError((err) { 
     log('_pool.connect Failed. $err');
-    completer.completeError(err);
+    throw err;
   });
-
-  return completer.future;
 }

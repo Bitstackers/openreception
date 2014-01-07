@@ -1,9 +1,7 @@
 part of db;
 
 Future<Map> getContact(int orgId, int contactId) {
-  Completer completer = new Completer();
-
-  _pool.connect().then((Connection conn) {
+  return _pool.connect().then((Connection conn) {
     String sql = '''
 SELECT orgcon.organization_id, orgcon.contact_id, orgcon.wants_messages, orgcon.attributes, orgcon.enabled, con.full_name, con.contact_type, con.enabled
 FROM contacts con join organization_contacts orgcon on con.id = orgcon.contact_id
@@ -12,7 +10,7 @@ WHERE orgcon.organization_id = @orgid AND orgcon.contact_id = @contactid''';
     Map parameters = {'orgid' : orgId,
                       'contactid': contactId};
 
-    conn.query(sql, parameters).toList().then((rows) {
+    return conn.query(sql, parameters).toList().then((rows) {
       Map data = {};
       if(rows.length == 1) {
         var row = rows.first;
@@ -27,10 +25,7 @@ WHERE orgcon.organization_id = @orgid AND orgcon.contact_id = @contactid''';
         JSON.decode(row.attributes).forEach((key, value) => data.putIfAbsent(key, () => value));
       }
 
-      completer.complete(data);
-    }).catchError((err) => completer.completeError(err))
-      .whenComplete(() => conn.close());
-  }).catchError((err) => completer.completeError(err));
-
-  return completer.future;
+      return data;
+    }).whenComplete(() => conn.close());
+  });
 }

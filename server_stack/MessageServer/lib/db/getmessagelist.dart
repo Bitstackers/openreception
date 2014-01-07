@@ -1,15 +1,15 @@
 part of db;
 
 Future<Map> getMessageList() {
-  Completer completer = new Completer();
-
-  _pool.connect().then((Connection conn) {
+  return _pool.connect().then((Connection conn) {
     String sql = '''
       SELECT id, message, subject, to_contact_id, taken_from, taken_by_agent, urgent, created_at, last_try, tries
       FROM message_queue
+      LIMIT 100
     ''';
+    //[LIMIT { number | ALL }] [OFFSET number]
 
-    conn.query(sql).toList().then((rows) {
+    return conn.query(sql).toList().then((rows) {
       List messages = new List();
       for(var row in rows) {
         Map message =
@@ -26,12 +26,7 @@ Future<Map> getMessageList() {
         messages.add(message);
       }
 
-      Map data = {'messages': messages};
-
-      completer.complete(data);
-    }).catchError((err) => completer.completeError(err))
-      .whenComplete(() => conn.close());
-  }).catchError((err) => completer.completeError(err));
-
-  return completer.future;
+      return {'messages': messages};
+    }).whenComplete(() => conn.close());
+  });
 }
