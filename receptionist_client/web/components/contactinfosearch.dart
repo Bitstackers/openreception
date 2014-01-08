@@ -143,8 +143,8 @@ class ContactInfoSearch {
         searchBox.value = '';
       }
       
-      protocol.getContactList(organization.id).then((protocol.Response<model.ContactList> response) {
-        contactList = response.data;
+      storage.getContactList(organization.id).then((model.ContactList list) {
+        contactList = list;
         _performSearch(searchBox.value);
       }).catchError((error) => contactList = new model.ContactList.emptyList());
     });

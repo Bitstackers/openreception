@@ -18,5 +18,7 @@ import 'dart:async';
 import 'model.dart' as model;
 import 'protocol.dart' as protocol;
 
+part 'storage.contact.dart';
+part 'storage.contact_list.dart';
 part 'storage.organization.dart';
 part 'storage.organization_list.dart';

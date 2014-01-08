@@ -43,11 +43,7 @@ import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
 import 'classes/boblogin.dart';
-import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
-import 'classes/logger.dart';
-import 'classes/notification.dart';
-import 'classes/protocol.dart' as protocol;
 import 'classes/state.dart';
 
 BobActive bobActive;
