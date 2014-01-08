@@ -1,0 +1,31 @@
+{
+    "standardGreeting": "Velkommen til...",
+    "aliceBaseUrl": "http://alice.adaheads.com:4242",
+    "notificationSocket": {
+        "interface": "ws://alice.adaheads.com:4242/notifications",
+        "reconnectInterval": 2000
+    },
+    "agentID": "1",
+    "serverLog": {
+        "level": "info",
+        "interface": {
+            "critical": "/log/critical",
+            "error": "/log/error",
+            "info": "/log/info"
+        }
+    },
+    "Enable_Polling": false,
+    "PJSUA_HTTPD_URI": "http://localhost:30200",
+    "System_Console": {
+        "Max_Items": 15
+    },
+    "Event_Log": {
+        "Max_Items": 20
+    },
+    "Debug_Enabled": true,
+    "SIP_Account": {
+        "Domain": "asterisk2.adaheads.com",
+        "Password": "12345",
+        "Username": "softphone1"
+    }
+}
