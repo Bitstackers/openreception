@@ -103,11 +103,12 @@ void _pickupCallSuccess(protocol.Response response) {
         log.debug('commands._pickupCallSuccess NOT FOUND organization ${orgId}');
       }
 
+      //TODO Why is that here? Shouldn't this be a event.fire
       environment.organization = org;
-      environment.contact = org.contactList.first;
+      //environment.contact = org.contactList.first;
 
       log.debug('commands._pickupCallSuccess updated environment.organization to ${org}');
-      log.debug('commands._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
+      //log.debug('commands._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
 
     }).catchError((error) {
       environment.organization = model.nullOrganization;

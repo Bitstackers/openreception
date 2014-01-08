@@ -55,6 +55,17 @@ class _Configuration {
   String   get standardGreeting =>                    _standardGreeting;
   int      get userLogSizeLimit =>                    _userLogSizeLimit;
 
+  String _token = '1e048452ba43dab566b30a32e372a0b3448b5212f0c145fd818d2d001224f6c2';
+  String get token => _token;
+  
+  Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
+  Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
+  Uri _organizationServer = Uri.parse('http://alice.adaheads.com:4000');
+
+  Uri get contactServer => _contactServer;
+  Uri get logServer => _logServer;
+  Uri get organizationServer => _organizationServer;
+  
   /**
    * Is the configuration loaded.
    */

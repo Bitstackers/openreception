@@ -24,20 +24,20 @@ part of protocol;
 Future<Response<model.Organization>> getOrganization(int id) {
   assert(id != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.organizationServer.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.Organization>> completer =
       new Completer<Response<model.Organization>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/organization';
+  final String       path      = '/organization/${id}';//'/organization';
   HttpRequest        request;
   String             url;
 
-  fragments.add('org_id=${id}');
+  fragments.add('token=${configuration.token}');
+  //fragments.add('org_id=${id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
       ..open(GET, url)
-      ..withCredentials = true
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
@@ -73,23 +73,20 @@ const String MIDI = 'midi';
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}) {
-  assert(view == MINI || view == MIDI);
-
-  final String       base      = configuration.aliceBaseUrl.toString();
+Future<Response<model.OrganizationList>> getOrganizationList() {
+  final String       base      = configuration.organizationServer.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.OrganizationList>> completer =
       new Completer<Response<model.OrganizationList>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/organization/list';
+  final String       path      = '/organization';//'/organization/list';
   HttpRequest        request;
   String             url;
-
-  fragments.add('view=${view}');
+  
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
       ..open(GET, url)
-      ..withCredentials = true
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:

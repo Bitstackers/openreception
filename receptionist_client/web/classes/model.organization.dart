@@ -85,7 +85,7 @@ class Organization extends BasicOrganization{
   MiniboxList       get addressList            => _addressList;
   MiniboxList       get alternateNameList      => _alternateNameList;
   MiniboxList       get bankingInformationList => _bankingInformationList;
-  ContactList       get contactList            => _contactList;
+  //ContactList       get contactList            => _contactList;
   CalendarEventList get calendarEventList      => _calendarEventList;
   MiniboxList       get crapcallHandlingList   => _crapcallHandlingList;
   String            get customerType           => _customerType;

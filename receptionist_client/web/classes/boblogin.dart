@@ -54,12 +54,27 @@ class BobLogin {
       int userId = 1;
       protocol.login(userId).then((protocol.Response<Map> value) {
         if(value.status == protocol.Response.OK) {
-          log.debug('Bob.dart ------- Success Logged in---------');
+          log.debug('BobLogin ------- Success Logged in---------');
         } else {
-          log.error('Bob.dart Did not log in.');
+          log.error('BobLogin Did not log in.');
         }
       }).catchError((e) {
-        log.error('Bob.dart: CatchError $e');
+        log.error('BobLogin: CatchError $e');
       });
     });
+
+  void repeatingLogin(int userId) {
+    new Future.delayed(new Duration(minutes: 5),() {
+      protocol.login(userId).then((protocol.Response<Map> value) {
+        if(value.status == protocol.Response.OK) {
+          log.debug('BobLogin Repeating login Success');
+          repeatingLogin(userId);
+        } else {
+          log.debug('BobLogin Repeating login Failed');
+        }
+      }).catchError((e) {
+        log.error('BobLogin: CatchError $e');
+      });
+    });
+  }
 }
