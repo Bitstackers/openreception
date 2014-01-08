@@ -20,7 +20,12 @@ WHERE orgcon.organization_id = @orgid''';
            'full_name'       : row.full_name,
            'contact_type'    : row.contact_type};
 
-        JSON.decode(row.attributes).forEach((key, value) => contact.putIfAbsent(key, () => value));
+        if (row.attributes != null) {
+          Map attributes = JSON.decode(row.attributes);
+          if(attributes != null) {
+            attributes.forEach((key, value) => contact.putIfAbsent(key, () => value));
+          }
+        }
         contacts.add(contact);
       }
 
