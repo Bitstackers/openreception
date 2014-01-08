@@ -1,4 +1,4 @@
-library cache;
+library cache.util;
 
 import 'dart:async';
 import 'dart:io';

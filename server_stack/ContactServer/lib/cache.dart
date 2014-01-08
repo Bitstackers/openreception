@@ -19,5 +19,7 @@ Future<bool> removeContact(int orgId, int contactId) => remove('${config.cache}c
 Future setup() {
   String path = '${config.cache}contact/';
   Directory dir = new Directory(path);
-  return dir.create();
+  
+  //First clear cache, then make the folder again.
+  return dir.delete(recursive: true).catchError((e) => print('Cache clearing error: $e')).whenComplete(dir.create);
 }

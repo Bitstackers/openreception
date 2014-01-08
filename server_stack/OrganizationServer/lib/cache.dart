@@ -19,5 +19,7 @@ Future<bool> removeOrganization(int id) => remove('${config.cache}org/$id.json')
 Future setup() {
   String path = '${config.cache}org/';
   Directory dir = new Directory(path);
-  return dir.create();
+  
+  //First clear cache, then make the folder again.
+  return dir.delete(recursive: true).catchError((e) => print('Cache clearing error: $e')).whenComplete(dir.create);
 }
