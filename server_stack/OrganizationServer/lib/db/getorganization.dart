@@ -15,10 +15,10 @@ Future<Map> getOrganization(int id) {
       if(rows.length == 1) {
         var row = rows.first;
         data =
-          {'id'        : row.id,
-           'full_name' : row.full_name,
-           'uri'       : row.uri,
-           'enabled'   : row.enabled};
+          {'organization_id' : row.id,
+           'full_name'       : row.full_name,
+           'uri'             : row.uri,
+           'enabled'         : row.enabled};
         
         JSON.decode(row.attributes).forEach((key, value) => data.putIfAbsent(key, () => value));
       }
