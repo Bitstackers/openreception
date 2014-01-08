@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import '../../Shared/cache.dart';
+import '../../Shared/common.dart';
 import 'configuration.dart';
 
 /**
@@ -21,5 +22,5 @@ Future setup() {
   Directory dir = new Directory(path);
   
   //First clear cache, then make the folder again.
-  return dir.delete(recursive: true).catchError((e) => print('Cache clearing error: $e')).whenComplete(dir.create);
+  return dir.delete(recursive: true).catchError((e) => log('Cache clearing error: $e')).whenComplete(dir.create);
 }
