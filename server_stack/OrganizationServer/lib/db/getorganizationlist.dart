@@ -16,7 +16,12 @@ Future<Map> getOrganizationList() {
            'uri'             : row.uri,
            'enabled'         : row.enabled};
 
-        JSON.decode(row.attributes).forEach((key, value) => organization.putIfAbsent(key, () => value));
+        if (row.attributes != null) {
+          Map attributes = JSON.decode(row.attributes);
+          if(attributes != null) {
+            attributes.forEach((key, value) => organization.putIfAbsent(key, () => value));
+          }
+        }
         organizations.add(organization);
       }
       
