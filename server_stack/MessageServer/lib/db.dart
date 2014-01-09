@@ -1,13 +1,13 @@
-library db;
+library messageserver.db;
 
 import 'dart:async';
 import 'dart:convert';
 
-import '../../Shared/common.dart';
-import 'configuration.dart';
-
-import 'package:postgresql/postgresql_pool.dart';
 import 'package:postgresql/postgresql.dart';
+import 'package:postgresql/postgresql_pool.dart';
+
+import 'package:Utilities/common.dart';
+import 'configuration.dart';
 
 part 'db/getdraft.dart';
 part 'db/getmessagelist.dart';

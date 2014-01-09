@@ -1,6 +1,8 @@
 name: MiscServer
 description: A sample command-line application
 dependencies:
+  Utilities:
+    path: ../Utilities
   args: any
   path: any
   postgresql: any

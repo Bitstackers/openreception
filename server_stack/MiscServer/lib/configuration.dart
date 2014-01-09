@@ -1,12 +1,12 @@
-library configuration;
+library miscserver.configuration;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../../Shared/common.dart';
-
 import 'package:args/args.dart';
+
+import 'package:Utilities/common.dart';
 
 Configuration config;
 
@@ -14,11 +14,13 @@ class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  String     _configfile = 'config.json';
-  int        _httpport   = 8080;
+  String     _bobconfigfile = 'bob_configuration.json';
+  String     _configfile    = 'config.json';
+  int        _httpport      = 8080;
 
-  String get configfile => _configfile;
-  int    get httpport   => _httpport;
+  String get bobConfigfile => _bobconfigfile;
+  String get configfile    => _configfile;
+  int    get httpport      => _httpport;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -53,6 +55,10 @@ class Configuration {
         _httpport = config['httpport'];
       }
       
+      if(config.containsKey('bobconfigfile')) {
+        _bobconfigfile = config['bobconfigfile'];
+      }
+      
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -64,6 +70,10 @@ class Configuration {
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }
+      
+      if(hasArgument('bobconfigfile')) {
+        _bobconfigfile = _args['bobconfigfile'];
+      }
 
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
@@ -73,7 +83,8 @@ class Configuration {
 
   void _outputConfig() {
     print('''
-httpport:   $httpport''');
+httpport:      $httpport
+bobconfigfile: $bobConfigfile''');
   }
 
   Future whenLoaded() {

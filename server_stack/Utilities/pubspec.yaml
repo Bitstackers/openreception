@@ -1,0 +1,4 @@
+name: Utilities
+description: A sample command-line application
+dependencies:
+  http: any

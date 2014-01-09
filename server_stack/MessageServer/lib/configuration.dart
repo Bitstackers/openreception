@@ -1,12 +1,12 @@
-library configuration;
+library messageserver.configuration;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../../Shared/common.dart';
-
 import 'package:args/args.dart';
+
+import 'package:Utilities/common.dart';
 
 Configuration config;
 

@@ -1,10 +1,14 @@
-library httpserver;
+library utilities.httpserver;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
+
 import 'common.dart';
+
+final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');
 
 void addCorsHeaders(HttpResponse res) {
   res.headers
@@ -19,24 +23,15 @@ Future<bool> authFilter(HttpRequest request) {
     int port = 80;
     String path = 'token/${request.uri.queryParameters['token']}';
 
-    HttpClient client = new HttpClient();
-    return client.open('GET', host, port, path).then((HttpClientRequest clientRequest) {
-      
-      return clientRequest.close();
-    }).then((HttpClientResponse clientResponse) {
-      //Response from the server
-      if(clientResponse.statusCode == 200) {
+    String url = 'http://$host:$port/$path';
+    return http.get(url).then((response) {
+      if (response.statusCode == 200) {
         return true;
-        
       } else {
-        request.response.statusCode = HttpStatus.UNAUTHORIZED;
-        writeAndClose(request, '');
+        writeAndClose(request, 'Auth Failed');
         return false;
       }
-    }).catchError((error) {
-      log('Auth failed: $error');
-      return false;
-    }).whenComplete(client.close);
+    });
     
   } else {
     request.response.statusCode = HttpStatus.UNAUTHORIZED;
@@ -85,8 +80,6 @@ void start(int port, void setupRoutes(HttpServer server)) {
   }
 }
 
-final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');
-
 void writeAndClose(HttpRequest request, String text) {
   String time = new DateTime.now().toString();
   
@@ -103,7 +96,7 @@ void writeAndClose(HttpRequest request, String text) {
   }
   
   sb.write(request.response.statusCode);
-  log(sb.toString());
+  //log(sb.toString());
   
   addCorsHeaders(request.response);
   request.response.headers.contentType = JSON_MIME_TYPE;

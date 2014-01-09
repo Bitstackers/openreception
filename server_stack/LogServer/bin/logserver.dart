@@ -1,16 +1,16 @@
-import 'dart:io';
 import 'dart:async';
-
-import '../../Shared/common.dart';
-import '../lib/configuration.dart';
-import '../lib/router.dart' as router;
-import '../../Shared/httpserver.dart' as http;
+import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-ArgResults    parsedArgs;
-ArgParser     parser = new ArgParser();
+import 'package:Utilities/common.dart';
+import '../lib/configuration.dart';
+import 'package:Utilities/httpserver.dart' as http;
+import '../lib/router.dart' as router;
+
+ArgResults parsedArgs;
+ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
   try {

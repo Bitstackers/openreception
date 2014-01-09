@@ -1,4 +1,4 @@
-part of db;
+part of messageserver.db;
 
 Future<Map> getContactsToMessagesList(List<String> contacts, int orgId) {
   return _pool.connect().then((Connection conn) {

@@ -1,4 +1,4 @@
-part of router;
+part of contactserver.router;
 
 void getPhone(HttpRequest request) {
   int phoneId = int.parse(request.uri.pathSegments.elementAt(1));  

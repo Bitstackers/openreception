@@ -1,6 +1,8 @@
 name: LogServer
 description: A sample command-line application
 dependencies:
+  Utilities:
+    path: ../Utilities
   args: any
   intl: any
   path: any

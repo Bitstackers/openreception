@@ -1,10 +1,10 @@
-library cache;
+library contactserver.cache;
 
 import 'dart:async';
 import 'dart:io';
 
-import '../../Shared/cache.dart';
-import '../../Shared/common.dart';
+import 'package:Utilities/cache.dart';
+import 'package:Utilities/common.dart';
 import 'configuration.dart';
 
 /**

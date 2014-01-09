@@ -1,4 +1,4 @@
-part of db;
+part of organizationserver.db;
 
 Future<Map> updateOrganization(int id, String full_name, String uri, Map attributes, bool enabled) {
   return _pool.connect().then((Connection conn) {

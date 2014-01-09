@@ -1,4 +1,4 @@
-part of router;
+part of messageserver.router;
 
 void getMessageList(HttpRequest request) {
   db.getMessageList().then((Map value) {

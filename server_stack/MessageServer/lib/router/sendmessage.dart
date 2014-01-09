@@ -1,4 +1,4 @@
-part of router;
+part of messageserver.router;
 
 void sendMessage(HttpRequest request) {
   extractContent(request).then((String content) {

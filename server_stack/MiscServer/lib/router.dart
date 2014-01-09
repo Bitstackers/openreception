@@ -1,17 +1,16 @@
-library router;
+library miscserver.router;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
-
-import '../../Shared/common.dart';
-import '../../Shared/httpserver.dart';
 
 import 'package:route/server.dart';
 
+import 'package:Utilities/common.dart';
+import 'package:Utilities/httpserver.dart';
+
 part 'router/getconfiguration.dart';
 
-final Pattern configurationUrl               = new UrlPattern('/configuration');
+final Pattern configurationUrl = new UrlPattern('/configuration');
 
 void setup(HttpServer server) {
   Router router = new Router(server)

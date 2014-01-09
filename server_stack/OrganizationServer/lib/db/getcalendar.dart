@@ -1,4 +1,4 @@
-part of db;
+part of organizationserver.db;
 
 Future<Map> getOrganizationCalendarList(int organizationId) {
   return _pool.connect().then((Connection conn) {

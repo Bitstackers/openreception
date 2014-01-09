@@ -1,4 +1,4 @@
-part of db;
+part of contactserver.db;
 
 Future<Map> getContact(int orgId, int contactId) {
   return _pool.connect().then((Connection conn) {

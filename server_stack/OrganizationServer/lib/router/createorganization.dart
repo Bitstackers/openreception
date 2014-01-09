@@ -1,4 +1,4 @@
-part of router;
+part of organizationserver.router;
 
 void createOrg(HttpRequest request) {
   extractContent(request).then((String content) {

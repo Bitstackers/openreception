@@ -1,4 +1,4 @@
-part of db;
+part of messageserver.db;
 
 Future<Map> getMessageList() {
   return _pool.connect().then((Connection conn) {

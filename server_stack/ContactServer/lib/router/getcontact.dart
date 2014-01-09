@@ -1,4 +1,4 @@
-part of router;
+part of contactserver.router;
 
 void getContact(HttpRequest request) {
   int orgId = int.parse(request.uri.pathSegments.elementAt(1));

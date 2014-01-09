@@ -1,13 +1,13 @@
-library db;
+library organizationserver.db;
 
 import 'dart:async';
 import 'dart:convert';
 
-import '../../Shared/common.dart';
-import 'configuration.dart';
-
 import 'package:postgresql/postgresql_pool.dart';
 import 'package:postgresql/postgresql.dart';
+
+import 'package:Utilities/common.dart';
+import 'configuration.dart';
 
 part 'db/getorganization.dart';
 part 'db/getcalendar.dart';

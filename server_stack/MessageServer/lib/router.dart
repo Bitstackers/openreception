@@ -1,14 +1,14 @@
-library router;
+library messageserver.router;
 
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import '../../Shared/httpserver.dart';
-import 'db.dart' as db;
-
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
+
+import 'db.dart' as db;
+import 'package:Utilities/httpserver.dart';
 
 part 'router/getdraft.dart';
 part 'router/getmessagelist.dart';

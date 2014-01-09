@@ -1,4 +1,4 @@
-part of router;
+part of organizationserver.router;
 
 void getOrganizationCalendar(HttpRequest request) {
   int orgId = int.parse(request.uri.pathSegments.elementAt(1));

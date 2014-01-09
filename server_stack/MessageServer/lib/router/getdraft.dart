@@ -1,4 +1,4 @@
-part of router;
+part of messageserver.router;
 
 void getMessageDrafts(HttpRequest request) {
   db.getDraft().then((Map data) {

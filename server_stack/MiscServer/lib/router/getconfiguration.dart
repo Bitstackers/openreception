@@ -1,4 +1,4 @@
-part of router;
+part of miscserver.router;
 
 void getBobConfig(HttpRequest request) {
   String path = 'bob_configuration.json';

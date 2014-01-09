@@ -1,4 +1,4 @@
-part of router;
+part of logserver.router;
 
 void logDebug(HttpRequest request) {
   _log(request, 'debug');

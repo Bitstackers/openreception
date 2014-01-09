@@ -1,14 +1,14 @@
-library router;
+library logserver.router;
 
 import 'dart:async';
 import 'dart:io';
 
-import '../../Shared/httpserver.dart';
-import '../../Shared/common.dart';
-
 import 'package:intl/intl.dart';
-import 'package:route/server.dart';
 import 'package:route/pattern.dart';
+import 'package:route/server.dart';
+
+import 'package:Utilities/common.dart';
+import 'package:Utilities/httpserver.dart';
 
 part 'router/log.dart';
 

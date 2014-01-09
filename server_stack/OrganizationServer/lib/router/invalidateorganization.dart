@@ -1,4 +1,4 @@
-part of router;
+part of organizationserver.router;
 
 void invalidateOrg(HttpRequest request) {
   int id = int.parse(request.uri.pathSegments.elementAt(1));
