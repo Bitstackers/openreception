@@ -36,7 +36,7 @@ Future<bool> authFilter(HttpRequest request) {
     }).catchError((error) {
       log('Auth failed: $error');
       return false;
-    });
+    }).whenComplete(client.close);
     
   } else {
     request.response.statusCode = HttpStatus.UNAUTHORIZED;
