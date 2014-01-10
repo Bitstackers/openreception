@@ -28,6 +28,7 @@ Future<bool> authFilter(HttpRequest request) {
       if (response.statusCode == 200) {
         return true;
       } else {
+        request.response.statusCode = HttpStatus.UNAUTHORIZED;
         writeAndClose(request, 'Auth Failed');
         return false;
       }
