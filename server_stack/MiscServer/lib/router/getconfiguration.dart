@@ -1,7 +1,7 @@
 part of miscserver.router;
 
 void getBobConfig(HttpRequest request) {
-  String path = 'bob_configuration.json';
+  String path = config.bobConfigfile;
   File file = new File(path);
 
   file.readAsString().then((String text) {
