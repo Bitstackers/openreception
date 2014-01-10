@@ -22,7 +22,7 @@ part of protocol;
  */
 Future<Response<Map>> login(int userId) {
   //TODO
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.authBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/login';
@@ -65,13 +65,15 @@ Future<Response<Map>> login(int userId) {
  */
 Future<Response<Map>> userslist() {
   //TODO
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.authBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
-  final String                   path      = '/users/list';
+  final String                   path      = '/user/list';
+  final List<String>             fragments = new List<String>();
   HttpRequest                    request;
   String                         url;
 
-  url = _buildUrl(base, path);
+  fragments.add('token=1');
+  url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(GET, url)

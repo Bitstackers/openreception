@@ -19,14 +19,14 @@ final Call nullCall = new Call._null();
  * A call.
  */
 class Call implements Comparable {
-  String   _assignedAgent;
+  int      _assignedAgent;
   String   _bLeg;
   String   _id;
   bool     _inbound;
   DateTime _start;
   int      _organizationId;
 
-  String   get assignedAgent  => _assignedAgent;
+  int      get assignedAgent  => _assignedAgent;
   String   get bLeg           => _bLeg;
   String   get id             => _id;
   bool     get inbound        => _inbound;

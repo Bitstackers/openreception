@@ -22,8 +22,9 @@ import 'package:logging/logging.dart';
 import 'logger.dart';
 import 'state.dart';
 
-const String CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
+//const String CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
+const String CONFIGURATION_URL = 'http://localhost:4242/configuration';
 
 final _Configuration configuration = new _Configuration();
 
@@ -33,8 +34,13 @@ final _Configuration configuration = new _Configuration();
 class _Configuration {
   bool _loaded = false;
 
-  String   _agentID;
-  Uri      _aliceBaseUrl;
+  int      _agentID;
+  Uri      _callFlowBaseUrl;
+  Uri      _orgBaseUrl;
+  Uri      _contactBaseUrl;
+  Uri      _messageBaseUrl;
+  Uri      _logBaseUrl;
+  Uri      _authBaseUrl;
   Uri      _notificationSocketInterface;
   Duration _notificationSocketReconnectInterval;
   Level    _serverLogLevel = Level.OFF;
@@ -44,8 +50,13 @@ class _Configuration {
   String   _standardGreeting;
   int      _userLogSizeLimit = 100000;
 
-  String   get agentID =>                             _agentID;
-  Uri      get aliceBaseUrl =>                        _aliceBaseUrl;
+  int      get agentID =>                             _agentID;
+  Uri      get orgBaseUrl =>                          _orgBaseUrl;
+  Uri      get callFlowBaseUrl =>                      _callFlowBaseUrl;
+  Uri      get contactBaseUrl =>                      _contactBaseUrl;
+  Uri      get messageBaseUrl =>                      _messageBaseUrl;
+  Uri      get logBaseUrl =>                          _logBaseUrl;
+  Uri      get authBaseUrl =>                         _authBaseUrl;
   Uri      get notificationSocketInterface =>         _notificationSocketInterface;
   Duration get notificationSocketReconnectInterval => _notificationSocketReconnectInterval;
   Level    get serverLogLevel =>                      _serverLogLevel;
@@ -112,8 +123,13 @@ class _Configuration {
     final Map notificationSocketMap = json['notificationSocket'];
     final Map serverLogMap = json['serverLog'];
 
-    _agentID      = _stringValue(json, 'agentID', '0');
-    _aliceBaseUrl = Uri.parse(_stringValue(json, 'aliceBaseUrl', 'http://alice.adaheads.com:4242'));
+    _agentID      = _intValue(json, 'agentID', 0);
+    _callFlowBaseUrl = Uri.parse(_stringValue(json, 'callFlowServerURI', 'http://localhost:4242'));
+    _orgBaseUrl = Uri.parse(_stringValue(json, 'organizationServerURI', 'http://localhost:8080'));
+    _contactBaseUrl = Uri.parse(_stringValue(json, 'contactServerURI', 'http://localhost:8081'));
+    _messageBaseUrl = Uri.parse(_stringValue(json, 'messageServerURI', 'http://localhost:8082'));
+    _logBaseUrl = Uri.parse(_stringValue(json, 'logServerURI', 'http://localhost:8083'));
+    _authBaseUrl = Uri.parse(_stringValue(json, 'authServerURI', 'http://localhost:9000'));
 
     if (notificationSocketMap['reconnectInterval'] is int && notificationSocketMap['reconnectInterval'] >= 1000) {
       _notificationSocketReconnectInterval =  new Duration(milliseconds: notificationSocketMap['reconnectInterval']);
@@ -123,7 +139,7 @@ class _Configuration {
 
     _notificationSocketInterface = Uri.parse(_stringValue(notificationSocketMap,
                                              'interface',
-                                             'ws://alice.adaheads.com:4242/notifications'));
+                                             'ws://localhost:4242/notifications?token=1'));
 
     switch (serverLogMap['level'].toLowerCase()) {
       case 'info':
@@ -144,13 +160,13 @@ class _Configuration {
     }
 
     criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
-    _serverLogInterfaceCritical = Uri.parse('${aliceBaseUrl}${criticalPath}');
+    _serverLogInterfaceCritical = Uri.parse('${logBaseUrl}${criticalPath}');
 
     errorPath = _stringValue(serverLogMap['interface'], 'error', '/log/error');
-    _serverLogInterfaceError = Uri.parse('${aliceBaseUrl}${errorPath}');
+    _serverLogInterfaceError = Uri.parse('${logBaseUrl}${errorPath}');
 
     infoPath = _stringValue(serverLogMap['interface'], 'info', '/log/info');
-    _serverLogInterfaceInfo = Uri.parse('${aliceBaseUrl}${infoPath}');
+    _serverLogInterfaceInfo = Uri.parse('${logBaseUrl}${infoPath}');
 
     _standardGreeting = _stringValue(json, 'standardGreeting', 'Velkommen til...');
   }

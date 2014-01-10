@@ -39,13 +39,13 @@ class BobLogin {
         subscription.cancel();
       }
     });
-
     configuration.initialize();
   }
 
   makeUserNode(Map user) => new LIElement()
     ..text = user['name']
     ..onClick.listen((_) {
+
       log.debug('BobLogin. Websocket is starting.');
       notification.initialize();
       element.classes.add('hidden');

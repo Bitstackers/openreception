@@ -24,20 +24,18 @@ part of protocol;
 Future<Response<model.Organization>> getOrganization(int id) {
   assert(id != null);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.orgBaseUrl.toString();
   final Completer<Response<model.Organization>> completer =
       new Completer<Response<model.Organization>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/organization';
+  final String       path      = '/organization/${id}';
   HttpRequest        request;
   String             url;
 
-  fragments.add('org_id=${id}');
-  url = _buildUrl(base, path, fragments);
+  url = _buildUrl(base, path);
 
   request = new HttpRequest()
       ..open(GET, url)
-      ..withCredentials = true
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
@@ -76,7 +74,7 @@ const String MIDI = 'midi';
 Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}) {
   assert(view == MINI || view == MIDI);
 
-  final String       base      = configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.orgBaseUrl.toString();
   final Completer<Response<model.OrganizationList>> completer =
       new Completer<Response<model.OrganizationList>>();
   final List<String> fragments = new List<String>();
@@ -89,15 +87,15 @@ Future<Response<model.OrganizationList>> getOrganizationList({String view: MINI}
 
   request = new HttpRequest()
       ..open(GET, url)
-      ..withCredentials = true
       ..onLoad.listen((val) {
         switch(request.status) {
           case 200:
             var response = _parseJson(request.responseText);
             //TODO REMOVE BEFORE november ends. TESTING ONLY
-            response['organization_list'].addAll(organizationListTestData);
+            //print (response['organization_list']);
+            //response['organization_list'].addAll(organizationListTestData);
 
-            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organization_list');
+            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organizations');
             completer.complete(new Response<model.OrganizationList>(Response.OK, data));
             break;
 
