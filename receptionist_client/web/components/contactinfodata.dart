@@ -115,9 +115,9 @@ class ContactInfoData {
         ..text = item.value);
     }
 
-    position.innerHtml = contact.position;
-    responsibility.innerHtml = contact.responsibility;
-    department.innerHtml = contact.department;
+    position.innerHtml = contact.position != null ? contact.position: '';
+    responsibility.innerHtml = contact.responsibility != null ? contact.responsibility: '';
+    department.innerHtml = contact.department  != null ? contact.department: '';
 
     telephoneNumberList.children.clear();
     for(var item in contact.telephoneNumberList) {
@@ -125,7 +125,7 @@ class ContactInfoData {
         ..text = item.value);
     }
 
-    relations.innerHtml = contact.relations;
+    relations.innerHtml = contact.relations != null ? contact.relations: '';
 
     emailAddressList.children.clear();
     for(var item in contact.emailAddressList) {
@@ -133,7 +133,7 @@ class ContactInfoData {
         ..text = item.value);
     }
 
-    info.innerHtml = contact.info;
+    info.innerHtml = contact.info  != null ? contact.info: '';
 
     backupList.children.clear();
     for(var item in contact.emailAddressList) {

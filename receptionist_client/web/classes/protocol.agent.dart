@@ -36,7 +36,6 @@ Future<Response<Map>> getAgentState(int agentId) {
 
   request = new HttpRequest()
       ..open(GET, url)
-      ..withCredentials = true
       ..onLoad.listen((_) {
         switch(request.status) {
           case 200:
@@ -85,7 +84,6 @@ Future<Response<Map>> setAgentState(int agentId) {
 
   request = new HttpRequest()
       ..open(POST, url)
-      ..withCredentials = true
       ..onLoad.listen((_) {
         switch(request.status) {
           case 200:
@@ -126,7 +124,6 @@ Future<Response<Map>> agentList() {
 
   request = new HttpRequest()
       ..open(GET, url)
-      ..withCredentials = true
       ..onLoad.listen((_) {
         switch(request.status) {
           case 200:

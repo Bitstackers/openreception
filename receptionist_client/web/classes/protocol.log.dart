@@ -21,7 +21,8 @@ part of protocol;
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<Map>> logInfo(String message) {
-  return _log(message, configuration.serverLogInterfaceInfo);
+  String url = '${configuration.serverLogInterfaceInfo}?token=${configuration.token}';
+  return _log(message, url);
 }
 
 /**
@@ -32,7 +33,8 @@ Future<Response<Map>> logInfo(String message) {
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<Map>> logError(String message) {
-  return _log(message, configuration.serverLogInterfaceError);
+  String url = '${configuration.serverLogInterfaceError}?token=${configuration.token}';
+  return _log(message, url);
 }
 
 /**
@@ -43,7 +45,8 @@ Future<Response<Map>> logError(String message) {
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<Map>> logCritical(String message) {
-  return _log(message, configuration.serverLogInterfaceCritical);
+  String url = '${configuration.serverLogInterfaceCritical}?token=${configuration.token}';
+  return _log(message, url);
 }
 
 /**
@@ -53,20 +56,19 @@ Future<Response<Map>> logCritical(String message) {
  *  On success : [Response] object with status OK (no data)
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-Future<Response<Map>> _log(String message, Uri url) {
+Future<Response<Map>> _log(String message, String url) {
   assert(message.isNotEmpty);
-  assert(url.isAbsolute);
 
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   HttpRequest                    request;
   final String                   payload   = 'msg=${Uri.encodeComponent(message)}';
-
+  
   request = new HttpRequest()
-      ..open(POST, url.toString())
-      ..withCredentials = true
+      ..open(POST, url)
       ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
       ..onLoad.listen((_) {
         switch(request.status) {
+          case 200:
           case 204:
             completer.complete(new Response<Map>(Response.OK, null));
             break;

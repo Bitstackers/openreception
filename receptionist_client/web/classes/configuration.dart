@@ -22,7 +22,7 @@ import 'package:logging/logging.dart';
 import 'logger.dart';
 import 'state.dart';
 
-const String CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
+const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
 
 final _Configuration configuration = new _Configuration();
@@ -57,6 +57,8 @@ class _Configuration {
 
   String _token = '1e048452ba43dab566b30a32e372a0b3448b5212f0c145fd818d2d001224f6c2';
   String get token => _token;
+  String _cfToken = '1';
+  String get cfToken => _cfToken;
   
   Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
   Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');

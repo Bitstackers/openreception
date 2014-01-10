@@ -28,12 +28,11 @@ Future<Response<model.Organization>> getOrganization(int id) {
   final Completer<Response<model.Organization>> completer =
       new Completer<Response<model.Organization>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/organization/${id}';//'/organization';
+  final String       path      = '/organization/${id}';
   HttpRequest        request;
   String             url;
 
   fragments.add('token=${configuration.token}');
-  //fragments.add('org_id=${id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()

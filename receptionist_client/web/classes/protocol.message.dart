@@ -33,6 +33,7 @@ Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) 
 
   final String                   base       = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer  = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
   final String                   path       = '/message/send';
 
   final String                   toPayload  = 'to=${to.map((i) => 'cid@oid').join(',')}';
@@ -42,11 +43,13 @@ Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) 
   final String                   payload    = '${recepients}&msg=${Uri.encodeComponent(message)}';
 
   HttpRequest                    request;
-  final String                   url        = _buildUrl(base, path);
+  String                         url;
+
+  fragments.add('token=${configuration.token}');
+  url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
   ..open(POST, url)
-  ..withCredentials = true
   ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
   ..onLoad.listen((_) {
     switch(request.status) {

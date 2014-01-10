@@ -23,13 +23,16 @@ part of protocol;
 Future<Response<Map>> callList() {
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
   final String                   path      = '/call/list';
   HttpRequest                    request;
-  final String                   url       = _buildUrl(base, path);
+  String                         url;
 
+  fragments.add('token=${configuration.cfToken}');
+  url = _buildUrl(base, path, fragments);
+    
   request = new HttpRequest()
     ..open(GET, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -61,13 +64,16 @@ Future<Response<Map>> callList() {
 Future<Response<Map>> callQueue() {
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
   final String                   path      = '/call/queue';
   HttpRequest                    request;
-  final String                   url       = _buildUrl(base, path);
+  String                         url;
 
+  fragments.add('token=${configuration.cfToken}');
+  url = _buildUrl(base, path, fragments);
+      
   request = new HttpRequest()
     ..open(GET, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
 //      Map data = {'calls': [
 //                        {'assigned_to': '',
@@ -124,11 +130,13 @@ Future<Response<Map>> callQueue() {
 Future<Response<model.CallList>> callLocalList(String agentId) {
   final String                               base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<model.CallList>>  completer = new Completer<Response<model.CallList>>();
+  final List<String>                         fragments = new List<String>();
   final String                               path      = '/call/localList';
   HttpRequest                                request;
   String                                     url;
 
-  url = _buildUrl(base, path);
+  fragments.add('token=${configuration.cfToken}');
+  url = _buildUrl(base, path, fragments);
 
 //Dummy Data
 //  Map dummyData = new Map();
@@ -142,7 +150,6 @@ Future<Response<model.CallList>> callLocalList(String agentId) {
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       print('----- ${request.responseText}');
       Map data = _parseJson(request.responseText);
@@ -169,12 +176,12 @@ Future<Response<Map>> hangupCall(model.Call call) {
   HttpRequest                    request;
   String                         url;
 
+  fragments.add('token=${configuration.cfToken}');
   fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -219,12 +226,12 @@ Future<Response<Map>> originateCall(String extension) {
   if (extension != null && extension.isNotEmpty){
     fragments.add('extension=${extension}');
   }
-
+  fragments.add('token=${configuration.cfToken}');
+  
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -261,11 +268,11 @@ Future<Response<Map>> parkCall(model.Call call) {
   String                         url;
 
   fragments.add('call_id=${call.id}');
+  fragments.add('token=${configuration.cfToken}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -307,12 +314,12 @@ Future<Response<Map>> pickupCall({model.Call call}) {
   if (call != null && call.id != null) {
     fragments.add('call_id=${call.id}');
   }
-
+  fragments.add('token=${configuration.cfToken}');
+  
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -353,11 +360,11 @@ Future<Response<Map>> statusCall(model.Call call) {
   String                         url;
 
   fragments.add('call_id=${call.id}');
+  fragments.add('token=${configuration.cfToken}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -399,11 +406,11 @@ Future<Response<Map>> transferCall(String source, String destination) {
 
   fragments.add('source=${source}');
   fragments.add('destination=${destination}');
+  fragments.add('token=${configuration.cfToken}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(POST, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:

@@ -34,7 +34,6 @@ Future<Response<Map>> login(int userId) {
 
   request = new HttpRequest()
     ..open(GET, url)
-    ..withCredentials = true
     ..onLoad.listen((_) {
       switch(request.status) {
         case 200:
@@ -65,13 +64,16 @@ Future<Response<Map>> login(int userId) {
  */
 Future<Response<Map>> userslist() {
   //TODO
+  //return new Future(() => new Response(200, {'users': [{'name': 'Faking'}, {'name': 'The'}, {'name': 'userlist'}]}));
   final String                   base      = configuration.aliceBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
-  final String                   path      = '/users/list';
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/user/list';
   HttpRequest                    request;
   String                         url;
 
-  url = _buildUrl(base, path);
+  fragments.add('token=${configuration.cfToken}');
+  url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
     ..open(GET, url)

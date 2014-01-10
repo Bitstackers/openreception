@@ -28,7 +28,7 @@ class BobLogin {
       if(value.isConfigurationOK) {
         protocol.userslist().then((protocol.Response response) {
           if(response.status == protocol.Response.OK) {
-            List users = response.data['users'];
+            List users = response.data['users']['users'];
             list.children.addAll(users.map(makeUserNode));
             box = new Box.withHeader(element, header, list);
           } else {
@@ -44,7 +44,7 @@ class BobLogin {
   }
 
   makeUserNode(Map user) => new LIElement()
-    ..text = user['name']
+    ..text = user['user']['name']
     ..onClick.listen((_) {
       log.debug('BobLogin. Websocket is starting.');
       notification.initialize();
