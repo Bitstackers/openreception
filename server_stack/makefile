@@ -18,3 +18,6 @@ misc: outfolder
 
 outfolder:
 	-mkdir out
+
+clean: 
+	-rm out
