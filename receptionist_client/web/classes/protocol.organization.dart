@@ -73,11 +73,11 @@ const String MIDI = 'midi';
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<model.OrganizationList>> getOrganizationList() {
-  final String       base      = configuration.organizationServer.toString(); //configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.organizationServer.toString();
   final Completer<Response<model.OrganizationList>> completer =
       new Completer<Response<model.OrganizationList>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/organization';//'/organization/list';
+  final String       path      = '/organization';
   HttpRequest        request;
   String             url;
   
@@ -90,11 +90,7 @@ Future<Response<model.OrganizationList>> getOrganizationList() {
         switch(request.status) {
           case 200:
             var response = _parseJson(request.responseText);
-            //TODO REMOVE BEFORE november ends. TESTING ONLY
-            //print (response['organization_list']);
-            //response['organization_list'].addAll(organizationListTestData);
-
-            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organizations');
+            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organization_list');
             completer.complete(new Response<model.OrganizationList>(Response.OK, data));
             break;
 
