@@ -1,10 +1,8 @@
 library organizationserver.cache;
 
 import 'dart:async';
-import 'dart:io';
 
-import 'package:Utilities/cache.dart';
-import 'package:Utilities/common.dart';
+import 'package:Utilities/cache.dart' ;
 import 'configuration.dart';
 
 /**
@@ -17,10 +15,4 @@ Future<bool> saveOrganization(int id, String text) => save('${config.cache}org/$
 
 Future<bool> removeOrganization(int id) => remove('${config.cache}org/$id.json');
 
-Future setup() {
-  String path = '${config.cache}org/';
-  Directory dir = new Directory(path);
-    
-  //First clear cache, then make the folder again.
-  return dir.delete(recursive: true).catchError((e) => log('Cache clearing error: $e')).whenComplete(dir.create);
-}
+Future setup() => createCacheFolder('${config.cache}org/');

@@ -72,13 +72,12 @@ void serverError(HttpRequest request, String logMessage) {
 }
 
 void start(int port, void setupRoutes(HttpServer server)) {
-  try {
-    HttpServer.bind(InternetAddress.ANY_IP_V4, port)
-      .then(setupRoutes)
-      .catchError((e) => log('http.startHttp() -> HttpServer.bind() error: ${e}'));
-  } catch(e) {
-    log('http.startHttp() exception: ${e}');
-  }
+  HttpServer.bind(InternetAddress.ANY_IP_V4, port)
+    .then(setupRoutes)
+    .catchError((e) {
+      log('http.startHttp() -> HttpServer.bind() error: ${e}');
+      throw e;
+    });
 }
 
 void writeAndClose(HttpRequest request, String text) {
@@ -97,7 +96,7 @@ void writeAndClose(HttpRequest request, String text) {
   }
   
   sb.write(request.response.statusCode);
-  //log(sb.toString());
+  log(sb.toString());
   
   addCorsHeaders(request.response);
   request.response.headers.contentType = JSON_MIME_TYPE;

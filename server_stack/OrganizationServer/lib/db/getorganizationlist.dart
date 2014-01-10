@@ -1,11 +1,11 @@
-part of organizationserver.db;
+part of organizationserver.database;
 
 Future<Map> getOrganizationList() {
   return _pool.connect().then((Connection conn) {
     String sql = '''
       SELECT id, full_name, uri, enabled, attributes
       FROM organizations
-    ''';
+    ''';  
     
     return conn.query(sql).toList().then((rows) {
       List organizations = new List();

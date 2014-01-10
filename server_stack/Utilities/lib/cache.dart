@@ -20,6 +20,20 @@ Future<String> load(String path) {
   return completer.future;
 }
 
+Future<bool> remove(String path) {
+  Completer completer = new Completer();
+  File file = new File(path);
+
+  file.delete()
+    .then((_) => completer.complete(true))
+    .catchError((error) {
+      log(error.toString());
+      completer.complete(false);
+    });
+
+  return completer.future;
+}
+
 Future<bool> save(String path, String text) {
   Completer completer = new Completer();
 
@@ -35,16 +49,9 @@ Future<bool> save(String path, String text) {
   return completer.future;
 }
 
-Future<bool> remove(String path) {
-  Completer completer = new Completer();
-  File file = new File(path);
-
-  file.delete()
-    .then((_) => completer.complete(true))
-    .catchError((error) {
-      log(error.toString());
-      completer.complete(false);
-    });
-
-  return completer.future;
+Future createCacheFolder(String path) {
+  Directory dir = new Directory(path);
+    
+  //First clear cache, then make the folder again.
+  return dir.delete(recursive: true).catchError((_) => null).whenComplete(dir.create);
 }

@@ -1,4 +1,4 @@
-part of organizationserver.db;
+part of organizationserver.database;
 
 Future<Map> deleteOrganization(int id) {
  return _pool.connect().then((Connection conn) {

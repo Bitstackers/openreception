@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 import '../lib/cache.dart' as cache;
 import 'package:Utilities/common.dart';
 import '../lib/configuration.dart';
-import '../lib/db.dart';
+import '../lib/database.dart';
 import 'package:Utilities/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 
@@ -28,7 +28,10 @@ void main(List<String> args) {
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+        .catchError((e) { 
+          log('main() -> config.whenLoaded() ${e}');
+          throw e;
+        });
     }
   } on ArgumentError catch(e) {
     log('main() ArgumentError ${e}.');
