@@ -91,9 +91,10 @@ Future<Response<model.OrganizationList>> getOrganizationList() {
           case 200:
             var response = _parseJson(request.responseText);
             //TODO REMOVE BEFORE november ends. TESTING ONLY
-            response['organization_list'].addAll(organizationListTestData);
+            //print (response['organization_list']);
+            //response['organization_list'].addAll(organizationListTestData);
 
-            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organization_list');
+            model.OrganizationList data = new model.OrganizationList.fromJson(response, 'organizations');
             completer.complete(new Response<model.OrganizationList>(Response.OK, data));
             break;
 

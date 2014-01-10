@@ -22,7 +22,7 @@ part of protocol;
  */
 Future<Response<Map>> login(int userId) {
   //TODO
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.authBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/login';
@@ -63,9 +63,7 @@ Future<Response<Map>> login(int userId) {
  *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
 Future<Response<Map>> userslist() {
-  //TODO
-  //return new Future(() => new Response(200, {'users': [{'name': 'Faking'}, {'name': 'The'}, {'name': 'userlist'}]}));
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.authBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/user/list';

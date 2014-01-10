@@ -21,7 +21,7 @@ part of protocol;
  *  On error  : [Response] object with status ERROR or CRITICALERROR
  */
 Future<Response<Map>> callList() {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/list';
@@ -62,7 +62,7 @@ Future<Response<Map>> callList() {
  * Get a list of waiting calls.
  */
 Future<Response<Map>> callQueue() {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/queue';
@@ -127,8 +127,8 @@ Future<Response<Map>> callQueue() {
   return completer.future;
 }
 
-Future<Response<model.CallList>> callLocalList(String agentId) {
-  final String                               base      = configuration.aliceBaseUrl.toString();
+Future<Response<model.CallList>> callLocalList(int agentId) {
+  final String                               base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<model.CallList>>  completer = new Completer<Response<model.CallList>>();
   final List<String>                         fragments = new List<String>();
   final String                               path      = '/call/localList';
@@ -169,7 +169,7 @@ Future<Response<model.CallList>> callLocalList(String agentId) {
  * Hangup [call].
  */
 Future<Response<Map>> hangupCall(model.Call call) {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/hangup';
@@ -216,7 +216,7 @@ Future<Response<Map>> originateCall(String extension) {
   assert(extension != null);
   assert(extension.isNotEmpty);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/originate';
@@ -260,7 +260,7 @@ Future<Response<Map>> originateCall(String extension) {
 Future<Response<Map>> parkCall(model.Call call) {
   assert(call != null);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/park';
@@ -304,7 +304,7 @@ Future<Response<Map>> parkCall(model.Call call) {
  * to the agent.
  */
 Future<Response<Map>> pickupCall({model.Call call}) {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/pickup';
@@ -352,7 +352,7 @@ Future<Response<Map>> pickupCall({model.Call call}) {
 Future<Response<Map>> statusCall(model.Call call) {
   assert(call != null);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/state';
@@ -397,7 +397,7 @@ Future<Response<Map>> transferCall(String source, String destination) {
   assert(source != null);
   assert(source != model.nullCall);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/call/transfer';

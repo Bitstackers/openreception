@@ -30,7 +30,7 @@ const SIP_TYPE       = 3;
  * Originate [type] call to [address].
  */
 void originateCall(String address, int type) {
-  String agentId = configuration.agentID;
+  int agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
 
 //  switch(type) {

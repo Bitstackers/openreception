@@ -66,6 +66,7 @@ void main() {
   StreamSubscription subscription;
   subscription = event.bus.on(event.stateUpdated).listen((State value) {
     if(value.isConfigurationOK) {
+
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
     }
