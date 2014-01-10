@@ -9,6 +9,7 @@ class ContactInfoSearch {
   static const int                 incrementSteps       = 20;
                model.Organization  organization         = model.nullOrganization;
                String              placeholder          = 'Søg...';
+               model.ContactList   contactList;
                InputElement        searchBox;
 
   bool hasFocus = false;
@@ -53,7 +54,7 @@ class ContactInfoSearch {
 
   void contactClick(Event event) {
     LIElement element = event.target;
-    var contact = organization.contactList.getContact(element.value);
+    model.Contact contact = contactList.getContact(element.value);
     activeContact(contact);
   }
 
@@ -74,7 +75,7 @@ class ContactInfoSearch {
             li.classes.remove('contact-info-active');
             next.classes.add('contact-info-active');
             int contactId = next.value;
-            model.Contact con = organization.contactList.getContact(contactId);
+            model.Contact con = contactList.getContact(contactId);
             if(con != null) {
               event.bus.fire(event.contactChanged, con);
             }
@@ -91,7 +92,7 @@ class ContactInfoSearch {
             li.classes.remove('contact-info-active');
             previous.classes.add('contact-info-active');
             int contactId = previous.value;
-            model.Contact con = organization.contactList.getContact(contactId);
+            model.Contact con = contactList.getContact(contactId);
             if(con != null) {
               event.bus.fire(event.contactChanged, con);
             }
@@ -118,9 +119,9 @@ class ContactInfoSearch {
 
     //Do the search.
     if(search.isEmpty) {
-      filteredContactList.addAll(organization.contactList);
+      filteredContactList.addAll(contactList);
     } else {
-      filteredContactList.addAll(organization.contactList.where((model.Contact contact) => searchContact(contact, search)));
+      filteredContactList.addAll(contactList.where((model.Contact contact) => searchContact(contact, search)));
     }
 
     _clearDisplayedContactList();
@@ -141,7 +142,11 @@ class ContactInfoSearch {
       if(value == model.nullOrganization) {
         searchBox.value = '';
       }
-      _performSearch(searchBox.value);
+      
+      protocol.getContactList(organization.id).then((protocol.Response<model.ContactList> response) {
+        contactList = response.data;
+        _performSearch(searchBox.value);
+      }).catchError((error) => contactList = new model.ContactList.emptyList());
     });
 
     event.bus.on(event.contactChanged).listen((model.Contact value) {

@@ -182,10 +182,10 @@ class Call implements Comparable {
         }
 
         environment.organization = org;
-        environment.contact = org.contactList.first;
+        //environment.contact = org.contactList.first;
 
         log.debug('model.Call._pickupCallSuccess updated environment.organization to ${org}');
-        log.debug('model.Call._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
+        //log.debug('model.Call._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
 
       }).catchError((error) {
         environment.organization = nullOrganization;

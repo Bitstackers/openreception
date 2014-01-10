@@ -68,7 +68,11 @@ class MessageSearch{
         storage.getOrganization(element.id).then((model.Organization value) {
           selectedCompany = value;
           searchParametersChanged();
-          contactSearch.updateSourceList(value.contactList.toList(growable: false));
+          protocol.getContactList(value.id).then((protocol.Response<model.ContactList> response) {
+            contactSearch.updateSourceList(response.data.toList(growable: false));
+          }).catchError((error) {
+            contactSearch.updateSourceList(new model.ContactList.emptyList().toList(growable: false));
+          });
         });
       }
       ..searchFilter = (model.BasicOrganization org, String searchText) {
