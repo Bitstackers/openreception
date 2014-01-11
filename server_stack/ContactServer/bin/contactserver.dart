@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 import '../lib/cache.dart' as cache;
 import 'package:Utilities/common.dart';
 import '../lib/configuration.dart';
-import '../lib/db.dart';
+import '../lib/database.dart';
 import 'package:Utilities/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 

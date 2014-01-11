@@ -81,15 +81,9 @@ class Configuration {
     });
   }
 
-  void _outputConfig() {
-    print('''
-httpport:      $httpport
-bobconfigfile: $bobConfigfile''');
-  }
+  String toString() =>'''
+    httpport:      $httpport
+    bobconfigfile: $bobConfigfile''';
 
-  Future whenLoaded() {
-    return _parseConfigFile()
-        .whenComplete(_parseArgument)
-        .then((_) => _outputConfig());
-  }
+  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => print(config));
 }

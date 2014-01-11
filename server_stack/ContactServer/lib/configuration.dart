@@ -138,21 +138,10 @@ class Configuration {
     });
   }
 
-  void _outputConfig() {
-    print('''
-httpport:   $httpport
-dbuser:     $dbuser
-dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('').first +
-    dbpassword.split('').skip(1).take(dbpassword.length-2).map((_) => '*').join('') +
-    dbpassword.substring(dbpassword.length -1) : ''}
-dbhost:     $dbhost
-dbport:     $dbport
-dbname:     $dbname''');
-  }
+  String toString() =>'''
+    httpport: $httpport
+    dbhost:   $dbhost
+    dbname:   $dbname''';
 
-  Future whenLoaded() {
-    return _parseConfigFile()
-        .whenComplete(_parseArgument)
-        .then((_) => _outputConfig());
-  }
+  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => print(config));
 }

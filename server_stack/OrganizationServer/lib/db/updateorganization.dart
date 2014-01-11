@@ -1,7 +1,6 @@
 part of organizationserver.database;
 
 Future<Map> updateOrganization(int id, String full_name, String uri, Map attributes, bool enabled) {
-  return _pool.connect().then((Connection conn) {
     String sql = '''
       UPDATE organizations
       SET full_name=@full_name, uri=@uri, attributes=@attributes, enabled=@enabled
@@ -14,9 +13,7 @@ Future<Map> updateOrganization(int id, String full_name, String uri, Map attribu
        'uri'       : uri,
        'attributes': attributes == null ? '{}' : JSON.encode(attributes),
        'enabled'   : enabled};
-
-    return conn.execute(sql, parameters).then((rowsAffected) {
+    return database.execute(_pool, sql).then((rowsAffected) {
       return {'rowsAffected': rowsAffected};
-    }).whenComplete(() => conn.close());
-  });
+    });
 }

@@ -1,16 +1,15 @@
-part of contactserver.db;
+part of contactserver.database;
 
 Future<Map> getContact(int orgId, int contactId) {
-  return _pool.connect().then((Connection conn) {
     String sql = '''
-SELECT orgcon.organization_id, orgcon.contact_id, orgcon.wants_messages, orgcon.attributes, orgcon.enabled, con.full_name, con.contact_type, con.enabled
-FROM contacts con join organization_contacts orgcon on con.id = orgcon.contact_id
-WHERE orgcon.organization_id = @orgid AND orgcon.contact_id = @contactid''';
+      SELECT orgcon.organization_id, orgcon.contact_id, orgcon.wants_messages, orgcon.attributes, orgcon.enabled, con.full_name, con.contact_type, con.enabled
+      FROM contacts con JOIN organization_contacts orgcon on con.id = orgcon.contact_id
+      WHERE orgcon.organization_id = @orgid AND orgcon.contact_id = @contactid''';
 
     Map parameters = {'orgid' : orgId,
                       'contactid': contactId};
 
-    return conn.query(sql, parameters).toList().then((rows) {
+    return database.query(_pool, sql, parameters).then((rows) {
       Map data = {};
       if(rows.length == 1) {
         var row = rows.first;
@@ -26,6 +25,5 @@ WHERE orgcon.organization_id = @orgid AND orgcon.contact_id = @contactid''';
       }
 
       return data;
-    }).whenComplete(() => conn.close());
-  });
+    });
 }
