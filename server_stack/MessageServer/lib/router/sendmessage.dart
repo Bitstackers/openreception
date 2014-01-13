@@ -19,8 +19,8 @@ void sendMessage(HttpRequest request) {
     } catch(e) {
       request.response.statusCode = 400;
       String response = JSON.encode(
-          {'status'      : 'bad request',
-            'description': 'passed message argument is too long, missing or invalid'});
+          {'status'     : 'bad request',
+           'description': 'passed message argument is too long, missing or invalid'});
       writeAndClose(request, response);
       return;
     }

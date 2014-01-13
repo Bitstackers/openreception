@@ -1,12 +1,12 @@
 part of messageserver.database;
 
 Future<Map> getMessageList() {
+  int limit = 100;
   String sql = '''
     SELECT id, message, subject, to_contact_id, taken_from, taken_by_agent, urgent, created_at, last_try, tries
     FROM message_queue
-    LIMIT 100
+    LIMIT ${limit}
   ''';
-  //[LIMIT { number | ALL }] [OFFSET number]
 
   return database.query(_pool, sql).then((rows) {
     List messages = new List();
