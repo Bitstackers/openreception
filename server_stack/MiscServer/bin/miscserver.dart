@@ -43,6 +43,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
   parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
   parser.addOption('bobconfigfile',   help: 'The Bob configuration file. Defaults to bob_configuration.json');
+  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
 
   parsedArgs = parser.parse(arguments);
 }

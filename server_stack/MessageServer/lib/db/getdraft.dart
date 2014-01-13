@@ -1,8 +1,12 @@
 part of messageserver.database;
 
 Future<Map> getDraft() {
+  int limit = 100;
   String sql = '''
-    SELECT something FROM somewhere''';
+    SELECT id, owner, json
+    FROM message_draft
+    ORDER BY id
+    LIMIT ${limit};''';
 
   Map parameters = {};
 
@@ -11,7 +15,9 @@ Future<Map> getDraft() {
     if(rows.length == 1) {
       var row = rows.first;
       data =
-        {'contact_id' : row.contact_id};
+        {'contact_id' : row.id,
+         'owner'      : row.owner,
+         'json'       : JSON.decode(row.json)};
     }
 
     return data;
