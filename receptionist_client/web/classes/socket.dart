@@ -56,7 +56,7 @@ class Socket {
    */
   Socket._internal() {
     _reconnectInterval  = configuration.notificationSocketReconnectInterval;
-    _url                = configuration.notificationSocketInterface;
+    _url                = Uri.parse('${configuration.notificationSocketInterface}?token=${configuration.cfToken}');
     _registerEventListeners();
     _connect();
   }

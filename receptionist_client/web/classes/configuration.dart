@@ -23,7 +23,7 @@ import 'logger.dart';
 import 'state.dart';
 
 
-const String CONFIGURATION_URL = 'http://alice.adaheads.com:4242/configuration';
+const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
 //const String CONFIGURATION_URL = 'http://localhost:4242/configuration';
 

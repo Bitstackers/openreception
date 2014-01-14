@@ -116,7 +116,7 @@ Future<Response<Map>> setAgentState(int agentId) {
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<Map>> agentList() {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final String                   path      = '/agent/list';
   HttpRequest                    request;
