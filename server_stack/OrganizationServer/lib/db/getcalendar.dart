@@ -3,22 +3,22 @@ part of organizationserver.database;
 Future<Map> getOrganizationCalendarList(int organizationId) {
   String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
-    FROM calendar_events cal join organization_calendar org on cal.id = org.event_id
+    FROM calendar_events cal JOIN organization_calendar org ON cal.id = org.event_id
     WHERE org.organization_id = @orgid''';
   
   Map parameters = {'orgid' : organizationId};
   return database.query(_pool, sql, parameters).then((rows) {
-    List contacts = new List();
+    List events = new List();
     for(var row in rows) {
-      Map contact =
+      Map event =
         {'id'      : row.id,
-         'start'   : row.start,
-         'stop'    : row.stop,
+         'start'   : datetimeToJson(row.start),
+         'stop'    : datetimeToJson(row.stop),
          'message' : row.message};
-      contacts.add(contact);
+      events.add(event);
     }
-
-    Map data = {'CalendarEvents': contacts};
+    
+    Map data = {'CalendarEvents': events};
 
     return data;
   });
