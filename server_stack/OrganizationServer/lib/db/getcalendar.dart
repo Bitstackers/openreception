@@ -13,7 +13,6 @@ Future<Map> getOrganizationCalendarList(int organizationId) {
       DateTime now = new DateTime.now();
       Map event =
         {'id'      : row.id,
-         'active'  : now.isAfter(row.start) && now.isBefore(row.stop),
          'start'   : datetimeToJson(row.start),
          'stop'    : datetimeToJson(row.stop),
          'message' : row.message};
