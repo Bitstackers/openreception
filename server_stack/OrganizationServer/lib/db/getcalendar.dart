@@ -10,8 +10,10 @@ Future<Map> getOrganizationCalendarList(int organizationId) {
   return database.query(_pool, sql, parameters).then((rows) {
     List events = new List();
     for(var row in rows) {
+      DateTime now = new DateTime.now();
       Map event =
         {'id'      : row.id,
+         'active'  : now.isAfter(row.start) && now.isBefore(row.stop),
          'start'   : datetimeToJson(row.start),
          'stop'    : datetimeToJson(row.stop),
          'message' : row.message};
