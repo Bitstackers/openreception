@@ -15,7 +15,7 @@ Future<Map> getOrganizationCalendarList(int organizationId) {
         {'id'      : row.id,
          'start'   : datetimeToJson(row.start),
          'stop'    : datetimeToJson(row.stop),
-         'message' : row.message};
+         'content' : row.message};
       events.add(event);
     }
     
