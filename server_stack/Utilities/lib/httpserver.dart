@@ -103,5 +103,6 @@ void writeAndClose(HttpRequest request, String text) {
 
   request.response
     ..write(text)
+    ..write('\n')
     ..close();
 }
