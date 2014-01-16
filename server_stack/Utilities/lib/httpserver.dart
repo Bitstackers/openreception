@@ -56,6 +56,8 @@ Future<String> extractContent(HttpRequest request) {
   return completer.future;
 }
 
+String mapToUrlFormEncodedPostBody(Map body) => body.keys.map((key) => '$key=${Uri.encodeQueryComponent(body[key])}').join('&');
+
 void page404(HttpRequest request) {
   addCorsHeaders(request.response);
   
