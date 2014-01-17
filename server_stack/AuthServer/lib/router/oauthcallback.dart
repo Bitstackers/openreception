@@ -1,4 +1,4 @@
-part of organizationserver.router;
+part of authenticationserver.router;
 
 void oauthCallback(HttpRequest request) {  
   Map postBody = 
@@ -17,10 +17,13 @@ void oauthCallback(HttpRequest request) {
     if(json.containsKey('error')) {
       serverError(request, 'Authtication failed. ${json['error']}');
     } else {
-      print(json);
       String hash = Sha256Token(json['access_token']);
-      savedSession[hash] = json;
-      writeAndClose(request, hash);
+      cache.saveToken(hash, response.body).then((_) {
+        //TODO redirect to "State"
+        writeAndClose(request, hash);
+      }).catchError((error) {
+        serverError(request, error.toString());
+      });
     }
     
   }).catchError((error) => serverError(request, error.toString()));

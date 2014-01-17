@@ -1,4 +1,4 @@
-part of organizationserver.router;
+part of authenticationserver.router;
 
 void login(HttpRequest request) {
   Uri bobUrl = Uri.parse('localhost:3030/Bob/web/bob.dart');

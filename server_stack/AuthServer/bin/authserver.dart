@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
+import '../lib/cache.dart' as cache;
 import 'package:Utilities/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';
@@ -24,6 +25,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
         .catchError((e) { 

@@ -1,4 +1,4 @@
-part of organizationserver.database;
+part of authenticationserver.database;
 
 Future<Map> getUser(String userEmail) {
   String sql = '''

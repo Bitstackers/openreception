@@ -1,4 +1,4 @@
-library organizationserver.database;
+library authenticationserver.database;
 
 import 'dart:async';
 import 'dart:convert';

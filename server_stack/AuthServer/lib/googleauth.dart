@@ -9,8 +9,6 @@ final List<String> _scopes = ['https://www.googleapis.com/auth/userinfo.profile'
 
 Uri _AuthorizationUrl;
 
-Map<String, Map> savedSession = new Map<String, Map>();
-
 Uri googleAuthUrl(String identifier, String secret, Uri redirectUrl) {
   if(_AuthorizationUrl == null) {
     oauth2.AuthorizationCodeGrant grant = new oauth2.AuthorizationCodeGrant(identifier, secret, authorizationEndpoint, tokenEndpoint);
