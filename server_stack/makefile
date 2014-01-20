@@ -1,7 +1,11 @@
-all: contact log message misc organization
+all: auth contact log message misc organization
 
 clean: 
 	-rm out
+
+auth: outfolder
+	cd AuthServer/ && pub get 
+	dart2js --output-type=dart --checked --verbose --out=out/AuthServer.dart --categories=Server AuthServer/bin/authserver.dart
 
 contact: outfolder
 	cd ContactServer/ && pub get 
