@@ -14,9 +14,7 @@ import '../lib/router.dart' as router;
 ArgResults    parsedArgs;
 ArgParser     parser = new ArgParser();
 
-void main(List<String> args) {
-  print(Uri.encodeQueryComponent('http://localhost:8080/bob'));
-  
+void main(List<String> args) {  
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
