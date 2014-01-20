@@ -7,17 +7,17 @@ void getOrg(HttpRequest request) {
       writeAndClose(request, org);
 
     } else {
-      db.getOrganization(id).then((Map value) {
+      return db.getOrganization(id).then((Map value) {
         String org = JSON.encode(value);
 
         if(value.isEmpty) {
           request.response.statusCode = HttpStatus.NOT_FOUND;
           writeAndClose(request, org);
         } else {
-          cache.saveOrganization(id, org)
+          return cache.saveOrganization(id, org)
             .then((_) => writeAndClose(request, org));
         }
-      }).catchError((error) => serverError(request, error.toString()));
+      });
     }
-  });
+  }).catchError((error) => serverError(request, error.toString()));
 }
