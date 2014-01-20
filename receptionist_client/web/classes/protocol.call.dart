@@ -28,7 +28,7 @@ Future<Response<Map>> callList() {
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
     
   request = new HttpRequest()
@@ -69,7 +69,7 @@ Future<Response<Map>> callQueue() {
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
       
   request = new HttpRequest()
@@ -135,7 +135,7 @@ Future<Response<model.CallList>> callLocalList(int agentId) {
   HttpRequest                                request;
   String                                     url;
 
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 
 //Dummy Data
@@ -151,7 +151,6 @@ Future<Response<model.CallList>> callLocalList(int agentId) {
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_) {
-      print('----- ${request.responseText}');
       Map data = _parseJson(request.responseText);
       model.CallList list = new model.CallList.fromJson(data, 'calls');
       completer.complete(new Response<model.CallList>(Response.OK, list));
@@ -176,7 +175,7 @@ Future<Response<Map>> hangupCall(model.Call call) {
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   fragments.add('call_id=${call.id}');
   url = _buildUrl(base, path, fragments);
 
@@ -226,7 +225,7 @@ Future<Response<Map>> originateCall(String extension) {
   if (extension != null && extension.isNotEmpty){
     fragments.add('extension=${extension}');
   }
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   
   url = _buildUrl(base, path, fragments);
 
@@ -268,7 +267,7 @@ Future<Response<Map>> parkCall(model.Call call) {
   String                         url;
 
   fragments.add('call_id=${call.id}');
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
@@ -314,7 +313,7 @@ Future<Response<Map>> pickupCall({model.Call call}) {
   if (call != null && call.id != null) {
     fragments.add('call_id=${call.id}');
   }
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   
   url = _buildUrl(base, path, fragments);
 
@@ -360,7 +359,7 @@ Future<Response<Map>> statusCall(model.Call call) {
   String                         url;
 
   fragments.add('call_id=${call.id}');
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
@@ -406,7 +405,7 @@ Future<Response<Map>> transferCall(String source, String destination) {
 
   fragments.add('source=${source}');
   fragments.add('destination=${destination}');
-  fragments.add('token=${configuration.cfToken}');
+  fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()

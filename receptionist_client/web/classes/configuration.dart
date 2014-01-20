@@ -53,7 +53,7 @@ class _Configuration {
 
   int      get agentID =>                             _agentID;
   Uri      get orgBaseUrl =>                          _orgBaseUrl;
-  Uri      get callFlowBaseUrl =>                      _callFlowBaseUrl;
+  Uri      get callFlowBaseUrl =>                     _callFlowBaseUrl;
   Uri      get contactBaseUrl =>                      _contactBaseUrl;
   Uri      get messageBaseUrl =>                      _messageBaseUrl;
   Uri      get logBaseUrl =>                          _logBaseUrl;
@@ -67,10 +67,9 @@ class _Configuration {
   String   get standardGreeting =>                    _standardGreeting;
   int      get userLogSizeLimit =>                    _userLogSizeLimit;
 
-  String _token = '1e048452ba43dab566b30a32e372a0b3448b5212f0c145fd818d2d001224f6c2';
-  String get token => _token;
-  String _cfToken = '1';
-  String get cfToken => _cfToken;
+  String token = '1e048452ba43dab566b30a32e372a0b3448b5212f0c145fd818d2d001224f6c2';
+//  String get token => _token;
+//  void set token (String value) => _token = value;
   
   Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
   Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
@@ -91,17 +90,19 @@ class _Configuration {
    */
   _Configuration();
 
-  void initialize() {
+  Future initialize() {
     if(!isLoaded()) {
-      HttpRequest.request(CONFIGURATION_URL)
+      return HttpRequest.request(CONFIGURATION_URL)
         .then(_onComplete)
         .catchError((error) {
           if (!state.isConfigurationError) {
             log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
             state.configurationError();
           }
-          new Future.delayed(new Duration(seconds:5),() => initialize());
+          return new Future.delayed(new Duration(seconds:5),() => initialize());
         });
+    } else {
+      new Future(() => null);
     }
   }
 

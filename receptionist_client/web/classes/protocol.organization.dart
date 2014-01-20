@@ -66,6 +66,48 @@ const String MINI = 'mini';
 const String MIDI = 'midi';
 
 /**
+ * Get the organization calendar JSON data.
+ *
+ * Completes with
+ *  On success : [Response] object with status OK (data)
+ *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
+ */
+Future<Response<model.CalendarEventList>> getOrganizationCalendar(int id) {
+  final String       base      = configuration.organizationServer.toString();
+  final Completer<Response<model.CalendarEventList>> completer =
+      new Completer<Response<model.CalendarEventList>>();
+  final List<String> fragments = new List<String>();
+  final String       path      = '/organization/$id/calendar';
+  HttpRequest        request;
+  String             url;
+  
+  fragments.add('token=${configuration.token}');
+  url = _buildUrl(base, path, fragments);
+
+  request = new HttpRequest()
+      ..open(GET, url)
+      ..onLoad.listen((val) {
+        switch(request.status) {
+          case 200:
+            var response = _parseJson(request.responseText);
+            model.CalendarEventList data = new model.CalendarEventList.fromJson(response, 'CalendarEvents');
+            completer.complete(new Response<model.CalendarEventList>(Response.OK, data));
+            break;
+
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e) {
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send();
+
+  return completer.future;
+}
+
+/**
  * Get the organization list JSON data.
  *
  * Completes with

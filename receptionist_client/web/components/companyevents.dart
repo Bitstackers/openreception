@@ -14,13 +14,14 @@
 part of components;
 
 class CompanyEvents {
-  Box                box;
-  Context            context;
-  DivElement         element;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  String             title        = 'Kalender';
-  UListElement       ul;
+  Box                     box;
+  Context                 context;
+  DivElement              element;
+  SpanElement             header;
+  model.Organization      organization = model.nullOrganization;
+  model.CalendarEventList calendar;
+  String                  title        = 'Kalender';
+  UListElement            ul;
 
   bool hasFocus = false;
 
@@ -41,8 +42,11 @@ class CompanyEvents {
 
   void _registerEventListeners() {
     event.bus.on(event.organizationChanged).listen((model.Organization value) {
+      protocol.getOrganizationCalendar(value.id).then((protocol.Response<model.CalendarEventList> events) {
+        calendar = events.data;
+        render();
+      });
       organization = value;
-      render();
     });
 
     ul.onFocus.listen((_) {
@@ -67,7 +71,11 @@ class CompanyEvents {
   void render() {
     ul.children.clear();
 
-    for(var event in organization.calendarEventList) {
+    for(var event in calendar) {
+      print(event);
+      print(event.active);
+      print(event.start);
+      print(event.stop);
       String html = '''
         <li class="${event.active ? 'company-events-active': ''}">
           <table class="calendar-event-table">

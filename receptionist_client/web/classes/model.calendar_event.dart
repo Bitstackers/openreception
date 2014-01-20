@@ -42,16 +42,12 @@ class CalendarEvent implements Comparable{
    */
   CalendarEvent.fromJson(Map json) {
     final DateTime now = new DateTime.now();
-
+    
     _start = DateTime.parse(json['start']);
     _stop = DateTime.parse(json['stop']);
     _content = json['content'];
 
-    active = now == _start || now == _stop;
-
-    if (!active && (now.isAfter(_start) && now.isBefore(_stop))) {
-      active = true;
-    }
+    active = _start.millisecondsSinceEpoch <= now.millisecondsSinceEpoch && now.millisecondsSinceEpoch >= _stop.millisecondsSinceEpoch;
   }
 
   /**

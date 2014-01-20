@@ -31,7 +31,7 @@ Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) 
   assert(to != null);
   assert(message.isNotEmpty);
 
-  final String                   base       = configuration.aliceBaseUrl.toString();
+  final String                   base       = configuration.messageBaseUrl.toString();
   final Completer<Response<Map>> completer  = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path       = '/message/send';

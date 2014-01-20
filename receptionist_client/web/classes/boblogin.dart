@@ -28,7 +28,7 @@ class BobLogin {
       if(value.isConfigurationOK) {
         protocol.userslist().then((protocol.Response response) {
           if(response.status == protocol.Response.OK) {
-            List users = response.data['users']['users'];
+            List users = response.data['users'];
             list.children.addAll(users.map(makeUserNode));
             box = new Box.withHeader(element, header, list);
           } else {

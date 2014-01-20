@@ -14,28 +14,6 @@
 /**
  * The Bob client. Helping receptionists do their work every day.
  */
-//import 'dart:async';
-//
-//import 'classes/common.dart';
-//import 'classes/configuration.dart';
-//import 'classes/logger.dart';
-//import 'classes/notification.dart';
-
-//Future _configurationCheck() => repeatCheck(configuration.isLoaded, 0, new Duration(milliseconds: 50), timeoutMessage: 'configuration.isLoaded is false');
-//Future _notificationCheck() => repeatCheck(notification.isConnected, 0, new Duration(milliseconds: 100), timeoutMessage: 'notification.isConnected is false');
-
-/**
- * Get Bob going as soon as the configuration is loaded.
- */
-//@initMethod
-//void main() {
-//  _configurationCheck().then((_) => _notificationCheck())
-//                       .then((_) => log.debug('Main -- Everything seems to work! --'))
-//                       .catchError((error) {
-//                         log.critical('Bob main exception: ${error}');
-//                       });
-//}
-
 import 'dart:async';
 import 'dart:html';
 
@@ -43,7 +21,9 @@ import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
 import 'classes/boblogin.dart';
+import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
+import 'classes/notification.dart';
 import 'classes/state.dart';
 
 BobActive bobActive;
@@ -54,8 +34,18 @@ BobLogin boblogin;
 int userId = 1;
 
 void main() {
-
-  boblogin = new BobLogin(querySelector('#boblogin'));
+  Uri url = Uri.parse(window.location.href);
+  if(url.queryParameters.containsKey('setToken')) {
+    configuration.token = url.queryParameters['setToken']; 
+  } else {
+    window.location.assign('http://auth.adaheads.com');
+  }
+  
+  configuration.initialize().then((_) {
+    notification.initialize();
+  });
+  
+  //boblogin = new BobLogin(querySelector('#boblogin'));
 
   //notification.initialize();
   //configuration.initialize();
