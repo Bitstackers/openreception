@@ -58,6 +58,8 @@ Future<String> extractContent(HttpRequest request) {
 
 String mapToUrlFormEncodedPostBody(Map body) => body.keys.map((key) => '$key=${Uri.encodeQueryComponent(body[key])}').join('&');
 
+String queryParameter(Uri uri, String key) => uri.queryParameters.containsKey(key) ? uri.queryParameters[key] : null;
+
 void page404(HttpRequest request) {
   addCorsHeaders(request.response);
   
@@ -65,6 +67,15 @@ void page404(HttpRequest request) {
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write("Not Found");
   request.response.close();
+}
+
+int pathParameter(Uri uri, String key) {
+  try {
+    return int.parse(uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1));
+  } catch(error) {
+    log('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
+    return null;
+  }
 }
 
 void serverError(HttpRequest request, String logMessage) {
