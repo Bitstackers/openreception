@@ -15,6 +15,8 @@ ArgResults    parsedArgs;
 ArgParser     parser = new ArgParser();
 
 void main(List<String> args) {
+  print(Uri.encodeQueryComponent('http://localhost:8080/bob'));
+  
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 

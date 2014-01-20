@@ -1,6 +1,7 @@
 part of authenticationserver.router;
 
-void oauthCallback(HttpRequest request) {  
+void oauthCallback(HttpRequest request) {
+  Uri returnUrl = Uri.parse(queryParameter(request.uri, 'state'));
   Map postBody = 
     {
       "grant_type": "authorization_code",
@@ -8,7 +9,7 @@ void oauthCallback(HttpRequest request) {
       "redirect_uri": config.redirectUri.toString(),
       "client_id": config.clientId,
       "client_secret": config.clientSecret
-  };
+    };
   
   String body = mapToUrlFormEncodedPostBody(postBody);
   http.post(tokenEndpoint, headers: {'content-type':'application/x-www-form-urlencoded'}, body: body).then((http.Response response) {
@@ -18,9 +19,9 @@ void oauthCallback(HttpRequest request) {
       serverError(request, 'Authtication failed. ${json['error']}');
     } else {
       String hash = Sha256Token(json['access_token']);
-      cache.saveToken(hash, response.body).then((_) {
-        //TODO redirect to "State"
-        writeAndClose(request, hash);
+      return cache.saveToken(hash, response.body).then((_) {
+        Map queryParameters = {'settoken' : hash};
+        request.response.redirect(new Uri(scheme: returnUrl.scheme, userInfo: returnUrl.userInfo, host: returnUrl.host, port: returnUrl.port, path: returnUrl.path, queryParameters: queryParameters));
       }).catchError((error) {
         serverError(request, error.toString());
       });
