@@ -67,27 +67,27 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (64, 'Oda Olsen', 'human'),
        (99, 'Support', 'function');
 
-INSERT INTO organizations (id, full_name, uri, attributes)
+INSERT INTO receptions (id, full_name, uri, attributes)
 VALUES (1, 'AdaHeads K/S', 
            'adaheads_ks_1', 
            '{"addresses":[{"value":"For enden af regnbuen","priority":1},{"value":"Lovelace street","priority":2},{"value":"Farum Gydevej","priority":3},{"value":"Hvor kongerne hænger ud","priority":4}],"alternatenames":[{"value":"Code monkeys","priority":1},{"value":"Software Developers","priority":2},{"value":"Awesome mans","priority":3},{"value":"Bug Fixers","priority":4},{"value":"SuperHeroes","priority":5}],"bankinginformation":[{"value":"Amagerbank 123456789","priority":1},{"value":"Danskebank 123456789","priority":2},{"value":"Nordea 123456789","priority":3},{"value":"JysteBank 123456789","priority":4},{"value":"Bank Bank Bank 123456789","priority":5}],"crapcallhandling":[{"value":"Stil dem videre til Thomas","priority":1},{"value":"Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu","priority":2},{"value":"Sig at det lyder spænende, og de kan sende en email til spam@adaheads.com","priority":3},{"value":"Bed dem om at ringe igen, ved næste fuldmåne","priority":4},{"value":"Begynd at snakke om din hund, og hvor godt du har oplært den osv.","priority":5}],"customertype":"Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.","emailaddresses":[{"value":"mail@adaheads.com","priority":1},{"value":"support@adaheads.com","priority":2},{"value":"finance@adaheads.com","priority":3},{"value":"research@adaheads.com","priority":4},{"value":"production@adaheads.com","priority":5},{"value":"denmark-department@adaheads.com","priority":6}],"greeting":"Velkommen til AdaHeads, hvad kan jeg hjælpe med?","handlings":[{"value":"Lad tlf. ringe 4-5 gange.","priority":2},{"value":"Indgang til deres kontor ligger i gården.","priority":3},{"value":"Kunder skal tiltales formelt, med både fornavn og efternavn.","priority":1},{"value":"Biler bedes parkeres hos naboen","priority":4},{"value":"Spørg efter ordrenummer","priority":5},{"value":"De skal være over 18 år, før at der må handles med dem","priority":6},{"value":"Geden i forhaven er der for at holde grasset nede","priority":7}],"openinghours":[{"value":"Mandag 08:00:00 - 17:00:00","priority":1},{"value":"Tirsdag 08:00:00 - 17:00:00","priority":2},{"value":"Onsdag 08:00:00 - 17:00:00","priority":3},{"value":"Torsdag 08:00:00 - 17:00:00","priority":4},{"value":"Fredag 08:00:00 - 16:30:00","priority":5},{"value":"Lørdag 08:00:00 - 18:00:00","priority":6},{"value":"Resten af ugen fri","priority":7}],"other":"Bonus info: Man ville skulle bruge 40.5 milliarder LEGO klodser for at bygge et tårn til månen. Ludo opstod i 1896, da det blev patenteret i England som patent nr. 14636. En undersøgelse fra slutningen af 2008 viser vi bruger op mod 30% af vores fritid på online aktiviteter. Mandens hjerne rumfang er på ca. 1300 ml.","product":"Software produkter, men ikke bare hvilket som helst software produkter. Det er af den højeste kvalitet menneskeheden kan fremskaffe. Deres produkter er blevet brugt til at undgå 4 komet sammenstød med jorden, som ellers ville havde ændret verden som vi kender den","registrationnumbers":[{"value":"123456789","priority":1},{"value":"2835629523","priority":2},{"value":"385973572","priority":3},{"value":"1035798361","priority":4},{"value":"9792559265","priority":5}],"telephonenumbers":[{"value":"+45 10 20 30 40","priority":1},{"value":"+45 20 40 60 80","priority":1}],"websites":[{"value":"http://adaheads.com","priority":1},{"value":"http://adaheads.org","priority":2},{"value":"http://adaheads.dk","priority":3},{"value":"http://adaheads.nu","priority":4},{"value":"http://adaheads.awesome","priority":5},{"value":"http://adaheads.software","priority":6},{"value":"http://adaheads.welldone","priority":7}]}');
 
-INSERT INTO organizations (id, full_name, uri, attributes)
+INSERT INTO receptions (id, full_name, uri, attributes)
 VALUES (2, 'Fiskemandens venner A/S', 
            'fishermans_friends_as_2', '{"addresses":[{"value":"Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK","priority":1},{"value":"Valora Trade Denmark A/S Transformervej 16 2730 Herlev","priority":2},{"value":"Et sted ude på atlandterhavet","priority":3}],"alternatenames":[{"value":"Fiskernes venner","priority":1}],"bankinginformation":[{"value":"En kiste ude på en øde ø","priority":1},{"value":"Nogle englændere har pt. \"deres\" guld","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til marketings afdelingen","priority":1}],"customertype":"","emailaddresses":[{"value":"info@fiskermans.com","priority":1}],"greeting":"Fishermans Friends du taler med... hvad kan jeg gøre for dig?","handlings":[{"value":"Lad tlf. ringe 4-5 gange og spørg så: skal poppedreng ha'' noget.","priority":2},{"value":"Indgang til deres kontor ligger ved siden af kabyssen.","priority":3},{"value":"Kunder skal tiltales med pirat stemme, med både klo og klap for øjet.","priority":1}],"openinghours":[{"value":"Solopgang - Solnedgang","priority":1}],"other":"Bonus info","product":"ORIGINAL, MINT SUKKERFRI, SALMIAK SUKKERFRI, SØD LAKRIDS SUKKERFRI, EXSTRA STÆRK","registrationnumbers":[{"value":"Reg no. 781277","priority":1}],"telephonenumbers":[{"value":"+45 11 22 33 44","priority":1},{"value":"+45 21 32 43 55","priority":1}],"websites":[{"value":"http://www.fishermansfriend.com/","priority":1}]}');
 
-INSERT INTO organizations (id, full_name, uri, attributes)
+INSERT INTO receptions (id, full_name, uri, attributes)
 VALUES (3, 'Responsum K/S', 'responsum_ks_3', '{"addresses":[{"value":"Farum gydevej 87","priority":3}],"alternatenames":[{"value":"Stemmen i dit øre","priority":1}],"bankinginformation":[{"value":"Danske bank 222 333 444 555","priority":1},{"value":"Nordea 999 888 777 666","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@responsum.com","priority":1}],"greeting":"Velkommen til Responsum - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af produkter stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:thomas@responsum.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"http://responsum.dk","priority":1}]}');
 
-INSERT INTO organizations (id, full_name, uri, attributes)
+INSERT INTO receptions (id, full_name, uri, attributes)
 VALUES  (4, 'Hansen VVS A/S', 'hansen_vvs_4', '{"addresses":[],"alternatenames":[],"bankinginformation":[],"crapcallhandling":[],"customertype":"","emailaddresses":[],"greeting":"Hansen vvs. Hvad vil du?","handlings":[],"openinghours":[],"other":"","product":"","registrationnumbers":[],"telephonenumbers":[],"websites":[]}');
 
-INSERT INTO organizations (id, full_name, uri, attributes)
+INSERT INTO receptions (id, full_name, uri, attributes)
 VALUES (5, 'Kødbollen A/S',
            'koedbollen_as', 
            '{"addresses":[{"value":"Kødbyen","priority":3}],"alternatenames":[{"value":"Kødet i din bolle.","priority":1}],"bankinginformation":[{"value":"Spanske bank 222 444 555","priority":1},{"value":"Sydea 944 888 777 666","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@koedbollen.dk","priority":1}],"greeting":"Kødbollenn - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af kød stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:pent@koedbollen.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"","priority":1}]}');
 
-INSERT INTO organization_contacts(organization_id, contact_id, attributes) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes) 
 VALUES /*Adaheads*/
        (1, 1, '{"backup":[{"value":"Trine Løcke","priority":1},{"value":"Kim Rostgaard Christensen","priority":2},{"value":"Steen Løcke","priority":3},{"value":"Jacob Sparre Andersen","priority":4}],"emailaddresses":[{"value":"tl@adaheads.com","priority":1},{"value":"tl@adaheads.org","priority":2}],"handling":[{"value":"Bær over med hans gode humør","priority":1}],"telephonenumbers":[{"value":"+45 60 43 19 92","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["AWS","SIP","Slackware","Linux","Yolk"],"department":"Development","info":"Yolk forfatter","position":"Software udvikler","relations":"Gift med Trine Løcke","responsibility":"Alice og Bob"}'),
        (1, 2, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"trine@responsum.com","priority":1}],"handling":[{"value":"Bær over med hendes gode humør","priority":1}],"telephonenumbers":[{"value":"+45 60 43 19 92","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Grafik","SIP","Linux"],"department":"Development","info":"Laver alt det flotte I programmet","position":"Designer","relations":"Gift med Thomas","responsibility":"Bob"}'),
@@ -154,7 +154,7 @@ VALUES (1, 'e-mail', 'tl@adaheads.com'),
        (7, 'sms',    '+4588329100'),
        (9, 'e-mail', 'trine@responsum.dk');
 
-INSERT INTO messaging_end_points (contact_id, organization_id,
+INSERT INTO messaging_end_points (contact_id, reception_id,
                                   address_id,
                                   confidential, enabled)
 VALUES --  Adaheads
@@ -171,7 +171,7 @@ VALUES --  Adaheads
        (4, 3, 9, FALSE, TRUE);
 
 INSERT INTO distribution_lists (id,
-                                send_to_contact_id, send_to_organization_id,
+                                send_to_contact_id, send_to_reception_id,
                                 recipient_visibility)
 VALUES (1, 1, 1, 'to'),
        (2, 1, 2, 'cc'),
@@ -206,7 +206,7 @@ VALUES (1, 'Receptionist'),
        (2, 'Administrator'),
        (3, 'Service agent');
 
-INSERT INTO user_groups (uid, gid)
+INSERT INTO user_groups (user_id, group_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),
@@ -232,7 +232,7 @@ VALUES (1,'https://tux.myopenid.com/', 1),
        (7,'https://adaheads3.myopenid.com/', 1);
 
 INSERT INTO message_draft (id,owner, json)
-VALUES (1, 1 , '{"subject": "Vil gerne have du ringer tilbage.","From" : "Karen Karetkrejler", "body": "Det handler om den sølvgrå Fiat Punto."}]');
+VALUES (1, 1 , '{"subject": "Vil gerne have du ringer tilbage.","From" : "Karen Karetkrejler", "body": "Det handler om den sølvgrå Fiat Punto."}');
 
 
 INSERT INTO phone_numbers (id, value, kind) VALUES
@@ -247,7 +247,7 @@ INSERT INTO phone_numbers (id, value, kind) VALUES
 (9, '10203040', 'PSTN'),
 (10, '77773333', 'PSTN');
 
-INSERT INTO contact_phone_numbers (organization_id, contact_id, phone_number_id) VALUES
+INSERT INTO contact_phone_numbers (reception_id, contact_id, phone_number_id) VALUES
 (1, 1, 1),
 (1, 2, 2),
 (1, 2, 3),
@@ -263,13 +263,13 @@ INSERT INTO calendar_events (id, start, stop, message) VALUES
 (4, '2014-01-06 08:00:00', '2014-01-08 17:00:00', 'Mus samtaler'),
 (5, '2014-01-09 10:00:00', '2014-01-09 12:00:00', 'I møde med Hans Jørgensen');
 
-INSERT INTO contact_calendar (organization_id, contact_id, event_id) VALUES
+INSERT INTO contact_calendar (reception_id, contact_id, event_id) VALUES
 (1, 1, 1),
 (1, 1, 2),
 (1, 1, 3),
 (1, 1, 5);
 
-INSERT INTO organization_calendar (organization_id, event_id) VALUES
+INSERT INTO reception_calendar (reception_id, event_id) VALUES
 (1, 4);
 
 COMMIT;

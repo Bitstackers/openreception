@@ -9,15 +9,15 @@ CREATE TABLE users (
 );
 
 CREATE TABLE groups (
-   id  INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   id   INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    name TEXT    NOT NULL
 );
 
 CREATE TABLE user_groups (
-   uid INTEGER NOT NULL REFERENCES users (id),
-   gid INTEGER NOT NULL REFERENCES groups (id),
+   user_id  INTEGER NOT NULL REFERENCES users (id),
+   group_id INTEGER NOT NULL REFERENCES groups (id),
 
-  PRIMARY KEY (uid, gid)
+  PRIMARY KEY (user_id, group_id)
 );
 
 CREATE TABLE auth_identities (
@@ -55,7 +55,7 @@ CREATE TABLE special_days (
 );
 
 -------------------------------------------------------------------------------
---  Contacts and organizations:
+--  Contacts and receptions:
 
 CREATE TABLE contact_types (value TEXT NOT NULL PRIMARY KEY);
 INSERT INTO contact_types VALUES ('human'), ('function'), ('invisible');
@@ -67,30 +67,30 @@ CREATE TABLE contacts (
    enabled      BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE TABLE organizations (
-   id         INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   full_name  TEXT    NOT NULL,
-   uri        TEXT    NOT NULL UNIQUE,
-   attributes JSON    NOT NULL,
-   extradata  TEXT    NOT NULL,
-   enabled    BOOLEAN NOT NULL DEFAULT TRUE
+CREATE TABLE receptions (
+   id            INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   full_name     TEXT    NOT NULL,
+   uri           TEXT    NOT NULL UNIQUE,
+   attributes    JSON    NOT NULL,
+   extradatauri  TEXT,
+   enabled       BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE INDEX organization_uri_index ON organizations (uri);
+CREATE INDEX reception_uri_index ON receptions (uri);
 
-CREATE TABLE organization_contacts (
-   organization_id      INTEGER NOT NULL REFERENCES organizations (id) ON UPDATE CASCADE ON DELETE CASCADE,
+CREATE TABLE reception_contacts (
+   reception_id         INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
    contact_id           INTEGER NOT NULL REFERENCES contacts (id) ON UPDATE CASCADE ON DELETE CASCADE,
    wants_messages       BOOLEAN NOT NULL DEFAULT TRUE,
    distribution_list_id INTEGER, --  Reference constraint added further down
    attributes           JSON,
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
 
-   PRIMARY KEY (organization_id, contact_id)
+   PRIMARY KEY (reception_id, contact_id)
 );
 
-CREATE INDEX organization_contacts_contact_id_index      ON organization_contacts (contact_id);
-CREATE INDEX organization_contacts_organization_id_index ON organization_contacts (organization_id);
+CREATE INDEX reception_contacts_contact_id_index   ON reception_contacts (contact_id);
+CREATE INDEX reception_contacts_reception_id_index ON reception_contacts (reception_id);
 
 -------------------------------------------------------------------------------
 --  Addresses and messaging:
@@ -107,17 +107,17 @@ CREATE TABLE messaging_addresses (
 );
 
 CREATE TABLE messaging_end_points (
-   contact_id      INTEGER NOT NULL,
-   organization_id INTEGER NOT NULL,
-   address_id      INTEGER NOT NULL REFERENCES messaging_addresses (id),
-   confidential    BOOLEAN NOT NULL DEFAULT TRUE,
-   enabled         BOOLEAN NOT NULL DEFAULT FALSE,
-   priority        INTEGER NOT NULL DEFAULT 0,
+   contact_id   INTEGER NOT NULL,
+   reception_id INTEGER NOT NULL,
+   address_id   INTEGER NOT NULL REFERENCES messaging_addresses (id),
+   confidential BOOLEAN NOT NULL DEFAULT TRUE,
+   enabled      BOOLEAN NOT NULL DEFAULT FALSE,
+   priority     INTEGER NOT NULL DEFAULT 0,
 
-   PRIMARY KEY (contact_id, organization_id, address_id),
+   PRIMARY KEY (contact_id, reception_id, address_id),
 
-   FOREIGN KEY (contact_id, organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (contact_id, reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -125,21 +125,21 @@ CREATE TABLE recipient_visibilities (value TEXT NOT NULL PRIMARY KEY);
 INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 
 CREATE TABLE distribution_lists (
-   id                      INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   send_to_contact_id      INTEGER NOT NULL,
-   send_to_organization_id INTEGER NOT NULL,
-   recipient_visibility    TEXT    NOT NULL REFERENCES recipient_visibilities (value),
+   id                   INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   send_to_contact_id   INTEGER NOT NULL,
+   send_to_reception_id INTEGER NOT NULL,
+   recipient_visibility TEXT    NOT NULL REFERENCES recipient_visibilities (value),
 
-   FOREIGN KEY (send_to_contact_id, send_to_organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (send_to_contact_id, send_to_reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -------------------------------------------------------------------------------
---  Late reference from organization_contacts to distribution_lists:
+--  Late reference from reception_contacts to distribution_lists:
 
-ALTER TABLE organization_contacts
-   ADD CONSTRAINT organization_contacts_distribution_list_id_foreign_key
+ALTER TABLE reception_contacts
+   ADD CONSTRAINT reception_contacts_distribution_list_id_foreign_key
       FOREIGN KEY (distribution_list_id)
          REFERENCES distribution_lists (id) MATCH SIMPLE
          ON UPDATE CASCADE ON DELETE SET DEFAULT;
@@ -161,15 +161,15 @@ CREATE TABLE message_queue (
 );
 
 CREATE TABLE message_queue_recipients (
-   contact_id      INTEGER NOT NULL,
-   organization_id INTEGER NOT NULL,
-   message_id      INTEGER NOT NULL,
-   recipient_role  TEXT    NOT NULL  REFERENCES recipient_visibilities (value),
+   contact_id     INTEGER NOT NULL,
+   reception_id   INTEGER NOT NULL,
+   message_id     INTEGER NOT NULL,
+   recipient_role TEXT    NOT NULL  REFERENCES recipient_visibilities (value),
 
-   PRIMARY KEY (contact_id, organization_id, message_id),
+   PRIMARY KEY (contact_id, reception_id, message_id),
 
-   FOREIGN KEY (contact_id, organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (contact_id, reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -188,15 +188,15 @@ CREATE TABLE archive_message_queue (
 
 CREATE TABLE archive_message_queue_recipients (
    contact_id         INTEGER NOT NULL,
-   organization_id    INTEGER NOT NULL,
+   reception_id       INTEGER NOT NULL,
    message_id         INTEGER NOT NULL,
    recipient_role     TEXT    NOT NULL REFERENCES recipient_visibilities (value),
    resolved_addresses TEXT    NOT NULL,
 
-   PRIMARY KEY (contact_id, organization_id, message_id),
+   PRIMARY KEY (contact_id, reception_id, message_id),
 
-   FOREIGN KEY (contact_id, organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (contact_id, reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -220,22 +220,22 @@ CREATE TABLE calendar_events (
 );
 
 CREATE TABLE contact_calendar (
-   organization_id INTEGER NOT NULL,
-   contact_id      INTEGER NOT NULL,
-   event_id        INTEGER NOT NULL REFERENCES calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   reception_id INTEGER NOT NULL,
+   contact_id   INTEGER NOT NULL,
+   event_id     INTEGER NOT NULL REFERENCES calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
-   PRIMARY KEY (contact_id, organization_id, event_id),
+   PRIMARY KEY (contact_id, reception_id, event_id),
 
-   FOREIGN KEY (contact_id, organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (contact_id, reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE organization_calendar (
-   organization_id INTEGER NOT NULL REFERENCES organizations (id)   ON UPDATE CASCADE ON DELETE CASCADE,
-   event_id        INTEGER NOT NULL REFERENCES calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
+CREATE TABLE reception_calendar (
+   reception_id INTEGER NOT NULL REFERENCES receptions (id)   ON UPDATE CASCADE ON DELETE CASCADE,
+   event_id     INTEGER NOT NULL REFERENCES calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
-   PRIMARY KEY (organization_id, event_id)
+   PRIMARY KEY (reception_id, event_id)
 );
 
 -------------------------------------------------------------------------------
@@ -252,22 +252,22 @@ CREATE TABLE recurring_calendar_events (
 );
 
 CREATE TABLE contact_recurring_calendar (
-   organization_id INTEGER NOT NULL,
-   contact_id      INTEGER NOT NULL,
-   event_id        INTEGER NOT NULL REFERENCES recurring_calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   reception_id INTEGER NOT NULL,
+   contact_id   INTEGER NOT NULL,
+   event_id     INTEGER NOT NULL REFERENCES recurring_calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
-   PRIMARY KEY (contact_id, organization_id, event_id),
+   PRIMARY KEY (contact_id, reception_id, event_id),
 
-   FOREIGN KEY (contact_id, organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (contact_id, reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE organization_recurring_calendar (
-   organization_id INTEGER NOT NULL REFERENCES organizations (id) ON UPDATE CASCADE ON DELETE CASCADE,
-   event_id        INTEGER NOT NULL REFERENCES recurring_calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
+CREATE TABLE reception_recurring_calendar (
+   reception_id INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   event_id     INTEGER NOT NULL REFERENCES recurring_calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
-   PRIMARY KEY (organization_id, event_id)
+   PRIMARY KEY (reception_id, event_id)
 );
 
 -------------------------------------------------------------------------------
@@ -283,14 +283,14 @@ CREATE TABLE phone_numbers (
 );
 
 CREATE TABLE contact_phone_numbers (
-   organization_id INTEGER NOT NULL,
+   reception_id    INTEGER NOT NULL,
    contact_id      INTEGER NOT NULL,
    phone_number_id INTEGER NOT NULL REFERENCES phone_numbers (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
-   PRIMARY KEY (contact_id, organization_id, phone_number_id),
+   PRIMARY KEY (contact_id, reception_id, phone_number_id),
 
-   FOREIGN KEY (contact_id, organization_id)
-      REFERENCES organization_contacts (contact_id, organization_id)
+   FOREIGN KEY (contact_id, reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
