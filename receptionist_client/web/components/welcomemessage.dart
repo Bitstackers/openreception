@@ -31,8 +31,8 @@ class WelcomeMessage {
 
     box = new Box.noChrome(element, container);
 
-    event.bus.on(event.organizationChanged)
-      .listen((model.Organization org) => message.text = org != model.nullOrganization ? org.greeting : '');
+    event.bus.on(event.receptionChanged)
+      .listen((model.Reception reception) => message.text = reception != model.nullReception ? reception.greeting : '');
 
     event.bus.on(event.callChanged).listen((model.Call value) {
       element.classes.toggle('welcome-message-active-call', value != model.nullCall);

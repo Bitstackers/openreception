@@ -20,5 +20,5 @@ import 'protocol.dart' as protocol;
 
 part 'storage.contact.dart';
 part 'storage.contact_list.dart';
-part 'storage.organization.dart';
-part 'storage.organization_list.dart';
+part 'storage.reception.dart';
+part 'storage.reception_list.dart';

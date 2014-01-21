@@ -13,12 +13,12 @@
 
 part of model;
 
-final Organization nullOrganization = new Organization._null();
+final Reception nullReception = new Reception._null();
 
 /**
- * A [BasicOrganization] does only contains [id], [name] and [uri].
+ * A [BasicReception] does only contains [id], [name] and [uri].
  */
-class BasicOrganization implements Comparable{
+class BasicReception implements Comparable{
   int    _id   = -1;
   String _name = '';
   String _uri  = '';
@@ -28,43 +28,43 @@ class BasicOrganization implements Comparable{
   String get uri  => _uri;
 
   /**
-   * [BasicOrganization] constructor. Expects a map in the following format:
+   * [BasicReception] constructor. Expects a map in the following format:
    *
    *  {
    *    "full_name": String,
-   *    "organization_id": int,
+   *    "reception_id": int,
    *    "uri": String
    *  }
    *
    * TODO Obviously the above map format should be in the docs/wiki, as it is
    * also highly relevant to Alice.
    */
-  BasicOrganization.fromJson(Map json) {
-    _id   = json['organization_id'];
+  BasicReception.fromJson(Map json) {
+    _id   = json['reception_id'];
     _name = json['full_name'];
     _uri  = json['uri'];
   }
 
   /**
-   * [BasicOrganization] null constructor.
+   * [BasicReception] null constructor.
    */
-  BasicOrganization._null();
+  BasicReception._null();
 
   /**
-   * Enables a [BasicOrganization] to sort itself based on its [name].
+   * Enables a [BasicReception] to sort itself based on its [name].
    */
-  int compareTo(BasicOrganization other) => name.compareTo(other.name);
+  int compareTo(BasicReception other) => name.compareTo(other.name);
 
   /**
-   * [Organization] as String, for debug/log purposes.
+   * [Reception] as String, for debug/log purposes.
    */
   String toString() => '${name}-${id}';
 }
 
 /**
- * An [Organization]. Sorting organizations is done based on [name].
+ * An [Reception]. Sorting receptions is done based on [name].
  */
-class Organization extends BasicOrganization{
+class Reception extends BasicReception{
   MiniboxList       _addressList            = new MiniboxList();
   MiniboxList       _alternateNameList      = new MiniboxList();
   MiniboxList       _bankingInformationList = new MiniboxList();
@@ -100,7 +100,7 @@ class Organization extends BasicOrganization{
   MiniboxList       get websiteList            => _websiteList;
 
   /**
-   * [Organization] constructor. Expects a map in the following format:
+   * [Reception] constructor. Expects a map in the following format:
    *
    * intString JSON object =
    *  {
@@ -112,7 +112,7 @@ class Organization extends BasicOrganization{
    *    "full_name": String,
    *    "customertype": String,
    *    "addresses": [>= 0 intString objects],
-   *    "organization_id": int,
+   *    "reception_id": int,
    *    "crapcallhandling": [>= 0 intString objects],
    *    "greeting": String,
    *    "websites": [>= 0 intString objects],
@@ -132,7 +132,7 @@ class Organization extends BasicOrganization{
    * TODO Obviously the above map format should be in the docs/wiki, as it is
    * also highly relevant to Alice.
    */
-  Organization.fromJson(Map json) : super.fromJson(json) {
+  Reception.fromJson(Map json) : super.fromJson(json) {
     _addressList            = new MiniboxList.fromJson(json, 'addresses');
     _alternateNameList      = new MiniboxList.fromJson(json, 'alternatenames');
     _bankingInformationList = new MiniboxList.fromJson(json, 'bankinginformation');
@@ -159,7 +159,7 @@ class Organization extends BasicOrganization{
   }
 
   /**
-   * [Organization] null constructor.
+   * [Reception] null constructor.
    */
-  Organization._null() : super._null();
+  Reception._null() : super._null();
 }

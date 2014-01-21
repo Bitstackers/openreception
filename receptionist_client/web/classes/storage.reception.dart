@@ -13,40 +13,40 @@
 
 part of storage;
 
-Map<int, model.Organization> _organizationCache = new Map<int, model.Organization>();
+Map<int, model.Reception> _receptionCache = new Map<int, model.Reception>();
 
 /**
- * Get the [id] [Organization].
+ * Get the [id] [Reception].
  *
  * Completes with
- *  On success   : the [id] [Organization]
- *  On not found : a [nullOrganization]
+ *  On success   : the [id] [Reception]
+ *  On not found : a [nullReception]
  *  On error     : an error message.
  */
-Future<model.Organization> getOrganization(int id) {
-  final Completer completer = new Completer<model.Organization>();
+Future<model.Reception> getReception(int id) {
+  final Completer completer = new Completer<model.Reception>();
 
-  if (_organizationCache.containsKey(id)) {
-    completer.complete(_organizationCache[id]);
+  if (_receptionCache.containsKey(id)) {
+    completer.complete(_receptionCache[id]);
   } else {
-    protocol.getOrganization(id).then((protocol.Response<model.Organization> response) {
+    protocol.getReception(id).then((protocol.Response<model.Reception> response) {
       switch(response.status) {
         case protocol.Response.OK:
-          model.Organization org = response.data;
-          _organizationCache[org.id] = org;
-          completer.complete(org);
+          model.Reception reception = response.data;
+          _receptionCache[reception.id] = reception;
+          completer.complete(reception);
           break;
 
         case protocol.Response.NOTFOUND:
-          completer.complete(model.nullOrganization);
+          completer.complete(model.nullReception);
           break;
 
         default:
-          completer.completeError('storage.getOrganization ERROR failed with ${response}');
+          completer.completeError('storage.getReception ERROR failed with ${response}');
       }
     })
     .catchError((error) {
-      completer.completeError('storage.getOrganization ERROR protocol.getOrganization failed with ${error}');
+      completer.completeError('storage.getReception ERROR protocol.getReception failed with ${error}');
     });
   }
 

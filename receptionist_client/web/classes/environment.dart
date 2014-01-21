@@ -42,15 +42,15 @@ void          set contact(model.Contact contact) {
 //  event.bus.fire(event.contactChanged, contact);
 }
 
-model.Organization     _organization = model.nullOrganization;
-model.Organization get organization  => _organization;
-void               set organization(model.Organization organization) {
-  _organization = organization;
-//  event.bus.fire(event.organizationChanged, organization);
+model.Reception     _reception = model.nullReception;
+model.Reception get reception  => _reception;
+void               set reception(model.Reception reception) {
+  _reception = reception;
+//  event.bus.fire(event.receptionChanged, reception);
 }
 
-model.OrganizationList     _organizationList = new model.OrganizationList();
-model.OrganizationList get organizationList  => _organizationList;
-void                   set organizationList(model.OrganizationList organizationList) {
-  _organizationList = organizationList;
+model.ReceptionList     _receptionList = new model.ReceptionList();
+model.ReceptionList get receptionList  => _receptionList;
+void                   set receptionList(model.ReceptionList receptionList) {
+  _receptionList = receptionList;
 }

@@ -60,7 +60,7 @@ class Contact implements Comparable{
    *        "relations": String,
    *        "workhours": [>= 0 intString objects],
    *        "department": String,
-   *        "organization_id": int,
+   *        "reception_id": int,
    *        "handling": [>= 0 intString objects],
    *        "telephonenumbers": [>= 0 intString objects],
    *        "responsibility": String,

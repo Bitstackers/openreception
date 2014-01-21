@@ -14,27 +14,27 @@
 part of storage;
 
 /**
- * Get the [OrganizationList].
+ * Get the [ReceptionList].
  *
  * Completes with
- *  On success : the [OrganizationList]
+ *  On success : the [ReceptionList]
  *  On error   : an error message
  */
-Future<model.OrganizationList> getOrganizationList() {
-  final Completer completer = new Completer<model.OrganizationList>();
+Future<model.ReceptionList> getReceptionList() {
+  final Completer completer = new Completer<model.ReceptionList>();
 
-  protocol.getOrganizationList().then((protocol.Response response) {
+  protocol.getReceptionList().then((protocol.Response response) {
     switch(response.status) {
       case protocol.Response.OK:
         completer.complete(response.data);
         break;
 
       default:
-        completer.completeError('storage.getOrganizationList ERROR failed with ${response}');
+        completer.completeError('storage.getReceptionList ERROR failed with ${response}');
     }
   })
   .catchError((error) {
-    completer.completeError('storage.getOrganizationList ERROR protocol.getOrganizationList failed with ${error}');
+    completer.completeError('storage.getReceptionList ERROR protocol.getReceptionList failed with ${error}');
   });
 
   return completer.future;

@@ -85,9 +85,9 @@ bool handleFocusChange(Focus value, List<Element> focusElements, Element highlig
 class MessageSearchFilter {
   String agent;
   String type;
-  model.BasicOrganization company;
+  model.BasicReception reception;
   model.Contact contact;
 
-  MessageSearchFilter(this.agent, this.type, this.company, this.contact);
+  MessageSearchFilter(this.agent, this.type, this.reception, this.contact);
 }
 

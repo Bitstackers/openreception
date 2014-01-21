@@ -7,7 +7,7 @@ class ContactInfoSearch {
                DivElement          element;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
   static const int                 incrementSteps       = 20;
-               model.Organization  organization         = model.nullOrganization;
+               model.Reception     reception            = model.nullReception;
                String              placeholder          = 'Søg...';
                model.ContactList   contactList;
                InputElement        searchBox;
@@ -136,14 +136,14 @@ class ContactInfoSearch {
   }
 
   void registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      organization = value;
-      searchBox.disabled = value == model.nullOrganization;
-      if(value == model.nullOrganization) {
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
+      searchBox.disabled = value == model.nullReception;
+      if(value == model.nullReception) {
         searchBox.value = '';
       }
       
-      storage.getContactList(organization.id).then((model.ContactList list) {
+      storage.getContactList(reception.id).then((model.ContactList list) {
         contactList = list;
         _performSearch(searchBox.value);
       }).catchError((error) => contactList = new model.ContactList.emptyList());

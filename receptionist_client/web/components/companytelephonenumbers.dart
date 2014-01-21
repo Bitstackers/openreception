@@ -14,14 +14,14 @@
 part of components;
 
 class CompanyTelephoneNumbers {
-  Box                box;
-  Context            context;
-  DivElement         element;
-  bool               hasFocus = false;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  UListElement       ul;
-  String             title        = 'Hovednumre';
+  Box             box;
+  Context         context;
+  DivElement      element;
+  bool            hasFocus  = false;
+  SpanElement     header;
+  model.Reception reception = model.nullReception;
+  UListElement    ul;
+  String          title     = 'Hovednumre';
 
   CompanyTelephoneNumbers(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
@@ -39,8 +39,8 @@ class CompanyTelephoneNumbers {
   }
 
   void registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization org) {
-      organization = org;
+    event.bus.on(event.receptionChanged).listen((model.Reception reception) {
+      this.reception = reception;
       render();
     });
 
@@ -62,7 +62,7 @@ class CompanyTelephoneNumbers {
   void render() {
     ul.children.clear();
 
-    for(var value in organization.telephoneNumberList) {
+    for(var value in reception.telephoneNumberList) {
       ul.children.add(new LIElement()
                         ..text = value.value);
     }

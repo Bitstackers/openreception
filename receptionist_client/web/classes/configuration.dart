@@ -37,7 +37,7 @@ class _Configuration {
 
   int      _agentID;
   Uri      _callFlowBaseUrl;
-  Uri      _orgBaseUrl;
+  Uri      _receptionBaseUrl;
   Uri      _contactBaseUrl;
   Uri      _messageBaseUrl;
   Uri      _logBaseUrl;
@@ -52,7 +52,7 @@ class _Configuration {
   int      _userLogSizeLimit = 100000;
 
   int      get agentID =>                             _agentID;
-  Uri      get orgBaseUrl =>                          _orgBaseUrl;
+  Uri      get receptionBaseUrl =>                    _receptionBaseUrl;
   Uri      get callFlowBaseUrl =>                     _callFlowBaseUrl;
   Uri      get contactBaseUrl =>                      _contactBaseUrl;
   Uri      get messageBaseUrl =>                      _messageBaseUrl;
@@ -73,11 +73,11 @@ class _Configuration {
   
   Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
   Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
-  Uri _organizationServer = Uri.parse('http://alice.adaheads.com:4000');
+  Uri _receptionServer = Uri.parse('http://alice.adaheads.com:4000');
 
   Uri get contactServer => _contactServer;
   Uri get logServer => _logServer;
-  Uri get organizationServer => _organizationServer;
+  Uri get receptionServer => _receptionServer;
   
   /**
    * Is the configuration loaded.
@@ -140,7 +140,7 @@ class _Configuration {
 
     _agentID      = _intValue(json, 'agentID', 0);
     _callFlowBaseUrl = Uri.parse(_stringValue(json, 'callFlowServerURI', 'http://localhost:4242'));
-    _orgBaseUrl = Uri.parse(_stringValue(json, 'organizationServerURI', 'http://localhost:8080'));
+    _receptionBaseUrl = Uri.parse(_stringValue(json, 'receptionServerURI', 'http://localhost:8080'));
     _contactBaseUrl = Uri.parse(_stringValue(json, 'contactServerURI', 'http://localhost:8081'));
     _messageBaseUrl = Uri.parse(_stringValue(json, 'messageServerURI', 'http://localhost:8082'));
     _logBaseUrl = Uri.parse(_stringValue(json, 'logServerURI', 'http://localhost:8083'));
@@ -154,7 +154,7 @@ class _Configuration {
 
     _notificationSocketInterface = Uri.parse(_stringValue(notificationSocketMap,
                                              'interface',
-                                             'ws://localhost:4242/notifications?token=1'));
+                                             'ws://localhost:4242/notifications?token=${configuration.token}'));
 
     switch (serverLogMap['level'].toLowerCase()) {
       case 'info':

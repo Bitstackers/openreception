@@ -14,14 +14,14 @@
 part of components;
 
 class CompanyHandling {
-  Box                box;
-  Context            context;
-  DivElement         element;
-  bool               hasFocus     = false;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  UListElement       ul;
-  String             title        = 'Håndtering';
+  Box             box;
+  Context         context;
+  DivElement      element;
+  bool            hasFocus  = false;
+  SpanElement     header;
+  model.Reception reception = model.nullReception;
+  UListElement    ul;
+  String          title     = 'Håndtering';
 
   CompanyHandling(DivElement this.element, Context this.context) {
     ul = new UListElement()
@@ -39,8 +39,8 @@ class CompanyHandling {
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      organization = value;
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
       render();
     });
 
@@ -62,7 +62,7 @@ class CompanyHandling {
   void render() {
     ul.children.clear();
 
-    for(var value in organization.handlingList) {
+    for(var value in reception.handlingList) {
       ul.children.add(new LIElement()
                         ..text = value.value);
     }

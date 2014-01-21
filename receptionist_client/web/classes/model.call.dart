@@ -24,14 +24,14 @@ class Call implements Comparable {
   String   _id;
   bool     _inbound;
   DateTime _start;
-  int      _organizationId;
+  int      _receptionId;
 
   int      get assignedAgent  => _assignedAgent;
   String   get bLeg           => _bLeg;
   String   get id             => _id;
   bool     get inbound        => _inbound;
   DateTime get start          => _start;
-  int      get organizationId => _organizationId;
+  int      get receptionId => _receptionId;
 
   /**
    * [Call] constructor. Expects a map in the following format:
@@ -55,8 +55,8 @@ class Call implements Comparable {
       _assignedAgent = json['assigned_to'];
     }
 
-    if(json.containsKey('organization_id') && json['organization_id'] != null) {
-      _organizationId = json['organization_id'];
+    if(json.containsKey('reception_id') && json['reception_id'] != null) {
+      _receptionId = json['reception_id'];
     }
 
     if(json.containsKey('b_leg')) {
@@ -97,13 +97,13 @@ class Call implements Comparable {
         case protocol.Response.OK:
           log.debug('model.Call.hangup OK ${this}');
 
-          // Obviously we don't want to reset the organization on every hangup, but for
+          // Obviously we don't want to reset the reception on every hangup, but for
           // now this is here to remind us to do _something_ on hangup. I suspect
-          // resetting to nullOrganization will become annoying when the time comes.  :D
-          event.bus.fire(event.organizationChanged, nullOrganization);
+          // resetting to nullReception will become annoying when the time comes.  :D
+          event.bus.fire(event.receptionChanged, nullReception);
           event.bus.fire(event.contactChanged, nullContact);
 
-          log.debug('model.Call.hangup updated environment.organization to nullOrganization');
+          log.debug('model.Call.hangup updated environment.reception to nullReception');
           log.debug('model.Call.hangup updated environment.contact to nullContact');
           break;
 
@@ -167,37 +167,37 @@ class Call implements Comparable {
   }
 
   /**
-   * Update [environment.organization] and [environment.contact] according to the
-   * [model.Organization] found in the [response].
+   * Update [environment.reception] and [environment.contact] according to the
+   * [model.Reception] found in the [response].
    */
   void _pickupCallSuccess(protocol.Response response) {
     Map json = response.data;
 
-    if (json.containsKey('organization_id')) {
-      int orgId = json['organization_id'];
+    if (json.containsKey('reception_id')) {
+      int receptionId = json['receptionn_id'];
 
-      storage.getOrganization(orgId).then((Organization org) {
-        if(org == nullOrganization) {
-          log.error('model.Call._pickupCallSuccess NOT FOUND organization ${orgId}');
+      storage.getReception(receptionId).then((Reception reception) {
+        if(reception == nullReception) {
+          log.error('model.Call._pickupCallSuccess NOT FOUND reception ${receptionId}');
         }
 
-        environment.organization = org;
-        //environment.contact = org.contactList.first;
+        environment.reception = reception;
+        //environment.contact = reception.contactList.first;
 
-        log.debug('model.Call._pickupCallSuccess updated environment.organization to ${org}');
-        //log.debug('model.Call._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
+        log.debug('model.Call._pickupCallSuccess updated environment.reception to ${reception}');
+        //log.debug('model.Call._pickupCallSuccess updated environment.contact to ${reception.contactList.first}');
 
       }).catchError((error) {
-        environment.organization = nullOrganization;
+        environment.reception = nullReception;
         environment.contact = nullContact;
 
-        log.critical('model.Call._pickupCallSuccess storage.getOrganization failed with with ${error}');
+        log.critical('model.Call._pickupCallSuccess storage.getReception failed with with ${error}');
       });
     } else {
-      environment.organization = nullOrganization;
+      environment.reception = nullReception;
       environment.contact = nullContact;
 
-      log.critical('model.Call._pickupCallSuccess missing organization_id in ${json}');
+      log.critical('model.Call._pickupCallSuccess missing reception_id in ${json}');
     }
   }
 

@@ -14,14 +14,14 @@
 part of components;
 
 class CompanyAlternateNames {
-  Box                box;
-  Context            context;
-  DivElement         element;
-  bool               hasFocus = false;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  UListElement       ul;
-  String             title        = 'Alternative firmanavne';
+  Box             box;
+  Context         context;
+  DivElement      element;
+  bool            hasFocus  = false;
+  SpanElement     header;
+  model.Reception reception = model.nullReception;
+  UListElement    ul;
+  String          title     = 'Alternative firmanavne';
 
   CompanyAlternateNames(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
@@ -39,8 +39,8 @@ class CompanyAlternateNames {
   }
 
   void registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      organization = value;
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
       render();
     });
 
@@ -62,7 +62,7 @@ class CompanyAlternateNames {
   void render() {
     ul.children.clear();
 
-    for(var value in organization.alternateNameList) {
+    for(var value in reception.alternateNameList) {
       ul.children.add(new LIElement()
                         ..text = value.value);
     }

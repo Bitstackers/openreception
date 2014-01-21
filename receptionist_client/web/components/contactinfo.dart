@@ -23,8 +23,8 @@ class ContactInfo {
                SpanElement         header;
   static const int                 incrementSteps       = 20;
                InputElement        searchBox;
-               model.Organization  nullOrganization     = model.nullOrganization;
-               model.Organization  organization         = model.nullOrganization;
+               model.Reception     nullReception        = model.nullReception;
+               model.Reception     reception            = model.nullReception;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
                String              placeholder          = 'søg...';
                String              title                = 'Medarbejdere';

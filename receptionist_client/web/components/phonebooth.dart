@@ -8,8 +8,8 @@ class Phonebooth {
   DivElement element;
   SpanElement header;
   InputElement inputField;
-  SearchComponent<model.BasicOrganization> companySearch;
-  model.Organization organizationSelected;
+  SearchComponent<model.BasicReception> companySearch;
+  model.Reception receptionSelected;
 
   final String headerText = 'Telefon';
   final String dialButtonText = 'Ring op';
@@ -32,19 +32,19 @@ class Phonebooth {
 
     inputField = container.querySelector('#phonebooth-numberfield');
     call = container.querySelector('#phonebooth-button');
-    companySearch = new SearchComponent<model.BasicOrganization>(container.querySelector('#phonebooth-company'), context, 'phonebooth-company-searchbar')
+    companySearch = new SearchComponent<model.BasicReception>(container.querySelector('#phonebooth-company'), context, 'phonebooth-company-searchbar')
       ..searchPlaceholder = 'Søg på virksomheder...'
-      ..selectedElementChanged = (model.BasicOrganization element) {
-        storage.getOrganization(element.id).then((model.Organization value) {
-          changeOrganization(value);
+      ..selectedElementChanged = (model.BasicReception element) {
+        storage.getReception(element.id).then((model.Reception value) {
+          changeReception(value);
         });
       }
-      ..searchFilter = (model.BasicOrganization org, String searchText) {
-        return org.name.toLowerCase().contains(searchText.toLowerCase());
+      ..searchFilter = (model.BasicReception reception, String searchText) {
+        return reception.name.toLowerCase().contains(searchText.toLowerCase());
       }
       ..listElementToString = companyListElementToString;
 
-      storage.getOrganizationList().then((model.OrganizationList list) {
+      storage.getReceptionList().then((model.ReceptionList list) {
         companySearch.updateSourceList(list.toList(growable: false));
       });
 
@@ -71,7 +71,7 @@ class Phonebooth {
   }
 
   void dial() {
-    if(organizationSelected != model.nullOrganization) {
+    if(receptionSelected != model.nullReception) {
       String dialStrig = inputField.value;
       protocol.originateCall(dialStrig).then((protocol.Response<Map> response) {
         if(response.status == protocol.Response.OK) {
@@ -84,15 +84,15 @@ class Phonebooth {
       });
 
     } else {
-      log.debug('phonebooth. There is no organization selected.');
+      log.debug('phonebooth. There is no reception selected.');
     }
   }
 
-  String companyListElementToString(model.BasicOrganization org, String searchText) {
+  String companyListElementToString(model.BasicReception reception, String searchText) {
     if(searchText == null || searchText.isEmpty) {
-      return org.name;
+      return reception.name;
     } else {
-      String text = org.name;
+      String text = reception.name;
       int matchIndex = text.toLowerCase().indexOf(searchText.toLowerCase());
       String before  = text.substring(0, matchIndex);
       String match   = text.substring(matchIndex, matchIndex + searchText.length);
@@ -101,10 +101,10 @@ class Phonebooth {
     }
   }
 
-  void changeOrganization(model.Organization value) {
+  void changeReception(model.Reception value) {
     if(value != null) {
-      organizationSelected = value;
-      call.disabled = value == model.nullOrganization;
+      receptionSelected = value;
+      call.disabled = value == model.nullReception;
     }
   }
 }

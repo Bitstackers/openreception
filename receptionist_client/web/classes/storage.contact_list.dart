@@ -32,9 +32,9 @@ Future<model.ContactList> getContactList(int id) {
     protocol.getContactList(id).then((protocol.Response<model.ContactList> response) {
       switch(response.status) {
         case protocol.Response.OK:
-          model.ContactList org = response.data;
-          _contactListCache[id] = org;
-          completer.complete(org);
+          model.ContactList reception = response.data;
+          _contactListCache[id] = reception;
+          completer.complete(reception);
           break;
 
         case protocol.Response.NOTFOUND:
@@ -42,11 +42,11 @@ Future<model.ContactList> getContactList(int id) {
           break;
 
         default:
-          completer.completeError('storage.getOrganization ERROR failed with ${response}');
+          completer.completeError('storage.getContactList ERROR failed with ${response}');
       }
     })
     .catchError((error) {
-      completer.completeError('storage.getOrganization ERROR protocol.getOrganization failed with ${error}');
+      completer.completeError('storage.getContactList ERROR protocol.getContactList failed with ${error}');
     });
   }
 

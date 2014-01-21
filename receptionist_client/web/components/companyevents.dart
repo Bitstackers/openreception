@@ -18,9 +18,9 @@ class CompanyEvents {
   Context                 context;
   DivElement              element;
   SpanElement             header;
-  model.Organization      organization = model.nullOrganization;
+  model.Reception         reception = model.nullReception;
   model.CalendarEventList calendar;
-  String                  title        = 'Kalender';
+  String                  title     = 'Kalender';
   UListElement            ul;
 
   bool hasFocus = false;
@@ -41,12 +41,12 @@ class CompanyEvents {
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      protocol.getOrganizationCalendar(value.id).then((protocol.Response<model.CalendarEventList> events) {
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      protocol.getReceptionCalendar(value.id).then((protocol.Response<model.CalendarEventList> events) {
         calendar = events.data;
         render();
       });
-      organization = value;
+      reception = value;
     });
 
     ul.onFocus.listen((_) {

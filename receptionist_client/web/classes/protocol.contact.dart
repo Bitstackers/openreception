@@ -13,14 +13,14 @@
 
 part of protocol;
 
-Future<Response<model.ContactList>> getContactList(int organizationId) {
-  assert(organizationId != null);
+Future<Response<model.ContactList>> getContactList(int receptionId) {
+  assert(receptionId != null);
 
   final String       base      = configuration.contactServer.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.ContactList>> completer =
       new Completer<Response<model.ContactList>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/contact/list/organization/${organizationId}';
+  final String       path      = '/contact/list/reception/${receptionId}';
   HttpRequest        request;
   String             url;
 
@@ -54,9 +54,9 @@ Future<Response<model.ContactList>> getContactList(int organizationId) {
   return completer.future;
 }
 
-Future<Response<model.Contact>> getContact(int organizationId, int contactId) {
-  assert(organizationId != null);
-  assert(organizationId >= 0);
+Future<Response<model.Contact>> getContact(int receptionId, int contactId) {
+  assert(receptionId != null);
+  assert(receptionId >= 0);
   assert(contactId != null);
   assert(contactId >= 0);
 
@@ -64,7 +64,7 @@ Future<Response<model.Contact>> getContact(int organizationId, int contactId) {
   final Completer<Response<model.Contact>> completer =
       new Completer<Response<model.Contact>>();
   final List<String> fragments = new List<String>();
-  final String       path      = '/contact/${contactId}/organization/${organizationId}';
+  final String       path      = '/contact/${contactId}/reception/${receptionId}';
   HttpRequest        request;
   String             url;
 

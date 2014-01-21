@@ -14,14 +14,14 @@
 part of components;
 
 class CompanyBankingInformation {
-  Box                box;
-  Context            context;
-  DivElement         element;
-  bool               hasFocus = false;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  UListElement       ul;
-  String             title        = 'Bankoplysninger';
+  Box             box;
+  Context         context;
+  DivElement      element;
+  bool            hasFocus  = false;
+  SpanElement     header;
+  model.Reception reception = model.nullReception;
+  UListElement    ul;
+  String          title     = 'Bankoplysninger';
 
   CompanyBankingInformation(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
@@ -39,8 +39,8 @@ class CompanyBankingInformation {
   }
 
   void registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      organization = value;
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
       render();
     });
 
@@ -62,7 +62,7 @@ class CompanyBankingInformation {
   void render() {
     ul.children.clear();
 
-    for(var value in organization.bankingInformationList) {
+    for(var value in reception.bankingInformationList) {
       ul.children.add(new LIElement()
                         ..text = value.value);
     }

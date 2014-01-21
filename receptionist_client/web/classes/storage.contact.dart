@@ -23,21 +23,21 @@ Map<int, Map<int,model.Contact>> _contactCache = new Map<int, Map<int,model.Cont
  *  On not found : a [nullContact]
  *  On error     : an error message.
  */
-Future<model.Contact> getContact(int organizationId, int contactId) {
+Future<model.Contact> getContact(int receptionId, int contactId) {
   final Completer<model.Contact> completer = new Completer<model.Contact>();
 
-  if (_contactCache.containsKey(organizationId)) {
-    Map org = _contactCache[organizationId];
-    if(_contactCache[organizationId].containsKey(contactId)) {
-      completer.complete(_contactCache[organizationId][contactId]);
+  if (_contactCache.containsKey(receptionId)) {
+    Map reception = _contactCache[receptionId];
+    if(_contactCache[receptionId].containsKey(contactId)) {
+      completer.complete(_contactCache[receptionId][contactId]);
     }
   } else {
-    protocol.getContact(organizationId, contactId).then((protocol.Response<model.Contact> response) {
+    protocol.getContact(receptionId, contactId).then((protocol.Response<model.Contact> response) {
       switch(response.status) {
         case protocol.Response.OK:
           model.Contact contact = response.data;
-          if(_contactCache.containsKey(organizationId)) {
-            _contactCache[organizationId][contactId] = contact;
+          if(_contactCache.containsKey(receptionId)) {
+            _contactCache[receptionId][contactId] = contact;
           }
           completer.complete(contact);
           break;

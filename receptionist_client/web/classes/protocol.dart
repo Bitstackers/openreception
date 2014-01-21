@@ -28,7 +28,7 @@ part 'protocol.debug.dart';
 part 'protocol.log.dart';
 part 'protocol.login.dart';
 part 'protocol.message.dart';
-part 'protocol.organization.dart';
+part 'protocol.reception.dart';
 
 const String GET = "GET";
 const String POST = "POST";

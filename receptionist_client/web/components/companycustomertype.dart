@@ -14,14 +14,14 @@
 part of components;
 
 class CompanyCustomerType {
-  DivElement         body;
-  Box                box;
-  Context            context;
-  DivElement         element;
-  bool               hasFocus = false;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  String             title        = 'Kundetype';
+  DivElement      body;
+  Box             box;
+  Context         context;
+  DivElement      element;
+  bool            hasFocus  = false;
+  SpanElement     header;
+  model.Reception reception = model.nullReception;
+  String          title     = 'Kundetype';
 
   CompanyCustomerType(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
@@ -40,8 +40,8 @@ class CompanyCustomerType {
   }
 
   void registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      organization = value;
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
       body.text = value.customerType;
     });
 

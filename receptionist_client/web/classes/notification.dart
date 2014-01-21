@@ -179,16 +179,16 @@ void _callPickupEventHandler(Map json) {
 
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
-    if (call.organizationId != null) {
-      storage.getOrganization(call.organizationId).then((org) {
-        event.bus.fire(event.organizationChanged, org);
+    if (call.receptionId != null) {
+      storage.getReception(call.receptionId).then((model.Reception reception) {
+        event.bus.fire(event.receptionChanged, reception);
 
       }).catchError((error) {
-        log.critical('notification._callPickupEventHandler storage.getOrganization failed with ${error}');
-        event.bus.fire(event.organizationChanged, model.nullOrganization);
+        log.critical('notification._callPickupEventHandler storage.getReception failed with ${error}');
+        event.bus.fire(event.receptionChanged, model.nullReception);
       });
     } else {
-      log.error('notification._callPickupEventHandler call ${call} missing organizationId');
+      log.error('notification._callPickupEventHandler call ${call} missing receptionId');
     }
   }
 

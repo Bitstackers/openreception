@@ -77,26 +77,26 @@ Future<Response<Map>> callQueue() {
     ..onLoad.listen((_) {
 //      Map data = {'calls': [
 //                        {'assigned_to': '',
-//                          'organization_id': 1,
+//                          'reception_id': 1,
 //                          'id': 'callid_1',
 //                          'arrival_time': '1382099801'},
 //
 //                         {'assigned_to': '',
-//                          'organization_id': 2,
+//                          'reception_id': 2,
 //                          'id': 'callid_2',
 //                          'arrival_time': '1382099831'},
 //
 //                         {'assigned_to': '',
-//                          'organization_id': 1,
+//                          'reception_id': 1,
 //                          'id': 'callid_3',
 //                          'arrival_time': '1382099821'}
 //
 //                            ]};
 //      Map data = new Map();
 //      List calls = new List();
-//      calls.add({'id':'31','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:  3)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-//      calls.add({'id':'27','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 15)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-//      calls.add({'id':'11','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//      calls.add({'id':'31','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:  3)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
+//      calls.add({'id':'27','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 15)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
+//      calls.add({'id':'11','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
 //      data['calls'] = calls;
 //      log.debug('protocol.call.dart callQueue is sending out fake data.');
 
@@ -141,9 +141,9 @@ Future<Response<model.CallList>> callLocalList(int agentId) {
 //Dummy Data
 //  Map dummyData = new Map();
 //  List calls = new List();
-//  calls.add({'id':'40','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-//  calls.add({'id':'55','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
-//  calls.add({'id':'63','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'organization_id': 1, 'assigned_to': 'Thomas'});
+//  calls.add({'id':'40','arrival_time':'${(new DateTime.now().millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
+//  calls.add({'id':'55','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 13)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
+//  calls.add({'id':'63','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
 //  dummyData['calls'] = calls;
 //  model.CallList data = new model.CallList.fromJson(dummyData, 'calls');
 //  completer.complete(new Response<model.CallList>(Response.OK, data));

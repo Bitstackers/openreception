@@ -14,14 +14,14 @@
 part of components;
 
 class CompanyEmailAddresses {
-  Box                box;
-  Context            context;
-  DivElement         element;
-  bool               hasFocus = false;
-  SpanElement        header;
-  model.Organization organization = model.nullOrganization;
-  UListElement       ul;
-  String             title        = 'Emailadresser';
+  Box             box;
+  Context         context;
+  DivElement      element;
+  bool            hasFocus  = false;
+  SpanElement     header;
+  model.Reception reception = model.nullReception;
+  UListElement    ul;
+  String          title     = 'Emailadresser';
 
   CompanyEmailAddresses(DivElement this.element, Context this.context) {
     element.classes.add('minibox');
@@ -39,8 +39,8 @@ class CompanyEmailAddresses {
   }
 
   void registerEventListeners() {
-    event.bus.on(event.organizationChanged).listen((model.Organization value) {
-      organization = value;
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
       render();
     });
 
@@ -62,7 +62,7 @@ class CompanyEmailAddresses {
   void render() {
     ul.children.clear();
 
-    for(var value in organization.emailAddressList) {
+    for(var value in reception.emailAddressList) {
       ul.children.add(new LIElement()
                         ..text = value.value);
     }

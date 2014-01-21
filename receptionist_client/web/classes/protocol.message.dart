@@ -22,9 +22,9 @@ part of protocol;
  */
 
 /**
- * POST /message/send?[to=<contact_id>@<organization_id>{,<contact_id>@<organization_id>}&]
-                      [cc=<contact_id>@<organization_id>{,<contact_id>@<organization_id>}&]
-                      [bcc=<contact_id>@<organization_id>{,<contact_id>@<organization_id>}&]
+ * POST /message/send?[to=<contact_id>@<reception_id>{,<contact_id>@<reception_id>}&]
+                      [cc=<contact_id>@<reception_id>{,<contact_id>@<reception_id>}&]
+                      [bcc=<contact_id>@<reception_id>{,<contact_id>@<reception_id>}&]
                       message=<message>
  */
 Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) {

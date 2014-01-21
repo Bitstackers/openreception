@@ -89,38 +89,38 @@ void pickupNextCall() {
 }
 
 /**
- * Update [environment.organization] and [environment.contact] according to the
- * [model.Organization] found in the [response].
+ * Update [environment.reception] and [environment.contact] according to the
+ * [model.Reception] found in the [response].
  */
 void _pickupCallSuccess(protocol.Response response) {
   Map json = response.data;
 
-  if (json.containsKey('organization_id')) {
-    int orgId = json['organization_id'];
+  if (json.containsKey('reception_id')) {
+    int receptionId = json['reception_id'];
 
-    storage.getOrganization(orgId).then((model.Organization org) {
-      if(org == model.nullOrganization) {
-        log.debug('commands._pickupCallSuccess NOT FOUND organization ${orgId}');
+    storage.getReception(receptionId).then((model.Reception reception) {
+      if(reception == model.nullReception) {
+        log.debug('commands._pickupCallSuccess NOT FOUND reception ${receptionId}');
       }
 
       //TODO Why is that here? Shouldn't this be a event.fire
-      environment.organization = org;
-      //environment.contact = org.contactList.first;
+      environment.reception = reception;
+      //environment.contact = reception.contactList.first;
 
-      log.debug('commands._pickupCallSuccess updated environment.organization to ${org}');
-      //log.debug('commands._pickupCallSuccess updated environment.contact to ${org.contactList.first}');
+      log.debug('commands._pickupCallSuccess updated environment.reception to ${reception}');
+      //log.debug('commands._pickupCallSuccess updated environment.contact to ${reception.contactList.first}');
 
     }).catchError((error) {
-      environment.organization = model.nullOrganization;
+      environment.reception = model.nullReception;
       environment.contact = model.nullContact;
 
-      log.critical('commands._pickupCallSuccess storage.getOrganization failed with with ${error}');
+      log.critical('commands._pickupCallSuccess storage.getReception failed with with ${error}');
     });
   } else {
-    environment.organization = model.nullOrganization;
+    environment.reception = model.nullReception;
     environment.contact = model.nullContact;
 
-    log.critical('commands._pickupCallSuccess missing organization_id in ${json}');
+    log.critical('commands._pickupCallSuccess missing reception_id in ${json}');
   }
 }
 

@@ -14,12 +14,12 @@ class MessageSearch{
 
   SearchComponent<String> agentSearch;
   SearchComponent<String> typeSearch;
-  SearchComponent<model.BasicOrganization> companySearch;
+  SearchComponent<model.BasicReception> companySearch;
   SearchComponent<model.Contact> contactSearch;
 
   String selectedAgent;
   String selectedType;
-  model.BasicOrganization selectedCompany = model.nullOrganization;
+  model.BasicReception selectedCompany = model.nullReception;
   model.Contact selectedContact = model.nullContact;
 
   String headerText = 'Søgning';
@@ -62,10 +62,10 @@ class MessageSearch{
         searchParametersChanged();
       };
 
-    companySearch = new SearchComponent<model.BasicOrganization>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
+    companySearch = new SearchComponent<model.BasicReception>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
-      ..selectedElementChanged = (model.BasicOrganization element) {
-        storage.getOrganization(element.id).then((model.Organization value) {
+      ..selectedElementChanged = (model.BasicReception element) {
+        storage.getReception(element.id).then((model.Reception value) {
           selectedCompany = value;
           searchParametersChanged();
           storage.getContactList(value.id).then((model.ContactList list) {
@@ -75,12 +75,12 @@ class MessageSearch{
           });
         });
       }
-      ..searchFilter = (model.BasicOrganization org, String searchText) {
-        return org.name.toLowerCase().contains(searchText.toLowerCase());
+      ..searchFilter = (model.BasicReception reception, String searchText) {
+        return reception.name.toLowerCase().contains(searchText.toLowerCase());
       }
       ..listElementToString = companyListElementToString;
 
-      storage.getOrganizationList().then((model.OrganizationList list) {
+      storage.getReceptionList().then((model.ReceptionList list) {
         companySearch.updateSourceList(list.toList(growable: false));
       });
 
@@ -99,11 +99,11 @@ class MessageSearch{
     _context.registerFocusElement(body.querySelector('#message-search-resend'));
   }
 
-  String companyListElementToString(model.BasicOrganization org, String searchText) {
+  String companyListElementToString(model.BasicReception reception, String searchText) {
     if(searchText == null || searchText.isEmpty) {
-      return org.name;
+      return reception.name;
     } else {
-      String text = org.name;
+      String text = reception.name;
       int matchIndex = text.toLowerCase().indexOf(searchText.toLowerCase());
       String before  = text.substring(0, matchIndex);
       String match   = text.substring(matchIndex, matchIndex + searchText.length);
