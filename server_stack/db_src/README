@@ -1,0 +1,12 @@
+Try to keep the RDBMS specific details to a minimum.
+
+SQLite uses (0, 1) instead of (FALSE, TRUE).
+
+We use tables instead of enumeration types to have a more similar schema for
+SQLite and more complete RDBMS implementations (i.e. PostgreSQL).
+
+Use:
+
+   make sources # to generate RDBMS specific SQL sources
+   make         # to generate "test.db" for SQLite
+

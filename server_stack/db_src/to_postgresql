@@ -1,0 +1,84 @@
+#! /bin/bash
+#-----------------------------------------------------------------------------
+#--  Source and target file:
+
+if [ $# = 1 -a -r "$1" ]; then
+   source="$1"
+   target="$(dirname "${source}")/postgresql/$(basename "${source}")"
+else
+   echo "Usage:"                 1>&2
+   echo "  $0 <source_sql_file>" 1>&2
+   exit 1
+fi
+
+#-----------------------------------------------------------------------------
+#--  Simple substitutions:
+
+perl -lpe 's/\b(TIME)\b(.*)$/INTEGER$2 --  Time of day in seconds/g;' \
+     "${source}" \
+  > "${target}"
+
+#-----------------------------------------------------------------------------
+#--  Sequences/autoincrement:
+
+if egrep -q -- '-- +AUTOINCREMENT$' "${source}"; then
+   cat >> "${target}" << HEAD
+--  Create and enable sequences (AUTOINCREMENT):
+
+HEAD
+
+   normalised="$(mktemp)"
+
+   perl -lpe 's/(,?) +-- +AUTOINCREMENT/ AUTOINCREMENT$1/;
+              s/--.*$//;' "${source}" \
+     | tr '\n' ' ' \
+     | perl -lpe 's/; +/;/g; s/;/;\n/g; s/^ +//; s/  +/ /g;' \
+     | egrep 'CREATE TABLE .+ AUTOINCREMENT' \
+     > "${normalised}"
+
+   for table in $(cut -d' ' -f3 "${normalised}"); do
+      for field in $(grep "CREATE TABLE ${table} " "${normalised}" | tr '(),;' '\n\n\n\n' | perl -lpe 's/^ +//;' | grep AUTOINCREMENT | cut -d' ' -f1); do
+         cat >> "${target}" << SEQUENCE
+CREATE SEQUENCE ${table}_${field}_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE ${table}_${field}_sequence OWNED BY ${table}.${field};
+ALTER TABLE ONLY ${table} ALTER COLUMN id SET DEFAULT nextval ('${table}_${field}_sequence'::regclass);
+
+SEQUENCE
+
+      done
+   done
+
+   rm -f "${normalised}"
+
+   cat >> "${target}" << TAIL
+-------------------------------------------------------------------------------
+TAIL
+
+fi
+
+#-----------------------------------------------------------------------------
+#--  Set ownership:
+
+cat >> "${target}" << HEAD
+--  Set ownership:
+
+HEAD
+
+for kind in TABLE SEQUENCE; do
+   for object in $(grep "^CREATE ${kind} " "${target}" | cut -d' ' -f3); do
+      echo "ALTER ${kind} ${object} OWNER TO alice;" >> "${target}"
+   done
+
+   echo >> "${target}"
+done
+
+cat >> "${target}" << TAIL
+-------------------------------------------------------------------------------
+TAIL
+
+#-----------------------------------------------------------------------------

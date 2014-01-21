@@ -1,0 +1,8 @@
+# Generated SQL files:
+
+*/*.sql
+
+# Generated SQLite database:
+
+test.db
+
