@@ -18,20 +18,21 @@ part 'router/getcontactlist.dart';
 part 'router/getphone.dart';
 part 'router/invalidatecontact.dart';
 
-final Pattern invalidateContactUrl                   = new UrlPattern(r'/contact/(\d+)/invalidate');
-final Pattern getOrganizationContactUrl              = new UrlPattern(r'/contact/(\d+)/organization/(\d+)');
-final Pattern getOrganizationContactListUrl          = new UrlPattern(r'/contact/list/organization/(\d+)');
-final Pattern getPhoneUrl                            = new UrlPattern(r'/phone/(\d+)');
-final Pattern getOrganizationContactCalendarListUrl  = new UrlPattern(r'/contact/(\d+)/organization/(\d+)/calendar');
-final List<Pattern> allUniqueUrls = [invalidateContactUrl, getOrganizationContactUrl, getOrganizationContactListUrl, getPhoneUrl, getOrganizationContactCalendarListUrl];
+final Pattern invalidateContactUrl                = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
+final Pattern getReceptionContactUrl              = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
+final Pattern getReceptionContactListUrl          = new UrlPattern(r'/contact/list/reception/(\d+)');
+final Pattern getPhoneUrl                         = new UrlPattern(r'/phone/(\d+)');
+final Pattern getReceptionContactCalendarListUrl  = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
+final List<Pattern> allUniqueUrls = [invalidateContactUrl, getReceptionContactUrl, getReceptionContactListUrl, getPhoneUrl, getReceptionContactCalendarListUrl];
 
 void setup(HttpServer server) {
   Router router = new Router(server)
     ..filter(matchAny(allUniqueUrls), authFilter)
-    ..serve(getOrganizationContactUrl, method: 'GET').listen(getContact)
-    ..serve(getOrganizationContactListUrl, method: 'GET').listen(getOrgList)
+    ..serve(getReceptionContactUrl, method: 'GET').listen(getContact)
+    ..serve(getReceptionContactListUrl, method: 'GET').listen(getContactList)
     ..serve(getPhoneUrl, method: 'GET').listen(getPhone)
-    ..serve(getOrganizationContactCalendarListUrl, method: 'GET').listen(getContactCalendar)
+    ..serve(getReceptionContactCalendarListUrl, method: 'GET').listen(getContactCalendar)
+    ..serve(invalidateContactUrl, method: 'POST').listen(invalidateReception)
     ..defaultStream.listen(page404);
 }
 

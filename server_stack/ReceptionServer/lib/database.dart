@@ -1,4 +1,4 @@
-library organizationserver.database;
+library receptionserver.database;
 
 import 'dart:async';
 import 'dart:convert';
@@ -9,12 +9,12 @@ import 'configuration.dart';
 import 'package:Utilities/common.dart';
 import 'package:Utilities/database.dart' as database;
 
-part 'db/getorganization.dart';
+part 'db/getreception.dart';
 part 'db/getcalendar.dart';
-part 'db/createorganization.dart';
-part 'db/deleteorganization.dart';
-part 'db/updateorganization.dart';
-part 'db/getorganizationlist.dart';
+part 'db/createreception.dart';
+part 'db/deletereception.dart';
+part 'db/updatereception.dart';
+part 'db/getreceptionlist.dart';
 
 Pool _pool;
 

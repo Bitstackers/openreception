@@ -2,18 +2,18 @@ part of contactserver.router;
 
 void getContact(HttpRequest request) {
   int contactId  = pathParameter(request.uri, 'contact');
-  int orgId = pathParameter(request.uri, 'organization');
+  int receptionId = pathParameter(request.uri, 'reception');
   
-  cache.loadContact(orgId, contactId).then((String org) {
-    writeAndClose(request, org);
+  cache.loadContact(receptionId, contactId).then((String reception) {
+    writeAndClose(request, reception);
       
   }).catchError((_) {
-    _fetchAndCacheContact(orgId, contactId, request);
+    _fetchAndCacheContact(receptionId, contactId, request);
   });
 }
 
-void _fetchAndCacheContact(int orgId, int contactId, HttpRequest request) {
-  db.getContact(orgId, contactId).then((Map value) {
+void _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) {
+  db.getContact(receptionId, contactId).then((Map value) {
     String contact = JSON.encode(value);
     
     if(value.isEmpty) {
@@ -22,7 +22,7 @@ void _fetchAndCacheContact(int orgId, int contactId, HttpRequest request) {
       
     } else {
       writeAndClose(request, contact);
-      return cache.saveContact(orgId, contactId, contact)
+      return cache.saveContact(receptionId, contactId, contact)
         .catchError((error) {
           log('contactserver.router.getContact $error');
         });

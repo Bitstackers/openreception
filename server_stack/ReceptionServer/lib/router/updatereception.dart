@@ -1,6 +1,6 @@
-part of organizationserver.router;
+part of receptionserver.router;
 
-void updateOrg(HttpRequest request) {
+void updateReception(HttpRequest request) {
   int id = int.parse(request.uri.pathSegments.elementAt(1));
 
   extractContent(request).then((String content) {
@@ -10,8 +10,8 @@ void updateOrg(HttpRequest request) {
     Map attributes = data['attributes'];
     bool enabled = data['enabled'];
 
-    db.updateOrganization(id, full_name, uri, attributes, enabled).then((Map value) {
-      cache.removeOrganization(id).whenComplete(() {
+    db.updateReception(id, full_name, uri, attributes, enabled).then((Map value) {
+      cache.removeReception(id).whenComplete(() {
         writeAndClose(request, JSON.encode(value));
       });
     });

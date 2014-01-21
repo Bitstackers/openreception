@@ -1,4 +1,4 @@
-library organizationserver.configuration;
+library receptionserver.configuration;
 
 import 'dart:async';
 import 'dart:convert';

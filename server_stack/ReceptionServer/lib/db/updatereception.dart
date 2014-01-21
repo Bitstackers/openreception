@@ -1,11 +1,10 @@
-part of organizationserver.database;
+part of receptionserver.database;
 
-Future<Map> updateOrganization(int id, String full_name, String uri, Map attributes, bool enabled) {
+Future<Map> updateReception(int id, String full_name, String uri, Map attributes, bool enabled) {
     String sql = '''
-      UPDATE organizations
+      UPDATE receptions
       SET full_name=@full_name, uri=@uri, attributes=@attributes, enabled=@enabled
-      WHERE id=@id;
-    ''';
+      WHERE id=@id;''';
 
     Map parameters =
       {'id'        : id,

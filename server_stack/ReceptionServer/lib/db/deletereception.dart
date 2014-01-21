@@ -1,8 +1,8 @@
-part of organizationserver.database;
+part of receptionserver.database;
 
-Future<Map> deleteOrganization(int id) {
+Future<Map> deleteReception(int id) {
   String sql = '''
-    DELETE FROM organizations
+    DELETE FROM receptions
     WHERE id = @id;
   ''';
 

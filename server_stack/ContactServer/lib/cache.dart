@@ -5,14 +5,16 @@ import 'dart:async';
 import 'package:Utilities/cache.dart';
 import 'configuration.dart';
 
+const _folderName = 'contact';
+
 /**
- * Loads a organization from cache.
+ * Loads a contact from cache.
  * if it don't exists, then null is returned.
  */
-Future<String> loadContact(int orgId, int contactId) => load('${config.cache}contact/${orgId}_${contactId}.json');
+Future<String> loadContact(int receptionId, int contactId) => load('${config.cache}${_folderName}/${receptionId}_${contactId}.json');
 
-Future<bool> saveContact(int orgId, int contactId, String text) => save('${config.cache}contact/${orgId}_${contactId}.json', text);
+Future<bool> saveContact(int receptionId, int contactId, String text) => save('${config.cache}${_folderName}/${receptionId}_${contactId}.json', text);
 
-Future<bool> removeContact(int orgId, int contactId) => remove('${config.cache}contact/${orgId}_${contactId}.json');
+Future<bool> removeContact(int receptionId, int contactId) => remove('${config.cache}${_folderName}/${receptionId}_${contactId}.json');
 
-Future setup() => createCacheFolder('${config.cache}contact/');
+Future setup() => createCacheFolder('${config.cache}${_folderName}/');

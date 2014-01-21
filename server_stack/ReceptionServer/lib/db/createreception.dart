@@ -1,8 +1,8 @@
-part of organizationserver.database;
+part of receptionserver.database;
 
-Future<Map> createOrganization(String full_name, String uri, Map attributes, bool enabled) {
+Future<Map> createReception(String full_name, String uri, Map attributes, bool enabled) {
   String sql = '''
-    INSERT INTO organizations (full_name, uri, attributes, enabled)
+    INSERT INTO receptions (full_name, uri, attributes, enabled)
     VALUES (@full_name, @uri, @attributes, @enabled)
     RETURNING id;
   ''';

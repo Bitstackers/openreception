@@ -10,8 +10,8 @@ import 'package:Utilities/common.dart';
 import 'package:Utilities/database.dart' as database;
 import 'configuration.dart';
 
-part 'db/getorganizationcontact.dart';
-part 'db/getorganizationcontactlist.dart';
+part 'db/getreceptioncontact.dart';
+part 'db/getreceptioncontactlist.dart';
 part 'db/getphone.dart';
 part 'db/getcalendar.dart';
 

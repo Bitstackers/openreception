@@ -1,12 +1,12 @@
-part of organizationserver.database;
+part of receptionserver.database;
 
-Future<Map> getOrganizationCalendarList(int organizationId) {
+Future<Map> getReceptionCalendarList(int receptionId) {
   String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
-    FROM calendar_events cal JOIN organization_calendar org ON cal.id = org.event_id
-    WHERE org.organization_id = @orgid''';
+    FROM calendar_events cal JOIN reception_calendar org ON cal.id = org.event_id
+    WHERE org.reception_id = @receptionid''';
   
-  Map parameters = {'orgid' : organizationId};
+  Map parameters = {'receptionid' : receptionId};
   return database.query(_pool, sql, parameters).then((rows) {
     List events = new List();
     for(var row in rows) {

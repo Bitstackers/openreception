@@ -1,12 +1,12 @@
 part of contactserver.router;
 
 /**
- * Gives a lists of every contact in an organization.
+ * Gives a lists of every contact in an reception.
  */
-void getOrgList(HttpRequest request) {
-  int orgId = int.parse(request.uri.pathSegments.elementAt(3));
+void getContactList(HttpRequest request) {
+  int receptionId = int.parse(request.uri.pathSegments.elementAt(3));
   
-  db.getOrganizationContactList(orgId).then((Map value) {
+  db.getReceptionContactList(receptionId).then((Map value) {
     writeAndClose(request, JSON.encode(value));
-  }).catchError((error) => serverError(request, 'getOrgList. db.getOrganizationContactList returned error: $error'));
+  }).catchError((error) => serverError(request, 'getContactList. db.getReceptionContactList returned error: $error'));
 }

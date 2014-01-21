@@ -1,13 +1,13 @@
 part of contactserver.database;
 
-Future<Map> getOrganizationContactCalendarList(int organizationId, int contactId) {
+Future<Map> getReceptionContactCalendarList(int receptionId, int contactId) {
   String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal join contact_calendar con on cal.id = con.event_id
-    WHERE con.organization_id = @orgid AND con.contact_id = @contactid''';
+    WHERE con.reception_id = @receptionid AND con.contact_id = @contactid''';
   
-  Map parameters = {'orgid' : organizationId,
-                    'contactid': contactId};
+  Map parameters = {'receptionid' : receptionId,
+                    'contactid'   : contactId};
 
   return database.query(_pool, sql, parameters).then((rows) {
     List contacts = new List();

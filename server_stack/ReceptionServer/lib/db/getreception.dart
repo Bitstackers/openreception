@@ -1,9 +1,9 @@
-part of organizationserver.database;
+part of receptionserver.database;
 
-Future<Map> getOrganization(int id) {
+Future<Map> getReception(int id) {
   String sql = '''
       SELECT id, full_name, uri, attributes, enabled
-      FROM organizations
+      FROM receptions
       WHERE id = @id 
     ''';
 
@@ -14,10 +14,10 @@ Future<Map> getOrganization(int id) {
     if(rows.length == 1) {
       var row = rows.first;
       data =
-        {'organization_id' : row.id,
-         'full_name'       : row.full_name,
-         'uri'             : row.uri,
-         'enabled'         : row.enabled};
+        {'reception_id' : row.id,
+         'full_name'    : row.full_name,
+         'uri'          : row.uri,
+         'enabled'      : row.enabled};
       
       if (row.attributes != null) {
         Map attributes = JSON.decode(row.attributes);
