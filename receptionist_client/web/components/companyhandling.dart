@@ -44,19 +44,28 @@ class CompanyHandling {
       render();
     });
 
-    ul.onFocus.listen((_) {
-      if(!hasFocus) {
-        setFocus(ul.id);
-      }
-    });
+//    ul.onFocus.listen((_) {
+//      if(!hasFocus) {
+//        setFocus(ul.id);
+//      }
+//    });
 
     element.onClick.listen((_) {
-      setFocus(ul.id);
+//      setFocus(ul.id);
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id));
     });
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      hasFocus = handleFocusChange(value, [ul], element);
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == element.id;
+      element.classes.toggle(focusClassName, active);
+      if(active) {
+        ul.focus();
+      }
     });
+    
+//    event.bus.on(event.focusChanged).listen((Focus value) {
+//      hasFocus = handleFocusChange(value, [ul], element);
+//    });
   }
 
   void render() {

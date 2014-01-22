@@ -49,16 +49,27 @@ class CompanyEvents {
       reception = value;
     });
 
-    ul.onFocus.listen((_) {
-      setFocus(ul.id);
-    });
+//    ul.onFocus.listen((_) {
+//      hasFocus = true;
+//      event.bus.fire(event.locationChanged, new nav.Location(context.id, ul.id));
+//      //setFocus(ul.id);
+//    });
 
     element.onClick.listen((_) {
-      setFocus(ul.id);
+//      setFocus(ul.id);
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id));
     });
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      hasFocus = handleFocusChange(value, [ul], element);
+//    event.bus.on(event.focusChanged).listen((Focus value) {
+//      hasFocus = handleFocusChange(value, [ul], element);
+//    });
+    
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == element.id;
+      element.classes.toggle(focusClassName, active);
+      if(active) {
+        ul.focus();
+      }
     });
 
     context.registerFocusElement(ul);

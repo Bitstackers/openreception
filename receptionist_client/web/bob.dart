@@ -23,6 +23,7 @@ import 'classes/bobloading.dart';
 import 'classes/boblogin.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
+import 'classes/location.dart';
 import 'classes/notification.dart';
 import 'classes/state.dart';
 
@@ -35,8 +36,8 @@ int userId = 1;
 
 void main() {
   Uri url = Uri.parse(window.location.href);
-  if(url.queryParameters.containsKey('setToken')) {
-    configuration.token = url.queryParameters['setToken']; 
+  if(url.queryParameters.containsKey('settoken')) {
+    configuration.token = url.queryParameters['settoken']; 
   } else {
     window.location.assign('http://auth.adaheads.com');
   }
@@ -56,9 +57,10 @@ void main() {
   StreamSubscription subscription;
   subscription = event.bus.on(event.stateUpdated).listen((State value) {
     if(value.isConfigurationOK) {
-
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
+      
+      registerOnPopStateListeners();
     }
   });
 }

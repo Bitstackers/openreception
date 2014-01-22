@@ -19,6 +19,7 @@ import 'context.dart';
 import 'events.dart' as event;
 import 'focus.dart';
 import 'keyboardhandler.dart';
+import 'location.dart' as nav;
 import 'logger.dart';
 import 'state.dart';
 import '../components.dart';
@@ -121,11 +122,13 @@ class BobActive {
 
   void setupKeyboardShortcuts() {
     keyboardHandler.onKeyName('companyselector').listen((_) {
-      setFocus('company-selector-searchbar');
+      //setFocus('company-selector-searchbar');
+      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyhandling'));
     });
 
     keyboardHandler.onKeyName('companyevents').listen((_) {
-      setFocus('company_events_list');
+      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents'));
+      //setFocus('company_events_list');
     });
 
     keyboardHandler.onKeyName('companyhandling').listen((_) {

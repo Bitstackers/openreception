@@ -14,8 +14,8 @@
 part of components;
 
 class ContextSwitcher {
-  UListElement                 element;
   List<_ContextSwitcherButton> buttons = new List<_ContextSwitcherButton>();
+  UListElement                 element;
 
   ContextSwitcher(UListElement this.element, List<Context> contexts) {
     for(var context in contexts) {
@@ -29,10 +29,10 @@ class ContextSwitcher {
 class _ContextSwitcherButton {
   ImageElement  alertImg;
   ButtonElement button;
+  Context       context;
   LIElement     element;
   ImageElement  iconActive;
   ImageElement  iconPassive;
-  Context       context;
 
   _ContextSwitcherButton(LIElement this.element, Context this.context) {
     String html = '''
@@ -59,27 +59,33 @@ class _ContextSwitcherButton {
     }
 
     element.children.add(button);
-
+        
     registerEventListeners();
     resize();
   }
 
   void clicked(_) {
     if(!context.isActive) {
-      context.activate();
+      event.bus.fire(event.locationChanged, new nav.Location.context(context.id));
+//      context.activate();
     }
   }
 
   void registerEventListeners() {
     window.onResize.listen((_) => resize());
 
-    event.bus.on(event.activeContextChanged).listen((String _) {
-      iconActive.classes.toggle('hidden', !context.isActive);
-      button.disabled = context.isActive;
-    });
+//    event.bus.on(event.activeContextChanged).listen((String _) {
+//      iconActive.classes.toggle('hidden', !context.isActive);
+//      button.disabled = context.isActive;
+//    });
 
     context.bus.on(alertUpdated).listen((int value) {
       alertImg.classes.toggle('hidden', value == 0);
+    });
+    
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      iconActive.classes.toggle('hidden', !context.isActive);
+      button.disabled = context.isActive;
     });
   }
 

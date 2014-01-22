@@ -20,7 +20,8 @@ import 'package:event_bus/event_bus.dart';
 
 import 'events.dart' as event;
 import 'focus.dart';
-import 'keyboardhandler.dart';
+//import 'keyboardhandler.dart';
+import 'location.dart' as nav;
 import 'logger.dart';
 
 /**
@@ -72,11 +73,11 @@ class Context {
   /**
    * Activate this [Context].
    */
-  void activate() {
-    if(!isActive) {
-      event.bus.fire(event.activeContextChanged, this.id);
-    }
-  }
+//  void activate() {
+//    if(!isActive) {
+//      event.bus.fire(event.activeContextChanged, this.id);
+//    }
+//  }
 
   /**
    * Decrease the alert level for this [Context].
@@ -108,12 +109,12 @@ class Context {
    * (see the constructor comment) and setting [isActive] to false.
    */
   void _toggle(String contextId) {
-    if (contextId == this.id) {
+    if (contextId == id) {
       isActive = true;
       _element.classes.remove('hidden');
-      log.debug('Context._toggle activating ${this.id}');
+      log.debug('Context._toggle activating ${id}');
       focusElements.forEach((_, e) => e.tabIndex = getTabIndex(e.id));
-      setFocus(lastFocusId);
+//      setFocus(lastFocusId);
 
     } else if (isActive) {
       isActive = false;
@@ -128,16 +129,20 @@ class Context {
   void _registerEventListeners() {
     // Keep track of which Context is active.
     //_onChange.listen(_toggle);
-    event.bus.on(event.activeContextChanged).listen(_toggle);
+//    event.bus.on(event.activeContextChanged).listen(_toggle);
 
     // Keep track of keyboardshortcuts.
-    keyboardHandler.onKeyName(id).listen((_) => activate());
+//    keyboardHandler.onKeyName(id).listen((_) => activate());
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      if(focusElements.containsKey(value.current)) {
-        lastFocusId = value.current;
-        activate();
-      }
+//    event.bus.on(event.focusChanged).listen((Focus value) {
+//      if(focusElements.containsKey(value.current)) {
+//        lastFocusId = value.current;
+//        activate();
+//      }
+//    });
+    
+    event.bus.on(event.locationChanged).listen((nav.Location value) {
+      _toggle(value.contextId);
     });
   }
 

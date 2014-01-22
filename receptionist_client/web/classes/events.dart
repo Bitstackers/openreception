@@ -18,6 +18,7 @@ import 'package:event_bus/event_bus.dart';
 import '../components.dart';
 import 'focus.dart';
 import 'model.dart' as model;
+import 'location.dart';
 import 'state.dart';
 
 final EventType<String> activeContextChanged                    = new EventType<String>();
@@ -30,6 +31,7 @@ final EventType<MessageSearchFilter> messageSearchFilterChanged = new EventType<
 final EventType<Focus> focusChanged                             = new EventType<Focus>();
 final EventType<model.Call> localCallQueueAdd                   = new EventType<model.Call>();
 final EventType<model.Call> localCallQueueRemove                = new EventType<model.Call>();
+final EventType<Location> locationChanged                       = new EventType<Location>();
 final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
 final EventType<State> stateUpdated                             = new EventType<State>();
 

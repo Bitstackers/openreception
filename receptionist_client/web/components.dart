@@ -26,6 +26,7 @@ import 'classes/common.dart';
 import 'classes/focus.dart';
 import 'classes/events.dart' as event;
 import 'classes/keyboardhandler.dart';
+import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
 import 'classes/model.dart' as model;
 import 'classes/protocol.dart' as protocol;
