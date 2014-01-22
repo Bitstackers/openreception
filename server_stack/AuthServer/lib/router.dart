@@ -21,9 +21,9 @@ part 'router/validate.dart';
 
 final Pattern loginUrl = new UrlPattern('/login');
 final Pattern oauthReturnUrl = new UrlPattern('/oauth2callback');
-final Pattern userUrl = new UrlPattern('/user');
-final Pattern validateUrl = new UrlPattern('/token');
-final Pattern invalidateUrl = new UrlPattern('/token/invalidate');
+final Pattern userUrl = new UrlPattern('/user/([0-9a-zA-Z]+)');
+final Pattern validateUrl = new UrlPattern('/token/([0-9a-zA-Z]+)');
+final Pattern invalidateUrl = new UrlPattern('/token/([0-9a-zA-Z]+)/invalidate');
 
 void setup(HttpServer server) {
   Router router = new Router(server)
