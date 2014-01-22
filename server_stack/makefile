@@ -1,10 +1,10 @@
-all: auth contact log message misc organization
+all: auth contact log message misc reception
 
 clean: 
 	-rm out
 
 auth: outfolder
-	cd AuthServer/ && pub get 
+	cd AuthServer/ && /usr/bin/pub get 
 	dart2js --output-type=dart --checked --verbose --out=out/AuthServer.dart --categories=Server AuthServer/bin/authserver.dart
 
 contact: outfolder
@@ -26,6 +26,6 @@ misc: outfolder
 outfolder:
 	-mkdir out
 
-organization: outfolder
-	cd OrganizationServer/ && pub get
-	dart2js --output-type=dart --checked --verbose --out=out/OrganizationServer.dart --categories=Server OrganizationServer/bin/organizationserver.dart
+reception: outfolder
+	cd ReceptionServer/ && pub get
+	dart2js --output-type=dart --checked --verbose --out=out/ReceptionServer.dart --categories=Server ReceptionServer/bin/receptionserver.dart
