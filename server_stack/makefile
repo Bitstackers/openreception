@@ -1,10 +1,10 @@
 all: auth contact log message misc reception
 
 clean: 
-	-rm out
+	-rm -r out
 
 auth: outfolder
-	cd AuthServer/ && /usr/bin/pub get 
+	cd AuthServer/ && pub get 
 	dart2js --output-type=dart --checked --verbose --out=out/AuthServer.dart --categories=Server AuthServer/bin/authserver.dart
 
 contact: outfolder
