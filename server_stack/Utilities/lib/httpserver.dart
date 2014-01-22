@@ -19,8 +19,8 @@ void addCorsHeaders(HttpResponse res) {
 
 Future<bool> authFilter(HttpRequest request) {
   if(request.uri.queryParameters.containsKey('token')) {
-    String host = 'auth.adaheads.com';
-    int port = 80;
+    String host = 'alice.adaheads.com';
+    int port = 4050;
     String path = 'token/${request.uri.queryParameters['token']}';
 
     String url = 'http://$host:$port/$path';
