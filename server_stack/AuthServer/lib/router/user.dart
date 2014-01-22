@@ -1,7 +1,9 @@
 part of authenticationserver.router;
 
-void userinfo(HttpRequest request) {  
-  cache.loadToken(queryParameter(request.uri, 'token')).then((String token) {
+void userinfo(HttpRequest request) { 
+  String token = request.uri.pathSegments.elementAt(1);
+  
+  cache.loadToken(token).then((String token) {
     Map json = JSON.decode(token);
     String url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${json['access_token']}';
     

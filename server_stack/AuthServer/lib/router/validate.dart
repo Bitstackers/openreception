@@ -1,7 +1,7 @@
 part of authenticationserver.router;
 
 void validateToken(HttpRequest request) {
-  String token = queryParameter(request.uri, 'token');
+  String token = request.uri.pathSegments.elementAt(1);
   
   if(token != null && token.isNotEmpty) {
     cache.loadToken(token).then((_) {
