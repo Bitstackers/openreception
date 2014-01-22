@@ -1,11 +1,18 @@
 {
-    "standardGreeting": "Velkommen til...",
-    "aliceBaseUrl": "http://alice.adaheads.com:4242",
+    "standardGreeting"  : "Velkommen til...",
+
+    "callFlowServerURI"     : "http://localhost:4242",
+    "organizationServerURI" : "http://localhost:8080",
+    "contactServerURI"      : "http://localhost:8081",
+    "messageServerURI"      : "http://localhost:8082",
+    "logServerURI"          : "http://localhost:8083",
+    "authServerURI"         : "http://localhost:9000",
+
     "notificationSocket": {
         "interface": "ws://alice.adaheads.com:4242/notifications",
         "reconnectInterval": 2000
     },
-    "agentID": "1",
+
     "serverLog": {
         "level": "info",
         "interface": {
@@ -14,18 +21,7 @@
             "info": "/log/info"
         }
     },
-    "Enable_Polling": false,
-    "PJSUA_HTTPD_URI": "http://localhost:30200",
-    "System_Console": {
-        "Max_Items": 15
-    },
-    "Event_Log": {
-        "Max_Items": 20
-    },
-    "Debug_Enabled": true,
-    "SIP_Account": {
-        "Domain": "asterisk2.adaheads.com",
-        "Password": "12345",
-        "Username": "softphone1"
-    }
+
+    "aliceBaseUrl"      : "http://alice.adaheads.com:4242",
+    "agentID": "1"
 }
