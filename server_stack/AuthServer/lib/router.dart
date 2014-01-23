@@ -27,7 +27,7 @@ final Pattern invalidateUrl = new UrlPattern('/token/([0-9a-zA-Z]+)/invalidate')
 
 void setup(HttpServer server) {
   Router router = new Router(server)
-    ..serve(loginUrl, method: 'POST').listen(login)
+    ..serve(loginUrl, method: 'GET').listen(login)
     ..serve(oauthReturnUrl, method: 'GET').listen(oauthCallback)
     ..serve(userUrl, method: 'GET').listen(userinfo)
     ..serve(validateUrl, method: 'GET').listen(validateToken)
