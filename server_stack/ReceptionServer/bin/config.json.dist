@@ -1,5 +1,5 @@
 {
-    "authurl": 'auth.example.com/token/oauth2callback',
+    "authurl": "http://auth.example.com/",
     "httpport": 8080,
     "dbuser": "user",
     "dbpassword": "Secret",
