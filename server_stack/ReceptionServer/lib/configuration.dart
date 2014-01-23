@@ -23,16 +23,18 @@ class Configuration {
   int        _dbport     = 5432;
   String     _dbname;
   String     _cache;
+  InternetAddress _sysloghostname = InternetAddress.LOOPBACK_IP_V4;
 
-  Uri    get authUrl    => _authUrl;
-  String get cache      => _cache;
-  String get configfile => _configfile;
-  String get dbuser     => _dbuser;
-  String get dbpassword => _dbpassword;
-  String get dbhost     => _dbhost;
-  int    get dbport     => _dbport;
-  String get dbname     => _dbname;
-  int    get httpport   => _httpport;
+  Uri    get authUrl        => _authUrl;
+  String get cache          => _cache;
+  String get configfile     => _configfile;
+  String get dbuser         => _dbuser;
+  String get dbpassword     => _dbpassword;
+  String get dbhost         => _dbhost;
+  int    get dbport         => _dbport;
+  String get dbname         => _dbname;
+  int    get httpport       => _httpport;
+  InternetAddress get sysloghostname => _sysloghostname;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
