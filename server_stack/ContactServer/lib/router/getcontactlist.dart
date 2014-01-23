@@ -4,7 +4,7 @@ part of contactserver.router;
  * Gives a lists of every contact in an reception.
  */
 void getContactList(HttpRequest request) {
-  int receptionId = int.parse(request.uri.pathSegments.elementAt(3));
+  int receptionId = pathParameter(request.uri, 'reception');
   
   db.getReceptionContactList(receptionId).then((Map value) {
     writeAndClose(request, JSON.encode(value));

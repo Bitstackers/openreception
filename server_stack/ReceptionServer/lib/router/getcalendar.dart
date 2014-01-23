@@ -1,7 +1,7 @@
 part of receptionserver.router;
 
 void getReceptionCalendar(HttpRequest request) {
-  int receptionId = int.parse(request.uri.pathSegments.elementAt(1));
+  int receptionId = pathParameter(request.uri, 'reception');
   
   db.getReceptionCalendarList(receptionId).then((Map value) {
     writeAndClose(request, JSON.encode(value));

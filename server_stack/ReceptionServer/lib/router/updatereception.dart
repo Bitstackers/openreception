@@ -1,7 +1,7 @@
 part of receptionserver.router;
 
 void updateReception(HttpRequest request) {
-  int id = int.parse(request.uri.pathSegments.elementAt(1));
+  int id = pathParameter(request.uri, 'reception');
 
   extractContent(request).then((String content) {
     Map data = JSON.decode(content);

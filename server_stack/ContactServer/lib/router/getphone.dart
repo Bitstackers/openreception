@@ -1,7 +1,7 @@
 part of contactserver.router;
 
 void getPhone(HttpRequest request) {
-  int phoneId = int.parse(request.uri.pathSegments.elementAt(1));  
+  int phoneId = pathParameter(request.uri, 'phone');
   
   db.getPhone(phoneId).then((Map value) {
     String phone = JSON.encode(value);

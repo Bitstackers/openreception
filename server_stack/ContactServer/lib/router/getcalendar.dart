@@ -1,8 +1,8 @@
 part of contactserver.router;
 
 void getContactCalendar(HttpRequest request) {
-  int receptionId = int.parse(request.uri.pathSegments.elementAt(1));
-  int contactId = int.parse(request.uri.pathSegments.elementAt(3));
+  int contactId  = pathParameter(request.uri, 'contact');
+  int receptionId = pathParameter(request.uri, 'reception');
   
   db.getReceptionContactCalendarList(receptionId, contactId).then((Map value) {
     writeAndClose(request, JSON.encode(value));

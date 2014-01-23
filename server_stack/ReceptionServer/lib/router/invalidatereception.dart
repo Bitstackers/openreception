@@ -1,7 +1,7 @@
 part of receptionserver.router;
 
 void invalidateReception(HttpRequest request) {
-  int id = int.parse(request.uri.pathSegments.elementAt(1));
+  int id = pathParameter(request.uri, 'reception');
 
   cache.removeReception(id).then((_) {
     writeAndClose(request, JSON.encode({}));

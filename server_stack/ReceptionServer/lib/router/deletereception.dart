@@ -1,7 +1,7 @@
 part of receptionserver.router;
 
 void deleteReception(HttpRequest request) {
-  int id = int.parse(request.uri.pathSegments.elementAt(1));
+  int id = pathParameter(request.uri, 'reception');
 
   db.deleteReception(id).then((Map value) {
     return cache.removeReception(id).whenComplete(() {
