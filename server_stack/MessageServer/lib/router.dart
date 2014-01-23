@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
+import 'configuration.dart';
 import 'database.dart' as db;
 import 'package:Utilities/httpserver.dart';
 
@@ -22,7 +23,7 @@ final List<Pattern> allUniqueUrls = [getMessageDraftUrl, getMessageListUrl, getM
 
 void setup(HttpServer server) {
   Router router = new Router(server)
-    ..filter(matchAny(allUniqueUrls), authFilter)
+    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(getMessageDraftUrl, method: 'GET').listen(getMessageDrafts)
     ..serve(getMessageListUrl, method: 'GET').listen(getMessageList)
     ..serve(getMessageSendUrl, method: 'POST').listen(sendMessage)

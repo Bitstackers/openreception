@@ -19,10 +19,10 @@ part 'router/oauthcallback.dart';
 part 'router/user.dart';
 part 'router/validate.dart';
 
-final Pattern loginUrl = new UrlPattern('/login');
-final Pattern oauthReturnUrl = new UrlPattern('/oauth2callback');
-final Pattern userUrl = new UrlPattern('/user/([0-9a-zA-Z]+)');
-final Pattern validateUrl = new UrlPattern('/token/([0-9a-zA-Z]+)');
+final Pattern loginUrl = new UrlPattern('/token/create');
+final Pattern oauthReturnUrl = new UrlPattern('/token/oauth2callback');
+final Pattern userUrl = new UrlPattern('/token/([0-9a-zA-Z]+)');
+final Pattern validateUrl = new UrlPattern('/token/([0-9a-zA-Z]+)/validate');
 final Pattern invalidateUrl = new UrlPattern('/token/([0-9a-zA-Z]+)/invalidate');
 
 void setup(HttpServer server) {
@@ -31,6 +31,6 @@ void setup(HttpServer server) {
     ..serve(oauthReturnUrl, method: 'GET').listen(oauthCallback)
     ..serve(userUrl, method: 'GET').listen(userinfo)
     ..serve(validateUrl, method: 'GET').listen(validateToken)
-    ..serve(invalidateUrl, method: 'GET').listen(invalidateToken)
+    ..serve(invalidateUrl, method: 'POST').listen(invalidateToken)
     ..defaultStream.listen(page404);
 }

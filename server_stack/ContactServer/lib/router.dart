@@ -8,6 +8,7 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'cache.dart' as cache;
+import 'configuration.dart';
 import 'package:Utilities/common.dart';
 import 'database.dart' as db;
 import 'package:Utilities/httpserver.dart';
@@ -27,7 +28,7 @@ final List<Pattern> allUniqueUrls = [invalidateContactUrl, getReceptionContactUr
 
 void setup(HttpServer server) {
   Router router = new Router(server)
-    ..filter(matchAny(allUniqueUrls), authFilter)
+    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(getReceptionContactUrl, method: 'GET').listen(getContact)
     ..serve(getReceptionContactListUrl, method: 'GET').listen(getContactList)
     ..serve(getPhoneUrl, method: 'GET').listen(getPhone)

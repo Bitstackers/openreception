@@ -8,11 +8,11 @@ void validateToken(HttpRequest request) {
       request.response.statusCode = 200;
       writeAndClose(request, '{}');
     }).catchError((_) {
-      request.response.statusCode = 401;
+      request.response.statusCode = 404;
       writeAndClose(request, '{}');
     });
   } else {
-    request.response.statusCode = 401;
+    request.response.statusCode = 404;
     writeAndClose(request, '{}');
   }
 }

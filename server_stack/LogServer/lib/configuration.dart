@@ -14,9 +14,11 @@ class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
+  Uri        _authUrl;
   String     _configfile = 'config.json';
   int        _httpport   = 8080;
 
+  Uri    get authUrl    => _authUrl;
   String get configfile => _configfile;
   int    get httpport   => _httpport;
 
@@ -49,6 +51,10 @@ class Configuration {
     return file.readAsString().then((String data) {
       Map config = JSON.decode(data);
 
+      if(config.containsKey('authurl')) {
+        _authUrl = Uri.parse(config['authurl']);
+      }
+      
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
@@ -61,6 +67,9 @@ class Configuration {
 
   Future _parseArgument() {
     return new Future(() {
+      if(hasArgument('authurl')) {
+        _authUrl = Uri.parse(_args['authurl']);
+      }
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }

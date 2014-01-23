@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:route/server.dart';
 
 import 'common.dart';
 
@@ -17,28 +18,27 @@ void addCorsHeaders(HttpResponse res) {
     ..add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 }
 
-Future<bool> authFilter(HttpRequest request) {
-  if(request.uri.queryParameters.containsKey('token')) {
-    String host = 'alice.adaheads.com';
-    int port = 4050;
-    String path = 'token/${request.uri.queryParameters['token']}';
-
-    String url = 'http://$host:$port/$path';
-    return http.get(url).then((response) {
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        request.response.statusCode = HttpStatus.UNAUTHORIZED;
-        writeAndClose(request, 'Auth Failed');
-        return false;
-      }
-    });
-    
-  } else {
-    request.response.statusCode = HttpStatus.UNAUTHORIZED;
-    writeAndClose(request, '');
-    return new Future(() => false);
-  }
+Filter auth(Uri authUrl) {
+  return (HttpRequest request) {
+    if(request.uri.queryParameters.containsKey('token')) {      
+      String path = 'token/${request.uri.queryParameters['token']}/validate';
+      Uri url = new Uri(scheme: authUrl.scheme, userInfo: authUrl.userInfo, host: authUrl.host, port: authUrl.port, path: path);
+      return http.get(url).then((response) {
+        if (response.statusCode == 200) {
+          return true;
+        } else {
+          request.response.statusCode = HttpStatus.UNAUTHORIZED;
+          writeAndClose(request, 'Auth Failed');
+          return false;
+        }
+      });
+      
+    } else {
+      request.response.statusCode = HttpStatus.UNAUTHORIZED;
+      writeAndClose(request, '');
+      return new Future(() => false);
+    }
+  };
 }
 
 Future<String> extractContent(HttpRequest request) {

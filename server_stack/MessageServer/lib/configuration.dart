@@ -14,21 +14,23 @@ class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
+  Uri        _authUrl;
   String     _configfile = 'config.json';
-  int        _httpport   = 8080;
   String     _dbuser;
   String     _dbpassword;
   String     _dbhost     = 'localhost';
   int        _dbport     = 5432;
   String     _dbname;
+  int        _httpport   = 8080;
 
+  Uri    get authUrl    => _authUrl;
   String get configfile => _configfile;
-  int    get httpport   => _httpport;
   String get dbuser     => _dbuser;
   String get dbpassword => _dbpassword;
   String get dbhost     => _dbhost;
   int    get dbport     => _dbport;
   String get dbname     => _dbname;
+  int    get httpport   => _httpport;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -59,6 +61,10 @@ class Configuration {
     return file.readAsString().then((String data) {
       Map config = JSON.decode(data);
 
+      if(config.containsKey('authurl')) {
+        _authUrl = Uri.parse(config['authurl']);
+      }
+      
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
@@ -91,6 +97,10 @@ class Configuration {
 
   Future _parseArgument() {
     return new Future(() {
+      if(hasArgument('authurl')) {
+        _authUrl = Uri.parse(_args['authurl']);
+      }
+      
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }
