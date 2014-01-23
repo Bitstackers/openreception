@@ -4,8 +4,8 @@ Future<Map> getUser(String userEmail) {
   String sql = '''
   SELECT id, name, extension, 
    (SELECT array_to_json(array_agg(name)) 
-    FROM user_groups JOIN groups ON user_groups.gid = groups.id
-    WHERE user_groups.uid = id) AS groups,
+    FROM user_groups JOIN groups ON user_groups.group_id = groups.id
+    WHERE user_groups.user_id = id) AS groups,
    (SELECT array_to_json(array_agg(identity)) 
     FROM auth_identities 
     WHERE user_id = id) AS identities
