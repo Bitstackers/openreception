@@ -22,7 +22,7 @@ part 'router/invalidatecontact.dart';
 final Pattern invalidateContactUrl                = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
 final Pattern getReceptionContactUrl              = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
 final Pattern getReceptionContactListUrl          = new UrlPattern(r'/contact/list/reception/(\d+)');
-final Pattern getPhoneUrl                         = new UrlPattern(r'/phone/(\d+)');
+final Pattern getPhoneUrl                         = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/phone/(\d+)');
 final Pattern getReceptionContactCalendarListUrl  = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
 final List<Pattern> allUniqueUrls = [invalidateContactUrl, getReceptionContactUrl, getReceptionContactListUrl, getPhoneUrl, getReceptionContactCalendarListUrl];
 
