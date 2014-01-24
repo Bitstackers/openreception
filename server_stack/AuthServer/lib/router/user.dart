@@ -10,8 +10,13 @@ void userinfo(HttpRequest request) {
     return http.get(url).then((http.Response response) {
       Map googleProfile = JSON.decode(response.body);
       return db.getUser(googleProfile['email']).then((Map agent) {
-        agent['remote_attributes'] = googleProfile;
-        writeAndClose(request, JSON.encode(agent));
+        if(agent.isEmpty) {
+          request.response.statusCode = 404;
+          writeAndClose(request, '{}');
+        } else {
+          agent['remote_attributes'] = googleProfile;
+          writeAndClose(request, JSON.encode(agent));
+        }
       });
     });
   }).catchError((error) {
