@@ -12,7 +12,7 @@ void userinfo(HttpRequest request) {
       return db.getUser(googleProfile['email']).then((Map agent) {
         if(agent.isEmpty) {
           request.response.statusCode = 404;
-          writeAndClose(request, '{}');
+          writeAndClose(request, '{"status": "Unknown identity."}');
         } else {
           agent['remote_attributes'] = googleProfile;
           writeAndClose(request, JSON.encode(agent));
