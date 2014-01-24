@@ -222,6 +222,7 @@ VALUES ('kim.rostgaard@gmail.com', 2),
        ('devicesnull@gmail.com', 2),
        ('krc@adaheads.com', 2),
        ('tp@adaheads.com', 1),
+       ('cooltomme@gmail.com', 1),
        ('jsa@adaheads.com', 3);
 
 INSERT INTO openids (user_id, openid, priority)
