@@ -4,5 +4,5 @@ dependencies:
   http: any
   postgresql: any
   route: any
-  syslog: 
-    git: git@github.com:PedersenThomas/syslog.git
+#  syslog: 
+#    git: git@github.com:PedersenThomas/syslog.git
