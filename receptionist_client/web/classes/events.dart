@@ -35,5 +35,8 @@ final EventType<Location> locationChanged                       = new EventType<
 final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
 final EventType<State> stateUpdated                             = new EventType<State>();
 
+// Keyboards
+final EventType<String> pickupNextCall                          = new EventType<String>();
+
 EventBus _bus = new EventBus();
 EventBus get bus => _bus;

@@ -86,19 +86,23 @@ class GlobalQueue {
     });
 
     context.registerFocusElement(ul);
-
-    //Keyboard Shortcuts Handlers
-    keyboardHandler.onKeyName('pickupcall').listen((_) {
+    
+    event.bus.on(event.pickupNextCall).listen((_) {
       pickupnextcallHandler();
     });
-
-    keyboardHandler.onKeyName('parkcall').listen((_) {
-      holdcallHandler();
-    });
-
-    keyboardHandler.onKeyName('hangupcall').listen((_) {
-      hangupcallHandler();
-    });
+    
+    //Keyboard Shortcuts Handlers
+//    keyboardHandler.onKeyName('pickupcall').listen((_) {
+//      pickupnextcallHandler();
+//    });
+//
+//    keyboardHandler.onKeyName('parkcall').listen((_) {
+//      holdcallHandler();
+//    });
+//
+//    keyboardHandler.onKeyName('hangupcall').listen((_) {
+//      hangupcallHandler();
+//    });
   }
 
   void _initialFill() {

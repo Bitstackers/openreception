@@ -21,7 +21,7 @@ part of protocol;
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<Map>> peerList() {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final String                   path      = '/debug/peer/list';
   HttpRequest                    request;
@@ -58,7 +58,7 @@ Future<Response<Map>> peerList() {
  *  On error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<Map>> channelList() {
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final String                   path      = '/debug/channel/list';
   HttpRequest                    request;

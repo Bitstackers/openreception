@@ -15,7 +15,12 @@ library keyboard;
 
 import 'dart:async';
 import 'dart:html';
+
+import 'events.dart' as event;
+import 'location.dart' as nav;
 import 'logger.dart';
+
+import 'package:ctrl_alt_foo/keys.dart' as ctrlAlt;
 
 final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
@@ -89,8 +94,9 @@ class _KeyboardHandler {
    * Initialize (setup named streams) and setup listeners for key events.
    */
   _KeyboardHandler() {
-    _initialize();
-    _registerEventListeners();
+    _ctrlAltInitialize();
+    //_initialize();
+    //_registerEventListeners();
   }
 
   /**
@@ -126,6 +132,16 @@ class _KeyboardHandler {
       _StreamControllerMap[value] = new StreamController<int>.broadcast();
     });
   }
+  
+  void _ctrlAltInitialize() {
+    ctrlAlt.Keys.shortcuts({
+      'Ctrl+A': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
+      'Ctrl+E': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
+      'Ctrl+R': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
+      'Ctrl+W': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
+      'Ctrl+P': () => event.bus.fire(event.pickupNextCall, 'Keyboard')
+    });
+  }
 
   /**
    * Sink a keyCode on a stream if proper conditions are met, ie. the keyCode
@@ -137,7 +153,7 @@ class _KeyboardHandler {
    */
   void _keyDown(KeyboardEvent event) {
     KeyEvent key = new KeyEvent.wrap(event);
-
+    
     if (_locked == null && (/*key.ctrlKey &&*/ key.altKey)) {
       event.preventDefault();
       int keyCode = key.keyCode;
@@ -179,14 +195,14 @@ class _KeyboardHandler {
    *    // handle null return.
    *  }
    */
-  Stream<int> onKeyName(String keyName) {
-    if (_StreamControllerMap.containsKey(keyName)) {
-      return _StreamControllerMap[keyName].stream;
-    }
-
-    log.critical('_Keyboardhandler.onKeyName no key ${keyName}');
-    return null;
-  }
+//  Stream<int> onKeyName(String keyName) {
+//    if (_StreamControllerMap.containsKey(keyName)) {
+//      return _StreamControllerMap[keyName].stream;
+//    }
+//
+//    log.critical('_Keyboardhandler.onKeyName no key ${keyName}');
+//    return null;
+//  }
 
   /**
    * Registers the event listeners.

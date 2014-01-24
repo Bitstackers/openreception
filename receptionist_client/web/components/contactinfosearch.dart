@@ -180,13 +180,13 @@ class ContactInfoSearch {
 
     displayedContactList.onScroll.listen(scrolling);
 
-    keyboardHandler.onKeyName('selectedContactCall').listen((_) {
-      if (contact != model.nullContact) {
-        if (contact.telephoneNumberList.isNotEmpty) {
-          //TODO call contact;
-        }
-      }
-    });
+//    keyboardHandler.onKeyName('selectedContactCall').listen((_) {
+//      if (contact != model.nullContact) {
+//        if (contact.telephoneNumberList.isNotEmpty) {
+//          //TODO call contact;
+//        }
+//      }
+//    });
 
     context.registerFocusElement(searchBox);
   }

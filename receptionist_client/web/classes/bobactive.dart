@@ -121,35 +121,35 @@ class BobActive {
   }
 
   void setupKeyboardShortcuts() {
-    keyboardHandler.onKeyName('companyselector').listen((_) {
-      //setFocus('company-selector-searchbar');
-      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyhandling'));
-    });
-
-    keyboardHandler.onKeyName('companyevents').listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents'));
-      //setFocus('company_events_list');
-    });
-
-    keyboardHandler.onKeyName('companyhandling').listen((_) {
-      setFocus('company_handling_list');
-    });
-
-    keyboardHandler.onKeyName('contactinfosearch').listen((_) {
-      setFocus('contact-info-searchbar');
-    });
-
-    keyboardHandler.onKeyName('sendmessagetelephone').listen((_) {
-      setFocus('sendmessagephone');
-    });
-
-    keyboardHandler.onKeyName('messagefield').listen((_) {
-      setFocus('sendmessagetext');
-    });
-
-    keyboardHandler.onKeyName('companycustomertype').listen((_) {
-      setFocus('company-customertype-body');
-    });
-
+//    keyboardHandler.onKeyName('companyselector').listen((_) {
+//      //setFocus('company-selector-searchbar');
+//      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyhandling'));
+//    });
+//
+//    keyboardHandler.onKeyName('companyevents').listen((_) {
+//      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents'));
+//      //setFocus('company_events_list');
+//    });
+//
+//    keyboardHandler.onKeyName('companyhandling').listen((_) {
+//      setFocus('company_handling_list');
+//    });
+//
+//    keyboardHandler.onKeyName('contactinfosearch').listen((_) {
+//      setFocus('contact-info-searchbar');
+//    });
+//
+//    keyboardHandler.onKeyName('sendmessagetelephone').listen((_) {
+//      setFocus('sendmessagephone');
+//    });
+//
+//    keyboardHandler.onKeyName('messagefield').listen((_) {
+//      setFocus('sendmessagetext');
+//    });
+//
+//    keyboardHandler.onKeyName('companycustomertype').listen((_) {
+//      setFocus('company-customertype-body');
+//    });
+      print('BOB ACTIVE DEBUG: ${keyboardHandler}');
   }
 }

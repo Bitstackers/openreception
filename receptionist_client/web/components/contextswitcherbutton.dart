@@ -48,11 +48,11 @@ class ContextSwitcherButton {
   /**
    * Activate the context associated with the button.
    */
-  void _activate() {
-    if(!context.isActive) {
-      context.activate();
-    }
-  }
+//  void _activate() {
+//    if(!context.isActive) {
+//      context.activate();
+//    }
+//  }
 
   void _queryElements() {
 //    _button = getShadowRoot('context-switcher-button').querySelector('button');

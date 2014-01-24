@@ -24,7 +24,7 @@ part of protocol;
 Future<Response<Map>> getAgentState(int agentId) {
   assert(agentId != null);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/agent/state';
@@ -72,7 +72,7 @@ Future<Response<Map>> getAgentState(int agentId) {
 Future<Response<Map>> setAgentState(int agentId) {
   assert(agentId != null);
 
-  final String                   base      = configuration.aliceBaseUrl.toString();
+  final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path      = '/agent/state';
