@@ -1,0 +1,173 @@
+#!/bin/sh
+#
+####################
+# Basic init script for starting the dart services as daemons - and
+# stopping them again.
+# After configuring them individually, just run the script with the
+# start, stop or restart parmeter.
+
+DART_VM=`which dart`
+[ "$DART_VM" = "" ] && echo "No dart vm found in PATH" && exit 1
+
+AUTH_SERVER=$PWD/AuthServer/bin/authserver.dart
+AUTH_SERVER_PID_FILE=$PWD/authserver.pid
+
+MISC_SERVER=$PWD/MiscServer/bin/miscserver.dart
+MISC_SERVER_PID_FILE=$PWD/miscserver.pid
+
+RECEPTION_SERVER=$PWD/ReceptionServer/bin/receptionserver.dart
+RECEPTION_SERVER_PID_FILE=$PWD/receptionserver.pid
+
+CONTACT_SERVER=$PWD/ContactServer/bin/contactserver.dart
+CONTACT_SERVER_PID_FILE=$PWD/contactserver.pid
+
+LOG_SERVER=$PWD/LogServer/bin/logserver.dart
+LOG_SERVER_PID_FILE=$PWD/logserver.pid
+
+
+auth_start()
+{
+   # Authentication server.
+   echo -n "Starting the authentication server... "
+   (start-stop-daemon --start --exec $DART_VM $AUTH_SERVER --pidfile $AUTH_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+}
+
+auth_stop()
+{
+   echo -n "Stopping the authentication server..."
+   (start-stop-daemon --stop --exec $DART_VM $AUTH_SERVER --pidfile $AUTH_SERVER_PID_FILE && echo "OK")
+   rm $AUTH_SERVER_PID_FILE #Cleanup pid file.
+
+}
+
+auth_restart()
+{
+  auth_stop
+  auth_start
+  echo ...
+}
+
+bootstrap_start()
+{
+   # Bootstrapper server
+   echo -n "Starting the bootstrapper server... "
+   (start-stop-daemon --start --exec $DART_VM $MISC_SERVER --pidfile $MISC_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+}
+
+bootstrap_stop()
+{
+   echo -n "Stopping the bootstrapper server..."
+   (start-stop-daemon --stop --exec $DART_VM $MISC_SERVER --pidfile $MISC_SERVER_PID_FILE && echo "OK")
+   rm $MISC_SERVER_PID_FILE #Cleanup pid file.
+}
+
+bootstrap_restart()
+{
+   bootstrap_stop
+   bootstrap_start
+   echo ...
+}
+
+log_start()
+{
+   # Log server
+   echo -n "Starting the log server... "
+   (start-stop-daemon --start --exec $DART_VM $LOG_SERVER --pidfile $LOG_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+}
+
+log_stop()
+{
+   echo -n "Stopping the log server... "
+   (start-stop-daemon --stop --exec $DART_VM $LOG_SERVER --pidfile $LOG_SERVER_PID_FILE && echo "OK")
+   rm $LOG_SERVER_PID_FILE #Cleanup pid file.
+}
+
+log_restart()
+{
+  log_stop
+  log_start
+   echo ...
+}
+
+reception_start()
+{
+   # Reception server.
+   echo -n "Starting the reception server... "
+   (start-stop-daemon --start --exec $DART_VM $RECEPTION_SERVER --pidfile $RECEPTION_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+}
+
+reception_stop()
+{
+   echo -n "Stopping the reception server... "
+   (start-stop-daemon --stop --exec $DART_VM $RECEPTION_SERVER --pidfile $RECEPTION_SERVER_PID_FILE && echo "OK")
+   rm $RECEPTION_SERVER_PID_FILE #Cleanup pid file.
+}
+
+reception_restart()
+{
+   reception_stop
+   reception_start
+   echo ...
+}
+
+contact_start() {
+   # Contact server
+   echo -n "Starting the contact server... "
+   (start-stop-daemon --start --exec $DART_VM $CONTACT_SERVER --pidfile $CONTACT_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+}
+
+contact_stop()
+{
+   echo -n "Stopping the contact server... "
+   (start-stop-daemon --stop --exec $DART_VM $CONTACT_SERVER --pidfile $CONTACT_SERVER_PID_FILE && echo "OK")
+   rm $CONTACT_SERVER_PID_FILE #Cleanup pid file.
+}
+
+contact_restart()
+{
+   contact_stop
+   contact_start
+   echo ...
+}
+
+start_all()
+{
+   log_start
+   auth_start
+   bootstrap_start
+   reception_start
+   contact_start
+}
+
+stop_all()
+{
+   auth_stop
+   contact_stop
+   reception_stop
+   bootstrap_stop
+   log_stop
+}
+
+
+case "$1" in
+  start)
+	start_all
+        ;;
+  stop)
+	stop_all
+        ;;
+  restart)
+        log_restart
+        auth_restart
+        bootstrap_restart
+        contact_restart
+        reception_restart
+        ;;
+  *)
+        echo "Usage: $SCRIPTNAME {start|stop|restart}" >&2
+        exit 3
+        ;;
+esac
+
+
+sleep 1
