@@ -75,19 +75,6 @@ void sendMessage(HttpRequest request) {
         writeAndClose(request, JSON.encode(result));
       });
     });
-    
-    /*
-     * Jeg står med en JSON med "to, cc, bcc, message"
        
-     * Message Queue. skal først have STAM information
-         message, subject, to_contact_id, taken_from, taken_by_agent
-     * Så skal alle recipients tilføjes til message_queue_recipients
-         contact_id, reception_id, message_id, recipient_role
-     */
-    
-    
-    //Get all the contacts from the database.
-    //Check if every one i present
-    //Check if there any one that want messages.
   }).catchError((error) => serverError(request, error.toString()));
 }
