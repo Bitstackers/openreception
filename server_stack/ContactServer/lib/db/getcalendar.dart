@@ -10,17 +10,17 @@ Future<Map> getReceptionContactCalendarList(int receptionId, int contactId) {
                     'contactid'   : contactId};
 
   return database.query(_pool, sql, parameters).then((rows) {
-    List contacts = new List();
+    List events = new List();
     for(var row in rows) {
-      Map contact =
+      Map event =
         {'id'      : row.id,
          'start'   : datetimeToJson(row.start),
          'stop'    : datetimeToJson(row.stop),
-         'message' : row.message};
-      contacts.add(contact);
+         'content' : row.message};
+      events.add(event);
     }
 
-    Map data = {'CalendarEvents': contacts};
+    Map data = {'CalendarEvents': events};
 
     return data;
   });

@@ -153,5 +153,5 @@ class Configuration {
     dbhost:   $dbhost
     dbname:   $dbname''';
 
-  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => print(config));
+  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
