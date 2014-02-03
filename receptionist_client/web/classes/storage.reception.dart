@@ -27,6 +27,7 @@ Future<model.Reception> getReception(int id) {
   final Completer completer = new Completer<model.Reception>();
 
   if (_receptionCache.containsKey(id)) {
+    //TODO DEEP CLONE
     completer.complete(_receptionCache[id]);
   } else {
     protocol.getReception(id).then((protocol.Response<model.Reception> response) {

@@ -21,6 +21,7 @@ final Call nullCall = new Call._null();
 class Call implements Comparable {
   int      _assignedAgent;
   String   _bLeg;
+  bool     _greetingPlayed = false;
   String   _id;
   bool     _inbound;
   DateTime _start;
@@ -28,6 +29,7 @@ class Call implements Comparable {
 
   int      get assignedAgent  => _assignedAgent;
   String   get bLeg           => _bLeg;
+  bool     get greetingPlayed => _greetingPlayed;
   String   get id             => _id;
   bool     get inbound        => _inbound;
   DateTime get start          => _start;
@@ -65,6 +67,10 @@ class Call implements Comparable {
 
     if(json.containsKey('inbound')) {
       _inbound = json['inbound'];
+    }
+
+    if(json.containsKey('greeting_played')) {
+      _greetingPlayed = json['greeting_played'];
     }
 
     _id = json['id'];
@@ -174,7 +180,7 @@ class Call implements Comparable {
     Map json = response.data;
 
     if (json.containsKey('reception_id')) {
-      int receptionId = json['receptionn_id'];
+      int receptionId = json['reception_id'];
 
       storage.getReception(receptionId).then((Reception reception) {
         if(reception == nullReception) {

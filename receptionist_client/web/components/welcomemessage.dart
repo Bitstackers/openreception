@@ -14,28 +14,24 @@
 part of components;
 
 class WelcomeMessage {
-  Box         box;
   DivElement  container;
   DivElement  element;
   SpanElement message;
+  model.Call  call = model.nullCall;
 
   WelcomeMessage(DivElement this.element) {
-    String html = '''
-      <div>
-        <span></span>
-      </div>
-    ''';
-
-    container = new DocumentFragment.html(html).querySelector('div');
-    message = container.querySelector('div > span');
-
-    box = new Box.noChrome(element, container);
-
-    event.bus.on(event.receptionChanged)
-      .listen((model.Reception reception) => message.text = reception != model.nullReception ? reception.greeting : '');
+    message = element.querySelector('#welcome-message-text');
+    
+    event.bus.on(event.receptionChanged).listen((model.Reception reception) { 
+        message.text = reception != model.nullReception ? reception.greeting : ''; 
+      });
 
     event.bus.on(event.callChanged).listen((model.Call value) {
       element.classes.toggle('welcome-message-active-call', value != model.nullCall);
+      if(value != model.nullCall && value.greetingPlayed) {
+        //TODO Introduce variable greeting depending on if the welcomeMessage have been played.
+        //Different texts for the situations.
+      }
     });
   }
 }

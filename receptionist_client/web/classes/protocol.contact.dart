@@ -76,13 +76,46 @@ Future<Response<model.Contact>> getContact(int receptionId, int contactId) {
       ..onLoad.listen((value) {
         switch(request.status) {
           case 200:
-            log.debug('protocol.getContact json: ${request.responseText}'); //TODO remove.
             model.Contact data = new model.Contact.fromJson(_parseJson(request.responseText));
             completer.complete(new Response<model.Contact>(Response.OK, data));
             break;
 
           case 404:
             completer.complete(new Response<model.Contact>(Response.NOTFOUND, model.nullContact));
+            break;
+
+          default:
+            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+        }
+      })
+      ..onError.listen((e) {
+        _logError(request, url);
+        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+      })
+      ..send();
+
+  return completer.future;
+}
+
+Future<Response<model.CalendarEventList>> getContactCalendar(int receptionId, int contactId) {
+  final String       base      = configuration.contactServer.toString(); //configuration.aliceBaseUrl.toString();
+  final Completer<Response<model.CalendarEventList>> completer =
+      new Completer<Response<model.CalendarEventList>>();
+  final List<String> fragments = new List<String>();
+  final String       path      = '/contact/${contactId}/reception/${receptionId}/calendar';
+  HttpRequest        request;
+  String             url;
+
+  fragments.add('token=${configuration.token}');
+  url = _buildUrl(base, path, fragments);
+
+  request = new HttpRequest()
+      ..open(GET, url)
+      ..onLoad.listen((value) {
+        switch(request.status) {
+          case 200:
+            model.CalendarEventList data = new model.CalendarEventList.fromJson(_parseJson(request.responseText), 'CalendarEvents');
+            completer.complete(new Response<model.CalendarEventList>(Response.OK, data));
             break;
 
           default:

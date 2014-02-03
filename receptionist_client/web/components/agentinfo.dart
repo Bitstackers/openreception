@@ -25,34 +25,18 @@ class AgentInfo {
   int              paused      = 0;
   String           pausedLabel = 'pause';
   TableCellElement pausedTD;
+  ImageElement     portrait;
   TableElement     table;
 
   AgentInfo(DivElement this.element) {
-    String html = '''
-      <div class="agent-info-container">
-        <table>
-          <tr>
-            <td></td>
-            <td>: ${activeLabel}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>: ${pausedLabel}</td>
-          </tr>
-        </table>
-        <div class="agent-info-face">
-          <img src="${faceURL}">
-        </div>
-      </div>
-    ''';
-
-    divParent = new DocumentFragment.html(html).querySelector('.agent-info-container');
+    divParent = element.querySelector('#agent-info-stats');
     table = divParent.querySelector('table');
-    divFace = divParent.querySelector('.agent-info-face');
+    divFace = divParent.querySelector('#agent-info-portrait');
+    portrait = (divFace.querySelector('#agent-info-portrait-image') as ImageElement)
+      ..src = faceURL;
 
-    List<TableCellElement> tds = table.querySelectorAll('td');
-    activeTD = tds[0];
-    pausedTD = tds[2];
+    activeTD = table.querySelector('#agent-info-stats-active');
+    pausedTD = table.querySelector('#agent-info-stats-paused'); 
 
     box = new Box.noChrome(element, divParent);
 

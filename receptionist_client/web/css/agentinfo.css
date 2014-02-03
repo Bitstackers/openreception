@@ -1,4 +1,4 @@
-#agentinfo {
+#agent-info {
   position: absolute;
   left: 90%;
   top: 0%;
@@ -6,7 +6,7 @@
   width: 10%;
 }
 
-#agentinfo .agent-info-container {
+#agent-info-stats {
   position: relative;
   height: 100%;
   width: 100%;
@@ -15,14 +15,14 @@
   font-size: 1.1em;
 }
 
-#agentinfo .agent-info-face {
+#agent-info-portrait {
   position: absolute;
   top: 0px;
   height: 100%;
   padding: 5px;
 }
 
-#agentinfo .agent-info-face > img {
+#agent-info-portrait-image {
   border: solid 2px #aaa; 
   border-radius: 5px; 
   height: 100%; 

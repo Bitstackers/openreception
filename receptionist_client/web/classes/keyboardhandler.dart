@@ -17,8 +17,10 @@ import 'dart:async';
 import 'dart:html';
 
 import 'events.dart' as event;
+import 'id.dart' as id;
 import 'location.dart' as nav;
 import 'logger.dart';
+import 'model.dart' as model;
 
 import 'package:ctrl_alt_foo/keys.dart' as ctrlAlt;
 
@@ -88,127 +90,117 @@ class _KeyboardHandler {
   Map<int, String>                   _keyToName           = new Map<int, String>();
   Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
   int                                _locked              = null;
-
+  nav.Location                       _currentLocation;
+  
+  List<nav.Location> ContextHome;
+  Map<nav.Location, int> ContextHomeMap;
+  
+  List<nav.Location> contextHomeNoReception = 
+      [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR),
+       new nav.Location(id.CONTEXT_HOME, id.GLOBAL_QUEUE),
+       new nav.Location(id.CONTEXT_HOME, id.LOCAL_QUEUE)];
+  
+  List<nav.Location> contextHomeReception = 
+      [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)
+//       new nav.Location(id.CONTEXT_HOME, id.GLOBAL_QUEUE),
+//       new nav.Location(id.CONTEXT_HOME, id.LOCAL_QUEUE)
+      ];
+  
+  Map<String, Map<nav.Location, int>> tabMap = 
+      {id.CONTEXT_HOME : new Map<nav.Location, int>(),
+       id.CONTEXT_MESSAGES : new Map<nav.Location, int>(),
+       id.CONTEXT_LOG : new Map<nav.Location, int>(),
+       id.CONTEXT_STATISTICS : new Map<nav.Location, int>(),
+       id.CONTEXT_PHONE : new Map<nav.Location, int>(),
+       id.CONTEXT_VOICEMAILS : new Map<nav.Location, int>()};
+//    {'${id.CONTEXT_HOME}.${id.COMPANY_SELECTOR}.${id.COMPANY_SELECTOR_SEARCHBAR}' : 1,
+//     '${id.CONTEXT_HOME}.${id.COMPANY_EVENTS}.${id.COMPANY_EVENTS_LIST}'          : 2,
+//     '${id.CONTEXT_HOME}.${id.COMPANY_HANDLING}.${id.COMPANY_HANDLING_LIST}'      : 3};
+  
+  Map<nav.Location, int> contextHomeNoReceptionMap = new Map<nav.Location, int>();
+  Map<nav.Location, int> contextHomeReceptionMap = new Map<nav.Location, int>();
+  
   /**
    * [KeyboardHandler] constructor.
    * Initialize (setup named streams) and setup listeners for key events.
    */
   _KeyboardHandler() {
+    _buildTabMap();
     _ctrlAltInitialize();
-    //_initialize();
-    //_registerEventListeners();
+  }
+  
+  /**
+   * TODO Blah blah
+   */
+  void _buildTabMap() {
+    for(int index = 0; index < contextHomeNoReception.length; index++) {
+      contextHomeNoReceptionMap[contextHomeNoReception[index]] = index;
+    }
+
+    for(int index = 0; index < contextHomeReception.length; index++) {
+      contextHomeReceptionMap[contextHomeReception[index]] = index;
+    }
+    
+    ContextHome = contextHomeNoReception;
+    ContextHomeMap = contextHomeNoReceptionMap;
+    //tabMap[id.CONTEXT_HOME] = contextHomeNoReceptionMap;
   }
 
-  /**
-   * Setup all the keys and their associated streams.
-   */
-  void _initialize() {
-    _keyToName[Keys.ONE]   = 'contexthome';
-    _keyToName[Keys.TWO]   = 'contextmessages';
-    _keyToName[Keys.THREE] = 'contextlog';
-    _keyToName[Keys.FOUR]  = 'contextstatistics';
-    _keyToName[Keys.FIVE]  = 'contextphone';
-    _keyToName[Keys.SIX]   = 'contextvoicemails';
-    _keyToName[Keys.SEVEN] = 'companyevents';
-    _keyToName[Keys.EIGHT] = 'companyhandling';
-    _keyToName[Keys.UP]    = 'arrowUp';
-    _keyToName[Keys.DOWN]  = 'arrowDown';
-
-    _keyToName[Keys.A]     = 'cancelmessage';
-    _keyToName[Keys.C]     = 'companyselector';
-    _keyToName[Keys.E]     = 'companyevents';
-    _keyToName[Keys.G]     = 'savemessage';
-    _keyToName[Keys.H]     = 'hangupcall';
-    _keyToName[Keys.K]     = 'parkcall';
-    _keyToName[Keys.L]     = 'selectedContactCall';
-    _keyToName[Keys.M]     = 'messagefield';
-    _keyToName[Keys.P]     = 'pickupcall';
-    _keyToName[Keys.R]     = 'contactinfosearch';
-    _keyToName[Keys.S]     = 'sendmessage';
-    _keyToName[Keys.T]     = 'sendmessagetelephone';
-    _keyToName[Keys.Y]     = 'companycustomertype';
-
-    _keyToName.forEach((key, value) {
-      _StreamControllerMap[value] = new StreamController<int>.broadcast();
+  void _ctrlAltInitialize() {
+    
+    event.bus.on(event.receptionChanged).listen((model.Reception reception) {
+      ContextHome = reception != model.nullReception ? contextHomeReception : contextHomeNoReception;
+      ContextHomeMap = reception != model.nullReception ? contextHomeReceptionMap : contextHomeNoReceptionMap;
+    });
+    
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      _currentLocation = location;
+    });
+    
+    ctrlAlt.Keys.shortcuts({
+      'Ctrl+E'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST)),
+      'Ctrl+H'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
+      'Ctrl+C'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, 'sendmessage', 'sendmessagecellphone')),
+      'Ctrl+P'    : () => event.bus.fire(event.pickupNextCall, 'Keyboard'),
+      'Tab'       : tabHandler,
+      'Shift+Tab' : shiftTabHandler
     });
   }
   
-  void _ctrlAltInitialize() {
-    ctrlAlt.Keys.shortcuts({
-      'Ctrl+A': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
-      'Ctrl+E': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
-      'Ctrl+R': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
-      'Ctrl+W': () => event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents')),
-      'Ctrl+P': () => event.bus.fire(event.pickupNextCall, 'Keyboard')
-    });
+  void tabFoo(Map<nav.Location, int> map, List<nav.Location> list) {
+    if(map.containsKey(_currentLocation)) {
+      int index = (map[_currentLocation] + 1) % map.length;
+      event.bus.fire(event.locationChanged, list[index]); 
+      
+    } else {
+      log.error('keyboard.tabHandler() bad location $_currentLocation');
+    }
   }
-
-  /**
-   * Sink a keyCode on a stream if proper conditions are met, ie. the keyCode
-   * has a stream associated and the proper control keys are pressed.
-   *
-   * If the proper conditions are met, a keyCode is emitted on the stream and
-   * the class is then locked until a matching keyUp event has been fired. See
-   * [_keyUp].
-   */
-  void _keyDown(KeyboardEvent event) {
-    KeyEvent key = new KeyEvent.wrap(event);
+  
+  void tabHandler() {
+    switch (_currentLocation.contextId){
+      case id.CONTEXT_HOME: 
+        tabFoo(ContextHomeMap, ContextHome);
+          
+    }
     
-    if (_locked == null && (/*key.ctrlKey &&*/ key.altKey)) {
-      event.preventDefault();
-      int keyCode = key.keyCode;
-
-      if(_keyToName.containsKey(keyCode)) {
-        _locked = keyCode;
-        _StreamControllerMap[_keyToName[keyCode]].sink.add(keyCode);
-
-        log.debug('Sinking key ${keyCode}:${_keyToName[keyCode]}');
-      }
-    }
-
-//    if(key.ctrlKey && key.keyCode == Keys.R) {
-//      event.preventDefault();
-//      _StreamControllerMap['companyselector'].sink.add(key.keyCode);
+//    if(tabMap[_currentLocation.contextId].containsKey(_currentLocation)) {
+//      int index = (tabMap[_currentLocation.contextId][_currentLocation] + 1) % tabMap.length;
+//      
+//      event.bus.fire(event.locationChanged, contextHomeReception[index]);      
+//    } else {
+//      log.error('keyboard.tabHandler() Bad location ${_currentLocation}');
 //    }
   }
-
-  /**
-   * Unlocks the [_KeyboardHandler] class if the keyUp event match the keyCode
-   * that was used to lock the class in the first place.
-   */
-  void _keyUp(KeyboardEvent event) {
-    KeyEvent key = new KeyEvent.wrap(event);
-
-    if (_locked == key.keyCode) {
-      _locked = null;
+  
+  void shiftTabHandler() {
+    if(tabMap[_currentLocation.contextId].containsKey(_currentLocation)) {
+      int index = (tabMap[_currentLocation.contextId][_currentLocation] - 1) % tabMap.length;
+      event.bus.fire(event.locationChanged, contextHomeReception[index]);      
+    } else {
+      log.error('keyboard.shiftTabHandler() Bad location ${_currentLocation}');
     }
-  }
-
-  /**
-   * If [keyName] exists, return a broadcast stream. Else return null.
-   *
-   * User of this method should take care to handle null returns. Example:
-   *
-   *  try {
-   *    keyboardHandler.onKeyName(id).listen(_keyPress);
-   *  } catch(e) {
-   *    // handle null return.
-   *  }
-   */
-//  Stream<int> onKeyName(String keyName) {
-//    if (_StreamControllerMap.containsKey(keyName)) {
-//      return _StreamControllerMap[keyName].stream;
-//    }
-//
-//    log.critical('_Keyboardhandler.onKeyName no key ${keyName}');
-//    return null;
-//  }
-
-  /**
-   * Registers the event listeners.
-   */
-  void _registerEventListeners() {
-    window.onKeyDown.listen(_keyDown);
-    window.onKeyUp.listen(_keyUp);
   }
 }

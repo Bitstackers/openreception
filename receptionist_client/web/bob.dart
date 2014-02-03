@@ -23,7 +23,7 @@ import 'classes/bobloading.dart';
 import 'classes/boblogin.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
-import 'classes/location.dart';
+import 'classes/location.dart' as nav;
 import 'classes/notification.dart';
 import 'classes/state.dart';
 
@@ -35,25 +35,7 @@ BobLogin boblogin;
 int userId = 1;
 
 void main() {
-  Uri url = Uri.parse(window.location.href);
-  if(url.queryParameters.containsKey('settoken')) {
-    configuration.token = url.queryParameters['settoken'];
-    
-    //Remove ?settoken from the URL
-    Uri u = Uri.parse(window.location.toString());
-    Map queryParam = {};
-    u.queryParameters.forEach((key, value) {
-      if(key != 'settoken') {
-        queryParam[key] = value;
-      }
-    });
-    var finalUrl = new Uri(scheme: u.scheme, userInfo: u.userInfo, host: u.host, port: u.port, path: u.path, queryParameters: queryParam, fragment: u.fragment);
-    //window.location.assign(finalUrl.toString());
-    //Didn't work.
-    
-  } else {
-    window.location.assign('http://alice.adaheads.com:4050/token/create?returnurl=${window.location.toString()}');
-  }
+  handleToken();
   
   configuration.initialize().then((_) {
     notification.initialize();
@@ -73,9 +55,32 @@ void main() {
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
       
-      registerOnPopStateListeners();
+      nav.registerOnPopStateListeners();
     }
   });
+}
+
+void handleToken() {
+  Uri url = Uri.parse(window.location.href);
+  //TODO Thomas Løcke & Kim Rostgaard - Speak about this!
+  if(url.queryParameters.containsKey('settoken')) {
+    configuration.token = url.queryParameters['settoken'];
+    
+    //Remove ?settoken from the URL
+    Uri u = Uri.parse(window.location.toString());
+    Map queryParam = {};
+    u.queryParameters.forEach((key, value) {
+      if(key != 'settoken') {
+        queryParam[key] = value;
+      }
+    });
+    var finalUrl = new Uri(scheme: u.scheme, userInfo: u.userInfo, host: u.host, port: u.port, path: u.path, queryParameters: queryParam, fragment: u.fragment);
+    //window.location.assign(finalUrl.toString());
+    //Didn't work.
+    
+  } else {
+    window.location.assign('http://alice.adaheads.com:4050/token/create?returnurl=${window.location.toString()}');
+  }
 }
 
 

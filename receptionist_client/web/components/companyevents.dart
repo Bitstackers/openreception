@@ -26,16 +26,16 @@ class CompanyEvents {
   bool hasFocus = false;
 
   CompanyEvents(DivElement this.element, Context this.context) {
-    element.classes.add('company-events-container');
-
-    ul = new UListElement()
-      ..id = 'company_events_list'
-      ..classes.add('zebra');
+    String defaultElementId = 'data-default-element';
+    assert(element.attributes.containsKey(defaultElementId));
+    
+    ul = element.querySelector('#${element.attributes[defaultElementId]}');
 
     header = new SpanElement()
       ..text = title;
 
-    box = new Box.withHeader(element, header, ul);
+    box = new Box.withHeader(element, header)
+      ..addBody(ul);
 
     _registerEventListeners();
   }
@@ -82,7 +82,7 @@ class CompanyEvents {
   void render() {
     ul.children.clear();
 
-    for(var event in calendar) {
+    for(model.CalendarEvent event in calendar) {
       print(event);
       print(event.active);
       print(event.start);

@@ -39,6 +39,7 @@ class _Notification {
   static final EventType<Map> queueLeave = new EventType<Map>();
   static final EventType<Map> callPark   = new EventType<Map>();
   static final EventType<Map> callUnpark = new EventType<Map>();
+  static final EventType<Map> callOffer = new EventType<Map>();
 
   Socket _socket;
 
@@ -48,7 +49,8 @@ class _Notification {
      'queue_join' : queueJoin,
      'queue_leave': queueLeave,
      'call_park'  : callPark,
-     'call_unpark': callUnpark};
+     'call_unpark': callUnpark,
+     'call_offer' : callOffer};
 
   /**
    * [_Notification] constructor.
@@ -123,12 +125,12 @@ class _Notification {
    */
   void _registerEventListeners() {
     event.bus
-    ..on(callHangup).listen((Map json) => _callHangupEventHandler(json))
-    ..on(callPickup).listen((Map json) => _callPickupEventHandler(json))
-    ..on(queueJoin) .listen((Map json) => _queueJoinEventHandler(json))
-    ..on(queueLeave).listen((Map json) => _queueLeaveEventHandler(json))
-    ..on(callPark)  .listen((Map json) => _callParkEventHandler(json))
-    ..on(callUnpark).listen((Map json) => _callUnparkEventHandler(json));
+      ..on(callHangup).listen((Map json) => _callHangupEventHandler(json))
+      ..on(callPickup).listen((Map json) => _callPickupEventHandler(json))
+      ..on(queueJoin) .listen((Map json) => _queueJoinEventHandler(json))
+      ..on(queueLeave).listen((Map json) => _queueLeaveEventHandler(json))
+      ..on(callPark)  .listen((Map json) => _callParkEventHandler(json))
+      ..on(callUnpark).listen((Map json) => _callUnparkEventHandler(json));
 
     if(configuration != null && configuration.isLoaded()) {
       makeSocket();
@@ -181,6 +183,7 @@ void _callPickupEventHandler(Map json) {
 
     if (call.receptionId != null) {
       storage.getReception(call.receptionId).then((model.Reception reception) {
+        //TODO Set PlayedGreeting Flag
         event.bus.fire(event.receptionChanged, reception);
 
       }).catchError((error) {

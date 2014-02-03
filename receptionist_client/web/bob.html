@@ -47,11 +47,35 @@
     <div id="bobactive" class="hidden">
       <ul id="contextswitcher"></ul>
     
-      <section id="contexthome" class="context">
-        <div id="welcomemessage"></div>
-        <div id="agentinfo"></div>
+      <section id="contexthome" data-default-widget="companyevents" class="context">
+        <div id="welcome-message" class="no-chrome">
+          <div>
+            <span id="welcome-message-text"></span>
+          </div>
+        </div>
+        
+        <div id="agent-info">
+          <div id="agent-info-stats">
+            <table>
+              <tr>
+                <td id="agent-info-stats-active"></td>
+                <td>: aktive</td>
+              </tr>
+              <tr>
+                <td id="agent-info-stats-paused"></td>
+                <td>: pause</td>
+              </tr>
+            </table>
+            <div id="agent-info-portrait">
+              <img id="agent-info-portrait-image">
+            </div>
+          </div>
+        </div>
+        
         <div id="companyselector"></div>
-        <div id="companyevents"></div>
+        <div id="companyevents" data-default-element="company_events_list">
+          <ul id="company_events_list" class="zebra company-events-container"></ul>
+        </div>
         <div id="companyhandling"></div>
         
         <div id="companyopeninghours"></div>
@@ -150,7 +174,7 @@
         <div id="localqueue"></div>
       </section>
       
-      <section id="contextmessages" class="context hidden">
+      <section id="contextmessages" data-default-widget="message-search" class="context hidden">
         <div id="message-search">
           <div id="message-search-agent-selector"></div>
         </div>
@@ -160,21 +184,21 @@
         <div id="messageoverview"></div>
       </section>
       
-      <section id="contextlog" class="context hidden">
+      <section id="contextlog" data-default-widget="logbox" class="context hidden">
         <div id="logbox"></div>
       </section>
       
-      <section id="contextstatistics" class="context hidden">
-        <p>contextstatistics</p>
+      <section id="contextstatistics" data-default-widget="statbox" class="context hidden">
+        <p id="statbox">contextstatistics</p>
       </section>
       
-      <section id="contextphone" class="context hidden">
+      <section id="contextphone" data-default-widget="phonebooth" class="context hidden">
         <div id="phonebooth"></div>
         <p>contextphone</p>
       </section>
       
-      <section id="contextvoicemails" class="context hidden">
-        <p>contextvoicemails</p>
+      <section id="contextvoicemails" data-default-widget="voicebox" class="context hidden">
+        <p id="voicebox">contextvoicemails</p>
       </section>
     </div>
     <script type="application/dart" src="bob.dart"></script>

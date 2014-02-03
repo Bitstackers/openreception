@@ -64,7 +64,6 @@ class Context {
    */
   Context(Element this._element) {
     assert(_element != null);
-
     isActive = _element.classes.contains('hidden') ? false : true;
 
     _registerEventListeners();
@@ -147,7 +146,7 @@ class Context {
   }
 
   void registerFocusElement(Element element) {
-    if(focusElements.containsKey(element.id)) {
+    if (focusElements.containsKey(element.id)) {
       log.error('Context registerFocusElement. The element is already registered: ${element.id}');
     } else {
       focusElements[element.id] = element;

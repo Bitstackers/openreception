@@ -16,7 +16,7 @@ part of components;
 class Box {
   DivElement element;
   HeadingElement header;
-  DivElement body;
+  DivElement _body;
 
   Box.noChrome(DivElement this.element, Element bodyContent) {
     element
@@ -24,7 +24,7 @@ class Box {
       ..classes.add('no-chrome');
   }
 
-  Box.withHeader(DivElement this.element, Element headerContent, Element bodyContent) {
+  Box.withHeader(DivElement this.element, Element headerContent, [Element bodyContent]) {
     String html = '''
       <h1 class="box-with-header-headline box-with-header-medium">
       </h1>
@@ -36,21 +36,27 @@ class Box {
     element.classes.add('box-with-header-outer');
 
     header = element.querySelector('.box-with-header-headline');
-    body = element.querySelector('.box-with-header-content');
+    _body = element.querySelector('.box-with-header-content');
 
     header.children.add(headerContent);
-    body.children.add(bodyContent);
+    if (bodyContent != null) {
+      _body.children.add(bodyContent);
+    }
 
     _registerEventListeners();
     _resize();
   }
 
-  Box.withHeaderStatic(DivElement this.element, HeadingElement this.header, DivElement this.body) {
+  Box.withHeaderStatic(DivElement this.element, HeadingElement this.header, DivElement this._body) {
     element.classes.add('box-with-header-outer');
     header.classes.addAll(['box-with-header-headline','box-with-header-medium']);
-    body.classes.add('box-with-header-content');
+    _body.classes.add('box-with-header-content');
     _registerEventListeners();
     _resize();
+  }
+  
+  void addBody(Element bodyContent) {
+    _body.children.add(bodyContent);
   }
 
   void _registerEventListeners() {
@@ -58,6 +64,6 @@ class Box {
   }
 
   void _resize() {
-    body.style.height = '${element.client.height - header.client.height}px';
+    _body.style.height = '${element.client.height - header.client.height}px';
   }
 }

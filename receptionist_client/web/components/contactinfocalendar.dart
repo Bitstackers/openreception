@@ -7,6 +7,9 @@ class ContactInfoCalendar {
   model.Contact contact;
   Context       context;
   DivElement    element;
+  
+  model.CalendarEventList eventList;
+  model.Reception reception;
 
   bool hasFocus = false;
 
@@ -21,9 +24,20 @@ class ContactInfoCalendar {
 
     box = new Box.withHeader(element, calendarHeader, calendarBody);
 
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
+    });
+    
     event.bus.on(event.contactChanged).listen((model.Contact value) {
       contact = value;
-      render();
+      protocol.getContactCalendar(reception.id, contact.id).then((protocol.Response<model.CalendarEventList> response) {
+        if (response.status == protocol.Response.OK) {
+          eventList = response.data;
+        } else {
+          log.error('ContactInfoCalendar.ContactInfoCalendar. Request for getContactCalendar failed: ${response.statusText}');
+        }
+        render();
+      });
     });
 
     _registerEventListeners();
@@ -56,7 +70,11 @@ class ContactInfoCalendar {
 
   void render() {
     calendarBody.children.clear();
-    for(var event in contact.calendarEventList) {
+    if(eventList == null) {
+      return;
+    }
+    
+    for(model.CalendarEvent event in eventList) {
       String html = '''
         <li class="${event.active ? 'company-events-active': ''}">
           <table class="calendar-event-table">

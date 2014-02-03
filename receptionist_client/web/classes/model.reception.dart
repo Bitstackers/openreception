@@ -19,7 +19,7 @@ final Reception nullReception = new Reception._null();
  * A [BasicReception] does only contains [id], [name] and [uri].
  */
 class BasicReception implements Comparable{
-  int    _id   = -1;
+  int    _id   = 0;
   String _name = '';
   String _uri  = '';
 

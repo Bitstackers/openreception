@@ -1,4 +1,4 @@
-#welcomemessage {
+#welcome-message {
   position: absolute;
   left: 0%;
   top: 0%;
@@ -6,16 +6,17 @@
   width: 89%;
 }
 
-#welcomemessage > div {
+#welcome-message > div {
   display: table;
   height: 100%;
-  margin-left: 10px;
+  width: 100%;
   font-size: 1.5em;
 }
 
-#welcomemessage > div > span {
+#welcome-message-text {
   display: table-cell;
   vertical-align: middle;
+  padding: 0px 10px;
 }
 
 .welcome-message-active-call {

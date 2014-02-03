@@ -75,8 +75,8 @@ class BobActive {
     registerContexts();
 
     contextSwitcher          = new ContextSwitcher(querySelector('#contextswitcher'), [home, messages, logContext, statistics, phone, voicemails]);
-    welcomeMessage           = new WelcomeMessage(querySelector('#welcomemessage'));
-    agentInfo                = new AgentInfo(querySelector('#agentinfo'));
+    welcomeMessage           = new WelcomeMessage(querySelector('#welcome-message'));
+    agentInfo                = new AgentInfo(querySelector('#agent-info'));
     companySelector          = new CompanySelector(querySelector('#companyselector'), home);
     companyEvents            = new CompanyEvents(querySelector('#companyevents'), home);
     companyHandling          = new CompanyHandling(querySelector('#companyhandling'), home);
@@ -106,6 +106,9 @@ class BobActive {
 
     setupKeyboardShortcuts();
     event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    
+    //TODO move this to Bob.dart when we have no dynamic default elements.
+    nav.initialize();
   }
 
   void registerContexts() {
@@ -150,6 +153,6 @@ class BobActive {
 //    keyboardHandler.onKeyName('companycustomertype').listen((_) {
 //      setFocus('company-customertype-body');
 //    });
-      print('BOB ACTIVE DEBUG: ${keyboardHandler}');
+    keyboardHandler.toString();
   }
 }

@@ -135,9 +135,20 @@ class SendMessage {
   }
 
   void registerEventListeners() {
-    element.onClick.listen((_) {
-      if(!hasFocus) {
-        setFocus(sendmessagetext.id);
+//    element.onClick.listen((_) {
+//      if(!hasFocus) {
+//        setFocus(sendmessagetext.id);
+//      }
+//    });
+    
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == element.id;
+      element.classes.toggle(focusClassName, active);
+      if(location.elementId != null) {
+        var elem = element.querySelector('#${location.elementId}');
+        if (elem != null) {
+          elem.focus();
+        }
       }
     });
 
@@ -152,11 +163,11 @@ class SendMessage {
       sendmessagephone.value = '${value.id}';
     });
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      hasFocus = handleFocusChange(value, focusElements, element);
-      });
+//    event.bus.on(event.focusChanged).listen((Focus value) {
+//      hasFocus = handleFocusChange(value, focusElements, element);
+//      });
 
-    focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
+//    focusElements.forEach((e) => e.onFocus.listen((_) => setFocus(e.id)));
 
     checkbox1.onKeyUp.listen((KeyboardEvent event) {
       if(event.keyCode == Keys.SPACE) {
