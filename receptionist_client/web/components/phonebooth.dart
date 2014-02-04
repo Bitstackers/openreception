@@ -30,7 +30,7 @@ class Phonebooth {
 
     container = new DocumentFragment.html(html).querySelector('div');
 
-    inputField = container.querySelector('#phonebooth-numberfield');
+    inputField = container.querySelector('#${id.PHONEBOOTH_NUMBERFIELD}');
     call = container.querySelector('#phonebooth-button');
     companySearch = new SearchComponent<model.BasicReception>(container.querySelector('#phonebooth-company'), context, 'phonebooth-company-searchbar')
       ..searchPlaceholder = 'Søg på virksomheder...'
@@ -66,6 +66,18 @@ class Phonebooth {
       if(event.keyCode == Keys.ENTER) {
         dial();
         inputField.value = '';
+      }
+    });
+    
+    element.onClick.listen((MouseEvent e) {
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, (e.target as HtmlElement).id));
+    });
+    
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == element.id;
+      element.classes.toggle(focusClassName, active);
+      if(active) {
+        inputField.focus();
       }
     });
   }

@@ -25,6 +25,7 @@ import 'classes/commands.dart' as command;
 import 'classes/common.dart';
 import 'classes/focus.dart';
 import 'classes/events.dart' as event;
+import 'classes/id.dart' as id;
 import 'classes/keyboardhandler.dart';
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';

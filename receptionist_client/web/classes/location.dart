@@ -21,9 +21,19 @@ class Location {
   String get elementId => _elementId;
   int    get hashCode  => _hashCode;
   String get widgetId  => _widgetId;  
-   
-  Location(String this._contextId, String this._widgetId, [String this._elementId]) {
+  
+  Location._internal(String this._contextId, String this._widgetId, String this._elementId) {
     _hashCode = _calculateHashCode();
+  }
+  
+  factory Location(String contextId, String widgetId, [String elementId]) {
+    Element contextElement = querySelector('section#$contextId');
+    print('-------------- $contextElement - $contextId');
+    
+    if (elementId != null && elementId.trim().isEmpty) {
+      elementId = null;
+    }
+    return new Location._internal(contextId, widgetId, elementId);
   }
   
   Location.context(String this._contextId) {
@@ -112,7 +122,7 @@ void registerOnPopStateListeners() {
 void _emitWindowLocation() {
   String hash = window.location.hash;
   if(hash.isEmpty) {
-    event.bus.fire(event.locationChanged, new Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR));
+    event.bus.fire(event.locationChanged, new Location.context(id.CONTEXT_HOME));
   } else {
     event.bus.fire(event.locationChanged, new Location.fromPopState(hash));
   }

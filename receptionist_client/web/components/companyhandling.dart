@@ -52,7 +52,7 @@ class CompanyHandling {
 
     element.onClick.listen((_) {
 //      setFocus(ul.id);
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {

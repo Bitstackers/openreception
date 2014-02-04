@@ -26,6 +26,8 @@ import 'package:ctrl_alt_foo/keys.dart' as ctrlAlt;
 
 final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
+const bool BACKWARD = false;
+const bool FORWARD = true;
 /**
  * [Keys] is a simple mapping between constant literals and integer key codes.
  */
@@ -92,21 +94,14 @@ class _KeyboardHandler {
   int                                _locked              = null;
   nav.Location                       _currentLocation;
   
-  List<nav.Location> ContextHome;
-  Map<nav.Location, int> ContextHomeMap;
-  
-  List<nav.Location> contextHomeNoReception = 
-      [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR),
-       new nav.Location(id.CONTEXT_HOME, id.GLOBAL_QUEUE),
-       new nav.Location(id.CONTEXT_HOME, id.LOCAL_QUEUE)];
-  
-  List<nav.Location> contextHomeReception = 
+  List<nav.Location> contextHome = 
       [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)
-//       new nav.Location(id.CONTEXT_HOME, id.GLOBAL_QUEUE),
-//       new nav.Location(id.CONTEXT_HOME, id.LOCAL_QUEUE)
       ];
+  
+  List<nav.Location> contextPhone = 
+      [new nav.Location(id.CONTEXT_PHONE, id.PHONEBOOTH, id.PHONEBOOTH_NUMBERFIELD)];
   
   Map<String, Map<nav.Location, int>> tabMap = 
       {id.CONTEXT_HOME : new Map<nav.Location, int>(),
@@ -115,92 +110,67 @@ class _KeyboardHandler {
        id.CONTEXT_STATISTICS : new Map<nav.Location, int>(),
        id.CONTEXT_PHONE : new Map<nav.Location, int>(),
        id.CONTEXT_VOICEMAILS : new Map<nav.Location, int>()};
-//    {'${id.CONTEXT_HOME}.${id.COMPANY_SELECTOR}.${id.COMPANY_SELECTOR_SEARCHBAR}' : 1,
-//     '${id.CONTEXT_HOME}.${id.COMPANY_EVENTS}.${id.COMPANY_EVENTS_LIST}'          : 2,
-//     '${id.CONTEXT_HOME}.${id.COMPANY_HANDLING}.${id.COMPANY_HANDLING_LIST}'      : 3};
   
-  Map<nav.Location, int> contextHomeNoReceptionMap = new Map<nav.Location, int>();
-  Map<nav.Location, int> contextHomeReceptionMap = new Map<nav.Location, int>();
+  Map<String, List<nav.Location>> locationLists;
   
   /**
    * [KeyboardHandler] constructor.
    * Initialize (setup named streams) and setup listeners for key events.
    */
   _KeyboardHandler() {
-    _buildTabMap();
+    _buildTabMaps();
     _ctrlAltInitialize();
   }
   
   /**
    * TODO Blah blah
    */
-  void _buildTabMap() {
-    for(int index = 0; index < contextHomeNoReception.length; index++) {
-      contextHomeNoReceptionMap[contextHomeNoReception[index]] = index;
-    }
-
-    for(int index = 0; index < contextHomeReception.length; index++) {
-      contextHomeReceptionMap[contextHomeReception[index]] = index;
+  void _buildTabMaps() {
+    for(int index = 0; index < contextHome.length; index++) {
+      tabMap[id.CONTEXT_HOME][contextHome[index]] = index;
     }
     
-    ContextHome = contextHomeNoReception;
-    ContextHomeMap = contextHomeNoReceptionMap;
-    //tabMap[id.CONTEXT_HOME] = contextHomeNoReceptionMap;
+    for(int index = 0; index < contextPhone.length; index++) {
+      tabMap[id.CONTEXT_PHONE][contextPhone[index]] = index;
+    }
+    
+    locationLists = 
+      {id.CONTEXT_HOME : contextHome,
+       id.CONTEXT_PHONE : contextPhone};
   }
 
-  void _ctrlAltInitialize() {
-    
-    event.bus.on(event.receptionChanged).listen((model.Reception reception) {
-      ContextHome = reception != model.nullReception ? contextHomeReception : contextHomeNoReception;
-      ContextHomeMap = reception != model.nullReception ? contextHomeReceptionMap : contextHomeNoReceptionMap;
-    });
-    
+  void _ctrlAltInitialize() {    
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       _currentLocation = location;
     });
     
     ctrlAlt.Keys.shortcuts({
-      'Ctrl+E'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST)),
+      'Ctrl+1'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
+      'Ctrl+5'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
+      'Ctrl+E'    : () => event.bus.fire(event.locationChanged, new nav.Location('as', id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST)),
       'Ctrl+H'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Ctrl+C'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, 'sendmessage', 'sendmessagecellphone')),
       'Ctrl+P'    : () => event.bus.fire(event.pickupNextCall, 'Keyboard'),
-      'Tab'       : tabHandler,
-      'Shift+Tab' : shiftTabHandler
+      'Tab'       : () => tab(mode: FORWARD),
+      'Shift+Tab' : () => tab(mode: BACKWARD)
     });
   }
   
-  void tabFoo(Map<nav.Location, int> map, List<nav.Location> list) {
-    if(map.containsKey(_currentLocation)) {
-      int index = (map[_currentLocation] + 1) % map.length;
-      event.bus.fire(event.locationChanged, list[index]); 
+  void tab({bool mode}) {
+    String contextId = _currentLocation.contextId;
+    if(tabMap.containsKey(contextId) && locationLists.containsKey(contextId)) {
+      Map<nav.Location, int> map = tabMap[contextId];
+      List<nav.Location> list = locationLists[contextId];
+      
+      if(map.containsKey(_currentLocation)) {
+        int index = (map[_currentLocation] + (mode ? 1 : -1)) % map.length;
+        event.bus.fire(event.locationChanged, list[index]);
+      } else {
+        log.error('keyboard.tab() bad location ${_currentLocation}');
+      }
       
     } else {
-      log.error('keyboard.tabHandler() bad location $_currentLocation');
-    }
-  }
-  
-  void tabHandler() {
-    switch (_currentLocation.contextId){
-      case id.CONTEXT_HOME: 
-        tabFoo(ContextHomeMap, ContextHome);
-          
-    }
-    
-//    if(tabMap[_currentLocation.contextId].containsKey(_currentLocation)) {
-//      int index = (tabMap[_currentLocation.contextId][_currentLocation] + 1) % tabMap.length;
-//      
-//      event.bus.fire(event.locationChanged, contextHomeReception[index]);      
-//    } else {
-//      log.error('keyboard.tabHandler() Bad location ${_currentLocation}');
-//    }
-  }
-  
-  void shiftTabHandler() {
-    if(tabMap[_currentLocation.contextId].containsKey(_currentLocation)) {
-      int index = (tabMap[_currentLocation.contextId][_currentLocation] - 1) % tabMap.length;
-      event.bus.fire(event.locationChanged, contextHomeReception[index]);      
-    } else {
-      log.error('keyboard.shiftTabHandler() Bad location ${_currentLocation}');
+      log.error('keyboard.tab() bad context ${_currentLocation}');
     }
   }
 }

@@ -57,7 +57,7 @@ class CompanyEvents {
 
     element.onClick.listen((_) {
 //      setFocus(ul.id);
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
     });
 
 //    event.bus.on(event.focusChanged).listen((Focus value) {

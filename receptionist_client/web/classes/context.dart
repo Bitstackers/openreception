@@ -108,18 +108,8 @@ class Context {
    * (see the constructor comment) and setting [isActive] to false.
    */
   void _toggle(String contextId) {
-    if (contextId == id) {
-      isActive = true;
-      _element.classes.remove('hidden');
-      log.debug('Context._toggle activating ${id}');
-      focusElements.forEach((_, e) => e.tabIndex = getTabIndex(e.id));
-//      setFocus(lastFocusId);
-
-    } else if (isActive) {
-      isActive = false;
-      _element.classes.add('hidden');
-      focusElements.forEach((_, e) => e.tabIndex = -1);
-    }
+    isActive = contextId == id;
+    _element.classes.toggle('hidden', !isActive);
   }
 
   /**
@@ -141,7 +131,10 @@ class Context {
 //    });
     
     event.bus.on(event.locationChanged).listen((nav.Location value) {
-      _toggle(value.contextId);
+      if((value.contextId == id && !isActive) || 
+         (value.contextId != id && isActive)) {
+        _toggle(value.contextId);  
+      }
     });
   }
 
