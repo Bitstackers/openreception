@@ -25,6 +25,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => print(config))
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
