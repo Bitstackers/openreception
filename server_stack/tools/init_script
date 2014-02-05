@@ -9,32 +9,45 @@
 DART_VM=`which dart`
 [ "$DART_VM" = "" ] && echo "No dart vm found in PATH" && exit 1
 
+PID_DIR=$PWD
+
 AUTH_SERVER=$PWD/AuthServer/bin/authserver.dart
-AUTH_SERVER_PID_FILE=$PWD/authserver.pid
+AUTH_SERVER_PID_FILE=${PID_DIR}/authserver.pid
+AUTH_SERVER_PORT=8080
 
 MISC_SERVER=$PWD/MiscServer/bin/miscserver.dart
-MISC_SERVER_PID_FILE=$PWD/miscserver.pid
+MISC_SERVER_PID_FILE=${PID_DIR}/miscserver.pid
+MISC_SERVER_PORT=4030
 
 RECEPTION_SERVER=$PWD/ReceptionServer/bin/receptionserver.dart
-RECEPTION_SERVER_PID_FILE=$PWD/receptionserver.pid
+RECEPTION_SERVER_PID_FILE=${PID_DIR}/receptionserver.pid
+RECEPTION_SERVER_PORT_FIRST=4000
+RECEPTION_SERVER_PORT_LAST=4005
 
 CONTACT_SERVER=$PWD/ContactServer/bin/contactserver.dart
-CONTACT_SERVER_PID_FILE=$PWD/contactserver.pid
+CONTACT_SERVER_PID_FILE=${PID_DIR}/contactserver.pid
+CONTACT_SERVER_PORT_FIRST=4010
+CONTACT_SERVER_PORT_LAST=4015
 
 LOG_SERVER=$PWD/LogServer/bin/logserver.dart
-LOG_SERVER_PID_FILE=$PWD/logserver.pid
-
+LOG_SERVER_PID_FILE=${PID_DIR}/logserver.pid
+LOG_SERVER_PORT_FIRST=4020
+LOG_SERVER_PORT_LAST=4023
 
 auth_start()
 {
    # Authentication server.
-   echo -n "Starting the authentication server... "
-   (start-stop-daemon --start --exec $DART_VM $AUTH_SERVER --pidfile $AUTH_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+   echo -n "Starting an authentication server on port ${AUTH_SERVER_PORT}... "
+   (start-stop-daemon --start \
+                      --exec /bin/bash \
+                      --pidfile ${AUTH_SERVER_PID_FILE} \
+                      -m -- -c "exec $DART_VM $AUTH_SERVER --httpport ${AUTH_SERVER_PORT}" | logger -i -t auth_server&) || $ERROR="yes"
+      ([ "$ERROR" = "yes" ] && echo "ERROR" && exit 1) || echo "OK"
 }
 
 auth_stop()
 {
-   echo -n "Stopping the authentication server..."
+   echo -n "Stopping an authentication server on port ${AUTH_SERVER_PORT}..."
    (start-stop-daemon --stop --exec $DART_VM $AUTH_SERVER --pidfile $AUTH_SERVER_PID_FILE && echo "OK")
    rm $AUTH_SERVER_PID_FILE #Cleanup pid file.
 
@@ -50,13 +63,18 @@ auth_restart()
 bootstrap_start()
 {
    # Bootstrapper server
-   echo -n "Starting the bootstrapper server... "
-   (start-stop-daemon --start --exec $DART_VM $MISC_SERVER --pidfile $MISC_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+   echo -n "Starting a bootstrapper server on port ${MISC_SERVER_PORT}... "
+   (start-stop-daemon --start \
+                      --exec /bin/bash \
+                      --pidfile ${MISC_SERVER_PID_FILE} \
+                      -m -- -c "exec $DART_VM $MISC_SERVER --httpport ${MISC_SERVER_PORT}" | logger -i -t misc_server&) || $ERROR="yes"
+      ([ "$ERROR" = "yes" ] && echo "ERROR" && exit 1) || echo "OK"
+echo "Failed!"
 }
 
 bootstrap_stop()
 {
-   echo -n "Stopping the bootstrapper server..."
+   echo -n "Stopping a bootstrapper server on port ${MISC_SERVER_PORT}..."
    (start-stop-daemon --stop --exec $DART_VM $MISC_SERVER --pidfile $MISC_SERVER_PID_FILE && echo "OK")
    rm $MISC_SERVER_PID_FILE #Cleanup pid file.
 }
@@ -71,15 +89,23 @@ bootstrap_restart()
 log_start()
 {
    # Log server
-   echo -n "Starting the log server... "
-   (start-stop-daemon --start --exec $DART_VM $LOG_SERVER --pidfile $LOG_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+   for i in $(seq $LOG_SERVER_PORT_FIRST $LOG_SERVER_PORT_LAST); do
+      echo -n "Starting a log server on port ${i}... "
+      (start-stop-daemon --start \
+                          --exec /bin/bash \
+                          --pidfile ${LOG_SERVER_PID_FILE}.${i} \
+                          -m -- -c "exec $DART_VM $LOG_SERVER --httpport $i" | logger -i -t log_server&) || $ERROR="yes"
+      ([ "$ERROR" = "yes" ] && echo "ERROR" && exit 1) || echo "OK"
+    done
 }
 
 log_stop()
 {
-   echo -n "Stopping the log server... "
-   (start-stop-daemon --stop --exec $DART_VM $LOG_SERVER --pidfile $LOG_SERVER_PID_FILE && echo "OK")
-   rm $LOG_SERVER_PID_FILE #Cleanup pid file.
+   for i in $(seq $LOG_SERVER_PORT_FIRST $LOG_SERVER_PORT_LAST); do
+      echo -n "Stopping a log server on port ${i}... "
+      (start-stop-daemon --stop --pidfile ${LOG_SERVER_PID_FILE}.${i} && echo "OK")
+      rm $LOG_SERVER_PID_FILE.$i #Cleanup pid file.
+   done
 }
 
 log_restart()
@@ -91,16 +117,26 @@ log_restart()
 
 reception_start()
 {
+   ERROR=""
    # Reception server.
-   echo -n "Starting the reception server... "
-   (start-stop-daemon --start --exec $DART_VM $RECEPTION_SERVER --pidfile $RECEPTION_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+   for i in $(seq $RECEPTION_SERVER_PORT_FIRST $RECEPTION_SERVER_PORT_LAST); do
+      echo -n "Starting a reception server on port ${i}... "
+      (start-stop-daemon --start \
+                          --exec /bin/bash \
+                          --pidfile ${RECEPTION_SERVER_PID_FILE}.${i} \
+                          -m -- -c "exec $DART_VM $RECEPTION_SERVER --httpport $i" | logger -i -t reception_server&) || $ERROR="yes"
+      ([ "$ERROR" = "yes" ] && echo "ERROR" && exit 1) || echo "OK"
+    done
+    # We are waiting for the PID file to appear by sleeping :-\
 }
 
 reception_stop()
 {
-   echo -n "Stopping the reception server... "
-   (start-stop-daemon --stop --exec $DART_VM $RECEPTION_SERVER --pidfile $RECEPTION_SERVER_PID_FILE && echo "OK")
-   rm $RECEPTION_SERVER_PID_FILE #Cleanup pid file.
+   for i in $(seq $RECEPTION_SERVER_PORT_FIRST $RECEPTION_SERVER_PORT_LAST); do
+      echo -n "Stopping a reception server on port ${i} "
+      (start-stop-daemon --stop --pidfile ${RECEPTION_SERVER_PID_FILE}.${i} && echo "OK")
+      rm $RECEPTION_SERVER_PID_FILE.$i #Cleanup pid file.
+   done
 }
 
 reception_restart()
@@ -111,16 +147,27 @@ reception_restart()
 }
 
 contact_start() {
+   ERROR=""
    # Contact server
-   echo -n "Starting the contact server... "
-   (start-stop-daemon --start --exec $DART_VM $CONTACT_SERVER --pidfile $CONTACT_SERVER_PID_FILE -mb && echo "OK") || echo "Failed!"
+   for i in $(seq $CONTACT_SERVER_PORT_FIRST $CONTACT_SERVER_PORT_LAST); do
+      echo -n "Starting a contact server on port ${i}... "
+      (start-stop-daemon --start \
+                          --exec /bin/bash \
+                          --pidfile ${CONTACT_SERVER_PID_FILE}.${i} \
+                          -m -- -c "exec $DART_VM $CONTACT_SERVER --httpport $i" | logger -i -t contact_server&) || $ERROR="yes"
+      ([ "$ERROR" = "yes" ] && echo "ERROR" && exit 1) || echo "OK"
+    done
+    # We are waiting for the PID file to appear by sleeping :-\
+
 }
 
 contact_stop()
 {
-   echo -n "Stopping the contact server... "
-   (start-stop-daemon --stop --exec $DART_VM $CONTACT_SERVER --pidfile $CONTACT_SERVER_PID_FILE && echo "OK")
-   rm $CONTACT_SERVER_PID_FILE #Cleanup pid file.
+   for i in $(seq $CONTACT_SERVER_PORT_FIRST $CONTACT_SERVER_PORT_LAST); do
+      echo -n "Stopping a contact server on port ${i} "
+      (start-stop-daemon --stop --pidfile ${CONTACT_SERVER_PID_FILE}.${i} && echo "OK")
+      rm $CONTACT_SERVER_PID_FILE.$i #Cleanup pid file.
+   done
 }
 
 contact_restart()
