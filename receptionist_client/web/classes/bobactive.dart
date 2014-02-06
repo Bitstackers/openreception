@@ -17,7 +17,6 @@ import 'dart:html';
 
 import 'context.dart';
 import 'events.dart' as event;
-import 'focus.dart';
 import 'keyboardhandler.dart';
 import 'location.dart' as nav;
 import 'logger.dart';

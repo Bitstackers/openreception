@@ -18,45 +18,40 @@ class CompanyOther {
   Box             box;
   Context         context;
   DivElement      element;
-  bool            hasFocus  = false;
+  bool            hasFocus = false;
   SpanElement     header;
-  model.Reception reception = model.nullReception;
-  String          title     = 'Andet';
+  String          title    = 'Andet';
 
   CompanyOther(DivElement this.element, Context this.context) {
-    element.classes.add('minibox');
-
-    //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT
-    body = new DivElement()
-      ..style.padding = '5px'
-      ..id = 'company-other-body';
+    String defaultElementId = 'data-default-element';
+    assert(element.attributes.containsKey(defaultElementId));
+    
+    body = element.querySelector('#${id.COMPANY_OTHER_BODY}');
 
     header = new SpanElement()
       ..text = title;
 
-    box = new Box.withHeader(element, header, body);
+    box = new Box.withHeader(element, header)
+      ..addBody(body);
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      reception = value;
       body.text = value.product;
     });
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      hasFocus = handleFocusChange(value, [body], element);
-    });
-
-    body.onFocus.listen((_) {
-      setFocus(body.id);
-    });
-
     element.onClick.listen((_) {
-      setFocus(body.id);
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, body.id));
     });
 
-    context.registerFocusElement(body);
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == element.id;
+      element.classes.toggle(focusClassName, active);
+      if(active) {
+        body.focus();
+      }
+    });
   }
 }

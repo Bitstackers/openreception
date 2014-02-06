@@ -19,47 +19,41 @@ class CompanyWebsites {
   DivElement      element;
   bool            hasFocus  = false;
   SpanElement     header;
-  model.Reception reception = model.nullReception;
   UListElement    ul;
   String          title     = 'Web-sider';
 
   CompanyWebsites(DivElement this.element, Context this.context) {
-    element.classes.add('minibox');
-
-    ul = new UListElement()
-      ..classes.add('zebra')
-      ..id = 'company-websites-list';
+    String defaultElementId = 'data-default-element';
+    assert(element.attributes.containsKey(defaultElementId));
+    
+    ul = element.querySelector('#${id.COMPANY_WEBSITES_LIST}');
 
     header = new SpanElement()
       ..text = title;
 
-    box = new Box.withHeader(element, header, ul);
+    box = new Box.withHeader(element, header)
+      ..addBody(ul);
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      reception = value;
-      render();
-    });
-
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      hasFocus = handleFocusChange(value, [ul], element);
-    });
-
-    ul.onFocus.listen((_) {
-      setFocus(ul.id);
-    });
+    event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      setFocus(ul.id);
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
     });
 
-    context.registerFocusElement(ul);
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == element.id;
+      element.classes.toggle(focusClassName, active);
+      if(active) {
+        ul.focus();
+      }
+    });
   }
 
-  void render() {
+  void render(model.Reception reception) {
     ul.children.clear();
 
     for(var value in reception.websiteList) {

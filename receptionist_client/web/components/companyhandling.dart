@@ -19,39 +19,28 @@ class CompanyHandling {
   DivElement      element;
   bool            hasFocus  = false;
   SpanElement     header;
-  model.Reception reception = model.nullReception;
   UListElement    ul;
   String          title     = 'Håndtering';
 
   CompanyHandling(DivElement this.element, Context this.context) {
-    ul = new UListElement()
-      ..id = 'company_handling_list'
-      ..classes.add('zebra');
+    String defaultElementId = 'data-default-element';
+    assert(element.attributes.containsKey(defaultElementId));
+    
+    ul = element.querySelector('#${id.COMPANY_HANDLING_LIST}');
 
     header = new SpanElement()
       ..text = title;
 
-    box = new Box.withHeader(element, header, ul);
-
-    context.registerFocusElement(ul);
+    box = new Box.withHeader(element, header)
+      ..addBody(ul);
 
     _registerEventListeners();
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      reception = value;
-      render();
-    });
-
-//    ul.onFocus.listen((_) {
-//      if(!hasFocus) {
-//        setFocus(ul.id);
-//      }
-//    });
+    event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-//      setFocus(ul.id);
       event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
     });
 
@@ -62,13 +51,9 @@ class CompanyHandling {
         ul.focus();
       }
     });
-    
-//    event.bus.on(event.focusChanged).listen((Focus value) {
-//      hasFocus = handleFocusChange(value, [ul], element);
-//    });
   }
 
-  void render() {
+  void render(model.Reception reception) {
     ul.children.clear();
 
     for(var value in reception.handlingList) {

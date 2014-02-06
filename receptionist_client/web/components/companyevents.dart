@@ -14,22 +14,19 @@
 part of components;
 
 class CompanyEvents {
-  Box                     box;
-  Context                 context;
-  DivElement              element;
-  SpanElement             header;
-  model.Reception         reception = model.nullReception;
-  model.CalendarEventList calendar;
-  String                  title     = 'Kalender';
-  UListElement            ul;
+  Box          box;
+  Context      context;
+  DivElement   element;
+  SpanElement  header;
+  String       title    = 'Kalender';
+  UListElement ul;
 
-  bool hasFocus = false;
 
   CompanyEvents(DivElement this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
     
-    ul = element.querySelector('#${element.attributes[defaultElementId]}');
+    ul = element.querySelector('#${id.COMPANY_EVENTS_LIST}');
 
     header = new SpanElement()
       ..text = title;
@@ -43,26 +40,13 @@ class CompanyEvents {
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
       protocol.getReceptionCalendar(value.id).then((protocol.Response<model.CalendarEventList> events) {
-        calendar = events.data;
-        render();
+        _render(events.data);
       });
-      reception = value;
     });
-
-//    ul.onFocus.listen((_) {
-//      hasFocus = true;
-//      event.bus.fire(event.locationChanged, new nav.Location(context.id, ul.id));
-//      //setFocus(ul.id);
-//    });
 
     element.onClick.listen((_) {
-//      setFocus(ul.id);
       event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
     });
-
-//    event.bus.on(event.focusChanged).listen((Focus value) {
-//      hasFocus = handleFocusChange(value, [ul], element);
-//    });
     
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
@@ -72,21 +56,17 @@ class CompanyEvents {
       }
     });
 
-    context.registerFocusElement(ul);
+    //context.registerFocusElement(ul);
   }
 
   String getClass(model.CalendarEvent event) {
     return event.active ? 'company-events-active' : '';
   }
 
-  void render() {
+  void _render(model.CalendarEventList calendar) {
     ul.children.clear();
 
     for(model.CalendarEvent event in calendar) {
-      print(event);
-      print(event.active);
-      print(event.start);
-      print(event.stop);
       String html = '''
         <li class="${event.active ? 'company-events-active': ''}">
           <table class="calendar-event-table">

@@ -1,10 +1,10 @@
-name: bob_webui
-description: A sample WebUI application
+name: Bob
+description: Receptionist browser-based console for Adaheads
 dependencies:
   browser: any
-  ctrl_alt_foo: any
   event_bus: any
   intl: any
   js: any
   logging: any
   meta: any
+  okeyee: any

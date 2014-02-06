@@ -20,9 +20,8 @@ import 'events.dart' as event;
 import 'id.dart' as id;
 import 'location.dart' as nav;
 import 'logger.dart';
-import 'model.dart' as model;
 
-import 'package:ctrl_alt_foo/keys.dart' as ctrlAlt;
+import 'package:okeyee/okeyee.dart';
 
 final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
@@ -95,20 +94,32 @@ class _KeyboardHandler {
   nav.Location                       _currentLocation;
   
   List<nav.Location> contextHome = 
-      [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)
+      [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR,            id.COMPANY_SELECTOR_SEARCHBAR),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,              id.COMPANY_EVENTS_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING,            id.COMPANY_HANDLING_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_OPENINGHOURS,        id.COMPANY_OPENINGHOURS_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_SALESCALLS,          id.COMPANY_SALES_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_PRODUCT,             id.COMPANY_PRODUCT_BODY),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_CUSTOMERTYPE,        id.COMPANY_CUSTOMERTYPE_BODY),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_TELEPHONE_NUMBERS,   id.COMPANY_TELEPHONENUMBERS_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_ADDRESSES,           id.COMPANY_ADDRESSES_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_ALTERNATENAMES,      id.COMPANY_ALTERNATE_NAMES_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_BANKING_INFORMATION, id.COMPANY_BANKING_INFO_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_EMAIL_ADDRESSES,     id.COMPANY_EMAIL_ADDRESSES_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_WEBSITES,            id.COMPANY_WEBSITES_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_REGISTRATION_NUMBER, id.COMPANY_REGISTRATION_NUMBER_LIST),
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY)
       ];
   
   List<nav.Location> contextPhone = 
       [new nav.Location(id.CONTEXT_PHONE, id.PHONEBOOTH, id.PHONEBOOTH_NUMBERFIELD)];
   
   Map<String, Map<nav.Location, int>> tabMap = 
-      {id.CONTEXT_HOME : new Map<nav.Location, int>(),
-       id.CONTEXT_MESSAGES : new Map<nav.Location, int>(),
-       id.CONTEXT_LOG : new Map<nav.Location, int>(),
+      {id.CONTEXT_HOME       : new Map<nav.Location, int>(),
+       id.CONTEXT_MESSAGES   : new Map<nav.Location, int>(),
+       id.CONTEXT_LOG        : new Map<nav.Location, int>(),
        id.CONTEXT_STATISTICS : new Map<nav.Location, int>(),
-       id.CONTEXT_PHONE : new Map<nav.Location, int>(),
+       id.CONTEXT_PHONE      : new Map<nav.Location, int>(),
        id.CONTEXT_VOICEMAILS : new Map<nav.Location, int>()};
   
   Map<String, List<nav.Location>> locationLists;
@@ -144,16 +155,36 @@ class _KeyboardHandler {
       _currentLocation = location;
     });
     
-    ctrlAlt.Keys.shortcuts({
-      'Ctrl+1'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
-      'Ctrl+5'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
-      'Ctrl+E'    : () => event.bus.fire(event.locationChanged, new nav.Location('as', id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST)),
-      'Ctrl+H'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
-      'Ctrl+C'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, 'sendmessage', 'sendmessagecellphone')),
-      'Ctrl+P'    : () => event.bus.fire(event.pickupNextCall, 'Keyboard'),
-      'Tab'       : () => tab(mode: FORWARD),
-      'Shift+Tab' : () => tab(mode: BACKWARD)
-    });
+    Keyboard keyboard = new Keyboard();
+    Map<String, EventListener> keybindings = {
+      'Ctrl+1'    : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
+      'Ctrl+5'    : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
+      'Ctrl+C'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
+      'Ctrl+E'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
+      'Ctrl+H'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
+      'Ctrl+M'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
+      'Ctrl+P'    : (_) => event.bus.fire(event.pickupNextCall, 'Keyboard'),
+      'Tab'       : (_) => tab(mode: FORWARD),
+      'Shift+Tab' : (_) => tab(mode: BACKWARD)
+    };
+    // TODO God sigende kommentar - Thomas Løcke
+    keybindings.forEach((key, callback) => keyboard.register(key, (KeyboardEvent event) {
+      event.preventDefault();
+      callback(event);
+    }));
+    window.document.onKeyDown.listen(keyboard.press);
+    
+//    ctrlAlt.Keys.shortcuts({
+//      'Ctrl+1'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
+//      'Ctrl+5'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
+//      'Ctrl+C'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
+//      'Ctrl+E'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS, id.COMPANY_EVENTS_LIST)),
+//      'Ctrl+H'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
+//      'Ctrl+M'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, 'sendmessage', 'sendmessagecellphone')),
+//      'Ctrl+P'    : () => event.bus.fire(event.pickupNextCall, 'Keyboard'),
+//      'Tab'       : () => tab(mode: FORWARD),
+//      'Shift+Tab' : () => tab(mode: BACKWARD)
+//    });
   }
   
   void tab({bool mode}) {

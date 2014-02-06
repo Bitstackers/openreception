@@ -19,7 +19,6 @@ import 'dart:html';
 import 'package:event_bus/event_bus.dart';
 
 import 'events.dart' as event;
-import 'focus.dart';
 //import 'keyboardhandler.dart';
 import 'location.dart' as nav;
 import 'logger.dart';

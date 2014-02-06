@@ -1,9 +1,9 @@
 part of components;
 
 class CompanySelector {
-  static const String                      _searchInputId = 'company-selector-searchbar';
-  DivElement                               element;
-  Context                                  context;
+  static const String                   _searchInputId = 'company-selector-searchbar';
+  DivElement                            element;
+  Context                               context;
   SearchComponent<model.BasicReception> search;
 
   CompanySelector(DivElement this.element, Context this.context) {

@@ -12,6 +12,7 @@ Map<String, Location> _history = {};
 HtmlDocument doc = window.document;
 
 class Location {
+  bool   _pushable = true;
   String _contextId;
   String _elementId;
   int    _hashCode;
@@ -24,11 +25,12 @@ class Location {
   
   Location._internal(String this._contextId, String this._widgetId, String this._elementId) {
     _hashCode = _calculateHashCode();
+    _pushable = true;
   }
   
   factory Location(String contextId, String widgetId, [String elementId]) {
     Element contextElement = querySelector('section#$contextId');
-    print('-------------- $contextElement - $contextId');
+    print('Location.dart -------------- $contextElement - $contextId');
     
     if (elementId != null && elementId.trim().isEmpty) {
       elementId = null;
@@ -57,6 +59,7 @@ class Location {
       _elementId = addressSegments.elementAt(2);
     }
     _hashCode = _calculateHashCode();
+    _pushable = false;
   }
 
   bool operator==(Location other) => contextId == other.contextId && widgetId == other.widgetId && elementId == other.elementId;
@@ -67,13 +70,15 @@ class Location {
    * Update the url bar.
    */
   void push() {
-    if(_elementId != null) {
-      doc.title = 'Bob - ${_contextId}.${_widgetId}.${_elementId}';
-      window.history.pushState(null, '${_contextId}.${_widgetId}.${_elementId}', '#${_contextId}.${_widgetId}.${_elementId}');
-      
-    } else {
-      doc.title = 'Bob - ${_contextId}.${_widgetId}';
-      window.history.pushState(null, '${_contextId}.${_widgetId}', '#${_contextId}.${_widgetId}');
+    if(_pushable) {
+      if(_elementId != null) {
+        doc.title = 'Bob - ${_contextId}.${_widgetId}.${_elementId}';
+        window.history.pushState(null, '${_contextId}.${_widgetId}.${_elementId}', '#${_contextId}.${_widgetId}.${_elementId}');
+        
+      } else {
+        doc.title = 'Bob - ${_contextId}.${_widgetId}';
+        window.history.pushState(null, '${_contextId}.${_widgetId}', '#${_contextId}.${_widgetId}');
+      }
     }
   }
   

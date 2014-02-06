@@ -21,3 +21,7 @@
   width: 21%;
   overflow: auto;
 }
+
+#company-product-body {
+  padding: 5px;
+}

@@ -6,7 +6,7 @@
   width: 34%;
 }
 
-.company-events-container {
+#company_events_list {
   height: 100%;
   width: 100%;
   overflow: auto;

@@ -23,3 +23,7 @@
   width: 21%;
   overflow: auto;
 }
+
+#company-customertype-body {
+  padding: 5px;
+}
