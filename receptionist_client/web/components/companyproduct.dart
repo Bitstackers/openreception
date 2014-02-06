@@ -14,19 +14,17 @@
 part of components;
 
 class CompanyProduct {
-  DivElement  body;
-  Box         box;
-  Context     context;
-  DivElement  element;
-  bool        hasFocus = false;
-  SpanElement header;
-  String      title    = 'Produktbeskrivelse';
+  ParagraphElement body;
+  Box              box;
+  Context          context;
+  DivElement       element;
+  SpanElement      header;
+  String           title    = 'Produktbeskrivelse';
 
   CompanyProduct(DivElement this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
     
-    //TODO ??? FIXME XXX WARNING ERROR TL LØCKE ALERT Skal det "bare" være en Div med teksten inde i????
     body = element.querySelector('#${id.COMPANY_PRODUCT_BODY}');
 
     header = new SpanElement()
@@ -49,7 +47,7 @@ class CompanyProduct {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      element.classes.toggle(focusClassName, active);
+      element.classes.toggle(FOCUS, active);
       if(active) {
         body.focus();
       }

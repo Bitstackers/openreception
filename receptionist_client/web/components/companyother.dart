@@ -14,13 +14,12 @@
 part of components;
 
 class CompanyOther {
-  DivElement      body;
-  Box             box;
-  Context         context;
-  DivElement      element;
-  bool            hasFocus = false;
-  SpanElement     header;
-  String          title    = 'Andet';
+  ParagraphElement body;
+  Box              box;
+  Context          context;
+  DivElement       element;
+  SpanElement      header;
+  String           title    = 'Andet';
 
   CompanyOther(DivElement this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
@@ -48,7 +47,7 @@ class CompanyOther {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      element.classes.toggle(focusClassName, active);
+      element.classes.toggle(FOCUS, active);
       if(active) {
         body.focus();
       }

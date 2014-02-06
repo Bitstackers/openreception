@@ -17,6 +17,7 @@ import 'dart:html';
 
 import 'context.dart';
 import 'events.dart' as event;
+import 'id.dart' as id;
 import 'keyboardhandler.dart';
 import 'location.dart' as nav;
 import 'logger.dart';
@@ -104,7 +105,7 @@ class BobActive {
     phonebooth = new Phonebooth(querySelector('#phonebooth'), phone);
 
     setupKeyboardShortcuts();
-    event.bus.fire(event.activeContextChanged, CONTEXTHOME);
+    event.bus.fire(event.activeContextChanged, id.CONTEXT_HOME);
     
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();

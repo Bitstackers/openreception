@@ -84,7 +84,7 @@ class SendMessage {
 
     box = new Box.withHeader(element, header, body);
 
-    sendmessagesearchbox    = body.querySelector('#sendmessagesearchbox');
+    sendmessagesearchbox    = body.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
     sendmessagesearchresult = body.querySelector('#sendmessagesearchresult');
     sendmessagename         = body.querySelector('#sendmessagename');
     sendmessagecompany      = body.querySelector('#sendmessagecompany');
@@ -114,7 +114,6 @@ class SendMessage {
 
     focusElements =
         [sendmessagesearchbox,
-         sendmessagesearchresult,
          sendmessagename,
          sendmessagecompany,
          sendmessagephone,
@@ -143,7 +142,7 @@ class SendMessage {
     
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      element.classes.toggle(focusClassName, active);
+      element.classes.toggle(FOCUS, active);
       if(location.elementId != null) {
         var elem = element.querySelector('#${location.elementId}');
         if (elem != null) {
@@ -197,6 +196,12 @@ class SendMessage {
     checkbox2.parent.onClick.listen((_) => toggle(2));
     checkbox3.parent.onClick.listen((_) => toggle(3));
     checkbox4.parent.onClick.listen((_) => toggle(4));
+    
+    element.onClick.listen((MouseEvent e) {
+      if((e.target as Element).attributes.containsKey('tabindex')) {
+        event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, (e.target as Element).id));
+      }
+    });
   }
 
   void toggle(int number, {bool shouldBe}) {

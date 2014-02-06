@@ -55,12 +55,12 @@ class ContactInfoCalendar {
     event.bus.on(event.focusChanged).listen((Focus value) {
       if(value.old == calendarBody.id) {
         hasFocus = false;
-        element.classes.remove(focusClassName);
+        element.classes.remove(FOCUS);
       }
 
       if(value.current == calendarBody.id) {
         hasFocus = true;
-        element.classes.add(focusClassName);
+        element.classes.add(FOCUS);
         calendarBody.focus();
       }
     });

@@ -157,14 +157,14 @@ class ContactInfoSearch {
       if(value.old == searchBox.id) {
         hasFocus = false;
         //TODO HACK FIXME ??? THOMAS LØCKE
-        element.parent.parent.classes.remove(focusClassName);
+        element.parent.parent.classes.remove(FOCUS);
       }
 
       if(value.current == searchBox.id) {
         hasFocus = true;
         searchBox.focus();
         //TODO HACK FIXME ??? THOMAS LØCKE
-        element.parent.parent.classes.add(focusClassName);
+        element.parent.parent.classes.add(FOCUS);
       }
     });
 

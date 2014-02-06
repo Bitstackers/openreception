@@ -14,13 +14,13 @@
 part of components;
 
 class CompanyRegistrationNumber {
-  Box             box;
-  Context         context;
-  DivElement      element;
-  bool            hasFocus  = false;
-  SpanElement     header;
-  UListElement    ul;
-  String          title     = 'CVR';
+  Box          box;
+  Context      context;
+  DivElement   element;
+  bool         hasFocus  = false;
+  SpanElement  header;
+  UListElement ul;
+  String       title     = 'CVR';
 
   CompanyRegistrationNumber(DivElement this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
@@ -46,7 +46,7 @@ class CompanyRegistrationNumber {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      element.classes.toggle(focusClassName, active);
+      element.classes.toggle(FOCUS, active);
       if(active) {
         ul.focus();
       }

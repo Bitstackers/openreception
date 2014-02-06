@@ -47,7 +47,7 @@ class CompanyAddresses {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      element.classes.toggle(focusClassName, active);
+      element.classes.toggle(FOCUS, active);
       if(active) {
         ul.focus();
       }

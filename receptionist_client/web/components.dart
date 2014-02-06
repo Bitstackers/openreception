@@ -76,7 +76,7 @@ typedef void onCallQueueClick(MouseEvent event, CallQueueItem queueItem);
 
 bool handleFocusChange(Focus value, List<Element> focusElements, Element highlightElement) {
   Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
-  highlightElement.classes.toggle(focusClassName, focusedElement != null);
+  highlightElement.classes.toggle(FOCUS, focusedElement != null);
   if(focusedElement != null) {
     focusedElement.focus();
   }

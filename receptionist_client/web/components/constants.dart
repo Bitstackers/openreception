@@ -1,3 +1,3 @@
 part of components;
 
-const String focusClassName = 'focus';
+const String FOCUS = 'focus';

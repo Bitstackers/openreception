@@ -1,20 +1,3 @@
-/*
-.company-customer-type-placing {
-  position: absolute;
-  left: 35%;
-  top: 41%;
-  height: 9%;
-  width: 21%;
-}
-
-.company-customer-type-container {
-  height: 100%;
-  width: 100%;
-  overflow: auto;
-  padding: 5px;
-}
-*/
-
 #companycustomertype {
   position: absolute;
   left: 35%;

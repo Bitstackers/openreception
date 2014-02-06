@@ -39,26 +39,14 @@ class CompanyHandling {
 
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen(render);
+    event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, ul));
 
-    element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
-    });
-
-    event.bus.on(event.locationChanged).listen((nav.Location location) {
-      bool active = location.widgetId == element.id;
-      element.classes.toggle(focusClassName, active);
-      if(active) {
-        ul.focus();
-      }
-    });
+    element.onClick.listen((_) => event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id)));
   }
 
   void render(model.Reception reception) {
     ul.children.clear();
-
-    for(var value in reception.handlingList) {
-      ul.children.add(new LIElement()
-                        ..text = value.value);
-    }
+    
+    reception.handlingList.forEach((value) => ul.children.add(new LIElement()..text = value.value));
   }
 }

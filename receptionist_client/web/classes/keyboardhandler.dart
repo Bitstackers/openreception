@@ -108,7 +108,21 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_EMAIL_ADDRESSES,     id.COMPANY_EMAIL_ADDRESSES_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_WEBSITES,            id.COMPANY_WEBSITES_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_REGISTRATION_NUMBER, id.COMPANY_REGISTRATION_NUMBER_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY)
+       new nav.Location(id.CONTEXT_HOME, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEARCHBOX),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_NAME),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_COMPANY),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_PHONE),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CELLPHONE),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_LOCALNO),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_TEXT),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX1),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX2),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX3),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX4),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CANCEL),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_DRAFT),
+       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEND)
       ];
   
   List<nav.Location> contextPhone = 
@@ -159,7 +173,7 @@ class _KeyboardHandler {
     Map<String, EventListener> keybindings = {
       'Ctrl+1'    : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
       'Ctrl+5'    : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
-      'Ctrl+C'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
+      'Ctrl+C'    : (_) => event.bus.fire(event.locationChanged, new nav.Location('home', id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
       'Ctrl+E'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
       'Ctrl+H'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Ctrl+M'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),

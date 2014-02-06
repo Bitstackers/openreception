@@ -3,19 +3,21 @@ library location;
 import 'dart:html';
 import 'dart:math' show pow;
 
+import '../components.dart';
 import 'events.dart' as event;
 import 'id.dart' as id;
 import 'logger.dart';
 
 Map<String, Location> _history = {};
+Location appDefaultLocation;
 
 HtmlDocument doc = window.document;
 
 class Location {
-  bool   _pushable = true;
   String _contextId;
   String _elementId;
   int    _hashCode;
+  bool   _pushable = true;
   String _widgetId;
   
   String get contextId => _contextId;
@@ -25,46 +27,61 @@ class Location {
   
   Location._internal(String this._contextId, String this._widgetId, String this._elementId) {
     _hashCode = _calculateHashCode();
-    _pushable = true;
   }
   
-  factory Location(String contextId, String widgetId, [String elementId]) {
-    Element contextElement = querySelector('section#$contextId');
-    print('Location.dart -------------- $contextElement - $contextId');
-    
-    if (elementId != null && elementId.trim().isEmpty) {
-      elementId = null;
-    }
-    return new Location._internal(contextId, widgetId, elementId);
-  }
-  
-  Location.context(String this._contextId) {
-    if(_history.containsKey(_contextId)) {
-      Location location = _history[_contextId];
-      _widgetId = location._widgetId;
-      _elementId = location._elementId;
-      _hashCode = _calculateHashCode();
+  factory Location(String contextId, String widgetId, String elementId) {
+    if (validLocation(contextId, widgetId, elementId)) {
+      return new Location._internal(contextId, widgetId, elementId);
+      
     } else {
-      log.error('Location.context Unknow context: "${_contextId}"');
+      return appDefaultLocation;
     }
   }
   
-  Location.fromPopState(String hash) {
-    //TODO Validate
-    List<String> fragments = hash.substring(1).split('/');
-    List<String> addressSegments = fragments[0].split('.');
-    _contextId = addressSegments.elementAt(0);
-    _widgetId = addressSegments.elementAt(1);
-    if(addressSegments.length > 2) {
-      _elementId = addressSegments.elementAt(2);
+  factory Location.context(String contextId) {
+    if(_history.containsKey(contextId)) {
+      return _history[contextId];
+      
+    } else {
+      log.error('Location.context unknown context "${contextId}"');
     }
-    _hashCode = _calculateHashCode();
-    _pushable = false;
+  }
+  
+  factory Location.fromPopState(String hash) {
+    try {
+      List<String> fragments = hash.substring(1).split('/');
+      List<String> addressSegments = fragments[0].split('.');
+      
+      String contextId = addressSegments.elementAt(0);
+      String widgetId = addressSegments.elementAt(1);
+      String elementId = addressSegments.elementAt(2);
+      
+      if(validLocation(contextId, widgetId, elementId)) {
+        return new Location(contextId, widgetId, elementId)
+          .._pushable = false;
+        
+      } else {
+        throw('invalid hash');
+      }
+      
+    } catch(error) {
+      log.error('location.Location.fromPopState() threw ${error} "${hash}" returning default "${appDefaultLocation}"');
+      return new Location(appDefaultLocation.contextId, appDefaultLocation.widgetId, appDefaultLocation.elementId)
+        .._pushable = false;
+    }
   }
 
   bool operator==(Location other) => contextId == other.contextId && widgetId == other.widgetId && elementId == other.elementId;
   
   int _calculateHashCode() => int.parse(('$_contextId$_widgetId$_elementId').codeUnits.join('')) % pow(2, 31);
+  
+  void setFocusState(Element widget, Element element) {
+    bool active = widgetId == widget.id && elementId == element.id;
+    widget.classes.toggle(FOCUS, active);
+    if(active) {
+      element.focus();
+    }
+  }
   
   /**
    * Update the url bar.
@@ -83,6 +100,28 @@ class Location {
   }
   
   String toString() => '$_contextId.$_widgetId.$_elementId';
+
+  static bool validLocation(String contextId, String widgetId, String elementId) {
+    Element contextElement = querySelector('section#$contextId');
+    if(contextElement == null) {
+      log.error('location.Location() bad context "${contextId}" returning default "${appDefaultLocation}"');
+      return false;
+    }
+    
+    Element widgetElement = contextElement.querySelector('#${widgetId}');
+    if(widgetElement == null) {
+      log.error('location.Location() bad widget "${contextId}.${widgetId}" returning default "${appDefaultLocation}"');
+      return false;
+    }
+    
+    Element elementElement = widgetElement.querySelector('#${elementId}');
+    if(elementElement == null) {
+      log.error('location.Location() bad element "${contextId}.${widgetId}.${elementId}" returning default "${appDefaultLocation}"');
+      return false;
+    }
+    
+    return true;
+  }
 }
 
 //TODO Thomas Løcke DO SOMETHING! MAKE IT PRETTY. 
@@ -97,18 +136,20 @@ void initialize() {
           if (querySelector('#$elementId') != null) {
             _history[context.id] = new Location(context.id, widgetId, elementId);
           } else {
-            log.error('location.initialize() Widget ${widgetId} has bad default element');
+            log.critical('location.initialize() Widget ${widgetId} has bad default element');
           }
         } else {
-          _history[context.id] = new Location(context.id, widgetId);
+          log.critical('location.initialize() widget ${widgetId} is missing default element');
         }        
       } else {
-        log.error('location.initialize() Context ${context.id} has bad default widget');
+        log.critical('location.initialize() Context ${context.id} has bad default widget');
       }
     } else {
-      log.error('location.initialize() Context ${context.id} is missing default widget');
+      log.critical('location.initialize() Context ${context.id} is missing default widget');
     } 
   }
+  
+  appDefaultLocation = _history[id.CONTEXT_HOME];
 }
 
 void registerOnPopStateListeners() {
@@ -127,7 +168,7 @@ void registerOnPopStateListeners() {
 void _emitWindowLocation() {
   String hash = window.location.hash;
   if(hash.isEmpty) {
-    event.bus.fire(event.locationChanged, new Location.context(id.CONTEXT_HOME));
+    event.bus.fire(event.locationChanged, appDefaultLocation);
   } else {
     event.bus.fire(event.locationChanged, new Location.fromPopState(hash));
   }
