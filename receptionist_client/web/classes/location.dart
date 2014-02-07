@@ -44,6 +44,7 @@ class Location {
       
     } else {
       log.error('Location.context unknown context "${contextId}"');
+      return appDefaultLocation;
     }
   }
   

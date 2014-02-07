@@ -21,6 +21,7 @@ class LogBox {
   LogBox(DivElement this.element) {
 
     table = new TableElement()
+      ..id = id.LOGBOX_TABLE
       ..children.add(new TableRowElement()
         ..innerHtml = '''
           <th class="logbox-time-header">Tidspunkt</th>
