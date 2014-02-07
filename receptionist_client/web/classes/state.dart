@@ -127,7 +127,7 @@ class State {
   }
 
   String toString() {
-    return 'BobState configuration: ${_config} websocket: ${_websocket} overall: ${_getOverallState()}';
+    return 'BobState configuration: ${_config} websocket: ${_websocket} logger: ${_logger} overall: ${_getOverallState()}';
   }
 
   /**

@@ -65,47 +65,46 @@ class BobActive {
   Context voicemails;
 
   BobActive(DivElement this.element) {
-    assert(element != null);
+    element.classes.remove('hidden');
 
     event.bus.on(event.stateUpdated).listen((State value) {
       element.classes.toggle('hidden', !value.isOK);
-      log.debug('BobActive. stateUpdated: $value');
     });
-
+      
     registerContexts();
 
-    contextSwitcher          = new ContextSwitcher(querySelector('#contextswitcher'), [home, messages, logContext, statistics, phone, voicemails]);
-    welcomeMessage           = new WelcomeMessage(querySelector('#welcome-message'));
-    agentInfo                = new AgentInfo(querySelector('#agent-info'));
-    companySelector          = new CompanySelector(querySelector('#companyselector'), home);
-    companyEvents            = new CompanyEvents(querySelector('#companyevents'), home);
-    companyHandling          = new CompanyHandling(querySelector('#companyhandling'), home);
-    companyOpeningHours      = new CompanyOpeningHours(querySelector('#companyopeninghours'), home);
-    companySalesCalls        = new CompanySalesCalls(querySelector('#companysalescalls'), home);
-    companyProduct           = new CompanyProduct(querySelector('#companyproduct'), home);
-    companyCustomerType      = new CompanyCustomerType(querySelector('#companycustomertype'), home);
-    companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#companytelephonenumbers'), home);
-    companyAddresses         = new CompanyAddresses(querySelector('#companyaddresses'), home);
-    companyAlternateNames    = new CompanyAlternateNames(querySelector('#companyalternatenames'), home);
-    companyBankingInfomation = new CompanyBankingInformation(querySelector('#companybankinginformation'), home);
-    companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#companyemailaddresses'), home);
-    companyWebsites          = new CompanyWebsites(querySelector('#companywebsites'), home);
-    compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#companyregistrationnumber'), home);
-    companyOther             = new CompanyOther(querySelector('#companyother'), home);
-    contactInfo              = new ContactInfo(querySelector('#contactinfo'), home);
-    sendMessage              = new SendMessage(querySelector('#sendmessage'), home);
-    globalQueue              = new GlobalQueue(querySelector('#globalqueue'), home);
-    localQueue               = new LocalQueue(querySelector('#localqueue'), home);
+    contextSwitcher          = new ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, messages, logContext, statistics, phone, voicemails]);
+    welcomeMessage           = new WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
+    agentInfo                = new AgentInfo(querySelector('#${id.AGENT_INFO}'));
+    companySelector          = new CompanySelector(querySelector('#${id.COMPANY_SELECTOR}'), home);
+    companyEvents            = new CompanyEvents(querySelector('#${id.COMPANY_EVENTS}'), home);
+    companyHandling          = new CompanyHandling(querySelector('#${id.COMPANY_HANDLING}'), home);
+    companyOpeningHours      = new CompanyOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), home);
+    companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
+    companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
+    companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), home);
+    companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), home);
+    companyAddresses         = new CompanyAddresses(querySelector('#${id.COMPANY_ADDRESSES}'), home);
+    companyAlternateNames    = new CompanyAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), home);
+    companyBankingInfomation = new CompanyBankingInformation(querySelector('#${id.COMPANY_BANKING_INFORMATION}'), home);
+    companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), home);
+    companyWebsites          = new CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), home);
+    compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), home);
+    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), home);
+    contactInfo              = new ContactInfo(querySelector('#${id.CONTACT_INFO}'), home);
+    sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
+    globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
+    localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
 
-    messageSearch = new MessageSearch(querySelector('#message-search'), messages);
-    messageOverview = new MessageOverview(querySelector('#messageoverview'), messages);
+    messageSearch = new MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
+    messageOverview = new MessageOverview(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 
-    logBox = new LogBox(querySelector('#logbox'));
+    logBox = new LogBox(querySelector('#${id.LOGBOX}'));
 
     phonebooth = new Phonebooth(querySelector('#phonebooth'), phone);
 
     setupKeyboardShortcuts();
-    event.bus.fire(event.activeContextChanged, id.CONTEXT_HOME);
+//    event.bus.fire(event.activeContextChanged, id.CONTEXT_HOME);
     
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();

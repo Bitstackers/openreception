@@ -149,10 +149,10 @@ class Log {
    * Tests if there is a connecting to alice.
    */
   void connect() {
-    if (configuration.isLoaded()) {
+    if (configuration.isLoaded() && configuration.hasToken) {
       String browserInfo = window.navigator.userAgent;
       Duration retryTime = new Duration(seconds: 3);
-
+      
       protocol.logInfo('Logger connecting from ${browserInfo}').then((protocol.Response response) {
         if (response.status == protocol.Response.OK) {
           _resumeServerStream();

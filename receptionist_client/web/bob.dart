@@ -20,7 +20,7 @@ import 'dart:html';
 import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
-import 'classes/boblogin.dart';
+//import 'classes/boblogin.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
@@ -30,15 +30,13 @@ import 'classes/state.dart';
 BobActive bobActive;
 BobDisaster bobDiaster;
 BobLoading bobLoading;
-BobLogin boblogin;
-
-int userId = 1;
+//BobLogin boblogin;
 
 void main() {
-  handleToken();
-  
   configuration.initialize().then((_) {
-    notification.initialize();
+    if(handleToken()) {
+      notification.initialize();
+    }
   });
   
   //boblogin = new BobLogin(querySelector('#boblogin'));
@@ -50,8 +48,8 @@ void main() {
   bobDiaster = new BobDisaster(querySelector('#bobdisaster'));
 
   StreamSubscription subscription;
-  subscription = event.bus.on(event.stateUpdated).listen((State value) {
-    if(value.isConfigurationOK) {
+  subscription = event.bus.on(event.stateUpdated).listen((State state) {
+    if(state.isOK) {
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
       
@@ -60,7 +58,7 @@ void main() {
   });
 }
 
-void handleToken() {
+bool handleToken() {
   Uri url = Uri.parse(window.location.href);
   //TODO Thomas Løcke & Kim Rostgaard - Speak about this!
   if(url.queryParameters.containsKey('settoken')) {
@@ -77,9 +75,10 @@ void handleToken() {
     var finalUrl = new Uri(scheme: u.scheme, userInfo: u.userInfo, host: u.host, port: u.port, path: u.path, queryParameters: queryParam, fragment: u.fragment);
     //window.location.assign(finalUrl.toString());
     //Didn't work.
-    
+    return true;
   } else {
     window.location.assign('http://alice.adaheads.com:4050/token/create?returnurl=${window.location.toString()}');
+    return false;
   }
 }
 

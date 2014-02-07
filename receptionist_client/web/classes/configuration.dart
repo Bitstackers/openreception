@@ -67,7 +67,8 @@ class _Configuration {
   String   get standardGreeting =>                    _standardGreeting;
   int      get userLogSizeLimit =>                    _userLogSizeLimit;
 
-  String token = '1e048452ba43dab566b30a32e372a0b3448b5212f0c145fd818d2d001224f6c2';
+  String token = null;
+  bool get hasToken => token != null;
 //  String get token => _token;
 //  void set token (String value) => _token = value;
   
