@@ -21,8 +21,10 @@ import 'model.dart' as model;
 import 'location.dart';
 import 'state.dart';
 
-final EventType<String> activeContextChanged                    = new EventType<String>();
-final EventType<String> activeWidgetChanged                     = new EventType<String>();
+final EventType keyUp                                           = new EventType();
+final EventType keyDown                                         = new EventType();
+final EventType keyEsc                                          = new EventType();
+final EventType keyEnter                                        = new EventType();
 final EventType<model.Call> callChanged                         = new EventType<model.Call>();
 final EventType<model.Call> callQueueAdd                        = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove                     = new EventType<model.Call>();

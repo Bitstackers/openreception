@@ -177,13 +177,15 @@ class _KeyboardHandler {
       'Alt+4'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_STATISTICS)),
       'Alt+5'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
       'Alt+6'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_VOICEMAILS)),
-      'Ctrl+C'    : (_) => event.bus.fire(event.locationChanged, new nav.Location('home', id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
+      'Ctrl+C'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
       'Ctrl+E'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
       'Ctrl+H'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Ctrl+M'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
       'Ctrl+P'    : (_) => event.bus.fire(event.pickupNextCall, 'Keyboard'),
       'Tab'       : (_) => tab(mode: FORWARD),
-      'Shift+Tab' : (_) => tab(mode: BACKWARD)
+      'Shift+Tab' : (_) => tab(mode: BACKWARD),
+      'up'        : (_) => event.bus.fire(event.keyUp, null),
+      'down'      : (_) => event.bus.fire(event.keyDown, null)
     };
     // TODO God sigende kommentar - Thomas Løcke
     keybindings.forEach((key, callback) => keyboard.register(key, (KeyboardEvent event) {
@@ -191,6 +193,17 @@ class _KeyboardHandler {
       callback(event);
     }));
     window.document.onKeyDown.listen(keyboard.press);
+    
+    Keyboard keyUp = new Keyboard();
+    keybindings = {
+      'enter'        : (_) => event.bus.fire(event.keyEnter, null),
+      'esc'      : (_) => event.bus.fire(event.keyEsc, null)
+    };
+    keybindings.forEach((key, callback) => keyUp.register(key, (KeyboardEvent event) {
+      event.preventDefault();
+      callback(event);
+    }));
+    window.document.onKeyUp.listen(keyUp.press);
     
 //    ctrlAlt.Keys.shortcuts({
 //      'Ctrl+1'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),

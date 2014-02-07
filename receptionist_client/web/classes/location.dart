@@ -76,12 +76,13 @@ class Location {
   
   int _calculateHashCode() => int.parse(('$_contextId$_widgetId$_elementId').codeUnits.join('')) % pow(2, 31);
   
-  void setFocusState(Element widget, Element element) {
+  bool setFocusState(Element widget, Element element) {
     bool active = widgetId == widget.id && elementId == element.id;
     widget.classes.toggle(FOCUS, active);
     if(active) {
       element.focus();
     }
+    return active;
   }
   
   /**

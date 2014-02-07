@@ -1,5 +1,13 @@
 part of components;
 
+
+/*
+ * SetViewedObject(T obj) // Writes to _selectedElementText, but don't find it in the DataList. 
+ *                             Saved to CurrentObject, and find it in the list when the component gets focus.
+ * UpdateDataList(List<T> list) // saves reference to list in a new variable for UpdatedLists. On next open reload Datalist with UpdatedList.
+ * 
+ */
+
 typedef bool Where<T>(T element, String searchText);
 typedef String ElementToString<T>(T element, String searchText);
 typedef void ElementInvokation<T>(T element);
@@ -109,13 +117,18 @@ class SearchComponent<T> {
     _withDropDown = true;
   }
 
-  void clear() {
+  void Aclear() {
     closeDropDown();
     _searchBox.value = '';
     _selectedElementText.text = _searchPlaceholder;
+    performSearch('');
   }
+  
+//  void clear() {
+//    _searchBox.value = '';
+//  }
 
-  void _clearSelection() {
+  void clearSelection() {
     _selectedElementText.text = _searchPlaceholder;
     _whenClearSelection();
   }
@@ -222,98 +235,56 @@ class SearchComponent<T> {
     }
   }
 
-  void registerEventHandlers() {
-    _searchBox.onKeyDown.listen((KeyboardEvent event) {
-      KeyEvent key = new KeyEvent.wrap(event);
-
-      switch(key.keyCode) {
-        case Keys.UP:
-          event.preventDefault();
-          _previousElement();
-          break;
-
-        case Keys.DOWN:
-          event.preventDefault();
-          _nextElement();
-          break;
+  void registerEventHandlers() {    
+    event.bus.on(event.keyUp).listen((_) { 
+      if(_hasFocus) {
+        _previousElement();
       }
     });
-
-    _searchBox.onKeyUp.listen((KeyboardEvent event) {
-      KeyEvent key = new KeyEvent.wrap(event);
-
-      switch(key.keyCode) {
-        case Keys.ESC:
-          if(_withDropDown) {
-            closeDropDown();
-          } else {
-            _clearSelection();
-          }
-          break;
-
-        case Keys.ENTER:
-          _activateSelectedElement(_highlightedLi);
-          break;
-
-        case Keys.TAB:
-        case Keys.SHIFT:
-        case Keys.CTRL:
-        case Keys.ALT:
-          break;
-
-        default:
-          if(key.ctrlKey == false && key.altKey == false) {
-            performSearch(_searchBox.value);
-            showDropDown();
-          }
+    
+    event.bus.on(event.keyDown).listen((_) { 
+      if(_hasFocus) {
+        _nextElement();
       }
     });
-
-    _searchBox.onClick.listen((_) {
+    
+    event.bus.on(event.keyEnter).listen((_) {
+      if(_hasFocus &&_withDropDown) {
+        _activateSelectedElement(_highlightedLi);
+      }
+    });
+    
+    event.bus.on(event.keyEsc).listen((_) {
+      if(_hasFocus) {
+        Aclear();
+        _whenClearSelection();
+      }
+    });
+    
+    _searchBox.onInput.listen((Event e) {
       performSearch(_searchBox.value);
+      showDropDown();
     });
-
-    _searchBox.onFocus.listen((_) {
-      _container.classes.add('chosen-container-active');
-      if(!_hasFocus) {
-        setFocus(_searchBox.id);
+    
+    _container.querySelector('.chosen-single').onClick.listen((_) {
+      event.bus.fire(event.locationChanged, new nav.Location(_context.id, _element.id, _searchBox.id));
+      if(_withDropDown) {
+        closeDropDown();
+      } else {
+        showDropDown();
+        _searchBox.focus();
       }
     });
-
-    _searchBox.onBlur.listen((FocusEvent e) {
-      if(e.relatedTarget != null && isChildOf(e.relatedTarget, _container)) {
-        _searchBox.focus();
-
-      } else {
+    
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.setFocusState(_element, _searchBox);
+      if(!active) {
+        closeDropDown();
         _searchBox.value = '';
         performSearch('');
-        _container.classes.remove('chosen-container-active');
-        closeDropDown();
       }
+      _hasFocus = active;
     });
-
-    _container.querySelector('.chosen-single')
-      ..onMouseDown.listen((_) {
-        if(_withDropDown) {
-          closeDropDown();
-        } else {
-          _container.classes.add('chosen-container-active');
-          showDropDown();
-          _searchBox.focus();
-        }
-    });
-
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      if(value.current == _searchBox.id && !_hasFocus) {
-        _hasFocus = true;
-        _searchBox.focus();
-
-      } else if(value.current != _element.id) {
-        _hasFocus = false;
-      }
-    });
-
-    _context.registerFocusElement(_searchBox);
   }
 
   /**
@@ -334,7 +305,7 @@ class SearchComponent<T> {
 
   void updateSourceList(List<T> newList) {
     log.debug('SearchComponent. updateSourceList. numberOfElements: ${newList.length}');
-    _clearSelection();
+    clearSelection();
     _dataList = newList;
     _list.clear();
     for(int i = 0; i < _dataList.length; i++) {

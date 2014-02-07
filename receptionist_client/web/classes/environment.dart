@@ -18,17 +18,17 @@ library environment;
 
 //import 'common.dart';
 //import 'context.dart';
-import 'events.dart' as event;
+//import 'events.dart' as event;
 //import 'logger.dart';
 import 'model.dart' as model;
 //import 'state.dart';
-
-String     _activeWidget = '';
-String get activeWidget => _activeWidget;
-void   set activeWidget(String widget) {
-  _activeWidget = widget;
-  event.bus.fire(event.activeWidgetChanged, widget);
-}
+//
+//String     _activeWidget = '';
+//String get activeWidget => _activeWidget;
+//void   set activeWidget(String widget) {
+//  _activeWidget = widget;
+//  event.bus.fire(event.activeWidgetChanged, widget);
+//}
 
 //@observable
 model.Call             call             = model.nullCall;

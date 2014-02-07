@@ -20,7 +20,7 @@ import 'events.dart' as event;
 import 'id.dart' as id;
 import 'keyboardhandler.dart';
 import 'location.dart' as nav;
-import 'logger.dart';
+//import 'logger.dart';
 import 'state.dart';
 import '../components.dart';
 

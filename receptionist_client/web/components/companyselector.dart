@@ -1,21 +1,26 @@
 part of components;
 
 class CompanySelector {
-  static const String                   _searchInputId = 'company-selector-searchbar';
   DivElement                            element;
   Context                               context;
   SearchComponent<model.BasicReception> search;
 
   CompanySelector(DivElement this.element, Context this.context) {
-    search = new SearchComponent<model.BasicReception>(element, context, _searchInputId)
-      ..searchPlaceholder = 'Søg efter en virksomhed'
-      ..whenClearSelection = whenClearSelection
-      ..listElementToString = listElementToString
-      ..searchFilter = searchFilter
-      ..selectedElementChanged = elementSelected;
-
-    initialFill();
-    registerEventlisteners();
+    if(element.attributes.containsKey('data-default-element')) {
+      String searchBoxId = element.attributes['data-default-element'];
+        
+      search = new SearchComponent<model.BasicReception>(element, context, searchBoxId)
+        ..searchPlaceholder = 'Søg efter en virksomhed'
+        ..whenClearSelection = whenClearSelection
+        ..listElementToString = listElementToString
+        ..searchFilter = searchFilter
+        ..selectedElementChanged = elementSelected;
+    
+      initialFill();
+      registerEventlisteners(); 
+    } else {
+      log.error('components.CompanySelector.CompanySelector() element does not have a data-default-element.');
+    }
   }
 
   void initialFill() {
@@ -27,7 +32,7 @@ class CompanySelector {
   void registerEventlisteners() {
     event.bus.on(event.receptionChanged).listen((model.BasicReception value) {
       if(value == model.nullReception) {
-        search.clear();
+        search.clearSelection();
 
       } else {
         search.selectElement(value, _receptionEquality);
