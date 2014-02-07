@@ -35,8 +35,8 @@ Filter auth(Uri authUrl) {
       
     } else {
       request.response.statusCode = HttpStatus.UNAUTHORIZED;
-      writeAndClose(request, '');
-      return new Future(() => false);
+      writeAndClose(request, '{"description": "No token was specified"}');
+      return new Future.value(false);
     }
   };
 }
