@@ -5,21 +5,18 @@ void userinfo(HttpRequest request) {
   
   cache.loadToken(token).then((String token) {
     Map json = JSON.decode(token);
-    String url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${json['access_token']}';
-    
-    return http.get(url).then((http.Response response) {
-      Map googleProfile = JSON.decode(response.body);
-      return db.getUser(googleProfile['email']).then((Map agent) {
-        if(agent.isEmpty) {
-          request.response.statusCode = 404;
-          writeAndClose(request, '{"status": "Unknown identity."}');
-        } else {
-          agent['remote_attributes'] = googleProfile;
-          writeAndClose(request, JSON.encode(agent));
-        }
-      });
-    });
+    if(json.containsKey('identity')) {
+      String result = JSON.encode(json['identity']);
+      writeAndClose(request, result);
+    } else {
+      request.response.statusCode = 404;
+      writeAndClose(request, JSON.encode({'Status': 'Not found'}));
+      log("authenticationserver.router.userinfo() save object didn't have user data.");
+    }
   }).catchError((error) {
-    serverError(request, 'authenticationserver.router.userinfo: $error');
+    request.response.statusCode = 404;
+    writeAndClose(request, JSON.encode({'Status': 'Not found'}));
+    log('authenticationserver.router.userinfo() Tried to load token ${error}');
+    //serverError(request, 'authenticationserver.router.userinfo: $error');
   });  
 }

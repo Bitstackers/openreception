@@ -1,9 +1,7 @@
 part of authenticationserver.router;
 
 void login(HttpRequest request) {
-  try {
-    Uri bobUrl = Uri.parse('localhost:3030/Bob/web/bob.dart');
-    
+  try {    
     //Because the library does not allow to set custom query parameters
     Map googleParameters = {
       'access_type': 'offline',

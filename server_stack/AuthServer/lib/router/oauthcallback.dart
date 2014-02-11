@@ -16,16 +16,49 @@ void oauthCallback(HttpRequest request) {
     Map json = JSON.decode(response.body);
     
     if(json.containsKey('error')) {
-      serverError(request, 'Authtication failed. ${json['error']}');
+      serverError(request, 'Authtication failed. ${json}');
+      
     } else {
-      String hash = Sha256Token(json['access_token']);
-      return cache.saveToken(hash, response.body).then((_) {
-        Map queryParameters = {'settoken' : hash};
-        request.response.redirect(new Uri(scheme: returnUrl.scheme, userInfo: returnUrl.userInfo, host: returnUrl.host, port: returnUrl.port, path: returnUrl.path, queryParameters: queryParameters));
+      return getUserInfo(json['access_token']).then((Map userData) {
+        if(userData == null || userData.isEmpty) {
+          request.response.statusCode = 403;
+          writeAndClose(request, JSON.encode({'status': 'Forbidden'}));
+          
+        } else {
+          json['identity'] = userData;
+          
+          String cacheObject = JSON.encode(json);
+          String hash = Sha256Token(cacheObject);
+          
+          return cache.saveToken(hash, cacheObject).then((_) {
+            Map queryParameters = {'settoken' : hash};
+            request.response.redirect(new Uri(scheme: returnUrl.scheme, userInfo: returnUrl.userInfo, host: returnUrl.host, port: returnUrl.port, path: returnUrl.path, queryParameters: queryParameters));
+          }).catchError((error) {
+            serverError(request, error.toString());
+          });
+        }
       }).catchError((error) {
-        serverError(request, error.toString());
+        request.response.statusCode = 403;
+        writeAndClose(request, JSON.encode({'status': 'Forbidden'}));
       });
     }
     
   }).catchError((error) => serverError(request, error.toString()));
+}
+
+
+Future<Map> getUserInfo(String access_token) {
+  String url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}';
+  
+  return http.get(url).then((http.Response response) {
+    Map googleProfile = JSON.decode(response.body);
+    return db.getUser(googleProfile['email']).then((Map agent) {
+      if(agent.isNotEmpty) {
+        agent['remote_attributes'] = googleProfile;
+        return agent;
+      } else {
+        return null;
+      }
+    });
+  });
 }
