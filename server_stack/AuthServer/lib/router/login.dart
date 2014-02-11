@@ -5,7 +5,7 @@ void login(HttpRequest request) {
     //Because the library does not allow to set custom query parameters
     Map googleParameters = {
       'access_type': 'offline',
-      'state': 'http://bob.adaheads.com'
+      'state': config.clientURL
     };
     
     if(request.uri.queryParameters.containsKey('returnurl')) {

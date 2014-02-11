@@ -17,6 +17,7 @@ class Configuration {
   String     _cache;
   String     _clientId;
   String     _clientSecret;
+  String     _clientURL;
   String     _configfile  = 'config.json';
   String     _dbuser;
   String     _dbpassword;
@@ -30,6 +31,7 @@ class Configuration {
   String get configfile   => _configfile;
   String get clientId     => _clientId;
   String get clientSecret => _clientSecret;
+  String get clientURL    => _clientURL;
   String get dbuser       => _dbuser;
   String get dbpassword   => _dbpassword;
   String get dbhost       => _dbhost;
@@ -81,6 +83,10 @@ class Configuration {
 
       if(config.containsKey('clientsecret')) {
         _clientSecret = config['clientsecret'];
+      }
+
+      if(config.containsKey('clientURL')) {
+        _clientURL= config['clientURL'];
       }
 
       if(config.containsKey('dbuser')) {

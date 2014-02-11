@@ -8,5 +8,6 @@
     "dbname": "dbname",
     "httpport": 8080,
     "redirecturi" : "http://localhost:8080/oauth2callback",
+    "clientURL"   : "http://localhost:3030/Bob/web/bob.html",
     "cache": "/dev/shm/"
 }
