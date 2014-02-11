@@ -151,7 +151,8 @@ class Configuration {
   String toString() =>'''
     httpport: $httpport
     dbhost:   $dbhost
-    dbname:   $dbname''';
+    dbname:   $dbname
+    authurl:  $authUrl''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
