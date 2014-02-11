@@ -3,7 +3,7 @@ part of components;
 
 /*
  * SetViewedObject(T obj) // Writes to _selectedElementText, but don't find it in the DataList. 
- *                             Saved to CurrentObject, and find it in the list when the component gets focus.
+ *                             Saved to CurrentObject, and find it in the list when the component is activated.
  * UpdateDataList(List<T> list) // saves reference to list in a new variable for UpdatedLists. On next open reload Datalist with UpdatedList.
  * 
  */
@@ -128,15 +128,22 @@ class SearchComponent<T> {
 //    _searchBox.value = '';
 //  }
 
+  //TODO START XXX HACK If we notice the outside, then eventbus complains about making an event while another event is active.
   void clearSelection() {
+    _selectedElementText.text = _searchPlaceholder;
+    //_whenClearSelection();
+  }   
+  void _clearSelection() {
     _selectedElementText.text = _searchPlaceholder;
     _whenClearSelection();
   }
-
+  // TODO END
+  
   void closeDropDown() {
     _container.classes.remove('chosen-with-drop');
     _withDropDown = false;
   }
+  
 
   /**
   * Adjust the scollbar to keep the highlighted list element visible.
@@ -305,7 +312,7 @@ class SearchComponent<T> {
 
   void updateSourceList(List<T> newList) {
     log.debug('SearchComponent. updateSourceList. numberOfElements: ${newList.length}');
-    clearSelection();
+    _clearSelection();
     _dataList = newList;
     _list.clear();
     for(int i = 0; i < _dataList.length; i++) {
