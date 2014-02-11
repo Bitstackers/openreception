@@ -17,6 +17,7 @@ import 'dart:async';
 
 import 'package:event_bus/event_bus.dart';
 
+import 'commands.dart' as command;
 import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'events.dart' as event;
@@ -39,7 +40,7 @@ class _Notification {
   static final EventType<Map> queueLeave = new EventType<Map>();
   static final EventType<Map> callPark   = new EventType<Map>();
   static final EventType<Map> callUnpark = new EventType<Map>();
-  static final EventType<Map> callOffer = new EventType<Map>();
+  static final EventType<Map> callOffer  = new EventType<Map>();
 
   Socket _socket;
 
@@ -125,12 +126,13 @@ class _Notification {
    */
   void _registerEventListeners() {
     event.bus
-      ..on(callHangup).listen((Map json) => _callHangupEventHandler(json))
-      ..on(callPickup).listen((Map json) => _callPickupEventHandler(json))
-      ..on(queueJoin) .listen((Map json) => _queueJoinEventHandler(json))
-      ..on(queueLeave).listen((Map json) => _queueLeaveEventHandler(json))
-      ..on(callPark)  .listen((Map json) => _callParkEventHandler(json))
-      ..on(callUnpark).listen((Map json) => _callUnparkEventHandler(json));
+      ..on(callHangup).listen(_callHangupEventHandler)
+      ..on(callPickup).listen(_callPickupEventHandler)
+      ..on(queueJoin) .listen(_queueJoinEventHandler)
+      ..on(queueLeave).listen(_queueLeaveEventHandler)
+      ..on(callPark)  .listen(_callParkEventHandler)
+      ..on(callUnpark).listen(_callUnparkEventHandler)
+      ..on(callOffer) .listen(_callOfferEventHandler);
 
     if(configuration != null && configuration.isLoaded()) {
       makeSocket();
@@ -230,4 +232,9 @@ void _callParkEventHandler(Map json) {
 void _callUnparkEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
   event.bus.fire(event.localCallQueueRemove, call);
+}
+
+void _callOfferEventHandler(Map json) {
+  //TODO HACKY AUTO answer
+  //command.pickupNextCall();
 }
