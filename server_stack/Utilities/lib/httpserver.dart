@@ -35,7 +35,7 @@ Filter auth(Uri authUrl) {
       
     } else {
       request.response.statusCode = HttpStatus.UNAUTHORIZED;
-      writeAndClose(request, '{"description": "No token was specified"}');
+      writeAndClose(request, JSON.encode({'description': 'No token was specified'}));
       return new Future.value(false);
     }
   };
@@ -65,7 +65,7 @@ void page404(HttpRequest request) {
   
   log('404: ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
-  request.response.write("Not Found");
+  request.response.write(JSON.encode({'erorr':'Not Found'}));
   request.response.close();
 }
 
