@@ -70,8 +70,6 @@ class Socket {
     }
     _reconnectScheduled = false;
     String url = _url.toString();
-    //url = 'ws://alice.adaheads.com:4242/Wrong';
-    //url = 'ws://alice.adaheads.com';
     log.debug('Socket Opening a websocket on url: ${url}');
     _channel = new WebSocket(url)
         ..onMessage.listen(_onMessage)
