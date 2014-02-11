@@ -16,6 +16,7 @@ library commands;
 import 'dart:async';
 
 import 'configuration.dart';
+import 'events.dart' as event;
 import 'environment.dart' as environment;
 import 'logger.dart';
 import 'model.dart'       as model;
@@ -72,7 +73,7 @@ void pickupNextCall() {
   protocol.pickupCall().then((protocol.Response response) {
     switch (response.status) {
       case protocol.Response.OK:
-        log.debug('commands.pickupNextCall OK ${response.data['call_id']}');
+        log.debug('commands.pickupNextCall OK ${response.data['id']}');
         _pickupCallSuccess(response);
         break;
 
@@ -97,16 +98,14 @@ void _pickupCallSuccess(protocol.Response response) {
 
   if (json.containsKey('reception_id')) {
     int receptionId = json['reception_id'];
-
+    
     storage.getReception(receptionId).then((model.Reception reception) {
       if(reception == model.nullReception) {
         log.debug('commands._pickupCallSuccess NOT FOUND reception ${receptionId}');
+      } else {
+        event.bus.fire(event.receptionChanged, reception);
       }
-
-      //TODO Why is that here? Shouldn't this be a event.fire
-      environment.reception = reception;
-      //environment.contact = reception.contactList.first;
-
+      
       log.debug('commands._pickupCallSuccess updated environment.reception to ${reception}');
       //log.debug('commands._pickupCallSuccess updated environment.contact to ${reception.contactList.first}');
 
