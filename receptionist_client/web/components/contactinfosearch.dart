@@ -199,7 +199,7 @@ class ContactInfoSearch {
   }
 
   bool searchContact(model.Contact value, String search) {
-    var searchTerm = search.trim();
+    String searchTerm = search.trim();
     if(searchTerm.contains(' ')) {
       var terms = searchTerm.toLowerCase().split(' ');
       var names = value.name.toLowerCase().split(' ');
@@ -213,7 +213,7 @@ class ContactInfoSearch {
       }
       return termIndex >= terms.length;
     }
-
+    
     return value.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
            value.tags.any((tag) => tag.toLowerCase().contains(searchTerm.toLowerCase()));
   }
