@@ -14,8 +14,8 @@ Future<Map> getReceptionContactCalendarList(int receptionId, int contactId) {
     for(var row in rows) {
       Map event =
         {'id'      : row.id,
-         'start'   : datetimeToJson(row.start),
-         'stop'    : datetimeToJson(row.stop),
+         'start'   : dateTimeToJson(row.start),
+         'stop'    : dateTimeToJson(row.stop),
          'content' : row.message};
       events.add(event);
     }

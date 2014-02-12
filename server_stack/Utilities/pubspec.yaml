@@ -1,8 +1,8 @@
 name: Utilities
-description: A sample command-line application
+description: A utiliti package for Adaheads K/S
 dependencies:
   http: any
   postgresql: any
   route: any
-#  syslog: 
-#    git: git@github.com:PedersenThomas/syslog.git
+  syslog: 
+    git: git@github.com:PedersenThomas/syslog.git

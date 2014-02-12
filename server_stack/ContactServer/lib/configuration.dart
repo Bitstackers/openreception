@@ -14,25 +14,29 @@ class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  Uri        _authUrl;
-  String     _configfile = 'config.json';
-  int        _httpport   = 8080;
+  Uri        _authUrl        = Uri.parse('http://localhost');
+  String     _configfile     = 'config.json';
+  int        _httpport       = 8080;
   String     _dbuser;
   String     _dbpassword;
-  String     _dbhost     = 'localhost';
-  int        _dbport     = 5432;
+  String     _dbhost         = 'localhost';
+  int        _dbport         = 5432;
   String     _dbname;
   String     _cache;
+  bool       _useSyslog      = false;
+  InternetAddress _syslogIp  = InternetAddress.LOOPBACK_IP_V4;
 
-  Uri    get authUrl    => _authUrl;
-  String get cache      => _cache;
-  String get configfile => _configfile;
-  String get dbuser     => _dbuser;
-  String get dbpassword => _dbpassword;
-  String get dbhost     => _dbhost;
-  int    get dbport     => _dbport;
-  String get dbname     => _dbname;
-  int    get httpport   => _httpport;
+  Uri    get authUrl        => _authUrl;
+  String get cache          => _cache;
+  String get configfile     => _configfile;
+  String get dbuser         => _dbuser;
+  String get dbpassword     => _dbpassword;
+  String get dbhost         => _dbhost;
+  int    get dbport         => _dbport;
+  String get dbname         => _dbname;
+  int    get httpport       => _httpport;
+  bool   get useSyslog      => _useSyslog;
+  InternetAddress get syslogIp => _syslogIp;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -53,6 +57,7 @@ class Configuration {
     try {
       return _args[name] != null && _args[name].trim() != '';
     } catch(e) {
+      logger.error('contactserver.configuration.hasArgument() Name: "${name}" value: "${_args[name]}" gave $e');
       return false;
     }
   }
@@ -89,6 +94,10 @@ class Configuration {
 
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
+      }
+      
+      if(config.containsKey('syslogip')) {
+        _syslogIp = new InternetAddress(config['syslogip']);
       }
 
       if(config.containsKey('cache')) {
@@ -134,6 +143,12 @@ class Configuration {
         _dbname = _args['dbname'];
       }
 
+      _useSyslog = _args['usesyslog'];
+      
+      if(hasArgument('syslogip')) {
+        _syslogIp = new InternetAddress(_args['syslogip']);
+      }
+
       if(hasArgument('cache')) {
         if(_args['cache'].endsWith('/')) {
           _cache = _args['cache'];
@@ -149,10 +164,12 @@ class Configuration {
   }
 
   String toString() =>'''
-    httpport: $httpport
-    dbhost:   $dbhost
-    dbname:   $dbname
-    authurl:  $authUrl''';
+    httpport:  $httpport
+    dbhost:    $dbhost
+    dbname:    $dbname
+    authurl:   $authUrl
+    usesyslog: $useSyslog
+    syslogip:  ${syslogIp.address} - ${syslogIp.type.name}''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }

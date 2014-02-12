@@ -13,8 +13,8 @@ Future<Map> getReceptionCalendarList(int receptionId) {
       DateTime now = new DateTime.now();
       Map event =
         {'id'      : row.id,
-         'start'   : datetimeToJson(row.start),
-         'stop'    : datetimeToJson(row.stop),
+         'start'   : dateTimeToJson(row.start),
+         'stop'    : dateTimeToJson(row.stop),
          'content' : row.message};
       events.add(event);
     }

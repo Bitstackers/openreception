@@ -27,7 +27,7 @@ Filter auth(Uri authUrl) {
         if (response.statusCode == 200) {
           return true;
         } else {
-          request.response.statusCode = HttpStatus.UNAUTHORIZED;
+          request.response.statusCode = HttpStatus.FORBIDDEN;
           writeAndClose(request, 'Auth Failed');
           return false;
         }

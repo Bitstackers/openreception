@@ -26,6 +26,7 @@ void main(List<String> args) {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
         .then((_) => print(config))
+        .then((_) => handleLogger())
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
@@ -55,8 +56,16 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
   parser.addOption('dbname',          help: 'The database name');
   parser.addOption('cache',           help: 'The location for cache');
+  parser.addFlag('usesyslog',         help: 'Logs to syslog', defaultsTo: false);
+  parser.addOption('syslogip',        help: 'The syslog host. defaults to localhost');
 
   parsedArgs = parser.parse(arguments);
 }
 
 bool showHelp() => parsedArgs['help'];
+
+void handleLogger() {
+  if(config.useSyslog) {
+    activateSyslog(config.syslogIp);
+  }
+}

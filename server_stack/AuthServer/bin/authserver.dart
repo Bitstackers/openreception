@@ -10,6 +10,7 @@ import '../lib/configuration.dart';
 import '../lib/database.dart';
 import 'package:Utilities/httpserver.dart' as http;
 import '../lib/router.dart' as router;
+import '../lib/token_watcher.dart' as watcher;
 
 ArgResults    parsedArgs;
 ArgParser     parser = new ArgParser();
@@ -27,6 +28,7 @@ void main(List<String> args) {
       config.whenLoaded()
         .then((_) => cache.setup())
         .then((_) => startDatabase())
+        .then((_) => watcher.setup())
         .then((_) => http.start(config.httpport, router.setup))
         .catchError((e) { 
           log('main() -> config.whenLoaded() ${e}');
