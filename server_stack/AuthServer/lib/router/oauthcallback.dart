@@ -19,14 +19,16 @@ void oauthCallback(HttpRequest request) {
       serverError(request, 'Authtication failed. ${json}');
       
     } else {
+      //TODO How long should a token be valid for? configuration?
+      json['expiresAt'] = dateTimeToJson(new DateTime.now().add(new Duration(hours: 1)));
       return getUserInfo(json['access_token']).then((Map userData) {
         if(userData == null || userData.isEmpty) {
           request.response.statusCode = 403;
-          writeAndClose(request, JSON.encode({'status': 'Forbidden'}));
+          writeAndClose(request, JSON.encode({'status': 'Forbidden!'}));
           
         } else {
           json['identity'] = userData;
-          
+
           String cacheObject = JSON.encode(json);
           String hash = Sha256Token(cacheObject);
           
@@ -38,8 +40,9 @@ void oauthCallback(HttpRequest request) {
           });
         }
       }).catchError((error) {
+        log(error);
         request.response.statusCode = 403;
-        writeAndClose(request, JSON.encode({'status': 'Forbidden'}));
+        writeAndClose(request, JSON.encode({'status': 'Forbidden.'}));
       });
     }
     
