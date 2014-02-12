@@ -143,7 +143,7 @@ class Configuration {
         _dbname = _args['dbname'];
       }
 
-      _useSyslog = _args['usesyslog'];
+      _useSyslog = _args['syslog'];
       
       if(hasArgument('syslogip')) {
         _syslogIp = new InternetAddress(_args['syslogip']);
@@ -168,7 +168,7 @@ class Configuration {
     dbhost:    $dbhost
     dbname:    $dbname
     authurl:   $authUrl
-    usesyslog: $useSyslog
+    syslog:    $useSyslog
     syslogip:  ${syslogIp.address} - ${syslogIp.type.name}''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
