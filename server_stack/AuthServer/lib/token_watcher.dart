@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'cache.dart';
+import 'configuration.dart';
 import 'package:Utilities/cache.dart' as cacheUtil;
 import 'package:Utilities/common.dart';
 
@@ -15,12 +16,10 @@ void setup() {
   new Timer.periodic(new Duration(seconds: minutes), _timerTick);
 }
 
-Duration timeToLive = new Duration(hours: 1);
-
 Future seen(String token) {
   return loadToken(token).then((String text) {
     Map contentAsJson = JSON.decode(text);
-    contentAsJson['expiresAt'] = dateTimeToJson(new DateTime.now().add(timeToLive));
+    contentAsJson['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.tokenexpiretime));
     return saveToken(token, JSON.encode(contentAsJson));
   });
 }

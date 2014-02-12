@@ -26,6 +26,7 @@ class Configuration {
   String     _dbname;
   int        _httpport    = 8080;
   Uri        _redirectUri = Uri.parse('http://localhost:8080/oauth2callback');
+  Duration   _tokenexpiretime = new Duration(seconds: 3600);
 
   String get cache        => _cache;
   String get configfile   => _configfile;
@@ -39,6 +40,7 @@ class Configuration {
   String get dbname       => _dbname;
   int    get httpport     => _httpport;
   Uri    get redirectUri  => _redirectUri;
+  Duration get tokenexpiretime => _tokenexpiretime;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -117,6 +119,10 @@ class Configuration {
         _redirectUri = Uri.parse(config['redirecturi']);
       }
       
+      if(config.containsKey('tokenexpiretime')) {
+        _tokenexpiretime = new Duration(seconds: config['tokenexpiretime']);
+      }
+      
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -167,6 +173,10 @@ class Configuration {
 
       if(hasArgument('redirecturi')) {
         _redirectUri = Uri.parse(_args['redirecturi']);
+      }
+
+      if(hasArgument('tokenexpiretime')) {
+        _tokenexpiretime = new Duration(seconds: int.parse(_args['tokenexpiretime']));
       }
 
     }).catchError((error) {

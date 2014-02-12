@@ -55,7 +55,8 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
   parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
   parser.addOption('redirecturi',     help: 'The URI google redirects to after an authtication attempt. Defaults to http://localhost:8080/oauth2callback');
-
+  parser.addOption('tokenexpiretime', help: 'The time in seconds a token is valid. Refreshed on use. Defaults to 3600');
+  
   parsedArgs = parser.parse(arguments);
 }
 
