@@ -30,9 +30,9 @@ class _SysLogger extends BasicLogger {
   
   static Future open(InternetAddress hostname) => Syslog.open(hostname).then((Syslog syslog) => new _SysLogger(syslog));
   
-  void debug(String message) => _syslog.log(Facility.local0, Severity.Debug, message);  
-  void error(String message) => _syslog.log(Facility.local0, Severity.Error, message);  
-  void critical(String message) => _syslog.log(Facility.local0, Severity.Critical, message);
+  void debug(String message) => _syslog.log(Facility.user, Severity.Debug, message);  
+  void error(String message) => _syslog.log(Facility.user, Severity.Error, message);  
+  void critical(String message) => _syslog.log(Facility.user, Severity.Critical, message);
 }
 
 String dateTimeToJson(DateTime time) {
