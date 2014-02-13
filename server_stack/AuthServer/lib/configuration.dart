@@ -18,28 +18,32 @@ class Configuration {
   String     _clientId;
   String     _clientSecret;
   String     _clientURL;
-  String     _configfile  = 'config.json';
+  String     _configfile      = 'config.json';
   String     _dbuser;
   String     _dbpassword;
-  String     _dbhost      = 'localhost';
-  int        _dbport      = 5432;
+  String     _dbhost          = 'localhost';
+  int        _dbport          = 5432;
   String     _dbname;
-  int        _httpport    = 8080;
-  Uri        _redirectUri = Uri.parse('http://localhost:8080/oauth2callback');
+  int        _httpport        = 8080;
+  Uri        _redirectUri     = Uri.parse('http://localhost:8080/oauth2callback');
+  bool       _useSyslog       = false;
+  String     _syslogHost      = 'localhost';
   Duration   _tokenexpiretime = new Duration(seconds: 3600);
 
-  String get cache        => _cache;
-  String get configfile   => _configfile;
-  String get clientId     => _clientId;
-  String get clientSecret => _clientSecret;
-  String get clientURL    => _clientURL;
-  String get dbuser       => _dbuser;
-  String get dbpassword   => _dbpassword;
-  String get dbhost       => _dbhost;
-  int    get dbport       => _dbport;
-  String get dbname       => _dbname;
-  int    get httpport     => _httpport;
-  Uri    get redirectUri  => _redirectUri;
+  String   get cache           => _cache;
+  String   get configfile      => _configfile;
+  String   get clientId        => _clientId;
+  String   get clientSecret    => _clientSecret;
+  String   get clientURL       => _clientURL;
+  String   get dbuser          => _dbuser;
+  String   get dbpassword      => _dbpassword;
+  String   get dbhost          => _dbhost;
+  int      get dbport          => _dbport;
+  String   get dbname          => _dbname;
+  int      get httpport        => _httpport;
+  Uri      get redirectUri     => _redirectUri;
+  bool     get useSyslog       => _useSyslog;
+  String   get syslogHost      => _syslogHost;
   Duration get tokenexpiretime => _tokenexpiretime;
 
   factory Configuration(ArgResults args) {
@@ -115,6 +119,10 @@ class Configuration {
         _httpport = config['httpport'];
       }
       
+      if(config.containsKey('sysloghost')) {
+        _syslogHost = config['sysloghost'];
+      }
+      
       if(config.containsKey('redirecturi')) {
         _redirectUri = Uri.parse(config['redirecturi']);
       }
@@ -175,6 +183,12 @@ class Configuration {
         _redirectUri = Uri.parse(_args['redirecturi']);
       }
 
+      _useSyslog = _args['syslog'];
+      
+      if(hasArgument('sysloghost')) {
+        _syslogHost = _args['sysloghost'];
+      }
+
       if(hasArgument('tokenexpiretime')) {
         _tokenexpiretime = new Duration(seconds: int.parse(_args['tokenexpiretime']));
       }
@@ -187,7 +201,9 @@ class Configuration {
 
   String toString() => '''
     httpport:    $httpport
-    redirecturi: $redirectUri''';
+    redirecturi: $redirectUri
+    syslog:      $useSyslog
+    sysloghost:  ${syslogHost}''';
 
-  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => log(config));
+  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }

@@ -26,6 +26,8 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => handleLogger())
+        .then((_) => log(config))
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => watcher.setup())
@@ -56,8 +58,12 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
   parser.addOption('redirecturi',     help: 'The URI google redirects to after an authtication attempt. Defaults to http://localhost:8080/oauth2callback');
   parser.addOption('tokenexpiretime', help: 'The time in seconds a token is valid. Refreshed on use. Defaults to 3600');
+  parser.addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false);
+  parser.addOption('sysloghost',      help: 'The syslog host. Defaults to localhost');
   
   parsedArgs = parser.parse(arguments);
 }
 
 bool showHelp() => parsedArgs['help'];
+
+Future handleLogger() => config.useSyslog ? activateSyslog(config.syslogHost) : new Future.value(null);
