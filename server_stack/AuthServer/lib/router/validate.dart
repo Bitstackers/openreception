@@ -6,7 +6,7 @@ void validateToken(HttpRequest request) {
   if(token != null && token.isNotEmpty) {
     cache.loadToken(token).then((_) {
       watcher.seen(token).catchError((error) {
-        log('authenticationserver.router.validateToken() watcher threw ${error}');
+        log('authenticationserver.router.validateToken() watcher threw "${error}" for token "${token}" on uri "${request.uri}"');
       });
       
       request.response.statusCode = 200;
