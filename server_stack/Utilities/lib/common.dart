@@ -10,7 +10,7 @@ void log(message) => logger.debug(message.toString());
 
 BasicLogger logger = new BasicLogger();
 
-Future activateSyslog(InternetAddress hostname) {
+Future activateSyslog(String hostname) {
   return _SysLogger.open(hostname).then((BasicLogger value) {
     logger = value;
     return logger;
@@ -28,7 +28,7 @@ class _SysLogger extends BasicLogger {
   
   _SysLogger(Syslog this._syslog);
   
-  static Future open(InternetAddress hostname) => Syslog.open(hostname).then((Syslog syslog) => new _SysLogger(syslog));
+  static Future open(String hostname) => Syslog.open(hostname).then((Syslog syslog) => new _SysLogger(syslog));
   
   void debug(String message) => _syslog.log(Facility.user, Severity.Debug, message);  
   void error(String message) => _syslog.log(Facility.user, Severity.Error, message);  

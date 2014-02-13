@@ -24,7 +24,7 @@ class Configuration {
   String     _dbname;
   String     _cache;
   bool       _useSyslog      = false;
-  InternetAddress _syslogIp  = InternetAddress.LOOPBACK_IP_V4;
+  String     _syslogHost     = 'localhost';
 
   Uri    get authUrl        => _authUrl;
   String get cache          => _cache;
@@ -36,7 +36,7 @@ class Configuration {
   String get dbname         => _dbname;
   int    get httpport       => _httpport;
   bool   get useSyslog      => _useSyslog;
-  InternetAddress get syslogIp => _syslogIp;
+  String get syslogHost     => _syslogHost;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -96,8 +96,8 @@ class Configuration {
         _dbname = config['dbname'];
       }
       
-      if(config.containsKey('syslogip')) {
-        _syslogIp = new InternetAddress(config['syslogip']);
+      if(config.containsKey('sysloghost')) {
+        _syslogHost = config['sysloghost'];
       }
 
       if(config.containsKey('cache')) {
@@ -145,8 +145,8 @@ class Configuration {
 
       _useSyslog = _args['syslog'];
       
-      if(hasArgument('syslogip')) {
-        _syslogIp = new InternetAddress(_args['syslogip']);
+      if(hasArgument('sysloghost')) {
+        _syslogHost = _args['sysloghost'];
       }
 
       if(hasArgument('cache')) {
@@ -164,12 +164,12 @@ class Configuration {
   }
 
   String toString() =>'''
-    httpport:  $httpport
-    dbhost:    $dbhost
-    dbname:    $dbname
-    authurl:   $authUrl
-    syslog:    $useSyslog
-    syslogip:  ${syslogIp.address} - ${syslogIp.type.name}''';
+    httpport:   $httpport
+    dbhost:     $dbhost
+    dbname:     $dbname
+    authurl:    $authUrl
+    syslog:     $useSyslog
+    sysloghost: ${syslogHost}''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
