@@ -25,7 +25,8 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        //.then((_) => activateSyslog(config.sysloghostname))
+        .then((_) => handleLogger())
+        .then((_) => log(config))
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
@@ -49,6 +50,7 @@ void main(List<String> args) {
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
+  parser.addOption('authurl',         help: 'The http address for the authentication service. Example http://auth.example.com');
   parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
   parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
   parser.addOption('dbuser',          help: 'The database user');
@@ -57,8 +59,12 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
   parser.addOption('dbname',          help: 'The database name');
   parser.addOption('cache',           help: 'The location for cache');
+  parser.addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false);
+  parser.addOption('sysloghost',      help: 'The syslog host. Defaults to localhost');
 
   parsedArgs = parser.parse(arguments);
 }
 
 bool showHelp() => parsedArgs['help'];
+
+Future handleLogger() => config.useSyslog ? activateSyslog(config.syslogHost) : new Future.value(null);

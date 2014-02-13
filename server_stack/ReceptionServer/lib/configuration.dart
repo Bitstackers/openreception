@@ -23,7 +23,8 @@ class Configuration {
   int        _dbport     = 5432;
   String     _dbname;
   String     _cache;
-  InternetAddress _sysloghostname = InternetAddress.LOOPBACK_IP_V4;
+  bool       _useSyslog      = false;
+  String     _syslogHost = 'localhost';
 
   Uri    get authUrl        => _authUrl;
   String get cache          => _cache;
@@ -34,7 +35,8 @@ class Configuration {
   int    get dbport         => _dbport;
   String get dbname         => _dbname;
   int    get httpport       => _httpport;
-  InternetAddress get sysloghostname => _sysloghostname;
+  bool   get useSyslog      => _useSyslog;
+  String get syslogHost     => _syslogHost;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -67,6 +69,9 @@ class Configuration {
 
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
+        if(_authUrl.host == null || _authUrl.host.isEmpty) {
+          throw('Invalid authUrl missing host. ${_authUrl}');
+        }
       }
       
       if(config.containsKey('cache')) {
@@ -101,6 +106,10 @@ class Configuration {
         _httpport = config['httpport'];
       }
       
+      if(config.containsKey('sysloghost')) {
+        _syslogHost = config['sysloghost'];
+      }
+      
     })
     .catchError((error) {
       log('Failed to read "$configfile". Error: $error');
@@ -111,6 +120,9 @@ class Configuration {
     return new Future(() {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
+        if(_authUrl.host == null || _authUrl.host.isEmpty) {
+          throw('Invalid authUrl missing host. ${_authUrl}');
+        }
       }
 
       if(hasArgument('cache')) {
@@ -145,6 +157,12 @@ class Configuration {
         _httpport = int.parse(_args['httpport']);
       }
 
+      _useSyslog = _args['syslog'];
+      
+      if(hasArgument('sysloghost')) {
+        _syslogHost = _args['sysloghost'];
+      }
+
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
       throw error;
@@ -154,7 +172,10 @@ class Configuration {
   String toString() => '''
     httpport:     $httpport
     databasehost: $dbhost
-    databasename: $dbname''';
+    databasename: $dbname
+    authurl:      $authUrl
+    syslog:       $useSyslog
+    sysloghost:   ${syslogHost}''';
 
-  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => log(config));
+  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
