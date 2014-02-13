@@ -20,23 +20,30 @@ void addCorsHeaders(HttpResponse res) {
 
 Filter auth(Uri authUrl) {
   return (HttpRequest request) {
-    if(request.uri.queryParameters.containsKey('token')) {      
-      String path = 'token/${request.uri.queryParameters['token']}/validate';
-      Uri url = new Uri(scheme: authUrl.scheme, userInfo: authUrl.userInfo, host: authUrl.host, port: authUrl.port, path: path);
-      return http.get(url).then((response) {
-        if (response.statusCode == 200) {
-          return true;
-        } else {
-          request.response.statusCode = HttpStatus.FORBIDDEN;
-          writeAndClose(request, 'Auth Failed');
+    try {
+      if(request.uri.queryParameters.containsKey('token')) {      
+        String path = 'token/${request.uri.queryParameters['token']}/validate';
+        Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
+        return http.get(url).then((response) {
+          if (response.statusCode == 200) {
+            return true;
+          } else {
+            request.response.statusCode = HttpStatus.FORBIDDEN;
+            writeAndClose(request, 'Auth Failed');
+            return false;
+          }
+        }).catchError((error) {
+          serverError(request, 'utilities.httpserver.auth() ${error} config.authUrl: "${authUrl}" final authurl: ${url}');
           return false;
-        }
-      });
-      
-    } else {
-      request.response.statusCode = HttpStatus.UNAUTHORIZED;
-      writeAndClose(request, JSON.encode({'description': 'No token was specified'}));
-      return new Future.value(false);
+        });
+        
+      } else {
+        request.response.statusCode = HttpStatus.UNAUTHORIZED;
+        writeAndClose(request, JSON.encode({'description': 'No token was specified'}));
+        return new Future.value(false);
+      }
+    } catch (e) {
+      logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
     }
   };
 }
@@ -79,7 +86,7 @@ int pathParameter(Uri uri, String key) {
 }
 
 void serverError(HttpRequest request, String logMessage) {
-  log(logMessage);
+  logger.error(logMessage);
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
   writeAndClose(request, 'Internal Server Error');
 }
@@ -88,7 +95,7 @@ void start(int port, void setupRoutes(HttpServer server)) {
   HttpServer.bind(InternetAddress.ANY_IP_V4, port)
     .then(setupRoutes)
     .catchError((e) {
-      log('http.startHttp() -> HttpServer.bind() error: ${e}');
+      logger.error('utilities.httpserver.start() -> HttpServer.bind() error: ${e}');
       throw e;
     });
 }
