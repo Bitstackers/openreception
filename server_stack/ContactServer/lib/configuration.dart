@@ -70,6 +70,9 @@ class Configuration {
 
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
+        if(_authUrl.host == null || _authUrl.host.isEmpty) {
+          throw('Invalid authUrl missing host. ${_authUrl}');
+        }
       }
       
       if(config.containsKey('httpport')) {
@@ -117,6 +120,9 @@ class Configuration {
     return new Future(() {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
+        if(_authUrl.host == null || _authUrl.host.isEmpty) {
+          throw('Invalid authUrl missing host. ${_authUrl}');
+        }
       }
       
       if(hasArgument('httpport')) {

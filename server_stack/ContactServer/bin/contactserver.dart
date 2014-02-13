@@ -57,7 +57,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('dbname',          help: 'The database name');
   parser.addOption('cache',           help: 'The location for cache');
   parser.addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false);
-  parser.addOption('sysloghost',      help: 'The syslog host. defaults to localhost');
+  parser.addOption('sysloghost',      help: 'The syslog host. Defaults to localhost');
 
   parsedArgs = parser.parse(arguments);
 }
