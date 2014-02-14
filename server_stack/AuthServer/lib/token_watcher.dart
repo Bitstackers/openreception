@@ -20,7 +20,7 @@ Future seen(String token) {
   return loadToken(token).then((String text) {
     Map contentAsJson = JSON.decode(text);
     contentAsJson['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.tokenexpiretime));
-    return saveToken(token, JSON.encode(contentAsJson));
+    return updateToken(token, JSON.encode(contentAsJson));
   });
 }
 

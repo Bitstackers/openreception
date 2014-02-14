@@ -14,6 +14,8 @@ Future<String> loadToken(String id) => load('${config.cache}auth/$id.json');
 
 Future saveToken(String id, String text) => save('${config.cache}auth/$id.json', text);
 
+Future updateToken(String id, String text) => save('${config.cache}auth/$id.json.tmp', text).then((_) => rename('${config.cache}auth/$id.json.tmp', '${config.cache}auth/$id.json'));
+
 Future removeToken(String id) => remove('${config.cache}auth/$id.json');
 
 Future<List<FileSystemEntity>> listTokens() => list('${config.cache}auth');

@@ -14,6 +14,8 @@ Future<List<FileSystemEntity>> list(String path) {
 
 Future remove(String path) =>  new File(path).delete();
 
+Future rename(String path, String newPath) => new File(path).rename(newPath);
+
 Future save(String path, String text) => new File(path).writeAsString(text);
 
 Future createCacheFolder(String path) {
