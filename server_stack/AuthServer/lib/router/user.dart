@@ -5,7 +5,7 @@ void userinfo(HttpRequest request) {
   
   cache.loadToken(token).then((String content) {
     watcher.seen(token).catchError((error) {
-      log('authenticationserver.router.userinfo() watcher threw ${error}');
+      log('authenticationserver.router.userinfo() watcher threw ${error} Url ${request.uri}');
     });
     
     Map json = JSON.decode(content);
@@ -15,12 +15,11 @@ void userinfo(HttpRequest request) {
     } else {
       request.response.statusCode = 404;
       writeAndClose(request, JSON.encode({'Status': 'Not found'}));
-      log("authenticationserver.router.userinfo() save object didn't have user data.");
+      log('authenticationserver.router.userinfo() save object did not have user data. "${content}" Url "${request.uri}"');
     }
   }).catchError((error) {
     request.response.statusCode = 404;
     writeAndClose(request, JSON.encode({'Status': 'Not found'}));
-    log('authenticationserver.router.userinfo() Tried to load token ${error}');
-    //serverError(request, 'authenticationserver.router.userinfo: $error');
+    log('authenticationserver.router.userinfo() Tried to load token URL ${request.uri} Error: ${error}');
   });  
 }
