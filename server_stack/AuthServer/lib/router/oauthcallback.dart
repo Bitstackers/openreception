@@ -23,7 +23,7 @@ void oauthCallback(HttpRequest request) {
       Map json = JSON.decode(response.body);
       
       if(json.containsKey('error')) {
-        serverError(request, 'Authtication failed. ${json}');
+        serverError(request, 'authenticationserver.router.oauthCallback() Authtication failed. "${json}"');
         
       } else {
         //TODO How long should a token be valid for? configuration?
