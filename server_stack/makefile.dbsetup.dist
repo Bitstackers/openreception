@@ -1,0 +1,5 @@
+PGHOST=databasehost
+PGUSER=dbuser
+PG_SUPER_USER=postgres
+PGDB=somedatabase
+PGARGS=-X -q -a -1 -v ON_ERROR_STOP=1 --pset pager=off
