@@ -47,7 +47,7 @@ void oauthCallback(HttpRequest request) {
             });
           }
         }).catchError((error) {
-          log(error);
+          logger.error('authenticationserver.router.oauthCallback() requested userInfo error "${error}"');
           request.response.statusCode = 403;
           writeAndClose(request, JSON.encode({'status': 'Forbidden.'}));
         });
