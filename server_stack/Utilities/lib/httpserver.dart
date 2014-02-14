@@ -63,7 +63,16 @@ Future<String> extractContent(HttpRequest request) {
   return completer.future;
 }
 
-String mapToUrlFormEncodedPostBody(Map body) => body.keys.map((key) => '$key=${Uri.encodeQueryComponent(body[key])}').join('&');
+String mapToUrlFormEncodedPostBody(Map body) { 
+  return body.keys.map((key) {
+    try {    
+      return '$key=${Uri.encodeQueryComponent(body[key])}';
+    } catch (e) {
+      logger.error('mapToUrlFormEncodedPostBody() Key "${key}", value "${body[key]}"');
+      throw e;
+    }
+  }).join('&');
+}
 
 String queryParameter(Uri uri, String key) => uri.queryParameters.containsKey(key) ? uri.queryParameters[key] : null;
 
