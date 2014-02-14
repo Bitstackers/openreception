@@ -10,7 +10,7 @@ import 'package:Utilities/cache.dart' as cacheUtil;
 import 'package:Utilities/common.dart';
 
 void setup() {
-  print('Watcher started');
+  logger.debug('Watcher started');
   //TODO this should be an isolate
   int minutes = 10;
   new Timer.periodic(new Duration(seconds: minutes), _timerTick);

@@ -2,7 +2,12 @@ part of authenticationserver.router;
 
 void oauthCallback(HttpRequest request) {
   try {
-    Uri returnUrl = Uri.parse(queryParameter(request.uri, 'state'));
+    String state = queryParameter(request.uri, 'state');
+    if(state == null) {
+      serverError(request, 'authenticationserver.router.oauthCallback() State parameter is missing "${request.uri}"');
+      return;
+    }
+    Uri returnUrl = Uri.parse(state);
     Map postBody = 
       {
         "grant_type": "authorization_code",
@@ -11,8 +16,9 @@ void oauthCallback(HttpRequest request) {
         "client_id": config.clientId,
         "client_secret": config.clientSecret
       };
-    
     String body = mapToUrlFormEncodedPostBody(postBody);
+    logger.debug('authenticationserver.router.oauthCallback() Sending request to google. "${tokenEndpoint}" body "${body}"');
+    
     http.post(tokenEndpoint, headers: {'content-type':'application/x-www-form-urlencoded'}, body: body).then((http.Response response) {
       Map json = JSON.decode(response.body);
       
@@ -49,7 +55,7 @@ void oauthCallback(HttpRequest request) {
       
     }).catchError((error) => serverError(request, error.toString()));
   } catch(e) {
-    serverError(request, 'authenticationserver.router.oauthCallback() error ${e} Url ${request.uri}');
+    serverError(request, 'authenticationserver.router.oauthCallback() error "${e}" Url "${request.uri}"');
   }
 }
 

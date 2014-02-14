@@ -64,11 +64,11 @@ Future<String> extractContent(HttpRequest request) {
 }
 
 String mapToUrlFormEncodedPostBody(Map body) { 
-  body.keys.map((key) {
+  return body.keys.map((key) {
     try {    
       return '$key=${Uri.encodeQueryComponent(body[key])}';
     } catch (e) {
-      logger.error('Key "${key}", value "${body[key]}"');
+      logger.error('mapToUrlFormEncodedPostBody() Key "${key}", value "${body[key]}"');
       throw e;
     }
   }).join('&');
