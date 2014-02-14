@@ -11,6 +11,7 @@ import 'configuration.dart';
 
 part 'db/getreceptioncontact.dart';
 part 'db/getreceptioncontactlist.dart';
+part 'db/getcontactsphones.dart';
 part 'db/getphone.dart';
 part 'db/getcalendar.dart';
 
