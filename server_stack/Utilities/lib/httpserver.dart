@@ -97,7 +97,7 @@ int pathParameter(Uri uri, String key) {
 void serverError(HttpRequest request, String logMessage) {
   logger.error(logMessage);
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-  writeAndClose(request, 'Internal Server Error');
+  writeAndClose(request, JSON.encode({'error': 'Internal Server Error'}));
 }
 
 void start(int port, void setupRoutes(HttpServer server)) {

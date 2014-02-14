@@ -5,7 +5,7 @@ void userinfo(HttpRequest request) {
   
   cache.loadToken(token).then((String content) {
     watcher.seen(token).catchError((error) {
-      log('authenticationserver.router.userinfo() watcher threw ${error} Url ${request.uri}');
+      log('authenticationserver.router.userinfo() watcher threw "${error}" Url "${request.uri}"');
     });
     
     Map json = JSON.decode(content);
