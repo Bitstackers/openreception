@@ -26,11 +26,11 @@ clean:
 	-rm objects/*.o
 
 distclean: clean
-	-rm basic_agent
-	-rm deps_install pjlibs
-	-rm -rf lib/ include/ pjproject-2.0/ pjproject-2.1 pjproject-2.1.0/
-	-rm pjproject-2.1.tar.bz2
-	-rm pjproject-2.0.tar.bz2
+	rm -f  basic_agent
+	rm -f  deps_install pjlibs
+	rm -fr lib/ include/ pjproject-2.0/ pjproject-2.1 pjproject-2.1.0/
+	rm -f  pjproject-2.1.tar.bz2
+	rm -f  pjproject-2.0.tar.bz2
 
 pjproject-2.0: pjproject-2.0.tar.bz2
 	tar xjf pjproject-2.0.tar.bz2
