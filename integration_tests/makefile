@@ -42,7 +42,7 @@ pjproject-2.1: pjproject-2.1.tar.bz2
 	touch $@
 
 pjlibs: pjproject-${PJVERSION}
-	(cd pjproject-${PJVERSION}; ./configure --prefix="$(LIB_DIR)" ${PJOPTS}  && make lib && make && make install)	
+	(cd pjproject-${PJVERSION}; ./configure --prefix=$(LIB_DIR) ${PJOPTS}  && make lib && make && make install)	
 	touch $@
 
 pjproject-2.1.tar.bz2:
