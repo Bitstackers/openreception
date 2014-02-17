@@ -12,8 +12,8 @@ void getContact(HttpRequest request) {
   });
 }
 
-void _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) {
-  db.getContact(receptionId, contactId).then((Map value) {
+Future _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) {
+  return db.getContact(receptionId, contactId).then((Map value) {
     String contact = JSON.encode(value);
     
     if(value.isEmpty) {
@@ -27,5 +27,5 @@ void _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) 
           log('contactserver.router.getContact $error');
         });
     }
-  }).catchError((error) => serverError(request, error.toString()));
+  }).catchError((error) => serverError(request, 'contactserver.router._fetchAndCacheContact() ${error}'));
 }
