@@ -13,11 +13,13 @@ Future<Map> getContactsPhones(int receptionId, int contactId) {
 
   return database.query(_pool, sql, parameters).then((rows) {
     List phones = [];
+    
     for(var row in rows) {
       Map data = 
         {'id': row.id,
          'value': row.value,
          'type': row.kind};
+      phones.add(data);
     }
 
     return {'phones': phones};
