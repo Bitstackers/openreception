@@ -1,9 +1,11 @@
 part of contactserver.router;
 
 void getPhone(HttpRequest request) {
+  int contactId = pathParameter(request.uri, 'contact');
+  int receptionId = pathParameter(request.uri, 'reception');
   int phoneId = pathParameter(request.uri, 'phone');
   
-  db.getPhone(phoneId).then((Map value) {
+  db.getPhone(contactId, receptionId,phoneId).then((Map value) {
     String phone = JSON.encode(value);
     
     if(value.isEmpty) {
