@@ -23,6 +23,8 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => print(config))
+        .then((_) => config.validate())
         .then((_) => http.start(config.httpport, router.setup))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
