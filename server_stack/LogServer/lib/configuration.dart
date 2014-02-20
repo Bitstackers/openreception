@@ -74,13 +74,26 @@ class Configuration {
         _httpport = int.parse(_args['httpport']);
       }
 
+      
+      
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
       throw error;
     });
   }
+  
+  void validate() {
+    if(authUrl == null) {
+      logger.error('authurl is not specified');
+      throw('authurl is not specified');
+    }
+    
+    if(httpport <= 0 || httpport > 65535) {
+      throw('invalid httpport');
+    }
+  }
 
   String toString() => '''httpport: $httpport''';
 
-  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => print(config));
+  Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
