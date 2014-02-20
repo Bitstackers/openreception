@@ -13,6 +13,7 @@ import 'package:Utilities/common.dart';
 import 'database.dart' as db;
 import 'package:Utilities/httpserver.dart';
 
+part 'router/existscontact.dart';
 part 'router/getcalendar.dart';
 part 'router/getcontact.dart';
 part 'router/getcontactlist.dart';
