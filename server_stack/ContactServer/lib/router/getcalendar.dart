@@ -15,5 +15,4 @@ void getContactCalendar(HttpRequest request) {
   }).catchError((error) {
     serverError(request, error.toString());
   });
-  
 }
