@@ -28,6 +28,7 @@ class Contact implements Comparable{
   String            info                 = '';
   bool              isHuman;
   String            name                 = '';
+  List<Map>         phones;
   String            position             = '';
   String            relations            = '';
   String            responsibility       = '';
@@ -98,6 +99,10 @@ class Contact implements Comparable{
 
     if(json.containsKey('tags')) {
       _tags = json['tags'];
+    }
+    
+    if(json.containsKey('phones')) {
+      phones = json['phones'];
     }
     
     // Adding some dummy calendar events
