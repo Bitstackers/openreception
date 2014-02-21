@@ -31,7 +31,6 @@ const SIP_TYPE       = 3;
  * Originate [type] call to [address].
  */
 void originateCall(String address, int type) {
-  int agentId = configuration.agentID;
   Future<protocol.Response> originateCallRequest;
 
 //  switch(type) {
@@ -103,7 +102,7 @@ void _pickupCallSuccess(protocol.Response response) {
       if(reception == model.nullReception) {
         log.debug('commands._pickupCallSuccess NOT FOUND reception ${receptionId}');
       } else {
-        event.bus.fire(event.receptionChanged, reception);
+        //event.bus.fire(event.receptionChanged, reception);
       }
       
       log.debug('commands._pickupCallSuccess updated environment.reception to ${reception}');
