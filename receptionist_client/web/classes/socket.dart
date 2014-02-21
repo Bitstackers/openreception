@@ -108,6 +108,7 @@ class Socket {
    */
   void _onMessage(MessageEvent event) {
     try {
+      log.debug('socket._onMessage() ${event.data}');
       Map notificationEvent = JSON.decode(event.data);
       _messageStream.sink.add(notificationEvent);
     } on FormatException {
