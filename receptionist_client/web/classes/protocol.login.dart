@@ -97,3 +97,33 @@ Future<Response<Map>> userslist() {
 
   return completer.future;
 }
+
+Future<Response<Map>> userInfo(String token) {
+  final String                   base      = configuration.authBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final String                   path      = '/token/${token}';
+  HttpRequest                    request;
+  String                         url       = _buildUrl(base, path);
+
+  request = new HttpRequest()
+    ..open(GET, url)
+    ..onLoad.listen((_) {
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          completer.complete(new Response<Map>(Response.OK, data));
+          break;
+
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+    })
+    ..send();
+
+  return completer.future;
+}
