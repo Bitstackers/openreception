@@ -31,6 +31,10 @@ class Configuration {
   int    get dbport     => _dbport;
   String get dbname     => _dbname;
   int    get httpport   => _httpport;
+  
+  String emailUsername;
+  String emailPassword;
+  List<String> recipients = [];
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -89,6 +93,22 @@ class Configuration {
         _dbname = config['dbname'];
       }
       
+      //TODO XXX FIXME --- START --- TESTING TESTING TESTING 
+      if(config.containsKey('emailusername')) {
+        emailUsername = config['emailusername'];
+        log(emailUsername);
+      }
+
+      if(config.containsKey('emailpassword')) {
+        emailPassword = config['emailpassword'];
+        log(emailPassword);
+      }
+
+      if(config.containsKey('recipients')) {
+        recipients = config['recipients'];
+        log(recipients);
+      }
+      //TODO XXX FIXME ---- END ---- TESTING TESTING TESTING 
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');

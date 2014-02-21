@@ -4,6 +4,7 @@ dependencies:
   Utilities:
     path: ../Utilities
   args: any
+  mailer: any
   path: any
   postgresql: any
   route: any

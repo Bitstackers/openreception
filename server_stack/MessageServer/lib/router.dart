@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:mailer/mailer.dart';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 

@@ -8,12 +8,29 @@ void sendMessage(HttpRequest request) {
     //Check If the format of the message is valid.
     try {
       data = JSON.decode(content);
-      if( !(data.containsKey('to') && data.containsKey('cc') && data.containsKey('bcc') &&
-          data['to'] is List && data['cc'] is List && data['bcc'] is List) ) {
-        request.response.statusCode = 400;
+      if(!data.containsKey('to') || !(data['to'] is List)) {
+        request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
             {'status'     : 'bad request',
-             'description': 'passed message argument is too long, missing or invalid'});
+             'description': 'The syntax for "to" is wrong'});
+        writeAndClose(request, response);
+        return null;
+      }
+
+      if(!data.containsKey('cc') || !(data['cc'] is List)) {
+        request.response.statusCode = HttpStatus.BAD_REQUEST;
+        String response = JSON.encode(
+            {'status'     : 'bad request',
+             'description': 'The syntax for "cc" is wrong'});
+        writeAndClose(request, response);
+        return null;
+      }
+     
+      if(!data.containsKey('bcc') || !(data['bcc'] is List)) {
+        request.response.statusCode = HttpStatus.BAD_REQUEST;
+        String response = JSON.encode(
+            {'status'     : 'bad request',
+             'description': 'The syntax for "bcc" is wrong'});
         writeAndClose(request, response);
         return null;
       }
@@ -47,34 +64,64 @@ void sendMessage(HttpRequest request) {
     bool urgent        = data['urgent'];
     DateTime createdAt = DateTime.parse(data['createdAt']);
     
-    return db.createSendMessage(message, subject, toContactId, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
-      List<Map> recipients = new List<Map>();
-      
-      (data['to'] as List).map((String con) {
-        List<String> split = con.split('@');
-        int contactId = int.parse(split[0]);
-        int receptionId = int.parse(split[1]);
-        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'to'});
-      });
-      
-      (data['cc'] as List).map((String con) {
-        List<String> split = con.split('@');
-        int contactId = int.parse(split[0]);
-        int receptionId = int.parse(split[1]);
-        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'cc'});
-      });
-      
-      (data['bcc'] as List).map((String con) {
-        List<String> split = con.split('@');
-        int contactId = int.parse(split[0]);
-        int receptionId = int.parse(split[1]);
-        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'bcc'});
-      });
-      
-      return db.addRecipientsToSendMessage(recipients).then((Map result) {
-        writeAndClose(request, JSON.encode(result));
-      });
+    
+    
+    return tempSMTP(message, subject, ['tp@adaheads.com']).then((_) {
+      writeAndClose(request, JSON.encode({'status': 'Success'}));
     });
+    
+//    return db.createSendMessage(message, subject, toContactId, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
+//      List<Map> recipients = new List<Map>();
+//      
+//      (data['to'] as List).map((String con) {
+//        List<String> split = con.split('@');
+//        int contactId = int.parse(split[0]);
+//        int receptionId = int.parse(split[1]);
+//        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'to'});
+//      });
+//      
+//      (data['cc'] as List).map((String con) {
+//        List<String> split = con.split('@');
+//        int contactId = int.parse(split[0]);
+//        int receptionId = int.parse(split[1]);
+//        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'cc'});
+//      });
+//      
+//      (data['bcc'] as List).map((String con) {
+//        List<String> split = con.split('@');
+//        int contactId = int.parse(split[0]);
+//        int receptionId = int.parse(split[1]);
+//        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'bcc'});
+//      });
+//      
+//      return db.addRecipientsToSendMessage(recipients).then((Map result) {
+//        writeAndClose(request, JSON.encode(result));
+//      });
+//    });
        
   }).catchError((error) => serverError(request, error.toString()));
+}
+
+Future tempSMTP(String message, String subject, List<String> recipients) {
+  // If you want to use an arbitrary SMTP server, go with `new SmtpOptions()`.
+  // This class below is just for convenience. There are more similar classes available.
+  var options = new GmailSmtpOptions()
+    ..username = config.emailUsername
+    ..password = config.emailPassword; // Note: if you have Google's "app specific passwords" enabled,
+                                        // you need to use one of those here.
+  
+  // Create our email transport.
+  var emailTransport = new SmtpTransport(options);
+  
+  // Create our mail/envelope.
+  var envelope = new Envelope()
+    ..fromName = 'MyCompany'
+    ..recipients.addAll(recipients)
+    ..subject = subject
+    ..text = message;
+
+  // Email it.
+  return emailTransport.send(envelope)
+    .then((success) => log('Email sent! $success'))
+    .catchError((e) => logger.error('Error occured when sending mail: $e'));
 }
