@@ -183,9 +183,8 @@ void _callPickupEventHandler(Map json) {
 
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
-    if (call.receptionId != null) {
+    if (call.receptionId != null && call.receptionId > 0 && call.inbound) {
       storage.getReception(call.receptionId).then((model.Reception reception) {
-        //TODO Set PlayedGreeting Flag
         event.bus.fire(event.receptionChanged, reception);
 
       }).catchError((error) {
@@ -237,4 +236,5 @@ void _callUnparkEventHandler(Map json) {
 void _callOfferEventHandler(Map json) {
   //TODO HACKY AUTO answer
   //command.pickupNextCall();
+  log.info('Opkalds tilbud. ${json['call']}', toUserLog: true);
 }

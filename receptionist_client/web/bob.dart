@@ -24,7 +24,9 @@ import 'classes/bobloading.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
+import 'classes/logger.dart';
 import 'classes/notification.dart';
+import 'classes/protocol.dart' as protocol;
 import 'classes/state.dart';
 
 BobActive bobActive;
@@ -36,6 +38,7 @@ void main() {
   configuration.initialize().then((_) {
     if(handleToken()) {
       notification.initialize();
+      
     }
   });
   
@@ -60,24 +63,33 @@ void main() {
 
 bool handleToken() {
   Uri url = Uri.parse(window.location.href);
-  //TODO Thomas Løcke & Kim Rostgaard - Speak about this!
+  //TODO Save to localStorage.
   if(url.queryParameters.containsKey('settoken')) {
     configuration.token = url.queryParameters['settoken'];
     
     //Remove ?settoken from the URL
-    Uri u = Uri.parse(window.location.toString());
     Map queryParam = {};
-    u.queryParameters.forEach((key, value) {
+    url.queryParameters.forEach((key, value) {
       if(key != 'settoken') {
         queryParam[key] = value;
       }
     });
-    var finalUrl = new Uri(scheme: u.scheme, userInfo: u.userInfo, host: u.host, port: u.port, path: u.path, queryParameters: queryParam, fragment: u.fragment);
+    var finalUrl = new Uri(scheme: url.scheme, userInfo: url.userInfo, host: url.host, port: url.port, path: url.path, queryParameters: queryParam, fragment: url.fragment);
     //window.location.assign(finalUrl.toString());
-    //Didn't work.
+    //Didn't work. try localStorage.
+    
+    protocol.userInfo(configuration.token).then((protocol.Response<Map> response) {
+      Map data = response.data;
+      if(data.containsKey('id')) {
+        configuration.userId = data['id'];
+      } else {
+        log.error('bob.dart userInfo did not contain an id');
+      }
+    });
     return true;
   } else {
-    window.location.assign('http://alice.adaheads.com:4050/token/create?returnurl=${window.location.toString()}');
+    String loginUrl = 'http://alice.adaheads.com:4050/token/create?returnurl=${window.location.toString()}';
+    window.location.assign(loginUrl);
     return false;
   }
 }

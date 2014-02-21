@@ -16,7 +16,7 @@ part of protocol;
 Future<Response<model.ContactList>> getContactList(int receptionId) {
   assert(receptionId != null);
 
-  final String       base      = configuration.contactServer.toString(); //configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.contactServer.toString();
   final Completer<Response<model.ContactList>> completer =
       new Completer<Response<model.ContactList>>();
   final List<String> fragments = new List<String>();

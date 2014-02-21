@@ -44,8 +44,8 @@ class ContactInfo {
     DivElement contactinfo_calendar = querySelector('#contactinfo_calendar');
     DivElement contactinfo_data = querySelector('#contactinfo_data');
 
-    search = new ContactInfoSearch(contactinfo_search, context);
-    calendar = new ContactInfoCalendar(contactinfo_calendar, context);
+    search = new ContactInfoSearch(contactinfo_search, context, element);
+    calendar = new ContactInfoCalendar(contactinfo_calendar, context, element);
     data = new ContactInfoData(contactinfo_data);
 
     body = querySelector('#contactinfobody');
@@ -55,6 +55,7 @@ class ContactInfo {
   }
 
   void _registerEventListeners() {
+    //TODO old but is it required in some way?
     element.onClick.listen((_) {
       if(!search.hasFocus && !calendar.hasFocus) {
         setFocus(search.searchBox.id);

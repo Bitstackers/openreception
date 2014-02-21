@@ -53,7 +53,7 @@ class Response<T> {
   /**
    * [Response] as String, for debug/log purposes.
    */
-  String toString() => '${status} ${statusText}';
+  String toString() => '${status} ${statusText} "${data}"';
 }
 
 /**

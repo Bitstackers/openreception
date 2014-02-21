@@ -76,6 +76,9 @@ class SendMessage {
 
   List<Element> focusElements;
 
+  model.Reception reception = model.nullReception;
+  model.Contact contact = model.nullContact;
+  
   SendMessage(DivElement this.element, Context this.context) {
     body = querySelector('.send-message-container');
 
@@ -152,14 +155,20 @@ class SendMessage {
     });
 
     event.bus.on(event.contactChanged).listen((model.Contact contact) {
+      this.contact = contact;
+      
       //TODO I know this not right.
       recipientsList.children.clear();
       recipientsList.children.addAll(
         contact.emailAddressList.map((c) => new LIElement()..text = c.value));
     });
+    
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      reception = value;
+    });
 
     event.bus.on(event.callChanged).listen((model.Call value){
-      sendmessagephone.value = '${value.id}';
+      sendmessagephone.value = '${value.callerId}';
     });
 
 //    event.bus.on(event.focusChanged).listen((Focus value) {
@@ -272,6 +281,10 @@ class SendMessage {
       Fortsat god dag ønskes du fra agent ${configuration.agentID}
     ''';
 
-    protocol.sendMessage(completeMessage, ['8@1']);
+    protocol.sendMessage(completeMessage, ['1@1']).then((protocol.Response response) {
+      log.debug('+++++ Send Message Result: ${response.data}');
+    }).catchError((error) {
+      log.debug('----- Send Message Unlucky Result: ${error}');
+    });
   }
 }

@@ -91,6 +91,14 @@ class GlobalQueue {
       pickupnextcallHandler();
     });
     
+    event.bus.on(event.parkCall).listen((_) {
+      holdcallHandler();
+    });
+    
+    event.bus.on(event.hangupCall).listen((_) {
+      hangupcallHandler();
+    });
+    
     //Keyboard Shortcuts Handlers
 //    keyboardHandler.onKeyName('pickupcall').listen((_) {
 //      pickupnextcallHandler();

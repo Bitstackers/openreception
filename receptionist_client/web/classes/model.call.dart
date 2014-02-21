@@ -21,6 +21,8 @@ final Call nullCall = new Call._null();
 class Call implements Comparable {
   int      _assignedAgent;
   String   _bLeg;
+  String   _callerId;
+  String   _destination;
   bool     _greetingPlayed = false;
   String   _id;
   bool     _inbound;
@@ -29,6 +31,8 @@ class Call implements Comparable {
 
   int      get assignedAgent  => _assignedAgent;
   String   get bLeg           => _bLeg;
+  String   get callerId       => _callerId;
+  String   get destination    => _destination;
   bool     get greetingPlayed => _greetingPlayed;
   String   get id             => _id;
   bool     get inbound        => _inbound;
@@ -63,6 +67,14 @@ class Call implements Comparable {
 
     if(json.containsKey('b_leg')) {
       _bLeg = json['b_leg'];
+    }
+    
+    if(json.containsKey('caller_id')) {
+      _callerId = json['caller_id'];
+    }
+    
+    if(json.containsKey('destination')) {
+      _destination = json['destination'];
     }
 
     if(json.containsKey('inbound')) {
@@ -108,13 +120,15 @@ class Call implements Comparable {
           // resetting to nullReception will become annoying when the time comes.  :D
           event.bus.fire(event.receptionChanged, nullReception);
           event.bus.fire(event.contactChanged, nullContact);
+          event.bus.fire(event.callChanged, nullCall);
 
           log.debug('model.Call.hangup updated environment.reception to nullReception');
           log.debug('model.Call.hangup updated environment.contact to nullContact');
           break;
 
         case protocol.Response.NOTFOUND:
-          log.debug('model.Call.hangup NOT FOUND ${this}');
+          log.error('model.Call.hangup() NOT FOUND ${this}');
+          event.bus.fire(event.callChanged, nullCall);
           break;
 
         default:

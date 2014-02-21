@@ -27,15 +27,16 @@ const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
 //const String CONFIGURATION_URL = 'http://localhost:4242/configuration';
 
-final _Configuration configuration = new _Configuration();
+final Configuration configuration = new Configuration._internal();
 
 /**
  * _Configuration gives access to configuration parameters provided by Alice.
  */
-class _Configuration {
+class Configuration {
   bool _loaded = false;
 
-  int      _agentID;
+  int agentID = 1;
+  
   Uri      _callFlowBaseUrl;
   Uri      _receptionBaseUrl;
   Uri      _contactBaseUrl;
@@ -49,9 +50,9 @@ class _Configuration {
   Uri      _serverLogInterfaceError;
   Uri      _serverLogInterfaceInfo;
   String   _standardGreeting;
+  int      userId;
   int      _userLogSizeLimit = 100000;
 
-  int      get agentID =>                             _agentID;
   Uri      get receptionBaseUrl =>                    _receptionBaseUrl;
   Uri      get callFlowBaseUrl =>                     _callFlowBaseUrl;
   Uri      get contactBaseUrl =>                      _contactBaseUrl;
@@ -86,10 +87,10 @@ class _Configuration {
   bool isLoaded() => _loaded;
 
   /**
-   * [_Configuration] constructor. Initialize the object with the values from
+   * [Configuration] constructor. Initialize the object with the values from
    * [CONFIGURATION_URL]. Logs a critical error if the request fails.
    */
-  _Configuration();
+  Configuration._internal();
 
   Future initialize() {
     if(!isLoaded()) {
@@ -139,7 +140,6 @@ class _Configuration {
     final Map notificationSocketMap = json['notificationSocket'];
     final Map serverLogMap = json['serverLog'];
 
-    _agentID      = _intValue(json, 'agentID', 0);
     _callFlowBaseUrl = Uri.parse(_stringValue(json, 'callFlowServerURI', 'http://localhost:4242'));
     _receptionBaseUrl = Uri.parse(_stringValue(json, 'receptionServerURI', 'http://localhost:8080'));
     _contactBaseUrl = Uri.parse(_stringValue(json, 'contactServerURI', 'http://localhost:8081'));

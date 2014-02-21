@@ -127,7 +127,7 @@ Future<Response<Map>> callQueue() {
   return completer.future;
 }
 
-Future<Response<model.CallList>> callLocalList(int agentId) {
+Future<Response<model.CallList>> callLocalList() {
   final String                               base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<model.CallList>>  completer = new Completer<Response<model.CallList>>();
   final List<String>                         fragments = new List<String>();
@@ -207,11 +207,11 @@ Future<Response<Map>> hangupCall(model.Call call) {
 }
 
 /**
- * Place a new call to an Agent, a Contact (via contact method, ), an arbitrary PSTn number or a SIP phone.
+ * Place a new call to an arbitrary PSTn number or a SIP phone.
  *
  * Sends a request to make a new call.
  */
-Future<Response<Map>> originateCall(String extension) {
+Future<Response<Map>> originateCallFromExtension(int receptionId, String extension) {
   assert(extension != null);
   assert(extension.isNotEmpty);
 
@@ -222,9 +222,50 @@ Future<Response<Map>> originateCall(String extension) {
   HttpRequest                    request;
   String                         url;
 
-  if (extension != null && extension.isNotEmpty){
-    fragments.add('extension=${extension}');
-  }
+  fragments.add('extension=${extension}');
+  fragments.add('context=${receptionId}');
+  fragments.add('token=${configuration.token}');
+  
+  url = _buildUrl(base, path, fragments);
+
+  request = new HttpRequest()
+    ..open(POST, url)
+    ..onLoad.listen((_) {
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          completer.complete(new Response<Map>(Response.OK, data));
+          break;
+
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+    })
+    ..send();
+
+  return completer.future;
+}
+
+/**
+ * Place a new call to an a Contact (via contact method, ).
+ *
+ * Sends a request to make a new call.
+ */
+Future<Response<Map>> originateCallFromPhoneId(int contactId, int receptionId, int phoneId) {
+  final String                   base      = configuration.callFlowBaseUrl.toString();
+  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path      = '/call/originate';
+  HttpRequest                    request;
+  String                         url;
+
+  fragments.add('context=${contactId}@${receptionId}');
+  fragments.add('phone_id=${phoneId}');
   fragments.add('token=${configuration.token}');
   
   url = _buildUrl(base, path, fragments);

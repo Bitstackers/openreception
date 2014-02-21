@@ -39,6 +39,9 @@ final EventType<State> stateUpdated                             = new EventType<
 
 // Keyboards
 final EventType<String> pickupNextCall                          = new EventType<String>();
+final EventType<String> hangupCall                              = new EventType<String>();
+final EventType<String> parkCall                                = new EventType<String>();
+final EventType<String> CallSelectedContact                     = new EventType<String>();
 
 EventBus _bus = new EventBus();
 EventBus get bus => _bus;

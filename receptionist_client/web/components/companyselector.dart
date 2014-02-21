@@ -4,6 +4,7 @@ class CompanySelector {
   DivElement                            element;
   Context                               context;
   SearchComponent<model.BasicReception> search;
+  model.BasicReception                  selectedReception;
 
   CompanySelector(DivElement this.element, Context this.context) {
     if(element.attributes.containsKey('data-default-element')) {
@@ -31,19 +32,20 @@ class CompanySelector {
 
   void registerEventlisteners() {
     event.bus.on(event.receptionChanged).listen((model.BasicReception value) {
-      if(value == model.nullReception) {
+      if(value == model.nullReception && selectedReception != model.nullReception) {
         search.clearSelection();
-
+        
       } else {
         search.selectElement(value, _receptionEquality);
       }
+      selectedReception = value;
     });
   }
 
   bool _receptionEquality(model.BasicReception x, model.BasicReception y) => x.id == y.id;
 
   void whenClearSelection() {
-    event.bus.fire(event.receptionChanged, model.nullReception);
+    new Future(() => event.bus.fire(event.receptionChanged, model.nullReception));
   }
 
   String listElementToString(model.BasicReception reception, String searchText) {

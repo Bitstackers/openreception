@@ -36,12 +36,23 @@ Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) 
   final List<String>             fragments = new List<String>();
   final String                   path       = '/message/send';
 
-  final String                   toPayload  = 'to=${to.map((i) => 'cid@oid').join(',')}';
-  final String                   ccPayload  = cc != null && cc.isNotEmpty ? 'cc=${to.map((i) => 'cid@oid').join(',')}' : '';
-  final String                   bccPayload = bcc != null && bcc.isNotEmpty ? 'bcc=${to.map((i) => 'cid@oid').join(',')}' : '';
-  final String                   recepients = [toPayload, ccPayload, bccPayload].where((s) => s.isNotEmpty).join('&');
-  final String                   payload    = '${recepients}&msg=${Uri.encodeComponent(message)}';
-
+//  final String                   toPayload  = 'to=${to.map((i) => 'cid@oid').join(',')}';
+//  final String                   ccPayload  = cc != null && cc.isNotEmpty ? 'cc=${to.map((i) => 'cid@oid').join(',')}' : '';
+//  final String                   bccPayload = bcc != null && bcc.isNotEmpty ? 'bcc=${to.map((i) => 'cid@oid').join(',')}' : '';
+//  final String                   recepients = [toPayload, ccPayload, bccPayload].where((s) => s.isNotEmpty).join('&');
+//  final String                   payload    = '${recepients}&msg=${Uri.encodeComponent(message)}';
+  String payload = JSON.encode(
+      {'message': message,
+       'to': to.map((v) => v.toString()).toList(),
+       'cc':[],
+       'bcc':[],
+       'subject': 'subject',
+       'toContactId': 1,
+       'takenFrom': 'Thomas',
+       'takeByAgent': 1,
+       'urgent': false,
+       'createdAt': new DateTime.now().toString()});
+  
   HttpRequest                    request;
   String                         url;
 

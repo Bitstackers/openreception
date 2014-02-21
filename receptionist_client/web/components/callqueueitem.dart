@@ -25,7 +25,7 @@ class CallQueueItem {
     age = new DateTime.now().difference(call.start).inSeconds.ceil();
     String html = '''
       <li class="call-queue-item-default">
-        <span>Call ID : ${call.id}</span>
+        <span>${call.destination} - ${call.id}</span>
         <span class="call-queue-item-seconds">${age}</span>
       </li>
     ''';

@@ -11,10 +11,12 @@ class ContactInfoSearch {
                String              placeholder          = 'Søg...';
                model.ContactList   contactList;
                InputElement        searchBox;
+               Element             widget;
+               String              activeContactClass  = 'contact-info-active';
 
   bool hasFocus = false;
-
-  ContactInfoSearch(DivElement this.element, Context this.context) {
+  
+  ContactInfoSearch(DivElement this.element, Context this.context, Element this.widget) {    
     String html = '''
         <div class="contact-info-searchbox">
           <input id="contact-info-searchbar" 
@@ -40,7 +42,7 @@ class ContactInfoSearch {
 
   void activeContact(model.Contact contact) {
     for(LIElement element in displayedContactList.children) {
-      element.classes.toggle('contact-info-active', element.value == contact.id);
+      element.classes.toggle(activeContactClass, element.value == contact.id);
     }
 
     event.bus.fire(event.contactChanged, contact);
@@ -52,10 +54,13 @@ class ContactInfoSearch {
       ..scrollTop = 0;
   }
 
-  void contactClick(Event event) {
-    LIElement element = event.target;
+  void contactClick(Event e) {
+    LIElement element = e.target;
     model.Contact contact = contactList.getContact(element.value);
     activeContact(contact);
+    if(!hasFocus) {
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, widget.id, searchBox.id));
+    }
   }
 
   bool _hasScrollbar(Element element) => element.scrollHeight > element.clientHeight;
@@ -68,50 +73,50 @@ class ContactInfoSearch {
 
   void onkeydown(KeyboardEvent e) {
     if(e.keyCode == Keys.DOWN) {
-      for(LIElement li in displayedContactList.children) {
-        if(li.classes.contains('contact-info-active')) {
-          LIElement next = li.nextElementSibling;
-          if(next != null) {
-            li.classes.remove('contact-info-active');
-            next.classes.add('contact-info-active');
-            int contactId = next.value;
-            model.Contact con = contactList.getContact(contactId);
-            if(con != null) {
-              event.bus.fire(event.contactChanged, con);
-            }
-          }
-          break;
-        }
-      }
-      e.preventDefault();
+      nextElement(e);
     } else if(e.keyCode == Keys.UP) {
-      for(LIElement li in displayedContactList.children) {
-        if(li.classes.contains('contact-info-active')) {
-          LIElement previous = li.previousElementSibling;
-          if(previous != null) {
-            li.classes.remove('contact-info-active');
-            previous.classes.add('contact-info-active');
-            int contactId = previous.value;
-            model.Contact con = contactList.getContact(contactId);
-            if(con != null) {
-              event.bus.fire(event.contactChanged, con);
-            }
+      previousElement(e);
+    }
+  }
+
+  void previousElement(KeyboardEvent e) {
+    for(LIElement li in displayedContactList.children) {
+      if(li.classes.contains(activeContactClass)) {
+        LIElement previous = li.previousElementSibling;
+        if(previous != null) {
+          li.classes.remove(activeContactClass);
+          previous.classes.add(activeContactClass);
+          int contactId = previous.value;
+          model.Contact con = contactList.getContact(contactId);
+          if(con != null) {
+            event.bus.fire(event.contactChanged, con);
           }
-          break;
         }
+        break;
       }
-      e.preventDefault();
     }
+    e.preventDefault();
   }
 
-  void onkeyup(KeyboardEvent e) {
-    if(e.keyCode == Keys.DOWN || e.keyCode == Keys.UP) {
-      //NOTHING
-    } else {
-      _performSearch(searchBox.value);
+  void nextElement(KeyboardEvent e) {
+    for(LIElement li in displayedContactList.children) {
+      if(li.classes.contains(activeContactClass)) {
+        LIElement next = li.nextElementSibling;
+        if(next != null) {
+          li.classes.remove(activeContactClass);
+          next.classes.add(activeContactClass);
+          int contactId = next.value;
+          model.Contact con = contactList.getContact(contactId);
+          if(con != null) {
+            event.bus.fire(event.contactChanged, con);
+          }
+        }
+        break;
+      }
     }
+    e.preventDefault();
   }
-
+  
   void _performSearch(String search) {
     model.Contact _selectedContact;
     //Clear filtered list
@@ -153,29 +158,75 @@ class ContactInfoSearch {
       contact = value;
     });
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      if(value.old == searchBox.id) {
-        hasFocus = false;
-        //TODO HACK FIXME ??? THOMAS LØCKE
-        element.parent.parent.classes.remove(FOCUS);
-      }
+//    event.bus.on(event.focusChanged).listen((Focus value) {
+//      if(value.old == searchBox.id) {
+//        hasFocus = false;
+//        //TODO HACK FIXME ??? THOMAS LØCKE
+//        element.parent.parent.classes.remove(FOCUS);
+//      }
+//
+//      if(value.current == searchBox.id) {
+//        hasFocus = true;
+//        searchBox.focus();
+//        //TODO HACK FIXME
+//        element.parent.parent.classes.add(FOCUS);
+//      }
+//    });
 
-      if(value.current == searchBox.id) {
-        hasFocus = true;
+//    searchBox.onFocus.listen((_) {
+//      if(!hasFocus) {
+//        setFocus(searchBox.id);
+//      }
+//    });
+
+    event.bus.on(event.locationChanged).listen((nav.Location location) {
+      bool active = location.widgetId == widget.id;
+      widget.classes.toggle(FOCUS, active);
+      if(location.elementId == searchBox.id) {
         searchBox.focus();
-        //TODO HACK FIXME ??? THOMAS LØCKE
-        element.parent.parent.classes.add(FOCUS);
       }
     });
-
-    searchBox.onFocus.listen((_) {
-      if(!hasFocus) {
-        setFocus(searchBox.id);
+    
+    event.bus.on(event.CallSelectedContact).listen((_) {
+      for(LIElement li in displayedContactList.children) {
+        if(li.classes.contains(activeContactClass)) {
+          int contactId = li.value;
+          storage.getContact(reception.id, contactId).then((model.Contact contact) {
+            if(contact.phones.isNotEmpty) {
+              //TODO Call person.
+              log.debug('components.ContactInfoSearch.registerEventListeners() --------------- CALLING ${contact}');
+//              protocol.originateCallFromPhoneId(contactId, reception.id, contact.phones.first['id'])
+//                .then((_) {
+//                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- GOOD ${_}');
+//                }).catchError((e) {
+//                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- BAD ${_}');
+//                });
+              String extension = contact.phones.first['value'];
+              log.debug('------------------ $extension ---------------------');
+              protocol.originateCallFromExtension(reception.id, extension)
+                .then((_) {
+                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- GOOD ${_}');
+                }).catchError((e) {
+                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- BAD ${_}');
+                });
+            } else {
+              log.info('Personen ${contact.name} har ikke nogen telefon nummer der kan ringes på.', toUserLog: true);
+            }
+          });
+          log.critical('components.ContactInfoSearch.registerEventListeners() Call up contact is not implemented');
+        }
       }
     });
-
+    
+    searchBox.onInput.listen((_) {
+      _performSearch(searchBox.value);
+    });
+    
+    searchBox.onClick.listen((MouseEvent e) {
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, widget.id, searchBox.id));
+    });
+    
     searchBox
-     ..onKeyUp.listen(onkeyup)
      ..onKeyDown.listen(onkeydown);
 
     displayedContactList.onScroll.listen(scrolling);
@@ -188,7 +239,7 @@ class ContactInfoSearch {
 //      }
 //    });
 
-    context.registerFocusElement(searchBox);
+    //context.registerFocusElement(searchBox);
   }
 
   void scrolling(Event _) {

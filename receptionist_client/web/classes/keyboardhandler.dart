@@ -77,6 +77,14 @@ class Keys {
   static const int Z     = 90;
 }
 
+typedef void KeyboardListener(KeyboardEvent event);
+
+KeyboardListener customKeyboardHandler(Map<String, EventListener> keymappings) {
+  Keyboard keyboard = new Keyboard();
+  keymappings.forEach((key, callback) => keyboard.register(key, callback));
+  return keyboard.press;
+}
+
 /**
  * [_KeyboardHandler] handles sinking of keycodes on associated streams. User of
  * this class may subscribe to these streams using the [onKeyName] method.
@@ -109,6 +117,8 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_WEBSITES,            id.COMPANY_WEBSITES_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_REGISTRATION_NUMBER, id.COMPANY_REGISTRATION_NUMBER_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY),
+       new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,                id.CONTACT_INFO_SEARCHBAR),
+       new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,                id.CONTACT_CALENDAR),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEARCHBOX),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_NAME),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_COMPANY),
@@ -124,7 +134,8 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_DRAFT),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEND)
       ];
-  
+  //contexthome.contactinfo.contact-info-searchbar
+  //contexthome.contactinfo.contact-calendar
   List<nav.Location> contextPhone = 
       [new nav.Location(id.CONTEXT_PHONE, id.PHONEBOOTH, id.PHONEBOOTH_NUMBERFIELD)];
   
@@ -177,15 +188,21 @@ class _KeyboardHandler {
       'Alt+4'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_STATISTICS)),
       'Alt+5'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
       'Alt+6'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_VOICEMAILS)),
-      'Ctrl+C'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
-      'Ctrl+E'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
-      'Ctrl+H'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
-      'Ctrl+M'    : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
-      'Ctrl+P'    : (_) => event.bus.fire(event.pickupNextCall, 'Keyboard'),
+      'Alt+C'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
+      'Alt+A'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
+      'Alt+H'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
+      'Alt+M'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
+      'Alt+O'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
+      'Alt+P'     : (_) => event.bus.fire(event.pickupNextCall, 'Keyboard'),
+      'Alt+L'     : (_) => event.bus.fire(event.parkCall, 'Keyboard'),
+      'Alt+G'     : (_) => event.bus.fire(event.hangupCall, 'Keyboard'),
+      'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 'Keyboard'),
       'Tab'       : (_) => tab(mode: FORWARD),
       'Shift+Tab' : (_) => tab(mode: BACKWARD),
-      'up'        : (_) => event.bus.fire(event.keyUp, null),
-      'down'      : (_) => event.bus.fire(event.keyDown, null)
+      
+      //TODO This means that every component with a scroll have to handle arrow up/down.
+      //'up'        : (_) => event.bus.fire(event.keyUp, null),
+      //'down'      : (_) => event.bus.fire(event.keyDown, null)
     };
     // TODO God sigende kommentar - Thomas Løcke
     keybindings.forEach((key, callback) => keyboard.register(key, (KeyboardEvent event) {
@@ -196,8 +213,8 @@ class _KeyboardHandler {
     
     Keyboard keyUp = new Keyboard();
     keybindings = {
-      'enter'        : (_) => event.bus.fire(event.keyEnter, null),
-      'esc'      : (_) => event.bus.fire(event.keyEsc, null)
+      'enter' : (_) => event.bus.fire(event.keyEnter, null),
+      'esc'   : (_) => event.bus.fire(event.keyEsc, null)
     };
     keybindings.forEach((key, callback) => keyUp.register(key, (KeyboardEvent event) {
       event.preventDefault();

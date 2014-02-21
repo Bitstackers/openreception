@@ -85,7 +85,7 @@ class Phonebooth {
   void dial() {
     if(receptionSelected != model.nullReception) {
       String dialStrig = inputField.value;
-      protocol.originateCall(dialStrig).then((protocol.Response<Map> response) {
+      protocol.originateCallFromExtension(receptionSelected.id, dialStrig).then((protocol.Response<Map> response) {
         if(response.status == protocol.Response.OK) {
           log.info('Ringede op til ${dialStrig}', toUserLog: true);
           log.info('Agent ${configuration.agentID} called ${dialStrig}');

@@ -128,16 +128,10 @@ class SearchComponent<T> {
 //    _searchBox.value = '';
 //  }
 
-  //TODO START XXX HACK If we notice the outside, then eventbus complains about making an event while another event is active.
   void clearSelection() {
     _selectedElementText.text = _searchPlaceholder;
-    //_whenClearSelection();
-  }   
-  void _clearSelection() {
-    _selectedElementText.text = _searchPlaceholder;
     _whenClearSelection();
-  }
-  // TODO END
+  } 
   
   void closeDropDown() {
     _container.classes.remove('chosen-with-drop');
@@ -175,7 +169,8 @@ class SearchComponent<T> {
     _makeElementVisible();
   }
 
-  void _nextElement() {
+  void _nextElement(KeyboardEvent e) {
+    e.preventDefault();
     if(!_withDropDown) {
       showDropDown();
     } else {
@@ -208,7 +203,8 @@ class SearchComponent<T> {
     }
   }
 
-  void _previousElement() {
+  void _previousElement(KeyboardEvent e) {
+    e.preventDefault();
     if(!_withDropDown) {
       showDropDown();
       } else {
@@ -243,17 +239,17 @@ class SearchComponent<T> {
   }
 
   void registerEventHandlers() {    
-    event.bus.on(event.keyUp).listen((_) { 
-      if(_hasFocus) {
-        _previousElement();
-      }
-    });
-    
-    event.bus.on(event.keyDown).listen((_) { 
-      if(_hasFocus) {
-        _nextElement();
-      }
-    });
+//    event.bus.on(event.keyUp).listen((_) { 
+//      if(_hasFocus) {
+//        _previousElement();
+//      }
+//    });
+//    
+//    event.bus.on(event.keyDown).listen((_) { 
+//      if(_hasFocus) {
+//        _nextElement();
+//      }
+//    });
     
     event.bus.on(event.keyEnter).listen((_) {
       if(_hasFocus &&_withDropDown) {
@@ -292,6 +288,12 @@ class SearchComponent<T> {
       }
       _hasFocus = active;
     });
+    
+    Map<String, EventListener> mappings = 
+      {'up':   _previousElement,
+       'down': _nextElement};
+    
+    _searchBox.onKeyDown.listen(customKeyboardHandler(mappings));
   }
 
   /**
@@ -312,7 +314,7 @@ class SearchComponent<T> {
 
   void updateSourceList(List<T> newList) {
     log.debug('SearchComponent. updateSourceList. numberOfElements: ${newList.length}');
-    _clearSelection();
+    clearSelection();
     _dataList = newList;
     _list.clear();
     for(int i = 0; i < _dataList.length; i++) {

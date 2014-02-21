@@ -58,7 +58,7 @@ class LocalQueue {
   }
 
   void _initialFill() {
-    protocol.callLocalList(configuration.agentID).then((protocol.Response response) {
+    protocol.callLocalList().then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
           model.CallList initialCallQueue = response.data;
