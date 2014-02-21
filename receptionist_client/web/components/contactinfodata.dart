@@ -21,13 +21,13 @@ class ContactInfoData {
           <tr>
             <td>
               <h5>Arbejdstider</h5>
-              <div>
+              <div class="contact-info-field">
                 <ul id="contactWorkHoursList" class="zebra"></ul>
               </div>
             </td>
             <td>
               <h5>Kald</h5>
-              <div>
+              <div class="contact-info-field">
                 <ul id="contactHandlingList" class="zebra"></ul>
               </div>
             </td>
@@ -35,21 +35,21 @@ class ContactInfoData {
           <tr>
             <td>
               <h5>Stilling</h5>
-              <div id="contactPosition"></div>
+              <div id="contactPosition" class="contact-info-field"></div>
             </td>
             <td>
               <h5>Ansvar</h5>
-              <div id="contactResponsibility"></div>
+              <div id="contactResponsibility" class="contact-info-field"></div>
             </td>
           </tr>
           <tr>
             <td>
               <h5>Afdeling</h5>
-              <div id="contactDepartment"></div>
+              <div id="contactDepartment" class="contact-info-field"></div>
             </td>
             <td>
               <h5>Telefon</h5>
-              <div>
+              <div class="contact-info-field">
                 <ul id="contactTelephoneNumberList" class="zebra"></ul>
               </div>
             </td>
@@ -57,11 +57,11 @@ class ContactInfoData {
           <tr>
             <td>
               <h5>Relationer</h5>
-              <div id="contactRelations"></div>
+              <div id="contactRelations" class="contact-info-field"></div>
             </td>
             <td>
               <h5>Email</h5>
-              <div>
+              <div class="contact-info-field">
                 <ul id="contactEmailAddressList" class="zebra"></ul>
               </div>
             </td>
@@ -69,11 +69,11 @@ class ContactInfoData {
           <tr>
             <td>
               <h5>Info</h5>
-              <div id="contactInfo"></div>
+              <div id="contactAdditionalInfo" class="contact-info-field"></div>
             </td>
             <td>
               <h5>Backup</h5>
-              <div>
+              <div class="contact-info-field">
                 <ul id="contactBackupList" class="zebra"></ul>
               </div>
             </td>
@@ -83,16 +83,16 @@ class ContactInfoData {
 
     TableElement body = new DocumentFragment.html(html).querySelector('table');
 
-    workHoursList       = body.querySelector('#contactWorkHoursList');
-    handlingList        = body.querySelector('#contactHandlingList');
-    position            = body.querySelector('#contactPosition');
-    responsibility      = body.querySelector('#contactResponsibility');
-    department          = body.querySelector('#contactDepartment');
-    telephoneNumberList = body.querySelector('#contactTelephoneNumberList');
-    relations           = body.querySelector('#contactRelations');
-    emailAddressList    = body.querySelector('#contactEmailAddressList');
-    info                = body.querySelector('#contactInfo');
-    backupList          = body.querySelector('#contactBackupList');
+    workHoursList       = body.querySelector('#${id.CONTACT_WORK_HOURS_LIST}');
+    handlingList        = body.querySelector('#${id.CONTACT_HANDLING_LIST}');
+    position            = body.querySelector('#${id.CONTACT_PISITION}');
+    responsibility      = body.querySelector('#${id.CONTACT_RESPONSIBILITY}');
+    department          = body.querySelector('#${id.CONTACT_DEPARTMENT}');
+    telephoneNumberList = body.querySelector('#${id.CONTACT_TELEPHONE_NUMBER_LIST}');
+    relations           = body.querySelector('#${id.CONTACT_RELATIONS}');
+    emailAddressList    = body.querySelector('#${id.CONTACT_EMAIL_ADDRESS_LIST}');
+    info                = body.querySelector('#${id.CONTACT_ADDITIONAL_INFO}');
+    backupList          = body.querySelector('#${id.CONTACT_BACKUP_LIST}');
 
     element.children.add(body);
 
@@ -111,7 +111,7 @@ class ContactInfoData {
 
     handlingList.children.clear();
     for(var item in contact.handlingList) {
-      workHoursList.children.add(new LIElement()
+      handlingList.children.add(new LIElement()
         ..text = item.value);
     }
 

@@ -136,3 +136,15 @@
 .contact-info-active {
   border-left: solid 3px red;
 }
+
+
+
+.contact-info-field {
+  height: 40px;
+  width: 238px;
+  overflow: auto;
+  /*border: 1px red solid;*/
+  font-size: small;
+  
+}
+
