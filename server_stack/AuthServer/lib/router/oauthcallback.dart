@@ -30,6 +30,7 @@ void oauthCallback(HttpRequest request) {
         json['expiresAt'] = dateTimeToJson(new DateTime.now().add(new Duration(hours: 1)));
         return getUserInfo(json['access_token']).then((Map userData) {
           if(userData == null || userData.isEmpty) {
+            logger.debug('authenticationserver.router.oauthCallback() token:"${json['access_token']}" userdata:"${userData}"');
             request.response.statusCode = 403;
             writeAndClose(request, JSON.encode({'status': 'Forbidden!'}));
             
