@@ -19,7 +19,7 @@ void oauthCallback(HttpRequest request) {
     String body = mapToUrlFormEncodedPostBody(postBody);
     logger.debug('authenticationserver.router.oauthCallback() Sending request to google. "${tokenEndpoint}" body "${body}"');
     
-    http.post(tokenEndpoint, headers: {'content-type':'application/x-www-form-urlencoded'}, body: body).then((http.Response response) {
+    http.post(tokenEndpoint, headers: {'content-type':'application/x-www-form-urlencoded'}, body: postBody).then((http.Response response) {
       Map json = JSON.decode(response.body);
       
       if(json.containsKey('error')) {
@@ -43,7 +43,7 @@ void oauthCallback(HttpRequest request) {
               Map queryParameters = {'settoken' : hash};
               request.response.redirect(new Uri(scheme: returnUrl.scheme, userInfo: returnUrl.userInfo, host: returnUrl.host, port: returnUrl.port, path: returnUrl.path, queryParameters: queryParameters));
             }).catchError((error) {
-              serverError(request, error.toString());
+              serverError(request, 'authenticationserver.router.oauthCallback uri ${request.uri} error: "${error}" userData: "$userData"');
             });
           }
         }).catchError((error) {
@@ -53,7 +53,7 @@ void oauthCallback(HttpRequest request) {
         });
       }
       
-    }).catchError((error) => serverError(request, error.toString()));
+    }).catchError((error) => serverError(request, 'authenticationserver.router.oauthCallback uri ${request.uri} error: "${error}"'));
   } catch(e) {
     serverError(request, 'authenticationserver.router.oauthCallback() error "${e}" Url "${request.uri}"');
   }
