@@ -96,53 +96,53 @@ VALUES /*Adaheads*/
        (1, 5, '{"backup":[{"value":"Thomas Løcke", "priority": 1},{"value":"Kim rostgaard Christensen", "priority": 2}],"emailaddresses":[{"value":"jsa@adaheads.com", "priority": 1}],"handling":[{"value":"Hans telefon har ofte dårlig forbindelse på grund af, han befinder sig I de tyndere luftlag", "priority": 1}],"telephonenumbers":[{"value":"555 666 777", "priority": 1}],"workhours":[{"value":"Mandag-Tirsdag 09:00 16", "priority": 1},{"value":"Torsdag-Fredag 10:00 – 15:00", "priority": 2}],"tags":["Ada","SIP","Linux","Fysik"],"department":"Development","info":"Kigger efter koden","position":"Software udvikler","relations":"Har engang haft en hund","responsibility":"Alice og Cloe"}'),
        (1, 6, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[{"value":"ss@adaheads.com","priority":1}],"handling":[],"telephonenumbers":[],"workhours":[],"tags":["Grafik"],"department":"Design","info":"","position":"Designer","relations":"Børn med Kim Rostgaard Christensen","responsibility":"Bob design"}'),
        (1, 7, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[],"handling":[],"telephonenumbers":[{"value":"12345678","priority":1}],"workhours":[],"tags":["Granvej","Mosekrogen"],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 17, null),
-       (1, 46, null),
-       (1, 18, null),
-       (1, 19, null),
-       (1, 20, null),
-       (1, 21, null),
+       (1, 17, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (1, 46, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (1, 18, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (1, 19, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (1, 20, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (1, 21, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
        /*Fishermans Friends*/
        (2, 1, '{"backup":[{"value":"Steen Løcke","priority":1}],"emailaddresses":[{"value":"tl@ff.dk","priority":1}],"handling":[{"value":"spørg ikke ind til ekstra stærk varianten","priority":1}],"telephonenumbers":[{"value":"87654321","priority":1}],"workhours":[],"tags":["Fisker","sømand","pirat"],"department":"Fangst","info":"Tidligere fisker I militæret","position":"Key fishing manager","relations":"Gift med Trine Løcke","responsibility":"Fersk fisk"}'),
        (2, 4, '{"backup":[{"value":"Sidsel Schomacker", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Pas på hans skæg", "priority": 1}],"telephonenumbers":[{"value":"+45 31 41 59 26", "priority": 1}],"workhours":[{"value":"Hele tiden", "priority": 1}],"tags":["Linux","Tux","Pingvinen"],"department":"Båden","info":"Klap for den venstre øje","position":"CFO (Cheif fishing officer)","relations":"Papegøjen Dieco ","responsibility":"Saltvands fisk"}'),
-       (2, 8, null),
-       (2, 9, null),
-       (2, 10, null),
-       (2, 11, null),
-       (2, 12, null),
-       (2, 13, null),
-       (2, 14, null),
-       (2, 15, null),
-       (2, 16, null),
+       (2, 8,  '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 9,  '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 10, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 11, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 12, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 13, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 14, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 15, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (2, 16, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
        /*Responsum*/
        (3, 1, '{"backup":[{"value":"Trine Løcke","priority":1},{"value":"Steen Løcke","priority":2}],"emailaddresses":[{"value":"tl@responsum.dk","priority":1}],"handling":[{"value":"Bær over med hans gode humør","priority":1}],"telephonenumbers":[{"value":"+45 33 48 82 01","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["AWS","SIP","Slackware","Linux"],"department":"HQ","info":"Something","position":"CTO","relations":"Gift med Trine Løcke","responsibility":"IT afdellingen"}'),
        (3, 2, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"trine@adaheads.com","priority":1}],"handling":[],"telephonenumbers":[{"value":"60431993","priority":1}],"workhours":[{"value":"Hverdage 08:00 – 12:00 & 13:00 – 17:00","priority":1},{"value":"Lørdag Hele dagen","priority":2}],"tags":["Linux","Printer","Support","IT","Speaker"],"department":"Produktion","info":"Går altid I blå sko","position":"CRO (Cheif receptionist officer)","relations":"Gift med Thomas Løcke","responsibility":"Printeren"}'),
        (3, 3, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"steen@responsum.dk","priority":1}],"handling":[],"telephonenumbers":[{"value":"88329100","priority":1}],"workhours":[{"value":"Hverdage 08:00 – 17:00","priority":1}],"tags":["jobansøger","2730","3660","3520"],"department":"Produktion","info":"Ham I glasburet. We do not ask questions.","position":"CEO & CFO","relations":"Far til Thomas Løcke, men det kan han jo ikke gøre for.","responsibility":"Regnskab"}'),
        (3, 4, '{"backup":[{"value":"Jacob Sparre Andersen", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Spørg ikke ind til hvor god han er til at parkere - for det styrer han.", "priority": 1}],"telephonenumbers":[{"value":"88329100", "priority": 1}],"workhours":[{"value":"Hverdage 09:00 – 18:00", "priority": 1}],"tags":["Ny kunde","Salg","Uadresserede"],"department":"Produktion","info":"Ham med håret","position":"Backup software maintainer","relations":"ven med alle","responsibility":"mail"}'),
-       (3, 22, null),
-       (3, 23, null),
-       (3, 24, null),
-       (3, 25, null),
-       (3, 26, null),
-       (3, 27, null),
-       (3, 28, null),
-       (3, 29, null),
-       (3, 30, null),
-       (3, 31, null),
-       (3, 32, null),
-       (4, 33, null),
-       (4, 34, null),
-       (4, 35, null),
-       (4, 36, null),
-       (4, 37, null),
-       (5, 38, null),
-       (5, 39, null),
-       (5, 40, null),
-       (5, 41, null),
-       (5, 42, null),
-       (5, 43, null),
-       (5, 44, null),
-       (5, 45, null);
+       (3, 22, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 23, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 24, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 25, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 26, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 27, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 28, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 29, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 30, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 31, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (3, 32, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (4, 33, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (4, 34, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (4, 35, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (4, 36, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (4, 37, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 38, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 39, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 40, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 41, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 42, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 43, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 44, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       (5, 45, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}');
 
 INSERT INTO messaging_addresses (id, address_type, address)
 VALUES (1, 'e-mail', 'tl@adaheads.com'),
@@ -324,5 +324,17 @@ INSERT INTO contact_calendar (reception_id, contact_id, event_id) VALUES
 
 INSERT INTO reception_calendar (reception_id, event_id) VALUES
 (1, 4);
+
+-- POSTGRES ONLY
+SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
+SELECT setval('groups_id_sequence', (SELECT max(id)+1 FROM groups), FALSE);
+SELECT setval('contacts_id_sequence', (SELECT max(id)+1 FROM contacts), FALSE);
+SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
+SELECT setval('messaging_addresses_id_sequence', (SELECT max(id)+1 FROM messaging_addresses), FALSE);
+SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
+SELECT setval('message_queue_id_sequence', (SELECT max(id)+1 FROM message_queue), FALSE);
+SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
+SELECT setval('recurring_calendar_events_id_sequence', (SELECT max(id)+1 FROM recurring_calendar_events), FALSE);
+SELECT setval('phone_numbers_id_sequence', (SELECT max(id)+1 FROM phone_numbers), FALSE);
 
 COMMIT;
