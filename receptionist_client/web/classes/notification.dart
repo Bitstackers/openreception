@@ -34,13 +34,16 @@ final _Notification notification = new _Notification();
  * A Class to handle all the WebSocket notifications coming from Alice.
  */
 class _Notification {
-  static final EventType<Map> callHangup = new EventType<Map>();
-  static final EventType<Map> callPickup = new EventType<Map>();
-  static final EventType<Map> queueJoin  = new EventType<Map>();
-  static final EventType<Map> queueLeave = new EventType<Map>();
-  static final EventType<Map> callPark   = new EventType<Map>();
-  static final EventType<Map> callUnpark = new EventType<Map>();
-  static final EventType<Map> callOffer  = new EventType<Map>();
+  static final EventType<Map> callHangup  = new EventType<Map>();
+  static final EventType<Map> callPickup  = new EventType<Map>();
+  static final EventType<Map> queueJoin   = new EventType<Map>();
+  static final EventType<Map> queueLeave  = new EventType<Map>();
+  static final EventType<Map> callPark    = new EventType<Map>();
+  static final EventType<Map> callUnpark  = new EventType<Map>();
+  static final EventType<Map> callOffer   = new EventType<Map>();
+  static final EventType<Map> callLock    = new EventType<Map>();
+  static final EventType<Map> callUnlock  = new EventType<Map>();
+  static final EventType<Map> peerState   = new EventType<Map>();
 
   Socket _socket;
 
@@ -51,7 +54,10 @@ class _Notification {
      'queue_leave': queueLeave,
      'call_park'  : callPark,
      'call_unpark': callUnpark,
-     'call_offer' : callOffer};
+     'call_offer' : callOffer,
+     'call_unlock': callUnlock,
+     'call_lock'  : callLock,
+     'peer_state' : peerState};
 
   /**
    * [_Notification] constructor.
@@ -73,9 +79,7 @@ class _Notification {
   /**
    * Handles non-persistent notifications.
    */
-  void _nonPersistentNotification(Map json) {
-    log.debug('nonpersistent');
-
+  void _notificationDispatcher(Map json) {
     if(json.containsKey('event')) {
       String eventName = json['event'];
       log.debug('notification with event: ${eventName}');
@@ -97,30 +101,14 @@ class _Notification {
    * their persistence status.
    */
   void _onMessage(Map json) {
-    log.debug('Notification._onMessage ${json}');
     if (json.containsKey('notification')) {
       Map notificationMap = json['notification'];
-      if (notificationMap.containsKey('persistent')) {
-        if (parseBool(notificationMap['persistent'])) {
-          _persistentNotification(notificationMap);
-        } else {
-          _nonPersistentNotification(notificationMap);
-        }
-      } else {
-        log.error('Notification._onMessage Does not contains persistent.');
-      }
+      _notificationDispatcher(notificationMap);
     } else {
       log.critical('Notification._onMessage Does not contains notification.');
     }
   }
-
-  /**
-   * Handles persistent notifications.
-   */
-  void _persistentNotification(Map json) {
-    log.debug('Notification._persistentNotification');
-  }
-
+  
   /**
    * Register event listeners.
    */
@@ -163,6 +151,8 @@ void _callHangupEventHandler(Map json) {
     log.info('notification._callHangupEventHandler hangup ${call}');
     event.bus.fire(event.callChanged, model.nullCall);
   }
+
+  event.bus.fire(event.callQueueRemove, call);  
 }
 
 /**
@@ -170,13 +160,11 @@ void _callHangupEventHandler(Map json) {
  * notification socket and the assigned agent match the logged in agent.
  */
 void _callPickupEventHandler(Map json) {
-  log.debug('notification._callPickupEventHandler received ${json}');
-
   model.Call call = new model.Call.fromJson(json['call']);
 
   // TODO obviously the agent ID should not come from configuration. This is a
   // temporary hack as long as Alice is oblivious to login/session.
-  if (call.assignedAgent == configuration.agentID) {
+  if (call.assignedAgent == configuration.userId) {
     log.info('Tog kald. ${call}', toUserLog: true);
     event.bus.fire(event.callChanged, call);
     environment.call = call;
@@ -195,6 +183,8 @@ void _callPickupEventHandler(Map json) {
       log.error('notification._callPickupEventHandler call ${call} missing receptionId');
     }
   }
+  
+  event.bus.fire(event.callQueueRemove, call);
 
   log.info('Opkald ${call} tildelt til agent ${call.assignedAgent}', toUserLog: true);
 }
@@ -204,8 +194,8 @@ void _callPickupEventHandler(Map json) {
  */
 void _queueJoinEventHandler(Map json) {
   log.debug('notification._queueJoinEventHandler event: ${json}');
-  final model.Call call = new model.Call.fromJson(json['call']);
-  event.bus.fire(event.callQueueAdd, call);
+  //final model.Call call = new model.Call.fromJson(json['call']);
+  //event.bus.fire(event.callQueueAdd, call);
 }
 
 /**
@@ -222,7 +212,7 @@ void _queueLeaveEventHandler(Map json) {
  */
 void _callParkEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
-  if(call.assignedAgent == configuration.agentID) {
+  if(call.assignedAgent == configuration.userId) {
     event.bus.fire(event.localCallQueueAdd, call);
     event.bus.fire(event.callChanged, model.nullCall);
   }
@@ -234,7 +224,12 @@ void _callUnparkEventHandler(Map json) {
 }
 
 void _callOfferEventHandler(Map json) {
-  //TODO HACKY AUTO answer
-  //command.pickupNextCall();
+  final model.Call call = new model.Call.fromJson(json['call']);
+  if(configuration.autoAnswerEnabled) {
+    //TODO HACKY AUTO answer
+    command.pickupNextCall(); 
+  } else {
+    event.bus.fire(event.callQueueAdd, call);
+  }
   log.info('Opkalds tilbud. ${json['call']}', toUserLog: true);
 }
