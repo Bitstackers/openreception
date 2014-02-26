@@ -80,8 +80,11 @@ bool handleToken() {
     
     protocol.userInfo(configuration.token).then((protocol.Response<Map> response) {
       Map data = response.data;
+      configuration.profile = data;
       if(data.containsKey('id')) {
         configuration.userId = data['id'];
+        configuration.userName = data['name'];
+        print('---------- BOB.dart --------- UserId ${configuration.userId}');
       } else {
         log.error('bob.dart userInfo did not contain an id');
       }

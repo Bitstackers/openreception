@@ -44,6 +44,14 @@ class AgentInfo {
 
     registerEventListeners();
     resize();
+    
+    new Future.delayed(new Duration(seconds: 1, milliseconds: 500), () {
+      if(configuration.profile != null) {
+        portrait.src = configuration.profile['remote_attributes']['picture'];
+      }
+    }).catchError((error) {
+      log.error('components.AgentInfo() Updating Agent image failed with "${error}"');
+    });
   }
 
   void resize() {
