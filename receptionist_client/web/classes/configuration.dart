@@ -35,7 +35,7 @@ final Configuration configuration = new Configuration._internal();
 class Configuration {
   bool _loaded = false;
 
-  int agentID = 1;
+  bool autoAnswerEnabled = false;
   
   Uri      _callFlowBaseUrl;
   Uri      _receptionBaseUrl;
@@ -51,8 +51,10 @@ class Configuration {
   Uri      _serverLogInterfaceInfo;
   String   _standardGreeting;
   int      userId;
+  String   userName;
   int      _userLogSizeLimit = 100000;
-
+  Map      profile;
+  
   Uri      get receptionBaseUrl =>                    _receptionBaseUrl;
   Uri      get callFlowBaseUrl =>                     _callFlowBaseUrl;
   Uri      get contactBaseUrl =>                      _contactBaseUrl;
