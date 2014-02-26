@@ -69,9 +69,9 @@ class GlobalQueue {
   }
 
   void registerEventListerns() {
-    event.bus.on(event.callChanged).listen((model.Call value) => call = value);
-    event.bus.on(event.callQueueAdd).listen((model.Call call) => addCall(call));
-    event.bus.on(event.callQueueRemove).listen((model.Call call) => removeCall(call));
+    event.bus.on(event.callChanged).listen(_callChange);
+    event.bus.on(event.callQueueAdd).listen(addCall);
+    event.bus.on(event.callQueueRemove).listen(removeCall);
 
     event.bus.on(event.focusChanged).listen((Focus value) {
       hasFocus = handleFocusChange(value, [ul], element);
@@ -135,6 +135,7 @@ class GlobalQueue {
   }
 
   void _callChange(model.Call call) {
+    this.call = call;
     pickupnextcallbutton.disabled = !(call == null || call == model.nullCall);
     hangupcallButton.disabled = call == null || call == model.nullCall;
     holdcallButton.disabled = call == null || call == model.nullCall;
@@ -156,10 +157,12 @@ class GlobalQueue {
   }
 
   void addCall(model.Call call) {
-    CallQueueItem queueItem = new CallQueueItem(call, clickHandler);
-    callQueue.add(queueItem);
-    ul.children.add(queueItem.element);
-    updateHeaderText();
+    if(!callQueue.any((c) => c.call.id == call.id)) {
+      CallQueueItem queueItem = new CallQueueItem(call, clickHandler);
+      callQueue.add(queueItem);
+      ul.children.add(queueItem.element);
+      updateHeaderText();
+    }
   }
 
   void clickHandler(MouseEvent event, CallQueueItem queueItem) {
