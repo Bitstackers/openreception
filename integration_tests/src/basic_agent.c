@@ -5,22 +5,14 @@
  * following capabilities:
  *  - SIP registration
  *  - Making and receiving call
- *  - Audio/media to sound device.
- *
- * Usage:
- *  - To make outgoing call, start simple_pjsua with the URL of remote
- *    destination to contact.
- *    E.g.:
- *	 simpleua sip:user@remote
- *
- *  - Incoming calls will automatically be answered with 200.
- *
- * This program will quit once it has completed a single call.
  */
 
+#include <stdio.h>
+#include <unistd.h>
+#include <strings.h>
 #include <pjsua-lib/pjsua.h>
 
-#define THIS_FILE	"APP"
+#define THIS_FILE	"BASIC_AGENT"
 
 typedef enum {AH_ERROR, AH_READY, AH_OK} ah_status_t;
 
@@ -101,6 +93,57 @@ void usage(char *command) {
   fprintf (stderr, "Usage: %s username password domain clientport\n", command);
 }
 
+/**
+ * register_account()
+ * 
+ */
+
+
+void register_account(pjsua_acc_id acc_id) {
+
+   const int   u_resolution    = 100000;
+   const int   retries         = (10 * 1000000) / u_resolution;
+   int         reconnect_count = 0;
+   pj_status_t status          = !PJ_SUCCESS;
+
+   status = pjsua_acc_set_registration (acc_id, PJ_TRUE);
+   if (status != PJ_SUCCESS) { 
+      error_exit("Error in register_account()", status);
+   }
+
+   pjsua_acc_info account_info;
+   pjsua_acc_get_info(acc_id, &account_info);
+
+   while (account_info.status < 200) {
+      pjsua_acc_get_info(acc_id, &account_info);
+
+      if(usleep(u_resolution) < 0 || reconnect_count > retries) {
+        ah_status (AH_ERROR, "ACCOUNT_TIMEOUT");
+        exit(1);
+      }
+      reconnect_count++;
+   }
+   ah_status(AH_READY, "Account registered.");
+} 
+
+/**
+ * unregister_account()
+ * 
+ */
+
+
+void unregister_account(pjsua_acc_id acc_id) {
+
+   pj_status_t status = !PJ_SUCCESS;
+
+   status = pjsua_acc_set_registration (acc_id, PJ_FALSE);
+   if (status != PJ_SUCCESS) {
+      error_exit("Error in register_account()", status);
+   }
+
+   ah_status (AH_OK, "Unregistered account ");
+} 
+
 /*
  * main()
  *
@@ -146,14 +189,13 @@ int main(int argc, char *argv[]) {
   }
   /* Add UDP transport. */
   {
-    int port;
     pjsua_transport_config cfg;
 
     pjsua_transport_config_default(&cfg);
     sscanf(argv[4], "%d", &cfg.port);
-    cfg.port = port;
     status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &cfg, NULL);
     if (status != PJ_SUCCESS) error_exit("Error creating transport", status);
+    printf("Created UDP transport on port %d.\n", cfg.port);
   }
 
  /* Initialization is done, now start pjsua */
@@ -179,7 +221,7 @@ int main(int argc, char *argv[]) {
     pjsua_acc_config_default(&cfg);
     cfg.id = pj_str(uri_buf);
 
-    printf("Registering: %.*s.\n", cfg.id.slen, cfg.id.ptr);
+    printf("Registering: %.*s.\n", (int)cfg.id.slen, cfg.id.ptr);
 
     cfg.reg_uri = pj_str(reg_uri_buf);
     cfg.cred_count = 1;
@@ -188,30 +230,20 @@ int main(int argc, char *argv[]) {
     cfg.cred_info[0].username = pj_str(username);
     cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
     cfg.cred_info[0].data = pj_str(password);
+    cfg.register_on_acc_add = PJ_FALSE;
+
 
     status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
     if (status != PJ_SUCCESS) error_exit("Error adding account", status);
 
-    pjsua_acc_info account_info;
-    pjsua_acc_get_info(0, &account_info);
+    register_account (acc_id);
 
-    int reconnect_count = 0;
-    while (account_info.status < 200) {
-      pjsua_acc_get_info(0, &account_info);
-      sleep(1);
-      if (reconnect_count > 3) {
-        ah_status (AH_ERROR, "ACCOUNT_TIMEOUT");
-        exit(1);
-      }
-      reconnect_count++;
-    }
   }
 
   /* Start by muting the audio device. This a passive agent, and sound
      is just wasted CPU time and uwanted side effects. */
   pjsua_set_null_snd_dev();
 
-  ah_status(AH_READY, "Account registered.");
   fflush(stdout);
   /* Wait until user press "q" to quit. */
   for (;;) {
@@ -230,21 +262,29 @@ int main(int argc, char *argv[]) {
         ah_status (AH_ERROR, "Could not make call");
       }
       else {
-        ah_status (AH_OK, "Dialing...");
+        ah_status (AH_OK, "Dialling...");
       }
     }
 
-    if (option[0] == 'q') {
-      ah_status (AH_OK, "Exiting...");
-      break;
+    if (option[0] == 'r') {
+      register_account(acc_id);
     }
 
+    if (option[0] == 'u') {
+      unregister_account(acc_id);
+    }
+
+    if (option[0] == 'q') {
+      break;
+    }
+   
     if (option[0] == 'h') {
       ah_status (AH_OK, "Hangin up all calls...");
       pjsua_call_hangup_all();
     }
   }
   pjsua_destroy();
+  ah_status (AH_OK, "Exiting...");
 
   return 0;
 }
