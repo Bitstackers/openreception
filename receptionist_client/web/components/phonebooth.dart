@@ -88,10 +88,10 @@ class Phonebooth {
       protocol.originateCallFromExtension(receptionSelected.id, dialStrig).then((protocol.Response<Map> response) {
         if(response.status == protocol.Response.OK) {
           log.info('Ringede op til ${dialStrig}', toUserLog: true);
-          log.info('Agent ${configuration.agentID} called ${dialStrig}');
+          log.info('Agent ${configuration.userId} called ${dialStrig}');
         } else {
           log.info('Forsøgte at ringe op til ${dialStrig} men fejlede', toUserLog: true);
-          log.info('Agent ${configuration.agentID} called ${dialStrig} but failed. ${response.statusText}');
+          log.info('Agent ${configuration.userId} called ${dialStrig} but failed. ${response.statusText}');
         }
       });
 

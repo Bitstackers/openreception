@@ -278,7 +278,7 @@ class SendMessage {
       [${checkbox3Checked ? 'X': ' '}] Har ringet
       [${checkbox4Checked ? 'X': ' '}] Haster
 
-      Fortsat god dag ønskes du fra agent ${configuration.agentID}
+      Fortsat god dag ønskes du fra agent ${configuration.userName}
     ''';
 
     protocol.sendMessage(completeMessage, ['1@1']).then((protocol.Response response) {
