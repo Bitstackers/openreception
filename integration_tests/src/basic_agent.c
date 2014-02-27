@@ -10,11 +10,15 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <strings.h>
+#include <stdbool.h>
 #include <pjsua-lib/pjsua.h>
 
 #define THIS_FILE	"BASIC_AGENT"
 
 typedef enum {AH_ERROR, AH_READY, AH_OK} ah_status_t;
+
+bool is_registered = false;
+bool processing    = false;
 
 char *ah_status_to_string[] = {
   [AH_ERROR] = "-ERROR",
@@ -123,7 +127,8 @@ void register_account(pjsua_acc_id acc_id) {
       }
       reconnect_count++;
    }
-   ah_status(AH_READY, "Account registered.");
+   is_registered = true;
+   ah_status(AH_OK, "Account registered.");
 } 
 
 /**
@@ -136,11 +141,33 @@ void unregister_account(pjsua_acc_id acc_id) {
 
    pj_status_t status = !PJ_SUCCESS;
 
-   status = pjsua_acc_set_registration (acc_id, PJ_FALSE);
-   if (status != PJ_SUCCESS) {
-      error_exit("Error in register_account()", status);
-   }
+   if (is_registered) {
+      
+      const int   u_resolution    = 100000;
+      const int   retries         = (10 * 1000000) / u_resolution;
+      int         reconnect_count = 0;
+      pj_status_t status          = !PJ_SUCCESS;
+      
+      status = pjsua_acc_set_registration (acc_id, PJ_FALSE);
+      if (status != PJ_SUCCESS) { 
+         error_exit("Error in unregister_account()", status);
+      }
 
+      pjsua_acc_info account_info;
+      pjsua_acc_get_info(acc_id, &account_info);
+
+      while (account_info.expires >= 0) {
+         pjsua_acc_get_info(acc_id, &account_info);
+
+         if(usleep(u_resolution) < 0 || reconnect_count > retries) {
+            ah_status (AH_ERROR, "ACCOUNT_TIMEOUT");
+            exit(1);
+         }
+         reconnect_count++;
+
+      }
+      is_registered = false;
+   }
    ah_status (AH_OK, "Unregistered account ");
 } 
 
@@ -236,7 +263,7 @@ int main(int argc, char *argv[]) {
     status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
     if (status != PJ_SUCCESS) error_exit("Error adding account", status);
 
-    register_account (acc_id);
+    ah_status(AH_READY, "Agent initialized..");
 
   }
 
@@ -266,21 +293,24 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    if (option[0] == 'r') {
+    else if (option[0] == 'r') {
       register_account(acc_id);
     }
 
-    if (option[0] == 'u') {
+    else if (option[0] == 'u') {
       unregister_account(acc_id);
     }
 
-    if (option[0] == 'q') {
+    else if (option[0] == 'q') {
       break;
     }
    
-    if (option[0] == 'h') {
-      ah_status (AH_OK, "Hangin up all calls...");
+    else if (option[0] == 'h') {
       pjsua_call_hangup_all();
+      ah_status (AH_OK, "Hangin up all calls...");
+    }
+    else {
+      ah_status (AH_ERROR, "Unknown command:");
     }
   }
   pjsua_destroy();

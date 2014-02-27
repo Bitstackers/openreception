@@ -4,7 +4,7 @@ export LIB_DIR := "$(PWD)"
 PJVERSION=2.1
 
 PJBASE=$(PWD)/pjproject-${PJVERSION}
-PJOPTS=--enable-static  --disable-sound
+PJOPTS=--enable-static  --enable-sound
 -include $(PJBASE)/build.mak
 
 CC      = $(APP_CC)
