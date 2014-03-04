@@ -50,17 +50,17 @@ clean:
 	rm -rf $(OUTPUT_DIRECTORY)
 
 install: all
-	install --directory ${PREFIX}/bin
-	install --target-directory=${PREFIX}/bin out/*.dart
+	install --directory ${PREFIX}
+	install --target-directory=${PREFIX} out/*.dart
 
 install-default-config:
-	@install --directory ${PREFIX}/bin
-	@install AuthServer/bin/config.json.dist ${PREFIX}/bin/authconfig.json
-	@install ContactServer/bin/config.json.dist ${PREFIX}/bin/contactconfig.json
-	@install LogServer/bin/config.json.dist ${PREFIX}/bin/logconfig.json
-	@install MessageServer/bin/config.json.dist ${PREFIX}/bin/messageconfig.json
-	@install MiscServer/bin/config.json.dist ${PREFIX}/bin/miscconfig.json
-	@install ReceptionServer/bin/config.json.dist ${PREFIX}/bin/receptionconfig.json
+	@install --directory ${PREFIX}
+	@install AuthServer/bin/config.json.dist ${PREFIX}/authconfig.json
+	@install ContactServer/bin/config.json.dist ${PREFIX}/contactconfig.json
+	@install LogServer/bin/config.json.dist ${PREFIX}/logconfig.json
+	@install MessageServer/bin/config.json.dist ${PREFIX}/messageconfig.json
+	@install MiscServer/bin/config.json.dist ${PREFIX}/miscconfig.json
+	@install ReceptionServer/bin/config.json.dist ${PREFIX}/receptionconfig.json
 
 # This rule depends on a .pgpass file containing the password for the user specified in makefile.dbsetup
 latest_db_install:
