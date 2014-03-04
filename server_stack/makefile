@@ -4,6 +4,15 @@ DB_SCHEMA=postgresql/schema.sql
 DB_DATA=postgresql/test_data.sql
 TIMESTAMP=$(shell date +%s)
 
+PREFIX?=/usr/local/databaseservers
+
+AuthBinary=AuthServer.dart
+ContactBinary=ContactServer.dart
+LogBinary=LogServer.dart
+MessageBinary=MessageServer.dart
+MiscBinary=MiscServer.dart
+ReceptionBinary=ReceptionServer.dart
+
 -include makefile.dbsetup
 
 all: auth contact log message misc reception
@@ -12,33 +21,46 @@ OUTPUT_DIRECTORY=out
 
 auth: outfolder
 	cd AuthServer/ && pub get 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/AuthServer.dart --categories=Server AuthServer/bin/authserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart
 
 contact: outfolder
 	cd ContactServer/ && pub get 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/ContactServer.dart --categories=Server ContactServer/bin/contactserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server ContactServer/bin/contactserver.dart
 
 log: outfolder
 	cd LogServer/ && pub get 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/LogServer.dart --categories=Server LogServer/bin/logserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${LogBinary} --categories=Server LogServer/bin/logserver.dart
 
 message: outfolder
 	cd MessageServer/ && pub get
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/MessageServer.dart --categories=Server MessageServer/bin/messageserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server MessageServer/bin/messageserver.dart
 
 misc: outfolder
 	cd MiscServer/ && pub get
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/MiscServer.dart --categories=Server MiscServer/bin/miscserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MiscBinary} --categories=Server MiscServer/bin/miscserver.dart
 
 reception: outfolder
 	cd ReceptionServer/ && pub get
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/ReceptionServer.dart --categories=Server ReceptionServer/bin/receptionserver.dart
+	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${ReceptionBinary} --categories=Server ReceptionServer/bin/receptionserver.dart
 
 outfolder:
 	mkdir -p $(OUTPUT_DIRECTORY)
 
 clean: 
 	rm -rf $(OUTPUT_DIRECTORY)
+
+install: all
+	install --directory ${PREFIX}/bin
+	install --target-directory=${PREFIX}/bin out/*.dart
+
+install-default-config:
+	@install --directory ${PREFIX}/bin
+	@install AuthServer/bin/config.json.dist ${PREFIX}/bin/authconfig.json
+	@install ContactServer/bin/config.json.dist ${PREFIX}/bin/contactconfig.json
+	@install LogServer/bin/config.json.dist ${PREFIX}/bin/logconfig.json
+	@install MessageServer/bin/config.json.dist ${PREFIX}/bin/messageconfig.json
+	@install MiscServer/bin/config.json.dist ${PREFIX}/bin/miscconfig.json
+	@install ReceptionServer/bin/config.json.dist ${PREFIX}/bin/receptionconfig.json
 
 # This rule depends on a .pgpass file containing the password for the user specified in makefile.dbsetup
 latest_db_install:
