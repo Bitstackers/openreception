@@ -17,8 +17,11 @@
 
 typedef enum {AH_ERROR, AH_READY, AH_OK} ah_status_t;
 
-bool is_registered = false;
-bool processing    = false;
+bool          is_registered = false;
+bool          processing    = false;
+bool          autoanswer    = true;
+pjsua_call_id current_call  = PJSUA_INVALID_ID;
+
 
 char *ah_status_to_string[] = {
   [AH_ERROR] = "-ERROR",
@@ -36,12 +39,18 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
 
   pjsua_call_get_info(call_id, &ci);
 
+  current_call = call_id;
+
   PJ_LOG(3, (THIS_FILE, "Incoming call from %.*s!!",
              (int) ci.remote_info.slen,
              ci.remote_info.ptr));
 
-  /* Automatically answer incoming calls with 200/OK */
-  pjsua_call_answer(call_id, 200, NULL, NULL);
+  if (autoanswer) {
+    pjsua_call_answer(call_id, 200, NULL, NULL);
+  } else {
+    pjsua_call_answer(call_id, 180, NULL, NULL);
+  }
+
 }
 
 /* Callback called by the library when call's state has changed */
@@ -67,6 +76,7 @@ static void on_call_media_state(pjsua_call_id call_id) {
     pjsua_conf_connect(ci.conf_slot, 0);
     pjsua_conf_connect(0, ci.conf_slot);
   }
+
 }
 
 /* Display error and exit application */
@@ -281,7 +291,7 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    // Dial command.
+    /* Dial command. */
     if (option[0] == 'd') {
       pj_str_t uri = pj_str(&option[1]);
       status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
@@ -293,22 +303,48 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    /* Register */
     else if (option[0] == 'r') {
       register_account(acc_id);
     }
 
+    /* Unregister */
     else if (option[0] == 'u') {
       unregister_account(acc_id);
     }
 
-    else if (option[0] == 'q') {
-      break;
+    /* Enable autoanswer */
+    else if (option[0] == 'a') {
+      autoanswer = true;
+      ah_status(AH_OK, "Autoanswer enabled.");
     }
-   
+
+    /* Disable autoanswer (manual answer) */
+    else if (option[0] == 'm') {
+      autoanswer = false;
+      ah_status(AH_OK, "Autoanswer disabled.");
+    }
+
+    /* Pickup incoming call, unsupported for now. */
+    else if (option[0] == 'p') {
+      if (current_call != PJSUA_INVALID_ID) { 
+        pjsua_call_answer(current_call, 200, NULL, NULL);
+      } else {
+        ah_status(AH_ERROR, "No call to pick up.");
+      }
+    }
+
+    /* Full hangup.. */
     else if (option[0] == 'h') {
       pjsua_call_hangup_all();
       ah_status (AH_OK, "Hangin up all calls...");
     }
+
+    /* Exit application. */
+    else if (option[0] == 'q') {
+      break;
+    }
+   
     else {
       ah_status (AH_ERROR, "Unknown command:");
     }
