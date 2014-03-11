@@ -15,7 +15,7 @@
 
 #define THIS_FILE	"BASIC_AGENT"
 
-typedef enum {AH_ERROR, AH_READY, AH_OK} ah_status_t;
+typedef enum {AH_ERROR, AH_READY, AH_OK, AH_CALL} ah_status_t;
 
 bool          is_registered = false;
 bool          processing    = false;
@@ -26,8 +26,20 @@ pjsua_call_id current_call  = PJSUA_INVALID_ID;
 char *ah_status_to_string[] = {
   [AH_ERROR] = "-ERROR",
   [AH_READY] = "+READY",
-  [AH_OK] = "+OK"
+  [AH_OK] = "+OK",
+  [AH_CALL] = "+CALL"
 };
+
+/*
+ * status()
+ *
+ * Prints out the usage information.
+ */
+
+void ah_status(ah_status_t status, char* message) {
+  fprintf (stdout, "%s %s \n", ah_status_to_string[status], message);
+  fflush(stdout);
+}
 
 /* Callback called by the library upon receiving incoming call */
 static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
@@ -48,6 +60,7 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
   if (autoanswer) {
     pjsua_call_answer(call_id, 200, NULL, NULL);
   } else {
+    ah_status(AH_CALL, "Incoming call.");
     pjsua_call_answer(call_id, 180, NULL, NULL);
   }
 
@@ -84,17 +97,6 @@ static void error_exit(const char *title, pj_status_t status) {
   pjsua_perror(THIS_FILE, title, status);
   pjsua_destroy();
   exit(1);
-}
-
-/*
- * status()
- *
- * Prints out the usage information.
- */
-
-void ah_status(ah_status_t status, char* message) {
-  fprintf (stdout, "%s %s \n", ah_status_to_string[status], message);
-  fflush(stdout);
 }
 
 /*
