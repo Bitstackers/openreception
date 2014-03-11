@@ -57,10 +57,10 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
              (int) ci.remote_info.slen,
              ci.remote_info.ptr));
 
+  ah_status(AH_CALL, "Incoming call.");
   if (autoanswer) {
     pjsua_call_answer(call_id, 200, NULL, NULL);
   } else {
-    ah_status(AH_CALL, "Incoming call.");
     pjsua_call_answer(call_id, 180, NULL, NULL);
   }
 
