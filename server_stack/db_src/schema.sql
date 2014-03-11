@@ -67,13 +67,19 @@ CREATE TABLE contacts (
    enabled      BOOLEAN NOT NULL DEFAULT TRUE
 );
 
+CREATE TABLE organizations (
+   id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   full_name    TEXT NOT NULL
+);
+
 CREATE TABLE receptions (
-   id            INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   full_name     TEXT    NOT NULL,
-   uri           TEXT    NOT NULL UNIQUE,
-   attributes    JSON    NOT NULL,
-   extradatauri  TEXT,
-   enabled       BOOLEAN NOT NULL DEFAULT TRUE
+   id              INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   organization_id INTEGER NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
+   full_name       TEXT    NOT NULL,
+   uri             TEXT    NOT NULL UNIQUE,
+   attributes      JSON    NOT NULL,
+   extradatauri    TEXT,
+   enabled         BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE INDEX reception_uri_index ON receptions (uri);
