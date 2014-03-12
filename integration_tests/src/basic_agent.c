@@ -337,10 +337,20 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    /* Hang up current call */
+    else if (option[0] == 'H') {
+      if (current_call != PJSUA_INVALID_ID) {
+        pjsua_call_hangup (current_call, 0,NULL, NULL);
+        ah_status (AH_OK, "Hanging up current call...");
+      } else {
+        ah_status(AH_ERROR, "No call to hang up.");
+      }
+    }
+
     /* Full hangup.. */
     else if (option[0] == 'h') {
       pjsua_call_hangup_all();
-      ah_status (AH_OK, "Hangin up all calls...");
+      ah_status (AH_OK, "Hanging up all calls...");
     }
 
     /* Exit application. */
