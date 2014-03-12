@@ -331,6 +331,7 @@ int main(int argc, char *argv[]) {
     else if (option[0] == 'p') {
       if (current_call != PJSUA_INVALID_ID) { 
         pjsua_call_answer(current_call, 200, NULL, NULL);
+        ah_status(AH_OK, "Call picked up.");
       } else {
         ah_status(AH_ERROR, "No call to pick up.");
       }
