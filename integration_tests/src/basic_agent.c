@@ -15,7 +15,7 @@
 
 #define THIS_FILE	"BASIC_AGENT"
 
-typedef enum {AH_ERROR, AH_READY, AH_OK, AH_RINGING, AH_CONNECTED, AH_CALL} ah_status_t;
+typedef enum {AH_ERROR, AH_READY, AH_OK, AH_RINGING, AH_CONNECTED, AH_HANGUP, AH_CALL} ah_status_t;
 
 bool          is_registered = false;
 bool          processing    = false;
@@ -29,6 +29,7 @@ char *ah_status_to_string[] = {
   [AH_OK] = "+OK",
   [AH_RINGING] = "+RINGING",
   [AH_CONNECTED] = "+CONNECTED",
+  [AH_HANGUP] = "+HANGUP",
   [AH_CALL] = "+CALL"
 };
 
@@ -78,6 +79,10 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e) {
   PJ_LOG(3, (THIS_FILE, "Call %d state=%.*s", call_id,
              (int) ci.state_text.slen,
              ci.state_text.ptr));
+
+  if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
+    ah_status (AH_HANGUP, "Either you or the other party hung up.");
+  }
 }
 
 /* Called by the library when a transaction within the call has changed state. */
@@ -242,7 +247,7 @@ int main(int argc, char *argv[]) {
     cfg.cb.on_call_tsx_state   = &on_call_tsx_state;
 
     pjsua_logging_config_default(&log_cfg);
-    log_cfg.console_level = 0; // 0 = Mute console, 3 = somewhat userful, 4 = overly verbose.
+    log_cfg.console_level = 0; // 0 = Mute console, 3 = somewhat useful, 4 = overly verbose.
     pjsua_media_config_default(&media_cfg);
 
     status = pjsua_init(&cfg, &log_cfg, &media_cfg);
