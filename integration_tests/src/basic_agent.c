@@ -84,7 +84,7 @@ static void on_call_tsx_state (pjsua_call_id      call_id,
                                pjsip_event       *e) {
   PJ_UNUSED_ARG(e);
 
-  printf ("%d: '%s'",
+  printf ("%d: '%s'\n",
           tsx->status_code,
           tsx->status_text.ptr);
 }
