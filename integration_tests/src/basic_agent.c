@@ -15,7 +15,7 @@
 
 #define THIS_FILE	"BASIC_AGENT"
 
-typedef enum {AH_ERROR, AH_READY, AH_OK, AH_CALL} ah_status_t;
+typedef enum {AH_ERROR, AH_READY, AH_OK, AH_RINGING, AH_CONNECTED, AH_CALL} ah_status_t;
 
 bool          is_registered = false;
 bool          processing    = false;
@@ -27,6 +27,8 @@ char *ah_status_to_string[] = {
   [AH_ERROR] = "-ERROR",
   [AH_READY] = "+READY",
   [AH_OK] = "+OK",
+  [AH_RINGING] = "+RINGING",
+  [AH_CONNECTED] = "+CONNECTED",
   [AH_CALL] = "+CALL"
 };
 
@@ -87,6 +89,13 @@ static void on_call_tsx_state (pjsua_call_id      call_id,
   printf ("%d: '%s'\n",
           tsx->status_code,
           tsx->status_text.ptr);
+
+  if (tsx->status_code == 180) {
+    ah_status (AH_RINGING,   "Maybe somebody will pick up the phone at the other end soon.");
+  }
+  else if (tsx->status_code == 200) {
+    ah_status (AH_CONNECTED, "Somebody picked up the phone at the other end.");
+  }
 }
 
 /* Callback called by the library when call's media state has changed */
