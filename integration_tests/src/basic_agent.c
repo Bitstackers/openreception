@@ -78,6 +78,17 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e) {
              ci.state_text.ptr));
 }
 
+/* Called by the library when a transaction within the call has changed state. */
+static void on_call_tsx_state (pjsua_call_id      call_id,
+                               pjsip_transaction *tsx,
+                               pjsip_event       *e) {
+  PJ_UNUSED_ARG(e);
+
+  printf ("%d: '%s'",
+          tsx->status_code,
+          tsx->status_text.ptr);
+}
+
 /* Callback called by the library when call's media state has changed */
 static void on_call_media_state(pjsua_call_id call_id) {
   pjsua_call_info ci;
@@ -215,9 +226,10 @@ int main(int argc, char *argv[]) {
     pjsip_cfg()->endpt.disable_tcp_switch = PJ_TRUE;
 
     pjsua_config_default(&cfg);
-    cfg.cb.on_incoming_call = &on_incoming_call;
+    cfg.cb.on_incoming_call    = &on_incoming_call;
     cfg.cb.on_call_media_state = &on_call_media_state;
-    cfg.cb.on_call_state = &on_call_state;
+    cfg.cb.on_call_state       = &on_call_state;
+    cfg.cb.on_call_tsx_state   = &on_call_tsx_state;
 
     pjsua_logging_config_default(&log_cfg);
     log_cfg.console_level = 0; // 0 = Mute console, 3 = somewhat userful, 4 = overly verbose.
