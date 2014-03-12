@@ -86,8 +86,9 @@ static void on_call_tsx_state (pjsua_call_id      call_id,
                                pjsip_event       *e) {
   PJ_UNUSED_ARG(e);
 
-  printf ("%d: '%s'\n",
+  printf ("%d: '%.*s'\n",
           tsx->status_code,
+          (int)(tsx->status_text.slen),
           tsx->status_text.ptr);
 
   if (tsx->status_code == 180) {
