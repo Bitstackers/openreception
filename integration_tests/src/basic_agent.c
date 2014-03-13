@@ -17,11 +17,11 @@
 
 typedef enum {AH_ERROR, AH_READY, AH_OK, AH_RINGING, AH_CONNECTED, AH_HANGUP, AH_CALL} ah_status_t;
 
-bool          is_registered = false;
-bool          processing    = false;
-bool          autoanswer    = true;
-pjsua_call_id current_call  = PJSUA_INVALID_ID;
-
+bool            is_registered             = false;
+bool            processing                = false;
+bool            autoanswer                = true;
+pjsua_call_id   current_call              = PJSUA_INVALID_ID;
+pjsip_inv_state previous_invitation_state = PJSIP_INV_STATE_NULL;
 
 char *ah_status_to_string[] = {
   [AH_ERROR] = "-ERROR",
@@ -91,17 +91,51 @@ static void on_call_tsx_state (pjsua_call_id      call_id,
                                pjsip_event       *e) {
   PJ_UNUSED_ARG(e);
 
-  printf ("%d: '%.*s'\n",
-          tsx->status_code,
-          (int)(tsx->status_text.slen),
-          tsx->status_text.ptr);
+  pjsua_call_info ci;
+  pjsua_call_get_info(call_id, &ci);
 
-  if (tsx->status_code == 180) {
-    ah_status (AH_RINGING,   "Maybe somebody will pick up the phone at the other end soon.");
+  if ((ci.state_text.ptr == NULL) || (ci.state_text.slen <= 0)) {
+    PJ_LOG(3, (THIS_FILE,
+               "TSX: Call %d state=<NULL>",
+               call_id));
+  } else {
+    PJ_LOG(3, (THIS_FILE,
+               "TSX: Call %d state=%.*s",
+               call_id,
+               (int) ci.state_text.slen,
+               ci.state_text.ptr));
   }
-  else if (tsx->status_code == 200) {
-    ah_status (AH_CONNECTED, "Somebody picked up the phone at the other end.");
+
+  if (tsx == NULL) {
+    PJ_LOG(3, (THIS_FILE,
+               "TSX: Call %d (no TSX)",
+               call_id));
+  } else {
+    if ((tsx->status_text.ptr == NULL) || (tsx->status_text.slen <= 0)) {
+      PJ_LOG(3, (THIS_FILE,
+                 "TSX: Call %d ; Status: %d (<NULL>)",
+                 call_id,
+                 tsx->status_code));
+    } else {
+      PJ_LOG(3, (THIS_FILE,
+                 "TSX: Call %d ; Status: %d (%.*s)",
+                 call_id,
+                 tsx->status_code,
+                 (int)(tsx->status_text.slen),
+                 tsx->status_text.ptr));
+    }
+
+    if ((tsx->status_code == 180) &&
+        (previous_invitation_state == PJSIP_INV_STATE_CALLING)) {
+      ah_status (AH_RINGING,   "Maybe somebody will pick up the phone at the other end soon.");
+    }
+    else if ((tsx->status_code == 200) &&
+             (ci.state == PJSIP_INV_STATE_CONFIRMED)) {
+      ah_status (AH_CONNECTED, "Somebody picked up the phone at the other end.");
+    }
   }
+
+  previous_invitation_state = ci.state;
 }
 
 /* Callback called by the library when call's media state has changed */
@@ -137,7 +171,7 @@ void usage(char *command) {
 
 /**
  * register_account()
- * 
+ *
  */
 
 
@@ -149,7 +183,7 @@ void register_account(pjsua_acc_id acc_id) {
    pj_status_t status          = !PJ_SUCCESS;
 
    status = pjsua_acc_set_registration (acc_id, PJ_TRUE);
-   if (status != PJ_SUCCESS) { 
+   if (status != PJ_SUCCESS) {
       error_exit("Error in register_account()", status);
    }
 
@@ -167,11 +201,11 @@ void register_account(pjsua_acc_id acc_id) {
    }
    is_registered = true;
    ah_status(AH_OK, "Account registered.");
-} 
+}
 
 /**
  * unregister_account()
- * 
+ *
  */
 
 
@@ -180,14 +214,14 @@ void unregister_account(pjsua_acc_id acc_id) {
    pj_status_t status = !PJ_SUCCESS;
 
    if (is_registered) {
-      
+
       const int   u_resolution    = 100000;
       const int   retries         = (10 * 1000000) / u_resolution;
       int         reconnect_count = 0;
       pj_status_t status          = !PJ_SUCCESS;
-      
+
       status = pjsua_acc_set_registration (acc_id, PJ_FALSE);
-      if (status != PJ_SUCCESS) { 
+      if (status != PJ_SUCCESS) {
          error_exit("Error in unregister_account()", status);
       }
 
@@ -207,7 +241,7 @@ void unregister_account(pjsua_acc_id acc_id) {
       is_registered = false;
    }
    ah_status (AH_OK, "Unregistered account ");
-} 
+}
 
 /*
  * main()
@@ -356,7 +390,7 @@ int main(int argc, char *argv[]) {
 
     /* Pickup incoming call, unsupported for now. */
     else if (option[0] == 'p') {
-      if (current_call != PJSUA_INVALID_ID) { 
+      if (current_call != PJSUA_INVALID_ID) {
         pjsua_call_answer(current_call, 200, NULL, NULL);
         ah_status(AH_OK, "Call picked up.");
       } else {
@@ -384,7 +418,7 @@ int main(int argc, char *argv[]) {
     else if (option[0] == 'q') {
       break;
     }
-   
+
     else {
       ah_status (AH_ERROR, "Unknown command:");
     }
