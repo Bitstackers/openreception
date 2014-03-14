@@ -250,10 +250,15 @@ void unregister_account(pjsua_acc_id acc_id) {
  */
 int main(int argc, char *argv[]) {
   pj_status_t status;
+  int loglevel;
 
   if (argc < 4) {
     usage(argv[0]);
     exit(1);
+  }
+
+  if (argc > 5){
+    sscanf(argv[5], "%d", &loglevel);
   }
 
   pjsua_acc_id acc_id;
@@ -281,7 +286,7 @@ int main(int argc, char *argv[]) {
     cfg.cb.on_call_tsx_state   = &on_call_tsx_state;
 
     pjsua_logging_config_default(&log_cfg);
-    log_cfg.console_level = 0; // 0 = Mute console, 3 = somewhat useful, 4 = overly verbose.
+    log_cfg.console_level = loglevel; // 0 = Mute console, 3 = somewhat useful, 4 = overly verbose.
     pjsua_media_config_default(&media_cfg);
 
     status = pjsua_init(&cfg, &log_cfg, &media_cfg);
