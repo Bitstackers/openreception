@@ -166,7 +166,7 @@ static void error_exit(const char *title, pj_status_t status) {
  */
 
 void usage(char *command) {
-  fprintf (stderr, "Usage: %s username password domain clientport\n", command);
+  fprintf (stderr, "Usage: %s username password domain clientport [loglevel] \n", command);
 }
 
 /**
