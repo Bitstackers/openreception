@@ -337,6 +337,7 @@ INSERT INTO reception_calendar (reception_id, event_id) VALUES
 SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
 SELECT setval('groups_id_sequence', (SELECT max(id)+1 FROM groups), FALSE);
 SELECT setval('contacts_id_sequence', (SELECT max(id)+1 FROM contacts), FALSE);
+SELECT setval('organizations_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
 SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
 SELECT setval('messaging_addresses_id_sequence', (SELECT max(id)+1 FROM messaging_addresses), FALSE);
 SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
