@@ -42,7 +42,10 @@ class LocalQueue {
   void registerEventListerns() {
     event.bus.on(event.localCallQueueAdd).listen(addCall);
     event.bus.on(event.localCallQueueRemove).listen(removeCall);
-    event.bus.on(event.callChanged).listen((model.Call value) => call = value);
+    event.bus.on(event.callChanged).listen((model.Call value) { 
+      log.debug('------------- components.LocalQueue Call Changed to ID: ${value.id} Start: ${value.start} Inbound: ${value.inbound} B Leg: ${value.bLeg} Callid: ${value.callerId}');
+      call = value;
+    });
 
     event.bus.on(event.focusChanged).listen((Focus value) {
       hasFocus = handleFocusChange(value, [ul], element);
@@ -86,7 +89,10 @@ class LocalQueue {
   }
 
   void clickHandler(MouseEvent event, CallQueueItem queueItem) {
-    if(call == null || call == model.nullCall) {
+    if(call == null || call.id == model.nullCall.id) {
+      log.debug('localqueue TEST ${call == null} - call == null');
+      log.debug('localqueue TEST ${call.id == model.nullCall.id} - call.id == model.nullCall.id');
+      log.debug('components.LocalQueue.clickHandler() I have no call, so i\'ll pickup this one: Current Call: ${call} Pickup call ${queueItem.call}');
       queueItem.call.pickup();
     } else {
       log.debug('localqueue: clickHandler: Transfering. Got call ${call}');

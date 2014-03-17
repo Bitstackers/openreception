@@ -47,7 +47,7 @@ class CalendarEvent implements Comparable{
     _stop = DateTime.parse(json['stop']);
     _content = json['content'];
 
-    active = _start.millisecondsSinceEpoch <= now.millisecondsSinceEpoch && now.millisecondsSinceEpoch >= _stop.millisecondsSinceEpoch;
+    active = _start.millisecondsSinceEpoch <= now.millisecondsSinceEpoch && now.millisecondsSinceEpoch <= _stop.millisecondsSinceEpoch;
   }
 
   /**

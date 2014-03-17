@@ -98,6 +98,11 @@ Future<Response<model.Contact>> getContact(int receptionId, int contactId) {
 }
 
 Future<Response<model.CalendarEventList>> getContactCalendar(int receptionId, int contactId) {
+  assert(receptionId != null);
+  assert(receptionId >= 0);
+  assert(contactId != null);
+  assert(contactId >= 0);
+  
   final String       base      = configuration.contactServer.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.CalendarEventList>> completer =
       new Completer<Response<model.CalendarEventList>>();

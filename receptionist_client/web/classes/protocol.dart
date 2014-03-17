@@ -92,5 +92,6 @@ Map _parseJson(String responseText) {
  * Log [request] and [url] to [log.critical]
  */
 void _logError(HttpRequest request, String url) {
-  log.critical('Protocol failed. Status: [${request.status}] URL: ${url}');
+  log.critical('Protocol failed. Status: [${request.status}] URL: ${url} ${
+    request.responseText != null && request.responseText.isNotEmpty ? 'body: ${request.responseText}' : ''}');
 }

@@ -71,16 +71,18 @@ class ContactInfoCalendar {
     
     event.bus.on(event.contactChanged).listen((model.Contact value) {
       contact = value;
-      protocol.getContactCalendar(reception.id, contact.id).then((protocol.Response<model.CalendarEventList> response) {
-        if (response.status == protocol.Response.OK) {
-          eventList = response.data;
-        } else {
-          log.error('ContactInfoCalendar.ContactInfoCalendar. Request for getContactCalendar failed: ${response.statusText}');
-        }
-        render();
-      }).catchError((error) {
-        log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
-      });
+      if(value != model.nullContact) {
+        protocol.getContactCalendar(reception.id, contact.id).then((protocol.Response<model.CalendarEventList> response) {
+          if (response.status == protocol.Response.OK) {
+            eventList = response.data;
+          } else {
+            log.error('ContactInfoCalendar.ContactInfoCalendar. Request for getContactCalendar failed: ${response.statusText}');
+          }
+          render();
+        }).catchError((error) {
+          log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
+        });
+      }
     });
     
   }
