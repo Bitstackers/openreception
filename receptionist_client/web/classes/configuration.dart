@@ -75,13 +75,13 @@ class Configuration {
 //  String get token => _token;
 //  void set token (String value) => _token = value;
   
-  Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
-  Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
-  Uri _receptionServer = Uri.parse('http://alice.adaheads.com:4000');
-
-  Uri get contactServer => _contactServer;
-  Uri get logServer => _logServer;
-  Uri get receptionServer => _receptionServer;
+//  Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
+//  Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
+//  Uri _receptionServer = Uri.parse('http://alice.adaheads.com:4000');
+//
+//  Uri get contactServer => _contactServer;
+//  Uri get logServer => _logServer;
+//  Uri get receptionServer => _receptionServer;
   
   /**
    * Is the configuration loaded.
@@ -106,7 +106,7 @@ class Configuration {
           return new Future.delayed(new Duration(seconds:5),() => initialize());
         });
     } else {
-      new Future(() => null);
+      return new Future(() => null);
     }
   }
 

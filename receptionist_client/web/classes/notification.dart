@@ -92,7 +92,7 @@ class _Notification {
         log.debug(json.toString());
       }
     } else {
-      log.critical('nonPersistensNotification did not have a event field.');
+      log.critical('Notification did not have a event field.');
     }
   }
 

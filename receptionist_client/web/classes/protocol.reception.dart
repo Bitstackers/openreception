@@ -24,7 +24,7 @@ part of protocol;
 Future<Response<model.Reception>> getReception(int id) {
   assert(id != null);
 
-  final String       base      = configuration.receptionServer.toString(); //configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.receptionBaseUrl.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.Reception>> completer =
       new Completer<Response<model.Reception>>();
   final List<String> fragments = new List<String>();
@@ -73,7 +73,7 @@ const String MIDI = 'midi';
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<model.CalendarEventList>> getReceptionCalendar(int id) {
-  final String       base      = configuration.receptionServer.toString();
+  final String       base      = configuration.receptionBaseUrl.toString();
   final Completer<Response<model.CalendarEventList>> completer =
       new Completer<Response<model.CalendarEventList>>();
   final List<String> fragments = new List<String>();
@@ -115,7 +115,7 @@ Future<Response<model.CalendarEventList>> getReceptionCalendar(int id) {
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
 Future<Response<model.ReceptionList>> getReceptionList() {
-  final String       base      = configuration.receptionServer.toString();
+  final String       base      = configuration.receptionBaseUrl.toString();
   final Completer<Response<model.ReceptionList>> completer =
       new Completer<Response<model.ReceptionList>>();
   final List<String> fragments = new List<String>();

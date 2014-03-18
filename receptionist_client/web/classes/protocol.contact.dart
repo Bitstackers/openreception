@@ -16,7 +16,7 @@ part of protocol;
 Future<Response<model.ContactList>> getContactList(int receptionId) {
   assert(receptionId != null);
 
-  final String       base      = configuration.contactServer.toString();
+  final String       base      = configuration.contactBaseUrl.toString();
   final Completer<Response<model.ContactList>> completer =
       new Completer<Response<model.ContactList>>();
   final List<String> fragments = new List<String>();
@@ -60,7 +60,7 @@ Future<Response<model.Contact>> getContact(int receptionId, int contactId) {
   assert(contactId != null);
   assert(contactId >= 0);
 
-  final String       base      = configuration.contactServer.toString(); //configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.contactBaseUrl.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.Contact>> completer =
       new Completer<Response<model.Contact>>();
   final List<String> fragments = new List<String>();
@@ -103,7 +103,7 @@ Future<Response<model.CalendarEventList>> getContactCalendar(int receptionId, in
   assert(contactId != null);
   assert(contactId >= 0);
   
-  final String       base      = configuration.contactServer.toString(); //configuration.aliceBaseUrl.toString();
+  final String       base      = configuration.contactBaseUrl.toString(); //configuration.aliceBaseUrl.toString();
   final Completer<Response<model.CalendarEventList>> completer =
       new Completer<Response<model.CalendarEventList>>();
   final List<String> fragments = new List<String>();
