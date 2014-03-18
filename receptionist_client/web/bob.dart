@@ -91,7 +91,7 @@ bool handleToken() {
     });
     return true;
   } else {
-    String loginUrl = 'http://alice.adaheads.com:4050/token/create?returnurl=${window.location.toString()}';
+    String loginUrl = '${configuration.authBaseUrl}/token/create?returnurl=${window.location.toString()}';
     window.location.assign(loginUrl);
     return false;
   }
