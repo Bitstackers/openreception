@@ -250,7 +250,7 @@ void unregister_account(pjsua_acc_id acc_id) {
  */
 int main(int argc, char *argv[]) {
   pj_status_t status;
-  int loglevel;
+  int loglevel = 0;
 
   if (argc < 4) {
     usage(argv[0]);
