@@ -203,7 +203,8 @@ class Configuration {
     httpport:    $httpport
     redirecturi: $redirectUri
     syslog:      $useSyslog
-    sysloghost:  ${syslogHost}''';
+    sysloghost:  ${syslogHost}
+    change:      ${cache}''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
