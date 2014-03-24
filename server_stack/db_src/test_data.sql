@@ -35,7 +35,7 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (32, 'Jan Jordbi', 'human'),
        (33, 'Karsten Klokkefrø', 'human'),
        (34, 'Lars Latterfrø', 'human'),
-       (35, 'Maren Muldvarp', 'human'),
+       (35, 'Maren Malkeko', 'human'),
        (36, 'Nille Natugle', 'human'),
        (37, 'Ole Odder', 'human'),
        (38, 'Petra Pindsvin', 'human'),
@@ -65,12 +65,15 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (62, 'Morten Smidt-Holm', 'human'),
        (63, 'Naja Duelund', 'human'),
        (64, 'Oda Olsen', 'human'),
+       (65, 'Bondemand Jensen', 'human'),
+       (66, 'Mario Mario', 'human'),
+       (67, 'Luigi Mario', 'human'),
        (99, 'Support', 'function');
 
 
 INSERT INTO organizations (id, full_name)
 VALUES 	    (1, 'AdaHeads K/S'),
-	    (2, 'Fiskemandens venner A/S'),
+	    (2, 'Venner A/S'),
 	    (3, 'Responsum K/S'),
 	    (4, 'Hansen VVS A/S'),
 	    (5, 'Kødbollen A/S');
@@ -88,12 +91,16 @@ INSERT INTO receptions (id, organization_id, full_name, uri, attributes)
 VALUES (3, 3, 'Responsum K/S', 'responsum_ks_3', '{"addresses":[{"value":"Farum gydevej 87","priority":3}],"alternatenames":[{"value":"Stemmen i dit øre","priority":1}],"bankinginformation":[{"value":"Danske bank 222 333 444 555","priority":1},{"value":"Nordea 999 888 777 666","priority":2}],"short_greeting":"Du taler med...","crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@responsum.com","priority":1}],"greeting":"Velkommen til Responsum - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af produkter stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:thomas@responsum.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"http://responsum.dk","priority":1}]}');
 
 INSERT INTO receptions (id, organization_id, full_name, uri, attributes)
-VALUES  (4, 4, 'Hansen VVS A/S', 'hansen_vvs_4', '{"addresses":[],"alternatenames":[],"bankinginformation":[],"crapcallhandling":[],"customertype":"","emailaddresses":[],"greeting":"Hansen vvs. Hvad vil du?","handlings":[],"openinghours":[],"other":"","product":"","registrationnumbers":[],"telephonenumbers":[],"websites":[],"short_greeting":"Du taler med..."}');
+VALUES  (4, 4, 'Hansen VVS A/S', 'hansen_vvs_4', '{"addresses":[{"value":"Kloakstræde 2","priority":1}],"alternatenames":[{"value":"Du kommer og kalder, når rørene driller","priority":1}],"bankinginformation":[{"value":"Tube bank 696 347 230 9248","priority":1}],"short_greeting":"Du taler med...","crapcallhandling":[{"value":"Send en mail til mario@hansenvvs.dk","priority":1}],"customertype":"","emailaddresses":[{"value":"info@hansenvvs.com","priority":1}],"greeting":"Hansen VVS - du taler med ...","handlings":[{"value":"Nye kunder sendes til luigi","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"Håndter rør i alle størrelser","product":"Prmært VVS arbejde","registrationnumbers":[{"value":"Reg no. 223344","priority":1}],"telephonenumbers":[{"value":"+45 87 53 93 19","priority":1}],"websites":[{"value":"http://hansenvvs.dk","priority":1}]}');
 
 INSERT INTO receptions (id, organization_id, full_name, uri, attributes)
 VALUES (5, 5, 'Kødbollen A/S',
            'koedbollen_as', 
            '{"addresses":[{"value":"Kødbyen","priority":3}],"alternatenames":[{"value":"Kødet i din bolle.","priority":1}],"bankinginformation":[{"value":"Spanske bank 222 444 555","priority":1},{"value":"Sydea 944 888 777 666","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@koedbollen.dk","priority":1}],"greeting":"Kødbollenn - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af kød stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:pent@koedbollen.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"","priority":1}],"short_greeting":"Du taler med..."}');
+
+INSERT INTO receptions (id, organization_id, full_name, uri, attributes)
+VALUES (6, 2, 'Landmandens venner A/S', 
+           'farmers_friends_as_5', '{"addresses":[{"value":"Landmandsvej 1 - langtude 4400","priority":1}],"alternatenames":[{"value":"Landmændenes venner","priority":1}],"bankinginformation":[{"value":"Deres værdig er i jord og kvæg","priority":1}],"crapcallhandling":[{"value":"Bed dem om at kommde til dyreskuet","priority":1}],"customertype":"","short_greeting":"Goddag du taler med...","emailaddresses":[{"value":"info@landmænd.com","priority":1}],"greeting":"Landmændenes venner, hvad kan jeg gøre for dig?","handlings":[{"value":"Tag altid imod en besked.","priority":1}],"openinghours":[{"value":"Ude for høst-sæsonen","priority":1}],"other":"Bonus info","product":"Mælk, køer og grise","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"+45 66 77 88 90","priority":1}],"websites":[{"value":"http://www.farmerfriend.com/","priority":1}]}');
 
 INSERT INTO reception_contacts(reception_id, contact_id, attributes) 
 VALUES /*Adaheads*/
@@ -104,53 +111,27 @@ VALUES /*Adaheads*/
        (1, 5, '{"backup":[{"value":"Thomas Løcke", "priority": 1},{"value":"Kim rostgaard Christensen", "priority": 2}],"emailaddresses":[{"value":"jsa@adaheads.com", "priority": 1}],"handling":[{"value":"Hans telefon har ofte dårlig forbindelse på grund af, han befinder sig I de tyndere luftlag", "priority": 1}],"telephonenumbers":[{"value":"555 666 777", "priority": 1}],"workhours":[{"value":"Mandag-Tirsdag 09:00 16", "priority": 1},{"value":"Torsdag-Fredag 10:00 – 15:00", "priority": 2}],"tags":["Ada","SIP","Linux","Fysik"],"department":"Development","info":"Kigger efter koden","position":"Software udvikler","relations":"Har engang haft en hund","responsibility":"Alice og Cloe"}'),
        (1, 6, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[{"value":"ss@adaheads.com","priority":1}],"handling":[],"telephonenumbers":[],"workhours":[],"tags":["Grafik"],"department":"Design","info":"","position":"Designer","relations":"Børn med Kim Rostgaard Christensen","responsibility":"Bob design"}'),
        (1, 7, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[],"handling":[],"telephonenumbers":[{"value":"12345678","priority":1}],"workhours":[],"tags":["Granvej","Mosekrogen"],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 17, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 46, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 18, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 19, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 20, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (1, 21, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       
        /*Fishermans Friends*/
        (2, 1, '{"backup":[{"value":"Steen Løcke","priority":1}],"emailaddresses":[{"value":"tl@ff.dk","priority":1}],"handling":[{"value":"spørg ikke ind til ekstra stærk varianten","priority":1}],"telephonenumbers":[{"value":"87654321","priority":1}],"workhours":[],"tags":["Fisker","sømand","pirat"],"department":"Fangst","info":"Tidligere fisker I militæret","position":"Key fishing manager","relations":"Gift med Trine Løcke","responsibility":"Fersk fisk"}'),
        (2, 4, '{"backup":[{"value":"Sidsel Schomacker", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Pas på hans skæg", "priority": 1}],"telephonenumbers":[{"value":"+45 31 41 59 26", "priority": 1}],"workhours":[{"value":"Hele tiden", "priority": 1}],"tags":["Linux","Tux","Pingvinen"],"department":"Båden","info":"Klap for den venstre øje","position":"CFO (Cheif fishing officer)","relations":"Papegøjen Dieco ","responsibility":"Saltvands fisk"}'),
-       (2, 8,  '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 9,  '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 10, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 11, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 12, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 13, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 14, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 15, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (2, 16, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
+       
        /*Responsum*/
        (3, 1, '{"backup":[{"value":"Trine Løcke","priority":1},{"value":"Steen Løcke","priority":2}],"emailaddresses":[{"value":"tl@responsum.dk","priority":1}],"handling":[{"value":"Bær over med hans gode humør","priority":1}],"telephonenumbers":[{"value":"+45 33 48 82 01","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["AWS","SIP","Slackware","Linux"],"department":"HQ","info":"Something","position":"CTO","relations":"Gift med Trine Løcke","responsibility":"IT afdellingen"}'),
        (3, 2, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"trine@adaheads.com","priority":1}],"handling":[],"telephonenumbers":[{"value":"60431993","priority":1}],"workhours":[{"value":"Hverdage 08:00 – 12:00 & 13:00 – 17:00","priority":1},{"value":"Lørdag Hele dagen","priority":2}],"tags":["Linux","Printer","Support","IT","Speaker"],"department":"Produktion","info":"Går altid I blå sko","position":"CRO (Cheif receptionist officer)","relations":"Gift med Thomas Løcke","responsibility":"Printeren"}'),
        (3, 3, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"steen@responsum.dk","priority":1}],"handling":[],"telephonenumbers":[{"value":"88329100","priority":1}],"workhours":[{"value":"Hverdage 08:00 – 17:00","priority":1}],"tags":["jobansøger","2730","3660","3520"],"department":"Produktion","info":"Ham I glasburet. We do not ask questions.","position":"CEO & CFO","relations":"Far til Thomas Løcke, men det kan han jo ikke gøre for.","responsibility":"Regnskab"}'),
        (3, 4, '{"backup":[{"value":"Jacob Sparre Andersen", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Spørg ikke ind til hvor god han er til at parkere - for det styrer han.", "priority": 1}],"telephonenumbers":[{"value":"88329100", "priority": 1}],"workhours":[{"value":"Hverdage 09:00 – 18:00", "priority": 1}],"tags":["Ny kunde","Salg","Uadresserede"],"department":"Produktion","info":"Ham med håret","position":"Backup software maintainer","relations":"ven med alle","responsibility":"mail"}'),
-       (3, 22, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 23, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 24, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 25, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 26, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 27, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 28, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 29, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 30, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 31, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (3, 32, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (4, 33, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (4, 34, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (4, 35, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (4, 36, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (4, 37, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 38, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 39, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 40, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 41, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 42, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 43, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 44, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}'),
-       (5, 45, '{"backup":[],"emailaddresses":[],"handling":[],"telephonenumbers":[],"workhours":[],"tags":[],"department":"","info":"","position":"","relations":"","responsibility":""}');
+
+       /* Hansen VVS */
+       (4, 66, '{"backup":[{"value":"Luigi Mario","priority":1}],"emailaddresses":[{"value":"mario@hansenvvs.dk","priority":1}],"handling":[{"value":"Ring til hans telefonnummer","priority":1}],"telephonenumbers":[{"value":"+45 19 98 12 02","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Super"],"department":"Hovedafdelingen","info":"Alt-mulig-mand","position":"CPO (Cheif pluming officer)","relations":"Bror til Luigi Mario","responsibility":"Alt"}'),
+       (4, 67, '{"backup":[{"value":"Mario Mario","priority":1}],"emailaddresses":[{"value":"luigi@hansenvvs.dk","priority":1}],"handling":[{"value":"Ring til hans bror Mario, eller tag imod en besked","priority":1}],"telephonenumbers":[],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Super"],"department":"Hovedafdelingen","info":"Alt-mulig-mand","position":"Assistent","relations":"Bror til Mario Mario","responsibility":"Alt"}'),
+       
+       /* Kødbollen A/S */
+       (5, 28, '{"backup":[],"emailaddresses":[{"value":"frode@kødbollen.dk","priority":1}],"handling":[{"value":"Bare stil den videre til hans telefon","priority":1}],"telephonenumbers":[{"value":"+45 74 79 72 65","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 22:00","priority":1}],"tags":["byggemand"],"department":"Tuen","info":"Er rigtig god til holdarbejde","position":"Boss","relations":"","responsibility":"Tuen"}'),
+        
+       /* Farmer Friends */
+       (6, 65, '{"backup":[{"value":"Maren","priority":1}],"emailaddresses":[{"value":"jensen@landmand.dk","priority":1}],"handling":[{"value":"Tag altid i mod en besked, da han nok er ude i marken eller i stalden","priority":1}],"telephonenumbers":[],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Mark","Ko","Køer","Gris"],"department":"Stalden","info":"Har speciale i grise","position":"Bondemanden","relations":"Gift med Maren","responsibility":"Marken og alt i stalden"}'),
+       (6, 35, '{"backup":[{"value":"Bondemand Jensen","priority":1}],"emailaddresses":[{"value":"maren@landmand.dk","priority":1}],"handling":[{"value":"Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe.","priority":1}],"telephonenumbers":[{"value":"+45 90 12 14 16","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Fars","Steg"],"department":"Efterbehandling","info":"Arbejder med efterbehandling af råvarene","position":"Medarbejder","relations":"Gift med Bondemand Jensen","responsibility":"Alt efterbehandling"}');
 
 INSERT INTO messaging_addresses (id, address_type, address)
 VALUES (1, 'e-mail', 'tl@adaheads.com'),
@@ -162,8 +143,7 @@ VALUES (1, 'e-mail', 'tl@adaheads.com'),
        (7, 'sms',    '+4588329100'),
        (9, 'e-mail', 'trine@responsum.dk');
 
-INSERT INTO messaging_end_points (contact_id, reception_id,
-                                  address_id,
+INSERT INTO messaging_end_points (contact_id, reception_id, address_id,
                                   confidential, enabled)
 VALUES --  Adaheads
        (1, 1, 1, FALSE, TRUE),
@@ -171,12 +151,11 @@ VALUES --  Adaheads
        (3, 1, 3, FALSE, TRUE),
        (4, 1, 4, FALSE, TRUE),
        (5, 1, 5, TRUE,  FALSE),
-       --  Fishermans Friends                
-       (6, 1, 6, FALSE, TRUE),
-       (7, 1, 7, FALSE, FALSE),
+       --  Fishermans Friends    
+       (1, 2, 7, FALSE, FALSE),
        --  Responsum
-       (8, 2, 2, FALSE, TRUE),
-       (4, 3, 9, FALSE, TRUE);
+       (1, 3, 6, FALSE, TRUE),
+       (2, 3, 9, FALSE, TRUE);
 
 INSERT INTO distribution_lists (id,
                                 send_to_contact_id, send_to_reception_id,
@@ -292,7 +271,7 @@ VALUES (1,'https://tux.myopenid.com/', 1),
        (5, 'https://adaheads2.myopenid.com/', 1),
        (7,'https://adaheads3.myopenid.com/', 1);
 
-INSERT INTO message_draft (id,owner, json)
+INSERT INTO message_draft (id, owner, json)
 VALUES (1, 1 , '{"subject": "Vil gerne have du ringer tilbage.","From" : "Karen Karetkrejler", "body": "Det handler om den sølvgrå Fiat Punto."}');
 
 
@@ -306,23 +285,30 @@ INSERT INTO phone_numbers (id, value, kind) VALUES
 (7, '76296626', 'PSTN'),
 (8, '02850203', 'PSTN'),
 (9, '10203040', 'PSTN'),
-(10, '77773333', 'PSTN');
+(10, '1000', 'PSTN'),
+(11, '1001', 'PSTN'),
+(12, '1002', 'PSTN'),
+(13, '1003', 'PSTN');
 
 INSERT INTO contact_phone_numbers (reception_id, contact_id, phone_number_id) VALUES
-(1, 1, 1),
-(1, 2, 2),
-(1, 2, 3),
+(1, 1, 11),
+(1, 2, 12),
+(1, 2, 13),
 (1, 3, 4),
 (1, 4, 5),
 (1, 5, 6);
 
-
 INSERT INTO calendar_events (id, start, stop, message) VALUES
 (1, '2013-12-31 18:00:00', '2014-01-01 12:00:00', 'Nytårs aftensfest'),
-(2, '2014-01-02 08:00:00', '2014-01-02 18:00:00', 'Håndværker på besøg.'),
-(3, '2014-01-03 08:00:00', '2014-01-03 17:00:00', 'Er i møde, med mindre det er chefen (Hans Jørgensen)'),
-(4, '2014-01-06 08:00:00', '2014-01-08 17:00:00', 'Mus samtaler'),
-(5, '2014-01-09 10:00:00', '2014-01-09 12:00:00', 'I møde med Hans Jørgensen');
+(2, '2014-3-22 08:00:00', '2014-3-22 18:00:00', 'Håndværker på besøg.'),
+(3, '2014-3-23 08:00:00', '2014-3-23 17:00:00', 'Er i møde, med mindre det er chefen (Hans Jørgensen)'),
+(4, '2014-3-26 08:00:00', '2014-3-28 17:00:00', 'Mus samtaler'),
+(5, '2014-3-29 10:00:00', '2014-3-29 12:00:00', 'I møde med Hans Jørgensen'),
+(6, '2014-3-25 08:00:00', '2014-3-25 19:00:00', 'Renovation'),
+(7, '2014-3-25 12:00:00', '2014-3-25 13:00:00', 'Udbygning'),
+(8, '2014-3-25 16:00:00', '2014-3-25 22:00:00', 'Team building'),
+(9, '2014-3-25 16:00:00', '2014-3-25 20:00:00', 'Brandtest'),
+(10, '2014-3-25 16:00:00', '2014-3-25 20:00:00', 'Dyreskue');
 
 INSERT INTO contact_calendar (reception_id, contact_id, event_id) VALUES
 (1, 1, 1),
@@ -331,7 +317,12 @@ INSERT INTO contact_calendar (reception_id, contact_id, event_id) VALUES
 (1, 1, 5);
 
 INSERT INTO reception_calendar (reception_id, event_id) VALUES
-(1, 4);
+(1, 4),
+(2, 6),
+(3, 7),
+(4, 8),
+(5, 9),
+(6, 10);
 
 -- POSTGRES ONLY
 SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
