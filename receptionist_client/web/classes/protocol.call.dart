@@ -223,7 +223,7 @@ Future<Response<Map>> originateCallFromExtension(int receptionId, String extensi
   String                         url;
 
   fragments.add('extension=${extension}');
-  fragments.add('context=${receptionId}');
+  fragments.add('context=@${receptionId}');
   fragments.add('token=${configuration.token}');
   
   url = _buildUrl(base, path, fragments);

@@ -34,30 +34,34 @@ final _Notification notification = new _Notification();
  * A Class to handle all the WebSocket notifications coming from Alice.
  */
 class _Notification {
-  static final EventType<Map> callHangup  = new EventType<Map>();
-  static final EventType<Map> callPickup  = new EventType<Map>();
-  static final EventType<Map> queueJoin   = new EventType<Map>();
-  static final EventType<Map> queueLeave  = new EventType<Map>();
-  static final EventType<Map> callPark    = new EventType<Map>();
-  static final EventType<Map> callUnpark  = new EventType<Map>();
-  static final EventType<Map> callOffer   = new EventType<Map>();
-  static final EventType<Map> callLock    = new EventType<Map>();
-  static final EventType<Map> callUnlock  = new EventType<Map>();
-  static final EventType<Map> peerState   = new EventType<Map>();
+  static final EventType<Map> callTransfer = new EventType<Map>();
+  static final EventType<Map> callState    = new EventType<Map>();
+  static final EventType<Map> callHangup   = new EventType<Map>();
+  static final EventType<Map> callPickup   = new EventType<Map>();
+  static final EventType<Map> queueJoin    = new EventType<Map>();
+  static final EventType<Map> queueLeave   = new EventType<Map>();
+  static final EventType<Map> callPark     = new EventType<Map>();
+  static final EventType<Map> callUnpark   = new EventType<Map>();
+  static final EventType<Map> callOffer    = new EventType<Map>();
+  static final EventType<Map> callLock     = new EventType<Map>();
+  static final EventType<Map> callUnlock   = new EventType<Map>();
+  static final EventType<Map> peerState    = new EventType<Map>();
 
   Socket _socket;
 
   Map<String, EventType<Map>> _events =
-    {'call_hangup': callHangup,
-     'call_pickup': callPickup,
-     'queue_join' : queueJoin,
-     'queue_leave': queueLeave,
-     'call_park'  : callPark,
-     'call_unpark': callUnpark,
-     'call_offer' : callOffer,
-     'call_unlock': callUnlock,
-     'call_lock'  : callLock,
-     'peer_state' : peerState};
+    {'call_state'    : callState,
+     'call_transfer' : callTransfer,
+     'call_hangup'   : callHangup,
+     'call_pickup'   : callPickup,
+     'queue_join'    : queueJoin,
+     'queue_leave'   : queueLeave,
+     'call_park'     : callPark,
+     'call_unpark'   : callUnpark,
+     'call_offer'    : callOffer,
+     'call_unlock'   : callUnlock,
+     'call_lock'     : callLock,
+     'peer_state'    : peerState};
 
   /**
    * [_Notification] constructor.
@@ -114,13 +118,15 @@ class _Notification {
    */
   void _registerEventListeners() {
     event.bus
-      ..on(callHangup).listen(_callHangupEventHandler)
-      ..on(callPickup).listen(_callPickupEventHandler)
-      ..on(queueJoin) .listen(_queueJoinEventHandler)
-      ..on(queueLeave).listen(_queueLeaveEventHandler)
-      ..on(callPark)  .listen(_callParkEventHandler)
-      ..on(callUnpark).listen(_callUnparkEventHandler)
-      ..on(callOffer) .listen(_callOfferEventHandler);
+      ..on(callTransfer) .listen(_callTransferEventHandler)
+      ..on(callState)    .listen(_callStateEventHandler)
+      ..on(callHangup)   .listen(_callHangupEventHandler)
+      ..on(callPickup)   .listen(_callPickupEventHandler)
+      ..on(queueJoin)    .listen(_queueJoinEventHandler)
+      ..on(queueLeave)   .listen(_queueLeaveEventHandler)
+      ..on(callPark)     .listen(_callParkEventHandler)
+      ..on(callUnpark)   .listen(_callUnparkEventHandler)
+      ..on(callOffer)    .listen(_callOfferEventHandler);
 
     if(configuration != null && configuration.isLoaded()) {
       makeSocket();
@@ -136,6 +142,22 @@ class _Notification {
     }
   }
 }
+
+/**
+ * State [environment.call] when a call_state notification that matches
+ * [environment.call] is received on the notification socket.
+ */
+void _callStateEventHandler(Map json) {
+  log.debug('notification._callStateEventHandler');
+
+  model.Call call = new model.Call.fromJson(json['call']);
+
+  if (call.bLeg == environment.originationRequest) {
+    log.info('notification._callStateEventHandler this i my origination request: ${call}');
+    event.bus.fire(event.callChanged, call);
+  }
+}
+
 
 /**
  * Hangup [environment.call] when a call_hangup notification that matches
@@ -156,14 +178,32 @@ void _callHangupEventHandler(Map json) {
 }
 
 /**
+* Transfer [environment.call] when a call_transfer notification that matches
+* [environment.call] is received on the notification socket.
+*/
+void _callTransferEventHandler(Map json) {
+  log.debug('notification._callTransferEventHandler');
+
+  model.Call call = new model.Call.fromJson(json['call']);
+
+  if (call.id == environment.call.id || call.bLeg == environment.call.id) {
+    log.info('Opkald overført. ${call}', toUserLog: true);
+    log.info('notification._callTransferEventHandler transferred ${call}');
+    event.bus.fire(event.receptionChanged, model.nullReception);
+    event.bus.fire(event.contactChanged, model.nullContact);
+    event.bus.fire(event.callChanged, model.nullCall);
+  }
+
+  event.bus.fire(event.callQueueRemove, call);  
+}
+
+/**
  * Set [environment.call]] when a call_pickup notification is received on the
  * notification socket and the assigned agent match the logged in agent.
  */
 void _callPickupEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
 
-  // TODO obviously the agent ID should not come from configuration. This is a
-  // temporary hack as long as Alice is oblivious to login/session.
   if (call.assignedAgent == configuration.userId) {
     log.info('Tog kald. ${call}', toUserLog: true);
     event.bus.fire(event.callChanged, call);
@@ -171,7 +211,7 @@ void _callPickupEventHandler(Map json) {
 
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
-    if (call.receptionId != null && call.receptionId > 0 && call.inbound) {
+    if (call.receptionId != null && call.receptionId > 0) {
       storage.getReception(call.receptionId).then((model.Reception reception) {
         event.bus.fire(event.receptionChanged, reception);
 

@@ -15,7 +15,9 @@ part of components;
 
 class CallQueueItem {
   int         age  = 0;
+  String      reception = "...";
   SpanElement ageElement;
+  SpanElement callElement;
   model.Call _call = model.nullCall;
   LIElement   element;
 
@@ -25,14 +27,22 @@ class CallQueueItem {
     age = new DateTime.now().difference(call.start).inSeconds.ceil();
     String html = '''
       <li class="call-queue-item-default">
-        <span>${call.destination} - ${call.id}</span>
+        <span class="call-queue-element">${reception} (${call.destination})</span>
         <span class="call-queue-item-seconds">${age}</span>
       </li>
     ''';
 
     element = new DocumentFragment.html(html).querySelector('.call-queue-item-default');
-    ageElement = element.querySelector('.call-queue-item-seconds');
+    ageElement  = element.querySelector('.call-queue-item-seconds');
+    callElement = element.querySelector('.call-queue-element');
 
+    storage.getReception(call.receptionId).then((r) {
+      reception = r.name;
+      callElement.text = reception + "(${call.destination})";
+    });
+    
+    element.classes.add('locked');
+    
     new Timer.periodic(new Duration(seconds:1), (_) {
       age += 1;
       ageElement.text = age.toString();

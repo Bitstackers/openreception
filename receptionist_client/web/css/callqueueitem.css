@@ -1,5 +1,12 @@
 .call-queue-item-default {
-  padding: 5px;
+  margin-left: 30px;
+  border-bottom: 2px solid #AAA;
+  border-left: 2px solid #AAA;
+  background-color: lightyellow;
+  list-style-image: url("../images/phone20x20.png");
+}
+
+.locked {
 }
 
 .call-queue-item-seconds {

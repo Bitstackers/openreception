@@ -220,7 +220,7 @@ class Call implements Comparable {
       log.critical('model.Call._pickupCallSuccess missing reception_id in ${json}');
     }
   }
-
+  
   /**
    * [Call] as String, for debug/log purposes.
    */

@@ -23,9 +23,9 @@ import 'logger.dart';
 import 'state.dart';
 
 
-const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
+//const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
-//const String CONFIGURATION_URL = 'http://localhost:4242/configuration';
+const String CONFIGURATION_URL = 'http://localhost:4030/configuration';
 
 final Configuration configuration = new Configuration._internal();
 
@@ -141,7 +141,7 @@ class Configuration {
     String    infoPath;
     final Map notificationSocketMap = json['notificationSocket'];
     final Map serverLogMap = json['serverLog'];
-
+    
     _callFlowBaseUrl = Uri.parse(_stringValue(json, 'callFlowServerURI', 'http://localhost:4242'));
     _receptionBaseUrl = Uri.parse(_stringValue(json, 'receptionServerURI', 'http://localhost:8080'));
     _contactBaseUrl = Uri.parse(_stringValue(json, 'contactServerURI', 'http://localhost:8081'));
