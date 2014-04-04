@@ -20,6 +20,7 @@ void addCorsHeaders(HttpResponse res) {
 
 Filter auth(Uri authUrl) {
   return (HttpRequest request) {
+
     try {
       if(request.uri.queryParameters.containsKey('token')) {      
         String path = 'token/${request.uri.queryParameters['token']}/validate';
@@ -29,7 +30,7 @@ Filter auth(Uri authUrl) {
             return true;
           } else {
             request.response.statusCode = HttpStatus.FORBIDDEN;
-            writeAndClose(request, 'Auth Failed');
+            writeAndClose(request, JSON.encode({'description': 'Authorization failure.'}));
             return false;
           }
         }).catchError((error) {
@@ -47,6 +48,7 @@ Filter auth(Uri authUrl) {
     }
   };
 }
+
 
 Future<String> extractContent(HttpRequest request) {
   Completer completer = new Completer();
@@ -81,7 +83,7 @@ void page404(HttpRequest request) {
   
   log('404: ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
-  request.response.write(JSON.encode({'erorr':'Not Found'}));
+  request.response.write(JSON.encode({'erorr':'No handler found for ' + request.uri.toString() }));
   request.response.close();
 }
 
@@ -98,6 +100,15 @@ void serverError(HttpRequest request, String logMessage) {
   logger.error(logMessage);
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
   writeAndClose(request, JSON.encode({'error': 'Internal Server Error'}));
+}
+
+void resourceNotFound(HttpRequest request) {
+  addCorsHeaders(request.response);
+  
+  log(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
+  request.response.statusCode = HttpStatus.NOT_FOUND;
+  request.response.write(JSON.encode({'erorr':'Resource not found.'}));
+  request.response.close();
 }
 
 void start(int port, void setupRoutes(HttpServer server)) {
