@@ -1,6 +1,9 @@
 part of messageserver.router;
 
-void sendMessage(HttpRequest request) {
+void messageSend(HttpRequest request) {
+  
+  final String context = "messageserver.router.sendMessage";
+  
   extractContent(request).then((String content) {
     logger.debug(content);
     Map data;
@@ -17,7 +20,7 @@ void sendMessage(HttpRequest request) {
         return null;
       }
 
-      if(!data.containsKey('cc') || !(data['cc'] is List)) {
+      if(data.containsKey('cc') && !(data['cc'] is List)) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
             {'status'     : 'bad request',
@@ -26,7 +29,7 @@ void sendMessage(HttpRequest request) {
         return null;
       }
      
-      if(!data.containsKey('bcc') || !(data['bcc'] is List)) {
+      if(data.containsKey('bcc') && !(data['bcc'] is List)) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
             {'status'     : 'bad request',
@@ -54,54 +57,65 @@ void sendMessage(HttpRequest request) {
       return null;
     }
     
-    //Make a check if every field are present
+//    writeAndClose(request, JSON.encode({'status': 'Success'}));
     
     String message     = data['message'];
     String subject     = data['subject'];
-    int toContactId    = data['toContactId'];
+    int toContactId    = data['toContactID'];
     String takenFrom   = data['takenFrom'];
-    int takeByAgent    = data['takeByAgent'];
-    bool urgent        = data['urgent'];
-    DateTime createdAt = DateTime.parse(data['createdAt']);
-    
-    
-    
-    return tempSMTP(message, subject, ['tp@adaheads.com']).then((_) {
-      writeAndClose(request, JSON.encode({'status': 'Success'}));
-    });
-    
-//    return db.createSendMessage(message, subject, toContactId, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
-//      List<Map> recipients = new List<Map>();
-//      
-//      (data['to'] as List).map((String con) {
-//        List<String> split = con.split('@');
-//        int contactId = int.parse(split[0]);
-//        int receptionId = int.parse(split[1]);
-//        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'to'});
-//      });
-//      
-//      (data['cc'] as List).map((String con) {
-//        List<String> split = con.split('@');
-//        int contactId = int.parse(split[0]);
-//        int receptionId = int.parse(split[1]);
-//        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'cc'});
-//      });
-//      
-//      (data['bcc'] as List).map((String con) {
-//        List<String> split = con.split('@');
-//        int contactId = int.parse(split[0]);
-//        int receptionId = int.parse(split[1]);
-//        recipients.add({'contactId': contactId, 'receptionId':receptionId, 'message_id': result['id'], 'recipient_role': 'bcc'});
-//      });
-//      
-//      return db.addRecipientsToSendMessage(recipients).then((Map result) {
-//        writeAndClose(request, JSON.encode(result));
-//      });
+    int takeByAgent     = 10;
+    bool urgent             = data['urgent'];
+    DateTime createdAt      = new DateTime.now();
+        
+//    return tempSMTP(message, subject, ['kim.rostgaard@gmail.com']).then((_) {
+//      writeAndClose(request, JSON.encode({'status': 'Success'}));
 //    });
+    
+    
+    return db.createSendMessage(message, subject, toContactId, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
+      db.Message message = new db.Message(result['id']);
+      
+      // Harvest each field for recipients.
+      ['bcc','cc','to'].forEach ((String role) {
+        (data[role] as List).forEach((contact_string) =>  message.addRecipient(new db.Messaging_Contact(contact_string, role)));
+      });
+      
+      return db.addRecipientsToSendMessage(message.sqlRecipients()).then((Map result) {
+        db.populateQueue(message).then((queueSize) {
+          logger.debugContext("inserted $queueSize elements in queue.", context);
+        });
+
+        writeAndClose(request, JSON.encode(result));
+      });
+    });
        
   }).catchError((error) => serverError(request, error.toString()));
 }
 
+Future<int> getUserID (HttpRequest request, Uri authUrl) {
+    try {
+      if(request.uri.queryParameters.containsKey('token')) {      
+        String path = 'token/${request.uri.queryParameters['token']}/validate';
+        Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
+        return http.get(url).then((response) {
+          if (response.statusCode == 200) {
+            logger.debugContext (response.body, "common.AH_HTTPRequest.getUserID()");
+            return JSON.decode(response.body)['id'];
+          } else {
+            return 0;
+          }
+        }).catchError((error) {
+          return 0;
+        });
+        
+      } else {
+        return new Future.value(false);
+      }
+    } catch (e) {
+      logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
+    }
+}
+  
 Future tempSMTP(String message, String subject, List<String> recipients) {
   // If you want to use an arbitrary SMTP server, go with `new SmtpOptions()`.
   // This class below is just for convenience. There are more similar classes available.
@@ -115,7 +129,8 @@ Future tempSMTP(String message, String subject, List<String> recipients) {
   
   // Create our mail/envelope.
   var envelope = new Envelope()
-    ..fromName = 'MyCompany'
+    ..fromName = config.emailFromName
+    ..from     = config.emailFrom
     ..recipients.addAll(recipients)
     ..subject = subject
     ..text = message;
@@ -125,3 +140,4 @@ Future tempSMTP(String message, String subject, List<String> recipients) {
     .then((success) => log('Email sent! $success'))
     .catchError((e) => logger.error('Error occured when sending mail: $e'));
 }
+

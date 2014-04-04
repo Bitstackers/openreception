@@ -7,27 +7,46 @@ import 'dart:convert';
 import 'package:mailer/mailer.dart';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
+import 'package:http/http.dart' as http;
 
 import 'configuration.dart';
 import 'database.dart' as db;
 import 'package:Utilities/common.dart';
 import 'package:Utilities/httpserver.dart';
 
-part 'router/getdraft.dart';
-part 'router/getmessagelist.dart';
-part 'router/sendmessage.dart';
+part 'router/message-draft-single.dart';
+part 'router/message-draft-update.dart';
+part 'router/message-draft-create.dart';
+part 'router/message-draft-delete.dart';
+part 'router/message-draft-list.dart';
+part 'router/message-list.dart';
+part 'router/message-send.dart';
+part 'router/message-single.dart';
 
-final Pattern getMessageDraftUrl = new UrlPattern(r'/message/drafts');
-final Pattern getMessageListUrl = new UrlPattern(r'/message/list');
-final Pattern getMessageSendUrl = new UrlPattern(r'/message/send');
 
-final List<Pattern> allUniqueUrls = [getMessageDraftUrl, getMessageListUrl, getMessageSendUrl];
+final Pattern messageDraftListResource   = new UrlPattern(r'/message/draft/list');
+final Pattern messageDraftResource       = new UrlPattern(r'/message/draft/(\d+)');
+final Pattern messageDraftCreateResource = new UrlPattern(r'/message/draft/create');
+final Pattern messageListResource        = new UrlPattern(r'/message/list');
+final Pattern messageResource            = new UrlPattern(r'/message/(\d+)');
+final Pattern messageSendResource        = new UrlPattern(r'/message/send');
+
+final List<Pattern> allUniqueUrls = [messageDraftListResource, messageDraftResource, messageDraftCreateResource, 
+                                     messageListResource, messageResource, messageSendResource];
 
 void setup(HttpServer server) {
   Router router = new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
-    ..serve(getMessageDraftUrl, method: 'GET').listen(getMessageDrafts)
-    ..serve(getMessageListUrl, method: 'GET').listen(getMessageList)
-    ..serve(getMessageSendUrl, method: 'POST').listen(sendMessage)
+    
+    ..serve(messageDraftResource,       method: 'GET'   ).listen(messageDraftSingle)
+    ..serve(messageDraftResource,       method: 'PUT'   ).listen(messageDraftUpdate)
+    ..serve(messageDraftCreateResource, method: 'POST'  ).listen(messageDraftCreate)
+    ..serve(messageDraftResource,       method: 'DELETE').listen(messageDraftDelete)
+    ..serve(messageDraftListResource,   method: 'GET'   ).listen(messageDraftList)
+    
+    ..serve(messageResource,            method: 'GET'   ).listen(messageSingle)
+    ..serve(messageListResource,        method: 'GET'   ).listen(messageList)
+    ..serve(messageSendResource,        method: 'POST'  ).listen(messageSend)
+    
     ..defaultStream.listen(page404);
 }

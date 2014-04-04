@@ -1,14 +1,13 @@
 part of messageserver.database;
 
-Future<Map> getDraft() {
-  int limit = 100;
+Future<Map> messageDraftUpdate(int ID, String jsonBody) {
   String sql = '''
-    SELECT id, owner, json
-    FROM message_draft
-    ORDER BY id
-    LIMIT ${limit};''';
+   UPDATE message_draft
+      SET json = @jsonBody
+    WHERE    id = @draftID;''';
 
-  Map parameters = {};
+  Map parameters = {'draftID'  : ID,
+                    'jsonBody' : jsonBody};
 
   return database.query(_pool, sql, parameters).then((rows) {
     Map data = {};

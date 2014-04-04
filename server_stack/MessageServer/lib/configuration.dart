@@ -34,6 +34,8 @@ class Configuration {
   
   String emailUsername;
   String emailPassword;
+  String emailFromName;
+  String emailFrom;
   List<String> recipients = [];
 
   factory Configuration(ArgResults args) {
@@ -94,20 +96,28 @@ class Configuration {
       }
       
       //TODO XXX FIXME --- START --- TESTING TESTING TESTING 
-      if(config.containsKey('emailusername')) {
-        emailUsername = config['emailusername'];
+      if(config.containsKey('emailUsername')) {
+        emailUsername = config['emailUsername'];
         log(emailUsername);
       }
 
-      if(config.containsKey('emailpassword')) {
-        emailPassword = config['emailpassword'];
+      if(config.containsKey('emailPassword')) {
+        emailPassword = config['emailPassword'];
         log(emailPassword);
       }
 
       if(config.containsKey('recipients')) {
         recipients = config['recipients'];
-        log(recipients);
       }
+      
+      if(config.containsKey('emailFromName')) {
+        emailFromName = config['emailFromName'];
+      }
+
+      if(config.containsKey('emailFrom')) {
+        emailFrom = config['emailFrom'];
+      }
+
       //TODO XXX FIXME ---- END ---- TESTING TESTING TESTING 
     })
     .catchError((err) {
@@ -160,7 +170,10 @@ dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('')
     dbpassword.substring(dbpassword.length -1) : ''}
 dbhost:     $dbhost
 dbport:     $dbport
-dbname:     $dbname''');
+dbname:     $dbname
+emailfrom:  $emailFromName <$emailFrom>
+mailuser:   $emailUsername
+mailpass:   $emailPassword''');
   }
 
   Future whenLoaded() {
