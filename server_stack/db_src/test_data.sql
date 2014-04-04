@@ -76,7 +76,8 @@ VALUES 	    (1, 'AdaHeads K/S'),
 	    (2, 'Venner A/S'),
 	    (3, 'Responsum K/S'),
 	    (4, 'Hansen VVS A/S'),
-	    (5, 'Kødbollen A/S');
+	    (5, 'Kødbollen A/S'),
+	    (6, 'Landmandens venner A/S');
 
 INSERT INTO receptions (id, organization_id, full_name, uri, attributes)
 VALUES (1, 1, 'AdaHeads K/S', 
@@ -336,7 +337,8 @@ SELECT setval('organizations_id_sequence', (SELECT max(id)+1 FROM receptions), F
 SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
 SELECT setval('messaging_addresses_id_sequence', (SELECT max(id)+1 FROM messaging_addresses), FALSE);
 SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
-SELECT setval('message_queue_id_sequence', (SELECT max(id)+1 FROM message_queue), FALSE);
+SELECT setval('message_id_sequence', (SELECT max(id)+1 FROM message), FALSE);
+SELECT setval('message_draft_id_sequence', (SELECT max(id)+1 FROM message_draft), FALSE);
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
 SELECT setval('recurring_calendar_events_id_sequence', (SELECT max(id)+1 FROM recurring_calendar_events), FALSE);
 SELECT setval('phone_numbers_id_sequence', (SELECT max(id)+1 FROM phone_numbers), FALSE);

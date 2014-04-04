@@ -153,7 +153,7 @@ ALTER TABLE reception_contacts
 -------------------------------------------------------------------------------
 --  Message dispatching:
 
-CREATE TABLE message_queue (
+CREATE TABLE message (
    id                INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message           TEXT      NOT NULL,
    subject           TEXT      NOT NULL,
@@ -161,22 +161,32 @@ CREATE TABLE message_queue (
    taken_from        TEXT      NOT NULL,
    taken_by_agent    INTEGER   NOT NULL REFERENCES users (id),
    urgent            BOOLEAN   NOT NULL DEFAULT FALSE,
-   created_at        TIMESTAMP NOT NULL,
-   last_try          TIMESTAMP,
-   tries             INTEGER   NOT NULL DEFAULT 0
+   created_at        TIMESTAMP NOT NULL
 );
 
-CREATE TABLE message_queue_recipients (
+CREATE TABLE message_recipients (
    contact_id     INTEGER NOT NULL,
    reception_id   INTEGER NOT NULL,
    message_id     INTEGER NOT NULL,
    recipient_role TEXT    NOT NULL  REFERENCES recipient_visibilities (value),
+   last_try       TIMESTAMP,
+   tries          INTEGER   NOT NULL DEFAULT 0,
 
    PRIMARY KEY (contact_id, reception_id, message_id),
 
    FOREIGN KEY (contact_id, reception_id)
       REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE message_queue (
+   message_id     INTEGER NOT NULL,
+   endpoint_id    INTEGER NOT NULL  REFERENCES messaging_addresses (id),
+   recipient_role TEXT    NOT NULL  REFERENCES recipient_visibilities (value),
+   last_try       TIMESTAMP,
+   tries          INTEGER   NOT NULL DEFAULT 0,
+
+   PRIMARY KEY (message_id, endpoint_id)
 );
 
 CREATE TABLE archive_message_queue (
@@ -209,7 +219,7 @@ CREATE TABLE archive_message_queue_recipients (
 -------------------------------------------------------------------------------
 --  Message draft:
 CREATE TABLE message_draft (
-   id     INTEGER   NOT NULL PRIMARY KEY,
+   id     INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    owner  INTEGER   NOT NULL REFERENCES users (id),
    json   JSON      NOT NULL
 );
