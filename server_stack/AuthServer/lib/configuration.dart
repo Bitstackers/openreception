@@ -219,7 +219,13 @@ class Configuration {
     redirecturi: $redirectUri
     syslog:      $useSyslog
     sysloghost:  ${syslogHost}
-    change:      ${cache}''';
+    change:      ${cache}
+    Database:
+      Host: $dbhost
+      Port: $dbport
+      User: $dbuser
+      Pass: ${dbpassword.codeUnits.map((_) => '*').join()}
+      Name: $dbname  ''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument);
 }
