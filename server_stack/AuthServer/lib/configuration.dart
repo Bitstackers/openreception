@@ -10,7 +10,22 @@ import 'package:Utilities/common.dart';
 
 Configuration config;
 
+abstract class Configuration_Defaults {
+  static final String     configfile      = 'config.json';
+  
+  static final String     dbhost          = 'localhost';
+  static final int        dbport          = 5432;
+
+  static final int        httpport        = 8081;
+  static final Uri        redirectUri     = Uri.parse('http://localhost:8080/oauth2callback');
+  static final bool       useSyslog       = false;
+  static final String     syslogHost      = 'localhost';
+  static final Duration   tokenexpiretime = new Duration(seconds: 3600);
+}
+
 class Configuration {
+  
+  
   static Configuration _configuration;
 
   ArgResults _args;
@@ -18,17 +33,17 @@ class Configuration {
   String     _clientId;
   String     _clientSecret;
   String     _clientURL;
-  String     _configfile      = 'config.json';
+  String     _configfile      = Configuration_Defaults.configfile;
   String     _dbuser;
   String     _dbpassword;
-  String     _dbhost          = 'localhost';
-  int        _dbport          = 5432;
+  String     _dbhost          = Configuration_Defaults.dbhost;
+  int        _dbport          = Configuration_Defaults.dbport;
   String     _dbname;
-  int        _httpport        = 8080;
-  Uri        _redirectUri     = Uri.parse('http://localhost:8080/oauth2callback');
-  bool       _useSyslog       = false;
-  String     _syslogHost      = 'localhost';
-  Duration   _tokenexpiretime = new Duration(seconds: 3600);
+  int        _httpport        = Configuration_Defaults.httpport;
+  Uri        _redirectUri     = Configuration_Defaults.redirectUri;
+  bool       _useSyslog       = Configuration_Defaults.useSyslog;
+  String     _syslogHost      = Configuration_Defaults.syslogHost;
+  Duration   _tokenexpiretime = Configuration_Defaults.tokenexpiretime;
 
   String   get cache           => _cache;
   String   get configfile      => _configfile;
