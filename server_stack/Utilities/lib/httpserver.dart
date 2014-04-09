@@ -102,6 +102,12 @@ void serverError(HttpRequest request, String logMessage) {
   writeAndClose(request, JSON.encode({'error': 'Internal Server Error'}));
 }
 
+void clientError(HttpRequest request, String reason) {
+  logger.error(reason);
+  request.response.statusCode = HttpStatus.BAD_REQUEST;
+  writeAndClose(request, JSON.encode({'error': reason}));
+}
+
 void resourceNotFound(HttpRequest request) {
   addCorsHeaders(request.response);
   
@@ -146,3 +152,27 @@ void writeAndClose(HttpRequest request, String text) {
     ..write('\n')
     ..close();
 }
+
+Future<int> getUserID (HttpRequest request, Uri authUrl) {
+  try {
+    if(request.uri.queryParameters.containsKey('token')) {      
+      String path = 'token/${request.uri.queryParameters['token']}';
+      Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
+      return http.get(url).then((response) {
+        if (response.statusCode == 200) {
+          return JSON.decode(response.body)['id'];
+        } else {
+          return 0;
+        }
+      }).catchError((error) {
+        return 0;
+      });
+      
+    } else {
+      return new Future.value(false);
+    }
+  } catch (e) {
+    logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
+  }
+}
+
