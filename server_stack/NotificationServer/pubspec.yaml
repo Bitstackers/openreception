@@ -1,0 +1,8 @@
+name: NotificationServer
+description: Simple notification server.
+dependencies:
+  Utilities:
+    path: ../Utilities
+  args: any
+  path: any
+  route: any
