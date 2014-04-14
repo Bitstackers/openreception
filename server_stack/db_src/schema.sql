@@ -79,6 +79,8 @@ CREATE TABLE receptions (
    uri             TEXT    NOT NULL UNIQUE,
    attributes      JSON    NOT NULL,
    extradatauri    TEXT,
+   reception_telephonenumber TEXT UNIQUE,
+   dialplan        JSON,
    enabled         BOOLEAN NOT NULL DEFAULT TRUE
 );
 
