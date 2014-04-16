@@ -6,7 +6,8 @@ Future<Map> getReceptionContactList(int receptionId) {
            rcpcon.contact_id, 
            rcpcon.wants_messages, 
            rcpcon.attributes, 
-           rcpcon.enabled as rcpenabled, 
+           rcpcon.enabled as rcpenabled,
+           rcpcon.distribution_list,
            con.full_name, 
            con.contact_type, 
            con.enabled as conenabled,
@@ -27,13 +28,14 @@ Future<Map> getReceptionContactList(int receptionId) {
     List contacts = new List();
     for(var row in rows) {
       Map contact =
-        {'reception_id'    : row.reception_id,
-         'contact_id'      : row.contact_id,
-         'wants_messages'  : row.wants_messages,
-         'enabled'         : row.rcpenabled && row.conenabled,
-         'full_name'       : row.full_name,
-         'contact_type'    : row.contact_type,
-         'phones'          : row.phone != null ? JSON.decode(row.phone) : []};
+        {'reception_id'      : row.reception_id,
+         'contact_id'        : row.contact_id,
+         'wants_messages'    : row.wants_messages,
+         'enabled'           : row.rcpenabled && row.conenabled,
+         'full_name'         : row.full_name,
+         'distribution_list' : row.distribution_list != null ? JSON.decode(row.distribution_list) : [],
+         'contact_type'      : row.contact_type,
+         'phones'            : row.phone != null ? JSON.decode(row.phone) : []};
 
       if (row.attributes != null) {
         Map attributes = JSON.decode(row.attributes);
