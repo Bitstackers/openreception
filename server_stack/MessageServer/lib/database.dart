@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:postgresql/postgresql_pool.dart';
 
 import 'configuration.dart';
+import 'model.dart';
 import 'package:Utilities/common.dart';
 import 'package:Utilities/database.dart' as database;
 
@@ -18,7 +19,6 @@ part 'db/message-draft-single.dart';
 part 'db/message-list.dart';
 part 'db/message-single.dart';
 part 'db/message-send.dart';
-part 'db/message.dart';
 
 Pool _pool;
 

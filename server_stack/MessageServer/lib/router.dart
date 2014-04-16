@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 import 'configuration.dart';
 import 'database.dart' as db;
+import 'model.dart';
 import 'package:Utilities/common.dart';
 import 'package:Utilities/httpserver.dart';
 
@@ -22,6 +23,7 @@ part 'router/message-draft-list.dart';
 part 'router/message-list.dart';
 part 'router/message-send.dart';
 part 'router/message-single.dart';
+part 'router/message-resend.dart';
 
 
 final Pattern messageDraftListResource   = new UrlPattern(r'/message/draft/list');
@@ -30,9 +32,10 @@ final Pattern messageDraftCreateResource = new UrlPattern(r'/message/draft/creat
 final Pattern messageListResource        = new UrlPattern(r'/message/list');
 final Pattern messageResource            = new UrlPattern(r'/message/(\d+)');
 final Pattern messageSendResource        = new UrlPattern(r'/message/send');
+final Pattern messageResendResource      = new UrlPattern(r'/message/(\d+)/resend');
 
 final List<Pattern> allUniqueUrls = [messageDraftListResource, messageDraftResource, messageDraftCreateResource, 
-                                     messageListResource, messageResource, messageSendResource];
+                                     messageListResource, messageResource, messageSendResource, messageResendResource];
 
 void setup(HttpServer server) {
   Router router = new Router(server)
@@ -47,6 +50,7 @@ void setup(HttpServer server) {
     ..serve(messageResource,            method: 'GET'   ).listen(messageSingle)
     ..serve(messageListResource,        method: 'GET'   ).listen(messageList)
     ..serve(messageSendResource,        method: 'POST'  ).listen(messageSend)
+    ..serve(messageResendResource,      method: 'POST'  ).listen(messageResend)
     
     ..defaultStream.listen(page404);
 }
