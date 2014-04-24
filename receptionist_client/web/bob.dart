@@ -29,6 +29,8 @@ import 'classes/notification.dart';
 import 'classes/protocol.dart' as protocol;
 import 'classes/state.dart';
 
+import 'classes/model.dart' as model;
+
 BobActive bobActive;
 BobDisaster bobDiaster;
 BobLoading bobLoading;
@@ -82,10 +84,14 @@ bool handleToken() {
       Map data = response.data;
       configuration.profile = data;
       if(data.containsKey('id')) {
+        //TODO: remove these.
         configuration.userId = data['id'];
         configuration.userName = data['name'];
-        print('---------- BOB.dart --------- UserId ${configuration.userId}');
+        
+        model.User.currentUser = new model.User (data['id'],data['name']);
+        
       } else {
+        //TODO: Panic action.
         log.error('bob.dart userInfo did not contain an id');
       }
     });

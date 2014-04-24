@@ -23,6 +23,8 @@ import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
 import '../components.dart';
+import '../view.dart';
+import '../constants.dart' as constant;
 
 class BobActive {
   DivElement element;
@@ -49,6 +51,7 @@ class BobActive {
   SendMessage sendMessage;
   GlobalQueue globalQueue;
   LocalQueue localQueue;
+  CallManagement callManagement;
 
   MessageSearch messageSearch;
   MessageOverview messageOverview;
@@ -95,7 +98,7 @@ class BobActive {
     sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
     localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
-
+    callManagement           = new CallManagement(querySelector('#${constant.ID.CALL_MANAGEMENT}'));
     messageSearch = new MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
     messageOverview = new MessageOverview(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 

@@ -31,7 +31,7 @@ Future<model.Reception> getReception(int id) {
     completer.complete(_receptionCache[id]);
   } else {
     protocol.getReception(id).then((protocol.Response<model.Reception> response) {
-      switch(response.status) {
+      switch (response.status) {
         case protocol.Response.OK:
           model.Reception reception = response.data;
           _receptionCache[reception.id] = reception;
@@ -45,8 +45,7 @@ Future<model.Reception> getReception(int id) {
         default:
           completer.completeError('storage.getReception ERROR failed with ${response}');
       }
-    })
-    .catchError((error) {
+    }).catchError((error) {
       completer.completeError('storage.getReception ERROR protocol.getReception failed with ${error}');
     });
   }

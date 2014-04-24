@@ -27,31 +27,38 @@ part of protocol;
                       [bcc=<contact_id>@<reception_id>{,<contact_id>@<reception_id>}&]
                       message=<message>
  */
-Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) {
+Future<Response<Map>> sendMessage(String message, List to, int toContactID, {List cc, List bcc}) {
   assert(to != null);
-  assert(message.isNotEmpty);
+  assert(message.isNotEmpty); // Turn into a more specific exception so we can catch it an let the user know.
 
   final String                   base       = configuration.messageBaseUrl.toString();
   final Completer<Response<Map>> completer  = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
   final String                   path       = '/message/send';
 
-//  final String                   toPayload  = 'to=${to.map((i) => 'cid@oid').join(',')}';
-//  final String                   ccPayload  = cc != null && cc.isNotEmpty ? 'cc=${to.map((i) => 'cid@oid').join(',')}' : '';
-//  final String                   bccPayload = bcc != null && bcc.isNotEmpty ? 'bcc=${to.map((i) => 'cid@oid').join(',')}' : '';
-//  final String                   recepients = [toPayload, ccPayload, bccPayload].where((s) => s.isNotEmpty).join('&');
-//  final String                   payload    = '${recepients}&msg=${Uri.encodeComponent(message)}';
-  String payload = JSON.encode(
-      {'message': message,
+  /* Assemble the initial content for the message. */
+  Map payload = {'message': message,
        'to': to.map((v) => v.toString()).toList(),
-       'cc':[],
-       'bcc':[],
        'subject': 'subject',
-       'toContactId': 1,
-       'takenFrom': 'Thomas',
-       'takeByAgent': 1,
-       'urgent': false,
-       'createdAt': new DateTime.now().toString()});
+       'to_contact_id': toContactID,
+       'takenFrom': 'Thomas', //TODO: FIX
+       'takeByAgent': model.User.currentUser.ID,
+       'urgent': false   //TODO: FIX
+       };
+
+  /* Attach the cc recipients - only if there are any. */
+  if (cc != null) {
+    payload ['cc'] = cc.map((v) => v.toString()).toList();
+  }
+
+  /* Same thing goes for the bcc recipients.*/ 
+  if (bcc != null) {
+    payload ['bcc'] = bcc.map((v) => v.toString()).toList();
+  }
+
+  /* 
+   * Now we are ready to send the request to the server. 
+   */
   
   HttpRequest                    request;
   String                         url;
@@ -86,37 +93,46 @@ Future<Response<Map>> sendMessage(String message, List to, {List cc, List bcc}) 
   return completer.future;
 }
 
+/**
+ * Retrieves the list of messages stored on the server.
+ */
 Future<Response<Map>> getMessages() {
-  return new Future<Response<Map>>(() {
-    Map data = {'messages': [{
-      'time': 1385546113,
-      'message': 'Ring på 12340001. Det handler om hans cycle.',
-      'status': 'sendt',
-      'caller': 'Bent guldimund',
-      'agent': 'James bond',
-      'methode': 'e-mail'
-    }, {
-      'time': 1385546112,
-      'message': 'Ring på 12340002. Det handler om hans grill.',
-      'status': 'sendt',
-      'caller': 'Hans honningkage',
-      'agent': 'Svend bent',
-      'methode': 'Sms'
-    }, {
-      'time': 1385546110,
-      'message': 'Ring på 12340001. Det handler om hans Hund.',
-      'status': 'sender',
-      'caller': 'Alice from wonderland',
-      'agent': 'George Gearløs',
-      'methode': 'Sms'
-    }, {
-      'time': 1385546110,
-      'message': 'Ring på 12340001. Det handler om hans blå skur.',
-      'status': 'sendt',
-      'caller': 'Doktor hvem',
-      'agent': 'Thomas Løcke',
-      'methode': 'e-mail'
-    }]};
-    return new Response<Map>(Response.OK, data);
-  });
+
+  final String                   base       = configuration.messageBaseUrl.toString();
+  final Completer<Response<Map>> completer  = new Completer<Response<Map>>();
+  final List<String>             fragments = new List<String>();
+  final String                   path       = '/message/list';
+  
+  HttpRequest                    request;
+  String                         url;
+
+  fragments.add('token=${configuration.token}');
+  url = _buildUrl(base, path, fragments);
+
+  request = new HttpRequest()
+    ..open(GET, url)
+    ..onLoad.listen((_) {
+      switch(request.status) {
+        case 200:
+          Map data = _parseJson(request.responseText);
+          completer.complete(new Response<Map>(Response.OK, data));
+          break;
+
+        case 204:
+          completer.complete(new Response<Map>(Response.OK, null));
+          break;
+
+        default:
+          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+      }
+    })
+    ..onError.listen((e) {
+      _logError(request, url);
+      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+
+    })
+    ..send();
+  
+  return completer.future;
+  
 }

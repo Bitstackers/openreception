@@ -25,12 +25,13 @@ import 'state.dart';
 
 //const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
-const String CONFIGURATION_URL = 'http://localhost:4030/configuration';
+const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
 
 final Configuration configuration = new Configuration._internal();
 
 /**
  * _Configuration gives access to configuration parameters provided by Alice.
+ * TODO Move the userID/userName fields to model.User.
  */
 class Configuration {
   bool _loaded = false;

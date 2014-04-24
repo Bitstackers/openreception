@@ -33,7 +33,7 @@ Future<Response<model.ContactList>> getContactList(int receptionId) {
         switch(request.status) {
           case 200:
             log.debug('protocol.getContactList json: ${request.responseText}'); //TODO remove.
-            model.ContactList data = new model.ContactList.fromJson(_parseJson(request.responseText), 'contacts');
+            model.ContactList data = new model.ContactList.fromJson(_parseJson(request.responseText), 'contacts', receptionId);
             completer.complete(new Response<model.ContactList>(Response.OK, data));
             break;
 
@@ -76,7 +76,7 @@ Future<Response<model.Contact>> getContact(int receptionId, int contactId) {
       ..onLoad.listen((value) {
         switch(request.status) {
           case 200:
-            model.Contact data = new model.Contact.fromJson(_parseJson(request.responseText));
+            model.Contact data = new model.Contact.fromJson(_parseJson(request.responseText), receptionId);
             completer.complete(new Response<model.Contact>(Response.OK, data));
             break;
 

@@ -40,9 +40,9 @@ class Log {
   /**
    * Loglevels that represent the levels on the server side.
    */
-  static const Level DEBUG    = const Level('Debug'   ,  300);
-  static const Level INFO     = const Level('Info'    ,  800);
-  static const Level ERROR    = const Level('Error'   , 1000);
+  static const Level DEBUG    = const Level('Debug   ',  300);
+  static const Level INFO     = const Level('Info    ',  800);
+  static const Level ERROR    = const Level('Error   ', 1000);
   static const Level CRITICAL = const Level('Critical', 1200);
 
   final Logger                  _logger            = new Logger("System");
@@ -81,7 +81,9 @@ class Log {
    * Log [message] with level [DEBUG]. DEBUG level messages are only logged to
    * console.
    */
-  void debug (String message) => print('DEBUG ${new DateFormat.Hms().format(new DateTime.now())} - ${message}');
+  void debug (String message) => print('[Debug]    - ${new DateFormat.Hms().format(new DateTime.now())} - ${message}');
+  void debugContext (String message, String context) => print('[Debug]    - ${new DateFormat.Hms().format(new DateTime.now())} - $context - ${message}');
+  void dataDump (String data, String context) => print('[DataDump] - ${new DateFormat.Hms().format(new DateTime.now())} - $context - ${data}');
 
   /**
    * Log [message] with level [ERROR]. If [toUserLog] is true then [message]
@@ -111,7 +113,7 @@ class Log {
    * Writes [record] to the console and then sends it to Alice.
    */
   void _consoleLogSubscriber(LogRecord record) {
-    print('${record.loggerName} ${new DateFormat.Hms().format(new DateTime.now())} - ${record.sequenceNumber} - ${record.level.name} - ${record.message}');
+    print('[${record.level.name}] - ${new DateFormat.Hms().format(new DateTime.now())} - ${record.loggerName} - ${record.message}');
   }
 
   /**

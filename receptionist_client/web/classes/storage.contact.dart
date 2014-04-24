@@ -13,7 +13,7 @@
 
 part of storage;
 
-Map<int, Map<int,model.Contact>> _contactCache = new Map<int, Map<int,model.Contact>>();
+Map<int, Map<int, model.Contact>> _contactCache = new Map<int, Map<int, model.Contact>>();
 
 /**
  * Get the [Contact].
@@ -28,15 +28,15 @@ Future<model.Contact> getContact(int receptionId, int contactId) {
 
   if (_contactCache.containsKey(receptionId)) {
     Map reception = _contactCache[receptionId];
-    if(_contactCache[receptionId].containsKey(contactId)) {
+    if (_contactCache[receptionId].containsKey(contactId)) {
       completer.complete(_contactCache[receptionId][contactId]);
     }
   } else {
     protocol.getContact(receptionId, contactId).then((protocol.Response<model.Contact> response) {
-      switch(response.status) {
+      switch (response.status) {
         case protocol.Response.OK:
           model.Contact contact = response.data;
-          if(_contactCache.containsKey(receptionId)) {
+          if (_contactCache.containsKey(receptionId)) {
             _contactCache[receptionId][contactId] = contact;
           }
           completer.complete(contact);
@@ -49,8 +49,7 @@ Future<model.Contact> getContact(int receptionId, int contactId) {
         default:
           completer.completeError('storage.getContact ERROR failed with ${response}');
       }
-    })
-    .catchError((error) {
+    }).catchError((error) {
       completer.completeError('storage.getContact ERROR protocol.getContact failed with ${error}');
     });
   }

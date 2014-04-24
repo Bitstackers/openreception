@@ -11,6 +11,11 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/**
+ * This file defines and describes the different events that can occur 
+ * throughout the client ecosystem.
+ */
+
 library events;
 
 import 'package:event_bus/event_bus.dart';
@@ -20,6 +25,7 @@ import 'focus.dart';
 import 'model.dart' as model;
 import 'location.dart';
 import 'state.dart';
+import 'model.dart';
 
 final EventType keyUp                                           = new EventType();
 final EventType keyDown                                         = new EventType();
@@ -42,6 +48,13 @@ final EventType<String> pickupNextCall                          = new EventType<
 final EventType<String> hangupCall                              = new EventType<String>();
 final EventType<String> parkCall                                = new EventType<String>();
 final EventType<String> CallSelectedContact                     = new EventType<String>();
+
+// API commands
+final EventType<int>    pickupCallRequest                       = new EventType<int>(); 
+final EventType<String> pickupCallResponse                      = new EventType<String>(); 
+
+final EventType<DiablePhoneNumber> originateCallRequest         = new EventType<DiablePhoneNumber>(); 
+final EventType<String> originateCallResponse                   = new EventType<String>(); 
 
 EventBus _bus = new EventBus();
 EventBus get bus => _bus;
