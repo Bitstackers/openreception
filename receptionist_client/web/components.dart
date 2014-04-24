@@ -16,7 +16,6 @@ library components;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'classes/configuration.dart';
@@ -31,7 +30,9 @@ import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
 import 'classes/model.dart' as model;
 import 'classes/protocol.dart' as protocol;
+import 'service.dart' as service;
 import 'classes/storage.dart' as storage;
+import 'classes/controller.dart' as controller;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';
