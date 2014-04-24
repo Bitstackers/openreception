@@ -34,7 +34,7 @@ class ReceptionList extends IterableBase<BasicReception>{
     ReceptionList receptionList = new ReceptionList();
 
     if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.ReceptionList.fromJson key: ${key} list: ${json[key]}');
+      log.dataDump('model.ReceptionList.fromJson key: ${key} list: ${json[key]}', 'model.ReceptionList');
       receptionList = new ReceptionList._fromList(json[key]);
     } else {
       log.critical('model.ReceptionList.fromJson bad data key: ${key} map: ${json}');

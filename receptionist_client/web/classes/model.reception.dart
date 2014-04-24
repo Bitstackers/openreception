@@ -136,7 +136,7 @@ class Reception extends BasicReception{
     _addressList            = new MiniboxList.fromJson(json, 'addresses');
     _alternateNameList      = new MiniboxList.fromJson(json, 'alternatenames');
     _bankingInformationList = new MiniboxList.fromJson(json, 'bankinginformation');
-    _contactList            = new ContactList.fromJson(json, 'contacts');
+    _contactList            = new ContactList.fromJson(json, 'contacts', super.id);
     _crapcallHandlingList   = new MiniboxList.fromJson(json, 'crapcallhandling');
     _customerType           = json['customertype'];
     _emailAddressList       = new MiniboxList.fromJson(json, 'emailaddresses');

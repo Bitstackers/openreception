@@ -11,6 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/*
+ * Note on removal of assertions.
+ * 
+ * Rather than having an assertion (or more accurately; an implicit precondition) here, and
+ * having to perform manual checks from the outside of the object, it makes more sense to
+ * just ignore the call. 
+ */
+
+
 part of model;
 
 final Call nullCall = new Call._null();
@@ -105,11 +114,29 @@ class Call implements Comparable {
    */
   int compareTo(Call other) => _start.compareTo(other._start);
 
+  
+  /**
+   * Returns the caller ID of the foreign end of the caller from the user's perspective. 
+   */
+  String otherLegCallerID () {
+    if (this.inbound) {
+      return this.destination;
+    } else {
+      return this.destination;
+    }
+  }
+  
   /**
    * Hangup the [call].
    */
   void hangup() {
-    assert(this != nullCall);
+
+    // See note on assertions.
+    if (this == nullCall)  {
+      log.debug('Cowardly refusing ask the call-flow-control server to hangup a null call.');
+      return;
+    }
+    
     protocol.hangupCall(this).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
@@ -120,7 +147,6 @@ class Call implements Comparable {
           // resetting to nullReception will become annoying when the time comes.  :D
           event.bus.fire(event.receptionChanged, nullReception);
           event.bus.fire(event.contactChanged, nullContact);
-          event.bus.fire(event.callChanged, nullCall);
 
           log.debug('model.Call.hangup updated environment.reception to nullReception');
           log.debug('model.Call.hangup updated environment.contact to nullContact');
@@ -134,8 +160,12 @@ class Call implements Comparable {
         default:
           log.critical('model.Call.hangup ${this} failed with illegal response ${response}');
       }
+      
+      event.bus.fire(event.callChanged, nullCall);
+
     }).catchError((error) {
       log.critical('model.Call.hangup ${this} protocol.hangupCall failed with ${error}');
+      //TODO Actively check state or go to panic-action. At this point we cannot derive anything about the state in the current scope. 
     });
   }
 
@@ -143,7 +173,12 @@ class Call implements Comparable {
    * Park call.
    */
   void park() {
-    assert(this != nullCall);
+
+    // See note on assertions.
+    if (this == nullCall)  {
+      log.debug('Cowardly refusing ask the call-flow-control server to park a null call.');
+      return;
+    }
     protocol.parkCall(this).then((protocol.Response response) {
       switch(response.status) {
         case protocol.Response.OK:
@@ -166,7 +201,13 @@ class Call implements Comparable {
    * Pickup call.
    */
   void pickup() {
-    assert(this != nullCall);
+
+    // See note on assertions.
+    if (this == nullCall)  {
+      log.debug('Cowardly refusing ask the call-flow-control server to pickup a null call.');
+      return;
+    }
+    
     protocol.pickupCall(call: this).then((protocol.Response response) {
       switch (response.status) {
         case protocol.Response.OK:

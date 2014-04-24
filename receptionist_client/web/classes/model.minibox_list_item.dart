@@ -28,11 +28,17 @@ class MiniboxListItem implements Comparable{
    *    'priority' : int,
    *    'value'    : String
    *  }
+   *  
+   *  If the priority field is missing, a priority of 0 is assumed. 
    *
    */
   MiniboxListItem.fromJson(Map json) {
     this.value = json['value'];
     this.priority = json['priority'];
+    
+    if (this.priority == null) {
+      this.priority = 0;
+    }
   }
 
   /**

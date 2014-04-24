@@ -31,7 +31,7 @@ class ContactList extends IterableBase<Contact>{
    * [ContactList] constructor. Builds a list of [Contact] objects from the
    * contents of json[key].
    */
-  factory ContactList.fromJson(Map json, String key) {
+  factory ContactList.fromJson(Map json, String key, int receptionID) {
     ContactList contactList = new ContactList();
 
 //    //XXX ??? TODO FIXME TESTING TEST WARNING ERROR
@@ -76,7 +76,7 @@ class ContactList extends IterableBase<Contact>{
 //    //TESTING END
 
     if (json.containsKey(key) && json[key] is List) {
-      contactList = new ContactList._fromList(json[key]);
+      contactList = new ContactList._fromList(json[key], receptionID);
     } else {
       log.critical('model.ContactList.fromJson bad data key: ${key} map: ${json}');
     }
@@ -91,8 +91,8 @@ class ContactList extends IterableBase<Contact>{
   /**
    * [ContactList] from list constructor.
    */
-  ContactList._fromList(List<Map> list) {
-    list.forEach((item) => _list.add(new Contact.fromJson(item)));
+  ContactList._fromList(List<Map> list, int receptionID) {
+    list.forEach((item) => _list.add(new Contact.fromJson(item, receptionID)));
     _list.sort();
 
     log.debug('ContactList._internal build ContactList from ${list}');

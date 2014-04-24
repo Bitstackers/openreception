@@ -14,6 +14,7 @@
 library model;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:collection';
 import 'dart:math' hide log;
 
@@ -24,6 +25,8 @@ import 'events.dart' as event;
 import 'logger.dart';
 import 'protocol.dart' as protocol;
 import 'storage.dart' as storage;
+import 'configuration.dart' as config;
+import '../constants.dart' as constant;
 
 part 'model.call.dart';
 part 'model.call_list.dart';
@@ -31,7 +34,13 @@ part 'model.calendar_event.dart';
 part 'model.calendar_event_list.dart';
 part 'model.contact.dart';
 part 'model.contact_list.dart';
+part 'model-message.dart';
 part 'model.minibox_list_item.dart';
 part 'model.minibox_list.dart';
+part 'model-phone_number.dart';
+part 'model-recipient.dart';
+part 'model-user.dart';
 part 'model.reception.dart';
 part 'model.reception_list.dart';
+
+final String packageName = "model"; 

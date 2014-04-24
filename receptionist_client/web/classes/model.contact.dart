@@ -18,7 +18,8 @@ final Contact nullContact = new Contact._null();
 /**
  * A [Contact] object. Sorting contacts is done based on [name].
  */
-class Contact implements Comparable{
+class Contact implements Comparable {
+  int               _receptionID         = nullReception.id;
   MiniboxList       _backupList          = new MiniboxList();
   CalendarEventList _calendarEventList   = new CalendarEventList();
   String            department           = '';
@@ -32,17 +33,40 @@ class Contact implements Comparable{
   String            position             = '';
   String            relations            = '';
   String            responsibility       = '';
+  List<Recipient>   _distributionList    = new List<Recipient>();
   List<String>      _tags                = new List<String>();
+  List<PhoneNumber> _phoneNumberList     = new List<PhoneNumber>();
   MiniboxList       _telephoneNumberList = new MiniboxList();
   MiniboxList       _workHoursList       = new MiniboxList();
 
+  int               get receptionID         => _receptionID;
   MiniboxList       get backupList          => _backupList;
   CalendarEventList get calendarEventList   => _calendarEventList;
   MiniboxList       get emailAddressList    => _emailAddressList;
   MiniboxList       get handlingList        => _handlingList;
   List<String>      get tags                => _tags;
-  MiniboxList       get telephoneNumberList => _telephoneNumberList;
+  MiniboxList       get telephoneNumberList => _telephoneNumberList; // <- TODO: cleanup this
+  List<PhoneNumber> get phoneNumberList     => _phoneNumberList;
   MiniboxList       get workHoursList       => _workHoursList;
+  List<Recipient>   get distributionList    => _distributionList;
+  
+  /**
+   * TODO: Turn into A future.
+   */
+  Future<List<Recipient>> dereferenceDistributionList() {
+
+    return Future.forEach(this.distributionList, (Recipient recipient) {
+      return storage.getContact(recipient.receptionID, recipient.contactID).then((Contact dereferencedContact) {
+        recipient.contactName = dereferencedContact.name;
+        
+        return storage.getReception(recipient.receptionID).then((Reception dereferencedReception) {
+          recipient.receptionName = dereferencedReception.name;  
+        });
+        
+      });
+    }).then((_) {return this.distributionList;});
+  }
+
 
   /**
    * [Contact] constructor. Expects a map in the following format:
@@ -80,16 +104,17 @@ class Contact implements Comparable{
    * TODO Obviously the above map format should be in the docs/wiki, as it is
    * also highly relevant to Alice.
    */
-  Contact.fromJson(Map json) {
-    id = json['contact_id'];
-    isHuman = json['is_human'];
-    name = json['full_name'];
+  Contact.fromJson(Map json, int receptionID) {
+    this.id           = json['contact_id'];
+    this._receptionID = receptionID;
+    this.isHuman      = json['is_human'];
+    this.name         = json['full_name'];
 
-    _backupList          = new MiniboxList.fromJson(json, 'backup');
-    _emailAddressList    = new MiniboxList.fromJson(json, 'emailaddresses');
-    _handlingList        = new MiniboxList.fromJson(json, 'handling');
-    _telephoneNumberList = new MiniboxList.fromJson(json, 'telephonenumbers');
-    _workHoursList       = new MiniboxList.fromJson(json, 'workhours');
+    this._backupList          = new MiniboxList.fromJson(json, 'backup');
+    this._emailAddressList    = new MiniboxList.fromJson(json, 'emailaddresses');
+    this._handlingList        = new MiniboxList.fromJson(json, 'handling');
+    this._telephoneNumberList = new MiniboxList.fromJson(json, 'phones');
+    this._workHoursList       = new MiniboxList.fromJson(json, 'workhours');
 
     department     = json['department'];
     info           = json['info'];
@@ -102,9 +127,26 @@ class Contact implements Comparable{
     }
     
     if(json.containsKey('phones')) {
-      phones = json['phones'];
+      (json['phones'] as List).forEach((item) {
+        this._phoneNumberList.add(new PhoneNumber.fromMap(item));
+        
+        phones = json['phones'];
+      });
     }
     
+    if(json.containsKey('distribution_list')) {
+      print (json);
+      
+      (json['distribution_list'] as Map).forEach((role, recipientList) {
+        print(role);
+        print(recipientList);
+        (recipientList as List).forEach((recipientString) {
+          this._distributionList.add(new Recipient(recipientString, role));
+        });
+      });
+    }
+    print (distributionList);
+
     // Adding some dummy calendar events
     Map foo = new Map();
     foo['calendar_events'] = new List();
@@ -114,6 +156,10 @@ class Contact implements Comparable{
     _calendarEventList = new CalendarEventList.fromJson(foo, 'calendar_events');
   }
 
+  static Future<Contact> fetch(int contactID,int receptionID) {
+    return storage.getContact(receptionID, contactID);
+  }
+  
   /**
    * [Contact] null constructor.
    */
@@ -131,4 +177,17 @@ class Contact implements Comparable{
    * [Contact] as String, for debug/log purposes.
    */
   String toString() => '${name}-${id}-${isHuman}';
+  
+  Future<Map> contextMap() {
+    
+    return storage.getReception(this.receptionID).then ((Reception reception) {
+      return {'contact' : 
+                  {'id'   : this.id, 
+                   'name' : this.name}, 
+              'reception' : 
+                  {'id'   : this.receptionID, 
+                   'name' : reception.name}};
+    });
+    
+  }
 }
