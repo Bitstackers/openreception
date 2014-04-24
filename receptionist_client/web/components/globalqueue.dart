@@ -34,25 +34,20 @@ class GlobalQueue {
     String headerHtml = '''
       <span class="header">
         <span></span>        
-        <span>
-          <button id="pickupnextcallbutton">Pickup</button>
-          <button id="hangupcallButton">Hangup</button>
-          <button id="holdcallButton">Hold</button>
-        </span>
       </span>
     ''';
 
     header = new DocumentFragment.html(headerHtml).querySelector('.header');
 
-    pickupnextcallbutton = header.querySelector('#pickupnextcallbutton')
+    pickupnextcallbutton = querySelector('#pickupnextcallbutton')
       ..onClick.listen((_) => pickupnextcallHandler())
       ..tabIndex = -1;
 
-    hangupcallButton = header.querySelector('#hangupcallButton')
+    hangupcallButton = querySelector('#hangupcallButton')
       ..onClick.listen((_) => hangupcallHandler())
       ..tabIndex = -1;
 
-    holdcallButton = header.querySelector('#holdcallButton')
+    holdcallButton = querySelector('#holdcallButton')
       ..onClick.listen((_) => holdcallHandler())
       ..tabIndex = -1;
 

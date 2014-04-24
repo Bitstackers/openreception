@@ -14,10 +14,10 @@ class MessageOverview {
           <tr>
             <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
             <th id="message-overview-header-Timestamp"> Tidspunkt </th>
-            <th id="message-overview-header-agent"> Agent </th>
             <th id="message-overview-header-caller"> Opkalder </th>
-            <th id="message-overview-header-status"> Status </th>
-            <th id="message-overview-header-methode"> Metode </th>
+            <th id="message-overview-header-subject"> Subject </th>
+            <th id="message-overview-header-agent"> Agent </th>
+            <th id="message-overview-header-status"> Delivery </th>
           </tr>
         </thead>
         <tbody>
@@ -44,18 +44,29 @@ class MessageOverview {
   }
 
   TableRowElement makeRow(Map message) {
-    String time = dateFormat.format(new DateTime.fromMillisecondsSinceEpoch(message['time'] * 1000));
+    String time   = dateFormat.format(new DateTime.fromMillisecondsSinceEpoch(message['created_at']));
+    String status = "Pending";
+    if (message['pending_messages'] == 0) {
+      status = "Sent";
+    }
+    
     return new TableRowElement()
       ..children.addAll(
         [new TableCellElement()..children.add(new CheckboxInputElement()..tabIndex = -1)..style.textAlign = 'center'..onClick.listen((_) => messageCheckboxClick(message)),
          new TableCellElement()..text = time
                                ..style.textAlign = 'center',
-         new TableCellElement()..text = message['agent']
-                               ..style.paddingLeft = '3px',
-         new TableCellElement()..text = message['caller']
-                               ..style.paddingLeft = '3px',
-         new TableCellElement()..text = message['status'],
-         new TableCellElement()..text = message['methode']..style.textAlign = 'center']);
+         new TableCellElement()..text = message['taken_from']
+                               ..style.paddingLeft = '3px'
+                               ..style.textAlign = 'center',
+         new TableCellElement()..text = message['subject']
+                               ..style.paddingLeft = '3px'
+                               ..style.textAlign = 'center',
+         new TableCellElement()..text = message['taken_by_agent'].toString()
+                                   ..style.paddingLeft = '3px'
+                                   ..style.textAlign = 'center',
+         new TableCellElement()..text = status
+                               ..style.textAlign = 'center'
+        ]);
   }
 
   void headerCheckboxChange(Event event) {

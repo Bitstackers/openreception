@@ -195,12 +195,6 @@ class ContactInfoSearch {
             if(contact.phones.isNotEmpty) {
               //TODO Call person.
               log.debug('components.ContactInfoSearch.registerEventListeners() --------------- CALLING ${contact}');
-//              protocol.originateCallFromPhoneId(contactId, reception.id, contact.phones.first['id'])
-//                .then((_) {
-//                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- GOOD ${_}');
-//                }).catchError((e) {
-//                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- BAD ${_}');
-//                });
               String extension = contact.phones.first['value'];
               log.debug('------------------ $extension ---------------------');
               protocol.originateCallFromExtension(reception.id, extension)
@@ -279,7 +273,7 @@ class ContactInfoSearch {
         displayedContactList.children.addAll(appendingList.map(makeContactElement));
       }
 
-      //Add some air
+      //TODO: Add some spacing.
       var appendingList = filteredContactList.skip(displayedContactList.children.length).take(triesStep);
       displayedContactList.children.addAll(appendingList.map(makeContactElement));
 
