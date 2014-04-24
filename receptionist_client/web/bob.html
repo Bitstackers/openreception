@@ -40,12 +40,14 @@
     <link rel="stylesheet" href="css/phonebooth.css?v=1">
   </head>
   <body>
+   <!-- <div id="notifications" style="width:30%; height:40px; background-color:red; z-index:99; position:absolute;  margin: 0% 20% ;"></div>  --> 
+
     <div id="curtains"><!--We hide stuff behind these curtains--></div>
     <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div> 
     <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
     <div id="boblogin" style="position: absolute;"></div>
-    <div id="bobactive" class="hidden">
-      <ul id="contextswitcher"></ul>
+    <div id="bobactive">
+        <ul id="contextswitcher"></ul>
     
       <section id="contexthome" data-default-widget="companyselector" class="context">
         <div id="welcome-message" class="no-chrome">
@@ -69,6 +71,17 @@
             <div id="agent-info-portrait">
               <img id="agent-info-portrait-image">
             </div>
+          </div>
+        </div>
+
+        <div id="call-info" class="no-chrome">
+          <span>
+            <button id="pickupnextcallbutton">N&aelig;ste kald</button>
+            <button id="hangupcallButton">L&aelig;g P&aring;</button>
+            <button id="holdcallButton">Parkér</button>
+          </span>
+          <div id="current-call-info">
+          Ikke i kald.
           </div>
         </div>
         
