@@ -60,7 +60,7 @@ class ContactInfoData {
               <div id="contactRelations" class="contact-info-field"></div>
             </td>
             <td>
-              <h5>Email</h5>
+              <h5>Email og kontakter</h5>
               <div class="contact-info-field">
                 <ul id="contactEmailAddressList" class="zebra"></ul>
               </div>
@@ -120,17 +120,27 @@ class ContactInfoData {
     department.innerHtml = contact.department  != null ? contact.department: '';
 
     telephoneNumberList.children.clear();
-    for(var item in contact.telephoneNumberList) {
-      telephoneNumberList.children.add(new LIElement()
-        ..text = item.value);
+    for(var item in contact.phoneNumberList) {
+      
+      LIElement number = new LIElement()
+        ..classes.add ("phone-number")
+        ..classes.add (item.kind);
+      
+      number.children.add(new ButtonElement()
+          ..text = item.value
+          ..onClick.listen((_) =>  controller.call.dialContact(contact, item.phoneID)));
+      
+      telephoneNumberList.children.add(number);
+      
+      //TODO: Hide the phonenumber if it is private.
     }
 
     relations.innerHtml = contact.relations != null ? contact.relations: '';
 
     emailAddressList.children.clear();
-    for(var item in contact.emailAddressList) {
-      emailAddressList.children.add(new LIElement()
-        ..text = item.value);
+    for(var item in contact.distributionList) {
+        emailAddressList.children.add(new LIElement()
+          ..text = item.role + ": " + item.contactName);
     }
 
     info.innerHtml = contact.info  != null ? contact.info: '';
