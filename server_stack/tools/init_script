@@ -9,7 +9,7 @@
 DART_VM=`which dart`
 [ "$DART_VM" = "" ] && echo "No dart vm found in PATH" && exit 1
 
-PID_DIR=$PWD
+PID_DIR=$PWD/pid
 
 AUTH_SERVER=$PWD/AuthServer/bin/authserver.dart
 AUTH_SERVER_PID_FILE=${PID_DIR}/authserver.pid
@@ -18,6 +18,10 @@ AUTH_SERVER_PORT=8080
 MISC_SERVER=$PWD/MiscServer/bin/miscserver.dart
 MISC_SERVER_PID_FILE=${PID_DIR}/miscserver.pid
 MISC_SERVER_PORT=4080
+
+NOTIFICATION_SERVER=$PWD/NotificationServer/bin/notificationserver.dart
+NOTIFICATION_SERVER_PID_FILE=${PID_DIR}/NotificationServer.pid
+NOTIFICATION_SERVER_PORT=4200
 
 RECEPTION_SERVER=$PWD/ReceptionServer/bin/receptionserver.dart
 RECEPTION_SERVER_PID_FILE=${PID_DIR}/receptionserver.pid
@@ -60,8 +64,33 @@ auth_restart()
   echo ...
 }
 
-bootstrap_start()
+notification_start()
 {
+   # Notification server.
+   echo -n "Starting a notification server on port ${NOTIFICATION_SERVER_PORT}... "
+   (start-stop-daemon --start \
+                      --exec /bin/bash \
+                      --pidfile ${NOTIFICATION_SERVER_PID_FILE} \
+                      -m -- -c "exec $DART_VM $NOTIFICATION_SERVER --httpport ${NOTIFICATION_SERVER_PORT}" | logger -i -t notification_server&) || $ERROR="yes"
+      ([ "$ERROR" = "yes" ] && echo "ERROR" && exit 1) || echo "OK"
+}
+
+notification_stop()
+{
+   echo -n "Stopping a notification server on port ${AUTH_SERVER_PORT}..."
+   (start-stop-daemon --stop --exec $DART_VM $NOTIFICATION_SERVER --pidfile $NOTIFICATION_SERVER_PID_FILE && echo "OK")
+   rm $NOTIFICATION_SERVER_PID_FILE #Cleanup pid file.
+
+}
+
+notification_restart()
+{
+  notification_stop
+  notification_start
+  echo ...
+}
+
+bootstrap_start() {
    # Bootstrapper server
    echo -n "Starting a bootstrapper server on port ${MISC_SERVER_PORT}... "
    (start-stop-daemon --start \
@@ -184,6 +213,7 @@ start_all()
    bootstrap_start
    reception_start
    contact_start
+   notification_start
 }
 
 stop_all()
@@ -193,6 +223,7 @@ stop_all()
    reception_stop
    bootstrap_stop
    log_stop
+   notification_stop
 }
 
 
@@ -204,6 +235,7 @@ case "$1" in
 	stop_all
         ;;
   restart)
+	notification_restart
         log_restart
         auth_restart
         bootstrap_restart
