@@ -21,8 +21,9 @@ CREATE TABLE user_groups (
 );
 
 CREATE TABLE auth_identities (
-   identity TEXT    NOT NULL PRIMARY KEY,
-   user_id  INTEGER NOT NULL REFERENCES users (id)
+   identity  TEXT    NOT NULL PRIMARY KEY,
+   send_from BOOLEAN NOT NULL DEFAULT FAlSE,
+   user_id   INTEGER NOT NULL REFERENCES users (id)
 );
 
 CREATE TABLE openids (
@@ -148,7 +149,6 @@ INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 CREATE TABLE messages (
    id                        INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message                   TEXT      NOT NULL,
-   subject                   TEXT      NOT NULL,
    context_contact_id        INTEGER       NULL REFERENCES contacts   (id),  
    context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),  
    context_contact_name      TEXT          NULL DEFAULT NULL, --  Dereferenced contact name.

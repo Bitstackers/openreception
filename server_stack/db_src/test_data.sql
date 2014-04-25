@@ -277,23 +277,23 @@ VALUES (1, 1),
        (19, 2),
        (19, 3);
 
-INSERT INTO auth_identities (identity, user_id)
-VALUES ('kim.rostgaard@gmail.com', 2), 
-       ('devicesnull@gmail.com', 2),
-       ('cbergs8@gmail.com', 9),
-       ('krc@adaheads.com', 2),
-       ('tp@adaheads.com', 1),
-       ('cooltomme@gmail.com', 1),
-       ('testagent1100adaheads.com', 10),
-       ('testagent1101adaheads.com', 11),
-       ('testagent1102adaheads.com', 12),
-       ('testagent1103adaheads.com', 13),
-       ('testagent1104adaheads.com', 14),
-       ('testagent1105adaheads.com', 15),
-       ('testagent1106adaheads.com', 16),
-       ('testagent1107adaheads.com', 17),
-       ('testagent1108adaheads.com', 18),
-       ('testagent1109adaheads.com', 19);
+INSERT INTO auth_identities (identity, user_id, send_from)
+VALUES ('kim.rostgaard@gmail.com', 2, FALSE), 
+       ('devicesnull@gmail.com', 2, FALSE),
+       ('cbergs8@gmail.com', 9, TRUE),
+       ('krc@adaheads.com', 2, TRUE),
+       ('tp@adaheads.com', 1, TRUE),
+       ('cooltomme@gmail.com', 1, FALSE),
+       ('testagent1100adaheads.com', 10, TRUE),
+       ('testagent1101adaheads.com', 11, TRUE),
+       ('testagent1102adaheads.com', 12, TRUE),
+       ('testagent1103adaheads.com', 13, TRUE),
+       ('testagent1104adaheads.com', 14, TRUE),
+       ('testagent1105adaheads.com', 15, TRUE),
+       ('testagent1106adaheads.com', 16, TRUE),
+       ('testagent1107adaheads.com', 17, TRUE),
+       ('testagent1108adaheads.com', 18, TRUE),
+       ('testagent1109adaheads.com', 19, TRUE);
 
 
 INSERT INTO openids (user_id, openid, priority)
@@ -303,9 +303,18 @@ VALUES (1,'https://tux.myopenid.com/', 1),
        (5, 'https://adaheads2.myopenid.com/', 1),
        (7,'https://adaheads3.myopenid.com/', 1);
 
+-------------------------
+--  Message Test data  --
+-------------------------
+
+INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from, taken_by_agent, urgent, created_at)
+VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'AdaHeads K/S', 'Sparre', 2, TRUE, NOW());
+
 INSERT INTO message_draft (id, owner, json)
 VALUES (1, 1 , '{"subject": "Vil gerne have du ringer tilbage.","From" : "Karen Karetkrejler", "body": "Det handler om den sølvgrå Fiat Punto."}');
 
+INSERT INTO message_queue (message_id, enqueued_at, last_try, tries)
+VALUES (1, NOW(), NULL, 0);
 
 INSERT INTO phone_numbers (id, value, kind) VALUES
 (1, '11223344', 'PSTN'),
@@ -357,7 +366,20 @@ INSERT INTO reception_calendar (reception_id, event_id) VALUES
 (6, 10);
 
 INSERT INTO cdr_entries (uuid, inbound, reception_id, extension, duration, wait_time, ended_at) VALUES
-('00', false, 1, '12344412', 22, 3, now());
+('00', false, 1, '12344412', 22, 3, now()),
+('01', false, 1, '12344411', 12, 3, '2014-01-01 12:00:00'),
+('02', false, 1, '12344413', 21, 3, '2014-02-01 12:00:10'),
+('03', false, 1, '12344413', 21, 3, '2014-01-01 12:00:10'),
+('04', false, 1, '12344413', 21, 3, '2014-03-01 12:00:10'),
+('05', false, 1, '12344413', 21, 3, '2014-04-01 12:00:10'),
+('06', false, 1, '12344413', 21, 3, '2014-01-01 12:00:10'),
+('07', false, 1, '12344413', 21, 3, '2014-04-01 12:00:10'),
+('08', false, 1, '12344413', 21, 3, '2014-01-01 12:00:10'),
+('09', false, 1, '12344413', 21, 3, '2014-04-01 12:00:10'),
+('10', false, 1, '12344413', 21, 3, '2014-01-01 12:00:10'),
+('11', false, 1, '12344413', 21, 3, '2014-04-01 12:00:10'),
+('12', true,  1, '12344413', 21, 3, '2014-01-01 12:00:10'),
+('13', false, 1, '12344417', 61, 3, '2014-01-01 12:01:00');
 
 -- POSTGRES ONLY
 SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
