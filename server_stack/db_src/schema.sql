@@ -78,7 +78,7 @@ CREATE TABLE receptions (
    id              INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    organization_id INTEGER NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
    full_name       TEXT    NOT NULL,
-   uri             TEXT    NOT NULL UNIQUE,
+--   uri             TEXT    NOT NULL UNIQUE,
    attributes      JSON    NOT NULL,
    extradatauri    TEXT,
    enabled         BOOLEAN NOT NULL DEFAULT TRUE
@@ -93,6 +93,7 @@ CREATE TABLE reception_contacts (
 --   distribution_list_id INTEGER, --  Reference constraint added further down
    attributes           JSON,
    distribution_list    JSON,
+   phonenumbers		JSON,
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
 
    PRIMARY KEY (reception_id, contact_id)
@@ -266,6 +267,7 @@ CREATE TABLE reception_recurring_calendar (
 
 -------------------------------------------------------------------------------
 --  Phones
+-- TODO These are now in the contact as JSON and are therefore deprecated
 
 CREATE TABLE phone_number_types (value TEXT NOT NULL PRIMARY KEY);
 INSERT INTO phone_number_types (value) VALUES ('SIP'), ('PSTN');
