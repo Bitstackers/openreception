@@ -86,7 +86,7 @@ CREATE TABLE receptions (
    enabled         BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE INDEX reception_uri_index ON receptions (uri);
+--CREATE INDEX reception_uri_index ON receptions (uri);
 
 CREATE TABLE reception_contacts (
    reception_id         INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
