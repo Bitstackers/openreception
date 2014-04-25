@@ -1,3 +1,4 @@
+
 part of messageserver.router;
 
 void messageSend(HttpRequest request) {
@@ -5,7 +6,6 @@ void messageSend(HttpRequest request) {
   final String context = "messageserver.router.sendMessage";
   
   extractContent(request).then((String content) {
-    logger.debug(content);
     Map data;
     
     //Check If the format of the message is valid.
@@ -15,7 +15,7 @@ void messageSend(HttpRequest request) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
             {'status'     : 'bad request',
-             'description': 'The syntax for "to" is wrong'});
+             'description': 'The syntax for "to" is wrong (field is required).'});
         writeAndClose(request, response);
         return null;
       }
@@ -24,7 +24,7 @@ void messageSend(HttpRequest request) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
             {'status'     : 'bad request',
-             'description': 'The syntax for "cc" is wrong'});
+             'description': 'The syntax for "cc" is wrong.'});
         writeAndClose(request, response);
         return null;
       }
@@ -33,7 +33,7 @@ void messageSend(HttpRequest request) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
             {'status'     : 'bad request',
-             'description': 'The syntax for "bcc" is wrong'});
+             'description': 'The syntax for "bcc" is wrong.'});
         writeAndClose(request, response);
         return null;
       }
@@ -57,35 +57,39 @@ void messageSend(HttpRequest request) {
       return null;
     }
     
-//    writeAndClose(request, JSON.encode({'status': 'Success'}));
+    String     message = data['message'];
+    String     subject = data['subject'];
+    Messaging_Contact messageContext = new Messaging_Contact.fromMap(data['context']);
+    String   takenFrom = data['takenFrom'];
+    int    takeByAgent = 10; //getUserID (request, config.authUrl); //TODO: FIX!
+    bool        urgent = data['urgent'];
+    DateTime createdAt = new DateTime.now();
+
+    logger.debugContext(messageContext.toString(), context);
     
-    String message     = data['message'];
-    String subject     = data['subject'];
-    int toContactId    = data['toContactID'];
-    String takenFrom   = data['takenFrom'];
-    int takeByAgent     = 10;
-    bool urgent             = data['urgent'];
-    DateTime createdAt      = new DateTime.now();
-        
+    
 //    return tempSMTP(message, subject, ['kim.rostgaard@gmail.com']).then((_) {
 //      writeAndClose(request, JSON.encode({'status': 'Success'}));
 //    });
     
     
-    return db.createSendMessage(message, subject, toContactId, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
-      db.Message message = new db.Message(result['id']);
+    // TODO: Construct the message from a template.
+    return db.createSendMessage(message, "Message from " + takenFrom, messageContext, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
+      Message message = new Message(result['id']);
       
       // Harvest each field for recipients.
       ['bcc','cc','to'].forEach ((String role) {
-        (data[role] as List).forEach((contact_string) =>  message.addRecipient(new db.Messaging_Contact(contact_string, role)));
+        logger.debugContext("Adding for role $role", context);
+        if (data[role] != null) {
+          (data[role] as List).forEach((Map contact) =>  message.addRecipient(new Messaging_Contact.fromMap(contact, role)));
+        }
       });
       
       return db.addRecipientsToSendMessage(message.sqlRecipients()).then((Map result) {
-        db.populateQueue(message).then((queueSize) {
+        return db.enqueue(message).then((queueSize) {
           logger.debugContext("inserted $queueSize elements in queue.", context);
+          writeAndClose(request, JSON.encode(result));
         });
-
-        writeAndClose(request, JSON.encode(result));
       });
     });
        
@@ -115,7 +119,7 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
       logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
     }
 }
-  
+
 Future tempSMTP(String message, String subject, List<String> recipients) {
   // If you want to use an arbitrary SMTP server, go with `new SmtpOptions()`.
   // This class below is just for convenience. There are more similar classes available.

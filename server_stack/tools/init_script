@@ -17,7 +17,7 @@ AUTH_SERVER_PORT=8080
 
 MISC_SERVER=$PWD/MiscServer/bin/miscserver.dart
 MISC_SERVER_PID_FILE=${PID_DIR}/miscserver.pid
-MISC_SERVER_PORT=4030
+MISC_SERVER_PORT=4080
 
 RECEPTION_SERVER=$PWD/ReceptionServer/bin/receptionserver.dart
 RECEPTION_SERVER_PID_FILE=${PID_DIR}/receptionserver.pid

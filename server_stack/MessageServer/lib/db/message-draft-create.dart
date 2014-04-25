@@ -1,34 +1,40 @@
 part of messageserver.database;
 
-Future<Map> messageDraftCreate(int userID, String jsonBody) {
-    final String context = packageName + ".createDraft"; 
+/**
+ * Creates a draft (JSON encoded document) in the database.
+ * 
+ * [userID]   The user ID of the user owning the draft.
+ * [jsonBody] The draft object to store in the database. 
+ * 
+ */
+Future<Map> messageDraftCreate(int userID, Map jsonBody) {
     
-    String sql = '''
+  final String context = packageName + ".createDraft"; 
+    
+  String sql = '''
         INSERT INTO message_draft
         (owner, json) 
         VALUES 
         (@userID, @jsonBody)
         RETURNING id;''';
     
-    Map parameters = {'userID'   : userID,
-                      'jsonBody' : jsonBody};
+  Map parameters = {'userID'   : userID,
+                    'jsonBody' : JSON.encode (jsonBody)};
 
-    return database.query(_pool, sql, parameters).then((rows) {
-      logger.debugContext("Created a new draft for user " + userID.toString(), context);
+  return database.query(_pool, sql, parameters).then((rows) {
+    logger.debugContext("Created a new draft for user " + userID.toString(), context);
       
-      Map data = {};
+    Map data = {};
       
-      if (rows.length > 0) {
-        data = {'draft_id': rows.first.id};
-      } else {
-        throw new NotFound("Failed to insert the draft into database.");
-        //TODO: Throw createFailed exception 
-      }
+    if (rows.length > 0) {
+      data = {'draft_id': rows.first.id};
+    } else {
+      throw new CreateFailed("Failed to insert the draft into database.");
+    }
       
       return data;
     
     }).catchError((error) {
-      log(sql);
-      throw error;
+      logger.errorContext(error, context);
     });
   }

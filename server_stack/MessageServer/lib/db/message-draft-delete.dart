@@ -20,6 +20,6 @@ Future<Map> messageDraftDelete(int ID) {
     }
     return rowsAffected;
   }).catchError((error) {
-    throw error;
+    logger.errorContext(error, context) ;
   });
 }

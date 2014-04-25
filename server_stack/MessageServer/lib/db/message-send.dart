@@ -1,18 +1,41 @@
 part of messageserver.database;
 
-Future<Map> createSendMessage(String message, String subject, int toContactId, String takenFrom, int takeByAgent, bool urgent, DateTime createdAt) {
+Future<Map> createSendMessage(String message, String subject, Messaging_Contact messageContext, String takenFrom, int takeByAgent, bool urgent, DateTime createdAt) {
   String sql = '''
-    INSERT INTO message (message, subject, to_contact_id, taken_from, taken_by_agent, urgent, created_at)
-    VALUES (@message, @subject, @to_contact_id, @taken_from, @taken_by_agent, @urgent, timestamp'$createdAt')
+    INSERT INTO messages 
+         (message, 
+          subject, 
+          context_contact_id,
+          context_reception_id,
+          context_contact_name,
+          context_reception_name,
+          taken_from, 
+          taken_by_agent, 
+          urgent, 
+          created_at)
+    VALUES 
+         (@message, 
+          @subject, 
+          @context_contact_id,
+          @context_reception_id,
+          @context_contact_name,
+          @context_reception_name,
+          @taken_from,
+          @taken_by_agent, 
+          @urgent,
+          NOW())
     RETURNING id;
     '''; //@created_at
 
-  Map parameters = {'message'        : message,
-                    'subject'        : subject,
-                    'to_contact_id'  : toContactId,
-                    'taken_from'     : takenFrom,
-                    'taken_by_agent' : takeByAgent,
-                    'urgent'         : urgent
+  Map parameters = {'message'                : message,
+                    'subject'                : subject,
+                    'context_contact_id'     : messageContext.contactID,
+                    'context_reception_id'   : messageContext.receptionID,
+                    'context_contact_name'   : messageContext.contactName,
+                    'context_reception_name' : messageContext.receptionName,
+                    'taken_from'             : takenFrom,
+                    'taken_by_agent'         : takeByAgent,
+                    'urgent'                 : urgent
                     //'created_at'     : createdAt.toString()
                     };
   
@@ -34,14 +57,30 @@ Future<Map> addRecipientsToSendMessage(String sqlRecipients) {
   assert (sqlRecipients != ""); 
   
   String sql = '''
-    INSERT INTO message_recipients (contact_id, reception_id, message_id, recipient_role)
-    VALUES $sqlRecipients
-  ''';
-  print (sql);
+    INSERT INTO message_recipients (contact_id, contact_name, reception_id, reception_name, message_id, recipient_role)
+    VALUES $sqlRecipients''';
+  
   return database.execute(_pool, sql).then((int rowsAffected) {
     return {'rowsAffected': rowsAffected};
   });
 }
+
+Future<Map> enqueue(Message message) {
+  
+  final String context = '${packageName}.enqueue';
+  
+  String sql = '''INSERT INTO message_queue (message_id) VALUES (${message.ID})''';
+
+  return database.execute(_pool, sql).then((rowsAffected) {
+    logger.debugContext('Enqueued message with ID ${message.ID} for sending.', context);
+    return rowsAffected;
+  }).catchError((error) {
+    log(sql);
+    throw error;
+  });
+
+}
+
 
 Future<Map> populateQueue(Message message) {
   
@@ -51,7 +90,7 @@ Future<Map> populateQueue(Message message) {
   String sql = '''
 INSERT INTO message_queue (message_id, endpoint_id, recipient_role)
 SELECT msg.id AS message_id, addr.id AS endpoint_id, mrc.recipient_role as "role" FROM 
-message AS msg
+messages AS msg
   JOIN message_recipients   mrc  ON msg.id = message_id 
   JOIN reception_contacts   rc   ON mrc.contact_id = rc.contact_id AND mrc.reception_id = rc.reception_id AND rc.wants_messages
   JOIN messaging_end_points mep  ON rc.contact_id = mep.contact_id AND rc.reception_id = mrc.reception_id AND mep.enabled

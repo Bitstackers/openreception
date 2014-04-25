@@ -2,7 +2,7 @@ library utilities.common;
 
 //import 'dart:io';
 
-//import 'package:syslog/syslog.dart';
+import 'package:syslog/syslog.dart';
 
 //import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -22,6 +22,7 @@ Future activateSyslog(String hostname) {
 
 class BasicLogger {
   void debugContext(String message, String context) => print('[DEBUG] ${new DateTime.now()} - $context - $message');
+  void errorContext(String message, String context) => print('[ERROR] ${new DateTime.now()} - $context - $message');
   void debug(String message) => print('[DEBUG] $message');
   void error(String message) => print('[ERROR] $message');
   void critical(String message) => print('[CRITICAL] $message');
