@@ -12,7 +12,7 @@ fi
 
 kill ${dart_processes} || true
 
-dart_processes="$(cd /proc && ls -d ${dart_processes})"
+dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null)"
 
 if [ -z "${dart_processes}" ]; then
    echo "The spawner has been stopped."
@@ -24,7 +24,7 @@ sleep 1
 
 kill -9 ${dart_processes} || true
 
-dart_processes="$(cd /proc && ls -d ${dart_processes})"
+dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null)"
 
 if [ -z "${dart_processes}" ]; then
    echo "The spawner has been stopped hard."
