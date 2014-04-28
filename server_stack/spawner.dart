@@ -15,7 +15,7 @@ void main() {
   Servers.forEach((String serverName, Map server) {
     print ('Starting ${serverName}..');
     Process.start('dart', [server['path']]).then((process) {
-        server['pid'] = process.pid;
+        server['process'] = process;
         
         process.stdout
         .transform(UTF8.decoder)
@@ -33,4 +33,16 @@ void main() {
           });
     });
   });
+  
+  ProcessSignal.SIGINT.watch().listen((_) {
+    Servers.forEach((String serverName, Map server) {
+      (server['process'] as Process).kill(ProcessSignal.SIGINT);
+    });
+  });
+    
+    ProcessSignal.SIGTERM.watch().listen((_) {
+      Servers.forEach((String serverName, Map server) {
+        (server['process'] as Process).kill(ProcessSignal.SIGINT);
+      });
+    });
 }
