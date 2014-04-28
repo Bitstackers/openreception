@@ -24,5 +24,14 @@ if [ -d /proc/${pid} ]; then
    echo ${pid} > .pid
 else
    echo "The spawner failed to start properly."
+
+   echo "Standard output:"
+   cat .output
+   echo
+
+   echo "Standard error:"
+   cat .errors
+   echo
+
    exit 103
 fi
