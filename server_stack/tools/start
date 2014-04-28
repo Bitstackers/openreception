@@ -17,7 +17,7 @@ fi
 echo "Starting the spawner..."
 
 dart spawner.dart 0</dev/null 1>.output 2>.errors &
-pid=$?
+pid=$!
 
 if [ -d /proc/${pid} ]; then
    echo "The spawner is running."
