@@ -2,31 +2,36 @@
 
 cd "$(dirname "$0")/.." || exit 100
 
+dart_processes="$(ps auxwf | grep -v grep | egrep 'dart (.+/bin/.+|spawner)[.]dart' | cut -d10-14)"
+
 if [ ! -f .pid ]; then
    echo "No process ID available."
-   exit 101
+else
+   dart_processes="${dart_processes} $(cat .pid)"
 fi
 
-if [ ! -d /proc/$(cat .pid) ]; then
-   echo "No spawner running at the moment."
-   exit
-fi
+kill ${dart_processes} || true
 
-kill $(cat .pid)
+dart_processes="$(cd /proc && ls -d ${dart_processes})"
 
-if [ ! -d /proc/$(cat .pid) ]; then
+if [ -z "${dart_processes}" ]; then
    echo "The spawner has been stopped."
+   rm -f .pid
    exit
 fi
 
 sleep 1
-kill -9 $(cat .pid)
 
-if [ ! -d /proc/$(cat .pid) ]; then
+kill -9 ${dart_processes} || true
+
+dart_processes="$(cd /proc && ls -d ${dart_processes})"
+
+if [ -z "${dart_processes}" ]; then
    echo "The spawner has been stopped hard."
+   rm -f .pid
    exit
 fi
 
 echo "Failed to stop the spawner."
-exit 102
+exit 101
 
