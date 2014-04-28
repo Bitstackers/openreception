@@ -20,14 +20,14 @@ void main() {
         .transform(new LineSplitter())
         .listen(
           (String line) {
-            print('${serverName}: ${line}');
+            print('${serverName} (output): ${line}');
           });
         process.stderr
         .transform(UTF8.decoder)
         .transform(new LineSplitter())
         .listen(
           (String line) {
-            print('${serverName}: ${line}');
+            print('${serverName} (errors): ${line}');
           });
     });
   });
