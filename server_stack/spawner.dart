@@ -8,7 +8,6 @@ void main() {
                              'AuthServer'         : {'path' : 'AuthServer/bin/authserver.dart'},
                              'ContactServer'      : {'path' : 'ContactServer/bin/contactserver.dart'},
                              'LogServer'          : {'path' : 'LogServer/bin/logserver.dart'},
-                             'CDRServer'          : {'path' : 'CDRServer/bin/cdrserver.dart'},
                              'MessageDispatcher'  : {'path' : 'MessageDispatcher/bin/messagedispacher.dart'},
                              'MessageServer'      : {'path' : 'MessageServer/bin/messageserver.dart'},
                              'NotificationServer' : {'path' : 'NotificationServer/bin/notificationserver.dart'},
