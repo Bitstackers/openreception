@@ -1,0 +1,32 @@
+#! /bin/bash
+
+cd "$(dirname "$0")/.." || exit 100
+
+if [ ! -f .pid ]; then
+   echo "No process ID available."
+   exit 101
+fi
+
+if [ ! -d /proc/$(cat .pid) ]; then
+   echo "No spawner running at the moment."
+   exit
+fi
+
+kill $(cat .pid)
+
+if [ ! -d /proc/$(cat .pid) ]; then
+   echo "The spawner has been stopped."
+   exit
+fi
+
+sleep 1
+kill -9 $(cat .pid)
+
+if [ ! -d /proc/$(cat .pid) ]; then
+   echo "The spawner has been stopped hard."
+   exit
+fi
+
+echo "Failed to stop the spawner."
+exit 102
+

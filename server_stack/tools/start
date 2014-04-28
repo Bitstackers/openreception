@@ -1,0 +1,38 @@
+#! /bin/bash
+
+cd "$(dirname "$0")/.." || exit 100
+
+if [ ! -d "out" ]; then
+   echo "Please run 'make -C $(pwd)'."
+   exit 101
+fi
+
+for server in out/*.dart; do
+   service=$(basename ${server} .dart)
+
+   if [ ! -r ${service}/bin/config.json ]; then
+      echo "'${service}/bin/config.json' is missing."
+      echo "Please run 'make -C $(pwd) configs'."
+      exit 102
+   fi
+done
+
+if [ -f .pid ]; then
+   if [ -d /proc/$(cat .pid) ]; then
+      echo "The spawner is already running."
+      exit
+   fi
+fi
+
+echo "Starting the spawner..."
+
+dart spawner.dart 0</dev/null 1>.output 2>.errors &
+pid=$?
+
+if [ -d /proc/${pid} ]; then
+   echo "The spawner is running."
+   echo ${pid} > .pid
+else
+   echo "The spawner failed to start properly."
+   exit 103
+fi
