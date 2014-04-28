@@ -82,3 +82,5 @@ $(OUTPUT_DIRECTORY)/NotificationServer.dart : NotificationServer/bin/notificatio
 	cd `basename $@ .dart` && pub get
 	dart2js --output-type=dart --checked --verbose --out=$@ --categories=Server $<
 
+spawner: all
+
