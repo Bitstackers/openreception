@@ -15,6 +15,8 @@ void main() {
   Servers.forEach((String serverName, Map server) {
     print ('Starting ${serverName}..');
     Process.start('dart', [server['path']]).then((process) {
+        server['pid'] = process.pid;
+        
         process.stdout
         .transform(UTF8.decoder)
         .transform(new LineSplitter())
