@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")/.." || exit 100
 
-dart_processes="$(ps auxwf | grep -v grep | egrep 'dart (.+/bin/.+|spawner)[.]dart' | cut -d10-14)"
+dart_processes="$(ps auxwf | grep -v grep | egrep 'dart (.+/bin/.+|spawner)[.]dart' | cut -c10-14)"
 
 if [ ! -f .pid ]; then
    echo "No process ID available."
