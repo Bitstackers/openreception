@@ -6,6 +6,8 @@ TIMESTAMP=$(shell date +%s)
 
 PREFIX?=/usr/local/databaseservers
 
+OUTPUT_DIRECTORY=out
+
 AuthBinary=AuthServer.dart
 ContactBinary=ContactServer.dart
 LogBinary=LogServer.dart
@@ -15,35 +17,39 @@ ReceptionBinary=ReceptionServer.dart
 
 -include makefile.dbsetup
 
-all: auth contact log message misc reception
+all: auth contact log message misc reception $(OUTPUT_DIRECTORY)/NotificationServer.dart
 
-OUTPUT_DIRECTORY=out
+configs: */bin/config.json.dist
+	for source in */bin/config.json.dist; do \
+	   target=$${source%%.dist}; \
+	   cp -np $${source} $${target}; \
+	done
 
-auth: outfolder
+auth: $(OUTPUT_DIRECTORY)
 	cd AuthServer/ && pub get 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart
 
-contact: outfolder
+contact: $(OUTPUT_DIRECTORY)
 	cd ContactServer/ && pub get 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server ContactServer/bin/contactserver.dart
 
-log: outfolder
+log: $(OUTPUT_DIRECTORY)
 	cd LogServer/ && pub get 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${LogBinary} --categories=Server LogServer/bin/logserver.dart
 
-message: outfolder
+message: $(OUTPUT_DIRECTORY)
 	cd MessageServer/ && pub get
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server MessageServer/bin/messageserver.dart
 
-misc: outfolder
+misc: $(OUTPUT_DIRECTORY)
 	cd MiscServer/ && pub get
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MiscBinary} --categories=Server MiscServer/bin/miscserver.dart
 
-reception: outfolder
+reception: $(OUTPUT_DIRECTORY)
 	cd ReceptionServer/ && pub get
 	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${ReceptionBinary} --categories=Server ReceptionServer/bin/receptionserver.dart
 
-outfolder:
+$(OUTPUT_DIRECTORY):
 	mkdir -p $(OUTPUT_DIRECTORY)
 
 clean: 
@@ -70,3 +76,9 @@ latest_db_install:
 	psql -c "CREATE DATABASE ${PGDB} WITH OWNER = ${PGUSER} ENCODING='UTF8' TEMPLATE = template0;" --host=${PGHOST} --username=${PG_SUPER_USER} -w
 	PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_SCHEMA} --host=${PGHOST} --username=${PGUSER} -w
 	LANG=C.UTF-8 PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_DATA} --host=${PGHOST} --username=${PGUSER} -w
+
+$(OUTPUT_DIRECTORY)/NotificationServer.dart : NotificationServer/bin/notificationserver.dart NotificationServer/lib/*.dart
+	mkdir -p "`dirname $@`"
+	cd `basename $@ .dart` && pub get
+	dart2js --output-type=dart --checked --verbose --out=$@ --categories=Server $<
+
