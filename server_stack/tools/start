@@ -7,16 +7,6 @@ if [ ! -d "out" ]; then
    exit 101
 fi
 
-for server in out/*.dart; do
-   service=$(basename ${server} .dart)
-
-   if [ ! -r ${service}/bin/config.json ]; then
-      echo "'${service}/bin/config.json' is missing."
-      echo "Please run 'make -C $(pwd) configs'."
-      exit 102
-   fi
-done
-
 if [ -f .pid ]; then
    if [ -d /proc/$(cat .pid) ]; then
       echo "The spawner is already running."
