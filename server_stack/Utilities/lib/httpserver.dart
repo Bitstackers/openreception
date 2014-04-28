@@ -83,7 +83,7 @@ void page404(HttpRequest request) {
   
   log('404: ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
-  request.response.write(JSON.encode({'erorr':'No handler found for ' + request.uri.toString() }));
+  request.response.write(JSON.encode({'error':'No handler found for ' + request.uri.toString() }));
   request.response.close();
 }
 
@@ -113,7 +113,7 @@ void resourceNotFound(HttpRequest request) {
   
   log(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
-  request.response.write(JSON.encode({'erorr':'Resource not found.'}));
+  request.response.write(JSON.encode({'error':'Resource not found.'}));
   request.response.close();
 }
 
