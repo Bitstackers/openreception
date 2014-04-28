@@ -8,13 +8,10 @@ void main() {
                              'AuthServer'         : {'path' : 'AuthServer/bin/authserver.dart'},
                              'ContactServer'      : {'path' : 'ContactServer/bin/contactserver.dart'},
                              'LogServer'          : {'path' : 'LogServer/bin/logserver.dart'},
-                             'MessageDispatcher'  : {'path' : 'MessageDispatcher/bin/messagedispacher.dart'},
                              'MessageServer'      : {'path' : 'MessageServer/bin/messageserver.dart'},
                              'NotificationServer' : {'path' : 'NotificationServer/bin/notificationserver.dart'},
-//                             'OrganizationServer' : {'path' : 'MessageServer/bin/messageserver.dart'},
-                             'ReceptionServer'    : {'path' : 'ReceptionServer/bin/receptionserver.dart'},
-                             'UserServer'         : {'path' : 'UserServer/bin/userserver.dart'}};
-  
+                             'ReceptionServer'    : {'path' : 'ReceptionServer/bin/receptionserver.dart'}};
+
   Servers.forEach((String serverName, Map server) {
     print ('Starting ${serverName}..');
     Process.start('dart', [server['path']]).then((process) {
