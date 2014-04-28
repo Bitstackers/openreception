@@ -10,9 +10,16 @@ else
    dart_processes="${dart_processes} $(cat .pid)"
 fi
 
+dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null | egrep '^[0-9]+$')"
+
+if [ -z "${dart_processes}" ]; then
+   echo "Spawner not running."
+   exit
+fi
+
 kill ${dart_processes} || true
 
-dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null)"
+dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null | egrep '^[0-9]+$')"
 
 if [ -z "${dart_processes}" ]; then
    echo "The spawner has been stopped."
@@ -24,7 +31,7 @@ sleep 1
 
 kill -9 ${dart_processes} || true
 
-dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null)"
+dart_processes="$(cd /proc && ls -d ${dart_processes} 2>/dev/null | egrep '^[0-9]+$')"
 
 if [ -z "${dart_processes}" ]; then
    echo "The spawner has been stopped hard."
