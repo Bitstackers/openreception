@@ -15,20 +15,34 @@ void main() {
   Servers.forEach((String serverName, Map server) {
     print ('Starting ${serverName}..');
     Process.start('dart', [server['path']]).then((process) {
+        server['process'] = process;
+        
         process.stdout
         .transform(UTF8.decoder)
         .transform(new LineSplitter())
         .listen(
           (String line) {
-            print('${serverName}: ${line}');
+            print('${serverName} (output): ${line}');
           });
         process.stderr
         .transform(UTF8.decoder)
         .transform(new LineSplitter())
         .listen(
           (String line) {
-            print('${serverName}: ${line}');
+            print('${serverName} (errors): ${line}');
           });
     });
   });
+  
+  ProcessSignal.SIGINT.watch().listen((_) {
+    Servers.forEach((String serverName, Map server) {
+      (server['process'] as Process).kill(ProcessSignal.SIGINT);
+    });
+  });
+    
+    ProcessSignal.SIGTERM.watch().listen((_) {
+      Servers.forEach((String serverName, Map server) {
+        (server['process'] as Process).kill(ProcessSignal.SIGINT);
+      });
+    });
 }
