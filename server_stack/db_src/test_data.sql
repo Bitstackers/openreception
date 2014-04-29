@@ -125,7 +125,8 @@ VALUES /*Adaheads*/
        '{"to" : ["1@2"]}' ),
        (2, 4, '{"backup":[{"value":"Sidsel Schomacker", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Pas på hans skæg", "priority": 1}],"telephonenumbers":[{"value":"+45 31 41 59 26", "priority": 1}],"workhours":[{"value":"Hele tiden", "priority": 1}],"tags":["Linux","Tux","Pingvinen"],"department":"Båden","info":"Klap for den venstre øje","position":"CFO (Cheif fishing officer)","relations":"Papegøjen Dieco ","responsibility":"Saltvands fisk"}',
        '{"to" : ["2@2"]}' ),
-       
+       (2, 2, '{"backup":[{"value":"Sidsel Schomacker", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Pas på hans skæg", "priority": 1}],"telephonenumbers":[{"value":"+45 31 41 59 26", "priority": 1}],"workhours":[{"value":"Hele tiden", "priority": 1}],"tags":["Linux","Tux","Pingvinen"],"department":"Båden","info":"Klap for den venstre øje","position":"CFO (Cheif fishing officer)","relations":"Papegøjen Dieco ","responsibility":"Saltvands fisk"}',
+       '{"to" : ["2@2"]}' ),       
        /*Responsum*/
        (3, 1, '{"backup":[{"value":"Trine Løcke","priority":1},{"value":"Steen Løcke","priority":2}],"emailaddresses":[{"value":"tl@responsum.dk","priority":1}],"handling":[{"value":"Bær over med hans gode humør","priority":1}],"telephonenumbers":[{"value":"+45 33 48 82 01","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["AWS","SIP","Slackware","Linux"],"department":"HQ","info":"Something","position":"CTO","relations":"Gift med Trine Løcke","responsibility":"IT afdellingen"}',
         '{"to" : ["1@3"]}' ),
@@ -162,23 +163,27 @@ VALUES /*Adaheads*/
                    {"value":"maren@landmand.dk","priority":1}],"handling":[{"value":"Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe.","priority":1}],"telephonenumbers":[{"value":"+45 90 12 14 16","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Fars","Steg"],"department":"Efterbehandling","info":"Arbejder med efterbehandling af råvarene","position":"Medarbejder","relations":"Gift med Bondemand Jensen","responsibility":"Alt efterbehandling"}','{}');
 
 INSERT INTO messaging_addresses (id, address_type, address)
-VALUES (1, 'e-mail', 'tl@adaheads.com'),
-       (2, 'sms',    '+4560431992'),
-       (3, 'e-mail', 'jsa@adaheads.com'),
-       (4, 'sms',    '+4521490804'),
-       (5, 'e-mail', 'jacob@jacob-sparre.dk'),
-       (6, 'e-mail', 'thomas@responsum.dk'),
-       (7, 'sms',    '+4588329100'),
-       (9, 'e-mail', 'trine@responsum.dk');
+VALUES (1,  'email', 'tl@adaheads.com'),
+       (2,  'sms',    '+4560431992'),
+       (3,  'email', 'jsa@adaheads.com'),
+       (4,  'sms',    '+4521490804'),
+       (5,  'email', 'jacob@jacob-sparre.dk'),
+       (6,  'email', 'thomas@responsum.dk'),
+       (7,  'sms',    '+4588329100'),
+       (9,  'email', 'trine@responsum.dk'),
+       (10, 'email', 'krc@adaheads.com'),
+       (11, 'email', 'krc@retrospekt.dk'),
+       (12, 'email', 'krc@gir.dk');
 
 INSERT INTO messaging_end_points (contact_id, reception_id, address_id,
                                   confidential, enabled)
 VALUES --  Adaheads
-       (1, 1, 1, FALSE, TRUE),
-       (2, 1, 2, FALSE, FALSE),
-       (3, 1, 3, FALSE, TRUE),
-       (4, 1, 4, FALSE, TRUE),
-       (5, 1, 5, TRUE,  FALSE),
+       (1, 1, 1,  FALSE, TRUE),
+       (2, 1, 10, FALSE, TRUE),
+       (2, 2, 12, FALSE, TRUE),
+       (3, 1, 3,  FALSE, TRUE),
+       (4, 1, 4,  FALSE, TRUE),
+       (5, 1, 5,  TRUE,  FALSE),
        --  Fishermans Friends    
        (1, 2, 7, FALSE, FALSE),
        --  Responsum
@@ -307,14 +312,18 @@ VALUES (1,'https://tux.myopenid.com/', 1),
 --  Message Test data  --
 -------------------------
 
-INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from, taken_by_agent, urgent, created_at)
-VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'AdaHeads K/S', 'Sparre', 2, TRUE, NOW());
+INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from_name, taken_from_company, taken_from_phone, taken_from_cellphone, taken_by_agent, urgent, created_at)
+VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'AdaHeads K/S', 'Sparre', 'Blik A/S', '22114411', '33551122', 2, TRUE, NOW());
+
+INSERT INTO message_recipients (contact_id, reception_id, message_id, recipient_role, contact_name, reception_name)
+VALUES (2, 1, 1, 'to', 'Kim Rostgaard Chrisensen', 'AdaHeads K/S'),
+       (2, 2, 1, 'cc', 'Kim Rostgaard Chrisensen', 'Gir');
 
 INSERT INTO message_draft (id, owner, json)
 VALUES (1, 1 , '{"subject": "Vil gerne have du ringer tilbage.","From" : "Karen Karetkrejler", "body": "Det handler om den sølvgrå Fiat Punto."}');
 
-INSERT INTO message_queue (message_id, enqueued_at, last_try, tries)
-VALUES (1, NOW(), NULL, 0);
+INSERT INTO message_queue (id, message_id, enqueued_at, last_try, tries)
+VALUES (1000000, 1, NOW(), NULL, 0);
 
 INSERT INTO phone_numbers (id, value, kind) VALUES
 (1, '11223344', 'PSTN'),
@@ -388,6 +397,7 @@ SELECT setval('contacts_id_sequence', (SELECT max(id)+1 FROM contacts), FALSE);
 SELECT setval('organizations_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
 SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
 SELECT setval('messaging_addresses_id_sequence', (SELECT max(id)+1 FROM messaging_addresses), FALSE);
+--  SELECT setval('message_queue_id_sequence', (SELECT max(id)+1 FROM message_queue), FALSE);
 --  SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
 SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);
 SELECT setval('message_draft_id_sequence', (SELECT max(id)+1 FROM message_draft), FALSE);

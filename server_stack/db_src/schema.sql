@@ -108,7 +108,7 @@ CREATE INDEX reception_contacts_reception_id_index ON reception_contacts (recept
 --  Addresses and messaging:
 
 CREATE TABLE messaging_address_types (value TEXT NOT NULL PRIMARY KEY);
-INSERT INTO messaging_address_types VALUES ('e-mail'), ('sms');
+INSERT INTO messaging_address_types VALUES ('email'), ('sms');
 
 CREATE TABLE messaging_addresses (
    id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
@@ -156,7 +156,10 @@ CREATE TABLE messages (
    context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),  
    context_contact_name      TEXT          NULL DEFAULT NULL, --  Dereferenced contact name.
    context_reception_name    TEXT      NOT NULL,              --  Dereferenced reception name.
-   taken_from                TEXT      NOT NULL,
+   taken_from_name           TEXT      NOT NULL DEFAULT '',
+   taken_from_company        TEXT      NOT NULL DEFAULT '',
+   taken_from_phone          TEXT      NOT NULL DEFAULT '',
+   taken_from_cellphone      TEXT      NOT NULL DEFAULT '',
    taken_by_agent            INTEGER   NOT NULL REFERENCES users (id),
    urgent                    BOOLEAN   NOT NULL DEFAULT FALSE,
    created_at                TIMESTAMP NOT NULL DEFAULT NOW()
@@ -177,12 +180,13 @@ CREATE TABLE message_recipients (
 --  table, indicates that is has not been delived to a transport agent.
 
 CREATE TABLE message_queue (
+   id             INTEGER   NOT NULL,
    message_id     INTEGER   NOT NULL,
    enqueued_at    TIMESTAMP NOT NULL DEFAULT NOW(),
    last_try       TIMESTAMP     NULL DEFAULT NULL,
    tries          INTEGER   NOT NULL DEFAULT 0,
 
-   PRIMARY KEY (message_id)
+   PRIMARY KEY (id)
 );
 
 -------------------------------------------------------------------------------
