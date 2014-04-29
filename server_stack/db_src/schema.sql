@@ -40,6 +40,11 @@ CREATE TABLE dial_plans (
    dial_plan    XML  NOT NULL
 );
 
+CREATE TABLE audiofiles (
+   filepath  TEXT NOT NULL PRIMARY KEY,
+   shortname TEXT NOT NULL
+);
+
 -------------------------------------------------------------------------------
 --  Calendar of special days:
 
