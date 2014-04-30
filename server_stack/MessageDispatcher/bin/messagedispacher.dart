@@ -24,6 +24,9 @@ void main(List<String> args) {
 
     if (showHelp()) {
       print(parser.getUsage());
+      
+      exit(1);
+
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
@@ -31,18 +34,19 @@ void main(List<String> args) {
       // HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
       .then((_) => periodicEmailSend())
-      .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+      .catchError((e, stackTrace) => logger.errorContext('${e} : ${stackTrace}', 'main'));
     }
-  } on ArgumentError catch (e) {
-    log('main() ArgumentError ${e}.');
+  } on ArgumentError catch (e, stackTrace) {
+    logger.errorContext('main() ArgumentError ${e} : ${stackTrace}', 'main');
     print(parser.getUsage());
 
-  } on FormatException catch (e) {
-    log('main() FormatException ${e}');
+  } on FormatException catch (e, stackTrace) {
+    logger.errorContext('main() FormatException ${e} : ${stackTrace}', 'main');
     print(parser.getUsage());
 
-  } catch (e) {
-    log('main() exception ${e}');
+  } catch (e, stackTrace) {
+    
+    logger.errorContext('Unhandled exception ${e} : ${stackTrace}', 'main');
   }
 }
 
@@ -69,7 +73,7 @@ void periodicEmailSend() {
         String json = JSON.encode(template.toMap());
         
         if (!message.hasRecpients) {
-          logger.debugError("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
+          logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
         } else {
         
         /* Kick off a mailer process */ 
@@ -78,21 +82,21 @@ void periodicEmailSend() {
           
             process.exitCode.then((int exitCode) {
               if (exitCode != 0) {
-                logger.debugError('Python mailer prematurely exits with code: ${exitCode},', context);
+                logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
               } else {
                 MessageQueue.remove(queueEntry['queue_id']);
               }
             });
           
             process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
-              logger.debugContext('Python mailer (stdout): ${line}', context);
+              logger.errorContext('Python mailer (stdout): ${line}', context);
             });
             process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
-              logger.debugError('Python mailer (stderr): ${line}',context);
+              logger.errorContext('Python mailer (stderr): ${line}',context);
             });
 
           }).catchError((onError) {
-            logger.debugError("Failed to run mailer process. Error: ${onError}", context);
+            logger.errorContext("Failed to run mailer process. Error: ${onError}", context);
           });
        };
       });
