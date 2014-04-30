@@ -161,7 +161,7 @@ CREATE TABLE messages (
    taken_from_phone          TEXT      NOT NULL DEFAULT '',
    taken_from_cellphone      TEXT      NOT NULL DEFAULT '',
    taken_by_agent            INTEGER   NOT NULL REFERENCES users (id),
-   urgent                    BOOLEAN   NOT NULL DEFAULT FALSE,
+   flags                     JSON      NOT NULL DEFAULT '{}',
    created_at                TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -180,13 +180,11 @@ CREATE TABLE message_recipients (
 --  table, indicates that is has not been delived to a transport agent.
 
 CREATE TABLE message_queue (
-   id             INTEGER   NOT NULL,
+   id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message_id     INTEGER   NOT NULL,
    enqueued_at    TIMESTAMP NOT NULL DEFAULT NOW(),
    last_try       TIMESTAMP     NULL DEFAULT NULL,
-   tries          INTEGER   NOT NULL DEFAULT 0,
-
-   PRIMARY KEY (id)
+   tries          INTEGER   NOT NULL DEFAULT 0
 );
 
 -------------------------------------------------------------------------------

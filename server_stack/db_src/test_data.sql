@@ -188,7 +188,7 @@ VALUES --  Adaheads
        (1, 2, 7, FALSE, FALSE),
        --  Responsum
        (1, 3, 6, FALSE, TRUE),
-       (2, 3, 9, FALSE, TRUE);
+       (2, 3, 11, FALSE, TRUE);
 
 --  INSERT INTO distribution_lists (id,
 --                                  send_to_contact_id, send_to_reception_id,
@@ -312,8 +312,8 @@ VALUES (1,'https://tux.myopenid.com/', 1),
 --  Message Test data  --
 -------------------------
 
-INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from_name, taken_from_company, taken_from_phone, taken_from_cellphone, taken_by_agent, urgent, created_at)
-VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'AdaHeads K/S', 'Sparre', 'Blik A/S', '22114411', '33551122', 2, TRUE, NOW());
+INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from_name, taken_from_company, taken_from_phone, taken_from_cellphone, taken_by_agent, flags, created_at)
+VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'AdaHeads K/S', 'Sparre', 'Blik A/S', '22114411', '33551122', 2, '["urgent"]', NOW());
 
 INSERT INTO message_recipients (contact_id, reception_id, message_id, recipient_role, contact_name, reception_name)
 VALUES (2, 1, 1, 'to', 'Kim Rostgaard Chrisensen', 'AdaHeads K/S'),
