@@ -21,7 +21,16 @@ Future activateSyslog(String hostname) {
 
 
 class BasicLogger {
-  void debugContext(String message, String context) => print('[DEBUG] ${new DateTime.now()} - $context - $message');
+  
+  static final int DEBUG    = 255;
+  static final int INFO     = 10;
+  static final int ERROR    = 5;
+  static final int CRITICAL = 0;
+  
+  int loglevel = DEBUG;
+  
+  void debugContext(String message, String context) => (this.loglevel >= DEBUG ? print('[DEBUG] ${new DateTime.now()} - $context - $message') : null);
+  void infoContext(String message, String context)  => print('[INFO]  ${new DateTime.now()} - $context - $message');
   void errorContext(String message, String context) => print('[ERROR] ${new DateTime.now()} - $context - $message');
   void debug(String message) => print('[DEBUG] $message');
   void error(String message) => print('[ERROR] $message');
