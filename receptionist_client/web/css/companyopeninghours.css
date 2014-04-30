@@ -15,10 +15,7 @@
 */
 
 #companyopeninghours {
-  position: absolute;
-  left: 35%;
-  top: 8%;
   height: 9%;
-  width: 21%;
+  width: 100%;
   overflow: auto;
 }

@@ -13,11 +13,11 @@ class MessageOverview {
         <thead>
           <tr>
             <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
-            <th id="message-overview-header-Timestamp"> Tidspunkt </th>
+            <th id="message-overview-header-timestamp"> Tidspunkt </th>
             <th id="message-overview-header-caller"> Opkalder </th>
-            <th id="message-overview-header-subject"> Subject </th>
+            <th id="message-overview-header-context"> Kontekst </th>
             <th id="message-overview-header-agent"> Agent </th>
-            <th id="message-overview-header-status"> Delivery </th>
+            <th id="message-overview-header-status"> Status </th>
           </tr>
         </thead>
         <tbody>
@@ -55,16 +55,16 @@ class MessageOverview {
         [new TableCellElement()..children.add(new CheckboxInputElement()..tabIndex = -1)..style.textAlign = 'center'..onClick.listen((_) => messageCheckboxClick(message)),
          new TableCellElement()..text = time
                                ..style.textAlign = 'center',
-         new TableCellElement()..text = message['taken_from']
+         new TableCellElement()..text = '${message['caller']['name']} (${message['caller']['company']})'
+                               ..style.paddingLeft = '3px'
+                               ..style.textAlign = 'left',
+         new TableCellElement()..text = message['context']['contact']['name']
                                ..style.paddingLeft = '3px'
                                ..style.textAlign = 'center',
-         new TableCellElement()..text = message['subject']
-                               ..style.paddingLeft = '3px'
-                               ..style.textAlign = 'center',
-         new TableCellElement()..text = message['taken_by_agent'].toString()
+         new TableCellElement()..text = message['taken_by_agent']['name']
                                    ..style.paddingLeft = '3px'
                                    ..style.textAlign = 'center',
-         new TableCellElement()..text = status
+         new TableCellElement()..text = (message['pending_messages'] > 0 ? 'Venter' : 'Afsendt')
                                ..style.textAlign = 'center'
         ]);
   }

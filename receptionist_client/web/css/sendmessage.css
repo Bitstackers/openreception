@@ -1,9 +1,7 @@
 #sendmessage { /* .send-message-placing { */
-  position: absolute;
-  top: 52%;
-  left: 46%;
-  height: 48%;
-  width: 32%;
+  height: 50%;
+  margin-top: 0.5%;
+  width: 100%;
 }
 
 .send-message-container {
@@ -16,7 +14,6 @@
 }
 
 .send-message-field {
-  position: absolute;
   border: solid 2px #ccc;
   border-radius: 3px;
   font-size: 1.1em;
@@ -78,7 +75,6 @@ textarea.send-message-field {
 }
 
 .send-message-checkbox-container {
-  position: absolute;
   width: 40%;
   cursor:pointer;
 }
@@ -133,14 +129,11 @@ textarea.send-message-field {
 }
 
 .send-message-recipient-container {
-  position: absolute;
-  top: 61.5%;
-  left: 46%;
-  width: 53.5%;
-  padding: 10px;
-  height: 38%;
+  width: 100%;
+  min-height: 30px;
 }
 
 #send-message-recipient-list {
-  list-style-type: none;  
+  list-style-type: none;
+  display: inline;  
 }

@@ -1,29 +1,18 @@
 #contactinfo {/*.contact-info-placing {*/
-  position: absolute;
-  top: 52%;
-  left: 0%;
-  height: 48%;
-  width: 45%;
+  height: 100%;
+  width: 100%;
 }
 
 #contactinfo_search {
-  position: absolute;
-  top: 3%;
-  left: 0%;
-  width: 40%;
-  height: 350px;
+  width: 100%;
 }
 
 #contactinfo_calendar {
-  position: absolute;
-  top: 5.5%;
-  left: 40.5%;
-  width: 59%;
-  height: 150px;
+  width: 100%;
+  height: 100%;
 }
 
 #contactinfo_data {
-  position: absolute;
   top: 180px;
   left: 40.5%;
   width: 59%;
@@ -103,7 +92,7 @@
 
 #contact-info-searchbar {
   width: 100%;
-  height: 30px;
+  min-height: 30px;
   border: solid 2px #ccc;
   padding: 3px;
   font-size: 1.1em;

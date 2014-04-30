@@ -38,15 +38,15 @@ class BobActive {
   CompanyOpeningHours companyOpeningHours;
   CompanySalesCalls companySalesCalls;
   CompanyProduct companyProduct;
-  CompanyCustomerType companyCustomerType;
-  CompanyTelephoneNumbers companyTelephoneNumbers;
-  CompanyAddresses companyAddresses;
-  CompanyAlternateNames companyAlternateNames;
-  CompanyBankingInformation companyBankingInfomation;
-  CompanyEmailAddresses companyEmailAddresses;
-  CompanyWebsites companyWebsites;
-  CompanyRegistrationNumber compayRegistrationNumber;
-  CompanyOther companyOther;
+//  CompanyCustomerType companyCustomerType;
+//  CompanyTelephoneNumbers companyTelephoneNumbers;
+//  CompanyAddresses companyAddresses;
+//  CompanyAlternateNames companyAlternateNames;
+//  CompanyBankingInformation companyBankingInfomation;
+//  CompanyEmailAddresses companyEmailAddresses;
+//  CompanyWebsites companyWebsites;
+//  CompanyRegistrationNumber compayRegistrationNumber;
+//  CompanyOther companyOther;
   ContactInfo contactInfo;
   SendMessage sendMessage;
   GlobalQueue globalQueue;
@@ -85,7 +85,7 @@ class BobActive {
     companyOpeningHours      = new CompanyOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), home);
     companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
     companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
-    companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), home);
+    /*companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), home);
     companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), home);
     companyAddresses         = new CompanyAddresses(querySelector('#${id.COMPANY_ADDRESSES}'), home);
     companyAlternateNames    = new CompanyAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), home);
@@ -93,7 +93,7 @@ class BobActive {
     companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), home);
     companyWebsites          = new CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), home);
     compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), home);
-    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), home);
+    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), home); */
     contactInfo              = new ContactInfo(querySelector('#${id.CONTACT_INFO}'), home);
     sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);

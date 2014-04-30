@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Bob</title>
-    
     <link rel="stylesheet" href="css/agentinfo.css?v=1">
     <link rel="stylesheet" href="css/contextswitcher.css?v=1">
     <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
@@ -47,12 +46,14 @@
     <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
     <div id="boblogin" style="position: absolute;"></div>
     <div id="bobactive">
-        <ul id="contextswitcher"></ul>
-    
+      <ul id="contextswitcher"></ul>
+      
       <section id="contexthome" data-default-widget="companyselector" class="context">
+      
+      <div id="header-container" style=" height: 6%">
         <div id="welcome-message" class="no-chrome">
           <div>
-            <span id="welcome-message-text"></span>
+            <span id="welcome-message-text">Ikke i kald</span>
           </div>
         </div>
         
@@ -84,76 +85,28 @@
           Ikke i kald.
           </div>
         </div>
-        
-        <div id="companyselector" data-default-element="company-selector-searchbar"></div>
-        
-        <div id="companyevents" data-default-element="company_events_list">
-          <ul id="company_events_list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyhandling" data-default-element="company_handling_list">
-          <ul id="company_handling_list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyopeninghours" class="minibox" data-default-element="company-opening-hours-list">
-          <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companysalescalls" class="minibox" data-default-element="company-sales-list">
-          <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
-        </div>
-                
-        <div id="companyproduct" class="minibox" data-default-element="company-product-body">
-          <p id="company-product-body" tabindex="-1"></p>
-        </div>
-                
-        <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
-          <p id="company-customertype-body" tabindex="-1"></p>
-        </div>
-        
-        <div id="companytelephonenumbers" class="minibox" data-default-element="company-product-body">
-          <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyaddresses" class="minibox" data-default-element="company-product-body">
-          <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyalternatenames" class="minibox" data-default-element="company-alternate-names-list">
-          <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companybankinginformation" class="minibox" data-default-element="company-banking-info-list">
-          <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyemailaddresses" class="minibox" data-default-element="company-email-addresses-list">
-          <ul id="company-email-addresses-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companywebsites" class="minibox" data-default-element="company-websites-list">
-          <ul id="company-websites-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyregistrationnumber" class="minibox" data-default-element="company-registration-number-list">
-          <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyother" class="minibox" data-default-element="company-product-body">
-          <p id="company-other-body" class="zebra" tabindex="-1"></p>
-        </div>
-        
-        <div id="contactinfo">
-          <h1 id="contactinfohead"></h1>
-          <div id="contactinfobody">
-            <div id="contactinfo_search"></div>
-            <div id="contactinfo_calendar"></div>
-            <div id="contactinfo_data"></div>
+      </div>
+      
+      <div id="main-container" style="margin-top: 0.5%; width: 100%; height: 93%; overflow:hidden;">
+         
+         <!-- Left column -->
+        <div style=" width: 35%;height: 100%; float:left;"> 
+          <div id="companyselector" data-default-element="company-selector-searchbar"></div>
+
+          <div id="companyevents" data-default-element="company_events_list">
+            <ul id="company_events_list" class="zebra" tabindex="-1"></ul>
           </div>
-        </div>
+
+          <div id="companyhandling" data-default-element="company_handling_list">
+            <ul id="company_handling_list" class="zebra" tabindex="-1"></ul>
+          </div>
         
-        <div id="sendmessage" data-default-element="sendmessagename"> <!-- Make the content for the box here. --> 
+
+        <div id="sendmessage" > <!-- Make the content for the box here. --> 
           <div class="send-message-container">
+            <div class="send-message-recipient-container box-with-header-outer">
+              <ul id="send-message-recipient-list"></ul>
+            </div>
             <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1"/>
             <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly/>
     
@@ -189,41 +142,90 @@
               <button id="sendmessagesend"></button>
             </div>
     
-            <div class="send-message-recipient-container box-with-header-outer">
-              <ul id="send-message-recipient-list"></ul>
-            <!--
-              <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
-                <span name="boxheader">
-                  {{recipientTitle}}
-                </span>
-    
-                <div name="boxcontent" class="minibox">
-                  <ul>
-                    <li>Thomas</li>
-                    <li>Trine</li>
-                    <li>Steen</li>
-                  </ul>
-                  <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
-                    <template instantiate="if value.active">
-                      <li class="contact-info-active2">
-                        <calendar-event event="{{value}}"></calendar-event>
-                      </li>
-                    </template>
-                    <template instantiate="if !value.active">
-                      <li>
-                        <calendar-event event="{{value}}"></calendar-event>
-                      </li>
-                    </template>
-                  </ul>
-                </div>
-              </box-with-header>
-              -->
-            </div>
           </div>
         </div>
+
+        </div>
         
-        <div id="globalqueue"></div>
-        <div id="localqueue"></div>
+        <!-- Center column -->
+        <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
+          <div id="contactsearchpanel" style="height: 35%; overflow:hidden;" >
+            <div style="width:40%; float:left; height:100%;">
+        
+             <div id="contactinfo">
+               <h1 id="contactinfohead">Kontakt</h1>
+               <div id="contactinfobody">
+               <div id="contactinfo_search"></div>
+              </div>
+             </div>
+            </div>
+            <div style="width:60%; float:left; height:100%;">
+             <div id="contactinfo_calendar"></div>
+            </div>
+            </div>
+            <div id="contactinfopanel" style="height: 65%">
+              <div id="contactinfo_data"></div>
+            </div>
+          
+        </div>        
+        
+        <!-- Right column -->
+        <div style="margin-left: 1%;width: 19%;height: 100%; float:left;">
+          <div id="companyopeninghours" class="minibox" data-default-element="company-opening-hours-list" style="height:20%">
+            <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
+          </div>
+
+           <div id="companysalescalls" class="minibox" data-default-element="company-sales-list" style="height:20%">
+            <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
+           </div>
+        
+           <div id="companyproduct" class="minibox" data-default-element="company-product-body" style="height:20%">
+             <p id="company-product-body" tabindex="-1"></p>
+           </div>
+
+          <div id="globalqueue" style="height:20%"></div>
+          <div id="localqueue" style="height:20%" ></div>
+        
+        </div>
+        
+         <!--                 
+        <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
+          <p id="company-customertype-body" tabindex="-1"></p>
+        </div>
+        
+        <div id="companytelephonenumbers" class="minibox" data-default-element="company-product-body">
+          <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
+        </div>
+        
+        <div id="companyaddresses" class="minibox" data-default-element="company-product-body">
+          <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
+        </div>
+        
+        <div id="companyalternatenames" class="minibox" data-default-element="company-alternate-names-list">
+          <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
+        </div>
+        
+        <div id="companybankinginformation" class="minibox" data-default-element="company-banking-info-list">
+          <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
+        </div>
+        
+        <div id="companyemailaddresses" class="minibox" data-default-element="company-email-addresses-list">
+          <ul id="company-email-addresses-list" class="zebra" tabindex="-1"></ul>
+        </div>
+        
+        <div id="companywebsites" class="minibox" data-default-element="company-websites-list">
+          <ul id="company-websites-list" class="zebra" tabindex="-1"></ul>
+        </div>
+        
+        <div id="companyregistrationnumber" class="minibox" data-default-element="company-registration-number-list">
+          <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
+        </div>
+        
+        <div id="companyother" class="minibox" data-default-element="company-product-body">
+          <p id="company-other-body" class="zebra" tabindex="-1"></p>
+        </div>
+         -->
+       </div>
       </section>
       
       <section id="contextmessages" data-default-widget="message-search" class="context hidden">
@@ -253,7 +255,7 @@
         <p id="voicebox">contextvoicemails</p>
       </section>
     </div>
-    <script type="application/dart" src="bob.dart"></script>
+ <script type="application/dart" src="bob.dart"></script>
     <script src="packages/browser/dart.js"></script>
   </body>
 </html>

@@ -1,10 +1,8 @@
 #companyproduct {
-  position: absolute;
-  left: 35%;
-  top: 30%;
   height: 9%;
-  width: 21%;
+  width: 99%;
   overflow: auto;
+  margin: 0 auto;
 }
 
 #company-product-body {
