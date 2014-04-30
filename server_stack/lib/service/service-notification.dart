@@ -1,0 +1,37 @@
+part of service;
+
+abstract class Protocol {
+  static final BROADCAST_RESOURCE = "/broadcast";
+}
+
+abstract class Notification {
+  
+  static final String className = '${libraryName}.Notification'; 
+
+  static HttpClient client = new HttpClient();
+  
+  /**
+   * Performs a broadcat via the notification server.
+   */
+  static Future broadcast(Map map, Uri host) {
+    final String context = '${className}.broadcast';
+
+    host = Uri.parse(host.toString() + Protocol.BROADCAST_RESOURCE + "?token=feedabbadeadbeef0");
+    
+    return client.postUrl(host)
+      .then(( HttpClientRequest req ) {
+        req.headers.contentType = new ContentType( "application", "json", charset: "utf-8" );
+        //req.headers.add( HttpHeaders.CONNECTION, "keep-alive");
+        req.write( JSON.encode( map ));
+        return req.close();
+      }).then(( HttpClientResponse res ) {
+      res.transform(UTF8.decoder)
+         .transform(new LineSplitter())
+         .listen(
+          (String line) {
+            print('${line}');
+          });
+    });    
+  }
+}
+
