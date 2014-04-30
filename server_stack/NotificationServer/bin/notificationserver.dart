@@ -42,7 +42,7 @@ void main(List<String> args) {
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
   parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 4070');
+  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 4200');
 
   parsedArgs = parser.parse(arguments);
 }

@@ -1,6 +1,9 @@
 part of notificationserver.router;
 
 void handleBroadcast (HttpRequest request) {
+  
+  final String context = '${libraryName}.handleBroadcast';  
+  
   extractContent(request).then((String content) {
     
     try {
@@ -10,13 +13,20 @@ void handleBroadcast (HttpRequest request) {
       return;
     }
     
-    int count = 0;
+    int successCount = 0;
+    int failCount = 0;
     clientRegistry.forEach((int uid, List<WebSocket> clientSockets) {
       clientSockets.forEach((WebSocket clientSocket) {
+        try {
         clientSocket.add(content);
-        count++;
+        successCount++;
+        }
+        catch (error) {
+          failCount++;
+          logger.errorContext("Failed to send message to client $uid - error: $error", context);
+        }
       });
     });
-    writeAndClose(request, JSON.encode({"Status" : "done", "client_count" : count}));
+    writeAndClose(request, JSON.encode({"status" : {"success" : successCount, "failed" : failCount}}));
   });
 }
