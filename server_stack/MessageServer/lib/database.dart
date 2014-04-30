@@ -6,9 +6,10 @@ import 'dart:convert';
 import 'package:postgresql/postgresql_pool.dart';
 
 import 'configuration.dart';
-import 'model.dart';
 import 'package:Utilities/common.dart';
 import 'package:Utilities/database.dart' as database;
+
+import 'model.dart';
 
 part 'db/message-draft-create.dart';
 part 'db/message-draft-delete.dart';

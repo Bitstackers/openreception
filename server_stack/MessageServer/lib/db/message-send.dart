@@ -1,42 +1,39 @@
 part of messageserver.database;
 
-Future<Map> createSendMessage(String message, String subject, Messaging_Contact messageContext, String takenFrom, int takeByAgent, bool urgent, DateTime createdAt) {
+Future<Map> createSendMessage(String message, MessageRecipient messageContext, Map callee, int takenByAgentID, List flags) {
   String sql = '''
     INSERT INTO messages 
          (message, 
-          subject, 
           context_contact_id,
           context_reception_id,
           context_contact_name,
           context_reception_name,
-          taken_from, 
+          taken_from_name, 
+          taken_from_company, 
           taken_by_agent, 
-          urgent, 
-          created_at)
+          flags)
     VALUES 
          (@message, 
-          @subject, 
           @context_contact_id,
           @context_reception_id,
           @context_contact_name,
           @context_reception_name,
-          @taken_from,
+          @taken_from_name,
+          @taken_from_company,
           @taken_by_agent, 
-          @urgent,
-          NOW())
+          @flags)
     RETURNING id;
     '''; //@created_at
 
   Map parameters = {'message'                : message,
-                    'subject'                : subject,
                     'context_contact_id'     : messageContext.contactID,
                     'context_reception_id'   : messageContext.receptionID,
                     'context_contact_name'   : messageContext.contactName,
                     'context_reception_name' : messageContext.receptionName,
-                    'taken_from'             : takenFrom,
-                    'taken_by_agent'         : takeByAgent,
-                    'urgent'                 : urgent
-                    //'created_at'     : createdAt.toString()
+                    'taken_from_name'        : callee['name'],
+                    'taken_from_company'     : callee['company'],
+                    'taken_by_agent'         : takenByAgentID,
+                    'flags'                  : JSON.encode(flags)
                     };
   
   return database.query(_pool, sql, parameters).then((rows) {
@@ -60,6 +57,8 @@ Future<Map> addRecipientsToSendMessage(String sqlRecipients) {
     INSERT INTO message_recipients (contact_id, contact_name, reception_id, reception_name, message_id, recipient_role)
     VALUES $sqlRecipients''';
   
+  
+  print (sql);
   return database.execute(_pool, sql).then((int rowsAffected) {
     return {'rowsAffected': rowsAffected};
   });

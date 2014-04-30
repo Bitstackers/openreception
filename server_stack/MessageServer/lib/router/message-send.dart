@@ -8,9 +8,16 @@ void messageSend(HttpRequest request) {
   extractContent(request).then((String content) {
     Map data;
     
+    logger.debugContext(content, context);
+    
     //Check If the format of the message is valid.
     try {
       data = JSON.decode(content);
+      
+      if ((data['message'] as String).isEmpty) {
+        throw new StateError("Empty messages field not allowed.");
+      }
+      
       if(!data.containsKey('to') || !(data['to'] is List)) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
@@ -57,50 +64,48 @@ void messageSend(HttpRequest request) {
       return null;
     }
     
-    String     message = data['message'];
-    String     subject = data['subject'];
-    Messaging_Contact messageContext = new Messaging_Contact.fromMap(data['context']);
-    String   takenFrom = data['takenFrom'];
-    int    takeByAgent = 10; //getUserID (request, config.authUrl); //TODO: FIX!
-    bool        urgent = data['urgent'];
-    DateTime createdAt = new DateTime.now();
+    String     message  = data['message'];
+    Map      calleeInfo = (data.containsKey('callee') ? data['callee'] : {'name' : '', 'company' : ''});
+    List          flags = data['flags'];
 
-    logger.debugContext(messageContext.toString(), context);
+    model.MessageRecipient messageContext = new model.MessageRecipient.fromMap(data['context']);
     
-    
-//    return tempSMTP(message, subject, ['kim.rostgaard@gmail.com']).then((_) {
-//      writeAndClose(request, JSON.encode({'status': 'Success'}));
-//    });
-    
-    
-    // TODO: Construct the message from a template.
-    return db.createSendMessage(message, "Message from " + takenFrom, messageContext, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
-      Message message = new Message(result['id']);
-      
-      // Harvest each field for recipients.
-      ['bcc','cc','to'].forEach ((String role) {
-        logger.debugContext("Adding for role $role", context);
-        if (data[role] != null) {
-          (data[role] as List).forEach((Map contact) =>  message.addRecipient(new Messaging_Contact.fromMap(contact, role)));
-        }
-      });
-      
-      return db.addRecipientsToSendMessage(message.sqlRecipients()).then((Map result) {
-        return db.enqueue(message).then((queueSize) {
-          logger.debugContext("inserted $queueSize elements in queue.", context);
-          writeAndClose(request, JSON.encode(result));
+    return getUserID(request, config.authUrl).then((int userID) {
+      print(userID);
+      return db.createSendMessage(message, messageContext, calleeInfo, userID, flags).then((Map result) {
+        model.Message message = new model.Message(result['id']);
+        
+        // Harvest each field for recipients.
+        ['bcc','cc','to'].forEach ((String role) {
+          print (data[role]);
+          logger.debugContext("Adding for role $role", context);
+          if (data[role] != null) {
+            (data[role] as List).forEach((Map contact) =>  message.addRecipient(new model.MessageRecipient.fromMap(contact, role)));
+          }
+        });
+        
+        print (message.sqlRecipients());
+        
+        return db.addRecipientsToSendMessage(message.sqlRecipients()).then((Map result) {
+          return db.enqueue(message).then((queueSize) {
+            logger.debugContext("inserted $queueSize elements in queue.", context);
+            writeAndClose(request, JSON.encode(result));
+            service.Notification.broadcast({'event' : 'messageSend', 'message_id' : message.ID}, config.notificationServer);
+          });
         });
       });
     });
+    
        
-  }).catchError((error) => serverError(request, error.toString()));
+  });//.catchError((error) => serverError(request, error.toString()));
 }
 
 Future<int> getUserID (HttpRequest request, Uri authUrl) {
     try {
       if(request.uri.queryParameters.containsKey('token')) {      
-        String path = 'token/${request.uri.queryParameters['token']}/validate';
+        String path = 'token/${request.uri.queryParameters['token']}';
         Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
+        print(url);
         return http.get(url).then((response) {
           if (response.statusCode == 200) {
             logger.debugContext (response.body, "common.AH_HTTPRequest.getUserID()");
@@ -118,30 +123,5 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
     } catch (e) {
       logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
     }
-}
-
-Future tempSMTP(String message, String subject, List<String> recipients) {
-  // If you want to use an arbitrary SMTP server, go with `new SmtpOptions()`.
-  // This class below is just for convenience. There are more similar classes available.
-  var options = new GmailSmtpOptions()
-    ..username = config.emailUsername
-    ..password = config.emailPassword; // Note: if you have Google's "app specific passwords" enabled,
-                                        // you need to use one of those here.
-  
-  // Create our email transport.
-  var emailTransport = new SmtpTransport(options);
-  
-  // Create our mail/envelope.
-  var envelope = new Envelope()
-    ..fromName = config.emailFromName
-    ..from     = config.emailFrom
-    ..recipients.addAll(recipients)
-    ..subject = subject
-    ..text = message;
-
-  // Email it.
-  return emailTransport.send(envelope)
-    .then((success) => log('Email sent! $success'))
-    .catchError((e) => logger.error('Error occured when sending mail: $e'));
 }
 

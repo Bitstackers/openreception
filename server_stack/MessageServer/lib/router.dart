@@ -4,14 +4,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:mailer/mailer.dart';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 import 'package:http/http.dart' as http;
 
 import 'configuration.dart';
 import 'database.dart' as db;
-import 'model.dart';
+import 'model.dart' as model;
+import '../../lib/service.dart' as service;
 import 'package:Utilities/common.dart';
 import 'package:Utilities/httpserver.dart';
 

@@ -26,6 +26,7 @@ void main(List<String> args) {
       config.whenLoaded()
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
+        .then((_) => print ('MessageServer listening on port ${config.httpport}'))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch(e) {

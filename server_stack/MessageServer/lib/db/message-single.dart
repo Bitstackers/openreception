@@ -3,43 +3,56 @@ part of messageserver.database;
 /**
  * Retrieves a single message from the database.
  */
+/**
+ * XXX: We assume that the identity of the user (from auth_identities table) is an email.
+ */
 Future<Map> messageSingle(int messageID) {
   String sql = '''
-    SELECT
-         id, message, subject, 
-         context_contact_id,
-         context_reception_id,
-         context_contact_name,
-         context_reception_name,
-         taken_from, taken_by_agent, urgent, created_at,
-         (SELECT count(*) FROM message_queue WHERE message_id = messages.id) AS pending_messages
-    FROM messages
-    WHERE    id = @messageID 
-    ORDER BY id DESC;''';
+      SELECT
+           message.id,
+           message, 
+           context_contact_id,
+           context_reception_id,
+           context_contact_name,
+           context_reception_name,
+           taken_from_name,
+           taken_from_company,
+           taken_from_phone,
+           taken_from_cellphone,
+           identity       AS agent_address,
+           flags, 
+           created_at,
+           taken_by_agent AS taken_by_agent_id,
+           users.name     AS taken_by_agent_name,
+           (SELECT count(*) FROM message_queue AS queue WHERE queue.message_id = message.id) AS pending_messages
+      FROM messages message
+      LEFT JOIN auth_identities ai ON taken_by_agent = user_id AND ai.send_from
+           JOIN users on taken_by_agent = users.id
+    WHERE    message.id = $messageID 
+    ORDER BY 
+         message.id    DESC;''';
 
-  Map parameters = {"messageID" : messageID};
+  Map parameters = {};
 
   return database.query(_pool, sql, parameters).then((rows) {
+    if (rows.isEmpty) {
+      return {};
+    }
       var row = rows.first;
       
-      DateTime createdAt = row.created_at;
-      
-      if (createdAt == null) {
-        createdAt = new DateTime.fromMillisecondsSinceEpoch(0);
-      }
-      
       Map message =
-        {'id'                    : row.id,
-         'message'               : row.message,
-         'subject'               : row.subject,
-         'context_contact_id'    : row.context_contact_id,
-         'context_reception_id'  : row.context_reception_id,
-         'context_contact_name'  : row.context_contact_name,
-         'context_reception_name': row.context_contact_name,
-         'taken_by_agent'        : row.taken_by_agent,
-         'urgent'                : row.urgent,
-         'created_at'            : createdAt.millisecondsSinceEpoch,
-         'pending_messages'      : row.pending_messages};
+        {'id'               : row.id,
+         'message'          : row.message,
+         'context'          : {'contact'   : {'id' :row.context_contact_id, 'name' : row.context_contact_name},
+                               'reception' : {'id' :row.context_reception_id, 'name' : row.context_reception_name}},
+         'taken_from'       : {'name'      : row.taken_from_name,
+                               'company'   : row.taken_from_company,
+                               'phone'     : row.taken_from_phone,
+                               'cellphone' : row.taken_from_cellphone},
+         'taken_by_agent'   : {'name' : row.taken_by_agent_name, 'id' : row.taken_by_agent_id, 'address' : row.agent_address},
+         'flags'            : JSON.decode (row.flags),
+         'created_at'       : (row.created_at as DateTime).millisecondsSinceEpoch,
+         'pending_messages' : row.pending_messages};
 
     return message;
   });
