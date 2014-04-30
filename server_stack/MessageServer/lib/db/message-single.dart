@@ -38,21 +38,34 @@ Future<Map> messageSingle(int messageID) {
     if (rows.isEmpty) {
       return {};
     }
+    
       var row = rows.first;
       
+      DateTime createdAt = row.created_at;
+      
+      if (createdAt == null) {
+        createdAt = new DateTime.fromMillisecondsSinceEpoch(0);
+      }
+
       Map message =
-        {'id'               : row.id,
-         'message'          : row.message,
-         'context'          : {'contact'   : {'id' :row.context_contact_id, 'name' : row.context_contact_name},
-                               'reception' : {'id' :row.context_reception_id, 'name' : row.context_reception_name}},
-         'taken_from'       : {'name'      : row.taken_from_name,
-                               'company'   : row.taken_from_company,
-                               'phone'     : row.taken_from_phone,
-                               'cellphone' : row.taken_from_cellphone},
-         'taken_by_agent'   : {'name' : row.taken_by_agent_name, 'id' : row.taken_by_agent_id, 'address' : row.agent_address},
-         'flags'            : JSON.decode (row.flags),
-         'created_at'       : (row.created_at as DateTime).millisecondsSinceEpoch,
-         'pending_messages' : row.pending_messages};
+        {'id'                    : row.id,
+         'message'               : row.message,
+         'context'               : {'contact'   : 
+                                     {'id'   : row.context_contact_id, 
+                                      'name' : row.context_contact_name},
+                                    'reception' : 
+                                     {'id'   : row.context_reception_id, 
+                                      'name' : row.context_reception_name}},
+         'taken_by_agent'        : {'name'    : row.taken_by_agent_name, 
+                                    'id'      : row.taken_by_agent_id, 
+                                    'address' : row.agent_address},
+         'caller'                : {'name'      : row.taken_from_name,
+                                    'company'   : row.taken_from_company,
+                                    'phone'     : row.taken_from_phone,
+                                    'cellphone' : row.taken_from_cellphone},
+         'flags'                 : JSON.decode(row.flags),
+         'created_at'            : createdAt.millisecondsSinceEpoch,
+         'pending_messages'      : row.pending_messages};
 
     return message;
   });
