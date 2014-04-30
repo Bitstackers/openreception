@@ -9,9 +9,26 @@ void main() {
                              'ContactServer'      : {'path' : 'ContactServer/bin/contactserver.dart'},
                              'LogServer'          : {'path' : 'LogServer/bin/logserver.dart'},
                              'MessageServer'      : {'path' : 'MessageServer/bin/messageserver.dart'},
+                             'MessageDispatcher'  : {'path' : 'MessageDispatcher/bin/messagedispacher.dart'},
                              'NotificationServer' : {'path' : 'NotificationServer/bin/notificationserver.dart'},
                              'ReceptionServer'    : {'path' : 'ReceptionServer/bin/receptionserver.dart'}};
-
+ 
+  ProcessSignal.SIGINT.watch().listen((_) {
+    Servers.forEach((String serverName, Map server) {
+      print ('Sending SIGINT to instance of ${serverName}');
+      (server['process'] as Process).kill(ProcessSignal.SIGINT);
+    });
+    exit(0);
+  });
+    
+    ProcessSignal.SIGTERM.watch().listen((_) {
+      Servers.forEach((String serverName, Map server) {
+        print ('Sending SIGTERM to instance of ${serverName}');
+        (server['process'] as Process).kill(ProcessSignal.SIGINT);
+      });
+      exit(0);
+    });
+    
   Servers.forEach((String serverName, Map server) {
     print ('Starting ${serverName}..');
     Process.start('dart', [server['path']]).then((process) {
@@ -34,15 +51,4 @@ void main() {
     });
   });
   
-  ProcessSignal.SIGINT.watch().listen((_) {
-    Servers.forEach((String serverName, Map server) {
-      (server['process'] as Process).kill(ProcessSignal.SIGINT);
-    });
-  });
-    
-    ProcessSignal.SIGTERM.watch().listen((_) {
-      Servers.forEach((String serverName, Map server) {
-        (server['process'] as Process).kill(ProcessSignal.SIGINT);
-      });
-    });
 }
