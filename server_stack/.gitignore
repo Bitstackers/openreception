@@ -3,8 +3,11 @@ packages
 .project
 pubspec.lock
 
-# Don't track config.json
-*/config.json
+# Don't track config files.
+MiscServer/bin/bob_configuration.json
+MessageDispatcher/bin/mailer_conf.py
+*/*/config.json
+*/mailer_conf.py
 
 # Don't track out/
 out/
@@ -20,3 +23,8 @@ out/
 /.errors
 /.output
 
+# Don't track compiled python code.
+MessageDispatcher/bin/mailer_conf.pyc
+
+# Local makefile configuration.
+makefile.dbsetup
