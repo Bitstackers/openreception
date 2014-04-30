@@ -19,7 +19,7 @@ class Message {
   String   get calleeCellPhone => this._data['taken_from']['cellphone'];
   String   get agentName => this._data['taken_by_agent']['name'];
   String   get agentAddress => this._data['taken_by_agent']['address'];
-  bool     get urgent       => this._data['urgent'];
+  bool     get urgent       => (this._data['flags'] as List).contains('urgent');
   DateTime get receivedAt => this._data['created_at'];
   String   get body  => this._data['message'];
   Set<Messaging_Contact> get recipients => this._recipients;
