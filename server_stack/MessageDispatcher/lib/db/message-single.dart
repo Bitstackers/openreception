@@ -17,7 +17,7 @@ Future<Map> messageSingle(int messageID) {
            taken_from_phone,
            taken_from_cellphone,
            identity       AS agent_address,
-           urgent, 
+           flags, 
            created_at,
            taken_by_agent AS taken_by_agent_id,
            users.name     AS taken_by_agent_name,
@@ -47,7 +47,7 @@ Future<Map> messageSingle(int messageID) {
                                'phone'     : row.taken_from_phone,
                                'cellphone' : row.taken_from_cellphone},
          'taken_by_agent'   : {'name' : row.taken_by_agent_name, 'id' : row.taken_by_agent_id, 'address' : row.agent_address},
-         'urgent'           : row.urgent,
+         'flags'            : JSON.decode(row.flags),
          'created_at'       : row.created_at,
          'pending_messages' : row.pending_messages};
 

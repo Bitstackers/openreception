@@ -1,6 +1,7 @@
 library messagedispatcher.database;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:postgresql/postgresql_pool.dart';
 
