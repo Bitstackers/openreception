@@ -16,43 +16,80 @@ library commands;
 import 'dart:async';
 
 import 'configuration.dart';
-import 'events.dart' as event;
+import 'events.dart' as Event;
+import 'controller.dart' as Controller;
 import 'environment.dart' as environment;
 import 'logger.dart';
-import 'model.dart'       as model;
-import 'protocol.dart'    as protocol;
-import 'storage.dart'     as storage;
+import 'model.dart' as model;
+import 'protocol.dart' as protocol;
+import 'storage.dart' as storage;
 
 const CONTACTID_TYPE = 1;
-const PSTN_TYPE      = 2;
-const SIP_TYPE       = 3;
+const PSTN_TYPE = 2;
+const SIP_TYPE = 3;
+
+
+const String libraryName = 'commands'; 
+
+/**
+ * Command handlers are a centralized point, from where all actions are performed.
+ * Any UI componentes should only listen to Command Events, and update their own
+ * state/presentation accordingly.
+ * Every component, such as a button, that is able to send commands will inject a
+ * command into the command stream (currently event stream, separation will follow).
+ */
+abstract class CommandHandlers {
+  
+  static const String className = '${libraryName}.CommandHandlers';
+
+  /**
+   * Registers the appropriate command handlers.
+   */
+  static void registerListeners() {
+    Event.bus.on(Event.pickupCallRequest).listen(_pickuphandler);
+    Event.bus.on(Event.originateCallRequest).listen(_handleOriginate);
+    Event.bus.on(Event.hangupCallRequest).listen(_handleHangup);
+  }
+
+  /**
+   * Pickup the next available call - or a specific call identified by the [callID].
+   */
+  static void _pickuphandler(String callID) {
+    
+    const String context = '${className}._pickuphandler'; 
+    
+    protocol.pickupCall().then((protocol.Response response) {
+      if (response.status == protocol.Response.OK) {
+        log.debugContext('OK ${response.data['id']}', context);
+        model.Reception.currentReception = response.data['reception_id'];
+        
+        /* Notify components */
+        Event.bus.fire(Event.pickupCallSuccess, response.data['id']);
+      } else {
+        Event.bus.fire(Event.pickupCallFailure, null);
+      }
+    }).catchError((error, stackTrace) {
+      log.criticalContext('error : ${error}, stacktrace : ${stackTrace}',context);
+    });
+  }
+
+  static void _handleHangup(String CallID) {
+    throw new StateError("Not implemented!");
+  }
+  static void _handleOriginate(model.DiablePhoneNumber number) {
+    Controller.call.dial(number);
+  }
+
+}
 
 /**
  * Originate [type] call to [address].
  */
+
 void originateCall(String address, int type) {
   Future<protocol.Response> originateCallRequest;
-
-//  switch(type) {
-//    case CONTACTID_TYPE:
-//      originateCallRequest = protocol.originateCall(agentId, cmId: int.parse(address));
-//      break;
-//
-//    case PSTN_TYPE:
-//      originateCallRequest = protocol.originateCall(agentId, pstnNumber: address);
-//      break;
-//
-//    case SIP_TYPE:
-//      originateCallRequest = protocol.originateCall(agentId, sip: address);
-//      break;
-//
-//    default:
-//      log.error('commands.originateCall INVALID TYPE ${type}');
-//      return;
-//  }
-
   originateCallRequest.then((protocol.Response response) {
-    switch(response.status) {
+    switch (response.status) {
       case protocol.Response.OK:
         log.debug('commands.originateCall OK ${address} (type: ${type})');
         break;
@@ -66,29 +103,6 @@ void originateCall(String address, int type) {
 }
 
 /**
- * Pickup the next available call.
- */
-void pickupNextCall() {
-  protocol.pickupCall().then((protocol.Response response) {
-    switch (response.status) {
-      case protocol.Response.OK:
-        log.debug('commands.pickupNextCall OK ${response.data['id']}');
-        _pickupCallSuccess(response);
-        break;
-
-      case protocol.Response.NOTFOUND:
-        log.debug('commands.pickupNextCall no calls found');
-        break;
-
-      default:
-        log.critical('commands.pickupNextCall failed with illegal response ${response}');
-    }
-  }).catchError((error) {
-    log.critical('commands.pickupNextCall protocol.pickupCall failed with ${error}');
-  });
-}
-
-/**
  * Update [environment.reception] and [environment.contact] according to the
  * [model.Reception] found in the [response].
  */
@@ -97,14 +111,14 @@ void _pickupCallSuccess(protocol.Response response) {
 
   if (json.containsKey('reception_id')) {
     int receptionId = json['reception_id'];
-    
+
     storage.getReception(receptionId).then((model.Reception reception) {
-      if(reception == model.nullReception) {
+      if (reception == model.nullReception) {
         log.debug('commands._pickupCallSuccess NOT FOUND reception ${receptionId}');
       } else {
         //event.bus.fire(event.receptionChanged, reception);
       }
-      
+
       log.debug('commands._pickupCallSuccess updated environment.reception to ${reception}');
       //log.debug('commands._pickupCallSuccess updated environment.contact to ${reception.contactList.first}');
 
@@ -126,20 +140,20 @@ void _pickupCallSuccess(protocol.Response response) {
  * Bridges two calls.
  */
 void bridgeCall(model.Call a, model.Call b) {
-//  protocol.transferCall(call).then((protocol.Response response) {
-//    switch(response.status) {
-//      case protocol.Response.OK:
-//        log.info('commands.transferCall OK ${call}');
-//        break;
-//
-//      case protocol.Response.NOTFOUND:
-//        log.info('commands.transferCall NOT FOUND ${call}');
-//        break;
-//
-//      default:
-//        log.critical('commands.transferCall ${call} failed with illegal response ${response}');
-//    }
-//  }).catchError((error) {
-//    log.critical('commands.transferCall ${call} protocol.transferCall failed with ${error}');
-//  });
+  //  protocol.transferCall(call).then((protocol.Response response) {
+  //    switch(response.status) {
+  //      case protocol.Response.OK:
+  //        log.info('commands.transferCall OK ${call}');
+  //        break;
+  //
+  //      case protocol.Response.NOTFOUND:
+  //        log.info('commands.transferCall NOT FOUND ${call}');
+  //        break;
+  //
+  //      default:
+  //        log.critical('commands.transferCall ${call} failed with illegal response ${response}');
+  //    }
+  //  }).catchError((error) {
+  //    log.critical('commands.transferCall ${call} protocol.transferCall failed with ${error}');
+  //  });
 }

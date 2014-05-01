@@ -30,6 +30,8 @@ part 'protocol.login.dart';
 part 'protocol.message.dart';
 part 'protocol.reception.dart';
 
+const String libraryName = 'protocol';
+
 const String GET = "GET";
 const String POST = "POST";
 

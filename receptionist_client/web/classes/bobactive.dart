@@ -18,7 +18,8 @@ import 'dart:html';
 import 'context.dart';
 import 'events.dart' as event;
 import 'id.dart' as id;
-import 'keyboardhandler.dart';
+import 'commands.keyboard.dart';
+import 'commands.dart';
 import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
@@ -111,6 +112,8 @@ class BobActive {
     
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
+    
+    CommandHandlers.registerListeners();
   }
 
   void registerContexts() {

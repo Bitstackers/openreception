@@ -128,7 +128,7 @@ class ContactInfoData {
       
       number.children.add(new ButtonElement()
           ..text = item.value
-          ..onClick.listen((_) =>  controller.call.dialContact(contact, item.phoneID)));
+          ..onClick.listen((_) =>  controller.call.dial(new model.DiablePhoneNumber.from(item, contact))));
       
       telephoneNumberList.children.add(number);
       

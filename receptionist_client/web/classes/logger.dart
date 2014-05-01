@@ -37,6 +37,9 @@ final Log log = new Log._internal();
  * [info()], [error()] and [critical()] for more information.
  */
 class Log {
+
+  static final DateFormat dateFormat = new DateFormat.Hms();
+
   /**
    * Loglevels that represent the levels on the server side.
    */
@@ -81,9 +84,11 @@ class Log {
    * Log [message] with level [DEBUG]. DEBUG level messages are only logged to
    * console.
    */
-  void debug (String message) => print('[Debug]    - ${new DateFormat.Hms().format(new DateTime.now())} - ${message}');
-  void debugContext (String message, String context) => print('[Debug]    - ${new DateFormat.Hms().format(new DateTime.now())} - $context - ${message}');
-  void dataDump (String data, String context) => print('[DataDump] - ${new DateFormat.Hms().format(new DateTime.now())} - $context - ${data}');
+  void debug (String message)                           => print('[DEBUG]    - ${Log.dateFormat.format(new DateTime.now())} - ${message}');
+  void debugContext (String message, String context)    => print('[DEBUG]    - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
+  void dataDump (String data, String context)           => print('[DATADUMP] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${data}');
+  void criticalContext (String message, String context) => print('[CRITICAL] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
+  void errorContext (String message, String context)    => print('[ERROR]    - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
 
   /**
    * Log [message] with level [ERROR]. If [toUserLog] is true then [message]

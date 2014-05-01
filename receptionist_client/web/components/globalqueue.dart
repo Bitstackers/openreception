@@ -14,6 +14,9 @@
 part of components;
 
 class GlobalQueue {
+  
+  static const String className = '${libraryName}.GlobalQueue';
+  
         Box            box;
         model.Call     call      = model.nullCall;
         List<CallQueueItem> callQueue = new List<CallQueueItem>();
@@ -24,6 +27,7 @@ class GlobalQueue {
         SpanElement    headerText;
   final String         title     = 'Global kø';
         UListElement   ul;
+  model.CallList _callList;
 
   // Temporary
   ButtonElement pickupnextcallbutton;
@@ -64,8 +68,10 @@ class GlobalQueue {
   }
 
   void registerEventListerns() {
+    model.CallList.instance.events.on(model.CallList.insert).listen(addCall);
+    model.CallList.instance.events.on(model.CallList.delete).listen(removeCall);
+    
     event.bus.on(event.callChanged).listen(_callChange);
-    event.bus.on(event.callQueueAdd).listen(addCall);
     event.bus.on(event.callQueueRemove).listen(removeCall);
 
     event.bus.on(event.focusChanged).listen((Focus value) {
@@ -125,6 +131,7 @@ class GlobalQueue {
       }
       updateHeaderText();
     }).catchError((error) {
+      
       log.critical('GlobalQueue._initialFill protocol.callQueue failed with ${error}');
     });
   }
@@ -137,8 +144,10 @@ class GlobalQueue {
   }
 
   void pickupnextcallHandler() {
-    log.debug('GlobalQueue.pickupnextcallHandler');
-    command.pickupNextCall();
+    const String context = '${className}.pickupnextcallHandler'; 
+    
+    log.debugContext("Requested (by click) an unspecified call.", context);
+    event.bus.fire(event.pickupCallRequest, null);
   }
 
   void hangupcallHandler() {
@@ -152,7 +161,7 @@ class GlobalQueue {
   }
 
   void addCall(model.Call call) {
-    if(!callQueue.any((c) => c.call.id == call.id)) {
+    if(!callQueue.any((c) => c.call.ID == call.ID)) {
       CallQueueItem queueItem = new CallQueueItem(call, clickHandler);
       callQueue.add(queueItem);
       ul.children.add(queueItem.element);
@@ -160,7 +169,8 @@ class GlobalQueue {
     }
   }
 
-  void clickHandler(MouseEvent event, CallQueueItem queueItem) {
+  void clickHandler(MouseEvent mouseEvent, CallQueueItem queueItem) {
+    
     if(call == null || call == model.nullCall) {
       queueItem.call.pickup();
     } else {
@@ -171,7 +181,7 @@ class GlobalQueue {
   void removeCall(model.Call call) {
     CallQueueItem queueItem;
     for(CallQueueItem callItem in callQueue) {
-      if(callItem.call.id == call.id) {
+      if(callItem.call.ID == call.ID) {
         queueItem = callItem;
         break;
       }

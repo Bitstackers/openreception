@@ -176,7 +176,7 @@ Future<Response<Map>> hangupCall(model.Call call) {
   String                         url;
 
   fragments.add('token=${configuration.token}');
-  fragments.add('call_id=${call.id}');
+  fragments.add('call_id=${call.ID}');
   url = _buildUrl(base, path, fragments);
 
   request = new HttpRequest()
@@ -307,7 +307,7 @@ Future<Response<Map>> parkCall(model.Call call) {
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('call_id=${call.id}');
+  fragments.add('call_id=${call.ID}');
   fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 
@@ -344,6 +344,9 @@ Future<Response<Map>> parkCall(model.Call call) {
  * to the agent.
  */
 Future<Response<Map>> pickupCall({model.Call call}) {
+  
+  const String context = '${libraryName}.pickupCall';
+  
   final String                   base      = configuration.callFlowBaseUrl.toString();
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   final List<String>             fragments = new List<String>();
@@ -351,13 +354,15 @@ Future<Response<Map>> pickupCall({model.Call call}) {
   HttpRequest                    request;
   String                         url;
 
-  if (call != null && call.id != null) {
-    fragments.add('call_id=${call.id}');
+  if (call != null && call.ID != null) {
+    fragments.add('call_id=${call.ID}');
   }
   fragments.add('token=${configuration.token}');
   
   url = _buildUrl(base, path, fragments);
 
+  log.debugContext('Requesting to pickup ${call == null ? 'unspecifed call':'call with ID ${call.ID}'}' , context);
+  
   request = new HttpRequest()
     ..open(POST, url)
     ..onLoad.listen((_) {
@@ -367,7 +372,7 @@ Future<Response<Map>> pickupCall({model.Call call}) {
           completer.complete(new Response<Map>(Response.OK, data));
           break;
 
-        case 204:
+        case 404:
           completer.complete(new Response<Map>(Response.NOTFOUND, null));
           break;
 
@@ -399,7 +404,7 @@ Future<Response<Map>> statusCall(model.Call call) {
   HttpRequest                    request;
   String                         url;
 
-  fragments.add('call_id=${call.id}');
+  fragments.add('call_id=${call.ID}');
   fragments.add('token=${configuration.token}');
   url = _buildUrl(base, path, fragments);
 

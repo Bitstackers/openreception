@@ -28,10 +28,10 @@ class CallManagement {
    */
   CallManagement(DivElement this.node) {
     registerEventListeners();
-    _updateCallInfo(model.nullCall);
+    _changeActiveCall(model.nullCall);
   }
 
-  _updateCallInfo(model.Call call) {
+  _changeActiveCall(model.Call call) {
     String newText;
     
     if (call != model.nullCall) {
@@ -40,12 +40,25 @@ class CallManagement {
       newText = constant.Label.NOT_IN_CALL;
     }
     
-    print("Updated call text with $newText");
     this.node.querySelector('#current-call-info').text = newText;
   }
+  
+  void _originationStarted(model.DiablePhoneNumber number) {
+    this.node.querySelector('#current-call-info').text = 'Ringer til ${number.toLabel()}..';
+  }
+  
+  void _originationSucceded(dynamic) {
+    this.node.querySelector('#current-call-info').text = 'Forbundet!';
+  }
+
+  void _originationFailed(dynamic) {
+    this.node.querySelector('#current-call-info').text = 'Fejlet!';
+  }
+
   void registerEventListeners() {
-    //TODO: Listen on model changes.
-    event.bus..on(event.callChanged).listen(_updateCallInfo);
-    
+    event.bus.on(event.callChanged).listen(_changeActiveCall);
+    event.bus.on(event.originateCallRequest).listen(_originationStarted);
+    event.bus.on(event.originateCallRequestSuccess).listen(_originationSucceded);
+    event.bus.on(event.originateCallRequestFailure).listen(_originationFailed);
   }
 }

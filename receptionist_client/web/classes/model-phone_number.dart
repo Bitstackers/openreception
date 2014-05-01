@@ -42,9 +42,17 @@ class DiablePhoneNumber extends PhoneNumber {
   int compareTo(PhoneNumber other) => this.priority - other.priority;
 
   DiablePhoneNumber.from(PhoneNumber number, Contact context) {
-    DiablePhoneNumber returnValue = number as DiablePhoneNumber;
-    returnValue._contactID   = context.id;
-    returnValue._receptionID = context.receptionID;
+    this._value    = number._value;
+    this._kind     = number._kind;
+    this._phoneID  = number._phoneID;
+    this._priority = number._priority;
+
+    this._contactID   = context.id;
+    this._receptionID = context.receptionID;
+  }
+  
+  String toLabel () {
+    return '${this.value}';
   }
   
   @override

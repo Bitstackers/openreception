@@ -31,7 +31,7 @@ import 'model.dart' as model;
 //}
 
 //@observable
-model.Call             call               = model.nullCall;
+//model.Call             call               = model.nullCall;
 String                 originationRequest = null;
 //@observable model.CallList         callQueue        = new model.CallList();
 //@observable model.CallList         localCallQueue   = new model.CallList();

@@ -13,7 +13,7 @@ abstract class MessageConstants {
 
 class Message {
   
-  static final String className = packageName + ".Message";
+  static final String className = libraryName + ".Message";
   
   Map   _map;
   

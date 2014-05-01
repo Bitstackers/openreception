@@ -43,7 +43,7 @@ class LocalQueue {
     event.bus.on(event.localCallQueueAdd).listen(addCall);
     event.bus.on(event.localCallQueueRemove).listen(removeCall);
     event.bus.on(event.callChanged).listen((model.Call value) { 
-      log.debug('------------- components.LocalQueue Call Changed to ID: ${value.id} Start: ${value.start} Inbound: ${value.inbound} B Leg: ${value.bLeg} Callid: ${value.callerId}');
+      log.debug('------------- components.LocalQueue Call Changed to ID: ${value.ID} Start: ${value.start} Inbound: ${value.inbound} B Leg: ${value.bLeg} Callid: ${value.callerId}');
       call = value;
     });
 
@@ -89,14 +89,14 @@ class LocalQueue {
   }
 
   void clickHandler(MouseEvent event, CallQueueItem queueItem) {
-    if(call == null || call.id == model.nullCall.id) {
+    if(call == null || call.ID == model.nullCall.ID) {
       log.debug('localqueue TEST ${call == null} - call == null');
-      log.debug('localqueue TEST ${call.id == model.nullCall.id} - call.id == model.nullCall.id');
+      log.debug('localqueue TEST ${call.ID == model.nullCall.ID} - call.id == model.nullCall.id');
       log.debug('components.LocalQueue.clickHandler() I have no call, so i\'ll pickup this one: Current Call: ${call} Pickup call ${queueItem.call}');
       queueItem.call.pickup();
     } else {
       log.debug('localqueue: clickHandler: Transfering. Got call ${call}');
-      protocol.transferCall(call.id, queueItem.call.id);
+      protocol.transferCall(call.ID, queueItem.call.ID);
       log.error('Fordi du allerede har et kald igennem, bliver opkaldet, stillet videre til den du snakker med. ${queueItem.call}', toUserLog: true);
     }
   }
@@ -104,7 +104,7 @@ class LocalQueue {
   void removeCall(model.Call call) {
     CallQueueItem queueItem;
     for(CallQueueItem callItem in callQueue) {
-      if(callItem.call.id == call.id) {
+      if(callItem.call.ID == call.ID) {
         queueItem = callItem;
         break;
       }

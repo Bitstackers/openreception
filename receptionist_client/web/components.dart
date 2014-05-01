@@ -25,7 +25,7 @@ import 'classes/common.dart';
 import 'classes/focus.dart';
 import 'classes/events.dart' as event;
 import 'classes/id.dart' as id;
-import 'classes/keyboardhandler.dart';
+import 'classes/commands.keyboard.dart';
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
 import 'classes/model.dart' as model;
@@ -72,6 +72,8 @@ part 'components/logbox.dart';
 part 'components/phonebooth.dart';
 
 part 'components/searchcomponent.dart';
+
+const String libraryName = 'components';
 
 typedef void onCallQueueClick(MouseEvent event, CallQueueItem queueItem);
 

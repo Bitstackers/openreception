@@ -28,25 +28,37 @@ final Call nullCall = new Call._null();
  * A call.
  */
 class Call implements Comparable {
-  int      _assignedAgent;
-  String   _bLeg;
-  String   _callerId;
-  String   _destination;
-  bool     _greetingPlayed = false;
-  String   _id;
-  bool     _inbound;
-  DateTime _start;
-  int      _receptionId;
+  
+  static const String className = "${libraryName}.Call";
 
-  int      get assignedAgent  => _assignedAgent;
-  String   get bLeg           => _bLeg;
-  String   get callerId       => _callerId;
-  String   get destination    => _destination;
-  bool     get greetingPlayed => _greetingPlayed;
-  String   get id             => _id;
-  bool     get inbound        => _inbound;
-  DateTime get start          => _start;
-  int      get receptionId => _receptionId;
+  static final EventType currentCallChanged = new EventType();
+
+  int _assignedAgent;
+  String _bLeg;
+  String _callerID;
+  String _destination;
+  bool _greetingPlayed = false;
+  String _ID;
+  bool _inbound;
+  DateTime _start;
+  int _receptionID;
+  static Call _currentCall = nullCall;
+
+  int get assignedAgent => _assignedAgent;
+  String get bLeg => _bLeg;
+  String get callerId => _callerID;
+  String get destination => _destination;
+  bool get greetingPlayed => _greetingPlayed;
+  String get ID => _ID;
+  bool get inbound => _inbound;
+  DateTime get start => _start;
+  int get receptionId => _receptionID;
+
+  static Call get currentCall => _currentCall;
+  static set currentCall(Call newCall) {
+    _currentCall = newCall;
+    event.bus.fire(event.callChanged, _currentCall);
+  }
 
   /**
    * [Call] constructor. Expects a map in the following format:
@@ -66,38 +78,38 @@ class Call implements Comparable {
    */
   Call.fromJson(Map json) {
     log.debug('Call.fromJson ${json}');
-    if(json.containsKey('assigned_to') && json['assigned_to'] != null) {
+    if (json.containsKey('assigned_to') && json['assigned_to'] != null) {
       _assignedAgent = json['assigned_to'];
     }
 
-    if(json.containsKey('reception_id') && json['reception_id'] != null) {
-      _receptionId = json['reception_id'];
+    if (json.containsKey('reception_id') && json['reception_id'] != null) {
+      _receptionID = json['reception_id'];
     }
 
-    if(json.containsKey('b_leg')) {
+    if (json.containsKey('b_leg')) {
       _bLeg = json['b_leg'];
     }
-    
-    if(json.containsKey('caller_id')) {
-      _callerId = json['caller_id'];
+
+    if (json.containsKey('caller_id')) {
+      _callerID = json['caller_id'];
     }
-    
-    if(json.containsKey('destination')) {
+
+    if (json.containsKey('destination')) {
       _destination = json['destination'];
     }
 
-    if(json.containsKey('inbound')) {
+    if (json.containsKey('inbound')) {
       _inbound = json['inbound'];
     }
 
-    if(json.containsKey('greeting_played')) {
+    if (json.containsKey('greeting_played')) {
       _greetingPlayed = json['greeting_played'];
     }
 
-    _id = json['id'];
+    _ID = json['id'];
     //_start = DateTime.parse(json['arrival_time']);
     log.debug('Model.call Call.fromJson: ${json['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time'])*1000)}');
-    _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time'])*1000);
+    _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time']) * 1000);
   }
 
   /**
@@ -105,7 +117,7 @@ class Call implements Comparable {
    */
   Call._null() {
     _assignedAgent = null;
-    _id = null;
+    _ID = null;
     _start = new DateTime.now();
   }
 
@@ -114,31 +126,38 @@ class Call implements Comparable {
    */
   int compareTo(Call other) => _start.compareTo(other._start);
 
-  
+
+  /**
+   * TODO: Document.
+   */
+  bool operator ==(Call other) {
+    return this.ID == other.ID;
+  }
+
   /**
    * Returns the caller ID of the foreign end of the caller from the user's perspective. 
    */
-  String otherLegCallerID () {
+  String otherLegCallerID() {
     if (this.inbound) {
       return this.destination;
     } else {
       return this.destination;
     }
   }
-  
+
   /**
    * Hangup the [call].
    */
   void hangup() {
 
     // See note on assertions.
-    if (this == nullCall)  {
+    if (this == nullCall) {
       log.debug('Cowardly refusing ask the call-flow-control server to hangup a null call.');
       return;
     }
-    
+
     protocol.hangupCall(this).then((protocol.Response response) {
-      switch(response.status) {
+      switch (response.status) {
         case protocol.Response.OK:
           log.debug('model.Call.hangup OK ${this}');
 
@@ -154,18 +173,18 @@ class Call implements Comparable {
 
         case protocol.Response.NOTFOUND:
           log.error('model.Call.hangup() NOT FOUND ${this}');
-          event.bus.fire(event.callChanged, nullCall);
+          currentCall = nullCall;
           break;
 
         default:
           log.critical('model.Call.hangup ${this} failed with illegal response ${response}');
       }
-      
-      event.bus.fire(event.callChanged, nullCall);
+
+      currentCall = nullCall;
 
     }).catchError((error) {
       log.critical('model.Call.hangup ${this} protocol.hangupCall failed with ${error}');
-      //TODO Actively check state or go to panic-action. At this point we cannot derive anything about the state in the current scope. 
+      //TODO Actively check state or go to panic-action. At this point we cannot derive anything about the state in the current scope.
     });
   }
 
@@ -175,12 +194,12 @@ class Call implements Comparable {
   void park() {
 
     // See note on assertions.
-    if (this == nullCall)  {
+    if (this == nullCall) {
       log.debug('Cowardly refusing ask the call-flow-control server to park a null call.');
       return;
     }
     protocol.parkCall(this).then((protocol.Response response) {
-      switch(response.status) {
+      switch (response.status) {
         case protocol.Response.OK:
           log.debug('model.Call.park OK ${this}');
           break;
@@ -203,11 +222,11 @@ class Call implements Comparable {
   void pickup() {
 
     // See note on assertions.
-    if (this == nullCall)  {
+    if (this == nullCall) {
       log.debug('Cowardly refusing ask the call-flow-control server to pickup a null call.');
       return;
     }
-    
+
     protocol.pickupCall(call: this).then((protocol.Response response) {
       switch (response.status) {
         case protocol.Response.OK:
@@ -238,7 +257,7 @@ class Call implements Comparable {
       int receptionId = json['reception_id'];
 
       storage.getReception(receptionId).then((Reception reception) {
-        if(reception == nullReception) {
+        if (reception == nullReception) {
           log.error('model.Call._pickupCallSuccess NOT FOUND reception ${receptionId}');
         }
 
@@ -261,9 +280,9 @@ class Call implements Comparable {
       log.critical('model.Call._pickupCallSuccess missing reception_id in ${json}');
     }
   }
-  
+
   /**
    * [Call] as String, for debug/log purposes.
    */
-  String toString() => 'Call ${_id} - ${_start}';
+  String toString() => 'Call ${_ID} - ${_start}';
 }

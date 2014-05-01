@@ -11,7 +11,7 @@ abstract class UserConstants {
  */
 class User implements Comparable {
   
-  static final className = '${packageName}.User';
+  static final className = '${libraryName}.User';
 
   int    _ID   = nullUserID;
   String _name = constant.Label.UNKNOWN_AGENT_NAME;

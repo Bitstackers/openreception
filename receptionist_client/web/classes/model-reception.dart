@@ -16,24 +16,21 @@ part of model;
 final Reception nullReception = new Reception._null();
 
 /**
- * A [BasicReception] does only contains [id], [name] and [uri].
+ * A [BasicReception] does only contains [id] and [name].
  */
 class BasicReception implements Comparable{
   int    _id   = 0;
   String _name = '';
-  String _uri  = '';
 
   int    get id   => _id;
   String get name => _name;
-  String get uri  => _uri;
 
   /**
    * [BasicReception] constructor. Expects a map in the following format:
    *
    *  {
    *    "full_name": String,
-   *    "reception_id": int,
-   *    "uri": String
+   *    "reception_id": int
    *  }
    *
    * TODO Obviously the above map format should be in the docs/wiki, as it is
@@ -42,7 +39,6 @@ class BasicReception implements Comparable{
   BasicReception.fromJson(Map json) {
     _id   = json['reception_id'];
     _name = json['full_name'];
-    _uri  = json['uri'];
   }
 
   /**
@@ -99,6 +95,14 @@ class Reception extends BasicReception{
   MiniboxList       get telephoneNumberList    => _telephoneNumberList;
   MiniboxList       get websiteList            => _websiteList;
 
+  static Reception _currentReception = nullReception;
+  
+  static Reception get currentReception                       =>  _currentReception;
+  static           set currentReception (Reception reception) {
+    _currentReception = reception;
+    event.bus.fire(event.receptionChanged, reception);
+  }
+  
   /**
    * [Reception] constructor. Expects a map in the following format:
    *
@@ -122,8 +126,7 @@ class Reception extends BasicReception{
    *    "emailaddresses": [>= 0 intString objects],
    *    "alternatenames": [>= 0 intString objects],
    *    "other": String,
-   *    "bankinginformation": [>= 0 intString objects],
-   *    "uri": String,
+   *    "bankinginformation": [>= 0 intString objects]
    *    "contacts": [>= 0 Contact JSON objects],
    *    "openinghours": [>= 0 intString objects],
    *    "registrationnumbers": [>= 0 intString objects]

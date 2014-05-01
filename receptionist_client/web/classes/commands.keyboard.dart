@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library keyboard;
+library commands.keyboard;
 
 import 'dart:async';
 import 'dart:html';
@@ -193,7 +193,7 @@ class _KeyboardHandler {
       'Alt+H'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Alt+M'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
       'Alt+O'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
-      'Alt+P'     : (_) => event.bus.fire(event.pickupNextCall, 'Keyboard'),
+      'Alt+P'     : (_) => event.bus.fire(event.pickupCallRequest, null),
       'Alt+L'     : (_) => event.bus.fire(event.parkCall, 'Keyboard'),
       'Alt+G'     : (_) => event.bus.fire(event.hangupCall, 'Keyboard'),
       'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 'Keyboard'),

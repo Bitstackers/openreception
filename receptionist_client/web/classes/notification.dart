@@ -28,12 +28,12 @@ import 'state.dart';
 import 'storage.dart' as storage;
 import 'utilities.dart';
 
-final _Notification notification = new _Notification();
+final Notification notification = new Notification();
 
 /**
  * A Class to handle all the WebSocket notifications coming from Alice.
  */
-class _Notification {
+class Notification {
   static final EventType<Map> callTransfer = new EventType<Map>();
   static final EventType<Map> callState    = new EventType<Map>();
   static final EventType<Map> callHangup   = new EventType<Map>();
@@ -64,9 +64,9 @@ class _Notification {
      'peer_state'    : peerState};
 
   /**
-   * [_Notification] constructor.
+   * [Notification] constructor.
    */
-  _Notification();
+  Notification();
 
   void initialize() {
     _registerEventListeners();
@@ -153,8 +153,8 @@ void _callStateEventHandler(Map json) {
   model.Call call = new model.Call.fromJson(json['call']);
 
   if (call.bLeg == environment.originationRequest) {
-    log.info('notification._callStateEventHandler this i my origination request: ${call}');
-    event.bus.fire(event.callChanged, call);
+    log.info('notification._callStateEventHandler this is my origination request: ${call}');
+    model.Call.currentCall = call;
   }
 }
 
@@ -168,13 +168,13 @@ void _callHangupEventHandler(Map json) {
 
   model.Call call = new model.Call.fromJson(json['call']);
 
-  if (call.id == environment.call.id) {
+  if (call.ID == model.Call.currentCall) {
     log.info('Opkald lagt på. ${call}', toUserLog: true);
     log.info('notification._callHangupEventHandler hangup ${call}');
-    event.bus.fire(event.callChanged, model.nullCall);
+    model.Call.currentCall = model.nullCall;
   }
 
-  event.bus.fire(event.callQueueRemove, call);  
+  event.bus.fire(event.callDestroyed, call);  
 }
 
 /**
@@ -186,12 +186,13 @@ void _callTransferEventHandler(Map json) {
 
   model.Call call = new model.Call.fromJson(json['call']);
 
-  if (call.id == environment.call.id || call.bLeg == environment.call.id) {
+  if (call == model.Call.currentCall) {
     log.info('Opkald overført. ${call}', toUserLog: true);
     log.info('notification._callTransferEventHandler transferred ${call}');
     event.bus.fire(event.receptionChanged, model.nullReception);
     event.bus.fire(event.contactChanged, model.nullContact);
-    event.bus.fire(event.callChanged, model.nullCall);
+    
+    model.Call.currentCall = model.nullCall;
   }
 
   event.bus.fire(event.callQueueRemove, call);  
@@ -206,8 +207,7 @@ void _callPickupEventHandler(Map json) {
 
   if (call.assignedAgent == configuration.userId) {
     log.info('Tog kald. ${call}', toUserLog: true);
-    event.bus.fire(event.callChanged, call);
-    environment.call = call;
+    model.Call.currentCall = call;
 
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
@@ -265,9 +265,12 @@ void _callUnparkEventHandler(Map json) {
 
 void _callOfferEventHandler(Map json) {
   final model.Call call = new model.Call.fromJson(json['call']);
+  
+  event.bus.fire(event.callCreated, call);
+  
   if(configuration.autoAnswerEnabled) {
     //TODO HACKY AUTO answer
-    command.pickupNextCall(); 
+    //command.pickupNextCall(); 
   } else {
     event.bus.fire(event.callQueueAdd, call);
   }

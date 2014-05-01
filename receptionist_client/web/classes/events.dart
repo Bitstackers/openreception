@@ -31,6 +31,8 @@ final EventType keyUp                                           = new EventType(
 final EventType keyDown                                         = new EventType();
 final EventType keyEsc                                          = new EventType();
 final EventType keyEnter                                        = new EventType();
+final EventType<model.Call> callCreated                         = new EventType<model.Call>();
+final EventType<model.Call> callDestroyed                       = new EventType<model.Call>();
 final EventType<model.Call> callChanged                         = new EventType<model.Call>();
 final EventType<model.Call> callQueueAdd                        = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove                     = new EventType<model.Call>();
@@ -50,11 +52,17 @@ final EventType<String> parkCall                                = new EventType<
 final EventType<String> CallSelectedContact                     = new EventType<String>();
 
 // API commands
-final EventType<int>    pickupCallRequest                       = new EventType<int>(); 
-final EventType<String> pickupCallResponse                      = new EventType<String>(); 
+final EventType<String>    pickupCallRequest                    = new EventType<String>(); // String represents Call ID. 
+final EventType<String> pickupCallSuccess                       = new EventType<String>();
+final EventType         pickupCallFailure                       = new EventType();
+
+final EventType<String>    hangupCallRequest                    = new EventType<String>(); 
+
 
 final EventType<DiablePhoneNumber> originateCallRequest         = new EventType<DiablePhoneNumber>(); 
-final EventType<String> originateCallResponse                   = new EventType<String>(); 
+final EventType originateCallRequestSuccess                      = new EventType(); 
+final EventType originateCallRequestFailure                      = new EventType(); 
+final EventType<String> originateCallProgress                   = new EventType<String>(); 
 
 EventBus _bus = new EventBus();
 EventBus get bus => _bus;
