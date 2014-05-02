@@ -100,6 +100,10 @@ class Configuration {
         _dbhost = config['dbhost'];
       }
 
+      if(config.containsKey('notificationServer')) {
+        _notificationServer = config['notificationServer'];
+      }
+      
       if(config.containsKey('dbport')) {
         _dbport = config['dbport'];
       }

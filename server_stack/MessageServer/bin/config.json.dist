@@ -1,5 +1,6 @@
 {
-    "authurl": "auth.example.com/",
+    "authurl": "http://localhost:8080",
+    "notificationServer" : "http://localhost:4200",
     "httpport": 4040,
     "dbuser": "user",
     "dbpassword": "Secret",
