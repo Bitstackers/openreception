@@ -24,11 +24,16 @@ Map<int, model.ContactList> _contactListCache = new Map<int, model.ContactList>(
  *  On error     : an error message.
  */
 Future<model.ContactList> getContactList(int id) {
+  
+  const String context = '${libraryName}.getContactList';
+  
   final Completer completer = new Completer<model.ContactList>();
 
   if (_contactListCache.containsKey(id)) {
+    debug("Loading contactList from cache.",context);
     completer.complete(_contactListCache[id]);
   } else {
+    debug("ContactList not found in cache, loading from http.", context);
     protocol.getContactList(id).then((protocol.Response<model.ContactList> response) {
       switch(response.status) {
         case protocol.Response.OK:
