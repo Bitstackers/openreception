@@ -20,9 +20,9 @@ import 'events.dart' as Event;
 import 'controller.dart' as Controller;
 import 'environment.dart' as environment;
 import 'logger.dart';
-import 'model.dart' as model;
-import 'protocol.dart' as protocol;
-import 'storage.dart' as storage;
+import '../model/model.dart' as model;
+import '../protocol/protocol.dart' as protocol;
+import '../storage/storage.dart' as storage;
 
 const CONTACTID_TYPE = 1;
 const PSTN_TYPE = 2;
@@ -112,7 +112,7 @@ void _pickupCallSuccess(protocol.Response response) {
   if (json.containsKey('reception_id')) {
     int receptionId = json['reception_id'];
 
-    storage.getReception(receptionId).then((model.Reception reception) {
+    storage.Reception.get(receptionId).then((model.Reception reception) {
       if (reception == model.nullReception) {
         log.debug('commands._pickupCallSuccess NOT FOUND reception ${receptionId}');
       } else {
