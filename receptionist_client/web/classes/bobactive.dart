@@ -24,7 +24,7 @@ import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
 import '../components.dart';
-import '../view.dart';
+import '../view/view.dart';
 import '../constants.dart' as constant;
 
 class BobActive {
@@ -39,15 +39,15 @@ class BobActive {
   CompanyOpeningHours companyOpeningHours;
   CompanySalesCalls companySalesCalls;
   CompanyProduct companyProduct;
-//  CompanyCustomerType companyCustomerType;
-//  CompanyTelephoneNumbers companyTelephoneNumbers;
-//  CompanyAddresses companyAddresses;
-//  CompanyAlternateNames companyAlternateNames;
-//  CompanyBankingInformation companyBankingInfomation;
-//  CompanyEmailAddresses companyEmailAddresses;
-//  CompanyWebsites companyWebsites;
-//  CompanyRegistrationNumber compayRegistrationNumber;
-//  CompanyOther companyOther;
+  CompanyCustomerType companyCustomerType;
+  CompanyTelephoneNumbers companyTelephoneNumbers;
+  CompanyAddresses companyAddresses;
+  CompanyAlternateNames companyAlternateNames;
+  CompanyBankingInformation companyBankingInfomation;
+  CompanyEmailAddresses companyEmailAddresses;
+  CompanyWebsites companyWebsites;
+  CompanyRegistrationNumber compayRegistrationNumber;
+  CompanyOther companyOther;
   ContactInfo contactInfo;
   SendMessage sendMessage;
   GlobalQueue globalQueue;
@@ -62,6 +62,7 @@ class BobActive {
   Phonebooth phonebooth;
 
   Context home;
+  Context homePlus;
   Context messages;
   Context logContext;
   Context statistics;
@@ -77,7 +78,7 @@ class BobActive {
       
     registerContexts();
 
-    contextSwitcher          = new ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, messages, logContext, statistics, phone, voicemails]);
+    contextSwitcher          = new ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, homePlus, messages, logContext, statistics, phone, voicemails]);
     welcomeMessage           = new WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
     agentInfo                = new AgentInfo(querySelector('#${id.AGENT_INFO}'));
     companySelector          = new CompanySelector(querySelector('#${id.COMPANY_SELECTOR}'), home);
@@ -86,7 +87,7 @@ class BobActive {
     companyOpeningHours      = new CompanyOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), home);
     companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
     companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
-    /*companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), home);
+    companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), home);
     companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), home);
     companyAddresses         = new CompanyAddresses(querySelector('#${id.COMPANY_ADDRESSES}'), home);
     companyAlternateNames    = new CompanyAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), home);
@@ -94,7 +95,7 @@ class BobActive {
     companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), home);
     companyWebsites          = new CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), home);
     compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), home);
-    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), home); */
+    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), home); 
     contactInfo              = new ContactInfo(querySelector('#${id.CONTACT_INFO}'), home);
     sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
@@ -119,6 +120,8 @@ class BobActive {
   void registerContexts() {
     home       = new Context(querySelector('#contexthome'))
       ..lastFocusId = 'company-selector-searchbar';
+    homePlus   = new Context(querySelector('#contexthomeplus'))
+        ..lastFocusId = 'company-customertype-body';
     messages   = new Context(querySelector('#contextmessages'))
       ..lastFocusId = 'message-search-agent-searchbar';
     logContext        = new Context(querySelector('#contextlog'));
