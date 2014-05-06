@@ -1,5 +1,9 @@
 part of service;
 
+abstract class MessageResource {
+  
+}
+
 abstract class Message {
   
   static final String className = '${libraryName}.Message'; 
