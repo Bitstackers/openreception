@@ -1,3 +1,20 @@
+/*                     This file is part of Bob
+                   Copyright (C) 2012-, AdaHeads K/S
+
+  This is free software;  you can redistribute it and/or modify it
+  under terms of the  GNU General Public License  as published by the
+  Free Software  Foundation;  either version 3,  or (at your  option) any
+  later version. This software is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  You should have received a copy of the GNU General Public License along with
+  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
+*/
+
+/**
+ * View of the contact's data.
+ */
+
 part of components;
 
 class ContactInfoData {
@@ -16,85 +33,17 @@ class ContactInfoData {
   UListElement  workHoursList;
 
   ContactInfoData(DivElement this.element) {
-    String html = '''
-        <table>
-          <tr>
-            <td>
-              <h5>Arbejdstider</h5>
-              <div class="contact-info-field">
-                <ul id="contactWorkHoursList" class="zebra"></ul>
-              </div>
-            </td>
-            <td>
-              <h5>Kald</h5>
-              <div class="contact-info-field">
-                <ul id="contactHandlingList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5>Stilling</h5>
-              <div id="contactPosition" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5>Ansvar</h5>
-              <div id="contactResponsibility" class="contact-info-field"></div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5>Afdeling</h5>
-              <div id="contactDepartment" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5>Telefon</h5>
-              <div class="contact-info-field">
-                <ul id="contactTelephoneNumberList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5>Relationer</h5>
-              <div id="contactRelations" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5>Email og kontakter</h5>
-              <div class="contact-info-field">
-                <ul id="contactEmailAddressList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5>Info</h5>
-              <div id="contactAdditionalInfo" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5>Backup</h5>
-              <div class="contact-info-field">
-                <ul id="contactBackupList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-        </table>
-    ''';
 
-    TableElement body = new DocumentFragment.html(html).querySelector('table');
-
-    workHoursList       = body.querySelector('#${id.CONTACT_WORK_HOURS_LIST}');
-    handlingList        = body.querySelector('#${id.CONTACT_HANDLING_LIST}');
-    position            = body.querySelector('#${id.CONTACT_PISITION}');
-    responsibility      = body.querySelector('#${id.CONTACT_RESPONSIBILITY}');
-    department          = body.querySelector('#${id.CONTACT_DEPARTMENT}');
-    telephoneNumberList = body.querySelector('#${id.CONTACT_TELEPHONE_NUMBER_LIST}');
-    relations           = body.querySelector('#${id.CONTACT_RELATIONS}');
-    emailAddressList    = body.querySelector('#${id.CONTACT_EMAIL_ADDRESS_LIST}');
-    info                = body.querySelector('#${id.CONTACT_ADDITIONAL_INFO}');
-    backupList          = body.querySelector('#${id.CONTACT_BACKUP_LIST}');
-
-    element.children.add(body);
+    workHoursList       = querySelector('#${id.CONTACT_WORK_HOURS_LIST}');
+    handlingList        = querySelector('#${id.CONTACT_HANDLING_LIST}');
+    position            = querySelector('#${id.CONTACT_PISITION}');
+    responsibility      = querySelector('#${id.CONTACT_RESPONSIBILITY}');
+    department          = querySelector('#${id.CONTACT_DEPARTMENT}');
+    telephoneNumberList = querySelector('#${id.CONTACT_TELEPHONE_NUMBER_LIST}');
+    relations           = querySelector('#${id.CONTACT_RELATIONS}');
+    emailAddressList    = querySelector('#${id.CONTACT_EMAIL_ADDRESS_LIST}');
+    info                = querySelector('#${id.CONTACT_ADDITIONAL_INFO}');
+    backupList          = querySelector('#${id.CONTACT_BACKUP_LIST}');
 
     event.bus.on(event.contactChanged).listen((model.Contact value) {
       contact = value;
@@ -137,10 +86,20 @@ class ContactInfoData {
 
     relations.innerHtml = contact.relations != null ? contact.relations: '';
 
+    /* Add all contacts from the contacts distribution list.*/
     emailAddressList.children.clear();
+
     for(var item in contact.distributionList) {
-        emailAddressList.children.add(new LIElement()
-          ..text = item.role + ": " + item.contactName);
+        model.Contact.fetch(item.contactID, item.receptionID).then((model.Contact contact) {
+          model.Reception.fetch(item.receptionID).then((model.Reception reception) { 
+            if (reception != model.Reception.currentReception) {
+              LIElement li = new LIElement()
+                              ..text = '${contact.name} (${reception.name})'
+                              ..classes.add(item.role);
+                  emailAddressList.children.add(li);
+            }
+          });
+        });
     }
 
     info.innerHtml = contact.info  != null ? contact.info: '';

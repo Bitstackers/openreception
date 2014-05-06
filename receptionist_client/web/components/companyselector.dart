@@ -66,7 +66,7 @@ class CompanySelector {
   }
 
   void elementSelected(model.BasicReception reception) {
-    storage.getReception(reception.id).then((model.Reception value) {
+    storage.Reception.get(reception.id).then((model.Reception value) {
       event.bus.fire(event.receptionChanged, value);
     });
   }

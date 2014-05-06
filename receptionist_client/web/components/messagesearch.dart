@@ -65,7 +65,7 @@ class MessageSearch{
     companySearch = new SearchComponent<model.BasicReception>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
       ..selectedElementChanged = (model.BasicReception element) {
-        storage.getReception(element.id).then((model.Reception value) {
+        storage.Reception.get(element.id).then((model.Reception value) {
           selectedCompany = value;
           searchParametersChanged();
           storage.getContactList(value.id).then((model.ContactList list) {

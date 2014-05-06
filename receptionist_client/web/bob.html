@@ -39,15 +39,66 @@
     <link rel="stylesheet" href="css/phonebooth.css?v=1">
   </head>
   <body>
-   <!-- <div id="notifications" style="width:30%; height:40px; background-color:red; z-index:99; position:absolute;  margin: 0% 20% ;"></div>  --> 
+   <div id="notifications" style="width:30%; background-color:yellow; z-index:99; position:absolute; margin: 0% 35%;"></div>  
 
     <div id="curtains"><!--We hide stuff behind these curtains--></div>
     <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div> 
     <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
     <div id="boblogin" style="position: absolute;"></div>
     <div id="bobactive">
-      <ul id="contextswitcher"></ul>
       
+      <ul id="contextswitcher">
+        <li>
+          <button id="contexthome_switcherbutton">
+            <img id="contexthome_passive_icon" src="images/contexthome.svg" class="hidden" style="height: 20px; width: 20px;">
+            <img id="contexthome_active_icon" src="images/contexthome_active.svg" style="height: 20px; width: 20px;">
+            <img id="contexthome_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+        </li>
+        <li>
+          <button id="contexthomeplus_switcherbutton">
+            <img id="contexthomeplus_passive_icon" src="images/contexthome.svg" style="height: 20px; width: 20px;">
+            <img id="contexthomeplus_active_icon" src="images/contexthome_active.svg" class="hidden" style="height: 20px; width: 20px;">
+            <img id="contexthomeplus_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+        </li>
+        <li>
+          <button id="contextmessages_switcherbutton"">
+            <img id="contextmessages_passive_icon" src="images/contextmessages.svg" style="height: 20px; width: 20px;">
+            <img id="contextmessages_active_icon" src="images/contextmessages_active.svg" class="hidden" style="height: 20px; width: 20px;">
+            <img id="contextmessages_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextlog_switcherbutton">
+           <img id="contextlog_passive_icon" src="images/contextlog.svg" style="height: 20px; width: 20px;">
+           <img id="contextlog_active_icon" src="images/contextlog_active.svg" class="hidden" style="height: 20px; width: 20px;">
+           <img id="contextlog_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextstatistics_switcherbutton"">
+           <img id="contextstatistics_passive_icon" src="images/contextstatistics.svg" style="height: 20px; width: 20px;">
+           <img id="contextstatistics_active_icon" src="images/contextstatistics_active.svg" class="hidden" style="height: 20px; width: 20px;">
+           <img id="contextstatistics_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextphone_switcherbutton">
+           <img id="contextphone_passive_icon" src="images/contextphone.svg" style="height: 20px; width: 20px;">
+           <img id="contextphone_active_icon" src="images/contextphone_active.svg" class="hidden" style="height: 20px; width: 20px;">
+           <img id="contextphone_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextvoicemails_switcherbutton">
+           <img id="contextvoicemails_passive_icon" src="images/contextvoicemails.svg" style="height: 20px; width: 20px;">
+           <img id="contextvoicemails_active_icon" src="images/contextvoicemails_active.svg" class="hidden" style="height: 20px; width: 20px;">
+           <img id="contextvoicemails_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+     </ul>
+            
       <section id="contexthome" data-default-widget="companyselector" class="context">
       
       <div id="header-container" style=" height: 6%">
@@ -91,82 +142,162 @@
          
          <!-- Left column -->
         <div style=" width: 35%;height: 100%; float:left;"> 
+          
           <div id="companyselector" data-default-element="company-selector-searchbar"></div>
-
-          <div id="companyevents" data-default-element="company_events_list">
-            <ul id="company_events_list" class="zebra" tabindex="-1"></ul>
+          
+          <div id="companyevents" data-default-element="company_events_list" class="box-with-header-outer">
+            <h1 class="box-with-header-headline box-with-header-medium">
+              <span>Kalender</span>
+            </h1>
+            <div class="box-with-header-content">
+              <ul id="company_events_list" class="zebra"></ul>
+            </div>
           </div>
 
           <div id="companyhandling" data-default-element="company_handling_list">
             <ul id="company_handling_list" class="zebra" tabindex="-1"></ul>
           </div>
         
-
-        <div id="sendmessage" > <!-- Make the content for the box here. --> 
-          <div class="send-message-container">
-            <div class="send-message-recipient-container box-with-header-outer">
+          <div id="sendmessage" class="box-with-header-outer"> <!-- Make the content for the box here. -->
+            <h1 class="box-with-header-headline box-with-header-medium">
+              <span>Besked</span>
+            </h1>
+      
+            <div class="box-with-header-content" style="height: 443px;">
+              <div class="send-message-container">
+                <div class="send-message-recipient-container box-with-header-outer">
               <ul id="send-message-recipient-list"></ul>
             </div>
-            <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1"/>
-            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly/>
+            <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1">
+            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly="">
     
-            <input id="sendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1"/>
-            <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1"/>
+            <input id="sendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1">
+            <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1">
     
-            <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon"/>
-            <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil"/>
-            <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer"/>
+            <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon" tabindex="-1">
+            <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil" tabindex="-1">
+            <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer" tabindex="-1">
     
-            <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="Besked"></textarea>
+            <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="Besked" tabindex="-1"></textarea>
             
             <div class="send-message-checkbox-container send-message-pleasecall">
-              <div id="send-message-checkbox1"></div>
+              <div id="send-message-checkbox1" tabindex="-1"></div>
               <span>Ring venligst</span>
             </div> 
             <div class="send-message-checkbox-container send-message-callsback">
-              <div id="send-message-checkbox2"></div>
+              <div id="send-message-checkbox2" tabindex="-1"></div>
               <span>Ringer selv tilbage</span>
             </div>   
             <div class="send-message-checkbox-container send-message-hascalled">
-              <div id="send-message-checkbox3"></div>
+              <div id="send-message-checkbox3" tabindex="-1"></div>
               <span>Har ringet</span>
             </div>  
             <div class="send-message-checkbox-container send-message-emergency">
-              <div id="send-message-checkbox4"></div>
+              <div id="send-message-checkbox4" tabindex="-1"></div>
               <span>Haster</span>
             </div>
     
             <div class="send-message-button-container">
-              <button id="sendmessagecancel"></button>
-              <button id="sendmessagedraft"></button>
-              <button id="sendmessagesend"></button>
+              <button id="sendmessagecancel" tabindex="-1">Annuller</button>
+              <button id="sendmessagedraft" tabindex="-1">Gem</button>
+              <button id="sendmessagesend" tabindex="-1">Send</button>
             </div>
-    
           </div>
         </div>
-
-        </div>
+        <h1 class="box-with-header-headline box-with-header-medium"></h1>
+        <div class="box-with-header-content"></div>
+      </div>
+    </div>
         
         <!-- Center column -->
         <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
-          <div id="contactsearchpanel" style="height: 35%; overflow:hidden;" >
+          <div id="contactsearchpanel" style="height: 35%; overflow:hidden;">
             <div style="width:40%; float:left; height:100%;">
         
-             <div id="contactinfo">
-               <h1 id="contactinfohead">Kontakt</h1>
-               <div id="contactinfobody">
-               <div id="contactinfo_search"></div>
+             <div id="contactinfo" class="box-with-header-outer">
+               <h1 id="contactinfohead" class="box-with-header-headline box-with-header-medium">Kontakt<span>Medarbejdere</span></h1>
+               <div id="contactinfobody" class="box-with-header-content" style="height: 297px;">
+               <div id="contactinfo_search"><div class="contact-info-searchbox">
+          <input id="contact-info-searchbar" type="search" placeholder="Søg..." disabled="">
+        </div><ul id="contactlist" class="contact-info-zebra"></ul></div>
               </div>
              </div>
             </div>
             <div style="width:60%; float:left; height:100%;">
-             <div id="contactinfo_calendar"></div>
+              <div id="contactinfo_calendar" class="box-with-header-outer"><h1 class="box-with-header-headline box-with-header-medium">
+                <span class="boxheader calendar-title">::Kalender::</span></h1><div class="box-with-header-content" style="height: 297px;">
+                <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul></div>
+              </div>
             </div>
             </div>
             <div id="contactinfopanel" style="height: 65%">
-              <div id="contactinfo_data"></div>
-            </div>
-          
+            <div id="contactinfo_data">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+              <h5>Arbejdstider</h5>
+              <div class="contact-info-field">
+                <ul id="contactWorkHoursList" class="zebra"></ul>
+              </div>
+            </td>
+            <td>
+              <h5>Kald</h5>
+              <div class="contact-info-field">
+                <ul id="contactHandlingList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Stilling</h5>
+              <div id="contactPosition" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Ansvar</h5>
+              <div id="contactResponsibility" class="contact-info-field"></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Afdeling</h5>
+              <div id="contactDepartment" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Telefon</h5>
+              <div class="contact-info-field">
+                <ul id="contactTelephoneNumberList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Relationer</h5>
+              <div id="contactRelations" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Email og kontakter</h5>
+              <div class="contact-info-field">
+                <ul id="contactEmailAddressList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Info</h5>
+              <div id="contactAdditionalInfo" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Backup</h5>
+              <div class="contact-info-field">
+                <ul id="contactBackupList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        </div>
+        </div>
         </div>        
         
         <!-- Right column -->
@@ -187,8 +318,10 @@
           <div id="localqueue" style="height:20%" ></div>
         
         </div>
-        
-         <!--                 
+       </div>
+      </section>
+      
+      <section id="contexthomeplus" data-default-widget="companycustomertype" class="context hidden">
         <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
           <p id="company-customertype-body" tabindex="-1"></p>
         </div>
@@ -224,10 +357,8 @@
         <div id="companyother" class="minibox" data-default-element="company-product-body">
           <p id="company-other-body" class="zebra" tabindex="-1"></p>
         </div>
-         -->
-       </div>
       </section>
-      
+
       <section id="contextmessages" data-default-widget="message-search" class="context hidden">
         <div id="message-search" data-default-element="message-search-agent-selector">
           <div id="message-search-agent-selector"></div>

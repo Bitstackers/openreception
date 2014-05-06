@@ -36,7 +36,7 @@ class CallQueueItem {
     ageElement  = element.querySelector('.call-queue-item-seconds');
     callElement = element.querySelector('.call-queue-element');
 
-    storage.getReception(call.receptionId).then((r) {
+    storage.Reception.get(call.receptionId).then((r) {
       reception = r.name;
       callElement.text = reception + "(${call.destination})";
     });

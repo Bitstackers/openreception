@@ -35,7 +35,7 @@ class Phonebooth {
     companySearch = new SearchComponent<model.BasicReception>(container.querySelector('#phonebooth-company'), context, 'phonebooth-company-searchbar')
       ..searchPlaceholder = 'Søg på virksomheder...'
       ..selectedElementChanged = (model.BasicReception element) {
-        storage.getReception(element.id).then((model.Reception value) {
+        storage.Reception.get(element.id).then((model.Reception value) {
           changeReception(value);
         });
       }

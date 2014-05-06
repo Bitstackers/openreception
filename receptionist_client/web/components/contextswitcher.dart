@@ -14,15 +14,29 @@
 part of components;
 
 class ContextSwitcher {
+  
+  static const String className = '${libraryName}.ContextSwitcher';
+  
   List<_ContextSwitcherButton> buttons = new List<_ContextSwitcherButton>();
   UListElement                 element;
 
   ContextSwitcher(UListElement this.element, List<Context> contexts) {
-    for(var context in contexts) {
+    
+    const context = '${className}.ContextSwitcher';  
+    
+    for(var uiContext in contexts) {
+      ButtonElement existingElement = querySelector ('#${uiContext.id}_switcherbutton');
+      
+      if (existingElement != null) {
+        existingElement.parent.remove();
+        log.debugContext("Replacing exisiting list item for ${uiContext.id} in DOM tree.", context);
+      }
+      
       LIElement contextElement = new LIElement();
+      
       element.children.add(contextElement);
-      buttons.add(new _ContextSwitcherButton(contextElement, context));
-    };
+      buttons.add(new _ContextSwitcherButton(contextElement, uiContext));
+    }
   }
 }
 
@@ -67,6 +81,7 @@ class _ContextSwitcherButton {
   void clicked(_) {
     if(!context.isActive) {
       event.bus.fire(event.locationChanged, new nav.Location.context(context.id));
+      print(context.id.toString());
 //      context.activate();
     }
   }

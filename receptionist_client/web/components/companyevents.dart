@@ -11,6 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+
+/**
+ * Calendar widget. 
+ * 
+ * Hooks into Model.Calendar data feed.
+ * 
+ * Responds to global events:
+ *  - ReceptionChanged 
+ *  - ContactChanged
+ */
 part of components;
 
 class CompanyEvents {
@@ -26,13 +36,7 @@ class CompanyEvents {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
     
-    ul = element.querySelector('#${id.COMPANY_EVENTS_LIST}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    this.ul = element.querySelector('#${id.COMPANY_EVENTS_LIST}');
 
     _registerEventListeners();
   }
@@ -56,7 +60,6 @@ class CompanyEvents {
       }
     });
 
-    //context.registerFocusElement(ul);
   }
 
   String getClass(model.CalendarEvent event) {
