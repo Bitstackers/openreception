@@ -26,10 +26,14 @@ import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
 import 'classes/notification.dart';
-import 'classes/protocol.dart' as protocol;
+import 'protocol/protocol.dart' as protocol;
 import 'classes/state.dart';
 
-import 'classes/model.dart' as model;
+import 'service/service.dart' as Service;
+
+import 'view/view.dart' as View;
+
+import 'model/model.dart' as model;
 
 BobActive bobActive;
 BobDisaster bobDiaster;
@@ -37,12 +41,15 @@ BobLoading bobLoading;
 //BobLogin boblogin;
 
 void main() {
+  
+  View.Notification notificationPanel = new View.Notification();
+  
   configuration.initialize().then((_) {
     if(handleToken()) {
       notification.initialize();
-      
-    }
+    }      
   });
+  
   
   //boblogin = new BobLogin(querySelector('#boblogin'));
 
