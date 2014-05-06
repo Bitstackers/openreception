@@ -16,13 +16,13 @@ part of model;
 final Reception nullReception = new Reception._null();
 
 /**
- * A [BasicReception] does only contains [id] and [name].
+ * A [BasicReception] does only contains [ID] and [name].
  */
 class BasicReception implements Comparable{
-  int    _id   = 0;
+  int    _ID   = 0;
   String _name = '';
 
-  int    get id   => _id;
+  int    get ID   => _ID;
   String get name => _name;
 
   /**
@@ -37,7 +37,7 @@ class BasicReception implements Comparable{
    * also highly relevant to Alice.
    */
   BasicReception.fromJson(Map json) {
-    _id   = json['reception_id'];
+    _ID   = json['reception_id'];
     _name = json['full_name'];
   }
 
@@ -54,7 +54,7 @@ class BasicReception implements Comparable{
   /**
    * [Reception] as String, for debug/log purposes.
    */
-  String toString() => '${name}-${id}';
+  String toString() => '${name}-${ID}';
 }
 
 /**
@@ -78,22 +78,22 @@ class Reception extends BasicReception{
   MiniboxList       _telephoneNumberList    = new MiniboxList();
   MiniboxList       _websiteList            = new MiniboxList();
 
-  MiniboxList       get addressList            => _addressList;
-  MiniboxList       get alternateNameList      => _alternateNameList;
-  MiniboxList       get bankingInformationList => _bankingInformationList;
-  //ContactList       get contactList            => _contactList;
-  CalendarEventList get calendarEventList      => _calendarEventList;
-  MiniboxList       get crapcallHandlingList   => _crapcallHandlingList;
-  String            get customerType           => _customerType;
-  MiniboxList       get emailAddressList       => _emailAddressList;
-  String            get greeting               => _greeting;
-  MiniboxList       get handlingList           => _handlingList;
-  MiniboxList       get openingHoursList       => _openingHoursList;
-  String            get other                  => _other;
-  String            get product                => _product;
-  MiniboxList       get registrationNumberList => _registrationNumberList;
-  MiniboxList       get telephoneNumberList    => _telephoneNumberList;
-  MiniboxList       get websiteList            => _websiteList;
+  MiniboxList         get addressList            => _addressList;
+  MiniboxList         get alternateNameList      => _alternateNameList;
+  MiniboxList         get bankingInformationList => _bankingInformationList;
+  Future<ContactList> get contactList            => storage.Contact.list(this.ID);
+  Future<CalendarEventList> get calendarEventList => storage.Reception.calendar(this.ID);
+  MiniboxList         get crapcallHandlingList   => _crapcallHandlingList;
+  String              get customerType           => _customerType;
+  MiniboxList         get emailAddressList       => _emailAddressList;
+  String              get greeting               => _greeting;
+  MiniboxList         get handlingList           => _handlingList;
+  MiniboxList         get openingHoursList       => _openingHoursList;
+  String              get other                  => _other;
+  String              get product                => _product;
+  MiniboxList         get registrationNumberList => _registrationNumberList;
+  MiniboxList         get telephoneNumberList    => _telephoneNumberList;
+  MiniboxList         get websiteList            => _websiteList;
 
   static Reception _currentReception = nullReception;
   
@@ -103,8 +103,8 @@ class Reception extends BasicReception{
     event.bus.fire(event.receptionChanged, reception);
   }
   
-  static Future<Reception> fetch (int receptionID) {
-    return Service.Reception.single(receptionID);
+  static Future<Reception> get (int receptionID) {
+    return Service.Reception.get(receptionID);
   }
   
   /**
@@ -143,7 +143,6 @@ class Reception extends BasicReception{
     _addressList            = new MiniboxList.fromJson(json, 'addresses');
     _alternateNameList      = new MiniboxList.fromJson(json, 'alternatenames');
     _bankingInformationList = new MiniboxList.fromJson(json, 'bankinginformation');
-    //_contactList            = new ContactList.fromJson(json, 'contacts', super.id);
     _crapcallHandlingList   = new MiniboxList.fromJson(json, 'crapcallhandling');
     _customerType           = json['customertype'];
     _emailAddressList       = new MiniboxList.fromJson(json, 'emailaddresses');
@@ -155,14 +154,6 @@ class Reception extends BasicReception{
     _registrationNumberList = new MiniboxList.fromJson(json, 'registrationnumbers');
     _telephoneNumberList    = new MiniboxList.fromJson(json, 'telephonenumbers');
     _websiteList            = new MiniboxList.fromJson(json, 'websites');
-
-    // Adding some dummy calendar events
-    Map foo = new Map();
-    foo['calendar_events'] = new List();
-    foo['calendar_events'].add({'start':'2013-05-17 07:37:16', 'stop':'2013-05-17 17:00:00', 'content':'${id} Salgsmøde'});
-    foo['calendar_events'].add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus'});
-    foo['calendar_events'].add({'start':'2013-02-07 08:30:16', 'stop':'2014-02-07 14:45:00', 'content':'${id} Kunde besøg (tilbage fredag d. 5 maj) Haster: Stil til Peter Fredriksen von finddongdingleong. Der var en gagn en lille dreng som skulle ned til heksen for at hente sine kager.'});
-    _calendarEventList = new CalendarEventList.fromMap(foo, 'calendar_events');
   }
 
   /**
