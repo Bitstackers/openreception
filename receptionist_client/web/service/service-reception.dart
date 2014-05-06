@@ -41,10 +41,9 @@ abstract class Reception {
    *  On not found : [Response] object with status NOTFOUND (no data)
    *  on error     : [Response] object with status ERROR or CRITICALERROR (data)
    */
-  static Future<model.Reception> single(int id) {
+  static Future<model.Reception> get(int id) {
 
-    const String context = '${className}.getReception';
-
+    const String context = '${className}.get';
     assert(id != null);
 
     final String base = configuration.receptionBaseUrl.toString(); //configuration.aliceBaseUrl.toString();
@@ -96,11 +95,14 @@ abstract class Reception {
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-  Future<Response<model.CalendarEventList>> getReceptionCalendar(int id) {
+  static Future<Response<model.CalendarEventList>> calendar(int receptionID) {
+
+    const String context = '${className}.calendar';
+
     final String base = configuration.receptionBaseUrl.toString();
     final Completer<Response<model.CalendarEventList>> completer = new Completer<Response<model.CalendarEventList>>();
     final List<String> fragments = new List<String>();
-    final String path = '/reception/$id/calendar';
+    final String path = '/reception/$receptionID/calendar';
     HttpRequest request;
     String url;
 
@@ -112,17 +114,27 @@ abstract class Reception {
         ..onLoad.listen((val) {
           switch (request.status) {
             case 200:
-              model.CalendarEventList data = new model.CalendarEventList.fromMap(JSON.decode(request.responseText)['CalendarEvents']);
-              completer.complete(new Response<model.CalendarEventList>(Response.OK, data));
+              completer.complete(new model.CalendarEventList.fromMap(JSON.decode(request.responseText)['CalendarEvents']));
               break;
 
+            case 400:
+              completer.completeError(_badRequest('Resource ${base}${path}'));
+              break;
+
+            case 404:
+              completer.completeError(_notFound('Resource ${base}${path}'));
+              break;
+
+            case 500:
+              completer.completeError(_serverError('Resource ${base}${path}'));
+              break;
             default:
-              completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
           }
         })
         ..onError.listen((e) {
-          _logError(request, url);
-          completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
+          completer.completeError(e);
         })
         ..send();
 
@@ -136,7 +148,7 @@ abstract class Reception {
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-  Future<Response<model.ReceptionList>> getReceptionList() {
+  Future<Response<model.ReceptionList>> list() {
     final String base = configuration.receptionBaseUrl.toString();
     final Completer<Response<model.ReceptionList>> completer = new Completer<Response<model.ReceptionList>>();
     final List<String> fragments = new List<String>();

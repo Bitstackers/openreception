@@ -41,7 +41,7 @@ Future<Response<model.CalendarEventList>> getReceptionCalendar(int id) {
         switch(request.status) {
           case 200:
             var response = _parseJson(request.responseText);
-            model.CalendarEventList data = new model.CalendarEventList.fromMap(response, 'CalendarEvents');
+            model.CalendarEventList data = new model.CalendarEventList.fromMap(response['CalendarEvents']);
             completer.complete(new Response<model.CalendarEventList>(Response.OK, data));
             break;
 
