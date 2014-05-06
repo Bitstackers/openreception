@@ -119,7 +119,7 @@ Future<Response<model.CalendarEventList>> getContactCalendar(int receptionId, in
       ..onLoad.listen((value) {
         switch(request.status) {
           case 200:
-            model.CalendarEventList data = new model.CalendarEventList.fromJson(_parseJson(request.responseText), 'CalendarEvents');
+            model.CalendarEventList data = new model.CalendarEventList.fromMap(_parseJson(request.responseText), 'CalendarEvents');
             completer.complete(new Response<model.CalendarEventList>(Response.OK, data));
             break;
 

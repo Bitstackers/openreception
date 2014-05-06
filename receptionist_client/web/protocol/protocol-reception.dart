@@ -13,55 +13,6 @@
 
 part of protocol;
 
-/**
- * Get the [id] reception JSON data.
- *
- * Completes with
- *  On success   : [Response] object with status OK (data)
- *  On not found : [Response] object with status NOTFOUND (no data)
- *  on error     : [Response] object with status ERROR or CRITICALERROR (data)
- */
-Future<Response<model.Reception>> getReception(int id) {
-  assert(id != null);
-
-  final String       base      = configuration.receptionBaseUrl.toString(); //configuration.aliceBaseUrl.toString();
-  final Completer<Response<model.Reception>> completer =
-      new Completer<Response<model.Reception>>();
-  final List<String> fragments = new List<String>();
-  final String       path      = '/reception/${id}';
-  HttpRequest        request;
-  String             url;
-
-  fragments.add('token=${configuration.token}');
-  url = _buildUrl(base, path, fragments);
-
-  request = new HttpRequest()
-      ..open(GET, url)
-      ..onLoad.listen((val) {
-        switch(request.status) {
-          case 200:
-            log.debug('protocol.getReception json: ${request.responseText}'); //TODO remove.
-            model.Reception data = new model.Reception.fromJson(_parseJson(request.responseText));
-            completer.complete(new Response<model.Reception>(Response.OK, data));
-            break;
-
-          case 404:
-            completer.complete(new Response<model.Reception>(Response.NOTFOUND, model.nullReception));
-            break;
-
-          default:
-            completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
-        }
-      })
-      ..onError.listen((e) {
-        _logError(request, url);
-        completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-      })
-      ..send();
-
-  return completer.future;
-}
-
 const String MINI = 'mini';
 const String MIDI = 'midi';
 
@@ -90,7 +41,7 @@ Future<Response<model.CalendarEventList>> getReceptionCalendar(int id) {
         switch(request.status) {
           case 200:
             var response = _parseJson(request.responseText);
-            model.CalendarEventList data = new model.CalendarEventList.fromJson(response, 'CalendarEvents');
+            model.CalendarEventList data = new model.CalendarEventList.fromMap(response, 'CalendarEvents');
             completer.complete(new Response<model.CalendarEventList>(Response.OK, data));
             break;
 

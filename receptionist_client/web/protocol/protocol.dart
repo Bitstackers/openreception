@@ -17,18 +17,18 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:convert';
 
-import 'configuration.dart';
-import 'logger.dart';
-import 'model.dart' as model;
+import '../classes/configuration.dart';
+import '../classes/logger.dart';
+import '../model/model.dart' as model;
 
-part 'protocol.agent.dart';
-part 'protocol.call.dart';
-part 'protocol.contact.dart';
-part 'protocol.debug.dart';
-part 'protocol.log.dart';
-part 'protocol.login.dart';
-part 'protocol.message.dart';
-part 'protocol.reception.dart';
+part 'protocol-agent.dart';
+part 'protocol-call.dart';
+part 'protocol-contact.dart';
+part 'protocol-debug.dart';
+part 'protocol-log.dart';
+part 'protocol-login.dart';
+part 'protocol-message.dart';
+part 'protocol-reception.dart';
 
 const String libraryName = 'protocol';
 
