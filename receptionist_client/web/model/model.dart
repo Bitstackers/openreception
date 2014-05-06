@@ -26,10 +26,13 @@ import '../classes/environment.dart' as environment;
 import '../classes/notification.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
-import '../classes/protocol.dart' as protocol;
-import '../classes/storage.dart' as storage;
+import '../protocol/protocol.dart' as protocol;
+import '../storage/storage.dart' as storage;
 import '../classes/configuration.dart' as config;
 import '../constants.dart' as constant;
+import '../service/service.dart' as Service;
+
+
 
 part 'model-call.dart';
 part 'model-call_list.dart';
@@ -40,6 +43,8 @@ part 'model-contact_list.dart';
 part 'model-message.dart';
 part 'model-minibox_list_item.dart';
 part 'model-minibox_list.dart';
+part 'model-notification.dart';
+part 'model-notification_list.dart';
 part 'model-phone_number.dart';
 part 'model-recipient.dart';
 part 'model-user.dart';

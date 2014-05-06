@@ -256,7 +256,7 @@ class Call implements Comparable {
     if (json.containsKey('reception_id')) {
       int receptionId = json['reception_id'];
 
-      storage.getReception(receptionId).then((Reception reception) {
+      storage.Reception.get(receptionId).then((Reception reception) {
         if (reception == nullReception) {
           log.error('model.Call._pickupCallSuccess NOT FOUND reception ${receptionId}');
         }

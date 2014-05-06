@@ -34,47 +34,6 @@ class ContactList extends IterableBase<Contact>{
   factory ContactList.fromJson(Map json, String key, int receptionID) {
     ContactList contactList = new ContactList();
 
-//    //XXX ??? TODO FIXME TESTING TEST WARNING ERROR
-//    if (json.containsKey(key) && json[key] is List) {
-//      Random rand = new Random();
-//      int limit = 60;
-//      var attr = {'backup':[{'priority':1, 'value':'backup'}],
-//                   'emailaddresses':[{'priority':1, 'value':'emailaddresses'}],
-//                   'handling':[{'priority':1, 'value':'handling'}],
-//                   'telephonenumbers':[{'priority':1, 'value':'telephonenumbers'}],
-//                   'workhours':[{'priority':1, 'value':'workhours'}],
-//                   'department':'department',
-//                   'info':'info',
-//                   'position':'position',
-//                   'relations':'relations',
-//                   'responsibility':'responsibility',
-//                   'tags' : ['dummy']
-//                  };
-//      for(int i = 0; i < limit; i++) {
-//        var num = rand.nextInt(2*limit);
-//        var generateContact = {'contact_id': 100+i ,'full_name': 'XXXXXXXXXXXX XXXXXXXXXX XXXXXxxGenerate${num}' ,'is_human': true};
-//        
-//        attr.forEach((key, value) {
-//          generateContact.putIfAbsent(key, () => value);
-//        });
-//        json[key].add(generateContact);
-//      }
-//      var generateContacts = [{'contact_id': 1000 ,'full_name': 'Thomas klaus Løcke' ,'is_human': true},
-//                              {'contact_id': 1001 ,'full_name': 'Thomas k Løcke' ,'is_human': true},
-//                              {'contact_id': 1002 ,'full_name': 'Thomas Løcke klaus' ,'is_human': true},
-//                              {'contact_id': 1003 ,'full_name': 'Thomas Hans klaus Løcke' ,'is_human': true},
-//                              {'contact_id': 1004 ,'full_name': 'Thomas-klaus Løcke' ,'is_human': true},
-//                              {'contact_id': 1005 ,'full_name': 'Thomas klaus Løcke Hansen' ,'is_human': true},
-//                              {'contact_id': 1006 ,'full_name': 'Thomas klaus Løcke Løckesen' ,'is_human': true}];
-//      generateContacts.forEach((contactMap) {
-//        attr.forEach((key, value) {
-//          contactMap.putIfAbsent(key, () => value);
-//        });
-//      });
-//      json[key].addAll(generateContacts);
-//    }
-//    //TESTING END
-
     if (json.containsKey(key) && json[key] is List) {
       contactList = new ContactList._fromList(json[key], receptionID);
     } else {

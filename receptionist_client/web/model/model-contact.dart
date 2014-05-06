@@ -50,8 +50,11 @@ class Contact implements Comparable {
   MiniboxList       get workHoursList       => _workHoursList;
   List<Recipient>   get distributionList    => _distributionList;
   
+  static final Contact noContact = nullContact;
+
+  
   /**
-   * TODO: Turn into A future.
+   * 
    */
   Future<List<Recipient>> dereferenceDistributionList() {
 
@@ -59,7 +62,7 @@ class Contact implements Comparable {
       return storage.getContact(recipient.receptionID, recipient.contactID).then((Contact dereferencedContact) {
         recipient.contactName = dereferencedContact.name;
         
-        return storage.getReception(recipient.receptionID).then((Reception dereferencedReception) {
+        return storage.Reception.get(recipient.receptionID).then((Reception dereferencedReception) {
           recipient.receptionName = dereferencedReception.name;  
         });
         
@@ -135,17 +138,12 @@ class Contact implements Comparable {
     }
     
     if(json.containsKey('distribution_list')) {
-      print (json);
-      
       (json['distribution_list'] as Map).forEach((role, recipientList) {
-        print(role);
-        print(recipientList);
         (recipientList as List).forEach((recipientString) {
           this._distributionList.add(new Recipient(recipientString, role));
         });
       });
     }
-    print (distributionList);
 
     // Adding some dummy calendar events
     Map foo = new Map();
@@ -153,7 +151,7 @@ class Contact implements Comparable {
     foo['calendar_events'].add({'start':'2013-11-01 08:00:00', 'stop':'2014-04-07 17:00:01', 'content':'${id} Måneomrejse'});
     foo['calendar_events'].add({'start':'2013-05-01 08:00:00', 'stop':'2014-02-07 17:00:00', 'content':'${id} Jordomrejse'});
     foo['calendar_events'].add({'start':'2013-12-20 10:00:00', 'stop':'2014-01-05 12:00:00', 'content':'${id} Kursus I Shanghai. Tjekker sin email.'});
-    _calendarEventList = new CalendarEventList.fromJson(foo, 'calendar_events');
+    _calendarEventList = new CalendarEventList.fromMap(foo, 'calendar_events');
   }
 
   static Future<Contact> fetch(int contactID,int receptionID) {
@@ -180,7 +178,7 @@ class Contact implements Comparable {
   
   Future<Map> contextMap() {
     
-    return storage.getReception(this.receptionID).then ((Reception reception) {
+    return storage.Reception.get(this.receptionID).then ((Reception reception) {
       return {'contact' : 
                   {'id'   : this.id, 
                    'name' : this.name}, 
