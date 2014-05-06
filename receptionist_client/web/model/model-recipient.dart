@@ -5,7 +5,7 @@ class Recipient {
   Map _map = {'contact'   : { 'id'   : nullContact.id,
                               'name' : "<null contact>",
                              }, 
-              'reception' : { 'id'   : nullReception.id,
+              'reception' : { 'id'   : nullReception.ID,
                               'name' : "<null reception>",
                              },
               'role' : null};
