@@ -20,7 +20,7 @@ library environment;
 //import 'context.dart';
 //import 'events.dart' as event;
 //import 'logger.dart';
-import 'model.dart' as model;
+import '../model/model.dart' as model;
 //import 'state.dart';
 //
 //String     _activeWidget = '';

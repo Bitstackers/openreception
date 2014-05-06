@@ -209,6 +209,7 @@ class _KeyboardHandler {
       event.preventDefault();
       callback(event);
     }));
+
     window.document.onKeyDown.listen(keyboard.press);
     
     Keyboard keyUp = new Keyboard();

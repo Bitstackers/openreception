@@ -8,7 +8,7 @@ import 'configuration.dart';
 import 'events.dart' as event;
 import 'logger.dart';
 import 'notification.dart';
-import 'protocol.dart' as protocol;
+import '../protocol/protocol.dart' as protocol;
 import 'state.dart';
 
 class BobLogin {

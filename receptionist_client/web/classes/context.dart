@@ -107,7 +107,7 @@ class Context {
    * (see the constructor comment) and setting [isActive] to false.
    */
   void _toggle(String contextId) {
-    isActive = contextId == id;
+    bool isActive = (contextId == id);
     _element.classes.toggle('hidden', !isActive);
   }
 

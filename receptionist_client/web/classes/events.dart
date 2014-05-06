@@ -22,10 +22,10 @@ import 'package:event_bus/event_bus.dart';
 
 import '../components.dart';
 import 'focus.dart';
-import 'model.dart' as model;
+import '../model/model.dart' as model;
 import 'location.dart';
 import 'state.dart';
-import 'model.dart';
+import '../model/model.dart';
 
 final EventType keyUp                                           = new EventType();
 final EventType keyDown                                         = new EventType();
