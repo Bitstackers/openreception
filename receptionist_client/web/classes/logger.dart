@@ -20,7 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'configuration.dart';
-import 'protocol.dart' as protocol;
+import '../protocol/protocol.dart' as protocol;
 import 'state.dart';
 
 final Log log = new Log._internal();
@@ -88,6 +88,7 @@ class Log {
   void debugContext (String message, String context)    => print('[DEBUG]    - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
   void dataDump (String data, String context)           => print('[DATADUMP] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${data}');
   void criticalContext (String message, String context) => print('[CRITICAL] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
+  void criticalError (Error error, String context)      => print('[CRITICAL] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${error.toString()}');
   void errorContext (String message, String context)    => print('[ERROR]    - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
 
   /**
