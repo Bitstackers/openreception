@@ -16,7 +16,6 @@
   top: 180px;
   left: 40.5%;
   width: 59%;
-  height: 150px;
 }
 
 #contactlist {
@@ -127,8 +126,8 @@
 }
 
 .contact-info-field {
-  height: 40px;
-  width: 238px;
+  min-height: 40px;
+  min-width: 300px;
   overflow: auto;
   /*border: 1px red solid;*/
   font-size: small;
