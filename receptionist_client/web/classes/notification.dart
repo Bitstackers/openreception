@@ -22,10 +22,10 @@ import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'events.dart' as event;
 import 'logger.dart';
-import 'model.dart' as model;
+import '../model/model.dart' as model;
 import 'socket.dart';
 import 'state.dart';
-import 'storage.dart' as storage;
+import '../storage/storage.dart' as storage;
 import 'utilities.dart';
 
 final Notification notification = new Notification();
@@ -212,7 +212,7 @@ void _callPickupEventHandler(Map json) {
     log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
 
     if (call.receptionId != null && call.receptionId > 0) {
-      storage.getReception(call.receptionId).then((model.Reception reception) {
+      storage.Reception.get(call.receptionId).then((model.Reception reception) {
         event.bus.fire(event.receptionChanged, reception);
 
       }).catchError((error) {
