@@ -59,7 +59,7 @@ class Contact implements Comparable {
   Future<List<Recipient>> dereferenceDistributionList() {
 
     return Future.forEach(this.distributionList, (Recipient recipient) {
-      return storage.getContact(recipient.receptionID, recipient.contactID).then((Contact dereferencedContact) {
+      return Contact.get(recipient.contactID, recipient.receptionID).then((Contact dereferencedContact) {
         recipient.contactName = dereferencedContact.name;
 
         return storage.Reception.get(recipient.receptionID).then((Reception dereferencedReception) {
@@ -149,9 +149,18 @@ class Contact implements Comparable {
   }
 
   static Future<Contact> get(int contactID, int receptionID) {
-    return storage.getContact(receptionID, contactID);
+    return storage.Contact.get(contactID, receptionID);
   }
 
+  static Future<ContactList> list(int receptionID) {
+    return storage.Contact.list(receptionID);
+  }
+
+  static Future<CalendarEventList> calendar(int contactID, int receptionID) {
+    return storage.Contact.calendar(contactID, receptionID);
+  }
+
+  
   /**
    * [Contact] null constructor.
    */

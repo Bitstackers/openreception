@@ -30,17 +30,8 @@ class ReceptionList extends IterableBase<BasicReception>{
    * [ReceptionList] constructor. Builds a list of [BasicReception] objects
    * from the contents of json[key].
    */
-  factory ReceptionList.fromJson(Map json, String key) {
-    ReceptionList receptionList = new ReceptionList();
-
-    if (json.containsKey(key) && json[key] is List) {
-      log.dataDump('model.ReceptionList.fromJson key: ${key} list: ${json[key]}', 'model.ReceptionList');
-      receptionList = new ReceptionList._fromList(json[key]);
-    } else {
-      log.critical('model.ReceptionList.fromJson bad data key: ${key} map: ${json}');
-    }
-
-    return receptionList;
+  factory ReceptionList.fromList(List list) {
+    return new ReceptionList._fromList(list);
   }
 
   /**

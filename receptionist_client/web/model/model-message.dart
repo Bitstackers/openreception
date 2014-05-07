@@ -69,6 +69,10 @@ class Message {
     return this._map;
   }
   
+  Future send () {
+    return Service.Message.send(this);
+  }
+  
   /**
    * Adds a new recipient for the message. The recipient is subject to the following policy:
    *  - Contacts with both the same contact_id and reception_id are considered equal - regardless of their role.

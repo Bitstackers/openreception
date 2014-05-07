@@ -90,8 +90,8 @@ class ContactInfoData {
     emailAddressList.children.clear();
 
     for(var item in contact.distributionList) {
-        model.Contact.fetch(item.contactID, item.receptionID).then((model.Contact contact) {
-          model.Reception.fetch(item.receptionID).then((model.Reception reception) { 
+        model.Contact.get(item.contactID, item.receptionID).then((model.Contact contact) {
+          model.Reception.get(item.receptionID).then((model.Reception reception) { 
             if (reception != model.Reception.currentReception) {
               LIElement li = new LIElement()
                               ..text = '${contact.name} (${reception.name})'

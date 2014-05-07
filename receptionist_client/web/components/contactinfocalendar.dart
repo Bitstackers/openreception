@@ -17,7 +17,6 @@ class ContactInfoCalendar {
   DivElement element;
   Element widget;
 
-  model.CalendarEventList eventList;
   model.Reception reception;
 
   bool hasFocus = false;
@@ -56,13 +55,8 @@ class ContactInfoCalendar {
       
       /*  */
       if (newContact != model.Contact.noContact) {
-        protocol.getContactCalendar(reception.id, this.currentContact.id).then((protocol.Response<model.CalendarEventList> response) {
-          if (response.status == protocol.Response.OK) {
-            eventList = response.data;
-          } else {
-            log.error('ContactInfoCalendar.ContactInfoCalendar. Request for getContactCalendar failed: ${response.statusText}');
-          }
-          render();
+        storage.Contact.calendar(this.currentContact.id, reception.ID).then((model.CalendarEventList eventList) {
+          this.render(eventList);
         }).catchError((error) {
           log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
         });
@@ -71,7 +65,7 @@ class ContactInfoCalendar {
 
   }
 
-  void render() {
+  void render(model.CalendarEventList eventList) {
     calendarBody.children.clear();
     if (eventList == null) {
       return;

@@ -16,14 +16,11 @@ library storage;
 import 'dart:async';
 
 import '../model/model.dart' as model;
-import '../protocol/protocol.dart' as protocol;
 import '../service/service.dart' as Service;
 
 
 part 'storage.contact.dart';
-part 'storage.contact_list.dart';
 part 'storage.reception.dart';
-part 'storage.reception_list.dart';
 
 const libraryName = 'storage';
 

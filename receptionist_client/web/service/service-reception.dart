@@ -95,14 +95,15 @@ abstract class Reception {
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-  static Future<Response<model.CalendarEventList>> calendar(int receptionID) {
+  static Future<model.CalendarEventList> calendar(int receptionID) {
 
     const String context = '${className}.calendar';
 
     final String base = configuration.receptionBaseUrl.toString();
-    final Completer<Response<model.CalendarEventList>> completer = new Completer<Response<model.CalendarEventList>>();
+    final Completer<model.CalendarEventList> completer = new Completer<model.CalendarEventList>();
     final List<String> fragments = new List<String>();
-    final String path = '/reception/$receptionID/calendar';
+    final String path = ReceptionResource.calendar(receptionID);
+
     HttpRequest request;
     String url;
 
@@ -148,9 +149,12 @@ abstract class Reception {
  *  On success : [Response] object with status OK (data)
  *  on error   : [Response] object with status ERROR or CRITICALERROR (data)
  */
-  Future<Response<model.ReceptionList>> list() {
+  static Future<model.ReceptionList> list() {
+
+    const String context = '${className}.list';
+
     final String base = configuration.receptionBaseUrl.toString();
-    final Completer<Response<model.ReceptionList>> completer = new Completer<Response<model.ReceptionList>>();
+    final Completer<model.ReceptionList> completer = new Completer<model.ReceptionList>();
     final List<String> fragments = new List<String>();
     final String path = '/reception';
     HttpRequest request;
@@ -164,18 +168,27 @@ abstract class Reception {
         ..onLoad.listen((val) {
           switch (request.status) {
             case 200:
-              var response = _parseJson(request.responseText);
-              model.ReceptionList data = new model.ReceptionList.fromJson(response, 'reception_list');
-              completer.complete(new Response<model.ReceptionList>(Response.OK, data));
+              completer.complete(new model.ReceptionList.fromList(JSON.decode(request.responseText)['reception_list']));
               break;
 
+            case 400:
+              completer.completeError(_badRequest('Resource ${base}${path}'));
+              break;
+
+            case 404:
+              completer.completeError(_notFound('Resource ${base}${path}'));
+              break;
+
+            case 500:
+              completer.completeError(_serverError('Resource ${base}${path}'));
+              break;
             default:
-              completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
           }
         })
         ..onError.listen((e) {
-          _logError(request, url);
-          completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
+          completer.completeError(e);
         })
         ..send();
 

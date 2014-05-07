@@ -30,7 +30,6 @@ import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
 import 'model/model.dart' as model;
 import 'protocol/protocol.dart' as protocol;
-import 'service/service.dart' as service;
 import 'storage/storage.dart' as storage;
 import 'classes/controller.dart' as controller;
 

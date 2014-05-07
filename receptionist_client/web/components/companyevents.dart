@@ -42,9 +42,9 @@ class CompanyEvents {
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      protocol.getReceptionCalendar(value.id).then((protocol.Response<model.CalendarEventList> events) {
-        _render(events.data);
+    event.bus.on(event.receptionChanged).listen((model.Reception reception) {
+      storage.Reception.calendar(reception.ID).then((model.CalendarEventList events) {
+        _render(events);
       });
     });
 

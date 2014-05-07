@@ -298,8 +298,8 @@ class SendMessage {
       }
 
       log.dataDump(completeMessage, "components.sendClick");
-      service.Message.send(pendingMessage).then((protocol.Response response) {
-        log.debug('Send Message Result: ${response.data}');
+      pendingMessage.send().then((_) {
+        log.debug('Sent message');
       }).catchError((error) {
         log.debug('----- Send Message Unlucky Result: ${error}');
       });

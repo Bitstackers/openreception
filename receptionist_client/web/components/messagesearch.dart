@@ -64,11 +64,12 @@ class MessageSearch{
 
     companySearch = new SearchComponent<model.BasicReception>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
-      ..selectedElementChanged = (model.BasicReception element) {
-        storage.Reception.get(element.id).then((model.Reception value) {
+      ..selectedElementChanged = (model.BasicReception reception) {
+        model.Reception.get(reception.ID).then((model.Reception value) {
           selectedCompany = value;
           searchParametersChanged();
-          storage.getContactList(value.id).then((model.ContactList list) {
+          
+          model.Contact.list(value.ID).then((model.ContactList list) {
             contactSearch.updateSourceList(list.toList(growable: false));
           }).catchError((error) {
             contactSearch.updateSourceList(new model.ContactList.emptyList().toList(growable: false));
@@ -80,7 +81,7 @@ class MessageSearch{
       }
       ..listElementToString = companyListElementToString;
 
-      storage.getReceptionList().then((model.ReceptionList list) {
+      storage.Reception.list().then((model.ReceptionList list) {
         companySearch.updateSourceList(list.toList(growable: false));
       });
 

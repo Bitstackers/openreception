@@ -25,7 +25,7 @@ class CompanySelector {
   }
 
   void initialFill() {
-    storage.getReceptionList().then((model.ReceptionList list) {
+    storage.Reception.list().then((model.ReceptionList list) {
       search.updateSourceList(list.toList(growable: false));
     });
   }
@@ -42,7 +42,7 @@ class CompanySelector {
     });
   }
 
-  bool _receptionEquality(model.BasicReception x, model.BasicReception y) => x.id == y.id;
+  bool _receptionEquality(model.BasicReception x, model.BasicReception y) => x.ID == y.ID;
 
   void whenClearSelection() {
     new Future(() => event.bus.fire(event.receptionChanged, model.nullReception));
@@ -66,7 +66,7 @@ class CompanySelector {
   }
 
   void elementSelected(model.BasicReception reception) {
-    storage.Reception.get(reception.id).then((model.Reception value) {
+    storage.Reception.get(reception.ID).then((model.Reception value) {
       event.bus.fire(event.receptionChanged, value);
     });
   }

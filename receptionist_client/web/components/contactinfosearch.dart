@@ -148,7 +148,7 @@ class ContactInfoSearch {
         searchBox.value = '';
       }
       
-      storage.getContactList(reception.id).then((model.ContactList list) {
+      model.Contact.list(reception.ID).then((model.ContactList list) {
         contactList = list;
         _performSearch(searchBox.value);
       }).catchError((error) => contactList = new model.ContactList.emptyList());
@@ -191,13 +191,13 @@ class ContactInfoSearch {
       for(LIElement li in displayedContactList.children) {
         if(li.classes.contains(activeContactClass)) {
           int contactId = li.value;
-          storage.getContact(reception.id, contactId).then((model.Contact contact) {
+          model.Contact.get(contactId, reception.ID).then((model.Contact contact) {
             if(contact.phones.isNotEmpty) {
               //TODO Call person.
               log.debug('components.ContactInfoSearch.registerEventListeners() --------------- CALLING ${contact}');
               String extension = contact.phones.first['value'];
               log.debug('------------------ $extension ---------------------');
-              protocol.originateCallFromExtension(reception.id, extension)
+              protocol.originateCallFromExtension(reception.ID, extension)
                 .then((_) {
                   log.debug('components.ContactInfoSearch.registerEventListeners() --------------- GOOD ${_}');
                 }).catchError((e) {

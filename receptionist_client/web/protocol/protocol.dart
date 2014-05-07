@@ -23,12 +23,10 @@ import '../model/model.dart' as model;
 
 part 'protocol-agent.dart';
 part 'protocol-call.dart';
-part 'protocol-contact.dart';
 part 'protocol-debug.dart';
 part 'protocol-log.dart';
 part 'protocol-login.dart';
 part 'protocol-message.dart';
-part 'protocol-reception.dart';
 
 const String libraryName = 'protocol';
 

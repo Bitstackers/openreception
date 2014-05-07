@@ -35,7 +35,7 @@ class Phonebooth {
     companySearch = new SearchComponent<model.BasicReception>(container.querySelector('#phonebooth-company'), context, 'phonebooth-company-searchbar')
       ..searchPlaceholder = 'Søg på virksomheder...'
       ..selectedElementChanged = (model.BasicReception element) {
-        storage.Reception.get(element.id).then((model.Reception value) {
+        storage.Reception.get(element.ID).then((model.Reception value) {
           changeReception(value);
         });
       }
@@ -44,7 +44,7 @@ class Phonebooth {
       }
       ..listElementToString = companyListElementToString;
 
-      storage.getReceptionList().then((model.ReceptionList list) {
+      storage.Reception.list().then((model.ReceptionList list) {
         companySearch.updateSourceList(list.toList(growable: false));
       });
 
@@ -85,7 +85,7 @@ class Phonebooth {
   void dial() {
     if(receptionSelected != model.nullReception) {
       String dialStrig = inputField.value;
-      protocol.originateCallFromExtension(receptionSelected.id, dialStrig).then((protocol.Response<Map> response) {
+      protocol.originateCallFromExtension(receptionSelected.ID, dialStrig).then((protocol.Response<Map> response) {
         if(response.status == protocol.Response.OK) {
           log.info('Ringede op til ${dialStrig}', toUserLog: true);
           log.info('Agent ${configuration.userId} called ${dialStrig} of fik ${response.data['call']['id']}');
