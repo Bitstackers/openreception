@@ -13,10 +13,14 @@
 
 part of storage;
 
-Map<int, Map<int, model.Contact>> _contactCache = new Map<int, Map<int, model.Contact>>();
-
-
 abstract class Contact {
+
+  static Map<int, Map<int, model.Contact>> _contactCache = new Map<int, Map<int, model.Contact>>();
+
+  static Map<int, model.ContactList> _contactListCache = new Map<int, model.ContactList>();
+
+  static Map<int, Map<int, model.CalendarEventList>> _calendarCache = new Map<int, Map<int, model.CalendarEventList>>();
+
   /**
    * Get the [ContactList].
    *
@@ -25,85 +29,87 @@ abstract class Contact {
    *  On not found : a empty [ContactList]
    *  On error     : an error message.
    */
-  static Future<model.ContactList> list(int id) {
-    
-    const String context = '${libraryName}.getContactList';
-    
+  static Future<model.ContactList> list(int receptionID) {
+    const String context = '${libraryName}.list';
+
     final Completer completer = new Completer<model.ContactList>();
 
-    if (_contactListCache.containsKey(id)) {
-      debug("Loading contactList from cache.",context);
-      completer.complete(_contactListCache[id]);
+    if (_contactListCache.containsKey(receptionID)) {
+      debug("Loading contact list from cache.", context);
+      completer.complete(_contactListCache[receptionID]);
     } else {
-      debug("ContactList not found in cache, loading from http.", context);
-      protocol.getContactList(id).then((protocol.Response<model.ContactList> response) {
-        switch(response.status) {
-          case protocol.Response.OK:
-            model.ContactList reception = response.data;
-            _contactListCache[id] = reception;
-            completer.complete(reception);
-            break;
+      debug("Contact list not found in cache, loading from http.", context);
+      Service.Contact.list(receptionID).then((model.ContactList contactList) {
+        _contactListCache[receptionID] = contactList;
+        completer.complete(contactList);
+      }).catchError((error) {
+        completer.completeError(error);
+      });
+    }
 
-          case protocol.Response.NOTFOUND:
-            completer.complete(new model.ContactList.emptyList());
-            break;
+    return completer.future;
+  }
 
-          default:
-            completer.completeError('storage.getContactList ERROR failed with ${response}');
+  static Future<model.CalendarEventList> calendar(int contactID, int receptionID) {
+    const String context = '${libraryName}.calendar';
+
+    final Completer completer = new Completer<model.CalendarEventList>();
+
+    if (_calendarCache.containsKey(receptionID) && _calendarCache[receptionID].containsKey(contactID)) {
+      debug("Loading contact calendar from cache.", context);
+      completer.complete(_calendarCache[receptionID][contactID]);
+
+    } else {
+      debug("Contact Calendar not found in cache, loading from http.", context);
+      Service.Contact.calendar(contactID, receptionID).then((model.CalendarEventList eventList) {
+
+        if (!_calendarCache.containsKey(receptionID)) {
+          _calendarCache[receptionID] = new Map<int, model.CalendarEventList>();
+        } else {
+          _calendarCache[receptionID][contactID] = eventList;
         }
-      })
-      .catchError((error) {
-        completer.completeError('storage.getContactList ERROR protocol.getContactList failed with ${error}');
+
+        completer.complete(eventList);
+      }).catchError((error) {
+        completer.completeError(error);
+      });
+    }
+
+    return completer.future;
+  }
+
+  /**
+   * Get the [Contact].
+   *
+   * Completes with
+   *  On success   : the [Contact]
+   *  On not found : a [nullContact]
+   *  On error     : an error message.
+   */
+  static Future<model.Contact> get(int contactID, int receptionID) {
+
+    const String context = '${libraryName}.getContact';
+
+    final Completer<model.Contact> completer = new Completer<model.Contact>();
+
+    if (_contactCache.containsKey(receptionID) && _contactCache[receptionID].containsKey(contactID)) {
+      debug("Loading contact from cache.", context);
+      completer.complete(_contactCache[receptionID][contactID]);
+
+    } else {
+      debug("Contact not found in cache, loading from http.", context);
+      Service.Contact.get(contactID, receptionID).then((model.Contact contact) {
+        if (!_contactCache.containsKey(receptionID)) {
+          _contactCache[receptionID] = new Map<int, model.Contact>();
+        } else {
+          _contactCache[receptionID][contactID] = contact;
+        }
+        completer.complete(contact);
+      }).catchError((error) {
+        completer.completeError('storage.getContact ERROR protocol.getContact failed with ${error}');
       });
     }
 
     return completer.future;
   }
 }
-
-/**
- * Get the [Contact].
- *
- * Completes with
- *  On success   : the [Contact]
- *  On not found : a [nullContact]
- *  On error     : an error message.
- */
-Future<model.Contact> getContact(int receptionId, int contactId) {
-  
-  const String context = '${libraryName}.getContact';
-  
-  final Completer<model.Contact> completer = new Completer<model.Contact>();
-
-  if (_contactCache.containsKey(receptionId) && _contactCache[receptionId].containsKey(contactId)) {
-    debug("Loading contact from cache.", context);
-    completer.complete(_contactCache[receptionId][contactId]);
-
-  } else {
-    debug("Contact not found in cache, loading from http.", context);
-    protocol.getContact(receptionId, contactId).then((protocol.Response<model.Contact> response) {
-      switch (response.status) {
-        case protocol.Response.OK:
-          model.Contact contact = response.data;
-          if (!_contactCache.containsKey(receptionId)) {
-            _contactCache[receptionId] = new Map<int, model.Contact>();
-          } else {
-            _contactCache[receptionId][contactId] = contact;
-          }
-          completer.complete(contact);
-          break;
-
-        case protocol.Response.NOTFOUND:
-          completer.complete(model.nullContact);
-          break;
-
-        default:
-          completer.completeError('storage.getContact ERROR failed with ${response}');
-      }
-    }).catchError((error) {
-      completer.completeError('storage.getContact ERROR protocol.getContact failed with ${error}');
-    });
-  }
-
-  return completer.future;
-  }
