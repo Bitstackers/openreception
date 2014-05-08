@@ -61,6 +61,9 @@ class BasicReception implements Comparable{
  * An [Reception]. Sorting receptions is done based on [name].
  */
 class Reception extends BasicReception{
+  
+  Map               _extraData = {};
+  
   MiniboxList       _addressList            = new MiniboxList();
   MiniboxList       _alternateNameList      = new MiniboxList();
   MiniboxList       _bankingInformationList = new MiniboxList();
@@ -87,6 +90,10 @@ class Reception extends BasicReception{
   String              get customerType           => _customerType;
   MiniboxList         get emailAddressList       => _emailAddressList;
   String              get greeting               => _greeting;
+  String              get alternateGreeting      => 
+      (this._extraData.containsKey('alternateGreeting') 
+          ? this._extraData['alternateGreeting']  
+          : this.greeting);
   MiniboxList         get handlingList           => _handlingList;
   MiniboxList         get openingHoursList       => _openingHoursList;
   String              get other                  => _other;
