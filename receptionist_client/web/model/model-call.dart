@@ -44,6 +44,7 @@ class Call implements Comparable {
   bool _inbound;
   DateTime _start;
   int _receptionID;
+
   static Call _currentCall = nullCall;
 
   int get assignedAgent => _assignedAgent;
@@ -76,43 +77,48 @@ class Call implements Comparable {
    * is a timestamp of when the call was started. It MUST be in a format that
    * can be parsed by the [DateTime.parse] method.
    *
-   * TODO Obviously the above map format should be in the docs/wiki, as it is
-   * also highly relevant to Alice.
+   * TODO Obviously the above map format should be in the docs/wiki, and completed.
    */
-  Call.fromJson(Map json) {
-    log.debug('Call.fromJson ${json}');
-    if (json.containsKey('assigned_to') && json['assigned_to'] != null) {
-      _assignedAgent = json['assigned_to'];
+  Call.fromMap(Map map) {
+    log.debug('Call.fromJson ${map}');
+    if (map.containsKey('assigned_to') && map['assigned_to'] != null) {
+      _assignedAgent = map['assigned_to'];
     }
 
-    if (json.containsKey('reception_id') && json['reception_id'] != null) {
-      _receptionID = json['reception_id'];
+    if (map.containsKey('reception_id') && map['reception_id'] != null) {
+      _receptionID = map['reception_id'];
     }
 
-    if (json.containsKey('b_leg')) {
-      _bLeg = json['b_leg'];
+    if (map.containsKey('b_leg')) {
+      _bLeg = map['b_leg'];
     }
 
-    if (json.containsKey('caller_id')) {
-      _callerID = json['caller_id'];
+    if (map.containsKey('caller_id')) {
+      _callerID = map['caller_id'];
     }
 
-    if (json.containsKey('destination')) {
-      _destination = json['destination'];
+    if (map.containsKey('destination')) {
+      _destination = map['destination'];
     }
 
-    if (json.containsKey('inbound')) {
-      _inbound = json['inbound'];
+    if (map.containsKey('inbound')) {
+      _inbound = map['inbound'];
     }
 
-    if (json.containsKey('greeting_played')) {
-      _greetingPlayed = json['greeting_played'];
+    if (map.containsKey('greeting_played')) {
+      _greetingPlayed = map['greeting_played'];
     }
 
-    _ID = json['id'];
+    _ID = map['id'];
     //_start = DateTime.parse(json['arrival_time']);
-    log.debug('Model.call Call.fromJson: ${json['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time'])*1000)}');
-    _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['arrival_time']) * 1000);
+    log.debug('Model.call Call.fromJson: ${map['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(int.parse(map['arrival_time'])*1000)}');
+    _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(map['arrival_time']) * 1000);
+    
+    this._data = map;
+  }
+  
+  void update (Map map) {
+    this._data = map;
   }
 
   /**

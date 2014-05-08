@@ -99,7 +99,7 @@ class CallList extends IterableBase<Call> {
 
     this._list.clear();
 
-    list.forEach((item) => _list.add(new Call.fromJson(item)));
+    list.forEach((item) => _list.add(new Call.fromMap(item)));
     _list.sort();
 
     log.debugContext('Populated list with ${list.length} elements.', context);
