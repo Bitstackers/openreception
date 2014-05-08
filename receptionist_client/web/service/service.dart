@@ -11,6 +11,7 @@ import '../protocol/protocol.dart';
 import '../model/model.dart' as model;
 import '../classes/configuration.dart';
 
+part 'service-call.dart';
 part 'service-contact.dart';
 part 'service-message.dart';
 part 'service-reception.dart';

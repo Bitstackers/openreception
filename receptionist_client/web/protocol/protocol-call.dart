@@ -14,51 +14,6 @@
 part of protocol;
 
 /**
- * Get a list of every active call.
- *
- * Completes with:
- *  On success: [Response] object with status OK
- *  On error  : [Response] object with status ERROR or CRITICALERROR
- */
-Future<Response<Map>> callList() {
-  final String                   base      = configuration.callFlowBaseUrl.toString();
-  final Completer<Response<Map>> completer = new Completer<Response<Map>>();
-  final List<String>             fragments = new List<String>();
-  final String                   path      = '/call/list';
-  HttpRequest                    request;
-  String                         url;
-
-  fragments.add('token=${configuration.token}');
-  url = _buildUrl(base, path, fragments);
-    
-  request = new HttpRequest()
-    ..open(GET, url)
-    ..onLoad.listen((_) {
-      switch(request.status) {
-        case 200:
-          Map data = _parseJson(request.responseText);
-          completer.complete(new Response<Map>(Response.OK, data));
-          break;
-
-        case 204:
-          completer.complete(new Response<Map>(Response.OK, null));
-          break;
-
-        default:
-          completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
-      }
-    })
-    ..onError.listen((e) {
-      _logError(request, url);
-      completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
-
-    })
-    ..send();
-
-  return completer.future;
-}
-
-/**
  * Get a list of waiting calls.
  */
 Future<Response<Map>> callQueue() {
@@ -75,34 +30,6 @@ Future<Response<Map>> callQueue() {
   request = new HttpRequest()
     ..open(GET, url)
     ..onLoad.listen((_) {
-//      Map data = {'calls': [
-//                        {'assigned_to': '',
-//                          'reception_id': 1,
-//                          'id': 'callid_1',
-//                          'arrival_time': '1382099801'},
-//
-//                         {'assigned_to': '',
-//                          'reception_id': 2,
-//                          'id': 'callid_2',
-//                          'arrival_time': '1382099831'},
-//
-//                         {'assigned_to': '',
-//                          'reception_id': 1,
-//                          'id': 'callid_3',
-//                          'arrival_time': '1382099821'}
-//
-//                            ]};
-//      Map data = new Map();
-//      List calls = new List();
-//      calls.add({'id':'31','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds:  3)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
-//      calls.add({'id':'27','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 15)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
-//      calls.add({'id':'11','arrival_time':'${(new DateTime.now().subtract(new Duration(seconds: 37)).millisecondsSinceEpoch~/1000)}', 'reception_id': 1, 'assigned_to': 'Thomas'});
-//      data['calls'] = calls;
-//      log.debug('protocol.call.dart callQueue is sending out fake data.');
-
-//      completer.complete(new Response<Map>(Response.OK, data));
-//      return;
-
       switch(request.status) {
         case 200:
           Map data = _parseJson(request.responseText);
