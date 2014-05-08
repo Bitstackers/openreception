@@ -33,6 +33,8 @@ class Call implements Comparable {
 
   static final EventType currentCallChanged = new EventType();
 
+  Map _data;
+  
   int _assignedAgent;
   String _bLeg;
   String _callerID;
@@ -57,6 +59,7 @@ class Call implements Comparable {
   static Call get currentCall => _currentCall;
   static set currentCall(Call newCall) {
     _currentCall = newCall;
+    print("Call changed: ${newCall}");
     event.bus.fire(event.callChanged, _currentCall);
   }
 
@@ -121,6 +124,8 @@ class Call implements Comparable {
     _start = new DateTime.now();
   }
 
+  Call.stub(this._ID);
+  
   /**
    * Enables a [Call] to sort itself compared to other calls.
    */
@@ -132,6 +137,13 @@ class Call implements Comparable {
    */
   bool operator ==(Call other) {
     return this.ID == other.ID;
+  }
+
+  /**
+   * TODO: Document.
+   */
+  int get hashCode {
+    return this.ID.hashCode;
   }
 
   /**
