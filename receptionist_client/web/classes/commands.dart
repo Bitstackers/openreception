@@ -29,7 +29,7 @@ const PSTN_TYPE = 2;
 const SIP_TYPE = 3;
 
 
-const String libraryName = 'commands'; 
+const String libraryName = 'commands';
 
 /**
  * Command handlers are a centralized point, from where all actions are performed.
@@ -39,16 +39,13 @@ const String libraryName = 'commands';
  * command into the command stream (currently event stream, separation will follow).
  */
 abstract class CommandHandlers {
-  
+
   static const String className = '${libraryName}.CommandHandlers';
 
   /**
    * Registers the appropriate command handlers.
    */
-  static void registerListeners() {
-    Event.bus.on(Event.originateCallRequest).listen(Controller.Call.dial);
-    Event.bus.on(Event.hangupCallRequest).listen(Controller.Call.hangup);
-  }
+  static void registerListeners() {}
 
 }
 

@@ -184,11 +184,12 @@ class _KeyboardHandler {
     Keyboard keyboard = new Keyboard();
     Map<String, EventListener> keybindings = {
       'Alt+1'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
-      'Alt+2'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_MESSAGES)),
-      'Alt+3'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_LOG)),
-      'Alt+4'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_STATISTICS)),
-      'Alt+5'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
-      'Alt+6'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_VOICEMAILS)),
+      'Alt+2'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOMEPLUS)),
+      'Alt+3'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_MESSAGES)),
+      'Alt+4'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_LOG)),
+      'Alt+5'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_STATISTICS)),
+      'Alt+6'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
+      'Alt+7'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_VOICEMAILS)),
       'Alt+C'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
       'Alt+A'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
       'Alt+H'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),

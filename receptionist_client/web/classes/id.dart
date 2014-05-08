@@ -1,6 +1,7 @@
 library id;
 
 const String CONTEXT_HOME       = 'contexthome';
+const String CONTEXT_HOMEPLUS   = 'contexthomeplus';
 const String CONTEXT_MESSAGES   = 'contextmessages';
 const String CONTEXT_LOG        = 'contextlog';
 const String CONTEXT_STATISTICS = 'contextstatistics';

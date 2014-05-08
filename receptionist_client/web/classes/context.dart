@@ -106,9 +106,8 @@ class Context {
    * Toggline OFF means adding the .hidden class from the [Context] DOM element
    * (see the constructor comment) and setting [isActive] to false.
    */
-  void _toggle(String contextId) {
-    bool isActive = (contextId == id);
-    _element.classes.toggle('hidden', !isActive);
+  void _toggle(String newContextID) {
+    _element.classes.toggle('hidden', newContextID != id);
   }
 
   /**
@@ -129,11 +128,8 @@ class Context {
 //      }
 //    });
     
-    event.bus.on(event.locationChanged).listen((nav.Location value) {
-      if((value.contextId == id && !isActive) || 
-         (value.contextId != id && isActive)) {
-        _toggle(value.contextId);  
-      }
+    event.bus.on(event.locationChanged).listen((nav.Location newLocation) {
+        _toggle(newLocation.contextId);  
     });
   }
 
