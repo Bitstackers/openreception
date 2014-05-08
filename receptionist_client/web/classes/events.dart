@@ -46,23 +46,32 @@ final EventType<model.Reception> receptionChanged               = new EventType<
 final EventType<State> stateUpdated                             = new EventType<State>();
 
 // Keyboards
-final EventType<String> pickupNextCall                          = new EventType<String>();
 final EventType<String> hangupCall                              = new EventType<String>();
 final EventType<String> parkCall                                = new EventType<String>();
 final EventType<String> CallSelectedContact                     = new EventType<String>();
 
-// API commands
-final EventType<String>    pickupCallRequest                    = new EventType<String>(); // String represents Call ID. 
-final EventType<String> pickupCallSuccess                       = new EventType<String>();
-final EventType         pickupCallFailure                       = new EventType();
+/* Pickup */
+final EventType<Call> pickupCallRequest     = new EventType<Call>(); 
+final EventType       pickupNextCallRequest = new EventType(); 
+final EventType<Call> pickupCallSuccess     = new EventType();
+final EventType<Call> pickupCallFailure     = new EventType();
 
-final EventType<String>    hangupCallRequest                    = new EventType<String>(); 
+/* Hangup */
+final EventType<Call> hangupCallRequest        = new EventType<Call>(); 
+final EventType<Call> hangupCallRequestSuccess = new EventType<Call>();
+final EventType<Call> hangupCallRequestFailure = new EventType<Call>();
 
-
+/* Originate */
 final EventType<DiablePhoneNumber> originateCallRequest         = new EventType<DiablePhoneNumber>(); 
 final EventType originateCallRequestSuccess                      = new EventType(); 
 final EventType originateCallRequestFailure                      = new EventType(); 
 final EventType<String> originateCallProgress                   = new EventType<String>(); 
+
+/* Park */
+final EventType<Call> parkCallRequest        = new EventType<Call>(); 
+final EventType<Call> parkCallRequestSuccess = new EventType<Call>();
+final EventType<Call> parkCallRequestFailure = new EventType<Call>();
+
 
 EventBus _bus = new EventBus();
 EventBus get bus => _bus;
