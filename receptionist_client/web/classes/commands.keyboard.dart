@@ -20,6 +20,7 @@ import 'events.dart' as event;
 import 'id.dart' as id;
 import 'location.dart' as nav;
 import 'logger.dart';
+import 'controller.dart' as Controller;
 
 import 'package:okeyee/okeyee.dart';
 
@@ -193,7 +194,7 @@ class _KeyboardHandler {
       'Alt+H'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Alt+M'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
       'Alt+O'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
-      'Alt+P'     : (_) => event.bus.fire(event.pickupCallRequest, null),
+      'Alt+P'     : (_) => Controller.Call.pickup(),
       'Alt+L'     : (_) => event.bus.fire(event.parkCall, 'Keyboard'),
       'Alt+G'     : (_) => event.bus.fire(event.hangupCall, 'Keyboard'),
       'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 'Keyboard'),
