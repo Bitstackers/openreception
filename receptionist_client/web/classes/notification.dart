@@ -168,10 +168,11 @@ void _callHangupEventHandler(Map json) {
 
   model.Call call = new model.Call.fromJson(json['call']);
 
-  if (call.ID == model.Call.currentCall) {
+  if (call == model.Call.currentCall) {
     log.info('Opkald lagt på. ${call}', toUserLog: true);
     log.info('notification._callHangupEventHandler hangup ${call}');
     model.Call.currentCall = model.nullCall;
+    model.Reception.currentReception = model.nullReception;
   }
 
   event.bus.fire(event.callDestroyed, call);  
