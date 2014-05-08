@@ -21,9 +21,10 @@
  *  - ReceptionChanged 
  *  - ContactChanged
  */
-part of components;
+part of view;
 
-class CompanyEvents {
+class ReceptionEvents {
+    
   Box          box;
   Context      context;
   DivElement   element;
@@ -32,7 +33,7 @@ class CompanyEvents {
   UListElement ul;
 
 
-  CompanyEvents(DivElement this.element, Context this.context) {
+  ReceptionEvents(DivElement this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
     
@@ -43,7 +44,7 @@ class CompanyEvents {
 
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen((model.Reception reception) {
-      storage.Reception.calendar(reception.ID).then((model.CalendarEventList events) {
+      Storage.Reception.calendar(reception.ID).then((model.CalendarEventList events) {
         _render(events);
       });
     });

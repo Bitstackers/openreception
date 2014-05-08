@@ -44,15 +44,15 @@ class GlobalQueue {
     header = new DocumentFragment.html(headerHtml).querySelector('.header');
 
     pickupnextcallbutton = querySelector('#pickupnextcallbutton')
-      ..onClick.listen((_) => pickupnextcallHandler())
+      ..onClick.listen((_) => Controller.Call.pickup())
       ..tabIndex = -1;
 
     hangupcallButton = querySelector('#hangupcallButton')
-      ..onClick.listen((_) => hangupcallHandler())
+      ..onClick.listen((_) => Controller.Call.hangup(model.Call.currentCall))
       ..tabIndex = -1;
 
     holdcallButton = querySelector('#holdcallButton')
-      ..onClick.listen((_) => holdcallHandler())
+      ..onClick.listen((_) => Controller.Call.park(model.Call.currentCall))
       ..tabIndex = -1;
 
     headerText = header.querySelector('span');
@@ -88,30 +88,10 @@ class GlobalQueue {
 
     context.registerFocusElement(ul);
     
-    event.bus.on(event.pickupNextCall).listen((_) {
-      pickupnextcallHandler();
-    });
+    event.bus.on(event.pickupCallSuccess).listen((_) {});
+    event.bus.on(event.parkCall).listen((_) {});
+    event.bus.on(event.hangupCall).listen((_) {});
     
-    event.bus.on(event.parkCall).listen((_) {
-      holdcallHandler();
-    });
-    
-    event.bus.on(event.hangupCall).listen((_) {
-      hangupcallHandler();
-    });
-    
-    //Keyboard Shortcuts Handlers
-//    keyboardHandler.onKeyName('pickupcall').listen((_) {
-//      pickupnextcallHandler();
-//    });
-//
-//    keyboardHandler.onKeyName('parkcall').listen((_) {
-//      holdcallHandler();
-//    });
-//
-//    keyboardHandler.onKeyName('hangupcall').listen((_) {
-//      hangupcallHandler();
-//    });
   }
 
   void _initialFill() {
@@ -152,7 +132,7 @@ class GlobalQueue {
 
   void hangupcallHandler() {
     log.debug('GlobalQueue.hangupcallHandler');
-    call.hangup();
+    event.bus.fire(event.hangupCallRequest, model.Call.currentCall);
   }
 
   void holdcallHandler() {

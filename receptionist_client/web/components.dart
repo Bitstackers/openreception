@@ -31,7 +31,7 @@ import 'classes/logger.dart';
 import 'model/model.dart' as model;
 import 'protocol/protocol.dart' as protocol;
 import 'storage/storage.dart' as storage;
-import 'classes/controller.dart' as controller;
+import 'classes/controller.dart' as Controller;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';
@@ -41,8 +41,7 @@ part 'components/companyalternatenames.dart';
 part 'components/companybankinginformation.dart';
 part 'components/companycustomertype.dart';
 part 'components/companyemailaddresses.dart';
-part 'components/companyevents.dart';
-part 'components/companyhandling.dart';
+part 'components/view-reception-handling.dart';
 part 'components/companyopeninghours.dart';
 part 'components/companyother.dart';
 part 'components/companyproduct.dart';

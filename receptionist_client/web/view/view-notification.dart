@@ -35,11 +35,18 @@ class Notification {
   void registerEventListeners() {
     
     nl.events.on(model.NotificationList.insert).listen((model.Notification notification) {
-      node.append(new HeadingElement.h3()..text = notification.message..id = 'notification_${notification.ID}');
+          
+      node.append(new HeadingElement.h4()
+      ..text = notification.message..id = 'notification_${notification.ID}'
+      ..onClick.listen((_) {nl.remove(notification);}));
     });
 
     nl.events.on(model.NotificationList.delete).listen((model.Notification notification) {
-      querySelector('#notification_${notification.ID}').remove();
+      try {
+        querySelector('#notification_${notification.ID}').remove();
+      } catch (error){
+        null; // Ignore the request if the notification has already been removed.
+      }
     });
   }
 }

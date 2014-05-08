@@ -30,12 +30,10 @@ class ContactInfoSearch {
     ''';
 
     var frag = new DocumentFragment.html(html);
-    searchBox = frag.querySelector('#contact-info-searchbar') as InputElement
+    searchBox = element.querySelector('#contact-info-searchbar') as InputElement
       ..disabled = true;
 
-    displayedContactList = frag.querySelector('#contactlist');
-
-    element.children.addAll(frag.children);
+    displayedContactList = element.querySelector('#contactlist');
 
     registerEventListeners();
   }

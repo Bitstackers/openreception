@@ -13,26 +13,29 @@
 
 part of components;
 
-class CompanyHandling {
-  Box             box;
-  Context         context;
-  DivElement      element;
-  bool            hasFocus  = false;
-  SpanElement     header;
-  UListElement    ul;
-  String          title     = 'Håndtering';
+/**
+ * Widget for cleartext instruction used for instructing users on how to 
+ * handle the call for the reception.
+ * 
+ * It is a selectable context, and thus subscribes for 
+ * [event.locationChanged] events.
+ * 
+ * The data used in this widget is [model.Reception].
+ */
+class ReceptionHandling {
+  Box box;
+  Context context;
+  DivElement element;
+  bool hasFocus = false;
+  SpanElement header;
+  UListElement ul;
+  String title = 'Håndtering';
 
-  CompanyHandling(DivElement this.element, Context this.context) {
+  ReceptionHandling(DivElement this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     ul = element.querySelector('#${id.COMPANY_HANDLING_LIST}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
 
     _registerEventListeners();
   }
@@ -40,13 +43,12 @@ class CompanyHandling {
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen(render);
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, ul));
-
     element.onClick.listen((_) => event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id)));
   }
 
   void render(model.Reception reception) {
     ul.children.clear();
-    
+
     reception.handlingList.forEach((value) => ul.children.add(new LIElement()..text = value.value));
   }
 }

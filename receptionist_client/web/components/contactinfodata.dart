@@ -29,7 +29,7 @@ class ContactInfoData {
   DivElement    position;
   DivElement    relations;
   DivElement    responsibility;
-  UListElement  telephoneNumberList;
+  OListElement  telephoneNumberList;
   UListElement  workHoursList;
 
   ContactInfoData(DivElement this.element) {
@@ -74,10 +74,11 @@ class ContactInfoData {
       LIElement number = new LIElement()
         ..classes.add ("phone-number")
         ..classes.add (item.kind);
-      
+      print("Adding click handler");
       number.children.add(new ButtonElement()
           ..text = item.value
-          ..onClick.listen((_) =>  controller.call.dial(new model.DiablePhoneNumber.from(item, contact))));
+          ..onClick.listen((_) =>  
+              event.bus.fire(event.originateCallRequest, new model.DiablePhoneNumber.from(item, contact))));
       
       telephoneNumberList.children.add(number);
       
