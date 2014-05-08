@@ -46,38 +46,8 @@ abstract class CommandHandlers {
    * Registers the appropriate command handlers.
    */
   static void registerListeners() {
-    Event.bus.on(Event.pickupCallRequest).listen(_pickuphandler);
-    Event.bus.on(Event.originateCallRequest).listen(_handleOriginate);
-    Event.bus.on(Event.hangupCallRequest).listen(_handleHangup);
-  }
-
-  /**
-   * Pickup the next available call - or a specific call identified by the [callID].
-   */
-  static void _pickuphandler(String callID) {
-    
-    const String context = '${className}._pickuphandler'; 
-    
-    protocol.pickupCall().then((protocol.Response response) {
-      if (response.status == protocol.Response.OK) {
-        log.debugContext('OK ${response.data['id']}', context);
-        model.Reception.currentReception = response.data['reception_id'];
-        
-        /* Notify components */
-        Event.bus.fire(Event.pickupCallSuccess, response.data['id']);
-      } else {
-        Event.bus.fire(Event.pickupCallFailure, null);
-      }
-    }).catchError((error, stackTrace) {
-      log.criticalContext('error : ${error}, stacktrace : ${stackTrace}',context);
-    });
-  }
-
-  static void _handleHangup(String CallID) {
-    throw new StateError("Not implemented!");
-  }
-  static void _handleOriginate(model.DiablePhoneNumber number) {
-    Controller.call.dial(number);
+    Event.bus.on(Event.originateCallRequest).listen(Controller.Call.dial);
+    Event.bus.on(Event.hangupCallRequest).listen(Controller.Call.hangup);
   }
 
 }
