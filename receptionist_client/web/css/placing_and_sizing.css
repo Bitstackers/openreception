@@ -40,6 +40,7 @@ button::-moz-focus-inner {
 }
 
 .hidden {
+  display: none;
   z-index: -100;
 }
 
@@ -47,9 +48,7 @@ button::-moz-focus-inner {
   font-size: 0.9em;
 }
 
-.zebra {
-  list-style-type: none;
-}
+.zebra {}
 
 .zebra li {
   padding: 5px;
