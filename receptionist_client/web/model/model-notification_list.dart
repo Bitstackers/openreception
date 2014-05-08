@@ -62,9 +62,12 @@ class NotificationList extends IterableBase<Notification> {
   void remove(Notification notification) {
     const String context = '${className}.remove';
 
-    this._list.remove(notification);
-    this._bus.fire(delete, notification);
+    if (this._list.remove(notification)) {
+      this._bus.fire(delete, notification);
 
-    log.debugContext("Removing notification ${notification.ID}", context);
+      log.debugContext("Removing notification ${notification.ID}", context);
+    } else {
+      log.debugContext("Skipping scheduled removal of already removed ${notification.ID}", context);
+    }
   }
 }
