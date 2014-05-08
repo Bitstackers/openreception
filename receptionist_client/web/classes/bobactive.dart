@@ -34,8 +34,8 @@ class BobActive {
   WelcomeMessage welcomeMessage;
   AgentInfo agentInfo;
   CompanySelector companySelector;
-  CompanyEvents companyEvents;
-  CompanyHandling companyHandling;
+  ReceptionEvents companyEvents;
+  ReceptionHandling companyHandling;
   CompanyOpeningHours companyOpeningHours;
   CompanySalesCalls companySalesCalls;
   CompanyProduct companyProduct;
@@ -82,8 +82,8 @@ class BobActive {
     welcomeMessage           = new WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
     agentInfo                = new AgentInfo(querySelector('#${id.AGENT_INFO}'));
     companySelector          = new CompanySelector(querySelector('#${id.COMPANY_SELECTOR}'), home);
-    companyEvents            = new CompanyEvents(querySelector('#${id.COMPANY_EVENTS}'), home);
-    companyHandling          = new CompanyHandling(querySelector('#${id.COMPANY_HANDLING}'), home);
+    companyEvents            = new ReceptionEvents(querySelector('#${id.COMPANY_EVENTS}'), home);
+    companyHandling          = new ReceptionHandling(querySelector('#${id.COMPANY_HANDLING}'), home);
     companyOpeningHours      = new CompanyOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), home);
     companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
     companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
