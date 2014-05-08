@@ -50,7 +50,7 @@ part 'components/companysalescalls.dart';
 part 'components/companyselector.dart';
 part 'components/companytelephonenumbers.dart';
 part 'components/companywebsites.dart';
-part 'components/contextswitcher.dart';
+part 'components/view-contextswitcher.dart';
 part 'components/globalqueue.dart';
 part 'components/localqueue.dart';
 part 'components/sendmessage.dart';
