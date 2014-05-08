@@ -86,7 +86,7 @@ class Notification {
   void _notificationDispatcher(Map json) {
     if(json.containsKey('event')) {
       String eventName = json['event'];
-      log.debug('notification with event: ${eventName}');
+      log.info('notification with event: ${eventName}');
 
       if (_events.containsKey(eventName)) {
         event.bus.fire(_events[eventName], json);
@@ -150,7 +150,7 @@ class Notification {
 void _callStateEventHandler(Map json) {
   log.debug('notification._callStateEventHandler');
 
-  model.Call call = new model.Call.fromJson(json['call']);
+  model.Call call = new model.Call.fromMap(json['call']);
 
   if (call.bLeg == environment.originationRequest) {
     log.info('notification._callStateEventHandler this is my origination request: ${call}');
@@ -166,7 +166,7 @@ void _callStateEventHandler(Map json) {
 void _callHangupEventHandler(Map json) {
   log.debug('notification._callHangupEventHandler');
 
-  model.Call call = new model.Call.fromJson(json['call']);
+  model.Call call = new model.Call.fromMap(json['call']);
 
   if (call == model.Call.currentCall) {
     log.info('Opkald lagt på. ${call}', toUserLog: true);
@@ -185,7 +185,7 @@ void _callHangupEventHandler(Map json) {
 void _callTransferEventHandler(Map json) {
   log.debug('notification._callTransferEventHandler');
 
-  model.Call call = new model.Call.fromJson(json['call']);
+  model.Call call = new model.Call.fromMap(json['call']);
 
   if (call == model.Call.currentCall) {
     log.info('Opkald overført. ${call}', toUserLog: true);
@@ -204,7 +204,7 @@ void _callTransferEventHandler(Map json) {
  * notification socket and the assigned agent match the logged in agent.
  */
 void _callPickupEventHandler(Map json) {
-  model.Call call = new model.Call.fromJson(json['call']);
+  model.Call call = new model.Call.fromMap(json['call']);
 
   if (call.assignedAgent == configuration.userId) {
     log.info('Tog kald. ${call}', toUserLog: true);
@@ -244,7 +244,7 @@ void _queueJoinEventHandler(Map json) {
  */
 void _queueLeaveEventHandler(Map json) {
   log.debug('notification._queueLeaveEventHandler event: ${json}');
-  final model.Call call = new model.Call.fromJson(json['call']);
+  final model.Call call = new model.Call.fromMap(json['call']);
   event.bus.fire(event.callQueueRemove, call);
 }
 
@@ -252,7 +252,7 @@ void _queueLeaveEventHandler(Map json) {
  * Sends the parked call to the localqueue.
  */
 void _callParkEventHandler(Map json) {
-  model.Call call = new model.Call.fromJson(json['call']);
+  model.Call call = new model.Call.fromMap(json['call']);
   if(call.assignedAgent == configuration.userId) {
     event.bus.fire(event.localCallQueueAdd, call);
     event.bus.fire(event.callChanged, model.nullCall);
@@ -260,12 +260,12 @@ void _callParkEventHandler(Map json) {
 }
 
 void _callUnparkEventHandler(Map json) {
-  model.Call call = new model.Call.fromJson(json['call']);
+  model.Call call = new model.Call.fromMap(json['call']);
   event.bus.fire(event.localCallQueueRemove, call);
 }
 
 void _callOfferEventHandler(Map json) {
-  final model.Call call = new model.Call.fromJson(json['call']);
+  final model.Call call = new model.Call.fromMap(json['call']);
   
   event.bus.fire(event.callCreated, call);
   
