@@ -29,8 +29,6 @@ import 'classes/notification.dart';
 import 'protocol/protocol.dart' as protocol;
 import 'classes/state.dart';
 
-import 'service/service.dart' as Service;
-
 import 'view/view.dart' as View;
 
 import 'model/model.dart' as model;
