@@ -33,19 +33,30 @@ class CallList extends IterableBase<Call> {
   EventBus get events => _bus;
 
   EventBus _eventStream = event.bus;
-  
+
   /* Singleton instance - for quick and easy reference. */
   static CallList _instance = new CallList();
-  static CallList get instance => _instance; 
-  static          set instance (CallList newList) => _instance = newList; 
-  
-  
+  static CallList get instance => _instance;
+  static set instance(CallList newList) => _instance = newList;
+
   List<Call> _list = new List<Call>();
 
   /**
    * Iterator.
    */
   Iterator<Call> get iterator => _list.iterator;
+
+  List<Call> get queuedCalls {
+    List<Call> queuedCalls = new List<Call>();
+    this._list.forEach((Call call) {
+      //TODO: Only add non-parked calls.
+      if ([User.currentUser.ID, User.nullUserID].contains(call.assignedAgent)) {
+        queuedCalls.add(call);
+      }
+    });
+
+    return queuedCalls;
+  }
 
   /**
    * Default [CallList] constructor.
@@ -60,7 +71,7 @@ class CallList extends IterableBase<Call> {
    */
   factory CallList.fromJson(Map json, String key) {
     const String context = '${className}.CallList.fromJson';
-    
+
     CallList callList = new CallList();
 
     if (json.containsKey(key) && json[key] is List) {
@@ -72,9 +83,11 @@ class CallList extends IterableBase<Call> {
 
     return callList;
   }
-  
-  void _registerObservers () {
-    this._eventStream.on(event.callCreated) .listen(this.add);
+
+  void _registerObservers() {
+    this._eventStream.on(event.callCreated).listen(this.add);
+    //this._eventStream.on(event.callQueueAdd).listen((Call call) {this.get(call.ID).changeState(CallState.QUEUED);});
+    this._eventStream.on(event.callQueueRemove).listen(this.add);
     this._eventStream.on(event.callDestroyed).listen(this.remove);
   }
 
@@ -84,17 +97,28 @@ class CallList extends IterableBase<Call> {
   CallList._fromList(List<Map> list) {
     const String context = '${className}.CallList._fromList';
 
-    this._list.clear(); 
-    
+    this._list.clear();
+
     list.forEach((item) => _list.add(new Call.fromJson(item)));
     _list.sort();
 
-    /* Notify observers.*/
-    this._bus.fire(CallList.reload, null);
-
-    log.debugContext('Populated list with ${list.length} elements.',context);
+    log.debugContext('Populated list with ${list.length} elements.', context);
   }
+  
+  /**
+   * Reloads the Call list from the server.
+   */
+  Future<CallList> reloadFromServer() {
+    return Service.Call.list().then((CallList callList) {
+      this._list = callList._list;
 
+      /* Notify observers.*/
+      this._bus.fire(CallList.reload, null);
+      
+      return this;
+    });
+  }
+  
   /**
    * Appends [call] to the list.
    */
@@ -107,18 +131,20 @@ class CallList extends IterableBase<Call> {
     this._bus.fire(CallList.insert, call);
 
     log.debugContext('Added ${call}', context);
-}
+  }
 
   /**
    * Return the [id] [Call] or [nullCall] if [id] does not exist.
    */
-  Call get(int id) {
+  Call get(String ID) {
 
-    try {
-      return this._list[id];
-    } catch (_) {
-      throw new CallNotFound('ID: ${id}');
-    }
+    this._list.forEach((Call call) {
+      if (call.ID == ID) {
+        return call;
+      }
+    });
+    
+    throw new CallNotFound('ID: ${ID}');
   }
 
   /**
