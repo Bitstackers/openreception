@@ -14,6 +14,7 @@ import '../classes/configuration.dart';
 part 'service-call.dart';
 part 'service-contact.dart';
 part 'service-message.dart';
+part 'service-peer.dart';
 part 'service-reception.dart';
 
 const String libraryName = "service"; 
