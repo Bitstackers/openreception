@@ -40,7 +40,7 @@ class Peer {
         this._currentState = (map['registered'] ? PeerState.REGISTERED : PeerState.UNREGISTERED);
       } else {
         /*FIXME: The protocol needs to be changed as guessing that this is the peer_id is _BAD_.*/
-        this.ID = map [key];
+        this.ID = key;
         this._cachedData = map [key];
       }
     });
