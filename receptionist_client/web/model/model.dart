@@ -23,7 +23,7 @@ import 'dart:math' hide log;
 import 'package:intl/intl.dart';
 
 import '../classes/environment.dart' as environment;
-import '../classes/notification.dart';
+import '../classes/service-notification.dart';
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../protocol/protocol.dart' as protocol;
@@ -45,6 +45,8 @@ part 'model-minibox_list_item.dart';
 part 'model-minibox_list.dart';
 part 'model-notification.dart';
 part 'model-notification_list.dart';
+part 'model-peer.dart';
+part 'model-peer_list.dart';
 part 'model-phone_number.dart';
 part 'model-recipient.dart';
 part 'model-user.dart';
