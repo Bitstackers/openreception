@@ -11,5 +11,5 @@ import '../classes/location.dart' as nav;
 
 
 
-part '../classes/controller-call.dart';
-part '../classes/controller-context.dart';
+part 'controller-call.dart';
+part 'controller-context.dart';

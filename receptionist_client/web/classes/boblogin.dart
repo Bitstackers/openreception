@@ -7,7 +7,7 @@ import '../components.dart';
 import 'configuration.dart';
 import 'events.dart' as event;
 import 'logger.dart';
-import 'notification.dart';
+import 'service-notification.dart';
 import '../protocol/protocol.dart' as protocol;
 import 'state.dart';
 

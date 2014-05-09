@@ -31,7 +31,7 @@ import 'classes/logger.dart';
 import 'model/model.dart' as model;
 import 'protocol/protocol.dart' as protocol;
 import 'storage/storage.dart' as storage;
-import 'classes/controller.dart' as Controller;
+import 'controller/controller.dart' as Controller;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';

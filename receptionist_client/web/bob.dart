@@ -25,7 +25,7 @@ import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
-import 'classes/notification.dart';
+import 'classes/service-notification.dart';
 import 'protocol/protocol.dart' as protocol;
 import 'classes/state.dart';
 

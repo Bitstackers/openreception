@@ -20,7 +20,7 @@ import 'events.dart' as event;
 import 'id.dart' as id;
 import 'location.dart' as nav;
 import 'logger.dart';
-import 'controller.dart' as Controller;
+import '../controller/controller.dart' as Controller;
 
 import 'package:okeyee/okeyee.dart';
 
