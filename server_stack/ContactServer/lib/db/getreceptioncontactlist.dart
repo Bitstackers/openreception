@@ -11,17 +11,11 @@ Future<Map> getReceptionContactList(int receptionId) {
            con.full_name, 
            con.contact_type, 
            con.enabled as conenabled,
-           (SELECT array_to_json(array_agg(row_to_json(row)))
-            FROM (SELECT 
-            pn.id, pn.value, pn.kind
-            FROM contact_phone_numbers cpn
-              JOIN phone_numbers pn on cpn.phone_number_id = pn.id
-            WHERE cpn.reception_id = rcpcon.reception_id AND cpn.contact_id = rcpcon.contact_id
-            ) row) as phone
+           rcpcon.phonenumbers as phone
     FROM contacts con 
       JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
     WHERE rcpcon.reception_id = @receptionid''';
-  
+
   Map parameters = {'receptionid' : receptionId};
 
   return database.query(_pool, sql, parameters).then((rows) {

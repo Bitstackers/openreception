@@ -1,6 +1,6 @@
 part of contactserver.database;
 
-Future<Map> getContact(int receptionId, int contactId) {  
+Future<Map> getContact(int receptionId, int contactId) {
     String sql = '''
       SELECT rcpcon.reception_id, 
              rcpcon.contact_id, 
@@ -11,13 +11,7 @@ Future<Map> getContact(int receptionId, int contactId) {
              con.full_name, 
              con.contact_type, 
              con.enabled as conenabled,
-             (SELECT array_to_json(array_agg(row_to_json(row)))
-              FROM (SELECT 
-              pn.id, pn.value, pn.kind
-              FROM contact_phone_numbers cpn
-                JOIN phone_numbers pn on cpn.phone_number_id = pn.id
-              WHERE cpn.reception_id = @receptionid AND cpn.contact_id = @contactid
-              ) row) as phone
+             rcpcon.phonenumbers as phone
       FROM   contacts con 
         JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
       WHERE  rcpcon.reception_id = @receptionid 
@@ -39,12 +33,12 @@ Future<Map> getContact(int receptionId, int contactId) {
            'distribution_list' : row.distribution_list != null ? JSON.decode(row.distribution_list) : [],
            'contact_type'      : row.contact_type,
            'phones'            : row.phone != null ? JSON.decode(row.phone) : []};
-        
+
         if(row.attributes != null) {
           JSON.decode(row.attributes).forEach((key, value) => data.putIfAbsent(key, () => value));
         }
       }
-      
+
       return data;
     });
 }
