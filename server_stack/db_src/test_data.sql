@@ -108,17 +108,21 @@ VALUES /*Adaheads*/
        (1, 1, '{"backup":[{"value":"Trine Løcke","priority":1},{"value":"Kim Rostgaard Christensen","priority":2},{"value":"Steen Løcke","priority":3},{"value":"Jacob Sparre Andersen","priority":4}],"emailaddresses":[{"value":"tl@adaheads.com","priority":1},{"value":"tl@adaheads.org","priority":2}],"handling":[{"value":"Bær over med hans gode humør","priority":1}],"telephonenumbers":[{"value":"+45 60 43 19 92","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["AWS","SIP","Slackware","Linux","Yolk"],"department":"Development","info":"Yolk forfatter","position":"Software udvikler","relations":"Gift med Trine Løcke","responsibility":"Alice og Bob"}',
        '{"to" : ["1@1"]}' ),
        (1, 2, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"trine@responsum.com","priority":1}],"handling":[{"value":"Bær over med hendes gode humør","priority":1}],"telephonenumbers":[{"value":"+45 60 43 19 92","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Grafik","SIP","Linux"],"department":"Development","info":"Laver alt det flotte I programmet","position":"Designer","relations":"Gift med Thomas","responsibility":"Bob"}',
-       '{"to" : ["1@2"]}' ),
+       '{"to" : ["2@1"]}' ),
        (1, 3, '{"backup":[{"value":"Thomas Løcke", "priority": 1}],"emailaddresses":[{"value":"steen@adaheads.com", "priority": 1}],"handling":[{"value":"Bær over med hans gode humør", "priority": 1}],"telephonenumbers":[{"value":"+45 60 43 19 90", "priority": 1}],"workhours":[{"value":"Hverdage 07:00 – 18:00", "priority": 1},{"value":"Weekend: 10:00 - 14:00", "priority": 2}],"tags":["Grafik","SIP","Linux"],"department":"Regnskab","info":"Kigger efter pengene","position":"CFO","relations":"Far til Thomas Løcke","responsibility":"Regnskab"}',
-       '{"to" : ["1@3"]}' ),
+       '{"to" : ["3@1"]}' ),
        (1, 4, '{"backup":[{"value":"Thomas Løcke", "priority": 1},{"value":"Jacob Sparre Anders", "priority": 2}],"emailaddresses":[{"value":"krc@adaheads.com", "priority": 1}],"handling":[{"value":"Husk at slutte af med: Du må have en god dag", "priority": 1}],"telephonenumbers":[{"value":"555-78787878", "priority": 1}],"workhours":[{"value":"Hverdage 07:00 – 18:00", "priority": 1},{"value":"Weekend: 10:00 - 14:00", "priority": 2}],"tags":["mail","SIP","Linux"],"department":"Development","info":"Kigger efter koden","position":"Software udvikler","relations":"Børn med Sidsel Schomacker","responsibility":"Alice, Bob og telefonen"}',
-       '{"to" : ["1@4"]}' ),
+
+       '{"to"  : ["4@1"],
+         "cc"  : ["4@2"], 
+         "bcc" : ["4@3"]}'),
+
        (1, 5, '{"backup":[{"value":"Thomas Løcke", "priority": 1},{"value":"Kim rostgaard Christensen", "priority": 2}],"emailaddresses":[{"value":"jsa@adaheads.com", "priority": 1}],"handling":[{"value":"Hans telefon har ofte dårlig forbindelse på grund af, han befinder sig I de tyndere luftlag", "priority": 1}],"telephonenumbers":[{"value":"555 666 777", "priority": 1}],"workhours":[{"value":"Mandag-Tirsdag 09:00 16", "priority": 1},{"value":"Torsdag-Fredag 10:00 – 15:00", "priority": 2}],"tags":["Ada","SIP","Linux","Fysik"],"department":"Development","info":"Kigger efter koden","position":"Software udvikler","relations":"Har engang haft en hund","responsibility":"Alice og Cloe"}',
-       '{"to" : ["1@5"]}' ),
+       '{"to" : ["5@1"]}' ),
        (1, 6, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[{"value":"ss@adaheads.com","priority":1}],"handling":[],"telephonenumbers":[],"workhours":[],"tags":["Grafik"],"department":"Design","info":"","position":"Designer","relations":"Børn med Kim Rostgaard Christensen","responsibility":"Bob design"}',
-       '{"to" : ["1@6"]}' ),
+       '{"to" : ["6@1"]}' ),
        (1, 7, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[],"handling":[],"telephonenumbers":[{"value":"12345678","priority":1}],"workhours":[],"tags":["Granvej","Mosekrogen"],"department":"","info":"","position":"","relations":"","responsibility":""}',
-       '{"to" : ["1@7"]}' ),
+       '{"to" : ["7@1"]}' ),
        
        /*Fishermans Friends*/
        (2, 1, '{"backup":[{"value":"Steen Løcke","priority":1}],"emailaddresses":[{"value":"tl@ff.dk","priority":1}],"handling":[{"value":"spørg ikke ind til ekstra stærk varianten","priority":1}],"telephonenumbers":[{"value":"87654321","priority":1}],"workhours":[],"tags":["Fisker","sømand","pirat"],"department":"Fangst","info":"Tidligere fisker I militæret","position":"Key fishing manager","relations":"Gift med Trine Løcke","responsibility":"Fersk fisk"}',
@@ -142,25 +146,26 @@ VALUES /*Adaheads*/
 
        /* Hansen VVS */
        (4, 66, '{"backup":[{"value":"Luigi Mario","priority":1}],"emailaddresses":[{"value":"mario@hansenvvs.dk","priority":1}],"handling":[{"value":"Ring til hans telefonnummer","priority":1}],"telephonenumbers":[{"value":"+45 19 98 12 02","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Super"],"department":"Hovedafdelingen","info":"Alt-mulig-mand","position":"CPO (Cheif pluming officer)","relations":"Bror til Luigi Mario","responsibility":"Alt"}',
-        '{"to" : ["3@2"]}' ),
+        '{"to" : ["2@4"]}' ),
 
        (4, 67, '{"backup":[{"value":"Mario Mario","priority":1}],"emailaddresses":[{"value":"luigi@hansenvvs.dk","priority":1}],"handling":[{"value":"Ring til hans bror Mario, eller tag imod en besked","priority":1}],"telephonenumbers":[],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Super"],"department":"Hovedafdelingen","info":"Alt-mulig-mand","position":"Assistent","relations":"Bror til Mario Mario","responsibility":"Alt"}',
-        '{"to" : ["3@2"]}' ),
+        '{"to" : ["2@4"]}' ),
        
        /* Kødbollen A/S */
        (5, 28, '{"backup":[],"emailaddresses":[{"value":"frode@kødbollen.dk","priority":1}],"handling":[{"value":"Bare stil den videre til hans telefon","priority":1}],"telephonenumbers":[{"value":"+45 74 79 72 65","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 22:00","priority":1}],"tags":["byggemand"],"department":"Tuen","info":"Er rigtig god til holdarbejde","position":"Boss","relations":"","responsibility":"Tuen"}',
-        '{"to" : ["3@2"]}' ),
+        '{"to" : ["5@5"]}' ),
 
        /* Farmer Friends */
        (6, 65, '{"backup":[{"value":"Maren","priority":1}],"emailaddresses":[{"value":"jensen@landmand.dk","priority":1}],"handling":[{"value":"Tag altid i mod en besked, da han nok er ude i marken eller i stalden","priority":1}],"telephonenumbers":[],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Mark","Ko","Køer","Gris"],"department":"Stalden","info":"Har speciale i grise","position":"Bondemanden","relations":"Gift med Maren","responsibility":"Marken og alt i stalden"}',
-        '{"to" : ["3@2"]}' ),
-
+        '{"to" : ["6@5"]}' ),
        (6, 35, 
         '{"backup":[
                {"value":"Bondemand Jensen",
                 "priority":1}],
                 "emailaddresses":[
-                   {"value":"maren@landmand.dk","priority":1}],"handling":[{"value":"Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe.","priority":1}],"telephonenumbers":[{"value":"+45 90 12 14 16","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Fars","Steg"],"department":"Efterbehandling","info":"Arbejder med efterbehandling af råvarene","position":"Medarbejder","relations":"Gift med Bondemand Jensen","responsibility":"Alt efterbehandling"}','{}');
+                   {"value":"maren@landmand.dk",
+                    "priority":1}],
+                "handling":[{"value":"Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe.","priority":1}],"telephonenumbers":[{"value":"+45 90 12 14 16","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Fars","Steg"],"department":"Efterbehandling","info":"Arbejder med efterbehandling af råvarene","position":"Medarbejder","relations":"Gift med Bondemand Jensen","responsibility":"Alt efterbehandling"}','{}');
 
 INSERT INTO messaging_addresses (id, address_type, address)
 VALUES (1,  'email', 'tl@adaheads.com'),
