@@ -45,6 +45,8 @@ Filter auth(Uri authUrl) {
       }
     } catch (e) {
       logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
+      serverError(request, 'utilities.httpserver.auth() ${e} config.authUrl: "${authUrl}" final authurl: ${url}');
+      return new Future.value(false);
     }
   };
 }
@@ -81,7 +83,7 @@ String queryParameter(Uri uri, String key) => uri.queryParameters.containsKey(ke
 void page404(HttpRequest request) {
   addCorsHeaders(request.response);
   
-  log('404: ${request.uri}');
+  access('404: ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write(JSON.encode({'error':'No handler found for ' + request.uri.toString() }));
   request.response.close();
@@ -91,7 +93,7 @@ int pathParameter(Uri uri, String key) {
   try {
     return int.parse(uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1));
   } catch(error) {
-    log('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
+    access('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
     return null;
   }
 }
@@ -111,7 +113,7 @@ void clientError(HttpRequest request, String reason) {
 void resourceNotFound(HttpRequest request) {
   addCorsHeaders(request.response);
   
-  log(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
+  access(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write(JSON.encode({'error':'Resource not found.'}));
   request.response.close();
@@ -142,7 +144,8 @@ void writeAndClose(HttpRequest request, String text) {
   }
   
   sb.write(request.response.statusCode);
-  log(sb.toString());
+  //TODO Add real access log 
+  access(sb.toString());
   
   addCorsHeaders(request.response);
   request.response.headers.contentType = JSON_MIME_TYPE;
