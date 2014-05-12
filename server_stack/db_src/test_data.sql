@@ -395,6 +395,13 @@ INSERT INTO cdr_entries (uuid, inbound, reception_id, extension, duration, wait_
 ('12', true,  1, '12344413', 21, 3, '2014-01-01 12:00:10'),
 ('13', false, 1, '12344417', 61, 3, '2014-01-01 12:01:00');
 
+INSERT INTO audiofiles (shortname, filepath) VALUES
+('sorry', 'en/us/callie/misc/8000/sorry.wav'),
+('Welcome Freeswitch Conf', 'en/us/callie/misc/8000/misc-welcome_freeswitch_conf_call.wav'),
+('if_you_are_this_person', 'en/us/callie/misc/8000/if_you_are_this_person.was'),
+('misc_chicago_each_summer', 'en/us/callie/misc/8000/misc-chicago_each_summer.wav');
+
+
 -- POSTGRES ONLY
 SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
 SELECT setval('groups_id_sequence', (SELECT max(id)+1 FROM groups), FALSE);
