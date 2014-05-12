@@ -50,7 +50,7 @@ class Email implements Template {
    * TODO: Add callee number and company.
    */
   String _renderSubject() {
-    return '${this._message.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} Besked fra ${this._message.calleeName} ${this._message.calleeCompany} ${this._message.calleePhone}';
+    return '${this._message.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} Besked fra ${this._message.calleeName}, ${this._message.calleeCompany} ${this._message.calleePhone}';
   }
 
   String _renderBooleanFields() {
