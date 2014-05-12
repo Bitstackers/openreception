@@ -385,8 +385,7 @@ INSERT INTO audiofiles (shortname, filepath) VALUES
 ('sorry', 'en/us/callie/misc/8000/sorry.wav'),
 ('Welcome Freeswitch Conf', 'en/us/callie/misc/8000/misc-welcome_freeswitch_conf_call.wav'),
 ('if_you_are_this_person', 'en/us/callie/misc/8000/if_you_are_this_person.was'),
-('misc_chicago_each_summer', 'en/us/callie/misc/8000/misc-chicago_each_summer.wav'),
-();
+('misc_chicago_each_summer', 'en/us/callie/misc/8000/misc-chicago_each_summer.wav');
 
 
 -- POSTGRES ONLY
