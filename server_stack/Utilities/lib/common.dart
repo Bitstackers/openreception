@@ -8,7 +8,8 @@ import 'package:syslog/syslog.dart';
 import 'dart:async';
 //import 'dart:convert';
 
-void log(message) => logger.debug(message.toString());
+void access(String message) => logger.access(message);
+void log(String message) => logger.debug(message);
 
 BasicLogger logger = new BasicLogger();
 
@@ -29,9 +30,11 @@ class BasicLogger {
   
   int loglevel = DEBUG;
   
-  void debugContext(String message, String context) => (this.loglevel >= DEBUG ? print('[DEBUG] ${new DateTime.now()} - $context - $message') : null);
-  void infoContext(String message, String context)  => print('[INFO]  ${new DateTime.now()} - $context - $message');
-  void errorContext(String message, String context) => print('[ERROR] ${new DateTime.now()} - $context - $message');
+  void debugContext(String message, String context) => (this.loglevel >= DEBUG ? 
+                                                       print('[DEBUG]  ${new DateTime.now()} - $context - $message') : null);
+  void infoContext(String message, String context)  => print('[INFO]   ${new DateTime.now()} - $context - $message');
+  void errorContext(String message, String context) => print('[ERROR]  ${new DateTime.now()} - $context - $message');
+  void access(String message)                       => print('[ACCESS] ${new DateTime.now()} - $message');
   void debug(String message) => print('[DEBUG] $message');
   void error(String message) => print('[ERROR] $message');
   void critical(String message) => print('[CRITICAL] $message');
