@@ -103,7 +103,7 @@ CREATE TABLE reception_contacts (
    distribution_list    JSON,
    phonenumbers		JSON,
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
-   data_contact    	BOOLEAN NOT NULL DEFAULT TRUE,
+   data_contact    	BOOLEAN NOT NULL DEFAULT FALSE,
    status_email         BOOLEAN NOT NULL DEFAULT TRUE,
    PRIMARY KEY (reception_id, contact_id)
 );
