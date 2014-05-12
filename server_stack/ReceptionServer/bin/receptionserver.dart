@@ -26,11 +26,11 @@ void main(List<String> args) {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
         .then((_) => handleLogger())
-        .then((_) => log(config))
+        .then((_) => log(config.toString()))
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
-        .catchError((e) { 
+        .catchError((e) {
           log('main() -> config.whenLoaded() ${e}');
           throw e;
         });
