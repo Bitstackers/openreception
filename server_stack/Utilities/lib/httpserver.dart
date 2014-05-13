@@ -149,10 +149,11 @@ void writeAndClose(HttpRequest request, String text) {
   
   addCorsHeaders(request.response);
   request.response.headers.contentType = JSON_MIME_TYPE;
-
+  request.response.headers.contentLength = text.length;
+  log ("Closing connection.");
+  
   request.response
     ..write(text)
-    ..write('\n')
     ..close();
 }
 
