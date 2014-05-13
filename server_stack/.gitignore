@@ -6,8 +6,8 @@ pubspec.lock
 # Don't track config files.
 MiscServer/bin/bob_configuration.json
 MessageDispatcher/bin/mailer_conf.py
-*/*/config.json
 */mailer_conf.py
+*config.json
 
 # Don't track out/
 out/

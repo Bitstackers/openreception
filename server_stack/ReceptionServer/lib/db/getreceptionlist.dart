@@ -1,19 +1,21 @@
 part of receptionserver.database;
 
 Future<Map> getReceptionList() {
-  
+
   String sql = '''
-    SELECT id, full_name, enabled, attributes
+    SELECT id, full_name, enabled, attributes, reception_telephonenumber, last_check
     FROM receptions
   ''';
-  
+
   return database.query(_pool, sql).then((rows) {
     List receptions = new List();
     for(var row in rows) {
       Map reception =
         {'reception_id' : row.id,
          'full_name'    : row.full_name,
-         'enabled'      : row.enabled};
+         'enabled'      : row.enabled,
+         'reception_telephonenumber': row.reception_telephonenumber,
+         'last_check'   : row.last_check.toString()};
 
       if (row.attributes != null) {
         Map attributes = JSON.decode(row.attributes);
@@ -23,7 +25,7 @@ Future<Map> getReceptionList() {
       }
       receptions.add(reception);
     }
-    
+
     return {'reception_list':receptions};
   });
 }

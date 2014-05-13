@@ -24,18 +24,18 @@ part 'router/invalidatecontact.dart';
 final Pattern invalidateContactUrl                = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
 final Pattern getReceptionContactUrl              = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
 final Pattern getReceptionContactListUrl          = new UrlPattern(r'/contact/list/reception/(\d+)');
-final Pattern getPhoneUrl                         = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/phone/(\d+)');
-final Pattern getContactsPhonesUrl                = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/phone');
+//final Pattern getPhoneUrl                         = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/phone/(\d+)');
+//final Pattern getContactsPhonesUrl                = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/phone');
 final Pattern getReceptionContactCalendarListUrl  = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
-final List<Pattern> allUniqueUrls = [invalidateContactUrl, getReceptionContactUrl, getReceptionContactListUrl, getPhoneUrl, getContactsPhonesUrl, getReceptionContactCalendarListUrl];
+final List<Pattern> allUniqueUrls = [invalidateContactUrl, getReceptionContactUrl, getReceptionContactListUrl, getReceptionContactCalendarListUrl]; //getPhoneUrl, getContactsPhonesUrl
 
 void setup(HttpServer server) {
   Router router = new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(getReceptionContactUrl, method: 'GET').listen(getContact)
     ..serve(getReceptionContactListUrl, method: 'GET').listen(getContactList)
-    ..serve(getPhoneUrl, method: 'GET').listen(getPhone)
-    ..serve(getContactsPhonesUrl, method: 'GET').listen(getContactsPhone)
+//    ..serve(getPhoneUrl, method: 'GET').listen(getPhone)
+//    ..serve(getContactsPhonesUrl, method: 'GET').listen(getContactsPhone)
     ..serve(getReceptionContactCalendarListUrl, method: 'GET').listen(getContactCalendar)
     ..serve(invalidateContactUrl, method: 'POST').listen(invalidateReception)
     ..defaultStream.listen(page404);

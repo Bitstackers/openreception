@@ -40,6 +40,11 @@ CREATE TABLE dial_plans (
    dial_plan    XML  NOT NULL
 );
 
+CREATE TABLE audiofiles (
+   filepath  TEXT NOT NULL PRIMARY KEY,
+   shortname TEXT NOT NULL
+);
+
 -------------------------------------------------------------------------------
 --  Calendar of special days:
 
@@ -83,6 +88,7 @@ CREATE TABLE receptions (
    extradatauri    TEXT,
    reception_telephonenumber TEXT UNIQUE,
    dialplan        JSON,
+   last_check      TIMESTAMP NOT NULL DEFAULT NOW(),
    enabled         BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -97,7 +103,8 @@ CREATE TABLE reception_contacts (
    distribution_list    JSON,
    phonenumbers		JSON,
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
-
+   data_contact    	BOOLEAN NOT NULL DEFAULT FALSE,
+   status_email         BOOLEAN NOT NULL DEFAULT TRUE,
    PRIMARY KEY (reception_id, contact_id)
 );
 
