@@ -28,13 +28,17 @@ import 'state.dart';
 import '../storage/storage.dart' as storage;
 import 'utilities.dart';
 
-final Notification notification = new Notification();
+const String libraryName = 'notification';
+
+final EventSocket notification = new EventSocket();
 
 /**
- * A Class to handle all the WebSocket notifications coming from Alice.
+ * A Class to handle all the WebSocket notifications coming from the [NotificationServer].
  */
-class Notification {
+class EventSocket {
   
+  static const String className = '${libraryName}.EventSocket';
+    
   static final EventType<Map> callTransfer = new EventType<Map>();
   static final EventType<Map> callState    = new EventType<Map>();
   static final EventType<Map> callHangup   = new EventType<Map>();
@@ -65,9 +69,9 @@ class Notification {
      'peer_state'    : peerState};
 
   /**
-   * [Notification] constructor.
+   * [EventSocket] constructor.
    */
-  Notification();
+  EventSocket();
 
   void initialize() {
     _registerEventListeners();
@@ -85,32 +89,38 @@ class Notification {
    * Handles non-persistent notifications.
    */
   void _notificationDispatcher(Map json) {
+
+    const String context = '${className}._notificationDispatcher';
+
     if(json.containsKey('event')) {
       String eventName = json['event'];
-      log.info('notification with event: ${eventName}');
+      log.debugContext('notification with event: ${eventName}', context);
 
       if (_events.containsKey(eventName)) {
         event.bus.fire(_events[eventName], json);
 
       } else {
-        log.error('Unhandled event: ${eventName}');
-        log.debug(json.toString());
+        log.errorContext('Unhandled event: ${eventName}', context);
+        log.debugContext(json.toString(), context);
       }
     } else {
-      log.critical('Notification did not have a event field.');
+      log.criticalContext('Notification did not have a event field.', context);
     }
   }
 
   /**
-   * Handles all notifications from from Alice, and dispatches them according to
+   * Handles all notifications from from the NotificationServer, and dispatches them according to
    * their persistence status.
    */
   void _onMessage(Map json) {
+
+    const String context = '${className}._onMessage';
+
     if (json.containsKey('notification')) {
       Map notificationMap = json['notification'];
       _notificationDispatcher(notificationMap);
     } else {
-      log.critical('Notification._onMessage Does not contains notification.');
+      log.criticalContext('Map does not contains notification.', context);
     }
   }
   
@@ -119,7 +129,7 @@ class Notification {
    */
   void _registerEventListeners() {
     event.bus
-      ..on(peerState)    .listen(this._peerStateEventHandler)
+      ..on(peerState)    .listen((Map map) => model.PeerList.instance.updateOrInsert(new model.Peer.fromMap(map['peer'])))
       ..on(callTransfer) .listen(this._callTransferEventHandler)
       ..on(callState)    .listen(this._callStateEventHandler)
       ..on(callHangup)   .listen(this._callHangupEventHandler)
@@ -145,21 +155,16 @@ class Notification {
   }
 
   /**
-   * TODO
-   */
-  void _peerStateEventHandler(Map map) {
-    model.PeerList.instance.update(new model.Peer.fromMap(map));
-  }
-
-  /**
    * State [environment.call] when a call_state notification that matches
    * [environment.call] is received on the notification socket.
    */
   void _callStateEventHandler(Map json) {
+    const String context = '${className}._callStateEventHandler';
+    
     model.Call call = new model.Call.fromMap(json['call']);
 
     if (call.bLeg == environment.originationRequest) {
-      log.info('notification._callStateEventHandler this is my origination request: ${call}');
+      log.debugContext('this is my origination request: ${call}', context);
       model.Call.currentCall = call;
     }
   }
@@ -170,13 +175,13 @@ class Notification {
    * [environment.call] is received on the notification socket.
    */
   void _callHangupEventHandler(Map json) {
-    log.debug('notification._callHangupEventHandler');
+    const String context = '${className}._callHangupEventHandler';
 
     model.Call call = new model.Call.fromMap(json['call']);
 
     if (call == model.Call.currentCall) {
       log.info('Opkald lagt på. ${call}', toUserLog: true);
-      log.info('notification._callHangupEventHandler hangup ${call}');
+      log.debugContext('notification._callHangupEventHandler hangup ${call}', context);
       model.Call.currentCall = model.nullCall;
       model.Reception.currentReception = model.nullReception;
     }
@@ -189,20 +194,20 @@ class Notification {
   * [environment.call] is received on the notification socket.
   */
   void _callTransferEventHandler(Map json) {
-    log.debug('notification._callTransferEventHandler');
+    const String context = '${className}._callTransferEventHandler';
 
     model.Call call = new model.Call.fromMap(json['call']);
 
     if (call == model.Call.currentCall) {
       log.info('Opkald overført. ${call}', toUserLog: true);
-      log.info('notification._callTransferEventHandler transferred ${call}');
+      log.debugContext('Transferred ${call}', context);
+      
       event.bus.fire(event.receptionChanged, model.nullReception);
       event.bus.fire(event.contactChanged, model.nullContact);
-      
+
+      model.Reception.currentReception = model.nullReception;
       model.Call.currentCall = model.nullCall;
     }
-
-    event.bus.fire(event.callQueueRemove, call);  
   }
 
   /**
@@ -210,21 +215,23 @@ class Notification {
    * notification socket and the assigned agent match the logged in agent.
    */
   void _callPickupEventHandler(Map json) {
+
+    const String context = '${className}._callPickupEventHandler';
+
     model.Call call = new model.Call.fromMap(json['call']);
 
     if (call.assignedAgent == configuration.userId) {
       log.info('Tog kald. ${call}', toUserLog: true);
       model.Call.currentCall = call;
 
-      log.debug('notification._callPickupEventHandler updated environment.call to ${call}');
+      log.debugContext('Updated environment.call to ${call}', context);
 
       if (call.receptionId != null && call.receptionId > 0) {
         storage.Reception.get(call.receptionId).then((model.Reception reception) {
           event.bus.fire(event.receptionChanged, reception);
 
-        }).catchError((error) {
-          log.critical('notification._callPickupEventHandler storage.getReception failed with ${error}');
-          event.bus.fire(event.receptionChanged, model.nullReception);
+        }).catchError((Error error, StackTrace stackTrace) {
+          log.criticalContext('Storage.Reception.get failed with ${error} : ${stackTrace}', context);
         });
       } else {
         log.error('notification._callPickupEventHandler call ${call} missing receptionId');
@@ -252,6 +259,7 @@ class Notification {
     log.debug('notification._queueLeaveEventHandler event: ${json}');
     final model.Call call = new model.Call.fromMap(json['call']);
     event.bus.fire(event.callQueueRemove, call);
+    
   }
 
   /**
@@ -259,9 +267,13 @@ class Notification {
    */
   void _callParkEventHandler(Map json) {
     model.Call call = new model.Call.fromMap(json['call']);
-    if(call.assignedAgent == configuration.userId) {
+    if(call.assignedAgent == model.User.currentUser.ID) {
+      model.Call.currentCall = model.nullCall;
+
       event.bus.fire(event.localCallQueueAdd, call);
       event.bus.fire(event.callChanged, model.nullCall);
+    } else {
+      print(call);
     }
   }
 
