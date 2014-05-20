@@ -1,7 +1,7 @@
 {
     "standardGreeting"  : "Velkommen til...",
 
-    "callFlowServerURI"     : "http://localhost:4242",
+    "callFlowServerURI"     : "http://localhost:4243",
     "organizationServerURI" : "http://localhost:8080",
     "contactServerURI"      : "http://localhost:8081",
     "messageServerURI"      : "http://localhost:8082",
@@ -9,7 +9,7 @@
     "authServerURI"         : "http://localhost:9000",
 
     "notificationSocket": {
-        "interface": "ws://alice.adaheads.com:4242/notifications",
+        "interface": "ws://alice.adaheads.com:4200/notifications",
         "reconnectInterval": 2000
     },
 
