@@ -18,35 +18,53 @@ part of view;
  */
 
 class CallManagement {
-  
-  static final String     id        = constant.ID.CALL_MANAGEMENT;
-  static final String     className = '${libraryName}.CallManagement'; 
-         final DivElement node;
+
+  static final String id = constant.ID.CALL_MANAGEMENT;
+  static final String className = '${libraryName}.CallManagement';
+  final DivElement node;
+
+  // Temporary
+  ButtonElement pickupnextcallbutton;
+  ButtonElement hangupcallButton;
+  ButtonElement holdcallButton;
+  Component.Call currentCall;
 
   /**
    * TODO
    */
   CallManagement(DivElement this.node) {
+    pickupnextcallbutton = querySelector('#pickupnextcallbutton')
+        ..onClick.listen((_) => Controller.Call.pickup())
+        ..tabIndex = -1;
+
+    hangupcallButton = querySelector('#hangupcallButton')
+        ..onClick.listen((_) => Controller.Call.hangup(model.Call.currentCall))
+        ..tabIndex = -1;
+
+    holdcallButton = querySelector('#holdcallButton')
+        ..onClick.listen((_) => Controller.Call.park(model.Call.currentCall))
+        ..tabIndex = -1;
+    
     registerEventListeners();
-    _changeActiveCall(model.nullCall);
+    _changeActiveCall(model.Call.currentCall);
   }
 
   _changeActiveCall(model.Call call) {
     String newText;
-    
+
     if (call != model.nullCall) {
       newText = call.otherLegCallerID();
     } else {
       newText = constant.Label.NOT_IN_CALL;
     }
-    
+
     this.node.querySelector('#current-call-info').text = newText;
   }
-  
+
   void _originationStarted(model.DiablePhoneNumber number) {
     this.node.querySelector('#current-call-info').text = 'Ringer til ${number.toLabel()}..';
   }
-  
+
   void _originationSucceded(dynamic) {
     this.node.querySelector('#current-call-info').text = 'Forbundet!';
   }
@@ -55,8 +73,13 @@ class CallManagement {
     this.node.querySelector('#current-call-info').text = 'Fejlet!';
   }
 
+  void _handleHangup(dynamic) {
+    
+  }
+  
   void registerEventListeners() {
     event.bus.on(event.callChanged).listen(_changeActiveCall);
+    event.bus.on(event.hangupCall).listen(_handleHangup);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationSucceded);
     event.bus.on(event.originateCallRequestFailure).listen(_originationFailed);
