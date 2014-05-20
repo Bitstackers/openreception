@@ -24,6 +24,68 @@ part of model;
 
 final Call nullCall = new Call._null();
 
+class InvalidCallState extends StateError {
+  
+  InvalidCallState (String message) : super (message);
+}
+
+class CallState {
+  final String _name;
+  
+  static final CallState UNKNOWN      = new CallState._internal ('unknown'.toUpperCase());
+  static final CallState CREATED      = new CallState._internal ('created'.toUpperCase());
+  static final CallState RINGING      = new CallState._internal ('ringing'.toUpperCase());
+  static final CallState QUEUED       = new CallState._internal ('queued'.toUpperCase());
+  static final CallState HUNGUP       = new CallState._internal ('hungup'.toUpperCase());
+  static final CallState TRANSFERRING = new CallState._internal ('transferring'.toUpperCase());
+  static final CallState TRANSFERRED  = new CallState._internal ('transferred'.toUpperCase());
+  static final CallState SPEAKING     = new CallState._internal ('speaking'.toUpperCase());
+  static final CallState PARKED       = new CallState._internal ('parked'.toUpperCase());
+  
+  static final List<CallState> _validStates = 
+       [UNKNOWN, CREATED, RINGING, QUEUED, HUNGUP, TRANSFERRING, 
+        TRANSFERRED, SPEAKING, PARKED]; 
+
+  /**
+   * Default private constructor.
+   */
+  CallState._internal (this._name);
+  
+  /**
+   * Basic constructor. Normalizes the "enum" and performs checks.
+   */
+  factory CallState (String name) {
+    
+    CallState newItem = new CallState._internal(name.toUpperCase());
+    
+    if (!_validStates.contains (newItem)) {
+      throw new InvalidCallState(newItem.toString());
+    }
+    
+    return newItem;
+  }
+  
+  @override
+  operator == (CallState other) {
+    return this._name == other._name;
+  }
+  
+  @override 
+  int get hashCode {
+    return this._name.hashCode;
+  }
+  
+  
+  @override
+  String toString () {
+    return this._name;
+  }
+
+  static CallState parse (String value) {
+    return new CallState(value);
+  }
+}
+
 /**
  * A call.
  */
@@ -32,10 +94,25 @@ class Call implements Comparable {
   static const String className = "${libraryName}.Call";
 
   static final EventType currentCallChanged = new EventType();
-
-  Map _data;
+  static final EventType hungup      = new EventType();
+  static final EventType answered    = new EventType();
+  static final EventType parked      = new EventType();
+  static final EventType queueLeave  = new EventType();
+  static final EventType transferred = new EventType();
+  static final EventType stateChange = new EventType();
   
-  int _assignedAgent;
+  static final Map<CallState, EventType> stateEventMap = 
+    {CallState.HUNGUP   : Call.hungup,
+     CallState.SPEAKING : Call.answered,
+     CallState.PARKED   : Call.parked}; 
+
+  EventBus _bus = new EventBus();
+  EventBus get events => _bus;
+
+  EventBus _eventStream = event.bus;
+
+  Map _data = {};
+  CallState _currentState = CallState.UNKNOWN;
   String _bLeg;
   String _callerID;
   String _destination;
@@ -47,21 +124,23 @@ class Call implements Comparable {
 
   static Call _currentCall = nullCall;
 
-  int get assignedAgent => _assignedAgent;
+  int get assignedAgent => this._data['assigned_to'];
+  bool get isCall => this._data['is_call'];
   String get bLeg => _bLeg;
   String get callerId => _callerID;
   String get destination => _destination;
   bool get greetingPlayed => _greetingPlayed;
-  String get ID => _ID;
+  String get ID => this._data['id'];
   bool get inbound => _inbound;
   DateTime get start => _start;
   int get receptionId => _receptionID;
+  CallState get state => CallState.parse(this._data['state']);   
 
   static Call get currentCall => _currentCall;
+
   static set currentCall(Call newCall) {
     _currentCall = newCall;
-    print("Call changed: ${newCall}");
-    event.bus.fire(event.callChanged, _currentCall);
+    event.bus.fire(currentCallChanged, _currentCall);
   }
 
   /**
@@ -80,11 +159,7 @@ class Call implements Comparable {
    * TODO Obviously the above map format should be in the docs/wiki, and completed.
    */
   Call.fromMap(Map map) {
-    log.debug('Call.fromJson ${map}');
-    if (map.containsKey('assigned_to') && map['assigned_to'] != null) {
-      _assignedAgent = map['assigned_to'];
-    }
-
+    
     if (map.containsKey('reception_id') && map['reception_id'] != null) {
       _receptionID = map['reception_id'];
     }
@@ -110,24 +185,43 @@ class Call implements Comparable {
     }
 
     _ID = map['id'];
-    //_start = DateTime.parse(json['arrival_time']);
+
     log.debug('Model.call Call.fromJson: ${map['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(int.parse(map['arrival_time'])*1000)}');
     _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(map['arrival_time']) * 1000);
     
     this._data = map;
+    }
+  
+  /**
+   * Determine whether or not a call available for the user.
+   * 
+   */
+  bool availableForUser(User user) {
+    //return this.assignedAgent == user.ID || this.assignedAgent == User.nullUser.ID
+    return ([User.nullUser.ID, user.ID].contains(this.assignedAgent));
   }
   
-  void update (Map map) {
-    this._data = map;
+  void update (Call newCall) {
+    const String context = '${className}.update'; 
+    
+    CallState lastState = this.state;
+    
+    /* Update the current internal dataset */
+    this._data = newCall._data;
+    
+    /* Perfom a state change. */
+    if (lastState != this.state) {
+      log.debugContext('${lastState} => ${this.state}, firering event ${Call.stateEventMap[this.state]}', context);
+      this.events.fire(Call.stateEventMap[this.state], null);
+    }
   }
-
+  
   /**
    * [Call] null constructor.
    */
   Call._null() {
-    _assignedAgent = null;
     _ID = null;
-    _start = new DateTime.now();
+    _start = null;
   }
 
   Call.stub(this._ID);
@@ -174,36 +268,7 @@ class Call implements Comparable {
       return;
     }
 
-    protocol.hangupCall(this).then((protocol.Response response) {
-      switch (response.status) {
-        case protocol.Response.OK:
-          log.debug('model.Call.hangup OK ${this}');
-
-          // Obviously we don't want to reset the reception on every hangup, but for
-          // now this is here to remind us to do _something_ on hangup. I suspect
-          // resetting to nullReception will become annoying when the time comes.  :D
-          event.bus.fire(event.receptionChanged, nullReception);
-          event.bus.fire(event.contactChanged, nullContact);
-
-          log.debug('model.Call.hangup updated environment.reception to nullReception');
-          log.debug('model.Call.hangup updated environment.contact to nullContact');
-          break;
-
-        case protocol.Response.NOTFOUND:
-          log.error('model.Call.hangup() NOT FOUND ${this}');
-          currentCall = nullCall;
-          break;
-
-        default:
-          log.critical('model.Call.hangup ${this} failed with illegal response ${response}');
-      }
-
-      currentCall = nullCall;
-
-    }).catchError((error) {
-      log.critical('model.Call.hangup ${this} protocol.hangupCall failed with ${error}');
-      //TODO Actively check state or go to panic-action. At this point we cannot derive anything about the state in the current scope.
-    });
+    Controller.Call.hangup(this);
   }
 
   /**
@@ -216,22 +281,7 @@ class Call implements Comparable {
       log.debug('Cowardly refusing ask the call-flow-control server to park a null call.');
       return;
     }
-    protocol.parkCall(this).then((protocol.Response response) {
-      switch (response.status) {
-        case protocol.Response.OK:
-          log.debug('model.Call.park OK ${this}');
-          break;
-
-        case protocol.Response.NOTFOUND:
-          log.debug('model.Call.park NOT FOUND ${this}');
-          break;
-
-        default:
-          log.critical('model.Call.park ${this} failed with illegal response ${response}');
-      }
-    }).catchError((error) {
-      log.critical('model.Call.park ${this} protocol.parkCall failed with ${error}');
-    });
+    Controller.Call.park(this);
   }
 
   /**
@@ -244,24 +294,9 @@ class Call implements Comparable {
       log.debug('Cowardly refusing ask the call-flow-control server to pickup a null call.');
       return;
     }
+    
+    Controller.Call.pickupSpecific(this);
 
-    protocol.pickupCall(call: this).then((protocol.Response response) {
-      switch (response.status) {
-        case protocol.Response.OK:
-          log.debug('model.Call.pickup OK ${this}');
-          _pickupCallSuccess(response);
-          break;
-
-        case protocol.Response.NOTFOUND:
-          log.debug('model.Call.pickupCall NOT FOUND ${this}');
-          break;
-
-        default:
-          log.critical('model.Call.pickupCall ${this} failed with illegal response ${response}');
-      }
-    }).catchError((error) {
-      log.critical('model.Call.pickupCall ${this} protocol.pickupCall failed with ${error}');
-    });
   }
 
   /**
@@ -302,5 +337,5 @@ class Call implements Comparable {
   /**
    * [Call] as String, for debug/log purposes.
    */
-  String toString() => 'Call ${_ID} - ${_start}';
+  String toString() => 'Call ${this.ID} - ${_start} - ${this.state}';
 }
