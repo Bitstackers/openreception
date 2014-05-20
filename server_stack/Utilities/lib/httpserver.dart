@@ -45,7 +45,7 @@ Filter auth(Uri authUrl) {
       }
     } catch (e) {
       logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
-      serverError(request, 'utilities.httpserver.auth() ${e} config.authUrl: "${authUrl}" final authurl: ${url}');
+      serverError(request, 'utilities.httpserver.auth() ${e} config.authUrl: "${authUrl}"');
       return new Future.value(false);
     }
   };
@@ -91,7 +91,15 @@ void page404(HttpRequest request) {
 
 int pathParameter(Uri uri, String key) {
   try {
-    return int.parse(uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1));
+    return int.parse(pathParameterString(uri, key));
+  } catch(error) {
+    return null;
+  }
+}
+
+String pathParameterString(Uri uri, String key) {
+  try {
+    return uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1);
   } catch(error) {
     access('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
     return null;
@@ -129,6 +137,7 @@ void start(int port, void setupRoutes(HttpServer server)) {
 }
 
 void writeAndClose(HttpRequest request, String text) {
+  //addCorsHeaders(request.response);
   String time = new DateTime.now().toString();
   
   StringBuffer sb        = new StringBuffer();
@@ -146,15 +155,19 @@ void writeAndClose(HttpRequest request, String text) {
   sb.write(request.response.statusCode);
   //TODO Add real access log 
   access(sb.toString());
+
+  try {
+    request.response
+      ..headers.contentType = JSON_MIME_TYPE
+      ..headers.add("Access-Control-Allow-Origin", "*")
+      ..headers.add("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+      ..headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+      ..write(text)
+      ..close();
+  } catch (error) {
+    print (error);
+  }
   
-  addCorsHeaders(request.response);
-  request.response.headers.contentType = JSON_MIME_TYPE;
-  request.response.headers.contentLength = text.length;
-  log ("Closing connection.");
-  
-  request.response
-    ..write(text)
-    ..close();
 }
 
 Future<int> getUserID (HttpRequest request, Uri authUrl) {
@@ -174,6 +187,29 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
       
     } else {
       return new Future.value(false);
+    }
+  } catch (e) {
+    logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
+  }
+}
+
+Future<Map> getUserMap (HttpRequest request, Uri authUrl) {
+  try {
+    if(request.uri.queryParameters.containsKey('token')) {      
+      String path = 'token/${request.uri.queryParameters['token']}';
+      Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
+      return http.get(url).then((response) {
+        if (response.statusCode == 200) {
+          return JSON.decode(response.body);
+        } else {
+          return {};
+        }
+      }).catchError((error) {
+        return {};
+      });
+      
+    } else {
+      return new Future.value({});
     }
   } catch (e) {
     logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
