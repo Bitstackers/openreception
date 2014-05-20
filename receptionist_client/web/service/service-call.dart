@@ -77,7 +77,7 @@ abstract class Call {
       ..onLoad.listen((_) {
       switch (request.status) {
         case 200:
-          completer.complete(new model.Call.fromMap(JSON.decode(request.responseText)));
+          completer.complete(new model.CallList.fromJson(JSON.decode(request.responseText), 'calls'));
           break;
 
         case 400:
