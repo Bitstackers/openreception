@@ -10,18 +10,35 @@ import 'package:Utilities/common.dart';
 
 Configuration config;
 
+/**
+ * Default configuration values.
+ */
+abstract class Default {
+  static final String configFile           = 'config.json';
+  static final int    httpport             = 4243;
+  static final Uri    notificationServer   = Uri.parse("http://localhost:4200");
+  static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
+  static final String callFlowHost         = "localhost";
+  static final int    callFlowPort         = 9999;
+}
+
 class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  Uri        _authUrl;
-  String     _configfile = 'config.json';
-  int        _httpport   = 4243;
+  Uri        _authUrl              = Default.authenticationServer;
+  Uri        _notificationServer   = Default.notificationServer;
+  String     _configfile           = Default.configFile;
+  int        _httpport             = Default.httpport;
+  String     _callFlowHost         = Default.callFlowHost;
+  int        _callFlowPort         = Default.callFlowPort;
 
-  Uri    get authUrl    => _authUrl;
-  String get configfile => _configfile;
-  Uri get notificationServerUrl => Uri.parse ("http://localhost:4200");
-  int    get httpport   => _httpport;
+  Uri    get authUrl            => _authUrl;
+  Uri    get notificationServer => _notificationServer;
+  String get configfile         => _configfile;
+  int    get httpport           => _httpport;
+  String get callFlowHost       => _callFlowHost;
+  int    get callFlowPort       => _callFlowPort;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -56,8 +73,22 @@ class Configuration {
         _authUrl = Uri.parse(config['authurl']);
       }
       
+      
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
+      }
+
+      if(config.containsKey('notificationServer')) {
+        _notificationServer = Uri.parse(config['notificationServer']);
+      }
+      
+      
+      if(config.containsKey('callFlowHost')) {
+        _callFlowHost = config['callFlowHost'];
+      }
+
+      if(config.containsKey('callFlowPort')) {
+        _callFlowPort = config['callFlowPort'];
       }
 
     })
@@ -86,6 +117,10 @@ class Configuration {
     print('''
 authurl  :   $authUrl
 httpport :   $httpport
+notificationServer :   $notificationServer
+configfile : $configfile
+callFlowHost : $callFlowHost
+callFlowPort : $callFlowPort
 ''');
   }
 

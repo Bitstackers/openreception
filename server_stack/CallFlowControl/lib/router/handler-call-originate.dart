@@ -10,7 +10,7 @@ void handlerCallOrignate(HttpRequest request) {
   final String context = '${libraryName}.handlerCallOrignate';
 
   getUserMap(request, config.authUrl).then((Map user) {
-    clientSocket.connect().then((clientSocket client) {
+    clientSocket.connect(config.callFlowHost, config.callFlowPort).then((clientSocket client) {
       Map socketRequest = {
         'resource': 'call_originate',
         'parameters': {

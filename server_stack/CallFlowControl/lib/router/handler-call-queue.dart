@@ -5,7 +5,7 @@ void handlerCallQueue(HttpRequest request) {
   final String context = '${libraryName}.handlerCallList';
 
   getUserMap(request, config.authUrl).then((Map user) {
-    clientSocket.connect().then((clientSocket client) {
+    clientSocket.connect(config.callFlowHost, config.callFlowPort).then((clientSocket client) {
       Map socketRequest = {
         "resource": "call_list",
         "parameters": request.uri.queryParameters,

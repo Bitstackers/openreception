@@ -46,8 +46,8 @@ void connectClient() {
   Duration period = new Duration(seconds : 3);
   
   print ("Connecting");
-  clientSocket.connect().then((clientSocket socket) {
-    socket.listenEventSocket();
+  clientSocket.connect(config.callFlowHost, config.callFlowPort).then((clientSocket client) {
+    client.listenEventSocket();
   }).catchError((error) {
     print ("Failed to connect, retrying in ${period.inSeconds} seconds.");
       if (error is SocketException) {

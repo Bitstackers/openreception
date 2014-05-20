@@ -1,4 +1,7 @@
 {
     "authurl": "http://localhost:8080",
+    "notificationServer" : "http://localhost:4200",
+    "callFlowHost" : "localhost",
+    "callFlowPort" : 9999,
     "httpport": 4243
 }

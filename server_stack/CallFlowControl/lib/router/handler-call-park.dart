@@ -14,7 +14,7 @@ void handlerCallPark(HttpRequest request) {
   print ('Parking call $callID');
 
   getUserMap(request, config.authUrl).then((Map user) {
-    clientSocket.connect().then((clientSocket client) {
+    clientSocket.connect(config.callFlowHost, config.callFlowPort).then((clientSocket client) {
       Map socketRequest = {
         "resource": "call_park",
         "parameters": {

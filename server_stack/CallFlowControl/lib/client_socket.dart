@@ -21,16 +21,24 @@ class BadRequest extends StateError {
 }
 
 class clientSocket {
+  
+  String hostname = "";
+  int    port     = 0;
 
   Socket callFlowClient = null;
-  static String hostName = 'localhost';  
-
-  static Future<clientSocket> connect() {
+  static Future<clientSocket> connect(String host, int port) {
     clientSocket newInstance = new clientSocket();
-    return Socket.connect(hostName, 9999).then((newSocket) {
-      newInstance.callFlowClient = newSocket;
-      print('Connected to $hostName');
-      return newInstance;
+    newInstance.hostname = host;
+    newInstance.port     = port;
+    
+    return newInstance._connect();
+  }
+  
+  Future<clientSocket> _connect() {
+    return Socket.connect(this.hostname, this.port).then((newSocket) {
+      this.callFlowClient = newSocket;
+      print('Connected to ${this.hostname}:${this.port}');
+      return this;
     });
   }
 
@@ -53,13 +61,11 @@ class clientSocket {
     this.callFlowClient.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
        Map json = JSON.decode(line);
        print (json);
-      Service.Notification.broadcast(json, config.notificationServerUrl);
+      Service.Notification.broadcast(json, config.notificationServer);
     }).onDone(() {
-      print ('Disconnected from ${hostName}');
+      print ('Disconnected from ${this.hostname}');
     });
   }
-  
-
   
   Future<Response> command(Map command) {
     String buffer = "";

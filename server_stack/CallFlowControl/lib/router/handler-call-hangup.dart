@@ -14,7 +14,7 @@ void handlerCallHangup(HttpRequest request) {
   getUserMap(request, config.authUrl).then((Map user) {
 
     extractContent(request).then((String content) {
-      clientSocket.connect().then((clientSocket client) {
+      clientSocket.connect(config.callFlowHost, config.callFlowPort).then((clientSocket client) {
         client.command({
           "resource": "call_hangup",
           "parameters": {
