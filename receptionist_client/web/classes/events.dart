@@ -20,12 +20,12 @@ library events;
 
 import 'package:event_bus/event_bus.dart';
 
-import '../components.dart';
 import 'focus.dart';
 import '../model/model.dart' as model;
 import 'location.dart';
 import 'state.dart';
 import '../model/model.dart';
+import '../classes/context.dart' as UIContext;
 
 final EventType keyUp                                           = new EventType();
 final EventType keyDown                                         = new EventType();
@@ -37,11 +37,12 @@ final EventType<model.Call> callChanged                         = new EventType<
 final EventType<model.Call> callQueueAdd                        = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove                     = new EventType<model.Call>();
 final EventType<model.Contact> contactChanged                   = new EventType<model.Contact>();
-final EventType<MessageSearchFilter> messageSearchFilterChanged = new EventType<MessageSearchFilter>();
+//final EventType<MessageSearchFilter> messageSearchFilterChanged = new EventType<MessageSearchFilter>();
 final EventType<Focus> focusChanged                             = new EventType<Focus>();
 final EventType<model.Call> localCallQueueAdd                   = new EventType<model.Call>();
 final EventType<model.Call> localCallQueueRemove                = new EventType<model.Call>();
 final EventType<Location> locationChanged                       = new EventType<Location>();
+final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
 final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
 final EventType<State> stateUpdated                             = new EventType<State>();
 
