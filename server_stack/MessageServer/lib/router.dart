@@ -25,6 +25,7 @@ part 'router/message-send.dart';
 part 'router/message-single.dart';
 part 'router/message-resend.dart';
 
+final String libraryName = 'messageserver.router';
 
 final Pattern messageDraftListResource   = new UrlPattern(r'/message/draft/list');
 final Pattern messageDraftResource       = new UrlPattern(r'/message/draft/(\d+)');

@@ -2,7 +2,7 @@ part of messageserver.router;
 
 void messageResend(HttpRequest request) {
   
-  final String context = packageName + ".messageResend";
+  final String context = '${libraryName}.messageResend';
   
   int messageID  = pathParameter(request.uri, 'draft');
   
