@@ -31,7 +31,7 @@ abstract class Notification {
           (String line) {
             print('${line}');
           });
-    });    
+    }).catchError((error) => print("Bad things happened with your request! : ${error}"));    
   }
 }
 
