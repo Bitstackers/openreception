@@ -23,7 +23,7 @@ import 'dart:math' hide log;
 import 'package:intl/intl.dart';
 
 import '../classes/environment.dart' as environment;
-import '../classes/service-notification.dart';
+import '../classes/service-notification.dart' as Service;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
 import '../protocol/protocol.dart' as protocol;
@@ -31,6 +31,7 @@ import '../storage/storage.dart' as storage;
 import '../classes/configuration.dart' as config;
 import '../constants.dart' as constant;
 import '../service/service.dart' as Service;
+import '../controller/controller.dart' as Controller;
 
 
 
