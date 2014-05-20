@@ -8,7 +8,7 @@ abstract class Role {
 
 class Message {
   int _ID;
-  Set<Messaging_Contact> _recipients = new Set<Messaging_Contact>();
+  Set<MessageRecipient> _recipients = new Set<MessageRecipient>();
   Map _data;
 
   int      get ID => _ID;
@@ -22,7 +22,7 @@ class Message {
   bool     get urgent       => this._data['urgent'];
   DateTime get receivedAt => this._data['created_at'];
   String   get body  => this._data['message'];
-  Set<Messaging_Contact> get recipients => this._recipients;
+  Set<MessageRecipient> get recipients => this._recipients;
   
   Message(this._ID, [Map this._data]);
 
@@ -48,7 +48,7 @@ class Message {
       return messageRecipients(newMessage.ID).then((List recipientMaps) {
         recipientMaps.forEach((Map recipientMap) {
 
-          newMessage.addRecipient(new Messaging_Contact.fromMap(recipientMap, recipientMap['role']));
+          newMessage.addRecipient(new MessageRecipient.fromMap(recipientMap, recipientMap['role']));
         });
 
         return newMessage;
@@ -64,7 +64,7 @@ class Message {
   
   Map get recipientMap {
     Map newMap = {};
-    this.recipients.forEach((Messaging_Contact recipient) {
+    this.recipients.forEach((MessageRecipient recipient) {
       newMap[recipient.role] = recipient.toMap;
     });
 
@@ -80,7 +80,7 @@ class Message {
    *  
    * [contact] The new contact to add. See method documentation for adding policy.  
    */
-  void addRecipient(Messaging_Contact contact) {
+  void addRecipient(MessageRecipient contact) {
     print ('addRecipient $contact');
     if (this.recipients.contains(contact)) {
       if (contact.role == "to") {
@@ -106,89 +106,12 @@ class Message {
     }
   }
 
-  Set<Messaging_Contact> currentRecipients() {
+  Set<MessageRecipient> currentRecipients() {
     return this.recipients;
   }
 
   String sqlRecipients() {
-    return currentRecipients().map((Messaging_Contact contact) => "(${contact.contactID}, '${contact.contactName}', ${contact.receptionID}, '${contact.receptionName}', ${this.ID},'${contact.role}')").join(',');
+    return currentRecipients().map((MessageRecipient contact) => "(${contact.contactID}, '${contact.contactName}', ${contact.receptionID}, '${contact.receptionName}', ${this.ID},'${contact.role}')").join(',');
   }
-
-}
-
-class Messaging_Contact {
-
-  final String className = packageName + "Messaging_Contact";
-
-  /* Private fields */
-  Map _data;
-  
-  int _contactID;
-  int _receptionID;
-  String _contactName;
-  String _receptionName;
-  String _role;
-
-  /* Getters */
-  int    get contactID     => this._data['contact']['id'];
-  String get contactName   => this._data['contact']['name'];
-  int    get receptionID   => this._data['reception']['id'];
-  String get receptionName => this._data['reception']['name'];
-  String get role          => this._data['role'];
-  String get transport     => this._data['transport'];
-  String get address       => this._data['address'];
-
-  /**
-   * Constructor.
-   */
-  Messaging_Contact.fromMap(Map receptionContact, [String role]) {
-    final String context = className + ".fromMap";
-    
-    this._data         = receptionContact;
-    this._data['role'] = role;
-
-    
-    logger.debugContext(receptionContact.toString(), context);
-    try {
-      assert(['cc', 'bcc', 'to', null].contains(role.toLowerCase()));
-      this._role = role;
-      this._contactID = 
-      this._receptionID = receptionContact['reception']['id'];
-      this._receptionName = receptionContact['reception']['name'];
-    } catch (error) {
-      logger.errorContext("Failed to parse receptionContact map", context);
-      throw error; // Reraise.
-    }
-  }
-
-  Map get toMap => {
-    'transport' : this.transport,
-    'address'   : this.address,
-    'contact': {
-      'id': this.contactID,
-      'name': this.contactName
-    },
-    'reception': {
-      'id': this.receptionID,
-      'name': this.receptionName
-    }
-  };
-
-  @override
-  int get hashCode {
-    return (this.contactString).hashCode;
-  }
-
-  @override
-  bool operator ==(Messaging_Contact other) {
-    return this.contactString == other.contactString 
-        && this.transport == other.transport
-        && this.address   == other.address;
-  }
-
-  String get contactString => contactID.toString() + "@" + receptionID.toString();
-
-  @override
-  String toString() => this.contactString + " - " + this.contactName + "@" + this.receptionName;
 
 }
