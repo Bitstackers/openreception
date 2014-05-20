@@ -21,8 +21,6 @@ void handleSend (HttpRequest request) {
     
     List delivery_status = new List();
     recipients.forEach((int uid) {
-      
-      
       if (clientRegistry[uid]!= null) {
         int count = 0;
         clientRegistry[uid].forEach((WebSocket clientSocket) {
