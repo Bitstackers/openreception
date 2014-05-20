@@ -29,26 +29,26 @@ class CallList extends IterableBase<Call> {
   static final EventType<Call> insert = new EventType<Call>();
   static final EventType<Call> delete = new EventType<Call>();
 
-  EventBus _bus = new EventBus();
-  EventBus get events => _bus;
-
-  EventBus _eventStream = event.bus;
-
-  /* Singleton instance - for quick and easy reference. */
+  /// Local event stream. This just hooks into the global event stream.
+  EventBus _eventStream = new EventBus();
+  EventBus get events => _eventStream;
+ 
+  /// Singleton instance - for quick and easy reference.
   static CallList _instance = new CallList();
   static CallList get instance => _instance;
   static set instance(CallList newList) => _instance = newList;
 
-  List<Call> _list = new List<Call>();
+  /// A set would have been a better fit here, but it makes the code read terrible.
+  Map<String, Call> _map = new Map<String, Call>();
 
   /**
    * Iterator.
    */
-  Iterator<Call> get iterator => _list.iterator;
+  Iterator<Call> get iterator => this._map.values.iterator;
 
   List<Call> get queuedCalls {
     List<Call> queuedCalls = new List<Call>();
-    this._list.forEach((Call call) {
+    this.forEach((Call call) {
       //TODO: Only add non-parked calls.
       if ([User.currentUser.ID, User.nullUserID].contains(call.assignedAgent)) {
         queuedCalls.add(call);
@@ -84,11 +84,18 @@ class CallList extends IterableBase<Call> {
     return callList;
   }
 
+  /**
+   * Registers the internal observers.
+   */
   void _registerObservers() {
-    this._eventStream.on(event.callCreated).listen(this.add);
-    //this._eventStream.on(event.callQueueAdd).listen((Call call) {this.get(call.ID).changeState(CallState.QUEUED);});
-    this._eventStream.on(event.callQueueRemove).listen(this.add);
-    this._eventStream.on(event.callDestroyed).listen(this.remove);
+    event.bus.on(Service.EventSocket.callPickup).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callPark).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callHangup).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callState).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callLock).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callUnlock).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(event.callCreated).listen(this.add);
+    event.bus.on(event.callDestroyed).listen(this.remove);
   }
 
   /**
@@ -97,10 +104,14 @@ class CallList extends IterableBase<Call> {
   CallList._fromList(List<Map> list) {
     const String context = '${className}.CallList._fromList';
 
-    this._list.clear();
-
-    list.forEach((item) => _list.add(new Call.fromMap(item)));
-    _list.sort();
+    this._map.clear();
+    
+    list.forEach((item){
+      Call newCall = new Call.fromMap(item);
+      if (newCall.isCall) {
+      _map[newCall.ID] = newCall;
+      }
+    });
 
     log.debugContext('Populated list with ${list.length} elements.', context);
   }
@@ -110,13 +121,27 @@ class CallList extends IterableBase<Call> {
    */
   Future<CallList> reloadFromServer() {
     return Service.Call.list().then((CallList callList) {
-      this._list = callList._list;
+      this._map = callList._map;
 
       /* Notify observers.*/
-      this._bus.fire(CallList.reload, null);
+      this._eventStream.fire(CallList.reload, null);
       
       return this;
     });
+  }
+  
+  /**
+   * Updates the [Call] in the list with the values from the supplied object. 
+   */
+  void update (Call call) {
+    const String context = '${className}.update';
+    log.debugContext('Updating call ${call.ID}', context);
+    try {
+      this._map[call.ID].update(call);  
+    }
+    catch (error) {
+      log.errorContext('Failed to Updating call ${call}', context); 
+    }
   }
   
   /**
@@ -125,26 +150,26 @@ class CallList extends IterableBase<Call> {
   void add(Call call) {
     const String context = '${className}.add';
 
-    this._list.add(call);
+    if (!this._map.containsKey(call.ID)) {
+      this._map[call.ID] = call;
 
-    /* Notify observers.*/
-    this._bus.fire(CallList.insert, call);
+      /* Notify observers.*/
+      this._eventStream.fire(CallList.insert, call);
 
-    log.debugContext('Added ${call}', context);
+      log.debugContext('Added ${call}', context);
+    }
   }
 
   /**
    * Return the [id] [Call] or [nullCall] if [id] does not exist.
    */
   Call get(String ID) {
-
-    this._list.forEach((Call call) {
-      if (call.ID == ID) {
-        return call;
-      }
-    });
-    
-    throw new CallNotFound('ID: ${ID}');
+    try {
+      
+      return this._map[ID];
+    } catch (_) {
+      throw new CallNotFound('ID: ${ID}');
+    }
   }
 
   /**
@@ -153,13 +178,16 @@ class CallList extends IterableBase<Call> {
   void remove(Call call) {
     const String context = '${className}.remove';
 
-    if (this._list.contains(call)) {
-      this._list.remove(call);
-      log.debugContext('Removed call with ID: ${call.ID}', context);
-    } else {
+    try {
+      this._map.remove(call);
+
+    } catch (_) {
       log.errorContext('Call ${call.ID} not found in list', context);
+      throw new CallNotFound('ID: ${call.ID}');
     }
+
     /* Notify observers.*/
-    this._bus.fire(CallList.delete, call);
+    this._eventStream.fire(CallList.delete, call);
+  
   }
 }
