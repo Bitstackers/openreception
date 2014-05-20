@@ -14,25 +14,17 @@
 part of components;
 
 class GlobalQueue {
-  
-  static const String className = '${libraryName}.GlobalQueue';
-  
-        Box            box;
-        model.Call     call      = model.nullCall;
-        List<CallQueueItem> callQueue = new List<CallQueueItem>();
-        Context        context;
-        DivElement     element;
-        bool           hasFocus = false;
-        SpanElement    header;
-        SpanElement    headerText;
-  final String         title     = 'Global kø';
-        UListElement   ul;
-  model.CallList _callList;
 
-  // Temporary
-  ButtonElement pickupnextcallbutton;
-  ButtonElement hangupcallButton;
-  ButtonElement holdcallButton;
+  static const String className = '${libraryName}.GlobalQueue';
+
+  Context context;
+  DivElement element;
+  bool hasFocus = false;
+  HeadingElement header;
+  final String title = 'Global kø';
+  UListElement ul;
+  model.CallList _callList;
+  int callCount = 0;
 
   GlobalQueue(DivElement this.element, Context this.context) {
     String headerHtml = '''
@@ -41,27 +33,11 @@ class GlobalQueue {
       </span>
     ''';
 
-    header = new DocumentFragment.html(headerHtml).querySelector('.header');
+    header = querySelector("#globalqueue").querySelector('h1');
+    print (header);
+    header.text = this.title;
 
-    pickupnextcallbutton = querySelector('#pickupnextcallbutton')
-      ..onClick.listen((_) => Controller.Call.pickup())
-      ..tabIndex = -1;
-
-    hangupcallButton = querySelector('#hangupcallButton')
-      ..onClick.listen((_) => Controller.Call.hangup(model.Call.currentCall))
-      ..tabIndex = -1;
-
-    holdcallButton = querySelector('#holdcallButton')
-      ..onClick.listen((_) => Controller.Call.park(model.Call.currentCall))
-      ..tabIndex = -1;
-
-    headerText = header.querySelector('span');
-
-    ul = new UListElement()
-      ..classes.add('zebra')
-      ..id = 'global-queue-list';
-
-    box = new Box.withHeader(element, header, ul);
+    ul = querySelector("#globalqueue").querySelector('ul');
 
     registerEventListerns();
     _initialFill();
@@ -69,10 +45,7 @@ class GlobalQueue {
 
   void registerEventListerns() {
     model.CallList.instance.events.on(model.CallList.insert).listen(addCall);
-    model.CallList.instance.events.on(model.CallList.delete).listen(removeCall);
-    
-    event.bus.on(event.callChanged).listen(_callChange);
-    event.bus.on(event.callQueueRemove).listen(removeCall);
+    model.CallList.instance.events.on(model.CallList.delete).listen((_) { this.updateHeaderText();});
 
     event.bus.on(event.focusChanged).listen((Focus value) {
       hasFocus = handleFocusChange(value, [ul], element);
@@ -87,94 +60,42 @@ class GlobalQueue {
     });
 
     context.registerFocusElement(ul);
-    
-    event.bus.on(event.pickupCallSuccess).listen((_) {});
-    event.bus.on(event.parkCall).listen((_) {});
-    event.bus.on(event.hangupCall).listen((_) {});
-    
+
   }
 
   void _initialFill() {
-    protocol.callQueue().then((protocol.Response response) {
-      switch(response.status) {
-        case protocol.Response.OK:
-          Map callsjson = response.data;
-          model.CallList initialCallQueue = new model.CallList.fromJson(callsjson, 'calls');
-          for(var call in initialCallQueue) {
-            addCall(call);
-          }
-          log.debug('GlobalQueue._initialFill updated callQueue');
-          break;
-
-        default:
-          log.debug('GlobalQueue._initialFill updated callQueue with empty list');
+    model.CallList.instance.reloadFromServer().then((model.CallList callList) {
+      for (var call in callList) {
+        addCall(call);
+        this.callCount++;
       }
-      updateHeaderText();
-    }).catchError((error) {
-      
-      log.critical('GlobalQueue._initialFill protocol.callQueue failed with ${error}');
     });
-  }
-
-  void _callChange(model.Call call) {
-    this.call = call;
-    pickupnextcallbutton.disabled = !(call == null || call == model.nullCall);
-    hangupcallButton.disabled = call == null || call == model.nullCall;
-    holdcallButton.disabled = call == null || call == model.nullCall;
-  }
-
-  void pickupnextcallHandler() {
-    const String context = '${className}.pickupnextcallHandler'; 
     
-    log.debugContext("Requested (by click) an unspecified call.", context);
-    event.bus.fire(event.pickupCallRequest, null);
-  }
-
-  void hangupcallHandler() {
-    log.debug('GlobalQueue.hangupcallHandler');
-    event.bus.fire(event.hangupCallRequest, model.Call.currentCall);
-  }
-
-  void holdcallHandler() {
-    log.debug('GlobalQueue.holdcallHandler');
-    call.park();
+    updateHeaderText();
   }
 
   void addCall(model.Call call) {
-    if(!callQueue.any((c) => c.call.ID == call.ID)) {
-      CallQueueItem queueItem = new CallQueueItem(call, clickHandler);
-      callQueue.add(queueItem);
-      ul.children.add(queueItem.element);
-      updateHeaderText();
-    }
-  }
-
-  void clickHandler(MouseEvent mouseEvent, CallQueueItem queueItem) {
+    Call callView = new Call(call);
     
-    if(call == null || call == model.nullCall) {
-      queueItem.call.pickup();
-    } else {
-      log.error('Du prøver at tage et nyt kald, selv om du har en igennem.', toUserLog: true);
-    }
+    call.events.on(model.Call.answered).listen((_) {
+      callView._callQueueRemoveHandler(_); 
+      this.updateHeaderText();
+    });
+    call.events.on(model.Call.hungup).listen((_) {
+      callView._callHangupHandler(_);
+      this.updateHeaderText();
+    });
+    
+    callView.element.hidden = call.state == model.CallState.SPEAKING || call.state == model.CallState.PARKED;
+    
+    ul.children.add(callView.element);
   }
 
-  void removeCall(model.Call call) {
-    CallQueueItem queueItem;
-    for(CallQueueItem callItem in callQueue) {
-      if(callItem.call.ID == call.ID) {
-        queueItem = callItem;
-        break;
-      }
-    }
-
-    if(queueItem != null) {
-      ul.children.remove(queueItem.element);
-      callQueue.remove(queueItem);
-      updateHeaderText();
-    }
+  void queueItemClickHandler(MouseEvent mouseEvent, Call queueItem) {
+    queueItem.call.pickup();
   }
 
   void updateHeaderText() {
-    headerText.text = '${title} (${callQueue.length})';
+    header.text = '${title} (${this.ul.children.where((LIElement element) => !element.hidden).length}) ${new DateTime.now()}';
   }
 }

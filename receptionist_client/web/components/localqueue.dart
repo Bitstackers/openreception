@@ -16,7 +16,6 @@ part of components;
 class LocalQueue {
   Box box;
   model.Call call = model.nullCall;
-  List<CallQueueItem> callQueue = new List<CallQueueItem>();
   Context context;
   DivElement element;
   bool               hasFocus = false;
@@ -36,12 +35,12 @@ class LocalQueue {
     context.registerFocusElement(ul);
 
     registerEventListerns();
-    //_initialFill();
+    _initialFill();
   }
 
   void registerEventListerns() {
-    event.bus.on(event.localCallQueueAdd).listen(addCall);
-    event.bus.on(event.localCallQueueRemove).listen(removeCall);
+    model.CallList.instance.events.on(model.CallList.insert).listen(addCall);
+
     event.bus.on(event.callChanged).listen((model.Call value) { 
       log.debug('------------- components.LocalQueue Call Changed to ID: ${value.ID} Start: ${value.start} Inbound: ${value.inbound} B Leg: ${value.bLeg} Callid: ${value.callerId}');
       call = value;
@@ -61,59 +60,22 @@ class LocalQueue {
   }
 
   void _initialFill() {
-    protocol.callLocalList().then((protocol.Response response) {
-      switch(response.status) {
-        case protocol.Response.OK:
-          model.CallList initialCallQueue = response.data;
-          for(var call in initialCallQueue) {
-            addCall(call);
-          }
-          log.debug('LocalQueue._initialFill updated environment.localCallQueue');
-          break;
-
-        default:
-          log.debug('LocalQueue._initialFill updated environment.localCallQueue with empty list');
-      }
-    }).catchError((error) {
-      log.critical('LocalQueue._initialFill protocol.callLocalList failed with ${error}');
+    model.CallList.instance.reloadFromServer().then((model.CallList newList) {
+      newList.forEach((model.Call call) {
+        addCall(call);
+      });
     });
   }
 
   void addCall(model.Call call) {
-    CallQueueItem queueItem = new CallQueueItem(call, clickHandler)
-      ..age = 0;
-    callQueue.add(queueItem);
-    ul.children.add(queueItem.element);
+    Call queueItem = new Call(call);
+    call.events.on(model.Call.answered).listen(queueItem._callQueueRemoveHandler);
+    call.events.on(model.Call.parked).listen(queueItem._callParkHandler);
+    call.events.on(model.Call.hungup).listen(queueItem._callHangupHandler);
+    queueItem.element.hidden = !(call.state == model.CallState.PARKED);
 
+    ul.children.add(queueItem.element);
     context.increaseAlert();
   }
 
-  void clickHandler(MouseEvent event, CallQueueItem queueItem) {
-    if(call == null || call.ID == model.nullCall.ID) {
-      log.debug('localqueue TEST ${call == null} - call == null');
-      log.debug('localqueue TEST ${call.ID == model.nullCall.ID} - call.id == model.nullCall.id');
-      log.debug('components.LocalQueue.clickHandler() I have no call, so i\'ll pickup this one: Current Call: ${call} Pickup call ${queueItem.call}');
-      queueItem.call.pickup();
-    } else {
-      log.debug('localqueue: clickHandler: Transfering. Got call ${call}');
-      protocol.transferCall(call.ID, queueItem.call.ID);
-      log.error('Fordi du allerede har et kald igennem, bliver opkaldet, stillet videre til den du snakker med. ${queueItem.call}', toUserLog: true);
-    }
-  }
-
-  void removeCall(model.Call call) {
-    CallQueueItem queueItem;
-    for(CallQueueItem callItem in callQueue) {
-      if(callItem.call.ID == call.ID) {
-        queueItem = callItem;
-        break;
-      }
-    }
-
-    if(queueItem != null) {
-      context.decreaseAlert();
-      ul.children.remove(queueItem.element);
-      callQueue.remove(queueItem);
-    }
-  }
 }
