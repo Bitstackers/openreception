@@ -16,6 +16,7 @@ library components;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'classes/configuration.dart';
@@ -35,7 +36,7 @@ import 'controller/controller.dart' as Controller;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';
-part 'components/callqueueitem.dart';
+part 'components/view-call.dart';
 part 'components/companyaddresses.dart';
 part 'components/companyalternatenames.dart';
 part 'components/companybankinginformation.dart';
@@ -73,7 +74,7 @@ part 'components/searchcomponent.dart';
 
 const String libraryName = 'components';
 
-typedef void onCallQueueClick(MouseEvent event, CallQueueItem queueItem);
+typedef void onCallQueueClick(MouseEvent event, Call queueItem);
 
 bool handleFocusChange(Focus value, List<Element> focusElements, Element highlightElement) {
   Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
