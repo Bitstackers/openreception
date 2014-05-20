@@ -30,6 +30,8 @@ void handlerCallTransfer(HttpRequest request) {
             resourceNotFound(request);
           } else if (error is BadRequest) {
             clientError(request, error.toString());
+          } else if (error is NotAuthorized) {
+            forbidden(request, error.toString());
           }
           else {
             serverError(request, error.toString());

@@ -19,11 +19,13 @@ part 'router/handler-call-park.dart';
 part 'router/handler-call-pickup.dart';
 part 'router/handler-call-queue.dart';
 part 'router/handler-call-transfer.dart';
+part 'router/handler-peer-list.dart';
 
 final String libraryName = "notificationserver.router";
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 
+final Pattern peerListResource       = new UrlPattern(r'/peer/list');
 final Pattern callListResource       = new UrlPattern(r'/call/list');
 final Pattern callQueueResource      = new UrlPattern(r'/call/queue');
 final Pattern callHangupResource     = new UrlPattern(r'/call/([a-z\-0-9]+)/hangup');
@@ -33,7 +35,8 @@ final Pattern callTransferResource   = new UrlPattern(r'/call/([a-z\-0-9]+)/tran
 final Pattern callOriginateResource  = new UrlPattern(r'/call/originate/([a-z\-0-9]+)/reception/(\d+)/contact/(\d+)');
 final Pattern callPickupNextResource = new UrlPattern(r'/call/pickup');
 
-final List<Pattern> allUniqueUrls = [callListResource, callQueueResource, callHangupResource,
+final List<Pattern> allUniqueUrls = [peerListResource,
+                                     callListResource, callQueueResource, callHangupResource,
                                      callParkResource, callOriginateResource, 
                                      callPickupNextResource, callTransferResource, 
                                      callPickupNextResource];
@@ -45,6 +48,7 @@ void registerHandlers(HttpServer server) {
 
     router
       ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
+      ..serve(  peerListResource,     method : "GET"  ).listen(handlerPeerList)
       ..serve(  callListResource,     method : "GET"  ).listen(handlerCallList)
       ..serve(  callQueueResource,    method : "GET"  ).listen(handlerCallQueue)
       ..serve(callHangupResource,     method : "POST" ).listen(handlerCallHangup)

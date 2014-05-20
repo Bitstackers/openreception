@@ -15,6 +15,11 @@ class NotFound extends StateError {
   NotFound(String message): super(message);
 }
 
+class NotAuthorized extends StateError {
+
+  NotAuthorized(String message): super(message);
+}
+
 class BadRequest extends StateError {
 
   BadRequest(String message): super(message);
@@ -92,6 +97,11 @@ class clientSocket {
         case ServerResponses.BAD_REQUEST:
           completer.completeError(new BadRequest(response.errorText));
           break;
+          
+        case ServerResponses.PERMISSION_DENIED:
+          completer.completeError(new NotAuthorized(response.errorText));
+          break;
+
         default:
           completer.completeError(new InternalError(response.errorText));
           break;
@@ -111,12 +121,15 @@ class clientSocket {
 abstract class ServerResponses {
   static const String UNDEFINED = 'UNDEFINED';
   static const String UNKNOWN_RESOURCE = 'UNKNOWN_RESOURCE';
+  static const String PERMISSION_DENIED = 'PERMISSION_DENIED';
   static const String SUCCESS = 'SUCCESS';
   static const String BAD_REQUEST = 'BAD_REQUEST';
   static const String NOT_FOUND = 'NOT_FOUND';
   static const String INTERNAL_ERROR = 'INTERNAL_ERROR';
 
-  static List<String> validResponses = [UNKNOWN_RESOURCE, SUCCESS, BAD_REQUEST, NOT_FOUND, INTERNAL_ERROR];
+  static List<String> validResponses = [PERMISSION_DENIED, UNKNOWN_RESOURCE, 
+                                        SUCCESS, BAD_REQUEST, 
+                                        NOT_FOUND, INTERNAL_ERROR];
 
 }
 

@@ -112,6 +112,12 @@ void serverError(HttpRequest request, String logMessage) {
   writeAndClose(request, JSON.encode({'error': 'Internal Server Error'}));
 }
 
+void forbidden(HttpRequest request, String reason) {
+  logger.error(reason);
+  request.response.statusCode = HttpStatus.FORBIDDEN;
+  writeAndClose(request, JSON.encode({'error': reason}));
+}
+
 void clientError(HttpRequest request, String reason) {
   logger.error(reason);
   request.response.statusCode = HttpStatus.BAD_REQUEST;

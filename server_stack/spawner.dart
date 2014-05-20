@@ -8,9 +8,9 @@ void main() {
     'MiscServer': {
       'path': 'MiscServer/bin/miscserver.dart'
     },
-    'CallFlowWrapper': {
-      'path': 'CallFlowControl/bin/callflowcontrol.dart'
-    },
+//    'CallFlowWrapper': {
+//      'path': 'CallFlowControl/bin/callflowcontrol.dart'
+//    },
     'AuthServer': {
       'path': 'AuthServer/bin/authserver.dart'
     },
