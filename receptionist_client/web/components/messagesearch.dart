@@ -128,7 +128,7 @@ class MessageSearch{
 
   void searchParametersChanged() {
     log.debug('messagesearch. The search parameters have changed.');
-    event.bus.fire(event.messageSearchFilterChanged,
-        new MessageSearchFilter(selectedAgent, selectedType, selectedCompany, selectedContact));
+    //event.bus.fire(event.messageSearchFilterChanged,
+    //    new MessageSearchFilter(selectedAgent, selectedType, selectedCompany, selectedContact));
   }
 }
