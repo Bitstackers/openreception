@@ -28,8 +28,7 @@ class WelcomeMessage {
   WelcomeMessage(DivElement this.container) {
     event.bus.on(event.receptionChanged).listen(this._onReceptionChange);
 
-    event.bus.on(event.callChanged).listen((model.Call call) {
-    });
+    event.bus.on(model.Call.currentCallChanged).listen(_onCallChange);
   }
 
   /**
@@ -44,6 +43,8 @@ class WelcomeMessage {
    * TODO: Introduce variable greeting depending on if the welcomeMessage have been played. Different texts for the situations.
    */
   void _onCallChange(model.Call call) {
+    log.debugContext("Changed to call ${call.ID}", "WelcomeMessage");
+    
     container.classes.toggle('welcome-message-active-call', call != model.nullCall);
     
     if (call != model.nullCall ) {  
