@@ -71,7 +71,6 @@ void messageSend(HttpRequest request) {
     model.MessageRecipient messageContext = new model.MessageRecipient.fromMap(data['context']);
     
     return getUserID(request, config.authUrl).then((int userID) {
-      print(userID);
       return db.createSendMessage(message, messageContext, calleeInfo, userID, flags).then((Map result) {
         model.Message message = new model.Message(result['id']);
         
@@ -84,19 +83,17 @@ void messageSend(HttpRequest request) {
           }
         });
         
-        print (message.sqlRecipients());
-        
         return db.addRecipientsToSendMessage(message.sqlRecipients()).then((Map result) {
           return db.enqueue(message).then((queueSize) {
             logger.debugContext("inserted $queueSize elements in queue.", context);
             writeAndClose(request, JSON.encode(result));
+            
+            logger.debugContext("inserted $queueSize elements in queue.", context); 
             service.Notification.broadcast({'event' : 'messageSend', 'message_id' : message.ID}, config.notificationServer);
           });
         });
       });
     });
-    
-       
   });//.catchError((error) => serverError(request, error.toString()));
 }
 
