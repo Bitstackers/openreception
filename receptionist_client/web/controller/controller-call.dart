@@ -53,11 +53,11 @@ abstract class Call {
       if (response.status == protocol.Response.OK) {
         event.bus.fire(event.hangupCallRequestSuccess, call);
       } else {
-        event.bus.fire(event.hangupCallRequestFailure, false);
+        event.bus.fire(event.hangupCallRequestFailure, call);
       }
 
     }).catchError((error) {
-      event.bus.fire(event.hangupCallRequestFailure, false);
+      event.bus.fire(event.hangupCallRequestFailure, call);
     });
   }
 
