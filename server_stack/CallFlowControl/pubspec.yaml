@@ -1,0 +1,8 @@
+name: CallFlowControlWrapper
+description: Simple HTTP wrapper around the Call-Flow-Control socket interface.
+dependencies:
+  Utilities:
+    path: ../Utilities
+  args: any
+  path: any
+  route: any
