@@ -29,7 +29,7 @@ void handlerCallQueue(HttpRequest request) {
       });
     }).catchError((error) {
       if (error is NotFound) {
-        resourceNotFound(request);
+        notFound(request, {'description' :error.toString()});
       } else if (error is BadRequest) {
         clientError(request, error.toString());
       } else if (error is NotAuthorized) {

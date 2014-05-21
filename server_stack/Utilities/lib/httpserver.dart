@@ -124,6 +124,17 @@ void clientError(HttpRequest request, String reason) {
   writeAndClose(request, JSON.encode({'error': reason}));
 }
 
+void notFound(HttpRequest request, Map reply) {
+  addCorsHeaders(request.response);
+  Map responseBody = {'error':'Not found.'};
+  responseBody.addAll(reply);
+  
+  access(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
+  request.response.statusCode = HttpStatus.NOT_FOUND;
+  request.response.write(JSON.encode(responseBody));
+  request.response.close();
+}
+
 void resourceNotFound(HttpRequest request) {
   addCorsHeaders(request.response);
   

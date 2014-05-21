@@ -26,7 +26,7 @@ void handlerCallHangup(HttpRequest request) {
           writeAndClose(request, JSON.encode(response.content));
         }).catchError((Error error) {
           if (error is NotFound) {
-            resourceNotFound(request);
+            notFound(request, {'description' :error.toString()});
           } else if (error is BadRequest) {
             clientError(request, error.toString());
           } else if (error is NotAuthorized) {

@@ -56,6 +56,7 @@ void registerHandlers(HttpServer server) {
       ..serve(callParkResource,       method : "POST" ).listen(handlerCallPark)
       ..serve(callOriginateResource , method : "POST" ).listen(handlerCallOrignate)
       ..serve(callTransferResource,   method : "POST" ).listen(handlerCallTransfer)
-      ..serve(callPickupNextResource, method : "POST" ).listen(handlerCallPickupNext);
+      ..serve(callPickupNextResource, method : "POST" ).listen(handlerCallPickupNext)
+      ..defaultStream.listen(page404);
 }
 
