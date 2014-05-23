@@ -21,6 +21,7 @@ import 'id.dart' as id;
 import 'location.dart' as nav;
 import 'logger.dart';
 import '../controller/controller.dart' as Controller;
+import '../model/model.dart' as Model;
 
 import 'package:okeyee/okeyee.dart';
 
@@ -195,8 +196,8 @@ class _KeyboardHandler {
       'Alt+H'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Alt+M'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
       'Alt+O'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
-      'Alt+P'     : (_) => Controller.Call.pickup(),
-      'Alt+L'     : (_) => event.bus.fire(event.parkCall, 'Keyboard'),
+      'Alt+P'     : (_) => Controller.Call.pickupNext(),
+      'Alt+L'     : (_) => Controller.Call.park(Model.Call.currentCall),
       'Alt+G'     : (_) => event.bus.fire(event.hangupCall, 'Keyboard'),
       'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 'Keyboard'),
       'Tab'       : (_) => tab(mode: FORWARD),
@@ -217,7 +218,9 @@ class _KeyboardHandler {
     Keyboard keyUp = new Keyboard();
     keybindings = {
       'enter' : (_) => event.bus.fire(event.keyEnter, null),
-      'esc'   : (_) => event.bus.fire(event.keyEsc, null)
+      'esc'   : (_) => event.bus.fire(event.keyEsc, null),
+      'up'    : (_) => event.bus.fire(event.keyUp, null),
+      'down'  : (_) => event.bus.fire(event.keyDown, null)
     };
     keybindings.forEach((key, callback) => keyUp.register(key, (KeyboardEvent event) {
       event.preventDefault();
