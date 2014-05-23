@@ -41,7 +41,6 @@
   <body>
    <div id="notifications" style="width:30%; background-color:yellow; z-index:99; position:absolute; margin: 0% 35%;"></div>  
 
-    <div id="curtains"><!--We hide stuff behind these curtains--></div>
     <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div> 
     <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
     <div id="boblogin" style="position: absolute;"></div>
@@ -87,14 +86,14 @@
             
       <section id="contexthome" data-default-widget="companyselector" class="context">
       
-      <div id="header-container" style=" height: 6%">
-        <div id="welcome-message" class="no-chrome">
+      <div id="header-container" style=" height: 6%;">
+        <div id="welcome-message" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
           <div>
             <span id="welcome-message-text">Ikke i kald</span>
           </div>
         </div>
         
-        <div id="agent-info">
+        <div id="agent-info" style="box-shadow: 2px 2px 3px #ccc;">
           <div id="agent-info-stats">
             <table>
               <tr>
@@ -112,14 +111,13 @@
           </div>
         </div>
 
-        <div id="call-info" class="no-chrome">
+        <div id="call-info" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
           <span>
             <button id="pickupnextcallbutton">N&aelig;ste kald</button>
             <button id="hangupcallButton">L&aelig;g P&aring;</button>
             <button id="holdcallButton">Parkér</button>
           </span>
-          <div id="current-call-info">
-          Ikke i kald.
+          <div id="current-call">
           </div>
         </div>
       </div>
@@ -127,7 +125,7 @@
       <div id="main-container" style="margin-top: 0.5%; width: 100%; height: 93%; overflow:hidden;">
          
          <!-- Left column -->
-        <div style=" width: 35%;height: 100%; float:left;"> 
+        <div style=" width: 35%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;"> 
           
           <div id="companyselector" data-default-element="company-selector-searchbar"></div>
           
@@ -141,7 +139,7 @@
           </div>
 
 
-          <div id="companyhandling" data-default-element="company_handling_list" class="box-with-header-outer focus">
+          <div id="companyhandling" data-default-element="company_handling_list" class="box-with-header-outer focus" >
             <h1 class="box-with-header-headline box-with-header-medium">
               <span>Håndtering</span>
             </h1>
@@ -202,7 +200,7 @@
     </div>
         
         <!-- Center column -->
-        <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
+        <div style="margin-left: 1%; width: 44%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;">
           <div id="contactsearchpanel" style="height: 35%; overflow:hidden;">
             <div style="width:40%; float:left; height:100%;">
         
@@ -293,7 +291,7 @@
         </div>        
         
         <!-- Right column -->
-        <div style="margin-left: 1%;width: 19%;height: 100%; float:left;">
+        <div style="margin-left: 1%;width: 19%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;">
           <div id="companyopeninghours" class="minibox" data-default-element="company-opening-hours-list" style="height:20%">
             <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
           </div>
@@ -320,6 +318,7 @@
        </div>
       </section>
       
+      <!-- Context homeplus  -->
       <section id="contexthomeplus" data-default-widget="companycustomertype" class="context hidden">
         <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
           <p id="company-customertype-body" tabindex="-1"></p>
@@ -358,14 +357,91 @@
         </div>
       </section>
 
+      <!-- Context messages -->
+
       <section id="contextmessages" data-default-widget="message-search" class="context hidden">
-        <div id="message-search" data-default-element="message-search-agent-selector">
-          <div id="message-search-agent-selector"></div>
+        <div id="main-container" style="margin-top: 0%; width: 100%; height: 100%; overflow:hidden;">
+
+         <!-- Context messages - left container. -->
+
+          <div style="margin-left: 0%; width: 30%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;"">
+            <div id="message-search" data-default-element="message-search-agent-selector">
+              <div class="message-search-box">
+                <div id="message-search-agent-selector"></div>
+                <div id="message-search-agent"></div>
+        <div id="message-search-type"></div>
+        <div id="message-search-company"></div>
+        <div id="message-search-contact"></div>
+        <button id="message-search-print">Print</button>
+        <button id="message-search-resend">Gensend valgte</button>
+</div>        
+            </div>
+        
+            <div id="resendmessage" class="box-with-header-outer">
+              <h1 class="box-with-header-headline box-with-header-medium"> :: Besked :: </h1>
+              <div class="box-with-header-content" style="height: 443px;">
+              
+              <div class="resend-message-container">
+                <div class="resend-message-recipient-container box-with-header-outer">
+                  <ul id="resend-message-recipient-list"></ul>
+                </div>
+            
+                <input id="resendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1">
+                <input id="resendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly="">
+                <input id="resendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1">
+                <input id="resendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1">
+                <input id="resendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon" tabindex="-1">
+                <input id="resendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil" tabindex="-1">
+                <input id="resendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer" tabindex="-1">
+                <textarea style="resize: none;" id="resendmessagetext" class="send-message-text send-message-field" placeholder="Besked" tabindex="-1"></textarea>
+                
+                <ul>
+                  <li>
+                    <input type="checkbox" name="resend-message-pleasecall" id="resend-message-pleasecall">
+                    <label for="resend-message-pleasecall">:: Ring venligst ::</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" name="resend-message-callsback" id="resend-message-callsback">
+                    <label for="resend-message-callsback">:: Ringer selv tilbage ::</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" name="resend-message-hascalled" id="resend-message-hascalled">
+                    <label for="resend-message-hascalled">:: Har ringet ::</label>
+                  </li>
+                  <li>  
+                    <input type="checkbox" name="resend-message-urgent" id="resend-message-urgent">
+                    <label for="resend-message-callsback">:: Haster ::</label>
+                  </li>
+                </ul>
+                <div class="resend-message-button-container">
+                  <button id="resendmessagecancel" tabindex="-1">Annuller</button>
+                  <button id="resendmessagedraft" tabindex="-1">Gem</button>
+                  <button id="resendmessagesend" tabindex="-1">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+         </div>
+        <!-- Right column -->
+      <div style="margin-left: 1%;width: 69%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc; background-color: green;">
+        <div id="messageoverview" class="no-chrome">
+          <table>
+            <thead>
+              <tr>
+                <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
+                <th id="message-overview-header-timestamp"> :: Tidspunkt :: </th>
+                <th id="message-overview-header-caller"> :: Opkalder :: </th>
+                <th id="message-overview-header-context"> :: Kontekst :: </th>
+                <th id="message-overview-header-agent"> :: Agent :: </th>
+                <th id="message-overview-header-status"> :: Status :: </th>
+              </tr>
+            </thead>
+            <tbody />
+          </table>
+        </div>
+        </div>
         </div>
         
-        <div id="messageinfo">
-        </div>
-        <div id="messageoverview"></div>
       </section>
       
       <section id="contextlog" data-default-widget="logbox" class="context hidden">
