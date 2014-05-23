@@ -2,18 +2,12 @@ part of controller;
 
 abstract class Call {
 
-  static void dial(model.DiablePhoneNumber number) {
+  static void dial(String extension, int receptionID, [int contactID]) {
 
-    event.bus.fire(event.originateCallRequest, number);
+    event.bus.fire(event.originateCallRequest, extension);
 
-    protocol.originateCallFromPhoneId(number.contactID, number.receptionID, number.phoneID).then((protocol.Response response) {
-
-      if (response.status == protocol.Response.OK) {
-        event.bus.fire(event.originateCallRequestSuccess, null);
-      } else {
-        event.bus.fire(event.originateCallRequestFailure, null);
-      }
-
+    Service.Call.originate(contactID, receptionID, extension).then((_) {
+      event.bus.fire(event.originateCallRequestSuccess, null);
     }).catchError((error) {
       event.bus.fire(event.originateCallRequestFailure, null);
     });
@@ -23,7 +17,7 @@ abstract class Call {
    * Make the service layer perform a pickup request to the call-flow-control server. 
    */
   static void pickupSpecific(model.Call call) {
-    
+
     event.bus.fire(event.pickupCallRequest, call);
 
     Service.Call.next().then((model.Call call) {
@@ -33,8 +27,8 @@ abstract class Call {
     });
   }
 
-  static void pickup() {
-    
+  static void pickupNext() {
+
     event.bus.fire(event.pickupNextCallRequest, null);
 
     Service.Call.next().then((model.Call call) {
@@ -43,19 +37,13 @@ abstract class Call {
       event.bus.fire(event.pickupCallFailure, null);
     });
   }
-  
+
   static void hangup(model.Call call) {
 
     event.bus.fire(event.hangupCallRequest, call);
 
-    protocol.hangupCall(call).then((protocol.Response response) {
-
-      if (response.status == protocol.Response.OK) {
-        event.bus.fire(event.hangupCallRequestSuccess, call);
-      } else {
-        event.bus.fire(event.hangupCallRequestFailure, call);
-      }
-
+    Service.Call.hangup(call).then((model.Call call) {
+      event.bus.fire(event.hangupCallRequestSuccess, call);
     }).catchError((error) {
       event.bus.fire(event.hangupCallRequestFailure, call);
     });
@@ -65,24 +53,21 @@ abstract class Call {
 
     event.bus.fire(event.parkCallRequest, call);
 
-    protocol.parkCall(call).then((protocol.Response response) {
-
-      if (response.status == protocol.Response.OK) {
+    Service.Call.park(call).then((model.Call call) {
         event.bus.fire(event.parkCallRequestSuccess, call);
-      } else {
-        event.bus.fire(event.parkCallRequestSuccess, call);
-      }
-
     }).catchError((error) {
       event.bus.fire(event.parkCallRequestSuccess, call);
     });
   }
 
-  static dialContact(model.Contact contact, int phoneID) {
+  static void transfer(model.Call source, model.Call destination) {
 
-    //TODO: Check if the contact's phone list contains the phoneID supplied. Or cast to DialablePhoneNumber later on.
-    // Perhaps we should also find a way to store the reception id with the contact.
+    event.bus.fire(event.transferCallRequest, source);
 
-    //TODO: Put into the event stream that a new call was originated.
+    Service.Call.transfer(source, destination).then((model.Call call) {
+        event.bus.fire(event.transferCallRequestSuccess, call);
+    }).catchError((error) {
+      event.bus.fire(event.transferCallRequestSuccess, source);
+    });
   }
 }
