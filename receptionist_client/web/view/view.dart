@@ -1,5 +1,7 @@
 library view;
 
+import 'package:event_bus/event_bus.dart';
+
 import 'dart:async';
 import 'dart:html';
 import '../classes/events.dart' as event;
@@ -11,11 +13,12 @@ import '../components.dart' as Component;
 import '../classes/id.dart' as id;
 import '../classes/location.dart' as nav;
 import '../controller/controller.dart' as Controller;
-
+import '../classes/events.dart' as Event;
 
 import '../classes/context.dart';
 
 part 'view-call-management.dart';
+part 'view-message-list.dart';
 part 'view-notification.dart';
 part 'view-reception-events.dart';
 

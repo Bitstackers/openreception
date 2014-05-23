@@ -60,7 +60,7 @@ class Call {
      ..hidden =  call.assignedAgent != model.User.currentUser;
 
     (transferButton = htmlChunk.querySelector('.transfer-button'))
-     ..onClick.listen(print)
+     ..onClick.listen((_) {call.transfer (model.Call.currentCall);})
      ..hidden = call.assignedAgent != model.User.currentUser;
 
     ageElement = element.querySelector('.call-queue-item-seconds')
@@ -123,7 +123,6 @@ class Call {
     const String context = '${className}._callQueueRemoveHandler';
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
       this.element.hidden = true;
-    
   }
 
   /**
@@ -133,6 +132,7 @@ class Call {
     const String context = '${className}._callParkHandler';
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
       this.element.hidden = false;
+      transferButton.hidden = false;
   }
 
   /**

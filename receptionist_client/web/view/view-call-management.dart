@@ -27,6 +27,7 @@ class CallManagement {
   ButtonElement pickupnextcallbutton;
   ButtonElement hangupcallButton;
   ButtonElement holdcallButton;
+  DivElement    currentCallContainer;
   Component.Call currentCall;
 
   /**
@@ -34,7 +35,7 @@ class CallManagement {
    */
   CallManagement(DivElement this.node) {
     pickupnextcallbutton = querySelector('#pickupnextcallbutton')
-        ..onClick.listen((_) => Controller.Call.pickup())
+        ..onClick.listen((_) => Controller.Call.pickupNext())
         ..tabIndex = -1;
 
     hangupcallButton = querySelector('#hangupcallButton')
@@ -46,23 +47,30 @@ class CallManagement {
         ..tabIndex = -1;
     
     registerEventListeners();
+    this.currentCallContainer = this.node.querySelector("#current-call");
     _changeActiveCall(model.Call.currentCall);
   }
 
   _changeActiveCall(model.Call call) {
     String newText;
-
+    this.currentCallContainer.children.clear();
+    
     if (call != model.nullCall) {
-      newText = call.otherLegCallerID();
+      print ("!! Chaging calls");
+      this.currentCall = new Component.Call (call);
+      
+      this.currentCallContainer.children.add(currentCall.element);
+      this.currentCallContainer.children.add(new HeadElement()..text = "asd");
     } else {
+      
       newText = constant.Label.NOT_IN_CALL;
     }
 
-    this.node.querySelector('#current-call-info').text = newText;
+    this.currentCallContainer.text = newText;
   }
 
-  void _originationStarted(model.DiablePhoneNumber number) {
-    this.node.querySelector('#current-call-info').text = 'Ringer til ${number.toLabel()}..';
+  void _originationStarted(String number) {
+    this.node.querySelector('#current-call-info').text = 'Ringer til ${number}..';
   }
 
   void _originationSucceded(dynamic) {
@@ -78,7 +86,7 @@ class CallManagement {
   }
   
   void registerEventListeners() {
-    event.bus.on(event.callChanged).listen(_changeActiveCall);
+    event.bus.on(model.Call.currentCallChanged).listen(_changeActiveCall);
     event.bus.on(event.hangupCall).listen(_handleHangup);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationSucceded);

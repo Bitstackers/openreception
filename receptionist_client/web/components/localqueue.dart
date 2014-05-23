@@ -68,13 +68,13 @@ class LocalQueue {
   }
 
   void addCall(model.Call call) {
-    Call queueItem = new Call(call);
-    call.events.on(model.Call.answered).listen(queueItem._callQueueRemoveHandler);
-    call.events.on(model.Call.parked).listen(queueItem._callParkHandler);
-    call.events.on(model.Call.hungup).listen(queueItem._callHangupHandler);
-    queueItem.element.hidden = !(call.state == model.CallState.PARKED);
+    Call callView = new Call(call);
+    call.events.on(model.Call.answered).listen(callView._callQueueRemoveHandler);
+    call.events.on(model.Call.parked).listen(callView._callParkHandler);
+    call.events.on(model.Call.hungup).listen(callView._callHangupHandler);
+    callView.element.hidden = !(call.state == model.CallState.PARKED);
 
-    ul.children.add(queueItem.element);
+    ul.children.add(callView.element);
     context.increaseAlert();
   }
 

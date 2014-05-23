@@ -285,6 +285,19 @@ class Call implements Comparable {
   }
 
   /**
+   * Park call.
+   */
+  void transfer(Call destination) {
+
+    // See note on assertions.
+    if (this == nullCall) {
+      log.debug('Cowardly refusing ask the call-flow-control server to park a null call.');
+      return;
+    }
+    Controller.Call.transfer (this, destination);
+  }
+
+  /**
    * Pickup call.
    */
   void pickup() {
