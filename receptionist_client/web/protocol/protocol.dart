@@ -22,7 +22,6 @@ import '../classes/logger.dart';
 import '../model/model.dart' as model;
 
 part 'protocol-agent.dart';
-part 'protocol-call.dart';
 part 'protocol-log.dart';
 part 'protocol-login.dart';
 part 'protocol-message.dart';
