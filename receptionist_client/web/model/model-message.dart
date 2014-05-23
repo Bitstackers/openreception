@@ -11,22 +11,29 @@ abstract class MessageConstants {
   
 }
 
+/**
+ * 
+ */
 class Message {
   
   static final String className = libraryName + ".Message";
   
-  Map   _map;
+  static final EventType<Message> stateChange = new EventType<Message>();
+  
+  Map            _map;
+  MessageContext _context;
+  MessageCaller  _caller;
   
   Set<Recipient> _recipients = new Set<Recipient>();
   
-  Set<Recipient> get recipients => _recipients;
-  Map            get takenByAgent {
-    if (!this._map.containsKey(MessageConstants.TAKEN_BY_AGENT)) {
-      return User.currentUser.identityMap();
-    } else {
-      this._map[MessageConstants.TAKEN_BY_AGENT];
-    }
-  }
+  int get ID => this._map['id'];  
+  DateTime get createdAt => new DateTime.fromMillisecondsSinceEpoch(this._map['created_at']);
+  
+  MessageContext get context      => this._context;
+  MessageCaller  get caller       => this._caller;
+  int            get queueCount   => this._map['pending_messages'];
+  Set<Recipient> get recipients   => _recipients;
+  Map            get takenByAgent => this._map['taken_by_agent'];
   
   /**
    * Adds a free-form field to the message object.
@@ -36,10 +43,9 @@ class Message {
   }
   
   Message.fromMap (Map map) {
+    this._caller  = new MessageCaller(this);
+    this._context = new MessageContext(this);
     this._map = map;
-
-    _map[MessageConstants.TAKEN_BY_AGENT] = this.takenByAgent;
-    
   }
   
   Map get toMap {
@@ -117,4 +123,58 @@ class Message {
     return this.recipients.map((Recipient contact) => "(${contact.contactID},${contact.receptionID},${this._map['id']},'${contact.role}')").join(','); 
   }
 
+}
+
+
+class MessageCaller {
+
+  Message _message;
+
+  String get name      => this.lookup('name', '?');
+  String get company   => this.lookup('company', '?');
+  String get phone     => this.lookup('phone', '?');
+  String get cellphone => this.lookup('cellphone', '?');
+
+  MessageCaller(Message this._message);
+  
+  String lookup (String key, String defaultValue) {
+    try {
+      return this._message._map['caller'][key];
+    } catch (_) {
+      return defaultValue;
+    }
+  }
+}
+
+class MessageContact {
+  Message _message;
+  
+  String get name => this._message._map['context']['contact']['name']; 
+  String get ID   => this._message._map['context']['contact']['id']; 
+  
+  MessageContact(Message this._message);
+}
+
+
+class MessageReception {
+  Message _message;
+
+  String get name => this._message._map['context']['reception']['name']; 
+  String get ID   => this._message._map['context']['reception']['id']; 
+     
+  MessageReception(Message this._message);
+}
+
+class MessageContext {
+  MessageContact   _contact;
+  MessageReception _reception;
+  
+  MessageContact   get contact => this._contact;
+  MessageReception get reception => this._reception;
+  
+  MessageContext (Message message) {
+    this._contact = new MessageContact(message);
+    this._reception = new MessageReception(message);
+  }
+  
 }

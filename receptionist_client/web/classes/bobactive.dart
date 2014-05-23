@@ -24,7 +24,7 @@ import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
 import '../components.dart';
-import '../view/view.dart';
+import '../view/view.dart' as View;
 import '../constants.dart' as constant;
 
 class BobActive {
@@ -34,7 +34,7 @@ class BobActive {
   WelcomeMessage welcomeMessage;
   AgentInfo agentInfo;
   CompanySelector companySelector;
-  ReceptionEvents companyEvents;
+  
   ReceptionHandling companyHandling;
   CompanyOpeningHours companyOpeningHours;
   CompanySalesCalls companySalesCalls;
@@ -52,10 +52,12 @@ class BobActive {
   SendMessage sendMessage;
   GlobalQueue globalQueue;
   LocalQueue localQueue;
-  CallManagement callManagement;
-
+  
+  View.CallManagement callManagement;
+  View.ReceptionEvents receptionEvents;
+  
   MessageSearch messageSearch;
-  MessageOverview messageOverview;
+  View.MessageList messageList;
 
   LogBox logBox;
 
@@ -82,7 +84,7 @@ class BobActive {
     welcomeMessage           = new WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
     agentInfo                = new AgentInfo(querySelector('#${id.AGENT_INFO}'));
     companySelector          = new CompanySelector(querySelector('#${id.COMPANY_SELECTOR}'), home);
-    companyEvents            = new ReceptionEvents(querySelector('#${id.COMPANY_EVENTS}'), home);
+    receptionEvents          = new View.ReceptionEvents(querySelector('#${id.COMPANY_EVENTS}'), home);
     companyHandling          = new ReceptionHandling(querySelector('#${id.COMPANY_HANDLING}'), home);
     companyOpeningHours      = new CompanyOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), home);
     companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
@@ -100,9 +102,9 @@ class BobActive {
     sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
     localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
-    callManagement           = new CallManagement(querySelector('#${constant.ID.CALL_MANAGEMENT}'));
+    callManagement           = new View.CallManagement(querySelector('#${constant.ID.CALL_MANAGEMENT}'));
     messageSearch = new MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
-    messageOverview = new MessageOverview(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
+    messageList = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 
     logBox = new LogBox(querySelector('#${id.LOGBOX}'));
 

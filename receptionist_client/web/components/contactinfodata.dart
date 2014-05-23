@@ -77,8 +77,7 @@ class ContactInfoData {
       print("Adding click handler");
       number.children.add(new ButtonElement()
           ..text = item.value
-          ..onClick.listen((_) =>  
-              event.bus.fire(event.originateCallRequest, new model.DiablePhoneNumber.from(item, contact))));
+          ..onClick.listen((_) =>  Controller.Call.dial(item.value, contact.receptionID, contact.id)));
       
       telephoneNumberList.children.add(number);
       

@@ -138,16 +138,16 @@ class SendMessage {
     //      }
     //    });
 
-    event.bus.on(event.locationChanged).listen((nav.Location location) {
-      bool active = location.widgetId == element.id;
-      element.classes.toggle(FOCUS, active);
-      if (location.elementId != null) {
-        var elem = element.querySelector('#${location.elementId}');
-        if (elem != null) {
-          elem.focus();
-        }
-      }
-    });
+   // event.bus.on(event.locationChanged).listen((nav.Location location) {
+   //   bool active = location.widgetId == element.id;
+   //   element.classes.toggle(FOCUS, active);
+   //   if (location.elementId != null) {
+   //     var elem = element.querySelector('#${location.elementId}');
+   //     if (elem != null) {
+   //       elem.focus();
+   //     }
+   //   }
+   // });
 
     /**
      * Event handler responsible for updating the recipient list (and UI) when a contact is changed.

@@ -184,32 +184,7 @@ class ContactInfoSearch {
         searchBox.focus();
       }
     });
-    
-    event.bus.on(event.CallSelectedContact).listen((_) {
-      for(LIElement li in displayedContactList.children) {
-        if(li.classes.contains(activeContactClass)) {
-          int contactId = li.value;
-          model.Contact.get(contactId, reception.ID).then((model.Contact contact) {
-            if(contact.phones.isNotEmpty) {
-              //TODO Call person.
-              log.debug('components.ContactInfoSearch.registerEventListeners() --------------- CALLING ${contact}');
-              String extension = contact.phones.first['value'];
-              log.debug('------------------ $extension ---------------------');
-              protocol.originateCallFromExtension(reception.ID, extension)
-                .then((_) {
-                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- GOOD ${_}');
-                }).catchError((e) {
-                  log.debug('components.ContactInfoSearch.registerEventListeners() --------------- BAD ${_}');
-                });
-            } else {
-              log.info('Personen ${contact.name} har ikke nogen telefon nummer der kan ringes på.', toUserLog: true);
-            }
-          });
-          log.critical('components.ContactInfoSearch.registerEventListeners() Call up contact is not implemented');
-        }
-      }
-    });
-    
+ 
     searchBox.onInput.listen((_) {
       _performSearch(searchBox.value);
     });

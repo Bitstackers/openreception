@@ -84,18 +84,8 @@ class Phonebooth {
 
   void dial() {
     if(receptionSelected != model.nullReception) {
-      String dialStrig = inputField.value;
-      protocol.originateCallFromExtension(receptionSelected.ID, dialStrig).then((protocol.Response<Map> response) {
-        if(response.status == protocol.Response.OK) {
-          log.info('Ringede op til ${dialStrig}', toUserLog: true);
-          log.info('Agent ${configuration.userId} called ${dialStrig} of fik ${response.data['call']['id']}');
-
-        } else {
-          log.info('Forsøgte at ringe op til ${dialStrig} men fejlede', toUserLog: true);
-          log.info('Agent ${configuration.userId} called ${dialStrig} but failed. ${response.statusText}');
-        }
-      });
-
+      String number = inputField.value;
+      Controller.Call.dial (number, receptionSelected.ID);
     } else {
       log.debug('phonebooth. There is no reception selected.');
     }

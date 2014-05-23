@@ -2,7 +2,6 @@ part of components;
 
 class MessageSearch{
   DivElement body;
-  Box box;
   Context _context;
   DivElement element;
   SpanElement header;
@@ -25,24 +24,8 @@ class MessageSearch{
   String headerText = 'Søgning';
   MessageSearch(DivElement this.element, Context this._context) {
     assert(element != null);
-    header = new SpanElement()
-      ..text = headerText;
 
-    String html = '''
-      <div class="message-search-box">
-        <div id="message-search-agent"></div>
-        <div id="message-search-type"></div>
-        <div id="message-search-company"></div>
-        <div id="message-search-contact"></div>
-        
-        <button id="message-search-print">Print</button>
-        <button id="message-search-resend">Gensend valgte</button>
-      </div>
-    ''';
-
-    DocumentFragment frag = new DocumentFragment.html(html);
-    body = frag.querySelector('div');
-    box = new Box.withHeader(element, header, body);
+    body = querySelector('.message-search-box');
 
     agentSearch = new SearchComponent<String>(body.querySelector('#message-search-agent'), _context, 'message-search-agent-searchbar')
       ..searchPlaceholder = 'Agent...'
