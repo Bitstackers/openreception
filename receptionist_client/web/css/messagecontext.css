@@ -1,25 +1,12 @@
 #message-search {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  height: 40%;
-  width: 30%;
+  height: 30%;
+  width: 100%;
   overflow: auto
 }
 
-#message-search-agent, #message-search-type, #message-search-company, #message-search-contact {
-  width: 95%;
-  margin-top: 2%;
-  margin-left:auto;
-  margin-right:auto;
-}
-
 #messageoverview {
-  position: absolute;
-  left: 31%;
-  top: 0%;
   height: 100%;
-  width: 68%;
+  width: 100%;
   overflow: auto
 }
 
@@ -33,6 +20,10 @@
 
 #messageoverview > table tr:nth-of-type(even) {
   background-color: #eee;
+}
+#messageoverview > table tr.active {
+  background-color: #666;
+  color: white;
 }
 
 #message-overview-header-checkbox {

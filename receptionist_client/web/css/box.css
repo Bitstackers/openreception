@@ -1,7 +1,6 @@
 .box-with-header-outer {
   background-color: #fafafa;
   border: solid 2px #ddd;
-  border-radius: 5px;
   /* overflow: auto; */
 }
 
@@ -32,6 +31,5 @@
 .no-chrome {
   background-color: #fafafa;
   border: solid 2px #ddd;
-  border-radius: 5px;
   overflow: auto;
 }
