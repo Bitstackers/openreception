@@ -40,7 +40,7 @@ button::-moz-focus-inner {
 }
 
 .hidden {
-  display: none;
+  visibility: hidden;
   z-index: -100;
 }
 
@@ -55,7 +55,7 @@ button::-moz-focus-inner {
 }
 
 .zebra li:nth-of-type(even) {
-  background-color:rgba(0,0,0,100);
+  background-color:rgba(0,0,0,0.1);
 }
 
 .context {
