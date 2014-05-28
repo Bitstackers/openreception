@@ -29,6 +29,9 @@ final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
 const bool BACKWARD = false;
 const bool FORWARD = true;
+
+const String META = 'alt';
+
 /**
  * [Keys] is a simple mapping between constant literals and integer key codes.
  */
@@ -184,24 +187,26 @@ class _KeyboardHandler {
     
     Keyboard keyboard = new Keyboard();
     Map<String, EventListener> keybindings = {
-      'Alt+1'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
-      'Alt+2'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOMEPLUS)),
-      'Alt+3'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_MESSAGES)),
-      'Alt+4'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_LOG)),
-      'Alt+5'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_STATISTICS)),
-      'Alt+6'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
-      'Alt+7'     : (_) => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_VOICEMAILS)),
-      'Alt+C'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
-      'Alt+A'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
-      'Alt+H'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
-      'Alt+M'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
-      'Alt+O'     : (_) => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
+      'Alt+1'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_HOME)),
+      'Alt+2'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_HOMEPLUS)),
+      'Alt+3'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_MESSAGES)),
+      'Alt+4'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_LOG)),
+      'Alt+5'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_STATISTICS)),
+      'Alt+6'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_PHONE)),
+      'Alt+7'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_VOICEMAILS)),
+      'Alt+C'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
+      'Alt+A'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
+      'Alt+H'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
+      'Alt+M'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
+      'Alt+O'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
       'Alt+P'     : (_) => Controller.Call.pickupNext(),
       'Alt+L'     : (_) => Controller.Call.park(Model.Call.currentCall),
-      'Alt+G'     : (_) => event.bus.fire(event.hangupCall, 'Keyboard'),
-      'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 'Keyboard'),
-      'Tab'       : (_) => tab(mode: FORWARD),
-      'Shift+Tab' : (_) => tab(mode: BACKWARD),
+      'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      'Alt+W'     : (_) => event.bus.fire(event.CallSelectedContact, 1),
+      'Alt+E'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
+      'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
+//      'Tab'       : (_) => tab(mode: FORWARD),
+//      'Shift+Tab' : (_) => tab(mode: BACKWARD),
       
       //TODO This means that every component with a scroll have to handle arrow up/down.
       //'up'        : (_) => event.bus.fire(event.keyUp, null),
@@ -217,15 +222,30 @@ class _KeyboardHandler {
     
     Keyboard keyUp = new Keyboard();
     keybindings = {
+      META    : (_) => event.bus.fire(event.keyMeta, false),
       'enter' : (_) => event.bus.fire(event.keyEnter, null),
       'esc'   : (_) => event.bus.fire(event.keyEsc, null),
       'up'    : (_) => event.bus.fire(event.keyUp, null),
       'down'  : (_) => event.bus.fire(event.keyDown, null)
     };
+
     keybindings.forEach((key, callback) => keyUp.register(key, (KeyboardEvent event) {
       event.preventDefault();
       callback(event);
     }));
+
+    Keyboard keyDown = new Keyboard();
+    keybindings = {
+      META    : (_) => event.bus.fire(event.keyMeta, true),
+    };
+
+    keybindings.forEach((key, callback) => keyDown.register(key, (KeyboardEvent event) {
+      event.preventDefault();
+      callback(event);
+    }));
+
+    
+    window.document.onKeyDown.listen(keyDown.press);
     window.document.onKeyUp.listen(keyUp.press);
     
 //    ctrlAlt.Keys.shortcuts({
