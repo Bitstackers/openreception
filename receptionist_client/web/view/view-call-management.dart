@@ -24,11 +24,13 @@ class CallManagement {
   final DivElement node;
 
   // Temporary
-  ButtonElement pickupnextcallbutton;
-  ButtonElement hangupcallButton;
-  ButtonElement holdcallButton;
-  DivElement    currentCallContainer;
+  ButtonElement  pickupnextcallbutton;
+  ButtonElement  hangupcallButton;
+  ButtonElement  holdcallButton;
+  DivElement     currentCallContainer;
   Component.Call currentCall;
+  bool           get muted => false; //TODO: Change to check location.
+  List<Element>  get nuges => this.node.querySelectorAll('.nudge');
 
   /**
    * TODO
@@ -49,6 +51,8 @@ class CallManagement {
     registerEventListeners();
     this.currentCallContainer = this.node.querySelector("#current-call");
     _changeActiveCall(model.Call.currentCall);
+    
+    this.hideNudges(true);
   }
 
   _changeActiveCall(model.Call call) {
@@ -56,7 +60,7 @@ class CallManagement {
     this.currentCallContainer.children.clear();
     
     if (call != model.nullCall) {
-      print ("!! Chaging calls");
+      print ("!! Changing calls");
       this.currentCall = new Component.Call (call);
       
       this.currentCallContainer.children.add(currentCall.element);
@@ -85,11 +89,20 @@ class CallManagement {
     
   }
   
+  void hideNudges(bool hidden) {
+    nuges.forEach((Element element) {
+      element.hidden = hidden;
+    });
+  }
+  
   void registerEventListeners() {
     event.bus.on(model.Call.currentCallChanged).listen(_changeActiveCall);
     event.bus.on(event.hangupCall).listen(_handleHangup);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationSucceded);
     event.bus.on(event.originateCallRequestFailure).listen(_originationFailed);
+    event.bus.on(event.keyMeta).listen((bool isPressed) {
+      this.hideNudges(!isPressed);
+    });
   }
 }
