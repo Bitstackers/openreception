@@ -22,8 +22,8 @@ class MessageList extends IterableBase<Message> {
    * Iterator. 
    * 
    * This merely forwards the values from within the internal map.
-   * We are not interested in the keys (Peer ID) as they are already stored inside
-   * the Peer Object.
+   * We are not interested in the keys (Message ID) as they are already stored inside
+   * the Message Object.
    */
   Iterator<Message> get iterator => this._map.values.iterator;
 
@@ -39,10 +39,10 @@ class MessageList extends IterableBase<Message> {
     const String context = '${className}.update'; 
     
     if (this._map.containsKey(message.ID)) {
-      log.debugContext("Updating peer ${message.ID}", context);
+      log.debugContext("Updating message ${message.ID}", context);
       this._map[message.ID].update(message);
     } else {
-      log.debugContext("Inserting peer ${message.ID}", context);
+      log.debugContext("Inserting message ${message.ID}", context);
       this._map[message.ID] = message;
     }
   }

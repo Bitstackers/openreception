@@ -38,8 +38,17 @@ class Message {
   /**
    * Adds a free-form field to the message object.
    */
-  addValue(String key, newField) {
+  void addValue(String key, newField) {
     this._map[key] = newField;
+  }
+  
+  /**
+   * Appends a message flag to the message. 
+   */
+  void addFlag (String newFlag) {
+    if (!(this._map['flags'] as List<String>).contains(newFlag)) {
+      (this._map['flags'] as List<String>).add(newFlag);
+    }
   }
   
   Message.fromMap (Map map) {
