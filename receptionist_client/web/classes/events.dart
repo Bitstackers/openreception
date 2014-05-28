@@ -31,6 +31,7 @@ final EventType keyUp                                           = new EventType(
 final EventType keyDown                                         = new EventType();
 final EventType keyEsc                                          = new EventType();
 final EventType keyEnter                                        = new EventType();
+final EventType<bool> keyMeta                                = new EventType<bool>();
 final EventType<model.Call> callCreated                         = new EventType<model.Call>();
 final EventType<model.Call> callDestroyed                       = new EventType<model.Call>();
 final EventType<model.Call> callChanged                         = new EventType<model.Call>();
@@ -49,7 +50,7 @@ final EventType<State> stateUpdated                             = new EventType<
 // Keyboards
 final EventType<String> hangupCall                              = new EventType<String>();
 final EventType<String> parkCall                                = new EventType<String>();
-final EventType<String> CallSelectedContact                     = new EventType<String>();
+final EventType<int> CallSelectedContact                        = new EventType<int>();
 
 /* Pickup */
 final EventType<Call> pickupCallRequest     = new EventType<Call>(); 
