@@ -38,7 +38,7 @@ if __name__ == "__main__":
     except:
         error ('Failed to parse command line argument! (Expected JSON string as first argument')
         sys.exit(1)
-        
+    
     # Field renames.
     sender      = email['from']
     subject     = Header(email['subject'], "utf-8")

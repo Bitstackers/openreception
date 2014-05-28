@@ -30,7 +30,7 @@ class Message {
    * TODO: Document.
    */
   
-  bool get hasRecpients => !this.recipientMap.isEmpty;
+  bool get hasRecipients => !this.recipientMap.isEmpty;
   
   factory Message.stub(int ID) {
     return new Message(ID);

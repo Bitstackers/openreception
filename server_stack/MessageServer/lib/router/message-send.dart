@@ -65,13 +65,13 @@ void messageSend(HttpRequest request) {
     }
     
     String     message  = data['message'];
-    Map      calleeInfo = (data.containsKey('callee') ? data['callee'] : {'name' : '', 'company' : ''});
+    Map      callerInfo = (data.containsKey('caller') ? data['caller'] : {'name' : '', 'company' : ''});
     List          flags = data['flags'];
 
     model.MessageRecipient messageContext = new model.MessageRecipient.fromMap(data['context']);
     
     return getUserID(request, config.authUrl).then((int userID) {
-      return db.createSendMessage(message, messageContext, calleeInfo, userID, flags).then((Map result) {
+      return db.createSendMessage(message, messageContext, callerInfo, userID, flags).then((Map result) {
         model.Message message = new model.Message(result['id']);
         
         // Harvest each field for recipients.

@@ -72,7 +72,7 @@ void periodicEmailSend() {
 
         String json = JSON.encode(template.toMap());
         
-        if (!message.hasRecpients) {
+        if (!message.hasRecipients) {
           logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
         } else {
         
@@ -99,8 +99,10 @@ void periodicEmailSend() {
             logger.errorContext("Failed to run mailer process. Error: ${onError}", context);
           });
        };
+      }).catchError((onError, stacktrace) {
+        logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context);
+        // TODO mark the queueEntry as failed.
       });
-      
     });
       
     }).whenComplete(() {
