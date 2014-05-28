@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Bob</title>
+    <link rel="stylesheet" href="css/nudge.css?v=1">
     <link rel="stylesheet" href="css/agentinfo.css?v=1">
     <link rel="stylesheet" href="css/contextswitcher.css?v=1">
     <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
@@ -112,11 +113,18 @@
         </div>
 
         <div id="call-info" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
-          <span>
-            <button id="pickupnextcallbutton">N&aelig;ste kald</button>
-            <button id="hangupcallButton">L&aelig;g P&aring;</button>
-            <button id="holdcallButton">Parkér</button>
-          </span>
+            <div style="display:inline">
+              <span class="nudge">P</span>
+              <button id="pickupnextcallbutton">N&aelig;ste kald</button>
+            </div>
+            <div style="display:inline">
+              <span class="nudge">H</span>
+              <button id="hangupcallButton">L&aelig;g P&aring;</button>
+            </div>
+            <div style="display:inline">
+              <span class="nudge">L</span>
+              <button id="holdcallButton">Parkér</button>
+            </div>
           <div id="current-call">
           </div>
         </div>
@@ -256,7 +264,7 @@
             <td>
               <h5>Telefon</h5>
               <div class="contact-info-field">
-                <ol id="contactTelephoneNumberList" class="zebra" style="padding-left: 20px;"></ol>
+                <ol id="contactTelephoneNumberList" class="zebra"></ol>
               </div>
             </td>
           </tr>
