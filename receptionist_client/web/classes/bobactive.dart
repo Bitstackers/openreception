@@ -19,7 +19,6 @@ import 'context.dart';
 import 'events.dart' as event;
 import 'id.dart' as id;
 import 'commands.keyboard.dart';
-import 'commands.dart';
 import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
@@ -30,7 +29,6 @@ import '../constants.dart' as constant;
 class BobActive {
   DivElement element;
 
-  ContextSwitcher contextSwitcher;
   WelcomeMessage welcomeMessage;
   AgentInfo agentInfo;
   CompanySelector companySelector;
@@ -53,6 +51,7 @@ class BobActive {
   GlobalQueue globalQueue;
   LocalQueue localQueue;
   
+  View.ContextSwitcher contextSwitcher;
   View.CallManagement callManagement;
   View.ReceptionEvents receptionEvents;
   
@@ -79,8 +78,9 @@ class BobActive {
     });
       
     registerContexts();
+    contextSwitcher          = new View.ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, homePlus, messages, logContext, statistics, phone, voicemails]);
 
-    contextSwitcher          = new ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, homePlus, messages, logContext, statistics, phone, voicemails]);
+    /// Home context
     welcomeMessage           = new WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
     agentInfo                = new AgentInfo(querySelector('#${id.AGENT_INFO}'));
     companySelector          = new CompanySelector(querySelector('#${id.COMPANY_SELECTOR}'), home);
@@ -89,15 +89,6 @@ class BobActive {
     companyOpeningHours      = new CompanyOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), home);
     companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
     companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
-    companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), home);
-    companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), home);
-    companyAddresses         = new CompanyAddresses(querySelector('#${id.COMPANY_ADDRESSES}'), home);
-    companyAlternateNames    = new CompanyAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), home);
-    companyBankingInfomation = new CompanyBankingInformation(querySelector('#${id.COMPANY_BANKING_INFORMATION}'), home);
-    companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), home);
-    companyWebsites          = new CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), home);
-    compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), home);
-    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), home); 
     contactInfo              = new ContactInfo(querySelector('#${id.CONTACT_INFO}'), home);
     sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
@@ -106,6 +97,17 @@ class BobActive {
     messageSearch = new MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
     messageList = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 
+    /// Home Plus context
+    companyCustomerType      = new CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), homePlus);
+    companyTelephoneNumbers  = new CompanyTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), homePlus);
+    companyAddresses         = new CompanyAddresses(querySelector('#${id.COMPANY_ADDRESSES}'), homePlus);
+    companyAlternateNames    = new CompanyAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), homePlus);
+    companyBankingInfomation = new CompanyBankingInformation(querySelector('#${id.COMPANY_BANKING_INFORMATION}'), homePlus);
+    companyEmailAddresses    = new CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), homePlus);
+    companyWebsites          = new CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), homePlus);
+    compayRegistrationNumber = new CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), homePlus);
+    companyOther             = new CompanyOther(querySelector('#${id.COMPANY_OTHER}'), homePlus); 
+    
     logBox = new LogBox(querySelector('#${id.LOGBOX}'));
 
     phonebooth = new Phonebooth(querySelector('#phonebooth'), phone);
@@ -115,8 +117,6 @@ class BobActive {
     
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
-    
-    CommandHandlers.registerListeners();
   }
 
   void registerContexts() {

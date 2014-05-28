@@ -130,8 +130,6 @@ abstract class Call {
 
     const String context = '${className}.park';
 
-    assert(call != null && call != model.nullCall);
-
     final String base = configuration.callFlowBaseUrl.toString();
     final Completer<model.Call> completer = new Completer<model.Call>();
     final List<String> fragments = new List<String>();

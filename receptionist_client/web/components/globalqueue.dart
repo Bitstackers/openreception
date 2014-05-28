@@ -27,14 +27,7 @@ class GlobalQueue {
   int callCount = 0;
 
   GlobalQueue(DivElement this.element, Context this.context) {
-    String headerHtml = '''
-      <span class="header">
-        <span></span>        
-      </span>
-    ''';
-
     header = querySelector("#globalqueue").querySelector('h1');
-    print (header);
     header.text = this.title;
 
     ul = querySelector("#globalqueue").querySelector('ul');

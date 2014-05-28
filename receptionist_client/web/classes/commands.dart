@@ -31,13 +31,6 @@ const SIP_TYPE = 3;
 
 const String libraryName = 'commands';
 
-/**
- * Command handlers are a centralized point, from where all actions are performed.
- * Any UI componentes should only listen to Command Events, and update their own
- * state/presentation accordingly.
- * Every component, such as a button, that is able to send commands will inject a
- * command into the command stream (currently event stream, separation will follow).
- */
 abstract class CommandHandlers {
 
   static const String className = '${libraryName}.CommandHandlers';

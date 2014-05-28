@@ -42,7 +42,7 @@ class CompanyCustomerType {
     });
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, body.id));
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, body.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {

@@ -56,9 +56,10 @@ class CompanyBankingInformation {
   void render(model.Reception reception) {
     ul.children.clear();
 
-    for(var value in reception.bankingInformationList) {
+    for(var bankingInformation in reception.bankingInformationList) {
+      print (bankingInformation);
       ul.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = bankingInformation.value);
     }
   }
 }
