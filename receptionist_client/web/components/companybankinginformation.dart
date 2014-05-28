@@ -57,7 +57,6 @@ class CompanyBankingInformation {
     ul.children.clear();
 
     for(var bankingInformation in reception.bankingInformationList) {
-      print (bankingInformation);
       ul.children.add(new LIElement()
                         ..text = bankingInformation.value);
     }
