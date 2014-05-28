@@ -8,30 +8,18 @@ abstract class Message {
 
   static final String className = '${libraryName}.Message';
 
-  static Future<Response<Map>> send(model.Message message, [Uri host]) {
+  static Future send(model.Message message, [Uri host]) {
 
     final String context = '${className}.send';
 
     if (host == null) {
       host = configuration.messageBaseUrl;
-    }
-    ;
+    };
 
     final String base = configuration.messageBaseUrl.toString();
-    final Completer<Response<Map>> completer = new Completer<Response<Map>>();
+    final Completer completer = new Completer();
     final List<String> fragments = new List<String>();
     final String path = '/message/send';
-
-    /* Attach the cc recipients - only if there are any. 
-    if (cc != null) {
-      payload ['cc'] = cc.map((v) => v.toString()).toList();
-    }
-
-    /* Same thing goes for the bcc recipients.*/ 
-    if (bcc != null) {
-      payload ['bcc'] = bcc.map((v) => v.toString()).toList();
-    }
-    */
 
     /* Assemble the initial content for the message. */
     Map payload = message.toMap;
@@ -39,7 +27,7 @@ abstract class Message {
     /* 
      * Now we are ready to send the request to the server. 
      */
-
+    
     HttpRequest request;
     String url;
 
@@ -55,20 +43,25 @@ abstract class Message {
           switch (request.status) {
             case 200:
               Map data = JSON.decode(request.responseText);
-              if (data != null) {
-                completer.complete(new Response<Map>(Response.OK, data));
-              } else {
-                completer.complete(new Response<Map>(Response.ERROR, data));
-              }
+              break;
+            case 400:
+              completer.completeError(_badRequest('Resource ${base}${path}'));
               break;
 
+            case 404:
+              completer.completeError(_notFound('Resource ${base}${path}'));
+              break;
+
+            case 500:
+              completer.completeError(_serverError('Resource ${base}${path}'));
+              break;
             default:
-              completer.completeError(new Response.error(Response.CRITICALERROR, '${url} [${request.status}] ${request.statusText}'));
+              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
           }
         })
         ..onError.listen((e) {
-          print(url);
-          completer.completeError(new Response.error(Response.CRITICALERROR, e.toString()));
+          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
+          completer.completeError(e);
         })
         ..send(JSON.encode(payload));
 
