@@ -23,9 +23,7 @@ class User implements Comparable {
   /* Singleton representing the current user. */
   static User _currentUser = nullUser;
   
-  User (this._ID, this._name) {
-    print (className + 'Created a new user with ID ${this.ID}');
-  }
+  User (this._ID, this._name);
   
   Map identityMap () {
     return {UserConstants.ID : this.ID, UserConstants.NAME : this.name};

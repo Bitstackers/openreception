@@ -130,7 +130,7 @@ class Call {
    */
   void _callParkHandler (_) {
     const String context = '${className}._callParkHandler';
-    log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
+    log.debugContext("Unhiding call ${this.call.ID} from call list.", context);
       this.element.hidden = false;
       transferButton.hidden = false;
   }

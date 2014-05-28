@@ -137,10 +137,14 @@ class CallList extends IterableBase<Call> {
     const String context = '${className}.update';
     log.debugContext('Updating call ${call.ID}', context);
     try {
-      this._map[call.ID].update(call);  
+      if (!this._map.containsKey(call.ID)) {
+        this._map[call.ID] = call;
+      } else {
+        this._map[call.ID].update(call);
+      }
     }
-    catch (error) {
-      log.errorContext('Failed to Updating call ${call}', context); 
+    catch (error, stacktrace) {
+      log.errorContext('Failed to Update call ${call}, stacktrace ${stacktrace}', context); 
     }
   }
   

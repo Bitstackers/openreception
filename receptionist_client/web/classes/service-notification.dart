@@ -272,9 +272,7 @@ class EventSocket {
 
       event.bus.fire(event.localCallQueueAdd, call);
       event.bus.fire(event.callChanged, model.nullCall);
-    } else {
-      print(call);
-    }
+    } 
   }
 
   void _callUnparkEventHandler(Map json) {

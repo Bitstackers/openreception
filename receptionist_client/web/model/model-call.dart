@@ -211,7 +211,6 @@ class Call implements Comparable {
     
     /* Perfom a state change. */
     if (lastState != this.state) {
-      log.debugContext('${lastState} => ${this.state}, firering event ${Call.stateEventMap[this.state]}', context);
       this.events.fire(Call.stateEventMap[this.state], null);
     }
   }

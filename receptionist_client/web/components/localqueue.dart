@@ -21,10 +21,12 @@ class LocalQueue {
   bool               hasFocus = false;
   String         title          = 'Lokal kø';
   UListElement ul;
+  List<Element> get nuges => this.element.querySelectorAll('.nudge');
 
   LocalQueue(DivElement this.element, Context this.context) {
     SpanElement header = new SpanElement()
       ..text = title;
+    this.element.children.add(new View.Nudge('S').element);
 
     ul = new UListElement()
       ..classes.add('zebra')
@@ -42,7 +44,6 @@ class LocalQueue {
     model.CallList.instance.events.on(model.CallList.insert).listen(addCall);
 
     event.bus.on(event.callChanged).listen((model.Call value) { 
-      log.debug('------------- components.LocalQueue Call Changed to ID: ${value.ID} Start: ${value.start} Inbound: ${value.inbound} B Leg: ${value.bLeg} Callid: ${value.callerId}');
       call = value;
     });
 
@@ -56,6 +57,17 @@ class LocalQueue {
 
     element.onClick.listen((_) {
       setFocus(ul.id);
+    });
+
+    event.bus.on(event.keyMeta).listen((bool isPressed) {
+      this.hideNudges(!isPressed);
+    });
+ 
+  }
+
+  void hideNudges(bool hidden) {
+    nuges.forEach((Element element) {
+      element.hidden = hidden;
     });
   }
 
@@ -73,6 +85,20 @@ class LocalQueue {
     call.events.on(model.Call.parked).listen(callView._callParkHandler);
     call.events.on(model.Call.hungup).listen(callView._callHangupHandler);
     callView.element.hidden = !(call.state == model.CallState.PARKED);
+
+    event.bus.on(event.PickupFirstParkedCall).listen((_) {
+      if (call.state == model.CallState.PARKED && 
+          call.assignedAgent == model.User.currentUser.ID) {
+        call.pickup();
+        }
+    });
+
+    event.bus.on(event.TransferFirstParkedCall).listen((_) {
+      if (call.state == model.CallState.PARKED && 
+          call.assignedAgent == model.User.currentUser.ID) {
+        call.transfer(model.Call.currentCall);
+        }
+    });
 
     ul.children.add(callView.element);
     context.increaseAlert();
