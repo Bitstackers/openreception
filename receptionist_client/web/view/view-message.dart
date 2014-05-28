@@ -11,9 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of components;
+part of view;
 
 class SendMessage {
+
+  static const String className = '${libraryName}.SendMessage';
+
   /* Unused Variables
   final String       placeholderCellphone    = 'Mobil';
   final String       placeholderCompany      = 'Firmanavn';
@@ -47,18 +50,18 @@ class SendMessage {
   final String saveButtonLabel = 'Gem';
   final String sendButtonLabel = 'Send';
   final String title = 'Besked';
-  bool checkbox1Checked = false,
-      checkbox2Checked = false,
-      checkbox3Checked = false,
-      checkbox4Checked = false;
+  bool pleaseCallBack = false,
+      willCallBack = false,
+      called = false,
+      urgent = false;
 
   InputElement sendmessagesearchbox;
   InputElement sendmessagesearchresult;
-  InputElement calleeNameField;
-  InputElement calleeCompanyField;
-  InputElement calleePhoneField;
-  InputElement calleeCellphoneField;
-  InputElement calleeLocalExtensionField;
+  InputElement callerNameField;
+  InputElement callerCompanyField;
+  InputElement callerPhoneField;
+  InputElement callerCellphoneField;
+  InputElement callerLocalExtensionField;
   TextAreaElement messageBodyField;
 
   DivElement checkbox1;
@@ -80,6 +83,33 @@ class SendMessage {
   model.Contact contact = model.nullContact;
   List<model.Recipient> recipients = new List<model.Recipient>();
 
+  void set isDisabled(bool disabled) {
+    this.element.querySelectorAll('input').forEach((InputElement element) {
+      element.disabled = disabled;
+      element.tabIndex = disabled ? -1 : 1;
+    });
+
+    this.element.querySelectorAll('textarea').forEach((TextAreaElement element) {
+      element.disabled = disabled;
+      element.tabIndex = disabled ? -1 : 1;
+    });
+
+    this.element.querySelectorAll('button').forEach((ButtonElement element) {
+      element.disabled = disabled;
+      element.tabIndex = disabled ? -1 : 1;
+    });
+  }
+
+  void clear() {
+    this.element.querySelectorAll('input').forEach((InputElement element) {
+      element.value = "";
+    });
+
+    this.element.querySelectorAll('textearea').forEach((TextAreaElement element) {
+      element.value = "";
+    });
+  }
+
   SendMessage(DivElement this.element, Context this.context) {
     body = querySelector('.send-message-container');
 
@@ -87,14 +117,14 @@ class SendMessage {
 
     box = new Box.withHeader(element, header, body);
 
-    sendmessagesearchbox      = body.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
-    sendmessagesearchresult   = body.querySelector('#sendmessagesearchresult');
-    calleeNameField           = body.querySelector('#sendmessagename');
-    calleeCompanyField        = body.querySelector('#sendmessagecompany');
-    calleePhoneField          = body.querySelector('#sendmessagephone');
-    calleeCellphoneField      = body.querySelector('#sendmessagecellphone');
-    calleeLocalExtensionField = body.querySelector('#sendmessagelocalno');
-    messageBodyField          = body.querySelector('#sendmessagetext');
+    sendmessagesearchbox = body.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
+    sendmessagesearchresult = body.querySelector('#sendmessagesearchresult');
+    callerNameField = body.querySelector('#sendmessagename');
+    callerCompanyField = body.querySelector('#sendmessagecompany');
+    callerPhoneField = body.querySelector('#sendmessagephone');
+    callerCellphoneField = body.querySelector('#sendmessagecellphone');
+    callerLocalExtensionField = body.querySelector('#sendmessagelocalno');
+    messageBodyField = body.querySelector('#sendmessagetext');
 
     checkbox1 = body.querySelector('#send-message-checkbox1');
     checkbox2 = body.querySelector('#send-message-checkbox2');
@@ -115,64 +145,80 @@ class SendMessage {
 
     recipientsList = querySelector('#send-message-recipient-list');
 
-    focusElements = [sendmessagesearchbox, calleeNameField, calleeCompanyField, calleePhoneField, calleeCellphoneField, calleeLocalExtensionField, messageBodyField, checkbox1, checkbox2, checkbox3, checkbox4, cancelButton, draftButton, sendButton];
+    focusElements = [sendmessagesearchbox, callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, checkbox1, checkbox2, checkbox3, checkbox4, cancelButton, draftButton, sendButton];
 
     focusElements.forEach((e) => context.registerFocusElement(e));
 
-    registerEventListeners();
+    this._renderContact(contact);
+    _registerEventListeners();
   }
 
   void render() {
     // Updates the recipient list.
     recipientsList.children.clear();
-    this.recipients.forEach((model.Recipient recipient) { 
-      recipientsList.children.add (new LIElement()..text = recipient.role+ ": " + recipient.contactName);
+    this.recipients.forEach((model.Recipient recipient) {
+      recipientsList.children.add(new LIElement()..text = recipient.role + ": " + recipient.contactName);
     });
   }
-    
 
-  void registerEventListeners() {
-    //    element.onClick.listen((_) {
-    //      if(!hasFocus) {
-    //        setFocus(sendmessagetext.id);
-    //      }
-    //    });
 
-   // event.bus.on(event.locationChanged).listen((nav.Location location) {
-   //   bool active = location.widgetId == element.id;
-   //   element.classes.toggle(FOCUS, active);
-   //   if (location.elementId != null) {
-   //     var elem = element.querySelector('#${location.elementId}');
-   //     if (elem != null) {
-   //       elem.focus();
-   //     }
-   //   }
-   // });
+  /**
+   * Click handler for the entire message element. Sets the focus to the widget.
+   */
+  void _onMessageElementClick(_) {
+    const String context = '${className}._onMessageElementClick';
+    Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE, id.SENDMESSAGE_CELLPHONE));
+  }
 
-    /**
-     * Event handler responsible for updating the recipient list (and UI) when a contact is changed.
-     */
-    event.bus.on(event.contactChanged).listen((model.Contact contact) {
-      this.contact = contact;
+  /**
+   * Event handler responsible for selecting the current widget.
+   */
+  void _onLocationChanged(nav.Location location) {
+    bool active = location.widgetId == element.id;
+    element.classes.toggle(FOCUS, active);
+    if (location.elementId != null) {
+      var elem = element.querySelector('#${location.elementId}');
+      if (elem != null) {
+        elem.focus();
+      }
+    }
+  }
 
-      this.recipients.clear();
-      contact.dereferenceDistributionList()
-        .then((List<model.Recipient> dereferencedDistributionList) { 
-          // Put all the dereferenced recipients to the local list.
-          dereferencedDistributionList.forEach((model.Recipient recipient) {
-            this.recipients.add(recipient);
-          });
-          
-          this.render();
+  /**
+   * Event handler responsible for updating the recipient list (and UI) when a contact is changed.
+   */
+  void _renderContact(model.Contact contact) {
+    this.contact = contact;
+
+    this.recipients.clear();
+    if (this.contact != model.Contact.noContact) {
+      this.isDisabled = false;
+      contact.dereferenceDistributionList().then((List<model.Recipient> dereferencedDistributionList) {
+        // Put all the dereferenced recipients to the local list.
+        dereferencedDistributionList.forEach((model.Recipient recipient) {
+          this.recipients.add(recipient);
+        });
+
+        this.render();
       });
-    });
-    
+    } else {
+      this.isDisabled = true;
+      this.render();
+    }
+  }
+
+  void _registerEventListeners() {
+    element.onClick.listen(this._onMessageElementClick);
+    event.bus.on(event.locationChanged).listen(this._onLocationChanged);
+
+    event.bus.on(event.contactChanged).listen(this._renderContact);
+
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
       reception = value;
     });
 
     event.bus.on(event.callChanged).listen((model.Call value) {
-      calleePhoneField.value = '${value.callerId}';
+      callerPhoneField.value = '${value.callerId}';
     });
 
 
@@ -218,35 +264,35 @@ class SendMessage {
     switch (number) {
       case 1:
         if (shouldBe != null) {
-          checkbox1Checked = shouldBe;
+          pleaseCallBack = shouldBe;
         } else {
-          checkbox1Checked = !checkbox1Checked;
+          pleaseCallBack = !pleaseCallBack;
         }
-        checkbox1.classes.toggle(checkedClass, checkbox1Checked);
+        checkbox1.classes.toggle(checkedClass, pleaseCallBack);
         break;
       case 2:
         if (shouldBe != null) {
-          checkbox2Checked = shouldBe;
+          willCallBack = shouldBe;
         } else {
-          checkbox2Checked = !checkbox2Checked;
+          willCallBack = !willCallBack;
         }
-        checkbox2.classes.toggle(checkedClass, checkbox2Checked);
+        checkbox2.classes.toggle(checkedClass, willCallBack);
         break;
       case 3:
         if (shouldBe != null) {
-          checkbox3Checked = shouldBe;
+          called = shouldBe;
         } else {
-          checkbox3Checked = !checkbox3Checked;
+          called = !called;
         }
-        checkbox3.classes.toggle(checkedClass, checkbox3Checked);
+        checkbox3.classes.toggle(checkedClass, called);
         break;
       case 4:
         if (shouldBe != null) {
-          checkbox4Checked = shouldBe;
+          urgent = shouldBe;
         } else {
-          checkbox4Checked = !checkbox4Checked;
+          urgent = !urgent;
         }
-        checkbox4.classes.toggle(checkedClass, checkbox4Checked);
+        checkbox4.classes.toggle(checkedClass, urgent);
         break;
       default:
         log.error('sendmessage: toggle: The given number: ${number} is not accounted for');
@@ -263,44 +309,42 @@ class SendMessage {
 
   void sendClick(_) {
     log.debug('SendMessage Send Button pressed');
-    String completeMessage = '''
-      Goddag
-      Vi har taget imod en besked fra ${calleeNameField.value}
-      Det er i forbindelse med virksomheden ${calleeCompanyField.value}
-      Hans mobile nummer er ${calleeCellphoneField.value}
-      og hvis du vil fange ham på hans fastnet nummer, skal du bare ringe til ${calleePhoneField.value}
-      for ikke at glemme at han også oplyste sit lokalnummer ${calleeLocalExtensionField.value}
-      Han ville bare gerne lige fortælle
-      ${messageBodyField.value}
-      
-      [${checkbox1Checked ? 'X': ' '}] Ring venligst 
-      [${checkbox2Checked ? 'X': ' '}] Ringer selv tilbage
-      [${checkbox3Checked ? 'X': ' '}] Har ringet
-      [${checkbox4Checked ? 'X': ' '}] Haster
-
-      Fortsat god dag ønskes du fra agent ${configuration.userName}
-    ''';
-
 
     contact.contextMap().then((Map contextMap) {
       model.Message pendingMessage = new model.Message.fromMap({
-        'taken_from'  : calleeNameField.value,
-        'from_company': calleeCompanyField.value,
-        'message'     : messageBodyField.value,
-        'phone'       : calleePhoneField.value,
-        'cellphone'   : calleeCellphoneField.value,
-        'urgent'      : checkbox4Checked,
-        'context'     : contextMap
+        'message': messageBodyField.value,
+        'phone': callerPhoneField.value,
+        'caller': {
+          'name': callerNameField.value,
+          'company': callerCompanyField.value,
+          'phone': callerPhoneField.value,
+          'cellphone': callerCellphoneField.value,
+          'localextension': callerLocalExtensionField.value
+        },
+        'context': contextMap,
+        'flags': []
       });
+
+
+      pleaseCallBack ? pendingMessage.addFlag('urgent') : null;
+      willCallBack ? pendingMessage.addFlag('willCallBack') : null;
+      called ? pendingMessage.addFlag('called') : null;
+      urgent ? pendingMessage.addFlag('urgent') : null;
+
 
       for (model.Recipient recipient in this.recipients) {
         pendingMessage.addRecipient(recipient);
       }
 
-      log.dataDump(completeMessage, "components.sendClick");
+      log.dataDump(pendingMessage.toMap.toString(), "components.sendClick");
+
+      this.isDisabled = true;
+
       pendingMessage.send().then((_) {
         log.debug('Sent message');
+        this.clear();
       }).catchError((error) {
+        this.isDisabled = false;
         log.debug('----- Send Message Unlucky Result: ${error}');
       });
     });

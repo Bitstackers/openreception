@@ -18,8 +18,19 @@ import '../classes/events.dart' as Event;
 import '../classes/context.dart';
 
 part 'view-call-management.dart';
+part 'view-contextswitcher.dart';
 part 'view-message-list.dart';
 part 'view-notification.dart';
 part 'view-reception-events.dart';
+part 'view-nudge.dart';
+part 'view-message.dart';
 
 const String libraryName = "view";
+
+abstract class StyleClass {
+  static const String NUDGE = 'nudge';
+  
+  static String selector(String styleClass) {
+    return '.$styleClass';
+  }
+}

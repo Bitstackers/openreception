@@ -33,6 +33,7 @@ import 'model/model.dart' as model;
 import 'protocol/protocol.dart' as protocol;
 import 'storage/storage.dart' as storage;
 import 'controller/controller.dart' as Controller;
+import 'view/view.dart' as View;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';
@@ -51,10 +52,8 @@ part 'components/companysalescalls.dart';
 part 'components/companyselector.dart';
 part 'components/companytelephonenumbers.dart';
 part 'components/companywebsites.dart';
-part 'components/view-contextswitcher.dart';
 part 'components/globalqueue.dart';
 part 'components/localqueue.dart';
-part 'components/sendmessage.dart';
 part 'components/welcomemessage.dart';
 part 'components/contactinfo.dart';
 part 'components/contactinfosearch.dart';
