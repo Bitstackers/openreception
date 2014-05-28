@@ -106,7 +106,7 @@ class MessageList {
               ..text = (message.queueCount > 0 ? MessageOverviewLabels.PENDING : MessageOverviewLabels.SENT)]);
   }
 
-  void headerCheckboxChange(Event event) {
+  void headerCheckboxChange(event) {
     CheckboxInputElement target = event.target;
     bool checked = target.checked;
 
