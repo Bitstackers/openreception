@@ -86,6 +86,7 @@ class Log {
    */
   void debug (String message)                           => print('[DEBUG]    - ${Log.dateFormat.format(new DateTime.now())} - ${message}');
   void debugContext (String message, String context)    => print('[DEBUG]    - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
+  void fixmeContext (String message, String context)    => print('[FIXME]    - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
   void dataDump (String data, String context)           => print('[DATADUMP] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${data}');
   void criticalContext (String message, String context) => print('[CRITICAL] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${message}');
   void criticalError (Error error, String context)      => print('[CRITICAL] - ${Log.dateFormat.format(new DateTime.now())} - $context - ${error.toString()}');
