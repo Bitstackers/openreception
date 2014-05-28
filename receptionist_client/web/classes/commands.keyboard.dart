@@ -113,15 +113,6 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_OPENINGHOURS,        id.COMPANY_OPENINGHOURS_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_SALESCALLS,          id.COMPANY_SALES_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_PRODUCT,             id.COMPANY_PRODUCT_BODY),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_CUSTOMERTYPE,        id.COMPANY_CUSTOMERTYPE_BODY),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_TELEPHONE_NUMBERS,   id.COMPANY_TELEPHONENUMBERS_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_ADDRESSES,           id.COMPANY_ADDRESSES_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_ALTERNATENAMES,      id.COMPANY_ALTERNATE_NAMES_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_BANKING_INFORMATION, id.COMPANY_BANKING_INFO_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_EMAIL_ADDRESSES,     id.COMPANY_EMAIL_ADDRESSES_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_WEBSITES,            id.COMPANY_WEBSITES_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_REGISTRATION_NUMBER, id.COMPANY_REGISTRATION_NUMBER_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY),
        new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,                id.CONTACT_INFO_SEARCHBAR),
        new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,                id.CONTACT_CALENDAR),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEARCHBOX),
@@ -131,16 +122,23 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CELLPHONE),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_LOCALNO),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_TEXT),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX1),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX2),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX3),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CHECKBOX4),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CANCEL),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_DRAFT),
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEND)
       ];
-  //contexthome.contactinfo.contact-info-searchbar
-  //contexthome.contactinfo.contact-calendar
+
+  List<nav.Location> contextHomePlus = 
+      [new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_CUSTOMERTYPE,        id.COMPANY_CUSTOMERTYPE_BODY),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_TELEPHONE_NUMBERS,   id.COMPANY_TELEPHONENUMBERS_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_ADDRESSES,           id.COMPANY_ADDRESSES_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_ALTERNATENAMES,      id.COMPANY_ALTERNATE_NAMES_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_BANKING_INFORMATION, id.COMPANY_BANKING_INFO_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_EMAIL_ADDRESSES,     id.COMPANY_EMAIL_ADDRESSES_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_WEBSITES,            id.COMPANY_WEBSITES_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_REGISTRATION_NUMBER, id.COMPANY_REGISTRATION_NUMBER_LIST),
+       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY)
+       ];
+
   List<nav.Location> contextPhone = 
       [new nav.Location(id.CONTEXT_PHONE, id.PHONEBOOTH, id.PHONEBOOTH_NUMBERFIELD)];
   
