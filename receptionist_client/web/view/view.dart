@@ -14,6 +14,7 @@ import '../classes/id.dart' as id;
 import '../classes/location.dart' as nav;
 import '../controller/controller.dart' as Controller;
 import '../classes/events.dart' as Event;
+import '../classes/logger.dart';
 
 import '../classes/context.dart';
 
