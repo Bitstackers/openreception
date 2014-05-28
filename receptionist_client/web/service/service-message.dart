@@ -42,7 +42,7 @@ abstract class Message {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              Map data = JSON.decode(request.responseText);
+              completer.complete ();
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));

@@ -47,13 +47,13 @@ class BobActive {
   CompanyRegistrationNumber compayRegistrationNumber;
   CompanyOther companyOther;
   ContactInfo contactInfo;
-  SendMessage sendMessage;
   GlobalQueue globalQueue;
   LocalQueue localQueue;
   
   View.ContextSwitcher contextSwitcher;
   View.CallManagement callManagement;
   View.ReceptionEvents receptionEvents;
+  View.Message sendMessage;
   
   MessageSearch messageSearch;
   View.MessageList messageList;
@@ -90,7 +90,7 @@ class BobActive {
     companySalesCalls        = new CompanySalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), home);
     companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
     contactInfo              = new ContactInfo(querySelector('#${id.CONTACT_INFO}'), home);
-    sendMessage              = new SendMessage(querySelector('#${id.SENDMESSAGE}'), home);
+    sendMessage              = new View.Message(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
     localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
     callManagement           = new View.CallManagement(querySelector('#${constant.ID.CALL_MANAGEMENT}'));

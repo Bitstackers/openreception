@@ -74,6 +74,16 @@ textarea.send-message-field {
   width: 96%;
 }
 
+
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0px 4px 0 0;
+    vertical-align:middle;
+}
+
+
 .send-message-checkbox-container {
   width: 40%;
   cursor:pointer;
@@ -99,12 +109,7 @@ textarea.send-message-field {
   background-color: green;
 }
 
-.send-message-pleasecall {top: 63%;}
-.send-message-callsback {top: 70%;}
-.send-message-hascalled {top: 77%;}
-.send-message-emergency {top: 84%;}
-
-.send-message-button-container {
+send-message-button-container {
   position: absolute;
   top: 91.2%;
 }
