@@ -1,4 +1,4 @@
-name: Client
+name: ManagementClient
 description: A sample web application
 dependencies:
   browser: any
@@ -6,4 +6,6 @@ dependencies:
   html5_dnd: any
   okeyee: any
   libdialplan:
-    path: ../libdialplan
+    git: 
+      url: git@github.com:AdaHeads/libdialplan.git
+      ref: master
