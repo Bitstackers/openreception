@@ -1,0 +1,160 @@
+#dialplan-page {
+  height: 100%;
+}
+
+/**
+ * Left panel
+ */
+
+#dialplan-leftbar {
+  height: 100%;
+  float: left;
+  width: 20%;
+  margin: 0 5px;
+}
+
+#dialplan-mainbar {
+  height: 60%;
+  height: -moz-calc(10% - 5px);
+  height: -webkit-calc(10% - 5px);
+  padding: 5px;
+  border: solid 2px grey;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+#dialplan-receptionbar {
+  min-width: 300px;
+}
+
+#dialplan-savebutton {
+  padding: 1px 8px;
+}
+
+#dialplan-controlbar {
+  height: 80%;
+  height: -moz-calc(90% - 5px);
+  height: -webkit-calc(90% - 5px);
+  border: solid 2px grey;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+ul#dialplan-control-list {
+  padding: 5px;
+  list-style-type: none;
+  text-align:center;
+  margin: 0 auto;
+}
+
+ul#dialplan-control-list li {
+  padding: 5px;
+}
+
+img.dialplan-controlitem-img {
+  width: 64px;
+  height: 64px;
+}
+
+.dialplan-controlremove {
+  width: 16px;
+  height: 16px;
+}
+
+.dialplan-controlitem-nametag {
+  display: block;
+}
+
+/**
+ * MIDDEL PANEL
+ */
+
+#dialplan-contentbar {
+  height: 100%;
+  float: left;
+  width: 40%;
+  margin: 0 5px;
+  border: solid 2px grey;
+  border-radius: 10px;
+  overflow: auto;
+}
+
+#dialplan-selected-extensionname {
+  padding: 3px 0;
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: larger;
+}
+
+#dialplan-items-list {
+  width: 100%;
+  list-style-type: none;
+
+  text-align:center;
+  margin: 0 auto;
+}
+
+#dialplan-items-list > li {
+  padding: 5px;
+}
+
+#dialplan-controls {
+  list-style-type: none;
+}
+
+/**
+ * Right panel
+ */
+
+#dialplan-settingsbar {
+  height: 100%;
+  float: right;
+  width: 40%;
+  width: -moz-calc(40% - 30px);
+  width: -webkit-calc(40% - 30px);
+  margin: 0 5px;
+}
+
+#dialplan-extention-listing {
+  margin-bottom: 5px;
+  border: solid 2px grey;
+  border-radius: 10px;
+  padding: 5px;
+  height: 20%;
+}
+
+#dialplan-extension-list {
+  list-style-type: none;
+}
+
+#dialplan-settings {
+  border: solid 2px grey;
+  border-radius: 10px;
+  height: 60%;
+  height: -moz-calc(60% -   20px);
+  height: -webkit-calc(60% -   20px);
+  margin: 10px 0;
+}
+
+.dialplan-settingsList {
+  list-style-type: none;
+}
+
+.dialplan-setting-time {
+  width: 40px;
+}
+
+#dialplan-comment-container {
+  border: solid 2px grey;
+  border-radius: 10px;
+  height: 20%;
+  margin-top: 5px;
+  padding: 2px;
+}
+
+#dialplan-comment {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

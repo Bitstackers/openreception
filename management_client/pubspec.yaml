@@ -1,0 +1,9 @@
+name: Client
+description: A sample web application
+dependencies:
+  browser: any
+  event_bus: any
+  html5_dnd: any
+  okeyee: any
+  libdialplan:
+    path: ../libdialplan

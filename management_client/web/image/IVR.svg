@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="48"
+   height="48"
+   id="svg3653">
+  <defs
+     id="defs3655" />
+  <metadata
+     id="metadata3658">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1">
+    <g
+       transform="matrix(1.36956,0,0,1.36956,731.03482,233.07806)"
+       id="g5305">
+      <rect
+         width="35"
+         height="35"
+         x="-533.82562"
+         y="-170.02652"
+         id="rect5297"
+         style="fill:none;stroke:none" />
+      <g
+         transform="translate(-2.8714244,0.34563985)"
+         id="g5273">
+        <path
+           d="m -521.80588,-162.34237 0,21.6186"
+           id="path4983"
+           style="fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           d="m -521.80588,-157.38477 7.02434,0"
+           id="path4973"
+           style="fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <text
+           x="-458.3252"
+           y="-174.68193"
+           transform="scale(1.1178946,0.89453872)"
+           id="text4985"
+           xml:space="preserve"
+           style="font-size:9.92462444px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:'Arial Black, Bold'"><tspan
+             x="-458.3252"
+             y="-174.68193"
+             id="tspan4987">#1</tspan></text>
+        <path
+           d="m -521.80588,-149.05518 7,0"
+           id="path4971"
+           style="fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <text
+           x="-458.36121"
+           y="-163.35774"
+           transform="scale(1.1178946,0.89453872)"
+           id="text5121"
+           xml:space="preserve"
+           style="font-size:9.0997858px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:'Arial Black, Bold'"><tspan
+             x="-458.36121"
+             y="-163.35774"
+             id="tspan5123">#2</tspan></text>
+        <path
+           d="m -521.80588,-140.72559 6.99768,0"
+           id="path4969"
+           style="fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <text
+           x="-458.60843"
+           y="-151.46471"
+           transform="scale(1.1178946,0.89453872)"
+           id="text5127"
+           xml:space="preserve"
+           style="font-size:9.89122009px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:'Arial Black, Bold'"><tspan
+             x="-458.60843"
+             y="-151.46471"
+             id="tspan5129">#3</tspan></text>
+        <text
+           x="-528.91583"
+           y="-161.03307"
+           id="text5233"
+           xml:space="preserve"
+           style="font-size:12.81300449px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:'Arial Black, Bold'"><tspan
+             x="-528.91583"
+             y="-161.03307"
+             id="tspan5235">?</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
