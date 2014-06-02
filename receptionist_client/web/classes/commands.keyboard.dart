@@ -237,6 +237,9 @@ class _KeyboardHandler {
     Keyboard keyDown = new Keyboard();
     keybindings = {
       META    : (_) => event.bus.fire(event.keyMeta, true),
+      [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
+      [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      [Key.NumMinus] : (_) => Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)
     };
 
     keybindings.forEach((key, callback) => keyDown.register(key, (KeyboardEvent event) {

@@ -13,6 +13,11 @@ abstract class Call {
     });
   }
 
+  static void completeTransfer(model.TransferRequest request, model.Call destination) {
+    request.confirm(destination);
+  }
+
+
   /**
    * Make the service layer perform a pickup request to the call-flow-control server. 
    */
@@ -20,7 +25,7 @@ abstract class Call {
 
     event.bus.fire(event.pickupCallRequest, call);
 
-    Service.Call.next().then((model.Call call) {
+    Service.Call.pickup(call).then((model.Call call) {
       event.bus.fire(event.pickupCallSuccess, null);
     }).catchError((error) {
       event.bus.fire(event.pickupCallFailure, null);
