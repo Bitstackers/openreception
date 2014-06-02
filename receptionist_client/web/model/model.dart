@@ -55,5 +55,6 @@ part 'model-recipient.dart';
 part 'model-user.dart';
 part 'model-reception.dart';
 part 'model-reception_list.dart';
+part 'model-transfer_request.dart';
 
 const String libraryName = "model"; 
