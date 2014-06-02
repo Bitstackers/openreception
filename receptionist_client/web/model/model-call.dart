@@ -312,41 +312,6 @@ class Call implements Comparable {
   }
 
   /**
-   * Update [environment.reception] and [environment.contact] according to the
-   * [model.Reception] found in the [response].
-   */
-  void _pickupCallSuccess(protocol.Response response) {
-    Map json = response.data;
-
-    if (json.containsKey('reception_id')) {
-      int receptionId = json['reception_id'];
-
-      storage.Reception.get(receptionId).then((Reception reception) {
-        if (reception == nullReception) {
-          log.error('model.Call._pickupCallSuccess NOT FOUND reception ${receptionId}');
-        }
-
-        environment.reception = reception;
-        //environment.contact = reception.contactList.first;
-
-        log.debug('model.Call._pickupCallSuccess updated environment.reception to ${reception}');
-        //log.debug('model.Call._pickupCallSuccess updated environment.contact to ${reception.contactList.first}');
-
-      }).catchError((error) {
-        environment.reception = nullReception;
-        environment.contact = nullContact;
-
-        log.critical('model.Call._pickupCallSuccess storage.getReception failed with with ${error}');
-      });
-    } else {
-      environment.reception = nullReception;
-      environment.contact = nullContact;
-
-      log.critical('model.Call._pickupCallSuccess missing reception_id in ${json}');
-    }
-  }
-
-  /**
    * [Call] as String, for debug/log purposes.
    */
   String toString() => 'Call ${this.ID} - ${_start} - ${this.state}';
