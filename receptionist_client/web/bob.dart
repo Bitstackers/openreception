@@ -31,7 +31,7 @@ import 'classes/state.dart';
 
 import 'view/view.dart' as View;
 
-import 'model/model.dart' as model;
+import 'model/model.dart' as Model;
 
 BobActive bobActive;
 BobDisaster bobDiaster;
@@ -64,6 +64,8 @@ void main() {
       subscription.cancel();
       
       nav.registerOnPopStateListeners();
+      /// Reload the model.
+      Model.CallList.instance.reloadFromServer();
     }
   });
 }
@@ -93,13 +95,14 @@ bool handleToken() {
         configuration.userId = data['id'];
         configuration.userName = data['name'];
         
-        model.User.currentUser = new model.User (data['id'],data['name']);
+        Model.User.currentUser = new Model.User (data['id'],data['name']);
+        
         
       } else {
         //TODO: Panic action.
         log.error('bob.dart userInfo did not contain an id');
       }
-    });
+    }) ;
     return true;
   } else {
     String loginUrl = '${configuration.authBaseUrl}/token/create?returnurl=${window.location.toString()}';

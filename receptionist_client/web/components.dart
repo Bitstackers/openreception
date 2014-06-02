@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library components;
+library view;
 
 import 'dart:async';
 import 'dart:html';
@@ -37,7 +37,7 @@ import 'view/view.dart' as View;
 
 part 'components/agentinfo.dart';
 part 'components/boxwithheader.dart';
-part 'components/view-call.dart';
+part 'view/view-call.dart';
 part 'components/companyaddresses.dart';
 part 'components/companyalternatenames.dart';
 part 'components/companybankinginformation.dart';
@@ -52,7 +52,7 @@ part 'components/companysalescalls.dart';
 part 'components/companyselector.dart';
 part 'components/companytelephonenumbers.dart';
 part 'components/companywebsites.dart';
-part 'components/globalqueue.dart';
+part 'view/globalqueue.dart';
 part 'components/localqueue.dart';
 part 'components/welcomemessage.dart';
 part 'components/contactinfo.dart';

@@ -1,4 +1,4 @@
-part of components;
+part of view;
 
 abstract class CalendarLabels {
   static final String CALENDAR = 'Kalender';

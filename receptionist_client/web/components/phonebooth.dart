@@ -1,4 +1,4 @@
-part of components;
+part of view;
 
 class Phonebooth {
   Box box;

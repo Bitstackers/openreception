@@ -1,9 +1,8 @@
 #globalqueue {
-  height: 30%;
+  height: 40%;
   width: 100%;
   overflow: auto;
-  font-size: 0.9em;
-  background-color: #f1f1f1;
+  font-size: 0.7em;
 }
 
 .global-queue-zebra {
@@ -13,4 +12,14 @@
 
 .global-queue-zebra li:nth-of-type(even) {
   background-color: #eee;
+}
+
+.global-queue-zebra li {
+  width: 100%;
+}
+
+#local-call-list {
+  position: absolute; 
+  bottom: 1%; 
+  overflow: hidden;
 }

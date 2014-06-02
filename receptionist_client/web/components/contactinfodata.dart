@@ -15,7 +15,7 @@
  * View of the contact's data.
  */
 
-part of components;
+part of view;
 
 class ContactInfoData {
   UListElement backupList;

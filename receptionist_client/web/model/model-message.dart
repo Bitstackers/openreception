@@ -42,6 +42,10 @@ class Message {
     this._map[key] = newField;
   }
   
+  void update (Message other) {
+    this._map = other._map;
+  }
+  
   /**
    * Appends a message flag to the message. 
    */

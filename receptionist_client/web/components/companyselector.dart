@@ -1,4 +1,4 @@
-part of components;
+part of view;
 
 class CompanySelector {
   DivElement                            element;

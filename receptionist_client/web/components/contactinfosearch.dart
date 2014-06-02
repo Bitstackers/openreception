@@ -1,4 +1,4 @@
-part of components;
+part of view;
 
 class ContactInfoSearch {
                model.Contact       contact              = model.nullContact;

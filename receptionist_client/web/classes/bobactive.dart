@@ -47,8 +47,8 @@ class BobActive {
   CompanyRegistrationNumber compayRegistrationNumber;
   CompanyOther companyOther;
   ContactInfo contactInfo;
-  GlobalQueue globalQueue;
-  LocalQueue localQueue;
+  CallList globalQueue;
+  //LocalQueue localQueue;
   
   View.ContextSwitcher contextSwitcher;
   View.CallManagement callManagement;
@@ -91,8 +91,8 @@ class BobActive {
     companyProduct           = new CompanyProduct(querySelector('#${id.COMPANY_PRODUCT}'), home);
     contactInfo              = new ContactInfo(querySelector('#${id.CONTACT_INFO}'), home);
     sendMessage              = new View.Message(querySelector('#${id.SENDMESSAGE}'), home);
-    globalQueue              = new GlobalQueue(querySelector('#${id.GLOBAL_QUEUE}'), home);
-    localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
+    globalQueue              = new CallList(querySelector('#${id.GLOBAL_QUEUE}'), home);
+    //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
     callManagement           = new View.CallManagement(querySelector('#${constant.ID.CALL_MANAGEMENT}'));
     messageSearch = new MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
     messageList = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);

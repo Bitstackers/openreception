@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of components;
+part of view;
 
 class LocalQueue {
   Box box;
@@ -20,21 +20,17 @@ class LocalQueue {
   DivElement element;
   bool               hasFocus = false;
   String         title          = 'Lokal kø';
-  UListElement ul;
+  UListElement queuedCalls;
+  UListElement  get ownedCalls => this.element.querySelector("#local-call-list");
   List<Element> get nuges => this.element.querySelectorAll('.nudge');
 
   LocalQueue(DivElement this.element, Context this.context) {
-    SpanElement header = new SpanElement()
-      ..text = title;
     this.element.children.add(new View.Nudge('S').element);
 
-    ul = new UListElement()
-      ..classes.add('zebra')
-      ..id = 'local-queue-list';
+    ul = this.element.querySelector("#local-queue-list");
 
-    box = new Box.withHeader(element, header, ul);
 
-    context.registerFocusElement(ul);
+    this.context.registerFocusElement(ul);
 
     registerEventListerns();
     _initialFill();

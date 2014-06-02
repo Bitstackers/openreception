@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="css/companyaddresses.css?v=1">
     <link rel="stylesheet" href="css/companyalternatenames.css?v=1">
     <link rel="stylesheet" href="css/companybankinginformation.css?v=1">
-    <link rel="stylesheet" href="css/comcontexthomepanyemailaddresses.css?v=1">
+    <link rel="stylesheet" href="css/companyemailaddresses.css?v=1">
     <link rel="stylesheet" href="css/companywebsites.css?v=1">
     <link rel="stylesheet" href="css/companyregistrationnumber.css?v=1">
     <link rel="stylesheet" href="css/companyother.css?v=1">
@@ -310,15 +310,15 @@
              <p id="company-product-body" tabindex="-1"></p>
            </div>
 
-           <!-- Global Call Queue -->
-           <div id="globalqueue" style="height:20%" class="box-with-header-outer">
-             <h1 class="box-with-header-headline box-with-header-medium">::Kaldkø::</h1>
-             <div class="box-with-header-content" style="height: 176px;">
-               <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
-             </div>
+           <!-- Call List -->
+           <div id="globalqueue" class="box-with-header-outer">
+             <h1 class="box-with-header-headline box-with-header-medium">:: Opkald ::</h1>
+             <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
+             
+             <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
+             <ul class="zebra" id="local-call-list" tabindex="-1">
+             </ul>
            </div>
-           
-           <div id="localqueue" style="height:20%" ></div>
         
         </div>
        </div>
@@ -375,12 +375,12 @@
               <div class="message-search-box">
                 <div id="message-search-agent-selector"></div>
                 <div id="message-search-agent"></div>
-        <div id="message-search-type"></div>
-        <div id="message-search-company"></div>
-        <div id="message-search-contact"></div>
-        <button id="message-search-print">Print</button>
-        <button id="message-search-resend">Gensend valgte</button>
-</div>        
+                <div id="message-search-type"></div>
+                <div id="message-search-company"></div>
+                <div id="message-search-contact"></div>
+                <button id="message-search-print">Print</button>
+                <button id="message-search-resend">Gensend valgte</button>
+              </div>        
             </div>
         
             <div id="resendmessage" class="box-with-header-outer">

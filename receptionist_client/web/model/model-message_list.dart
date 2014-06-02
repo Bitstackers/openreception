@@ -39,11 +39,8 @@ class MessageList extends IterableBase<Message> {
     const String context = '${className}.update'; 
     
     if (this._map.containsKey(message.ID)) {
-      log.debugContext("Updating message ${message.ID}", context);
       this._map[message.ID].update(message);
-    } else {
-      log.debugContext("Inserting message ${message.ID}", context);
-      this._map[message.ID] = message;
+    } else {      this._map[message.ID] = message;
     }
   }
   

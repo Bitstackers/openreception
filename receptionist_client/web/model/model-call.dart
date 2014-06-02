@@ -109,8 +109,6 @@ class Call implements Comparable {
   EventBus _bus = new EventBus();
   EventBus get events => _bus;
 
-  EventBus _eventStream = event.bus;
-
   Map _data = {};
   CallState _currentState = CallState.UNKNOWN;
   String _bLeg;
@@ -204,15 +202,13 @@ class Call implements Comparable {
   void update (Call newCall) {
     const String context = '${className}.update'; 
     
-    CallState lastState = this.state;
-    
     /* Update the current internal dataset */
     this._data = newCall._data;
     
+    log.debugContext("${this.ID}: NewState: ${this.state}", context);
+    
     /* Perfom a state change. */
-    if (lastState != this.state) {
-      this.events.fire(Call.stateEventMap[this.state], null);
-    }
+    this._bus.fire(Call.stateEventMap[this.state], null);
   }
   
   /**

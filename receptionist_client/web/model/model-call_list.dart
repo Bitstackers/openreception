@@ -25,7 +25,7 @@ class CallList extends IterableBase<Call> {
 
   static const String className = "${libraryName}.CallList";
 
-  static final EventType reload = new EventType();
+  static final EventType<CallList> reload = new EventType<CallList>();
   static final EventType<Call> insert = new EventType<Call>();
   static final EventType<Call> delete = new EventType<Call>();
 
@@ -108,6 +108,7 @@ class CallList extends IterableBase<Call> {
     
     list.forEach((item){
       Call newCall = new Call.fromMap(item);
+      
       if (newCall.isCall) {
       _map[newCall.ID] = newCall;
       }
@@ -120,11 +121,29 @@ class CallList extends IterableBase<Call> {
    * Reloads the Call list from the server.
    */
   Future<CallList> reloadFromServer() {
+    
+    const String context = '${className}.reloadFromServer';
+    
     return Service.Call.list().then((CallList callList) {
       this._map = callList._map;
 
       /* Notify observers.*/
-      this._eventStream.fire(CallList.reload, null);
+      this._eventStream.fire(CallList.reload, this);
+
+      /// Look for the currently active call - if any.
+      this.forEach((Call call) {
+        if (call.assignedAgent != User.nullUserID && 
+            call.assignedAgent == User.currentUser.ID &&
+            call.state == CallState.SPEAKING) {
+            
+          log.debugContext("Found an already active call.", context);
+          Call.currentCall = call;
+          
+          Reception.get(call.receptionId).then((Reception reception) {
+            Reception.currentReception = reception;
+          });
+        }
+      });
       
       return this;
     });
