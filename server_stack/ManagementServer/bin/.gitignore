@@ -1,0 +1,3 @@
+#Don't track config files, unless it is the dist
+*.json
+!config.json.dist
