@@ -1,0 +1,11 @@
+name: server
+description: A sample command-line application
+dependencies:
+  args: any
+  http: any
+  postgresql: any
+  route: any
+  libdialplan:
+    git:
+      url: git@github.com:AdaHeads/libdialplan.git
+      ref: master
