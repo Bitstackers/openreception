@@ -360,6 +360,7 @@ class ReceptionView {
   void updateContactList(int receptionId) {
     getReceptionContactList(receptionId).then((List<CustomReceptionContact>
         contacts) {
+      contacts.sort((a, b) => a.fullName.compareTo(b.fullName));
       ulContactList.children
           ..clear()
           ..addAll(contacts.map(makeContactNode));
