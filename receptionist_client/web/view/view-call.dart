@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of components;
+part of view;
 
 class Call {
   
@@ -46,22 +46,17 @@ class Call {
     age = new DateTime.now().difference(call.start);
     element = htmlChunk.querySelector('.call-queue-item-default');
         
-    (pickupButton = htmlChunk.querySelector('.pickup-button'))
-     ..onClick.listen((_) { call.pickup();})
-     ..hidden = !call.availableForUser(model.User.currentUser);
-    
-    (parkButton = htmlChunk.querySelector('.park-button'))
-      ..onClick.listen((_) { call.park();})
-       ..hidden = (call.availableForUser(model.User.currentUser) && 
-                   call.state != model.CallState.SPEAKING);
-    
-    (hangupButton = htmlChunk.querySelector('.hangup-button'))
-     ..onClick.listen((_) {call.hangup();})
-     ..hidden =  call.assignedAgent != model.User.currentUser;
+    this.pickupButton = htmlChunk.querySelector('.pickup-button')
+     ..onClick.listen((_) { call.pickup();});
 
-    (transferButton = htmlChunk.querySelector('.transfer-button'))
-     ..onClick.listen((_) {call.transfer (model.Call.currentCall);})
-     ..hidden = call.assignedAgent != model.User.currentUser;
+    this.parkButton = htmlChunk.querySelector('.park-button')
+      ..onClick.listen((_) { call.park();});
+    
+    this.hangupButton = htmlChunk.querySelector('.hangup-button')
+     ..onClick.listen((_) {call.hangup();});
+
+    this.transferButton = htmlChunk.querySelector('.transfer-button')
+     ..onClick.listen((_) {call.transfer (model.Call.currentCall);});
 
     ageElement = element.querySelector('.call-queue-item-seconds')
         ..text = _renderDuration(age);
@@ -79,6 +74,7 @@ class Call {
       ageElement.text = _renderDuration(age);
     });
     
+    this._renderButtons();
   }
 
   /**
@@ -99,6 +95,19 @@ class Call {
     } else {
       return '0:${duration.inSeconds}';
     }
+  }
+  
+  void render() {
+    this._renderButtons();
+  }
+  
+  void _renderButtons () {
+    this.pickupButton.hidden   = ! (call.availableForUser(model.User.currentUser) && 
+                                    call.state != model.CallState.SPEAKING);
+    this.parkButton.hidden     = ! (call.availableForUser(model.User.currentUser) && 
+                                    call.state == model.CallState.SPEAKING);
+    this.hangupButton.hidden   = ! (call.assignedAgent == model.User.currentUser);
+    this.transferButton.hidden = ! (call.assignedAgent == model.User.currentUser);
   }
   
   /**
@@ -122,7 +131,11 @@ class Call {
   void _callQueueRemoveHandler (_) {
     const String context = '${className}._callQueueRemoveHandler';
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
-      this.element.hidden = true;
+    this.element.classes.toggle("answered", true);
+    
+    this.element.hidden = true;
+    
+    this._renderButtons();
   }
 
   /**
@@ -132,7 +145,7 @@ class Call {
     const String context = '${className}._callParkHandler';
     log.debugContext("Unhiding call ${this.call.ID} from call list.", context);
       this.element.hidden = false;
-      transferButton.hidden = false;
+      this._renderButtons();
   }
 
   /**
