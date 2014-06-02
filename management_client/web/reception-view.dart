@@ -16,7 +16,7 @@ class ReceptionView {
   String addNewLiClass = 'addnew';
   String viewName = 'reception';
   DivElement element;
-  InputElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,
+  TextAreaElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,
       inputCostumerstype, inputReceptionNumber;
   ButtonElement buttonDialplan;
   CheckboxInputElement inputEnabled;
@@ -179,6 +179,7 @@ class ReceptionView {
     inputEnabled.checked = true;
     inputReceptionNumber.value = '';
     inputCostumerstype.value = '';
+    inputShortGreeting.value = '';
     inputGreeting.value = '';
     inputOther.value = '';
     inputProduct.value = '';
@@ -260,6 +261,7 @@ class ReceptionView {
         ..number = inputReceptionNumber.value
 
         ..customertype = inputCostumerstype.value
+        ..shortGreeting = inputShortGreeting.value
         ..greeting = inputGreeting.value
         ..other = inputOther.value
         ..product = inputProduct.value
@@ -317,8 +319,8 @@ class ReceptionView {
         inputFullName.value = response.full_name;
         inputEnabled.checked = response.enabled;
         inputReceptionNumber.value = response.number;
-
         inputCostumerstype.value = response.customertype;
+        inputShortGreeting.value = response.shortGreeting;
         inputGreeting.value = response.greeting;
         inputOther.value = response.other;
         inputProduct.value = response.product;
@@ -336,23 +338,24 @@ class ReceptionView {
 
       updateContactList(receptionId);
     } else {
-      inputFullName.value = '';
-      inputEnabled.checked = false;
-
-      inputCostumerstype.value = '';
-      inputGreeting.value = '';
-      inputOther.value = '';
-      inputProduct.value = '';
-      fillList(ulAddresses, []);
-      fillList(ulAlternatenames, []);
-      fillList(ulBankinginformation, []);
-      fillList(ulCrapcallhandling, []);
-      fillList(ulEmailaddresses, []);
-      fillList(ulHandlings, []);
-      fillList(ulOpeninghours, []);
-      fillList(ulRegistrationnumbers, []);
-      fillList(ulTelephonenumbers, []);
-      fillList(ulWebsites, []);
+//      inputFullName.value = '';
+//      inputEnabled.checked = false;
+//
+//      inputCostumerstype.value = '';
+//      inputGreeting.value = '';
+//      inputOther.value = '';
+//      inputProduct.value = '';
+//      fillList(ulAddresses, []);
+//      fillList(ulAlternatenames, []);
+//      fillList(ulBankinginformation, []);
+//      fillList(ulCrapcallhandling, []);
+//      fillList(ulEmailaddresses, []);
+//      fillList(ulHandlings, []);
+//      fillList(ulOpeninghours, []);
+//      fillList(ulRegistrationnumbers, []);
+//      fillList(ulTelephonenumbers, []);
+//      fillList(ulWebsites, []);
+      clearContent();
       updateContactList(receptionId);
     }
   }

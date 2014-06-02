@@ -13,7 +13,7 @@ class OrganizationView {
   String viewName = 'organization';
   DivElement element;
   UListElement uiList;
-  InputElement inputName, inputBilltype, inputFlag;
+  TextAreaElement inputName, inputBilltype, inputFlag;
   ButtonElement buttonCreate, buttonSave, buttonDelete;
   SearchInputElement searchBox;
   UListElement ulReceptionList;

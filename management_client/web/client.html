@@ -32,15 +32,15 @@
       <div id="organization-content">
         <table>
           <tr>
-            <td><label for="organization-input-name">Navn</label> <input id="organization-input-name" type="text"></td>
+            <td><label for="organization-input-name">Navn</label> <textarea rows="1" id="organization-input-name" type="text"></textarea></td>
           </tr>
 
           <tr>
-            <td><label for="organization-input-billtype">Regnings type</label> <input id="organization-input-billtype" type="text"></td>
+            <td><label for="organization-input-billtype">Regnings type</label> <textarea rows="1" id="organization-input-billtype" type="text"></textarea></td>
           </tr>
 
           <tr>
-            <td><label for="organization-input-flag">Flag</label> <input id="organization-input-flag" type="text"></td>
+            <td><label for="organization-input-flag">Flag</label> <textarea rows="1" id="organization-input-flag" type="text"></textarea></td>
           </tr>
         </table>
 
@@ -73,37 +73,57 @@
       <div id="reception-content">
         <table class="content-table">
           <tr>
-            <td><label for="reception-input-name">Navn</label><input
-              id="reception-input-name"></td>
-            <td><label>Organisation</label>
-              <div id="reception-organization-selector"></div></td>
+            <td>
+              <label for="reception-input-name">Navn</label>
+              <textarea rows="1" id="reception-input-name"> </textarea>
+            </td>
+            <td>
+              <label>Organisation</label>
+              <div id="reception-organization-selector"></div>
+            </td>
           </tr>
 
           <tr>
-            <td><label for="reception-input-shortgreeting">Kort Velkomst</label><input
-              id="reception-input-shortgreeting"></td>
-            <td><label for="reception-input-customertype">Kundetype</label><input
-              id="reception-input-customertype"></td>
+            <td>
+              <label for="reception-input-shortgreeting">Kort Velkomst</label>
+              <textarea rows="1"  id="reception-input-shortgreeting"></textarea>
+            </td>
+            <td>
+              <label for="reception-input-customertype">Kundetype</label>
+              <textarea rows="1"  id="reception-input-customertype"></textarea>
+            </td>
           </tr>
 
           <tr>
-            <td><label for="reception-input-greeting">Velkomst
-                besked</label><input id="reception-input-greeting"></td>
-            <td><label for="reception-input-other">Andet</label><input
-              id="reception-input-other"></td>
+            <td>
+              <label for="reception-input-greeting">Velkomst besked</label>
+              <textarea rows="1" id="reception-input-greeting"></textarea>
+            </td>
+            <td>
+              <label for="reception-input-other">Andet</label>
+              <textarea rows="1" id="reception-input-other"></textarea>
+            </td>
           </tr>
 
           <tr>
-            <td><label for="reception-input-product">Produktbeskrivelse</label><input
-              id="reception-input-product"></td>
-            <td><label for="reception-input-enabled">Aktiv</label><input
-              id="reception-input-enabled" type="checkbox"></td>
+            <td>
+              <label for="reception-input-product">Produktbeskrivelse</label>
+              <textarea rows="1" id="reception-input-product"></textarea>
+            </td>
+            <td>
+              <label for="reception-input-enabled">Aktiv</label>
+              <input rows="1" id="reception-input-enabled" type="checkbox">
+            </td>
           </tr>
 
           <tr>
-            <td><label>Reception-telefon-nummber</label><input
-              id="reception-input-receptionnumber"></input></td>
-            <td><button disabled id="reception-button-dialplan">Dialplan</button></td>
+            <td>
+              <label>Reception-telefon-nummber</label>
+              <textarea rows="1" id="reception-input-receptionnumber"></textarea>
+            </td>
+            <td>
+              <button disabled id="reception-button-dialplan">Dialplan</button>
+            </td>
           </tr>
 
           <tr>
@@ -187,15 +207,15 @@
         <ul id="reception-contacts"></ul>
       </div>
       <div id="contact-rightbar">
-        <div>
+        <div id="contact-organization-container">
           <div>
             <span>Organisationer</span>
             <ul id="contact-organization-list" class="zebra"></ul>
           </div>
         </div>
-        <div>
+
+        <div  id="contact-reception-container">
           <div>
-            <span>Receptioner</span>
             <ul id="contact-reception-list" class="zebra"></ul>
           </div>
         </div>
