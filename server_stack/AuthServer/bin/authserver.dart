@@ -15,7 +15,7 @@ import '../lib/token_watcher.dart' as watcher;
 ArgResults    parsedArgs;
 ArgParser     parser = new ArgParser();
 
-void main(List<String> args) {  
+void main(List<String> args) {
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -27,12 +27,12 @@ void main(List<String> args) {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
         .then((_) => handleLogger())
-        .then((_) => log(config))
+        .then((_) => log(config.toString()))
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => watcher.setup())
         .then((_) => http.start(config.httpport, router.setup))
-        .catchError((e) { 
+        .catchError((e) {
           log('main() -> config.whenLoaded() ${e}');
           throw e;
         });
@@ -60,7 +60,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('tokenexpiretime', help: 'The time in seconds a token is valid. Refreshed on use. Defaults to 3600');
   parser.addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false);
   parser.addOption('sysloghost',      help: 'The syslog host. Defaults to localhost');
-  
+
   parsedArgs = parser.parse(arguments);
 }
 
