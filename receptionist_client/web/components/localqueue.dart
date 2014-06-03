@@ -13,6 +13,10 @@
 
 part of view;
 
+/**
+ * Currently unused, and part of the CallList View. 
+ */
+
 class LocalQueue {
   Box box;
   model.Call call = model.nullCall;
@@ -25,7 +29,7 @@ class LocalQueue {
   List<Element> get nuges => this.element.querySelectorAll('.nudge');
 
   LocalQueue(DivElement this.element, Context this.context) {
-    this.element.children.add(new View.Nudge('S').element);
+    this.element.children.add(new Nudge('S').element);
 
     ul = this.element.querySelector("#local-queue-list");
 

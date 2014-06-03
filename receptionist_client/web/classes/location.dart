@@ -3,7 +3,7 @@ library location;
 import 'dart:html';
 import 'dart:math' show pow;
 
-import '../components.dart';
+import '../view/view.dart';
 import 'events.dart' as event;
 import 'id.dart' as id;
 import 'logger.dart';

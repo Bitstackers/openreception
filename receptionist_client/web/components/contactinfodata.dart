@@ -76,7 +76,7 @@ class ContactInfoData {
           ..classes.add(item.kind);
 
       if (index < shortCuts.length ) {
-        number.children.add(new View.Nudge(shortCuts[index]).element);
+        number.children.add(new Nudge(shortCuts[index]).element);
       }
       index++;
 

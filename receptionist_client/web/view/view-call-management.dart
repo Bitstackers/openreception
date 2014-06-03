@@ -28,7 +28,7 @@ class CallManagement {
   ButtonElement  hangupcallButton;
   ButtonElement  holdcallButton;
   DivElement     currentCallContainer;
-  Component.Call currentCall;
+  Call           currentCallWidget;
   bool           get muted => false; //TODO: Change to check location.
   List<Element>  get nuges => this.node.querySelectorAll('.nudge');
 
@@ -61,9 +61,9 @@ class CallManagement {
     
     if (call != model.nullCall) {
       print ("!! Changing calls");
-      this.currentCall = new Component.Call (call);
+      this.currentCallWidget = new Call (call);
       
-      this.currentCallContainer.children.add(currentCall.element);
+      this.currentCallContainer.children.add(currentCallWidget.element);
       this.currentCallContainer.children.add(new HeadElement()..text = "asd");
     } else {
       
