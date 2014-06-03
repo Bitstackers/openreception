@@ -387,67 +387,66 @@
               <h1 class="box-with-header-headline box-with-header-medium"> :: Besked :: </h1>
               <div class="box-with-header-content" style="height: 443px;">
               
-              <div class="resend-message-container">
-                <div class="resend-message-recipient-container box-with-header-outer">
-                  <ul id="resend-message-recipient-list"></ul>
-                </div>
+                <div class="resend-message-container">
+                  <div class="resend-message-recipient-container box-with-header-outer">
+                    <ul id="resend-message-recipient-list"></ul>
+                  </div>
             
-                <input id="resendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1">
-                <input id="resendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly="">
-                <input id="resendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1">
-                <input id="resendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1">
-                <input id="resendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon" tabindex="-1">
-                <input id="resendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil" tabindex="-1">
-                <input id="resendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer" tabindex="-1">
-                <textarea style="resize: none;" id="resendmessagetext" class="send-message-text send-message-field" placeholder="Besked" tabindex="-1"></textarea>
+                  <input id="resendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1">
+                  <input id="resendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly="">
+                  <input id="resendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1">
+                  <input id="resendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1">
+                  <input id="resendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon" tabindex="-1">
+                  <input id="resendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil" tabindex="-1">
+                  <input id="resendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer" tabindex="-1">
+                  <textarea style="resize: none;" id="resendmessagetext" class="send-message-text send-message-field" placeholder="Besked" tabindex="-1"></textarea>
                 
-                <ul>
-                  <li>
-                    <input type="checkbox" name="resend-message-pleasecall" id="resend-message-pleasecall">
-                    <label for="resend-message-pleasecall">:: Ring venligst ::</label>
-                  </li>
-                  <li>
-                    <input type="checkbox" name="resend-message-callsback" id="resend-message-callsback">
-                    <label for="resend-message-callsback">:: Ringer selv tilbage ::</label>
-                  </li>
-                  <li>
-                    <input type="checkbox" name="resend-message-hascalled" id="resend-message-hascalled">
-                    <label for="resend-message-hascalled">:: Har ringet ::</label>
-                  </li>
-                  <li>  
-                    <input type="checkbox" name="resend-message-urgent" id="resend-message-urgent">
-                    <label for="resend-message-callsback">:: Haster ::</label>
-                  </li>
-                </ul>
-                <div class="resend-message-button-container">
-                  <button id="resendmessagecancel" tabindex="-1">Annuller</button>
-                  <button id="resendmessagedraft" tabindex="-1">Gem</button>
-                  <button id="resendmessagesend" tabindex="-1">Send</button>
+                  <ul>
+                    <li>
+                      <input type="checkbox" name="resend-message-pleasecall" id="resend-message-pleasecall">
+                      <label for="resend-message-pleasecall">:: Ring venligst ::</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="resend-message-callsback" id="resend-message-callsback">
+                      <label for="resend-message-callsback">:: Ringer selv tilbage ::</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="resend-message-hascalled" id="resend-message-hascalled">
+                      <label for="resend-message-hascalled">:: Har ringet ::</label>
+                    </li>
+                    <li>  
+                      <input type="checkbox" name="resend-message-urgent" id="resend-message-urgent">
+                      <label for="resend-message-callsback">:: Haster ::</label>
+                    </li>
+                  </ul>
+                  <div class="resend-message-button-container">
+                    <button id="resendmessagecancel" tabindex="-1">Annuller</button>
+                    <button id="resendmessagedraft" tabindex="-1">Gem</button>
+                    <button id="resendmessagesend" tabindex="-1">Send</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-         </div>
-        <!-- Right column -->
-      <div style="margin-left: 1%;width: 69%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc; background-color: green;">
-        <div id="messageoverview" class="no-chrome">
-          <table>
-            <thead>
-              <tr>
-                <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
-                <th id="message-overview-header-timestamp"> :: Tidspunkt :: </th>
-                <th id="message-overview-header-caller"> :: Opkalder :: </th>
-                <th id="message-overview-header-context"> :: Kontekst :: </th>
-                <th id="message-overview-header-agent"> :: Agent :: </th>
-                <th id="message-overview-header-status"> :: Status :: </th>
-              </tr>
-            </thead>
-            <tbody />
-          </table>
+          <!-- Right column -->
+          <div style="margin-left: 1%;width: 69%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc; background-color: green;">
+            <div id="messageoverview" class="no-chrome">
+              <table>
+                <thead>
+                  <tr>
+                    <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
+                    <th id="message-overview-header-timestamp"> :: Tidspunkt :: </th>
+                    <th id="message-overview-header-caller"> :: Opkalder :: </th>
+                    <th id="message-overview-header-context"> :: Kontekst :: </th>
+                    <th id="message-overview-header-agent"> :: Agent :: </th>
+                    <th id="message-overview-header-status"> :: Status :: </th>
+                  </tr>
+                </thead>
+                <tbody />
+              </table>
+            </div>
+          </div>
         </div>
-        </div>
-        </div>
-        
       </section>
       
       <section id="contextlog" data-default-widget="logbox" class="context hidden">
@@ -467,7 +466,7 @@
         <p id="voicebox">contextvoicemails</p>
       </section>
     </div>
- <script type="application/dart" src="bob.dart"></script>
+    <script type="application/dart" src="bob.dart"></script>
     <script src="packages/browser/dart.js"></script>
   </body>
 </html>
