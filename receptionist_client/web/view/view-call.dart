@@ -13,6 +13,9 @@
 
 part of view;
 
+/**
+ * Widget representing a call. 
+ */
 class Call {
   
   static const String className = '${libraryName}.Call';

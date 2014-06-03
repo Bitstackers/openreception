@@ -1,5 +1,5 @@
 /*                     This file is part of Bob
-                   Copyright (C) 2012-, AdaHeads K/S
+                   Copyright (C) 2014-, AdaHeads K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * 
+ * Temporary widget for performing common call-related tasks.
  */
 
 class CallManagement {
@@ -74,15 +74,15 @@ class CallManagement {
   }
 
   void _originationStarted(String number) {
-    this.node.querySelector('#current-call-info').text = 'Ringer til ${number}..';
+    this.currentCallContainer.text = 'Ringer til ${number}..';
   }
 
   void _originationSucceded(dynamic) {
-    this.node.querySelector('#current-call-info').text = 'Forbundet!';
+    this.currentCallContainer.text = 'Forbundet!';
   }
 
   void _originationFailed(dynamic) {
-    this.node.querySelector('#current-call-info').text = 'Fejlet!';
+    this.currentCallContainer.text = 'Fejlet!';
   }
 
   void _handleHangup(dynamic) {

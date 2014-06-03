@@ -39,18 +39,19 @@ import '../classes/commands.keyboard.dart';
 import '../protocol/protocol.dart' as protocol;
 import '../storage/storage.dart' as storage;
 
+part 'view-call.dart';
+part 'view-call_list.dart';
 part 'view-call-management.dart';
 part 'view-contextswitcher.dart';
+part 'view-logbox.dart';
 part 'view-message-list.dart';
 part 'view-notification.dart';
-part 'view-reception-events.dart';
 part 'view-nudge.dart';
+part 'view-reception-events.dart';
 part 'view-message.dart';
-part 'view-call_list.dart';
 
 part '../components/agentinfo.dart';
 part '../components/boxwithheader.dart';
-part '../view/view-call.dart';
 part '../components/companyaddresses.dart';
 part '../components/companyalternatenames.dart';
 part '../components/companybankinginformation.dart';
@@ -73,7 +74,6 @@ part '../components/contactinfocalendar.dart';
 part '../components/contactinfodata.dart';
 part '../components/constants.dart';
 part '../components/messagesearch.dart';
-part '../components/logbox.dart';
 part '../components/phonebooth.dart';
 part '../components/searchcomponent.dart';
 

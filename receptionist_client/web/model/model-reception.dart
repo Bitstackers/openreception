@@ -104,6 +104,8 @@ class Reception extends BasicReception{
 
   static Reception _currentReception = nullReception;
   
+  static final EventType<Reception> currentReceptionChanged = new EventType<Reception>();
+  
   static Reception get currentReception                       =>  _currentReception;
   static           set currentReception (Reception reception) {
     _currentReception = reception;

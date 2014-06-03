@@ -15,9 +15,7 @@
 /**
  * Calendar widget. 
  * 
- * Hooks into Model.Calendar data feed.
- * 
- * Responds to global events:
+ * Hooks into Model.Reception event stream and responds to the following events:
  *  - ReceptionChanged 
  *  - ContactChanged
  */
