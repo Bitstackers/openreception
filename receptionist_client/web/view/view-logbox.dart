@@ -12,6 +12,10 @@
 */
 part of view;
 
+/**
+ * LogBox widget. Subscribes into the [userLogStream] of the [logger] and 
+ * appends each log entry to the body of the widget. 
+ */
 class LogBox {
   Box             box;
   DivElement      element;
