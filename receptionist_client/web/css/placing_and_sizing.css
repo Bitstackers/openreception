@@ -17,6 +17,33 @@ body {
   font-weight: normal;
 }
 
+fieldset {
+  border-radius: 4px;
+  margin: 0.3em 0;
+  padding-bottom: 1.1em;
+}
+
+fieldset legend {
+  display: inline;
+  line-height: 16px;
+  text-indent: 1em;
+  font-size: 0.7em;
+  font-weight: bold;
+  padding: 1px 1em;
+  margin-left: 1em;
+  min-height: 16px;
+  background-repeat: no-repeat;
+}
+
+fieldset#companyevents legend {
+  background-image: url('../images/calendar-icon-16x16.png');
+}
+
+fieldset#companyhandling legend {
+  background-image: url('../images/alert-icon-16x16.png');
+}
+
+
 /*
   This rule disables the dotted line Firefox adds to the latest clicked button
   element.
@@ -71,5 +98,37 @@ button::-moz-focus-inner {
 }
 
 .focus {
-  border: 2px solid red !important;
+  border: 2px dashed black !important;
+}
+
+#notifications {
+}
+#notifications>h4 {
+  font-size:0.8em;
+
+  padding:10px 36px;
+  margin:10px;
+
+  color:#555;
+  border-radius: 4px;
+  font-weight:bold;
+
+  background:#fff8c4 url('../images/warning.png') no-repeat 10px 50%;
+  border:1px solid #f2c779;
+}
+.error {
+  background:#ffecec url('../images/error.png') no-repeat 10px 50%;
+  border:1px solid #f5aca6;
+}
+.success {
+  background:#e9ffd9 url('../images/success.png') no-repeat 10px 50%;
+  border:1px solid #a6ca8a;
+}
+.warning {
+  background:#fff8c4 url('../images/warning.png') no-repeat 10px 50%;
+  border:1px solid #f2c779;
+}
+.notice {
+  background:#e3f7fc url('../images/notice.png') no-repeat 10px 50%;
+  border:1px solid #8ed9f6;
 }

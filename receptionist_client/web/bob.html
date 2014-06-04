@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="css/phonebooth.css?v=1">
   </head>
   <body>
-   <div id="notifications" style="width:30%; background-color:yellow; z-index:99; position:absolute; margin: 0% 35%;"></div>  
+   <div id="notifications" style="width:30%; z-index:9999; position:absolute; margin: 0% 35%;"></div>  
 
     <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div> 
     <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
@@ -137,24 +137,17 @@
           
           <div id="companyselector" data-default-element="company-selector-searchbar"></div>
           
-          <div id="companyevents" data-default-element="company_events_list" class="box-with-header-outer">
-            <h1 class="box-with-header-headline box-with-header-medium">
-              <span>Kalender</span>
-            </h1>
-            <div class="box-with-header-content">
-              <ul id="company_events_list" class="zebra"></ul>
+          <fieldset id="companyevents" data-default-element="company_events_list">
+            <legend> :: Kalender :: </legend>
+            <div>
+            <ul id="company_events_list" class="zebra"></ul>
             </div>
-          </div>
+          </fieldset>
 
-
-          <div id="companyhandling" data-default-element="company_handling_list" class="box-with-header-outer focus" >
-            <h1 class="box-with-header-headline box-with-header-medium">
-              <span>:: Håndtering ::</span>
-            </h1>
-            <div class="box-with-header-content">
-              <ul id="company_handling_list" class="zebra" tabindex="-1"></ul>
-            </div>
-          </div>
+          <fieldset id="companyhandling" data-default-element="company_handling_list" >
+            <legend>:: Håndtering ::</legend>
+            <ul id="company_handling_list" class="zebra"></ul>
+          </fieldset>
        
           <div id="sendmessage" class="box-with-header-outer"> <!-- Make the content for the box here. -->
             <h1 class="box-with-header-headline box-with-header-medium">:: Besked ::</h1>

@@ -10,7 +10,11 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
+part of view;
 
+abstract class ReceptionEventsLabels {
+  static const String title    = 'Kalender';
+}
 
 /**
  * Calendar widget. 
@@ -19,23 +23,17 @@
  *  - ReceptionChanged 
  *  - ContactChanged
  */
-part of view;
-
 class ReceptionEvents {
     
   Context      context;
-  DivElement   element;
-  SpanElement  header;
-  String       title    = 'Kalender';
-  UListElement ul;
+  Element      element;
+  Element      get header  => this.element.querySelector('legend');
+  UListElement get listElement => this.element.querySelector('ul');
 
-
-  ReceptionEvents(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  ReceptionEvents(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
-    this.ul = element.querySelector('#${id.COMPANY_EVENTS_LIST}');
-
+    this.header.text = ReceptionEventsLabels.title;
     _registerEventListeners();
   }
 
@@ -47,14 +45,14 @@ class ReceptionEvents {
     });
 
     element.onClick.listen((_) {
-      Controller.Context.changeLocation(new nav.Location(context.id, element.id, ul.id));
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id));
     });
     
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       //element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        listElement.focus();
       }
     });
   }
@@ -64,7 +62,7 @@ class ReceptionEvents {
   }
 
   void _render(model.CalendarEventList calendar) {
-    ul.children.clear();
+    listElement.children.clear();
 
     for(model.CalendarEvent event in calendar) {
       String html = '''
@@ -88,7 +86,7 @@ class ReceptionEvents {
         </li>
       ''';
 
-      ul.children.add(new DocumentFragment.html(html).children.first);
+      listElement.children.add(new DocumentFragment.html(html).children.first);
     }
   }
 }

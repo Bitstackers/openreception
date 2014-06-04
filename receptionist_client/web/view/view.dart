@@ -57,7 +57,7 @@ part '../components/companyalternatenames.dart';
 part '../components/companybankinginformation.dart';
 part '../components/companycustomertype.dart';
 part '../components/companyemailaddresses.dart';
-part '../components/view-reception-handling.dart';
+part 'view-reception-handling.dart';
 part '../components/companyopeninghours.dart';
 part '../components/companyother.dart';
 part '../components/companyproduct.dart';
@@ -87,6 +87,7 @@ abstract class StyleClass {
   }
 }
 
+const String defaultElementId = 'data-default-element';
 
 typedef void onCallQueueClick(MouseEvent event, Call queueItem);
 

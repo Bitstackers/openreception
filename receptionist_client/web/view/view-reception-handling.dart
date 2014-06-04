@@ -13,6 +13,10 @@
 
 part of view;
 
+abstract class ReceptionHandlingLabels {
+  static const String title = 'Håndtering';
+}
+
 /**
  * Widget for cleartext instruction used for instructing users on how to 
  * handle the call for the reception.
@@ -23,32 +27,31 @@ part of view;
  * The data used in this widget is [model.Reception].
  */
 class ReceptionHandling {
-  Box box;
-  Context context;
-  DivElement element;
-  bool hasFocus = false;
-  SpanElement header;
-  UListElement ul;
-  String title = 'Håndtering';
 
-  ReceptionHandling(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  static const String className = '${libraryName}.ReceptionHandling';
+
+  Context          context;
+  Element          element;
+  UListElement get listElement => this.element.querySelector('ul');
+  Element      get header      => this.element.querySelector('legend');
+
+  ReceptionHandling(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
 
-    ul = element.querySelector('#${id.COMPANY_HANDLING_LIST}');
-
+    this.header.text = ReceptionHandlingLabels.title;
     _registerEventListeners();
   }
 
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen(render);
-    event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, ul));
-    element.onClick.listen((_) => event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id)));
+    event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, listElement));
+    element.onClick.listen((_) => event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, listElement.id)));
   }
 
   void render(model.Reception reception) {
-    ul.children.clear();
+    listElement.children.clear();
 
-    reception.handlingList.forEach((value) => ul.children.add(new LIElement()..text = value.value));
+
+    reception.handlingList.forEach((value) => listElement.children.add(new LIElement()..text = value.value));
   }
 }
