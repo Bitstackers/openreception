@@ -13,10 +13,17 @@
 
 part of view;
 
+/**
+ * Labels for the CallList widget.
+ */
 abstract class CallListLabels {
   static const String Title = 'Opkald';
 }
 
+
+/**
+ * 
+ */
 class CallList {
 
   static const String className = '${libraryName}.CallList';
@@ -65,7 +72,6 @@ class CallList {
   }
 
   void renderList(model.CallList callList) {
-    print ("!! reloading list!");
     callList.where((model.Call call) => call.availableForUser(model.User.currentUser)).forEach((model.Call call) {
       if ([model.CallState.PARKED, model.CallState.SPEAKING].contains(call.state)) {
         this._addCall(call, this.ownedCallsUL);
