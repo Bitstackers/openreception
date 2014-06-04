@@ -197,6 +197,7 @@ class _KeyboardHandler {
       'Alt+H'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Alt+B'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
       'Alt+S'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
+      'Alt+M'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
       'Alt+P'     : (_) => Controller.Call.pickupNext(),
       'Alt+L'     : (_) => Controller.Call.park(Model.Call.currentCall),
       'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
