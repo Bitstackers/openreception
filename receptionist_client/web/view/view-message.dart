@@ -119,6 +119,7 @@ class Message {
     
     this.element.querySelectorAll('input').forEach((InputElement element) {
       element.value = "";
+      element.checked = false;
     });
 
     this.element.querySelectorAll('textarea').forEach((TextAreaElement element) {
