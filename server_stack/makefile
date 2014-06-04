@@ -9,15 +9,17 @@ PREFIX?=/usr/local/databaseservers
 OUTPUT_DIRECTORY=out
 
 AuthBinary=AuthServer.dart
+CallFlowBinary=CallFlow.dart
 ContactBinary=ContactServer.dart
 LogBinary=LogServer.dart
 MessageBinary=MessageServer.dart
+MessageDispatcherBinary=MessageDispatcher.dart
 MiscBinary=MiscServer.dart
 ReceptionBinary=ReceptionServer.dart
 
 -include makefile.dbsetup
 
-all: auth contact log message misc reception $(OUTPUT_DIRECTORY)/NotificationServer.dart
+all: auth callflow contact log message messagedispatcher misc reception $(OUTPUT_DIRECTORY)/NotificationServer.dart
 
 configs: */bin/config.json.dist
 	for source in */bin/config.json.dist; do \
@@ -28,6 +30,10 @@ configs: */bin/config.json.dist
 auth: $(OUTPUT_DIRECTORY)
 	cd AuthServer/ && pub get 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart
+
+callflow: $(OUTPUT_DIRECTORY)
+	cd CallFlowControl/ && pub get 
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server CallFlowControl/bin/callflowcontrol.dart
 
 contact: $(OUTPUT_DIRECTORY)
 	cd ContactServer/ && pub get 
@@ -40,6 +46,10 @@ log: $(OUTPUT_DIRECTORY)
 message: $(OUTPUT_DIRECTORY)
 	cd MessageServer/ && pub get
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server MessageServer/bin/messageserver.dart
+
+messagedispatcher: $(OUTPUT_DIRECTORY)
+	cd MessageDispatcher/ && pub get
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageDispatcherBinary} --categories=Server MessageDispatcher/bin/messagedispacher.dart
 
 misc: $(OUTPUT_DIRECTORY)
 	cd MiscServer/ && pub get
