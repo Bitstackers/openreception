@@ -2,7 +2,6 @@
   height: 40%;
   width: 100%;
   overflow: auto;
-  font-size: 0.7em;
 }
 
 .global-queue-zebra {
@@ -18,8 +17,9 @@
   width: 100%;
 }
 
-#local-call-list {
+#local-calls {
   position: absolute; 
-  bottom: 1%; 
+  bottom: 1%;
+  width: 18.5%; 
   overflow: hidden;
 }

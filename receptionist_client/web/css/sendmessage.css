@@ -139,6 +139,20 @@ send-message-button-container {
 }
 
 #send-message-recipient-list {
+  inherit: none;
   list-style-type: none;
   display: inline;  
+}
+
+li.email-recipient-role-to {
+  list-style-image: url('../images/email-role-to-icon-16x16.png');  
+}
+
+
+li.email-recipient-role-cc {
+  list-style-image: url('../images/email-role-cc-icon-16x16.png');  
+}
+
+li.email-recipient-role-bcc {
+  list-style-image: url('../images/email-role-bcc-icon-16x16.png');  
 }

@@ -36,34 +36,34 @@ class Message {
 
   static const String className = '${libraryName}.Message';
 
-  final DivElement element;
+  final Element element;
   final Context context;
    
-  DivElement     get body   => this.element.querySelector('.send-message-container');
-  HeadingElement get header => this.element.querySelector('h1');
-
-  InputElement get sendmessagesearchbox    => this.body.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
-  InputElement get sendmessagesearchresult => this.body.querySelector('#sendmessagesearchresult');
-  InputElement callerNameField;
-  InputElement callerCompanyField;
-  InputElement callerPhoneField;
-  InputElement callerCellphoneField;
-  InputElement callerLocalExtensionField;
-  TextAreaElement messageBodyField;
+  Element         get header                    => this.element.querySelector('legend');
+  InputElement    get sendmessagesearchbox      => this.element.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
+  InputElement    get sendmessagesearchresult   => this.element.querySelector('#sendmessagesearchresult');
+  InputElement    get callerNameField           => this.element.querySelector('#sendmessagename');
+  InputElement    get callerCompanyField        => this.element.querySelector('#sendmessagecompany');
+  InputElement    get callerPhoneField          => this.element.querySelector('#sendmessagephone');
+  InputElement    get callerCellphoneField      => this.element.querySelector('#sendmessagecellphone');
+  InputElement    get callerLocalExtensionField => this.element.querySelector('#sendmessagelocalno');
+  TextAreaElement get messageBodyField          => this.element.querySelector('#sendmessagetext');
 
   /// Checkboxes
-  InputElement get pleaseCall => this.body.querySelector('#send-message-pleasecall');
-  InputElement get callsBack  => this.body.querySelector('#send-message-callsback');
-  InputElement get hasCalled  => this.body.querySelector('#send-message-hascalled');
-  InputElement get urgent     => this.body.querySelector('#send-message-urgent');
+  InputElement get pleaseCall => this.element.querySelector('#send-message-pleasecall');
+  InputElement get callsBack  => this.element.querySelector('#send-message-callsback');
+  InputElement get hasCalled  => this.element.querySelector('#send-message-hascalled');
+  InputElement get urgent     => this.element.querySelector('#send-message-urgent');
+  
+  /// Widget control buttons
+  ButtonElement get cancelButton => this.element.querySelector('#sendmessagecancel');
+  ButtonElement get draftButton  => this.element.querySelector('#sendmessagedraft');
+  ButtonElement get sendButton   => this.element.querySelector('#sendmessagesend');
+
   
   bool hasFocus = false;
 
-  ButtonElement cancelButton;
-  ButtonElement draftButton;
-  ButtonElement sendButton;
-
-  UListElement recipientsList;
+  UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
 
   List<Element> focusElements;
 
@@ -128,31 +128,22 @@ class Message {
     log.debugContext('Message Cleared', context);
   }
 
-  Message(DivElement this.element, Context this.context) {
+  Message(Element this.element, Context this.context) {
   
-    callerNameField = body.querySelector('#sendmessagename');
-    callerCompanyField = body.querySelector('#sendmessagecompany');
-    callerPhoneField = body.querySelector('#sendmessagephone');
-    callerCellphoneField = body.querySelector('#sendmessagecellphone');
-    callerLocalExtensionField = body.querySelector('#sendmessagelocalno');
-    messageBodyField = body.querySelector('#sendmessagetext');
 
-
-    cancelButton = body.querySelector('#sendmessagecancel')
+    this.cancelButton
         ..text = MessageLabels.cancelButtonLabel
         ..onClick.listen(_cancelClick);
 
-    draftButton = body.querySelector('#sendmessagedraft')
+    this.draftButton
         ..text = MessageLabels.saveButtonLabel
         ..onClick.listen(_draftClick);
 
-    sendButton = body.querySelector('#sendmessagesend')
+    this.sendButton
         ..text = MessageLabels.sendButtonLabel
         ..onClick.listen(_sendHandler);
 
-    recipientsList = querySelector('#send-message-recipient-list');
-
-    focusElements = [sendmessagesearchbox, callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
+    focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
 
     focusElements.forEach((e) => context.registerFocusElement(e));
 
@@ -194,7 +185,9 @@ class Message {
     // Updates the recipient list.
     recipientsList.children.clear();
     this.recipients.forEach((model.Recipient recipient) {
-      recipientsList.children.add(new LIElement()..text = recipient.role + ": " + recipient.contactName);
+      recipientsList.children.add(new LIElement()
+                                    ..text = recipient.contactName
+                                    ..classes.add('email-recipient-role-${recipient.role}'));
     });
   }
 

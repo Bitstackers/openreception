@@ -50,7 +50,6 @@ class BobActive {
   //LocalQueue localQueue;
   
   View.ContextSwitcher contextSwitcher;
-  View.CallManagement callManagement;
   View.ReceptionEvents receptionEvents;
   View.Message sendMessage;
   
@@ -92,7 +91,6 @@ class BobActive {
     sendMessage              = new View.Message(querySelector('#${id.SENDMESSAGE}'), home);
     globalQueue              = new View.CallList(querySelector('#${id.GLOBAL_QUEUE}'), home);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
-    callManagement           = new View.CallManagement(querySelector('#${constant.ID.CALL_MANAGEMENT}'));
     messageSearch            = new View.MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
     messageList              = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 

@@ -43,6 +43,13 @@ fieldset#companyhandling legend {
   background-image: url('../images/alert-icon-16x16.png');
 }
 
+fieldset#local-calls legend {
+  background-image: url('../images/phone-icon-alert-16x16.png');
+}
+
+fieldset#sendmessage legend {
+  background-image: url('../images/message-icon-16x16.png');
+}
 
 /*
   This rule disables the dotted line Firefox adds to the latest clicked button

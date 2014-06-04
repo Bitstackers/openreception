@@ -32,6 +32,7 @@ class Call {
   ButtonElement transferButton;
 
   model.Call get call => _call;
+  List<Element> get nuges => this.element.querySelectorAll('.nudge');
 
   Call(model.Call this._call) {
     DocumentFragment htmlChunk = new DocumentFragment.html(

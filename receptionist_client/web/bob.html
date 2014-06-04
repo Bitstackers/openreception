@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="css/contactinfo.css?v=1">
     <link rel="stylesheet" href="css/sendmessage.css?v=1">
     <link rel="stylesheet" href="css/globalqueue.css?v=1">
-    <link rel="stylesheet" href="css/localqueue.css?v=1">
     <link rel="stylesheet" href="css/callqueueitem.css?v=1">
     
     <link rel="stylesheet" href="css/messagecontext.css?v=1">
@@ -112,28 +111,12 @@
           </div>
         </div>
 
-        <div id="call-info" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
-            <div style="display:inline">
-              <span class="nudge">P</span>
-              <button id="pickupnextcallbutton">N&aelig;ste kald</button>
-            </div>
-            <div style="display:inline">
-              <span class="nudge">G</span>
-              <button id="hangupcallButton">L&aelig;g P&aring;</button>
-            </div>
-            <div style="display:inline">
-              <span class="nudge">L</span>
-              <button id="holdcallButton">Parkér</button>
-            </div>
-          <div id="current-call">
-          </div>
-        </div>
       </div>
       
       <div id="main-container" style="margin-top: 0.5%; width: 100%; height: 93%; overflow:hidden;">
          
          <!-- Left column -->
-        <div style=" width: 35%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;"> 
+        <div style=" width: 35%;height: 100%; float:left;"> 
           
           <div id="companyselector" data-default-element="company-selector-searchbar"></div>
           
@@ -149,16 +132,10 @@
             <ul id="company_handling_list" class="zebra"></ul>
           </fieldset>
        
-          <div id="sendmessage" class="box-with-header-outer"> <!-- Make the content for the box here. -->
-            <h1 class="box-with-header-headline box-with-header-medium">:: Besked ::</h1>
-      
-            <div class="box-with-header-content" style="height: 443px;">
-              <div class="send-message-container">
-                <div class="send-message-recipient-container box-with-header-outer">
-              <ul id="send-message-recipient-list"></ul>
-            </div>
-            <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">
-            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder=":: Ingen data fundet ::" readonly="">
+          <fieldset id="sendmessage" data-default-element="company_events_list">
+            <legend> :: Ny besked :: </legend>
+            <!-- Disabled for now. <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">  
+            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder=":: Ingen data fundet ::" readonly="">-->
     
             <input id="sendmessagename" class="send-message-name send-message-field" placeholder=":: Navn ::" tabindex="-1">
             <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder=":: Firmanavn ::" tabindex="-1">
@@ -168,7 +145,8 @@
             <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder=":: Lokalnummer ::" tabindex="-1">
     
             <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="::Besked::" tabindex="-1"></textarea>
-                <ul>
+            <div style="width: 40%;float: left;">
+                <ul send-message-checkboxes>
                   <li>
                     <input type="checkbox" name="send-message-pleasecall" id="send-message-pleasecall">
                     <label for="send-message-pleasecall">:: Ring venligst ::</label>
@@ -186,16 +164,16 @@
                     <label for="send-message-urgent">:: Haster ::</label>
                   </li>
                 </ul>
-            <div class="send-message-button-container">
+                </div>
+          <div style="float:left; height: 40%; width: 60%;">
+          <ul class="message-recipient-list"> </ul>
+          </div>
+            <div class="send-message-button-container" style="width: 100%; float:left;">
               <button id="sendmessagecancel" tabindex="-1">:: Annuller ::</button>
               <button id="sendmessagedraft" tabindex="-1">:: Gem ::</button>
               <button id="sendmessagesend" tabindex="-1">:: Send ::</button>
             </div>
-          </div>
-        </div>
-        <h1 class="box-with-header-headline box-with-header-medium"></h1>
-        <div class="box-with-header-content"></div>
-      </div>
+          </fieldset>
     </div>
         
         <!-- Center column -->
@@ -308,9 +286,14 @@
              <h1 class="box-with-header-headline box-with-header-medium">:: Opkald ::</h1>
              <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
              
-             <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
+          <fieldset id="local-calls" data-default-element="local-call-list">
+            
+            <legend> :: Lokale kald :: </legend>
+            <div>
              <ul class="zebra" id="local-call-list" tabindex="-1">
              </ul>
+            </div>
+          </fieldset>
            </div>
         
         </div>
