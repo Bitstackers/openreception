@@ -7,6 +7,7 @@ import '../utilities/http.dart';
 import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
+import '../view/colleague.dart';
 import '../view/contact.dart';
 import '../view/organization.dart';
 import '../view/reception_contact_reduced_reception.dart';
@@ -40,6 +41,16 @@ class ContactController {
     int contactId = pathParameter(request.uri, 'contact');
     db.getAContactsOrganizationList(contactId).then((List<Organization> organizations) {
       writeAndCloseJson(request, listOrganizatonAsJson(organizations));
+    }).catchError((error) {
+      logger.error('contractController.getAContactsOrganizationList url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
+  void getColleagues(HttpRequest request) {
+    int contactId = pathParameter(request.uri, 'contact');
+    db.getContactColleagues(contactId).then((List<ReceptionColleague> receptions) {
+      writeAndCloseJson(request, listReceptionColleaguesAsJson(receptions));
     }).catchError((error) {
       logger.error('contractController.getAContactsOrganizationList url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);

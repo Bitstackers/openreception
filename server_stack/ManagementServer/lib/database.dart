@@ -72,6 +72,8 @@ class Database {
 
   Future<int> deleteContact(int contactId) => _deleteContact(pool, contactId);
 
+  Future<List<model.ReceptionColleague>> getContactColleagues(int contactId) => _getContactColleagues(pool, contactId);
+
   Future<model.Contact> getContact(int contactId) => _getContact(pool, contactId);
 
   Future<List<model.Contact>> getContactList() => _getContactList(pool);
