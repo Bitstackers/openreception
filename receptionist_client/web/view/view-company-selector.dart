@@ -5,32 +5,35 @@ class CompanySelector {
   Context                               context;
   SearchComponent<model.BasicReception> search;
   model.BasicReception                  selectedReception;
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
   CompanySelector(DivElement this.element, Context this.context) {
-    if(element.attributes.containsKey('data-default-element')) {
-      String searchBoxId = element.attributes['data-default-element'];
-        
-      search = new SearchComponent<model.BasicReception>(element, context, searchBoxId)
-        ..searchPlaceholder = 'Søg efter en virksomhed'
-        ..whenClearSelection = whenClearSelection
-        ..listElementToString = listElementToString
-        ..searchFilter = searchFilter
-        ..selectedElementChanged = elementSelected;
+    assert (element.attributes.containsKey(defaultElementId));
     
-      initialFill();
-      registerEventlisteners(); 
-    } else {
-      log.error('components.CompanySelector.CompanySelector() element does not have a data-default-element.');
-    }
+    String searchBoxId = element.attributes['data-default-element'];
+        
+    search = new SearchComponent<model.BasicReception>(element, context, searchBoxId)
+      ..searchPlaceholder = 'Søg efter en virksomhed'
+      ..whenClearSelection = whenClearSelection
+      ..listElementToString = listElementToString
+      ..searchFilter = searchFilter
+      ..selectedElementChanged = elementSelected;
+    
+    this.initialFill().then(this._registerEventlisteners); 
   }
 
-  void initialFill() {
-    storage.Reception.list().then((model.ReceptionList list) {
+  Future initialFill() {
+    return storage.Reception.list().then((model.ReceptionList list) {
       search.updateSourceList(list.toList(growable: false));
+      return this.element.append(new Nudge('V').element); 
     });
   }
 
-  void registerEventlisteners() {
+  void _registerEventlisteners(_) {
+    event.bus.on(event.keyMeta).listen((bool isPressed) {
+      this.hideNudges(!isPressed);
+    });
+    
     event.bus.on(event.receptionChanged).listen((model.BasicReception value) {
       if(value == model.nullReception && selectedReception != model.nullReception) {
         search.clearSelection();
@@ -59,6 +62,12 @@ class CompanySelector {
       String after   = text.substring(matchIndex + searchText.length, text.length);
       return '${before}<em>${match}</em>${after}';
     }
+  }
+
+  void hideNudges(bool hidden) {
+    nudges.forEach((Element element) {
+      element.hidden = hidden;
+    });
   }
 
   bool searchFilter(model.BasicReception reception, String searchText) {
