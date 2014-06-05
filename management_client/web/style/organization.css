@@ -45,6 +45,10 @@
   padding: 5px 8px;
 }
 
+/******************
+     CONTENT
+*******************/
+
 #organization-content {
   float: left;
   width: 60%;
@@ -60,6 +64,10 @@
   overflow: auto;
 }
 
+/******************
+     RIGHT BAR
+*******************/
+
 #organization-rightbar {
   float: right;
   width: 20%;
@@ -69,12 +77,12 @@
   padding: 5px 10px 5px 0px;
 }
 
-#organization-rightbar>div {
-  height: 50%;
+#organization-reception-container {
+  height: 15%;
 }
 
-#organization-rightbar>div+div {
-  height: 50%;
+#organization-contact-container {
+  height: 85%;
   padding-top: 15px;
 }
 
@@ -83,6 +91,20 @@
   border: 2px solid grey;
   border-radius: 10px;
   padding: 5px;
+}
+
+#organization-reception-list {
+  overflow: auto;
+  height: 100%;
+  height: -moz-calc(100% - 20px);
+  height: -webkit-calc(100% - 20px);
+}
+
+#organization-contact-list {
+  overflow: auto;
+  height: 100%;
+  height: -moz-calc(100% - 20px);
+  height: -webkit-calc(100% - 20px);
 }
 
 #organization-reception-list li,#organization-contact-list li {
