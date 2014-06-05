@@ -92,8 +92,7 @@ Future<Map> createContact(String data) {
   return completer.future;
 }
 
-Future<List<ReceptionContact_ReducedReception>> getAContactsEveryReception(int
-    contactId) {
+Future<List<ReceptionContact_ReducedReception>> getAContactsEveryReception(int contactId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
@@ -108,6 +107,32 @@ Future<List<ReceptionContact_ReducedReception>> getAContactsEveryReception(int
           List<Map> rawReceptions = rawData['contacts'];
           completer.complete(rawReceptions.map((r) =>
               new ReceptionContact_ReducedReception.fromJson(r)).toList());
+        } else {
+          completer.completeError('Bad status code. ${request.status}');
+        }
+      })
+      ..onError.listen((e) {
+        //TODO logging.
+        completer.completeError(e.toString());
+      })
+      ..send();
+
+  return completer.future;
+}
+
+Future<List<ReceptionColleague>> getContactsColleagues(int contactId) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/contact/$contactId/colleagues?token=${config.token}';
+
+  request = new HttpRequest()
+      ..open(HttpMethod.GET, url)
+      ..onLoad.listen((_) {
+        if (request.status == 200) {
+          Map rawData = JSON.decode(request.responseText);
+          List<Map> rawReceptions = rawData['receptions'];
+          completer.complete(rawReceptions.map((r) => new ReceptionColleague.fromJson(r)).toList());
         } else {
           completer.completeError('Bad status code. ${request.status}');
         }

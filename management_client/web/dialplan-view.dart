@@ -261,7 +261,7 @@ class DialplanView {
           });
 
         } else if (action is ExecuteIvr) {
-          image.src = 'image/tp/ivr.svg';
+          image.src = 'image/IVR.svg';
           nameTag.text = 'Ivrmenu';
           li.onClick.listen((_) {
             settingsActionExecuteIvr(action);

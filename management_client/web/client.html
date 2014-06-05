@@ -90,7 +90,7 @@
             </td>
             <td>
               <label for="reception-input-customertype">Kundetype</label>
-              <textarea rows="1"  id="reception-input-customertype"></textarea>
+              <textarea rows="1" id="reception-input-customertype"></textarea>
             </td>
           </tr>
 
@@ -176,8 +176,7 @@
     <div id="contact-page" class="hidden">
       <div id="contact-listing">
         <button id="contact-create">Ny Kontakt</button>
-        <input id="contact-search-box" type="search"
-          placeholder="Søg...">
+        <input id="contact-search-box" type="search" placeholder="Søg...">
         <ul id="contact-list" class="zebra"></ul>
       </div>
       <div id="contact-content">
@@ -185,20 +184,31 @@
           <!-- Contact Content -->
           <table class="content-table">
             <tr>
-              <td><label for="contact-input-name">Navn</label><input
-                id="contact-input-name"></td>
-              <td rowspan="2"><label>Reception</label>
+              <td>
+                <label for="contact-input-name">Navn</label>
+                <textarea rows="1" id="contact-input-name"></textarea>
+              </td>
+              <td rowspan="2">
+                <label>Reception</label>
                 <div id="contact-reception-selector"></div>
-                <button id="contact-add">Tilføj</button></td>
+                <button id="contact-add">Tilføj</button>
+              </td>
             </tr>
             <tr>
-              <td><label for="contact-input-enabled">Aktiv</label><input
-                id="contact-input-enabled" type="checkbox"></td>
+              <td>
+                <label for="contact-input-enabled">Aktiv</label>
+                <input id="contact-input-enabled" type="checkbox">
+              </td>
             </tr>
             <tr>
-              <td><label for="contact-input-type">Type</label><select
-                id="contact-select-type"></select></td>
-              <td><label>Id:</label><span id="contact-span-id"></span></td>
+              <td>
+                <label for="contact-input-type">Type</label>
+                <select id="contact-select-type"></select>
+              </td>
+              <td>
+                <label>Id:</label>
+                <span id="contact-span-id"></span>
+              </td>
             </tr>
           </table>
           <button id="contact-save">Gem</button>
@@ -258,7 +268,7 @@
             </li>
 
             <li value="5">
-              <img alt="ivr" src="image/tp/ivr.svg" class="dialplan-controlitem-img">
+              <img alt="ivr" src="image/IVR.svg" class="dialplan-controlitem-img">
               <span class="dialplan-controlitem-nametag">ivr</span>
             </li>
 

@@ -10,6 +10,7 @@ import 'lib/logger.dart' as log;
 import 'lib/model.dart';
 import 'lib/request.dart' as request;
 import 'lib/searchcomponent.dart';
+import 'lib/utilities.dart';
 import 'lib/view_utilities.dart';
 
 typedef Future HandleReceptionContact(ReceptionContact receptionContact);
@@ -25,7 +26,7 @@ class ContactView {
   List<Contact> contactList = new List<Contact>();
   SearchInputElement searchBox;
 
-  InputElement inputName;
+  TextAreaElement inputName;
   SelectElement inputType;
   SpanElement spanContactId;
   CheckboxInputElement inputEnabled;
@@ -156,18 +157,18 @@ class ContactView {
               ..clear()
               ..addAll(contacts.map((ReceptionContact_ReducedReception receptioncontact) => receptionContactBox(receptioncontact, receptionContactUpdate)));
 
-          //Rightbar
-          ulReceptionList.children
+        //Rightbar
+        request.getContactsOrganizationList(id).then((List<Organization> organizations) {
+          organizations.sort((a, b) => a.full_name.compareTo(b.full_name));
+          ulOrganizationList.children
               ..clear()
-              ..addAll(contacts.map(makeReceptionNode));
+              ..addAll(organizations.map(makeOrganizationNode));
+        });
 
-          //Rightbar
-          request.getContactsOrganizationList(id).then((List<Organization>
-              organizations) {
-            organizations.sort((a, b) => a.full_name.compareTo(b.full_name));
-            ulOrganizationList.children
-                ..clear()
-                ..addAll(organizations.map(makeOrganizationNode));
+        return request.getContactsColleagues(id).then((List<ReceptionColleague> Receptions) {
+          ulReceptionList.children
+                      ..clear()
+                      ..addAll(Receptions.map(makeReceptionNode).reduce(union));
           });
         }
       });
@@ -236,8 +237,8 @@ class ContactView {
 
     div.children.add(delete);
 
-    InputElement wantMessage, enabled, department, info, position, relations,
-        responsibility;
+    TextAreaElement department, info, position, relations, responsibility;
+    InputElement wantMessage, enabled;
     UListElement backupList, emailList, handlingList, phoneNumbersList,
         workhoursList, tagsList;
 
@@ -291,31 +292,25 @@ class ContactView {
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
-    department = makeTextBox(leftCell, 'Afdelling', contact.department,
-        onChange: onChange);
+    department = makeTextBox(leftCell, 'Afdelling', contact.department, onChange: onChange);
     info = makeTextBox(rightCell, 'Andet', contact.info, onChange: onChange);
 
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
-    position = makeTextBox(leftCell, 'Stilling', contact.position, onChange:
-        onChange);
-    relations = makeTextBox(rightCell, 'Relationer', contact.relations,
-        onChange: onChange);
+    position = makeTextBox(leftCell, 'Stilling', contact.position, onChange: onChange);
+    relations = makeTextBox(rightCell, 'Relationer', contact.relations, onChange: onChange);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
-    responsibility = makeTextBox(leftCell, 'Ansvar', contact.responsibility,
-        onChange: onChange);
+    responsibility = makeTextBox(leftCell, 'Ansvar', contact.responsibility, onChange: onChange);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
-    backupList = makeListBox(leftCell, 'Backup', contact.backup, onChange:
-        onChange);
-    emailList = makeListBox(rightCell, 'E-mail', contact.emailaddresses,
-        onChange: onChange);
+    backupList = makeListBox(leftCell, 'Backup', contact.backup, onChange: onChange);
+    emailList = makeListBox(rightCell, 'E-mail', contact.emailaddresses, onChange: onChange);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
@@ -489,10 +484,10 @@ class ContactView {
     return ul;
   }
 
-  InputElement makeTextBox(Element container, String labelText, String
-      data, {Function onChange}) {
+  TextAreaElement makeTextBox(Element container, String labelText, String data, {Function onChange}) {
     LabelElement label = new LabelElement();
-    InputElement inputText = new InputElement();
+    TextAreaElement inputText = new TextAreaElement()
+      ..rows = 1;
 
     label.text = labelText;
     inputText.value = data;
@@ -623,24 +618,47 @@ class ContactView {
           ..workhours = []
           ..tags = [];
 
+      //TODO Warning, This could go wrong if not fixed with the new design of the collegues list.
       ulReceptionContacts.children..add(receptionContactBox(template,
           receptionContactCreate, true));
     }
   }
 
-  LIElement makeReceptionNode(ReceptionContact_ReducedReception reception) {
-    LIElement li = new LIElement()
+  List<LIElement> makeReceptionNode(ReceptionColleague reception) {
+    //TODO First node is the receptionname. Clickable to the reception
+    //     Second is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
+
+    LIElement receptionLi = new LIElement()
         ..classes.add('clickable')
-        ..text = '${reception.receptionName}'
+        ..classes.add('receptioncolleague')
+        ..text = reception.full_name
         ..onClick.listen((_) {
           Map event = {
             'window': 'reception',
-            'organization_id': reception.organizationId,
-            'reception_id': reception.receptionId
+            'organization_id': reception.organization_id,
+            'reception_id': reception.id
           };
           bus.fire(windowChanged, event);
         });
-    return li;
+//
+//    UListElement contactsUl = new UListElement()
+//      ..children.addAll(reception.contacts.map(makeColleagueNode));
+//    LIElement contactsLi = new LIElement()..children.add(contactsUl);
+    return [receptionLi]..addAll(reception.contacts.map(makeColleagueNode));
+  }
+
+  LIElement makeColleagueNode(Colleague collegue) {
+    return new LIElement()
+      ..classes.add('clickable')
+      ..classes.add('colleague')
+      ..text = collegue.full_name
+      ..onClick.listen((_) {
+        Map event = {
+          'window': 'contact',
+          'contact_id': collegue.id
+        };
+        bus.fire(windowChanged, event);
+      });
   }
 
   LIElement makeOrganizationNode(Organization organization) {

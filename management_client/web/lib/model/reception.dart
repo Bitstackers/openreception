@@ -7,6 +7,7 @@ class Reception {
   String product;
   String other;
   String greeting;
+  String shortGreeting;
   String customertype;
   String extradatauri;
   bool enabled;
@@ -43,6 +44,7 @@ class Reception {
           ..product = stringFromJson(attributes, 'product')
           ..other = stringFromJson(attributes, 'other')
           ..greeting = stringFromJson(attributes, 'greeting')
+          ..shortGreeting = stringFromJson(attributes, 'shortgreeting')
           ..customertype = stringFromJson(attributes, 'customertype')
 
           ..addresses = priorityListFromJson(attributes, 'addresses')
@@ -65,6 +67,7 @@ class Reception {
       'product': product,
       'other': other,
       'greeting': greeting,
+      'shortgreeting': shortGreeting,
       'customertype': customertype,
       'addresses': priorityListToJson(addresses),
       'alternatenames': priorityListToJson(alternatenames),

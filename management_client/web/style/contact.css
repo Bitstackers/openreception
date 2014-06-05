@@ -109,12 +109,12 @@
   padding: 5px 10px 5px 0px;
 }
 
-#contact-rightbar>div {
-  height: 50%;
+#contact-organization-container {
+  height: 15%;
 }
 
-#contact-rightbar>div+div {
-  height: 50%;
+#contact-reception-container {
+  height: 85%;
   padding-top: 15px;
 }
 
@@ -123,6 +123,19 @@
   border: 2px solid grey;
   border-radius: 10px;
   padding: 5px;
+}
+
+#contact-reception-list {
+  height: 100%;
+  overflow: auto;
+}
+
+.receptioncolleague {
+  font-weight: bold;
+}
+
+.colleague {
+  padding-left: 10px;
 }
 
 #contact-organization-list li,#contact-reception-list li {
