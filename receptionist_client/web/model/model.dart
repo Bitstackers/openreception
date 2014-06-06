@@ -41,6 +41,7 @@ part 'model-calendar_event.dart';
 part 'model-calendar_event_list.dart';
 part 'model-contact.dart';
 part 'model-contact_list.dart';
+part 'model-extension.dart';
 part 'model-message.dart';
 part 'model-message_list.dart';
 part 'model-minibox_list_item.dart';

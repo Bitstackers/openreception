@@ -80,3 +80,5 @@ const String SENDMESSAGE_SEND                 = 'sendmessagesend';
 const String SENDMESSAGE_TEXT                 = 'sendmessagetext';
 const String WELCOME_MESSAGE                  = 'welcome-message';
 
+const String CALL_ORIGINATE                   = 'call-originate';
+const String CALL_ORIGINATE_NUMBER_FIELD      = 'call-originate-number-field';

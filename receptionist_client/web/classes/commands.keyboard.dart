@@ -192,6 +192,7 @@ class _KeyboardHandler {
       'Alt+5'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_STATISTICS)),
       'Alt+6'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_PHONE)),
       'Alt+7'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_VOICEMAILS)),
+      'Alt+T'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CALL_ORIGINATE,   id.CALL_ORIGINATE_NUMBER_FIELD)),
       'Alt+V'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
       'Alt+A'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
       'Alt+H'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
@@ -202,10 +203,11 @@ class _KeyboardHandler {
       'Alt+L'     : (_) => Controller.Call.park(Model.Call.currentCall),
       'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
       'Alt+U'     : (_) => event.bus.fire(event.PickupFirstParkedCall, null),
-      'Alt+T'     : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
+      'Alt+O'     : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
       'Alt+W'     : (_) => event.bus.fire(event.CallSelectedContact, 1),
       'Alt+E'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
+      'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
 //      'Tab'       : (_) => tab(mode: FORWARD),
 //      'Shift+Tab' : (_) => tab(mode: BACKWARD),
       
@@ -238,6 +240,7 @@ class _KeyboardHandler {
     Keyboard keyDown = new Keyboard();
     keybindings = {
       META    : (_) => event.bus.fire(event.keyMeta, true),
+      [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
       [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
       [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),
       [Key.NumMinus] : (_) => Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)

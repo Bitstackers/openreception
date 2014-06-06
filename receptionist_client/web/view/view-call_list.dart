@@ -89,7 +89,6 @@ class CallList {
       callView._callQueueRemoveHandler(_);
       
       if (callView.call.assignedAgent == model.User.currentUser.ID) {
-        print ("!! moving call");
         this.queuedCallUL.children.remove(callView.element);
         
         

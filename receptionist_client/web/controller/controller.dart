@@ -9,14 +9,14 @@
 
 library controller;
 
-import 'dart:async';
-
-import '../protocol/protocol.dart' as protocol;
 import '../classes/events.dart' as event;
 import '../service/service.dart' as Service;
-import '../model/model.dart' as model;
+import '../model/model.dart' as Model;
 import '../classes/context.dart' as UIContext;
 import '../classes/location.dart' as nav;
+import '../classes/logger.dart';
 
 part 'controller-call.dart';
 part 'controller-context.dart';
+
+const String libraryName = 'controller';

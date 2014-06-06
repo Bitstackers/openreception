@@ -197,7 +197,13 @@
               </div>
             </div>
             </div>
-            <div id="contactinfopanel" style="height: 65%">
+            <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field">
+              <legend> :: Opkald :: </legend>
+              <label for="call-originate-number-field"> :: Nummer: :: </label>
+              <input id="call-originate-number-field" name="call-originate-number-field" type="text"/>
+              <button id="call-originate-number-button">Ring op</button>
+            </fieldset>
+            <div id="contactinfopanel" style="height: 60%">
             <div id="contactinfo_data">
               <table>
                 <tbody>
@@ -285,7 +291,7 @@
            <div id="globalqueue" class="box-with-header-outer">
              <h1 class="box-with-header-headline box-with-header-medium">:: Opkald ::</h1>
              <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
-             
+
           <fieldset id="local-calls" data-default-element="local-call-list">
             
             <legend> :: Lokale kald :: </legend>

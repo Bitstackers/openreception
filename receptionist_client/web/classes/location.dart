@@ -86,6 +86,13 @@ class Location {
   }
   
   /**
+   * Determines whether or a widget is currently selected.
+   */
+  static isActive (Element widget) {
+    return widget.classes.contains (FOCUS);
+  }
+  
+  /**
    * Update the url bar.
    */
   void push() {

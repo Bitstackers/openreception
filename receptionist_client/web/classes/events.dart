@@ -53,6 +53,8 @@ final EventType<String> parkCall                                = new EventType<
 final EventType<int>    CallSelectedContact                     = new EventType<int>();
 final EventType         PickupFirstParkedCall                   = new EventType();
 final EventType         TransferFirstParkedCall                 = new EventType();
+final EventType         dialSelectedContact                     = new EventType();
+
 
 /* Pickup */
 final EventType<Call> pickupCallRequest     = new EventType<Call>(); 

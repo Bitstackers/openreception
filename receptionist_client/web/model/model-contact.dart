@@ -52,13 +52,16 @@ class Contact implements Comparable {
 
   static final Contact noContact = nullContact;
 
+  static Contact currentContact = nullContact;
 
   /**
    * 
    */
   Future<List<Recipient>> dereferenceDistributionList() {
+    
+    Completer<List<Recipient>> completer = new Completer<List<Recipient>>(); 
 
-    return Future.forEach(this.distributionList, (Recipient recipient) {
+    Future.forEach(this.distributionList, (Recipient recipient) {
       return Contact.get(recipient.contactID, recipient.receptionID).then((Contact dereferencedContact) {
         recipient.contactName = dereferencedContact.name;
 
@@ -67,9 +70,14 @@ class Contact implements Comparable {
         });
 
       });
-    }).then((_) {
-      return this.distributionList;
+    }).then((_) { 
+      completer.complete(this.distributionList); 
+     }
+    ).catchError((error) {
+      completer.completeError(error);
     });
+    
+    return completer.future;
   }
 
 
