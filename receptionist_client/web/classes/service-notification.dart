@@ -17,7 +17,7 @@ import 'dart:async';
 
 import 'package:event_bus/event_bus.dart';
 
-import 'commands.dart' as command;
+import '../controller/controller.dart' as Controller;
 import 'configuration.dart';
 import 'environment.dart' as environment;
 import 'events.dart' as event;
@@ -183,7 +183,7 @@ class EventSocket {
       log.info('Opkald lagt på. ${call}', toUserLog: true);
       log.debugContext('notification._callHangupEventHandler hangup ${call}', context);
       model.Call.currentCall = model.nullCall;
-      model.Reception.currentReception = model.nullReception;
+      model.Reception.selectedReception = model.nullReception;
     }
 
     event.bus.fire(event.callDestroyed, call);  
@@ -202,10 +202,10 @@ class EventSocket {
       log.info('Opkald overført. ${call}', toUserLog: true);
       log.debugContext('Transferred ${call}', context);
       
-      event.bus.fire(event.receptionChanged, model.nullReception);
-      event.bus.fire(event.contactChanged, model.nullContact);
+      Controller.Reception.change (model.nullReception);
 
-      model.Reception.currentReception = model.nullReception;
+      Controller.Contact.change(model.nullContact);
+
       model.Call.currentCall = model.nullCall;
     }
   }
@@ -228,7 +228,7 @@ class EventSocket {
 
       if (call.receptionId != null && call.receptionId > 0) {
         storage.Reception.get(call.receptionId).then((model.Reception reception) {
-          event.bus.fire(event.receptionChanged, reception);
+          Controller.Reception.change (reception);
 
         }).catchError((Error error, StackTrace stackTrace) {
           log.criticalContext('Storage.Reception.get failed with ${error} : ${stackTrace}', context);

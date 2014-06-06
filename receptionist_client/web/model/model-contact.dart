@@ -52,7 +52,16 @@ class Contact implements Comparable {
 
   static final Contact noContact = nullContact;
 
-  static Contact currentContact = nullContact;
+  static Contact _selectedContact = nullContact;
+  
+  static final EventType<Contact> activeContactChanged = new EventType<Contact>();
+  
+  static Contact get selectedContact                   =>  _selectedContact;
+  static         set selectedContact (Contact contact) {
+    _selectedContact = contact;
+    event.bus.fire(event.contactChanged, _selectedContact);
+    event.bus.fire(activeContactChanged, _selectedContact);
+  }
 
   /**
    * 

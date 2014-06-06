@@ -8,7 +8,15 @@ class Extension {
   
   static final nullExtension = new Extension._null(); 
 
-  static Extension currentExtension = nullExtension; 
+  static Extension _selectedExtension = nullExtension; 
+  
+  static final EventType<Extension> activeExtensionChanged = new EventType<Extension>();
+  
+  static Extension get selectedExtension                       =>  _selectedExtension;
+  static           set selectedExtension (Extension extension) {
+    _selectedExtension = extension;
+    event.bus.fire(activeExtensionChanged, _selectedExtension);
+  }
   
   Extension (this._value);
 

@@ -48,7 +48,7 @@ class CompanySelector {
   bool _receptionEquality(model.BasicReception x, model.BasicReception y) => x.ID == y.ID;
 
   void whenClearSelection() {
-    new Future(() => event.bus.fire(event.receptionChanged, model.nullReception));
+    new Future(() => Controller.Reception.change (model.nullReception));
   }
 
   String listElementToString(model.BasicReception reception, String searchText) {
@@ -74,9 +74,9 @@ class CompanySelector {
     return reception.name.toLowerCase().contains(searchText.toLowerCase());
   }
 
-  void elementSelected(model.BasicReception reception) {
-    storage.Reception.get(reception.ID).then((model.Reception value) {
-      event.bus.fire(event.receptionChanged, value);
+  void elementSelected(model.BasicReception receptionStub) {
+    storage.Reception.get(receptionStub.ID).then((model.Reception reception) {
+      Controller.Reception.change (reception);
     });
   }
 }

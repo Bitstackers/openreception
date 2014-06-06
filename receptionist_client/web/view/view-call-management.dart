@@ -59,7 +59,7 @@ class CallManagement {
 
   _dialSelectedNumber(_) {
     if (!this.disabled) {
-      Controller.Call.dial(new model.Extension (this.numberField.value), model.Reception.currentReception);  
+      Controller.Call.dial(new model.Extension (this.numberField.value), model.Reception.selectedReception, model.Contact.selectedContact);  
     }
   }
 
@@ -68,11 +68,11 @@ class CallManagement {
   }
 
   void _originationSucceded(dynamic) {
-    this.disabled = (model.Reception.currentReception == model.nullReception);
+    this.disabled = (model.Reception.selectedReception == model.nullReception);
   }
 
   void _originationFailed(dynamic) {
-    this.disabled = (model.Reception.currentReception == model.nullReception);
+    this.disabled = (model.Reception.selectedReception == model.nullReception);
   }
 
   void hideNudges(bool hidden) {
@@ -83,6 +83,11 @@ class CallManagement {
 
   void registerEventListeners() {
     event.bus.on(event.dialSelectedContact).listen(this._dialSelectedNumber);
+    
+    event.bus.on(model.Extension.activeExtensionChanged)
+      .listen((model.Extension extension) {
+        this.numberField.value = extension.dialString;
+    });
     
     event.bus.on(model.Call.currentCallChanged).listen(_changeActiveCall);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);

@@ -43,7 +43,7 @@ class ContactInfoSearch {
       element.classes.toggle(activeContactClass, element.value == contact.id);
     }
 
-    event.bus.fire(event.contactChanged, contact);
+    Controller.Contact.change(contact);
   }
 
   void _clearDisplayedContactList() {
@@ -87,7 +87,7 @@ class ContactInfoSearch {
           int contactId = previous.value;
           model.Contact con = contactList.getContact(contactId);
           if(con != null) {
-            event.bus.fire(event.contactChanged, con);
+            Controller.Contact.change(con);
           }
         }
         break;
@@ -106,7 +106,7 @@ class ContactInfoSearch {
           int contactId = next.value;
           model.Contact con = contactList.getContact(contactId);
           if(con != null) {
-            event.bus.fire(event.contactChanged, con);
+            Controller.Contact.change(con);
           }
         }
         break;

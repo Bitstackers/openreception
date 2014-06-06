@@ -102,14 +102,15 @@ class Reception extends BasicReception{
   MiniboxList         get telephoneNumberList    => _telephoneNumberList;
   MiniboxList         get websiteList            => _websiteList;
 
-  static Reception _currentReception = nullReception;
+  static Reception _selectedReception = nullReception;
   
-  static final EventType<Reception> currentReceptionChanged = new EventType<Reception>();
+  static final EventType<Reception> activeReceptionChanged = new EventType<Reception>();
   
-  static Reception get currentReception                       =>  _currentReception;
-  static           set currentReception (Reception reception) {
-    _currentReception = reception;
-    event.bus.fire(event.receptionChanged, reception);
+  static Reception get selectedReception                       =>  _selectedReception;
+  static           set selectedReception (Reception reception) {
+    _selectedReception = reception;
+    event.bus.fire(event.receptionChanged, _selectedReception);
+    event.bus.fire(activeReceptionChanged, _selectedReception);
   }
   
   static Future<Reception> get (int receptionID) {

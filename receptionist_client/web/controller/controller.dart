@@ -17,6 +17,9 @@ import '../classes/location.dart' as nav;
 import '../classes/logger.dart';
 
 part 'controller-call.dart';
+part 'controller-contact.dart';
 part 'controller-context.dart';
+part 'controller-extension.dart';
+part 'controller-reception.dart';
 
 const String libraryName = 'controller';

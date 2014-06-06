@@ -140,7 +140,7 @@ class CallList extends IterableBase<Call> {
           Call.currentCall = call;
           
           Reception.get(call.receptionId).then((Reception reception) {
-            Reception.currentReception = reception;
+            Reception.selectedReception = reception;
           });
         }
       });

@@ -82,7 +82,7 @@ class ContactInfoData {
 
       number.children.add(new ButtonElement()
           ..text = item.value
-          ..onClick.listen((_) => Controller.Call.dial(item.value, contact.receptionID, contact.id)));
+          ..onClick.listen((_) => Controller.Extension.change (new model.Extension (item.value))));
 
       telephoneNumberList.children.add(number);
 
@@ -97,7 +97,7 @@ class ContactInfoData {
     for (var item in contact.distributionList) {
       model.Contact.get(item.contactID, item.receptionID).then((model.Contact contact) {
         model.Reception.get(item.receptionID).then((model.Reception reception) {
-          if (reception != model.Reception.currentReception) {
+          if (reception != model.Reception.selectedReception) {
             LIElement li = new LIElement()
                 ..text = '${contact.name} (${reception.name})'
                 ..classes.add(item.role);
