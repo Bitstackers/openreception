@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import 'package:html5_dnd/html5_dnd.dart';
+
 import 'lib/eventbus.dart';
 import 'lib/logger.dart' as log;
 import 'lib/model.dart';
@@ -14,11 +16,12 @@ import 'lib/searchcomponent.dart';
 
 class _ControlLookUp {
   static const int timeControl = 0;
-  static const int forward = 1;
-  static const int receptionist = 2;
-  static const int voicemail = 3;
-  static const int playAudioFile = 4;
-  static const int ivr = 5;
+  static const int dateControl = 1;
+  static const int forward = 2;
+  static const int receptionist = 3;
+  static const int voicemail = 4;
+  static const int playAudioFile = 5;
+  static const int ivr = 6;
 }
 
 class DialplanView {
@@ -129,7 +132,7 @@ class DialplanView {
   }
 
   void activateDialplan(int receptionId) {
-    SC.selectElement(null, (Reception a,_) => a.id == receptionId);
+    SC.selectElement(null, (Reception a, _) => a.id == receptionId);
 
     request.getDialplan(receptionId).then((Dialplan value) {
       disableSaveButton();
@@ -198,6 +201,12 @@ class DialplanView {
           settingsConditionTime(condition);
           break;
 
+        case _ControlLookUp.dateControl:
+          Date condition = new Date();
+          selectedExtension.conditions.add(condition);
+          settingsConditionDate(condition);
+          break;
+
         case _ControlLookUp.forward:
           Forward action = new Forward();
           selectedExtension.actions.add(action);
@@ -235,6 +244,8 @@ class DialplanView {
 
   void renderSelectedExtensionActions() {
     if(selectedExtension != null) {
+      SortableGroup sortGroup = new SortableGroup()
+        ..onSortUpdate.listen((_) => enabledSaveButton());
       for (Action action in selectedExtension.actions) {
         LIElement li = new LIElement();
         ImageElement image = new ImageElement()
@@ -293,37 +304,56 @@ class DialplanView {
           nameTag.text = 'Ukendt';
         }
         itemsList.children.add(li);
+        sortGroup.install(li);
       }
     }
   }
 
   void renderSelectedExtensionCondition() {
     if(selectedExtension != null) {
+      SortableGroup sortGroup = new SortableGroup()
+        ..onSortUpdate.listen((_) => enabledSaveButton());
+
       for (Condition condition in selectedExtension.conditions) {
-        if (condition is Time) {
-          ImageElement image = new ImageElement(src: 'image/tp/time.svg')
-            ..classes.add('dialplan-controlitem-img');
+        ImageElement image = new ImageElement()
+          ..classes.add('dialplan-controlitem-img');
 
-          SpanElement nameTag = new SpanElement()
-            ..text = 'Tidsstyring'
-            ..classes.add('dialplan-controlitem-nametag');
+        SpanElement nameTag = new SpanElement()
+          ..classes.add('dialplan-controlitem-nametag');
 
-          ImageElement remove = new ImageElement(src: 'image/cross.png')
-            ..classes.add('dialplan-controlremove')
-            ..title = 'Fjern'
-            ..onClick.listen((MouseEvent event) {
-            event.stopPropagation();
+        ImageElement remove = new ImageElement(src: 'image/cross.png')
+          ..classes.add('dialplan-controlremove')
+          ..title = 'Fjern'
+          ..onClick.listen((MouseEvent event) {
+            event.stopPropagation(); //TESTING
             selectedExtension.conditions.remove(condition);
             clearSettingsPanel();
             activateExtension(selectedExtension);
             enabledSaveButton();
+        });
+
+        LIElement li = new LIElement()
+          ..children.addAll([image, remove, nameTag]);
+
+        itemsList.children.add(li);
+
+        sortGroup.install(li);
+
+        if (condition is Time) {
+          image.src = 'image/tp/time.svg';
+          nameTag.text = 'Tidsstyring';
+
+          li.onClick.listen((_) {
+            settingsConditionTime(condition);
           });
 
-          itemsList.children.add(new LIElement()
-            ..children.addAll([image, remove, nameTag])
-            ..onClick.listen((_) {
-              settingsConditionTime(condition);
-          }));
+        } else if(condition is Date) {
+          image.src = 'image/tp/date.svg';
+          nameTag.text = 'Datostyring';
+
+          li.onClick.listen((_) {
+              settingsConditionDate(condition);
+          });
         }
       }
     }
@@ -485,6 +515,60 @@ class DialplanView {
       enabledSaveButton();
     });
   }
+
+  void settingsConditionDate(Date condition) {
+      clearSettingsPanel();
+
+      String html = '''
+      <ul class="dialplan-settingsList">
+        <li>
+            <label for="dialplan-setting-year">År</label>
+            <input id="dialplan-setting-year" type="text" value="${condition.year != null ? condition.year : ''}" placeholder="${new DateTime.now().year}">
+        </li>
+        <li>
+            <label for="dialplan-setting-month">Måned</label>
+            <input id="dialplan-setting-month" type="text" value="${condition.mon != null ? condition.mon : ''}" placeholder="${new DateTime.now().month}">
+        </li>
+        <li>
+            <label for="dialplan-setting-day">Dag</label>
+            <input id="dialplan-setting-day" type="text" value="${condition.mday != null ? condition.mday : ''}" placeholder="${new DateTime.now().day}">
+        </li>
+      </ul>
+      ''';
+
+      DocumentFragment fragment = new DocumentFragment.html(html);
+      settingPanel.children.addAll(fragment.children);
+
+      InputElement yearInput = settingPanel.querySelector('#dialplan-setting-year');
+      yearInput
+        ..onInput.listen((_) {
+          condition.year = yearInput.value.isEmpty ? null : yearInput.value;
+          enabledSaveButton();
+        });
+
+      InputElement monthInput = settingPanel.querySelector('#dialplan-setting-month');
+      monthInput
+        ..onInput.listen((_) {
+          condition.mon = monthInput.value.isEmpty ? null : monthInput.value;
+          enabledSaveButton();
+        });
+
+      InputElement dayInput = settingPanel.querySelector('#dialplan-setting-day');
+      dayInput
+        ..onInput.listen((_) {
+          condition.mday = dayInput.value.isEmpty ? null : dayInput.value;
+          enabledSaveButton();
+        });
+
+      commentTextarea.value = condition.comment;
+      if(commentTextSubscription != null) {
+        commentTextSubscription.cancel();
+      }
+      commentTextSubscription = commentTextarea.onInput.listen((_) {
+        condition.comment = commentTextarea.value;
+        enabledSaveButton();
+      });
+    }
 
   void settingsActionPlayAudio(PlayAudio action) {
     clearSettingsPanel();
