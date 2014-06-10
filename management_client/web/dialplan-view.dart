@@ -238,7 +238,8 @@ class DialplanView {
           break;
       }
 
-      renderContent();
+      enabledSaveButton();
+      renderContentList();
     }
   }
 
@@ -325,7 +326,7 @@ class DialplanView {
           ..classes.add('dialplan-controlremove')
           ..title = 'Fjern'
           ..onClick.listen((MouseEvent event) {
-            event.stopPropagation(); //TESTING
+            event.stopPropagation();
             selectedExtension.conditions.remove(condition);
             clearSettingsPanel();
             activateExtension(selectedExtension);
@@ -366,7 +367,7 @@ class DialplanView {
     if (extension != null) {
       settingsExtension(extension);
     }
-    renderContent();
+    renderContentList();
   }
 
   void updateSelectedExtensionName(Extension extension) {
@@ -374,7 +375,7 @@ class DialplanView {
       ..text = extension != null ? extension.name : '';
   }
 
-  void renderContent() {
+  void renderContentList() {
     itemsList.children.clear();
     renderSelectedExtensionCondition();
     renderSelectedExtensionActions();
@@ -589,7 +590,7 @@ class DialplanView {
       action.filename = audiofiledropdown.value;
       enabledSaveButton();
     });
-    request.getAudiofileList().then((List<Audiofile> files) {
+    request.getAudiofileList(selectedReceptionId).then((List<Audiofile> files) {
       //Give it the first as default.
       if((action.filename == null || action.filename.isEmpty) && files.isNotEmpty) {
         action.filename = files.first.filepath;
@@ -708,7 +709,7 @@ class DialplanView {
       } catch(_) {}
     });
 
-    InputElement musicInput = settingPanel.querySelector('#dialplan-setting-sleeptime');
+    InputElement musicInput = settingPanel.querySelector('#dialplan-setting-music');
     musicInput
         ..onInput.listen((_) {
       action.music = musicInput.value;
@@ -717,11 +718,12 @@ class DialplanView {
 
     SelectElement welcomeFilePicker = settingPanel.querySelector('#dialplan-setting-welcome');
     welcomeFilePicker
-        ..onInput.listen((_) {
+        ..onChange.listen((_) {
       action.welcomeFile = welcomeFilePicker.value == '' ? null : welcomeFilePicker.value;
       enabledSaveButton();
     });
-    request.getAudiofileList().then((List<Audiofile> files) {
+
+    request.getAudiofileList(selectedReceptionId).then((List<Audiofile> files) {
       bool found = false;
       for(Audiofile file in files) {
         OptionElement option = new OptionElement()
