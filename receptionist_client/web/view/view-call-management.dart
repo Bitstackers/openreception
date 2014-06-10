@@ -26,21 +26,22 @@ class CallManagement {
 
   bool                get muted        => !nav.Location.isActive(this.element);
   InputElement        get numberField  => this.element.querySelector('#call-originate-number-field');
+  ButtonElement       get dialButton   => this.element.querySelector('.call-originate-number-button');
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
   List<InputElement>  get inputFields  => this.element.querySelectorAll('input');
-  List<ButtonElement> get buttonFields => this.element.querySelectorAll('button');
+  List<ButtonElement> get buttons      => this.element.querySelectorAll('button');
 
   void set disabled (bool toggle) {
     this.inputFields.forEach((InputElement inputField) {
       inputField.disabled = toggle;
     });
 
-    this.buttonFields.forEach((ButtonElement button) {
+    this.buttons.forEach((ButtonElement button) {
       button.disabled = toggle;
     });
   }
   
-  bool get disabled => this.buttonFields.first.disabled;
+  bool get disabled => this.buttons.first.disabled;
   
   /**
    * TODO
@@ -48,7 +49,8 @@ class CallManagement {
   CallManagement(Element this.element, Context this.context) {
     registerEventListeners();
     
-    this.element.insertBefore(new Nudge('T').element, this.inputFields.first);
+    this.element.insertBefore(new Nudge('T').element, this.numberField);
+    this.element.insertBefore(new Nudge('I').element, this.dialButton);
     
     this.hideNudges(true);
   }
@@ -97,10 +99,14 @@ class CallManagement {
       this.hideNudges(!isPressed);
     });
 
+    this.numberField.onFocus.listen((_) => this.numberField.select());
+    
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, this.inputFields.first));
     event.bus.on(event.receptionChanged).listen((model.Reception reception) => this.disabled = (reception == model.nullReception));
-
-    element.onClick.listen((_) {
+    
+    this.dialButton.onClick.listen((_) => this._dialSelectedNumber(_));
+    
+    this.element.onClick.listen((_) {
       Controller.Context.changeLocation
           (new nav.Location(this.context.id, this.element.id, this.inputFields.first.id));
     });
