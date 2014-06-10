@@ -55,7 +55,7 @@ Future updateDialplan(int receptionId, String dialplan) {
   return completer.future;
 }
 
-Future<List<Audiofile>> getAudiofileList() {
+Future<List<Audiofile>> getAudiofileList(int receptionId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
