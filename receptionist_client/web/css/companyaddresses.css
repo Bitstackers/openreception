@@ -13,10 +13,8 @@
 }*/
 
 #companyaddresses {
-  position: absolute;
-  left: 70%;
-  top: 0%;
-  height: 35%;
-  width: 30%;
+  height: 9%;
+  width: 100%;
   overflow: auto;
+  margin: 0 auto;
 }
