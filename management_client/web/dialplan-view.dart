@@ -686,7 +686,7 @@ class DialplanView {
       </li>
       <li>
           <label for="dialplan-setting-music">Music</label>
-          <input id="dialplan-setting-music" type="text" value="${action.music != null ? action.music : ''}"/>
+          <input id="dialplan-setting-music" type="text" value="${action.music != null ? action.music : 'default'}"/>
       </li>
       <li>
           <label for="dialplan-setting-welcome">Velkomst</label>
