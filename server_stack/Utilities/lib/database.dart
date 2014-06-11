@@ -21,3 +21,28 @@ Future<Pool> start(String user, String password, String host, int port, String d
 }
 
 Future _testConnection(Pool pool) => pool.connect().then((Connection conn) => conn.close());
+
+
+class Database {
+  
+  Pool _pool;
+  
+  static Future <Database> connect (String dsn, {int minimumConnections: 1, int maximumConnections: 5}) {
+    Database db = new Database._stub();
+    db._pool = new Pool(dsn, min: minimumConnections, max: maximumConnections);
+    return db._pool.start().then((_) => db._testConnection()).then((_) => db);
+  }
+  
+  Database._stub();
+
+  Future _testConnection() => this._pool.connect().then((Connection conn) => conn.close());
+  
+  Future query(String sql, [Map parameters = null]) => this._pool.connect()
+    .then((Connection conn) => conn.query(sql, parameters).toList()
+    .whenComplete(() => conn.close()));
+
+  Future execute(String sql, [Map parameters = null]) => this._pool.connect()
+    .then((Connection conn) => conn.execute(sql, parameters)
+    .whenComplete(() => conn.close()));
+
+}

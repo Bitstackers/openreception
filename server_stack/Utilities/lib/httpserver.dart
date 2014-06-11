@@ -34,7 +34,11 @@ Filter auth(Uri authUrl) {
             return false;
           }
         }).catchError((error) {
-          serverError(request, 'utilities.httpserver.auth() ${error} config.authUrl: "${authUrl}" final authurl: ${url}');
+          if (error is SocketException) {
+            serverError(request, 'failed to connect to authentication server');  
+          } else {
+            serverError(request, 'utilities.httpserver.auth() ${error} config.authUrl: "${authUrl}" final authurl: ${url}');
+          }
           return false;
         });
         
@@ -102,14 +106,15 @@ String pathParameterString(Uri uri, String key) {
     return uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1);
   } catch(error) {
     access('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
-    return null;
+    throw new StateError('Parameter not found: ${key}');
   }
 }
 
 void serverError(HttpRequest request, String logMessage) {
   logger.errorContext(logMessage, "serverError");
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-  writeAndClose(request, JSON.encode({'error': 'Internal Server Error'}));
+  writeAndClose(request, JSON.encode({'error': 'Internal Server Error',
+                                      'description' : logMessage}));
 }
 
 void forbidden(HttpRequest request, String reason) {
