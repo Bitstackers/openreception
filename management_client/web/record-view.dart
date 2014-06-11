@@ -34,6 +34,10 @@ class RecordView {
 
   void registrateEventHandlers() {
     receptionSearchBox.onInput.listen((_) => performSearch());
+
+    bus.on(windowChanged).listen((Map event) {
+      element.classes.toggle('hidden', event['window'] != viewName);
+    });
   }
 
   LIElement makeReceptionNode(Reception reception) {
