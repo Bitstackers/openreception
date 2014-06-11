@@ -1,4 +1,4 @@
-part of service;
+part of utilities.service;
 
 abstract class Protocol {
   static final BROADCAST_RESOURCE = "/broadcast";
@@ -13,10 +13,10 @@ abstract class Notification {
   /**
    * Performs a broadcat via the notification server.
    */
-  static Future broadcast(Map map, Uri host) {
+  static Future broadcast(Map map, Uri host, String serverToken) {
     final String context = '${className}.broadcast';
 
-    host = Uri.parse(host.toString() + Protocol.BROADCAST_RESOURCE + "?token=feedabbadeadbeef0");
+    host = Uri.parse('${host}${Protocol.BROADCAST_RESOURCE}?token=${serverToken}');
     
     return client.postUrl(host)
       .then(( HttpClientRequest req ) {
