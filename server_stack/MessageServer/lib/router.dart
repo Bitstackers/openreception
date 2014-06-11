@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'configuration.dart';
 import 'database.dart' as db;
 import 'model.dart' as model;
-import '../../lib/service.dart' as service;
+import 'package:Utilities/service.dart' as Service;
 import 'package:Utilities/common.dart';
 import 'package:Utilities/httpserver.dart';
 

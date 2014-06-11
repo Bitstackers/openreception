@@ -20,6 +20,7 @@ abstract class Default {
   static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
   static final String callFlowHost         = "localhost";
   static final int    callFlowPort         = 9999;
+  static final String serverToken          = 'feedabbadeadbeef0';
 }
 
 class Configuration {
@@ -32,6 +33,7 @@ class Configuration {
   int        _httpport             = Default.httpport;
   String     _callFlowHost         = Default.callFlowHost;
   int        _callFlowPort         = Default.callFlowPort;
+  String     _serverToken          = Default.serverToken;
 
   Uri    get authUrl            => _authUrl;
   Uri    get notificationServer => _notificationServer;
@@ -39,6 +41,7 @@ class Configuration {
   int    get httpport           => _httpport;
   String get callFlowHost       => _callFlowHost;
   int    get callFlowPort       => _callFlowPort;
+  String get serverToken        => _serverToken;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -76,6 +79,10 @@ class Configuration {
       
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
+      }
+      
+      if(config.containsKey('serverToken')) {
+        _httpport = config['serverToken'];
       }
 
       if(config.containsKey('notificationServer')) {
