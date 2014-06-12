@@ -3,10 +3,14 @@ nav>ul {
   padding: 0;
 }
 
+nav img.faded {
+  opacity: 0.2;
+}
+
 nav img {
   /*
   width: 32px;
   height: 32px;
   */
-  
+
 }
