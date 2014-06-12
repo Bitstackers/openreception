@@ -95,10 +95,8 @@ class OrganizationView {
       }
     });
 
-    bus.on(Invalidate.receptionContactAdded).listen(handleReceptionContactAdded
-        );
-    bus.on(Invalidate.receptionContactRemoved).listen(
-        handleReceptionContactRemoved);
+    bus.on(Invalidate.receptionContactAdded).listen(handleReceptionContactAdded);
+    bus.on(Invalidate.receptionContactRemoved).listen(handleReceptionContactRemoved);
 
     searchBox.onInput.listen((_) => performSearch());
   }
@@ -148,7 +146,6 @@ class OrganizationView {
   }
 
   void saveChanges() {
-    //TODO Does this make sense? Remove currentOrganizationId?????
     if (selectedOrganizationId > 0) {
       Map organization = {
         'id': selectedOrganizationId,
@@ -205,15 +202,20 @@ class OrganizationView {
   LIElement makeOrganizationNode(Organization organization) {
     return new LIElement()
         ..classes.add('clickable')
-        ..value = organization.id
+        ..attributes['data-organizationid'] = '${organization.id}'
         ..text = '${organization.full_name}'
         ..onClick.listen((_) {
           activateOrganization(organization.id);
         });
   }
 
+  void highlightContactInList(int id) {
+    uiList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-organizationid'] == '$id'));
+  }
+
   void activateOrganization(int organizationId) {
     getOrganization(organizationId).then((Organization organization) {
+      highlightContactInList(organizationId);
       selectedOrganizationId = organizationId;
       createNew = false;
       buttonSave.disabled = false;

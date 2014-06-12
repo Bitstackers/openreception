@@ -129,8 +129,13 @@ class ContactView {
     LIElement li = new LIElement()
         ..classes.add('clickable')
         ..text = '${contact.full_name}'
+        ..attributes['data-contactid'] = '${contact.id}'
         ..onClick.listen((_) => activateContact(contact.id));
     return li;
+  }
+
+  void highlightContactInList(int id) {
+    ulContactList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-contactid'] == '$id'));
   }
 
   void activateContact(int id) {
@@ -147,6 +152,8 @@ class ContactView {
       inputEnabled.checked = contact.enabled;
       spanContactId.text = '${contact.id}';
       selectedContactId = contact.id;
+
+      highlightContactInList(id);
 
       return request.getAContactsEveryReception(id).then(
           (List<ReceptionContact_ReducedReception> contacts) {

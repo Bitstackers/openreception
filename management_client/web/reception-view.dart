@@ -292,11 +292,15 @@ class ReceptionView {
   LIElement makeReceptionNode(Reception reception) {
     return new LIElement()
         ..classes.add('clickable')
-        ..value = reception.id //TODO Er den brugt?
+        ..attributes['data-receptionid'] = '${reception.id}'
         ..text = '${reception.full_name}'
         ..onClick.listen((_) {
           activateReception(reception.organization_id, reception.id);
         });
+  }
+
+  void highlightContactInList(int id) {
+    uiReceptionList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-receptionid'] == '$id'));
   }
 
   void activateReception(int organizationId, int receptionId) {
@@ -312,9 +316,10 @@ class ReceptionView {
     });
 
     if (organizationId > 0 && receptionId > 0) {
-      getReception(currentOrganizationId, selectedReceptionId).then((Reception
-          response) {
+      getReception(currentOrganizationId, selectedReceptionId).then((Reception response) {
         buttonDialplan.disabled = false;
+
+        highlightContactInList(receptionId);
 
         inputFullName.value = response.full_name;
         inputEnabled.checked = response.enabled;

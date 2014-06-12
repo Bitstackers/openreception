@@ -44,14 +44,9 @@ class RecordView {
     LIElement li = new LIElement();
     return li
       ..classes.add('clickable')
-      ..value = reception.id //TODO Er den brugt?
+      ..attributes['data-receptionid'] = '${reception.id}'
       ..text = '${reception.full_name}'
       ..onClick.listen((_) {
-        if(highlightedReceptionLI != null) {
-          highlightedReceptionLI.classes.remove('highlightedLI');
-        }
-        highlightedReceptionLI = li;
-        li.classes.add('highlightedLI');
         activateReception(reception.organization_id, reception.id);
       });
   }
@@ -80,9 +75,15 @@ class RecordView {
         ..addAll(receptions.map(makeReceptionNode));
   }
 
+  void highlightContactInList(int id) {
+    receptionListUL.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-receptionid'] == '$id'));
+  }
+
   void activateReception(int organization, int reception) {
     //TODO DO SOMETHING
     notify.info('Activated: ${organization} / ${reception}');
+
+    highlightContactInList(reception);
 
     request.getAudiofileList(reception).then((List<Audiofile> files) {
       fileListUL.children.clear();

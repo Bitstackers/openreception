@@ -42,7 +42,12 @@
 }
 
 #organization-list>li {
-  padding: 5px 8px;
+  border-left: 2px solid transparent;
+  padding: 5px 0 5px 5px;
+}
+
+#organization-list>li.highlightListItem {
+  border-left: 2px solid red;
 }
 
 /******************

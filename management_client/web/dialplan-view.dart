@@ -279,8 +279,6 @@ class DialplanView {
 
   void renderSelectedExtensionActions() {
     if(selectedExtension != null) {
-//      SortableGroup sortGroup = new SortableGroup()
-//        ..onSortUpdate.listen((_) => enabledSaveButton());
       for (Action action in selectedExtension.actions) {
 
         ImageElement image = new ImageElement()
@@ -296,17 +294,13 @@ class DialplanView {
           enabledSaveButton();
         });
         SpanElement nameTag = new SpanElement();
-          //..classes.add('dialplan-controlitem-nametag');
-
-//        LIElement li = new LIElement();
-//        li.children.addAll([image, remove, nameTag]);
-//        sortGroup.install(li);
 
         TextAreaElement shortDescription = new TextAreaElement()
           ..readOnly = true
           ..classes.add('dialplan-controlitem-description');
 
-        TableRowElement row = new TableRowElement();
+        TableRowElement row = new TableRowElement()
+            ..classes.add('clickable');
         row.children.addAll(
           [new TableCellElement()..children.addAll([image, nameTag])..classes.add('dialplan-item-image'),
            new TableCellElement()..children.add(shortDescription)..classes.add('dialplan-item-description'),
@@ -366,15 +360,11 @@ class DialplanView {
 
   void renderSelectedExtensionCondition() {
     if(selectedExtension != null) {
-//      SortableGroup sortGroup = new SortableGroup()
-//        ..onSortUpdate.listen((_) => enabledSaveButton());
-
       for (Condition condition in selectedExtension.conditions) {
         ImageElement image = new ImageElement()
           ..classes.add('dialplan-controlitem-img');
 
         SpanElement nameTag = new SpanElement();
-          //..classes.add('dialplan-controlitem-nametag');
 
         ImageElement remove = new ImageElement(src: 'image/cross.png')
           ..classes.add('dialplan-controlremove')
@@ -392,7 +382,8 @@ class DialplanView {
           ..classes.add('dialplan-controlitem-description')
           ..value = 'This is the first line where some of the description will be. \n And this is the second';
 
-        TableRowElement row = new TableRowElement();
+        TableRowElement row = new TableRowElement()
+          ..classes.add('clickable');
         row.children.addAll(
             [new TableCellElement()..children.addAll([image, nameTag])..classes.add('dialplan-item-image'),
              new TableCellElement()..children.add(shortDescription)..classes.add('dialplan-item-description'),

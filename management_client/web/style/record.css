@@ -29,10 +29,10 @@
 
 #record-reception-list > li {
   border-left: 2px solid transparent;
-  padding: 5px 0;
+  padding: 5px 0 5px 3px;
 }
 
-#record-reception-list > li.highlightedLI {
+#record-reception-list > li.highlightListItem {
   border-left: 2px solid red;
 }
 
