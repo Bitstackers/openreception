@@ -52,6 +52,10 @@ class _SysLogger extends BasicLogger {
   void critical(String message) => _syslog.log(Facility.user, Severity.Critical, message);
 }
 
+int dateTimeToUnixTimestamp(DateTime time) {
+  return time.millisecondsSinceEpoch~/1000; 
+}
+
 String dateTimeToJson(DateTime time) {
   //TODO We should find a format.
   return time.toString(); 
