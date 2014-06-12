@@ -1,6 +1,7 @@
 part of contactserver.database;
 
-///NOTE: For some (uninvestigated) reason rowcount is not returned when using transactions.
+/// NOTE: Transactions discards rows, and therefore does not leave us any option
+/// to extract the latest ID, or rowcount. 
 
 abstract class ContactCalendar {
 
@@ -36,30 +37,31 @@ LIMIT 1;
   
   }
 
-  static Future<int> createEvent({int contactID, int receptionID, Map event, Map distributionList : null}) {
+  static Future createEvent({int contactID, int receptionID, Map event, Map distributionList : null}) {
     String sql = '''
 START TRANSACTION;
 
    INSERT INTO calendar_events 
-     ("start", "stop", "message") 
+     ("id", "start", "stop", "message") 
    VALUES 
-     (@start, @end, @description);
+     (DEFAULT, @start, @end, @content);
 
    INSERT INTO contact_calendar 
      ("reception_id", "contact_id", "distribution_list", "event_id")
    VALUES
      (@receptionID, @contactID, @distributionList, lastval());
-
 COMMIT;''';  
 
     Map parameters = 
       {'receptionID'      : receptionID,
        'contactID'        : contactID,
        'distributionList' : distributionList,
-       'start'            : new DateTime.fromMillisecondsSinceEpoch(event['from']*1000),
-       'end'              : new DateTime.fromMillisecondsSinceEpoch(event['until']*1000),
-       'description'      : event['description']};
+       'start'            : new DateTime.fromMillisecondsSinceEpoch(event['start']*1000),
+       'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
+       'content'           : event['content']};
 
+    print (sql);
+    
   return database.execute(_pool, sql, parameters);
   
   }
@@ -71,7 +73,7 @@ COMMIT;''';
       SET
           "start"   = @start, 
           "stop"    = @end, 
-          "message" = @description
+          "message" = @content
       FROM contact_calendar cc
       WHERE ce.id = @eventID 
         AND cc.contact_id   = @contactID
@@ -82,15 +84,15 @@ COMMIT;''';
        'contactID'        : contactID,
        'eventID'          : eventID,
        'distributionList' : distributionList,
-       'start'            : new DateTime.fromMillisecondsSinceEpoch(event['from']*1000),
-       'end'              : new DateTime.fromMillisecondsSinceEpoch(event['until']*1000),
-       'description'      : event['description']};
+       'start'            : new DateTime.fromMillisecondsSinceEpoch(event['start']*1000),
+       'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
+       'content'          : event['content']};
 
   return database.execute(_pool, sql, parameters).then((int rowsAffected) => rowsAffected);
   
   }
 
-  static Future<int> removeEvent({int contactID, int receptionID, int eventID}) {
+  static Future removeEvent({int contactID, int receptionID, int eventID}) {
     String sql = '''
 START TRANSACTION;
   DELETE FROM 
@@ -111,7 +113,7 @@ COMMIT; ''';
        'contactID'   : contactID,
        'eventID'     : eventID};
 
-    return database.execute(_pool, sql, parameters).then((int rowsAffected) { return rowsAffected;});
+    return database.execute(_pool, sql, parameters);
   
   }
 
@@ -142,17 +144,13 @@ LIMIT 1;
     
       var row = rows.first;
     
-      return {'description' : row.message,
-              'from'        : dateTimeToJson(row.start),
-              'until'       : dateTimeToJson(row.stop)};
+      return {'content' : row.message,
+              'start'   : dateTimeToUnixTimestamp(row.start),
+              'stop'    : dateTimeToUnixTimestamp(row.stop)};
     } else {
       return null;
     }
   });
   
   }
-
-
-
-
 }

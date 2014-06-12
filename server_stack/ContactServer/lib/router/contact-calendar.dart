@@ -113,7 +113,7 @@ abstract class ContactCalendar {
         if (event == null) {
           notFound(request, {'description' : 'No calendar event found with ID $eventID'});
         }
-        writeAndClose(request, JSON.encode(event));
+        writeAndClose(request, JSON.encode({'event' : event}));
       });
   }
 

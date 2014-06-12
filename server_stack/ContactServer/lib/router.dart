@@ -22,12 +22,12 @@ part 'router/invalidatecontact.dart';
 part 'router/contact-calendar.dart';
 part 'router/contact.dart';
 
-final Pattern receptionContactInvalidateResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
-final Pattern receptionContactResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
-final Pattern receptionContactListResource = new UrlPattern(r'/contact/list/reception/(\d+)');
-final Pattern receptionContactCalendarResource     = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event/(\d+)');
+final Pattern receptionContactInvalidateResource     = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
+final Pattern receptionContactResource               = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
+final Pattern receptionContactListResource           = new UrlPattern(r'/contact/list/reception/(\d+)');
+final Pattern receptionContactCalendarResource       = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event/(\d+)');
 final Pattern receptionContactCalendarCreateResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event');
-final Pattern receptionContactCalendarListResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
+final Pattern receptionContactCalendarListResource   = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
 
 final List<Pattern> allUniqueUrls = 
    [receptionContactInvalidateResource, 
