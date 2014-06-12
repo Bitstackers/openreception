@@ -98,10 +98,11 @@ class ReceptionController {
   void getDialplan(HttpRequest request) {
     int receptionId = pathParameter(request.uri, 'reception');
 
-    db.getDialplan(receptionId).then((Dialplan dialplan) => writeAndCloseJson(
-        request, dialplanAsJson(dialplan))).catchError((error) {
-      logger.error('getDialplan url: "${request.uri}" gave error "${error}"');
-      Internal_Error(request);
+    db.getDialplan(receptionId)
+      .then((Dialplan dialplan) => writeAndCloseJson(request, dialplanAsJson(dialplan)))
+      .catchError((error) {
+        logger.error('getDialplan url: "${request.uri}" gave error "${error}"');
+        Internal_Error(request);
     });
   }
 
