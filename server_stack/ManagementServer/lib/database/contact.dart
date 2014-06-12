@@ -42,7 +42,6 @@ Future<List<model.ReceptionColleague>> _getContactColleagues(Pool pool, int cont
         JOIN (SELECT reception_id
               FROM reception_contacts
               WHERE contact_id = @contactid) cr on cr.reception_id = rc.reception_id
-     WHERE c.id != @contactid
      ORDER BY r.full_name, c.full_name
     ''';
 
