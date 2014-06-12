@@ -30,7 +30,9 @@ abstract class ContactCalendar {
                                               'description' : 'Event created'}));
         }).catchError((onError) {
           serverError(request, 'Failed to store event in database');
-      });
+        });
+    }).catchError((onError) {
+      serverError(request, 'Failed to extract client request');
     });
   }
 
@@ -72,7 +74,11 @@ abstract class ContactCalendar {
         }).catchError((onError) {
           serverError(request, 'Failed to update event in database');
         });
+      }).catchError((onError) {
+        serverError(request, 'Failed to execute database query');
       });
+    }).catchError((onError) {
+      serverError(request, 'Failed to extract client request');
     });
   }
 
@@ -98,6 +104,8 @@ abstract class ContactCalendar {
           }).catchError((onError) {
           serverError(request, 'Failed to removed event from database');
         });
+    }).catchError((onError) {
+      serverError(request, 'Failed to execute database query');
     });
   }
 
@@ -112,8 +120,11 @@ abstract class ContactCalendar {
       .then((Map event) {
         if (event == null) {
           notFound(request, {'description' : 'No calendar event found with ID $eventID'});
+        } else {
+          writeAndClose(request, JSON.encode({'event' : event}));
         }
-        writeAndClose(request, JSON.encode({'event' : event}));
+      }).catchError((onError) {
+        serverError(request, 'Failed to execute database query');
       });
   }
 
