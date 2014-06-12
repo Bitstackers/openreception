@@ -63,10 +63,10 @@ class Menu {
   }
 
   void _highlightItem(String window) {
-    orgButton.style.opacity = window == ORGANIZATION_WINDOW ? '1': '0.2';
-    recButton.style.opacity = window == RECEPTION_WINDOW ? '1': '0.2';
-    conButton.style.opacity = window == CONTACT_WINDOW ? '1': '0.2';
-    dialButton.style.opacity = window == DIALPLAN_WINDOW ? '1': '0.2';
-    recordButton.style.opacity = window == RECORD_WINDOW ? '1': '0.2';
+    orgButton.classes.toggle('faded', window != ORGANIZATION_WINDOW);
+    recButton.classes.toggle('faded', window != RECEPTION_WINDOW);
+    conButton.classes.toggle('faded', window != CONTACT_WINDOW);
+    dialButton.classes.toggle('faded', window != DIALPLAN_WINDOW);
+    recordButton.classes.toggle('faded', window != RECORD_WINDOW);
   }
 }

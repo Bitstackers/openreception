@@ -28,7 +28,8 @@
 }
 
 #dialplan-savebutton {
-  padding: 1px 8px;
+  margin: 5px 5px 5px 0;
+  padding: 2px 10px;
 }
 
 #dialplan-controlbar {
@@ -40,25 +41,59 @@
   margin-top: 10px;
 }
 
+#dialplan-controlbar-condition {
+  height: 30%;
+  height: -moz-calc(35% - 10px);
+  height: -webkit-calc(35% - 10px);
+  border: solid 2px grey;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: auto;
+}
+
+#dialplan-controlbar-action {
+  height: 40%;
+  height: -moz-calc(55% - 5px);
+  height: -webkit-calc(55% - 5px);
+  border: solid 2px grey;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: auto;
+}
+
+#dialplan-controlbar-condition h4, #dialplan-controlbar-action h4 {
+  padding: 5px 0 5px 5px;
+  background-color: lightgrey;
+  border-radius: 8px 8px 0 0;
+}
+
+#dialplan-control-condition-list, #dialplan-control-action-list {
+  padding: 5px;
+  list-style-type: none;
+  text-align:center;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+#dialplan-control-condition-list li, #dialplan-control-action-list li {
+  padding: 5px;
+}
+
+/*
 ul#dialplan-control-list {
   padding: 5px;
   list-style-type: none;
   text-align:center;
   margin: 0 auto;
-}
+}*/
 
 ul#dialplan-control-list li {
   padding: 5px;
 }
 
 img.dialplan-controlitem-img {
-  width: 64px;
-  height: 64px;
-}
-
-.dialplan-controlremove {
-  width: 16px;
-  height: 16px;
+  width: 48px;
+  height: 48px;
 }
 
 .dialplan-controlitem-nametag {
@@ -87,11 +122,12 @@ img.dialplan-controlitem-img {
   font-size: larger;
 }
 
+/*
 #dialplan-items-list {
   width: 100%;
   list-style-type: none;
 
-  text-align:center;
+  text-align: left;
   margin: 0 auto;
 }
 
@@ -99,8 +135,56 @@ img.dialplan-controlitem-img {
   padding: 5px;
 }
 
+*/
+
+#dialplan-items-table {
+  width: 100%;
+}
+
+#dialplan-items-table tr:not(:first-child) td {
+  border-top: 1px solid black;
+}
+
+/* Table Cells */
+td.dialplan-item-image {
+  width: 100px;
+  text-align: center;
+
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+td.dialplan-item-image > * {
+  margin: auto;
+  display: block;
+}
+
+td.dialplan-item-description > textarea {
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  border: none;
+
+  outline: none;
+  resize: none;
+}
+
+td.dialplan-item-remove {
+  margin: auto;
+  text-align: center;
+}
+
 #dialplan-controls {
   list-style-type: none;
+}
+
+.dialplan-controlremove {
+  width: 24px;
+  height: 24px;
+}
+
+.dialplan-controlitem-description {
+
 }
 
 /**

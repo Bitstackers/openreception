@@ -257,51 +257,57 @@
           <button id="dialplan-savebutton">Gem</button>
         </div>
 
-        <div id="dialplan-controlbar">
-          <ul id="dialplan-control-list">
-
+        <div id="dialplan-controlbar-condition">
+          <h4>Betingelser</h4>
+          <ol id="dialplan-control-condition-list">
             <li value="0">
-              <img alt="Tidsstyring" src="image/tp/time.svg" class="dialplan-controlitem-img">
+              <img alt="Tidsstyring" src="image/dialplan/watch.svg" class="dialplan-controlitem-img">
               <span class="dialplan-controlitem-nametag">Tidsstyring</span>
             </li>
 
             <li value="1">
-              <img alt="Tidsstyring" src="image/tp/date.svg" class="dialplan-controlitem-img">
+              <img alt="Tidsstyring" src="image/dialplan/calendar.svg" class="dialplan-controlitem-img">
               <span class="dialplan-controlitem-nametag">Datostyring</span>
             </li>
+          </ol>
+        </div>
 
+        <div id="dialplan-controlbar-action">
+          <h4>Handlinger</h4>
+          <ol id="dialplan-control-action-list">
             <li value="2">
-              <img alt="viderstil" src="image/tp/bendedarrow.svg" class="dialplan-controlitem-img">
-              <span class="dialplan-controlitem-nametag">viderstil</span>
+              <img alt="viderstil" src="image/dialplan/bended_arrow.svg" class="dialplan-controlitem-img">
+              <span class="dialplan-controlitem-nametag">Viderstil</span>
             </li>
 
             <li value="3">
-              <img alt="Receptionisterne" src="image/tp/multiplemen.svg" class="dialplan-controlitem-img">
+              <img alt="Receptionisterne" src="image/dialplan/group.svg" class="dialplan-controlitem-img">
               <span class="dialplan-controlitem-nametag">Receptionisterne</span>
             </li>
 
             <li value="4">
-              <img alt="Telefonsvare" src="image/tp/microphone.svg" class="dialplan-controlitem-img">
+              <img alt="Telefonsvare" src="image/dialplan/microphone.svg" class="dialplan-controlitem-img">
               <span class="dialplan-controlitem-nametag">Telefonsvare</span>
             </li>
 
             <li value="5">
-              <img alt="lydfil" src="image/tp/speaker.svg" class="dialplan-controlitem-img">
-              <span class="dialplan-controlitem-nametag">lydfil</span>
+              <img alt="lydfil" src="image/dialplan/speaker.svg" class="dialplan-controlitem-img">
+              <span class="dialplan-controlitem-nametag">Lydfil</span>
             </li>
 
             <li value="6">
-              <img alt="ivr" src="image/IVR.svg" class="dialplan-controlitem-img">
-              <span class="dialplan-controlitem-nametag">ivr</span>
+              <img alt="ivr" src="image/dialplan/IVR.svg" class="dialplan-controlitem-img">
+              <span class="dialplan-controlitem-nametag">IVR</span>
             </li>
-
-          </ul>
+          </ol>
         </div>
       </div>
 
       <div id="dialplan-contentbar">
         <span id="dialplan-selected-extensionname"></span>
-        <ul id="dialplan-items-list"></ul>
+        <table id="dialplan-items-table">
+          <tbody id="dialplan-items-body"></tbody>
+        </table>
       </div>
 
       <div id="dialplan-settingsbar">

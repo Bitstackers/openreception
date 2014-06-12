@@ -24,13 +24,25 @@ class _ControlLookUp {
   static const int ivr = 6;
 }
 
+class _ControlImage {
+  static const String bendedArrow = 'image/dialplan/bended_arrow.svg';
+  static const String calendar = 'image/dialplan/calendar.svg';
+  static const String group = 'image/dialplan/group.svg';
+  static const String IVR = 'image/dialplan/IVR.svg';
+  static const String microphone = 'image/dialplan/microphone.svg';
+  static const String speaker = 'image/dialplan/speaker.svg';
+  static const String tape = 'image/dialplan/tape.svg';
+  static const String watch = 'image/dialplan/watch.svg';
+}
+
 class DialplanView {
   String viewName = 'dialplan';
   int selectedReceptionId;
 
   DivElement element;
-  UListElement controlList;
-  UListElement itemsList;
+  OListElement controlListCondition, controlListAction;
+  //TableElement itemsList;
+  TableSectionElement itemsList;
   UListElement extensionList;
   ButtonElement extensionAdd;
   DivElement settingPanel;
@@ -44,8 +56,9 @@ class DialplanView {
   Extension selectedExtension;
 
   DialplanView(DivElement this.element) {
-    controlList = element.querySelector('#dialplan-control-list');
-    itemsList = element.querySelector('#dialplan-items-list');
+    controlListCondition = element.querySelector('#dialplan-control-condition-list');
+    controlListAction = element.querySelector('#dialplan-control-action-list');
+    itemsList = element.querySelector('#dialplan-items-body');
     extensionList = element.querySelector('#dialplan-extension-list');
     extensionAdd = element.querySelector('#dialplan-extension-add');
     settingPanel = element.querySelector('#dialplan-settings');
@@ -78,8 +91,12 @@ class DialplanView {
       saveDialplan();
     });
 
-    controlList.children.forEach((LIElement li) {
-      li.onClick.listen((_) => handleControlClick(li.value));
+    controlListCondition.children.forEach((LIElement li) {
+      li.onClick.listen((_) => handleControlConditionClick(li.value));
+    });
+
+    controlListAction.children.forEach((LIElement li) {
+      li.onClick.listen((_) => handleControlActionClick(li.value));
     });
 
     extensionAdd.onClick.listen((_) {
@@ -91,12 +108,17 @@ class DialplanView {
         int count = 1;
         String genericName = 'extension${count}';
         while (dialplan.Extensions.any((e) => e.name == genericName)) {
-          print(count);
           count += 1;
           genericName = 'extension${count}';
         }
 
         newExtension.name = genericName;
+
+        //The first extension is marked as start per default.
+        if(dialplan.Extensions.isEmpty) {
+          newExtension.isStart = true;
+        }
+
         dialplan.Extensions.add(newExtension);
         renderExtensionList(dialplan);
         activateExtension(newExtension);
@@ -192,7 +214,10 @@ class DialplanView {
     return li;
   }
 
-  void handleControlClick(int value) {
+  /**
+   * Inserts a new condition to the selected Extension based on the number.
+   **/
+  void handleControlConditionClick(int value) {
     if (selectedExtension != null) {
       switch (value) {
         case _ControlLookUp.timeControl:
@@ -206,7 +231,16 @@ class DialplanView {
           selectedExtension.conditions.add(condition);
           settingsConditionDate(condition);
           break;
+      }
 
+      enabledSaveButton();
+      renderContentList();
+    }
+  }
+
+  void handleControlActionClick(int value) {
+    if (selectedExtension != null) {
+      switch (value) {
         case _ControlLookUp.forward:
           Forward action = new Forward();
           selectedExtension.actions.add(action);
@@ -245,10 +279,10 @@ class DialplanView {
 
   void renderSelectedExtensionActions() {
     if(selectedExtension != null) {
-      SortableGroup sortGroup = new SortableGroup()
-        ..onSortUpdate.listen((_) => enabledSaveButton());
+//      SortableGroup sortGroup = new SortableGroup()
+//        ..onSortUpdate.listen((_) => enabledSaveButton());
       for (Action action in selectedExtension.actions) {
-        LIElement li = new LIElement();
+
         ImageElement image = new ImageElement()
           ..classes.add('dialplan-controlitem-img');
         ImageElement remove = new ImageElement(src: 'image/cross.png')
@@ -261,66 +295,86 @@ class DialplanView {
           activateExtension(selectedExtension);
           enabledSaveButton();
         });
-        SpanElement nameTag = new SpanElement()
-          ..classes.add('dialplan-controlitem-nametag');
-        li.children.addAll([image, remove, nameTag]);
+        SpanElement nameTag = new SpanElement();
+          //..classes.add('dialplan-controlitem-nametag');
+
+//        LIElement li = new LIElement();
+//        li.children.addAll([image, remove, nameTag]);
+//        sortGroup.install(li);
+
+        TextAreaElement shortDescription = new TextAreaElement()
+          ..readOnly = true
+          ..classes.add('dialplan-controlitem-description');
+
+        TableRowElement row = new TableRowElement();
+        row.children.addAll(
+          [new TableCellElement()..children.addAll([image, nameTag])..classes.add('dialplan-item-image'),
+           new TableCellElement()..children.add(shortDescription)..classes.add('dialplan-item-description'),
+           new TableCellElement()..children.add(remove)..classes.add('dialplan-item-remove')
+          ]);
+
+        itemsList.children.add(row);
 
         if (action is Forward) {
-          image.src = 'image/tp/bendedarrow.svg';
+          image.src = _ControlImage.bendedArrow;
           nameTag.text = 'Viderstil';
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
             settingsActionForward(action);
           });
+          shortDescription.value = 'Nummer: ${action.number}';
 
         } else if (action is ExecuteIvr) {
-          image.src = 'image/IVR.svg';
+          image.src = _ControlImage.IVR;
           nameTag.text = 'Ivrmenu';
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
             settingsActionExecuteIvr(action);
           });
+          shortDescription.value = 'IVR: ${action.ivrname}';
 
         } else if (action is PlayAudio) {
-          image.src = 'image/tp/speaker.svg';
+          image.src = _ControlImage.speaker;
           nameTag.text = 'Afspil lyd';
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
             settingsActionPlayAudio(action);
           });
+          shortDescription.value = 'Fil: ${action.filename}';
 
         } else if (action is Receptionists) {
-          image.src = 'image/tp/multiplemen.svg';
+          image.src = _ControlImage.group;
           nameTag.text = 'Receptionisterne';
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
             settingsActionReceptionists(action);
           });
+          shortDescription.value =
+              'VenteTid: ${action.sleepTime}\nMusik: ${action.music}\nVelkomst: ${action.welcomeFile}';
 
         } else if (action is Voicemail) {
-          image.src = 'image/tp/microphone.svg';
+          image.src = _ControlImage.microphone;
           nameTag.text = 'Telefonsvare';
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
             settingsActionVoicemail(action);
           });
+          shortDescription.value = 'Email: ${action.email}';
 
         } else {
           image.src = 'image/organization_icon_disable.svg';
           nameTag.text = 'Ukendt';
         }
-        itemsList.children.add(li);
-        sortGroup.install(li);
       }
     }
   }
 
   void renderSelectedExtensionCondition() {
     if(selectedExtension != null) {
-      SortableGroup sortGroup = new SortableGroup()
-        ..onSortUpdate.listen((_) => enabledSaveButton());
+//      SortableGroup sortGroup = new SortableGroup()
+//        ..onSortUpdate.listen((_) => enabledSaveButton());
 
       for (Condition condition in selectedExtension.conditions) {
         ImageElement image = new ImageElement()
           ..classes.add('dialplan-controlitem-img');
 
-        SpanElement nameTag = new SpanElement()
-          ..classes.add('dialplan-controlitem-nametag');
+        SpanElement nameTag = new SpanElement();
+          //..classes.add('dialplan-controlitem-nametag');
 
         ImageElement remove = new ImageElement(src: 'image/cross.png')
           ..classes.add('dialplan-controlremove')
@@ -333,28 +387,39 @@ class DialplanView {
             enabledSaveButton();
         });
 
-        LIElement li = new LIElement()
-          ..children.addAll([image, remove, nameTag]);
+        TextAreaElement shortDescription = new TextAreaElement()
+          ..readOnly = true
+          ..classes.add('dialplan-controlitem-description')
+          ..value = 'This is the first line where some of the description will be. \n And this is the second';
 
-        itemsList.children.add(li);
+        TableRowElement row = new TableRowElement();
+        row.children.addAll(
+            [new TableCellElement()..children.addAll([image, nameTag])..classes.add('dialplan-item-image'),
+             new TableCellElement()..children.add(shortDescription)..classes.add('dialplan-item-description'),
+             new TableCellElement()..children.add(remove)..classes.add('dialplan-item-remove')
+            ]);
 
-        sortGroup.install(li);
+        itemsList.children.add(row);
 
         if (condition is Time) {
-          image.src = 'image/tp/time.svg';
+          image.src = _ControlImage.watch;
           nameTag.text = 'Tidsstyring';
 
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
             settingsConditionTime(condition);
           });
+          shortDescription.value =
+              'Ugedage: ${condition.wday}\nTid: ${condition.timeOfDay}';
 
         } else if(condition is Date) {
-          image.src = 'image/tp/date.svg';
+          image.src = _ControlImage.calendar;
           nameTag.text = 'Datostyring';
 
-          li.onClick.listen((_) {
+          row.onClick.listen((_) {
               settingsConditionDate(condition);
           });
+          shortDescription.value =
+               'Dato: ${condition.year}-${condition.mon}-${condition.mday}';
         }
       }
     }
