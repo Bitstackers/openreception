@@ -1,7 +1,7 @@
-part of utilitiesservice;
+part of utilities.service;
 
 abstract class userProtocol {
-  static final User_RESOURCE = "/broadcast";
+  static userResource(int userID) => '/user/${userID}';
 }
 
 abstract class User {
