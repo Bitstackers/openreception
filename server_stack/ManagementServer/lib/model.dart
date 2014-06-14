@@ -9,3 +9,4 @@ part 'model/reception_contact_reduced_reception.dart';
 part 'model/complete_reception_contact.dart';
 part 'model/phone.dart';
 part 'model/user.dart';
+part 'model/user_group.dart';

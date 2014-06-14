@@ -35,6 +35,9 @@ final Pattern contactypestUrl = new UrlPattern(r'/contacttypes(/?)');
 
 final Pattern UserUrl = new UrlPattern(r'/user(/?)');
 final Pattern UserIdUrl = new UrlPattern(r'/user/(\d+)');
+final Pattern UserIdGroupUrl = new UrlPattern(r'/user/(\d+)/group');
+final Pattern UserIdGroupIdUrl = new UrlPattern(r'/user/(\d+)/group/(\d+)');
+final Pattern GroupUrl = new UrlPattern(r'/group');
 
 final Pattern AudioFilelistUrl = new UrlPattern(r'/audiofiles(/?)');
 
@@ -99,6 +102,12 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(UserIdUrl, method: HttpMethod.GET).listen(user.getUser)
     ..serve(UserIdUrl, method: HttpMethod.POST)  .listen(user.updateUser)
     ..serve(UserIdUrl, method: HttpMethod.DELETE).listen(user.deleteUser)
+
+    ..serve(UserIdGroupUrl, method: HttpMethod.GET).listen(user.getUserGroups)
+    ..serve(UserIdGroupIdUrl, method: HttpMethod.PUT).listen(user.joinUserGroups)
+    ..serve(UserIdGroupIdUrl, method: HttpMethod.DELETE).listen(user.leaveUserGroups)
+
+    ..serve(GroupUrl, method: HttpMethod.GET).listen(user.getGroupList)
 
     ..serve(AudioFilelistUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
 
