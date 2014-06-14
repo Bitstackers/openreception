@@ -209,13 +209,13 @@ class OrganizationView {
         });
   }
 
-  void highlightContactInList(int id) {
+  void highlightOrganizationInList(int id) {
     uiList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-organizationid'] == '$id'));
   }
 
   void activateOrganization(int organizationId) {
     getOrganization(organizationId).then((Organization organization) {
-      highlightContactInList(organizationId);
+      highlightOrganizationInList(organizationId);
       selectedOrganizationId = organizationId;
       createNew = false;
       buttonSave.disabled = false;
