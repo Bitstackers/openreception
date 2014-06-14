@@ -8,7 +8,7 @@ Future<int> _createUser(Pool pool, String name, String extension) {
   ''';
 
   Map parameters =
-    {'name'    : name,
+    {'name'      : name,
      'extension' : extension};
 
   return query(pool, sql, parameters).then((rows) => rows.first.id);
@@ -69,6 +69,68 @@ Future<int> _updateUser(Pool pool, int userId, String name, String extension) {
     {'name'      : name,
      'extension' : extension,
      'id'        : userId};
+
+  return execute(pool, sql, parameters);
+}
+
+Future<List<model.UserGroup>> _getUserGroups(Pool pool, int userId) {
+  String sql = '''
+    SELECT id, name
+    FROM user_groups 
+     JOIN groups on user_groups.group_id = groups.id
+    WHERE user_groups.user_id = @userid
+  ''';
+
+  Map parameters =
+    {'userid': userId};
+
+  return query(pool, sql, parameters)
+    .then((rows) {
+      List<model.UserGroup> userGroups = new List<model.UserGroup>();
+      for(var row in rows) {
+        userGroups.add(new model.UserGroup(row.id, row.name));
+      }
+      return userGroups;
+    });
+}
+
+Future<List<model.UserGroup>> _getGroupList(Pool pool) {
+  String sql = '''
+    SELECT id, name
+    FROM groups
+  ''';
+
+  return query(pool, sql).then((rows) {
+    List<model.UserGroup> userGroups = new List<model.UserGroup>();
+    for(var row in rows) {
+      userGroups.add(new model.UserGroup(row.id, row.name));
+    }
+    return userGroups;
+  });
+}
+
+Future<int> _joinUserGroup(Pool pool, int userId, int groupId) {
+  String sql = '''
+    INSERT INTO user_groups (user_id, group_id)
+    VALUES (@userid, @groupid);
+  ''';
+
+  Map parameters =
+    {'userid'  : userId,
+     'groupid' : groupId};
+
+  return execute(pool, sql, parameters);
+}
+
+Future<int> _leaveUserGroup(Pool pool, int userId, int groupId) {
+  String sql = '''
+    DELETE FROM user_groups
+    WHERE user_id = @userid AND group_id = @groupid;
+  ''';
+
+  Map parameters =
+    {'userid'  : userId,
+     'groupid' : groupId};
 
   return execute(pool, sql, parameters);
 }

@@ -9,7 +9,7 @@ class Configuration {
   ArgResults _args;
 
   Uri        _authUrl;
-  String     _configfile;
+  String     _configfile = 'config.json';
   int        _httpport   = 8080;
   String     _dbuser;
   String     _dbpassword;

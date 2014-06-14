@@ -64,12 +64,55 @@ class UserController {
   void updateUser(HttpRequest request) {
     int userId = pathParameter(request.uri, 'user');
     extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.updateUser(userId, data['name'], data['extension']))
-    .then((int id) => writeAndCloseJson(request, userIdAsJson(id)))
-    .catchError((error) {
-      logger.error('updateUser url: "${request.uri}" gave error "${error}"');
+      .then(JSON.decode)
+      .then((Map data) => db.updateUser(userId, data['name'], data['extension']))
+      .then((int id) => writeAndCloseJson(request, userIdAsJson(id)))
+      .catchError((error) {
+        logger.error('updateUser url: "${request.uri}" gave error "${error}"');
+        Internal_Error(request);
+      });
+  }
+
+  void getUserGroups(HttpRequest request) {
+    int userId = pathParameter(request.uri, 'user');
+    db.getUserGroups(userId)
+      .then((List<UserGroup> data) => writeAndCloseJson(request, userGroupAsJson(data)) )
+      .catchError((error) {
+        logger.error('getUserGroups: url: "${request.uri}" gave error "${error}"');
+	      Internal_Error(request);
+      });
+  }
+
+  void joinUserGroups(HttpRequest request) {
+    int userId = pathParameter(request.uri, 'user');
+    int groupId = pathParameter(request.uri, 'group');
+
+    db.joinUserGroup(userId, groupId).then((_) {
+      writeAndCloseJson(request, '{}');
+    }).catchError((error) {
+      logger.error('joinUserGroups: url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
     });
+  }
+
+  void leaveUserGroups(HttpRequest request) {
+    int userId = pathParameter(request.uri, 'user');
+    int groupId = pathParameter(request.uri, 'group');
+
+    db.leaveUserGroup(userId, groupId).then((_) {
+      writeAndCloseJson(request, '{}');
+    }).catchError((error) {
+      logger.error('leaveUserGroups: url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
+  void getGroupList(HttpRequest request) {
+    db.getGroupList()
+      .then((List<UserGroup> data) => writeAndCloseJson(request, userGroupAsJson(data)) )
+      .catchError((error) {
+        logger.error('getGroupList: url: "${request.uri}" gave error "${error}"');
+        Internal_Error(request);
+      });
   }
 }

@@ -19,6 +19,7 @@ abstract class Default {
   static final int    httpport             = 4040;
   static final Uri    notificationServer   = Uri.parse("http://localhost:4200");
   static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
+  static final String serverToken          = 'feedabbadeadbeef0';
 }
 
 class Configuration {
@@ -34,16 +35,18 @@ class Configuration {
   int        _dbport     = 5432;
   String     _dbname;
   int        _httpport   = Default.httpport;
+  String     _serverToken          = Default.serverToken;
 
-  Uri    get authUrl    => _authUrl;
+  Uri    get authUrl            => _authUrl;
   Uri    get notificationServer => _notificationServer;
-  String get configfile => _configfile;
-  String get dbuser     => _dbuser;
-  String get dbpassword => _dbpassword;
-  String get dbhost     => _dbhost;
-  int    get dbport     => _dbport;
-  String get dbname     => _dbname;
-  int    get httpport   => _httpport;
+  String get configfile         => _configfile;
+  String get dbuser             => _dbuser;
+  String get dbpassword         => _dbpassword;
+  String get dbhost             => _dbhost;
+  int    get dbport             => _dbport;
+  String get dbname             => _dbname;
+  int    get httpport           => _httpport;
+  String get serverToken        => _serverToken;
   
   String emailUsername;
   String emailPassword;
@@ -86,6 +89,10 @@ class Configuration {
       
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
+      }
+
+      if(config.containsKey('serverToken')) {
+        _httpport = config['serverToken'];
       }
 
       if(config.containsKey('dbuser')) {

@@ -170,6 +170,22 @@ class Database {
 
   Future<int> updateUser(int userId, String name, String extension) =>
       _updateUser(pool, userId, name, extension);
+
+  /* ***********************************************
+     **************** User Groups ******************
+   */
+
+  Future<List<model.UserGroup>> getUserGroups(int userId) =>
+      _getUserGroups(pool, userId);
+
+  Future<List<model.UserGroup>> getGroupList() =>
+        _getGroupList(pool);
+
+  Future joinUserGroup(int userId, int groupId) =>
+      _joinUserGroup(pool, userId, groupId);
+
+  Future leaveUserGroup(int userId, int groupId) =>
+      _leaveUserGroup(pool, userId, groupId);
 }
 
 /* ***********************************************

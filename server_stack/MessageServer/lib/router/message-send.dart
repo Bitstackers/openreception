@@ -89,7 +89,7 @@ void messageSend(HttpRequest request) {
             writeAndClose(request, JSON.encode(result));
             
             logger.debugContext("inserted $queueSize elements in queue.", context); 
-            service.Notification.broadcast({'event' : 'messageSend', 'message_id' : message.ID}, config.notificationServer);
+            Service.Notification.broadcast({'event' : 'messageSend', 'message_id' : message.ID}, config.notificationServer, config.serverToken);
           });
         });
       });

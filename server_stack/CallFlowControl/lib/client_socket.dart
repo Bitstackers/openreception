@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
-import '../../lib/service.dart' as Service;
+import 'package:Utilities/service.dart' as Service;
 import '../lib/configuration.dart';
 
 
@@ -66,7 +66,7 @@ class clientSocket {
     this.callFlowClient.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
        Map json = JSON.decode(line);
        print (json);
-      Service.Notification.broadcast(json, config.notificationServer);
+      Service.Notification.broadcast(json, config.notificationServer, config.serverToken);
     }).onDone(() {
       print ('Disconnected from ${this.hostname}');
     });
