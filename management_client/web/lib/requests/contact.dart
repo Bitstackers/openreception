@@ -11,8 +11,8 @@ Future<List<Contact>> getEveryContact() {
       ..onLoad.listen((_) {
         if (request.status == 200) {
           Map rawData = JSON.decode(request.responseText);
-          List<Map> rawReceptions = rawData['contacts'];
-          completer.complete(rawReceptions.map((r) => new Contact.fromJson(r)
+          List<Map> rawContacts = rawData['contacts'];
+          completer.complete(rawContacts.map((r) => new Contact.fromJson(r)
               ).toList());
         } else {
           completer.completeError('Bad status code. ${request.status}');
@@ -37,8 +37,8 @@ Future<Contact> getContact(int contactId) {
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
         if (request.status == 200) {
-          completer.complete(new Contact.fromJson(JSON.decode(
-              request.responseText)));
+          completer.complete(
+              new Contact.fromJson(JSON.decode(request.responseText)));
         } else {
           completer.completeError('Bad status code. ${request.status}');
         }
