@@ -14,6 +14,7 @@ part 'requests/dialplan.dart';
 part 'requests/organization.dart';
 part 'requests/reception.dart';
 part 'requests/reception_contact.dart';
+part 'requests/user.dart';
 
 class HttpMethod {
   static const String GET = 'GET';

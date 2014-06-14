@@ -13,6 +13,8 @@ part 'model/reception_contact.dart';
 part 'model/custom_reception_contact.dart';
 part 'model/phone.dart';
 part 'model/reception_contact_reduced_reception.dart';
+part 'model/user.dart';
+part 'model/user_group.dart';
 
 String stringFromJson(Map json, String key) {
   if (json.containsKey(key)) {

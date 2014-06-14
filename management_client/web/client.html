@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style/searchcomponent.css">
 <link rel="stylesheet" href="style/dialplan.css">
 <link rel="stylesheet" href="style/record.css">
+<link rel="stylesheet" href="style/user.css">
 </head>
 <body>
   <nav id="navigation">
@@ -21,6 +22,7 @@
       <li><img id="contact-button" alt="Kontaktpersoner" title="Kontaktpersoner" src="image/con.svg" draggable="false" class="faded"></li>
       <li><img id="dialplan-button" alt="Kaldplan" title="Kaldplan" src="image/dialplan_icon.svg" draggable="false" class="faded"></li>
       <li><img id="record-button" alt="Optage" title="Optage" src="image/record_icon.svg" draggable="false" class="faded"></li>
+      <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user_icon.svg" draggable="false" class="faded"></li>
     </ul>
   </nav>
 
@@ -208,12 +210,14 @@
                 <button id="contact-add">Tilføj</button>
               </td>
             </tr>
+
             <tr>
               <td>
                 <label for="contact-input-enabled">Aktiv</label>
                 <input id="contact-input-enabled" type="checkbox">
               </td>
             </tr>
+
             <tr>
               <td>
                 <label for="contact-input-type">Type</label>
@@ -337,6 +341,28 @@
 
       <div id="record-file-listing">
         <ul id="record-file-list" class="zebra"></ul>
+      </div>
+    </div>
+
+    <div id="user-page" class="hidden">
+      <div id="user-listing">
+        <button id="user-create">Ny Bruger</button>
+        <ul id="user-list" class="zebra"></ul>
+      </div>
+
+      <div id="user-content">
+        <button id="user-save">Gem</button>
+        <label for="user-name">Navn</label> <input id="user-name" type="text">
+        <label for="user-extension">Telefon</label> <input id="user-extension" type="text">
+
+        <div>
+          <h4>Rettigheds grupper</h4>
+          <table id="groups-table">
+
+          </table>
+        </div>
+          <h4>Identiteter</h4>
+        <!-- Groups, Identity -->
       </div>
     </div>
 
