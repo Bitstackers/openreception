@@ -88,7 +88,7 @@ class UserController {
     int groupId = intPathParameter(request.uri, 'group');
 
     db.joinUserGroup(userId, groupId).then((_) {
-      writeAndCloseJson(request, '{}');
+      writeAndCloseJson(request, JSON.encode({}));
     }).catchError((error) {
       logger.error('joinUserGroups: url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
@@ -100,7 +100,7 @@ class UserController {
     int groupId = intPathParameter(request.uri, 'group');
 
     db.leaveUserGroup(userId, groupId).then((_) {
-      writeAndCloseJson(request, '{}');
+      writeAndCloseJson(request, JSON.encode({}));
     }).catchError((error) {
       logger.error('leaveUserGroups: url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
