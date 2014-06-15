@@ -19,8 +19,8 @@ class ReceptionController {
   ReceptionController(Database this.db);
 
   void getReception(HttpRequest request) {
-    int organizationId = pathParameter(request.uri, 'organization');
-    int receptionId = pathParameter(request.uri, 'reception');
+    int organizationId = intPathParameter(request.uri, 'organization');
+    int receptionId = intPathParameter(request.uri, 'reception');
 
     db.getReception(organizationId, receptionId).then((Reception reception) {
       if (reception == null) {
@@ -45,7 +45,7 @@ class ReceptionController {
   }
 
   void getOrganizationReceptionList(HttpRequest request) {
-    int organizationId = pathParameter(request.uri, 'organization');
+    int organizationId = intPathParameter(request.uri, 'organization');
 
     db.getOrganizationReceptionList(organizationId).then((List<Reception> list)
         {
@@ -57,7 +57,7 @@ class ReceptionController {
   }
 
   void createReception(HttpRequest request) {
-    int organizationId = pathParameter(request.uri, 'organization');
+    int organizationId = intPathParameter(request.uri, 'organization');
 
     extractContent(request).then(JSON.decode).then((Map data) =>
         db.createReception(organizationId, data['full_name'], data['attributes'], data['extradatauri'], data['enabled'], data['number'])
@@ -69,8 +69,8 @@ class ReceptionController {
   }
 
   void updateReception(HttpRequest request) {
-    int organizationId = pathParameter(request.uri, 'organization');
-    int receptionId = pathParameter(request.uri, 'reception');
+    int organizationId = intPathParameter(request.uri, 'organization');
+    int receptionId = intPathParameter(request.uri, 'reception');
 
     extractContent(request).then(JSON.decode).then((Map data) =>
         db.updateReception(organizationId, receptionId, data['full_name'],
@@ -84,8 +84,8 @@ class ReceptionController {
   }
 
   void deleteReception(HttpRequest request) {
-    int organizationId = pathParameter(request.uri, 'organization');
-    int receptionId = pathParameter(request.uri, 'reception');
+    int organizationId = intPathParameter(request.uri, 'organization');
+    int receptionId = intPathParameter(request.uri, 'reception');
 
     db.deleteReception(organizationId, receptionId).then((int id) =>
         writeAndCloseJson(request, receptionIdAsJson(id))).catchError((error, stack) {
@@ -96,7 +96,7 @@ class ReceptionController {
   }
 
   void getDialplan(HttpRequest request) {
-    int receptionId = pathParameter(request.uri, 'reception');
+    int receptionId = intPathParameter(request.uri, 'reception');
 
     db.getDialplan(receptionId)
       .then((Dialplan dialplan) => writeAndCloseJson(request, dialplanAsJson(dialplan)))
@@ -107,7 +107,7 @@ class ReceptionController {
   }
 
   void updateDialplan(HttpRequest request) {
-    int receptionId = pathParameter(request.uri, 'reception');
+    int receptionId = intPathParameter(request.uri, 'reception');
 
     extractContent(request)
       .then(JSON.decode)

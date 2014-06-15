@@ -26,7 +26,7 @@ class UserController {
   }
 
   void deleteUser(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
 
     db.deleteContact(userId)
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
@@ -37,7 +37,7 @@ class UserController {
   }
 
   void getUser(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
 
     db.getUser(userId).then((User user) {
       if(user == null) {
@@ -62,7 +62,7 @@ class UserController {
   }
 
   void updateUser(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
     extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateUser(userId, data['name'], data['extension']))
@@ -74,7 +74,7 @@ class UserController {
   }
 
   void getUserGroups(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
     db.getUserGroups(userId)
       .then((List<UserGroup> data) => writeAndCloseJson(request, userGroupAsJson(data)) )
       .catchError((error) {
@@ -84,8 +84,8 @@ class UserController {
   }
 
   void joinUserGroups(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
-    int groupId = pathParameter(request.uri, 'group');
+    int userId = intPathParameter(request.uri, 'user');
+    int groupId = intPathParameter(request.uri, 'group');
 
     db.joinUserGroup(userId, groupId).then((_) {
       writeAndCloseJson(request, '{}');
@@ -96,8 +96,8 @@ class UserController {
   }
 
   void leaveUserGroups(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
-    int groupId = pathParameter(request.uri, 'group');
+    int userId = intPathParameter(request.uri, 'user');
+    int groupId = intPathParameter(request.uri, 'group');
 
     db.leaveUserGroup(userId, groupId).then((_) {
       writeAndCloseJson(request, '{}');

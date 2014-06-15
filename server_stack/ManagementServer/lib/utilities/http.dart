@@ -113,9 +113,11 @@ Future NOTFOUND(HttpRequest request) {
   return writeAndCloseJson(request, JSON.encode({'status': 'Not found'}));
 }
 
-int pathParameter(Uri uri, String key) {
+int intPathParameter(Uri uri, String key) => int.parse(PathParameter(uri, key));
+
+String PathParameter(Uri uri, String key) {
   try {
-    return int.parse(uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1));
+    return uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1);
   } catch(error) {
     logger.error('utilities.http.pathParameter failed $error Key: $key Uri: $uri');
     return null;
@@ -123,7 +125,7 @@ int pathParameter(Uri uri, String key) {
 }
 
 void PreFlight(HttpRequest request) {
-  print('PREFLIGHT');
+  logger.debug('PREFLIGHT');
   writeAndCloseJson(request, '');
 }
 
