@@ -292,7 +292,7 @@ class ReceptionView {
   LIElement makeReceptionNode(Reception reception) {
     return new LIElement()
         ..classes.add('clickable')
-        ..attributes['data-receptionid'] = '${reception.id}'
+        ..dataset['receptionid'] = '${reception.id}'
         ..text = '${reception.full_name}'
         ..onClick.listen((_) {
           activateReception(reception.organization_id, reception.id);
@@ -300,7 +300,8 @@ class ReceptionView {
   }
 
   void highlightContactInList(int id) {
-    uiReceptionList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-receptionid'] == '$id'));
+    uiReceptionList.children.forEach((LIElement li) =>
+        li.classes.toggle('highlightListItem', li.dataset['receptionid'] == '$id'));
   }
 
   void activateReception(int organizationId, int receptionId) {

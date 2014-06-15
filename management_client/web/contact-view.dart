@@ -129,13 +129,13 @@ class ContactView {
     LIElement li = new LIElement()
         ..classes.add('clickable')
         ..text = '${contact.full_name}'
-        ..attributes['data-contactid'] = '${contact.id}'
+        ..dataset['contactid'] = '${contact.id}'
         ..onClick.listen((_) => activateContact(contact.id));
     return li;
   }
 
   void highlightContactInList(int id) {
-    ulContactList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-contactid'] == '$id'));
+    ulContactList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['contactid'] == '$id'));
   }
 
   void activateContact(int id) {

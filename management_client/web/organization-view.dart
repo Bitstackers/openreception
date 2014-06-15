@@ -202,7 +202,7 @@ class OrganizationView {
   LIElement makeOrganizationNode(Organization organization) {
     return new LIElement()
         ..classes.add('clickable')
-        ..attributes['data-organizationid'] = '${organization.id}'
+        ..dataset['organizationid'] = '${organization.id}'
         ..text = '${organization.full_name}'
         ..onClick.listen((_) {
           activateOrganization(organization.id);
@@ -210,7 +210,7 @@ class OrganizationView {
   }
 
   void highlightOrganizationInList(int id) {
-    uiList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-organizationid'] == '$id'));
+    uiList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['organizationid'] == '$id'));
   }
 
   void activateOrganization(int organizationId) {

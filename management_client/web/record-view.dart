@@ -44,7 +44,7 @@ class RecordView {
     LIElement li = new LIElement();
     return li
       ..classes.add('clickable')
-      ..attributes['data-receptionid'] = '${reception.id}'
+      ..dataset['receptionid'] = '${reception.id}'
       ..text = '${reception.full_name}'
       ..onClick.listen((_) {
         activateReception(reception.organization_id, reception.id);
@@ -76,7 +76,7 @@ class RecordView {
   }
 
   void highlightContactInList(int id) {
-    receptionListUL.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.attributes['data-receptionid'] == '$id'));
+    receptionListUL.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['receptionid'] == '$id'));
   }
 
   void activateReception(int organization, int reception) {
