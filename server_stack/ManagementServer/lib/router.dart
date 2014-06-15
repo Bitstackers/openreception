@@ -39,6 +39,9 @@ final Pattern UserIdGroupUrl = new UrlPattern(r'/user/(\d+)/group');
 final Pattern UserIdGroupIdUrl = new UrlPattern(r'/user/(\d+)/group/(\d+)');
 final Pattern GroupUrl = new UrlPattern(r'/group');
 
+final Pattern UserIdIdentityUrl = new UrlPattern(r'/user/(\d+)/identity');
+final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)');
+
 final Pattern AudioFilelistUrl = new UrlPattern(r'/audiofiles(/?)');
 
 final List<Pattern> Serviceagents =
@@ -106,6 +109,11 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(UserIdGroupUrl, method: HttpMethod.GET).listen(user.getUserGroups)
     ..serve(UserIdGroupIdUrl, method: HttpMethod.PUT).listen(user.joinUserGroups)
     ..serve(UserIdGroupIdUrl, method: HttpMethod.DELETE).listen(user.leaveUserGroups)
+
+    ..serve(UserIdIdentityUrl, method: HttpMethod.GET).listen(user.getUserIdentityList)
+    ..serve(UserIdIdentityIdUrl, method: HttpMethod.PUT)   .listen(user.createUserIdentity)
+    ..serve(UserIdIdentityIdUrl, method: HttpMethod.POST)  .listen(user.updateUserIdentity)
+    ..serve(UserIdIdentityIdUrl, method: HttpMethod.DELETE).listen(user.deleteUserIdentity)
 
     ..serve(GroupUrl, method: HttpMethod.GET).listen(user.getGroupList)
 

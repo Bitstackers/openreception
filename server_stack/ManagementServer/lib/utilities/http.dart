@@ -21,7 +21,7 @@ class HttpMethod {
 void addCorsHeaders(HttpResponse res) {
   res.headers
     ..add("Access-Control-Allow-Origin", "*")
-    ..add("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE,OPTIONS")
+    ..add("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
     ..add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 }
 
@@ -96,9 +96,13 @@ Future Forbidden(HttpRequest request, [String reason = null]) {
   return writeAndCloseJson(request, JSON.encode(data));
 }
 
-Future Internal_Error(HttpRequest request) {
+Future Internal_Error(HttpRequest request, [String error]) {
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-  return writeAndCloseJson(request, JSON.encode({'status': 'Internal Server Error'}));
+  Map response = {'status': 'Internal Server Error'};
+  if(error != null) {
+    response['error'] = error;
+  }
+  return writeAndCloseJson(request, JSON.encode(response));
 }
 
 Future<bool> logHit(HttpRequest request, Logger logger) {

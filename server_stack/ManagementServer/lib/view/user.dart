@@ -18,15 +18,3 @@ Map _userAsJsonMap(User user) => user == null ? {} :
 
 List _listUserAsJsonList(List<User> user) =>
     user.map(_userAsJsonMap).toList();
-
-
-String userGroupAsJson(List<UserGroup> groups) =>
-    JSON.encode({'groups': _listUserGroupsAsJsonList(groups)});
-
-List<Map> _listUserGroupsAsJsonList(List<UserGroup> groups) =>
-    groups.map(_userGroupAsJsonMap).toList();
-
-Map _userGroupAsJsonMap(UserGroup group) =>
-    {'id': group.id,
-     'name': group.name};
-

@@ -10,3 +10,4 @@ part 'model/complete_reception_contact.dart';
 part 'model/phone.dart';
 part 'model/user.dart';
 part 'model/user_group.dart';
+part 'model/user_identity.dart';

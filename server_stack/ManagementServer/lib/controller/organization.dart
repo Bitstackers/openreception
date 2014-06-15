@@ -26,8 +26,9 @@ class OrganizationController {
         return writeAndCloseJson(request, organizationAsJson(organization));
       }
     }).catchError((error) {
-      String body = '$error';
-      writeAndCloseJson(request, body);
+      logger.error('get organization Error: "$error"');
+      String body = JSON.encode({'error': '$error'});
+      Internal_Error(request, body);
     });
   }
 
@@ -35,7 +36,7 @@ class OrganizationController {
     db.getOrganizationList().then((List<Organization> list) {
       return writeAndCloseJson(request, listOrganizatonAsJson(list));
     }).catchError((error) {
-      logger.error('get reception list Error: "$error"');
+      logger.error('get organization list Error: "$error"');
       Internal_Error(request);
     });
   }
