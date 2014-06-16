@@ -47,7 +47,7 @@ final Pattern AudioFilelistUrl = new UrlPattern(r'/audiofiles(/?)');
 final List<Pattern> Serviceagents =
 [organizationIdUrl, organizationUrl,organizationReceptionIdUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
- UserUrl, UserIdUrl ];
+ UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl];
 
 ContactController contact;
 DialplanController dialplan;
@@ -111,7 +111,7 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(UserIdGroupIdUrl, method: HttpMethod.DELETE).listen(user.leaveUserGroups)
 
     ..serve(UserIdIdentityUrl, method: HttpMethod.GET).listen(user.getUserIdentityList)
-    ..serve(UserIdIdentityIdUrl, method: HttpMethod.PUT)   .listen(user.createUserIdentity)
+    ..serve(UserIdIdentityUrl, method: HttpMethod.PUT).listen(user.createUserIdentity)
     ..serve(UserIdIdentityIdUrl, method: HttpMethod.POST)  .listen(user.updateUserIdentity)
     ..serve(UserIdIdentityIdUrl, method: HttpMethod.DELETE).listen(user.deleteUserIdentity)
 

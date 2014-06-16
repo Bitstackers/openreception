@@ -19,7 +19,7 @@ class UserController {
   void createUser(HttpRequest request) {
     extractContent(request)
     .then(JSON.decode)
-    .then((Map data) => db.createUser(data['name'], data['extension']))
+    .then((Map data) => db.createUser(data['name'], data['extension'], data['send_from']))
     .then((int id) => writeAndCloseJson(request, userIdAsJson(id)))
     .catchError((error) {
       logger.error('create user failed: $error');
@@ -67,7 +67,7 @@ class UserController {
     int userId = intPathParameter(request.uri, 'user');
     extractContent(request)
       .then(JSON.decode)
-      .then((Map data) => db.updateUser(userId, data['name'], data['extension']))
+      .then((Map data) => db.updateUser(userId, data['name'], data['extension'], data['send_from']))
       .then((int id) => writeAndCloseJson(request, userIdAsJson(id)))
       .catchError((error) {
         logger.error('updateUser url: "${request.uri}" gave error "${error}"');
@@ -136,13 +136,13 @@ class UserController {
     int userId = intPathParameter(request.uri, 'user');
 
     extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.createUserIdentity(userId, data['identity'], data['send_from']))
-    .then((String identityId) => writeAndCloseJson(request, userIdentityIdAsJson(identityId)))
-    .catchError((error) {
-      logger.error('create UserIdentity url: "${request.uri}" gave error "${error}"');
-      Internal_Error(request);
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.createUserIdentity(userId, data['identity']))
+      .then((String identityId) => writeAndCloseJson(request, userIdentityIdAsJson(identityId)))
+      .catchError((error) {
+        logger.error('create UserIdentity url: "${request.uri}" gave error "${error}"');
+        Internal_Error(request);
+      });
   }
 
   void updateUserIdentity(HttpRequest request) {
@@ -150,17 +150,13 @@ class UserController {
     String identityId = PathParameter(request.uri, 'identity');
 
     extractContent(request)
-    .then((String TEST) {
-      logger.debug('TESTING $TEST');
-      return TEST;
-    })
-    .then(JSON.decode)
-    .then((Map data) => db.updateUserIdentity(userId, identityId, data['identity'], data['send_from'], data['user_id']))
-    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
-    .catchError((error) {
-      logger.error('updateUserIdentity url: "${request.uri}" gave error "${error}"');
-      Internal_Error(request);
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.updateUserIdentity(userId, identityId, data['identity'], data['user_id']))
+      .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+      .catchError((error) {
+        logger.error('updateUserIdentity url: "${request.uri}" gave error "${error}"');
+        Internal_Error(request);
+      });
   }
 
   void deleteUserIdentity(HttpRequest request) {
@@ -168,10 +164,10 @@ class UserController {
     String identityId = PathParameter(request.uri, 'identity');
 
     db.deleteUserIdentity(userId, identityId)
-    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
-    .catchError((error) {
-      logger.error('deleteUserIdentity url: "${request.uri}" gave error "${error}"');
-      Internal_Error(request);
-    });
+      .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+      .catchError((error) {
+        logger.error('deleteUserIdentity url: "${request.uri}" gave error "${error}"');
+        Internal_Error(request);
+      });
   }
 }
