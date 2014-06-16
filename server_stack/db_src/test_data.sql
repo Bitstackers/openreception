@@ -384,23 +384,23 @@ VALUES (1, 1),
        (19, 2),
        (19, 3);
 
-INSERT INTO auth_identities (identity, user_id, send_from)
-VALUES ('kim.rostgaard@gmail.com', 2, FALSE), 
-       ('devicesnull@gmail.com', 2, FALSE),
-       ('cbergs8@gmail.com', 9, TRUE),
-       ('krc@adaheads.com', 2, TRUE),
-       ('tp@adaheads.com', 1, TRUE),
-       ('cooltomme@gmail.com', 1, FALSE),
-       ('testagent1100adaheads.com', 10, TRUE),
-       ('testagent1101adaheads.com', 11, TRUE),
-       ('testagent1102adaheads.com', 12, TRUE),
-       ('testagent1103adaheads.com', 13, TRUE),
-       ('testagent1104adaheads.com', 14, TRUE),
-       ('testagent1105adaheads.com', 15, TRUE),
-       ('testagent1106adaheads.com', 16, TRUE),
-       ('testagent1107adaheads.com', 17, TRUE),
-       ('testagent1108adaheads.com', 18, TRUE),
-       ('testagent1109adaheads.com', 19, TRUE);
+INSERT INTO auth_identities (identity, user_id)
+VALUES ('kim.rostgaard@gmail.com', 2), 
+       ('devicesnull@gmail.com', 2),
+       ('cbergs8@gmail.com', 9),
+       ('krc@adaheads.com', 2),
+       ('tp@adaheads.com', 1),
+       ('cooltomme@gmail.com', 1),
+       ('testagent1100adaheads.com', 10),
+       ('testagent1101adaheads.com', 11),
+       ('testagent1102adaheads.com', 12),
+       ('testagent1103adaheads.com', 13),
+       ('testagent1104adaheads.com', 14),
+       ('testagent1105adaheads.com', 15),
+       ('testagent1106adaheads.com', 16),
+       ('testagent1107adaheads.com', 17),
+       ('testagent1108adaheads.com', 18),
+       ('testagent1109adaheads.com', 19);
 
 
 INSERT INTO openids (user_id, openid, priority)
