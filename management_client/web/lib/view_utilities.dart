@@ -83,7 +83,7 @@ LIElement simpleListElement(String item, {Function onChange}) {
   return li;
 }
 
-void editableSpan(SpanElement content, InputElement editBox, Function onChange) {
+void editableSpan(SpanElement content, InputElement editBox, [Function onChange]) {
   bool activeEdit = false;
   String oldDisplay = content.style.display;
   editBox

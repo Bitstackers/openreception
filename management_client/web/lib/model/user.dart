@@ -4,6 +4,7 @@ class User {
   String extension;
   String name;
   int id;
+  String sendFrom;
 
   User();
 
@@ -12,6 +13,7 @@ class User {
     object.extension = json['extension'];
     object.name = json['name'];
     object.id = json['id'];
+    object.sendFrom = json['send_from'];
 
     return object;
   }
@@ -20,7 +22,8 @@ class User {
     Map data = {
       'extension': extension,
       'name': name,
-      'id': id
+      'id': id,
+      'send_from': sendFrom
     };
 
     return data;

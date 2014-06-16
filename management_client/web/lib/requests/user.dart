@@ -52,6 +52,27 @@ Future<User> getUser(int userId) {
   return completer.future;
 }
 
+Future<Map> updateUser(int userId, String body) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url =
+      '${config.serverUrl}/user/$userId?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.POST, url)
+    ..onLoad.listen((_) {
+      completer.complete(JSON.decode(request.responseText));
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error.toString());
+    })
+    ..send(body);
+
+  return completer.future;
+}
+
 Future<List<UserGroup>> getUsersGroup(int userId) {
   final Completer completer = new Completer();
 
@@ -142,6 +163,82 @@ Future<Map> leaveUserGroup(int userId, int groupId) {
     ..onError.listen((error) {
       //TODO logging.
       completer.completeError(error.toString());
+    })
+    ..send();
+
+  return completer.future;
+}
+
+Future<List<UserIdentity>> getUserIdentities(int userId) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/user/$userId/identity?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      if (request.status == 200) {
+        Map rawData = JSON.decode(request.responseText);
+        List<Map> rawIdentities = rawData['identities'];
+        completer.complete(rawIdentities.map((r) => new UserIdentity.fromJson(r)).toList());
+      } else {
+        completer.completeError('Bad status code. ${request.status}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send();
+
+  return completer.future;
+}
+
+Future createUserIdentity(int userId, String data) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/user/$userId/identity?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.PUT, url)
+    ..onLoad.listen((_) {
+      if (request.status == 200) {
+        Map rawData = JSON.decode(request.responseText);
+        completer.complete();
+      } else {
+        completer.completeError('Bad status code. ${request.status}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send(data);
+
+  return completer.future;
+}
+
+Future deleteUserIdentity(int userId, String identity) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/user/$userId/identity/${identity}?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.DELETE, url)
+    ..onLoad.listen((_) {
+      if (request.status == 200) {
+        Map rawData = JSON.decode(request.responseText);
+        completer.complete();
+      } else {
+        completer.completeError('Bad status code. ${request.status}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
     })
     ..send();
 

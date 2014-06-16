@@ -1,12 +1,14 @@
 library user_view;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import 'lib/eventbus.dart';
 import 'lib/logger.dart' as log;
 import 'lib/model.dart';
 import 'lib/request.dart' as request;
+import 'lib/view_utilities.dart';
 import 'notification.dart' as notify;
 
 class UserView {
@@ -17,8 +19,9 @@ class UserView {
 
   UListElement userList;
   UserGroupContainer groupContainer;
+  IdentityContainer identityContainer;
 
-  TextInputElement userName, userExtension;
+  TextInputElement userName, userExtension, userSendFrom;
 
   int selectedUserId;
 
@@ -28,9 +31,11 @@ class UserView {
 
     saveUserButton = element.querySelector('#user-save');
     groupContainer = new UserGroupContainer(element.querySelector('#groups-table'));
+    identityContainer = new IdentityContainer(element.querySelector('#user-identities'));
 
     userName = element.querySelector('#user-name');
     userExtension = element.querySelector('#user-extension');
+    userSendFrom = element.querySelector('#user-sendfrom');
 
     refreshList();
     registrateEventHandlers();
@@ -78,8 +83,10 @@ class UserView {
       selectedUserId = userId;
       userName.value = user.name;
       userExtension.value = user.extension;
+      userSendFrom.value = user.sendFrom;
 
       highlightUserInList(userId);
+      identityContainer.showIdentities(userId);
       return groupContainer.showUsersGroups(userId);
     }).catchError((error) {
       log.error('Failed to fetch user ${userId} got: "${error}"');
@@ -91,10 +98,102 @@ class UserView {
   }
 
   void saveChanges() {
-    //Save username, Extension
+    User user = new User()
+      ..extension = userExtension.value
+      ..name = userName.value
+      ..sendFrom = userSendFrom.value;
+
+    request.updateUser(selectedUserId, JSON.encode(user));
+
+    //Save username, Extension, sendFrom
+    identityContainer.saveChanges(selectedUserId).catchError((error) {
+      notify.error('Lageringen af brugerens identiteter gav en fejl.');
+    });
+
     groupContainer.saveChanges(selectedUserId).catchError((error) {
       notify.error('Lageringen af brugerens rettigheder gav en fejl.');
     });
+  }
+
+}
+
+class IdentityContainer {
+  UListElement ul;
+
+  List<UserIdentity> identities;
+
+  IdentityContainer(UListElement this.ul);
+
+  Future showIdentities(int userId) {
+    InputElement newItem = new InputElement(type: 'text');
+    newItem
+        ..placeholder = 'Tilføj ny...'
+        ..onKeyPress.listen((KeyboardEvent event) {
+          KeyEvent key = new KeyEvent.wrap(event);
+          if (key.keyCode == Keys.ENTER) {
+            String item = newItem.value;
+            newItem.value = '';
+
+            LIElement li = makeIdentityNode(new UserIdentity()..identity = item);
+            int index = ul.children.length - 1;
+            ul.children.insert(index, li);
+          } else if (key.keyCode == Keys.ESCAPE) {
+            newItem.value = '';
+          }
+        });
+
+    return request.getUserIdentities(userId).then((List<UserIdentity> identities) {
+      this.identities = identities;
+      ul.children
+        ..clear()
+        ..addAll(identities.map(makeIdentityNode))
+        ..add(new LIElement()..children.add(newItem));
+    });
+  }
+
+  LIElement makeIdentityNode(UserIdentity identity) {
+    LIElement li = new LIElement();
+
+    SpanElement content = new SpanElement()
+      ..text = identity.identity;
+    InputElement editBox = new InputElement(type: 'text');
+
+    editableSpan(content, editBox);
+
+    li.children.addAll([content, editBox]);
+    return li;
+  }
+
+  Future saveChanges(int userId) {
+    List<String> foundIdentities = [];
+
+    for(LIElement item in ul.children) {
+      SpanElement span = item.children.firstWhere((i) => i is SpanElement, orElse: () => null);
+      if(span != null) {
+        String context = span.text;
+        foundIdentities.add(context);
+      }
+    }
+
+    List<Future> worklist = new List<Future>();
+
+    //Inserts
+    for(String identity in foundIdentities) {
+      if(!identities.any((UserIdentity i) => i.identity == identity)) {
+        //Insert Identity
+        Map data = {'identity': identity};
+        worklist.add(request.createUserIdentity(userId, JSON.encode(data)));
+      }
+    }
+
+    //Deletes
+    for(UserIdentity identity in identities) {
+      if(!foundIdentities.any((String i) => i == identity.identity)) {
+        //Delete Identity
+        worklist.add(request.deleteUserIdentity(userId, identity.identity));
+      }
+    }
+    return Future.wait(worklist);
   }
 }
 

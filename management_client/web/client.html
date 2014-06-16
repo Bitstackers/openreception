@@ -344,6 +344,10 @@
       </div>
     </div>
 
+    <!-- -------------------- --
+      -- ------- USER ------- --
+      -- -------------------- -->
+
     <div id="user-page" class="hidden">
       <div id="user-listing">
         <button id="user-create">Ny Bruger</button>
@@ -352,8 +356,9 @@
 
       <div id="user-content">
         <button id="user-save">Gem</button>
-        <label for="user-name">Navn</label> <input id="user-name" type="text">
-        <label for="user-extension">Telefon</label> <input id="user-extension" type="text">
+        <label for="user-name">Navn</label><input id="user-name" type="text">
+        <label for="user-sendfrom">Send fra</label><input id="user-sendfrom" type="text">
+        <label for="user-extension">Telefon</label><input id="user-extension" type="text">
 
         <div>
           <h4>Rettigheds grupper</h4>
@@ -361,7 +366,8 @@
 
           </table>
         </div>
-          <h4>Identiteter</h4>
+        <h4>Identiteter</h4>
+        <ul id="user-identities"></ul>
         <!-- Groups, Identity -->
       </div>
     </div>
