@@ -30,7 +30,7 @@ class UserController {
   void deleteUser(HttpRequest request) {
     int userId = intPathParameter(request.uri, 'user');
 
-    db.deleteContact(userId)
+    db.deleteUser(userId)
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
     .catchError((error) {
       logger.error('deleteUser url: "${request.uri}" gave error "${error}"');
