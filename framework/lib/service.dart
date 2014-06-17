@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'model.dart' as Model;
+import 'common.dart';
 
 part 'service/service-auth.dart';
 part 'service/service-notification.dart';

@@ -28,14 +28,7 @@ abstract class Notification {
         //req.headers.add( HttpHeaders.CONNECTION, "keep-alive");
         req.write( JSON.encode( map ));
         return req.close();
-      }).then(( HttpClientResponse res ) {
-      res.transform(UTF8.decoder)
-         .transform(new LineSplitter())
-         .listen(
-          (String line) {
-            print('${line}');
-          });
-    }).catchError((error) => print("Bad things happened with your request! : ${error}"));    
+      }).catchError((error, StackTrace) => logger.errorContext('${error} : ${StackTrace}' , context));    
   }
   
   static bool _UriEndsWithSlash (Uri uri) => uri.toString()[uri.toString().length-1] == '/'; 
