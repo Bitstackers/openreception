@@ -12,6 +12,7 @@ import 'configuration.dart';
 import 'package:Utilities/common.dart';
 import 'database.dart' as db;
 import 'package:Utilities/httpserver.dart';
+import 'package:Utilities/service.dart' as Service;
 
 part 'router/getcalendar.dart';
 part 'router/getcontact.dart';
@@ -21,6 +22,8 @@ part 'router/getphone.dart';
 part 'router/invalidatecontact.dart';
 part 'router/contact-calendar.dart';
 part 'router/contact.dart';
+
+const String libraryName = 'contactserver.router';
 
 final Pattern receptionContactInvalidateResource     = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
 final Pattern receptionContactResource               = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
