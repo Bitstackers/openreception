@@ -2,8 +2,10 @@ part of utilities.model;
 
 class User {
   
+  static int nullID = 0;
+  
   Map _map = {};
-  List<String> get ID     => this._map['id']; 
+  int          get ID     => this._map['id']; 
   List<String> get groups => this._map['groups']; 
 
   static Future<User> load (String identity) {
