@@ -4,10 +4,10 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';
-import 'package:Utilities/httpserver.dart' as http;
+import 'package:OpenReceptionFramework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 
 ArgResults parsedArgs;

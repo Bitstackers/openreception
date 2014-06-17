@@ -1,8 +1,8 @@
 name: UserServer
 description: Simple user server.
 dependencies:
-  Utilities:
-    path: ../Utilities
+  OpenReceptionFramework:
+    git: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   path: any
   route: any

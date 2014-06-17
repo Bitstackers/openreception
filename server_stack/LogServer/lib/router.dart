@@ -9,8 +9,8 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:Utilities/common.dart';
-import 'package:Utilities/httpserver.dart';
+import 'package:OpenReceptionFramework/common.dart';
+import 'package:OpenReceptionFramework/httpserver.dart';
 
 part 'router/log.dart';
 
