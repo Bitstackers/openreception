@@ -12,7 +12,7 @@ Configuration config;
 
 abstract class Configuration_Defaults {
   static final String     configfile      = 'config.json';
-  
+
   static final String     dbhost          = 'localhost';
   static final int        dbport          = 5432;
 
@@ -24,8 +24,8 @@ abstract class Configuration_Defaults {
 }
 
 class Configuration {
-  
-  
+
+
   static Configuration _configuration;
 
   ArgResults _args;
@@ -42,6 +42,7 @@ class Configuration {
   int        _httpport        = Configuration_Defaults.httpport;
   Uri        _redirectUri     = Configuration_Defaults.redirectUri;
   bool       _useSyslog       = Configuration_Defaults.useSyslog;
+  String     _serverTokenDir;
   String     _syslogHost      = Configuration_Defaults.syslogHost;
   Duration   _tokenexpiretime = Configuration_Defaults.tokenexpiretime;
 
@@ -58,6 +59,7 @@ class Configuration {
   int      get httpport        => _httpport;
   Uri      get redirectUri     => _redirectUri;
   bool     get useSyslog       => _useSyslog;
+  String   get serverTokenDir  => _serverTokenDir;
   String   get syslogHost      => _syslogHost;
   Duration get tokenexpiretime => _tokenexpiretime;
 
@@ -89,7 +91,7 @@ class Configuration {
 
     return file.readAsString().then((String data) {
       Map config = JSON.decode(data);
-      
+
       if(config.containsKey('cache')) {
         if(config['cache'].endsWith('/')) {
           _cache = config['cache'];
@@ -97,7 +99,7 @@ class Configuration {
           _cache = '${config['cache']}/';
         }
       }
-      
+
       if(config.containsKey('clientid')) {
         _clientId = config['clientid'];
       }
@@ -133,19 +135,23 @@ class Configuration {
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
-      
+
+      if(config.containsKey('servertokendir')) {
+        _serverTokenDir = config['servertokendir'];
+      }
+
       if(config.containsKey('sysloghost')) {
         _syslogHost = config['sysloghost'];
       }
-      
+
       if(config.containsKey('redirecturi')) {
         _redirectUri = Uri.parse(config['redirecturi']);
       }
-      
+
       if(config.containsKey('tokenexpiretime')) {
         _tokenexpiretime = new Duration(seconds: config['tokenexpiretime']);
       }
-      
+
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -189,7 +195,7 @@ class Configuration {
       if(hasArgument('dbname')) {
         _dbname = _args['dbname'];
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }
@@ -198,8 +204,12 @@ class Configuration {
         _redirectUri = Uri.parse(_args['redirecturi']);
       }
 
+      if(hasArgument('servertokendir')) {
+        _serverTokenDir = _args['servertokendir'];
+      }
+
       _useSyslog = _args['syslog'];
-      
+
       if(hasArgument('sysloghost')) {
         _syslogHost = _args['sysloghost'];
       }
@@ -215,11 +225,12 @@ class Configuration {
   }
 
   String toString() => '''
-    httpport:    $httpport
-    redirecturi: $redirectUri
-    syslog:      $useSyslog
-    sysloghost:  ${syslogHost}
-    change:      ${cache}
+    httpport:       $httpport
+    redirecturi:    $redirectUri
+    syslog:         $useSyslog
+    sysloghost:     ${syslogHost}
+    cache:          ${cache}
+    ServerTokenDir: ${serverTokenDir}
     Database:
       Host: $dbhost
       Port: $dbport
