@@ -1,10 +1,10 @@
 name: OpenReceptionFramework
-auther: AdaHeads K/S
-version: 0.0.4
+version: 0.0.5
 description: A utility package for AdaHeads K/S
 dependencies:
   http: any
   postgresql: any
   route: any
-  syslog: 
+  syslog:
     git: https://github.com/PedersenThomas/syslog.git
+auther: AdaHeads K/S
