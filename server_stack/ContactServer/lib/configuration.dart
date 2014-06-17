@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/common.dart';
 
 Configuration config;
 

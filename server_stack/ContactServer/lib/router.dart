@@ -9,10 +9,10 @@ import 'package:route/server.dart';
 
 import 'cache.dart' as cache;
 import 'configuration.dart';
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/common.dart';
 import 'database.dart' as db;
-import 'package:Utilities/httpserver.dart';
-import 'package:Utilities/service.dart' as Service;
+import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:OpenReceptionFramework/service.dart' as Service;
 
 part 'router/getcalendar.dart';
 part 'router/getcontact.dart';
