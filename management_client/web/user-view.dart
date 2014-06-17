@@ -15,7 +15,7 @@ class UserView {
   String viewName = 'user';
   DivElement element;
 
-  ButtonElement newUserButton, saveUserButton;
+  ButtonElement newUserButton, saveUserButton, removeUserButton;
 
   UListElement userList;
   UserGroupContainer groupContainer;
@@ -24,12 +24,14 @@ class UserView {
   TextInputElement userName, userExtension, userSendFrom;
 
   int selectedUserId;
+  bool isNewUser = false;
 
   UserView(DivElement this.element) {
     newUserButton = element.querySelector('#user-create');
     userList = element.querySelector('#user-list');
 
     saveUserButton = element.querySelector('#user-save');
+    removeUserButton = element.querySelector('#user-delete');
     groupContainer = new UserGroupContainer(element.querySelector('#groups-table'));
     identityContainer = new IdentityContainer(element.querySelector('#user-identities'));
 
@@ -46,13 +48,17 @@ class UserView {
       element.classes.toggle('hidden', event['window'] != viewName);
     });
 
-    newUserButton.onClick.listen((_) {
-      //TODO
+    bus.on(Invalidate.userAdded).listen((Map event) {
+      refreshList();
     });
 
-    saveUserButton.onClick.listen((_) {
-      saveChanges();
+    bus.on(Invalidate.userRemoved).listen((Map event) {
+      refreshList();
     });
+
+    newUserButton.onClick.listen((_) => newUser());
+    saveUserButton.onClick.listen((_) => saveChanges());
+    removeUserButton.onClick.listen((_) => deleteUser());
   }
 
   Future refreshList() {
@@ -80,7 +86,9 @@ class UserView {
 
   void activateUser(int userId) {
     request.getUser(userId).then((User user) {
+      isNewUser = false;
       selectedUserId = userId;
+
       userName.value = user.name;
       userExtension.value = user.extension;
       userSendFrom.value = user.sendFrom;
@@ -97,61 +105,112 @@ class UserView {
     userList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['userid'] == '$id'));
   }
 
+  void newUser() {
+    isNewUser = true;
+
+    userName.value = '';
+    userExtension.value = '';
+    userSendFrom.value = '';
+
+    groupContainer.showNewUsersGroups();
+    identityContainer.showNewUsersIdentities();
+  }
+
   void saveChanges() {
     User user = new User()
       ..extension = userExtension.value
       ..name = userName.value
       ..sendFrom = userSendFrom.value;
 
-    request.updateUser(selectedUserId, JSON.encode(user));
+    Future basicInformationRequest;
+    if(isNewUser) {
+      basicInformationRequest = request.createUser(JSON.encode(user))
+        .then((Map user) {
+          int userId = user['id'];
+          selectedUserId = userId;
+          isNewUser = false;
+          bus.fire(Invalidate.userAdded, user);
+      });
+    } else {
+      basicInformationRequest = request.updateUser(selectedUserId, JSON.encode(user));
+    }
 
-    //Save username, Extension, sendFrom
-    identityContainer.saveChanges(selectedUserId).catchError((error) {
-      notify.error('Lageringen af brugerens identiteter gav en fejl.');
-    });
-
-    groupContainer.saveChanges(selectedUserId).catchError((error) {
-      notify.error('Lageringen af brugerens rettigheder gav en fejl.');
-    });
+    basicInformationRequest
+      .then((_) =>
+        identityContainer.saveChanges(selectedUserId))
+      .catchError((error) {
+          notify.error('Lageringen af brugerens identiteter gav en fejl.');
+        })
+      .then((_) =>
+        groupContainer.saveChanges(selectedUserId)
+      ).catchError((error) {
+        notify.error('Lageringen af brugerens rettigheder gav en fejl.');
+      });
   }
 
+  void deleteUser() {
+    if(!isNewUser && selectedUserId != null) {
+      request.deleteUser(selectedUserId)
+        .then((_) {
+        bus.fire(Invalidate.userRemoved, {'id': selectedUserId});
+          selectedUserId = null;
+        })
+        .catchError((error) {
+          notify.error('Der skete en fejl i forbindelse med sletningen af brugeren');
+          log.error('Delete user failed with: ${error}');
+        });
+    }
+  }
 }
 
 class IdentityContainer {
-  UListElement ul;
+  UListElement _ul;
 
-  List<UserIdentity> identities;
+  List<UserIdentity> _identities;
 
-  IdentityContainer(UListElement this.ul);
+  IdentityContainer(UListElement this._ul);
 
   Future showIdentities(int userId) {
-    InputElement newItem = new InputElement(type: 'text');
-    newItem
-        ..placeholder = 'Tilføj ny...'
-        ..onKeyPress.listen((KeyboardEvent event) {
-          KeyEvent key = new KeyEvent.wrap(event);
-          if (key.keyCode == Keys.ENTER) {
-            String item = newItem.value;
-            newItem.value = '';
-
-            LIElement li = makeIdentityNode(new UserIdentity()..identity = item);
-            int index = ul.children.length - 1;
-            ul.children.insert(index, li);
-          } else if (key.keyCode == Keys.ESCAPE) {
-            newItem.value = '';
-          }
-        });
-
     return request.getUserIdentities(userId).then((List<UserIdentity> identities) {
-      this.identities = identities;
-      ul.children
-        ..clear()
-        ..addAll(identities.map(makeIdentityNode))
-        ..add(new LIElement()..children.add(newItem));
+      populateUL(identities);
     });
   }
 
-  LIElement makeIdentityNode(UserIdentity identity) {
+  void populateUL(List<UserIdentity> identities) {
+    InputElement newItem = _makeInputForNewItem();
+
+    this._identities = identities;
+    _ul.children
+      ..clear()
+      ..addAll(identities.map(_makeIdentityNode))
+      ..add(new LIElement()..children.add(newItem));
+  }
+
+  InputElement _makeInputForNewItem() {
+    InputElement newItem = new InputElement(type: 'text');
+    newItem
+      ..placeholder = 'Tilføj ny...'
+      ..onKeyPress.listen((KeyboardEvent event) {
+        KeyEvent key = new KeyEvent.wrap(event);
+        if (key.keyCode == Keys.ENTER) {
+          String item = newItem.value;
+          newItem.value = '';
+
+          LIElement li = _makeIdentityNode(new UserIdentity()..identity = item);
+          int index = _ul.children.length - 1;
+          _ul.children.insert(index, li);
+        } else if (key.keyCode == Keys.ESCAPE) {
+          newItem.value = '';
+        }
+      });
+    return newItem;
+  }
+
+  void showNewUsersIdentities() {
+    populateUL([]);
+  }
+
+  LIElement _makeIdentityNode(UserIdentity identity) {
     LIElement li = new LIElement();
 
     SpanElement content = new SpanElement()
@@ -167,7 +226,7 @@ class IdentityContainer {
   Future saveChanges(int userId) {
     List<String> foundIdentities = [];
 
-    for(LIElement item in ul.children) {
+    for(LIElement item in _ul.children) {
       SpanElement span = item.children.firstWhere((i) => i is SpanElement, orElse: () => null);
       if(span != null) {
         String context = span.text;
@@ -179,7 +238,7 @@ class IdentityContainer {
 
     //Inserts
     for(String identity in foundIdentities) {
-      if(!identities.any((UserIdentity i) => i.identity == identity)) {
+      if(!_identities.any((UserIdentity i) => i.identity == identity)) {
         //Insert Identity
         Map data = {'identity': identity};
         worklist.add(request.createUserIdentity(userId, JSON.encode(data)));
@@ -187,7 +246,7 @@ class IdentityContainer {
     }
 
     //Deletes
-    for(UserIdentity identity in identities) {
+    for(UserIdentity identity in _identities) {
       if(!foundIdentities.any((String i) => i == identity.identity)) {
         //Delete Identity
         worklist.add(request.deleteUserIdentity(userId, identity.identity));
@@ -198,38 +257,38 @@ class IdentityContainer {
 }
 
 class UserGroupContainer {
-  TableElement table;
+  TableElement _table;
 
-  List<CheckboxInputElement> checkboxs = [];
-  List<UserGroup> groupList = [], userGroupList = [];
+  List<CheckboxInputElement> _checkboxs = [];
+  List<UserGroup> _groupList = [], _userGroupList = [];
 
-  UserGroupContainer(TableElement this.table) {
+  UserGroupContainer(TableElement this._table) {
     refreshGroupList();
   }
 
   void refreshGroupList() {
     request.getGroupList().then((List<UserGroup> groups) {
       groups.sort((a, b) => a.name.compareTo(b.name));
-      groupList = groups;
-      renderBaseList();
+      _groupList = groups;
+      _renderBaseList();
     });
   }
 
-  void renderBaseList() {
-    checkboxs.clear();
+  void _renderBaseList() {
+    _checkboxs.clear();
 
-    table.children
+    _table.children
       ..clear()
-      ..addAll(groupList.map(makeGroupRow));
+      ..addAll(_groupList.map(_makeGroupRow));
   }
 
-  TableRowElement makeGroupRow(UserGroup group) {
+  TableRowElement _makeGroupRow(UserGroup group) {
     TableRowElement row = new TableRowElement();
 
     CheckboxInputElement checkbox = new CheckboxInputElement()
       ..id = 'grp_${group.id}'
       ..dataset['id'] = group.id.toString();
-    checkboxs.add(checkbox);
+    _checkboxs.add(checkbox);
 
     TableCellElement checkCell = new TableCellElement()
       ..children.add(checkbox);
@@ -245,20 +304,28 @@ class UserGroupContainer {
 
   Future showUsersGroups(int userId) {
     return request.getUsersGroup(userId).then((List<UserGroup> groups) {
-      userGroupList = groups;
-      for(CheckboxInputElement checkbox in checkboxs) {
-        checkbox.checked = groups.any((UserGroup userGroup) => userGroup.id == int.parse(checkbox.dataset['id']));
-      }
+      _updateCheckBoxesWithUserGroup(groups);
     });
+  }
+
+  void _updateCheckBoxesWithUserGroup(List<UserGroup> groups) {
+    _userGroupList = groups;
+    for(CheckboxInputElement checkbox in _checkboxs) {
+      checkbox.checked = groups.any((UserGroup userGroup) => userGroup.id == int.parse(checkbox.dataset['id']));
+    }
+  }
+
+  void showNewUsersGroups() {
+    _updateCheckBoxesWithUserGroup([]);
   }
 
   Future saveChanges(int userId) {
     List<int> inserts = [], removes = [];
     List<Future> worklist = [];
 
-    for(CheckboxInputElement item in checkboxs) {
+    for(CheckboxInputElement item in _checkboxs) {
       int id = int.parse(item.dataset['id']);
-      bool userIsAMember = userGroupList.any((g) => g.id == id);
+      bool userIsAMember = _userGroupList.any((g) => g.id == id);
 
       if(item.checked && !userIsAMember) {
         worklist.add(request.joinUserGroup(userId, id));

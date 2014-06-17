@@ -52,6 +52,26 @@ Future<User> getUser(int userId) {
   return completer.future;
 }
 
+Future<Map> createUser(String data) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/user?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.PUT, url)
+    ..onLoad.listen((_) {
+      completer.complete(JSON.decode(request.responseText));
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error.toString());
+    })
+    ..send(data);
+
+  return completer.future;
+}
+
 Future<Map> updateUser(int userId, String body) {
   final Completer completer = new Completer();
 
@@ -69,6 +89,26 @@ Future<Map> updateUser(int userId, String body) {
       completer.completeError(error.toString());
     })
     ..send(body);
+
+  return completer.future;
+}
+
+Future<Map> deleteUser(int userId) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/user/$userId?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.DELETE, url)
+    ..onLoad.listen((_) {
+      completer.complete(JSON.decode(request.responseText));
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error.toString());
+    })
+    ..send();
 
   return completer.future;
 }
