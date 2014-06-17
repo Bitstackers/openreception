@@ -5,6 +5,7 @@ class User {
   static int nullID = 0;
   
   Map _map = {};
+  String       get peer   => this._map['extension']; 
   int          get ID     => this._map['id']; 
   List<String> get groups => this._map['groups']; 
 
