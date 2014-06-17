@@ -21,10 +21,49 @@ class CalendarEvent implements Comparable{
   String   _content;
   DateTime _start;
   DateTime _stop;
+  
+  int      _contactID   = nullContact.id;
+  int      _receptionID = nullReception.ID;
 
-  String get start => _formatTimestamp(_start);
-  String get stop  => _formatTimestamp(_stop);
+  String get start       => _formatTimestamp(_start);
+  String get stop        => _formatTimestamp(_stop);
+  String get content     => this._content;
+  int    get contactID   => this._contactID;
+  int    get receptionID => this._receptionID;
 
+  void set beginsAt (DateTime start) {
+    this._start = start;
+  }
+
+  void set until (DateTime stop) {
+    this._stop = stop;
+  }
+  
+  void set content (String eventBody) {
+    this._content = eventBody;
+  }
+  
+  CalendarEvent.forContact (this._contactID, this._receptionID);
+
+  CalendarEvent.forReception (this._receptionID);
+  
+  Future save () {
+    /// Dispatch to the correct service.
+    if (this._contactID != nullContact.id) {
+      return Service.Contact.calendarEventCreate (this);
+    } else if (this._receptionID != nullReception.ID) {
+      return Service.Reception.calendarEventCreate (this);
+    } else {
+      return new Future(() { throw new StateError("Trying to update an event object without an owner!");});
+    }
+  }
+  
+  Map toJson () => {'start'  : _timeToEpoch(this._start),
+                    'stop'   : _timeToEpoch(this._stop),
+                    'content': this._content};
+
+  static int _timeToEpoch(DateTime time) => time.millisecondsSinceEpoch~/1000;
+  
   /**
    * [CalendarEvent] constructor. Expects a map in the following format:
    *

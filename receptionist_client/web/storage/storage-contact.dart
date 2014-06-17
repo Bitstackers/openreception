@@ -20,7 +20,15 @@ abstract class Contact {
   static Map<int, model.ContactList> _contactListCache = new Map<int, model.ContactList>();
 
   static Map<int, Map<int, model.CalendarEventList>> _calendarCache = new Map<int, Map<int, model.CalendarEventList>>();
-
+  
+  static void invalidateCalendar (int contactID, int receptionID) {
+    if (_calendarCache.containsKey(receptionID)) {
+      if (_calendarCache[receptionID].containsKey(contactID)) {
+        _calendarCache[receptionID].remove(contactID);
+      }
+    }
+  }
+  
   /**
    * Get the [ContactList].
    *
@@ -35,10 +43,10 @@ abstract class Contact {
     final Completer completer = new Completer<model.ContactList>();
 
     if (_contactListCache.containsKey(receptionID)) {
-      debug("Loading contact list from cache.", context);
+      debugStorage("Loading contact list from cache.", context);
       completer.complete(_contactListCache[receptionID]);
     } else {
-      debug("Contact list not found in cache, loading from http.", context);
+      debugStorage("Contact list not found in cache, loading from http.", context);
       Service.Contact.list(receptionID).then((model.ContactList contactList) {
         _contactListCache[receptionID] = contactList;
         completer.complete(contactList);
@@ -56,11 +64,11 @@ abstract class Contact {
     final Completer completer = new Completer<model.CalendarEventList>();
 
     if (_calendarCache.containsKey(receptionID) && _calendarCache[receptionID].containsKey(contactID)) {
-      debug("Loading contact calendar from cache.", context);
+      debugStorage("Loading contact calendar from cache.", context);
       completer.complete(_calendarCache[receptionID][contactID]);
 
     } else {
-      debug("Contact Calendar not found in cache, loading from http.", context);
+      debugStorage("Contact Calendar not found in cache, loading from http.", context);
       Service.Contact.calendar(contactID, receptionID).then((model.CalendarEventList eventList) {
 
         if (!_calendarCache.containsKey(receptionID)) {
@@ -93,11 +101,11 @@ abstract class Contact {
     final Completer<model.Contact> completer = new Completer<model.Contact>();
 
     if (_contactCache.containsKey(receptionID) && _contactCache[receptionID].containsKey(contactID)) {
-      debug("Loading contact from cache.", context);
+      debugStorage("Loading contact from cache.", context);
       completer.complete(_contactCache[receptionID][contactID]);
 
     } else {
-      debug("Contact not found in cache, loading from http.", context);
+      debugStorage("Contact not found in cache, loading from http.", context);
       Service.Contact.get(contactID, receptionID).then((model.Contact contact) {
         if (!_contactCache.containsKey(receptionID)) {
           _contactCache[receptionID] = new Map<int, model.Contact>();

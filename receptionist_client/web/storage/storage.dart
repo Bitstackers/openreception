@@ -17,13 +17,14 @@ import 'dart:async';
 
 import '../model/model.dart' as model;
 import '../service/service.dart' as Service;
-
+import '../classes/logger.dart';
 
 part 'storage-contact.dart';
 part 'storage-reception.dart';
 
 const libraryName = 'storage';
 
-void debug (String message, String context) {
+
+void debugStorage (String message, String context) {
   //print ('[STORAGE]  - $context - $message');
 }

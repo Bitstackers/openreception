@@ -50,8 +50,8 @@ class EventSocket {
   static final EventType<Map> callOffer    = new EventType<Map>();
   static final EventType<Map> callLock     = new EventType<Map>();
   static final EventType<Map> callUnlock   = new EventType<Map>();
-  static final EventType<Map> peerState    = new EventType<Map>();
-
+  static final EventType<Map> peerState            = new EventType<Map>();
+  static final EventType<Map> calendarEventCreated = new EventType<Map>();
   Socket _socket;
 
   Map<String, EventType<Map>> _events =
@@ -66,7 +66,8 @@ class EventSocket {
      'call_offer'    : callOffer,
      'call_unlock'   : callUnlock,
      'call_lock'     : callLock,
-     'peer_state'    : peerState};
+     'peer_state'    : peerState,
+     'calendarEventCreated' : calendarEventCreated};
 
   /**
    * [EventSocket] constructor.
@@ -119,6 +120,8 @@ class EventSocket {
     if (json.containsKey('notification')) {
       Map notificationMap = json['notification'];
       _notificationDispatcher(notificationMap);
+    } else if (json.containsKey('event')) { 
+      _notificationDispatcher(json);
     } else {
       log.criticalContext('Map does not contains notification.', context);
     }

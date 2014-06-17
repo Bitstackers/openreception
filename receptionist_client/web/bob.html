@@ -177,7 +177,7 @@
     </div>
         
         <!-- Center column -->
-        <div style="margin-left: 1%; width: 44%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;">
+        <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
           <div id="contactsearchpanel" style="height: 35%; overflow:hidden;">
             <div style="width:40%; float:left; height:100%;">
         
@@ -190,12 +190,44 @@
               </div>
              </div>
             </div>
-            <div style="width:60%; float:left; height:100%;">
-              <div id="contactinfo_calendar" class="box-with-header-outer"><h1 class="box-with-header-headline box-with-header-medium">
-                <span class="boxheader calendar-title">::Kalender::</span></h1><div class="box-with-header-content" style="height: 297px;">
-                <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul></div>
-              </div>
-            </div>
+            
+              <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:96%;">
+               <legend> :: Medarbejderaftaler :: </legend>
+               
+               <fieldset class="contactinfo-calendar-event-create" style="width:90%; float:left; margin:1em; padding:0.5em;">
+                 <legend>:: Ny aftale::</legend>
+                 <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
+                 
+                 <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
+                   <legend>:: Start::</legend>
+                   <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                   <span style="width:1em;">:</span>
+                   <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                 
+                   <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                   <span style="width:1em;">/</span>
+                   <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/> 
+
+                   <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                 </fieldset>
+                 
+                 <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
+                   <legend>:: Slut::</legend>
+                   <input class="contactinfo-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                   <span style="width:1em;">:</span>
+                   <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                 
+                   <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                   <span style="width:1em;">/</span>
+                   <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/> 
+
+                   <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                 </fieldset>
+
+               </fieldset>
+                <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
+              </fieldset>
+
             </div>
             <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field">
               <legend> :: Opkald :: </legend>
@@ -287,9 +319,9 @@
              <p id="company-product-body" tabindex="-1"></p>
            </div>
 
-        <div id="companyaddresses" class="minibox" data-default-element="company-product-body">
-          <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
-        </div>
+           <div id="companyaddresses" class="minibox" data-default-element="company-product-body">
+             <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
+           </div>
 
            <!-- Call List -->
            <div id="globalqueue" class="box-with-header-outer">

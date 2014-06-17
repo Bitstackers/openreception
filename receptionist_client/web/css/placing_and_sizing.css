@@ -1,6 +1,13 @@
 *:focus {
-    outline: 0;
+    outline: none;
 }
+
+
+input:focus {
+  outline: 3px solid #67c1f3;
+}
+
+
 
 * {
   margin: 0;

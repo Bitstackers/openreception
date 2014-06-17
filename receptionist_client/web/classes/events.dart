@@ -31,7 +31,7 @@ final EventType keyUp                                           = new EventType(
 final EventType keyDown                                         = new EventType();
 final EventType keyEsc                                          = new EventType();
 final EventType keyEnter                                        = new EventType();
-final EventType<bool> keyMeta                                = new EventType<bool>();
+final EventType<bool> keyMeta                                   = new EventType<bool>();
 final EventType<model.Call> callCreated                         = new EventType<model.Call>();
 final EventType<model.Call> callDestroyed                       = new EventType<model.Call>();
 final EventType<model.Call> callChanged                         = new EventType<model.Call>();
@@ -46,6 +46,8 @@ final EventType<Location> locationChanged                       = new EventType<
 final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
 final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
 final EventType<State> stateUpdated                             = new EventType<State>();
+final EventType CreateNewContactEvent                           = new EventType();
+final EventType Save                                            = new EventType();
 
 // Keyboards
 final EventType<String> hangupCall                              = new EventType<String>();

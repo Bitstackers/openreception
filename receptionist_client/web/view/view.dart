@@ -70,7 +70,7 @@ part '../components/localqueue.dart';
 part '../components/welcomemessage.dart';
 part '../components/contactinfo.dart';
 part '../components/contactinfosearch.dart';
-part '../components/contactinfocalendar.dart';
+part 'contactinfocalendar.dart';
 part 'contactinfodata.dart';
 part '../components/constants.dart';
 part '../components/messagesearch.dart';

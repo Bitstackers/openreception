@@ -24,6 +24,7 @@ import 'location.dart' as nav;
 import 'state.dart';
 import '../view/view.dart' as View;
 import '../constants.dart' as constant;
+import '../model/model.dart' as Model;
 
 class BobActive {
   DivElement element;
@@ -116,6 +117,7 @@ class BobActive {
     
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
+    Model.CalendarEventList.registerObservers();
   }
 
   void registerContexts() {

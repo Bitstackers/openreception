@@ -37,10 +37,10 @@ abstract class Reception {
     final Completer completer = new Completer<model.Reception>();
 
     if (_receptionCache.containsKey(id)) {
-      debug("Loading reception from cache.", context);
+      debugStorage("Loading reception from cache.", context);
       completer.complete(_receptionCache[id]);
     } else {
-      debug("Reception not found in cache, loading from http.", context);
+      debugStorage("Reception not found in cache, loading from http.", context);
       Service.Reception.get(id).then((model.Reception reception) {
         // Store the reception in the cache.
         _receptionCache[reception.ID] = reception;
@@ -67,10 +67,10 @@ abstract class Reception {
     final Completer completer = new Completer<model.ReceptionList>();
 
     if (_receptionListCache != null) {
-      debug("Loading receptionList from cache.", context);
+      debugStorage("Loading receptionList from cache.", context);
       completer.complete(_receptionListCache);
     } else {
-      debug("Reception not found in cache, loading from http.", context);
+      debugStorage("Reception not found in cache, loading from http.", context);
       Service.Reception.list().then((model.ReceptionList receptionList) {
         // Store the reception in the cache.
         _receptionListCache = receptionList;
@@ -93,10 +93,10 @@ abstract class Reception {
     final Completer completer = new Completer<model.CalendarEventList>();
 
     if (_calendarCache.containsKey(receptionID)) {
-      debug("Loading calendar from cache.", context);
+      debugStorage("Loading calendar from cache.", context);
       completer.complete(_calendarCache[receptionID]);
     } else {
-      debug("Reception not found in cache, loading from http.", context);
+      debugStorage("Reception not found in cache, loading from http.", context);
       Service.Reception.calendar(receptionID).then((model.CalendarEventList eventList) {
         _calendarCache[receptionID] = eventList;
         completer.complete(eventList);

@@ -34,7 +34,6 @@ import '../service/service.dart' as Service;
 import '../controller/controller.dart' as Controller;
 
 
-
 part 'model-call.dart';
 part 'model-call_list.dart';
 part 'model-calendar_event.dart';

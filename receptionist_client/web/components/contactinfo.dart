@@ -41,7 +41,7 @@ class ContactInfo {
         ..children.add(header);
 
     DivElement contactinfo_search = querySelector('#contactinfo_search');
-    DivElement contactinfo_calendar = querySelector('#contactinfo_calendar');
+    Element contactinfo_calendar = querySelector('#contactinfo_calendar');
     DivElement contactinfo_data = querySelector('#contactinfo_data');
 
     search = new ContactInfoSearch(contactinfo_search, context, element);

@@ -208,6 +208,8 @@ class _KeyboardHandler {
       'Alt+E'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
       'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
+      'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
+      'Ctrl+S'    : (_) => event.bus.fire(event.Save, null),
 //      'Tab'       : (_) => tab(mode: FORWARD),
 //      'Shift+Tab' : (_) => tab(mode: BACKWARD),
       

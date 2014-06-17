@@ -29,7 +29,7 @@ class CallList extends IterableBase<Call> {
   static final EventType<Call> insert = new EventType<Call>();
   static final EventType<Call> delete = new EventType<Call>();
 
-  /// Local event stream. This just hooks into the global event stream.
+  /// Local event stream.
   EventBus _eventStream = new EventBus();
   EventBus get events => _eventStream;
  
