@@ -311,8 +311,8 @@ VALUES ('helligdag', '2013-12-25'),
        ('helligdag', '2013-12-26'),
        ('helligdag', '2014-01-01');
 
-INSERT INTO dial_plans (phone_number, dial_plan)
-VALUES ('+4521490804', '<dial-plan title="Jacob: Hang up on anonymous callers"> <start do="Start"/> <decision-tree title="Start"> <branch> <conditions> <caller number=""/> </conditions> <action do="Hang up"/> </branch> <fall-back do="Pass through"/> </decision-tree> <end-point title="Hang up"> <hang-up/> </end-point> <end-point title="Pass through"> <redirect to="+45 21 49 08 04"/> </end-point> </dial-plan>');
+--INSERT INTO dial_plans (phone_number, dial_plan)
+--VALUES ('+4521490804', '<dial-plan title="Jacob: Hang up on anonymous callers"> <start do="Start"/> <decision-tree title="Start"> <branch> <conditions> <caller number=""/> </conditions> <action do="Hang up"/> </branch> <fall-back do="Pass through"/> </decision-tree> <end-point title="Hang up"> <hang-up/> </end-point> <end-point title="Pass through"> <redirect to="+45 21 49 08 04"/> </end-point> </dial-plan>');
 
 INSERT INTO users (id, name, extension)
 VALUES (1,  'Thomas Pedersen',           1001),
@@ -403,13 +403,14 @@ VALUES ('kim.rostgaard@gmail.com', 2),
        ('testagent1109adaheads.com', 19);
 
 
+/*
 INSERT INTO openids (user_id, openid, priority)
 VALUES (1,'https://tux.myopenid.com/', 1), 
        (6,'https://accounts.google.com/we-love-tux/', 2),
        (4, 'https://adaheads1.myopenid.com/', 1),
        (5, 'https://adaheads2.myopenid.com/', 1),
        (7,'https://adaheads3.myopenid.com/', 1);
-
+*/
 -------------------------
 --  Message Test data  --
 -------------------------
