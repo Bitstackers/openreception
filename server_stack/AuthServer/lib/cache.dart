@@ -3,7 +3,7 @@ library authenticationserver.cache;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:Utilities/cache.dart';
+import 'package:OpenReceptionFramework/cache.dart';
 import 'configuration.dart';
 
 /**

@@ -6,8 +6,9 @@ import 'dart:io';
 
 import 'cache.dart';
 import 'configuration.dart';
-import 'package:Utilities/cache.dart' as cacheUtil;
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/cache.dart' as cacheUtil;
+import 'package:OpenReceptionFramework/common.dart';
+
 
 void setup() {
   logger.debug('Watcher started');
