@@ -5,6 +5,7 @@
 CREATE TABLE users (
    id               INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    name             TEXT    NOT NULL,
+   send_from        TEXT    NULL,
    extension        TEXT    NULL
 );
 
@@ -22,7 +23,6 @@ CREATE TABLE user_groups (
 
 CREATE TABLE auth_identities (
    identity  TEXT    NOT NULL PRIMARY KEY,
-   send_from BOOLEAN NOT NULL DEFAULT FAlSE,
    user_id   INTEGER NOT NULL REFERENCES users (id)
 );
 

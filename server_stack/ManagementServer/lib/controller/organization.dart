@@ -16,7 +16,7 @@ class OrganizationController {
   OrganizationController(Database this.db);
 
   void getOrganization(HttpRequest request) {
-    int organizationId = pathParameter(request.uri, 'organization');
+    int organizationId = intPathParameter(request.uri, 'organization');
 
     db.getOrganization(organizationId).then((Organization organization) {
       if(organization == null) {
@@ -26,8 +26,9 @@ class OrganizationController {
         return writeAndCloseJson(request, organizationAsJson(organization));
       }
     }).catchError((error) {
-      String body = '$error';
-      writeAndCloseJson(request, body);
+      logger.error('get organization Error: "$error"');
+      String body = JSON.encode({'error': '$error'});
+      Internal_Error(request, body);
     });
   }
 
@@ -35,7 +36,7 @@ class OrganizationController {
     db.getOrganizationList().then((List<Organization> list) {
       return writeAndCloseJson(request, listOrganizatonAsJson(list));
     }).catchError((error) {
-      logger.error('get reception list Error: "$error"');
+      logger.error('get organization list Error: "$error"');
       Internal_Error(request);
     });
   }
@@ -54,7 +55,7 @@ class OrganizationController {
   void updateOrganization(HttpRequest request) {
     extractContent(request)
     .then(JSON.decode)
-    .then((Map data) => db.updateOrganization(pathParameter(request.uri, 'organization'), data['full_name'], data['bill_type'], data['flag']))
+    .then((Map data) => db.updateOrganization(intPathParameter(request.uri, 'organization'), data['full_name'], data['bill_type'], data['flag']))
     .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id)))
     .catchError((error) {
       logger.error('updateOrganization url: "${request.uri}" gave error "${error}"');
@@ -63,7 +64,7 @@ class OrganizationController {
   }
 
   void deleteOrganization(HttpRequest request) {
-    db.deleteOrganization(pathParameter(request.uri, 'organization'))
+    db.deleteOrganization(intPathParameter(request.uri, 'organization'))
     .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id)))
     .catchError((error) {
       logger.error('deleteOrganization url: "${request.uri}" gave error "${error}"');
@@ -72,7 +73,7 @@ class OrganizationController {
   }
 
   void getOrganizationContactList(HttpRequest request) {
-    db.getOrganizationContactList(pathParameter(request.uri, 'organization')).then((List<Contact> contacts) {
+    db.getOrganizationContactList(intPathParameter(request.uri, 'organization')).then((List<Contact> contacts) {
       return writeAndCloseJson(request, listContactAsJson(contacts));
     }).catchError((error) {
       logger.error('get contact list Error: "$error"');

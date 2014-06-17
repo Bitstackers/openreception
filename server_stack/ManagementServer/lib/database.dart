@@ -186,6 +186,25 @@ class Database {
 
   Future leaveUserGroup(int userId, int groupId) =>
       _leaveUserGroup(pool, userId, groupId);
+
+  /* ***********************************************
+     *************** User Identity *****************
+   */
+
+  Future<List<model.UserIdentity>> getUserIdentityList(int userId) =>
+        _getUserIdentityList(pool, userId);
+
+  Future<String> createUserIdentity(int userId, String identity, bool sendFrom) =>
+      _createUserIdentity(pool, userId, identity, sendFrom);
+
+  Future<int> updateUserIdentity(int userIdKey, String identityIdKey,
+      String identityIdValue, bool sendFrom, int userIdValue) =>
+      _updateUserIdentity(pool, userIdKey, identityIdKey, identityIdValue,
+          sendFrom, userIdValue);
+
+  Future<int> deleteUserIdentity(int userId, String identityId) =>
+      _deleteUserIdentity(pool, userId, identityId);
+
 }
 
 /* ***********************************************

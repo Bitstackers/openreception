@@ -15,8 +15,8 @@ class ReceptionContactController {
   ReceptionContactController(Database this.db);
 
   void getReceptionContact(HttpRequest request) {
-    int receptionId = pathParameter(request.uri, 'reception');
-    int contactId = pathParameter(request.uri, 'contact');
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
 
     db.getReceptionContact(receptionId, contactId).then((CompleteReceptionContact contact) {
       if(contact == null) {
@@ -32,7 +32,7 @@ class ReceptionContactController {
   }
 
   void getReceptionContactList(HttpRequest request) {
-    int receptionId = pathParameter(request.uri, 'reception');
+    int receptionId = intPathParameter(request.uri, 'reception');
 
     db.getReceptionContactList(receptionId).then((List<CompleteReceptionContact> list) {
       return writeAndCloseJson(request, listReceptionContactAsJson(list));
@@ -46,8 +46,8 @@ class ReceptionContactController {
     extractContent(request)
     .then(JSON.decode)
     .then((Map data) {
-      int receptionId = pathParameter(request.uri, 'reception');
-      int contactId = pathParameter(request.uri, 'contact');
+      int receptionId = intPathParameter(request.uri, 'reception');
+      int contactId = intPathParameter(request.uri, 'contact');
       return db.createReceptionContact(receptionId, contactId, data['wants_messages'], data['phonenumbers'], data['attributes'], data['enabled']);
     })
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
@@ -61,8 +61,8 @@ class ReceptionContactController {
     extractContent(request)
     .then(JSON.decode)
     .then((Map data) {
-      int receptionId = pathParameter(request.uri, 'reception');
-      int contactId = pathParameter(request.uri, 'contact');
+      int receptionId = intPathParameter(request.uri, 'reception');
+      int contactId = intPathParameter(request.uri, 'contact');
       return db.updateReceptionContact(receptionId, contactId, data['wants_messages'], data['phonenumbers'], data['attributes'], data['enabled']);
     })
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
@@ -73,8 +73,8 @@ class ReceptionContactController {
   }
 
   void deleteReceptionContact(HttpRequest request) {
-    int receptionId = pathParameter(request.uri, 'reception');
-    int contactId = pathParameter(request.uri, 'contact');
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
     db.deleteReceptionContact(receptionId, contactId)
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
     .catchError((error) {

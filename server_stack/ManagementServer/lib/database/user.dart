@@ -134,3 +134,67 @@ Future<int> _leaveUserGroup(Pool pool, int userId, int groupId) {
 
   return execute(pool, sql, parameters);
 }
+
+Future<List<model.UserIdentity>> _getUserIdentityList(Pool pool, int userId) {
+  String sql = '''
+    SELECT identity, send_from, user_id
+    FROM auth_identities
+    WHERE user_id = @userid
+  ''';
+
+  Map parameters = {'userid': userId};
+
+  return query(pool, sql, parameters).then((rows) {
+    List<model.UserIdentity> userIdentities = new List<model.UserIdentity>();
+    for(var row in rows) {
+      userIdentities.add(new model.UserIdentity(row.identity, row.send_from, row.user_id));
+    }
+    return userIdentities;
+  });
+}
+
+Future<String> _createUserIdentity(Pool pool, int userId, String identity, bool sendFrom) {
+  String sql = '''
+    INSERT INTO auth_identities (identity, send_from, user_id)
+    VALUES (@identity, @sendfrom, @userid)
+    RETURNING identity;
+  ''';
+
+  Map parameters =
+    {'identity' : identity,
+     'sendfrom' : sendFrom,
+     'userid'   : userId};
+
+  return query(pool, sql, parameters).then((rows) => rows.first.identity);
+}
+
+Future<int> _updateUserIdentity(Pool pool, int userIdKey, String identityIdKey,
+    String identityIdValue, bool sendFrom, int userIdValue) {
+  String sql = '''
+    UPDATE auth_identities
+    SET identity = @identityvalye, send_from = @sendfrom, user_id = @useridvalue
+    WHERE user_id = @useridkey AND identity = @identitykey;
+  ''';
+
+  Map parameters =
+    {'useridkey'     : userIdKey,
+     'identitykey'   : identityIdKey,
+     'identityvalye' : identityIdValue,
+     'sendfrom'      : sendFrom,
+     'useridvalue'   : userIdValue};
+
+  return execute(pool, sql, parameters);
+}
+
+Future<int> _deleteUserIdentity(Pool pool, int userId, String identityId) {
+  String sql = '''
+      DELETE FROM auth_identities
+      WHERE user_id=@userid AND identity=@identity;
+    ''';
+
+  Map parameters =
+    {'userid': userId,
+     'identity': identityId};
+
+  return execute(pool, sql, parameters);
+}

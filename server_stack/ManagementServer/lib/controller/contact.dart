@@ -29,7 +29,7 @@ class ContactController {
   }
 
   void deleteContact(HttpRequest request) {
-    db.deleteContact(pathParameter(request.uri, 'contact'))
+    db.deleteContact(intPathParameter(request.uri, 'contact'))
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
     .catchError((error) {
       logger.error('deleteContact url: "${request.uri}" gave error "${error}"');
@@ -38,7 +38,7 @@ class ContactController {
   }
 
   void getAContactsOrganizationList(HttpRequest request) {
-    int contactId = pathParameter(request.uri, 'contact');
+    int contactId = intPathParameter(request.uri, 'contact');
     db.getAContactsOrganizationList(contactId).then((List<Organization> organizations) {
       writeAndCloseJson(request, listOrganizatonAsJson(organizations));
     }).catchError((error) {
@@ -48,7 +48,7 @@ class ContactController {
   }
 
   void getColleagues(HttpRequest request) {
-    int contactId = pathParameter(request.uri, 'contact');
+    int contactId = intPathParameter(request.uri, 'contact');
     db.getContactColleagues(contactId).then((List<ReceptionColleague> receptions) {
       writeAndCloseJson(request, listReceptionColleaguesAsJson(receptions));
     }).catchError((error) {
@@ -58,7 +58,7 @@ class ContactController {
   }
 
   void getContact(HttpRequest request) {
-    int contactId = pathParameter(request.uri, 'contact');
+    int contactId = intPathParameter(request.uri, 'contact');
 
     db.getContact(contactId).then((Contact contact) {
       if(contact == null) {
@@ -92,7 +92,7 @@ class ContactController {
   }
 
   void getReceptionList(HttpRequest request) {
-    int contactId = pathParameter(request.uri, 'contact');
+    int contactId = intPathParameter(request.uri, 'contact');
 
     db.getAContactsReceptionContactList(contactId).then((List<ReceptionContact_ReducedReception> data) {
       writeAndCloseJson(request, listReceptionContact_ReducedReceptionAsJson(data));
@@ -105,7 +105,7 @@ class ContactController {
   void updateContact(HttpRequest request) {
     extractContent(request)
     .then(JSON.decode)
-    .then((Map data) => db.updateContact(pathParameter(request.uri, 'contact'), data['full_name'], data['contact_type'], data['enabled']))
+    .then((Map data) => db.updateContact(intPathParameter(request.uri, 'contact'), data['full_name'], data['contact_type'], data['enabled']))
     .then((int id) => writeAndCloseJson(request, contactIdAsJson(id)))
     .catchError((error) {
       logger.error('updateContact url: "${request.uri}" gave error "${error}"');

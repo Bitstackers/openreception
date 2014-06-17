@@ -8,6 +8,8 @@ import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/user.dart';
+import '../view/user_group.dart';
+import '../view/user_identity.dart';
 
 class UserController {
   Database db;
@@ -26,7 +28,7 @@ class UserController {
   }
 
   void deleteUser(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
 
     db.deleteContact(userId)
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
@@ -37,7 +39,7 @@ class UserController {
   }
 
   void getUser(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
 
     db.getUser(userId).then((User user) {
       if(user == null) {
@@ -62,7 +64,7 @@ class UserController {
   }
 
   void updateUser(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
     extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateUser(userId, data['name'], data['extension']))
@@ -74,7 +76,7 @@ class UserController {
   }
 
   void getUserGroups(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    int userId = intPathParameter(request.uri, 'user');
     db.getUserGroups(userId)
       .then((List<UserGroup> data) => writeAndCloseJson(request, userGroupAsJson(data)) )
       .catchError((error) {
@@ -84,11 +86,11 @@ class UserController {
   }
 
   void joinUserGroups(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
-    int groupId = pathParameter(request.uri, 'group');
+    int userId = intPathParameter(request.uri, 'user');
+    int groupId = intPathParameter(request.uri, 'group');
 
     db.joinUserGroup(userId, groupId).then((_) {
-      writeAndCloseJson(request, '{}');
+      writeAndCloseJson(request, JSON.encode({}));
     }).catchError((error) {
       logger.error('joinUserGroups: url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
@@ -96,11 +98,11 @@ class UserController {
   }
 
   void leaveUserGroups(HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
-    int groupId = pathParameter(request.uri, 'group');
+    int userId = intPathParameter(request.uri, 'user');
+    int groupId = intPathParameter(request.uri, 'group');
 
     db.leaveUserGroup(userId, groupId).then((_) {
-      writeAndCloseJson(request, '{}');
+      writeAndCloseJson(request, JSON.encode({}));
     }).catchError((error) {
       logger.error('leaveUserGroups: url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
@@ -114,5 +116,62 @@ class UserController {
         logger.error('getGroupList: url: "${request.uri}" gave error "${error}"');
         Internal_Error(request);
       });
+  }
+
+  /**
+   * Identity
+   */
+  void getUserIdentityList(HttpRequest request) {
+    int userId = intPathParameter(request.uri, 'user');
+
+    db.getUserIdentityList(userId).then((List<UserIdentity> list) {
+      return writeAndCloseJson(request, listUserIdentityAsJson(list));
+    }).catchError((error) {
+      logger.error('getUserIdentityList Error: "$error"');
+      Internal_Error(request);
+    });
+  }
+
+  void createUserIdentity(HttpRequest request) {
+    int userId = intPathParameter(request.uri, 'user');
+
+    extractContent(request)
+    .then(JSON.decode)
+    .then((Map data) => db.createUserIdentity(userId, data['identity'], data['send_from']))
+    .then((String identityId) => writeAndCloseJson(request, userIdentityIdAsJson(identityId)))
+    .catchError((error) {
+      logger.error('create UserIdentity url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
+  void updateUserIdentity(HttpRequest request) {
+    int userId = intPathParameter(request.uri, 'user');
+    String identityId = PathParameter(request.uri, 'identity');
+
+    extractContent(request)
+    .then((String TEST) {
+      logger.debug('TESTING $TEST');
+      return TEST;
+    })
+    .then(JSON.decode)
+    .then((Map data) => db.updateUserIdentity(userId, identityId, data['identity'], data['send_from'], data['user_id']))
+    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+    .catchError((error) {
+      logger.error('updateUserIdentity url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
+  void deleteUserIdentity(HttpRequest request) {
+    int userId = intPathParameter(request.uri, 'user');
+    String identityId = PathParameter(request.uri, 'identity');
+
+    db.deleteUserIdentity(userId, identityId)
+    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+    .catchError((error) {
+      logger.error('deleteUserIdentity url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
   }
 }
