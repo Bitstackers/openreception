@@ -1,8 +1,13 @@
 part of contactserver.router;
 
 abstract class ContactCalendar {
+  
+  static const String className = '${libraryName}.ContactCalendar'; 
 
   static void create(HttpRequest request) {
+    
+    const String context = '${className}.create';
+    
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
     
@@ -26,6 +31,15 @@ abstract class ContactCalendar {
                                      event            : data['event'],
                                      distributionList : data['distribution_list'])
         .then((_) {
+          logger.debugContext('Created event for ${contactID}@${receptionID}', context);
+          
+          Service.Notification.broadcast (
+              {'event'         : 'calendarEventCreated',
+               'calendarEvent' :  { 
+                 'contactID'   : contactID,
+                 'receptionID' : receptionID
+               }
+              }, config.notificationServer, config.serverToken);
           writeAndClose(request, JSON.encode({'status' : 'ok',
                                               'description' : 'Event created'}));
         }).catchError((onError) {

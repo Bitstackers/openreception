@@ -4,10 +4,10 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';
-import 'package:Utilities/httpserver.dart' as http;
+import 'package:OpenReceptionFramework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 
 ArgResults parsedArgs;
@@ -51,6 +51,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('dbhost',          help: 'The database host. Defaults to localhost');
   parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
   parser.addOption('dbname',          help: 'The database name');
+  parser.addOption('servertoken',     help: 'Server-Token');
 
   parsedArgs = parser.parse(arguments);
 }

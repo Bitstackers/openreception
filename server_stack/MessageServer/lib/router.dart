@@ -11,9 +11,9 @@ import 'package:http/http.dart' as http;
 import 'configuration.dart';
 import 'database.dart' as db;
 import 'model.dart' as model;
-import 'package:Utilities/service.dart' as Service;
-import 'package:Utilities/common.dart';
-import 'package:Utilities/httpserver.dart';
+import 'package:OpenReceptionFramework/service.dart' as Service;
+import 'package:OpenReceptionFramework/common.dart';
+import 'package:OpenReceptionFramework/httpserver.dart';
 
 part 'router/message-draft-single.dart';
 part 'router/message-draft-update.dart';

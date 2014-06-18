@@ -13,8 +13,8 @@ import 'database.dart' as db;
 import 'googleauth.dart';
 import 'token_watcher.dart' as watcher;
 import 'token_vault.dart';
-import 'package:Utilities/httpserver.dart';
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:OpenReceptionFramework/common.dart';
 
 part 'router/invalidate.dart';
 part 'router/login.dart';

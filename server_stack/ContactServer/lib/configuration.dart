@@ -6,17 +6,29 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/common.dart';
 
 Configuration config;
+
+/**
+ * Default configuration values.
+ */
+abstract class Default {
+  static final String configFile           = 'config.json';
+  static final int    httpport             = 4010;
+  static final Uri    notificationServer   = Uri.parse("http://localhost:4200");
+  static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
+  static final String serverToken          = 'feedabbadeadbeef0';
+}
 
 class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  Uri        _authUrl        = Uri.parse('http://localhost');
-  String     _configfile     = 'config.json';
-  int        _httpport       = 8080;
+  Uri        _authUrl            = Default.authenticationServer;
+  Uri        _notificationServer = Default.notificationServer;
+  String     _configfile         = Default.configFile;
+  int        _httpport           = Default.httpport;
   String     _dbuser;
   String     _dbpassword;
   String     _dbhost         = 'localhost';
@@ -25,6 +37,7 @@ class Configuration {
   String     _cache;
   bool       _useSyslog      = false;
   String     _syslogHost     = 'localhost';
+  String     _serverToken    = Default.serverToken;
 
   Uri    get authUrl        => _authUrl;
   String get cache          => _cache;
@@ -37,6 +50,8 @@ class Configuration {
   int    get httpport       => _httpport;
   bool   get useSyslog      => _useSyslog;
   String get syslogHost     => _syslogHost;
+  String get serverToken    => _serverToken;
+  Uri    get notificationServer => _notificationServer;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -77,6 +92,14 @@ class Configuration {
       
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
+      }
+
+      if(config.containsKey('serverToken')) {
+        _httpport = config['serverToken'];
+      }
+
+      if(config.containsKey('notificationServer')) {
+        _notificationServer = config['notificationServer'];
       }
 
       if(config.containsKey('dbuser')) {

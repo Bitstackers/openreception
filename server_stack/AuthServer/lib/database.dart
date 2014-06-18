@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:postgresql/postgresql_pool.dart';
 
 import 'configuration.dart';
-import 'package:Utilities/database.dart' as database;
+import 'package:OpenReceptionFramework/database.dart' as database;
 
 part 'db/getuser.dart';
 

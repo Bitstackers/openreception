@@ -1,10 +1,11 @@
 name: MessageServer
-description: A sample command-line application
+description: A simple REST-based message-store server
 dependencies:
-  Utilities:
-    path: ../Utilities
+  OpenReceptionFramework:
+    git: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   mailer: any
   path: any
   postgresql: any
   route: any
+  xml: any

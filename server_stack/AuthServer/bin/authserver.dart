@@ -5,10 +5,10 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 
 import '../lib/cache.dart' as cache;
-import 'package:Utilities/common.dart';
+import 'package:OpenReceptionFramework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';
-import 'package:Utilities/httpserver.dart' as http;
+import 'package:OpenReceptionFramework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 import '../lib/token_vault.dart';
 import '../lib/token_watcher.dart' as watcher;

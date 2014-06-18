@@ -11,8 +11,8 @@ import 'package:http/http.dart' as http;
 
 import 'configuration.dart';
 import 'database.dart' as db;
-import 'package:Utilities/common.dart';
-import 'package:Utilities/httpserver.dart';
+import 'package:OpenReceptionFramework/common.dart';
+import 'package:OpenReceptionFramework/httpserver.dart';
 
 part 'router/message-queue-single.dart';
 part 'router/message-queue-list.dart';

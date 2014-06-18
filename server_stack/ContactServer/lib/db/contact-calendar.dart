@@ -59,8 +59,6 @@ COMMIT;''';
        'start'            : new DateTime.fromMillisecondsSinceEpoch(event['start']*1000),
        'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
        'content'           : event['content']};
-
-    print (sql);
     
   return database.execute(_pool, sql, parameters);
   

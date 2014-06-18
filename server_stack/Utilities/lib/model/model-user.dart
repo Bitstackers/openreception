@@ -2,9 +2,12 @@ part of utilities.model;
 
 class User {
   
+  static int nullUserID = 0;
+  
   Map _map = {};
-  List<String> get ID     => this._map['id']; 
-  List<String> get groups => this._map['groups']; 
+  int          get ID     => this._map['id']; 
+  List<String> get groups => this._map['groups'];
+  String       get peer   => this._map['extension'];
 
   static Future<User> load (String identity) {
     return UserDatabase.getUser(identity).then((Map userMap) {
