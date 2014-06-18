@@ -124,11 +124,11 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..defaultStream.listen(NOTFOUND);
 }
 
-void setupControllers(Database db) {
-  contact = new ContactController(db);
+void setupControllers(Database db, Configuration config) {
+  contact = new ContactController(db, config);
   dialplan = new DialplanController(db);
-  organization = new OrganizationController(db);
-  reception = new ReceptionController(db);
-  receptionContact = new ReceptionContactController(db);
+  organization = new OrganizationController(db, config);
+  reception = new ReceptionController(db, config);
+  receptionContact = new ReceptionContactController(db, config);
   user = new UserController(db);
 }

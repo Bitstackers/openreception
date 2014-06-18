@@ -5,6 +5,10 @@ dependencies:
   http: any
   postgresql: any
   route: any
+  OpenReceptionFramework: 
+    git:
+      url: git@github.com:AdaHeads/OpenReceptionFramework.git
+      ref: master
   libdialplan:
     git:
       url: git@github.com:AdaHeads/libdialplan.git
