@@ -23,7 +23,7 @@ void seen(String token) {
 }
 
 void _timerTick(Timer timer) {
-  Iterable<String> tokens = vault.listTokens();
+  Iterable<String> tokens = vault.listUserTokens().toList();
   for(String token in tokens) {
     Map data = vault.getToken(token);
     DateTime expiresAt = JsonToDateTime(data['expiresAt']);
