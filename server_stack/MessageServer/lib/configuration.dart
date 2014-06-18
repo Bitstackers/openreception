@@ -24,7 +24,7 @@ abstract class Default {
 
 class Configuration {
   static Configuration _configuration;
-  
+
   ArgResults _args;
   Uri        _authUrl            = Default.authenticationServer;
   Uri        _notificationServer = Default.notificationServer;
@@ -47,7 +47,7 @@ class Configuration {
   String get dbname             => _dbname;
   int    get httpport           => _httpport;
   String get serverToken        => _serverToken;
-  
+
   String emailUsername;
   String emailPassword;
   String emailFromName;
@@ -86,13 +86,13 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
+
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
 
       if(config.containsKey('serverToken')) {
-        _httpport = config['serverToken'];
+        _serverToken = config['serverToken'];
       }
 
       if(config.containsKey('dbuser')) {
@@ -110,7 +110,7 @@ class Configuration {
       if(config.containsKey('notificationServer')) {
         _notificationServer = config['notificationServer'];
       }
-      
+
       if(config.containsKey('dbport')) {
         _dbport = config['dbport'];
       }
@@ -118,8 +118,8 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
-      
-      //TODO XXX FIXME --- START --- TESTING TESTING TESTING 
+
+      //TODO XXX FIXME --- START --- TESTING TESTING TESTING
       if(config.containsKey('emailUsername')) {
         emailUsername = config['emailUsername'];
         log(emailUsername);
@@ -133,7 +133,7 @@ class Configuration {
       if(config.containsKey('recipients')) {
         recipients = config['recipients'];
       }
-      
+
       if(config.containsKey('emailFromName')) {
         emailFromName = config['emailFromName'];
       }
@@ -142,7 +142,7 @@ class Configuration {
         emailFrom = config['emailFrom'];
       }
 
-      //TODO XXX FIXME ---- END ---- TESTING TESTING TESTING 
+      //TODO XXX FIXME ---- END ---- TESTING TESTING TESTING
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -154,7 +154,7 @@ class Configuration {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }
@@ -177,6 +177,10 @@ class Configuration {
 
       if(hasArgument('dbname')) {
         _dbname = _args['dbname'];
+      }
+
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
       }
 
     }).catchError((error) {

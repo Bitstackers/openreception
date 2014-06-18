@@ -51,6 +51,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addOption('dbhost',          help: 'The database host. Defaults to localhost');
   parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
   parser.addOption('dbname',          help: 'The database name');
+  parser.addOption('servertoken',     help: 'Server-Token');
 
   parsedArgs = parser.parse(arguments);
 }
