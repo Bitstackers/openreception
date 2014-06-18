@@ -22,7 +22,7 @@ Filter auth(Uri authUrl) {
   return (HttpRequest request) {
 
     try {
-      if(request.uri.queryParameters.containsKey('token')) {      
+      if(request.uri.queryParameters.containsKey('token')) {
         String path = 'token/${request.uri.queryParameters['token']}/validate';
         Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
         return http.get(url).then((response) {
@@ -35,13 +35,13 @@ Filter auth(Uri authUrl) {
           }
         }).catchError((error) {
           if (error is SocketException) {
-            serverError(request, 'failed to connect to authentication server');  
+            serverError(request, 'failed to connect to authentication server');
           } else {
             serverError(request, 'utilities.httpserver.auth() ${error} config.authUrl: "${authUrl}" final authurl: ${url}');
           }
           return false;
         });
-        
+
       } else {
         request.response.statusCode = HttpStatus.UNAUTHORIZED;
         writeAndClose(request, JSON.encode({'description': 'No token was specified'}));
@@ -71,9 +71,9 @@ Future<String> extractContent(HttpRequest request) {
   return completer.future;
 }
 
-String mapToUrlFormEncodedPostBody(Map body) { 
+String mapToUrlFormEncodedPostBody(Map body) {
   return body.keys.map((key) {
-    try {    
+    try {
       return '$key=${Uri.encodeQueryComponent(body[key])}';
     } catch (e) {
       logger.error('mapToUrlFormEncodedPostBody() Key "${key}", value "${body[key]}"');
@@ -86,7 +86,7 @@ String queryParameter(Uri uri, String key) => uri.queryParameters.containsKey(ke
 
 void page404(HttpRequest request) {
   addCorsHeaders(request.response);
-  
+
   access('404: ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write(JSON.encode({'error':'No handler found for ' + request.uri.toString() }));
@@ -133,7 +133,7 @@ void notFound(HttpRequest request, Map reply) {
   addCorsHeaders(request.response);
   Map responseBody = {'error':'Not found.'};
   responseBody.addAll(reply);
-  
+
   access(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write(JSON.encode(responseBody));
@@ -142,7 +142,7 @@ void notFound(HttpRequest request, Map reply) {
 
 void resourceNotFound(HttpRequest request) {
   addCorsHeaders(request.response);
-  
+
   access(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
   request.response.write(JSON.encode({'error':'Resource not found.'}));
@@ -161,40 +161,38 @@ void start(int port, void setupRoutes(HttpServer server)) {
 void writeAndClose(HttpRequest request, String text) {
   //addCorsHeaders(request.response);
   String time = new DateTime.now().toString();
-  
+
   StringBuffer sb        = new StringBuffer();
   final String logPrefix = request.response.statusCode == 200 ? 'Access' : 'Error';
 
   sb.write('${logPrefix} - ');
   sb.write('${request.uri} - ');
-  
+
   if(request.connectionInfo != null) {
     sb.write('${request.connectionInfo.remoteAddress} - ');
   } else {
     sb.write('Unknown remote address - ');
   }
-  
+
   sb.write(request.response.statusCode);
-  //TODO Add real access log 
+  //TODO Add real access log
   access(sb.toString());
 
+  addCorsHeaders(request.response);
   try {
     request.response
       ..headers.contentType = JSON_MIME_TYPE
-      ..headers.add("Access-Control-Allow-Origin", "*")
-      ..headers.add("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
-      ..headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
       ..write(text)
       ..close();
   } catch (error) {
     print (error);
   }
-  
+
 }
 
 Future<int> getUserID (HttpRequest request, Uri authUrl) {
   try {
-    if(request.uri.queryParameters.containsKey('token')) {      
+    if(request.uri.queryParameters.containsKey('token')) {
       String path = 'token/${request.uri.queryParameters['token']}';
       Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
       return http.get(url).then((response) {
@@ -206,7 +204,7 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
       }).catchError((error) {
         return 0;
       });
-      
+
     } else {
       return new Future.value(false);
     }
@@ -217,7 +215,7 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
 
 Future<Map> getUserMap (HttpRequest request, Uri authUrl) {
   try {
-    if(request.uri.queryParameters.containsKey('token')) {      
+    if(request.uri.queryParameters.containsKey('token')) {
       String path = 'token/${request.uri.queryParameters['token']}';
       Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
       return http.get(url).then((response) {
@@ -229,7 +227,7 @@ Future<Map> getUserMap (HttpRequest request, Uri authUrl) {
       }).catchError((error) {
         return {};
       });
-      
+
     } else {
       return new Future.value({});
     }
