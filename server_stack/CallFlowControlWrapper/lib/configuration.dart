@@ -76,7 +76,6 @@ class Configuration {
         _authUrl = Uri.parse(config['authurl']);
       }
 
-
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
@@ -112,6 +111,10 @@ class Configuration {
 
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
+      }
+
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
       }
 
     }).catchError((error) {
