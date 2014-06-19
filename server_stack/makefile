@@ -15,11 +15,13 @@ LogBinary=LogServer.dart
 MessageBinary=MessageServer.dart
 MessageDispatcherBinary=MessageDispatcher.dart
 MiscBinary=MiscServer.dart
+NotificationBinary=NotificationServer.dart
 ReceptionBinary=ReceptionServer.dart
+SpawnerBinary=Spawner.dart
 
 -include makefile.dbsetup
 
-all: auth callflow contact log message messagedispatcher misc reception $(OUTPUT_DIRECTORY)/NotificationServer.dart
+all: $(OUTPUT_DIRECTORY) auth callflow contact log message messagedispatcher misc reception spawner notification
 
 configs: */bin/config.json.dist
 	for source in */bin/config.json.dist; do \
@@ -27,37 +29,59 @@ configs: */bin/config.json.dist
 	   cp -np $${source} $${target}; \
 	done
 
-auth: $(OUTPUT_DIRECTORY)
+dependency:
 	cd AuthServer/ && pub get 
+	cd CallFlowControlWrapper/ && pub get 
+	cd ContactServer/ && pub get 
+	cd LogServer/ && pub get 
+	cd MessageServer/ && pub get
+	cd MessageDispatcher/ && pub get
+	cd MiscServer/ && pub get
+	cd NotificationServer/ && pub get
+	cd ReceptionServer/ && pub get
+	cd spawner/ && pub get
+
+upgrade-dependency:
+	cd AuthServer/ && pub upgrade
+	cd CallFlowControlWrapper/ && pub upgrade 
+	cd ContactServer/ && pub upgrade
+	cd LogServer/ && pub upgrade
+	cd MessageServer/ && pub upgrade
+	cd MessageDispatcher/ && pub upgrade
+	cd MiscServer/ && pub upgrade
+	cd NotificationServer/ && pub upgrade
+	cd ReceptionServer/ && pub upgrade
+	cd spawner/ && pub upgrade
+
+auth: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart
 
-callflow: $(OUTPUT_DIRECTORY)
-	cd CallFlowControl/ && pub get 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server CallFlowControl/bin/callflowcontrol.dart
+callflow: 
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server CallFlowControlWrapper/bin/callflowcontrol.dart
 
-contact: $(OUTPUT_DIRECTORY)
-	cd ContactServer/ && pub get 
+contact: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server ContactServer/bin/contactserver.dart
 
-log: $(OUTPUT_DIRECTORY)
-	cd LogServer/ && pub get 
+log: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${LogBinary} --categories=Server LogServer/bin/logserver.dart
 
-message: $(OUTPUT_DIRECTORY)
-	cd MessageServer/ && pub get
+message: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server MessageServer/bin/messageserver.dart
 
-messagedispatcher: $(OUTPUT_DIRECTORY)
-	cd MessageDispatcher/ && pub get
+messagedispatcher: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageDispatcherBinary} --categories=Server MessageDispatcher/bin/messagedispacher.dart
 
-misc: $(OUTPUT_DIRECTORY)
-	cd MiscServer/ && pub get
+misc: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MiscBinary} --categories=Server MiscServer/bin/miscserver.dart
 
-reception: $(OUTPUT_DIRECTORY)
-	cd ReceptionServer/ && pub get
+notification:
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${NotificationBinary} --categories=Server NotificationServer/bin/notificationserver.dart
+
+reception: 
 	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${ReceptionBinary} --categories=Server ReceptionServer/bin/receptionserver.dart
+
+spawner: 
+	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${SpawnerBinary} --categories=Server spawner/bin/spawner.dart
 
 $(OUTPUT_DIRECTORY):
 	mkdir -p $(OUTPUT_DIRECTORY)
@@ -67,14 +91,16 @@ clean:
 
 install: all
 	install --directory ${PREFIX}
-	install --target-directory=${PREFIX} out/*.dart
+	install --target-directory=${PREFIX} $(OUTPUT_DIRECTORY)/*.dart
 
 install-default-config:
 	@install --directory ${PREFIX}
 	@install AuthServer/bin/config.json.dist ${PREFIX}/authconfig.json
+	@install CallFlowControlWrapper/bin/config.json.dist ${PREFIX}/callflowcontrolconfig.json
 	@install ContactServer/bin/config.json.dist ${PREFIX}/contactconfig.json
 	@install LogServer/bin/config.json.dist ${PREFIX}/logconfig.json
 	@install MessageServer/bin/config.json.dist ${PREFIX}/messageconfig.json
+	@install MessageDispatcher/bin/config.json.dist ${PREFIX}/messagedispatcherconfig.json
 	@install MiscServer/bin/config.json.dist ${PREFIX}/miscconfig.json
 	@install ReceptionServer/bin/config.json.dist ${PREFIX}/receptionconfig.json
 
@@ -87,10 +113,9 @@ latest_db_install:
 	PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_SCHEMA} --host=${PGHOST} --username=${PGUSER} -w
 	LANG=C.UTF-8 PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_DATA} --host=${PGHOST} --username=${PGUSER} -w
 
-$(OUTPUT_DIRECTORY)/NotificationServer.dart : NotificationServer/bin/notificationserver.dart NotificationServer/lib/*.dart
-	mkdir -p "`dirname $@`"
-	cd `basename $@ .dart` && pub get
-	dart2js --output-type=dart --checked --verbose --out=$@ --categories=Server $<
+#$(OUTPUT_DIRECTORY)/NotificationServer.dart : NotificationServer/bin/notificationserver.dart NotificationServer/lib/*.dart
+#	mkdir -p "`dirname $@`"
+#	cd `basename $@ .dart` && pub get
+#	dart2js --output-type=dart --checked --verbose --out=$@ --categories=Server $<
 
-spawner: all
 
