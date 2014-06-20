@@ -36,7 +36,10 @@ class TokenVault {
   void updateToken(String token, Map data) {
     if(_userTokens.containsKey(token)) {
       _userTokens[token] = data;
-    } else {
+    } else if (_serverTokens.containsKey(token)) {
+       return;      
+    }
+    else {
       throw new Exception('updateToken. Unknown token: ${token}');
     }
   }
@@ -68,7 +71,7 @@ class TokenVault {
               String token = item.path.split('/').last.split('.').first;
               Map data = JSON.decode(text);
               _serverTokens[token] = data;
-
+              print ('Loaded ${_serverTokens[token]}');
             }).catchError((error) {
               log('TokenVault.loadFromDirectory() ${error}');
             });
