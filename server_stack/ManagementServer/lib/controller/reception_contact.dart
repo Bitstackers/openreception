@@ -3,16 +3,19 @@ library receptionContactController;
 import 'dart:io';
 import 'dart:convert';
 
+import '../configuration.dart';
 import '../utilities/http.dart';
 import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/complete_reception_contact.dart';
+import 'package:OpenReceptionFramework/service.dart' as ORFService;
 
 class ReceptionContactController {
   Database db;
+  Configuration config;
 
-  ReceptionContactController(Database this.db);
+  ReceptionContactController(Database this.db, Configuration this.config);
 
   void getReceptionContact(HttpRequest request) {
     int receptionId = intPathParameter(request.uri, 'reception');
@@ -43,13 +46,21 @@ class ReceptionContactController {
   }
 
   void createReceptionContact(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+
     extractContent(request)
     .then(JSON.decode)
-    .then((Map data) {
-      int receptionId = intPathParameter(request.uri, 'reception');
-      int contactId = intPathParameter(request.uri, 'contact');
-      return db.createReceptionContact(receptionId, contactId, data['wants_messages'], data['phonenumbers'], data['attributes'], data['enabled']);
-    })
+    .then((Map data) => db.createReceptionContact(
+        receptionId, contactId, data['wants_messages'],
+        data['phonenumbers'], data['attributes'], data['enabled'])
+    .then((_) {
+        Map data = {'event' : 'receptionContactEventCreated', 'receptionContactEvent' : {'receptionId': receptionId, 'contactId': contactId}};
+        ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            logger.error('createReceptionContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+          });
+      }))
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
     .catchError((error) {
       logger.error(error);
@@ -58,13 +69,21 @@ class ReceptionContactController {
   }
 
   void updateReceptionContact(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+
     extractContent(request)
     .then(JSON.decode)
-    .then((Map data) {
-      int receptionId = intPathParameter(request.uri, 'reception');
-      int contactId = intPathParameter(request.uri, 'contact');
-      return db.updateReceptionContact(receptionId, contactId, data['wants_messages'], data['phonenumbers'], data['attributes'], data['enabled']);
-    })
+    .then((Map data) => db.updateReceptionContact(
+        receptionId, contactId, data['wants_messages'],
+        data['phonenumbers'], data['attributes'], data['enabled'])
+    .then((_) {
+        Map data = {'event' : 'receptionContactEventUpdated', 'receptionContactEvent' : {'receptionId': receptionId, 'contactId': contactId}};
+        ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            logger.error('updateReceptionContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+          });
+      }))
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
     .catchError((error) {
       logger.error('updateReception url: "${request.uri}" gave error "${error}"');
@@ -75,8 +94,16 @@ class ReceptionContactController {
   void deleteReceptionContact(HttpRequest request) {
     int receptionId = intPathParameter(request.uri, 'reception');
     int contactId = intPathParameter(request.uri, 'contact');
+
     db.deleteReceptionContact(receptionId, contactId)
-    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({}))
+    .then((_) {
+        Map data = {'event' : 'receptionContactEventDeleted', 'receptionContactEvent' : {'receptionId': receptionId, 'contactId': contactId}};
+        ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            logger.error('deleteReceptionContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+          });
+      }))
     .catchError((error) {
       logger.error('updateReception url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);

@@ -75,21 +75,20 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
-      
+
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
-      
+
       if(config.containsKey('serverToken')) {
-        _httpport = config['serverToken'];
+        _serverToken = config['serverToken'];
       }
 
       if(config.containsKey('notificationServer')) {
         _notificationServer = Uri.parse(config['notificationServer']);
       }
-      
-      
+
+
       if(config.containsKey('callFlowHost')) {
         _callFlowHost = config['callFlowHost'];
       }
@@ -109,9 +108,13 @@ class Configuration {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
+      }
+
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
       }
 
     }).catchError((error) {

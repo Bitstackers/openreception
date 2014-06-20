@@ -1,15 +1,16 @@
 part of adaheads.server.database;
 
-Future<int> _createUser(Pool pool, String name, String extension) {
+Future<int> _createUser(Pool pool, String name, String extension, String sendFrom) {
   String sql = '''
-    INSERT INTO users (name, extension)
-    VALUES (@name, @extension)
+    INSERT INTO users (name, extension, send_from)
+    VALUES (@name, @extension, @sendfrom)
     RETURNING id;
   ''';
 
   Map parameters =
     {'name'      : name,
-     'extension' : extension};
+     'extension' : extension,
+     'sendfrom'  : sendFrom};
 
   return query(pool, sql, parameters).then((rows) => rows.first.id);
 }
@@ -26,7 +27,7 @@ Future<int> _deleteUser(Pool pool, int userId) {
 
 Future<model.User> _getUser(Pool pool, int userId) {
   String sql = '''
-    SELECT id, name, extension
+    SELECT id, name, extension, send_from
     FROM users
     WHERE id = @id
   ''';
@@ -38,36 +39,37 @@ Future<model.User> _getUser(Pool pool, int userId) {
       return null;
     } else {
       Row row = rows.first;
-      return new model.User(row.id, row.name, row.extension);
+      return new model.User(row.id, row.name, row.extension, row.send_from);
     }
   });
 }
 
 Future<List<model.User>> _getUserList(Pool pool) {
   String sql = '''
-    SELECT id, name, extension
+    SELECT id, name, extension, send_from
     FROM users
   ''';
 
   return query(pool, sql).then((rows) {
     List<model.User> users = new List<model.User>();
     for(var row in rows) {
-      users.add(new model.User(row.id, row.name, row.extension));
+      users.add(new model.User(row.id, row.name, row.extension, row.send_from));
     }
     return users;
   });
 }
 
-Future<int> _updateUser(Pool pool, int userId, String name, String extension) {
+Future<int> _updateUser(Pool pool, int userId, String name, String extension, String sendFrom) {
   String sql = '''
     UPDATE users
-    SET name=@name, extension=@extension
+    SET name=@name, extension=@extension, send_from=@sendfrom
     WHERE id=@id;
   ''';
 
   Map parameters =
     {'name'      : name,
      'extension' : extension,
+     'sendfrom'  : sendFrom,
      'id'        : userId};
 
   return execute(pool, sql, parameters);
@@ -81,8 +83,7 @@ Future<List<model.UserGroup>> _getUserGroups(Pool pool, int userId) {
     WHERE user_groups.user_id = @userid
   ''';
 
-  Map parameters =
-    {'userid': userId};
+  Map parameters = {'userid': userId};
 
   return query(pool, sql, parameters)
     .then((rows) {
@@ -137,7 +138,7 @@ Future<int> _leaveUserGroup(Pool pool, int userId, int groupId) {
 
 Future<List<model.UserIdentity>> _getUserIdentityList(Pool pool, int userId) {
   String sql = '''
-    SELECT identity, send_from, user_id
+    SELECT identity, user_id
     FROM auth_identities
     WHERE user_id = @userid
   ''';
@@ -147,32 +148,31 @@ Future<List<model.UserIdentity>> _getUserIdentityList(Pool pool, int userId) {
   return query(pool, sql, parameters).then((rows) {
     List<model.UserIdentity> userIdentities = new List<model.UserIdentity>();
     for(var row in rows) {
-      userIdentities.add(new model.UserIdentity(row.identity, row.send_from, row.user_id));
+      userIdentities.add(new model.UserIdentity(row.identity, row.user_id));
     }
     return userIdentities;
   });
 }
 
-Future<String> _createUserIdentity(Pool pool, int userId, String identity, bool sendFrom) {
+Future<String> _createUserIdentity(Pool pool, int userId, String identity) {
   String sql = '''
-    INSERT INTO auth_identities (identity, send_from, user_id)
-    VALUES (@identity, @sendfrom, @userid)
+    INSERT INTO auth_identities (identity, user_id)
+    VALUES (@identity, @userid)
     RETURNING identity;
   ''';
 
   Map parameters =
     {'identity' : identity,
-     'sendfrom' : sendFrom,
      'userid'   : userId};
 
   return query(pool, sql, parameters).then((rows) => rows.first.identity);
 }
 
 Future<int> _updateUserIdentity(Pool pool, int userIdKey, String identityIdKey,
-    String identityIdValue, bool sendFrom, int userIdValue) {
+    String identityIdValue, int userIdValue) {
   String sql = '''
     UPDATE auth_identities
-    SET identity = @identityvalye, send_from = @sendfrom, user_id = @useridvalue
+    SET identity = @identityvalye, user_id = @useridvalue
     WHERE user_id = @useridkey AND identity = @identitykey;
   ''';
 
@@ -180,7 +180,6 @@ Future<int> _updateUserIdentity(Pool pool, int userIdKey, String identityIdKey,
     {'useridkey'     : userIdKey,
      'identitykey'   : identityIdKey,
      'identityvalye' : identityIdValue,
-     'sendfrom'      : sendFrom,
      'useridvalue'   : userIdValue};
 
   return execute(pool, sql, parameters);

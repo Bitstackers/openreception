@@ -14,7 +14,6 @@ String userIdentityIdAsJson(String id) => JSON.encode({'identity': id});
 
 Map _userIdentityAsJsonMap(UserIdentity userIdentity) => userIdentity == null ? {} :
     {'identity'  : userIdentity.identity,
-     'send_from' : userIdentity.send_from,
      'user_id'   : userIdentity.user_id};
 
 List _listUserIdentityAsJsonList(List<UserIdentity> userIdentities) =>

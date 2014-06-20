@@ -1,14 +1,10 @@
-library tokenWatch; 
+library tokenWatch;
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'cache.dart';
 import 'configuration.dart';
-import 'package:OpenReceptionFramework/cache.dart' as cacheUtil;
+import 'token_vault.dart';
 import 'package:OpenReceptionFramework/common.dart';
-
 
 void setup() {
   logger.debug('Watcher started');
@@ -17,33 +13,22 @@ void setup() {
   new Timer.periodic(new Duration(seconds: minutes), _timerTick);
 }
 
-Future seen(String token) {
-  return loadToken(token).then((String text) {
-    Map contentAsJson = JSON.decode(text);
-    contentAsJson['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.tokenexpiretime));
-    return updateToken(token, JSON.encode(contentAsJson));
-  });
+void seen(String token) {
+  Map data = vault.getToken(token);
+  data['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.tokenexpiretime));
+  vault.updateToken(token, data);
 }
 
 void _timerTick(Timer timer) {
-  listTokens().then((List<FileSystemEntity> list) {
-    for(FileSystemEntity item in list) {      
-      if(item is File) {
-        cacheUtil.load(item.path).then((String text) {
-          Map contentAsJson = JSON.decode(text);
-          DateTime expiresAt = JsonToDateTime(contentAsJson['expiresAt']);
-          
-          //TODO handle systems that do not seperate folders with "/"
-          String token = item.path.split('/').last.split('.').first;
-          var now = new DateTime.now().millisecondsSinceEpoch;
-          if(now > expiresAt.millisecondsSinceEpoch) {
-            logger.debug('tokenWatch._timerTick() This token ${token} expired ${expiresAt}');
-            return removeToken(token); 
-          }
-        }).catchError((error) {
-          log('tokenWatch._timerTick() ${error}');
-        });
-      }
+  Iterable<String> tokens = vault.listUserTokens().toList();
+  for(String token in tokens) {
+    Map data = vault.getToken(token);
+    DateTime expiresAt = JsonToDateTime(data['expiresAt']);
+
+    int now = new DateTime.now().millisecondsSinceEpoch;
+    if(now > expiresAt.millisecondsSinceEpoch) {
+      logger.debug('tokenWatch._timerTick() This token ${token} expired ${expiresAt}');
+      vault.removeToken(token);
     }
-  });
+  }
 }

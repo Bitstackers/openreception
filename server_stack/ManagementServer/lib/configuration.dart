@@ -8,23 +8,27 @@ import 'package:args/args.dart';
 class Configuration {
   ArgResults _args;
 
-  Uri        _authUrl;
-  String     _configfile = 'config.json';
-  int        _httpport   = 8080;
-  String     _dbuser;
-  String     _dbpassword;
-  String     _dbhost;
-  int        _dbport;
-  String     _dbname;
+  Uri    _authUrl;
+  String _configfile = 'config.json';
+  int    _httpport   = 8080;
+  String _dbuser;
+  String _dbpassword;
+  String _dbhost;
+  int    _dbport;
+  String _dbname;
+  Uri    _notificationServer;
+  String _token;
 
-  Uri    get authUrl        => _authUrl;
-  String get configfile     => _configfile;
-  String get dbuser         => _dbuser;
-  String get dbpassword     => _dbpassword;
-  String get dbhost         => _dbhost;
-  int    get dbport         => _dbport;
-  String get dbname         => _dbname;
-  int    get httpport       => _httpport;
+  Uri    get authUrl            => _authUrl;
+  String get configfile         => _configfile;
+  String get dbuser             => _dbuser;
+  String get dbpassword         => _dbpassword;
+  String get dbhost             => _dbhost;
+  int    get dbport             => _dbport;
+  String get dbname             => _dbname;
+  int    get httpport           => _httpport;
+  Uri    get notificationServer => _notificationServer;
+  String get token              => _token;
 
   Configuration(ArgResults args) {
     _args = args;
@@ -68,6 +72,13 @@ class Configuration {
       _httpport = int.parse(_args['httpport']);
     }
 
+    if(_hasArgument('notificationserver')) {
+      _notificationServer = Uri.parse(_args['notificationserver']);
+    }
+
+    if(_hasArgument('token')) {
+      _token = _args['token'];
+    }
   }
 
   void _parseFile() {
@@ -107,6 +118,14 @@ class Configuration {
     if(content.containsKey('httpport')) {
       _httpport = content['httpport'];
     }
+
+    if(content.containsKey('notificationserver')) {
+      _notificationServer = Uri.parse(content['notificationserver']);
+    }
+
+    if(content.containsKey('token')) {
+      _token = content['token'];
+    }
   }
 
   void _validate() {
@@ -137,11 +156,17 @@ class Configuration {
     if(httpport == null) {
       throw('httpport is not specified.');
     }
+
+    if(notificationServer == null) {
+      throw('notificationServer is not specified.');
+    }
   }
 
   String toString() => '''
     AuthUrl: $authUrl
     HttpPort: $httpport
+    NotificationServer: $notificationServer
+    Token: $token
     Database:
       Host: $dbhost
       Port: $dbport

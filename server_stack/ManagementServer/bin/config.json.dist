@@ -5,5 +5,7 @@
     "dbpassword": "Secret",
     "dbhost": "localhost",
     "dbport": 5432,
-    "dbname": "dbname"
+    "dbname": "dbname",
+    "notificationserver": "http://example.com",
+    "token": "secret-token"
 }

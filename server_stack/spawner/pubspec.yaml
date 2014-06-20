@@ -1,0 +1,4 @@
+name: spawner
+description: A sample command-line application
+dependencies:
+  crypto: any

@@ -3,17 +3,20 @@ library organizationController;
 import 'dart:io';
 import 'dart:convert';
 
+import '../configuration.dart';
 import '../utilities/http.dart';
 import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/organization.dart';
 import '../view/contact.dart';
+import 'package:OpenReceptionFramework/service.dart' as ORFService;
 
 class OrganizationController {
   Database db;
+  Configuration config;
 
-  OrganizationController(Database this.db);
+  OrganizationController(Database this.db, Configuration this.config);
 
   void getOrganization(HttpRequest request) {
     int organizationId = intPathParameter(request.uri, 'organization');
@@ -45,7 +48,13 @@ class OrganizationController {
     extractContent(request)
     .then(JSON.decode)
     .then((Map data) => db.createOrganization(data['full_name'], data['bill_type'], data['flag']))
-    .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id)))
+    .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id)).then((_) {
+      Map data = {'event' : 'organizationEventCreated', 'organizationEvent' : {'organizationId' : id}};
+      ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+        .catchError((error) {
+          logger.error('createOrganization Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+        });
+    }))
     .catchError((error) {
       logger.error(error);
       Internal_Error(request);
@@ -56,7 +65,14 @@ class OrganizationController {
     extractContent(request)
     .then(JSON.decode)
     .then((Map data) => db.updateOrganization(intPathParameter(request.uri, 'organization'), data['full_name'], data['bill_type'], data['flag']))
-    .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id)))
+    .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id))
+    .then((_) {
+      Map data = {'event' : 'organizationEventupdated', 'organizationEvent' : {'organizationId' : id}};
+      ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+        .catchError((error) {
+          logger.error('updateOrganization Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+        });
+    }))
     .catchError((error) {
       logger.error('updateOrganization url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
@@ -64,8 +80,16 @@ class OrganizationController {
   }
 
   void deleteOrganization(HttpRequest request) {
-    db.deleteOrganization(intPathParameter(request.uri, 'organization'))
-    .then((int id) => writeAndCloseJson(request, organizationIdAsJson(id)))
+    var organizationId = intPathParameter(request.uri, 'organization');
+    db.deleteOrganization(organizationId)
+    .then((int id) => writeAndCloseJson(request, organizationIdAsJson(organizationId))
+    .then((_) {
+      Map data = {'event' : 'organizationEventDeleted', 'organizationEvent' : {'organizationId' : organizationId}};
+      ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+        .catchError((error) {
+          logger.error('deleteOrganization Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+        });
+    }))
     .catchError((error) {
       logger.error('deleteOrganization url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);

@@ -3,25 +3,35 @@ library contactController;
 import 'dart:io';
 import 'dart:convert';
 
+import '../view/colleague.dart';
+import '../configuration.dart';
+import '../view/contact.dart';
+import '../database.dart';
 import '../utilities/http.dart';
 import '../utilities/logger.dart';
-import '../database.dart';
 import '../model.dart';
-import '../view/colleague.dart';
-import '../view/contact.dart';
 import '../view/organization.dart';
 import '../view/reception_contact_reduced_reception.dart';
+import 'package:OpenReceptionFramework/service.dart' as ORFService;
 
 class ContactController {
   Database db;
+  Configuration config;
 
-  ContactController(Database this.db);
+  ContactController(Database this.db, Configuration this.config);
 
   void createContact(HttpRequest request) {
     extractContent(request)
     .then(JSON.decode)
     .then((Map data) => db.createContact(data['full_name'], data['contact_type'], data['enabled']))
-    .then((int id) => writeAndCloseJson(request, contactIdAsJson(id)))
+    .then((int id) =>
+        writeAndCloseJson(request, contactIdAsJson(id)).then((_) {
+          Map data = {'event' : 'contactEventCreated', 'contactEvent' : {'contactId' : id}};
+          ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+            .catchError((error) {
+              logger.error('createContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+            });
+        }))
     .catchError((error) {
       logger.error(error);
       Internal_Error(request);
@@ -29,8 +39,16 @@ class ContactController {
   }
 
   void deleteContact(HttpRequest request) {
-    db.deleteContact(intPathParameter(request.uri, 'contact'))
+    int contactId = intPathParameter(request.uri, 'contact');
+    db.deleteContact(contactId)
     .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+    .then((_) {
+      Map data = {'event' : 'contactEventDeleted', 'contactEvent' : {'contactId' : contactId}};
+      ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+        .catchError((error) {
+          logger.error('deleteContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+        });
+    })
     .catchError((error) {
       logger.error('deleteContact url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
@@ -103,10 +121,19 @@ class ContactController {
   }
 
   void updateContact(HttpRequest request) {
+    var contactId = intPathParameter(request.uri, 'contact');
+
     extractContent(request)
     .then(JSON.decode)
-    .then((Map data) => db.updateContact(intPathParameter(request.uri, 'contact'), data['full_name'], data['contact_type'], data['enabled']))
+    .then((Map data) => db.updateContact(contactId, data['full_name'], data['contact_type'], data['enabled']))
     .then((int id) => writeAndCloseJson(request, contactIdAsJson(id)))
+    .then((_) {
+      Map data = {'event' : 'contactEventUpdated', 'contactEvent' : {'contactId' : contactId}};
+      ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+        .catchError((error) {
+          logger.error('updateContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+        });
+    })
     .catchError((error) {
       logger.error('updateContact url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);

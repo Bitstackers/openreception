@@ -15,30 +15,31 @@ CREATE TABLE groups (
 );
 
 CREATE TABLE user_groups (
-   user_id  INTEGER NOT NULL REFERENCES users (id),
-   group_id INTEGER NOT NULL REFERENCES groups (id),
+   user_id  INTEGER NOT NULL REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   group_id INTEGER NOT NULL REFERENCES groups (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
   PRIMARY KEY (user_id, group_id)
 );
 
 CREATE TABLE auth_identities (
    identity  TEXT    NOT NULL PRIMARY KEY,
-   user_id   INTEGER NOT NULL REFERENCES users (id)
+   user_id   INTEGER NOT NULL REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE openids (
-   user_id  INTEGER NOT NULL REFERENCES users (id),
-   openid   TEXT    NOT NULL PRIMARY KEY,
-   priority INTEGER NOT NULL
-);
+
+-- CREATE TABLE openids (
+--    user_id  INTEGER NOT NULL REFERENCES users (id),
+--    openid   TEXT    NOT NULL PRIMARY KEY,
+--    priority INTEGER NOT NULL
+-- );
 
 -------------------------------------------------------------------------------
 --  Dial-plans:
 
-CREATE TABLE dial_plans (
+/*CREATE TABLE dial_plans (
    phone_number TEXT NOT NULL PRIMARY KEY,
    dial_plan    XML  NOT NULL
-);
+);*/
 
 CREATE TABLE audiofiles (
    filepath  TEXT NOT NULL PRIMARY KEY,

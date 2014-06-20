@@ -159,8 +159,8 @@ class Database {
   /* ***********************************************
      ********************* User ********************
    */
-  Future<int> createUser(String name, String extension) =>
-      _createUser(pool, name, extension);
+  Future<int> createUser(String name, String extension, String sendFrom) =>
+      _createUser(pool, name, extension, sendFrom);
 
   Future<int> deleteUser(int userId) => _deleteUser(pool, userId);
 
@@ -168,8 +168,8 @@ class Database {
 
   Future<List<model.User>> getUserList() => _getUserList(pool);
 
-  Future<int> updateUser(int userId, String name, String extension) =>
-      _updateUser(pool, userId, name, extension);
+  Future<int> updateUser(int userId, String name, String extension, String sendFrom) =>
+      _updateUser(pool, userId, name, extension, sendFrom);
 
   /* ***********************************************
      **************** User Groups ******************
@@ -194,13 +194,12 @@ class Database {
   Future<List<model.UserIdentity>> getUserIdentityList(int userId) =>
         _getUserIdentityList(pool, userId);
 
-  Future<String> createUserIdentity(int userId, String identity, bool sendFrom) =>
-      _createUserIdentity(pool, userId, identity, sendFrom);
+  Future<String> createUserIdentity(int userId, String identity) =>
+      _createUserIdentity(pool, userId, identity);
 
   Future<int> updateUserIdentity(int userIdKey, String identityIdKey,
-      String identityIdValue, bool sendFrom, int userIdValue) =>
-      _updateUserIdentity(pool, userIdKey, identityIdKey, identityIdValue,
-          sendFrom, userIdValue);
+      String identityIdValue, int userIdValue) =>
+      _updateUserIdentity(pool, userIdKey, identityIdKey, identityIdValue, userIdValue);
 
   Future<int> deleteUserIdentity(int userId, String identityId) =>
       _deleteUserIdentity(pool, userId, identityId);

@@ -42,9 +42,9 @@ void main(List<String> args) {
 }
 
 void connectClient() {
-  
+
   Duration period = new Duration(seconds : 3);
-  
+
   print ("Connecting");
   clientSocket.connect(config.callFlowHost, config.callFlowPort).then((clientSocket client) {
     client.listenEventSocket();
@@ -58,9 +58,11 @@ void connectClient() {
 
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile', help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to 4243');
+  parser
+    ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addOption('configfile', help: 'The JSON configuration file. Defaults to config.json')
+    ..addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to 4243')
+    ..addOption('servertoken', help: 'servertoken');
 
   parsedArgs = parser.parse(arguments);
 }

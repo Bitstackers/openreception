@@ -14,7 +14,8 @@ String userIdAsJson(int id) => JSON.encode({'id': id});
 Map _userAsJsonMap(User user) => user == null ? {} :
     {'id': user.id,
      'name': user.name,
-     'extension': user.extension};
+     'extension': user.extension,
+     'send_from': user.sendFrom};
 
 List _listUserAsJsonList(List<User> user) =>
     user.map(_userAsJsonMap).toList();
