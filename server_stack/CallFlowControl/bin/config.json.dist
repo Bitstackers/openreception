@@ -1,0 +1,8 @@
+{
+    "authurl": "http://localhost:8080/",
+    "notificationServer" : "http://localhost:4200",
+    "httpport": 4244,
+    "eslHostname" : "localhost",
+    "eslPort"     : 8021,
+    "eslPassword" : "ClueCon"
+}

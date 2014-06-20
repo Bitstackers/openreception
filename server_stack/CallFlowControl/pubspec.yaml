@@ -1,0 +1,12 @@
+name: CallFlowControl
+version: 0.1.1
+author: Kim Rostgaard Christensen
+description: Call-Flow-Control server.
+dependencies:
+  OpenReceptionFramework:
+    git: https://github.com/AdaHeads/OpenReceptionFramework.git
+  args: any
+  esl:
+    git: https://github.com/rostgaard/libesl-dart.git
+  path: any
+  route: any

@@ -1,0 +1,246 @@
+part of callflowcontrol.model;
+
+class NotFound implements Exception {
+
+  final String message;
+  const NotFound([this.message = ""]);
+
+  String toString() => "NotFound: $message";
+}
+
+class Forbidden implements Exception {
+
+  final String message;
+  const Forbidden([this.message = ""]);
+
+  String toString() => "Forbidden: $message";
+}
+
+class CallList extends IterableBase<Call> {
+
+  static const String className = '${libraryName}.CallList';
+
+  static const int    nullReceptionID = 0;
+
+  Map<String, Call> _map = new Map<String, Call>();
+
+  Iterator get iterator => this._map.values.iterator;
+
+  static CallList instance = new CallList();
+
+  List toJson() => this.toList(growable: false);
+
+  void subscribe(Stream<ESL.Packet> eventStream) {
+    eventStream.listen(_handlePacket);
+  }
+
+  List<Call> callsOf(SharedModel.User user) => this.where((Call call) => call.assignedTo == user.ID).toList();
+
+  Call get(String callID) {
+    if (this._map.containsKey(callID)) {
+      return this._map[callID];
+    } else {
+      throw new NotFound(callID);
+    }
+  }
+
+  void remove (String callID) {
+    if (this._map.containsKey(callID)) {
+      this._map.remove(callID);  
+    } else {
+      throw new NotFound(callID);
+    }
+  }
+
+  Call requestCall(user) {
+    Call call = this.singleWhere((Call call) => call.assignedTo == Call.noUser);
+    
+    if (call == null) {
+      throw new NotFound ("No calls available");
+    } else {
+      return call;
+    }
+  }
+
+  Call requestSpecificCall(String callID, SharedModel.User user )  {
+    const String context = '${className}.requestSpecificCall';
+
+    Call call = this.get(callID);
+
+    if (![user.ID, Call.noUser].contains(call.assignedTo)) {
+      logger.errorContext('Call ${callID} already assigned to ${call.assignedTo}', context);
+      throw new Forbidden(callID);
+    } else if (call.locked) {
+      throw new NotFound(callID);
+    }
+
+    return call;
+  }
+
+  void _handleBridge(ESL.Packet packet) {
+    const String context = '${className}._handleBridge';
+
+    final Call aLeg = this.get(packet.field('Bridge-A-Unique-ID'));
+    final Call bLeg = this.get(packet.field('Bridge-B-Unique-ID'));
+
+    logger.debugContext('Bridging ${aLeg.ID} and ${bLeg.ID}', context);
+
+    //  Inherit the context from the other channel.
+    if (aLeg.receptionID == nullReceptionID) {
+      /// Inherit fields from b-Leg.
+      aLeg..receptionID = bLeg.receptionID
+          ..contactID   = bLeg.contactID
+          ..assignedTo  = bLeg.assignedTo;
+    } else if (bLeg.receptionID == nullReceptionID) {
+      /// Inherit fields from a-Leg.
+      bLeg..receptionID = aLeg.receptionID
+          ..contactID   = aLeg.contactID
+          ..assignedTo  = aLeg.assignedTo;
+    }
+
+    aLeg.link(bLeg);
+
+    if (TransferRequest.contains (aLeg.ID, bLeg.ID)) {
+      TransferRequest.confirm (aLeg.ID, bLeg.ID);
+       aLeg.changeState (CallState.Transferred);
+       bLeg.changeState (CallState.Transferred);
+    } else if (OriginationRequest.contains (aLeg.ID)){
+       OriginationRequest.confirm (aLeg.ID);
+    } else if (OriginationRequest.contains (bLeg.ID)){
+      OriginationRequest.confirm (bLeg.ID);
+    }
+
+    aLeg.changeState (CallState.Speaking);
+    bLeg.changeState (CallState.Speaking);
+  }
+  
+  void _handleChannelState (ESL.Packet packet) {
+    const String context = '${className}._handleChannelState';
+
+     if (packet.field('Channel-Call-State') == 'RINGING') {
+       Call call = this.get(packet.uniqueID);
+       if (call.b_Leg != null && (OriginationRequest.contains (call.ID) || OriginationRequest.contains(call.b_Leg.ID))) {
+         if (call.receptionID == nullReceptionID) {
+           /// Inherit fields from b-Leg.
+           call..receptionID = call.b_Leg.receptionID
+               ..contactID   = call.b_Leg.contactID
+               ..assignedTo  = call.b_Leg.assignedTo;
+         }
+
+         call.changeState(CallState.Ringing);
+         logger.debugContext ('${call.ID} is part of origination request '
+                              'and other_leg is ${call.b_Leg}', context);
+       }
+     }
+  }
+  
+  void _handleChannelDestroy (ESL.Packet packet) {
+    const String context = '${className}._handleChannelDestroy';
+    try {
+      /// Remove the call assignment from user->call and call->user
+      this.get(packet.uniqueID).release();
+      this.get(packet.uniqueID).changeState(CallState.Hungup);
+
+      logger.debugContext('Hanging up ${packet.uniqueID}', context);
+      this.remove(packet.uniqueID);
+
+      print (this._map);
+
+    } catch (error) {
+      if (error is NotFound) {
+        logger.errorContext('Tried to hang up non-existing call ${packet.uniqueID}.'
+                            'Call list may be inconsistent - consider reloading.', context);
+      } else {
+        logger.errorContext(error, context);
+      }
+    }
+  }
+
+  
+  void _handleCustom (ESL.Packet packet) {
+    const String context = '${className}._handleCustom';
+
+    switch (packet.eventSubclass) {
+      case ("AdaHeads::pre-queue-enter"):
+        this.get(packet.uniqueID)
+            ..receptionID = int.parse(packet.field('variable_reception_id'))
+            ..isCall = true
+            ..changeState(CallState.Created);
+
+        break;
+      case ("AdaHeads::outbound-call::outbound-call"):
+           logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
+           OriginationRequest.create (packet.uniqueID);
+           //TODO: Harvest in the outbound parameters.
+           break;
+      case ('AdaHeads::pre-queue-leave'):
+        CallList.instance.get (packet.uniqueID)
+          ..changeState (CallState.Transferring)
+          ..locked = true;
+        break;
+      
+      case ('AdaHeads::wait-queue-enter'):
+        CallList.instance.get (packet.uniqueID)
+          ..locked = false
+          ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
+          ..changeState (CallState.Queued);
+        break;
+
+      case ('AdaHeads::parking-lot-enter'):
+        CallList.instance.get (packet.uniqueID)
+          ..changeState (CallState.Parked);
+        break;
+
+      case ('AdaHeads::parking-lot-leave'):
+        CallList.instance.get (packet.uniqueID)
+          ..changeState (CallState.Transferring);
+        break;
+    }
+  }
+  
+  
+  void _handlePacket(ESL.Packet packet) {
+    const String context = '${className}._handlePacket';
+
+    //print (packet.eventName + '::' + packet.eventSubclass);
+
+    switch (packet.eventName) {
+      
+      case ('CHANNEL_BRIDGE'):
+        this._handleBridge(packet);
+        break;
+
+      case ('CHANNEL_STATE'):
+        this._handleChannelState(packet);
+        break;
+        
+      case ('CHANNEL_CREATE'):
+        this._createCall(packet);
+        break;
+
+      case ('CHANNEL_DESTROY'):
+        this._handleChannelDestroy(packet);
+        break;
+
+      case ("CUSTOM"):
+        this._handleCustom(packet);
+        break;
+    }
+  }
+
+  Call _createCall(ESL.Packet packet) {
+    const String context = '${className}._createCall';
+    logger.debugContext('Creating new channel ${packet.uniqueID}', context);
+    Call createdCall = new Call()
+        ..ID = packet.uniqueID
+        ..isCall = false
+        ..inbound = (packet.field('Call-Direction') == 'inbound' ? true : false)
+        ..callerID = packet.field('Caller-Caller-ID-Name')
+        ..destination = packet.field('Caller-Destination-Number');
+
+    this._map[packet.uniqueID] = createdCall;
+
+    print (this._map);
+    return createdCall;
+  }
+}
