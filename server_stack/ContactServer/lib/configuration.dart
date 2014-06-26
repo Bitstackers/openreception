@@ -89,7 +89,7 @@ class Configuration {
           throw('Invalid authUrl missing host. ${_authUrl}');
         }
       }
-      
+
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
@@ -121,7 +121,7 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
-      
+
       if(config.containsKey('sysloghost')) {
         _syslogHost = config['sysloghost'];
       }
@@ -147,7 +147,7 @@ class Configuration {
           throw('Invalid authUrl missing host. ${_authUrl}');
         }
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }
@@ -173,7 +173,7 @@ class Configuration {
       }
 
       _useSyslog = _args['syslog'];
-      
+
       if(hasArgument('sysloghost')) {
         _syslogHost = _args['sysloghost'];
       }
@@ -184,6 +184,10 @@ class Configuration {
         } else {
           _cache = '${_args['cache']}/';
         }
+      }
+
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
       }
 
     }).catchError((error) {

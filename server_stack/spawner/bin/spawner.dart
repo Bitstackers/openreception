@@ -12,7 +12,7 @@ Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
 
 void main() {
-  List<String> tokens = new List(2).map((_) => generateToken()).toList(growable: false);
+  List<String> tokens = new List(4).map((_) => generateToken()).toList(growable: false);
   int index = 0;
 
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
@@ -35,7 +35,7 @@ void main() {
     },
     'ContactServer': {
       'path': 'ContactServer/bin/contactserver.dart',
-      'args': []
+      'args': ['--servertoken', tokens[index++]]
     },
     'LogServer': {
       'path': 'LogServer/bin/logserver.dart',
@@ -55,7 +55,7 @@ void main() {
     },
     'ReceptionServer': {
       'path': 'ReceptionServer/bin/receptionserver.dart',
-      'args': []
+      'args': ['--servertoken', tokens[index++]]
     }
   };
 
