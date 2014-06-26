@@ -7,18 +7,19 @@ abstract class CalendarLabels {
 
 /**
  * View for the Contact's calendar.
- * Listens for  
+ * Listens for
  *  - global contactChanged events
- *  - 
+ *  -
  */
 class ContactInfoCalendar {
-  
+
   static final String  id        = constant.ID.CALL_MANAGEMENT;
   static const String  className = '${libraryName}.CallManagement';
   final        Element element;
   final        Context context;
+               Element lastActive = null;
 
-  bool                get muted          => !nav.Location.isActive(this.element);
+  bool                get active         => nav.Location.isActive(this.element);
   InputElement        get numberField    => this.element.querySelector('#call-originate-number-field');
   ButtonElement       get dialButton     => this.element.querySelector('.call-originate-number-button');
   List<Element>       get nuges          => this.element.querySelectorAll('.nudge');
@@ -39,7 +40,7 @@ class ContactInfoCalendar {
   InputElement get endsDayField    => this.element.querySelector('.contactinfo-calendar-event-create-ends-day');
   InputElement get endsMonthField  => this.element.querySelector('.contactinfo-calendar-event-create-ends-month');
   InputElement get endsYearField   => this.element.querySelector('.contactinfo-calendar-event-create-ends-year');
-  
+
   ///Dateinput getter values
   int get startsHourValue   => int.parse(this.startsHourField.value);
   int get startsMinuteValue => int.parse(this.startsMinuteField.value);
@@ -52,7 +53,7 @@ class ContactInfoCalendar {
   int get endsDayValue    => int.parse(this.endsDayField.value);
   int get endsMonthValue  => int.parse(this.endsMonthField.value);
   int get endsYearValue   => int.parse(this.endsYearField.value);
-  
+
   ///Dateinput setters
   void set startsHourValue   (int value) {this.startsHourField.value = value.toString();}
   void set startsMinuteValue (int value) {this.startsMinuteField.value = value.toString();}
@@ -66,7 +67,7 @@ class ContactInfoCalendar {
   void set endsMonthValue  (int value) {this.endsMonthField.value = value.toString();}
   void set endsYearValue   (int value) {this.endsYearField.value = value.toString();}
 
-  DateTime get _selectedStartDate => 
+  DateTime get _selectedStartDate =>
      new DateTime(this.startsYearValue, this.startsMonthValue, this.startsDayValue, this.startsHourValue, this.startsMinuteValue);
 
   DateTime get _selectedEndDate =>
@@ -87,37 +88,36 @@ class ContactInfoCalendar {
     this.endsHourValue   = newTime.hour;
     this.endsMinuteValue = newTime.minute;
   }
-  
-  
-  UListElement calendarBody;
+
+
+  UListElement get calendarBody => this.element.querySelector("#contact-calendar");
   model.Contact currentContact;
   Element widget;
 
   model.Reception reception;
 
   bool hasFocus = false;
-  
+
   void set inputDisabled (bool disabled) {
-    
+
     this.newEventField.disabled = disabled;
     this.inputFields.forEach((InputElement element) => element.disabled = disabled);
   }
-  
+
 
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
-    this.calendarBody = this.element.querySelector("#contact-calendar");
     this._setTitle(CalendarLabels.calendar);
-    
+
     newEventField.placeholder = CalendarLabels.newEventPlaceholder;
     this.newEventWidget.hidden = true;
     _registerEventListeners();
-    
+
   }
-  
+
   void _setTitle (String newTitle) {
     this.element.querySelectorAll(".calendar-title").forEach((var node) {
         node..text = newTitle;
-    }); 
+    });
   }
 
 
@@ -125,24 +125,49 @@ class ContactInfoCalendar {
     calendarBody.onClick.listen((MouseEvent e) {
       Controller.Context.changeLocation(new nav.Location(context.id, widget.id, calendarBody.id));
     });
+    void onkeydown(KeyboardEvent e) {
+      LIElement li = this.calendarBody.children.firstWhere((LIElement child) => child == document.activeElement);
+        if (li == null) {
+          li = this.calendarBody.children.first;
+        } else if (e.keyCode == Keys.DOWN){
+          li = li.nextElementSibling;   
+        } else if (e.keyCode == Keys.UP){
+          li = li.previousElementSibling;   
+        }
+        if (li != null) {
+          li.focus();
+        }
+        e.preventDefault();
+    }
 
+    //this.calendarBody.onKeyDown.listen(onkeydown);
+    
     event.bus.on(event.locationChanged).listen((nav.Location location) {
-      bool active = location.widgetId == widget.id;
-      widget.classes.toggle(FOCUS, active);
+      
+      element.classes.toggle(FOCUS, this.element.id == location.widgetId);
       if (location.elementId == calendarBody.id) {
         calendarBody.focus();
       }
     });
 
     event.bus.on(event.CreateNewContactEvent).listen((_) {
-      this.newEventWidget.hidden = !this.newEventWidget.hidden;
       
+      this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+      this.calendarBody.hidden = !this.newEventWidget.hidden;
       if (!this.newEventWidget.hidden) {
         this._selectedStartDate = new DateTime.now();
         this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
-        this.newEventField.focus();  
+        this.newEventField.value = "";
+        
+        this.lastActive = document.activeElement;
+        this.newEventField.focus();
+      } else {
+        if (this.lastActive != null) {
+          this.lastActive.focus();  
+        }
       }
-      
+
     });
 
     event.bus.on(event.Save).listen((_) {
@@ -153,16 +178,17 @@ class ContactInfoCalendar {
           ..until    = this._selectedEndDate
           ).save().then((_) {
           this.newEventWidget.hidden = true;
+          this.calendarBody.hidden = !this.newEventWidget.hidden;
         });
       }
     });
-    
-    
+
+
     model.CalendarEventList.events.on(model.CalendarEventList.reload).listen((Map eventStub) {
       const String context = '${className}.reload (listener)';
-      
+
       log.debugContext(eventStub.toString(), context);
-      
+
       if (eventStub['contactID'] == this.currentContact.id && eventStub['receptionID'] == this.reception.ID) {
         log.debugContext('Reloading calendarlist for ${eventStub['contactID']}@${eventStub['receptionID']}', context);
         storage.Contact.calendar(this.currentContact.id, reception.ID).then((model.CalendarEventList eventList) {
@@ -181,7 +207,7 @@ class ContactInfoCalendar {
 
     event.bus.on(event.contactChanged).listen((model.Contact newContact) {
       this.currentContact = newContact;
-      
+
       /*  */
       if (newContact != model.Contact.noContact) {
         storage.Contact.calendar(this.currentContact.id, reception.ID).then((model.CalendarEventList eventList) {
@@ -191,7 +217,6 @@ class ContactInfoCalendar {
         });
       }
     });
-
   }
 
   void render(model.CalendarEventList eventList) {
@@ -222,7 +247,10 @@ class ContactInfoCalendar {
         <li>
       ''';
 
-      calendarBody.children.add(new DocumentFragment.html(html).children.first);
+      var frag = new DocumentFragment.html(html).children.first;
+      //frag.tabIndex = 1;
+      calendarBody.children.add(frag);
     }
   }
+  
 }
