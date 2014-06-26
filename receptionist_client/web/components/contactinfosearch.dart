@@ -12,11 +12,11 @@ class ContactInfoSearch {
                model.ContactList   contactList;
                InputElement        searchBox;
                Element             widget;
-               String              activeContactClass  = 'contact-info-active';
+  static const String              SELECTED             = 'contact-info-active';
 
   bool hasFocus = false;
-  
-  ContactInfoSearch(DivElement this.element, Context this.context, Element this.widget) {    
+
+  ContactInfoSearch(DivElement this.element, Context this.context, Element this.widget) {
     String html = '''
         <div class="contact-info-searchbox">
           <input id="contact-info-searchbar" 
@@ -40,7 +40,7 @@ class ContactInfoSearch {
 
   void activeContact(model.Contact contact) {
     for(LIElement element in displayedContactList.children) {
-      element.classes.toggle(activeContactClass, element.value == contact.id);
+      element.classes.toggle(SELECTED, element.value == contact.id);
     }
 
     Controller.Contact.change(contact);
@@ -61,7 +61,7 @@ class ContactInfoSearch {
     }
   }
 
-  bool _hasScrollbar(Element element) => element.scrollHeight > element.clientHeight;
+  bool _overflows(Element element) => element.scrollHeight > element.clientHeight;
 
   LIElement makeContactElement(model.Contact contact) =>
     new LIElement()
@@ -78,19 +78,16 @@ class ContactInfoSearch {
   }
 
   void previousElement(KeyboardEvent e) {
-    for(LIElement li in displayedContactList.children) {
-      if(li.classes.contains(activeContactClass)) {
-        LIElement previous = li.previousElementSibling;
-        if(previous != null) {
-          li.classes.remove(activeContactClass);
-          previous.classes.add(activeContactClass);
-          int contactId = previous.value;
-          model.Contact con = contactList.getContact(contactId);
-          if(con != null) {
-            Controller.Contact.change(con);
-          }
-        }
-        break;
+    LIElement li = displayedContactList.querySelector('.${SELECTED}');
+    LIElement previous = li.previousElementSibling;
+    
+    if(previous != null) {
+      li.classes.toggle(SELECTED, false);
+      previous.classes.toggle(SELECTED, true);
+      int contactId = previous.value;
+      model.Contact con = contactList.getContact(contactId);
+      if(con != null) {
+        Controller.Contact.change(con);
       }
     }
     e.preventDefault();
@@ -98,11 +95,11 @@ class ContactInfoSearch {
 
   void nextElement(KeyboardEvent e) {
     for(LIElement li in displayedContactList.children) {
-      if(li.classes.contains(activeContactClass)) {
+      if(li.classes.contains(SELECTED)) {
         LIElement next = li.nextElementSibling;
         if(next != null) {
-          li.classes.remove(activeContactClass);
-          next.classes.add(activeContactClass);
+          li.classes.remove(SELECTED);
+          next.classes.add(SELECTED);
           int contactId = next.value;
           model.Contact con = contactList.getContact(contactId);
           if(con != null) {
@@ -114,7 +111,7 @@ class ContactInfoSearch {
     }
     e.preventDefault();
   }
-  
+
   void _performSearch(String search) {
     model.Contact _selectedContact;
     //Clear filtered list
@@ -145,7 +142,7 @@ class ContactInfoSearch {
       if(value == model.nullReception) {
         searchBox.value = '';
       }
-      
+
       model.Contact.list(reception.ID).then((model.ContactList list) {
         contactList = list;
         _performSearch(searchBox.value);
@@ -156,27 +153,6 @@ class ContactInfoSearch {
       contact = value;
     });
 
-//    event.bus.on(event.focusChanged).listen((Focus value) {
-//      if(value.old == searchBox.id) {
-//        hasFocus = false;
-//        //TODO HACK FIXME ??? THOMAS LØCKE
-//        element.parent.parent.classes.remove(FOCUS);
-//      }
-//
-//      if(value.current == searchBox.id) {
-//        hasFocus = true;
-//        searchBox.focus();
-//        //TODO HACK FIXME
-//        element.parent.parent.classes.add(FOCUS);
-//      }
-//    });
-
-//    searchBox.onFocus.listen((_) {
-//      if(!hasFocus) {
-//        setFocus(searchBox.id);
-//      }
-//    });
-
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == widget.id;
       widget.classes.toggle(FOCUS, active);
@@ -184,29 +160,20 @@ class ContactInfoSearch {
         searchBox.focus();
       }
     });
- 
+
     searchBox.onInput.listen((_) {
       _performSearch(searchBox.value);
     });
-    
+
     searchBox.onClick.listen((MouseEvent e) {
       event.bus.fire(event.locationChanged, new nav.Location(context.id, widget.id, searchBox.id));
     });
-    
+
     searchBox
      ..onKeyDown.listen(onkeydown);
 
     displayedContactList.onScroll.listen(scrolling);
 
-//    keyboardHandler.onKeyName('selectedContactCall').listen((_) {
-//      if (contact != model.nullContact) {
-//        if (contact.telephoneNumberList.isNotEmpty) {
-//          //TODO call contact;
-//        }
-//      }
-//    });
-
-    //context.registerFocusElement(searchBox);
   }
 
   void scrolling(Event _) {
@@ -231,7 +198,7 @@ class ContactInfoSearch {
       }
       return termIndex >= terms.length;
     }
-    
+
     return value.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
            value.tags.any((tag) => tag.toLowerCase().contains(searchTerm.toLowerCase()));
   }
@@ -239,9 +206,9 @@ class ContactInfoSearch {
   void _showMoreElements(int numberOfElementsMore) {
     int numberOfContactsDisplaying = displayedContactList.children.length;
     //If it don't have a scrollbar, add elements until it gets one, or there are no more elements to show.
-    if(!_hasScrollbar(displayedContactList)) {
+    if(!this._overflows(displayedContactList)) {
       int triesStep = 5;
-      while(!_hasScrollbar(displayedContactList) && displayedContactList.children.length != filteredContactList.length) {
+      while(!this._overflows(displayedContactList) && displayedContactList.children.length != filteredContactList.length) {
         var appendingList = filteredContactList.skip(displayedContactList.children.length).take(triesStep);
         displayedContactList.children.addAll(appendingList.map(makeContactElement));
       }
