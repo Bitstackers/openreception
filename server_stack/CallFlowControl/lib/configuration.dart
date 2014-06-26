@@ -84,7 +84,7 @@ class Configuration {
       }
 
       if(config.containsKey('eslPort')) {
-        this._eslPort = int.parse(config['eslPort']);
+        this._eslPort = config['eslPort'];
       }
       
       if(config.containsKey('eslPassword')) {
