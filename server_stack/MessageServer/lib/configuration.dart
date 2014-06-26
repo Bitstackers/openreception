@@ -108,7 +108,7 @@ class Configuration {
       }
 
       if(config.containsKey('notificationServer')) {
-        _notificationServer = config['notificationServer'];
+        _notificationServer = Uri.parse(config['notificationServer']);
       }
 
       if(config.containsKey('dbport')) {
