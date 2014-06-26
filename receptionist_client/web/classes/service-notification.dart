@@ -36,9 +36,9 @@ final EventSocket notification = new EventSocket();
  * A Class to handle all the WebSocket notifications coming from the [NotificationServer].
  */
 class EventSocket {
-  
+
   static const String className = '${libraryName}.EventSocket';
-    
+
   static final EventType<Map> callTransfer = new EventType<Map>();
   static final EventType<Map> callState    = new EventType<Map>();
   static final EventType<Map> callHangup   = new EventType<Map>();
@@ -51,7 +51,8 @@ class EventSocket {
   static final EventType<Map> callLock     = new EventType<Map>();
   static final EventType<Map> callUnlock   = new EventType<Map>();
   static final EventType<Map> peerState            = new EventType<Map>();
-  static final EventType<Map> calendarEventCreated = new EventType<Map>();
+  static final EventType<Map> contactCalendarEventCreated = new EventType<Map>();
+  static final EventType<Map> receptionCalendarEventCreated = new EventType<Map>();
   Socket _socket;
 
   Map<String, EventType<Map>> _events =
@@ -67,7 +68,8 @@ class EventSocket {
      'call_unlock'   : callUnlock,
      'call_lock'     : callLock,
      'peer_state'    : peerState,
-     'calendarEventCreated' : calendarEventCreated};
+     'contactCalendarEventCreated' : contactCalendarEventCreated,
+     'receptionCalendarEventCreated' : receptionCalendarEventCreated};
 
   /**
    * [EventSocket] constructor.
@@ -120,13 +122,13 @@ class EventSocket {
     if (json.containsKey('notification')) {
       Map notificationMap = json['notification'];
       _notificationDispatcher(notificationMap);
-    } else if (json.containsKey('event')) { 
+    } else if (json.containsKey('event')) {
       _notificationDispatcher(json);
     } else {
       log.criticalContext('Map does not contains notification.', context);
     }
   }
-  
+
   /**
    * Register event listeners.
    */
@@ -163,7 +165,7 @@ class EventSocket {
    */
   void _callStateEventHandler(Map json) {
     const String context = '${className}._callStateEventHandler';
-    
+
     model.Call call = new model.Call.fromMap(json['call']);
 
     if (call.bLeg == environment.originationRequest) {
@@ -189,7 +191,7 @@ class EventSocket {
       model.Reception.selectedReception = model.nullReception;
     }
 
-    event.bus.fire(event.callDestroyed, call);  
+    event.bus.fire(event.callDestroyed, call);
   }
 
   /**
@@ -204,7 +206,7 @@ class EventSocket {
     if (call == model.Call.currentCall) {
       log.info('Opkald overført. ${call}', toUserLog: true);
       log.debugContext('Transferred ${call}', context);
-      
+
       Controller.Reception.change (model.nullReception);
 
       Controller.Contact.change(model.nullContact);
@@ -240,7 +242,7 @@ class EventSocket {
         log.error('notification._callPickupEventHandler call ${call} missing receptionId');
       }
     }
-    
+
     event.bus.fire(event.callQueueRemove, call);
 
     log.info('Opkald ${call} tildelt til agent ${call.assignedAgent}', toUserLog: true);
@@ -262,7 +264,7 @@ class EventSocket {
     log.debug('notification._queueLeaveEventHandler event: ${json}');
     final model.Call call = new model.Call.fromMap(json['call']);
     event.bus.fire(event.callQueueRemove, call);
-    
+
   }
 
   /**
@@ -275,7 +277,7 @@ class EventSocket {
 
       event.bus.fire(event.localCallQueueAdd, call);
       event.bus.fire(event.callChanged, model.nullCall);
-    } 
+    }
   }
 
   void _callUnparkEventHandler(Map json) {
@@ -285,12 +287,12 @@ class EventSocket {
 
   void _callOfferEventHandler(Map json) {
     final model.Call call = new model.Call.fromMap(json['call']);
-    
+
     event.bus.fire(event.callCreated, call);
-    
+
     if(configuration.autoAnswerEnabled) {
       //TODO HACKY AUTO answer
-      //command.pickupNextCall(); 
+      //command.pickupNextCall();
     } else {
       event.bus.fire(event.callQueueAdd, call);
     }

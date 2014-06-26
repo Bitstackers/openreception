@@ -38,6 +38,9 @@ class Location {
     }
   }
 
+  /**
+   * Make a location based on context, and choose the last used widget in the context.
+   */
   factory Location.context(String contextId) {
     if(_history.containsKey(contextId)) {
       return _history[contextId];
@@ -48,6 +51,9 @@ class Location {
     }
   }
 
+  /***
+   * Make a [Location] from the hash in the URL.
+   */
   factory Location.fromPopState(String hash) {
     try {
       List<String> fragments = hash.substring(1).split('/');
@@ -88,12 +94,10 @@ class Location {
   /**
    * Determines whether or a widget is currently selected.
    */
-  static isActive (Element widget) {
-    return widget.classes.contains (FOCUS);
-  }
+  static isActive (Element widget) => widget.classes.contains (FOCUS);
 
   /**
-   * Update the url bar.
+   * Updates the url bar.
    */
   void push() {
     if(_pushable) {
@@ -133,7 +137,9 @@ class Location {
   }
 }
 
-//TODO Thomas Løcke DO SOMETHING! MAKE IT PRETTY.
+/***
+ * Inserts the default widgets in the History, for use when no widget, only context, is specified.
+ */
 void initialize() {
   List<HtmlElement> contexts = querySelectorAll('#bobactive > section');
   for (HtmlElement context in contexts) {

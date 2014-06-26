@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/box.css?v=1">
     <link rel="stylesheet" href="css/companyhandling.css?v=1">
     <link rel="stylesheet" href="css/calendar.css?v=1">
-    
+
     <link rel="stylesheet" href="css/companyopeninghours.css?v=1">
     <link rel="stylesheet" href="css/companysalescalls.css?v=1">
     <link rel="stylesheet" href="css/companyproduct.css?v=1">
@@ -26,26 +26,26 @@
     <link rel="stylesheet" href="css/companywebsites.css?v=1">
     <link rel="stylesheet" href="css/companyregistrationnumber.css?v=1">
     <link rel="stylesheet" href="css/companyother.css?v=1">
-    
+
     <link rel="stylesheet" href="css/contactinfo.css?v=1">
     <link rel="stylesheet" href="css/sendmessage.css?v=1">
     <link rel="stylesheet" href="css/globalqueue.css?v=1">
     <link rel="stylesheet" href="css/callqueueitem.css?v=1">
-    
+
     <link rel="stylesheet" href="css/messagecontext.css?v=1">
-    
+
     <link rel="stylesheet" href="css/logbox.css?v=1">
-    
+
     <link rel="stylesheet" href="css/phonebooth.css?v=1">
   </head>
   <body>
-   <div id="notifications" style="width:30%; z-index:9999; position:absolute; margin: 0% 35%;"></div>  
+   <div id="notifications" style="width:30%; z-index:9999; position:absolute; margin: 0% 35%;"></div>
 
-    <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div> 
-    <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
+    <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div>
+    <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div>
     <div id="boblogin" style="position: absolute;"></div>
     <div id="bobactive">
-      
+
       <ul id="contextswitcher">
         <li>
           <button id="contexthome_switcherbutton">
@@ -83,16 +83,16 @@
          </button>
        </li>
      </ul>
-            
+
       <section id="contexthome" data-default-widget="companyselector" class="context">
-      
+
       <div id="header-container" style=" height: 6%;">
         <div id="welcome-message" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
           <div>
             <span id="welcome-message-text">Ikke i kald</span>
           </div>
         </div>
-        
+
         <div id="agent-info" style="box-shadow: 2px 2px 3px #ccc;">
           <div id="agent-info-stats">
             <table>
@@ -112,17 +112,50 @@
         </div>
 
       </div>
-      
+
       <div id="main-container" style="margin-top: 0.5%; width: 100%; height: 93%; overflow:hidden;">
-         
+
          <!-- Left column -->
-        <div style=" width: 35%;height: 100%; float:left;"> 
-          
+        <div style=" width: 35%;height: 100%; float:left;">
+
           <div id="companyselector" data-default-element="company-selector-searchbar"></div>
-          
+
           <fieldset id="companyevents" data-default-element="company_events_list">
-            <legend> :: Kalender :: </legend>
+            <legend id="company-events-header"> :: Kalender :: </legend>
             <div>
+
+            <fieldset id="receptioninfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
+              <legend>:: Ny aftale ::</legend>
+              <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
+
+              <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
+                <legend>:: Start::</legend>
+                <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                <span style="width:1em;">:</span>
+                <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                <span style="width:1em;">/</span>
+                <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+              </fieldset>
+
+              <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
+                <legend>:: Slut::</legend>
+                <input class="contactinfo-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                <span style="width:1em;">:</span>
+                <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                <span style="width:1em;">/</span>
+                <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+              </fieldset>
+
+            </fieldset>
+
             <ul id="company_events_list" class="zebra"></ul>
             </div>
           </fieldset>
@@ -131,19 +164,19 @@
             <legend>:: Håndtering ::</legend>
             <ul id="company_handling_list" class="zebra"></ul>
           </fieldset>
-       
+
           <fieldset id="sendmessage" data-default-element="company_events_list">
             <legend> :: Ny besked :: </legend>
-            <!-- Disabled for now. <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">  
+            <!-- Disabled for now. <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">
             <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder=":: Ingen data fundet ::" readonly="">-->
-    
+
             <input id="sendmessagename" class="send-message-name send-message-field" placeholder=":: Navn ::" tabindex="-1">
             <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder=":: Firmanavn ::" tabindex="-1">
-    
+
             <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder=":: Telefon ::" tabindex="-1">
             <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder=":: Mobil ::" tabindex="-1">
             <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder=":: Lokalnummer ::" tabindex="-1">
-    
+
             <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="::Besked::" tabindex="-1"></textarea>
             <div style="width: 40%;float: left;">
                 <ul send-message-checkboxes>
@@ -159,7 +192,7 @@
                     <input type="checkbox" name="send-message-hascalled" id="send-message-hascalled">
                     <label for="send-message-hascalled">:: Har ringet ::</label>
                   </li>
-                  <li>  
+                  <li>
                     <input type="checkbox" name="send-message-urgent" id="send-message-urgent">
                     <label for="send-message-urgent">:: Haster ::</label>
                   </li>
@@ -175,7 +208,7 @@
             </div>
           </fieldset>
     </div>
-        
+
         <!-- Center column -->
         <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
           <div id="contactsearchpanel" style="height: 35%; overflow:hidden;">
@@ -187,44 +220,44 @@
                </div><ul id="contactlist" class="contact-list zebra"></ul></div>
               </div>
             </fieldset>
-            
-              <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:96%;">
-               <legend> :: Medarbejderaftaler :: </legend>
-               <fieldset class="contactinfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
-                 <legend>:: Ny aftale ::</legend>
-                 <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
-                 
-                 <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
-                   <legend>:: Start::</legend>
-                   <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
-                   <span style="width:1em;">:</span>
-                   <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
-                 
-                   <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
-                   <span style="width:1em;">/</span>
-                   <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/> 
 
-                   <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
-                 </fieldset>
-                 
-                 <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
-                   <legend>:: Slut::</legend>
-                   <input class="contactinfo-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
-                   <span style="width:1em;">:</span>
-                   <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
-                 
-                   <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
-                   <span style="width:1em;">/</span>
-                   <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/> 
+            <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:96%;">
+             <legend> :: Medarbejderaftaler :: </legend>
+             <fieldset class="contactinfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
+               <legend>:: Ny aftale ::</legend>
+               <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
 
-                   <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
-                 </fieldset>
+               <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
+                 <legend>:: Start::</legend>
+                 <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                 <span style="width:1em;">:</span>
+                 <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
 
-                 </fieldset>
-                <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
-              </fieldset>
+                 <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                 <span style="width:1em;">/</span>
+                 <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
 
-            </div>
+                 <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+               </fieldset>
+
+               <fieldset style="width:7em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
+                 <legend>:: Slut::</legend>
+                 <input class="contactinfo-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                 <span style="width:1em;">:</span>
+                 <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                 <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                 <span style="width:1em;">/</span>
+                 <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                 <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+               </fieldset>
+
+             </fieldset>
+             <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
+            </fieldset>
+
+          </div>
             <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field">
               <legend> :: Opkald :: </legend>
               <label for="call-originate-number-field"> :: Nummer: :: </label>
@@ -299,8 +332,8 @@
         </table>
         </div>
         </fieldset>
-        </div>        
-        
+        </div>
+
         <!-- Right column -->
         <div style="margin-left: 1%;width: 19%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;">
           <div id="companyopeninghours" class="minibox" data-default-element="company-opening-hours-list" style="height:20%">
@@ -310,7 +343,7 @@
            <div id="companysalescalls" class="minibox" data-default-element="company-sales-list" style="height:20%">
             <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
            </div>
-        
+
            <div id="companyproduct" class="minibox" data-default-element="company-product-body" style="height:20%">
              <p id="company-product-body" tabindex="-1"></p>
            </div>
@@ -325,7 +358,7 @@
              <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
 
           <fieldset id="local-calls" data-default-element="local-call-list">
-            
+
             <legend> :: Lokale kald :: </legend>
             <div>
              <ul class="zebra" id="local-call-list" tabindex="-1">
@@ -333,41 +366,41 @@
             </div>
           </fieldset>
            </div>
-        
+
         </div>
        </div>
       </section>
-      
+
       <!-- Context homeplus  -->
       <section id="contexthomeplus" data-default-widget="companycustomertype" class="context hidden">
         <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
           <p id="company-customertype-body" tabindex="-1"></p>
         </div>
-        
+
         <div id="companytelephonenumbers" class="minibox" data-default-element="company-product-body">
           <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
         </div>
-        
+
         <div id="companyalternatenames" class="minibox" data-default-element="company-alternate-names-list">
           <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
         </div>
-        
+
         <div id="companybankinginformation" class="minibox" data-default-element="company-banking-info-list">
           <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
         </div>
-        
+
         <div id="companyemailaddresses" class="minibox" data-default-element="company-email-addresses-list">
           <ul id="company-email-addresses-list" class="zebra" tabindex="-1"></ul>
         </div>
-        
+
         <div id="companywebsites" class="minibox" data-default-element="company-websites-list">
           <ul id="company-websites-list" class="zebra" tabindex="-1"></ul>
         </div>
-        
+
         <div id="companyregistrationnumber" class="minibox" data-default-element="company-registration-number-list">
           <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
         </div>
-        
+
         <div id="companyother" class="minibox" data-default-element="company-product-body">
           <p id="company-other-body" class="zebra" tabindex="-1"></p>
         </div>
@@ -390,18 +423,18 @@
                 <div id="message-search-contact"></div>
                 <button id="message-search-print">Print</button>
                 <button id="message-search-resend">Gensend valgte</button>
-              </div>        
+              </div>
             </div>
-        
+
             <div id="resendmessage" class="box-with-header-outer">
               <h1 class="box-with-header-headline box-with-header-medium"> :: Besked :: </h1>
               <div class="box-with-header-content" style="height: 443px;">
-              
+
                 <div class="resend-message-container">
                   <div class="resend-message-recipient-container box-with-header-outer">
                     <ul id="resend-message-recipient-list"></ul>
                   </div>
-            
+
                   <input id="resendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1">
                   <input id="resendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly="">
                   <input id="resendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1">
@@ -410,7 +443,7 @@
                   <input id="resendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil" tabindex="-1">
                   <input id="resendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer" tabindex="-1">
                   <textarea style="resize: none;" id="resendmessagetext" class="send-message-text send-message-field" placeholder="Besked" tabindex="-1"></textarea>
-                
+
                   <ul>
                     <li>
                       <input type="checkbox" name="resend-message-pleasecall" id="resend-message-pleasecall">
@@ -424,7 +457,7 @@
                       <input type="checkbox" name="resend-message-hascalled" id="resend-message-hascalled">
                       <label for="resend-message-hascalled">:: Har ringet ::</label>
                     </li>
-                    <li>  
+                    <li>
                       <input type="checkbox" name="resend-message-urgent" id="resend-message-urgent">
                       <label for="resend-message-callsback">:: Haster ::</label>
                     </li>
@@ -458,20 +491,20 @@
           </div>
         </div>
       </section>
-      
+
       <section id="contextlog" data-default-widget="logbox" class="context hidden">
         <div id="logbox" data-default-element="logbox-table"></div>
       </section>
-      
+
       <section id="contextstatistics" data-default-widget="statbox" class="context hidden">
         <p id="statbox">contextstatistics</p>
       </section>
-      
+
       <section id="contextphone" data-default-widget="phonebooth" class="context hidden">
         <div id="phonebooth" data-default-element="phonebooth-numberfield"></div>
         <p>contextphone</p>
       </section>
-      
+
       <section id="contextvoicemails" data-default-widget="voicebox" class="context hidden">
         <p id="voicebox">contextvoicemails</p>
       </section>

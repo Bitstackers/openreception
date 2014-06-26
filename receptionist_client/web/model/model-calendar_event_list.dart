@@ -17,30 +17,36 @@ part of model;
  * A list of [CalendarEvent] objects.
  */
 class CalendarEventList extends IterableBase<CalendarEvent> {
-  
-  static const String className = '${libraryName}.CalendarEventList'; 
-  
+
+  static const String className = '${libraryName}.CalendarEventList';
+
   static final EventType<Map> reload = new EventType<Map>();
 
   /// Local event stream.
   static EventBus _eventStream = new EventBus();
   static EventBus get events => _eventStream;
- 
+
   List<CalendarEvent> _list = new List<CalendarEvent>();
-  
+
   Iterator<CalendarEvent> get iterator => _list.iterator;
 
   static void registerObservers () {
     const String context = '${className}.registerObservers';
-    event.bus.on(Service.EventSocket.calendarEventCreated).listen((Map event) {
+    event.bus.on(Service.EventSocket.contactCalendarEventCreated).listen((Map event) {
       Map calendarEvent = event['calendarEvent'];
-      
       storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
       log.debugContext('Notifying about change in calendar event list', context);
       _eventStream.fire(reload, calendarEvent);
     });
+
+    event.bus.on(Service.EventSocket.receptionCalendarEventCreated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Reception.invalidateCalendar(calendarEvent['receptionID']);
+      log.debugContext('Notifying about change in calendar event list', context);
+      _eventStream.fire(reload, calendarEvent);
+    });
   }
-  
+
   /**
    * [CalendarEventList] constructor.
    */
@@ -51,9 +57,9 @@ class CalendarEventList extends IterableBase<CalendarEvent> {
    * from the contents of json[key].
    */
   factory CalendarEventList.fromMap(List<Map> list) {
-    
+
     const String context = '${className}.CalendarEventList.fromMap';
-    
+
     CalendarEventList calendarEventList = new CalendarEventList();
 
     try {

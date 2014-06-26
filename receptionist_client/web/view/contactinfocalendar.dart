@@ -14,7 +14,7 @@ abstract class CalendarLabels {
 class ContactInfoCalendar {
 
   static final String  id        = constant.ID.CALL_MANAGEMENT;
-  static const String  className = '${libraryName}.CallManagement';
+  static const String  className = '${libraryName}.ContactInfoCalendar';
   final        Element element;
   final        Context context;
                Element lastActive = null;
@@ -116,7 +116,7 @@ class ContactInfoCalendar {
 
   void _setTitle (String newTitle) {
     this.element.querySelectorAll(".calendar-title").forEach((var node) {
-        node..text = newTitle;
+        node.text = newTitle;
     });
   }
 
@@ -125,14 +125,15 @@ class ContactInfoCalendar {
     calendarBody.onClick.listen((MouseEvent e) {
       Controller.Context.changeLocation(new nav.Location(context.id, widget.id, calendarBody.id));
     });
+
     void onkeydown(KeyboardEvent e) {
       LIElement li = this.calendarBody.children.firstWhere((LIElement child) => child == document.activeElement);
         if (li == null) {
           li = this.calendarBody.children.first;
         } else if (e.keyCode == Keys.DOWN){
-          li = li.nextElementSibling;   
+          li = li.nextElementSibling;
         } else if (e.keyCode == Keys.UP){
-          li = li.previousElementSibling;   
+          li = li.previousElementSibling;
         }
         if (li != null) {
           li.focus();
@@ -141,9 +142,9 @@ class ContactInfoCalendar {
     }
 
     //this.calendarBody.onKeyDown.listen(onkeydown);
-    
+
     event.bus.on(event.locationChanged).listen((nav.Location location) {
-      
+
       element.classes.toggle(FOCUS, this.element.id == location.widgetId);
       if (location.elementId == calendarBody.id) {
         calendarBody.focus();
@@ -151,23 +152,24 @@ class ContactInfoCalendar {
     });
 
     event.bus.on(event.CreateNewContactEvent).listen((_) {
-      
-      this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
-      this.calendarBody.hidden = !this.newEventWidget.hidden;
-      if (!this.newEventWidget.hidden) {
-        this._selectedStartDate = new DateTime.now();
-        this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
-        this.newEventField.value = "";
-        
-        this.lastActive = document.activeElement;
-        this.newEventField.focus();
-      } else {
-        if (this.lastActive != null) {
-          this.lastActive.focus();  
+      if(nav.Location.isActive(this.element)) {
+        this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+        this.calendarBody.hidden = !this.newEventWidget.hidden;
+        if (!this.newEventWidget.hidden) {
+          this._selectedStartDate = new DateTime.now();
+          this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
+          this.newEventField.value = "";
+
+          this.lastActive = document.activeElement;
+          this.newEventField.focus();
+        } else {
+          if (this.lastActive != null) {
+            this.lastActive.focus();
+          }
         }
       }
-
     });
 
     event.bus.on(event.Save).listen((_) {
@@ -252,5 +254,5 @@ class ContactInfoCalendar {
       calendarBody.children.add(frag);
     }
   }
-  
+
 }

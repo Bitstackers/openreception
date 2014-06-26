@@ -12,7 +12,7 @@
 */
 
 /**
- * This file defines and describes the different events that can occur 
+ * This file defines and describes the different events that can occur
  * throughout the client ecosystem.
  */
 
@@ -59,29 +59,29 @@ final EventType         dialSelectedContact                     = new EventType(
 
 
 /* Pickup */
-final EventType<Call> pickupCallRequest     = new EventType<Call>(); 
-final EventType       pickupNextCallRequest = new EventType(); 
+final EventType<Call> pickupCallRequest     = new EventType<Call>();
+final EventType       pickupNextCallRequest = new EventType();
 final EventType<Call> pickupCallSuccess     = new EventType();
 final EventType<Call> pickupCallFailure     = new EventType();
 
 /* Hangup */
-final EventType<Call> hangupCallRequest        = new EventType<Call>(); 
+final EventType<Call> hangupCallRequest        = new EventType<Call>();
 final EventType<Call> hangupCallRequestSuccess = new EventType<Call>();
 final EventType<Call> hangupCallRequestFailure = new EventType<Call>();
 
 /* Originate */
-final EventType<String> originateCallRequest         = new EventType<String>(); 
-final EventType originateCallRequestSuccess                      = new EventType(); 
-final EventType originateCallRequestFailure                      = new EventType(); 
-final EventType<String> originateCallProgress                   = new EventType<String>(); 
+final EventType<String> originateCallRequest  = new EventType<String>();
+final EventType originateCallRequestSuccess   = new EventType();
+final EventType originateCallRequestFailure   = new EventType();
+final EventType<String> originateCallProgress = new EventType<String>();
 
 /* Park */
-final EventType<Call> parkCallRequest        = new EventType<Call>(); 
+final EventType<Call> parkCallRequest        = new EventType<Call>();
 final EventType<Call> parkCallRequestSuccess = new EventType<Call>();
 final EventType<Call> parkCallRequestFailure = new EventType<Call>();
 
 /* Transfer */
-final EventType<Call> transferCallRequest        = new EventType<Call>(); 
+final EventType<Call> transferCallRequest        = new EventType<Call>();
 final EventType<Call> transferCallRequestSuccess = new EventType<Call>();
 final EventType<Call> transferCallRequestFailure = new EventType<Call>();
 

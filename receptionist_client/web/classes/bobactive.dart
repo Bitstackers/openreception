@@ -32,7 +32,7 @@ class BobActive {
   View.WelcomeMessage welcomeMessage;
   View.AgentInfo agentInfo;
   View.CompanySelector companySelector;
-  
+
   View.ReceptionHandling companyHandling;
   View.CompanyOpeningHours companyOpeningHours;
   View.CompanySalesCalls companySalesCalls;
@@ -50,11 +50,11 @@ class BobActive {
   View.CallList globalQueue;
   View.CallManagement callManagement;
   //LocalQueue localQueue;
-  
+
   View.ContextSwitcher contextSwitcher;
   View.ReceptionEvents receptionEvents;
   View.Message sendMessage;
-  
+
   View.MessageSearch messageSearch;
   View.MessageList messageList;
 
@@ -76,7 +76,7 @@ class BobActive {
     event.bus.on(event.stateUpdated).listen((State value) {
       element.classes.toggle('hidden', !value.isOK);
     });
-      
+
     registerContexts();
     contextSwitcher          = new View.ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, homePlus, messages, logContext, statistics, phone, voicemails]);
 
@@ -106,15 +106,15 @@ class BobActive {
     companyEmailAddresses    = new View.CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), homePlus);
     companyWebsites          = new View.CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), homePlus);
     compayRegistrationNumber = new View.CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), homePlus);
-    companyOther             = new View.CompanyOther(querySelector('#${id.COMPANY_OTHER}'), homePlus); 
-    
+    companyOther             = new View.CompanyOther(querySelector('#${id.COMPANY_OTHER}'), homePlus);
+
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
 
     phonebooth = new View.Phonebooth(querySelector('#phonebooth'), phone);
 
     setupKeyboardShortcuts();
 //    event.bus.fire(event.activeContextChanged, id.CONTEXT_HOME);
-    
+
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
     Model.CalendarEventList.registerObservers();
@@ -164,6 +164,8 @@ class BobActive {
 //    keyboardHandler.onKeyName('companycustomertype').listen((_) {
 //      setFocus('company-customertype-body');
 //    });
+
+    //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
     keyboardHandler.toString();
   }
 }

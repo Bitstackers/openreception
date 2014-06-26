@@ -17,9 +17,18 @@ part of storage;
 abstract class Reception {
 
   /* Local cache objects. */
-  static model.ReceptionList _receptionListCache = null; 
+  static model.ReceptionList _receptionListCache = null;
   static Map<int, model.Reception> _receptionCache = new Map<int, model.Reception>();
   static Map<int, model.CalendarEventList> _calendarCache = new Map<int, model.CalendarEventList>();
+
+  /**
+   * Removes the cached calendar.
+   */
+  static void invalidateCalendar (int receptionID) {
+    if (_calendarCache.containsKey(receptionID)) {
+      _calendarCache.remove(receptionID);
+    }
+  }
 
   /**
    * Retrieved a single [model.Reception] - identified by [id] from the
@@ -27,7 +36,7 @@ abstract class Reception {
    *
    * Completes with
    *  On success   : the [id] [model.Reception]
-   *  
+   *
    *  Throws errors propagating from the service layer.
    */
   static Future<model.Reception> get(int id) {
@@ -63,7 +72,7 @@ abstract class Reception {
   static Future<model.ReceptionList> list() {
 
     const String context = '${libraryName}.list';
-    
+
     final Completer completer = new Completer<model.ReceptionList>();
 
     if (_receptionListCache != null) {

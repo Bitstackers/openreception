@@ -17,28 +17,101 @@ abstract class ReceptionEventsLabels {
 }
 
 /**
- * Calendar widget. 
- * 
+ * Calendar widget.
+ *
  * Hooks into Model.Reception event stream and responds to the following events:
- *  - ReceptionChanged 
+ *  - ReceptionChanged
  *  - ContactChanged
  */
 class ReceptionEvents {
-    
+
+  model.Reception currentReception;
   Context      context;
   Element      element;
-  Element      get header  => this.element.querySelector('legend');
-  UListElement get listElement => this.element.querySelector('ul');
+  Element         get header         => this.element.querySelector('#company-events-header');
+  UListElement    get listElement    => this.element.querySelector('#company_events_list');
+
+
+  Element lastActive = null;
+  static const String  className = '${libraryName}.ReceptionEvents';
+  FieldSetElement get newEventWidget => this.element.querySelector('#receptioninfo-calendar-event-create');
+  TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
+
+  ///Dateinput starts fields:
+  InputElement get startsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-hour');
+  InputElement get startsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-minute');
+  InputElement get startsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-day');
+  InputElement get startsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-month');
+  InputElement get startsYearField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-year');
+
+  ///Dateinput ends fields:
+  InputElement get endsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-hour');
+  InputElement get endsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-minute');
+  InputElement get endsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-day');
+  InputElement get endsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-month');
+  InputElement get endsYearField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-year');
+
+  ///Dateinput getter values
+  int get startsHourValue   => int.parse(this.startsHourField.value);
+  int get startsMinuteValue => int.parse(this.startsMinuteField.value);
+  int get startsDayValue    => int.parse(this.startsDayField.value);
+  int get startsMonthValue  => int.parse(this.startsMonthField.value);
+  int get startsYearValue   => int.parse(this.startsYearField.value);
+
+  int get endsHourValue   => int.parse(this.endsHourField.value);
+  int get endsMinuteValue => int.parse(this.endsMinuteField.value);
+  int get endsDayValue    => int.parse(this.endsDayField.value);
+  int get endsMonthValue  => int.parse(this.endsMonthField.value);
+  int get endsYearValue   => int.parse(this.endsYearField.value);
+
+  ///Dateinput setters
+  void set startsHourValue   (int value) {this.startsHourField.value = value.toString();}
+  void set startsMinuteValue (int value) {this.startsMinuteField.value = value.toString();}
+  void set startsDayValue    (int value) {this.startsDayField.value = value.toString();}
+  void set startsMonthValue  (int value) {this.startsMonthField.value = value.toString();}
+  void set startsYearValue   (int value) {this.startsYearField.value = value.toString();}
+
+  void set endsHourValue   (int value) {this.endsHourField.value = value.toString();}
+  void set endsMinuteValue (int value) {this.endsMinuteField.value = value.toString();}
+  void set endsDayValue    (int value) {this.endsDayField.value = value.toString();}
+  void set endsMonthValue  (int value) {this.endsMonthField.value = value.toString();}
+  void set endsYearValue   (int value) {this.endsYearField.value = value.toString();}
+
+  DateTime get _selectedStartDate =>
+     new DateTime(this.startsYearValue, this.startsMonthValue, this.startsDayValue, this.startsHourValue, this.startsMinuteValue);
+
+  DateTime get _selectedEndDate =>
+      new DateTime(this.endsYearValue, this.endsMonthValue, this.endsDayValue, this.endsHourValue, this.endsMinuteValue);
+
+  void set _selectedStartDate (DateTime newTime) {
+    this.startsDayValue    = newTime.day;
+    this.startsMonthValue  = newTime.month;
+    this.startsYearValue   = newTime.year;
+    this.startsHourValue   = newTime.hour;
+    this.startsMinuteValue = newTime.minute;
+   }
+
+   void set _selectedEndDate (DateTime newTime) {
+     this.endsDayValue    = newTime.day;
+     this.endsMonthValue  = newTime.month;
+     this.endsYearValue   = newTime.year;
+     this.endsHourValue   = newTime.hour;
+     this.endsMinuteValue = newTime.minute;
+   }
+
 
   ReceptionEvents(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     this.header.text = ReceptionEventsLabels.title;
+
+    this.newEventWidget.hidden = true;
     _registerEventListeners();
   }
 
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen((model.Reception reception) {
+      this.currentReception = reception;
       Storage.Reception.calendar(reception.ID).then((model.CalendarEventList events) {
         _render(events);
       });
@@ -47,12 +120,65 @@ class ReceptionEvents {
     element.onClick.listen((_) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id));
     });
-    
+
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      //element.classes.toggle(FOCUS, active);
+      element.classes.toggle(FOCUS, active);
       if(active) {
         listElement.focus();
+      }
+    });
+
+    event.bus.on(event.CreateNewContactEvent).listen((_) {
+      if(nav.Location.isActive(this.element)) {
+        //Toggle the widget to create new calendar events.
+        this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+        //Toggle the list of events based on the widget for creatings visability.
+        this.listElement.hidden = !this.newEventWidget.hidden;
+
+        if (!this.newEventWidget.hidden) {
+          this._selectedStartDate = new DateTime.now();
+          this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
+          this.newEventField.value = "";
+
+          this.lastActive = document.activeElement;
+          this.newEventField.focus();
+        } else {
+          if (this.lastActive != null) {
+            this.lastActive.focus();
+          }
+        }
+      }
+    });
+
+    event.bus.on(event.Save).listen((_) {
+      if (nav.Location.isActive(element) && !this.newEventWidget.hidden) {
+        (new model.CalendarEvent.forReception(this.currentReception.ID)
+          ..content = this.newEventField.value
+          ..beginsAt = this._selectedStartDate
+          ..until    = this._selectedEndDate
+         ).save().then((_) {
+          this.newEventWidget.hidden = true;
+          this.listElement.hidden = !this.newEventWidget.hidden;
+        });
+      }
+    });
+
+    model.CalendarEventList.events.on(model.CalendarEventList.reload).listen((Map eventStub) {
+      const String context = '${className}.reload (listener)';
+
+      log.debugContext(eventStub.toString(), context);
+
+      if (eventStub['receptionID'] == this.currentReception.ID && !eventStub.containsKey('contactID')) {
+        log.debugContext('Reloading calendarlist for ${eventStub['receptionID']}', context);
+        storage.Reception.calendar(this.currentReception.ID).then((model.CalendarEventList eventList) {
+            this._render(eventList);
+          }).catchError((error) {
+            log.error('${className}._registerEventListeners Error while fetching reception calendar ${error}');
+          });
+      } else {
+        log.debugContext('Skipping reloading calendarlist for ${eventStub['receptionID']} (not selected)', context);
       }
     });
   }
