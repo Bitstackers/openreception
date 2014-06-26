@@ -208,6 +208,7 @@ class _KeyboardHandler {
       'Alt+E'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
       'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
+      'ALT+K'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, 'contactinfo_calendar', id.CONTACT_CALENDAR)),
       'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
       'Ctrl+S'    : (_) => event.bus.fire(event.Save, null),
 //      'Tab'       : (_) => tab(mode: FORWARD),
