@@ -14,13 +14,13 @@
 part of view;
 
 class ContactInfo {
-               DivElement          body;
+         final Element             element;
                Box                 box;
                model.Contact       contact              = model.nullContact;
                Context             context;
                UListElement        displayedContactList;
-               DivElement          element;
-               SpanElement         header;
+               DivElement          body;
+               Element         get header  => element.querySelector('legend');
   static const int                 incrementSteps       = 20;
                InputElement        searchBox;
                model.Reception     nullReception        = model.nullReception;
@@ -33,12 +33,9 @@ class ContactInfo {
   ContactInfoCalendar calendar;
   ContactInfoData data;
 
-  ContactInfo(DivElement this.element, Context this.context) {
-    header = new SpanElement()
-    ..text = title;
+  ContactInfo(Element this.element, Context this.context) {
 
-    HeadingElement contactInfoHeader = querySelector('#contactinfohead')
-        ..children.add(header);
+    this.header..text = title;
 
     DivElement contactinfo_search = querySelector('#contactinfo_search');
     Element contactinfo_calendar = querySelector('#contactinfo_calendar');
@@ -49,7 +46,6 @@ class ContactInfo {
     data = new ContactInfoData(contactinfo_data);
 
     body = querySelector('#contactinfobody');
-    box = new Box.withHeaderStatic(element, contactInfoHeader, body);
 
     _registerEventListeners();
   }
