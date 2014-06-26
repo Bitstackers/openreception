@@ -1,19 +1,19 @@
 part of contactserver.router;
 
 abstract class ContactCalendar {
-  
-  static const String className = '${libraryName}.ContactCalendar'; 
+
+  static const String className = '${libraryName}.ContactCalendar';
 
   static void create(HttpRequest request) {
-    
+
     const String context = '${className}.create';
-    
+
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
-    
+
     extractContent(request).then((String content) {
       Map data;
-      
+
       try {
         data = JSON.decode(content);
       }
@@ -26,16 +26,16 @@ abstract class ContactCalendar {
         return;
       }
 
-      db.ContactCalendar.createEvent(contactID        : contactID, 
+      db.ContactCalendar.createEvent(contactID        : contactID,
                                      receptionID      : receptionID,
                                      event            : data['event'],
                                      distributionList : data['distribution_list'])
         .then((_) {
           logger.debugContext('Created event for ${contactID}@${receptionID}', context);
-          
+
           Service.Notification.broadcast (
-              {'event'         : 'calendarEventCreated',
-               'calendarEvent' :  { 
+              {'event'         : 'contactCalendarEventCreated',
+               'calendarEvent' :  {
                  'contactID'   : contactID,
                  'receptionID' : receptionID
                }
@@ -54,10 +54,10 @@ abstract class ContactCalendar {
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-    
+
     extractContent(request).then((String content) {
       Map data;
-      
+
       try {
         data = JSON.decode(content);
       }
@@ -70,14 +70,14 @@ abstract class ContactCalendar {
         return;
       }
 
-      db.ContactCalendar.exists(contactID        : contactID, 
+      db.ContactCalendar.exists(contactID        : contactID,
                                 receptionID      : receptionID,
                                 eventID          : eventID).then((bool eventExists) {
         if (!eventExists) {
           notFound(request, {'error' : 'not found'});
           return;
         }
-        db.ContactCalendar.updateEvent(contactID        : contactID, 
+        db.ContactCalendar.updateEvent(contactID        : contactID,
                                      receptionID      : receptionID,
                                      eventID          : eventID,
                                      event            : data['event'],
@@ -100,16 +100,16 @@ abstract class ContactCalendar {
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-    
-    db.ContactCalendar.exists(contactID        : contactID, 
+
+    db.ContactCalendar.exists(contactID        : contactID,
                               receptionID      : receptionID,
                               eventID          : eventID).then((bool eventExists) {
       if (!eventExists) {
         notFound(request, {'error' : 'not found'});
         return;
       }
-      
-      db.ContactCalendar.removeEvent(contactID        : contactID, 
+
+      db.ContactCalendar.removeEvent(contactID        : contactID,
                                      receptionID      : receptionID,
                                      eventID          : eventID)
           .then((_) {
@@ -127,8 +127,8 @@ abstract class ContactCalendar {
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-    
-    db.ContactCalendar.getEvent(contactID        : contactID, 
+
+    db.ContactCalendar.getEvent(contactID        : contactID,
                                 receptionID      : receptionID,
                                 eventID          : eventID)
       .then((Map event) {
