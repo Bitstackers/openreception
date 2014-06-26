@@ -66,7 +66,6 @@ part '../components/companyregistrationnumber.dart';
 part '../components/companysalescalls.dart';
 part '../components/companytelephonenumbers.dart';
 part '../components/companywebsites.dart';
-part '../components/localqueue.dart';
 part '../components/welcomemessage.dart';
 part '../components/contactinfo.dart';
 part '../components/contactinfosearch.dart';
