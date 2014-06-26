@@ -123,7 +123,7 @@ class CalendarEvent implements Comparable{
       return 0;
     }
 
-    return _start.isBefore(other._start) ? -1 : 1;
+    return _start.isBefore(other._start) ? 1 : -1;
   }
 
   /**
