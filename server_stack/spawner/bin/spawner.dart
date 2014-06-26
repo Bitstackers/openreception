@@ -79,7 +79,7 @@ void main() {
   Servers.forEach((String serverName, Map server) {
     print('Starting ${serverName}..');
 
-    List<String> args = CHECKED ? ['-c'] : [];
+    List<String> args = CHECKED ? ['--checked'] : [];
     args.add(server['path']);
     args.addAll(server['args']);
 
