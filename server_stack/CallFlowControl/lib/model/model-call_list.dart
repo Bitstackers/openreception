@@ -105,10 +105,10 @@ class CallList extends IterableBase<Call> {
       TransferRequest.confirm (aLeg.ID, bLeg.ID);
        aLeg.changeState (CallState.Transferred);
        bLeg.changeState (CallState.Transferred);
-    } else if (OriginationRequest.contains (aLeg.ID)){
-       OriginationRequest.confirm (aLeg.ID);
-    } else if (OriginationRequest.contains (bLeg.ID)){
-      OriginationRequest.confirm (bLeg.ID);
+    } else if (OriginationRequest.contains (aLeg)){
+       OriginationRequest.confirm (aLeg);
+    } else if (OriginationRequest.contains (bLeg)){
+      OriginationRequest.confirm (bLeg);
     }
 
     aLeg.changeState (CallState.Speaking);
@@ -120,7 +120,7 @@ class CallList extends IterableBase<Call> {
 
      if (packet.field('Channel-Call-State') == 'RINGING') {
        Call call = this.get(packet.uniqueID);
-       if (call.b_Leg != null && (OriginationRequest.contains (call.ID) || OriginationRequest.contains(call.b_Leg.ID))) {
+       if (call.b_Leg != null && (OriginationRequest.contains (call) || OriginationRequest.contains(call.b_Leg))) {
          if (call.receptionID == nullReceptionID) {
            /// Inherit fields from b-Leg.
            call..receptionID = call.b_Leg.receptionID
@@ -167,7 +167,7 @@ class CallList extends IterableBase<Call> {
             ..changeState(CallState.Created);
 
         break;
-      case ("AdaHeads::outbound-call::outbound-call"):
+      case ("AdaHeads::outbound-call"):
            logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
            OriginationRequest.create (packet.uniqueID);
            //TODO: Harvest in the outbound parameters.
