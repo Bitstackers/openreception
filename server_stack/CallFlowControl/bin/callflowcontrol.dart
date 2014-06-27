@@ -9,7 +9,7 @@ import '../lib/configuration.dart';
 import 'package:OpenReceptionFramework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 import '../lib/model/model.dart' as Model;
-import 'package:esl/esl.dart' as ESL; 
+import 'package:esl/esl.dart' as ESL;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -51,11 +51,12 @@ void connectESLClient() {
   Duration period = new Duration(seconds : 3);
   
   logger.infoContext('Connecting to ${config.eslHostname}:${config.eslPort}', context);
+
   Model.PBXClient.instance =  new ESL.Connection();
-  
+
   Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
   Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
-  
+
   /// Respond to server requests.
   Model.PBXClient.instance.requestStream.listen((ESL.Packet packet) {
     switch (packet.contentType) {
@@ -66,7 +67,7 @@ void connectESLClient() {
             .then(loadPeerListFromPacket));
       break;
       default:
-        
+
         break;
     }
   });
@@ -87,7 +88,6 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
         ..addOption('configfile', help: 'The JSON configuration file. Defaults to config.json')
         ..addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${Default.httpport}')
         ..addOption('servertoken', help: 'servertoken');
-  
 
   parsedArgs = parser.parse(arguments);
 }

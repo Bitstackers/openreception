@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 
+const bool CHECKED = true;
+
 Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
 
@@ -76,7 +78,12 @@ void main() {
   writeTokensToDisk(tokens, serverTokenDirAbsolutPath).then((_) =>
   Servers.forEach((String serverName, Map server) {
     print('Starting ${serverName}..');
-    Process.start('dart', [server['path']]..addAll(server['args'])).then((process) {
+
+    List<String> args = CHECKED ? ['-c'] : [];
+    args.add(server['path']);
+    args.addAll(server['args']);
+
+    Process.start('dart', args).then((process) {
       server['process'] = process;
 
       process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {

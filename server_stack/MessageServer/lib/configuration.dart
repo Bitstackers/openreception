@@ -108,7 +108,7 @@ class Configuration {
       }
 
       if(config.containsKey('notificationServer')) {
-        _notificationServer = config['notificationServer'];
+        _notificationServer = Uri.parse(config['notificationServer']);
       }
 
       if(config.containsKey('dbport')) {
@@ -118,31 +118,6 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
-
-      //TODO XXX FIXME --- START --- TESTING TESTING TESTING
-      if(config.containsKey('emailUsername')) {
-        emailUsername = config['emailUsername'];
-        log(emailUsername);
-      }
-
-      if(config.containsKey('emailPassword')) {
-        emailPassword = config['emailPassword'];
-        log(emailPassword);
-      }
-
-      if(config.containsKey('recipients')) {
-        recipients = config['recipients'];
-      }
-
-      if(config.containsKey('emailFromName')) {
-        emailFromName = config['emailFromName'];
-      }
-
-      if(config.containsKey('emailFrom')) {
-        emailFrom = config['emailFrom'];
-      }
-
-      //TODO XXX FIXME ---- END ---- TESTING TESTING TESTING
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
