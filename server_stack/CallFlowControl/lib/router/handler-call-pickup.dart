@@ -34,11 +34,10 @@ void handlerCallPickup(HttpRequest request) {
       logger.errorContext('Failed to lookup peer for user with ID ${user.ID}. Error : $error', context);
       return;
     }
-    
-    //TODO: Implicit park.
-    /*Model.CallList.instance.callsOf (user).where 
-      ((Model.Call call) => call.state == Model.CallState.Speaking).forEach((Call)
-      .park(); */
+
+    /// Park all the users calls.
+    Model.CallList.instance.callsOf (user).where 
+      ((Model.Call call) => call.state == Model.CallState.Speaking).forEach((Model.Call call) => call.park(user)); 
     
     Model.Call assignedCall = Model.CallList.instance.requestSpecificCall (callID, user);
     

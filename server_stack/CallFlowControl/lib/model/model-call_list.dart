@@ -53,7 +53,7 @@ class CallList extends IterableBase<Call> {
   }
 
   Call requestCall(user) {
-    Call call = this.singleWhere((Call call) => call.assignedTo == Call.noUser);
+    Call call = this.singleWhere((Call call) => call.assignedTo == Call.noUser && !call.locked);
     
     if (call == null) {
       throw new NotFound ("No calls available");
@@ -71,6 +71,7 @@ class CallList extends IterableBase<Call> {
       logger.errorContext('Call ${callID} already assigned to ${call.assignedTo}', context);
       throw new Forbidden(callID);
     } else if (call.locked) {
+      logger.debugContext('Requested locked call $callID', context);
       throw new NotFound(callID);
     }
 
@@ -144,8 +145,6 @@ class CallList extends IterableBase<Call> {
       logger.debugContext('Hanging up ${packet.uniqueID}', context);
       this.remove(packet.uniqueID);
 
-      print (this._map);
-
     } catch (error) {
       if (error is NotFound) {
         logger.errorContext('Tried to hang up non-existing call ${packet.uniqueID}.'
@@ -174,12 +173,14 @@ class CallList extends IterableBase<Call> {
            //TODO: Harvest in the outbound parameters.
            break;
       case ('AdaHeads::pre-queue-leave'):
+        logger.debugContext('Locking ${packet.uniqueID}', context);
         CallList.instance.get (packet.uniqueID)
           ..changeState (CallState.Transferring)
           ..locked = true;
         break;
       
       case ('AdaHeads::wait-queue-enter'):
+        logger.debugContext('Unlocking ${packet.uniqueID}', context);
         CallList.instance.get (packet.uniqueID)
           ..locked = false
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
@@ -202,29 +203,37 @@ class CallList extends IterableBase<Call> {
   void _handlePacket(ESL.Packet packet) {
     const String context = '${className}._handlePacket';
 
-    //print (packet.eventName + '::' + packet.eventSubclass);
-
-    switch (packet.eventName) {
-      
-      case ('CHANNEL_BRIDGE'):
-        this._handleBridge(packet);
-        break;
-
-      case ('CHANNEL_STATE'):
-        this._handleChannelState(packet);
-        break;
+    void dispatch () {
+      switch (packet.eventName) {
         
-      case ('CHANNEL_CREATE'):
-        this._createCall(packet);
-        break;
+        case ('CHANNEL_BRIDGE'):
+          this._handleBridge(packet);
+          break;
 
-      case ('CHANNEL_DESTROY'):
-        this._handleChannelDestroy(packet);
-        break;
+        case ('CHANNEL_STATE'):
+          this._handleChannelState(packet);
+          break;
+          
+        case ('CHANNEL_CREATE'):
+          this._createCall(packet);
+          break;
 
-      case ("CUSTOM"):
-        this._handleCustom(packet);
-        break;
+        case ('CHANNEL_DESTROY'):
+          this._handleChannelDestroy(packet);
+          break;
+
+        case ("CUSTOM"):
+          this._handleCustom(packet);
+          break;
+      }
+    }
+    
+    
+    //print (packet.eventName + '::' + packet.eventSubclass);
+  try {
+    dispatch();
+  } catch (error, stackTrace) {
+    logger.errorContext('$error : $stackTrace', context);
     }
   }
 
@@ -240,7 +249,6 @@ class CallList extends IterableBase<Call> {
 
     this._map[packet.uniqueID] = createdCall;
 
-    print (this._map);
     return createdCall;
   }
 }

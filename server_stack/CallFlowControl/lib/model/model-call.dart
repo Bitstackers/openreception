@@ -41,7 +41,17 @@ class Call {
   bool get isCall              => this._isCall;
   void set isCall (bool value)   {this._isCall = value;}
   bool get locked              => this._locked;
-  void set locked (bool value)   {this._locked = value;}
+  void set locked (bool lock)   {
+    this._locked = lock;
+    
+    if (lock) {
+      Service.Notification.broadcast(ClientNotification.callLock(this),
+                                     config.notificationServer, config.serverToken);
+    }else {
+      Service.Notification.broadcast(ClientNotification.callUnlock(this),
+                                     config.notificationServer, config.serverToken);
+    }
+  }
 
 
   @override
@@ -65,6 +75,8 @@ class Call {
   }
 
   void link (Call other) {
+    this.locked = false;
+    
     this.b_Leg  = other;
     other.b_Leg = this;
   }

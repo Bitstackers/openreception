@@ -33,10 +33,15 @@ void handlerCallOrignate(HttpRequest request) {
       return;
     }
 
-    Controller.PBX.originate (extension, contactID, receptionID, user)
-      .then ((String channelUUID) => writeAndClose(request, JSON.encode(orignateOK(channelUUID))))
-      .catchError((error) => serverError(request, error.toString()));
-  }).catchError((error) {
-      serverError(request, error.toString());
-  });
+    /// Park all the users calls.
+    Future.forEach(Model.CallList.instance.callsOf (user).where 
+      ((Model.Call call) => call.state == Model.CallState.Speaking), (call) => call.park(user)).whenComplete(() {
+      Controller.PBX.originate (extension, contactID, receptionID, user)
+        .then ((String channelUUID) => writeAndClose(request, JSON.encode(orignateOK(channelUUID))))
+        .catchError((error) => serverError(request, error.toString()));
+    }).catchError((error) {
+        serverError(request, error.toString());
+    });
+    }); 
+    
 }

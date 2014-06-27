@@ -49,7 +49,6 @@ void handlerCallHangup(HttpRequest request) {
      } else {
         serverError(request, 'Bad stuff!');
      }
-      print (error);
     }
   });
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
@@ -26,7 +27,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        .then((_) => connectClient())
+        .then((_) => connectESLClient())
         .then((_) => http.start(config.httpport, router.registerHandlers))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
@@ -43,11 +44,13 @@ void main(List<String> args) {
   }
 }
 
-void connectClient() {
+void connectESLClient() {
   
-  //Duration period = new Duration(seconds : 3);
+  const String context = 'connectClient';
   
-  print ("Connecting");
+  Duration period = new Duration(seconds : 3);
+  
+  logger.infoContext('Connecting to ${config.eslHostname}:${config.eslPort}', context);
   Model.PBXClient.instance =  new ESL.Connection();
   
   Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
@@ -69,7 +72,13 @@ void connectClient() {
   });
 
   Model.PBXClient.instance.connect(config.eslHostname, config.eslPort).catchError((error, stackTrace) {
-    logger.errorContext('${error} : ${stackTrace}', 'callflowcontrol.main');
+    if (error is SocketException) {
+      logger.errorContext('ESL Connection failed - reconnecting in ${period.inSeconds} seconds', context);
+      new Timer(period, connectESLClient);
+      
+    } else {
+      logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);  
+    }
   });
 }
 
