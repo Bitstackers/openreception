@@ -177,6 +177,11 @@ td.dialplan-item-remove {
   margin: 0 5px;
 }
 
+.dialplan-extension-add-icon {
+  width: 16px;
+  height: 16px;
+}
+
 #dialplan-extention-listing {
   margin-bottom: 5px;
   border: solid 2px grey;
@@ -187,6 +192,13 @@ td.dialplan-item-remove {
 
 #dialplan-extension-list {
   list-style-type: none;
+  overflow: auto;
+
+  height: 90%;
+}
+
+.dialplan-extension-list-item {
+  padding-left: 5px;
 }
 
 #dialplan-settings {

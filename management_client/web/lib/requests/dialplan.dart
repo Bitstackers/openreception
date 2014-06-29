@@ -11,8 +11,8 @@ Future<Dialplan> getDialplan(int receptionId) {
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
         if (request.status == 200) {
-          completer.complete(new Dialplan.fromJson(JSON.decode(
-              request.responseText)));
+          String body = request.responseText;
+          completer.complete(new Dialplan.fromJson(JSON.decode(body)));
         } else {
           completer.completeError('Bad status code. ${request.status}');
         }

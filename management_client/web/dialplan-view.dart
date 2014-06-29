@@ -41,10 +41,9 @@ class DialplanView {
 
   DivElement element;
   OListElement controlListCondition, controlListAction;
-  //TableElement itemsList;
   TableSectionElement itemsList;
   UListElement extensionList;
-  ButtonElement extensionAdd;
+  ImageElement extensionGroupAdd;
   DivElement settingPanel;
   TextAreaElement commentTextarea;
   StreamSubscription<Event> commentTextSubscription;
@@ -60,7 +59,7 @@ class DialplanView {
     controlListAction = element.querySelector('#dialplan-control-action-list');
     itemsList = element.querySelector('#dialplan-items-body');
     extensionList = element.querySelector('#dialplan-extension-list');
-    extensionAdd = element.querySelector('#dialplan-extension-add');
+    extensionGroupAdd = element.querySelector('#dialplan-extensiongroup-add');
     settingPanel = element.querySelector('#dialplan-settings');
     commentTextarea = element.querySelector('#dialplan-comment');
     saveButton = element.querySelector('#dialplan-savebutton');
@@ -99,29 +98,21 @@ class DialplanView {
       li.onClick.listen((_) => handleControlActionClick(li.value));
     });
 
-    extensionAdd.onClick.listen((_) {
+    extensionGroupAdd.onClick.listen((_) {
       if (dialplan != null) {
         enabledSaveButton();
         Extension newExtension = new Extension();
 
         //Find a new extension name that is not taken.
         int count = 1;
-        String genericName = 'extension${count}';
-        while (dialplan.Extensions.any((e) => e.name == genericName)) {
+        String genericName = 'gruppe${count}';
+        while (dialplan.extensionGroups.any((group) => group.name == genericName)) {
           count += 1;
-          genericName = 'extension${count}';
+          genericName = 'gruppe${count}';
         }
-
-        newExtension.name = genericName;
-
-        //The first extension is marked as start per default.
-        if(dialplan.Extensions.isEmpty) {
-          newExtension.isStart = true;
-        }
-
-        dialplan.Extensions.add(newExtension);
+        ExtensionGroup group = new ExtensionGroup(name: genericName);
+        dialplan.extensionGroups.add(group);
         renderExtensionList(dialplan);
-        activateExtension(newExtension);
       }
     });
   }
@@ -161,18 +152,51 @@ class DialplanView {
       dialplan = value;
       selectedReceptionId = receptionId;
       renderExtensionList(value);
-
-      Extension startExtension = dialplan.Extensions.firstWhere((e) =>
-          e.isStart, orElse: () => dialplan.Extensions.isNotEmpty ? dialplan.Extensions.first : null);
-      activateExtension(startExtension);
+      activateExtension(null);
     });
   }
 
   void renderExtensionList(Dialplan dialplan) {
     extensionList.children.clear();
-    if (dialplan != null && dialplan.Extensions != null) {
-      extensionList.children.addAll(dialplan.Extensions.map(extensionListItem));
+    if (dialplan != null && dialplan.extensionGroups != null) {
+      for(ExtensionGroup group in dialplan.extensionGroups) {
+        extensionList.children.add(_makeGroupListItem(group));
+
+        extensionList.children.addAll(group.extensions.map((ext) => extensionListItem(ext, group)));
+      }
     }
+  }
+
+  LIElement _makeGroupListItem(ExtensionGroup group) {
+    ImageElement addButton = new ImageElement(src: 'image/tp/plus.svg')
+      ..classes.add('dialplan-extension-add-icon')
+      ..onClick.listen((_) {
+        addNewExtension(group);
+        renderExtensionList(dialplan);
+      });
+
+    SpanElement text = new SpanElement()
+      ..text = group.name
+      ..onClick.listen((_) {
+        settingsExtensionGroup(group);
+      });
+
+    LIElement li = new LIElement()
+      ..children.addAll([addButton, text]);
+    return li;
+  }
+
+  void addNewExtension(ExtensionGroup group) {
+    List<Extension> extensions = group.extensions;
+      //Find a new extension name that is not taken.
+    int count = 1;
+    String genericName = 'extension${count}';
+    while (extensions.any((extension) => extension.name == genericName)) {
+      count += 1;
+      genericName = 'extension${count}';
+    }
+    extensions.add(new Extension()
+                     ..name = genericName);
   }
 
   Future saveDialplan() {
@@ -190,23 +214,20 @@ class DialplanView {
     }
   }
 
-  LIElement extensionListItem(Extension extension) {
-    LIElement li = new LIElement();
+  LIElement extensionListItem(Extension extension, ExtensionGroup group) {
+    LIElement li = new LIElement()
+      ..classes.add('dialplan-extension-list-item');
 
     ButtonElement deleteButton = new ButtonElement()
       ..text = 'Slet'
       ..onClick.listen((_) {
-      dialplan.Extensions.remove(extension);
+      group.extensions.remove(extension);
       renderExtensionList(dialplan);
-      if(dialplan.Extensions.isNotEmpty) {
-        activateExtension(dialplan.Extensions.first);
-      } else {
-        clearSettingsPanel();
-      }
+      clearSettingsPanel();
       enabledSaveButton();
     });
     SpanElement text = new SpanElement()
-      ..text = '${extension.name}${extension.isStart ? '(s)' : ''}${extension.isCatchAll ? '(c)' : ''}'
+      ..text = '${extension.name}'
       ..onClick.listen((_) {
         activateExtension(extension);
       });
@@ -441,6 +462,41 @@ class DialplanView {
     settingPanel.children.clear();
   }
 
+  void settingsExtensionGroup(ExtensionGroup group) {
+    clearSettingsPanel();
+    String html = '''
+      <ul class="dialplan-settingsList">
+        <li>
+            <label for="dialplan-setting-extensiongroupname">Navn</label>
+            <input id="dialplan-setting-extensiongroupname" type="text" value="${group.name != null ? group.name : ''}">
+        </li>
+      </ul>
+    ''';
+
+    DocumentFragment fragment = new DocumentFragment.html(html);
+    settingPanel.children.addAll(fragment.children);
+
+    InputElement nameInput = settingPanel.querySelector('#dialplan-setting-extensiongroupname');
+    nameInput
+      ..onInput.listen((_) {
+      group.name = nameInput.value;
+      renderExtensionList(dialplan);
+      enabledSaveButton();
+    })
+    ..onInvalid.listen((_) {
+      nameInput.title = nameInput.validationMessage;
+    });
+
+    commentTextarea.value = group.comment;
+    if(commentTextSubscription != null) {
+      commentTextSubscription.cancel();
+    }
+    commentTextSubscription = commentTextarea.onInput.listen((_) {
+      group.comment = commentTextarea.value;
+      enabledSaveButton();
+    });
+  }
+
   void settingsExtension(Extension extension) {
     clearSettingsPanel();
       String html = '''
@@ -448,20 +504,6 @@ class DialplanView {
         <li>
             <label for="dialplan-setting-extensionname">Navn</label>
             <input id="dialplan-setting-extensionname" type="text" value="${extension.name != null ? extension.name : ''}">
-        </li>
-        <li>
-            <label for="dialplan-setting-extensionstart">Start</label>
-            <input id="dialplan-setting-extensionstart" type="checkbox" ${extension.isStart ? 'checked': ''}>
-        </li>
-        <li>
-            <label for="dialplan-setting-extensioncatch">Grib fejl</label>
-            <input id="dialplan-setting-extensioncatch" type="checkbox" ${extension.isCatchAll ? 'checked': ''}>
-        </li>
-        <li>
-            <label for="dialplan-setting-extensioncatch">failover</label>
-            <select id="dialplan-setting-extensionfailover">
-              <option value="none">Ingen</option>
-            </select>
         </li>
       </ul>
       ''';
@@ -479,43 +521,6 @@ class DialplanView {
       })
       ..onInvalid.listen((_) {
         nameInput.title = nameInput.validationMessage;
-      });
-
-      CheckboxInputElement startInput = settingPanel.querySelector('#dialplan-setting-extensionstart');
-      startInput.onChange.listen((_) {
-         extension.isStart = startInput.checked;
-         renderExtensionList(dialplan);
-         enabledSaveButton();
-      });
-
-      SelectElement failover = settingPanel.querySelector('#dialplan-setting-extensionfailover');
-      for(Extension ext in dialplan.Extensions) {
-        if(!ext.isStart && !ext.isCatchAll && extension != ext) {
-          OptionElement opt = new OptionElement()
-            ..text = ext.name
-            ..value = ext.name;
-
-          if(ext.name == extension.failoverExtension) {
-            opt.selected = true;
-          }
-
-          failover.children.add(opt);
-        }
-      }
-      failover.onChange.listen((_) {
-        enabledSaveButton();
-        if(failover.selectedIndex == 0) {
-          extension.failoverExtension = '';
-        } else {
-          extension.failoverExtension = failover.options[failover.selectedIndex].value;
-        }
-      });
-
-      CheckboxInputElement catchInput = settingPanel.querySelector('#dialplan-setting-extensioncatch');
-      catchInput.onChange.listen((_) {
-        enabledSaveButton();
-        extension.isCatchAll = catchInput.checked;
-        renderExtensionList(dialplan);
       });
 
       commentTextarea.value = extension.comment;
