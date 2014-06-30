@@ -159,7 +159,6 @@ void start(int port, void setupRoutes(HttpServer server)) {
 }
 
 void writeAndClose(HttpRequest request, String text) {
-  //addCorsHeaders(request.response);
   String time = new DateTime.now().toString();
 
   StringBuffer sb        = new StringBuffer();
