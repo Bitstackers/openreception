@@ -4,12 +4,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import 'lib/eventbus.dart';
-import 'lib/logger.dart' as log;
-import 'lib/model.dart';
-import 'lib/request.dart' as request;
-import 'lib/view_utilities.dart';
-import 'notification.dart' as notify;
+import '../lib/eventbus.dart';
+import '../lib/logger.dart' as log;
+import '../lib/model.dart';
+import '../lib/request.dart' as request;
+import '../lib/view_utilities.dart';
+import '../notification.dart' as notify;
 
 class UserView {
   String viewName = 'user';

@@ -5,13 +5,13 @@ import 'dart:html';
 
 import 'package:html5_dnd/html5_dnd.dart';
 
-import 'lib/eventbus.dart';
-import 'lib/logger.dart' as log;
-import 'lib/model.dart';
-import 'lib/request.dart' as request;
-import 'lib/searchcomponent.dart';
-import 'lib/utilities.dart';
-import 'lib/view_utilities.dart';
+import '../lib/eventbus.dart';
+import '../lib/logger.dart' as log;
+import '../lib/model.dart';
+import '../lib/request.dart' as request;
+import '../lib/searchcomponent.dart';
+import '../lib/utilities.dart';
+import '../lib/view_utilities.dart';
 
 typedef Future HandleReceptionContact(ReceptionContact receptionContact);
 typedef Future LazyFuture();

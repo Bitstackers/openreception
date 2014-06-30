@@ -6,13 +6,13 @@ import 'dart:html';
 
 import 'package:html5_dnd/html5_dnd.dart';
 
-import 'lib/eventbus.dart';
-import 'lib/logger.dart' as log;
-import 'lib/model.dart';
-import 'lib/request.dart' as request;
+import '../lib/eventbus.dart';
+import '../lib/logger.dart' as log;
+import '../lib/model.dart';
+import '../lib/request.dart' as request;
 import 'package:libdialplan/libdialplan.dart';
-import 'notification.dart' as notify;
-import 'lib/searchcomponent.dart';
+import '../notification.dart' as notify;
+import '../lib/searchcomponent.dart';
 
 class _ControlLookUp {
   static const int timeControl = 0;
@@ -49,6 +49,7 @@ class DialplanView {
   StreamSubscription<Event> commentTextSubscription;
   DivElement receptionOuterSelector;
   ButtonElement saveButton;
+  SpanElement extensionListHeader;
 
   SearchComponent SC;
   Dialplan dialplan;
@@ -63,6 +64,7 @@ class DialplanView {
     settingPanel = element.querySelector('#dialplan-settings');
     commentTextarea = element.querySelector('#dialplan-comment');
     saveButton = element.querySelector('#dialplan-savebutton');
+    extensionListHeader = element.querySelector('#dialplan-extensionlist-header');
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
@@ -113,6 +115,12 @@ class DialplanView {
         ExtensionGroup group = new ExtensionGroup(name: genericName);
         dialplan.extensionGroups.add(group);
         renderExtensionList(dialplan);
+      }
+    });
+
+    extensionListHeader.onClick.listen((_) {
+      if(dialplan != null) {
+        settingsDialplan(dialplan);
       }
     });
   }
@@ -462,7 +470,55 @@ class DialplanView {
     settingPanel.children.clear();
   }
 
+  void settingsDialplan(Dialplan dialplan) {
+    clearSettingsPanel();
+    String html = '''
+      <ul class="dialplan-settingsList">
+        <li>
+            <label for="dialplan-setting-dialplan-startextension">Start gruppe</label>
+            <select id="dialplan-setting-dialplan-startextension"></select>
+        </li>
+      </ul>
+    ''';
+
+    DocumentFragment fragment = new DocumentFragment.html(html);
+    settingPanel.children.addAll(fragment.children);
+
+    SelectElement startGroupInput = settingPanel.querySelector('#dialplan-setting-dialplan-startextension');
+    startGroupInput
+      ..onChange.listen((_) {
+        dialplan.startExtensionGroup = startGroupInput.value;
+        enabledSaveButton();
+    });
+
+    bool foundSelected = false;
+    for(ExtensionGroup group in dialplan.extensionGroups) {
+      bool Selected = dialplan.startExtensionGroup == group.name;
+      if(Selected) {
+        foundSelected = true;
+      }
+      startGroupInput.children.add(new OptionElement(data: group.name, value: group.name, selected: Selected));
+    }
+
+    if(!foundSelected) {
+      OptionElement firstOption = startGroupInput.options.first;
+      firstOption.selected = true;
+      dialplan.startExtensionGroup = firstOption.value;
+      enabledSaveButton();
+    }
+
+    commentTextarea.value = dialplan.comment;
+    if(commentTextSubscription != null) {
+      commentTextSubscription.cancel();
+    }
+    commentTextSubscription = commentTextarea.onInput.listen((_) {
+      dialplan.comment = commentTextarea.value;
+      enabledSaveButton();
+    });
+  }
+
   void settingsExtensionGroup(ExtensionGroup group) {
+    final bool isStartGroup = dialplan.startExtensionGroup == group.name;
     clearSettingsPanel();
     String html = '''
       <ul class="dialplan-settingsList">
@@ -479,9 +535,12 @@ class DialplanView {
     InputElement nameInput = settingPanel.querySelector('#dialplan-setting-extensiongroupname');
     nameInput
       ..onInput.listen((_) {
-      group.name = nameInput.value;
-      renderExtensionList(dialplan);
-      enabledSaveButton();
+        group.name = nameInput.value;
+        if(isStartGroup) {
+          dialplan.startExtensionGroup = group.name;
+        }
+        renderExtensionList(dialplan);
+        enabledSaveButton();
     })
     ..onInvalid.listen((_) {
       nameInput.title = nameInput.validationMessage;
@@ -559,6 +618,7 @@ class DialplanView {
       ..onInput.listen((_) {
         condition.timeOfDay = timeOfDayInput.value.isEmpty ? null : timeOfDayInput.value;
         enabledSaveButton();
+        renderContentList(); //TODO TESTING
       });
 
     InputElement wdayInput = settingPanel.querySelector('#dialplan-setting-wday');
@@ -566,6 +626,7 @@ class DialplanView {
       ..onInput.listen((_) {
         condition.wday = wdayInput.value;
         enabledSaveButton();
+        renderContentList(); //TODO TESTING
     });
 
     commentTextarea.value = condition.comment;

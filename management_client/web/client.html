@@ -23,6 +23,7 @@
       <li><img id="dialplan-button" alt="Kaldplan" title="Kaldplan" src="image/dialplan_icon.svg" draggable="false" class="faded"></li>
       <li><img id="record-button" alt="Optage" title="Optage" src="image/record_icon.svg" draggable="false" class="faded"></li>
       <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user_icon.svg" draggable="false" class="faded"></li>
+      <li><img id="billing-button" alt="Faktura" title="Faktura" src="image/billing_icon.svg" draggable="false" class="faded"></li>
     </ul>
   </nav>
 
@@ -317,7 +318,7 @@
       <div id="dialplan-settingsbar">
         <div id="dialplan-extention-listing">
           <img src="image/tp/plus.svg" id="dialplan-extensiongroup-add" class="dialplan-extension-add-icon">
-          <span>Grupper</span>
+          <span id="dialplan-extensionlist-header">Kaldplan</span>
           <ul id="dialplan-extension-list" class="zebra"></ul>
           <!--<button id="dialplan-extension-add">Tilføj</button>-->
         </div>
@@ -372,6 +373,13 @@
         <ul id="user-identities"></ul>
         <!-- Groups, Identity -->
       </div>
+    </div>
+
+    <!-- -------------------- --
+      -- ----- BILLING ------ --
+      -- -------------------- -->
+    <div id="user-page" class="hidden">
+      BILLING
     </div>
 
   </div> <!-- page-main-screen -->

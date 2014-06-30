@@ -3,14 +3,14 @@ library reception_view;
 import 'dart:async';
 import 'dart:html';
 
-import 'lib/logger.dart' as log;
-import 'lib/model.dart';
-import 'lib/request.dart';
-import 'lib/eventbus.dart';
-import 'lib/view_utilities.dart';
-import 'lib/searchcomponent.dart';
-import 'notification.dart' as notify;
-import 'menu.dart';
+import '../lib/logger.dart' as log;
+import '../lib/model.dart';
+import '../lib/request.dart';
+import '../lib/eventbus.dart';
+import '../lib/view_utilities.dart';
+import '../lib/searchcomponent.dart';
+import '../notification.dart' as notify;
+import '../menu.dart';
 
 class ReceptionView {
   String addNewLiClass = 'addnew';

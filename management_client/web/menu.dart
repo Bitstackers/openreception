@@ -11,11 +11,13 @@ class Menu {
   static const String DIALPLAN_WINDOW = 'dialplan';
   static const String RECORD_WINDOW = 'record';
   static const String USER_WINDOW = 'user';
+  static const String BILLING_WINDOW = 'billing';
 
   HtmlElement element;
 
   ImageElement orgButton, recButton, conButton,
-               dialButton, recordButton, userButton;
+               dialButton, recordButton, userButton,
+               billingButton;
 
   Menu(HtmlElement this.element) {
     orgButton = element.querySelector('#organization-button');
@@ -24,6 +26,7 @@ class Menu {
     dialButton = element.querySelector('#dialplan-button');
     recordButton = element.querySelector('#record-button');
     userButton = element.querySelector('#user-button');
+    billingButton = element.querySelector('#billing-button');
 
     orgButton.onClick.listen((_) {
       Map event = {
@@ -67,6 +70,13 @@ class Menu {
       bus.fire(windowChanged, event);
     });
 
+    billingButton.onClick.listen((_) {
+      Map event = {
+        'window': BILLING_WINDOW
+      };
+      bus.fire(windowChanged, event);
+    });
+
     bus.on(windowChanged).listen((Map event) {
       _highlightItem(event['window']);
     });
@@ -79,5 +89,6 @@ class Menu {
     dialButton.classes.toggle('faded', window != DIALPLAN_WINDOW);
     recordButton.classes.toggle('faded', window != RECORD_WINDOW);
     userButton.classes.toggle('faded', window != USER_WINDOW);
+    billingButton.classes.toggle('faded', window != BILLING_WINDOW);
   }
 }

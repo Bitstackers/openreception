@@ -3,11 +3,11 @@ library organization_view;
 import 'dart:html';
 import 'dart:convert';
 
-import 'lib/eventbus.dart';
-import 'lib/logger.dart' as log;
-import 'lib/model.dart';
-import 'lib/request.dart';
-import 'notification.dart' as notify;
+import '../lib/eventbus.dart';
+import '../lib/logger.dart' as log;
+import '../lib/model.dart';
+import '../lib/request.dart';
+import '../notification.dart' as notify;
 
 class OrganizationView {
   String viewName = 'organization';
