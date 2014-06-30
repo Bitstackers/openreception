@@ -20,8 +20,6 @@ class CallList extends IterableBase<Call> {
 
   static const String className = '${libraryName}.CallList';
 
-  static const int    nullReceptionID = 0;
-
   Map<String, Call> _map = new Map<String, Call>();
 
   Iterator get iterator => this._map.values.iterator;
@@ -84,15 +82,15 @@ class CallList extends IterableBase<Call> {
     final Call aLeg = this.get(packet.field('Bridge-A-Unique-ID'));
     final Call bLeg = this.get(packet.field('Bridge-B-Unique-ID'));
 
-    logger.debugContext('Bridging ${aLeg.ID} and ${bLeg.ID}', context);
+    logger.debugContext('Bridging ${aLeg.toJson()} and ${bLeg.toJson()}', context);
 
     //  Inherit the context from the other channel.
-    if (aLeg.receptionID == nullReceptionID) {
+    if (aLeg.receptionID == Call.nullReceptionID) {
       /// Inherit fields from b-Leg.
       aLeg..receptionID = bLeg.receptionID
           ..contactID   = bLeg.contactID
           ..assignedTo  = bLeg.assignedTo;
-    } else if (bLeg.receptionID == nullReceptionID) {
+    } else if (bLeg.receptionID == Call.nullReceptionID) {
       /// Inherit fields from a-Leg.
       bLeg..receptionID = aLeg.receptionID
           ..contactID   = aLeg.contactID
@@ -101,14 +99,13 @@ class CallList extends IterableBase<Call> {
 
     aLeg.link(bLeg);
 
+    OriginationRequest.confirm(aLeg);
+    OriginationRequest.confirm(bLeg);
+    
     if (TransferRequest.contains (aLeg.ID, bLeg.ID)) {
       TransferRequest.confirm (aLeg.ID, bLeg.ID);
        aLeg.changeState (CallState.Transferred);
        bLeg.changeState (CallState.Transferred);
-    } else if (OriginationRequest.contains (aLeg)){
-       OriginationRequest.confirm (aLeg);
-    } else if (OriginationRequest.contains (bLeg)){
-      OriginationRequest.confirm (bLeg);
     }
 
     aLeg.changeState (CallState.Speaking);
@@ -121,7 +118,7 @@ class CallList extends IterableBase<Call> {
      if (packet.field('Channel-Call-State') == 'RINGING') {
        Call call = this.get(packet.uniqueID);
        if (call.b_Leg != null && (OriginationRequest.contains (call) || OriginationRequest.contains(call.b_Leg))) {
-         if (call.receptionID == nullReceptionID) {
+         if (call.receptionID == Call.nullReceptionID) {
            /// Inherit fields from b-Leg.
            call..receptionID = call.b_Leg.receptionID
                ..contactID   = call.b_Leg.contactID
@@ -170,7 +167,12 @@ class CallList extends IterableBase<Call> {
       case ("AdaHeads::outbound-call"):
            logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
            OriginationRequest.create (packet.uniqueID);
-           //TODO: Harvest in the outbound parameters.
+
+          this.get(packet.uniqueID)          
+               ..receptionID = int.parse(packet.field('variable_reception_id'))
+               ..contactID   = int.parse(packet.field('variable_contact_id'))
+               ..assignedTo  = int.parse(packet.field('variable_owner'));
+           
            break;
       case ('AdaHeads::pre-queue-leave'):
         logger.debugContext('Locking ${packet.uniqueID}', context);
@@ -244,7 +246,7 @@ class CallList extends IterableBase<Call> {
         ..ID = packet.uniqueID
         ..isCall = false
         ..inbound = (packet.field('Call-Direction') == 'inbound' ? true : false)
-        ..callerID = packet.field('Caller-Caller-ID-Name')
+        ..callerID = packet.field('Caller-Caller-ID-Number')
         ..destination = packet.field('Caller-Destination-Number');
 
     this._map[packet.uniqueID] = createdCall;

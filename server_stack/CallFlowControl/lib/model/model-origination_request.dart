@@ -18,8 +18,12 @@ abstract class OriginationRequest {
   static void confirm (Call sourceCall) {
     const String context = '${classname}.confirm';
     
+    if (!_storage.contains(sourceCall.ID)) {
+      return;
+    }
+    
     logger.debugContext(sourceCall.ID, context);
-    sourceCall.isCall = true;
+    sourceCall.b_Leg.isCall = true;
     _storage.remove(sourceCall.ID); 
     }
   

@@ -33,10 +33,13 @@ void handlerCallTransfer(HttpRequest request) {
 
     logger.debugContext('Transferring $sourceCall -> $destinationCall', context);
     
+    Controller.PBX.bridge (sourceCall, destinationCall).then((_) => writeAndClose(request, '{"status" : "ok"}'))
+    .catchError((error, stackTrace) {
+      logger.critical ('$error : $stackTrace');
+      serverError(request, error.toString());
+    });
     
-    Controller.PBX.bridge (sourceCall, destinationCall);
-    
-  } catch (error) {
+  } catch (error, stackTrace) {
     if (error is FormatException) {
       clientError(request, error.toString());
     } else if (error is Model.NotFound) {
@@ -44,10 +47,9 @@ void handlerCallTransfer(HttpRequest request) {
                                          'no longer available',
                          'error' : error.toString()});
     } else {
+      logger.critical ('$error : $stackTrace');
       serverError(request, error.toString());
     }
-    
-    return;
   }
    
 }

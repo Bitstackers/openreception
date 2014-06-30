@@ -57,9 +57,12 @@ abstract class PBX {
     
     return Model.PBXClient.api ('uuid_bridge ${source.ID} ${destination.ID}')
         .then((ESL.Response response) {
+          
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}'); 
           }
+          
+          return response;
         });
   }
   

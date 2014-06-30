@@ -21,6 +21,7 @@ class Call {
 
   static final String nullCallID = null;
   static final int    noUser     = SharedModel.User.nullID;
+  static const int    nullReceptionID = 0;
 
   String   ID              = nullCallID;
   Call     b_Leg           = null;
@@ -32,7 +33,7 @@ class Call {
   bool     greetingPlayed  = false;
   bool     _locked         = false;
   bool     inbound         = null;
-  int      receptionID     = null;
+  int      receptionID     = nullReceptionID;
   int      assignedTo      = noUser;
   int      contactID       = null;
   DateTime arrived         = new DateTime.now();

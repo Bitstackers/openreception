@@ -37,7 +37,10 @@ void handlerCallOrignate(HttpRequest request) {
     Future.forEach(Model.CallList.instance.callsOf (user).where 
       ((Model.Call call) => call.state == Model.CallState.Speaking), (call) => call.park(user)).whenComplete(() {
       Controller.PBX.originate (extension, contactID, receptionID, user)
-        .then ((String channelUUID) => writeAndClose(request, JSON.encode(orignateOK(channelUUID))))
+        .then ((String channelUUID) {
+          //Model.OriginationRequest.create (channelUUID);
+          writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
+        })
         .catchError((error) => serverError(request, error.toString()));
     }).catchError((error) {
         serverError(request, error.toString());
