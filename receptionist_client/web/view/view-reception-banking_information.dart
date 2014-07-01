@@ -13,26 +13,21 @@
 
 part of view;
 
-class CompanyTelephoneNumbers {
-  Box             box;
-  Context         context;
-  DivElement      element;
+class ReceptionBankingInformation {
+  final Context context;
+  final Element element;
+  
   bool            hasFocus  = false;
-  SpanElement     header;
-  UListElement    ul;
-  String          title     = 'Hovednumre';
 
-  CompanyTelephoneNumbers(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  Element         get header                 => this.element.querySelector('legend');
+  UListElement    get bankingInformationList => this.element.querySelector('#${id.COMPANY_BANKING_INFO_LIST}');
+  
+  String          title     = 'Bankoplysninger';
+
+  ReceptionBankingInformation(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
-    ul = element.querySelector('#${id.COMPANY_TELEPHONENUMBERS_LIST}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    header .text = title;
 
     registerEventListeners();
   }
@@ -41,26 +36,24 @@ class CompanyTelephoneNumbers {
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, bankingInformationList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        bankingInformationList.focus();
       }
     });
-
-    context.registerFocusElement(ul);
   }
 
   void render(model.Reception reception) {
-    ul.children.clear();
+    bankingInformationList.children.clear();
 
-    for(var value in reception.telephoneNumberList) {
-      ul.children.add(new LIElement()
-                        ..text = value.value);
+    for(var bankingInformation in reception.bankingInformationList) {
+      bankingInformationList.children.add(new LIElement()
+                        ..text = bankingInformation.value);
     }
   }
 }

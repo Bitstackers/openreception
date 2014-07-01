@@ -1,24 +1,5 @@
-/*
-.company-banking-information-placing {
-  position: absolute;
-  left: 57%;
-  top: 41%;
-  height: 9%;
-  width: 21%;
-}
-
-.company-banking-information-container {
-  height: 100%;
-  width: 100%;
-  overflow: auto;
-}
-*/
-
 #companybankinginformation {
-  position: absolute;
-  left: 70%;
-  top: 35%;
-  height: 35%;
-  width: 30%;
+  height: 25%;
+  width: 100%;
   overflow: auto;
 }

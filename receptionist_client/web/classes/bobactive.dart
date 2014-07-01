@@ -36,14 +36,14 @@ class BobActive {
   View.ReceptionOpeningHours companyOpeningHours;
   View.ReceptionSalesCalls companySalesCalls;
   View.ReceptionProduct companyProduct;
-  View.CompanyCustomerType companyCustomerType;
-  View.CompanyTelephoneNumbers companyTelephoneNumbers;
+  View.ReceptionCustomerType companyCustomerType;
+  View.ReceptionTelephoneNumbers companyTelephoneNumbers;
   View.ReceptionAddresses companyAddresses;
-  View.CompanyAlternateNames companyAlternateNames;
-  View.CompanyBankingInformation companyBankingInfomation;
-  View.CompanyEmailAddresses companyEmailAddresses;
-  View.CompanyWebsites companyWebsites;
-  View.CompanyRegistrationNumber compayRegistrationNumber;
+  View.ReceptionAlternateNames companyAlternateNames;
+  View.ReceptionBankingInformation companyBankingInfomation;
+  View.ReceptionEmailAddresses companyEmailAddresses;
+  View.ReceptionWebsites companyWebsites;
+  View.ReceptionRegistrationNumber compayRegistrationNumber;
   View.CompanyOther companyOther;
   View.ContactInfo contactInfo;
   View.CallList globalQueue;
@@ -95,14 +95,14 @@ class BobActive {
     messageList              = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 
     /// Home Plus context
-    companyCustomerType      = new View.CompanyCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), homePlus);
-    companyTelephoneNumbers  = new View.CompanyTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), homePlus);
+    companyCustomerType      = new View.ReceptionCustomerType(querySelector('#${id.COMPANY_CUSTOMERTYPE}'), homePlus);
+    companyTelephoneNumbers  = new View.ReceptionTelephoneNumbers(querySelector('#${id.COMPANY_TELEPHONE_NUMBERS}'), homePlus);
     companyAddresses         = new View.ReceptionAddresses(querySelector('#${id.COMPANY_ADDRESSES}'), home);
-    companyAlternateNames    = new View.CompanyAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), homePlus);
-    companyBankingInfomation = new View.CompanyBankingInformation(querySelector('#${id.COMPANY_BANKING_INFORMATION}'), homePlus);
-    companyEmailAddresses    = new View.CompanyEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), homePlus);
-    companyWebsites          = new View.CompanyWebsites(querySelector('#${id.COMPANY_WEBSITES}'), homePlus);
-    compayRegistrationNumber = new View.CompanyRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), homePlus);
+    companyAlternateNames    = new View.ReceptionAlternateNames(querySelector('#${id.COMPANY_ALTERNATENAMES}'), homePlus);
+    companyBankingInfomation = new View.ReceptionBankingInformation(querySelector('#${id.COMPANY_BANKING_INFORMATION}'), homePlus);
+    companyEmailAddresses    = new View.ReceptionEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), homePlus);
+    companyWebsites          = new View.ReceptionWebsites(querySelector('#${id.COMPANY_WEBSITES}'), homePlus);
+    compayRegistrationNumber = new View.ReceptionRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), homePlus);
     companyOther             = new View.CompanyOther(querySelector('#${id.COMPANY_OTHER}'), homePlus);
 
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
@@ -123,10 +123,6 @@ class BobActive {
     messages   = new Context(querySelector('#contextmessages'))
       ..lastFocusId = 'message-search-agent-searchbar';
     logContext        = new Context(querySelector('#contextlog'));
-    statistics = new Context(querySelector('#contextstatistics'));
-    phone      = new Context(querySelector('#contextphone'))
-      ..lastFocusId = 'phonebooth-company-searchbar';
-    voicemails = new Context(querySelector('#contextvoicemails'));
   }
 
   void setupKeyboardShortcuts() {

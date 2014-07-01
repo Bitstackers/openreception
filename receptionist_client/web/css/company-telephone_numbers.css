@@ -1,14 +1,10 @@
 #companytelephonenumbers {
-  position: absolute;
-  left: 35%;
-  top: 0%;
-  height: 35%;
-  width: 35%;
+  height: 25%;
+  width: 100%;
   overflow: auto;
 }
 
 #company-telephonenumbers-list {
-  height: 100%;
   width: 100%;
   overflow: auto;
   font-size: 0.9em;

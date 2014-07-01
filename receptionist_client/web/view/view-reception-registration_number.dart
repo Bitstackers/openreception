@@ -13,44 +13,47 @@
 
 part of view;
 
-class CompanyCustomerType {
-  ParagraphElement body;
-  Box              box;
-  Context          context;
-  DivElement       element;
-  SpanElement      header;
-  String           title     = 'Kundetype';
-
-  CompanyCustomerType(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+class ReceptionRegistrationNumber {
+  
+  final Context context;
+  final Element element;
+  
+  bool         hasFocus  = false;
+  
+  Element      get header                 => this.element.querySelector('legend');
+  UListElement get registrationNumberList => element.querySelector('#${id.COMPANY_REGISTRATION_NUMBER_LIST}');
+  String       title     = 'CVR';
+  
+  ReceptionRegistrationNumber(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
-    body = element.querySelector('#${id.COMPANY_CUSTOMERTYPE_BODY}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(body);
+    header.text = title;
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      body.text = value.customerType;
-    });
+    event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      Controller.Context.changeLocation(new nav.Location(context.id, element.id, body.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, registrationNumberList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        body.focus();
+        registrationNumberList.focus();
       }
     });
+  }
+
+  void render(model.Reception reception) {
+    registrationNumberList.children.clear();
+
+    for(var value in reception.registrationNumberList) {
+      registrationNumberList.children.add(new LIElement()
+                        ..text = value.value);
+    }
   }
 }

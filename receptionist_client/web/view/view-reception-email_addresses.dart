@@ -13,26 +13,21 @@
 
 part of view;
 
-class CompanyWebsites {
-  Box             box;
-  Context         context;
-  DivElement      element;
-  bool            hasFocus  = false;
-  SpanElement     header;
-  UListElement    ul;
-  String          title     = 'Web-sider';
+class ReceptionEmailAddresses {
 
-  CompanyWebsites(DivElement this.element, Context this.context) {
+  Context         context;
+  final Element      element;
+  bool            hasFocus  = false;
+  Element         get header => this.element.querySelector('legend');
+  model.Reception reception = model.nullReception;
+  UListElement    get ul    => this.element.querySelector('#${id.COMPANY_EMAIL_ADDRESSES_LIST}');
+  String          title     = 'Emailadresser';
+
+  ReceptionEmailAddresses(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
-    
-    ul = element.querySelector('#${id.COMPANY_WEBSITES_LIST}');
 
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    header.text = title;
 
     registerEventListeners();
   }
@@ -56,7 +51,7 @@ class CompanyWebsites {
   void render(model.Reception reception) {
     ul.children.clear();
 
-    for(var value in reception.websiteList) {
+    for(var value in reception.emailAddressList) {
       ul.children.add(new LIElement()
                         ..text = value.value);
     }

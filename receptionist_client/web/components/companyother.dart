@@ -14,24 +14,18 @@
 part of view;
 
 class CompanyOther {
-  ParagraphElement body;
-  Box              box;
-  Context          context;
-  DivElement       element;
-  SpanElement      header;
+  final Context context;
+  final Element element;
+
+  Element          get header => this.element.querySelector('legend');
+  ParagraphElement get body   => element.querySelector('#${id.COMPANY_OTHER_BODY}');
+
   String           title    = 'Andet';
 
-  CompanyOther(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  CompanyOther(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
-    body = element.querySelector('#${id.COMPANY_OTHER_BODY}');
 
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(body);
+    header.text = title;
 
     registerEventListeners();
   }

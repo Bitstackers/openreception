@@ -13,53 +13,36 @@
 
 part of view;
 
-class CompanyEmailAddresses {
-  Box             box;
-  Context         context;
-  DivElement      element;
-  bool            hasFocus  = false;
-  SpanElement     header;
-  model.Reception reception = model.nullReception;
-  UListElement    ul;
-  String          title     = 'Emailadresser';
+class ReceptionCustomerType {
+  
+  final Context        context;
+  final Element        element;
+  ParagraphElement get body   => this.element.querySelector('#${id.COMPANY_CUSTOMERTYPE_BODY}');
+  Element          get header => this.element.querySelector('legend');
+  String           title     = 'Kundetype';
 
-  CompanyEmailAddresses(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  ReceptionCustomerType(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
-    ul = element.querySelector('#${id.COMPANY_EMAIL_ADDRESSES_LIST}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    header.text = title;
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen(render);
+    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+      body.text = value.customerType;
+    });
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, body.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        body.focus();
       }
     });
-  }
-
-  void render(model.Reception reception) {
-    ul.children.clear();
-
-    for(var value in reception.emailAddressList) {
-      ul.children.add(new LIElement()
-                        ..text = value.value);
-    }
   }
 }

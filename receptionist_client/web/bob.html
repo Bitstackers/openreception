@@ -377,37 +377,56 @@
       </section>
 
       <!-- Context homeplus  -->
-      <section id="contexthomeplus" data-default-widget="companycustomertype" class="context hidden">
-        <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
-          <p id="company-customertype-body" tabindex="-1"></p>
+      <section id="contexthomeplus" data-default-widget="companyother" class="context hidden">
+        <div id="context-home_plus-left" style="width: 30%; height: 99.5%%; overflow:hidden; float:left;">
+        
+          <fieldset id="companyemailaddresses" class="box-with-header-outer" data-default-element="company-email-addresses-list">
+            <legend> :: Emailadresser :: </legend>
+            <ul id="company-email-addresses-list" class="zebra"></ul>
+          </fieldset>
+        
+          <fieldset id="companywebsites" class="box-with-header-outer" data-default-element="company-websites-list">
+            <legend> :: Websites :: </legend>
+            <ul id="company-websites-list" class="zebra""></ul>
+          </fieldset>
+
+          <fieldset id="companycustomertype" class="box-with-header-outer" data-default-element="company-customertype-body">
+            <legend> :: Kundetype :: </legend>
+            <p id="company-customertype-body"></p>
+          </fieldset>
+
         </div>
 
-        <div id="companytelephonenumbers" class="minibox" data-default-element="company-product-body">
-          <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
+        <div id="context-home_plus-center" style="width: 30%; height: 100%; margin-left: 0.5%; overflow:hidden; float:left;">
+
+          <fieldset id="companyalternatenames" class="box-with-header-outer" data-default-element="company-alternate-names-list">
+            <legend> :: Alternative firmanavne :: </legend>
+            <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+
+          <fieldset id="companytelephonenumbers" class="box-with-header-outer" data-default-element="company-product-body">
+            <legend> :: Telefonnumre :: </legend>
+            <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+      
+          <fieldset id="companybankinginformation" class="box-with-header-outer" data-default-element="company-banking-info-list">
+            <legend> :: Bankinformation :: </legend>
+            <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
+          </fieldset>
+
+
+          <fieldset id="companyregistrationnumber" class="box-with-header-outer" data-default-element="company-registration-number-list">
+            <legend> :: Registreringsnumre :: </legend>
+            <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
+          </fieldset>
+
         </div>
 
-        <div id="companyalternatenames" class="minibox" data-default-element="company-alternate-names-list">
-          <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
-        </div>
-
-        <div id="companybankinginformation" class="minibox" data-default-element="company-banking-info-list">
-          <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
-        </div>
-
-        <div id="companyemailaddresses" class="minibox" data-default-element="company-email-addresses-list">
-          <ul id="company-email-addresses-list" class="zebra" tabindex="-1"></ul>
-        </div>
-
-        <div id="companywebsites" class="minibox" data-default-element="company-websites-list">
-          <ul id="company-websites-list" class="zebra" tabindex="-1"></ul>
-        </div>
-
-        <div id="companyregistrationnumber" class="minibox" data-default-element="company-registration-number-list">
-          <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
-        </div>
-
-        <div id="companyother" class="minibox" data-default-element="company-product-body">
-          <p id="company-other-body" class="zebra" tabindex="-1"></p>
+        <div id="context-home_plus-right" style="width: 39%; height: 100%; overflow:hidden; margin-left: 0.5%; float:left;">
+          <fieldset id="companyother" class="box-with-header-outer" data-default-element="company-product-body">
+            <legend> :: Ekstra data :: </legend>
+            <p id="company-other-body" class="zebra" tabindex="-1"></p>
+          </fieldset>
         </div>
       </section>
 
@@ -501,18 +520,6 @@
         <div id="logbox" data-default-element="logbox-table"></div>
       </section>
 
-      <section id="contextstatistics" data-default-widget="statbox" class="context hidden">
-        <p id="statbox">contextstatistics</p>
-      </section>
-
-      <section id="contextphone" data-default-widget="phonebooth" class="context hidden">
-        <div id="phonebooth" data-default-element="phonebooth-numberfield"></div>
-        <p>contextphone</p>
-      </section>
-
-      <section id="contextvoicemails" data-default-widget="voicebox" class="context hidden">
-        <p id="voicebox">contextvoicemails</p>
-      </section>
     </div>
     <script type="application/dart" src="bob.dart"></script>
     <script src="packages/browser/dart.js"></script>

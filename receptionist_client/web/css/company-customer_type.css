@@ -1,9 +1,6 @@
 #companycustomertype {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  height: 35%;
-  width: 35%;
+  height: 25%;
+  width: 100%;
   overflow: auto;
 }
 

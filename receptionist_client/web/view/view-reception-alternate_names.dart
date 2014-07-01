@@ -13,26 +13,19 @@
 
 part of view;
 
-class CompanyRegistrationNumber {
-  Box          box;
-  Context      context;
-  DivElement   element;
-  bool         hasFocus  = false;
-  SpanElement  header;
-  UListElement ul;
-  String       title     = 'CVR';
+class ReceptionAlternateNames {
+  final Context context;
+  final Element element;
+  
+  bool            hasFocus  = false;
+  Element         get header             => this.element.querySelector('legend');
+  UListElement    get alternateNamesList => this.element.querySelector('#${id.COMPANY_ALTERNATE_NAMES_LIST}');
+  String          title     = 'Alternative firmanavne';
 
-  CompanyRegistrationNumber(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  ReceptionAlternateNames(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
-    ul = element.querySelector('#${id.COMPANY_REGISTRATION_NUMBER_LIST}');
 
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    header.text = title;
 
     registerEventListeners();
   }
@@ -41,23 +34,23 @@ class CompanyRegistrationNumber {
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, alternateNamesList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        alternateNamesList.focus();
       }
     });
   }
 
   void render(model.Reception reception) {
-    ul.children.clear();
+    alternateNamesList.children.clear();
 
-    for(var value in reception.registrationNumberList) {
-      ul.children.add(new LIElement()
+    for(var value in reception.alternateNameList) {
+      alternateNamesList.children.add(new LIElement()
                         ..text = value.value);
     }
   }

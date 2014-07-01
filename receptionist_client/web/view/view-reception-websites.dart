@@ -13,26 +13,21 @@
 
 part of view;
 
-class CompanyBankingInformation {
-  Box             box;
-  Context         context;
-  DivElement      element;
+class ReceptionWebsites {
+  final Context context;
+  final Element element;
+  
   bool            hasFocus  = false;
-  SpanElement     header;
-  UListElement    ul;
-  String          title     = 'Bankoplysninger';
+  
+  String          title     = 'Web-sider';
 
-  CompanyBankingInformation(DivElement this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  Element         get header      => this.element.querySelector('legend');
+  UListElement    get websiteList => element.querySelector('#${id.COMPANY_WEBSITES_LIST}'); 
+  
+  ReceptionWebsites(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
-    ul = element.querySelector('#${id.COMPANY_BANKING_INFO_LIST}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    header.text = title;
 
     registerEventListeners();
   }
@@ -41,24 +36,24 @@ class CompanyBankingInformation {
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, websiteList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        websiteList.focus();
       }
     });
   }
 
   void render(model.Reception reception) {
-    ul.children.clear();
+    websiteList.children.clear();
 
-    for(var bankingInformation in reception.bankingInformationList) {
-      ul.children.add(new LIElement()
-                        ..text = bankingInformation.value);
+    for(var value in reception.websiteList) {
+      websiteList.children.add(new LIElement()
+                        ..text = value.value);
     }
   }
 }
