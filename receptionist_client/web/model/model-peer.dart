@@ -34,18 +34,10 @@ class Peer {
   }
 
   Peer.fromMap(Map map) {
-    map.forEach((String key, var value) {
-      if (key == 'expires') {
-      } else if (key == 'registered') {
-        this._currentState = (map['registered'] ? PeerState.REGISTERED : PeerState.UNREGISTERED);
-      } else {
-        /*FIXME: The protocol needs to be changed as guessing that this is the peer_id is _BAD_.*/
-        this.ID = key;
-        this._cachedData = map [key];
-      }
-    });
+    this._currentState = (map['registered'] ? PeerState.REGISTERED : PeerState.UNREGISTERED);
+    this.ID = map['userid'];
+    this._cachedData = map;
   }
-  
   
   /**
    * 
