@@ -1,14 +1,23 @@
 part of view;
 
-class CompanySelector {
-  DivElement                            element;
-  Context                               context;
+class ReceptionSelector {
+  
+  static const String className = '${libraryName}.ReceptionSelector';
+  static const String NavShortcut = 'V'; 
+
+  final DivElement                      element;
+  final Context                         context;
   SearchComponent<model.BasicReception> search;
   model.BasicReception                  selectedReception;
+  
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  CompanySelector(DivElement this.element, Context this.context) {
+  ReceptionSelector(DivElement this.element, Context this.context) {
     assert (element.attributes.containsKey(defaultElementId));
+
+    ///Navigation shortcuts
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, element.attributes[defaultElementId])));
     
     String searchBoxId = element.attributes['data-default-element'];
         
@@ -25,14 +34,12 @@ class CompanySelector {
   Future initialFill() {
     return storage.Reception.list().then((model.ReceptionList list) {
       search.updateSourceList(list.toList(growable: false));
-      return this.element.append(new Nudge('V').element); 
+      return this.element.append(new Nudge(NavShortcut).element); 
     });
   }
 
   void _registerEventlisteners(_) {
-    event.bus.on(event.keyNav).listen((bool isPressed) {
-      this.hideNudges(!isPressed);
-    });
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
     
     event.bus.on(event.receptionChanged).listen((model.BasicReception value) {
       if(value == model.nullReception && selectedReception != model.nullReception) {
@@ -62,12 +69,6 @@ class CompanySelector {
       String after   = text.substring(matchIndex + searchText.length, text.length);
       return '${before}<em>${match}</em>${after}';
     }
-  }
-
-  void hideNudges(bool hidden) {
-    nudges.forEach((Element element) {
-      element.hidden = hidden;
-    });
   }
 
   bool searchFilter(model.BasicReception reception, String searchText) {

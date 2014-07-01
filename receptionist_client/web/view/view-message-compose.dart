@@ -35,7 +35,7 @@ abstract class MessageLabels {
 class Message {
 
   static const String className = '${libraryName}.Message';
-  static const String NavShortcut = 'H'; 
+  static const String NavShortcut = 'B'; 
 
   final Element element;
   final Context context;
@@ -60,11 +60,13 @@ class Message {
   ButtonElement get cancelButton => this.element.querySelector('#sendmessagecancel');
   ButtonElement get draftButton  => this.element.querySelector('#sendmessagedraft');
   ButtonElement get sendButton   => this.element.querySelector('#sendmessagesend');
-
   
   bool hasFocus = false;
-
+  
   UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
+
+  List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   List<Element> focusElements;
 
@@ -131,7 +133,10 @@ class Message {
   }
 
   Message(Element this.element, Context this.context) {
-  
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, this.messageBodyField.id)));
+
 
     this.cancelButton
         ..text = MessageLabels.cancelButtonLabel
@@ -145,9 +150,9 @@ class Message {
         ..text = MessageLabels.sendButtonLabel
         ..onClick.listen(_sendHandler);
 
-    //focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
+    focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
 
-    //focusElements.forEach((e) => context.registerFocusElement(e));
+    focusElements.forEach((e) => context.registerFocusElement(e));
 
     this._renderContact(contact);
     this._setupLabels();
@@ -242,6 +247,8 @@ class Message {
   }
 
   void _registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+    
     element.onClick.listen(this._onMessageElementClick);
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 

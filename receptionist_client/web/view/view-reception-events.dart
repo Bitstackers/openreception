@@ -25,15 +25,17 @@ abstract class ReceptionEventsLabels {
  */
 class ReceptionEvents {
 
-  model.Reception currentReception;
-  Context      context;
-  Element      element;
+  static const String   className = '${libraryName}.ReceptionEvents';
+  static const String NavShortcut = 'A'; 
+  
+  final Context       context;
+  final Element       element;
   Element         get header         => this.element.querySelector('#company-events-header');
   UListElement    get listElement    => this.element.querySelector('#company_events_list');
+  List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
 
 
   Element lastActive = null;
-  static const String  className = '${libraryName}.ReceptionEvents';
   FieldSetElement get newEventWidget => this.element.querySelector('#receptioninfo-calendar-event-create');
   TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
 
@@ -98,9 +100,14 @@ class ReceptionEvents {
      this.endsHourValue   = newTime.hour;
      this.endsMinuteValue = newTime.minute;
    }
-
+   
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   ReceptionEvents(Element this.element, Context this.context) {
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
+    
     assert(element.attributes.containsKey(defaultElementId));
 
     this.header.text = ReceptionEventsLabels.title;
@@ -110,8 +117,10 @@ class ReceptionEvents {
   }
 
   void _registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+    
     event.bus.on(event.receptionChanged).listen((model.Reception reception) {
-      this.currentReception = reception;
       Storage.Reception.calendar(reception.ID).then((model.CalendarEventList events) {
         _render(events);
       });
@@ -154,7 +163,7 @@ class ReceptionEvents {
 
     event.bus.on(event.Save).listen((_) {
       if (nav.Location.isActive(element) && !this.newEventWidget.hidden) {
-        (new model.CalendarEvent.forReception(this.currentReception.ID)
+        (new model.CalendarEvent.forReception(model.Reception.selectedReception.ID)
           ..content = this.newEventField.value
           ..beginsAt = this._selectedStartDate
           ..until    = this._selectedEndDate
@@ -170,9 +179,9 @@ class ReceptionEvents {
 
       log.debugContext(eventStub.toString(), context);
 
-      if (eventStub['receptionID'] == this.currentReception.ID && !eventStub.containsKey('contactID')) {
+      if (eventStub['receptionID'] == model.Reception.selectedReception.ID && !eventStub.containsKey('contactID')) {
         log.debugContext('Reloading calendarlist for ${eventStub['receptionID']}', context);
-        storage.Reception.calendar(this.currentReception.ID).then((model.CalendarEventList eventList) {
+        storage.Reception.calendar(model.Reception.selectedReception.ID).then((model.CalendarEventList eventList) {
             this._render(eventList);
           }).catchError((error) {
             log.error('${className}._registerEventListeners Error while fetching reception calendar ${error}');

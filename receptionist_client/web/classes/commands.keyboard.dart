@@ -197,22 +197,15 @@ class _KeyboardHandler {
     });
     
     Map<String, EventListener> keybindings = {
-      'Alt+T'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CALL_ORIGINATE,   id.CALL_ORIGINATE_NUMBER_FIELD)),
-      'Alt+V'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
-      'Alt+A'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
-      'Alt+B'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
-      'Alt+S'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
-      'Alt+M'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
       'Alt+P'     : (_) => Controller.Call.pickupNext(),
       'Alt+L'     : (_) => Controller.Call.park(Model.Call.currentCall),
-      'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      //'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
       'Alt+U'     : (_) => event.bus.fire(event.PickupFirstParkedCall, null),
       'Alt+O'     : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
       'Alt+1'     : (_) => event.bus.fire(event.CallSelectedContact, 1),
       'Alt+2'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+3'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
       'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
-      'ALT+K'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, 'contactinfo_calendar', id.CONTACT_CALENDAR)),
       'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
       'Ctrl+S'    : (_) => event.bus.fire(event.Save, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),

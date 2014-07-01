@@ -1,6 +1,11 @@
 part of view;
 
 class ContactInfoSearch {
+
+  static const String className = '${libraryName}.ContactInfoSearch';
+  static const String NavShortcut = 'S'; 
+
+  
                model.Contact       contact              = model.nullContact;
                Context             context;
                UListElement        displayedContactList;
@@ -17,19 +22,6 @@ class ContactInfoSearch {
   bool hasFocus = false;
 
   ContactInfoSearch(DivElement this.element, Context this.context, Element this.widget) {
-    String html = '''
-        <div class="contact-info-searchbox">
-          <input id="contact-info-searchbar" 
-                 type="search"  
-                 placeholder="${placeholder}"/>
-        </div>
-  
-        <ul id="contactlist" class="contact-info-zebra">
-          <!-- Contact List, filled from component class. -->
-        </ul>
-    ''';
-
-    var frag = new DocumentFragment.html(html);
     searchBox = element.querySelector('#contact-info-searchbar') as InputElement
       ..disabled = true;
 
@@ -136,6 +128,7 @@ class ContactInfoSearch {
   }
 
   void registerEventListeners() {
+
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
       reception = value;
       searchBox.disabled = value == model.nullReception;

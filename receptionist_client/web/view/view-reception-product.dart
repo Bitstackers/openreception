@@ -13,27 +13,40 @@
 
 part of view;
 
-abstract class CompanyProductLabels {
+abstract class ReceptionProductLabels {
   static const String HeaderText = 'Produktbeskrivelse';
 }
 
-class CompanyProduct {
+class ReceptionProduct {
   final Context       context;
   final Element       element;
 
+  
+  static const String className   = '${libraryName}.ReceptionProduct';
+  static const String NavShortcut = 'F'; 
+
   ParagraphElement get body     => this.element.querySelector('#${id.COMPANY_PRODUCT_BODY}');
   Element          get header   => this.element.querySelector('legend');
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  CompanyProduct(Element this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  ReceptionProduct(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
+    
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, body.id)));
+    
 
-    header.text = CompanyProductLabels.HeaderText;
+    header.text = ReceptionProductLabels.HeaderText;
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
       body.text = value.product;
     });

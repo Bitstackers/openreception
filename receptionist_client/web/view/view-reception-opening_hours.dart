@@ -13,29 +13,40 @@
 
 part of view;
 
-abstract class CompanyOpeningHoursLabels {
+abstract class ReceptionOpeningHoursLabels {
   static const HeaderText = 'Åbningstider';
 }
 
-class CompanyOpeningHours {
+class ReceptionOpeningHours {
+  
+  static const String className   = '${libraryName}.CompanyOpeningHours';
+  static const String NavShortcut = 'X'; 
+
   Context         context;
   Element         element;
   bool            hasFocus  = false;
   model.Reception reception = model.nullReception;
   UListElement    get openingHoursList      => this.element.querySelector('#${id.COMPANY_OPENINGHOURS_LIST}');
   Element         get header                => this.element.querySelector('legend');
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   
-  CompanyOpeningHours(Element this.element, Context this.context) {
-    String defaultElementId = 'data-default-element';
+  ReceptionOpeningHours(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
-    header.text = CompanyOpeningHoursLabels.HeaderText;
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, openingHoursList.id)));
+
+    header.text = ReceptionOpeningHoursLabels.HeaderText;
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen((model.Reception reception) {
       render(reception);
     });

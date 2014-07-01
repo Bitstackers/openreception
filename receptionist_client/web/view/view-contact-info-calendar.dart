@@ -13,8 +13,10 @@ abstract class CalendarLabels {
  */
 class ContactInfoCalendar {
 
+  static const String className = '${libraryName}.ContactInfoSearch';
+  static const String NavShortcut = 'K'; 
+
   static final String  id        = constant.ID.CALL_MANAGEMENT;
-  static const String  className = '${libraryName}.ContactInfoCalendar';
   final        Element element;
   final        Context context;
                Element lastActive = null;
@@ -90,6 +92,8 @@ class ContactInfoCalendar {
     this.endsMinuteValue = newTime.minute;
   }
   
+  List<Element>   get nudges    => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   UListElement get calendarBody => this.element.querySelector("#contact-calendar");
   model.Contact currentContact;
@@ -109,6 +113,11 @@ class ContactInfoCalendar {
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.text =  CalendarLabels.calendar;
 
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.calendarBody.id)));
+    
+    
     newEventField.placeholder = CalendarLabels.newEventPlaceholder;
     this.newEventWidget.hidden = true;
     _registerEventListeners();
@@ -116,6 +125,8 @@ class ContactInfoCalendar {
   }
 
   void _registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     calendarBody.onClick.listen((MouseEvent e) {
       Controller.Context.changeLocation(new nav.Location(context.id, widget.id, calendarBody.id));
     });

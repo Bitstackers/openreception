@@ -22,9 +22,10 @@ abstract class CallManagementLabels {
 }
 
 class CallManagement {
+  static const String  className = '${libraryName}.CallManagement';
+  static const String NavShortcut = 'T'; 
 
   static final String  id        = constant.ID.CALL_MANAGEMENT;
-  static const String  className = '${libraryName}.CallManagement';
   final        Element element;
   final        Context context;
 
@@ -47,6 +48,9 @@ class CallManagement {
   }
   
   bool get disabled => this.buttons.first.disabled;
+  List<Element> get nudges      => this.element.querySelectorAll('.nudge');
+  void set NudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
   
   /**
    * TODO
@@ -57,9 +61,9 @@ class CallManagement {
     registerEventListeners();
     
     this.element.insertBefore(new Nudge('T').element, this.numberField);
-    this.element.insertBefore(new Nudge('I').element, this.dialButton);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, this.numberField.id)));
     
-    this.hideNudges(true);
+    this.element.insertBefore(new Nudge('I').element, this.dialButton);
   }
 
   _changeActiveCall(model.Call call) {
@@ -76,21 +80,13 @@ class CallManagement {
     this.disabled = true;
   }
 
-  void _originationSucceded(dynamic) {
+  void _originationDone(_) {
     this.disabled = (model.Reception.selectedReception == model.nullReception);
-  }
-
-  void _originationFailed(dynamic) {
-    this.disabled = (model.Reception.selectedReception == model.nullReception);
-  }
-
-  void hideNudges(bool hidden) {
-    nuges.forEach((Element element) {
-      element.hidden = hidden;
-    });
   }
 
   void registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.NudgesHidden = !isPressed);
+
     event.bus.on(event.dialSelectedContact).listen(this._dialSelectedNumber);
     
     event.bus.on(model.Extension.activeExtensionChanged)
@@ -100,11 +96,8 @@ class CallManagement {
     
     event.bus.on(model.Call.currentCallChanged).listen(_changeActiveCall);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
-    event.bus.on(event.originateCallRequestSuccess).listen(_originationSucceded);
-    event.bus.on(event.originateCallRequestFailure).listen(_originationFailed);
-    event.bus.on(event.keyNav).listen((bool isPressed) {
-      this.hideNudges(!isPressed);
-    });
+    event.bus.on(event.originateCallRequestSuccess).listen(_originationDone);
+    event.bus.on(event.originateCallRequestFailure).listen(_originationDone);
 
     this.numberField.onFocus.listen((_) => this.numberField.select());
     

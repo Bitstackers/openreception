@@ -29,6 +29,10 @@ class ContactInfo {
                String              placeholder          = 'søg...';
                String              title                = 'Medarbejdere';
 
+               List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
+               void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
+
   ContactInfoSearch search;
   ContactInfoCalendar calendar;
   ContactInfoData data;
@@ -45,12 +49,18 @@ class ContactInfo {
     calendar = new ContactInfoCalendar(contactinfo_calendar, context, element);
     data = new ContactInfoData(contactinfo_data);
 
+
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(ContactInfoSearch.NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(search.context.id, element.id, search.searchBox.id)));
+
     body = querySelector('#contactinfobody');
 
     _registerEventListeners();
   }
 
   void _registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
     //TODO old but is it required in some way?
     element.onClick.listen((_) {
       if(!search.hasFocus && !calendar.hasFocus) {

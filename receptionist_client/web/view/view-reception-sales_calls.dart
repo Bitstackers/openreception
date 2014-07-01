@@ -17,24 +17,37 @@ abstract class CompanySalesCallsLabels {
   static const String HeaderText = 'Sælgere / Analyser';
 }
 
-class CompanySalesCalls {
-  Box          box;
+class ReceptionSalesCalls {
+  
+  static const String className   = '${libraryName}.ReceptionSalesCalls';
+  static const String NavShortcut = 'C'; 
+
   Context      context;
   final Element   element;
   bool         hasFocus  = false;
   Element      get header           => this.element.querySelector('legend');
   UListElement get instructionList  => this.element.querySelector('#${id.COMPANY_SALES_LIST}');
 
-  CompanySalesCalls(Element this.element, Context this.context) {
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
+  ReceptionSalesCalls(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
     
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, instructionList.id)));
+
     header.text = CompanySalesCallsLabels.HeaderText;
 
     registerEventListeners();
   }
 
   void registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
