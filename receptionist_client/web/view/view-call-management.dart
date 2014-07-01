@@ -102,7 +102,7 @@ class CallManagement {
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationSucceded);
     event.bus.on(event.originateCallRequestFailure).listen(_originationFailed);
-    event.bus.on(event.keyMeta).listen((bool isPressed) {
+    event.bus.on(event.keyNav).listen((bool isPressed) {
       this.hideNudges(!isPressed);
     });
 

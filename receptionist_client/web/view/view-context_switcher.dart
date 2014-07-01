@@ -62,9 +62,7 @@ class ContextSwitcher {
   }
   
   void _registerEventListeners() {
-    event.bus.on(event.keyNav).listen((bool isPressed) {
-      this.hideNudges(!isPressed);
-    });
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.hideNudges(!isPressed));
   }
   
 }

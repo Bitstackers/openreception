@@ -30,7 +30,7 @@ class CompanySelector {
   }
 
   void _registerEventlisteners(_) {
-    event.bus.on(event.keyMeta).listen((bool isPressed) {
+    event.bus.on(event.keyNav).listen((bool isPressed) {
       this.hideNudges(!isPressed);
     });
     
