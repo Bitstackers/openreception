@@ -8,4 +8,4 @@ dependencies:
   path: any
   postgresql: any
   route: any
-  xml: any
+  xml: 1.0.0
