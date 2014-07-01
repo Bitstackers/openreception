@@ -173,6 +173,7 @@ class ContactView {
         });
 
         return request.getContactsColleagues(id).then((List<ReceptionColleague> Receptions) {
+          Receptions.sort((a, b) => a.full_name.compareTo(b.full_name));
           ulReceptionList.children
                       ..clear()
                       ..addAll(Receptions.map(makeReceptionNode).reduce(union));

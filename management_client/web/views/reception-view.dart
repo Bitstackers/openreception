@@ -344,31 +344,13 @@ class ReceptionView {
 
       updateContactList(receptionId);
     } else {
-//      inputFullName.value = '';
-//      inputEnabled.checked = false;
-//
-//      inputCostumerstype.value = '';
-//      inputGreeting.value = '';
-//      inputOther.value = '';
-//      inputProduct.value = '';
-//      fillList(ulAddresses, []);
-//      fillList(ulAlternatenames, []);
-//      fillList(ulBankinginformation, []);
-//      fillList(ulCrapcallhandling, []);
-//      fillList(ulEmailaddresses, []);
-//      fillList(ulHandlings, []);
-//      fillList(ulOpeninghours, []);
-//      fillList(ulRegistrationnumbers, []);
-//      fillList(ulTelephonenumbers, []);
-//      fillList(ulWebsites, []);
       clearContent();
       updateContactList(receptionId);
     }
   }
 
   void updateContactList(int receptionId) {
-    getReceptionContactList(receptionId).then((List<CustomReceptionContact>
-        contacts) {
+    getReceptionContactList(receptionId).then((List<CustomReceptionContact> contacts) {
       contacts.sort((a, b) => a.fullName.compareTo(b.fullName));
       ulContactList.children
           ..clear()
