@@ -1,0 +1,16 @@
+fieldset#companyopeninghours legend {
+  background-image: url('../images/clock-icon-16x16.png');
+}
+
+fieldset#companyopeninghours ul {
+  overflow: auto;
+}
+
+
+#company-opening-hours-list {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.8em;
+  list-style-type: none;
+}

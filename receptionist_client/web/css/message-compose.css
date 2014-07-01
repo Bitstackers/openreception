@@ -1,3 +1,8 @@
+
+fieldset#sendmessage legend {
+  background-image: url('../images/message-icon-16x16.png');
+}
+
 #sendmessage { /* .send-message-placing { */
   height: 50%;
   margin-top: 0.5%;
@@ -79,7 +84,7 @@ textarea.send-message-field {
 input[type="checkbox"] {
     width: 20px;
     height: 20px;
-    margin: 0px 4px 0 0;
+    margin: 0.1em 0.2em 0.1em 0.2em;
     vertical-align:middle;
 }
 
@@ -115,7 +120,6 @@ send-message-button-container {
 }
 
 .send-message-button-container button {
-  background-color: #fafafa;
   border: solid 2px #ccc;
   border-radius: 3px;
   font-size: 1em;
@@ -128,7 +132,6 @@ send-message-button-container {
   border: solid 2px #bbb;
   border-radius: 3px;
   font-size: 1em;
-  background-color: #eee;
   padding: 5px;
   cursor: pointer;
 }

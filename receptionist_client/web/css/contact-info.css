@@ -3,6 +3,11 @@
   width: 100%;
 }
 
+fieldset#contactinfo legend {
+  background-image: url('../images/contact-icon-16x16.png');
+}
+
+
 li:focus {
   border: 2px solid aqua;
   height: 100px;
@@ -16,6 +21,16 @@ li:focus {
   width: 100%;
   height: 100%;
 }
+
+fieldset#contactinfo_calendar legend {
+  background-image: url('../images/calendar-icon-16x16.png');
+}
+
+
+fieldset#contactinfopanel legend {
+  background-image: url('../images/contact_card-icon-16x16.png');
+}
+
 
 #contactinfo_data {
   top: 180px;
@@ -42,6 +57,8 @@ li:focus {
   overflow: auto;
   font-size: 0.9em;
 }
+
+
 
 .contact-info-datacolumn {
   height: 100%;

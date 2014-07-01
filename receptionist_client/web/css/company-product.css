@@ -1,0 +1,11 @@
+fieldset#companyproduct legend {
+  background-image: url('../images/box-icon-16x16.png');
+}
+
+#company-product-body {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 5px;
+  font-size: 0.8em;
+}

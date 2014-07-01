@@ -1,6 +1,10 @@
+fieldset#companyevents legend {
+  background-image: url('../images/calendar-icon-16x16.png');
+}
+
+
 #companyevents {
   width: 100%;
-  height: 20%;
 }
 
 #company_events_list {
