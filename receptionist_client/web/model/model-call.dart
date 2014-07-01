@@ -184,8 +184,8 @@ class Call implements Comparable {
 
     _ID = map['id'];
 
-    log.debug('Model.call Call.fromJson: ${map['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(int.parse(map['arrival_time'])*1000)}');
-    _start = new DateTime.fromMillisecondsSinceEpoch(int.parse(map['arrival_time']) * 1000);
+    log.debug('Model.call Call.fromJson: ${map['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(map['arrival_time']*1000)}');
+    _start = new DateTime.fromMillisecondsSinceEpoch(map['arrival_time'] * 1000);
     
     this._data = map;
     }
