@@ -46,18 +46,20 @@ void main(List<String> args) {
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('authurl',         help: 'The http address for the authentication service.');
-  parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
-  parser.addOption('dbuser',          help: 'The database user');
-  parser.addOption('dbpassword',      help: 'The database password');
-  parser.addOption('dbhost',          help: 'The database host. Defaults to localhost');
-  parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
-  parser.addOption('dbname',          help: 'The database name');
-  parser.addOption('cache',           help: 'The location for cache');
-  parser.addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false);
-  parser.addOption('sysloghost',      help: 'The syslog host. Defaults to localhost');
+  parser
+    ..addFlag  ('help', abbr: 'h', help: 'Output this help')
+    ..addOption('authurl',         help: 'The http address for the authentication service.')
+    ..addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json')
+    ..addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080')
+    ..addOption('dbuser',          help: 'The database user')
+    ..addOption('dbpassword',      help: 'The database password')
+    ..addOption('dbhost',          help: 'The database host. Defaults to localhost')
+    ..addOption('dbport',          help: 'The database port. Defaults to 5432')
+    ..addOption('dbname',          help: 'The database name')
+    ..addOption('cache',           help: 'The location for cache')
+    ..addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false)
+    ..addOption('sysloghost',      help: 'The syslog host. Defaults to localhost')
+    ..addOption('servertoken', help: 'servertoken');
 
   parsedArgs = parser.parse(arguments);
 }

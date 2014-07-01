@@ -10,33 +10,52 @@ import 'package:OpenReceptionFramework/common.dart';
 
 Configuration config;
 
+/**
+ * Default configuration values.
+ */
+abstract class Default {
+  static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
+  static final String configFile           = 'config.json';
+  static final int    dbport               = 5432;
+  static final String dbhost               = 'localhost';
+  static final int    httpport             = 4010;
+  static final Uri    notificationServer   = Uri.parse("http://localhost:4200");
+  static final String serverToken          = 'feedabbadeadbeef0';
+  static final String syslogHost           = 'localhost';
+  static final bool   useSyslog = false;
+}
+
 class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  Uri        _authUrl;
-  String     _configfile = 'config.json';
-  int        _httpport   = 8080;
+  Uri        _authUrl            = Default.authenticationServer;
+  Uri        _notificationServer = Default.notificationServer;
+  String     _configfile         = Default.configFile;
+  int        _httpport           = Default.httpport;
   String     _dbuser;
   String     _dbpassword;
-  String     _dbhost     = 'localhost';
-  int        _dbport     = 5432;
+  String     _dbhost             = Default.dbhost;
+  int        _dbport             = Default.dbport;
   String     _dbname;
   String     _cache;
-  bool       _useSyslog      = false;
-  String     _syslogHost = 'localhost';
+  bool       _useSyslog          = Default.useSyslog;
+  String     _serverToken        = Default.serverToken;
+  String     _syslogHost         = Default.syslogHost;
 
-  Uri    get authUrl        => _authUrl;
-  String get cache          => _cache;
-  String get configfile     => _configfile;
-  String get dbuser         => _dbuser;
-  String get dbpassword     => _dbpassword;
-  String get dbhost         => _dbhost;
-  int    get dbport         => _dbport;
-  String get dbname         => _dbname;
-  int    get httpport       => _httpport;
-  bool   get useSyslog      => _useSyslog;
-  String get syslogHost     => _syslogHost;
+  Uri    get authUrl            => _authUrl;
+  String get cache              => _cache;
+  String get configfile         => _configfile;
+  String get dbuser             => _dbuser;
+  String get dbpassword         => _dbpassword;
+  String get dbhost             => _dbhost;
+  int    get dbport             => _dbport;
+  String get dbname             => _dbname;
+  int    get httpport           => _httpport;
+  Uri    get notificationServer => _notificationServer;
+  bool   get useSyslog          => _useSyslog;
+  String get serverToken        => _serverToken;
+  String get syslogHost         => _syslogHost;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -73,7 +92,7 @@ class Configuration {
           throw('Invalid authUrl missing host. ${_authUrl}');
         }
       }
-      
+
       if(config.containsKey('cache')) {
         if(config['cache'].endsWith('/')) {
           _cache = config['cache'];
@@ -105,11 +124,15 @@ class Configuration {
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
-      
+
+      if(config.containsKey('notificationServer')) {
+        _notificationServer = config['notificationServer'];
+      }
+
       if(config.containsKey('sysloghost')) {
         _syslogHost = config['sysloghost'];
       }
-      
+
     })
     .catchError((error) {
       log('Failed to read "$configfile". Error: $error');
@@ -158,9 +181,13 @@ class Configuration {
       }
 
       _useSyslog = _args['syslog'];
-      
+
       if(hasArgument('sysloghost')) {
         _syslogHost = _args['sysloghost'];
+      }
+
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
       }
 
     }).catchError((error) {

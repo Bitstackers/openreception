@@ -10,6 +10,7 @@ import 'cache.dart' as cache;
 import 'configuration.dart';
 import 'database.dart' as db;
 import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:OpenReceptionFramework/service.dart' as Service;
 
 part 'router/reception-calendar.dart';
 part 'router/getreception.dart';
@@ -27,8 +28,8 @@ final Pattern receptionCalendarListResource         = new UrlPattern(r'/receptio
 final Pattern receptionCalendarEventResource        = new UrlPattern(r'/reception/(\d+)/calendar/event/(\d+)');
 final Pattern receptionCalendarEventCreateResource  = new UrlPattern(r'/reception/(\d+)/calendar/event');
 
-final List<Pattern> allUniqueUrls = [receptionResource, receptionListResource, 
-                                     receptionUrl, receptionInvalidateResource, 
+final List<Pattern> allUniqueUrls = [receptionResource, receptionListResource,
+                                     receptionUrl, receptionInvalidateResource,
                                      receptionCalendarListResource,
                                      receptionCalendarEventResource];
 

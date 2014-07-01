@@ -53,7 +53,7 @@ class Configuration {
 
     return _configuration;
   }
-    
+
   Configuration._internal(ArgResults args) {
     _args = args;
     if(hasArgument('configfile')) {
@@ -78,7 +78,7 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
+
       if(config.containsKey('eslHostname')) {
         this._eslHostname = config['eslHostname'];
       }
@@ -86,13 +86,9 @@ class Configuration {
       if(config.containsKey('eslPort')) {
         this._eslPort = config['eslPort'];
       }
-      
+
       if(config.containsKey('eslPassword')) {
         this._eslPassword = config['eslPassword'];
-      }
-
-      if(hasArgument('servertoken')) {
-        _serverToken = _args['servertoken'];
       }
 
       if(config.containsKey('httpport')) {
@@ -102,7 +98,7 @@ class Configuration {
       if(config.containsKey('notificationServer')) {
         _notificationServer = Uri.parse(config['notificationServer']);
       }
-      
+
       assert (this.serverToken != null);
 
     })
@@ -116,9 +112,13 @@ class Configuration {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
+      }
+
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
       }
 
     }).catchError((error) {

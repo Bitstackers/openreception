@@ -4,10 +4,10 @@ abstract class ReceptionCalendar {
 
   static void create(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
-    
+
     extractContent(request).then((String content) {
       Map data;
-      
+
       try {
         data = JSON.decode(content);
       }
@@ -23,6 +23,12 @@ abstract class ReceptionCalendar {
       db.ReceptionCalendar.createEvent(receptionID      : receptionID,
                                        event            : data['event'])
         .then((_) {
+          Map event = {'event'         : 'receptionCalendarEventCreated',
+                       'calendarEvent' :  {
+                         'receptionID' : receptionID
+                       }
+                      };
+          Service.Notification.broadcast (event, config.notificationServer, config.serverToken);
           writeAndClose(request, JSON.encode({'status'      : 'ok',
                                               'description' : 'Event created'}));
         }).catchError((onError) {
@@ -36,10 +42,10 @@ abstract class ReceptionCalendar {
   static void update(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-    
+
     extractContent(request).then((String content) {
       Map data;
-      
+
       try {
         data = JSON.decode(content);
       }
@@ -78,14 +84,14 @@ abstract class ReceptionCalendar {
   static void remove(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-    
+
     db.ReceptionCalendar.exists(receptionID      : receptionID,
                                 eventID          : eventID).then((bool eventExists) {
       if (!eventExists) {
         notFound(request, {'error' : 'not found'});
         return;
       }
-      
+
       db.ReceptionCalendar.removeEvent(receptionID : receptionID,
                                        eventID     : eventID)
           .then((_) {
@@ -102,7 +108,7 @@ abstract class ReceptionCalendar {
   static void get(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-    
+
     db.ReceptionCalendar.getEvent(receptionID : receptionID,
                                   eventID     : eventID)
       .then((Map event) {

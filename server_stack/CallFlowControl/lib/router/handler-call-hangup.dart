@@ -1,22 +1,21 @@
 part of callflowcontrol.router;
 
 
-Map hangupOK (callID) => 
+Map hangupOK (callID) =>
     {'status'      : 'ok',
      'description' : 'Request to hang up ${callID} sent.'};
 
 void handlerCallHangup(HttpRequest request) {
-  
+
   final String context = '${libraryName}.handlerCallHangup';
 
   final String callID  = pathParameterString(request.uri, 'call');
   final String token   = request.uri.queryParameters['token'];
 
   List<String> hangupGroups = ['Administrator'];
-  
-  bool aclCheck (User user) 
-    => user.groups.any((group) 
-        => hangupGroups.contains(group))  
+
+  bool aclCheck (User user)
+    => user.groups.any(hangupGroups.contains)
     || Model.CallList.instance.get(callID).assignedTo == user.ID;
 
   if (callID == null || callID == "") {
@@ -25,7 +24,7 @@ void handlerCallHangup(HttpRequest request) {
   }
 
   Service.Authentication.userOf(token: token, host: config.authUrl).then((User user) {
-  
+
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
       return;
@@ -33,8 +32,8 @@ void handlerCallHangup(HttpRequest request) {
 
     try {
       Model.Call call = Model.CallList.instance.get(callID);
-      
-      Controller.PBX.hangup (call).then ((_) => 
+
+      Controller.PBX.hangup (call).then ((_) =>
         writeAndClose(request, JSON.encode(hangupOK(callID)))
       ).catchError((error) {
         if (error is Model.NotFound) {
