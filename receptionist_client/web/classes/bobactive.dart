@@ -23,7 +23,6 @@ import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
 import '../view/view.dart' as View;
-import '../constants.dart' as constant;
 import '../model/model.dart' as Model;
 
 class BobActive {
@@ -60,8 +59,6 @@ class BobActive {
 
   View.LogBox logBox;
 
-  View.Phonebooth phonebooth;
-
   Context home;
   Context homePlus;
   Context messages;
@@ -78,7 +75,7 @@ class BobActive {
     });
 
     registerContexts();
-    contextSwitcher          = new View.ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, homePlus, messages, logContext, statistics, phone, voicemails]);
+    contextSwitcher          = new View.ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [home, homePlus, messages, logContext]);
 
     /// Home context
     welcomeMessage           = new View.WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
@@ -109,8 +106,6 @@ class BobActive {
     companyOther             = new View.CompanyOther(querySelector('#${id.COMPANY_OTHER}'), homePlus);
 
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
-
-    phonebooth = new View.Phonebooth(querySelector('#phonebooth'), phone);
 
     setupKeyboardShortcuts();
 //    event.bus.fire(event.activeContextChanged, id.CONTEXT_HOME);
