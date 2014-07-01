@@ -9,6 +9,7 @@ class Cdr_Entry {
   int duration;
   String flag;
   int smsCount;
+  double avgDuration;
 
   Cdr_Entry();
 
@@ -21,7 +22,8 @@ class Cdr_Entry {
       ..totalWait = json['total_wait']
       ..billType = json['bill_type']
       ..duration = json['duration']
-      ..flag = json['flag'];
+      ..flag = json['flag']
+      ..avgDuration = json['avg_duration'];
 
     object.smsCount = 0;
 

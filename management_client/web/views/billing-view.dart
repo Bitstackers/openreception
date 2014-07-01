@@ -63,7 +63,8 @@ class BillingView {
                        new TableCellElement()..text = '${entry.callCount}',
                        new TableCellElement()..text = '${entry.duration}',
                        new TableCellElement()..text = '${entry.totalWait}',
-                       new TableCellElement()..text = '${entry.smsCount}']);
+                       new TableCellElement()..text = '${entry.smsCount}',
+                       new TableCellElement()..text = '${entry.avgDuration}']);
               }));
         });
   }
