@@ -30,8 +30,6 @@ final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 const bool BACKWARD = false;
 const bool FORWARD = true;
 
-const String META = 'alt';
-
 /**
  * [Keys] is a simple mapping between constant literals and integer key codes.
  */
@@ -101,10 +99,15 @@ KeyboardListener customKeyboardHandler(Map<String, EventListener> keymappings) {
  * a stream.
  */
 class _KeyboardHandler {
+  
+  static const String NavKey     = 'Alt';
+  static const String CommandKey = 'Ctrl';
+  
   Map<int, String>                   _keyToName           = new Map<int, String>();
   Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
   int                                _locked              = null;
   nav.Location                       _currentLocation;
+  Keyboard keyboard = new Keyboard();
   
   List<nav.Location> contextHome = 
       [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR,            id.COMPANY_SELECTOR_SEARCHBAR),
@@ -178,20 +181,22 @@ class _KeyboardHandler {
        id.CONTEXT_PHONE : contextPhone};
   }
 
+  void registerHandler (key, callback) {
+    keyboard.register(key, (KeyboardEvent event) {
+      event.preventDefault();
+      callback(event);
+    });
+  }
+  
+  void registerNavShortcut(key, callback)     => this.registerHandler('${NavKey}+${key}', callback);
+  void registerCommandShortcut(key, callback) => this.registerHandler('${CommandKey}+${key}', callback);
+
   void _ctrlAltInitialize() {    
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       _currentLocation = location;
     });
     
-    Keyboard keyboard = new Keyboard();
     Map<String, EventListener> keybindings = {
-      'Alt+1'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_HOME)),
-      'Alt+2'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_HOMEPLUS)),
-      'Alt+3'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_MESSAGES)),
-      'Alt+4'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_LOG)),
-      'Alt+5'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_STATISTICS)),
-      'Alt+6'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_PHONE)),
-      'Alt+7'     : (_) => Controller.Context.changeLocation(new nav.Location.context(id.CONTEXT_VOICEMAILS)),
       'Alt+T'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CALL_ORIGINATE,   id.CALL_ORIGINATE_NUMBER_FIELD)),
       'Alt+V'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
       'Alt+A'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
@@ -204,9 +209,9 @@ class _KeyboardHandler {
       'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
       'Alt+U'     : (_) => event.bus.fire(event.PickupFirstParkedCall, null),
       'Alt+O'     : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
-      'Alt+W'     : (_) => event.bus.fire(event.CallSelectedContact, 1),
-      'Alt+E'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
-      'Alt+R'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
+      'Alt+1'     : (_) => event.bus.fire(event.CallSelectedContact, 1),
+      'Alt+2'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
+      'Alt+3'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
       'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
       'ALT+K'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, 'contactinfo_calendar', id.CONTACT_CALENDAR)),
       'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
@@ -219,20 +224,19 @@ class _KeyboardHandler {
       //'down'      : (_) => event.bus.fire(event.keyDown, null)
     };
     // TODO God sigende kommentar - Thomas Løcke
-    keybindings.forEach((key, callback) => keyboard.register(key, (KeyboardEvent event) {
-      event.preventDefault();
-      callback(event);
-    }));
-
     window.document.onKeyDown.listen(keyboard.press);
+
+    keybindings.forEach(this.registerHandler);
+
     
     Keyboard keyUp = new Keyboard();
     keybindings = {
-      META    : (_) => event.bus.fire(event.keyMeta, false),
-      'enter' : (_) => event.bus.fire(event.keyEnter, null),
-      'esc'   : (_) => event.bus.fire(event.keyEsc, null),
-      'up'    : (_) => event.bus.fire(event.keyUp, null),
-      'down'  : (_) => event.bus.fire(event.keyDown, null)
+      NavKey     : (_) => event.bus.fire(event.keyNav, false),
+      CommandKey : (_) => event.bus.fire(event.keyCommand, false),
+      'enter'    : (_) => event.bus.fire(event.keyEnter, null),
+      'esc'      : (_) => event.bus.fire(event.keyEsc, null),
+      'up'       : (_) => event.bus.fire(event.keyUp, null),
+      'down'     : (_) => event.bus.fire(event.keyDown, null)
     };
 
     keybindings.forEach((key, callback) => keyUp.register(key, (KeyboardEvent event) {
@@ -242,7 +246,8 @@ class _KeyboardHandler {
 
     Keyboard keyDown = new Keyboard();
     keybindings = {
-      META    : (_) => event.bus.fire(event.keyMeta, true),
+      [NavKey]       : (_) => event.bus.fire(event.keyNav, true),
+      [CommandKey]   : (_) => event.bus.fire(event.keyCommand, true),
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
       [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
       [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),

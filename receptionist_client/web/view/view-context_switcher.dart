@@ -39,6 +39,8 @@ class ContextSwitcher {
       if (index < shortCuts.length) {
         
         existingElement.parent.insertBefore(new Nudge(shortCuts[index]).element, existingElement);
+        keyboardHandler.registerNavShortcut(shortCuts[index], (_) => Controller.Context.changeLocation(new nav.Location.context(uiContext.id)));
+        
         index++;
       }
 
@@ -60,7 +62,7 @@ class ContextSwitcher {
   }
   
   void _registerEventListeners() {
-    event.bus.on(event.keyMeta).listen((bool isPressed) {
+    event.bus.on(event.keyNav).listen((bool isPressed) {
       this.hideNudges(!isPressed);
     });
   }
