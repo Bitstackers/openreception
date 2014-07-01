@@ -68,7 +68,7 @@
          </button>
        </li>
        <li>
-         <button id="contextstatistics_switcherbutton">
+<!--         <button id="contextstatistics_switcherbutton">
            <img id="contextstatistics_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
          </button>
        </li>
@@ -81,7 +81,7 @@
          <button id="contextvoicemails_switcherbutton">
            <img id="contextvoicemails_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
          </button>
-       </li>
+       </li> -->
      </ul>
 
       <section id="contexthome" data-default-widget="companyselector" class="context">
@@ -118,9 +118,9 @@
          <!-- Left column -->
         <div style=" width: 35%;height: 100%; float:left;">
 
-          <div id="companyselector" data-default-element="company-selector-searchbar"></div>
+          <div id="companyselector" data-default-element="company-selector-searchbar" style="height: 4%;"></div>
 
-          <fieldset id="companyevents" data-default-element="company_events_list">
+          <fieldset id="companyevents" data-default-element="company_events_list" class="box-with-header-outer" style="height: 22%;">
             <legend id="company-events-header"> :: Kalender :: </legend>
             <div style="height: 100%;">
 
@@ -160,12 +160,12 @@
             </div>
           </fieldset>
 
-          <fieldset id="companyhandling" data-default-element="company_handling_list" >
+          <fieldset id="companyhandling" data-default-element="company_handling_list" class="box-with-header-outer" style="height: 22%;">
             <legend>:: Håndtering ::</legend>
             <ul id="company_handling_list" class="zebra"></ul>
           </fieldset>
 
-          <fieldset id="sendmessage" data-default-element="company_events_list">
+          <fieldset id="sendmessage" data-default-element="company_events_list" class="box-with-header-outer" style="height: 50%;">
             <legend> :: Ny besked :: </legend>
             <!-- Disabled for now. <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">
             <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder=":: Ingen data fundet ::" readonly="">-->
@@ -207,13 +207,13 @@
               <button id="sendmessagesend" tabindex="-1">:: Send ::</button>
             </div>
           </fieldset>
-    </div>
+        </div>
 
         <!-- Center column -->
         <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
-          <div id="contactsearchpanel" style="height: 35%; overflow:hidden;">
-            <fieldset id="contactinfo" style="width:40%; float:left; height:96%;">
-               <legend> asd</legend>
+          <div id="contactsearchpanel" style="height: 35%;">
+            <fieldset id="contactinfo" style="width:40%; float:left; height:100%;" class="box-with-header-outer-left">
+               <legend> :: Medarbejdere :: </legend>
                <div id="contactinfobody" class="box-with-header-content" style="height: 297px;">
                <div id="contactinfo_search"><div class="contact-info-searchbox">
                <input id="contact-info-searchbar" type="search" placeholder="Søg..." disabled="">
@@ -221,7 +221,7 @@
               </div>
             </fieldset>
 
-            <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:96%;">
+            <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:100%;" class="box-with-header-outer-right">
              <legend> :: Medarbejderaftaler :: </legend>
              <fieldset class="contactinfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
                <legend>:: Ny aftale ::</legend>
@@ -258,13 +258,15 @@
             </fieldset>
 
           </div>
-            <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field">
+            
+            <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field" class="box-with-header-outer">
               <legend> :: Opkald :: </legend>
-              <label for="call-originate-number-field"> :: Nummer: :: </label>
-              <input id="call-originate-number-field" name="call-originate-number-field" type="text"/>
+              <input id="call-originate-number-field" name="call-originate-number-field" type="text" placeholder=":: nummer ::" style="margin-left: 0.5%;"/>
               <button class="call-originate-number-button">Ring op</button>
             </fieldset>
-            <fieldset id="contactinfopanel" style="height: 55%">
+            
+            <fieldset id="contactinfopanel" style="height: 58%" class="box-with-header-outer">
+            <legend> :: Kontaktinfo :: </legend>
             <div id="contactinfo_data">
               <table>
                 <tbody>
@@ -335,29 +337,35 @@
         </div>
 
         <!-- Right column -->
-        <div style="margin-left: 1%;width: 19%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;">
-          <div id="companyopeninghours" class="minibox" data-default-element="company-opening-hours-list" style="height:20%">
+        <div style="margin-left: 1%;width: 18.5%;height: 100%; float:left;">
+          <fieldset id="companyopeninghours" data-default-element="company-opening-hours-list" style="height:18%" class="box-with-header-outer">
+            <legend>:: Åbningstider :: </legend>
             <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
-          </div>
+          </fieldset>
 
-           <div id="companysalescalls" class="minibox" data-default-element="company-sales-list" style="height:20%">
+           <fieldset id="companysalescalls" data-default-element="company-sales-list" style="height:15%" class="box-with-header-outer">
+            <legend>:: Sælgere/Analyser :: </legend>
             <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
-           </div>
+           </fieldset>
 
-           <div id="companyproduct" class="minibox" data-default-element="company-product-body" style="height:20%">
+           <fieldset id="companyproduct" data-default-element="company-product-body" style="height:15%" class="box-with-header-outer">
+            <legend>:: Produkter :: </legend>
              <p id="company-product-body" tabindex="-1"></p>
-           </div>
+           </fieldset>
 
-           <div id="companyaddresses" class="minibox" data-default-element="company-product-body">
+           <fieldset id="companyaddresses" data-default-element="company-product-body" style="height:15%" class="box-with-header-outer">
+              <legend>:: Adresser :: </legend>
              <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
-           </div>
+           </fieldset>
 
            <!-- Call List -->
-           <div id="globalqueue" class="box-with-header-outer">
-             <h1 class="box-with-header-headline box-with-header-medium">:: Opkald ::</h1>
+           <fieldset id="globalqueue" class="box-with-header-outer" style="height:18%" >
+             <legend>:: Opkald ::</legend>
              <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
 
-          <fieldset id="local-calls" data-default-element="local-call-list">
+           </fieldset>
+
+          <fieldset id="local-calls" data-default-element="local-call-list" class="box-with-header-outer" style="height:16%">
 
             <legend> :: Lokale kald :: </legend>
             <div>
@@ -365,7 +373,6 @@
              </ul>
             </div>
           </fieldset>
-           </div>
 
         </div>
        </div>
