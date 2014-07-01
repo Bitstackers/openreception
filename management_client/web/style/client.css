@@ -81,6 +81,10 @@ nav#navigation img {
   padding: 2px 0;
 }
 
+.box-header {
+  margin: 0;
+}
+
 .notificationbox {
   z-index: 10;
   position: fixed;

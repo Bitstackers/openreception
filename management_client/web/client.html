@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 
 <html>
-<head>
-<meta charset="utf-8">
-<title>Adaheads Adaministration</title>
-<link rel="stylesheet" href="style/client.css">
-<link rel="stylesheet" href="style/navigation.css">
-<link rel="stylesheet" href="style/organization.css">
-<link rel="stylesheet" href="style/reception.css">
-<link rel="stylesheet" href="style/contact.css">
-<link rel="stylesheet" href="style/searchcomponent.css">
-<link rel="stylesheet" href="style/dialplan.css">
-<link rel="stylesheet" href="style/record.css">
-<link rel="stylesheet" href="style/user.css">
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Adaheads Adaministration</title>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css">
+
+    <link rel="stylesheet" href="style/client.css">
+    <link rel="stylesheet" href="style/navigation.css">
+    <link rel="stylesheet" href="style/organization.css">
+    <link rel="stylesheet" href="style/reception.css">
+    <link rel="stylesheet" href="style/contact.css">
+    <link rel="stylesheet" href="style/searchcomponent.css">
+    <link rel="stylesheet" href="style/dialplan.css">
+    <link rel="stylesheet" href="style/record.css">
+    <link rel="stylesheet" href="style/user.css">
+    <link rel="stylesheet" href="style/billing.css">
+  </head>
 <body>
   <nav id="navigation">
     <ul>
@@ -263,7 +267,7 @@
         </div>
 
         <div id="dialplan-controlbar-condition">
-          <h4>Betingelser</h4>
+          <h4 class="box-header">Betingelser</h4>
           <ol id="dialplan-control-condition-list">
             <li value="0" class="clickable">
               <img alt="Tidsstyring" src="image/dialplan/watch.svg" class="dialplan-controlitem-img">
@@ -278,7 +282,7 @@
         </div>
 
         <div id="dialplan-controlbar-action">
-          <h4>Handlinger</h4>
+          <h4 class="box-header">Handlinger</h4>
           <ol id="dialplan-control-action-list">
             <li value="2" class="clickable">
               <img alt="viderstil" src="image/dialplan/bended_arrow.svg" class="dialplan-controlitem-img">
@@ -378,8 +382,31 @@
     <!-- -------------------- --
       -- ----- BILLING ------ --
       -- -------------------- -->
-    <div id="user-page" class="hidden">
-      BILLING
+    <div id="billing-page" class="hidden">
+      <div>
+        <label for="billing-from-input">Fra</label>
+        <input id="billing-from-input" type="date">
+        <label for="billing-to-input">Til</label>
+        <input id="billing-to-input" type="date">
+      </div>
+
+      <table id="billing-table" class="pure-table pure-table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Flag</th>
+            <th>Fakturering</th>
+            <th>Organization</th>
+            <th>Antal kald ud</th>
+            <th>Minutter forbrugt</th>
+            <th>Ventetid </th>
+            <th>SMS'er sendt</th>
+          </tr>
+        </thead>
+
+        <tbody id="billing-data-body">
+        </tbody>
+      </table>
     </div>
 
   </div> <!-- page-main-screen -->

@@ -15,6 +15,7 @@ part 'requests/organization.dart';
 part 'requests/reception.dart';
 part 'requests/reception_contact.dart';
 part 'requests/user.dart';
+part 'requests/cdr.dart';
 
 class HttpMethod {
   static const String GET = 'GET';
