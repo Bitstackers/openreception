@@ -28,28 +28,39 @@ abstract class ReceptionHandlingLabels {
  */
 class ReceptionHandling {
 
-  static const String className = '${libraryName}.ReceptionHandling';
+  static const String className   = '${libraryName}.ReceptionHandling';
+  static const String NavShortcut = 'H'; 
 
-  Context          context;
-  Element          element;
-  UListElement get listElement => this.element.querySelector('ul');
-  Element      get header      => this.element.querySelector('legend');
+  Context           context;
+  Element           element;
+  UListElement  get listElement => this.element.querySelector('ul');
+  Element       get header      => this.element.querySelector('legend');
+  bool          get active      => nav.Location.isActive(this.element);
+  List<Element> get nudges      => this.element.querySelectorAll('.nudge');
 
   ReceptionHandling(Element this.element, Context this.context) {
+
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
+
     assert(element.attributes.containsKey(defaultElementId));
 
     this.header.text = ReceptionHandlingLabels.title;
     _registerEventListeners();
   }
+  
+  void hideNudges(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   void _registerEventListeners() {
     event.bus.on(event.receptionChanged).listen(render);
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, listElement));
-    element.onClick.listen((_) => event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, listElement.id)));
+    element.onClick.listen((_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
   }
 
   void render(model.Reception reception) {
     listElement.children.clear();
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.hideNudges(!isPressed));
 
 
     reception.handlingList.forEach((value) => listElement.children.add(new LIElement()..text = value.value));

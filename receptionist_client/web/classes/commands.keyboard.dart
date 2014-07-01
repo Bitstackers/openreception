@@ -200,7 +200,6 @@ class _KeyboardHandler {
       'Alt+T'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CALL_ORIGINATE,   id.CALL_ORIGINATE_NUMBER_FIELD)),
       'Alt+V'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
       'Alt+A'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,   id.COMPANY_EVENTS_LIST)),
-      'Alt+H'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING, id.COMPANY_HANDLING_LIST)),
       'Alt+B'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,      id.SENDMESSAGE_CELLPHONE)),
       'Alt+S'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
       'Alt+M'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,     id.CONTACT_INFO_SEARCHBAR)),
@@ -216,6 +215,13 @@ class _KeyboardHandler {
       'ALT+K'     : (_) => Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, 'contactinfo_calendar', id.CONTACT_CALENDAR)),
       'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
       'Ctrl+S'    : (_) => event.bus.fire(event.Save, null),
+      NavKey       : (_) => event.bus.fire(event.keyNav, true),
+      CommandKey   : (_) => event.bus.fire(event.keyCommand, true),
+      [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
+      [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
+      [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      [Key.NumMinus] : (_) => Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)
+      
 //      'Tab'       : (_) => tab(mode: FORWARD),
 //      'Shift+Tab' : (_) => tab(mode: BACKWARD),
       
@@ -224,10 +230,9 @@ class _KeyboardHandler {
       //'down'      : (_) => event.bus.fire(event.keyDown, null)
     };
     // TODO God sigende kommentar - Thomas Løcke
-    window.document.onKeyDown.listen(keyboard.press);
+    window.document.onKeyDown.listen(this.keyboard.press);
 
     keybindings.forEach(this.registerHandler);
-
     
     Keyboard keyUp = new Keyboard();
     keybindings = {
@@ -243,24 +248,7 @@ class _KeyboardHandler {
       event.preventDefault();
       callback(event);
     }));
-
-    Keyboard keyDown = new Keyboard();
-    keybindings = {
-      [NavKey]       : (_) => event.bus.fire(event.keyNav, true),
-      [CommandKey]   : (_) => event.bus.fire(event.keyCommand, true),
-      [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
-      [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
-      [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),
-      [Key.NumMinus] : (_) => Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)
-    };
-
-    keybindings.forEach((key, callback) => keyDown.register(key, (KeyboardEvent event) {
-      event.preventDefault();
-      callback(event);
-    }));
-
     
-    window.document.onKeyDown.listen(keyDown.press);
     window.document.onKeyUp.listen(keyUp.press);
     
 //    ctrlAlt.Keys.shortcuts({
