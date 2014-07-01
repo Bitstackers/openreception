@@ -183,6 +183,13 @@ class DialplanView {
         renderExtensionList(dialplan);
       });
 
+    ImageElement removeButton = new ImageElement(src: 'image/tp/red_plus.svg')
+      ..classes.add('dialplan-extension-add-icon')
+      ..onClick.listen((_) {
+        dialplan.extensionGroups.remove(group);
+        renderExtensionList(dialplan);
+      });
+
     SpanElement text = new SpanElement()
       ..text = group.name
       ..onClick.listen((_) {
@@ -190,7 +197,7 @@ class DialplanView {
       });
 
     LIElement li = new LIElement()
-      ..children.addAll([addButton, text]);
+      ..children.addAll([addButton, removeButton, text]);
     return li;
   }
 
