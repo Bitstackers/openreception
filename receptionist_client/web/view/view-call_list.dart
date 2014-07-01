@@ -29,17 +29,17 @@ class CallList {
   static const String className = '${libraryName}.CallList';
 
   Context context;
-  DivElement element;
+  Element element;
   bool hasFocus = false;
 
-  HeadingElement get header => this.element.querySelector('h1');
+  Element        get header => this.element.querySelector('legend');
   UListElement   get queuedCallUL => this.element.querySelector("#global-queue-list");
   UListElement   get ownedCallsUL => this.element.querySelector("#local-call-list");
 
   model.CallList _callList;
   int callCount = 0;
 
-  CallList(DivElement this.element, Context this.context) {
+  CallList(Element this.element, Context this.context) {
     this._registerEventListerns();
     this._renderHeader;
   }
@@ -134,6 +134,6 @@ class CallList {
   }
 
   void _renderHeader() {
-    header.text = '${CallListLabels.Title} (${this.queuedCallUL.children.where((LIElement element) => !element.hidden).length})}';
+    header.text = '${CallListLabels.Title} (${this.queuedCallUL.children.where((LIElement element) => !element.hidden).length})';
   }
 }

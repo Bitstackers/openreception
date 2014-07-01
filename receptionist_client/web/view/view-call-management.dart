@@ -17,6 +17,10 @@ part of view;
  * Widget for originating a new call.
  */
 
+abstract class CallManagementLabels {
+  static const String HeaderText = 'Ring ud';
+}
+
 class CallManagement {
 
   static final String  id        = constant.ID.CALL_MANAGEMENT;
@@ -30,6 +34,7 @@ class CallManagement {
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
   List<InputElement>  get inputFields  => this.element.querySelectorAll('input');
   List<ButtonElement> get buttons      => this.element.querySelectorAll('button');
+  Element             get header       => this.element.querySelector('legend');
 
   void set disabled (bool toggle) {
     this.inputFields.forEach((InputElement inputField) {
@@ -47,6 +52,8 @@ class CallManagement {
    * TODO
    */
   CallManagement(Element this.element, Context this.context) {
+    header.text = CallManagementLabels.HeaderText;
+    
     registerEventListeners();
     
     this.element.insertBefore(new Nudge('T').element, this.numberField);

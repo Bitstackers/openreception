@@ -20,7 +20,7 @@ abstract class MessageLabels {
   static final String cancelButtonLabel = 'Annuller';
   static final String callerPhonePlaceholder = 'Telefon';
   static final String callerCellphonePlaceholder = 'Mobilnummer';
-  static final String callerLocalNumberPlaceholder = 'Lokalnr';
+  static final String callerLocalNumberPlaceholder = 'Lokalnummer';
   static final String callerCompanyPlaceholder = 'Firmanavn';
   static final String callerNamePlaceholder = 'Opkalders navn';
   static final String searchPlaceholder = 'S&oslash;g..';
@@ -144,9 +144,9 @@ class Message {
         ..text = MessageLabels.sendButtonLabel
         ..onClick.listen(_sendHandler);
 
-    focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
+    //focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
 
-    focusElements.forEach((e) => context.registerFocusElement(e));
+    //focusElements.forEach((e) => context.registerFocusElement(e));
 
     this._renderContact(contact);
     this._setupLabels();
@@ -241,7 +241,7 @@ class Message {
   }
 
   void _registerEventListeners() {
-    element.onClick.listen(this._onMessageElementClick);
+    //element.onClick.listen(this._onMessageElementClick);
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
     event.bus.on(event.contactChanged).listen(this._renderContact);
@@ -254,11 +254,12 @@ class Message {
       callerPhoneField.value = '${value.callerId}';
     });
 
+    /*
     element.onClick.listen((MouseEvent e) {
       if ((e.target as Element).attributes.containsKey('tabindex')) {
         event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, (e.target as Element).id));
       }
-    });
+    });*/
   }
 
   void _cancelClick(_) {

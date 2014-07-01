@@ -13,26 +13,23 @@
 
 part of view;
 
+abstract class CompanySalesCallsLabels {
+  static const String HeaderText = 'Sælgere / Analyser';
+}
+
 class CompanySalesCalls {
   Box          box;
   Context      context;
-  DivElement   element;
+  final Element   element;
   bool         hasFocus  = false;
-  SpanElement  header;
-  UListElement ul;
-  String       title     = 'Sælgere / Analyser';
+  Element      get header           => this.element.querySelector('legend');
+  UListElement get instructionList  => this.element.querySelector('#${id.COMPANY_SALES_LIST}');
 
-  CompanySalesCalls(DivElement this.element, Context this.context) {
+  CompanySalesCalls(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
     
-    ul = element.querySelector('#${id.COMPANY_SALES_LIST}');
-
-    header = new SpanElement()
-      ..text = title;
-
-    box = new Box.withHeader(element, header)
-      ..addBody(ul);
+    header.text = CompanySalesCallsLabels.HeaderText;
 
     registerEventListeners();
   }
@@ -41,37 +38,24 @@ class CompanySalesCalls {
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, instructionList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        instructionList.focus();
       }
     });
     
-//    event.bus.on(event.focusChanged).listen((Focus value) {
-//      hasFocus = handleFocusChange(value, [ul], element);
-//    });
-//
-//    ul.onFocus.listen((_) {
-//      setFocus(ul.id);
-//    });
-//
-//    element.onClick.listen((_) {
-//      setFocus(ul.id);
-//    });
-//
-//    context.registerFocusElement(ul);
   }
 
   void render(model.Reception reception) {
-    ul.children.clear();
+    instructionList.children.clear();
 
     for(var value in reception.crapcallHandlingList) {
-      ul.children.add(new LIElement()
+      instructionList.children.add(new LIElement()
                         ..text = value.value);
     }
   }
