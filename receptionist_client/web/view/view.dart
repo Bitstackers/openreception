@@ -49,7 +49,7 @@ part 'view-message-list.dart';
 part 'view-notification.dart';
 part 'view-nudge.dart';
 part 'view-reception-events.dart';
-part 'view-message.dart';
+part 'view-message-compose.dart';
 
 part '../components/agentinfo.dart';
 part '../components/boxwithheader.dart';

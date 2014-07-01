@@ -35,6 +35,7 @@ abstract class MessageLabels {
 class Message {
 
   static const String className = '${libraryName}.Message';
+  static const String NavShortcut = 'H'; 
 
   final Element element;
   final Context context;
@@ -241,7 +242,7 @@ class Message {
   }
 
   void _registerEventListeners() {
-    //element.onClick.listen(this._onMessageElementClick);
+    element.onClick.listen(this._onMessageElementClick);
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
     event.bus.on(event.contactChanged).listen(this._renderContact);
@@ -254,12 +255,12 @@ class Message {
       callerPhoneField.value = '${value.callerId}';
     });
 
-    /*
+    
     element.onClick.listen((MouseEvent e) {
       if ((e.target as Element).attributes.containsKey('tabindex')) {
         event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, (e.target as Element).id));
       }
-    });*/
+    });
   }
 
   void _cancelClick(_) {
