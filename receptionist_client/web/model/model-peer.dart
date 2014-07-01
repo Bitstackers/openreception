@@ -6,19 +6,28 @@ class PeerState  {
   static final REGISTERED   = new PeerState('Registered');
   static final UNREGISTERED = new PeerState('Unregistered');
   
-  final String name;
+  String _name;
   
-  PeerState (this.name);
+  PeerState (this._name);
+  
+  @override
+  operator == (PeerState other) => this._name.toLowerCase() == other._name.toLowerCase();
+  
+  @override
+  int get hashCode => this._name.hashCode;
+  
+  @override
+  String toString () => this._name;
 }
 
 class Peer {
   
   static const String className = "${libraryName}.Peer";
 
-  String              ID  = null;
-  int            expires  = null;
-  PeerState _currentState = PeerState.UNKNOWN;
-  Map _cachedData         = {};
+  String         get ID   => this._cachedData['userid'];
+  int            expires  =  null;
+  PeerState _currentState =  PeerState.UNKNOWN;
+  Map _cachedData         =  {};
 
   static final EventType<PeerState> stateChange = new EventType<PeerState>();
 
@@ -35,18 +44,9 @@ class Peer {
 
   Peer.fromMap(Map map) {
     this._currentState = (map['registered'] ? PeerState.REGISTERED : PeerState.UNREGISTERED);
-    this.ID = map['userid'];
     this._cachedData = map;
   }
   
-  /**
-   * 
-   */
-  @override
-  String toString () {
-    return this.toMap().toString();
-  }
-
   void update (Peer newPeer) {
     assert (this.ID == newPeer.ID);
     
@@ -55,21 +55,29 @@ class Peer {
     this.state       = newPeer.state;
   }
   
-  Map toMap() {
-    this._cachedData['peer_id'] = this.ID;
-    return this._cachedData;
-  }
+  /**
+   * Serialization function.
+   */
+  Map toJson() =>  this._cachedData;
   
-  Map toJSON() {
-    return this.toMap();
-  }
-
-  bool operator ==(Call other) {
-    return this.ID == other.ID;
-  }
-
-  int get hashCode {
-    return this.ID.hashCode;
-  }
+  /**
+   * Two peers are considered equal, if their ID's are.
+   */
+  @override
+  bool operator == (Peer other) => this.ID == other.ID;
+  
+  /**
+   * See the equals operator definition.
+   */
+  @override
+  int get hashCode => this.ID.hashCode;
+  
+  /**
+   * String representation of the peer.
+   * 
+   * Returns string with the format "ID - status".
+   */
+  @override
+  String toString () => '${this.ID} - ${this.state}.'; 
   
 }
