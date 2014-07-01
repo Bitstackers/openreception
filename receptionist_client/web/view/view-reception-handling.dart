@@ -39,12 +39,11 @@ class ReceptionHandling {
   List<Element> get nudges      => this.element.querySelectorAll('.nudge');
 
   ReceptionHandling(Element this.element, Context this.context) {
+    assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
-
-    assert(element.attributes.containsKey(defaultElementId));
 
     this.header.text = ReceptionHandlingLabels.title;
     _registerEventListeners();

@@ -6,22 +6,23 @@ class ReceptionSelector {
   static const String NavShortcut = 'V'; 
 
   final DivElement                      element;
-  final Context                         context;
+  final Context                         uiContext;
   SearchComponent<model.BasicReception> search;
   model.BasicReception                  selectedReception;
-  
+  bool get muted     => this.uiContext != Context.current;  
+
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  ReceptionSelector(DivElement this.element, Context this.context) {
+  ReceptionSelector(DivElement this.element, Context this.uiContext) {
     assert (element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, element.attributes[defaultElementId])));
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
     String searchBoxId = element.attributes['data-default-element'];
         
-    search = new SearchComponent<model.BasicReception>(element, context, searchBoxId)
+    search = new SearchComponent<model.BasicReception>(element, uiContext, searchBoxId)
       ..searchPlaceholder = 'Søg efter en virksomhed'
       ..whenClearSelection = whenClearSelection
       ..listElementToString = listElementToString
@@ -29,6 +30,15 @@ class ReceptionSelector {
       ..selectedElementChanged = elementSelected;
     
     this.initialFill().then(this._registerEventlisteners); 
+  }
+  
+  void _select (_) {
+    const String context = '${className}._select';
+    log.debugContext('${this.uiContext} : ${Context.current}', context);
+    
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, element.attributes[defaultElementId]));
+    } 
   }
 
   Future initialFill() {

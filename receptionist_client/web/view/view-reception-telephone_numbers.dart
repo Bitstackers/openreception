@@ -14,27 +14,51 @@
 part of view;
 
 class ReceptionTelephoneNumbers {
-  final Context   context;
+  final Context   uiContext;
   final Element   element;
   
-  bool            hasFocus  = false;
+  bool     hasFocus  = false;
+  bool get muted     => this.uiContext != Context.current;
   
+  static const String className = '${libraryName}.ReceptionTelephoneNumbers';
+  static const String NavShortcut = 'Z';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
   Element         get header              => this.element.querySelector('legend');
   UListElement    get telephoneNumberList => this.element.querySelector('#${id.COMPANY_TELEPHONENUMBERS_LIST}');
   String          title     = 'Hovednumre';
 
-  ReceptionTelephoneNumbers(Element this.element, Context this.context) {
+  ReceptionTelephoneNumbers(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
+
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     header.text = title;    
     registerEventListeners();
   }
+  
+  void _select(_) {
+    const String context = '${className}._select';
+
+    if (!muted) {
+      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, telephoneNumberList.id));
+    } else {
+      log.debugContext('${this.uiContext} : ${Context.current}', context);
+    }
+  }
+
 
   void registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, telephoneNumberList.id));
+      event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, telephoneNumberList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
@@ -45,7 +69,7 @@ class ReceptionTelephoneNumbers {
       }
     });
 
-    context.registerFocusElement(telephoneNumberList);
+    uiContext.registerFocusElement(telephoneNumberList);
   }
 
   void render(model.Reception reception) {

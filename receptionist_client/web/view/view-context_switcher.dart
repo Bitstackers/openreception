@@ -39,16 +39,17 @@ class ContextSwitcher {
       if (index < shortCuts.length) {
         
         existingElement.parent.insertBefore(new Nudge(shortCuts[index]).element, existingElement);
-        keyboardHandler.registerNavShortcut(shortCuts[index], (_) => Controller.Context.changeLocation(new nav.Location.context(uiContext.id)));
+                
+        keyboardHandler.registerNavShortcut(shortCuts[index], (_) => Controller.Context.change(uiContext));
         
         index++;
       }
 
       existingElement..onClick.listen((_) => Controller.Context.change(uiContext));
       
-      event.bus.on(event.locationChanged).listen((nav.Location newlocation) { 
-        existingElement.classes.toggle('active', newlocation.contextId == uiContext.id);
-        });
+      event.bus.on(event.locationChanged).listen((nav.Location newlocation) => 
+        existingElement.classes.toggle('active', newlocation.contextId == uiContext.id));
+        
       
     }
     

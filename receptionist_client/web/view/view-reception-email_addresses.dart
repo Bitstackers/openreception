@@ -15,44 +15,66 @@ part of view;
 
 class ReceptionEmailAddresses {
 
-  Context         context;
-  final Element      element;
+  final Context context;
+  final Element element;
+
   bool            hasFocus  = false;
+
+  bool get muted => this.context == Context.current;
+  
+  static const String className = '${libraryName}.ReceptionEmailAddresses';
+  static const String NavShortcut = 'A';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
   Element         get header => this.element.querySelector('legend');
   model.Reception reception = model.nullReception;
-  UListElement    get ul    => this.element.querySelector('#${id.COMPANY_EMAIL_ADDRESSES_LIST}');
+  UListElement    get emailAddressList    => this.element.querySelector('#${id.COMPANY_EMAIL_ADDRESSES_LIST}');
   String          title     = 'Emailadresser';
 
   ReceptionEmailAddresses(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
 
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
+
     header.text = title;
 
     registerEventListeners();
   }
+  
+  void _select() {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, emailAddressList.id));
+    }
+  }
 
   void registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, ul.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, emailAddressList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        ul.focus();
+        emailAddressList.focus();
       }
     });
   }
 
   void render(model.Reception reception) {
-    ul.children.clear();
+    emailAddressList.children.clear();
 
     for(var value in reception.emailAddressList) {
-      ul.children.add(new LIElement()
+      emailAddressList.children.add(new LIElement()
                         ..text = value.value);
     }
   }

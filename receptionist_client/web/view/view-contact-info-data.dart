@@ -31,7 +31,6 @@ class ContactInfoData {
   DivElement responsibility;
   OListElement telephoneNumberList;
   UListElement get workHoursList => this.element.querySelector('#${id.CONTACT_WORK_HOURS_LIST}');
-  bool get muted => false; //TODO: Change to check location.
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
 

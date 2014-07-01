@@ -17,6 +17,14 @@ class ReceptionCustomerType {
   
   final Context        context;
   final Element        element;
+  
+  bool get muted => this.context != Context.current;
+  
+  static const String className = '${libraryName}.ReceptionCustomerType';
+  static const String NavShortcut = 'D';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
   ParagraphElement get body   => this.element.querySelector('#${id.COMPANY_CUSTOMERTYPE_BODY}');
   Element          get header => this.element.querySelector('legend');
   String           title     = 'Kundetype';
@@ -25,10 +33,25 @@ class ReceptionCustomerType {
     assert(element.attributes.containsKey(defaultElementId));
     header.text = title;
 
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
+
     registerEventListeners();
   }
 
+  void _select(_) {
+    if (!muted) {
+      Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.body.id));
+    } else {
+      print (this.context);
+    }
+  }
+
   void registerEventListeners() {
+
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
       body.text = value.customerType;
     });

@@ -18,10 +18,11 @@ abstract class ReceptionProductLabels {
 }
 
 class ReceptionProduct {
-  final Context       context;
+  final Context       uiContext;
   final Element       element;
 
-  
+  bool get muted     => this.uiContext != Context.current;
+
   static const String className   = '${libraryName}.ReceptionProduct';
   static const String NavShortcut = 'F'; 
 
@@ -30,19 +31,25 @@ class ReceptionProduct {
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  ReceptionProduct(Element this.element, Context this.context) {
+  ReceptionProduct(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
     
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, body.id)));
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
     
 
     header.text = ReceptionProductLabels.HeaderText;
 
     registerEventListeners();
   }
-
+  
+  void _select() {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, body.id));
+    } 
+  }
+  
   void registerEventListeners() {
     
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
@@ -52,7 +59,7 @@ class ReceptionProduct {
     });
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, body.id));
+      event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, body.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {

@@ -24,12 +24,13 @@ abstract class CallManagementLabels {
 class CallManagement {
   static const String  className = '${libraryName}.CallManagement';
   static const String NavShortcut = 'T'; 
+  bool get muted     => this.context != Context.current;  
 
   static final String  id        = constant.ID.CALL_MANAGEMENT;
   final        Element element;
   final        Context context;
 
-  bool                get muted        => !nav.Location.isActive(this.element);
+  bool                get selected        => !nav.Location.isActive(this.element);
   InputElement        get numberField  => this.element.querySelector('#call-originate-number-field');
   ButtonElement       get dialButton   => this.element.querySelector('.call-originate-number-button');
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
@@ -61,9 +62,15 @@ class CallManagement {
     registerEventListeners();
     
     this.element.insertBefore(new Nudge('T').element, this.numberField);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, this.numberField.id)));
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
     this.element.insertBefore(new Nudge('I').element, this.dialButton);
+  }
+  
+  void _select (_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, this.numberField.id));
+    }
   }
 
   _changeActiveCall(model.Call call) {

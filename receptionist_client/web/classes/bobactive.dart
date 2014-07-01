@@ -44,7 +44,7 @@ class BobActive {
   View.ReceptionEmailAddresses companyEmailAddresses;
   View.ReceptionWebsites companyWebsites;
   View.ReceptionRegistrationNumber compayRegistrationNumber;
-  View.CompanyOther companyOther;
+  View.ReceptionOther companyOther;
   View.ContactInfo contactInfo;
   View.CallList globalQueue;
   View.CallManagement callManagement;
@@ -103,7 +103,7 @@ class BobActive {
     companyEmailAddresses    = new View.ReceptionEmailAddresses(querySelector('#${id.COMPANY_EMAIL_ADDRESSES}'), homePlus);
     companyWebsites          = new View.ReceptionWebsites(querySelector('#${id.COMPANY_WEBSITES}'), homePlus);
     compayRegistrationNumber = new View.ReceptionRegistrationNumber(querySelector('#${id.COMPANY_REGISTRATION_NUMBER}'), homePlus);
-    companyOther             = new View.CompanyOther(querySelector('#${id.COMPANY_OTHER}'), homePlus);
+    companyOther             = new View.ReceptionOther(querySelector('#${id.COMPANY_OTHER}'), homePlus);
 
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
 

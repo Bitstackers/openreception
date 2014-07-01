@@ -20,6 +20,7 @@ class ContactInfoCalendar {
   final        Element element;
   final        Context context;
                Element lastActive = null;
+               bool get muted     => this.context != Context.current;  
 
   Element             get header                    => this.element.querySelector('legend');
   bool                get active         => nav.Location.isActive(this.element);

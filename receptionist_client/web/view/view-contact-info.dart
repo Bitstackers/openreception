@@ -31,6 +31,7 @@ class ContactInfo {
 
                List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
                void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+               bool get muted     => this.context != Context.current;  
 
 
   ContactInfoSearch search;
@@ -52,11 +53,17 @@ class ContactInfo {
 
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(ContactInfoSearch.NavShortcut).element,  this.header);
-    keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(search.context.id, element.id, search.searchBox.id)));
+    keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, this._select);
 
     body = querySelector('#contactinfobody');
 
     _registerEventListeners();
+  }
+  
+  void _select (_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(search.context.id, element.id, search.searchBox.id));
+    }
   }
 
   void _registerEventListeners() {

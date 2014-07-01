@@ -17,8 +17,14 @@ class ReceptionWebsites {
   final Context context;
   final Element element;
   
-  bool            hasFocus  = false;
+  bool     hasFocus  = false;
+  bool get muted     => this.context != Context.current;
   
+  static const String className = '${libraryName}.ReceptionTelephoneNumbers';
+  static const String NavShortcut = 'S';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
   String          title     = 'Web-sider';
 
   Element         get header      => this.element.querySelector('legend');
@@ -27,12 +33,26 @@ class ReceptionWebsites {
   ReceptionWebsites(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
+    
+
     header.text = title;
 
     registerEventListeners();
   }
+  
+  void _select(_) {
+    if (!muted) {
+       Controller.Context.changeLocation(new nav.Location(context.id, element.id, websiteList.id));
+    }
+  }
 
   void registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {

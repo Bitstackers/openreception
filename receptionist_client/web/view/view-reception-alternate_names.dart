@@ -14,27 +14,47 @@
 part of view;
 
 class ReceptionAlternateNames {
-  final Context context;
+  final Context uiContext;
   final Element element;
   
-  bool            hasFocus  = false;
+  static const String className = '${libraryName}.ReceptionAlternateNames';
+  static const String NavShortcut = 'F';
+
+  bool get muted     => this.uiContext != Context.current;
+  bool     hasFocus  =  false;
+  
   Element         get header             => this.element.querySelector('legend');
   UListElement    get alternateNamesList => this.element.querySelector('#${id.COMPANY_ALTERNATE_NAMES_LIST}');
   String          title     = 'Alternative firmanavne';
 
-  ReceptionAlternateNames(Element this.element, Context this.context) {
+  List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
+  ReceptionAlternateNames(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
     header.text = title;
 
     registerEventListeners();
   }
+  
+  void _select() {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, alternateNamesList.id));
+    } 
+  }
 
   void registerEventListeners() {
+    
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, alternateNamesList.id));
+      event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, alternateNamesList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {

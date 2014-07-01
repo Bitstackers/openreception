@@ -42,6 +42,9 @@ import 'logger.dart';
 final EventType<int> alertUpdated = new EventType<int>();
 
 class Context {
+  
+  static const String context = 'Context';
+  
   EventBus _bus = new EventBus();
   EventBus get bus => _bus;
 
@@ -51,6 +54,23 @@ class Context {
   String             lastFocusId   = '';
 
   Element _element;
+  
+  static Context    _current = null;
+  static Context get current => _current;
+  static    void set current (Context newUIContext) {
+    log.debugContext('Changing active context to ${newUIContext.id}', context);
+    _current = newUIContext;
+  }
+
+  @override
+  operator == (Context other) {
+    return this.id.toLowerCase() == other.id.toLowerCase();
+  }
+  
+  @override
+  String toString() {
+    return this.id;
+  }
 
   int    get alertCounter => _alertCounter;
   bool   get alertMode    => alertCounter > 0;
@@ -129,7 +149,12 @@ class Context {
 //    });
     
     event.bus.on(event.locationChanged).listen((nav.Location newLocation) {
-        _toggle(newLocation.contextId);  
+      
+      if (newLocation.contextId == this.id) {
+        Context.current = this;
+      }
+      
+      _toggle(newLocation.contextId);  
     });
   }
 

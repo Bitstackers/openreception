@@ -13,30 +13,54 @@
 
 part of view;
 
-class CompanyOther {
-  final Context context;
+class ReceptionOther {
+  final Context uiContext;
   final Element element;
+
+  bool     hasFocus  = false;
+  bool get muted     => this.uiContext != Context.current;
+  
+  static const String className = '${libraryName}.ReceptionOther';
+  static const String NavShortcut = 'V';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element          get header => this.element.querySelector('legend');
   ParagraphElement get body   => element.querySelector('#${id.COMPANY_OTHER_BODY}');
 
   String           title    = 'Andet';
 
-  CompanyOther(Element this.element, Context this.context) {
+  ReceptionOther(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
+
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     header.text = title;
 
     registerEventListeners();
   }
+  
+  void _select (_) {
+    const String context = '${className}._select';
+    log.debugContext('${this.uiContext} : ${Context.current}', context);
+    
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, body.id));
+    } 
+  }
 
   void registerEventListeners() {
+
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen((model.Reception value) {
       body.text = value.product;
     });
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, body.id));
+      event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, body.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {

@@ -18,8 +18,14 @@ class ReceptionRegistrationNumber {
   final Context context;
   final Element element;
   
-  bool         hasFocus  = false;
+  bool     hasFocus  =  false;
+  bool get muted     => this.context != Context.current;
   
+  static const String className = '${libraryName}.ReceptionRegistrationNumber';
+  static const String NavShortcut = 'C';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+
   Element      get header                 => this.element.querySelector('legend');
   UListElement get registrationNumberList => element.querySelector('#${id.COMPANY_REGISTRATION_NUMBER_LIST}');
   String       title     = 'CVR';
@@ -27,12 +33,24 @@ class ReceptionRegistrationNumber {
   ReceptionRegistrationNumber(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (this._select));
+    
     header.text = title;
 
     registerEventListeners();
   }
+  
+  void _select (_) {
+    if (!muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, registrationNumberList.id));
+    }
+  }
 
   void registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {

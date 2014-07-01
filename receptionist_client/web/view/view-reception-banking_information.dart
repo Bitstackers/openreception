@@ -18,6 +18,13 @@ class ReceptionBankingInformation {
   final Element element;
   
   bool            hasFocus  = false;
+  
+  bool get muted => this.context != Context.current;
+  
+  static const String className = '${libraryName}.ReceptionAlternateNames';
+  static const String NavShortcut = 'X';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element         get header                 => this.element.querySelector('legend');
   UListElement    get bankingInformationList => this.element.querySelector('#${id.COMPANY_BANKING_INFO_LIST}');
@@ -26,13 +33,25 @@ class ReceptionBankingInformation {
 
   ReceptionBankingInformation(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
+    ///Navigation shortcuts
+    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
+
     header .text = title;
 
     registerEventListeners();
   }
 
+  void _select() {
+    if (!muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, bankingInformationList.id));
+    }
+  }
+
   void registerEventListeners() {
+    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {

@@ -34,7 +34,6 @@ class ReceptionEvents {
   UListElement    get listElement    => this.element.querySelector('#company_events_list');
   List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
 
-
   Element lastActive = null;
   FieldSetElement get newEventWidget => this.element.querySelector('#receptioninfo-calendar-event-create');
   TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
@@ -104,11 +103,11 @@ class ReceptionEvents {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   ReceptionEvents(Element this.element, Context this.context) {
+    assert(element.attributes.containsKey(defaultElementId));
+
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
-    
-    assert(element.attributes.containsKey(defaultElementId));
 
     this.header.text = ReceptionEventsLabels.title;
 
