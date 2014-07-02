@@ -9,6 +9,7 @@ class Menu {
   static const String RECEPTION_WINDOW = 'reception';
   static const String CONTACT_WINDOW = 'contact';
   static const String DIALPLAN_WINDOW = 'dialplan';
+  static const String IVR_WINDOW = 'ivr';
   static const String RECORD_WINDOW = 'record';
   static const String USER_WINDOW = 'user';
   static const String BILLING_WINDOW = 'billing';
@@ -16,14 +17,15 @@ class Menu {
   HtmlElement element;
 
   ImageElement orgButton, recButton, conButton,
-               dialButton, recordButton, userButton,
-               billingButton;
+               dialButton, ivrButton, recordButton,
+               userButton, billingButton;
 
   Menu(HtmlElement this.element) {
     orgButton = element.querySelector('#organization-button');
     recButton = element.querySelector('#reception-button');
     conButton = element.querySelector('#contact-button');
     dialButton = element.querySelector('#dialplan-button');
+    ivrButton = element.querySelector('#ivr-button');
     recordButton = element.querySelector('#record-button');
     userButton = element.querySelector('#user-button');
     billingButton = element.querySelector('#billing-button');
@@ -52,6 +54,13 @@ class Menu {
     dialButton.onClick.listen((_) {
       Map event = {
         'window': DIALPLAN_WINDOW
+      };
+      bus.fire(windowChanged, event);
+    });
+
+    ivrButton.onClick.listen((_) {
+      Map event = {
+        'window': IVR_WINDOW
       };
       bus.fire(windowChanged, event);
     });
@@ -87,6 +96,7 @@ class Menu {
     recButton.classes.toggle('faded', window != RECEPTION_WINDOW);
     conButton.classes.toggle('faded', window != CONTACT_WINDOW);
     dialButton.classes.toggle('faded', window != DIALPLAN_WINDOW);
+    ivrButton.classes.toggle('faded', window != IVR_WINDOW);
     recordButton.classes.toggle('faded', window != RECORD_WINDOW);
     userButton.classes.toggle('faded', window != USER_WINDOW);
     billingButton.classes.toggle('faded', window != BILLING_WINDOW);

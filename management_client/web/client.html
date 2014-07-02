@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="style/contact.css">
     <link rel="stylesheet" href="style/searchcomponent.css">
     <link rel="stylesheet" href="style/dialplan.css">
+    <link rel="stylesheet" href="style/ivr.css">
     <link rel="stylesheet" href="style/record.css">
     <link rel="stylesheet" href="style/user.css">
     <link rel="stylesheet" href="style/billing.css">
@@ -25,6 +26,7 @@
       <li><img id="reception-button" alt="Reception" title="Receptioner" src="image/rec.svg" draggable="false" class="faded"></li>
       <li><img id="contact-button" alt="Kontaktpersoner" title="Kontaktpersoner" src="image/con.svg" draggable="false" class="faded"></li>
       <li><img id="dialplan-button" alt="Kaldplan" title="Kaldplan" src="image/dialplan_icon.svg" draggable="false" class="faded"></li>
+      <li><img id="ivr-button" alt="IVR" title="IVR" src="image/dialplan/IVR.svg" draggable="false" class="faded"></li>
       <li><img id="record-button" alt="Optage" title="Optage" src="image/record_icon.svg" draggable="false" class="faded"></li>
       <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user_icon.svg" draggable="false" class="faded"></li>
       <li><img id="billing-button" alt="Faktura" title="Faktura" src="image/billing_icon.svg" draggable="false" class="faded"></li>
@@ -332,6 +334,186 @@
         <div id="dialplan-comment-container">
           <textarea id="dialplan-comment" placeholder="Skriv en kommentar..."></textarea>
         </div>
+      </div>
+    </div>
+
+    <!-- --------------- --
+      -- ----- IVR ----- --
+      -- --------------- -->
+    <div id="ivr-page" class="hidden">
+
+      <div id="ivr-content-container">
+        <table id="ivr-action-table" class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th class="ivr-dial-field">Tast</th>
+              <th class="ivr-action-field">Handling</th>
+              <th>Parameter</th>
+            </tr>
+          </thead>
+          <tbody id="ivr-content-body">
+            <tr>
+              <td class="ivr-dial-field">0</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">1</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+	               <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td>
+                <select>
+                 <option>Lukket</option>
+                 <option>Ferie</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">2</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td>
+                <select>
+                 <option>Lukket</option>
+                 <option>Ferie</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">3</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">4</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">5</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">6</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">7</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">8</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">9</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">*</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="ivr-dial-field">#</td>
+              <td class="ivr-action-field">
+                <select>
+                 <option>Intet</option>
+                 <option>Send til gruppe</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="ivr-rightbar">
+        <div id="ivr-receptionpicker"></div>
+        <div id="ivr-menu-container">
+          <button id="ivr-new-menu">Opret ny</button>
+          <button id="ivr-save">Gem ændringer</button>
+          <ul id="ivr-menu-list" class="zebra">
+          </ul>
+
+        </div>
+
+        <!--
+        <div id="ivr-settings-container">
+          <span>Tast: 3</span> <br>
+          <select>
+            <option>Intet</option>
+            <option>Viderstil</option>
+            <option>Receptionister</option>
+            <option>Telefonsvare</option>
+            <option>Gå til menu</option>
+            <option>Send til gruppe</option>
+          </select>
+
+          <select>
+            <option>Start</option>
+            <option>Lukket</option>
+            <option>Receptionisterne</option>
+          </select>
+        </div>
+        -->
       </div>
     </div>
 
