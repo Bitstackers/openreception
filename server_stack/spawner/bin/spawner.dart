@@ -25,8 +25,8 @@ void main() {
       'path': 'MiscServer/bin/miscserver.dart',
       'args': []
     },
-    'CallFlowWrapper': {
-      'path': 'CallFlowControlWrapper/bin/callflowcontrol.dart',
+    'CallFlowControl': {
+      'path': 'CallFlowControl/bin/callflowcontrol.dart',
       'args': ['--servertoken', tokens[index++]]
     },
     'AuthServer': {
