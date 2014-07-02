@@ -171,7 +171,7 @@ class IvrView {
    * TODO find a better name, for the function that generates a row for the table in the middle of the screen.
    */
   TableRowElement ivrTableRow(String digit, libIvr.Ivr ivr) {
-    libIvr.Entry entry = ivr.Entries.firstWhere((e) => e.digits == digit, orElse: () => null);
+    libIvr.Entry entry = ivr.entries.firstWhere((e) => e.digits == digit, orElse: () => null);
 
     TableRowElement row = new TableRowElement();
     TableCellElement digitCell = new TableCellElement()
@@ -190,12 +190,12 @@ class IvrView {
       ..onChange.listen((_) {
       switch (actionPicker.selectedOptions.first.value) {
         case 'none':
-          ivr.Entries.remove(entry);
+          ivr.entries.remove(entry);
           break;
         case 'extensiongroup':
           entry = new libIvr.Entry()
             ..digits = digit;
-          ivr.Entries.add(entry);
+          ivr.entries.add(entry);
           break;
       }
       parameterCell.children
