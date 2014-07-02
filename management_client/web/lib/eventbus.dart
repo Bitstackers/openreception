@@ -84,6 +84,17 @@ class Invalidate {
    * }
    */
   static final EventType<Map> userRemoved = new EventType<Map>();
+
+  /**
+   * Contains the reception id where the dialplan is updated.
+   *
+   * Example:
+   * {
+   *   "id": 1
+   * }
+   *
+   */
+  static final EventType<Map> dialplanChanged = new EventType<Map>();
 }
 
 EventBus _bus = new EventBus();

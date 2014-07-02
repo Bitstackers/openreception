@@ -219,6 +219,8 @@ class DialplanView {
       return request.updateDialplan(selectedReceptionId, JSON.encode(dialplan))
         .then((_) {
         notify.info('Dialplan er blevet updateret.');
+        Map event = {'id': selectedReceptionId};
+        bus.fire(Invalidate.dialplanChanged, event);
         disableSaveButton();
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med updateringen af dialplanen.');
