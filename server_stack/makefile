@@ -31,7 +31,7 @@ configs: */bin/config.json.dist
 
 dependency:
 	cd AuthServer/ && pub get 
-	cd CallFlowControlWrapper/ && pub get 
+	cd CallFlowControl/ && pub get 
 	cd ContactServer/ && pub get 
 	cd LogServer/ && pub get 
 	cd MessageServer/ && pub get
@@ -43,7 +43,7 @@ dependency:
 
 upgrade-dependency:
 	cd AuthServer/ && pub upgrade
-	cd CallFlowControlWrapper/ && pub upgrade 
+	cd CallFlowControl/ && pub upgrade 
 	cd ContactServer/ && pub upgrade
 	cd LogServer/ && pub upgrade
 	cd MessageServer/ && pub upgrade
@@ -57,7 +57,7 @@ auth:
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart
 
 callflow: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server CallFlowControlWrapper/bin/callflowcontrol.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server CallFlowControl/bin/callflowcontrol.dart
 
 contact: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server ContactServer/bin/contactserver.dart
