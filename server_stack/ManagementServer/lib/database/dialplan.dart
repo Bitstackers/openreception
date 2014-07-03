@@ -44,6 +44,47 @@ Future _updateDialplan(Pool pool, int receptionId, Map dialplan) {
   return execute(pool, sql, parameters);
 }
 
+Future<IvrList> _getIvr(Pool pool, int receptionId) {
+  String sql = '''
+    SELECT id, ivr
+    FROM receptions
+    WHERE id = @id
+  ''';
+
+  Map parameters = {'id': receptionId};
+
+  return query(pool, sql, parameters).then((rows) {
+    if(rows.length != 1) {
+      return null;
+    } else {
+      Row row = rows.first;
+      Map ivrMap = JSON.decode(row.ivr != null ? row.ivr : '{}');
+      IvrList ivrList = new IvrList.fromJson(ivrMap);
+
+      //In case the json is empty.
+      if(IvrList == null) {
+        ivrList = new IvrList();
+      }
+
+      return ivrList;
+    }
+  });
+}
+
+Future _updateIvr(Pool pool, int receptionId, Map ivr) {
+  String sql = '''
+    UPDATE receptions
+    SET ivr=@ivr
+    WHERE id=@id;
+  ''';
+
+  Map parameters =
+    {'ivr': JSON.encode(ivr),
+     'id' : receptionId};
+
+  return execute(pool, sql, parameters);
+}
+
 Future<List<model.Audiofile>> _getAudiofileList(Pool pool) {
   String sql = '''
     SELECT filepath, shortname

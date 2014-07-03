@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:postgresql/postgresql_pool.dart';
 import 'package:postgresql/postgresql.dart';
 import 'package:libdialplan/libdialplan.dart';
+import 'package:libdialplan/ivr.dart';
 
 import 'model.dart' as model;
 import 'configuration.dart';
@@ -137,8 +138,14 @@ class Database {
   Future<Dialplan> getDialplan(int receptionId) =>
       _getDialplan(pool, receptionId);
 
-  Future<Dialplan> updateDialplan(int receptionId, Map dialplan) =>
+  Future updateDialplan(int receptionId, Map dialplan) =>
       _updateDialplan(pool, receptionId, dialplan);
+
+  Future<IvrList> getIvr(int receptionId) =>
+      _getIvr(pool, receptionId);
+
+  Future updateIvr(int receptionId, Map ivr) =>
+      _updateIvr(pool, receptionId, ivr);
 
   Future<List<model.Audiofile>> getAudiofileList() =>
       _getAudiofileList(pool);

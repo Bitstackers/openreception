@@ -1,6 +1,6 @@
 {
     "authurl": "auth.example.com/",
-    "httpport": 8080,
+    "httpport": 4090,
     "dbuser": "user",
     "dbpassword": "Secret",
     "dbhost": "localhost",

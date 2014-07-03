@@ -89,6 +89,7 @@ CREATE TABLE receptions (
    extradatauri    TEXT,
    reception_telephonenumber TEXT UNIQUE,
    dialplan        JSON,
+   ivr             JSON,
    last_check      TIMESTAMP NOT NULL DEFAULT NOW(),
    enabled         BOOLEAN NOT NULL DEFAULT TRUE
 );
