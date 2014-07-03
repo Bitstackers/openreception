@@ -1,0 +1,94 @@
+#ivr-page {
+  height: 100%;
+}
+
+#ivr-content-container {
+  float: left;
+
+  width: 80%;
+  width: -moz-calc(80% - 5px);
+  width: -webkit-calc(80% - 5px);
+
+  height: 100%;
+  height: -moz-calc(100% - 10px);
+  height: -webkit-calc(100% - 10px);
+
+  border: solid 2px grey;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 5px;
+  overflow: auto;
+}
+
+#ivr-action-table {
+  width: 100%;
+}
+
+.ivr-dial-field {
+  width: 10px;
+
+  text-align: center;
+}
+
+.ivr-action-field {
+  width: 10%;
+}
+
+#ivr-rightbar {
+  float: right;
+
+  width: 20%;
+  width: -moz-calc(20% - 5px);
+  width: -webkit-calc(20% - 5px);
+
+  height: 100%;
+
+  overflow: auto;
+}
+
+#ivr-receptionpicker {
+  margin: 5px 5px 5px 0;
+}
+
+#ivr-menu-container {
+  height: 95%;
+  height: -moz-calc(100% - 43px);
+  height: -webkit-calc(100% - 43px);
+
+  margin-right: 5px;
+
+  border: solid 2px grey;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+#ivr-menu-list {
+  height: 98%;
+  overflow: auto;
+}
+
+#ivr-menu-list li {
+  padding: 5px 0;
+}
+
+.ivr-small-button {
+  width: 16px;
+  height: 16px;
+
+  float: right;
+}
+
+/*
+#ivr-settings-container {
+  height: 80%;
+  height: -moz-calc(80% - 38px);
+  height: -webkit-calc(80% - 38px);
+
+  margin-right: 5px;
+
+  border: solid 2px grey;
+  border-radius: 10px;
+  padding: 5px;
+  overflow: auto;
+}
+*/

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:libdialplan/libdialplan.dart';
+import 'package:libdialplan/ivr.dart';
 
 import 'configuration.dart';
 import 'model.dart';

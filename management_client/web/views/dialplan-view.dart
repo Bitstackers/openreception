@@ -51,7 +51,7 @@ class DialplanView {
   ButtonElement saveButton;
   SpanElement extensionListHeader;
 
-  SearchComponent SC;
+  SearchComponent receptionPicker;
   Dialplan dialplan;
   Extension selectedExtension;
 
@@ -68,7 +68,7 @@ class DialplanView {
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
-    SC = new SearchComponent<Reception>(receptionOuterSelector,
+    receptionPicker = new SearchComponent<Reception>(receptionOuterSelector,
         'dialplan-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
         ..searchFilter = receptionSearchHandler;
@@ -86,7 +86,7 @@ class DialplanView {
       }
     });
 
-    SC.selectedElementChanged = SearchComponentChanged;
+    receptionPicker.selectedElementChanged = SearchComponentChanged;
 
     saveButton.onClick.listen((_) {
       saveDialplan();
@@ -140,7 +140,7 @@ class DialplanView {
   void fillSearchComponent() {
     request.getReceptionList().then((List<Reception> list) {
       list.sort((a, b) => a.full_name.compareTo(b.full_name));
-      SC.updateSourceList(list);
+      receptionPicker.updateSourceList(list);
     });
   }
 
@@ -153,7 +153,7 @@ class DialplanView {
   }
 
   void activateDialplan(int receptionId) {
-    SC.selectElement(null, (Reception a, _) => a.id == receptionId);
+    receptionPicker.selectElement(null, (Reception a, _) => a.id == receptionId);
 
     request.getDialplan(receptionId).then((Dialplan value) {
       disableSaveButton();
@@ -219,6 +219,8 @@ class DialplanView {
       return request.updateDialplan(selectedReceptionId, JSON.encode(dialplan))
         .then((_) {
         notify.info('Dialplan er blevet updateret.');
+        Map event = {'id': selectedReceptionId};
+        bus.fire(Invalidate.dialplanChanged, event);
         disableSaveButton();
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med updateringen af dialplanen.');

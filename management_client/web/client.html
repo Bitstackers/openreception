@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="style/contact.css">
     <link rel="stylesheet" href="style/searchcomponent.css">
     <link rel="stylesheet" href="style/dialplan.css">
+    <link rel="stylesheet" href="style/ivr.css">
     <link rel="stylesheet" href="style/record.css">
     <link rel="stylesheet" href="style/user.css">
     <link rel="stylesheet" href="style/billing.css">
@@ -24,10 +25,11 @@
       <li><img id="organization-button" alt="Organisation" title="Organisationer" src="image/org.svg" draggable="false"></li>
       <li><img id="reception-button" alt="Reception" title="Receptioner" src="image/rec.svg" draggable="false" class="faded"></li>
       <li><img id="contact-button" alt="Kontaktpersoner" title="Kontaktpersoner" src="image/con.svg" draggable="false" class="faded"></li>
-      <li><img id="dialplan-button" alt="Kaldplan" title="Kaldplan" src="image/dialplan_icon.svg" draggable="false" class="faded"></li>
-      <li><img id="record-button" alt="Optage" title="Optage" src="image/record_icon.svg" draggable="false" class="faded"></li>
-      <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user_icon.svg" draggable="false" class="faded"></li>
-      <li><img id="billing-button" alt="Faktura" title="Faktura" src="image/billing_icon.svg" draggable="false" class="faded"></li>
+      <li><img id="dialplan-button" alt="Kaldplan" title="Kaldplan" src="image/dialplan.svg" draggable="false" class="faded"></li>
+      <li><img id="ivr-button" alt="IVR" title="IVR" src="image/dialplan/IVR.svg" draggable="false" class="faded"></li>
+      <li><img id="record-button" alt="Optage" title="Optage" src="image/record.svg" draggable="false" class="faded"></li>
+      <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user.svg" draggable="false" class="faded"></li>
+      <li><img id="billing-button" alt="Faktura" title="Faktura" src="image/billing.svg" draggable="false" class="faded"></li>
     </ul>
   </nav>
 
@@ -331,6 +333,106 @@
 
         <div id="dialplan-comment-container">
           <textarea id="dialplan-comment" placeholder="Skriv en kommentar..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- --------------- --
+      -- ----- IVR ----- --
+      -- --------------- -->
+    <div id="ivr-page" class="hidden">
+
+      <div id="ivr-content-container">
+        <table id="ivr-action-table" class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th class="ivr-dial-field">Tast</th>
+              <th class="ivr-action-field">Handling</th>
+              <th>Parameter</th>
+            </tr>
+          </thead>
+          <tbody id="ivr-content-body">
+          </tbody>
+        </table>
+
+        <table class="pure-table pure-table-striped">
+          <tbody>
+          	<tr>
+          		<td>
+          			<label for="ivr-greetlong">Første velkomstsbesked</label>
+          		</td>
+              <td><select id="ivr-greetlong"></select></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-greetshort">Anden velkomstsbesked</label>
+          		</td>
+              <td><select id="ivr-greetshort"></select></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-invalidsound">Ugyldigt valg</label>
+          		</td>
+              <td><select id="ivr-invalidsound"></select></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-exitsound">Afslutningsbesked</label>
+          		</td>
+              <td><select id="ivr-exitsound"></select></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-confirmkey">Bekræftelsestast</label>
+          		</td>
+              <td><input id="ivr-confirmkey"></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-confirmattempt">Bekræftelsesforsøg</label>
+          		</td>
+              <td><input id="ivr-confirmattempt"></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-timeout">Tid mellem genoplæsning</label>
+          		</td>
+              <td><input id="ivr-timeout"></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-interdigittimeout">Inter Digit Timeout</label>
+          		</td>
+              <td><input id="ivr-interdigittimeout"></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-maxfailure">Max antal fejl</label>
+          		</td>
+              <td><input id="ivr-maxfailure"></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-maxtimeout">Max antal timeouts</label>
+          		</td>
+              <td><input id="ivr-maxtimeout"></td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<label for="ivr-digitlength">Cifferlængde</label>
+          		</td>
+              <td><input id="ivr-digitlength"></td>
+          	</tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="ivr-rightbar">
+        <div id="ivr-receptionpicker"></div>
+        <div id="ivr-menu-container">
+          <button id="ivr-new-menu">Opret ny</button>
+          <button id="ivr-save">Gem ændringer</button>
+          <ul id="ivr-menu-list" class="zebra">
+          </ul>
         </div>
       </div>
     </div>

@@ -15,8 +15,8 @@
 
 #organization-create {
   width: 100%;
-  width: -moz-calc(100% -   2px);
-  width: -webkit-calc(100% -   2px);
+  width: -moz-calc(100% - 2px);
+  width: -webkit-calc(100% - 2px);
   margin: 5px 1px;
   background-color: white;
   border: 1px solid grey;
@@ -34,8 +34,8 @@
 
 #organization-list {
   height: 100%;
-  height: -moz-calc(100% -   68px);
-  height: -webkit-calc(100% -   68px);
+  height: -moz-calc(100% - 68px);
+  height: -webkit-calc(100% - 68px);
   overflow: auto;
   border: 1px solid grey;
   border-radius: 2px;
@@ -58,11 +58,11 @@
 #organization-content {
   float: left;
   width: 60%;
-  width: -moz-calc(60% -   5px);
-  width: -webkit-calc(60% -   5px);
+  width: -moz-calc(60% - 5px);
+  width: -webkit-calc(60% - 5px);
   height: 100%;
-  height: -moz-calc(100% -   10px);
-  height: -webkit-calc(100% -   10px);
+  height: -moz-calc(100% - 10px);
+  height: -webkit-calc(100% - 10px);
   border: solid 2px grey;
   border-radius: 10px;
   padding: 5px;
@@ -77,8 +77,8 @@
 #organization-rightbar {
   float: right;
   width: 20%;
-  width: -moz-calc(20% -   10px);
-  width: -webkit-calc(20% -   10px);
+  width: -moz-calc(20% - 10px);
+  width: -webkit-calc(20% - 10px);
   height: 100%;
   padding: 5px 10px 5px 0px;
 }

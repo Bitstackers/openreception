@@ -8,20 +8,20 @@ Future<Dialplan> getDialplan(int receptionId) {
       '${config.serverUrl}/reception/$receptionId/dialplan?token=${config.token}';
 
   request = new HttpRequest()
-      ..open(HttpMethod.GET, url)
-      ..onLoad.listen((_) {
-        if (request.status == 200) {
-          String body = request.responseText;
-          completer.complete(new Dialplan.fromJson(JSON.decode(body)));
-        } else {
-          completer.completeError('Bad status code. ${request.status}');
-        }
-      })
-      ..onError.listen((e) {
-        //TODO logging.
-        completer.completeError(e.toString());
-      })
-      ..send();
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      if (request.status == 200) {
+        String body = request.responseText;
+        completer.complete(new Dialplan.fromJson(JSON.decode(body)));
+      } else {
+        completer.completeError('Bad status code. ${request.status}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send();
 
   return completer.future;
 }
@@ -34,23 +34,76 @@ Future updateDialplan(int receptionId, String dialplan) {
       '${config.serverUrl}/reception/$receptionId/dialplan?token=${config.token}';
 
   request = new HttpRequest()
-      ..open(HttpMethod.POST, url)
-      ..onLoad.listen((_) {
-        try {
-          if (request.status == 200) {
-            completer.complete(JSON.decode(request.responseText));
-          } else {
-            completer.completeError('Bad status code. ${request.status}');
-          }
-        } catch (e) {
-          completer.completeError('Exception in updateDialplan ${e}');
+    ..open(HttpMethod.POST, url)
+    ..onLoad.listen((_) {
+      try {
+        if (request.status == 200) {
+          completer.complete(JSON.decode(request.responseText));
+        } else {
+          completer.completeError('Bad status code. ${request.status}');
         }
-      })
-      ..onError.listen((e) {
-        //TODO logging.
-        completer.completeError(e.toString());
-      })
-      ..send(dialplan);
+      } catch (e) {
+        completer.completeError('Exception in updateDialplan ${e}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send(dialplan);
+
+  return completer.future;
+}
+
+Future<IvrList> getIvr(int receptionId) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/ivr?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      if (request.status == 200) {
+        String body = request.responseText;
+        completer.complete(new IvrList.fromJson(JSON.decode(body)));
+      } else {
+        completer.completeError('Bad status code. ${request.status}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send();
+
+  return completer.future;
+}
+
+Future updateIvr(int receptionId, String ivrList) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/ivr?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.POST, url)
+    ..onLoad.listen((_) {
+      try {
+        if (request.status == 200) {
+          completer.complete(JSON.decode(request.responseText));
+        } else {
+          completer.completeError('Bad status code. ${request.status}');
+        }
+      } catch (e) {
+        completer.completeError('Exception in updateIvr ${e}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send(ivrList);
 
   return completer.future;
 }
