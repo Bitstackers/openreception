@@ -12,7 +12,7 @@ Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
 
 void main() {
-  List<String> tokens = new List(4).map((_) => generateToken()).toList(growable: false);
+  List<String> tokens = new List(5).map((_) => generateToken()).toList(growable: false);
   int index = 0;
 
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
@@ -21,12 +21,9 @@ void main() {
   String serverTokenDirAbsolutPath = dir.absolute.path;
 
   Map<String, Map> Servers = {
-    'MiscServer': {
-      'path': 'MiscServer/bin/miscserver.dart',
-      'args': []
-    },
-    'CallFlowWrapper': {
-      'path': 'CallFlowControlWrapper/bin/callflowcontrol.dart',
+
+    'CallFlow': {
+      'path': 'CallFlowControl/bin/callflowcontrol.dart',
       'args': ['--servertoken', tokens[index++]]
     },
     'AuthServer': {
@@ -41,12 +38,20 @@ void main() {
       'path': 'LogServer/bin/logserver.dart',
       'args': []
     },
+    'ManagementServer': {
+      'path': 'ManagementServer/bin/server.dart',
+      'args': ['--servertoken', tokens[index++]]
+    },
     'MessageServer': {
       'path': 'MessageServer/bin/messageserver.dart',
       'args': ['--servertoken', tokens[index++]]
     },
     'MessageDispatcher': {
       'path': 'MessageDispatcher/bin/messagedispacher.dart',
+      'args': []
+    },
+    'MiscServer': {
+      'path': 'MiscServer/bin/miscserver.dart',
       'args': []
     },
     'NotificationServer': {
