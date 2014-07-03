@@ -16,27 +16,26 @@ Future<Map> messageSingle(int messageID) {
            taken_from_company,
            taken_from_phone,
            taken_from_cellphone,
-           identity       AS agent_address,
+           send_from      AS agent_address,
            flags, 
            created_at,
            taken_by_agent AS taken_by_agent_id,
            users.name     AS taken_by_agent_name,
            (SELECT count(*) FROM message_queue AS queue WHERE queue.message_id = message.id) AS pending_messages
       FROM messages message
-      LEFT JOIN auth_identities ai ON taken_by_agent = user_id AND ai.send_from
            JOIN users on taken_by_agent = users.id
-    WHERE    message.id = $messageID 
+    WHERE    message.id = @messageID
     ORDER BY 
          message.id    DESC;''';
 
-  Map parameters = {};
+  Map parameters = {'messageID': messageID};
 
   return database.query(_pool, sql, parameters).then((rows) {
     if (rows.isEmpty) {
       return {};
     }
       var row = rows.first;
-      
+
       Map message =
         {'id'               : row.id,
          'message'          : row.message,
@@ -79,10 +78,10 @@ Future<List<Map>> messageRecipients(int messageID) {
     return database.query(_pool, sql).then((rows) {
       List<Map> recipients = new List<Map>();
       for(var row in rows) {
-        recipients.add({'role'      : row.role, 
+        recipients.add({'role'      : row.role,
                         'contact'   : { 'id' : row.contact_id,   'name' : row.contact_name},
                         'reception' : { 'id' : row.reception_id, 'name' : row.reception_name},
-                        'transport' : row.transport, 
+                        'transport' : row.transport,
                         'address'   : row.address});
       }
 
