@@ -37,8 +37,8 @@ class Configuration {
   void parse() {
     if(_hasArgument('configfile')) {
       _configfile = _args['configfile'];
-      _parseFile();
     }
+    _parseFile();
     _parseCLA();
     _validate();
   }
