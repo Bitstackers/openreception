@@ -34,6 +34,7 @@ dependency:
 	cd CallFlowControlWrapper/ && pub get 
 	cd ContactServer/ && pub get 
 	cd LogServer/ && pub get 
+	cd ManagementServer/ && pub get
 	cd MessageServer/ && pub get
 	cd MessageDispatcher/ && pub get
 	cd MiscServer/ && pub get
@@ -46,6 +47,7 @@ upgrade-dependency:
 	cd CallFlowControlWrapper/ && pub upgrade 
 	cd ContactServer/ && pub upgrade
 	cd LogServer/ && pub upgrade
+	cd ManagementServer/ && pub upgrade
 	cd MessageServer/ && pub upgrade
 	cd MessageDispatcher/ && pub upgrade
 	cd MiscServer/ && pub upgrade
