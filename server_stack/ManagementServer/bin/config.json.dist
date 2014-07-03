@@ -7,5 +7,5 @@
     "dbport": 5432,
     "dbname": "dbname",
     "notificationserver": "http://example.com",
-    "token": "secret-token"
+    "servertoken": "secret-token"
 }

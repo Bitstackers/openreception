@@ -42,7 +42,8 @@ ArgResults registerAndParseCommandlineArguments(ArgParser parser, List<String> a
       ..addOption('dbhost',             help: 'The database host. Defaults to localhost')
       ..addOption('dbport',             help: 'The database port. Defaults to 5432')
       ..addOption('dbname',             help: 'The database name')
-      ..addOption('notificationserver', help: 'The notification server address');
+      ..addOption('notificationserver', help: 'The notification server address')
+      ..addOption('servertoken',        help : 'Servertoken for authServer.');
 
   return parser.parse(arguments);
 }

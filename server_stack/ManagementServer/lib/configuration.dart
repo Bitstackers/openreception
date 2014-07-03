@@ -76,8 +76,8 @@ class Configuration {
       _notificationServer = Uri.parse(_args['notificationserver']);
     }
 
-    if(_hasArgument('token')) {
-      _token = _args['token'];
+    if(_hasArgument('servertoken')) {
+      _token = _args['servertoken'];
     }
   }
 
@@ -123,8 +123,8 @@ class Configuration {
       _notificationServer = Uri.parse(content['notificationserver']);
     }
 
-    if(content.containsKey('token')) {
-      _token = content['token'];
+    if(content.containsKey('servertoken')) {
+      _token = content['servertoken'];
     }
   }
 
