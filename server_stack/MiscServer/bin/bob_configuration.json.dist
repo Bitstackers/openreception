@@ -2,7 +2,7 @@
     "standardGreeting"  : "Velkommen til...",
 
     "callFlowServerURI"     : "http://localhost:4243",
-    "organizationServerURI" : "http://localhost:8080",
+    "receptionServerURI" : "http://localhost:8080",
     "contactServerURI"      : "http://localhost:8081",
     "messageServerURI"      : "http://localhost:8082",
     "logServerURI"          : "http://localhost:8083",
@@ -20,8 +20,5 @@
             "error": "/log/error",
             "info": "/log/info"
         }
-    },
-
-    "aliceBaseUrl"      : "http://alice.adaheads.com:4242",
-    "agentID": "1"
+    }
 }
