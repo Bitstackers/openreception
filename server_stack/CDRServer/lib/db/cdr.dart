@@ -12,7 +12,8 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
             (org.flag)      AS flag,
       COUNT (cdr.uuid)      AS call_count, 
       SUM   (cdr.duration)  AS total_duration,
-      SUM   (wait_time)     AS total_wait
+      SUM   (wait_time)     AS total_wait,
+      AVG   (cdr.duration)  AS avg_duration
       
   FROM 
        cdr_entries   cdr
@@ -47,7 +48,8 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
                  'flag'       : row.flag,
                  'call_count' : row.call_count,
                  'duration'   : row.total_duration,
-                 'total_wait' : row.total_wait});
+                 'total_wait' : row.total_wait,
+                 'avg_duration': double.parse(row.avg_duration)});
     }
 
     return cdr;

@@ -7,8 +7,6 @@ void cdrHandler(HttpRequest request) {
   DateTime end    = new DateTime.fromMillisecondsSinceEpoch(int.parse (request.uri.queryParameters['date_to'])*1000);
   bool inbound    = false;
 
-  print (start.toString() + " - " + end.toString());
-
   if (request.uri.queryParameters['inbound'] == "true") {
     inbound = true;
   }
