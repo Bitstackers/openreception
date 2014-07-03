@@ -99,8 +99,6 @@ class Configuration {
         _notificationServer = Uri.parse(config['notificationServer']);
       }
 
-      assert (this.serverToken != null);
-
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -120,6 +118,8 @@ class Configuration {
       if(hasArgument('servertoken')) {
         _serverToken = _args['servertoken'];
       }
+
+      assert (this.serverToken != null);
 
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
