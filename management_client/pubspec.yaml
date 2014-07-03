@@ -8,5 +8,5 @@ dependencies:
   libdialplan:
     git:
       ref: master
-      url: git@github.com:AdaHeads/libdialplan.git
+      url: https://github.com/AdaHeads/libdialplan.git
   okeyee: any
