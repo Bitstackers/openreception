@@ -11,5 +11,6 @@ dependencies:
     git:
       ref: master
       url: https://github.com/AdaHeads/libdialplan.git
+  path: any
   postgresql: any
   route: any

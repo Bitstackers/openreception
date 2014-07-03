@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:path/path.dart';
 
 import '../lib/configuration.dart';
 import '../lib/database.dart';
@@ -10,6 +11,8 @@ import '../lib/utilities/http.dart';
 import '../lib/utilities/logger.dart';
 
 void main(List<String> args) {
+  Directory.current = dirname(Platform.script.toFilePath());
+
   ArgParser parser = new ArgParser();
   ArgResults parsedArgs = registerAndParseCommandlineArguments(parser, args);
 
