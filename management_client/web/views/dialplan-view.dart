@@ -197,6 +197,7 @@ class DialplanView {
       });
 
     LIElement li = new LIElement()
+      ..classes.add('dialplan-extension-list-group')
       ..children.addAll([addButton, removeButton, text]);
     return li;
   }
@@ -235,14 +236,14 @@ class DialplanView {
     LIElement li = new LIElement()
       ..classes.add('dialplan-extension-list-item');
 
-    ButtonElement deleteButton = new ButtonElement()
-      ..text = 'Slet'
+    ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
+      ..classes.add('dialplan-extension-add-icon')
       ..onClick.listen((_) {
-      group.extensions.remove(extension);
-      renderExtensionList(dialplan);
-      clearSettingsPanel();
-      enabledSaveButton();
-    });
+        group.extensions.remove(extension);
+        renderExtensionList(dialplan);
+        clearSettingsPanel();
+        enabledSaveButton();
+      });
     SpanElement text = new SpanElement()
       ..text = '${extension.name}'
       ..onClick.listen((_) {

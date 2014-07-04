@@ -190,6 +190,10 @@ td.dialplan-item-remove {
   height: 20%;
 }
 
+#dialplan-extensionlist-header {
+  font-size: 1.3em;
+}
+
 #dialplan-extension-list {
   list-style-type: none;
   overflow: auto;
@@ -198,7 +202,11 @@ td.dialplan-item-remove {
 }
 
 .dialplan-extension-list-item {
-  padding-left: 5px;
+  padding: 2px 0 2px 5px;
+}
+
+.dialplan-extension-list-group {
+  font-weight:bold;
 }
 
 #dialplan-settings {
