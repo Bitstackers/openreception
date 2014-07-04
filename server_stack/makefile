@@ -32,6 +32,7 @@ configs: */bin/config.json.dist
 dependency:
 	cd AuthServer/ && pub get 
 	cd CallFlowControl/ && pub get 
+	cd CDRServer/ && pub get 
 	cd ContactServer/ && pub get 
 	cd LogServer/ && pub get 
 	cd ManagementServer/ && pub get
@@ -45,6 +46,7 @@ dependency:
 upgrade-dependency:
 	cd AuthServer/ && pub upgrade
 	cd CallFlowControl/ && pub upgrade 
+	cd CDRServer/ && pub upgrade 
 	cd ContactServer/ && pub upgrade
 	cd LogServer/ && pub upgrade
 	cd ManagementServer/ && pub upgrade
