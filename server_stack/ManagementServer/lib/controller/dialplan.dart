@@ -1,7 +1,7 @@
 library dialplanController;
 
+import 'dart:convert';
 import 'dart:io';
-
 
 import 'package:http/http.dart' as http;
 
@@ -24,8 +24,14 @@ class DialplanController {
     String token = request.uri.queryParameters['token'];
 
     service.getAudioFileList(config.dialplanCompilerServer, receptionId, token).then((http.Response response) {
-      request.response.statusCode = response.statusCode;
-      return writeAndCloseJson(request, response.body);
+      if(response.statusCode == 200) {
+        List<String> files = JSON.decode(response.body)['files'];
+        List<Audiofile> audioFiles = files.map((file) => new Audiofile(file, file.split('/').last)).toList();
+        return writeAndCloseJson(request, listAudiofileAsJson(audioFiles));
+      } else {
+        request.response.statusCode = response.statusCode;
+        return writeAndCloseJson(request, response.body);
+      }
     }).catchError((error) {
       logger.error('DialplanController.getAudiofileList: ${error}');
       Internal_Error(request, error);
