@@ -8,8 +8,6 @@ import 'package:path/path.dart';
 import 'package:OpenReceptionFramework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';
-import 'package:OpenReceptionFramework/httpserver.dart' as http;
-import '../lib/router.dart' as router;
 
 import '../lib/model.dart';
 
@@ -24,7 +22,7 @@ void main(List<String> args) {
 
     if (showHelp()) {
       print(parser.getUsage());
-      
+
       exit(1);
 
     } else {
@@ -45,7 +43,7 @@ void main(List<String> args) {
     print(parser.getUsage());
 
   } catch (e, stackTrace) {
-    
+
     logger.errorContext('Unhandled exception ${e} : ${stackTrace}', 'main');
   }
 }
@@ -55,31 +53,31 @@ void main(List<String> args) {
  * As of now, this is done by an external mailer script.
  */
 void periodicEmailSend() {
-  
+
   int messageCount = null;
   DateTime start   = new DateTime.now();
-  
-  final String context = "periodicEmailSend"; 
+
+  final String context = "periodicEmailSend";
 
   messageQueueList().then((List<Map> items) {
-    
+
     messageCount = items.length;
-    
+
     items.forEach((Map queueEntry) {
       Message.loadFromDatabase(queueEntry['message_id']).then((Message message) {
         logger.debugContext('Trying to dispatch message with id ${queueEntry['message_id']} - queueID: ${queueEntry['queue_id']} ',context );
         Email template = new Email(message);
 
         String json = JSON.encode(template.toMap());
-        
+
         if (!message.hasRecipients) {
           logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
         } else {
-        
-        /* Kick off a mailer process */ 
+
+        /* Kick off a mailer process */
           Process.start('python', [config.mailerScript, json]).then((process) {
-          
-          
+
+
             process.exitCode.then((int exitCode) {
               if (exitCode != 0) {
                 logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
@@ -87,7 +85,7 @@ void periodicEmailSend() {
                 MessageQueue.remove(queueEntry['queue_id']);
               }
             });
-          
+
             process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
               logger.errorContext('Python mailer (stdout): ${line}', context);
             });
@@ -104,9 +102,9 @@ void periodicEmailSend() {
         // TODO mark the queueEntry as failed.
       });
     });
-      
+
     }).whenComplete(() {
-    logger.infoContext('Processed $messageCount messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.mailerPeriod} seconds..', context);  
+    logger.infoContext('Processed $messageCount messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.mailerPeriod} seconds..', context);
     messageCount = null;
     new Timer(new Duration(seconds: config.mailerPeriod), periodicEmailSend);
   });

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'configuration.dart';
 import 'package:OpenReceptionFramework/cache.dart' as IO;
 import 'package:OpenReceptionFramework/common.dart';
 
@@ -37,7 +36,7 @@ class TokenVault {
     if(_userTokens.containsKey(token)) {
       _userTokens[token] = data;
     } else if (_serverTokens.containsKey(token)) {
-       return;      
+       return;
     }
     else {
       throw new Exception('updateToken. Unknown token: ${token}');
