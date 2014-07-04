@@ -112,7 +112,7 @@ Future<List<Audiofile>> getAudiofileList(int receptionId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
-  String url = '${config.serverUrl}/audiofiles?token=${config.token}';
+  String url = '${config.serverUrl}/reception/${receptionId}/audiofiles?token=${config.token}';
 
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
@@ -120,7 +120,7 @@ Future<List<Audiofile>> getAudiofileList(int receptionId) {
       if (request.status == 200) {
         Map rawData = JSON.decode(request.responseText);
         List<Map> rawAudiofiles = rawData['audiofiles'];
-        completer.complete(rawAudiofiles.map((file) => new Audiofile.fromJson(file)).toList());
+        completer.complete(rawAudiofiles.map((Map file) => new Audiofile.fromJson(file)).toList());
       } else {
         completer.completeError('Bad status code. ${request.status}');
       }

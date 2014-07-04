@@ -25,13 +25,20 @@ class IvrView {
   ButtonElement newButton;
   ButtonElement saveButton;
   TableSectionElement contentBody;
+  SelectElement greetLongPicker, greetShortPicker,
+                invalidSoundPicker, exitSoundPicker;
 
   SearchComponent receptionPicker;
   IvrView(DivElement this.element) {
-    menuList = element.querySelector('#ivr-menu-list');
-    newButton = element.querySelector('#ivr-new-menu');
-    saveButton = element.querySelector('#ivr-save');
+    menuList    = element.querySelector('#ivr-menu-list');
+    newButton   = element.querySelector('#ivr-new-menu');
+    saveButton  = element.querySelector('#ivr-save');
     contentBody = element.querySelector('#ivr-content-body');
+
+    greetLongPicker    = element.querySelector('#ivr-greetlong');
+    greetShortPicker   = element.querySelector('#ivr-greetshort');
+    invalidSoundPicker = element.querySelector('#ivr-invalidsound');
+    exitSoundPicker    = element.querySelector('#ivr-exitsound');
 
     receptionOuterSelector = element.querySelector('#ivr-receptionpicker');
     receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'ivr-reception-searchbox')
@@ -173,6 +180,32 @@ class IvrView {
     contentBody.children
       ..clear()
       ..addAll(digitss.map((String digit) => ivrTableRow(digit, ivr)));
+
+    request.getAudiofileList(receptionId).then((List<Audiofile> sounds) {
+      greetLongPicker.children
+        ..clear()
+        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingLong == null || ivr.greetingLong.trim().isEmpty))
+        ..addAll(sounds.map((Audiofile file) =>
+          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingLong)));
+
+      greetShortPicker.children
+        ..clear()
+        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingShort == null || ivr.greetingShort.trim().isEmpty))
+        ..addAll(sounds.map((Audiofile file) =>
+          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingShort)));
+
+      invalidSoundPicker.children
+        ..clear()
+        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.invalidSound == null || ivr.invalidSound.trim().isEmpty))
+        ..addAll(sounds.map((Audiofile file) =>
+          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.invalidSound)));
+
+      exitSoundPicker.children
+        ..clear()
+        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.exitSound == null || ivr.exitSound.trim().isEmpty))
+        ..addAll(sounds.map((Audiofile file) =>
+          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.exitSound)));
+    });
   }
 
   /**
@@ -226,7 +259,7 @@ class IvrView {
       SelectElement gruops = new SelectElement()
         ..children.addAll(dialplan.extensionGroups.map((eg) => new OptionElement(data: eg.name, value: eg.name, selected: entry.extensionGroup == eg.name)))
         ..onChange.listen((_) {
-
+        //TODO
       });
 
       LabelElement label = new LabelElement()
