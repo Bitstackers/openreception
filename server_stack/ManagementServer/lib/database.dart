@@ -147,9 +147,6 @@ class Database {
   Future updateIvr(int receptionId, Map ivr) =>
       _updateIvr(pool, receptionId, ivr);
 
-  Future<List<model.Audiofile>> getAudiofileList() =>
-      _getAudiofileList(pool);
-
   /* ***********************************************
      ******************** Phone ********************
    */

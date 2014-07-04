@@ -7,5 +7,6 @@
     "dbport": 5432,
     "dbname": "dbname",
     "notificationserver": "http://example.com",
+    "dialplancompilerserver": "http://example.com",
     "servertoken": "secret-token"
 }

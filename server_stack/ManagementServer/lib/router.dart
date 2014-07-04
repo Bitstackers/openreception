@@ -22,12 +22,13 @@ final Pattern organizationContactUrl     = new UrlPattern(r'/organization/(\d+)/
 final Pattern organizationReceptionIdUrl = new UrlPattern(r'/organization/(\d+)/reception/(\d+)');
 final Pattern organizationReceptionUrl   = new UrlPattern(r'/organization/(\d+)/reception(/?)');
 
-final Pattern receptionUrl          = new UrlPattern(r'/reception(/?)');
-final Pattern receptionIdUrl        = new UrlPattern(r'/reception/(\d+)');
-final Pattern receptionContactIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
-final Pattern receptionContactUrl   = new UrlPattern(r'/reception/(\d+)/contact(/?)');
-final Pattern dialplanUrl           = new UrlPattern(r'/reception/(\d+)/dialplan');
-final Pattern ivrUrl                = new UrlPattern(r'/reception/(\d+)/ivr');
+final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
+final Pattern receptionIdUrl         = new UrlPattern(r'/reception/(\d+)');
+final Pattern receptionContactIdUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
+final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact(/?)');
+final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
+final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
+final Pattern ReceptionAudiofilesUrl = new UrlPattern(r'/reception/(\d+)/audiofiles');
 
 final Pattern contactIdUrl           = new UrlPattern(r'/contact/(\d+)');
 final Pattern contactUrl             = new UrlPattern(r'/contact(/?)');
@@ -46,12 +47,10 @@ final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)')
 
 final Pattern GroupUrl = new UrlPattern(r'/group');
 
-final Pattern AudioFilelistUrl = new UrlPattern(r'/audiofiles(/?)');
-
 final List<Pattern> Serviceagents =
 [organizationIdUrl, organizationUrl,organizationReceptionIdUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
- UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl];
+ UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl, ReceptionAudiofilesUrl];
 
 ContactController contact;
 DialplanController dialplan;
@@ -124,7 +123,7 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(GroupUrl, method: HttpMethod.GET).listen(user.getGroupList)
 
-    ..serve(AudioFilelistUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
+    ..serve(ReceptionAudiofilesUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
 
     ..serve(anyThing, method: HttpMethod.OPTIONS).listen(PreFlight)
 
@@ -133,7 +132,7 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
 void setupControllers(Database db, Configuration config) {
   contact = new ContactController(db, config);
-  dialplan = new DialplanController(db);
+  dialplan = new DialplanController(db, config);
   organization = new OrganizationController(db, config);
   reception = new ReceptionController(db, config);
   receptionContact = new ReceptionContactController(db, config);
