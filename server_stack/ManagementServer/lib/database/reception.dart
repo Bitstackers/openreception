@@ -18,15 +18,13 @@ Future<int> _createReception(Pool pool, int organizationId, String fullName, Map
   return query(pool, sql, parameters).then((rows) => rows.first.id);
 }
 
-Future<int> _deleteReception(Pool pool, int organizationId, int id) {
+Future<int> _deleteReception(Pool pool, int id) {
   String sql = '''
       DELETE FROM receptions
-      WHERE id=@id AND organization_id=@organization_id;
+      WHERE id=@id;
     ''';
 
-  Map parameters =
-    {'id': id,
-     'organization_id': organizationId};
+  Map parameters = {'id': id};
   return execute(pool, sql, parameters);
 }
 
@@ -55,16 +53,14 @@ Future<List<model.Reception>> _getOrganizationReceptionList(Pool pool, int organ
   });
 }
 
-Future<model.Reception> _getReception(Pool pool, int organizationId, int receptionId) {
+Future<model.Reception> _getReception(Pool pool, int receptionId) {
   String sql = '''
     SELECT id, organization_id, full_name, attributes, extradatauri, enabled, reception_telephonenumber
     FROM receptions
-    WHERE id = @id AND organization_id=@organization_id
+    WHERE id = @id
   ''';
 
-  Map parameters =
-    {'id': receptionId,
-     'organization_id': organizationId};
+  Map parameters = {'id': receptionId};
 
   return query(pool, sql, parameters).then((rows) {
     if(rows.length != 1) {
@@ -106,11 +102,16 @@ Future<List<model.Reception>> _getReceptionList(Pool pool) {
   });
 }
 
-Future<int> _updateReception(Pool pool, int organizationId, int id, String fullName, Map attributes, String extradatauri, bool enabled, String number) {
+Future<int> _updateReception(Pool pool, int id, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) {
   String sql = '''
     UPDATE receptions
-    SET full_name=@full_name, attributes=@attributes, extradatauri=@extradatauri, enabled=@enabled, reception_telephonenumber=@reception_telephonenumber
-    WHERE id=@id AND organization_id=@organization_id;
+    SET full_name=@full_name, 
+        attributes=@attributes, 
+        extradatauri=@extradatauri, 
+        enabled=@enabled, 
+        reception_telephonenumber=@reception_telephonenumber,
+        organization_id=@organization_id
+    WHERE id=@id;
   ''';
 
   Map parameters =

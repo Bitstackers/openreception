@@ -15,33 +15,36 @@ import 'utilities/http.dart';
 import 'utilities/logger.dart';
 
 final Pattern anyThing = new UrlPattern(r'/(.*)');
-final Pattern organizationIdUrl = new UrlPattern(r'/organization/(\d+)');
-final Pattern organizationUrl = new UrlPattern(r'/organization(/?)');
-final Pattern organizationReceptionIdUrl = new UrlPattern(r'/organization/(\d+)/reception/(\d+)');
-final Pattern organizationReceptionUrl = new UrlPattern(r'/organization/(\d+)/reception(/?)');
-final Pattern receptionUrl = new UrlPattern(r'/reception(/?)');
-final Pattern contactIdUrl = new UrlPattern(r'/contact/(\d+)');
-final Pattern contactUrl = new UrlPattern(r'/contact(/?)');
-final Pattern receptionContactIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
-final Pattern receptionContactUrl = new UrlPattern(r'/reception/(\d+)/contact(/?)');
-final Pattern dialplanUrl = new UrlPattern(r'/reception/(\d+)/dialplan');
-final Pattern ivrUrl = new UrlPattern(r'/reception/(\d+)/ivr');
 
-final Pattern organizationContactUrl = new UrlPattern(r'/organization/(\d+)/contact(/?)');
-final Pattern ContactReceptionUrl = new UrlPattern(r'/contact/(\d+)/reception(/?)');
+final Pattern organizationIdUrl          = new UrlPattern(r'/organization/(\d+)');
+final Pattern organizationUrl            = new UrlPattern(r'/organization(/?)');
+final Pattern organizationContactUrl     = new UrlPattern(r'/organization/(\d+)/contact(/?)');
+final Pattern organizationReceptionIdUrl = new UrlPattern(r'/organization/(\d+)/reception/(\d+)');
+final Pattern organizationReceptionUrl   = new UrlPattern(r'/organization/(\d+)/reception(/?)');
+
+final Pattern receptionUrl          = new UrlPattern(r'/reception(/?)');
+final Pattern receptionIdUrl        = new UrlPattern(r'/reception/(\d+)');
+final Pattern receptionContactIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
+final Pattern receptionContactUrl   = new UrlPattern(r'/reception/(\d+)/contact(/?)');
+final Pattern dialplanUrl           = new UrlPattern(r'/reception/(\d+)/dialplan');
+final Pattern ivrUrl                = new UrlPattern(r'/reception/(\d+)/ivr');
+
+final Pattern contactIdUrl           = new UrlPattern(r'/contact/(\d+)');
+final Pattern contactUrl             = new UrlPattern(r'/contact(/?)');
+final Pattern ContactColleaguesUrl   = new UrlPattern(r'/contact/(\d+)/colleagues(/?)');
 final Pattern ContactOrganizationUrl = new UrlPattern(r'/contact/(\d+)/organization(/?)');
-final Pattern ContactColleaguesUrl = new UrlPattern(r'/contact/(\d+)/colleagues(/?)');
+final Pattern ContactReceptionUrl    = new UrlPattern(r'/contact/(\d+)/reception(/?)');
 
 final Pattern contactypestUrl = new UrlPattern(r'/contacttypes(/?)');
 
-final Pattern UserUrl = new UrlPattern(r'/user(/?)');
-final Pattern UserIdUrl = new UrlPattern(r'/user/(\d+)');
-final Pattern UserIdGroupUrl = new UrlPattern(r'/user/(\d+)/group');
-final Pattern UserIdGroupIdUrl = new UrlPattern(r'/user/(\d+)/group/(\d+)');
-final Pattern GroupUrl = new UrlPattern(r'/group');
-
-final Pattern UserIdIdentityUrl = new UrlPattern(r'/user/(\d+)/identity');
+final Pattern UserUrl             = new UrlPattern(r'/user(/?)');
+final Pattern UserIdUrl           = new UrlPattern(r'/user/(\d+)');
+final Pattern UserIdGroupUrl      = new UrlPattern(r'/user/(\d+)/group');
+final Pattern UserIdGroupIdUrl    = new UrlPattern(r'/user/(\d+)/group/(\d+)');
+final Pattern UserIdIdentityUrl   = new UrlPattern(r'/user/(\d+)/identity');
 final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)');
+
+final Pattern GroupUrl = new UrlPattern(r'/group');
 
 final Pattern AudioFilelistUrl = new UrlPattern(r'/audiofiles(/?)');
 
@@ -66,9 +69,9 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
 
     ..serve(organizationReceptionUrl, method: HttpMethod.PUT).listen(reception.createReception)
-    ..serve(organizationReceptionIdUrl, method: HttpMethod.GET)   .listen(reception.getReception)
-    ..serve(organizationReceptionIdUrl, method: HttpMethod.POST)  .listen(reception.updateReception)
-    ..serve(organizationReceptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
+    ..serve(receptionIdUrl, method: HttpMethod.GET)   .listen(reception.getReception)
+    ..serve(receptionIdUrl, method: HttpMethod.POST)  .listen(reception.updateReception)
+    ..serve(receptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
 
     ..serve(organizationContactUrl, method: HttpMethod.GET).listen(organization.getOrganizationContactList)
 

@@ -47,19 +47,19 @@ class Database {
   Future<int> createReception(int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) =>
       _createReception(pool, organizationId, fullName, attributes, extradatauri, enabled, number);
 
-  Future<int> deleteReception(int organizationId, int id) =>
-      _deleteReception(pool, organizationId, id);
+  Future<int> deleteReception(int id) =>
+      _deleteReception(pool, id);
 
   Future<List<model.Reception>> getContactReceptions(int contactId) =>
       _getContactReceptions(pool, contactId);
 
-  Future<model.Reception> getReception(int organizationId, int receptionId) =>
-      _getReception(pool, organizationId, receptionId);
+  Future<model.Reception> getReception(int receptionId) =>
+      _getReception(pool, receptionId);
 
   Future<List<model.Reception>> getReceptionList() => _getReceptionList(pool);
 
-  Future<int> updateReception(int organizationId, int id, String fullName, Map attributes, String extradatauri, bool enabled, String number) =>
-      _updateReception(pool, organizationId, id, fullName, attributes, extradatauri, enabled, number);
+  Future<int> updateReception(int id, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) =>
+      _updateReception(pool, id, organizationId, fullName, attributes, extradatauri, enabled, number);
 
   Future<List<model.Reception>> getOrganizationReceptionList(int organizationId) =>
       _getOrganizationReceptionList(pool, organizationId);

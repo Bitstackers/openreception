@@ -23,10 +23,9 @@ class ReceptionController {
   ReceptionController(Database this.db, Configuration this.config);
 
   void getReception(HttpRequest request) {
-    int organizationId = intPathParameter(request.uri, 'organization');
     int receptionId = intPathParameter(request.uri, 'reception');
 
-    db.getReception(organizationId, receptionId).then((Reception reception) {
+    db.getReception(receptionId).then((Reception reception) {
       if (reception == null) {
         request.response.statusCode = 404;
         return writeAndCloseJson(request, JSON.encode({}));
@@ -80,11 +79,10 @@ class ReceptionController {
   }
 
   void updateReception(HttpRequest request) {
-    int organizationId = intPathParameter(request.uri, 'organization');
     int receptionId = intPathParameter(request.uri, 'reception');
 
     extractContent(request).then(JSON.decode).then((Map data) =>
-      db.updateReception(organizationId, receptionId, data['full_name'],
+      db.updateReception(receptionId, data['organization_id'], data['full_name'],
       data['attributes'], data['extradatauri'], data['enabled'], data['number']))
         .then((_) => writeAndCloseJson(request, receptionIdAsJson(receptionId))
         .then((_) {
@@ -101,10 +99,9 @@ class ReceptionController {
   }
 
   void deleteReception(HttpRequest request) {
-    int organizationId = intPathParameter(request.uri, 'organization');
     int receptionId = intPathParameter(request.uri, 'reception');
 
-    db.deleteReception(organizationId, receptionId)
+    db.deleteReception(receptionId)
       .then((_) => writeAndCloseJson(request, receptionIdAsJson(receptionId))
       .then((_) {
           Map data = {'event' : 'receptionEventDeleted', 'receptionEvent' : {'receptionId' : receptionId}};
