@@ -71,6 +71,10 @@
   padding: 5px 0;
 }
 
+#ivr-menu-list>li.highlightListItem {
+  border-left: 2px solid red;
+}
+
 .ivr-small-button {
   width: 16px;
   height: 16px;

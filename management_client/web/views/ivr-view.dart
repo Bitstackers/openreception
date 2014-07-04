@@ -54,7 +54,7 @@ class IvrView {
 
     newButton.onClick.listen((_) {
       if(ivrList != null) {
-        ivrList.list.add(new libIvr.Ivr()..name = 'I_Must_Have_A_Unique_Name');
+        ivrList.list.add(new libIvr.Ivr()..name = 'Jeg_Skal_Have_Et_Unikt_Navn');
         renderMenuList(ivrList);
       }
     });
@@ -101,13 +101,20 @@ class IvrView {
       ..addAll(menus.list.map(makeMenuListItem));
   }
 
+  void HighlightItem(LIElement node) {
+    menuList.children.forEach((item) => item.classes.toggle('highlightListItem', item == node));
+  }
+
   /**
    * Creates an item for the list of IVRs.
    */
   LIElement makeMenuListItem(libIvr.Ivr item) {
+    LIElement node = new LIElement();
+
     SpanElement text = new SpanElement()
       ..text = item.name
       ..onClick.listen((_) {
+        HighlightItem(node);
         loadIVR(item);
       });
 
@@ -129,13 +136,9 @@ class IvrView {
                   activeEdit = false;
                 }
               });
-    return new LIElement()
-      ..children.addAll(
-          [text,
-           editBox,
-           new ImageElement(src: 'image/tp/line.svg')
-              ..classes.add('ivr-small-button')
-              ..onClick.listen((_) {
+    ImageElement editButton = new ImageElement(src: 'image/tp/line.svg')
+        ..classes.add('ivr-small-button')
+        ..onClick.listen((_) {
             if(activeEdit == false) {
               activeEdit = true;
               text.style.display = 'none';
@@ -145,12 +148,17 @@ class IvrView {
                 ..focus()
                 ..value = text.text;
             }
-          }),
-           new ImageElement(src: 'image/tp/red_plus.svg')
-              ..classes.add('ivr-small-button')
-              ..onClick.listen((_) {
-                ivrList.list.remove(item);
-              })]);
+          });
+
+    ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
+      ..classes.add('ivr-small-button')
+      ..onClick.listen((_) {
+        ivrList.list.remove(item);
+      });
+
+    node.children.addAll([text, editBox, editButton, deleteButton]);
+
+    return node;
   }
 
   void clearContentTable() {
