@@ -1,5 +1,4 @@
 import 'dart:io';
-//import 'dart:async';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';

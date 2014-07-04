@@ -21,13 +21,17 @@ void main() {
   String serverTokenDirAbsolutPath = dir.absolute.path;
 
   Map<String, Map> Servers = {
+    'AuthServer': {
+      'path': 'AuthServer/bin/authserver.dart',
+      'args': ['--servertokendir', '$serverTokenDirAbsolutPath']
+    },
     'CallFlow': {
       'path': 'CallFlowControl/bin/callflowcontrol.dart',
       'args': ['--servertoken', tokens[index++]]
     },
-    'AuthServer': {
-      'path': 'AuthServer/bin/authserver.dart',
-      'args': ['--servertokendir', '$serverTokenDirAbsolutPath']
+    'CDRServer': {
+      'path': 'CDRServer/bin/cdrserver.dart',
+      'args': []
     },
     'ContactServer': {
       'path': 'ContactServer/bin/contactserver.dart',
