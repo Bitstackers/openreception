@@ -206,8 +206,8 @@ class ReceptionView {
   }
 
   void deleteCurrentReception() {
-    if (currentOrganizationId > 0 && selectedReceptionId > 0) {
-      deleteReception(currentOrganizationId, selectedReceptionId).then((_) {
+    if (selectedReceptionId > 0) {
+      deleteReception(selectedReceptionId).then((_) {
         Map event = {
           'organizationId': currentOrganizationId,
           'receptionId': selectedReceptionId
@@ -219,7 +219,7 @@ class ReceptionView {
         clearContent();
         refreshList();
       }).catchError((error) {
-        notify.error('Der skete en fejl i forbindelse med sletningen af receptionen.');
+        notify.error('Der skete en fejl i forbindelse med sletningen af receptionen. Fejl: ${error}');
         log.error('Failed to delete reception orgId: "${currentOrganizationId}" recId: "${selectedReceptionId}" got "${error}"');
       });
     }
@@ -229,8 +229,7 @@ class ReceptionView {
     if (selectedReceptionId > 0) {
       Reception updatedReception = extractValues();
 
-      updateReception(currentOrganizationId, selectedReceptionId,
-          updatedReception.toJson()).then((_) {
+      updateReception(selectedReceptionId, updatedReception.toJson()).then((_) {
         //Show a message that tells the user, that the changes went threw.
         refreshList();
       });
@@ -316,8 +315,8 @@ class ReceptionView {
       return listItem.id == organizationId;
     });
 
-    if (organizationId > 0 && receptionId > 0) {
-      getReception(currentOrganizationId, selectedReceptionId).then((Reception response) {
+    if (receptionId > 0) {
+      getReception(selectedReceptionId).then((Reception response) {
         buttonDialplan.disabled = false;
 
         highlightContactInList(receptionId);

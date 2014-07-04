@@ -83,7 +83,7 @@ class Reception {
 
     Map data = {
       'id': id,
-      'orgaanization_id': organization_id,
+      'organization_id': organization_id,
       'full_name': full_name,
       'enabled': enabled,
       'attributes': attributes,
