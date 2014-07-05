@@ -1,4 +1,4 @@
-library ivr_view;
+library ivr.view;
 
 import 'dart:html';
 import 'dart:convert';

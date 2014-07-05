@@ -1,4 +1,4 @@
-library user_view;
+library user.view;
 
 import 'dart:async';
 import 'dart:convert';

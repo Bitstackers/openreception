@@ -4,6 +4,7 @@ import 'views/contact-view.dart' as conView;
 import 'views/billing-view.dart' as billView;
 import 'views/dialplan-view.dart' as diaView;
 import 'views/ivr-view.dart' as ivrView;
+import 'views/music-view.dart' as musicView;
 import 'views/organization-view.dart' as orgView;
 import 'views/reception-view.dart' as recepView;
 import 'views/record-view.dart' as recordView;
@@ -23,6 +24,7 @@ void main() {
     new recordView.RecordView(querySelector('#record-page'));
     new userView.UserView(querySelector('#user-page'));
     new billView.BillingView(querySelector('#billing-page'));
+    new musicView.MusicView(querySelector('#billing-page'));
     new Menu(querySelector('nav#navigation'));
   }
 }

@@ -1,4 +1,4 @@
-library organization_view;
+library organization.view;
 
 import 'dart:html';
 import 'dart:convert';

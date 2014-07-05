@@ -1,4 +1,4 @@
-library reception_view;
+library reception.view;
 
 import 'dart:async';
 import 'dart:html';

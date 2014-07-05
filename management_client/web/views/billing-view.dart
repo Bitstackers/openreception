@@ -1,4 +1,4 @@
-library billing_view;
+library billing.view;
 
 import 'dart:html';
 

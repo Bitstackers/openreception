@@ -1,8 +1,7 @@
-library record_view;
+library record.view;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:convert';
 
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;

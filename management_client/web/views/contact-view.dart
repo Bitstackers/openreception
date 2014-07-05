@@ -1,4 +1,4 @@
-library contact_view;
+library contact.view;
 
 import 'dart:async';
 import 'dart:html';

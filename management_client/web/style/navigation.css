@@ -1,6 +1,9 @@
 nav>ul {
   list-style-type: none;
   padding: 0;
+
+  overflow: auto;
+  height: 100%;
 }
 
 nav img.faded {

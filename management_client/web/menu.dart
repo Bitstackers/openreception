@@ -13,92 +13,50 @@ class Menu {
   static const String RECORD_WINDOW = 'record';
   static const String USER_WINDOW = 'user';
   static const String BILLING_WINDOW = 'billing';
+  static const String MUSIC_WINDOW = 'music';
 
   HtmlElement element;
 
   ImageElement orgButton, recButton, conButton,
                dialButton, ivrButton, recordButton,
-               userButton, billingButton;
+               userButton, billingButton, musicButton;
+
+  Map<String, ImageElement> menus;
 
   Menu(HtmlElement this.element) {
-    orgButton = element.querySelector('#organization-button');
-    recButton = element.querySelector('#reception-button');
-    conButton = element.querySelector('#contact-button');
-    dialButton = element.querySelector('#dialplan-button');
-    ivrButton = element.querySelector('#ivr-button');
-    recordButton = element.querySelector('#record-button');
-    userButton = element.querySelector('#user-button');
-    billingButton = element.querySelector('#billing-button');
-
-    orgButton.onClick.listen((_) {
-      Map event = {
-        'window': ORGANIZATION_WINDOW
+    //Build up collections of menus
+    menus = {
+       'organization': element.querySelector('#organization-button'),
+       'reception': element.querySelector('#reception-button'),
+       'contact': element.querySelector('#contact-button'),
+       'dialplan': element.querySelector('#dialplan-button'),
+       'ivr': element.querySelector('#ivr-button'),
+       'record': element.querySelector('#record-button'),
+       'user': element.querySelector('#user-button'),
+       'billing': element.querySelector('#billing-button'),
+       'music': element.querySelector('#music-button'),
       };
-      bus.fire(windowChanged, event);
+
+    //Register onClicker handler, and emit an event about window change.
+    menus.forEach((String name, ImageElement button) {
+      button.onClick.listen((_) {
+        Map event = {
+          'window': name
+        };
+        bus.fire(windowChanged, event);
+      });
     });
 
-    recButton.onClick.listen((_) {
-      Map event = {
-        'window': RECEPTION_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
-    conButton.onClick.listen((_) {
-      Map event = {
-        'window': CONTACT_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
-    dialButton.onClick.listen((_) {
-      Map event = {
-        'window': DIALPLAN_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
-    ivrButton.onClick.listen((_) {
-      Map event = {
-        'window': IVR_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
-    recordButton.onClick.listen((_) {
-      Map event = {
-        'window': RECORD_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
-    userButton.onClick.listen((_) {
-      Map event = {
-        'window': USER_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
-    billingButton.onClick.listen((_) {
-      Map event = {
-        'window': BILLING_WINDOW
-      };
-      bus.fire(windowChanged, event);
-    });
-
+    //When there comes an windowChange event, highlight the right button.
     bus.on(windowChanged).listen((Map event) {
       _highlightItem(event['window']);
     });
   }
 
+  //Highlights the right button.
   void _highlightItem(String window) {
-    orgButton.classes.toggle('faded', window != ORGANIZATION_WINDOW);
-    recButton.classes.toggle('faded', window != RECEPTION_WINDOW);
-    conButton.classes.toggle('faded', window != CONTACT_WINDOW);
-    dialButton.classes.toggle('faded', window != DIALPLAN_WINDOW);
-    ivrButton.classes.toggle('faded', window != IVR_WINDOW);
-    recordButton.classes.toggle('faded', window != RECORD_WINDOW);
-    userButton.classes.toggle('faded', window != USER_WINDOW);
-    billingButton.classes.toggle('faded', window != BILLING_WINDOW);
+    menus.forEach((String name, ImageElement button) {
+      button.classes.toggle('faded', window != name);
+    });
   }
 }

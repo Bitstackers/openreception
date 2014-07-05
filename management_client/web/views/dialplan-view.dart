@@ -1,4 +1,4 @@
-library dialplan_view;
+library dialplan.view;
 
 import 'dart:async';
 import 'dart:convert';
