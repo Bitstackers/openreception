@@ -17,10 +17,6 @@ class Menu {
 
   HtmlElement element;
 
-  ImageElement orgButton, recButton, conButton,
-               dialButton, ivrButton, recordButton,
-               userButton, billingButton, musicButton;
-
   Map<String, ImageElement> menus;
 
   Menu(HtmlElement this.element) {
