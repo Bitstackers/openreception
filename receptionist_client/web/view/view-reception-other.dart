@@ -55,8 +55,14 @@ class ReceptionOther {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      body.text = value.product;
+    event.bus.on(event.receptionChanged).listen((model.Reception selectedReception) {
+      if (selectedReception.extraDataUri != null) {
+        this.body.children = [new ProgressElement()];
+
+        selectedReception.loadExtraData().then ((String responseText) {
+          this.body.children = new DocumentFragment.html(responseText).children;
+        });
+      }
     });
 
     element.onClick.listen((_) {

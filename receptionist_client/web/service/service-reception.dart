@@ -33,6 +33,48 @@ abstract class Reception {
 
   static const String className = '${libraryName}.Reception';
 
+  /**
+   * Retrieves the extraData of a reception from the supplied resource.
+   */
+  static Future<String> extraData (Uri resource) {
+    const String context = '${className}.calendarEventCreate';
+
+    final Completer<String> completer = new Completer<String>();
+
+    HttpRequest request;
+    
+    request = new HttpRequest()
+        ..open(GET, resource.toString())
+        ..onLoad.listen((val) {
+          switch (request.status) {
+            case 200:
+              completer.complete(request.responseText);
+              break;
+
+            case 400:
+              completer.completeError(_badRequest('Resource $resource'));
+              break;
+
+            case 404:
+              completer.completeError(_notFound('Resource $resource'));
+              break;
+
+            case 500:
+              completer.completeError(_serverError('Resource $resource'));
+              break;
+            default:
+              completer.completeError(new UndefinedError('Status (${request.status}): Resource $resource'));
+          }
+        })
+        ..onError.listen((e) {
+          log.errorContext('Status (${request.status}): Resource $resource', context);
+          completer.completeError(e);
+        })
+        ..send();
+
+    return completer.future;
+  }
+  
   static Future calendarEventCreate(model.CalendarEvent event) {
 
     const String context = '${className}.calendarEventCreate';

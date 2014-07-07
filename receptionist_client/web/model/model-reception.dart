@@ -80,6 +80,8 @@ class Reception extends BasicReception{
   MiniboxList       _registrationNumberList = new MiniboxList();
   MiniboxList       _telephoneNumberList    = new MiniboxList();
   MiniboxList       _websiteList            = new MiniboxList();
+  Uri               _extraDataUri           = null;
+  
 
   MiniboxList         get addressList            => _addressList;
   MiniboxList         get alternateNameList      => _alternateNameList;
@@ -102,6 +104,8 @@ class Reception extends BasicReception{
   MiniboxList         get telephoneNumberList    => _telephoneNumberList;
   MiniboxList         get websiteList            => _websiteList;
 
+  Uri                 get extraDataUri           => _extraDataUri;
+  
   static Reception _selectedReception = nullReception;
   
   static final EventType<Reception> activeReceptionChanged = new EventType<Reception>();
@@ -164,6 +168,15 @@ class Reception extends BasicReception{
     _registrationNumberList = new MiniboxList.fromJson(json, 'registrationnumbers');
     _telephoneNumberList    = new MiniboxList.fromJson(json, 'telephonenumbers');
     _websiteList            = new MiniboxList.fromJson(json, 'websites');
+    this._extraDataUri      = (json['extradatauri'] == null ? null : Uri.parse(json['extradatauri']));
+  }
+  
+  Future<String> loadExtraData() {
+    if (this.extraDataUri == null) {
+      return null;
+    }
+    
+    return Service.Reception.extraData(this.extraDataUri);
   }
 
   /**
