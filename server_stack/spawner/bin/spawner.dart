@@ -11,11 +11,15 @@ const bool CHECKED = true;
 Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
 
-void main() {
+void main(List<String> arguments) {
   List<String> tokens = new List(5).map((_) => generateToken()).toList(growable: false);
   int index = 0;
-
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
+  
+  if(arguments.length > 0) {
+    ServerTokenDir = arguments[0];
+  }
+  
   Directory dir = new Directory(ServerTokenDir);
   dir.createSync();
   String serverTokenDirAbsolutPath = dir.absolute.path;
