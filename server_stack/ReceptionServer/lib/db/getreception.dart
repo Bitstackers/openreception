@@ -2,7 +2,7 @@ part of receptionserver.database;
 
 Future<Map> getReception(int id) {
   String sql = '''
-      SELECT id, full_name, attributes, enabled, reception_telephonenumber, last_check
+      SELECT id, full_name, attributes, enabled, extradatauri, reception_telephonenumber, last_check
       FROM receptions
       WHERE id = @id 
     ''';
@@ -17,6 +17,7 @@ Future<Map> getReception(int id) {
         {'reception_id' : row.id,
          'full_name'    : row.full_name,
          'enabled'      : row.enabled,
+         'extradatauri' : row.extradatauri,
          'reception_telephonenumber': row.reception_telephonenumber,
          'last_check'   : row.last_check.toString()};
 
