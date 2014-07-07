@@ -7,7 +7,7 @@ dependencies:
     git: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   esl:
-    path: /home/krc/Projects/esl
-    #git: https://github.com/rostgaard/libesl-dart.git
+    #path: /home/krc/Projects/esl
+    git: https://github.com/rostgaard/libesl-dart.git
   path: any
   route: any
