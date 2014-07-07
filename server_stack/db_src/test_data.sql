@@ -314,26 +314,26 @@ VALUES ('helligdag', '2013-12-25'),
 --INSERT INTO dial_plans (phone_number, dial_plan)
 --VALUES ('+4521490804', '<dial-plan title="Jacob: Hang up on anonymous callers"> <start do="Start"/> <decision-tree title="Start"> <branch> <conditions> <caller number=""/> </conditions> <action do="Hang up"/> </branch> <fall-back do="Pass through"/> </decision-tree> <end-point title="Hang up"> <hang-up/> </end-point> <end-point title="Pass through"> <redirect to="+45 21 49 08 04"/> </end-point> </dial-plan>');
 
-INSERT INTO users (id, name, extension)
-VALUES (1,  'Thomas Pedersen',           1001),
-       (2,  'Kim Rostgaard Christensen', 1002),
-       (3,  'Jacob Sparre Andersen',     1003),
-       (4,  'AdaHeads Test User One',    1004),
-       (5,  'AdaHeads Test User Two',    1005),
-       (6,  'Tux',                       1006),
-       (7,  'This guy here',             1007),
-       (8,  'Thata guy there',           1008),
-       (9,  'Casper Bergsø',             1009),
-       (10, 'Testagent 1100',            1100),
-       (11, 'Testagent 1101',            1101),
-       (12, 'Testagent 1102',            1102),
-       (13, 'Testagent 1103',            1103),
-       (14, 'Testagent 1104',            1104),
-       (15, 'Testagent 1105',            1105),
-       (16, 'Testagent 1106',            1106),
-       (17, 'Testagent 1107',            1107),
-       (18, 'Testagent 1108',            1108),
-       (19, 'Testagent 1109',            1109);
+INSERT INTO users (id, name, extension, send_from)
+VALUES (1,  'Thomas Pedersen',           1001, 'tp@adaheads.com'),
+       (2,  'Kim Rostgaard Christensen', 1002, 'krc@adaheads.com'),
+       (3,  'Jacob Sparre Andersen',     1003, 'jsa@adaheads.com'),
+       (4,  'AdaHeads Test User One',    1004, null),
+       (5,  'AdaHeads Test User Two',    1005, null),
+       (6,  'Tux',                       1006, null),
+       (7,  'This guy here',             1007, null),
+       (8,  'Thata guy there',           1008, null),
+       (9,  'Casper Bergsø',             1009, null),
+       (10, 'Testagent 1100',            1100, 'noreply@adaheads.com'),
+       (11, 'Testagent 1101',            1101, 'noreply@adaheads.com'),
+       (12, 'Testagent 1102',            1102, 'noreply@adaheads.com'),
+       (13, 'Testagent 1103',            1103, 'noreply@adaheads.com'),
+       (14, 'Testagent 1104',            1104, 'noreply@adaheads.com'),
+       (15, 'Testagent 1105',            1105, 'noreply@adaheads.com'),
+       (16, 'Testagent 1106',            1106, 'noreply@adaheads.com'),
+       (17, 'Testagent 1107',            1107, 'noreply@adaheads.com'),
+       (18, 'Testagent 1108',            1108, 'noreply@adaheads.com'),
+       (19, 'Testagent 1109',            1109, 'noreply@adaheads.com');
 
 INSERT INTO groups (id, name)
 VALUES (1, 'Receptionist'),
