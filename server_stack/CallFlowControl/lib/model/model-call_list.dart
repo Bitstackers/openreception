@@ -51,7 +51,8 @@ class CallList extends IterableBase<Call> {
   }
 
   Call requestCall(user) {
-    Call call = this.singleWhere((Call call) => call.assignedTo == Call.noUser && !call.locked);
+    //TODO: Implement a real algorithm for selecting calls.
+    Call call = this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked);
     
     if (call == null) {
       throw new NotFound ("No calls available");
