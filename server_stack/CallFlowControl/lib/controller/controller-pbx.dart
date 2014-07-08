@@ -71,11 +71,10 @@ abstract class PBX {
    */
   static Future transfer (Model.Call source, String extension) {
     const String context = '${className}.transfer';
+    ESL.Response transferResponse;
     
-    
-    logger.debugContext('Breaking channel from current audio stream.', context);
-    return Model.PBXClient.api ('uuid_break ${source.channel}')
-        .then ((ESL.Response reponse) => Model.PBXClient.api ('uuid_transfer ${source.channel} ${extension}').then((response) => response));
+    return Model.PBXClient.api ('uuid_transfer ${source.channel} ${extension}').then((response) => transferResponse = response)
+        .then ((_) => Model.PBXClient.api ('uuid_break ${source.channel}').then((_) => transferResponse));
   }
 
   /**

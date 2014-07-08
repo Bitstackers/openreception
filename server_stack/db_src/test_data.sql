@@ -79,8 +79,8 @@ VALUES 	    (1, 'AdaHeads K/S', 'Bank', 'VIP'),
 	    (5, 'Kødbollen A/S', 'Kødpenge', 'Non-VIP'),
 	    (6, 'Landmandens venner A/S', 'PBS', 'Non-VIP');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
-VALUES (1, 1, 'AdaHeads K/S', '12340001',
+INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, extradatauri, attributes)
+VALUES (1, 1, 'AdaHeads K/S', '12340001', 'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
            '{"shortgreeting": "","addresses":[{"value":"For enden af regnbuen","priority":1},{"value":"Lovelace street","priority":2},{"value":"Farum Gydevej","priority":3},{"value":"Hvor kongerne hænger ud","priority":4}],"alternatenames":[{"value":"Code monkeys","priority":1},{"value":"Software Developers","priority":2},{"value":"Awesome mans","priority":3},{"value":"Bug Fixers","priority":4},{"value":"SuperHeroes","priority":5}],"bankinginformation":[{"value":"Amagerbank 123456789","priority":1},{"value":"Danskebank 123456789","priority":2},{"value":"Nordea 123456789","priority":3},{"value":"JysteBank 123456789","priority":4},{"value":"Bank Bank Bank 123456789","priority":5}],"crapcallhandling":[{"value":"Stil dem videre til Thomas","priority":1},{"value":"Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu","priority":2},{"value":"Sig at det lyder spænende, og de kan sende en email til spam@adaheads.com","priority":3},{"value":"Bed dem om at ringe igen, ved næste fuldmåne","priority":4},{"value":"Begynd at snakke om din hund, og hvor godt du har oplært den osv.","priority":5}],"customertype":"Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.","emailaddresses":[{"value":"mail@adaheads.com","priority":1},{"value":"support@adaheads.com","priority":2},{"value":"finance@adaheads.com","priority":3},{"value":"research@adaheads.com","priority":4},{"value":"production@adaheads.com","priority":5},{"value":"denmark-department@adaheads.com","priority":6}],"greeting":"Velkommen til AdaHeads, hvad kan jeg hjælpe med?","short_greeting":"Du taler med...","handlings":[{"value":"Lad tlf. ringe 4-5 gange.","priority":2},{"value":"Indgang til deres kontor ligger i gården.","priority":3},{"value":"Kunder skal tiltales formelt, med både fornavn og efternavn.","priority":1},{"value":"Biler bedes parkeres hos naboen","priority":4},{"value":"Spørg efter ordrenummer","priority":5},{"value":"De skal være over 18 år, før at der må handles med dem","priority":6},{"value":"Geden i forhaven er der for at holde grasset nede","priority":7}],"openinghours":[{"value":"Mandag 08:00:00 - 17:00:00","priority":1},{"value":"Tirsdag 08:00:00 - 17:00:00","priority":2},{"value":"Onsdag 08:00:00 - 17:00:00","priority":3},{"value":"Torsdag 08:00:00 - 17:00:00","priority":4},{"value":"Fredag 08:00:00 - 16:30:00","priority":5},{"value":"Lørdag 08:00:00 - 18:00:00","priority":6},{"value":"Resten af ugen fri","priority":7}],"other":"Bonus info: Man ville skulle bruge 40.5 milliarder LEGO klodser for at bygge et tårn til månen. Ludo opstod i 1896, da det blev patenteret i England som patent nr. 14636. En undersøgelse fra slutningen af 2008 viser vi bruger op mod 30% af vores fritid på online aktiviteter. Mandens hjerne rumfang er på ca. 1300 ml.","product":"Software produkter, men ikke bare hvilket som helst software produkter. Det er af den højeste kvalitet menneskeheden kan fremskaffe. Deres produkter er blevet brugt til at undgå 4 komet sammenstød med jorden, som ellers ville havde ændret verden som vi kender den","registrationnumbers":[{"value":"123456789","priority":1},{"value":"2835629523","priority":2},{"value":"385973572","priority":3},{"value":"1035798361","priority":4},{"value":"9792559265","priority":5}],"telephonenumbers":[{"value":"+45 10 20 30 40","priority":1},{"value":"+45 20 40 60 80","priority":1}],"websites":[{"value":"http://adaheads.com","priority":1},{"value":"http://adaheads.org","priority":2},{"value":"http://adaheads.dk","priority":3},{"value":"http://adaheads.nu","priority":4},{"value":"http://adaheads.awesome","priority":5},{"value":"http://adaheads.software","priority":6},{"value":"http://adaheads.welldone","priority":7}]}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
@@ -88,7 +88,7 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
 	   '{"shortgreeting": "","addresses":[{"value":"Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK","priority":1},{"value":"Valora Trade Denmark A/S Transformervej 16 2730 Herlev","priority":2},{"value":"Et sted ude på atlandterhavet","priority":3}],"alternatenames":[{"value":"Fiskernes venner","priority":1}],"bankinginformation":[{"value":"En kiste ude på en øde ø","priority":1},{"value":"Nogle englændere har pt. \"deres\" guld","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til marketings afdelingen","priority":1}],"customertype":"","short_greeting":"Du taler med...","emailaddresses":[{"value":"info@fiskermans.com","priority":1}],"greeting":"Fishermans Friends du taler med... hvad kan jeg gøre for dig?","handlings":[{"value":"Lad tlf. ringe 4-5 gange og spørg så: skal poppedreng ha'' noget.","priority":2},{"value":"Indgang til deres kontor ligger ved siden af kabyssen.","priority":3},{"value":"Kunder skal tiltales med pirat stemme, med både klo og klap for øjet.","priority":1}],"openinghours":[{"value":"Solopgang - Solnedgang","priority":1}],"other":"Bonus info","product":"ORIGINAL, MINT SUKKERFRI, SALMIAK SUKKERFRI, SØD LAKRIDS SUKKERFRI, EXSTRA STÆRK","registrationnumbers":[{"value":"Reg no. 781277","priority":1}],"telephonenumbers":[{"value":"+45 11 22 33 44","priority":1},{"value":"+45 21 32 43 55","priority":1}],"websites":[{"value":"http://www.fishermansfriend.com/","priority":1}]}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
-VALUES (3, 3, 'Responsum K/S', '12340003',  
+VALUES (3, 3, 'Responsum K/S', '12340003',
        	   '{"shortgreeting": "","addresses":[{"value":"Farum gydevej 87","priority":3}],"alternatenames":[{"value":"Stemmen i dit øre","priority":1}],"bankinginformation":[{"value":"Danske bank 222 333 444 555","priority":1},{"value":"Nordea 999 888 777 666","priority":2}],"short_greeting":"Du taler med...","crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@responsum.com","priority":1}],"greeting":"Velkommen til Responsum - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af produkter stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:thomas@responsum.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"http://responsum.dk","priority":1}]}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
@@ -96,7 +96,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
 	    '{"shortgreeting": "","addresses":[{"value":"Kloakstræde 2","priority":1}],"alternatenames":[{"value":"Du kommer og kalder, når rørene driller","priority":1}],"bankinginformation":[{"value":"Tube bank 696 347 230 9248","priority":1}],"short_greeting":"Du taler med...","crapcallhandling":[{"value":"Send en mail til mario@hansenvvs.dk","priority":1}],"customertype":"","emailaddresses":[{"value":"info@hansenvvs.com","priority":1}],"greeting":"Hansen VVS - du taler med ...","handlings":[{"value":"Nye kunder sendes til luigi","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"Håndter rør i alle størrelser","product":"Prmært VVS arbejde","registrationnumbers":[{"value":"Reg no. 223344","priority":1}],"telephonenumbers":[{"value":"+45 87 53 93 19","priority":1}],"websites":[{"value":"http://hansenvvs.dk","priority":1}]}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
-VALUES (5, 5, 'Kødbollen A/S', '12340005', 
+VALUES (5, 5, 'Kødbollen A/S', '12340005',
            '{"shortgreeting": "","addresses":[{"value":"Kødbyen","priority":3}],"alternatenames":[{"value":"Kødet i din bolle.","priority":1}],"bankinginformation":[{"value":"Spanske bank 222 444 555","priority":1},{"value":"Sydea 944 888 777 666","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@koedbollen.dk","priority":1}],"greeting":"Kødbollenn - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af kød stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:pent@koedbollen.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"","priority":1}],"short_greeting":"Du taler med..."}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
@@ -314,26 +314,26 @@ VALUES ('helligdag', '2013-12-25'),
 --INSERT INTO dial_plans (phone_number, dial_plan)
 --VALUES ('+4521490804', '<dial-plan title="Jacob: Hang up on anonymous callers"> <start do="Start"/> <decision-tree title="Start"> <branch> <conditions> <caller number=""/> </conditions> <action do="Hang up"/> </branch> <fall-back do="Pass through"/> </decision-tree> <end-point title="Hang up"> <hang-up/> </end-point> <end-point title="Pass through"> <redirect to="+45 21 49 08 04"/> </end-point> </dial-plan>');
 
-INSERT INTO users (id, name, extension)
-VALUES (1,  'Thomas Pedersen',           1001),
-       (2,  'Kim Rostgaard Christensen', 1002),
-       (3,  'Jacob Sparre Andersen',     1003),
-       (4,  'AdaHeads Test User One',    1004),
-       (5,  'AdaHeads Test User Two',    1005),
-       (6,  'Tux',                       1006),
-       (7,  'This guy here',             1007),
-       (8,  'Thata guy there',           1008),
-       (9,  'Casper Bergsø',             1009),
-       (10, 'Testagent 1100',            1100),
-       (11, 'Testagent 1101',            1101),
-       (12, 'Testagent 1102',            1102),
-       (13, 'Testagent 1103',            1103),
-       (14, 'Testagent 1104',            1104),
-       (15, 'Testagent 1105',            1105),
-       (16, 'Testagent 1106',            1106),
-       (17, 'Testagent 1107',            1107),
-       (18, 'Testagent 1108',            1108),
-       (19, 'Testagent 1109',            1109);
+INSERT INTO users (id, name, extension, send_from)
+VALUES (1,  'Thomas Pedersen',           1001, 'tp@adaheads.com'),
+       (2,  'Kim Rostgaard Christensen', 1002, 'krc@adaheads.com'),
+       (3,  'Jacob Sparre Andersen',     1003, 'jsa@adaheads.com'),
+       (4,  'AdaHeads Test User One',    1004, null),
+       (5,  'AdaHeads Test User Two',    1005, null),
+       (6,  'Tux',                       1006, null),
+       (7,  'This guy here',             1007, null),
+       (8,  'Thata guy there',           1008, null),
+       (9,  'Casper Bergsø',             1009, null),
+       (10, 'Testagent 1100',            1100, 'noreply@adaheads.com'),
+       (11, 'Testagent 1101',            1101, 'noreply@adaheads.com'),
+       (12, 'Testagent 1102',            1102, 'noreply@adaheads.com'),
+       (13, 'Testagent 1103',            1103, 'noreply@adaheads.com'),
+       (14, 'Testagent 1104',            1104, 'noreply@adaheads.com'),
+       (15, 'Testagent 1105',            1105, 'noreply@adaheads.com'),
+       (16, 'Testagent 1106',            1106, 'noreply@adaheads.com'),
+       (17, 'Testagent 1107',            1107, 'noreply@adaheads.com'),
+       (18, 'Testagent 1108',            1108, 'noreply@adaheads.com'),
+       (19, 'Testagent 1109',            1109, 'noreply@adaheads.com');
 
 INSERT INTO groups (id, name)
 VALUES (1, 'Receptionist'),
