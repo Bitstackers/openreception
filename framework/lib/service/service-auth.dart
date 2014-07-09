@@ -19,11 +19,11 @@ abstract class Authentication {
 
     Completer<Model.User> completer = new Completer<Model.User>();
     
-    Uri url = Uri.parse(host.toString() + AuthProtocol.tokenResource(token));
-
     if (!_UriEndsWithSlash(host)) {
       host = Uri.parse (host.toString() + '/');
     }
+
+    Uri url = Uri.parse(host.toString() + AuthProtocol.tokenResource(token));
     
     client.getUrl(url)
         .then((HttpClientRequest request) => request.close())
