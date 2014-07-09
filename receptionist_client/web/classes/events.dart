@@ -49,6 +49,7 @@ final EventType<model.Reception> receptionChanged               = new EventType<
 final EventType<State> stateUpdated                             = new EventType<State>();
 final EventType CreateNewContactEvent                           = new EventType();
 final EventType Save                                            = new EventType();
+final EventType Edit                                            = new EventType();
 
 // Keyboards
 final EventType<String> hangupCall                              = new EventType<String>();
