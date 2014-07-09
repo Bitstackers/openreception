@@ -20,7 +20,7 @@ class ReceptionEmailAddresses {
 
   bool            hasFocus  = false;
 
-  bool get muted => this.context == Context.current;
+  bool get muted => this.context != Context.current;
   
   static const String className = '${libraryName}.ReceptionEmailAddresses';
   static const String NavShortcut = 'A';

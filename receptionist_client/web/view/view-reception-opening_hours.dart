@@ -22,6 +22,8 @@ class ReceptionOpeningHours {
   static const String className   = '${libraryName}.CompanyOpeningHours';
   static const String NavShortcut = 'X'; 
 
+  bool get muted => this.context != Context.current;
+
   Context         context;
   Element         element;
   bool            hasFocus  = false;
@@ -37,7 +39,7 @@ class ReceptionOpeningHours {
     
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, openingHoursList.id)));
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     header.text = ReceptionOpeningHoursLabels.HeaderText;
 
@@ -52,7 +54,7 @@ class ReceptionOpeningHours {
     });
     
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, this.openingHoursList.id));
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, openingHoursList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
@@ -62,6 +64,12 @@ class ReceptionOpeningHours {
         this.openingHoursList.focus();
       }
     });
+  }
+  
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, openingHoursList.id));
+    }
   }
 
   void render(model.Reception reception) {

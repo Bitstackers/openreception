@@ -22,7 +22,9 @@ class ReceptionSalesCalls {
   static const String className   = '${libraryName}.ReceptionSalesCalls';
   static const String NavShortcut = 'C'; 
 
-  Context      context;
+  bool get muted => this.context != Context.current;
+
+  final Context   context;
   final Element   element;
   bool         hasFocus  = false;
   Element      get header           => this.element.querySelector('legend');
@@ -37,7 +39,7 @@ class ReceptionSalesCalls {
     
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, instructionList.id)));
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     header.text = CompanySalesCallsLabels.HeaderText;
 
@@ -51,7 +53,7 @@ class ReceptionSalesCalls {
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, instructionList.id));
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, instructionList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
@@ -61,7 +63,12 @@ class ReceptionSalesCalls {
         instructionList.focus();
       }
     });
-    
+  }
+  
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, instructionList.id));
+    }
   }
 
   void render(model.Reception reception) {
