@@ -57,11 +57,12 @@ class ReceptionOther {
 
     event.bus.on(event.receptionChanged).listen((model.Reception selectedReception) {
       if (selectedReception.extraDataUri != null) {
-        this.body.children = [new ProgressElement()];
-
-        selectedReception.loadExtraData().then ((String responseText) {
-          this.body.children = new DocumentFragment.html(responseText).children;
-        });
+        //this.body.children = [new ProgressElement()];
+        this.body.children = 
+            [new IFrameElement()
+              ..src = selectedReception.extraDataUri.toString()
+              ..width  = '100%'
+              ..height = '${this.element.clientHeight - (this.header.clientHeight + 50)}px']; 
       }
     });
 
