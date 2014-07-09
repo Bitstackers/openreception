@@ -24,7 +24,7 @@ void main() {
     new recordView.RecordView(querySelector('#record-page'));
     new userView.UserView(querySelector('#user-page'));
     new billView.BillingView(querySelector('#billing-page'));
-    new musicView.MusicView(querySelector('#billing-page'));
+    new musicView.MusicView(querySelector('#music-page'));
     new Menu(querySelector('nav#navigation'));
   }
 }

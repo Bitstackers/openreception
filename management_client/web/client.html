@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="style/record.css">
     <link rel="stylesheet" href="style/user.css">
     <link rel="stylesheet" href="style/billing.css">
+    <link rel="stylesheet" href="style/music.css">
   </head>
 <body>
   <nav id="navigation">
@@ -30,7 +31,7 @@
       <li><img id="record-button" alt="Optage" title="Optage" src="image/record.svg" draggable="false" class="faded"></li>
       <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user.svg" draggable="false" class="faded"></li>
       <li><img id="billing-button" alt="Faktura" title="Faktura" src="image/billing.svg" draggable="false" class="faded"></li>
-      <li><img id="music-button" alt="Musik" title="Musik" src="image/music_icon.svg" draggable="false" class="faded"></li>
+      <li><img id="music-button" alt="Musik" title="Musik" src="image/tp/musicalnote.svg" draggable="false" class="faded"></li>
     </ul>
   </nav>
 
@@ -517,18 +518,53 @@
       -- ------- MUSIC -------- --
       -- ---------------------- -->
     <div id="music-page" class="hidden">
-      <div id="music-CRUD">
-        <button id="music-new">Ny</button>
-        <button id="music-save">Gem</button>
-        <button id="music-delete">Slet</button>
-      </div>
-      <div id="music-listing">
-        <ul id="music-playlists"></ul>
+      <div iD="music-leftbar">
+        <div id="music-CRUD">
+          <button id="music-new">Ny</button>
+          <button id="music-save">Gem</button>
+          <button id="music-delete">Slet</button>
+        </div>
+        <div id="music-listing">
+          <ul id="music-playlists" class="zebra"></ul>
+        </div>
       </div>
       <div id="music-content">
-      <!-- name, path, rate, shuffle, channels, interval, chime-list, chime-freq -->
-        <label for="music-folder">Mappe</label> <input id="music-folder" type="text">
-        <label for="music-folder">Mappe</label> <input id="music-folder" type="text">
+        <ul>
+          <li>
+          	<label for="music-name">afspilningslistenavn</label>
+          	<input id="music-name" type="text">
+          </li>
+          <li>
+          	<label for="music-path">Mappe</label>
+          	<input id="music-path" type="text">
+          </li>
+          <li>
+          	<label for="music-shuffle">bland</label>
+          	<input id="music-shuffle" type="checkbox">
+          </li>
+          <li>
+          	<label for="music-channels">stereo</label>
+          	<input id="music-channels" type="checkbox">
+          </li>
+          <li>
+          	<label for="music-interval">
+          		Millisekunder mellem filer
+          	</label>
+          	<input id="music-interval" type="number">
+          </li>
+        </ul>
+        <fieldset style="display: none;">
+          <legend>IKKE ANBEFALET - (heller ikke implementeret)</legend>
+          <ul>
+          	<li>
+          		<label for="music-chimelist">Afbrudelsesliste</label>
+          		<input id="music-folder" type="text" disabled></li>
+          	<li>
+          		<label for="music-chimefreq">Sekunder mellem afbrudelser</label>
+          		<input id="music-chimefreq" type="number" disabled>
+            </li>
+          </ul>
+        </fieldset>
       </div>
     </div>
 

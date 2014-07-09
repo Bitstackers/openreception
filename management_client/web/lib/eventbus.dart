@@ -95,6 +95,39 @@ class Invalidate {
    *
    */
   static final EventType<Map> dialplanChanged = new EventType<Map>();
+
+  /**
+   * Contains the playlist id for the updated playlist.
+   *
+   * Example:
+   * {
+   *   "id": 1
+   * }
+   *
+   */
+  static final EventType<Map> playlistChanged = new EventType<Map>();
+
+  /**
+   * Contains the playlist id for the added playlist.
+   *
+   * Example:
+   * {
+   *   "id": 1
+   * }
+   *
+   */
+  static final EventType<Map> playlistAdded = new EventType<Map>();
+
+  /**
+   * Contains the playlist id for the removed playlist.
+   *
+   * Example:
+   * {
+   *   "id": 1
+   * }
+   *
+   */
+  static final EventType<Map> playlistRemoved = new EventType<Map>();
 }
 
 EventBus _bus = new EventBus();
