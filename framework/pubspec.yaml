@@ -1,6 +1,6 @@
 name: OpenReceptionFramework
-version: 0.0.6+1
-description: A utility package for AdaHeads K/S
+version: 0.0.7+1
+description: A utility package for the OpenReception application.
 dependencies:
   http: any
   postgresql: any

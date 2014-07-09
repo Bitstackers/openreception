@@ -21,6 +21,10 @@ abstract class Authentication {
     
     Uri url = Uri.parse(host.toString() + AuthProtocol.tokenResource(token));
 
+    if (!_UriEndsWithSlash(host)) {
+      host = Uri.parse (host.toString() + '/');
+    }
+    
     client.getUrl(url)
         .then((HttpClientRequest request) => request.close())
         .then((HttpClientResponse response) {
@@ -40,4 +44,6 @@ abstract class Authentication {
     return completer.future;
              
   }
+
+  static bool _UriEndsWithSlash (Uri uri) => uri.toString().endsWith('/');
 }
