@@ -148,6 +148,59 @@ class Database {
       _updateIvr(pool, receptionId, ivr);
 
   /* ***********************************************
+     ****************** Playlist *******************
+   */
+
+  Future<int> createPlaylist(
+      String       name,
+      String       path,
+      bool         shuffle,
+      int          channels,
+      int          interval,
+      List<String> chimelist,
+      int          chimefreq,
+      int          chimemax) =>
+      _createPlaylist(pool,
+                      name,
+                      path,
+                      shuffle,
+                      channels,
+                      interval,
+                      chimelist,
+                      chimefreq,
+                      chimemax);
+
+
+  Future<int> deletePlaylist(int playlistId) => _deletePlaylist(pool, playlistId);
+
+  Future<model.Playlist> getPlaylist(int playlistId) => _getPlaylist(pool, playlistId);
+
+  Future<List<model.Playlist>> getPlaylistList() =>
+      _getPlaylistList(pool);
+
+  Future<int> updatePlaylist(
+      int          id,
+      String       name,
+      String       path,
+      bool         shuffle,
+      int          channels,
+      int          interval,
+      List<String> chimelist,
+      int          chimefreq,
+      int          chimemax) =>
+      _updatePlaylist(
+          pool,
+          id,
+          name,
+          path,
+          shuffle,
+          channels,
+          interval,
+          chimelist,
+          chimefreq,
+          chimemax);
+
+  /* ***********************************************
      ******************** Phone ********************
    */
 

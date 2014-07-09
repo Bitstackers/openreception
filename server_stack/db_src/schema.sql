@@ -322,6 +322,11 @@ CREATE TABLE cdr_checkpoints (
    checkpoint   TIMESTAMP NOT NULL PRIMARY KEY
 );
 
+
+CREATE TABLE playlists (
+   id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   content      json    NOT NULL
+);
 --  The distribution lists are temporarily moved to an object residing inside
 --  the contact table. Wheter or not we need the strong references will be
 --  clear later on. From there, we can safely migrate to db-keys.
