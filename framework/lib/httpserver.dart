@@ -3,6 +3,7 @@ library utilities.httpserver;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:route/server.dart';
@@ -56,7 +57,6 @@ Filter auth(Uri authUrl) {
 }
 
 void preFlight(HttpRequest request) {
-  logger.debug('PREFLIGHT');
   writeAndClose(request, '');
 }
 
@@ -121,6 +121,16 @@ void serverError(HttpRequest request, String logMessage) {
                                       'description' : logMessage}));
 }
 
+//TODO: Implement real TimeZone! TimeFormatter throws NotImplemented.
+DateFormat ClfDate = new DateFormat('dd/MMMM/yyyy:HH:mm:ss +0200');
+
+void commonLogFormat (HttpRequest request) {
+  
+ logger.access('${request.connectionInfo.remoteAddress.address} - - ${ClfDate.format(new DateTime.now())}'
+               ' "${request.method} ${request.requestedUri}" ${request.response.statusCode}'
+               ' ${request.response.contentLength}');
+}
+
 void forbidden(HttpRequest request, String reason) {
   logger.error(reason);
   request.response.statusCode = HttpStatus.FORBIDDEN;
@@ -138,10 +148,9 @@ void notFound(HttpRequest request, Map reply) {
   Map responseBody = {'error':'Not found.'};
   responseBody.addAll(reply);
 
-  access(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
+  access('${HttpStatus.NOT_FOUND} : ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
-  request.response.write(JSON.encode(responseBody));
-  request.response.close();
+  writeAndClose(request, JSON.encode(responseBody));
 }
 
 void resourceNotFound(HttpRequest request) {
@@ -149,8 +158,7 @@ void resourceNotFound(HttpRequest request) {
 
   access(HttpStatus.NOT_FOUND.toString() +': ${request.uri}');
   request.response.statusCode = HttpStatus.NOT_FOUND;
-  request.response.write(JSON.encode({'error':'Resource not found.'}));
-  request.response.close();
+  writeAndClose(request, JSON.encode({'error':'Resource not found.'}));
 }
 
 void start(int port, void setupRoutes(HttpServer server)) {
@@ -179,7 +187,8 @@ void writeAndClose(HttpRequest request, String text) {
 
   sb.write(request.response.statusCode);
   //TODO Add real access log
-  access(sb.toString());
+  //access(sb.toString());
+  commonLogFormat(request);
 
   addCorsHeaders(request.response);
   try {
