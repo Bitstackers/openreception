@@ -29,6 +29,7 @@ class User {
     return this._map;
   }
 
+  bool inAnyGroups(List<String> groupNames) => groupNames.any((g) => groups.contains(g));
 }
 
 abstract class UserDatabase {
