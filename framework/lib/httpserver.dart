@@ -55,6 +55,10 @@ Filter auth(Uri authUrl) {
   };
 }
 
+void preFlight(HttpRequest request) {
+  logger.debug('PREFLIGHT');
+  writeAndClose(request, '');
+}
 
 Future<String> extractContent(HttpRequest request) {
   Completer completer = new Completer();
