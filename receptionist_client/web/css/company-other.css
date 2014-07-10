@@ -1,0 +1,9 @@
+#companyother {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+#company-other-body{
+  padding: 5px;
+}

@@ -1,0 +1,12 @@
+#companytelephonenumbers {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
+#company-telephonenumbers-list {
+  width: 100%;
+  overflow: auto;
+  font-size: 0.9em;
+  list-style-type: none;
+}

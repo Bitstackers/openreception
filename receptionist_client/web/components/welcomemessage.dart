@@ -11,27 +11,56 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of components;
+part of view;
 
+const String EMPTY_FIELD = '';
+
+/**
+ * Widget for displaying greetings for 
+ */
 class WelcomeMessage {
-  DivElement  container;
-  DivElement  element;
-  SpanElement message;
-  model.Call  call = model.nullCall;
+  DivElement container;
+  SpanElement get message => container.querySelector('#welcome-message-text');
 
-  WelcomeMessage(DivElement this.element) {
-    message = element.querySelector('#welcome-message-text');
+  /**
+   * 
+   */
+  WelcomeMessage(DivElement this.container) {
+    event.bus.on(event.receptionChanged).listen(this._onReceptionChange);
+
+    event.bus.on(model.Call.currentCallChanged).listen(_onCallChange);
+  }
+
+  /**
+   * 
+   */
+  void _onReceptionChange(model.Reception reception) {
+    this._render(reception != model.nullReception ? reception.greeting : EMPTY_FIELD);
+  }
+
+  /**
+   * Marks the widget as being active.
+   * TODO: Introduce variable greeting depending on if the welcomeMessage have been played. Different texts for the situations.
+   */
+  void _onCallChange(model.Call call) {
+    log.debugContext("Changed to call ${call.ID}", "WelcomeMessage");
     
-    event.bus.on(event.receptionChanged).listen((model.Reception reception) { 
-        message.text = reception != model.nullReception ? reception.greeting : ''; 
-      });
+    container.classes.toggle('welcome-message-active-call', call != model.nullCall);
+    
+    if (call != model.nullCall ) {  
+      return;
+    }
+    if (call != model.nullCall && call.greetingPlayed) {
+        model.Reception.get(call.receptionId).then((model.Reception reception) {
+          this._render(!call.greetingPlayed ? reception.greeting : reception.alternateGreeting);
+        });
+    }
+  }
 
-    event.bus.on(event.callChanged).listen((model.Call value) {
-      element.classes.toggle('welcome-message-active-call', value != model.nullCall);
-      if(value != model.nullCall && value.greetingPlayed) {
-        //TODO Introduce variable greeting depending on if the welcomeMessage have been played.
-        //Different texts for the situations.
-      }
-    });
+  /**
+   * 
+   */
+  void _render(String newTitle) {
+    message.text = newTitle;
   }
 }

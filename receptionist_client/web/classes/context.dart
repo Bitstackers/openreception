@@ -42,6 +42,9 @@ import 'logger.dart';
 final EventType<int> alertUpdated = new EventType<int>();
 
 class Context {
+  
+  static const String context = 'Context';
+  
   EventBus _bus = new EventBus();
   EventBus get bus => _bus;
 
@@ -51,6 +54,23 @@ class Context {
   String             lastFocusId   = '';
 
   Element _element;
+  
+  static Context    _current = null;
+  static Context get current => _current;
+  static    void set current (Context newUIContext) {
+    log.debugContext('Changing active context to ${newUIContext.id}', context);
+    _current = newUIContext;
+  }
+
+  @override
+  operator == (Context other) {
+    return this.id.toLowerCase() == other.id.toLowerCase();
+  }
+  
+  @override
+  String toString() {
+    return this.id;
+  }
 
   int    get alertCounter => _alertCounter;
   bool   get alertMode    => alertCounter > 0;
@@ -106,9 +126,8 @@ class Context {
    * Toggline OFF means adding the .hidden class from the [Context] DOM element
    * (see the constructor comment) and setting [isActive] to false.
    */
-  void _toggle(String contextId) {
-    isActive = contextId == id;
-    _element.classes.toggle('hidden', !isActive);
+  void _toggle(String newContextID) {
+    _element.classes.toggle('hidden', newContextID != id);
   }
 
   /**
@@ -129,11 +148,13 @@ class Context {
 //      }
 //    });
     
-    event.bus.on(event.locationChanged).listen((nav.Location value) {
-      if((value.contextId == id && !isActive) || 
-         (value.contextId != id && isActive)) {
-        _toggle(value.contextId);  
+    event.bus.on(event.locationChanged).listen((nav.Location newLocation) {
+      
+      if (newLocation.contextId == this.id) {
+        Context.current = this;
       }
+      
+      _toggle(newLocation.contextId);  
     });
   }
 

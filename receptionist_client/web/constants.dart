@@ -81,6 +81,9 @@ abstract class ID {
   static final SENDMESSAGE_SEND = 'sendmessagesend';
   static final SENDMESSAGE_TEXT = 'sendmessagetext';
   static final WELCOME_MESSAGE = 'welcome-message';
+  
+  static final NOTIFICATION_PANEL = 'notifications';
+  
 }
 
 abstract class Label {

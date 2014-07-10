@@ -3,12 +3,12 @@ library BobLogin;
 import 'dart:async';
 import 'dart:html';
 
-import '../components.dart';
+import '../view/view.dart';
 import 'configuration.dart';
 import 'events.dart' as event;
 import 'logger.dart';
-import 'notification.dart';
-import 'protocol.dart' as protocol;
+import 'service-notification.dart';
+import '../protocol/protocol.dart' as protocol;
 import 'state.dart';
 
 class BobLogin {

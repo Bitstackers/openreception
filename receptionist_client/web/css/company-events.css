@@ -1,0 +1,21 @@
+fieldset#companyevents legend {
+  background-image: url('../images/calendar-icon-16x16.png');
+}
+
+
+#companyevents {
+  width: 100%;
+}
+
+#company_events_list {
+  height: 100%;
+  width: 100%;
+  font-size: 0.8em;
+  list-style-type: none;
+  overflow: auto;
+}
+
+.company-events-active {
+  border-left: solid 3px red;
+}
+

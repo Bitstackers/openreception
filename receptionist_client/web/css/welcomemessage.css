@@ -1,9 +1,8 @@
 #welcome-message {
-  position: absolute;
   left: 0%;
   top: 0%;
-  height: 6%;
-  width: 78%;
+  height: 100%;
+  width: 80%;
 }
 
 #welcome-message > div {

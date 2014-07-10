@@ -3,60 +3,95 @@
   <head>
     <meta charset="utf-8">
     <title>Bob</title>
-    
+    <link rel="stylesheet" href="css/nudge.css?v=1">
     <link rel="stylesheet" href="css/agentinfo.css?v=1">
-    <link rel="stylesheet" href="css/contextswitcher.css?v=1">
+    <link rel="stylesheet" href="css/context-switcher.css?v=1">
     <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
     <link rel="stylesheet" href="css/welcomemessage.css?v=1">
-    <link rel="stylesheet" href="css/companyselector.css?v=1">
-    <link rel="stylesheet" href="css/companyevents.css?v=1">
+    <link rel="stylesheet" href="css/company-selector.css?v=1">
+    <link rel="stylesheet" href="css/company-events.css?v=1">
     <link rel="stylesheet" href="css/box.css?v=1">
-    <link rel="stylesheet" href="css/companyhandling.css?v=1">
+    <link rel="stylesheet" href="css/company-handling.css?v=1">
     <link rel="stylesheet" href="css/calendar.css?v=1">
-    
-    <link rel="stylesheet" href="css/companyopeninghours.css?v=1">
-    <link rel="stylesheet" href="css/companysalescalls.css?v=1">
-    <link rel="stylesheet" href="css/companyproduct.css?v=1">
-    <link rel="stylesheet" href="css/companycustomertype.css?v=1">
-    <link rel="stylesheet" href="css/companytelephonenumbers.css?v=1">
-    <link rel="stylesheet" href="css/companyaddresses.css?v=1">
-    <link rel="stylesheet" href="css/companyalternatenames.css?v=1">
-    <link rel="stylesheet" href="css/companybankinginformation.css?v=1">
-    <link rel="stylesheet" href="css/companyemailaddresses.css?v=1">
-    <link rel="stylesheet" href="css/companywebsites.css?v=1">
-    <link rel="stylesheet" href="css/companyregistrationnumber.css?v=1">
-    <link rel="stylesheet" href="css/companyother.css?v=1">
-    
-    <link rel="stylesheet" href="css/contactinfo.css?v=1">
-    <link rel="stylesheet" href="css/sendmessage.css?v=1">
-    <link rel="stylesheet" href="css/globalqueue.css?v=1">
-    <link rel="stylesheet" href="css/localqueue.css?v=1">
-    <link rel="stylesheet" href="css/callqueueitem.css?v=1">
-    
-    <link rel="stylesheet" href="css/messagecontext.css?v=1">
-    
+
+    <link rel="stylesheet" href="css/company-opening_hours.css?v=1">
+    <link rel="stylesheet" href="css/company-sales_calls.css?v=1">
+    <link rel="stylesheet" href="css/company-product.css?v=1">
+    <link rel="stylesheet" href="css/company-customer_type.css?v=1">
+    <link rel="stylesheet" href="css/company-telephone_numbers.css?v=1">
+    <link rel="stylesheet" href="css/company-addresses.css?v=1">
+    <link rel="stylesheet" href="css/company-alternate_names.css?v=1">
+    <link rel="stylesheet" href="css/company-banking_information.css?v=1">
+    <link rel="stylesheet" href="css/company-email_addresses.css?v=1">
+    <link rel="stylesheet" href="css/company-websites.css?v=1">
+    <link rel="stylesheet" href="css/company-vat_number.css?v=1">
+    <link rel="stylesheet" href="css/company-other.css?v=1">
+
+    <link rel="stylesheet" href="css/contact-info.css?v=1">
+    <link rel="stylesheet" href="css/message-compose.css?v=1">
+    <link rel="stylesheet" href="css/call_list.css?v=1">
+
+    <link rel="stylesheet" href="css/context-message.css?v=1">
+
     <link rel="stylesheet" href="css/logbox.css?v=1">
-    
-    <link rel="stylesheet" href="css/phonebooth.css?v=1">
+
   </head>
   <body>
-   <!-- <div id="notifications" style="width:30%; height:40px; background-color:red; z-index:99; position:absolute;  margin: 0% 20% ;"></div>  --> 
+   <div id="notifications" style="width:30%; z-index:9999; position:absolute; margin: 0% 35%;"></div>
 
-    <div id="curtains"><!--We hide stuff behind these curtains--></div>
-    <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div> 
-    <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div> 
+    <div id="bobloading" style="position: absolute;" class="hidden"><h1>Loading</h1></div>
+    <div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div>
     <div id="boblogin" style="position: absolute;"></div>
     <div id="bobactive">
-        <ul id="contextswitcher"></ul>
-    
+
+      <ul id="contextswitcher">
+        <li>
+          <button id="contexthome_switcherbutton">
+            <img id="contexthome_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+        </li>
+        <li>
+          <button id="contexthomeplus_switcherbutton">
+            <img id="contexthomeplus_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+        </li>
+        <li>
+          <button id="contextmessages_switcherbutton">
+            <img id="contextmessages_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextlog_switcherbutton">
+           <img id="contextlog_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+<!--         <button id="contextstatistics_switcherbutton">
+           <img id="contextstatistics_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextphone_switcherbutton">
+           <img id="contextphone_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li>
+       <li>
+         <button id="contextvoicemails_switcherbutton">
+           <img id="contextvoicemails_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+         </button>
+       </li> -->
+     </ul>
+
       <section id="contexthome" data-default-widget="companyselector" class="context">
-        <div id="welcome-message" class="no-chrome">
+
+      <div id="header-container" style=" height: 6%;">
+        <div id="welcome-message" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
           <div>
-            <span id="welcome-message-text"></span>
+            <span id="welcome-message-text">Ikke i kald</span>
           </div>
         </div>
-        
-        <div id="agent-info">
+
+        <div id="agent-info" style="box-shadow: 2px 2px 3px #ccc;">
           <div id="agent-info-stats">
             <table>
               <tr>
@@ -74,184 +109,421 @@
           </div>
         </div>
 
-        <div id="call-info" class="no-chrome">
-          <span>
-            <button id="pickupnextcallbutton">N&aelig;ste kald</button>
-            <button id="hangupcallButton">L&aelig;g P&aring;</button>
-            <button id="holdcallButton">Parkér</button>
-          </span>
-          <div id="current-call-info">
-          Ikke i kald.
-          </div>
-        </div>
-        
-        <div id="companyselector" data-default-element="company-selector-searchbar"></div>
-        
-        <div id="companyevents" data-default-element="company_events_list">
-          <ul id="company_events_list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyhandling" data-default-element="company_handling_list">
-          <ul id="company_handling_list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyopeninghours" class="minibox" data-default-element="company-opening-hours-list">
-          <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companysalescalls" class="minibox" data-default-element="company-sales-list">
-          <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
-        </div>
-                
-        <div id="companyproduct" class="minibox" data-default-element="company-product-body">
-          <p id="company-product-body" tabindex="-1"></p>
-        </div>
-                
-        <div id="companycustomertype" class="minibox" data-default-element="company-customertype-body">
-          <p id="company-customertype-body" tabindex="-1"></p>
-        </div>
-        
-        <div id="companytelephonenumbers" class="minibox" data-default-element="company-product-body">
-          <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyaddresses" class="minibox" data-default-element="company-product-body">
-          <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyalternatenames" class="minibox" data-default-element="company-alternate-names-list">
-          <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companybankinginformation" class="minibox" data-default-element="company-banking-info-list">
-          <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyemailaddresses" class="minibox" data-default-element="company-email-addresses-list">
-          <ul id="company-email-addresses-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companywebsites" class="minibox" data-default-element="company-websites-list">
-          <ul id="company-websites-list" class="zebra" tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyregistrationnumber" class="minibox" data-default-element="company-registration-number-list">
-          <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
-        </div>
-        
-        <div id="companyother" class="minibox" data-default-element="company-product-body">
-          <p id="company-other-body" class="zebra" tabindex="-1"></p>
-        </div>
-        
-        <div id="contactinfo">
-          <h1 id="contactinfohead"></h1>
-          <div id="contactinfobody">
-            <div id="contactinfo_search"></div>
-            <div id="contactinfo_calendar"></div>
-            <div id="contactinfo_data"></div>
-          </div>
-        </div>
-        
-        <div id="sendmessage" data-default-element="sendmessagename"> <!-- Make the content for the box here. --> 
-          <div class="send-message-container">
-            <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1"/>
-            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly/>
-    
-            <input id="sendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1"/>
-            <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1"/>
-    
-            <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon"/>
-            <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil"/>
-            <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer"/>
-    
-            <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="Besked"></textarea>
-            
-            <div class="send-message-checkbox-container send-message-pleasecall">
-              <div id="send-message-checkbox1"></div>
-              <span>Ring venligst</span>
-            </div> 
-            <div class="send-message-checkbox-container send-message-callsback">
-              <div id="send-message-checkbox2"></div>
-              <span>Ringer selv tilbage</span>
-            </div>   
-            <div class="send-message-checkbox-container send-message-hascalled">
-              <div id="send-message-checkbox3"></div>
-              <span>Har ringet</span>
-            </div>  
-            <div class="send-message-checkbox-container send-message-emergency">
-              <div id="send-message-checkbox4"></div>
-              <span>Haster</span>
+      </div>
+
+      <div id="main-container" style="margin-top: 0.5%; width: 100%; height: 93%; overflow:hidden;">
+
+         <!-- Left column -->
+        <div style=" width: 35%;height: 100%; float:left;">
+
+          <div id="companyselector" data-default-element="company-selector-searchbar" style="height: 4%;"></div>
+
+          <fieldset id="companyevents" data-default-element="company_events_list" class="box-with-header-outer" style="height: 22%;">
+            <legend id="company-events-header"> :: Kalender :: </legend>
+            <div style="height: 100%;">
+
+            <fieldset id="receptioninfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
+              <legend>:: Ny aftale ::</legend>
+              <input class="calendar-event-id" type="hidden" value="0"/>
+              
+              <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
+
+              <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
+                <legend>:: Start::</legend>
+                <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                <span style="width:1em;">:</span>
+                <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                <span style="width:1em;">/</span>
+                <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+              </fieldset>
+
+              <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
+                <legend>:: Slut::</legend>
+                <input class="contactinfo-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                <span style="width:1em;">:</span>
+                <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                <span style="width:1em;">/</span>
+                <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+              </fieldset>
+
+            </fieldset>
+
+            <ul id="company_events_list" class="zebra"></ul>
             </div>
-    
-            <div class="send-message-button-container">
-              <button id="sendmessagecancel"></button>
-              <button id="sendmessagedraft"></button>
-              <button id="sendmessagesend"></button>
-            </div>
-    
-            <div class="send-message-recipient-container box-with-header-outer">
-              <ul id="send-message-recipient-list"></ul>
-            <!--
-              <box-with-header headerfontsize="0.8em" headerpadding="0px 5px 2px 5px">
-                <span name="boxheader">
-                  {{recipientTitle}}
-                </span>
-    
-                <div name="boxcontent" class="minibox">
-                  <ul>
-                    <li>Thomas</li>
-                    <li>Trine</li>
-                    <li>Steen</li>
-                  </ul>
-                  <ul template iterate="value in environment.contact.calendarEventList" class="contact-info-zebraeven2">
-                    <template instantiate="if value.active">
-                      <li class="contact-info-active2">
-                        <calendar-event event="{{value}}"></calendar-event>
-                      </li>
-                    </template>
-                    <template instantiate="if !value.active">
-                      <li>
-                        <calendar-event event="{{value}}"></calendar-event>
-                      </li>
-                    </template>
-                  </ul>
+          </fieldset>
+
+          <fieldset id="companyhandling" data-default-element="company_handling_list" class="box-with-header-outer" style="height: 22%;">
+            <legend>:: Håndtering ::</legend>
+            <ul id="company_handling_list" class="zebra"></ul>
+          </fieldset>
+
+          <fieldset id="sendmessage" data-default-element="company_events_list" class="box-with-header-outer" style="height: 50%;">
+            <legend> :: Ny besked :: </legend>
+            <!-- Disabled for now. <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">
+            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder=":: Ingen data fundet ::" readonly="">-->
+
+            <input id="sendmessagename" class="send-message-name send-message-field" placeholder=":: Navn ::" tabindex="-1">
+            <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder=":: Firmanavn ::" tabindex="-1">
+
+            <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder=":: Telefon ::" tabindex="-1">
+            <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder=":: Mobil ::" tabindex="-1">
+            <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder=":: Lokalnummer ::" tabindex="-1">
+
+            <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="::Besked::" tabindex="-1"></textarea>
+            <div style="width: 40%;float: left;">
+                <ul send-message-checkboxes>
+                  <li>
+                    <input type="checkbox" name="send-message-pleasecall" id="send-message-pleasecall">
+                    <label for="send-message-pleasecall">:: Ring venligst ::</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" name="send-message-callsback" id="send-message-callsback">
+                    <label for="send-message-callsback">:: Ringer selv tilbage ::</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" name="send-message-hascalled" id="send-message-hascalled">
+                    <label for="send-message-hascalled">:: Har ringet ::</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" name="send-message-urgent" id="send-message-urgent">
+                    <label for="send-message-urgent">:: Haster ::</label>
+                  </li>
+                </ul>
                 </div>
-              </box-with-header>
-              -->
+          <div style="float:left; height: 40%; width: 60%;">
+          <ul class="message-recipient-list"> </ul>
+          </div>
+            <div class="send-message-button-container" style="width: 100%; float:left;">
+              <button id="sendmessagecancel" tabindex="-1">:: Annuller ::</button>
+              <button id="sendmessagedraft" tabindex="-1">:: Gem ::</button>
+              <button id="sendmessagesend" tabindex="-1">:: Send ::</button>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Center column -->
+        <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
+          <div id="contactsearchpanel" style="height: 35%;">
+            <fieldset id="contactinfo" style="width:40%; float:left; height:100%;" class="box-with-header-outer-left">
+               <legend> :: Medarbejdere :: </legend>
+               <div id="contactinfobody" class="box-with-header-content" style="height: 297px;">
+               <div id="contactinfo_search"><div class="contact-info-searchbox">
+               <input id="contact-info-searchbar" type="search" placeholder="Søg..." disabled="">
+               </div><ul id="contactlist" class="contact-list zebra"></ul></div>
+              </div>
+            </fieldset>
+
+            <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:100%;" class="box-with-header-outer-right">
+             <legend> :: Medarbejderaftaler :: </legend>
+             <fieldset class="contactinfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
+               <legend>:: Ny aftale ::</legend>
+                 <input class="calendar-event-id" type="hidden" value="0"/>
+                 
+                 <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
+                 
+               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
+                 <legend>:: Start::</legend>
+                 <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                 <span style="width:1em;">:</span>
+                 <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                 <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                 <span style="width:1em;">/</span>
+                 <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                 <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+               </fieldset>
+
+               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
+                 <legend>:: Slut::</legend>
+                 <input class="contactinfo-calendar-event-create-ends-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                 <span style="width:1em;">:</span>
+                 <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+
+                 <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                 <span style="width:1em;">/</span>
+                 <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+
+                 <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+               </fieldset>
+
+             </fieldset>
+             <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
+            </fieldset>
+
+          </div>
+            
+            <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field" class="box-with-header-outer">
+              <legend> :: Opkald :: </legend>
+              <input id="call-originate-number-field" name="call-originate-number-field" type="text" placeholder=":: nummer ::" style="margin-left: 0.5%;"/>
+              <button class="call-originate-number-button">Ring op</button>
+            </fieldset>
+            
+            <fieldset id="contactinfopanel" style="height: 58%" class="box-with-header-outer">
+            <legend> :: Kontaktinfo :: </legend>
+            <div id="contactinfo_data">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+              <h5>Arbejdstider</h5>
+              <div class="contact-info-field">
+                <ul id="contactWorkHoursList" class="zebra"></ul>
+              </div>
+            </td>
+            <td>
+              <h5>Kald</h5>
+              <div class="contact-info-field">
+                <ul id="contactHandlingList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Stilling</h5>
+              <div id="contactPosition" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Ansvar</h5>
+              <div id="contactResponsibility" class="contact-info-field"></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Afdeling</h5>
+              <div id="contactDepartment" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Telefon</h5>
+              <div class="contact-info-field">
+                <ol id="contactTelephoneNumberList" class="zebra"></ol>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Relationer</h5>
+              <div id="contactRelations" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Email og kontakter</h5>
+              <div class="contact-info-field">
+                <ul id="contactEmailAddressList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Info</h5>
+              <div id="contactAdditionalInfo" class="contact-info-field"></div>
+            </td>
+            <td>
+              <h5>Backup</h5>
+              <div class="contact-info-field">
+                <ul id="contactBackupList" class="zebra"></ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        </div>
+        </fieldset>
+        </div>
+
+        <!-- Right column -->
+        <div style="margin-left: 1%;width: 18.5%;height: 100%; float:left;">
+          <fieldset id="companyopeninghours" data-default-element="company-opening-hours-list" style="height:18%" class="box-with-header-outer">
+            <legend>:: Åbningstider :: </legend>
+            <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+
+           <fieldset id="companysalescalls" data-default-element="company-sales-list" style="height:15%" class="box-with-header-outer">
+            <legend>:: Sælgere/Analyser :: </legend>
+            <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
+           </fieldset>
+
+           <fieldset id="companyproduct" data-default-element="company-product-body" style="height:15%" class="box-with-header-outer">
+            <legend>:: Produkter :: </legend>
+             <p id="company-product-body" tabindex="-1"></p>
+           </fieldset>
+
+           <fieldset id="companyaddresses" data-default-element="company-product-body" style="height:15%" class="box-with-header-outer">
+              <legend>:: Adresser :: </legend>
+             <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
+           </fieldset>
+
+           <!-- Call List -->
+           <fieldset id="globalqueue" class="box-with-header-outer" style="height:18%" >
+             <legend>:: Opkald ::</legend>
+             <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
+
+           </fieldset>
+
+          <fieldset id="local-calls" data-default-element="local-call-list" class="box-with-header-outer" style="height:16%">
+
+            <legend> :: Lokale kald :: </legend>
+            <div>
+             <ul class="zebra" id="local-call-list" tabindex="-1">
+             </ul>
+            </div>
+          </fieldset>
+
+        </div>
+       </div>
+      </section>
+
+      <!-- Context homeplus  -->
+      <section id="contexthomeplus" data-default-widget="companyother" class="context hidden">
+        <div id="context-home_plus-left" style="width: 30%; height: 99.5%%; overflow:hidden; float:left;">
+        
+          <fieldset id="companyemailaddresses" class="box-with-header-outer" data-default-element="company-email-addresses-list">
+            <legend> :: Emailadresser :: </legend>
+            <ul id="company-email-addresses-list" class="zebra"></ul>
+          </fieldset>
+        
+          <fieldset id="companywebsites" class="box-with-header-outer" data-default-element="company-websites-list">
+            <legend> :: Websites :: </legend>
+            <ul id="company-websites-list" class="zebra""></ul>
+          </fieldset>
+
+          <fieldset id="companycustomertype" class="box-with-header-outer" data-default-element="company-customertype-body">
+            <legend> :: Kundetype :: </legend>
+            <p id="company-customertype-body"></p>
+          </fieldset>
+
+        </div>
+
+        <div id="context-home_plus-center" style="width: 30%; height: 100%; margin-left: 0.5%; overflow:hidden; float:left;">
+
+          <fieldset id="companyalternatenames" class="box-with-header-outer" data-default-element="company-alternate-names-list">
+            <legend> :: Alternative firmanavne :: </legend>
+            <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+
+          <fieldset id="companytelephonenumbers" class="box-with-header-outer" data-default-element="company-product-body">
+            <legend> :: Telefonnumre :: </legend>
+            <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+      
+          <fieldset id="companybankinginformation" class="box-with-header-outer" data-default-element="company-banking-info-list">
+            <legend> :: Bankinformation :: </legend>
+            <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
+          </fieldset>
+
+
+          <fieldset id="companyregistrationnumber" class="box-with-header-outer" data-default-element="company-registration-number-list">
+            <legend> :: Registreringsnumre :: </legend>
+            <ul id="company-registration-number-list" class="zebra"tabindex="-1"></ul>
+          </fieldset>
+
+        </div>
+
+        <div id="context-home_plus-right" style="width: 39%; height: 100%; overflow:hidden; margin-left: 0.5%; float:left;">
+          <fieldset id="companyother" class="box-with-header-outer" data-default-element="company-other-body">
+            <legend> :: Ekstra data :: </legend>
+            <p id="company-other-body" class="zebra" tabindex="-1"></p>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- Context messages -->
+
+      <section id="contextmessages" data-default-widget="message-search" class="context hidden">
+        <div id="main-container" style="margin-top: 0%; width: 100%; height: 100%; overflow:hidden;">
+
+         <!-- Context messages - left container. -->
+
+          <div style="margin-left: 0%; width: 30%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc;"">
+            <div id="message-search" data-default-element="message-search-agent-selector">
+              <div class="message-search-box">
+                <div id="message-search-agent-selector"></div>
+                <div id="message-search-agent"></div>
+                <div id="message-search-type"></div>
+                <div id="message-search-company"></div>
+                <div id="message-search-contact"></div>
+                <button id="message-search-print">Print</button>
+                <button id="message-search-resend">Gensend valgte</button>
+              </div>
+            </div>
+
+            <div id="resendmessage" class="box-with-header-outer">
+              <h1 class="box-with-header-headline box-with-header-medium"> :: Besked :: </h1>
+              <div class="box-with-header-content" style="height: 443px;">
+
+                <div class="resend-message-container">
+                  <div class="resend-message-recipient-container box-with-header-outer">
+                    <ul id="resend-message-recipient-list"></ul>
+                  </div>
+
+                  <input id="resendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder="Søg..." type="search" tabindex="-1">
+                  <input id="resendmessagesearchresult" class="send-message-search-result send-message-field" placeholder="Ingen data fundet" readonly="">
+                  <input id="resendmessagename" class="send-message-name send-message-field" placeholder="Navn" tabindex="-1">
+                  <input id="resendmessagecompany" class="send-message-company send-message-field" placeholder="Firmanavn" tabindex="-1">
+                  <input id="resendmessagephone" class="send-message-phone send-message-field" placeholder="Telefon" tabindex="-1">
+                  <input id="resendmessagecellphone" class="send-message-cellphone send-message-field" placeholder="Mobil" tabindex="-1">
+                  <input id="resendmessagelocalno" class="send-message-localno send-message-field" placeholder="Lokalnummer" tabindex="-1">
+                  <textarea style="resize: none;" id="resendmessagetext" class="send-message-text send-message-field" placeholder="Besked" tabindex="-1"></textarea>
+
+                  <ul>
+                    <li>
+                      <input type="checkbox" name="resend-message-pleasecall" id="resend-message-pleasecall">
+                      <label for="resend-message-pleasecall">:: Ring venligst ::</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="resend-message-callsback" id="resend-message-callsback">
+                      <label for="resend-message-callsback">:: Ringer selv tilbage ::</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="resend-message-hascalled" id="resend-message-hascalled">
+                      <label for="resend-message-hascalled">:: Har ringet ::</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="resend-message-urgent" id="resend-message-urgent">
+                      <label for="resend-message-callsback">:: Haster ::</label>
+                    </li>
+                  </ul>
+                  <div class="resend-message-button-container">
+                    <button id="resendmessagecancel" tabindex="-1">Annuller</button>
+                    <button id="resendmessagedraft" tabindex="-1">Gem</button>
+                    <button id="resendmessagesend" tabindex="-1">Send</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right column -->
+          <div style="margin-left: 1%;width: 69%;height: 100%; float:left; box-shadow: 0px 0px 10px #ccc; background-color: green;">
+            <div id="messageoverview" class="no-chrome">
+              <table>
+                <thead>
+                  <tr>
+                    <th id="message-overview-header-checkbox"> <input type="checkbox" tabindex="-1"> </th>
+                    <th id="message-overview-header-timestamp"> :: Tidspunkt :: </th>
+                    <th id="message-overview-header-caller"> :: Opkalder :: </th>
+                    <th id="message-overview-header-context"> :: Kontekst :: </th>
+                    <th id="message-overview-header-agent"> :: Agent :: </th>
+                    <th id="message-overview-header-status"> :: Status :: </th>
+                  </tr>
+                </thead>
+                <tbody />
+              </table>
             </div>
           </div>
         </div>
-        
-        <div id="globalqueue"></div>
-        <div id="localqueue"></div>
       </section>
-      
-      <section id="contextmessages" data-default-widget="message-search" class="context hidden">
-        <div id="message-search" data-default-element="message-search-agent-selector">
-          <div id="message-search-agent-selector"></div>
-        </div>
-        
-        <div id="messageinfo">
-        </div>
-        <div id="messageoverview"></div>
-      </section>
-      
+
       <section id="contextlog" data-default-widget="logbox" class="context hidden">
         <div id="logbox" data-default-element="logbox-table"></div>
       </section>
-      
-      <section id="contextstatistics" data-default-widget="statbox" class="context hidden">
-        <p id="statbox">contextstatistics</p>
-      </section>
-      
-      <section id="contextphone" data-default-widget="phonebooth" class="context hidden">
-        <div id="phonebooth" data-default-element="phonebooth-numberfield"></div>
-        <p>contextphone</p>
-      </section>
-      
-      <section id="contextvoicemails" data-default-widget="voicebox" class="context hidden">
-        <p id="voicebox">contextvoicemails</p>
-      </section>
+
     </div>
     <script type="application/dart" src="bob.dart"></script>
     <script src="packages/browser/dart.js"></script>

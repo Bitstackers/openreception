@@ -1,0 +1,161 @@
+
+fieldset#sendmessage legend {
+  background-image: url('../images/message-icon-16x16.png');
+}
+
+#sendmessage { /* .send-message-placing { */
+  height: 50%;
+  margin-top: 0.5%;
+  width: 100%;
+}
+
+.send-message-container {
+  margin: 10px;
+  height: -moz-calc(100% - 20px);
+  height: -webkit-calc(100% - 20px);
+  width: -moz-calc(100% - 20px);
+  width: -webkit-calc(100% - 20px);
+  overflow: auto;
+}
+
+.send-message-field {
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  font-size: 1.1em;
+  margin: 0px;
+}
+
+input.send-message-field {
+  height: 30px;
+  padding: 3px;
+}
+
+textarea.send-message-field {
+  height: 30%;
+  padding: 5px;
+  font-size: 1.2em;
+}
+
+.send-message-searchbox {
+  width: 25%;
+}
+
+.send-message-search-result {
+  left: 29%;
+  width: 69%;
+}
+
+.send-message-name {
+  top: 15.5%;
+  width: 46%;
+}
+
+.send-message-company {
+  top: 15.5%;
+  left: 50%;
+  width: 48%;
+}
+
+.send-message-phone {
+  top: 23%;
+  width: 34%;
+}
+
+.send-message-cellphone {
+  top: 23%;
+  left: 38%;
+  width: 34%;
+}
+
+.send-message-localno {
+  top: 23%;
+  left: 74%;
+  width: 24%;
+}
+
+.send-message-text {
+  top: 31%;
+  height: 30%;
+  width: 96%;
+}
+
+
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0.1em 0.2em 0.1em 0.2em;
+    vertical-align:middle;
+}
+
+
+.send-message-checkbox-container {
+  width: 40%;
+  cursor:pointer;
+}
+
+.send-message-checkbox-container > div {
+  height: 20px;
+  width: 20px;
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  display: inline-block;
+  margin: -2px 5px 0 0;
+  vertical-align: middle;
+}
+
+.send-message-checkbox-label {
+  position: absolute;
+  top: 2px;
+  margin-left: 2%;
+}
+
+.send-message-checkbox-checked {
+  background-color: green;
+}
+
+send-message-button-container {
+  position: absolute;
+  top: 91.2%;
+}
+
+.send-message-button-container button {
+  border: solid 2px #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+  margin: 0px 10px 0px 0px;
+  padding: 5px 0px;
+  width: 75px;
+}
+
+.send-message-button-container button:hover {
+  border: solid 2px #bbb;
+  border-radius: 3px;
+  font-size: 1em;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.send-message-recipient-container {
+  width: 100%;
+  min-height: 30px;
+}
+
+#send-message-recipient-list {
+  inherit: none;
+  list-style-type: none;
+  display: inline;  
+}
+
+li.email-recipient-role-to {
+  list-style-image: url('../images/email-role-to-icon-16x16.png');  
+}
+
+
+li.email-recipient-role-cc {
+  list-style-image: url('../images/email-role-cc-icon-16x16.png');  
+}
+
+li.email-recipient-role-bcc {
+  list-style-image: url('../images/email-role-bcc-icon-16x16.png');  
+}

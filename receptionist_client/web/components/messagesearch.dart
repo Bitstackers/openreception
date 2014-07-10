@@ -1,8 +1,7 @@
-part of components;
+part of view;
 
 class MessageSearch{
   DivElement body;
-  Box box;
   Context _context;
   DivElement element;
   SpanElement header;
@@ -25,24 +24,8 @@ class MessageSearch{
   String headerText = 'Søgning';
   MessageSearch(DivElement this.element, Context this._context) {
     assert(element != null);
-    header = new SpanElement()
-      ..text = headerText;
 
-    String html = '''
-      <div class="message-search-box">
-        <div id="message-search-agent"></div>
-        <div id="message-search-type"></div>
-        <div id="message-search-company"></div>
-        <div id="message-search-contact"></div>
-        
-        <button id="message-search-print">Print</button>
-        <button id="message-search-resend">Gensend valgte</button>
-      </div>
-    ''';
-
-    DocumentFragment frag = new DocumentFragment.html(html);
-    body = frag.querySelector('div');
-    box = new Box.withHeader(element, header, body);
+    body = querySelector('.message-search-box');
 
     agentSearch = new SearchComponent<String>(body.querySelector('#message-search-agent'), _context, 'message-search-agent-searchbar')
       ..searchPlaceholder = 'Agent...'
@@ -64,11 +47,12 @@ class MessageSearch{
 
     companySearch = new SearchComponent<model.BasicReception>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
-      ..selectedElementChanged = (model.BasicReception element) {
-        storage.getReception(element.id).then((model.Reception value) {
+      ..selectedElementChanged = (model.BasicReception reception) {
+        model.Reception.get(reception.ID).then((model.Reception value) {
           selectedCompany = value;
           searchParametersChanged();
-          storage.getContactList(value.id).then((model.ContactList list) {
+          
+          model.Contact.list(value.ID).then((model.ContactList list) {
             contactSearch.updateSourceList(list.toList(growable: false));
           }).catchError((error) {
             contactSearch.updateSourceList(new model.ContactList.emptyList().toList(growable: false));
@@ -80,7 +64,7 @@ class MessageSearch{
       }
       ..listElementToString = companyListElementToString;
 
-      storage.getReceptionList().then((model.ReceptionList list) {
+      storage.Reception.list().then((model.ReceptionList list) {
         companySearch.updateSourceList(list.toList(growable: false));
       });
 
@@ -127,7 +111,7 @@ class MessageSearch{
 
   void searchParametersChanged() {
     log.debug('messagesearch. The search parameters have changed.');
-    event.bus.fire(event.messageSearchFilterChanged,
-        new MessageSearchFilter(selectedAgent, selectedType, selectedCompany, selectedContact));
+    //event.bus.fire(event.messageSearchFilterChanged,
+    //    new MessageSearchFilter(selectedAgent, selectedType, selectedCompany, selectedContact));
   }
 }

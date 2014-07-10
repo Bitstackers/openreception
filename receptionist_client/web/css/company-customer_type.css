@@ -1,0 +1,9 @@
+#companycustomertype {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
+#company-customertype-body {
+  padding: 5px;
+}

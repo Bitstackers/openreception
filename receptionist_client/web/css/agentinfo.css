@@ -1,9 +1,9 @@
 #agent-info {
   position: absolute;
-  left: 79%;
+  left: 81%;
   top: 0%;
   height: 6%;
-  width: 8%;
+  width: 19%;
 }
 
 #agent-info-stats {
@@ -27,14 +27,4 @@
   border-radius: 5px; 
   height: 100%; 
   width: 100%;
-}
-
-
-#call-info {
-  text-align:right;
-  position: absolute;
-  left: 86%;
-  top: 0%;
-  height: 6%;
-  width: 14%;
 }

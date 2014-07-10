@@ -25,11 +25,13 @@ import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
-import 'classes/notification.dart';
-import 'classes/protocol.dart' as protocol;
+import 'classes/service-notification.dart';
+import 'protocol/protocol.dart' as protocol;
 import 'classes/state.dart';
 
-import 'classes/model.dart' as model;
+import 'view/view.dart' as View;
+
+import 'model/model.dart' as Model;
 
 BobActive bobActive;
 BobDisaster bobDiaster;
@@ -37,12 +39,15 @@ BobLoading bobLoading;
 //BobLogin boblogin;
 
 void main() {
+  
+  View.Notification notificationPanel = new View.Notification();
+  
   configuration.initialize().then((_) {
     if(handleToken()) {
       notification.initialize();
-      
-    }
+    }      
   });
+  
   
   //boblogin = new BobLogin(querySelector('#boblogin'));
 
@@ -59,6 +64,8 @@ void main() {
       subscription.cancel();
       
       nav.registerOnPopStateListeners();
+      /// Reload the model.
+      Model.CallList.instance.reloadFromServer();
     }
   });
 }
@@ -88,13 +95,14 @@ bool handleToken() {
         configuration.userId = data['id'];
         configuration.userName = data['name'];
         
-        model.User.currentUser = new model.User (data['id'],data['name']);
+        Model.User.currentUser = new Model.User (data['id'],data['name']);
+        
         
       } else {
         //TODO: Panic action.
         log.error('bob.dart userInfo did not contain an id');
       }
-    });
+    }) ;
     return true;
   } else {
     String loginUrl = '${configuration.authBaseUrl}/token/create?returnurl=${window.location.toString()}';
