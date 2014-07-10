@@ -213,13 +213,20 @@ class IdentityContainer {
   LIElement _makeIdentityNode(UserIdentity identity) {
     LIElement li = new LIElement();
 
+    ImageElement deleteButton = new ImageElement(src: '/image/tp/red_plus.svg')
+      ..classes.add('small-button')
+      ..onClick.listen((_) {
+      _identities.remove(identity);
+      populateUL(_identities);
+    });
+
     SpanElement content = new SpanElement()
       ..text = identity.identity;
     InputElement editBox = new InputElement(type: 'text');
 
     editableSpan(content, editBox);
 
-    li.children.addAll([content, editBox]);
+    li.children.addAll([deleteButton, content, editBox]);
     return li;
   }
 
