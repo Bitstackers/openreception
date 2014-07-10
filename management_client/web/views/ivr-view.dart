@@ -19,6 +19,8 @@ class IvrView {
   Dialplan dialplan;
   libIvr.IvrList ivrList;
 
+  List<Audiofile> receptionSounds = new List<Audiofile>();
+
   DivElement element;
   DivElement receptionOuterSelector;
   UListElement menuList;
@@ -80,6 +82,10 @@ class IvrView {
       return request.getIvr(receptionId);
     }).then((libIvr.IvrList ivrList) {
       this.ivrList = ivrList;
+      return request.getAudiofileList(receptionId);
+    }).then((List<Audiofile> sounds) {
+      receptionSounds = sounds;
+    }).then((_) {
       clearContentTable();
       renderMenuList(ivrList);
     }).catchError((error) {
@@ -161,6 +167,7 @@ class IvrView {
       ..classes.add('ivr-small-button')
       ..onClick.listen((_) {
         ivrList.list.remove(item);
+        renderMenuList(ivrList);
       });
 
     node.children.addAll([text, editBox, editButton, deleteButton]);
@@ -181,31 +188,30 @@ class IvrView {
       ..clear()
       ..addAll(digitss.map((String digit) => ivrTableRow(digit, ivr)));
 
-    request.getAudiofileList(receptionId).then((List<Audiofile> sounds) {
-      greetLongPicker.children
-        ..clear()
-        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingLong == null || ivr.greetingLong.trim().isEmpty))
-        ..addAll(sounds.map((Audiofile file) =>
-          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingLong)));
+    greetLongPicker.children
+      ..clear()
+      ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingLong == null || ivr.greetingLong.trim().isEmpty))
+      ..addAll(receptionSounds.map((Audiofile file) =>
+        new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingLong)));
 
-      greetShortPicker.children
-        ..clear()
-        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingShort == null || ivr.greetingShort.trim().isEmpty))
-        ..addAll(sounds.map((Audiofile file) =>
-          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingShort)));
+    greetShortPicker.children
+      ..clear()
+      ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingShort == null || ivr.greetingShort.trim().isEmpty))
+      ..addAll(receptionSounds.map((Audiofile file) =>
+        new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingShort)));
 
-      invalidSoundPicker.children
-        ..clear()
-        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.invalidSound == null || ivr.invalidSound.trim().isEmpty))
-        ..addAll(sounds.map((Audiofile file) =>
-          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.invalidSound)));
+    invalidSoundPicker.children
+      ..clear()
+      ..add(new OptionElement(data:'ingen', value: '', selected: ivr.invalidSound == null || ivr.invalidSound.trim().isEmpty))
+      ..addAll(receptionSounds.map((Audiofile file) =>
+        new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.invalidSound)));
 
-      exitSoundPicker.children
-        ..clear()
-        ..add(new OptionElement(data:'ingen', value: '', selected: ivr.exitSound == null || ivr.exitSound.trim().isEmpty))
-        ..addAll(sounds.map((Audiofile file) =>
-          new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.exitSound)));
-    });
+    exitSoundPicker.children
+      ..clear()
+      ..add(new OptionElement(data:'ingen', value: '', selected: ivr.exitSound == null || ivr.exitSound.trim().isEmpty))
+      ..addAll(receptionSounds.map((Audiofile file) =>
+        new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.exitSound)));
+
   }
 
   /**
