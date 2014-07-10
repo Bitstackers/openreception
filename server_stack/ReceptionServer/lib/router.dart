@@ -20,7 +20,7 @@ part 'router/deletereception.dart';
 part 'router/getreceptionlist.dart';
 part 'router/invalidatereception.dart';
 
-final Pattern anyThing = new UrlPattern(r'/(.*)');
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern receptionResource                     = new UrlPattern(r'/reception/(\d+)');
 final Pattern receptionUrl                          = new UrlPattern(r'/reception'); //TODO: Deprecate in protocol in favour of the more eloborate /reception/list
 final Pattern receptionListResource                 = new UrlPattern(r'/reception/list');
@@ -48,6 +48,6 @@ void setup(HttpServer server) {
     ..serve(      receptionCalendarEventResource, method: 'PUT'   ).listen(ReceptionCalendar.update)
     ..serve(receptionCalendarEventCreateResource, method: 'POST'  ).listen(ReceptionCalendar.create)
     ..serve(      receptionCalendarEventResource, method: 'DELETE').listen(ReceptionCalendar.remove)
-    ..serve(anyThing, method: 'OPTIONS').listen(preFlight)
+    ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
 }
