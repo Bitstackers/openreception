@@ -26,7 +26,6 @@ import '../model/model.dart' as model;
 import 'socket.dart';
 import 'state.dart';
 import '../storage/storage.dart' as storage;
-import 'utilities.dart';
 
 const String libraryName = 'notification';
 
@@ -53,6 +52,9 @@ class EventSocket {
   static final EventType<Map> peerState            = new EventType<Map>();
   static final EventType<Map> contactCalendarEventCreated = new EventType<Map>();
   static final EventType<Map> receptionCalendarEventCreated = new EventType<Map>();
+  static final EventType<Map> receptionCalendarEventUpdated = new EventType<Map>();
+  static final EventType<Map> receptionCalendarEventDeleted = new EventType<Map>();
+
   Socket _socket;
 
   Map<String, EventType<Map>> _events =
@@ -68,8 +70,10 @@ class EventSocket {
      'call_unlock'   : callUnlock,
      'call_lock'     : callLock,
      'peer_state'    : peerState,
-     'contactCalendarEventCreated' : contactCalendarEventCreated,
-     'receptionCalendarEventCreated' : receptionCalendarEventCreated};
+     'contactCalendarEventCreated'   : contactCalendarEventCreated,
+     'receptionCalendarEventCreated' : receptionCalendarEventCreated,
+     'receptionCalendarEventUpdated' : receptionCalendarEventUpdated,
+     'receptionCalendarEventDeleted' : receptionCalendarEventDeleted};
 
   /**
    * [EventSocket] constructor.

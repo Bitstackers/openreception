@@ -50,6 +50,7 @@ final EventType<State> stateUpdated                             = new EventType<
 final EventType CreateNewContactEvent                           = new EventType();
 final EventType Save                                            = new EventType();
 final EventType Edit                                            = new EventType();
+final EventType Delete                                          = new EventType();
 
 // Keyboards
 final EventType<String> hangupCall                              = new EventType<String>();

@@ -7,10 +7,8 @@ fieldset#contactinfo legend {
   background-image: url('../images/contact-icon-16x16.png');
 }
 
-
-li:focus {
-  border: 2px solid aqua;
-  height: 100px;
+.selected {
+  border: 3px solid #67c1f3;
 }
 
 #contactinfo_search {

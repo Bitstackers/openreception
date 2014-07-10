@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:event_bus/event_bus.dart';
-import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import '../classes/events.dart' as event;

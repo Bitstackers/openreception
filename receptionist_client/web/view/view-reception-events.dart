@@ -13,7 +13,9 @@
 part of view;
 
 abstract class ReceptionEventsLabels {
-  static const String title    = 'Kalender';
+  static const String title     = 'Kalender';
+  static const String newEvent  = 'Opret aftale';
+  static const String editEvent = 'Rediger aftale';
 }
 
 /**
@@ -25,18 +27,43 @@ abstract class ReceptionEventsLabels {
  */
 class ReceptionEvents {
 
-  static const String   className = '${libraryName}.ReceptionEvents';
-  static const String NavShortcut = 'A'; 
+  static const String   className   = '${libraryName}.ReceptionEvents';
+  static const String NavShortcut   = 'A'; 
+  static const String SelectedClass = 'selected';
+  
+  bool get muted   => this.context != Context.current;
+  bool get inFocus => nav.Location.isActive(this.element);
   
   final Context       context;
+        nav.Location  location;
   final Element       element;
-  Element         get header         => this.element.querySelector('#company-events-header');
-  UListElement    get listElement    => this.element.querySelector('#company_events_list');
-  List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
-
+  Element         get header          => this.element.querySelector('#company-events-header');
+  UListElement    get eventList       => this.element.querySelector('#company_events_list');
+  List<Element>   get nudges          => this.element.querySelectorAll('.nudge');
+  
+  LIElement       get selectedElement 
+    => this.eventList.children.firstWhere((LIElement child) 
+      => child.classes.contains(SelectedClass), 
+         orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.nullID);
+  
+  void            set selectedElement (LIElement element) {
+    assert (element != null);
+    
+    this.selectedElement.classes.toggle(SelectedClass, false);
+    element.classes.toggle(SelectedClass, true);
+    
+    if (this.inFocus) {
+      element.focus();
+    }
+  }
+  
+  
   Element lastActive = null;
-  FieldSetElement get newEventWidget => this.element.querySelector('#receptioninfo-calendar-event-create');
-  TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
+  InputElement    get eventIDField     => this.element.querySelector('.contactinfo-calendar-event-id');
+  int             get eventID          => int.parse(this.eventIDField.value);
+  void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
+  FieldSetElement get newEventWidget   => this.element.querySelector('#receptioninfo-calendar-event-create');
+  TextAreaElement get newEventField    => this.element.querySelector('.contact-calendar-event-create-body');
 
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-hour');
@@ -104,19 +131,44 @@ class ReceptionEvents {
 
   ReceptionEvents(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
+    
+    this.location = new nav.Location(context.id, element.id, eventList.id);
 
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     this.header.text = ReceptionEventsLabels.title;
 
     this.newEventWidget.hidden = true;
     _registerEventListeners();
   }
+  
+  /**
+   * Selects the widget and puts the default element in focus.
+   */
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(this.location);
+    }
+  }
+
+  /**
+   * Harvests the typed information from the widget and returns a CalendarEvent object.
+   */
+  model.CalendarEvent _getEvent() {
+    assert (this.inFocus && !this.newEventWidget.hidden);
+    
+    return new model.CalendarEvent.forReception(model.Reception.selectedReception.ID)
+              ..ID       = this.eventID
+              ..content  = this.newEventField.value
+              ..beginsAt = this._selectedStartDate
+              ..until    = this._selectedEndDate;
+  }
 
   void _registerEventListeners() {
     
+    /// Nudge boiler plate code. 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
     
     event.bus.on(event.receptionChanged).listen((model.Reception reception) {
@@ -125,54 +177,120 @@ class ReceptionEvents {
       });
     });
 
-    element.onClick.listen((_) {
-      Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id));
+    element.onClick.listen((Event event) {
+        Controller.Context.changeLocation(this.location);
+        
+        print (event.target);
+        if (event.target is LIElement) {
+          this.selectedElement = event.target; 
+        }
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
-      bool active = location.widgetId == element.id;
-      element.classes.toggle(FOCUS, active);
-      if(active) {
-        listElement.focus();
+      element.classes.toggle(FOCUS, location.targets(this.element));
+
+      if (location.targets(this.element)) {
+        this.selectedElement.focus();
       }
     });
 
     event.bus.on(event.CreateNewContactEvent).listen((_) {
-      if(nav.Location.isActive(this.element)) {
-        //Toggle the widget to create new calendar events.
-        this.newEventWidget.hidden = !this.newEventWidget.hidden;
+      if(!this.inFocus) {
+        return;
+      }
+      
+      //Toggle the widget to create new calendar events.
+      this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
-        //Toggle the list of events based on the widget for creatings visability.
-        this.listElement.hidden = !this.newEventWidget.hidden;
+      //Toggle the list of events based on the widget for creatings visability.
+      this.eventList.hidden = !this.newEventWidget.hidden;
 
-        if (!this.newEventWidget.hidden) {
-          this._selectedStartDate = new DateTime.now();
-          this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
-          this.newEventField.value = "";
+      if (!this.newEventWidget.hidden) {
+        this._selectedStartDate = new DateTime.now();
+        this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
+        this.newEventField.value = "";
+        this.eventID = model.CalendarEvent.nullID;
+        
+        this.lastActive = document.activeElement;
+        this.newEventField.focus();
+      } else {
+        if (this.lastActive != null) {
+          this.lastActive.focus();
+        }
+      }
+      
+    });
 
-          this.lastActive = document.activeElement;
-          this.newEventField.focus();
-        } else {
-          if (this.lastActive != null) {
-            this.lastActive.focus();
-          }
+    event.bus.on(event.Edit).listen((_) {
+      
+      if(!this.inFocus) {
+        return;
+      }
+      
+      //Toggle the widget to create new calendar events.
+      this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+      //Toggle the list of events based on the widget for creatings visability.
+      this.eventList.hidden = !this.newEventWidget.hidden;
+      int eventID = this.selectedElement.value;
+      
+      if (!this.newEventWidget.hidden) {
+        model.Reception.selectedReception.calendarEventList.then((model.CalendarEventList eventList) {
+          model.CalendarEvent event = eventList.get(eventID);
+          
+          this._selectedStartDate = event.startTime;
+          this._selectedEndDate = event.stopTime;
+          this.newEventField.value = event.content;
+          this.eventID = eventID;
+        });
+
+        this.lastActive = document.activeElement;
+        this.newEventField.focus();
+      } else {
+        if (this.lastActive != null) {
+          this.lastActive.focus();
         }
       }
     });
+    
+    void listNavigation(KeyboardEvent e) {
+      LIElement lastFocusLI = this.selectedElement;
+      LIElement newFocusLI;
+      
+        if (lastFocusLI == null) {
+          newFocusLI = this.eventList.children.first;
+        } else if (e.keyCode == Keys.DOWN){
+          newFocusLI = lastFocusLI.nextElementSibling;
+          e.preventDefault();
+        } else if (e.keyCode == Keys.UP){
+          newFocusLI = lastFocusLI.previousElementSibling;
+          e.preventDefault();
+        }
+        if (newFocusLI != null) {
+          selectedElement = newFocusLI;
+        }
+    }
 
+    this.eventList.onKeyDown.listen(listNavigation);
+    
     event.bus.on(event.Save).listen((_) {
-      if (nav.Location.isActive(element) && !this.newEventWidget.hidden) {
-        (new model.CalendarEvent.forReception(model.Reception.selectedReception.ID)
-          ..content = this.newEventField.value
-          ..beginsAt = this._selectedStartDate
-          ..until    = this._selectedEndDate
-         ).save().then((_) {
+      if (this.inFocus && !this.newEventWidget.hidden) {
+        this._getEvent().save().then((_) {
           this.newEventWidget.hidden = true;
-          this.listElement.hidden = !this.newEventWidget.hidden;
+          this.eventList.hidden = !this.newEventWidget.hidden;
         });
       }
     });
-
+    
+    event.bus.on(event.Delete).listen((_) {
+      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.nullID) {
+        this._getEvent().delete().then((_) {
+          this.newEventWidget.hidden = true;
+          this.eventList.hidden = !this.newEventWidget.hidden;
+        });
+      }
+    });
+    
     model.CalendarEventList.events.on(model.CalendarEventList.reload).listen((Map eventStub) {
       const String context = '${className}.reload (listener)';
 
@@ -196,11 +314,11 @@ class ReceptionEvents {
   }
 
   void _render(model.CalendarEventList calendar) {
-    listElement.children.clear();
+    eventList.children.clear();
 
     for(model.CalendarEvent event in calendar) {
       String html = '''
-        <li class="${event.active ? 'company-events-active': ''}">
+        <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
           <table class="calendar-event-table">
             <tbody>
               <tr>
@@ -220,7 +338,11 @@ class ReceptionEvents {
         </li>
       ''';
 
-      listElement.children.add(new DocumentFragment.html(html).children.first);
+      eventList.children.add(new DocumentFragment.html(html).children.first..tabIndex = -1);
+    }
+    
+    if (eventList.children.length > 0) {
+      this.selectedElement = eventList.children.first;
     }
   }
 }

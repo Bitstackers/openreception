@@ -22,14 +22,21 @@ class CalendarEvent implements Comparable{
   DateTime _start;
   DateTime _stop;
   
+  static const int      nullID =  0;
+  
+  int      _ID          = nullID;
   int      _contactID   = nullContact.id;
   int      _receptionID = nullReception.ID;
 
-  String get start       => _formatTimestamp(_start);
-  String get stop        => _formatTimestamp(_stop);
-  String get content     => this._content;
-  int    get contactID   => this._contactID;
-  int    get receptionID => this._receptionID;
+  int      get ID          => this._ID;
+  void     set ID (int newID) {this._ID = newID;}
+  String   get start       => _formatTimestamp(this.startTime);
+  String   get stop        => _formatTimestamp(this.stopTime);
+  DateTime get startTime   => this._start;
+  DateTime get stopTime    => this._stop;
+  String   get content     => this._content;
+  int      get contactID   => this._contactID;
+  int      get receptionID => this._receptionID;
 
   void set beginsAt (DateTime start) {
     this._start = start;
@@ -50,15 +57,35 @@ class CalendarEvent implements Comparable{
   Future save () {
     /// Dispatch to the correct service.
     if (this._contactID != nullContact.id) {
-      return Service.Contact.calendarEventCreate (this);
+      if (this.ID == nullID) {
+        return Service.Contact.calendarEventCreate (this);
+      } else {
+        return Service.Contact.calendarEventUpdate (this);
+      }
     } else if (this._receptionID != nullReception.ID) {
-      return Service.Reception.calendarEventCreate (this);
+      if (this.ID == nullID) {
+        return Service.Reception.calendarEventCreate (this);
+      } else {
+        return Service.Reception.calendarEventUpdate (this);
+      }
     } else {
       return new Future(() { throw new StateError("Trying to update an event object without an owner!");});
     }
   }
   
-  Map toJson () => {'start'  : _timeToEpoch(this._start),
+  Future delete () {
+    /// Dispatch to the correct service.
+    if (this._contactID != nullContact.id) {
+        return Service.Contact.calendarEventDelete (this);
+    } else if (this._receptionID != nullReception.ID) {
+        return Service.Reception.calendarEventDelete(this);
+    } else {
+      return new Future(() { throw new StateError("Trying to update an event object without an owner!");});
+    }
+  }
+
+  Map toJson () => {'id'     : this.ID, 
+                    'start'  : _timeToEpoch(this._start),
                     'stop'   : _timeToEpoch(this._stop),
                     'content': this._content};
 
@@ -82,9 +109,10 @@ class CalendarEvent implements Comparable{
   CalendarEvent.fromJson(Map json) {
     final DateTime now = new DateTime.now();
     
-    _start = DateTime.parse(json['start']);
-    _stop = DateTime.parse(json['stop']);
-    _content = json['content'];
+    this._ID      = json['id'];
+    this._start   = DateTime.parse(json['start']);
+    this._stop    = DateTime.parse(json['stop']);
+    this._content = json['content'];
 
     active = _start.millisecondsSinceEpoch <= now.millisecondsSinceEpoch && now.millisecondsSinceEpoch <= _stop.millisecondsSinceEpoch;
   }

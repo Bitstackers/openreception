@@ -128,26 +128,39 @@ class ContactInfoCalendar {
   void _registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    calendarBody.onClick.listen((MouseEvent e) {
-      Controller.Context.changeLocation(new nav.Location(context.id, widget.id, calendarBody.id));
+    this.element.onClick.listen((MouseEvent e) {
+      Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.calendarBody.id));
     });
 
     void onkeydown(KeyboardEvent e) {
-      LIElement li = this.calendarBody.children.firstWhere((LIElement child) => child == document.activeElement);
-        if (li == null) {
-          li = this.calendarBody.children.first;
+      if (this.calendarBody.children.length == 0) {
+        return;
+      }
+   
+      LIElement previousLI = this.calendarBody.children.firstWhere((LIElement child) => child == document.activeElement, orElse : () => null);
+      LIElement newLI = null;
+        if (previousLI == null) {
+          newLI = this.calendarBody.children.first;
         } else if (e.keyCode == Keys.DOWN){
-          li = li.nextElementSibling;
+          newLI = previousLI.nextElementSibling;
+          e.preventDefault();
         } else if (e.keyCode == Keys.UP){
-          li = li.previousElementSibling;
+          newLI = previousLI.previousElementSibling;
+          e.preventDefault();
         }
-        if (li != null) {
-          li.focus();
+        if (newLI != null) {
+          if (previousLI != null) {
+            previousLI.blur();
+            previousLI.classes.toggle('selected', false);
+          }
+          
+          newLI.focus();
+          newLI.classes.toggle('selected', true);
         }
-        e.preventDefault();
+        
     }
 
-    //this.calendarBody.onKeyDown.listen(onkeydown);
+    this.calendarBody.onKeyDown.listen(onkeydown);
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
 
@@ -191,6 +204,10 @@ class ContactInfoCalendar {
       }
     });
 
+    event.bus.on(event.Edit).listen((_) {
+      //TODO!
+      null;
+    });
 
     model.CalendarEventList.events.on(model.CalendarEventList.reload).listen((Map eventStub) {
       const String context = '${className}.reload (listener)';
@@ -256,7 +273,8 @@ class ContactInfoCalendar {
       ''';
 
       var frag = new DocumentFragment.html(html).children.first;
-      //frag.tabIndex = 1;
+      frag.tabIndex = -1;
+      frag.value = event.ID;
       calendarBody.children.add(frag);
     }
   }

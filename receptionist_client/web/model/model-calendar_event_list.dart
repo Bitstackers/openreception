@@ -45,6 +45,22 @@ class CalendarEventList extends IterableBase<CalendarEvent> {
       log.debugContext('Notifying about change in calendar event list', context);
       _eventStream.fire(reload, calendarEvent);
     });
+
+    event.bus.on(Service.EventSocket.receptionCalendarEventUpdated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Reception.invalidateCalendar(calendarEvent['receptionID']);
+      log.debugContext('Notifying about change in calendar event list', context);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+    event.bus.on(Service.EventSocket.receptionCalendarEventDeleted).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Reception.invalidateCalendar(calendarEvent['receptionID']);
+      log.debugContext('Notifying about change in calendar event list', context);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+  
   }
 
   /**
@@ -78,4 +94,11 @@ class CalendarEventList extends IterableBase<CalendarEvent> {
     list.forEach((item) => this._list.add(new CalendarEvent.fromJson(item)));
     this._list.sort();
   }
+  
+  /**
+   * Retrieves a single CalendarEvent based on its ID.
+   */
+  CalendarEvent get (int eventID) {
+    return this.firstWhere((CalendarEvent event) => event.ID == eventID);
+   }
 }

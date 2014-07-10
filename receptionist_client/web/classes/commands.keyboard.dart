@@ -208,6 +208,7 @@ class _KeyboardHandler {
       'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
       'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
       'Ctrl+S'    : (_) => event.bus.fire(event.Save, null),
+      'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
       'Ctrl+E'    : (_) => event.bus.fire(event.Edit, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),
       CommandKey   : (_) => event.bus.fire(event.keyCommand, true),

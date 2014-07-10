@@ -78,6 +78,7 @@ class Location {
     }
   }
 
+  bool targets (Element element) => this.widgetId == element.id;
   bool operator==(Location other) => contextId == other.contextId && widgetId == other.widgetId && elementId == other.elementId;
 
   int _calculateHashCode() => int.parse(('$_contextId$_widgetId$_elementId').codeUnits.join('')) % pow(2, 31);

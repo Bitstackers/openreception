@@ -19,7 +19,6 @@ import 'dart:convert';
 
 import '../classes/configuration.dart';
 import '../classes/logger.dart';
-import '../model/model.dart' as model;
 
 part 'protocol-agent.dart';
 part 'protocol-log.dart';
@@ -27,8 +26,10 @@ part 'protocol-login.dart';
 
 const String libraryName = 'protocol';
 
-const String GET = "GET";
-const String POST = "POST";
+const String GET    = "GET";
+const String PUT    = "PUT";
+const String POST   = "POST";
+const String DELETE = "POST";
 
 /**
  * TODO comment.
