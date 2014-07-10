@@ -41,7 +41,7 @@ class Contact implements Comparable {
 
   int get receptionID => _receptionID;
   MiniboxList get backupList => _backupList;
-  CalendarEventList get calendarEventList => _calendarEventList;
+  Future<CalendarEventList> get calendarEventList => calendar(this.id, this.receptionID);
   MiniboxList get emailAddressList => _emailAddressList;
   MiniboxList get handlingList => _handlingList;
   List<String> get tags => _tags;

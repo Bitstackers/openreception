@@ -29,7 +29,7 @@ const String libraryName = 'protocol';
 const String GET    = "GET";
 const String PUT    = "PUT";
 const String POST   = "POST";
-const String DELETE = "POST";
+const String DELETE = "DELETE";
 
 /**
  * TODO comment.

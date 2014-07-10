@@ -59,7 +59,7 @@ class ReceptionEvents {
   
   
   Element lastActive = null;
-  InputElement    get eventIDField     => this.element.querySelector('.contactinfo-calendar-event-id');
+  InputElement    get eventIDField     => this.element.querySelector('.calendar-event-id');
   int             get eventID          => int.parse(this.eventIDField.value);
   void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
   FieldSetElement get newEventWidget   => this.element.querySelector('#receptioninfo-calendar-event-create');

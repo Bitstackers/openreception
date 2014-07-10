@@ -32,6 +32,7 @@ class CalendarEventList extends IterableBase<CalendarEvent> {
 
   static void registerObservers () {
     const String context = '${className}.registerObservers';
+    
     event.bus.on(Service.EventSocket.contactCalendarEventCreated).listen((Map event) {
       Map calendarEvent = event['calendarEvent'];
       storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
@@ -39,6 +40,20 @@ class CalendarEventList extends IterableBase<CalendarEvent> {
       _eventStream.fire(reload, calendarEvent);
     });
 
+    event.bus.on(Service.EventSocket.contactCalendarEventUpdated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
+      log.debugContext('Notifying about change in calendar event list', context);
+      _eventStream.fire(reload, calendarEvent);
+    });
+    
+    event.bus.on(Service.EventSocket.contactCalendarEventDeleted).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
+      log.debugContext('Notifying about change in calendar event list', context);
+      _eventStream.fire(reload, calendarEvent);
+    });
+    
     event.bus.on(Service.EventSocket.receptionCalendarEventCreated).listen((Map event) {
       Map calendarEvent = event['calendarEvent'];
       storage.Reception.invalidateCalendar(calendarEvent['receptionID']);

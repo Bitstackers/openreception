@@ -13,14 +13,18 @@ abstract class CalendarLabels {
  */
 class ContactInfoCalendar {
 
-  static const String className = '${libraryName}.ContactInfoSearch';
-  static const String NavShortcut = 'K'; 
-
+  static const String className     = '${libraryName}.ContactInfoSearch';
+  static const String NavShortcut   = 'K'; 
+  static const String SelectedClass = 'selected';
+  
   static final String  id        = constant.ID.CALL_MANAGEMENT;
   final        Element element;
   final        Context context;
+          nav.Location location;
                Element lastActive = null;
                bool get muted     => this.context != Context.current;  
+               bool get inFocus    => nav.Location.isActive(this.element);
+
 
   Element             get header                    => this.element.querySelector('legend');
   bool                get active         => nav.Location.isActive(this.element);
@@ -30,6 +34,10 @@ class ContactInfoCalendar {
   Element             get newEventWidget => this.element.querySelector('.contactinfo-calendar-event-create');
   TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
   List<InputElement>  get inputFields    => this.element.querySelectorAll('input');
+
+  InputElement    get eventIDField     => this.element.querySelector('.calendar-event-id');
+  int             get eventID          => int.parse(this.eventIDField.value);
+  void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
 
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.element.querySelector('.contactinfo-calendar-event-create-starts-hour');
@@ -96,7 +104,7 @@ class ContactInfoCalendar {
   List<Element>   get nudges    => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  UListElement get calendarBody => this.element.querySelector("#contact-calendar");
+  UListElement get eventList => this.element.querySelector("#contact-calendar");
   model.Contact currentContact;
   Element widget;
 
@@ -109,64 +117,94 @@ class ContactInfoCalendar {
     this.newEventField.disabled = disabled;
     this.inputFields.forEach((InputElement element) => element.disabled = disabled);
   }
+  
+  LIElement       get selectedElement 
+    => this.eventList.children.firstWhere((LIElement child) 
+      => child.classes.contains(SelectedClass), 
+         orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.nullID);
+  
+  void            set selectedElement (LIElement element) {
+    assert (element != null);
+    
+    this.selectedElement.classes.toggle(SelectedClass, false);
+    element.classes.toggle(SelectedClass, true);
+    
+    if (this.inFocus) {
+      element.focus();
+    }
+  }
 
 
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.text =  CalendarLabels.calendar;
+    
+    this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);
 
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.calendarBody.id)));
-    
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
     newEventField.placeholder = CalendarLabels.newEventPlaceholder;
     this.newEventWidget.hidden = true;
     _registerEventListeners();
 
   }
+  
+  /**
+   * Selects the widget and puts the default element in focus.
+   */
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(this.location);
+    }
+  }
+  
+  /**
+   * Harvests the typed information from the widget and returns a CalendarEvent object.
+   */
+  model.CalendarEvent _getEvent() {
+    assert (this.inFocus && !this.newEventWidget.hidden);
+    
+    return new model.CalendarEvent.forContact(this.currentContact.id, this.currentContact.receptionID)
+              ..ID       = this.eventID
+              ..content = this.newEventField.value
+              ..beginsAt = this._selectedStartDate
+              ..until    = this._selectedEndDate;
+   }
+
 
   void _registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     this.element.onClick.listen((MouseEvent e) {
-      Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.calendarBody.id));
+      Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.eventList.id));
     });
 
-    void onkeydown(KeyboardEvent e) {
-      if (this.calendarBody.children.length == 0) {
-        return;
-      }
-   
-      LIElement previousLI = this.calendarBody.children.firstWhere((LIElement child) => child == document.activeElement, orElse : () => null);
-      LIElement newLI = null;
-        if (previousLI == null) {
-          newLI = this.calendarBody.children.first;
+    void listNavigation(KeyboardEvent e) {
+      LIElement lastFocusLI = this.selectedElement;
+      LIElement newFocusLI;
+      
+        if (lastFocusLI == null) {
+          newFocusLI = this.eventList.children.first;
         } else if (e.keyCode == Keys.DOWN){
-          newLI = previousLI.nextElementSibling;
+          newFocusLI = lastFocusLI.nextElementSibling;
           e.preventDefault();
         } else if (e.keyCode == Keys.UP){
-          newLI = previousLI.previousElementSibling;
+          newFocusLI = lastFocusLI.previousElementSibling;
           e.preventDefault();
         }
-        if (newLI != null) {
-          if (previousLI != null) {
-            previousLI.blur();
-            previousLI.classes.toggle('selected', false);
-          }
-          
-          newLI.focus();
-          newLI.classes.toggle('selected', true);
+        if (newFocusLI != null) {
+          selectedElement = newFocusLI;
         }
-        
     }
 
-    this.calendarBody.onKeyDown.listen(onkeydown);
+    this.eventList.onKeyDown.listen(listNavigation);
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
 
       element.classes.toggle(FOCUS, this.element.id == location.widgetId);
-      if (location.elementId == calendarBody.id) {
-        calendarBody.focus();
+      if (location.elementId == eventList.id) {
+        eventList.focus();
       }
     });
 
@@ -175,7 +213,7 @@ class ContactInfoCalendar {
       if(nav.Location.isActive(this.element)) {
         this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
-        this.calendarBody.hidden = !this.newEventWidget.hidden;
+        this.eventList.hidden = !this.newEventWidget.hidden;
         if (!this.newEventWidget.hidden) {
           this._selectedStartDate = new DateTime.now();
           this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
@@ -192,23 +230,55 @@ class ContactInfoCalendar {
     });
 
     event.bus.on(event.Save).listen((_) {
-      if (!this.newEventWidget.hidden) {
-        (new model.CalendarEvent.forContact(this.currentContact.id, this.currentContact.receptionID)
-          ..content = this.newEventField.value
-          ..beginsAt = this._selectedStartDate
-          ..until    = this._selectedEndDate
-          ).save().then((_) {
+      if (this.inFocus && !this.newEventWidget.hidden) {
+        this._getEvent().save().then((_) {
           this.newEventWidget.hidden = true;
-          this.calendarBody.hidden = !this.newEventWidget.hidden;
+          this.eventList.hidden = !this.newEventWidget.hidden;
+        });
+      }
+    });
+
+    event.bus.on(event.Delete).listen((_) {
+      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.nullID) {
+        this._getEvent().delete().then((_) {
+          this.newEventWidget.hidden = true;
+          this.eventList.hidden = !this.newEventWidget.hidden;
         });
       }
     });
 
     event.bus.on(event.Edit).listen((_) {
-      //TODO!
-      null;
-    });
+      
+      if(!this.inFocus) {
+        return;
+      }
+      
+      //Toggle the widget to create new calendar events.
+      this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
+      //Toggle the list of events based on the widget for creatings visability.
+      this.eventList.hidden = !this.newEventWidget.hidden;
+      int eventID = this.selectedElement.value;
+      
+      if (!this.newEventWidget.hidden) {
+        model.Contact.selectedContact.calendarEventList.then((model.CalendarEventList eventList) {
+          model.CalendarEvent event = eventList.get(eventID);
+          
+          this._selectedStartDate = event.startTime;
+          this._selectedEndDate = event.stopTime;
+          this.newEventField.value = event.content;
+          this.eventID = eventID;
+        });
+
+        this.lastActive = document.activeElement;
+        this.newEventField.focus();
+      } else {
+        if (this.lastActive != null) {
+          this.lastActive.focus();
+        }
+      }
+    });
+    
     model.CalendarEventList.events.on(model.CalendarEventList.reload).listen((Map eventStub) {
       const String context = '${className}.reload (listener)';
 
@@ -244,13 +314,13 @@ class ContactInfoCalendar {
     });
   }
 
-  void render(model.CalendarEventList eventList) {
-    calendarBody.children.clear();
-    if (eventList == null) {
+  void render(model.CalendarEventList calendarEventList) {
+    eventList.children.clear();
+    if (calendarEventList == null) {
       return;
     }
 
-    for (model.CalendarEvent event in eventList) {
+    for (model.CalendarEvent event in calendarEventList) {
       String html = '''
         <li class="${event.active ? 'company-events-active': ''}">
           <table class="calendar-event-table">
@@ -275,7 +345,10 @@ class ContactInfoCalendar {
       var frag = new DocumentFragment.html(html).children.first;
       frag.tabIndex = -1;
       frag.value = event.ID;
-      calendarBody.children.add(frag);
+      eventList.children.add(frag);
+    }
+    if (eventList.children.length > 0) {
+      this.selectedElement = eventList.children.first;
     }
   }
 
