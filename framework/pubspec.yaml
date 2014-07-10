@@ -1,5 +1,5 @@
 name: OpenReceptionFramework
-version: 0.0.9+1
+version: 0.0.10+1
 description: A utility package for the OpenReception application.
 dependencies:
   http: any
