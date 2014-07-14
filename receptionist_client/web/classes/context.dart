@@ -68,6 +68,10 @@ class Context {
   }
   
   @override
+  int get hashCode => this.id.hashCode;
+  
+
+  @override
   String toString() {
     return this.id;
   }
