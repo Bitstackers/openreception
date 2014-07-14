@@ -7,8 +7,8 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:Utilities/common.dart';
-import 'package:Utilities/httpserver.dart';
+import 'package:OpenReceptionFramework/common.dart';
+import 'package:OpenReceptionFramework/httpserver.dart';
 
 import 'client_socket.dart';
 
@@ -25,6 +25,7 @@ final String libraryName = "notificationserver.router";
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern peerListResource       = new UrlPattern(r'/peer/list');
 final Pattern callListResource       = new UrlPattern(r'/call/list');
 final Pattern callQueueResource      = new UrlPattern(r'/call/queue');
@@ -57,6 +58,7 @@ void registerHandlers(HttpServer server) {
       ..serve(callOriginateResource , method : "POST" ).listen(handlerCallOrignate)
       ..serve(callTransferResource,   method : "POST" ).listen(handlerCallTransfer)
       ..serve(callPickupNextResource, method : "POST" ).listen(handlerCallPickupNext)
+      ..serve(anything, method: 'OPTIONS').listen(preFlight)
       ..defaultStream.listen(page404);
 }
 
