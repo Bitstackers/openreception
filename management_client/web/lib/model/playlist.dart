@@ -38,4 +38,6 @@ class Playlist {
     'chimelist': chimelist,
     'chimefreq': chimefreq,
     'chimemax': chimemax};
+
+  static final sortByName = (Playlist a, Playlist b) => a.name.compareTo(b.name);
 }

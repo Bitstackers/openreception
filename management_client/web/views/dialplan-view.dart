@@ -54,6 +54,7 @@ class DialplanView {
   SearchComponent receptionPicker;
   Dialplan dialplan;
   Extension selectedExtension;
+  List<Playlist> playlists;
 
   DialplanView(DivElement this.element) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
@@ -161,6 +162,17 @@ class DialplanView {
       selectedReceptionId = receptionId;
       renderExtensionList(value);
       activateExtension(null);
+
+      return request.getPlaylistList().then((List<Playlist> list) {
+            list.sort(Playlist.sortByName);
+            playlists = list;
+      }).catchError((error, stack) {
+        log.error('activateDialplan() failed at fetching playlists. "${error}" \n"${stack}"');
+        notify.error('Der skete en fejl i forbindelse med hentningen af ventemusik-afspilningslisterne. "${error}"');
+      });
+    }).catchError((error, stack) {
+      log.error('activateDialplan() failed at fetching the dialplan. "${error}" \n"${stack}"');
+      notify.error('Der skete en fejl i forbindelse med heningen af kaldplaner. "${error}"');
     });
   }
 
@@ -814,14 +826,14 @@ class DialplanView {
     <ul class="dialplan-settingsList">
       <li>
           <label for="dialplan-setting-sleeptime">Ventetid</label>
-          <input id="dialplan-setting-sleeptime" type="text" value="${action.sleepTime != null ? action.sleepTime : ''}"/>
+          <input id="dialplan-setting-sleeptime" type="number" min="0" value="${action.sleepTime != null ? action.sleepTime : ''}"/>
       </li>
       <li>
           <label for="dialplan-setting-music">Music</label>
-          <input id="dialplan-setting-music" type="text" value="${action.music != null ? action.music : 'default'}"/>
+          <select id="dialplan-setting-music"></select>
       </li>
       <li>
-          <label for="dialplan-setting-welcome">Velkomst</label>
+          <label for="dialplan-setting-welcome">Velkomstbesked</label>
           <select id="dialplan-setting-welcome">
             <option value="">Ingen</option>
           </select>
@@ -841,12 +853,18 @@ class DialplanView {
       } catch(_) {}
     });
 
-    InputElement musicInput = settingPanel.querySelector('#dialplan-setting-music');
-    musicInput
-        ..onInput.listen((_) {
-      action.music = musicInput.value;
+    SelectElement playlistPicker = settingPanel.querySelector('#dialplan-setting-music');
+    playlistPicker
+        ..onChange.listen((_) {
+      action.music = playlistPicker.value == '' ? null : playlistPicker.value;
       enabledSaveButton();
     });
+
+    if(playlists != null) {
+      playlistPicker.children
+        ..clear()
+        ..addAll(playlists.map((p) => new OptionElement(data: p.name, value: p.name.toString(), selected: action.music == p.name)));
+    }
 
     SelectElement welcomeFilePicker = settingPanel.querySelector('#dialplan-setting-welcome');
     welcomeFilePicker
