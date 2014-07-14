@@ -172,18 +172,3 @@ abstract class Message {
     return completer.future;
   }
 }
-
-String _buildUrl(String base, String path, [List<String> fragments]) {
-  assert(base != null);
-  assert(path != null);
-
-  final StringBuffer buffer = new StringBuffer();
-  final String url = '${base}${path}';
-
-  if (fragments != null && !fragments.isEmpty) {
-    buffer.write('?${fragments.first}');
-    fragments.skip(1).forEach((fragment) => buffer.write('&${fragment}'));
-  }
-
-  return '${url}${buffer.toString()}';
-}
