@@ -127,10 +127,10 @@ class ContactView {
 
   LIElement makeContactNode(Contact contact) {
     LIElement li = new LIElement()
-        ..classes.add('clickable')
-        ..text = '${contact.full_name}'
-        ..dataset['contactid'] = '${contact.id}'
-        ..onClick.listen((_) => activateContact(contact.id));
+      ..classes.add('clickable')
+      ..text = '${contact.full_name}'
+      ..dataset['contactid'] = '${contact.id}'
+      ..onClick.listen((_) => activateContact(contact.id));
     return li;
   }
 
@@ -206,8 +206,7 @@ class ContactView {
       };
       bus.fire(Invalidate.receptionContactAdded, event);
     }).catchError((error) {
-      log.error('Tried to update a Reception Contact, but failed with "$error"'
-          );
+      log.error('Tried to update a Reception Contact, but failed with "$error"');
     });
   }
 
