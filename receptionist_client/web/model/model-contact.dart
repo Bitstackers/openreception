@@ -19,6 +19,9 @@ final Contact nullContact = new Contact._null();
  * A [Contact] object. Sorting contacts is done based on [name].
  */
 class Contact implements Comparable {
+
+  static const String className = '${libraryName}.Contact';
+
   int _receptionID = nullReception.ID;
   MiniboxList _backupList = new MiniboxList();
   CalendarEventList _calendarEventList = new CalendarEventList();
@@ -53,11 +56,11 @@ class Contact implements Comparable {
   static final Contact noContact = nullContact;
 
   static Contact _selectedContact = nullContact;
-  
+
   static final EventType<Contact> activeContactChanged = new EventType<Contact>();
-  
-  static Contact get selectedContact                   =>  _selectedContact;
-  static         set selectedContact (Contact contact) {
+
+  static Contact get selectedContact => _selectedContact;
+  static set selectedContact(Contact contact) {
     _selectedContact = contact;
     event.bus.fire(event.contactChanged, _selectedContact);
     event.bus.fire(activeContactChanged, _selectedContact);
@@ -67,8 +70,8 @@ class Contact implements Comparable {
    * 
    */
   Future<List<Recipient>> dereferenceDistributionList() {
-    
-    Completer<List<Recipient>> completer = new Completer<List<Recipient>>(); 
+
+    Completer<List<Recipient>> completer = new Completer<List<Recipient>>();
 
     Future.forEach(this.distributionList, (Recipient recipient) {
       return Contact.get(recipient.contactID, recipient.receptionID).then((Contact dereferencedContact) {
@@ -79,13 +82,12 @@ class Contact implements Comparable {
         });
 
       });
-    }).then((_) { 
-      completer.complete(this.distributionList); 
-     }
-    ).catchError((error) {
+    }).then((_) {
+      completer.complete(this.distributionList);
+    }).catchError((error) {
       completer.completeError(error);
     });
-    
+
     return completer.future;
   }
 
@@ -127,41 +129,53 @@ class Contact implements Comparable {
    * also highly relevant to Alice.
    */
   Contact.fromJson(Map json, int receptionID) {
-    this.id = json['contact_id'];
-    this._receptionID = receptionID;
-    this.isHuman = json['is_human'];
-    this.name = json['full_name'];
 
-    this._backupList = new MiniboxList.fromJson(json, 'backup');
-    this._emailAddressList = new MiniboxList.fromJson(json, 'emailaddresses');
-    this._handlingList = new MiniboxList.fromJson(json, 'handling');
-    this._telephoneNumberList = new MiniboxList.fromJson(json, 'phones');
-    this._workHoursList = new MiniboxList.fromJson(json, 'workhours');
+    const String context = '${className}.fromJson';
 
-    department = json['department'];
-    info = json['info'];
-    position = json['position'];
-    relations = json['relations'];
-    responsibility = json['responsibility'];
+    try {
 
-    if (json.containsKey('tags')) {
-      _tags = json['tags'];
-    }
+      this.id = json['contact_id'];
+      this._receptionID = receptionID;
+      this.isHuman = json['is_human'];
+      this.name = json['full_name'];
 
-    if (json.containsKey('phones')) {
-      (json['phones'] as List).forEach((item) {
-        this._phoneNumberList.add(new PhoneNumber.fromMap(item));
+      this._backupList = new MiniboxList.fromJson(json, 'backup');
+      this._emailAddressList = new MiniboxList.fromJson(json, 'emailaddresses');
+      this._handlingList = new MiniboxList.fromJson(json, 'handling');
+      this._telephoneNumberList = new MiniboxList.fromJson(json, 'phones');
+      this._workHoursList = new MiniboxList.fromJson(json, 'workhours');
 
-        phones = json['phones'];
-      });
-    }
+      department = json['department'];
+      info = json['info'];
+      position = json['position'];
+      relations = json['relations'];
+      responsibility = json['responsibility'];
 
-    if (json.containsKey('distribution_list')) {
-      (json['distribution_list'] as Map).forEach((role, recipientList) {
-        (recipientList as List).forEach((recipientString) {
-          this._distributionList.add(new Recipient(recipientString, role));
+      if (json.containsKey('tags')) {
+        _tags = json['tags'];
+      }
+
+      if (json.containsKey('phones')) {
+        (json['phones'] as List).forEach((item) {
+          this._phoneNumberList.add(new PhoneNumber.fromMap(item));
+
+          phones = json['phones'];
         });
-      });
+      }
+
+      try {
+        if (json.containsKey('distribution_list')) {
+          (json['distribution_list'] as Map).forEach((role, recipientList) {
+            (recipientList as List).forEach((recipientString) {
+              this._distributionList.add(new Recipient(recipientString, role));
+            });
+          });
+        }
+      } catch (error, stackTrace) {
+        log.errorContext('Failed to parse distribution list. $error : $stackTrace', context);
+      }
+    } catch (error, stackTrace) {
+      log.errorContext('Failed to parse contact map. $error : $stackTrace', context);
     }
   }
 
@@ -177,7 +191,7 @@ class Contact implements Comparable {
     return storage.Contact.calendar(contactID, receptionID);
   }
 
-  
+
   /**
    * [Contact] null constructor.
    */
