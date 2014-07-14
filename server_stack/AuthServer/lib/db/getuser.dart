@@ -2,18 +2,20 @@ part of authenticationserver.database;
 
 Future<Map> getUser(String userEmail) {
   String sql = '''
-  SELECT id, name, extension, 
-   (SELECT array_to_json(array_agg(name)) 
-    FROM user_groups JOIN groups ON user_groups.group_id = groups.id
-    WHERE user_groups.user_id = id) AS groups,
-   (SELECT array_to_json(array_agg(identity)) 
-    FROM auth_identities 
-    WHERE user_id = id) AS identities
-  FROM auth_identities JOIN users ON auth_identities.user_id = users.id 
-  WHERE identity = @email;''';
-  
+SELECT u.id, u.name, u.extension, 
+  coalesce (
+    (SELECT array_to_json(array_agg(name)) 
+     FROM user_groups JOIN groups ON user_groups.group_id = groups.id
+     WHERE user_groups.user_id = u.id), 
+    '[]') AS groups,
+  (SELECT array_to_json(array_agg(identity)) 
+   FROM auth_identities 
+   WHERE user_id = u.id) AS identities
+FROM auth_identities JOIN users u ON auth_identities.user_id = u.id 
+WHERE identity = @email;''';
+
   Map parameters = {'email' : userEmail};
-  
+
   return database.query(_pool, sql, parameters).then((rows) {
     Map data = {};
     if(rows.length == 1) {

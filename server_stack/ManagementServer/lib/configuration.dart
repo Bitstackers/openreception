@@ -17,6 +17,7 @@ class Configuration {
   int    _dbport;
   String _dbname;
   Uri    _notificationServer;
+  Uri    _dialplanCompilerServer;
   String _token;
 
   Uri    get authUrl            => _authUrl;
@@ -28,6 +29,7 @@ class Configuration {
   String get dbname             => _dbname;
   int    get httpport           => _httpport;
   Uri    get notificationServer => _notificationServer;
+  Uri    get dialplanCompilerServer => _dialplanCompilerServer;
   String get token              => _token;
 
   Configuration(ArgResults args) {
@@ -74,6 +76,10 @@ class Configuration {
 
     if(_hasArgument('notificationserver')) {
       _notificationServer = Uri.parse(_args['notificationserver']);
+    }
+
+    if(_hasArgument('dialplancompilerserver')) {
+      _dialplanCompilerServer = Uri.parse(_args['dialplancompilerserver']);
     }
 
     if(_hasArgument('servertoken')) {
@@ -123,6 +129,10 @@ class Configuration {
       _notificationServer = Uri.parse(content['notificationserver']);
     }
 
+    if(content.containsKey('dialplancompilerserver')) {
+      _dialplanCompilerServer = Uri.parse(content['dialplancompilerserver']);
+    }
+
     if(content.containsKey('servertoken')) {
       _token = content['servertoken'];
     }
@@ -159,6 +169,10 @@ class Configuration {
 
     if(notificationServer == null) {
       throw('notificationServer is not specified.');
+    }
+
+    if(dialplanCompilerServer == null) {
+      throw('dialplancompilerserver is not specified.');
     }
   }
 

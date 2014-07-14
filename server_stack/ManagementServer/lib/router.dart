@@ -22,12 +22,15 @@ final Pattern organizationContactUrl     = new UrlPattern(r'/organization/(\d+)/
 final Pattern organizationReceptionIdUrl = new UrlPattern(r'/organization/(\d+)/reception/(\d+)');
 final Pattern organizationReceptionUrl   = new UrlPattern(r'/organization/(\d+)/reception(/?)');
 
-final Pattern receptionUrl          = new UrlPattern(r'/reception(/?)');
-final Pattern receptionIdUrl        = new UrlPattern(r'/reception/(\d+)');
-final Pattern receptionContactIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
-final Pattern receptionContactUrl   = new UrlPattern(r'/reception/(\d+)/contact(/?)');
-final Pattern dialplanUrl           = new UrlPattern(r'/reception/(\d+)/dialplan');
-final Pattern ivrUrl                = new UrlPattern(r'/reception/(\d+)/ivr');
+final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
+final Pattern receptionIdUrl         = new UrlPattern(r'/reception/(\d+)');
+final Pattern receptionContactIdUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
+final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact(/?)');
+final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
+final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
+final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
+final Pattern playlistUrl            = new UrlPattern(r'/playlist');
+final Pattern playlistIdUrl          = new UrlPattern(r'/playlist/(\d+)');
 
 final Pattern contactIdUrl           = new UrlPattern(r'/contact/(\d+)');
 final Pattern contactUrl             = new UrlPattern(r'/contact(/?)');
@@ -46,12 +49,12 @@ final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)')
 
 final Pattern GroupUrl = new UrlPattern(r'/group');
 
-final Pattern AudioFilelistUrl = new UrlPattern(r'/audiofiles(/?)');
-
 final List<Pattern> Serviceagents =
 [organizationIdUrl, organizationUrl,organizationReceptionIdUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
- UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl];
+ UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
+
+ ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl];
 
 ContactController contact;
 DialplanController dialplan;
@@ -63,7 +66,7 @@ UserController user;
 void setupRoutes(HttpServer server, Configuration config, Logger logger) {
   Router router = new Router(server)
     ..filter(anyThing, (HttpRequest req) => logHit(req, logger))
-    ..filter(matchAny(Serviceagents), (HttpRequest req) => authorized(req, config.authUrl, groupName: 'Service agent'))
+    ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
     ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
@@ -101,11 +104,17 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(organizationIdUrl, method: HttpMethod.POST)  .listen(organization.updateOrganization)
     ..serve(organizationIdUrl, method: HttpMethod.DELETE).listen(organization.deleteOrganization)
 
-    ..serve(dialplanUrl, method: HttpMethod.GET).listen(reception.getDialplan)
-    ..serve(dialplanUrl, method: HttpMethod.POST).listen(reception.updateDialplan)
+    ..serve(dialplanUrl, method: HttpMethod.GET).listen(dialplan.getDialplan)
+    ..serve(dialplanUrl, method: HttpMethod.POST).listen(dialplan.updateDialplan)
 
-    ..serve(ivrUrl, method: HttpMethod.GET).listen(reception.getIvr)
-    ..serve(ivrUrl, method: HttpMethod.POST).listen(reception.updateIvr)
+    ..serve(ivrUrl, method: HttpMethod.GET).listen(dialplan.getIvr)
+    ..serve(ivrUrl, method: HttpMethod.POST).listen(dialplan.updateIvr)
+
+    ..serve(playlistUrl, method: HttpMethod.GET).listen(dialplan.getPlaylists)
+    ..serve(playlistUrl, method: HttpMethod.PUT).listen(dialplan.createPlaylist)
+    ..serve(playlistIdUrl, method: HttpMethod.GET)   .listen(dialplan.getPlaylist)
+    ..serve(playlistIdUrl, method: HttpMethod.POST)  .listen(dialplan.updatePlaylist)
+    ..serve(playlistIdUrl, method: HttpMethod.DELETE).listen(dialplan.deletePlaylist)
 
     ..serve(UserUrl, method: HttpMethod.GET).listen(user.getUserList)
     ..serve(UserUrl, method: HttpMethod.PUT).listen(user.createUser)
@@ -124,7 +133,7 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(GroupUrl, method: HttpMethod.GET).listen(user.getGroupList)
 
-    ..serve(AudioFilelistUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
+    ..serve(audiofilesUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
 
     ..serve(anyThing, method: HttpMethod.OPTIONS).listen(PreFlight)
 
@@ -133,7 +142,7 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
 void setupControllers(Database db, Configuration config) {
   contact = new ContactController(db, config);
-  dialplan = new DialplanController(db);
+  dialplan = new DialplanController(db, config);
   organization = new OrganizationController(db, config);
   reception = new ReceptionController(db, config);
   receptionContact = new ReceptionContactController(db, config);

@@ -3,16 +3,11 @@ library receptionController;
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:libdialplan/libdialplan.dart';
-import 'package:libdialplan/ivr.dart';
-
 import '../configuration.dart';
 import '../utilities/http.dart';
 import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
-import '../view/dialplan.dart';
-import '../view/ivr.dart';
 import '../view/reception.dart';
 import 'package:OpenReceptionFramework/service.dart' as ORFService;
 
@@ -112,54 +107,6 @@ class ReceptionController {
         }))
       .catchError((error, stack) {
         logger.error('deleteReception url: "${request.uri}" gave error "${error}" ${stack}');
-        Internal_Error(request);
-    });
-  }
-
-  void getDialplan(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
-
-    db.getDialplan(receptionId)
-      .then((Dialplan dialplan) => writeAndCloseJson(request, dialplanAsJson(dialplan)))
-      .catchError((error) {
-        logger.error('getDialplan url: "${request.uri}" gave error "${error}"');
-        Internal_Error(request);
-    });
-  }
-
-  void updateDialplan(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
-
-    extractContent(request)
-      .then(JSON.decode)
-      .then((Map data) => db.updateDialplan(receptionId, data))
-      .then((_) => writeAndCloseJson(request, JSON.encode({})))
-      .catchError((error, stack) {
-        logger.error('updateDialplan url: "${request.uri}" gave error "${error}" ${stack}');
-        Internal_Error(request);
-    });
-  }
-
-  void getIvr(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
-
-    db.getIvr(receptionId)
-      .then((IvrList ivrList) => writeAndCloseJson(request, ivrListAsJson(ivrList)))
-      .catchError((error) {
-        logger.error('getIvr url: "${request.uri}" gave error "${error}"');
-        Internal_Error(request);
-    });
-  }
-
-  void updateIvr(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
-
-    extractContent(request)
-      .then(JSON.decode)
-      .then((Map data) => db.updateIvr(receptionId, data))
-      .then((_) => writeAndCloseJson(request, JSON.encode({})))
-      .catchError((error, stack) {
-        logger.error('updateIvr url: "${request.uri}" gave error "${error}" ${stack}');
         Internal_Error(request);
     });
   }

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:OpenReceptionFramework/model.dart' as ORF;
 
 import 'logger.dart';
 
@@ -25,48 +26,35 @@ void addCorsHeaders(HttpResponse res) {
     ..add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 }
 
-Future<bool> authorized(HttpRequest request, Uri authUrl, {String groupName}) {
+Future<bool> authorizedRole(HttpRequest request, Uri authUrl, List<String> groups) {
   try {
-    if(request.uri.queryParameters.containsKey('token')) {
-      String token = request.uri.queryParameters['token'];
-      Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: 'token/${token}');
-      return http.get(url).then((http.Response response) {
-        if (response.statusCode == 200) {
-          if(groupName != null) {
-            Map content = JSON.decode(response.body);
-            if(content.containsKey('groups') && content['groups'] is List) {
-              if ((content['groups'] as List).contains(groupName)) {
-                return true;
-              } else {
-                logger.debug('The list "${content['groups']}" does not containt "${groupName}"');
-                Forbidden(request, 'You do not have the right premissions');
-                return false;
-              }
-            } else {
-              logger.error('Request for token "${token}" gave malformed data.');
-              Internal_Error(request);
-              return false;
-            }
-          } else {
-            return true;
-          }
+    String token = request.uri.queryParameters['token'];
+    Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: 'token/${token}');
+    return http.get(url).then((http.Response response) {
+      if(response.statusCode == HttpStatus.OK) {
+        Map userMap = JSON.decode(response.body);
+        ORF.User user = new ORF.User.fromMap(userMap);
+
+        //If the user is in any of the required groups.
+        if(groups != null && groups.isNotEmpty && user.inAnyGroups(groups)) {
+          return true;
+
+        } else {
+          Forbidden(request, 'Do not have the required permissions.');
+          return false;
         }
-        logger.debug('Auth return with code "${response.statusCode}" on url "${url}"');
+
+      } else {
         Forbidden(request);
         return false;
-
-      }).catchError((error) {
-        logger.error('authorized() Url: "${request.uri}" authUrl: "${url}" Error: $error');
-        Internal_Error(request);
-        return false;
-      });
-
-    } else {
-      Unauthorized(request);
-      return new Future.value(false);
-    }
+      }
+    }).catchError((error, stack) {
+      logger.critical('authorizedRole. Auth request failed with: ${error}, \n${stack}');
+      Internal_Error(request);
+      return false;
+    });
   } catch (e) {
-    logger.critical('authorized() ${e} authUrl: "${authUrl}"');
+    logger.critical('authorizedRole() ${e} authUrl: "${authUrl}"');
     Internal_Error(request);
     return new Future.value(false);
   }

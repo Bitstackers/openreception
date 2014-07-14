@@ -2,6 +2,7 @@ part of authenticationserver.router;
 
 void oauthCallback(HttpRequest request) {
   try {
+    //State is used as a return URL.
     String state = queryParameter(request.uri, 'state');
     if(state == null) {
       serverError(request, 'authenticationserver.router.oauthCallback() State parameter is missing "${request.uri}"');
@@ -19,14 +20,15 @@ void oauthCallback(HttpRequest request) {
     String body = mapToUrlFormEncodedPostBody(postBody);
     logger.debug('authenticationserver.router.oauthCallback() Sending request to google. "${tokenEndpoint}" body "${body}"');
 
-    http.post(tokenEndpoint, headers: {'content-type':'application/x-www-form-urlencoded'}, body: postBody).then((http.Response response) {
+    //Now we have the "code" which will be exchanged to a token.
+    http.post(tokenEndpoint, headers: {'content-type':'application/x-www-form-urlencoded'}, body: postBody)
+      .then((http.Response response) {
       Map json = JSON.decode(response.body);
 
       if(json.containsKey('error')) {
         serverError(request, 'authenticationserver.router.oauthCallback() Authtication failed. "${json}"');
 
       } else {
-        //TODO How long should a token be valid for? configuration?
         json['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.tokenexpiretime));
         return getUserInfo(json['access_token']).then((Map userData) {
           if(userData == null || userData.isEmpty) {
@@ -68,12 +70,16 @@ void oauthCallback(HttpRequest request) {
   }
 }
 
-
+/**
+ * Asks google for the user data, for the user bound to the [access_token].
+ */
 Future<Map> getUserInfo(String access_token) {
   String url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}';
 
   return http.get(url).then((http.Response response) {
     Map googleProfile = JSON.decode(response.body);
+    //TODO DELETE
+    print(response.body);
     return db.getUser(googleProfile['email']).then((Map agent) {
       if(agent.isNotEmpty) {
         agent['remote_attributes'] = googleProfile;
