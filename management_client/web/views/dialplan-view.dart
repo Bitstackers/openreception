@@ -11,6 +11,7 @@ import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart' as request;
 import 'package:libdialplan/libdialplan.dart';
+import 'package:libdialplan/ivr.dart';
 import '../notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 
@@ -55,6 +56,7 @@ class DialplanView {
   Dialplan dialplan;
   Extension selectedExtension;
   List<Playlist> playlists;
+  IvrList ivrMenus;
 
   DialplanView(DivElement this.element) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
@@ -163,12 +165,19 @@ class DialplanView {
       renderExtensionList(value);
       activateExtension(null);
 
-      return request.getPlaylistList().then((List<Playlist> list) {
+      request.getPlaylistList().then((List<Playlist> list) {
             list.sort(Playlist.sortByName);
             playlists = list;
       }).catchError((error, stack) {
         log.error('activateDialplan() failed at fetching playlists. "${error}" \n"${stack}"');
         notify.error('Der skete en fejl i forbindelse med hentningen af ventemusik-afspilningslisterne. "${error}"');
+      });
+
+      request.getIvr(receptionId).then((IvrList list) {
+        ivrMenus = list;
+      }).catchError((error, stack) {
+        log.error('activateDialplan() failed at fetching ivr menus. "${error}" \n"${stack}"');
+        notify.error('Der skete en fejl i forbindelse med hentningen af IVR menuer. "${error}"');
       });
     }).catchError((error, stack) {
       log.error('activateDialplan() failed at fetching the dialplan. "${error}" \n"${stack}"');
@@ -366,7 +375,7 @@ class DialplanView {
           row.onClick.listen((_) {
             settingsActionForward(action);
           });
-          shortDescription.value = 'Nummer: ${action.number}';
+          shortDescription.value = 'Nummer: ${nullBecomesEmpty(action.number)}';
 
         } else if (action is ExecuteIvr) {
           image.src = _ControlImage.IVR;
@@ -374,7 +383,7 @@ class DialplanView {
           row.onClick.listen((_) {
             settingsActionExecuteIvr(action);
           });
-          shortDescription.value = 'IVR: ${action.ivrname}';
+          shortDescription.value = 'IVR: ${nullBecomesEmpty(action.ivrname)}';
 
         } else if (action is PlayAudio) {
           image.src = _ControlImage.speaker;
@@ -382,7 +391,7 @@ class DialplanView {
           row.onClick.listen((_) {
             settingsActionPlayAudio(action);
           });
-          shortDescription.value = 'Fil: ${action.filename}';
+          shortDescription.value = 'Fil: ${nullBecomesEmpty(action.filename)}';
 
         } else if (action is Receptionists) {
           image.src = _ControlImage.group;
@@ -391,7 +400,7 @@ class DialplanView {
             settingsActionReceptionists(action);
           });
           shortDescription.value =
-              'VenteTid: ${action.sleepTime}\nMusik: ${action.music}\nVelkomst: ${action.welcomeFile}';
+              'VenteTid: ${action.sleepTime == null ? '' : action.sleepTime} sekund${action.sleepTime != null && action.sleepTime != 1 ? 'er' : ''}\nMusik: ${nullBecomesEmpty(action.music)}\nVelkomst: ${nullBecomesEmpty(action.welcomeFile)}';
 
         } else if (action is Voicemail) {
           image.src = _ControlImage.microphone;
@@ -399,10 +408,10 @@ class DialplanView {
           row.onClick.listen((_) {
             settingsActionVoicemail(action);
           });
-          shortDescription.value = 'Email: ${action.email}';
+          shortDescription.value = 'Email: ${nullBecomesEmpty(action.email)}';
 
         } else {
-          image.src = 'image/organization_icon_disable.svg';
+          image.src = 'image/tp/red_plus.svg';
           nameTag.text = 'Ukendt';
         }
       }
@@ -640,7 +649,7 @@ class DialplanView {
       ..onInput.listen((_) {
         condition.timeOfDay = timeOfDayInput.value.isEmpty ? null : timeOfDayInput.value;
         enabledSaveButton();
-        renderContentList(); //TODO TESTING
+        renderContentList();
       });
 
     InputElement wdayInput = settingPanel.querySelector('#dialplan-setting-wday');
@@ -648,7 +657,7 @@ class DialplanView {
       ..onInput.listen((_) {
         condition.wday = wdayInput.value;
         enabledSaveButton();
-        renderContentList(); //TODO TESTING
+        renderContentList();
     });
 
     commentTextarea.value = condition.comment;
@@ -689,6 +698,7 @@ class DialplanView {
         ..onInput.listen((_) {
           condition.year = yearInput.value.isEmpty ? null : yearInput.value;
           enabledSaveButton();
+          renderContentList();
         });
 
       InputElement monthInput = settingPanel.querySelector('#dialplan-setting-month');
@@ -696,6 +706,7 @@ class DialplanView {
         ..onInput.listen((_) {
           condition.mon = monthInput.value.isEmpty ? null : monthInput.value;
           enabledSaveButton();
+          renderContentList();
         });
 
       InputElement dayInput = settingPanel.querySelector('#dialplan-setting-day');
@@ -703,6 +714,7 @@ class DialplanView {
         ..onInput.listen((_) {
           condition.mday = dayInput.value.isEmpty ? null : dayInput.value;
           enabledSaveButton();
+          renderContentList();
         });
 
       commentTextarea.value = condition.comment;
@@ -733,6 +745,7 @@ class DialplanView {
         ..onChange.listen((_) {
       action.filename = audiofiledropdown.value;
       enabledSaveButton();
+      renderContentList();
     });
     request.getAudiofileList(selectedReceptionId).then((List<Audiofile> files) {
       //Give it the first as default.
@@ -748,6 +761,7 @@ class DialplanView {
         }
         audiofiledropdown.children.add(option);
       }
+      renderContentList();
     });
 
     commentTextarea.value = action.comment;
@@ -778,6 +792,7 @@ class DialplanView {
         ..onInput.listen((_) {
       action.number = numberInput.value;
       enabledSaveButton();
+      renderContentList();
     });
 
     commentTextarea.value = action.comment;
@@ -796,19 +811,31 @@ class DialplanView {
     <ul class="dialplan-settingsList">
       <li>
           <label for="dialplan-setting-ivrname">Ivr menu</label>
-          <input id="dialplan-setting-ivrname" type="text" value="${action.ivrname != null ? action.ivrname : ''}"/>
+          <select id="dialplan-setting-ivrname"></select>
       </li>
     </ul>
     ''';
     DocumentFragment fragment = new DocumentFragment.html(html);
     settingPanel.children.addAll(fragment.children);
 
-    InputElement ivrnameInput = settingPanel.querySelector('#dialplan-setting-ivrname');
-    ivrnameInput
-        ..onInput.listen((_) {
-      action.ivrname = ivrnameInput.value;
+    SelectElement ivrPicker = settingPanel.querySelector('#dialplan-setting-ivrname');
+    ivrPicker
+        ..onChange.listen((_) {
+      action.ivrname = ivrPicker.value == '' ? null : ivrPicker.value;
       enabledSaveButton();
+      renderContentList();
     });
+
+    if(ivrMenus != null) {
+      if(action.ivrname == null || action.ivrname.isEmpty) {
+        action.ivrname = ivrMenus.list.first.name;
+        renderContentList();
+      }
+
+      ivrPicker.children
+        ..clear()
+        ..addAll(ivrMenus.list.map((Ivr i) => new OptionElement(data: i.name, value: i.name.toString(), selected: action.ivrname == i.name)));
+    }
 
     commentTextarea.value = action.comment;
     if(commentTextSubscription != null) {
@@ -850,6 +877,7 @@ class DialplanView {
         int sleepTime = int.parse(sleepTimeInput.value);
         action.sleepTime = sleepTime;
         enabledSaveButton();
+        renderContentList();
       } catch(_) {}
     });
 
@@ -858,12 +886,13 @@ class DialplanView {
         ..onChange.listen((_) {
       action.music = playlistPicker.value == '' ? null : playlistPicker.value;
       enabledSaveButton();
+      renderContentList();
     });
 
     if(playlists != null) {
       playlistPicker.children
         ..clear()
-        ..addAll(playlists.map((p) => new OptionElement(data: p.name, value: p.name.toString(), selected: action.music == p.name)));
+        ..addAll(playlists.map((Playlist p) => new OptionElement(data: p.name, value: p.name.toString(), selected: action.music == p.name)));
     }
 
     SelectElement welcomeFilePicker = settingPanel.querySelector('#dialplan-setting-welcome');
@@ -871,6 +900,7 @@ class DialplanView {
         ..onChange.listen((_) {
       action.welcomeFile = welcomeFilePicker.value == '' ? null : welcomeFilePicker.value;
       enabledSaveButton();
+      renderContentList();
     });
 
     request.getAudiofileList(selectedReceptionId).then((List<Audiofile> files) {
@@ -918,6 +948,7 @@ class DialplanView {
         ..onInput.listen((_) {
         action.email = emailInput.value;
         enabledSaveButton();
+        renderContentList();
     });
 
     commentTextarea.value = action.comment;
@@ -929,4 +960,6 @@ class DialplanView {
       enabledSaveButton();
     });
   }
+
+  String nullBecomesEmpty(String item) => item == null ? '' : item;
 }
