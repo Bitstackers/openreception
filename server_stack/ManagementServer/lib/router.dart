@@ -66,7 +66,7 @@ UserController user;
 void setupRoutes(HttpServer server, Configuration config, Logger logger) {
   Router router = new Router(server)
     ..filter(anyThing, (HttpRequest req) => logHit(req, logger))
-    ..filter(matchAny(Serviceagents), (HttpRequest req) => authorized(req, config.authUrl, groupName: 'Service agent'))
+    ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
     ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
