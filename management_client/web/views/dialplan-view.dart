@@ -14,6 +14,7 @@ import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 import '../notification.dart' as notify;
 import '../lib/searchcomponent.dart';
+import '../lib/utilities.dart';
 
 class _ControlLookUp {
   static const int timeControl = 0;
@@ -190,8 +191,16 @@ class DialplanView {
     if (dialplan != null && dialplan.extensionGroups != null) {
       for(ExtensionGroup group in dialplan.extensionGroups) {
         extensionList.children.add(_makeGroupListItem(group));
+        List<LIElement> liExtensions = group.extensions.map((ext) => extensionListItem(ext, group)).toList();
+        SortableGroup sortGroup = new SortableGroup()..installAll(liExtensions);
+        sortGroup.accept.add(sortGroup);
 
-        extensionList.children.addAll(group.extensions.map((ext) => extensionListItem(ext, group)));
+        sortGroup.onSortUpdate.listen((SortableEvent event) {
+          moveTo(group.extensions, event.originalPosition.index-1, event.newPosition.index-1);
+          enabledSaveButton();
+        });
+
+        extensionList.children.addAll(liExtensions);
       }
     }
   }
@@ -962,4 +971,6 @@ class DialplanView {
   }
 
   String nullBecomesEmpty(String item) => item == null ? '' : item;
+
+
 }
