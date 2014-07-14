@@ -39,7 +39,7 @@ class DialplanController {
       }
     }).catchError((error) {
       logger.error('DialplanController.getAudiofileList: ${error}');
-      Internal_Error(request, error);
+      Internal_Error(request, error.toString());
     });
   }
 
