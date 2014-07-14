@@ -52,10 +52,10 @@
   float: left;
   width: 80%;
   width: -moz-calc(80% - 10px);
-  width: -webkit-calc(80% -   10px);
+  width: -webkit-calc(80% - 10px);
   height: 100%;
-  height: -moz-calc(100% -   10px);
-  height: -webkit-calc(100% -   10px);
+  height: -moz-calc(100% - 10px);
+  height: -webkit-calc(100% - 10px);
   border: solid 2px grey;
   border-radius: 10px;
   padding: 5px;
