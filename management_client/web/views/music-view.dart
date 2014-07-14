@@ -42,15 +42,27 @@ class MusicView {
     });
 
     bus.on(Invalidate.playlistAdded).listen((Map event) {
-      refresh();
+      refresh().then((_) {
+        if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
+          highlightPlaylistItem(selectedPlaylistId);
+        }
+      });
     });
 
     bus.on(Invalidate.playlistChanged).listen((Map event) {
-      refresh();
+      refresh().then((_) {
+        if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
+          highlightPlaylistItem(selectedPlaylistId);
+        }
+      });
     });
 
     bus.on(Invalidate.playlistRemoved).listen((Map event) {
-      refresh();
+      refresh().then((_) {
+        if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
+          highlightPlaylistItem(selectedPlaylistId);
+        }
+      });
     });
 
     buttonNew.onClick.listen((_) {
@@ -68,6 +80,7 @@ class MusicView {
 
   Future refresh() {
     return getPlaylistList().then((List<Playlist> list) {
+      list.sort(Playlist.sortByName);
       renderList(list);
     });
   }
@@ -113,26 +126,22 @@ class MusicView {
     String data = JSON.encode(playlist);
 
     if(isCreatingNewPlaylist) {
-      //Create new
-
       createPlaylist(data).then((Map response) {
         int id = response['id'];
         Map event = {'id': id};
         bus.fire(Invalidate.playlistAdded, event);
         return activatePlaylist(id);
       }).catchError((error) {
-        //ERROR
+        //TODO ERROR
       });
     } else {
-      updatePlaylist(selectedPlaylistId, data)
-      .then((_) {
+      updatePlaylist(selectedPlaylistId, data).then((_) {
         Map event = {'id': selectedPlaylistId};
         bus.fire(Invalidate.playlistChanged, event);
       })
         .catchError((error) {
-        //Log error
+        //TODO Log error
       });
-      //Save changes
     }
   }
 
