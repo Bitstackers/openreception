@@ -22,6 +22,7 @@ part 'router/oauthcallback.dart';
 part 'router/user.dart';
 part 'router/validate.dart';
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern loginUrl = new UrlPattern('/token/create');
 final Pattern oauthReturnUrl = new UrlPattern('/token/oauth2callback');
 final Pattern userUrl = new UrlPattern('/token/([0-9a-zA-Z]+)');
@@ -35,5 +36,6 @@ void setup(HttpServer server) {
     ..serve(userUrl, method: 'GET').listen(userinfo)
     ..serve(validateUrl, method: 'GET').listen(validateToken)
     ..serve(invalidateUrl, method: 'POST').listen(invalidateToken)
+    ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
 }

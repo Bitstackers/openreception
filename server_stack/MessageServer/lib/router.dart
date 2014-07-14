@@ -27,6 +27,7 @@ part 'router/message-resend.dart';
 
 final String libraryName = 'messageserver.router';
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern messageDraftListResource   = new UrlPattern(r'/message/draft/list');
 final Pattern messageDraftResource       = new UrlPattern(r'/message/draft/(\d+)');
 final Pattern messageDraftCreateResource = new UrlPattern(r'/message/draft/create');
@@ -53,5 +54,6 @@ void setup(HttpServer server) {
     ..serve(messageSendResource,        method: 'POST'  ).listen(messageSend)
     ..serve(messageResendResource,      method: 'POST'  ).listen(messageResend)
     
+    ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
 }

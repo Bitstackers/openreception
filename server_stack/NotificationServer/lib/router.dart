@@ -18,6 +18,7 @@ final String libraryName = "notificationserver.router";
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern notificationSocketResource = new UrlPattern(r'/notifications');
 final Pattern broadcastResource          = new UrlPattern(r'/broadcast');
 final Pattern sendResource               = new UrlPattern(r'/send');
@@ -31,7 +32,8 @@ void registerHandlers(HttpServer server) {
       ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
       ..serve(notificationSocketResource, method : "GET" ).listen(registerWebsocket) // The upgrade-request is found in the header of a GET request.
       ..serve(         broadcastResource, method : "POST").listen(handleBroadcast)
-      ..serve(              sendResource, method : "POST").listen(handleSend);
-
+      ..serve(              sendResource, method : "POST").listen(handleSend)
+      ..serve(anything, method: 'OPTIONS').listen(preFlight)
+      ..defaultStream.listen(page404);
 }
 

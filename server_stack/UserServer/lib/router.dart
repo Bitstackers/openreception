@@ -20,6 +20,7 @@ final String libraryName = "notificationserver.router";
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern userListResource = new UrlPattern(r'/user/list');
 final Pattern userResource     = new UrlPattern(r'/user/(\d+)');
 
@@ -36,6 +37,8 @@ void registerHandlers(HttpServer server) {
       ..serve(userResource,     method : "GET"   ).listen(User.get)
       ..serve(userResource,     method : "PUT"   ).listen(User.update)
       ..serve(userResource,     method : "DELETE").listen(User.remove)
-      ..serve(userResource,     method : "POST"  ).listen(User.add);
+      ..serve(userResource,     method : "POST"  ).listen(User.add)
+      ..serve(anything, method: 'OPTIONS').listen(preFlight)
+      ..defaultStream.listen(page404);
 }
 

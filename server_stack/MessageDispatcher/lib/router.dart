@@ -14,7 +14,7 @@ import 'package:OpenReceptionFramework/httpserver.dart';
 part 'router/message-queue-single.dart';
 part 'router/message-queue-list.dart';
 
-
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern messageQueueListResource = new UrlPattern(r'/message/queue/list');
 final Pattern messageQueueItemResource = new UrlPattern(r'/message/queue/(\d+)');
 final Pattern messageDispatchAllResource = new UrlPattern(r'/message/queue/dispatchAll');
@@ -29,6 +29,7 @@ void setup(HttpServer server) {
     ..serve(messageDispatchAllResource, method: 'GET'   ).listen(messageDispatchAll)
 
     //..serve(messageQueueItemResource, method: 'GET'   ).listen(messageQueueSingle)
-    ..defaultStream.listen(page404);
+   ..serve(anything, method: 'OPTIONS').listen(preFlight)
+   ..defaultStream.listen(page404);
 }
 

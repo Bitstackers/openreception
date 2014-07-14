@@ -12,6 +12,7 @@ import 'package:OpenReceptionFramework/httpserver.dart';
 
 part 'router/log.dart';
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern debugUrl = new UrlPattern('/log/debug');
 final Pattern infoUrl = new UrlPattern('/log/info');
 final Pattern errorUrl = new UrlPattern('/log/error');
@@ -25,5 +26,6 @@ void setup(HttpServer server) {
     ..serve(infoUrl, method: 'POST').listen(logInfo)
     ..serve(errorUrl, method: 'POST').listen(logError)
     ..serve(criticalUrl, method: 'POST').listen(logCritical)
+    ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
 }
