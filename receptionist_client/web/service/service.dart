@@ -68,22 +68,6 @@ Error _serverError(String resource) {
   return error;
 }
 
-class Request {
-  
-  bool   _useCredientials = true;
-  String _token           = configuration.token; 
-  
-  Request (Uri, String method, [bool useCredentials, String token]) {
-    if (useCredentials != null) {
-      this._useCredientials = useCredentials;
-    }
-
-    if (token != null) {
-      this._token = token;
-    }
-  }
-}
-
 String _buildUrl(String base, String path, [List<String> fragments]) {
   if (!base.endsWith('/') && !path.startsWith('/')) {
     base = '$base/';
