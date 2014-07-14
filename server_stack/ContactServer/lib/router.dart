@@ -25,6 +25,7 @@ part 'router/contact.dart';
 
 const String libraryName = 'contactserver.router';
 
+final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern receptionContactInvalidateResource     = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
 final Pattern receptionContactResource               = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
 final Pattern receptionContactListResource           = new UrlPattern(r'/contact/list/reception/(\d+)');
@@ -50,5 +51,6 @@ void setup(HttpServer server) {
       ..serve(      receptionContactCalendarResource, method: 'PUT'   ).listen(ContactCalendar.update)
       ..serve(receptionContactCalendarCreateResource, method: 'POST'  ).listen(ContactCalendar.create)
       ..serve(      receptionContactCalendarResource, method: 'DELETE').listen(ContactCalendar.remove)
+      ..serve(anything, method: 'OPTIONS').listen(preFlight)
       ..defaultStream.listen(page404);
 }

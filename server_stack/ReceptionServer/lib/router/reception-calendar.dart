@@ -68,6 +68,13 @@ abstract class ReceptionCalendar {
                                          eventID          : eventID,
                                          event            : data['event'])
         .then((_) {
+          Map event = {'event'         : 'receptionCalendarEventUpdated',
+                       'calendarEvent' :  {
+                         'eventID'     :  eventID,
+                         'receptionID' : receptionID
+                       }
+                      };
+          Service.Notification.broadcast (event, config.notificationServer, config.serverToken);
           writeAndClose(request, JSON.encode({'status' : 'ok',
                                               'description' : 'Event updated'}));
         }).catchError((onError) {
@@ -95,6 +102,14 @@ abstract class ReceptionCalendar {
       db.ReceptionCalendar.removeEvent(receptionID : receptionID,
                                        eventID     : eventID)
           .then((_) {
+        Map event = {'event'         : 'receptionCalendarEventDeleted',
+                     'calendarEvent' :  {
+                       'eventID'     :  eventID,
+                       'receptionID' : receptionID
+                     }
+                    };
+        Service.Notification.broadcast (event, config.notificationServer, config.serverToken);
+        
             writeAndClose(request, JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
           }).catchError((onError) {

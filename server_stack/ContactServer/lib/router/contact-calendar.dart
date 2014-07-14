@@ -54,7 +54,7 @@ abstract class ContactCalendar {
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID     = pathParameter(request.uri, 'event');
-
+    
     extractContent(request).then((String content) {
       Map data;
 
@@ -83,6 +83,13 @@ abstract class ContactCalendar {
                                      event            : data['event'],
                                      distributionList : data['distribution_list'])
         .then((_) {
+          Service.Notification.broadcast (
+              {'event'         : 'contactCalendarEventUpdated',
+               'calendarEvent' :  {
+                 'contactID'   : contactID,
+                 'receptionID' : receptionID
+               }
+              }, config.notificationServer, config.serverToken);
           writeAndClose(request, JSON.encode({'status' : 'ok',
                                               'description' : 'Event updated'}));
         }).catchError((onError) {
@@ -113,6 +120,13 @@ abstract class ContactCalendar {
                                      receptionID      : receptionID,
                                      eventID          : eventID)
           .then((_) {
+        Service.Notification.broadcast (
+            {'event'         : 'contactCalendarEventDeleted',
+             'calendarEvent' :  {
+               'contactID'   : contactID,
+               'receptionID' : receptionID
+             }
+            }, config.notificationServer, config.serverToken);
             writeAndClose(request, JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
           }).catchError((onError) {
