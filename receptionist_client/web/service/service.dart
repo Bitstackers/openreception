@@ -71,7 +71,7 @@ String _buildUrl(String base, String path, [List<String> fragments]) {
   if (!base.endsWith('/') && !path.startsWith('/')) {
     base = '$base/';
   } else if (base.endsWith('/') && !path.startsWith('/')) {
-    path = path.replaceFirst(path, '/');
+    path = path.replaceFirst('/', '');
   }
   
   assert(base != null);
