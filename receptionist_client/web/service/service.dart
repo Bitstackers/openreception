@@ -49,7 +49,6 @@ class UndefinedError extends HTTPError {
   UndefinedError (String message) : super(message);
 }
 
-
 Error _badRequest(String resource) {
   Error error = new BadRequest(resource);
   model.NotificationList.instance.add(new model.Notification(error.toString()));
@@ -71,6 +70,8 @@ Error _serverError(String resource) {
 String _buildUrl(String base, String path, [List<String> fragments]) {
   if (!base.endsWith('/') && !path.startsWith('/')) {
     base = '$base/';
+  } else if (base.endsWith('/') && !path.startsWith('/')) {
+    path = path.replaceFirst(path, '/');
   }
   
   assert(base != null);
