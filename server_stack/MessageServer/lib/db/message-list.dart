@@ -15,14 +15,13 @@ Future<Map> messageList() {
            taken_from_company,
            taken_from_phone,
            taken_from_cellphone,
-           identity       AS agent_address,
+           send_from      AS agent_address,
            flags, 
            created_at,
            taken_by_agent AS taken_by_agent_id,
            users.name     AS taken_by_agent_name,
            (SELECT count(*) FROM message_queue AS queue WHERE queue.message_id = message.id) AS pending_messages
       FROM messages message
-      LEFT JOIN auth_identities ai ON taken_by_agent = user_id AND ai.send_from
            JOIN users on taken_by_agent = users.id
     ORDER BY 
          message.id    DESC

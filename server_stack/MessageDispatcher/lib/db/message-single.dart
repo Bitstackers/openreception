@@ -1,7 +1,7 @@
 part of messagedispatcher.database;
 
 /**
- * XXX: We assume that the identity of the user (from auth_identities table) is an email.
+ * Returns a single Message (in map format) from the database.
  */
 Future<Map> messageSingle(int messageID) {
   String sql = '''
