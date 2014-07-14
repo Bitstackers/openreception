@@ -63,18 +63,13 @@ class Context {
   }
 
   @override
-  operator == (Context other) {
-    return this.id.toLowerCase() == other.id.toLowerCase();
-  }
+  operator == (Context other) => this.id.toLowerCase() == other.id.toLowerCase();
   
   @override
   int get hashCode => this.id.hashCode;
   
-
   @override
-  String toString() {
-    return this.id;
-  }
+  String toString() => this.id;
 
   int    get alertCounter => _alertCounter;
   bool   get alertMode    => alertCounter > 0;
