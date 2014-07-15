@@ -40,11 +40,10 @@ void handlerCallOrignate(HttpRequest request) {
         .then ((String channelUUID) {
           //Model.OriginationRequest.create (channelUUID);
           writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
-        })
-        .catchError((error) => serverError(request, error.toString()));
-    }).catchError((error) {
-        serverError(request, error.toString());
-    });
-    }); 
+          
+        }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+      
+    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
     
+  }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 }

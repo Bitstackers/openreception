@@ -33,11 +33,9 @@ void handlerCallTransfer(HttpRequest request) {
 
     logger.debugContext('Transferring $sourceCall -> $destinationCall', context);
     
-    Controller.PBX.bridge (sourceCall, destinationCall).then((_) => writeAndClose(request, '{"status" : "ok"}'))
-    .catchError((error, stackTrace) {
-      logger.critical ('$error : $stackTrace');
-      serverError(request, error.toString());
-    });
+    Controller.PBX.bridge (sourceCall, destinationCall)
+      .then((_) => writeAndClose(request, '{"status" : "ok"}'))
+      .catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
     
   } catch (error, stackTrace) {
     if (error is FormatException) {
@@ -48,7 +46,7 @@ void handlerCallTransfer(HttpRequest request) {
                          'error' : error.toString()});
     } else {
       logger.critical ('$error : $stackTrace');
-      serverError(request, error.toString());
+      serverErrorTrace(request, error, stackTrace: stackTrace);
     }
   }
    

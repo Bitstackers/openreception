@@ -35,19 +35,21 @@ void handlerCallHangup(HttpRequest request) {
 
       Controller.PBX.hangup (call).then ((_) =>
         writeAndClose(request, JSON.encode(hangupOK(callID)))
-      ).catchError((error) {
+      ).catchError((error, stackTrace) {
         if (error is Model.NotFound) {
           notFound (request, {'call_id' : callID});
        } else {
-          serverError(request, 'Bad stuff!');
+         serverErrorTrace(request, error, stackTrace: stackTrace);
        }
-      });
-    } catch (error) {
+
+      }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+    
+    } catch (error, stackTrace) {
       if (error is Model.NotFound) {
         notFound (request, {'call_id' : callID});
      } else {
-        serverError(request, 'Bad stuff!');
+       serverErrorTrace(request, error, stackTrace: stackTrace);
      }
     }
-  });
+  }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 }

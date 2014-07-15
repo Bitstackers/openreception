@@ -9,10 +9,9 @@ void handlerCallQueue(HttpRequest request) {
     Model.CallList.instance.where((Model.Call call) => call.isCall).forEach ((Model.Call call) {
       calls.add(call);
     });
-    
   
     writeAndClose(request, JSON.encode({'calls' : calls}));
-  } catch (error) {
-    serverError(request, error.toString());    
+  } catch (error, stackTrace) {
+    serverErrorTrace(request, error, stackTrace: stackTrace);    
   }
 }

@@ -6,7 +6,8 @@ void handlerCallList(HttpRequest request) {
 
   try {
     writeAndClose(request, JSON.encode({'calls' : Model.CallList.instance}));
-  } catch (error) {
-    serverError(request, error.toString());    
+  } catch (error, stackTrace) {
+    serverErrorTrace(request, error, stackTrace: stackTrace);    
   }
+  
 }

@@ -46,18 +46,18 @@ void handlerCallPickup(HttpRequest request) {
     Controller.PBX.transfer (assignedCall, user.peer).then((_) {
       assignedCall.assignedTo = user.ID;
       writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
+      
     }).catchError((error, stackTrace) {
-      serverError (request, error.toString());
-      logger.errorContext ('$error : $stackTrace', context);
+      serverErrorTrace(request, error, stackTrace: stackTrace);
     });
+    
   }).catchError((error, stackTrace) {
     if (error is Model.NotFound) {
       notFound (request, {'reason' : 'No calls available.'});
     } else {
-      serverError (request, error.toString());
-     logger.errorContext ('$error : $stackTrace', context);
+      serverErrorTrace(request, error, stackTrace: stackTrace);
     }
-  });
+  }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 }
 
 void handlerCallPickupNext(HttpRequest request) {
@@ -97,15 +97,13 @@ void handlerCallPickupNext(HttpRequest request) {
       assignedCall.assignedTo = user.ID;
       writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
     }).catchError((error, stackTrace) {
-      serverError (request, error.toString());
-      logger.errorContext ('$error : $stackTrace', context);
+      serverErrorTrace(request, error, stackTrace: stackTrace);
     });
   }).catchError((error, stackTrace) {
     if (error is Model.NotFound) {
       notFound (request, {'reason' : 'No calls available.'});
     } else {
-      serverError (request, error.toString());
-     logger.errorContext ('$error : $stackTrace', context);
+      serverErrorTrace(request, error, stackTrace: stackTrace);
     }
-  });
+  }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 }

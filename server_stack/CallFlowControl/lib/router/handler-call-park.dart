@@ -38,10 +38,14 @@ void handlerCallPark(HttpRequest request) {
     Controller.PBX.park (call, user).then ((_) {
       writeAndClose(request, JSON.encode (parkOK (call)));
     
-    });
-  }).catchError((error) {
+    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+  
+  }).catchError((error, stackTrace) {
     if (error is Model.NotFound) {
       notFound (request, {'description' : 'callID : $callID'});
+    } else {
+      serverErrorTrace(request, error, stackTrace: stackTrace);
     }
-  });
+  }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+
 }
