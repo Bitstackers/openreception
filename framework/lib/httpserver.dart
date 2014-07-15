@@ -114,6 +114,17 @@ String pathParameterString(Uri uri, String key) {
   }
 }
 
+
+void serverErrorTrace(HttpRequest request, Error error, {StackTrace stackTrace : null}) {
+  const String context = 'serverErrorTrace'; 
+  
+  logger.errorContext('$error ${stackTrace != null ? ' : ${stackTrace}' : ''}', context);
+  request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+  writeAndClose(request, JSON.encode({'error': 'Internal Server Error',
+                                      'description' : error.toString()}));
+}
+
+
 void serverError(HttpRequest request, String logMessage) {
   logger.errorContext(logMessage, "serverError");
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
