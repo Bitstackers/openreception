@@ -1,19 +1,28 @@
 part of model;
 
-class MessageRecipient extends MessageContext {
+class MessageContext {
 
-  final String className = libraryName + "MessageRecipient";
+  final String className = libraryName + "MessageContext";
 
+  /* Private fields */
+  Map _data;
+  
   /* Getters */
-  String get role          => this._data['role'];
+  int    get contactID     => this._data['contact']['id'];
+  String get contactName   => this._data['contact']['name'];
+  int    get receptionID   => this._data['reception']['id'];
+  String get receptionName => this._data['reception']['name'];
 
   /**
    * Constructor.
    */
-  MessageRecipient.fromMap(Map map, {String role : null}) : super.fromMap(map) {
+  MessageContext.fromMap(Map map) {
     final String context = className + ".fromMap";
-    this._data['role'] = role;
+    
+    this.._data = map
+         ..validate();
   }
+
 
   Map get toMap => {
     'contact'   : {
@@ -26,6 +35,11 @@ class MessageRecipient extends MessageContext {
     }
   };
 
+  /**
+   * TODO: Write up a proper validation function.
+   */
+  void validate() => null;
+  
   Map toJson () => this.toMap;
   
   @override

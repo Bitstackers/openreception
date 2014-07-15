@@ -5,14 +5,14 @@ void messageDraftSingle(HttpRequest request) {
   
     db.messageDraftSingle(messageID).then((Map value) {
       writeAndClose(request, JSON.encode(value));
-    }).catchError((Error error) => _onException(error, request));
+    }).catchError((Error error, StackTrace stackTrace) => _onException(request, error, stackTrace));
 }
 
-void _onException (Error error, HttpRequest request) {
+void _onException (HttpRequest request, Error error, StackTrace stackTrace) {
   
-  if (error.runtimeType == db.NotFound) {
-    resourceNotFound (request);
+  if (error is db.NotFound) {
+    notFound (request, {'description' :'not found'});
   } else {
-    serverError(request, error.runtimeType.toString() + "Oh noes: " +  error.toString());  
+    serverErrorTrace(request, error, stackTrace: stackTrace);  
   }
 }

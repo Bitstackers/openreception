@@ -2,7 +2,8 @@ name: MessageServer
 description: A sample command-line application
 dependencies:
   OpenReceptionFramework:
-    git: https://github.com/AdaHeads/OpenReceptionFramework.git
+    #git: https://github.com/AdaHeads/OpenReceptionFramework.git
+    path: /home/krc/Projects/OpenReceptionFramework
   args: any
   mailer: any
   path: any

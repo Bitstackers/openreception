@@ -8,5 +8,5 @@ void messageDraftUpdate(HttpRequest request) {
     db.messageDraftUpdate(draftID, content).then((value) {
       writeAndClose(request, JSON.encode(value));
     });
-  }).catchError((error) => _onException(error, request));
+  }).catchError((error, stackTrace) => _onException(request, error, stackTrace));
 }

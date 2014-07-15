@@ -5,6 +5,6 @@ void messageDraftDelete(HttpRequest request) {
   
   db.messageDraftDelete(draftID).then((value) {
     writeAndClose(request,'{ "status" : "successfully deleted draft with ID $draftID" }' );
-  }).catchError((error) => serverError(request, error.toString()));
+  }).catchError((error,stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
 }
 
