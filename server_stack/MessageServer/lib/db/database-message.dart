@@ -141,6 +141,7 @@ abstract class Message {
    *
    */
   static Future<Map> save(Model.Message message) {
+    print(message.caller);
     String sql = '''
       INSERT INTO messages 
            (message, 
@@ -149,7 +150,9 @@ abstract class Message {
             context_contact_name,
             context_reception_name,
             taken_from_name, 
-            taken_from_company, 
+            taken_from_company,
+            taken_from_phone,
+            taken_from_cellphone, 
             taken_by_agent, 
             flags)
       VALUES 
@@ -160,6 +163,8 @@ abstract class Message {
             @context_reception_name,
             @taken_from_name,
             @taken_from_company,
+            @taken_from_phone,
+            @taken_from_cellphone, 
             @taken_by_agent, 
             @flags)
       RETURNING id;
@@ -172,6 +177,8 @@ abstract class Message {
                       'context_reception_name' : message.context.receptionName,
                       'taken_from_name'        : message.caller['name'],
                       'taken_from_company'     : message.caller['company'],
+                      'taken_from_phone'       : message.caller['phone'],
+                      'taken_from_cellphone'   : message.caller['cellphone'], 
                       'taken_by_agent'         : message.sender.ID,
                       'flags'                  : JSON.encode(message.flags)
                       };
