@@ -52,13 +52,13 @@ class CallList extends IterableBase<Call> {
 
   Call requestCall(user) {
     //TODO: Implement a real algorithm for selecting calls.
-    Call call = this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked);
+    Call call = this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked, orElse: null);
     
     if (call == null) {
       throw new NotFound ("No calls available");
-    } else {
-      return call;
     }
+    
+    return call;
   }
 
   Call requestSpecificCall(String callID, SharedModel.User user )  {
