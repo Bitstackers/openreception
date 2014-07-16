@@ -2,7 +2,7 @@ part of messagedispatcher.database;
 
 Future<List> messageQueueSingle() {
 
-  final context = packageName + ".messageQueueSingle";
+  final context = '${libraryName}.messageQueueSingle';
 
   int limit = 100;
   String sql = '''
@@ -45,14 +45,14 @@ Future<List> messageQueueSingle() {
 
 abstract class MessageQueue {
 
-  static final ClassName = '${packageName}.MessageQueue';
+  static final className = '${libraryName}.MessageQueue';
 
   /**
    * Removes a single queue entry from the database.
    */
   static Future remove(int queueID) {
 
-    final context = ClassName + ".remove";
+    final context = className + ".remove";
 
     String sql = 'DELETE FROM message_queue WHERE id = ${queueID};';
 
@@ -63,7 +63,47 @@ abstract class MessageQueue {
       log(sql);
       throw error;
     });
-
   }
 
+  static Future<List<Model.MessageEndpoint>> endpoints (int messageID) {
+    final context = '${className}.endpoints';
+
+    String sql = '''
+    SELECT 
+      mr.contact_name as name,
+      mr.recipient_role as role, 
+      ma.address as address,
+      ma.address_type as type
+    FROM
+    message_queue mq
+    JOIN
+    messages msg ON mq.message_id = msg.id
+    JOIN
+    message_recipients mr ON mr.message_id = msg.id
+    JOIN
+    messaging_end_points mep ON mep.reception_id = mr.reception_id AND mep.contact_id = mr.contact_id
+    JOIN
+    messaging_addresses ma ON mep.address_id = ma.id
+    WHERE mq.message_id = $messageID
+    ''';
+
+    return database.query(_pool, sql).then((rows) {
+      logger.debugContext(rows.length.toString(), context);
+
+      List<Model.MessageEndpoint> endpoints = new List<Model.MessageEndpoint>();
+
+      for (var row in rows) {
+        endpoints.add(new Model.MessageEndpoint.fromMap({
+          'name'    : row.name,
+          'role'    : row.role,
+          'address' : row.address,
+          'type'    : row.type,
+        }));
+      }
+
+      return endpoints;
+    });
+  }
+  
+  
 }

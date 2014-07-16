@@ -2,7 +2,7 @@ part of messagedispatcher.database;
 
 Future<List> messageQueueList() {
   
-  final context = packageName + ".messageQueueList";
+  final context = '${libraryName}.messageQueueList';
   
   int limit = 100;
   String sql = '''

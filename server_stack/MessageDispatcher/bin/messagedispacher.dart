@@ -7,9 +7,9 @@ import 'package:path/path.dart';
 
 import 'package:OpenReceptionFramework/common.dart';
 import '../lib/configuration.dart';
-import '../lib/database.dart';
+import '../lib/database.dart' as Database;
 
-import '../lib/model.dart';
+import '../lib/model.dart' as Model;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -28,7 +28,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-      .then((_) => startDatabase())
+      .then((_) => Database.startDatabase())
       // HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
       .then((_) => periodicEmailSend())
@@ -59,47 +59,47 @@ void periodicEmailSend() {
 
   final String context = "periodicEmailSend";
 
-  messageQueueList().then((List<Map> items) {
+  Database.messageQueueList().then((List<Map> items) {
 
     messageCount = items.length;
 
     items.forEach((Map queueEntry) {
-      Message.loadFromDatabase(queueEntry['message_id']).then((Message message) {
+      new Model.Message.stub(queueEntry['message_id']).load().then((Model.Message message) {
         logger.debugContext('Trying to dispatch message with id ${queueEntry['message_id']} - queueID: ${queueEntry['queue_id']} ',context );
-        Email template = new Email(message);
+        Model.Email.dereferenceRecipients(message).then((Model.Email email) {
+          if (!message.hasRecipients) {
+            logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
+          } else {
+            String json = JSON.encode(email);
+  
+            /* Kick off a mailer process */
+            Process.start('python', [config.mailerScript, json]).then((process) {
 
-        String json = JSON.encode(template.toMap());
+              process.exitCode.then((int exitCode) {
+                if (exitCode != 0) {
+                  logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
+                } else {
+                  Database.MessageQueue.remove(queueEntry['queue_id']);
+                }
+              });
 
-        if (!message.hasRecipients) {
-          logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
-        } else {
+              process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
+                logger.errorContext('Python mailer (stdout): ${line}', context);
+              });
+              process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
+                logger.errorContext('Python mailer (stderr): ${line}',context);
+              });
 
-        /* Kick off a mailer process */
-          Process.start('python', [config.mailerScript, json]).then((process) {
-
-
-            process.exitCode.then((int exitCode) {
-              if (exitCode != 0) {
-                logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
-              } else {
-                MessageQueue.remove(queueEntry['queue_id']);
-              }
+            }).catchError((onError) {
+              logger.errorContext("Failed to run mailer process. Error: ${onError}", context);
             });
+         };
+        }).catchError((onError, stacktrace) {
+          logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context);
+          // TODO mark the queueEntry as failed.
+          
+        });
 
-            process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
-              logger.errorContext('Python mailer (stdout): ${line}', context);
-            });
-            process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
-              logger.errorContext('Python mailer (stderr): ${line}',context);
-            });
-
-          }).catchError((onError) {
-            logger.errorContext("Failed to run mailer process. Error: ${onError}", context);
-          });
-       };
-      }).catchError((onError, stacktrace) {
-        logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context);
-        // TODO mark the queueEntry as failed.
       });
     });
 

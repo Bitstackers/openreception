@@ -1,193 +1,112 @@
 part of model;
 
 abstract class Role {
-  static final String TO  = 'to';
-  static final String CC  = 'cc';
+  static final String TO = 'to';
+  static final String CC = 'cc';
   static final String BCC = 'bcc';
 }
 
 class Message {
-  int _ID;
-  Set<Messaging_Contact> _recipients = new Set<Messaging_Contact>();
-  Map _data;
 
-  int      get ID => _ID;
-  String   get contextContactName => this._data['context']['contact']['name'];
-  String   get calleeName => this._data['taken_from']['name'];
-  String   get calleeCompany => this._data['taken_from']['company'];
-  String   get calleePhone => this._data['taken_from']['phone'];
-  String   get calleeCellPhone => this._data['taken_from']['cellphone'];
-  String   get agentName => this._data['taken_by_agent']['name'];
-  String   get agentAddress => this._data['taken_by_agent']['address'];
-  bool     get urgent       => (this._data['flags'] as List).contains('urgent');
-  DateTime get receivedAt => this._data['created_at'];
-  String   get body  => this._data['message'];
-  Set<Messaging_Contact> get recipients => this._recipients;
+  static const String className = '${libraryName}.Message';
+  static const int noID = 0;
+
+  int                  _ID              = noID;
+  MessageRecipientList _recipients      = new MessageRecipientList.empty();
+  MessageContext        _messageContext = null;
+  List<String>          _flags          = [];
+  Map                   _callerInfo     = {};
+  DateTime              _createdAt      = null;
+  String                _body           = '';
+  SharedModel.User      _sender         = null;
+
+  int                  get ID         => _ID;
+  SharedModel.User     get sender     => this._sender;
+  bool                 get urgent     => this._flags.contains('urgent');
+  DateTime             get receivedAt => this._createdAt;
+  String               get body       => this._body;
+  MessageRecipientList get recipients => this._recipients;
+  MessageContext       get context    => this._messageContext;
+  List<String>         get flags      => this._flags;
+  Map                  get caller     => this._callerInfo;
   
-  Message(this._ID, [Map this._data]);
+  void set sender (SharedModel.User user) { this._sender = user;}
+  
+  Message.stub(this._ID); 
+
+  bool get hasRecipients => !this.recipients.hasRecipients;
+
+  Map toJson() => this.asMap;
 
   /**
    * TODO: Document.
    */
-  
-  bool get hasRecipients => !this.recipientMap.isEmpty;
-  
-  factory Message.stub(int ID) {
-    return new Message(ID);
+  factory Message.fromMap(Map map) {
+
+    const String context = '${className}.fromMap';
+
+    int ID = (map.containsKey('id') ? map['id'] : noID);
+    
+    logger.debugContext(map.toString(), context);
+
+    return new Message.stub(ID)
+        .._recipients     = new MessageRecipientList.fromMap(map.containsKey('recipients') ? map['recipients'] : new MessageRecipientList.empty())
+        .._messageContext = new MessageContext.fromMap(map['context'])
+        .._flags          = map['flags']
+        .._callerInfo     = map['caller']
+        .._body           = map['message']
+        ..validate();
   }
 
+  Map get asMap => 
+      { 'id'             : this.ID,
+        'message'        : this.body,
+        'context'        : this._messageContext,
+        'taken_by_agent' : this.sender.asSender,
+        'caller'         : this._callerInfo,
+        'flags'          : this._flags,
+        'created_at'     : dateTimeToUnixTimestamp(this._createdAt),
+        'recipients'     : this.recipients
+      };
+  
   /**
-   * TODO: Throw NotFound exception.
+   * 
    */
-  static Future<Message> loadFromDatabase(int messageID) {
-    Message newMessage = new Message.stub(messageID);
+  void validate() => this.body.isEmpty ? throw new StateError("Empty messages field not allowed") : null;
 
-    return messageSingle(messageID).then((Map values) {
-      newMessage._data = values;
+  Future send() => Database.Message.enqueue(this);
 
-      return messageRecipients(newMessage.ID).then((List recipientMaps) {
-        recipientMaps.forEach((Map recipientMap) {
+  Future save() => Database.Message.save(this).then((Map result) => this._ID = result['id']);
 
-          newMessage.addRecipient(new Messaging_Contact.fromMap(recipientMap, recipientMap['role']));
-        });
-
-        return newMessage;
+  Future<List<MessageEndpoint>> endpoints() => Database.MessageQueue.endpoints(this.ID);
+  
+  /**
+   * 
+   */
+  Future<Message> load() {
+    return Database.Message.get(this.ID).then((Map map) {
+      return Database.Message.recipients(this).then((MessageRecipientList recipients) {
+        return this
+            //.._recipients = recipients
+            .._messageContext = new MessageContext.fromMap(map['context'])
+            .._recipients     = recipients
+            .._callerInfo     = map['caller']
+            .._flags          = map['flags']
+            .._body           = map['message']
+            .._createdAt      = map['created_at']
+            .._sender         = new SharedModel.User.fromMap (map['taken_by_agent'])
+            ..validate();
 
       });
     });
   }
 
-  Map get toMap {
-    this._data['recipients'] = this.recipientMap;
-    return this._data;
-  }
-  
-  Map get recipientMap {
-    Map newMap = {};
-    this.recipients.forEach((Messaging_Contact recipient) {
-      newMap[recipient.role] = recipient.toMap;
-    });
 
-    return newMap;
-  }
-
-  /**
-   * Adds a new recipient for the message. The recipient is subject to the following policy:
-   *  - Contacts with both the same contact_id and reception_id are considered equal - regardless of their role.
-   *  - CC roles _replace_ BCC roles
-   *  - To roles _replace_ both BCC roles _and_ CC roles.
-   *  The point of this is to avoid sending out the same email twice to the same recipient.
-   *  
-   * [contact] The new contact to add. See method documentation for adding policy.  
-   */
-  void addRecipient(Messaging_Contact contact) {
-    if (this.recipients.contains(contact)) {
-      if (contact.role == "to") {
-        if (this.recipients.lookup(contact).role == "cc" || this.recipients.lookup(contact).role == "bcc") {
-          logger.debugContext(contact.contactString + " found with role \"" + this.recipients.lookup(contact).role + "\". Replacing with role \"" + contact.role + "\"", "Message.addRecipient");
-          // Replace the contact.
-          this.recipients.remove(contact);
-          this.recipients.add(contact);
-        }
-      } else if (contact.role == "cc") {
-        if (this.recipients.lookup(contact).role == "bcc") {
-          logger.debugContext(contact.contactString + " found with role \"" + this.recipients.lookup(contact).role + "\". Replacing with role \"" + contact.role + "\"", "Message.addRecipient");
-          // Replace the contact.
-          this.recipients.remove(contact);
-          this.recipients.add(contact);
-        }
-      } else {
-        logger.debugContext(contact.contactString + " found with role \"" + this.recipients.lookup(contact).role + "\". Refusing to replace with role \"" + contact.role + "\"", "Message.addRecipient");
-      }
-    } else {
-      logger.debugContext(contact.contactString + " not found - inserting with role \"" + contact.role + "\"", "Message.addRecipient");
-      this.recipients.add(contact);
-    }
-  }
-
-  Set<Messaging_Contact> currentRecipients() {
-    return this.recipients;
+  Set<MessageRecipient> currentRecipients() {
+    return this.recipients.asSet;
   }
 
   String sqlRecipients() {
-    return currentRecipients().map((Messaging_Contact contact) => "(${contact.contactID}, '${contact.contactName}', ${contact.receptionID}, '${contact.receptionName}', ${this.ID},'${contact.role}')").join(',');
+    return currentRecipients().map((MessageRecipient contact) => "(${contact.contactID}, '${contact.contactName}', ${contact.receptionID}, '${contact.receptionName}', ${this.ID},'${contact.role}')").join(',');
   }
-
-}
-
-class Messaging_Contact {
-
-  final String className = packageName + "Messaging_Contact";
-
-  /* Private fields */
-  Map _data;
-  
-  int _contactID;
-  int _receptionID;
-  String _contactName;
-  String _receptionName;
-  String _role;
-
-  /* Getters */
-  int    get contactID     => this._data['contact']['id'];
-  String get contactName   => this._data['contact']['name'];
-  int    get receptionID   => this._data['reception']['id'];
-  String get receptionName => this._data['reception']['name'];
-  String get role          => this._data['role'];
-  String get transport     => this._data['transport'];
-  String get address       => this._data['address'];
-
-  /**
-   * Constructor.
-   */
-  Messaging_Contact.fromMap(Map receptionContact, [String role]) {
-    final String context = className + ".fromMap";
-    
-    this._data         = receptionContact;
-    this._data['role'] = role;
-
-    
-    logger.debugContext(receptionContact.toString(), context);
-    try {
-      assert(['cc', 'bcc', 'to', null].contains(role.toLowerCase()));
-      this._role = role;
-      this._contactID = 
-      this._receptionID = receptionContact['reception']['id'];
-      this._receptionName = receptionContact['reception']['name'];
-    } catch (error) {
-      logger.errorContext("Failed to parse receptionContact map", context);
-      throw error; // Reraise.
-    }
-  }
-
-  Map get toMap => {
-    'transport' : this.transport,
-    'address'   : this.address,
-    'contact': {
-      'id': this.contactID,
-      'name': this.contactName
-    },
-    'reception': {
-      'id': this.receptionID,
-      'name': this.receptionName
-    }
-  };
-
-  @override
-  int get hashCode {
-    return (this.contactString).hashCode;
-  }
-
-  @override
-  bool operator ==(Messaging_Contact other) {
-    return this.contactString == other.contactString 
-        && this.transport == other.transport
-        && this.address   == other.address;
-  }
-
-  String get contactString => contactID.toString() + "@" + receptionID.toString();
-
-  @override
-  String toString() => this.contactString + " - " + this.contactName + "@" + this.receptionName;
-
 }
