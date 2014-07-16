@@ -15,17 +15,6 @@ class MessageRecipient extends MessageContext {
     this._data['role'] = role;
   }
 
-  Map get toMap => {
-    'contact'   : {
-      'id'  : this.contactID,
-      'name': this.contactName
-    },
-    'reception' : {
-      'id'  : this.receptionID,
-      'name': this.receptionName
-    }
-  };
-
   Map toJson () => this.toMap;
   
   @override
