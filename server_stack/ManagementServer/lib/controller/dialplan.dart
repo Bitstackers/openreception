@@ -31,7 +31,7 @@ class DialplanController {
     service.getAudioFileList(config.dialplanCompilerServer, receptionId, token).then((http.Response response) {
       if(response.statusCode == 200) {
         List<String> files = JSON.decode(response.body)['files'];
-        List<Audiofile> audioFiles = files.map((file) => new Audiofile(file, file.split('/').last)).toList();
+        List<Audiofile> audioFiles = files.map((String file) => new Audiofile(file, file.split('/').last)).toList();
         return writeAndCloseJson(request, listAudiofileAsJson(audioFiles));
       } else {
         request.response.statusCode = response.statusCode;
