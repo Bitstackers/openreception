@@ -11,7 +11,8 @@ abstract class Message {
     int messageID  = pathParameter(request.uri, 'message');
     
     new model.Message.stub(messageID).load()
-      .then((model.Message message) => writeAndClose(request, JSON.encode(message)));
+      .then((model.Message message) => writeAndClose(request, JSON.encode(message)))
+      .catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
   }
 
   static void list (HttpRequest request) {
