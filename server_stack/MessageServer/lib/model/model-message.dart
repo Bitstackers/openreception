@@ -50,7 +50,7 @@ class Message {
     logger.debugContext(map.toString(), context);
 
     return new Message.stub(ID)
-        .._recipients     = new MessageRecipientList.fromMap(map['recipients'])
+        .._recipients     = new MessageRecipientList.fromMap(map.containsKey('recipients') ? map['recipients'] : new MessageRecipientList.empty())
         .._messageContext = new MessageContext.fromMap(map['context'])
         .._flags          = map['flags']
         .._callerInfo     = map['caller']
