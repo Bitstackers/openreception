@@ -116,8 +116,8 @@ String pathParameterString(Uri uri, String key) {
 
 
 void serverErrorTrace(HttpRequest request, Error error, {StackTrace stackTrace : null}) {
-  const String context = 'serverErrorTrace'; 
-  
+  const String context = 'serverErrorTrace';
+
   logger.errorContext('$error ${stackTrace != null ? ' : ${stackTrace}' : ''}', context);
   request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
   writeAndClose(request, JSON.encode({'error': 'Internal Server Error',
@@ -136,7 +136,7 @@ void serverError(HttpRequest request, String logMessage) {
 DateFormat ClfDate = new DateFormat('dd/MMMM/yyyy:HH:mm:ss +0200');
 
 void commonLogFormat (HttpRequest request) {
-  
+
  logger.access('${request.connectionInfo.remoteAddress.address} - - ${ClfDate.format(new DateTime.now())}'
                ' "${request.method} ${request.requestedUri}" ${request.response.statusCode}'
                ' ${request.response.contentLength}');
@@ -197,18 +197,15 @@ void writeAndClose(HttpRequest request, String text) {
   }
 
   sb.write(request.response.statusCode);
-  //TODO Add real access log
-  //access(sb.toString());
-  commonLogFormat(request);
 
   addCorsHeaders(request.response);
   try {
     request.response
       ..headers.contentType = JSON_MIME_TYPE
       ..write(text)
-      ..close();
+      ..close().then((_) => commonLogFormat(request));
   } catch (error) {
-    print (error);
+    logger.errorContext(error.toString(), 'WriteAndClose');
   }
 
 }
