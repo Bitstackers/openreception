@@ -216,9 +216,7 @@ class IdentityContainer {
     ImageElement deleteButton = new ImageElement(src: '/image/tp/red_plus.svg')
       ..classes.add('small-button')
       ..onClick.listen((_) {
-      //TODO BUG. a press on save, does not send the delete to the server.
-      _identities.remove(identity);
-      populateUL(_identities);
+      _ul.children.remove(li);
     });
 
     SpanElement content = new SpanElement()
