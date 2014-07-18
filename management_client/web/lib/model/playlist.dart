@@ -4,6 +4,7 @@ class Playlist {
   int id;
   String name;
   String path;
+  int rate;
   bool shuffle;
   int channels;
   int interval;
@@ -18,6 +19,7 @@ class Playlist {
     object.id = json['id'];
     object.name = json['name'];
     object.path = json['path'];
+    object.rate = json['rate'];
     object.shuffle = json['shuffle'];
     object.channels = json['channels'];
     object.interval = json['interval'];
@@ -32,6 +34,7 @@ class Playlist {
     'id': id,
     'name': name,
     'path': path,
+    'rate': rate,
     'shuffle': shuffle,
     'channels': channels,
     'interval': interval,
