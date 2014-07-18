@@ -26,6 +26,8 @@ final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
 final Pattern receptionIdUrl         = new UrlPattern(r'/reception/(\d+)');
 final Pattern receptionContactIdUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
 final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact(/?)');
+final Pattern receptionContactIdEnpointUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint');
+final Pattern receptionContactIdEnpointIdUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint/(.+)/type/(.+)');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
@@ -38,7 +40,8 @@ final Pattern ContactColleaguesUrl   = new UrlPattern(r'/contact/(\d+)/colleague
 final Pattern ContactOrganizationUrl = new UrlPattern(r'/contact/(\d+)/organization(/?)');
 final Pattern ContactReceptionUrl    = new UrlPattern(r'/contact/(\d+)/reception(/?)');
 
-final Pattern contactypestUrl = new UrlPattern(r'/contacttypes(/?)');
+final Pattern contactTypesUrl  = new UrlPattern(r'/contacttypes(/?)');
+final Pattern addressTypestUrl = new UrlPattern(r'/addresstypes(/?)');
 
 final Pattern UserUrl             = new UrlPattern(r'/user(/?)');
 final Pattern UserIdUrl           = new UrlPattern(r'/user/(\d+)');
@@ -80,7 +83,8 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(ContactReceptionUrl, method: HttpMethod.GET).listen(contact.getReceptionList)
 
-    ..serve(contactypestUrl, method: HttpMethod.GET).listen(contact.getContactTypeList)
+    ..serve(contactTypesUrl, method: HttpMethod.GET).listen(contact.getContactTypeList)
+    ..serve(addressTypestUrl, method: HttpMethod.GET).listen(contact.getAddressTypestList)
 
     ..serve(ContactOrganizationUrl, method: HttpMethod.GET).listen(contact.getAContactsOrganizationList)
 
@@ -95,6 +99,12 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(receptionContactIdUrl, method: HttpMethod.GET)   .listen(receptionContact.getReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.POST)  .listen(receptionContact.updateReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteReceptionContact)
+
+    ..serve(receptionContactIdEnpointUrl, method: HttpMethod.GET).listen(receptionContact.getEndpointList)
+    ..serve(receptionContactIdEnpointUrl, method: HttpMethod.PUT).listen(receptionContact.createEndpoint)
+    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.GET).listen(receptionContact.getEndpoint)
+    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.POST).listen(receptionContact.updateEndpoint)
+    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteEndpoint)
 
     ..serve(ContactColleaguesUrl, method: HttpMethod.GET).listen(contact.getColleagues)
 

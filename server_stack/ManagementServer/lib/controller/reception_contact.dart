@@ -9,6 +9,7 @@ import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/complete_reception_contact.dart';
+import '../view/endpoint.dart';
 import 'package:OpenReceptionFramework/service.dart' as ORFService;
 
 class ReceptionContactController {
@@ -84,7 +85,7 @@ class ReceptionContactController {
             logger.error('updateReceptionContact Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
           });
       }))
-    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+    .then((_) => writeAndCloseJson(request, JSON.encode({})))
     .catchError((error) {
       logger.error('updateReception url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
@@ -106,6 +107,123 @@ class ReceptionContactController {
       }))
     .catchError((error) {
       logger.error('updateReception url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
+  void createEndpoint(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+
+    extractContent(request)
+      .then(JSON.decode)
+      .then((Map data) => db.createEndpoint(receptionId, contactId, data['address'], data['address_type'], data['confidential'], data['enabled'], data['priority'])
+        .then((_) {
+            Map event = {'event' : 'endpointEventCreated', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': data['address'], 'address_type': data['address_type']}};
+            ORFService.Notification.broadcast(event, config.notificationServer, config.token)
+              .catchError((error) {
+                logger.error('createEndpoint Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+              });
+          }))
+      .then((_) => writeAndCloseJson(request, JSON.encode({})))
+      .catchError((error) {
+        logger.error(error);
+        Internal_Error(request);
+      });
+  }
+
+  void getEndpoint(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+    String address = PathParameter(request.uri, 'endpoint');
+    String addressType = PathParameter(request.uri, 'type');
+
+    db.getEndpoint(receptionId, contactId, address, addressType).then((Endpoint endpoint) {
+      if(endpoint == null) {
+        request.response.statusCode = 404;
+        return writeAndCloseJson(request, JSON.encode({}));
+      } else {
+        return writeAndCloseJson(request, endpointAsJson(endpoint));
+      }
+    }).catchError((error) {
+      logger.error('getEndpoint Error: "$error"');
+      Internal_Error(request);
+    });
+  }
+
+  void getEndpointList(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+
+    db.getEndpointList(receptionId, contactId).then((List<Endpoint> list) {
+      return writeAndCloseJson(request, endpointListAsJson(list));
+    }).catchError((error) {
+      logger.error('getEndpointList Error: "$error"');
+      Internal_Error(request);
+    });
+  }
+
+  void updateEndpoint(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+    String address = PathParameter(request.uri, 'endpoint');
+    String addressType = PathParameter(request.uri, 'type');
+
+    int newreceptionId, newContactId;
+    String newAddress, newAddressType;
+
+    extractContent(request)
+    .then(JSON.decode)
+    .then((Map data) {
+      newreceptionId = data['reception_id'];
+      newContactId = data['contact_id'];
+      newAddress = data['address'];
+      newAddressType = data['address_type'];
+
+      return db.updateEndpoint(
+          receptionId,
+          contactId,
+          address,
+          addressType,
+          data['reception_id'],
+          data['contact_id'],
+          data['address'],
+          data['address_type'],
+          data['confidential'],
+          data['enabled'],
+          data['priority']);
+    })
+    .then((_) {
+        Map data = {'event' : 'endpointEventUpdated', 'endpointEvent' : {'reception_id': newreceptionId, 'contact_id': newContactId, 'address': newAddress, 'address_type': newAddressType}};
+        ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            logger.error('updateEndpoint Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+          });
+      })
+    .then((_) => writeAndCloseJson(request, JSON.encode({})))
+    .catchError((error) {
+      logger.error('updateEndpoint url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
+  void deleteEndpoint(HttpRequest request) {
+    int receptionId = intPathParameter(request.uri, 'reception');
+    int contactId = intPathParameter(request.uri, 'contact');
+    String address = PathParameter(request.uri, 'endpoint');
+    String addressType = PathParameter(request.uri, 'type');
+
+    db.deleteEndpoint(receptionId, contactId, address, addressType)
+    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({}))
+    .then((_) {
+        Map data = {'event' : 'endpointEventDeleted', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': address, 'address_type': addressType}};
+        ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            logger.error('deleteEndpoint Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"');
+          });
+      }))
+    .catchError((error) {
+      logger.error('deleteEndpoint url: "${request.uri}" gave error "${error}"');
       Internal_Error(request);
     });
   }

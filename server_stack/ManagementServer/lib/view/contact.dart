@@ -12,6 +12,7 @@ String listContactAsJson(List<Contact> contacts) =>
 String contactIdAsJson(int id) => JSON.encode({'id': id});
 
 String contactTypesAsJson(List<String> types) => JSON.encode({'contacttypes': types});
+String addressTypesAsJson(List<String> types) => JSON.encode({'addresstypes': types});
 
 Map _contactAsJsonMap(Contact contact) => contact == null ? {} :
     {'id': contact.id,

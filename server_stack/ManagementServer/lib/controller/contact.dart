@@ -109,6 +109,15 @@ class ContactController {
     });
   }
 
+  void getAddressTypestList(HttpRequest request) {
+    db.getAddressTypeList().then((List<String> data) {
+      writeAndCloseJson(request, addressTypesAsJson(data));
+    }).catchError((error) {
+      logger.error('contractController.getAddressTypestList url: "${request.uri}" gave error "${error}"');
+      Internal_Error(request);
+    });
+  }
+
   void getReceptionList(HttpRequest request) {
     int contactId = intPathParameter(request.uri, 'contact');
 
