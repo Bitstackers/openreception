@@ -87,6 +87,8 @@ class RecordView {
     request.getAudiofileList(reception).then((List<Audiofile> files) {
       fileListUL.children.clear();
       fileListUL.children.addAll(files.map(makeAudioFileNode));
+    }).catchError((error) {
+      notify.error('activateReception: ${error}');
     });
   }
 

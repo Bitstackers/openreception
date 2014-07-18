@@ -8,6 +8,7 @@ part 'model/audiofile.dart';
 part 'model/cdr_entry.dart';
 part 'model/colleague.dart';
 part 'model/contact.dart';
+part 'model/endpoint.dart';
 part 'model/organization.dart';
 part 'model/reception.dart';
 part 'model/reception_contact.dart';

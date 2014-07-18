@@ -26,3 +26,9 @@ class HttpMethod {
 }
 
 class Forbidden {}
+class InternalServerError {}
+class UnknowStatusCode {
+  int statusCode;
+
+  UnknowStatusCode(int this.statusCode);
+}

@@ -74,6 +74,10 @@ class ContactView {
       inputType.children.addAll(typesList.map((type) => new OptionElement(data:
           type, value: type)));
     });
+
+    request.getAddressTypeList().then((List<String> types) {
+      EndpointsComponent.addressTypes = types;
+    });
   }
 
   String receptionToSearchboxString(Reception reception, String searchterm) {
@@ -248,6 +252,7 @@ class ContactView {
     InputElement wantMessage, enabled;
     UListElement backupList, emailList, handlingList, phoneNumbersList,
         workhoursList, tagsList;
+    EndpointsComponent endpointsContainer;
 
     Function onChange = () {
       if (!saveList.containsKey(contact.receptionId)) {
@@ -261,7 +266,7 @@ class ContactView {
               ..phoneNumbers = getPhoneNumbersFromDOM(phoneNumbersList)
 
               ..backup = getListValues(backupList)
-              ..emailaddresses = getListValues(emailList)
+              //..emailaddresses = getListValues(emailList)
               ..handling = getListValues(handlingList)
               //..telephonenumbers = getListValues(telephoneNumbersList)
               ..workhours = getListValues(workhoursList)
@@ -273,7 +278,8 @@ class ContactView {
               ..relations = relations.value
               ..responsibility = responsibility.value;
 
-          return receptionContactHandler(RC);
+          return receptionContactHandler(RC)
+              .then((_) => endpointsContainer.save(RC.receptionId, RC.contactId));
         };
       }
     };
@@ -317,7 +323,9 @@ class ContactView {
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
     backupList = makeListBox(leftCell, 'Backup', contact.backup, onChange: onChange);
-    emailList = makeListBox(rightCell, 'E-mail', contact.emailaddresses, onChange: onChange);
+    //emailList = makeListBox(rightCell, 'E-mail', contact.emailaddresses, onChange: onChange);
+    endpointsContainer = new EndpointsComponent(rightCell, onChange)
+      ..load(contact.receptionId, contact.contactId);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
@@ -693,12 +701,183 @@ class ContactView {
         buttonJoinReception.disabled = true;
         selectedContactId = 0;
       }).catchError((error) {
-        log.error('Failed to delete contact "${selectedContactId}" got "$error"'
-            );
+        log.error('Failed to delete contact "${selectedContactId}" got "$error"');
       });
     } else {
-      log.error(
-          'Failed to delete. createNew: ${createNew} id: ${selectedContactId}');
+      log.error('Failed to delete. createNew: ${createNew} id: ${selectedContactId}');
     }
+  }
+}
+
+class EndpointsComponent {
+  static List<String> addressTypes = [];
+
+  Element _element;
+  Function _onChange;
+  List<Endpoint> persistenceEndpoint = [];
+  UListElement _ul = new UListElement();
+
+  EndpointsComponent(Element this._element, Function this._onChange) {
+    _element.children.add(_ul);
+  }
+
+  void clear() {
+    _ul.children.clear();
+    persistenceEndpoint = [];
+  }
+
+  Future load(int receptionId, int contactId) {
+    persistenceEndpoint = [];
+    return request.getEndpointsList(receptionId, contactId).then((List<Endpoint> list) {
+      populateUL(list);
+    });
+  }
+
+  void populateUL(List<Endpoint> list) {
+    persistenceEndpoint = list;
+    _ul.children
+      ..clear()
+      ..addAll(list.map(_makeEndpointRow))
+      ..add(_makeNewEndpointRow());
+  }
+
+  LIElement _makeNewEndpointRow() {
+    LIElement li = new LIElement();
+
+    //TODO Make it do something.
+    ButtonElement createButton = new ButtonElement()
+      ..text = 'Ny'
+      ..onClick.listen((_) {
+        Endpoint endpoint = new Endpoint()
+          ..address = 'mig@eksempel.dk';
+        LIElement row = _makeEndpointRow(endpoint);
+        int index = _ul.children.length - 1;
+        _ul.children.insert(index, row);
+        if(_onChange != null) {
+          _onChange();
+        }
+    });
+
+    return li
+        ..children.addAll([createButton]);
+  }
+
+  LIElement _makeEndpointRow(Endpoint endpoint) {
+    LIElement li = new LIElement();
+
+    SpanElement address = new SpanElement()
+      ..classes.add('contact-endpoint-address')
+      ..text = endpoint.address;
+    InputElement addressEditBox = new InputElement(type: 'text');
+    editableSpan(address, addressEditBox, _onChange);
+
+    SelectElement typePicker = new SelectElement()
+      ..classes.add('contact-endpoint-addresstype')
+      ..children.addAll(addressTypes.map((String type) => new OptionElement(data: type, value: type, selected: type == endpoint.addressType)))
+      ..onChange.listen((_) {
+      if(_onChange != null) {
+        _onChange();
+      }
+    });
+
+    LabelElement confidentialLabel = new LabelElement()
+      ..text = 'Fortrolig';
+    CheckboxInputElement confidentialCheckbox = new CheckboxInputElement()
+      ..classes.add('contact-endpoint-confidential')
+      ..checked = endpoint.confidential
+      ..onChange.listen((_) {
+      if(_onChange != null) {
+        _onChange();
+      }
+    });
+
+    LabelElement enabledLabel = new LabelElement()
+      ..text = 'Aktiv';
+    CheckboxInputElement enabledCheckbox = new CheckboxInputElement()
+      ..classes.add('contact-endpoint-enabled')
+      ..checked = endpoint.enabled
+      ..onChange.listen((_) {
+        if(_onChange != null) {
+          _onChange();
+        }
+      });
+
+    LabelElement priorityLabel = new LabelElement()
+      ..text = 'prioritet';
+    NumberInputElement PriorityCheckbox = new NumberInputElement()
+      ..classes.add('contact-endpoint-priority')
+      ..value = (endpoint.priority == null ? 0 : endpoint.priority).toString()
+      ..onInput.listen((_) {
+        if(_onChange != null) {
+          _onChange();
+        }
+    });
+
+    //TODO Make it do something.
+    ButtonElement deleteButton = new ButtonElement()
+      ..text = 'slet'
+      ..onClick.listen((_) {
+      _ul.children.remove(li);
+      if(_onChange != null) {
+        _onChange();
+      }
+    });
+
+    return li
+        ..children.addAll([address, addressEditBox, typePicker, confidentialLabel, confidentialCheckbox, enabledLabel, enabledCheckbox, priorityLabel, PriorityCheckbox, deleteButton]);
+  }
+
+  Future save(int receptionId, int contactId) {
+    List<Endpoint> foundEndpoints = [];
+
+    for(LIElement item in _ul.children) {
+      SpanElement addressSpan = item.querySelector('.contact-endpoint-address');
+      SelectElement addressTypePicker = item.querySelector('.contact-endpoint-addresstype');
+      CheckboxInputElement confidentialBox = item.querySelector('.contact-endpoint-confidential');
+      CheckboxInputElement enabledBox = item.querySelector('.contact-endpoint-enabled');
+      NumberInputElement priorityBox = item.querySelector('.contact-endpoint-priority');
+
+      if(addressSpan != null && addressTypePicker != null && confidentialBox != null && enabledBox != null && priorityBox != null) {
+        Endpoint endpoint = new Endpoint()
+          ..receptionId = receptionId
+          ..contactId = contactId
+          ..address = addressSpan.text
+          ..addressType = addressTypePicker.selectedOptions.first.value
+          ..confidential = confidentialBox.checked
+          ..enabled = enabledBox.checked
+          ..priority = int.parse(priorityBox.value);
+        foundEndpoints.add(endpoint);
+      }
+    }
+
+    List<Future> worklist = new List<Future>();
+
+    //Inserts
+    for(Endpoint endpoint in foundEndpoints) {
+      if(!persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+        //Insert Endpoint
+        print('Insert ${endpoint.toJson()}');
+        worklist.add(request.createEndpoint(receptionId, contactId, endpoint.toJson()));
+      }
+    }
+
+    //Deletes
+    for(Endpoint endpoint in persistenceEndpoint) {
+      if(!foundEndpoints.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+        //Delete Endpoint
+        print('DELETE ${endpoint.toJson()}');
+        worklist.add(request.deleteEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType));
+      }
+    }
+
+    //Update
+    for(Endpoint endpoint in foundEndpoints) {
+      if(persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+        //Update Endpoint
+        print('Update ${endpoint.toJson()}');
+        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, endpoint.toJson()));
+      }
+    }
+    return Future.wait(worklist);
   }
 }

@@ -172,6 +172,32 @@ Future<List<String>> getContacttypeList() {
   return completer.future;
 }
 
+Future<List<String>> getAddressTypeList() {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/addresstypes?token=${config.token}';
+
+  request = new HttpRequest()
+      ..open(HttpMethod.GET, url)
+      ..onLoad.listen((_) {
+        if (request.status == 200) {
+          Map rawData = JSON.decode(request.responseText);
+          List<String> addresstypes = rawData['addresstypes'];
+          completer.complete(addresstypes);
+        } else {
+          completer.completeError('Bad status code. ${request.status}');
+        }
+      })
+      ..onError.listen((e) {
+        //TODO logging.
+        completer.completeError(e.toString());
+      })
+      ..send();
+
+  return completer.future;
+}
+
 Future deleteContact(int contactId) {
   final Completer completer = new Completer();
 

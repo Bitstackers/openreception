@@ -13,8 +13,12 @@ Future<Dialplan> getDialplan(int receptionId) {
       if (request.status == 200) {
         String body = request.responseText;
         completer.complete(new Dialplan.fromJson(JSON.decode(body)));
+      } else if (request.status == 403) {
+        completer.completeError(new Forbidden());
+      } else if (request.status == 500) {
+        completer.completeError(new InternalServerError());
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status));
       }
     })
     ..onError.listen((e) {
@@ -67,8 +71,12 @@ Future<IvrList> getIvr(int receptionId) {
       if (request.status == 200) {
         String body = request.responseText;
         completer.complete(new IvrList.fromJson(JSON.decode(body)));
+      } else if (request.status == 403) {
+        completer.completeError(new Forbidden());
+      } else if (request.status == 500) {
+        completer.completeError(new InternalServerError());
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status));
       }
     })
     ..onError.listen((e) {
@@ -121,8 +129,12 @@ Future<List<Audiofile>> getAudiofileList(int receptionId) {
         Map rawData = JSON.decode(request.responseText);
         List<Map> rawAudiofiles = rawData['audiofiles'];
         completer.complete(rawAudiofiles.map((Map file) => new Audiofile.fromJson(file)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new Forbidden());
+      } else if (request.status == 500) {
+        completer.completeError(new InternalServerError());
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status));
       }
     })
     ..onError.listen((e) {
@@ -147,8 +159,12 @@ Future<List<Playlist>> getPlaylistList() {
         Map rawData = JSON.decode(request.responseText);
         List<Map> rawPlaylistList = rawData['playlist'];
         completer.complete(rawPlaylistList.map((Map file) => new Playlist.fromJson(file)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new Forbidden());
+      } else if (request.status == 500) {
+        completer.completeError(new InternalServerError());
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status));
       }
     })
     ..onError.listen((e) {
@@ -171,8 +187,12 @@ Future<Playlist> getPlaylist(int playlistId) {
     ..onLoad.listen((_) {
       if (request.status == 200) {
         completer.complete(new Playlist.fromJson(JSON.decode(request.responseText)));
+      } else if (request.status == 403) {
+        completer.completeError(new Forbidden());
+      } else if (request.status == 500) {
+        completer.completeError(new InternalServerError());
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status));
       }
     })
     ..onError.listen((e) {
