@@ -17,13 +17,13 @@ import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
 
 class _ControlLookUp {
-  static const int timeControl = 0;
-  static const int dateControl = 1;
-  static const int forward = 2;
-  static const int receptionist = 3;
-  static const int voicemail = 4;
-  static const int playAudioFile = 5;
-  static const int ivr = 6;
+  static const int TIME_CONTROL = 0;
+  static const int DATE_CONTROL = 1;
+  static const int TRANSFER = 2;
+  static const int RECEPTIONIST = 3;
+  static const int VOICEMAIL = 4;
+  static const int PLAY_AUDIO_FILE = 5;
+  static const int IVR = 6;
 }
 
 class _ControlImage {
@@ -289,13 +289,13 @@ class DialplanView {
   void handleControlConditionClick(int value) {
     if (selectedExtension != null) {
       switch (value) {
-        case _ControlLookUp.timeControl:
+        case _ControlLookUp.TIME_CONTROL:
           Time condition = new Time();
           selectedExtension.conditions.add(condition);
           settingsConditionTime(condition);
           break;
 
-        case _ControlLookUp.dateControl:
+        case _ControlLookUp.DATE_CONTROL:
           Date condition = new Date();
           selectedExtension.conditions.add(condition);
           settingsConditionDate(condition);
@@ -310,31 +310,31 @@ class DialplanView {
   void handleControlActionClick(int value) {
     if (selectedExtension != null) {
       switch (value) {
-        case _ControlLookUp.forward:
-          Forward action = new Forward();
+        case _ControlLookUp.TRANSFER:
+          Transfer action = new Transfer();
           selectedExtension.actions.add(action);
-          settingsActionForward(action);
+          settingsActionTransfer(action);
           break;
 
-        case _ControlLookUp.receptionist:
+        case _ControlLookUp.RECEPTIONIST:
           Receptionists action = new Receptionists();
           selectedExtension.actions.add(action);
           settingsActionReceptionists(action);
           break;
 
-        case _ControlLookUp.voicemail:
+        case _ControlLookUp.VOICEMAIL:
           Voicemail action = new Voicemail();
           selectedExtension.actions.add(action);
           settingsActionVoicemail(action);
           break;
 
-        case _ControlLookUp.playAudioFile:
+        case _ControlLookUp.PLAY_AUDIO_FILE:
           PlayAudio action = new PlayAudio();
           selectedExtension.actions.add(action);
           settingsActionPlayAudio(action);
           break;
 
-        case _ControlLookUp.ivr:
+        case _ControlLookUp.IVR:
           ExecuteIvr action = new ExecuteIvr();
           selectedExtension.actions.add(action);
           settingsActionExecuteIvr(action);
@@ -378,13 +378,19 @@ class DialplanView {
 
         itemsList.children.add(row);
 
-        if (action is Forward) {
+        if (action is Transfer) {
           image.src = _ControlImage.bendedArrow;
           nameTag.text = 'Viderstil';
           row.onClick.listen((_) {
-            settingsActionForward(action);
+            settingsActionTransfer(action);
           });
-          shortDescription.value = 'Nummer: ${nullBecomesEmpty(action.number)}';
+          if(action.type == TransferType.PHONE) {
+            shortDescription.value = 'Nummer: ${nullBecomesEmpty(action.phoneNumber)}';
+          } else if (action.type == TransferType.GROUP) {
+            shortDescription.value = 'Gruppe: ${nullBecomesEmpty(action.extensionGroup)}';
+          } else {
+            shortDescription.value = '';
+          }
 
         } else if (action is ExecuteIvr) {
           image.src = _ControlImage.IVR;
@@ -783,26 +789,90 @@ class DialplanView {
     });
   }
 
-  void settingsActionForward(Forward action) {
+  void settingsActionTransfer(Transfer action) {
     clearSettingsPanel();
     String html = '''
     <ul class="dialplan-settingsList">
       <li>
-          <label for="dialplan-setting-number">Nummer</label>
-          <input id="dialplan-setting-number" type="text" value="${action.number != null ? action.number : ''}"/>
+        <fieldset id="dialplan-transfertype-phone-fieldset">
+          <legend>
+            <label for="dialplan-transfertype-phone">Telefon</label>
+            <input id="dialplan-transfertype-phone" type="radio" name="dialplan-transfertype" value="true">
+          </legend>
+          <label for="dialplan-transfer-phone-input">Nummer</label>
+          <input id="dialplan-transfer-phone-input" placeholder="70 12 14 16" type="text">
+        </fieldset>
+      </li>
+
+      <li>
+        <fieldset id="dialplan-transfertype-extensiongroup-fieldset">
+          <legend>
+            <label for="dialplan-transfertype-extensiongroup">Gruppe</label>
+            <input id="dialplan-transfertype-extensiongroup" type="radio" name="dialplan-transfertype">
+          </legend>
+          <label for="dialplan-transfer-group-picker">Gruppe</label>
+          <select id="dialplan-transfer-group-picker"></select>
+        </fieldset>
       </li>
     </ul>
     ''';
     DocumentFragment fragment = new DocumentFragment.html(html);
     settingPanel.children.addAll(fragment.children);
 
-    InputElement numberInput = settingPanel.querySelector('#dialplan-setting-number');
-    numberInput
-        ..onInput.listen((_) {
-      action.number = numberInput.value;
+    FieldSetElement transferTypePhoneFieldset = settingPanel.querySelector('#dialplan-transfertype-phone-fieldset');
+    FieldSetElement transferTypeExtensionGroupFieldset = settingPanel.querySelector('#dialplan-transfertype-extensiongroup-fieldset');
+
+    RadioButtonInputElement transferTypePhone = settingPanel.querySelector('#dialplan-transfertype-phone');
+    RadioButtonInputElement transferTypeExtensionGroup = settingPanel.querySelector('#dialplan-transfertype-extensiongroup');
+
+    var updateDisables = () {
+      //This can seems a little backwards, but it's because we set if it is disabled not enabled.
+      transferTypePhoneFieldset.disabled = !transferTypePhone.checked;
+      transferTypeExtensionGroupFieldset.disabled = !transferTypeExtensionGroup.checked;
+
+      if(transferTypePhone.checked) {
+        action.type = TransferType.PHONE;
+      } else if(transferTypeExtensionGroup.checked) {
+        action.type = TransferType.GROUP;
+      }
+    };
+
+    transferTypePhone.onChange.listen((_) {
+      updateDisables();
       enabledSaveButton();
       renderContentList();
     });
+
+    transferTypeExtensionGroup.onChange.listen((_) {
+      updateDisables();
+      enabledSaveButton();
+      renderContentList();
+    });
+
+    TextInputElement phoneNumberInput = settingPanel.querySelector('#dialplan-transfer-phone-input');
+    phoneNumberInput.value = action.phoneNumber;
+    phoneNumberInput.onInput.listen((_) {
+      action.phoneNumber = phoneNumberInput.value;
+      enabledSaveButton();
+      renderContentList();
+    });
+
+    SelectElement groupPicker = settingPanel.querySelector('#dialplan-transfer-group-picker');
+    groupPicker.children
+      ..clear()
+      ..addAll(dialplan.extensionGroups.map((ExtensionGroup g) => new OptionElement(data: g.name, value: g.name, selected: g.name == action.extensionGroup)));
+    groupPicker.onChange.listen((_) {
+      action.extensionGroup = groupPicker.selectedOptions.first.value;
+      enabledSaveButton();
+      renderContentList();
+    });
+
+    if(action.type == TransferType.GROUP) {
+      transferTypeExtensionGroup.checked = true;
+    } else {
+      transferTypePhone.checked = true;
+    }
+    updateDisables();
 
     commentTextarea.value = action.comment;
     if(commentTextSubscription != null) {
