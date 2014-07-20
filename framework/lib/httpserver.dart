@@ -181,7 +181,7 @@ void start(int port, void setupRoutes(HttpServer server)) {
     });
 }
 
-void writeAndClose(HttpRequest request, String text) {
+Future writeAndClose(HttpRequest request, String text) {
   String time = new DateTime.now().toString();
 
   StringBuffer sb        = new StringBuffer();
@@ -202,8 +202,9 @@ void writeAndClose(HttpRequest request, String text) {
   try {
     request.response
       ..headers.contentType = JSON_MIME_TYPE
-      ..write(text)
-      ..close().then((_) => commonLogFormat(request));
+      ..write(text);
+
+    return request.response.close().then((_) => commonLogFormat(request));
   } catch (error) {
     logger.errorContext(error.toString(), 'WriteAndClose');
   }
