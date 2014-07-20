@@ -14,11 +14,11 @@ Future<Dialplan> getDialplan(int receptionId) {
         String body = request.responseText;
         completer.complete(new Dialplan.fromJson(JSON.decode(body)));
       } else if (request.status == 403) {
-        completer.completeError(new Forbidden());
+        completer.completeError(new ForbiddenException());
       } else if (request.status == 500) {
         completer.completeError(new InternalServerError());
       } else {
-        completer.completeError(new UnknowStatusCode(request.status));
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText));
       }
     })
     ..onError.listen((e) {
@@ -72,11 +72,11 @@ Future<IvrList> getIvr(int receptionId) {
         String body = request.responseText;
         completer.complete(new IvrList.fromJson(JSON.decode(body)));
       } else if (request.status == 403) {
-        completer.completeError(new Forbidden());
+        completer.completeError(new ForbiddenException());
       } else if (request.status == 500) {
         completer.completeError(new InternalServerError());
       } else {
-        completer.completeError(new UnknowStatusCode(request.status));
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText));
       }
     })
     ..onError.listen((e) {
@@ -130,11 +130,11 @@ Future<List<Audiofile>> getAudiofileList(int receptionId) {
         List<Map> rawAudiofiles = rawData['audiofiles'];
         completer.complete(rawAudiofiles.map((Map file) => new Audiofile.fromJson(file)).toList());
       } else if (request.status == 403) {
-        completer.completeError(new Forbidden());
+        completer.completeError(new ForbiddenException());
       } else if (request.status == 500) {
         completer.completeError(new InternalServerError());
       } else {
-        completer.completeError(new UnknowStatusCode(request.status));
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText));
       }
     })
     ..onError.listen((e) {
@@ -160,11 +160,11 @@ Future<List<Playlist>> getPlaylistList() {
         List<Map> rawPlaylistList = rawData['playlist'];
         completer.complete(rawPlaylistList.map((Map file) => new Playlist.fromJson(file)).toList());
       } else if (request.status == 403) {
-        completer.completeError(new Forbidden());
+        completer.completeError(new ForbiddenException());
       } else if (request.status == 500) {
         completer.completeError(new InternalServerError());
       } else {
-        completer.completeError(new UnknowStatusCode(request.status));
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText));
       }
     })
     ..onError.listen((e) {
@@ -188,11 +188,11 @@ Future<Playlist> getPlaylist(int playlistId) {
       if (request.status == 200) {
         completer.complete(new Playlist.fromJson(JSON.decode(request.responseText)));
       } else if (request.status == 403) {
-        completer.completeError(new Forbidden());
+        completer.completeError(new ForbiddenException());
       } else if (request.status == 500) {
         completer.completeError(new InternalServerError());
       } else {
-        completer.completeError(new UnknowStatusCode(request.status));
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText));
       }
     })
     ..onError.listen((e) {

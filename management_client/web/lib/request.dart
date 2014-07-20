@@ -25,10 +25,36 @@ class HttpMethod {
   static const String DELETE = 'DELETE';
 }
 
-class Forbidden {}
-class InternalServerError {}
-class UnknowStatusCode {
-  int statusCode;
+class ForbiddenException implements Exception {
+  final message;
 
-  UnknowStatusCode(int this.statusCode);
+  ForbiddenException([this.message]);
+
+  String toString() {
+    if (message == null) return "ForbiddenException";
+    return "ForbiddenException: $message";
+  }
+}
+
+class InternalServerError implements Exception {
+  final message;
+
+  InternalServerError([this.message]);
+
+  String toString() {
+    if (message == null) return "InternalServerError";
+    return "InternalServerError: $message";
+  }
+}
+
+class UnknowStatusCode implements Exception {
+  int statusCode;
+  String statusText;
+
+  UnknowStatusCode(int this.statusCode, String this.statusText);
+
+  String toString() {
+    if (statusCode == null || statusText == null) return "UnknowStatusCode";
+    return "UnknowStatusCode: ${statusCode} ${statusText}";
+  }
 }
