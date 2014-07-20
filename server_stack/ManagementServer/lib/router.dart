@@ -12,7 +12,7 @@ import 'controller/reception_contact.dart';
 import 'controller/user.dart';
 import 'database.dart';
 import 'utilities/http.dart';
-import 'utilities/logger.dart';
+import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 
 final Pattern anyThing = new UrlPattern(r'/(.*)');
 
@@ -66,9 +66,8 @@ ReceptionController reception;
 ReceptionContactController receptionContact;
 UserController user;
 
-void setupRoutes(HttpServer server, Configuration config, Logger logger) {
+void setupRoutes(HttpServer server, Configuration config) {
   Router router = new Router(server)
-    ..filter(anyThing, (HttpRequest req) => logHit(req, logger))
     ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
@@ -145,9 +144,9 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(audiofilesUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
 
-    ..serve(anyThing, method: HttpMethod.OPTIONS).listen(PreFlight)
+    ..serve(anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
 
-    ..defaultStream.listen(NOTFOUND);
+    ..defaultStream.listen(orf_http.page404);
 }
 
 void setupControllers(Database db, Configuration config) {
