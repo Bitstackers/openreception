@@ -12,6 +12,13 @@ import 'common.dart';
 
 final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');
 
+class ParameterNotFoundException implements Exception {
+  String parameterName;
+  ParameterNotFoundException(String this.parameterName);
+
+  String toString() => 'Parameter not found ${parameterName}';
+}
+
 void addCorsHeaders(HttpResponse res) {
   res.headers
     ..add("Access-Control-Allow-Origin", "*")
@@ -110,12 +117,11 @@ String pathParameterString(Uri uri, String key) {
     return uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1);
   } catch(error) {
     access('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
-    throw new StateError('Parameter not found: ${key}');
+    throw new ParameterNotFoundException(key);
   }
 }
 
-
-void serverErrorTrace(HttpRequest request, Error error, {StackTrace stackTrace : null}) {
+void serverErrorTrace(HttpRequest request, error, {StackTrace stackTrace : null}) {
   const String context = 'serverErrorTrace';
 
   logger.errorContext('$error ${stackTrace != null ? ' : ${stackTrace}' : ''}', context);

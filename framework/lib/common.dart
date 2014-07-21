@@ -20,7 +20,6 @@ Future activateSyslog(String hostname) {
   });
 }
 
-
 class BasicLogger {
 
   static final int DEBUG    = 255;
