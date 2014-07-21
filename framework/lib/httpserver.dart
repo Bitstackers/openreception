@@ -133,13 +133,26 @@ void serverError(HttpRequest request, String logMessage) {
 }
 
 //TODO: Implement real TimeZone! TimeFormatter throws NotImplemented.
-DateFormat ClfDate = new DateFormat('dd/MMMM/yyyy:HH:mm:ss +0200');
+DateFormat ClfDate = new DateFormat('dd/MMMM/yyyy:HH:mm:ss');
 
 void commonLogFormat (HttpRequest request) {
-
- logger.access('${request.connectionInfo.remoteAddress.address} - - ${ClfDate.format(new DateTime.now())}'
+  DateTime now = new DateTime.now();
+ logger.access('${request.connectionInfo.remoteAddress.address} - - ${ClfDate.format(now)} ${timeZoneFormat(now.timeZoneOffset)}'
                ' "${request.method} ${request.requestedUri}" ${request.response.statusCode}'
                ' ${request.response.contentLength}');
+}
+
+String timeZoneFormat(Duration timezone) {
+  String sign = timezone.inMilliseconds < 0 ? '-' : '+';
+  return '${sign}${doubleDigit(timezone.inHours)}${doubleDigit(timezone.inMinutes % 60)}';
+}
+
+String doubleDigit(int number) {
+  if(number < 10) {
+    return '0${number.abs()}';
+  } else {
+    return '${number.abs()}';
+  }
 }
 
 void forbidden(HttpRequest request, String reason) {
