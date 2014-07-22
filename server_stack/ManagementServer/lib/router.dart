@@ -28,6 +28,7 @@ final Pattern receptionContactIdUrl  = new UrlPattern(r'/reception/(\d+)/contact
 final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact(/?)');
 final Pattern receptionContactIdEnpointUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint');
 final Pattern receptionContactIdEnpointIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint/(.+)/type/(.+)');
+final Pattern receptionContactIdDistributionListUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
@@ -57,7 +58,7 @@ final List<Pattern> Serviceagents =
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
 
- ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl];
+ ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl];
 
 ContactController contact;
 DialplanController dialplan;
@@ -115,6 +116,9 @@ void setupRoutes(HttpServer server, Configuration config) {
 
     ..serve(dialplanUrl, method: HttpMethod.GET).listen(dialplan.getDialplan)
     ..serve(dialplanUrl, method: HttpMethod.POST).listen(dialplan.updateDialplan)
+
+    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.GET).listen(receptionContact.getDistributionList)
+    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.POST).listen(receptionContact.updateDistributionList)
 
     ..serve(ivrUrl, method: HttpMethod.GET).listen(dialplan.getIvr)
     ..serve(ivrUrl, method: HttpMethod.POST).listen(dialplan.updateIvr)

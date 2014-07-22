@@ -1,7 +1,7 @@
 part of adaheads_server_model;
 
-class CompleteReceptionContact {
-  int id;
+class ReceptionContact {
+  int contactId;
   String fullName;
   String contactType;
   bool contactEnabled;
@@ -11,8 +11,10 @@ class CompleteReceptionContact {
   bool receptionEnabled;
   List phonenumbers;
 
-  CompleteReceptionContact (
-    int this.id,
+  ReceptionContact.empty();
+
+  ReceptionContact (
+    int this.contactId,
     String this.fullName,
     String this.contactType,
     bool this.contactEnabled,

@@ -13,11 +13,12 @@ import 'configuration.dart';
 
 part 'database/contact.dart';
 part 'database/dialplan.dart';
+part 'database/distribution_list.dart';
 part 'database/endpoint.dart';
 part 'database/organization.dart';
+part 'database/phone.dart';
 part 'database/reception.dart';
 part 'database/reception_contact.dart';
-part 'database/phone.dart';
 part 'database/user.dart';
 
 Future<Database> setupDatabase(Configuration config) {
@@ -105,10 +106,10 @@ class Database {
   Future<List<model.ReceptionContact_ReducedReception>> getAContactsReceptionContactList(int contactId) =>
       _getAContactsReceptionContactList(pool, contactId);
 
-  Future<model.CompleteReceptionContact> getReceptionContact(int receptionId, int contactId) =>
+  Future<model.ReceptionContact> getReceptionContact(int receptionId, int contactId) =>
       _getReceptionContact(pool, receptionId, contactId);
 
-  Future<List<model.CompleteReceptionContact>> getReceptionContactList(int receptionId) =>
+  Future<List<model.ReceptionContact>> getReceptionContactList(int receptionId) =>
       _getReceptionContactList(pool, receptionId);
 
   Future<int> updateReceptionContact(int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) =>
@@ -132,6 +133,15 @@ class Database {
 
   Future<int> updateEndpoint(int fromReceptionid, int fromContactid, String fromAddress, String fromType, int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority) =>
       _updateEndpoint(pool, fromReceptionid, fromContactid, fromAddress, fromType, receptionid, contactid, address, type, confidential, enabled, priority);
+
+  /* ***********************************************
+     ************** DistributionList ***************
+   */
+  Future<model.DistributionList> getDistributionList(int receptionId, int contactId) =>
+      _getDistributionList(pool, receptionId, contactId);
+
+  Future updateDistributionList(int receptionId, int contactId, Map distributionList) =>
+      _updateDistributionList(pool, receptionId, contactId, distributionList);
 
   /* ***********************************************
      *************** Organization ******************

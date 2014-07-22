@@ -9,6 +9,7 @@ import '../database.dart';
 import '../model.dart';
 import '../view/complete_reception_contact.dart';
 import '../view/endpoint.dart';
+import '../view/distribution_list.dart';
 import 'package:OpenReceptionFramework/service.dart' as ORFService;
 import 'package:OpenReceptionFramework/common.dart' as orf;
 import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
@@ -26,7 +27,7 @@ class ReceptionContactController {
     int receptionId = orf_http.pathParameter(request.uri, 'reception');
     int contactId = orf_http.pathParameter(request.uri, 'contact');
 
-    db.getReceptionContact(receptionId, contactId).then((CompleteReceptionContact contact) {
+    db.getReceptionContact(receptionId, contactId).then((ReceptionContact contact) {
       if(contact == null) {
         request.response.statusCode = 404;
         return orf_http.writeAndClose(request, JSON.encode({}));
@@ -43,7 +44,7 @@ class ReceptionContactController {
     const context = '${libraryName}.getReceptionContactList';
     int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
-    db.getReceptionContactList(receptionId).then((List<CompleteReceptionContact> list) {
+    db.getReceptionContactList(receptionId).then((List<ReceptionContact> list) {
       return orf_http.writeAndClose(request, listReceptionContactAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
@@ -239,5 +240,35 @@ class ReceptionContactController {
       orf.logger.errorContext('Error: "$error"', context);
       Internal_Error(request);
     });
+  }
+
+  void getDistributionList(HttpRequest request) {
+    const context = '${libraryName}.getDistributionList';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    int contactId = orf_http.pathParameter(request.uri, 'contact');
+
+    db.getDistributionList(receptionId, contactId)
+      .then((DistributionList distributionList) => orf_http.writeAndClose(request, distributionListAsJson(distributionList)))
+      .catchError((error) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
+        Internal_Error(request);
+    });
+
+  }
+
+  void updateDistributionList(HttpRequest request) {
+    const context = '${libraryName}.updateDistributionList';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    int contactId = orf_http.pathParameter(request.uri, 'contact');
+
+    orf_http.extractContent(request)
+      .then(JSON.decode)
+      .then((Map data) => db.updateDistributionList(receptionId, contactId, data))
+      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
+      .catchError((error, stack) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+        Internal_Error(request);
+    });
+
   }
 }
