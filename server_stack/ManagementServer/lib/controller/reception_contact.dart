@@ -127,7 +127,7 @@ class ReceptionContactController {
 
     orf_http.extractContent(request)
       .then(JSON.decode)
-      .then((Map data) => db.createEndpoint(receptionId, contactId, data['address'], data['address_type'], data['confidential'], data['enabled'], data['priority'])
+      .then((Map data) => db.createEndpoint(receptionId, contactId, data['address'], data['address_type'], data['confidential'], data['enabled'], data['priority'], data['description'])
         .then((_) {
             Map event = {'event' : 'endpointEventCreated', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': data['address'], 'address_type': data['address_type']}};
             ORFService.Notification.broadcast(event, config.notificationServer, config.token)
@@ -204,7 +204,8 @@ class ReceptionContactController {
             data['address_type'],
             data['confidential'],
             data['enabled'],
-            data['priority']);
+            data['priority'],
+            data['description']);
       })
       .then((_) {
           Map data = {'event' : 'endpointEventUpdated', 'endpointEvent' : {'reception_id': newreceptionId, 'contact_id': newContactId, 'address': newAddress, 'address_type': newAddressType}};

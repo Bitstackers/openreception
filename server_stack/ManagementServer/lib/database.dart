@@ -119,8 +119,8 @@ class Database {
      ***************** Endpoints *******************
    */
 
-  Future<int> createEndpoint(int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority) =>
-      _createEndpoint(pool, receptionid, contactid, address, type, confidential, enabled, priority);
+  Future<int> createEndpoint(int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority, String description) =>
+      _createEndpoint(pool, receptionid, contactid, address, type, confidential, enabled, priority, description);
 
   Future<int> deleteEndpoint(int receptionid, int contactid, String address, String type) =>
       _deleteEndpoint(pool, receptionid, contactid, address, type);
@@ -131,8 +131,8 @@ class Database {
   Future<List<model.Endpoint>> getEndpointList(int receptionid, int contactid) =>
       _getEndpointList(pool, receptionid, contactid);
 
-  Future<int> updateEndpoint(int fromReceptionid, int fromContactid, String fromAddress, String fromType, int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority) =>
-      _updateEndpoint(pool, fromReceptionid, fromContactid, fromAddress, fromType, receptionid, contactid, address, type, confidential, enabled, priority);
+  Future<int> updateEndpoint(int fromReceptionid, int fromContactid, String fromAddress, String fromType, int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority, String description) =>
+      _updateEndpoint(pool, fromReceptionid, fromContactid, fromAddress, fromType, receptionid, contactid, address, type, confidential, enabled, priority, description);
 
   /* ***********************************************
      ************** DistributionList ***************

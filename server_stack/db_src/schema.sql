@@ -127,6 +127,7 @@ CREATE TABLE messaging_end_points (
    confidential BOOLEAN NOT NULL DEFAULT TRUE,
    enabled      BOOLEAN NOT NULL DEFAULT FALSE,
    priority     INTEGER NOT NULL DEFAULT 0,
+   description  TEXT    NULL,
 
    PRIMARY KEY (contact_id, reception_id, address, address_type),
 

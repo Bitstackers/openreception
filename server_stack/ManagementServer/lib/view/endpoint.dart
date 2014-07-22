@@ -16,7 +16,8 @@ Map _endpointAsJsonMap(Endpoint endpoint) => endpoint == null ? {} :
      'address_type': endpoint.addressType,
      'confidential': endpoint.confidential,
      'enabled'     : endpoint.enabled,
-     'priority'    : endpoint.priority};
+     'priority'    : endpoint.priority,
+     'description' : endpoint.description};
 
 List _endpointListAsJsonList(List<Endpoint> endpoints) =>
     endpoints.map(_endpointAsJsonMap).toList();

@@ -8,6 +8,7 @@ class Endpoint {
   bool confidential;
   bool enabled;
   int priority;
+  String description;
 
   Endpoint(int    this.contactId,
            int    this.receptionId,
@@ -15,5 +16,6 @@ class Endpoint {
            String this.addressType,
            bool   this.confidential,
            bool   this.enabled,
-           int    this.priority);
+           int    this.priority,
+           String this.description);
 }
