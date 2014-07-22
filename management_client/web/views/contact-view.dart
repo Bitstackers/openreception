@@ -1,6 +1,7 @@
 library contact.view;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:html5_dnd/html5_dnd.dart';
@@ -163,29 +164,34 @@ class ContactView {
           (List<ReceptionContact_ReducedReception> contacts) {
         if (contacts != null) {
           saveList.clear();
-          contacts.sort((a, b) => a.receptionName.compareTo(b.receptionName));
+          contacts.sort(ReceptionContact_ReducedReception.sortByReceptionName);
           ulReceptionContacts.children
               ..clear()
               ..addAll(contacts.map((ReceptionContact_ReducedReception receptioncontact) => receptionContactBox(receptioncontact, receptionContactUpdate)));
 
         //Rightbar
         request.getContactsOrganizationList(id).then((List<Organization> organizations) {
-          organizations.sort((a, b) => a.full_name.compareTo(b.full_name));
+          organizations.sort(Organization.sortByName);
           ulOrganizationList.children
               ..clear()
               ..addAll(organizations.map(makeOrganizationNode));
+        }).catchError((error, stack) {
+          log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
         return request.getContactsColleagues(id).then((List<ReceptionColleague> Receptions) {
-          Receptions.sort((a, b) => a.full_name.compareTo(b.full_name));
-          ulReceptionList.children
-                      ..clear()
-                      ..addAll(Receptions.map(makeReceptionNode).reduce(union));
+          ulReceptionList.children.clear();
+
+          if(Receptions.isNotEmpty) {
+            Receptions.sort(ReceptionColleague.sortByName);
+            ulReceptionList.children
+                ..addAll(Receptions.map(makeReceptionNode).reduce(union));
+          }
           });
         }
       });
-    }).catchError((error) {
-      log.error('Tried to activate contact "${id}" but gave "${error}"');
+    }).catchError((error, stack) {
+      log.error('Tried to activate contact "${id}" but gave "${error}" \n${stack}');
     });
   }
 
@@ -253,6 +259,7 @@ class ContactView {
     UListElement backupList, emailList, handlingList, phoneNumbersList,
         workhoursList, tagsList;
     EndpointsComponent endpointsContainer;
+    DistributionsListComponent distributionsListContainer;
 
     Function onChange = () {
       if (!saveList.containsKey(contact.receptionId)) {
@@ -279,7 +286,8 @@ class ContactView {
               ..responsibility = responsibility.value;
 
           return receptionContactHandler(RC)
-              .then((_) => endpointsContainer.save(RC.receptionId, RC.contactId));
+              .then((_) => endpointsContainer.save(RC.receptionId, RC.contactId))
+              .then((_) => distributionsListContainer.save(RC.receptionId, RC.contactId));
         };
       }
     };
@@ -334,9 +342,6 @@ class ContactView {
         onChange: onChange);
     phoneNumbersList = makePhoneNumbersList(rightCell, contact.phoneNumbers, onChange: onChange);
 
-//      telephoneNumbersList =  makeListBox(rightCell, 'Telefonnumre',
-//        contact.telephonenumbers, onChange: onChange);
-
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
@@ -344,6 +349,11 @@ class ContactView {
         onChange: onChange);
     tagsList = makeListBox(rightCell, 'Stikord', contact.tags, onChange:
         onChange);
+
+    row = makeTableRowInsertInTable(tableBody);
+    leftCell = makeTableCellInsertInRow(row);
+    distributionsListContainer = new DistributionsListComponent(leftCell, onChange)
+        ..load(contact.receptionId, contact.contactId);
 
     //In case of creating. You always want it in saveList.
     if (alwaysAddToSaveList) {
@@ -457,7 +467,6 @@ class ContactView {
       ul.children
           ..clear()
           ..addAll(children);
-    /////
 
     container.children.addAll([label, ul]);
 
@@ -565,8 +574,8 @@ class ContactView {
         log.info('Activating Contact.');
 
         return activateContact(contactId);
-      }).catchError((error) {
-        log.error('Contact was appling update for ${contactId} when "$error"');
+      }).catchError((error, stack) {
+        log.error('Contact was appling update for ${contactId} when "$error", ${stack}');
       });
 
     } else if (createNew) {
@@ -655,10 +664,6 @@ class ContactView {
           };
           bus.fire(windowChanged, event);
         });
-//
-//    UListElement contactsUl = new UListElement()
-//      ..children.addAll(reception.contacts.map(makeColleagueNode));
-//    LIElement contactsLi = new LIElement()..children.add(contactsUl);
     return [receptionLi]..addAll(reception.contacts.map(makeColleagueNode));
   }
 
@@ -716,8 +721,11 @@ class EndpointsComponent {
   Function _onChange;
   List<Endpoint> persistenceEndpoint = [];
   UListElement _ul = new UListElement();
+  LabelElement header = new LabelElement()
+    ..text = 'Kontaktpunkter';
 
   EndpointsComponent(Element this._element, Function this._onChange) {
+    _element.children.add(header);
     _element.children.add(_ul);
   }
 
@@ -744,7 +752,6 @@ class EndpointsComponent {
   LIElement _makeNewEndpointRow() {
     LIElement li = new LIElement();
 
-    //TODO Make it do something.
     ButtonElement createButton = new ButtonElement()
       ..text = 'Ny'
       ..onClick.listen((_) {
@@ -758,8 +765,8 @@ class EndpointsComponent {
         }
     });
 
-    return li
-        ..children.addAll([createButton]);
+    li.children.addAll([createButton]);
+    return li;
   }
 
   LIElement _makeEndpointRow(Endpoint endpoint) {
@@ -856,7 +863,6 @@ class EndpointsComponent {
     for(Endpoint endpoint in foundEndpoints) {
       if(!persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Insert Endpoint
-        print('Insert ${endpoint.toJson()}');
         worklist.add(request.createEndpoint(receptionId, contactId, endpoint.toJson()));
       }
     }
@@ -865,7 +871,6 @@ class EndpointsComponent {
     for(Endpoint endpoint in persistenceEndpoint) {
       if(!foundEndpoints.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Delete Endpoint
-        print('DELETE ${endpoint.toJson()}');
         worklist.add(request.deleteEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType));
       }
     }
@@ -874,10 +879,181 @@ class EndpointsComponent {
     for(Endpoint endpoint in foundEndpoints) {
       if(persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Update Endpoint
-        print('Update ${endpoint.toJson()}');
         worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, endpoint.toJson()));
       }
     }
     return Future.wait(worklist);
+  }
+}
+
+class DistributionsListComponent {
+  final Element paranet;
+  final Function onChange;
+  DistributionList persistentList;
+  UListElement ulTo = new UListElement()
+    ..classes.add('zebra')
+    ..classes.add('distributionlist');
+
+  UListElement ulCc = new UListElement()
+    ..classes.add('zebra')
+    ..classes.add('distributionlist');
+
+  UListElement ulBcc = new UListElement()
+    ..classes.add('zebra')
+    ..classes.add('distributionlist');
+
+  List<ReceptionColleague> colleagues = new List<ReceptionColleague>();
+
+  DistributionsListComponent(Element this.paranet, Function this.onChange) {
+    LabelElement toLabel = new LabelElement()
+      ..text = 'To'
+      ..title = 'To';
+    LabelElement ccLabel = new LabelElement()
+      ..text = 'CC'
+      ..title = 'Carbon Copy';
+    LabelElement bccLabel = new LabelElement()
+      ..text = 'BCC'
+      ..title = 'Blind Carbon Copy';
+
+    paranet.children.addAll([toLabel, ulTo, ccLabel, ulCc, bccLabel, ulBcc]);
+  }
+
+  void clear() {
+
+  }
+
+  Future load(int receptionId, int contactId) {
+    return request.getContactsColleagues(contactId).then((List<ReceptionColleague> list) {
+      this.colleagues = list;
+    }).then((_) {
+      return request.getDistributionList(receptionId, contactId).then((DistributionList list) {
+        populateUL(list);
+      });
+    }).catchError((error) {
+      log.error('Tried to load contact ${contactId} in reception: ${receptionId} distributionList but got: ${error}');
+    });
+  }
+
+  void populateUL(DistributionList list) {
+    this.persistentList = list;
+    ulTo.children
+      ..clear()
+      ..addAll(list.to.map(_makeEndpointRow))
+      ..add(_makeNewEndpointRow(ulTo));
+
+    ulCc.children
+      ..clear()
+      ..addAll(list.cc.map(_makeEndpointRow))
+      ..add(_makeNewEndpointRow(ulCc));
+
+    ulBcc.children
+      ..clear()
+      ..addAll(list.bcc.map(_makeEndpointRow))
+      ..add(_makeNewEndpointRow(ulBcc));
+  }
+
+  LIElement _makeNewEndpointRow(UListElement ul) {
+    LIElement li = new LIElement();
+
+    List<ReceptionContact> allReadyInThelist = _extractReceptionContacts(ul);
+
+    SelectElement picker = new SelectElement();
+    picker.children.add(new OptionElement(data: 'Vælg'));
+    for(var reception in colleagues) {
+      for(var contact in reception.contacts) {
+        if(!allReadyInThelist.any((rc) => rc.contactId == contact.id && rc.receptionId == reception.id)) {
+          String displayedText = '${contact.full_name} (${reception.full_name})';
+          picker.children.add(new OptionElement(data: displayedText)
+            ..dataset['reception_id'] = reception.id.toString()
+            ..dataset['contact_id'] = contact.id.toString());
+        }
+      }
+    }
+    picker.onChange.listen((_) {
+      if(picker.selectedIndex != 0) {
+        OptionElement pickedOption = picker.options[picker.selectedIndex];
+        int receptionId = int.parse(pickedOption.dataset['reception_id']);
+        int contactId = int.parse(pickedOption.dataset['contact_id']);
+
+        ReceptionContact contact = new ReceptionContact()
+          ..receptionId = receptionId
+          ..contactId = contactId;
+
+        int index = ul.children.length -1;
+        ul.children.insert(index, _makeEndpointRow(contact));
+
+        picker.selectedIndex = 0;
+        picker.children.remove(pickedOption);
+        _notifyChange();
+      }
+    });
+
+    li.children.add(picker);
+    return li;
+  }
+
+  LIElement _makeEndpointRow(ReceptionContact contact) {
+    LIElement li = new LIElement()
+      ..dataset['reception_id'] = contact.receptionId.toString()
+      ..dataset['contact_id'] = contact.contactId.toString();
+
+    SpanElement element = new SpanElement();
+
+    bool found = false;
+    ReceptionColleague reception = colleagues.firstWhere((ReceptionColleague rc) => rc.id == contact.receptionId, orElse: () => null);
+    if(reception != null) {
+      Colleague colleague = reception.contacts.firstWhere((Colleague c) => c.id == contact.contactId, orElse: () => null);
+      if(colleague != null) {
+        found = true;
+        element.text = '${colleague.full_name} (${reception.full_name})';
+      }
+    }
+
+    if(found == false) {
+      //This Should not happend.
+      element.text = 'Fejl. Person ikke fundet.';
+    }
+
+    ButtonElement deleteButton = new ButtonElement()
+      ..text = 'Slet'
+      ..onClick.listen((_) {
+      li.parent.children.remove(li);
+      _notifyChange();
+    });
+
+    li.children.addAll([element, deleteButton]);
+    return li;
+  }
+
+  Future save(int receptionId, int contactId) {
+    DistributionList distributionList = new DistributionList();
+
+    distributionList.to  = _extractReceptionContacts(ulTo);
+    distributionList.cc  = _extractReceptionContacts(ulCc);
+    distributionList.bcc = _extractReceptionContacts(ulBcc);
+
+    return request.updateDistributionList(receptionId, contactId, JSON.encode(distributionList.toJson()));
+    //TODO Do something about the response
+  }
+
+  List<ReceptionContact> _extractReceptionContacts(UListElement ul) {
+    List<ReceptionContact> list = new List<ReceptionContact>();
+    for(LIElement li in ul.children) {
+      if(li.dataset.containsKey('reception_id') && li.dataset.containsKey('contact_id')) {
+        int receptionId = int.parse(li.dataset['reception_id']);
+        int contactId = int.parse(li.dataset['contact_id']);
+        list.add(new ReceptionContact()
+        ..receptionId = receptionId
+        ..contactId = contactId);
+      }
+    }
+
+    return list;
+  }
+
+  void _notifyChange() {
+    if(onChange != null) {
+      onChange();
+    }
   }
 }

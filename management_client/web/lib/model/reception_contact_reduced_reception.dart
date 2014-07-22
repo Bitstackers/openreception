@@ -124,4 +124,6 @@ class ReceptionContact_ReducedReception {
 
     return object;
   }
+
+  static final sortByReceptionName = (ReceptionContact_ReducedReception a, ReceptionContact_ReducedReception b) => a.receptionName.compareTo(b.receptionName);
 }

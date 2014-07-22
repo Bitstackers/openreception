@@ -103,6 +103,10 @@
   width: 50px;
 }
 
+.distributionlist select {
+  width: 100%;
+}
+
 /**
   Right side panel.
 */

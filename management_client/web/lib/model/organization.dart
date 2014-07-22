@@ -28,4 +28,6 @@ class Organization {
 
     return data;
   }
+
+  static final sortByName = (Organization a, Organization b) => a.full_name.compareTo(b.full_name);
 }

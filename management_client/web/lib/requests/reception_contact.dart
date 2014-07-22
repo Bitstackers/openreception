@@ -89,7 +89,7 @@ Future<List<Endpoint>> getEndpointsList(int receptionId, int contactId) {
   return completer.future;
 }
 
-Future<List<String>> getEndpoint(int receptionId, int contactId, String address, String addressType) {
+Future<Endpoint> getEndpoint(int receptionId, int contactId, String address, String addressType) {
   final Completer completer = new Completer();
 
   final String encodeAddress = Uri.encodeComponent(address);
@@ -180,3 +180,50 @@ Future updateEndpoint(int receptionId, int contactId, String address, String add
 
   return completer.future;
 }
+
+Future<DistributionList> getDistributionList(int receptionId, int contactId) {
+  final Completer completer = new Completer();
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/${receptionId}/contact/${contactId}/distributionlist?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      if (request.status == 200) {
+        Map rawData = JSON.decode(request.responseText);
+        completer.complete(new DistributionList.fromJson(rawData));
+      } else {
+        completer.completeError('Bad status code. ${request.status}');
+      }
+    })
+    ..onError.listen((e) {
+      //TODO logging.
+      completer.completeError(e.toString());
+    })
+    ..send();
+
+  return completer.future;
+}
+
+Future updateDistributionList(int receptionId, int contactId, String body) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url =
+      '${config.serverUrl}/reception/$receptionId/contact/$contactId/distributionlist?token=${config.token}';
+
+  request = new HttpRequest()
+      ..open(HttpMethod.POST, url)
+      ..onLoad.listen((_) {
+        completer.complete(request.responseText);
+      })
+      ..onError.listen((error) {
+        //TODO logging.
+        completer.completeError(error.toString());
+      })
+      ..send(body);
+
+  return completer.future;
+}
+
+
