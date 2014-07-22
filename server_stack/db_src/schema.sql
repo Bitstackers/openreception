@@ -119,23 +119,17 @@ CREATE INDEX reception_contacts_reception_id_index ON reception_contacts (recept
 CREATE TABLE messaging_address_types (value TEXT NOT NULL PRIMARY KEY);
 INSERT INTO messaging_address_types VALUES ('email'), ('sms');
 
-CREATE TABLE messaging_addresses (
-   id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   address      TEXT    NOT NULL,
-   address_type TEXT    NOT NULL REFERENCES messaging_address_types (value),
-
-   UNIQUE (address, address_type)
-);
-
 CREATE TABLE messaging_end_points (
    contact_id   INTEGER NOT NULL,
    reception_id INTEGER NOT NULL,
-   address_id   INTEGER NOT NULL REFERENCES messaging_addresses (id),
+   address      TEXT    NOT NULL,
+   address_type TEXT    NOT NULL REFERENCES messaging_address_types (value),
    confidential BOOLEAN NOT NULL DEFAULT TRUE,
    enabled      BOOLEAN NOT NULL DEFAULT FALSE,
    priority     INTEGER NOT NULL DEFAULT 0,
+   description  TEXT    NULL,
 
-   PRIMARY KEY (contact_id, reception_id, address_id),
+   PRIMARY KEY (contact_id, reception_id, address, address_type),
 
    FOREIGN KEY (contact_id, reception_id)
       REFERENCES reception_contacts (contact_id, reception_id)

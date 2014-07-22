@@ -264,33 +264,33 @@ VALUES /*Adaheads*/
                "priority":1}],
            "handling":[{"value":"Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe.","priority":1}],"telephonenumbers":[{"value":"+45 90 12 14 16","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Fars","Steg"],"department":"Efterbehandling","info":"Arbejder med efterbehandling af råvarene","position":"Medarbejder","relations":"Gift med Bondemand Jensen","responsibility":"Alt efterbehandling"}','{}','[]');
 
-INSERT INTO messaging_addresses (id, address_type, address)
-VALUES (1,  'email', 'tl@adaheads.com'),
-       (2,  'sms',    '+4560431992'),
-       (3,  'email', 'jsa@adaheads.com'),
-       (4,  'sms',    '+4521490804'),
-       (5,  'email', 'jacob@jacob-sparre.dk'),
-       (6,  'email', 'thomas@responsum.dk'),
-       (7,  'sms',    '+4588329100'),
-       (9,  'email', 'trine@responsum.dk'),
-       (10, 'email', 'krc@adaheads.com'),
-       (11, 'email', 'krc@retrospekt.dk'),
-       (12, 'email', 'krc@gir.dk');
+--INSERT INTO messaging_addresses (id, address_type, address)
+--VALUES (1,  'email', 'tl@adaheads.com'),
+--       (2,  'sms',    '+4560431992'),
+--       (3,  'email', 'jsa@adaheads.com'),
+--       (4,  'sms',    '+4521490804'),
+--       (5,  'email', 'jacob@jacob-sparre.dk'),
+--       (6,  'email', 'thomas@responsum.dk'),
+--       (7,  'sms',    '+4588329100'),
+--       (9,  'email', 'trine@responsum.dk'),
+--       (10, 'email', 'krc@adaheads.com'),
+--       (11, 'email', 'krc@retrospekt.dk'),
+--       (12, 'email', 'krc@gir.dk');
 
-INSERT INTO messaging_end_points (contact_id, reception_id, address_id,
+INSERT INTO messaging_end_points (contact_id, reception_id, address_type, address,
                                   confidential, enabled)
 VALUES --  Adaheads
-       (1, 1, 1,  FALSE, TRUE),
-       (2, 1, 10, FALSE, TRUE),
-       (2, 2, 12, FALSE, TRUE),
-       (3, 1, 3,  FALSE, TRUE),
-       (4, 1, 4,  FALSE, TRUE),
-       (5, 1, 5,  TRUE,  FALSE),
+       (1, 1, 'email', 'tl@adaheads.com',  FALSE, TRUE),
+       (4, 1, 'email', 'krc@adaheads.com', FALSE, TRUE),
+       (4, 2, 'email', 'krc@gir.dk', FALSE, TRUE),
+       (5, 1, 'email', 'jsa@adaheads.com',  FALSE, TRUE),
+       (4, 1, 'sms',    '+4521490804',  FALSE, TRUE),
+       (5, 1, 'email', 'jacob@jacob-sparre.dk',  TRUE,  FALSE),
        --  Fishermans Friends    
-       (1, 2, 7, FALSE, FALSE),
+       (1, 2, 'sms',    '+4588329100', FALSE, FALSE),
        --  Responsum
-       (1, 3, 6, FALSE, TRUE),
-       (2, 3, 11, FALSE, TRUE);
+       (1, 3, 'email', 'thomas@responsum.dk', FALSE, TRUE),
+       (4, 3, 'email', 'krc@retrospekt.dk', FALSE, TRUE);
 
 --  INSERT INTO distribution_lists (id,
 --                                  send_to_contact_id, send_to_reception_id,
@@ -506,7 +506,7 @@ SELECT setval('groups_id_sequence', (SELECT max(id)+1 FROM groups), FALSE);
 SELECT setval('contacts_id_sequence', (SELECT max(id)+1 FROM contacts), FALSE);
 SELECT setval('organizations_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
 SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALSE);
-SELECT setval('messaging_addresses_id_sequence', (SELECT max(id)+1 FROM messaging_addresses), FALSE);
+--  SELECT setval('messaging_addresses_id_sequence', (SELECT max(id)+1 FROM messaging_addresses), FALSE);
 --  SELECT setval('message_queue_id_sequence', (SELECT max(id)+1 FROM message_queue), FALSE);
 --  SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
 SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);

@@ -9,7 +9,6 @@ import 'package:libdialplan/ivr.dart';
 
 import '../configuration.dart';
 import '../utilities/http.dart';
-import '../utilities/logger.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/audiofile.dart';
@@ -17,6 +16,10 @@ import '../view/dialplan.dart';
 import '../view/playlist.dart';
 import '../view/ivr.dart';
 import '../service/audiofiles.dart' as service;
+import 'package:OpenReceptionFramework/common.dart' as orf;
+import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+
+const libraryName = 'dialplanController';
 
 class DialplanController {
   Database db;
@@ -25,83 +28,93 @@ class DialplanController {
   DialplanController(Database this.db, Configuration this.config);
 
   void getAudiofileList(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
+    const context = '${libraryName}.getAudiofileList';
+
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
     String token = request.uri.queryParameters['token'];
 
     service.getAudioFileList(config.dialplanCompilerServer, receptionId, token).then((http.Response response) {
       if(response.statusCode == 200) {
         List<String> files = JSON.decode(response.body)['files'];
-        List<Audiofile> audioFiles = files.map((file) => new Audiofile(file, file.split('/').last)).toList();
-        return writeAndCloseJson(request, listAudiofileAsJson(audioFiles));
+        List<Audiofile> audioFiles = files.map((String file) => new Audiofile(file, file.split('/').last)).toList();
+        return orf_http.writeAndClose(request, listAudiofileAsJson(audioFiles));
       } else {
         request.response.statusCode = response.statusCode;
-        return writeAndCloseJson(request, response.body);
+        return orf_http.writeAndClose(request, response.body);
       }
     }).catchError((error) {
-      logger.error('DialplanController.getAudiofileList: ${error}');
+      orf.logger.errorContext('Error: ${error}', context);
       Internal_Error(request, error.toString());
     });
   }
 
   void getDialplan(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
+    const context = '${libraryName}.getDialplan';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.getDialplan(receptionId)
-      .then((Dialplan dialplan) => writeAndCloseJson(request, dialplanAsJson(dialplan)))
+      .then((Dialplan dialplan) => orf_http.writeAndClose(request, dialplanAsJson(dialplan)))
       .catchError((error) {
-        logger.error('getDialplan url: "${request.uri}" gave error "${error}"');
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         Internal_Error(request);
     });
   }
 
   void updateDialplan(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
+    const context = '${libraryName}.updateDialplan';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
-    extractContent(request)
+    orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateDialplan(receptionId, data))
-      .then((_) => writeAndCloseJson(request, JSON.encode({})))
+      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
-        logger.error('updateDialplan url: "${request.uri}" gave error "${error}" ${stack}');
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         Internal_Error(request);
     });
   }
 
   void getIvr(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
+    const context = '${libraryName}.getIvr';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.getIvr(receptionId)
-      .then((IvrList ivrList) => writeAndCloseJson(request, ivrListAsJson(ivrList)))
+      .then((IvrList ivrList) => orf_http.writeAndClose(request, ivrListAsJson(ivrList)))
       .catchError((error) {
-        logger.error('getIvr url: "${request.uri}" gave error "${error}"');
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         Internal_Error(request);
     });
   }
 
   void updateIvr(HttpRequest request) {
-    int receptionId = intPathParameter(request.uri, 'reception');
+    const context = '${libraryName}.updateIvr';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
-    extractContent(request)
+    orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateIvr(receptionId, data))
-      .then((_) => writeAndCloseJson(request, JSON.encode({})))
+      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
-        logger.error('updateIvr url: "${request.uri}" gave error "${error}" ${stack}');
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         Internal_Error(request);
     });
   }
 
   void getPlaylists(HttpRequest request) {
+    const context = '${libraryName}.updateIvr';
+
     db.getPlaylistList()
-      .then((List<Playlist> playlists) => writeAndCloseJson(request, playlistListAsJson(playlists)))
+      .then((List<Playlist> playlists) => orf_http.writeAndClose(request, playlistListAsJson(playlists)))
       .catchError((error) {
-        logger.error('getPlaylists url: "${request.uri}" gave error "${error}"');
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         Internal_Error(request);
     });
   }
 
   void createPlaylist(HttpRequest request) {
-    extractContent(request)
+    const context = '${libraryName}.createPlaylist';
+
+    orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) {
         return db.createPlaylist(
@@ -113,43 +126,47 @@ class DialplanController {
           data['chimelist'],
           data['chimefreq'],
           data['chimemax']);})
-      .then((int id) => writeAndCloseJson(request, playlistIdAsJson(id)))
+      .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
       .catchError((error, stack) {
-        logger.error('create playlist failed: $error ${stack}');
+        orf.logger.errorContext('error: $error ${stack}', context);
         Internal_Error(request);
       });
   }
 
   void deletePlaylist(HttpRequest request) {
-    int playlistId = intPathParameter(request.uri, 'playlist');
+    const context = '${libraryName}.deletePlaylist';
+    int playlistId = orf_http.pathParameter(request.uri, 'playlist');
 
     db.deletePlaylist(playlistId)
-    .then((int rowsAffected) => writeAndCloseJson(request, JSON.encode({})))
+    .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
     .catchError((error) {
-      logger.error('deletePlaylist url: "${request.uri}" gave error "${error}"');
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
       Internal_Error(request);
     });
   }
 
   void getPlaylist(HttpRequest request) {
-    int playlistId = intPathParameter(request.uri, 'playlist');
+    const context = '${libraryName}.getPlaylist';
+    int playlistId = orf_http.pathParameter(request.uri, 'playlist');
 
     db.getPlaylist(playlistId).then((Playlist playlist) {
       if(playlist == null) {
         request.response.statusCode = 404;
-        return writeAndCloseJson(request, JSON.encode({}));
+        return orf_http.writeAndClose(request, JSON.encode({}));
       } else {
-        return writeAndCloseJson(request, playlistAsJson(playlist));
+        return orf_http.writeAndClose(request, playlistAsJson(playlist));
       }
     }).catchError((error, stack) {
-      logger.error('get playlist Error: "$error" "${stack}"');
+      orf.logger.errorContext('Error: "$error" "${stack}"', context);
       Internal_Error(request);
     });
   }
 
   void updatePlaylist(HttpRequest request) {
-    int playlistId = intPathParameter(request.uri, 'playlist');
-    extractContent(request)
+    const context = '${libraryName}.updatePlaylist';
+    int playlistId = orf_http.pathParameter(request.uri, 'playlist');
+
+    orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updatePlaylist(
           playlistId,
@@ -161,9 +178,9 @@ class DialplanController {
           data['chimelist'],
           data['chimefreq'],
           data['chimemax']) )
-      .then((int id) => writeAndCloseJson(request, playlistIdAsJson(id)))
+      .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
       .catchError((error) {
-        logger.error('updatePlaylist url: "${request.uri}" gave error "${error}"');
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         Internal_Error(request);
       });
   }

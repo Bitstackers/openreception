@@ -108,6 +108,15 @@ Future<List<String>> _getContactTypeList(Pool pool) {
   return query(pool, sql).then((List Rows) => Rows.map((row) => row.value).toList());
 }
 
+Future<List<String>> _getAddressTypeList(Pool pool) {
+  String sql = '''
+    SELECT value
+    FROM messaging_address_types;
+  ''';
+
+  return query(pool, sql).then((List Rows) => Rows.map((row) => row.value).toList());
+}
+
 Future<int> _updateContact(Pool pool, int contactId, String fullName, String contact_type, bool enabled) {
   String sql = '''
     UPDATE contacts

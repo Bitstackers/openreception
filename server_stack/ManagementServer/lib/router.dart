@@ -12,7 +12,7 @@ import 'controller/reception_contact.dart';
 import 'controller/user.dart';
 import 'database.dart';
 import 'utilities/http.dart';
-import 'utilities/logger.dart';
+import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 
 final Pattern anyThing = new UrlPattern(r'/(.*)');
 
@@ -26,6 +26,9 @@ final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
 final Pattern receptionIdUrl         = new UrlPattern(r'/reception/(\d+)');
 final Pattern receptionContactIdUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
 final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact(/?)');
+final Pattern receptionContactIdEnpointUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint');
+final Pattern receptionContactIdEnpointIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint/(.+)/type/(.+)');
+final Pattern receptionContactIdDistributionListUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
@@ -38,7 +41,8 @@ final Pattern ContactColleaguesUrl   = new UrlPattern(r'/contact/(\d+)/colleague
 final Pattern ContactOrganizationUrl = new UrlPattern(r'/contact/(\d+)/organization(/?)');
 final Pattern ContactReceptionUrl    = new UrlPattern(r'/contact/(\d+)/reception(/?)');
 
-final Pattern contactypestUrl = new UrlPattern(r'/contacttypes(/?)');
+final Pattern contactTypesUrl  = new UrlPattern(r'/contacttypes(/?)');
+final Pattern addressTypestUrl = new UrlPattern(r'/addresstypes(/?)');
 
 final Pattern UserUrl             = new UrlPattern(r'/user(/?)');
 final Pattern UserIdUrl           = new UrlPattern(r'/user/(\d+)');
@@ -54,7 +58,7 @@ final List<Pattern> Serviceagents =
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
 
- ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl];
+ ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl];
 
 ContactController contact;
 DialplanController dialplan;
@@ -63,9 +67,8 @@ ReceptionController reception;
 ReceptionContactController receptionContact;
 UserController user;
 
-void setupRoutes(HttpServer server, Configuration config, Logger logger) {
+void setupRoutes(HttpServer server, Configuration config) {
   Router router = new Router(server)
-    ..filter(anyThing, (HttpRequest req) => logHit(req, logger))
     ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
@@ -80,7 +83,8 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(ContactReceptionUrl, method: HttpMethod.GET).listen(contact.getReceptionList)
 
-    ..serve(contactypestUrl, method: HttpMethod.GET).listen(contact.getContactTypeList)
+    ..serve(contactTypesUrl, method: HttpMethod.GET).listen(contact.getContactTypeList)
+    ..serve(addressTypestUrl, method: HttpMethod.GET).listen(contact.getAddressTypestList)
 
     ..serve(ContactOrganizationUrl, method: HttpMethod.GET).listen(contact.getAContactsOrganizationList)
 
@@ -96,6 +100,12 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
     ..serve(receptionContactIdUrl, method: HttpMethod.POST)  .listen(receptionContact.updateReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteReceptionContact)
 
+    ..serve(receptionContactIdEnpointUrl, method: HttpMethod.GET).listen(receptionContact.getEndpointList)
+    ..serve(receptionContactIdEnpointUrl, method: HttpMethod.PUT).listen(receptionContact.createEndpoint)
+    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.GET).listen(receptionContact.getEndpoint)
+    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.POST).listen(receptionContact.updateEndpoint)
+    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteEndpoint)
+
     ..serve(ContactColleaguesUrl, method: HttpMethod.GET).listen(contact.getColleagues)
 
     ..serve(organizationUrl, method: HttpMethod.GET).listen(organization.getOrganizationList)
@@ -106,6 +116,9 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(dialplanUrl, method: HttpMethod.GET).listen(dialplan.getDialplan)
     ..serve(dialplanUrl, method: HttpMethod.POST).listen(dialplan.updateDialplan)
+
+    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.GET).listen(receptionContact.getDistributionList)
+    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.POST).listen(receptionContact.updateDistributionList)
 
     ..serve(ivrUrl, method: HttpMethod.GET).listen(dialplan.getIvr)
     ..serve(ivrUrl, method: HttpMethod.POST).listen(dialplan.updateIvr)
@@ -135,9 +148,9 @@ void setupRoutes(HttpServer server, Configuration config, Logger logger) {
 
     ..serve(audiofilesUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
 
-    ..serve(anyThing, method: HttpMethod.OPTIONS).listen(PreFlight)
+    ..serve(anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
 
-    ..defaultStream.listen(NOTFOUND);
+    ..defaultStream.listen(orf_http.page404);
 }
 
 void setupControllers(Database db, Configuration config) {
