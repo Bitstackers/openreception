@@ -756,7 +756,8 @@ class EndpointsComponent {
       ..text = 'Ny'
       ..onClick.listen((_) {
         Endpoint endpoint = new Endpoint()
-          ..address = 'mig@eksempel.dk';
+          ..address = 'mig@eksempel.dk'
+          ..enabled = true;
         LIElement row = _makeEndpointRow(endpoint);
         int index = _ul.children.length - 1;
         _ul.children.insert(index, row);
@@ -820,6 +821,17 @@ class EndpointsComponent {
         }
     });
 
+    LabelElement descriptionLabel = new LabelElement()
+      ..text = 'note:';
+    TextInputElement descriptionInput = new TextInputElement()
+      ..classes.add('contact-endpoint-description')
+      ..value = endpoint.description
+      ..onInput.listen((_) {
+        if(_onChange != null) {
+          _onChange();
+        }
+    });
+
     //TODO Make it do something.
     ButtonElement deleteButton = new ButtonElement()
       ..text = 'slet'
@@ -831,7 +843,12 @@ class EndpointsComponent {
     });
 
     return li
-        ..children.addAll([address, addressEditBox, typePicker, confidentialLabel, confidentialCheckbox, enabledLabel, enabledCheckbox, priorityLabel, PriorityCheckbox, deleteButton]);
+        ..children.addAll([address, addressEditBox, typePicker,
+                           confidentialLabel, confidentialCheckbox,
+                           enabledLabel, enabledCheckbox,
+                           priorityLabel, PriorityCheckbox,
+                           descriptionLabel, descriptionInput,
+                           deleteButton]);
   }
 
   Future save(int receptionId, int contactId) {
@@ -843,6 +860,7 @@ class EndpointsComponent {
       CheckboxInputElement confidentialBox = item.querySelector('.contact-endpoint-confidential');
       CheckboxInputElement enabledBox = item.querySelector('.contact-endpoint-enabled');
       NumberInputElement priorityBox = item.querySelector('.contact-endpoint-priority');
+      TextInputElement descriptionBox = item.querySelector('.contact-endpoint-description');
 
       if(addressSpan != null && addressTypePicker != null && confidentialBox != null && enabledBox != null && priorityBox != null) {
         Endpoint endpoint = new Endpoint()
@@ -852,7 +870,8 @@ class EndpointsComponent {
           ..addressType = addressTypePicker.selectedOptions.first.value
           ..confidential = confidentialBox.checked
           ..enabled = enabledBox.checked
-          ..priority = int.parse(priorityBox.value);
+          ..priority = int.parse(priorityBox.value)
+          ..description = descriptionBox.value;
         foundEndpoints.add(endpoint);
       }
     }
