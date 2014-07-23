@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:convert';
 
 import '../configuration.dart';
-import '../utilities/http.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/complete_reception_contact.dart';

@@ -3,7 +3,6 @@ library userController;
 import 'dart:io';
 import 'dart:convert';
 
-import '../utilities/http.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/user.dart';
@@ -81,8 +80,8 @@ class UserController {
       .then((Map data) => db.updateUser(userId, data['name'], data['extension'], data['send_from']))
       .then((int id) => orf_http.writeAndClose(request, userIdAsJson(id)))
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -93,8 +92,8 @@ class UserController {
     db.getUserGroups(userId)
       .then((List<UserGroup> data) => orf_http.writeAndClose(request, userGroupAsJson(data)) )
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -130,8 +129,8 @@ class UserController {
     db.getGroupList()
       .then((List<UserGroup> data) => orf_http.writeAndClose(request, userGroupAsJson(data)) )
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -159,8 +158,8 @@ class UserController {
       .then((Map data) => db.createUserIdentity(userId, data['identity']))
       .then((String identityId) => orf_http.writeAndClose(request, userIdentityIdAsJson(identityId)))
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -174,8 +173,8 @@ class UserController {
       .then((Map data) => db.updateUserIdentity(userId, identityId, data['identity'], data['user_id']))
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -187,8 +186,8 @@ class UserController {
     db.deleteUserIdentity(userId, identityId)
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 }

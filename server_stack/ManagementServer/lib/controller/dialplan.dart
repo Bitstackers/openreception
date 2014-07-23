@@ -8,7 +8,6 @@ import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 
 import '../configuration.dart';
-import '../utilities/http.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/audiofile.dart';
@@ -142,10 +141,10 @@ class DialplanController {
     int playlistId = orf_http.pathParameter(request.uri, 'playlist');
 
     db.deletePlaylist(playlistId)
-    .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
-    .catchError((error) {
-      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      orf_http.serverError(request, error.toString());
+      .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
+      .catchError((error) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
+        orf_http.serverError(request, error.toString());
     });
   }
 

@@ -7,7 +7,6 @@ import '../view/colleague.dart';
 import '../configuration.dart';
 import '../view/contact.dart';
 import '../database.dart';
-import '../utilities/http.dart';
 import '../model.dart';
 import '../view/organization.dart';
 import '../view/reception_contact_reduced_reception.dart';
