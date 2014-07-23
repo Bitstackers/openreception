@@ -135,11 +135,11 @@ void serverError(HttpRequest request, String logMessage) {
 //TODO: Implement real TimeZone! TimeFormatter throws NotImplemented.
 DateFormat ClfDate = new DateFormat('dd/MMMM/yyyy:HH:mm:ss');
 
-void commonLogFormat (HttpRequest request) {
+void commonLogFormat (HttpRequest request) {  
   DateTime now = new DateTime.now();
- logger.access('${request.connectionInfo.remoteAddress.address} - - ${ClfDate.format(now)} ${timeZoneFormat(now.timeZoneOffset)}'
-               ' "${request.method} ${request.requestedUri}" ${request.response.statusCode}'
-               ' ${request.response.contentLength}');
+  logger.access('${request.connectionInfo != null ? request.connectionInfo.remoteAddress.address : '-'} - - ${ClfDate.format(now)} ${timeZoneFormat(now.timeZoneOffset)}'
+                ' "${request.method} ${request.requestedUri}" ${request.response.statusCode}'
+                ' ${request.response.contentLength}');
 }
 
 String timeZoneFormat(Duration timezone) {
