@@ -71,12 +71,15 @@ Future<String> extractContent(HttpRequest request) {
   Completer completer = new Completer();
   List<int> completeRawContent = new List<int>();
 
-  request.listen((List<int> data) {
-    completeRawContent.addAll(data);
-  }, onError: (error) => completer.completeError(error),
+  request.listen(completeRawContent.addAll,
+     onError: (error) => completer.completeError(error),
      onDone: () {
-    String content = UTF8.decode(completeRawContent);
-    completer.complete(content);
+       try {
+         String content = UTF8.decode(completeRawContent);
+         completer.complete(content);
+       } catch(error) {
+         completer.completeError(error);
+       }
   }, cancelOnError: true);
 
   return completer.future;
