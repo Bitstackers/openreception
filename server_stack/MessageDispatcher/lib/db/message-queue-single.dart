@@ -72,18 +72,13 @@ abstract class MessageQueue {
     SELECT 
       mr.contact_name as name,
       mr.recipient_role as role, 
-      ma.address as address,
-      ma.address_type as type
-    FROM
-    message_queue mq
-    JOIN
-    messages msg ON mq.message_id = msg.id
-    JOIN
-    message_recipients mr ON mr.message_id = msg.id
-    JOIN
-    messaging_end_points mep ON mep.reception_id = mr.reception_id AND mep.contact_id = mr.contact_id
-    JOIN
-    messaging_addresses ma ON mep.address_id = ma.id
+      mep.address as address,
+      mep.address_type as type
+    FROM message_queue mq
+      JOIN messages msg ON mq.message_id = msg.id
+      JOIN message_recipients mr ON mr.message_id = msg.id
+      JOIN messaging_end_points mep ON mep.reception_id = mr.reception_id AND 
+                                       mep.contact_id = mr.contact_id
     WHERE mq.message_id = $messageID
     ''';
 
@@ -104,6 +99,6 @@ abstract class MessageQueue {
       return endpoints;
     });
   }
-  
-  
+
+
 }
