@@ -109,8 +109,8 @@ class BobActive {
     
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
 
-    setupKeyboardShortcuts();
-//    event.bus.fire(event.activeContextChanged, id.CONTEXT_HOME);
+    //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
+    keyboardHandler.toString();
 
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
@@ -127,38 +127,4 @@ class BobActive {
     logContext        = new Context(querySelector('#contextlog'));
   }
 
-  void setupKeyboardShortcuts() {
-//    keyboardHandler.onKeyName('companyselector').listen((_) {
-//      //setFocus('company-selector-searchbar');
-//      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyhandling'));
-//    });
-//
-//    keyboardHandler.onKeyName('companyevents').listen((_) {
-//      event.bus.fire(event.locationChanged, new nav.Location('contexthome', 'companyevents'));
-//      //setFocus('company_events_list');
-//    });
-//
-//    keyboardHandler.onKeyName('companyhandling').listen((_) {
-//      setFocus('company_handling_list');
-//    });
-//
-//    keyboardHandler.onKeyName('contactinfosearch').listen((_) {
-//      setFocus('contact-info-searchbar');
-//    });
-//
-//    keyboardHandler.onKeyName('sendmessagetelephone').listen((_) {
-//      setFocus('sendmessagephone');
-//    });
-//
-//    keyboardHandler.onKeyName('messagefield').listen((_) {
-//      setFocus('sendmessagetext');
-//    });
-//
-//    keyboardHandler.onKeyName('companycustomertype').listen((_) {
-//      setFocus('company-customertype-body');
-//    });
-
-    //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
-    keyboardHandler.toString();
-  }
 }
