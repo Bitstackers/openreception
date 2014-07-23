@@ -46,6 +46,7 @@ part 'view-reception-selector.dart';
 part 'view-context_switcher.dart';
 part 'view-logbox.dart';
 part 'view-message-list.dart';
+part 'view-message-edit.dart';
 part 'view-notification.dart';
 part 'view-nudge.dart';
 part 'view-reception-events.dart';

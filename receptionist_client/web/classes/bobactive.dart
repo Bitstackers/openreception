@@ -56,6 +56,7 @@ class BobActive {
 
   View.MessageFilter messageSearch;
   View.MessageList messageList;
+  View.MessageEdit messageEdit;
 
   View.LogBox logBox;
 
@@ -104,8 +105,9 @@ class BobActive {
     companyOther             = new View.ReceptionOther(querySelector('#${id.COMPANY_OTHER}'), homePlusContext);
 
     /// Message context
-    messageSearch            = new View.MessageFilter(querySelector('#${id.MESSAGE_SEARCH}'), messageContext);
-    messageList              = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messageContext);
+    messageSearch = new View.MessageFilter(querySelector('#${id.MESSAGE_SEARCH}'), messageContext);
+    messageList   = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messageContext);
+    messageEdit   = new View.MessageEdit(querySelector('#${id.MESSAGE_EDIT}'), messageContext);
     
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
 

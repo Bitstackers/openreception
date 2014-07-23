@@ -2,10 +2,6 @@
    outline: 0.2em solid transparent;
 }*
 
-input {
-     margin: 0.2em;
-}
-
 input:focus {
   background-color: #fff8c4;
     outline: 0.2em solid red;

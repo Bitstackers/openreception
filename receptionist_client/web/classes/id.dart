@@ -28,6 +28,7 @@ const String GLOBAL_QUEUE                = 'globalqueue';
 const String LOCAL_QUEUE                 = 'localqueue';
 const String LOGBOX                      = 'logbox';
 const String MESSAGE_OVERVIEW            = 'messageoverview';
+const String MESSAGE_EDIT                = 'message-edit';
 const String PHONEBOOTH                  = 'phonebooth';
 const String SENDMESSAGE                 = 'sendmessage';
 

@@ -36,6 +36,11 @@ class Message {
   int            get queueCount   => this._map['pending_messages'];
   Set<Recipient> get recipients   => _recipients;
   Map            get takenByAgent => this._map['taken_by_agent'];
+  String         get body         => this._map['message'];
+  
+  List<String>   get flags        => this._map['flags'];
+  
+  bool hasFlag (String flag) => this.flags.contains(flag);
   
   /**
    * Adds a free-form field to the message object.

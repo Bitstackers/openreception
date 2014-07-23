@@ -50,7 +50,6 @@ class MessageList {
   TableElement        get table     => this.element.querySelector('table');
   TableSectionElement get tableBody => this.table.querySelector('tbody');
   TableRowElement _selectedRow = null;
-  ResendMessage messageView = new ResendMessage(querySelector("#resendmessage"));
   
   Element get header => this.element.querySelector('legend'); 
   
@@ -89,7 +88,7 @@ class MessageList {
     }
     
     Service.Message.get (int.parse(newRow.dataset['messageID'])).then((model.Message message) {
-      messageView.render(message);
+      event.bus.fire(event.selectedEditMessageChanged, message);
     });
   }
 
@@ -105,15 +104,16 @@ class MessageList {
   MessageList(Element this.element, Context this.context) {
     this.location = new nav.Location(context.id, element.id, this.tableBody.id);
     
+    this._setHeaderLabels();
+
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-    
+    this.header.append(new Nudge(NavShortcut).element);
+
     /// Event listeners
     this.table.querySelector('input').onClick.listen(headerCheckboxChange);
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
-
     
     element.onClick.listen((Event event) {
       if (!this.inFocus)
@@ -185,7 +185,6 @@ class MessageList {
         this.nextPageButton.click();
     });
 
-    this._setHeaderLabels();
     this.loadData(model.Message.noID);
   }
 
@@ -272,17 +271,5 @@ class MessageList {
 
   void messageCheckboxClick(_) {
     (this.table.querySelector('input') as CheckboxInputElement).checked = false;
-  }
-}
-
-class ResendMessage {
-
-  final Element element;
-  
-  ResendMessage (this.element);
-  
-  void render (model.Message message) {
-    (this.element.querySelector("#resendmessagetext") as TextAreaElement).value = message.toMap['message'];
-    
   }
 }
