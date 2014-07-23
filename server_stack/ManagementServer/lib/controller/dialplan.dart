@@ -44,7 +44,7 @@ class DialplanController {
       }
     }).catchError((error) {
       orf.logger.errorContext('Error: ${error}', context);
-      Internal_Error(request, error.toString());
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -56,7 +56,7 @@ class DialplanController {
       .then((Dialplan dialplan) => orf_http.writeAndClose(request, dialplanAsJson(dialplan)))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
   }
 
@@ -72,7 +72,7 @@ class DialplanController {
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
   }
 
@@ -84,7 +84,7 @@ class DialplanController {
       .then((IvrList ivrList) => orf_http.writeAndClose(request, ivrListAsJson(ivrList)))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
   }
 
@@ -100,7 +100,7 @@ class DialplanController {
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
   }
 
@@ -111,7 +111,7 @@ class DialplanController {
       .then((List<Playlist> playlists) => orf_http.writeAndClose(request, playlistListAsJson(playlists)))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
   }
 
@@ -133,7 +133,7 @@ class DialplanController {
       .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
       .catchError((error, stack) {
         orf.logger.errorContext('error: $error ${stack}', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -145,7 +145,7 @@ class DialplanController {
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
     .catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -162,7 +162,7 @@ class DialplanController {
       }
     }).catchError((error, stack) {
       orf.logger.errorContext('Error: "$error" "${stack}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -185,7 +185,7 @@ class DialplanController {
       .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
       });
   }
 }

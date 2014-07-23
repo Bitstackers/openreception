@@ -36,7 +36,7 @@ class ReceptionContactController {
       }
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -48,7 +48,7 @@ class ReceptionContactController {
       return orf_http.writeAndClose(request, listReceptionContactAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -72,7 +72,7 @@ class ReceptionContactController {
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -96,7 +96,7 @@ class ReceptionContactController {
     .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -116,7 +116,7 @@ class ReceptionContactController {
       }))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -138,7 +138,7 @@ class ReceptionContactController {
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 
@@ -158,7 +158,7 @@ class ReceptionContactController {
       }
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -171,7 +171,7 @@ class ReceptionContactController {
       return orf_http.writeAndClose(request, endpointListAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -217,7 +217,7 @@ class ReceptionContactController {
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
         orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -239,7 +239,7 @@ class ReceptionContactController {
       }))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -252,7 +252,7 @@ class ReceptionContactController {
       .then((DistributionList distributionList) => orf_http.writeAndClose(request, distributionListAsJson(distributionList)))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
 
   }
@@ -268,7 +268,7 @@ class ReceptionContactController {
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
-        Internal_Error(request);
+        orf_http.serverError(request, error.toString());
     });
 
   }

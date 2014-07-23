@@ -33,7 +33,7 @@ class ReceptionController {
       }
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -44,7 +44,7 @@ class ReceptionController {
       return orf_http.writeAndClose(request, listReceptionAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -57,7 +57,7 @@ class ReceptionController {
       return orf_http.writeAndClose(request, listReceptionAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -77,7 +77,7 @@ class ReceptionController {
             }))
           .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -98,7 +98,7 @@ class ReceptionController {
           }))
         .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-          Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -117,7 +117,7 @@ class ReceptionController {
         }))
       .catchError((error, stack) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 }

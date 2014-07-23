@@ -34,8 +34,7 @@ class OrganizationController {
       }
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      String errorMessage = error.toString();
-      Internal_Error(request, errorMessage);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -46,7 +45,7 @@ class OrganizationController {
       return orf_http.writeAndClose(request, listOrganizatonAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -65,7 +64,7 @@ class OrganizationController {
     }))
     .catchError((error) {
       orf.logger.errorContext(error, context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -85,7 +84,7 @@ class OrganizationController {
     }))
     .catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -104,7 +103,7 @@ class OrganizationController {
     }))
     .catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -115,7 +114,7 @@ class OrganizationController {
       return orf_http.writeAndClose(request, listContactAsJson(contacts));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 }

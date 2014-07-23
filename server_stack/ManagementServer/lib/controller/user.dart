@@ -28,7 +28,7 @@ class UserController {
     .then((int id) => orf_http.writeAndClose(request, userIdAsJson(id)))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -40,7 +40,7 @@ class UserController {
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -57,7 +57,7 @@ class UserController {
       }
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -68,7 +68,7 @@ class UserController {
       return orf_http.writeAndClose(request, listUserAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -82,7 +82,7 @@ class UserController {
       .then((int id) => orf_http.writeAndClose(request, userIdAsJson(id)))
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 
@@ -94,7 +94,7 @@ class UserController {
       .then((List<UserGroup> data) => orf_http.writeAndClose(request, userGroupAsJson(data)) )
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-	      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 
@@ -107,7 +107,7 @@ class UserController {
       orf_http.writeAndClose(request, JSON.encode({}));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -120,7 +120,7 @@ class UserController {
       orf_http.writeAndClose(request, JSON.encode({}));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -131,7 +131,7 @@ class UserController {
       .then((List<UserGroup> data) => orf_http.writeAndClose(request, userGroupAsJson(data)) )
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 
@@ -146,7 +146,7 @@ class UserController {
       return orf_http.writeAndClose(request, listUserIdentityAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -160,7 +160,7 @@ class UserController {
       .then((String identityId) => orf_http.writeAndClose(request, userIdentityIdAsJson(identityId)))
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 
@@ -175,7 +175,7 @@ class UserController {
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 
@@ -188,7 +188,7 @@ class UserController {
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-        Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       });
   }
 }

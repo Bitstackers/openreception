@@ -58,7 +58,7 @@ class ContactController {
     })
     .catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -70,7 +70,7 @@ class ContactController {
       orf_http.writeAndClose(request, listOrganizatonAsJson(organizations));
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -82,7 +82,7 @@ class ContactController {
       orf_http.writeAndClose(request, listReceptionColleaguesAsJson(receptions));
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -110,7 +110,7 @@ class ContactController {
       return orf_http.writeAndClose(request, listContactAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -121,7 +121,7 @@ class ContactController {
       orf_http.writeAndClose(request, contactTypesAsJson(data));
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -132,7 +132,7 @@ class ContactController {
       orf_http.writeAndClose(request, addressTypesAsJson(data));
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -144,7 +144,7 @@ class ContactController {
       orf_http.writeAndClose(request, listReceptionContact_ReducedReceptionAsJson(data));
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 
@@ -165,7 +165,7 @@ class ContactController {
     })
     .catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
     });
   }
 }

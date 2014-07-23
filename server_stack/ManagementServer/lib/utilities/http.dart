@@ -23,6 +23,11 @@ class HttpMethod {
 Future<bool> authorizedRole(HttpRequest request, Uri authUrl, List<String> groups) {
   const context = '${libraryName}.authorizedRole';
   try {
+    if(!request.uri.queryParameters.containsKey('token')) {
+      Unauthorized(request);
+      return new Future.value(false);
+    }
+
     String token = request.uri.queryParameters['token'];
     Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: 'token/${token}');
     return http.get(url).then((http.Response response) {
@@ -35,42 +40,24 @@ Future<bool> authorizedRole(HttpRequest request, Uri authUrl, List<String> group
           return true;
 
         } else {
-          Forbidden(request, 'Do not have the required permissions.');
+          orf_http.forbidden(request, 'Do not have the required permissions.');
           return false;
         }
 
       } else {
-        Forbidden(request);
+        orf_http.forbidden(request, 'Auth server denied access. ${response.body}');
         return false;
       }
     }).catchError((error, stack) {
       orf.logger.errorContext('Auth request failed with: ${error}, \n${stack}', context);
-      Internal_Error(request);
+      orf_http.serverError(request, error.toString());
       return false;
     });
-  } catch (e) {
-    orf.logger.errorContext('error: ${e} authUrl: "${authUrl}"', context);
-    Internal_Error(request);
+  } catch (error) {
+    orf.logger.errorContext('error: ${error} authUrl: "${authUrl}"', context);
+    orf_http.serverError(request, error.toString());
     return new Future.value(false);
   }
-}
-
-Future Forbidden(HttpRequest request, [String reason = null]) {
-  request.response.statusCode = HttpStatus.FORBIDDEN;
-  Map data = {'status': 'Forbidden'};
-  if(reason != null) {
-    data['reason'] = reason;
-  }
-  return orf_http.writeAndClose(request, JSON.encode(data));
-}
-
-Future Internal_Error(HttpRequest request, [String error]) {
-  request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-  Map response = {'status': 'Internal Server Error'};
-  if(error != null) {
-    response['error'] = error;
-  }
-  return orf_http.writeAndClose(request, JSON.encode(response));
 }
 
 Future<HttpServer> makeServer(int port) => HttpServer.bind(InternetAddress.ANY_IP_V4, port);
@@ -93,4 +80,3 @@ void printDebug(HttpRequest request) {
   });
   print('-------------------------- END ---------------------------');
 }
-
