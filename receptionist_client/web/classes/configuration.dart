@@ -30,13 +30,19 @@ const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
 
 final Configuration configuration = new Configuration._internal();
 
+abstract class Default {
+  static const String messageServer = 'http://localhost:4040';
+  
+  static Uri get messageServerUri => Uri.parse (messageServer);
+}
+
 /**
  * _Configuration gives access to configuration parameters provided by Alice.
  * TODO Move the userID/userName fields to model.User.
  */
 class Configuration {
   bool _loaded = false;
-
+  
   bool autoAnswerEnabled = false;
   
   Uri      _callFlowBaseUrl;
@@ -147,7 +153,7 @@ class Configuration {
     _callFlowBaseUrl = Uri.parse(_stringValue(json, 'callFlowServerURI', 'http://localhost:4242'));
     _receptionBaseUrl = Uri.parse(_stringValue(json, 'receptionServerURI', 'http://localhost:8080'));
     _contactBaseUrl = Uri.parse(_stringValue(json, 'contactServerURI', 'http://localhost:8081'));
-    _messageBaseUrl = Uri.parse(_stringValue(json, 'messageServerURI', 'http://localhost:8082'));
+    _messageBaseUrl = Uri.parse(_stringValue(json, 'messageServerURI', Default.messageServer));
     _logBaseUrl = Uri.parse(_stringValue(json, 'logServerURI', 'http://localhost:8083'));
     _authBaseUrl = Uri.parse(_stringValue(json, 'authServerURI', 'http://localhost:9000'));
 

@@ -18,12 +18,17 @@
 part of view;
 
 class Nudge {
+
+  static const String Navigation = 'navigation';
+  static const String Command    = 'command';
+  
   final SpanElement element = new SpanElement()
                              ..classes.add(StyleClass.NUDGE)
                              ..hidden = true;
 
-  Nudge (String shortcutText) {
+  Nudge (String shortcutText, {String type : Navigation}) {
     this.element.text = shortcutText; 
+    this.element.classes.add(type);
   }
 }
 

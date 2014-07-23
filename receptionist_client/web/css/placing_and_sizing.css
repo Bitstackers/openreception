@@ -11,11 +11,38 @@ input:focus {
     outline: 0.2em solid red;
 }
 
+button {
+ color: white;
+ border-radius: 4px;
+ text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+legend span,
+button span {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+button.print,
+button.save {
+ color: white;
+ border-radius: 4px;
+ text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+ background: rgb(28, 184, 65); /* this is a green */
+}
+button.send,
+button.resend,
+button.resend-multiple {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  background: rgb(66, 184, 221); /* this is a light blue */
+}
+
 button:focus {
   background-color: #fff8c4;
   outline: 0.2em solid red;
 }
-
 
 textarea:focus {
   background-color: #fff8c4;
@@ -50,13 +77,8 @@ fieldset ul {
 
 fieldset legend {
   /*display: inline; */
-  line-height: 16px;
-  text-indent: 1em;
-  font-size: 0.7em;
   font-weight: bold;
-  padding: 1px 1em;
   margin-left: 1em;
-  min-height: 16px;
   background-repeat: no-repeat;
 }
 
@@ -115,6 +137,7 @@ button::-moz-focus-inner {
 
 .focus {
   border: 2px dashed black !important;
+  
 }
 
 #notifications {

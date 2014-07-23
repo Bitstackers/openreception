@@ -18,6 +18,7 @@ import 'dart:html';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
+import 'package:intl/intl.dart';
 
 import '../classes/events.dart' as event;
 import '../model/model.dart' as model;
@@ -71,7 +72,7 @@ part 'view-contact-info-search.dart';
 part 'view-contact-info-calendar.dart';
 part 'view-contact-info-data.dart';
 part '../components/constants.dart';
-part '../components/messagesearch.dart';
+part 'view-message_filter.dart';
 part '../components/searchcomponent.dart';
 
 const String libraryName = "view";

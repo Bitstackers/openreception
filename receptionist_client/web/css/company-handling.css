@@ -1,4 +1,6 @@
 fieldset#companyhandling legend {
+  background-repeat: no-repeat;
+  padding: 1px 1em;
   background-image: url('../images/alert-icon-16x16.png');
 }
 

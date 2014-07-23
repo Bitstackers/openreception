@@ -38,7 +38,7 @@ abstract class Message {
 
     request = new HttpRequest()
         ..open(POST, url)
-        ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        ..setRequestHeader('Content-Type', 'application/json')
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
@@ -68,19 +68,18 @@ abstract class Message {
     return completer.future;
   }
 
-  static Future<model.MessageList> list([Uri host]) {
+  static Future<model.MessageList> list({Uri host   : null, 
+                                         int lastID : model.Message.noID,
+                                         int limit  : 100}) {
 
     final String context = '${className}.list';
-
-    if (host == null) {
-      host = configuration.messageBaseUrl;
-    }
-    ;
+    
+    if (host == null) { host = Default.messageServerUri;};
 
     final String base = configuration.messageBaseUrl.toString();
     final Completer<model.MessageList> completer = new Completer<model.MessageList>();
     final List<String> fragments = new List<String>();
-    final String path = '/message/list';
+    final String path = '/message/list/$lastID/limit/$limit';
 
     HttpRequest request;
     String url;

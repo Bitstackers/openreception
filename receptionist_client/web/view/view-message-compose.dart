@@ -37,8 +37,9 @@ class Message {
   static const String className = '${libraryName}.Message';
   static const String NavShortcut = 'B'; 
 
-  final Element element;
-  final Context context;
+  final Element      element;
+  final Context      context;
+        nav.Location location;
    
   Element         get header                    => this.element.querySelector('legend');
   InputElement    get sendmessagesearchbox      => this.element.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
@@ -62,6 +63,7 @@ class Message {
   ButtonElement get sendButton   => this.element.querySelector('#sendmessagesend');
   
   bool hasFocus = false;
+  bool get muted     => this.context != Context.current;
   
   UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
 
@@ -133,10 +135,12 @@ class Message {
   }
 
   Message(Element this.element, Context this.context) {
+    
+    this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
+    
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, this.messageBodyField.id)));
-
+    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
+    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     this.cancelButton
         ..text = MessageLabels.cancelButtonLabel
@@ -157,6 +161,12 @@ class Message {
     this._renderContact(contact);
     this._setupLabels();
     this._registerEventListeners();
+  }
+
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(this.location);
+    }
   }
 
   
@@ -300,6 +310,7 @@ class Message {
         'flags': []
       });
 
+      print (pendingMessage.toMap);
 
       pleaseCall.checked ? pendingMessage.addFlag('urgent') : null;
       callsBack.checked ? pendingMessage.addFlag('willCallBack') : null;

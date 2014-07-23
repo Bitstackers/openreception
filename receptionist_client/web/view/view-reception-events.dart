@@ -180,7 +180,6 @@ class ReceptionEvents {
     element.onClick.listen((Event event) {
         Controller.Context.changeLocation(this.location);
         
-        print (event.target);
         if (event.target is LIElement) {
           this.selectedElement = event.target; 
         }

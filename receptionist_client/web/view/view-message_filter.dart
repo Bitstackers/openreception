@@ -1,9 +1,20 @@
 part of view;
 
-class MessageSearch{
+abstract class MessageFilterLabels {
+
+  static Element get SaveIcon => new DocumentFragment.html ('''<i class=\"fa fa-save"></i>''').children.first;
+  static Element get SendIcon => new DocumentFragment.html ('''<i class=\"fa fa-send"></i>''').children.first;
+
+  static const String Resend = 'Gensend';
+  static const String EditMessage = 'Rediger besked';
+  static const String Filter = 'Filtrér beskeder';
+  static const String Save = 'Gem';
+}
+
+class MessageFilter{
   DivElement body;
   Context _context;
-  DivElement element;
+  Element element;
   SpanElement header;
 
   DivElement agent;
@@ -16,13 +27,16 @@ class MessageSearch{
   SearchComponent<model.BasicReception> companySearch;
   SearchComponent<model.Contact> contactSearch;
 
+  ButtonElement get saveMessageButton            => this.element.querySelector('button.previous');
+  ButtonElement get resendMessageButton          => this.element.querySelector('button.resend');
+  
   String selectedAgent;
   String selectedType;
   model.BasicReception selectedCompany = model.nullReception;
   model.Contact selectedContact = model.nullContact;
 
   String headerText = 'Søgning';
-  MessageSearch(DivElement this.element, Context this._context) {
+  MessageFilter(Element this.element, Context this._context) {
     assert(element != null);
 
     body = querySelector('.message-search-box');
@@ -79,8 +93,13 @@ class MessageSearch{
         searchParametersChanged();
       };
 
-    _context.registerFocusElement(body.querySelector('#message-search-print'));
-    _context.registerFocusElement(body.querySelector('#message-search-resend'));
+    //_context.registerFocusElement(body.querySelector('#message-search-print'));
+    //_context.registerFocusElement(body.querySelector('#message-search-resend'));
+    
+    this._setLabels();
+  }
+  
+  void _setLabels() {
   }
 
   String companyListElementToString(model.BasicReception reception, String searchText) {

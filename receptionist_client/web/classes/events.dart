@@ -49,6 +49,9 @@ final EventType<model.Reception> receptionChanged               = new EventType<
 final EventType<State> stateUpdated                             = new EventType<State>();
 final EventType CreateNewContactEvent                           = new EventType();
 final EventType Save                                            = new EventType();
+final EventType Send                                            = new EventType();
+final EventType Next                                            = new EventType();
+final EventType Previous                                        = new EventType();
 final EventType Edit                                            = new EventType();
 final EventType Delete                                          = new EventType();
 

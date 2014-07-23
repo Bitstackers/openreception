@@ -3,6 +3,9 @@ part of view;
 abstract class CalendarLabels {
   static final String calendar            = 'Medarbejderaftaler';
   static final String newEventPlaceholder = 'Opret aftale';
+  static final String create              = 'Opret';
+  static final String update              = 'Gem';
+  static final String delete              = 'Slet';
 }
 
 /**
@@ -13,9 +16,12 @@ abstract class CalendarLabels {
  */
 class ContactInfoCalendar {
 
-  static const String className     = '${libraryName}.ContactInfoSearch';
-  static const String NavShortcut   = 'K'; 
-  static const String SelectedClass = 'selected';
+  static const String className      = '${libraryName}.ContactInfoSearch';
+  static const String NavShortcut    = 'K'; 
+  static const String EditShortcut   = 'E';
+  static const String SaveShortcut   = 'S';
+  static const String DeleteShortcut = 'Backspace';
+  static const String SelectedClass  = 'selected';
   
   static final String  id        = constant.ID.CALL_MANAGEMENT;
   final        Element element;
@@ -39,6 +45,11 @@ class ContactInfoCalendar {
   int             get eventID          => int.parse(this.eventIDField.value);
   void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
 
+  ///Buttons
+  ButtonElement get createButton => this.element.querySelector('.calendar-event-create');
+  ButtonElement get updateButton => this.element.querySelector('.calendar-event-update');
+  ButtonElement get deleteButton => this.element.querySelector('.calendar-event-delete');
+  
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.element.querySelector('.contactinfo-calendar-event-create-starts-hour');
   InputElement get startsMinuteField => this.element.querySelector('.contactinfo-calendar-event-create-starts-minute');
@@ -137,11 +148,17 @@ class ContactInfoCalendar {
 
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.text =  CalendarLabels.calendar;
+    this.createButton.text = CalendarLabels.create;
+    this.updateButton.text = CalendarLabels.update;
+    this.deleteButton.text = CalendarLabels.delete;
     
     this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);
 
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
+    this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.updateButton);
+    this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.createButton);
+    this.newEventWidget.insertBefore(new Nudge(DeleteShortcut, type : Nudge.Command).element,  this.deleteButton);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
     newEventField.placeholder = CalendarLabels.newEventPlaceholder;
@@ -211,10 +228,15 @@ class ContactInfoCalendar {
     event.bus.on(event.CreateNewContactEvent).listen((_) {
 
       if(nav.Location.isActive(this.element)) {
+        eventID = model.CalendarEvent.nullID;
         this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
         this.eventList.hidden = !this.newEventWidget.hidden;
         if (!this.newEventWidget.hidden) {
+          this.createButton.hidden = false;
+          this.updateButton.hidden = true;
+          this.deleteButton.hidden = true;
+
           this._selectedStartDate = new DateTime.now();
           this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
           this.newEventField.value = "";
@@ -263,6 +285,9 @@ class ContactInfoCalendar {
       if (!this.newEventWidget.hidden) {
         model.Contact.selectedContact.calendarEventList.then((model.CalendarEventList eventList) {
           model.CalendarEvent event = eventList.get(eventID);
+          this.createButton.hidden = true;
+          this.updateButton.hidden = false;
+          this.deleteButton.hidden = false;
           
           this._selectedStartDate = event.startTime;
           this._selectedEndDate = event.stopTime;

@@ -41,6 +41,10 @@ class Keys {
   static const int ALT   = 18;
   static const int ESC   = 27;
   static const int SPACE = 32;
+  static const int PGUP  = 33;
+  static const int PGDOWN= 34;
+  static const int END   = 35;
+  static const int HOME  = 36; 
   static const int UP    = 38;
   static const int DOWN  = 40;
   static const int ZERO  = 48;
@@ -197,17 +201,20 @@ class _KeyboardHandler {
     });
     
     Map<String, EventListener> keybindings = {
-      'Alt+P'     : (_) => Controller.Call.pickupNext(),
-      'Alt+L'     : (_) => Controller.Call.park(Model.Call.currentCall),
-      //'Alt+G'     : (_) => Controller.Call.hangup(Model.Call.currentCall),
-      'Alt+U'     : (_) => event.bus.fire(event.PickupFirstParkedCall, null),
-      'Alt+O'     : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
-      'Alt+1'     : (_) => event.bus.fire(event.CallSelectedContact, 1),
-      'Alt+2'     : (_) => event.bus.fire(event.CallSelectedContact, 2),
-      'Alt+3'     : (_) => event.bus.fire(event.CallSelectedContact, 3),
-      'ALT+I'     : (_) => Controller.Call.dialSelectedContact(),
-      'Ctrl+K'    : (_) => event.bus.fire(event.CreateNewContactEvent, null),
-      'Ctrl+S'    : (_) => event.bus.fire(event.Save, null),
+      'Alt+P'      : (_) => Controller.Call.pickupNext(),
+      'Alt+L'      : (_) => Controller.Call.park(Model.Call.currentCall),
+      //'Alt+G'    : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      'Alt+U'      : (_) => event.bus.fire(event.PickupFirstParkedCall, null),
+      'Alt+O'      : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
+      'Alt+1'      : (_) => event.bus.fire(event.CallSelectedContact, 1),
+      'Alt+2'      : (_) => event.bus.fire(event.CallSelectedContact, 2),
+      'Alt+3'      : (_) => event.bus.fire(event.CallSelectedContact, 3),
+      'ALT+I'      : (_) => Controller.Call.dialSelectedContact(),
+      'Ctrl+K'     : (_) => event.bus.fire(event.CreateNewContactEvent, null),
+      'Ctrl+S'     : (_) => event.bus.fire(event.Save, null),
+      'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
+      'Ctrl+Z'     : (_) => event.bus.fire(event.Previous, null),
+      'Ctrl+X'     : (_) => event.bus.fire(event.Next, null),
       'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
       'Ctrl+E'    : (_) => event.bus.fire(event.Edit, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),

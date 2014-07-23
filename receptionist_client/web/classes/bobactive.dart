@@ -54,7 +54,7 @@ class BobActive {
   View.ReceptionEvents receptionEvents;
   View.Message sendMessage;
 
-  View.MessageSearch messageSearch;
+  View.MessageFilter messageSearch;
   View.MessageList messageList;
 
   View.LogBox logBox;
@@ -91,7 +91,7 @@ class BobActive {
     globalQueue              = new View.CallList(querySelector('#${id.GLOBAL_QUEUE}'), home);
     callManagement           = new View.CallManagement(querySelector('#${id.CALL_ORIGINATE}'), home);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
-    messageSearch            = new View.MessageSearch(querySelector('#${id.MESSAGE_SEARCH}'), messages);
+    messageSearch            = new View.MessageFilter(querySelector('#${id.MESSAGE_SEARCH}'), messages);
     messageList              = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messages);
 
     /// Home Plus context

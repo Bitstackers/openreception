@@ -1,19 +1,16 @@
 .nudge {
-  font-size: 0.5em;
+  font-size: 0.7em;
   font-weight:bold; 
   border:1px solid grey;
   border-radius: 4px;
   padding : 3px;
-  position: absolute;
+  position:absolute;
+}
+
+.nudge.navigation {
   background-color:rgba(255,255,0,0.9);
 }
 
-.nudge-command {
-  font-size: 0.5em;
-  font-weight:bold; 
-  border:1px solid grey;
-  border-radius: 4px;
-  padding : 3px;
-  position: absolute;
+.nudge.command {
   background-color:rgba(0,255,0,0.9);
 }

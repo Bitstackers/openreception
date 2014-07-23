@@ -18,12 +18,17 @@ class MessageList extends IterableBase<Message> {
   /// A set would have been a better fit here, but it makes the code read terrible.
   Map<int, Message> _map = new Map<int, Message>();
 
+  /// Wrapped functions
+  Map<int, Message> get values => this._map;
+  bool contains (int MessageID) => this._map.containsKey(MessageID);
+  
+  
   /**
    * Iterator. 
    * 
    * This merely forwards the values from within the internal map.
    * We are not interested in the keys (Message ID) as they are already stored inside
-   * the Message Object.
+   * the Message object.
    */
   Iterator<Message> get iterator => this._map.values.iterator;
 
@@ -40,7 +45,8 @@ class MessageList extends IterableBase<Message> {
     
     if (this._map.containsKey(message.ID)) {
       this._map[message.ID].update(message);
-    } else {      this._map[message.ID] = message;
+    } else {
+      this._map[message.ID] = message;
     }
   }
   
@@ -62,6 +68,17 @@ class MessageList extends IterableBase<Message> {
     }
   }
   
+  /**
+   * Reloads the MessageList from a List of Message.
+   * 
+   * TODO: Document the map format in the wiki.
+   */
+  MessageList.fromMessageMap (Iterable<Message> messages) {
+    messages.forEach((Message message) => this.updateOrInsert(message));  
+  }
+  
+  MessageList._internal();
+
   /**
    * Reloads the instance from the server
    * 

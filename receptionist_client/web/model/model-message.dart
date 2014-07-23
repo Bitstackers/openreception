@@ -18,6 +18,8 @@ class Message {
   
   static final String className = libraryName + ".Message";
   
+  static const int noID = 0;
+  
   static final EventType<Message> stateChange = new EventType<Message>();
   
   Map            _map;
@@ -62,28 +64,25 @@ class Message {
   }
   
   Map get toMap {
-    List<Map> toList = new List<Map>();
-    List<Map> ccList = new List<Map>();
-    List<Map> bccList = new List<Map>();
+    this._map['recipients'] = {};
+    this._map['recipients'][MessageConstants.TO]  = [];
+    this._map['recipients'][MessageConstants.CC]  = [];
+    this._map['recipients'][MessageConstants.BCC] = [];
     
     this.recipients.forEach((recipient) {
       if (recipient.role == MessageConstants.TO) {
-        toList.add(recipient.toMap());
+        this._map['recipients'][MessageConstants.TO].add(recipient.toMap());
       }
       else if (recipient.role == MessageConstants.CC) {
-        ccList.add(recipient.toMap());
+        this._map['recipients'][MessageConstants.TO].add(recipient.toMap());
       }
       else if (recipient.role == MessageConstants.BCC) {
-        bccList.add(recipient.toMap());
+        this._map['recipients'][MessageConstants.TO].add(recipient.toMap());
       }
       else {
         throw new StateError("Bad role for recipient: ${recipient}.");
       }
     });
-
-    this._map[MessageConstants.TO]  = toList;    
-    this._map[MessageConstants.CC]  = ccList;    
-    this._map[MessageConstants.BCC] = bccList;    
     
     return this._map;
   }

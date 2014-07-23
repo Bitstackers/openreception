@@ -1,5 +1,7 @@
 
 fieldset#sendmessage legend {
+  background-repeat: no-repeat;
+  padding: 1px 1em;
   background-image: url('../images/message-icon-16x16.png');
 }
 
@@ -129,7 +131,6 @@ send-message-button-container {
 }
 
 .send-message-button-container button:hover {
-  border: solid 2px #bbb;
   border-radius: 3px;
   font-size: 1em;
   padding: 5px;

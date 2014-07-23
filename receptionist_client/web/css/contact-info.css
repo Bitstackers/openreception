@@ -15,12 +15,22 @@ fieldset#contactinfo legend {
   width: 100%;
 }
 
+button.calendar-event-create {
+}
+
+button.calendar-event-update {
+}
+
+button.calendar-event-delete {
+}
+
+
 #contactinfo_calendar {
   width: 100%;
   height: 100%;
 }
 
-fieldset#contactinfo_calendar legend {
+fieldset#contactinfo_calendar>legend {
   background-image: url('../images/calendar-icon-16x16.png');
 }
 

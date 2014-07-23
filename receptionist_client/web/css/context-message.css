@@ -5,32 +5,41 @@
 }
 
 #messageoverview {
-  height: 100%;
+  height: 99%;
   width: 100%;
   overflow: auto
 }
 
 #messageoverview > table {
-  width: 100%
+  font-size: 0.9em;
+  width: 100%;
+  display:block;
+  overflow: auto;
 }
 
 #messageoverview > table > thead {
   background-color: #ddd;
 }
 
-#messageoverview > table tr:nth-of-type(even) {
-  background-color: #eee;
+#messageoverview > table tr {
+  outline: 0.1em solid transparent;
+  height: 3.2em;
 }
+
 #messageoverview > table tr.active {
-  background-color: #666;
-  color: white;
+  outline: 0.1em solid #67c1f3;
 }
+
+#messageoverview > table tr.active td {
+  background-color:rgba(67,193,243,0.2) !important;
+}
+
 
 #message-overview-header-checkbox {
   width: 2%;  
 }
 
-#message-overview-header-Timestamp {
+#message-overview-header-timestamp {
   width: 13%;  
 }
 
@@ -38,14 +47,14 @@
   width: 15%;  
 }
 
+#message-overview-header-context {
+  width: 20%;  
+}
+
 #message-overview-header-caller {
-  width: 39%;  
+  width: 40%;  
 }
 
 #message-overview-header-status {
-  width: 10%;  
-}
-
-#message-overview-header-methode {
   width: 10%;  
 }
