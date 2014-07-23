@@ -15,7 +15,7 @@ import '../view/audiofile.dart';
 import '../view/dialplan.dart';
 import '../view/playlist.dart';
 import '../view/ivr.dart';
-import '../service/audiofiles.dart' as service;
+import '../service.dart' as service;
 import 'package:OpenReceptionFramework/common.dart' as orf;
 import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 
@@ -63,10 +63,12 @@ class DialplanController {
   void updateDialplan(HttpRequest request) {
     const context = '${libraryName}.updateDialplan';
     int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateDialplan(receptionId, data))
+      .then((_) => service.compileDialplan(config.dialplanCompilerServer, receptionId, token))
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
@@ -89,10 +91,12 @@ class DialplanController {
   void updateIvr(HttpRequest request) {
     const context = '${libraryName}.updateIvr';
     int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateIvr(receptionId, data))
+      .then((_) => service.compileIvrMenu(config.dialplanCompilerServer, receptionId, token))
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
