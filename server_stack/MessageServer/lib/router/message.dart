@@ -15,10 +15,26 @@ abstract class Message {
       .catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
   }
 
-  static void list (HttpRequest request) {
+  static void listNewest (HttpRequest request) {
+
     db.Message.list().then ((Map map) { 
         writeAndClose(request, JSON.encode(map));
-      }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+      }).catchError((error, stackTrace) {
+        serverError(request, error.toString());
+        print('$error : $stackTrace');
+    });
+  }
+
+  static void list (HttpRequest request) {
+    int messageID = pathParameter(request.uri, 'list');
+    int limit     = pathParameter(request.uri, 'limit');
+
+    db.Message.list(fromID: messageID, limit: limit).then ((Map map) { 
+        writeAndClose(request, JSON.encode(map));
+      }).catchError((error, stackTrace) {
+        serverError(request, error.toString());
+        print('$error : $stackTrace');
+    });
   }
   
   /**

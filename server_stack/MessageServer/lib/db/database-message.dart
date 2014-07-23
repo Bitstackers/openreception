@@ -40,7 +40,6 @@ abstract class Message {
    * 
    */
   static Future<Map> list ({int fromID : Model.Message.noID, int limit : 100}){
-    int limit = 100;
     String sql = '''
         SELECT
              message.id,
@@ -60,10 +59,11 @@ abstract class Message {
              users.name     AS taken_by_agent_name,
              (SELECT count(*) FROM message_queue AS queue WHERE queue.message_id = message.id) AS pending_messages
         FROM messages message
-             JOIN users on taken_by_agent = users.id
-      ORDER BY 
-           message.id    DESC
-      LIMIT ${limit} 
+        JOIN users on taken_by_agent = users.id
+      ${fromID != Model.Message.noID ? 'WHERE message.id <= $fromID' : ''}
+        ORDER BY 
+           message.id DESC
+        LIMIT ${limit} 
     ''';
 
     return database.query(_pool, sql).then((rows) {
