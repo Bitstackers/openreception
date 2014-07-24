@@ -115,6 +115,9 @@ class Database {
   Future<int> updateReceptionContact(int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) =>
       _updateReceptionContact(pool, receptionId, contactId, wantMessages, phonenumbers, attributes, enabled);
 
+  Future moveReceptionContact(int receptionid, int oldContactId, int newContactId) =>
+      _moveReceptionContact(pool, receptionid, oldContactId, newContactId);
+
   /* ***********************************************
      ***************** Endpoints *******************
    */

@@ -53,12 +53,16 @@ final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)')
 
 final Pattern GroupUrl = new UrlPattern(r'/group');
 
+//This resource is only meant to be used, in the time where data is being migrated over.
+final Pattern receptionContactIdMoveUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
+
 final List<Pattern> Serviceagents =
 [organizationIdUrl, organizationUrl,organizationReceptionIdUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
+ ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl,
 
- ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl];
+ receptionContactIdMoveUrl];
 
 ContactController contact;
 DialplanController dialplan;
@@ -147,6 +151,8 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(GroupUrl, method: HttpMethod.GET).listen(user.getGroupList)
 
     ..serve(audiofilesUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
+
+    ..serve(receptionContactIdMoveUrl, method: HttpMethod.POST).listen(receptionContact.moveContact)
 
     ..serve(anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
 

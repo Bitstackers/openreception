@@ -181,3 +181,18 @@ Future<List<model.Organization>> _getAContactsOrganizationList(Pool pool, int co
     return organizations;
   });
 }
+
+Future _moveReceptionContact(Pool pool, int receptionId, int oldContactId, int newContactId) {
+  String sql = '''
+    UPDATE reception_contacts
+    SET contact_id = @new_contact_id
+    WHERE reception_id=@reception_id AND contact_id=@contact_id;
+  ''';
+
+  Map parameters =
+    {'reception_id'   : receptionId,
+     'contact_id'     : oldContactId,
+     'new_contact_id' : newContactId};
+
+  return execute(pool, sql, parameters);
+}

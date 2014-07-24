@@ -269,6 +269,44 @@ class ReceptionContactController {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());
     });
+  }
 
+  void moveContact(HttpRequest request) {
+    const context = '${libraryName}.updateDistributionList';
+    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    int newContactId = orf_http.pathParameter(request.uri, 'newContactId');
+
+    db.moveReceptionContact(receptionId, contactId, newContactId)
+      .then((_) => db.getDistributionList(receptionId, newContactId))
+      .then((DistributionList list) {
+      bool madeChanges = false;
+      for(ReceptionContact rc in list.to) {
+        if(rc.receptionId == receptionId && rc.contactId == contactId) {
+          rc.contactId = newContactId;
+          madeChanges = true;
+        }
+      }
+      for(ReceptionContact rc in list.cc) {
+        if(rc.receptionId == receptionId && rc.contactId == contactId) {
+          rc.contactId = newContactId;
+          madeChanges = true;
+        }
+      }
+      for(ReceptionContact rc in list.bcc) {
+        if(rc.receptionId == receptionId && rc.contactId == contactId) {
+          rc.contactId = newContactId;
+          madeChanges = true;
+        }
+      }
+      if(madeChanges) {
+        return db.updateDistributionList(receptionId, newContactId, JSON.decode(distributionListAsJson(list)));
+      }
+    })
+      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
+      .catchError((error, stack) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+        orf_http.serverError(request, error.toString());
+    });
   }
 }

@@ -3,7 +3,7 @@ part of adaheads.server.database;
 Future<int> _createEndpoint(Pool pool, int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority, String description) {
   String sql = '''
     INSERT INTO messaging_end_points (contact_id, reception_id, address, address_type, confidential, enabled, priority, description)
-    VALUES (@receptionid, @contactid, @address, @addresstype, @confidential, @enabled, @priority, @description);
+    VALUES (@contactid, @receptionid,  @address, @addresstype, @confidential, @enabled, @priority, @description);
   ''';
 
   Map parameters =
