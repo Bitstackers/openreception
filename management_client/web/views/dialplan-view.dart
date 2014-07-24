@@ -59,6 +59,10 @@ class DialplanView {
   List<Playlist> playlists;
   IvrList ivrMenus;
 
+  List<DialplanTemplate> dialplanTemplates;
+  SelectElement templatePicker;
+  ButtonElement loadDialplanTemplate;
+
   DialplanView(DivElement this.element) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
     controlListAction = element.querySelector('#dialplan-control-action-list');
@@ -69,6 +73,8 @@ class DialplanView {
     commentTextarea = element.querySelector('#dialplan-comment');
     saveButton = element.querySelector('#dialplan-savebutton');
     extensionListHeader = element.querySelector('#dialplan-extensionlist-header');
+    templatePicker = element.querySelector('#dialplan-templates');
+    loadDialplanTemplate = element.querySelector('#dialplan-loadtemplate');
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
@@ -78,6 +84,7 @@ class DialplanView {
         ..searchFilter = receptionSearchHandler;
 
     fillSearchComponent();
+    fillDialplanTempalte();
 
     registrateEventHandlers();
   }
@@ -118,6 +125,10 @@ class DialplanView {
         }
         ExtensionGroup group = new ExtensionGroup(name: genericName);
         dialplan.extensionGroups.add(group);
+
+        if(dialplan.startExtensionGroup == null || dialplan.startExtensionGroup.isEmpty) {
+          dialplan.startExtensionGroup = group.name;
+        }
         renderExtensionList(dialplan);
       }
     });
@@ -125,6 +136,24 @@ class DialplanView {
     extensionListHeader.onClick.listen((_) {
       if(dialplan != null) {
         settingsDialplan(dialplan);
+      }
+    });
+
+    loadDialplanTemplate.onClick.listen((_) {
+      //TODO Load dialplan template
+      if(selectedReceptionId != null && dialplan != null) {
+        OptionElement selectTempalte = templatePicker.selectedOptions.first;
+        DialplanTemplate template = dialplanTemplates.firstWhere((t) => t.id == int.parse(selectTempalte.value), orElse: () => null);
+        if(template != null) {
+          String groupName = '${template.template.name}${new DateTime.now().millisecondsSinceEpoch}';
+          dialplan.extensionGroups.add(template.template
+              ..name = groupName);
+          if(dialplan.startExtensionGroup == null || dialplan.startExtensionGroup.trim().isEmpty) {
+            dialplan.startExtensionGroup = groupName;
+          }
+          renderExtensionList(dialplan);
+          enabledSaveButton();
+        }
       }
     });
   }
@@ -148,6 +177,21 @@ class DialplanView {
     });
   }
 
+  Future fillDialplanTempalte() {
+    return request.getDialplanTemplates().then((List<DialplanTemplate> templates) {
+      dialplanTemplates = templates;
+      templatePicker.children.addAll(templates.map(templatePickerOption));
+    });
+  }
+
+  OptionElement templatePickerOption(DialplanTemplate template) {
+    return new OptionElement(data: template.template.name, value: template.id.toString());
+  }
+
+  void enableTemplateLoadButton() {
+    loadDialplanTemplate.disabled = false;
+  }
+
   void enabledSaveButton() {
     saveButton.disabled = false;
   }
@@ -160,6 +204,7 @@ class DialplanView {
     receptionPicker.selectElement(null, (Reception a, _) => a.id == receptionId);
 
     request.getDialplan(receptionId).then((Dialplan value) {
+      enableTemplateLoadButton();
       disableSaveButton();
       dialplan = value;
       selectedReceptionId = receptionId;

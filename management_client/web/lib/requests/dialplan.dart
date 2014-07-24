@@ -264,3 +264,26 @@ Future<Map> deletePlaylist(int playlistId) {
 
   return completer.future;
 }
+
+Future<List<DialplanTemplate>> getDialplanTemplates() {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/dialplantemplate?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      Map bodyMap = JSON.decode(request.responseText);
+      List tempalteRoot = bodyMap['templates'];
+      List<DialplanTemplate> list = tempalteRoot.map((Map json) => new DialplanTemplate.fromJson(json)).toList();
+      completer.complete(list);
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error.toString());
+    })
+    ..send();
+
+  return completer.future;
+}

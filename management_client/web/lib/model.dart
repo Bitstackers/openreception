@@ -2,6 +2,8 @@ library model;
 
 import 'dart:convert';
 
+import 'package:libdialplan/libdialplan.dart';
+
 import 'logger.dart' as log;
 
 part 'model/audiofile.dart';
@@ -9,6 +11,7 @@ part 'model/cdr_entry.dart';
 part 'model/colleague.dart';
 part 'model/contact.dart';
 part 'model/custom_reception_contact.dart';
+part 'model/dialplan_template.dart';
 part 'model/distributionlist.dart';
 part 'model/endpoint.dart';
 part 'model/organization.dart';
