@@ -94,7 +94,7 @@ class ContactView {
     bus.on(windowChanged).listen((Map event) {
       element.classes.toggle('hidden', event['window'] != viewName);
       if (event.containsKey('contact_id')) {
-        activateContact(event['contact_id']);
+        activateContact(event['contact_id'], event['reception_id']);
       }
     });
 
@@ -144,7 +144,7 @@ class ContactView {
     ulContactList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['contactid'] == '$id'));
   }
 
-  void activateContact(int id) {
+  void activateContact(int id, [int reception_id]) {
     request.getContact(id).then((Contact contact) {
       buttonSave.text = 'Gem';
       buttonSave.disabled = false;
@@ -168,7 +168,8 @@ class ContactView {
           contacts.sort(ReceptionContact_ReducedReception.sortByReceptionName);
           ulReceptionContacts.children
               ..clear()
-              ..addAll(contacts.map((ReceptionContact_ReducedReception receptioncontact) => receptionContactBox(receptioncontact, receptionContactUpdate)));
+              ..addAll(contacts.map((ReceptionContact_ReducedReception receptioncontact) =>
+                  receptionContactBox(receptioncontact, receptionContactUpdate, selected: receptioncontact.receptionId == reception_id)));
 
         //Rightbar
         request.getContactsOrganizationList(id).then((List<Organization> organizations) {
@@ -227,9 +228,10 @@ class ContactView {
    * If you want there to always be this function in [saveList] set alwaysAddToSaveList to true.
    */
   LIElement receptionContactBox(ReceptionContact_ReducedReception contact, HandleReceptionContact receptionContactHandler,
-                                [bool alwaysAddToSaveList = false]) {
+                                {bool selected: false, bool alwaysAddToSaveList: false}) {
     DivElement div = new DivElement()..classes.add('contact-reception');
-    LIElement li = new LIElement();
+    LIElement li = new LIElement()
+        ..tabIndex = -1;
     SpanElement header = new SpanElement()
         ..text = contact.receptionName
         ..classes.add('reception-contact-header');
@@ -316,6 +318,7 @@ class ContactView {
       }
     };
 
+    List<Future> loadingJobs = new List<Future>();
     TableElement table = new TableElement()..classes.add('content-table');
     div.children.add(table);
 
@@ -356,8 +359,9 @@ class ContactView {
     rightCell = makeTableCellInsertInRow(row);
     backupList = makeListBox(leftCell, 'Backup', contact.backup, onChange: onChange);
     //emailList = makeListBox(rightCell, 'E-mail', contact.emailaddresses, onChange: onChange);
-    endpointsContainer = new EndpointsComponent(rightCell, onChange)
-      ..load(contact.receptionId, contact.contactId);
+    endpointsContainer = new EndpointsComponent(rightCell, onChange);
+    //Saving the future, so we are able to wait on it later.
+    loadingJobs.add(endpointsContainer.load(contact.receptionId, contact.contactId));
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
@@ -376,12 +380,18 @@ class ContactView {
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
-    distributionsListContainer = new DistributionsListComponent(leftCell, onChange)
-        ..load(contact.receptionId, contact.contactId);
+    distributionsListContainer = new DistributionsListComponent(leftCell, onChange);
+    loadingJobs.add(distributionsListContainer.load(contact.receptionId, contact.contactId));
 
     //In case of creating. You always want it in saveList.
     if (alwaysAddToSaveList) {
       onChange();
+    }
+
+    if(selected) {
+      Future.wait(loadingJobs).then((_) {
+        li.focus();
+      });
     }
 
     li.children.add(div);
@@ -668,7 +678,7 @@ class ContactView {
 
       //TODO Warning, This could go wrong if not fixed with the new design of the collegues list.
       ulReceptionContacts.children..add(receptionContactBox(template,
-          receptionContactCreate, true));
+          receptionContactCreate, alwaysAddToSaveList: true));
     }
   }
 
@@ -688,10 +698,10 @@ class ContactView {
           };
           bus.fire(windowChanged, event);
         });
-    return [receptionLi]..addAll(reception.contacts.map(makeColleagueNode));
+    return [receptionLi]..addAll(reception.contacts.map((Colleague collegue) => makeColleagueNode(collegue, reception.id)));
   }
 
-  LIElement makeColleagueNode(Colleague collegue) {
+  LIElement makeColleagueNode(Colleague collegue, int receptionId) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
@@ -699,7 +709,8 @@ class ContactView {
       ..onClick.listen((_) {
         Map event = {
           'window': 'contact',
-          'contact_id': collegue.id
+          'contact_id': collegue.id,
+          'reception_id': receptionId
         };
         bus.fire(windowChanged, event);
       });
