@@ -26,8 +26,6 @@ class ContactInfo {
                model.Reception     nullReception        = model.nullReception;
                model.Reception     reception            = model.nullReception;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
-               String              placeholder          = 'søg...';
-               String              title                = 'Medarbejdere';
 
                List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
                void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
@@ -40,8 +38,6 @@ class ContactInfo {
 
   ContactInfo(Element this.element, Context this.context) {
 
-    this.header..text = title;
-
     DivElement contactinfo_search = querySelector('#contactinfo_search');
     Element contactinfo_calendar = querySelector('#contactinfo_calendar');
     DivElement contactinfo_data = querySelector('#contactinfo_data');
@@ -50,9 +46,12 @@ class ContactInfo {
     calendar = new ContactInfoCalendar(contactinfo_calendar, context, element);
     data = new ContactInfoData(contactinfo_data);
 
+    this.header.children = [Icon.Contacts,
+                            new SpanElement()..text = Label.ReceptionContacts,
+                            new Nudge(ContactInfoSearch.NavShortcut).element];
+
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(ContactInfoSearch.NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, this._select);
 
     body = querySelector('#contactinfobody');

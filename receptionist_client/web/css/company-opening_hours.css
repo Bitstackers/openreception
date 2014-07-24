@@ -1,14 +1,6 @@
-.clock-icon {
-  background-image: url('../images/clock-icon-16x16.png');
-  
-  padding: 1px 1em;
-  
-}
-
 fieldset#companyopeninghours ul {
   overflow: auto;
 }
-
 
 #company-opening-hours-list {
   height: 100%;

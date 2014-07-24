@@ -25,8 +25,6 @@ class ReceptionWebsites {
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  String          title     = 'Web-sider';
-
   Element         get header      => this.element.querySelector('legend');
   UListElement    get websiteList => element.querySelector('#${id.COMPANY_WEBSITES_LIST}'); 
   
@@ -38,7 +36,8 @@ class ReceptionWebsites {
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
 
-    header.text = title;
+    header.children = [Icon.Globe, 
+                       new SpanElement()..text = Label.WebSites];
 
     registerEventListeners();
   }

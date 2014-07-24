@@ -13,10 +13,6 @@
 
 part of view;
 
-abstract class ReceptionOpeningHoursLabels {
-  static const HeaderText = 'Åbningstider';
-}
-
 class ReceptionOpeningHours {
   
   static const String className   = '${libraryName}.CompanyOpeningHours';
@@ -38,10 +34,11 @@ class ReceptionOpeningHours {
     assert(element.attributes.containsKey(defaultElementId));
     
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
-    header.text = ReceptionOpeningHoursLabels.HeaderText;
+    header.children = [Icon.Clock,
+                       new SpanElement()..text = Label.OpeningHours,
+                       new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }

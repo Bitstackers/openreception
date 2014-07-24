@@ -13,12 +13,6 @@ abstract class MessageOverviewLabels {
   static const String MessageArchive = 'Beskedarkiv';
   static const String ResendSelected = 'Gensend valgte';
   static const String Print = 'Udskriv';
-
-  static Element get ArchiveIcon => new DocumentFragment.html ('''<i class=\"fa fa-archive"></i>''').children.first;
-  static Element get PreviousIcon => new DocumentFragment.html ('''<i class=\"fa fa-chevron-left"></i>''').children.first;
-  static Element get NextIcon => new DocumentFragment.html ('''<i class=\"fa fa-chevron-right"></i>''').children.first;
-  static Element get PrintIcon => new DocumentFragment.html ('''<i class=\"fa fa-print"></i>''').children.first;
-  static Element get SendIcon => new DocumentFragment.html ('''<i class=\"fa fa-send"></i>''').children.first;
 }
 
 /**
@@ -219,23 +213,23 @@ class MessageList {
     this.element.querySelector('#message-overview-header-status').text = MessageOverviewLabels.STATUS;
 
    this.previousPageButton
-     ..children = [MessageOverviewLabels.PreviousIcon, 
+     ..children = [Icon.Previous, 
                    new SpanElement()..text = MessageOverviewLabels.PreviousPage];
     
    this.nextPageButton
      ..children = [new SpanElement()..text = MessageOverviewLabels.NextPage,
-                   MessageOverviewLabels.NextIcon];
+                   Icon.Next];
     
    this.printMessageButton
-     ..children = [MessageOverviewLabels.PrintIcon,
+     ..children = [Icon.Print,
                    new SpanElement()..text = MessageOverviewLabels.Print];
 
    this.resendMultipleMessagesButton
-     ..children = [MessageOverviewLabels.SendIcon,
+     ..children = [Icon.Send,
                    new SpanElement()..text = MessageOverviewLabels.ResendSelected];
 
    this.header
-     ..children = [MessageOverviewLabels.ArchiveIcon,
+     ..children = [Icon.Archive,
                    new SpanElement()..text = MessageOverviewLabels.MessageArchive];
   }
 

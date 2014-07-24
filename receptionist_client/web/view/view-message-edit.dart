@@ -118,10 +118,6 @@ class MessageEdit {
   }
 
   MessageEdit(Element this.element, Context this.context) {
-    print (context.id);
-    print (element.id);
-    print (this.messageBodyField.id);
-    
     this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
     
     this._setupLabels();

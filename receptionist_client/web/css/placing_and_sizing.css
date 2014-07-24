@@ -72,10 +72,18 @@ fieldset ul {
 }
 
 fieldset legend {
-  /*display: inline; */
   font-weight: bold;
   margin-left: 1em;
   background-repeat: no-repeat;
+  vertical-align: center;
+}
+
+fieldset legend i{
+  font-size: 1.3em;
+}
+
+fieldset legend span{
+  font-size: 0.9em;
 }
 
 /*

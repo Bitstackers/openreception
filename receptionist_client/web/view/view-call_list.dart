@@ -14,14 +14,6 @@
 part of view;
 
 /**
- * Labels for the CallList widget.
- */
-abstract class CallListLabels {
-  static const String Title = 'Opkald';
-}
-
-
-/**
  *
  */
 class CallList {
@@ -134,6 +126,8 @@ class CallList {
   }
 
   void _renderHeader() {
-    header.text = '${CallListLabels.Title} (${this.queuedCallUL.children.where((LIElement element) => !element.hidden).length})';
+    header.children = 
+        [Icon.Phone,
+         new SpanElement()..text = '${Label.Calls} (${this.queuedCallUL.children.where((LIElement element) => !element.hidden).length})'];
   }
 }

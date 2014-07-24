@@ -4,7 +4,6 @@ class ContactInfoSearch {
 
   static const String className = '${libraryName}.ContactInfoSearch';
   static const String NavShortcut = 'S'; 
-
   
                model.Contact       contact              = model.nullContact;
                Context             context;
@@ -17,7 +16,7 @@ class ContactInfoSearch {
                model.ContactList   contactList;
                InputElement        searchBox;
                Element             widget;
-  static const String              SELECTED             = 'contact-info-active';
+  static const String              SELECTED             = 'selected';
 
   bool hasFocus = false;
 
@@ -113,7 +112,7 @@ class ContactInfoSearch {
     if(search.isEmpty) {
       filteredContactList.addAll(contactList);
     } else {
-      filteredContactList.addAll(contactList.where((model.Contact contact) => searchContact(contact, search)));
+      filteredContactList.addAll(contactList.where((model.Contact contact) => contactMatches(contact, search)));
     }
 
     _clearDisplayedContactList();
@@ -176,7 +175,7 @@ class ContactInfoSearch {
     }
   }
 
-  bool searchContact(model.Contact value, String search) {
+  bool contactMatches(model.Contact value, String search) {
     String searchTerm = search.trim();
     if(searchTerm.contains(' ')) {
       var terms = searchTerm.toLowerCase().split(' ');

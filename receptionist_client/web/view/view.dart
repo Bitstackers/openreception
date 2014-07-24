@@ -40,6 +40,8 @@ import '../protocol/protocol.dart' as protocol;
 import '../storage/storage.dart' as storage;
 
 part 'view-call.dart';
+part 'view-icons.dart';
+part 'view-labels.dart';
 part 'view-call_list.dart';
 part 'view-call-management.dart';
 part 'view-reception-selector.dart';

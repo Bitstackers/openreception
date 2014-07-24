@@ -1,13 +1,5 @@
 part of view;
 
-abstract class CalendarLabels {
-  static final String calendar            = 'Medarbejderaftaler';
-  static final String newEventPlaceholder = 'Opret aftale';
-  static final String create              = 'Opret';
-  static final String update              = 'Gem';
-  static final String delete              = 'Slet';
-}
-
 /**
  * View for the Contact's calendar.
  * Listens for
@@ -147,21 +139,20 @@ class ContactInfoCalendar {
 
 
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
-    this.header.text =  CalendarLabels.calendar;
-    this.createButton.text = CalendarLabels.create;
-    this.updateButton.text = CalendarLabels.update;
-    this.deleteButton.text = CalendarLabels.delete;
+    this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element]; 
+    this.createButton.text = Label.Create;
+    this.updateButton.text = Label.Update;
+    this.deleteButton.text = Label.Delete;
     
     this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.updateButton);
     this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.createButton);
     this.newEventWidget.insertBefore(new Nudge(DeleteShortcut, type : Nudge.Command).element,  this.deleteButton);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
-    newEventField.placeholder = CalendarLabels.newEventPlaceholder;
+    newEventField.placeholder = Label.CreateEvent;
     this.newEventWidget.hidden = true;
     _registerEventListeners();
 

@@ -33,7 +33,8 @@ class ReceptionAddresses {
     assert(element.attributes.containsKey(defaultElementId));
     
     listElement = element.querySelector('#${id.COMPANY_ADDRESSES_LIST}');
-    header.text = title;
+    header.children = [Icon.MapMarker,
+                       new SpanElement()..text = title];
 
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element, this.header);

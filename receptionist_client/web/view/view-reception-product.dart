@@ -13,10 +13,6 @@
 
 part of view;
 
-abstract class ReceptionProductLabels {
-  static const String HeaderText = 'Produktbeskrivelse';
-}
-
 class ReceptionProduct {
   final Context       uiContext;
   final Element       element;
@@ -35,11 +31,12 @@ class ReceptionProduct {
     assert(element.attributes.containsKey(defaultElementId));
     
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
     
 
-    header.text = ReceptionProductLabels.HeaderText;
+    header.children = [Icon.Product,
+                       new SpanElement()..text = Label.ProductDescription,
+                       new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }

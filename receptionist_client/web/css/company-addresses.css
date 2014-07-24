@@ -1,8 +1,4 @@
-fieldset#companyaddresses legend {
-  background-image: url('../images/pin-icon-16x16.png');
-}
-
-#company-addresses-list {
+ #company-addresses-list {
   height: 100%;
   width: 100%;
   overflow: auto;

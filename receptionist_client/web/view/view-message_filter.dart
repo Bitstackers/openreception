@@ -2,9 +2,6 @@ part of view;
 
 abstract class MessageFilterLabels {
 
-  static Element get SaveIcon => new DocumentFragment.html ('''<i class=\"fa fa-save"></i>''').children.first;
-  static Element get SendIcon => new DocumentFragment.html ('''<i class=\"fa fa-send"></i>''').children.first;
-
   static const String Resend = 'Gensend';
   static const String EditMessage = 'Rediger besked';
   static const String Filter = 'Filtrér beskeder';

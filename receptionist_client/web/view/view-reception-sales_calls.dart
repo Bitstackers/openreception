@@ -13,10 +13,6 @@
 
 part of view;
 
-abstract class CompanySalesCallsLabels {
-  static const String HeaderText = 'Sælgere / Analyser';
-}
-
 class ReceptionSalesCalls {
   
   static const String className   = '${libraryName}.ReceptionSalesCalls';
@@ -38,10 +34,9 @@ class ReceptionSalesCalls {
     assert(element.attributes.containsKey(defaultElementId));
     
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
-    header.text = CompanySalesCallsLabels.HeaderText;
+    header.children = [Icon.Money, new SpanElement()..text = Label.SalesCalls, new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }
