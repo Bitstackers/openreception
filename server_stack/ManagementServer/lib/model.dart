@@ -6,6 +6,7 @@ part 'model/audiofile.dart';
 part 'model/colleague.dart';
 part 'model/reception_contact.dart';
 part 'model/contact.dart';
+part 'model/dialplan_template.dart';
 part 'model/distribution_list.dart';
 part 'model/endpoint.dart';
 part 'model/organization.dart';

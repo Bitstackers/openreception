@@ -402,15 +402,6 @@ VALUES ('kim.rostgaard@gmail.com', 2),
        ('testagent1108adaheads.com', 18),
        ('testagent1109adaheads.com', 19);
 
-
-/*
-INSERT INTO openids (user_id, openid, priority)
-VALUES (1,'https://tux.myopenid.com/', 1), 
-       (6,'https://accounts.google.com/we-love-tux/', 2),
-       (4, 'https://adaheads1.myopenid.com/', 1),
-       (5, 'https://adaheads2.myopenid.com/', 1),
-       (7,'https://adaheads3.myopenid.com/', 1);
-*/
 -------------------------
 --  Message Test data  --
 -------------------------
@@ -493,11 +484,9 @@ INSERT INTO cdr_entries (uuid, inbound, reception_id, extension, duration, wait_
 ('12', true,  1, '12344413', 21, 3, '2014-01-01 12:00:10'),
 ('13', false, 1, '12344417', 61, 3, '2014-01-01 12:01:00');
 
-INSERT INTO audiofiles (shortname, filepath) VALUES
-('sorry', 'en/us/callie/misc/8000/sorry.wav'),
-('Welcome Freeswitch Conf', 'en/us/callie/misc/8000/misc-welcome_freeswitch_conf_call.wav'),
-('if_you_are_this_person', 'en/us/callie/misc/8000/if_you_are_this_person.was'),
-('misc_chicago_each_summer', 'en/us/callie/misc/8000/misc-chicago_each_summer.wav');
+
+INSERT INTO dialplan_templates (template) VALUES
+('{"name":"ResponsumClassic","extensionlist":[{"name":"mandag-torsdag","conditionlist":[{"condition":"time","time-of-day":"08:00-17:00","wday":"mon-thu"}],"actionlist":[{"action":"receptionists","sleeptime":0}]},{"name":"fredag","conditionlist":[{"condition":"time","time-of-day":"08:00-16:30","wday":"fri"}],"actionlist":[{"action":"receptionists","sleeptime":0}]},{"name":"lukket","conditionlist":[],"actionlist":[{"action":"voicemail"}]}]}');
 
 
 -- POSTGRES ONLY
@@ -514,5 +503,6 @@ SELECT setval('message_draft_id_sequence', (SELECT max(id)+1 FROM message_draft)
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
 SELECT setval('recurring_calendar_events_id_sequence', (SELECT max(id)+1 FROM recurring_calendar_events), FALSE);
 SELECT setval('phone_numbers_id_sequence', (SELECT max(id)+1 FROM phone_numbers), FALSE);
+SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 
 COMMIT;

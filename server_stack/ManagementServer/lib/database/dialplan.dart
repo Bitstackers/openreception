@@ -197,3 +197,19 @@ Future<int> _updatePlaylist(
 
   return execute(pool, sql, parameters);
 }
+
+Future<List<model.DialplanTemplate>> _getDialplanTemplates(Pool pool) {
+  String sql = '''
+    SELECT id, template
+    FROM dialplan_templates
+  ''';
+
+  return query(pool, sql).then((rows) {
+    List<model.DialplanTemplate> templates = new List<model.DialplanTemplate>();
+    for(var row in rows) {
+      Map content = JSON.decode(row.template);
+      templates.add(new model.DialplanTemplate.fromDb(row.id, content));
+    }
+    return templates;
+  });
+}

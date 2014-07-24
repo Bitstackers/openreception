@@ -12,6 +12,7 @@ import '../database.dart';
 import '../model.dart';
 import '../view/audiofile.dart';
 import '../view/dialplan.dart';
+import '../view/dialplan_template.dart';
 import '../view/playlist.dart';
 import '../view/ivr.dart';
 import '../service.dart' as service;
@@ -186,5 +187,16 @@ class DialplanController {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         orf_http.serverError(request, error.toString());
       });
+  }
+
+  void getTemplates(HttpRequest request) {
+    const context = '${libraryName}.getTemplates';
+
+    db.getDialplanTemplates().then((List<DialplanTemplate> templates) {
+      return orf_http.writeAndClose(request, dialplanTemplateListAsJson(templates));
+    }).catchError((error) {
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
+      orf_http.serverError(request, error.toString());
+    });
   }
 }

@@ -272,7 +272,7 @@ class ReceptionContactController {
   }
 
   void moveContact(HttpRequest request) {
-    const context = '${libraryName}.updateDistributionList';
+    const context = '${libraryName}.moveContact';
     int receptionId = orf_http.pathParameter(request.uri, 'reception');
     int contactId = orf_http.pathParameter(request.uri, 'contact');
     int newContactId = orf_http.pathParameter(request.uri, 'newContactId');

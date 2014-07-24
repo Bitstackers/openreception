@@ -36,14 +36,9 @@ CREATE TABLE auth_identities (
 -------------------------------------------------------------------------------
 --  Dial-plans:
 
-/*CREATE TABLE dial_plans (
-   phone_number TEXT NOT NULL PRIMARY KEY,
-   dial_plan    XML  NOT NULL
-);*/
-
-CREATE TABLE audiofiles (
-   filepath  TEXT NOT NULL PRIMARY KEY,
-   shortname TEXT NOT NULL
+CREATE TABLE dialplan_templates (
+   id       INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   template JSON    NOT NULL
 );
 
 -------------------------------------------------------------------------------

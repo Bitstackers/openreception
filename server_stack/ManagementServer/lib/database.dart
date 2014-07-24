@@ -205,6 +205,9 @@ class Database {
   Future updateIvr(int receptionId, Map ivr) =>
       _updateIvr(pool, receptionId, ivr);
 
+  Future<List<model.DialplanTemplate>> getDialplanTemplates() =>
+      _getDialplanTemplates(pool);
+
   /* ***********************************************
      ****************** Playlist *******************
    */
