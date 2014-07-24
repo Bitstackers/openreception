@@ -9,6 +9,7 @@ import 'package:html5_dnd/html5_dnd.dart';
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
 import '../lib/model.dart';
+import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
@@ -253,6 +254,29 @@ class ContactView {
         });
 
     div.children.add(delete);
+
+    //FIXME This code is only nessesary when it's time to migrate from FrontDesk to OpenReception
+    NumberInputElement newContactIdInput = new NumberInputElement()
+      ..style.marginLeft = '10px'
+      ..placeholder = 'Flyt til kontakt med id...';
+    ButtonElement moveContact = new ButtonElement()
+      ..text = 'Flyt'
+      ..onClick.listen((_) {
+      try {
+        int newContactId = int.parse(newContactIdInput.value);
+        request.moveReceptionContact(contact.receptionId, contact.contactId, newContactId).then((_) {
+          notify.info('Oplysningerne er nu flyttet til ${newContactId}');
+          activateContact(contact.contactId);
+        }).catchError((error) {
+          notify.info('Oplysningerne blev ikke flyttet. Fejl: ${error}');
+        });
+      } catch(error) {
+        notify.info('Det er kontaktens ID der skal skrive i tal. ${error}');
+      }
+    });
+
+    div.children.addAll([newContactIdInput, moveContact]);
+    //
 
     TextAreaElement department, info, position, relations, responsibility;
     InputElement wantMessage, enabled;
@@ -921,6 +945,10 @@ class DistributionsListComponent {
     ..classes.add('zebra')
     ..classes.add('distributionlist');
 
+  SelectElement toPicker = new SelectElement();
+  SelectElement ccPicker = new SelectElement();
+  SelectElement bccPicker = new SelectElement();
+
   List<ReceptionColleague> colleagues = new List<ReceptionColleague>();
 
   DistributionsListComponent(Element this.paranet, Function this.onChange) {
@@ -934,7 +962,38 @@ class DistributionsListComponent {
       ..text = 'BCC'
       ..title = 'Blind Carbon Copy';
 
-    paranet.children.addAll([toLabel, ulTo, ccLabel, ulCc, bccLabel, ulBcc]);
+    paranet.children.addAll([toLabel,  ulTo,
+                             ccLabel,  ulCc,
+                             bccLabel, ulBcc]);
+
+    _registerEventListerns();
+  }
+
+  void _registerEventListerns() {
+    _registerPicker(toPicker, ulTo);
+    _registerPicker(ccPicker, ulCc);
+    _registerPicker(bccPicker, ulBcc);
+  }
+
+  void _registerPicker(SelectElement picker, UListElement ul) {
+    picker.onChange.listen((_) {
+      if(picker.selectedIndex != 0) {
+        OptionElement pickedOption = picker.options[picker.selectedIndex];
+        int receptionId = int.parse(pickedOption.dataset['reception_id']);
+        int contactId = int.parse(pickedOption.dataset['contact_id']);
+
+        ReceptionContact contact = new ReceptionContact()
+          ..receptionId = receptionId
+          ..contactId = contactId;
+
+        int index = ul.children.length -1;
+        ul.children.insert(index, _makeEndpointRow(contact));
+
+        picker.selectedIndex = 0;
+        picker.children.remove(pickedOption);
+        _notifyChange();
+      }
+    });
   }
 
   void clear() {
@@ -958,25 +1017,32 @@ class DistributionsListComponent {
     ulTo.children
       ..clear()
       ..addAll(list.to.map(_makeEndpointRow))
-      ..add(_makeNewEndpointRow(ulTo));
+      ..add(_makeNewEndpointRow(toPicker, ulTo));
 
     ulCc.children
       ..clear()
       ..addAll(list.cc.map(_makeEndpointRow))
-      ..add(_makeNewEndpointRow(ulCc));
+      ..add(_makeNewEndpointRow(ccPicker, ulCc));
 
     ulBcc.children
       ..clear()
       ..addAll(list.bcc.map(_makeEndpointRow))
-      ..add(_makeNewEndpointRow(ulBcc));
+      ..add(_makeNewEndpointRow(bccPicker, ulBcc));
   }
 
-  LIElement _makeNewEndpointRow(UListElement ul) {
+  LIElement _makeNewEndpointRow(SelectElement picker, UListElement ul) {
     LIElement li = new LIElement();
 
     List<ReceptionContact> allReadyInThelist = _extractReceptionContacts(ul);
 
-    SelectElement picker = new SelectElement();
+    _populatePicker(picker, allReadyInThelist);
+
+    li.children.add(picker);
+    return li;
+  }
+
+  void _populatePicker(SelectElement picker, List<ReceptionContact> allReadyInThelist) {
+    picker.children.clear();
     picker.children.add(new OptionElement(data: 'Vælg'));
     for(var reception in colleagues) {
       for(var contact in reception.contacts) {
@@ -988,27 +1054,6 @@ class DistributionsListComponent {
         }
       }
     }
-    picker.onChange.listen((_) {
-      if(picker.selectedIndex != 0) {
-        OptionElement pickedOption = picker.options[picker.selectedIndex];
-        int receptionId = int.parse(pickedOption.dataset['reception_id']);
-        int contactId = int.parse(pickedOption.dataset['contact_id']);
-
-        ReceptionContact contact = new ReceptionContact()
-          ..receptionId = receptionId
-          ..contactId = contactId;
-
-        int index = ul.children.length -1;
-        ul.children.insert(index, _makeEndpointRow(contact));
-
-        picker.selectedIndex = 0;
-        picker.children.remove(pickedOption);
-        _notifyChange();
-      }
-    });
-
-    li.children.add(picker);
-    return li;
   }
 
   LIElement _makeEndpointRow(ReceptionContact contact) {
@@ -1038,6 +1083,18 @@ class DistributionsListComponent {
       ..onClick.listen((_) {
       li.parent.children.remove(li);
       _notifyChange();
+
+      List<ReceptionContact> allReadyInThelist;
+
+      allReadyInThelist = _extractReceptionContacts(ulTo);
+      _populatePicker(toPicker, allReadyInThelist);
+
+      allReadyInThelist = _extractReceptionContacts(ulCc);
+      _populatePicker(ccPicker, allReadyInThelist);
+
+      allReadyInThelist = _extractReceptionContacts(ulBcc);
+      _populatePicker(bccPicker, allReadyInThelist);
+
     });
 
     li.children.addAll([element, deleteButton]);

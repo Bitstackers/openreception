@@ -226,4 +226,22 @@ Future updateDistributionList(int receptionId, int contactId, String body) {
   return completer.future;
 }
 
+Future moveReceptionContact(int receptionId, int contactId, int newContactId) {
+  final Completer completer = new Completer();
 
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/contact/$contactId/newContactId/${newContactId}?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.POST, url)
+    ..onLoad.listen((_) {
+      completer.complete(request.responseText);
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error.toString());
+    })
+    ..send();
+
+  return completer.future;
+}

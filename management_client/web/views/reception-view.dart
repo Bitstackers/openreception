@@ -257,7 +257,7 @@ class ReceptionView {
         ..organization_id = currentOrganizationId
         ..full_name = inputFullName.value
         ..enabled = inputEnabled.checked
-        ..number = inputReceptionNumber.value
+        ..receptionNumber = inputReceptionNumber.value
 
         ..customertype = inputCostumerstype.value
         ..shortGreeting = inputShortGreeting.value
@@ -323,7 +323,7 @@ class ReceptionView {
 
         inputFullName.value = response.full_name;
         inputEnabled.checked = response.enabled;
-        inputReceptionNumber.value = response.number;
+        inputReceptionNumber.value = response.receptionNumber;
         inputCostumerstype.value = response.customertype;
         inputShortGreeting.value = response.shortGreeting;
         inputGreeting.value = response.greeting;

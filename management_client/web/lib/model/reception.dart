@@ -11,7 +11,7 @@ class Reception {
   String customertype;
   String extradatauri;
   bool enabled;
-  String number;
+  String receptionNumber;
 
   List<String> addresses;
   List<String> alternatenames;
@@ -35,7 +35,7 @@ class Reception {
         ..organization_id = json['organization_id']
         ..full_name = stringFromJson(json, 'full_name')
         ..enabled = json['enabled']
-        ..number = json['number'];
+        ..receptionNumber = json['number'];
 
     if (json.containsKey('attributes')) {
       Map attributes = json['attributes'];
@@ -87,7 +87,7 @@ class Reception {
       'full_name': full_name,
       'enabled': enabled,
       'attributes': attributes,
-      'number': number
+      'number': receptionNumber
     };
 
     return JSON.encode(data);
