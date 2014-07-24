@@ -1089,7 +1089,8 @@ class DistributionsListComponent {
       element.text = 'Fejl. Person ikke fundet.';
     }
 
-    ButtonElement deleteButton = new ButtonElement()
+    ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
+      ..classes.add('small-button')
       ..text = 'Slet'
       ..onClick.listen((_) {
       li.parent.children.remove(li);
@@ -1108,7 +1109,7 @@ class DistributionsListComponent {
 
     });
 
-    li.children.addAll([element, deleteButton]);
+    li.children.addAll([deleteButton, element]);
     return li;
   }
 
