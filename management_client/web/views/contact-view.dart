@@ -941,7 +941,7 @@ class EndpointsComponent {
 }
 
 class DistributionsListComponent {
-  final Element paranet;
+  final Element parent;
   final Function onChange;
   DistributionList persistentList;
   UListElement ulTo = new UListElement()
@@ -962,7 +962,7 @@ class DistributionsListComponent {
 
   List<ReceptionColleague> colleagues = new List<ReceptionColleague>();
 
-  DistributionsListComponent(Element this.paranet, Function this.onChange) {
+  DistributionsListComponent(Element this.parent, Function this.onChange) {
     LabelElement toLabel = new LabelElement()
       ..text = 'To'
       ..title = 'To';
@@ -973,7 +973,7 @@ class DistributionsListComponent {
       ..text = 'BCC'
       ..title = 'Blind Carbon Copy';
 
-    paranet.children.addAll([toLabel,  ulTo,
+    parent.children.addAll([toLabel,  ulTo,
                              ccLabel,  ulCc,
                              bccLabel, ulBcc]);
 
@@ -1093,21 +1093,21 @@ class DistributionsListComponent {
       ..classes.add('small-button')
       ..text = 'Slet'
       ..onClick.listen((_) {
-      li.parent.children.remove(li);
-      _notifyChange();
+        li.parent.children.remove(li);
+        _notifyChange();
 
-      List<ReceptionContact> allReadyInThelist;
+        List<ReceptionContact> allReadyInThelist;
 
-      allReadyInThelist = _extractReceptionContacts(ulTo);
-      _populatePicker(toPicker, allReadyInThelist);
+        allReadyInThelist = _extractReceptionContacts(ulTo);
+        _populatePicker(toPicker, allReadyInThelist);
 
-      allReadyInThelist = _extractReceptionContacts(ulCc);
-      _populatePicker(ccPicker, allReadyInThelist);
+        allReadyInThelist = _extractReceptionContacts(ulCc);
+        _populatePicker(ccPicker, allReadyInThelist);
 
-      allReadyInThelist = _extractReceptionContacts(ulBcc);
-      _populatePicker(bccPicker, allReadyInThelist);
+        allReadyInThelist = _extractReceptionContacts(ulBcc);
+        _populatePicker(bccPicker, allReadyInThelist);
 
-    });
+      });
 
     li.children.addAll([deleteButton, element]);
     return li;
