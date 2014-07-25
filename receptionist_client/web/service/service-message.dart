@@ -22,7 +22,7 @@ abstract class Message {
     final String path = '/message/send';
 
     /* Assemble the initial content for the message. */
-    Map payload = message.toMap;
+    Map payload = message.asMap;
 
     /* 
      * Now we are ready to send the request to the server. 
