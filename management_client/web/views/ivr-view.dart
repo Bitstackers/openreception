@@ -63,7 +63,12 @@ class IvrView {
 
     newButton.onClick.listen((_) {
       if(ivrList != null) {
-        ivrList.list.add(new libIvr.Ivr()..name = 'Jeg_Skal_Have_Et_Unikt_Navn');
+        int number = 1;
+        String name = 'menu${number}';
+        while(ivrList.list.any((libIvr.Ivr i) => i.name == name)) {
+          name = 'menu${++number}';
+        }
+        ivrList.list.add(new libIvr.Ivr()..name = name);
         renderMenuList(ivrList);
       }
     });
