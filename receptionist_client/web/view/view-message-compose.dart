@@ -13,25 +13,6 @@
 
 part of view;
 
-abstract class MessageLabels {
-  static final String saveButtonLabel = 'Gem';
-  static final String sendButtonLabel = 'Send';
-  static final String title = 'Besked';
-  static final String cancelButtonLabel = 'Annuller';
-  static final String callerPhonePlaceholder = 'Telefon';
-  static final String callerCellphonePlaceholder = 'Mobilnummer';
-  static final String callerLocalNumberPlaceholder = 'Lokalnummer';
-  static final String callerCompanyPlaceholder = 'Firmanavn';
-  static final String callerNamePlaceholder = 'Opkalders navn';
-  static final String searchPlaceholder = 'S&oslash;g..';
-  static final String searchResultPlaceholder = 'Ingen data fundet';
-  static final String messagePlaceholder = 'Besked';
-  static final String pleaseCall = 'Ring venligst';
-  static final String callsBack = 'Ringer selv tilbage';
-  static final String hasCalled = 'Har ringet';
-  static final String urgent = 'Haster';
-}
-
 class Message {
 
   static const String className = '${libraryName}.Message';
@@ -139,19 +120,18 @@ class Message {
     this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
     
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     this.cancelButton
-        ..text = MessageLabels.cancelButtonLabel
+        ..text = Label.Cancel
         ..onClick.listen(_cancelClick);
 
     this.draftButton
-        ..text = MessageLabels.saveButtonLabel
+        ..text = Label.Save
         ..onClick.listen(_draftClick);
 
     this.sendButton
-        ..text = MessageLabels.sendButtonLabel
+        ..text = Label.Send
         ..onClick.listen(_sendHandler);
 
     focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
@@ -171,26 +151,29 @@ class Message {
 
   
   void _setupLabels () {
-    this.header.text = MessageLabels.title;
-    this.callerCellphoneField.placeholder = MessageLabels.callerCellphonePlaceholder; 
-    this.callerNameField.placeholder = MessageLabels.callerNamePlaceholder;
-    this.callerCompanyField.placeholder = MessageLabels.callerCompanyPlaceholder;
-    this.callerPhoneField.placeholder= MessageLabels.callerPhonePlaceholder;
-    this.callerLocalExtensionField.placeholder = MessageLabels.callerLocalNumberPlaceholder;
-    this.messageBodyField.placeholder = MessageLabels.messagePlaceholder;
+    this.header.children = 
+        [Icon.Message,
+         new SpanElement()..text =  Label.MessageCompose,
+         new Nudge(NavShortcut).element];
+    this.callerNameField.placeholder = Label.CallerName;
+    this.callerCompanyField.placeholder = Label.Company;
+    this.callerPhoneField.placeholder= Label.Phone;
+    this.callerCellphoneField.placeholder = Label.CellPhone; 
+    this.callerLocalExtensionField.placeholder = Label.LocalExtension;
+    this.messageBodyField.placeholder = Label.PlaceholderMessageCompose;
     
     /// Checkbox labes.
     this.element.querySelectorAll('label').forEach((LabelElement label) {
       final String labelFor = label.attributes['for'];
       
       if (labelFor == this.pleaseCall.id) {
-        label.text = MessageLabels.pleaseCall;
+        label.text = Label.PleaseCall;
       } else if (labelFor == this.callsBack.id) {
-        label.text = MessageLabels.callsBack;
+        label.text = Label.WillCallBack;
       } else if (labelFor == this.hasCalled.id) {
-        label.text =  MessageLabels.hasCalled;
+        label.text =  Label.HasCalled;
       } else if (labelFor == this.urgent.id) {
-        label.text = MessageLabels.urgent;
+        label.text = Label.Urgent;
       }
     });
     }
@@ -310,7 +293,7 @@ class Message {
         'flags': []
       });
 
-      print (pendingMessage.toMap);
+      print (pendingMessage.asMap);
 
       pleaseCall.checked ? pendingMessage.addFlag('urgent') : null;
       callsBack.checked ? pendingMessage.addFlag('willCallBack') : null;

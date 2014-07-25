@@ -1,9 +1,3 @@
-fieldset#companyevents>legend {
-  background-repeat: no-repeat;
-  padding: 1px 1em;
-  background-image: url('../images/calendar-icon-16x16.png');
-}
-
 #companyevents {
   width: 100%;
 }

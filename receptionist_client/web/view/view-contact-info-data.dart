@@ -33,7 +33,6 @@ class ContactInfoData {
   UListElement get workHoursList => this.element.querySelector('#${id.CONTACT_WORK_HOURS_LIST}');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
-
   ContactInfoData(DivElement this.element) {
     handlingList = querySelector('#${id.CONTACT_HANDLING_LIST}');
     position = querySelector('#${id.CONTACT_PISITION}');
@@ -44,7 +43,7 @@ class ContactInfoData {
     emailAddressList = querySelector('#${id.CONTACT_EMAIL_ADDRESS_LIST}');
     info = querySelector('#${id.CONTACT_ADDITIONAL_INFO}');
     backupList = querySelector('#${id.CONTACT_BACKUP_LIST}');
-
+    
     this._registerEventHandlers();
   }
 

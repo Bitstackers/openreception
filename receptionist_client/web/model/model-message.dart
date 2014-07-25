@@ -1,6 +1,6 @@
 part of model;
 
-abstract class MessageConstants {
+abstract class Role {
   static final String TO             = "to";
   static final String CC             = "cc";
   static final String BCC            = "bcc";
@@ -31,10 +31,14 @@ class Message {
   int get ID => this._map['id'];  
   DateTime get createdAt => new DateTime.fromMillisecondsSinceEpoch(this._map['created_at']);
   
-  MessageContext get context      => this._context;
-  MessageCaller  get caller       => this._caller;
-  int            get queueCount   => this._map['pending_messages'];
-  Set<Recipient> get recipients   => _recipients;
+  MessageContext  get  context      => this._context;
+  MessageCaller   get  caller       => this._caller;
+  int             get  queueCount   => this._map['pending_messages'];
+  Set<Recipient>  get  recipients   => _recipients;
+  List<Recipient> get toRecipients  => this.recipients.where((Recipient recipient) => recipient.role == Role.TO).toList();
+  List<Recipient> get ccRecipients  => this.recipients.where((Recipient recipient) => recipient.role == Role.CC).toList();
+  List<Recipient> get bccRecipients => this.recipients.where((Recipient recipient) => recipient.role == Role.BCC).toList();
+  
   Map            get takenByAgent => this._map['taken_by_agent'];
   String         get body         => this._map['message'];
   
@@ -66,31 +70,20 @@ class Message {
     this._caller  = new MessageCaller(this);
     this._context = new MessageContext(this);
     this._map = map;
+
+    if (map.containsKey('recipients')) {
+      Role.RECIPIENT_ROLES.forEach((String role) {
+        (map['recipients'][role] as List).forEach ((Map recipientMap) {
+          this.addRecipient(new Recipient.fromMap(recipientMap..addAll({'role' : role})));
+        });
+      });
+    }
   }
   
-  Map get toMap {
-    this._map['recipients'] = {};
-    this._map['recipients'][MessageConstants.TO]  = [];
-    this._map['recipients'][MessageConstants.CC]  = [];
-    this._map['recipients'][MessageConstants.BCC] = [];
-    
-    this.recipients.forEach((recipient) {
-      if (recipient.role == MessageConstants.TO) {
-        this._map['recipients'][MessageConstants.TO].add(recipient.toMap());
-      }
-      else if (recipient.role == MessageConstants.CC) {
-        this._map['recipients'][MessageConstants.TO].add(recipient.toMap());
-      }
-      else if (recipient.role == MessageConstants.BCC) {
-        this._map['recipients'][MessageConstants.TO].add(recipient.toMap());
-      }
-      else {
-        throw new StateError("Bad role for recipient: ${recipient}.");
-      }
-    });
-    
-    return this._map;
-  }
+  Map get asMap => this._map
+    ..addAll({'recipients' : {Role.TO : this.toRecipients,
+                              Role.CC : this.ccRecipients,
+                              Role.BCC : this.bccRecipients}});
   
   Future send () {
     return Service.Message.send(this);
@@ -107,8 +100,8 @@ class Message {
    */
   void addRecipient (Recipient contact) {
     if (this._recipients.contains(contact)) {
-      if (contact.role == MessageConstants.TO) {
-        if (this.recipients.lookup(contact).role == MessageConstants.CC || this.recipients.lookup(contact).role == MessageConstants.BCC) {
+      if (contact.role == Role.TO) {
+        if (this.recipients.lookup(contact).role == Role.CC || this.recipients.lookup(contact).role == Role.BCC) {
           //log.debugContext (contact.ContactString() + " found with role \""  + this.recipients.lookup(contact).role + 
           //  "\". Replacing with role \"" + contact.role + "\"", "Message.addRecipient");
           // Replace the contact.
@@ -117,8 +110,8 @@ class Message {
         }
       }
 
-      else if (contact.role == MessageConstants.CC) {
-        if (this.recipients.lookup(contact).role == MessageConstants.BCC) {
+      else if (contact.role == Role.CC) {
+        if (this.recipients.lookup(contact).role == Role.BCC) {
           //logger.debugContext (contact.ContactString() + " found with role \""  + this.recipients.lookup(contact).role + 
           //    "\". Replacing with role \"" + contact.role + "\"", "Message.addRecipient");
             // Replace the contact.

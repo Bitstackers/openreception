@@ -34,10 +34,10 @@ class ReceptionAddresses {
     
     listElement = element.querySelector('#${id.COMPANY_ADDRESSES_LIST}');
     header.children = [Icon.MapMarker,
-                       new SpanElement()..text = title];
+                       new SpanElement()..text = title,
+                       new Nudge(NavShortcut).element];
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
 
     _registerEventListeners();

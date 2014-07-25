@@ -17,7 +17,7 @@ class Recipient {
          set contactName (String name)   => this._map['contact']['name'] = name;
   int    get receptionID                 => this._map['reception']['id'];
          set receptionID (int ID)        => this._map['reception']['id'] = ID; 
-  String get receptionName               => this._map['reception']['id'];
+  String get receptionName               => this._map['reception']['name'];
          set receptionName (String name) => this._map['reception']['name'] = name; 
   String get role                        => this._map['role'];
          set role (String role)          => this._map['role'] = role;
@@ -29,35 +29,28 @@ class Recipient {
     this.role = role;
   }
 
-  Recipient.fromJSONString (String item) {
-    Map json = JSON.decode (item);
-
-    this.contactID     = json['contact']['id'];
-    this.contactName   = json['contact']['name'];
-    this.receptionID   = json['reception']['id'];
-    this.receptionName = json['reception']['name'];
-    this.role          = json['role'];
-  }
+  factory Recipient.fromJSONString (String json) => new  Recipient.fromMap(JSON.decode (json));
   
-  @override
-  int get hashCode {
-    return (this.ContactString()).hashCode;
-  }
-  
-  @override
-  bool operator == (Recipient other) {
-    return this.ContactString() == other.ContactString();
-  }
-  
-  Map toMap() {
-    return this._map;
+  Recipient.fromMap (Map map) {
+    this.contactID     = map['contact']['id'];
+    this.contactName   = map['contact']['name'];
+    this.receptionID   = map['reception']['id'];
+    this.receptionName = map['reception']['name'];
+    this.role          = map['role'];
   }
 
-  String toJson() {
-    return JSON.encode(this._map);
-  }
+  @override
+  int get hashCode => (this.ContactString()).hashCode;
   
-  String ContactString() {
-    return contactID.toString() + "@" + receptionID.toString(); 
-  }
+  @override
+  bool operator == (Recipient other) => this.ContactString() == other.ContactString();
+  
+  Map get asMap => this._map;
+
+  Map    toJson()   => this.asMap;
+  
+  @override
+  String toString() => '${this.contactName}@${this.receptionName}';
+  
+  String ContactString() => contactID.toString() + "@" + receptionID.toString(); 
 }

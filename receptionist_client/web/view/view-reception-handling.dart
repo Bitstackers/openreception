@@ -13,10 +13,6 @@
 
 part of view;
 
-abstract class ReceptionHandlingLabels {
-  static const String title = 'Håndtering';
-}
-
 /**
  * Widget for cleartext instruction used for instructing users on how to 
  * handle the call for the reception.
@@ -42,10 +38,11 @@ class ReceptionHandling {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
 
-    this.header.text = ReceptionHandlingLabels.title;
+    this.header.children = [Icon.Alert,
+                            new SpanElement()..text = Label.ReceptionHandling,
+                            new Nudge(NavShortcut).element];
     _registerEventListeners();
   }
   

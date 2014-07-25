@@ -26,7 +26,9 @@ class CallList {
 
   Element        get header       => this.element.querySelector('legend');
   UListElement   get queuedCallUL => this.element.querySelector("#global-queue-list");
-  UListElement   get ownedCallsUL =>  querySelector("#local-call-list"); //TODO: Move this to a more local DOM scope.
+  UListElement   get ownedCallsUL => querySelector("#local-call-list"); //TODO: Move this to a more local DOM scope.
+  
+  Element        get localCallsHeader => querySelector("#local-calls legend"); //TODO: Move this to a more local DOM scope.
 
   model.CallList _callList;
   int callCount = 0;
@@ -129,5 +131,10 @@ class CallList {
     header.children = 
         [Icon.Phone,
          new SpanElement()..text = '${Label.Calls} (${this.queuedCallUL.children.where((LIElement element) => !element.hidden).length})'];
+
+    localCallsHeader.children = 
+        [Icon.Exclamation,
+         new SpanElement()..text = '${Label.LocalCalls} (${this.ownedCallsUL.children.where((LIElement element) => !element.hidden).length})'];
+
   }
 }

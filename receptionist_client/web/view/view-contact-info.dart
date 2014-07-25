@@ -46,11 +46,19 @@ class ContactInfo {
     calendar = new ContactInfoCalendar(contactinfo_calendar, context, element);
     data = new ContactInfoData(contactinfo_data);
 
+    Element contactinfopanelHeader = querySelector('#contactinfopanel legend'); 
+    
     this.header.children = [Icon.Contacts,
                             new SpanElement()..text = Label.ReceptionContacts,
                             new Nudge(ContactInfoSearch.NavShortcut).element];
 
+    
+    print (Icon.Info.children);
+    contactinfopanelHeader.children = [Icon.Info,
+                            new SpanElement()..text = Label.ContactInformation,
+                            new Nudge(ContactInfoSearch.NavShortcut).element];
 
+    
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, this._select);
 

@@ -2,8 +2,14 @@ part of view;
 
 abstract class Icon {
   
+  static Element get _baseElement => document.createElement('i')..classes.add('fa');
   
+  static Element get Dialpad     => _baseElement..classes.add('fa-th');  
+  static Element get Info        => _baseElement..classes.add('fa-info');
+  static Element get Exclamation => _baseElement..classes.add('fa-exclamation');  
+  static Element get Alert       => _baseElement..classes.add('fa-exclamation-triangle');  
   static Element get Globe => new DocumentFragment.html ('''<i class=\"fa fa-globe"></i>''').children.first;
+  static Element get Message => new DocumentFragment.html ('''<i class=\"fa fa-comment"></i>''').children.first;
   static Element get Phone => new DocumentFragment.html ('''<i class=\"fa fa-phone"></i>''').children.first;
   static Element get OrderedList => new DocumentFragment.html ('''<i class=\"fa fa-list-ol"></i>''').children.first;
   static Element get Contacts => new DocumentFragment.html ('''<i class=\"fa fa-users"></i>''').children.first;

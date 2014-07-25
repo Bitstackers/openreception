@@ -140,44 +140,30 @@ class MessageEdit {
 
   
   void _setupLabels () {
-    this.header.text = MessageLabels.title;
-    this.callerCellphoneField.placeholder = MessageLabels.callerCellphonePlaceholder; 
-    this.callerNameField.placeholder = MessageLabels.callerNamePlaceholder;
-    this.callerCompanyField.placeholder = MessageLabels.callerCompanyPlaceholder;
-    this.callerPhoneField.placeholder= MessageLabels.callerPhonePlaceholder;
-    this.callerLocalExtensionField.placeholder = MessageLabels.callerLocalNumberPlaceholder;
-    this.messageBodyField.placeholder = MessageLabels.messagePlaceholder;
+    this.header.text = Label.MessageEdit;
+    this.callerNameField.placeholder = Label.CallerName;
+    this.callerCompanyField.placeholder = Label.Company;
+    this.callerPhoneField.placeholder= Label.Phone;
+    this.callerCellphoneField.placeholder = Label.CellPhone; 
+    this.callerLocalExtensionField.placeholder = Label.LocalExtension;
+    this.messageBodyField.placeholder = Label.PlaceholderMessageCompose;
     
     /// Checkbox labes.
     this.element.querySelectorAll('label').forEach((LabelElement label) {
       final String labelFor = label.attributes['for'];
-      
-      if (labelFor == this.pleaseCall.id) {
-        label.text = MessageLabels.pleaseCall;
-      } else if (labelFor == this.callsBack.id) {
-        label.text = MessageLabels.callsBack;
-      } else if (labelFor == this.hasCalled.id) {
-        label.text =  MessageLabels.hasCalled;
-      } else if (labelFor == this.urgent.id) {
-        label.text = MessageLabels.urgent;
-      }
+        if (labelFor == this.pleaseCall.id) {
+          label.text = Label.PleaseCall;
+        } else if (labelFor == this.callsBack.id) {
+          label.text = Label.WillCallBack;
+        } else if (labelFor == this.hasCalled.id) {
+          label.text =  Label.HasCalled;
+        } else if (labelFor == this.urgent.id) {
+          label.text = Label.Urgent;
+        }
     });
     }
   
-  /**
-   * Re-renders the recipient list.
-   */
-  void _renderRecipientList() {
-    // Updates the recipient list.
-    recipientsList.children.clear();
-    this.recipients.forEach((model.Recipient recipient) {
-      recipientsList.children.add(new LIElement()
-                                    ..text = recipient.contactName
-                                    ..classes.add('email-recipient-role-${recipient.role}'));
-    });
-  }
-
-  /**
+    /**
    * Click handler for the entire message element. Sets the focus to the widget.
    */
   void _onMessageElementClick(_) {
@@ -242,11 +228,15 @@ class MessageEdit {
     this.hasCalled.checked = message.hasFlag('hasCalled');
     this.urgent.checked = message.hasFlag('urgent');
 
-      /// Checkboxes
-//      InputElement get pleaseCall => this.element.querySelector('input.message-tag.pleasecall');
-//      InputElement get callsBack  => this.element.querySelector('input.message-tag.callsback');
- //     InputElement get hasCalled  => this.element.querySelector('input.message-tag.hascalled');
- //    InputElement get urgent     => this.element.querySelector('input.message-tag.urgent');
+    // /Updates the recipient list.
+    recipientsList.children.clear();
+    
+    print (message.recipients);
+    message.recipients.forEach((model.Recipient recipient) {
+      recipientsList.children.add(new LIElement()
+                                  ..text = recipient.contactName
+                                  ..classes.add('email-recipient-role-${recipient.role}'));
+    });
   }
   
   /**
@@ -269,7 +259,7 @@ class MessageEdit {
         'flags': []
       });
 
-      print (pendingMessage.toMap);
+      print (pendingMessage.asMap);
 
       pleaseCall.checked ? pendingMessage.addFlag('urgent') : null;
       callsBack.checked ? pendingMessage.addFlag('willCallBack') : null;

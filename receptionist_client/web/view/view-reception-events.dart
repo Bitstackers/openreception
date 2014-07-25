@@ -12,12 +12,6 @@
 */
 part of view;
 
-abstract class ReceptionEventsLabels {
-  static const String title     = 'Kalender';
-  static const String newEvent  = 'Opret aftale';
-  static const String editEvent = 'Rediger aftale';
-}
-
 /**
  * Calendar widget.
  *
@@ -135,10 +129,11 @@ class ReceptionEvents {
     this.location = new nav.Location(context.id, element.id, eventList.id);
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
-    this.header.text = ReceptionEventsLabels.title;
+    this.header.children = [Icon.Calendar,
+                            new SpanElement()..text = Label.ReceptionEvents,
+                            new Nudge(NavShortcut).element];
 
     this.newEventWidget.hidden = true;
     _registerEventListeners();

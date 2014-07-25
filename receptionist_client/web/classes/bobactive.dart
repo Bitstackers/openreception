@@ -76,7 +76,7 @@ class BobActive {
     });
 
     registerContexts();
-    contextSwitcher          = new View.ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [homeContext, homePlusContext, messageContext, logContext]);
+    contextSwitcher          = new View.ContextSwitcher(querySelector('#${id.CONTEXT_SWITCHER}'), [homeContext, homePlusContext, messageContext]);
 
     /// Home context
     welcomeMessage           = new View.WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
@@ -126,7 +126,7 @@ class BobActive {
         ..lastFocusId = 'company-customertype-body';
     messageContext   = new Context(querySelector('#contextmessages'))
       ..lastFocusId = 'message-search-agent-searchbar';
-    logContext        = new Context(querySelector('#contextlog'));
+    //logContext        = new Context(querySelector('#contextlog'));
   }
 
 }

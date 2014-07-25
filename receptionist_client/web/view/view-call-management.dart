@@ -17,10 +17,6 @@ part of view;
  * Widget for originating a new call.
  */
 
-abstract class CallManagementLabels {
-  static const String HeaderText = 'Ring ud';
-}
-
 class CallManagement {
   static const String  className = '${libraryName}.CallManagement';
   static const String NavShortcut = 'T'; 
@@ -30,7 +26,7 @@ class CallManagement {
   final        Element element;
   final        Context context;
 
-  bool                get selected        => !nav.Location.isActive(this.element);
+  bool                get selected     => !nav.Location.isActive(this.element);
   InputElement        get numberField  => this.element.querySelector('#call-originate-number-field');
   ButtonElement       get dialButton   => this.element.querySelector('.call-originate-number-button');
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
@@ -57,11 +53,13 @@ class CallManagement {
    * TODO
    */
   CallManagement(Element this.element, Context this.context) {
-    header.text = CallManagementLabels.HeaderText;
+    header.children = [Icon.Dialpad,
+                       new SpanElement()..text = Label.DialOut,
+                       new Nudge('T').element];
+    
     
     registerEventListeners();
     
-    this.element.insertBefore(new Nudge('T').element, this.numberField);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     
     this.element.insertBefore(new Nudge('I').element, this.dialButton);
