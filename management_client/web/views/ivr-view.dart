@@ -137,6 +137,7 @@ class IvrView {
     LIElement node = new LIElement();
 
     SpanElement text = new SpanElement()
+      ..classes.add('clickable')
       ..text = item.name
       ..onClick.listen((_) {
         HighlightItem(node);
@@ -250,6 +251,7 @@ class IvrView {
       switch (actionPicker.selectedOptions.first.value) {
         case 'none':
           ivr.entries.remove(entry);
+          entry = null;
           break;
         case 'extensiongroup':
           entry = new libIvr.Entry()
