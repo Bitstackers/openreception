@@ -267,15 +267,22 @@ class IvrView {
     DivElement container = new DivElement();
 
     if(entry != null) {
-      SelectElement gruops = new SelectElement()
+      SelectElement gruops = new SelectElement();
+      gruops
         ..children.addAll(dialplan.extensionGroups.map((eg) => new OptionElement(data: eg.name, value: eg.name, selected: entry.extensionGroup == eg.name)))
         ..onChange.listen((_) {
-        //TODO
+        entry.extensionGroup = gruops.selectedOptions.first.value;
       });
 
       LabelElement label = new LabelElement()
         ..htmlFor = 'ivr-${entry.digits}-group'
         ..text = 'Gruppe';
+
+      if(entry.extensionGroup == null || entry.extensionGroup.isEmpty) {
+        if(dialplan.extensionGroups.isNotEmpty) {
+          entry.extensionGroup = dialplan.extensionGroups.first.name;
+        }
+      }
 
       container.children.addAll([label, gruops]);
     }
