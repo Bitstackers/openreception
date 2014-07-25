@@ -77,9 +77,7 @@ class ContactView {
           type, value: type)));
     });
 
-    request.getAddressTypeList().then((List<String> types) {
-      EndpointsComponent.addressTypes = types;
-    });
+    EndpointsComponent.loadAddressTypes();
   }
 
   String receptionToSearchboxString(Reception reception, String searchterm) {
@@ -765,6 +763,8 @@ class EndpointsComponent {
   LabelElement header = new LabelElement()
     ..text = 'Kontaktpunkter';
 
+  SortableGroup sortGroup;
+
   EndpointsComponent(Element this._element, Function this._onChange) {
     _element.children.add(header);
     _element.children.add(_ul);
@@ -773,6 +773,12 @@ class EndpointsComponent {
   void clear() {
     _ul.children.clear();
     persistenceEndpoint = [];
+  }
+
+  static Future loadAddressTypes() {
+    return request.getAddressTypeList().then((List<String> types) {
+      EndpointsComponent.addressTypes = types;
+    });
   }
 
   Future load(int receptionId, int contactId) {
@@ -785,10 +791,19 @@ class EndpointsComponent {
   void populateUL(List<Endpoint> list) {
     persistenceEndpoint = list;
     list.sort(Endpoint.sortByPriority);
+
+    List<LIElement> items = list.map(_makeEndpointRow).toList();
+
     _ul.children
       ..clear()
-      ..addAll(list.map(_makeEndpointRow))
+      ..addAll(items)
       ..add(_makeNewEndpointRow());
+
+    sortGroup = new SortableGroup()
+      ..installAll(items);
+
+    // Only accept elements from the same section.
+    sortGroup.accept.add(sortGroup);
   }
 
   LIElement _makeNewEndpointRow() {
@@ -801,6 +816,7 @@ class EndpointsComponent {
           ..address = 'mig@eksempel.dk'
           ..enabled = true;
         LIElement row = _makeEndpointRow(endpoint);
+        sortGroup.install(row);
         int index = _ul.children.length - 1;
         _ul.children.insert(index, row);
         _notifyChange();
@@ -844,15 +860,6 @@ class EndpointsComponent {
         _notifyChange();
       });
 
-//    LabelElement priorityLabel = new LabelElement()
-//      ..text = 'prioritet';
-//    NumberInputElement PriorityCheckbox = new NumberInputElement()
-//      ..classes.add('contact-endpoint-priority')
-//      ..value = (endpoint.priority == null ? 0 : endpoint.priority).toString()
-//      ..onInput.listen((_) {
-//        _notifyChange();
-//    });
-
     LabelElement descriptionLabel = new LabelElement()
       ..text = 'note:';
     TextInputElement descriptionInput = new TextInputElement()
@@ -873,7 +880,6 @@ class EndpointsComponent {
         ..children.addAll([address, addressEditBox, typePicker,
                            confidentialLabel, confidentialCheckbox,
                            enabledLabel, enabledCheckbox,
-                           //priorityLabel, PriorityCheckbox,
                            descriptionLabel, descriptionInput,
                            deleteButton]);
   }
