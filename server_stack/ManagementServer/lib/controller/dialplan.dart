@@ -42,8 +42,8 @@ class DialplanController {
         request.response.statusCode = response.statusCode;
         return orf_http.writeAndClose(request, response.body);
       }
-    }).catchError((error) {
-      orf.logger.errorContext('Error: ${error}', context);
+    }).catchError((error, stack) {
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
       orf_http.serverError(request, error.toString());
     });
   }
@@ -69,7 +69,15 @@ class DialplanController {
       .then(JSON.decode)
       .then((Map data) => db.updateDialplan(receptionId, data))
       .then((_) => service.compileDialplan(config.dialplanCompilerServer, receptionId, token))
-      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
+      .then((http.Response response) {
+        if(response.statusCode == 200) {
+         return orf_http.writeAndClose(request, JSON.encode({}));
+        } else {
+          request.response.statusCode = response.statusCode;
+          return orf_http.writeAndClose(request, JSON.encode({'error': 'The is saved, but the compilating returned an error',
+                                                              'description': JSON.decode(response.body)}));
+        }
+      })
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());
