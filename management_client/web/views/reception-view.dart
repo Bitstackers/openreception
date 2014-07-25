@@ -231,7 +231,11 @@ class ReceptionView {
 
       updateReception(selectedReceptionId, updatedReception.toJson()).then((_) {
         //Show a message that tells the user, that the changes went threw.
+        notify.info('Receptionens ændringer er gemt.');
         refreshList();
+      }).catchError((error, stack) {
+        notify.error('Der skete en fejl da receptionen skulle gemmes. ${error}');
+        log.error('Tried to update reception ${selectedReceptionId} but got "${error}" "${stack}"');
       });
     } else if (selectedReceptionId == 0 && currentOrganizationId == 0) {
       Reception newReception = extractValues();
@@ -246,7 +250,7 @@ class ReceptionView {
           });
         }).catchError((error) {
           notify.error('Der skete en fejl, så receptionen blev ikke oprettet.');
-          log.error('Tried to create a new reception but got "$error"');
+          log.error('Tried to create a new reception but got "${error}"');
         });
       }
     }

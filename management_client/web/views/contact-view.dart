@@ -204,8 +204,11 @@ class ContactView {
   }
 
   Future receptionContactUpdate(ReceptionContact RC) {
-    return request.updateReceptionContact(RC.receptionId, RC.contactId, RC.toJson()).catchError((error) {
-      log.error('Tried to update a Reception Contact, but failed with "$error"');
+    return request.updateReceptionContact(RC.receptionId, RC.contactId, RC.toJson()).then((_) {
+      notify.info('Oplysningerne blev gemt.');
+    }).catchError((error, stack) {
+      notify.error('Ændringerne blev ikke gemt.');
+      log.error('Tried to update a Reception Contact, but failed with "${error}", ${stack}');
     });
   }
 
@@ -216,9 +219,11 @@ class ContactView {
         "receptionId": RC.receptionId,
         "contactId": RC.contactId
       };
+      notify.info('Lageringen gik godt.');
       bus.fire(Invalidate.receptionContactAdded, event);
-    }).catchError((error) {
-      log.error('Tried to update a Reception Contact, but failed with "$error"');
+    }).catchError((error, stack) {
+      notify.error('Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
+      log.error('Tried to update a Reception Contact, but failed with "$error" ${stack}');
     });
   }
 
@@ -620,11 +625,12 @@ class ContactView {
           ..enabled = inputEnabled.checked;
 
       request.createContact(newContact.toJson()).then((Map response) {
-        //TODO Success Show message?
         bus.fire(Invalidate.contactAdded, null);
         refreshList();
         activateContact(response['id']);
+        notify.info('Kontaktpersonen blev oprettet.');
       }).catchError((error) {
+        notify.info('Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
         log.error('Tried to make a new contact but failed with error "${error}" from body: "${newContact.toJson()}"');
       });
     }

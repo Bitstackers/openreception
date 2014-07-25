@@ -8,6 +8,7 @@ import 'package:libdialplan/ivr.dart' as libIvr;
 
 import '../lib/eventbus.dart';
 import '../lib/model.dart';
+import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
@@ -75,7 +76,12 @@ class IvrView {
 
     saveButton.onClick.listen((_) {
       if(receptionId != null && ivrList != null) {
-        request.updateIvr(receptionId, JSON.encode(ivrList));
+        request.updateIvr(receptionId, JSON.encode(ivrList)).then((_) {
+          notify.info('IVR menuen blev updateret.');
+        }).catchError((error, stack) {
+          notify.error('Der skete en fejl, så Ivr menuens ændringer blev ikke gemt.');
+          log.error('Tried to update a IVR menu but got "$error" "${stack}"');
+        });
       }
     });
   }
@@ -93,7 +99,8 @@ class IvrView {
     }).then((_) {
       clearContentTable();
       renderMenuList(ivrList);
-    }).catchError((error) {
+    }).catchError((error, stack) {
+      log.error('IVR.loadReceptionData "${error}" "${stack}"');
       notify.error(error.toString());
     });
   }
