@@ -61,5 +61,5 @@ class ReceptionColleague {
     return JSON.encode(data);
   }
 
-  static final sortByName = (ReceptionColleague a, ReceptionColleague b) => a.full_name.compareTo(b.full_name);
+  static int sortByName(ReceptionColleague a, ReceptionColleague b) => a.full_name.compareTo(b.full_name);
 }

@@ -40,4 +40,6 @@ class Endpoint {
 
     return JSON.encode(data);
   }
+
+  static int sortByPriority(Endpoint a, Endpoint b) => a.priority.compareTo(b.priority);
 }

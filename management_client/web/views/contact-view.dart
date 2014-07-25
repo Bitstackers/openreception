@@ -778,6 +778,7 @@ class EndpointsComponent {
 
   void populateUL(List<Endpoint> list) {
     persistenceEndpoint = list;
+    list.sort(Endpoint.sortByPriority);
     _ul.children
       ..clear()
       ..addAll(list.map(_makeEndpointRow))
@@ -796,9 +797,7 @@ class EndpointsComponent {
         LIElement row = _makeEndpointRow(endpoint);
         int index = _ul.children.length - 1;
         _ul.children.insert(index, row);
-        if(_onChange != null) {
-          _onChange();
-        }
+        _notifyChange();
     });
 
     li.children.addAll([createButton]);
@@ -818,9 +817,7 @@ class EndpointsComponent {
       ..classes.add('contact-endpoint-addresstype')
       ..children.addAll(addressTypes.map((String type) => new OptionElement(data: type, value: type, selected: type == endpoint.addressType)))
       ..onChange.listen((_) {
-      if(_onChange != null) {
-        _onChange();
-      }
+      _notifyChange();
     });
 
     LabelElement confidentialLabel = new LabelElement()
@@ -829,9 +826,7 @@ class EndpointsComponent {
       ..classes.add('contact-endpoint-confidential')
       ..checked = endpoint.confidential
       ..onChange.listen((_) {
-      if(_onChange != null) {
-        _onChange();
-      }
+      _notifyChange();
     });
 
     LabelElement enabledLabel = new LabelElement()
@@ -840,21 +835,17 @@ class EndpointsComponent {
       ..classes.add('contact-endpoint-enabled')
       ..checked = endpoint.enabled
       ..onChange.listen((_) {
-        if(_onChange != null) {
-          _onChange();
-        }
+        _notifyChange();
       });
 
-    LabelElement priorityLabel = new LabelElement()
-      ..text = 'prioritet';
-    NumberInputElement PriorityCheckbox = new NumberInputElement()
-      ..classes.add('contact-endpoint-priority')
-      ..value = (endpoint.priority == null ? 0 : endpoint.priority).toString()
-      ..onInput.listen((_) {
-        if(_onChange != null) {
-          _onChange();
-        }
-    });
+//    LabelElement priorityLabel = new LabelElement()
+//      ..text = 'prioritet';
+//    NumberInputElement PriorityCheckbox = new NumberInputElement()
+//      ..classes.add('contact-endpoint-priority')
+//      ..value = (endpoint.priority == null ? 0 : endpoint.priority).toString()
+//      ..onInput.listen((_) {
+//        _notifyChange();
+//    });
 
     LabelElement descriptionLabel = new LabelElement()
       ..text = 'note:';
@@ -862,42 +853,43 @@ class EndpointsComponent {
       ..classes.add('contact-endpoint-description')
       ..value = endpoint.description
       ..onInput.listen((_) {
-        if(_onChange != null) {
-          _onChange();
-        }
+        _notifyChange();
     });
 
-    //TODO Make it do something.
     ButtonElement deleteButton = new ButtonElement()
-      ..text = 'slet'
+      ..text = 'Slet'
       ..onClick.listen((_) {
       _ul.children.remove(li);
-      if(_onChange != null) {
-        _onChange();
-      }
+      _notifyChange();
     });
 
     return li
         ..children.addAll([address, addressEditBox, typePicker,
                            confidentialLabel, confidentialCheckbox,
                            enabledLabel, enabledCheckbox,
-                           priorityLabel, PriorityCheckbox,
+                           //priorityLabel, PriorityCheckbox,
                            descriptionLabel, descriptionInput,
                            deleteButton]);
+  }
+
+  void _notifyChange() {
+    if(_onChange != null) {
+      _onChange();
+    }
   }
 
   Future save(int receptionId, int contactId) {
     List<Endpoint> foundEndpoints = [];
 
+    int index = 1;
     for(LIElement item in _ul.children) {
       SpanElement addressSpan = item.querySelector('.contact-endpoint-address');
       SelectElement addressTypePicker = item.querySelector('.contact-endpoint-addresstype');
       CheckboxInputElement confidentialBox = item.querySelector('.contact-endpoint-confidential');
       CheckboxInputElement enabledBox = item.querySelector('.contact-endpoint-enabled');
-      NumberInputElement priorityBox = item.querySelector('.contact-endpoint-priority');
       TextInputElement descriptionBox = item.querySelector('.contact-endpoint-description');
 
-      if(addressSpan != null && addressTypePicker != null && confidentialBox != null && enabledBox != null && priorityBox != null) {
+      if(addressSpan != null && addressTypePicker != null && confidentialBox != null && enabledBox != null) {
         Endpoint endpoint = new Endpoint()
           ..receptionId = receptionId
           ..contactId = contactId
@@ -905,7 +897,7 @@ class EndpointsComponent {
           ..addressType = addressTypePicker.selectedOptions.first.value
           ..confidential = confidentialBox.checked
           ..enabled = enabledBox.checked
-          ..priority = int.parse(priorityBox.value)
+          ..priority = index++
           ..description = descriptionBox.value;
         foundEndpoints.add(endpoint);
       }
