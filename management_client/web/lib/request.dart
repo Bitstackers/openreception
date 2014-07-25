@@ -28,7 +28,7 @@ class HttpMethod {
 class ForbiddenException implements Exception {
   final message;
 
-  ForbiddenException([this.message]);
+  ForbiddenException(this.message);
 
   String toString() {
     if (message == null) return "ForbiddenException";
@@ -39,7 +39,7 @@ class ForbiddenException implements Exception {
 class InternalServerError implements Exception {
   final message;
 
-  InternalServerError([this.message]);
+  InternalServerError(this.message);
 
   String toString() {
     if (message == null) return "InternalServerError";
@@ -50,11 +50,12 @@ class InternalServerError implements Exception {
 class UnknowStatusCode implements Exception {
   int statusCode;
   String statusText;
+  String message;
 
-  UnknowStatusCode(int this.statusCode, String this.statusText);
+  UnknowStatusCode(int this.statusCode, String this.statusText, String this.message);
 
   String toString() {
     if (statusCode == null || statusText == null) return "UnknowStatusCode";
-    return "UnknowStatusCode: ${statusCode} ${statusText}";
+    return "UnknowStatusCode: ${statusCode} ${statusText} - ${message}";
   }
 }

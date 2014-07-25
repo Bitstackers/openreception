@@ -21,6 +21,7 @@ void initialize() {
 
 void _deactivateBox(String cssClass) {
   _box.classes.remove('notifyActivate');
+  _box.classes.remove(cssClass);
 }
 
 void _activateBox(String cssClass) {
