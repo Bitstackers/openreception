@@ -372,7 +372,8 @@ class ReceptionView {
         ..onClick.listen((_) {
           Map event = {
             'window': 'contact',
-            'contact_id': contact.contactId
+            'contact_id': contact.contactId,
+            'reception_id': contact.receptionId
           };
           bus.fire(windowChanged, event);
         });
