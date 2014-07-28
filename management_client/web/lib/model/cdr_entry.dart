@@ -25,6 +25,7 @@ class Cdr_Entry {
       ..flag = json['flag']
       ..avgDuration = json['avg_duration'];
 
+    //TODO Extract Data when the interface is updated.
     object.smsCount = 0;
 
     return object;

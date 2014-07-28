@@ -15,17 +15,17 @@ class Playlist {
   Playlist();
 
   factory Playlist.fromJson(Map json) {
-    Playlist object = new Playlist();
-    object.id = json['id'];
-    object.name = json['name'];
-    object.path = json['path'];
-    object.rate = json['rate'];
-    object.shuffle = json['shuffle'];
-    object.channels = json['channels'];
-    object.interval = json['interval'];
-    object.chimelist = json['chimelist'];
-    object.chimefreq = json['chimefreq'];
-    object.chimemax = json['chimemax'];
+    Playlist object = new Playlist()
+      ..id = json['id']
+      ..name = json['name']
+      ..path = json['path']
+      ..rate = json['rate']
+      ..shuffle = json['shuffle']
+      ..channels = json['channels']
+      ..interval = json['interval']
+      ..chimelist = json['chimelist']
+      ..chimefreq = json['chimefreq']
+      ..chimemax = json['chimemax'];
 
     return object;
   }

@@ -7,9 +7,9 @@ class UserIdentity {
   UserIdentity();
 
   factory UserIdentity.fromJson(Map json) {
-    UserIdentity object = new UserIdentity();
-    object.identity = json['identity'];
-    object.userId = json['user_id'];
+    UserIdentity object = new UserIdentity()
+      ..identity = json['identity']
+      ..userId = json['user_id'];
 
     return object;
   }

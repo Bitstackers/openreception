@@ -12,14 +12,14 @@ class Phone {
   Phone();
 
   factory Phone.fromJson(Map json) {
-    Phone object = new Phone();
-    object.id = json['id'];
-    object.value = json['value'];
-    object.kind = json['kind'];
-    object.description = json['description'];
-    object.bill_type = json['bill_type'];
-    object.tag = json['tag'];
-    object.confidential = json.containsKey('confidential') ? json['confidential'] : false;
+    Phone object = new Phone()
+      ..id = json['id']
+      ..value = json['value']
+      ..kind = json['kind']
+      ..description = json['description']
+      ..bill_type = json['bill_type']
+      ..tag = json['tag']
+      ..confidential = json.containsKey('confidential') ? json['confidential'] : false;
 
     return object;
   }

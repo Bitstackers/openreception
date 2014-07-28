@@ -13,15 +13,15 @@ class CustomReceptionContact {
   CustomReceptionContact();
 
   factory CustomReceptionContact.fromJson(Map json) {
-    CustomReceptionContact object = new CustomReceptionContact();
-    object.contactId = json['contact_id'];
-    object.fullName = json['full_name'];
-    object.contactType = json['contact_type'];
-    object.contactEnabled = json['contact_enabled'];
-    object.receptionId = json['reception_id'];
-    object.wantsMessages = json['wants_messages'];
-    object.attributes = json['attributes'];
-    object.receptionEnabled = json['reception_enabled'];
+    CustomReceptionContact object = new CustomReceptionContact()
+      ..contactId = json['contact_id']
+      ..fullName = json['full_name']
+      ..contactType = json['contact_type']
+      ..contactEnabled = json['contact_enabled']
+      ..receptionId = json['reception_id']
+      ..wantsMessages = json['wants_messages']
+      ..attributes = json['attributes']
+      ..receptionEnabled = json['reception_enabled'];
 
     return object;
   }

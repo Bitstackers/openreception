@@ -9,11 +9,11 @@ class Colleague {
   Colleague();
 
   factory Colleague.fromJson(Map json) {
-    Colleague object = new Colleague();
-    object.id = json['id'];
-    object.full_name = json['full_name'];
-    object.enabled = json['enabled'];
-    object.type = json['contact_type'];
+    Colleague object = new Colleague()
+      ..id = json['id']
+      ..full_name = json['full_name']
+      ..enabled = json['enabled']
+      ..type = json['contact_type'];
 
     return object;
   }

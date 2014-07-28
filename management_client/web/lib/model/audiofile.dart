@@ -7,9 +7,9 @@ class Audiofile {
   Audiofile();
 
   factory Audiofile.fromJson(Map json) {
-    Audiofile object = new Audiofile();
-    object.filepath = json['filepath'];
-    object.shortname = json['shortname'];
+    Audiofile object = new Audiofile()
+      ..filepath = json['filepath']
+      ..shortname = json['shortname'];
 
     return object;
   }

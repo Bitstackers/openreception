@@ -52,8 +52,7 @@ class SearchComponent<T> {
       int matchIndex = text.toLowerCase().indexOf(searchText.toLowerCase());
       String before = text.substring(0, matchIndex);
       String match = text.substring(matchIndex, matchIndex + searchText.length);
-      String after = text.substring(matchIndex + searchText.length, text.length
-          );
+      String after = text.substring(matchIndex + searchText.length, text.length);
       return '${before}<em>${match}</em>${after}';
     }
   };

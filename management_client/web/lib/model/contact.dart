@@ -9,11 +9,11 @@ class Contact {
   Contact();
 
   factory Contact.fromJson(Map json) {
-    Contact object = new Contact();
-    object.id = json['id'];
-    object.full_name = json['full_name'];
-    object.enabled = json['enabled'];
-    object.type = json['contact_type'];
+    Contact object = new Contact()
+      ..id = json['id']
+      ..full_name = json['full_name']
+      ..enabled = json['enabled']
+      ..type = json['contact_type'];
 
     return object;
   }

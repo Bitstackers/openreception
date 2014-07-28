@@ -359,8 +359,7 @@ class ReceptionView {
           ..clear()
           ..addAll(contacts.map(makeContactNode));
     }).catchError((error) {
-      log.error('Tried to fetch the contactlist from an reception Error: $error'
-          );
+      log.error('Tried to fetch the contactlist from an reception Error: $error');
     });
   }
 

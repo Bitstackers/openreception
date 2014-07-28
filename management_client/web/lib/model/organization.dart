@@ -9,11 +9,11 @@ class Organization {
   Organization();
 
   factory Organization.fromJson(Map json) {
-    Organization object = new Organization();
-    object.id = json['id'];
-    object.full_name = json['full_name'];
-    object.bill_type = json['bill_type'];
-    object.flag = json['flag'];
+    Organization object = new Organization()
+      ..id = json['id']
+      ..full_name = json['full_name']
+      ..bill_type = json['bill_type']
+      ..flag = json['flag'];
 
     return object;
   }

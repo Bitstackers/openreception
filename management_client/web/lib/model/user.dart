@@ -9,11 +9,11 @@ class User {
   User();
 
   factory User.fromJson(Map json) {
-    User object = new User();
-    object.extension = json['extension'];
-    object.name = json['name'];
-    object.id = json['id'];
-    object.sendFrom = json['send_from'];
+    User object = new User()
+      ..extension = json['extension']
+      ..name = json['name']
+      ..id = json['id']
+      ..sendFrom = json['send_from'];
 
     return object;
   }

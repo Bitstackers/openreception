@@ -7,9 +7,9 @@ class UserGroup {
   UserGroup();
 
   factory UserGroup.fromJson(Map json) {
-    UserGroup object = new UserGroup();
-    object.id = json['id'];
-    object.name = json['name'];
+    UserGroup object = new UserGroup()
+      ..id = json['id']
+      ..name = json['name'];
 
     return object;
   }

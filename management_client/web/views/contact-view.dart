@@ -598,18 +598,13 @@ class ContactView {
         //Show a message that tells the user, that the changes went through.
         refreshList();
       }).catchError((error) {
-        log.error(
-            'Tried to update a contact but failed with error "${error}" from body: "${updatedContact.toJson()}"'
-            );
+        log.error('Tried to update a contact but failed with error "${error}" from body: "${updatedContact.toJson()}"');
       }));
 
       work.addAll(saveList.values.map((f) => f()));
 
       //When all updates are applied. Reload the contact.
       Future.wait(work).then((_) {
-        //TODO Remove.
-        log.info('Activating Contact.');
-
         return activateContact(contactId);
       }).catchError((error, stack) {
         log.error('Contact was appling update for ${contactId} when "$error", ${stack}');
