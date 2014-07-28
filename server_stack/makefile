@@ -42,6 +42,7 @@ dependency:
 	cd NotificationServer/ && pub get
 	cd ReceptionServer/ && pub get
 	cd spawner/ && pub get
+	cd UserServer/ && pub get
 
 upgrade-dependency:
 	cd AuthServer/ && pub upgrade
@@ -56,6 +57,7 @@ upgrade-dependency:
 	cd NotificationServer/ && pub upgrade
 	cd ReceptionServer/ && pub upgrade
 	cd spawner/ && pub upgrade
+	cd UserServer/ && pub upgrade
 
 auth: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart

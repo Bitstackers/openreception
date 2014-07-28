@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<model.CompleteReceptionContact> _getReceptionContact(Pool pool, int receptionId, int contactId) {
+Future<model.ReceptionContact> _getReceptionContact(Pool pool, int receptionId, int contactId) {
   String sql = '''
     SELECT c.id, 
            c.full_name, 
@@ -26,7 +26,7 @@ Future<model.CompleteReceptionContact> _getReceptionContact(Pool pool, int recep
     } else {
       Row row = rows.first;
 
-      return new model.CompleteReceptionContact(
+      return new model.ReceptionContact(
           row.id,
           row.full_name,
           row.contact_type,
@@ -40,7 +40,7 @@ Future<model.CompleteReceptionContact> _getReceptionContact(Pool pool, int recep
   });
 }
 
-Future<List<model.CompleteReceptionContact>> _getReceptionContactList(Pool pool, int receptionId) {
+Future<List<model.ReceptionContact>> _getReceptionContactList(Pool pool, int receptionId) {
   String sql = '''
     SELECT c.id, 
            c.full_name, 
@@ -59,9 +59,9 @@ Future<List<model.CompleteReceptionContact>> _getReceptionContactList(Pool pool,
   Map parameters = {'reception_id': receptionId};
 
   return query(pool, sql, parameters).then((rows) {
-    List<model.CompleteReceptionContact> receptions = new List<model.CompleteReceptionContact>();
+    List<model.ReceptionContact> receptions = new List<model.ReceptionContact>();
     for(var row in rows) {
-      receptions.add(new model.CompleteReceptionContact(
+      receptions.add(new model.ReceptionContact(
           row.id,
           row.full_name,
           row.contact_type,
@@ -180,4 +180,19 @@ Future<List<model.Organization>> _getAContactsOrganizationList(Pool pool, int co
     }
     return organizations;
   });
+}
+
+Future _moveReceptionContact(Pool pool, int receptionId, int oldContactId, int newContactId) {
+  String sql = '''
+    UPDATE reception_contacts
+    SET contact_id = @new_contact_id
+    WHERE reception_id=@reception_id AND contact_id=@contact_id;
+  ''';
+
+  Map parameters =
+    {'reception_id'   : receptionId,
+     'contact_id'     : oldContactId,
+     'new_contact_id' : newContactId};
+
+  return execute(pool, sql, parameters);
 }

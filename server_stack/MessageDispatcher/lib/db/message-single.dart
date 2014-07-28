@@ -70,8 +70,6 @@ Future<List<Map>> messageRecipients(int messageID) {
            messaging_end_points mep ON mr.contact_id = mep.contact_id 
        AND mr.reception_id = mep.reception_id
        AND mep.enabled 
-     JOIN 
-       messaging_addresses ma ON  ma.id = mep.address_id
      WHERE
          message_id = $messageID;''';
 

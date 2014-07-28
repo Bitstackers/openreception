@@ -1,7 +1,6 @@
 library model;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:OpenReceptionFramework/common.dart';
 import 'package:OpenReceptionFramework/model.dart' as SharedModel;

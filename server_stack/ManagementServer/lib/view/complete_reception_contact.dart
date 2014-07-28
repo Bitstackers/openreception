@@ -4,14 +4,14 @@ import 'dart:convert';
 
 import '../model.dart';
 
-String receptionContactAsJson(CompleteReceptionContact contact) => JSON.encode(_receptionContactAsJsonMap(contact));
+String receptionContactAsJson(ReceptionContact contact) => JSON.encode(_receptionContactAsJsonMap(contact));
 
-String listReceptionContactAsJson(List<CompleteReceptionContact> contacts) =>
+String listReceptionContactAsJson(List<ReceptionContact> contacts) =>
     JSON.encode({'receptionContacts': _listReceptionContactAsJsonMap(contacts)});
 
-Map _receptionContactAsJsonMap(CompleteReceptionContact contact) => contact == null ? {} :
+Map _receptionContactAsJsonMap(ReceptionContact contact) => contact == null ? {} :
     {'reception_id': contact.receptionId,
-     'contact_id': contact.id,
+     'contact_id': contact.contactId,
      'full_name': contact.fullName,
      'contact_type': contact.contactType,
      'contact_enabled': contact.contactEnabled,
@@ -20,6 +20,6 @@ Map _receptionContactAsJsonMap(CompleteReceptionContact contact) => contact == n
      'reception_enabled': contact.receptionEnabled,
      'phonenumbers': contact.phonenumbers};
 
-List _listReceptionContactAsJsonMap(List<CompleteReceptionContact> contacts) =>
+List _listReceptionContactAsJsonMap(List<ReceptionContact> contacts) =>
     contacts.map(_receptionContactAsJsonMap).toList();
 

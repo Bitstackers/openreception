@@ -44,7 +44,7 @@ class Call {
   bool get locked              => this._locked;
   void set locked (bool lock)   {
     this._locked = lock;
-    
+
     if (lock) {
       Service.Notification.broadcast(ClientNotification.callLock(this),
                                      config.notificationServer, config.serverToken);
@@ -57,10 +57,10 @@ class Call {
 
   @override
   operator == (Call other) => this.ID == other.ID;
-  
+
   @override
   int get hashCode => this.ID.hashCode;
-  
+
   static void validateID (String callID) {
     if (callID == null || callID == nullCallID || callID.isEmpty) {
       throw new FormatException('Invalid Call ID: ${callID}');
@@ -77,7 +77,7 @@ class Call {
 
   void link (Call other) {
     this.locked = false;
-    
+
     this.b_Leg  = other;
     other.b_Leg = this;
   }
@@ -100,11 +100,11 @@ class Call {
      "channel"         : this.channel,
      "arrival_time"    : dateTimeToUnixTimestamp (this.arrived)};
 
-     
-   void park (SharedModel.User user) {
-    Controller.PBX.park (this, user);    
+
+   Future park (SharedModel.User user) {
+     return Controller.PBX.park (this, user);
    }
-     
+
   void changeState (String newState) {
 
     const String context   = '${className}.changeState';

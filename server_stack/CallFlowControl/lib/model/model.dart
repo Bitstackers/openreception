@@ -3,7 +3,7 @@ library callflowcontrol.model;
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:esl/esl.dart' as ESL; 
+import 'package:esl/esl.dart' as ESL;
 import 'package:OpenReceptionFramework/service.dart' as Service;
 import 'package:OpenReceptionFramework/model.dart' as SharedModel;
 import 'package:OpenReceptionFramework/common.dart';
