@@ -11,7 +11,15 @@ Future<Map> getReceptionContactList(int receptionId) {
            con.full_name, 
            con.contact_type, 
            con.enabled as conenabled,
-           rcpcon.phonenumbers as phone
+           rcpcon.phonenumbers as phone,
+
+           (SELECT coalesce(array_to_json(array_agg(row_to_json(contact_end_point))), '[]')
+            FROM (SELECT address, address_type, confidential, enabled, priority, description
+                  FROM messaging_end_points
+                  WHERE reception_id = rcpcon.reception_id AND
+                        contact_id = rcpcon.contact_id
+                  ORDER BY priority ASC) contact_end_point) AS endpoints
+
     FROM contacts con 
       JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
     WHERE rcpcon.reception_id = @receptionid''';
@@ -29,7 +37,8 @@ Future<Map> getReceptionContactList(int receptionId) {
          'full_name'         : row.full_name,
          'distribution_list' : row.distribution_list != null ? JSON.decode(row.distribution_list) : [],
          'contact_type'      : row.contact_type,
-         'phones'            : row.phone != null ? JSON.decode(row.phone) : []};
+         'phones'            : row.phone != null ? JSON.decode(row.phone) : [],
+         'endpoints'         : JSON.decode(row.endpoints)};
 
       if (row.attributes != null) {
         Map attributes = JSON.decode(row.attributes);
