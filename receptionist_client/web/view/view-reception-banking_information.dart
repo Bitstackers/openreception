@@ -29,16 +29,15 @@ class ReceptionBankingInformation {
   Element         get header                 => this.element.querySelector('legend');
   UListElement    get bankingInformationList => this.element.querySelector('#${id.COMPANY_BANKING_INFO_LIST}');
   
-  String          title     = 'Bankoplysninger';
-
   ReceptionBankingInformation(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
-    header .text = title;
+    header.children = [Icon.Bank, 
+                       new SpanElement()..text = Label.ReceptionBankingInformation, 
+                       new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }

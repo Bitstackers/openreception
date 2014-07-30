@@ -28,16 +28,16 @@ class ReceptionRegistrationNumber {
 
   Element      get header                 => this.element.querySelector('legend');
   UListElement get registrationNumberList => element.querySelector('#${id.COMPANY_REGISTRATION_NUMBER_LIST}');
-  String       title     = 'CVR';
   
   ReceptionRegistrationNumber(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
     
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (this._select));
     
-    header.text = title;
+    header.children = [Icon.Gavel,
+                       new SpanElement()..text = Label.ReceptionRegistrationNumbers,
+                       new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }

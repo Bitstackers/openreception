@@ -33,7 +33,8 @@ class Message {
   
   MessageContext  get  context      => this._context;
   MessageCaller   get  caller       => this._caller;
-  int             get  queueCount   => this._map['pending_messages'];
+  bool            get  enqueued     => this._map['enqueued'];
+  bool            get  sent         => this._map['sent'];
   Set<Recipient>  get  recipients   => _recipients;
   List<Recipient> get toRecipients  => this.recipients.where((Recipient recipient) => recipient.role == Role.TO).toList();
   List<Recipient> get ccRecipients  => this.recipients.where((Recipient recipient) => recipient.role == Role.CC).toList();

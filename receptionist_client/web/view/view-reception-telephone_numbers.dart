@@ -27,16 +27,14 @@ class ReceptionTelephoneNumbers {
 
   Element         get header              => this.element.querySelector('legend');
   UListElement    get telephoneNumberList => this.element.querySelector('#${id.COMPANY_TELEPHONENUMBERS_LIST}');
-  String          title     = 'Hovednumre';
 
   ReceptionTelephoneNumbers(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
-    header.text = title;    
+    header.children = [Icon.Phone,new SpanElement()..text = Label.ReceptionPhoneNumbers, new Nudge(NavShortcut).element];    
     registerEventListeners();
   }
   

@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>openReception Client</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/buttons-min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/buttons-min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css" >
     
     <link rel="stylesheet" href="css/nudge.css?v=1">
@@ -205,9 +205,9 @@
           <ul class="message-recipient-list"> </ul>
           </div>
             <div class="send-message-button-container" style="width: 100%; float:left;">
-              <button id="sendmessagecancel" tabindex="-1">:: Annuller ::</button>
-              <button id="sendmessagedraft" tabindex="-1">:: Gem ::</button>
-              <button id="sendmessagesend" tabindex="-1">:: Send ::</button>
+              <button class="cancel pure-button" tabindex="-1">:: Annuller ::</button>
+              <button class="save   pure-button" tabindex="-1">:: Gem ::</button>
+              <button class="send   pure-button" tabindex="-1">:: Send ::</button>
             </div>
           </fieldset>
         </div>
@@ -257,9 +257,9 @@
 
                  <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
                </fieldset>
-                 <button class="calendar-event-create">:: Opret ::</button>
-                 <button class="calendar-event-update">:: Gem ::</button>
-                 <button class="calendar-event-delete">:: Slet ::</button>
+                 <button class="create pure-button">:: Opret ::</button>
+                 <button class="save pure-button">:: Gem ::</button>
+                 <button class="delete pure-button">:: Slet ::</button>
              </fieldset>
              <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
             </fieldset>
@@ -521,8 +521,8 @@
                :: Næste ::
                
             </button>
-                              <button style="margin:0.5em;" id="message-search-print" class="print pure-button" tabindex="-1"> <i class="fa fa-print"></i> :: Print :: </button>
-                  <button style="margin:0.5em;" id="message-search-resend" class="resend-multiple pure-button" tabindex="-1"> <i class="fa fa-send"></i> :: Gensend valgte:: </button>
+            <button style="margin:0.5em;" id="message-search-print" class="print pure-button" tabindex="-1"> <i class="fa fa-print"></i> :: Print :: </button>
+            <button style="margin:0.5em;" id="message-search-resend" class="resend-multiple pure-button" tabindex="-1"> <i class="fa fa-send"></i> :: Gensend valgte:: </button>
             
               <table class="pure-table pure-table-striped">
                 <thead>

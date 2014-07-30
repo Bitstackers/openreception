@@ -26,13 +26,15 @@ abstract class Message {
    * messageID 12, downto (including) 3.
    * 
    */
-  static Future<model.MessageList> list({int lastID : model.Message.noID, int limit : 100}) {
+  static Future<model.MessageList> list({int lastID                 : model.Message.noID, 
+                                         int limit                  : 100, 
+                                         model.MessageFilter filter : null}) {
     const String context = '${className}.list';
 
     final Completer completer = new Completer<model.MessageList>();
     
     debugStorage("Message list not found in cache, loading from service.", context);
-    Service.Message.list(lastID: lastID, limit: limit).then((model.MessageList messages) {
+    Service.Message.list(lastID: lastID, limit: limit, filter: filter).then((model.MessageList messages) {
       completer.complete(messages);
     }).catchError((error) {
       completer.completeError(error);
@@ -45,7 +47,9 @@ abstract class Message {
    * Get the [MessageList] from cache.
    * TODO: implement.
    */
-  static Future<model.MessageList> listCached({int lastID : model.Message.noID, int maxRows : 100}) {
+  static Future<model.MessageList> listCached({int lastID                 : model.Message.noID, 
+                                               int maxRows                : 100, 
+                                               model.MessageFilter filter : null}) {
     const String context = '${className}.list';
 
     final Completer completer = new Completer<model.MessageList>();

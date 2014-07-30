@@ -24,6 +24,7 @@ class BasicReception implements Comparable{
 
   int    get ID   => _ID;
   String get name => _name;
+  void set name (String name) {this._name= name;}
 
   /**
    * [BasicReception] constructor. Expects a map in the following format:
@@ -183,4 +184,7 @@ class Reception extends BasicReception{
    * [Reception] null constructor.
    */
   Reception._null() : super._null();
+  
+  @override
+  operator == (Reception other) => this._ID == other._ID;
 }

@@ -45,6 +45,8 @@ final EventType<model.Call> localCallQueueAdd                   = new EventType<
 final EventType<model.Call> localCallQueueRemove                = new EventType<model.Call>();
 final EventType<Location> locationChanged                       = new EventType<Location>();
 final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
+final EventType<model.MessageFilter> messageFilterChanged       = new EventType<model.MessageFilter>();
+
 final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
 final EventType<model.Message> selectedEditMessageChanged       = new EventType<model.Message>();
 final EventType<State> stateUpdated                             = new EventType<State>();

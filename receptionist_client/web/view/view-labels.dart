@@ -14,11 +14,12 @@ abstract class Label {
   static final String Update                    = 'Gem';
   static final String Delete                    = 'Slet';
   static final String PlaceholderSearch         = 'Søg...';
-  static final String ReceptionContacts         = 'Medarbejdere';
   static final String Save                      = 'Gem';
   static final String Send                      = 'Send';
+  static const String Resend                    = 'Gensend';
   static final String MessageCompose            = 'Opret Besked';
   static final String MessageEdit               = 'Rediger Besked';
+  static const String MessageFilter             = 'Filtrér beskeder';
   static final String Cancel                    = 'Annuller';
   static final String Phone                     = 'Telefon';
   static final String CellPhone                 = 'Mobilnummer';
@@ -31,8 +32,18 @@ abstract class Label {
   static final String WillCallBack              = 'Ringer selv tilbage';
   static final String HasCalled                 = 'Har ringet';
   static final String Urgent                    = 'Haster';
-  static const String ReceptionHandling         = 'Håndtering';
   static const String DialOut                   = 'Ring ud';
   static const String ContactInformation        = 'KontaktInformation';
-  static const String ReceptionEvents           = 'Virksomhedskalender';
+
+  static const String ReceptionAlternateNames      = 'Alternative firmanavne';
+  static const String ReceptionBankingInformation  = 'Bankoplysninger';
+  static final String ReceptionContacts            = 'Medarbejdere';
+  static const String ReceptionEmailaddresses      = 'Emailadresser';
+  static const String ReceptionEvents              = 'Virksomhedskalender';
+  static const String ReceptionHandling            = 'Håndtering';
+  static const String ReceptionType                = 'Kundetype';
+  static const String ReceptionPhoneNumbers        = 'Hovednumre';
+  static const String ReceptionRegistrationNumbers = 'CVR Numre';
+  static const String ReceptionExtraData           = 'Ekstra information';
+
 }

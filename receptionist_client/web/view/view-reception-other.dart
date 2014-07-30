@@ -28,16 +28,15 @@ class ReceptionOther {
   Element          get header => this.element.querySelector('legend');
   ParagraphElement get body   => element.querySelector('#${id.COMPANY_OTHER_BODY}');
 
-  String           title    = 'Andet';
-
   ReceptionOther(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element, this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
-    header.text = title;
+    header.children = [Icon.Plus,
+                       new SpanElement()..text = Label.ReceptionExtraData,
+                       new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }

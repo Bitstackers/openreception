@@ -25,7 +25,6 @@ class ReceptionAlternateNames {
   
   Element         get header             => this.element.querySelector('legend');
   UListElement    get alternateNamesList => this.element.querySelector('#${id.COMPANY_ALTERNATE_NAMES_LIST}');
-  String          title     = 'Alternative firmanavne';
 
   List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
@@ -33,10 +32,11 @@ class ReceptionAlternateNames {
   ReceptionAlternateNames(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
-    header.text = title;
+    header.children = [Icon.Building, 
+                       new SpanElement()..text = Label.ReceptionAlternateNames,
+                       new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }

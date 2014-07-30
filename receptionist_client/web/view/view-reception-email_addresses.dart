@@ -30,17 +30,18 @@ class ReceptionEmailAddresses {
   Element         get header => this.element.querySelector('legend');
   model.Reception reception = model.nullReception;
   UListElement    get emailAddressList    => this.element.querySelector('#${id.COMPANY_EMAIL_ADDRESSES_LIST}');
-  String          title     = 'Emailadresser';
 
   ReceptionEmailAddresses(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
-    header.text = title;
+    header.children = [Icon.Email,
+                       new SpanElement()..text = Label.ReceptionEmailaddresses,
+                       new Nudge(NavShortcut).element];
+                       
 
     registerEventListeners();
   }

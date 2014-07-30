@@ -70,7 +70,8 @@ abstract class Message {
 
   static Future<model.MessageList> list({Uri host   : null, 
                                          int lastID : model.Message.noID,
-                                         int limit  : 100}) {
+                                         int limit  : 100,
+                                         model.MessageFilter filter : null}) {
 
     final String context = '${className}.list';
     
@@ -85,7 +86,13 @@ abstract class Message {
     String url;
 
     fragments.add('token=${configuration.token}');
+    if (filter != null || filter == model.MessageFilter.none) {
+      fragments.add('filter=${JSON.encode(filter.asMap)}');
+    }
+    
     url = _buildUrl(base, path, fragments);
+    
+    print (url);
 
     request = new HttpRequest()
         ..open(GET, url)

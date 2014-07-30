@@ -38,9 +38,9 @@ class ContactInfoCalendar {
   void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
 
   ///Buttons
-  ButtonElement get createButton => this.element.querySelector('.calendar-event-create');
-  ButtonElement get updateButton => this.element.querySelector('.calendar-event-update');
-  ButtonElement get deleteButton => this.element.querySelector('.calendar-event-delete');
+  ButtonElement get createButton => this.element.querySelector('button.create');
+  ButtonElement get saveButton   => this.element.querySelector('button.save');
+  ButtonElement get deleteButton => this.element.querySelector('button.delete');
   
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.element.querySelector('.contactinfo-calendar-event-create-starts-hour');
@@ -141,13 +141,13 @@ class ContactInfoCalendar {
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element]; 
     this.createButton.text = Label.Create;
-    this.updateButton.text = Label.Update;
+    this.saveButton.text = Label.Update;
     this.deleteButton.text = Label.Delete;
     
     this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);
 
     ///Navigation shortcuts
-    this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.updateButton);
+    this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.saveButton);
     this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.createButton);
     this.newEventWidget.insertBefore(new Nudge(DeleteShortcut, type : Nudge.Command).element,  this.deleteButton);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
@@ -225,7 +225,7 @@ class ContactInfoCalendar {
         this.eventList.hidden = !this.newEventWidget.hidden;
         if (!this.newEventWidget.hidden) {
           this.createButton.hidden = false;
-          this.updateButton.hidden = true;
+          this.saveButton.hidden = true;
           this.deleteButton.hidden = true;
 
           this._selectedStartDate = new DateTime.now();
@@ -277,7 +277,7 @@ class ContactInfoCalendar {
         model.Contact.selectedContact.calendarEventList.then((model.CalendarEventList eventList) {
           model.CalendarEvent event = eventList.get(eventID);
           this.createButton.hidden = true;
-          this.updateButton.hidden = false;
+          this.saveButton.hidden = false;
           this.deleteButton.hidden = false;
           
           this._selectedStartDate = event.startTime;

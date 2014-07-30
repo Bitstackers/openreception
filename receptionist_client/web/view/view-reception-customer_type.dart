@@ -27,14 +27,14 @@ class ReceptionCustomerType {
 
   ParagraphElement get body   => this.element.querySelector('#${id.COMPANY_CUSTOMERTYPE_BODY}');
   Element          get header => this.element.querySelector('legend');
-  String           title     = 'Kundetype';
 
   ReceptionCustomerType(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    header.text = title;
+    header.children = [Icon.Bookmark,
+                       new SpanElement()..text = Label.ReceptionType,
+                       new Nudge(NavShortcut).element];
 
     ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     registerEventListeners();
