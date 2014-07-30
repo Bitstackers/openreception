@@ -164,6 +164,11 @@ String doubleDigit(int number) {
   }
 }
 
+void allOk(HttpRequest request, [String body = '{}']) {
+  request.response.statusCode = HttpStatus.OK;
+  writeAndClose(request, body);
+}
+
 void forbidden(HttpRequest request, String reason) {
   logger.error(reason);
   request.response.statusCode = HttpStatus.FORBIDDEN;
