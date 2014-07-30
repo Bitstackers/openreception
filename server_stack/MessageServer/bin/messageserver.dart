@@ -13,6 +13,7 @@ ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
+  
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 

@@ -2,6 +2,31 @@ part of messageserver.database;
 
 abstract class Message {
   
+
+  /// WITH expressions used for harvesting various message
+  /// status information.
+  static const String SQL_MACROS = '''
+  WITH queue_status AS (
+     SELECT 
+        message.id AS message_id, count(mq.id) > 0 AS enqueued
+     FROM 
+        message_queue mq 
+     RIGHT JOIN 
+        messages message ON message.id = mq.message_id
+     GROUP BY 
+       message.id
+     ),
+  sent_status AS (
+     SELECT 
+        message.id AS message_id, count(mqh.id) > 0 AS sent
+     FROM 
+        message_queue_history mqh 
+     RIGHT JOIN 
+        messages message ON message.id = mqh.message_id
+     GROUP BY 
+       message.id
+  )''';
+  
   static const String className = '${libraryName}.Message';
   
   /**
@@ -39,8 +64,11 @@ abstract class Message {
   /**
    * 
    */
-  static Future<Map> list ({int fromID : Model.Message.noID, int limit : 100}){
+  static Future<Map> list ({int limit : 100, Model.MessageFilter filter : null}){
+    assert (filter != null);
+    
     String sql = '''
+        ${SQL_MACROS}
         SELECT
              message.id,
              message, 
@@ -57,15 +85,20 @@ abstract class Message {
              created_at,
              taken_by_agent AS taken_by_agent_id,
              users.name     AS taken_by_agent_name,
-             (SELECT count(*) FROM message_queue AS queue WHERE queue.message_id = message.id) AS pending_messages
+             enqueued,
+             sent
         FROM messages message
-        JOIN users on taken_by_agent = users.id
-      ${fromID != Model.Message.noID ? 'WHERE message.id <= $fromID' : ''}
+        JOIN users        ON taken_by_agent = users.id
+        JOIN queue_status ON queue_status.message_id = message.id
+        JOIN sent_status  ON sent_status.message_id = message.id
+        ${filter.asSQL}
         ORDER BY 
            message.id DESC
         LIMIT ${limit} 
     ''';
 
+    
+    print (sql);
     return database.query(_pool, sql).then((rows) {
       List messages = new List();
       
@@ -76,6 +109,7 @@ abstract class Message {
         if (createdAt == null) {
           createdAt = new DateTime.fromMillisecondsSinceEpoch(0);
         }
+        
                     
         Map message =
           {'id'                    : row.id,
@@ -94,8 +128,9 @@ abstract class Message {
                                       'phone'     : row.taken_from_phone,
                                       'cellphone' : row.taken_from_cellphone},
            'flags'                 : JSON.decode(row.flags),
-           'created_at'            : createdAt.millisecondsSinceEpoch,
-           'pending_messages'      : row.pending_messages};
+           'enqueued'              : row.enqueued,
+           'sent'                  : row.sent,
+           'created_at'            : createdAt.millisecondsSinceEpoch};
         messages.add(message);
       }
 

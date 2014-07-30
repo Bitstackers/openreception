@@ -26,10 +26,29 @@ abstract class Message {
   }
 
   static void list (HttpRequest request) {
-    int messageID = pathParameter(request.uri, 'list');
-    int limit     = pathParameter(request.uri, 'limit');
+    model.MessageFilter filter = new model.MessageFilter();
 
-    db.Message.list(fromID: messageID, limit: limit).then ((Map map) { 
+    filter.upperMessageID = pathParameter(request.uri, 'list');
+    int limit             = pathParameter(request.uri, 'limit');
+    
+    if (request.uri.queryParameters.containsKey('filter')) {
+      try {
+        Map map = JSON.decode(request.uri.queryParameters['filter']);
+        
+        filter..messageState   = map ['state']
+              ..contactID      = map ['contact_id']
+              ..receptionID    = map ['reception_id']
+              ..userID         = map ['user_id'];
+        
+      } catch (error, stacktrace) {
+        serverError(request, error.toString());
+        return;
+      }
+    }
+    
+    print ('!!!FILTER' + filter.asMap.toString());
+
+    db.Message.list(limit: limit, filter : filter).then ((Map map) { 
         writeAndClose(request, JSON.encode(map));
       }).catchError((error, stackTrace) {
         serverError(request, error.toString());
