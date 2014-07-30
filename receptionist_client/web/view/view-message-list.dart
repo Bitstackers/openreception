@@ -67,7 +67,9 @@ class MessageList {
          orElse : () => new TableRowElement()..hidden = true);
 
   set selectedRow (TableRowElement newRow) {
-    assert (newRow != null);
+    if (newRow == null || !(newRow is TableRowElement)) {
+      return;
+    }
 
     this.selectedRow.classes.toggle(SelectedClass, false);
     if (this._selectedRow != null) {
@@ -108,6 +110,10 @@ class MessageList {
     this.table.querySelector('input').onClick.listen(headerCheckboxChange);
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
+    event.bus.on(event.messageFilterChanged).listen((model.MessageFilter filter) {
+      this.loadData(model.Message.noID);
+    });
     
     element.onClick.listen((Event event) {
       if (!this.inFocus)
@@ -192,7 +198,8 @@ class MessageList {
     this.nextPageButton.disabled = true;
     this.previousPageButton.disabled = true;
     
-    Storage.Message.list(lastID: fromID, limit: viewLimit).then((model.MessageList messageList) {
+    Storage.Message.list(lastID: fromID, limit: viewLimit, filter : model.MessageFilter.current)
+      .then((model.MessageList messageList) {
       tableBody.children.clear();
       messageList.forEach ((model.Message message) {
         tableBody.children.add(createRow(message));
@@ -250,8 +257,24 @@ class MessageList {
            new TableCellElement()
               ..text = message.takenByAgent['name'],
            new TableCellElement()
-              ..text = (message.queueCount > 0 ? MessageOverviewLabels.PENDING : MessageOverviewLabels.SENT)]);
+              ..children = [_messageStatusIcon (message)]]);
   }
+  
+  Element _messageStatusIcon (model.Message message) {
+    if (message.enqueued) {
+      return Icon.Enqueued;
+    } 
+    
+    if (message.sent) {
+      return Icon.Sent;
+    }
+  
+    if (!message.sent && ! message.enqueued) {
+      return Icon.Saved;
+    }
+    
+    return Icon.Unknown;
+}
 
   void headerCheckboxChange(event) {
     CheckboxInputElement target = event.target;

@@ -39,9 +39,9 @@ class Message {
   InputElement get urgent     => this.element.querySelector('#send-message-urgent');
   
   /// Widget control buttons
-  ButtonElement get cancelButton => this.element.querySelector('#sendmessagecancel');
-  ButtonElement get draftButton  => this.element.querySelector('#sendmessagedraft');
-  ButtonElement get sendButton   => this.element.querySelector('#sendmessagesend');
+  ButtonElement get cancelButton => this.element.querySelector('button.cancel');
+  ButtonElement get saveButton   => this.element.querySelector('button.save');
+  ButtonElement get sendButton   => this.element.querySelector('button.send');
   
   bool hasFocus = false;
   bool get muted     => this.context != Context.current;
@@ -126,7 +126,7 @@ class Message {
         ..text = Label.Cancel
         ..onClick.listen(_cancelClick);
 
-    this.draftButton
+    this.saveButton
         ..text = Label.Save
         ..onClick.listen(_draftClick);
 
@@ -134,7 +134,7 @@ class Message {
         ..text = Label.Send
         ..onClick.listen(_sendHandler);
 
-    focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, draftButton, sendButton];
+    focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, saveButton, sendButton];
 
     focusElements.forEach((e) => context.registerFocusElement(e));
 

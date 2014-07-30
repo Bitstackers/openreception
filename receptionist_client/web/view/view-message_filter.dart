@@ -1,13 +1,5 @@
 part of view;
 
-abstract class MessageFilterLabels {
-
-  static const String Resend = 'Gensend';
-  static const String EditMessage = 'Rediger besked';
-  static const String Filter = 'Filtrér beskeder';
-  static const String Save = 'Gem';
-}
-
 class MessageFilter{
   DivElement body;
   Context _context;
@@ -24,15 +16,9 @@ class MessageFilter{
   SearchComponent<model.BasicReception> companySearch;
   SearchComponent<model.Contact> contactSearch;
 
-  ButtonElement get saveMessageButton            => this.element.querySelector('button.previous');
+  ButtonElement get saveMessageButton            => this.element.querySelector('button.save');
   ButtonElement get resendMessageButton          => this.element.querySelector('button.resend');
   
-  String selectedAgent;
-  String selectedType;
-  model.BasicReception selectedCompany = model.nullReception;
-  model.Contact selectedContact = model.nullContact;
-
-  String headerText = 'Søgning';
   MessageFilter(Element this.element, Context this._context) {
     assert(element != null);
 
@@ -40,31 +26,62 @@ class MessageFilter{
 
     agentSearch = new SearchComponent<String>(body.querySelector('#message-search-agent'), _context, 'message-search-agent-searchbar')
       ..searchPlaceholder = 'Agent...'
-      ..updateSourceList(['Alle', 'Trine', 'Thomas', 'Kim'])
+      ..updateSourceList(['Alle', '1', '2', '10'])
       ..selectElement('Alle')
       ..selectedElementChanged = (String text) {
-        selectedAgent = text;
+        if (text != 'Alle') {
+          model.MessageFilter.current.userID = int.parse(text);
+        } else {
+          model.MessageFilter.current.userID = null;
+        }
         searchParametersChanged();
     };
 
     typeSearch = new SearchComponent<String>(body.querySelector('#message-search-type'), _context, 'message-search-type-searchbar')
       ..searchPlaceholder = 'Type...'
-      ..updateSourceList(['Alle', 'Sendte', 'Gemte', 'Kladder'])
+      ..updateSourceList(['Alle', 'Sendte', 'Gemte', 'Venter'])
       ..selectElement('Alle')
       ..selectedElementChanged = (String text) {
-        selectedType = text;
-        searchParametersChanged();
-      };
+      switch (text) {
+        case 'Sendte':
+          model.MessageFilter.current.state = model.MessageState.Sent;          
+          
+          break;
+          
+        case 'Gemte':
+          model.MessageFilter.current.state = model.MessageState.Saved;          
+          break;
+          
+        case 'Venter':
+          model.MessageFilter.current.state = model.MessageState.Pending;          
+          break;
 
+        default:
+          break;
+          
+      }
+
+      searchParametersChanged();
+    };
+      
     companySearch = new SearchComponent<model.BasicReception>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
-      ..selectedElementChanged = (model.BasicReception reception) {
-        model.Reception.get(reception.ID).then((model.Reception value) {
-          selectedCompany = value;
+      ..selectedElementChanged = (model.BasicReception receptionStub) {
+      if (receptionStub == model.nullReception) {
+        model.MessageFilter.current.receptionID = null;
+        model.MessageFilter.current.contactID = null;
+        contactSearch.updateSourceList([model.nullContact]);
+        searchParametersChanged();
+        return;
+      }
+        model.Reception.get(receptionStub.ID).then((model.Reception reception) {
+
+            model.MessageFilter.current.receptionID = reception.ID;
+            model.MessageFilter.current.contactID = null;
           searchParametersChanged();
           
-          model.Contact.list(value.ID).then((model.ContactList list) {
-            contactSearch.updateSourceList(list.toList(growable: false));
+          model.Contact.list(reception.ID).then((model.ContactList contacts) {
+            contactSearch.updateSourceList([model.nullContact..name = 'Alle']..addAll(contacts));
           }).catchError((error) {
             contactSearch.updateSourceList(new model.ContactList.emptyList().toList(growable: false));
           });
@@ -75,8 +92,8 @@ class MessageFilter{
       }
       ..listElementToString = companyListElementToString;
 
-      storage.Reception.list().then((model.ReceptionList list) {
-        companySearch.updateSourceList(list.toList(growable: false));
+      storage.Reception.list().then((model.ReceptionList contacts) {
+        companySearch.updateSourceList([model.nullReception..name = 'Alle']..addAll(contacts));
       });
 
     contactSearch = new SearchComponent<model.Contact>(body.querySelector('#message-search-contact'), _context, 'message-search-contact-searchbar')
@@ -86,19 +103,23 @@ class MessageFilter{
         return contact.name.toLowerCase().contains(searchText.toLowerCase());
       }
       ..selectedElementChanged = (model.Contact contact) {
-        selectedContact = contact;
+        if (contact == model.nullContact) {
+          model.MessageFilter.current.contactID = null;
+        } else {
+          model.MessageFilter.current.contactID = contact.id;
+        }
+        
         searchParametersChanged();
       };
 
     //_context.registerFocusElement(body.querySelector('#message-search-print'));
     //_context.registerFocusElement(body.querySelector('#message-search-resend'));
     
-    this._setLabels();
+  
+      
   }
   
-  void _setLabels() {
-  }
-
+  
   String companyListElementToString(model.BasicReception reception, String searchText) {
     if(searchText == null || searchText.isEmpty) {
       return reception.name;
@@ -127,7 +148,6 @@ class MessageFilter{
 
   void searchParametersChanged() {
     log.debug('messagesearch. The search parameters have changed.');
-    //event.bus.fire(event.messageSearchFilterChanged,
-    //    new MessageSearchFilter(selectedAgent, selectedType, selectedCompany, selectedContact));
+    event.bus.fire(event.messageFilterChanged, model.MessageFilter.current);
   }
 }

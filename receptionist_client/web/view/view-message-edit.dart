@@ -121,9 +121,8 @@ class MessageEdit {
     this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
     
     this._setupLabels();
+
     ///Navigation shortcuts
-    this.header.children.add(new Nudge(NavShortcut).element);
-   
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
     //focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, sendButton];
 
@@ -140,7 +139,10 @@ class MessageEdit {
 
   
   void _setupLabels () {
-    this.header.text = Label.MessageEdit;
+    this.header.children = [Icon.Edit,
+                            new SpanElement()..text = Label.MessageEdit,
+                            new Nudge(NavShortcut).element];
+    
     this.callerNameField.placeholder = Label.CallerName;
     this.callerCompanyField.placeholder = Label.Company;
     this.callerPhoneField.placeholder= Label.Phone;
