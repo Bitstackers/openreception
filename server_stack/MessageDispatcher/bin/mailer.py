@@ -46,6 +46,10 @@ if __name__ == "__main__":
     cc          = email['cc']
     bcc         = email['bcc']
 
+    if len(to + cc + bcc) == 0:
+      error ('No recpients found in message object');
+      sys.exit(2)
+
     try:
         msg = MIMEText(email['message_body'], _charset=text_subtype)
         msg['From']   = sender
