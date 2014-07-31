@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../lib/eventbus.dart';
 import '../lib/model.dart';
+import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 
 DateFormat inputDateFormat = new DateFormat('yyyy-MM-dd');
@@ -39,14 +40,18 @@ class BillingView {
     });
 
     fromInput.onChange.listen((_) {
-
+      refreshList();
     });
   }
 
   void refreshList() {
     DateTime from = fromInput.valueAsDate != null ? fromInput.valueAsDate : new DateTime.utc(2014,1,1);
     DateTime to = toInput.valueAsDate != null ? toInput.valueAsDate : new DateTime.now();
-    renderList(from, to);
+    if(from.isAfter(to)) {
+      notify.info('Fra tidspunktet skal være før Til tidspunktet');
+    } else {
+      renderList(from, to);
+    }
   }
 
   void renderList(DateTime from, DateTime to) {
@@ -57,7 +62,7 @@ class BillingView {
                 return new TableRowElement()
                   ..children.addAll(
                       [new TableCellElement()..text = '${entry.orgId}',
-                       new TableCellElement()..text = entry.flag,
+                       new TableCellElement()..text = '${entry.flag}',
                        new TableCellElement()..text = '${entry.billType}',
                        new TableCellElement()..text = '${entry.orgName}',
                        new TableCellElement()..text = '${entry.callCount}',
