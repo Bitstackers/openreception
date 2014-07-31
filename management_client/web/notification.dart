@@ -1,10 +1,13 @@
 library notification;
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:html';
 
 DivElement _box;
 cancellationToken _cancelToken;
+Queue<String> infoMessages = new Queue<String>();
+Queue<String> errorMessages = new Queue<String>();
 
 void initialize() {
   _box = new DivElement()
@@ -19,12 +22,46 @@ void initialize() {
   });
 }
 
-void _deactivateBox(String cssClass) {
-  _box.classes.remove('notifyActivate');
-  _box.classes.remove(cssClass);
+void info(String text) {
+  infoMessages.addLast(text);
+  _newMessage();
 }
 
-void _activateBox(String cssClass) {
+void error (String text) {
+  errorMessages.addLast(text);
+  _newMessage();
+}
+
+
+bool active = false;
+void _newMessage() {
+  if(!active) {
+    _displayNextMessage();
+  }
+}
+
+void _displayNextMessage() {
+  if(errorMessages.isNotEmpty) {
+    _activateBox(errorMessages.removeFirst(), 'notificationboxerror', 0);
+
+  } else if(infoMessages.isNotEmpty) {
+    _activateBox(infoMessages.removeFirst(), 'notificationboxinfo');
+  }
+}
+
+void _deactivateBox(String cssClass) {
+  active = false;
+  _box.classes
+    ..remove('notifyActivate')
+    ..remove(cssClass);
+  _displayNextMessage();
+}
+
+void _activateBox(String message, String cssClass, [int displayTime = 3000]) {
+  active = true;
+
+  _box.text = message;
+
   _box.classes
     ..add('notifyActivate')
     ..add(cssClass);
@@ -36,19 +73,11 @@ void _activateBox(String cssClass) {
   cancellationToken token = new cancellationToken(() => _deactivateBox(cssClass));
   _cancelToken = token;
 
-  new Future.delayed(new Duration(milliseconds: 5000), () {
-    token.cancel();
-  });
-}
-
-void info(String text) {
-  _box.text = text;
-  _activateBox('notificationboxinfo');
-}
-
-void error (String text) {
-  _box.text = text;
-  _activateBox('notificationboxerror');
+  if(displayTime != null && displayTime > 0) {
+    new Future.delayed(new Duration(milliseconds: displayTime), () {
+      token.cancel();
+    });
+  }
 }
 
 class cancellationToken {
