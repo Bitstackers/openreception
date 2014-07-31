@@ -65,21 +65,20 @@ class DialplanView {
 
   DialplanView(DivElement this.element) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
-    controlListAction = element.querySelector('#dialplan-control-action-list');
-    itemsList = element.querySelector('#dialplan-items-body');
-    extensionList = element.querySelector('#dialplan-extension-list');
-    extensionGroupAdd = element.querySelector('#dialplan-extensiongroup-add');
-    settingPanel = element.querySelector('#dialplan-settings');
-    commentTextarea = element.querySelector('#dialplan-comment');
-    saveButton = element.querySelector('#dialplan-savebutton');
-    extensionListHeader = element.querySelector('#dialplan-extensionlist-header');
-    templatePicker = element.querySelector('#dialplan-templates');
+    controlListAction    = element.querySelector('#dialplan-control-action-list');
+    itemsList            = element.querySelector('#dialplan-items-body');
+    extensionList        = element.querySelector('#dialplan-extension-list');
+    extensionGroupAdd    = element.querySelector('#dialplan-extensiongroup-add');
+    settingPanel         = element.querySelector('#dialplan-settings');
+    commentTextarea      = element.querySelector('#dialplan-comment');
+    saveButton           = element.querySelector('#dialplan-savebutton');
+    extensionListHeader  = element.querySelector('#dialplan-extensionlist-header');
+    templatePicker       = element.querySelector('#dialplan-templates');
     loadDialplanTemplate = element.querySelector('#dialplan-loadtemplate');
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
-    receptionPicker = new SearchComponent<Reception>(receptionOuterSelector,
-        'dialplan-reception-searchbox')
+    receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'dialplan-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
         ..searchFilter = receptionSearchHandler;
 

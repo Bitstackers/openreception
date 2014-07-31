@@ -283,8 +283,8 @@ Future<List<DialplanTemplate>> getDialplanTemplates() {
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
       Map bodyMap = JSON.decode(request.responseText);
-      List tempalteRoot = bodyMap['templates'];
-      List<DialplanTemplate> list = tempalteRoot.map((Map json) => new DialplanTemplate.fromJson(json)).toList();
+      List templateRoot = bodyMap['templates'];
+      List<DialplanTemplate> list = templateRoot.map((Map json) => new DialplanTemplate.fromJson(json)).toList();
       completer.complete(list);
     })
     ..onError.listen((error) {
