@@ -14,7 +14,7 @@ class CdrEntry {
 
     uuid = json['variables']['uuid'];
     inbound = json['variables']['direction'] == 'inbound';
-    reception_id = int.parse(json['variables']['receptionid']);
+    reception_id = int.parse(json['variables']['reception_id']);
 
     if(json['callflow'] is List) {
       List<Map> callFlow = json['callflow'];
