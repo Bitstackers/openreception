@@ -6,6 +6,7 @@ import 'dart:html';
 
 import '../lib/eventbus.dart';
 import '../lib/model.dart';
+import '../notification.dart' as notify;
 import '../lib/request.dart';
 
 class MusicView {
@@ -130,17 +131,21 @@ class MusicView {
         int id = response['id'];
         Map event = {'id': id};
         bus.fire(Invalidate.playlistAdded, event);
+        notify.info('Afspilningslisten blev oprettet');
         return activatePlaylist(id);
       }).catchError((error) {
-        //TODO ERROR
+        //TODO Log error
+        notify.error('Der skete en fejl i forbindelse med oprettelsen af afspilningslisten. ${error}');
       });
     } else {
       updatePlaylist(selectedPlaylistId, data).then((_) {
         Map event = {'id': selectedPlaylistId};
         bus.fire(Invalidate.playlistChanged, event);
+        notify.info('Afspilningslisten blev opdateret');
       })
         .catchError((error) {
         //TODO Log error
+        notify.error('Der skete en fejl i forbindelse med opdateringen af afspilningslisten. ${error}');
       });
     }
   }
@@ -150,8 +155,10 @@ class MusicView {
       deletePlaylist(selectedPlaylistId).then((_) {
         Map event = {'id': selectedPlaylistId};
         bus.fire(Invalidate.playlistRemoved, event);
-      }).catchError((_) {
+        notify.info('Afspilningslisten blev slettet');
+      }).catchError((error) {
         //TODO DO SOMETHING!
+        notify.error('Der skete en fejl i forbindelse med sletningen af afspilningslisten. ${error}');
       });
     }
   }
