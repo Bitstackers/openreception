@@ -1,6 +1,6 @@
 part of service;
 
-Future<http.Response> compileDialplan(Uri dialplanCompilerServer, int receptionId, String token) {
+Future<http.Response> compileDialplan(Uri dialplanCompilerServer, int receptionId, String dialplan, String token) {
   Uri url = new Uri(
       scheme: dialplanCompilerServer.scheme,
       host: dialplanCompilerServer.host,
@@ -8,5 +8,5 @@ Future<http.Response> compileDialplan(Uri dialplanCompilerServer, int receptionI
       path: '/reception/${receptionId}/dialplan',
       queryParameters: {'token': token});
 
-  return http.get(url);
+  return http.post(url, body: dialplan);
 }
