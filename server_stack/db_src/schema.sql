@@ -302,10 +302,11 @@ CREATE TABLE cdr_entries (
    extension    TEXT      NOT NULL,
    duration     INTEGER   NOT NULL,
    wait_time    INTEGER   NOT NULL,
-   ended_at     TIMESTAMP NOT NULL
+   started_at   TIMESTAMP NOT NULL,
+   json         JSON      NOT NULL
 );
 
-CREATE INDEX cdr_entries_index ON cdr_entries (ended_at);
+CREATE INDEX cdr_entries_index ON cdr_entries (started_at);
 
 CREATE TABLE cdr_checkpoints (
    checkpoint   TIMESTAMP NOT NULL PRIMARY KEY

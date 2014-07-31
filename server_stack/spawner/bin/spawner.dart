@@ -15,11 +15,11 @@ void main(List<String> arguments) {
   List<String> tokens = new List(5).map((_) => generateToken()).toList(growable: false);
   int index = 0;
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
-  
+
   if(arguments.length > 0) {
     ServerTokenDir = arguments[0];
   }
-  
+
   Directory dir = new Directory(ServerTokenDir);
   dir.createSync();
   String serverTokenDirAbsolutPath = dir.absolute.path;
@@ -126,7 +126,7 @@ Future writeTokensToDisk(List<String> tokens, String dir) {
        "identities":[],"remote_attributes":{}}};
 
   return Future.forEach(tokens, (String token) {
-    File file = new File('${dir}/${token}');
+    File file = new File('${dir}/${token}.servertoken');
     return file.writeAsString(JSON.encode(content));
   });
 }

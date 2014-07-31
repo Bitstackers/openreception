@@ -67,11 +67,17 @@ class DialplanController {
 
     orf_http.extractContent(request)
       .then(JSON.decode)
-      .then((Map data) => db.updateDialplan(receptionId, data))
-      .then((_) => service.compileDialplan(config.dialplanCompilerServer, receptionId, token))
+      .then((Map dialplanJson) => db.updateDialplan(receptionId, dialplanJson))
+      .then((_) => db.getDialplan(receptionId))
+      .then((Dialplan dialplan) {
+        Map json = dialplan.toJson();
+        json['receptionid'] = receptionId;
+        json['entrynumber'] = dialplan.entryNumber;
+        return service.compileDialplan(config.dialplanCompilerServer, receptionId, JSON.encode(json), token);
+      })
       .then((http.Response response) {
         if(response.statusCode == 200) {
-         return orf_http.writeAndClose(request, JSON.encode({}));
+          return orf_http.writeAndClose(request, JSON.encode({}));
         } else {
           request.response.statusCode = response.statusCode;
           return orf_http.writeAndClose(request, JSON.encode({'error': 'The is saved, but the compilating returned an error',
@@ -103,9 +109,9 @@ class DialplanController {
 
     orf_http.extractContent(request)
       .then(JSON.decode)
-      .then((Map data) => db.updateIvr(receptionId, data))
-      .then((_) => service.compileIvrMenu(config.dialplanCompilerServer, receptionId, token))
-      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
+      .then((Map ivrMenu) => db.updateIvr(receptionId, ivrMenu)
+        .then((_) => service.compileIvrMenu(config.dialplanCompilerServer, receptionId, JSON.encode(ivrMenu), token)))
+      .then((_) => orf_http.allOk(request) )
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());
@@ -125,11 +131,12 @@ class DialplanController {
 
   void createPlaylist(HttpRequest request) {
     const context = '${libraryName}.createPlaylist';
+    String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
-      .then((Map data) {
-        return db.createPlaylist(
+      .then((Map data) =>
+        db.createPlaylist(
           data['name'],
           data['path'],
           data['shuffle'],
@@ -137,7 +144,9 @@ class DialplanController {
           data['interval'],
           data['chimelist'],
           data['chimefreq'],
-          data['chimemax']);})
+          data['chimemax'])
+        .then((int id) => service.compilePlaylist(config.dialplanCompilerServer, id, JSON.encode(data), token)
+        .then((_) => id)))
       .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
       .catchError((error, stack) {
         orf.logger.errorContext('error: $error ${stack}', context);
@@ -177,6 +186,7 @@ class DialplanController {
   void updatePlaylist(HttpRequest request) {
     const context = '${libraryName}.updatePlaylist';
     int playlistId = orf_http.pathParameter(request.uri, 'playlist');
+    String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -189,8 +199,9 @@ class DialplanController {
           data['interval'],
           data['chimelist'],
           data['chimefreq'],
-          data['chimemax']) )
-      .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
+          data['chimemax'])
+        .then((_) => service.compilePlaylist(config.dialplanCompilerServer, playlistId, JSON.encode(data), token)))
+      .then((_) => orf_http.allOk(request))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         orf_http.serverError(request, error.toString());

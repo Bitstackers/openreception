@@ -21,8 +21,8 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
   JOIN organizations org ON rcp.organization_id = org.id
 
   WHERE cdr.inbound   = @inbound AND
-        cdr.ended_at >= @start   AND
-        cdr.ended_at <  @end   
+        cdr.started_at >= @start   AND
+        cdr.started_at <  @end   
 
   GROUP by
      org.id,
@@ -33,10 +33,8 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
                     'start'   : start,
                     'end'     : end};
 
-
-
   return database.query(_pool, sql, parameters).then((rows) {
-    logger.debugContext("Returned ${rows.length} queued messages.", context);
+    logger.debugContext("Returned ${rows.length} reception cdr stats.", context);
 
     List cdr = new List();
 
