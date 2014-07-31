@@ -6,14 +6,14 @@ import 'lib/eventbus.dart';
 
 class Menu {
   static const String ORGANIZATION_WINDOW = 'organization';
-  static const String RECEPTION_WINDOW = 'reception';
-  static const String CONTACT_WINDOW = 'contact';
-  static const String DIALPLAN_WINDOW = 'dialplan';
-  static const String IVR_WINDOW = 'ivr';
-  static const String RECORD_WINDOW = 'record';
-  static const String USER_WINDOW = 'user';
-  static const String BILLING_WINDOW = 'billing';
-  static const String MUSIC_WINDOW = 'music';
+  static const String RECEPTION_WINDOW    = 'reception';
+  static const String CONTACT_WINDOW      = 'contact';
+  static const String DIALPLAN_WINDOW     = 'dialplan';
+  static const String IVR_WINDOW          = 'ivr';
+  static const String RECORD_WINDOW       = 'record';
+  static const String USER_WINDOW         = 'user';
+  static const String BILLING_WINDOW      = 'billing';
+  static const String MUSIC_WINDOW        = 'music';
 
   HtmlElement element;
 
