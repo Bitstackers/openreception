@@ -179,8 +179,17 @@ CREATE TABLE message_recipients (
 
 CREATE TABLE message_queue (
    id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   message_id     INTEGER   NOT NULL,
+   message_id     INTEGER   NOT NULL REFERENCES messages (id),
    enqueued_at    TIMESTAMP NOT NULL DEFAULT NOW(),
+   last_try       TIMESTAMP     NULL DEFAULT NULL,
+   tries          INTEGER   NOT NULL DEFAULT 0
+);
+
+CREATE TABLE message_queue_history (
+   id             INTEGER   NOT NULL PRIMARY KEY,
+   message_id     INTEGER   NOT NULL REFERENCES messages (id),
+   enqueued_at    TIMESTAMP NOT NULL,
+   sent_at        TIMESTAMP NOT NULL DEFAULT NOW(),
    last_try       TIMESTAMP     NULL DEFAULT NULL,
    tries          INTEGER   NOT NULL DEFAULT 0
 );
