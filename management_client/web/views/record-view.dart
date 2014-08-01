@@ -142,7 +142,11 @@ class RecordView {
       });
     });
 
-    li.children.addAll([play, delete, content, editBox ]);
+    /**
+     * The Delete button is not rendered, because without any kind of check on
+     * if the file is used, it will be too easy for the user to make a mistake.
+     */
+    li.children.addAll([play, content, editBox ]);
 
     return li;
   }
