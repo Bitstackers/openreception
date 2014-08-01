@@ -4,8 +4,7 @@ Future<Dialplan> getDialplan(int receptionId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
-  String url =
-      '${config.serverUrl}/reception/$receptionId/dialplan?token=${config.token}';
+  String url = '${config.serverUrl}/reception/$receptionId/dialplan?token=${config.token}';
 
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
@@ -34,8 +33,7 @@ Future updateDialplan(int receptionId, String dialplan) {
   final Completer completer = new Completer();
 
   HttpRequest request;
-  String url =
-      '${config.serverUrl}/reception/$receptionId/dialplan?token=${config.token}';
+  String url = '${config.serverUrl}/reception/$receptionId/dialplan?token=${config.token}';
 
   request = new HttpRequest()
     ..open(HttpMethod.POST, url)

@@ -11,17 +11,20 @@ Future<List<Cdr_Entry>> getCdrEntries(DateTime from, DateTime to) {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
+        Map rawData = JSON.decode(body);
         List<Map> rawEntries = rawData['cdr_stats'];
         completer.complete(rawEntries.map((r) => new Cdr_Entry.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 

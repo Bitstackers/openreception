@@ -15,6 +15,7 @@ import 'notification.dart' as notify;
 
 void main() {
   if(handleToken()) {
+    //Initializes the notification system.
     notify.initialize();
     new orgView.OrganizationView(querySelector('#organization-page'));
     new recepView.ReceptionView(querySelector('#reception-page'));

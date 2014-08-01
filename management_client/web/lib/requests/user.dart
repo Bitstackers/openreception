@@ -276,9 +276,9 @@ Future deleteUserIdentity(int userId, String identity) {
         completer.completeError('Bad status code. ${request.status}');
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 

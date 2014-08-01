@@ -9,18 +9,21 @@ Future<List<Contact>> getEveryContact() {
   request = new HttpRequest()
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
+        String body = request.responseText;
         if (request.status == 200) {
-          Map rawData = JSON.decode(request.responseText);
+          Map rawData = JSON.decode(body);
           List<Map> rawContacts = rawData['contacts'];
-          completer.complete(rawContacts.map((r) => new Contact.fromJson(r)
-              ).toList());
+          completer.complete(rawContacts.map((Map contactJson) =>
+              new Contact.fromJson(contactJson)).toList());
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
         } else {
-          completer.completeError('Bad status code. ${request.status}');
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
       })
-      ..onError.listen((e) {
+      ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(e.toString());
+        completer.completeError(error);
       })
       ..send();
 
@@ -36,16 +39,18 @@ Future<Contact> getContact(int contactId) {
   request = new HttpRequest()
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
+        String body = request.responseText;
         if (request.status == 200) {
-          completer.complete(
-              new Contact.fromJson(JSON.decode(request.responseText)));
+          completer.complete(new Contact.fromJson(JSON.decode(body)));
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
         } else {
-          completer.completeError('Bad status code. ${request.status}');
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
       })
-      ..onError.listen((e) {
+      ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(e.toString());
+        completer.completeError(error);
       })
       ..send();
 
@@ -61,11 +66,18 @@ Future updateContact(int contactId, String body) {
   request = new HttpRequest()
       ..open(HttpMethod.POST, url)
       ..onLoad.listen((_) {
-        completer.complete(request.responseText);
+        String body = request.responseText;
+        if (request.status == 200) {
+          completer.complete(new Contact.fromJson(JSON.decode(body)));
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
+        } else {
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+        }
       })
       ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(error.toString());
+        completer.completeError(error);
       })
       ..send(body);
 
@@ -81,11 +93,18 @@ Future<Map> createContact(String data) {
   request = new HttpRequest()
       ..open(HttpMethod.PUT, url)
       ..onLoad.listen((_) {
-        completer.complete(JSON.decode(request.responseText));
+        String body = request.responseText;
+        if (request.status == 200) {
+          completer.complete(new Contact.fromJson(JSON.decode(body)));
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
+        } else {
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+        }
       })
       ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(error.toString());
+        completer.completeError(error);
       })
       ..send(data);
 
@@ -100,22 +119,25 @@ Future<List<ReceptionContact_ReducedReception>> getAContactsEveryReception(int c
       '${config.serverUrl}/contact/$contactId/reception?token=${config.token}';
 
   request = new HttpRequest()
-      ..open(HttpMethod.GET, url)
-      ..onLoad.listen((_) {
-        if (request.status == 200) {
-          Map rawData = JSON.decode(request.responseText);
-          List<Map> rawReceptions = rawData['contacts'];
-          completer.complete(rawReceptions.map((r) =>
-              new ReceptionContact_ReducedReception.fromJson(r)).toList());
-        } else {
-          completer.completeError('Bad status code. ${request.status}');
-        }
-      })
-      ..onError.listen((e) {
-        //TODO logging.
-        completer.completeError(e.toString());
-      })
-      ..send();
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      String body = request.responseText;
+      if (request.status == 200) {
+        Map rawData = JSON.decode(body);
+        List<Map> rawReceptions = rawData['contacts'];
+        completer.complete(rawReceptions.map((Map r) =>
+            new ReceptionContact_ReducedReception.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error);
+    })
+    ..send();
 
   return completer.future;
 }
@@ -127,21 +149,24 @@ Future<List<ReceptionColleague>> getContactsColleagues(int contactId) {
   String url = '${config.serverUrl}/contact/$contactId/colleagues?token=${config.token}';
 
   request = new HttpRequest()
-      ..open(HttpMethod.GET, url)
-      ..onLoad.listen((_) {
-        if (request.status == 200) {
-          Map rawData = JSON.decode(request.responseText);
-          List<Map> rawReceptions = rawData['receptions'];
-          completer.complete(rawReceptions.map((r) => new ReceptionColleague.fromJson(r)).toList());
-        } else {
-          completer.completeError('Bad status code. ${request.status}');
-        }
-      })
-      ..onError.listen((e) {
-        //TODO logging.
-        completer.completeError(e.toString());
-      })
-      ..send();
+    ..open(HttpMethod.GET, url)
+    ..onLoad.listen((_) {
+      String body = request.responseText;
+      if (request.status == 200) {
+        Map rawData = JSON.decode(body);
+        List<Map> rawReceptions = rawData['receptions'];
+        completer.complete(rawReceptions.map((r) => new ReceptionColleague.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error);
+    })
+    ..send();
 
   return completer.future;
 }
@@ -155,12 +180,15 @@ Future<List<String>> getContacttypeList() {
   request = new HttpRequest()
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
+        String body = request.responseText;
         if (request.status == 200) {
-          Map rawData = JSON.decode(request.responseText);
+          Map rawData = JSON.decode(body);
           List<String> contacttypes = rawData['contacttypes'];
           completer.complete(contacttypes);
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
         } else {
-          completer.completeError('Bad status code. ${request.status}');
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
       })
       ..onError.listen((e) {
@@ -181,17 +209,20 @@ Future<List<String>> getAddressTypeList() {
   request = new HttpRequest()
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
+        String body = request.responseText;
         if (request.status == 200) {
-          Map rawData = JSON.decode(request.responseText);
+          Map rawData = JSON.decode(body);
           List<String> addresstypes = rawData['addresstypes'];
           completer.complete(addresstypes);
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
         } else {
-          completer.completeError('Bad status code. ${request.status}');
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
       })
-      ..onError.listen((e) {
+      ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(e.toString());
+        completer.completeError(error);
       })
       ..send();
 
@@ -207,11 +238,18 @@ Future deleteContact(int contactId) {
   request = new HttpRequest()
       ..open(HttpMethod.DELETE, url)
       ..onLoad.listen((_) {
-        completer.complete(JSON.decode(request.responseText));
+        String body = request.responseText;
+        if (request.status == 200) {
+          completer.complete(new Contact.fromJson(JSON.decode(body)));
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
+        } else {
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+        }
       })
       ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(error.toString());
+        completer.completeError(error);
       })
       ..send();
 
@@ -228,18 +266,21 @@ Future<List<Organization>> getContactsOrganizationList(int contactId) {
   request = new HttpRequest()
       ..open(HttpMethod.GET, url)
       ..onLoad.listen((_) {
+        String body = request.responseText;
         if (request.status == 200) {
-          Map rawData = JSON.decode(request.responseText);
+          Map rawData = JSON.decode(body);
           List<Map> rawOrganizations = rawData['organizations'];
-          completer.complete(rawOrganizations.map((r) =>
+          completer.complete(rawOrganizations.map((Map r) =>
               new Organization.fromJson(r)).toList());
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
         } else {
-          completer.completeError('Bad status code. ${request.status}');
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
       })
-      ..onError.listen((e) {
+      ..onError.listen((error) {
         //TODO logging.
-        completer.completeError(e.toString());
+        completer.completeError(error);
       })
       ..send();
 

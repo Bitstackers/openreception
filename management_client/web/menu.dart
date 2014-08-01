@@ -4,6 +4,10 @@ import 'dart:html';
 
 import 'lib/eventbus.dart';
 
+/**
+ * Widget to control the menu on the left side of the screen.
+ * It lets the user switch between windows.
+ */
 class Menu {
   static const String ORGANIZATION_WINDOW = 'organization';
   static const String RECEPTION_WINDOW    = 'reception';
@@ -15,12 +19,13 @@ class Menu {
   static const String BILLING_WINDOW      = 'billing';
   static const String MUSIC_WINDOW        = 'music';
 
+  //root DOM element for the menu.
   HtmlElement element;
 
   Map<String, ImageElement> menus;
 
   Menu(HtmlElement this.element) {
-    //Build up collections of menus
+    //Build up collections of menus for easier use later.
     menus = {
        'organization': element.querySelector('#organization-button'),
        'reception': element.querySelector('#reception-button'),
@@ -33,7 +38,8 @@ class Menu {
        'music': element.querySelector('#music-button'),
       };
 
-    //Register onClicker handler, and emit an event about window change.
+    //Register onClicker handler on the image, and emit an event about window change.
+    // for the other windows to know when to hide/show.
     menus.forEach((String name, ImageElement button) {
       button.onClick.listen((_) {
         Map event = {

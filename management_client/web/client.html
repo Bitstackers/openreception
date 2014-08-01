@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Adaheads Adaministration</title>
+<head>
+  <meta charset="utf-8">
+  <title>AdaHeads Adaministration</title>
 
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css">
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css">
 
-    <link rel="stylesheet" href="style/client.css">
-    <link rel="stylesheet" href="style/navigation.css">
-    <link rel="stylesheet" href="style/organization.css">
-    <link rel="stylesheet" href="style/reception.css">
-    <link rel="stylesheet" href="style/contact.css">
-    <link rel="stylesheet" href="style/searchcomponent.css">
-    <link rel="stylesheet" href="style/dialplan.css">
-    <link rel="stylesheet" href="style/ivr.css">
-    <link rel="stylesheet" href="style/record.css">
-    <link rel="stylesheet" href="style/user.css">
-    <link rel="stylesheet" href="style/billing.css">
-    <link rel="stylesheet" href="style/music.css">
-  </head>
+  <link rel="stylesheet" href="style/client.css">
+  <link rel="stylesheet" href="style/navigation.css">
+  <link rel="stylesheet" href="style/organization.css">
+  <link rel="stylesheet" href="style/reception.css">
+  <link rel="stylesheet" href="style/contact.css">
+  <link rel="stylesheet" href="style/searchcomponent.css">
+  <link rel="stylesheet" href="style/dialplan.css">
+  <link rel="stylesheet" href="style/ivr.css">
+  <link rel="stylesheet" href="style/record.css">
+  <link rel="stylesheet" href="style/user.css">
+  <link rel="stylesheet" href="style/billing.css">
+  <link rel="stylesheet" href="style/music.css">
+</head>
 <body>
   <nav id="navigation">
     <ul>
-      <li><img id="organization-button" alt="Organisation" title="Organisationer" src="image/org.svg" draggable="false"></li>
-      <li><img id="reception-button" alt="Reception" title="Receptioner" src="image/rec.svg" draggable="false" class="faded"></li>
-      <li><img id="contact-button" alt="Kontaktpersoner" title="Kontaktpersoner" src="image/con.svg" draggable="false" class="faded"></li>
-      <li><img id="dialplan-button" alt="Kaldplan" title="Kaldplan" src="image/dialplan.svg" draggable="false" class="faded"></li>
-      <li><img id="ivr-button" alt="IVR" title="IVR" src="image/dialplan/IVR.svg" draggable="false" class="faded"></li>
-      <li><img id="record-button" alt="Optage" title="Optage" src="image/record.svg" draggable="false" class="faded"></li>
-      <li><img id="user-button" alt="Brugere" title="Brugere" src="image/user.svg" draggable="false" class="faded"></li>
-      <li><img id="billing-button" alt="Faktura" title="Faktura" src="image/billing.svg" draggable="false" class="faded"></li>
-      <li><img id="music-button" alt="Musik" title="Musik" src="image/tp/musicalnote.svg" draggable="false" class="faded"></li>
+      <li><img id="organization-button" alt="Organisation"    title="Organisationer"  src="image/org.svg"            draggable="false"></li>
+      <li><img id="reception-button"    alt="Reception"       title="Receptioner"     src="image/rec.svg"            draggable="false" class="faded"></li>
+      <li><img id="contact-button"      alt="Kontaktpersoner" title="Kontaktpersoner" src="image/con.svg"            draggable="false" class="faded"></li>
+      <li><img id="dialplan-button"     alt="Kaldplan"        title="Kaldplan"        src="image/dialplan.svg"       draggable="false" class="faded"></li>
+      <li><img id="ivr-button"          alt="IVR"             title="IVR"             src="image/dialplan/IVR.svg"   draggable="false" class="faded"></li>
+      <li><img id="record-button"       alt="Optage"          title="Optage"          src="image/record.svg"         draggable="false" class="faded"></li>
+      <li><img id="user-button"         alt="Brugere"         title="Brugere"         src="image/user.svg"           draggable="false" class="faded"></li>
+      <li><img id="billing-button"      alt="Faktura"         title="Faktura"         src="image/billing.svg"        draggable="false" class="faded"></li>
+      <li><img id="music-button"        alt="Musik"           title="Musik"           src="image/tp/musicalnote.svg" draggable="false" class="faded"></li>
     </ul>
   </nav>
 
@@ -41,11 +41,14 @@
       -- -------------------------- -->
 
     <div id="organization-page">
+      <!-- The left side, where the organization list and search bar are. -->
       <div id="organization-listing">
         <button id="organization-create">Ny Organisation</button>
         <input id="organization-search-box" type="search" placeholder="Søg...">
         <ul id="organization-list" class="zebra"></ul>
       </div>
+
+      <!-- The center box for the information about a specific organization -->
       <div id="organization-content">
         <table>
           <tr>
@@ -64,6 +67,8 @@
         <button id="organization-save">Gem</button>
         <button id="organization-delete">Slet</button>
       </div>
+
+      <!-- The right box for receptions and contacts. -->
       <div id="organization-rightbar">
         <div id="organization-reception-container">
           <div>
@@ -86,12 +91,15 @@
       -- ----------------------- -->
 
     <div id="reception-page" class="hidden">
+      <!-- Left side for the list of receptions and the searchbar. -->
       <div id="reception-listing">
         <button id="reception-create">Ny Reception</button>
         <input id="reception-search-box" type="search"
           placeholder="Søg...">
         <ul id="reception-list" class="zebra"></ul>
       </div>
+
+      <!-- The middle part for all the information about the selected reception -->
       <div id="reception-content">
         <table class="content-table">
           <tr>
@@ -187,6 +195,8 @@
         <button id="reception-save">Gem</button>
         <button id="reception-delete">Slet</button>
       </div>
+
+      <!-- The right side for the list of all the contacts associated with the selected reception -->
       <div id="reception-rightbar">
         <div>
           <span>Kontakter</span>
@@ -199,11 +209,14 @@
       -- ------ CONTACT ------ --
       -- --------------------- -->
     <div id="contact-page" class="hidden">
+      <!-- Searchbar and contact list -->
       <div id="contact-listing">
         <button id="contact-create">Ny Kontakt</button>
         <input id="contact-search-box" type="search" placeholder="Søg...">
         <ul id="contact-list" class="zebra"></ul>
       </div>
+
+      <!-- Contact information, and reception-contacts -->
       <div id="contact-content">
         <div id="contact-base-info">
           <!-- Contact Content -->
@@ -243,6 +256,8 @@
         </div>
         <ul id="reception-contacts"></ul>
       </div>
+
+      <!-- List of the colleagues -->
       <div id="contact-rightbar">
         <div id="contact-organization-container">
           <div>
