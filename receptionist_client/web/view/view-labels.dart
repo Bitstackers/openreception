@@ -1,7 +1,7 @@
 part of view;
 
 abstract class Label {
-  static const String WebSites                  = 'Web-sider'; 
+  static const String WebSites                  = 'Web-sider';
   static const String OpeningHours              = 'Åbningstider';
   static const String Calls                     = 'Opkald';
   static const String LocalCalls                = 'Lokale kald';
@@ -16,11 +16,20 @@ abstract class Label {
   static final String PlaceholderSearch         = 'Søg...';
   static final String Save                      = 'Gem';
   static final String Send                      = 'Send';
+  static const String Print                     = 'Udskriv';
   static const String Resend                    = 'Gensend';
+  static final String Cancel                    = 'Annuller';
+  static final String Draft                     = 'Kladde';
+
+  static const String MessageArchive            = 'Beskedarkiv';
   static final String MessageCompose            = 'Opret Besked';
   static final String MessageEdit               = 'Rediger Besked';
   static const String MessageFilter             = 'Filtrér beskeder';
-  static final String Cancel                    = 'Annuller';
+  static const String MessagePending            = 'Afventer';
+  static const String MessageResendSelected     = 'Gensend valgte';
+  static const String MessageSent               = 'Sendt';
+  static const String MessageTakenAt            = 'Modtaget';
+
   static final String Phone                     = 'Telefon';
   static final String CellPhone                 = 'Mobilnummer';
   static final String LocalExtension            = 'Lokalnummer';
@@ -34,6 +43,10 @@ abstract class Label {
   static final String Urgent                    = 'Haster';
   static const String DialOut                   = 'Ring ud';
   static const String ContactInformation        = 'KontaktInformation';
+  static const String Caller                    = 'Opkalder';
+  static const String Context                   = 'Kontekst';
+  static const String Agent                     = 'Agent';
+  static const String Status                    = 'Status';
 
   static const String ReceptionAlternateNames      = 'Alternative firmanavne';
   static const String ReceptionBankingInformation  = 'Bankoplysninger';
@@ -45,5 +58,4 @@ abstract class Label {
   static const String ReceptionPhoneNumbers        = 'Hovednumre';
   static const String ReceptionRegistrationNumbers = 'CVR Numre';
   static const String ReceptionExtraData           = 'Ekstra information';
-
 }

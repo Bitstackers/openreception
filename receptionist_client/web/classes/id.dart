@@ -30,7 +30,7 @@ const String LOGBOX                      = 'logbox';
 const String MESSAGE_OVERVIEW            = 'messageoverview';
 const String MESSAGE_EDIT                = 'message-edit';
 const String PHONEBOOTH                  = 'phonebooth';
-const String SENDMESSAGE                 = 'sendmessage';
+const String SENDMESSAGE                 = 'message-compose';
 
 const String AGENT_INFO                       = 'agent-info';
 const String COMPANY_ADDRESSES_LIST           = 'company-addresses-list';

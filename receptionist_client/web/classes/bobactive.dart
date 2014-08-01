@@ -88,7 +88,7 @@ class BobActive {
     companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), homeContext);
     companyProduct           = new View.ReceptionProduct(querySelector('#${id.COMPANY_PRODUCT}'), homeContext);
     contactInfo              = new View.ContactInfo(querySelector('#${id.CONTACT_INFO}'), homeContext);
-    sendMessage              = new View.Message(querySelector('#${id.SENDMESSAGE}'), homeContext);
+    sendMessage              = new View.Message(querySelector('#message-compose'), homeContext);
     globalQueue              = new View.CallList(querySelector('#${id.GLOBAL_QUEUE}'), homeContext);
     callManagement           = new View.CallManagement(querySelector('#${id.CALL_ORIGINATE}'), homeContext);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
@@ -108,7 +108,7 @@ class BobActive {
     messageSearch = new View.MessageFilter(querySelector('#${id.MESSAGE_SEARCH}'), messageContext);
     messageList   = new View.MessageList(querySelector('#${id.MESSAGE_OVERVIEW}'), messageContext);
     messageEdit   = new View.MessageEdit(querySelector('#${id.MESSAGE_EDIT}'), messageContext);
-    
+
     logBox = new View.LogBox(querySelector('#${id.LOGBOX}'));
 
     //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
@@ -117,6 +117,7 @@ class BobActive {
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
     Model.CalendarEventList.registerObservers();
+    Model.MessageList.instance.registerObservers();
   }
 
   void registerContexts() {

@@ -16,36 +16,35 @@ part of view;
 class Message {
 
   static const String className = '${libraryName}.Message';
-  static const String NavShortcut = 'B'; 
+  static const String NavShortcut = 'B';
 
   final Element      element;
   final Context      context;
         nav.Location location;
-   
-  Element         get header                    => this.element.querySelector('legend');
-  InputElement    get sendmessagesearchbox      => this.element.querySelector('#${id.SENDMESSAGE_SEARCHBOX}');
-  InputElement    get sendmessagesearchresult   => this.element.querySelector('#sendmessagesearchresult');
-  InputElement    get callerNameField           => this.element.querySelector('#sendmessagename');
-  InputElement    get callerCompanyField        => this.element.querySelector('#sendmessagecompany');
-  InputElement    get callerPhoneField          => this.element.querySelector('#sendmessagephone');
-  InputElement    get callerCellphoneField      => this.element.querySelector('#sendmessagecellphone');
-  InputElement    get callerLocalExtensionField => this.element.querySelector('#sendmessagelocalno');
-  TextAreaElement get messageBodyField          => this.element.querySelector('#sendmessagetext');
+
+        Element         get header                    => this.element.querySelector('legend');
+        InputElement    get callerNameField           => this.element.querySelector('input.name');
+        InputElement    get callerCompanyField        => this.element.querySelector('input.company');
+        InputElement    get callerPhoneField          => this.element.querySelector('input.phone');
+        InputElement    get callerCellphoneField      => this.element.querySelector('input.cellphone');
+        InputElement    get callerLocalExtensionField => this.element.querySelector('input.local-extension');
+        TextAreaElement get messageBodyField          => this.element.querySelector('textarea.message-body');
 
   /// Checkboxes
-  InputElement get pleaseCall => this.element.querySelector('#send-message-pleasecall');
-  InputElement get callsBack  => this.element.querySelector('#send-message-callsback');
-  InputElement get hasCalled  => this.element.querySelector('#send-message-hascalled');
-  InputElement get urgent     => this.element.querySelector('#send-message-urgent');
-  
+        InputElement get pleaseCall => this.element.querySelector('input.message-tag.pleasecall');
+        InputElement get callsBack  => this.element.querySelector('input.message-tag.callsback');
+        InputElement get hasCalled  => this.element.querySelector('input.message-tag.hascalled');
+        InputElement get urgent     => this.element.querySelector('input.message-tag.urgent');
+        InputElement get draft      => this.element.querySelector('input.message-tag.draft');
+
   /// Widget control buttons
   ButtonElement get cancelButton => this.element.querySelector('button.cancel');
   ButtonElement get saveButton   => this.element.querySelector('button.save');
   ButtonElement get sendButton   => this.element.querySelector('button.send');
-  
+
   bool hasFocus = false;
   bool get muted     => this.context != Context.current;
-  
+
   UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
 
   List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
@@ -59,7 +58,7 @@ class Message {
 
   /**
    * Update the disabled property.
-   * 
+   *
    * Used for locking the input fields upon sending
    * a message, or when no contact is selected.
    */
@@ -76,10 +75,10 @@ class Message {
       element.disabled = disabled;
     });
   }
-  
+
   /**
    * Update the tabable property.
-   * 
+   *
    * Used for enabling and disabling the tab button for the widget.
    */
   void set tabable (bool enable) {
@@ -100,9 +99,9 @@ class Message {
    * Clears out the content of the input fields.
    */
   void _clearInputFields() {
-    
+
     const String context = '${className}._clear';
-    
+
     this.element.querySelectorAll('input').forEach((InputElement element) {
       element.value = "";
       element.checked = false;
@@ -116,27 +115,21 @@ class Message {
   }
 
   Message(Element this.element, Context this.context) {
-    
-    this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
-    
+
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
     this.cancelButton
         ..text = Label.Cancel
-        ..onClick.listen(_cancelClick);
+        ..onClick.listen((_) => this._clearInputFields());
 
     this.saveButton
         ..text = Label.Save
-        ..onClick.listen(_draftClick);
+        ..onClick.listen(this._saveHandler);
 
     this.sendButton
         ..text = Label.Send
-        ..onClick.listen(_sendHandler);
-
-    focusElements = [callerNameField, callerCompanyField, callerPhoneField, callerCellphoneField, callerLocalExtensionField, messageBodyField, pleaseCall, callsBack, hasCalled, urgent, cancelButton, saveButton, sendButton];
-
-    focusElements.forEach((e) => context.registerFocusElement(e));
+        ..onClick.listen(this._sendHandler);
 
     this._renderContact(contact);
     this._setupLabels();
@@ -149,23 +142,23 @@ class Message {
     }
   }
 
-  
+
   void _setupLabels () {
-    this.header.children = 
+    this.header.children =
         [Icon.Message,
          new SpanElement()..text =  Label.MessageCompose,
          new Nudge(NavShortcut).element];
     this.callerNameField.placeholder = Label.CallerName;
     this.callerCompanyField.placeholder = Label.Company;
     this.callerPhoneField.placeholder= Label.Phone;
-    this.callerCellphoneField.placeholder = Label.CellPhone; 
+    this.callerCellphoneField.placeholder = Label.CellPhone;
     this.callerLocalExtensionField.placeholder = Label.LocalExtension;
     this.messageBodyField.placeholder = Label.PlaceholderMessageCompose;
-    
+
     /// Checkbox labes.
     this.element.querySelectorAll('label').forEach((LabelElement label) {
       final String labelFor = label.attributes['for'];
-      
+
       if (labelFor == this.pleaseCall.id) {
         label.text = Label.PleaseCall;
       } else if (labelFor == this.callsBack.id) {
@@ -174,10 +167,12 @@ class Message {
         label.text =  Label.HasCalled;
       } else if (labelFor == this.urgent.id) {
         label.text = Label.Urgent;
+      } else if (labelFor == this.draft.id) {
+        label.text = Label.Draft;
       }
     });
     }
-  
+
   /**
    * Re-renders the recipient list.
    */
@@ -196,7 +191,7 @@ class Message {
    */
   void _onMessageElementClick(_) {
     const String context = '${className}._onMessageElementClick';
-    Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE, id.SENDMESSAGE_CELLPHONE));
+    //Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE, id.SENDMESSAGE_CELLPHONE));
   }
 
   /**
@@ -204,16 +199,10 @@ class Message {
    */
   void _onLocationChanged(nav.Location location) {
     this.hasFocus = (location.widgetId == element.id);
-    
+
     element.classes.toggle('focus', this.hasFocus);
     this.tabable = this.hasFocus;
-    
-    if (location.elementId != null) {
-      var elem = element.querySelector('#${location.elementId}');
-      if (elem != null) {
-        elem.focus();
-      }
-    }
+
   }
 
   /**
@@ -241,7 +230,7 @@ class Message {
 
   void _registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
-    
+
     element.onClick.listen(this._onMessageElementClick);
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
@@ -255,30 +244,15 @@ class Message {
       callerPhoneField.value = '${value.callerId}';
     });
 
-    
-    element.onClick.listen((MouseEvent e) {
-      if ((e.target as Element).attributes.containsKey('tabindex')) {
-        event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, (e.target as Element).id));
-      }
-    });
-  }
+    this.draft.onClick.listen((_) => this.sendButton.disabled = this.draft.checked);
 
-  void _cancelClick(_) {
-    this._clearInputFields();
-  }
-
-  void _draftClick(_) {
-    const String context = '${className}.draftClick';
-
-    log.fixmeContext("Not implemented!", context);
   }
 
   /**
-   * Harvests and prepares the message from the input fields and
-   * sends is via the Message Service.
+   * Extracts a Message from the information stored in the widget
    */
-  void _sendHandler(_) {
-    contact.contextMap().then((Map contextMap) {
+  Future<model.Message> _harvestMessage() {
+    return contact.contextMap().then((Map contextMap) {
       model.Message pendingMessage = new model.Message.fromMap({
         'message': messageBodyField.value,
         'phone': callerPhoneField.value,
@@ -293,28 +267,50 @@ class Message {
         'flags': []
       });
 
-      print (pendingMessage.asMap);
-
       pleaseCall.checked ? pendingMessage.addFlag('urgent') : null;
       callsBack.checked ? pendingMessage.addFlag('willCallBack') : null;
       hasCalled.checked ? pendingMessage.addFlag('called') : null;
       urgent.checked ? pendingMessage.addFlag('urgent') : null;
 
+      draft.checked ? pendingMessage.addFlag('draft') : null;
 
       for (model.Recipient recipient in this.recipients) {
         pendingMessage.addRecipient(recipient);
       }
 
-      this.isDisabled = true;
+      return pendingMessage;
+    });
+  }
 
-      pendingMessage.send().then((_) {
+  /**
+   * Click handler for send button. Sends the currently typed in message via the Message Service.
+   */
+  void _sendHandler(_) {
+    this.isDisabled = true;
+
+    this._harvestMessage().then ((model.Message message) {
+      message.send().then((_) {
         log.debug('Sent message');
         this._clearInputFields();
-        this.isDisabled = false;
       }).catchError((error) {
-        this.isDisabled = false;
         log.debug('----- Send Message Unlucky Result: ${error}');
-      });
+      }).whenComplete(() => this.isDisabled = false);
+    });
+  }
+
+  /**
+   * Click handler for save button. Saves the currently typed in message via the Message Service.
+   */
+  void _saveHandler(_) {
+    this.isDisabled = true;
+
+    this._harvestMessage().then ((model.Message message) {
+      message.save().then((_) {
+        log.debug('Sent message');
+        this._clearInputFields();
+      }).catchError((error) {
+        log.debug('----- Send Message Unlucky Result: ${error}');
+      }).whenComplete(() => this.isDisabled = false);
     });
   }
 }

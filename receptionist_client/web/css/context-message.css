@@ -11,7 +11,7 @@
 }
 
 #messageoverview > table {
-  font-size: 0.9em;
+  font-size: 0.8em;
   width: 100%;
   display:block;
   overflow: auto;
@@ -26,14 +26,13 @@
   height: 3.2em;
 }
 
-#messageoverview > table tr.active {
+#messageoverview > table tr.selected {
   outline: 0.1em solid #67c1f3;
 }
 
-#messageoverview > table tr.active td {
+#messageoverview > table tr.selected td {
   background-color:rgba(67,193,243,0.2) !important;
 }
-
 
 #message-overview-header-checkbox {
   width: 2%;  

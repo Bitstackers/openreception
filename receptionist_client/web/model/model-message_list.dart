@@ -5,6 +5,7 @@ class MessageList extends IterableBase<Message> {
   static const String className = "${libraryName}.MessageList";
 
   static final EventType reload = new EventType();
+  static final EventType<int> add    = new EventType<int>();
   static final EventType<Message> stateChange = new EventType<Message>();
 
   EventBus _eventStream =  new EventBus();
@@ -21,7 +22,7 @@ class MessageList extends IterableBase<Message> {
   /// Wrapped functions
   Map<int, Message> get values => this._map;
   bool contains (int MessageID) => this._map.containsKey(MessageID);
-  
+
   
   /**
    * Iterator. 
@@ -49,6 +50,19 @@ class MessageList extends IterableBase<Message> {
       this._map[message.ID] = message;
     }
   }
+
+  
+  void registerObservers () {
+    const String context = '${className}.registerObservers';
+    
+    event.bus.on(Service.EventSocket.messageCreated).listen((Map event) {
+      //TODO: invalidate cache.
+      //storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
+      log.debugContext('Notifying about new message ${event}', context);
+      this._eventStream.fire(add, event['message']['id']);
+    });
+  }
+  
   
   /**
    * Reloads the MessageList from a List of Maps.
@@ -88,7 +102,7 @@ class MessageList extends IterableBase<Message> {
     return Service.Message.list().then ((MessageList messageList){
       this._map = messageList._map;
       
-      this._eventStream.fire(MessageList.reload, null);
+      //this._eventStream.fire(MessageList.reload, null);
       return this;
     });
   }

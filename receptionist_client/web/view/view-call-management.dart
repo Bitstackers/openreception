@@ -19,8 +19,8 @@ part of view;
 
 class CallManagement {
   static const String  className = '${libraryName}.CallManagement';
-  static const String NavShortcut = 'T'; 
-  bool get muted     => this.context != Context.current;  
+  static const String NavShortcut = 'T';
+  bool get muted     => this.context != Context.current;
 
   static final String  id        = constant.ID.CALL_MANAGEMENT;
   final        Element element;
@@ -28,11 +28,14 @@ class CallManagement {
 
   bool                get selected     => !nav.Location.isActive(this.element);
   InputElement        get numberField  => this.element.querySelector('#call-originate-number-field');
-  ButtonElement       get dialButton   => this.element.querySelector('.call-originate-number-button');
+  ButtonElement       get dialButton   => this.element.querySelector('button.dial');
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
   List<InputElement>  get inputFields  => this.element.querySelectorAll('input');
   List<ButtonElement> get buttons      => this.element.querySelectorAll('button');
   Element             get header       => this.element.querySelector('legend');
+
+  //TODO: Perform a more elaborate check for a valid extension.
+  static isValidExtension (String extension) => extension.length > 2;
 
   void set disabled (bool toggle) {
     this.inputFields.forEach((InputElement inputField) {
@@ -43,12 +46,12 @@ class CallManagement {
       button.disabled = toggle;
     });
   }
-  
+
   bool get disabled => this.buttons.first.disabled;
   List<Element> get nudges      => this.element.querySelectorAll('.nudge');
   void set NudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  
+
   /**
    * TODO
    */
@@ -56,15 +59,17 @@ class CallManagement {
     header.children = [Icon.Dialpad,
                        new SpanElement()..text = Label.DialOut,
                        new Nudge('T').element];
-    
-    
+
+
     registerEventListeners();
-    
+
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-    
+
     this.element.insertBefore(new Nudge('I').element, this.dialButton);
+
+    this._render();
   }
-  
+
   void _select (_) {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, this.numberField.id));
@@ -77,7 +82,7 @@ class CallManagement {
 
   _dialSelectedNumber(_) {
     if (!this.disabled) {
-      Controller.Call.dial(new model.Extension (this.numberField.value), model.Reception.selectedReception, model.Contact.selectedContact);  
+      Controller.Call.dial(new model.Extension (this.numberField.value), model.Reception.selectedReception, model.Contact.selectedContact);
     }
   }
 
@@ -92,28 +97,39 @@ class CallManagement {
   void registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.NudgesHidden = !isPressed);
 
+    this.numberField.onInput.listen((_) => this._render());
+
     event.bus.on(event.dialSelectedContact).listen(this._dialSelectedNumber);
-    
-    event.bus.on(model.Extension.activeExtensionChanged)
-      .listen((model.Extension extension) {
-        this.numberField.value = extension.dialString;
+
+    // When a reception changes - clear the number to avoid stale information in the UI.
+    event.bus.on(event.receptionChanged).listen((_) {
+      this.numberField.value = '';
+      this._render();
     });
-    
+
+    event.bus.on(model.Extension.activeExtensionChanged).listen((model.Extension extension) {
+        this.numberField.value = extension.dialString;
+        this._render();
+    });
+
     event.bus.on(model.Call.currentCallChanged).listen(_changeActiveCall);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationDone);
     event.bus.on(event.originateCallRequestFailure).listen(_originationDone);
 
     this.numberField.onFocus.listen((_) => this.numberField.select());
-    
+
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, this.inputFields.first));
-    event.bus.on(event.receptionChanged).listen((model.Reception reception) => this.disabled = (reception == model.nullReception));
-    
+
     this.dialButton.onClick.listen((_) => this._dialSelectedNumber(_));
-    
+
     this.element.onClick.listen((_) {
       Controller.Context.changeLocation
           (new nav.Location(this.context.id, this.element.id, this.inputFields.first.id));
     });
+  }
+
+  void _render() {
+    this.dialButton.disabled = !isValidExtension(this.numberField.value) || model.Reception.selectedReception == model.nullReception;
   }
 }

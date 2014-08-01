@@ -166,8 +166,23 @@ class Contact implements Comparable {
       try {
         if (json.containsKey('distribution_list')) {
           (json['distribution_list'] as Map).forEach((role, recipientList) {
-            (recipientList as List).forEach((recipientString) {
-              this._distributionList.add(new Recipient(recipientString, role));
+            (recipientList as List).forEach((Map recipientMap) {
+              Map map = {};
+              try {
+                
+                log.debugContext('${map}', context);
+                
+                map['role'] = role;
+                map['contact'] = {'id' : recipientMap['contact_id']};
+                map['reception'] = {'id' : recipientMap['reception_id']};;
+                
+                this._distributionList.add(new Recipient.fromMap(map));
+                
+
+              } catch (error) {
+                log.errorContext('Failed to parse recipient ${recipientMap}', context);
+              }
+              
             });
           });
         }

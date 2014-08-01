@@ -8,7 +8,7 @@ abstract class Message {
 
   static final String className = '${libraryName}.Message';
 
-  static Future send(model.Message message, [Uri host]) {
+  static Future save(model.Message message, [Uri host]) {
 
     final String context = '${className}.send';
 
@@ -19,15 +19,15 @@ abstract class Message {
     final String base = configuration.messageBaseUrl.toString();
     final Completer completer = new Completer();
     final List<String> fragments = new List<String>();
-    final String path = '/message/send';
+    final String path = '/message';
 
     /* Assemble the initial content for the message. */
     Map payload = message.asMap;
 
-    /* 
-     * Now we are ready to send the request to the server. 
+    /*
+     * Now we are ready to send the request to the server.
      */
-    
+
     HttpRequest request;
     String url;
 
@@ -68,13 +68,77 @@ abstract class Message {
     return completer.future;
   }
 
-  static Future<model.MessageList> list({Uri host   : null, 
+  /**
+   * Stores and sends a message via the message service.
+   */
+
+  static Future send(model.Message message, [Uri host]) {
+
+    final String context = '${className}.send';
+
+    if (host == null) {
+      host = configuration.messageBaseUrl;
+    };
+
+    final String base = configuration.messageBaseUrl.toString();
+    final Completer completer = new Completer();
+    final List<String> fragments = new List<String>();
+    final String path = '/message/send';
+
+    /* Assemble the initial content for the message. */
+    Map payload = message.asMap;
+
+    /*
+     * Now we are ready to send the request to the server.
+     */
+
+    HttpRequest request;
+    String url;
+
+    fragments.add('token=${configuration.token}');
+    url = _buildUrl(base, path, fragments);
+
+    log.debugContext('url: ${url} - payload: ${payload}', context);
+
+    request = new HttpRequest()
+        ..open(POST, url)
+        ..setRequestHeader('Content-Type', 'application/json')
+        ..onLoad.listen((_) {
+          switch (request.status) {
+            case 200:
+              completer.complete ();
+              break;
+            case 400:
+              completer.completeError(_badRequest('Resource ${base}${path}'));
+              break;
+
+            case 404:
+              completer.completeError(_notFound('Resource ${base}${path}'));
+              break;
+
+            case 500:
+              completer.completeError(_serverError('Resource ${base}${path}'));
+              break;
+            default:
+              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
+          }
+        })
+        ..onError.listen((e) {
+          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
+          completer.completeError(e);
+        })
+        ..send(JSON.encode(payload));
+
+    return completer.future;
+  }
+
+  static Future<model.MessageList> list({Uri host   : null,
                                          int lastID : model.Message.noID,
                                          int limit  : 100,
                                          model.MessageFilter filter : null}) {
 
     final String context = '${className}.list';
-    
+
     if (host == null) { host = Default.messageServerUri;};
 
     final String base = configuration.messageBaseUrl.toString();
@@ -89,9 +153,9 @@ abstract class Message {
     if (filter != null || filter == model.MessageFilter.none) {
       fragments.add('filter=${JSON.encode(filter.asMap)}');
     }
-    
+
     url = _buildUrl(base, path, fragments);
-    
+
     print (url);
 
     request = new HttpRequest()

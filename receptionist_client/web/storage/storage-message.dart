@@ -44,6 +44,25 @@ abstract class Message {
   }
 
   /**
+   * 
+   */
+  static Future<model.Message> get(int messageID) {
+    const String context = '${className}.get';
+
+    final Completer completer = new Completer<model.Message>();
+    
+    debugStorage("Message not found in cache, loading from service.", context);
+    Service.Message.get(messageID).then((model.Message message) {
+      completer.complete(message);
+    }).catchError((error) {
+      completer.completeError(error);
+    });
+
+    return completer.future;
+  }
+
+
+  /**
    * Get the [MessageList] from cache.
    * TODO: implement.
    */

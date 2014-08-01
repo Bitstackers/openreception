@@ -50,6 +50,7 @@ class EventSocket {
   static final EventType<Map> callLock     = new EventType<Map>();
   static final EventType<Map> callUnlock   = new EventType<Map>();
   static final EventType<Map> peerState            = new EventType<Map>();
+  static final EventType<Map> messageCreated              = new EventType<Map>();
   static final EventType<Map> contactCalendarEventCreated = new EventType<Map>();
   static final EventType<Map> contactCalendarEventUpdated = new EventType<Map>();
   static final EventType<Map> contactCalendarEventDeleted = new EventType<Map>();
@@ -72,6 +73,7 @@ class EventSocket {
      'call_unlock'   : callUnlock,
      'call_lock'     : callLock,
      'peer_state'    : peerState,
+     'messageCreated' : messageCreated,
      'contactCalendarEventCreated'   : contactCalendarEventCreated,
      'contactCalendarEventUpdated'   : contactCalendarEventUpdated,
      'contactCalendarEventDeleted'   : contactCalendarEventDeleted,

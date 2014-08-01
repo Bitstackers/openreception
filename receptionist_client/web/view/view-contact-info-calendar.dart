@@ -140,6 +140,7 @@ class ContactInfoCalendar {
 
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element]; 
+    
     this.createButton.text = Label.Create;
     this.saveButton.text = Label.Update;
     this.deleteButton.text = Label.Delete;

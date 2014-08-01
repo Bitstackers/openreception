@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/buttons-min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css" >
-    
+
     <link rel="stylesheet" href="css/nudge.css?v=1">
     <link rel="stylesheet" href="css/agentinfo.css?v=1">
     <link rel="stylesheet" href="css/context-switcher.css?v=1">
@@ -128,7 +128,7 @@
             <fieldset id="receptioninfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
               <legend>:: Ny aftale ::</legend>
               <input class="calendar-event-id" type="hidden" value="0"/>
-              
+
               <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
 
               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
@@ -168,46 +168,58 @@
             <ul id="company_handling_list" class="zebra"></ul>
           </fieldset>
 
-          <fieldset id="sendmessage" data-default-element="company_events_list" class="box-with-header-outer" style="height: 50%;">
+          <fieldset id="message-compose" data-default-element="message-compose-body" class="message-compose box-with-header-outer" style="height: 50%;">
             <legend> :: Ny besked :: </legend>
-            <!-- Disabled for now. <input id="sendmessagesearchbox" class="send-message-searchbox send-message-field" placeholder=":: Søg... ::" type="search" tabindex="-1">
-            <input id="sendmessagesearchresult" class="send-message-search-result send-message-field" placeholder=":: Ingen data fundet ::" readonly="">-->
 
-            <input id="sendmessagename" class="send-message-name send-message-field" placeholder=":: Navn ::" tabindex="-1">
-            <input id="sendmessagecompany" class="send-message-company send-message-field" placeholder=":: Firmanavn ::" tabindex="-1">
+            <input class="name" placeholder=":: Navn ::" tabindex="-1">
+            <input class="company" placeholder=":: Firmanavn ::" tabindex="-1">
+            <input class="phone" placeholder=":: Telefon ::" tabindex="-1">
+            <input class="cellphone" placeholder=":: Mobil ::" tabindex="-1">
+            <input class="local-extension" placeholder=":: Lokalnummer ::" tabindex="-1">
 
-            <input id="sendmessagephone" class="send-message-phone send-message-field" placeholder=":: Telefon ::" tabindex="-1">
-            <input id="sendmessagecellphone" class="send-message-cellphone send-message-field" placeholder=":: Mobil ::" tabindex="-1">
-            <input id="sendmessagelocalno" class="send-message-localno send-message-field" placeholder=":: Lokalnummer ::" tabindex="-1">
-
-            <textarea style="resize: none;" id="sendmessagetext" class="send-message-text send-message-field" placeholder="::Besked::" tabindex="-1"></textarea>
+            <textarea id="message-compose-body" style="resize: none;" class="message-body" placeholder="::Besked::" tabindex="-1"></textarea>
             <div style="width: 40%;float: left;">
                 <ul send-message-checkboxes>
                   <li>
-                    <input type="checkbox" name="send-message-pleasecall" id="send-message-pleasecall">
-                    <label for="send-message-pleasecall">:: Ring venligst ::</label>
+                    <input id="message-compose-tag-pleasecall" type="checkbox" class="message-tag pleasecall">
+                    <label for="message-compose-tag-pleasecall">:: Ring venligst ::</label>
                   </li>
                   <li>
-                    <input type="checkbox" name="send-message-callsback" id="send-message-callsback">
-                    <label for="send-message-callsback">:: Ringer selv tilbage ::</label>
+                    <input id="message-compose-tag-callsback" type="checkbox" class="message-tag callsback">
+                    <label for="message-compose-tag-callsback">:: Ringer selv tilbage ::</label>
                   </li>
                   <li>
-                    <input type="checkbox" name="send-message-hascalled" id="send-message-hascalled">
-                    <label for="send-message-hascalled">:: Har ringet ::</label>
+                    <input id="message-compose-tag-hascalled" type="checkbox"  class="message-tag hascalled">
+                    <label for="message-compose-tag-hascalled">:: Har ringet ::</label>
                   </li>
                   <li>
-                    <input type="checkbox" name="send-message-urgent" id="send-message-urgent">
-                    <label for="send-message-urgent">:: Haster ::</label>
+                    <input id="message-compose-tag-urgent" type="checkbox" class="message-tag urgent">
+                    <label for="message-compose-tag-urgent">:: Haster ::</label>
+                  </li>
+                  <li>
+                    <input id="message-compose-tag-draft" type="checkbox" class="message-tag draft">
+                    <label for="message-compose-tag-draft">:: Kladde ::</label>
                   </li>
                 </ul>
                 </div>
-          <div style="float:left; height: 40%; width: 60%;">
+          <div style="float:left; height: 30%; width: 60%;">
           <ul class="message-recipient-list"> </ul>
           </div>
-            <div class="send-message-button-container" style="width: 100%; float:left;">
-              <button class="cancel pure-button" tabindex="-1">:: Annuller ::</button>
-              <button class="save   pure-button" tabindex="-1">:: Gem ::</button>
-              <button class="send   pure-button" tabindex="-1">:: Send ::</button>
+          <div style="float: right;">
+            <button style="margin:0.5em;" class="cancel pure-button" tabindex="-1">
+               <i class="fa fa-cancel"></i>
+               :: Annuller ::
+            </button>
+
+            <button style="margin:0.5em;" class="save pure-button" tabindex="-1">
+               <i class="fa fa-save"></i>
+               :: Gem ::
+            </button>
+
+            <button style="margin:0.5em;" class="send pure-button" tabindex="-1">
+               <i class="fa fa-send"></i>
+               :: Send ::
+            </button>
             </div>
           </fieldset>
         </div>
@@ -229,9 +241,9 @@
              <fieldset class="contactinfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
                <legend>:: Ny aftale ::</legend>
                  <input class="calendar-event-id" type="hidden" value="0"/>
-                 
+
                  <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
-                 
+
                <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
                  <legend>:: Start::</legend>
                  <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
@@ -265,14 +277,14 @@
             </fieldset>
 
           </div>
-            
-            <fieldset id="call-originate" style="height: 5%" data-default-element="call-originate-number-field" class="box-with-header-outer">
+
+            <fieldset id="call-originate" style="height: 7%" data-default-element="call-originate-number-field" class="box-with-header-outer">
               <legend> :: Opkald :: </legend>
               <input id="call-originate-number-field" name="call-originate-number-field" type="text" placeholder=":: nummer ::" style="margin-left: 0.5%;"/>
-              <button class="call-originate-number-button">Ring op</button>
+              <button class="dial pure-button">Ring op</button>
             </fieldset>
-            
-            <fieldset id="contactinfopanel" style="height: 58%" class="box-with-header-outer">
+
+            <fieldset id="contactinfopanel" style="height: 56%" class="box-with-header-outer">
             <legend> :: Kontaktinfo :: </legend>
             <div id="contactinfo_data">
               <table>
@@ -388,12 +400,12 @@
       <!-- Context homeplus  -->
       <section id="contexthomeplus" data-default-widget="companyother" class="context hidden">
         <div id="context-home_plus-left" style="width: 30%; height: 99.5%%; overflow:hidden; float:left;">
-        
+
           <fieldset id="companyemailaddresses" class="box-with-header-outer" data-default-element="company-email-addresses-list">
             <legend> :: Emailadresser :: </legend>
             <ul id="company-email-addresses-list" class="zebra"></ul>
           </fieldset>
-        
+
           <fieldset id="companywebsites" class="box-with-header-outer" data-default-element="company-websites-list">
             <legend> :: Websites :: </legend>
             <ul id="company-websites-list" class="zebra""></ul>
@@ -417,7 +429,7 @@
             <legend> :: Telefonnumre :: </legend>
             <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
           </fieldset>
-      
+
           <fieldset id="companybankinginformation" class="box-with-header-outer" data-default-element="company-banking-info-list">
             <legend> :: Bankinformation :: </legend>
             <ul id="company-banking-info-list" class="zebra"tabindex="-1"></ul>
@@ -447,7 +459,7 @@
          <!-- Context messages - left container. -->
 
           <div style="margin-left: 0%; width: 30%;height: 100%; float:left;">
-            <fieldset id="message-search" class="box-with-header-outer" data-default-element="message-search-agent-selector" style="height: 35%;">
+            <fieldset id="message-search" class="box-with-header-outer" data-default-element="message-search-agent-selector" style="height: 35%; overflow: hidden;">
             <legend> :: Søg :: </legend>
               <div class="message-search-box">
                 <div id="message-search-agent-selector"></div>
@@ -458,7 +470,7 @@
               </div>
             </fieldset>
 
-          <fieldset id="message-edit" data-default-element="message-edit-body" class="box-with-header-outer" style="height: 64%;">
+          <fieldset id="message-edit" data-default-element="message-edit-body" class="message-compose box-with-header-outer" style="height: 64%;">
             <legend> :: Gensend besked :: </legend>
 
             <input class="name" placeholder=":: Navn ::" tabindex="-1">
@@ -486,6 +498,10 @@
                     <input id="message-edit-tag-urgent" type="checkbox" class="message-tag urgent">
                     <label for="message-edit-tag-urgent">:: Haster ::</label>
                   </li>
+                  <li>
+                    <input id="message-edit-tag-draft" type="checkbox" class="message-tag draft">
+                    <label for="message-edit-tag-draft">:: Kladde ::</label>
+                  </li>
                 </ul>
                 </div>
           <div style="float:left; height: 40%; width: 60%;">
@@ -510,20 +526,11 @@
             <fieldset id="messageoverview" data-default-element="message-overview-body" class="box-with-header-outer">
             <legend>
               <i class="fa fa-archive"></i>
-               :: Beskedarkiv :: 
+               :: Beskedarkiv ::
             </legend>
-              <button style="margin:0.5em;" class="previous pure-button" tabindex="-1">
-               <i class="fa fa-caret-left"></i>
-               :: Næste ::
-            </button>
-
-              <button style="margin:0.5em;" class="next pure-button" tabindex="-1">
-               :: Næste ::
-               
-            </button>
             <button style="margin:0.5em;" id="message-search-print" class="print pure-button" tabindex="-1"> <i class="fa fa-print"></i> :: Print :: </button>
             <button style="margin:0.5em;" id="message-search-resend" class="resend-multiple pure-button" tabindex="-1"> <i class="fa fa-send"></i> :: Gensend valgte:: </button>
-            
+
               <table class="pure-table pure-table-striped">
                 <thead>
                   <tr>
@@ -537,7 +544,8 @@
                 </thead>
                 <tbody id="message-overview-body"/>
               </table>
-              
+              <progress class="loading"></progress>
+
             </fieldset>
           </div>
         </div>

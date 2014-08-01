@@ -6,11 +6,6 @@ class MessageFilter{
   Element element;
   SpanElement header;
 
-  DivElement agent;
-  DivElement type;
-  DivElement company;
-  DivElement contact;
-
   SearchComponent<String> agentSearch;
   SearchComponent<String> typeSearch;
   SearchComponent<model.BasicReception> companySearch;
@@ -18,7 +13,7 @@ class MessageFilter{
 
   ButtonElement get saveMessageButton            => this.element.querySelector('button.save');
   ButtonElement get resendMessageButton          => this.element.querySelector('button.resend');
-  
+
   MessageFilter(Element this.element, Context this._context) {
     assert(element != null);
 
@@ -44,26 +39,27 @@ class MessageFilter{
       ..selectedElementChanged = (String text) {
       switch (text) {
         case 'Sendte':
-          model.MessageFilter.current.state = model.MessageState.Sent;          
-          
+          model.MessageFilter.current.state = model.MessageState.Sent;
+
           break;
-          
+
         case 'Gemte':
-          model.MessageFilter.current.state = model.MessageState.Saved;          
+          model.MessageFilter.current.state = model.MessageState.Saved;
           break;
-          
+
         case 'Venter':
-          model.MessageFilter.current.state = model.MessageState.Pending;          
+          model.MessageFilter.current.state = model.MessageState.Pending;
           break;
 
         default:
+          model.MessageFilter.current.state = null;
           break;
-          
+
       }
 
       searchParametersChanged();
     };
-      
+
     companySearch = new SearchComponent<model.BasicReception>(body.querySelector('#message-search-company'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = 'Virksomheder...'
       ..selectedElementChanged = (model.BasicReception receptionStub) {
@@ -79,7 +75,7 @@ class MessageFilter{
             model.MessageFilter.current.receptionID = reception.ID;
             model.MessageFilter.current.contactID = null;
           searchParametersChanged();
-          
+
           model.Contact.list(reception.ID).then((model.ContactList contacts) {
             contactSearch.updateSourceList([model.nullContact..name = 'Alle']..addAll(contacts));
           }).catchError((error) {
@@ -108,18 +104,12 @@ class MessageFilter{
         } else {
           model.MessageFilter.current.contactID = contact.id;
         }
-        
+
         searchParametersChanged();
       };
-
-    //_context.registerFocusElement(body.querySelector('#message-search-print'));
-    //_context.registerFocusElement(body.querySelector('#message-search-resend'));
-    
-  
-      
   }
-  
-  
+
+
   String companyListElementToString(model.BasicReception reception, String searchText) {
     if(searchText == null || searchText.isEmpty) {
       return reception.name;

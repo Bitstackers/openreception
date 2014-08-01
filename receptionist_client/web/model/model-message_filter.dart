@@ -6,6 +6,18 @@ abstract class MessageState {
   static final Sent    = 'Sent';
   static final Pending = 'Pending';
   
+  static String ofMessage (Message message) {
+    if (message.enqueued) {
+      return Pending;
+    } else if (message.sent) {
+      return Sent;
+    } else if (!message.sent && ! message.enqueued){
+      return Saved;
+    } else {
+      return null;
+    }
+  }
+  
 }
 
 class MessageFilter {
@@ -43,6 +55,13 @@ class MessageFilter {
     return retval;
   }
 
+  bool appliesTo (Message message) => [message.context.contact.ID, null].contains(this.contactID) &&
+                                      [message.context.reception.ID, null].contains(this.receptionID) &&
+                                      [message.takenByAgent, null].contains(this.userID) &&
+                                      [MessageState.ofMessage(message), null].contains(this.contactID); 
+  
+  List<Message> filter (List<Message> messages) => messages.where((Message message) => this.appliesTo (message));
+  
   @override
   operator == (MessageFilter other) =>
       this.state       == other.state &&

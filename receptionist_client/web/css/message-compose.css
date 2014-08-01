@@ -1,47 +1,29 @@
-#sendmessage { /* .send-message-placing { */
-  height: 50%;
-  margin-top: 0.5%;
-  width: 100%;
-}
-
-..send-message-container {
-  margin: 10px;
-  height: -moz-calc(100% - 20px);
-  height: -webkit-calc(100% - 20px);
-  width: -moz-calc(100% - 20px);
-  width: -webkit-calc(100% - 20px);
-  overflow: auto;
-}
-
-.send-message-field {
-  border: solid 2px #ccc;
-  border-radius: 3px;
-  font-size: 1.1em;
-  margin: 0px;
-}
-
-#message-edit input,
-#message-edit textarea {
+input,
+textarea {
   border: solid 2px #ccc;
   border-radius: 4px;
-  font-size: 1.1em;
+  font-size: 0.8em;
   font-weight: bold;
   padding: 1%;
+}
+
+.message-compose input,
+.message-compose textarea {
   margin: 1%;
 }
 
-#message-edit input.name,
-#message-edit input.company {
+.message-compose input.name,
+.message-compose input.company {
   width: 47.5%;
 }
 
-#message-edit input.phone,
-#message-edit input.cellphone,
-#message-edit input.local-extension {
+.message-compose input.phone,
+.message-compose input.cellphone,
+.message-compose input.local-extension {
   width: 30.6666666%;
 }
 
-#message-edit textarea {
+.message-compose textarea {
   width: 98%;
 }
 
@@ -50,11 +32,10 @@ input.send-message-field {
   padding: 3px;
 }
 
-textarea.send-message-field,
+textarea.message-body ,
 #message-edit-body {
   height: 30%;
-  padding: 5px;
-  font-size: 1.2em;
+  font-size: 0.9em;
 }
 
 .send-message-searchbox {
@@ -164,18 +145,18 @@ send-message-button-container {
 #send-message-recipient-list {
   inherit: none;
   list-style-type: none;
-  display: inline;  
+  display: inline;
 }
 
 li.email-recipient-role-to {
-  list-style-image: url('../images/email-role-to-icon-16x16.png');  
+  list-style-image: url('../images/email-role-to-icon-16x16.png');
 }
 
 
 li.email-recipient-role-cc {
-  list-style-image: url('../images/email-role-cc-icon-16x16.png');  
+  list-style-image: url('../images/email-role-cc-icon-16x16.png');
 }
 
 li.email-recipient-role-bcc {
-  list-style-image: url('../images/email-role-bcc-icon-16x16.png');  
+  list-style-image: url('../images/email-role-bcc-icon-16x16.png');
 }
