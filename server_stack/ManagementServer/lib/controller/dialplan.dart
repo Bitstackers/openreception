@@ -234,18 +234,51 @@ class DialplanController {
 
     String filename = request.uri.queryParameters['filename'];
     if(filename == null || filename.trim().isEmpty) {
-      orf_http.clientError(request, 'Missing parameter: "$filename".');
-      return;
-    }
-
-    if(!path.normalize(filename).startsWith(config.recordingsDirectory)) {
-      orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');
+      orf_http.clientError(request, 'Missing parameter: "filename".');
       return;
     }
 
     String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
 
+    if(!path.normalize(filepath).startsWith(config.recordingsDirectory)) {
+      orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');
+      return;
+    }
+
     service.record(config.callFlowServer, receptionId, filepath, token).then((http.Response repsonse) {
+      orf_http.allOk(request);
+    }).catchError((error, stack) {
+      String logMessage = 'Error ${error}, Stack: ${stack}';
+      orf_http.serverError(request, logMessage);
+    });
+  }
+
+  void deleteSoundFile(HttpRequest request) {
+    const context = '${libraryName}.getReception';
+    final token = request.uri.queryParameters['token'];
+
+    int receptionId;
+    try {
+      receptionId = orf_http.pathParameter(request.uri, 'reception');
+    } catch(error) {
+      orf_http.clientError(request, 'Bad parameter: reception. ${error}');
+      return;
+    }
+
+    String filename = request.uri.queryParameters['filename'];
+    if(filename == null || filename.trim().isEmpty) {
+      orf_http.clientError(request, 'Missing parameter: "filename".');
+      return;
+    }
+
+    String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
+
+    if(!path.normalize(filepath).startsWith(config.recordingsDirectory)) {
+      orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');
+      return;
+    }
+
+    service.deleteRecording(config.dialplanCompilerServer, filepath, token).then((http.Response repsonse) {
       orf_http.allOk(request);
     }).catchError((error, stack) {
       String logMessage = 'Error ${error}, Stack: ${stack}';

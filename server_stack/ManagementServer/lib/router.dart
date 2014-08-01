@@ -108,6 +108,7 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(receptionContactIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteReceptionContact)
 
     ..serve(receptionRecordUrl, method: HttpMethod.POST).listen(dialplan.recordSound)
+    ..serve(receptionRecordUrl, method: HttpMethod.DELETE).listen(dialplan.deleteSoundFile)
 
     ..serve(receptionContactIdEnpointUrl, method: HttpMethod.GET).listen(receptionContact.getEndpointList)
     ..serve(receptionContactIdEnpointUrl, method: HttpMethod.PUT).listen(receptionContact.createEndpoint)
