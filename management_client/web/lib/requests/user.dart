@@ -9,18 +9,20 @@ Future<List<User>> getUserList() {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
+        Map rawData = JSON.decode(body);
         List<Map> rawUsers = rawData['users'];
-        completer.complete(rawUsers.map((r) => new User.fromJson(r)
-            ).toList());
+        completer.complete(rawUsers.map((r) => new User.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -36,16 +38,18 @@ Future<User> getUser(int userId) {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        completer.complete(
-            new User.fromJson(JSON.decode(request.responseText)));
+        completer.complete(new User.fromJson(JSON.decode(body)));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -61,11 +65,18 @@ Future<Map> createUser(String data) {
   request = new HttpRequest()
     ..open(HttpMethod.PUT, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send(data);
 
@@ -82,11 +93,18 @@ Future<Map> updateUser(int userId, String body) {
   request = new HttpRequest()
     ..open(HttpMethod.POST, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send(body);
 
@@ -102,11 +120,18 @@ Future<Map> deleteUser(int userId) {
   request = new HttpRequest()
     ..open(HttpMethod.DELETE, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -122,17 +147,20 @@ Future<List<UserGroup>> getUsersGroup(int userId) {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
+        Map rawData = JSON.decode(body);
         List<Map> rawUserGroups = rawData['groups'];
-        completer.complete(rawUserGroups.map((r) => new UserGroup.fromJson(r)).toList());
+        completer.complete(rawUserGroups.map((Map r) => new UserGroup.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -148,17 +176,20 @@ Future<List<UserGroup>> getGroupList() {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
+        Map rawData = JSON.decode(body);
         List<Map> rawUserGroups = rawData['groups'];
-        completer.complete(rawUserGroups.map((r) => new UserGroup.fromJson(r)).toList());
+        completer.complete(rawUserGroups.map((Map r) => new UserGroup.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -174,11 +205,18 @@ Future<Map> joinUserGroup(int userId, int groupId) {
   request = new HttpRequest()
     ..open(HttpMethod.PUT, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -194,15 +232,18 @@ Future<Map> leaveUserGroup(int userId, int groupId) {
   request = new HttpRequest()
     ..open(HttpMethod.DELETE, url)
     ..onLoad.listen((_) {
-      if(request.status == 200) {
-        completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError(JSON.decode(request.responseText));
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -218,17 +259,20 @@ Future<List<UserIdentity>> getUserIdentities(int userId) {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
+        Map rawData = JSON.decode(body);
         List<Map> rawIdentities = rawData['identities'];
-        completer.complete(rawIdentities.map((r) => new UserIdentity.fromJson(r)).toList());
+        completer.complete(rawIdentities.map((Map r) => new UserIdentity.fromJson(r)).toList());
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -244,16 +288,18 @@ Future createUserIdentity(int userId, String data) {
   request = new HttpRequest()
     ..open(HttpMethod.PUT, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
-        completer.complete();
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send(data);
 
@@ -269,11 +315,13 @@ Future deleteUserIdentity(int userId, String identity) {
   request = new HttpRequest()
     ..open(HttpMethod.DELETE, url)
     ..onLoad.listen((_) {
+      String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(request.responseText);
-        completer.complete();
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
       } else {
-        completer.completeError('Bad status code. ${request.status}');
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
     ..onError.listen((error) {

@@ -20,9 +20,9 @@ Future<Dialplan> getDialplan(int receptionId) {
         completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -49,13 +49,13 @@ Future updateDialplan(int receptionId, String dialplan) {
         } else {
           completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
-      } catch (e) {
-        completer.completeError('Exception in updateDialplan ${e}');
+      } catch (error) {
+        completer.completeError('Exception in updateDialplan ${error}');
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send(dialplan);
 
@@ -82,9 +82,9 @@ Future<IvrList> getIvr(int receptionId) {
         completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -101,13 +101,16 @@ Future updateIvr(int receptionId, String ivrList) {
     ..open(HttpMethod.POST, url)
     ..onLoad.listen((_) {
       try {
+        String body = request.responseText;
         if (request.status == 200) {
-          completer.complete(JSON.decode(request.responseText));
+          completer.complete(JSON.decode(body));
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
         } else {
-          completer.completeError('Bad status code. ${request.status}');
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
         }
-      } catch (e) {
-        completer.completeError('Exception in updateIvr ${e}');
+      } catch (error) {
+        completer.completeError('Exception in updateIvr ${error}');
       }
     })
     ..onError.listen((e) {
@@ -141,9 +144,9 @@ Future<List<Audiofile>> getAudiofileList(int receptionId) {
         completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -172,9 +175,9 @@ Future<List<Playlist>> getPlaylistList() {
         completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -201,9 +204,9 @@ Future<Playlist> getPlaylist(int playlistId) {
         completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
       }
     })
-    ..onError.listen((e) {
+    ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(e.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -219,11 +222,18 @@ Future<Map> createPlaylist(String data) {
   request = new HttpRequest()
     ..open(HttpMethod.PUT, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send(data);
 
@@ -240,11 +250,18 @@ Future<Map> updatePlaylist(int playlistId, String body) {
   request = new HttpRequest()
     ..open(HttpMethod.POST, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send(body);
 
@@ -260,11 +277,18 @@ Future<Map> deletePlaylist(int playlistId) {
   request = new HttpRequest()
     ..open(HttpMethod.DELETE, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
-      completer.completeError(error.toString());
+      completer.completeError(error);
     })
     ..send();
 
@@ -280,10 +304,17 @@ Future<List<DialplanTemplate>> getDialplanTemplates() {
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
     ..onLoad.listen((_) {
-      Map bodyMap = JSON.decode(request.responseText);
-      List templateRoot = bodyMap['templates'];
-      List<DialplanTemplate> list = templateRoot.map((Map json) => new DialplanTemplate.fromJson(json)).toList();
-      completer.complete(list);
+      String body = request.responseText;
+      if (request.status == 200) {
+        Map bodyMap = JSON.decode(body);
+        List templateRoot = bodyMap['templates'];
+        List<DialplanTemplate> list = templateRoot.map((Map json) => new DialplanTemplate.fromJson(json)).toList();
+        completer.complete(list);
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
@@ -307,7 +338,14 @@ Future<Map> recordSoundFile(int receptionId, String filename) {
   request = new HttpRequest()
     ..open(HttpMethod.POST, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
@@ -331,7 +369,14 @@ Future<Map> deleteSoundFile(int receptionId, String filename) {
   request = new HttpRequest()
     ..open(HttpMethod.DELETE, url)
     ..onLoad.listen((_) {
-      completer.complete(JSON.decode(request.responseText));
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
     })
     ..onError.listen((error) {
       //TODO logging.
