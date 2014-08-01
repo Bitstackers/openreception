@@ -5,9 +5,22 @@ void handlerCallRecordSound(HttpRequest request) {
   const String context = '${libraryName}.handlerCallOrignate';
   const String recordExtension = 'slowrecordmenu';
 
-  final int    receptionID = pathParameter(request.uri, 'reception');
-  final String recordPath  = request.uri.queryParameters['recordpath'];
-  final String token       = request.uri.queryParameters['token'];
+  int    receptionID;
+  String recordPath;
+  String token;
+
+  try {
+    receptionID = pathParameter(request.uri, 'reception');
+    recordPath  = request.uri.queryParameters['recordpath'];
+    token       = request.uri.queryParameters['token'];
+  } catch(error, stack) {
+    clientError(request, 'Parameter error. ${error} ${stack}');
+  }
+
+  if(recordPath == null) {
+    clientError(request, 'Missing parameter "recordpath".');
+    return;
+  }
 
   logger.debugContext ('Originating to ${recordExtension} with path ${recordPath} for reception ${receptionID}', context);
 
