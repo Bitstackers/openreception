@@ -18,7 +18,7 @@ class Contact {
     return object;
   }
 
-  String toJson() {
+  Map toJson() {
     Map data = {
       'id': id,
       'full_name': full_name,
@@ -26,6 +26,6 @@ class Contact {
       'contact_type': type
     };
 
-    return JSON.encode(data);
+    return data;
   }
 }

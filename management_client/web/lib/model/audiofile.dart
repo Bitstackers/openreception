@@ -14,12 +14,12 @@ class Audiofile {
     return object;
   }
 
-  String toJson() {
+  Map toJson() {
     Map data = {
       'filepath': filepath,
       'shortname': shortname
     };
 
-    return JSON.encode(data);
+    return data;
   }
 }

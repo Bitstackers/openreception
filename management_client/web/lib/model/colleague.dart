@@ -39,17 +39,17 @@ class ReceptionColleague {
   ReceptionColleague();
 
   factory ReceptionColleague.fromJson(Map json) {
-    ReceptionColleague object = new ReceptionColleague();
-    object.id = json['id'];
-    object.organization_id = json['organization_id'];
-    object.full_name = json['full_name'];
-    object.enabled = json['enabled'];
-    object.contacts = (json['contacts'] as List).map((Map c) => new Colleague.fromJson(c)).toList();
+    ReceptionColleague object = new ReceptionColleague()
+      ..id = json['id']
+      ..organization_id = json['organization_id']
+      ..full_name = json['full_name']
+      ..enabled = json['enabled']
+      ..contacts = (json['contacts'] as List).map((Map c) => new Colleague.fromJson(c)).toList();
 
     return object;
   }
 
-  String toJson() {
+  Map toJson() {
     Map data = {
       'id': id,
       'organization_id': organization_id,
@@ -58,7 +58,7 @@ class ReceptionColleague {
       'contacts': contacts
     };
 
-    return JSON.encode(data);
+    return data;
   }
 
   static int sortByName(ReceptionColleague a, ReceptionColleague b) => a.full_name.compareTo(b.full_name);

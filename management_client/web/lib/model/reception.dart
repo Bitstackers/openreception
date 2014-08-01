@@ -62,7 +62,7 @@ class Reception {
     return reception;
   }
 
-  String toJson() {
+  Map toJson() {
     Map attributes = {
       'product': product,
       'other': other,
@@ -90,6 +90,6 @@ class Reception {
       'number': receptionNumber
     };
 
-    return JSON.encode(data);
+    return data;
   }
 }

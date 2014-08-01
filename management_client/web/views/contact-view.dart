@@ -202,7 +202,7 @@ class ContactView {
   }
 
   Future receptionContactUpdate(ReceptionContact RC) {
-    return request.updateReceptionContact(RC.receptionId, RC.contactId, RC.toJson()).then((_) {
+    return request.updateReceptionContact(RC.receptionId, RC.contactId, JSON.encode(RC)).then((_) {
       notify.info('Oplysningerne blev gemt.');
     }).catchError((error, stack) {
       notify.error('Ændringerne blev ikke gemt.');
@@ -212,7 +212,7 @@ class ContactView {
 
   Future receptionContactCreate(ReceptionContact RC) {
     return request.createReceptionContact(RC.receptionId, RC.contactId,
-        RC.toJson()).then((_) {
+        JSON.encode(RC)).then((_) {
       Map event = {
         "receptionId": RC.receptionId,
         "contactId": RC.contactId
@@ -593,12 +593,12 @@ class ContactView {
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      work.add(request.updateContact(contactId, updatedContact.toJson()).then(
+      work.add(request.updateContact(contactId, JSON.encode(updatedContact)).then(
           (_) {
         //Show a message that tells the user, that the changes went through.
         refreshList();
       }).catchError((error) {
-        log.error('Tried to update a contact but failed with error "${error}" from body: "${updatedContact.toJson()}"');
+        log.error('Tried to update a contact but failed with error "${error}" from body: "${JSON.encode(updatedContact)}"');
       }));
 
       work.addAll(saveList.values.map((f) => f()));
@@ -617,14 +617,14 @@ class ContactView {
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      request.createContact(newContact.toJson()).then((Map response) {
+      request.createContact(JSON.encode(newContact)).then((Map response) {
         bus.fire(Invalidate.contactAdded, null);
         refreshList();
         activateContact(response['id']);
         notify.info('Kontaktpersonen blev oprettet.');
       }).catchError((error) {
         notify.info('Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
-        log.error('Tried to make a new contact but failed with error "${error}" from body: "${newContact.toJson()}"');
+        log.error('Tried to make a new contact but failed with error "${error}" from body: "${JSON.encode(newContact)}"');
       });
     }
   }
@@ -916,7 +916,7 @@ class EndpointsComponent {
     for(Endpoint endpoint in foundEndpoints) {
       if(!persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Insert Endpoint
-        worklist.add(request.createEndpoint(receptionId, contactId, endpoint.toJson()));
+        worklist.add(request.createEndpoint(receptionId, contactId, JSON.encode(endpoint)));
       }
     }
 
@@ -932,7 +932,7 @@ class EndpointsComponent {
     for(Endpoint endpoint in foundEndpoints) {
       if(persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Update Endpoint
-        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, endpoint.toJson()));
+        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, JSON.encode(endpoint)));
       }
     }
     return Future.wait(worklist);

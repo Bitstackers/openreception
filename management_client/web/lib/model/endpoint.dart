@@ -26,7 +26,7 @@ class Endpoint {
     return object;
   }
 
-  String toJson() {
+  Map toJson() {
     Map data = {
       'contact_id': contactId,
       'reception_id': receptionId,
@@ -38,7 +38,7 @@ class Endpoint {
       'description': description
     };
 
-    return JSON.encode(data);
+    return data;
   }
 
   static int sortByPriority(Endpoint a, Endpoint b) => a.priority.compareTo(b.priority);

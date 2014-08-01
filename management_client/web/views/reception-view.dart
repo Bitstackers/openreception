@@ -1,6 +1,7 @@
 library reception.view;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import '../lib/logger.dart' as log;
@@ -229,7 +230,7 @@ class ReceptionView {
     if (selectedReceptionId > 0) {
       Reception updatedReception = extractValues();
 
-      updateReception(selectedReceptionId, updatedReception.toJson()).then((_) {
+      updateReception(selectedReceptionId, JSON.encode(updatedReception)).then((_) {
         //Show a message that tells the user, that the changes went threw.
         notify.info('Receptionens ændringer er gemt.');
         refreshList();
@@ -241,7 +242,7 @@ class ReceptionView {
       Reception newReception = extractValues();
       if (SC.currentElement != null) {
         int organizationId = SC.currentElement.id;
-        createReception(organizationId, newReception.toJson()).then((Map data) {
+        createReception(organizationId, JSON.encode(newReception)).then((Map data) {
           notify.info('Receptionen blev oprettet.');
           int receptionId = data['id'];
           bus.fire(Invalidate.receptionAdded, organizationId);

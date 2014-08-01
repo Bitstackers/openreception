@@ -131,7 +131,7 @@ class ReceptionContact {
     return object;
   }
 
-  String toJson() {
+  Map toJson() {
     Map data = {
       'contact_id': contactId,
       'reception_id': receptionId,
@@ -141,6 +141,6 @@ class ReceptionContact {
       'attributes': attributes
     };
 
-    return JSON.encode(data);
+    return data;
   }
 }

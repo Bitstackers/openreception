@@ -5,7 +5,7 @@ class DialplanTemplate {
   ExtensionGroup _template;
 
   //Easy way to make a deep copy clone.
-  ExtensionGroup get template => new ExtensionGroup.fromJson(JSON.decode(JSON.encode(_template.toJson())));
+  ExtensionGroup get template => new ExtensionGroup.fromJson(JSON.decode(JSON.encode(_template)));
 
   DialplanTemplate.fromJson(Map json) {
     id = json['id'];

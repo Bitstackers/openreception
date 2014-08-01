@@ -26,7 +26,7 @@ class CustomReceptionContact {
     return object;
   }
 
-  String toJson() {
+  Map toJson() {
     Map data = {
       'contact_id': contactId,
       'full_name': fullName,
@@ -38,6 +38,6 @@ class CustomReceptionContact {
       'reception_enabled': receptionEnabled
     };
 
-    return JSON.encode(data);
+    return data;
   }
 }
