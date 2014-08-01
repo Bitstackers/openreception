@@ -234,11 +234,16 @@ class DialplanController {
 
     String filename = request.uri.queryParameters['filename'];
     if(filename == null || filename.trim().isEmpty) {
-      orf_http.clientError(request, 'Missing parameter: "filename".');
+      orf_http.clientError(request, 'Missing parameter: "$filename".');
       return;
     }
 
-    String filepath = path.join(config.recordingsDirectory, receptionId.toString(), '${filename}.wav');
+    if(!path.normalize(filename).startsWith(config.recordingsDirectory)) {
+      orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');
+      return;
+    }
+
+    String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
 
     service.record(config.callFlowServer, receptionId, filepath, token).then((http.Response repsonse) {
       orf_http.allOk(request);
