@@ -281,7 +281,7 @@ class ContactView {
     });
 
     div.children.addAll([newContactIdInput, moveContact]);
-    //
+    //FIXME end of migrate from Frontdesk to OpenReception code
 
     TextAreaElement department, info, position, relations, responsibility;
     InputElement wantMessage, enabled;
@@ -335,10 +335,8 @@ class ContactView {
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
-    wantMessage = makeCheckBox(leftCell, 'Vil have beskeder',
-        contact.wantsMessages, onChange: onChange);
-    enabled = makeCheckBox(rightCell, 'Aktiv', contact.wantsMessages, onChange:
-        onChange);
+    wantMessage = makeCheckBox(leftCell, 'Vil have beskeder', contact.wantsMessages, onChange: onChange);
+    enabled = makeCheckBox(rightCell, 'Aktiv', contact.contactEnabled, onChange: onChange);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
@@ -369,17 +367,14 @@ class ContactView {
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
-    handlingList = makeListBox(leftCell, 'Håndtering', contact.handling,
-        onChange: onChange);
+    handlingList = makeListBox(leftCell, 'Håndtering', contact.handling, onChange: onChange);
     phoneNumbersList = makePhoneNumbersList(rightCell, contact.phoneNumbers, onChange: onChange);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
     rightCell = makeTableCellInsertInRow(row);
-    workhoursList = makeListBox(leftCell, 'Arbejdstid', contact.workhours,
-        onChange: onChange);
-    tagsList = makeListBox(rightCell, 'Stikord', contact.tags, onChange:
-        onChange);
+    workhoursList = makeListBox(leftCell, 'Arbejdstid', contact.workhours, onChange: onChange);
+    tagsList = makeListBox(rightCell, 'Stikord', contact.tags, onChange: onChange);
 
     row = makeTableRowInsertInTable(tableBody);
     leftCell = makeTableCellInsertInRow(row);
@@ -445,7 +440,8 @@ class ContactView {
         }
       }
 
-      SortableGroup sortGroup = new SortableGroup()..installAll(children);
+      SortableGroup sortGroup = new SortableGroup()
+        ..installAll(children);
 
       if (onChange != null) {
         sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
@@ -1113,13 +1109,12 @@ class DistributionsListComponent {
   }
 
   Future save(int receptionId, int contactId) {
-    DistributionList distributionList = new DistributionList();
+    DistributionList distributionList = new DistributionList()
+      ..to  = _extractReceptionContacts(ulTo)
+      ..cc  = _extractReceptionContacts(ulCc)
+      ..bcc = _extractReceptionContacts(ulBcc);
 
-    distributionList.to  = _extractReceptionContacts(ulTo);
-    distributionList.cc  = _extractReceptionContacts(ulCc);
-    distributionList.bcc = _extractReceptionContacts(ulBcc);
-
-    return request.updateDistributionList(receptionId, contactId, JSON.encode(distributionList.toJson()));
+    return request.updateDistributionList(receptionId, contactId, JSON.encode(distributionList));
     //TODO Do something about the response
   }
 
