@@ -1,12 +1,14 @@
 {
     "authurl": "http://auth.example.com/",
-    "httpport": 8080,
+    "callflowserver" : "http://example.com",
     "dbuser": "user",
     "dbpassword": "Secret",
     "dbhost": "localhost",
     "dbport": 5432,
     "dbname": "dbname",
-    "notificationserver": "http://example.com",
     "dialplancompilerserver": "http://example.com",
+    "httpport": 4100,
+    "notificationserver": "http://example.com",
+    "recordingsdirectory": "/usr/local/freeswitch/sounds/receptions",
     "servertoken": "secret-token"
 }

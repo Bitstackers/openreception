@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
+import 'package:path/path.dart' as path;
 
 import '../configuration.dart';
 import '../database.dart';
@@ -216,6 +217,34 @@ class DialplanController {
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
       orf_http.serverError(request, error.toString());
+    });
+  }
+
+  void recordSound(HttpRequest request) {
+    const context = '${libraryName}.getReception';
+    final token = request.uri.queryParameters['token'];
+
+    int receptionId;
+    try {
+      receptionId = orf_http.pathParameter(request.uri, 'reception');
+    } catch(error) {
+      orf_http.clientError(request, 'Bad parameter: reception. ${error}');
+      return;
+    }
+
+    String filename = request.uri.queryParameters['filename'];
+    if(filename == null || filename.trim().isEmpty) {
+      orf_http.clientError(request, 'Missing parameter: "filename".');
+      return;
+    }
+
+    String filepath = path.join(config.recordingsDirectory, receptionId.toString(), '${filename}.wav');
+
+    service.record(config.callFlowServer, receptionId, filepath, token).then((http.Response repsonse) {
+      orf_http.allOk(request);
+    }).catchError((error, stack) {
+      String logMessage = 'Error ${error}, Stack: ${stack}';
+      orf_http.serverError(request, logMessage);
     });
   }
 }

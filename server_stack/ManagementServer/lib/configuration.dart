@@ -5,32 +5,43 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+abstract class Default {
+  static final String configFile           = 'config.json';
+  static final int    dbport               = 5432;
+  static final String dbhost               = 'localhost';
+  static final int    httpport             = 4100;
+}
+
 class Configuration {
   ArgResults _args;
 
   Uri    _authUrl;
-  String _configfile = 'config.json';
-  int    _httpport   = 8080;
+  Uri    _callFlowServer;
+  String _configfile = Default.configFile;
   String _dbuser;
   String _dbpassword;
-  String _dbhost;
-  int    _dbport;
+  String _dbhost = Default.dbhost;
+  int    _dbport = Default.dbport;
   String _dbname;
-  Uri    _notificationServer;
   Uri    _dialplanCompilerServer;
+  int    _httpport   = Default.httpport;
+  Uri    _notificationServer;
+  String _recordingsDirectory;
   String _token;
 
-  Uri    get authUrl            => _authUrl;
-  String get configfile         => _configfile;
-  String get dbuser             => _dbuser;
-  String get dbpassword         => _dbpassword;
-  String get dbhost             => _dbhost;
-  int    get dbport             => _dbport;
-  String get dbname             => _dbname;
-  int    get httpport           => _httpport;
-  Uri    get notificationServer => _notificationServer;
+  Uri    get authUrl                => _authUrl;
+  Uri    get callFlowServer         => _callFlowServer;
+  String get configfile             => _configfile;
+  String get dbuser                 => _dbuser;
+  String get dbpassword             => _dbpassword;
+  String get dbhost                 => _dbhost;
+  int    get dbport                 => _dbport;
+  String get dbname                 => _dbname;
   Uri    get dialplanCompilerServer => _dialplanCompilerServer;
-  String get token              => _token;
+  int    get httpport               => _httpport;
+  Uri    get notificationServer     => _notificationServer;
+  String get recordingsDirectory    => _recordingsDirectory;
+  String get token                  => _token;
 
   Configuration(ArgResults args) {
     _args = args;
@@ -48,6 +59,10 @@ class Configuration {
   void _parseCLA() {
     if(_hasArgument('authurl')) {
       _authUrl = Uri.parse(_args['authurl']);
+    }
+
+    if(_hasArgument('callflowserver')) {
+      _callFlowServer = Uri.parse(_args['callflowserver']);
     }
 
     if(_hasArgument('dbhost')) {
@@ -70,6 +85,10 @@ class Configuration {
       _dbuser = _args['dbuser'];
     }
 
+    if(_hasArgument('dialplancompilerserver')) {
+      _dialplanCompilerServer = Uri.parse(_args['dialplancompilerserver']);
+    }
+
     if(_hasArgument('httpport')) {
       _httpport = int.parse(_args['httpport']);
     }
@@ -78,8 +97,8 @@ class Configuration {
       _notificationServer = Uri.parse(_args['notificationserver']);
     }
 
-    if(_hasArgument('dialplancompilerserver')) {
-      _dialplanCompilerServer = Uri.parse(_args['dialplancompilerserver']);
+    if(_hasArgument('recordingsdirectory')) {
+      _recordingsDirectory = _args['recordingsdirectory'];
     }
 
     if(_hasArgument('servertoken')) {
@@ -99,6 +118,10 @@ class Configuration {
 
     if(content.containsKey('authurl')) {
       _authUrl = Uri.parse(content['authurl']);
+    }
+
+    if(content.containsKey('callflowserver')) {
+      _callFlowServer = Uri.parse(content['callflowserver']);
     }
 
     if(content.containsKey('dbhost')) {
@@ -121,6 +144,10 @@ class Configuration {
       _dbuser = content['dbuser'];
     }
 
+    if(content.containsKey('dialplancompilerserver')) {
+      _dialplanCompilerServer = Uri.parse(content['dialplancompilerserver']);
+    }
+
     if(content.containsKey('httpport')) {
       _httpport = content['httpport'];
     }
@@ -129,8 +156,8 @@ class Configuration {
       _notificationServer = Uri.parse(content['notificationserver']);
     }
 
-    if(content.containsKey('dialplancompilerserver')) {
-      _dialplanCompilerServer = Uri.parse(content['dialplancompilerserver']);
+    if(content.containsKey('recordingsdirectory')) {
+      _recordingsDirectory = content['recordingsdirectory'];
     }
 
     if(content.containsKey('servertoken')) {
@@ -141,6 +168,10 @@ class Configuration {
   void _validate() {
     if(authUrl == null) {
       throw('authurl is not specified.');
+    }
+
+    if(callFlowServer == null) {
+      throw('callflowserver is not specified.');
     }
 
     if(dbhost == null) {
@@ -163,6 +194,10 @@ class Configuration {
       throw('dbuser is not specified.');
     }
 
+    if(dialplanCompilerServer == null) {
+      throw('dialplancompilerserver is not specified.');
+    }
+
     if(httpport == null) {
       throw('httpport is not specified.');
     }
@@ -171,15 +206,18 @@ class Configuration {
       throw('notificationServer is not specified.');
     }
 
-    if(dialplanCompilerServer == null) {
-      throw('dialplancompilerserver is not specified.');
+    if(recordingsDirectory == null) {
+      throw('recordingsdirectory is not specified.');
     }
   }
 
   String toString() => '''
     AuthUrl: $authUrl
     HttpPort: $httpport
-    NotificationServer: $notificationServer
+    NotificationServer:  $notificationServer
+    dialplanserver:      $dialplanCompilerServer
+    callflowserver:      $callFlowServer
+    recordingsdirectory: ${recordingsDirectory}
     Token: $token
     Database:
       Host: $dbhost

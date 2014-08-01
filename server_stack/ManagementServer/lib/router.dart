@@ -32,6 +32,7 @@ final Pattern receptionContactIdDistributionListUrl  = new UrlPattern(r'/recepti
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
+final Pattern receptionRecordUrl     = new UrlPattern(r'/reception/(\d+)/record');
 final Pattern playlistUrl            = new UrlPattern(r'/playlist');
 final Pattern playlistIdUrl          = new UrlPattern(r'/playlist/(\d+)');
 
@@ -105,6 +106,8 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(receptionContactIdUrl, method: HttpMethod.GET)   .listen(receptionContact.getReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.POST)  .listen(receptionContact.updateReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteReceptionContact)
+
+    ..serve(receptionRecordUrl, method: HttpMethod.POST).listen(dialplan.recordSound)
 
     ..serve(receptionContactIdEnpointUrl, method: HttpMethod.GET).listen(receptionContact.getEndpointList)
     ..serve(receptionContactIdEnpointUrl, method: HttpMethod.PUT).listen(receptionContact.createEndpoint)
