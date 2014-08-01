@@ -295,3 +295,51 @@ Future<List<DialplanTemplate>> getDialplanTemplates() {
 
   return completer.future;
 }
+
+/**
+ * Calls the user, and starts the recordings menu, for the specified [filename].
+ */
+Future<Map> recordSoundFile(int receptionId, String filename) {
+  final Completer completer = new Completer();
+  final encodeFileName = Uri.encodeComponent(filename);
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/record?token=${config.token}&filename=${encodeFileName}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.POST, url)
+    ..onLoad.listen((_) {
+      completer.complete(JSON.decode(request.responseText));
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error);
+    })
+    ..send();
+
+  return completer.future;
+}
+
+/**
+ * Deletes the recorded file: [filename].
+ */
+Future<Map> deleteSoundFile(int receptionId, String filename) {
+  final Completer completer = new Completer();
+  final encodeFilename = Uri.encodeComponent(filename);
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/record?token=${config.token}&filename=${encodeFilename}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.DELETE, url)
+    ..onLoad.listen((_) {
+      completer.complete(JSON.decode(request.responseText));
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error);
+    })
+    ..send();
+
+  return completer.future;
+}

@@ -18,12 +18,17 @@ class RecordView {
   UListElement receptionListUL;
   InputElement receptionSearchBox;
   LIElement highlightedReceptionLI;
-
+  ButtonElement newRecording;
+  TextInputElement newFileName;
+  int selectedOrganizationId;
+  int selectedReceptionId;
   UListElement fileListUL;
 
   RecordView(DivElement this.element) {
     receptionListUL = element.querySelector('#record-reception-list');
     receptionSearchBox = element.querySelector('#record-reception-search-box');
+    newRecording = element.querySelector('#record-new-file-button');
+    newFileName = element.querySelector('#record-new-file-name');
 
     fileListUL = element.querySelector('#record-file-list');
 
@@ -36,6 +41,21 @@ class RecordView {
 
     bus.on(windowChanged).listen((Map event) {
       element.classes.toggle('hidden', event['window'] != viewName);
+    });
+
+    newRecording.onClick.listen((_) {
+      String fileName = newFileName.value;
+      if(fileName != null && fileName.trim().isNotEmpty) {
+        if(selectedReceptionId != null && selectedReceptionId > 0) {
+          request.recordSoundFile(selectedReceptionId, '${fileName}.wav').catchError((error) {
+            notify.error('Der er skete en fejl med opringen.');
+          });
+        } else {
+          notify.error('Der skal være valgt en reception før man kan starte optagelsen.');
+        }
+      } else {
+        notify.error('Filnavnet må ikke være tomt.');
+      }
     });
   }
 
@@ -78,13 +98,13 @@ class RecordView {
     receptionListUL.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['receptionid'] == '$id'));
   }
 
-  void activateReception(int organization, int reception) {
-    //TODO DO SOMETHING
-    notify.info('Activated: ${organization} / ${reception}');
+  void activateReception(int organization, int receptionId) {
+    selectedOrganizationId = organization;
+    selectedReceptionId = receptionId;
 
-    highlightContactInList(reception);
+    highlightContactInList(receptionId);
 
-    request.getAudiofileList(reception).then((List<Audiofile> files) {
+    request.getAudiofileList(receptionId).then((List<Audiofile> files) {
       fileListUL.children.clear();
       fileListUL.children.addAll(files.map(makeAudioFileNode));
     }).catchError((error) {
@@ -107,10 +127,22 @@ class RecordView {
     ButtonElement play = new ButtonElement()
       ..text = 'Afspil'
       ..onClick.listen((_) {
-      notify.info('Listen carefully. \n ${file.filepath}');
+      request.recordSoundFile(selectedReceptionId, file.shortname).catchError((error) {
+        notify.error('Det skete en fejl i forbindelse med oprettelsen af opkaldet. ${error}');
+      });
     });
 
-    li.children.addAll([content, editBox, play]);
+    ButtonElement delete = new ButtonElement()
+      ..text = 'Slet'
+      ..onClick.listen((_) {
+      request.deleteSoundFile(selectedReceptionId, file.shortname).then((_) {
+        return activateReception(selectedOrganizationId, selectedReceptionId);
+      }).catchError((error) {
+        notify.error('Det skete en fejl, i forbindelse med sletningen af filen ${error}');
+      });
+    });
+
+    li.children.addAll([play, delete, content, editBox ]);
 
     return li;
   }
