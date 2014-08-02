@@ -36,7 +36,7 @@ class UserController {
     final int userId = orf_http.pathParameter(request.uri, 'user');
 
     db.deleteUser(userId)
-    .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
+    .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
     .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
       orf_http.serverError(request, error.toString());
@@ -62,12 +62,12 @@ class UserController {
   void getUserList(HttpRequest request) {
     const String context = '${libraryName}.getUserList';
 
-    db.getUserList().then((List<User> list) {
-      return orf_http.writeAndClose(request, listUserAsJson(list));
-    }).catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
+    db.getUserList().then((List<User> list) =>
+        orf_http.writeAndClose(request, listUserAsJson(list)))
+      .catchError((error) {
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void updateUser(HttpRequest request) {

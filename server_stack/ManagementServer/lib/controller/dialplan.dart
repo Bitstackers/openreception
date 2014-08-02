@@ -78,7 +78,7 @@ class DialplanController {
       })
       .then((http.Response response) {
         if(response.statusCode == 200) {
-          return orf_http.writeAndClose(request, JSON.encode({}));
+          return orf_http.allOk(request);
         } else {
           request.response.statusCode = response.statusCode;
           return orf_http.writeAndClose(request, JSON.encode({'error': 'The is saved, but the compilating returned an error',
@@ -174,7 +174,7 @@ class DialplanController {
     db.getPlaylist(playlistId).then((Playlist playlist) {
       if(playlist == null) {
         request.response.statusCode = 404;
-        return orf_http.writeAndClose(request, JSON.encode({}));
+        return orf_http.allOk(request);
       } else {
         return orf_http.writeAndClose(request, playlistAsJson(playlist));
       }
