@@ -97,7 +97,7 @@ class ContactController {
       }
     }).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      orf_http.writeAndClose(request, JSON.encode({}));
+      orf_http.allOk(request);
     });
   }
 

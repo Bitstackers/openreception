@@ -28,8 +28,7 @@ class ReceptionContactController {
 
     db.getReceptionContact(receptionId, contactId).then((ReceptionContact contact) {
       if(contact == null) {
-        request.response.statusCode = 404;
-        return orf_http.writeAndClose(request, JSON.encode({}));
+        return orf_http.notFound(request, {});
       } else {
         return orf_http.writeAndClose(request, receptionContactAsJson(contact));
       }
@@ -150,8 +149,7 @@ class ReceptionContactController {
 
     db.getEndpoint(receptionId, contactId, address, addressType).then((Endpoint endpoint) {
       if(endpoint == null) {
-        request.response.statusCode = 404;
-        return orf_http.writeAndClose(request, JSON.encode({}));
+        return orf_http.notFound(request, {});
       } else {
         return orf_http.writeAndClose(request, endpointAsJson(endpoint));
       }

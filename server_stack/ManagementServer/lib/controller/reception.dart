@@ -25,8 +25,7 @@ class ReceptionController {
 
     db.getReception(receptionId).then((Reception reception) {
       if (reception == null) {
-        request.response.statusCode = 404;
-        return orf_http.writeAndClose(request, JSON.encode({}));
+        return orf_http.notFound(request, {});
       } else {
         return orf_http.writeAndClose(request, receptionAsJson(reception));
       }

@@ -49,8 +49,7 @@ class UserController {
 
     db.getUser(userId).then((User user) {
       if(user == null) {
-        request.response.statusCode = 404;
-        return orf_http.writeAndClose(request, JSON.encode({}));
+        return orf_http.notFound(request, {});
       } else {
         return orf_http.writeAndClose(request, userAsJson(user));
       }
@@ -103,7 +102,7 @@ class UserController {
     final int groupId = orf_http.pathParameter(request.uri, 'group');
 
     db.joinUserGroup(userId, groupId).then((_) {
-      orf_http.writeAndClose(request, JSON.encode({}));
+      orf_http.allOk(request);
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
       orf_http.serverError(request, error.toString());
@@ -116,7 +115,7 @@ class UserController {
     final int groupId = orf_http.pathParameter(request.uri, 'group');
 
     db.leaveUserGroup(userId, groupId).then((_) {
-      orf_http.writeAndClose(request, JSON.encode({}));
+      return orf_http.allOk(request);
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
       orf_http.serverError(request, error.toString());
