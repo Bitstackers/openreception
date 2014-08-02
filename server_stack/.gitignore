@@ -28,3 +28,6 @@ MessageDispatcher/bin/mailer_conf.pyc
 
 # Local makefile configuration.
 makefile.dbsetup
+
+# DartEditor settings
+.settings
