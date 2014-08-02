@@ -1,4 +1,4 @@
-library adaheads_server_model;
+library model;
 
 import 'package:OpenReceptionFramework/common.dart' as orf;
 
@@ -18,4 +18,4 @@ part 'model/user.dart';
 part 'model/user_group.dart';
 part 'model/user_identity.dart';
 
-const libraryName = 'adaheads_server_model';
+const libraryName = 'model';

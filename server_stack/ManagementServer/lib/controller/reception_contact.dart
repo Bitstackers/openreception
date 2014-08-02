@@ -16,15 +16,15 @@ import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 const libraryName = 'receptionContactController';
 
 class ReceptionContactController {
-  Database db;
-  Configuration config;
+  final Database db;
+  final Configuration config;
 
   ReceptionContactController(Database this.db, Configuration this.config);
 
   void getReceptionContact(HttpRequest request) {
-    const context = '${libraryName}.getReceptionContact';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getReceptionContact';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getReceptionContact(receptionId, contactId).then((ReceptionContact contact) {
       if(contact == null) {
@@ -40,8 +40,8 @@ class ReceptionContactController {
   }
 
   void getReceptionContactList(HttpRequest request) {
-    const context = '${libraryName}.getReceptionContactList';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    const String context = '${libraryName}.getReceptionContactList';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.getReceptionContactList(receptionId).then((List<ReceptionContact> list) {
       return orf_http.writeAndClose(request, listReceptionContactAsJson(list));
@@ -52,9 +52,9 @@ class ReceptionContactController {
   }
 
   void createReceptionContact(HttpRequest request) {
-    const context = '${libraryName}.createReceptionContact';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.createReceptionContact';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     orf_http.extractContent(request)
     .then(JSON.decode)
@@ -76,9 +76,9 @@ class ReceptionContactController {
   }
 
   void updateReceptionContact(HttpRequest request) {
-    const context = '${libraryName}.updateReceptionContact';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.updateReceptionContact';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     orf_http.extractContent(request)
     .then(JSON.decode)
@@ -100,9 +100,9 @@ class ReceptionContactController {
   }
 
   void deleteReceptionContact(HttpRequest request) {
-    const context = '${libraryName}.deleteReceptionContact';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.deleteReceptionContact';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.deleteReceptionContact(receptionId, contactId)
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({}))
@@ -120,9 +120,9 @@ class ReceptionContactController {
   }
 
   void createEndpoint(HttpRequest request) {
-    const context = '${libraryName}.createEndpoint';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.createEndpoint';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -142,11 +142,11 @@ class ReceptionContactController {
   }
 
   void getEndpoint(HttpRequest request) {
-    const context = '${libraryName}.getEndpoint';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
-    String address = orf_http.pathParameterString(request.uri, 'endpoint');
-    String addressType = orf_http.pathParameterString(request.uri, 'type');
+    const String context = '${libraryName}.getEndpoint';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+    final String address = orf_http.pathParameterString(request.uri, 'endpoint');
+    final String addressType = orf_http.pathParameterString(request.uri, 'type');
 
     db.getEndpoint(receptionId, contactId, address, addressType).then((Endpoint endpoint) {
       if(endpoint == null) {
@@ -162,9 +162,9 @@ class ReceptionContactController {
   }
 
   void getEndpointList(HttpRequest request) {
-    const context = '${libraryName}.getEndpointList';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getEndpointList';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getEndpointList(receptionId, contactId).then((List<Endpoint> list) {
       return orf_http.writeAndClose(request, endpointListAsJson(list));
@@ -175,11 +175,11 @@ class ReceptionContactController {
   }
 
   void updateEndpoint(HttpRequest request) {
-    const context = '${libraryName}.updateEndpoint';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
-    String address = orf_http.pathParameterString(request.uri, 'endpoint');
-    String addressType = orf_http.pathParameterString(request.uri, 'type');
+    const String context = '${libraryName}.updateEndpoint';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+    final String address = orf_http.pathParameterString(request.uri, 'endpoint');
+    final String addressType = orf_http.pathParameterString(request.uri, 'type');
 
     int newreceptionId, newContactId;
     String newAddress, newAddressType;
@@ -221,11 +221,11 @@ class ReceptionContactController {
   }
 
   void deleteEndpoint(HttpRequest request) {
-    const context = '${libraryName}.deleteEndpoint';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
-    String address = orf_http.pathParameterString(request.uri, 'endpoint');
-    String addressType = orf_http.pathParameterString(request.uri, 'type');
+    const String context = '${libraryName}.deleteEndpoint';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+    final String address = orf_http.pathParameterString(request.uri, 'endpoint');
+    final String addressType = orf_http.pathParameterString(request.uri, 'type');
 
     db.deleteEndpoint(receptionId, contactId, address, addressType)
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({}))
@@ -243,9 +243,9 @@ class ReceptionContactController {
   }
 
   void getDistributionList(HttpRequest request) {
-    const context = '${libraryName}.getDistributionList';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getDistributionList';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getDistributionList(receptionId, contactId)
       .then((DistributionList distributionList) => orf_http.writeAndClose(request, distributionListAsJson(distributionList)))
@@ -257,9 +257,9 @@ class ReceptionContactController {
   }
 
   void updateDistributionList(HttpRequest request) {
-    const context = '${libraryName}.updateDistributionList';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.updateDistributionList';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -272,10 +272,10 @@ class ReceptionContactController {
   }
 
   void moveContact(HttpRequest request) {
-    const context = '${libraryName}.moveContact';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
-    int newContactId = orf_http.pathParameter(request.uri, 'newContactId');
+    const String context = '${libraryName}.moveContact';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+    final int newContactId = orf_http.pathParameter(request.uri, 'newContactId');
 
     db.moveReceptionContact(receptionId, contactId, newContactId)
       .then((_) => db.getDistributionList(receptionId, newContactId))

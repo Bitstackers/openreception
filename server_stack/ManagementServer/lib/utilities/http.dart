@@ -9,7 +9,7 @@ import 'package:OpenReceptionFramework/model.dart' as orf_model;
 import 'package:OpenReceptionFramework/common.dart' as orf;
 import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 
-const libraryName = 'userController';
+const libraryName = 'Utilities';
 final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');
 
 class HttpMethod {

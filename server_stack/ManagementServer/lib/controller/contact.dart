@@ -17,13 +17,13 @@ import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 const libraryName = 'contactController';
 
 class ContactController {
-  Database db;
-  Configuration config;
+  final Database db;
+  final Configuration config;
 
   ContactController(Database this.db, Configuration this.config);
 
   void createContact(HttpRequest request) {
-    const context = '${libraryName}.createContact';
+    const String context = '${libraryName}.createContact';
 
     orf_http.extractContent(request)
     .then(JSON.decode)
@@ -43,14 +43,14 @@ class ContactController {
   }
 
   void deleteContact(HttpRequest request) {
-    const context = '${libraryName}.deleteContact';
-    int contactId =  orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.deleteContact';
+    final int contactId =  orf_http.pathParameter(request.uri, 'contact');
 
     db.deleteContact(contactId)
-    .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
+    .then((_) => orf_http.allOk(request))
     .then((_) {
       Map data = {'event' : 'contactEventDeleted', 'contactEvent' : {'contactId' : contactId}};
-      orf_service.Notification.broadcast(data, config.notificationServer, config.token)
+      return orf_service.Notification.broadcast(data, config.notificationServer, config.token)
         .catchError((error) {
           orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
         });
@@ -62,8 +62,8 @@ class ContactController {
   }
 
   void getAContactsOrganizationList(HttpRequest request) {
-    const context = '${libraryName}.getAContactsOrganizationList';
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getAContactsOrganizationList';
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getAContactsOrganizationList(contactId).then((List<Organization> organizations) {
       orf_http.writeAndClose(request, listOrganizatonAsJson(organizations));
@@ -74,8 +74,8 @@ class ContactController {
   }
 
   void getColleagues(HttpRequest request) {
-    const context = '${libraryName}.getColleagues';
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getColleagues';
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getContactColleagues(contactId).then((List<ReceptionColleague> receptions) {
       orf_http.writeAndClose(request, listReceptionColleaguesAsJson(receptions));
@@ -86,13 +86,12 @@ class ContactController {
   }
 
   void getContact(HttpRequest request) {
-    const context = '${libraryName}.getContact';
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getContact';
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getContact(contactId).then((Contact contact) {
       if(contact == null) {
-        request.response.statusCode = 404;
-        return orf_http.writeAndClose(request, JSON.encode({}));
+        return orf_http.notFound(request, {});
       } else {
         return orf_http.writeAndClose(request, contactAsJson(contact));
       }
@@ -103,7 +102,7 @@ class ContactController {
   }
 
   void getContactList(HttpRequest request) {
-    const context = '${libraryName}.getContactList';
+    const String context = '${libraryName}.getContactList';
 
     db.getContactList().then((List<Contact> list) {
       return orf_http.writeAndClose(request, listContactAsJson(list));
@@ -114,7 +113,7 @@ class ContactController {
   }
 
   void getContactTypeList(HttpRequest request) {
-    const context = '${libraryName}.getContactTypeList';
+    const String context = '${libraryName}.getContactTypeList';
 
     db.getContactTypeList().then((List<String> data) {
       orf_http.writeAndClose(request, contactTypesAsJson(data));
@@ -125,7 +124,7 @@ class ContactController {
   }
 
   void getAddressTypestList(HttpRequest request) {
-    const context = '${libraryName}.getAddressTypestList';
+    const String context = '${libraryName}.getAddressTypestList';
 
     db.getAddressTypeList().then((List<String> data) {
       orf_http.writeAndClose(request, addressTypesAsJson(data));
@@ -136,8 +135,8 @@ class ContactController {
   }
 
   void getReceptionList(HttpRequest request) {
-    const context = '${libraryName}.getReceptionList';
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.getReceptionList';
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     db.getAContactsReceptionContactList(contactId).then((List<ReceptionContact_ReducedReception> data) {
       orf_http.writeAndClose(request, listReceptionContact_ReducedReceptionAsJson(data));
@@ -148,8 +147,8 @@ class ContactController {
   }
 
   void updateContact(HttpRequest request) {
-    const context = '${libraryName}.updateContact';
-    int contactId = orf_http.pathParameter(request.uri, 'contact');
+    const String context = '${libraryName}.updateContact';
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     orf_http.extractContent(request)
     .then(JSON.decode)

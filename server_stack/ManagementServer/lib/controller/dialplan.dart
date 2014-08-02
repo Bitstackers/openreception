@@ -23,16 +23,16 @@ import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 const libraryName = 'dialplanController';
 
 class DialplanController {
-  Database db;
-  Configuration config;
+  final Database db;
+  final Configuration config;
 
   DialplanController(Database this.db, Configuration this.config);
 
   void getAudiofileList(HttpRequest request) {
-    const context = '${libraryName}.getAudiofileList';
+    const String context = '${libraryName}.getAudiofileList';
 
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    String token = request.uri.queryParameters['token'];
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final String token = request.uri.queryParameters['token'];
 
     service.getAudioFileList(config.dialplanCompilerServer, receptionId, token).then((http.Response response) {
       if(response.statusCode == 200) {
@@ -50,8 +50,8 @@ class DialplanController {
   }
 
   void getDialplan(HttpRequest request) {
-    const context = '${libraryName}.getDialplan';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    const String context = '${libraryName}.getDialplan';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.getDialplan(receptionId)
       .then((Dialplan dialplan) => orf_http.writeAndClose(request, dialplanAsJson(dialplan)))
@@ -62,9 +62,9 @@ class DialplanController {
   }
 
   void updateDialplan(HttpRequest request) {
-    const context = '${libraryName}.updateDialplan';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    String token = request.uri.queryParameters['token'];
+    const String context = '${libraryName}.updateDialplan';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -92,8 +92,8 @@ class DialplanController {
   }
 
   void getIvr(HttpRequest request) {
-    const context = '${libraryName}.getIvr';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    const String context = '${libraryName}.getIvr';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.getIvr(receptionId)
       .then((IvrList ivrList) => orf_http.writeAndClose(request, ivrListAsJson(ivrList)))
@@ -104,9 +104,9 @@ class DialplanController {
   }
 
   void updateIvr(HttpRequest request) {
-    const context = '${libraryName}.updateIvr';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    String token = request.uri.queryParameters['token'];
+    const String context = '${libraryName}.updateIvr';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -120,7 +120,7 @@ class DialplanController {
   }
 
   void getPlaylists(HttpRequest request) {
-    const context = '${libraryName}.updateIvr';
+    const String context = '${libraryName}.updateIvr';
 
     db.getPlaylistList()
       .then((List<Playlist> playlists) => orf_http.writeAndClose(request, playlistListAsJson(playlists)))
@@ -131,8 +131,8 @@ class DialplanController {
   }
 
   void createPlaylist(HttpRequest request) {
-    const context = '${libraryName}.createPlaylist';
-    String token = request.uri.queryParameters['token'];
+    const String context = '${libraryName}.createPlaylist';
+    final String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -156,8 +156,8 @@ class DialplanController {
   }
 
   void deletePlaylist(HttpRequest request) {
-    const context = '${libraryName}.deletePlaylist';
-    int playlistId = orf_http.pathParameter(request.uri, 'playlist');
+    const String context = '${libraryName}.deletePlaylist';
+    final int playlistId = orf_http.pathParameter(request.uri, 'playlist');
 
     db.deletePlaylist(playlistId)
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
@@ -168,8 +168,8 @@ class DialplanController {
   }
 
   void getPlaylist(HttpRequest request) {
-    const context = '${libraryName}.getPlaylist';
-    int playlistId = orf_http.pathParameter(request.uri, 'playlist');
+    const String context = '${libraryName}.getPlaylist';
+    final int playlistId = orf_http.pathParameter(request.uri, 'playlist');
 
     db.getPlaylist(playlistId).then((Playlist playlist) {
       if(playlist == null) {
@@ -185,9 +185,9 @@ class DialplanController {
   }
 
   void updatePlaylist(HttpRequest request) {
-    const context = '${libraryName}.updatePlaylist';
-    int playlistId = orf_http.pathParameter(request.uri, 'playlist');
-    String token = request.uri.queryParameters['token'];
+    const String context = '${libraryName}.updatePlaylist';
+    final int playlistId = orf_http.pathParameter(request.uri, 'playlist');
+    final String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -210,7 +210,7 @@ class DialplanController {
   }
 
   void getTemplates(HttpRequest request) {
-    const context = '${libraryName}.getTemplates';
+    const String context = '${libraryName}.getTemplates';
 
     db.getDialplanTemplates().then((List<DialplanTemplate> templates) {
       return orf_http.writeAndClose(request, dialplanTemplateListAsJson(templates));
@@ -221,16 +221,9 @@ class DialplanController {
   }
 
   void recordSound(HttpRequest request) {
-    const context = '${libraryName}.getReception';
-    final token = request.uri.queryParameters['token'];
-
-    int receptionId;
-    try {
-      receptionId = orf_http.pathParameter(request.uri, 'reception');
-    } catch(error) {
-      orf_http.clientError(request, 'Bad parameter: reception. ${error}');
-      return;
-    }
+    const String context = '${libraryName}.getReception';
+    final String token = request.uri.queryParameters['token'];
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     String filename = request.uri.queryParameters['filename'];
     if(filename == null || filename.trim().isEmpty) {
@@ -254,24 +247,17 @@ class DialplanController {
   }
 
   void deleteSoundFile(HttpRequest request) {
-    const context = '${libraryName}.getReception';
-    final token = request.uri.queryParameters['token'];
+    const String context = '${libraryName}.getReception';
+    final String token = request.uri.queryParameters['token'];
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
-    int receptionId;
-    try {
-      receptionId = orf_http.pathParameter(request.uri, 'reception');
-    } catch(error) {
-      orf_http.clientError(request, 'Bad parameter: reception. ${error}');
-      return;
-    }
-
-    String filename = request.uri.queryParameters['filename'];
+    final String filename = request.uri.queryParameters['filename'];
     if(filename == null || filename.trim().isEmpty) {
       orf_http.clientError(request, 'Missing parameter: "filename".');
       return;
     }
 
-    String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
+    final String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
 
     if(!path.normalize(filepath).startsWith(config.recordingsDirectory)) {
       orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');

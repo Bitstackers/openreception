@@ -6,10 +6,10 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 abstract class Default {
-  static final String configFile           = 'config.json';
-  static final int    dbport               = 5432;
-  static final String dbhost               = 'localhost';
-  static final int    httpport             = 4100;
+  static final String configFile = 'config.json';
+  static final int    dbport     = 5432;
+  static final String dbhost     = 'localhost';
+  static final int    httpport   = 4100;
 }
 
 class Configuration {

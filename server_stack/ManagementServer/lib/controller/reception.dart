@@ -14,14 +14,14 @@ import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 const libraryName = 'receptionController';
 
 class ReceptionController {
-  Database db;
-  Configuration config;
+  final Database db;
+  final Configuration config;
 
   ReceptionController(Database this.db, Configuration this.config);
 
   void getReception(HttpRequest request) {
-    const context = '${libraryName}.getReception';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    const String context = '${libraryName}.getReception';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.getReception(receptionId).then((Reception reception) {
       if (reception == null) {
@@ -37,7 +37,7 @@ class ReceptionController {
   }
 
   void getReceptionList(HttpRequest request) {
-    const context = '${libraryName}.getReceptionList';
+    const String context = '${libraryName}.getReceptionList';
 
     db.getReceptionList().then((List<Reception> list) {
       return orf_http.writeAndClose(request, listReceptionAsJson(list));
@@ -48,8 +48,8 @@ class ReceptionController {
   }
 
   void getOrganizationReceptionList(HttpRequest request) {
-    const context = '${libraryName}.getOrganizationReceptionList';
-    int organizationId = orf_http.pathParameter(request.uri, 'organization');
+    const String context = '${libraryName}.getOrganizationReceptionList';
+    final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
     db.getOrganizationReceptionList(organizationId).then((List<Reception> list)
         {
@@ -61,8 +61,8 @@ class ReceptionController {
   }
 
   void createReception(HttpRequest request) {
-    const context = '${libraryName}.createReception';
-    int organizationId = orf_http.pathParameter(request.uri, 'organization');
+    const String context = '${libraryName}.createReception';
+    final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
     orf_http.extractContent(request).then(JSON.decode).then((Map data) =>
         db.createReception(organizationId, data['full_name'], data['attributes'], data['extradatauri'], data['enabled'], data['number']))
@@ -81,8 +81,8 @@ class ReceptionController {
   }
 
   void updateReception(HttpRequest request) {
-    const context = '${libraryName}.updateReception';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    const String context = '${libraryName}.updateReception';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     orf_http.extractContent(request).then(JSON.decode).then((Map data) =>
       db.updateReception(receptionId, data['organization_id'], data['full_name'],
@@ -102,8 +102,8 @@ class ReceptionController {
   }
 
   void deleteReception(HttpRequest request) {
-    const context = '${libraryName}.deleteReception';
-    int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    const String context = '${libraryName}.deleteReception';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
     db.deleteReception(receptionId)
       .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId))

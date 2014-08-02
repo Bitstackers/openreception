@@ -15,14 +15,14 @@ import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 const libraryName = 'organizationController';
 
 class OrganizationController {
-  Database db;
-  Configuration config;
+  final Database db;
+  final Configuration config;
 
   OrganizationController(Database this.db, Configuration this.config);
 
   void getOrganization(HttpRequest request) {
-    const context = '${libraryName}.getOrganization';
-    int organizationId = orf_http.pathParameter(request.uri, 'organization');
+    const String context = '${libraryName}.getOrganization';
+    final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
     db.getOrganization(organizationId).then((Organization organization) {
       if(organization == null) {
@@ -38,7 +38,7 @@ class OrganizationController {
   }
 
   void getOrganizationList(HttpRequest request) {
-    const context = '${libraryName}.getOrganizationList';
+    const String context = '${libraryName}.getOrganizationList';
 
     db.getOrganizationList().then((List<Organization> list) {
       return orf_http.writeAndClose(request, listOrganizatonAsJson(list));
@@ -49,7 +49,7 @@ class OrganizationController {
   }
 
   void createOrganization(HttpRequest request) {
-    const context = '${libraryName}.createOrganization';
+    const String context = '${libraryName}.createOrganization';
 
     orf_http.extractContent(request)
     .then(JSON.decode)
@@ -68,7 +68,7 @@ class OrganizationController {
   }
 
   void updateOrganization(HttpRequest request) {
-    const context = '${libraryName}.updateOrganization';
+    const String context = '${libraryName}.updateOrganization';
 
     orf_http.extractContent(request)
     .then(JSON.decode)
@@ -88,9 +88,9 @@ class OrganizationController {
   }
 
   void deleteOrganization(HttpRequest request) {
-    const context = '${libraryName}.deleteOrganization';
+    const String context = '${libraryName}.deleteOrganization';
+    final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
-    int organizationId = orf_http.pathParameter(request.uri, 'organization');
     db.deleteOrganization(organizationId)
     .then((int id) => orf_http.writeAndClose(request, organizationIdAsJson(organizationId))
     .then((_) {
@@ -107,7 +107,7 @@ class OrganizationController {
   }
 
   void getOrganizationContactList(HttpRequest request) {
-    const context = '${libraryName}.getOrganizationContactList';
+    const String context = '${libraryName}.getOrganizationContactList';
 
     db.getOrganizationContactList(orf_http.pathParameter(request.uri, 'organization')).then((List<Contact> contacts) {
       return orf_http.writeAndClose(request, listContactAsJson(contacts));

@@ -14,12 +14,12 @@ import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
 const libraryName = 'userController';
 
 class UserController {
-  Database db;
+  final Database db;
 
   UserController(Database this.db);
 
   void createUser(HttpRequest request) {
-    const context = '${libraryName}.createUser';
+    const String context = '${libraryName}.createUser';
 
     orf_http.extractContent(request)
     .then(JSON.decode)
@@ -32,8 +32,8 @@ class UserController {
   }
 
   void deleteUser(HttpRequest request) {
-    const context = '${libraryName}.deleteUser';
-    int userId = orf_http.pathParameter(request.uri, 'user');
+    const String context = '${libraryName}.deleteUser';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
 
     db.deleteUser(userId)
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))
@@ -44,8 +44,8 @@ class UserController {
   }
 
   void getUser(HttpRequest request) {
-    const context = '${libraryName}.getUser';
-    int userId = orf_http.pathParameter(request.uri, 'user');
+    const String context = '${libraryName}.getUser';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
 
     db.getUser(userId).then((User user) {
       if(user == null) {
@@ -61,7 +61,7 @@ class UserController {
   }
 
   void getUserList(HttpRequest request) {
-    const context = '${libraryName}.getUserList';
+    const String context = '${libraryName}.getUserList';
 
     db.getUserList().then((List<User> list) {
       return orf_http.writeAndClose(request, listUserAsJson(list));
@@ -72,8 +72,8 @@ class UserController {
   }
 
   void updateUser(HttpRequest request) {
-    const context = '${libraryName}.updateUser';
-    int userId = orf_http.pathParameter(request.uri, 'user');
+    const String context = '${libraryName}.updateUser';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -86,8 +86,8 @@ class UserController {
   }
 
   void getUserGroups(HttpRequest request) {
-    const context = '${libraryName}.getUserGroups';
-    int userId = orf_http.pathParameter(request.uri, 'user');
+    const String context = '${libraryName}.getUserGroups';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
 
     db.getUserGroups(userId)
       .then((List<UserGroup> data) => orf_http.writeAndClose(request, userGroupAsJson(data)) )
@@ -98,9 +98,9 @@ class UserController {
   }
 
   void joinUserGroups(HttpRequest request) {
-    const context = '${libraryName}.joinUserGroups';
-    int userId = orf_http.pathParameter(request.uri, 'user');
-    int groupId = orf_http.pathParameter(request.uri, 'group');
+    const String context = '${libraryName}.joinUserGroups';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
+    final int groupId = orf_http.pathParameter(request.uri, 'group');
 
     db.joinUserGroup(userId, groupId).then((_) {
       orf_http.writeAndClose(request, JSON.encode({}));
@@ -111,9 +111,9 @@ class UserController {
   }
 
   void leaveUserGroups(HttpRequest request) {
-    const context = '${libraryName}.leaveUserGroups';
-    int userId = orf_http.pathParameter(request.uri, 'user');
-    int groupId = orf_http.pathParameter(request.uri, 'group');
+    const String context = '${libraryName}.leaveUserGroups';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
+    final int groupId = orf_http.pathParameter(request.uri, 'group');
 
     db.leaveUserGroup(userId, groupId).then((_) {
       orf_http.writeAndClose(request, JSON.encode({}));
@@ -124,7 +124,7 @@ class UserController {
   }
 
   void getGroupList(HttpRequest request) {
-    const context = '${libraryName}.getGroupList';
+    const String context = '${libraryName}.getGroupList';
 
     db.getGroupList()
       .then((List<UserGroup> data) => orf_http.writeAndClose(request, userGroupAsJson(data)) )
@@ -138,8 +138,8 @@ class UserController {
    * Identity
    */
   void getUserIdentityList(HttpRequest request) {
-    const context = '${libraryName}.getUserIdentityList';
-    int userId = orf_http.pathParameter(request.uri, 'user');
+    const String context = '${libraryName}.getUserIdentityList';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
 
     db.getUserIdentityList(userId).then((List<UserIdentity> list) {
       return orf_http.writeAndClose(request, listUserIdentityAsJson(list));
@@ -150,8 +150,8 @@ class UserController {
   }
 
   void createUserIdentity(HttpRequest request) {
-    const context = '${libraryName}.createUserIdentity';
-    int userId = orf_http.pathParameter(request.uri, 'user');
+    const String context = '${libraryName}.createUserIdentity';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -164,9 +164,9 @@ class UserController {
   }
 
   void updateUserIdentity(HttpRequest request) {
-    const context = '${libraryName}.updateUserIdentity';
-    int userId = orf_http.pathParameter(request.uri, 'user');
-    String identityId = orf_http.pathParameterString(request.uri, 'identity');
+    const String context = '${libraryName}.updateUserIdentity';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
+    final String identityId = orf_http.pathParameterString(request.uri, 'identity');
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -179,9 +179,9 @@ class UserController {
   }
 
   void deleteUserIdentity(HttpRequest request) {
-    const context = '${libraryName}.deleteUserIdentity';
-    int userId = orf_http.pathParameter(request.uri, 'user');
-    String identityId = orf_http.pathParameterString(request.uri, 'identity');
+    const String context = '${libraryName}.deleteUserIdentity';
+    final int userId = orf_http.pathParameter(request.uri, 'user');
+    final String identityId = orf_http.pathParameterString(request.uri, 'identity');
 
     db.deleteUserIdentity(userId, identityId)
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({})))

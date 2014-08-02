@@ -1,4 +1,4 @@
-part of adaheads_server_model;
+part of model;
 
 class Playlist {
   int id;
