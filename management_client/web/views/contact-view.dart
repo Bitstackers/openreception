@@ -1303,7 +1303,6 @@ class CalendarComponent {
     for(CalendarEvent event in currentEvents) {
       if(!originalEvents.any((CalendarEvent e) => e.id == event.id)) {
         //Insert event
-        print('Insert. ${JSON.encode(event)}');
         worklist.add(request.createContactCalendarEvent(receptionId, contactId, JSON.encode(event)));
       }
     }
@@ -1312,7 +1311,6 @@ class CalendarComponent {
     for(CalendarEvent event in originalEvents) {
       if(!currentEvents.any((CalendarEvent e) => e.id == event.id)) {
         //Delete event
-        print('Delete. ${JSON.encode(event)}');
         worklist.add(request.deleteContactCalendarEvent(receptionId, contactId, event.id));
       }
     }
@@ -1326,10 +1324,6 @@ class CalendarComponent {
            e.start != event.start ||
            e.stop != event.stop) {
           //Update event
-          print('--');
-          print('Update. Old${JSON.encode(e)}');
-          print('Update. New${JSON.encode(event)}');
-          print('--');
           worklist.add(request.updateContactCalendarEvent(receptionId, contactId, event.id, JSON.encode(event)));
         }
       }
