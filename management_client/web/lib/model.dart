@@ -7,6 +7,7 @@ import 'package:libdialplan/libdialplan.dart';
 import 'logger.dart' as log;
 
 part 'model/audiofile.dart';
+part 'model/calendar_event.dart';
 part 'model/cdr_entry.dart';
 part 'model/colleague.dart';
 part 'model/contact.dart';

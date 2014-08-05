@@ -116,6 +116,46 @@
   margin-bottom: 10px;
 }
 
+/** UNDER CONSTRUCTION!
+  Calendar Stuff
+*/
+
+.contact-calendar-event {
+  width: 99%;
+  margin: 0.5%;
+  padding: 0.5%;
+}
+
+.contact-calendar-event-text {
+  width: 100%;
+  height: 4em;
+}
+
+.contact-calendar-timebox {
+  width:8em;
+  float:left;
+  border:1px solid #dadada;
+  padding: 0.5em;
+  border-radius: 1em 0 0 1em;
+}
+
+.contact-calendar-list {
+  max-height: 310px;
+  overflow: auto;
+}
+
+.contact-calendar-event-start-hour,
+.contact-calendar-event-start-minute,
+
+.contact-calendar-event-stop-hour,
+.contact-calendar-event-stop-minute {
+  width:3em;
+}
+
+.contact-calendar-seperator {
+  width: 1em;
+}
+
 /**
   Right side panel.
 */
