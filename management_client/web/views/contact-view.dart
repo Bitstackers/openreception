@@ -1171,13 +1171,14 @@ class CalendarComponent {
     _parent.children.addAll([header, _newButton, _ul]);
 
     _newButton.onClick.listen((_) {
-      _ul.children.add(_makeEventRow(new CalendarEvent()));
+      _ul.children.insert(0, _makeEventRow(new CalendarEvent()));
     });
   }
 
   Future load(int receptionId, int contactId) {
     return request.getReceptionContactCalendar(receptionId, contactId)
         .then((List<CalendarEvent> events) {
+      events.sort(CalendarEvent.sortByStartThenStop);
       originalEvents = events;
       _ul.children
         ..clear()

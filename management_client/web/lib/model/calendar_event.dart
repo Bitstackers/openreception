@@ -28,4 +28,13 @@ class CalendarEvent {
 
     return data;
   }
+
+  static int sortByStartThenStop(CalendarEvent a, CalendarEvent b) {
+    int result = a.start.compareTo(b.start);
+    if(result == 0) {
+      return a.stop.compareTo(b.stop);
+    } else {
+      return result;
+    }
+  }
 }
