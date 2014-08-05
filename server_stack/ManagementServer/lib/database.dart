@@ -11,6 +11,7 @@ import 'package:libdialplan/ivr.dart';
 import 'model.dart' as model;
 import 'configuration.dart';
 
+part 'database/calendar.dart';
 part 'database/contact.dart';
 part 'database/dialplan.dart';
 part 'database/distribution_list.dart';
@@ -160,6 +161,22 @@ class Database {
           enabled,
           priority,
           description);
+
+  /* ***********************************************
+     ****************** Calendar *******************
+   */
+
+  Future<List<model.Event>> getReceptionContactCalendarEvents(int receptionId, int contactId) =>
+      _getReceptionContactCalendarEvents(pool, receptionId, contactId);
+
+  Future<int> createReceptionContactCalendarEvent(int receptioinId, int contactId, String message, DateTime start, DateTime stop) =>
+      _createReceptionContactCalendarEvent(pool, receptioinId, contactId, message, start, stop);
+
+  Future<int> updateCalendarEvent(int eventId, String message, DateTime start, DateTime stop, [Map distributionList]) =>
+      _updateCalendarEvent(pool, eventId, message, start, stop);
+
+  Future<int> deleteCalendarEvent(int eventId) =>
+      _deleteCalendarEvent(pool, eventId);
 
   /* ***********************************************
      ************** DistributionList ***************
@@ -328,7 +345,7 @@ class Database {
    ***************** Utilities *******************
  */
 
-Future<List<Row>> query(Pool pool, String sql, [Map parameters = null]) =>  pool.connect()
+Future<List<Row>> query(Pool pool, String sql, [Map parameters = null]) => pool.connect()
   .then((Connection conn) => conn.query(sql, parameters).toList()
   .whenComplete(() => conn.close()));
 

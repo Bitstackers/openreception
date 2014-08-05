@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../configuration.dart';
 import '../database.dart';
 import '../model.dart';
+import '../view/calendar_event.dart';
 import '../view/complete_reception_contact.dart';
 import '../view/endpoint.dart';
 import '../view/distribution_list.dart';
@@ -135,8 +136,8 @@ class ReceptionContactController {
           }))
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
       .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
       });
   }
 
@@ -226,18 +227,18 @@ class ReceptionContactController {
     final String addressType = orf_http.pathParameterString(request.uri, 'type');
 
     db.deleteEndpoint(receptionId, contactId, address, addressType)
-    .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({}))
-    .then((_) {
-        Map data = {'event' : 'endpointEventDeleted', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': address, 'address_type': addressType}};
-        ORFService.Notification.broadcast(data, config.notificationServer, config.token)
-          .catchError((error) {
-            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
-          });
-      }))
-    .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({}))
+      .then((_) {
+          Map data = {'event' : 'endpointEventDeleted', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': address, 'address_type': addressType}};
+          ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+            .catchError((error) {
+              orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+            });
+        }))
+      .catchError((error) {
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void getDistributionList(HttpRequest request) {
@@ -251,7 +252,6 @@ class ReceptionContactController {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
         orf_http.serverError(request, error.toString());
     });
-
   }
 
   void updateDistributionList(HttpRequest request) {
@@ -262,13 +262,16 @@ class ReceptionContactController {
     orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map data) => db.updateDistributionList(receptionId, contactId, data))
-      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
+      .then((_) => orf_http.allOk(request))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());
     });
   }
 
+  /**
+   * Temporary interface, only meant to be here while migrating.
+   */
   void moveContact(HttpRequest request) {
     const String context = '${libraryName}.moveContact';
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
@@ -305,6 +308,73 @@ class ReceptionContactController {
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());
+    });
+  }
+
+  void getCalendarEvents(HttpRequest request) {
+    const String context = '${libraryName}.getCalendarEvents';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+
+    db.getReceptionContactCalendarEvents(receptionId, contactId)
+      .then((List<Event> events) => orf_http.allOk(request, listEventsAsJson(events)))
+      .catchError((error, stack) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+        orf_http.serverError(request, error.toString());
+    });
+  }
+
+  void createCalendarEvent(HttpRequest request) {
+    const String context = '${libraryName}.createCalendarEvent';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+
+    orf_http.extractContent(request)
+      .then(JSON.decode)
+      .then((Map data) {
+        DateTime start = new DateTime.fromMillisecondsSinceEpoch(data['start']*1000);
+        DateTime stop = new DateTime.fromMillisecondsSinceEpoch(data['stop']*1000);
+        String message = data['content'];
+        return db.createReceptionContactCalendarEvent(receptionId, contactId, message, start, stop);
+      }).then((int id) {
+      return orf_http.writeAndClose(request, '{"id": ${id}}');
+    }).catchError((error, stack) {
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+      orf_http.serverError(request, error.toString());
+    });
+  }
+
+  void deleteCalendarEvent(HttpRequest request) {
+    const String context = '${libraryName}.deleteCalendarEvent';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+    final int eventId = orf_http.pathParameter(request.uri, 'calendar');
+
+    db.deleteCalendarEvent(eventId).then((int rowsAffted) {
+      return orf_http.allOk(request);
+    }).catchError((error, stack) {
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+      orf_http.serverError(request, error.toString());
+    });
+  }
+
+  void updateCalendarEvent(HttpRequest request) {
+    const String context = '${libraryName}.updateCalendarEvent';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+    final int eventId = orf_http.pathParameter(request.uri, 'calendar');
+
+    orf_http.extractContent(request)
+    .then(JSON.decode)
+    .then((Map data) {
+      DateTime start = new DateTime.fromMillisecondsSinceEpoch(data['start']*1000);
+      DateTime stop = new DateTime.fromMillisecondsSinceEpoch(data['stop']*1000);
+      return db.updateCalendarEvent(eventId, data['content'], start, stop);
+    })
+    .then((_) => orf_http.allOk(request))
+    .catchError((error, stack) {
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+      orf_http.serverError(request, error.toString());
     });
   }
 }

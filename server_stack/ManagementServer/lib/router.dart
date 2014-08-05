@@ -29,6 +29,8 @@ final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact
 final Pattern receptionContactIdEnpointUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint');
 final Pattern receptionContactIdEnpointIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint/(.+)/type/(.+)');
 final Pattern receptionContactIdDistributionListUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist');
+final Pattern receptionContactIdCalendarUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar');
+final Pattern receptionContactIdCalendarIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar/(\d+)');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
@@ -115,6 +117,11 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.GET).listen(receptionContact.getEndpoint)
     ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.POST).listen(receptionContact.updateEndpoint)
     ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteEndpoint)
+
+    ..serve(receptionContactIdCalendarUrl, method: HttpMethod.GET).listen(receptionContact.getCalendarEvents)
+    ..serve(receptionContactIdCalendarUrl, method: HttpMethod.PUT).listen(receptionContact.createCalendarEvent)
+    ..serve(receptionContactIdCalendarIdUrl, method: HttpMethod.POST).listen(receptionContact.updateCalendarEvent)
+    ..serve(receptionContactIdCalendarIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteCalendarEvent)
 
     ..serve(ContactColleaguesUrl, method: HttpMethod.GET).listen(contact.getColleagues)
 
