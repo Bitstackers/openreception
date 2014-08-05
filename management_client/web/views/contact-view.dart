@@ -1222,7 +1222,7 @@ class CalendarComponent {
     <span class="contact-calendar-seperator">:</span>
     <input class="contact-calendar-event-stop-minute" type="number" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2 value="${event.stop.minute}"/>
 
-    <input class="contact-calendar-event-stop-date" type="date" value="${RFC3339.format(event.start)}">
+    <input class="contact-calendar-event-stop-date" type="date" value="${RFC3339.format(event.stop)}">
 
     </fieldset>
   <button class="contact-calendar-event-delete"> Slet <button>
