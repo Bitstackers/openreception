@@ -22,13 +22,13 @@ class UserController {
     const String context = '${libraryName}.createUser';
 
     orf_http.extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.createUser(data['name'], data['extension'], data['send_from']))
-    .then((int id) => orf_http.writeAndClose(request, userIdAsJson(id)))
-    .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.createUser(data['name'], data['extension'], data['send_from']))
+      .then((int id) => orf_http.writeAndClose(request, userIdAsJson(id)))
+      .catchError((error) {
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void deleteUser(HttpRequest request) {
@@ -36,11 +36,11 @@ class UserController {
     final int userId = orf_http.pathParameter(request.uri, 'user');
 
     db.deleteUser(userId)
-    .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
-    .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
+      .catchError((error) {
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void getUser(HttpRequest request) {
