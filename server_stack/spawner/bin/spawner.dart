@@ -82,7 +82,7 @@ void main(List<String> arguments) {
   ProcessSignal.SIGTERM.watch().listen((_) {
     Servers.forEach((String serverName, Map server) {
       print('Sending SIGTERM to instance of ${serverName}');
-      (server['process'] as Process).kill(ProcessSignal.SIGINT);
+      (server['process'] as Process).kill(ProcessSignal.SIGTERM);
     });
     exit(0);
   });
@@ -108,10 +108,6 @@ void main(List<String> arguments) {
   }));
 
 }
-
-List union(List a, List b) => []
-  ..addAll(a)
-  ..addAll(b);
 
 Future writeTokensToDisk(List<String> tokens, String dir) {
   tokens.forEach(print);
