@@ -66,10 +66,10 @@ class ContactView {
     searchBox = element.querySelector('#contact-search-box');
     receptionOuterSelector = element.querySelector('#contact-reception-selector');
 
-    SC = new SearchComponent<Reception>(receptionOuterSelector,
-        'contact-reception-searchbox')
+    SC = new SearchComponent<Reception>(receptionOuterSelector, 'contact-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
-        ..searchFilter = receptionSearchHandler;
+        ..searchFilter = receptionSearchHandler
+        ..searchPlaceholder = 'Søg...';
 
     fillSearchComponent();
 

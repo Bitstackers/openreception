@@ -46,7 +46,8 @@ class IvrView {
     receptionOuterSelector = element.querySelector('#ivr-receptionpicker');
     receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'ivr-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
-        ..searchFilter = receptionSearchHandler;
+        ..searchFilter = receptionSearchHandler
+        ..searchPlaceholder = 'Søg...';
 
     fillSearchComponent();
 

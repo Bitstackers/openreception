@@ -80,7 +80,8 @@ class DialplanView {
 
     receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'dialplan-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
-        ..searchFilter = receptionSearchHandler;
+        ..searchFilter = receptionSearchHandler
+        ..searchPlaceholder = 'Søg...';
 
     fillSearchComponent();
     fillDialplanTempalte();

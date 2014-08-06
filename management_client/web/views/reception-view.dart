@@ -77,7 +77,8 @@ class ReceptionView {
     SC = new SearchComponent<Organization>(organizationOuterSelector,
         'reception-organization-searchbox')
         ..listElementToString = organizationToSearchboxString
-        ..searchFilter = organizationSearchHandler;
+        ..searchFilter = organizationSearchHandler
+        ..searchPlaceholder = 'Søg...';
 
     fillSearchComponent();
 
