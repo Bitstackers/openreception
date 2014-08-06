@@ -130,8 +130,9 @@ class ContactView {
     String searchTerm = searchBox.value;
     ulContactList.children
         ..clear()
-        ..addAll(contactList.where((e) => e.full_name.toLowerCase().contains(
-            searchTerm.toLowerCase())).map(makeContactNode));
+        ..addAll(contactList
+                  .where((Contact contact) => contact.full_name.toLowerCase().contains(searchTerm.toLowerCase()))
+                  .map(makeContactNode));
   }
 
   LIElement makeContactNode(Contact contact) {
