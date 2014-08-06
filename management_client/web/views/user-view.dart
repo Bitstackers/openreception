@@ -133,16 +133,26 @@ class UserView {
           selectedUserId = userId;
           isNewUser = false;
           bus.fire(Invalidate.userAdded, user);
+          notify.info('Brugeren blev oprettet');
+      }).catchError((error, stack) {
+        log.error('Tried to create a new user from data: "${JSON.encode(user)}" but got: ${error} ${stack}');
+        notify.error('Der skete en fejl i forbindelse med oprettelsen af brugeren. Fejl: ${error}');
       });
     } else {
-      basicInformationRequest = request.updateUser(selectedUserId, JSON.encode(user));
+      basicInformationRequest = request.updateUser(selectedUserId, JSON.encode(user))
+          .then((_) {
+        notify.info('Brugeren blev opdateret');
+      }).catchError((error, stack) {
+        log.error('Tried to update user "${selectedUserId}" from data: "${JSON.encode(user)}" but got: ${error} ${stack}');
+        notify.error('Der skete en fejl i forbindelse med opdateringen af brugeren. Fejl: ${error}');
+      });
     }
 
     basicInformationRequest
       .then((_) =>
         identityContainer.saveChanges(selectedUserId))
-      .catchError((error) {
-          notify.error('Lageringen af brugerens identiteter gav en fejl.');
+      .catchError((error, stack) {
+          notify.error('Lageringen af brugerens identiteter gav en fejl. ${error}');
         })
       .then((_) =>
         groupContainer.saveChanges(selectedUserId)
@@ -155,8 +165,9 @@ class UserView {
     if(!isNewUser && selectedUserId != null) {
       request.deleteUser(selectedUserId)
         .then((_) {
-        bus.fire(Invalidate.userRemoved, {'id': selectedUserId});
+          bus.fire(Invalidate.userRemoved, {'id': selectedUserId});
           selectedUserId = null;
+          notify.info('Brugeren er slettet.');
         })
         .catchError((error) {
           notify.error('Der skete en fejl i forbindelse med sletningen af brugeren');

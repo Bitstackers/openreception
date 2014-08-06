@@ -73,7 +73,11 @@ class IdentityContainer {
       if(!_identities.any((UserIdentity i) => i.identity == identity)) {
         //Insert Identity
         Map data = {'identity': identity};
-        worklist.add(request.createUserIdentity(userId, JSON.encode(data)));
+        worklist.add(request.createUserIdentity(userId, JSON.encode(data)).catchError((error, stack) {
+          log.error('Tried to create a user identity. UserId: "${userId}". Identity: "${JSON.encode(data)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
 
@@ -81,7 +85,12 @@ class IdentityContainer {
     for(UserIdentity identity in _identities) {
       if(!foundIdentities.any((String i) => i == identity.identity)) {
         //Delete Identity
-        worklist.add(request.deleteUserIdentity(userId, identity.identity));
+        worklist.add(request.deleteUserIdentity(userId, identity.identity)
+            .catchError((error, stack) {
+          log.error('Tried to delete user identity. UserId: "${userId}". Identity: "${JSON.encode(identity.identity)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
     return Future.wait(worklist);
