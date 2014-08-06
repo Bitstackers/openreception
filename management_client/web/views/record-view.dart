@@ -117,12 +117,12 @@ class RecordView {
 
     SpanElement content = new SpanElement()
       ..text = file.shortname;
-    InputElement editBox = new InputElement(type: 'text');
-
-    editableSpan(content, editBox, () {
-      //TODO save changes.
-      notify.info(content.text);
-    });
+//    InputElement editBox = new InputElement(type: 'text');
+//
+//    editableSpan(content, editBox, () {
+//      //TODO save changes. //Expand Dialplan Compiler and update where the file is used...
+//      notify.info(content.text);
+//    });
 
     ButtonElement play = new ButtonElement()
       ..text = 'Afspil'
@@ -145,8 +145,10 @@ class RecordView {
     /**
      * The Delete button is not rendered, because without any kind of check on
      * if the file is used, it will be too easy for the user to make a mistake.
+     *
+     * The same follows for the editBox(rename feature).
      */
-    li.children.addAll([play, content, editBox ]);
+    li.children.addAll([play, content ]); //delete, editBox
 
     return li;
   }
