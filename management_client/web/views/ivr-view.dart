@@ -233,7 +233,7 @@ class IvrView {
    *       Or just find a better way of doing it.
    */
   TableRowElement ivrTableRow(String digit, libIvr.Ivr ivr) {
-    libIvr.Entry entry = ivr.entries.firstWhere((e) => e.digits == digit, orElse: () => null);
+    libIvr.Entry entry = ivr.entries.firstWhere((libIvr.Entry e) => e.digits == digit, orElse: () => null);
 
     TableRowElement row = new TableRowElement();
     TableCellElement digitCell = new TableCellElement()
@@ -280,7 +280,8 @@ class IvrView {
     if(entry != null) {
       SelectElement gruops = new SelectElement();
       gruops
-        ..children.addAll(dialplan.extensionGroups.map((eg) => new OptionElement(data: eg.name, value: eg.name, selected: entry.extensionGroup == eg.name)))
+        ..children.addAll(dialplan.extensionGroups.map((ExtensionGroup eg) =>
+            new OptionElement(data: eg.name, value: eg.name, selected: entry.extensionGroup == eg.name)))
         ..onChange.listen((_) {
         entry.extensionGroup = gruops.selectedOptions.first.value;
       });
