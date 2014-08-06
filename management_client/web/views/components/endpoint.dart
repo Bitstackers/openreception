@@ -163,7 +163,12 @@ class EndpointsComponent {
     for(Endpoint endpoint in foundEndpoints) {
       if(!_persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Insert Endpoint
-        worklist.add(request.createEndpoint(receptionId, contactId, JSON.encode(endpoint)));
+        worklist.add(request.createEndpoint(receptionId, contactId, JSON.encode(endpoint))
+            .catchError((error, stack) {
+          log.error('Request to create an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
 
@@ -171,7 +176,12 @@ class EndpointsComponent {
     for(Endpoint endpoint in _persistenceEndpoint) {
       if(!foundEndpoints.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Delete Endpoint
-        worklist.add(request.deleteEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType));
+        worklist.add(request.deleteEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType)
+            .catchError((error, stack) {
+          log.error('Request to delete an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
 
@@ -179,7 +189,12 @@ class EndpointsComponent {
     for(Endpoint endpoint in foundEndpoints) {
       if(_persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Update Endpoint
-        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, JSON.encode(endpoint)));
+        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, JSON.encode(endpoint))
+            .catchError((error, stack) {
+          log.error('Request to update an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
     return Future.wait(worklist);

@@ -12,7 +12,6 @@ class ContactCalendarComponent {
     ..classes.add('zebra')
     ..classes.add('contact-calendar-list');
 
-
   ContactCalendarComponent(Element this._parent, Function this._onChange) {
     DivElement editContainer = new DivElement();
     LabelElement header = new LabelElement()
@@ -57,7 +56,7 @@ class ContactCalendarComponent {
       event.stop    = stop;
       event.message = textField.value;
     } catch(error, stack) {
-      log.error('CalendarComponent error: ${error} stack: ${stack}]');
+      log.error('CalendarComponent _extractValue error: ${error} stack: ${stack}]');
     }
     return event;
   }
@@ -160,7 +159,12 @@ class ContactCalendarComponent {
     for(CalendarEvent event in currentEvents) {
       if(!_originalEvents.any((CalendarEvent e) => e.id == event.id)) {
         //Insert event
-        worklist.add(request.createContactCalendarEvent(receptionId, contactId, JSON.encode(event)));
+        worklist.add(request.createContactCalendarEvent(receptionId, contactId, JSON.encode(event))
+            .catchError((error, stack) {
+          log.error('Request to create a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
 
@@ -168,7 +172,12 @@ class ContactCalendarComponent {
     for(CalendarEvent event in _originalEvents) {
       if(!currentEvents.any((CalendarEvent e) => e.id == event.id)) {
         //Delete event
-        worklist.add(request.deleteContactCalendarEvent(receptionId, contactId, event.id));
+        worklist.add(request.deleteContactCalendarEvent(receptionId, contactId, event.id)
+            .catchError((error, stack) {
+          log.error('Request to delete a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
+          // Rethrow.
+          throw error;
+        }));
       }
     }
 
@@ -181,7 +190,12 @@ class ContactCalendarComponent {
            e.start != event.start ||
            e.stop != event.stop) {
           //Update event
-          worklist.add(request.updateContactCalendarEvent(receptionId, contactId, event.id, JSON.encode(event)));
+          worklist.add(request.updateContactCalendarEvent(receptionId, contactId, event.id, JSON.encode(event))
+              .catchError((error, stack) {
+            log.error('Request to update a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
+            // Rethrow.
+            throw error;
+          }));
         }
       }
     }
