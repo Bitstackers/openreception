@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import '../lib/logger.dart' as log;
 import '../lib/eventbus.dart';
 import '../lib/model.dart';
 import '../notification.dart' as notify;
@@ -21,6 +22,7 @@ class MusicView {
 
   bool isCreatingNewPlaylist = false;
   int selectedPlaylistId;
+
   MusicView(DivElement this.element) {
     buttonNew = element.querySelector('#music-new');
     buttonSave = element.querySelector('#music-save');
@@ -35,6 +37,21 @@ class MusicView {
 
     registrateEventHandlers();
     refresh();
+  }
+
+  Future activatePlaylist(int id) {
+    return getPlaylist(id).then((Playlist playlist) {
+      isCreatingNewPlaylist = false;
+      selectedPlaylistId = id;
+
+      name.value = playlist.name;
+      path.value = playlist.path;
+      shuffle.checked = playlist.shuffle;
+      channels.checked = playlist.channels != 1;
+      interval.value = playlist.interval.toString();
+
+      highlightPlaylistItem(id);
+    });
   }
 
   void registrateEventHandlers() {
@@ -133,8 +150,8 @@ class MusicView {
         bus.fire(Invalidate.playlistAdded, event);
         notify.info('Afspilningslisten blev oprettet');
         return activatePlaylist(id);
-      }).catchError((error) {
-        //TODO Log error
+      }).catchError((error, stack) {
+        log.error('Tried to create a new playlist, but got: ${error} ${stack}');
         notify.error('Der skete en fejl i forbindelse med oprettelsen af afspilningslisten. ${error}');
       });
     } else {
@@ -143,8 +160,8 @@ class MusicView {
         bus.fire(Invalidate.playlistChanged, event);
         notify.info('Afspilningslisten blev opdateret');
       })
-        .catchError((error) {
-        //TODO Log error
+        .catchError((error, stack) {
+        log.error('Tried to update a playlist, but got: ${error} ${stack}');
         notify.error('Der skete en fejl i forbindelse med opdateringen af afspilningslisten. ${error}');
       });
     }
@@ -156,8 +173,8 @@ class MusicView {
         Map event = {'id': selectedPlaylistId};
         bus.fire(Invalidate.playlistRemoved, event);
         notify.info('Afspilningslisten blev slettet');
-      }).catchError((error) {
-        //TODO DO SOMETHING!
+      }).catchError((error, stack) {
+        log.error('Tried to delete a playlist, but got: ${error} ${stack}');
         notify.error('Der skete en fejl i forbindelse med sletningen af afspilningslisten. ${error}');
       });
     }
@@ -165,20 +182,5 @@ class MusicView {
 
   void highlightPlaylistItem(int id) {
     UlPlaylist.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['id'] == id.toString()));
-  }
-
-  Future activatePlaylist(int id) {
-    return getPlaylist(id).then((Playlist playlist) {
-      isCreatingNewPlaylist = false;
-      selectedPlaylistId = id;
-
-      name.value = playlist.name;
-      path.value = playlist.path;
-      shuffle.checked = playlist.shuffle;
-      channels.checked = playlist.channels != 1;
-      interval.value = playlist.interval.toString();
-
-      highlightPlaylistItem(id);
-    });
   }
 }

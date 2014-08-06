@@ -1,42 +1,37 @@
 part of contact.view;
 
 class EndpointsComponent {
-  static List<String> addressTypes = [];
+  static List<String> _addressTypes = [];
 
   Element _element;
   Function _onChange;
-  List<Endpoint> persistenceEndpoint = [];
+  List<Endpoint> _persistenceEndpoint = [];
   UListElement _ul = new UListElement();
-  LabelElement header = new LabelElement()
+  LabelElement _header = new LabelElement()
     ..text = 'Kontaktpunkter';
 
-  SortableGroup sortGroup;
+  SortableGroup _sortGroup;
 
   EndpointsComponent(Element this._element, Function this._onChange) {
-    _element.children.add(header);
+    _element.children.add(_header);
     _element.children.add(_ul);
-  }
-
-  void clear() {
-    _ul.children.clear();
-    persistenceEndpoint = [];
   }
 
   static Future loadAddressTypes() {
     return request.getAddressTypeList().then((List<String> types) {
-      EndpointsComponent.addressTypes = types;
+      EndpointsComponent._addressTypes = types;
     });
   }
 
   Future load(int receptionId, int contactId) {
-    persistenceEndpoint = [];
+    _persistenceEndpoint = [];
     return request.getEndpointsList(receptionId, contactId).then((List<Endpoint> list) {
-      populateUL(list);
+      _populateUL(list);
     });
   }
 
-  void populateUL(List<Endpoint> list) {
-    persistenceEndpoint = list;
+  void _populateUL(List<Endpoint> list) {
+    _persistenceEndpoint = list;
     list.sort(Endpoint.sortByPriority);
 
     List<LIElement> items = list.map(_makeEndpointRow).toList();
@@ -46,11 +41,11 @@ class EndpointsComponent {
       ..addAll(items)
       ..add(_makeNewEndpointRow());
 
-    sortGroup = new SortableGroup()
+    _sortGroup = new SortableGroup()
       ..installAll(items);
 
     // Only accept elements from the same section.
-    sortGroup.accept.add(sortGroup);
+    _sortGroup.accept.add(_sortGroup);
   }
 
   LIElement _makeNewEndpointRow() {
@@ -63,7 +58,7 @@ class EndpointsComponent {
           ..address = 'mig@eksempel.dk'
           ..enabled = true;
         LIElement row = _makeEndpointRow(endpoint);
-        sortGroup.install(row);
+        _sortGroup.install(row);
         int index = _ul.children.length - 1;
         _ul.children.insert(index, row);
         _notifyChange();
@@ -84,7 +79,7 @@ class EndpointsComponent {
 
     SelectElement typePicker = new SelectElement()
       ..classes.add('contact-endpoint-addresstype')
-      ..children.addAll(addressTypes.map((String type) => new OptionElement(data: type, value: type, selected: type == endpoint.addressType)))
+      ..children.addAll(_addressTypes.map((String type) => new OptionElement(data: type, value: type, selected: type == endpoint.addressType)))
       ..onChange.listen((_) {
       _notifyChange();
     });
@@ -166,14 +161,14 @@ class EndpointsComponent {
 
     //Inserts
     for(Endpoint endpoint in foundEndpoints) {
-      if(!persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+      if(!_persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Insert Endpoint
         worklist.add(request.createEndpoint(receptionId, contactId, JSON.encode(endpoint)));
       }
     }
 
     //Deletes
-    for(Endpoint endpoint in persistenceEndpoint) {
+    for(Endpoint endpoint in _persistenceEndpoint) {
       if(!foundEndpoints.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Delete Endpoint
         worklist.add(request.deleteEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType));
@@ -182,7 +177,7 @@ class EndpointsComponent {
 
     //Update
     for(Endpoint endpoint in foundEndpoints) {
-      if(persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+      if(_persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Update Endpoint
         worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, JSON.encode(endpoint)));
       }

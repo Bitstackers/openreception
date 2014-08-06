@@ -139,7 +139,6 @@ class DialplanView {
     });
 
     loadDialplanTemplate.onClick.listen((_) {
-      //TODO Load dialplan template
       if(selectedReceptionId != null && dialplan != null) {
         OptionElement selectTempalte = templatePicker.selectedOptions.first;
         DialplanTemplate template = dialplanTemplates.firstWhere((t) => t.id == int.parse(selectTempalte.value), orElse: () => null);

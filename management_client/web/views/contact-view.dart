@@ -688,8 +688,8 @@ class ContactView {
   }
 
   List<LIElement> makeReceptionNode(ReceptionColleague reception) {
-    //TODO First node is the receptionname. Clickable to the reception
-    //     Second is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
+    // First node is the receptionname. Clickable to the reception
+    //   Second node is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
 
     LIElement receptionLi = new LIElement()
         ..classes.add('clickable')

@@ -1,26 +1,28 @@
 part of user.view;
 
 class IdentityContainer {
-  UListElement _ul;
-
   List<UserIdentity> _identities;
+  UListElement _ul;
 
   IdentityContainer(UListElement this._ul);
 
-  Future showIdentities(int userId) {
-    return request.getUserIdentities(userId).then((List<UserIdentity> identities) {
-      populateUL(identities);
+  LIElement _makeIdentityNode(UserIdentity identity) {
+    LIElement li = new LIElement();
+
+    ImageElement deleteButton = new ImageElement(src: '/image/tp/red_plus.svg')
+      ..classes.add('small-button')
+      ..onClick.listen((_) {
+      _ul.children.remove(li);
     });
-  }
 
-  void populateUL(List<UserIdentity> identities) {
-    InputElement newItem = _makeInputForNewItem();
+    SpanElement content = new SpanElement()
+      ..text = identity.identity;
+    InputElement editBox = new InputElement(type: 'text');
 
-    this._identities = identities;
-    _ul.children
-      ..clear()
-      ..addAll(identities.map(_makeIdentityNode))
-      ..add(new LIElement()..children.add(newItem));
+    editableSpan(content, editBox);
+
+    li.children.addAll([deleteButton, content, editBox]);
+    return li;
   }
 
   InputElement _makeInputForNewItem() {
@@ -43,27 +45,14 @@ class IdentityContainer {
     return newItem;
   }
 
-  void showNewUsersIdentities() {
-    populateUL([]);
-  }
+  void _populateUL(List<UserIdentity> identities) {
+    InputElement newItem = _makeInputForNewItem();
 
-  LIElement _makeIdentityNode(UserIdentity identity) {
-    LIElement li = new LIElement();
-
-    ImageElement deleteButton = new ImageElement(src: '/image/tp/red_plus.svg')
-      ..classes.add('small-button')
-      ..onClick.listen((_) {
-      _ul.children.remove(li);
-    });
-
-    SpanElement content = new SpanElement()
-      ..text = identity.identity;
-    InputElement editBox = new InputElement(type: 'text');
-
-    editableSpan(content, editBox);
-
-    li.children.addAll([deleteButton, content, editBox]);
-    return li;
+    this._identities = identities;
+    _ul.children
+      ..clear()
+      ..addAll(identities.map(_makeIdentityNode))
+      ..add(new LIElement()..children.add(newItem));
   }
 
   Future saveChanges(int userId) {
@@ -96,5 +85,15 @@ class IdentityContainer {
       }
     }
     return Future.wait(worklist);
+  }
+
+  Future showIdentities(int userId) {
+    return request.getUserIdentities(userId).then((List<UserIdentity> identities) {
+      _populateUL(identities);
+    });
+  }
+
+  void showNewUsersIdentities() {
+    _populateUL([]);
   }
 }

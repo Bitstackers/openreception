@@ -2,16 +2,16 @@ part of contact.view;
 
 class ContactCalendarComponent {
   final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
-  Element _parent;
-  Function _onChange;
   ButtonElement _newButton = new ButtonElement()
     ..text = 'Opret ny';
+  Function _onChange;
+  List<CalendarEvent> _originalEvents;
+  Element _parent;
 
   UListElement _ul = new UListElement()
     ..classes.add('zebra')
     ..classes.add('contact-calendar-list');
 
-  List<CalendarEvent> originalEvents;
 
   ContactCalendarComponent(Element this._parent, Function this._onChange) {
     DivElement editContainer = new DivElement();
@@ -24,11 +24,49 @@ class ContactCalendarComponent {
     });
   }
 
+  CalendarEvent _extractValue(LIElement li) {
+    CalendarEvent event = new CalendarEvent();
+
+    try {
+      HiddenInputElement idField = li.querySelector('.contact-calendar-event-id');
+      TextAreaElement textField  = li.querySelector('.contact-calendar-event-text');
+
+      NumberInputElement startHourField   = li.querySelector('.contact-calendar-event-start-hour');
+      NumberInputElement startMinuteField = li.querySelector('.contact-calendar-event-start-minute');
+      DateInputElement startDateField     = li.querySelector('.contact-calendar-event-start-date');
+
+      NumberInputElement stopHourField   = li.querySelector('.contact-calendar-event-stop-hour');
+      NumberInputElement stopMinuteField = li.querySelector('.contact-calendar-event-stop-minute');
+      DateInputElement stopDateField     = li.querySelector('.contact-calendar-event-stop-date');
+
+      if(idField.value != null && idField.value.trim().isNotEmpty) {
+        event.id = int.parse(idField.value);
+      }
+
+      DateTime startDate  = startDateField.valueAsDate;
+      int startHour   = int.parse(startHourField.value);
+      int startMinute = int.parse(startMinuteField.value);
+      DateTime start = new DateTime(startDate.year, startDate.month, startDate.day, startHour, startMinute);
+
+      DateTime stopDate  = stopDateField.valueAsDate;
+      int stopHour   = int.parse(stopHourField.value);
+      int stopMinute = int.parse(stopMinuteField.value);
+      DateTime stop = new DateTime(stopDate.year, stopDate.month, stopDate.day, stopHour, stopMinute);
+
+      event.start   = start;
+      event.stop    = stop;
+      event.message = textField.value;
+    } catch(error, stack) {
+      log.error('CalendarComponent error: ${error} stack: ${stack}]');
+    }
+    return event;
+  }
+
   Future load(int receptionId, int contactId) {
     return request.getReceptionContactCalendar(receptionId, contactId)
         .then((List<CalendarEvent> events) {
       events.sort(CalendarEvent.sortByStartThenStop);
-      originalEvents = events;
+      _originalEvents = events;
       _ul.children
         ..clear()
         ..addAll(events.map(_makeEventRow));
@@ -107,59 +145,27 @@ class ContactCalendarComponent {
     return li;
   }
 
-  CalendarEvent extractValue(LIElement li) {
-    CalendarEvent event = new CalendarEvent();
-
-    try {
-      HiddenInputElement idField = li.querySelector('.contact-calendar-event-id');
-      TextAreaElement textField = li.querySelector('.contact-calendar-event-text');
-
-      NumberInputElement startHourField   = li.querySelector('.contact-calendar-event-start-hour');
-      NumberInputElement startMinuteField = li.querySelector('.contact-calendar-event-start-minute');
-      DateInputElement startDateField    = li.querySelector('.contact-calendar-event-start-date');
-
-      NumberInputElement stopHourField   = li.querySelector('.contact-calendar-event-stop-hour');
-      NumberInputElement stopMinuteField = li.querySelector('.contact-calendar-event-stop-minute');
-      DateInputElement stopDateField    = li.querySelector('.contact-calendar-event-stop-date');
-
-      if(idField.value != null && idField.value.trim().isNotEmpty) {
-        event.id = int.parse(idField.value);
-      }
-
-      DateTime startDate  = startDateField.valueAsDate;
-      int startHour   = int.parse(startHourField.value);
-      int startMinute = int.parse(startMinuteField.value);
-      DateTime start = new DateTime(startDate.year, startDate.month, startDate.day, startHour, startMinute);
-
-      DateTime stopDate  = stopDateField.valueAsDate;
-      int stopHour   = int.parse(stopHourField.value);
-      int stopMinute = int.parse(stopMinuteField.value);
-      DateTime stop = new DateTime(stopDate.year, stopDate.month, stopDate.day, stopHour, stopMinute);
-
-      event.start   = start;
-      event.stop    = stop;
-      event.message = textField.value;
-    } catch(error, stack) {
-      log.error('CalendarComponent error: ${error} stack: ${stack}]');
+  void _notifyChange() {
+    if(_onChange != null) {
+      _onChange();
     }
-    return event;
   }
 
   Future save(int receptionId, int contactId) {
-    List<CalendarEvent> currentEvents = _ul.children.map(extractValue).toList();
+    List<CalendarEvent> currentEvents = _ul.children.map(_extractValue).toList();
 
     List<Future> worklist = new List<Future>();
 
     //Inserts
     for(CalendarEvent event in currentEvents) {
-      if(!originalEvents.any((CalendarEvent e) => e.id == event.id)) {
+      if(!_originalEvents.any((CalendarEvent e) => e.id == event.id)) {
         //Insert event
         worklist.add(request.createContactCalendarEvent(receptionId, contactId, JSON.encode(event)));
       }
     }
 
     //Deletes
-    for(CalendarEvent event in originalEvents) {
+    for(CalendarEvent event in _originalEvents) {
       if(!currentEvents.any((CalendarEvent e) => e.id == event.id)) {
         //Delete event
         worklist.add(request.deleteContactCalendarEvent(receptionId, contactId, event.id));
@@ -168,7 +174,7 @@ class ContactCalendarComponent {
 
     //Update
     for(CalendarEvent event in currentEvents) {
-      CalendarEvent e = originalEvents.firstWhere((CalendarEvent e) => e.id == event.id, orElse: () => null);
+      CalendarEvent e = _originalEvents.firstWhere((CalendarEvent e) => e.id == event.id, orElse: () => null);
       if(e != null) {
         //Check if there is made a change
         if(e.message != event.message ||
@@ -180,11 +186,5 @@ class ContactCalendarComponent {
       }
     }
     return Future.wait(worklist);
-  }
-
-  void _notifyChange() {
-    if(_onChange != null) {
-      _onChange();
-    }
   }
 }

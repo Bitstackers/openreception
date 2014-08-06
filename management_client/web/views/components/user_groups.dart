@@ -1,29 +1,12 @@
 part of user.view;
 
 class UserGroupContainer {
-  TableElement _table;
-
   List<CheckboxInputElement> _checkboxs = [];
+  TableElement _table;
   List<UserGroup> _groupList = [], _userGroupList = [];
 
   UserGroupContainer(TableElement this._table) {
     refreshGroupList();
-  }
-
-  void refreshGroupList() {
-    request.getGroupList().then((List<UserGroup> groups) {
-      groups.sort((a, b) => a.name.compareTo(b.name));
-      _groupList = groups;
-      _renderBaseList();
-    });
-  }
-
-  void _renderBaseList() {
-    _checkboxs.clear();
-
-    _table.children
-      ..clear()
-      ..addAll(_groupList.map(_makeGroupRow));
   }
 
   TableRowElement _makeGroupRow(UserGroup group) {
@@ -46,21 +29,20 @@ class UserGroupContainer {
       ..children.addAll([checkCell, labelCell]);
   }
 
-  Future showUsersGroups(int userId) {
-    return request.getUsersGroup(userId).then((List<UserGroup> groups) {
-      _updateCheckBoxesWithUserGroup(groups);
+  void _renderBaseList() {
+    _checkboxs.clear();
+
+    _table.children
+      ..clear()
+      ..addAll(_groupList.map(_makeGroupRow));
+  }
+
+  void refreshGroupList() {
+    request.getGroupList().then((List<UserGroup> groups) {
+      groups.sort((a, b) => a.name.compareTo(b.name));
+      _groupList = groups;
+      _renderBaseList();
     });
-  }
-
-  void _updateCheckBoxesWithUserGroup(List<UserGroup> groups) {
-    _userGroupList = groups;
-    for(CheckboxInputElement checkbox in _checkboxs) {
-      checkbox.checked = groups.any((UserGroup userGroup) => userGroup.id == int.parse(checkbox.dataset['id']));
-    }
-  }
-
-  void showNewUsersGroups() {
-    _updateCheckBoxesWithUserGroup([]);
   }
 
   Future saveChanges(int userId) {
@@ -79,5 +61,22 @@ class UserGroupContainer {
       }
     }
     return Future.wait(worklist);
+  }
+
+  void showNewUsersGroups() {
+    _updateCheckBoxesWithUserGroup([]);
+  }
+
+  Future showUsersGroups(int userId) {
+    return request.getUsersGroup(userId).then((List<UserGroup> groups) {
+      _updateCheckBoxesWithUserGroup(groups);
+    });
+  }
+
+  void _updateCheckBoxesWithUserGroup(List<UserGroup> groups) {
+    _userGroupList = groups;
+    for(CheckboxInputElement checkbox in _checkboxs) {
+      checkbox.checked = groups.any((UserGroup userGroup) => userGroup.id == int.parse(checkbox.dataset['id']));
+    }
   }
 }
