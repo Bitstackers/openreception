@@ -1251,6 +1251,7 @@ class CalendarComponent {
 
     ButtonElement deleteButton = li.querySelector('.contact-calendar-event-delete')
         ..onClick.listen((_) {
+      _notifyChange();
       li.parent.children.remove(li);
     });
 
