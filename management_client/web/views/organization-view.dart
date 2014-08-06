@@ -261,7 +261,7 @@ class OrganizationView {
 
   void updateContactList(int organizationId) {
     getOrganizationContactList(organizationId).then((List<Contact> contacts) {
-      contacts.sort(Contact.sortByName);
+      contacts.sort();
       currentContactList = contacts;
       ulContactList.children
           ..clear()
@@ -275,7 +275,7 @@ class OrganizationView {
   LIElement makeContactNode(Contact contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${contact.full_name}'
+      ..text = '${contact.fullName}'
       ..onClick.listen((_) {
         Map event = {
           'window': 'contact',

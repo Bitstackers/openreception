@@ -44,8 +44,7 @@ Future<List<Contact>> getOrganizationContactList(int organizationId) {
       if (request.status == 200) {
         Map rawData = JSON.decode(body);
         List<Map> rawReceptions = rawData['contacts'];
-        completer.complete(rawReceptions.map((r) => new Contact.fromJson(r)
-            ).toList());
+        completer.complete(rawReceptions.map((r) => new Contact.fromJson(r)).toList());
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {

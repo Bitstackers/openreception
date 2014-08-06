@@ -110,6 +110,7 @@ Future<List<Endpoint>> getEndpointsList(int receptionId, int contactId) {
   return completer.future;
 }
 
+//TODO unused
 Future<Endpoint> getEndpoint(int receptionId, int contactId, String address, String addressType) {
   final Completer completer = new Completer();
 

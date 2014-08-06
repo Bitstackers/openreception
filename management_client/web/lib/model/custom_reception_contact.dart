@@ -1,14 +1,14 @@
 part of model;
 
 class CustomReceptionContact {
-  int contactId;
+  int    contactId;
   String fullName;
   String contactType;
-  bool contactEnabled;
-  int receptionId;
-  bool wantsMessages;
-  Map attributes;
-  bool receptionEnabled;
+  bool   contactEnabled;
+  int    receptionId;
+  bool   wantsMessages;
+  Map    attributes;
+  bool   receptionEnabled;
 
   CustomReceptionContact();
 

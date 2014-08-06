@@ -211,7 +211,7 @@ class DialplanView {
       activateExtension(null);
 
       request.getPlaylistList().then((List<Playlist> list) {
-            list.sort(Playlist.sortByName);
+            list.sort();
             playlists = list;
       }).catchError((error, stack) {
         log.error('activateDialplan() failed at fetching playlists. "${error}" \n"${stack}"');

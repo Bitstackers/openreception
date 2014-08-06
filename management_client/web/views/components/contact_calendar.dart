@@ -64,7 +64,7 @@ class ContactCalendarComponent {
   Future load(int receptionId, int contactId) {
     return request.getReceptionContactCalendar(receptionId, contactId)
         .then((List<CalendarEvent> events) {
-      events.sort(CalendarEvent.sortByStartThenStop);
+      events.sort();
       _originalEvents = events;
       _ul.children
         ..clear()

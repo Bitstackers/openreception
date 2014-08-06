@@ -4,22 +4,13 @@ class Audiofile {
   String filepath;
   String shortname;
 
-  Audiofile();
-
-  factory Audiofile.fromJson(Map json) {
-    Audiofile object = new Audiofile()
-      ..filepath = json['filepath']
-      ..shortname = json['shortname'];
-
-    return object;
+  Audiofile.fromJson(Map json) {
+    filepath  = json['filepath'];
+    shortname = json['shortname'];
   }
 
-  Map toJson() {
-    Map data = {
-      'filepath': filepath,
-      'shortname': shortname
-    };
-
-    return data;
-  }
+  Map toJson() => {
+    'filepath' : filepath,
+    'shortname': shortname
+  };
 }

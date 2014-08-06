@@ -298,7 +298,7 @@ class ReceptionView {
     return new LIElement()
         ..classes.add('clickable')
         ..dataset['receptionid'] = '${reception.id}'
-        ..text = '${reception.full_name}'
+        ..text = reception.full_name
         ..onClick.listen((_) {
           activateReception(reception.organization_id, reception.id);
         });
@@ -355,29 +355,29 @@ class ReceptionView {
   }
 
   void updateContactList(int receptionId) {
-    getReceptionContactList(receptionId).then((List<CustomReceptionContact> contacts) {
-      contacts.sort(CustomReceptionContact.sortByFullName);
+    getReceptionContactList(receptionId).then((List<Contact> contacts) {
+      contacts.sort();
       ulContactList.children
           ..clear()
-          ..addAll(contacts.map(makeContactNode));
+          ..addAll(contacts.map((Contact contact) => makeContactNode(contact, receptionId)));
     }).catchError((error) {
       log.error('Tried to fetch the contactlist from an reception Error: $error');
     });
   }
 
-  LIElement makeContactNode(CustomReceptionContact contact) {
+  LIElement makeContactNode(Contact contact, int receptionId) {
     LIElement li = new LIElement();
     li
         ..classes.add('clickable')
-        ..text = '${contact.fullName}'
+        ..text = contact.fullName
         ..onClick.listen((_) {
           Map event = {
             'window': 'contact',
-            'contact_id': contact.contactId,
-            'reception_id': contact.receptionId
+            'contact_id': contact.id,
+            'reception_id': receptionId
           };
-          bus.fire(windowChanged, event);
-        });
+        bus.fire(windowChanged, event);
+      });
     return li;
   }
 }

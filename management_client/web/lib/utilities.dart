@@ -17,3 +17,7 @@ void moveTo(List list, int fromIndex, int toIndex) {
     list.insert(toIndex, tmp);
   }
 }
+
+DateTime dateTimeFromUnixTimestamp(int seconds) => new DateTime.fromMillisecondsSinceEpoch(seconds*1000);
+
+int unixTimestampFromDateTime(DateTime datetime) => datetime.millisecondsSinceEpoch~/1000;

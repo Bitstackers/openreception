@@ -5,12 +5,14 @@ import 'dart:convert';
 import 'package:libdialplan/libdialplan.dart';
 
 import 'logger.dart' as log;
+import 'utilities.dart';
 
 part 'model/audiofile.dart';
 part 'model/calendar_event.dart';
 part 'model/cdr_entry.dart';
 part 'model/colleague.dart';
 part 'model/contact.dart';
+part 'model/contact_attribute.dart';
 part 'model/custom_reception_contact.dart';
 part 'model/dialplan_template.dart';
 part 'model/distributionlist.dart';
@@ -20,7 +22,7 @@ part 'model/reception.dart';
 part 'model/reception_contact.dart';
 part 'model/phone.dart';
 part 'model/playlist.dart';
-part 'model/reception_contact_reduced_reception.dart';
+part 'model/reception_colleague.dart';
 part 'model/user.dart';
 part 'model/user_group.dart';
 part 'model/user_identity.dart';

@@ -1,45 +1,39 @@
 part of model;
 
-class Endpoint {
-  int contactId;
-  int receptionId;
+class Endpoint implements Comparable<Endpoint> {
   String address;
   String addressType;
-  bool confidential;
-  bool enabled;
-  int priority;
+  bool   confidential;
+  int    contactId;
   String description;
+  bool   enabled;
+  int    priority;
+  int    receptionId;
 
   Endpoint();
 
-  factory Endpoint.fromJson(Map json) {
-    Endpoint object = new Endpoint()
-      ..contactId = json['contact_id']
-      ..receptionId = json['reception_id']
-      ..address = json['address']
-      ..addressType = json['address_type']
-      ..confidential = json['confidential']
-      ..enabled = json['enabled']
-      ..priority = json['priority']
-      ..description = json['description'];
-
-    return object;
+  Endpoint.fromJson(Map json) {
+    contactId    = json['contact_id'];
+    receptionId  = json['reception_id'];
+    address      = json['address'];
+    addressType  = json['address_type'];
+    confidential = json['confidential'];
+    enabled      = json['enabled'];
+    priority     = json['priority'];
+    description  = json['description'];
   }
 
-  Map toJson() {
-    Map data = {
-      'contact_id': contactId,
-      'reception_id': receptionId,
-      'address': address,
-      'address_type': addressType,
-      'confidential': confidential,
-      'enabled': enabled,
-      'priority': priority,
-      'description': description
-    };
+  Map toJson() => {
+    'contact_id': contactId,
+    'reception_id': receptionId,
+    'address': address,
+    'address_type': addressType,
+    'confidential': confidential,
+    'enabled': enabled,
+    'priority': priority,
+    'description': description
+  };
 
-    return data;
-  }
-
-  static int sortByPriority(Endpoint a, Endpoint b) => a.priority.compareTo(b.priority);
+  @override
+  int compareTo(Endpoint other) => this.priority.compareTo(other.priority);
 }

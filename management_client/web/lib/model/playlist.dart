@@ -1,33 +1,30 @@
 part of model;
 
-class Playlist {
-  int id;
-  String name;
-  String path;
-  int rate;
-  bool shuffle;
-  int channels;
-  int interval;
+class Playlist implements Comparable<Playlist>{
+  int          id;
+  String       name;
+  String       path;
+  int          rate;
+  bool         shuffle;
+  int          channels;
+  int          interval;
   List<String> chimelist;
-  int chimefreq;
-  int chimemax;
+  int          chimefreq;
+  int          chimemax;
 
   Playlist();
 
-  factory Playlist.fromJson(Map json) {
-    Playlist object = new Playlist()
-      ..id = json['id']
-      ..name = json['name']
-      ..path = json['path']
-      ..rate = json['rate']
-      ..shuffle = json['shuffle']
-      ..channels = json['channels']
-      ..interval = json['interval']
-      ..chimelist = json['chimelist']
-      ..chimefreq = json['chimefreq']
-      ..chimemax = json['chimemax'];
-
-    return object;
+Playlist.fromJson(Map json) {
+    id = json['id'];
+    name = json['name'];
+    path = json['path'];
+    rate = json['rate'];
+    shuffle = json['shuffle'];
+    channels = json['channels'];
+    interval = json['interval'];
+    chimelist = json['chimelist'];
+    chimefreq = json['chimefreq'];
+    chimemax = json['chimemax'];
   }
 
   Map toJson() => {
@@ -40,7 +37,9 @@ class Playlist {
     'interval': interval,
     'chimelist': chimelist,
     'chimefreq': chimefreq,
-    'chimemax': chimemax};
+    'chimemax': chimemax
+  };
 
-  static final sortByName = (Playlist a, Playlist b) => a.name.compareTo(b.name);
+  @override
+  int compareTo(Playlist other) => this.name.compareTo(other.name);
 }

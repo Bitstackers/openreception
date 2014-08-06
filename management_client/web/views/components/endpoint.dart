@@ -32,7 +32,7 @@ class EndpointsComponent {
 
   void _populateUL(List<Endpoint> list) {
     _persistenceEndpoint = list;
-    list.sort(Endpoint.sortByPriority);
+    list.sort();
 
     List<LIElement> items = list.map(_makeEndpointRow).toList();
 

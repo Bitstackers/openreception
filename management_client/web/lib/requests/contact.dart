@@ -57,7 +57,7 @@ Future<Contact> getContact(int contactId) {
   return completer.future;
 }
 
-Future updateContact(int contactId, String body) {
+Future<Map> updateContact(int contactId, String body) {
   final Completer completer = new Completer();
 
   HttpRequest request;
@@ -68,7 +68,7 @@ Future updateContact(int contactId, String body) {
       ..onLoad.listen((_) {
         String body = request.responseText;
         if (request.status == 200) {
-          completer.complete(new Contact.fromJson(JSON.decode(body)));
+          completer.complete(JSON.decode(body));
         } else if (request.status == 403) {
           completer.completeError(new ForbiddenException(body));
         } else {
@@ -111,12 +111,11 @@ Future<Map> createContact(String data) {
   return completer.future;
 }
 
-Future<List<ReceptionContact_ReducedReception>> getAContactsEveryReception(int contactId) {
+Future<List<ContactAttribute>> getContactWithAttributes(int contactId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
-  String url =
-      '${config.serverUrl}/contact/$contactId/reception?token=${config.token}';
+  String url = '${config.serverUrl}/contact/$contactId/reception?token=${config.token}';
 
   request = new HttpRequest()
     ..open(HttpMethod.GET, url)
@@ -124,9 +123,8 @@ Future<List<ReceptionContact_ReducedReception>> getAContactsEveryReception(int c
       String body = request.responseText;
       if (request.status == 200) {
         Map rawData = JSON.decode(body);
-        List<Map> rawReceptions = rawData['contacts'];
-        completer.complete(rawReceptions.map((Map r) =>
-            new ReceptionContact_ReducedReception.fromJson(r)).toList());
+        List attributes = rawData['contacts'];
+        completer.complete(attributes.map((Map attribute) => new ContactAttribute.fromJson(attribute)).toList());
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {

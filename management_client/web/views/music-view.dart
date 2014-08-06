@@ -98,7 +98,7 @@ class MusicView {
 
   Future refresh() {
     return getPlaylistList().then((List<Playlist> list) {
-      list.sort(Playlist.sortByName);
+      list.sort();
       renderList(list);
     });
   }

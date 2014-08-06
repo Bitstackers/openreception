@@ -7,7 +7,6 @@ import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart' as request;
-import '../lib/view_utilities.dart';
 import '../notification.dart' as notify;
 
 class RecordView {
@@ -83,8 +82,7 @@ class RecordView {
       this.receptions = receptions;
       performSearch();
     }).catchError((error) {
-      log.error(
-          'Failed to refreshing the list of receptions in reception window.');
+      log.error( 'Failed to refreshing the list of receptions in reception window.');
     });
   }
 

@@ -40,7 +40,7 @@ Future createContactCalendarEvent(int receptionId, int contactId, String data) {
     ..onLoad.listen((_) {
       String body = request.responseText;
       if (request.status == 200) {
-        completer.complete(new Contact.fromJson(JSON.decode(body)));
+        completer.complete(JSON.decode(body));
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {
@@ -67,7 +67,7 @@ Future deleteContactCalendarEvent(int receptionId, int contactId, int eventId) {
     ..onLoad.listen((_) {
       String body = request.responseText;
       if (request.status == 200) {
-        completer.complete(new Contact.fromJson(JSON.decode(body)));
+        completer.complete(JSON.decode(body));
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {
@@ -94,7 +94,7 @@ Future updateContactCalendarEvent(int receptionId, int contactId, int eventId, S
     ..onLoad.listen((_) {
       String body = request.responseText;
       if (request.status == 200) {
-        completer.complete(new Contact.fromJson(JSON.decode(body)));
+        completer.complete(JSON.decode(body));
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {

@@ -1,33 +1,36 @@
 part of model;
 
-class Contact {
-  int id;
-  String full_name;
-  bool enabled;
+class Contact implements Comparable<Contact> {
+  bool   enabled;
+  int    id;
+  String fullName;
   String type;
+  Map<int, ContactAttribute> attributes = new Map<int, ContactAttribute>();
 
   Contact();
 
-  factory Contact.fromJson(Map json) {
-    Contact object = new Contact()
-      ..id = json['id']
-      ..full_name = json['full_name']
-      ..enabled = json['enabled']
-      ..type = json['contact_type'];
+  Contact.fromJson(Map json) {
+    id        = json['id'];
+    fullName  = json['full_name'];
+    enabled   = json['enabled'];
+    type      = json['contact_type'];
 
-    return object;
+    List attributes = json['attributes'];
+    if(attributes != null) {
+      attributes.forEach((Map attributeMap) {
+        ContactAttribute attribute = new ContactAttribute.fromJson(attributeMap);
+        attributes[attribute.receptionId] = attribute;
+      });
+    }
   }
 
-  Map toJson() {
-    Map data = {
-      'id': id,
-      'full_name': full_name,
-      'enabled': enabled,
-      'contact_type': type
-    };
+  Map toJson() => {
+    'id': id,
+    'full_name': fullName,
+    'enabled': enabled,
+    'contact_type': type
+  };
 
-    return data;
-  }
-
-  static int sortByName(Contact a, Contact b) => a.full_name.compareTo(b.full_name);
+  @override
+  int compareTo(Contact other) => this.fullName.compareTo(other.fullName);
 }
