@@ -39,7 +39,7 @@ class UserGroupContainer {
 
   void refreshGroupList() {
     request.getGroupList().then((List<UserGroup> groups) {
-      groups.sort((a, b) => a.name.compareTo(b.name));
+      groups.sort(UserGroup.sortByName);
       _groupList = groups;
       _renderBaseList();
     });

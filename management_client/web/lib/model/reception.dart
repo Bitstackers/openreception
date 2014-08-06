@@ -92,4 +92,6 @@ class Reception {
 
     return data;
   }
+
+  static int sortByName(Reception a, Reception b) => a.full_name.compareTo(b.full_name);
 }

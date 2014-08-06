@@ -79,7 +79,7 @@ class RecordView {
 
   Future refreshList() {
     return request.getReceptionList().then((List<Reception> receptions) {
-      receptions.sort((a, b) => a.full_name.compareTo(b.full_name));
+      receptions.sort(Reception.sortByName);
       this.receptions = receptions;
       performSearch();
     }).catchError((error) {

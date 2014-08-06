@@ -28,4 +28,6 @@ class Contact {
 
     return data;
   }
+
+  static int sortByName(Contact a, Contact b) => a.full_name.compareTo(b.full_name);
 }

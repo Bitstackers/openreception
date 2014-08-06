@@ -171,7 +171,7 @@ class DialplanView {
 
   void fillSearchComponent() {
     request.getReceptionList().then((List<Reception> list) {
-      list.sort((a, b) => a.full_name.compareTo(b.full_name));
+      list.sort(Reception.sortByName);
       receptionPicker.updateSourceList(list);
     });
   }

@@ -40,4 +40,6 @@ class CustomReceptionContact {
 
     return data;
   }
+
+  static int sortByFullName(CustomReceptionContact a, CustomReceptionContact b) => a.fullName.compareTo(b.fullName);
 }

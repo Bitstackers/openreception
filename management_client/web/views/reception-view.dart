@@ -92,7 +92,7 @@ class ReceptionView {
 
   void fillSearchComponent() {
     getOrganizationList().then((List<Organization> list) {
-      list.sort((a, b) => a.full_name.compareTo(b.full_name));
+      list.sort(Organization.sortByName);
       SC.updateSourceList(list);
     });
   }
@@ -285,7 +285,7 @@ class ReceptionView {
 
   Future refreshList() {
     return getReceptionList().then((List<Reception> receptions) {
-      receptions.sort((a, b) => a.full_name.compareTo(b.full_name));
+      receptions.sort(Reception.sortByName);
       this.receptions = receptions;
       performSearch();
     }).catchError((error) {
@@ -356,7 +356,7 @@ class ReceptionView {
 
   void updateContactList(int receptionId) {
     getReceptionContactList(receptionId).then((List<CustomReceptionContact> contacts) {
-      contacts.sort((a, b) => a.fullName.compareTo(b.fullName));
+      contacts.sort(CustomReceptionContact.sortByFullName);
       ulContactList.children
           ..clear()
           ..addAll(contacts.map(makeContactNode));

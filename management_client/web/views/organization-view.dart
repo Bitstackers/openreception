@@ -183,8 +183,7 @@ class OrganizationView {
 
   void refreshList() {
     getOrganizationList().then((List<Organization> organizations) {
-      organizations.sort((a, b) => a.full_name.compareTo(b.full_name));
-      //TODO Skal det være her.
+      organizations.sort(Organization.sortByName);
       this.organizations = organizations;
       renderOrganizationList(organizations);
     }).catchError((error) {
@@ -235,7 +234,7 @@ class OrganizationView {
 
   void updateReceptionList(int organizationId) {
     getAnOrganizationsReceptionList(organizationId).then((List<Reception> receptions) {
-      receptions.sort((a, b) => a.full_name.compareTo(b.full_name));
+      receptions.sort(Reception.sortByName);
       currentReceptionList = receptions;
       ulReceptionList.children
           ..clear()
@@ -262,7 +261,7 @@ class OrganizationView {
 
   void updateContactList(int organizationId) {
     getOrganizationContactList(organizationId).then((List<Contact> contacts) {
-      contacts.sort((a, b) => a.full_name.compareTo(b.full_name));
+      contacts.sort(Contact.sortByName);
       currentContactList = contacts;
       ulContactList.children
           ..clear()

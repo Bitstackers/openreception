@@ -28,4 +28,6 @@ class User {
 
     return data;
   }
+
+  static int sortByName(User a, User b) => a.name.compareTo(b.name);
 }

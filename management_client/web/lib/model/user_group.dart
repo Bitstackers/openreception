@@ -22,4 +22,6 @@ class UserGroup {
 
     return data;
   }
+
+  static int sortByName(UserGroup a, UserGroup b) => a.name.compareTo(b.name);
 }

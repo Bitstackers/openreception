@@ -66,7 +66,7 @@ class UserView {
 
   Future refreshList() {
     return request.getUserList().then((List<User> users) {
-      users.sort((a, b) => a.name.compareTo(b.name));
+      users.sort(User.sortByName);
       renderUserList(users);
     }).catchError((error) {
       log.error('Failed to refreshing the list of receptions in reception window.');
