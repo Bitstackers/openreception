@@ -1,33 +1,27 @@
 part of model;
 
-class Organization {
-  int id;
-  String full_name;
-  String bill_type;
+class Organization implements Comparable<Organization> {
+  String billType;
   String flag;
+  String fullName;
+  int    id;
 
   Organization();
 
-  factory Organization.fromJson(Map json) {
-    Organization object = new Organization()
-      ..id = json['id']
-      ..full_name = json['full_name']
-      ..bill_type = json['bill_type']
-      ..flag = json['flag'];
-
-    return object;
+  Organization.fromJson(Map json) {
+    billType = json['bill_type'];
+    flag     = json['flag'];
+    fullName = json['full_name'];
+    id       = json['id'];
   }
 
-  Map toJson() {
-    Map data = {
-      'id': id,
-      'full_name': full_name,
-      'bill_type': bill_type,
-      'flag': flag
-    };
+  Map toJson() => {
+    'bill_type': billType,
+    'flag'     : flag,
+    'full_name': fullName,
+    'id'       : id
+  };
 
-    return data;
-  }
-
-  static final sortByName = (Organization a, Organization b) => a.full_name.compareTo(b.full_name);
+  @override
+  int compareTo(Organization other) => this.fullName.compareTo(other.fullName);
 }

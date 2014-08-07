@@ -2,24 +2,17 @@ part of model;
 
 class UserIdentity {
   String identity;
-  int userId;
+  int    userId;
 
   UserIdentity();
 
-  factory UserIdentity.fromJson(Map json) {
-    UserIdentity object = new UserIdentity()
-      ..identity = json['identity']
-      ..userId = json['user_id'];
-
-    return object;
+  UserIdentity.fromJson(Map json) {
+    identity = json['identity'];
+    userId   = json['user_id'];
   }
 
-  Map toJson() {
-    Map data = {
-      'user_id': userId,
-      'identity': identity
-    };
-
-    return data;
-  }
+  Map toJson() => {
+    'user_id': userId,
+    'identity': identity
+  };
 }

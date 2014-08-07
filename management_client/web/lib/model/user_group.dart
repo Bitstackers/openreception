@@ -1,17 +1,12 @@
 part of model;
 
-class UserGroup {
-  int id;
+class UserGroup implements Comparable<UserGroup> {
+  int    id;
   String name;
 
-  UserGroup();
-
-  factory UserGroup.fromJson(Map json) {
-    UserGroup object = new UserGroup()
-      ..id = json['id']
-      ..name = json['name'];
-
-    return object;
+  UserGroup.fromJson(Map json) {
+    id   = json['id'];
+    name = json['name'];
   }
 
   Map toJson() {
@@ -23,5 +18,6 @@ class UserGroup {
     return data;
   }
 
-  static int sortByName(UserGroup a, UserGroup b) => a.name.compareTo(b.name);
+  @override
+  int compareTo(UserGroup other) => this.name.compareTo(other.name);
 }

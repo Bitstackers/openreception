@@ -92,17 +92,17 @@ class ReceptionView {
 
   void fillSearchComponent() {
     getOrganizationList().then((List<Organization> list) {
-      list.sort(Organization.sortByName);
+      list.sort();
       SC.updateSourceList(list);
     });
   }
 
   String organizationToSearchboxString(Organization organization, String searchterm) {
-    return '${organization.full_name}';
+    return '${organization.fullName}';
   }
 
   bool organizationSearchHandler(Organization organization, String searchTerm) {
-    return organization.full_name.toLowerCase().contains(searchTerm.toLowerCase());
+    return organization.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
   void registrateEventHandlers() {
@@ -152,7 +152,7 @@ class ReceptionView {
   void performSearch() {
     String searchText = searchBox.value;
     List<Reception> filteredList = receptions.where((Reception recep) =>
-        recep.full_name.toLowerCase().contains(searchText.toLowerCase())).toList();
+        recep.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderReceptionList(filteredList);
   }
 
@@ -260,8 +260,8 @@ class ReceptionView {
 
   Reception extractValues() {
     return new Reception()
-        ..organization_id = currentOrganizationId
-        ..full_name = inputFullName.value
+        ..organizationId = currentOrganizationId
+        ..fullName = inputFullName.value
         ..enabled = inputEnabled.checked
         ..receptionNumber = inputReceptionNumber.value
 
@@ -285,7 +285,7 @@ class ReceptionView {
 
   Future refreshList() {
     return getReceptionList().then((List<Reception> receptions) {
-      receptions.sort(Reception.sortByName);
+      receptions.sort();
       this.receptions = receptions;
       performSearch();
     }).catchError((error) {
@@ -298,9 +298,9 @@ class ReceptionView {
     return new LIElement()
         ..classes.add('clickable')
         ..dataset['receptionid'] = '${reception.id}'
-        ..text = reception.full_name
+        ..text = reception.fullName
         ..onClick.listen((_) {
-          activateReception(reception.organization_id, reception.id);
+          activateReception(reception.organizationId, reception.id);
         });
   }
 
@@ -327,7 +327,7 @@ class ReceptionView {
 
         highlightContactInList(receptionId);
 
-        inputFullName.value = response.full_name;
+        inputFullName.value = response.fullName;
         inputEnabled.checked = response.enabled;
         inputReceptionNumber.value = response.receptionNumber;
         inputCostumerstype.value = response.customertype;

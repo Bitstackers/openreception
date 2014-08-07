@@ -24,18 +24,19 @@ class DistributionList {
     }
   }
 
-  ReceptionContact _makeReceptionContact(Map map) => new ReceptionContact()
-                                          ..receptionId = map['reception_id']
-                                          ..contactId = map['contact_id'];
+  ReceptionContact _makeReceptionContact(Map map) =>
+      new ReceptionContact()
+      ..contactId   = map['contact_id']
+        ..receptionId = map['reception_id'];
 
-  Map toJson() {
-    return {'to': to.map(_contactToJson).toList(),
-            'cc': cc.map(_contactToJson).toList(),
-            'bcc': bcc.map(_contactToJson).toList()};
-  }
+  Map toJson() =>
+    {'to' : to .map(_contactToJson).toList(),
+     'cc' : cc .map(_contactToJson).toList(),
+     'bcc': bcc.map(_contactToJson).toList()
+    };
 
-  Map _contactToJson(ReceptionContact rc) {
-    return {'reception_id': rc.receptionId,
-            'contact_id': rc.contactId};
-  }
+
+  Map _contactToJson(ReceptionContact rc) =>
+      {'reception_id': rc.receptionId,
+       'contact_id'  : rc.contactId};
 }

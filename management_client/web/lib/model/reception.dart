@@ -1,9 +1,9 @@
 part of model;
 
-class Reception {
+class Reception implements Comparable<Reception> {
   int id;
-  int organization_id;
-  String full_name;
+  int organizationId;
+  String fullName;
   String product;
   String other;
   String greeting;
@@ -29,37 +29,33 @@ class Reception {
    */
   Reception();
 
-  factory Reception.fromJson(Map json) {
-    Reception reception = new Reception()
-        ..id = json['id']
-        ..organization_id = json['organization_id']
-        ..full_name = stringFromJson(json, 'full_name')
-        ..enabled = json['enabled']
-        ..receptionNumber = json['number'];
+  Reception.fromJson(Map json) {
+    id = json['id'];
+    organizationId = json['organization_id'];
+    fullName = stringFromJson(json, 'full_name');
+    enabled = json['enabled'];
+    receptionNumber = json['number'];
 
     if (json.containsKey('attributes')) {
       Map attributes = json['attributes'];
 
-      reception
-          ..product = stringFromJson(attributes, 'product')
-          ..other = stringFromJson(attributes, 'other')
-          ..greeting = stringFromJson(attributes, 'greeting')
-          ..shortGreeting = stringFromJson(attributes, 'shortgreeting')
-          ..customertype = stringFromJson(attributes, 'customertype')
+      product = stringFromJson(attributes, 'product');
+      other = stringFromJson(attributes, 'other');
+      greeting = stringFromJson(attributes, 'greeting');
+      shortGreeting = stringFromJson(attributes, 'shortgreeting');
+      customertype = stringFromJson(attributes, 'customertype');
 
-          ..addresses = priorityListFromJson(attributes, 'addresses')
-          ..alternatenames = priorityListFromJson(attributes, 'alternatenames')
-          ..bankinginformation = priorityListFromJson(attributes, 'bankinginformation')
-          ..crapcallhandling = priorityListFromJson(attributes, 'crapcallhandling')
-          ..emailaddresses = priorityListFromJson(attributes, 'emailaddresses')
-          ..handlings = priorityListFromJson(attributes, 'handlings')
-          ..openinghours = priorityListFromJson(attributes, 'openinghours')
-          ..registrationnumbers = priorityListFromJson(attributes, 'registrationnumbers')
-          ..telephonenumbers = priorityListFromJson(attributes, 'telephonenumbers')
-          ..websites = priorityListFromJson(attributes, 'websites');
+      addresses = priorityListFromJson(attributes, 'addresses');
+      alternatenames = priorityListFromJson(attributes, 'alternatenames');
+      bankinginformation = priorityListFromJson(attributes, 'bankinginformation');
+      crapcallhandling = priorityListFromJson(attributes, 'crapcallhandling');
+      emailaddresses = priorityListFromJson(attributes, 'emailaddresses');
+      handlings = priorityListFromJson(attributes, 'handlings');
+      openinghours = priorityListFromJson(attributes, 'openinghours');
+      registrationnumbers = priorityListFromJson(attributes, 'registrationnumbers');
+      telephonenumbers = priorityListFromJson(attributes, 'telephonenumbers');
+      websites = priorityListFromJson(attributes, 'websites');
     }
-
-    return reception;
   }
 
   Map toJson() {
@@ -83,8 +79,8 @@ class Reception {
 
     Map data = {
       'id': id,
-      'organization_id': organization_id,
-      'full_name': full_name,
+      'organization_id': organizationId,
+      'full_name': fullName,
       'enabled': enabled,
       'attributes': attributes,
       'number': receptionNumber
@@ -93,5 +89,6 @@ class Reception {
     return data;
   }
 
-  static int sortByName(Reception a, Reception b) => a.full_name.compareTo(b.full_name);
+  @override
+  int compareTo(Reception other) => this.fullName.compareTo(other.fullName);
 }

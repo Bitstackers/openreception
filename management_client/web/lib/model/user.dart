@@ -1,33 +1,27 @@
 part of model;
 
-class User {
+class User implements Comparable<User> {
   String extension;
+  int    id;
   String name;
-  int id;
   String sendFrom;
 
   User();
 
-  factory User.fromJson(Map json) {
-    User object = new User()
-      ..extension = json['extension']
-      ..name = json['name']
-      ..id = json['id']
-      ..sendFrom = json['send_from'];
-
-    return object;
+  User.fromJson(Map json) {
+    extension = json['extension'];
+    id        = json['id'];
+    name      = json['name'];
+    sendFrom  = json['send_from'];
   }
 
-  Map toJson() {
-    Map data = {
-      'extension': extension,
-      'name': name,
-      'id': id,
-      'send_from': sendFrom
-    };
+  Map toJson() => {
+    'extension' : extension,
+    'id'        : id,
+    'name'      : name,
+    'send_from' : sendFrom
+  };
 
-    return data;
-  }
-
-  static int sortByName(User a, User b) => a.name.compareTo(b.name);
+  @override
+  int compareTo(User other) => this.name.compareTo(other.name);
 }

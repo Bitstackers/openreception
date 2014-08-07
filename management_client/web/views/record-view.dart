@@ -63,22 +63,22 @@ class RecordView {
     return li
       ..classes.add('clickable')
       ..dataset['receptionid'] = '${reception.id}'
-      ..text = '${reception.full_name}'
+      ..text = '${reception.fullName}'
       ..onClick.listen((_) {
-        activateReception(reception.organization_id, reception.id);
+        activateReception(reception.organizationId, reception.id);
       });
   }
 
   void performSearch() {
     String searchText = receptionSearchBox.value;
     List<Reception> filteredList = receptions.where((Reception recep) =>
-        recep.full_name.toLowerCase().contains(searchText.toLowerCase())).toList();
+        recep.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderReceptionList(filteredList);
   }
 
   Future refreshList() {
     return request.getReceptionList().then((List<Reception> receptions) {
-      receptions.sort(Reception.sortByName);
+      receptions.sort();
       this.receptions = receptions;
       performSearch();
     }).catchError((error) {

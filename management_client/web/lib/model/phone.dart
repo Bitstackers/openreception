@@ -1,27 +1,24 @@
 part of model;
 
 class Phone {
-  int id;
-  String value;
-  String kind;
+  int    id;
+  String billType; //Landline, mobile, which foreign country
+  bool   confidential = false;
   String description;
-  String bill_type; //Landline, mobile, which foreign country
+  String kind;
   String tag; //tags
-  bool confidential = false;
+  String value;
 
   Phone();
 
-  factory Phone.fromJson(Map json) {
-    Phone object = new Phone()
-      ..id = json['id']
-      ..value = json['value']
-      ..kind = json['kind']
-      ..description = json['description']
-      ..bill_type = json['bill_type']
-      ..tag = json['tag']
-      ..confidential = json.containsKey('confidential') ? json['confidential'] : false;
-
-    return object;
+  Phone.fromJson(Map json) {
+    id = json['id'];
+    value = json['value'];
+    kind = json['kind'];
+    description = json['description'];
+    billType = json['bill_type'];
+    tag = json['tag'];
+    confidential = json.containsKey('confidential') ? json['confidential'] : false;
   }
 
   Map toJson() => {
@@ -29,7 +26,7 @@ class Phone {
     'value': value,
     'kind': kind,
     'description': description,
-    'bill_type': bill_type,
+    'bill_type': billType,
     'tag': tag,
     'confidential': confidential};
 }

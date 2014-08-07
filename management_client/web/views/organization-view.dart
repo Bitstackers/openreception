@@ -141,7 +141,7 @@ class OrganizationView {
   void performSearch() {
     String searchText = searchBox.value;
     List<Organization> filteredList = organizations.where((Organization org) =>
-        org.full_name.toLowerCase().contains(searchText.toLowerCase())).toList();
+        org.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderOrganizationList(filteredList);
   }
 
@@ -183,7 +183,7 @@ class OrganizationView {
 
   void refreshList() {
     getOrganizationList().then((List<Organization> organizations) {
-      organizations.sort(Organization.sortByName);
+      organizations.sort();
       this.organizations = organizations;
       renderOrganizationList(organizations);
     }).catchError((error) {
@@ -202,7 +202,7 @@ class OrganizationView {
     return new LIElement()
         ..classes.add('clickable')
         ..dataset['organizationid'] = '${organization.id}'
-        ..text = '${organization.full_name}'
+        ..text = '${organization.fullName}'
         ..onClick.listen((_) {
           activateOrganization(organization.id);
         });
@@ -220,8 +220,8 @@ class OrganizationView {
       buttonSave.disabled = false;
       buttonSave.text = 'Gem';
       buttonDelete.disabled = false;
-      inputName.value = organization.full_name;
-      inputBilltype.value = organization.bill_type;
+      inputName.value = organization.fullName;
+      inputBilltype.value = organization.billType;
       inputFlag.value = organization.flag;
 
       updateReceptionList(selectedOrganizationId);
@@ -234,7 +234,7 @@ class OrganizationView {
 
   void updateReceptionList(int organizationId) {
     getAnOrganizationsReceptionList(organizationId).then((List<Reception> receptions) {
-      receptions.sort(Reception.sortByName);
+      receptions.sort();
       currentReceptionList = receptions;
       ulReceptionList.children
           ..clear()
@@ -247,11 +247,11 @@ class OrganizationView {
   LIElement makeReceptionNode(Reception reception) {
     LIElement li = new LIElement()
         ..classes.add('clickable')
-        ..text = '${reception.full_name}'
+        ..text = '${reception.fullName}'
         ..onClick.listen((_) {
           Map event = {
             'window': 'reception',
-            'organization_id': reception.organization_id,
+            'organization_id': reception.organizationId,
             'reception_id': reception.id
           };
           bus.fire(windowChanged, event);

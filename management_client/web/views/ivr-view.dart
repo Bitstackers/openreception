@@ -107,16 +107,16 @@ class IvrView {
   }
 
   String receptionToSearchboxString(Reception reception, String searchterm) {
-    return '${reception.full_name}';
+    return '${reception.fullName}';
   }
 
   bool receptionSearchHandler(Reception reception, String searchTerm) {
-    return reception.full_name.toLowerCase().contains(searchTerm.toLowerCase());
+    return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
   void fillSearchComponent() {
     request.getReceptionList().then((List<Reception> list) {
-      list.sort(Reception.sortByName);
+      list.sort();
       receptionPicker.updateSourceList(list);
     });
   }

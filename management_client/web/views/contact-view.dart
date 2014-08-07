@@ -86,11 +86,11 @@ class ContactView {
   }
 
   String receptionToSearchboxString(Reception reception, String searchterm) {
-    return '${reception.full_name}';
+    return '${reception.fullName}';
   }
 
   bool receptionSearchHandler(Reception reception, String searchTerm) {
-    return reception.full_name.toLowerCase().contains(searchTerm.toLowerCase());
+    return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
   void registrateEventHandlers() {
@@ -176,7 +176,7 @@ class ContactView {
 
         //Rightbar
         request.getContactsOrganizationList(id).then((List<Organization> organizations) {
-          organizations.sort(Organization.sortByName);
+          organizations.sort();
           ulOrganizationList.children
               ..clear()
               ..addAll(organizations.map(makeOrganizationNode));
@@ -440,7 +440,7 @@ class ContactView {
           editableSpan(descriptionContent, descriptionEditBox, onChange);
 
           SpanElement billTypeContent = new SpanElement()
-            ..text = number.bill_type
+            ..text = number.billType
             ..classes.add('phonenumberbilltype');
           InputElement billTypeEditBox = new InputElement(type: 'text');
           editableSpan(billTypeContent, billTypeEditBox, onChange);
@@ -532,7 +532,7 @@ class ContactView {
             ..kind = kindpicker.options[kindpicker.selectedIndex].value
             ..value = content.text
             ..description = description.text
-            ..bill_type = billType.text);
+            ..billType = billType.text);
         }
       }
     }
@@ -659,7 +659,7 @@ class ContactView {
       ContactAttribute template =
           new ContactAttribute()
           ..receptionId = reception.id
-          ..receptionName = reception.full_name
+          ..receptionName = reception.fullName
           ..receptionEnabled = reception.enabled
           ..wantsMessages = true
           ..enabled = true
@@ -718,7 +718,7 @@ class ContactView {
   LIElement makeOrganizationNode(Organization organization) {
     LIElement li = new LIElement()
         ..classes.add('clickable')
-        ..text = '${organization.full_name}'
+        ..text = '${organization.fullName}'
         ..onClick.listen((_) {
           Map event = {
             'window': 'organization',
