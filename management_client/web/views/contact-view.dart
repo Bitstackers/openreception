@@ -438,13 +438,13 @@ class ContactView {
           InputElement descriptionEditBox = new InputElement(type: 'text');
           editableSpan(descriptionContent, descriptionEditBox, onChange);
 
-          SpanElement billTypeContent = new SpanElement()
-            ..text = number.billType
-            ..classes.add('phonenumberbilltype');
-          InputElement billTypeEditBox = new InputElement(type: 'text');
-          editableSpan(billTypeContent, billTypeEditBox, onChange);
+          SpanElement billingTypeContent = new SpanElement()
+            ..text = number.billingType
+            ..classes.add('phonenumberbillingtype');
+          InputElement billingTypeEditBox = new InputElement(type: 'text');
+          editableSpan(billingTypeContent, billingTypeEditBox, onChange);
 
-          li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billTypeContent, billTypeEditBox]);
+          li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
           children.add(li);
         }
       }
@@ -483,14 +483,14 @@ class ContactView {
               ..placeholder = 'beskrivelse';
             editableSpan(descriptionContent, descriptionEditBox, onChange);
 
-            SpanElement billTypeContent = new SpanElement()
+            SpanElement billingTypeContent = new SpanElement()
               ..text = 'fastnet'
-              ..classes.add('phonenumberbilltype');
-            InputElement billTypeEditBox = new InputElement(type: 'text')
+              ..classes.add('phonenumberbillingtype');
+            InputElement billingTypeEditBox = new InputElement(type: 'text')
               ..placeholder = 'taksttype';
-            editableSpan(billTypeContent, billTypeEditBox, onChange);
+            editableSpan(billingTypeContent, billingTypeEditBox, onChange);
 
-            li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billTypeContent, billTypeEditBox]);
+            li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
 
             int index = ul.children.length - 1;
             sortGroup.install(li);
@@ -523,7 +523,7 @@ class ContactView {
         SpanElement content = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('contactgenericcontent'), orElse: () => null);
         SelectElement kindpicker = li.children.firstWhere((elem) => elem is SelectElement, orElse: () => null);
         SpanElement description = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberdescription'), orElse: () => null);
-        SpanElement billType = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberbilltype'), orElse: () => null);
+        SpanElement billingType = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberbillingtype'), orElse: () => null);
 
         if (content != null && kindpicker != null) {
           phonenumbers.add(new Phone()
@@ -531,7 +531,7 @@ class ContactView {
             ..kind = kindpicker.options[kindpicker.selectedIndex].value
             ..value = content.text
             ..description = description.text
-            ..billType = billType.text);
+            ..billingType = billingType.text);
         }
       }
     }
@@ -746,5 +746,3 @@ class ContactView {
     }
   }
 }
-
-

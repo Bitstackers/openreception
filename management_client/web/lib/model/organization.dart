@@ -1,22 +1,20 @@
 part of model;
 
 class Organization implements Comparable<Organization> {
-  String billType;
+  String billingType;
   String flag;
   String fullName;
   int    id;
 
-  Organization();
-
   Organization.fromJson(Map json) {
-    billType = json['bill_type'];
+    billingType = json['billing_type'];
     flag     = json['flag'];
     fullName = json['full_name'];
     id       = json['id'];
   }
 
   Map toJson() => {
-    'bill_type': billType,
+    'billing_type': billingType,
     'flag'     : flag,
     'full_name': fullName,
     'id'       : id

@@ -63,7 +63,7 @@ class BillingView {
                   ..children.addAll(
                       [new TableCellElement()..text = '${entry.orgId}',
                        new TableCellElement()..text = '${entry.flag}',
-                       new TableCellElement()..text = '${entry.billType}',
+                       new TableCellElement()..text = '${entry.billingType}',
                        new TableCellElement()..text = '${entry.orgName}',
                        new TableCellElement()..text = '${entry.callCount}',
                        new TableCellElement()..text = '${entry.duration}',

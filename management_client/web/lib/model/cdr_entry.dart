@@ -2,7 +2,7 @@ part of model;
 
 class Cdr_Entry {
   double avgDuration;
-  String billType;
+  String billingType;
   int    callCount;
   int    duration;
   String flag;
@@ -16,7 +16,7 @@ class Cdr_Entry {
     callCount   = json['call_count'];
     orgName     = json['org_name'];
     totalWait   = json['total_wait'];
-    billType    = json['bill_type'];
+    billingType    = json['billing_type'];
     duration    = json['duration'];
     flag        = json['flag'];
     avgDuration = json['avg_duration'];

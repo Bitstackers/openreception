@@ -13,7 +13,7 @@ class OrganizationView {
   String viewName = 'organization';
   DivElement element;
   UListElement uiList;
-  TextAreaElement inputName, inputBilltype, inputFlag;
+  TextAreaElement inputName, inputBillingtype, inputFlag;
   ButtonElement buttonCreate, buttonSave, buttonDelete;
   SearchInputElement searchBox;
   UListElement ulReceptionList;
@@ -31,7 +31,7 @@ class OrganizationView {
     searchBox = element.querySelector('#organization-search-box');
     uiList = element.querySelector('#organization-list');
     inputName = element.querySelector('#organization-input-name');
-    inputBilltype = element.querySelector('#organization-input-billtype');
+    inputBillingtype = element.querySelector('#organization-input-billingtype');
     inputFlag = element.querySelector('#organization-input-flag');
     buttonSave = element.querySelector('#organization-save');
     buttonCreate = element.querySelector('#organization-create');
@@ -134,7 +134,7 @@ class OrganizationView {
 
   void clearContent() {
     inputName.value = '';
-    inputBilltype.value = '';
+    inputBillingtype.value = '';
     inputFlag.value = '';
   }
 
@@ -150,7 +150,7 @@ class OrganizationView {
       Map organization = {
         'id': selectedOrganizationId,
         'full_name': inputName.value,
-        'bill_type': inputBilltype.value,
+        'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
       String newOrganization = JSON.encode(organization);
@@ -164,7 +164,7 @@ class OrganizationView {
     } else if (createNew) {
       Map organization = {
         'full_name': inputName.value,
-        'bill_type': inputBilltype.value,
+        'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
       String newOrganization = JSON.encode(organization);
@@ -221,7 +221,7 @@ class OrganizationView {
       buttonSave.text = 'Gem';
       buttonDelete.disabled = false;
       inputName.value = organization.fullName;
-      inputBilltype.value = organization.billType;
+      inputBillingtype.value = organization.billingType;
       inputFlag.value = organization.flag;
 
       updateReceptionList(selectedOrganizationId);
