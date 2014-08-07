@@ -40,14 +40,14 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
 
     for(var row in rows) {
 
-      cdr.add({'org_id'     : row.org_id,
-                 'org_name'   : row.org_name,
-                 'bill_type'  : row.bill_type,
-                 'flag'       : row.flag,
-                 'call_count' : row.call_count,
-                 'duration'   : row.total_duration,
-                 'total_wait' : row.total_wait,
-                 'avg_duration': double.parse(row.avg_duration)});
+      cdr.add({'org_id'       : row.org_id,
+               'org_name'     : row.org_name,
+               'billing_type' : row.billing_type,
+               'flag'         : row.flag,
+               'call_count'   : row.call_count,
+               'duration'     : row.total_duration,
+               'total_wait'   : row.total_wait,
+               'avg_duration' : double.parse(row.avg_duration)});
     }
 
     return cdr;
