@@ -140,7 +140,7 @@ Future<List<ContactAttribute>> getContactWithAttributes(int contactId) {
   return completer.future;
 }
 
-Future<List<ReceptionColleague>> getContactsColleagues(int contactId) {
+Future<List<Reception>> getColleagues(int contactId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
@@ -153,7 +153,7 @@ Future<List<ReceptionColleague>> getContactsColleagues(int contactId) {
       if (request.status == 200) {
         Map rawData = JSON.decode(body);
         List<Map> rawReceptions = rawData['receptions'];
-        completer.complete(rawReceptions.map((r) => new ReceptionColleague.fromJson(r)).toList());
+        completer.complete(rawReceptions.map((r) => new Reception.fromJson(r)).toList());
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {

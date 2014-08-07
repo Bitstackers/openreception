@@ -224,7 +224,7 @@ class SearchComponent<T> {
    */
   void performSearch(String searchText) {
     _resultsList.children.clear();
-    for (var li in _list) {
+    for (LIElement li in _list) {
       int index = int.parse(li.attributes[liIdTag]);
       T dataElement = _dataList[index];
 

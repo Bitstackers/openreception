@@ -869,7 +869,7 @@ class DialplanView {
     RadioButtonInputElement transferTypePhone = settingPanel.querySelector('#dialplan-transfertype-phone');
     RadioButtonInputElement transferTypeExtensionGroup = settingPanel.querySelector('#dialplan-transfertype-extensiongroup');
 
-    var updateDisables = () {
+    Function updateDisables = () {
       //This can seems a little backwards, but it's because we set if it is disabled not enabled.
       transferTypePhoneFieldset.disabled = !transferTypePhone.checked;
       transferTypeExtensionGroupFieldset.disabled = !transferTypeExtensionGroup.checked;

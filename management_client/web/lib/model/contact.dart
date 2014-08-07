@@ -15,7 +15,7 @@ class Contact implements Comparable<Contact> {
     enabled   = json['enabled'];
     type      = json['contact_type'];
 
-    List attributes = json['attributes'];
+    List attributes = json['attributes'] as List;
     if(attributes != null) {
       attributes.forEach((Map attributeMap) {
         ContactAttribute attribute = new ContactAttribute.fromJson(attributeMap);

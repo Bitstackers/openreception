@@ -10,21 +10,21 @@ class DistributionList {
   DistributionList.fromJson(Map json) {
     if(json['to'] != null && json['to'] is List) {
       List list = json['to'];
-      this.to = list.map(_makeReceptionContact).toList();
+      this.to = list.map(_createReceptionContact).toList();
     }
 
     if(json['cc'] != null && json['cc'] is List) {
       List list = json['cc'];
-      this.cc = list.map(_makeReceptionContact).toList();
+      this.cc = list.map(_createReceptionContact).toList();
     }
 
     if(json['bcc'] != null && json['bcc'] is List) {
       List list = json['bcc'];
-      this.bcc = list.map(_makeReceptionContact).toList();
+      this.bcc = list.map(_createReceptionContact).toList();
     }
   }
 
-  ContactAttribute _makeReceptionContact(Map map) =>
+  ContactAttribute _createReceptionContact(Map map) =>
       new ContactAttribute()
         ..contactId   = map['contact_id']
         ..receptionId = map['reception_id'];
@@ -35,8 +35,7 @@ class DistributionList {
      'bcc': bcc.map(_contactToJson).toList()
     };
 
-
-  Map _contactToJson(ContactAttribute rc) =>
-      {'reception_id': rc.receptionId,
-       'contact_id'  : rc.contactId};
+  Map _contactToJson(ContactAttribute contactAttribute) =>
+      {'reception_id': contactAttribute.receptionId,
+       'contact_id'  : contactAttribute.contactId};
 }

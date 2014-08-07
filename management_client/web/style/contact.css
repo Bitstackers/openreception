@@ -197,6 +197,10 @@
   padding-left: 10px;
 }
 
-#contact-organization-list li,#contact-reception-list li {
+#contact-organization-list li {
   margin-left: 10px;
+}
+
+#contact-reception-list > li:not(:first-child) {
+  margin-top: 5px;
 }

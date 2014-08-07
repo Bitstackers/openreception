@@ -1,6 +1,7 @@
 part of model;
 
 class Reception implements Comparable<Reception> {
+  List<Contact> contacts;
   int id;
   int organizationId;
   String fullName;
@@ -14,9 +15,9 @@ class Reception implements Comparable<Reception> {
   String receptionNumber;
 
   List<String> addresses;
-  List<String> alternatenames;
+  List<String> alternateNames;
   List<String> bankinginformation;
-  List<String> crapcallhandling;
+  List<String> salesCalls;
   List<String> emailaddresses;
   List<String> handlings;
   List<String> openinghours;
@@ -30,6 +31,10 @@ class Reception implements Comparable<Reception> {
   Reception();
 
   Reception.fromJson(Map json) {
+    List<Map> contacts = json['contacts'] as List;
+    if(contacts != null) {
+      this.contacts = contacts.map((Map c) => new Contact.fromJson(c)).toList();
+    }
     id = json['id'];
     organizationId = json['organization_id'];
     fullName = stringFromJson(json, 'full_name');
@@ -46,9 +51,9 @@ class Reception implements Comparable<Reception> {
       customertype = stringFromJson(attributes, 'customertype');
 
       addresses = priorityListFromJson(attributes, 'addresses');
-      alternatenames = priorityListFromJson(attributes, 'alternatenames');
+      alternateNames = priorityListFromJson(attributes, 'alternatenames');
       bankinginformation = priorityListFromJson(attributes, 'bankinginformation');
-      crapcallhandling = priorityListFromJson(attributes, 'crapcallhandling');
+      salesCalls = priorityListFromJson(attributes, 'salescalls');
       emailaddresses = priorityListFromJson(attributes, 'emailaddresses');
       handlings = priorityListFromJson(attributes, 'handlings');
       openinghours = priorityListFromJson(attributes, 'openinghours');
@@ -66,9 +71,9 @@ class Reception implements Comparable<Reception> {
       'shortgreeting': shortGreeting,
       'customertype': customertype,
       'addresses': priorityListToJson(addresses),
-      'alternatenames': priorityListToJson(alternatenames),
+      'alternatenames': priorityListToJson(alternateNames),
       'bankinginformation': priorityListToJson(bankinginformation),
-      'crapcallhandling': priorityListToJson(crapcallhandling),
+      'salescalls': priorityListToJson(salesCalls),
       'emailaddresses': priorityListToJson(emailaddresses),
       'handlings': priorityListToJson(handlings),
       'openinghours': priorityListToJson(openinghours),
@@ -83,7 +88,8 @@ class Reception implements Comparable<Reception> {
       'full_name': fullName,
       'enabled': enabled,
       'attributes': attributes,
-      'number': receptionNumber
+      'number': receptionNumber,
+      'contacts': contacts
     };
 
     return data;

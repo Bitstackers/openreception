@@ -23,7 +23,7 @@ class ReceptionView {
   CheckboxInputElement inputEnabled;
   ButtonElement buttonSave, buttonCreate, buttonDelete;
   UListElement ulAddresses, ulAlternatenames, ulBankinginformation,
-      ulCrapcallhandling, ulEmailaddresses, ulHandlings, ulOpeninghours,
+      ulSalesCalls, ulEmailaddresses, ulHandlings, ulOpeninghours,
       ulRegistrationnumbers, ulTelephonenumbers, ulWebsites;
   SearchInputElement searchBox;
   UListElement uiReceptionList;
@@ -56,8 +56,8 @@ class ReceptionView {
     ulAlternatenames = element.querySelector('#reception-list-alternatenames');
     ulBankinginformation = element.querySelector(
         '#reception-list-bankinginformation');
-    ulCrapcallhandling = element.querySelector(
-        '#reception-list-crapcallhandling');
+    ulSalesCalls = element.querySelector(
+        '#reception-list-salescalls');
     ulEmailaddresses = element.querySelector('#reception-list-emailaddresses');
     ulHandlings = element.querySelector('#reception-list-handlings');
     ulOpeninghours = element.querySelector('#reception-list-openinghours');
@@ -188,7 +188,7 @@ class ReceptionView {
     fillList(ulAddresses, []);
     fillList(ulAlternatenames, []);
     fillList(ulBankinginformation, []);
-    fillList(ulCrapcallhandling, []);
+    fillList(ulSalesCalls, []);
     fillList(ulEmailaddresses, []);
     fillList(ulHandlings, []);
     fillList(ulOpeninghours, []);
@@ -272,9 +272,9 @@ class ReceptionView {
         ..product = inputProduct.value
 
         ..addresses = getListValues(ulAddresses)
-        ..alternatenames = getListValues(ulAlternatenames)
+        ..alternateNames = getListValues(ulAlternatenames)
         ..bankinginformation = getListValues(ulBankinginformation)
-        ..crapcallhandling = getListValues(ulCrapcallhandling)
+        ..salesCalls = getListValues(ulSalesCalls)
         ..emailaddresses = getListValues(ulEmailaddresses)
         ..handlings = getListValues(ulHandlings)
         ..openinghours = getListValues(ulOpeninghours)
@@ -336,9 +336,9 @@ class ReceptionView {
         inputOther.value = response.other;
         inputProduct.value = response.product;
         fillList(ulAddresses, response.addresses);
-        fillList(ulAlternatenames, response.alternatenames);
+        fillList(ulAlternatenames, response.alternateNames);
         fillList(ulBankinginformation, response.bankinginformation);
-        fillList(ulCrapcallhandling, response.crapcallhandling);
+        fillList(ulSalesCalls, response.salesCalls);
         fillList(ulEmailaddresses, response.emailaddresses);
         fillList(ulHandlings, response.handlings);
         fillList(ulOpeninghours, response.openinghours);

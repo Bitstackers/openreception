@@ -13,7 +13,6 @@ import '../lib/model.dart';
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
-import '../lib/utilities.dart';
 import '../lib/view_utilities.dart';
 
 part 'components/contact_calendar.dart';
@@ -179,18 +178,18 @@ class ContactView {
           organizations.sort();
           ulOrganizationList.children
               ..clear()
-              ..addAll(organizations.map(makeOrganizationNode));
+              ..addAll(organizations.map(createOrganizationNode));
         }).catchError((error, stack) {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
-        return request.getContactsColleagues(id).then((List<ReceptionColleague> Receptions) {
+        return request.getColleagues(id).then((List<Reception> Receptions) {
           ulReceptionList.children.clear();
 
           if(Receptions.isNotEmpty) {
-            Receptions.sort(ReceptionColleague.sortByName);
+            Receptions.sort();
             ulReceptionList.children
-                ..addAll(Receptions.map(makeReceptionNode).reduce(union));
+                ..addAll(Receptions.map(createReceptionNode));
           }
           });
         }
@@ -202,12 +201,13 @@ class ContactView {
 
   void fillSearchComponent() {
     request.getReceptionList().then((List<Reception> receptions) {
+      receptions.sort();
       SC.updateSourceList(receptions);
     });
   }
 
-  Future receptionContactUpdate(ContactAttribute RC) {
-    return request.updateReceptionContact(RC.receptionId, RC.contactId, JSON.encode(RC)).then((_) {
+  Future receptionContactUpdate(ContactAttribute ca) {
+    return request.updateReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
       notify.info('Oplysningerne blev gemt.');
     }).catchError((error, stack) {
       notify.error('Ændringerne blev ikke gemt.');
@@ -215,11 +215,11 @@ class ContactView {
     });
   }
 
-  Future receptionContactCreate(ContactAttribute RC) {
-    return request.createReceptionContact(RC.receptionId, RC.contactId, JSON.encode(RC)).then((_) {
+  Future receptionContactCreate(ContactAttribute ca) {
+    return request.createReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
       Map event = {
-        "receptionId": RC.receptionId,
-        "contactId": RC.contactId
+        "receptionId": ca.receptionId,
+        "contactId": ca.contactId
       };
       notify.info('Lageringen gik godt.');
       bus.fire(Invalidate.receptionContactAdded, event);
@@ -680,30 +680,35 @@ class ContactView {
     }
   }
 
-  List<LIElement> makeReceptionNode(ReceptionColleague reception) {
+  LIElement createReceptionNode(Reception reception) {
     // First node is the receptionname. Clickable to the reception
     //   Second node is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
+    LIElement rootNode = new LIElement();
+    HeadingElement receptionNode = new HeadingElement.h4()
+      ..classes.add('clickable')
+      ..text = reception.fullName
+      ..onClick.listen((_) {
+        Map event = {
+          'window': 'reception',
+          'organization_id': reception.organizationId,
+          'reception_id': reception.id
+        };
+        bus.fire(windowChanged, event);
+      });
 
-    LIElement receptionLi = new LIElement()
-        ..classes.add('clickable')
-        ..classes.add('receptioncolleague')
-        ..text = reception.full_name
-        ..onClick.listen((_) {
-          Map event = {
-            'window': 'reception',
-            'organization_id': reception.organization_id,
-            'reception_id': reception.id
-          };
-          bus.fire(windowChanged, event);
-        });
-    return [receptionLi]..addAll(reception.contacts.map((Colleague collegue) => makeColleagueNode(collegue, reception.id)));
+    UListElement contacts = new UListElement()
+      ..classes.add('zebra')
+      ..children = reception.contacts.map((Contact collegue) => createColleagueNode(collegue, reception.id)).toList();
+
+    rootNode.children.addAll([receptionNode, contacts]);
+    return rootNode;
   }
 
-  LIElement makeColleagueNode(Colleague collegue, int receptionId) {
+  LIElement createColleagueNode(Contact collegue, int receptionId) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text = collegue.full_name
+      ..text = collegue.fullName
       ..onClick.listen((_) {
         Map event = {
           'window': 'contact',
@@ -714,17 +719,17 @@ class ContactView {
       });
   }
 
-  LIElement makeOrganizationNode(Organization organization) {
+  LIElement createOrganizationNode(Organization organization) {
     LIElement li = new LIElement()
-        ..classes.add('clickable')
-        ..text = '${organization.fullName}'
-        ..onClick.listen((_) {
-          Map event = {
-            'window': 'organization',
-            'organization_id': organization.id,
-          };
-          bus.fire(windowChanged, event);
-        });
+      ..classes.add('clickable')
+      ..text = '${organization.fullName}'
+      ..onClick.listen((_) {
+        Map event = {
+          'window': 'organization',
+          'organization_id': organization.id,
+        };
+        bus.fire(windowChanged, event);
+      });
     return li;
   }
 

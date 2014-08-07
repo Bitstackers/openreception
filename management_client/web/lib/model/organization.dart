@@ -8,16 +8,16 @@ class Organization implements Comparable<Organization> {
 
   Organization.fromJson(Map json) {
     billingType = json['billing_type'];
-    flag     = json['flag'];
-    fullName = json['full_name'];
-    id       = json['id'];
+    flag        = json['flag'];
+    fullName    = json['full_name'];
+    id          = json['id'];
   }
 
   Map toJson() => {
     'billing_type': billingType,
-    'flag'     : flag,
-    'full_name': fullName,
-    'id'       : id
+    'flag'        : flag,
+    'full_name'   : fullName,
+    'id'          : id
   };
 
   @override

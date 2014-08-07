@@ -13,25 +13,25 @@ class Endpoint implements Comparable<Endpoint> {
   Endpoint();
 
   Endpoint.fromJson(Map json) {
-    contactId    = json['contact_id'];
-    receptionId  = json['reception_id'];
     address      = json['address'];
     addressType  = json['address_type'];
+    contactId    = json['contact_id'];
     confidential = json['confidential'];
+    description  = json['description'];
     enabled      = json['enabled'];
     priority     = json['priority'];
-    description  = json['description'];
+    receptionId  = json['reception_id'];
   }
 
   Map toJson() => {
-    'contact_id': contactId,
-    'reception_id': receptionId,
-    'address': address,
+    'address'     : address,
     'address_type': addressType,
+    'contact_id'  : contactId,
     'confidential': confidential,
-    'enabled': enabled,
-    'priority': priority,
-    'description': description
+    'description' : description,
+    'enabled'     : enabled,
+    'priority'    : priority,
+    'reception_id': receptionId
   };
 
   @override
