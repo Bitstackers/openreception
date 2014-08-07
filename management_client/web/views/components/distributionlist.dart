@@ -45,13 +45,13 @@ class DistributionsListComponent {
     _registerEventListerns();
   }
 
-  List<ReceptionContact> _extractReceptionContacts(UListElement ul) {
-    List<ReceptionContact> list = new List<ReceptionContact>();
+  List<ContactAttribute> _extractReceptionContacts(UListElement ul) {
+    List<ContactAttribute> list = new List<ContactAttribute>();
     for(LIElement li in ul.children) {
       if(li.dataset.containsKey('reception_id') && li.dataset.containsKey('contact_id')) {
         int receptionId = int.parse(li.dataset['reception_id']);
         int contactId = int.parse(li.dataset['contact_id']);
-        list.add(new ReceptionContact()
+        list.add(new ContactAttribute()
         ..receptionId = receptionId
         ..contactId = contactId);
       }
@@ -72,7 +72,7 @@ class DistributionsListComponent {
     });
   }
 
-  LIElement _makeEndpointRow(ReceptionContact contact) {
+  LIElement _makeEndpointRow(ContactAttribute contact) {
     LIElement li = new LIElement()
       ..dataset['reception_id'] = contact.receptionId.toString()
       ..dataset['contact_id'] = contact.contactId.toString();
@@ -101,7 +101,7 @@ class DistributionsListComponent {
         li.parent.children.remove(li);
         _notifyChange();
 
-        List<ReceptionContact> allReadyInThelist;
+        List<ContactAttribute> allReadyInThelist;
 
         allReadyInThelist = _extractReceptionContacts(_ulTo);
         _populatePicker(_toPicker, allReadyInThelist);
@@ -121,7 +121,7 @@ class DistributionsListComponent {
   LIElement _makeNewEndpointRow(SelectElement picker, UListElement ul) {
     LIElement li = new LIElement();
 
-    List<ReceptionContact> allReadyInThelist = _extractReceptionContacts(ul);
+    List<ContactAttribute> allReadyInThelist = _extractReceptionContacts(ul);
 
     _populatePicker(picker, allReadyInThelist);
 
@@ -153,7 +153,7 @@ class DistributionsListComponent {
       ..add(_makeNewEndpointRow(_bccPicker, _ulBcc));
   }
 
-  void _populatePicker(SelectElement picker, List<ReceptionContact> allReadyInThelist) {
+  void _populatePicker(SelectElement picker, List<ContactAttribute> allReadyInThelist) {
     picker.children.clear();
     picker.children.add(new OptionElement(data: 'Vælg'));
     for(var reception in _colleagues) {
@@ -181,7 +181,7 @@ class DistributionsListComponent {
         int receptionId = int.parse(pickedOption.dataset['reception_id']);
         int contactId = int.parse(pickedOption.dataset['contact_id']);
 
-        ReceptionContact contact = new ReceptionContact()
+        ContactAttribute contact = new ContactAttribute()
           ..receptionId = receptionId
           ..contactId = contactId;
 

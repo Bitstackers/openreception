@@ -20,7 +20,7 @@ part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
 part 'components/endpoint.dart';
 
-typedef Future HandleReceptionContact(ReceptionContact receptionContact);
+typedef Future HandleReceptionContact(ContactAttribute receptionContact);
 typedef Future LazyFuture();
 
 class ContactView {
@@ -206,7 +206,7 @@ class ContactView {
     });
   }
 
-  Future receptionContactUpdate(ReceptionContact RC) {
+  Future receptionContactUpdate(ContactAttribute RC) {
     return request.updateReceptionContact(RC.receptionId, RC.contactId, JSON.encode(RC)).then((_) {
       notify.info('Oplysningerne blev gemt.');
     }).catchError((error, stack) {
@@ -215,7 +215,7 @@ class ContactView {
     });
   }
 
-  Future receptionContactCreate(ReceptionContact RC) {
+  Future receptionContactCreate(ContactAttribute RC) {
     return request.createReceptionContact(RC.receptionId, RC.contactId, JSON.encode(RC)).then((_) {
       Map event = {
         "receptionId": RC.receptionId,
@@ -298,11 +298,10 @@ class ContactView {
     Function onChange = () {
       if (!saveList.containsKey(attribute.receptionId)) {
         saveList[attribute.receptionId] = () {
-          ReceptionContact RC = new ReceptionContact()
-              ..attributes = attribute.attributes //There can be more values than we know of.
+          ContactAttribute RC = new ContactAttribute()
               ..contactId = contactId
               ..receptionId = attribute.receptionId
-              ..contactEnabled = enabled.checked
+              ..enabled = enabled.checked
               ..wantsMessages = wantMessage.checked
               ..phoneNumbers = getPhoneNumbersFromDOM(phoneNumbersList)
 

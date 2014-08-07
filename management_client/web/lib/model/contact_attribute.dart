@@ -2,6 +2,7 @@ part of model;
 
 class ContactAttribute implements Comparable<ContactAttribute> {
   Map         _attributes;
+  int         contactId;
   bool        enabled;
   List        distributionList;
   List<Phone> phoneNumbers;
@@ -90,6 +91,7 @@ class ContactAttribute implements Comparable<ContactAttribute> {
   ContactAttribute();
 
   ContactAttribute.fromJson(Map json) {
+    contactId = json['contact_id'];
     enabled = json['enabled'];
     wantsMessages = json['wants_messages'];
     distributionList = json['distribution_list'];
@@ -103,6 +105,15 @@ class ContactAttribute implements Comparable<ContactAttribute> {
     receptionName = json['reception_full_name'];
     receptionEnabled = json['reception_enabled'];
   }
+
+  Map toJson() => {
+    'contact_id': contactId,
+    'reception_id': receptionId,
+    'wants_messages': wantsMessages,
+    'enabled': enabled,
+    'phonenumbers' : phoneNumbers,
+    'attributes': attributes
+  };
 
   @override
   int compareTo(ContactAttribute other) => this.receptionName.compareTo(other.receptionName);

@@ -1,9 +1,9 @@
 part of model;
 
 class DistributionList {
-  List<ReceptionContact> to = new List<ReceptionContact>();
-  List<ReceptionContact> cc = new List<ReceptionContact>();
-  List<ReceptionContact> bcc = new List<ReceptionContact>();
+  List<ContactAttribute> to = new List<ContactAttribute>();
+  List<ContactAttribute> cc = new List<ContactAttribute>();
+  List<ContactAttribute> bcc = new List<ContactAttribute>();
 
   DistributionList();
 
@@ -24,9 +24,9 @@ class DistributionList {
     }
   }
 
-  ReceptionContact _makeReceptionContact(Map map) =>
-      new ReceptionContact()
-      ..contactId   = map['contact_id']
+  ContactAttribute _makeReceptionContact(Map map) =>
+      new ContactAttribute()
+        ..contactId   = map['contact_id']
         ..receptionId = map['reception_id'];
 
   Map toJson() =>
@@ -36,7 +36,7 @@ class DistributionList {
     };
 
 
-  Map _contactToJson(ReceptionContact rc) =>
+  Map _contactToJson(ContactAttribute rc) =>
       {'reception_id': rc.receptionId,
        'contact_id'  : rc.contactId};
 }

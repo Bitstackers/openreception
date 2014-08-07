@@ -235,7 +235,7 @@ class DialplanView {
     if (dialplan != null && dialplan.extensionGroups != null) {
       for(ExtensionGroup group in dialplan.extensionGroups) {
         extensionList.children.add(_makeGroupListItem(group));
-        List<LIElement> liExtensions = group.extensions.map((ext) => extensionListItem(ext, group)).toList();
+        List<LIElement> liExtensions = group.extensions.map((Extension ext) => extensionListItem(ext, group)).toList();
         SortableGroup sortGroup = new SortableGroup()..installAll(liExtensions);
         sortGroup.accept.add(sortGroup);
 
