@@ -72,7 +72,7 @@ CREATE TABLE contacts (
 CREATE TABLE organizations (
    id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    full_name    TEXT NOT NULL,
-   bill_type    TEXT NOT NULL,
+   billing_type TEXT NOT NULL,
    flag         TEXT NOT NULL);
 
 CREATE TABLE receptions (

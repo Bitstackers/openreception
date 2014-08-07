@@ -8,7 +8,7 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
   SELECT 
             (org.id)        AS org_id,
             (org.full_name) AS org_name,
-            (org.bill_type) AS bill_type,
+            (org.billing_type) AS bill_type,
             (org.flag)      AS flag,
       COUNT (cdr.uuid)      AS call_count, 
       SUM   (cdr.duration)  AS total_duration,

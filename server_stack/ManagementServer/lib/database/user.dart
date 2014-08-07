@@ -50,9 +50,9 @@ Future<List<model.User>> _getUserList(Pool pool) {
     FROM users
   ''';
 
-  return query(pool, sql).then((rows) {
+  return query(pool, sql).then((List<Row> rows) {
     List<model.User> users = new List<model.User>();
-    for(var row in rows) {
+    for(Row row in rows) {
       users.add(new model.User(row.id, row.name, row.extension, row.send_from));
     }
     return users;
@@ -85,10 +85,9 @@ Future<List<model.UserGroup>> _getUserGroups(Pool pool, int userId) {
 
   Map parameters = {'userid': userId};
 
-  return query(pool, sql, parameters)
-    .then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
       List<model.UserGroup> userGroups = new List<model.UserGroup>();
-      for(var row in rows) {
+      for(Row row in rows) {
         userGroups.add(new model.UserGroup(row.id, row.name));
       }
       return userGroups;
@@ -101,9 +100,9 @@ Future<List<model.UserGroup>> _getGroupList(Pool pool) {
     FROM groups
   ''';
 
-  return query(pool, sql).then((rows) {
+  return query(pool, sql).then((List<Row> rows) {
     List<model.UserGroup> userGroups = new List<model.UserGroup>();
-    for(var row in rows) {
+    for(Row row in rows) {
       userGroups.add(new model.UserGroup(row.id, row.name));
     }
     return userGroups;
@@ -145,9 +144,9 @@ Future<List<model.UserIdentity>> _getUserIdentityList(Pool pool, int userId) {
 
   Map parameters = {'userid': userId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.UserIdentity> userIdentities = new List<model.UserIdentity>();
-    for(var row in rows) {
+    for(Row row in rows) {
       userIdentities.add(new model.UserIdentity(row.identity, row.user_id));
     }
     return userIdentities;

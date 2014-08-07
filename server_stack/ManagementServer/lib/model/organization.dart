@@ -3,8 +3,8 @@ part of model;
 class Organization {
   int id;
   String fullName;
-  String billType;
+  String billingType;
   String flag;
 
-  Organization(int this.id, String this.fullName, String this.billType, String this.flag);
+  Organization(int this.id, String this.fullName, String this.billingType, String this.flag);
 }

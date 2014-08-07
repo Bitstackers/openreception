@@ -91,9 +91,9 @@ Future<List<model.Playlist>> _getPlaylistList(Pool pool) {
     FROM playlists
   ''';
 
-  return query(pool, sql).then((rows) {
+  return query(pool, sql).then((List<Row> rows) {
     List<model.Playlist> receptions = new List<model.Playlist>();
-    for(var row in rows) {
+    for(Row row in rows) {
       Map content = JSON.decode(row.content);
       receptions.add(new model.Playlist.fromDb(row.id, content));
     }
@@ -204,9 +204,9 @@ Future<List<model.DialplanTemplate>> _getDialplanTemplates(Pool pool) {
     FROM dialplan_templates
   ''';
 
-  return query(pool, sql).then((rows) {
+  return query(pool, sql).then((List<Row> rows) {
     List<model.DialplanTemplate> templates = new List<model.DialplanTemplate>();
-    for(var row in rows) {
+    for(Row row in rows) {
       Map content = JSON.decode(row.template);
       templates.add(new model.DialplanTemplate.fromDb(row.id, content));
     }

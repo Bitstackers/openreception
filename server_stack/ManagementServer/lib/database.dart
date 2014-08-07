@@ -17,7 +17,6 @@ part 'database/dialplan.dart';
 part 'database/distribution_list.dart';
 part 'database/endpoint.dart';
 part 'database/organization.dart';
-part 'database/phone.dart';
 part 'database/reception.dart';
 part 'database/reception_contact.dart';
 part 'database/user.dart';
@@ -191,8 +190,8 @@ class Database {
      *************** Organization ******************
    */
 
-  Future<int> createOrganization(String fullName, String bill_type, String flag) =>
-      _createOrganization(pool, fullName, bill_type, flag);
+  Future<int> createOrganization(String fullName, String billingType, String flag) =>
+      _createOrganization(pool, fullName, billingType, flag);
 
   Future<int> deleteOrganization(int organizationId) =>
       _deleteOrganization(pool, organizationId);
@@ -203,8 +202,8 @@ class Database {
   Future<List<model.Organization>> getOrganizationList() =>
       _getOrganizationList(pool);
 
-  Future<int> updateOrganization(int organizationId, String fullName, String billType, String flag) =>
-      _updateOrganization(pool, organizationId, fullName, billType, flag);
+  Future<int> updateOrganization(int organizationId, String fullName, String billingType, String flag) =>
+      _updateOrganization(pool, organizationId, fullName, billingType, flag);
 
   /* ***********************************************
      ****************** Dialplan *******************
@@ -277,19 +276,6 @@ class Database {
           chimelist,
           chimefreq,
           chimemax);
-
-  /* ***********************************************
-     ******************** Phone ********************
-   */
-
-//  Future<int> createPhoneNumber(int receptionId, int contactId, String value, String kind) =>
-//      _createPhoneNumber(pool, receptionId, contactId, value, kind);
-//
-//  Future<int> deletePhoneNumber(int phonenumberId) =>
-//      _deletePhoneNumber(pool, phonenumberId);
-
-//  Future<List<model.Phone>> getPhoneNumbers(int receptionId, int contactId) =>
-//      _getPhoneNumbers(pool, receptionId, contactId);
 
   /* ***********************************************
      ********************* User ********************
