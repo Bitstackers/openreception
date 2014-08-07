@@ -13,10 +13,10 @@ String listOrganizatonAsJson(List<Organization> organizations) =>
 String organizationIdAsJson(int id) => JSON.encode({'id': id});
 
 Map _organizationAsJsonMap(Organization organization) => organization == null ? {} :
-    {'id': organization.id,
-     'full_name': organization.fullName,
-     'bill_type': organization.billType,
-     'flag'     : organization.flag};
+    {'id'          : organization.id,
+     'full_name'   : organization.fullName,
+     'billing_type': organization.billingType,
+     'flag'        : organization.flag};
 
 List _listOrganizatonAsJsonList(List<Organization> organizations) =>
     organizations.map(_organizationAsJsonMap).toList();

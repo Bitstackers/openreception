@@ -71,7 +71,7 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (99, 'Support', 'function');
 
 
-INSERT INTO organizations (id, full_name, bill_type, flag)
+INSERT INTO organizations (id, full_name, billing_type, flag)
 VALUES 	    (1, 'AdaHeads K/S', 'Bank', 'VIP'),
 	    (2, 'Venner A/S', 'Naturalier', 'Non-VIP'),
 	    (3, 'Responsum K/S', 'Cool cash', 'Non-VIP'),
@@ -129,7 +129,7 @@ VALUES /*Adaheads*/
             { "value" : "60431992",
               "kind"  : "PSTN",
               "description" : "Mobilnummer - arbejde",
-              "bill_type": "mobil",
+              "billing_type": "mobil",
               "tag": null,
               "confidential": false}
           ]'),
@@ -174,7 +174,7 @@ VALUES /*Adaheads*/
             { "value" : "60431990",
               "kind"  : "PSTN",
               "description" : "Mobilnummer - arbejde",
-              "bill_type": "mobil",
+              "billing_type": "mobil",
               "tag": null,
               "confidential": false}
           ]'),
@@ -201,7 +201,7 @@ VALUES /*Adaheads*/
             { "value" : "40966024",
               "kind"  : "PSTN",
               "description" : "Mobilnummer - arbejde",
-              "bill_type": "mobil",
+              "billing_type": "mobil",
               "tag": null,
               "confidential": false}
           ]'),

@@ -58,9 +58,9 @@ Future<List<model.ReceptionContact>> _getReceptionContactList(Pool pool, int rec
 
   Map parameters = {'reception_id': receptionId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.ReceptionContact> receptions = new List<model.ReceptionContact>();
-    for(var row in rows) {
+    for(Row row in rows) {
       receptions.add(new model.ReceptionContact(
           row.id,
           row.full_name,
@@ -144,9 +144,9 @@ Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionCont
 
   Map parameters = {'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.ReceptionContact_ReducedReception> contacts = new List<model.ReceptionContact_ReducedReception>();
-    for(var row in rows) {
+    for(Row row in rows) {
       contacts.add(new model.ReceptionContact_ReducedReception(
         row.contact_id,
         row.wants_messages,
@@ -164,7 +164,7 @@ Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionCont
 
 Future<List<model.Organization>> _getAContactsOrganizationList(Pool pool, int contactId) {
   String sql = '''
-    SELECT DISTINCT o.id, o.full_name, o.bill_type, o.flag
+    SELECT DISTINCT o.id, o.full_name, o.billing_type, o.flag
     FROM reception_contacts rc
     JOIN receptions r on rc.reception_id = r.id
     JOIN organizations o on r.organization_id = o.id
@@ -173,10 +173,10 @@ Future<List<model.Organization>> _getAContactsOrganizationList(Pool pool, int co
 
   Map parameters = {'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.Organization> organizations = new List<model.Organization>();
-    for(var row in rows) {
-      organizations.add(new model.Organization(row.id, row.full_name, row.bill_type, row.flag));
+    for(Row row in rows) {
+      organizations.add(new model.Organization(row.id, row.full_name, row.billing_type, row.flag));
     }
     return organizations;
   });
