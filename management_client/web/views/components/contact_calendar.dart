@@ -95,9 +95,9 @@ class ContactCalendarComponent {
 
   <fieldset class="contact-calendar-timebox">
     <legend> Start </legend>
-    <input class="contact-calendar-event-start-hour" type="number" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2 value="${event.start.hour}"/>
+    <input class="contact-calendar-event-start-hour" type="number" min="0" max="23" placeholder="tt" tabindex=1 value="${event.start.hour}"/>
     <span class="contact-calendar-seperator">:</span>
-    <input class="contact-calendar-event-start-minute" type="number" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2 value="${event.start.minute}"/>
+    <input class="contact-calendar-event-start-minute" type="number" min="0" max="59" placeholder="mm" tabindex=1 value="${event.start.minute}"/>
 
     <input class="contact-calendar-event-start-date" type="date" value="${RFC3339.format(event.start)}">
 
@@ -105,9 +105,9 @@ class ContactCalendarComponent {
 
   <fieldset class="contact-calendar-timebox">
     <legend> Slut </legend>
-    <input class="contact-calendar-event-stop-hour" type="number" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2 value="${event.stop.hour}"/>
+    <input class="contact-calendar-event-stop-hour" type="number" min="0" max="23" placeholder="tt" tabindex=1 value="${event.stop.hour}"/>
     <span class="contact-calendar-seperator">:</span>
-    <input class="contact-calendar-event-stop-minute" type="number" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2 value="${event.stop.minute}"/>
+    <input class="contact-calendar-event-stop-minute" type="number" min="0" max="59" placeholder="mm" tabindex=1 value="${event.stop.minute}"/>
 
     <input class="contact-calendar-event-stop-date" type="date" value="${RFC3339.format(event.stop)}">
 

@@ -90,8 +90,8 @@ class DistributionsListComponent {
     }
 
     ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
+      ..alt = 'Slet'
       ..classes.add('small-button')
-      ..text = 'Slet'
       ..onClick.listen((_) {
         li.parent.children.remove(li);
         _notifyChange();
