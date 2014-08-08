@@ -9,7 +9,7 @@ class ContactCalendarComponent {
   Element _parent;
 
   UListElement _ul = new UListElement()
-    ..classes.add('zebra')
+    ..classes.add('zebra-even')
     ..classes.add('contact-calendar-list');
 
   ContactCalendarComponent(Element this._parent, Function this._onChange) {

@@ -27,16 +27,16 @@ class Menu {
   Menu(HtmlElement this.element) {
     //Build up collections of menus for easier use later.
     menus = {
-       'organization': element.querySelector('#organization-button'),
-       'reception': element.querySelector('#reception-button'),
-       'contact': element.querySelector('#contact-button'),
-       'dialplan': element.querySelector('#dialplan-button'),
-       'ivr': element.querySelector('#ivr-button'),
-       'record': element.querySelector('#record-button'),
-       'user': element.querySelector('#user-button'),
-       'billing': element.querySelector('#billing-button'),
-       'music': element.querySelector('#music-button'),
-      };
+     'organization': element.querySelector('#organization-button'),
+     'reception'   : element.querySelector('#reception-button'),
+     'contact'     : element.querySelector('#contact-button'),
+     'dialplan'    : element.querySelector('#dialplan-button'),
+     'ivr'         : element.querySelector('#ivr-button'),
+     'record'      : element.querySelector('#record-button'),
+     'user'        : element.querySelector('#user-button'),
+     'billing'     : element.querySelector('#billing-button'),
+     'music'       : element.querySelector('#music-button'),
+    };
 
     //Register onClicker handler on the image, and emit an event about window change.
     // for the other windows to know when to hide/show.

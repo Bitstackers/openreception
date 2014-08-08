@@ -697,7 +697,7 @@ class ContactView {
       });
 
     UListElement contacts = new UListElement()
-      ..classes.add('zebra')
+      ..classes.add('zebra-odd')
       ..children = reception.contacts.map((Contact collegue) => createColleagueNode(collegue, reception.id)).toList();
 
     rootNode.children.addAll([receptionNode, contacts]);

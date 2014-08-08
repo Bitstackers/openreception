@@ -8,15 +8,15 @@ class DistributionsListComponent {
   DistributionList _persistentList;
 
   UListElement _ulTo = new UListElement()
-    ..classes.add('zebra')
+    ..classes.add('zebra-even')
     ..classes.add('distributionlist');
 
   UListElement _ulCc = new UListElement()
-    ..classes.add('zebra')
+    ..classes.add('zebra-even')
     ..classes.add('distributionlist');
 
   UListElement _ulBcc = new UListElement()
-    ..classes.add('zebra')
+    ..classes.add('zebra-even')
     ..classes.add('distributionlist');
 
   SelectElement _toPicker = new SelectElement();
