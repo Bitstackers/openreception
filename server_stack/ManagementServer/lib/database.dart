@@ -324,7 +324,6 @@ class Database {
 
   Future<int> deleteUserIdentity(int userId, String identityId) =>
       _deleteUserIdentity(pool, userId, identityId);
-
 }
 
 /* ***********************************************

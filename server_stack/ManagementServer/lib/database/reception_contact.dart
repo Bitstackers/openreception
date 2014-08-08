@@ -35,7 +35,7 @@ Future<model.ReceptionContact> _getReceptionContact(Pool pool, int receptionId, 
           row.wants_messages,
           row.attributes == null ? {} : JSON.decode(row.attributes),
           row.receptionenabled,
-          row.phonenumbers == null ? [] : JSON.decode(row.phonenumbers));
+          row.phonenumbers == null ? new List<Map>() : JSON.decode(row.phonenumbers));
     }
   });
 }
@@ -70,7 +70,7 @@ Future<List<model.ReceptionContact>> _getReceptionContactList(Pool pool, int rec
           row.wants_messages,
           row.attributes == null ? {} : JSON.decode(row.attributes),
           row.receptionenabled,
-          row.phonenumbers == null ? [] : JSON.decode(row.phonenumbers)));
+          row.phonenumbers == null ? new List<Map>() : JSON.decode(row.phonenumbers)));
     }
     return receptions;
   });
@@ -152,7 +152,7 @@ Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionCont
         row.wants_messages,
         row.attributes == null ? {} : JSON.decode(row.attributes),
         row.contactenabled,
-        row.phonenumbers == null ? [] : JSON.decode(row.phonenumbers),
+        row.phonenumbers == null ? new List<Map>() : JSON.decode(row.phonenumbers),
         row.reception_id,
         row.receptionname,
         row.receptionenabled,
