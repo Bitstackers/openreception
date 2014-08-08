@@ -337,5 +337,3 @@ Future<List<Row>> query(Pool pool, String sql, [Map parameters = null]) => pool.
 Future<int> execute(Pool pool, String sql, [Map parameters = null]) => pool.connect()
   .then((Connection conn) => conn.execute(sql, parameters)
   .whenComplete(() => conn.close()));
-
-

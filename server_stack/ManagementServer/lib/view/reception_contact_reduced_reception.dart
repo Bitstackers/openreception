@@ -8,7 +8,7 @@ String listReceptionContact_ReducedReceptionAsJson(List<ReceptionContact_Reduced
   JSON.encode({'contacts': _listReceptionContact_ReducedReceptionAsJsonList(receptions)});
 
 Map _receptionContact_ReducedReceptionAsJsonMap(ReceptionContact_ReducedReception r) => r == null ? {} :
-    {'id': r.contactId,
+    {'contact_id': r.contactId,
      'wants_messages': r.wantsMessages,
      'attributes': r.attributes,
      'enabled': r.contactEnabled,
