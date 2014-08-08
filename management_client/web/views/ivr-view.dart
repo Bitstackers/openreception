@@ -15,7 +15,7 @@ import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 
 class IvrView {
-  String viewName = 'ivr';
+  static const String viewName = 'ivr';
   int receptionId;
   Dialplan dialplan;
   libIvr.IvrList ivrList;

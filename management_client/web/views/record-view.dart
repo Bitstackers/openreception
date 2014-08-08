@@ -10,10 +10,10 @@ import '../lib/request.dart' as request;
 import '../notification.dart' as notify;
 
 class RecordView {
-  String viewName = 'record';
+  static const String viewName = 'record';
   DivElement element;
 
-  List<Reception> receptions = [];
+  List<Reception> receptions = new List<Reception>();
   UListElement receptionListUL;
   InputElement receptionSearchBox;
   LIElement highlightedReceptionLI;

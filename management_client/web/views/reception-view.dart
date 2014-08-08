@@ -14,8 +14,8 @@ import '../notification.dart' as notify;
 import '../menu.dart';
 
 class ReceptionView {
-  String addNewLiClass = 'addnew';
-  String viewName = 'reception';
+  static const String addNewLiClass = 'addnew';
+  static const String viewName = 'reception';
   DivElement element;
   TextAreaElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,
       inputCostumerstype, inputReceptionNumber;
@@ -30,7 +30,7 @@ class ReceptionView {
   UListElement ulContactList;
   DivElement organizationOuterSelector;
 
-  List<Reception> receptions = [];
+  List<Reception> receptions = new List<Reception>();
 
   SearchComponent<Organization> SC;
   int selectedReceptionId = 0,
@@ -185,16 +185,16 @@ class ReceptionView {
     inputGreeting.value = '';
     inputOther.value = '';
     inputProduct.value = '';
-    fillList(ulAddresses, []);
-    fillList(ulAlternatenames, []);
-    fillList(ulBankinginformation, []);
-    fillList(ulSalesCalls, []);
-    fillList(ulEmailaddresses, []);
-    fillList(ulHandlings, []);
-    fillList(ulOpeninghours, []);
-    fillList(ulRegistrationnumbers, []);
-    fillList(ulTelephonenumbers, []);
-    fillList(ulWebsites, []);
+    fillList(ulAddresses, new List<String>());
+    fillList(ulAlternatenames, new List<String>());
+    fillList(ulBankinginformation, new List<String>());
+    fillList(ulSalesCalls, new List<String>());
+    fillList(ulEmailaddresses, new List<String>());
+    fillList(ulHandlings, new List<String>());
+    fillList(ulOpeninghours, new List<String>());
+    fillList(ulRegistrationnumbers, new List<String>());
+    fillList(ulTelephonenumbers, new List<String>());
+    fillList(ulWebsites, new List<String>());
   }
 
   void goToDialplan() {

@@ -1,9 +1,10 @@
 part of user.view;
 
 class UserGroupContainer {
-  List<CheckboxInputElement> _checkboxs = [];
+  List<CheckboxInputElement> _checkboxs = new List<CheckboxInputElement>();
   TableElement _table;
-  List<UserGroup> _groupList = [], _userGroupList = [];
+  List<UserGroup> _groupList     = new List<UserGroup>();
+  List<UserGroup> _userGroupList = new List<UserGroup>();
 
   UserGroupContainer(TableElement this._table) {
     refreshGroupList();
@@ -49,8 +50,9 @@ class UserGroupContainer {
    * Finds the groups the user should join/leave and sends the changes to the server.
    */
   Future saveChanges(int userId) {
-    List<int> inserts = [], removes = [];
-    List<Future> worklist = [];
+    List<int> inserts = new List<int>();
+    List<int> removes = new List<int>();
+    List<Future> worklist = new List<Future>();
 
     for(CheckboxInputElement item in _checkboxs) {
       int groupId = int.parse(item.dataset['id']);
@@ -77,7 +79,7 @@ class UserGroupContainer {
   }
 
   void showNewUsersGroups() {
-    _updateCheckBoxesWithUserGroup([]);
+    _updateCheckBoxesWithUserGroup(new List<UserGroup>());
   }
 
   Future showUsersGroups(int userId) {

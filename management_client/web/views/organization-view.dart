@@ -10,7 +10,7 @@ import '../lib/request.dart';
 import '../notification.dart' as notify;
 
 class OrganizationView {
-  String viewName = 'organization';
+  static const String viewName = 'organization';
   DivElement element;
   UListElement uiList;
   TextAreaElement inputName, inputBillingtype, inputFlag;
@@ -21,11 +21,11 @@ class OrganizationView {
 
   bool createNew = false;
 
-  List<Organization> organizations = [];
+  List<Organization> organizations = new List<Organization>();
   int selectedOrganizationId = 0;
 
-  List<Contact> currentContactList = [];
-  List<Reception> currentReceptionList = [];
+  List<Contact> currentContactList = new List<Contact>();
+  List<Reception> currentReceptionList = new List<Reception>();
 
   OrganizationView(DivElement this.element) {
     searchBox = element.querySelector('#organization-search-box');

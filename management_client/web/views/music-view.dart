@@ -11,7 +11,7 @@ import '../notification.dart' as notify;
 import '../lib/request.dart';
 
 class MusicView {
-  String viewName = 'music';
+  static const String viewName = 'music';
   DivElement element;
   ButtonElement buttonNew, buttonSave, ButtonDelete;
   UListElement UlPlaylist;

@@ -38,7 +38,7 @@ class _ControlImage {
 }
 
 class DialplanView {
-  String viewName = 'dialplan';
+  static const String viewName = 'dialplan';
   int selectedReceptionId;
 
   DivElement element;

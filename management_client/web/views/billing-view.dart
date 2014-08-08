@@ -9,10 +9,10 @@ import '../lib/model.dart';
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 
-DateFormat inputDateFormat = new DateFormat('yyyy-MM-dd');
+final DateFormat inputDateFormat = new DateFormat('yyyy-MM-dd');
 
 class BillingView {
-  String viewName = 'billing';
+  static const String viewName = 'billing';
   DivElement element;
   TableSectionElement dataTable;
   DateInputElement fromInput, toInput;

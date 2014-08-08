@@ -15,7 +15,7 @@ part 'components/user_groups.dart';
 part 'components/user_identity.dart';
 
 class UserView {
-  String viewName = 'user';
+  static const String viewName = 'user';
   DivElement element;
 
   ButtonElement newUserButton, saveUserButton, removeUserButton;

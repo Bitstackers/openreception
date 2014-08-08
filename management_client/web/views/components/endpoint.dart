@@ -1,11 +1,11 @@
 part of contact.view;
 
 class EndpointsComponent {
-  static List<String> _addressTypes = [];
+  static List<String> _addressTypes = new List<String>();
 
   Element _element;
   Function _onChange;
-  List<Endpoint> _persistenceEndpoint = [];
+  List<Endpoint> _persistenceEndpoint = new List<Endpoint>();
   UListElement _ul = new UListElement();
   LabelElement _header = new LabelElement()
     ..text = 'Kontaktpunkter';
@@ -24,7 +24,7 @@ class EndpointsComponent {
   }
 
   Future load(int receptionId, int contactId) {
-    _persistenceEndpoint = [];
+    _persistenceEndpoint = new List<Endpoint>();
     return request.getEndpointsList(receptionId, contactId).then((List<Endpoint> list) {
       _populateUL(list);
     });
@@ -133,7 +133,7 @@ class EndpointsComponent {
   }
 
   Future save(int receptionId, int contactId) {
-    List<Endpoint> foundEndpoints = [];
+    List<Endpoint> foundEndpoints = new List<Endpoint>();
 
     int index = 1;
     for(LIElement item in _ul.children) {

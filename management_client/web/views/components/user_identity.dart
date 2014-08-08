@@ -56,10 +56,10 @@ class IdentityContainer {
   }
 
   Future saveChanges(int userId) {
-    List<String> foundIdentities = [];
+    List<String> foundIdentities = new List<String>();
 
     for(LIElement item in _ul.children) {
-      SpanElement span = item.children.firstWhere((i) => i is SpanElement, orElse: () => null);
+      SpanElement span = item.children.firstWhere((Element i) => i is SpanElement, orElse: () => null);
       if(span != null) {
         String context = span.text;
         foundIdentities.add(context);
@@ -103,6 +103,6 @@ class IdentityContainer {
   }
 
   void showNewUsersIdentities() {
-    _populateUL([]);
+    _populateUL(new List<UserIdentity>());
   }
 }

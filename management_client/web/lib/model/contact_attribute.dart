@@ -95,8 +95,9 @@ class ContactAttribute implements Comparable<ContactAttribute> {
     enabled = json['enabled'];
     wantsMessages = json['wants_messages'];
     distributionList = json['distribution_list'];
-    if(json.containsKey('phonenumbers')) {
-      phoneNumbers = (json['phonenumbers'] as List<Map>).map((Map json) => new Phone.fromJson(json)).toList();
+    List<Map> phoneList = json['phonenumbers'] as List<Map>;
+    if(phoneList != null) {
+      phoneNumbers = phoneList.map((Map json) => new Phone.fromJson(json)).toList();
     }
     _attributes = json['attributes'];
     statusEmail = json['status_email'];

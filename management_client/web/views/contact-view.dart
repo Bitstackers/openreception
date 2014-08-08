@@ -23,7 +23,7 @@ typedef Future HandleReceptionContact(ContactAttribute receptionContact);
 typedef Future LazyFuture();
 
 class ContactView {
-  String viewName = 'contact';
+  static const String viewName = 'contact';
   DivElement element;
   UListElement ulContactList;
   UListElement ulReceptionContacts;
@@ -45,7 +45,7 @@ class ContactView {
   bool createNew = false;
 
   Map<int, LazyFuture> saveList = new Map<int, LazyFuture>();
-  List<String> phonenumberTypes = ['PSTN', 'SIP'];
+  static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
   ContactView(DivElement this.element) {
     ulContactList = element.querySelector('#contact-list');
@@ -298,7 +298,7 @@ class ContactView {
     Function onChange = () {
       if (!saveList.containsKey(attribute.receptionId)) {
         saveList[attribute.receptionId] = () {
-          ContactAttribute RC = new ContactAttribute()
+          ContactAttribute CA = new ContactAttribute()
               ..contactId = contactId
               ..receptionId = attribute.receptionId
               ..enabled = enabled.checked
@@ -306,9 +306,7 @@ class ContactView {
               ..phoneNumbers = getPhoneNumbersFromDOM(phoneNumbersList)
 
               ..backup = getListValues(backupList)
-              //..emailaddresses = getListValues(emailList)
               ..handling = getListValues(handlingList)
-              //..telephonenumbers = getListValues(telephoneNumbersList)
               ..workhours = getListValues(workhoursList)
               ..tags = getListValues(tagsList)
 
@@ -318,10 +316,10 @@ class ContactView {
               ..relations = relations.value
               ..responsibility = responsibility.value;
 
-          return receptionContactHandler(RC)
-              .then((_) => endpointsContainer.save(RC.receptionId, RC.contactId))
-              .then((_) => distributionsListContainer.save(RC.receptionId, RC.contactId))
-              .then((_) => calendarComponent.save(RC.receptionId, RC.contactId));
+          return receptionContactHandler(CA)
+              .then((_) => endpointsContainer.save(CA.receptionId, CA.contactId))
+              .then((_) => distributionsListContainer.save(CA.receptionId, CA.contactId))
+              .then((_) => calendarComponent.save(CA.receptionId, CA.contactId));
         };
       }
     };
@@ -337,53 +335,53 @@ class ContactView {
     TableCellElement leftCell, rightCell;
 
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
-    wantMessage = makeCheckBox(leftCell, 'Vil have beskeder', attribute.wantsMessages, onChange: onChange);
-    enabled = makeCheckBox(rightCell, 'Aktiv', attribute.enabled, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    wantMessage = createCheckBox(leftCell, 'Vil have beskeder', attribute.wantsMessages, onChange: onChange);
+    enabled = createCheckBox(rightCell, 'Aktiv', attribute.enabled, onChange: onChange);
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
-    department = makeTextBox(leftCell, 'Afdelling', attribute.department, onChange: onChange);
-    info = makeTextBox(rightCell, 'Andet', attribute.info, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    department = createTextBox(leftCell, 'Afdelling', attribute.department, onChange: onChange);
+    info = createTextBox(rightCell, 'Andet', attribute.info, onChange: onChange);
 
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
-    position = makeTextBox(leftCell, 'Stilling', attribute.position, onChange: onChange);
-    relations = makeTextBox(rightCell, 'Relationer', attribute.relations, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    position = createTextBox(leftCell, 'Stilling', attribute.position, onChange: onChange);
+    relations = createTextBox(rightCell, 'Relationer', attribute.relations, onChange: onChange);
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    responsibility = makeTextBox(leftCell, 'Ansvar', attribute.responsibility, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row)
+        ..colSpan = 2; //Because of w3 validation
+    responsibility = createTextBox(leftCell, 'Ansvar', attribute.responsibility, onChange: onChange);
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
-    backupList = makeListBox(leftCell, 'Backup', attribute.backup, onChange: onChange);
-    //emailList = makeListBox(rightCell, 'E-mail', contact.emailaddresses, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    backupList = createListBox(leftCell, 'Backup', attribute.backup, onChange: onChange);
     endpointsContainer = new EndpointsComponent(rightCell, onChange);
     //Saving the future, so we are able to wait on it later.
     loadingJobs.add(endpointsContainer.load(attribute.receptionId, contactId));
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
-    handlingList = makeListBox(leftCell, 'Håndtering', attribute.handling, onChange: onChange);
-    phoneNumbersList = makePhoneNumbersList(rightCell, attribute.phoneNumbers, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    handlingList = createListBox(leftCell, 'Håndtering', attribute.handling, onChange: onChange);
+    phoneNumbersList = createPhoneNumbersList(rightCell, attribute.phoneNumbers, onChange: onChange);
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
-    workhoursList = makeListBox(leftCell, 'Arbejdstid', attribute.workhours, onChange: onChange);
-    tagsList = makeListBox(rightCell, 'Stikord', attribute.tags, onChange: onChange);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    workhoursList = createListBox(leftCell, 'Arbejdstid', attribute.workhours, onChange: onChange);
+    tagsList = createListBox(rightCell, 'Stikord', attribute.tags, onChange: onChange);
 
-    row = makeTableRowInsertInTable(tableBody);
-    leftCell = makeTableCellInsertInRow(row);
-    rightCell = makeTableCellInsertInRow(row);
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
     distributionsListContainer = new DistributionsListComponent(leftCell, onChange);
     loadingJobs.add(distributionsListContainer.load(attribute.receptionId, contactId));
     calendarComponent = new ContactCalendarComponent(rightCell, onChange);
@@ -405,110 +403,110 @@ class ContactView {
     return li;
   }
 
-  TableCellElement makeTableCellInsertInRow(TableRowElement row) {
+  TableCellElement createTableCellInsertInRow(TableRowElement row) {
     TableCellElement td = new TableCellElement();
     row.children.add(td);
     return td;
   }
 
-  TableRowElement makeTableRowInsertInTable(Element table) {
+  TableRowElement createTableRowInsertInTable(TableSectionElement table) {
     TableRowElement row = new TableRowElement();
     table.children.add(row);
     return row;
   }
 
-  UListElement makePhoneNumbersList(Element container, List<Phone> phonenumbers, {Function onChange}) {
+  UListElement createPhoneNumbersList(Element container, List<Phone> phonenumbers, {Function onChange}) {
     LabelElement label = new LabelElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 
     label.text = 'Telefonnumre';
 
     List<LIElement> children = new List<LIElement>();
-      if (phonenumbers != null) {
-        for (Phone number in phonenumbers) {
-          LIElement li = simpleListElement(number.value, onChange: onChange);
-          li.value = number.id != null ? number.id : -1;
+    if (phonenumbers != null) {
+      for (Phone number in phonenumbers) {
+        LIElement li = simpleListElement(number.value, onChange: onChange);
+        li.value = number.id != null ? number.id : -1;
+        SelectElement kindpicker = new SelectElement()
+          ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind, selected: kind == number.kind)))
+          ..onChange.listen((_) => onChange());
+
+        SpanElement descriptionContent = new SpanElement()
+          ..text = number.description
+          ..classes.add('phonenumberdescription');
+        InputElement descriptionEditBox = new InputElement(type: 'text');
+        editableSpan(descriptionContent, descriptionEditBox, onChange);
+
+        SpanElement billingTypeContent = new SpanElement()
+          ..text = number.billingType
+          ..classes.add('phonenumberbillingtype');
+        InputElement billingTypeEditBox = new InputElement(type: 'text');
+        editableSpan(billingTypeContent, billingTypeEditBox, onChange);
+
+        li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
+        children.add(li);
+      }
+    }
+
+    SortableGroup sortGroup = new SortableGroup()
+      ..installAll(children);
+
+    if (onChange != null) {
+      sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
+    }
+
+    // Only accept elements from this section.
+    sortGroup.accept.add(sortGroup);
+
+    InputElement inputNewItem = new InputElement();
+    inputNewItem
+      ..classes.add(addNewLiClass)
+      ..placeholder = 'Tilføj ny...'
+      ..onKeyPress.listen((KeyboardEvent event) {
+        KeyEvent key = new KeyEvent.wrap(event);
+        if (key.keyCode == Keys.ENTER) {
+          String item = inputNewItem.value;
+          inputNewItem.value = '';
+
+          LIElement li = simpleListElement(item);
+          //A bit of a hack to get a unique id.
+          li.value = item.hashCode;
           SelectElement kindpicker = new SelectElement()
-            ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind, selected: kind == number.kind)))
+            ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind)))
             ..onChange.listen((_) => onChange());
 
           SpanElement descriptionContent = new SpanElement()
-            ..text = number.description
+            ..text = 'kontor'
             ..classes.add('phonenumberdescription');
-          InputElement descriptionEditBox = new InputElement(type: 'text');
+          InputElement descriptionEditBox = new InputElement(type: 'text')
+            ..placeholder = 'beskrivelse';
           editableSpan(descriptionContent, descriptionEditBox, onChange);
 
           SpanElement billingTypeContent = new SpanElement()
-            ..text = number.billingType
+            ..text = 'fastnet'
             ..classes.add('phonenumberbillingtype');
-          InputElement billingTypeEditBox = new InputElement(type: 'text');
+          InputElement billingTypeEditBox = new InputElement(type: 'text')
+            ..placeholder = 'taksttype';
           editableSpan(billingTypeContent, billingTypeEditBox, onChange);
 
           li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
-          children.add(li);
-        }
-      }
 
-      SortableGroup sortGroup = new SortableGroup()
-        ..installAll(children);
+          int index = ul.children.length - 1;
+          sortGroup.install(li);
+          ul.children.insert(index, li);
 
-      if (onChange != null) {
-        sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
-      }
-
-      // Only accept elements from this section.
-      sortGroup.accept.add(sortGroup);
-
-      InputElement inputNewItem = new InputElement();
-      inputNewItem
-        ..classes.add(addNewLiClass)
-        ..placeholder = 'Tilføj ny...'
-        ..onKeyPress.listen((KeyboardEvent event) {
-          KeyEvent key = new KeyEvent.wrap(event);
-          if (key.keyCode == Keys.ENTER) {
-            String item = inputNewItem.value;
-            inputNewItem.value = '';
-
-            LIElement li = simpleListElement(item);
-            //A bit of a hack to get a unique id.
-            li.value = item.hashCode;
-            SelectElement kindpicker = new SelectElement()
-              ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind)))
-              ..onChange.listen((_) => onChange());
-
-            SpanElement descriptionContent = new SpanElement()
-              ..text = 'kontor'
-              ..classes.add('phonenumberdescription');
-            InputElement descriptionEditBox = new InputElement(type: 'text')
-              ..placeholder = 'beskrivelse';
-            editableSpan(descriptionContent, descriptionEditBox, onChange);
-
-            SpanElement billingTypeContent = new SpanElement()
-              ..text = 'fastnet'
-              ..classes.add('phonenumberbillingtype');
-            InputElement billingTypeEditBox = new InputElement(type: 'text')
-              ..placeholder = 'taksttype';
-            editableSpan(billingTypeContent, billingTypeEditBox, onChange);
-
-            li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
-
-            int index = ul.children.length - 1;
-            sortGroup.install(li);
-            ul.children.insert(index, li);
-
-            if (onChange != null) {
-              onChange();
-            }
-          } else if (key.keyCode == Keys.ESCAPE) {
-            inputNewItem.value = '';
+          if (onChange != null) {
+            onChange();
           }
-        });
+        } else if (key.keyCode == Keys.ESCAPE) {
+          inputNewItem.value = '';
+        }
+      });
 
-      children.add(new LIElement()..children.add(inputNewItem));
+    children.add(new LIElement()..children.add(inputNewItem));
 
-      ul.children
-          ..clear()
-          ..addAll(children);
+    ul.children
+        ..clear()
+        ..addAll(children);
 
     container.children.addAll([label, ul]);
 
@@ -520,10 +518,10 @@ class ContactView {
 
     for (LIElement li in element.children) {
       if (!li.classes.contains(addNewLiClass)) {
-        SpanElement content = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('contactgenericcontent'), orElse: () => null);
+        SpanElement content      = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('contactgenericcontent'), orElse: () => null);
         SelectElement kindpicker = li.children.firstWhere((elem) => elem is SelectElement, orElse: () => null);
-        SpanElement description = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberdescription'), orElse: () => null);
-        SpanElement billingType = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberbillingtype'), orElse: () => null);
+        SpanElement description  = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberdescription'), orElse: () => null);
+        SpanElement billingType  = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberbillingtype'), orElse: () => null);
 
         if (content != null && kindpicker != null) {
           phonenumbers.add(new Phone()
@@ -538,7 +536,7 @@ class ContactView {
     return phonenumbers;
   }
 
-  UListElement makeListBox(Element container, String labelText, List<String> dataList, {Function onChange}) {
+  UListElement createListBox(Element container, String labelText, List<String> dataList, {Function onChange}) {
     LabelElement label = new LabelElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 
@@ -550,7 +548,7 @@ class ContactView {
     return ul;
   }
 
-  TextAreaElement makeTextBox(Element container, String labelText, String data, {Function onChange}) {
+  TextAreaElement createTextBox(Element container, String labelText, String data, {Function onChange}) {
     LabelElement label = new LabelElement();
     TextAreaElement inputText = new TextAreaElement()
       ..rows = 1;
@@ -569,7 +567,7 @@ class ContactView {
     return inputText;
   }
 
-  InputElement makeCheckBox(Element container, String labelText, bool
+  InputElement createCheckBox(Element container, String labelText, bool
       data, {Function onChange}) {
     LabelElement label = new LabelElement();
     CheckboxInputElement inputCheckbox = new CheckboxInputElement();
@@ -669,11 +667,10 @@ class ContactView {
           ..relations = ''
           ..responsibility = ''
 
-          ..backup = []
-          ..handling = []
-          //..telephonenumbers = []
-          ..workhours = []
-          ..tags = [];
+          ..backup = new List<String>()
+          ..handling = new List<String>()
+          ..workhours = new List<String>()
+          ..tags = new List<String>();
 
       ulReceptionContacts.children..add(receptionContactBox(selectedContactId, template,
           receptionContactCreate, alwaysAddToSaveList: true));
