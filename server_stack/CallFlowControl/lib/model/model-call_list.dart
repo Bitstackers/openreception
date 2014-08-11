@@ -160,7 +160,10 @@ class CallList extends IterableBase<Call> {
     switch (packet.eventSubclass) {
       case ("AdaHeads::pre-queue-enter"):
         this.get(packet.uniqueID)
-            ..receptionID = int.parse(packet.field('variable_reception_id'))
+            ..receptionID = 
+              int.parse(packet.contentAsMap.containsKey('variable_reception_id') 
+                        ? packet.field('variable_reception_id') 
+                        : 0)
             ..isCall = true
             ..changeState(CallState.Created);
 
