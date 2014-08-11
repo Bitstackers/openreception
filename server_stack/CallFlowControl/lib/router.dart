@@ -64,6 +64,7 @@ void registerHandlers(HttpServer server) {
       ..serve(  callQueueResource,    method : "GET"  ).listen(handlerCallQueue)
       ..serve(callHangupResource,     method : "POST" ).listen(handlerCallHangup)
       ..serve(callPickupResource,     method : "POST" ).listen(handlerCallPickup)
+      ..serve(callPickupNextResource, method : "POST" ).listen(handlerCallPickupNext)
       ..serve(callParkResource,       method : "POST" ).listen(handlerCallPark)
       ..serve(callOriginateResource,  method : "POST" ).listen(handlerCallOrignate)
       ..serve(callTransferResource,   method : "POST" ).listen(handlerCallTransfer)
