@@ -13,7 +13,7 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
       COUNT (cdr.uuid)      AS call_count, 
       SUM   (cdr.duration)  AS total_duration,
       SUM   (wait_time)     AS total_wait,
-      AVG   (cdr.duration)  AS avg_duration
+      ceiling(AVG   (cdr.duration))  AS avg_duration
       
   FROM 
        cdr_entries   cdr
