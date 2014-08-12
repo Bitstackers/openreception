@@ -1,4 +1,4 @@
-part of utilities.service;
+part of openreception.service;
 
 abstract class Protocol {
   static final BROADCAST_RESOURCE = "broadcast";

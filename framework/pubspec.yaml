@@ -1,10 +1,12 @@
 name: OpenReceptionFramework
-version: 0.0.10+7
+version: 0.0.11+0
 description: A utility package for the OpenReception application.
 dependencies:
   http: any
+  logging: any
   postgresql: any
   route: any
   syslog:
     git: https://github.com/PedersenThomas/syslog.git
+  unittest: any
 auther: AdaHeads K/S
