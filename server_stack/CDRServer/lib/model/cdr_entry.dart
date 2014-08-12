@@ -23,7 +23,7 @@ class CdrEntry {
       extension = json['callflow']['caller_profile']['destination_number'];
     }
 
-    duration = int.parse(json['variables']['duration']);
+    duration = int.parse(json['variables']['billsec']);
     waitTime = int.parse(json['variables']['waitsec']);
     started_at = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['variables']['start_epoch'])*1000);
   }
