@@ -44,7 +44,7 @@ class CallList extends IterableBase<Call> {
 
   void remove (String callID) {
     if (this._map.containsKey(callID)) {
-      this._map.remove(callID);  
+      this._map.remove(callID);
     } else {
       throw new NotFound(callID);
     }
@@ -53,11 +53,11 @@ class CallList extends IterableBase<Call> {
   Call requestCall(user) {
     //TODO: Implement a real algorithm for selecting calls.
     Call call = this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked, orElse: null);
-    
+
     if (call == null) {
       throw new NotFound ("No calls available");
     }
-    
+
     return call;
   }
 
@@ -102,7 +102,7 @@ class CallList extends IterableBase<Call> {
 
     OriginationRequest.confirm(aLeg);
     OriginationRequest.confirm(bLeg);
-    
+
     if (TransferRequest.contains (aLeg.ID, bLeg.ID)) {
       TransferRequest.confirm (aLeg.ID, bLeg.ID);
        aLeg.changeState (CallState.Transferred);
@@ -112,7 +112,7 @@ class CallList extends IterableBase<Call> {
     aLeg.changeState (CallState.Speaking);
     bLeg.changeState (CallState.Speaking);
   }
-  
+
   void _handleChannelState (ESL.Packet packet) {
     const String context = '${className}._handleChannelState';
 
@@ -132,7 +132,7 @@ class CallList extends IterableBase<Call> {
        }
      }
   }
-  
+
   void _handleChannelDestroy (ESL.Packet packet) {
     const String context = '${className}._handleChannelDestroy';
     try {
@@ -153,17 +153,17 @@ class CallList extends IterableBase<Call> {
     }
   }
 
-  
+
   void _handleCustom (ESL.Packet packet) {
     const String context = '${className}._handleCustom';
 
     switch (packet.eventSubclass) {
       case ("AdaHeads::pre-queue-enter"):
         this.get(packet.uniqueID)
-            ..receptionID = 
-              int.parse(packet.contentAsMap.containsKey('variable_reception_id') 
-                        ? packet.field('variable_reception_id') 
-                        : 0)
+            ..receptionID =
+              packet.contentAsMap.containsKey('variable_reception_id')
+                        ? int.parse(packet.field('variable_reception_id'))
+                        : 0
             ..isCall = true
             ..changeState(CallState.Created);
 
@@ -172,11 +172,11 @@ class CallList extends IterableBase<Call> {
            logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
            OriginationRequest.create (packet.uniqueID);
 
-          this.get(packet.uniqueID)          
+          this.get(packet.uniqueID)
                ..receptionID = int.parse(packet.field('variable_reception_id'))
                ..contactID   = int.parse(packet.field('variable_contact_id'))
                ..assignedTo  = int.parse(packet.field('variable_owner'));
-           
+
            break;
       case ('AdaHeads::pre-queue-leave'):
         logger.debugContext('Locking ${packet.uniqueID}', context);
@@ -184,7 +184,7 @@ class CallList extends IterableBase<Call> {
           ..changeState (CallState.Transferring)
           ..locked = true;
         break;
-      
+
       case ('AdaHeads::wait-queue-enter'):
         logger.debugContext('Unlocking ${packet.uniqueID}', context);
         CallList.instance.get (packet.uniqueID)
@@ -204,14 +204,14 @@ class CallList extends IterableBase<Call> {
         break;
     }
   }
-  
-  
+
+
   void _handlePacket(ESL.Packet packet) {
     const String context = '${className}._handlePacket';
 
     void dispatch () {
       switch (packet.eventName) {
-        
+
         case ('CHANNEL_BRIDGE'):
           this._handleBridge(packet);
           break;
@@ -219,7 +219,7 @@ class CallList extends IterableBase<Call> {
         case ('CHANNEL_STATE'):
           this._handleChannelState(packet);
           break;
-          
+
         case ('CHANNEL_CREATE'):
           this._createCall(packet);
           break;
@@ -233,8 +233,8 @@ class CallList extends IterableBase<Call> {
           break;
       }
     }
-    
-    
+
+
     //print (packet.eventName + '::' + packet.eventSubclass);
   try {
     dispatch();
