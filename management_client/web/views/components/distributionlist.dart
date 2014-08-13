@@ -196,11 +196,15 @@ class DistributionsListComponent {
       ..cc  = _extractContacts(_ulCc)
       ..bcc = _extractContacts(_ulBcc);
 
-    return request.updateDistributionList(receptionId, contactId, JSON.encode(distributionList))
-        .then((_) => notify.info('Opdateringen af distributionslisten gik godt.'))
-        .catchError((error, stack) {
-      log.error('distributionlist.save. Tried to save updates to distributionlist, but got: ${error} ${stack}');
-      notify.error('Der skete en fejl i forbindelse med opdateringen af distributions listen. ${error}');
-    });
+    if(!_persistentList.equals(distributionList)) {
+      return request.updateDistributionList(receptionId, contactId, JSON.encode(distributionList))
+          .then((_) => notify.info('Opdateringen af distributionslisten gik godt.'))
+          .catchError((error, stack) {
+        log.error('distributionlist.save. Tried to save updates to distributionlist, but got: ${error} ${stack}');
+        notify.error('Der skete en fejl i forbindelse med opdateringen af distributions listen. ${error}');
+      });
+    } else {
+      return new Future.value();
+    }
   }
 }

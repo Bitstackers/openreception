@@ -285,8 +285,7 @@ class DialplanView {
       count += 1;
       genericName = 'extension${count}';
     }
-    extensions.add(new Extension()
-                     ..name = genericName);
+    extensions.add(new Extension()..name = genericName);
   }
 
   Future saveDialplan() {
@@ -663,10 +662,10 @@ class DialplanView {
       InputElement nameInput = settingPanel.querySelector('#dialplan-setting-extensionname');
       nameInput
         ..onInput.listen((_) {
-        extension.name = nameInput.value;
-        renderExtensionList(dialplan);
-        updateSelectedExtensionName(extension);
-        enabledSaveButton();
+          extension.name = nameInput.value;
+          renderExtensionList(dialplan);
+          updateSelectedExtensionName(extension);
+          enabledSaveButton();
       })
       ..onInvalid.listen((_) {
         nameInput.title = nameInput.validationMessage;
@@ -1085,6 +1084,4 @@ class DialplanView {
   }
 
   String nullBecomesEmpty(String item) => item == null ? '' : item;
-
-
 }

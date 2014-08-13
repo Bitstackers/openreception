@@ -38,4 +38,31 @@ class DistributionList {
   Map _contactToJson(ContactAttribute contactAttribute) =>
       {'reception_id': contactAttribute.receptionId,
        'contact_id'  : contactAttribute.contactId};
+
+  bool equals(DistributionList other) {
+    if(to.length != other.to.length ||
+       cc.length != other.cc.length ||
+       bcc.length != other.bcc.length) {
+      return false;
+    }
+
+    for(ContactAttribute CA in to) {
+      if(!other.to.any((ContactAttribute otherCa) => CA.contactId == otherCa.contactId && CA.receptionId == otherCa.receptionId)) {
+        return false;
+      }
+    }
+
+    for(ContactAttribute CA in cc) {
+      if(!other.cc.any((ContactAttribute otherCa) => CA.contactId == otherCa.contactId && CA.receptionId == otherCa.receptionId)) {
+        return false;
+      }
+    }
+
+    for(ContactAttribute CA in bcc) {
+      if(!other.bcc.any((ContactAttribute otherCa) => CA.contactId == otherCa.contactId && CA.receptionId == otherCa.receptionId)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
