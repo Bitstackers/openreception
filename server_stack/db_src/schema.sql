@@ -176,17 +176,20 @@ CREATE TABLE message_recipients (
 
 --  The message_queue is a simple job-stack that, when a item is present in the 
 --  table, indicates that is has not been delived to a transport agent.
+--  'unhandled_endpoints' stores a list of recipient endpoints, still waiting
+--  to be dispatched.
 
 CREATE TABLE message_queue (
-   id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   message_id     INTEGER   NOT NULL REFERENCES messages (id),
-   enqueued_at    TIMESTAMP NOT NULL DEFAULT NOW(),
-   last_try       TIMESTAMP     NULL DEFAULT NULL,
-   tries          INTEGER   NOT NULL DEFAULT 0
+   id                  INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   message_id          INTEGER   NOT NULL REFERENCES messages (id),
+   enqueued_at         TIMESTAMP NOT NULL DEFAULT NOW(),
+   last_try            TIMESTAMP     NULL DEFAULT NULL,
+   unhandled_endpoints JSON      NOT NULL DEFAULT '[]',
+   tries               INTEGER   NOT NULL DEFAULT 0
 );
 
 CREATE TABLE message_queue_history (
-   id             INTEGER   NOT NULL PRIMARY KEY,
+   id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message_id     INTEGER   NOT NULL REFERENCES messages (id),
    enqueued_at    TIMESTAMP NOT NULL,
    sent_at        TIMESTAMP NOT NULL DEFAULT NOW(),
