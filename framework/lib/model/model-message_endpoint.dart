@@ -16,7 +16,19 @@ class MessageEndpoint {
     assert(['type','address'].every((String key) => map.containsKey(key)));
     this.type    = map['type'];
     this.address = map['address'];
+
+    if (map.containsKey('recipient')) {
+      this.recipient = new MessageRecipient.fromMap(map['recipient']);
+    }
+
   }
+
+  Map toJson() => this.asMap;
+
+  Map get asMap => {
+        'type' : this.type,
+        'address' : this.address
+        };
 
   @override
   String toString() => '${this.type}:${this.address}';

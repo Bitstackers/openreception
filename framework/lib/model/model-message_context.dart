@@ -21,9 +21,6 @@ class MessageContext {
 
     this.._data = map
         ..validate();
-
-    print ('MessageContext ${map}');
-    print ('MessageContext ${this.toJson()}');
   }
 
 

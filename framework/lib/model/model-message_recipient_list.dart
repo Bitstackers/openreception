@@ -27,7 +27,9 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
 
   Map toJson() => this.asMap;
 
-  bool get hasRecipients => this.recipients[Role.TO].isNotEmpty && this.recipients[Role.CC].isNotEmpty && this.recipients[Role.BCC].isNotEmpty;
+  bool get hasRecipients => this.recipients[Role.TO].isNotEmpty ||
+                            this.recipients[Role.CC].isNotEmpty ||
+                            this.recipients[Role.BCC].isNotEmpty;
 
   factory MessageRecipientList.empty() {
     return new MessageRecipientList._internal()..recipients = {
@@ -38,7 +40,6 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
   }
 
   MessageRecipientList._internal();
-
 
   /**
    * Initializes a new object using a list of the form :
@@ -63,15 +64,12 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
                                'name' : map['reception_name']}};
 
       MessageRecipient newRecipient;
-      newRecipient=
-          new MessageRecipient.fromMap(tmp, role : map['recipient_role'])
-         ..endpoints.addAll(map['endpoints'].map((Map map) =>
+      newRecipient= new MessageRecipient.fromMap(tmp, role : map['recipient_role']);
+      newRecipient.endpoints.addAll(map['endpoints'].map((Map map) =>
          new MessageEndpoint.fromMap(map)..recipient = newRecipient));
 
       this.add(newRecipient);
     });
-
-      print (this.recipients);
   }
 
   /**
