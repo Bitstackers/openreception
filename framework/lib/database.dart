@@ -4,11 +4,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-
 import 'package:postgresql/postgresql_pool.dart'     as PGPool;
 import 'package:postgresql/postgresql.dart'          as PG;
-import 'package:openreceptionframework/model.dart'   as Model;
-import 'package:openreceptionframework/storage.dart' as Storage;
+
+import 'model.dart'   as Model;
+import 'storage.dart' as Storage;
 
 part 'database/database-message.dart';
 part 'database/database-message_draft.dart';
