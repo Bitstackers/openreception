@@ -1,15 +1,16 @@
 import 'dart:io';
+import 'dart:core';
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
-import '../lib/configuration.dart';
-import '../lib/database.dart' as Database;
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/model.dart' as Model;
 
-import '../lib/model.dart' as Model;
+import '../lib/configuration.dart';
+import '../lib/router.dart';
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -27,12 +28,9 @@ void main(List<String> args) {
 
     } else {
       config = new Configuration(parsedArgs);
-      config.whenLoaded()
-      .then((_) => Database.startDatabase())
-      // HTTP interface is currently unsupported, due to database schema changes.
+      config.whenLoaded().then((_) => startDatabase())// HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
-      .then((_) => periodicEmailSend())
-      .catchError((e, stackTrace) => logger.errorContext('${e} : ${stackTrace}', 'main'));
+      .then((_) => periodicEmailSend()).catchError((e, stackTrace) => logger.errorContext('${e} : ${stackTrace}', 'main'));
     }
   } on ArgumentError catch (e, stackTrace) {
     logger.errorContext('main() ArgumentError ${e} : ${stackTrace}', 'main');
@@ -48,6 +46,67 @@ void main(List<String> args) {
   }
 }
 
+
+List<Model.MessageRecipient> emailRecipients(Model.Message message) => message.recipients.where((Model.MessageRecipient recipient) => recipient.endpoints.contains(Model.MessageEndpointType.EMAIL)).toList();
+
+List<Model.MessageEndpoint> emailEndpoints(List<Model.MessageEndpoint> endpoints) => endpoints.where((Model.MessageEndpoint endpoint) => endpoint.type == Model.MessageEndpointType.EMAIL).toList();
+
+List<Model.MessageRecipient> smsRecipients(Model.Message message) => message.recipients.where((Model.MessageRecipient recipient) => recipient.endpoints.contains(Model.MessageEndpointType.SMS)).toList();
+
+Timer reSchedule() => new Timer(new Duration(seconds: config.mailerPeriod), periodicEmailSend);
+
+
+Future tryDispatch(Model.MessageQueueItem queueItem) {
+  final String context = "tryDispatch";
+
+  return queueItem.message(messageStore).then((Model.Message message) {
+
+    if (!message.recipients.hasRecipients) {
+      logger.errorContext("No recipients detected on message with ID ${message.ID}!", context);
+
+      queueItem.save(messageQueueStore);
+
+    } else {
+
+      logger.debugContext('Dispatching to email recipients message with id ${message.ID} - queueID: ${queueItem.ID} ', context);
+
+      Model.Template email = new Model.TemplateEmail(message)..endpoints = emailEndpoints(queueItem.unhandledEndpoints);
+
+      String json = JSON.encode(email);
+
+      /* Kick off a mailer process */
+      return Process.start('python', [config.mailerScript, json]).then((process) {
+
+        logger.errorContext('Kicking off mailer process', context);
+        /// Redirect the output from the mailer to the logger.
+        process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) => logger.errorContext('Python mailer (stdout): ${line}', context));
+        process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) => logger.errorContext('Python mailer (stderr): ${line}', context));
+
+        process.exitCode.then((int exitCode) {
+          if (exitCode != 0) {
+            logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
+          } else {
+            /// Remove the email endpoints, as they are now handled.
+            queueItem.unhandledEndpoints.removeWhere((Model.MessageEndpoint ep)
+                => emailEndpoints(queueItem.unhandledEndpoints).contains(ep));
+          }
+
+        }).whenComplete(() {
+          queueItem.tries++;
+
+          if (queueItem.unhandledEndpoints.isEmpty) {
+            queueItem.archive(messageQueueStore);
+          }
+          else {
+            queueItem.save(messageQueueStore);
+          }
+        });
+      }).catchError((onError) => logger.errorContext("Failed to run mailer process. Error: ${onError}", context));;
+    }
+  });
+}
+
+
 /**
  * The Periodic task that passes emails on to the SMTP server.
  * As of now, this is done by an external mailer script.
@@ -55,59 +114,16 @@ void main(List<String> args) {
 void periodicEmailSend() {
 
   int messageCount = null;
-  DateTime start   = new DateTime.now();
+  DateTime start = new DateTime.now();
 
   final String context = "periodicEmailSend";
 
-  Database.messageQueueList().then((List<Map> items) {
-
-    messageCount = items.length;
-
-    items.forEach((Map queueEntry) {
-      new Model.Message.stub(queueEntry['message_id']).load().then((Model.Message message) {
-        logger.debugContext('Trying to dispatch message with id ${queueEntry['message_id']} - queueID: ${queueEntry['queue_id']} ',context );
-        Model.Email.dereferenceRecipients(message).then((Model.Email email) {
-          if (!message.hasRecipients) {
-            logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
-          } else {
-            String json = JSON.encode(email);
-  
-            /* Kick off a mailer process */
-            Process.start('python', [config.mailerScript, json]).then((process) {
-
-              process.exitCode.then((int exitCode) {
-                if (exitCode != 0) {
-                  logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
-                } else {
-                  Database.MessageQueue.remove(queueEntry['queue_id']);
-                }
-              });
-
-              process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
-                logger.errorContext('Python mailer (stdout): ${line}', context);
-              });
-              process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
-                logger.errorContext('Python mailer (stderr): ${line}',context);
-              });
-
-            }).catchError((onError) {
-              logger.errorContext("Failed to run mailer process. Error: ${onError}", context);
-            });
-         };
-        }).catchError((onError, stacktrace) {
-          logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context);
-          // TODO mark the queueEntry as failed.
-          
-        });
-
-      });
+  messageQueueStore.list(maxTries : config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
+    Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
+      logger.infoContext('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.mailerPeriod} seconds', context);
+      reSchedule();
     });
-
-    }).whenComplete(() {
-    logger.infoContext('Processed $messageCount messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.mailerPeriod} seconds..', context);
-    messageCount = null;
-    new Timer(new Duration(seconds: config.mailerPeriod), periodicEmailSend);
-  });
+  }).catchError((onError, stacktrace) => logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context));
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {

@@ -7,9 +7,9 @@ import '../configuration.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/reception.dart';
-import 'package:OpenReceptionFramework/service.dart' as ORFService;
-import 'package:OpenReceptionFramework/common.dart' as orf;
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/service.dart' as ORFService;
+import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'receptionController';
 

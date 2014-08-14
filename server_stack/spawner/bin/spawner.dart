@@ -49,10 +49,10 @@ void main(List<String> arguments) {
       'path': 'ManagementServer/bin/server.dart',
       'args': ['--servertoken', tokens[index++]]
     },
-    'MessageServer': {
+/*    'MessageServer': {
       'path': 'MessageServer/bin/messageserver.dart',
       'args': ['--servertoken', tokens[index++]]
-    },
+    },*/
     'MessageDispatcher': {
       'path': 'MessageDispatcher/bin/messagedispacher.dart',
       'args': []

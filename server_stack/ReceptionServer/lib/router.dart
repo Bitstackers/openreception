@@ -9,8 +9,8 @@ import 'package:route/server.dart';
 import 'cache.dart' as cache;
 import 'configuration.dart';
 import 'database.dart' as db;
-import 'package:OpenReceptionFramework/httpserver.dart';
-import 'package:OpenReceptionFramework/service.dart' as Service;
+import 'package:openreception_framework/httpserver.dart';
+import 'package:openreception_framework/service.dart' as Service;
 
 part 'router/reception-calendar.dart';
 part 'router/getreception.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
-import 'package:OpenReceptionFramework/service.dart' as Service;
+import 'package:openreception_framework/service.dart' as Service;
 import '../lib/configuration.dart';
 
 

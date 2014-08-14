@@ -4,9 +4,9 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:esl/esl.dart' as ESL;
-import 'package:OpenReceptionFramework/service.dart' as Service;
-import 'package:OpenReceptionFramework/model.dart' as SharedModel;
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/model.dart' as SharedModel;
+import 'package:openreception_framework/common.dart';
 import '../configuration.dart';
 import '../controller/controller.dart' as Controller;
 

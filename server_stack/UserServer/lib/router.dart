@@ -7,9 +7,9 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/httpserver.dart';
-import 'package:OpenReceptionFramework/model.dart' as Model;
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/httpserver.dart';
+import 'package:openreception_framework/model.dart' as Model;
 import 'database/database.dart'; 
 
 part 'router/user.dart';

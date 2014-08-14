@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:openreception_framework/httpserver.dart';
 
 part 'router/getconfiguration.dart';
 

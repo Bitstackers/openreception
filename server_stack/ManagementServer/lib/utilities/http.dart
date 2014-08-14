@@ -5,9 +5,9 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:OpenReceptionFramework/model.dart' as orf_model;
-import 'package:OpenReceptionFramework/common.dart' as orf;
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/model.dart' as orf_model;
+import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'Utilities';
 final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');

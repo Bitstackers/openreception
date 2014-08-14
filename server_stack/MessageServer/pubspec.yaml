@@ -1,8 +1,12 @@
 name: MessageServer
 description: A sample command-line application
 dependencies:
-  OpenReceptionFramework:
-    git: https://github.com/AdaHeads/OpenReceptionFramework.git
+  openreception_framework:
+    #git:
+    #  ref: converging_model
+    #  url: https://github.com/AdaHeads/OpenReceptionFramework.git
+    path: /home/krc/Projects/OpenReceptionFramework
+
   args: any
   mailer: any
   path: any

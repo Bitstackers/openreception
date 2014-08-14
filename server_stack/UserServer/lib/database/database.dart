@@ -3,7 +3,7 @@ library userserver.database;
 import 'dart:async';
 
 import '../configuration.dart';
-import 'package:OpenReceptionFramework/database.dart' as database;
+import 'package:openreception_framework/database.dart' as database;
 
 database.Connection db;
 

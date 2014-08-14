@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
+import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
-import '../lib/database.dart';
-import 'package:OpenReceptionFramework/httpserver.dart' as http;
+import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
-  
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen(print);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -24,7 +26,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        .then((_) => startDatabase())
+        .then((_) => router.startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
         .then((_) => print ('MessageServer listening on port ${config.httpport}'))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));

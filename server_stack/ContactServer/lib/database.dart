@@ -5,8 +5,8 @@ import 'dart:convert';
 
 import 'package:postgresql/postgresql_pool.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/database.dart' as database;
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/database.dart' as database;
 import 'configuration.dart';
 
 part 'db/getreceptioncontact.dart';

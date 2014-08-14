@@ -10,9 +10,9 @@ import '../view/calendar_event.dart';
 import '../view/complete_reception_contact.dart';
 import '../view/endpoint.dart';
 import '../view/distribution_list.dart';
-import 'package:OpenReceptionFramework/service.dart' as ORFService;
-import 'package:OpenReceptionFramework/common.dart' as orf;
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/service.dart' as ORFService;
+import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'receptionContactController';
 

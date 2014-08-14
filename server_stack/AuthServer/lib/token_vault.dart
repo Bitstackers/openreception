@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:OpenReceptionFramework/cache.dart' as IO;
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/cache.dart' as IO;
+import 'package:openreception_framework/common.dart';
 
 TokenVault vault = new TokenVault();
 

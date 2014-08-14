@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenReceptionFramework/common.dart' as orf;
+import 'package:openreception_framework/common.dart' as orf;
 
 import '../lib/configuration.dart';
 import '../lib/database.dart';

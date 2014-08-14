@@ -1,9 +1,9 @@
 name: server
 description: A sample command-line application
 dependencies:
-  OpenReceptionFramework:
+  openreception_framework:
     git:
-      ref: master
+      ref: converging_model
       url: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   http: any

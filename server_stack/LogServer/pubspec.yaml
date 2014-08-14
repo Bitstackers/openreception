@@ -1,8 +1,10 @@
 name: LogServer
 description: A sample command-line application
 dependencies:
-  OpenReceptionFramework:
-    git: https://github.com/AdaHeads/OpenReceptionFramework.git
+  openreception_framework:
+    git:
+      ref: converging_model
+      url: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   intl: any
   path: any
