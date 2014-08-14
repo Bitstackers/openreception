@@ -7,7 +7,35 @@ Future<Map> getReceptionContactList(int receptionId) {
            rcpcon.wants_messages, 
            rcpcon.attributes, 
            rcpcon.enabled as rcpenabled,
-           rcpcon.distribution_list,
+           (SELECT row_to_json(distribution_column_seperated_roles)
+            FROM (SELECT (SELECT array_to_json(array_agg(row_to_json(tmp_to)))
+                          FROM (SELECT recipient_reception_id as reception_id, recipient_contact_id as contact_id
+                                FROM distribution_list dl
+                                WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                      dl.owner_contact_id = rcpcon.contact_id AND
+                                      dl.role = 'to'
+                               ) tmp_to
+                         ) AS to,
+               
+                         (SELECT array_to_json(array_agg(row_to_json(tmp_cc)))
+                          FROM (SELECT recipient_reception_id as reception_id, recipient_contact_id as contact_id
+                                FROM distribution_list dl
+                                WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                      dl.owner_contact_id = rcpcon.contact_id AND 
+                                      dl.role = 'cc'
+                               ) tmp_cc
+                         ) AS cc,
+               
+                         (SELECT array_to_json(array_agg(row_to_json(tmp_bcc)))
+                          FROM (SELECT recipient_reception_id as reception_id, recipient_contact_id as contact_id
+                                FROM distribution_list dl
+                                WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                      dl.owner_contact_id = rcpcon.contact_id AND
+                                      dl.role = 'bcc'
+                               ) tmp_bcc
+                         ) AS bcc
+                 ) distribution_column_seperated_roles
+           ) as distribution_list,
            con.full_name, 
            con.contact_type, 
            con.enabled as conenabled,
