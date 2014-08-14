@@ -28,6 +28,7 @@ final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact
 final Pattern receptionContactIdEnpointUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint');
 final Pattern receptionContactIdEnpointIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint/(.+)/type/(.+)');
 final Pattern receptionContactIdDistributionListUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist');
+final Pattern receptionContactIdDistributionListEntryUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist/(\d+)');
 final Pattern receptionContactIdCalendarUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar');
 final Pattern receptionContactIdCalendarIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar/(\d+)');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
@@ -136,7 +137,9 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(DialplanTemplateUrl, method: HttpMethod.GET).listen(dialplan.getTemplates)
 
     ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.GET).listen(receptionContact.getDistributionList)
-    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.POST).listen(receptionContact.updateDistributionList)
+    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.PUT).listen(receptionContact.createDistributionListEntry)
+    ..serve(receptionContactIdDistributionListEntryUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteDistributionListEntry)
+    //..serve(receptionContactIdDistributionListEntryUrl, method: HttpMethod.POST).listen(receptionContact.updateDistributionList)
 
     ..serve(ivrUrl, method: HttpMethod.GET).listen(dialplan.getIvr)
     ..serve(ivrUrl, method: HttpMethod.POST).listen(dialplan.updateIvr)

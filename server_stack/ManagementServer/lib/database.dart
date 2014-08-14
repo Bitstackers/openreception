@@ -183,8 +183,14 @@ class Database {
   Future<model.DistributionList> getDistributionList(int receptionId, int contactId) =>
       _getDistributionList(pool, receptionId, contactId);
 
-  Future updateDistributionList(int receptionId, int contactId, Map distributionList) =>
-      _updateDistributionList(pool, receptionId, contactId, distributionList);
+//  Future updateDistributionList(int receptionId, int contactId, Map distributionList) =>
+//      _updateDistributionList(pool, receptionId, contactId, distributionList);
+
+  Future createDistributionListEntry(int ownerReceptionId, int ownerContactId, String role, int recipientReceptionId, int recipientContactId) =>
+      _createDistributionListEntry(pool, ownerReceptionId, ownerContactId, role, recipientReceptionId, recipientContactId);
+
+  Future deleteDistributionListEntry(int entryId) =>
+      _deleteDistributionListEntry(pool, entryId);
 
   /* ***********************************************
      *************** Organization ******************

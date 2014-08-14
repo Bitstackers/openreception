@@ -2,9 +2,9 @@ part of adaheads.server.database;
 
 Future<model.DistributionList> _getDistributionList(Pool pool, int receptionId, int contactId) {
   String sql = '''
-    SELECT distribution_list
-    FROM reception_contacts
-    WHERE reception_id = @reception_id AND contact_id = @contact_id;
+    SELECT owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id, id
+    FROM distribution_list
+    WHERE owner_reception_id = @reception_id AND owner_contact_id = @contact_id;
   ''';
 
   Map parameters =
@@ -12,29 +12,48 @@ Future<model.DistributionList> _getDistributionList(Pool pool, int receptionId, 
      'contact_id': contactId};
 
   return query(pool, sql, parameters).then((rows) {
-    if(rows.length != 1) {
-      return null;
-    } else {
-      Row row = rows.first;
-      Map distributionListMap = JSON.decode(row.distribution_list != null ? row.distribution_list : '{}');
-      model.DistributionList distributionList = new model.DistributionList.fromJson(distributionListMap);
+    model.DistributionList list = new model.DistributionList();
+    for(Row row in rows) {
+      model.DistributionListEntry contact = new model.DistributionListEntry()
+        ..receptionId = row.recipient_reception_id
+        ..contactId = row.recipient_contact_id
+        ..id = row.id;
 
-      return distributionList;
+      if(row.role == 'to') {
+        list.to.add(contact);
+      } else if(row.role == 'cc') {
+        list.cc.add(contact);
+      } else if(row.role == 'bcc') {
+        list.bcc.add(contact);
+      }
     }
+    return list;
   });
 }
 
-Future _updateDistributionList(Pool pool, int receptionId, int contactId, Map distributionList) {
+Future<int> _createDistributionListEntry(Pool pool, int ownerReceptionId, int ownerContactId, String role, int recipientReceptionId, int recipientContactId) {
   String sql = '''
-    UPDATE reception_contacts
-    SET distribution_list = @distribution_list
-    WHERE reception_id = @reception_id AND contact_id = @contact_id;
+    INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id)
+    VALUES (@owner_reception, @owner_contact, @role, @recipient_reception, @recipient_contact)
+    RETURNING id;
   ''';
 
   Map parameters =
-    {'distribution_list': JSON.encode(distributionList),
-     'reception_id': receptionId,
-     'contact_id': contactId};
+    {'owner_reception'     : ownerReceptionId,
+     'owner_contact'       : ownerContactId,
+     'role'                : role,
+     'recipient_reception' : recipientReceptionId,
+     'recipient_contact'   : recipientContactId};
 
+  return query(pool, sql, parameters).then((rows) => rows.first.id);
+}
+
+Future _deleteDistributionListEntry(Pool pool, int entryId) {
+  String sql = '''
+      DELETE FROM distribution_list
+      WHERE id=@id;
+    ''';
+
+  Map parameters = {'id': entryId};
   return execute(pool, sql, parameters);
 }
