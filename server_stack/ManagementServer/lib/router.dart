@@ -19,7 +19,6 @@ final Pattern anyThing = new UrlPattern(r'/(.*)');
 final Pattern organizationIdUrl          = new UrlPattern(r'/organization/(\d+)');
 final Pattern organizationUrl            = new UrlPattern(r'/organization(/?)');
 final Pattern organizationContactUrl     = new UrlPattern(r'/organization/(\d+)/contact(/?)');
-final Pattern organizationReceptionIdUrl = new UrlPattern(r'/organization/(\d+)/reception/(\d+)');
 final Pattern organizationReceptionUrl   = new UrlPattern(r'/organization/(\d+)/reception(/?)');
 
 final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
@@ -62,7 +61,7 @@ final Pattern GroupUrl = new UrlPattern(r'/group');
 final Pattern receptionContactIdMoveUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
 
 final List<Pattern> Serviceagents =
-[organizationIdUrl, organizationUrl,organizationReceptionIdUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
+[organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
  ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl,
