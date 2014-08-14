@@ -1,5 +1,6 @@
 part of cdrserver.database;
 
+//TODO "owner" and "contact_id" is not part of the database tuppel.
 Future newcdrEntry(CdrEntry entry) {
 
   final context = packageName + ".cdrList";
