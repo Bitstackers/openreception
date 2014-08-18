@@ -17,7 +17,6 @@ part 'database/dialplan.dart';
 part 'database/distribution_list.dart';
 part 'database/endpoint.dart';
 part 'database/organization.dart';
-part 'database/phone.dart';
 part 'database/reception.dart';
 part 'database/reception_contact.dart';
 part 'database/user.dart';
@@ -184,15 +183,21 @@ class Database {
   Future<model.DistributionList> getDistributionList(int receptionId, int contactId) =>
       _getDistributionList(pool, receptionId, contactId);
 
-  Future updateDistributionList(int receptionId, int contactId, Map distributionList) =>
-      _updateDistributionList(pool, receptionId, contactId, distributionList);
+//  Future updateDistributionList(int receptionId, int contactId, Map distributionList) =>
+//      _updateDistributionList(pool, receptionId, contactId, distributionList);
+
+  Future createDistributionListEntry(int ownerReceptionId, int ownerContactId, String role, int recipientReceptionId, int recipientContactId) =>
+      _createDistributionListEntry(pool, ownerReceptionId, ownerContactId, role, recipientReceptionId, recipientContactId);
+
+  Future deleteDistributionListEntry(int entryId) =>
+      _deleteDistributionListEntry(pool, entryId);
 
   /* ***********************************************
      *************** Organization ******************
    */
 
-  Future<int> createOrganization(String fullName, String bill_type, String flag) =>
-      _createOrganization(pool, fullName, bill_type, flag);
+  Future<int> createOrganization(String fullName, String billingType, String flag) =>
+      _createOrganization(pool, fullName, billingType, flag);
 
   Future<int> deleteOrganization(int organizationId) =>
       _deleteOrganization(pool, organizationId);
@@ -203,8 +208,8 @@ class Database {
   Future<List<model.Organization>> getOrganizationList() =>
       _getOrganizationList(pool);
 
-  Future<int> updateOrganization(int organizationId, String fullName, String billType, String flag) =>
-      _updateOrganization(pool, organizationId, fullName, billType, flag);
+  Future<int> updateOrganization(int organizationId, String fullName, String billingType, String flag) =>
+      _updateOrganization(pool, organizationId, fullName, billingType, flag);
 
   /* ***********************************************
      ****************** Dialplan *******************
@@ -279,19 +284,6 @@ class Database {
           chimemax);
 
   /* ***********************************************
-     ******************** Phone ********************
-   */
-
-//  Future<int> createPhoneNumber(int receptionId, int contactId, String value, String kind) =>
-//      _createPhoneNumber(pool, receptionId, contactId, value, kind);
-//
-//  Future<int> deletePhoneNumber(int phonenumberId) =>
-//      _deletePhoneNumber(pool, phonenumberId);
-
-//  Future<List<model.Phone>> getPhoneNumbers(int receptionId, int contactId) =>
-//      _getPhoneNumbers(pool, receptionId, contactId);
-
-  /* ***********************************************
      ********************* User ********************
    */
   Future<int> createUser(String name, String extension, String sendFrom) =>
@@ -338,7 +330,6 @@ class Database {
 
   Future<int> deleteUserIdentity(int userId, String identityId) =>
       _deleteUserIdentity(pool, userId, identityId);
-
 }
 
 /* ***********************************************
@@ -352,5 +343,3 @@ Future<List<Row>> query(Pool pool, String sql, [Map parameters = null]) => pool.
 Future<int> execute(Pool pool, String sql, [Map parameters = null]) => pool.connect()
   .then((Connection conn) => conn.execute(sql, parameters)
   .whenComplete(() => conn.close()));
-
-

@@ -13,8 +13,11 @@ Map _contactAsJsonMap(DistributionList distributionList) =>
      'bcc': _contactsToJson(distributionList.bcc)};
 
 
-List _contactsToJson(List<ReceptionContact> list) {
+List _contactsToJson(List<DistributionListEntry> list) {
   return list
-    .map((ReceptionContact rc) => {'reception_id': rc.receptionId, 'contact_id': rc.contactId})
+    .map((DistributionListEntry entry) =>
+        {'reception_id': entry.receptionId,
+         'contact_id'  : entry.contactId,
+         'id'          : entry.id})
     .toList();
 }

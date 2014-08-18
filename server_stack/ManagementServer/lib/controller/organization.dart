@@ -53,7 +53,7 @@ class OrganizationController {
 
     orf_http.extractContent(request)
     .then(JSON.decode)
-    .then((Map data) => db.createOrganization(data['full_name'], data['bill_type'], data['flag']))
+    .then((Map data) => db.createOrganization(data['full_name'], data['billing_type'], data['flag']))
     .then((int id) => orf_http.writeAndClose(request, organizationIdAsJson(id)).then((_) {
       Map data = {'event' : 'organizationEventCreated', 'organizationEvent' : {'organizationId' : id}};
       ORFService.Notification.broadcast(data, config.notificationServer, config.token)
@@ -72,7 +72,7 @@ class OrganizationController {
 
     orf_http.extractContent(request)
     .then(JSON.decode)
-    .then((Map data) => db.updateOrganization(orf_http.pathParameter(request.uri, 'organization'), data['full_name'], data['bill_type'], data['flag']))
+    .then((Map data) => db.updateOrganization(orf_http.pathParameter(request.uri, 'organization'), data['full_name'], data['billing_type'], data['flag']))
     .then((int id) => orf_http.writeAndClose(request, organizationIdAsJson(id))
     .then((_) {
       Map data = {'event' : 'organizationEventupdated', 'organizationEvent' : {'organizationId' : id}};

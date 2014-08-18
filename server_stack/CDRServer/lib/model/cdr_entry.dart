@@ -8,13 +8,18 @@ class CdrEntry {
   int duration;
   int waitTime;
   DateTime started_at;
+
+  int owner;
+  int contact_id;
+
   Map json;
 
   CdrEntry.fromJson(Map this.json) {
+    Map variables = json['variables'];
 
-    uuid = json['variables']['uuid'];
-    inbound = json['variables']['direction'] == 'inbound';
-    reception_id = int.parse(json['variables']['reception_id']);
+    uuid = variables['uuid'];
+    inbound = variables['direction'] == 'inbound';
+    reception_id = int.parse(variables['reception_id']);
 
     if(json['callflow'] is List) {
       List<Map> callFlow = json['callflow'];
@@ -23,8 +28,16 @@ class CdrEntry {
       extension = json['callflow']['caller_profile']['destination_number'];
     }
 
-    duration = int.parse(json['variables']['duration']);
-    waitTime = int.parse(json['variables']['waitsec']);
+    duration = int.parse(variables['billsec']);
+    waitTime = int.parse(variables['waitsec']);
     started_at = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['variables']['start_epoch'])*1000);
+
+    if(variables.containsKey('owner')) {
+      owner = int.parse(variables['owner']);
+    }
+
+    if(variables.containsKey('contact_id')) {
+      contact_id = int.parse(variables['contact_id']);
+    }
   }
 }

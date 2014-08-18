@@ -12,9 +12,9 @@ Future<List<model.Event>> _getReceptionContactCalendarEvents(Pool pool, int rece
   Map parameters = {'reception_id': receptionId,
                     'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.Event> events = new List<model.Event>();
-    for(var row in rows) {
+    for(Row row in rows) {
       events.add(new model.Event(row.id, row.start, row.stop, row.message));
     }
     return events;

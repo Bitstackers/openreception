@@ -2,7 +2,7 @@ part of cdrserver.router;
 
 void insertCdrData(HttpRequest request) {
   //AUTH
-  //Check if the shared Secret is matching, and the whitelisted ips.
+  //Check if the shared Secret is matching, and the whitelisted IPs.
 
   extractContent(request).then((String content) {
     Map json;

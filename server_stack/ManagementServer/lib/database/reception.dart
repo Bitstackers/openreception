@@ -37,9 +37,9 @@ Future<List<model.Reception>> _getOrganizationReceptionList(Pool pool, int organ
 
   Map parameters = {'organization_id': organizationId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.Reception> receptions = new List<model.Reception>();
-    for(var row in rows) {
+    for(Row row in rows) {
       receptions.add(new model.Reception(
           row.id,
           row.organization_id,
@@ -85,10 +85,9 @@ Future<List<model.Reception>> _getReceptionList(Pool pool) {
     FROM receptions
   ''';
 
-  return query(pool, sql).then((rows) {
-
+  return query(pool, sql).then((List<Row> rows) {
     List<model.Reception> receptions = new List<model.Reception>();
-    for(var row in rows) {
+    for(Row row in rows) {
       receptions.add(new model.Reception(
           row.id,
           row.organization_id,
@@ -136,9 +135,9 @@ Future<List<model.Reception>> _getContactReceptions(Pool pool, int contactId) {
 
   Map parameters = {'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.Reception> receptions = new List<model.Reception>();
-    for(var row in rows) {
+    for(Row row in rows) {
       receptions.add(new model.Reception(
           row.id,
           row.organization_id,

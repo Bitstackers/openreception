@@ -47,10 +47,10 @@ Future<List<model.ReceptionColleague>> _getContactColleagues(Pool pool, int cont
 
   Map parameters = {'contactid': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     Map<int, model.ReceptionColleague> receptions = new Map<int, model.ReceptionColleague>();
 
-    for(var row in rows) {
+    for(Row row in rows) {
       int receptionId = row.receptionid;
       if(!receptions.containsKey(receptionId)) {
         model.ReceptionColleague reception = new model.ReceptionColleague(row.receptionid, row.organizationid, row.receptionname, row.receptionenabled);
@@ -90,9 +90,9 @@ Future<List<model.Contact>> _getContactList(Pool pool) {
     FROM contacts
   ''';
 
-  return query(pool, sql).then((rows) {
+  return query(pool, sql).then((List<Row> rows) {
     List<model.Contact> contacts = new List<model.Contact>();
-    for(var row in rows) {
+    for(Row row in rows) {
       contacts.add(new model.Contact(row.id, row.full_name, row.contact_type, row.enabled));
     }
     return contacts;
@@ -145,9 +145,9 @@ Future<List<model.Contact>> _getOrganizationContactList(Pool pool, int organizat
 
   Map parameters = {'organization_id': organizationId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.Contact> contacts = new List<model.Contact>();
-    for(var row in rows) {
+    for(Row row in rows) {
       contacts.add(new model.Contact(row.id, row.full_name, row.contact_type, row.enabled));
     }
     return contacts;
