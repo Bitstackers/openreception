@@ -253,14 +253,14 @@ Future<DistributionList> getDistributionList(int receptionId, int contactId) {
   return completer.future;
 }
 
-Future updateDistributionList(int receptionId, int contactId, String data) {
+Future createDistributionListEntry(int receptionId, int contactId, String data) {
   final Completer completer = new Completer();
 
   HttpRequest request;
   String url = '${config.serverUrl}/reception/$receptionId/contact/$contactId/distributionlist?token=${config.token}';
 
   request = new HttpRequest()
-    ..open(HttpMethod.POST, url)
+    ..open(HttpMethod.PUT, url)
     ..onLoad.listen((_) {
       String body = request.responseText;
       if (request.status == 200) {
@@ -276,6 +276,33 @@ Future updateDistributionList(int receptionId, int contactId, String data) {
       completer.completeError(error);
     })
     ..send(data);
+
+  return completer.future;
+}
+
+Future deleteDistributionListEntry(int receptionId, int contactId, int distributionListEntryId) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/contact/$contactId/distributionlist/${distributionListEntryId}?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.DELETE, url)
+    ..onLoad.listen((_) {
+      String body = request.responseText;
+      if (request.status == 200) {
+        completer.complete(JSON.decode(body));
+      } else if (request.status == 403) {
+        completer.completeError(new ForbiddenException(body));
+      } else {
+        completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+      }
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error);
+    })
+    ..send();
 
   return completer.future;
 }

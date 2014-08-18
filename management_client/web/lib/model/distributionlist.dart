@@ -1,44 +1,47 @@
 part of model;
 
 class DistributionList {
-  List<ContactAttribute> to = new List<ContactAttribute>();
-  List<ContactAttribute> cc = new List<ContactAttribute>();
-  List<ContactAttribute> bcc = new List<ContactAttribute>();
+  List<DistributionListEntry> to  = new List<DistributionListEntry>();
+  List<DistributionListEntry> cc  = new List<DistributionListEntry>();
+  List<DistributionListEntry> bcc = new List<DistributionListEntry>();
 
   DistributionList();
 
   DistributionList.fromJson(Map json) {
     if(json['to'] != null && json['to'] is List) {
       List list = json['to'];
-      this.to = list.map(_createReceptionContact).toList();
+      this.to = list.map(_createEntryFromJson).toList();
     }
 
     if(json['cc'] != null && json['cc'] is List) {
       List list = json['cc'];
-      this.cc = list.map(_createReceptionContact).toList();
+      this.cc = list.map(_createEntryFromJson).toList();
     }
 
     if(json['bcc'] != null && json['bcc'] is List) {
       List list = json['bcc'];
-      this.bcc = list.map(_createReceptionContact).toList();
+      this.bcc = list.map(_createEntryFromJson).toList();
     }
   }
 
-  ContactAttribute _createReceptionContact(Map map) =>
-      new ContactAttribute()
+  DistributionListEntry _createEntryFromJson(Map map) =>
+      new DistributionListEntry()
         ..contactId   = map['contact_id']
-        ..receptionId = map['reception_id'];
+        ..receptionId = map['reception_id']
+        ..id          = map['id'];
 
   Map toJson() =>
-    {'to' : to .map(_contactToJson).toList(),
-     'cc' : cc .map(_contactToJson).toList(),
-     'bcc': bcc.map(_contactToJson).toList()
+    {'to' : to .map(_entryToJson).toList(),
+     'cc' : cc .map(_entryToJson).toList(),
+     'bcc': bcc.map(_entryToJson).toList()
     };
 
-  Map _contactToJson(ContactAttribute contactAttribute) =>
-      {'reception_id': contactAttribute.receptionId,
-       'contact_id'  : contactAttribute.contactId};
+  Map _entryToJson(DistributionListEntry entry) =>
+      {'reception_id': entry.receptionId,
+       'contact_id'  : entry.contactId,
+       'id'          : entry.id};
 
+  //TODO Delete
   bool equals(DistributionList other) {
     if(to.length != other.to.length ||
        cc.length != other.cc.length ||
@@ -46,23 +49,38 @@ class DistributionList {
       return false;
     }
 
-    for(ContactAttribute CA in to) {
-      if(!other.to.any((ContactAttribute otherCa) => CA.contactId == otherCa.contactId && CA.receptionId == otherCa.receptionId)) {
+    for(DistributionListEntry entry in to) {
+      if(!other.to.any((DistributionListEntry otherEntry) => entry.contactId == otherEntry.contactId && entry.receptionId == otherEntry.receptionId)) {
         return false;
       }
     }
 
-    for(ContactAttribute CA in cc) {
-      if(!other.cc.any((ContactAttribute otherCa) => CA.contactId == otherCa.contactId && CA.receptionId == otherCa.receptionId)) {
+    for(DistributionListEntry entry in cc) {
+      if(!other.cc.any((DistributionListEntry otherEntry) => entry.contactId == otherEntry.contactId && entry.receptionId == otherEntry.receptionId)) {
         return false;
       }
     }
 
-    for(ContactAttribute CA in bcc) {
-      if(!other.bcc.any((ContactAttribute otherCa) => CA.contactId == otherCa.contactId && CA.receptionId == otherCa.receptionId)) {
+    for(DistributionListEntry entry in bcc) {
+      if(!other.bcc.any((DistributionListEntry otherEntry) => entry.contactId == otherEntry.contactId && entry.receptionId == otherEntry.receptionId)) {
         return false;
       }
     }
     return true;
   }
 }
+
+class DistributionListEntry {
+  int id;
+  int receptionId;
+  int contactId;
+  String role;
+
+  Map toJson() => {
+    'contact_id': contactId,
+    'reception_id': receptionId,
+    'id': id,
+    'role': role
+  };
+}
+
