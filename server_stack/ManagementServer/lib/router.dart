@@ -12,7 +12,7 @@ import 'controller/reception_contact.dart';
 import 'controller/user.dart';
 import 'database.dart';
 import 'utilities/http.dart';
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 final Pattern anyThing = new UrlPattern(r'/(.*)');
 

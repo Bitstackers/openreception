@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'configuration.dart';
 import 'token_vault.dart';
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 
 void setup() {
   logger.debug('Watcher started');

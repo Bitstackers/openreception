@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
@@ -40,7 +40,7 @@ class Configuration {
   int    get httpport     => _httpport;
   String get mailerScript => _mailerScript;
   int    get mailerPeriod => _mailerPeriod;
-  
+
   String emailUsername;
   String emailPassword;
   String emailFromName;
@@ -69,7 +69,7 @@ class Configuration {
       return false;
     }
   }
-  
+
   static String loadWithDefault(String key, Map map, String defaultValue) {
     if (map.containsKey(key)) {
       return (map['key']);
@@ -87,11 +87,11 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
+
       if(config.containsKey('mailerScript')) {
         this._mailerScript = config['mailerScript'];
       }
-      
+
       if(config.containsKey('mailerPeriod')) {
         this._mailerPeriod = config['mailerPeriod'];
       }
@@ -119,7 +119,7 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
-      
+
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -131,7 +131,7 @@ class Configuration {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }

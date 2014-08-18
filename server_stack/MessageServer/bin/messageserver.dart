@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';
-import 'package:OpenReceptionFramework/httpserver.dart' as http;
+import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
-  
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 

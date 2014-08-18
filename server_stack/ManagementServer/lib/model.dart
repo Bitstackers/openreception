@@ -1,6 +1,6 @@
 library model;
 
-import 'package:OpenReceptionFramework/common.dart' as orf;
+import 'package:openreception_framework/common.dart' as orf;
 
 part 'model/audiofile.dart';
 part 'model/colleague.dart';

@@ -10,9 +10,9 @@ import '../database.dart';
 import '../model.dart';
 import '../view/organization.dart';
 import '../view/reception_contact_reduced_reception.dart';
-import 'package:OpenReceptionFramework/service.dart' as orf_service;
-import 'package:OpenReceptionFramework/common.dart' as orf;
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/service.dart' as orf_service;
+import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'contactController';
 

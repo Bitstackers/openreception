@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
@@ -54,7 +54,7 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
+
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
@@ -70,7 +70,7 @@ class Configuration {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }

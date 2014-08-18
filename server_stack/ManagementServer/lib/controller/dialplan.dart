@@ -17,8 +17,8 @@ import '../view/dialplan_template.dart';
 import '../view/playlist.dart';
 import '../view/ivr.dart';
 import '../service.dart' as service;
-import 'package:OpenReceptionFramework/common.dart' as orf;
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'dialplanController';
 

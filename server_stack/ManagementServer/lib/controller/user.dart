@@ -8,8 +8,8 @@ import '../model.dart';
 import '../view/user.dart';
 import '../view/user_group.dart';
 import '../view/user_identity.dart';
-import 'package:OpenReceptionFramework/common.dart' as orf;
-import 'package:OpenReceptionFramework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'userController';
 

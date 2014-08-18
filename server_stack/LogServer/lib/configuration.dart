@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
@@ -54,11 +54,11 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
+
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
-      
+
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -74,20 +74,20 @@ class Configuration {
         _httpport = int.parse(_args['httpport']);
       }
 
-      
-      
+
+
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
       throw error;
     });
   }
-  
+
   void validate() {
     if(authUrl == null) {
       logger.error('authurl is not specified');
       throw('authurl is not specified');
     }
-    
+
     if(httpport <= 0 || httpport > 65535) {
       throw('invalid httpport');
     }

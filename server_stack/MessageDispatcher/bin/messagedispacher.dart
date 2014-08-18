@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart' as Database;
 
@@ -71,7 +71,7 @@ void periodicEmailSend() {
             logger.errorContext("No email recipients detected on message with ID ${queueEntry['message_id']}!", context);
           } else {
             String json = JSON.encode(email);
-  
+
             /* Kick off a mailer process */
             Process.start('python', [config.mailerScript, json]).then((process) {
 
@@ -97,7 +97,7 @@ void periodicEmailSend() {
         }).catchError((onError, stacktrace) {
           logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context);
           // TODO mark the queueEntry as failed.
-          
+
         });
 
       });

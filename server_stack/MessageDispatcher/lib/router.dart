@@ -8,8 +8,8 @@ import 'package:route/server.dart';
 
 import 'configuration.dart';
 import 'database.dart' as db;
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/httpserver.dart';
 
 part 'router/message-queue-single.dart';
 part 'router/message-queue-list.dart';

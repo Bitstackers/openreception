@@ -5,8 +5,8 @@ import 'dart:convert';
 
 import 'package:postgresql/postgresql_pool.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/database.dart' as database;
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/database.dart' as database;
 import 'configuration.dart';
 
 part 'db/getreceptioncontact.dart';
@@ -18,6 +18,6 @@ part 'db/contact-calendar.dart';
 
 Pool _pool;
 
-Future startDatabase() => 
+Future startDatabase() =>
     database.start(config.dbuser, config.dbpassword, config.dbhost, config.dbport, config.dbname)
             .then((pool) {_pool = pool;});

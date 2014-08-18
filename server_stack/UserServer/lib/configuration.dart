@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
@@ -73,7 +73,7 @@ class Configuration {
           throw('Invalid authUrl missing host. ${_authUrl}');
         }
       }
-      
+
       if(config.containsKey('cache')) {
         if(config['cache'].endsWith('/')) {
           _cache = config['cache'];
@@ -105,11 +105,11 @@ class Configuration {
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
-      
+
       if(config.containsKey('sysloghost')) {
         _syslogHost = config['sysloghost'];
       }
-      
+
     })
     .catchError((error) {
       log('Failed to read "$configfile". Error: $error');

@@ -2,7 +2,7 @@ library receptionserver.cache;
 
 import 'dart:async';
 
-import 'package:OpenReceptionFramework/cache.dart' ;
+import 'package:openreception_framework/cache.dart' ;
 import 'configuration.dart';
 
 /**

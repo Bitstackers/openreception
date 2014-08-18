@@ -1,10 +1,10 @@
 name: MessageServer
 description: A simple REST-based message-store server
 dependencies:
-  OpenReceptionFramework:
-    git: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   mailer: any
+  openreception_framework:
+    git: https://github.com/AdaHeads/OpenReceptionFramework.git
   path: any
   postgresql: any
   route: any

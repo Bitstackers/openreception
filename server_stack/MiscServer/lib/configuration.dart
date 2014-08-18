@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
@@ -54,11 +54,11 @@ class Configuration {
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
-      
+
       if(config.containsKey('bobconfigfile')) {
         _bobconfigfile = config['bobconfigfile'];
       }
-      
+
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -70,7 +70,7 @@ class Configuration {
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }
-      
+
       if(hasArgument('bobconfigfile')) {
         _bobconfigfile = _args['bobconfigfile'];
       }

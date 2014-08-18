@@ -8,14 +8,14 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/httpserver.dart';
 
 import 'controller/controller.dart' as Controller;
 import 'model/model.dart' as Model;
-import 'package:OpenReceptionFramework/model.dart' as SharedModel;
-import 'package:OpenReceptionFramework/service.dart' as Service;
-import 'package:OpenReceptionFramework/model.dart';
+import 'package:openreception_framework/model.dart' as SharedModel;
+import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/model.dart';
 
 part 'router/handler-call-hangup.dart';
 part 'router/handler-call-list.dart';

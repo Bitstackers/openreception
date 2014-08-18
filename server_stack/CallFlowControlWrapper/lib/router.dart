@@ -7,8 +7,8 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/httpserver.dart';
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/httpserver.dart';
 
 import 'client_socket.dart';
 
@@ -38,8 +38,8 @@ final Pattern callPickupNextResource = new UrlPattern(r'/call/pickup');
 
 final List<Pattern> allUniqueUrls = [peerListResource,
                                      callListResource, callQueueResource, callHangupResource,
-                                     callParkResource, callOriginateResource, 
-                                     callPickupNextResource, callTransferResource, 
+                                     callParkResource, callOriginateResource,
+                                     callPickupNextResource, callTransferResource,
                                      callPickupNextResource];
 
 void registerHandlers(HttpServer server) {

@@ -1,8 +1,8 @@
 name: NotificationServer
 description: Simple notification server.
 dependencies:
-  OpenReceptionFramework:
-    git: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
+  openreception_framework:
+    git: https://github.com/AdaHeads/OpenReceptionFramework.git
   path: any
   route: any

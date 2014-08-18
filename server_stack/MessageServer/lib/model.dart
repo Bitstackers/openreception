@@ -2,8 +2,8 @@ library model;
 
 import 'dart:async';
 
-import 'package:OpenReceptionFramework/common.dart';
-import 'package:OpenReceptionFramework/model.dart' as SharedModel;
+import 'package:openreception_framework/common.dart';
+import 'package:openreception_framework/model.dart' as SharedModel;
 
 import 'database.dart' as Database;
 

@@ -4,9 +4,9 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenReceptionFramework/common.dart';
+import 'package:openreception_framework/common.dart';
 import '../lib/configuration.dart';
-import 'package:OpenReceptionFramework/httpserver.dart' as http;
+import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 import '../lib/client_socket.dart';
 
