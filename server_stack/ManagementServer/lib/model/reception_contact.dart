@@ -9,7 +9,7 @@ class ReceptionContact {
   bool wantsMessages;
   Map attributes;
   bool receptionEnabled;
-  List phonenumbers;
+  List<Map> phonenumbers;
 
   ReceptionContact.empty();
 

@@ -72,7 +72,7 @@ CREATE TABLE contacts (
 CREATE TABLE organizations (
    id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    full_name    TEXT NOT NULL,
-   bill_type    TEXT NOT NULL,
+   billing_type TEXT NOT NULL,
    flag         TEXT NOT NULL);
 
 CREATE TABLE receptions (
@@ -95,9 +95,7 @@ CREATE TABLE reception_contacts (
    reception_id         INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
    contact_id           INTEGER NOT NULL REFERENCES contacts (id) ON UPDATE CASCADE ON DELETE CASCADE,
    wants_messages       BOOLEAN NOT NULL DEFAULT TRUE,
---   distribution_list_id INTEGER, --  Reference constraint added further down
    attributes           JSON,
-   distribution_list    JSON,
    phonenumbers		JSON,
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
    data_contact    	BOOLEAN NOT NULL DEFAULT FALSE,
@@ -176,17 +174,20 @@ CREATE TABLE message_recipients (
 
 --  The message_queue is a simple job-stack that, when a item is present in the 
 --  table, indicates that is has not been delived to a transport agent.
+--  'unhandled_endpoints' stores a list of recipient endpoints, still waiting
+--  to be dispatched.
 
 CREATE TABLE message_queue (
-   id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   message_id     INTEGER   NOT NULL REFERENCES messages (id),
-   enqueued_at    TIMESTAMP NOT NULL DEFAULT NOW(),
-   last_try       TIMESTAMP     NULL DEFAULT NULL,
-   tries          INTEGER   NOT NULL DEFAULT 0
+   id                  INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   message_id          INTEGER   NOT NULL REFERENCES messages (id),
+   enqueued_at         TIMESTAMP NOT NULL DEFAULT NOW(),
+   last_try            TIMESTAMP     NULL DEFAULT NULL,
+   unhandled_endpoints JSON      NOT NULL DEFAULT '[]',
+   tries               INTEGER   NOT NULL DEFAULT 0
 );
 
 CREATE TABLE message_queue_history (
-   id             INTEGER   NOT NULL PRIMARY KEY,
+   id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message_id     INTEGER   NOT NULL REFERENCES messages (id),
    enqueued_at    TIMESTAMP NOT NULL,
    sent_at        TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -242,6 +243,29 @@ CREATE TABLE reception_calendar (
        ON UPDATE CASCADE ON DELETE CASCADE,
 
    PRIMARY KEY (reception_id, event_id)
+);
+
+------------------------------------------------------------------------------
+-- Distribution list
+CREATE TABLE distribution_list_roles (value TEXT NOT NULL PRIMARY KEY);
+INSERT INTO distribution_list_roles (value) VALUES ('to'), ('cc'), ('bcc');
+
+CREATE TABLE distribution_list (
+  id                     INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+  owner_reception_id     INTEGER NOT NULL,
+  owner_contact_id       INTEGER NOT NULL,
+  role                   TEXT    NOT NULL REFERENCES distribution_list_roles(value) ON UPDATE CASCADE ON DELETE CASCADE,
+  recipient_reception_id INTEGER NOT NULL,
+  recipient_contact_id   INTEGER NOT NULL,
+  UNIQUE(owner_reception_id, owner_contact_id, recipient_reception_id, recipient_contact_id),
+  
+  FOREIGN KEY (owner_contact_id, owner_reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+
+  FOREIGN KEY (recipient_contact_id, recipient_reception_id)
+      REFERENCES reception_contacts (contact_id, reception_id)
+      ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -------------------------------------------------------------------------------

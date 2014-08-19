@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 
 const bool CHECKED = true;
+const bool USE_OBSERVATORY = true;
 
 Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
@@ -87,11 +88,15 @@ void main(List<String> arguments) {
     exit(0);
   });
 
+  int opservatoryCount = 8182;
   writeTokensToDisk(tokens, serverTokenDirAbsolutPath).then((_) =>
   Servers.forEach((String serverName, Map server) {
     print('Starting ${serverName}..');
 
     List<String> args = CHECKED ? ['--checked'] : [];
+    if(USE_OBSERVATORY) {
+      args.add('--enable-vm-service=${opservatoryCount++}');
+    }
     args.add(server['path']);
     args.addAll(server['args']);
 

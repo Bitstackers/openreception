@@ -39,12 +39,11 @@ final List<Pattern> allUniqueUrls = [messageDraftListResource, messageDraftResou
 void setup(HttpServer server) {
   Router router = new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
-    ..serve(messageDraftResource,       method: 'GET'   ).listen(MessageDraft.get)
-    ..serve(messageDraftResource,       method: 'PUT'   ).listen(MessageDraft.update)
-    ..serve(messageDraftCreateResource, method: 'POST'  ).listen(MessageDraft.create)
-    ..serve(messageDraftResource,       method: 'DELETE').listen(MessageDraft.delete)
-    ..serve(messageDraftListResource,   method: 'GET'   ).listen(MessageDraft.list)
-
+    ..serve(messageDraftResource,        method: 'GET'   ).listen(MessageDraft.get)
+    ..serve(messageDraftResource,        method: 'PUT'   ).listen(MessageDraft.update)
+    ..serve(messageDraftCreateResource,  method: 'POST'  ).listen(MessageDraft.create)
+    ..serve(messageDraftResource,        method: 'DELETE').listen(MessageDraft.delete)
+    ..serve(messageDraftListResource,    method: 'GET'   ).listen(MessageDraft.list)
     ..serve(messageResource,             method: 'GET'   ).listen(Message.get)
     ..serve(messageResource,             method: 'PUT'   ).listen(Message.update)
     ..serve(messageListResource,         method: 'GET'   ).listen(Message.listNewest)

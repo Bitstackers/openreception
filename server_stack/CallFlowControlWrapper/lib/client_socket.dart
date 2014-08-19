@@ -26,7 +26,7 @@ class BadRequest extends StateError {
 }
 
 class clientSocket {
-  
+
   String hostname = "";
   int    port     = 0;
 
@@ -35,10 +35,10 @@ class clientSocket {
     clientSocket newInstance = new clientSocket();
     newInstance.hostname = host;
     newInstance.port     = port;
-    
+
     return newInstance._connect();
   }
-  
+
   Future<clientSocket> _connect() {
     return Socket.connect(this.hostname, this.port).then((newSocket) {
       this.callFlowClient = newSocket;
@@ -71,7 +71,7 @@ class clientSocket {
       print ('Disconnected from ${this.hostname}');
     });
   }
-  
+
   Future<Response> command(Map command) {
     String buffer = "";
 
@@ -84,20 +84,20 @@ class clientSocket {
       }
 
       Response response = new Response.fromMap(JSON.decode(line));
-      
+
       switch (response.status) {
         case ServerResponses.SUCCESS:
           completer.complete(response);
           break;
-        
+
         case ServerResponses.NOT_FOUND:
           completer.completeError(new NotFound(response.errorText));
           break;
-          
+
         case ServerResponses.BAD_REQUEST:
           completer.completeError(new BadRequest(response.errorText));
           break;
-          
+
         case ServerResponses.PERMISSION_DENIED:
           completer.completeError(new NotAuthorized(response.errorText));
           break;
@@ -127,8 +127,8 @@ abstract class ServerResponses {
   static const String NOT_FOUND = 'NOT_FOUND';
   static const String INTERNAL_ERROR = 'INTERNAL_ERROR';
 
-  static List<String> validResponses = [PERMISSION_DENIED, UNKNOWN_RESOURCE, 
-                                        SUCCESS, BAD_REQUEST, 
+  static List<String> validResponses = [PERMISSION_DENIED, UNKNOWN_RESOURCE,
+                                        SUCCESS, BAD_REQUEST,
                                         NOT_FOUND, INTERNAL_ERROR];
 
 }

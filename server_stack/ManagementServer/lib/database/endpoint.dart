@@ -67,9 +67,9 @@ Future<List<model.Endpoint>> _getEndpointList(Pool pool, int receptionid, int co
       {'receptionid' : receptionid,
        'contactid'   : contactid};
 
-  return query(pool, sql, parameters).then((rows) {
+  return query(pool, sql, parameters).then((List<Row> rows) {
     List<model.Endpoint> endpoints = new List<model.Endpoint>();
-    for(var row in rows) {
+    for(Row row in rows) {
       endpoints.add(new model.Endpoint(row.contact_id, row.reception_id, row.address, row.address_type, row.confidential, row.enabled, row.priority, row.description));
     }
     return endpoints;

@@ -1,10 +1,10 @@
 name: CallFlowControlWrapper
 description: Simple HTTP wrapper around the Call-Flow-Control socket interface.
 dependencies:
+  args: any
   openreception_framework:
     git:
       ref: converging_model
       url: https://github.com/AdaHeads/OpenReceptionFramework.git
-  args: any
   path: any
   route: any

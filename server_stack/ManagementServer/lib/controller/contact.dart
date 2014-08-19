@@ -26,20 +26,20 @@ class ContactController {
     const String context = '${libraryName}.createContact';
 
     orf_http.extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.createContact(data['full_name'], data['contact_type'], data['enabled']))
-    .then((int id) =>
-        orf_http.writeAndClose(request, contactIdAsJson(id)).then((_) {
-          Map data = {'event' : 'contactEventCreated', 'contactEvent' : {'contactId' : id}};
-          orf_service.Notification.broadcast(data, config.notificationServer, config.token)
-            .catchError((error) {
-              orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
-            });
-        }))
-    .catchError((error) {
-      orf.logger.errorContext(error, context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.createContact(data['full_name'], data['contact_type'], data['enabled']))
+      .then((int id) =>
+          orf_http.writeAndClose(request, contactIdAsJson(id)).then((_) {
+            Map data = {'event' : 'contactEventCreated', 'contactEvent' : {'contactId' : id}};
+            orf_service.Notification.broadcast(data, config.notificationServer, config.token)
+              .catchError((error) {
+                orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+              });
+          }))
+      .catchError((error) {
+        orf.logger.errorContext(error, context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void deleteContact(HttpRequest request) {
@@ -47,18 +47,18 @@ class ContactController {
     final int contactId =  orf_http.pathParameter(request.uri, 'contact');
 
     db.deleteContact(contactId)
-    .then((_) => orf_http.allOk(request))
-    .then((_) {
-      Map data = {'event' : 'contactEventDeleted', 'contactEvent' : {'contactId' : contactId}};
-      return orf_service.Notification.broadcast(data, config.notificationServer, config.token)
-        .catchError((error) {
-          orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
-        });
-    })
-    .catchError((error) {
-      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then((_) => orf_http.allOk(request))
+      .then((_) {
+        Map data = {'event' : 'contactEventDeleted', 'contactEvent' : {'contactId' : contactId}};
+        return orf_service.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+          });
+      })
+      .catchError((error) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void getAContactsOrganizationList(HttpRequest request) {
@@ -151,19 +151,19 @@ class ContactController {
     final int contactId = orf_http.pathParameter(request.uri, 'contact');
 
     orf_http.extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.updateContact(contactId, data['full_name'], data['contact_type'], data['enabled']))
-    .then((int id) => orf_http.writeAndClose(request, contactIdAsJson(id)))
-    .then((_) {
-      Map data = {'event' : 'contactEventUpdated', 'contactEvent' : {'contactId' : contactId}};
-      orf_service.Notification.broadcast(data, config.notificationServer, config.token)
-        .catchError((error) {
-          orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
-        });
-    })
-    .catchError((error) {
-      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.updateContact(contactId, data['full_name'], data['contact_type'], data['enabled']))
+      .then((int id) => orf_http.writeAndClose(request, contactIdAsJson(id)))
+      .then((_) {
+        Map data = {'event' : 'contactEventUpdated', 'contactEvent' : {'contactId' : contactId}};
+        orf_service.Notification.broadcast(data, config.notificationServer, config.token)
+          .catchError((error) {
+            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+          });
+      })
+      .catchError((error) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 }

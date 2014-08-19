@@ -38,8 +38,8 @@ final Pattern callPickupNextResource = new UrlPattern(r'/call/pickup');
 
 final List<Pattern> allUniqueUrls = [peerListResource,
                                      callListResource, callQueueResource, callHangupResource,
-                                     callParkResource, callOriginateResource, 
-                                     callPickupNextResource, callTransferResource, 
+                                     callParkResource, callOriginateResource,
+                                     callPickupNextResource, callTransferResource,
                                      callPickupNextResource];
 
 void registerHandlers(HttpServer server) {

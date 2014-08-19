@@ -1,9 +1,9 @@
 part of model;
 
 class DistributionList {
-  List<ReceptionContact> to = new List<ReceptionContact>();
-  List<ReceptionContact> cc = new List<ReceptionContact>();
-  List<ReceptionContact> bcc = new List<ReceptionContact>();
+  List<DistributionListEntry> to = new List<DistributionListEntry>();
+  List<DistributionListEntry> cc = new List<DistributionListEntry>();
+  List<DistributionListEntry> bcc = new List<DistributionListEntry>();
 
   DistributionList();
 
@@ -13,9 +13,10 @@ class DistributionList {
     try {
       if(json['to'] != null && json['to'] is List) {
         List list = json['to'];
-        this.to = list.map((Map map) => new ReceptionContact.empty()
+        this.to = list.map((Map map) => new DistributionListEntry()
                                             ..receptionId = map['reception_id']
-                                            ..contactId   = map['contact_id']).toList();
+                                            ..contactId   = map['contact_id']
+                                            ..id          = map['id']).toList();
       }
     } catch(error) {
       orf.logger.errorContext('Error: "${error}" from ${json['to']} ', context);
@@ -24,9 +25,10 @@ class DistributionList {
     try {
       if(json['cc'] != null && json['cc'] is List) {
         List list = json['cc'];
-        this.cc = list.map((Map map) => new ReceptionContact.empty()
+        this.cc = list.map((Map map) => new DistributionListEntry()
                                             ..receptionId = map['reception_id']
-                                            ..contactId   = map['contact_id']).toList();
+                                            ..contactId   = map['contact_id']
+                                            ..id          = map['id']).toList();
       }
     } catch(error) {
       orf.logger.errorContext('Error: "${error}" from ${json['cc']} ', context);
@@ -35,12 +37,19 @@ class DistributionList {
     try {
       if(json['bcc'] != null && json['bcc'] is List) {
         List list = json['bcc'];
-        this.bcc = list.map((Map map) => new ReceptionContact.empty()
+        this.bcc = list.map((Map map) => new DistributionListEntry()
                                             ..receptionId = map['reception_id']
-                                            ..contactId   = map['contact_id']).toList();
+                                            ..contactId   = map['contact_id']
+                                            ..id          = map['id']).toList();
       }
     } catch(error) {
       orf.logger.errorContext('Error: "${error}" from ${json['bcc']} ', context);
     }
   }
+}
+
+class DistributionListEntry {
+  int id;
+  int receptionId;
+  int contactId;
 }

@@ -33,9 +33,9 @@ final Pattern receptionContactCalendarResource       = new UrlPattern(r'/contact
 final Pattern receptionContactCalendarCreateResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event');
 final Pattern receptionContactCalendarListResource   = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
 
-final List<Pattern> allUniqueUrls = 
-   [receptionContactInvalidateResource, 
-    receptionContactResource, 
+final List<Pattern> allUniqueUrls =
+   [receptionContactInvalidateResource,
+    receptionContactResource,
     receptionContactListResource,
     receptionContactCalendarResource,
     receptionContactCalendarListResource];

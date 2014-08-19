@@ -8,12 +8,12 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
   SELECT 
             (org.id)        AS org_id,
             (org.full_name) AS org_name,
-            (org.bill_type) AS bill_type,
+            (org.billing_type) AS billing_type,
             (org.flag)      AS flag,
       COUNT (cdr.uuid)      AS call_count, 
       SUM   (cdr.duration)  AS total_duration,
       SUM   (wait_time)     AS total_wait,
-      AVG   (cdr.duration)  AS avg_duration
+      ceiling(AVG   (cdr.duration))  AS avg_duration
       
   FROM 
        cdr_entries   cdr
@@ -40,14 +40,14 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
 
     for(var row in rows) {
 
-      cdr.add({'org_id'     : row.org_id,
-                 'org_name'   : row.org_name,
-                 'bill_type'  : row.bill_type,
-                 'flag'       : row.flag,
-                 'call_count' : row.call_count,
-                 'duration'   : row.total_duration,
-                 'total_wait' : row.total_wait,
-                 'avg_duration': double.parse(row.avg_duration)});
+      cdr.add({'org_id'       : row.org_id,
+               'org_name'     : row.org_name,
+               'billing_type' : row.billing_type,
+               'flag'         : row.flag,
+               'call_count'   : row.call_count,
+               'duration'     : row.total_duration,
+               'total_wait'   : row.total_wait,
+               'avg_duration' : double.parse(row.avg_duration)});
     }
 
     return cdr;

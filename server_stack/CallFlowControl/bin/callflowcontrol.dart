@@ -45,11 +45,11 @@ void main(List<String> args) {
 }
 
 void connectESLClient() {
-  
+
   const String context = 'connectClient';
-  
+
   Duration period = new Duration(seconds : 3);
-  
+
   logger.infoContext('Connecting to ${config.eslHostname}:${config.eslPort}', context);
 
   Model.PBXClient.instance =  new ESL.Connection();
@@ -76,9 +76,9 @@ void connectESLClient() {
     if (error is SocketException) {
       logger.errorContext('ESL Connection failed - reconnecting in ${period.inSeconds} seconds', context);
       new Timer(period, connectESLClient);
-      
+
     } else {
-      logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);  
+      logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);
     }
   });
 }

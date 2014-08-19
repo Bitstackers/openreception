@@ -31,7 +31,7 @@ class Configuration {
   int    get dbport     => _dbport;
   String get dbname     => _dbname;
   int    get httpport   => _httpport;
-  
+
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
       _configuration = new Configuration._internal(args);
@@ -64,7 +64,7 @@ class Configuration {
       if(config.containsKey('authurl')) {
         _authUrl = Uri.parse(config['authurl']);
       }
-      
+
       if(config.containsKey('httpport')) {
         _httpport = config['httpport'];
       }
@@ -88,7 +88,7 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
-      
+
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -100,7 +100,7 @@ class Configuration {
       if(hasArgument('authurl')) {
         _authUrl = Uri.parse(_args['authurl']);
       }
-      
+
       if(hasArgument('httpport')) {
         _httpport = int.parse(_args['httpport']);
       }

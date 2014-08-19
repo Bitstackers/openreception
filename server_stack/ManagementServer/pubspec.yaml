@@ -1,16 +1,16 @@
 name: server
 description: A sample command-line application
 dependencies:
-  openreception_framework:
-    git:
-      ref: converging_model
-      url: https://github.com/AdaHeads/OpenReceptionFramework.git
   args: any
   http: any
   libdialplan:
     git:
       ref: master
       url: https://github.com/AdaHeads/libdialplan.git
+  openreception_framework:
+    git:
+      ref: converging_model
+      url: https://github.com/AdaHeads/OpenReceptionFramework.git
   path: any
   postgresql: any
   route: any

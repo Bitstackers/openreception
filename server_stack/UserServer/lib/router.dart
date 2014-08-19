@@ -10,7 +10,7 @@ import 'configuration.dart';
 import 'package:openreception_framework/common.dart';
 import 'package:openreception_framework/httpserver.dart';
 import 'package:openreception_framework/model.dart' as Model;
-import 'database/database.dart'; 
+import 'database/database.dart';
 
 part 'router/user.dart';
 part 'router/group.dart';
