@@ -36,7 +36,7 @@ class Contact implements Comparable {
   String position = '';
   String relations = '';
   String responsibility = '';
-  List<Recipient> _distributionList = new List<Recipient>();
+  ORModel.MessageRecipientList _distributionList = new ORModel.MessageRecipientList.empty();
   List<String> _tags = new List<String>();
   List<PhoneNumber> _phoneNumberList = new List<PhoneNumber>();
   MiniboxList _telephoneNumberList = new MiniboxList();
@@ -51,7 +51,7 @@ class Contact implements Comparable {
   MiniboxList get telephoneNumberList => _telephoneNumberList; // <- TODO: cleanup this
   List<PhoneNumber> get phoneNumberList => _phoneNumberList;
   MiniboxList get workHoursList => _workHoursList;
-  List<Recipient> get distributionList => _distributionList;
+  ORModel.MessageRecipientList get distributionList => this._distributionList;
 
   static final Contact noContact = nullContact;
 
@@ -67,13 +67,16 @@ class Contact implements Comparable {
   }
 
   /**
-   * 
+   *
    */
-  Future<List<Recipient>> dereferenceDistributionList() {
+  Future<ORModel.MessageRecipientList> dereferenceDistributionList() {
 
-    Completer<List<Recipient>> completer = new Completer<List<Recipient>>();
+    Completer<ORModel.MessageRecipientList> completer = new Completer<ORModel.MessageRecipientList>();
 
-    Future.forEach(this.distributionList, (Recipient recipient) {
+    this.distributionList.forEach(print);
+
+    Future.forEach(this.distributionList,
+        (ORModel.MessageRecipient recipient) {
       return Contact.get(recipient.contactID, recipient.receptionID).then((Contact dereferencedContact) {
         recipient.contactName = dereferencedContact.name;
 
@@ -94,6 +97,7 @@ class Contact implements Comparable {
 
   /**
    * [Contact] constructor. Expects a map in the following format:
+   * TODO: Verify the format of this map and put it on the wiki.
    *
    * intString JSON object =
    *  {
@@ -169,20 +173,23 @@ class Contact implements Comparable {
             (recipientList as List).forEach((Map recipientMap) {
               Map map = {};
               try {
-                
+
                 log.debugContext('${map}', context);
-                
-                map['role'] = role;
-                map['contact'] = {'id' : recipientMap['contact_id']};
-                map['reception'] = {'id' : recipientMap['reception_id']};;
-                
-                this._distributionList.add(new Recipient.fromMap(map));
-                
+
+                this._distributionList.add(
+                    new ORModel.MessageRecipient.fromMap(
+                        { 'contact'   : {'id'   : recipientMap['contact_id'],
+                                         'name' : null},
+                          'reception' : {'id'   : recipientMap['reception_id'],
+                                         'name' : null},
+                        },
+                        role : role));
+
 
               } catch (error) {
                 log.errorContext('Failed to parse recipient ${recipientMap}', context);
               }
-              
+
             });
           });
         }

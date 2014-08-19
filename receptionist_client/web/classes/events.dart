@@ -48,7 +48,7 @@ final EventType<UIContext.Context> contextChanged               = new EventType<
 final EventType<model.MessageFilter> messageFilterChanged       = new EventType<model.MessageFilter>();
 
 final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
-final EventType<model.Message> selectedEditMessageChanged       = new EventType<model.Message>();
+final EventType selectedMessagesChanged                         = new EventType();
 final EventType<State> stateUpdated                             = new EventType<State>();
 final EventType CreateNewContactEvent                           = new EventType();
 final EventType Save                                            = new EventType();

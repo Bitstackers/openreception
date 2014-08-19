@@ -39,20 +39,20 @@ class MessageFilter{
       ..selectedElementChanged = (String text) {
       switch (text) {
         case 'Sendte':
-          model.MessageFilter.current.state = model.MessageState.Sent;
+          model.MessageFilter.current.messageState = ORModel.MessageState.Sent;
 
           break;
 
         case 'Gemte':
-          model.MessageFilter.current.state = model.MessageState.Saved;
+          model.MessageFilter.current.messageState = ORModel.MessageState.Saved;
           break;
 
         case 'Venter':
-          model.MessageFilter.current.state = model.MessageState.Pending;
+          model.MessageFilter.current.messageState = ORModel.MessageState.Pending;
           break;
 
         default:
-          model.MessageFilter.current.state = null;
+          model.MessageFilter.current.messageState = null;
           break;
 
       }

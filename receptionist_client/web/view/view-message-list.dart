@@ -12,7 +12,7 @@ class MessageList {
   static const String CommandPreviousPage = 'Q';
   static const String CommandNextPage     = 'W';
   static const String SelectedClass       = 'selected';
-  static const int    viewLimit           = 20;
+  static const int    viewLimit           = 30;
 
   static final messageDateFormat = new DateFormat('EEE, MMM d, HH:mm');
 
@@ -72,9 +72,8 @@ class MessageList {
       newRow.focus();
     }
 
-    Service.Message.get (int.parse(newRow.dataset['messageID'])).then((model.Message message) {
-      event.bus.fire(event.selectedEditMessageChanged, message);
-    });
+    model.Message.selectedMessages = [int.parse(newRow.dataset['messageID'])].toSet();
+    event.bus.fire(event.selectedMessagesChanged, null);
   }
 
   /**
@@ -130,9 +129,16 @@ class MessageList {
     model.MessageList.instance.events.on(model.MessageList.add).listen((int messageID) {
       const String context = '${className}.add (listener)';
 
+      /// Hacky way of fetching message and determining if is affected by the current filter.
       Storage.Message.list (filter: model.MessageFilter.current, lastID: messageID, limit: 1)
         .then ((model.MessageList messages) {
-          if (messages.length > 0) {
+
+        TableRowElement existingRow = this.tableBody.children.firstWhere((TableRowElement row) => row.dataset['messageID'] == messageID.toString(), orElse: () => null);
+
+        if (existingRow != null) {
+          existingRow = this.createRow(messages.first);
+        }
+        else if (messages.length > 0) {
             this.tableBody.insertBefore(this.createRow(messages.first), this.firstRow);
               this.selectedRow == this.firstRow;
             this.lastRow.remove();
@@ -156,6 +162,8 @@ class MessageList {
         if (this._selectedRow != null && !muted) {
           CheckboxInputElement checkbox = this._selectedRow.querySelector('input');
           checkbox.checked = !checkbox.checked;
+
+
           e.preventDefault();
         }
       }
@@ -237,9 +245,9 @@ class MessageList {
            new TableCellElement()
               ..text = '${message.ID} ${message.caller.name} (${message.caller.company})',
            new TableCellElement()
-              ..text = '${message.context.contact.name} (${message.context.reception.name})',
+              ..text = '${message.context.contactName} (${message.context.receptionName})',
            new TableCellElement()
-              ..text = message.takenByAgent['name'],
+              ..text = message.sender.name,
            new TableCellElement()
               ..children = [_messageStatusIcon (message)]]);
   }

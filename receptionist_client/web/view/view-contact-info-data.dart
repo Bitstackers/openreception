@@ -43,7 +43,7 @@ class ContactInfoData {
     emailAddressList = querySelector('#${id.CONTACT_EMAIL_ADDRESS_LIST}');
     info = querySelector('#${id.CONTACT_ADDITIONAL_INFO}');
     backupList = querySelector('#${id.CONTACT_BACKUP_LIST}');
-    
+
     this._registerEventHandlers();
   }
 
@@ -63,7 +63,7 @@ class ContactInfoData {
     department.innerHtml = contact.department != null ? contact.department : '';
 
     telephoneNumberList.children.clear();
-    
+
     int index = 1;
     for (var item in contact.phoneNumberList) {
 
@@ -90,18 +90,16 @@ class ContactInfoData {
     /* Add all contacts from the contacts distribution list.*/
     emailAddressList.children.clear();
 
-    for (var item in contact.distributionList) {
-      model.Contact.get(item.contactID, item.receptionID).then((model.Contact contact) {
-        model.Reception.get(item.receptionID).then((model.Reception reception) {
-          if (reception != model.Reception.selectedReception) {
-            LIElement li = new LIElement()
-                ..text = '${contact.name} (${reception.name})'
-                ..classes.add(item.role);
-            emailAddressList.children.add(li);
-          }
-        });
+    contact.dereferenceDistributionList().then((ORModel.MessageRecipientList recipients) {
+      recipients.forEach((ORModel.MessageRecipient recipient) {
+        LIElement li = new LIElement()
+            ..text = '${recipient.contactName} (${recipient.receptionName})'
+            ..classes.add(recipient.role);
+        emailAddressList.children.add(li);
+
       });
-    }
+    });
+
 
     info.innerHtml = contact.info != null ? contact.info : '';
 
@@ -121,7 +119,7 @@ class ContactInfoData {
     event.bus.on(event.keyNav).listen((bool isPressed) {
       this.hideNudges(!isPressed);
     });
-    
+
     event.bus.on(event.CallSelectedContact).listen((int index) {
       if (telephoneNumberList.children.length < index) {
         return;
@@ -129,7 +127,7 @@ class ContactInfoData {
 
       telephoneNumberList.children [index-1].querySelector('button').click();
     });
-    
+
     event.bus.on(event.contactChanged).listen((model.Contact value) {
       contact = value;
       render();

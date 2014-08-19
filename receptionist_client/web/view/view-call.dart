@@ -14,12 +14,12 @@
 part of view;
 
 /**
- * Widget representing a call. 
+ * Widget representing a call.
  */
 class Call {
-  
+
   static const String className = '${libraryName}.Call';
-  
+
   Duration age = new Duration(seconds: 0);
   String reception = "...";
   SpanElement ageElement;
@@ -46,16 +46,16 @@ class Call {
         <button class="transfer-button">Viderestil</button>
       </li>
     ''');
-    
+
     age = new DateTime.now().difference(call.start);
     element = htmlChunk.querySelector('.call-queue-item-default');
-        
+
     this.pickupButton = htmlChunk.querySelector('.pickup-button')
-     ..onClick.listen((_) { call.pickup();});
+     ..onClick.listen((_) => call.pickup());
 
     this.parkButton = htmlChunk.querySelector('.park-button')
       ..onClick.listen((_) { call.park();});
-    
+
     this.hangupButton = htmlChunk.querySelector('.hangup-button')
      ..onClick.listen((_) {call.hangup();});
 
@@ -64,7 +64,7 @@ class Call {
 
     ageElement = element.querySelector('.call-queue-item-seconds')
         ..text = _renderDuration(age);
-    
+
     callElement = element.querySelector('.call-queue-element')
         ..text = '${reception} (${call.destination}) ${call.state}';
 
@@ -77,7 +77,7 @@ class Call {
       this.age += pollInterval;
       ageElement.text = _renderDuration(age);
     });
-    
+
     this._renderButtons();
   }
 
@@ -88,7 +88,7 @@ class Call {
     if (duration.inSeconds > 59) {
       int minutes = duration.inSeconds ~/ 60;
       int seconds = duration.inSeconds - (minutes * 60);
-      
+
       // Hotfix of missing leading zero.
       if (seconds < 10) {
         return '${minutes}:0${seconds}';
@@ -100,29 +100,29 @@ class Call {
       return '0:${duration.inSeconds}';
     }
   }
-  
+
   void render() {
     this._renderButtons();
   }
-  
+
   void _renderButtons () {
-    this.pickupButton.hidden   = ! (call.availableForUser(model.User.currentUser) && 
+    this.pickupButton.hidden   = ! (call.availableForUser(model.User.currentUser) &&
                                     call.state != model.CallState.SPEAKING);
-    this.parkButton.hidden     = ! (call.availableForUser(model.User.currentUser) && 
+    this.parkButton.hidden     = ! (call.availableForUser(model.User.currentUser) &&
                                     call.state == model.CallState.SPEAKING);
     this.hangupButton.hidden   = ! (call.assignedAgent == model.User.currentUser);
     this.transferButton.hidden = ! (call.assignedAgent == model.User.currentUser);
   }
-  
+
   /**
    * Event handler for taking care of the queueJoin events in the Widget.
-   * 
-   * Simply hides the call from sight, as it should be removed only by a 
+   *
+   * Simply hides the call from sight, as it should be removed only by a
    * callHangup event.
    */
   void _callQueueJoinHandler (model.Call queuedCall) {
     const String context = '${className}._callQueueJoinHandler';
-    
+
     if (this.call == queuedCall) {
       log.debugContext("Unhiding call ${queuedCall.ID} from call queue.", context);
       this.element.hidden = false;
@@ -130,20 +130,20 @@ class Call {
   }
 
   /**
-   * Event handler for taking care of the queueLeave events in the Widget. 
+   * Event handler for taking care of the queueLeave events in the Widget.
    */
   void _callQueueRemoveHandler (_) {
     const String context = '${className}._callQueueRemoveHandler';
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
     this.element.classes.toggle("answered", true);
-    
+
     this.element.hidden = true;
-    
+
     this._renderButtons();
   }
 
   /**
-   * Event handler for taking care of the park events in the Widget. 
+   * Event handler for taking care of the park events in the Widget.
    */
   void _callParkHandler (_) {
     const String context = '${className}._callParkHandler';
@@ -153,7 +153,7 @@ class Call {
   }
 
   /**
-   * Event handler for taking care of the callHangup event in the Widget. 
+   * Event handler for taking care of the callHangup event in the Widget.
    */
   void _callHangupHandler (_) {
     const String context = '${className}._callQueueRemoveHandler';

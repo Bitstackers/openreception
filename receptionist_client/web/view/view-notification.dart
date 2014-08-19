@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * 
+ *
  */
 
 class Notification {
@@ -33,11 +33,12 @@ class Notification {
   }
 
   void registerEventListeners() {
-    
+
     nl.events.on(model.NotificationList.insert).listen((model.Notification notification) {
-          
+
       node.append(new HeadingElement.h4()
       ..text = notification.message..id = 'notification_${notification.ID}'
+      ..classes.toggle(notification.type)
       ..onClick.listen((_) {nl.remove(notification);}));
     });
 

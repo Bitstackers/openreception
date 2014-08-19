@@ -29,6 +29,8 @@ abstract class Label {
   static const String MessageResendSelected     = 'Gensend valgte';
   static const String MessageSent               = 'Sendt';
   static const String MessageTakenAt            = 'Modtaget';
+  static const String MessageUpdated            = 'Beskeden blev opdateret';
+  static const String MessageNotUpdated         = 'Beskeden kunne ikke opdateres';
 
   static final String Phone                     = 'Telefon';
   static final String CellPhone                 = 'Mobilnummer';

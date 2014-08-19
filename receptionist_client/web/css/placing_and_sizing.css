@@ -141,7 +141,7 @@ button::-moz-focus-inner {
 
 .focus {
   border: 2px dashed black !important;
-  
+
 }
 
 #notifications {
@@ -155,9 +155,6 @@ button::-moz-focus-inner {
   color:#555;
   border-radius: 4px;
   font-weight:bold;
-
-  background:#fff8c4 url('../images/warning.png') no-repeat 10px 50%;
-  border:1px solid #f2c779;
 }
 .error {
   background:#ffecec url('../images/error.png') no-repeat 10px 50%;

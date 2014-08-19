@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * View for a message being edited. This widget listens for [selectedEditMessageChanged]
+ * View for a message being edited. This widget listens for [selectedMessagesChanged]
  * events and render the selected message.
  */
 class MessageEdit {
@@ -57,7 +57,6 @@ class MessageEdit {
 
   model.Reception reception = model.nullReception;
   model.Contact contact = model.nullContact;
-  List<model.Recipient> recipients = new List<model.Recipient>();
 
   model.Message activeMessage = null;
 
@@ -195,7 +194,7 @@ class MessageEdit {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
-    event.bus.on(event.selectedEditMessageChanged ).listen(this._renderMessage);
+    event.bus.on(event.selectedMessagesChanged ).listen(this._fetchAndRender);
     this.draft.onClick.listen((_) => this.resendButton.disabled = this.draft.checked);
 
     /// Button click handlers
@@ -208,39 +207,46 @@ class MessageEdit {
    */
   Future<model.Message> _harvestMessage() {
 
-    return new Future(() {
+     return new Future(() {
       this.activeMessage
          ..body = messageBodyField.value
          ..caller.name = callerNameField.value
          ..caller.company = callerCompanyField.value
          ..caller.phone= callerPhoneField.value
          ..caller.cellphone = callerCellphoneField.value
-         ..caller.localExtension = callerLocalExtensionField.value;
+         ..caller.localExtension = callerLocalExtensionField.value
+         ..flags.clear();
 
+      pleaseCall.checked ? this.activeMessage.flags.add('pleaseCall') : null;
+      callsBack.checked  ? this.activeMessage.flags.add('willCallBack') : null;
+      hasCalled.checked  ? this.activeMessage.flags.add('hasCalled') : null;
+      urgent.checked     ? this.activeMessage.flags.add('urgent') : null;
 
-     List<String> flags = [];
-      pleaseCall.checked ? flags.add('urgent') : null;
-      callsBack.checked ? flags.add('willCallBack') : null;
-      hasCalled.checked ? flags.add('called') : null;
-      urgent.checked ? flags.add('urgent') : null;
-
-      draft.checked ? flags.add('draft') : null;
-
-
-      this.activeMessage.recipients.clear();
-      for (model.Recipient recipient in this.recipients) {
-        this.activeMessage.addRecipient(recipient);
-      }
+      draft.checked      ? this.activeMessage.flags.add('draft') : null;
 
       return this.activeMessage;
     });
   }
 
+  void _fetchAndRender (_) {
+    if (model.Message.selectedMessages.length == 1) {
+      Storage.Message.get(model.Message.selectedMessages.first).then(_renderMessage);
+      this.isDisabled = false;
+
+    } else {
+      this._clearInputFields();
+      this.isDisabled = true;
+    }
+  }
+
+
   /**
    * Renders a message
    */
   void _renderMessage (model.Message message) {
-    this.messageBodyField.text = message.body;
+    this.activeMessage = message;
+
+    this.messageBodyField.value = message.body;
     this.callerNameField.value      = message.caller.name;
     this.callerCompanyField.value      = message.caller.company;
     this.callerPhoneField.value  = message.caller.phone;
@@ -256,9 +262,10 @@ class MessageEdit {
     this.resendButton.disabled = this.draft.checked;
 
     // /Updates the recipient list.
-    recipientsList.children.clear();
 
-    message.recipients.forEach((model.Recipient recipient) {
+
+    recipientsList.children.clear();
+    message.recipients.forEach((ORModel.MessageRecipient recipient) {
       recipientsList.children.add(new LIElement()
                                   ..text = recipient.contactName
                                   ..classes.add('email-recipient-role-${recipient.role}'));
@@ -274,11 +281,16 @@ class MessageEdit {
     this.isDisabled = true;
 
     this._harvestMessage().then ((model.Message message) {
-      message.save().then((_) {
+      message.saveTMP().then((_) {
         log.debug('Sent message');
-        this._clearInputFields();
+        model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
+
+        Storage.Message.get(message.ID).then(this._renderMessage);
+
+
       }).catchError((error) {
         log.debug('----- Send Message Unlucky Result: ${error}');
+        model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
       }).whenComplete(() => this.isDisabled = false);
     });
   }
@@ -290,12 +302,19 @@ class MessageEdit {
     this.isDisabled = true;
 
     this._harvestMessage().then ((model.Message message) {
-      message.send().then((_) {
+
+      message.sendTMP().then((_) {
+        model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
         log.debug('Sent message');
         this._clearInputFields();
+
+        model.Message.selectedMessages.clear();
+        event.bus.fire(event.selectedMessagesChanged, null);
+
       }).catchError((error) {
+        model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
         log.debug('----- Send Message Unlucky Result: ${error}');
-      }).whenComplete(() => this.isDisabled = false);
+      });
     });
   }
 }

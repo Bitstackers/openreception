@@ -54,7 +54,7 @@ class Message {
 
   model.Reception reception = model.nullReception;
   model.Contact contact = model.nullContact;
-  List<model.Recipient> recipients = new List<model.Recipient>();
+  ORModel.MessageRecipientList recipients = new ORModel.MessageRecipientList.empty();
 
   /**
    * Update the disabled property.
@@ -179,7 +179,7 @@ class Message {
   void _renderRecipientList() {
     // Updates the recipient list.
     recipientsList.children.clear();
-    this.recipients.forEach((model.Recipient recipient) {
+    this.recipients.forEach((ORModel.MessageRecipient recipient) {
       recipientsList.children.add(new LIElement()
                                     ..text = recipient.contactName
                                     ..classes.add('email-recipient-role-${recipient.role}'));
@@ -211,12 +211,12 @@ class Message {
   void _renderContact(model.Contact contact) {
     this.contact = contact;
 
-    this.recipients.clear();
+    this.recipients = new ORModel.MessageRecipientList.empty();
     if (this.contact != model.Contact.noContact) {
       this.isDisabled = false;
-      contact.dereferenceDistributionList().then((List<model.Recipient> dereferencedDistributionList) {
+      contact.dereferenceDistributionList().then((ORModel.MessageRecipientList dereferencedDistributionList) {
         // Put all the dereferenced recipients to the local list.
-        dereferencedDistributionList.forEach((model.Recipient recipient) {
+        dereferencedDistributionList.forEach((ORModel.MessageRecipient recipient) {
           this.recipients.add(recipient);
         });
 
@@ -274,8 +274,8 @@ class Message {
 
       draft.checked ? pendingMessage.addFlag('draft') : null;
 
-      for (model.Recipient recipient in this.recipients) {
-        pendingMessage.addRecipient(recipient);
+      for (ORModel.MessageRecipient recipient in this.recipients) {
+        pendingMessage.recipients.add(recipient);
       }
 
       return pendingMessage;
@@ -289,7 +289,7 @@ class Message {
     this.isDisabled = true;
 
     this._harvestMessage().then ((model.Message message) {
-      message.send().then((_) {
+      message.sendTMP().then((_) {
         log.debug('Sent message');
         this._clearInputFields();
       }).catchError((error) {
@@ -305,7 +305,7 @@ class Message {
     this.isDisabled = true;
 
     this._harvestMessage().then ((model.Message message) {
-      message.save().then((_) {
+      message.saveTMP().then((_) {
         log.debug('Sent message');
         this._clearInputFields();
       }).catchError((error) {

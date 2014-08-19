@@ -19,6 +19,7 @@ import 'dart:html';
 import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 import '../classes/events.dart' as event;
 import '../model/model.dart' as model;

@@ -19,7 +19,7 @@ abstract class Message {
     final String base = configuration.messageBaseUrl.toString();
     final Completer completer = new Completer();
     final List<String> fragments = new List<String>();
-    final String path = '/message';
+    final String path = '/message${message.ID != model.Message.noID ? '/${message.ID}' : ''}';
 
     /* Assemble the initial content for the message. */
     Map payload = message.asMap;
@@ -30,6 +30,9 @@ abstract class Message {
 
     HttpRequest request;
     String url;
+    String method = message.ID == model.Message.noID
+                    ? POST
+                    : PUT;
 
     fragments.add('token=${configuration.token}');
     url = _buildUrl(base, path, fragments);
@@ -37,7 +40,7 @@ abstract class Message {
     log.debugContext('url: ${url} - payload: ${payload}', context);
 
     request = new HttpRequest()
-        ..open(POST, url)
+        ..open(method, url)
         ..setRequestHeader('Content-Type', 'application/json')
         ..onLoad.listen((_) {
           switch (request.status) {

@@ -1,6 +1,11 @@
 name: Bob
 description: Receptionist browser-based console for Adaheads
 dependencies:
+dependencies:
+  openreception_framework:
+    git:
+      ref: converging_model
+      url: https://github.com/AdaHeads/OpenReceptionFramework.git
   browser: any
   event_bus: any
   intl: any

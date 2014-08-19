@@ -32,7 +32,7 @@ import '../classes/configuration.dart' as config;
 import '../constants.dart' as constant;
 import '../service/service.dart' as Service;
 import '../controller/controller.dart' as Controller;
-
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'model-call.dart';
 part 'model-call_list.dart';
@@ -58,4 +58,4 @@ part 'model-reception.dart';
 part 'model-reception_list.dart';
 part 'model-transfer_request.dart';
 
-const String libraryName = "model"; 
+const String libraryName = "model";
