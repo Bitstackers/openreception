@@ -12,6 +12,13 @@ import 'common.dart';
 
 final ContentType JSON_MIME_TYPE = new ContentType('application', 'json', charset: 'UTF-8');
 
+class ParameterNotFoundException implements Exception {
+  String parameterName;
+  ParameterNotFoundException(String this.parameterName);
+
+  String toString() => 'Parameter not found ${parameterName}';
+}
+
 void addCorsHeaders(HttpResponse res) {
   res.headers
     ..add("Access-Control-Allow-Origin", "*")
@@ -64,12 +71,15 @@ Future<String> extractContent(HttpRequest request) {
   Completer completer = new Completer();
   List<int> completeRawContent = new List<int>();
 
-  request.listen((List<int> data) {
-    completeRawContent.addAll(data);
-  }, onError: (error) => completer.completeError(error),
+  request.listen(completeRawContent.addAll,
+     onError: (error) => completer.completeError(error),
      onDone: () {
-    String content = UTF8.decode(completeRawContent);
-    completer.complete(content);
+       try {
+         String content = UTF8.decode(completeRawContent);
+         completer.complete(content);
+       } catch(error) {
+         completer.completeError(error);
+       }
   }, cancelOnError: true);
 
   return completer.future;
@@ -110,12 +120,11 @@ String pathParameterString(Uri uri, String key) {
     return uri.pathSegments.elementAt(uri.pathSegments.indexOf(key) + 1);
   } catch(error) {
     access('utilities.httpserver.pathParameter failed $error Key: $key Uri: $uri');
-    throw new StateError('Parameter not found: ${key}');
+    throw new ParameterNotFoundException(key);
   }
 }
 
-
-void serverErrorTrace(HttpRequest request, Error error, {StackTrace stackTrace : null}) {
+void serverErrorTrace(HttpRequest request, error, {StackTrace stackTrace : null}) {
   const String context = 'serverErrorTrace';
 
   logger.errorContext('$error ${stackTrace != null ? ' : ${stackTrace}' : ''}', context);
@@ -153,6 +162,11 @@ String doubleDigit(int number) {
   } else {
     return '${number.abs()}';
   }
+}
+
+void allOk(HttpRequest request, [String body = '{}']) {
+  request.response.statusCode = HttpStatus.OK;
+  writeAndClose(request, body);
 }
 
 void forbidden(HttpRequest request, String reason) {
