@@ -13,6 +13,7 @@ import 'storage.dart' as Storage;
 part 'database/database-message.dart';
 part 'database/database-message_draft.dart';
 part 'database/database-message_queue.dart';
+part 'database/database-user.dart';
 
 const String libraryName = 'openreception.database';
 

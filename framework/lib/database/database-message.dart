@@ -96,7 +96,8 @@ class Message implements Storage.Message {
         throw new Storage.SaveFailed('Enqueue failed on id ${message.ID}');
       }
 
-      return addRecipientsToSendMessage(message.sqlRecipients());
+      return message;
+
 
     }).catchError((error, stackTrace) {
       log.severe(sql, error, stackTrace);
@@ -109,7 +110,7 @@ class Message implements Storage.Message {
    */
   Future<List<Model.Message>> list ({int limit : 100, Model.MessageFilter filter : null}){
     if (filter == null) {
-      filter = new Model.MessageFilter();
+      filter = new Model.MessageFilter.empty();
     }
 
     String sql = '''
@@ -149,13 +150,6 @@ class Message implements Storage.Message {
       List messages = new List();
 
       for(var row in rows) {
-        DateTime createdAt = row.created_at;
-
-        if (createdAt == null) {
-          createdAt = new DateTime.fromMillisecondsSinceEpoch(0);
-        }
-
-
         Model.Message message = new Model.Message.fromMap(
           {'id'                    : row.id,
            'message'               : row.message,
@@ -175,9 +169,8 @@ class Message implements Storage.Message {
                                       'cellphone' : row.taken_from_cellphone},
            'flags'                 : JSON.decode(row.flags),
            'enqueued'              : row.enqueued,
-           'sent'                  : row.sent,
-           'created_at'            : createdAt}
-      );
+           'sent'                  : row.sent}
+      )..createdAt = row.created_at;
         messages.add(message);
       }
 
@@ -216,10 +209,55 @@ class Message implements Storage.Message {
     });
   }
 
+  Future<Model.Message> update (Model.Message message) {
+    log.finest('Updating message with ID ${message.ID}.');
+
+    String sql = '''
+    UPDATE messages
+       SET 
+         message                 = @message,
+         context_contact_id      = @context_contact_id,
+         context_reception_id    = @context_reception_id,
+         context_contact_name    = @context_contact_name,
+         context_reception_name  = @context_reception_name,
+         taken_from_name         = @taken_from_name,
+         taken_from_company      = @taken_from_company,
+         taken_from_phone        = @taken_from_phone,
+         taken_from_cellphone    = @taken_from_cellphone,
+         flags                   = @flags
+    WHERE id=${message.ID};''';
+
+    Map parameters = {'message'                : message.body,
+                      'context_contact_id'     : message.context.contactID,
+                      'context_reception_id'   : message.context.receptionID,
+                      'context_contact_name'   : message.context.contactName,
+                      'context_reception_name' : message.context.receptionName,
+                      'taken_from_name'        : message.caller.name,
+                      'taken_from_company'     : message.caller.company,
+                      'taken_from_phone'       : message.caller.phone,
+                      'taken_from_cellphone'   : message.caller.cellphone,
+                      'flags'                  : JSON.encode(message.flags)
+                      };
+
+    return this._database.query(sql, parameters).then((rows) {
+      if (rows.length == 1) {
+        message.ID = rows.first.id;
+      }
+      return message;
+    });
+  }
+
   /**
    *
    */
   Future<Model.Message> save (Model.Message message) {
+    if (message.ID != Model.Message.noID) {
+      return this.update(message);
+    }
+
+    log.finest('Creating new message.');
+
+
     String sql = '''
       INSERT INTO messages 
            (message, 
@@ -253,10 +291,10 @@ class Message implements Storage.Message {
                       'context_reception_id'   : message.context.receptionID,
                       'context_contact_name'   : message.context.contactName,
                       'context_reception_name' : message.context.receptionName,
-                      'taken_from_name'        : message.caller['name'],
-                      'taken_from_company'     : message.caller['company'],
-                      'taken_from_phone'       : message.caller['phone'],
-                      'taken_from_cellphone'   : message.caller['cellphone'],
+                      'taken_from_name'        : message.caller.name,
+                      'taken_from_company'     : message.caller.company,
+                      'taken_from_phone'       : message.caller.phone,
+                      'taken_from_cellphone'   : message.caller.cellphone,
                       'taken_by_agent'         : message.sender.ID,
                       'flags'                  : JSON.encode(message.flags)
                       };
@@ -265,7 +303,8 @@ class Message implements Storage.Message {
       if (rows.length == 1) {
         message.ID = rows.first.id;
       }
-      return message;
+
+      return this.addRecipientsToSendMessage(message).then((_) => message);
     });
   }
 
@@ -341,12 +380,32 @@ class Message implements Storage.Message {
    * an empty list is denoted by ()
    *
    */
-  Future<Map> addRecipientsToSendMessage(String sqlRecipients) {
-    assert (sqlRecipients != "");
+  Future<Map> addRecipientsToSendMessage(Model.Message message) {
+    assert (message.sqlRecipients != "");
 
     String sql = '''
-      INSERT INTO message_recipients (contact_id, contact_name, reception_id, reception_name, message_id, recipient_role)
-      VALUES $sqlRecipients''';
+    WITH existing_rows AS (
+      DELETE 
+        FROM 
+          message_recipients 
+        WHERE 
+          message_id = ${message.ID} 
+        RETURNING
+          contact_id, 
+          contact_name, 
+          reception_id, 
+          reception_name, 
+          message_id, 
+          recipient_role
+    )
+    INSERT 
+       INTO 
+          message_recipients 
+             (contact_id, contact_name, reception_id, reception_name, message_id, recipient_role)
+          SELECT * 
+          FROM 
+             existing_rows 
+            INTERSECT VALUES ${message.sqlRecipients()} UNION VALUES ${message.sqlRecipients()};''';
 
     return this._database.execute(sql).then((int rowsAffected) {
       return {'rowsAffected': rowsAffected};

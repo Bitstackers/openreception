@@ -32,7 +32,7 @@ class TemplateEmail extends Template {
    * TODO: Add caller number and company.
    */
   String _renderSubject() =>
-      '${this._message.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} Besked fra ${this._message.caller['name']}, ${this._message.caller['company']} ${this._message.caller['phone']}';
+      '${this._message.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} Besked fra ${this._message.caller.name}, ${this._message.caller.company} ${this._message.caller.phone}';
 
 
   String _renderBooleanFields() =>
@@ -49,17 +49,17 @@ class TemplateEmail extends Template {
   String get _renderedBody =>
 '''Til ${_message.context.contactName}.
 
-Der er besked fra ${_message.caller['name']}, ${this._message.caller['company']}.
+Der er besked fra ${_message.caller.name}, ${this._message.caller.company}.
 
-Tlf. ${this._message.caller['phone']}
-Mob. ${this._message.caller['cellphone']}
+Tlf. ${this._message.caller.phone}
+Mob. ${this._message.caller.cellphone}
 
 ${this._renderBooleanFields()}
 
 Vedr.:
 ${this._message.body}
 
-Modtaget den ${this._renderTime(this._message.receivedAt)}
+Modtaget den ${this._renderTime(this._message.createdAt)}
 
 Med venlig hilsen
 ${this._message.sender.name}

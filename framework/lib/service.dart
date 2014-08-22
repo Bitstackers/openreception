@@ -9,6 +9,7 @@ import 'common.dart';
 
 part 'service/service-auth.dart';
 part 'service/service-webservice.dart';
+part 'service/service-message.dart';
 part 'service/service-message_resource.dart';
 part 'service/service-notification.dart';
 part 'service/service-user.dart';

@@ -21,6 +21,9 @@ abstract class MessageResource {
   static Uri single(Uri host, int messageID)
     => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/${messageID}');
 
+  static Uri send(Uri host, int messageID)
+    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/${messageID != Model.Message.noID ? '${messageID}/' : ''}send');
+
   static Uri root(Uri host)
     => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}');
 

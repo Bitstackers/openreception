@@ -7,11 +7,15 @@ class MessageContext {
   /* Private fields */
   Map _data;
 
-  /* Getters */
-  int    get contactID     => this._data['contact']['id'];
-  String get contactName   => this._data['contact']['name'];
-  int    get receptionID   => this._data['reception']['id'];
-  String get receptionName => this._data['reception']['name'];
+  /* Getters and setters, chunk-o-boilerplate code. */
+  int    get contactID                      => this._data['contact']['id'];
+         set contactID (int newID)          => this._data['contact']['id'] = newID;
+  String get contactName                    => this._data['contact']['name'];
+         set contactName (String newName)   => this._data['contact']['name'] = newName;
+  int    get receptionID                    => this._data['reception']['id'];
+         set receptionID (int newID)        => this._data['reception']['id'] = newID;
+  String get receptionName                  => this._data['reception']['name'];
+         set receptionName (String newName) => this._data['reception']['name'] = newName;
 
   /**
    * Constructor.

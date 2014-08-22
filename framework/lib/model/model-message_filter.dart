@@ -8,9 +8,9 @@ class InvalidState implements Exception {
 
 abstract class MessageState {
 
-  static const Saved   = 'Saved';
-  static const Sent    = 'Sent';
-  static const Pending = 'Pending';
+  static const Saved   = 'saved';
+  static const Sent    = 'sent';
+  static const Pending = 'pending';
 
   static List<String> validStates = [Saved, Sent, Pending];
 
@@ -42,7 +42,6 @@ class MessageFilter {
 
     if (newState != null) {
       if (!MessageState.validStates.contains(newState.toLowerCase())) {
-        print ('is not valid state');
         throw new InvalidState (newState.toLowerCase());
       }
 

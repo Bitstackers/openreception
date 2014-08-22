@@ -9,7 +9,7 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
   static const String className = '${libraryName}.RecipientList';
   static final Logger log = new Logger(className);
 
-  Iterator get iterator => this.recipients.values.iterator;
+  Iterator get iterator => this.asSet.iterator;
 
   Map<String, List<MessageRecipient>> recipients = {};
 
@@ -44,8 +44,9 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
   /**
    * Initializes a new object using a list of the form :
    *
-   *  [{String role, int contact_id,   String contact_name,
-   *                 int reception_id, String reception_name} ... ]
+   *     [{String role, int contact_id,   String contact_name,
+   *                    int reception_id, String reception_name,
+   *         (optional) endpoint[] } ... ]
    */
   MessageRecipientList.fromlist(List<Map> list) {
     const String context = '${className}.fromList';
@@ -65,8 +66,11 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
 
       MessageRecipient newRecipient;
       newRecipient= new MessageRecipient.fromMap(tmp, role : map['recipient_role']);
-      newRecipient.endpoints.addAll(map['endpoints'].map((Map map) =>
-         new MessageEndpoint.fromMap(map)..recipient = newRecipient));
+
+      if (map.containsKey('endpoints') && map['endpoints'] != null) {
+        newRecipient.endpoints.addAll(map['endpoints'].map((Map endpointsMap) =>
+           new MessageEndpoint.fromMap(endpointsMap)..recipient = newRecipient));
+      }
 
       this.add(newRecipient);
     });

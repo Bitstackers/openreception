@@ -1,15 +1,13 @@
-library openreception.io.service;
+library openreception.service.io;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as IO;
-//import 'dart:html' as HTML;
-import 'model.dart' as Model;
 import 'storage.dart' as Storage;
-import 'service.dart';
-import 'common.dart';
+import 'service.dart' as Service;
+import 'package:logging/logging.dart';
 
-part 'service/io/service-io-message.dart';
+part 'service/io/service-io-client.dart';
 
-final String libraryName = "service";
+final String libraryName = "openreception.service.io";
 

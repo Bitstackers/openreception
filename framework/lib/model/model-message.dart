@@ -16,6 +16,41 @@ class InvalidMessage implements Exception {
   String toString() => message;
 }
 
+int dateTimeToUnixTimestamp(DateTime time) {
+  return time != null ? time.millisecondsSinceEpoch~/1000 : null;
+}
+
+class MessageCaller {
+
+  Map    _map = {};
+
+  String get name                          => this.lookup('name', '?');
+         set name           (String value) => this.update('name', value);
+  String get company                       => this.lookup('company', '?');
+         set company        (String value) => this.update('company', value);
+  String get phone                         => this.lookup('phone', '?');
+         set phone          (String value) => this.update('phone', value);
+  String get cellphone                     => this.lookup('cellphone', '?');
+         set cellphone      (String value) => this.update('cellphone', value);
+  String get localExtension                => this.lookup('cellphone', '?');
+         set localExtension (String value) => this.update('localExtension', value);
+
+  MessageCaller(Map this._map);
+
+  Map toJson () => this._map;
+
+  void update (String key, String value) {
+    this._map[key] = value;
+  }
+
+  String lookup (String key, String defaultValue) {
+    try {
+      return this._map[key];
+    } catch (_) {
+      return defaultValue;
+    }
+  }
+}
 
 class Message {
 
@@ -28,20 +63,18 @@ class Message {
   MessageRecipientList recipients      = new MessageRecipientList.empty();
   MessageContext       _messageContext = null;
   List<String>         _flags          = [];
-  Map                  _callerInfo     = {};
-  DateTime             _createdAt      = null;
-  String               _body           = '';
+  MessageCaller        _callerInfo     = null;
+  DateTime             createdAt       = null;
+  String               body            = '';
   User                 _sender         = null;
   bool                 enqueued        = null;
   bool                 sent            = null;
 
   User                 get sender     => this._sender;
   bool                 get urgent     => this._flags.contains('urgent');
-  DateTime             get receivedAt => this._createdAt;
-  String               get body       => this._body;
   MessageContext       get context    => this._messageContext;
   List<String>         get flags      => this._flags;
-  Map                  get caller     => this._callerInfo;
+  MessageCaller        get caller     => this._callerInfo;
 
   List<MessageRecipient> get toRecipients  => this.recipients.where((MessageRecipient recipient) => recipient.role == Role.TO).toList();
   List<MessageRecipient> get ccRecipients  => this.recipients.where((MessageRecipient recipient) => recipient.role == Role.CC).toList();
@@ -69,11 +102,9 @@ class Message {
   /**
    * TODO: Document.
    */
-  factory Message.fromMap(Map map) {
+  Message.fromMap(Map map) {
 
     const String context = '${className}.fromMap';
-
-    int ID = (map.containsKey('id') ? map['id'] : noID);
 
     /// TODO: figure out a more generic way of decoding different recipient formats.
     MessageRecipientList recipients = null;
@@ -87,13 +118,13 @@ class Message {
       throw new InvalidMessage('Bad recipient format: ${map['recipients']}');
     }
 
-    return new Message.stub(ID)
+    this
+        ..ID = (map.containsKey('id') ? map['id'] : noID)
         ..recipients      = recipients
         .._messageContext = new MessageContext.fromMap(map['context'])
         .._flags          = map['flags']
-        .._createdAt      = map['created_at']
-        .._callerInfo     = map['caller']
-        .._body           = map['message']
+        .._callerInfo     = new MessageCaller(map['caller'])
+        ..body           = map['message']
         ..sent            = map['sent']
         ..enqueued        = map['enqueued']
         .._sender         = new User.fromMap(map['taken_by_agent'])
@@ -109,7 +140,7 @@ class Message {
         'flags'          : this._flags,
         'sent'           : this.sent,
         'enqueued'       : this.enqueued,
-        'created_at'     : Common.dateTimeToUnixTimestamp(this._createdAt),
+        'created_at'     : dateTimeToUnixTimestamp(this.createdAt),
         'recipients'     : this.recipients
       };
 
