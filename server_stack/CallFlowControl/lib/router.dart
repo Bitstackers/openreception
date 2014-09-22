@@ -15,6 +15,7 @@ import 'controller/controller.dart' as Controller;
 import 'model/model.dart' as Model;
 import 'package:openreception_framework/model.dart' as SharedModel;
 import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/model.dart';
 
 part 'router/handler-call-hangup.dart';
@@ -31,6 +32,7 @@ part 'router/handler-peer-list.dart';
 const String libraryName = "notificationserver.router";
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
+Service.Authentication AuthService = null;
 
 final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern peerListResource        = new UrlPattern(r'/peer/list');
@@ -50,6 +52,11 @@ final List<Pattern> allUniqueUrls = [peerListResource,
                                      callParkResource, callOriginateResource,
                                      callPickupNextResource, callTransferResource,
                                      callRecordSoundResource];
+
+void connectAuthService() {
+  AuthService = new Service.Authentication
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
 
 void registerHandlers(HttpServer server) {
     logger.debugContext("CallFlowControl REST interface is listening on "

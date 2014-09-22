@@ -21,8 +21,7 @@ void handlerCallOrignate(HttpRequest request) {
 
   bool validExtension (String extension) => extension != null && extension.length > 1;
 
-  Service.Authentication.userOf(token: token, host: config.authUrl).then((User user) {
-
+  AuthService.userOf(token).then((User user) {
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
       return;
@@ -35,11 +34,12 @@ void handlerCallOrignate(HttpRequest request) {
 
     /// Park all the users calls.
     Future.forEach(Model.CallList.instance.callsOf(user).where
-      ((Model.Call call) => call.state == Model.CallState.Speaking), (Model.Call call) => call.park(user)).whenComplete(() {
-      Controller.PBX.originate (extension, contactID, receptionID, user)
-        .then ((String channelUUID) {
-          //Model.OriginationRequest.create (channelUUID);
-          writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
+      ((Model.Call call) => call.state == Model.CallState.Speaking), (Model.Call call) => call.park(user))
+      .whenComplete(() {
+        Controller.PBX.originate (extension, contactID, receptionID, user)
+          .then ((String channelUUID) {
+            //Model.OriginationRequest.create (channelUUID);
+            writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 
         }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 

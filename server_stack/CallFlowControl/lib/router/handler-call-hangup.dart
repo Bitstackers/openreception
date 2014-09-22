@@ -23,7 +23,7 @@ void handlerCallHangup(HttpRequest request) {
     return;
   }
 
-  Service.Authentication.userOf(token: token, host: config.authUrl).then((User user) {
+  AuthService.userOf(token).then((User user) {
 
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
@@ -43,7 +43,7 @@ void handlerCallHangup(HttpRequest request) {
        }
 
       }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
-    
+
     } catch (error, stackTrace) {
       if (error is Model.NotFound) {
         notFound (request, {'call_id' : callID});

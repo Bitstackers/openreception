@@ -29,8 +29,7 @@ void handlerCallRecordSound(HttpRequest request) {
 
   bool validExtension (String extension) => extension != null && extension.length > 1;
 
-  Service.Authentication.userOf(token: token, host: config.authUrl).then((User user) {
-
+  AuthService.userOf(token).then((User user) {
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
       return;

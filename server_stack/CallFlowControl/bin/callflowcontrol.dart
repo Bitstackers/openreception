@@ -10,11 +10,11 @@ import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
 import '../lib/model/model.dart' as Model;
 import 'package:esl/esl.dart' as ESL;
+import 'package:logging/logging.dart';
+
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
-
-ESL.PeerList peerList = null;
 
 void main(List<String> args) {
   try {
@@ -27,6 +27,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => router.connectAuthService())
         .then((_) => connectESLClient())
         .then((_) => http.start(config.httpport, router.registerHandlers))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
@@ -52,7 +53,9 @@ void connectESLClient() {
 
   logger.infoContext('Connecting to ${config.eslHostname}:${config.eslPort}', context);
 
-  Model.PBXClient.instance =  new ESL.Connection();
+  Logger.root.level = Level.ALL;
+
+  Model.PBXClient.instance =  new ESL.Connection()..log.onRecord.listen(print);
 
   Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
   Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
@@ -80,7 +83,7 @@ void connectESLClient() {
     } else {
       logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);
     }
-  });
+  }).then ((_) => logger.infoContext('Connected to ${config.eslHostname}:${config.eslPort}', context));
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
