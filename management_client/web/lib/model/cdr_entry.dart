@@ -16,7 +16,7 @@ class Cdr_Entry {
     callCount   = json['call_count'];
     orgName     = json['org_name'];
     totalWait   = json['total_wait'];
-    billingType    = json['billing_type'];
+    billingType = json['billing_type'];
     duration    = json['duration'];
     flag        = json['flag'];
     avgDuration = json['avg_duration'];
