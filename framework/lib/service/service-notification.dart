@@ -1,8 +1,14 @@
 part of openreception.service;
 
-abstract class Protocol {
-  static final BROADCAST_RESOURCE = "broadcast";
+abstract class Resource {
+  static final broadcast    = "/broadcast";
+  static final message      = "/message";
+  static final notification = "/notification";
 }
+
+/**
+ * TODO: Change to reflect the pattern of message.
+ */
 
 abstract class Notification {
 
@@ -20,7 +26,7 @@ abstract class Notification {
       host = Uri.parse (host.toString() + '/');
     }
 
-    host = Uri.parse('${host}${Protocol.BROADCAST_RESOURCE}?token=${serverToken}');
+    host = Uri.parse('${host}${Resource.broadcast}?token=${serverToken}');
 
     return client.postUrl(host)
       .then(( HttpClientRequest req ) {
@@ -28,8 +34,29 @@ abstract class Notification {
         //req.headers.add( HttpHeaders.CONNECTION, "keep-alive");
         req.write( JSON.encode( map ));
         return req.close();
-      }).catchError((error, StackTrace) => logger.errorContext('${error} : ${StackTrace}' , context));
+      }).catchError((error, StackTrace) => print('${error} : ${StackTrace}' + context));
   }
 
+  /**
+   * Opens a WebSocket connection
+   */
+  static Future<NotificationSocket> socket(Uri host, String serverToken) {
+    if (!_UriEndsWithSlash(host)) {
+      host = Uri.parse (host.toString() + '/');
+    }
+
+    return WebSocket.connect('${host}${Resource.notification}')
+        .then((WebSocket ws) => new NotificationSocket(ws));
+  }
+
+
   static bool _UriEndsWithSlash (Uri uri) => uri.toString().endsWith('/');
+}
+
+
+class NotificationSocket {
+
+  WebSocket ws = null;
+
+  NotificationSocket (this.ws);
 }
