@@ -1,5 +1,6 @@
 name: openreception_framework
-version: 0.0.11+3
+author: BitStack K/S
+version: 0.0.11+4
 description: A utility package for the OpenReception application.
 dependencies:
   http: any
@@ -9,4 +10,4 @@ dependencies:
   syslog:
     git: https://github.com/PedersenThomas/syslog.git
   unittest: any
-auther: AdaHeads K/S
+  junitconfiguration: ">=1.0.0 <2.0.0"
