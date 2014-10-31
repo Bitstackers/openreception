@@ -57,7 +57,8 @@ class MessageContext {
   }
 
   @override
-  bool operator ==(MessageRecipient other) => this.contactString == other.contactString;
+  bool operator ==(MessageRecipient other) => this.contactID   == other.contactID &&
+                                              this.receptionID == other.receptionID;
 
   String get contactString => contactID.toString() + "@" + receptionID.toString();
 
