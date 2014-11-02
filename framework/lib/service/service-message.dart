@@ -2,7 +2,7 @@ part of openreception.service;
 
 class RESTMessageStore implements Storage.Message {
 
-  static final String className = '${libraryName}.Message';
+  static final String className = '${libraryName}.RESTMessageStore';
 
   WebService _backed = null;
   Uri        _host;
