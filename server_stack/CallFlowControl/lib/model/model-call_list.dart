@@ -28,8 +28,8 @@ class CallList extends IterableBase<Call> {
 
   List toJson() => this.toList(growable: false);
 
-  void subscribe(Stream<ESL.Packet> eventStream) {
-    eventStream.listen(_handlePacket);
+  void subscribe(Stream<ESL.Event> eventStream) {
+    eventStream.listen(_handleEvent);
   }
 
   List<Call> callsOf(SharedModel.User user) => this.where((Call call) => call.assignedTo == user.ID).toList();
@@ -206,30 +206,30 @@ class CallList extends IterableBase<Call> {
   }
 
 
-  void _handlePacket(ESL.Packet packet) {
-    const String context = '${className}._handlePacket';
+  void _handleEvent(ESL.Event event) {
+    const String context = '${className}._handleEvent';
 
     void dispatch () {
-      switch (packet.eventName) {
+      switch (event.eventName) {
 
         case ('CHANNEL_BRIDGE'):
-          this._handleBridge(packet);
+          this._handleBridge(event);
           break;
 
         case ('CHANNEL_STATE'):
-          this._handleChannelState(packet);
+          this._handleChannelState(event);
           break;
 
         case ('CHANNEL_CREATE'):
-          this._createCall(packet);
+          this._createCall(event);
           break;
 
         case ('CHANNEL_DESTROY'):
-          this._handleChannelDestroy(packet);
+          this._handleChannelDestroy(event);
           break;
 
         case ("CUSTOM"):
-          this._handleCustom(packet);
+          this._handleCustom(event);
           break;
       }
     }
