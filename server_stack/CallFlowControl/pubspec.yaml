@@ -5,8 +5,13 @@ description: Call-Flow-Control server.
 dependencies:
   args: any
   esl:
-    git: https://github.com/rostgaard/libesl-dart.git
+    git:
+      ref: master
+      url: https://github.com/rostgaard/libesl-dart.git
+      
   openreception_framework:
-    git: https://github.com/AdaHeads/OpenReceptionFramework.git
+    git:
+      ref: master
+      url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
   route: any
