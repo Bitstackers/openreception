@@ -13,8 +13,14 @@ abstract class Message {
     messageStore.get(messageID)
       .then((Model.Message message) =>
           writeAndClose(request, JSON.encode(message)))
-      .catchError((error, stackTrace) =>
-          serverError(request, '$error : $stackTrace'));
+      .catchError((error, stackTrace) {
+
+      if (error is Storage.NotFound) {
+        notFound(request, {'description' : error.message});
+      } else {
+        serverError(request, '$error : $stackTrace');
+      }
+      });
   }
 
 
@@ -26,7 +32,7 @@ abstract class Message {
     final String     token = request.uri.queryParameters['token'];
     final String   context = '${className}.update';
 
-    Service.Authentication.userOf(token: token, host: config.authUrl).then((Model.User user) {
+    AuthService.userOf(token).then((Model.User user) {
       extractContent(request).then((String content) {
         Model.Message message;
         try {
@@ -102,7 +108,7 @@ abstract class Message {
     final String context = '${className}.send';
     final String token   = request.uri.queryParameters['token'];
 
-    Service.Authentication.userOf(token: token, host: config.authUrl).then((Model.User user) {
+    AuthService.userOf(token).then((Model.User user) {
       extractContent(request).then((String content) {
 
         try {
@@ -133,7 +139,7 @@ abstract class Message {
     final String context = '${className}.save';
     final String token   = request.uri.queryParameters['token'];
 
-    Service.Authentication.userOf(token: token, host: config.authUrl).then((Model.User user) {
+    AuthService.userOf(token).then((Model.User user) {
       extractContent(request).then((String content) {
 
         try {

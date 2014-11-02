@@ -9,6 +9,7 @@ import 'package:route/server.dart';
 
 import 'configuration.dart';
 import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/database.dart' as Database;
@@ -58,6 +59,13 @@ void setup(HttpServer server) {
 
 Database.Connection connection = null;
 Storage.Message messageStore = new Database.Message (connection);
+Service.Authentication AuthService = null;
+
+
+void connectAuthService() {
+  AuthService = new Service.Authentication
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
 
 Future startDatabase() =>
     Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')
