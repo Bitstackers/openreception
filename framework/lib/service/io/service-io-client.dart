@@ -24,7 +24,7 @@ class Client extends Service.WebService {
           });
         } catch (error, stacktrace) {
           if (error is Storage.StorageException) {
-            log.severe('$error : $stacktrace');
+            log.severe('$error : $resource');
             completer.completeError(error);
           } else {
             log.shout('$error : $stacktrace');
