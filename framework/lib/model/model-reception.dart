@@ -82,9 +82,7 @@ class Reception {
 
       throw new ArgumentError('Bad list type: ${list.runtimeType}');
     }
-    print ('EXTRACT: ${extractValues(receptionMap[ReceptionJSONKey.ADDRESSES])}');
 
-    print ('EXTRACT: ${receptionMap[ReceptionJSONKey.ADDRESSES]}');
     try {
       this..ID                     = receptionMap[ReceptionJSONKey.ID]
           ..extraData              = Uri.parse(receptionMap[ReceptionJSONKey.EXTRADATA_URI])
