@@ -8,6 +8,8 @@ import 'package:logging/logging.dart';
 
 import 'storage.dart' as Storage;
 
+part 'model/model-call.dart';
+part 'model/model-event.dart';
 part 'model/model-user.dart';
 part 'model/model-message.dart';
 part 'model/model-message_context.dart';
@@ -17,6 +19,7 @@ part 'model/model-message_filter.dart';
 part 'model/model-message_queue_item.dart';
 part 'model/model-message_recipient.dart';
 part 'model/model-message_recipient_list.dart';
+part 'model/model-peer.dart';
 part 'model/model-reception.dart';
 part 'model/model-reception_filter.dart';
 part 'model/model-template.dart';
