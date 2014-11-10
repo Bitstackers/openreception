@@ -50,16 +50,9 @@ class CallList extends IterableBase<Call> {
     }
   }
 
-  Call requestCall(user) {
+  Call requestCall(user) =>
     //TODO: Implement a real algorithm for selecting calls.
-    Call call = this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked, orElse: null);
-
-    if (call == null) {
-      throw new NotFound ("No calls available");
-    }
-
-    return call;
-  }
+    this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked, orElse: () => throw new NotFound ("No calls available"));
 
   Call requestSpecificCall(String callID, SharedModel.User user )  {
     const String context = '${className}.requestSpecificCall';
