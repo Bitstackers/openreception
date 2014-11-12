@@ -17,10 +17,13 @@ class Peer {
     PeerJSONKey.REGISTERED : this.registered
   };
 
-  Peer.fromMap (Map map) : this.ID = map[PeerJSONKey.ID] {
-    throw new StateError('Not implemented!');
-  }
+  Peer.fromMap (Map map) :
+    this.ID         = map[PeerJSONKey.ID],
+    this.registered = map[PeerJSONKey.REGISTERED];
 
   Map toJson() => this.asMap;
+
+  @override
+  String toString() => '${this.ID}, registered:${this.registered}';
 
 }

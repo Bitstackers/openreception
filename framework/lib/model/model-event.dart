@@ -52,6 +52,15 @@ abstract class Event {
   Map toJson();
 
   Event.fromMap(Map map);
+
+  factory Event.parse (Map map) {
+    if (map['event'] == EventJSONKey.peerState) {
+      return new PeerState.fromMap(map);
+    } else {
+      return null;
+    }
+  }
+
 }
 
 abstract class CallEvent implements Event {
