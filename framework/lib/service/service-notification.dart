@@ -3,7 +3,7 @@ part of openreception.service;
 abstract class Resource {
   static final broadcast    = "/broadcast";
   static final message      = "/message";
-  static final notification = "/notification";
+  static final notification = "/notifications";
 }
 
 /**
@@ -11,9 +11,9 @@ abstract class Resource {
  */
 
 class NotificationRequest {
-  String body     = null;
-  Uri    resource = null;
-  Completer<String> response = new Completer();
+  Map    body        = null;
+  Uri    resource    = null;
+  Completer response = new Completer();
 }
 
 abstract class Notification {
@@ -24,6 +24,7 @@ abstract class Notification {
 
   static Queue<NotificationRequest> _requestQueue = new Queue();
   static bool   _busy = false;
+  static Logger log   = new Logger (className);
 
   /**
    * Performs a broadcat via the notification server.
@@ -31,13 +32,11 @@ abstract class Notification {
   static Future broadcast(Map map, Uri host, String serverToken) {
     final String context = '${className}.broadcast';
 
-    if (!_UriEndsWithSlash(host)) {
-      host = Uri.parse (host.toString() + '/');
-    }
-
     host = Uri.parse('${host}${Resource.broadcast}?token=${serverToken}');
 
-    return _enqueue (new NotificationRequest()..body     = map.toString()
+    log.finest('POST $host');
+
+    return _enqueue (new NotificationRequest()..body     = map
                                               ..resource = host);
   }
 
@@ -48,23 +47,28 @@ abstract class Notification {
    */
   static Future<String> _enqueue (NotificationRequest request) {
       if (!_busy) {
+        log.finest('No requests enqueued. Sending request directly.');
         _busy = true;
         return _performRequest (request);
       } else {
+        log.finest('Requests enqueued. Enqueueing this request.');
         _requestQueue.add(request);
         return request.response.future;
       }
   }
 
-  static Future <String> _performRequest (NotificationRequest request) {
+  static Future _performRequest (NotificationRequest request) {
 
     void dispatchNext() {
+      log.severe('Dispatching next.');
       if (_requestQueue.isNotEmpty) {
+        log.finest('Popping request from queue.');
         NotificationRequest currentRequest = _requestQueue.removeFirst();
 
         _performRequest (currentRequest)
-          .then((String response) => currentRequest.response.complete(response));
+          .then((_) => currentRequest.response.complete());
       } else {
+        log.finest('queue is empty.');
         _busy = false;
       }
     }
@@ -72,11 +76,13 @@ abstract class Notification {
     return _client.postUrl(request.resource)
             .then(( HttpClientRequest req ) {
              req.headers.contentType = new ContentType( "application", "json", charset: "utf-8" );
-             req.headers.add( HttpHeaders.CONNECTION, "keep-alive");
+             //req.headers.add( HttpHeaders.CONNECTION, "keep-alive");
              req.write( JSON.encode( request.body ));
              return req.close();
-           }).catchError((error, StackTrace) => print('${error} : ${StackTrace}'))
-           ..whenComplete(() => new Future(dispatchNext));
+           })
+           .whenComplete(dispatchNext);
+           //.catchError((error, StackTrace) => print('${error} : ${StackTrace}'))
+
     }
 
 
@@ -84,11 +90,8 @@ abstract class Notification {
    * Opens a WebSocket connection
    */
   static Future<NotificationSocket> socket(Uri host, String serverToken) {
-    if (!_UriEndsWithSlash(host)) {
-      host = Uri.parse (host.toString() + '/');
-    }
 
-    return WebSocket.connect('${host}${Resource.notification}')
+    return WebSocket.connect('${host}${Resource.notification}?token=$serverToken')
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
 
@@ -99,7 +102,19 @@ abstract class Notification {
 
 class NotificationSocket {
 
-  WebSocket ws = null;
+  WebSocket                     _websocket        = null;
+  StreamController<Model.Event> _streamController = new StreamController.broadcast();
+  Stream<Model.Event> get       eventStream       => this._streamController.stream;
 
-  NotificationSocket (this.ws);
+  NotificationSocket (this._websocket) {
+    print ("created websocket");
+    this._websocket.listen (this._parseAndDispatch);
+  }
+
+  void _parseAndDispatch(String buffer) {
+    print (buffer);
+    Map map = JSON.decode(buffer);
+    this._streamController.add(new Model.Event.parse(map));
+  }
+
 }

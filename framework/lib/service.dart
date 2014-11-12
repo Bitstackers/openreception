@@ -7,6 +7,8 @@ import 'dart:io';
 import 'model.dart' as Model;
 import 'storage.dart' as Storage;
 
+import 'package:logging/logging.dart';
+
 part 'service/service-auth.dart';
 part 'service/service-webservice.dart';
 part 'service/service-message.dart';
