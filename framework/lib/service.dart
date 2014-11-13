@@ -3,6 +3,7 @@ library openreception.service;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+//TODO: Move dart:io out of this package
 import 'dart:io';
 import 'model.dart' as Model;
 import 'storage.dart' as Storage;
@@ -10,13 +11,15 @@ import 'storage.dart' as Storage;
 import 'package:logging/logging.dart';
 
 part 'service/service-auth.dart';
-part 'service/service-webservice.dart';
+part 'service/service-call_flow_control.dart';
+part 'service/service-call_flow_control_resource.dart';
 part 'service/service-message.dart';
 part 'service/service-message_resource.dart';
 part 'service/service-notification.dart';
 part 'service/service-reception.dart';
 part 'service/service-reception_resource.dart';
 part 'service/service-user.dart';
+part 'service/service-webservice.dart';
 
 final String libraryName = "service";
 
