@@ -54,13 +54,48 @@ abstract class Event {
   Event.fromMap(Map map);
 
   factory Event.parse (Map map) {
-    if (map['event'] == EventJSONKey.peerState) {
-      return new PeerState.fromMap(map);
-    } else {
-      return null;
+    switch (map['event']) {
+
+      case EventJSONKey.peerState:
+        return new PeerState.fromMap(map);
+
+      case EventJSONKey.queueJoin:
+        return new QueueJoin.fromMap(map);
+
+      case EventJSONKey.queueLeave:
+        return new QueueLeave.fromMap(map);
+
+      case EventJSONKey.callLock:
+        return new CallLock.fromMap(map);
+
+      case EventJSONKey.callUnlock:
+        return new CallUnlock.fromMap(map);
+
+      case EventJSONKey.callOffer:
+        return new CallOffer.fromMap(map);
+
+      case EventJSONKey.callTransfer:
+        return new CallTransfer.fromMap(map);
+
+      case EventJSONKey.callUnpark:
+        return new CallUnpark.fromMap(map);
+
+      case EventJSONKey.callPark:
+        return new CallPark.fromMap(map);
+
+      case EventJSONKey.callHangup:
+        return new CallHangup.fromMap(map);
+
+      case EventJSONKey.callState:
+        return new CallStateChanged.fromMap(map);
+
+      case EventJSONKey.callPickup:
+        return new CallPickup.fromMap(map);
+
+      default:
+        throw new UnsupportedError('Unsupported event type: ${map['event']}');
     }
   }
-
 }
 
 abstract class CallEvent implements Event {
