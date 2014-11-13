@@ -101,19 +101,21 @@ abstract class Notification {
 
 
 class NotificationSocket {
+  static final String className = '${libraryName}.NotificationSocket';
 
   WebSocket                     _websocket        = null;
   StreamController<Model.Event> _streamController = new StreamController.broadcast();
   Stream<Model.Event> get       eventStream       => this._streamController.stream;
+  static Logger                 log               = new Logger (NotificationSocket.className);
 
   NotificationSocket (this._websocket) {
-    print ("created websocket");
+    log.finest('Created a new WebSocket.');
     this._websocket.listen (this._parseAndDispatch);
   }
 
   void _parseAndDispatch(String buffer) {
-    print (buffer);
     Map map = JSON.decode(buffer);
+    log.finest('Sending object: $map');
     this._streamController.add(new Model.Event.parse(map));
   }
 
