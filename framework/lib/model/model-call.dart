@@ -14,6 +14,21 @@ abstract class CallState {
    static const String Parked       = 'PARKED';
 }
 
+abstract class CallJsonKey {
+  static const String ID             = 'id';
+  static const String state          = 'state';
+  static const String bLeg           = 'b_leg';
+  static const String locked         = 'locked';
+  static const String inbound        = 'inbound';
+  static const String isCall         = 'is_call';
+  static const String destination    = 'destination';
+  static const String callerID       = 'caller_id';
+  static const String greetingPlayed = 'greeting_played';
+  static const String receptionID    = 'reception_id';
+  static const String assignedTo     = 'assigned_to';
+  static const String channel        = 'channel';
+  static const String arrivalTime    = 'arrival_time';
+}
 
 class Call {
 
@@ -30,12 +45,13 @@ class Call {
   Stream get event => this._streamController.stream;
 
   String   ID              = nullCallID;
-  Call     b_Leg           = null;
+  String   b_Leg           = null;
   String   get channel     => this.ID; //The channel is a unique identifier. Remember to change, if ID changes.
   String   state           = CallState.Unknown;
   String   destination     = null;
   String   callerID        = null;
   bool     _isCall         = null;
+  bool     isStub          = false;
   bool     greetingPlayed  = false;
   bool     _locked         = false;
   bool     inbound         = null;
@@ -48,6 +64,7 @@ class Call {
   bool get isCall              => this._isCall;
   void set isCall (bool value)   {this._isCall = value;}
   bool get locked              => this._locked;
+
   void set locked (bool lock)   {
     this._locked = lock;
 
@@ -58,8 +75,24 @@ class Call {
     }
   }
 
+  Call.stub (Map map) {
+    this.ID = map[CallJsonKey.ID];
+    isStub = true;
+  }
+
   Call.fromMap (map) {
-    throw new StateError ('Not implemented!');
+    this.ID = map[CallJsonKey.ID];
+    this.state = map[CallJsonKey.state];
+    this.b_Leg = map[CallJsonKey.bLeg];
+    this._locked = map[CallJsonKey.locked];
+    this.inbound = map[CallJsonKey.inbound];
+    this._isCall = map[CallJsonKey.isCall];
+    this.destination = map[CallJsonKey.destination];
+    this.callerID = map[CallJsonKey.callerID];
+    this.greetingPlayed = map[CallJsonKey.greetingPlayed];
+    this.receptionID = map[CallJsonKey.receptionID];
+    this.assignedTo = map[CallJsonKey.assignedTo];
+    this.arrived = timestampToDateTime (map[CallJsonKey.arrivalTime]);
   }
 
   @override
@@ -87,27 +120,27 @@ class Call {
   void link (Call other) {
     this.locked = false;
 
-    this.b_Leg  = other;
-    other.b_Leg = this;
+    this.b_Leg  = other.ID;
+    other.b_Leg = this.ID;
   }
 
    @override
-  String toString () => this.ID;
+  String toString () => '${this.ID} ${this.isStub ? '(stub)' : ''}';
 
    Map toJson () => {
-     'id'              : this.ID,
-     "state"           : this.state,
-     "b_leg"           : (this.b_Leg != null ? this.b_Leg.ID : null),
-     "locked"          : this.locked,
-     "inbound"         : this.inbound,
-     "is_call"         : this.isCall,
-     "destination"     : this.destination,
-     "caller_id"       : this.callerID,
-     "greeting_played" : this.greetingPlayed,
-     "reception_id"    : this.receptionID,
-     "assigned_to"     : this.assignedTo,
-     "channel"         : this.channel,
-     "arrival_time"    : dateTimeToUnixTimestamp (this.arrived)};
+     CallJsonKey.ID             : this.ID,
+     CallJsonKey.state          : this.state,
+     CallJsonKey.bLeg           : this.b_Leg,
+     CallJsonKey.locked         : this.locked,
+     CallJsonKey.inbound        : this.inbound,
+     CallJsonKey.isCall         : this.isCall,
+     CallJsonKey.destination    : this.destination,
+     CallJsonKey.callerID       : this.callerID,
+     CallJsonKey.greetingPlayed : this.greetingPlayed,
+     CallJsonKey.receptionID    : this.receptionID,
+     CallJsonKey.assignedTo     : this.assignedTo,
+     CallJsonKey.channel        : this.channel,
+     CallJsonKey.arrivalTime    : dateTimeToUnixTimestamp (this.arrived)};
 
   void changeState (String newState) {
 
