@@ -31,6 +31,7 @@ abstract class Label {
   static const String MessageTakenAt            = 'Modtaget';
 
   static final String Phone                     = 'Telefon';
+  static final String No_Information            = '<Ingen information>';
   static final String CellPhone                 = 'Mobilnummer';
   static final String LocalExtension            = 'Lokalnummer';
   static final String Company                   = 'Firmanavn';
