@@ -5,9 +5,9 @@ dependencies:
   openreception_framework:
     git:
       ref: converging_model
-      url: https://github.com/AdaHeads/OpenReceptionFramework.git
+      url: https://github.com/Bitstackers/OpenReceptionFramework.git
   browser: any
-  event_bus: any
+  event_bus: < 0.3.0
   intl: any
   js: any
   logging: any
