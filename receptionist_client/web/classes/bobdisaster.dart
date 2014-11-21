@@ -13,6 +13,7 @@
 
 library BobDisaster;
 
+import 'dart:async';
 import 'dart:html';
 
 import 'events.dart' as event;
@@ -24,8 +25,20 @@ class BobDisaster {
   BobDisaster(DivElement this.element) {
     assert(element != null);
 
+    String baseUrl (String location)
+      => location.split('?').first;
+
+
+    void tryRedirect() {
+      print("Retrying");
+      window.location.assign(baseUrl(window.location.href));
+    }
+
     event.bus.on(event.stateUpdated).listen((State value) {
       element.classes.toggle('hidden', !value.isError);
+      if (value.isError) {
+        new Timer(new Duration(seconds: 3), tryRedirect);
+      }
     });
   }
 }
