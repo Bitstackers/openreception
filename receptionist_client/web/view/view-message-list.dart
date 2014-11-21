@@ -234,6 +234,21 @@ class MessageList {
 
   TableRowElement createRow(model.Message message) {
 
+    // Formatting helper function.
+    String callerInfo () {
+      if (message.caller.name.isNotEmpty && message.caller.company.isNotEmpty) {
+        return '${message.caller.name}, ${message.caller.company}';
+
+      } else if (message.caller.company.isNotEmpty) {
+        return message.caller.company;
+
+      } else if (message.caller.name.isNotEmpty) {
+        return message.caller.name;
+      }
+
+      return Label.No_Information;
+    }
+
     return new TableRowElement()
             ..tabIndex = -1
             ..dataset = {'messageID' : message.ID.toString()}
@@ -243,7 +258,7 @@ class MessageList {
            new TableCellElement()
               ..text = messageDateFormat.format(message.createdAt),
            new TableCellElement()
-              ..text = '${message.ID} ${message.caller.name} (${message.caller.company})',
+              ..text = '${callerInfo()}',
            new TableCellElement()
               ..text = '${message.context.contactName} (${message.context.receptionName})',
            new TableCellElement()

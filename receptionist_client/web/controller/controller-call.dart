@@ -1,17 +1,17 @@
 part of controller;
 
 abstract class Call {
-  
+
   static const String className = '${libraryName}.Call';
 
   static void dialSelectedContact() {
     event.bus.fire(event.dialSelectedContact, null);
   }
-  
+
   static void dial(Model.Extension extension, Model.Reception reception, [Model.Contact contact]) {
-    
+
     const String context = '${className}.dial';
-    
+
     event.bus.fire(event.originateCallRequest, extension.dialString);
 
     if (!extension.valid || extension == null) {
@@ -19,7 +19,7 @@ abstract class Call {
       event.bus.fire(event.originateCallRequestFailure, null);
       return;
     }
-    
+
     Service.Call.originate((contact == null ? Model.Contact.noContact : contact).id, reception.ID, extension.dialString).then((_) {
       event.bus.fire(event.originateCallRequestSuccess, null);
     }).catchError((error) {
@@ -33,28 +33,40 @@ abstract class Call {
 
 
   /**
-   * Make the service layer perform a pickup request to the call-flow-control server. 
+   * Make the service layer perform a pickup request to the call-flow-control server.
    */
   static void pickupSpecific(Model.Call call) {
 
     event.bus.fire(event.pickupCallRequest, call);
 
-    Service.Call.pickup(call).then((Model.Call call) {
-      event.bus.fire(event.pickupCallSuccess, null);
-    }).catchError((error) {
+    // Verify that the user does not already have a call.
+    if (Model.Call.currentCall != Model.nullCall) {
       event.bus.fire(event.pickupCallFailure, null);
-    });
+    }
+    else {
+      Service.Call.pickup(call).then((Model.Call call) {
+        event.bus.fire(event.pickupCallSuccess, null);
+      }).catchError((error) {
+        event.bus.fire(event.pickupCallFailure, null);
+      });
+    }
   }
 
   static void pickupNext() {
 
     event.bus.fire(event.pickupNextCallRequest, null);
 
-    Service.Call.next().then((Model.Call call) {
-      event.bus.fire(event.pickupCallSuccess, null);
-    }).catchError((error) {
+    // Verify that the user does not already have a call.
+    if (Model.Call.currentCall != Model.nullCall) {
       event.bus.fire(event.pickupCallFailure, null);
-    });
+    }
+    else {
+      Service.Call.next().then((Model.Call call) {
+        event.bus.fire(event.pickupCallSuccess, null);
+      }).catchError((error) {
+        event.bus.fire(event.pickupCallFailure, null);
+      });
+    }
   }
 
   static void hangup(Model.Call call) {
