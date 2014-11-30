@@ -1,49 +1,29 @@
-part of utilities.service;
+part of openreception.service;
 
-abstract class AuthProtocol {
-  static tokenResource(String token) => 'token/${token}';
-  static tokenValidateResource(String token) => 'token/${token}/validate';
+abstract class AuthResource {
+
+  static String nameSpace = 'token';
+
+  static Uri tokenToUser(Uri host, String token)
+    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/${token}');
 }
 
-abstract class Authentication {
+class Authentication {
 
   static final String className = '${libraryName}.Authentication';
 
-  static HttpClient client = new HttpClient();
+  WebService _backed = null;
+  Uri        _host;
+  String     _token = '';
+
+
+  Authentication (Uri this._host, String this._token, this._backed);
 
   /**
    * Performs a lookup of the user on the notification server via the supplied token.
    */
-  static Future<Model.User> userOf({String token, Uri host}) {
-    final String context = '${className}.broadcast';
-
-    Completer<Model.User> completer = new Completer<Model.User>();
-    
-    if (!_UriEndsWithSlash(host)) {
-      host = Uri.parse (host.toString() + '/');
-    }
-
-    Uri url = Uri.parse(host.toString() + AuthProtocol.tokenResource(token));
-    
-    client.getUrl(url)
-        .then((HttpClientRequest request) => request.close())
-        .then((HttpClientResponse response) {
-          String buffer = "";
-          if (response.statusCode == 200) {
-          response.transform(UTF8.decoder).listen((contents) {
-            buffer = '${buffer}${contents}';
-            
-          }).onDone(() {
-            completer.complete(new Model.User.fromMap(JSON.decode(buffer)));
-          });
-          } else {
-            completer.completeError(new StateError('Bad response from server: ${response.statusCode}'));
-          }
-    });
-
-    return completer.future;
-             
-  }
-
-  static bool _UriEndsWithSlash (Uri uri) => uri.toString().endsWith('/');
+  Future<Model.User> userOf(String token) =>
+      this._backed.get (appendToken(AuthResource.tokenToUser(this._host, token), this._token))
+      .then((String response)
+        => new Model.User.fromMap(JSON.decode(response)));
 }

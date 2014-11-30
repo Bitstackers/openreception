@@ -1,4 +1,4 @@
-part of utilities.service;
+part of openreception.service;
 
 abstract class NotificationResource {
   static final broadcast    = "/broadcast";
@@ -41,7 +41,6 @@ class NotificationService {
    */
   Future broadcast(Map map) {
     final String context = '${className}.broadcast';
-
     Uri host = Uri.parse('${this._host}${NotificationResource.broadcast}?token=${this._token}');
 
     log.finest('POST $host $map');
@@ -98,6 +97,7 @@ class NotificationService {
         appendToken(NotificationResource.notifications (host),serverToken))
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
+
 
   static bool _UriEndsWithSlash (Uri uri) => uri.toString().endsWith('/');
 }

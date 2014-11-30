@@ -10,5 +10,5 @@ import 'package:logging/logging.dart';
 part 'service/io/service-io-client.dart';
 part 'service/io/service-io-websocket_client.dart';
 
-final String libraryName = "openreception.service.io";
+const String libraryName = "openreception.service.io";
 
