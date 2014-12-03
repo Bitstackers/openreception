@@ -24,6 +24,7 @@ import 'location.dart' as nav;
 import 'state.dart';
 import '../view/view.dart' as View;
 import '../model/model.dart' as Model;
+import 'package:logging/logging.dart';
 
 class BobActive {
   DivElement element;
@@ -69,6 +70,9 @@ class BobActive {
   Context voicemails;
 
   BobActive(DivElement this.element) {
+    Logger.root.onRecord.listen (print);
+    Logger.root.level = Level.ALL;
+
     element.classes.remove('hidden');
 
     event.bus.on(event.stateUpdated).listen((State value) {

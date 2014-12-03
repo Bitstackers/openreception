@@ -16,14 +16,14 @@ part of view;
 const String EMPTY_FIELD = '';
 
 /**
- * Widget for displaying greetings for 
+ * Widget for displaying greetings for
  */
 class WelcomeMessage {
   DivElement container;
   SpanElement get message => container.querySelector('#welcome-message-text');
 
   /**
-   * 
+   *
    */
   WelcomeMessage(DivElement this.container) {
     event.bus.on(event.receptionChanged).listen(this._onReceptionChange);
@@ -32,7 +32,7 @@ class WelcomeMessage {
   }
 
   /**
-   * 
+   *
    */
   void _onReceptionChange(model.Reception reception) {
     this._render(reception != model.nullReception ? reception.greeting : EMPTY_FIELD);
@@ -40,14 +40,13 @@ class WelcomeMessage {
 
   /**
    * Marks the widget as being active.
-   * TODO: Introduce variable greeting depending on if the welcomeMessage have been played. Different texts for the situations.
    */
   void _onCallChange(model.Call call) {
     log.debugContext("Changed to call ${call.ID}", "WelcomeMessage");
-    
+
     container.classes.toggle('welcome-message-active-call', call != model.nullCall);
-    
-    if (call != model.nullCall ) {  
+
+    if (call != model.nullCall ) {
       return;
     }
     if (call != model.nullCall && call.greetingPlayed) {
@@ -58,7 +57,7 @@ class WelcomeMessage {
   }
 
   /**
-   * 
+   *
    */
   void _render(String newTitle) {
     message.text = newTitle;
