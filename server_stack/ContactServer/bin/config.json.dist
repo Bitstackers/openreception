@@ -1,5 +1,6 @@
 {
     "authurl": "http://auth.example.com/",
+    "notificationServer" : "http://notify.example.com",
     "cache": "/dev/shm/",
     "dbuser": "user",
     "dbpassword": "Secret",

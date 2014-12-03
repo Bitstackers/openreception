@@ -21,7 +21,7 @@ void main(List<String> args) {
     registerAndParseCommandlineArguments(args);
 
     if(showHelp()) {
-      print(parser.getUsage());
+      print(parser.usage);
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
@@ -29,18 +29,17 @@ void main(List<String> args) {
         .then((_) => router.connectNotificationService())
         .then((_) => handleLogger())
         .then((_) => log(config.toString()))
-        .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch(e) {
     log('main() ArgumentError ${e}.');
-    print(parser.getUsage());
+    print(parser.usage);
 
   } on FormatException catch(e) {
     log('main() FormatException ${e}');
-    print(parser.getUsage());
+    print(parser.usage);
 
   } catch(e) {
     log('main() exception ${e}');

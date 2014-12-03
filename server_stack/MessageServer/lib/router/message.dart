@@ -56,7 +56,7 @@ abstract class Message {
   static void listNewest (HttpRequest request) {
     messageStore.list()
       .then ((List<Model.Message> messages) =>
-        writeAndClose(request, JSON.encode({'messages' : messages})))
+        writeAndClose(request, JSON.encode(messages)))
       .catchError((error, stackTrace) {
         serverError(request, error.toString());
         print('$error : $stackTrace');
@@ -91,7 +91,7 @@ abstract class Message {
     messageStore.list(limit: limit, filter : filter)
       .then ((List<Model.Message> messages) {
       messages.forEach((e) => print (e.asMap));
-        writeAndClose(request, JSON.encode({'messages' : messages}));})
+        writeAndClose(request, JSON.encode(messages));})
       .catchError((error, stackTrace) {
         serverError(request, error.toString());
         print('$error : $stackTrace');

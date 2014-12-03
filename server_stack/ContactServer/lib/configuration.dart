@@ -17,7 +17,7 @@ abstract class Default {
   static final String configFile           = 'config.json';
   static final int    httpport             = 4010;
   static final Uri    notificationServer   = Uri.parse("http://localhost:4200");
-  static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
+  static final Uri    authenticationServer = Uri.parse("http://localhost:4050");
   static final String serverToken          = 'feedabbadeadbeef0';
 }
 

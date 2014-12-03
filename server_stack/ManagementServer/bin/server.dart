@@ -22,7 +22,7 @@ void main(List<String> args) {
   ArgResults parsedArgs = registerAndParseCommandlineArguments(parser, args);
 
   if(parsedArgs['help']) {
-    print(parser.getUsage());
+    print(parser.usage);
   }
 
   config = new Configuration(parsedArgs)
@@ -30,8 +30,8 @@ void main(List<String> args) {
   orf.logger.debugContext(config, context);
 
   setupDatabase(config)
-    .then((_) => connectNotificationService())
     .then((db) => setupControllers(db, config))
+    .then((_) => connectNotificationService())
     .then((_) => makeServer(config.httpport))
     .then((HttpServer server) {
       setupRoutes(server, config);

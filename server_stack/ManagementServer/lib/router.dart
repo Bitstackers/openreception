@@ -82,7 +82,7 @@ Service.NotificationService Notification = null;
 
 void connectNotificationService() {
   Notification = new Service.NotificationService
-      (config.authUrl, config.serverToken, new Service_IO.Client());
+      (config.notificationServer, config.serverToken, new Service_IO.Client());
 }
 
 
