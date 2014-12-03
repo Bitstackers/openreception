@@ -2,6 +2,7 @@ library openreception.model;
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
