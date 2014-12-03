@@ -8,7 +8,7 @@ dependencies:
     git:
       ref: master
       url: https://github.com/rostgaard/libesl-dart.git
-      
+
   openreception_framework:
     git:
       ref: converging_model
