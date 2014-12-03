@@ -46,11 +46,9 @@ class Call {
     this._locked = lock;
 
     if (lock) {
-      Service.Notification.broadcast(ClientNotification.callLock(this),
-                                     config.notificationServer, config.serverToken);
+      Notification.broadcast(ClientNotification.callLock(this));
     }else {
-      Service.Notification.broadcast(ClientNotification.callUnlock(this),
-                                     config.notificationServer, config.serverToken);
+      Notification.broadcast(ClientNotification.callUnlock(this));
     }
   }
 
@@ -115,58 +113,48 @@ class Call {
     logger.debugContext('UUID: ${this.ID}: ${lastState} => ${newState}',context);
 
     if (lastState == CallState.Queued) {
-      Service.Notification.broadcast(ClientNotification.queueLeave (this),
-                                     config.notificationServer, config.serverToken);
+      Notification.broadcast(ClientNotification.queueLeave (this));
     } else if (lastState == CallState.Parked) {
-      Service.Notification.broadcast(ClientNotification.callUnpark (this),
-                                     config.notificationServer, config.serverToken);
+      Notification.broadcast(ClientNotification.callUnpark (this));
     }
 
     switch (newState) {
       case (CallState.Created):
-        Service.Notification.broadcast(ClientNotification.callOffer (this),
-                                       config.notificationServer, config.serverToken);
+        Notification.broadcast(ClientNotification.callOffer (this));
         break;
 
       case (CallState.Parked):
-        Service.Notification.broadcast(ClientNotification.callPark (this),
-                                       config.notificationServer, config.serverToken);
+        Notification.broadcast(ClientNotification.callPark (this));
         break;
 
       case (CallState.Unparked):
-        Service.Notification.broadcast(ClientNotification.callUnpark (this),
-                                       config.notificationServer, config.serverToken);
+        Notification.broadcast(ClientNotification.callUnpark (this));
         break;
 
       case (CallState.Queued):
-        Service.Notification.broadcast(ClientNotification.queueJoin (this),
-                                       config.notificationServer, config.serverToken);
+        Notification.broadcast(ClientNotification.queueJoin (this));
         break;
 
       case (CallState.Hungup):
         if (this.isCall) {
-          Service.Notification.broadcast(ClientNotification.callHangup (this),
-                                         config.notificationServer, config.serverToken);
+          Notification.broadcast(ClientNotification.callHangup (this));
         }
         //TODO: Call_List.Remove (ID => Obj.ID);
         break;
 
       case (CallState.Speaking):
         if (this.isCall) {
-          Service.Notification.broadcast(ClientNotification.callPickup (this),
-                                         config.notificationServer, config.serverToken);
+          Notification.broadcast(ClientNotification.callPickup (this));
         }
         break;
 
       case (CallState.Transferred):
-        Service.Notification.broadcast(ClientNotification.callTransfer (this),
-                                       config.notificationServer, config.serverToken);
+        Notification.broadcast(ClientNotification.callTransfer (this));
         break;
 
       case  (CallState.Ringing):
         if (lastState != CallState.Ringing) {
-          Service.Notification.broadcast(ClientNotification.callPickup (this),
-                                         config.notificationServer, config.serverToken);
+          Notification.broadcast(ClientNotification.callPickup (this));
         }
         break;
 

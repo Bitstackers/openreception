@@ -28,6 +28,7 @@ void main(List<String> args) {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
         .then((_) => router.connectAuthService())
+        .then((_) => router.connectNotificationService())
         .then((_) => connectESLClient())
         .then((_) => http.start(config.httpport, router.registerHandlers))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));

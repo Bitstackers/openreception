@@ -9,6 +9,7 @@ import 'package:openreception_framework/model.dart' as SharedModel;
 import 'package:openreception_framework/common.dart';
 import '../configuration.dart';
 import '../controller/controller.dart' as Controller;
+import '../router.dart';
 
 part 'model-call.dart';
 part 'model-call_list.dart';

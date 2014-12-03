@@ -32,6 +32,7 @@ const String libraryName = "notificationserver.router";
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 Service.Authentication AuthService = null;
+Service.NotificationService Notification = null;
 
 final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern peerListResource        = new UrlPattern(r'/peer/list');
@@ -56,6 +57,12 @@ void connectAuthService() {
   AuthService = new Service.Authentication
       (config.authUrl, config.serverToken, new Service_IO.Client());
 }
+
+void connectNotificationService() {
+  Notification = new Service.NotificationService
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
+
 
 void registerHandlers(HttpServer server) {
     logger.debugContext("CallFlowControl REST interface is listening on "
