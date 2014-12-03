@@ -13,7 +13,7 @@ Configuration config;
 abstract class Default {
   static const int    maxTries = 3;
   static final int    HTTPPort = 4080;
-  static final String AuthURL  = "http://localhost:8080";
+  static final String AuthURL  = "http://localhost:4050";
 }
 
 class Configuration {
@@ -31,6 +31,7 @@ class Configuration {
   String     _dbname;
   int        _httpport   = Default.HTTPPort;
   String     serverToken;
+  Uri        notificationServer;
 
   Uri    get authUrl      => _authUrl;
   String get configfile   => _configfile;
