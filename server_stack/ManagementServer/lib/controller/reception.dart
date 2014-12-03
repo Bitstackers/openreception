@@ -7,7 +7,7 @@ import '../configuration.dart';
 import '../database.dart';
 import '../model.dart';
 import '../view/reception.dart';
-import 'package:openreception_framework/service.dart' as ORFService;
+import '../router.dart';
 import 'package:openreception_framework/common.dart' as orf;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
@@ -68,9 +68,9 @@ class ReceptionController {
           .then((int id) => orf_http.writeAndClose(request, receptionIdAsJson(id))
           .then((_) {
               Map data = {'event' : 'receptionEventCreated', 'receptionEvent' : {'receptionId' : id}};
-              ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+              Notification.broadcast(data)
                 .catchError((error) {
-                  orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+                  orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
                 });
             }))
           .catchError((error) {
@@ -89,9 +89,9 @@ class ReceptionController {
         .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId))
         .then((_) {
             Map data = {'event' : 'receptionEventUpdated', 'receptionEvent' : {'receptionId' : receptionId}};
-            ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+            Notification.broadcast(data)
               .catchError((error) {
-                orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+                orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
               });
           }))
         .catchError((error) {
@@ -108,9 +108,9 @@ class ReceptionController {
       .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId))
       .then((_) {
           Map data = {'event' : 'receptionEventDeleted', 'receptionEvent' : {'receptionId' : receptionId}};
-          ORFService.Notification.broadcast(data, config.notificationServer, config.token)
+          Notification.broadcast(data)
             .catchError((error) {
-              orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.token} url: "${request.uri}" gave error "${error}"', context);
+              orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
             });
         }))
       .catchError((error, stack) {

@@ -13,6 +13,8 @@ import 'controller/user.dart';
 import 'database.dart';
 import 'utilities/http.dart';
 import 'package:openreception_framework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 
 final Pattern anyThing = new UrlPattern(r'/(.*)');
 
@@ -75,6 +77,14 @@ OrganizationController organization;
 ReceptionController reception;
 ReceptionContactController receptionContact;
 UserController user;
+
+Service.NotificationService Notification = null;
+
+void connectNotificationService() {
+  Notification = new Service.NotificationService
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
+
 
 void setupRoutes(HttpServer server, Configuration config) {
   Router router = new Router(server)

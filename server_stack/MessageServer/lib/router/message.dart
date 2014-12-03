@@ -115,7 +115,7 @@ abstract class Message {
           Model.Message message = new Model.Message.fromMap(JSON.decode(content))..sender = user;
           return messageStore.save(message)
               .then((_) => messageStore.enqueue(message)
-              .then((_) => Service.Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}}, config.notificationServer, config.serverToken))
+              .then((_) => Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}}))
               .then((_) => writeAndClose(request, '{"description" : "Saved and enqueued message." , "id" : ${message.ID} }')));
 
 

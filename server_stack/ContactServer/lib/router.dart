@@ -13,6 +13,7 @@ import 'package:openreception_framework/common.dart';
 import 'database.dart' as db;
 import 'package:openreception_framework/httpserver.dart';
 import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 
 part 'router/getcalendar.dart';
 part 'router/getcontact.dart';
@@ -39,6 +40,20 @@ final List<Pattern> allUniqueUrls =
     receptionContactListResource,
     receptionContactCalendarResource,
     receptionContactCalendarListResource];
+
+Service.Authentication      AuthService  = null;
+Service.NotificationService Notification = null;
+
+void connectAuthService() {
+  AuthService = new Service.Authentication
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
+
+void connectNotificationService() {
+  Notification = new Service.NotificationService
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
+
 
 void setup(HttpServer server) {
   Router router = new Router(server)

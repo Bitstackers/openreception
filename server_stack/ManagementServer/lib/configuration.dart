@@ -5,6 +5,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+Configuration config = null;
+
 abstract class Default {
   static final String configFile = 'config.json';
   static final int    dbport     = 5432;
@@ -27,7 +29,7 @@ class Configuration {
   int    _httpport   = Default.httpport;
   Uri    _notificationServer;
   String _recordingsDirectory;
-  String _token;
+  String _serverToken;
 
   Uri    get authUrl                => _authUrl;
   Uri    get callFlowServer         => _callFlowServer;
@@ -41,7 +43,7 @@ class Configuration {
   int    get httpport               => _httpport;
   Uri    get notificationServer     => _notificationServer;
   String get recordingsDirectory    => _recordingsDirectory;
-  String get token                  => _token;
+  String get serverToken            => _serverToken;
 
   Configuration(ArgResults args) {
     _args = args;
@@ -102,7 +104,7 @@ class Configuration {
     }
 
     if(_hasArgument('servertoken')) {
-      _token = _args['servertoken'];
+      _serverToken = _args['servertoken'];
     }
   }
 
@@ -161,7 +163,7 @@ class Configuration {
     }
 
     if(content.containsKey('servertoken')) {
-      _token = content['servertoken'];
+      _serverToken = content['servertoken'];
     }
   }
 
@@ -218,7 +220,7 @@ class Configuration {
     dialplanserver:      $dialplanCompilerServer
     callflowserver:      $callFlowServer
     recordingsdirectory: ${recordingsDirectory}
-    Token: $token
+    Token: $serverToken
     Database:
       Host: $dbhost
       Port: $dbport

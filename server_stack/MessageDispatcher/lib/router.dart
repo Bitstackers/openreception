@@ -11,9 +11,11 @@ import 'configuration.dart';
 import 'package:openreception_framework/common.dart';
 import 'package:openreception_framework/httpserver.dart';
 
-import 'package:openreception_framework/database.dart' as Database;
-import 'package:openreception_framework/model.dart'    as Model;
-import 'package:openreception_framework/storage.dart'  as Storage;
+import 'package:openreception_framework/database.dart'   as Database;
+import 'package:openreception_framework/model.dart'      as Model;
+import 'package:openreception_framework/storage.dart'    as Storage;
+import 'package:openreception_framework/service.dart'    as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 
 part 'router/message-queue-single.dart';
 part 'router/message-queue-list.dart';
@@ -41,6 +43,13 @@ Database.Connection connection = null;
 
 Storage.Message      messageStore;
 Storage.MessageQueue messageQueueStore;
+
+Service.NotificationService Notification = null;
+
+void connectNotificationService() {
+  Notification = new Service.NotificationService
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
 
 Future startDatabase() =>
     Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')

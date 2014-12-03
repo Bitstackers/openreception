@@ -11,6 +11,7 @@ import 'configuration.dart';
 import 'database.dart' as db;
 import 'package:openreception_framework/httpserver.dart';
 import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 
 part 'router/reception-calendar.dart';
 part 'router/getreception.dart';
@@ -33,6 +34,13 @@ final List<Pattern> allUniqueUrls = [receptionResource, receptionListResource,
                                      receptionUrl, receptionInvalidateResource,
                                      receptionCalendarListResource,
                                      receptionCalendarEventResource];
+
+Service.NotificationService Notification = null;
+
+void connectNotificationService() {
+  Notification = new Service.NotificationService
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
 
 void setup(HttpServer server) {
   Router router = new Router(server)

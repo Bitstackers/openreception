@@ -6,20 +6,24 @@ part of userserver.router;
 abstract class User {
 
   static list (HttpRequest request) {
-    Model.UserDatabase.userList(db).then((List<Map> userlist) {
+    /*Model.UserDatabase.userList(db).then((List<Map> userlist) {
       writeAndClose(request, JSON.encode({"users" : userlist}));
     }).catchError((error, stacktrace) {
       serverError(request, error.toString() + " : " + stacktrace.toString());
     });
+    */
+    serverError(request, "Not implemented");
+
   }
 
   static get (HttpRequest request) {
-    int userId = pathParameter(request.uri, 'user');
+    /*int userId = pathParameter(request.uri, 'user');
     Model.UserDatabase.getUserFromId(userId, fromDatabase: db).then((Map user) {
       writeAndClose(request, JSON.encode(user));
     }).catchError((error, stacktrace) {
       serverError(request, error.toString() + " : " + stacktrace.toString());
-    });
+    }); */
+    serverError(request, "Not implemented");
   }
 
   static add (HttpRequest request) {

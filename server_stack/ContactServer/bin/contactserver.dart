@@ -25,6 +25,8 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
+        .then((_) => router.connectAuthService())
+        .then((_) => router.connectNotificationService())
         .then((_) => handleLogger())
         .then((_) => log(config.toString()))
         .then((_) => cache.setup())

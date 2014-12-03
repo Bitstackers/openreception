@@ -30,6 +30,7 @@ class Configuration {
   int        _dbport     = 5432;
   String     _dbname;
   int        _httpport   = Default.HTTPPort;
+  String     serverToken;
 
   Uri    get authUrl      => _authUrl;
   String get configfile   => _configfile;

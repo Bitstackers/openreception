@@ -26,8 +26,9 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        .then((_) => router.startDatabase())
         .then((_) => router.connectAuthService())
+        .then((_) => router.connectNotificationService())
+        .then((_) => router.startDatabase())
         .then((_) => http.start(config.httpport, router.setup))
         .then((_) => print ('MessageServer listening on port ${config.httpport}'))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));

@@ -28,7 +28,7 @@ abstract class ReceptionCalendar {
                          'receptionID' : receptionID
                        }
                       };
-          Service.Notification.broadcast (event, config.notificationServer, config.serverToken);
+          Notification.broadcast (event);
           writeAndClose(request, JSON.encode({'status'      : 'ok',
                                               'description' : 'Event created'}));
         }).catchError((onError) {
@@ -74,7 +74,7 @@ abstract class ReceptionCalendar {
                          'receptionID' : receptionID
                        }
                       };
-          Service.Notification.broadcast (event, config.notificationServer, config.serverToken);
+          Notification.broadcast (event);
           writeAndClose(request, JSON.encode({'status' : 'ok',
                                               'description' : 'Event updated'}));
         }).catchError((onError) {
@@ -108,8 +108,8 @@ abstract class ReceptionCalendar {
                        'receptionID' : receptionID
                      }
                     };
-        Service.Notification.broadcast (event, config.notificationServer, config.serverToken);
-        
+        Notification.broadcast (event);
+
             writeAndClose(request, JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
           }).catchError((onError) {

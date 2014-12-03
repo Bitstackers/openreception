@@ -10,10 +10,14 @@ import 'package:openreception_framework/common.dart';
 import 'package:openreception_framework/model.dart' as Model;
 
 import '../lib/configuration.dart';
-import '../lib/router.dart';
+import '../lib/router.dart' as Router;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
+
+/**
+ * TODO: Initialize serverToken
+ */
 
 void main(List<String> args) {
   try {
@@ -28,7 +32,11 @@ void main(List<String> args) {
 
     } else {
       config = new Configuration(parsedArgs);
-      config.whenLoaded().then((_) => startDatabase())// HTTP interface is currently unsupported, due to database schema changes.
+      config.whenLoaded()
+        .then((_) => Router.startDatabase())
+        .then((_) => Router.connectNotificationService())
+
+        // HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
       .then((_) => periodicEmailSend()).catchError((e, stackTrace) => logger.errorContext('${e} : ${stackTrace}', 'main'));
     }
@@ -59,12 +67,12 @@ Timer reSchedule() => new Timer(new Duration(seconds: config.mailerPeriod), peri
 Future tryDispatch(Model.MessageQueueItem queueItem) {
   final String context = "tryDispatch";
 
-  return queueItem.message(messageStore).then((Model.Message message) {
+  return queueItem.message(Router.messageStore).then((Model.Message message) {
 
     if (!message.recipients.hasRecipients) {
       logger.errorContext("No recipients detected on message with ID ${message.ID}!", context);
 
-      queueItem.save(messageQueueStore);
+      queueItem.save(Router.messageQueueStore);
 
     } else {
 
@@ -95,10 +103,10 @@ Future tryDispatch(Model.MessageQueueItem queueItem) {
           queueItem.tries++;
 
           if (queueItem.unhandledEndpoints.isEmpty) {
-            queueItem.archive(messageQueueStore);
+            queueItem.archive(Router.messageQueueStore);
           }
           else {
-            queueItem.save(messageQueueStore);
+            queueItem.save(Router.messageQueueStore);
           }
         });
       }).catchError((onError) => logger.errorContext("Failed to run mailer process. Error: ${onError}", context));;
@@ -118,7 +126,7 @@ void periodicEmailSend() {
 
   final String context = "periodicEmailSend";
 
-  messageQueueStore.list(maxTries : config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
+  Router.messageQueueStore.list(maxTries : config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       logger.infoContext('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.mailerPeriod} seconds', context);
       reSchedule();

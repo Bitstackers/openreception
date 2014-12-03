@@ -60,10 +60,15 @@ void setup(HttpServer server) {
 Database.Connection connection = null;
 Storage.Message messageStore = new Database.Message (connection);
 Service.Authentication AuthService = null;
-
+Service.NotificationService Notification = null;
 
 void connectAuthService() {
   AuthService = new Service.Authentication
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
+
+void connectNotificationService() {
+  Notification = new Service.NotificationService
       (config.authUrl, config.serverToken, new Service_IO.Client());
 }
 

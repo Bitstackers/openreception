@@ -25,11 +25,12 @@ void main(List<String> args) {
     print(parser.getUsage());
   }
 
-  Configuration config = new Configuration(parsedArgs)
+  config = new Configuration(parsedArgs)
     ..parse();
   orf.logger.debugContext(config, context);
 
   setupDatabase(config)
+    .then((_) => connectNotificationService())
     .then((db) => setupControllers(db, config))
     .then((_) => makeServer(config.httpport))
     .then((HttpServer server) {
