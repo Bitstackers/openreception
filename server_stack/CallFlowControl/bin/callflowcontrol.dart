@@ -56,7 +56,7 @@ void connectESLClient() {
 
   Logger.root.level = Level.ALL;
 
-  Model.PBXClient.instance =  new ESL.Connection()..log.onRecord.listen(print);
+  Model.PBXClient.instance = new ESL.Connection()..log.onRecord.listen(print);
 
   Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
   Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
@@ -76,15 +76,19 @@ void connectESLClient() {
     }
   });
 
-  Model.PBXClient.instance.connect(config.eslHostname, config.eslPort).catchError((error, stackTrace) {
-    if (error is SocketException) {
-      logger.errorContext('ESL Connection failed - reconnecting in ${period.inSeconds} seconds', context);
-      new Timer(period, connectESLClient);
+  void tryConnect () {
+    Model.PBXClient.instance.connect(config.eslHostname, config.eslPort).catchError((error, stackTrace) {
+      if (error is SocketException) {
+        logger.errorContext('ESL Connection failed - reconnecting in ${period.inSeconds} seconds', context);
+        new Timer(period, tryConnect);
 
-    } else {
-      logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);
-    }
-  }).then ((_) => logger.infoContext('Connected to ${config.eslHostname}:${config.eslPort}', context));
+      } else {
+        logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);
+      }
+    }).then ((_) => logger.infoContext('Connected to ${config.eslHostname}:${config.eslPort}', context));
+  }
+
+  tryConnect ();
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
