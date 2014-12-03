@@ -131,7 +131,7 @@ class MessageList {
 
       /// Hacky way of fetching message and determining if is affected by the current filter.
       Storage.Message.list (filter: model.MessageFilter.current, lastID: messageID, limit: 1)
-        .then ((model.MessageList messages) {
+        .then ((List<model.Message> messages) {
 
         TableRowElement existingRow = this.tableBody.children.firstWhere((TableRowElement row) => row.dataset['messageID'] == messageID.toString(), orElse: () => null);
 
@@ -176,7 +176,7 @@ class MessageList {
           else if (this._selectedRow.nextNode == null) {
             if (!this._busy && this.lowerID-1 != model.Message.noID ) {
               this._busy = true;
-              Storage.Message.list(lastID : this.lowerID-1, limit: viewLimit , filter : model.MessageFilter.current).then((model.MessageList messages) {
+              Storage.Message.list(lastID : this.lowerID-1, limit: viewLimit , filter : model.MessageFilter.current).then((List<model.Message> messages) {
                 messages.forEach((model.Message message) => this.tableBody.append(createRow(message)));
 
               }).whenComplete(() => this._busy = false);
@@ -202,7 +202,7 @@ class MessageList {
     }
 
     Storage.Message.list(lastID: fromID, limit: viewLimit, filter : model.MessageFilter.current)
-      .then((model.MessageList messageList) {
+      .then((List<model.Message> messageList) {
       tableBody.children.clear();
       messageList.forEach ((model.Message message) {
         tableBody.children.add(createRow(message));
@@ -256,7 +256,7 @@ class MessageList {
               ..children.add(new CheckboxInputElement()..tabIndex = -1)
               ..onClick.listen(messageCheckboxClick),
            new TableCellElement()
-              ..text = messageDateFormat.format(message.createdAt),
+              ..text = message.createdAt != null? messageDateFormat.format(message.createdAt) : "??",
            new TableCellElement()
               ..text = '${callerInfo()}',
            new TableCellElement()

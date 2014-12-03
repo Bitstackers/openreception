@@ -23,7 +23,6 @@ class MessageList extends IterableBase<Message> {
   Map<int, Message> get values => this._map;
   bool contains (int MessageID) => this._map.containsKey(MessageID);
 
-
   /**
    * Iterator.
    *
@@ -64,12 +63,12 @@ class MessageList extends IterableBase<Message> {
    *
    * TODO: Document the map format in the wiki.
    */
-  MessageList.fromList (List<Map> messageMaps) {
+  MessageList.fromList (List<ORModel.Message> messages) {
     const String context = '${className}.fromList';
 
     try {
-      messageMaps.forEach((Map messageMap) {
-        this.updateOrInsert(new Message.fromMap(messageMap));
+      messages.forEach((ORModel.Message message) {
+        this.updateOrInsert(new Message.fromMap(message.asMap));
       });
     } catch (error, stacktrace) {
       log.criticalError(error, context);
@@ -95,10 +94,10 @@ class MessageList extends IterableBase<Message> {
    * Returns a Future containing the [MessageList] instance - updated with new elements.
    */
   Future<MessageList> reloadFromServer() {
-    return Service.Message.list().then ((MessageList messageList){
-      this._map = messageList._map;
+    return Service.Message.instance.list().then ((List<ORModel.Message> messages){
+      messages.forEach((Message message) => this.updateOrInsert(message));
 
-      //this._eventStream.fire(MessageList.reload, null);
+      this._eventStream.fire(MessageList.reload, null);
       return this;
     });
   }

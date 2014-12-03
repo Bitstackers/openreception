@@ -18,6 +18,7 @@ import 'dart:async';
 import '../model/model.dart' as model;
 import '../service/service.dart' as Service;
 import '../classes/logger.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'storage-contact.dart';
 part 'storage-message.dart';

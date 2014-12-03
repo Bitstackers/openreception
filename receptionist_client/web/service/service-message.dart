@@ -6,6 +6,21 @@ abstract class MessageResource {
 
 abstract class Message {
 
+  static ORStorage.Message _instance = null;
+
+
+  static ORStorage.Message get instance {
+    if (_instance == null) {
+      _instance = new ORService.RESTMessageStore
+          (Uri.parse('http://localhost:4040'),
+           configuration.token,
+           new ORServiceHTML.Client());
+    }
+
+    return _instance;
+  }
+
+
   static final String className = '${libraryName}.Message';
 
   static Future save(model.Message message, [Uri host]) {
@@ -131,64 +146,6 @@ abstract class Message {
           completer.completeError(e);
         })
         ..send(JSON.encode(payload));
-
-    return completer.future;
-  }
-
-  static Future<model.MessageList> list({Uri host   : null,
-                                         int lastID : model.Message.noID,
-                                         int limit  : 100,
-                                         model.MessageFilter filter : null}) {
-
-    final String context = '${className}.list';
-
-    if (host == null) { host = Default.messageServerUri;};
-
-    final String base = configuration.messageBaseUrl.toString();
-    final Completer<model.MessageList> completer = new Completer<model.MessageList>();
-    final List<String> fragments = new List<String>();
-    final String path = '/message/list/$lastID/limit/$limit';
-
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    if (filter != null || filter == model.MessageFilter.none) {
-      fragments.add('filter=${JSON.encode(filter.asMap)}');
-    }
-
-    url = _buildUrl(base, path, fragments);
-
-    print (url);
-
-    request = new HttpRequest()
-        ..open(GET, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.MessageList.fromList (JSON.decode(request.responseText)['messages']));
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
 
     return completer.future;
   }

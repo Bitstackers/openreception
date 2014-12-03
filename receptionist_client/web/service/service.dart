@@ -4,6 +4,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'package:logging/logging.dart' show Logger, Level, LogRecord;
+import 'package:openreception_framework/service.dart'      as ORService;
+import 'package:openreception_framework/storage.dart'      as ORStorage;
+import 'package:openreception_framework/service-html.dart' as ORServiceHTML;
+
 
 import '../classes/logger.dart';
 
@@ -17,7 +21,7 @@ part 'service-message.dart';
 part 'service-peer.dart';
 part 'service-reception.dart';
 
-const String libraryName = "service"; 
+const String libraryName = "service";
 
 abstract class HTTPError extends Error {
   final String message;
@@ -73,7 +77,7 @@ String _buildUrl(String base, String path, [List<String> fragments]) {
   } else if (base.endsWith('/') && !path.startsWith('/')) {
     path = path.replaceFirst('/', '');
   }
-  
+
   assert(base != null);
   assert(path != null);
 

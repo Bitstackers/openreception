@@ -26,16 +26,20 @@ abstract class Message {
    * messageID 12, downto (including) 3.
    *
    */
-  static Future<model.MessageList> list({int lastID                 : model.Message.noID,
+  static Future<List<model.Message>> list({int lastID                 : model.Message.noID,
                                          int limit                  : 100,
                                          model.MessageFilter filter : null}) {
     const String context = '${className}.list';
 
-    final Completer completer = new Completer<model.MessageList>();
+    final Completer completer = new Completer<List<model.Message>>();
 
     debugStorage("Message list not found in cache, loading from service.", context);
-    Service.Message.list(lastID: lastID, limit: limit, filter: filter).then((model.MessageList messages) {
-      completer.complete(messages);
+    Service.Message.instance.list(limit: limit, filter: filter).then((List<ORModel.Message> messages) {
+
+      print (messages);
+
+      completer.complete(messages.map((ORModel.Message message) =>
+          new model.Message.fromMap(message.asMap)).toList());
     }).catchError((error) {
       completer.completeError(error);
     });
