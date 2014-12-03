@@ -1,10 +1,11 @@
 name: MiscServer
-description: A sample command-line application
+description: Configuration management server.
 dependencies:
   openreception_framework:
     git:
       ref: converging_model
-      url: https://github.com/AdaHeads/OpenReceptionFramework.git  args: any
+      url: https://github.com/AdaHeads/OpenReceptionFramework.git
+  args: any
   path: any
   postgresql: any
   route: any
