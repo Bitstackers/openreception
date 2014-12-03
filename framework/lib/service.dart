@@ -16,7 +16,6 @@ part 'service/service-message_resource.dart';
 part 'service/service-notification.dart';
 part 'service/service-reception.dart';
 part 'service/service-reception_resource.dart';
-part 'service/service-user.dart';
 part 'service/service-webservice.dart';
 part 'service/service-websocket.dart';
 
