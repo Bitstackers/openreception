@@ -1,6 +1,5 @@
-name: Bob
+name: OpenReception Client
 description: Receptionist browser-based console for Adaheads
-dependencies:
 dependencies:
   openreception_framework:
     git:
@@ -13,3 +12,4 @@ dependencies:
   logging: any
   meta: any
   okeyee: any
+  logging: any
