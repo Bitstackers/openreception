@@ -1,6 +1,6 @@
 name: openreception_framework
 author: BitStack K/S
-version: 0.0.11+8
+version: 0.0.12+0
 description: A utility package for the OpenReception application.
 dependencies:
   http: any

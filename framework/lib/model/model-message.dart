@@ -37,7 +37,9 @@ class MessageCaller {
 
   MessageCaller(Map this._map);
 
-  Map toJson () => this._map;
+  Map get asMap => this._map;
+
+  Map toJson () => this.asMap;
 
   void update (String key, String value) {
     this._map[key] = value;
@@ -134,14 +136,14 @@ class Message {
   Map get asMap =>
       { 'id'             : this.ID,
         'message'        : this.body,
-        'context'        : this.context,
+        'context'        : this.context.asMap,
         'taken_by_agent' : this.sender.asSender,
-        'caller'         : this._callerInfo,
+        'caller'         : this._callerInfo.asMap,
         'flags'          : this._flags,
         'sent'           : this.sent,
         'enqueued'       : this.enqueued,
         'created_at'     : dateTimeToUnixTimestamp(this.createdAt),
-        'recipients'     : this.recipients
+        'recipients'     : this.recipients.asMap
       };
 
   /**

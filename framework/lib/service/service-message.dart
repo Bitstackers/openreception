@@ -43,7 +43,7 @@ class RESTMessageStore implements Storage.Message {
         (appendToken
            (MessageResource.list(this._host),this._token))
       .then((String response)
-        => (JSON.decode(response) as List).map((Map map) => new Model.Message.fromMap(map)));
+        => (JSON.decode(response) as List).map((Map map) => new Model.Message.fromMap(map)).toList());
 
   Future<List<Model.Message>> subset(int upperMessageID, int count) =>
       this._backed.get
