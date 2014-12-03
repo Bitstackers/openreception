@@ -1,10 +1,11 @@
 name: ReceptionServer
-description: A sample command-line application
+description: Data management server for proving Reception information
 dependencies:
   args: any
   openreception_framework:
     git:
       ref: converging_model
-      url: https://github.com/AdaHeads/OpenReceptionFramework.git  path: any
+      url: https://github.com/AdaHeads/OpenReceptionFramework.git
+  path: any
   postgresql: any
   route: any
