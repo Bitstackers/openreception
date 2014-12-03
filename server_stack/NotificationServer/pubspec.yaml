@@ -4,7 +4,7 @@ dependencies:
   args: any
   openreception_framework:
     git:
-      ref: converging_model
-      url: https://github.com/AdaHeads/OpenReceptionFramework.git
+      ref: master
+      url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
   route: any

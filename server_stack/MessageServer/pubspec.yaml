@@ -4,10 +4,9 @@ dependencies:
   args: any
   mailer: any
   openreception_framework:
-    #git:
-    #  ref: converging_model
-    #  url: https://github.com/AdaHeads/OpenReceptionFramework.git
-    path: /home/krc/Projects/OpenReceptionFramework
+    git:
+      ref: master
+      url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
   postgresql: any
   route: any

@@ -11,7 +11,7 @@ dependencies:
 
   openreception_framework:
     git:
-      ref: converging_model
+      ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
   route: any
