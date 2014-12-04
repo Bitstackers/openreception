@@ -4,7 +4,7 @@
 }
 
 .selected {
-  border: 0.1em solid #67c1f3;
+  outline: 0.1em solid #67c1f3;
 }
 
 #contactinfo_search {
@@ -157,6 +157,6 @@ ul.contact-list>li.selected {
   overflow: auto;
   /*border: 1px red solid;*/
   font-size: small;
-  
+
 }
 
