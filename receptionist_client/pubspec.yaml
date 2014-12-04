@@ -1,9 +1,9 @@
-name: OpenReception Client
+name: openreception_client
 description: Receptionist browser-based console for Adaheads
 dependencies:
   openreception_framework:
     git:
-      ref: converging_model
+      ref: master
       url: https://github.com/Bitstackers/OpenReceptionFramework.git
   browser: any
   event_bus: < 0.3.0
