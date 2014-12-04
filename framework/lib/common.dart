@@ -52,7 +52,11 @@ class _SysLogger extends BasicLogger {
 }
 
 int dateTimeToUnixTimestamp(DateTime time) {
-  return time.millisecondsSinceEpoch~/1000;
+  return time.toUtc().millisecondsSinceEpoch~/1000;
+}
+
+DateTime unixTimestampToDateTime(int secondsSinceEpoch) {
+  return new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch*1000, isUtc: true);
 }
 
 String dateTimeToJson(DateTime time) {
