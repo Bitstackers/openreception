@@ -9,6 +9,7 @@ import 'package:postgresql/postgresql.dart'          as PG;
 
 import 'model.dart'   as Model;
 import 'storage.dart' as Storage;
+import 'util.dart'    as Util;
 
 part 'database/database-message.dart';
 part 'database/database-message_draft.dart';

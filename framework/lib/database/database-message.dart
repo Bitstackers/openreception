@@ -169,8 +169,9 @@ class Message implements Storage.Message {
                                       'cellphone' : row.taken_from_cellphone},
            'flags'                 : JSON.decode(row.flags),
            'enqueued'              : row.enqueued,
+           'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
            'sent'                  : row.sent}
-      )..createdAt = row.created_at;
+      );
         messages.add(message);
       }
 
@@ -369,8 +370,8 @@ class Message implements Storage.Message {
                                       'cellphone' : row.taken_from_cellphone},
            'flags'                 : JSON.decode(row.flags),
            'enqueued'              : row.enqueued,
-           'sent'                  : row.sent,
-           'created_at'            : row.created_at != null ? row.created_at : new DateTime.fromMillisecondsSinceEpoch(0)});
+           'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
+           'sent'                  : row.sent});
 
     });
   }
