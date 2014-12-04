@@ -51,13 +51,16 @@ class MessageList {
 
   static final EventType selectedMessageChanged = new EventType();
 
-  TableRowElement  get selectedRow
+  TableRowElement get selectedRow
     => this.tableBody.children.firstWhere((TableRowElement child)
       => child.classes.contains(SelectedClass),
          orElse : () => new TableRowElement()..hidden = true);
 
   set selectedRow (TableRowElement newRow) {
-    if (newRow == null || !(newRow is TableRowElement)) {
+    bool isHeader(TableRowElement row) =>
+        !row.dataset.containsKey('messageID');
+
+    if (newRow == null || !(newRow is TableRowElement || isHeader(newRow))) {
       return;
     }
 

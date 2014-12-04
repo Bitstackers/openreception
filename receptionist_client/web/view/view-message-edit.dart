@@ -32,6 +32,11 @@ class MessageEdit {
   InputElement    get callerPhoneField          => this.element.querySelector('input.phone');
   InputElement    get callerCellphoneField      => this.element.querySelector('input.cellphone');
   InputElement    get callerLocalExtensionField => this.element.querySelector('input.local-extension');
+  InputElement    get contextReceptionIDField   => this.element.querySelector('input.context-reception-id');
+  InputElement    get contextReceptionNameField => this.element.querySelector('input.context-reception-name');
+  InputElement    get contextContactIDField     => this.element.querySelector('input.context-contact-id');
+  InputElement    get contextContactNameField   => this.element.querySelector('input.context-contact-name');
+
   TextAreaElement get messageBodyField          => this.element.querySelector('textarea.message-body');
 
   /// Checkboxes
@@ -251,7 +256,7 @@ class MessageEdit {
     this.callerCompanyField.value      = message.caller.company;
     this.callerPhoneField.value  = message.caller.phone;
     this.callerCellphoneField.value = message.caller.cellphone;
-    //this.callerLocalExtensionField.value = message.caller.localExtension;
+    this.callerLocalExtensionField.value = message.caller.localExtension;
 
     this.pleaseCall.checked = message.hasFlag('pleaseCall');
     this.callsBack.checked = message.hasFlag('willCallBack');
@@ -260,6 +265,12 @@ class MessageEdit {
     this.draft.checked = message.hasFlag('draft');
 
     this.resendButton.disabled = this.draft.checked;
+
+    // Set the context. Currently unused as this information is stored in activeMessage.
+    //this.contextContactIDField.value     = message.context.contactID.toString();
+    //this.contextContactNameField.value   = message.context.contactName;
+    //this.contextReceptionIDField.value   = message.context.receptionID.toString();
+    //this.contextReceptionNameField.value = message.context.receptionName;
 
     // /Updates the recipient list.
 
@@ -281,18 +292,19 @@ class MessageEdit {
     this.isDisabled = true;
 
     this._harvestMessage().then ((model.Message message) {
-      message.saveTMP().then((_) {
-        log.debug('Sent message');
+      return message.saveTMP().then((_) {
+
         model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
 
-        Storage.Message.get(message.ID).then(this._renderMessage);
+        return Storage.Message.get(message.ID).then(this._renderMessage);
+      });
+    }).catchError((error, stackTrace) {
 
+      model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
 
-      }).catchError((error) {
-        log.debug('----- Send Message Unlucky Result: ${error}');
-        model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
-      }).whenComplete(() => this.isDisabled = false);
-    });
+      log.debug('Failed to complete save operation: ${error} : $stackTrace');
+    })
+    .whenComplete(() => this.isDisabled = false);
   }
 
   /**
@@ -304,16 +316,16 @@ class MessageEdit {
     this._harvestMessage().then ((model.Message message) {
 
       message.sendTMP().then((_) {
-        model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
+        model.NotificationList.instance.add(new model.Notification(Label.MessageEnqueued, type : model.NotificationType.Success));
         log.debug('Sent message');
         this._clearInputFields();
 
         model.Message.selectedMessages.clear();
         event.bus.fire(event.selectedMessagesChanged, null);
 
-      }).catchError((error) {
-        model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
-        log.debug('----- Send Message Unlucky Result: ${error}');
+      }).catchError((error, stackTrace) {
+        model.NotificationList.instance.add(new model.Notification(Label.MessageNotEnqueued, type : model.NotificationType.Error));
+        log.debug('Failed to complete enqueue operation: ${error} : $stackTrace');
       });
     });
   }

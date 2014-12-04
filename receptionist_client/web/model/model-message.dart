@@ -26,15 +26,10 @@ class Message extends ORModel.Message {
 
   void clearRecipients() => this.recipients.recipients.clear();
 
-  Message.fromMap(Map map) : super.fromMap(map) {
+  Message.fromMap(Map map) : super.fromMap(map);
 
-    this.createdAt = map['created_at'] != null
-                     ? new DateTime.fromMillisecondsSinceEpoch(map['created_at']*1000)
-                     : null;
-  }
+  Future saveTMP() => Service.Message.store.save(this);
 
-  Future saveTMP() => Service.Message.save(this);
-
-  Future sendTMP() => Service.Message.send(this);
+  Future sendTMP() => Service.Message.store.enqueue(this);
 
 }

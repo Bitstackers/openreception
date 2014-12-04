@@ -94,7 +94,7 @@ class MessageList extends IterableBase<Message> {
    * Returns a Future containing the [MessageList] instance - updated with new elements.
    */
   Future<MessageList> reloadFromServer() {
-    return Service.Message.instance.list().then ((List<ORModel.Message> messages){
+    return Service.Message.store.list().then ((List<ORModel.Message> messages){
       messages.forEach((Message message) => this.updateOrInsert(message));
 
       this._eventStream.fire(MessageList.reload, null);

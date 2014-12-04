@@ -34,7 +34,7 @@ abstract class Message {
     final Completer completer = new Completer<List<model.Message>>();
 
     debugStorage("Message list not found in cache, loading from service.", context);
-    Service.Message.instance.list(limit: limit, filter: filter).then((List<ORModel.Message> messages) {
+    Service.Message.store.list(limit: limit, filter: filter).then((List<ORModel.Message> messages) {
 
       print (messages);
 
@@ -56,8 +56,8 @@ abstract class Message {
     final Completer completer = new Completer<model.Message>();
 
     debugStorage("Message not found in cache, loading from service.", context);
-    Service.Message.get(messageID).then((model.Message message) {
-      completer.complete(message);
+    Service.Message.store.get(messageID).then((ORModel.Message message) {
+      completer.complete(new model.Message.fromMap(message.asMap));
     }).catchError((error) {
       completer.completeError(error);
     });
@@ -83,7 +83,7 @@ abstract class Message {
     } else {
       throw new StateError('Not implemeted!');
       debugStorage("Message list not found in cache, loading from service.", context);
-      Service.Message.list().then((model.MessageList messages) {
+      Service.Message.store.list().then((List<model.Message> messages) {
         /*
         _messageCache.addAll(messages.values);
         _contactListCache[receptionID] = contactList;

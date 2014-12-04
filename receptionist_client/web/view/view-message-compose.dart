@@ -292,8 +292,8 @@ class Message {
       message.sendTMP().then((_) {
         log.debug('Sent message');
         this._clearInputFields();
-      }).catchError((error) {
-        log.debug('----- Send Message Unlucky Result: ${error}');
+      }).catchError((error, stackTrace) {
+        log.debug('----- Send Message Unlucky Result: ${stackTrace}');
       }).whenComplete(() => this.isDisabled = false);
     });
   }
@@ -308,8 +308,8 @@ class Message {
       message.saveTMP().then((_) {
         log.debug('Sent message');
         this._clearInputFields();
-      }).catchError((error) {
-        log.debug('----- Send Message Unlucky Result: ${error}');
+      }).catchError((error, stackTrace) {
+        log.debug('----- Send Message Unlucky Result: ${error} : $stackTrace');
       }).whenComplete(() => this.isDisabled = false);
     });
   }
