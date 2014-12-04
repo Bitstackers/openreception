@@ -2,11 +2,11 @@ library openreception.model;
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'storage.dart' as Storage;
+import 'util.dart'    as Util;
 
 part 'model/model-call.dart';
 part 'model/model-contact.dart';
