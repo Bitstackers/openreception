@@ -32,15 +32,78 @@ class Client extends Service.WebService {
 
 
   Future<String> put (Uri resource, String payload) {
-    throw new UnimplementedError();
-  }
+    final Completer<String> completer = new Completer<String>();
+
+    log.finest("PUT $resource");
+
+    HTML.HttpRequest request;
+    request = new HTML.HttpRequest()
+          ..open('PUT', resource.toString())
+          ..onLoad.listen((_) {
+            try {
+              this.checkResponseCode  (request.status);
+              completer.complete(request.responseText);
+            } catch (error) {
+              completer.completeError (error);
+            }
+          })
+          ..send(payload)
+          ..onError.listen((e) {
+            completer.completeError(e);
+          });
+
+      return completer.future;
+    }
+
 
   Future<String> post (Uri resource, String payload) {
-    throw new UnimplementedError();
-  }
+    final Completer<String> completer = new Completer<String>();
+
+    log.finest("POST $resource");
+
+    HTML.HttpRequest request;
+    request = new HTML.HttpRequest()
+          ..open('POST', resource.toString())
+          ..onLoad.listen((_) {
+            try {
+              this.checkResponseCode  (request.status);
+              completer.complete(request.responseText);
+            } catch (error) {
+              completer.completeError (error);
+            }
+          })
+          ..send(payload)
+          ..onError.listen((e) {
+            completer.completeError(e);
+          });
+
+      return completer.future;
+    }
+
 
   Future<String> delete (Uri resource) {
-    throw new UnimplementedError();
-  }
+    final Completer<String> completer = new Completer<String>();
+
+    log.finest("DELETE $resource");
+
+    HTML.HttpRequest request;
+    request = new HTML.HttpRequest()
+          ..open('DELETE', resource.toString())
+          ..onLoad.listen((_) {
+            try {
+              this.checkResponseCode  (request.status);
+              completer.complete(request.responseText);
+            } catch (error) {
+              completer.completeError (error);
+            }
+          })
+          ..send()
+          ..onError.listen((e) {
+            completer.completeError(e);
+          });
+
+      return completer.future;
+    }
+
 
 }
