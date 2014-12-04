@@ -34,10 +34,9 @@ abstract class Message {
 
     AuthService.userOf(token).then((Model.User user) {
       extractContent(request).then((String content) {
-        Model.Message message;
         try {
           return messageStore.save(new Model.Message.fromMap(JSON.decode(content))..sender = user)
-              .then((_) => writeAndClose(request, '{"status" : "ok"}'));
+              .then((Model.Message message) => writeAndClose(request, JSON.encode(message)));
 
         } catch (error, stackTrace) {
           logger.errorContext('$error : $stackTrace', context);
@@ -153,7 +152,7 @@ abstract class Message {
 
 
           messageStore.save(message)
-              .then((_) => writeAndClose(request, '{"status" : "ok"}'));
+              .then((Model.Message message) => writeAndClose(request, JSON.encode(message)));
 
         } catch (error, stackTrace) {
           logger.errorContext('$error : $stackTrace', context);
