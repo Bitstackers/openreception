@@ -140,7 +140,7 @@ class Call {
      CallJsonKey.receptionID    : this.receptionID,
      CallJsonKey.assignedTo     : this.assignedTo,
      CallJsonKey.channel        : this.channel,
-     CallJsonKey.arrivalTime    : dateTimeToUnixTimestamp (this.arrived)};
+     CallJsonKey.arrivalTime    : Util.dateTimeToUnixTimestamp (this.arrived)};
 
   void changeState (String newState) {
 

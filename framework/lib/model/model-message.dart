@@ -16,10 +16,6 @@ class InvalidMessage implements Exception {
   String toString() => message;
 }
 
-int dateTimeToUnixTimestamp(DateTime time) {
-  return time != null ? time.millisecondsSinceEpoch~/1000 : null;
-}
-
 class MessageCaller {
 
   Map    _map = {};
@@ -106,8 +102,6 @@ class Message {
    */
   Message.fromMap(Map map) {
 
-    const String context = '${className}.fromMap';
-
     /// TODO: figure out a more generic way of decoding different recipient formats.
     MessageRecipientList recipients = null;
     if (!map.containsKey('recipients')) {
@@ -120,16 +114,19 @@ class Message {
       throw new InvalidMessage('Bad recipient format: ${map['recipients']}');
     }
 
+
+
     this
         ..ID = (map.containsKey('id') ? map['id'] : noID)
         ..recipients      = recipients
         .._messageContext = new MessageContext.fromMap(map['context'])
         .._flags          = map['flags']
         .._callerInfo     = new MessageCaller(map['caller'])
-        ..body           = map['message']
+        ..body            = map['message']
         ..sent            = map['sent']
         ..enqueued        = map['enqueued']
         .._sender         = new User.fromMap(map['taken_by_agent'])
+        ..createdAt       = Util.unixTimestampToDateTime(map['created_at'])
         ..validate();
   }
 
@@ -142,7 +139,7 @@ class Message {
         'flags'          : this._flags,
         'sent'           : this.sent,
         'enqueued'       : this.enqueued,
-        'created_at'     : dateTimeToUnixTimestamp(this.createdAt),
+        'created_at'     : Util.dateTimeToUnixTimestamp(this.createdAt),
         'recipients'     : this.recipients.asMap
       };
 
