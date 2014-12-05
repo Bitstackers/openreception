@@ -46,3 +46,20 @@
   border: solid 2px #ddd;
   overflow: auto;
 }
+
+.loading-overlay {
+    width:100%;
+    background: #000;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+}
+
+img.loading-big {
+    width: 222px;
+    height: 222px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -111px 0 0 -111px;
+    filter: alpha(opacity=80);
+}
