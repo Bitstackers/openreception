@@ -44,6 +44,7 @@ class Message {
 
   bool hasFocus = false;
   bool get muted     => this.context != Context.current;
+  bool get inFocus   => nav.Location.isActive(this.element);
 
   UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
 
@@ -115,9 +116,15 @@ class Message {
   }
 
   Message(Element this.element, Context this.context) {
+    this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
 
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
+
+    element.onClick.listen((Event event) {
+    if (!this.inFocus)
+        Controller.Context.changeLocation(this.location);
+    });
 
     this.cancelButton
         ..text = Label.Cancel
@@ -203,6 +210,12 @@ class Message {
     element.classes.toggle('focus', this.hasFocus);
     this.tabable = this.hasFocus;
 
+    if (location.elementId != null) {
+      var elem = element.querySelector('#${location.elementId}');
+      if (elem != null) {
+        elem.focus();
+      }
+    }
   }
 
   /**
