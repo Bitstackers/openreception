@@ -2,10 +2,10 @@ part of view;
 
 
 /*
- * SetViewedObject(T obj) // Writes to _selectedElementText, but don't find it in the DataList. 
+ * SetViewedObject(T obj) // Writes to _selectedElementText, but don't find it in the DataList.
  *                             Saved to CurrentObject, and find it in the list when the component is activated.
  * UpdateDataList(List<T> list) // saves reference to list in a new variable for UpdatedLists. On next open reload Datalist with UpdatedList.
- * 
+ *
  */
 
 typedef bool Where<T>(T element, String searchText);
@@ -94,7 +94,7 @@ class SearchComponent<T> {
       </a>
       <div class="chosen-drop">
         <div class="chosen-search">
-          <input id="${inputId}" type="text" autocomplete="off"></input>
+          <input id="${inputId}" type="text" autocomplete="off" tabindex="-1"></input>
         </div>
         <ul class="chosen-results"></ul>
       <div>
@@ -123,7 +123,7 @@ class SearchComponent<T> {
     _selectedElementText.text = _searchPlaceholder;
     performSearch('');
   }
-  
+
 //  void clear() {
 //    _searchBox.value = '';
 //  }
@@ -131,13 +131,13 @@ class SearchComponent<T> {
   void clearSelection() {
     _selectedElementText.text = _searchPlaceholder;
     _whenClearSelection();
-  } 
-  
+  }
+
   void closeDropDown() {
     _container.classes.remove('chosen-with-drop');
     _withDropDown = false;
   }
-  
+
 
   /**
   * Adjust the scollbar to keep the highlighted list element visible.
@@ -238,37 +238,37 @@ class SearchComponent<T> {
     }
   }
 
-  void registerEventHandlers() {    
-//    event.bus.on(event.keyUp).listen((_) { 
+  void registerEventHandlers() {
+//    event.bus.on(event.keyUp).listen((_) {
 //      if(_hasFocus) {
 //        _previousElement();
 //      }
 //    });
-//    
-//    event.bus.on(event.keyDown).listen((_) { 
+//
+//    event.bus.on(event.keyDown).listen((_) {
 //      if(_hasFocus) {
 //        _nextElement();
 //      }
 //    });
-    
+
     event.bus.on(event.keyEnter).listen((_) {
       if(_hasFocus &&_withDropDown) {
         _activateSelectedElement(_highlightedLi);
       }
     });
-    
+
     event.bus.on(event.keyEsc).listen((_) {
       if(_hasFocus) {
         Aclear();
         _whenClearSelection();
       }
     });
-    
+
     _searchBox.onInput.listen((Event e) {
       performSearch(_searchBox.value);
       showDropDown();
     });
-    
+
     _container.querySelector('.chosen-single').onClick.listen((_) {
       event.bus.fire(event.locationChanged, new nav.Location(_context.id, _element.id, _searchBox.id));
       if(_withDropDown) {
@@ -278,7 +278,7 @@ class SearchComponent<T> {
         _searchBox.focus();
       }
     });
-    
+
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.setFocusState(_element, _searchBox);
       if(!active) {
@@ -288,11 +288,11 @@ class SearchComponent<T> {
       }
       _hasFocus = active;
     });
-    
-    Map<String, EventListener> mappings = 
+
+    Map<String, EventListener> mappings =
       {'up':   _previousElement,
        'down': _nextElement};
-    
+
     _searchBox.onKeyDown.listen(customKeyboardHandler(mappings));
   }
 

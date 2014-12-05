@@ -52,6 +52,7 @@ class MessageEdit {
 
   bool hasFocus = false;
   bool get muted     => this.context != Context.current;
+  bool get inFocus   => nav.Location.isActive(this.element);
 
   UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
 
@@ -202,6 +203,14 @@ class MessageEdit {
     event.bus.on(event.selectedMessagesChanged ).listen(this._fetchAndRender);
     this.draft.onClick.listen((_) => this.resendButton.disabled = this.draft.checked);
 
+    /**
+     * Clicks inside the widget area marks up the widget at directly selects
+     * any table entry it targets.
+     */
+    element.onClick.listen((Event event) {
+      if (!this.inFocus)
+        Controller.Context.changeLocation(this.location);
+    });
     /// Button click handlers
     this.saveButton  .onClick.listen(this._saveHandler);
     this.resendButton.onClick.listen(this._sendHandler);
@@ -210,27 +219,27 @@ class MessageEdit {
   /**
    * Extracts a Message from the information stored in the widget
    */
-  Future<model.Message> _harvestMessage() {
+  model.Message _harvestMessage() {
 
-     return new Future(() {
-      this.activeMessage
-         ..body = messageBodyField.value
-         ..caller.name = callerNameField.value
-         ..caller.company = callerCompanyField.value
-         ..caller.phone= callerPhoneField.value
-         ..caller.cellphone = callerCellphoneField.value
-         ..caller.localExtension = callerLocalExtensionField.value
-         ..flags.clear();
+    // Update the cached message with the information from the
+    // fields in the widget.
+    this.activeMessage
+        ..body = messageBodyField.value
+        ..caller.name = callerNameField.value
+        ..caller.company = callerCompanyField.value
+        ..caller.phone= callerPhoneField.value
+        ..caller.cellphone = callerCellphoneField.value
+        ..caller.localExtension = callerLocalExtensionField.value
+        ..flags.clear();
 
-      pleaseCall.checked ? this.activeMessage.flags.add('pleaseCall') : null;
-      callsBack.checked  ? this.activeMessage.flags.add('willCallBack') : null;
-      hasCalled.checked  ? this.activeMessage.flags.add('hasCalled') : null;
-      urgent.checked     ? this.activeMessage.flags.add('urgent') : null;
+    pleaseCall.checked ? this.activeMessage.flags.add('pleaseCall') : null;
+    callsBack.checked  ? this.activeMessage.flags.add('willCallBack') : null;
+    hasCalled.checked  ? this.activeMessage.flags.add('hasCalled') : null;
+    urgent.checked     ? this.activeMessage.flags.add('urgent') : null;
 
-      draft.checked      ? this.activeMessage.flags.add('draft') : null;
+    draft.checked      ? this.activeMessage.flags.add('draft') : null;
 
-      return this.activeMessage;
-    });
+    return this.activeMessage;
   }
 
   void _fetchAndRender (_) {
@@ -290,18 +299,14 @@ class MessageEdit {
    */
   void _saveHandler(_) {
     this.isDisabled = true;
+    model.Message message = this._harvestMessage();
+    message.saveTMP().then((_) {
+      model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
 
-    this._harvestMessage().then ((model.Message message) {
-      return message.saveTMP().then((_) {
-
-        model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
-
-        return Storage.Message.get(message.ID).then(this._renderMessage);
-      });
+      return Storage.Message.get(message.ID).then(this._renderMessage);
     }).catchError((error, stackTrace) {
 
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
-
       log.debug('Failed to complete save operation: ${error} : $stackTrace');
     })
     .whenComplete(() => this.isDisabled = false);
