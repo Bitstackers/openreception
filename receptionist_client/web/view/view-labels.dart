@@ -35,7 +35,7 @@ abstract class Label {
   static const String MessageNotEnqueued        = 'Besked ikke afsendt!';
 
   static final String Phone                     = 'Telefon';
-  static final String No_Information            = '<Ingen information>';
+  static final String No_Information            = '<Ikke oplyst>';
   static final String CellPhone                 = 'Mobilnummer';
   static final String LocalExtension            = 'Lokalnummer';
   static final String Company                   = 'Firmanavn';
