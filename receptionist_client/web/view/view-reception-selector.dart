@@ -1,15 +1,16 @@
 part of view;
 
 class ReceptionSelector {
-  
+
   static const String className = '${libraryName}.ReceptionSelector';
-  static const String NavShortcut = 'V'; 
+  static const String NavShortcut = 'V';
 
   final DivElement                      element;
   final Context                         uiContext;
   SearchComponent<model.BasicReception> search;
   model.BasicReception                  selectedReception;
-  bool get muted     => this.uiContext != Context.current;  
+  bool get muted     => this.uiContext != Context.current;
+  dynamic onSelectReception = () => null;
 
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
@@ -19,42 +20,42 @@ class ReceptionSelector {
 
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-    
+
     String searchBoxId = element.attributes['data-default-element'];
-        
+
     search = new SearchComponent<model.BasicReception>(element, uiContext, searchBoxId)
       ..searchPlaceholder = 'Søg efter en virksomhed'
       ..whenClearSelection = whenClearSelection
       ..listElementToString = listElementToString
       ..searchFilter = searchFilter
       ..selectedElementChanged = elementSelected;
-    
-    this.initialFill().then(this._registerEventlisteners); 
+
+    this.initialFill().then(this._registerEventlisteners);
   }
-  
+
   void _select (_) {
     const String context = '${className}._select';
     log.debugContext('${this.uiContext} : ${Context.current}', context);
-    
+
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, element.attributes[defaultElementId]));
-    } 
+    }
   }
 
   Future initialFill() {
     return storage.Reception.list().then((model.ReceptionList list) {
       search.updateSourceList(list.toList(growable: false));
-      return this.element.append(new Nudge(NavShortcut).element); 
+      return this.element.append(new Nudge(NavShortcut).element);
     });
   }
 
   void _registerEventlisteners(_) {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
-    
+
     event.bus.on(event.receptionChanged).listen((model.BasicReception value) {
       if(value == model.nullReception && selectedReception != model.nullReception) {
         search.clearSelection();
-        
+
       } else {
         search.selectElement(value, _receptionEquality);
       }
@@ -88,6 +89,8 @@ class ReceptionSelector {
   void elementSelected(model.BasicReception receptionStub) {
     storage.Reception.get(receptionStub.ID).then((model.Reception reception) {
       Controller.Reception.change (reception);
+      this.onSelectReception(); //Callback function.
+
     });
   }
 }

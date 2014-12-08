@@ -3,8 +3,8 @@ part of view;
 class ContactInfoSearch {
 
   static const String className = '${libraryName}.ContactInfoSearch';
-  static const String NavShortcut = 'S'; 
-  
+  static const String NavShortcut = 'S';
+
                model.Contact       contact              = model.nullContact;
                Context             context;
                UListElement        displayedContactList;
@@ -29,6 +29,13 @@ class ContactInfoSearch {
     registerEventListeners();
   }
 
+  /**
+   * Brings focus to the widget.
+   */
+  void focus () {
+    event.bus.fire(event.locationChanged, new nav.Location(context.id, widget.id, searchBox.id));
+  }
+
   void activeContact(model.Contact contact) {
     for(LIElement element in displayedContactList.children) {
       element.classes.toggle(SELECTED, element.value == contact.id);
@@ -48,7 +55,7 @@ class ContactInfoSearch {
     model.Contact contact = contactList.getContact(element.value);
     activeContact(contact);
     if(!hasFocus) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, widget.id, searchBox.id));
+      this.focus();
     }
   }
 
@@ -71,7 +78,7 @@ class ContactInfoSearch {
   void previousElement(KeyboardEvent e) {
     LIElement li = displayedContactList.querySelector('.${SELECTED}');
     LIElement previous = li.previousElementSibling;
-    
+
     if(previous != null) {
       li.classes.toggle(SELECTED, false);
       previous.classes.toggle(SELECTED, true);
