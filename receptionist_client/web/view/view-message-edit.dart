@@ -72,7 +72,8 @@ class MessageEdit {
    * Used for locking the input fields upon sending
    * a message, or when no contact is selected.
    */
-  void set isDisabled(bool disabled) {
+  void set disabled(bool disabled) {
+    this.element.classes.toggle("disabled", disabled);
     this.element.querySelectorAll('input').forEach((InputElement element) {
       element.disabled = disabled;
     });
@@ -85,6 +86,18 @@ class MessageEdit {
       element.disabled = disabled;
     });
   }
+
+  /**
+   * Update the disabled property.
+   *
+   * Used for locking the input fields upon sending
+   * a message, or when no contact is selected.
+   */
+  void set loading(bool isLoading) {
+    this.disabled = isLoading;
+    this.messageBodyField.classes.toggle('loading', isLoading);
+  }
+
 
   /**
    * Update the tabable property.
@@ -245,11 +258,11 @@ class MessageEdit {
   void _fetchAndRender (_) {
     if (model.Message.selectedMessages.length == 1) {
       Storage.Message.get(model.Message.selectedMessages.first).then(_renderMessage);
-      this.isDisabled = false;
+      this.loading = false;
 
     } else {
       this._clearInputFields();
-      this.isDisabled = true;
+      this.loading = true;
     }
   }
 
@@ -298,7 +311,7 @@ class MessageEdit {
    * Click handler for save button. Saves the currently typed in message via the Message Service.
    */
   void _saveHandler(_) {
-    this.isDisabled = true;
+    this.loading = true;
     model.Message message = this._harvestMessage();
     message.saveTMP().then((_) {
       model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
@@ -309,29 +322,27 @@ class MessageEdit {
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
       log.debug('Failed to complete save operation: ${error} : $stackTrace');
     })
-    .whenComplete(() => this.isDisabled = false);
+    .whenComplete(() => this.loading = false);
   }
 
   /**
    * Click handler for send button. Sends the currently typed in message via the Message Service.
    */
   void _sendHandler(_) {
-    this.isDisabled = true;
+    this.loading = true;
 
-    this._harvestMessage().then ((model.Message message) {
+    model.Message message = this._harvestMessage();
 
-      message.sendTMP().then((_) {
-        model.NotificationList.instance.add(new model.Notification(Label.MessageEnqueued, type : model.NotificationType.Success));
-        log.debug('Sent message');
-        this._clearInputFields();
+    message.sendTMP().then((_) {
+      model.NotificationList.instance.add(new model.Notification(Label.MessageEnqueued, type : model.NotificationType.Success));
+      this._clearInputFields();
 
-        model.Message.selectedMessages.clear();
-        event.bus.fire(event.selectedMessagesChanged, null);
+      model.Message.selectedMessages.clear();
+      event.bus.fire(event.selectedMessagesChanged, null);
 
       }).catchError((error, stackTrace) {
         model.NotificationList.instance.add(new model.Notification(Label.MessageNotEnqueued, type : model.NotificationType.Error));
         log.debug('Failed to complete enqueue operation: ${error} : $stackTrace');
-      });
-    });
+      }).whenComplete(() => this.loading = false);;
   }
 }
