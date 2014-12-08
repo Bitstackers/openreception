@@ -254,7 +254,11 @@ class Message {
     });
 
     event.bus.on(event.callChanged).listen((model.Call value) {
-      callerPhoneField.value = '${value.callerId}';
+      if (value.callerId != null ) {
+        callerPhoneField.value = '${value.callerId}';
+      } else {
+        callerPhoneField.value;
+      }
     });
 
     this.draft.onClick.listen((_) => this.sendButton.disabled = this.draft.checked);
