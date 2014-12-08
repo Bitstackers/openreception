@@ -21,5 +21,6 @@ part 'controller-contact.dart';
 part 'controller-context.dart';
 part 'controller-extension.dart';
 part 'controller-reception.dart';
+part 'controller-user.dart';
 
 const String libraryName = 'controller';

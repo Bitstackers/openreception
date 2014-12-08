@@ -44,7 +44,7 @@ class Keys {
   static const int PGUP  = 33;
   static const int PGDOWN= 34;
   static const int END   = 35;
-  static const int HOME  = 36; 
+  static const int HOME  = 36;
   static const int UP    = 38;
   static const int DOWN  = 40;
   static const int ZERO  = 48;
@@ -103,17 +103,17 @@ KeyboardListener customKeyboardHandler(Map<String, EventListener> keymappings) {
  * a stream.
  */
 class _KeyboardHandler {
-  
+
   static const String NavKey     = 'Alt';
   static const String CommandKey = 'Ctrl';
-  
+
   Map<int, String>                   _keyToName           = new Map<int, String>();
   Map<String, StreamController<int>> _StreamControllerMap = new Map<String, StreamController<int>>();
   int                                _locked              = null;
   nav.Location                       _currentLocation;
   Keyboard keyboard = new Keyboard();
-  
-  List<nav.Location> contextHome = 
+
+  List<nav.Location> contextHome =
       [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR,            id.COMPANY_SELECTOR_SEARCHBAR),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,              id.COMPANY_EVENTS_LIST),
        new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING,            id.COMPANY_HANDLING_LIST),
@@ -134,7 +134,7 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEND)
       ];
 
-  List<nav.Location> contextHomePlus = 
+  List<nav.Location> contextHomePlus =
       [new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_CUSTOMERTYPE,        id.COMPANY_CUSTOMERTYPE_BODY),
        new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_TELEPHONE_NUMBERS,   id.COMPANY_TELEPHONENUMBERS_LIST),
        new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_ADDRESSES,           id.COMPANY_ADDRESSES_LIST),
@@ -146,19 +146,19 @@ class _KeyboardHandler {
        new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY)
        ];
 
-  List<nav.Location> contextPhone = 
+  List<nav.Location> contextPhone =
       [new nav.Location(id.CONTEXT_PHONE, id.PHONEBOOTH, id.PHONEBOOTH_NUMBERFIELD)];
-  
-  Map<String, Map<nav.Location, int>> tabMap = 
+
+  Map<String, Map<nav.Location, int>> tabMap =
       {id.CONTEXT_HOME       : new Map<nav.Location, int>(),
        id.CONTEXT_MESSAGES   : new Map<nav.Location, int>(),
        id.CONTEXT_LOG        : new Map<nav.Location, int>(),
        id.CONTEXT_STATISTICS : new Map<nav.Location, int>(),
        id.CONTEXT_PHONE      : new Map<nav.Location, int>(),
        id.CONTEXT_VOICEMAILS : new Map<nav.Location, int>()};
-  
+
   Map<String, List<nav.Location>> locationLists;
-  
+
   /**
    * [KeyboardHandler] constructor.
    * Initialize (setup named streams) and setup listeners for key events.
@@ -167,7 +167,7 @@ class _KeyboardHandler {
     _buildTabMaps();
     _ctrlAltInitialize();
   }
-  
+
   /**
    * TODO Blah blah
    */
@@ -175,12 +175,12 @@ class _KeyboardHandler {
     for(int index = 0; index < contextHome.length; index++) {
       tabMap[id.CONTEXT_HOME][contextHome[index]] = index;
     }
-    
+
     for(int index = 0; index < contextPhone.length; index++) {
       tabMap[id.CONTEXT_PHONE][contextPhone[index]] = index;
     }
-    
-    locationLists = 
+
+    locationLists =
       {id.CONTEXT_HOME : contextHome,
        id.CONTEXT_PHONE : contextPhone};
   }
@@ -191,15 +191,15 @@ class _KeyboardHandler {
       callback(event);
     });
   }
-  
+
   void registerNavShortcut(key, callback)     => this.registerHandler('${NavKey}+${key}', callback);
   void registerCommandShortcut(key, callback) => this.registerHandler('${CommandKey}+${key}', callback);
 
-  void _ctrlAltInitialize() {    
+  void _ctrlAltInitialize() {
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       _currentLocation = location;
     });
-    
+
     Map<String, EventListener> keybindings = {
       'Alt+P'      : (_) => Controller.Call.pickupNext(),
       'Alt+L'      : (_) => Controller.Call.park(Model.Call.currentCall),
@@ -212,6 +212,7 @@ class _KeyboardHandler {
       'ALT+I'      : (_) => Controller.Call.dialSelectedContact(),
       'Ctrl+K'     : (_) => event.bus.fire(event.CreateNewContactEvent, null),
       'Ctrl+S'     : (_) => event.bus.fire(event.Save, null),
+      'Ctrl+Alt+Enter' : Controller.User.signalReady,
       'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
       'Ctrl+Z'     : (_) => event.bus.fire(event.Previous, null),
       'Ctrl+X'     : (_) => event.bus.fire(event.Next, null),
@@ -222,11 +223,12 @@ class _KeyboardHandler {
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
       [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
       [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),
-      [Key.NumMinus] : (_) => Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)
-      
+      [Key.NumMinus] : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
+          //Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)
+
 //      'Tab'       : (_) => tab(mode: FORWARD),
 //      'Shift+Tab' : (_) => tab(mode: BACKWARD),
-      
+
       //TODO This means that every component with a scroll have to handle arrow up/down.
       //'up'        : (_) => event.bus.fire(event.keyUp, null),
       //'down'      : (_) => event.bus.fire(event.keyDown, null)
@@ -235,7 +237,7 @@ class _KeyboardHandler {
     window.document.onKeyDown.listen(this.keyboard.press);
 
     keybindings.forEach(this.registerHandler);
-    
+
     Keyboard keyUp = new Keyboard();
     keybindings = {
       NavKey     : (_) => event.bus.fire(event.keyNav, false),
@@ -250,9 +252,9 @@ class _KeyboardHandler {
       event.preventDefault();
       callback(event);
     }));
-    
+
     window.document.onKeyUp.listen(keyUp.press);
-    
+
 //    ctrlAlt.Keys.shortcuts({
 //      'Ctrl+1'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_HOME)),
 //      'Ctrl+5'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
@@ -265,20 +267,20 @@ class _KeyboardHandler {
 //      'Shift+Tab' : () => tab(mode: BACKWARD)
 //    });
   }
-  
+
   void tab({bool mode}) {
     String contextId = _currentLocation.contextId;
     if(tabMap.containsKey(contextId) && locationLists.containsKey(contextId)) {
       Map<nav.Location, int> map = tabMap[contextId];
       List<nav.Location> list = locationLists[contextId];
-      
+
       if(map.containsKey(_currentLocation)) {
         int index = (map[_currentLocation] + (mode ? 1 : -1)) % map.length;
         event.bus.fire(event.locationChanged, list[index]);
       } else {
         log.error('keyboard.tab() bad location ${_currentLocation}');
       }
-      
+
     } else {
       log.error('keyboard.tab() bad context ${_currentLocation}');
     }
