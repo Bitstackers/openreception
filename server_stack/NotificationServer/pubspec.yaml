@@ -2,6 +2,7 @@ name: NotificationServer
 description: Simple notification server.
 dependencies:
   args: any
+  logging: any
   openreception_framework:
     git:
       ref: master

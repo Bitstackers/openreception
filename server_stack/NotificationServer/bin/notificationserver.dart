@@ -22,7 +22,8 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        .then((_) => http.start(config.httpport, router.registerHandlers))
+        .then((_)       => router.connectAuthService())
+        .then((_)       => http.start(config.httpport, router.registerHandlers))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch(e) {
