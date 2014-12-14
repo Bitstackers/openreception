@@ -214,8 +214,6 @@ class _KeyboardHandler {
       'Ctrl+S'     : (_) => event.bus.fire(event.Save, null),
       'Ctrl+Alt+Enter' : Controller.User.signalReady,
       'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
-      'Ctrl+Z'     : (_) => event.bus.fire(event.Previous, null),
-      'Ctrl+X'     : (_) => event.bus.fire(event.Next, null),
       'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
       'Ctrl+E'    : (_) => event.bus.fire(event.Edit, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),
