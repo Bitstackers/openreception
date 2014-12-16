@@ -21,7 +21,7 @@ class AgentInfo {
   DivElement       divFace;
   DivElement       divParent;
   DivElement       element;
-  String           faceURL     = 'images/face.jpg';
+  String           faceURL     = 'images/face.png';
   int              paused      = 0;
   String           pausedLabel = 'pause';
   TableCellElement pausedTD;
