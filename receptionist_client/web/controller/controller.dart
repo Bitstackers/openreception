@@ -9,6 +9,8 @@
 
 library controller;
 
+import 'dart:async';
+
 import '../classes/events.dart' as event;
 import '../service/service.dart' as Service;
 import '../model/model.dart' as Model;

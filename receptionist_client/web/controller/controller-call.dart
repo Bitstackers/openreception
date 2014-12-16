@@ -12,6 +12,10 @@ abstract class Call {
 
     const String context = '${className}.dial';
 
+    if (Model.Call.currentCall.isActive) {
+      Model.Call.currentCall.park();
+    }
+
     event.bus.fire(event.originateCallRequest, extension.dialString);
 
     if (!extension.valid || extension == null) {
@@ -40,7 +44,7 @@ abstract class Call {
     event.bus.fire(event.pickupCallRequest, call);
 
     // Verify that the user does not already have a call.
-    if (Model.Call.currentCall != Model.nullCall) {
+    if (Model.Call.currentCall.isActive) {
       event.bus.fire(event.pickupCallFailure, null);
     }
     else {
@@ -57,7 +61,7 @@ abstract class Call {
     event.bus.fire(event.pickupNextCallRequest, null);
 
     // Verify that the user does not already have a call.
-    if (Model.Call.currentCall != Model.nullCall) {
+    if (Model.Call.currentCall.isActive) {
       event.bus.fire(event.pickupCallFailure, null);
     }
     else {

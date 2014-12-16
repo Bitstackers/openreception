@@ -13,10 +13,10 @@
 
 /*
  * Note on removal of assertions.
- * 
+ *
  * Rather than having an assertion (or more accurately; an implicit precondition) here, and
  * having to perform manual checks from the outside of the object, it makes more sense to
- * just ignore the call. 
+ * just ignore the call.
  */
 
 
@@ -25,13 +25,13 @@ part of model;
 final Call nullCall = new Call._null();
 
 class InvalidCallState extends StateError {
-  
+
   InvalidCallState (String message) : super (message);
 }
 
 class CallState {
   final String _name;
-  
+
   static final CallState UNKNOWN      = new CallState._internal ('unknown'.toUpperCase());
   static final CallState CREATED      = new CallState._internal ('created'.toUpperCase());
   static final CallState RINGING      = new CallState._internal ('ringing'.toUpperCase());
@@ -41,41 +41,41 @@ class CallState {
   static final CallState TRANSFERRED  = new CallState._internal ('transferred'.toUpperCase());
   static final CallState SPEAKING     = new CallState._internal ('speaking'.toUpperCase());
   static final CallState PARKED       = new CallState._internal ('parked'.toUpperCase());
-  
-  static final List<CallState> _validStates = 
-       [UNKNOWN, CREATED, RINGING, QUEUED, HUNGUP, TRANSFERRING, 
-        TRANSFERRED, SPEAKING, PARKED]; 
+
+  static final List<CallState> _validStates =
+       [UNKNOWN, CREATED, RINGING, QUEUED, HUNGUP, TRANSFERRING,
+        TRANSFERRED, SPEAKING, PARKED];
 
   /**
    * Default private constructor.
    */
   CallState._internal (this._name);
-  
+
   /**
    * Basic constructor. Normalizes the "enum" and performs checks.
    */
   factory CallState (String name) {
-    
+
     CallState newItem = new CallState._internal(name.toUpperCase());
-    
+
     if (!_validStates.contains (newItem)) {
       throw new InvalidCallState(newItem.toString());
     }
-    
+
     return newItem;
   }
-  
+
   @override
   operator == (CallState other) {
     return this._name == other._name;
   }
-  
-  @override 
+
+  @override
   int get hashCode {
     return this._name.hashCode;
   }
-  
-  
+
+
   @override
   String toString () {
     return this._name;
@@ -90,7 +90,7 @@ class CallState {
  * A call.
  */
 class Call implements Comparable {
-  
+
   static const String className = "${libraryName}.Call";
 
   static final EventType currentCallChanged = new EventType();
@@ -100,11 +100,11 @@ class Call implements Comparable {
   static final EventType queueLeave  = new EventType();
   static final EventType transferred = new EventType();
   static final EventType stateChange = new EventType();
-  
-  static final Map<CallState, EventType> stateEventMap = 
+
+  static final Map<CallState, EventType> stateEventMap =
     {CallState.HUNGUP   : Call.hungup,
      CallState.SPEAKING : Call.answered,
-     CallState.PARKED   : Call.parked}; 
+     CallState.PARKED   : Call.parked};
 
   EventBus _bus = new EventBus();
   EventBus get events => _bus;
@@ -132,7 +132,7 @@ class Call implements Comparable {
   bool get inbound => _inbound;
   DateTime get start => _start;
   int get receptionId => _receptionID;
-  CallState get state => CallState.parse(this._data['state']);   
+  CallState get state => CallState.parse(this._data['state']);
 
   static Call get currentCall => _currentCall;
 
@@ -140,6 +140,8 @@ class Call implements Comparable {
     _currentCall = newCall;
     event.bus.fire(currentCallChanged, _currentCall);
   }
+
+  bool get isActive => this != nullCall;
 
   /**
    * [Call] constructor. Expects a map in the following format:
@@ -157,7 +159,7 @@ class Call implements Comparable {
    * TODO Obviously the above map format should be in the docs/wiki, and completed.
    */
   Call.fromMap(Map map) {
-    
+
     if (map.containsKey('reception_id') && map['reception_id'] != null) {
       _receptionID = map['reception_id'];
     }
@@ -186,31 +188,31 @@ class Call implements Comparable {
 
     log.debug('Model.call Call.fromJson: ${map['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(map['arrival_time']*1000)}');
     _start = new DateTime.fromMillisecondsSinceEpoch(map['arrival_time'] * 1000);
-    
+
     this._data = map;
     }
-  
+
   /**
    * Determine whether or not a call available for the user.
-   * 
+   *
    */
   bool availableForUser(User user) {
     //return this.assignedAgent == user.ID || this.assignedAgent == User.nullUser.ID
     return ([User.nullUser.ID, user.ID].contains(this.assignedAgent));
   }
-  
+
   void update (Call newCall) {
-    const String context = '${className}.update'; 
-    
+    const String context = '${className}.update';
+
     /* Update the current internal dataset */
     this._data = newCall._data;
-    
+
     log.debugContext("${this.ID}: NewState: ${this.state}", context);
-    
+
     /* Perfom a state change. */
     this._bus.fire(Call.stateEventMap[this.state], null);
   }
-  
+
   /**
    * [Call] null constructor.
    */
@@ -220,7 +222,7 @@ class Call implements Comparable {
   }
 
   Call.stub(this._ID);
-  
+
   /**
    * Enables a [Call] to sort itself compared to other calls.
    */
@@ -242,7 +244,7 @@ class Call implements Comparable {
   }
 
   /**
-   * Returns the caller ID of the foreign end of the caller from the user's perspective. 
+   * Returns the caller ID of the foreign end of the caller from the user's perspective.
    */
   String otherLegCallerID() {
     if (this.inbound) {
@@ -302,7 +304,7 @@ class Call implements Comparable {
       log.debug('Cowardly refusing ask the call-flow-control server to pickup a null call.');
       return;
     }
-    
+
     Controller.Call.pickupSpecific(this);
 
   }
