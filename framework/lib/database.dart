@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:postgresql/postgresql_pool.dart'     as PGPool;
-import 'package:postgresql/postgresql.dart'          as PG;
+import 'package:postgresql/pool.dart'       as PGPool;
+import 'package:postgresql/postgresql.dart' as PG;
 
 import 'model.dart'   as Model;
 import 'storage.dart' as Storage;
@@ -29,7 +29,7 @@ Future execute(PGPool.Pool pool, String sql, [Map parameters = null]) => pool.co
 Future<PGPool.Pool> start(String user, String password, String host, int port, String database, {int minimumConnections: 1, int maximumConnections: 2}) {
   String connectString = 'postgres://${user}:${password}@${host}:${port}/${database}';
 
-  PGPool.Pool pool = new PGPool.Pool(connectString, min: minimumConnections, max: maximumConnections);
+  PGPool.Pool pool = new PGPool.Pool(connectString, minConnections: minimumConnections, maxConnections: maximumConnections);
   return pool.start().then((_) => _testConnection(pool)).then((_) => pool);
 }
 
@@ -41,7 +41,7 @@ class Connection {
 
   static Future <Connection> connect (String dsn, {int minimumConnections: 1, int maximumConnections: 5}) {
     Connection db = new Connection._stub()
-        .._pool = new PGPool.Pool(dsn, min: minimumConnections, max: maximumConnections);
+        .._pool = new PGPool.Pool(dsn, minConnections: minimumConnections, maxConnections: maximumConnections);
 
     return db._pool.start().then((_) => db._testConnection()).then((_) => db);
   }

@@ -75,7 +75,7 @@ class MessageQueue implements Storage.MessageQueue {
         queue.add(new Model.MessageQueueItem.fromMap({
           'id'                 : row.id,
           'message_id'         : row.message_id,
-          'unhandled_endpoints': JSON.decode(row.unhandled_endpoints),
+          'unhandled_endpoints': row.unhandled_endpoints,
           'tries'              : row.tries,
           'last_try'           : row.last_try
         }));
@@ -110,7 +110,7 @@ class MessageQueue implements Storage.MessageQueue {
       return new Model.MessageQueueItem.fromMap({
         'id'                 : row.id,
         'message_id'         : row.message_id,
-        'unhandled_endpoints': JSON.decode(row.unhandled_endpoints),
+        'unhandled_endpoints': row.unhandled_endpoints,
         'tries'              : row.tries,
         'last_try'           : row.last_try
       });
@@ -151,7 +151,7 @@ class MessageQueue implements Storage.MessageQueue {
 
     final String sql = '''
     UPDATE message_queue
-       SET last_try=NOW(), unhandled_endpoints='${JSON.encode(unhandled_endpoints)}', 
+       SET last_try=NOW(), unhandled_endpoints='${unhandled_endpoints}', 
          tries=${queueItem.tries}
     WHERE id=${queueItem.ID};''';
 

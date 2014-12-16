@@ -147,13 +147,13 @@ class Message implements Storage.Message {
 
 
     return this._database.query(sql).then((rows) {
-      List messages = new List();
+      List<Model.Message> messages = new List();
 
       for(var row in rows) {
         Model.Message message = new Model.Message.fromMap(
           {'id'                    : row.id,
            'message'               : row.message,
-           'recipients'            : row.json_recipients != null ?JSON.decode(row.json_recipients) : [],
+           'recipients'            : row.json_recipients != null ?row.json_recipients : [],
            'context'               : {'contact'   :
                                        {'id'   : row.context_contact_id,
                                         'name' : row.context_contact_name},
@@ -167,7 +167,7 @@ class Message implements Storage.Message {
                                       'company'   : row.taken_from_company,
                                       'phone'     : row.taken_from_phone,
                                       'cellphone' : row.taken_from_cellphone},
-           'flags'                 : JSON.decode(row.flags),
+           'flags'                 : row.flags,
            'enqueued'              : row.enqueued,
            'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
            'sent'                  : row.sent}
@@ -237,7 +237,7 @@ class Message implements Storage.Message {
                       'taken_from_company'     : message.caller.company,
                       'taken_from_phone'       : message.caller.phone,
                       'taken_from_cellphone'   : message.caller.cellphone,
-                      'flags'                  : JSON.encode(message.flags)
+                      'flags'                  : message.flags
                       };
 
     return this._database.query(sql, parameters).then((rows) {
@@ -297,7 +297,7 @@ class Message implements Storage.Message {
                       'taken_from_phone'       : message.caller.phone,
                       'taken_from_cellphone'   : message.caller.cellphone,
                       'taken_by_agent'         : message.sender.ID,
-                      'flags'                  : JSON.encode(message.flags)
+                      'flags'                  : message.flags
                       };
 
     return this._database.query(sql, parameters).then((rows) {
@@ -354,7 +354,7 @@ class Message implements Storage.Message {
         return new Model.Message.fromMap(
           {'id'                    : row.id,
            'message'               : row.message,
-           'recipients'            : row.json_recipients != null ?JSON.decode(row.json_recipients) : [],
+           'recipients'            : row.json_recipients != null ?row.json_recipients : [],
            'context'               : {'contact'   :
                                        {'id'   : row.context_contact_id,
                                         'name' : row.context_contact_name},
@@ -368,7 +368,7 @@ class Message implements Storage.Message {
                                       'company'   : row.taken_from_company,
                                       'phone'     : row.taken_from_phone,
                                       'cellphone' : row.taken_from_cellphone},
-           'flags'                 : JSON.decode(row.flags),
+           'flags'                 : row.flags,
            'enqueued'              : row.enqueued,
            'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
            'sent'                  : row.sent});

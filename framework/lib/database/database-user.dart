@@ -57,8 +57,8 @@ class User implements Storage.User {
           {'id'        : row.id,
            'name'      : row.name,
            'extension' : row.extension,
-           'groups'    : JSON.decode(row.groups),
-           'identities': JSON.decode(row.identities)};
+           'groups'    : row.groups,
+           'identities': row.identities};
       }
 
       return data;
@@ -87,8 +87,8 @@ class User implements Storage.User {
             {'id'        : row.id,
              'name'      : row.name,
              'extension' : row.extension,
-             'groups'    : JSON.decode(row.groups),
-             'identities': JSON.decode(row.identities)};
+             'groups'    : row.groups,
+             'identities': row.identities};
         }
 
         return data;
@@ -118,8 +118,8 @@ JOIN
 
       for (var row in rows) {
 
-        List <String> groups     = JSON.decode(row.groups);
-        List <String> identities = JSON.decode(row.identities);
+        List <String> groups     = row.groups;
+        List <String> identities = row.identities;
 
         /// Hotfixing Postgres returning a list containg null instead
         /// of an empty list.

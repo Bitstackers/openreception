@@ -26,7 +26,7 @@ abstract class MessageDraft {
 
     Map parameters = {
       'userID': userID,
-      'jsonBody': JSON.encode(jsonBody)
+      'jsonBody': jsonBody
     };
 
     return connection.query(sql, parameters).then((rows) {
@@ -101,7 +101,7 @@ abstract class MessageDraft {
         Map draft = {
           'contact_id': row.id,
           'owner': row.owner,
-          'json': JSON.decode(row.json)
+          'json': row.json
         };
         draftList.add(draft);
       }
@@ -138,7 +138,7 @@ abstract class MessageDraft {
         data =
           {'contact_id' : row.id,
            'owner'      : row.owner,
-           'json'       : JSON.decode(row.json)};
+           'json'       : row.json};
 
       return data;
     });
@@ -163,7 +163,7 @@ abstract class MessageDraft {
         data =
           {'contact_id' : row.id,
            'owner'      : row.owner,
-           'json'       : JSON.decode(row.json)};
+           'json'       : row.json};
       }
 
       return data;

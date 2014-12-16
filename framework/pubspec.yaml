@@ -1,11 +1,11 @@
 name: openreception_framework
 author: BitStack K/S
-version: 0.0.12+2
+version: 0.0.13+0
 description: A utility package for the OpenReception application.
 dependencies:
   http: any
   logging: any
-  postgresql: "<=0.2.14"
+  postgresql: ">= 0.3.0"
   route: any
   syslog:
     git: https://github.com/PedersenThomas/syslog.git
