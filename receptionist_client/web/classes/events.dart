@@ -60,7 +60,6 @@ final EventType Delete                                          = new EventType(
 final EventType<String> hangupCall                              = new EventType<String>();
 final EventType<String> parkCall                                = new EventType<String>();
 final EventType<int>    CallSelectedContact                     = new EventType<int>();
-final EventType         PickupFirstParkedCall                   = new EventType();
 final EventType         TransferFirstParkedCall                 = new EventType();
 final EventType         dialSelectedContact                     = new EventType();
 

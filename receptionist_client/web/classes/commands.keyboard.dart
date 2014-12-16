@@ -204,7 +204,7 @@ class _KeyboardHandler {
       'Alt+P'      : (_) => Controller.Call.pickupNext(),
       'Alt+L'      : (_) => Controller.Call.park(Model.Call.currentCall),
       //'Alt+G'    : (_) => Controller.Call.hangup(Model.Call.currentCall),
-      'Alt+U'      : (_) => event.bus.fire(event.PickupFirstParkedCall, null),
+      'Alt+U'      : (_) => Controller.Call.pickupNext(),
       'Alt+O'      : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
       'Alt+1'      : (_) => event.bus.fire(event.CallSelectedContact, 1),
       'Alt+2'      : (_) => event.bus.fire(event.CallSelectedContact, 2),
