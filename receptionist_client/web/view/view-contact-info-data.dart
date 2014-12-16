@@ -78,6 +78,7 @@ class ContactInfoData {
 
       number.children.add(new ButtonElement()
           ..text = item.value
+          ..classes = ['pure-button', 'phonenumber']
           ..onClick.listen((_) => Controller.Extension.change (new model.Extension (item.value))));
 
       telephoneNumberList.children.add(number);
