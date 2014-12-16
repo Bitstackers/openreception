@@ -198,7 +198,6 @@ class EventSocket {
       log.info('Opkald lagt på. ${call}', toUserLog: true);
       log.debugContext('notification._callHangupEventHandler hangup ${call}', context);
       model.Call.currentCall = model.nullCall;
-      model.Reception.selectedReception = model.nullReception;
     }
 
     event.bus.fire(event.callDestroyed, call);
@@ -216,10 +215,6 @@ class EventSocket {
     if (call == model.Call.currentCall) {
       log.info('Opkald overført. ${call}', toUserLog: true);
       log.debugContext('Transferred ${call}', context);
-
-      Controller.Reception.change (model.nullReception);
-
-      Controller.Contact.change(model.nullContact);
 
       model.Call.currentCall = model.nullCall;
     }
