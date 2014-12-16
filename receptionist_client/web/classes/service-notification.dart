@@ -230,7 +230,7 @@ class EventSocket {
 
     model.Call call = new model.Call.fromMap(json['call']);
 
-    if (call.assignedAgent == configuration.userId) {
+    if (call.assignedAgent == model.User.currentUser) {
       log.info('Tog kald. ${call}', toUserLog: true);
       model.Call.currentCall = call;
 

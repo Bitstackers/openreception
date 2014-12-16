@@ -1,9 +1,5 @@
 part of service;
 
-abstract class MessageResource {
-
-}
-
 abstract class Message {
 
   static ORStorage.Message _store = null;

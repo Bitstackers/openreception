@@ -36,7 +36,7 @@ class AgentInfo {
       ..src = faceURL;
 
     activeTD = table.querySelector('#agent-info-stats-active');
-    pausedTD = table.querySelector('#agent-info-stats-paused'); 
+    pausedTD = table.querySelector('#agent-info-stats-paused');
 
     box = new Box.noChrome(element, divParent);
 
@@ -44,10 +44,11 @@ class AgentInfo {
 
     registerEventListeners();
     resize();
-    
+
     new Future.delayed(new Duration(seconds: 1, milliseconds: 500), () {
-      if(configuration.profile != null) {
-        portrait.src = configuration.profile['remote_attributes']['picture'];
+      if(model.User.currentUser != null) {
+        //FIXME: implement an photoUrl in the User class in the framework.
+        portrait.src = model.User.currentUser.toJson()['remote_attributes']['picture'];
       }
     }).catchError((error) {
       log.error('components.AgentInfo() Updating Agent image failed with "${error}"');

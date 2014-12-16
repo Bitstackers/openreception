@@ -199,7 +199,7 @@ class Call implements Comparable {
    */
   bool availableForUser(User user) {
     //return this.assignedAgent == user.ID || this.assignedAgent == User.nullUser.ID
-    return ([User.nullUser.ID, user.ID].contains(this.assignedAgent));
+    return ([ORModel.User.nullID, user.ID].contains(this.assignedAgent));
   }
 
   void update (Call newCall) {

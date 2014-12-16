@@ -24,7 +24,7 @@ import 'state.dart';
 
 
 
-//const String CONFIGURATION_URL = 'http://alice.adaheads.com:4030/configuration';
+//const String CONFIGURATION_URL = 'http://service.openreception.org/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
 const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
 
@@ -32,7 +32,7 @@ final Configuration configuration = new Configuration._internal();
 
 abstract class Default {
   static const String messageServer = 'http://localhost:4040';
-  
+
   static Uri get messageServerUri => Uri.parse (messageServer);
 }
 
@@ -42,9 +42,9 @@ abstract class Default {
  */
 class Configuration {
   bool _loaded = false;
-  
+
   bool autoAnswerEnabled = false;
-  
+
   Uri      _callFlowBaseUrl;
   Uri      _receptionBaseUrl;
   Uri      _contactBaseUrl;
@@ -58,11 +58,9 @@ class Configuration {
   Uri      _serverLogInterfaceError;
   Uri      _serverLogInterfaceInfo;
   String   _standardGreeting;
-  int      userId;
-  String   userName;
   int      _userLogSizeLimit = 100000;
   Map      profile;
-  
+
   Uri      get receptionBaseUrl =>                    _receptionBaseUrl;
   Uri      get callFlowBaseUrl =>                     _callFlowBaseUrl;
   Uri      get contactBaseUrl =>                      _contactBaseUrl;
@@ -82,7 +80,7 @@ class Configuration {
   bool get hasToken => token != null;
 //  String get token => _token;
 //  void set token (String value) => _token = value;
-  
+
 //  Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
 //  Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
 //  Uri _receptionServer = Uri.parse('http://alice.adaheads.com:4000');
@@ -90,7 +88,7 @@ class Configuration {
 //  Uri get contactServer => _contactServer;
 //  Uri get logServer => _logServer;
 //  Uri get receptionServer => _receptionServer;
-  
+
   /**
    * Is the configuration loaded.
    */
@@ -149,7 +147,7 @@ class Configuration {
     String    infoPath;
     final Map notificationSocketMap = json['notificationSocket'];
     final Map serverLogMap = json['serverLog'];
-    
+
     _callFlowBaseUrl = Uri.parse(_stringValue(json, 'callFlowServerURI', 'http://localhost:4242'));
     _receptionBaseUrl = Uri.parse(_stringValue(json, 'receptionServerURI', 'http://localhost:8080'));
     _contactBaseUrl = Uri.parse(_stringValue(json, 'contactServerURI', 'http://localhost:8081'));

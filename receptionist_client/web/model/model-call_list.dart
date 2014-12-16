@@ -32,7 +32,7 @@ class CallList extends IterableBase<Call> {
   /// Local event stream.
   EventBus _eventStream = new EventBus();
   EventBus get events => _eventStream;
- 
+
   /// Singleton instance - for quick and easy reference.
   static CallList _instance = new CallList();
   static CallList get instance => _instance;
@@ -50,7 +50,7 @@ class CallList extends IterableBase<Call> {
     List<Call> queuedCalls = new List<Call>();
     this.forEach((Call call) {
       //TODO: Only add non-parked calls.
-      if ([User.currentUser.ID, User.nullUserID].contains(call.assignedAgent)) {
+      if ([User.currentUser.ID, ORModel.User.nullID].contains(call.assignedAgent)) {
         queuedCalls.add(call);
       }
     });
@@ -105,10 +105,10 @@ class CallList extends IterableBase<Call> {
     const String context = '${className}.CallList._fromList';
 
     this._map.clear();
-    
+
     list.forEach((item){
       Call newCall = new Call.fromMap(item);
-      
+
       if (newCall.isCall) {
       _map[newCall.ID] = newCall;
       }
@@ -116,14 +116,14 @@ class CallList extends IterableBase<Call> {
 
     log.debugContext('Populated list with ${list.length} elements.', context);
   }
-  
+
   /**
    * Reloads the Call list from the server.
    */
   Future<CallList> reloadFromServer() {
-    
+
     const String context = '${className}.reloadFromServer';
-    
+
     return Service.Call.list().then((CallList callList) {
       this._map = callList._map;
 
@@ -132,25 +132,25 @@ class CallList extends IterableBase<Call> {
 
       /// Look for the currently active call - if any.
       this.forEach((Call call) {
-        if (call.assignedAgent != User.nullUserID && 
+        if (call.assignedAgent != ORModel.User.nullID &&
             call.assignedAgent == User.currentUser.ID &&
             call.state == CallState.SPEAKING) {
-            
+
           log.debugContext("Found an already active call.", context);
           Call.currentCall = call;
-          
+
           Reception.get(call.receptionId).then((Reception reception) {
             Reception.selectedReception = reception;
           });
         }
       });
-      
+
       return this;
     });
   }
-  
+
   /**
-   * Updates the [Call] in the list with the values from the supplied object. 
+   * Updates the [Call] in the list with the values from the supplied object.
    */
   void update (Call call) {
     const String context = '${className}.update';
@@ -163,10 +163,10 @@ class CallList extends IterableBase<Call> {
       }
     }
     catch (error, stacktrace) {
-      log.errorContext('Failed to Update call ${call}, stacktrace ${stacktrace}', context); 
+      log.errorContext('Failed to Update call ${call}, stacktrace ${stacktrace}', context);
     }
   }
-  
+
   /**
    * Appends [call] to the list.
    */
@@ -188,7 +188,7 @@ class CallList extends IterableBase<Call> {
    */
   Call get(String ID) {
     try {
-      
+
       return this._map[ID];
     } catch (_) {
       throw new CallNotFound('ID: ${ID}');
@@ -211,6 +211,6 @@ class CallList extends IterableBase<Call> {
 
     /* Notify observers.*/
     this._eventStream.fire(CallList.delete, call);
-  
+
   }
 }

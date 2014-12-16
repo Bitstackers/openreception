@@ -26,12 +26,13 @@ import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
 import 'classes/service-notification.dart';
-import 'protocol/protocol.dart' as protocol;
 import 'classes/state.dart';
 
-import 'view/view.dart' as View;
+import 'view/view.dart'       as View;
+import 'model/model.dart'     as Model;
+import 'service/service.dart' as Service;
 
-import 'model/model.dart' as Model;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 BobActive bobActive;
 BobDisaster bobDiaster;
@@ -39,16 +40,16 @@ BobLoading bobLoading;
 //BobLogin boblogin;
 
 void main() {
-  
+
   View.Notification notificationPanel = new View.Notification();
-  
+
   configuration.initialize().then((_) {
     if(handleToken()) {
       notification.initialize();
-    }      
+    }
   });
-  
-  
+
+
   //boblogin = new BobLogin(querySelector('#boblogin'));
 
   //notification.initialize();
@@ -62,7 +63,7 @@ void main() {
     if(state.isOK) {
       bobActive = new BobActive(querySelector('#bobactive'));
       subscription.cancel();
-      
+
       nav.registerOnPopStateListeners();
       /// Reload the model.
       Model.CallList.instance.reloadFromServer();
@@ -75,7 +76,7 @@ bool handleToken() {
   //TODO Save to localStorage.
   if(url.queryParameters.containsKey('settoken')) {
     configuration.token = url.queryParameters['settoken'];
-    
+
     //Remove ?settoken from the URL
     Map queryParam = {};
     url.queryParameters.forEach((key, value) {
@@ -86,7 +87,16 @@ bool handleToken() {
     var finalUrl = new Uri(scheme: url.scheme, userInfo: url.userInfo, host: url.host, port: url.port, path: url.path, queryParameters: queryParam, fragment: url.fragment);
     //window.location.assign(finalUrl.toString());
     //Didn't work. try localStorage.
-    
+
+    Service.Authentication.store.userOf(configuration.token).then((ORModel.User user) {
+      print("!!!!");
+      print(user.toJson());
+      print("!!!!");
+        Model.User.currentUser = user;
+    }).catchError((error, stackTrace) {
+      log.error('Failed to load user. $error : $stackTrace');
+    });
+      /*
     protocol.userInfo(configuration.token).then((protocol.Response<Map> response) {
       Map data = response.data;
       configuration.profile = data;
@@ -94,15 +104,15 @@ bool handleToken() {
         //TODO: remove these.
         configuration.userId = data['id'];
         configuration.userName = data['name'];
-        
+
         Model.User.currentUser = new Model.User (data['id'],data['name']);
-        
-        
+
+
       } else {
         //TODO: Panic action.
         log.error('bob.dart userInfo did not contain an id');
       }
-    }) ;
+    });*/
     return true;
   } else {
     String loginUrl = '${configuration.authBaseUrl}/token/create?returnurl=${window.location.toString()}';
