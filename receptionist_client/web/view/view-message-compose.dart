@@ -123,6 +123,9 @@ class Message {
 
     element.onClick.listen((Event event) {
     if (!this.inFocus)
+      if ((event.target as Element).id.isNotEmpty)
+        Controller.Context.changeLocation(new nav.Location(context.id, element.id, (event.target as Element).id));
+      else
         Controller.Context.changeLocation(this.location);
     });
 
@@ -194,14 +197,6 @@ class Message {
   }
 
   /**
-   * Click handler for the entire message element. Sets the focus to the widget.
-   */
-  void _onMessageElementClick(_) {
-    const String context = '${className}._onMessageElementClick';
-    //Controller.Context.changeLocation(new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE, id.SENDMESSAGE_CELLPHONE));
-  }
-
-  /**
    * Event handler responsible for selecting the current widget.
    */
   void _onLocationChanged(nav.Location location) {
@@ -244,7 +239,6 @@ class Message {
   void _registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    element.onClick.listen(this._onMessageElementClick);
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
     event.bus.on(event.contactChanged).listen(this._renderContact);
@@ -281,7 +275,8 @@ class Message {
           'localextension': callerLocalExtensionField.value
         },
         'context': contextMap,
-        'flags': []
+        'flags': [],
+        'created_at' : 0
       });
 
       pleaseCall.checked ? pendingMessage.addFlag('urgent') : null;

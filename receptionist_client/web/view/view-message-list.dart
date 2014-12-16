@@ -14,6 +14,8 @@ class MessageList {
   static const String SelectedClass       = 'selected';
   static const int    viewLimit           = 30;
 
+  static final TableRowElement noRow      = (new TableRowElement()..hidden = true);
+
   static final messageDateFormat = new DateFormat('EEE, MMM d, HH:mm');
 
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
@@ -51,10 +53,20 @@ class MessageList {
 
   static final EventType selectedMessageChanged = new EventType();
 
+  /**
+   * Extracts the currently selected row.
+   * Returns a non-visible dummy row if no row i selected to avoid null
+   * exceptions.
+   */
   TableRowElement get selectedRow
     => this.tableBody.children.firstWhere((TableRowElement child)
       => child.classes.contains(SelectedClass),
-         orElse : () => new TableRowElement()..hidden = true);
+         orElse : () => noRow);
+
+  TableRowElement rowOf(int messageID)
+    => this.tableBody.children.firstWhere((TableRowElement child)
+      => child.dataset['messageID'] == messageID,
+         orElse : () => noRow);
 
   set selectedRow (TableRowElement newRow) {
     bool isHeader(TableRowElement row) =>
@@ -101,6 +113,13 @@ class MessageList {
     this.table.querySelector('input').onClick.listen(headerCheckboxChange);
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+
+    model.MessageList.instance.events.on(model.MessageList.stateChange).listen((model.Message message) {
+      TableRowElement messageRow = this.rowOf(message.ID);
+      if(messageRow != noRow) {
+          messageRow = this.createRow(message);
+      }
+    });
 
     event.bus.on(event.messageFilterChanged).listen((model.MessageFilter filter) {
       this.loadData(model.Message.noID);

@@ -222,7 +222,10 @@ class MessageEdit {
      */
     element.onClick.listen((Event event) {
       if (!this.inFocus)
-        Controller.Context.changeLocation(this.location);
+        if ((event.target as Element).id.isNotEmpty)
+          Controller.Context.changeLocation(new nav.Location(context.id, element.id, (event.target as Element).id));
+        else
+          Controller.Context.changeLocation(this.location);
     });
     /// Button click handlers
     this.saveButton  .onClick.listen(this._saveHandler);
