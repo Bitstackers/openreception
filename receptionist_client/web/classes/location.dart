@@ -128,7 +128,7 @@ class Location {
       return false;
     }
 
-    Element elementElement = widgetElement.querySelector('#${elementId}');
+    Element elementElement = elementId.isEmpty ? null : widgetElement.querySelector('#${elementId}');
     if(elementElement == null) {
       log.error('location.Location() bad element "${contextId}.${widgetId}.${elementId}" returning default "${appDefaultLocation}"');
       return false;
