@@ -27,7 +27,7 @@ class CallList {
   Element        get header       => this.element.querySelector('legend');
   UListElement   get queuedCallUL => this.element.querySelector("#global-queue-list");
   UListElement   get ownedCallsUL => querySelector("#local-call-list"); //TODO: Move this to a more local DOM scope.
-  
+
   Element        get localCallsHeader => querySelector("#local-calls legend"); //TODO: Move this to a more local DOM scope.
 
   model.CallList _callList;
@@ -93,6 +93,11 @@ class CallList {
       this._renderHeader();
     });
 
+    call.events.on(model.Call.transferred).listen((_) {
+      callView._callTransferHandler(_);
+      this._renderHeader();
+    });
+
     call.events.on(model.Call.hungup).listen((_) {
       callView._callHangupHandler(_);
       this._renderHeader();
@@ -101,20 +106,6 @@ class CallList {
     call.events.on(model.Call.parked).listen((_) {
       callView._renderButtons();
       this._renderHeader();
-    });
-
-    event.bus.on(event.PickupFirstParkedCall).listen((_) {
-      if (call.state == model.CallState.PARKED &&
-          call.assignedAgent == model.User.currentUser.ID) {
-        call.pickup();
-        }
-    });
-
-    event.bus.on(event.TransferFirstParkedCall).listen((_) {
-      if (call.state == model.CallState.PARKED &&
-          call.assignedAgent == model.User.currentUser.ID) {
-        call.transfer(model.Call.currentCall);
-        }
     });
 
 
@@ -128,11 +119,11 @@ class CallList {
   }
 
   void _renderHeader() {
-    header.children = 
+    header.children =
         [Icon.Phone,
          new SpanElement()..text = '${Label.Calls} (${this.queuedCallUL.children.where((LIElement element) => !element.hidden).length})'];
 
-    localCallsHeader.children = 
+    localCallsHeader.children =
         [Icon.Exclamation,
          new SpanElement()..text = '${Label.LocalCalls} (${this.ownedCallsUL.children.where((LIElement element) => !element.hidden).length})'];
 

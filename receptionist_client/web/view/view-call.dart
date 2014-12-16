@@ -156,9 +156,20 @@ class Call {
    * Event handler for taking care of the callHangup event in the Widget.
    */
   void _callHangupHandler (_) {
-    const String context = '${className}._callQueueRemoveHandler';
+    const String context = '${className}._callHangupHandler';
       log.debugContext("Removing call ${this.call.ID} from call queue view.", context);
       this.element.remove();
   }
 
+  /**
+   * Event handler for taking care of the callHangup event in the Widget.
+   */
+  void _callTransferHandler (_) {
+    const String context = '${className}._callTransferHandler ';
+    log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
+
+    this.element.classes.toggle("transferred", true);
+    this.element.hidden = true;
+    this._renderButtons();
+  }
 }

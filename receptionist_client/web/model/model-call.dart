@@ -102,9 +102,10 @@ class Call implements Comparable {
   static final EventType stateChange = new EventType();
 
   static final Map<CallState, EventType> stateEventMap =
-    {CallState.HUNGUP   : Call.hungup,
-     CallState.SPEAKING : Call.answered,
-     CallState.PARKED   : Call.parked};
+    {CallState.HUNGUP      : Call.hungup,
+     CallState.SPEAKING    : Call.answered,
+     CallState.PARKED      : Call.parked,
+     CallState.TRANSFERRED : Call.transferred};
 
   EventBus _bus = new EventBus();
   EventBus get events => _bus;
