@@ -54,6 +54,10 @@ class Connection {
     .then((PG.Connection conn) => conn.query(sql, parameters).toList()
     .whenComplete(() => conn.close()));
 
+  Future runInTransaction(Future operation()) => this._pool.connect()
+    .then((PG.Connection conn) => conn.runInTransaction(operation)
+    .whenComplete(() => conn.close()));
+
   Future execute(String sql, [Map parameters = null]) => this._pool.connect()
     .then((PG.Connection conn) => conn.execute(sql, parameters)
     .whenComplete(() => conn.close()));
