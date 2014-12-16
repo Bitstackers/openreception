@@ -1,7 +1,7 @@
 part of contactserver.database;
 
 /// NOTE: Transactions discards rows, and therefore does not leave us any option
-/// to extract the latest ID, or rowcount. 
+/// to extract the latest ID, or rowcount.
 
 abstract class ContactCalendar {
 
@@ -20,21 +20,21 @@ AND
 AND 
   event.id     = @eventID
 LIMIT 1;
-''';  
+''';
 
-    Map parameters = 
+    Map parameters =
       {'receptionID' : receptionID,
        'contactID'   : contactID,
        'eventID'     : eventID};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if (rows.length > 0) {
       return true;
     } else {
       return false;
     }
   });
-  
+
   }
 
   static Future createEvent({int contactID, int receptionID, Map event, Map distributionList : null}) {
@@ -50,18 +50,18 @@ START TRANSACTION;
      ("reception_id", "contact_id", "distribution_list", "event_id")
    VALUES
      (@receptionID, @contactID, @distributionList, lastval());
-COMMIT;''';  
+COMMIT;''';
 
-    Map parameters = 
+    Map parameters =
       {'receptionID'      : receptionID,
        'contactID'        : contactID,
        'distributionList' : distributionList,
        'start'            : new DateTime.fromMillisecondsSinceEpoch(event['start']*1000),
        'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
        'content'           : event['content']};
-    
-  return database.execute(_pool, sql, parameters);
-  
+
+  return connection.execute(sql, parameters);
+
   }
 
 
@@ -75,9 +75,9 @@ COMMIT;''';
       FROM contact_calendar cc
       WHERE ce.id = @eventID 
         AND cc.contact_id   = @contactID
-        AND cc.reception_id = @receptionID;''';  
+        AND cc.reception_id = @receptionID;''';
 
-    Map parameters = 
+    Map parameters =
       {'receptionID'      : receptionID,
        'contactID'        : contactID,
        'eventID'          : eventID,
@@ -86,8 +86,8 @@ COMMIT;''';
        'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
        'content'          : event['content']};
 
-  return database.execute(_pool, sql, parameters).then((int rowsAffected) => rowsAffected);
-  
+  return connection.execute(sql, parameters).then((int rowsAffected) => rowsAffected);
+
   }
 
   static Future removeEvent({int contactID, int receptionID, int eventID}) {
@@ -104,15 +104,15 @@ START TRANSACTION;
   
   DELETE FROM calendar_events WHERE id = @eventID;
 
-COMMIT; ''';  
+COMMIT; ''';
 
-    Map parameters = 
+    Map parameters =
       {'receptionID' : receptionID,
        'contactID'   : contactID,
        'eventID'     : eventID};
 
-    return database.execute(_pool, sql, parameters);
-  
+    return connection.execute(sql, parameters);
+
   }
 
   static Future<Map> getEvent({int contactID, int receptionID, int eventID}) {
@@ -130,18 +130,18 @@ AND
 AND 
   event.id     = @eventID
 LIMIT 1;
-''';  
+''';
 
-    Map parameters = 
+    Map parameters =
       {'receptionID' : receptionID,
        'contactID'   : contactID,
        'eventID'     : eventID};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if (rows.length > 0) {
-    
+
       var row = rows.first;
-    
+
       return {'content' : row.message,
               'start'   : dateTimeToUnixTimestamp(row.start),
               'stop'    : dateTimeToUnixTimestamp(row.stop)};
@@ -149,6 +149,6 @@ LIMIT 1;
       return null;
     }
   });
-  
+
   }
 }

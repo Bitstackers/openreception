@@ -8,7 +8,7 @@ Future<Map> deleteReception(int id) {
 
   Map parameters = {'id' : id};
 
-  return database.execute(_pool, sql, parameters).then((rowsAffected) {
+  return connection.execute(sql, parameters).then((rowsAffected) {
     return {'rowsAffected': rowsAffected};
   });
 }

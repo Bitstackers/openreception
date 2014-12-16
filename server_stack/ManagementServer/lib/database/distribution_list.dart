@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<model.DistributionList> _getDistributionList(Pool pool, int receptionId, int contactId) {
+Future<model.DistributionList> _getDistributionList(ORDatabase.Connection connection, int receptionId, int contactId) {
   String sql = '''
     SELECT owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id, id
     FROM distribution_list
@@ -11,9 +11,9 @@ Future<model.DistributionList> _getDistributionList(Pool pool, int receptionId, 
     {'reception_id': receptionId,
      'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     model.DistributionList list = new model.DistributionList();
-    for(Row row in rows) {
+    for(var row in rows) {
       model.DistributionListEntry contact = new model.DistributionListEntry()
         ..receptionId = row.recipient_reception_id
         ..contactId = row.recipient_contact_id
@@ -31,7 +31,7 @@ Future<model.DistributionList> _getDistributionList(Pool pool, int receptionId, 
   });
 }
 
-Future<int> _createDistributionListEntry(Pool pool, int ownerReceptionId, int ownerContactId, String role, int recipientReceptionId, int recipientContactId) {
+Future<int> _createDistributionListEntry(ORDatabase.Connection connection, int ownerReceptionId, int ownerContactId, String role, int recipientReceptionId, int recipientContactId) {
   String sql = '''
     INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id)
     VALUES (@owner_reception, @owner_contact, @role, @recipient_reception, @recipient_contact)
@@ -45,15 +45,15 @@ Future<int> _createDistributionListEntry(Pool pool, int ownerReceptionId, int ow
      'recipient_reception' : recipientReceptionId,
      'recipient_contact'   : recipientContactId};
 
-  return query(pool, sql, parameters).then((rows) => rows.first.id);
+  return connection.query(sql, parameters).then((rows) => rows.first.id);
 }
 
-Future _deleteDistributionListEntry(Pool pool, int entryId) {
+Future _deleteDistributionListEntry(ORDatabase.Connection connection, int entryId) {
   String sql = '''
       DELETE FROM distribution_list
       WHERE id=@id;
     ''';
 
   Map parameters = {'id': entryId};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }

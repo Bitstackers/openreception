@@ -54,7 +54,7 @@ Future<Map> getReceptionContactList(int receptionId) {
 
   Map parameters = {'receptionid' : receptionId};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     List contacts = new List();
     for(var row in rows) {
       Map contact =
@@ -63,13 +63,13 @@ Future<Map> getReceptionContactList(int receptionId) {
          'wants_messages'    : row.wants_messages,
          'enabled'           : row.rcpenabled && row.conenabled,
          'full_name'         : row.full_name,
-         'distribution_list' : row.distribution_list != null ? JSON.decode(row.distribution_list) : [],
+         'distribution_list' : row.distribution_list != null ? row.distribution_list : [],
          'contact_type'      : row.contact_type,
-         'phones'            : row.phone != null ? JSON.decode(row.phone) : [],
-         'endpoints'         : JSON.decode(row.endpoints)};
+         'phones'            : row.phone != null ? row.phone : [],
+         'endpoints'         : row.endpoints};
 
       if (row.attributes != null) {
-        Map attributes = JSON.decode(row.attributes);
+        Map attributes = row.attributes;
         if(attributes != null) {
           attributes.forEach((key, value) => contact.putIfAbsent(key, () => value));
         }

@@ -6,12 +6,12 @@ Future<Map> getPhone(int contactId, int receptionId, int phoneId) {
     FROM phone_numbers p JOIN contact_phone_numbers c ON p.id = c.phone_number_id
     WHERE c.phone_number_id = @phoneId AND c.contact_id = @contactId AND c.reception_id = @receptionId''';
 
-  Map parameters = 
+  Map parameters =
     {'phoneId': phoneId,
      'contactId': contactId,
      'receptionId': receptionId};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     Map data = {};
     if(rows.length == 1) {
       var row = rows.first;

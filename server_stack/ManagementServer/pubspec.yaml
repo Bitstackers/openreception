@@ -1,5 +1,5 @@
-name: server
-description: A sample command-line application
+name: openreception-data-management-server
+description: Backoffice interfaces
 dependencies:
   args: any
   http: any
@@ -8,9 +8,9 @@ dependencies:
       ref: master
       url: https://github.com/AdaHeads/libdialplan.git
   openreception_framework:
+    version: ">= 0.0.13+1"
     git:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
-  postgresql: any
   route: any

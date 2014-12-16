@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<int> _createContact(Pool pool, String fullName, String contact_type, bool enabled) {
+Future<int> _createContact(ORDatabase.Connection connection, String fullName, String contact_type, bool enabled) {
   String sql = '''
     INSERT INTO contacts (full_name, contact_type, enabled)
     VALUES (@full_name, @contact_type, @enabled)
@@ -12,20 +12,20 @@ Future<int> _createContact(Pool pool, String fullName, String contact_type, bool
      'contact_type' : contact_type,
      'enabled'      : enabled};
 
-  return query(pool, sql, parameters).then((rows) => rows.first.id);
+  return connection.query(sql, parameters).then((rows) => rows.first.id);
 }
 
-Future<int> _deleteContact(Pool pool, int contactId) {
+Future<int> _deleteContact(ORDatabase.Connection connection, int contactId) {
   String sql = '''
       DELETE FROM contacts
       WHERE id=@id;
     ''';
 
   Map parameters = {'id': contactId};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.ReceptionColleague>> _getContactColleagues(Pool pool, int contactId) {
+Future<List<model.ReceptionColleague>> _getContactColleagues(ORDatabase.Connection connection, int contactId) {
   String sql = '''
      SELECT
         r.organization_id as organizationid,
@@ -47,10 +47,10 @@ Future<List<model.ReceptionColleague>> _getContactColleagues(Pool pool, int cont
 
   Map parameters = {'contactid': contactId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     Map<int, model.ReceptionColleague> receptions = new Map<int, model.ReceptionColleague>();
 
-    for(Row row in rows) {
+    for(var row in rows) {
       int receptionId = row.receptionid;
       if(!receptions.containsKey(receptionId)) {
         model.ReceptionColleague reception = new model.ReceptionColleague(row.receptionid, row.organizationid, row.receptionname, row.receptionenabled);
@@ -65,7 +65,7 @@ Future<List<model.ReceptionColleague>> _getContactColleagues(Pool pool, int cont
   });
 }
 
-Future<model.Contact> _getContact(Pool pool, int contactId) {
+Future<model.Contact> _getContact(ORDatabase.Connection connection, int contactId) {
   String sql = '''
     SELECT id, full_name, contact_type, enabled
     FROM contacts
@@ -74,50 +74,50 @@ Future<model.Contact> _getContact(Pool pool, int contactId) {
 
   Map parameters = {'id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
+      var row = rows.first;
       return new model.Contact(row.id, row.full_name, row.contact_type, row.enabled);
     }
   });
 }
 
-Future<List<model.Contact>> _getContactList(Pool pool) {
+Future<List<model.Contact>> _getContactList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT id, full_name, contact_type, enabled
     FROM contacts
   ''';
 
-  return query(pool, sql).then((List<Row> rows) {
+  return connection.query(sql).then((List rows) {
     List<model.Contact> contacts = new List<model.Contact>();
-    for(Row row in rows) {
+    for(var row in rows) {
       contacts.add(new model.Contact(row.id, row.full_name, row.contact_type, row.enabled));
     }
     return contacts;
   });
 }
 
-Future<List<String>> _getContactTypeList(Pool pool) {
+Future<List<String>> _getContactTypeList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT value
     FROM contact_types;
   ''';
 
-  return query(pool, sql).then((List Rows) => Rows.map((row) => row.value).toList());
+  return connection.query(sql).then((List Rows) => Rows.map((row) => row.value).toList());
 }
 
-Future<List<String>> _getAddressTypeList(Pool pool) {
+Future<List<String>> _getAddressTypeList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT value
     FROM messaging_address_types;
   ''';
 
-  return query(pool, sql).then((List Rows) => Rows.map((row) => row.value).toList());
+  return connection.query(sql).then((List Rows) => Rows.map((row) => row.value).toList());
 }
 
-Future<int> _updateContact(Pool pool, int contactId, String fullName, String contact_type, bool enabled) {
+Future<int> _updateContact(ORDatabase.Connection connection, int contactId, String fullName, String contact_type, bool enabled) {
   String sql = '''
     UPDATE contacts
     SET full_name=@full_name, contact_type=@contact_type, enabled=@enabled
@@ -130,10 +130,10 @@ Future<int> _updateContact(Pool pool, int contactId, String fullName, String con
      'enabled'      : enabled,
      'id'           : contactId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.Contact>> _getOrganizationContactList(Pool pool, int organizationId) {
+Future<List<model.Contact>> _getOrganizationContactList(ORDatabase.Connection connection, int organizationId) {
   String sql = '''
     SELECT DISTINCT c.id, c.full_name, c.enabled, c.contact_type
     FROM receptions r
@@ -145,9 +145,9 @@ Future<List<model.Contact>> _getOrganizationContactList(Pool pool, int organizat
 
   Map parameters = {'organization_id': organizationId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.Contact> contacts = new List<model.Contact>();
-    for(Row row in rows) {
+    for(var row in rows) {
       contacts.add(new model.Contact(row.id, row.full_name, row.contact_type, row.enabled));
     }
     return contacts;

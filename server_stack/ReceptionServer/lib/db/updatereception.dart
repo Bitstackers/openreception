@@ -10,9 +10,9 @@ Future<Map> updateReception(int id, String full_name, String uri, Map attributes
       {'id'        : id,
        'full_name' : full_name,
        'uri'       : uri,
-       'attributes': attributes == null ? '{}' : JSON.encode(attributes),
+       'attributes': attributes == null ? '{}' : attributes,
        'enabled'   : enabled};
-    return database.execute(_pool, sql).then((rowsAffected) {
+    return connection.execute(sql).then((rowsAffected) {
       return {'rowsAffected': rowsAffected};
     });
 }

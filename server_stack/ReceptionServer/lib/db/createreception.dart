@@ -9,10 +9,10 @@ Future<Map> createReception(String full_name, Map attributes, bool enabled) {
 
   Map parameters =
     {'full_name' : full_name,
-     'attributes': attributes == null ? '{}' : JSON.encode(attributes),
+     'attributes': attributes == null ? '{}' : attributes,
      'enabled'   : enabled};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     Map data = {};
     if (rows.length == 1) {
       data = {'id': rows.first.id};

@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<int> _createUser(Pool pool, String name, String extension, String sendFrom) {
+Future<int> _createUser(ORDatabase.Connection connection, String name, String extension, String sendFrom) {
   String sql = '''
     INSERT INTO users (name, extension, send_from)
     VALUES (@name, @extension, @sendfrom)
@@ -12,20 +12,20 @@ Future<int> _createUser(Pool pool, String name, String extension, String sendFro
      'extension' : extension,
      'sendfrom'  : sendFrom};
 
-  return query(pool, sql, parameters).then((rows) => rows.first.id);
+  return connection.query( sql, parameters).then((rows) => rows.first.id);
 }
 
-Future<int> _deleteUser(Pool pool, int userId) {
+Future<int> _deleteUser(ORDatabase.Connection connection, int userId) {
   String sql = '''
       DELETE FROM users
       WHERE id=@id;
     ''';
 
   Map parameters = {'id': userId};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<model.User> _getUser(Pool pool, int userId) {
+Future<model.User> _getUser(ORDatabase.Connection connection, int userId) {
   String sql = '''
     SELECT id, name, extension, send_from
     FROM users
@@ -34,32 +34,32 @@ Future<model.User> _getUser(Pool pool, int userId) {
 
   Map parameters = {'id': userId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
+      var row = rows.first;
       return new model.User(row.id, row.name, row.extension, row.send_from);
     }
   });
 }
 
-Future<List<model.User>> _getUserList(Pool pool) {
+Future<List<model.User>> _getUserList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT id, name, extension, send_from
     FROM users
   ''';
 
-  return query(pool, sql).then((List<Row> rows) {
+  return connection.query(sql).then((List rows) {
     List<model.User> users = new List<model.User>();
-    for(Row row in rows) {
+    for(var row in rows) {
       users.add(new model.User(row.id, row.name, row.extension, row.send_from));
     }
     return users;
   });
 }
 
-Future<int> _updateUser(Pool pool, int userId, String name, String extension, String sendFrom) {
+Future<int> _updateUser(ORDatabase.Connection connection, int userId, String name, String extension, String sendFrom) {
   String sql = '''
     UPDATE users
     SET name=@name, extension=@extension, send_from=@sendfrom
@@ -72,10 +72,10 @@ Future<int> _updateUser(Pool pool, int userId, String name, String extension, St
      'sendfrom'  : sendFrom,
      'id'        : userId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.UserGroup>> _getUserGroups(Pool pool, int userId) {
+Future<List<model.UserGroup>> _getUserGroups(ORDatabase.Connection connection, int userId) {
   String sql = '''
     SELECT id, name
     FROM user_groups 
@@ -85,31 +85,31 @@ Future<List<model.UserGroup>> _getUserGroups(Pool pool, int userId) {
 
   Map parameters = {'userid': userId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
       List<model.UserGroup> userGroups = new List<model.UserGroup>();
-      for(Row row in rows) {
+      for(var row in rows) {
         userGroups.add(new model.UserGroup(row.id, row.name));
       }
       return userGroups;
     });
 }
 
-Future<List<model.UserGroup>> _getGroupList(Pool pool) {
+Future<List<model.UserGroup>> _getGroupList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT id, name
     FROM groups
   ''';
 
-  return query(pool, sql).then((List<Row> rows) {
+  return connection.query(sql).then((List rows) {
     List<model.UserGroup> userGroups = new List<model.UserGroup>();
-    for(Row row in rows) {
+    for(var row in rows) {
       userGroups.add(new model.UserGroup(row.id, row.name));
     }
     return userGroups;
   });
 }
 
-Future<int> _joinUserGroup(Pool pool, int userId, int groupId) {
+Future<int> _joinUserGroup(ORDatabase.Connection connection, int userId, int groupId) {
   String sql = '''
     INSERT INTO user_groups (user_id, group_id)
     VALUES (@userid, @groupid);
@@ -119,10 +119,10 @@ Future<int> _joinUserGroup(Pool pool, int userId, int groupId) {
     {'userid'  : userId,
      'groupid' : groupId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<int> _leaveUserGroup(Pool pool, int userId, int groupId) {
+Future<int> _leaveUserGroup(ORDatabase.Connection connection, int userId, int groupId) {
   String sql = '''
     DELETE FROM user_groups
     WHERE user_id = @userid AND group_id = @groupid;
@@ -132,10 +132,10 @@ Future<int> _leaveUserGroup(Pool pool, int userId, int groupId) {
     {'userid'  : userId,
      'groupid' : groupId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.UserIdentity>> _getUserIdentityList(Pool pool, int userId) {
+Future<List<model.UserIdentity>> _getUserIdentityList(ORDatabase.Connection connection, int userId) {
   String sql = '''
     SELECT identity, user_id
     FROM auth_identities
@@ -144,16 +144,16 @@ Future<List<model.UserIdentity>> _getUserIdentityList(Pool pool, int userId) {
 
   Map parameters = {'userid': userId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.UserIdentity> userIdentities = new List<model.UserIdentity>();
-    for(Row row in rows) {
+    for(var row in rows) {
       userIdentities.add(new model.UserIdentity(row.identity, row.user_id));
     }
     return userIdentities;
   });
 }
 
-Future<String> _createUserIdentity(Pool pool, int userId, String identity) {
+Future<String> _createUserIdentity(ORDatabase.Connection connection, int userId, String identity) {
   String sql = '''
     INSERT INTO auth_identities (identity, user_id)
     VALUES (@identity, @userid)
@@ -164,10 +164,10 @@ Future<String> _createUserIdentity(Pool pool, int userId, String identity) {
     {'identity' : identity,
      'userid'   : userId};
 
-  return query(pool, sql, parameters).then((rows) => rows.first.identity);
+  return connection.query(sql, parameters).then((rows) => rows.first.identity);
 }
 
-Future<int> _updateUserIdentity(Pool pool, int userIdKey, String identityIdKey,
+Future<int> _updateUserIdentity(ORDatabase.Connection connection, int userIdKey, String identityIdKey,
     String identityIdValue, int userIdValue) {
   String sql = '''
     UPDATE auth_identities
@@ -181,10 +181,10 @@ Future<int> _updateUserIdentity(Pool pool, int userIdKey, String identityIdKey,
      'identityvalye' : identityIdValue,
      'useridvalue'   : userIdValue};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<int> _deleteUserIdentity(Pool pool, int userId, String identityId) {
+Future<int> _deleteUserIdentity(ORDatabase.Connection connection, int userId, String identityId) {
   String sql = '''
       DELETE FROM auth_identities
       WHERE user_id=@userid AND identity=@identity;
@@ -194,5 +194,5 @@ Future<int> _deleteUserIdentity(Pool pool, int userId, String identityId) {
     {'userid': userId,
      'identity': identityId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }

@@ -7,7 +7,7 @@ Future<Map> getReceptionList() {
     FROM receptions
   ''';
 
-  return database.query(_pool, sql).then((rows) {
+  return connection.query(sql).then((rows) {
     List receptions = new List();
     for(var row in rows) {
       Map reception =
@@ -18,7 +18,7 @@ Future<Map> getReceptionList() {
          'last_check'   : row.last_check.toString()};
 
       if (row.attributes != null) {
-        Map attributes = JSON.decode(row.attributes);
+        Map attributes = row.attributes;
         if(attributes != null) {
           attributes.forEach((key, value) => reception.putIfAbsent(key, () => value));
         }

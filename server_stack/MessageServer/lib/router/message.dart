@@ -11,8 +11,10 @@ abstract class Message {
     int messageID  = pathParameter(request.uri, 'message');
 
     messageStore.get(messageID)
-      .then((Model.Message message) =>
-          writeAndClose(request, JSON.encode(message)))
+      .then((Model.Message message) {
+        print(message.asMap);
+        writeAndClose(request, JSON.encode(message));
+      })
       .catchError((error, stackTrace) {
 
       if (error is Storage.NotFound) {

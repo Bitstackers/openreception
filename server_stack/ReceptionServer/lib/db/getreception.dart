@@ -9,7 +9,7 @@ Future<Map> getReception(int id) {
 
   Map parameters = {'id' : id};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     Map data = {};
     if(rows.length == 1) {
       var row = rows.first;
@@ -22,7 +22,7 @@ Future<Map> getReception(int id) {
          'last_check'   : row.last_check.toString()};
 
       if (row.attributes != null) {
-        Map attributes = JSON.decode(row.attributes);
+        Map attributes = row.attributes;
         if(attributes != null) {
           attributes.forEach((key, value) => data.putIfAbsent(key, () => value));
         }

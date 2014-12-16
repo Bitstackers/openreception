@@ -16,7 +16,7 @@ WHERE identity = @email;''';
 
   Map parameters = {'email' : userEmail};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     Map data = {};
     if(rows.length == 1) {
       var row = rows.first;
@@ -24,8 +24,8 @@ WHERE identity = @email;''';
         {'id'        : row.id,
          'name'      : row.name,
          'extension' : row.extension,
-         'groups'    : JSON.decode(row.groups),
-         'identities': JSON.decode(row.identities)};
+         'groups'    : row.groups,
+         'identities': row.identities};
     }
 
     return data;

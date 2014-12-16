@@ -5,11 +5,11 @@ Future<Map> getReceptionContactCalendarList(int receptionId, int contactId) {
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal join contact_calendar con on cal.id = con.event_id
     WHERE con.reception_id = @receptionid AND con.contact_id = @contactid''';
-  
+
   Map parameters = {'receptionid' : receptionId,
                     'contactid'   : contactId};
 
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     List events = new List();
     for(var row in rows) {
       Map event =

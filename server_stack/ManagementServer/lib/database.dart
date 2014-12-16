@@ -3,8 +3,7 @@ library adaheads.server.database;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:postgresql/postgresql_pool.dart';
-import 'package:postgresql/postgresql.dart';
+import 'package:openreception_framework/database.dart' as ORDatabase;
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 
@@ -27,7 +26,7 @@ Future<Database> setupDatabase(Configuration config) {
 }
 
 class Database {
-  Pool pool;
+  ORDatabase.Connection db;
   String user, password, host, name;
   int port, minimumConnections, maximumConnections;
 
@@ -36,103 +35,101 @@ class Database {
   Future start() {
     String connectString = 'postgres://${user}:${password}@${host}:${port}/${name}';
 
-    pool = new Pool(connectString, min: minimumConnections, max: maximumConnections);
-    return pool.start().then((_) => _testConnection());
+    return ORDatabase.Connection.connect (connectString)
+        .then((ORDatabase.Connection connection) => this.db = connection);
   }
-
-  Future _testConnection() => pool.connect().then((Connection conn) => conn.close());
 
   /* ***********************************************
      ***************** Reception *******************
   */
 
   Future<int> createReception(int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) =>
-      _createReception(pool, organizationId, fullName, attributes, extradatauri, enabled, number);
+      _createReception(this.db, organizationId, fullName, attributes, extradatauri, enabled, number);
 
   Future<int> deleteReception(int id) =>
-      _deleteReception(pool, id);
+      _deleteReception(this.db, id);
 
   Future<List<model.Reception>> getContactReceptions(int contactId) =>
-      _getContactReceptions(pool, contactId);
+      _getContactReceptions(this.db, contactId);
 
   Future<model.Reception> getReception(int receptionId) =>
-      _getReception(pool, receptionId);
+      _getReception(this.db, receptionId);
 
-  Future<List<model.Reception>> getReceptionList() => _getReceptionList(pool);
+  Future<List<model.Reception>> getReceptionList() => _getReceptionList(this.db);
 
   Future<int> updateReception(int id, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) =>
-      _updateReception(pool, id, organizationId, fullName, attributes, extradatauri, enabled, number);
+      _updateReception(this.db, id, organizationId, fullName, attributes, extradatauri, enabled, number);
 
   Future<List<model.Reception>> getOrganizationReceptionList(int organizationId) =>
-      _getOrganizationReceptionList(pool, organizationId);
+      _getOrganizationReceptionList(this.db, organizationId);
 
   /* ***********************************************
      ****************** Contact ********************
   */
 
   Future<int> createContact(String fullName, String contact_type, bool enabled) =>
-      _createContact(pool, fullName, contact_type, enabled);
+      _createContact(this.db, fullName, contact_type, enabled);
 
-  Future<int> deleteContact(int contactId) => _deleteContact(pool, contactId);
+  Future<int> deleteContact(int contactId) => _deleteContact(this.db, contactId);
 
-  Future<List<model.ReceptionColleague>> getContactColleagues(int contactId) => _getContactColleagues(pool, contactId);
+  Future<List<model.ReceptionColleague>> getContactColleagues(int contactId) => _getContactColleagues(this.db, contactId);
 
-  Future<model.Contact> getContact(int contactId) => _getContact(pool, contactId);
+  Future<model.Contact> getContact(int contactId) => _getContact(this.db, contactId);
 
-  Future<List<model.Contact>> getContactList() => _getContactList(pool);
+  Future<List<model.Contact>> getContactList() => _getContactList(this.db);
 
-  Future<List<String>> getContactTypeList() => _getContactTypeList(pool);
-  Future<List<String>> getAddressTypeList() => _getAddressTypeList(pool);
+  Future<List<String>> getContactTypeList() => _getContactTypeList(this.db);
+  Future<List<String>> getAddressTypeList() => _getAddressTypeList(this.db);
 
   Future<List<model.Contact>> getOrganizationContactList(int organizationId) =>
-      _getOrganizationContactList(pool, organizationId);
+      _getOrganizationContactList(this.db, organizationId);
 
   Future<int> updateContact(int contactId, String fullName, String contact_type, bool enabled) =>
-      _updateContact(pool, contactId, fullName, contact_type, enabled);
+      _updateContact(this.db, contactId, fullName, contact_type, enabled);
 
   /* ***********************************************
      ************ Reception Contacts ***************
    */
 
   Future<int> createReceptionContact(int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) =>
-      _createReceptionContact(pool, receptionId, contactId, wantMessages, phonenumbers, attributes, enabled);
+      _createReceptionContact(this.db, receptionId, contactId, wantMessages, phonenumbers, attributes, enabled);
 
   Future<int> deleteReceptionContact(int receptionId, int contactId) =>
-      _deleteReceptionContact(pool, receptionId, contactId);
+      _deleteReceptionContact(this.db, receptionId, contactId);
 
   Future<List<model.Organization>> getAContactsOrganizationList(int contactId) =>
-      _getAContactsOrganizationList(pool, contactId);
+      _getAContactsOrganizationList(this.db, contactId);
 
   Future<List<model.ReceptionContact_ReducedReception>> getAContactsReceptionContactList(int contactId) =>
-      _getAContactsReceptionContactList(pool, contactId);
+      _getAContactsReceptionContactList(this.db, contactId);
 
   Future<model.ReceptionContact> getReceptionContact(int receptionId, int contactId) =>
-      _getReceptionContact(pool, receptionId, contactId);
+      _getReceptionContact(this.db, receptionId, contactId);
 
   Future<List<model.ReceptionContact>> getReceptionContactList(int receptionId) =>
-      _getReceptionContactList(pool, receptionId);
+      _getReceptionContactList(this.db, receptionId);
 
   Future<int> updateReceptionContact(int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) =>
-      _updateReceptionContact(pool, receptionId, contactId, wantMessages, phonenumbers, attributes, enabled);
+      _updateReceptionContact(this.db, receptionId, contactId, wantMessages, phonenumbers, attributes, enabled);
 
   Future moveReceptionContact(int receptionid, int oldContactId, int newContactId) =>
-      _moveReceptionContact(pool, receptionid, oldContactId, newContactId);
+      _moveReceptionContact(this.db, receptionid, oldContactId, newContactId);
 
   /* ***********************************************
      ***************** Endpoints *******************
    */
 
   Future<int> createEndpoint(int receptionid, int contactid, String address, String type, bool confidential, bool enabled, int priority, String description) =>
-      _createEndpoint(pool, receptionid, contactid, address, type, confidential, enabled, priority, description);
+      _createEndpoint(this.db, receptionid, contactid, address, type, confidential, enabled, priority, description);
 
   Future<int> deleteEndpoint(int receptionid, int contactid, String address, String type) =>
-      _deleteEndpoint(pool, receptionid, contactid, address, type);
+      _deleteEndpoint(this.db, receptionid, contactid, address, type);
 
   Future<model.Endpoint> getEndpoint(int receptionid, int contactid, String address, String type) =>
-      _getEndpoint(pool, receptionid, contactid, address, type);
+      _getEndpoint(this.db, receptionid, contactid, address, type);
 
   Future<List<model.Endpoint>> getEndpointList(int receptionid, int contactid) =>
-      _getEndpointList(pool, receptionid, contactid);
+      _getEndpointList(this.db, receptionid, contactid);
 
   Future<int> updateEndpoint(int fromReceptionid,
                              int fromContactid,
@@ -147,7 +144,7 @@ class Database {
                              int priority,
                              String description) =>
 
-      _updateEndpoint(pool,
+      _updateEndpoint(this.db,
           fromReceptionid,
           fromContactid,
           fromAddress,
@@ -166,69 +163,69 @@ class Database {
    */
 
   Future<List<model.Event>> getReceptionContactCalendarEvents(int receptionId, int contactId) =>
-      _getReceptionContactCalendarEvents(pool, receptionId, contactId);
+      _getReceptionContactCalendarEvents(this.db, receptionId, contactId);
 
   Future<int> createReceptionContactCalendarEvent(int receptioinId, int contactId, String message, DateTime start, DateTime stop) =>
-      _createReceptionContactCalendarEvent(pool, receptioinId, contactId, message, start, stop);
+      _createReceptionContactCalendarEvent(this.db, receptioinId, contactId, message, start, stop);
 
   Future<int> updateCalendarEvent(int eventId, String message, DateTime start, DateTime stop, [Map distributionList]) =>
-      _updateCalendarEvent(pool, eventId, message, start, stop);
+      _updateCalendarEvent(this.db, eventId, message, start, stop);
 
   Future<int> deleteCalendarEvent(int eventId) =>
-      _deleteCalendarEvent(pool, eventId);
+      _deleteCalendarEvent(this.db, eventId);
 
   /* ***********************************************
      ************** DistributionList ***************
    */
   Future<model.DistributionList> getDistributionList(int receptionId, int contactId) =>
-      _getDistributionList(pool, receptionId, contactId);
+      _getDistributionList(this.db, receptionId, contactId);
 
 //  Future updateDistributionList(int receptionId, int contactId, Map distributionList) =>
-//      _updateDistributionList(pool, receptionId, contactId, distributionList);
+//      _updateDistributionList(this.db, receptionId, contactId, distributionList);
 
   Future createDistributionListEntry(int ownerReceptionId, int ownerContactId, String role, int recipientReceptionId, int recipientContactId) =>
-      _createDistributionListEntry(pool, ownerReceptionId, ownerContactId, role, recipientReceptionId, recipientContactId);
+      _createDistributionListEntry(this.db, ownerReceptionId, ownerContactId, role, recipientReceptionId, recipientContactId);
 
   Future deleteDistributionListEntry(int entryId) =>
-      _deleteDistributionListEntry(pool, entryId);
+      _deleteDistributionListEntry(this.db, entryId);
 
   /* ***********************************************
      *************** Organization ******************
    */
 
   Future<int> createOrganization(String fullName, String billingType, String flag) =>
-      _createOrganization(pool, fullName, billingType, flag);
+      _createOrganization(this.db, fullName, billingType, flag);
 
   Future<int> deleteOrganization(int organizationId) =>
-      _deleteOrganization(pool, organizationId);
+      _deleteOrganization(this.db, organizationId);
 
   Future<model.Organization> getOrganization(int organizationId) =>
-      _getOrganization(pool, organizationId);
+      _getOrganization(this.db, organizationId);
 
   Future<List<model.Organization>> getOrganizationList() =>
-      _getOrganizationList(pool);
+      _getOrganizationList(this.db);
 
   Future<int> updateOrganization(int organizationId, String fullName, String billingType, String flag) =>
-      _updateOrganization(pool, organizationId, fullName, billingType, flag);
+      _updateOrganization(this.db, organizationId, fullName, billingType, flag);
 
   /* ***********************************************
      ****************** Dialplan *******************
    */
 
   Future<Dialplan> getDialplan(int receptionId) =>
-      _getDialplan(pool, receptionId);
+      _getDialplan(this.db, receptionId);
 
   Future updateDialplan(int receptionId, Map dialplan) =>
-      _updateDialplan(pool, receptionId, dialplan);
+      _updateDialplan(this.db, receptionId, dialplan);
 
   Future<IvrList> getIvr(int receptionId) =>
-      _getIvr(pool, receptionId);
+      _getIvr(this.db, receptionId);
 
   Future updateIvr(int receptionId, Map ivr) =>
-      _updateIvr(pool, receptionId, ivr);
+      _updateIvr(this.db, receptionId, ivr);
 
   Future<List<model.DialplanTemplate>> getDialplanTemplates() =>
-      _getDialplanTemplates(pool);
+      _getDialplanTemplates(this.db);
 
   /* ***********************************************
      ****************** Playlist *******************
@@ -243,7 +240,7 @@ class Database {
       List<String> chimelist,
       int          chimefreq,
       int          chimemax) =>
-      _createPlaylist(pool,
+      _createPlaylist(this.db,
                       name,
                       path,
                       shuffle,
@@ -254,12 +251,12 @@ class Database {
                       chimemax);
 
 
-  Future<int> deletePlaylist(int playlistId) => _deletePlaylist(pool, playlistId);
+  Future<int> deletePlaylist(int playlistId) => _deletePlaylist(this.db, playlistId);
 
-  Future<model.Playlist> getPlaylist(int playlistId) => _getPlaylist(pool, playlistId);
+  Future<model.Playlist> getPlaylist(int playlistId) => _getPlaylist(this.db, playlistId);
 
   Future<List<model.Playlist>> getPlaylistList() =>
-      _getPlaylistList(pool);
+      _getPlaylistList(this.db);
 
   Future<int> updatePlaylist(
       int          id,
@@ -272,7 +269,7 @@ class Database {
       int          chimefreq,
       int          chimemax) =>
       _updatePlaylist(
-          pool,
+          this.db,
           id,
           name,
           path,
@@ -287,59 +284,47 @@ class Database {
      ********************* User ********************
    */
   Future<int> createUser(String name, String extension, String sendFrom) =>
-      _createUser(pool, name, extension, sendFrom);
+      _createUser(this.db, name, extension, sendFrom);
 
-  Future<int> deleteUser(int userId) => _deleteUser(pool, userId);
+  Future<int> deleteUser(int userId) => _deleteUser(this.db, userId);
 
-  Future<model.User> getUser(int userId) => _getUser(pool, userId);
+  Future<model.User> getUser(int userId) => _getUser(this.db, userId);
 
-  Future<List<model.User>> getUserList() => _getUserList(pool);
+  Future<List<model.User>> getUserList() => _getUserList(this.db);
 
   Future<int> updateUser(int userId, String name, String extension, String sendFrom) =>
-      _updateUser(pool, userId, name, extension, sendFrom);
+      _updateUser(this.db, userId, name, extension, sendFrom);
 
   /* ***********************************************
      **************** User Groups ******************
    */
 
   Future<List<model.UserGroup>> getUserGroups(int userId) =>
-      _getUserGroups(pool, userId);
+      _getUserGroups(this.db, userId);
 
   Future<List<model.UserGroup>> getGroupList() =>
-        _getGroupList(pool);
+        _getGroupList(this.db);
 
   Future joinUserGroup(int userId, int groupId) =>
-      _joinUserGroup(pool, userId, groupId);
+      _joinUserGroup(this.db, userId, groupId);
 
   Future leaveUserGroup(int userId, int groupId) =>
-      _leaveUserGroup(pool, userId, groupId);
+      _leaveUserGroup(this.db, userId, groupId);
 
   /* ***********************************************
      *************** User Identity *****************
    */
 
   Future<List<model.UserIdentity>> getUserIdentityList(int userId) =>
-        _getUserIdentityList(pool, userId);
+        _getUserIdentityList(this.db, userId);
 
   Future<String> createUserIdentity(int userId, String identity) =>
-      _createUserIdentity(pool, userId, identity);
+      _createUserIdentity(this.db, userId, identity);
 
   Future<int> updateUserIdentity(int userIdKey, String identityIdKey,
       String identityIdValue, int userIdValue) =>
-      _updateUserIdentity(pool, userIdKey, identityIdKey, identityIdValue, userIdValue);
+      _updateUserIdentity(this.db, userIdKey, identityIdKey, identityIdValue, userIdValue);
 
   Future<int> deleteUserIdentity(int userId, String identityId) =>
-      _deleteUserIdentity(pool, userId, identityId);
+      _deleteUserIdentity(this.db, userId, identityId);
 }
-
-/* ***********************************************
-   ***************** Utilities *******************
- */
-
-Future<List<Row>> query(Pool pool, String sql, [Map parameters = null]) => pool.connect()
-  .then((Connection conn) => conn.query(sql, parameters).toList()
-  .whenComplete(() => conn.close()));
-
-Future<int> execute(Pool pool, String sql, [Map parameters = null]) => pool.connect()
-  .then((Connection conn) => conn.execute(sql, parameters)
-  .whenComplete(() => conn.close()));

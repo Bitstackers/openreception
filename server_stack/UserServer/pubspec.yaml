@@ -3,6 +3,7 @@ description: Simple user server.
 dependencies:
   args: any
   openreception_framework:
+    version: ">= 0.0.13+0"
     git:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git

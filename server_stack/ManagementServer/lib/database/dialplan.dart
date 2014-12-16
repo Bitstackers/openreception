@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<Dialplan> _getDialplan(Pool pool, int receptionId) {
+Future<Dialplan> _getDialplan(ORDatabase.Connection connection, int receptionId) {
   String sql = '''
     SELECT id, dialplan, reception_telephonenumber
     FROM receptions
@@ -9,12 +9,12 @@ Future<Dialplan> _getDialplan(Pool pool, int receptionId) {
 
   Map parameters = {'id': receptionId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
-      Map dialplanMap = JSON.decode(row.dialplan != null ? row.dialplan : '{}');
+      var row = rows.first;
+      Map dialplanMap = row.dialplan != null ? row.dialplan : '{}';
       Dialplan dialplan = new Dialplan.fromJson(dialplanMap);
 
       //In case the json is empty.
@@ -30,7 +30,7 @@ Future<Dialplan> _getDialplan(Pool pool, int receptionId) {
   });
 }
 
-Future _updateDialplan(Pool pool, int receptionId, Map dialplan) {
+Future _updateDialplan(ORDatabase.Connection connection, int receptionId, Map dialplan) {
   String sql = '''
     UPDATE receptions
     SET dialplan=@dialplan
@@ -38,13 +38,13 @@ Future _updateDialplan(Pool pool, int receptionId, Map dialplan) {
   ''';
 
   Map parameters =
-    {'dialplan': JSON.encode(dialplan),
+    {'dialplan': dialplan,
      'id'      : receptionId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<IvrList> _getIvr(Pool pool, int receptionId) {
+Future<IvrList> _getIvr(ORDatabase.Connection connection, int receptionId) {
   String sql = '''
     SELECT id, ivr
     FROM receptions
@@ -53,12 +53,12 @@ Future<IvrList> _getIvr(Pool pool, int receptionId) {
 
   Map parameters = {'id': receptionId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
-      Map ivrMap = JSON.decode(row.ivr != null ? row.ivr : '{}');
+      var row = rows.first;
+      Map ivrMap = row.ivr != null ? row.ivr : '{}';
       IvrList ivrList = new IvrList.fromJson(ivrMap);
 
       //In case the json is empty.
@@ -71,7 +71,7 @@ Future<IvrList> _getIvr(Pool pool, int receptionId) {
   });
 }
 
-Future _updateIvr(Pool pool, int receptionId, Map ivr) {
+Future _updateIvr(ORDatabase.Connection connection, int receptionId, Map ivr) {
   String sql = '''
     UPDATE receptions
     SET ivr=@ivr
@@ -79,22 +79,22 @@ Future _updateIvr(Pool pool, int receptionId, Map ivr) {
   ''';
 
   Map parameters =
-    {'ivr': JSON.encode(ivr),
+    {'ivr': ivr,
      'id' : receptionId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.Playlist>> _getPlaylistList(Pool pool) {
+Future<List<model.Playlist>> _getPlaylistList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT id, content
     FROM playlists
   ''';
 
-  return query(pool, sql).then((List<Row> rows) {
+  return connection.query(sql).then((List rows) {
     List<model.Playlist> receptions = new List<model.Playlist>();
-    for(Row row in rows) {
-      Map content = JSON.decode(row.content);
+    for(var row in rows) {
+      Map content = row.content;
       receptions.add(new model.Playlist.fromDb(row.id, content));
     }
     return receptions;
@@ -102,7 +102,7 @@ Future<List<model.Playlist>> _getPlaylistList(Pool pool) {
 }
 
 Future<int> _createPlaylist(
-    Pool         pool,
+    ORDatabase.Connection connection,
     String       name,
     String       path,
     bool         shuffle,
@@ -129,22 +129,22 @@ Future<int> _createPlaylist(
      'chimemax': chimemax};
 
   Map parameters =
-    {'content' : JSON.encode(content)};
+    {'content' : content};
 
-  return query(pool, sql, parameters).then((rows) => rows.first.id);
+  return connection.query(sql, parameters).then((rows) => rows.first.id);
 }
 
-Future<int> _deletePlaylist(Pool pool, int playlistId) {
+Future<int> _deletePlaylist(ORDatabase.Connection connection, int playlistId) {
   String sql = '''
       DELETE FROM playlists
       WHERE id=@id;
     ''';
 
   Map parameters = {'id': playlistId};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<model.Playlist> _getPlaylist(Pool pool, int playlistId) {
+Future<model.Playlist> _getPlaylist(ORDatabase.Connection connection, int playlistId) {
   String sql = '''
     SELECT id, content
     FROM playlists
@@ -153,18 +153,18 @@ Future<model.Playlist> _getPlaylist(Pool pool, int playlistId) {
 
   Map parameters = {'id': playlistId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
-      return new model.Playlist.fromDb(row.id, JSON.decode(row.content));
+      var row = rows.first;
+      return new model.Playlist.fromDb(row.id, row.content);
     }
   });
 }
 
 Future<int> _updatePlaylist(
-    Pool         pool,
+    ORDatabase.Connection connection,
     int          id,
     String       name,
     String       path,
@@ -193,21 +193,21 @@ Future<int> _updatePlaylist(
 
   Map parameters =
     {'id'      : id,
-     'content' : JSON.encode(content)};
+     'content' : content};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.DialplanTemplate>> _getDialplanTemplates(Pool pool) {
+Future<List<model.DialplanTemplate>> _getDialplanTemplates(ORDatabase.Connection connection) {
   String sql = '''
     SELECT id, template
     FROM dialplan_templates
   ''';
 
-  return query(pool, sql).then((List<Row> rows) {
+  return connection.query (sql).then((List rows) {
     List<model.DialplanTemplate> templates = new List<model.DialplanTemplate>();
-    for(Row row in rows) {
-      Map content = JSON.decode(row.template);
+    for(var row in rows) {
+      Map content = row.template;
       templates.add(new model.DialplanTemplate.fromDb(row.id, content));
     }
     return templates;

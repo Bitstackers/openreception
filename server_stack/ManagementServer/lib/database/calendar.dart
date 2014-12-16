@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<List<model.Event>> _getReceptionContactCalendarEvents(Pool pool, int receptionId, int contactId) {
+Future<List<model.Event>> _getReceptionContactCalendarEvents(ORDatabase.Connection connection, int receptionId, int contactId) {
   String sql = '''
     SELECT id, start, stop, message 
     FROM contact_calendar cc
@@ -12,20 +12,17 @@ Future<List<model.Event>> _getReceptionContactCalendarEvents(Pool pool, int rece
   Map parameters = {'reception_id': receptionId,
                     'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.Event> events = new List<model.Event>();
-    for(Row row in rows) {
+    for(var row in rows) {
       events.add(new model.Event(row.id, row.start, row.stop, row.message));
     }
     return events;
   });
 }
 
-Future<int> _createReceptionContactCalendarEvent(Pool pool, int receptioinId, int contactId, String message, DateTime start, DateTime stop, [Map distributionList]) {
-  final Completer completer = new Completer();
-
-  pool.connect().then((Connection conn) {
-    return conn.runInTransaction(() {
+Future<int> _createReceptionContactCalendarEvent(ORDatabase.Connection connection, int receptioinId, int contactId, String message, DateTime start, DateTime stop, [Map distributionList]) {
+  return connection.runInTransaction(() {
       //Make the Calendar Event
       String sql = '''
         INSERT INTO calendar_events (start, stop, message)
@@ -38,7 +35,7 @@ Future<int> _createReceptionContactCalendarEvent(Pool pool, int receptioinId, in
          'stop'    : stop,
          'message' : message};
 
-      return conn.query(sql, parameters).toList().then((rows) {
+      return connection.query(sql, parameters).then((rows) {
         int eventId = rows.first.id;
         //Linked the event together with the contact.
 
@@ -50,22 +47,17 @@ Future<int> _createReceptionContactCalendarEvent(Pool pool, int receptioinId, in
         Map parameters =
           {'reception_id'      : receptioinId,
            'contact_id'        : contactId,
-           'distribution_list' : distributionList == null ? null : JSON.encode(distributionList),
+           'distribution_list' : distributionList == null ? null : distributionList,
            'event_id'          : eventId};
 
-        return conn.execute(sql, parameters).then((_) {
-          completer.complete(eventId);
+        return connection.execute(sql, parameters).then((_) {
+          return eventId;
         });
       });
     });
-  }).catchError((error, stack) {
-    completer.completeError(error, stack);
-  });
-
-  return completer.future;
 }
 
-Future<int> _updateCalendarEvent(Pool pool, int eventId, String message, DateTime start, DateTime stop, [Map distributionList]) {
+Future<int> _updateCalendarEvent(ORDatabase.Connection connection, int eventId, String message, DateTime start, DateTime stop, [Map distributionList]) {
   String sql = '''
     UPDATE calendar_events
     SET start=@start, 
@@ -80,15 +72,15 @@ Future<int> _updateCalendarEvent(Pool pool, int eventId, String message, DateTim
      'message' : message,
      'id'      : eventId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<int> _deleteCalendarEvent(Pool pool, int eventId) {
+Future<int> _deleteCalendarEvent(ORDatabase.Connection connection, int eventId) {
   String sql = '''
       DELETE FROM calendar_events
       WHERE id=@id;
     ''';
 
   Map parameters = {'id': eventId};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }

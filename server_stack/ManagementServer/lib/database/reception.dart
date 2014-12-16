@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<int> _createReception(Pool pool, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) {
+Future<int> _createReception(ORDatabase.Connection connection, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) {
   String sql = '''
     INSERT INTO receptions (organization_id, full_name, attributes, extradatauri, enabled, reception_telephonenumber)
     VALUES (@organization_id, @full_name, @attributes, @extradatauri, @enabled, @reception_telephonenumber)
@@ -10,25 +10,25 @@ Future<int> _createReception(Pool pool, int organizationId, String fullName, Map
   Map parameters =
     {'organization_id': organizationId,
      'full_name'      : fullName,
-     'attributes'     : attributes == null ? '{}' : JSON.encode(attributes),
+     'attributes'     : attributes == null ? '{}' : attributes,
      'extradatauri'   : extradatauri,
      'enabled'        : enabled,
      'reception_telephonenumber': number};
 
-  return query(pool, sql, parameters).then((rows) => rows.first.id);
+  return connection.query(sql, parameters).then((rows) => rows.first.id);
 }
 
-Future<int> _deleteReception(Pool pool, int id) {
+Future<int> _deleteReception(ORDatabase.Connection connection, int id) {
   String sql = '''
       DELETE FROM receptions
       WHERE id=@id;
     ''';
 
   Map parameters = {'id': id};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.Reception>> _getOrganizationReceptionList(Pool pool, int organizationId) {
+Future<List<model.Reception>> _getOrganizationReceptionList(ORDatabase.Connection connection, int organizationId) {
   String sql = '''
     SELECT id, organization_id, full_name, attributes, extradatauri, enabled, reception_telephonenumber
     FROM receptions
@@ -37,14 +37,14 @@ Future<List<model.Reception>> _getOrganizationReceptionList(Pool pool, int organ
 
   Map parameters = {'organization_id': organizationId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.Reception> receptions = new List<model.Reception>();
-    for(Row row in rows) {
+    for(var row in rows) {
       receptions.add(new model.Reception(
           row.id,
           row.organization_id,
           row.full_name,
-          JSON.decode(row.attributes != null ? row.attributes : '{}'),
+          row.attributes != null ? row.attributes : '{}',
           row.extradatauri,
           row.enabled,
           row.reception_telephonenumber));
@@ -53,7 +53,7 @@ Future<List<model.Reception>> _getOrganizationReceptionList(Pool pool, int organ
   });
 }
 
-Future<model.Reception> _getReception(Pool pool, int receptionId) {
+Future<model.Reception> _getReception(ORDatabase.Connection connection, int receptionId) {
   String sql = '''
     SELECT id, organization_id, full_name, attributes, extradatauri, enabled, reception_telephonenumber
     FROM receptions
@@ -62,16 +62,16 @@ Future<model.Reception> _getReception(Pool pool, int receptionId) {
 
   Map parameters = {'id': receptionId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
+      var row = rows.first;
       return new model.Reception(
           row.id,
           row.organization_id,
           row.full_name,
-          JSON.decode(row.attributes != null ? row.attributes : '{}'),
+          row.attributes != null ? row.attributes : '{}',
           row.extradatauri,
           row.enabled,
           row.reception_telephonenumber);
@@ -79,20 +79,20 @@ Future<model.Reception> _getReception(Pool pool, int receptionId) {
   });
 }
 
-Future<List<model.Reception>> _getReceptionList(Pool pool) {
+Future<List<model.Reception>> _getReceptionList(ORDatabase.Connection connection) {
   String sql = '''
     SELECT id, organization_id, full_name, attributes, extradatauri, enabled, reception_telephonenumber
     FROM receptions
   ''';
 
-  return query(pool, sql).then((List<Row> rows) {
+  return connection.query(sql).then((List rows) {
     List<model.Reception> receptions = new List<model.Reception>();
-    for(Row row in rows) {
+    for(var row in rows) {
       receptions.add(new model.Reception(
           row.id,
           row.organization_id,
           row.full_name,
-          JSON.decode(row.attributes != null ? row.attributes : '{}'),
+          row.attributes != null ? row.attributes : '{}',
           row.extradatauri,
           row.enabled,
           row.reception_telephonenumber));
@@ -101,7 +101,7 @@ Future<List<model.Reception>> _getReceptionList(Pool pool) {
   });
 }
 
-Future<int> _updateReception(Pool pool, int id, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) {
+Future<int> _updateReception(ORDatabase.Connection connection, int id, int organizationId, String fullName, Map attributes, String extradatauri, bool enabled, String number) {
   String sql = '''
     UPDATE receptions
     SET full_name=@full_name, 
@@ -115,17 +115,17 @@ Future<int> _updateReception(Pool pool, int id, int organizationId, String fullN
 
   Map parameters =
     {'full_name'      : fullName,
-     'attributes'     : attributes == null ? '{}' : JSON.encode(attributes),
+     'attributes'     : attributes == null ? '{}' : attributes,
      'extradatauri'   : extradatauri,
      'enabled'        : enabled,
      'id'             : id,
      'organization_id': organizationId,
      'reception_telephonenumber': number};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.Reception>> _getContactReceptions(Pool pool, int contactId) {
+Future<List<model.Reception>> _getContactReceptions(ORDatabase.Connection connection, int contactId) {
   String sql = '''
     SELECT r.id, r.organization_id, r.full_name, r.attributes, r.extradatauri, r.enabled, r.reception_telephonenumber
     FROM reception_contacts rc
@@ -135,14 +135,14 @@ Future<List<model.Reception>> _getContactReceptions(Pool pool, int contactId) {
 
   Map parameters = {'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.Reception> receptions = new List<model.Reception>();
-    for(Row row in rows) {
+    for(var row in rows) {
       receptions.add(new model.Reception(
           row.id,
           row.organization_id,
           row.full_name,
-          JSON.decode(row.attributes != null ? row.attributes : '{}'),
+          row.attributes != null ? row.attributes : '{}',
           row.extradatauri,
           row.enabled,
           row.reception_telephonenumber));

@@ -5,9 +5,9 @@ Future<Map> getReceptionCalendarList(int receptionId) {
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal JOIN reception_calendar org ON cal.id = org.event_id
     WHERE org.reception_id = @receptionid''';
-  
+
   Map parameters = {'receptionid' : receptionId};
-  return database.query(_pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     List events = new List();
     for(var row in rows) {
       DateTime now = new DateTime.now();
@@ -18,7 +18,7 @@ Future<Map> getReceptionCalendarList(int receptionId) {
          'content' : row.message};
       events.add(event);
     }
-    
+
     Map data = {'CalendarEvents': events};
 
     return data;

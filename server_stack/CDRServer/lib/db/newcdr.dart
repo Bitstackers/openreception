@@ -3,7 +3,7 @@ part of cdrserver.database;
 //TODO "owner" and "contact_id" is not part of the database tuppel.
 Future newcdrEntry(CdrEntry entry) {
 
-  final context = packageName + ".cdrList";
+  final context = libraryName + ".cdrList";
 
   String sql = '''
     INSERT INTO cdr_entries (uuid, inbound, reception_id, extension, duration, wait_time, started_at, json)
@@ -18,8 +18,8 @@ Future newcdrEntry(CdrEntry entry) {
     'duration': entry.duration,
     'wait_time': entry.waitTime,
     'started_at': entry.started_at,
-    'json': JSON.encode(entry.json)
+    'json': entry.json
   };
 
-  return database.execute(_pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }

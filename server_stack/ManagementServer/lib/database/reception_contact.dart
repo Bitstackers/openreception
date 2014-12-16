@@ -1,6 +1,6 @@
 part of adaheads.server.database;
 
-Future<model.ReceptionContact> _getReceptionContact(Pool pool, int receptionId, int contactId) {
+Future<model.ReceptionContact> _getReceptionContact(ORDatabase.Connection connection, int receptionId, int contactId) {
   String sql = '''
     SELECT c.id, 
            c.full_name, 
@@ -20,11 +20,11 @@ Future<model.ReceptionContact> _getReceptionContact(Pool pool, int receptionId, 
     {'reception_id': receptionId,
      'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((rows) {
+  return connection.query(sql, parameters).then((rows) {
     if(rows.length != 1) {
       return null;
     } else {
-      Row row = rows.first;
+      var row = rows.first;
 
       return new model.ReceptionContact(
           row.id,
@@ -33,14 +33,14 @@ Future<model.ReceptionContact> _getReceptionContact(Pool pool, int receptionId, 
           row.contactenabled,
           row.reception_id,
           row.wants_messages,
-          row.attributes == null ? {} : JSON.decode(row.attributes),
+          row.attributes == null ? {} : row.attributes,
           row.receptionenabled,
-          row.phonenumbers == null ? new List<Map>() : JSON.decode(row.phonenumbers));
+          row.phonenumbers == null ? new List<Map>() : row.phonenumbers);
     }
   });
 }
 
-Future<List<model.ReceptionContact>> _getReceptionContactList(Pool pool, int receptionId) {
+Future<List<model.ReceptionContact>> _getReceptionContactList(ORDatabase.Connection connection, int receptionId) {
   String sql = '''
     SELECT c.id, 
            c.full_name, 
@@ -58,9 +58,9 @@ Future<List<model.ReceptionContact>> _getReceptionContactList(Pool pool, int rec
 
   Map parameters = {'reception_id': receptionId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.ReceptionContact> receptions = new List<model.ReceptionContact>();
-    for(Row row in rows) {
+    for(var row in rows) {
       receptions.add(new model.ReceptionContact(
           row.id,
           row.full_name,
@@ -68,15 +68,15 @@ Future<List<model.ReceptionContact>> _getReceptionContactList(Pool pool, int rec
           row.contactenabled,
           row.reception_id,
           row.wants_messages,
-          row.attributes == null ? {} : JSON.decode(row.attributes),
+          row.attributes == null ? {} : row.attributes,
           row.receptionenabled,
-          row.phonenumbers == null ? new List<Map>() : JSON.decode(row.phonenumbers)));
+          row.phonenumbers == null ? new List<Map>() : row.phonenumbers));
     }
     return receptions;
   });
 }
 
-Future<int> _createReceptionContact(Pool pool, int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) {
+Future<int> _createReceptionContact(ORDatabase.Connection connection, int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) {
   String sql = '''
     INSERT INTO reception_contacts (reception_id, contact_id, wants_messages, phonenumbers, attributes, enabled)
     VALUES (@reception_id, @contact_id, @wants_messages, @phonenumbers, @attributes, @enabled);
@@ -86,14 +86,14 @@ Future<int> _createReceptionContact(Pool pool, int receptionId, int contactId, b
     {'reception_id'         : receptionId,
      'contact_id'           : contactId,
      'wants_messages'       : wantMessages,
-     'phonenumbers'         : phonenumbers == null ? '[]' : JSON.encode(phonenumbers),
-     'attributes'           : attributes == null ? '{}' : JSON.encode(attributes),
+     'phonenumbers'         : phonenumbers == null ? '[]' : phonenumbers,
+     'attributes'           : attributes == null ? '{}' : attributes,
      'enabled'              : enabled};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<int> _deleteReceptionContact(Pool pool, int receptionId, int contactId) {
+Future<int> _deleteReceptionContact(ORDatabase.Connection connection, int receptionId, int contactId) {
   String sql = '''
     DELETE FROM reception_contacts
     WHERE reception_id=@reception_id AND contact_id=@contact_id;
@@ -101,10 +101,10 @@ Future<int> _deleteReceptionContact(Pool pool, int receptionId, int contactId) {
 
   Map parameters = {'reception_id' : receptionId,
                     'contact_id'   : contactId};
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<int> _updateReceptionContact(Pool pool, int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) {
+Future<int> _updateReceptionContact(ORDatabase.Connection connection, int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) {
   String sql = '''
     UPDATE reception_contacts
     SET wants_messages=@wants_messages,
@@ -118,14 +118,14 @@ Future<int> _updateReceptionContact(Pool pool, int receptionId, int contactId, b
     {'reception_id'         : receptionId,
      'contact_id'           : contactId,
      'wants_messages'       : wantMessages,
-     'phonenumbers'         : phonenumbers == null ? '[]' : JSON.encode(phonenumbers),
-     'attributes'           : attributes == null ? '{}' : JSON.encode(attributes),
+     'phonenumbers'         : phonenumbers == null ? '[]' : phonenumbers,
+     'attributes'           : attributes == null ? '{}'   : attributes,
      'enabled'              : enabled};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }
 
-Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionContactList(Pool pool, int contactId) {
+Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionContactList(ORDatabase.Connection connection, int contactId) {
   String sql = '''
     SELECT rc.contact_id,
            rc.wants_messages,
@@ -144,15 +144,15 @@ Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionCont
 
   Map parameters = {'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.ReceptionContact_ReducedReception> contacts = new List<model.ReceptionContact_ReducedReception>();
-    for(Row row in rows) {
+    for(var row in rows) {
       contacts.add(new model.ReceptionContact_ReducedReception(
         row.contact_id,
         row.wants_messages,
-        row.attributes == null ? {} : JSON.decode(row.attributes),
+        row.attributes == null ? {} : row.attributes,
         row.contactenabled,
-        row.phonenumbers == null ? new List<Map>() : JSON.decode(row.phonenumbers),
+        row.phonenumbers == null ? new List<Map>() : row.phonenumbers,
         row.reception_id,
         row.receptionname,
         row.receptionenabled,
@@ -162,7 +162,7 @@ Future<List<model.ReceptionContact_ReducedReception>> _getAContactsReceptionCont
   });
 }
 
-Future<List<model.Organization>> _getAContactsOrganizationList(Pool pool, int contactId) {
+Future<List<model.Organization>> _getAContactsOrganizationList(ORDatabase.Connection connection, int contactId) {
   String sql = '''
     SELECT DISTINCT o.id, o.full_name, o.billing_type, o.flag
     FROM reception_contacts rc
@@ -173,16 +173,16 @@ Future<List<model.Organization>> _getAContactsOrganizationList(Pool pool, int co
 
   Map parameters = {'contact_id': contactId};
 
-  return query(pool, sql, parameters).then((List<Row> rows) {
+  return connection.query(sql, parameters).then((List rows) {
     List<model.Organization> organizations = new List<model.Organization>();
-    for(Row row in rows) {
+    for(var row in rows) {
       organizations.add(new model.Organization(row.id, row.full_name, row.billing_type, row.flag));
     }
     return organizations;
   });
 }
 
-Future _moveReceptionContact(Pool pool, int receptionId, int oldContactId, int newContactId) {
+Future _moveReceptionContact(ORDatabase.Connection connection, int receptionId, int oldContactId, int newContactId) {
   String sql = '''
     UPDATE reception_contacts
     SET contact_id = @new_contact_id
@@ -194,5 +194,5 @@ Future _moveReceptionContact(Pool pool, int receptionId, int oldContactId, int n
      'contact_id'     : oldContactId,
      'new_contact_id' : newContactId};
 
-  return execute(pool, sql, parameters);
+  return connection.execute(sql, parameters);
 }

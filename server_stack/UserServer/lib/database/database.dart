@@ -3,10 +3,10 @@ library userserver.database;
 import 'dart:async';
 
 import '../configuration.dart';
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/database.dart' as Database;
 
-database.Connection db;
+Database.Connection connection;
 
 Future startDatabase() =>
-    database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}').then((database.Connection
-        databaseHandle) {db = databaseHandle;});
+    Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}').then((Database.Connection
+        databaseHandle) {connection = databaseHandle;});

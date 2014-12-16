@@ -26,7 +26,7 @@ void main(List<String> args) {
     registerAndParseCommandlineArguments(args);
 
     if (showHelp()) {
-      print(parser.getUsage());
+      print(parser.usage);
 
       exit(1);
 
@@ -42,11 +42,11 @@ void main(List<String> args) {
     }
   } on ArgumentError catch (e, stackTrace) {
     logger.errorContext('main() ArgumentError ${e} : ${stackTrace}', 'main');
-    print(parser.getUsage());
+    print(parser.usage);
 
   } on FormatException catch (e, stackTrace) {
     logger.errorContext('main() FormatException ${e} : ${stackTrace}', 'main');
-    print(parser.getUsage());
+    print(parser.usage);
 
   } catch (e, stackTrace) {
 
@@ -109,7 +109,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) {
             queueItem.save(Router.messageQueueStore);
           }
         });
-      }).catchError((onError) => logger.errorContext("Failed to run mailer process. Error: ${onError}", context));;
+      }).catchError((onError) => logger.errorContext("Failed to run mailer process. Error: ${onError}", context));
     }
   });
 }
