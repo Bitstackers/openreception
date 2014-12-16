@@ -57,10 +57,6 @@ class CallList {
       setFocus(queuedCallUL.id);
     });
 
-    element.onClick.listen((_) {
-      setFocus(queuedCallUL.id);
-    });
-
     context.registerFocusElement(queuedCallUL);
 
   }
