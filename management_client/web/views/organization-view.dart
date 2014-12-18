@@ -63,7 +63,7 @@ class OrganizationView {
 
           currentContactList.clear();
           currentReceptionList.clear();
-          bus.fire(Invalidate.organizationRemoved, selectedOrganizationId);
+          bus.fire( new OrganizationRemovedEvent(selectedOrganizationId) );
           refreshList();
           clearContent();
           buttonSave.disabled = true;
@@ -83,34 +83,32 @@ class OrganizationView {
       }
     });
 
-    bus.on(Invalidate.receptionAdded).listen((int organizationId) {
-      if (organizationId == selectedOrganizationId) {
+    bus.on(ReceptionAddedEvent).listen((ReceptionAddedEvent event) {
+      if (event.organizationId == selectedOrganizationId) {
         activateOrganization(selectedOrganizationId);
       }
     });
 
-    bus.on(Invalidate.receptionRemoved).listen((Map event) {
-      if (event['organizationId'] == selectedOrganizationId) {
+    bus.on(ReceptionRemovedEvent).listen((ReceptionRemovedEvent event) {
+      if (event.organizationId == selectedOrganizationId) {
         activateOrganization(selectedOrganizationId);
       }
     });
 
-    bus.on(Invalidate.receptionContactAdded).listen(handleReceptionContactAdded);
-    bus.on(Invalidate.receptionContactRemoved).listen(handleReceptionContactRemoved);
+    bus.on(ReceptionContactAddedEvent).listen(handleReceptionContactAdded);
+    bus.on(ReceptionContactRemovedEvent).listen(handleReceptionContactRemoved);
 
     searchBox.onInput.listen((_) => performSearch());
   }
 
-  void handleReceptionContactAdded(Map event) {
-    int receptionId = event['receptionId'];
-    if (currentReceptionList.any((r) => r.id == receptionId)) {
+  void handleReceptionContactAdded(ReceptionContactAddedEvent event) {
+    if (currentReceptionList.any((r) => r.id == event.receptionId)) {
       activateOrganization(selectedOrganizationId);
     }
   }
 
-  void handleReceptionContactRemoved(Map event) {
-    int contactId = event['contactId'];
-    if (currentContactList.any((contact) => contact.id == contactId)) {
+  void handleReceptionContactRemoved(ReceptionContactRemovedEvent event) {
+    if (currentContactList.any((contact) => contact.id == event.contactId)) {
       activateOrganization(selectedOrganizationId);
     }
   }
@@ -173,9 +171,9 @@ class OrganizationView {
         int organizationId = response['id'];
         refreshList();
         activateOrganization(organizationId);
-        bus.fire(Invalidate.organizationAdded, null);
+        bus.fire(new OrganizationAddedEvent());
       }).catchError((error) {
-        notify.error('Der skete en fejl, så organisationen blev ikke oprettet.');
+        notify.error('Der skete en fejl, så organisationen blev ikke oprettet.q');
         log.error('Tried to create an new organizaiton got: $error');
       });
     }

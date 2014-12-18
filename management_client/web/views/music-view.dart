@@ -59,7 +59,7 @@ class MusicView {
       element.classes.toggle('hidden', event['window'] != viewName);
     });
 
-    bus.on(Invalidate.playlistAdded).listen((Map event) {
+    bus.on(PlaylistAddedEvent).listen((PlaylistAddedEvent event) {
       refresh().then((_) {
         if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
           highlightPlaylistItem(selectedPlaylistId);
@@ -67,7 +67,7 @@ class MusicView {
       });
     });
 
-    bus.on(Invalidate.playlistChanged).listen((Map event) {
+    bus.on(PlaylistChangedEvent).listen((PlaylistChangedEvent event) {
       refresh().then((_) {
         if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
           highlightPlaylistItem(selectedPlaylistId);
@@ -75,7 +75,7 @@ class MusicView {
       });
     });
 
-    bus.on(Invalidate.playlistRemoved).listen((Map event) {
+    bus.on(PlaylistRemovedEvent).listen((PlaylistRemovedEvent event) {
       refresh().then((_) {
         if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
           highlightPlaylistItem(selectedPlaylistId);
@@ -146,8 +146,7 @@ class MusicView {
     if(isCreatingNewPlaylist) {
       createPlaylist(data).then((Map response) {
         int id = response['id'];
-        Map event = {'id': id};
-        bus.fire(Invalidate.playlistAdded, event);
+        bus.fire(new PlaylistAddedEvent(id));
         notify.info('Afspilningslisten blev oprettet');
         return activatePlaylist(id);
       }).catchError((error, stack) {
@@ -156,8 +155,7 @@ class MusicView {
       });
     } else {
       updatePlaylist(selectedPlaylistId, data).then((_) {
-        Map event = {'id': selectedPlaylistId};
-        bus.fire(Invalidate.playlistChanged, event);
+        bus.fire(new PlaylistChangedEvent(selectedPlaylistId));
         notify.info('Afspilningslisten blev opdateret');
       })
         .catchError((error, stack) {
@@ -170,8 +168,7 @@ class MusicView {
   void deleteHandler() {
     if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
       deletePlaylist(selectedPlaylistId).then((_) {
-        Map event = {'id': selectedPlaylistId};
-        bus.fire(Invalidate.playlistRemoved, event);
+        bus.fire(new PlaylistRemovedEvent(selectedPlaylistId));
         notify.info('Afspilningslisten blev slettet');
       }).catchError((error, stack) {
         log.error('Tried to delete a playlist, but got: ${error} ${stack}');

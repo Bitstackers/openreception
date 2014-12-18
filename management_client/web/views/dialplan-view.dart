@@ -293,8 +293,7 @@ class DialplanView {
       return request.updateDialplan(selectedReceptionId, JSON.encode(dialplan))
         .then((_) {
         notify.info('Dialplan er blevet opdateret.');
-        Map event = {'id': selectedReceptionId};
-        bus.fire(Invalidate.dialplanChanged, event);
+        bus.fire(new DialplanChangedEvent(selectedReceptionId));
         disableSaveButton();
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med opdateringen af dialplanen.');

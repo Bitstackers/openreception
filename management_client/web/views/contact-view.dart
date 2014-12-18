@@ -100,11 +100,11 @@ class ContactView {
       }
     });
 
-    bus.on(Invalidate.receptionAdded).listen((_) {
+    bus.on(ReceptionAddedEvent).listen((_) {
       fillSearchComponent();
     });
 
-    bus.on(Invalidate.receptionRemoved).listen((_) {
+    bus.on(ReceptionRemovedEvent).listen((_) {
       fillSearchComponent();
     });
 
@@ -217,12 +217,8 @@ class ContactView {
 
   Future receptionContactCreate(ContactAttribute ca) {
     return request.createReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
-      Map event = {
-        "receptionId": ca.receptionId,
-        "contactId": ca.contactId
-      };
       notify.info('Lageringen gik godt.');
-      bus.fire(Invalidate.receptionContactAdded, event);
+      bus.fire(new ReceptionContactAddedEvent(ca.receptionId, ca.contactId));
     }).catchError((error, stack) {
       notify.error('Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
       log.error('Tried to update a Reception Contact, but failed with "$error" ${stack}');
@@ -250,11 +246,7 @@ class ContactView {
           saveList[attribute.receptionId] = () {
             return request.deleteReceptionContact(attribute.receptionId,
                 contactId).then((_) {
-              Map event = {
-                "receptionId": attribute.receptionId,
-                "contactId": contactId
-              };
-              bus.fire(Invalidate.receptionContactRemoved, event);
+              bus.fire(new ReceptionContactRemovedEvent(attribute.receptionId, contactId));
             }).catchError((error) {
               log.error('deleteReceptionContact error: "error"');
             });
@@ -620,9 +612,10 @@ class ContactView {
           ..enabled = inputEnabled.checked;
 
       request.createContact(JSON.encode(newContact)).then((Map response) {
-        bus.fire(Invalidate.contactAdded, null);
+        int newContactId = response['id'];
+        bus.fire(new ContactAddedEvent(newContactId));
         refreshList();
-        activateContact(response['id']);
+        activateContact(newContactId);
         notify.info('Kontaktpersonen blev oprettet.');
       }).catchError((error) {
         notify.info('Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
@@ -733,7 +726,7 @@ class ContactView {
   void deleteSelectedContact() {
     if (!createNew && selectedContactId > 0) {
       request.deleteContact(selectedContactId).then((_) {
-        bus.fire(Invalidate.contactRemoved, selectedContactId);
+        bus.fire(new ContactRemovedEvent(selectedContactId));
         refreshList();
         clearContent();
         buttonSave.disabled = true;

@@ -122,24 +122,22 @@ class ReceptionView {
       }
     });
 
-    bus.on(Invalidate.organizationAdded).listen((int id) {
+    bus.on(OrganizationAddedEvent).listen((OrganizationAddedEvent event) {
       fillSearchComponent();
     });
 
-    bus.on(Invalidate.organizationRemoved).listen((int id) {
+    bus.on(OrganizationRemovedEvent).listen((OrganizationRemovedEvent event) {
       fillSearchComponent();
     });
 
-    bus.on(Invalidate.receptionContactAdded).listen((Map event) {
-      int receptionId = event['receptionId'];
-      if (selectedReceptionId == receptionId) {
+    bus.on(ReceptionContactAddedEvent).listen((ReceptionContactAddedEvent event) {
+      if (selectedReceptionId == event.receptionId) {
         activateReception(currentOrganizationId, selectedReceptionId);
       }
     });
 
-    bus.on(Invalidate.receptionContactRemoved).listen((Map event) {
-      int receptionId = event['receptionId'];
-      if (selectedReceptionId == receptionId) {
+    bus.on(ReceptionContactRemovedEvent).listen((ReceptionContactRemovedEvent event) {
+      if (selectedReceptionId == event.receptionId) {
         activateReception(currentOrganizationId, selectedReceptionId);
       }
     });
@@ -199,23 +197,15 @@ class ReceptionView {
 
   void goToDialplan() {
     if (selectedReceptionId != null && selectedReceptionId > 0) {
-      Map event = {
-        'window': Menu.DIALPLAN_WINDOW,
-        'receptionid': selectedReceptionId
-      };
-      bus.fire(windowChanged, event);
+      bus.fire(new WindowChangedEvent.DialplanWithReception(selectedReceptionId));
     }
   }
 
   void deleteCurrentReception() {
     if (selectedReceptionId > 0) {
       deleteReception(selectedReceptionId).then((_) {
-        Map event = {
-          'organizationId': currentOrganizationId,
-          'receptionId': selectedReceptionId
-        };
         notify.info('Sletning af receptionen gik godt.');
-        bus.fire(Invalidate.receptionRemoved, event);
+        bus.fire(new ReceptionRemovedEvent(currentOrganizationId, selectedReceptionId));
         selectedReceptionId = 0;
         currentOrganizationId = 0;
         clearContent();
@@ -246,7 +236,7 @@ class ReceptionView {
         createReception(organizationId, JSON.encode(newReception)).then((Map data) {
           notify.info('Receptionen blev oprettet.');
           int receptionId = data['id'];
-          bus.fire(Invalidate.receptionAdded, organizationId);
+          bus.fire( new ReceptionAddedEvent(organizationId) );
           return refreshList().then((_) {
             return activateReception(organizationId, receptionId);
           });
