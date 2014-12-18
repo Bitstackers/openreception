@@ -23,7 +23,7 @@ void main(List<String> args) {
     registerAndParseCommandlineArguments(args);
 
     if (showHelp()) {
-      print(parser.getUsage());
+      print(parser.usage);
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
@@ -35,11 +35,11 @@ void main(List<String> args) {
     }
   } on ArgumentError catch (e) {
     log('main() ArgumentError ${e}.');
-    print(parser.getUsage());
+    print(parser.usage);
 
   } on FormatException catch (e) {
     log('main() FormatException ${e}');
-    print(parser.getUsage());
+    print(parser.usage);
 
   } catch (e) {
     log('main() exception ${e}');
