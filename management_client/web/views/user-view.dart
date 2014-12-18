@@ -47,8 +47,8 @@ class UserView {
   }
 
   void registrateEventHandlers() {
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
     });
 
     bus.on(UserAddedEvent).listen((UserAddedEvent event) {

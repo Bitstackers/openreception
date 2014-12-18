@@ -2,18 +2,7 @@ library eventbus;
 
 import 'package:event_bus/event_bus.dart';
 
-import '../menu.dart';
-
 abstract class BaseEvent {}
-
-class WindowChangedEvent implements BaseEvent {
-  String window;
-  int receptionId;
-
-  WindowChangedEvent.DialplanWithReception(int this.receptionId) {
-    window = Menu.DIALPLAN_WINDOW;
-  }
-}
 
 class OrganizationAddedEvent implements BaseEvent {
   final int organizationId;
@@ -107,7 +96,12 @@ class PlaylistRemovedEvent implements BaseEvent {
   PlaylistRemovedEvent(int this.playlistId);
 }
 
-final EventType<Map> windowChanged = new EventType<Map>();
+class WindowChanged implements BaseEvent {
+  final Map data;
+  final String window;
+
+  WindowChanged(String this.window, [Map this.data = const {}]);
+}
 
 EventBus _bus = new EventBus();
 EventBus get bus => _bus;

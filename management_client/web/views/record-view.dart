@@ -38,8 +38,8 @@ class RecordView {
   void registrateEventHandlers() {
     receptionSearchBox.onInput.listen((_) => performSearch());
 
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
     });
 
     newRecording.onClick.listen((_) {

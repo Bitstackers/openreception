@@ -114,11 +114,11 @@ class ReceptionView {
 
     buttonDelete.onClick.listen((_) => deleteCurrentReception());
 
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
-      if (event.containsKey('organization_id') && event.containsKey(
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
+      if (event.data.containsKey('organization_id') && event.data.containsKey(
           'reception_id')) {
-        activateReception(event['organization_id'], event['reception_id']);
+        activateReception(event.data['organization_id'], event.data['reception_id']);
       }
     });
 
@@ -197,7 +197,10 @@ class ReceptionView {
 
   void goToDialplan() {
     if (selectedReceptionId != null && selectedReceptionId > 0) {
-      bus.fire(new WindowChangedEvent.DialplanWithReception(selectedReceptionId));
+      Map data = {
+        'reception_id': selectedReceptionId
+      };
+      bus.fire(new WindowChanged(Menu.DIALPLAN_WINDOW, data));
     }
   }
 
@@ -361,12 +364,11 @@ class ReceptionView {
         ..classes.add('clickable')
         ..text = contact.fullName
         ..onClick.listen((_) {
-          Map event = {
-            'window': 'contact',
+          Map data = {
             'contact_id': contact.id,
             'reception_id': receptionId
           };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
     return li;
   }

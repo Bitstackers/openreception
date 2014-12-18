@@ -14,6 +14,7 @@ import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
+import '../menu.dart';
 
 part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
@@ -93,10 +94,10 @@ class ContactView {
   }
 
   void registrateEventHandlers() {
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
-      if (event.containsKey('contact_id')) {
-        activateContact(event['contact_id'], event['reception_id']);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
+      if (event.data.containsKey('contact_id')) {
+        activateContact(event.data['contact_id'], event.data['reception_id']);
       }
     });
 
@@ -678,12 +679,11 @@ class ContactView {
       ..classes.add('clickable')
       ..text = reception.fullName
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'reception',
+        Map data = {
           'organization_id': reception.organizationId,
           'reception_id': reception.id
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
 
     UListElement contacts = new UListElement()
@@ -700,12 +700,11 @@ class ContactView {
       ..classes.add('colleague')
       ..text = collegue.fullName
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'contact',
+        Map data = {
           'contact_id': collegue.id,
           'reception_id': receptionId
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
   }
 
@@ -714,11 +713,10 @@ class ContactView {
       ..classes.add('clickable')
       ..text = '${organization.fullName}'
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'organization',
+        Map data = {
           'organization_id': organization.id,
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.ORGANIZATION_WINDOW, data));
       });
     return li;
   }

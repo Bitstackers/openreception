@@ -8,6 +8,7 @@ import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart';
 import '../notification.dart' as notify;
+import '../menu.dart';
 
 class OrganizationView {
   static const String viewName = 'organization';
@@ -76,10 +77,10 @@ class OrganizationView {
       }
     });
 
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
-      if (event.containsKey('organization_id')) {
-        activateOrganization(event['organization_id']);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
+      if (event.data.containsKey('organization_id')) {
+        activateOrganization(event.data['organization_id']);
       }
     });
 
@@ -247,12 +248,11 @@ class OrganizationView {
         ..classes.add('clickable')
         ..text = '${reception.fullName}'
         ..onClick.listen((_) {
-          Map event = {
-            'window': 'reception',
+          Map data = {
             'organization_id': reception.organizationId,
             'reception_id': reception.id
           };
-          bus.fire(windowChanged, event);
+          bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
         });
     return li;
   }
@@ -275,11 +275,10 @@ class OrganizationView {
       ..classes.add('clickable')
       ..text = '${contact.fullName}'
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'contact',
+        Map data = {
           'contact_id': contact.id
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
     return li;
   }

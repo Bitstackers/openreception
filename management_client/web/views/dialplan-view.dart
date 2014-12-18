@@ -90,10 +90,10 @@ class DialplanView {
   }
 
   void registrateEventHandlers() {
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
-      if (event.containsKey('receptionid')) {
-        activateDialplan(event['receptionid']);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
+      if (event.data.containsKey('receptionid')) {
+        activateDialplan(event.data['receptionid']);
       }
     });
 

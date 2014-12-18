@@ -40,18 +40,15 @@ class Menu {
 
     //Register onClicker handler on the image, and emit an event about window change.
     // for the other windows to know when to hide/show.
-    menus.forEach((String name, ImageElement button) {
+    menus.forEach((String windowName, ImageElement button) {
       button.onClick.listen((_) {
-        Map event = {
-          'window': name
-        };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(windowName));
       });
     });
 
     //When there comes an windowChange event, highlight the right button.
-    bus.on(windowChanged).listen((Map event) {
-      _highlightItem(event['window']);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      _highlightItem(event.window);
     });
   }
 
