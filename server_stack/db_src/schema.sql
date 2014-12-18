@@ -342,7 +342,11 @@ CREATE TABLE cdr_entries (
 CREATE INDEX cdr_entries_index ON cdr_entries (started_at);
 
 CREATE TABLE cdr_checkpoints (
-   checkpoint   TIMESTAMP NOT NULL PRIMARY KEY
+   id          INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   startDate   TIMESTAMP NOT NULL,
+   endDate     TIMESTAMP NOT NULL,
+   name	       TEXT	 NOT NULL,
+   UNIQUE(startDate, endDate)
 );
 
 
