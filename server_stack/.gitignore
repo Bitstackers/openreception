@@ -1,6 +1,7 @@
 .DS_Store
 packages
 .project
+.pub/
 pubspec.lock
 
 # Don't track config files.
