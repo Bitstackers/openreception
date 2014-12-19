@@ -612,11 +612,10 @@ class ContactView {
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      request.createContact(JSON.encode(newContact)).then((Map response) {
-        int newContactId = response['id'];
-        bus.fire(new ContactAddedEvent(newContactId));
+      request.createContact(JSON.encode(newContact)).then((Contact responseContact) {
+        bus.fire(new ContactAddedEvent(responseContact.id));
         refreshList();
-        activateContact(newContactId);
+        activateContact(responseContact.id);
         notify.info('Kontaktpersonen blev oprettet.');
       }).catchError((error) {
         notify.info('Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');

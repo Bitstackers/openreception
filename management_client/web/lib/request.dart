@@ -8,6 +8,7 @@ import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 
 import 'configuration.dart';
+import 'logger.dart' as log;
 import 'model.dart';
 
 part 'requests/calendar.dart';
