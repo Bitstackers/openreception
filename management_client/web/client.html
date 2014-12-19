@@ -42,7 +42,11 @@
     <div id="organization-page">
       <!-- The left side, where the organization list and search bar are. -->
       <div id="organization-listing">
-        <button id="organization-create">Ny Organisation</button>
+        <div id="organization-controlbar" class="basic3controls">
+          <button id="organization-create">Ny</button>
+          <button id="organization-save">Gem</button>
+          <button id="organization-delete">Slet</button>
+        </div>
         <input id="organization-search-box" type="search" placeholder="Søg...">
         <ul id="organization-list" class="zebra-even"></ul>
       </div>
@@ -62,9 +66,6 @@
             <td><label for="organization-input-flag">Flag</label> <textarea rows="1" id="organization-input-flag"></textarea></td>
           </tr>
         </table>
-
-        <button id="organization-save">Gem</button>
-        <button id="organization-delete">Slet</button>
       </div>
 
       <!-- The right box for receptions and contacts. -->
@@ -92,7 +93,11 @@
     <div id="reception-page" class="hidden">
       <!-- Left side for the list of receptions and the searchbar. -->
       <div id="reception-listing">
-        <button id="reception-create">Ny Reception</button>
+        <div id="reception-controlbar" class="basic3controls">
+          <button id="reception-create">Ny</button>
+          <button id="reception-save">Gem</button>
+          <button id="reception-delete">Slet</button>
+        </div>
         <input id="reception-search-box" type="search"
           placeholder="Søg...">
         <ul id="reception-list" class="zebra-even"></ul>
@@ -190,9 +195,6 @@
               <ul id="reception-list-websites"></ul></td>
           </tr>
         </table>
-
-        <button id="reception-save">Gem</button>
-        <button id="reception-delete">Slet</button>
       </div>
 
       <!-- The right side for the list of all the contacts associated with the selected reception -->
@@ -210,7 +212,11 @@
     <div id="contact-page" class="hidden">
       <!-- Searchbar and contact list -->
       <div id="contact-listing">
-        <button id="contact-create">Ny Kontakt</button>
+        <div id="contact-controlbar" class="basic3controls">
+          <button id="contact-create">Ny</button>
+          <button id="contact-save">Gem</button>
+          <button id="contact-delete">Slet</button>
+        </div>
         <input id="contact-search-box" type="search" placeholder="Søg...">
         <ul id="contact-list" class="zebra-even"></ul>
       </div>
@@ -250,8 +256,6 @@
               </td>
             </tr>
           </table>
-          <button id="contact-save">Gem</button>
-          <button id="contact-delete">Slet</button>
         </div>
         <ul id="reception-contacts"></ul>
       </div>
@@ -477,13 +481,15 @@
       - - - - - - - - - - - - - -->
     <div id="user-page" class="hidden">
       <div id="user-listing">
-        <button id="user-create">Ny Bruger</button>
+        <div id="user-controlbar" class="basic3controls">
+          <button id="user-create">Ny</button>
+          <button id="user-save">Gem</button>
+          <button id="user-delete">Slet</button>
+        </div>
         <ul id="user-list" class="zebra-even"></ul>
       </div>
 
       <div id="user-content">
-        <button id="user-save">Gem</button>
-        <button id="user-delete">Slet</button>
         <label for="user-name">Navn</label><input id="user-name" type="text">
         <label for="user-sendfrom">Send fra</label><input id="user-sendfrom" type="text">
         <label for="user-extension">Telefon</label><input id="user-extension" type="text">
@@ -543,11 +549,16 @@
       - - - - - - - - - - - - - - -->
     <div id="music-page" class="hidden">
       <div iD="music-leftbar">
+        <div id="music-controlbar" class="basic3controls">
+          <button id="music-new">Ny</button>
+          <button id="music-save">Gem</button>
+          <button id="music-delete">Slet</button>
+        </div> <!--
         <div id="music-CRUD">
           <button id="music-new">Ny</button>
           <button id="music-save">Gem</button>
           <button id="music-delete">Slet</button>
-        </div>
+        </div> -->
         <div id="music-listing">
           <ul id="music-playlists" class="zebra-even"></ul>
         </div>

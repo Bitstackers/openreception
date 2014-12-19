@@ -120,6 +120,25 @@ nav#navigation img {
   top: 3px;
 }
 
+.basic3controls > button {
+  width: 32%;
+  width: -moz-calc(33% - 4px);
+  width: -webkit-calc(33% - 4px);
+
+  margin-left: 2px;
+}
+
+.basic3controls {
+  width: calc(100% - 2px);
+  width: -moz-calc(100% - 2px);
+  width: -webkit-calc(100% - 2px);
+
+  margin: 5px 1px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 2px;
+}
+
 /*
 .notifyDeActivate {
 

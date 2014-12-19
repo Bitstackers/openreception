@@ -13,17 +13,6 @@
   padding: 0 5px;
 }
 
-#reception-create {
-  width: 100%;
-  width: -moz-calc(100% -   2px);
-  width: -webkit-calc(100% -   2px);
-  margin: 5px 1px;
-  background-color: white;
-  border: 1px solid grey;
-  border-radius: 5px;
-  padding: 2px;
-}
-
 #reception-search-box {
   width: 100%;
   margin-bottom: 5px;
@@ -96,8 +85,4 @@
 
 #reception-contact-list li {
   margin-left: 10px;
-}
-
-#reception-save,#reception-delete {
-  width: 50px;
 }
