@@ -1,23 +1,56 @@
 #ivr-page {
   height: 100%;
+  width: calc(97% - 5px);
+  width: -moz-calc(97% - 5px);
+  width: -webkit-calc(97% - 5px);
+
+  margin-left:5px;
+  position: absolute;
+  z-index: 100;
+  background-color: rgba(175, 175, 175, 0.9);
+}
+
+#ivr-page-content {
+  position: relative;
+  height: 90%;
+  width: 90%;
+  top: 5%;
+  left: 5%;
+}
+
+#ivr-page.hidden {
+  left: -99999px;
+}
+
+#ivr-controlbar {
+  float: left;
+
+  border: solid 2px grey;
+  border-radius: 10px;
+
+  width: calc(20% - 10px);
+  width: -moz-calc(20% - 10px);
+  width: -webkit-calc(20% - 10px);
+
+  height: 100%;
+  margin-right: 5px;
+
+  overflow: auto;
+  background-color: white;
 }
 
 #ivr-content-container {
   float: left;
 
   width: 80%;
-  width: -moz-calc(80% - 5px);
-  width: -webkit-calc(80% - 5px);
 
   height: 100%;
-  height: -moz-calc(100% - 10px);
-  height: -webkit-calc(100% - 10px);
 
   border: solid 2px grey;
   border-radius: 10px;
-  padding: 5px;
-  margin: 5px;
+  margin-left: 5px;
   overflow: auto;
+  background-color: white;
 }
 
 #ivr-action-table {
@@ -32,34 +65,6 @@
 
 .ivr-action-field {
   width: 10%;
-}
-
-#ivr-rightbar {
-  float: right;
-
-  width: 20%;
-  width: -moz-calc(20% - 5px);
-  width: -webkit-calc(20% - 5px);
-
-  height: 100%;
-
-  overflow: auto;
-}
-
-#ivr-receptionpicker {
-  margin: 5px 5px 5px 0;
-}
-
-#ivr-menu-container {
-  height: 95%;
-  height: -moz-calc(100% - 43px);
-  height: -webkit-calc(100% - 43px);
-
-  margin-right: 5px;
-
-  border: solid 2px grey;
-  border-radius: 10px;
-  padding: 5px;
 }
 
 #ivr-menu-list {
@@ -81,18 +86,3 @@
 
   float: right;
 }
-
-/*
-#ivr-settings-container {
-  height: 80%;
-  height: -moz-calc(80% - 38px);
-  height: -webkit-calc(80% - 38px);
-
-  margin-right: 5px;
-
-  border: solid 2px grey;
-  border-radius: 10px;
-  padding: 5px;
-  overflow: auto;
-}
-*/

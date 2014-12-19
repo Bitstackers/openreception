@@ -46,8 +46,7 @@ nav#navigation img {
 .hidden {
   /*display: none;*/
   position: absolute;
-  left: -99999px
-
+  left: -99999px;
 }
 
 .dnd-placeholder {

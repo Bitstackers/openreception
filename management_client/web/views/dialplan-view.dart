@@ -7,6 +7,7 @@ import 'dart:html';
 import 'package:html5_dnd/html5_dnd.dart';
 
 import '../lib/eventbus.dart';
+import 'ivr-view.dart';
 import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart' as request;
@@ -63,6 +64,9 @@ class DialplanView {
   SelectElement templatePicker;
   ButtonElement loadDialplanTemplate;
 
+  ButtonElement showIvrView;
+  IvrView ivrView;
+
   DialplanView(DivElement this.element) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
     controlListAction    = element.querySelector('#dialplan-control-action-list');
@@ -75,6 +79,7 @@ class DialplanView {
     extensionListHeader  = element.querySelector('#dialplan-extensionlist-header');
     templatePicker       = element.querySelector('#dialplan-templates');
     loadDialplanTemplate = element.querySelector('#dialplan-loadtemplate');
+    showIvrView          = element.querySelector('#dialplan-showivr');
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
@@ -82,6 +87,8 @@ class DialplanView {
         ..listElementToString = receptionToSearchboxString
         ..searchFilter = receptionSearchHandler
         ..searchPlaceholder = 'Søg...';
+
+    ivrView = new IvrView(element.querySelector('#ivr-page'));
 
     fillSearchComponent();
     fillDialplanTempalte();
@@ -155,6 +162,10 @@ class DialplanView {
         }
       }
     });
+
+    showIvrView.onClick.listen((_) {
+      ivrView.loadReception(selectedReceptionId, dialplan);
+    });
   }
 
   void SearchComponentChanged(Reception reception) {
@@ -209,6 +220,8 @@ class DialplanView {
       selectedReceptionId = receptionId;
       renderExtensionList(value);
       activateExtension(null);
+
+      showIvrView.disabled = false;
 
       request.getPlaylistList().then((List<Playlist> list) {
             list.sort();

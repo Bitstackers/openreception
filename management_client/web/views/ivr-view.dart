@@ -15,7 +15,6 @@ import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 
 class IvrView {
-  static const String viewName = 'ivr';
   int receptionId;
   Dialplan dialplan;
   libIvr.IvrList ivrList;
@@ -23,19 +22,19 @@ class IvrView {
   List<Audiofile> receptionSounds = new List<Audiofile>();
 
   DivElement element;
-  DivElement receptionOuterSelector;
   UListElement menuList;
   ButtonElement newButton;
   ButtonElement saveButton;
+  ButtonElement closeButton;
   TableSectionElement contentBody;
   SelectElement greetLongPicker, greetShortPicker,
                 invalidSoundPicker, exitSoundPicker;
 
-  SearchComponent receptionPicker;
   IvrView(DivElement this.element) {
     menuList    = element.querySelector('#ivr-menu-list');
     newButton   = element.querySelector('#ivr-new-menu');
     saveButton  = element.querySelector('#ivr-save');
+    closeButton = element.querySelector('#ivr-close');
     contentBody = element.querySelector('#ivr-content-body');
 
     greetLongPicker    = element.querySelector('#ivr-greetlong');
@@ -43,26 +42,10 @@ class IvrView {
     invalidSoundPicker = element.querySelector('#ivr-invalidsound');
     exitSoundPicker    = element.querySelector('#ivr-exitsound');
 
-    receptionOuterSelector = element.querySelector('#ivr-receptionpicker');
-    receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'ivr-reception-searchbox')
-        ..listElementToString = receptionToSearchboxString
-        ..searchFilter = receptionSearchHandler
-        ..searchPlaceholder = 'Søg...';
-
-    fillSearchComponent();
-
-    registrateEventHandlers();
+    registerEventHandlers();
   }
 
-  void registrateEventHandlers() {
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != viewName);
-    });
-
-    receptionPicker.selectedElementChanged = (Reception reception) {
-      loadReceptionData(reception.id);
-    };
-
+  void registerEventHandlers() {
     newButton.onClick.listen((_) {
       if(ivrList != null) {
         int number = 1;
@@ -85,40 +68,40 @@ class IvrView {
         });
       }
     });
+
+    closeButton.onClick.listen((_) {
+      hideWindow();
+    });
   }
 
-  void loadReceptionData(int receptionId) {
+  void hideWindow() {
+    element.classes.add('hidden');
+  }
+
+  void showWindow() {
+    element.classes.remove('hidden');
+  }
+
+  /**
+   * Loads a reception' IVR.
+   */
+  void loadReception(int receptionId, Dialplan dialplan) {
     this.receptionId = receptionId;
-    request.getDialplan(receptionId).then((Dialplan dialplan) {
-      this.dialplan = dialplan;
-      return request.getIvr(receptionId);
-    }).then((libIvr.IvrList ivrList) {
-      this.ivrList = ivrList;
-      return request.getAudiofileList(receptionId);
-    }).then((List<Audiofile> sounds) {
-      receptionSounds = sounds;
-    }).then((_) {
-      clearContentTable();
-      renderMenuList(ivrList);
-    }).catchError((error, stack) {
-      log.error('IVR.loadReceptionData "${error}" "${stack}"');
-      notify.error(error.toString());
-    });
-  }
-
-  String receptionToSearchboxString(Reception reception, String searchterm) {
-    return '${reception.fullName}';
-  }
-
-  bool receptionSearchHandler(Reception reception, String searchTerm) {
-    return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
-  }
-
-  void fillSearchComponent() {
-    request.getReceptionList().then((List<Reception> list) {
-      list.sort();
-      receptionPicker.updateSourceList(list);
-    });
+    this.dialplan = dialplan;
+    request.getIvr(receptionId)
+      .then((libIvr.IvrList ivrList) {
+        this.ivrList = ivrList;
+        return request.getAudiofileList(receptionId);
+      }).then((List<Audiofile> sounds) {
+        receptionSounds = sounds;
+      }).then((_) {
+        clearContentTable();
+        renderMenuList(ivrList);
+      }).catchError((error, stack) {
+        log.error('IVR.loadReception "${error}" "${stack}"');
+        notify.error(error.toString());
+      });
+    showWindow();
   }
 
   void renderMenuList(libIvr.IvrList menus) {

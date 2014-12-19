@@ -13,7 +13,6 @@ class Menu {
   static const String RECEPTION_WINDOW    = 'reception';
   static const String CONTACT_WINDOW      = 'contact';
   static const String DIALPLAN_WINDOW     = 'dialplan';
-  static const String IVR_WINDOW          = 'ivr';
   static const String RECORD_WINDOW       = 'record';
   static const String USER_WINDOW         = 'user';
   static const String BILLING_WINDOW      = 'billing';
@@ -31,7 +30,6 @@ class Menu {
      'reception'   : element.querySelector('#reception-button'),
      'contact'     : element.querySelector('#contact-button'),
      'dialplan'    : element.querySelector('#dialplan-button'),
-     'ivr'         : element.querySelector('#ivr-button'),
      'record'      : element.querySelector('#record-button'),
      'user'        : element.querySelector('#user-button'),
      'billing'     : element.querySelector('#billing-button'),
