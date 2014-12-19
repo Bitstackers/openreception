@@ -17,24 +17,24 @@ import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
 
 class _ControlLookUp {
-  static const int TIME_CONTROL = 0;
-  static const int DATE_CONTROL = 1;
-  static const int TRANSFER = 2;
-  static const int RECEPTIONIST = 3;
-  static const int VOICEMAIL = 4;
+  static const int TIME_CONTROL    = 0;
+  static const int DATE_CONTROL    = 1;
+  static const int TRANSFER        = 2;
+  static const int RECEPTIONIST    = 3;
+  static const int VOICEMAIL       = 4;
   static const int PLAY_AUDIO_FILE = 5;
-  static const int IVR = 6;
+  static const int IVR             = 6;
 }
 
 class _ControlImage {
   static const String bendedArrow = 'image/dialplan/bended_arrow.svg';
-  static const String calendar = 'image/dialplan/calendar.svg';
-  static const String group = 'image/dialplan/group.svg';
-  static const String IVR = 'image/dialplan/IVR.svg';
-  static const String microphone = 'image/dialplan/microphone.svg';
-  static const String speaker = 'image/dialplan/speaker.svg';
-  static const String tape = 'image/dialplan/tape.svg';
-  static const String watch = 'image/dialplan/watch.svg';
+  static const String calendar    = 'image/dialplan/calendar.svg';
+  static const String group       = 'image/dialplan/group.svg';
+  static const String IVR         = 'image/dialplan/IVR.svg';
+  static const String microphone  = 'image/dialplan/microphone.svg';
+  static const String speaker     = 'image/dialplan/speaker.svg';
+  static const String tape        = 'image/dialplan/tape.svg';
+  static const String watch       = 'image/dialplan/watch.svg';
 }
 
 class DialplanView {
