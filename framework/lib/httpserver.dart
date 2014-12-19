@@ -231,9 +231,8 @@ Future writeAndClose(HttpRequest request, String text) {
       ..headers.contentType = JSON_MIME_TYPE
       ..write(text);
 
-
-    new Future(() => commonLogFormat(request))
-      .whenComplete(() => request.response.close())
+    return new Future(() => commonLogFormat(request))
+      .then((_) => request.response.close())
       .catchError((error) => logger.errorContext ('Failed to write to access log', 'Common.writeAndClose'));
   } catch (error) {
     logger.errorContext(error.toString(), 'WriteAndClose');

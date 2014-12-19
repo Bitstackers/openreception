@@ -1,13 +1,13 @@
 name: openreception_framework
+version: 0.0.13+2
 author: BitStack K/S
-version: 0.0.13+1
 description: A utility package for the OpenReception application.
 dependencies:
   http: any
+  junitconfiguration: '>=1.0.0 <2.0.0'
   logging: any
-  postgresql: ">= 0.3.0"
+  postgresql: '>= 0.3.0'
   route: any
   syslog:
     git: https://github.com/PedersenThomas/syslog.git
   unittest: any
-  junitconfiguration: ">=1.0.0 <2.0.0"
