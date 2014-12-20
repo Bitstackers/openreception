@@ -54,7 +54,7 @@ class DialplanView {
   ButtonElement saveButton;
   SpanElement extensionListHeader;
 
-  SearchComponent receptionPicker;
+  SearchComponent<Reception> receptionPicker;
   Dialplan dialplan;
   Extension selectedExtension;
   List<Playlist> playlists;
@@ -164,7 +164,12 @@ class DialplanView {
     });
 
     showIvrView.onClick.listen((_) {
-      ivrView.loadReception(selectedReceptionId, dialplan);
+      ivrView.loadReception(selectedReceptionId, dialplan, ivrMenus)
+      .then((bool changesMade) {
+        if (changesMade) {
+          enabledSaveButton();
+        }
+      });
     });
   }
 
@@ -308,6 +313,8 @@ class DialplanView {
         notify.info('Dialplan er blevet opdateret.');
         bus.fire(new DialplanChangedEvent(selectedReceptionId));
         disableSaveButton();
+      }).then((_) {
+        return request.updateIvr(selectedReceptionId, JSON.encode(ivrMenus));
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med opdateringen af dialplanen.');
         log.error('Update Dialplan gave ${error}');

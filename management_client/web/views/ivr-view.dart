@@ -1,39 +1,36 @@
 library ivr.view;
 
+import 'dart:async';
 import 'dart:html';
-import 'dart:convert';
 
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart' as libIvr;
 
-import '../lib/eventbus.dart';
 import '../lib/model.dart';
 import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
-import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 
 class IvrView {
-  int receptionId;
   Dialplan dialplan;
   libIvr.IvrList ivrList;
-
   List<Audiofile> receptionSounds = new List<Audiofile>();
 
   DivElement element;
   UListElement menuList;
   ButtonElement newButton;
-  ButtonElement saveButton;
   ButtonElement closeButton;
   TableSectionElement contentBody;
   SelectElement greetLongPicker, greetShortPicker,
                 invalidSoundPicker, exitSoundPicker;
 
+  Completer returnFuture;
+  bool madeChange = false;
+
   IvrView(DivElement this.element) {
     menuList    = element.querySelector('#ivr-menu-list');
     newButton   = element.querySelector('#ivr-new-menu');
-    saveButton  = element.querySelector('#ivr-save');
     closeButton = element.querySelector('#ivr-close');
     contentBody = element.querySelector('#ivr-content-body');
 
@@ -55,17 +52,7 @@ class IvrView {
         }
         ivrList.list.add(new libIvr.Ivr()..name = name);
         renderMenuList(ivrList);
-      }
-    });
-
-    saveButton.onClick.listen((_) {
-      if(receptionId != null && ivrList != null) {
-        request.updateIvr(receptionId, JSON.encode(ivrList)).then((_) {
-          notify.info('IVR menuen blev updateret.');
-        }).catchError((error, stack) {
-          notify.error('Der skete en fejl, så Ivr menuens ændringer blev ikke gemt.');
-          log.error('Tried to update a IVR menu but got "$error" "${stack}"');
-        });
+        madeChange = true;
       }
     });
 
@@ -76,6 +63,7 @@ class IvrView {
 
   void hideWindow() {
     element.classes.add('hidden');
+    returnFuture.complete(madeChange);
   }
 
   void showWindow() {
@@ -84,24 +72,23 @@ class IvrView {
 
   /**
    * Loads a reception' IVR.
+   *
+   * Return whether there are made a change to the IVR menues.
    */
-  void loadReception(int receptionId, Dialplan dialplan) {
-    this.receptionId = receptionId;
+  Future<bool> loadReception(int receptionId, Dialplan dialplan, libIvr.IvrList ivrList) {
     this.dialplan = dialplan;
-    request.getIvr(receptionId)
-      .then((libIvr.IvrList ivrList) {
-        this.ivrList = ivrList;
-        return request.getAudiofileList(receptionId);
-      }).then((List<Audiofile> sounds) {
-        receptionSounds = sounds;
-      }).then((_) {
-        clearContentTable();
-        renderMenuList(ivrList);
-      }).catchError((error, stack) {
-        log.error('IVR.loadReception "${error}" "${stack}"');
-        notify.error(error.toString());
-      });
+    this.ivrList = ivrList;
+    request.getAudiofileList(receptionId).then((List<Audiofile> sounds) {
+      this.receptionSounds = sounds;
+    }).catchError((error, stack) {
+      log.error('IVR.loadReception "${error}" "${stack}"');
+      notify.error('Der skete en fejl da listen med lydfiler skulle hentes. Fejl: $error');
+    });
+    clearContentTable();
+    renderMenuList(ivrList);
     showWindow();
+    returnFuture = new Completer();
+    return returnFuture.future;
   }
 
   void renderMenuList(libIvr.IvrList menus) {
@@ -135,36 +122,38 @@ class IvrView {
     editBox
       ..style.display = 'none'
       ..onKeyDown.listen((KeyboardEvent event) {
-                KeyEvent key = new KeyEvent.wrap(event);
-                if (key.keyCode == Keys.ENTER || key.keyCode == Keys.ESCAPE) {
-                  if (key.keyCode == Keys.ENTER) {
-                    item.name = editBox.value;
-                    text.text = item.name;
-                  }
-                  text.style.display = oldDisplay;
-                  editBox.style.display = 'none';
-                  activeEdit = false;
-                }
-              });
-    ImageElement editButton = new ImageElement(src: 'image/tp/line.svg')
-        ..classes.add('ivr-small-button')
-        ..onClick.listen((_) {
-            if(activeEdit == false) {
-              activeEdit = true;
-              text.style.display = 'none';
-              editBox.style.display = 'inline';
-
-              editBox
-                ..focus()
-                ..value = text.text;
+          KeyEvent key = new KeyEvent.wrap(event);
+          if (key.keyCode == Keys.ENTER || key.keyCode == Keys.ESCAPE) {
+            if (key.keyCode == Keys.ENTER) {
+              item.name = editBox.value;
+              text.text = item.name;
+              madeChange = true;
             }
-          });
+            text.style.display = oldDisplay;
+            editBox.style.display = 'none';
+            activeEdit = false;
+          }
+        });
+    ImageElement editButton = new ImageElement(src: 'image/tp/line.svg')
+      ..classes.add('ivr-small-button')
+      ..onClick.listen((_) {
+          if(activeEdit == false) {
+            activeEdit = true;
+            text.style.display = 'none';
+            editBox.style.display = 'inline';
+
+            editBox
+              ..focus()
+              ..value = text.text;
+          }
+        });
 
     ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
       ..classes.add('ivr-small-button')
       ..onClick.listen((_) {
         ivrList.list.remove(item);
         renderMenuList(ivrList);
+        madeChange = true;
       });
 
     node.children.addAll([text, editBox, editButton, deleteButton]);
@@ -209,6 +198,10 @@ class IvrView {
       ..addAll(receptionSounds.map((Audiofile file) =>
         new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.exitSound)));
 
+    greetLongPicker.onChange.listen((_) => madeChange = true);
+    greetShortPicker.onChange.listen((_) => madeChange = true);
+    invalidSoundPicker.onChange.listen((_) => madeChange = true);
+    exitSoundPicker.onChange.listen((_) => madeChange = true);
   }
 
   /**
@@ -233,6 +226,7 @@ class IvrView {
     actionPicker
       ..children.addAll(actionList)
       ..onChange.listen((_) {
+      madeChange = true;
       switch (actionPicker.selectedOptions.first.value) {
         case 'none':
           ivr.entries.remove(entry);
@@ -266,6 +260,7 @@ class IvrView {
         ..children.addAll(dialplan.extensionGroups.map((ExtensionGroup eg) =>
             new OptionElement(data: eg.name, value: eg.name, selected: entry.extensionGroup == eg.name)))
         ..onChange.listen((_) {
+        madeChange = true;
         entry.extensionGroup = gruops.selectedOptions.first.value;
       });
 

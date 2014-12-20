@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:libdialplan/libdialplan.dart';
 
 import 'logger.dart' as log;
-import 'utilities.dart';
 
 part 'model/audiofile.dart';
 part 'model/calendar_event.dart';

@@ -138,13 +138,3 @@ nav#navigation img {
     flex-grow: 1;
     margin: 1px 2px;
 }
-
-/*
-.notifyDeActivate {
-
-  animation-duration: 3s;
-  animation-name: slideout;
-
-  top: -5000px;
-}
-*/
