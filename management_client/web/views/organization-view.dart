@@ -23,7 +23,7 @@ class OrganizationView {
   bool createNew = false;
 
   List<Organization> organizations = new List<Organization>();
-  int selectedOrganizationId = 0;
+  int selectedOrganizationId;
 
   List<Contact> currentContactList = new List<Contact>();
   List<Reception> currentReceptionList = new List<Reception>();
@@ -40,15 +40,15 @@ class OrganizationView {
     ulReceptionList = element.querySelector('#organization-reception-list');
     ulContactList = element.querySelector('#organization-contact-list');
 
-    buttonSave.disabled = true;
-    buttonDelete.disabled = true;
+    disableDeleteButton();
+    disableSaveButton();
 
-    registrateEventHandlers();
+    registerEventHandlers();
 
     refreshList();
   }
 
-  void registrateEventHandlers() {
+  void registerEventHandlers() {
     buttonSave.onClick.listen((_) {
       saveChanges();
     });
@@ -57,8 +57,28 @@ class OrganizationView {
       createOrganizationHandler();
     });
 
+    inputName.onInput.listen((_) {
+      if(isNameEmpty()) {
+        disableSaveButton();
+      } else if(createNew || selectedOrganizationId != null) {
+        enableSaveButton();
+      }
+    });
+
+    inputFlag.onInput.listen((_) {
+      if(selectedOrganizationId != null && !isNameEmpty()) {
+        enableSaveButton();
+      }
+    });
+
+    inputBillingtype.onInput.listen((_) {
+      if(selectedOrganizationId != null && !isNameEmpty()) {
+        enableSaveButton();
+      }
+    });
+
     buttonDelete.onClick.listen((_) {
-      if (!createNew && selectedOrganizationId > 0) {
+      if (!createNew && selectedOrganizationId != null) {
         deleteOrganization(selectedOrganizationId).then((_) {
           notify.info('Organisation blev slettet.');
 
@@ -67,9 +87,9 @@ class OrganizationView {
           bus.fire( new OrganizationRemovedEvent(selectedOrganizationId) );
           refreshList();
           clearContent();
-          buttonSave.disabled = true;
-          buttonDelete.disabled = true;
-          selectedOrganizationId = 0;
+          disableSaveButton();
+          disableDeleteButton();
+          selectedOrganizationId = null;
         }).catchError((error) {
           notify.error('Der skete en fejl i forbindelsen med sletningen.');
           log.error('Failed to delete organization "${selectedOrganizationId}", got "${error}"');
@@ -102,6 +122,24 @@ class OrganizationView {
     searchBox.onInput.listen((_) => performSearch());
   }
 
+  bool isNameEmpty() => inputName.value.trim() == "";
+
+  void enableSaveButton() {
+    buttonSave.disabled = false;
+  }
+
+  void disableSaveButton() {
+    buttonSave.disabled = true;
+  }
+
+  void enableDeleteButton() {
+    buttonDelete.disabled = false;
+  }
+
+  void disableDeleteButton() {
+    buttonDelete.disabled = true;
+  }
+
   void handleReceptionContactAdded(ReceptionContactAddedEvent event) {
     if (currentReceptionList.any((r) => r.id == event.receptionId)) {
       activateOrganization(selectedOrganizationId);
@@ -115,10 +153,9 @@ class OrganizationView {
   }
 
   void createOrganizationHandler() {
-    selectedOrganizationId = 0;
+    selectedOrganizationId = null;
     buttonSave.text = 'Opret';
-    buttonSave.disabled = false;
-    buttonDelete.disabled = true;
+    disableDeleteButton();
     clearRightBar();
     clearContent();
     createNew = true;
@@ -145,7 +182,7 @@ class OrganizationView {
   }
 
   void saveChanges() {
-    if (selectedOrganizationId > 0) {
+    if (selectedOrganizationId != null) {
       Map organization = {
         'id': selectedOrganizationId,
         'full_name': inputName.value,
@@ -193,18 +230,18 @@ class OrganizationView {
 
   void renderOrganizationList(List<Organization> organizations) {
     uiList.children
-        ..clear()
-        ..addAll(organizations.map(makeOrganizationNode));
+      ..clear()
+      ..addAll(organizations.map(makeOrganizationNode));
   }
 
   LIElement makeOrganizationNode(Organization organization) {
     return new LIElement()
-        ..classes.add('clickable')
-        ..dataset['organizationid'] = '${organization.id}'
-        ..text = '${organization.fullName}'
-        ..onClick.listen((_) {
-          activateOrganization(organization.id);
-        });
+      ..classes.add('clickable')
+      ..dataset['organizationid'] = '${organization.id}'
+      ..text = '${organization.fullName}'
+      ..onClick.listen((_) {
+        activateOrganization(organization.id);
+      });
   }
 
   void highlightOrganizationInList(int id) {
@@ -216,9 +253,9 @@ class OrganizationView {
       highlightOrganizationInList(organizationId);
       selectedOrganizationId = organizationId;
       createNew = false;
-      buttonSave.disabled = false;
       buttonSave.text = 'Gem';
-      buttonDelete.disabled = false;
+      disableSaveButton();
+      enableDeleteButton();
       inputName.value = organization.fullName;
       inputBillingtype.value = organization.billingType;
       inputFlag.value = organization.flag;
@@ -245,15 +282,15 @@ class OrganizationView {
 
   LIElement makeReceptionNode(Reception reception) {
     LIElement li = new LIElement()
-        ..classes.add('clickable')
-        ..text = '${reception.fullName}'
-        ..onClick.listen((_) {
-          Map data = {
-            'organization_id': reception.organizationId,
-            'reception_id': reception.id
-          };
-          bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
-        });
+      ..classes.add('clickable')
+      ..text = '${reception.fullName}'
+      ..onClick.listen((_) {
+        Map data = {
+          'organization_id': reception.organizationId,
+          'reception_id': reception.id
+        };
+        bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
+      });
     return li;
   }
 
