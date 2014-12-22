@@ -1,5 +1,4 @@
-
--------------------------------------------------------------------------------
+﻿-------------------------------------------------------------------------------
 --  System users:
 
 CREATE TABLE users (
@@ -548,56 +547,56 @@ ALTER TABLE ONLY playlists ALTER COLUMN id SET DEFAULT nextval ('playlists_id_se
 -------------------------------------------------------------------------------
 --  Set ownership:
 
-ALTER TABLE users OWNER TO alice;
-ALTER TABLE groups OWNER TO alice;
-ALTER TABLE user_groups OWNER TO alice;
-ALTER TABLE auth_identities OWNER TO alice;
-ALTER TABLE dialplan_templates OWNER TO alice;
-ALTER TABLE kinds OWNER TO alice;
-ALTER TABLE special_days OWNER TO alice;
-ALTER TABLE contact_types OWNER TO alice;
-ALTER TABLE contacts OWNER TO alice;
-ALTER TABLE organizations OWNER TO alice;
-ALTER TABLE receptions OWNER TO alice;
-ALTER TABLE reception_contacts OWNER TO alice;
-ALTER TABLE messaging_address_types OWNER TO alice;
-ALTER TABLE messaging_end_points OWNER TO alice;
-ALTER TABLE recipient_visibilities OWNER TO alice;
-ALTER TABLE messages OWNER TO alice;
-ALTER TABLE message_recipients OWNER TO alice;
-ALTER TABLE message_queue OWNER TO alice;
-ALTER TABLE message_queue_history OWNER TO alice;
-ALTER TABLE message_draft OWNER TO alice;
-ALTER TABLE calendar_events OWNER TO alice;
-ALTER TABLE contact_calendar OWNER TO alice;
-ALTER TABLE reception_calendar OWNER TO alice;
-ALTER TABLE distribution_list_roles OWNER TO alice;
-ALTER TABLE distribution_list OWNER TO alice;
-ALTER TABLE recurring_calendar_events OWNER TO alice;
-ALTER TABLE contact_recurring_calendar OWNER TO alice;
-ALTER TABLE reception_recurring_calendar OWNER TO alice;
-ALTER TABLE phone_number_types OWNER TO alice;
-ALTER TABLE phone_numbers OWNER TO alice;
-ALTER TABLE contact_phone_numbers OWNER TO alice;
-ALTER TABLE cdr_entries OWNER TO alice;
-ALTER TABLE cdr_checkpoints OWNER TO alice;
-ALTER TABLE playlists OWNER TO alice;
+ALTER TABLE users OWNER TO openreception;
+ALTER TABLE groups OWNER TO openreception;
+ALTER TABLE user_groups OWNER TO openreception;
+ALTER TABLE auth_identities OWNER TO openreception;
+ALTER TABLE dialplan_templates OWNER TO openreception;
+ALTER TABLE kinds OWNER TO openreception;
+ALTER TABLE special_days OWNER TO openreception;
+ALTER TABLE contact_types OWNER TO openreception;
+ALTER TABLE contacts OWNER TO openreception;
+ALTER TABLE organizations OWNER TO openreception;
+ALTER TABLE receptions OWNER TO openreception;
+ALTER TABLE reception_contacts OWNER TO openreception;
+ALTER TABLE messaging_address_types OWNER TO openreception;
+ALTER TABLE messaging_end_points OWNER TO openreception;
+ALTER TABLE recipient_visibilities OWNER TO openreception;
+ALTER TABLE messages OWNER TO openreception;
+ALTER TABLE message_recipients OWNER TO openreception;
+ALTER TABLE message_queue OWNER TO openreception;
+ALTER TABLE message_queue_history OWNER TO openreception;
+ALTER TABLE message_draft OWNER TO openreception;
+ALTER TABLE calendar_events OWNER TO openreception;
+ALTER TABLE contact_calendar OWNER TO openreception;
+ALTER TABLE reception_calendar OWNER TO openreception;
+ALTER TABLE distribution_list_roles OWNER TO openreception;
+ALTER TABLE distribution_list OWNER TO openreception;
+ALTER TABLE recurring_calendar_events OWNER TO openreception;
+ALTER TABLE contact_recurring_calendar OWNER TO openreception;
+ALTER TABLE reception_recurring_calendar OWNER TO openreception;
+ALTER TABLE phone_number_types OWNER TO openreception;
+ALTER TABLE phone_numbers OWNER TO openreception;
+ALTER TABLE contact_phone_numbers OWNER TO openreception;
+ALTER TABLE cdr_entries OWNER TO openreception;
+ALTER TABLE cdr_checkpoints OWNER TO openreception;
+ALTER TABLE playlists OWNER TO openreception;
 
-ALTER SEQUENCE users_id_sequence OWNER TO alice;
-ALTER SEQUENCE groups_id_sequence OWNER TO alice;
-ALTER SEQUENCE dialplan_templates_id_sequence OWNER TO alice;
-ALTER SEQUENCE contacts_id_sequence OWNER TO alice;
-ALTER SEQUENCE organizations_id_sequence OWNER TO alice;
-ALTER SEQUENCE receptions_id_sequence OWNER TO alice;
-ALTER SEQUENCE messages_id_sequence OWNER TO alice;
-ALTER SEQUENCE message_queue_id_sequence OWNER TO alice;
-ALTER SEQUENCE message_queue_history_id_sequence OWNER TO alice;
-ALTER SEQUENCE message_draft_id_sequence OWNER TO alice;
-ALTER SEQUENCE calendar_events_id_sequence OWNER TO alice;
-ALTER SEQUENCE distribution_list_id_sequence OWNER TO alice;
-ALTER SEQUENCE recurring_calendar_events_id_sequence OWNER TO alice;
-ALTER SEQUENCE phone_numbers_id_sequence OWNER TO alice;
-ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO alice;
-ALTER SEQUENCE playlists_id_sequence OWNER TO alice;
+ALTER SEQUENCE users_id_sequence OWNER TO openreception;
+ALTER SEQUENCE groups_id_sequence OWNER TO openreception;
+ALTER SEQUENCE dialplan_templates_id_sequence OWNER TO openreception;
+ALTER SEQUENCE contacts_id_sequence OWNER TO openreception;
+ALTER SEQUENCE organizations_id_sequence OWNER TO openreception;
+ALTER SEQUENCE receptions_id_sequence OWNER TO openreception;
+ALTER SEQUENCE messages_id_sequence OWNER TO openreception;
+ALTER SEQUENCE message_queue_id_sequence OWNER TO openreception;
+ALTER SEQUENCE message_queue_history_id_sequence OWNER TO openreception;
+ALTER SEQUENCE message_draft_id_sequence OWNER TO openreception;
+ALTER SEQUENCE calendar_events_id_sequence OWNER TO openreception;
+ALTER SEQUENCE distribution_list_id_sequence OWNER TO openreception;
+ALTER SEQUENCE recurring_calendar_events_id_sequence OWNER TO openreception;
+ALTER SEQUENCE phone_numbers_id_sequence OWNER TO openreception;
+ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO openreception;
+ALTER SEQUENCE playlists_id_sequence OWNER TO openreception;
 
 -------------------------------------------------------------------------------
