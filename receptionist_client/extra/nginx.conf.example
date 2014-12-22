@@ -1,0 +1,8 @@
+server {
+        server_name client.example.com;
+
+        root /usr/local/openreception/client;
+        index bob.html;
+
+        access_log logs/openreception_client.access.log main;
+}
