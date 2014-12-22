@@ -86,8 +86,8 @@ Future<int> _createReceptionContact(ORDatabase.Connection connection, int recept
     {'reception_id'         : receptionId,
      'contact_id'           : contactId,
      'wants_messages'       : wantMessages,
-     'phonenumbers'         : phonenumbers == null ? '[]' : phonenumbers,
-     'attributes'           : attributes == null ? '{}' : attributes,
+     'phonenumbers'         : phonenumbers == null ? '[]' : JSON.encode(phonenumbers),
+     'attributes'           : attributes   == null ? {} : attributes,
      'enabled'              : enabled};
 
   return connection.execute(sql, parameters);
@@ -118,8 +118,8 @@ Future<int> _updateReceptionContact(ORDatabase.Connection connection, int recept
     {'reception_id'         : receptionId,
      'contact_id'           : contactId,
      'wants_messages'       : wantMessages,
-     'phonenumbers'         : phonenumbers == null ? '[]' : phonenumbers,
-     'attributes'           : attributes == null ? '{}'   : attributes,
+     'phonenumbers'         : phonenumbers == null ? '[]' : JSON.encode(phonenumbers),
+     'attributes'           : attributes == null ? {}   : attributes,
      'enabled'              : enabled};
 
   return connection.execute(sql, parameters);

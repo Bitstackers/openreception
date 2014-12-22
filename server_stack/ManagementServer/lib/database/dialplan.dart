@@ -14,7 +14,7 @@ Future<Dialplan> _getDialplan(ORDatabase.Connection connection, int receptionId)
       return null;
     } else {
       var row = rows.first;
-      Map dialplanMap = row.dialplan != null ? row.dialplan : '{}';
+      Map dialplanMap = row.dialplan != null ? row.dialplan : {};
       Dialplan dialplan = new Dialplan.fromJson(dialplanMap);
 
       //In case the json is empty.
@@ -58,7 +58,7 @@ Future<IvrList> _getIvr(ORDatabase.Connection connection, int receptionId) {
       return null;
     } else {
       var row = rows.first;
-      Map ivrMap = row.ivr != null ? row.ivr : '{}';
+      Map ivrMap = row.ivr != null ? row.ivr : {};
       IvrList ivrList = new IvrList.fromJson(ivrMap);
 
       //In case the json is empty.

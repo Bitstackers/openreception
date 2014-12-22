@@ -1,5 +1,4 @@
-
--------------------------------------------------------------------------------
+﻿-------------------------------------------------------------------------------
 --  System users:
 
 CREATE TABLE users (
@@ -342,7 +341,11 @@ CREATE TABLE cdr_entries (
 CREATE INDEX cdr_entries_index ON cdr_entries (started_at);
 
 CREATE TABLE cdr_checkpoints (
-   checkpoint   TIMESTAMP NOT NULL PRIMARY KEY
+   id          INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   startDate   TIMESTAMP NOT NULL,
+   endDate     TIMESTAMP NOT NULL,
+   name	       TEXT	 NOT NULL,
+   UNIQUE(startDate, endDate)
 );
 
 
@@ -395,3 +398,205 @@ CREATE TABLE playlists (
 --        REFERENCES reception_contacts (contact_id, reception_id)
 --        ON UPDATE CASCADE ON DELETE CASCADE
 --  );
+--  Create and enable sequences (AUTOINCREMENT):
+
+CREATE SEQUENCE users_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE users_id_sequence OWNED BY users.id;
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval ('users_id_sequence'::regclass);
+
+CREATE SEQUENCE groups_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE groups_id_sequence OWNED BY groups.id;
+ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval ('groups_id_sequence'::regclass);
+
+CREATE SEQUENCE dialplan_templates_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE dialplan_templates_id_sequence OWNED BY dialplan_templates.id;
+ALTER TABLE ONLY dialplan_templates ALTER COLUMN id SET DEFAULT nextval ('dialplan_templates_id_sequence'::regclass);
+
+CREATE SEQUENCE contacts_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE contacts_id_sequence OWNED BY contacts.id;
+ALTER TABLE ONLY contacts ALTER COLUMN id SET DEFAULT nextval ('contacts_id_sequence'::regclass);
+
+CREATE SEQUENCE organizations_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE organizations_id_sequence OWNED BY organizations.id;
+ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval ('organizations_id_sequence'::regclass);
+
+CREATE SEQUENCE receptions_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE receptions_id_sequence OWNED BY receptions.id;
+ALTER TABLE ONLY receptions ALTER COLUMN id SET DEFAULT nextval ('receptions_id_sequence'::regclass);
+
+CREATE SEQUENCE messages_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE messages_id_sequence OWNED BY messages.id;
+ALTER TABLE ONLY messages ALTER COLUMN id SET DEFAULT nextval ('messages_id_sequence'::regclass);
+
+CREATE SEQUENCE message_queue_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE message_queue_id_sequence OWNED BY message_queue.id;
+ALTER TABLE ONLY message_queue ALTER COLUMN id SET DEFAULT nextval ('message_queue_id_sequence'::regclass);
+
+CREATE SEQUENCE message_queue_history_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE message_queue_history_id_sequence OWNED BY message_queue_history.id;
+ALTER TABLE ONLY message_queue_history ALTER COLUMN id SET DEFAULT nextval ('message_queue_history_id_sequence'::regclass);
+
+CREATE SEQUENCE message_draft_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE message_draft_id_sequence OWNED BY message_draft.id;
+ALTER TABLE ONLY message_draft ALTER COLUMN id SET DEFAULT nextval ('message_draft_id_sequence'::regclass);
+
+CREATE SEQUENCE calendar_events_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE calendar_events_id_sequence OWNED BY calendar_events.id;
+ALTER TABLE ONLY calendar_events ALTER COLUMN id SET DEFAULT nextval ('calendar_events_id_sequence'::regclass);
+
+CREATE SEQUENCE distribution_list_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE distribution_list_id_sequence OWNED BY distribution_list.id;
+ALTER TABLE ONLY distribution_list ALTER COLUMN id SET DEFAULT nextval ('distribution_list_id_sequence'::regclass);
+
+CREATE SEQUENCE recurring_calendar_events_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE recurring_calendar_events_id_sequence OWNED BY recurring_calendar_events.id;
+ALTER TABLE ONLY recurring_calendar_events ALTER COLUMN id SET DEFAULT nextval ('recurring_calendar_events_id_sequence'::regclass);
+
+CREATE SEQUENCE phone_numbers_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE phone_numbers_id_sequence OWNED BY phone_numbers.id;
+ALTER TABLE ONLY phone_numbers ALTER COLUMN id SET DEFAULT nextval ('phone_numbers_id_sequence'::regclass);
+
+CREATE SEQUENCE cdr_checkpoints_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE cdr_checkpoints_id_sequence OWNED BY cdr_checkpoints.id;
+ALTER TABLE ONLY cdr_checkpoints ALTER COLUMN id SET DEFAULT nextval ('cdr_checkpoints_id_sequence'::regclass);
+
+CREATE SEQUENCE playlists_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE playlists_id_sequence OWNED BY playlists.id;
+ALTER TABLE ONLY playlists ALTER COLUMN id SET DEFAULT nextval ('playlists_id_sequence'::regclass);
+
+-------------------------------------------------------------------------------
+--  Set ownership:
+
+ALTER TABLE users OWNER TO openreception;
+ALTER TABLE groups OWNER TO openreception;
+ALTER TABLE user_groups OWNER TO openreception;
+ALTER TABLE auth_identities OWNER TO openreception;
+ALTER TABLE dialplan_templates OWNER TO openreception;
+ALTER TABLE kinds OWNER TO openreception;
+ALTER TABLE special_days OWNER TO openreception;
+ALTER TABLE contact_types OWNER TO openreception;
+ALTER TABLE contacts OWNER TO openreception;
+ALTER TABLE organizations OWNER TO openreception;
+ALTER TABLE receptions OWNER TO openreception;
+ALTER TABLE reception_contacts OWNER TO openreception;
+ALTER TABLE messaging_address_types OWNER TO openreception;
+ALTER TABLE messaging_end_points OWNER TO openreception;
+ALTER TABLE recipient_visibilities OWNER TO openreception;
+ALTER TABLE messages OWNER TO openreception;
+ALTER TABLE message_recipients OWNER TO openreception;
+ALTER TABLE message_queue OWNER TO openreception;
+ALTER TABLE message_queue_history OWNER TO openreception;
+ALTER TABLE message_draft OWNER TO openreception;
+ALTER TABLE calendar_events OWNER TO openreception;
+ALTER TABLE contact_calendar OWNER TO openreception;
+ALTER TABLE reception_calendar OWNER TO openreception;
+ALTER TABLE distribution_list_roles OWNER TO openreception;
+ALTER TABLE distribution_list OWNER TO openreception;
+ALTER TABLE recurring_calendar_events OWNER TO openreception;
+ALTER TABLE contact_recurring_calendar OWNER TO openreception;
+ALTER TABLE reception_recurring_calendar OWNER TO openreception;
+ALTER TABLE phone_number_types OWNER TO openreception;
+ALTER TABLE phone_numbers OWNER TO openreception;
+ALTER TABLE contact_phone_numbers OWNER TO openreception;
+ALTER TABLE cdr_entries OWNER TO openreception;
+ALTER TABLE cdr_checkpoints OWNER TO openreception;
+ALTER TABLE playlists OWNER TO openreception;
+
+ALTER SEQUENCE users_id_sequence OWNER TO openreception;
+ALTER SEQUENCE groups_id_sequence OWNER TO openreception;
+ALTER SEQUENCE dialplan_templates_id_sequence OWNER TO openreception;
+ALTER SEQUENCE contacts_id_sequence OWNER TO openreception;
+ALTER SEQUENCE organizations_id_sequence OWNER TO openreception;
+ALTER SEQUENCE receptions_id_sequence OWNER TO openreception;
+ALTER SEQUENCE messages_id_sequence OWNER TO openreception;
+ALTER SEQUENCE message_queue_id_sequence OWNER TO openreception;
+ALTER SEQUENCE message_queue_history_id_sequence OWNER TO openreception;
+ALTER SEQUENCE message_draft_id_sequence OWNER TO openreception;
+ALTER SEQUENCE calendar_events_id_sequence OWNER TO openreception;
+ALTER SEQUENCE distribution_list_id_sequence OWNER TO openreception;
+ALTER SEQUENCE recurring_calendar_events_id_sequence OWNER TO openreception;
+ALTER SEQUENCE phone_numbers_id_sequence OWNER TO openreception;
+ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO openreception;
+ALTER SEQUENCE playlists_id_sequence OWNER TO openreception;
+
+-------------------------------------------------------------------------------

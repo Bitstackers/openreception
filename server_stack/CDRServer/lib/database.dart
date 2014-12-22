@@ -9,6 +9,8 @@ import 'package:openreception_framework/database.dart' as Database;
 
 
 part 'db/cdr.dart';
+part 'db/create_checkpoint.dart';
+part 'db/get_checkpoint_list.dart';
 part 'db/newcdr.dart';
 
 final String libraryName = "cdrserver.database";

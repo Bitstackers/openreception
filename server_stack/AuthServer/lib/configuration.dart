@@ -25,7 +25,6 @@ abstract class Configuration_Defaults {
 
 class Configuration {
 
-
   static Configuration _configuration;
 
   ArgResults _args;
