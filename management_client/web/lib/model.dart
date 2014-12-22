@@ -10,6 +10,7 @@ import 'utilities.dart';
 part 'model/audiofile.dart';
 part 'model/calendar_event.dart';
 part 'model/cdr_entry.dart';
+part 'model/checkpoint.dart';
 part 'model/contact.dart';
 part 'model/contact_attribute.dart';
 part 'model/dialplan_template.dart';
