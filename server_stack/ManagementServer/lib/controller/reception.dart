@@ -86,14 +86,14 @@ class ReceptionController {
     orf_http.extractContent(request).then(JSON.decode).then((Map data) =>
       db.updateReception(receptionId, data['organization_id'], data['full_name'],
       data['attributes'], data['extradatauri'], data['enabled'], data['number']))
-        .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId))
+        .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId)))
         .then((_) {
             Map data = {'event' : 'receptionEventUpdated', 'receptionEvent' : {'receptionId' : receptionId}};
             Notification.broadcast(data)
               .catchError((error) {
                 orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
               });
-          }))
+          })
         .catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
       orf_http.serverError(request, error.toString());

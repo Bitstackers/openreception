@@ -81,7 +81,7 @@ class DialplanController {
           return orf_http.allOk(request);
         } else {
           request.response.statusCode = response.statusCode;
-          return orf_http.writeAndClose(request, JSON.encode({'error': 'The is saved, but the compilating returned an error',
+          return orf_http.writeAndClose(request, JSON.encode({'error': 'The dialplan is saved, but the compilating returned an error',
                                                               'description': JSON.decode(response.body)}));
         }
       })
