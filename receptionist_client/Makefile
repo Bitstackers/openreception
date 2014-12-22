@@ -1,5 +1,11 @@
 HOME=$(CURDIR)
 
+all: js-build
+
+js-build:
+	@pub build
+
+
 deployment: dart-sdk copy-static-files update-pub compile-js link-to-packages
 	rm deploy/pubspec.*
 
