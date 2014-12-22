@@ -1,7 +1,7 @@
 PWD=$(shell pwd)
 DB_SRC=${PWD}/db_src
-DB_SCHEMA=postgresql/schema.sql
-DB_DATA=postgresql/test_data.sql
+DB_SCHEMA=schema.sql
+DB_DATA=test_data.sql
 TIMESTAMP=$(shell date +%s)
 
 PREFIX?=/usr/local/databaseservers
@@ -109,6 +109,12 @@ install-default-config:
 	@install MessageDispatcher/bin/config.json.dist ${PREFIX}/messagedispatcherconfig.json
 	@install MiscServer/bin/config.json.dist ${PREFIX}/miscconfig.json
 	@install ReceptionServer/bin/config.json.dist ${PREFIX}/receptionconfig.json
+
+install_db:
+	PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_SCHEMA} --host=${PGHOST} --username=${PGUSER} -w
+
+install_db_test_data:
+	LANG=C.UTF-8 PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_DATA} --host=${PGHOST} --username=${PGUSER} -w
 
 # This rule depends on a .pgpass file containing the password for the user specified in makefile.dbsetup
 latest_db_install:
