@@ -1,0 +1,23 @@
+library or_test_fw;
+
+import 'package:phonio/phonio.dart' as Phonio;
+import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Transport;
+import 'package:openreception_framework/storage.dart' as Storage;
+import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception_framework/eventtypes.dart';
+import 'dart:async';
+import 'dart:collection';
+import 'package:logging/logging.dart';
+import 'package:unittest/unittest.dart';
+
+part 'config.dart';
+part 'pool.dart';
+part 'receptionist.dart';
+part 'receptionist_pool.dart';
+part 'customer.dart';
+part 'customer_pool.dart';
+
+part 'incoming_call.dart';
+
+const String libraryName = 'OpenReceptionTest';

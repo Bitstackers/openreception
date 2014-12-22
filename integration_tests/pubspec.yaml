@@ -1,0 +1,9 @@
+name: openreception_tests
+description: OpenReception Acceptance tests
+dependencies:
+  logging: any
+  unittest: any
+  Phonio:
+    git: "https://github.com/Bitstackers/Phonio.git"
+  openreception_framework:
+    git: "https://github.com/Bitstackers/OpenReceptionFramework.git"
