@@ -503,3 +503,8 @@ SELECT setval('phone_numbers_id_sequence', (SELECT max(id)+1 FROM phone_numbers)
 SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 
 COMMIT;
+--  Set ownership:
+
+
+
+-------------------------------------------------------------------------------

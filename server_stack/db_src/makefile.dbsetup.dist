@@ -1,3 +1,0 @@
-PGHOST=localhost
-PGUSER=alice
-PGPASS=password
