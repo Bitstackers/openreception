@@ -29,7 +29,40 @@ Future<Dialplan> getDialplan(int receptionId) {
   return completer.future;
 }
 
-Future updateDialplan(int receptionId, String dialplan) {
+Future markDialplanAsCompiled(int receptionId) {
+  final Completer completer = new Completer();
+
+  HttpRequest request;
+  String url = '${config.serverUrl}/reception/$receptionId/dialplan/compile?token=${config.token}';
+
+  request = new HttpRequest()
+    ..open(HttpMethod.POST, url)
+    ..onLoad.listen((_) {
+      try {
+        String body = request.responseText;
+        if (request.status == 200) {
+          completer.complete(JSON.decode(body));
+        } else if (request.status == 403) {
+          completer.completeError(new ForbiddenException(body));
+        } else if (request.status == 500) {
+          completer.completeError(new InternalServerError(body));
+        } else {
+          completer.completeError(new UnknowStatusCode(request.status, request.statusText, body));
+        }
+      } catch (error) {
+        completer.completeError('Exception in updateDialplan ${error}');
+      }
+    })
+    ..onError.listen((error) {
+      //TODO logging.
+      completer.completeError(error);
+    })
+    ..send();
+
+  return completer.future;
+}
+
+Future<Dialplan> updateDialplan(int receptionId, String dialplan) {
   final Completer completer = new Completer();
 
   HttpRequest request;

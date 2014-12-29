@@ -52,6 +52,7 @@ class DialplanView {
   StreamSubscription<Event> commentTextSubscription;
   DivElement receptionOuterSelector;
   ButtonElement saveButton;
+  ButtonElement compileButton;
   SpanElement extensionListHeader;
 
   SearchComponent<Reception> receptionPicker;
@@ -76,6 +77,7 @@ class DialplanView {
     settingPanel         = element.querySelector('#dialplan-settings');
     commentTextarea      = element.querySelector('#dialplan-comment');
     saveButton           = element.querySelector('#dialplan-savebutton');
+    compileButton        = element.querySelector('#dialplan-compile');
     extensionListHeader  = element.querySelector('#dialplan-extensionlist-header');
     templatePicker       = element.querySelector('#dialplan-templates');
     loadDialplanTemplate = element.querySelector('#dialplan-loadtemplate');
@@ -108,6 +110,10 @@ class DialplanView {
 
     saveButton.onClick.listen((_) {
       saveDialplan();
+    });
+
+    compileButton.onClick.listen((_) {
+      compileDialplan();
     });
 
     controlListCondition.children.forEach((LIElement li) {
@@ -207,6 +213,19 @@ class DialplanView {
     loadDialplanTemplate.disabled = false;
   }
 
+  void markAsCompiled(bool toggle) {
+    compileButton.classes.toggle('dialplan-iscompiled', toggle);
+    compileButton.classes.toggle('dialplan-isnotcompiled', !toggle);
+  }
+
+  void enabledCompile() {
+    compileButton.disabled = false;
+  }
+
+  void disableCompile() {
+    compileButton.disabled = true;
+  }
+
   void enabledSaveButton() {
     saveButton.disabled = false;
   }
@@ -221,10 +240,12 @@ class DialplanView {
     request.getDialplan(receptionId).then((Dialplan value) {
       enableTemplateLoadButton();
       disableSaveButton();
+      enabledCompile();
       dialplan = value;
       selectedReceptionId = receptionId;
       renderExtensionList(value);
       activateExtension(null);
+      markAsCompiled(dialplan.isCompiled);
 
       showIvrView.disabled = false;
 
@@ -306,6 +327,17 @@ class DialplanView {
     extensions.add(new Extension()..name = genericName);
   }
 
+  Future compileDialplan() {
+    if (selectedReceptionId != null && selectedReceptionId > 0) {
+      return request.markDialplanAsCompiled(selectedReceptionId).then((_) {
+        dialplan.isCompiled = true;
+        markAsCompiled(dialplan.isCompiled);
+      });
+    } else {
+      return new Future.value();
+    }
+  }
+
   Future saveDialplan() {
     if (selectedReceptionId != null && selectedReceptionId > 0) {
       return request.updateDialplan(selectedReceptionId, JSON.encode(dialplan))
@@ -313,6 +345,8 @@ class DialplanView {
         notify.info('Dialplan er blevet opdateret.');
         bus.fire(new DialplanChangedEvent(selectedReceptionId));
         disableSaveButton();
+        dialplan.isCompiled = false;
+        markAsCompiled(dialplan.isCompiled);
       }).then((_) {
         return request.updateIvr(selectedReceptionId, JSON.encode(ivrMenus));
       }).catchError((error) {
