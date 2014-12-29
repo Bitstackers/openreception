@@ -6,5 +6,7 @@ abstract class Organization {
 
   Future<List<Model.Organization>> list();
 
+  Future<Model.Organization> remove(Model.Organization organization);
+
   Future<Model.Organization> save(Model.Organization organization);
 }

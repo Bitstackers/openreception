@@ -15,5 +15,5 @@ abstract class OrganizationResource {
     => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}');
 
   static Uri list(Uri host)
-    => Uri.parse('${root(host)}/list');
+    => Uri.parse('${root(host)}');
 }

@@ -18,16 +18,23 @@ class RESTOrganizationStore implements Storage.Organization {
         => new Model.Organization.fromMap (JSON.decode(response)));
 
   Future<Model.Organization> create(Model.Organization organization) =>
-      this._backed.post
+      this._backed.put
         (appendToken
            (OrganizationResource.root(this._host), this._token), JSON.encode(organization.asMap))
       .then((String response)
         => new Model.Organization.fromMap (JSON.decode(response)));
 
   Future<Model.Organization> update(Model.Organization organization) =>
-      this._backed.put
+      this._backed.post
         (appendToken
           (OrganizationResource.single(this._host, organization.id), this._token), JSON.encode (organization.asMap))
+      .then((String response)
+        => new Model.Organization.fromMap (JSON.decode(response)));
+
+  Future<Model.Organization> remove(Model.Organization organization) =>
+      this._backed.delete
+        (appendToken
+          (OrganizationResource.single(this._host, organization.id), this._token))
       .then((String response)
         => new Model.Organization.fromMap (JSON.decode(response)));
 
@@ -42,5 +49,6 @@ class RESTOrganizationStore implements Storage.Organization {
   Future<List<Model.Organization>> list() =>
       this._backed.get(appendToken(OrganizationResource.list(this._host),this._token))
       .then((String response)
-        => (JSON.decode(response) as List).map((Map map) => new Model.Organization.fromMap(map)));
+        => (JSON.decode(response) as Map)[Model.OrganizationJSONKey.ORGANIZATION_LIST]
+           .map((Map map) => new Model.Organization.fromMap(map)).toList() );
 }

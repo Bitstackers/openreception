@@ -1,6 +1,7 @@
 part of openreception.model;
 
 abstract class OrganizationJSONKey {
+  static const String ORGANIZATION_LIST = 'organizations';
   static const String BILLING_TYOE = 'billing_type';
   static const String FLAG = 'flag';
   static const String FULL_NAME = 'full_name';
@@ -17,6 +18,8 @@ class Organization {
   String fullName;
   String billingType;
   String flag;
+
+  Organization();
 
   Organization.fromMap(Map organizationMap) {
     if (organizationMap == null) throw new ArgumentError('Null map');
