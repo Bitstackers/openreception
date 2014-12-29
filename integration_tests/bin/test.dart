@@ -5,6 +5,8 @@ import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Transport;
 import '../lib/or_test_fw.dart';
 
+import '../lib/managementserver.dart' as mgt;
+
 import 'package:logging/logging.dart';
 
 const String pbxHost = '192.168.1.116';
@@ -52,6 +54,7 @@ void main() {
 
   //testPJSUA();
   //testSNOM();
+  testServerStack();
 
   Receptionist r1 = new Receptionist(null);
 
@@ -237,3 +240,6 @@ class Receptionist extends Phone {
 
 }*/
 
+void testServerStack() {
+  mgt.runAllTests();
+}
