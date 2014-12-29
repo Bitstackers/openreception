@@ -23,7 +23,7 @@ class ReceptionView {
   ButtonElement buttonSave, buttonCreate, buttonDelete;
   UListElement ulAddresses, ulAlternatenames, ulBankinginformation,
       ulSalesCalls, ulEmailaddresses, ulHandlings, ulOpeninghours,
-      ulRegistrationnumbers, ulTelephonenumbers, ulWebsites;
+      ulRegistrationNumbers, ulTelephonenumbers, ulWebsites;
   SearchInputElement searchBox;
   UListElement uiReceptionList;
   UListElement ulContactList;
@@ -32,59 +32,54 @@ class ReceptionView {
   List<Reception> receptions = new List<Reception>();
 
   SearchComponent<Organization> SC;
-  int selectedReceptionId = 0,
+  int selectedReceptionId   = 0,
       currentOrganizationId = 0;
+  bool createNew = false;
 
   ReceptionView(DivElement this.element) {
-    searchBox = element.querySelector('#reception-search-box');
+    searchBox       = element.querySelector('#reception-search-box');
     uiReceptionList = element.querySelector('#reception-list');
-    ulContactList = element.querySelector('#reception-contact-list');
+    ulContactList   = element.querySelector('#reception-contact-list');
 
-    inputFullName = element.querySelector('#reception-input-name');
-    inputProduct = element.querySelector('#reception-input-product');
-    inputOther = element.querySelector('#reception-input-other');
-    inputCostumerstype = element.querySelector('#reception-input-customertype');
-    inputShortGreeting = element.querySelector('#reception-input-shortgreeting');
-    inputGreeting = element.querySelector('#reception-input-greeting');
-    inputEnabled = element.querySelector('#reception-input-enabled');
-    inputReceptionNumber = element.querySelector(
-        '#reception-input-receptionnumber');
-    buttonDialplan = element.querySelector('#reception-button-dialplan');
+    inputFullName        = element.querySelector('#reception-input-name');
+    inputProduct         = element.querySelector('#reception-input-product');
+    inputOther           = element.querySelector('#reception-input-other');
+    inputCostumerstype   = element.querySelector('#reception-input-customertype');
+    inputShortGreeting   = element.querySelector('#reception-input-shortgreeting');
+    inputGreeting        = element.querySelector('#reception-input-greeting');
+    inputEnabled         = element.querySelector('#reception-input-enabled');
+    inputReceptionNumber = element.querySelector('#reception-input-receptionnumber');
+    buttonDialplan       = element.querySelector('#reception-button-dialplan');
 
-    ulAddresses = element.querySelector('#reception-list-addresses');
-    ulAlternatenames = element.querySelector('#reception-list-alternatenames');
-    ulBankinginformation = element.querySelector(
-        '#reception-list-bankinginformation');
-    ulSalesCalls = element.querySelector(
-        '#reception-list-salescalls');
-    ulEmailaddresses = element.querySelector('#reception-list-emailaddresses');
-    ulHandlings = element.querySelector('#reception-list-handlings');
-    ulOpeninghours = element.querySelector('#reception-list-openinghours');
-    ulRegistrationnumbers = element.querySelector(
-        '#reception-list-registrationnumbers');
-    ulTelephonenumbers = element.querySelector(
-        '#reception-list-telephonenumbers');
-    ulWebsites = element.querySelector('#reception-list-websites');
+    ulAddresses           = element.querySelector('#reception-list-addresses');
+    ulAlternatenames      = element.querySelector('#reception-list-alternatenames');
+    ulBankinginformation  = element.querySelector('#reception-list-bankinginformation');
+    ulSalesCalls          = element.querySelector('#reception-list-salescalls');
+    ulEmailaddresses      = element.querySelector('#reception-list-emailaddresses');
+    ulHandlings           = element.querySelector('#reception-list-handlings');
+    ulOpeninghours        = element.querySelector('#reception-list-openinghours');
+    ulRegistrationNumbers = element.querySelector('#reception-list-registrationnumbers');
+    ulTelephonenumbers    = element.querySelector('#reception-list-telephonenumbers');
+    ulWebsites            = element.querySelector('#reception-list-websites');
 
-    buttonSave = element.querySelector('#reception-save');
+    buttonSave   = element.querySelector('#reception-save');
     buttonCreate = element.querySelector('#reception-create');
     buttonDelete = element.querySelector('#reception-delete');
 
-    organizationOuterSelector = element.querySelector(
-        '#reception-organization-selector');
+    organizationOuterSelector = element.querySelector('#reception-organization-selector');
 
-    SC = new SearchComponent<Organization>(organizationOuterSelector,
-        'reception-organization-searchbox')
-        ..listElementToString = organizationToSearchboxString
-        ..searchFilter = organizationSearchHandler
-        ..searchPlaceholder = 'Søg...';
+    SC = new SearchComponent<Organization>(organizationOuterSelector, 'reception-organization-searchbox')
+      ..selectedElementChanged = selectedElementChanged
+      ..listElementToString = organizationToSearchboxString
+      ..searchFilter = organizationSearchHandler
+      ..searchPlaceholder = 'Søg...';
 
     fillSearchComponent();
 
-    buttonSave.disabled = true;
-    buttonDelete.disabled = true;
+    disabledDeleteButton();
+    disabledSaveButton();
 
-    registrateEventHandlers();
+    registerEventHandlers();
 
     refreshList();
   }
@@ -104,19 +99,22 @@ class ReceptionView {
     return organization.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
-  void registrateEventHandlers() {
+  void selectedElementChanged(Organization organization) {
+    OnContentChange();
+  }
+
+  void registerEventHandlers() {
     buttonSave.onClick.listen((_) {
       saveChanges();
     });
 
     buttonCreate.onClick.listen((_) => createReceptionClickHandler());
-
     buttonDelete.onClick.listen((_) => deleteCurrentReception());
 
     bus.on(WindowChanged).listen((WindowChanged event) {
       element.classes.toggle('hidden', event.window != viewName);
-      if (event.data.containsKey('organization_id') && event.data.containsKey(
-          'reception_id')) {
+      if (event.data.containsKey('organization_id') &&
+          event.data.containsKey('reception_id')) {
         activateReception(event.data['organization_id'], event.data['reception_id']);
       }
     });
@@ -142,8 +140,40 @@ class ReceptionView {
     });
 
     searchBox.onInput.listen((_) => performSearch());
-
     buttonDialplan.onClick.listen((_) => goToDialplan());
+
+    //Listen to content elements for changes.
+    buttonDialplan.onInput.listen((_) => OnContentChange());
+    inputFullName.onInput.listen((_) => OnContentChange());
+    inputEnabled.onChange.listen((_) => OnContentChange());
+    inputReceptionNumber.onInput.listen((_) => OnContentChange());
+    inputCostumerstype.onInput.listen((_) => OnContentChange());
+    inputShortGreeting.onInput.listen((_) => OnContentChange());
+    inputGreeting.onInput.listen((_) => OnContentChange());
+    inputOther.onInput.listen((_) => OnContentChange());
+    inputProduct.onInput.listen((_) => OnContentChange());
+  }
+
+  void enabledSaveButton() {
+    buttonSave.disabled = false;
+  }
+
+  void disabledSaveButton() {
+    buttonSave.disabled = true;
+  }
+
+  void enabledDeleteButton() {
+    buttonDelete.disabled = false;
+  }
+
+  void disabledDeleteButton() {
+    buttonDelete.disabled = true;
+  }
+
+  void OnContentChange() {
+    if(createNew || selectedReceptionId > 0) {
+      inputFullName.value.trim() == '' ? disabledSaveButton() : enabledSaveButton();
+    }
   }
 
   void performSearch() {
@@ -155,16 +185,17 @@ class ReceptionView {
 
   void renderReceptionList(List<Reception> receptions) {
     uiReceptionList.children
-        ..clear()
-        ..addAll(receptions.map(makeReceptionNode));
+      ..clear()
+      ..addAll(receptions.map(makeReceptionNode));
   }
 
   void createReceptionClickHandler() {
     selectedReceptionId = 0;
     currentOrganizationId = 0;
+    createNew = true;
 
-    buttonDelete.disabled = true;
-    buttonSave.disabled = false;
+    disabledDeleteButton();
+    disabledSaveButton();
     buttonSave.text = 'Opret';
 
     //Clear all fields.
@@ -182,16 +213,16 @@ class ReceptionView {
     inputGreeting.value = '';
     inputOther.value = '';
     inputProduct.value = '';
-    fillList(ulAddresses, new List<String>());
-    fillList(ulAlternatenames, new List<String>());
-    fillList(ulBankinginformation, new List<String>());
-    fillList(ulSalesCalls, new List<String>());
-    fillList(ulEmailaddresses, new List<String>());
-    fillList(ulHandlings, new List<String>());
-    fillList(ulOpeninghours, new List<String>());
-    fillList(ulRegistrationnumbers, new List<String>());
-    fillList(ulTelephonenumbers, new List<String>());
-    fillList(ulWebsites, new List<String>());
+    fillList(ulAddresses, new List<String>(), onChange: OnContentChange);
+    fillList(ulAlternatenames, new List<String>(), onChange: OnContentChange);
+    fillList(ulBankinginformation, new List<String>(), onChange: OnContentChange);
+    fillList(ulSalesCalls, new List<String>(), onChange: OnContentChange);
+    fillList(ulEmailaddresses, new List<String>(), onChange: OnContentChange);
+    fillList(ulHandlings, new List<String>(), onChange: OnContentChange);
+    fillList(ulOpeninghours, new List<String>(), onChange: OnContentChange);
+    fillList(ulRegistrationNumbers, new List<String>(), onChange: OnContentChange);
+    fillList(ulTelephonenumbers, new List<String>(), onChange: OnContentChange);
+    fillList(ulWebsites, new List<String>(), onChange: OnContentChange);
   }
 
   void goToDialplan() {
@@ -231,7 +262,7 @@ class ReceptionView {
         notify.error('Der skete en fejl da receptionen skulle gemmes. ${error}');
         log.error('Tried to update reception ${selectedReceptionId} but got "${error}" "${stack}"');
       });
-    } else if (selectedReceptionId == 0 && currentOrganizationId == 0) {
+    } else if (createNew && selectedReceptionId == 0 && currentOrganizationId == 0) {
       Reception newReception = extractValues();
       if (SC.currentElement != null) {
         int organizationId = SC.currentElement.id;
@@ -252,27 +283,27 @@ class ReceptionView {
 
   Reception extractValues() {
     return new Reception()
-        ..organizationId = currentOrganizationId
-        ..fullName = inputFullName.value
-        ..enabled = inputEnabled.checked
-        ..receptionNumber = inputReceptionNumber.value
+      ..organizationId = currentOrganizationId
+      ..fullName = inputFullName.value
+      ..enabled = inputEnabled.checked
+      ..receptionNumber = inputReceptionNumber.value
 
-        ..customertype = inputCostumerstype.value
-        ..shortGreeting = inputShortGreeting.value
-        ..greeting = inputGreeting.value
-        ..other = inputOther.value
-        ..product = inputProduct.value
+      ..customertype = inputCostumerstype.value
+      ..shortGreeting = inputShortGreeting.value
+      ..greeting = inputGreeting.value
+      ..other = inputOther.value
+      ..product = inputProduct.value
 
-        ..addresses = getListValues(ulAddresses)
-        ..alternateNames = getListValues(ulAlternatenames)
-        ..bankinginformation = getListValues(ulBankinginformation)
-        ..salesCalls = getListValues(ulSalesCalls)
-        ..emailaddresses = getListValues(ulEmailaddresses)
-        ..handlings = getListValues(ulHandlings)
-        ..openinghours = getListValues(ulOpeninghours)
-        ..registrationnumbers = getListValues(ulRegistrationnumbers)
-        ..telephonenumbers = getListValues(ulTelephonenumbers)
-        ..websites = getListValues(ulWebsites);
+      ..addresses = getListValues(ulAddresses)
+      ..alternateNames = getListValues(ulAlternatenames)
+      ..bankinginformation = getListValues(ulBankinginformation)
+      ..salesCalls = getListValues(ulSalesCalls)
+      ..emailaddresses = getListValues(ulEmailaddresses)
+      ..handlings = getListValues(ulHandlings)
+      ..openinghours = getListValues(ulOpeninghours)
+      ..registrationnumbers = getListValues(ulRegistrationNumbers)
+      ..telephonenumbers = getListValues(ulTelephonenumbers)
+      ..websites = getListValues(ulWebsites);
   }
 
   Future refreshList() {
@@ -288,12 +319,12 @@ class ReceptionView {
 
   LIElement makeReceptionNode(Reception reception) {
     return new LIElement()
-        ..classes.add('clickable')
-        ..dataset['receptionid'] = '${reception.id}'
-        ..text = reception.fullName
-        ..onClick.listen((_) {
-          activateReception(reception.organizationId, reception.id);
-        });
+      ..classes.add('clickable')
+      ..dataset['receptionid'] = '${reception.id}'
+      ..text = reception.fullName
+      ..onClick.listen((_) {
+        activateReception(reception.organizationId, reception.id);
+      });
   }
 
   void highlightContactInList(int id) {
@@ -305,9 +336,10 @@ class ReceptionView {
     currentOrganizationId = organizationId;
     selectedReceptionId = receptionId;
 
-    buttonDelete.disabled = false;
-    buttonSave.disabled = false;
+    disabledSaveButton();
+    enabledDeleteButton();
     buttonSave.text = 'Gem';
+    createNew = false;
 
     SC.selectElement(null, (Organization listItem, _) {
       return listItem.id == organizationId;
@@ -327,16 +359,16 @@ class ReceptionView {
         inputGreeting.value = response.greeting;
         inputOther.value = response.other;
         inputProduct.value = response.product;
-        fillList(ulAddresses, response.addresses);
-        fillList(ulAlternatenames, response.alternateNames);
-        fillList(ulBankinginformation, response.bankinginformation);
-        fillList(ulSalesCalls, response.salesCalls);
-        fillList(ulEmailaddresses, response.emailaddresses);
-        fillList(ulHandlings, response.handlings);
-        fillList(ulOpeninghours, response.openinghours);
-        fillList(ulRegistrationnumbers, response.registrationnumbers);
-        fillList(ulTelephonenumbers, response.telephonenumbers);
-        fillList(ulWebsites, response.websites);
+        fillList(ulAddresses, response.addresses, onChange: OnContentChange);
+        fillList(ulAlternatenames, response.alternateNames, onChange: OnContentChange);
+        fillList(ulBankinginformation, response.bankinginformation, onChange: OnContentChange);
+        fillList(ulSalesCalls, response.salesCalls, onChange: OnContentChange);
+        fillList(ulEmailaddresses, response.emailaddresses, onChange: OnContentChange);
+        fillList(ulHandlings, response.handlings, onChange: OnContentChange);
+        fillList(ulOpeninghours, response.openinghours, onChange: OnContentChange);
+        fillList(ulRegistrationNumbers, response.registrationnumbers, onChange: OnContentChange);
+        fillList(ulTelephonenumbers, response.telephonenumbers, onChange: OnContentChange);
+        fillList(ulWebsites, response.websites, onChange: OnContentChange);
       });
 
       updateContactList(receptionId);
@@ -358,15 +390,14 @@ class ReceptionView {
   }
 
   LIElement makeContactNode(Contact contact, int receptionId) {
-    LIElement li = new LIElement();
-    li
-        ..classes.add('clickable')
-        ..text = contact.fullName
-        ..onClick.listen((_) {
-          Map data = {
-            'contact_id': contact.id,
-            'reception_id': receptionId
-          };
+    LIElement li = new LIElement()
+      ..classes.add('clickable')
+      ..text = contact.fullName
+      ..onClick.listen((_) {
+        Map data = {
+          'contact_id': contact.id,
+          'reception_id': receptionId
+        };
         bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
     return li;
