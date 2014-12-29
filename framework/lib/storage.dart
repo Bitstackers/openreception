@@ -5,6 +5,7 @@ import 'model.dart' as Model;
 
 part 'storage/storage-message.dart';
 part 'storage/storage-message_queue.dart';
+part 'storage/storage-organization.dart';
 part 'storage/storage-reception.dart';
 part 'storage/storage-user.dart';
 
