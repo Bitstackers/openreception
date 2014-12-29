@@ -69,26 +69,32 @@ class DialplanController {
     orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map dialplanJson) => db.updateDialplan(receptionId, dialplanJson))
-      .then((_) => db.getDialplan(receptionId))
-      .then((Dialplan dialplan) {
-        Map json = dialplan.toJson();
-        json['receptionid'] = receptionId;
-        json['entrynumber'] = dialplan.entryNumber;
-        return service.compileDialplan(config.dialplanCompilerServer, receptionId, JSON.encode(json), token);
-      })
-      .then((http.Response response) {
-        if(response.statusCode == 200) {
-          return orf_http.allOk(request);
-        } else {
-          request.response.statusCode = response.statusCode;
-          return orf_http.writeAndClose(request, JSON.encode({'error': 'The dialplan is saved, but the compilating returned an error',
-                                                              'description': JSON.decode(response.body)}));
-        }
-      })
+      .then((_) => orf_http.allOk(request))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());
     });
+  }
+
+  void compileDialplan(HttpRequest request) {
+    const String context = '${libraryName}.compileDialplan';
+    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+    final String token = request.uri.queryParameters['token'];
+    db.getDialplan(receptionId).then((Dialplan dialplan) {
+      return service.compileDialplan(config.dialplanCompilerServer, receptionId, dialplanAsJson(dialplan), token);
+    }).then((http.Response response) {
+      if(response.statusCode == 200) {
+        return db.markDialplanAsCompiled(receptionId).then((_) => orf_http.allOk(request));
+      } else {
+        request.response.statusCode = response.statusCode;
+        return orf_http.writeAndClose(request, JSON.encode({'error': 'The compilating of the dialplan returned an error',
+                                                            'description': JSON.decode(response.body)}));
+      }
+    }).catchError((error, stack) {
+      orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
+      orf_http.serverError(request, error.toString());
+  });
+
   }
 
   void getIvr(HttpRequest request) {

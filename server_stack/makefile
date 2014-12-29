@@ -1,7 +1,7 @@
 PWD=$(shell pwd)
 DB_SRC=${PWD}/db_src
-DB_SCHEMA=postgresql/schema.sql
-DB_DATA=postgresql/test_data.sql
+DB_SCHEMA=schema.sql
+DB_DATA=test_data.sql
 TIMESTAMP=$(shell date +%s)
 
 PREFIX?=/usr/local/databaseservers

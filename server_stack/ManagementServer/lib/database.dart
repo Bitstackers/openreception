@@ -218,6 +218,9 @@ class Database {
   Future updateDialplan(int receptionId, Map dialplan) =>
       _updateDialplan(this.db, receptionId, dialplan);
 
+  Future markDialplanAsCompiled(int receptionId) =>
+      _markDialplanAsCompiled(this.db, receptionId);
+
   Future<IvrList> getIvr(int receptionId) =>
       _getIvr(this.db, receptionId);
 

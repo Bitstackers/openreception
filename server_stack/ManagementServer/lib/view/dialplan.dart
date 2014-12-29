@@ -9,8 +9,9 @@ String dialplanAsJson(Dialplan dialplan) => JSON.encode(_dialplanAsJsonMap(dialp
 Map _dialplanAsJsonMap(Dialplan dialplan) {
   if(dialplan != null) {
     Map json = dialplan.toJson();
-    json['number'] = dialplan.entryNumber;
+    json['entrynumber'] = dialplan.entryNumber;
     json['receptionid'] = dialplan.receptionId;
+    json['iscompiled'] = dialplan.isCompiled;
     return json;
   } else {
     return {};

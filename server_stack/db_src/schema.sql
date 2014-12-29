@@ -75,17 +75,18 @@ CREATE TABLE organizations (
    flag         TEXT NOT NULL);
 
 CREATE TABLE receptions (
-   id              INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   organization_id INTEGER NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
-   full_name       TEXT    NOT NULL,
+   id                INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   organization_id   INTEGER NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
+   full_name         TEXT    NOT NULL,
 --   uri             TEXT    NOT NULL UNIQUE,
-   attributes      JSON    NOT NULL,
-   extradatauri    TEXT,
+   attributes        JSON    NOT NULL,
+   extradatauri      TEXT,
    reception_telephonenumber TEXT UNIQUE,
-   dialplan        JSON,
-   ivr             JSON,
-   last_check      TIMESTAMP NOT NULL DEFAULT NOW(),
-   enabled         BOOLEAN NOT NULL DEFAULT TRUE
+   dialplan          JSON,
+   dialplan_compiled BOOLEAN NOT NULL DEFAULT FALSE,
+   ivr               JSON,
+   last_check        TIMESTAMP NOT NULL DEFAULT NOW(),
+   enabled           BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 --CREATE INDEX reception_uri_index ON receptions (uri);

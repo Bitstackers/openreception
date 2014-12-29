@@ -35,6 +35,7 @@ final Pattern receptionContactIdDistributionListEntryUrl  = new UrlPattern(r'/re
 final Pattern receptionContactIdCalendarUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar');
 final Pattern receptionContactIdCalendarIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar/(\d+)');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
+final Pattern dialplanCompileUrl     = new UrlPattern(r'/reception/(\d+)/dialplan/compile');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
 final Pattern receptionRecordUrl     = new UrlPattern(r'/reception/(\d+)/record');
@@ -66,7 +67,7 @@ final Pattern receptionContactIdMoveUrl = new UrlPattern(r'/reception/(\d+)/cont
 
 final List<Pattern> Serviceagents =
 [organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
- receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
+ receptionContactIdUrl, receptionContactUrl, dialplanUrl, dialplanCompileUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
  ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl,
 
@@ -144,6 +145,7 @@ void setupRoutes(HttpServer server, Configuration config) {
 
     ..serve(dialplanUrl, method: HttpMethod.GET).listen(dialplan.getDialplan)
     ..serve(dialplanUrl, method: HttpMethod.POST).listen(dialplan.updateDialplan)
+    ..serve(dialplanCompileUrl, method: HttpMethod.POST).listen(dialplan.compileDialplan)
 
     ..serve(DialplanTemplateUrl, method: HttpMethod.GET).listen(dialplan.getTemplates)
 
