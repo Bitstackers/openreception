@@ -14,7 +14,6 @@ import '../notification.dart' as notify;
 import '../menu.dart';
 
 class ReceptionView {
-  static const String addNewLiClass = 'addnew';
   static const String viewName = 'reception';
   DivElement element;
   TextAreaElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,

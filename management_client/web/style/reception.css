@@ -23,8 +23,8 @@
 
 #reception-list {
   height: 100%;
-  height: -moz-calc(100% -   68px);
-  height: -webkit-calc(100% -   68px);
+  height: -moz-calc(100% - 68px);
+  height: -webkit-calc(100% - 68px);
   overflow: auto;
   border: 1px solid grey;
   border-radius: 2px;

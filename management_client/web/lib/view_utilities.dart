@@ -4,14 +4,16 @@ import 'dart:html';
 
 import 'package:html5_dnd/html5_dnd.dart';
 
-String addNewLiClass = 'addnew';
+const String addNewLiClass = 'addnew';
+
+typedef void OnChange();
 
 class Keys {
   static const int ESCAPE = 27;
   static const int ENTER = 13;
 }
 
-void fillList(UListElement element, List<String> items, {Function onChange}) {
+void fillList(UListElement element, List<String> items, {OnChange onChange}) {
   List<LIElement> children = new List<LIElement>();
   if (items != null) {
     for (String item in items) {
