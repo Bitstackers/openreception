@@ -25,6 +25,7 @@ class Reception implements Comparable<Reception> {
   List<String> telephonenumbers;
   List<String> websites;
 
+  Map attributes = {};
   /**
    * Default constructor
    */
@@ -42,7 +43,7 @@ class Reception implements Comparable<Reception> {
     receptionNumber = json['reception_telephonenumber'];
 
     if (json.containsKey('attributes')) {
-      Map attributes = json['attributes'];
+      attributes = json['attributes'];
 
       product = stringFromJson(attributes, 'product');
       other = stringFromJson(attributes, 'other');
@@ -64,23 +65,21 @@ class Reception implements Comparable<Reception> {
   }
 
   Map toJson() {
-    Map attributes = {
-      'product': product,
-      'other': other,
-      'greeting': greeting,
-      'shortgreeting': shortGreeting,
-      'customertype': customertype,
-      'addresses': priorityListToJson(addresses),
-      'alternatenames': priorityListToJson(alternateNames),
-      'bankinginformation': priorityListToJson(bankinginformation),
-      'salescalls': priorityListToJson(salesCalls),
-      'emailaddresses': priorityListToJson(emailaddresses),
-      'handlings': priorityListToJson(handlings),
-      'openinghours': priorityListToJson(openinghours),
-      'registrationnumbers': priorityListToJson(registrationnumbers),
-      'telephonenumbers': priorityListToJson(telephonenumbers),
-      'websites': priorityListToJson(websites)
-    };
+    attributes['product'] = product;
+    attributes['other'] = other;
+    attributes['greeting'] = greeting;
+    attributes['shortgreeting'] = shortGreeting;
+
+    attributes['addresses'] = priorityListToJson(addresses);
+    attributes['alternatenames'] = priorityListToJson(alternateNames);
+    attributes['bankinginformation'] = priorityListToJson(bankinginformation);
+    attributes['salescalls'] = priorityListToJson(salesCalls);
+    attributes['emailaddresses'] = priorityListToJson(emailaddresses);
+    attributes['handlings'] = priorityListToJson(handlings);
+    attributes['openinghours'] = priorityListToJson(openinghours);
+    attributes['registrationnumbers'] = priorityListToJson(registrationnumbers);
+    attributes['telephonenumbers'] = priorityListToJson(telephonenumbers);
+    attributes['websites'] = priorityListToJson(websites);
 
     Map data = {
       'id': id,
