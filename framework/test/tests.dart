@@ -24,8 +24,6 @@ void main() {
   group('service.MessageResource', () {
     test('service.MessageResource.singleMessage', MessageResource.singleMessage);
   });
-
-
 }
 
 abstract class MessageObject {
@@ -45,8 +43,6 @@ abstract class ContactObject {
       expect(new Model.Contact.fromMap(Test_Data.testContact_1_2).asMap,
         equals(Test_Data.testContact_1_2));
 }
-
-
 
 abstract class MessageResource {
   static void singleMessage () =>
