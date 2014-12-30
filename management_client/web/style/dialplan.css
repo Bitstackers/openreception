@@ -213,8 +213,8 @@ td.dialplan-item-remove {
   border: solid 2px grey;
   border-radius: 10px;
   height: 60%;
-  height: -moz-calc(60% -   20px);
-  height: -webkit-calc(60% -   20px);
+  height: -moz-calc(60% - 20px);
+  height: -webkit-calc(60% - 20px);
   margin: 10px 0;
 }
 
@@ -245,9 +245,13 @@ td.dialplan-item-remove {
 }
 
 .dialplan-iscompiled {
-  background: #e9e9e9 url(http://www.famfamfam.com/lab/icons/silk/icons/accept.png) no-repeat;
+  background: #e9e9e9 url(http://www.famfamfam.com/lab/icons/silk/icons/accept.png);
+  background-position: 0;
+  background-repeat: no-repeat;
 }
 
 .dialplan-isnotcompiled {
-  background: #e9e9e9 url(http://www.famfamfam.com/lab/icons/silk/icons/exclamation.png) no-repeat;
+  background: #e9e9e9 url(http://www.famfamfam.com/lab/icons/silk/icons/exclamation.png);
+  background-position: 0;
+  background-repeat: no-repeat;
 }
