@@ -24,8 +24,7 @@ part 'service/service-websocket.dart';
 const String libraryName = "service";
 
 Uri appendToken (Uri uri, String token) =>
-    Uri.parse('${uri}${uri.queryParameters.isEmpty ? '?' : '&'}token=${token}');
-
+  token == null ? uri : Uri.parse('${uri}${uri.queryParameters.isEmpty ? '?' : '&'}token=${token}');
 
 String _removeTailingSlashes (Uri host) {
    String _trimmedHostname = host.toString();

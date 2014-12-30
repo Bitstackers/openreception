@@ -6,14 +6,29 @@ part of openreception.service;
  */
 abstract class OrganizationResource {
 
-  static String nameSpace = 'organization';
+  static const String _nameSpace = 'organization';
 
-  static Uri single(Uri host, int organizationID)
-    => Uri.parse('${root(host)}/${organizationID}');
+  /**
+   * Url for a single organization.
+   */
+  static Uri single(Uri host, int organizationID, {String token}) {
+    Uri url = Uri.parse('${root(host)}/${organizationID}');
+    return appendToken(url, token);
+  }
 
-  static Uri root(Uri host)
-    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}');
+  /**
+   * Url for the organization namespace.
+   */
+  static Uri root(Uri host, {String token}) {
+    Uri url = Uri.parse('${_removeTailingSlashes(host)}/${_nameSpace}');
+    return appendToken(url, token);
+  }
 
-  static Uri list(Uri host)
-    => Uri.parse('${root(host)}');
+  /**
+   * Url for list of organizations.
+   */
+  static Uri list(Uri host, {String token}) {
+    Uri url = Uri.parse('${root(host)}');
+    return appendToken(url, token);
+  }
 }
