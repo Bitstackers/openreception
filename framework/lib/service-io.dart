@@ -1,5 +1,7 @@
 library openreception.service.io;
 
+import 'httpserver.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as IO;
