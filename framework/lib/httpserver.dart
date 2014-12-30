@@ -67,7 +67,7 @@ void preFlight(HttpRequest request) {
   writeAndClose(request, '');
 }
 
-Future<String> extractContent(HttpRequest request) {
+Future<String> extractContent(Stream<List<int>> request) {
   Completer completer = new Completer();
   List<int> completeRawContent = new List<int>();
 
