@@ -119,6 +119,14 @@ class ReceptionView {
       }
     });
 
+    bus.on(ReceptionAddedEvent).listen((ReceptionAddedEvent event) {
+      refreshList();
+    });
+
+    bus.on(ReceptionRemovedEvent).listen((ReceptionRemovedEvent event) {
+      refreshList();
+    });
+
     bus.on(OrganizationAddedEvent).listen((OrganizationAddedEvent event) {
       fillSearchComponent();
     });
@@ -242,7 +250,6 @@ class ReceptionView {
         selectedReceptionId = 0;
         currentOrganizationId = 0;
         clearContent();
-        refreshList();
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med sletningen af receptionen. Fejl: ${error}');
         log.error('Failed to delete reception orgId: "${currentOrganizationId}" recId: "${selectedReceptionId}" got "${error}"');
