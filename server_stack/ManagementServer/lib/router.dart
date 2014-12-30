@@ -66,7 +66,7 @@ final Pattern GroupUrl = new UrlPattern(r'/group');
 final Pattern receptionContactIdMoveUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
 
 final List<Pattern> Serviceagents =
-[organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
+[organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, receptionIdUrl, contactIdUrl, contactUrl,
  receptionContactIdUrl, receptionContactUrl, dialplanUrl, dialplanCompileUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
  ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl,
@@ -93,9 +93,9 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
-    ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
 
-    ..serve(organizationReceptionUrl, method: HttpMethod.PUT).listen(reception.createReception)
+    ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
+    ..serve(receptionUrl, method: HttpMethod.PUT).listen(reception.createReception)
     ..serve(receptionIdUrl, method: HttpMethod.GET)   .listen(reception.getReception)
     ..serve(receptionIdUrl, method: HttpMethod.POST)  .listen(reception.updateReception)
     ..serve(receptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
