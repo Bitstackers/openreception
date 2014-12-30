@@ -27,7 +27,7 @@ class OrganizationController {
     db.getOrganization(organizationId).then((Organization organization) {
       if(organization == null) {
         request.response.statusCode = 404;
-        return orf_http.allOk(request);
+        return orf_http.writeAndClose(request, '{}');
       } else {
         return orf_http.writeAndClose(request, organizationAsJson(organization));
       }
