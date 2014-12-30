@@ -266,7 +266,8 @@ class ReceptionView {
       Reception newReception = extractValues();
       if (SC.currentElement != null) {
         int organizationId = SC.currentElement.id;
-        createReception(organizationId, JSON.encode(newReception)).then((Map data) {
+        newReception.organizationId = organizationId;
+        createReception(JSON.encode(newReception)).then((Map data) {
           notify.info('Receptionen blev oprettet.');
           int receptionId = data['id'];
           bus.fire( new ReceptionAddedEvent(organizationId) );

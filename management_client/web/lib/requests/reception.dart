@@ -89,11 +89,11 @@ Future<Reception> getReception(int receptionId) {
   return completer.future;
 }
 
-Future<Map> createReception(int organizationId, String data) {
+Future<Map> createReception(String data) {
   final Completer completer = new Completer();
 
   HttpRequest request;
-  String url = '${config.serverUrl}/organization/$organizationId/reception?token=${config.token}';
+  String url = '${config.serverUrl}/reception?token=${config.token}';
 
   request = new HttpRequest()
     ..open(HttpMethod.PUT, url)
