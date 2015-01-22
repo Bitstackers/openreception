@@ -266,39 +266,6 @@ CREATE TABLE distribution_list (
       REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
-
--------------------------------------------------------------------------------
---  Recurring calendar events:
-
-CREATE TABLE recurring_calendar_events (
-  id               INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-  start            TIMESTAMP NOT NULL,
-  stop             TIMESTAMP NOT NULL,
-  message          TEXT      NOT NULL,
-  pattern          JSON      NOT NULL,
-  first_occurrence TIMESTAMP NOT NULL,
-  expires          TIMESTAMP NOT NULL
-);
-
-CREATE TABLE contact_recurring_calendar (
-   reception_id INTEGER NOT NULL,
-   contact_id   INTEGER NOT NULL,
-   event_id     INTEGER NOT NULL REFERENCES recurring_calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
-
-   PRIMARY KEY (contact_id, reception_id, event_id),
-
-   FOREIGN KEY (contact_id, reception_id)
-      REFERENCES reception_contacts (contact_id, reception_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE reception_recurring_calendar (
-   reception_id INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
-   event_id     INTEGER NOT NULL REFERENCES recurring_calendar_events (id) ON UPDATE CASCADE ON DELETE CASCADE,
-
-   PRIMARY KEY (reception_id, event_id)
-);
-
 -------------------------------------------------------------------------------
 --  Phones
 -- TODO These are now in the contact as JSON and are therefore deprecated
@@ -353,52 +320,6 @@ CREATE TABLE playlists (
    id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    content      json    NOT NULL
 );
---  The distribution lists are temporarily moved to an object residing inside
---  the contact table. Wheter or not we need the strong references will be
---  clear later on. From there, we can safely migrate to db-keys.
-
---  CREATE TABLE distribution_lists (
---     id                   INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
---     send_to_contact_id   INTEGER NOT NULL,
---     send_to_reception_id INTEGER NOT NULL,
---     recipient_visibility TEXT    NOT NULL REFERENCES recipient_visibilities (value),
---  
---     FOREIGN KEY (send_to_contact_id, send_to_reception_id)
---     REFERENCES reception_contacts (contact_id, reception_id)
---        ON UPDATE CASCADE ON DELETE CASCADE
---  );
-
-
-
---  Unused at the moment. The message archive _could_ be realized by an IMAP store.
---
---  CREATE TABLE archive_message_queue (
---     id                INTEGER   NOT NULL PRIMARY KEY,
---     message           TEXT      NOT NULL,
---     subject           TEXT      NOT NULL,
---     to_contact_id     INTEGER   NOT NULL REFERENCES contacts (id),
---     taken_from        TEXT      NOT NULL,
---     taken_by_agent    INTEGER   NOT NULL REFERENCES users (id),
---     urgent            BOOLEAN   NOT NULL,
---     created_at        TIMESTAMP NOT NULL,
---     last_try          TIMESTAMP NOT NULL,
---     tries             INTEGER   NOT NULL
---  );
-
---  CREATE TABLE archive_message_queue_recipients (
---     contact_id         INTEGER NOT NULL,
---     reception_id       INTEGER NOT NULL,
---     message_id         INTEGER NOT NULL,
---     recipient_role     TEXT    NOT NULL REFERENCES recipient_visibilities (value),
---     resolved_addresses TEXT    NOT NULL,
---  
---     PRIMARY KEY (contact_id, reception_id, message_id),
---  
---     FOREIGN KEY (contact_id, reception_id)
---        REFERENCES reception_contacts (contact_id, reception_id)
---        ON UPDATE CASCADE ON DELETE CASCADE
---  );
---  Create and enable sequences (AUTOINCREMENT):
 
 CREATE SEQUENCE users_id_sequence
   START WITH 1
@@ -508,24 +429,6 @@ CREATE SEQUENCE distribution_list_id_sequence
 ALTER SEQUENCE distribution_list_id_sequence OWNED BY distribution_list.id;
 ALTER TABLE ONLY distribution_list ALTER COLUMN id SET DEFAULT nextval ('distribution_list_id_sequence'::regclass);
 
-CREATE SEQUENCE recurring_calendar_events_id_sequence
-  START WITH 1
-  INCREMENT BY 1
-  NO MINVALUE
-  NO MAXVALUE
-  CACHE 1;
-ALTER SEQUENCE recurring_calendar_events_id_sequence OWNED BY recurring_calendar_events.id;
-ALTER TABLE ONLY recurring_calendar_events ALTER COLUMN id SET DEFAULT nextval ('recurring_calendar_events_id_sequence'::regclass);
-
-CREATE SEQUENCE phone_numbers_id_sequence
-  START WITH 1
-  INCREMENT BY 1
-  NO MINVALUE
-  NO MAXVALUE
-  CACHE 1;
-ALTER SEQUENCE phone_numbers_id_sequence OWNED BY phone_numbers.id;
-ALTER TABLE ONLY phone_numbers ALTER COLUMN id SET DEFAULT nextval ('phone_numbers_id_sequence'::regclass);
-
 CREATE SEQUENCE cdr_checkpoints_id_sequence
   START WITH 1
   INCREMENT BY 1
@@ -572,11 +475,6 @@ ALTER TABLE contact_calendar OWNER TO openreception;
 ALTER TABLE reception_calendar OWNER TO openreception;
 ALTER TABLE distribution_list_roles OWNER TO openreception;
 ALTER TABLE distribution_list OWNER TO openreception;
-ALTER TABLE recurring_calendar_events OWNER TO openreception;
-ALTER TABLE contact_recurring_calendar OWNER TO openreception;
-ALTER TABLE reception_recurring_calendar OWNER TO openreception;
-ALTER TABLE phone_number_types OWNER TO openreception;
-ALTER TABLE phone_numbers OWNER TO openreception;
 ALTER TABLE contact_phone_numbers OWNER TO openreception;
 ALTER TABLE cdr_entries OWNER TO openreception;
 ALTER TABLE cdr_checkpoints OWNER TO openreception;
@@ -594,8 +492,6 @@ ALTER SEQUENCE message_queue_history_id_sequence OWNER TO openreception;
 ALTER SEQUENCE message_draft_id_sequence OWNER TO openreception;
 ALTER SEQUENCE calendar_events_id_sequence OWNER TO openreception;
 ALTER SEQUENCE distribution_list_id_sequence OWNER TO openreception;
-ALTER SEQUENCE recurring_calendar_events_id_sequence OWNER TO openreception;
-ALTER SEQUENCE phone_numbers_id_sequence OWNER TO openreception;
 ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO openreception;
 ALTER SEQUENCE playlists_id_sequence OWNER TO openreception;
 

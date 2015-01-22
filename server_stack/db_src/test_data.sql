@@ -5,7 +5,7 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (2,  'Trine Løcke', 'human'),
        (3,  'Steen Løcke', 'human'),
        (4,  'Kim Rostgaard Christensen', 'human'),
-       (5,  'Jacob Sparre Andersen', 'human'),
+       (5,  'Wolfram Beta', 'human'),
        (6,  'Sidsel Schomacker', 'human'),
        (7,  'Ulrik Hørlyk Hjort', 'human'),
        (8,  'Alexandra Kongstad Pedersen', 'human'),
@@ -72,7 +72,7 @@ VALUES (1,  'Thomas Løcke', 'human'),
 
 
 INSERT INTO organizations (id, full_name, billing_type, flag)
-VALUES 	    (1, 'AdaHeads K/S', 'Bank', 'VIP'),
+VALUES 	    (1, 'BitStackers K/S', 'Bank', 'VIP'),
 	    (2, 'Venner A/S', 'Naturalier', 'Non-VIP'),
 	    (3, 'Responsum K/S', 'Cool cash', 'Non-VIP'),
 	    (4, 'Hansen VVS A/S', 'PBS', 'Non-VIP'),
@@ -80,58 +80,354 @@ VALUES 	    (1, 'AdaHeads K/S', 'Bank', 'VIP'),
 	    (6, 'Landmandens venner A/S', 'PBS', 'Non-VIP');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, extradatauri, attributes)
-VALUES (1, 1, 'AdaHeads K/S', '12340001', 'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
-           '{"shortgreeting": "","addresses":[{"value":"For enden af regnbuen","priority":1},{"value":"Lovelace street","priority":2},{"value":"Farum Gydevej","priority":3},{"value":"Hvor kongerne hænger ud","priority":4}],"alternatenames":[{"value":"Code monkeys","priority":1},{"value":"Software Developers","priority":2},{"value":"Awesome mans","priority":3},{"value":"Bug Fixers","priority":4},{"value":"SuperHeroes","priority":5}],"bankinginformation":[{"value":"Amagerbank 123456789","priority":1},{"value":"Danskebank 123456789","priority":2},{"value":"Nordea 123456789","priority":3},{"value":"JysteBank 123456789","priority":4},{"value":"Bank Bank Bank 123456789","priority":5}],"crapcallhandling":[{"value":"Stil dem videre til Thomas","priority":1},{"value":"Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu","priority":2},{"value":"Sig at det lyder spænende, og de kan sende en email til spam@adaheads.com","priority":3},{"value":"Bed dem om at ringe igen, ved næste fuldmåne","priority":4},{"value":"Begynd at snakke om din hund, og hvor godt du har oplært den osv.","priority":5}],"customertype":"Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.","emailaddresses":[{"value":"mail@adaheads.com","priority":1},{"value":"support@adaheads.com","priority":2},{"value":"finance@adaheads.com","priority":3},{"value":"research@adaheads.com","priority":4},{"value":"production@adaheads.com","priority":5},{"value":"denmark-department@adaheads.com","priority":6}],"greeting":"Velkommen til AdaHeads, hvad kan jeg hjælpe med?","short_greeting":"Du taler med...","handlings":[{"value":"Lad tlf. ringe 4-5 gange.","priority":2},{"value":"Indgang til deres kontor ligger i gården.","priority":3},{"value":"Kunder skal tiltales formelt, med både fornavn og efternavn.","priority":1},{"value":"Biler bedes parkeres hos naboen","priority":4},{"value":"Spørg efter ordrenummer","priority":5},{"value":"De skal være over 18 år, før at der må handles med dem","priority":6},{"value":"Geden i forhaven er der for at holde grasset nede","priority":7}],"openinghours":[{"value":"Mandag 08:00:00 - 17:00:00","priority":1},{"value":"Tirsdag 08:00:00 - 17:00:00","priority":2},{"value":"Onsdag 08:00:00 - 17:00:00","priority":3},{"value":"Torsdag 08:00:00 - 17:00:00","priority":4},{"value":"Fredag 08:00:00 - 16:30:00","priority":5},{"value":"Lørdag 08:00:00 - 18:00:00","priority":6},{"value":"Resten af ugen fri","priority":7}],"other":"Bonus info: Man ville skulle bruge 40.5 milliarder LEGO klodser for at bygge et tårn til månen. Ludo opstod i 1896, da det blev patenteret i England som patent nr. 14636. En undersøgelse fra slutningen af 2008 viser vi bruger op mod 30% af vores fritid på online aktiviteter. Mandens hjerne rumfang er på ca. 1300 ml.","product":"Software produkter, men ikke bare hvilket som helst software produkter. Det er af den højeste kvalitet menneskeheden kan fremskaffe. Deres produkter er blevet brugt til at undgå 4 komet sammenstød med jorden, som ellers ville havde ændret verden som vi kender den","registrationnumbers":[{"value":"123456789","priority":1},{"value":"2835629523","priority":2},{"value":"385973572","priority":3},{"value":"1035798361","priority":4},{"value":"9792559265","priority":5}],"telephonenumbers":[{"value":"+45 10 20 30 40","priority":1},{"value":"+45 20 40 60 80","priority":1}],"websites":[{"value":"http://adaheads.com","priority":1},{"value":"http://adaheads.org","priority":2},{"value":"http://adaheads.dk","priority":3},{"value":"http://adaheads.nu","priority":4},{"value":"http://adaheads.awesome","priority":5},{"value":"http://adaheads.software","priority":6},{"value":"http://adaheads.welldone","priority":7}]}');
+VALUES (1, 1, 'BitStackers', '12340001', 
+           'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
+           '{
+    "shortgreeting": "",
+    "addresses": [
+        "For enden af regnbuen",
+        "Lovelace street",
+        "Farum Gydevej",
+        "Hvor kongerne hænger ud"
+    ],
+    "alternatenames": [
+        "Code monkeys",
+        "Software Developers",
+        "Awesome dudes",
+        "Bug Hunters",
+        "SuperHeroes"
+    ],
+    "bankinginformation": [
+        "Bank banken 123456789",
+        "Trojanske bank 123456789",
+        "Ostdea 123456789",
+        "Tyste Bank 123456789",
+        "Bank Bank Bank 123456789"
+    ],
+    "crapcallhandling": [
+        "Stil dem videre til Thomas",
+        "Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu",
+        "Sig at det lyder spændende, og de kan sende en email til gtfo@bitstack.dk",
+        "Bed dem om at ringe igen, ved næste fuldmåne",
+        "Begynd at snakke om din hund, og hvor godt du har oplært den osv."
+    ],
+    "customertype": "Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.",
+    "emailaddresses": [
+        "mail@bitstack.dk",
+        "support@bitstack.dk",
+        "finance@bitstack.dk",
+        "research@bitstack.dk",
+        "production@bitstack.dk",
+        "denmark-department@bitstack.dk"
+    ],
+    "greeting": "Velkommen til BitStackers, hvad kan jeg hjælpe med?",
+    "short_greeting": "Du taler med...",
+    "handlings": [
+        "Lad tlf. ringe 4-5 gange.",
+        "Indgang til deres kontor ligger i gården.",
+        "Kunder skal tiltales formelt, med både fornavn og efternavn.",
+        "Biler bedes parkeres hos naboen",
+        "Spørg efter ordrenummer",
+        "De skal være over 18 år, før at der må handles med dem",
+        "Geden i forhaven er der for at holde græsset nede"
+    ],
+    "openinghours": [
+        "Mandag 08:00:00 - 17:10:00",
+        "Tirsdag 08:00:00 - 17:05:00",
+        "Onsdag 08:00:00 - 17:02:00",
+        "Torsdag 08:00:00 - 17:08:00",
+        "Fredag 08:00:00 - 16:30:00",
+        "Lørdag 08:00:00 - 18:00:00",
+        "Resten af ugen fri"
+    ],
+    "other": "Bonus info: Man ville skulle bruge 40.5 milliarder LEGO klodser for at bygge et tårn til månen. Ludo opstod i 1896, da det blev patenteret i England som patent nr.En undersøgelse fra slutningen af 2008 viser vi bruger op mod 30% af vores fritid på online aktiviteter. Mandens hjerne rumfang er på ca. 1300 ml.",
+    "product": "Software produkter, men ikke bare hvilket som helst software produkter. Det er af den højeste kvalitet menneskeheden kan fremskaffe. Deres produkter er blevet brugt til at undgå 4 komet sammenstød med jorden, som ellers ville havde ændret verden som vi kender den",
+    "registrationnumbers": [
+        "DK-123456789",
+        "SE-2835629523",
+        "DE-385973572",
+        "UK-1035798361",
+        "PL-9792559265"
+    ],
+    "telephonenumbers": [
+        "+45 10 20 30 40",
+        "+45 20 40 60 80"
+    ],
+    "websites": [
+        "http://bitstackers.dk",
+        "http://bitstack.dk",
+        "http://bitstack.me",
+        "http://bitstackers.org",
+        "http://bitstackers.stuff",
+        "http://bitstack.software",
+        "http://bitstack.welldone"
+    ]
+}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
-	   '{"shortgreeting": "","addresses":[{"value":"Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK","priority":1},{"value":"Valora Trade Denmark A/S Transformervej 16 2730 Herlev","priority":2},{"value":"Et sted ude på atlandterhavet","priority":3}],"alternatenames":[{"value":"Fiskernes venner","priority":1}],"bankinginformation":[{"value":"En kiste ude på en øde ø","priority":1},{"value":"Nogle englændere har pt. \"deres\" guld","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til marketings afdelingen","priority":1}],"customertype":"","short_greeting":"Du taler med...","emailaddresses":[{"value":"info@fiskermans.com","priority":1}],"greeting":"Fishermans Friends du taler med... hvad kan jeg gøre for dig?","handlings":[{"value":"Lad tlf. ringe 4-5 gange og spørg så: skal poppedreng ha'' noget.","priority":2},{"value":"Indgang til deres kontor ligger ved siden af kabyssen.","priority":3},{"value":"Kunder skal tiltales med pirat stemme, med både klo og klap for øjet.","priority":1}],"openinghours":[{"value":"Solopgang - Solnedgang","priority":1}],"other":"Bonus info","product":"ORIGINAL, MINT SUKKERFRI, SALMIAK SUKKERFRI, SØD LAKRIDS SUKKERFRI, EXSTRA STÆRK","registrationnumbers":[{"value":"Reg no. 781277","priority":1}],"telephonenumbers":[{"value":"+45 11 22 33 44","priority":1},{"value":"+45 21 32 43 55","priority":1}],"websites":[{"value":"http://www.fishermansfriend.com/","priority":1}]}');
+	   '{
+    "shortgreeting": "",
+    "addresses": [
+        "Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK",
+        "Valora Trade Denmark A/S Transformervej 16 2730 Herlev",
+        "Et sted ude på Atlanten"
+    ],
+    "alternatenames": [
+        "Fiskernesvenner"
+    ],
+    "bankinginformation": [
+        "En kiste ude på en øde ø",
+        "Nogle englændere har pt.\"deres\"guld"
+    ],
+    "crapcallhandling": [
+        "Stil dem videre til marketingsafdelingen"
+    ],
+    "customertype": "",
+    "short_greeting": "Du taler med...",
+    "emailaddresses": [
+        "info@fiskermans.com"
+    ],
+    "greeting": "Fishermans Friends du taler med... hvad kan jeg gøre for dig?",
+    "handlings": [
+        "Lad tlf. ringe 4-5 gange og spørg så: skal poppe dreng ha''kiks?",
+        "Indgang til deres kontor ligger ved siden af kabyssen.",
+        "Kunder skal tiltales med pirat stemme, med både klo og klap for øjet."
+    ],
+    "openinghours": [
+        "Solopgang-Solnedgang"
+    ],
+    "other": "Bonusinfo",
+    "product": "ORIGINAL, MINTSUKKERFRI, SALMIAKSUKKERFRI, SØDLAKRIDSSUKKERFRI, EXSTRASTÆRK",
+    "registrationnumbers": [
+        "UK-781277"
+    ],
+    "telephonenumbers": [
+        "+4511223344",
+        "+4521324355"
+    ],
+    "websites": [
+        "http: //www.fishermansfriend.com/"
+    ]
+}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (3, 3, 'Responsum K/S', '12340003',
-       	   '{"shortgreeting": "","addresses":[{"value":"Farum gydevej 87","priority":3}],"alternatenames":[{"value":"Stemmen i dit øre","priority":1}],"bankinginformation":[{"value":"Danske bank 222 333 444 555","priority":1},{"value":"Nordea 999 888 777 666","priority":2}],"short_greeting":"Du taler med...","crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@responsum.com","priority":1}],"greeting":"Velkommen til Responsum - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af produkter stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:thomas@responsum.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"http://responsum.dk","priority":1}]}');
+       	   '{
+    "shortgreeting": "",
+    "addresses": [
+        "Farum gydevej 87"
+    ],
+    "alternatenames": [
+        "Stemmen i dit øre",
+        "De glade receptionister"
+    ],
+    "bankinginformation": [
+        "Danske bank 222 333 444 555",
+        "Nordea 999 888 777 666"
+    ],
+    "short_greeting": "Du taler med...",
+    "crapcallhandling": [
+        "Stil dem videre til Thomas Løcke"
+    ],
+    "customertype": "",
+    "emailaddresses": [
+        "info@responsum.com"
+    ],
+    "greeting": "Velkommen til Responsum - du taler med ...",
+    "handlings": [
+        "De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen",
+        "Man kan ikke møde op på adressen, før der er aftalt et møde.",
+        "Køb af produkter stilles videre til Steen"
+    ],
+    "openinghours": [
+        "08:00 - 17:00"
+    ],
+    "other": "De har byens eneste mandelige receptionister",
+    "product": "Extern reception",
+    "registrationnumbers": [
+        "DK-123456"
+    ],
+    "telephonenumbers": [
+        "sip:thomas@responsum.dk",
+        "+45 13 37 13 37"
+    ],
+    "websites": [
+        "http://responsum.dk"
+    ]
+}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
-	    '{"shortgreeting": "","addresses":[{"value":"Kloakstræde 2","priority":1}],"alternatenames":[{"value":"Du kommer og kalder, når rørene driller","priority":1}],"bankinginformation":[{"value":"Tube bank 696 347 230 9248","priority":1}],"short_greeting":"Du taler med...","crapcallhandling":[{"value":"Send en mail til mario@hansenvvs.dk","priority":1}],"customertype":"","emailaddresses":[{"value":"info@hansenvvs.com","priority":1}],"greeting":"Hansen VVS - du taler med ...","handlings":[{"value":"Nye kunder sendes til luigi","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"Håndter rør i alle størrelser","product":"Prmært VVS arbejde","registrationnumbers":[{"value":"Reg no. 223344","priority":1}],"telephonenumbers":[{"value":"+45 87 53 93 19","priority":1}],"websites":[{"value":"http://hansenvvs.dk","priority":1}]}');
+	    '{
+    "shortgreeting": "",
+    "addresses": [
+        "Kloakstræde 2"
+    ],
+    "alternatenames": [
+        "Du kommer og kalder, når rørene driller"
+    ],
+    "bankinginformation": [
+        "Tube bank 696 347 230 9248"
+    ],
+    "short_greeting": "Du taler med...",
+    "crapcallhandling": [
+        "Send en mail til mario@hansenvvs.dk"
+    ],
+    "customertype": "",
+    "emailaddresses": [
+        "info@hansenvvs.com"
+    ],
+    "greeting": "Hansen VVS - du taler med ...",
+    "handlings": [
+        "Nye kunder sendes til luigi"
+    ],
+    "openinghours": [
+        "08:00 - 17:00"
+    ],
+    "other": "Håndter rør i alle størrelser",
+    "product": "Prmært VVS arbejde",
+    "registrationnumbers": [
+        "Reg no. 223344"
+    ],
+    "telephonenumbers": [
+        "+45 87 53 93 19"
+    ],
+    "websites": [
+        "http://hansenvvs.dk"
+    ]
+}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (5, 5, 'Kødbollen A/S', '12340005',
-           '{"shortgreeting": "","addresses":[{"value":"Kødbyen","priority":3}],"alternatenames":[{"value":"Kødet i din bolle.","priority":1}],"bankinginformation":[{"value":"Spanske bank 222 444 555","priority":1},{"value":"Sydea 944 888 777 666","priority":2}],"crapcallhandling":[{"value":"Stil dem videre til Thomas Løcke","priority":1}],"customertype":"","emailaddresses":[{"value":"info@koedbollen.dk","priority":1}],"greeting":"Kødbollenn - du taler med ...","handlings":[{"value":"De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen","priority":2},{"value":"Man kan ikke møde op på adressen, før der er aftalt et møde.","priority":3},{"value":"Køb af kød stilles videre til Steen","priority":1}],"openinghours":[{"value":"08:00 - 17:00","priority":1}],"other":"De har byens eneste mandelige receptionister","product":"Extern reception","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"sip:pent@koedbollen.dk","priority":1},{"value":"+45 13 37 13 37","priority":1}],"websites":[{"value":"","priority":1}],"short_greeting":"Du taler med..."}');
+           '{
+    "shortgreeting": "",
+    "addresses": [
+        "Kødbyen"
+    ],
+    "alternatenames": [
+        "Kødet i din bolle."
+    ],
+    "bankinginformation": [
+        "Spanske bank 222 444 555",
+        "Sydea 944 888 777 666"
+    ],
+    "crapcallhandling": [
+        "Stil dem videre til Thomas Løcke"
+    ],
+    "customertype": "",
+    "emailaddresses": [
+        "info@koedbollen.dk"
+    ],
+    "greeting": "Kødbollenn - du taler med ...",
+    "handlings": [
+        "De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen",
+        "Man kan ikke møde op på adressen, før der er aftalt et møde.",
+        "Køb af kød stilles videre til Steen"
+    ],
+    "openinghours": [
+        "08:00 - 17:00 hverdage"
+    ],
+    "other": "De har byens eneste mandelige receptionister",
+    "product": "Extern reception",
+    "registrationnumbers": [
+        "DK-123456"
+    ],
+    "telephonenumbers": [
+        "sip:pent@koedbollen.dk",
+        "+45 13 37 13 37"
+    ],
+    "websites": [
+        "http://meatbun.com"
+    ],
+    "short_greeting": "Du taler med..."
+}');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (6, 2, 'Landmandens venner A/S', '12340006',
-	   '{"shortgreeting": "","addresses":[{"value":"Landmandsvej 1 - langt-ude 4180","priority":1}],"alternatenames":[{"value":"Landmandens venner","priority":1}],"bankinginformation":[{"value":"Deres værdi er i jord og kvæg","priority":1}],"crapcallhandling":[{"value":"Bed dem om at komme til dyrskuet","priority":1}],"customertype":"","short_greeting":"Goddag du taler med...","emailaddresses":[{"value":"info@landmænd.com","priority":1}],"greeting":"Landmandens venner, hvad kan jeg gøre for dig?","handlings":[{"value":"Tag altid imod en besked.","priority":1}],"openinghours":[{"value":"Uden for høstsæsonen","priority":1}],"other":"Bonus info","product":"Mælk, køer og grise","registrationnumbers":[{"value":"Reg no. 123456","priority":1}],"telephonenumbers":[{"value":"+45 66 77 88 90","priority":1}],"websites":[{"value":"http://www.farmerfriend.com/","priority":1}]}');
+	   '{
+    "shortgreeting": "",
+    "addresses": [
+        "Landmandsvej 1 - langt-ude 4600"
+    ],
+    "alternatenames": [
+        "Landmandens venner"
+    ],
+    "bankinginformation": [
+        "Deres værdi er i jord og kvæg"
+    ],
+    "crapcallhandling": [
+        "Bed dem om at komme til dyrskuet og snakke med tyren"
+    ],
+    "customertype": "",
+    "short_greeting": "Goddag du taler med...",
+    "emailaddresses": [
+        "info@landmænd.com"
+    ],
+    "greeting": "Landmandens venner, hvad kan jeg gøre for dig?",
+    "handlings": [
+        "Tag altid imod en besked."
+    ],
+    "openinghours": [
+        "Uden for høstsæsonen"
+    ],
+    "other": "Bonus info",
+    "product": "Mælk, køer og grise",
+    "registrationnumbers": [
+        "DK-123456"
+    ],
+    "telephonenumbers": [
+        "+45 66 77 88 90"
+    ],
+    "websites": [
+        "http://www.farmerfriend.com/"
+    ]
+}');
 
+/* BitStackers */
 INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
-VALUES /*Adaheads*/
+VALUES
        (1, 1, 
-         '{"backup":[
-              {"value":"Trine Løcke","priority":1},
-              {"value":"Kim Rostgaard Christensen","priority":2},
-              {"value":"Steen Løcke","priority":3},
-              {"value":"Jacob Sparre Andersen","priority":4}],
-           "emailaddresses":[
-              {"value":"tl@adaheads.com","priority":1},
-              {"value":"tl@adaheads.org","priority":2}],
-           "handling":[
-              {"value":"Bær over med hans gode humør","priority":1}],
-           "workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},
-              {"value":"Weekend: 10:00 - 14:00","priority":2}],
-           "tags":["AWS","SIP","Slackware","Linux","Yolk"],
-           "department":"Development",
-           "info":"Yolk forfatter",
-           "position":"Softwareudvikler",
-           "relations":"Gift med Trine Løcke",
-           "responsibility":"Alice og Bob"}',
-         '[
-            { "value" : "60431992",
-              "kind"  : "PSTN",
-              "description" : "Mobilnummer - arbejde",
-              "billing_type": "mobil",
-              "tag": null,
-              "confidential": false}
-          ]'),
+         '{
+    "backup": [
+        "Trine Løcke",
+        "Kim Rostgaard Christensen",
+        "Steen Løcke"
+    ],
+    "emailaddresses": [
+        "tl@bitstack.dk",
+        "tl@bitstackers.dk"
+    ],
+    "handling": [
+        "Bær over med hans gode humør"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "javascript",
+        "snak",
+        "Slackware",
+        "Linux",
+        "Yolk"
+    ],
+    "department": "Development",
+    "info": "Yolk forfatter",
+    "position": "Softwareudvikler",
+    "relations": "Gift med Trine Løcke",
+    "responsibility": "Alice og Bob"
+}',
+'[
+    {
+        "value": "60431992",
+        "kind": "PSTN",
+        "description": "Mobilnummer - arbejde",
+        "billing_type": "mobil",
+        "tag": null,
+        "confidential": false
+    }
+]'),
 
        (1, 2, 
          '{"backup":[
@@ -154,7 +450,7 @@ VALUES /*Adaheads*/
          '{"backup":[
               {"value":"Thomas Løcke", "priority": 1}],
            "emailaddresses":[
-              {"value":"steen@adaheads.com", "priority": 1}],
+              {"value":"steen@bitstack.dk", "priority": 1}],
            "handling":[
               {"value":"Bær over med hans gode humør", "priority": 1}],
            "telephonenumbers":[{}],
@@ -178,10 +474,9 @@ VALUES /*Adaheads*/
 
        (1, 4, 
          '{"backup":[
-              {"value":"Thomas Løcke", "priority": 1},
-              {"value":"Jacob Sparre Anders", "priority": 2}],
+              {"value":"Thomas Løcke", "priority": 1}],
            "emailaddresses":[
-              {"value":"krc@adaheads.com", "priority": 1}],
+              {"value":"krc@bitstack.dk", "priority": 1}],
            "handling":[
               {"value":"Husk at slutte af med: Du må have en god dag", "priority": 1}],
            "workhours":[
@@ -194,68 +489,421 @@ VALUES /*Adaheads*/
            "relations":"Børn med Sidsel Schomacker",
            "responsibility":"Alice, Bob og telefonen"}',
          '[
-            { "value" : "40966024",
+            { "value" : "30481150",
               "kind"  : "PSTN",
               "description" : "Mobilnummer - arbejde",
               "billing_type": "mobil",
               "tag": null,
-              "confidential": false}
+              "confidential": false},
+            { "value" : "40966024",
+              "kind"  : "PSTN",
+              "description" : "Mobilnummer - privat",
+              "billing_type": "mobil",
+              "tag": null,
+              "confidential": true}
           ]'),
 
        (1, 5, 
-         '{"backup":[{"value":"Thomas Løcke", "priority": 1},{"value":"Kim rostgaard Christensen", "priority": 2}],"emailaddresses":[{"value":"jsa@adaheads.com", "priority": 1}],"handling":[{"value":"Hans telefon har ofte dårlig forbindelse på grund af, han befinder sig I de tyndere luftlag", "priority": 1}],"workhours":[{"value":"Mandag-Tirsdag 09:00 16", "priority": 1},{"value":"Torsdag-Fredag 10:00 – 15:00", "priority": 2}],"tags":["Ada","SIP","Linux","Fysik"],"department":"Development","info":"Kigger efter koden","position":"Software udvikler","relations":"Har engang haft en hund","responsibility":"Alice og Cloe"}','[]'),
+         '{
+    "backup": [
+        "Thomas Løcke",
+        "Kim rostgaard Christensen"
+    ],
+    "emailaddresses": [
+        "none@bitstack.dk"
+    ],
+    "handling": [
+        "Hans telefon har ofte dårlig forbindelse på grund af den kunstige intelligens"
+    ],
+    "workhours": [
+        "Mandag-Tirsdag 09:00 16",
+        "Torsdag-Fredag 10:00 – 15:00"
+    ],
+    "tags": [
+        "AI",
+        "SIP",
+        "Linux",
+        "Fransk",
+        "ost"
+    ],
+    "department": "Development",
+    "info": "Kigger efter koden",
+    "position": "Software udvikler",
+    "relations": "Har engang haft en hund",
+    "responsibility": "Bitstableri"
+}','[]'),
 
-       (1, 6, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[{"value":"ss@adaheads.com","priority":1}],"handling":[],"workhours":[],"tags":["Grafik"],"department":"Design","info":"","position":"Designer","relations":"Børn med Kim Rostgaard Christensen","responsibility":"Bob design"}','[]'),
+       (1, 6, '{
+    "backup": [ "Kim Rostgaard Christensen"
+    ],
+    "emailaddresses": ["ss@bitstack.dk"
+    ],
+    "handling": [],
+    "workhours": [],
+    "tags": [
+        "Grafik",
+        "hatte",
+        "Tegneserier"
+    ],
+    "department": "Design",
+    "info": "",
+    "position": "Designer",
+    "relations": "Børn med Kim Rostgaard Christensen",
+    "responsibility": "UI design"
+}','[]'),
 
-       (1, 7, '{"backup":[{"value":"Kim Rostgaard Christensen","priority":1}],"emailaddresses":[],"handling":[],"workhours":[],"tags":["Granvej","Mosekrogen"],"department":"","info":"","position":"","relations":"","responsibility":""}','[]'),
+       (1, 7, '{
+    "backup": [ "Kim Rostgaard Christensen"],
+    "emailaddresses": [],
+    "handling": [],
+    "workhours": [],
+    "tags": [
+        "Granvej",
+        "Mosekrogen"
+    ],
+    "department": "",
+    "info": "",
+    "position": "",
+    "relations": "",
+    "responsibility": ""
+}','[]');
+
+/*Fishermans Friends*/
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+VALUES
+       (2, 1, '{
+    "backup": [
+        "Steen Løcke"
+    ],
+    "emailaddresses": [
+        "tl@ff.dk"
+    ],
+    "handling": [
+        "spørg ikke ind til ekstra stærk varianten"
+    ],
+    "workhours": [],
+    "tags": [
+        "Fisker",
+        "sømand",
+        "pirat"
+    ],
+    "department": "Fangst",
+    "info": "Tidligere fisker I militæret",
+    "position": "Key fishing manager",
+    "relations": "Gift med Trine Løcke",
+    "responsibility": "Fersk fisk"
+}','[]' ),
+
+       (2, 2, '{
+    "backup": [
+        "Sidsel Schomacker"
+    ],
+    "emailaddresses": [
+        "krc@bitstack.dk"
+    ],
+    "handling": [
+        "Pas på hans skæg"
+    ],
+    "telephonenumbers": [
+        "+45 31 41 59 26"
+    ],
+    "workhours": [
+        "Hele tiden"
+    ],
+    "tags": [
+        "Linux",
+        "Tux",
+        "Pingvinen"
+    ],
+    "department": "Båden",
+    "info": "Klap for den venstre øje",
+    "position": "CFO (Cheif fishing officer)",
+    "relations": "Papegøjen Diego ",
+    "responsibility": "Saltvands fisk"
+}','[]'),
+
+       (2, 4, '{
+    "backup": [
+        "Sidsel Schomacker"
+    ],
+    "emailaddresses": [
+        "krc@retrospekt.dk"
+    ],
+    "handling": [
+        "Pas på hans skæg"
+    ],
+    "workhours": [
+        "Hele tiden"
+    ],
+    "tags": [
+        "Linux",
+        "Tux",
+        "Pingvinen"
+    ],
+    "department": "Båden",
+    "info": "Klap for den venstre øje",
+    "position": "CFO (Cheif fishing officer)",
+    "relations": "Papegøjen Diego ",
+    "responsibility": "Saltvands fisk"
+}','[]');
        
-       /*Fishermans Friends*/
-       (2, 1, '{"backup":[{"value":"Steen Løcke","priority":1}],"emailaddresses":[{"value":"tl@ff.dk","priority":1}],"handling":[{"value":"spørg ikke ind til ekstra stærk varianten","priority":1}],"workhours":[],"tags":["Fisker","sømand","pirat"],"department":"Fangst","info":"Tidligere fisker I militæret","position":"Key fishing manager","relations":"Gift med Trine Løcke","responsibility":"Fersk fisk"}','[]' ),
+/*Responsum*/
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+VALUES
+       (3, 1, '{
+    "backup": [
+        "Trine Løcke",
+        "Steen Løcke"
+    ],
+    "emailaddresses": [
+        "tl@responsum.dk"
+    ],
+    "handling": [
+        "Bær over med hans gode humør"
+    ],
+    "telephonenumbers": [
+        "+45 33 48 82 01"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "AWS",
+        "SIP",
+        "Slackware",
+        "Linux"
+    ],
+    "department": "HQ",
+    "info": "Something",
+    "position": "CTO",
+    "relations": "Gift med Trine Løcke",
+    "responsibility": "IT afdellingen"
+}','[]'),
 
-       (2, 2, '{"backup":[{"value":"Sidsel Schomacker", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Pas på hans skæg", "priority": 1}],"telephonenumbers":[{"value":"+45 31 41 59 26", "priority": 1}],"workhours":[{"value":"Hele tiden", "priority": 1}],"tags":["Linux","Tux","Pingvinen"],"department":"Båden","info":"Klap for den venstre øje","position":"CFO (Cheif fishing officer)","relations":"Papegøjen Dieco ","responsibility":"Saltvands fisk"}','[]'),
+       (3, 2, '{
+    "backup": [
+        "Thomas Løcke"
+    ],
+    "emailaddresses": [
+        "trine@bitstack.dk"
+    ],
+    "handling": [],
+    "telephonenumbers": [
+        "60431993"
+    ],
+    "workhours": [
+        "Hverdage 08:00 – 12:00 & 13:00 – 17:00",
+        "Lørdag Hele dagen"
+    ],
+    "tags": [
+        "Linux",
+        "Printer",
+        "Support",
+        "IT",
+        "Speaker"
+    ],
+    "department": "Produktion",
+    "info": "Går altid I blå sko",
+    "position": "CRO (Cheif receptionist officer)",
+    "relations": "Gift med Thomas Løcke",
+    "responsibility": "Printeren"
+}','[]'),
 
-       (2, 4, '{"backup":[{"value":"Sidsel Schomacker", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Pas på hans skæg", "priority": 1}],"workhours":[{"value":"Hele tiden", "priority": 1}],"tags":["Linux","Tux","Pingvinen"],"department":"Båden","info":"Klap for den venstre øje","position":"CFO (Cheif fishing officer)","relations":"Papegøjen Dieco ","responsibility":"Saltvands fisk"}','[]'),
+       (3, 3, '{
+    "backup": [
+        "Thomas Løcke"
+    ],
+    "emailaddresses": [
+        "steen@responsum.dk"
+    ],
+    "handling": [],
+    "telephonenumbers": [
+        "88329100"
+    ],
+    "workhours": [
+        "Hverdage 08:00 – 17:00"
+    ],
+    "tags": [
+        "jobansøger",
+        "2730",
+        "3660",
+        "3520"
+    ],
+    "department": "Produktion",
+    "info": "Ham I glasburet. We do not ask questions.",
+    "position": "CEO & CFO",
+    "relations": "Far til Thomas Løcke, men det kan han jo ikke gøre for.",
+    "responsibility": "Regnskab"
+}','[]'),
+
+       (3, 4, '{
+    "backup": [],
+    "emailaddresses": [
+        "krc@gir.dk"
+    ],
+    "handling": [
+        "Spørg ikke ind til hvor god han er til at parkere - for det styrer han."
+    ],
+    "telephonenumbers": [
+        "88329100"
+    ],
+    "workhours": [
+        "Hverdage 09:00 – 18:00"
+    ],
+    "tags": [
+        "Ny kunde",
+        "Salg",
+        "Uadresserede"
+    ],
+    "department": "Produktion",
+    "info": "Ham med håret",
+    "position": "Backup software maintainer",
+    "relations": "ven med alle",
+    "responsibility": "mail"
+}','[]');
+
+/* Hansen VVS */
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+VALUES
+       (4, 66, '{
+    "backup": [
+        "Luigi Mario"
+    ],
+    "emailaddresses": [
+        "mario@hansenvvs.dk"
+    ],
+    "handling": [
+        "Ring til hans telefonnummer"
+    ],
+    "telephonenumbers": [
+        "+45 19 98 12 02"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "Super"
+    ],
+    "department": "Hovedafdelingen",
+    "info": "Alt-mulig-mand",
+    "position": "CPO (Cheif pluming officer)",
+    "relations": "Bror til Luigi Mario",
+    "responsibility": "Alt"
+}','[]' ),
+
+       (4, 67, '{
+    "backup": [
+        "Mario Mario"
+    ],
+    "emailaddresses": [
+        "luigi@hansenvvs.dk"
+    ],
+    "handling": [
+        "Ring til hans bror Mario, eller tag imod en besked"
+    ],
+    "telephonenumbers": [],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "Super"
+    ],
+    "department": "Hovedafdelingen",
+    "info": "Alt-mulig-mand",
+    "position": "Assistent",
+    "relations": "Bror til Mario Mario",
+    "responsibility": "Alt"
+}','[]');
        
-       /*Responsum*/
-       (3, 1, '{"backup":[{"value":"Trine Løcke","priority":1},{"value":"Steen Løcke","priority":2}],"emailaddresses":[{"value":"tl@responsum.dk","priority":1}],"handling":[{"value":"Bær over med hans gode humør","priority":1}],"telephonenumbers":[{"value":"+45 33 48 82 01","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["AWS","SIP","Slackware","Linux"],"department":"HQ","info":"Something","position":"CTO","relations":"Gift med Trine Løcke","responsibility":"IT afdellingen"}','[]'),
+/* Kødbollen A/S */
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+VALUES
+       (5, 28, '{
+    "backup": [],
+    "emailaddresses": [
+        "frode@kødbollen.dk"
+    ],
+    "handling": [
+        "Bare stil den videre til hans telefon"
+    ],
+    "telephonenumbers": [
+        "+45 74 79 72 65"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 22:00"
+    ],
+    "tags": [
+        "byggemand"
+    ],
+    "department": "Tuen",
+    "info": "Er rigtig god til holdarbejde",
+    "position": "Boss",
+    "relations": "",
+    "responsibility": "Tuen"
+}','[]');
 
-       (3, 2, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"trine@adaheads.com","priority":1}],"handling":[],"telephonenumbers":[{"value":"60431993","priority":1}],"workhours":[{"value":"Hverdage 08:00 – 12:00 & 13:00 – 17:00","priority":1},{"value":"Lørdag Hele dagen","priority":2}],"tags":["Linux","Printer","Support","IT","Speaker"],"department":"Produktion","info":"Går altid I blå sko","position":"CRO (Cheif receptionist officer)","relations":"Gift med Thomas Løcke","responsibility":"Printeren"}','[]'),
-
-       (3, 3, '{"backup":[{"value":"Thomas Løcke","priority":1}],"emailaddresses":[{"value":"steen@responsum.dk","priority":1}],"handling":[],"telephonenumbers":[{"value":"88329100","priority":1}],"workhours":[{"value":"Hverdage 08:00 – 17:00","priority":1}],"tags":["jobansøger","2730","3660","3520"],"department":"Produktion","info":"Ham I glasburet. We do not ask questions.","position":"CEO & CFO","relations":"Far til Thomas Løcke, men det kan han jo ikke gøre for.","responsibility":"Regnskab"}','[]'),
-
-       (3, 4, '{"backup":[{"value":"Jacob Sparre Andersen", "priority": 1}],"emailaddresses":[{"value":"krc@retrospekt.dk", "priority": 1}],"handling":[{"value":"Spørg ikke ind til hvor god han er til at parkere - for det styrer han.", "priority": 1}],"telephonenumbers":[{"value":"88329100", "priority": 1}],"workhours":[{"value":"Hverdage 09:00 – 18:00", "priority": 1}],"tags":["Ny kunde","Salg","Uadresserede"],"department":"Produktion","info":"Ham med håret","position":"Backup software maintainer","relations":"ven med alle","responsibility":"mail"}','[]'),
-
-       /* Hansen VVS */
-       (4, 66, '{"backup":[{"value":"Luigi Mario","priority":1}],"emailaddresses":[{"value":"mario@hansenvvs.dk","priority":1}],"handling":[{"value":"Ring til hans telefonnummer","priority":1}],"telephonenumbers":[{"value":"+45 19 98 12 02","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Super"],"department":"Hovedafdelingen","info":"Alt-mulig-mand","position":"CPO (Cheif pluming officer)","relations":"Bror til Luigi Mario","responsibility":"Alt"}','[]' ),
-
-       (4, 67, '{"backup":[{"value":"Mario Mario","priority":1}],"emailaddresses":[{"value":"luigi@hansenvvs.dk","priority":1}],"handling":[{"value":"Ring til hans bror Mario, eller tag imod en besked","priority":1}],"telephonenumbers":[],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Super"],"department":"Hovedafdelingen","info":"Alt-mulig-mand","position":"Assistent","relations":"Bror til Mario Mario","responsibility":"Alt"}','[]'),
-       
-       /* Kødbollen A/S */
-       (5, 28, '{"backup":[],"emailaddresses":[{"value":"frode@kødbollen.dk","priority":1}],"handling":[{"value":"Bare stil den videre til hans telefon","priority":1}],"telephonenumbers":[{"value":"+45 74 79 72 65","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 22:00","priority":1}],"tags":["byggemand"],"department":"Tuen","info":"Er rigtig god til holdarbejde","position":"Boss","relations":"","responsibility":"Tuen"}','[]'),
-
-       /* Farmer Friends */
-       (6, 65, '{"backup":[{"value":"Maren","priority":1}],"emailaddresses":[{"value":"jensen@landmand.dk","priority":1}],"handling":[{"value":"Tag altid i mod en besked, da han nok er ude i marken eller i stalden","priority":1}],"telephonenumbers":[],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Mark","Ko","Køer","Gris"],"department":"Stalden","info":"Har speciale i grise","position":"Bondemanden","relations":"Gift med Maren","responsibility":"Marken og alt i stalden"}','[]'),
-       (6, 35, 
-         '{"backup":[
-              {"value":"Bondemand Jensen",
-               "priority":1}],
-           "emailaddresses":[
-              {"value":"maren@landmand.dk",
-               "priority":1}],
-           "handling":[{"value":"Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe.","priority":1}],"telephonenumbers":[{"value":"+45 90 12 14 16","priority":1}],"workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},{"value":"Weekend: 10:00 - 14:00","priority":2}],"tags":["Fars","Steg"],"department":"Efterbehandling","info":"Arbejder med efterbehandling af råvarene","position":"Medarbejder","relations":"Gift med Bondemand Jensen","responsibility":"Alt efterbehandling"}','[]');
-
---INSERT INTO messaging_addresses (id, address_type, address)
---VALUES (1,  'email', 'tl@adaheads.com'),
---       (2,  'sms',    '+4560431992'),
---       (3,  'email', 'jsa@adaheads.com'),
---       (4,  'sms',    '+4521490804'),
---       (5,  'email', 'jacob@jacob-sparre.dk'),
---       (6,  'email', 'thomas@responsum.dk'),
---       (7,  'sms',    '+4588329100'),
---       (9,  'email', 'trine@responsum.dk'),
---       (10, 'email', 'krc@adaheads.com'),
---       (11, 'email', 'krc@retrospekt.dk'),
---       (12, 'email', 'krc@gir.dk');
+/* Farmer Friends */
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+VALUES
+       (6, 65, '{
+    "backup": [
+        "Maren"
+    ],
+    "emailaddresses": [
+        "jensen@landmand.dk"
+    ],
+    "handling": [
+        "Tag altid i mod en besked, da han nok er ude i marken eller i stalden"
+    ],
+    "telephonenumbers": [],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "Mark",
+        "Ko",
+        "Køer",
+        "Gris"
+    ],
+    "department": "Stalden",
+    "info": "Har speciale i grise",
+    "position": "Bondemanden",
+    "relations": "Gift med Maren",
+    "responsibility": "Marken og alt i stalden"
+}','[]'),
+ 
+      (6, 35, 
+         '{
+    "backup": [
+        "Bondemand Jensen"
+    ],
+    "emailaddresses": [
+        "maren@landmand.dk"
+    ],
+    "handling": [
+        "Hvis de siger de har en kort spørgsmål, så tag imod en besked, da Maren kan snakke meget længe."
+    ],
+    "telephonenumbers": [
+        "+45 90 12 14 16"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "Fars",
+        "Steg"
+    ],
+    "department": "Efterbehandling",
+    "info": "Arbejder med efterbehandling af råvarene",
+    "position": "Medarbejder",
+    "relations": "Gift med Bondemand Jensen",
+    "responsibility": "Alt efterbehandling"
+}','[]');
 
 INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id) VALUES
 (1,1,'to',1,1),
@@ -287,50 +935,38 @@ INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recip
 
 INSERT INTO messaging_end_points (contact_id, reception_id, address_type, address,
                                   confidential, enabled)
-VALUES --  Adaheads
-       (1, 1, 'email', 'tl@adaheads.com',  FALSE, TRUE),
-       (4, 1, 'email', 'krc@adaheads.com', FALSE, TRUE),
+VALUES --  BitStackers
+       (1, 1, 'email', 'tl@bitstack.dk',  FALSE, TRUE),
+       (4, 1, 'email', 'krc@bitstack.dk', FALSE, TRUE),
        (4, 2, 'email', 'krc@gir.dk', FALSE, TRUE),
-       (5, 1, 'email', 'jsa@adaheads.com',  FALSE, TRUE),
-       (4, 1, 'sms',    '+4521490804',  FALSE, TRUE),
-       (5, 1, 'email', 'jacob@jacob-sparre.dk',  TRUE,  FALSE),
+       (5, 1, 'email', 'wfb@bitstack.dk',  FALSE, TRUE),
        --  Fishermans Friends    
        (1, 2, 'sms',    '+4588329100', FALSE, FALSE),
        --  Responsum
        (1, 3, 'email', 'thomas@responsum.dk', FALSE, TRUE),
        (4, 3, 'email', 'krc@retrospekt.dk', FALSE, TRUE);
 
-INSERT INTO kinds (id)
-VALUES ('helligdag');
-
-INSERT INTO special_days (kind, day)
-VALUES ('helligdag', '2013-12-25'),
-       ('helligdag', '2013-12-26'),
-       ('helligdag', '2014-01-01');
-
---INSERT INTO dial_plans (phone_number, dial_plan)
---VALUES ('+4521490804', '<dial-plan title="Jacob: Hang up on anonymous callers"> <start do="Start"/> <decision-tree title="Start"> <branch> <conditions> <caller number=""/> </conditions> <action do="Hang up"/> </branch> <fall-back do="Pass through"/> </decision-tree> <end-point title="Hang up"> <hang-up/> </end-point> <end-point title="Pass through"> <redirect to="+45 21 49 08 04"/> </end-point> </dial-plan>');
 
 INSERT INTO users (id, name, extension, send_from)
-VALUES (1,  'Thomas Pedersen',           1001, 'tp@adaheads.com'),
-       (2,  'Kim Rostgaard Christensen', 1002, 'krc@adaheads.com'),
-       (3,  'Jacob Sparre Andersen',     1003, 'jsa@adaheads.com'),
-       (4,  'AdaHeads Test User One',    1004, null),
-       (5,  'AdaHeads Test User Two',    1005, null),
-       (6,  'Tux',                       1006, null),
-       (7,  'This guy here',             1007, null),
-       (8,  'Thata guy there',           1008, null),
+VALUES (1,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
+       (2,  'Kim Rostgaard Christensen', 1002, 'krc@bitstack.dk'),
+       (3,  'Agent 3',                   1003, null),
+       (4,  'Agent 4',                   1004, null),
+       (5,  'Agent 5',                   1005, null),
+       (6,  'Agent 6',                   1006, null),
+       (7,  'Agent 7',                   1007, null),
+       (8,  'Agent 8',                   1008, null),
        (9,  'Casper Bergsø',             1009, null),
-       (10, 'Testagent 1100',            1100, 'noreply@adaheads.com'),
-       (11, 'Testagent 1101',            1101, 'noreply@adaheads.com'),
-       (12, 'Testagent 1102',            1102, 'noreply@adaheads.com'),
-       (13, 'Testagent 1103',            1103, 'noreply@adaheads.com'),
-       (14, 'Testagent 1104',            1104, 'noreply@adaheads.com'),
-       (15, 'Testagent 1105',            1105, 'noreply@adaheads.com'),
-       (16, 'Testagent 1106',            1106, 'noreply@adaheads.com'),
-       (17, 'Testagent 1107',            1107, 'noreply@adaheads.com'),
-       (18, 'Testagent 1108',            1108, 'noreply@adaheads.com'),
-       (19, 'Testagent 1109',            1109, 'noreply@adaheads.com');
+       (10, 'Testagent 1100',            1100, 'noreply@bitstack.dk'),
+       (11, 'Testagent 1101',            1101, 'noreply@bitstack.dk'),
+       (12, 'Testagent 1102',            1102, 'noreply@bitstack.dk'),
+       (13, 'Testagent 1103',            1103, 'noreply@bitstack.dk'),
+       (14, 'Testagent 1104',            1104, 'noreply@bitstack.dk'),
+       (15, 'Testagent 1105',            1105, 'noreply@bitstack.dk'),
+       (16, 'Testagent 1106',            1106, 'noreply@bitstack.dk'),
+       (17, 'Testagent 1107',            1107, 'noreply@bitstack.dk'),
+       (18, 'Testagent 1108',            1108, 'noreply@bitstack.dk'),
+       (19, 'Testagent 1109',            1109, 'noreply@bitstack.dk');
 
 INSERT INTO groups (id, name)
 VALUES (1, 'Receptionist'),
@@ -385,29 +1021,29 @@ INSERT INTO auth_identities (identity, user_id)
 VALUES ('kim.rostgaard@gmail.com', 2), 
        ('devicesnull@gmail.com', 2),
        ('cbergs8@gmail.com', 9),
-       ('krc@adaheads.com', 2),
-       ('tp@adaheads.com', 1),
+       ('krc@bitstack.dk', 2),
+       ('tp@bitstack.dk', 1),
        ('cooltomme@gmail.com', 1),
-       ('testagent1100adaheads.com', 10),
-       ('testagent1101adaheads.com', 11),
-       ('testagent1102adaheads.com', 12),
-       ('testagent1103adaheads.com', 13),
-       ('testagent1104adaheads.com', 14),
-       ('testagent1105adaheads.com', 15),
-       ('testagent1106adaheads.com', 16),
-       ('testagent1107adaheads.com', 17),
-       ('testagent1108adaheads.com', 18),
-       ('testagent1109adaheads.com', 19);
+       ('testagent1100bitstack.dk', 10),
+       ('testagent1101bitstack.dk', 11),
+       ('testagent1102bitstack.dk', 12),
+       ('testagent1103bitstack.dk', 13),
+       ('testagent1104bitstack.dk', 14),
+       ('testagent1105bitstack.dk', 15),
+       ('testagent1106bitstack.dk', 16),
+       ('testagent1107bitstack.dk', 17),
+       ('testagent1108bitstack.dk', 18),
+       ('testagent1109bitstack.dk', 19);
 
 -------------------------
 --  Message Test data  --
 -------------------------
 
 INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from_name, taken_from_company, taken_from_phone, taken_from_cellphone, taken_by_agent, flags, created_at)
-VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'AdaHeads K/S', 'Sparre', 'Blik A/S', '22114411', '33551122', 2, '["urgent"]', NOW());
+VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'BitStackers', 'Jens Olsen', 'Blik A/S', '22114411', '33551122', 2, '["urgent"]', NOW());
 
 INSERT INTO message_recipients (contact_id, reception_id, message_id, recipient_role, contact_name, reception_name)
-VALUES (4, 1, 1, 'to', 'Kim Rostgaard Chrisensen', 'AdaHeads K/S'),
+VALUES (4, 1, 1, 'to', 'Kim Rostgaard Chrisensen', 'BitStackers'),
        (4, 2, 1, 'cc', 'Kim Rostgaard Chrisensen', 'Gir');
 
 INSERT INTO message_draft (id, owner, json)
@@ -498,8 +1134,6 @@ SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALS
 SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);
 SELECT setval('message_draft_id_sequence', (SELECT max(id)+1 FROM message_draft), FALSE);
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
-SELECT setval('recurring_calendar_events_id_sequence', (SELECT max(id)+1 FROM recurring_calendar_events), FALSE);
-SELECT setval('phone_numbers_id_sequence', (SELECT max(id)+1 FROM phone_numbers), FALSE);
 SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 
 COMMIT;
