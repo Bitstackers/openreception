@@ -3,7 +3,6 @@ part of openreception.model;
 
 /**
  * Serialization values.
- * TODO: Check where the "shortgreeting" field comes from in the serialization data. It seems unused.
  */
 abstract class ReceptionJSONKey {
   static const String ID                    = 'id';
@@ -13,7 +12,7 @@ abstract class ReceptionJSONKey {
   static const String EXTRADATA_URI         = 'extradatauri';
   static const String EXTENSION             = 'reception_telephonenumber';
   static const String LAST_CHECK            = 'last_check';
-  static const String SHORT_GREETING        = 'shortgreeting'; //TODO WRONG Should be short_greeting
+  static const String SHORT_GREETING        = 'short_greeting';
   static const String GREETING              = 'greeting';
   static const String ADDRESSES             = 'addresses';
   static const String ATTRIBUTES            = 'attributes';
@@ -33,18 +32,45 @@ abstract class ReceptionJSONKey {
 
   static const String RECEPTION_LIST        = 'receptions';
 
-  ///FIXME: This value should be removed as soon as the lists in the JSON data format is changed everywhere.
-  static const String FIXME_VALUE           = 'value';
+}
+
+class ReceptionStub implements Comparable {
+
+  int    ID       = Reception.noID;
+  String fullName = null;
+
+  String get name => this.fullName;
+
+  /**
+   * Enables a [ReceptionStub] to sort itself based on its [name].
+   */
+   int compareTo(ReceptionStub other) => this.name.compareTo(other.name);
+
+  /**
+   * [Reception] as String, for debug/log purposes.
+   */
+   String toString() => '${name}-${ID}';
+
+  ReceptionStub.fromMap (Map map) {
+    if (map == null) throw new ArgumentError.notNull('Null map');
+
+    this.ID       = map[ReceptionJSONKey.ID];
+    this.fullName = map[ReceptionJSONKey.FULL_NAME];
   }
 
-class Reception {
+  ReceptionStub._null();
+
+}
+
+
+
+class Reception extends ReceptionStub {
 
   static const String className = '$libraryName.Reception';
   static final Logger log       = new Logger(Reception.className);
   static const int    noID      =    0;
 
 
-  int          ID                     = noID;
   int          organizationId         = noID;
   Uri          extraData              = null;
   DateTime     lastChecked            = new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
@@ -60,7 +86,6 @@ class Reception {
   List<String> websites               = [];
 
 
-  String fullName;
   String extension;
   String greeting;
   String otherData;
@@ -71,20 +96,15 @@ class Reception {
 
   Map attributes = {};
 
-  Reception();
+  // Default intiliazing contructor
+  Reception() : super._null();
 
-  Reception.fromMap(Map receptionMap) {
-    if (receptionMap == null) throw new ArgumentError('Null map');
-
-
-    //TODO Remove extractValuesFromList and extractValues once the format is corrected.
-    List<String> extractValuesFromList(List<Map> list)
-        => []..addAll(list.map((Map tuple) => tuple[ReceptionJSONKey.FIXME_VALUE]));
+  Reception.fromMap(Map receptionMap) : super.fromMap(receptionMap) {
 
     List<String> extractValues(List list) {
       if (list == null)         return [];
       if (list.isEmpty)         return [];
-      if (list.first is Map)    return extractValuesFromList(list);
+      if (list.first is Map)    return throw new ArgumentError('Maps are no longer supported. Please upgrade data model.');
       if (list.first is String) return list;
 
       throw new ArgumentError('Bad list type: ${list.runtimeType}');
@@ -127,6 +147,8 @@ class Reception {
 
     this.validate();
   }
+
+  Map toJson() => this.asMap;
 
   /**
    * Returns a Map representation of the Reception.
@@ -181,4 +203,14 @@ class Reception {
     if (this.shortGreeting == null || this.shortGreeting.isEmpty) throw new StateError('Short greeting not allowed to be empty. Value: "${this.shortGreeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
     if (this.greeting      == null || this.greeting.isEmpty)      throw new StateError('Greeting not allowed to be empty. Value: "${this.greeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
   }
+
+  @override
+  operator == (Reception other) => this.ID == other.ID;
+
+
+  /**
+   * [Reception] null constructor.
+   */
+  Reception.none() : super._null();
+
 }
