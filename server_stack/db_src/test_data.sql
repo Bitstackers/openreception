@@ -416,7 +416,7 @@ VALUES
     "info": "Yolk forfatter",
     "position": "Softwareudvikler",
     "relations": "Gift med Trine Løcke",
-    "responsibility": "Alice og Bob"
+    "responsibility": "Server og klient udvikling"
 }',
 '[
     {
@@ -430,39 +430,60 @@ VALUES
 ]'),
 
        (1, 2, 
-         '{"backup":[
-              {"value":"Thomas Løcke","priority":1}],
-           "emailaddresses":[
-              {"value":"trine@responsum.com","priority":1}],
-          "handling":[
-              {"value":"Bær over med hendes gode humør","priority":1}],
-          "workhours":[{"value":"Hverdage 07:00 – 18:00","priority":1},
-              {"value":"Weekend: 10:00 - 14:00","priority":2}],
-          "tags":["Grafik","SIP","Linux"],
-          "department":"Development",
-          "info":"Laver alt det flotte I programmet",
-          "position":"Designer",
-          "relations":"Gift med Thomas",
-          "responsibility":"Bob"}',
+         '{
+    "backup": [
+        "Thomas Løcke"
+    ],
+    "emailaddresses": [
+        "trine@responsum.com"
+    ],
+    "handling": [
+        "Bær over med hendes gode humør"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "Grafik",
+        "SIP",
+        "Linux"
+    ],
+    "department": "Development",
+    "info": "Laver alt det flotte I programmet",
+    "position": "Designer",
+    "relations": "Gift med Thomas",
+    "responsibility": "Brugerfladedesign."
+}',
          '[]' ),
 
        (1, 3, 
-         '{"backup":[
-              {"value":"Thomas Løcke", "priority": 1}],
-           "emailaddresses":[
-              {"value":"steen@bitstack.dk", "priority": 1}],
-           "handling":[
-              {"value":"Bær over med hans gode humør", "priority": 1}],
-           "telephonenumbers":[{}],
-           "workhours":[
-              {"value":"Hverdage 07:00 – 18:00", "priority": 1},
-              {"value":"Weekend: 10:00 - 14:00", "priority": 2}],
-           "tags":["Grafik","SIP","Linux"],
-           "department":"Regnskab",
-           "info":"Kigger efter pengene",
-           "position":"CFO",
-           "relations":"Far til Thomas Løcke",
-           "responsibility":"Regnskab"}',
+         '{
+    "backup": [
+        "Thomas Løcke"
+    ],
+    "emailaddresses": [
+        "steen@bitstack.dk"
+    ],
+    "handling": [
+        "Prøv at stille igennem"
+    ],
+    "telephonenumbers": [],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "Grafik",
+        "SIP",
+        "Linux"
+    ],
+    "department": "Regnskab",
+    "info": "Kigger efter pengene",
+    "position": "CFO",
+    "relations": "Far til Thomas Løcke",
+    "responsibility": "Regnskab"
+}',
          '[
             { "value" : "60431990",
               "kind"  : "PSTN",
@@ -473,21 +494,32 @@ VALUES
           ]'),
 
        (1, 4, 
-         '{"backup":[
-              {"value":"Thomas Løcke", "priority": 1}],
-           "emailaddresses":[
-              {"value":"krc@bitstack.dk", "priority": 1}],
-           "handling":[
-              {"value":"Husk at slutte af med: Du må have en god dag", "priority": 1}],
-           "workhours":[
-              {"value":"Hverdage 07:00 – 18:00", "priority": 1},
-              {"value":"Weekend: 10:00 - 14:00", "priority": 2}],
-           "tags":["mail","SIP","Linux"],
-           "department":"Development",
-           "info":"Kigger efter koden",
-           "position":"Software udvikler",
-           "relations":"Børn med Sidsel Schomacker",
-           "responsibility":"Alice, Bob og telefonen"}',
+         '{
+    "backup": [
+        "Thomas Løcke"
+    ],
+    "emailaddresses": [
+        "krc@bitstack.dk"
+    ],
+    "handling": [
+        "Husk at slutte af med: Du må have en god dag"
+    ],
+    "workhours": [
+        "Hverdage 07:00 – 18:00",
+        "Weekend: 10:00 - 14:00"
+    ],
+    "tags": [
+        "mail",
+        "SIP",
+        "Linux",
+        "FreeSWITCH"
+    ],
+    "department": "Development",
+    "info": "Kigger efter koden",
+    "position": "Software udvikler",
+    "relations": "Børn med Sidsel Schomacker",
+    "responsibility": "Server, klient, FreeSWITCH og SNOM telefoner"
+}',
          '[
             { "value" : "30481150",
               "kind"  : "PSTN",
