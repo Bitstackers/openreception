@@ -27,7 +27,7 @@ class OrganizationController {
     db.getOrganization(organizationId).then((Organization organization) {
       if(organization == null) {
         request.response.statusCode = 404;
-        return orf_http.allOk(request);
+        return orf_http.writeAndClose(request, '{}');
       } else {
         return orf_http.writeAndClose(request, organizationAsJson(organization));
       }
@@ -52,55 +52,58 @@ class OrganizationController {
     const String context = '${libraryName}.createOrganization';
 
     orf_http.extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.createOrganization(data['full_name'], data['billing_type'], data['flag']))
-    .then((int id) => orf_http.writeAndClose(request, organizationIdAsJson(id)).then((_) {
-      Map data = {'event' : 'organizationEventCreated', 'organizationEvent' : {'organizationId' : id}};
-      Notification.broadcast(data)
-        .catchError((error) {
-          orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-        });
-    }))
-    .catchError((error) {
-      orf.logger.errorContext(error, context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.createOrganization(data['full_name'], data['billing_type'], data['flag']))
+      .then(db.getOrganization)
+      .then((Organization organization) => orf_http.writeAndClose(request, organizationAsJson(organization)).then((_) {
+        Map data = {'event': 'organizationEventCreated', 'organizationEvent' : {'organizationId' : organization.id}};
+        Notification.broadcast(data)
+          .catchError((error) {
+            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
+          });
+      }))
+      .catchError((error) {
+        orf.logger.errorContext(error, context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void updateOrganization(HttpRequest request) {
     const String context = '${libraryName}.updateOrganization';
 
     orf_http.extractContent(request)
-    .then(JSON.decode)
-    .then((Map data) => db.updateOrganization(orf_http.pathParameter(request.uri, 'organization'), data['full_name'], data['billing_type'], data['flag']))
-    .then((int id) => orf_http.writeAndClose(request, organizationIdAsJson(id))
-    .then((_) {
-      Map data = {'event' : 'organizationEventupdated', 'organizationEvent' : {'organizationId' : id}};
-      Notification.broadcast(data)
-        .catchError((error) {
-          orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-        });
-    }))
-    .catchError((error) {
-      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      orf_http.serverError(request, error.toString());
-    });
+      .then(JSON.decode)
+      .then((Map data) => db.updateOrganization(orf_http.pathParameter(request.uri, 'organization'), data['full_name'], data['billing_type'], data['flag']))
+      .then(db.getOrganization)
+      .then((Organization organization) => orf_http.writeAndClose(request, organizationAsJson(organization))
+        .then((_) {
+          Map data = {'event' : 'organizationEventupdated', 'organizationEvent' : {'organizationId' : organization.id}};
+          Notification.broadcast(data)
+            .catchError((error) {
+              orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
+            });
+        }))
+      .catchError((error) {
+        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
+        orf_http.serverError(request, error.toString());
+      });
   }
 
   void deleteOrganization(HttpRequest request) {
     const String context = '${libraryName}.deleteOrganization';
     final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
+    db.getOrganization(organizationId).then((Organization organization) =>
     db.deleteOrganization(organizationId)
-    .then((int id) => orf_http.writeAndClose(request, organizationIdAsJson(organizationId))
-    .then((_) {
-      Map data = {'event' : 'organizationEventDeleted', 'organizationEvent' : {'organizationId' : organizationId}};
-      Notification.broadcast(data)
-        .catchError((error) {
-          orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-        });
-    }))
-    .catchError((error) {
+      .then((int id) => orf_http.writeAndClose(request, organizationAsJson(organization))
+      .then((_) {
+        Map data = {'event' : 'organizationEventDeleted', 'organizationEvent' : {'organizationId' : organizationId}};
+        Notification.broadcast(data)
+          .catchError((error) {
+            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
+          });
+      }))
+    ).catchError((error) {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
       orf_http.serverError(request, error.toString());
     });

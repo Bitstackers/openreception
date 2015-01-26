@@ -21,4 +21,4 @@ Map _receptionAsJsonMap(Reception r) => r == null ? {} :
  'attributes': r.attributes,
  'extradatauri': r.extradatauri,
  'enabled': r.enabled,
- 'number': r.receptionNumber};
+ 'reception_telephonenumber': r.receptionNumber};

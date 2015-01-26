@@ -2,7 +2,7 @@ part of adaheads.server.database;
 
 Future<Dialplan> _getDialplan(ORDatabase.Connection connection, int receptionId) {
   String sql = '''
-    SELECT id, dialplan, reception_telephonenumber
+    SELECT id, dialplan, reception_telephonenumber, dialplan_compiled
     FROM receptions
     WHERE id = @id
   ''';
@@ -24,7 +24,9 @@ Future<Dialplan> _getDialplan(ORDatabase.Connection connection, int receptionId)
 
       dialplan
         ..receptionId = row.id
-        ..entryNumber = row.reception_telephonenumber;
+        ..entryNumber = row.reception_telephonenumber
+        ..isCompiled = row.dialplan_compiled;
+
       return dialplan;
     }
   });
@@ -33,13 +35,25 @@ Future<Dialplan> _getDialplan(ORDatabase.Connection connection, int receptionId)
 Future _updateDialplan(ORDatabase.Connection connection, int receptionId, Map dialplan) {
   String sql = '''
     UPDATE receptions
-    SET dialplan=@dialplan
+    SET dialplan=@dialplan, dialplan_compiled=false
     WHERE id=@id;
   ''';
 
   Map parameters =
     {'dialplan': dialplan,
      'id'      : receptionId};
+
+  return connection.execute(sql, parameters);
+}
+
+Future _markDialplanAsCompiled(ORDatabase.Connection connection, int receptionId) {
+  String sql = '''
+    UPDATE receptions
+    SET dialplan_compiled=true
+    WHERE id=@id;
+  ''';
+
+  Map parameters = {'id': receptionId};
 
   return connection.execute(sql, parameters);
 }

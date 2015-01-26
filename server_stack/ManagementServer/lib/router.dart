@@ -35,6 +35,7 @@ final Pattern receptionContactIdDistributionListEntryUrl  = new UrlPattern(r'/re
 final Pattern receptionContactIdCalendarUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar');
 final Pattern receptionContactIdCalendarIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar/(\d+)');
 final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
+final Pattern dialplanCompileUrl     = new UrlPattern(r'/reception/(\d+)/dialplan/compile');
 final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
 final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
 final Pattern receptionRecordUrl     = new UrlPattern(r'/reception/(\d+)/record');
@@ -65,8 +66,8 @@ final Pattern GroupUrl = new UrlPattern(r'/group');
 final Pattern receptionContactIdMoveUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
 
 final List<Pattern> Serviceagents =
-[organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, contactIdUrl, contactUrl,
- receptionContactIdUrl, receptionContactUrl, dialplanUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
+[organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, receptionIdUrl, contactIdUrl, contactUrl,
+ receptionContactIdUrl, receptionContactUrl, dialplanUrl, dialplanCompileUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
  UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
  ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl,
 
@@ -92,9 +93,9 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
-    ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
 
-    ..serve(organizationReceptionUrl, method: HttpMethod.PUT).listen(reception.createReception)
+    ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
+    ..serve(receptionUrl, method: HttpMethod.PUT).listen(reception.createReception)
     ..serve(receptionIdUrl, method: HttpMethod.GET)   .listen(reception.getReception)
     ..serve(receptionIdUrl, method: HttpMethod.POST)  .listen(reception.updateReception)
     ..serve(receptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
@@ -144,6 +145,7 @@ void setupRoutes(HttpServer server, Configuration config) {
 
     ..serve(dialplanUrl, method: HttpMethod.GET).listen(dialplan.getDialplan)
     ..serve(dialplanUrl, method: HttpMethod.POST).listen(dialplan.updateDialplan)
+    ..serve(dialplanCompileUrl, method: HttpMethod.POST).listen(dialplan.compileDialplan)
 
     ..serve(DialplanTemplateUrl, method: HttpMethod.GET).listen(dialplan.getTemplates)
 

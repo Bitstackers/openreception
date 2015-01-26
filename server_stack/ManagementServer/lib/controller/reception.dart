@@ -50,8 +50,7 @@ class ReceptionController {
     const String context = '${libraryName}.getOrganizationReceptionList';
     final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
-    db.getOrganizationReceptionList(organizationId).then((List<Reception> list)
-        {
+    db.getOrganizationReceptionList(organizationId).then((List<Reception> list) {
       return orf_http.writeAndClose(request, listReceptionAsJson(list));
     }).catchError((error) {
       orf.logger.errorContext('Error: "$error"', context);
@@ -61,13 +60,13 @@ class ReceptionController {
 
   void createReception(HttpRequest request) {
     const String context = '${libraryName}.createReception';
-    final int organizationId = orf_http.pathParameter(request.uri, 'organization');
 
     orf_http.extractContent(request).then(JSON.decode).then((Map data) =>
-        db.createReception(organizationId, data['full_name'], data['attributes'], data['extradatauri'], data['enabled'], data['number']))
-          .then((int id) => orf_http.writeAndClose(request, receptionIdAsJson(id))
+        db.createReception(data['organization_id'], data['full_name'], data['attributes'], data['extradatauri'], data['enabled'], data['reception_telephonenumber']))
+          .then(db.getReception)
+          .then((Reception reception) => orf_http.writeAndClose(request, receptionAsJson(reception))
           .then((_) {
-              Map data = {'event' : 'receptionEventCreated', 'receptionEvent' : {'receptionId' : id}};
+              Map data = {'event' : 'receptionEventCreated', 'receptionEvent' : {'receptionId' : reception.id}};
               Notification.broadcast(data)
                 .catchError((error) {
                   orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
@@ -83,20 +82,23 @@ class ReceptionController {
     const String context = '${libraryName}.updateReception';
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
-    orf_http.extractContent(request).then(JSON.decode).then((Map data) =>
-      db.updateReception(receptionId, data['organization_id'], data['full_name'],
-      data['attributes'], data['extradatauri'], data['enabled'], data['number']))
-        .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId)))
-        .then((_) {
-            Map data = {'event' : 'receptionEventUpdated', 'receptionEvent' : {'receptionId' : receptionId}};
-            Notification.broadcast(data)
-              .catchError((error) {
-                orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-              });
+    orf_http.extractContent(request)
+      .then(JSON.decode)
+      .then((Map data) =>
+        db.updateReception(receptionId, data['organization_id'], data['full_name'],
+        data['attributes'], data['extradatauri'], data['enabled'], data['reception_telephonenumber']))
+      .then(db.getReception)
+      .then((Reception reception) => orf_http.writeAndClose(request, receptionAsJson(reception)))
+      .then((_) {
+          Map data = {'event' : 'receptionEventUpdated', 'receptionEvent' : {'receptionId' : receptionId}};
+          Notification.broadcast(data)
+            .catchError((error) {
+              orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
+            });
           })
-        .catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
+      .catchError((error) {
+        orf.logger.errorContext('Error: "$error"', context);
+        orf_http.serverError(request, error.toString());
     });
   }
 
@@ -104,8 +106,9 @@ class ReceptionController {
     const String context = '${libraryName}.deleteReception';
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
+    db.getReception(receptionId).then((Reception reception) =>
     db.deleteReception(receptionId)
-      .then((_) => orf_http.writeAndClose(request, receptionIdAsJson(receptionId))
+      .then((_) => orf_http.writeAndClose(request, receptionAsJson(reception))
       .then((_) {
           Map data = {'event' : 'receptionEventDeleted', 'receptionEvent' : {'receptionId' : receptionId}};
           Notification.broadcast(data)
@@ -116,6 +119,6 @@ class ReceptionController {
       .catchError((error, stack) {
       orf.logger.errorContext('Error: "$error"', context);
       orf_http.serverError(request, error.toString());
-    });
+    }));
   }
 }
