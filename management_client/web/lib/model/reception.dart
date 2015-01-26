@@ -41,6 +41,7 @@ class Reception implements Comparable<Reception> {
     fullName = stringFromJson(json, 'full_name');
     enabled = json['enabled'];
     receptionNumber = json['reception_telephonenumber'];
+    extradatauri = json['extradatauri'];
 
     if (json.containsKey('attributes')) {
       attributes = json['attributes'];
@@ -88,6 +89,7 @@ class Reception implements Comparable<Reception> {
       'enabled': enabled,
       'attributes': attributes,
       'reception_telephonenumber': receptionNumber,
+      'extradatauri': extradatauri,
       'contacts': contacts
     };
     return data;

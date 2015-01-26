@@ -17,7 +17,7 @@ class ReceptionView {
   static const String viewName = 'reception';
   DivElement element;
   TextAreaElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,
-      inputCostumerstype, inputReceptionNumber;
+      inputCostumerstype, inputReceptionNumber, extradataUrl;
   ButtonElement buttonDialplan;
   CheckboxInputElement inputEnabled;
   ButtonElement buttonSave, buttonCreate, buttonDelete;
@@ -49,6 +49,7 @@ class ReceptionView {
     inputGreeting        = element.querySelector('#reception-input-greeting');
     inputEnabled         = element.querySelector('#reception-input-enabled');
     inputReceptionNumber = element.querySelector('#reception-input-receptionnumber');
+    extradataUrl         = element.querySelector('#reception-input-extradataurl');
     buttonDialplan       = element.querySelector('#reception-button-dialplan');
 
     ulAddresses           = element.querySelector('#reception-list-addresses');
@@ -160,6 +161,7 @@ class ReceptionView {
     inputGreeting.onInput.listen((_) => OnContentChange());
     inputOther.onInput.listen((_) => OnContentChange());
     inputProduct.onInput.listen((_) => OnContentChange());
+    extradataUrl.onInput.listen((_) => OnContentChange());
   }
 
   void enabledSaveButton() {
@@ -221,6 +223,7 @@ class ReceptionView {
     inputGreeting.value = '';
     inputOther.value = '';
     inputProduct.value = '';
+    extradataUrl.value = '';
     fillList(ulAddresses, new List<String>(), onChange: OnContentChange);
     fillList(ulAlternatenames, new List<String>(), onChange: OnContentChange);
     fillList(ulBankinginformation, new List<String>(), onChange: OnContentChange);
@@ -301,6 +304,7 @@ class ReceptionView {
       ..greeting = inputGreeting.value
       ..other = inputOther.value
       ..product = inputProduct.value
+      ..extradatauri = extradataUrl.value
 
       ..addresses = getListValues(ulAddresses)
       ..alternateNames = getListValues(ulAlternatenames)
@@ -367,6 +371,7 @@ class ReceptionView {
         inputGreeting.value = response.greeting;
         inputOther.value = response.other;
         inputProduct.value = response.product;
+        extradataUrl.value = response.extradatauri;
         fillList(ulAddresses, response.addresses, onChange: OnContentChange);
         fillList(ulAlternatenames, response.alternateNames, onChange: OnContentChange);
         fillList(ulBankinginformation, response.bankinginformation, onChange: OnContentChange);
