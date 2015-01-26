@@ -19,14 +19,8 @@ Future<Map> getReception(int id) {
          'enabled'      : row.enabled,
          'extradatauri' : row.extradatauri,
          'reception_telephonenumber': row.reception_telephonenumber,
-         'last_check'   : row.last_check.toString()};
-
-      if (row.attributes != null) {
-        Map attributes = row.attributes;
-        if(attributes != null) {
-          attributes.forEach((key, value) => data.putIfAbsent(key, () => value));
-        }
-      }
+         'last_check'   : row.last_check.toString(),
+         'attributes'   : row.attributes};
     }
 
     return data;
