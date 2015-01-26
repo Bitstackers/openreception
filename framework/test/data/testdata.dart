@@ -58,31 +58,31 @@ Map testMessage_1_Map =
    "name": "Kim Rostgaard"},
    "reception":
    {"id":1,
-   "name":"AdaHeads K/S"}
+   "name":"BitStackers"}
    },
    "taken_by_agent":
    {"name":"Kim Rostgaard Christensen",
-   "id":2,"address":"krc@adaheads.com"
+   "id":2,"address":"krc@bitstack.dk"
    },
    "caller":
-   {"name":"Sparre",
+   {"name":"Jens Olsen",
    "company":"Blik A/S",
    "phone":"22114411",
    "cellphone":"33551122"},
    "flags":["urgent"],
    "sent":false,
-   "enqueued":false,
+   "enqueued":true,
    "created_at":1411987105,
    "recipients":
    {"bcc":[],
    "cc":[{"contact":{"id":4,"name":"Kim Rostgaard Chrisensen"},
    "reception":{"id":2,"name":"Gir"}}],
    "to":[{"contact":{"id":4,"name":"Kim Rostgaard Chrisensen"},
-   "reception":{"id":1,"name":"AdaHeads K/S"}}]}};
+   "reception":{"id":1,"name":"BitStackers"}}]}};
 
 Map reception_1 = {
     "reception_id": 1,
-    "full_name": "AdaHeads K/S",
+    "full_name": "BitStackers",
     "enabled": true,
     "extradatauri": "https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true",
     "reception_telephonenumber": "12340001",
