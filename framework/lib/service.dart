@@ -11,6 +11,8 @@ import 'package:logging/logging.dart';
 part 'service/service-auth.dart';
 part 'service/service-call_flow_control.dart';
 part 'service/service-call_flow_control_resource.dart';
+part 'service/service-contact.dart';
+part 'service/service-contact_resource.dart';
 part 'service/service-message.dart';
 part 'service/service-message_resource.dart';
 part 'service/service-notification.dart';
