@@ -154,35 +154,21 @@ class Reception extends ReceptionStub {
    * Returns a Map representation of the Reception.
    */
   Map get asMap {
-    List priorityListToJson(List<String> list) {
-      List<Map> result = new List<Map>();
-
-      int priority = 1;
-      for (String item in list) {
-        result.add({
-          'priority': priority,
-          'value': item
-        });
-      }
-
-      return result;
-    }
-
-    attributes[ReceptionJSONKey.ADDRESSES]             = priorityListToJson(this.addresses);
-    attributes[ReceptionJSONKey.ALT_NAMES]             = priorityListToJson(this.alternateNames);
-    attributes[ReceptionJSONKey.BANKING_INFO]          = priorityListToJson(this.bankingInformation);
+    attributes[ReceptionJSONKey.ADDRESSES]             = this.addresses;
+    attributes[ReceptionJSONKey.ALT_NAMES]             = this.alternateNames;
+    attributes[ReceptionJSONKey.BANKING_INFO]          = this.bankingInformation;
     attributes[ReceptionJSONKey.CUSTOMER_TYPE]         = this.customertype;
-    attributes[ReceptionJSONKey.EMAIL_ADDRESSES]       = priorityListToJson(this.emailAddresses);
+    attributes[ReceptionJSONKey.EMAIL_ADDRESSES]       = this.emailAddresses;
     attributes[ReceptionJSONKey.GREETING]              = this.greeting;
-    attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS] = priorityListToJson(this.handlingInstructions);
-    attributes[ReceptionJSONKey.OPENING_HOURS]         = priorityListToJson(this.openingHours);
+    attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS] = this.handlingInstructions;
+    attributes[ReceptionJSONKey.OPENING_HOURS]         = this.openingHours;
     attributes[ReceptionJSONKey.OTHER]                 = this.otherData;
     attributes[ReceptionJSONKey.PRODUCT]               = this.product;
-    attributes[ReceptionJSONKey.SALES_MARKET_HANDLING] = priorityListToJson(this.salesMarketingHandling);
+    attributes[ReceptionJSONKey.SALES_MARKET_HANDLING] = this.salesMarketingHandling;
     attributes[ReceptionJSONKey.SHORT_GREETING]        = this.shortGreeting;
-    attributes[ReceptionJSONKey.VAT_NUMBERS]           = priorityListToJson(this.vatNumbers);
-    attributes[ReceptionJSONKey.PHONE_NUMBERS]         = priorityListToJson(this.telephonenumbers);
-    attributes[ReceptionJSONKey.WEBSITES]              = priorityListToJson(this.websites);
+    attributes[ReceptionJSONKey.VAT_NUMBERS]           = this.vatNumbers;
+    attributes[ReceptionJSONKey.PHONE_NUMBERS]         = this.telephonenumbers;
+    attributes[ReceptionJSONKey.WEBSITES]              = this.websites;
 
     Map map = {
       ReceptionJSONKey.ID              : this.ID,
