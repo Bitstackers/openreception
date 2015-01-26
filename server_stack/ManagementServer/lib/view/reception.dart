@@ -2,6 +2,8 @@ library adaheads.server.view.reception;
 
 import 'dart:convert';
 
+import 'package:openreception_framework/model.dart' as ORF;
+
 import '../model.dart';
 
 String receptionAsJson(Reception r) => JSON.encode(_receptionAsJsonMap(r));
@@ -15,10 +17,10 @@ List _listReceptionAsJsonList(List<Reception> receptions) =>
     receptions.map(_receptionAsJsonMap).toList();
 
 Map _receptionAsJsonMap(Reception r) => r == null ? {} :
-{'id': r.id,
- 'organization_id': r.organizationId,
- 'full_name': r.fullName,
- 'attributes': r.attributes,
- 'extradatauri': r.extradatauri,
- 'enabled': r.enabled,
- 'reception_telephonenumber': r.receptionNumber};
+{ORF.ReceptionJSONKey.ID: r.id,
+ ORF.ReceptionJSONKey.ORGANIZATION_ID: r.organizationId,
+ ORF.ReceptionJSONKey.FULL_NAME: r.fullName,
+ ORF.ReceptionJSONKey.ATTRIBUTES: r.attributes,
+ ORF.ReceptionJSONKey.EXTRADATA_URI: r.extradatauri,
+ ORF.ReceptionJSONKey.ENABLED: r.enabled,
+ ORF.ReceptionJSONKey.EXTENSION: r.receptionNumber};

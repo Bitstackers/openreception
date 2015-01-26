@@ -104,7 +104,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "Tyste Bank 123456789",
         "Bank Bank Bank 123456789"
     ],
-    "crapcallhandling": [
+    "salescalls": [
         "Stil dem videre til Thomas",
         "Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu",
         "Sig at det lyder spændende, og de kan sende en email til gtfo@bitstack.dk",
@@ -180,7 +180,7 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
         "En kiste ude på en øde ø",
         "Nogle englændere har pt.\"deres\"guld"
     ],
-    "crapcallhandling": [
+    "salescalls": [
         "Stil dem videre til marketingsafdelingen"
     ],
     "customertype": "",
@@ -227,7 +227,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
         "Nordea 999 888 777 666"
     ],
     "short_greeting": "Du taler med...",
-    "crapcallhandling": [
+    "salescalls": [
         "Stil dem videre til Thomas Løcke"
     ],
     "customertype": "",
@@ -271,7 +271,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
         "Tube bank 696 347 230 9248"
     ],
     "short_greeting": "Du taler med...",
-    "crapcallhandling": [
+    "salescalls": [
         "Send en mail til mario@hansenvvs.dk"
     ],
     "customertype": "",
@@ -312,7 +312,7 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
         "Spanske bank 222 444 555",
         "Sydea 944 888 777 666"
     ],
-    "crapcallhandling": [
+    "salescalls": [
         "Stil dem videre til Thomas Løcke"
     ],
     "customertype": "",
@@ -356,7 +356,7 @@ VALUES (6, 2, 'Landmandens venner A/S', '12340006',
     "bankinginformation": [
         "Deres værdi er i jord og kvæg"
     ],
-    "crapcallhandling": [
+    "salescalls": [
         "Bed dem om at komme til dyrskuet og snakke med tyren"
     ],
     "customertype": "",
