@@ -61,5 +61,4 @@ class Connection {
   Future execute(String sql, [Map parameters = null]) => this._pool.connect()
     .then((PG.Connection conn) => conn.execute(sql, parameters)
     .whenComplete(() => conn.close()));
-
 }
