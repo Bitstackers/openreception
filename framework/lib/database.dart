@@ -1,7 +1,6 @@
 library openreception.database;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:logging/logging.dart';
 import 'package:postgresql/pool.dart'       as PGPool;
