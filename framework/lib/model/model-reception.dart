@@ -21,7 +21,7 @@ abstract class ReceptionJSONKey {
   static const String CUSTOMER_TYPE         = 'customertype';
   static const String PRODUCT               = 'product';
   static const String BANKING_INFO          = 'bankinginformation';
-  static const String SALES_MARKET_HANDLING = 'crapcallhandling';
+  static const String SALES_MARKET_HANDLING = 'salescalls';
   static const String EMAIL_ADDRESSES       = 'emailaddresses';
   static const String HANDLING_INSTRUCTIONS = 'handlings';
   static const String OPENING_HOURS         = 'openinghours';
