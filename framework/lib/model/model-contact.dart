@@ -25,6 +25,8 @@ abstract class ContactJSONKey {
   static const position = 'position';
   static const relations = 'relations';
   static const responsibility = 'responsibility';
+
+  static const Contact_LIST = 'contacts';
 }
 
 abstract class ContactDefault {
