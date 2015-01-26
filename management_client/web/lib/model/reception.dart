@@ -52,16 +52,16 @@ class Reception implements Comparable<Reception> {
       shortGreeting = stringFromJson(attributes, 'shortgreeting');
       customertype = stringFromJson(attributes, 'customertype');
 
-      addresses = priorityListFromJson(attributes, 'addresses');
-      alternateNames = priorityListFromJson(attributes, 'alternatenames');
-      bankinginformation = priorityListFromJson(attributes, 'bankinginformation');
-      salesCalls = priorityListFromJson(attributes, 'salescalls');
-      emailaddresses = priorityListFromJson(attributes, 'emailaddresses');
-      handlings = priorityListFromJson(attributes, 'handlings');
-      openinghours = priorityListFromJson(attributes, 'openinghours');
-      registrationnumbers = priorityListFromJson(attributes, 'registrationnumbers');
-      telephonenumbers = priorityListFromJson(attributes, 'telephonenumbers');
-      websites = priorityListFromJson(attributes, 'websites');
+      addresses = attributes['addresses'];
+      alternateNames = attributes['alternatenames'];
+      bankinginformation = attributes['bankinginformation'];
+      salesCalls = attributes['salescalls'];
+      emailaddresses = attributes['emailaddresses'];
+      handlings = attributes['handlings'];
+      openinghours = attributes['openinghours'];
+      registrationnumbers = attributes['registrationnumbers'];
+      telephonenumbers = attributes['telephonenumbers'];
+      websites = attributes['websites'];
     }
   }
 
@@ -71,16 +71,16 @@ class Reception implements Comparable<Reception> {
     attributes['greeting'] = greeting;
     attributes['shortgreeting'] = shortGreeting;
 
-    attributes['addresses'] = priorityListToJson(addresses);
-    attributes['alternatenames'] = priorityListToJson(alternateNames);
-    attributes['bankinginformation'] = priorityListToJson(bankinginformation);
-    attributes['salescalls'] = priorityListToJson(salesCalls);
-    attributes['emailaddresses'] = priorityListToJson(emailaddresses);
-    attributes['handlings'] = priorityListToJson(handlings);
-    attributes['openinghours'] = priorityListToJson(openinghours);
-    attributes['registrationnumbers'] = priorityListToJson(registrationnumbers);
-    attributes['telephonenumbers'] = priorityListToJson(telephonenumbers);
-    attributes['websites'] = priorityListToJson(websites);
+    attributes['addresses'] = addresses;
+    attributes['alternatenames'] = alternateNames;
+    attributes['bankinginformation'] = bankinginformation;
+    attributes['salescalls'] = salesCalls;
+    attributes['emailaddresses'] = emailaddresses;
+    attributes['handlings'] = handlings;
+    attributes['openinghours'] = openinghours;
+    attributes['registrationnumbers'] = registrationnumbers;
+    attributes['telephonenumbers'] = telephonenumbers;
+    attributes['websites'] = websites;
 
     Map data = {
       'id': id,
