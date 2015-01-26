@@ -27,6 +27,15 @@ void main() {
     test('list', MessageResource.list);
     test('subset', MessageResource.subset);
   });
+
+  group('service.ReceptionResource', () {
+    test('singleMessage', ReceptionResource.single);
+    test('list', ReceptionResource.list);
+    test('subset', ReceptionResource.subset);
+    test('calendar', ReceptionResource.calendar);
+    test('calendarEvent', ReceptionResource.calendarEvent);
+  });
+
 }
 
 abstract class MessageObject {
@@ -45,6 +54,30 @@ abstract class ContactObject {
   static void serializationDeserialization () =>
       expect(new Model.Contact.fromMap(Test_Data.testContact_1_2).asMap,
         equals(Test_Data.testContact_1_2));
+}
+
+abstract class ReceptionResource {
+  static Uri receptionServer = Uri.parse('http://localhost:4000');
+
+  static void single () =>
+      expect(Service.ReceptionResource.single(receptionServer, 1),
+        equals(Uri.parse('${receptionServer}/reception/1')));
+
+  static void list () =>
+      expect(Service.ReceptionResource.list(receptionServer),
+        equals(Uri.parse('${receptionServer}/reception/list')));
+
+  static void subset () =>
+      expect(Service.ReceptionResource.subset(receptionServer, 10, 20),
+        equals(Uri.parse('${receptionServer}/reception/list/10/limit/20')));
+
+  static void calendar () =>
+      expect(Service.ReceptionResource.calendar(receptionServer, 1),
+        equals(Uri.parse('${receptionServer}/reception/1/calendar')));
+
+  static void calendarEvent () =>
+      expect(Service.ReceptionResource.calendarEvent(receptionServer, 1, 2),
+        equals(Uri.parse('${receptionServer}/reception/1/calendar/event/2')));
 }
 
 abstract class MessageResource {
@@ -66,3 +99,4 @@ abstract class MessageResource {
       expect(Service.MessageResource.subset(messageServer, 10, 20),
         equals(Uri.parse('${messageServer}/message/list/10/limit/20')));
 }
+
