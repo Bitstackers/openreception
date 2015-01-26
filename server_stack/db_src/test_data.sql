@@ -83,7 +83,7 @@ INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumbe
 VALUES (1, 1, 'BitStackers', '12340001', 
            'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
            '{
-    "shortgreeting": "",
+    "short_greeting": "",
     "addresses": [
         "For enden af regnbuen",
         "Lovelace street",
@@ -167,7 +167,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
 	   '{
-    "shortgreeting": "",
+    "short_greeting": "",
     "addresses": [
         "Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK",
         "Valora Trade Denmark A/S Transformervej 16 2730 Herlev",
@@ -214,7 +214,7 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (3, 3, 'Responsum K/S', '12340003',
        	   '{
-    "shortgreeting": "",
+    "short_greeting": "",
     "addresses": [
         "Farum gydevej 87"
     ],
@@ -260,7 +260,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
 	    '{
-    "shortgreeting": "",
+    "short_greeting": "",
     "addresses": [
         "Kloakstræde 2"
     ],
@@ -301,7 +301,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (5, 5, 'Kødbollen A/S', '12340005',
            '{
-    "shortgreeting": "",
+    "short_greeting": "",
     "addresses": [
         "Kødbyen"
     ],
@@ -346,7 +346,7 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (6, 2, 'Landmandens venner A/S', '12340006',
 	   '{
-    "shortgreeting": "",
+    "short_greeting": "",
     "addresses": [
         "Landmandsvej 1 - langt-ude 4600"
     ],
