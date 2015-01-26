@@ -2,7 +2,7 @@ part of openreception.model;
 
 abstract class OrganizationJSONKey {
   static const String ORGANIZATION_LIST = 'organizations';
-  static const String BILLING_TYOE = 'billing_type';
+  static const String BILLING_TYPE = 'billing_type';
   static const String FLAG = 'flag';
   static const String FULL_NAME = 'full_name';
   static const String ID = 'id';
@@ -27,7 +27,7 @@ class Organization {
     try {
       this
         ..id          = organizationMap[OrganizationJSONKey.ID]
-        ..billingType = organizationMap[OrganizationJSONKey.BILLING_TYOE]
+        ..billingType = organizationMap[OrganizationJSONKey.BILLING_TYPE]
         ..flag        = organizationMap[OrganizationJSONKey.FLAG]
         ..fullName    = organizationMap[OrganizationJSONKey.FULL_NAME];
     } catch (error, stacktrace) {
@@ -44,7 +44,7 @@ class Organization {
   Map get asMap =>
     {
     OrganizationJSONKey.ID: this.id,
-    OrganizationJSONKey.BILLING_TYOE: this.billingType,
+    OrganizationJSONKey.BILLING_TYPE: this.billingType,
     OrganizationJSONKey.FLAG: this.flag,
     OrganizationJSONKey.FULL_NAME: this.fullName
     };
