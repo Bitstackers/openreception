@@ -22,7 +22,10 @@ void main() {
   });
 
   group('service.MessageResource', () {
-    test('service.MessageResource.singleMessage', MessageResource.singleMessage);
+    test('singleMessage', MessageResource.singleMessage);
+    test('send', MessageResource.send);
+    test('list', MessageResource.list);
+    test('subset', MessageResource.subset);
   });
 }
 
@@ -45,7 +48,21 @@ abstract class ContactObject {
 }
 
 abstract class MessageResource {
+  static Uri messageServer = Uri.parse('http://localhost:4040');
+
   static void singleMessage () =>
-      expect(Service.MessageResource.single(Uri.parse('http://test/'), 5),
-        equals(Uri.parse('http://test/message/5')));
+      expect(Service.MessageResource.single(messageServer, 5),
+        equals(Uri.parse('${messageServer}/message/5')));
+
+  static void send () =>
+      expect(Service.MessageResource.send(messageServer, 5),
+        equals(Uri.parse('${messageServer}/message/5/send')));
+
+  static void list () =>
+      expect(Service.MessageResource.list(messageServer),
+        equals(Uri.parse('${messageServer}/message/list')));
+
+  static void subset () =>
+      expect(Service.MessageResource.subset(messageServer, 10, 20),
+        equals(Uri.parse('${messageServer}/message/list/10/limit/20')));
 }
