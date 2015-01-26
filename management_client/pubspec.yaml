@@ -9,4 +9,8 @@ dependencies:
     git:
       ref: master
       url: https://github.com/AdaHeads/libdialplan.git
+  openreception_framework:
+    git:
+      ref: master
+      url: https://github.com/Bitstackers/OpenReceptionFramework.git
   okeyee: any

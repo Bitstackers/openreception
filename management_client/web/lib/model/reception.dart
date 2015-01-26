@@ -36,60 +36,60 @@ class Reception implements Comparable<Reception> {
     if(contacts != null) {
       this.contacts = contacts.map((Map c) => new Contact.fromJson(c)).toList();
     }
-    id = json['id'];
-    organizationId = json['organization_id'];
-    fullName = stringFromJson(json, 'full_name');
-    enabled = json['enabled'];
-    receptionNumber = json['reception_telephonenumber'];
-    extradatauri = json['extradatauri'];
+    id = json[ReceptionJSONKey.ID];
+    organizationId = json[ReceptionJSONKey.ORGANIZATION_ID];
+    fullName = stringFromJson(json, ReceptionJSONKey.FULL_NAME);
+    enabled = json[ReceptionJSONKey.ENABLED];
+    receptionNumber = json[ReceptionJSONKey.EXTENSION];
+    extradatauri = json[ReceptionJSONKey.EXTRADATA_URI];
 
-    if (json.containsKey('attributes')) {
-      attributes = json['attributes'];
+    if (json.containsKey(ReceptionJSONKey.ATTRIBUTES)) {
+      attributes = json[ReceptionJSONKey.ATTRIBUTES];
 
-      product = stringFromJson(attributes, 'product');
-      other = stringFromJson(attributes, 'other');
-      greeting = stringFromJson(attributes, 'greeting');
-      shortGreeting = stringFromJson(attributes, 'shortgreeting');
-      customertype = stringFromJson(attributes, 'customertype');
+      product = stringFromJson(attributes, ReceptionJSONKey.PRODUCT);
+      other = stringFromJson(attributes, ReceptionJSONKey.OTHER);
+      greeting = stringFromJson(attributes, ReceptionJSONKey.GREETING);
+      shortGreeting = stringFromJson(attributes, ReceptionJSONKey.SHORT_GREETING);
+      customertype = stringFromJson(attributes, ReceptionJSONKey.CUSTOMER_TYPE);
 
-      addresses = attributes['addresses'];
-      alternateNames = attributes['alternatenames'];
-      bankinginformation = attributes['bankinginformation'];
-      salesCalls = attributes['salescalls'];
-      emailaddresses = attributes['emailaddresses'];
-      handlings = attributes['handlings'];
-      openinghours = attributes['openinghours'];
-      registrationnumbers = attributes['registrationnumbers'];
-      telephonenumbers = attributes['telephonenumbers'];
-      websites = attributes['websites'];
+      addresses = attributes[ReceptionJSONKey.ADDRESSES];
+      alternateNames = attributes[ReceptionJSONKey.ALT_NAMES];
+      bankinginformation = attributes[ReceptionJSONKey.BANKING_INFO];
+      salesCalls = attributes[ReceptionJSONKey.SALES_MARKET_HANDLING];
+      emailaddresses = attributes[ReceptionJSONKey.EMAIL_ADDRESSES];
+      handlings = attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS];
+      openinghours = attributes[ReceptionJSONKey.OPENING_HOURS];
+      registrationnumbers = attributes[ReceptionJSONKey.VAT_NUMBERS];
+      telephonenumbers = attributes[ReceptionJSONKey.PHONE_NUMBERS];
+      websites = attributes[ReceptionJSONKey.WEBSITES];
     }
   }
 
   Map toJson() {
-    attributes['product'] = product;
-    attributes['other'] = other;
-    attributes['greeting'] = greeting;
-    attributes['shortgreeting'] = shortGreeting;
+    attributes[ReceptionJSONKey.PRODUCT] = product;
+    attributes[ReceptionJSONKey.OTHER] = other;
+    attributes[ReceptionJSONKey.GREETING] = greeting;
+    attributes[ReceptionJSONKey.SHORT_GREETING] = shortGreeting;
 
-    attributes['addresses'] = addresses;
-    attributes['alternatenames'] = alternateNames;
-    attributes['bankinginformation'] = bankinginformation;
-    attributes['salescalls'] = salesCalls;
-    attributes['emailaddresses'] = emailaddresses;
-    attributes['handlings'] = handlings;
-    attributes['openinghours'] = openinghours;
-    attributes['registrationnumbers'] = registrationnumbers;
-    attributes['telephonenumbers'] = telephonenumbers;
-    attributes['websites'] = websites;
+    attributes[ReceptionJSONKey.ADDRESSES] = addresses;
+    attributes[ReceptionJSONKey.ALT_NAMES] = alternateNames;
+    attributes[ReceptionJSONKey.BANKING_INFO] = bankinginformation;
+    attributes[ReceptionJSONKey.SALES_MARKET_HANDLING] = salesCalls;
+    attributes[ReceptionJSONKey.EMAIL_ADDRESSES] = emailaddresses;
+    attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS] = handlings;
+    attributes[ReceptionJSONKey.OPENING_HOURS] = openinghours;
+    attributes[ReceptionJSONKey.VAT_NUMBERS] = registrationnumbers;
+    attributes[ReceptionJSONKey.PHONE_NUMBERS] = telephonenumbers;
+    attributes[ReceptionJSONKey.WEBSITES] = websites;
 
     Map data = {
-      'id': id,
-      'organization_id': organizationId,
-      'full_name': fullName,
-      'enabled': enabled,
-      'attributes': attributes,
-      'reception_telephonenumber': receptionNumber,
-      'extradatauri': extradatauri,
+      ReceptionJSONKey.ID: id,
+      ReceptionJSONKey.ORGANIZATION_ID: organizationId,
+      ReceptionJSONKey.FULL_NAME: fullName,
+      ReceptionJSONKey.ENABLED: enabled,
+      ReceptionJSONKey.ATTRIBUTES: attributes,
+      ReceptionJSONKey.EXTENSION: receptionNumber,
+      ReceptionJSONKey.EXTRADATA_URI: extradatauri,
       'contacts': contacts
     };
     return data;
