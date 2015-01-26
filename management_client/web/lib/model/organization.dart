@@ -7,17 +7,17 @@ class Organization implements Comparable<Organization> {
   int    id;
 
   Organization.fromJson(Map json) {
-    billingType = json['billing_type'];
-    flag        = json['flag'];
-    fullName    = json['full_name'];
-    id          = json['id'];
+    billingType = json[ORF.OrganizationJSONKey.BILLING_TYPE];
+    flag        = json[ORF.OrganizationJSONKey.FLAG];
+    fullName    = json[ORF.OrganizationJSONKey.FULL_NAME];
+    id          = json[ORF.OrganizationJSONKey.ID];
   }
 
   Map toJson() => {
-    'billing_type': billingType,
-    'flag'        : flag,
-    'full_name'   : fullName,
-    'id'          : id
+    ORF.OrganizationJSONKey.BILLING_TYPE: billingType,
+    ORF.OrganizationJSONKey.FLAG        : flag,
+    ORF.OrganizationJSONKey.FULL_NAME   : fullName,
+    ORF.OrganizationJSONKey.ID          : id
   };
 
   @override

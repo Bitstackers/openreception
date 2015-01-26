@@ -11,9 +11,9 @@ class Contact implements Comparable<Contact> {
 
   Contact.fromJson(Map json) {
     id        = json['id'];
-    fullName  = json['full_name'];
-    enabled   = json['enabled'];
-    type      = json['contact_type'];
+    fullName  = json[ORF.ContactJSONKey.fullName];
+    enabled   = json[ORF.ContactJSONKey.enabled];
+    type      = json[ORF.ContactJSONKey.contactType];
 
     List attributes = json['attributes'] as List;
     if(attributes != null) {
@@ -26,9 +26,9 @@ class Contact implements Comparable<Contact> {
 
   Map toJson() => {
     'id': id,
-    'full_name': fullName,
-    'enabled': enabled,
-    'contact_type': type
+    ORF.ContactJSONKey.fullName: fullName,
+    ORF.ContactJSONKey.enabled: enabled,
+    ORF.ContactJSONKey.contactType: type
   };
 
   @override
