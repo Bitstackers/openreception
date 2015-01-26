@@ -8,5 +8,7 @@ abstract class Contact {
 
   Future<Model.Contact> remove(Model.Contact Contact);
 
-  Future<Model.Contact> save(Model.Contact Contact);
+  Future<Model.Contact> create(Model.Contact Contact);
+
+  Future<Model.Contact> update(Model.Contact Contact);
 }

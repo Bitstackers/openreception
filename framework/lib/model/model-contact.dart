@@ -36,7 +36,7 @@ abstract class ContactDefault {
 class Contact {
 
   static final int     noID        = 0;
-  static final Contact nullContact = new Contact._null();
+  static final Contact nullContact = new Contact.none();
   static const String  className   = '${libraryName}.Contact';
   static final Logger  log         = new Logger(Contact.className);
 
@@ -74,6 +74,8 @@ class Contact {
   MessageRecipientList get distributionList => this._distributionList;
 
   static final Contact noContact = nullContact;
+
+  Map toJson() => this.asMap;
 
   Map get asMap =>
       {
@@ -132,9 +134,8 @@ class Contact {
   /**
    * [Contact] null constructor.
    */
-  Contact._null() {
+  Contact.none() {
     ID          = noID;
     contactType = null;
   }
-
 }
