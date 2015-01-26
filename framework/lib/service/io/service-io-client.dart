@@ -46,13 +46,4 @@ class Client extends Service.WebService {
         .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
   }
 
-  Future<String> _handleResponse(IO.HttpClientResponse response, Uri resource) {
-    try {
-      this.checkResponseCode(response.statusCode);
-      return extractContent(response);
-    } catch (error, stacktrace) {
-      log.severe('$error : $resource\n$stacktrace');
-      return new Future.error(error, stacktrace);
-    }
-  }
 }

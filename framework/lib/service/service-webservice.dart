@@ -16,7 +16,7 @@ abstract class WebService {
   Future<String> post   (Uri path, String payload);
   Future<String> delete (Uri path);
 
-  void checkResponseCode(int responseCode) {
+  static void checkResponseCode(int responseCode) {
     switch (responseCode) {
       case 200:
         break;

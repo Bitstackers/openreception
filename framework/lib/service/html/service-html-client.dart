@@ -6,6 +6,9 @@ class Client extends Service.WebService {
 
   Logger log = new Logger(Client.className);
 
+  /**
+   * Retrives [resource] using HTTP GET.
+   */
   Future<String> get (Uri resource) {
     final Completer<String> completer = new Completer<String>();
 
@@ -16,7 +19,7 @@ class Client extends Service.WebService {
           ..open('GET', resource.toString())
           ..onLoad.listen((_) {
             try {
-              this.checkResponseCode(request.status);
+              Service.WebService.checkResponseCode(request.status);
               completer.complete(request.responseText);
             } catch (error) {
               completer.completeError (error);
@@ -38,7 +41,7 @@ class Client extends Service.WebService {
           ..open('PUT', resource.toString())
           ..onLoad.listen((_) {
             try {
-              this.checkResponseCode(request.status);
+              Service.WebService.checkResponseCode(request.status);
               completer.complete(request.responseText);
             } catch (error) {
               completer.completeError (error);
@@ -60,7 +63,7 @@ class Client extends Service.WebService {
           ..open('POST', resource.toString())
           ..onLoad.listen((_) {
             try {
-              this.checkResponseCode(request.status);
+              Service.WebService.checkResponseCode(request.status);
               completer.complete(request.responseText);
             } catch (error) {
               completer.completeError (error);
@@ -82,7 +85,7 @@ class Client extends Service.WebService {
           ..open('DELETE', resource.toString())
           ..onLoad.listen((_) {
             try {
-              this.checkResponseCode(request.status);
+              Service.WebService.checkResponseCode(request.status);
               completer.complete(request.responseText);
             } catch (error) {
               completer.completeError (error);
