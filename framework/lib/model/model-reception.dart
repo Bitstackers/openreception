@@ -85,11 +85,14 @@ class Reception extends ReceptionStub {
   List<String> telephonenumbers       = [];
   List<String> websites               = [];
 
+  String get shortGreeting => this._shortGreeting.isNotEmpty
+                                ? this._shortGreeting
+                                : this.greeting;
 
   String extension;
   String greeting;
   String otherData;
-  String shortGreeting;
+  String _shortGreeting = '';
   String customertype;
   String product;
   bool   enabled = false;
@@ -134,7 +137,7 @@ class Reception extends ReceptionStub {
              ..otherData              = attributes[ReceptionJSONKey.OTHER]
              ..product                = attributes[ReceptionJSONKey.PRODUCT]
              ..salesMarketingHandling = extractValues(attributes[ReceptionJSONKey.SALES_MARKET_HANDLING])
-             ..shortGreeting          = attributes[ReceptionJSONKey.SHORT_GREETING]
+             .._shortGreeting         = attributes[ReceptionJSONKey.SHORT_GREETING] != null ? attributes[ReceptionJSONKey.SHORT_GREETING] : ''
              ..vatNumbers             = extractValues(attributes[ReceptionJSONKey.VAT_NUMBERS])
              ..telephonenumbers       = extractValues(attributes[ReceptionJSONKey.PHONE_NUMBERS])
              ..websites               = extractValues(attributes[ReceptionJSONKey.WEBSITES]);
@@ -185,8 +188,7 @@ class Reception extends ReceptionStub {
 
 
   void validate() {
-    log.severe ('Implement me - i\'m not finished!');
-    if (this.shortGreeting == null || this.shortGreeting.isEmpty) throw new StateError('Short greeting not allowed to be empty. Value: "${this.shortGreeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
+    //if (this.shortGreeting == null || this.shortGreeting.isEmpty) throw new StateError('Short greeting not allowed to be empty. Value: "${this.shortGreeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
     if (this.greeting      == null || this.greeting.isEmpty)      throw new StateError('Greeting not allowed to be empty. Value: "${this.greeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
   }
 

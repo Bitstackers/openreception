@@ -35,7 +35,7 @@ abstract class ContactDefault {
 
 class Contact {
 
-  static final int     noID        = 0;
+  static const int     noID        = 0;
   static final Contact nullContact = new Contact.none();
   static const String  className   = '${libraryName}.Contact';
   static final Logger  log         = new Logger(Contact.className);

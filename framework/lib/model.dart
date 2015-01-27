@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
+part 'model/model-calendar_event.dart';
 part 'model/model-call.dart';
 part 'model/model-contact.dart';
 part 'model/model-contact_filter.dart';

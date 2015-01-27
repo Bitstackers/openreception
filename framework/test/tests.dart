@@ -65,11 +65,11 @@ abstract class ReceptionResource {
 
   static void list () =>
       expect(Service.ReceptionResource.list(receptionServer),
-        equals(Uri.parse('${receptionServer}/reception/list')));
+        equals(Uri.parse('${receptionServer}/reception')));
 
   static void subset () =>
       expect(Service.ReceptionResource.subset(receptionServer, 10, 20),
-        equals(Uri.parse('${receptionServer}/reception/list/10/limit/20')));
+        equals(Uri.parse('${receptionServer}/reception/10/limit/20')));
 
   static void calendar () =>
       expect(Service.ReceptionResource.calendar(receptionServer, 1),

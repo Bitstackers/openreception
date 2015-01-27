@@ -74,4 +74,47 @@ class RESTContactStore implements Storage.Contact {
             .toList() );
   }
 
+  Future<List<Model.CalendarEvent>> calendar (int contactID, int receptionID) {
+    Uri url = ContactResource.calendar(this._host, contactID, receptionID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) =>
+       (JSON.decode(response) as List)
+              .map((Map map) => new Model.CalendarEvent.fromMap(map, receptionID))
+              .toList());
+  }
+
+  Future<Model.CalendarEvent> calendarEvent (int receptionID, int contactID, int eventID) {
+    Uri url = ContactResource.calendarEvent(this._host, contactID, receptionID, eventID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) =>
+        new Model.CalendarEvent.fromMap (JSON.decode(response), receptionID));
+  }
+
+  Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event) {
+    Uri url = ContactResource.calendar (this._host, event.contactID, event.receptionID);
+        url = appendToken(url, this._token);
+
+    String data = JSON.encode(event);
+    return this._backend.post(url, data).then((String response) =>
+        new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID, contactID : event.contactID));
+  }
+
+  Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event) {
+    Uri url = ContactResource.calendarEvent (this._host, event.contactID, event.receptionID, event.ID);
+        url = appendToken(url, this._token);
+
+    String data = JSON.encode(event);
+    return this._backend.put(url, data).then((String response) =>
+        new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID, contactID : event.contactID));
+  }
+
+  Future calendarEventRemove (Model.CalendarEvent event) {
+    Uri url = ContactResource.calendarEvent(this._host, event.contactID, event.receptionID, event.ID);
+        url = appendToken(url, this._token);
+
+    return this._backend.delete(url);
+  }
+
 }

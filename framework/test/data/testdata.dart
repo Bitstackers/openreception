@@ -1,3 +1,12 @@
+Map ReceptionEvent_1_4 =
+{
+    "event": {
+        "content": "Mus samtaler",
+        "start": "2014-03-26 08:00:00.000",
+        "stop": "2014-03-28 17:00:00.000"
+    }
+};
+
 Map testContact_1_2 =
 {
     "reception_id": 2,
@@ -81,236 +90,90 @@ Map testMessage_1_Map =
    "reception":{"id":1,"name":"BitStackers"}}]}};
 
 Map reception_1 = {
-    "reception_id": 1,
+    "id": 1,
     "full_name": "BitStackers",
     "enabled": true,
     "extradatauri": "https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true",
     "reception_telephonenumber": "12340001",
-    "last_check": "2014-09-08 21:49:24.482",
-    "shortgreeting": "",
-    "addresses": [
-        "For enden af regnbuen",
-        "Lovelace street",
-        "Farum Gydevej",
-        "Hvor kongerne hænger ud"
-    ],
-    "alternatenames": [
-        {
-            "value": "Code monkeys",
-            "priority": 1
-        },
-        {
-            "value": "Software Developers",
-            "priority": 2
-        },
-        {
-            "value": "Awesome mans",
-            "priority": 3
-        },
-        {
-            "value": "Bug Fixers",
-            "priority": 4
-        },
-        {
-            "value": "SuperHeroes",
-            "priority": 5
-        }
-    ],
-    "bankinginformation": [
-        {
-            "value": "Amagerbank 123456789",
-            "priority": 1
-        },
-        {
-            "value": "Danskebank 123456789",
-            "priority": 2
-        },
-        {
-            "value": "Nordea 123456789",
-            "priority": 3
-        },
-        {
-            "value": "JysteBank 123456789",
-            "priority": 4
-        },
-        {
-            "value": "Bank Bank Bank 123456789",
-            "priority": 5
-        }
-    ],
-    "crapcallhandling": [
-        {
-            "value": "Stil dem videre til Thomas",
-            "priority": 1
-        },
-        {
-            "value": "Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu",
-            "priority": 2
-        },
-        {
-            "value": "Sig at det lyder spænende, og de kan sende en email til spam@adaheads.com",
-            "priority": 3
-        },
-        {
-            "value": "Bed dem om at ringe igen, ved næste fuldmåne",
-            "priority": 4
-        },
-        {
-            "value": "Begynd at snakke om din hund, og hvor godt du har oplært den osv.",
-            "priority": 5
-        }
-    ],
-    "customertype": "Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.",
-    "emailaddresses": [
-        {
-            "value": "mail@adaheads.com",
-            "priority": 1
-        },
-        {
-            "value": "support@adaheads.com",
-            "priority": 2
-        },
-        {
-            "value": "finance@adaheads.com",
-            "priority": 3
-        },
-        {
-            "value": "research@adaheads.com",
-            "priority": 4
-        },
-        {
-            "value": "production@adaheads.com",
-            "priority": 5
-        },
-        {
-            "value": "denmark-department@adaheads.com",
-            "priority": 6
-        }
-    ],
-    "greeting": "Velkommen til AdaHeads, hvad kan jeg hjælpe med?",
-    "short_greeting": "Du taler med...",
-    "handlings": [
-        {
-            "value": "Lad tlf. ringe 4-5 gange.",
-            "priority": 2
-        },
-        {
-            "value": "Indgang til deres kontor ligger i gården.",
-            "priority": 3
-        },
-        {
-            "value": "Kunder skal tiltales formelt, med både fornavn og efternavn.",
-            "priority": 1
-        },
-        {
-            "value": "Biler bedes parkeres hos naboen",
-            "priority": 4
-        },
-        {
-            "value": "Spørg efter ordrenummer",
-            "priority": 5
-        },
-        {
-            "value": "De skal være over 18 år, før at der må handles med dem",
-            "priority": 6
-        },
-        {
-            "value": "Geden i forhaven er der for at holde grasset nede",
-            "priority": 7
-        }
-    ],
-    "openinghours": [
-        {
-            "value": "Mandag 08:00:00 - 17:00:00",
-            "priority": 1
-        },
-        {
-            "value": "Tirsdag 08:00:00 - 17:00:00",
-            "priority": 2
-        },
-        {
-            "value": "Onsdag 08:00:00 - 17:00:00",
-            "priority": 3
-        },
-        {
-            "value": "Torsdag 08:00:00 - 17:00:00",
-            "priority": 4
-        },
-        {
-            "value": "Fredag 08:00:00 - 16:30:00",
-            "priority": 5
-        },
-        {
-            "value": "Lørdag 08:00:00 - 18:00:00",
-            "priority": 6
-        },
-        {
-            "value": "Resten af ugen fri",
-            "priority": 7
-        }
-    ],
-    "other": "Bonus info: Man ville skulle bruge 40.5 milliarder LEGO klodser for at bygge et tårn til månen. Ludo opstod i 1896, da det blev patenteret i England som patent nr. 14636. En undersøgelse fra slutningen af 2008 viser vi bruger op mod 30% af vores fritid på online aktiviteter. Mandens hjerne rumfang er på ca. 1300 ml.",
-    "product": "Software produkter, men ikke bare hvilket som helst software produkter. Det er af den højeste kvalitet menneskeheden kan fremskaffe. Deres produkter er blevet brugt til at undgå 4 komet sammenstød med jorden, som ellers ville havde ændret verden som vi kender den",
-    "registrationnumbers": [
-        {
-            "value": "123456789",
-            "priority": 1
-        },
-        {
-            "value": "2835629523",
-            "priority": 2
-        },
-        {
-            "value": "385973572",
-            "priority": 3
-        },
-        {
-            "value": "1035798361",
-            "priority": 4
-        },
-        {
-            "value": "9792559265",
-            "priority": 5
-        }
-    ],
-    "telephonenumbers": [
-        {
-            "value": "+45 10 20 30 40",
-            "priority": 1
-        },
-        {
-            "value": "+45 20 40 60 80",
-            "priority": 1
-        }
-    ],
-    "websites": [
-        {
-            "value": "http://adaheads.com",
-            "priority": 1
-        },
-        {
-            "value": "http://adaheads.org",
-            "priority": 2
-        },
-        {
-            "value": "http://adaheads.dk",
-            "priority": 3
-        },
-        {
-            "value": "http://adaheads.nu",
-            "priority": 4
-        },
-        {
-            "value": "http://adaheads.awesome",
-            "priority": 5
-        },
-        {
-            "value": "http://adaheads.software",
-            "priority": 6
-        },
-        {
-            "value": "http://adaheads.welldone",
-            "priority": 7
-        }
-    ]
+    "last_check": "2015-01-26 15:37:40.000",
+    "attributes": {
+        "short_greeting": "Du taler med...",
+        "addresses": [
+            "For enden af regnbuen",
+            "Lovelace street",
+            "Farum Gydevej",
+            "Hvor kongerne hænger ud"
+        ],
+        "alternatenames": [
+            "Code monkeys",
+            "Software Developers",
+            "Awesome dudes",
+            "Bug Hunters",
+            "SuperHeroes"
+        ],
+        "bankinginformation": [
+            "Bank banken 123456789",
+            "Trojanske bank 123456789",
+            "Ostdea 123456789",
+            "Tyste Bank 123456789",
+            "Bank Bank Bank 123456789"
+        ],
+        "salescalls": [
+            "Stil dem videre til Thomas",
+            "Spørg om hvor mange liter mælk der i køleskabet tættest på dem lige nu",
+            "Sig at det lyder spændende, og de kan sende en email til gtfo@bitstack.dk",
+            "Bed dem om at ringe igen, ved næste fuldmåne",
+            "Begynd at snakke om din hund, og hvor godt du har oplært den osv."
+        ],
+        "customertype": "Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.",
+        "emailaddresses": [
+            "mail@bitstack.dk",
+            "support@bitstack.dk",
+            "finance@bitstack.dk",
+            "research@bitstack.dk",
+            "production@bitstack.dk",
+            "denmark-department@bitstack.dk"
+        ],
+        "greeting": "Velkommen til BitStackers, hvad kan jeg hjælpe med?",
+        "handlings": [
+            "Lad tlf. ringe 4-5 gange.",
+            "Indgang til deres kontor ligger i gården.",
+            "Kunder skal tiltales formelt, med både fornavn og efternavn.",
+            "Biler bedes parkeres hos naboen",
+            "Spørg efter ordrenummer",
+            "De skal være over 18 år, før at der må handles med dem",
+            "Geden i forhaven er der for at holde græsset nede"
+        ],
+        "openinghours": [
+            "Mandag 08:00:00 - 17:10:00",
+            "Tirsdag 08:00:00 - 17:05:00",
+            "Onsdag 08:00:00 - 17:02:00",
+            "Torsdag 08:00:00 - 17:08:00",
+            "Fredag 08:00:00 - 16:30:00",
+            "Lørdag 08:00:00 - 18:00:00",
+            "Resten af ugen fri"
+        ],
+        "other": "Bonus info: Man ville skulle bruge 40.5 milliarder LEGO klodser for at bygge et tårn til månen. Ludo opstod i 1896, da det blev patenteret i England som patent nr.En undersøgelse fra slutningen af 2008 viser vi bruger op mod 30% af vores fritid på online aktiviteter. Mandens hjerne rumfang er på ca. 1300 ml.",
+        "product": "Software produkter, men ikke bare hvilket som helst software produkter. Det er af den højeste kvalitet menneskeheden kan fremskaffe. Deres produkter er blevet brugt til at undgå 4 komet sammenstød med jorden, som ellers ville havde ændret verden som vi kender den",
+        "registrationnumbers": [
+            "DK-123456789",
+            "SE-2835629523",
+            "DE-385973572",
+            "UK-1035798361",
+            "PL-9792559265"
+        ],
+        "telephonenumbers": [
+            "+45 10 20 30 40",
+            "+45 20 40 60 80"
+        ],
+        "websites": [
+            "http://bitstackers.dk",
+            "http://bitstack.dk",
+            "http://bitstack.me",
+            "http://bitstackers.org",
+            "http://bitstackers.stuff",
+            "http://bitstack.software",
+            "http://bitstack.welldone"
+        ]
+    }
 };
