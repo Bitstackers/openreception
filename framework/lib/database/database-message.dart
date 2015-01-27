@@ -237,7 +237,7 @@ class Message implements Storage.Message {
                       'taken_from_company'     : message.caller.company,
                       'taken_from_phone'       : message.caller.phone,
                       'taken_from_cellphone'   : message.caller.cellphone,
-                      'flags'                  : message.flags
+                      'flags'                  : JSON.encode(message.flags)
                       };
 
     return this._database.query(sql, parameters).then((rows) {
@@ -297,7 +297,7 @@ class Message implements Storage.Message {
                       'taken_from_phone'       : message.caller.phone,
                       'taken_from_cellphone'   : message.caller.cellphone,
                       'taken_by_agent'         : message.sender.ID,
-                      'flags'                  : message.flags
+                      'flags'                  : JSON.encode(message.flags)
                       };
 
     return this._database.query(sql, parameters).then((rows) {
