@@ -50,14 +50,12 @@ class CalendarEvent implements Comparable {
 
   Map get asMap =>
   {
-    'id': this.ID,
-    'start': _timeToEpoch(this._start),
-    'stop': _timeToEpoch(this._stop),
+    'id'     : this.ID,
+    'start'  : Util.dateTimeToUnixTimestamp(this._start),
+    'stop'   : Util.dateTimeToUnixTimestamp(this._stop),
     'content': this._content
   };
 
-  //TODO: check time implementation with the one from util.
-  static int _timeToEpoch(DateTime time) => time.millisecondsSinceEpoch ~/ 1000;
 
   CalendarEvent();
 
@@ -74,12 +72,12 @@ class CalendarEvent implements Comparable {
      *  [DateTime.parse] method. 'content' is the actual event description.
      */
   CalendarEvent.fromMap(Map json, int receptionID, {int contactID : Contact.noID}) {
-    this._ID = json['id'];
-    this._receptionID = receptionID;
-    this._contactID = contactID;
-    this._start = DateTime.parse(json['start']);
-    this._stop = DateTime.parse(json['stop']);
-    this._content = json['content'];
+    this.._ID          = json['id']
+        .._receptionID = receptionID
+        .._contactID   = contactID
+        .._start       = Util.unixTimestampToDateTime(json['start'])
+        .._stop        = Util.unixTimestampToDateTime(json['stop'])
+        .._content     = json['content'];
   }
 
   /**

@@ -101,6 +101,7 @@ class RESTReceptionStore implements Storage.Reception {
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
+
     return this._backend.post(url, data).then((String response) =>
         new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID));
   }
