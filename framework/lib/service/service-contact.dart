@@ -10,6 +10,24 @@ class RESTContactStore implements Storage.Contact {
 
   RESTContactStore (Uri this._host, String this._token, this._backend);
 
+  Future<List<Map>> calendarMap (int contactID, int receptionID) {
+    Uri url = ContactResource.calendar(this._host, contactID, receptionID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) {
+      var decodedData = JSON.decode(response);
+
+      if (decodedData is Map) {
+        return  (JSON.decode(response)
+            ['CalendarEvents'] as List);
+
+      } else {
+        return (JSON.decode(response) as List);
+      }
+    });
+  }
+
+
   Future<Model.Contact> get(int contactID) {
     Uri url = ContactResource.single(this._host, contactID);
         url = appendToken(url, this._token);
@@ -63,7 +81,6 @@ class RESTContactStore implements Storage.Contact {
         new Model.Contact.fromMap (JSON.decode(response)));
   }
 
-
   Future<List<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter}) {
     Uri url = ContactResource.listByReception(this._host, receptionID);
         url = appendToken(url, this._token);
@@ -74,15 +91,9 @@ class RESTContactStore implements Storage.Contact {
             .toList() );
   }
 
-  Future<List<Model.CalendarEvent>> calendar (int contactID, int receptionID) {
-    Uri url = ContactResource.calendar(this._host, contactID, receptionID);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url).then((String response) =>
-       (JSON.decode(response) as List)
-              .map((Map map) => new Model.CalendarEvent.fromMap(map, receptionID))
-              .toList());
-  }
+  Future<List<Model.CalendarEvent>> calendar (int contactID, int receptionID) =>
+      calendarMap (contactID, receptionID).then((List<Map> maps) =>
+          maps.map((Map map) => new Model.CalendarEvent.fromMap(map, receptionID)).toList());
 
   Future<Model.CalendarEvent> calendarEvent (int receptionID, int contactID, int eventID) {
     Uri url = ContactResource.calendarEvent(this._host, contactID, receptionID, eventID);

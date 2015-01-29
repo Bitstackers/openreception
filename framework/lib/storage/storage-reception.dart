@@ -2,6 +2,26 @@ part of openreception.storage;
 
 abstract class Reception {
 
+  // Map versions of the retriever functions.
+  Future<Map> getMap (int receptionID);
+
+  Future<List<Map>> listMap ();
+
+  Future<Map> removeMap(int receptionID);
+
+  Future<Map> saveMap (Map receptionMap);
+
+  Future<List<Map>> calendarMap (int receptionID);
+
+  Future<Map> calendarEventMap (int receptionID, int eventID);
+
+  Future<Map> calendarEventCreateMap (Map eventMap);
+
+  Future<Map> calendarEventUpdateMap (Map eventMap);
+
+  Future calendarEventRemoveMap (Map eventMap);
+
+  // Autocasting versions of the retriever functions.
   Future<Model.Reception> get (int receptionID);
 
   Future<List<Model.ReceptionStub>> list (); //{int limit: 100, Model.ReceptionFilter filter}
@@ -19,8 +39,5 @@ abstract class Reception {
   Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event);
 
   Future calendarEventRemove (Model.CalendarEvent event);
-
-
-
 
 }
