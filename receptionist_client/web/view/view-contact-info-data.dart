@@ -20,7 +20,6 @@ part of view;
 class ContactInfoData {
   UListElement backupList;
   UListElement calendarBody;
-  model.Contact contact = model.Contact.noContact;
   DivElement department;
   DivElement element;
   UListElement emailAddressList;
@@ -47,10 +46,7 @@ class ContactInfoData {
     this._registerEventHandlers();
   }
 
-  void render() {
-    if (contact.isNull()) {
-      return;
-    }
+  void render(model.Contact contact) {
 
     workHoursList.children = contact.workhours.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
 
@@ -65,6 +61,7 @@ class ContactInfoData {
     telephoneNumberList.children.clear();
 
     int index = 1;
+
     for (var item in contact.phones) {
 
       LIElement number = new LIElement()
@@ -86,6 +83,7 @@ class ContactInfoData {
 
       //TODO: Hide the phonenumber if it is private.
     }
+
 
     relations.innerHtml = contact.relations != null ? contact.relations : '';
 
@@ -122,10 +120,7 @@ class ContactInfoData {
       telephoneNumberList.children [index-1].querySelector('button').click();
     });
 
-    event.bus.on(event.contactChanged).listen((model.Contact contact) {
-      contact = contact;
-      render();
-    });
+    event.bus.on(event.contactChanged).listen(render);
 
   }
 }
