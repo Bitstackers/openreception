@@ -49,17 +49,17 @@ void handlerCallRecordSound(HttpRequest request) {
       }
 
       /// Update the user state
-      Model.UserStatusList.instance.update(user, Model.UserState.Receiving);
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Receiving);
 
       Controller.PBX.originateRecording (receptionID, recordExtension, recordPath, user)
         .then ((String channelUUID) {
 
-          Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+          Model.UserStatusList.instance.update(user.ID, Model.UserState.Speaking);
 
           writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 
       }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user, Model.UserState.Idle);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Idle);
 
         serverErrorTrace(request, error, stackTrace: stackTrace);
       });

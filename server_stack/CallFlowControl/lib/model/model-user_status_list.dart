@@ -14,10 +14,10 @@ class UserStatusList extends IterableBase<UserStatus> {
       CallList.instance.callsOf (userID).where
          ((Call call) => call.state == CallState.Speaking);
 
-  void update (userID, String newState) {
-    Notification.broadcast({'event' : {'name' : 'userState',
-                                       'oldState' : this.get (userID).state,
-                                       'newState' : newState}});
+  void update (int userID, String newState) {
+    Notification.broadcast({'event'    : 'userState',
+                            'oldState' : this.get (userID).state,
+                            'newState' : newState});
 
     this.get (userID).lastActivity = new DateTime.now();
     this.get (userID).state = newState;
@@ -52,12 +52,22 @@ abstract class UserState {
 }
 
 
+abstract class UserStatusJSONKey {
+  static const String UserID        = 'userID';
+  static const String State         = 'state';
+  static const String LastActivity  = 'lastActivity';
+  static const String CallsHandled  = 'callsHandled';
+  static const String AssignedCalls = 'assignedCalls';
+}
+
 class UserStatus {
   int          userID       = SharedModel.User.nullID;
   String       _state       = UserState.Unknown;
   DateTime     lastActivity = null;
   int          callsHandled = 0;
-  //Set<String>  calls        = new Set<String>();
+
+  List<Call> get assignedCalls => CallList.instance.callsOf (this.userID)
+      .map((Call call)=> call.ID).toList();
 
   Map toJson () => this.asMap;
 
@@ -66,13 +76,21 @@ class UserStatus {
            this._state = newState;
          }
 
+  UserStatus();
+
+  UserStatus.fromMap (Map map) {
+    this.userID       = map[UserStatusJSONKey.UserID];
+    this.state        = map[UserStatusJSONKey.State];
+    this.lastActivity = Util.unixTimestampToDateTime(map[UserStatusJSONKey.State]);
+    this.callsHandled = map[UserStatusJSONKey.CallsHandled];
+  }
+
   Map get asMap =>
       {
           'userID'        : this.userID,
           'state'         : this._state,
           'lastActivity'  : this.lastActivity != null ? Util.dateTimeToUnixTimestamp(this.lastActivity) : null,
-          'callsHandled'  : this.callsHandled,
-          'assignedCalls' : CallList.instance.callsOf (userID)
-                              .map((Call call)=> call.ID).toList()
+          'callsHandled'  : this.callsHandled
+          //'assignedCalls' : this.assignedCalls
       };
 }

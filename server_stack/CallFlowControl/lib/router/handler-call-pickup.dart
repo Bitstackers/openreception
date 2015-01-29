@@ -57,17 +57,17 @@ void handlerCallPickup(HttpRequest request) {
       logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
 
       /// Update the user state
-      Model.UserStatusList.instance.update(user, Model.UserState.Receiving);
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Receiving);
 
       Controller.PBX.transfer (assignedCall, user.peer).then((_) {
         assignedCall.assignedTo = user.ID;
 
-        Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Speaking);
 
         writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
 
       }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user, Model.UserState.Unknown);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
 
         serverErrorTrace(request, error, stackTrace: stackTrace);
       });
@@ -136,17 +136,17 @@ void handlerCallPickupNext(HttpRequest request) {
       logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
 
       /// Update the user state
-      Model.UserStatusList.instance.update(user, Model.UserState.Receiving);
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Receiving);
 
       Controller.PBX.transfer (assignedCall, user.peer).then((_) {
         assignedCall.assignedTo = user.ID;
 
-        Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Speaking);
 
         writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
 
       }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user, Model.UserState.Unknown);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
 
         serverErrorTrace(request, error, stackTrace: stackTrace);
       });

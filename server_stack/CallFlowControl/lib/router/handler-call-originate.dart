@@ -44,14 +44,14 @@ void handlerCallOrignate(HttpRequest request) {
         }
 
         /// Update the user state
-        Model.UserStatusList.instance.update(user, Model.UserState.Dialing);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Dialing);
 
         /// Perform the origination via the PBX.
         Controller.PBX.originate (extension, contactID, receptionID, user)
           .then ((String channelUUID) {
 
           /// Update the user state
-          Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+          Model.UserStatusList.instance.update(user.ID, Model.UserState.Speaking);
 
           writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 

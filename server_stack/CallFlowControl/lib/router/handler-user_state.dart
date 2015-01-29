@@ -31,7 +31,7 @@ abstract class UserState {
 
       /// Check user state. We allow the user manually change state from unknown.
       String userState = Model.UserStatusList.instance.get(user.ID).state;
-      if (userState == Model.UserState.Unknown ||
+      if (userState != Model.UserState.Unknown &&
           !Model.UserState.phoneIsReady(userState)) {
         clientError(request, 'Phone is not ready.');
         return;
