@@ -1,0 +1,59 @@
+part of openreception.model;
+
+abstract class UserStatusJSONKey {
+  static const String UserID        = 'userID';
+  static const String State         = 'state';
+  static const String LastActivity  = 'lastActivity';
+  static const String CallsHandled  = 'callsHandled';
+  static const String AssignedCalls = 'assignedCalls';
+}
+
+abstract class UserState {
+  static const Unknown         = 'unknown';
+  static const Idle            = 'idle';
+  static const Speaking        = 'speaking';
+  static const Receiving       = 'receivingCall';
+  static const HangingUp       = 'hangingUp';
+  static const Transferring    = 'transferring';
+  static const Dialing         = 'dialing';
+  static const Parking         = 'parking';
+  static const Unparking       = 'unParking';
+  static const WrappingUp      = 'wrappingUp';
+  static const HandlingOffHook = 'handlingOffHook';
+
+  static final List<String> PhoneReadyStates = [Idle, WrappingUp, HandlingOffHook];
+
+  static phoneIsReady (String state) => PhoneReadyStates.contains(state);
+}
+
+
+class UserStatus {
+  int          userID       = User.nullID;
+  String       _state       = UserState.Unknown;
+  DateTime     lastActivity = null;
+  int          callsHandled = 0;
+
+  Map toJson () => this.asMap;
+
+  String get state => this._state;
+         set state (String newState) {
+           this._state = newState;
+         }
+
+  UserStatus();
+
+  UserStatus.fromMap (Map map) {
+    this.userID       = map[UserStatusJSONKey.UserID];
+    this.state        = map[UserStatusJSONKey.State];
+    this.lastActivity = this.lastActivity != null ? Util.unixTimestampToDateTime(map[UserStatusJSONKey.State]) : null;
+    this.callsHandled = map[UserStatusJSONKey.CallsHandled];
+  }
+
+  Map get asMap =>
+      {
+          'userID'        : this.userID,
+          'state'         : this._state,
+          'lastActivity'  : this.lastActivity != null ? Util.dateTimeToUnixTimestamp(this.lastActivity) : null,
+          'callsHandled'  : this.callsHandled
+      };
+}

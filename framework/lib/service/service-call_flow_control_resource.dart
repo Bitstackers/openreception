@@ -9,6 +9,22 @@ abstract class CallFlowControlResource {
   static String nameSpace = 'call';
 
   /**
+   * Builds a Uri to retrieve a userstatus resource.
+   * The output format is:
+   *    http://hostname/userstatus/${userID}
+   */
+  static Uri userStatus(Uri host, int userID)
+    => Uri.parse('${host}/userstatus/${userID}');
+
+  /**
+   * Builds a Uri to mark a userstatus resource as idle.
+   * The output format is:
+   *    http://hostname/userstatus/${userID}/idle
+   */
+  static Uri userStatusIdle(Uri host, int userID)
+    => Uri.parse('${userStatus(host, userID)}/idle');
+
+  /**
    * Builds a Uri to retrieve a every current peer resource.
    * The output format is:
    *    http://hostname/peer/list

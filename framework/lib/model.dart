@@ -28,5 +28,6 @@ part 'model/model-reception_filter.dart';
 part 'model/model-template.dart';
 part 'model/model-template_email.dart';
 part 'model/model-user.dart';
+part 'model/model-user_status.dart';
 
 const String libraryName = "openreception.model";

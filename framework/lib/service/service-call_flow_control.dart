@@ -11,6 +11,18 @@ class CallFlowControl {
   CallFlowControl (Uri this._host, String this._token, this._backed);
 
   /**
+   * Returns a Map representation of the [Model.UserStatus] object associated
+   * with [userID].
+   */
+  Future<Map> userStatusMap(int userID) =>
+      this._backed.get
+        (appendToken(CallFlowControlResource.userStatus
+           (this._host, userID), this._token))
+      .then((String response)
+        => JSON.decode(response));
+
+
+  /**
    * Returns a single call resource.
    */
   Future<Model.Call> get(String callID) =>
