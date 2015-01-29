@@ -197,7 +197,7 @@ class Call implements Comparable {
    * Determine whether or not a call available for the user.
    *
    */
-  bool availableForUser(User user) {
+  bool availableForUser(ORModel.User user) {
     //return this.assignedAgent == user.ID || this.assignedAgent == User.nullUser.ID
     return ([ORModel.User.nullID, user.ID].contains(this.assignedAgent));
   }

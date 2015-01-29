@@ -9,7 +9,12 @@ abstract class User {
    * TODO: Build logic behind this.
    */
   static void signalReady(_) {
-    event.bus.fire(event.receptionChanged, Model.Reception.noReception);
+    Service.Call.markUserStateIdle(Model.User.currentUser.ID).then((Model.UserStatus newUserStatus) {
+      event.bus.fire(event.userStatusChanged, newUserStatus);
+      event.bus.fire(event.receptionChanged, Model.Reception.noReception);
+    });
+
   }
+
 
 }

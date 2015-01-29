@@ -28,6 +28,8 @@ class AgentInfo {
   ImageElement     portrait;
   TableElement     table;
 
+  TableCellElement get userStatusTD => element.querySelector('#agent-info-status');
+
   AgentInfo(DivElement this.element) {
     divParent = element.querySelector('#agent-info-stats');
     table = divParent.querySelector('table');
@@ -49,10 +51,21 @@ class AgentInfo {
       if(model.User.currentUser != null) {
         //FIXME: implement an photoUrl in the User class in the framework.
         portrait.src = model.User.currentUser.toJson()['remote_attributes']['picture'];
+
+        Service.Call.userState(model.User.currentUser.ID).then((model.UserStatus newUserStatus) {
+          this.userStatusTD.text = newUserStatus.state;
+        }) ;
       }
     }).catchError((error) {
       log.error('components.AgentInfo() Updating Agent image failed with "${error}"');
     });
+
+    userStatusTD.text = Label.Unknown;
+
+    event.bus.on(event.userStatusChanged).listen((model.UserStatus newUserStatus) {
+      this.userStatusTD.text = newUserStatus.state;
+    }) ;
+
   }
 
   void resize() {

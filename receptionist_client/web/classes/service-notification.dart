@@ -42,6 +42,7 @@ class EventSocket {
   static final EventType<Map> callHangup   = new EventType<Map>();
   static final EventType<Map> callPickup   = new EventType<Map>();
   static final EventType<Map> queueJoin    = new EventType<Map>();
+  static final EventType<Map> userState    = new EventType<Map>();
   static final EventType<Map> queueLeave   = new EventType<Map>();
   static final EventType<Map> callPark     = new EventType<Map>();
   static final EventType<Map> callUnpark   = new EventType<Map>();
@@ -72,7 +73,8 @@ class EventSocket {
      'call_unlock'   : callUnlock,
      'call_lock'     : callLock,
      'peer_state'    : peerState,
-     'messageCreated' : messageCreated,
+     'messageCreated': messageCreated,
+     'userState'     : userState,
      'contactCalendarEventCreated'   : contactCalendarEventCreated,
      'contactCalendarEventUpdated'   : contactCalendarEventUpdated,
      'contactCalendarEventDeleted'   : contactCalendarEventDeleted,
@@ -152,6 +154,7 @@ class EventSocket {
       ..on(queueLeave)   .listen(this._queueLeaveEventHandler)
       ..on(callPark)     .listen(this._callParkEventHandler)
       ..on(callUnpark)   .listen(this._callUnparkEventHandler)
+      ..on(userState)    .listen(this._userStateEventHandler)
       ..on(callOffer)    .listen(this._callOfferEventHandler);
 
     if(configuration != null && configuration.isLoaded()) {
@@ -166,6 +169,12 @@ class EventSocket {
         }
       });
     }
+  }
+
+  void _userStateEventHandler(Map map) {
+    const String context = '${className}._callStateEventHandler';
+
+    model.UserStatus.currentStatus.update(map ['newState']);
   }
 
   /**

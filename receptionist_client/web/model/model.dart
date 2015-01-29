@@ -47,6 +47,7 @@ part 'model-peer_list.dart';
 part 'model-phone_number.dart';
 part 'model-recipient.dart';
 part 'model-user.dart';
+part 'model-user_status.dart';
 part 'model-reception.dart';
 part 'model-transfer_request.dart';
 

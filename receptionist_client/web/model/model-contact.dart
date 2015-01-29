@@ -92,4 +92,7 @@ class Contact extends ORModel.Contact implements Comparable{
 
     return Contact.noContact;
   }
+
+  bool isNull () => this == noContact;
+
 }

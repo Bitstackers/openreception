@@ -20,7 +20,7 @@ part of view;
 class ContactInfoData {
   UListElement backupList;
   UListElement calendarBody;
-  model.Contact contact;
+  model.Contact contact = model.Contact.noContact;
   DivElement department;
   DivElement element;
   UListElement emailAddressList;
@@ -48,6 +48,10 @@ class ContactInfoData {
   }
 
   void render() {
+    if (contact.isNull()) {
+      return;
+    }
+
     workHoursList.children = contact.workhours.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
 
     if (workHoursList.children.isEmpty) workHoursList.children = [new LIElement()..text = Label.UnkownWorkHours];
@@ -118,8 +122,8 @@ class ContactInfoData {
       telephoneNumberList.children [index-1].querySelector('button').click();
     });
 
-    event.bus.on(event.contactChanged).listen((model.Contact value) {
-      contact = value;
+    event.bus.on(event.contactChanged).listen((model.Contact contact) {
+      contact = contact;
       render();
     });
 

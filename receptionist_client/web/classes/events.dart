@@ -48,7 +48,10 @@ final EventType<Location> locationChanged                       = new EventType<
 final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
 final EventType<model.MessageFilter> messageFilterChanged       = new EventType<model.MessageFilter>();
 
-final EventType<ORModel.Reception> receptionChanged               = new EventType<ORModel.Reception>();
+final EventType<model.Reception>  receptionChanged              = new EventType<model.Reception>();
+final EventType<model.UserStatus> userStatusChanged             = new EventType<model.UserStatus>();
+
+
 final EventType selectedMessagesChanged                         = new EventType();
 final EventType<State> stateUpdated                             = new EventType<State>();
 final EventType CreateNewContactEvent                           = new EventType();

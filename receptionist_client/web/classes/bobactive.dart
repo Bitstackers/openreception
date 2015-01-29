@@ -71,7 +71,7 @@ class BobActive {
 
   BobActive(DivElement this.element) {
     Logger.root.onRecord.listen (print);
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.INFO;
 
     element.classes.remove('hidden');
 

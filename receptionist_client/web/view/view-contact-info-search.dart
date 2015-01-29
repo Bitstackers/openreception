@@ -111,7 +111,7 @@ class ContactInfoSearch {
   }
 
   void _performSearch(String search) {
-    model.Contact _selectedContact;
+    model.Contact _selectedContact = model.Contact.noContact;
     //Clear filtered list
     filteredContactList.clear();
 

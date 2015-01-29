@@ -1,6 +1,7 @@
 part of view;
 
 abstract class Label {
+  static const String Unknown                   = 'Ukendt';
   static const String WebSites                  = 'Web-sider';
   static const String OpeningHours              = 'Åbningstider';
   static const String Calls                     = 'Opkald';
