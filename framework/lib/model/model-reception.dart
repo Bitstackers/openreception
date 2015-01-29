@@ -6,6 +6,7 @@ part of openreception.model;
  */
 abstract class ReceptionJSONKey {
   static const String ID                    = 'id';
+  static const String FIXME_ALT_ID          = 'reception_id';
   static const String ORGANIZATION_ID       = 'organization_id';
   static const String FULL_NAME             = 'full_name';
   static const String ENABLED               = 'enabled';
@@ -54,9 +55,16 @@ class ReceptionStub implements Comparable {
   ReceptionStub.fromMap (Map map) {
     if (map == null) throw new ArgumentError.notNull('Null map');
 
-    this.ID       = map[ReceptionJSONKey.ID];
+    if (map.containsKey(ReceptionJSONKey.FIXME_ALT_ID)) {
+      this.ID       = map[ReceptionJSONKey.FIXME_ALT_ID];
+    } else {
+      this.ID       = map[ReceptionJSONKey.ID];
+    }
+
     this.fullName = map[ReceptionJSONKey.FULL_NAME];
   }
+
+  ReceptionStub.none() : this._null();
 
   ReceptionStub._null();
 
