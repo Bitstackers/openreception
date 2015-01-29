@@ -1,6 +1,6 @@
 part of contactserver.database;
 
-Future<Map> getReceptionContactCalendarList(int receptionId, int contactId) {
+Future<List<Map>> getReceptionContactCalendarList(int receptionId, int contactId) {
   String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal join contact_calendar con on cal.id = con.event_id
@@ -14,14 +14,12 @@ Future<Map> getReceptionContactCalendarList(int receptionId, int contactId) {
     for(var row in rows) {
       Map event =
         {'id'      : row.id,
-         'start'   : dateTimeToJson(row.start),
-         'stop'    : dateTimeToJson(row.stop),
+         'start'   : Util.dateTimeToUnixTimestamp(row.start),
+         'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
          'content' : row.message};
       events.add(event);
     }
 
-    Map data = {'CalendarEvents': events};
-
-    return data;
+    return events;
   });
 }

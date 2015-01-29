@@ -3,10 +3,10 @@ part of contactserver.router;
 void getContactCalendar(HttpRequest request) {
   int contactID   = pathParameter(request.uri, 'contact');
   int receptionID = pathParameter(request.uri, 'reception');
-  
+
   Contact.exists (contactID : contactID, receptionID : receptionID).then((bool exists) {
     if(exists) {
-      return db.getReceptionContactCalendarList(receptionID, contactID).then((Map value) {
+      return db.getReceptionContactCalendarList(receptionID, contactID).then((List<Map> value) {
         writeAndClose(request, JSON.encode(value));
       });
     } else {

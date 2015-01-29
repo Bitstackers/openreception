@@ -12,6 +12,7 @@ import 'configuration.dart';
 import 'package:openreception_framework/common.dart';
 import 'database.dart' as db;
 import 'package:openreception_framework/httpserver.dart';
+import 'package:openreception_framework/model.dart'   as Model;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
@@ -31,7 +32,7 @@ final Pattern receptionContactInvalidateResource     = new UrlPattern(r'/contact
 final Pattern receptionContactResource               = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
 final Pattern receptionContactListResource           = new UrlPattern(r'/contact/list/reception/(\d+)');
 final Pattern receptionContactCalendarResource       = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event/(\d+)');
-final Pattern receptionContactCalendarCreateResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event');
+final Pattern receptionContactCalendarCreateResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
 final Pattern receptionContactCalendarListResource   = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
 
 final List<Pattern> allUniqueUrls =

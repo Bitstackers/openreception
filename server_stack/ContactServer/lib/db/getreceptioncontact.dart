@@ -1,6 +1,6 @@
 part of contactserver.database;
 
-Future<Map> getContact(int receptionId, int contactId) {
+Future<Model.Contact> getContact(int receptionId, int contactId) {
     String sql = '''
       SELECT rcpcon.reception_id, 
              rcpcon.contact_id, 
@@ -9,8 +9,13 @@ Future<Map> getContact(int receptionId, int contactId) {
              rcpcon.enabled as rcpenabled,
              (SELECT row_to_json(distribution_column_seperated_roles)
               FROM (SELECT (SELECT array_to_json(array_agg(row_to_json(tmp_to)))
-                            FROM (SELECT recipient_reception_id as reception_id, recipient_contact_id as contact_id
-                                  FROM distribution_list dl
+                            FROM (SELECT 
+                                    recipient_reception_id as reception_id,
+                                    reception.full_name    as reception_name,
+                                    contact.full_name      as contact_name,
+                                    recipient_contact_id   as contact_id
+                                  FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
                                   WHERE dl.owner_reception_id = rcpcon.reception_id AND 
                                         dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'to'
@@ -18,8 +23,13 @@ Future<Map> getContact(int receptionId, int contactId) {
                            ) AS to,
                
                            (SELECT array_to_json(array_agg(row_to_json(tmp_cc)))
-                            FROM (SELECT recipient_reception_id as reception_id, recipient_contact_id as contact_id
-                                  FROM distribution_list dl
+                            FROM (SELECT 
+                                    recipient_reception_id as reception_id,
+                                    reception.full_name    as reception_name,
+                                    contact.full_name      as conctact_name,
+                                    recipient_contact_id   as contact_id
+                                  FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
                                   WHERE dl.owner_reception_id = rcpcon.reception_id AND 
                                         dl.owner_contact_id = rcpcon.contact_id AND 
                                         dl.role = 'cc'
@@ -27,8 +37,13 @@ Future<Map> getContact(int receptionId, int contactId) {
                            ) AS cc,
                
                            (SELECT array_to_json(array_agg(row_to_json(tmp_bcc)))
-                            FROM (SELECT recipient_reception_id as reception_id, recipient_contact_id as contact_id
-                                  FROM distribution_list dl
+                            FROM (SELECT 
+                                    recipient_reception_id as reception_id,
+                                    reception.full_name    as reception_name,
+                                    contact.full_name      as conctact_name,
+                                    recipient_contact_id   as contact_id
+                                  FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
                                   WHERE dl.owner_reception_id = rcpcon.reception_id AND 
                                         dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'bcc'
@@ -57,9 +72,11 @@ Future<Map> getContact(int receptionId, int contactId) {
                       'contactid': contactId};
 
     return connection.query(sql, parameters).then((rows) {
+
       Map data = {};
       if(rows != null && rows.length == 1) {
         var row = rows.first;
+
         data =
           {'reception_id'      : row.reception_id,
            'contact_id'        : row.contact_id,
@@ -74,8 +91,32 @@ Future<Map> getContact(int receptionId, int contactId) {
         if(row.attributes != null) {
           row.attributes.forEach((key, value) => data.putIfAbsent(key, () => value));
         }
-      }
 
-      return data;
+        //FIXME: The format should be changed in the SQL return value.
+
+
+        //print (new Model.MessageRecipientList.fromMap(data['distribution_list']).asMap);
+
+        var tmp = new Model.MessageRecipientList.empty();
+
+        Model.Role.RECIPIENT_ROLES.forEach((String role) {
+            if (data['distribution_list'][role] is List) {
+              (data['distribution_list'][role] as List).forEach((Map dlistMap) {
+                            tmp.add(new Model.MessageRecipient.fromMap({'reception' :
+                            {'id'   : dlistMap['reception_id'],
+                             'name' : dlistMap['reception_name']},
+                           'contact'   :
+                            {'id'   : dlistMap['contact_id'],
+                             'name' : dlistMap['contact_name']}},
+                             role : role));
+                          });
+            }
+          });
+
+        data['distribution_list'] = tmp.asMap;
+        return new Model.Contact.fromMap(data);
+      } else {
+        return Model.Contact.noContact;
+      }
     });
 }

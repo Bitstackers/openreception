@@ -5,8 +5,8 @@ part of contactserver.router;
  */
 void getContactList(HttpRequest request) {
   int receptionId = pathParameter(request.uri, 'reception');
-  
-  db.getReceptionContactList(receptionId).then((Map value) {
-    writeAndClose(request, JSON.encode(value));
+
+  db.getReceptionContactList(receptionId).then((List<Model.Contact> contacts) {
+    writeAndClose(request, JSON.encode(contacts));
   }).catchError((error) => serverError(request, 'getContactList. db.getReceptionContactList returned error: $error'));
 }

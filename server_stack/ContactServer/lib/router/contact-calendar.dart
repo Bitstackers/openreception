@@ -14,6 +14,8 @@ abstract class ContactCalendar {
     extractContent(request).then((String content) {
       Map data;
 
+      print (content);
+
       try {
         data = JSON.decode(content);
       }
@@ -24,12 +26,13 @@ abstract class ContactCalendar {
                         'error'      : error.toString()};
         clientError(request, JSON.encode(response));
         return;
+
       }
+      print (data);
 
       db.ContactCalendar.createEvent(contactID        : contactID,
                                      receptionID      : receptionID,
-                                     event            : data['event'],
-                                     distributionList : data['distribution_list'])
+                                     event            : data)
         .then((_) {
           logger.debugContext('Created event for ${contactID}@${receptionID}', context);
 
@@ -40,8 +43,7 @@ abstract class ContactCalendar {
                  'receptionID' : receptionID
                }
               });
-          writeAndClose(request, JSON.encode({'status' : 'ok',
-                                              'description' : 'Event created'}));
+          writeAndClose(request, JSON.encode(data));
         }).catchError((onError) {
           serverError(request, 'Failed to store event in database');
         });
@@ -80,8 +82,7 @@ abstract class ContactCalendar {
         db.ContactCalendar.updateEvent(contactID        : contactID,
                                      receptionID      : receptionID,
                                      eventID          : eventID,
-                                     event            : data['event'],
-                                     distributionList : data['distribution_list'])
+                                     event            : data)
         .then((_) {
           Notification.broadcast (
               {'event'         : 'contactCalendarEventUpdated',
@@ -90,8 +91,7 @@ abstract class ContactCalendar {
                  'receptionID' : receptionID
                }
               });
-          writeAndClose(request, JSON.encode({'status' : 'ok',
-                                              'description' : 'Event updated'}));
+          writeAndClose(request, JSON.encode(data));
         }).catchError((onError) {
           serverError(request, 'Failed to update event in database');
         });

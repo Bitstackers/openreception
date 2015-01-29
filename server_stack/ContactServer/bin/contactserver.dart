@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import '../lib/cache.dart' as cache;
 import 'package:openreception_framework/common.dart';
 import '../lib/configuration.dart';
 import '../lib/database.dart';

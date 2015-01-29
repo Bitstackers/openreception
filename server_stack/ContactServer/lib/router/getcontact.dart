@@ -13,19 +13,15 @@ void getContact(HttpRequest request) {
 }
 
 Future _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) {
-  return db.getContact(receptionId, contactId).then((Map value) {
-    String contact = JSON.encode(value);
+  return db.getContact(receptionId, contactId).then((Model.Contact contact) {
 
-    if(value.isEmpty) {
+
+    if(contact == Model.Contact.nullContact) {
       request.response.statusCode = HttpStatus.NOT_FOUND;
-      writeAndClose(request, contact);
+      return writeAndClose(request, JSON.encode({}));
 
     } else {
-      writeAndClose(request, contact);
-      return cache.saveContact(receptionId, contactId, contact)
-        .catchError((error) {
-          log('contactserver.router.getContact $error');
-        });
+      return writeAndClose(request, JSON.encode(contact.asMap));
     }
   }).catchError((error) => serverError(request, 'contactserver.router._fetchAndCacheContact() ${error}'));
 }

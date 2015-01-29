@@ -47,7 +47,8 @@ START TRANSACTION;
      (DEFAULT, @start, @end, @content);
 
    INSERT INTO contact_calendar 
-     ("reception_id", "contact_id", "distribution_list", "event_id")
+     ("reception_id", "contact_id", 
+"distribution_list", "event_id")
    VALUES
      (@receptionID, @contactID, @distributionList, lastval());
 COMMIT;''';
@@ -56,10 +57,11 @@ COMMIT;''';
       {'receptionID'      : receptionID,
        'contactID'        : contactID,
        'distributionList' : distributionList,
-       'start'            : new DateTime.fromMillisecondsSinceEpoch(event['start']*1000),
-       'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
-       'content'           : event['content']};
+       'start'            : Util.unixTimestampToDateTime(event['start']),
+       'end'              : Util.unixTimestampToDateTime(event['stop']),
+       'content'          : event['content']};
 
+    print (sql);
   return connection.execute(sql, parameters);
 
   }
@@ -82,8 +84,8 @@ COMMIT;''';
        'contactID'        : contactID,
        'eventID'          : eventID,
        'distributionList' : distributionList,
-       'start'            : new DateTime.fromMillisecondsSinceEpoch(event['start']*1000),
-       'end'              : new DateTime.fromMillisecondsSinceEpoch(event['stop']*1000),
+       'start'            : Util.unixTimestampToDateTime(event['start']),
+       'end'              : Util.unixTimestampToDateTime(event['stop']),
        'content'          : event['content']};
 
   return connection.execute(sql, parameters).then((int rowsAffected) => rowsAffected);
@@ -143,8 +145,8 @@ LIMIT 1;
       var row = rows.first;
 
       return {'content' : row.message,
-              'start'   : dateTimeToUnixTimestamp(row.start),
-              'stop'    : dateTimeToUnixTimestamp(row.stop)};
+              'start'   : Util.dateTimeToUnixTimestamp(row.start),
+              'stop'    : Util.dateTimeToUnixTimestamp(row.stop)};
     } else {
       return null;
     }
