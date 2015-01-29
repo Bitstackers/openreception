@@ -12,14 +12,12 @@ void handlerCallPark(HttpRequest request) {
 
   String callID = pathParameterString(request.uri, "call");
 
-  List<String> parkGroups = ['Administrator'];
+  List<String> parkGroups = ['Administrator', 'Service_Agent', 'Receptionist'];
 
   bool aclCheck (User user)
     => user.groups.any((group)
         => parkGroups.contains(group))
     || Model.CallList.instance.get(callID).assignedTo == user.ID;
-
-  print ('Parking call $callID');
 
   AuthService.userOf(token).then((User user) {
     if (callID == null || callID == "") {
@@ -34,10 +32,17 @@ void handlerCallPark(HttpRequest request) {
       return;
     }
 
+    Model.UserStatusList.instance.update(user.ID, Model.UserState.Parking);
+
     Controller.PBX.park (call, user).then ((_) {
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.HandlingOffHook);
+
       writeAndClose(request, JSON.encode (parkOK (call)));
 
-    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+    }).catchError((error, stackTrace) {
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+        serverErrorTrace(request, error, stackTrace: stackTrace);
+    });
 
   }).catchError((error, stackTrace) {
     if (error is Model.NotFound) {

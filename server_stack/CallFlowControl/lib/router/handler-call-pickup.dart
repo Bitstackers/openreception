@@ -4,6 +4,9 @@ Map pickupOK (Model.Call call) => call.toJson();
     //{'status' : 'ok',
     // 'call'   : call};
 
+
+Map<int,Model.UserState> userMap = {};
+
 void handlerCallPickup(HttpRequest request) {
 
   String callID = pathParameterString(request.uri, "call");
@@ -35,19 +38,43 @@ void handlerCallPickup(HttpRequest request) {
       return;
     }
 
+
     /// Park all the users calls.
-    Model.CallList.instance.callsOf (user).where
-      ((Model.Call call) => call.state == Model.CallState.Speaking).forEach((Model.Call call) => call.park(user));
+    Future.forEach(Model.UserStatusList.instance.activeCallsAt(user.ID),
+                   (Model.Call call) => call.park(user))
+      .whenComplete(() {
 
-    Model.Call assignedCall = Model.CallList.instance.requestSpecificCall (callID, user);
+      /// Check user state
+      String userState = Model.UserStatusList.instance.get(user.ID).state;
+      if (!Model.UserState.phoneIsReady(userState)) {
+        clientError(request, 'Phone is not ready.');
+        return;
+      }
 
-    logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
+      /// Request the specified call.
+      Model.Call assignedCall = Model.CallList.instance.requestSpecificCall (callID, user);
 
-    Controller.PBX.transfer (assignedCall, user.peer).then((_) {
-      assignedCall.assignedTo = user.ID;
-      writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
+      logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
+
+      /// Update the user state
+      Model.UserStatusList.instance.update(user, Model.UserState.Receiving);
+
+      Controller.PBX.transfer (assignedCall, user.peer).then((_) {
+        assignedCall.assignedTo = user.ID;
+
+        Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+
+        writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
+
+      }).catchError((error, stackTrace) {
+        Model.UserStatusList.instance.update(user, Model.UserState.Unknown);
+
+        serverErrorTrace(request, error, stackTrace: stackTrace);
+      });
 
     }).catchError((error, stackTrace) {
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+
       serverErrorTrace(request, error, stackTrace: stackTrace);
     });
 
@@ -85,20 +112,51 @@ void handlerCallPickupNext(HttpRequest request) {
       return;
     }
 
+    if (Model.UserStatusList.instance.get(user.ID).state == Model.UserState.Speaking) {
+      clientError (request, "User with ${user.ID} is not ready for call.");
+      logger.errorContext("User with ${user.ID} is not ready for call.", context);
+      return;
+    }
 
-    Model.CallList.instance.callsOf (user).where
-      ((Model.Call call) => call.state == Model.CallState.Speaking).forEach((Model.Call call) => call.park(user));
+    /// Park all the users calls.
+    Future.forEach(Model.UserStatusList.instance.activeCallsAt(user.ID),
+                   (Model.Call call) => call.park(user))
+      .whenComplete(() {
 
-    Model.Call assignedCall = Model.CallList.instance.requestCall (user);
+      /// Check user state
+      String userState = Model.UserStatusList.instance.get(user.ID).state;
+      if (!Model.UserState.phoneIsReady(userState)) {
+        clientError(request, 'Phone is not ready.');
+        return;
+      }
 
-    logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
+      /// Get the next available call.
+      Model.Call assignedCall = Model.CallList.instance.requestCall (user);
 
-    Controller.PBX.transfer (assignedCall, user.peer).then((_) {
-      assignedCall.assignedTo = user.ID;
-      writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
+      logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
+
+      /// Update the user state
+      Model.UserStatusList.instance.update(user, Model.UserState.Receiving);
+
+      Controller.PBX.transfer (assignedCall, user.peer).then((_) {
+        assignedCall.assignedTo = user.ID;
+
+        Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+
+        writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
+
+      }).catchError((error, stackTrace) {
+        Model.UserStatusList.instance.update(user, Model.UserState.Unknown);
+
+        serverErrorTrace(request, error, stackTrace: stackTrace);
+      });
+
     }).catchError((error, stackTrace) {
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+
       serverErrorTrace(request, error, stackTrace: stackTrace);
     });
+
   }).catchError((error, stackTrace) {
     if (error is Model.NotFound) {
       notFound (request, {'reason' : 'No calls available.'});

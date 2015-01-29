@@ -35,17 +35,40 @@ void handlerCallRecordSound(HttpRequest request) {
       return;
     }
 
+
     /// Park all the users calls.
-    Future.forEach(Model.CallList.instance.callsOf(user).where
-      ((Model.Call call) => call.state == Model.CallState.Speaking), (Model.Call call) => call.park(user)).whenComplete(() {
+    Future.forEach(Model.CallList.instance.callsOf(user.ID).where
+      ((Model.Call call) => call.state == Model.CallState.Speaking), (Model.Call call) => call.park(user))
+      .whenComplete(() {
+
+      /// Check user state
+      String userState = Model.UserStatusList.instance.get(user.ID).state;
+      if (!Model.UserState.phoneIsReady(userState)) {
+        clientError(request, 'Phone is not ready.');
+        return;
+      }
+
+      /// Update the user state
+      Model.UserStatusList.instance.update(user, Model.UserState.Receiving);
+
       Controller.PBX.originateRecording (receptionID, recordExtension, recordPath, user)
         .then ((String channelUUID) {
-          //Model.OriginationRequest.create (channelUUID);
+
+          Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
+
           writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 
-        }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+      }).catchError((error, stackTrace) {
+        Model.UserStatusList.instance.update(user, Model.UserState.Idle);
 
-    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+        serverErrorTrace(request, error, stackTrace: stackTrace);
+      });
+
+    }).catchError((error, stackTrace) {
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+
+      serverErrorTrace(request, error, stackTrace: stackTrace);
+    });
 
   }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 }

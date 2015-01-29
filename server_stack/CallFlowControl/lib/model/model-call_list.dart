@@ -32,7 +32,8 @@ class CallList extends IterableBase<Call> {
     eventStream.listen(_handleEvent);
   }
 
-  List<Call> callsOf(SharedModel.User user) => this.where((Call call) => call.assignedTo == user.ID).toList();
+  List<Call> callsOf(int userID) =>
+      this.where((Call call) => call.assignedTo == userID).toList();
 
   Call get(String callID) {
     if (this._map.containsKey(callID)) {

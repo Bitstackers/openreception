@@ -70,6 +70,13 @@ class Call {
   }
 
   void release() {
+    logger.debugContext('Releasing call assigned to: ${this.assignedTo}', 'RELEASE');
+
+    if (this.assignedTo != noUser) {
+      UserStatusList.instance.get (this.assignedTo).callsHandled++;
+      UserStatusList.instance.update(this.assignedTo, UserState.WrappingUp);
+    }
+
     this.assignedTo = noUser;
   }
 

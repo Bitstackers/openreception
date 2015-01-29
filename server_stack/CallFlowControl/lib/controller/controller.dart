@@ -2,6 +2,7 @@ library callflowcontrol.controller;
 
 import 'dart:async';
 import '../model/model.dart' as Model;
+import '..//configuration.dart' as Conf;
 import 'package:esl/esl.dart' as ESL;
 import 'package:openreception_framework/model.dart' as SharedModel;
 

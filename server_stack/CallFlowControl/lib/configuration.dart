@@ -8,6 +8,11 @@ import 'package:args/args.dart';
 
 import 'package:openreception_framework/common.dart';
 
+
+abstract class PhoneType {
+  static const String SNOM = 'snom';
+}
+
 Configuration config;
 
 /**
@@ -21,7 +26,8 @@ abstract class Default {
   static final String serverToken          = null;
   static final String eslHostname          = 'localhost';
   static final int    eslPort              = 8021;
-  static final String eslPassword          = '1234';
+  static const String eslPassword          = 'ClueCon';
+  static const String phoneType            = PhoneType.SNOM;
 }
 
 class Configuration {
@@ -45,6 +51,7 @@ class Configuration {
   String get eslHostname        => this._eslHostname;
   int    get eslPort            => this._eslPort;
   String get eslPassword        => this._eslPassword;
+  String get phoneType          => Default.phoneType;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {

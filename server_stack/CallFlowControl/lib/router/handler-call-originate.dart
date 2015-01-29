@@ -31,19 +31,40 @@ void handlerCallOrignate(HttpRequest request) {
       clientError(request, 'Invalid extension: $extension');
       return;
     }
-
     /// Park all the users calls.
-    Future.forEach(Model.CallList.instance.callsOf(user).where
+    Future.forEach(Model.CallList.instance.callsOf(user.ID).where
       ((Model.Call call) => call.state == Model.CallState.Speaking), (Model.Call call) => call.park(user))
       .whenComplete(() {
+
+        /// Check user state
+        String userState = Model.UserStatusList.instance.get(user.ID).state;
+        if (!Model.UserState.phoneIsReady(userState)) {
+          clientError(request, 'Phone is not ready.');
+          return;
+        }
+
+        /// Update the user state
+        Model.UserStatusList.instance.update(user, Model.UserState.Dialing);
+
+        /// Perform the origination via the PBX.
         Controller.PBX.originate (extension, contactID, receptionID, user)
           .then ((String channelUUID) {
-            //Model.OriginationRequest.create (channelUUID);
-            writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 
-        }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+          /// Update the user state
+          Model.UserStatusList.instance.update(user, Model.UserState.Speaking);
 
-    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
+          writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 
+        }).catchError((error, stackTrace) {
+          Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+
+          serverErrorTrace(request, error, stackTrace: stackTrace);
+        });
+
+    }).catchError((error, stackTrace) {
+      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+
+      serverErrorTrace(request, error, stackTrace: stackTrace);
+    });
   }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
 }
