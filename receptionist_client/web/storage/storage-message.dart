@@ -17,7 +17,7 @@ abstract class Message {
 
   static const String className = '${libraryName}.Message';
 
-  static model.MessageList _messageCache = new model.MessageList();
+  static Model.MessageList _messageCache = new Model.MessageList();
 
   /**
    * Get a [MessageList] starting from [lastID] and downward of max size [limit].
@@ -26,20 +26,18 @@ abstract class Message {
    * messageID 12, downto (including) 3.
    *
    */
-  static Future<List<model.Message>> list({int lastID                 : model.Message.noID,
+  static Future<List<Model.Message>> list({int lastID                 : Model.Message.noID,
                                          int limit                  : 100,
-                                         model.MessageFilter filter : null}) {
+                                         Model.MessageFilter filter : null}) {
     const String context = '${className}.list';
 
-    final Completer completer = new Completer<List<model.Message>>();
+    final Completer completer = new Completer<List<Model.Message>>();
 
     debugStorage("Message list not found in cache, loading from service.", context);
     Service.Message.store.list(limit: limit, filter: filter).then((List<ORModel.Message> messages) {
 
-      print (messages);
-
       completer.complete(messages.map((ORModel.Message message) =>
-          new model.Message.fromMap(message.asMap)).toList());
+          new Model.Message.fromMap(message.asMap)).toList());
     }).catchError((error) {
       completer.completeError(error);
     });
@@ -50,14 +48,14 @@ abstract class Message {
   /**
    *
    */
-  static Future<model.Message> get(int messageID) {
+  static Future<Model.Message> get(int messageID) {
     const String context = '${className}.get';
 
-    final Completer completer = new Completer<model.Message>();
+    final Completer completer = new Completer<Model.Message>();
 
     debugStorage("Message not found in cache, loading from service.", context);
     Service.Message.store.get(messageID).then((ORModel.Message message) {
-      completer.complete(new model.Message.fromMap(message.asMap));
+      completer.complete(new Model.Message.fromMap(message.asMap));
     }).catchError((error) {
       completer.completeError(error);
     });
@@ -70,20 +68,20 @@ abstract class Message {
    * Get the [MessageList] from cache.
    * TODO: implement.
    */
-  static Future<model.MessageList> listCached({int lastID                 : model.Message.noID,
+  static Future<Model.MessageList> listCached({int lastID                 : Model.Message.noID,
                                                int maxRows                : 100,
-                                               model.MessageFilter filter : null}) {
+                                               Model.MessageFilter filter : null}) {
     const String context = '${className}.list';
 
-    final Completer completer = new Completer<model.MessageList>();
+    final Completer completer = new Completer<Model.MessageList>();
 
     if (_messageCache.contains(lastID)) {
       debugStorage("Loading message list from cache.", context);
-      completer.complete( new model.MessageList.fromMessageMap(_messageCache.take(maxRows)));
+      completer.complete( new Model.MessageList.fromMessageMap(_messageCache.take(maxRows)));
     } else {
       throw new StateError('Not implemeted!');
       debugStorage("Message list not found in cache, loading from service.", context);
-      Service.Message.store.list().then((List<model.Message> messages) {
+      Service.Message.store.list().then((List<Model.Message> messages) {
         /*
         _messageCache.addAll(messages.values);
         _contactListCache[receptionID] = contactList;

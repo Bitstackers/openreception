@@ -139,7 +139,7 @@ class CallList extends IterableBase<Call> {
           log.debugContext("Found an already active call.", context);
           Call.currentCall = call;
 
-          Reception.get(call.receptionId).then((Reception reception) {
+          storage.Reception.get(call.receptionId).then((Reception reception) {
             Reception.selectedReception = reception;
           });
         }

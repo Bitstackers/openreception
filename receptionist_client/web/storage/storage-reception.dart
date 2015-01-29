@@ -17,9 +17,9 @@ part of storage;
 abstract class Reception {
 
   /* Local cache objects. */
-  static model.ReceptionList _receptionListCache = null;
-  static Map<int, model.Reception> _receptionCache = new Map<int, model.Reception>();
-  static Map<int, model.CalendarEventList> _calendarCache = new Map<int, model.CalendarEventList>();
+  static List<Model.ReceptionStub> _receptionListCache  = [];
+  static Map<int, Model.Reception> _receptionCache      = {};
+  static Map<int, List<Model.CalendarEvent>> _calendarCache = {};
 
   /**
    * Removes the cached calendar.
@@ -31,29 +31,30 @@ abstract class Reception {
   }
 
   /**
-   * Retrieved a single [model.Reception] - identified by [id] from the
+   * Retrieved a single [Model.Reception] - identified by [id] from the
    * cache - or from the remote storage.
    *
    * Completes with
-   *  On success   : the [id] [model.Reception]
+   *  On success   : the [id] [Model.Reception]
    *
    *  Throws errors propagating from the service layer.
    */
-  static Future<model.Reception> get(int id) {
+  static Future<Model.Reception> get(int id) {
 
     const String context = '${libraryName}.get';
 
-    final Completer completer = new Completer<model.Reception>();
+    final Completer completer = new Completer<Model.Reception>();
 
     if (_receptionCache.containsKey(id)) {
       debugStorage("Loading reception from cache.", context);
       completer.complete(_receptionCache[id]);
     } else {
       debugStorage("Reception not found in cache, loading from http.", context);
-      Service.Reception.get(id).then((model.Reception reception) {
+      Service.Reception.store.getMap(id).then((Map receptionMap) {
         // Store the reception in the cache.
+        Model.Reception reception = new Model.Reception.fromMap(receptionMap);
         _receptionCache[reception.ID] = reception;
-        completer.complete(reception);
+        completer.complete(_receptionCache[reception.ID]);
       }).catchError((error) {
         completer.completeError(error);
       });
@@ -63,27 +64,32 @@ abstract class Reception {
   }
 
   /**
-   * Get the [ReceptionList].
+   * Get the [ReceptionStubList].
    *
    * Completes with
-   *  On success : the [ReceptionList]
+   *  On success : the [ReceptionStubList]
    *  On error   : an error message
    */
-  static Future<model.ReceptionList> list() {
+  static Future<List<Model.ReceptionStub>> list() {
 
     const String context = '${libraryName}.list';
 
-    final Completer completer = new Completer<model.ReceptionList>();
+    final Completer completer = new Completer<List<Model.ReceptionStub>>();
 
-    if (_receptionListCache != null) {
+    if (_receptionListCache.isNotEmpty) {
       debugStorage("Loading receptionList from cache.", context);
       completer.complete(_receptionListCache);
     } else {
       debugStorage("Reception not found in cache, loading from http.", context);
-      Service.Reception.list().then((model.ReceptionList receptionList) {
+      Service.Reception.store.listMap().then((List<Map> receptionMapList) {
         // Store the reception in the cache.
+        List<Model.ReceptionStub> receptionList =
+            receptionMapList.map((Map receptionStubMap)
+                => new Model.ReceptionStub.fromMap(receptionStubMap)).toList();
+
         _receptionListCache = receptionList;
-        completer.complete(receptionList);
+
+        completer.complete(_receptionListCache);
       }).catchError((error) {
         completer.completeError(error);
       });
@@ -96,19 +102,21 @@ abstract class Reception {
    * Retrives the [model.calendarList].
    *
    */
-  static Future<model.CalendarEventList> calendar(int receptionID) {
+  static Future<List<Model.CalendarEvent>> calendar(int receptionID) {
     const String context = '${libraryName}.get';
 
-    final Completer completer = new Completer<model.CalendarEventList>();
+    final Completer completer = new Completer<List<Model.CalendarEvent>>();
 
     if (_calendarCache.containsKey(receptionID)) {
       debugStorage("Loading calendar from cache.", context);
       completer.complete(_calendarCache[receptionID]);
     } else {
       debugStorage("Reception not found in cache, loading from http.", context);
-      Service.Reception.calendar(receptionID).then((model.CalendarEventList eventList) {
-        _calendarCache[receptionID] = eventList;
-        completer.complete(eventList);
+
+      Service.Reception.store.calendarMap(receptionID).then((List<Map> eventList) {
+        _calendarCache[receptionID] = eventList.map((Map eventMap)
+            => new Model.CalendarEvent.fromMap(eventMap, receptionID)).toList();
+        completer.complete(_calendarCache[receptionID]);
       }).catchError((error) {
         completer.completeError(error);
       });

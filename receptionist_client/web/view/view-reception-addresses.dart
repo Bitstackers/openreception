@@ -22,7 +22,6 @@ class ReceptionAddresses {
   Element element;
   bool hasFocus = false;
   Element get header => this.element.querySelector('legend');
-  model.Reception reception = model.nullReception;
   UListElement listElement;
   String title = 'Adresser';
 
@@ -31,7 +30,7 @@ class ReceptionAddresses {
 
   ReceptionAddresses(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     listElement = element.querySelector('#${id.COMPANY_ADDRESSES_LIST}');
     header.children = [Icon.MapMarker,
                        new SpanElement()..text = title,
@@ -64,8 +63,8 @@ class ReceptionAddresses {
   void render(model.Reception reception) {
     listElement.children.clear();
 
-    for (var value in reception.addressList) {
-      listElement.children.add(new LIElement()..text = value.value);
+    for (var value in reception.addresses) {
+      listElement.children.add(new LIElement()..text = value);
     }
   }
 }

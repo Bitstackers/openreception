@@ -14,9 +14,9 @@
 part of view;
 
 class ReceptionSalesCalls {
-  
+
   static const String className   = '${libraryName}.ReceptionSalesCalls';
-  static const String NavShortcut = 'C'; 
+  static const String NavShortcut = 'C';
 
   bool get muted => this.context != Context.current;
 
@@ -32,7 +32,7 @@ class ReceptionSalesCalls {
   ReceptionSalesCalls(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
@@ -42,7 +42,7 @@ class ReceptionSalesCalls {
   }
 
   void registerEventListeners() {
-    
+
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.receptionChanged).listen(render);
@@ -59,7 +59,7 @@ class ReceptionSalesCalls {
       }
     });
   }
-  
+
   void _select(_) {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, instructionList.id));
@@ -69,9 +69,9 @@ class ReceptionSalesCalls {
   void render(model.Reception reception) {
     instructionList.children.clear();
 
-    for(var value in reception.crapcallHandlingList) {
+    for(var value in reception.salesMarketingHandling) {
       instructionList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

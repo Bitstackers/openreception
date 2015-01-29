@@ -20,7 +20,7 @@ class ReceptionProduct {
   bool get muted     => this.uiContext != Context.current;
 
   static const String className   = '${libraryName}.ReceptionProduct';
-  static const String NavShortcut = 'F'; 
+  static const String NavShortcut = 'F';
 
   ParagraphElement get body     => this.element.querySelector('#${id.COMPANY_PRODUCT_BODY}');
   Element          get header   => this.element.querySelector('legend');
@@ -29,10 +29,10 @@ class ReceptionProduct {
 
   ReceptionProduct(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
-    
+
 
     header.children = [Icon.Product,
                        new SpanElement()..text = Label.ProductDescription,
@@ -40,18 +40,18 @@ class ReceptionProduct {
 
     registerEventListeners();
   }
-  
+
   void _select() {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, body.id));
-    } 
+    }
   }
-  
+
   void registerEventListeners() {
-    
+
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception value) {
       body.text = value.product;
     });
 

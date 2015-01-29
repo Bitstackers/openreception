@@ -14,12 +14,12 @@
 part of view;
 
 class ReceptionCustomerType {
-  
+
   final Context        context;
   final Element        element;
-  
+
   bool get muted => this.context != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionCustomerType';
   static const String NavShortcut = 'D';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
@@ -52,8 +52,8 @@ class ReceptionCustomerType {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      body.text = value.customerType;
+    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception value) {
+      body.text = value.customertype;
     });
 
     element.onClick.listen((_) {

@@ -14,13 +14,13 @@
 part of view;
 
 class ReceptionRegistrationNumber {
-  
+
   final Context context;
   final Element element;
-  
+
   bool     hasFocus  =  false;
   bool get muted     => this.context != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionRegistrationNumber';
   static const String NavShortcut = 'C';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
@@ -28,20 +28,20 @@ class ReceptionRegistrationNumber {
 
   Element      get header                 => this.element.querySelector('legend');
   UListElement get registrationNumberList => element.querySelector('#${id.COMPANY_REGISTRATION_NUMBER_LIST}');
-  
+
   ReceptionRegistrationNumber(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, (this._select));
-    
+
     header.children = [Icon.Gavel,
                        new SpanElement()..text = Label.ReceptionRegistrationNumbers,
                        new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }
-  
+
   void _select (_) {
     if (!muted) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, registrationNumberList.id));
@@ -69,9 +69,9 @@ class ReceptionRegistrationNumber {
   void render(model.Reception reception) {
     registrationNumberList.children.clear();
 
-    for(var value in reception.registrationNumberList) {
+    for(var value in reception.vatNumbers) {
       registrationNumberList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

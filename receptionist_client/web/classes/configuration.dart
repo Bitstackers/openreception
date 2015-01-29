@@ -22,11 +22,10 @@ import 'package:logging/logging.dart';
 import 'logger.dart';
 import 'state.dart';
 
-
-
 //const String CONFIGURATION_URL = 'http://service.openreception.org/configuration';
 //const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
 const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
+//const String CONFIGURATION_URL = 'http://orfdemo.xlab1.txlab.net:4080/configuration';
 
 final Configuration configuration = new Configuration._internal();
 

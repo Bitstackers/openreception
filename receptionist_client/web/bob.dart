@@ -89,10 +89,8 @@ bool handleToken() {
     //Didn't work. try localStorage.
 
     Service.Authentication.store.userOf(configuration.token).then((ORModel.User user) {
-      print("!!!!");
-      print(user.toJson());
-      print("!!!!");
         Model.User.currentUser = user;
+
     }).catchError((error, stackTrace) {
       log.error('Failed to load user. $error : $stackTrace');
     });

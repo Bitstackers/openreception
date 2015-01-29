@@ -68,7 +68,7 @@ class Call {
     callElement = element.querySelector('.call-queue-element')
         ..text = '${reception} (${call.destination}) ${call.state}';
 
-    model.Reception.get(call.receptionId).then((model.Reception reception) {
+    storage.Reception.get(call.receptionId).then((model.Reception reception) {
       callElement.text = reception.name + "(${call.destination}) - ${call.state}";
     });
 

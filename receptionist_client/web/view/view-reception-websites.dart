@@ -16,32 +16,32 @@ part of view;
 class ReceptionWebsites {
   final Context context;
   final Element element;
-  
+
   bool     hasFocus  = false;
   bool get muted     => this.context != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionTelephoneNumbers';
   static const String NavShortcut = 'S';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element         get header      => this.element.querySelector('legend');
-  UListElement    get websiteList => element.querySelector('#${id.COMPANY_WEBSITES_LIST}'); 
-  
+  UListElement    get websiteList => element.querySelector('#${id.COMPANY_WEBSITES_LIST}');
+
   ReceptionWebsites(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     ///Navigation shortcuts
     this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-    
 
-    header.children = [Icon.Globe, 
+
+    header.children = [Icon.Globe,
                        new SpanElement()..text = Label.WebSites];
 
     registerEventListeners();
   }
-  
+
   void _select(_) {
     if (!muted) {
        Controller.Context.changeLocation(new nav.Location(context.id, element.id, websiteList.id));
@@ -49,7 +49,7 @@ class ReceptionWebsites {
   }
 
   void registerEventListeners() {
-    
+
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.receptionChanged).listen(render);
@@ -70,9 +70,9 @@ class ReceptionWebsites {
   void render(model.Reception reception) {
     websiteList.children.clear();
 
-    for(var value in reception.websiteList) {
+    for(var value in reception.websites) {
       websiteList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

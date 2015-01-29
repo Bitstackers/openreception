@@ -70,8 +70,8 @@ class BobActive {
   Context voicemails;
 
   BobActive(DivElement this.element) {
-    //Logger.root.onRecord.listen (print);
-    //Logger.root.level = Level.ALL;
+    Logger.root.onRecord.listen (print);
+    Logger.root.level = Level.ALL;
 
     element.classes.remove('hidden');
 
@@ -121,7 +121,7 @@ class BobActive {
 
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
-    Model.CalendarEventList.registerObservers();
+    Model.CalendarEvent.registerObservers();
     Model.MessageList.instance.registerObservers();
   }
 

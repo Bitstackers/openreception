@@ -14,18 +14,18 @@
 part of view;
 
 /**
- * Widget for cleartext instruction used for instructing users on how to 
+ * Widget for cleartext instruction used for instructing users on how to
  * handle the call for the reception.
- * 
- * It is a selectable context, and thus subscribes for 
+ *
+ * It is a selectable context, and thus subscribes for
  * [event.locationChanged] events.
- * 
+ *
  * The data used in this widget is [model.Reception].
  */
 class ReceptionHandling {
 
   static const String className   = '${libraryName}.ReceptionHandling';
-  static const String NavShortcut = 'H'; 
+  static const String NavShortcut = 'H';
 
   Context           context;
   Element           element;
@@ -45,11 +45,11 @@ class ReceptionHandling {
                             new Nudge(NavShortcut).element];
     _registerEventListeners();
   }
-  
+
   void hideNudges(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   void _registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen(render);
+    event.bus.on(model.Reception.activeReceptionChanged).listen(render);
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, listElement));
     element.onClick.listen((_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
   }
@@ -59,6 +59,6 @@ class ReceptionHandling {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.hideNudges(!isPressed));
 
 
-    reception.handlingList.forEach((value) => listElement.children.add(new LIElement()..text = value.value));
+    reception.handlingInstructions.forEach((value) => listElement.children.add(new LIElement()..text = value));
   }
 }

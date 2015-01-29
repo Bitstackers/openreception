@@ -91,7 +91,7 @@ class CallManagement {
   }
 
   void _originationDone(_) {
-    this.disabled = (model.Reception.selectedReception == model.nullReception);
+    this.disabled = (model.Reception.selectedReception == model.Reception.noReception);
   }
 
   void registerEventListeners() {
@@ -130,6 +130,6 @@ class CallManagement {
   }
 
   void _render() {
-    this.dialButton.disabled = !isValidExtension(this.numberField.value) || model.Reception.selectedReception == model.nullReception;
+    this.dialButton.disabled = !isValidExtension(this.numberField.value) || model.Reception.selectedReception == model.Reception.noReception;
   }
 }

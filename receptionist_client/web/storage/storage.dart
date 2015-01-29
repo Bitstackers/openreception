@@ -15,9 +15,8 @@ library storage;
 
 import 'dart:async';
 
-import '../model/model.dart' as model;
+import '../model/model.dart' as Model;
 import '../service/service.dart' as Service;
-import '../classes/logger.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'storage-contact.dart';

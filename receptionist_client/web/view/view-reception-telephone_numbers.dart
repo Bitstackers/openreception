@@ -16,10 +16,10 @@ part of view;
 class ReceptionTelephoneNumbers {
   final Context   uiContext;
   final Element   element;
-  
+
   bool     hasFocus  = false;
   bool get muted     => this.uiContext != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionTelephoneNumbers';
   static const String NavShortcut = 'Z';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
@@ -34,10 +34,10 @@ class ReceptionTelephoneNumbers {
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
-    header.children = [Icon.Phone,new SpanElement()..text = Label.ReceptionPhoneNumbers, new Nudge(NavShortcut).element];    
+    header.children = [Icon.Phone,new SpanElement()..text = Label.ReceptionPhoneNumbers, new Nudge(NavShortcut).element];
     registerEventListeners();
   }
-  
+
   void _select(_) {
     const String context = '${className}._select';
 
@@ -50,7 +50,7 @@ class ReceptionTelephoneNumbers {
 
 
   void registerEventListeners() {
-    
+
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.receptionChanged).listen(render);
@@ -73,9 +73,9 @@ class ReceptionTelephoneNumbers {
   void render(model.Reception reception) {
     telephoneNumberList.children.clear();
 
-    for(var value in reception.telephoneNumberList) {
+    for(var value in reception.telephonenumbers) {
       telephoneNumberList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

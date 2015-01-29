@@ -16,20 +16,20 @@ part of view;
 class ContactInfo {
          final Element             element;
                Box                 box;
-               model.Contact       contact              = model.nullContact;
+               model.Contact       contact              = model.Contact.noContact;
                Context             context;
                UListElement        displayedContactList;
                DivElement          body;
                Element         get header  => element.querySelector('legend');
   static const int                 incrementSteps       = 20;
                InputElement        searchBox;
-               model.Reception     nullReception        = model.nullReception;
-               model.Reception     reception            = model.nullReception;
+               model.Reception     nullReception        = model.Reception.noReception;
+               model.Reception     reception            = model.Reception.noReception;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
 
                List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
                void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
-               bool get muted     => this.context != Context.current;  
+               bool get muted     => this.context != Context.current;
 
 
   ContactInfoSearch search;
@@ -46,19 +46,19 @@ class ContactInfo {
     calendar = new ContactInfoCalendar(contactinfo_calendar, context, element);
     data = new ContactInfoData(contactinfo_data);
 
-    Element contactinfopanelHeader = querySelector('#contactinfopanel legend'); 
-    
+    Element contactinfopanelHeader = querySelector('#contactinfopanel legend');
+
     this.header.children = [Icon.Contacts,
                             new SpanElement()..text = Label.ReceptionContacts,
                             new Nudge(ContactInfoSearch.NavShortcut).element];
 
-    
+
     print (Icon.Info.children);
     contactinfopanelHeader.children = [Icon.Info,
                             new SpanElement()..text = Label.ContactInformation,
                             new Nudge(ContactInfoSearch.NavShortcut).element];
 
-    
+
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, this._select);
 
@@ -66,7 +66,7 @@ class ContactInfo {
 
     _registerEventListeners();
   }
-  
+
   void _select (_) {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(search.context.id, element.id, search.searchBox.id));

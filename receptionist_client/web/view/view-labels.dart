@@ -20,6 +20,7 @@ abstract class Label {
   static const String Resend                    = 'Gensend';
   static final String Cancel                    = 'Annuller';
   static final String Draft                     = 'Kladde';
+  static final String UnkownWorkHours           = 'Ikke oplyst';
 
   static const String MessageArchive            = 'Beskedarkiv';
   static final String MessageCompose            = 'Opret Besked';

@@ -48,15 +48,11 @@ class ContactInfoData {
   }
 
   void render() {
-    workHoursList.children.clear();
-    for (var item in contact.workHoursList) {
-      workHoursList.children.add(new LIElement()..text = item.value);
-    }
+    workHoursList.children = contact.workhours.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
 
-    handlingList.children.clear();
-    for (var item in contact.handlingList) {
-      handlingList.children.add(new LIElement()..text = item.value);
-    }
+    if (workHoursList.children.isEmpty) workHoursList.children = [new LIElement()..text = Label.UnkownWorkHours];
+
+    handlingList .children = contact.handling .map((String hourDesc) => new LIElement()..text = hourDesc).toList();
 
     position.innerHtml = contact.position != null ? contact.position : '';
     responsibility.innerHtml = contact.responsibility != null ? contact.responsibility : '';
@@ -65,21 +61,22 @@ class ContactInfoData {
     telephoneNumberList.children.clear();
 
     int index = 1;
-    for (var item in contact.phoneNumberList) {
+    for (var item in contact.phones) {
 
       LIElement number = new LIElement()
           ..classes.add("phone-number")
-          ..classes.add(item.kind);
+          ..classes.add(item['kind']);
 
       if (index < 9) {
         number.children.add(new Nudge(index.toString()).element);
       }
       index++;
 
+      //TODO: Check if the phone number is confidential, and add the appropriate LI class.
       number.children.add(new ButtonElement()
-          ..text = item.value
+          ..text = item['value']
           ..classes = ['pure-button', 'phonenumber']
-          ..onClick.listen((_) => Controller.Extension.change (new model.Extension (item.value))));
+          ..onClick.listen((_) => Controller.Extension.change (new model.Extension (item['value']))));
 
       telephoneNumberList.children.add(number);
 
@@ -90,24 +87,16 @@ class ContactInfoData {
 
     /* Add all contacts from the contacts distribution list.*/
     emailAddressList.children.clear();
-
-    contact.dereferenceDistributionList().then((ORModel.MessageRecipientList recipients) {
-      recipients.forEach((ORModel.MessageRecipient recipient) {
-        LIElement li = new LIElement()
-            ..text = '${recipient.contactName} (${recipient.receptionName})'
-            ..classes.add(recipient.role);
+    contact.distributionList.forEach((ORModel.MessageRecipient recipient) {
+      LIElement li = new LIElement()
+                   ..text = '${recipient.contactName} (${recipient.receptionName})'
+                   ..classes.add(recipient.role);
         emailAddressList.children.add(li);
-
-      });
     });
 
 
     info.innerHtml = contact.info != null ? contact.info : '';
-
-    backupList.children.clear();
-    for (var item in contact.emailAddressList) {
-      backupList.children.add(new LIElement()..text = item.value);
-    }
+    backupList.children = contact.emailaddresses.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
   }
 
   void hideNudges(bool hidden) {

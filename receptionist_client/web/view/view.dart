@@ -24,7 +24,6 @@ import 'package:openreception_framework/model.dart' as ORModel;
 import '../classes/events.dart' as event;
 import '../model/model.dart' as model;
 import '../constants.dart' as constant;
-import '../service/service.dart' as Service;
 import '../storage/storage.dart' as Storage;
 import '../classes/id.dart' as id;
 import '../classes/location.dart' as nav;
@@ -103,10 +102,11 @@ bool handleFocusChange(Focus value, List<Element> focusElements, Element highlig
   return focusedElement != null;
 }
 
+//TODO move to model and merge with the one from the framework.
 class MessageSearchFilter {
   String agent;
   String type;
-  model.BasicReception reception;
+  model.ReceptionStub reception;
   model.Contact contact;
 
   MessageSearchFilter(this.agent, this.type, this.reception, this.contact);

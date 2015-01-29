@@ -9,7 +9,7 @@ abstract class User {
    * TODO: Build logic behind this.
    */
   static void signalReady(_) {
-    event.bus.fire(event.receptionChanged, Model.nullReception);
+    event.bus.fire(event.receptionChanged, Model.Reception.noReception);
   }
 
 }

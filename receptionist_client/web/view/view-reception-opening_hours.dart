@@ -14,25 +14,24 @@
 part of view;
 
 class ReceptionOpeningHours {
-  
+
   static const String className   = '${libraryName}.CompanyOpeningHours';
-  static const String NavShortcut = 'X'; 
+  static const String NavShortcut = 'X';
 
   bool get muted => this.context != Context.current;
 
   Context         context;
   Element         element;
   bool            hasFocus  = false;
-  model.Reception reception = model.nullReception;
   UListElement    get openingHoursList      => this.element.querySelector('#${id.COMPANY_OPENINGHOURS_LIST}');
   Element         get header                => this.element.querySelector('legend');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  
+
   ReceptionOpeningHours(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
-    
+
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
 
@@ -46,10 +45,10 @@ class ReceptionOpeningHours {
   void registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen((model.Reception reception) {
+    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception reception) {
       render(reception);
     });
-    
+
     element.onClick.listen((_) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, openingHoursList.id));
     });
@@ -62,7 +61,7 @@ class ReceptionOpeningHours {
       }
     });
   }
-  
+
   void _select(_) {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, openingHoursList.id));
@@ -72,9 +71,9 @@ class ReceptionOpeningHours {
   void render(model.Reception reception) {
     openingHoursList.children.clear();
 
-    for(var value in reception.openingHoursList) {
+    for(var value in reception.openingHours) {
       openingHoursList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

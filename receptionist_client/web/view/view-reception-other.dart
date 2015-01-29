@@ -19,7 +19,7 @@ class ReceptionOther {
 
   bool     hasFocus  = false;
   bool get muted     => this.uiContext != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionOther';
   static const String NavShortcut = 'V';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
@@ -40,28 +40,29 @@ class ReceptionOther {
 
     registerEventListeners();
   }
-  
+
   void _select (_) {
     const String context = '${className}._select';
     log.debugContext('${this.uiContext} : ${Context.current}', context);
-    
+
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, body.id));
-    } 
+    }
   }
 
   void registerEventListeners() {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen((model.Reception selectedReception) {
-      if (selectedReception.extraDataUri != null) {
+
+    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception selectedReception) {
+      if (selectedReception.extraData != null) {
         //this.body.children = [new ProgressElement()];
-        this.body.children = 
+        this.body.children =
             [new IFrameElement()
-              ..src = selectedReception.extraDataUri.toString()
+              ..src = selectedReception.extraData.toString()
               ..width  = '100%'
-              ..height = '${this.element.clientHeight - (this.header.clientHeight + 50)}px']; 
+              ..height = '${this.element.clientHeight - (this.header.clientHeight + 50)}px'];
       }
     });
 

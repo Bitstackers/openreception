@@ -24,7 +24,7 @@ abstract class Call {
       return;
     }
 
-    Service.Call.originate((contact == null ? Model.Contact.noContact : contact).id, reception.ID, extension.dialString).then((_) {
+    Service.Call.originate((contact == null ? Model.Contact.noContact : contact).ID, reception.ID, extension.dialString).then((_) {
       event.bus.fire(event.originateCallRequestSuccess, null);
     }).catchError((error) {
       event.bus.fire(event.originateCallRequestFailure, null);

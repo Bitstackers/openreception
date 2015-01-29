@@ -1,7 +1,8 @@
 name: openreception_client
-description: Receptionist browser-based console for Adaheads
+description: Receptionist browser-based console for OpenReception project.
 dependencies:
   openreception_framework:
+    version: ">= 0.0.15+2"
     git:
       ref: master
       url: https://github.com/Bitstackers/OpenReceptionFramework.git

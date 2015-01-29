@@ -16,11 +16,11 @@ part of view;
 class ReceptionBankingInformation {
   final Context context;
   final Element element;
-  
+
   bool            hasFocus  = false;
-  
+
   bool get muted => this.context != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionAlternateNames';
   static const String NavShortcut = 'X';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
@@ -28,15 +28,15 @@ class ReceptionBankingInformation {
 
   Element         get header                 => this.element.querySelector('legend');
   UListElement    get bankingInformationList => this.element.querySelector('#${id.COMPANY_BANKING_INFO_LIST}');
-  
+
   ReceptionBankingInformation(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
-    header.children = [Icon.Bank, 
-                       new SpanElement()..text = Label.ReceptionBankingInformation, 
+    header.children = [Icon.Bank,
+                       new SpanElement()..text = Label.ReceptionBankingInformation,
                        new Nudge(NavShortcut).element];
 
     registerEventListeners();
@@ -69,9 +69,9 @@ class ReceptionBankingInformation {
   void render(model.Reception reception) {
     bankingInformationList.children.clear();
 
-    for(var bankingInformation in reception.bankingInformationList) {
+    for(var bankingInformation in reception.bankingInformation) {
       bankingInformationList.children.add(new LIElement()
-                        ..text = bankingInformation.value);
+                        ..text = bankingInformation);
     }
   }
 }

@@ -61,8 +61,7 @@ class MessageEdit {
 
   List<Element> focusElements;
 
-  model.Reception reception = model.nullReception;
-  model.Contact contact = model.nullContact;
+  model.Contact contact = model.Contact.noContact;
 
   model.Message activeMessage = null;
 

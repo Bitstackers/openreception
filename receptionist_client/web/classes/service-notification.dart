@@ -19,7 +19,6 @@ import 'package:event_bus/event_bus.dart';
 
 import '../controller/controller.dart' as Controller;
 import 'configuration.dart';
-import 'environment.dart' as environment;
 import 'events.dart' as event;
 import 'logger.dart';
 import '../model/model.dart' as model;
@@ -178,10 +177,6 @@ class EventSocket {
 
     model.Call call = new model.Call.fromMap(json['call']);
 
-    if (call.bLeg == environment.originationRequest) {
-      log.debugContext('this is my origination request: ${call}', context);
-      model.Call.currentCall = call;
-    }
   }
 
 

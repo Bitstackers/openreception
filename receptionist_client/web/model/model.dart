@@ -22,14 +22,10 @@ import 'dart:math' hide log;
 
 import 'package:intl/intl.dart';
 
-import '../classes/environment.dart' as environment;
 import '../classes/service-notification.dart' as Service;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
-import '../protocol/protocol.dart' as protocol;
 import '../storage/storage.dart' as storage;
-import '../classes/configuration.dart' as config;
-import '../constants.dart' as constant;
 import '../service/service.dart' as Service;
 import '../controller/controller.dart' as Controller;
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -37,15 +33,12 @@ import 'package:openreception_framework/model.dart' as ORModel;
 part 'model-call.dart';
 part 'model-call_list.dart';
 part 'model-calendar_event.dart';
-part 'model-calendar_event_list.dart';
 part 'model-contact.dart';
 part 'model-contact_list.dart';
 part 'model-extension.dart';
 part 'model-message.dart';
 part 'model-message_filter.dart';
 part 'model-message_list.dart';
-part 'model-minibox_list_item.dart';
-part 'model-minibox_list.dart';
 part 'model-notification.dart';
 part 'model-notification_list.dart';
 part 'model-origination_request.dart';
@@ -55,7 +48,6 @@ part 'model-phone_number.dart';
 part 'model-recipient.dart';
 part 'model-user.dart';
 part 'model-reception.dart';
-part 'model-reception_list.dart';
 part 'model-transfer_request.dart';
 
 const String libraryName = "model";

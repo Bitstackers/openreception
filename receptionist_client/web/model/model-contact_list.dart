@@ -19,7 +19,7 @@ part of model;
 class ContactList extends IterableBase<Contact>{
   List<Contact> _list = new List<Contact>();
 
-  Contact           get first    => _list.length > 0 ? _list.first : nullContact;
+  Contact           get first    => _list.length > 0 ? _list.first : Contact.noContact;
   Iterator<Contact> get iterator => _list.iterator;
 
   /**
@@ -29,20 +29,12 @@ class ContactList extends IterableBase<Contact>{
 
   /**
    * [ContactList] constructor. Builds a list of [Contact] objects from the
-   * contents of json[key].
+   * elements in the Contact list supplied.
    */
-  factory ContactList.fromJson(Map json, String key, int receptionID) {
-    ContactList contactList = new ContactList();
+  factory ContactList.fromJson(List<ORModel.Contact> json, int receptionID) =>
+    new ContactList._fromList(json, receptionID);
 
-    if (json.containsKey(key) && json[key] is List) {
-      contactList = new ContactList._fromList(json[key], receptionID);
-    } else {
-      log.critical('model.ContactList.fromJson bad data key: ${key} map: ${json}');
-    }
 
-    return contactList;
-  }
-  
   factory ContactList.emptyList() {
     return new ContactList();
   }
@@ -50,8 +42,8 @@ class ContactList extends IterableBase<Contact>{
   /**
    * [ContactList] from list constructor.
    */
-  ContactList._fromList(List<Map> list, int receptionID) {
-    list.forEach((item) => _list.add(new Contact.fromJson(item, receptionID)));
+  ContactList._fromList(List<ORModel.Contact> list, int receptionID) {
+    list.forEach((item) => _list.add((item..receptionID = receptionID) as Contact));
     _list.sort();
 
     log.debug('ContactList._internal build ContactList from ${list}');
@@ -62,11 +54,11 @@ class ContactList extends IterableBase<Contact>{
    */
   Contact getContact(int id) {
     for(Contact contact in _list) {
-      if(id == contact.id) {
+      if(id == contact.ID) {
         return contact;
       }
     }
 
-    return nullContact;
+    return Contact.noContact;
   }
 }

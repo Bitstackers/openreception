@@ -8,154 +8,107 @@
   useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   You should have received a copy of the GNU General Public License along with
-  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
+  event program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
 part of model;
 
-/**
- * A calendar event.
- */
-class CalendarEvent implements Comparable{
-  bool      active = false;
-  String   _content;
-  DateTime _start;
-  DateTime _stop;
-  
-  static const int      nullID =  0;
-  
-  int      _ID          = nullID;
-  int      _contactID   = nullContact.id;
-  int      _receptionID = nullReception.ID;
+class CalendarEvent extends ORModel.CalendarEvent {
 
-  int      get ID          => this._ID;
-  void     set ID (int newID) {this._ID = newID;}
-  String   get start       => _formatTimestamp(this.startTime);
-  String   get stop        => _formatTimestamp(this.stopTime);
-  DateTime get startTime   => this._start;
-  DateTime get stopTime    => this._stop;
-  String   get content     => this._content;
-  int      get contactID   => this._contactID;
-  int      get receptionID => this._receptionID;
+  static int get noID => ORModel.CalendarEvent.noID;
 
-  void set beginsAt (DateTime start) {
-    this._start = start;
+  CalendarEvent.fromMap(Map map, int receptionID, {int contactID : ORModel.CalendarEvent.noID}) : super.fromMap(map, receptionID, contactID : contactID);
+
+  CalendarEvent.forReception(int receptionID) : super.forReception(receptionID);
+
+  CalendarEvent.forContact (int contactID, int receptionID) : super.forContact(contactID, receptionID);
+
+  static findEvent (int eventID, List<CalendarEvent> events) => events.firstWhere((CalendarEvent event) => event.ID == eventID);
+
+  static final EventType<Map> reload = new EventType<Map>();
+
+  /// Local event stream.
+  static EventBus _eventStream = new EventBus();
+  static EventBus get events => _eventStream;
+
+  List<CalendarEvent> _list = new List<CalendarEvent>();
+
+  Iterator<CalendarEvent> get iterator => _list.iterator;
+
+  static void registerObservers () {
+
+    event.bus.on(Service.EventSocket.contactCalendarEventCreated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+    event.bus.on(Service.EventSocket.contactCalendarEventUpdated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+    event.bus.on(Service.EventSocket.contactCalendarEventDeleted).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+    event.bus.on(Service.EventSocket.receptionCalendarEventCreated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Reception.invalidateCalendar(calendarEvent['receptionID']);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+    event.bus.on(Service.EventSocket.receptionCalendarEventUpdated).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Reception.invalidateCalendar(calendarEvent['receptionID']);
+      _eventStream.fire(reload, calendarEvent);
+    });
+
+    event.bus.on(Service.EventSocket.receptionCalendarEventDeleted).listen((Map event) {
+      Map calendarEvent = event['calendarEvent'];
+      storage.Reception.invalidateCalendar(calendarEvent['receptionID']);
+      _eventStream.fire(reload, calendarEvent);
+    });
   }
-
-  void set until (DateTime stop) {
-    this._stop = stop;
-  }
-  
-  void set content (String eventBody) {
-    this._content = eventBody;
-  }
-  
-  CalendarEvent.forContact (this._contactID, this._receptionID);
-
-  CalendarEvent.forReception (this._receptionID);
-  
-  Future save () {
-    /// Dispatch to the correct service.
-    if (this._contactID != nullContact.id) {
-      if (this.ID == nullID) {
-        return Service.Contact.calendarEventCreate (this);
-      } else {
-        return Service.Contact.calendarEventUpdate (this);
-      }
-    } else if (this._receptionID != nullReception.ID) {
-      if (this.ID == nullID) {
-        return Service.Reception.calendarEventCreate (this);
-      } else {
-        return Service.Reception.calendarEventUpdate (this);
-      }
-    } else {
-      return new Future(() { throw new StateError("Trying to update an event object without an owner!");});
-    }
-  }
-  
-  Future delete () {
-    /// Dispatch to the correct service.
-    if (this._contactID != nullContact.id) {
-        return Service.Contact.calendarEventDelete (this);
-    } else if (this._receptionID != nullReception.ID) {
-        return Service.Reception.calendarEventDelete(this);
-    } else {
-      return new Future(() { throw new StateError("Trying to update an event object without an owner!");});
-    }
-  }
-
-  Map toJson () => {'id'     : this.ID, 
-                    'start'  : _timeToEpoch(this._start),
-                    'stop'   : _timeToEpoch(this._stop),
-                    'content': this._content};
-
-  static int _timeToEpoch(DateTime time) => time.millisecondsSinceEpoch~/1000;
-  
-  /**
-   * [CalendarEvent] constructor. Expects a map in the following format:
-   *
-   *  {
-   *    'start'   : DateTime String,
-   *    'stop'    : DateTime String,
-   *    'content' : String
-   *  }
-   *
-   *  'start' and 'stop' MUST be in a format that can be parsed by the
-   *  [DateTime.parse] method. 'content' is the actual event description.
-   *
-   * TODO Obviously the above map format should be in the docs/wiki, as it is
-   * also highly relevant to Alice.
-   */
-  CalendarEvent.fromJson(Map json) {
-    final DateTime now = new DateTime.now();
-    
-    this._ID      = json['id'];
-    this._start   = DateTime.parse(json['start']);
-    this._stop    = DateTime.parse(json['stop']);
-    this._content = json['content'];
-
-    active = _start.millisecondsSinceEpoch <= now.millisecondsSinceEpoch && now.millisecondsSinceEpoch <= _stop.millisecondsSinceEpoch;
-  }
-
-  /**
-   * Format the [DateTime] [stamp] timestamp into a string. If [stamp] is today
-   * then return hour:minute, else return day/month hour:minute. Append year if
-   * [stamp] is in another year than now.
-   */
-  String _formatTimestamp(DateTime stamp) {
-    final String       day        = new DateFormat.d().format(stamp);
-    final String       hourMinute = new DateFormat.Hm().format(stamp);
-    final String       month      = new DateFormat.M().format(stamp);
-    final DateTime     now        = new DateTime.now();
-    final StringBuffer output     = new StringBuffer();
-    final String       year       = new DateFormat.y().format(stamp);
-
-    if (new DateFormat.yMd().format(stamp) != new DateFormat.yMd().format(now)) {
-      output.write('${day}/${month}');
-    }
-
-    if (new DateFormat.y().format(stamp) != new DateFormat.y().format(now)) {
-      output.write('/${year.substring(2)}');
-    }
-
-    output.write(' ${hourMinute}');
-
-    return output.toString();
-  }
-
-  /**
-   * Enables a [CalendarEvent] to sort itself compared to other calendar events.
-   */
-  int compareTo(CalendarEvent other) {
-    if(_start.isAtSameMomentAs(other._start)) {
-      return 0;
-    }
-
-    return _start.isBefore(other._start) ? 1 : -1;
-  }
-
-  /**
-   * [CalendarEvent] as String, for debug/log purposes.
-   */
-  String toString() => _content;
 }
+
+
+Future saveCalendarEvent(ORModel.CalendarEvent event) {
+  /// Dispatch to the correct service.
+  if (event.contactID != Contact.noContact.ID) {
+    if (event.ID == Contact.noContact.ID) {
+      return Service.Contact.store.calendarEventCreate(event);
+    } else {
+      return Service.Contact.store.calendarEventUpdate(event);
+    }
+  } else if (event.receptionID != Reception.noReception.ID) {
+    if (event.ID == ORModel.CalendarEvent.noID) {
+      return Service.Reception.store.calendarEventCreate(event);
+    } else {
+      return Service.Reception.store.calendarEventUpdate(event);
+    }
+  } else {
+    return new Future(() {
+      throw new StateError("Trying to update an event object without an owner!");
+    });
+  }
+}
+
+Future deleteCalendarEvent(ORModel.CalendarEvent event) {
+  /// Dispatch to the correct service.
+  if (event.contactID != Contact.noContact.ID) {
+    return Service.Contact.store.calendarEventRemove(event);
+  } else if (event.receptionID != Reception.noReception.ID) {
+    return Service.Reception.store.calendarEventRemove(event);
+  } else {
+    return new Future(() {
+      throw new StateError("Trying to update an event object without an owner!");
+    });
+  }
+}
+
+findEvent (List<ORModel.CalendarEvent> events, int eventID) =>
+   events.firstWhere((ORModel.CalendarEvent event) => event.ID == eventID);

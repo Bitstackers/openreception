@@ -21,14 +21,13 @@ class ReceptionEmailAddresses {
   bool            hasFocus  = false;
 
   bool get muted => this.context != Context.current;
-  
+
   static const String className = '${libraryName}.ReceptionEmailAddresses';
   static const String NavShortcut = 'A';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element         get header => this.element.querySelector('legend');
-  model.Reception reception = model.nullReception;
   UListElement    get emailAddressList    => this.element.querySelector('#${id.COMPANY_EMAIL_ADDRESSES_LIST}');
 
   ReceptionEmailAddresses(Element this.element, Context this.context) {
@@ -41,11 +40,11 @@ class ReceptionEmailAddresses {
     header.children = [Icon.Email,
                        new SpanElement()..text = Label.ReceptionEmailaddresses,
                        new Nudge(NavShortcut).element];
-                       
+
 
     registerEventListeners();
   }
-  
+
   void _select() {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, emailAddressList.id));
@@ -53,7 +52,7 @@ class ReceptionEmailAddresses {
   }
 
   void registerEventListeners() {
-    
+
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.receptionChanged).listen(render);
@@ -74,9 +73,9 @@ class ReceptionEmailAddresses {
   void render(model.Reception reception) {
     emailAddressList.children.clear();
 
-    for(var value in reception.emailAddressList) {
+    for(var value in reception.emailAddresses) {
       emailAddressList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

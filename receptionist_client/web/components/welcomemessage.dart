@@ -26,7 +26,7 @@ class WelcomeMessage {
    *
    */
   WelcomeMessage(DivElement this.container) {
-    event.bus.on(event.receptionChanged).listen(this._onReceptionChange);
+    event.bus.on(model.Reception.activeReceptionChanged).listen(this._onReceptionChange);
 
     event.bus.on(model.Call.currentCallChanged).listen(_onCallChange);
   }
@@ -35,7 +35,7 @@ class WelcomeMessage {
    *
    */
   void _onReceptionChange(model.Reception reception) {
-    this._render(reception != model.nullReception ? reception.greeting : EMPTY_FIELD);
+    this._render(reception != model.Reception.noReception ? reception.greeting : EMPTY_FIELD);
   }
 
   /**
@@ -50,8 +50,8 @@ class WelcomeMessage {
       return;
     }
     if (call != model.nullCall && call.greetingPlayed) {
-        model.Reception.get(call.receptionId).then((model.Reception reception) {
-          this._render(!call.greetingPlayed ? reception.greeting : reception.alternateGreeting);
+      storage.Reception.get(call.receptionId).then((model.Reception reception) {
+          this._render(!call.greetingPlayed ? reception.greeting : reception.shortGreeting);
         });
     }
   }

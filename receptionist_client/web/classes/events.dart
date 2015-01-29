@@ -19,6 +19,7 @@
 library events;
 
 import 'package:event_bus/event_bus.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 import 'focus.dart';
 import '../model/model.dart' as model;
@@ -47,7 +48,7 @@ final EventType<Location> locationChanged                       = new EventType<
 final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
 final EventType<model.MessageFilter> messageFilterChanged       = new EventType<model.MessageFilter>();
 
-final EventType<model.Reception> receptionChanged               = new EventType<model.Reception>();
+final EventType<ORModel.Reception> receptionChanged               = new EventType<ORModel.Reception>();
 final EventType selectedMessagesChanged                         = new EventType();
 final EventType<State> stateUpdated                             = new EventType<State>();
 final EventType CreateNewContactEvent                           = new EventType();

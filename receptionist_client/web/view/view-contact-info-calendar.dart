@@ -9,18 +9,18 @@ part of view;
 class ContactInfoCalendar {
 
   static const String className      = '${libraryName}.ContactInfoSearch';
-  static const String NavShortcut    = 'K'; 
+  static const String NavShortcut    = 'K';
   static const String EditShortcut   = 'E';
   static const String SaveShortcut   = 'S';
   static const String DeleteShortcut = 'Backspace';
   static const String SelectedClass  = 'selected';
-  
+
   static final String  id        = constant.ID.CALL_MANAGEMENT;
   final        Element element;
   final        Context context;
           nav.Location location;
                Element lastActive = null;
-               bool get muted     => this.context != Context.current;  
+               bool get muted     => this.context != Context.current;
                bool get inFocus    => nav.Location.isActive(this.element);
 
 
@@ -41,7 +41,7 @@ class ContactInfoCalendar {
   ButtonElement get createButton => this.element.querySelector('button.create');
   ButtonElement get saveButton   => this.element.querySelector('button.save');
   ButtonElement get deleteButton => this.element.querySelector('button.delete');
-  
+
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.element.querySelector('.contactinfo-calendar-event-create-starts-hour');
   InputElement get startsMinuteField => this.element.querySelector('.contactinfo-calendar-event-create-starts-minute');
@@ -103,7 +103,7 @@ class ContactInfoCalendar {
     this.endsHourValue   = newTime.hour;
     this.endsMinuteValue = newTime.minute;
   }
-  
+
   List<Element>   get nudges    => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
@@ -120,18 +120,18 @@ class ContactInfoCalendar {
     this.newEventField.disabled = disabled;
     this.inputFields.forEach((InputElement element) => element.disabled = disabled);
   }
-  
-  LIElement       get selectedElement 
-    => this.eventList.children.firstWhere((LIElement child) 
-      => child.classes.contains(SelectedClass), 
-         orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.nullID);
-  
+
+  LIElement       get selectedElement
+    => this.eventList.children.firstWhere((LIElement child)
+      => child.classes.contains(SelectedClass),
+         orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.noID);
+
   void            set selectedElement (LIElement element) {
     assert (element != null);
-    
+
     this.selectedElement.classes.toggle(SelectedClass, false);
     element.classes.toggle(SelectedClass, true);
-    
+
     if (this.inFocus) {
       element.focus();
     }
@@ -139,12 +139,12 @@ class ContactInfoCalendar {
 
 
   ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
-    this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element]; 
-    
+    this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element];
+
     this.createButton.text = Label.Create;
     this.saveButton.text = Label.Update;
     this.deleteButton.text = Label.Delete;
-    
+
     this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);
 
     ///Navigation shortcuts
@@ -152,13 +152,13 @@ class ContactInfoCalendar {
     this.newEventWidget.insertBefore(new Nudge(SaveShortcut, type : Nudge.Command ).element,  this.createButton);
     this.newEventWidget.insertBefore(new Nudge(DeleteShortcut, type : Nudge.Command).element,  this.deleteButton);
     keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-    
+
     newEventField.placeholder = Label.CreateEvent;
     this.newEventWidget.hidden = true;
     _registerEventListeners();
 
   }
-  
+
   /**
    * Selects the widget and puts the default element in focus.
    */
@@ -167,14 +167,14 @@ class ContactInfoCalendar {
       Controller.Context.changeLocation(this.location);
     }
   }
-  
+
   /**
    * Harvests the typed information from the widget and returns a CalendarEvent object.
    */
   model.CalendarEvent _getEvent() {
     assert (this.inFocus && !this.newEventWidget.hidden);
-    
-    return new model.CalendarEvent.forContact(this.currentContact.id, this.currentContact.receptionID)
+
+    return new model.CalendarEvent.forContact(this.currentContact.ID, this.currentContact.receptionID)
               ..ID       = this.eventID
               ..content = this.newEventField.value
               ..beginsAt = this._selectedStartDate
@@ -192,7 +192,7 @@ class ContactInfoCalendar {
     void listNavigation(KeyboardEvent e) {
       LIElement lastFocusLI = this.selectedElement;
       LIElement newFocusLI;
-      
+
         if (lastFocusLI == null) {
           newFocusLI = this.eventList.children.first;
         } else if (e.keyCode == Keys.DOWN){
@@ -220,7 +220,7 @@ class ContactInfoCalendar {
     event.bus.on(event.CreateNewContactEvent).listen((_) {
 
       if(nav.Location.isActive(this.element)) {
-        eventID = model.CalendarEvent.nullID;
+        eventID = model.CalendarEvent.noID;
         this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
         this.eventList.hidden = !this.newEventWidget.hidden;
@@ -245,7 +245,7 @@ class ContactInfoCalendar {
 
     event.bus.on(event.Save).listen((_) {
       if (this.inFocus && !this.newEventWidget.hidden) {
-        this._getEvent().save().then((_) {
+        model.saveCalendarEvent(this._getEvent()).then((_) {
           this.newEventWidget.hidden = true;
           this.eventList.hidden = !this.newEventWidget.hidden;
         });
@@ -253,8 +253,8 @@ class ContactInfoCalendar {
     });
 
     event.bus.on(event.Delete).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.nullID) {
-        this._getEvent().delete().then((_) {
+      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.noID) {
+        model.deleteCalendarEvent(this._getEvent()).then((_) {
           this.newEventWidget.hidden = true;
           this.eventList.hidden = !this.newEventWidget.hidden;
         });
@@ -262,25 +262,25 @@ class ContactInfoCalendar {
     });
 
     event.bus.on(event.Edit).listen((_) {
-      
+
       if(!this.inFocus) {
         return;
       }
-      
+
       //Toggle the widget to create new calendar events.
       this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
       //Toggle the list of events based on the widget for creatings visability.
       this.eventList.hidden = !this.newEventWidget.hidden;
       int eventID = this.selectedElement.value;
-      
+
       if (!this.newEventWidget.hidden) {
-        model.Contact.selectedContact.calendarEventList.then((model.CalendarEventList eventList) {
-          model.CalendarEvent event = eventList.get(eventID);
+        model.Contact.selectedContact.calendarEventList().then((List<model.CalendarEvent> eventList) {
+          model.CalendarEvent event = model.CalendarEvent.findEvent(eventID, eventList);
           this.createButton.hidden = true;
           this.saveButton.hidden = false;
           this.deleteButton.hidden = false;
-          
+
           this._selectedStartDate = event.startTime;
           this._selectedEndDate = event.stopTime;
           this.newEventField.value = event.content;
@@ -295,15 +295,15 @@ class ContactInfoCalendar {
         }
       }
     });
-    
-    model.CalendarEventList.events.on(model.CalendarEventList.reload).listen((Map eventStub) {
+
+    model.CalendarEvent.events.on(model.CalendarEvent.reload).listen((Map eventStub) {
       const String context = '${className}.reload (listener)';
 
       log.debugContext(eventStub.toString(), context);
 
-      if (eventStub['contactID'] == this.currentContact.id && eventStub['receptionID'] == this.reception.ID) {
+      if (eventStub['contactID'] == this.currentContact.ID && eventStub['receptionID'] == this.reception.ID) {
         log.debugContext('Reloading calendarlist for ${eventStub['contactID']}@${eventStub['receptionID']}', context);
-        storage.Contact.calendar(this.currentContact.id, reception.ID).then((model.CalendarEventList eventList) {
+        storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.CalendarEvent> eventList) {
             this.render(eventList);
           }).catchError((error) {
             log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
@@ -313,7 +313,7 @@ class ContactInfoCalendar {
       }
     });
 
-    event.bus.on(event.receptionChanged).listen((model.Reception reception) {
+    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception reception) {
       this.reception = reception;
     });
 
@@ -322,7 +322,7 @@ class ContactInfoCalendar {
 
       /*  */
       if (newContact != model.Contact.noContact) {
-        storage.Contact.calendar(this.currentContact.id, reception.ID).then((model.CalendarEventList eventList) {
+        storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.CalendarEvent> eventList) {
           this.render(eventList);
         }).catchError((error) {
           log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
@@ -331,13 +331,13 @@ class ContactInfoCalendar {
     });
   }
 
-  void render(model.CalendarEventList calendarEventList) {
+  void render(List<model.CalendarEvent> events) {
     eventList.children.clear();
-    if (calendarEventList == null) {
+    if (events == null) {
       return;
     }
 
-    for (model.CalendarEvent event in calendarEventList) {
+    for (model.CalendarEvent event in events) {
       String html = '''
         <li class="${event.active ? 'company-events-active': ''}">
           <table class="calendar-event-table">

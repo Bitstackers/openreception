@@ -53,8 +53,7 @@ class Message {
 
   List<Element> focusElements;
 
-  model.Reception reception = model.nullReception;
-  model.Contact contact = model.nullContact;
+  model.Contact contact = model.Contact.noContact;
   ORModel.MessageRecipientList recipients = new ORModel.MessageRecipientList.empty();
 
   /**
@@ -222,14 +221,11 @@ class Message {
     this.recipients = new ORModel.MessageRecipientList.empty();
     if (this.contact != model.Contact.noContact) {
       this.isDisabled = false;
-      contact.dereferenceDistributionList().then((ORModel.MessageRecipientList dereferencedDistributionList) {
-        // Put all the dereferenced recipients to the local list.
-        dereferencedDistributionList.forEach((ORModel.MessageRecipient recipient) {
+        contact.distributionList.forEach((ORModel.MessageRecipient recipient) {
           this.recipients.add(recipient);
         });
 
         this._renderRecipientList();
-      });
     } else {
       this.isDisabled = true;
       this._renderRecipientList();
@@ -242,10 +238,6 @@ class Message {
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
     event.bus.on(event.contactChanged).listen(this._renderContact);
-
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      reception = value;
-    });
 
     event.bus.on(event.callChanged).listen((model.Call value) {
       if (value.callerId != null ) {
@@ -289,6 +281,8 @@ class Message {
       for (ORModel.MessageRecipient recipient in this.recipients) {
         pendingMessage.recipients.add(recipient);
       }
+
+      pendingMessage.sender = model.User.currentUser;
 
       return pendingMessage;
     });

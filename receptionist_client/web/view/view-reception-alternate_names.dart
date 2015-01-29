@@ -16,13 +16,13 @@ part of view;
 class ReceptionAlternateNames {
   final Context uiContext;
   final Element element;
-  
+
   static const String className = '${libraryName}.ReceptionAlternateNames';
   static const String NavShortcut = 'F';
 
   bool get muted     => this.uiContext != Context.current;
   bool     hasFocus  =  false;
-  
+
   Element         get header             => this.element.querySelector('legend');
   UListElement    get alternateNamesList => this.element.querySelector('#${id.COMPANY_ALTERNATE_NAMES_LIST}');
 
@@ -34,21 +34,21 @@ class ReceptionAlternateNames {
     ///Navigation shortcuts
     keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
-    header.children = [Icon.Building, 
+    header.children = [Icon.Building,
                        new SpanElement()..text = Label.ReceptionAlternateNames,
                        new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }
-  
+
   void _select() {
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, alternateNamesList.id));
-    } 
+    }
   }
 
   void registerEventListeners() {
-    
+
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.receptionChanged).listen(render);
@@ -69,9 +69,9 @@ class ReceptionAlternateNames {
   void render(model.Reception reception) {
     alternateNamesList.children.clear();
 
-    for(var value in reception.alternateNameList) {
+    for(var value in reception.alternateNames) {
       alternateNamesList.children.add(new LIElement()
-                        ..text = value.value);
+                        ..text = value);
     }
   }
 }

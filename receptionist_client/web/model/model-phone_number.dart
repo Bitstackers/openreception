@@ -50,7 +50,7 @@ class DiablePhoneNumber extends PhoneNumber {
     this._phoneID  = number._phoneID;
     this._priority = number._priority;
 
-    this._contactID   = context.id;
+    this._contactID   = context.ID;
     this._receptionID = context.receptionID;
   }
 
