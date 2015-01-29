@@ -17,12 +17,10 @@ class RESTMessageStore implements Storage.Message {
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
-  Future<Model.Message> enqueue(Model.Message message) =>
+  Future enqueue(Model.Message message) =>
       this._backed.post
         (appendToken
-           (MessageResource.send(this._host, message.ID), this._token), JSON.encode (message.asMap))
-      .then((String response)
-        => new Model.Message.fromMap (JSON.decode(response)));
+           (MessageResource.send(this._host, message.ID), this._token), JSON.encode (message.asMap));
 
   Future<Model.Message> create(Model.Message message) =>
       this._backed.post

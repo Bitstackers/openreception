@@ -2,7 +2,7 @@ part of openreception.storage;
 
 abstract class Message {
 
-  Future<Model.Message> enqueue (Model.Message message);
+  Future enqueue (Model.Message message);
 
   Future<Model.Message> get (int messageID);
 
