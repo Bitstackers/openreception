@@ -4,10 +4,8 @@ dependencies:
   args: any
   mailer: any
   openreception_framework:
-     version: ">= 0.0.13+0"
-     git:
-       ref: master
-       url: https://github.com/BitStackers/OpenReceptionFramework.git
+    path: "/home/krc/Projects/OpenReceptionFramework"
+    version: ">= 0.0.15+2"
   path: any
   postgresql: any
   route: any
