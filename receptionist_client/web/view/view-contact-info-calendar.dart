@@ -344,7 +344,7 @@ class ContactInfoCalendar {
             <tbody>
               <tr>
                 <td class="calendar-event-content  ${event.active ? '' : 'calendar-event-notactive'}">
-                  ${event}
+                  ${event.content}
                 <td>
               </tr>
             </tbody>
