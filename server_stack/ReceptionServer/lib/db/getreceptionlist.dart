@@ -1,6 +1,6 @@
 part of receptionserver.database;
 
-Future<Map> getReceptionList() {
+Future<List<Map>> getReceptionList() {
 
   String sql = '''
     SELECT id, full_name, enabled, attributes, reception_telephonenumber, last_check
@@ -26,6 +26,6 @@ Future<Map> getReceptionList() {
       receptions.add(reception);
     }
 
-    return {'reception_list':receptions};
+    return receptions;
   });
 }

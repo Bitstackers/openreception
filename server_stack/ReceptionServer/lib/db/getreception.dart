@@ -14,7 +14,7 @@ Future<Map> getReception(int id) {
     if(rows.length == 1) {
       var row = rows.first;
       data =
-        {'reception_id' : row.id,
+        {'id'           : row.id,
          'full_name'    : row.full_name,
          'enabled'      : row.enabled,
          'extradatauri' : row.extradatauri,
