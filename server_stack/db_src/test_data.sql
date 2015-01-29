@@ -7,7 +7,7 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (4,  'Kim Rostgaard Christensen', 'human'),
        (5,  'Wolfram Beta', 'human'),
        (6,  'Sidsel Schomacker', 'human'),
-       (7,  'Ulrik Hørlyk Hjort', 'human'),
+       (7,  'Ulrik Højby', 'human'),
        (8,  'Alexandra Kongstad Pedersen', 'human'),
        (9,  'Anne And', 'human'),
        (10, 'Gardenia Hø', 'human'),
@@ -68,6 +68,9 @@ VALUES (1,  'Thomas Løcke', 'human'),
        (65, 'Bondemand Jensen', 'human'),
        (66, 'Mario Mario', 'human'),
        (67, 'Luigi Mario', 'human'),
+       (96, 'Support', 'function'),
+       (97, 'Salg', 'function'),
+       (98, 'Traktorservice', 'function'),
        (99, 'Support', 'function');
 
 
