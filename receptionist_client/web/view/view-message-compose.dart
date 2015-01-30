@@ -264,7 +264,7 @@ class Message {
           'company': callerCompanyField.value,
           'phone': callerPhoneField.value,
           'cellphone': callerCellphoneField.value,
-          'localextension': callerLocalExtensionField.value
+          'localExtension': callerLocalExtensionField.value
         },
         'context': contextMap,
         'flags': [],
