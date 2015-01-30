@@ -83,7 +83,7 @@ VALUES 	    (1, 'BitStackers K/S', 'Bank', 'VIP'),
 	    (6, 'Landmandens venner A/S', 'PBS', 'Non-VIP');
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, extradatauri, attributes)
-VALUES (1, 1, 'BitStackers', '12340001', 
+VALUES (1, 1, 'BitStackers', '12340001',
            'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
            '{
     "short_greeting": "",
@@ -388,9 +388,9 @@ VALUES (6, 2, 'Landmandens venner A/S', '12340006',
 }');
 
 /* BitStackers */
-INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers)
 VALUES
-       (1, 1, 
+       (1, 1,
          '{
     "backup": [
         "Trine Løcke",
@@ -432,7 +432,7 @@ VALUES
     }
 ]'),
 
-       (1, 2, 
+       (1, 2,
          '{
     "backup": [
         "Thomas Løcke"
@@ -460,7 +460,7 @@ VALUES
 }',
          '[]' ),
 
-       (1, 3, 
+       (1, 3,
          '{
     "backup": [
         "Thomas Løcke"
@@ -496,7 +496,7 @@ VALUES
               "confidential": false}
           ]'),
 
-       (1, 4, 
+       (1, 4,
          '{
     "backup": [
         "Thomas Løcke"
@@ -538,7 +538,7 @@ VALUES
               "confidential": true}
           ]'),
 
-       (1, 5, 
+       (1, 5,
          '{
     "backup": [
         "Thomas Løcke",
@@ -604,7 +604,7 @@ VALUES
 }','[]');
 
 /*Fishermans Friends*/
-INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers)
 VALUES
        (2, 1, '{
     "backup": [
@@ -681,9 +681,9 @@ VALUES
     "relations": "Papegøjen Diego ",
     "responsibility": "Saltvands fisk"
 }','[]');
-       
+
 /*Responsum*/
-INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers)
 VALUES
        (3, 1, '{
     "backup": [
@@ -799,7 +799,7 @@ VALUES
 }','[]');
 
 /* Hansen VVS */
-INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers)
 VALUES
        (4, 66, '{
     "backup": [
@@ -852,9 +852,9 @@ VALUES
     "relations": "Bror til Mario Mario",
     "responsibility": "Alt"
 }','[]');
-       
+
 /* Kødbollen A/S */
-INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers)
 VALUES
        (5, 28, '{
     "backup": [],
@@ -881,7 +881,7 @@ VALUES
 }','[]');
 
 /* Farmer Friends */
-INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers) 
+INSERT INTO reception_contacts(reception_id, contact_id, attributes, phonenumbers)
 VALUES
        (6, 65, '{
     "backup": [
@@ -910,8 +910,8 @@ VALUES
     "relations": "Gift med Maren",
     "responsibility": "Marken og alt i stalden"
 }','[]'),
- 
-      (6, 35, 
+
+      (6, 35,
          '{
     "backup": [
         "Bondemand Jensen"
@@ -975,7 +975,7 @@ VALUES --  BitStackers
        (4, 1, 'email', 'krc@bitstack.dk', FALSE, TRUE),
        (4, 2, 'email', 'krc@gir.dk', FALSE, TRUE),
        (5, 1, 'email', 'wfb@bitstack.dk',  FALSE, TRUE),
-       --  Fishermans Friends    
+       --  Fishermans Friends
        (1, 2, 'sms',    '+4588329100', FALSE, FALSE),
        --  Responsum
        (1, 3, 'email', 'thomas@responsum.dk', FALSE, TRUE),
@@ -986,11 +986,11 @@ INSERT INTO users (id, name, extension, send_from)
 VALUES (1,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
        (2,  'Kim Rostgaard Christensen', 1002, 'krc@bitstack.dk'),
        (3,  'Agent 3',                   1003, null),
-       (4,  'Agent 4',                   1004, null),
-       (5,  'Agent 5',                   1005, null),
+       (4,  'Thomas Løcke',              1004, 'thomas@responsum.dk'),
+       (5,  'Morten Jensen',             1005, 'tomren3000@gmail.com'),
        (6,  'Agent 6',                   1006, null),
        (7,  'Agent 7',                   1007, null),
-       (8,  'Agent 8',                   1008, null),
+       (8,  'Stanislav Sinyagin',        1008, 'ssinyagin@gmail.com'),
        (9,  'Casper Bergsø',             1009, null),
        (10, 'Testagent 1100',            1100, 'noreply@bitstack.dk'),
        (11, 'Testagent 1101',            1101, 'noreply@bitstack.dk'),
@@ -1018,6 +1018,15 @@ VALUES (1, 1),
        (3, 1),
        (3, 2),
        (3, 3),
+       (4, 1),
+       (4, 2),
+       (4, 3),
+       (5, 1),
+       (5, 2),
+       (5, 3),
+       (8, 1),
+       (8, 2),
+       (8, 3),
        (9, 1),
        (9, 2),
        (9, 3),
@@ -1053,8 +1062,11 @@ VALUES (1, 1),
        (19, 3);
 
 INSERT INTO auth_identities (identity, user_id)
-VALUES ('kim.rostgaard@gmail.com', 2), 
+VALUES ('kim.rostgaard@gmail.com', 2),
        ('devicesnull@gmail.com', 2),
+       ('thomas@responsum.dk', 4),
+       ('tomren3000@gmail.com', 5),
+       ('ssinyagin@gmail.com', 8),
        ('cbergs8@gmail.com', 9),
        ('krc@bitstack.dk', 2),
        ('tp@bitstack.dk', 1),
