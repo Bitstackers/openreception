@@ -127,6 +127,7 @@ class Message implements Storage.Message {
              taken_from_company,
              taken_from_phone,
              taken_from_cellphone,
+             taken_from_localexten,
              send_from      AS agent_address,
              flags, 
              created_at,
@@ -151,26 +152,27 @@ class Message implements Storage.Message {
 
       for(var row in rows) {
         Model.Message message = new Model.Message.fromMap(
-          {'id'                    : row.id,
-           'message'               : row.message,
-           'recipients'            : row.json_recipients != null ?row.json_recipients : [],
-           'context'               : {'contact'   :
-                                       {'id'   : row.context_contact_id,
-                                        'name' : row.context_contact_name},
-                                      'reception' :
-                                       {'id'   : row.context_reception_id,
-                                        'name' : row.context_reception_name}},
-           'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
-                                      'id'      : row.taken_by_agent_id,
-                                      'address' : row.agent_address},
-           'caller'                : {'name'      : row.taken_from_name,
-                                      'company'   : row.taken_from_company,
-                                      'phone'     : row.taken_from_phone,
-                                      'cellphone' : row.taken_from_cellphone},
-           'flags'                 : row.flags,
-           'enqueued'              : row.enqueued,
-           'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
-           'sent'                  : row.sent}
+            {'id'                    : row.id,
+                       'message'               : row.message,
+                       'recipients'            : row.json_recipients != null ?row.json_recipients : [],
+                       'context'               : {'contact'   :
+                                                   {'id'   : row.context_contact_id,
+                                                    'name' : row.context_contact_name},
+                                                  'reception' :
+                                                   {'id'   : row.context_reception_id,
+                                                    'name' : row.context_reception_name}},
+                       'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
+                                                  'id'      : row.taken_by_agent_id,
+                                                  'address' : row.agent_address},
+                       'caller'                : {'name'           : row.taken_from_name,
+                                                  'company'        : row.taken_from_company,
+                                                  'phone'          : row.taken_from_phone,
+                                                  'cellphone'      : row.taken_from_cellphone,
+                                                  'localExtension' : row.taken_from_localexten},
+                       'flags'                 : row.flags,
+                       'enqueued'              : row.enqueued,
+                       'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
+                       'sent'                  : row.sent}
       );
         messages.add(message);
       }
@@ -224,6 +226,7 @@ class Message implements Storage.Message {
          taken_from_name         = @taken_from_name,
          taken_from_company      = @taken_from_company,
          taken_from_phone        = @taken_from_phone,
+         taken_from_localexten   = @taken_from_localexten,
          taken_from_cellphone    = @taken_from_cellphone,
          flags                   = @flags
     WHERE id=${message.ID};''';
@@ -237,6 +240,7 @@ class Message implements Storage.Message {
                       'taken_from_company'     : message.caller.company,
                       'taken_from_phone'       : message.caller.phone,
                       'taken_from_cellphone'   : message.caller.cellphone,
+                      'taken_from_localexten'  : message.caller.localExtension,
                       'flags'                  : JSON.encode(message.flags)
                       };
 
@@ -269,7 +273,8 @@ class Message implements Storage.Message {
             taken_from_name, 
             taken_from_company,
             taken_from_phone,
-            taken_from_cellphone, 
+            taken_from_cellphone,
+            taken_from_localexten, 
             taken_by_agent, 
             flags)
       VALUES 
@@ -281,7 +286,8 @@ class Message implements Storage.Message {
             @taken_from_name,
             @taken_from_company,
             @taken_from_phone,
-            @taken_from_cellphone, 
+            @taken_from_cellphone,
+            @taken_from_localexten 
             @taken_by_agent, 
             @flags)
       RETURNING id;
@@ -296,6 +302,7 @@ class Message implements Storage.Message {
                       'taken_from_company'     : message.caller.company,
                       'taken_from_phone'       : message.caller.phone,
                       'taken_from_cellphone'   : message.caller.cellphone,
+                      'taken_from_localexten'  : message.caller.localExtension,
                       'taken_by_agent'         : message.sender.ID,
                       'flags'                  : JSON.encode(message.flags)
                       };
@@ -328,6 +335,7 @@ class Message implements Storage.Message {
              taken_from_company,
              taken_from_phone,
              taken_from_cellphone,
+             taken_from_localexten,
              send_from      AS agent_address,
              flags, 
              created_at,
@@ -364,10 +372,11 @@ class Message implements Storage.Message {
            'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
                                       'id'      : row.taken_by_agent_id,
                                       'address' : row.agent_address},
-           'caller'                : {'name'      : row.taken_from_name,
-                                      'company'   : row.taken_from_company,
-                                      'phone'     : row.taken_from_phone,
-                                      'cellphone' : row.taken_from_cellphone},
+           'caller'                : {'name'           : row.taken_from_name,
+                                      'company'        : row.taken_from_company,
+                                      'phone'          : row.taken_from_phone,
+                                      'cellphone'      : row.taken_from_cellphone,
+                                      'localExtension' : row.taken_from_localexten},
            'flags'                 : row.flags,
            'enqueued'              : row.enqueued,
            'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
