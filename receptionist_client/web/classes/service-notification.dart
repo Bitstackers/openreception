@@ -174,7 +174,10 @@ class EventSocket {
   void _userStateEventHandler(Map map) {
     const String context = '${className}._callStateEventHandler';
 
-    model.UserStatus.currentStatus.update(map ['newState']);
+    if (model.User.currentUser.ID == map ['userID']) {
+      model.UserStatus.currentStatus.update(map ['newState']);
+    }
+
   }
 
   /**
@@ -234,7 +237,7 @@ class EventSocket {
 
     model.Call call = new model.Call.fromMap(json['call']);
 
-    if (call.assignedAgent == model.User.currentUser) {
+    if (call.assignedAgent == model.User.currentUser.ID) {
       log.info('Tog kald. ${call}', toUserLog: true);
       model.Call.currentCall = call;
 
