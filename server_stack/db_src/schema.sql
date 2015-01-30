@@ -156,6 +156,7 @@ CREATE TABLE messages (
    taken_from_company        TEXT      NOT NULL DEFAULT '',
    taken_from_phone          TEXT      NOT NULL DEFAULT '',
    taken_from_cellphone      TEXT      NOT NULL DEFAULT '',
+   taken_from_localexten     TEXT      NOT NULL DEFAULT '',
    taken_by_agent            INTEGER   NOT NULL REFERENCES users (id),
    flags                     JSON      NOT NULL DEFAULT '[]',
    created_at                TIMESTAMP NOT NULL DEFAULT NOW()
