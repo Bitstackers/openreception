@@ -287,7 +287,7 @@ class Message implements Storage.Message {
             @taken_from_company,
             @taken_from_phone,
             @taken_from_cellphone,
-            @taken_from_localexten 
+            @taken_from_localexten, 
             @taken_by_agent, 
             @flags)
       RETURNING id;
