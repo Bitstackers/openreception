@@ -28,7 +28,7 @@ class MessageCaller {
          set phone          (String value) => this.update('phone', value);
   String get cellphone                     => this.lookup('cellphone', '?');
          set cellphone      (String value) => this.update('cellphone', value);
-  String get localExtension                => this.lookup('cellphone', '?');
+  String get localExtension                => this.lookup('localExtension', '?');
          set localExtension (String value) => this.update('localExtension', value);
 
   MessageCaller(Map this._map);
