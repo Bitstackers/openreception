@@ -16,6 +16,7 @@ class UserStatusList extends IterableBase<UserStatus> {
 
   void update (int userID, String newState) {
     Notification.broadcast({'event'    : 'userState',
+                            'userID'   : userID,
                             'oldState' : this.get (userID).state,
                             'newState' : newState});
 
