@@ -229,7 +229,6 @@ class CallList extends IterableBase<Call> {
     }
 
 
-    //print (packet.eventName + '::' + packet.eventSubclass);
   try {
     dispatch();
   } catch (error, stackTrace) {
@@ -238,6 +237,9 @@ class CallList extends IterableBase<Call> {
   }
 
   Call _createCall(ESL.Packet packet) {
+    //TODO: If channel.isExternal add to call list!
+
+
     const String context = '${className}._createCall';
     logger.debugContext('Creating new channel ${packet.uniqueID}', context);
     Call createdCall = new Call()

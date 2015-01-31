@@ -6,13 +6,13 @@ void handlerChannelList(HttpRequest request) {
 
   try {
     List<Map> retval = new List<Map>();
-    Model.ChanneList.instance.forEach ((channel) {
+    Model.ChannelList.instance.forEach ((channel) {
       retval.add(channel.toMap());
     });
-    
+
     writeAndClose(request, JSON.encode( { "channels" : retval}));
   } catch (error, stacktrace) {
     serverError(request, error.toString());
   }
-  
+
 }

@@ -59,7 +59,7 @@ void handlerCallRecordSound(HttpRequest request) {
           writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
 
       }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user.ID, Model.UserState.Idle);
+        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
 
         serverErrorTrace(request, error, stackTrace: stackTrace);
       });

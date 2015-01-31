@@ -59,6 +59,9 @@ void connectESLClient() {
   Model.PBXClient.instance = new ESL.Connection()..log.onRecord.listen(print);
 
   Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
+
+  Model.PBXClient.instance.eventStream.listen(Model.ChannelList.instance.handleEvent);
+
   Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
 
   /// Respond to server requests.

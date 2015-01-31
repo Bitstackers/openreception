@@ -6,7 +6,7 @@ abstract class PBX {
 
   static const String className      = '${libraryName}.PBX';
   static const String callerID       = '39990141';
-  static const int    timeOutSeconds = 5;
+  static const int    timeOutSeconds = 120;
   static const String dialplan       = 'xml default';
 
   /**
@@ -66,6 +66,7 @@ abstract class PBX {
                               'origination_caller_id_number=$callerID',
                               'originate_timeout=$timeOutSeconds'];
 
+    String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${dialplan} $callerID $callerID $timeOutSeconds';
     throw new StateError('Not implemented');
     //Alternate origination:: originate  sofia/gateway/fonet-77344600-outbound/40966024 &bridge(user/1002)
   }
