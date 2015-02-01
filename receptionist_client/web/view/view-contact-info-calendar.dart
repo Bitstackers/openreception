@@ -317,7 +317,7 @@ class ContactInfoCalendar {
       this.reception = reception;
     });
 
-    event.bus.on(event.contactChanged).listen((model.Contact newContact) {
+    event.bus.on(model.Contact.activeContactChanged).listen((model.Contact newContact) {
       this.currentContact = newContact;
 
       /*  */
@@ -332,6 +332,7 @@ class ContactInfoCalendar {
   }
 
   void render(List<model.CalendarEvent> events) {
+    events.sort();
     eventList.children.clear();
     if (events == null) {
       return;

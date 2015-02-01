@@ -39,7 +39,6 @@ final EventType<model.Call> callDestroyed                       = new EventType<
 final EventType<model.Call> callChanged                         = new EventType<model.Call>();
 final EventType<model.Call> callQueueAdd                        = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove                     = new EventType<model.Call>();
-final EventType<model.Contact> contactChanged                   = new EventType<model.Contact>();
 //final EventType<MessageSearchFilter> messageSearchFilterChanged = new EventType<MessageSearchFilter>();
 final EventType<Focus> focusChanged                             = new EventType<Focus>();
 final EventType<model.Call> localCallQueueAdd                   = new EventType<model.Call>();

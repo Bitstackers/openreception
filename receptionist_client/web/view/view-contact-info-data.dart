@@ -120,7 +120,7 @@ class ContactInfoData {
       telephoneNumberList.children [index-1].querySelector('button').click();
     });
 
-    event.bus.on(event.contactChanged).listen(render);
+    event.bus.on(model.Contact.activeContactChanged).listen(render);
 
   }
 }

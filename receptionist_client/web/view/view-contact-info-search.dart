@@ -148,7 +148,7 @@ class ContactInfoSearch {
       }).catchError((error) => contactList = []);
     });
 
-    event.bus.on(event.contactChanged).listen((model.Contact value) {
+    event.bus.on(model.Contact.activeContactChanged).listen((model.Contact value) {
       contact = value;
     });
 

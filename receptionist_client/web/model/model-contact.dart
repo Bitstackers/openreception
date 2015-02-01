@@ -29,7 +29,6 @@ class Contact extends ORModel.Contact implements Comparable{
   static Contact get selectedContact => _selectedContact;
   static set selectedContact(Contact contact) {
     _selectedContact = contact;
-    event.bus.fire(event.contactChanged, _selectedContact);
     event.bus.fire(activeContactChanged, _selectedContact);
   }
 
