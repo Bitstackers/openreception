@@ -62,7 +62,7 @@ class Message {
    * Used for locking the input fields upon sending
    * a message, or when no contact is selected.
    */
-  void set isDisabled(bool disabled) {
+  void set disabled(bool disabled) {
     this.element.querySelectorAll('input').forEach((InputElement element) {
       element.disabled = disabled;
     });
@@ -74,6 +74,17 @@ class Message {
     this.element.querySelectorAll('button').forEach((ButtonElement element) {
       element.disabled = disabled;
     });
+  }
+
+  /**
+   * Update the disabled property.
+   *
+   * Used for locking the input fields upon sending
+   * a message, or when no contact is selected.
+   */
+  void set loading(bool isLoading) {
+    this.disabled = isLoading;
+    this.messageBodyField.classes.toggle('loading', isLoading);
   }
 
   /**
@@ -110,6 +121,8 @@ class Message {
     this.element.querySelectorAll('textarea').forEach((TextAreaElement element) {
       element.value = "";
     });
+
+    recipientsList.children.clear();
 
     log.debugContext('Message Cleared', context);
   }
@@ -210,6 +223,7 @@ class Message {
         elem.focus();
       }
     }
+
   }
 
   /**
@@ -220,14 +234,14 @@ class Message {
 
     this.recipients = new ORModel.MessageRecipientList.empty();
     if (this.contact != model.Contact.noContact) {
-      this.isDisabled = false;
+      this.disabled = false;
         contact.distributionList.forEach((ORModel.MessageRecipient recipient) {
           this.recipients.add(recipient);
         });
 
         this._renderRecipientList();
     } else {
-      this.isDisabled = true;
+      this.disabled = true;
       this._renderRecipientList();
     }
   }
@@ -237,7 +251,7 @@ class Message {
 
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
-    event.bus.on(event.contactChanged).listen(this._renderContact);
+    event.bus.on(model.Contact.activeContactChanged).listen(this._renderContact);
 
     event.bus.on(event.callChanged).listen((model.Call value) {
       if (value.callerId != null ) {
@@ -292,15 +306,19 @@ class Message {
    * Click handler for send button. Sends the currently typed in message via the Message Service.
    */
   void _sendHandler(_) {
-    this.isDisabled = true;
+    this.loading  = true;
 
     this._harvestMessage().then ((model.Message message) {
       message.sendTMP().then((_) {
-        log.debug('Sent message');
+        model.NotificationList.instance.add(new model.Notification
+            (Label.MessageSent, type : model.NotificationType.Success));
+        print ("CLEARING!!");
         this._clearInputFields();
-      }).catchError((error, stackTrace) {
-        log.debug('----- Send Message Unlucky Result: ${stackTrace}');
-      }).whenComplete(() => this.isDisabled = false);
+      }).catchError(() {
+        model.NotificationList.instance.add(new model.Notification
+            (Label.MessageNotUpdated, type : model.NotificationType.Error));
+      })
+      .whenComplete(() => this.loading = false);
     });
   }
 
@@ -308,7 +326,7 @@ class Message {
    * Click handler for save button. Saves the currently typed in message via the Message Service.
    */
   void _saveHandler(_) {
-    this.isDisabled = true;
+    this.disabled = true;
 
     this._harvestMessage().then ((model.Message message) {
       message.saveTMP().then((_) {
@@ -316,7 +334,7 @@ class Message {
         this._clearInputFields();
       }).catchError((error, stackTrace) {
         log.debug('----- Send Message Unlucky Result: ${error} : $stackTrace');
-      }).whenComplete(() => this.isDisabled = false);
+      }).whenComplete(() => this.disabled = false);
     });
   }
 }

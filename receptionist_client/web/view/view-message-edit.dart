@@ -97,7 +97,6 @@ class MessageEdit {
     this.messageBodyField.classes.toggle('loading', isLoading);
   }
 
-
   /**
    * Update the tabable property.
    *
