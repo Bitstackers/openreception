@@ -47,7 +47,7 @@ void handlerCallOrignate(HttpRequest request) {
         Model.UserStatusList.instance.update(user.ID, Model.UserState.Dialing);
 
         /// Perform the origination via the PBX.
-        Controller.PBX.originate (extension, contactID, receptionID, user)
+        Controller.PBX.originateOutboundFirst (extension, contactID, receptionID, user)
           .then ((String channelUUID) {
 
           /// Update the user state

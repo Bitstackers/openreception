@@ -8,6 +8,7 @@ abstract class PBX {
   static const String callerID       = '39990141';
   static const int    timeOutSeconds = 120;
   static const String dialplan       = 'xml default';
+  static const String dialoutGateway = 'example.com';
 
   /**
    * Starts an origination in the PBX.
@@ -64,11 +65,19 @@ abstract class PBX {
                               'contact_id=${contactID}',
                               'origination_caller_id_name=$callerID',
                               'origination_caller_id_number=$callerID',
-                              'originate_timeout=$timeOutSeconds'];
+                              'originate_timeout=$timeOutSeconds',
+                              'return_ring_ready=true'];
 
-    String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${dialplan} $callerID $callerID $timeOutSeconds';
-    throw new StateError('Not implemented');
-    //Alternate origination:: originate  sofia/gateway/fonet-77344600-outbound/40966024 &bridge(user/1002)
+    return Model.PBXClient.api
+        ('originate {${variables.join(',')}}sofia/external/${extension}@dialoutGateway ${dialplan} $callerID $callerID $timeOutSeconds')
+        .then((ESL.Response response) {
+          if (response.status != ESL.Response.OK) {
+            throw new StateError('ESL returned ${response.rawBody}');
+          }
+
+          return response.channelUUID;
+        });
+    //Alternate origination:: originate sofia/gateway/fonet-77344600-outbound/40966024 &bridge(user/1002)
   }
 
   /**
