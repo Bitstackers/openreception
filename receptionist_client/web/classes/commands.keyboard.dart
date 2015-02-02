@@ -213,6 +213,7 @@ class _KeyboardHandler {
       'Ctrl+K'     : (_) => event.bus.fire(event.CreateNewContactEvent, null),
       'Ctrl+S'     : (_) => event.bus.fire(event.Save, null),
       'Ctrl+Alt+Enter' : Controller.User.signalReady,
+      'Ctrl+Alt+P' : Controller.User.signalPaused,
       'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
       'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
       'Ctrl+E'    : (_) => event.bus.fire(event.Edit, null),

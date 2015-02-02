@@ -16,5 +16,12 @@ abstract class User {
 
   }
 
+  static void signalPaused(_) {
+    Service.Call.markUserStatePaused(Model.User.currentUser.ID).then((Model.UserStatus newUserStatus) {
+      event.bus.fire(event.userStatusChanged, newUserStatus);
+      event.bus.fire(event.receptionChanged, Model.Reception.noReception);
+    });
+
+  }
 
 }

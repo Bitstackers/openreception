@@ -114,6 +114,54 @@ abstract class Call {
   }
 
   /**
+   * Updates userState associated with userID to Paused state.
+   */
+  static Future<model.UserStatus> markUserStatePaused(int userID) {
+
+    const String context = '${className}.userState';
+
+    final String base = configuration.callFlowBaseUrl.toString();
+    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
+    final List<String> fragments = new List<String>();
+    final String path = '/userstate/${userID}/paused';
+    HttpRequest request;
+    String url;
+
+    fragments.add('token=${configuration.token}');
+    url = _buildUrl(base, path, fragments);
+
+    request = new HttpRequest()
+        ..open(POST, url)
+        ..onLoad.listen((_) {
+          switch (request.status) {
+            case 200:
+              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
+              break;
+            case 400:
+              completer.completeError(_badRequest('Resource ${base}${path}'));
+              break;
+
+            case 404:
+              completer.completeError(_notFound('Resource ${base}${path}'));
+              break;
+
+            case 500:
+              completer.completeError(_serverError('Resource ${base}${path}'));
+              break;
+            default:
+              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
+          }
+        })
+        ..onError.listen((e) {
+          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
+          completer.completeError(e);
+        })
+        ..send();
+
+    return completer.future;
+  }
+
+  /**
    * Fetches a list of currently queued calls from the Server.
    */
   static Future<model.CallList> queue() {
