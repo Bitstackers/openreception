@@ -40,6 +40,7 @@ final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern peerListResource           = new UrlPattern(r'/peer/list');
 final Pattern userStateResource          = new UrlPattern(r'/userstate/(\d+)');
 final Pattern userStateIdleResource      = new UrlPattern(r'/userstate/(\d+)/idle');
+final Pattern userStatePausedResource    = new UrlPattern(r'/userstate/(\d+)/paused');
 final Pattern userStateListResource      = new UrlPattern(r'/userstate');
 final Pattern callListResource           = new UrlPattern(r'/call/list');
 final Pattern callQueueResource          = new UrlPattern(r'/call/queue');
@@ -80,6 +81,7 @@ void registerHandlers(HttpServer server) {
       ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
       ..serve(userStateResource,          method : "GET"  ).listen(UserState.get)
       ..serve(userStateIdleResource,      method : "POST" ).listen(UserState.markIdle)
+      ..serve(userStatePausedResource,    method : "POST" ).listen(UserState.markPaused)
       ..serve(userStateListResource,      method : "GET"  ).listen(UserState.list)
 
       ..serve(peerListResource,           method : "GET"  ).listen(handlerPeerList)

@@ -37,6 +37,7 @@ class UserStatusList extends IterableBase<UserStatus> {
 abstract class UserState {
   static const Unknown         = 'unknown';
   static const Idle            = 'idle';
+  static const Paused          = 'paused';
   static const Speaking        = 'speaking';
   static const Receiving       = 'receivingCall';
   static const HangingUp       = 'hangingUp';

@@ -8,7 +8,7 @@ abstract class PBX {
   static const String callerID       = '39990141';
   static const int    timeOutSeconds = 120;
   static const String dialplan       = 'xml default';
-  static const String dialoutGateway = 'example.com';
+  static const String dialoutGateway = 'gw1.fonet.dk';
 
   /**
    * Starts an origination in the PBX.
