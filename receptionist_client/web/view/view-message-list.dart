@@ -308,18 +308,18 @@ class MessageList {
 
   Element _messageStatusIcon (model.Message message) {
     if (message.enqueued) {
-      return Icon.Enqueued;
+      return Icon.Enqueued..title = Label.MessageToolTipEnqueued;
     }
 
     if (message.sent) {
-      return Icon.Sent;
+      return Icon.Sent..title = Label.MessageToolTipSent;
     }
 
     if (!message.sent && ! message.enqueued) {
-      return Icon.Saved;
+      return Icon.Saved..title = Label.MessageToolTipSent;
     }
 
-    return Icon.Unknown;
+    return Icon.Unknown..title = Label.MessageToolTipUnknown;
 }
 
   void headerCheckboxChange(event) {

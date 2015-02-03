@@ -37,7 +37,6 @@ import '../classes/context.dart';
 import '../classes/common.dart';
 import '../classes/focus.dart';
 import '../classes/commands.keyboard.dart';
-import '../protocol/protocol.dart' as protocol;
 import '../storage/storage.dart' as storage;
 
 part 'view-call.dart';

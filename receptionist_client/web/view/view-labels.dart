@@ -49,6 +49,10 @@ abstract class Label {
   static const String MessageEnqueued           = 'Besked afsendt';
   static const String MessageNotEnqueued        = 'Besked ikke afsendt!';
 
+  static const String MessageToolTipEnqueued    = 'Besked endnu ikke afsendt';
+  static const String MessageToolTipSent        = 'Besked afsendt';
+  static const String MessageToolTipUnknown     = 'Beskedstatus ukendt';
+
   static final String Phone                     = 'Telefon';
   static final String No_Information            = '<Ikke oplyst>';
   static final String CellPhone                 = 'Mobilnummer';
