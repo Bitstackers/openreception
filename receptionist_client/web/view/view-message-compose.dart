@@ -312,7 +312,6 @@ class Message {
       message.sendTMP().then((_) {
         model.NotificationList.instance.add(new model.Notification
             (Label.MessageSent, type : model.NotificationType.Success));
-        print ("CLEARING!!");
         this._clearInputFields();
       }).catchError(() {
         model.NotificationList.instance.add(new model.Notification
@@ -330,10 +329,12 @@ class Message {
 
     this._harvestMessage().then ((model.Message message) {
       message.saveTMP().then((_) {
-        log.debug('Sent message');
+        model.NotificationList.instance.add(new model.Notification
+            (Label.MessageSent, type : model.NotificationType.Success));
         this._clearInputFields();
       }).catchError((error, stackTrace) {
-        log.debug('----- Send Message Unlucky Result: ${error} : $stackTrace');
+        model.NotificationList.instance.add(new model.Notification
+            (Label.MessageNotUpdated, type : model.NotificationType.Error));
       }).whenComplete(() => this.disabled = false);
     });
   }
