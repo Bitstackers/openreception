@@ -14,12 +14,12 @@ void handlerCallPark(HttpRequest request) {
 
   List<String> parkGroups = ['Administrator', 'Service_Agent', 'Receptionist'];
 
-  bool aclCheck (User user)
+  bool aclCheck (ORModel.User user)
     => user.groups.any((group)
         => parkGroups.contains(group))
     || Model.CallList.instance.get(callID).assignedTo == user.ID;
 
-  AuthService.userOf(token).then((User user) {
+  AuthService.userOf(token).then((ORModel.User user) {
     if (callID == null || callID == "") {
       clientError(request, "Empty call_id in path.");
       return;
@@ -32,15 +32,15 @@ void handlerCallPark(HttpRequest request) {
       return;
     }
 
-    Model.UserStatusList.instance.update(user.ID, Model.UserState.Parking);
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Parking);
 
     Controller.PBX.park (call, user).then ((_) {
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.HandlingOffHook);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HandlingOffHook);
 
       writeAndClose(request, JSON.encode (parkOK (call)));
 
     }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
         serverErrorTrace(request, error, stackTrace: stackTrace);
     });
 

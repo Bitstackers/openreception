@@ -6,7 +6,7 @@ import 'dart:collection';
 import 'package:esl/esl.dart' as ESL;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/util.dart'  as Util;
-import 'package:openreception_framework/model.dart' as SharedModel;
+import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:openreception_framework/common.dart';
 import '../configuration.dart';
 import '../controller/controller.dart' as Controller;

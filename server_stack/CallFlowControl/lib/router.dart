@@ -15,7 +15,7 @@ import 'controller/controller.dart' as Controller;
 import 'model/model.dart' as Model;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
-import 'package:openreception_framework/model.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:esl/esl.dart' as ESL;
 
 part 'router/handler-call-hangup.dart';

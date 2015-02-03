@@ -20,7 +20,7 @@ class Call {
   static const String className  = '${libraryName}.Call';
 
   static final String nullCallID = null;
-  static final int    noUser     = SharedModel.User.nullID;
+  static final int    noUser     = ORModel.User.nullID;
   static const int    nullReceptionID = 0;
 
   String   ID              = nullCallID;
@@ -65,7 +65,7 @@ class Call {
     }
   }
 
-  void assignTo (SharedModel.User user) {
+  void assignTo (ORModel.User user) {
     this.assignedTo = user.ID;
   }
 
@@ -74,7 +74,7 @@ class Call {
 
     if (this.assignedTo != noUser) {
       UserStatusList.instance.get (this.assignedTo).callsHandled++;
-      UserStatusList.instance.update(this.assignedTo, UserState.WrappingUp);
+      UserStatusList.instance.update(this.assignedTo, ORModel.UserState.WrappingUp);
     }
 
     this.assignedTo = noUser;
@@ -106,7 +106,7 @@ class Call {
      "arrival_time"    : dateTimeToUnixTimestamp (this.arrived)};
 
 
-   Future park (SharedModel.User user) {
+   Future park (ORModel.User user) {
      return Controller.PBX.park (this, user);
    }
 

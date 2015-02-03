@@ -19,9 +19,9 @@ abstract class UserState {
     final int    userID = pathParameter(request.uri, 'userstate');
     final String  token = request.uri.queryParameters['token'];
 
-    bool aclCheck (User user) => user.ID == userID;
+    bool aclCheck (ORModel.User user) => user.ID == userID;
 
-    AuthService.userOf(token).then((User user) {
+    AuthService.userOf(token).then((ORModel.User user) {
 
       if (!aclCheck(user)) {
         forbidden(request, 'Insufficient privileges.');
@@ -29,8 +29,8 @@ abstract class UserState {
       }
 
       // States that are okay to transfer to idle from.
-      List validStates = [Model.UserState.Unknown,
-                          Model.UserState.Paused]..addAll(Model.UserState.PhoneReadyStates);
+      List validStates = [ORModel.UserState.Unknown,
+                              ORModel.UserState.Paused]..addAll(ORModel.UserState.PhoneReadyStates);
 
       /// Check user state. We allow the user manually change state from unknown.
       String userState = Model.UserStatusList.instance.get(user.ID).state;
@@ -39,7 +39,7 @@ abstract class UserState {
         return;
       }
 
-      Model.UserStatusList.instance.update(userID, Model.UserState.Idle);
+      Model.UserStatusList.instance.update(userID, ORModel.UserState.Idle);
 
       writeAndClose(request, JSON.encode(Model.UserStatusList.instance.get(userID)));
     }).catchError((error, stackTrace)
@@ -51,9 +51,9 @@ abstract class UserState {
     final int    userID = pathParameter(request.uri, 'userstate');
     final String  token = request.uri.queryParameters['token'];
 
-    bool aclCheck (User user) => user.ID == userID;
+    bool aclCheck (ORModel.User user) => user.ID == userID;
 
-    AuthService.userOf(token).then((User user) {
+    AuthService.userOf(token).then((ORModel.User user) {
 
       if (!aclCheck(user)) {
         forbidden(request, 'Insufficient privileges.');
@@ -61,7 +61,7 @@ abstract class UserState {
       }
 
       // States that are okay to transfer to paused from.
-      List validStates = [Model.UserState.Unknown]..addAll(Model.UserState.PhoneReadyStates);
+      List validStates = [ORModel.UserState.Unknown]..addAll(ORModel.UserState.PhoneReadyStates);
 
       /// Check user state. We allow the user manually change state from unknown.
       String userState = Model.UserStatusList.instance.get(user.ID).state;
@@ -70,7 +70,7 @@ abstract class UserState {
         return;
       }
 
-      Model.UserStatusList.instance.update(userID, Model.UserState.Paused);
+      Model.UserStatusList.instance.update(userID, ORModel.UserState.Paused);
 
       writeAndClose(request, JSON.encode(Model.UserStatusList.instance.get(userID)));
     }).catchError((error, stackTrace)

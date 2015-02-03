@@ -48,18 +48,18 @@ void handlerCallTransfer(HttpRequest request) {
 
   logger.debugContext('Transferring $sourceCall -> $destinationCall', context);
 
-  AuthService.userOf(token).then((User user) {
+  AuthService.userOf(token).then((ORModel.User user) {
     /// Update user state.
-    Model.UserStatusList.instance.update(user.ID, Model.UserState.Transferring);
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Transferring);
 
     Controller.PBX.bridge (sourceCall, destinationCall).then((_) {
       /// Update user state.
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.WrappingUp);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.WrappingUp);
       writeAndClose(request, '{"status" : "ok"}');
 
     }).catchError((error, stackTrace) {
       /// Update user state.
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
       serverErrorTrace(request, error, stackTrace : stackTrace);
     });
 

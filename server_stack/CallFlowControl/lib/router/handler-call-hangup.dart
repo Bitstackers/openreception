@@ -17,9 +17,9 @@ void handlerCallHangup(HttpRequest request) {
 
        List<String> hangupGroups = ['Administrator'];
 
-       bool aclCheck (User user) => true;
+       bool aclCheck (ORModel.User user) => true;
 
-       AuthService.userOf(token).then((User user) {
+       AuthService.userOf(token).then((ORModel.User user) {
 
          if (!aclCheck(user)) {
            forbidden(request, 'Insufficient privileges.');
@@ -29,22 +29,22 @@ void handlerCallHangup(HttpRequest request) {
          try {
            ESL.Peer peer = Model.PeerList.get(user.peer);
 
-           Model.UserStatusList.instance.update(user.ID, Model.UserState.HangingUp);
+           Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
 
            Controller.PBX.hangupCommand (peer).then ((_) {
 
-             Model.UserStatusList.instance.update(user.ID, Model.UserState.HandlingOffHook);
+             Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HandlingOffHook);
 
              writeAndClose(request, JSON.encode(hangupCommandOK(peer.ID)));
 
            }).catchError((error, stackTrace) {
-             Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+             Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
              serverErrorTrace(request, error, stackTrace: stackTrace);
 
            });
 
          } catch (error, stackTrace) {
-            Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+            Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
             serverErrorTrace(request, error, stackTrace: stackTrace);
          }
        }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace: stackTrace));
@@ -59,7 +59,7 @@ void handlerCallHangupSpecific(HttpRequest request) {
 
   List<String> hangupGroups = ['Administrator'];
 
-  bool aclCheck (User user)
+  bool aclCheck (ORModel.User user)
     => user.groups.any(hangupGroups.contains)
     || Model.CallList.instance.get(callID).assignedTo == user.ID;
 
@@ -68,7 +68,7 @@ void handlerCallHangupSpecific(HttpRequest request) {
     return;
   }
 
-  AuthService.userOf(token).then((User user) {
+  AuthService.userOf(token).then((ORModel.User user) {
 
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
@@ -85,17 +85,17 @@ void handlerCallHangupSpecific(HttpRequest request) {
     }
 
     /// Update user state.
-    Model.UserStatusList.instance.update(user.ID, Model.UserState.HangingUp);
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
 
     Controller.PBX.hangup (targetCall).then ((_) {
 
       /// Update user state.
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.WrappingUp);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.WrappingUp);
       writeAndClose(request, JSON.encode(hangupCallIDOK(callID)));
 
     }).catchError((error, stackTrace) {
       /// Update user state.
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
       serverErrorTrace(request, error, stackTrace: stackTrace);
 
     });

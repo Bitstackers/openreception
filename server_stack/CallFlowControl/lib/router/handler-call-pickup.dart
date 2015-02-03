@@ -5,7 +5,7 @@ Map pickupOK (Model.Call call) => call.toJson();
     // 'call'   : call};
 
 
-Map<int,Model.UserState> userMap = {};
+Map<int,ORModel.UserState> userMap = {};
 
 void handlerCallPickup(HttpRequest request) {
 
@@ -19,9 +19,9 @@ void handlerCallPickup(HttpRequest request) {
 
   final String token   = request.uri.queryParameters['token'];
 
-  bool aclCheck (User user) => true;
+  bool aclCheck (ORModel.User user) => true;
 
-  AuthService.userOf(token).then((User user) {
+  AuthService.userOf(token).then((ORModel.User user) {
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
       return;
@@ -46,7 +46,7 @@ void handlerCallPickup(HttpRequest request) {
 
       /// Check user state
       String userState = Model.UserStatusList.instance.get(user.ID).state;
-      if (!Model.UserState.phoneIsReady(userState)) {
+      if (!ORModel.UserState.phoneIsReady(userState)) {
         clientError(request, 'Phone is not ready.');
         return;
       }
@@ -57,23 +57,23 @@ void handlerCallPickup(HttpRequest request) {
       logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
 
       /// Update the user state
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.Receiving);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Receiving);
 
       Controller.PBX.transfer (assignedCall, user.peer).then((_) {
         assignedCall.assignedTo = user.ID;
 
-        Model.UserStatusList.instance.update(user.ID, Model.UserState.Speaking);
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
 
         writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
 
       }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
 
         serverErrorTrace(request, error, stackTrace: stackTrace);
       });
 
     }).catchError((error, stackTrace) {
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
 
       serverErrorTrace(request, error, stackTrace: stackTrace);
     });
@@ -92,9 +92,9 @@ void handlerCallPickupNext(HttpRequest request) {
   const String context = '${libraryName}.handlerCallPickupNext';
   final String token   = request.uri.queryParameters['token'];
 
-  bool aclCheck (User user) => true;
+  bool aclCheck (ORModel.User user) => true;
 
-  AuthService.userOf(token).then((User user) {
+  AuthService.userOf(token).then((ORModel.User user) {
 
     if (!aclCheck(user)) {
       forbidden(request, 'Insufficient privileges.');
@@ -112,7 +112,7 @@ void handlerCallPickupNext(HttpRequest request) {
       return;
     }
 
-    if (Model.UserStatusList.instance.get(user.ID).state == Model.UserState.Speaking) {
+    if (Model.UserStatusList.instance.get(user.ID).state == ORModel.UserState.Speaking) {
       clientError (request, "User with ${user.ID} is not ready for call.");
       logger.errorContext("User with ${user.ID} is not ready for call.", context);
       return;
@@ -125,7 +125,7 @@ void handlerCallPickupNext(HttpRequest request) {
 
       /// Check user state
       String userState = Model.UserStatusList.instance.get(user.ID).state;
-      if (!Model.UserState.phoneIsReady(userState)) {
+      if (!ORModel.UserState.phoneIsReady(userState)) {
         clientError(request, 'Phone is not ready.');
         return;
       }
@@ -136,23 +136,23 @@ void handlerCallPickupNext(HttpRequest request) {
       logger.debugContext ('Assigned call ${assignedCall.ID} to user with ID ${user.ID}', context);
 
       /// Update the user state
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.Receiving);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Receiving);
 
       Controller.PBX.transfer (assignedCall, user.peer).then((_) {
         assignedCall.assignedTo = user.ID;
 
-        Model.UserStatusList.instance.update(user.ID, Model.UserState.Speaking);
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
 
         writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
 
       }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
 
         serverErrorTrace(request, error, stackTrace: stackTrace);
       });
 
     }).catchError((error, stackTrace) {
-      Model.UserStatusList.instance.update(user.ID, Model.UserState.Unknown);
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
 
       serverErrorTrace(request, error, stackTrace: stackTrace);
     });
