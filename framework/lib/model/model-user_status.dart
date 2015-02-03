@@ -1,16 +1,10 @@
 part of openreception.model;
 
-abstract class UserStatusJSONKey {
-  static const String UserID        = 'userID';
-  static const String State         = 'state';
-  static const String LastActivity  = 'lastActivity';
-  static const String CallsHandled  = 'callsHandled';
-  static const String AssignedCalls = 'assignedCalls';
-}
 
 abstract class UserState {
   static const Unknown         = 'unknown';
   static const Idle            = 'idle';
+  static const Paused          = 'paused';
   static const Speaking        = 'speaking';
   static const Receiving       = 'receivingCall';
   static const HangingUp       = 'hangingUp';
@@ -27,11 +21,20 @@ abstract class UserState {
 }
 
 
+abstract class UserStatusJSONKey {
+  static const String UserID        = 'userID';
+  static const String State         = 'state';
+  static const String LastActivity  = 'lastActivity';
+  static const String CallsHandled  = 'callsHandled';
+  static const String AssignedCalls = 'assignedCalls';
+}
+
 class UserStatus {
   int          userID       = User.nullID;
   String       _state       = UserState.Unknown;
   DateTime     lastActivity = null;
   int          callsHandled = 0;
+
 
   Map toJson () => this.asMap;
 
@@ -45,7 +48,9 @@ class UserStatus {
   UserStatus.fromMap (Map map) {
     this.userID       = map[UserStatusJSONKey.UserID];
     this.state        = map[UserStatusJSONKey.State];
-    this.lastActivity = this.lastActivity != null ? Util.unixTimestampToDateTime(map[UserStatusJSONKey.State]) : null;
+    this.lastActivity = map[UserStatusJSONKey.State] != null
+                         ? Util.unixTimestampToDateTime(map[UserStatusJSONKey.State])
+                         : null;
     this.callsHandled = map[UserStatusJSONKey.CallsHandled];
   }
 

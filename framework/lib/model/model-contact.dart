@@ -56,8 +56,8 @@ class Contact {
   String  fullName = '';
   String  contactType = '';
 
-  List<Map> phones;
-  List<String> backupContacts;
+  List<Map> phones = [];
+  List<String> backupContacts = [];
   String position = '';
   String relations = '';
   String responsibility = '';

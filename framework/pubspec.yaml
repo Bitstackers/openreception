@@ -1,7 +1,9 @@
 name: openreception_framework
-version: 0.0.15+5
-author: BitStack K/S
-description: A utility package for the OpenReception application.
+version: 0.0.15+6
+author: BitStackers
+description: 
+  A utility package for the OpenReception application that provides data model
+  service and storage layer.
 dependencies:
   http: any
   junitconfiguration: '>=1.0.0 <2.0.0'
