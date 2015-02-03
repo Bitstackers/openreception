@@ -4,5 +4,5 @@ void handlerPeerList(HttpRequest request) {
 
   final String context = '${libraryName}.handlerPeerList';
 
-  writeAndClose(request, JSON.encode({'peers' : Model.PeerList.instance}));
+  writeAndClose(request, JSON.encode(Model.PeerList.simplify().toList(growable: false)));
 }

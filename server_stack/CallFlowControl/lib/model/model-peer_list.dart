@@ -1,8 +1,8 @@
 part of callflowcontrol.model;
 
-abstract class PeerList {
+abstract class PeerList implements IterableBase<Peer> {
   /// Singleton reference.
-  static ESL.PeerList instance = null;
+  static ESL.PeerList instance = new ESL.PeerList.empty();
 
   static ESL.Peer get (String peerID) => instance.get(peerID);
 
@@ -15,7 +15,6 @@ abstract class PeerList {
 
     peer.register (contact);
     Notification.broadcast(ClientNotification.peerState (peer));
-
   }
 
   static unRegisterPeer (String peerID) {
@@ -39,5 +38,9 @@ abstract class PeerList {
         break;
     }
   }
+
+  static Iterable<Peer> simplify() =>
+    instance.map((ESL.Peer peer) => new Peer.fromESLPeer(peer));
+
 
 }
