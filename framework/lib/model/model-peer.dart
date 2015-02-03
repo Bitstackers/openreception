@@ -1,7 +1,7 @@
 part of openreception.model;
 
 abstract class PeerJSONKey {
-  static const ID         = 'peer_id';
+  static const ID         = 'id';
   static const REGISTERED = 'registered';
 }
 
