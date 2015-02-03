@@ -1,5 +1,5 @@
-/*                     This file is part of Bob
-                   Copyright (C) 2012-, AdaHeads K/S
+/*                  This file is part of OpenReception
+                   Copyright (C) 2012-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -62,7 +62,7 @@ Future<Response<Map>> _log(String message, String url) {
   final Completer<Response<Map>> completer = new Completer<Response<Map>>();
   HttpRequest                    request;
   final String                   payload   = 'msg=${Uri.encodeComponent(message)}';
-  
+
   request = new HttpRequest()
       ..open(POST, url)
       ..setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')

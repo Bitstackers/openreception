@@ -1,5 +1,5 @@
-/*                     This file is part of Bob
-                   Copyright (C) 2014-, AdaHeads K/S
+/*                  This file is part of OpenReception
+                   Copyright (C) 2014-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -11,9 +11,8 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-
 /**
- * Nudge widget. 
+ * Nudge widget.
  */
 part of view;
 
@@ -21,13 +20,13 @@ class Nudge {
 
   static const String Navigation = 'navigation';
   static const String Command    = 'command';
-  
+
   final SpanElement element = new SpanElement()
                              ..classes.add(StyleClass.NUDGE)
                              ..hidden = true;
 
   Nudge (String shortcutText, {String type : Navigation}) {
-    this.element.text = shortcutText; 
+    this.element.text = shortcutText;
     this.element.classes.add(type);
   }
 }

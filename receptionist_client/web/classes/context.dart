@@ -1,5 +1,5 @@
-/*                     This file is part of Bob
-                   Copyright (C) 2012-, AdaHeads K/S
+/*                  This file is part of OpenReception
+                   Copyright (C) 2012-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -42,9 +42,9 @@ import 'logger.dart';
 final EventType<int> alertUpdated = new EventType<int>();
 
 class Context {
-  
+
   static const String context = 'Context';
-  
+
   EventBus _bus = new EventBus();
   EventBus get bus => _bus;
 
@@ -54,7 +54,7 @@ class Context {
   String             lastFocusId   = '';
 
   Element _element;
-  
+
   static Context    _current = null;
   static Context get current => _current;
   static    void set current (Context newUIContext) {
@@ -64,10 +64,10 @@ class Context {
 
   @override
   operator == (Context other) => this.id.toLowerCase() == other.id.toLowerCase();
-  
+
   @override
   int get hashCode => this.id.hashCode;
-  
+
   @override
   String toString() => this.id;
 
@@ -146,14 +146,14 @@ class Context {
 //        activate();
 //      }
 //    });
-    
+
     event.bus.on(event.locationChanged).listen((nav.Location newLocation) {
-      
+
       if (newLocation.contextId == this.id) {
         Context.current = this;
       }
-      
-      _toggle(newLocation.contextId);  
+
+      _toggle(newLocation.contextId);
     });
   }
 

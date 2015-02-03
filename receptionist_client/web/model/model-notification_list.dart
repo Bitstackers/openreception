@@ -1,5 +1,5 @@
-/*                     This file is part of Bob
-                   Copyright (C) 2012-, AdaHeads K/S
+/*                  This file is part of OpenReception
+                   Copyright (C) 2012-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -10,7 +10,6 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
-
 part of model;
 
 class NotificationList extends IterableBase<Notification> {
@@ -28,26 +27,26 @@ class NotificationList extends IterableBase<Notification> {
   EventBus get events => _bus;
 
   EventBus _eventStream = event.bus;
-  
+
   /* Singleton instance - for quick and easy reference. */
   static NotificationList _instance    = new NotificationList();
-  static NotificationList get instance => _instance; 
-  static                  set instance (NotificationList newList) => _instance = newList; 
+  static NotificationList get instance => _instance;
+  static                  set instance (NotificationList newList) => _instance = newList;
 
   /**
-   * 
+   *
    */
   NotificationList();
 
   /**
-   * 
+   *
    */
   void add(Notification notification) {
     const String context = '${className}.add';
-    
+
     this._list.add(notification);
     this._bus.fire(insert, notification);
-    
+
     log.debugContext("Insering notification ${notification.ID}", context);
 
     /* Schedule the notification for removal. */
@@ -55,9 +54,9 @@ class NotificationList extends IterableBase<Notification> {
       this.remove(notification);
     });
   }
-  
+
   /**
-   * 
+   *
    */
   void remove(Notification notification) {
     const String context = '${className}.remove';
