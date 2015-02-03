@@ -20,9 +20,7 @@ import 'dart:convert';
 import '../classes/configuration.dart';
 import '../classes/logger.dart';
 
-part 'protocol-agent.dart';
 part 'protocol-log.dart';
-part 'protocol-login.dart';
 
 const String libraryName = 'protocol';
 

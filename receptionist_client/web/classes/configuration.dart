@@ -23,7 +23,6 @@ import 'logger.dart';
 import 'state.dart';
 
 //const String CONFIGURATION_URL = 'http://service.openreception.org/configuration';
-//const String CONFIGURATION_URL = 'http://192.168.2.172:4242/configuration';
 const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
 //const String CONFIGURATION_URL = 'http://orfdemo.xlab1.txlab.net:4080/configuration';
 
@@ -36,7 +35,7 @@ abstract class Default {
 }
 
 /**
- * _Configuration gives access to configuration parameters provided by Alice.
+ * _Configuration gives access to configuration parameters provided by Config server.
  * TODO Move the userID/userName fields to model.User.
  */
 class Configuration {
@@ -77,16 +76,6 @@ class Configuration {
 
   String token = null;
   bool get hasToken => token != null;
-//  String get token => _token;
-//  void set token (String value) => _token = value;
-
-//  Uri _contactServer = Uri.parse('http://alice.adaheads.com:4010');
-//  Uri _logServer = Uri.parse('http://alice.adaheads.com:4020');
-//  Uri _receptionServer = Uri.parse('http://alice.adaheads.com:4000');
-//
-//  Uri get contactServer => _contactServer;
-//  Uri get logServer => _logServer;
-//  Uri get receptionServer => _receptionServer;
 
   /**
    * Is the configuration loaded.
@@ -136,7 +125,7 @@ class Configuration {
   }
 
   /**
-   * Parse and validate the configuration JSON from Alice.
+   * Parse and validate the configuration JSON from Config server.
    */
   void _parseConfiguration(Map json) {
     log.debug('_Configuration._parseConfiguration ${json}');

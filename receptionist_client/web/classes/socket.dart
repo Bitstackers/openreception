@@ -22,7 +22,7 @@ import 'logger.dart';
 import 'state.dart';
 
 /**
- * The Socket singleton handles the WebSocket connection to Alice.
+ * The Socket singleton handles the WebSocket connection to the Notification server.
  */
 class Socket {
   WebSocket             _channel;
@@ -79,8 +79,7 @@ class Socket {
   }
 
   /**
-   * Sink boolean true to the _connectedToAlice stream when the _channel
-   * WebSocket is connected.
+   * Update the state when WebSocket is connected.
    */
   void _onOpen(Event event) {
     log.debug('socket._onOpen');
@@ -88,8 +87,7 @@ class Socket {
   }
 
   /**
-   * Sink boolean false to the _connectedToAlice stream when the _channel
-   * WebSocket disconnects and then try to reconnect.
+   * Update the state when WebSocket disconnects and then try to reconnect.
    */
   void _onError (Event event) {
     if(!state.isScheduledShutdown) {

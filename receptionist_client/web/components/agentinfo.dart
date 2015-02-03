@@ -28,7 +28,7 @@ class AgentInfo {
   ImageElement     portrait;
   TableElement     table;
 
-  TableCellElement get userStatusTD => element.querySelector('#agent-info-status');
+  Element get userStatusElement => element.querySelector('#agent-info-status');
 
   AgentInfo(DivElement this.element) {
     divParent = element.querySelector('#agent-info-stats');
@@ -53,19 +53,37 @@ class AgentInfo {
         portrait.src = model.User.currentUser.toJson()['remote_attributes']['picture'];
 
         Service.Call.userState(model.User.currentUser.ID).then((model.UserStatus newUserStatus) {
-          this.userStatusTD.text = newUserStatus.state;
-        }) ;
+          this._updateUserState(newUserStatus);
+        });
       }
     }).catchError((error) {
       log.error('components.AgentInfo() Updating Agent image failed with "${error}"');
     });
 
-    userStatusTD.text = Label.Unknown;
+    userStatusElement.children = [Icon.Unknown];
 
-    event.bus.on(event.userStatusChanged).listen((model.UserStatus newUserStatus) {
-      this.userStatusTD.text = newUserStatus.state;
-    }) ;
+    event.bus.on(event.userStatusChanged).listen(_updateUserState) ;
 
+  }
+
+  _updateUserState (model.UserStatus newUserStatus) {
+    switch (newUserStatus.state) {
+      case (ORModel.UserState.Unknown):
+        userStatusElement.children = [Icon.Unknown];
+        break;
+
+      case (ORModel.UserState.Idle):
+        userStatusElement.children = [Icon.Idle];
+        break;
+
+      case (ORModel.UserState.Paused):
+        userStatusElement.children = [Icon.Pause];
+        break;
+
+      default:
+        userStatusElement.children = [Icon.Busy];
+        break;
+    }
   }
 
   void resize() {
@@ -89,25 +107,13 @@ class AgentInfo {
   }
 
   void initialSetup() {
-    protocol.agentList().then((protocol.Response response) {
-      switch(response.status) {
-        case protocol.Response.OK:
-          for (var agent in response.data['Agents']) {
-            switch(agent["state"]) {
-              case "busy":
-              case "idle":
-                active++;
-                break;
-              case "paused":
-                paused++;
-                break;
-            }
-          }
-          break;
+    Service.Call.userStateList().then((Iterable<model.UserStatus> userStates) {
+      this.active = userStates.where((model.UserStatus user)
+          => user.state != ORModel.UserState.Idle).length;
 
-        default:
-        //TODO How to handle this?
-      }
+      this.paused= userStates.where((model.UserStatus user)
+          => user.state != ORModel.UserState.Paused).length;
+
     })
     .catchError((error) => log.critical('AgentInfo ERROR ${error.toString()}'))
     .whenComplete(updateCounters);

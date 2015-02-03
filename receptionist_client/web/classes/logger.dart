@@ -30,7 +30,7 @@ final Log log = new Log._internal();
  * the [debug()], [info()], [error()] and [critical()] methods, each of which
  * represents a log level equivalent to its name.
  *
- * Log messages of levels INFO, ERROR and CRITICAL are sent to Alice according
+ * Log messages of levels INFO, ERROR and CRITICAL are sent to Log server according
  * to [configuration.serverLogLevel]. DEBUG log messages are sent to console.
  *
  * Users of [Log] can listen for select log records on the [userLogStream]. See
@@ -117,7 +117,7 @@ class Log {
   }
 
   /**
-   * Writes [record] to the console and then sends it to Alice.
+   * Writes [record] to the console and then sends it to Log server.
    */
   void _consoleLogSubscriber(LogRecord record) {
     print('[${record.level.name}] - ${new DateFormat.Hms().format(new DateTime.now())} - ${record.loggerName} - ${record.message}');
@@ -155,13 +155,13 @@ class Log {
   }
 
   /**
-   * Tests if there is a connecting to alice.
+   * Tests if the Log server is connectable.
    */
   void connect() {
     if (configuration.isLoaded() && configuration.hasToken) {
       String browserInfo = window.navigator.userAgent;
       Duration retryTime = new Duration(seconds: 3);
-      
+
       protocol.logInfo('Logger connecting from ${browserInfo}').then((protocol.Response response) {
         if (response.status == protocol.Response.OK) {
           _resumeServerStream();
@@ -181,7 +181,7 @@ class Log {
   }
 
   /**
-   * Sends the log [record] to Alice.
+   * Sends the log [record] to Log server.
    */
   _serverLog(LogRecord record) {
     if (configuration.serverLogLevel <= record.level) {
