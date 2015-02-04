@@ -29,6 +29,7 @@ abstract class Label {
   static final String Delete                    = 'Slet';
   static final String PlaceholderSearch         = 'Søg...';
   static final String Save                      = 'Gem';
+  static final String Copy                      = 'Kopiér';
   static final String Send                      = 'Send';
   static const String Print                     = 'Udskriv';
   static const String Resend                    = 'Gensend';

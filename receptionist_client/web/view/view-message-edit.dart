@@ -47,9 +47,9 @@ class MessageEdit {
   InputElement get draft      => this.element.querySelector('input.message-tag.draft');
 
   /// Widget control buttons
-  ButtonElement get saveButton   => this.element.querySelector('button.save');
-  ButtonElement get copyButton   => this.element.querySelector('button.copy');
-  ButtonElement get resendButton => this.element.querySelector('button.resend');
+  ButtonElement get saveButton => this.element.querySelector('button.save');
+  ButtonElement get copyButton => this.element.querySelector('button.copy');
+  ButtonElement get sendButton => this.element.querySelector('button.resend');
 
   bool hasFocus = false;
   bool get muted     => this.context != Context.current;
@@ -65,6 +65,8 @@ class MessageEdit {
   model.Contact contact = model.Contact.noContact;
 
   model.Message activeMessage = null;
+
+  bool get disabled => this.element.classes.contains('disabled');
 
   /**
    * Update the disabled property.
@@ -183,7 +185,7 @@ class MessageEdit {
         } else if (labelFor == this.draft.id) {
           label.text = Label.Draft;
         }
-    });
+      });
     }
 
 
@@ -213,7 +215,7 @@ class MessageEdit {
 
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
     event.bus.on(event.selectedMessagesChanged ).listen(this._fetchAndRender);
-    this.draft.onClick.listen((_) => this.resendButton.disabled = this.draft.checked);
+    this.draft.onClick.listen((_) => this.sendButton.disabled = this.draft.checked);
 
     /**
      * Clicks inside the widget area marks up the widget at directly selects
@@ -226,10 +228,19 @@ class MessageEdit {
         else
           Controller.Context.changeLocation(this.location);
     });
-    /// Button click handlers
-    this.copyButton  .onClick.listen(this._copyHandler);
-    this.saveButton  .onClick.listen(this._saveHandler);
-    this.resendButton.onClick.listen(this._sendHandler);
+
+    /// Button click handlers and labels
+    this.copyButton..children = [Icon.Copy,
+                                 new SpanElement()..text = Label.Copy]
+                   ..onClick.listen(this._copyHandler);
+
+    this.saveButton..children = [Icon.Save,
+                                 new SpanElement()..text = Label.Save]
+                   ..onClick.listen(this._saveHandler);
+
+    this.sendButton..children = [Icon.Send,
+                                 new SpanElement()..text = Label.Send]
+                   ..onClick.listen(this._sendHandler);
 
   }
 
@@ -292,8 +303,8 @@ class MessageEdit {
 
     this.disabled = !this.draft.checked;
 
-    this.copyButton.disabled   = message.hasFlag('draft');
-    this.resendButton.disabled = this.draft.checked;
+    this.copyButton.disabled = message.hasFlag('draft');
+    this.sendButton.disabled = true;
 
     // Set the context. Currently unused as this information is stored in activeMessage.
     //this.contextContactIDField.value     = message.context.contactID.toString();
@@ -323,8 +334,7 @@ class MessageEdit {
     message.saveTMP().then((_) {
       model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
 
-      //TODO: Fetch the new message ID and render the message.
-      //return Storage.Message.get(message.ID).then(this._renderMessage);
+      return Storage.Message.get(message.ID).then(this._renderMessage);
     }).catchError((error, stackTrace) {
 
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
@@ -345,7 +355,8 @@ class MessageEdit {
     message.saveTMP().then((_) {
       model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
 
-      return Storage.Message.get(message.ID).then(this._renderMessage);
+      //TODO: Fetch the new message ID and render the message.
+      //return Storage.Message.get(message.ID).then(this._renderMessage);
     }).catchError((error, stackTrace) {
 
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));

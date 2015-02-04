@@ -56,6 +56,7 @@ abstract class Icon {
   static Element get Print       => _baseElement..classes.add('fa-print');
   static Element get Send        => _baseElement..classes.add('fa-send');
   static Element get Save        => _baseElement..classes.add('fa-save');
+  static Element get Copy        => _baseElement..classes.add('fa-copy');
 
   static Element get Pause       => _baseElement..classes.add('fa-pause');
   static Element get Busy        => _baseElement..classes.add('fa-clock-o');
