@@ -48,6 +48,7 @@ class MessageEdit {
 
   /// Widget control buttons
   ButtonElement get saveButton   => this.element.querySelector('button.save');
+  ButtonElement get copyButton   => this.element.querySelector('button.copy');
   ButtonElement get resendButton => this.element.querySelector('button.resend');
 
   bool hasFocus = false;
@@ -72,7 +73,6 @@ class MessageEdit {
    * a message, or when no contact is selected.
    */
   void set disabled(bool disabled) {
-    this.element.classes.toggle("disabled", disabled);
     this.element.querySelectorAll('input').forEach((InputElement element) {
       element.disabled = disabled;
     });
@@ -94,6 +94,7 @@ class MessageEdit {
    */
   void set loading(bool isLoading) {
     this.disabled = isLoading;
+    this.element.classes.toggle("disabled", isLoading);
     this.messageBodyField.classes.toggle('loading', isLoading);
   }
 
@@ -226,8 +227,10 @@ class MessageEdit {
           Controller.Context.changeLocation(this.location);
     });
     /// Button click handlers
+    this.copyButton  .onClick.listen(this._copyHandler);
     this.saveButton  .onClick.listen(this._saveHandler);
     this.resendButton.onClick.listen(this._sendHandler);
+
   }
 
   /**
@@ -263,7 +266,7 @@ class MessageEdit {
 
     } else {
       this._clearInputFields();
-      this.loading = true;
+      this.disabled = true;
     }
   }
 
@@ -282,11 +285,14 @@ class MessageEdit {
     this.callerLocalExtensionField.value = message.caller.localExtension;
 
     this.pleaseCall.checked = message.hasFlag('pleaseCall');
-    this.callsBack.checked = message.hasFlag('willCallBack');
-    this.hasCalled.checked = message.hasFlag('hasCalled');
-    this.urgent.checked = message.hasFlag('urgent');
-    this.draft.checked = message.hasFlag('draft');
+    this.callsBack.checked  = message.hasFlag('willCallBack');
+    this.hasCalled.checked  = message.hasFlag('hasCalled');
+    this.urgent.checked     = message.hasFlag('urgent');
+    this.draft.checked      = message.hasFlag('draft');
 
+    this.disabled = !this.draft.checked;
+
+    this.copyButton.disabled   = message.hasFlag('draft');
     this.resendButton.disabled = this.draft.checked;
 
     // Set the context. Currently unused as this information is stored in activeMessage.
@@ -314,6 +320,28 @@ class MessageEdit {
   void _saveHandler(_) {
     this.loading = true;
     model.Message message = this._harvestMessage();
+    message.saveTMP().then((_) {
+      model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
+
+      //TODO: Fetch the new message ID and render the message.
+      //return Storage.Message.get(message.ID).then(this._renderMessage);
+    }).catchError((error, stackTrace) {
+
+      model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
+      log.debug('Failed to complete save operation: ${error} : $stackTrace');
+    })
+    .whenComplete(() => this.loading = false);
+  }
+
+  /**
+   * Click handler for save button. Saves the currently typed in message via the Message Service.
+   */
+  void _copyHandler(_) {
+    this.loading = true;
+    model.Message message = this._harvestMessage();
+    message.ID = model.Message.noID;
+    message.flags.add('draft');
+
     message.saveTMP().then((_) {
       model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
 

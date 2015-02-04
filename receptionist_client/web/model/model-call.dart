@@ -38,7 +38,7 @@ class CallState {
   static final CallState QUEUED       = new CallState._internal ('queued'.toUpperCase());
   static final CallState HUNGUP       = new CallState._internal ('hungup'.toUpperCase());
   static final CallState TRANSFERRING = new CallState._internal ('transferring'.toUpperCase());
-  static final CallState TRANSFERRED  = new CallState._internal ('transferred'.toUpperCase());
+  static final CallState TRANSFERRED  = new CallState._internal ('TRANSFERRED');
   static final CallState SPEAKING     = new CallState._internal ('speaking'.toUpperCase());
   static final CallState PARKED       = new CallState._internal ('parked'.toUpperCase());
 
