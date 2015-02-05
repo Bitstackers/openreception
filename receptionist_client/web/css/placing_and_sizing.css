@@ -15,8 +15,11 @@ input:focus {
     1px -1px 0 #000,
     -1px 1px 0 #000,
      1px 1px 0 #000;
-}}
+}
 
+textarea {
+   resize: none;
+}
 
 textarea:focus {
   background-color: #fff8c4;
