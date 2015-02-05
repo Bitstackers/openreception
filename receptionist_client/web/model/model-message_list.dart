@@ -62,19 +62,17 @@ class MessageList extends IterableBase<Message> {
   void registerObservers () {
     const String context = '${className}.registerObservers';
 
-    event.bus.on(Service.EventSocket.messageCreated).listen((Map event) {
-      //TODO: invalidate cache.
-      //storage.Contact.invalidateCalendar(calendarEvent['contactID'], calendarEvent['receptionID']);
-      log.debugContext('Notifying about new message ${event}', context);
-      this._eventStream.fire(add, event['message']['id']);
+    event.bus.on(event.messageCreated).listen((int id) {
+
+
+      log.debugContext('Notifying about new message ${id}', context);
+      this._eventStream.fire(add, id);
     });
   }
 
 
   /**
    * Reloads the MessageList from a List of Maps.
-   *
-   * TODO: Document the map format in the wiki.
    */
   MessageList.fromList (List<ORModel.Message> messages) {
     const String context = '${className}.fromList';
