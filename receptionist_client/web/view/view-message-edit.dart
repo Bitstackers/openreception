@@ -83,9 +83,12 @@ class MessageEdit {
       element.disabled = disabled;
     });
 
-    this.element.querySelectorAll('button').forEach((ButtonElement element) {
-      element.disabled = disabled;
-    });
+    this.copyButton.disabled = this.draft.checked;
+    this.sendButton.disabled = true;
+
+//    this.element.querySelectorAll('button').forEach((ButtonElement element) {
+//      element.disabled = disabled;
+//    });
   }
 
   /**
@@ -260,12 +263,12 @@ class MessageEdit {
         ..caller.localExtension = callerLocalExtensionField.value
         ..flags.clear();
 
-    pleaseCall.checked ? this.activeMessage.flags.add('pleaseCall') : null;
-    callsBack.checked  ? this.activeMessage.flags.add('willCallBack') : null;
-    hasCalled.checked  ? this.activeMessage.flags.add('hasCalled') : null;
-    urgent.checked     ? this.activeMessage.flags.add('urgent') : null;
+    pleaseCall.checked ? this.activeMessage.flags.add(model.MessageFlag.PleaseCall)   : null;
+    callsBack.checked  ? this.activeMessage.flags.add(model.MessageFlag.willCallBack) : null;
+    hasCalled.checked  ? this.activeMessage.flags.add(model.MessageFlag.Called)       : null;
+    urgent.checked     ? this.activeMessage.flags.add(model.MessageFlag.Urgent)       : null;
 
-    draft.checked      ? this.activeMessage.flags.add('draft') : null;
+    draft.checked      ? this.activeMessage.flags.add(model.MessageFlag.Draft) : null;
 
     return this.activeMessage;
   }
@@ -295,15 +298,15 @@ class MessageEdit {
     this.callerCellphoneField.value = message.caller.cellphone;
     this.callerLocalExtensionField.value = message.caller.localExtension;
 
-    this.pleaseCall.checked = message.hasFlag('pleaseCall');
-    this.callsBack.checked  = message.hasFlag('willCallBack');
-    this.hasCalled.checked  = message.hasFlag('hasCalled');
-    this.urgent.checked     = message.hasFlag('urgent');
-    this.draft.checked      = message.hasFlag('draft');
+    this.pleaseCall.checked = message.hasFlag(model.MessageFlag.PleaseCall);
+    this.callsBack.checked  = message.hasFlag(model.MessageFlag.willCallBack);
+    this.hasCalled.checked  = message.hasFlag(model.MessageFlag.Called);
+    this.urgent.checked     = message.hasFlag(model.MessageFlag.Urgent);
+    this.draft.checked      = message.hasFlag(model.MessageFlag.Draft);
 
     this.disabled = !this.draft.checked;
 
-    this.copyButton.disabled = message.hasFlag('draft');
+    this.copyButton.disabled = this.draft.checked;
     this.sendButton.disabled = true;
 
     // Set the context. Currently unused as this information is stored in activeMessage.

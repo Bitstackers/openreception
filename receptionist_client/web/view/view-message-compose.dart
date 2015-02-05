@@ -285,12 +285,14 @@ class Message {
         'created_at' : 0
       });
 
-      pleaseCall.checked ? pendingMessage.addFlag('urgent') : null;
-      callsBack.checked ? pendingMessage.addFlag('willCallBack') : null;
-      hasCalled.checked ? pendingMessage.addFlag('called') : null;
-      urgent.checked ? pendingMessage.addFlag('urgent') : null;
+      /// Check if tags should be added to the message and if so; add them.
+      pleaseCall.checked ? pendingMessage.addFlag(model.MessageFlag.PleaseCall)   : null;
+      callsBack.checked  ? pendingMessage.addFlag(model.MessageFlag.willCallBack) : null;
+      hasCalled.checked  ? pendingMessage.addFlag(model.MessageFlag.Called)       : null;
+      urgent.checked     ? pendingMessage.addFlag(model.MessageFlag.Urgent)       : null;
 
-      draft.checked ? pendingMessage.addFlag('draft') : null;
+      /// For now, draft is merely a flag we tag the message with.
+      draft.checked      ? pendingMessage.addFlag('draft') : null;
 
       for (ORModel.MessageRecipient recipient in this.recipients) {
         pendingMessage.recipients.add(recipient);

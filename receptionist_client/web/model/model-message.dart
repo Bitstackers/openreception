@@ -24,6 +24,15 @@ abstract class Role {
 
 }
 
+abstract class MessageFlag {
+  static final String PleaseCall   = 'pleaseCall';
+  static final String willCallBack = 'willCallBack';
+  static final String Called       = 'called';
+  static final String Urgent       = 'urgent';
+  static final String Draft        = 'draft';
+}
+
+
 /**
  *
  */
