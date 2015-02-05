@@ -19,7 +19,6 @@
 library events;
 
 import 'package:event_bus/event_bus.dart';
-import 'package:openreception_framework/model.dart' as ORModel;
 
 import 'focus.dart';
 import '../model/model.dart' as model;
@@ -39,17 +38,15 @@ final EventType<model.Call> callDestroyed                       = new EventType<
 final EventType<model.Call> callChanged                         = new EventType<model.Call>();
 final EventType<model.Call> callQueueAdd                        = new EventType<model.Call>();
 final EventType<model.Call> callQueueRemove                     = new EventType<model.Call>();
-//final EventType<MessageSearchFilter> messageSearchFilterChanged = new EventType<MessageSearchFilter>();
 final EventType<Focus> focusChanged                             = new EventType<Focus>();
 final EventType<model.Call> localCallQueueAdd                   = new EventType<model.Call>();
 final EventType<model.Call> localCallQueueRemove                = new EventType<model.Call>();
 final EventType<Location> locationChanged                       = new EventType<Location>();
 final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
 final EventType<model.MessageFilter> messageFilterChanged       = new EventType<model.MessageFilter>();
-
+final EventType<int> messageCreated                             = new EventType<int>();
 final EventType<model.Reception>  receptionChanged              = new EventType<model.Reception>();
 final EventType<model.UserStatus> userStatusChanged             = new EventType<model.UserStatus>();
-
 
 final EventType selectedMessagesChanged                         = new EventType();
 final EventType<State> stateUpdated                             = new EventType<State>();

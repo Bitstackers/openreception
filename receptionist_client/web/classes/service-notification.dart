@@ -145,17 +145,18 @@ class EventSocket {
    */
   void _registerEventListeners() {
     event.bus
-      ..on(peerState)    .listen((Map map) => model.PeerList.instance.updateOrInsert(new model.Peer.fromMap(map['peer'])))
-      ..on(callTransfer) .listen(this._callTransferEventHandler)
-      ..on(callState)    .listen(this._callStateEventHandler)
-      ..on(callHangup)   .listen(this._callHangupEventHandler)
-      ..on(callPickup)   .listen(this._callPickupEventHandler)
-      ..on(queueJoin)    .listen(this._queueJoinEventHandler)
-      ..on(queueLeave)   .listen(this._queueLeaveEventHandler)
-      ..on(callPark)     .listen(this._callParkEventHandler)
-      ..on(callUnpark)   .listen(this._callUnparkEventHandler)
-      ..on(userState)    .listen(this._userStateEventHandler)
-      ..on(callOffer)    .listen(this._callOfferEventHandler);
+      ..on(peerState)     .listen((Map map) => model.PeerList.instance.updateOrInsert(new model.Peer.fromMap(map['peer'])))
+      ..on(callTransfer)  .listen(this._callTransferEventHandler)
+      ..on(callState)     .listen(this._callStateEventHandler)
+      ..on(callHangup)    .listen(this._callHangupEventHandler)
+      ..on(callPickup)    .listen(this._callPickupEventHandler)
+      ..on(queueJoin)     .listen(this._queueJoinEventHandler)
+      ..on(queueLeave)    .listen(this._queueLeaveEventHandler)
+      ..on(callPark)      .listen(this._callParkEventHandler)
+      ..on(callUnpark)    .listen(this._callUnparkEventHandler)
+      ..on(userState)     .listen(this._userStateEventHandler)
+      ..on(messageCreated).listen(this._messageCreatedEventHandler)
+      ..on(callOffer)     .listen(this._callOfferEventHandler);
 
     if(configuration != null && configuration.isLoaded()) {
       makeSocket();
@@ -171,13 +172,18 @@ class EventSocket {
     }
   }
 
+  void _messageCreatedEventHandler(Map map) {
+    const String context = '${className}._messageCreatedEventHandler';
+
+    event.bus.fire(event.messageCreated, map['message']['id']);
+  }
+
   void _userStateEventHandler(Map map) {
-    const String context = '${className}._callStateEventHandler';
+    const String context = '${className}._userStateEventHandler';
 
     if (model.User.currentUser.ID == map ['userID']) {
       model.UserStatus.currentStatus.update(map ['newState']);
     }
-
   }
 
   /**
