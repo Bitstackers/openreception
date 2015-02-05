@@ -34,7 +34,7 @@ abstract class MessageFlag {
 
 
 /**
- *
+ * TODO: override the fromMap constructor to avoid redundant encode/decodes.
  */
 class Message extends ORModel.Message {
 
@@ -50,7 +50,8 @@ class Message extends ORModel.Message {
 
   Message.fromMap(Map map) : super.fromMap(map);
 
-  Future saveTMP() => Service.Message.store.save(this);
+  Future<Message> saveTMP() => Service.Message.store.save(this)
+      .then((ORModel.Message message) => new Message.fromMap(message.asMap));
 
   Future sendTMP() => Service.Message.store.enqueue(this);
 

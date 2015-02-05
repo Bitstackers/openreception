@@ -347,7 +347,8 @@ class MessageEdit {
   }
 
   /**
-   * Click handler for save button. Saves the currently typed in message via the Message Service.
+   * Click handler for copy button. Saves a new copy of the typed in message
+   * via the Message Service.
    */
   void _copyHandler(_) {
     this.loading = true;
@@ -355,15 +356,17 @@ class MessageEdit {
     message.ID = model.Message.noID;
     message.flags.add('draft');
 
-    message.saveTMP().then((_) {
-      model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
+    message.saveTMP().then((model.Message savedMessage) {
+      model.NotificationList.instance.add(
+          new model.Notification(Label.MessageUpdated,
+              type : model.NotificationType.Success));
 
-      //TODO: Fetch the new message ID and render the message.
-      //return Storage.Message.get(message.ID).then(this._renderMessage);
+      //TODO: Fetch the new message ID and render the new message.
+      return Storage.Message.get(savedMessage.ID).then(this._renderMessage);
     }).catchError((error, stackTrace) {
 
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
-      log.debug('Failed to complete save operation: ${error} : $stackTrace');
+      log.debug('Failed to complete copy operation: ${error} : $stackTrace');
     })
     .whenComplete(() => this.loading = false);
   }
