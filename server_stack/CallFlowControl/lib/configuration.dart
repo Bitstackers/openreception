@@ -28,6 +28,7 @@ abstract class Default {
   static final int    eslPort              = 8021;
   static const String eslPassword          = 'ClueCon';
   static const String phoneType            = PhoneType.SNOM;
+  static const String dialoutgateway       = 'trunk.example.com';
 }
 
 class Configuration {
@@ -42,6 +43,7 @@ class Configuration {
   String     _eslHostname          = Default.eslHostname;
   int        _eslPort              = Default.eslPort;
   String     _eslPassword          = Default.eslPassword;
+  String     _dialoutgateway       = Default.dialoutgateway;
 
   Uri    get authUrl            => _authUrl;
   Uri    get notificationServer => _notificationServer;
@@ -52,6 +54,7 @@ class Configuration {
   int    get eslPort            => this._eslPort;
   String get eslPassword        => this._eslPassword;
   String get phoneType          => Default.phoneType;
+  String get dialoutgateway     => this._dialoutgateway;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -106,6 +109,10 @@ class Configuration {
         _notificationServer = Uri.parse(config['notificationServer']);
       }
 
+      if(config.containsKey('dialoutgateway')) {
+        _dialoutgateway = config['dialoutgateway'];
+      }
+
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -136,12 +143,13 @@ class Configuration {
 
   void _outputConfig() {
     print('''
-authurl            :   ${this.authUrl}
-httpport           :   ${this.httpport}
-notificationServer :   ${this.notificationServer}
-configfile         :   ${this.configfile}
-eslDSN             :   esl://:${this.eslPassword}@${this.eslHostname}:${this.eslPort}
-serverToken        :   ${this.serverToken}''');
+authurl            : ${this.authUrl}
+httpport           : ${this.httpport}
+notificationServer : ${this.notificationServer}
+configfile         : ${this.configfile}
+eslDSN             : esl://:${this.eslPassword}@${this.eslHostname}:${this.eslPort}
+dailoutgateway     : ${this.dialoutgateway}
+serverToken        : ${this.serverToken}''');
   }
 
   Future whenLoaded() {

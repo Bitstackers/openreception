@@ -1,14 +1,11 @@
 part of callflowcontrol.controller;
 
-
-
 abstract class PBX {
 
   static const String className      = '${libraryName}.PBX';
   static const String callerID       = '39990141';
   static const int    timeOutSeconds = 120;
   static const String dialplan       = 'xml default';
-  static const String dialoutGateway = 'gw1.fonet.dk';
 
   /**
    * Starts an origination in the PBX.
@@ -69,7 +66,7 @@ abstract class PBX {
                               'return_ring_ready=true'];
 
     return Model.PBXClient.api
-        ('originate {${variables.join(',')}}sofia/external/${extension}@dialoutGateway ${dialplan} $callerID $callerID $timeOutSeconds')
+        ('originate {${variables.join(',')}}sofia/external/${extension}@${config.dialoutgateway} &bridge(user/${user.peer}) ${dialplan} $callerID $callerID $timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
