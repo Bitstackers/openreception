@@ -17,6 +17,14 @@ abstract class CallFlowControlResource {
     => Uri.parse('${host}/userstatus/${userID}');
 
   /**
+   * Builds a Uri to retrieve a userstatus resource.
+   * The output format is:
+   *    http://hostname/channel/list
+   */
+  static Uri channelList(Uri host)
+    => Uri.parse('${host}/channel/list');
+
+  /**
    * Builds a Uri to mark a userstatus resource as idle.
    * The output format is:
    *    http://hostname/userstatus/${userID}/idle
