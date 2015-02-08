@@ -31,7 +31,6 @@ import '../classes/location.dart' as nav;
 import '../controller/controller.dart' as Controller;
 import '../classes/logger.dart';
 
-
 import '../classes/configuration.dart';
 import '../classes/context.dart';
 import '../classes/common.dart';
@@ -39,9 +38,10 @@ import '../classes/focus.dart';
 import '../classes/commands.keyboard.dart';
 import '../storage/storage.dart' as storage;
 
+import 'view-labels-en.dart';
+
 part 'view-call.dart';
 part 'view-icons.dart';
-part 'view-labels.dart';
 part 'view-call_list.dart';
 part 'view-call-management.dart';
 part 'view-reception-selector.dart';

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of view;
+library view.labels;
 
 abstract class Label {
   static const String Unknown                   = 'Ukendt';
