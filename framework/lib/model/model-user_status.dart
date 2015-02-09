@@ -49,8 +49,8 @@ class UserStatus {
   UserStatus.fromMap (Map map) {
     this.userID       = map[UserStatusJSONKey.UserID];
     this.state        = map[UserStatusJSONKey.State];
-    this.lastActivity = map[UserStatusJSONKey.State] != null
-                         ? Util.unixTimestampToDateTime(map[UserStatusJSONKey.State])
+    this.lastActivity = map[UserStatusJSONKey.LastActivity] != null
+                         ? Util.unixTimestampToDateTime(map[UserStatusJSONKey.LastActivity])
                          : null;
     this.callsHandled = map[UserStatusJSONKey.CallsHandled];
   }
