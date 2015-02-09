@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:openreception_framework/common.dart';
 import '../lib/configuration.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/router.dart' as router;
@@ -12,11 +11,13 @@ import '../lib/model/model.dart' as Model;
 import 'package:esl/esl.dart' as ESL;
 import 'package:logging/logging.dart';
 
-
+Logger log = new Logger ('CallFlowControl')..onRecord.listen(print);
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
 void main(List<String> args) {
+  Logger.root.level = Level.ALL;
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -31,34 +32,35 @@ void main(List<String> args) {
         .then((_) => router.connectNotificationService())
         .then((_) => connectESLClient())
         .then((_) => http.start(config.httpport, router.registerHandlers))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+        .catchError((e) => log.info('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch (e) {
-    log('main() ArgumentError ${e}.');
+    log.shout ('main() ArgumentError ${e}.');
     print(parser.usage);
 
   } on FormatException catch (e) {
-    log('main() FormatException ${e}');
+    log.shout('main() FormatException ${e}');
     print(parser.usage);
 
   } catch (e) {
-    log('main() exception ${e}');
+    log.shout('main() exception ${e}');
   }
 }
 
 void connectESLClient() {
 
-  const String context = 'connectClient';
-
   Duration period = new Duration(seconds : 3);
 
-  logger.infoContext('Connecting to ${config.eslHostname}:${config.eslPort}', context);
+  log.info('Connecting to ${config.eslHostname}:${config.eslPort}');
 
-  Logger.root.level = Level.ALL;
-
-  Model.PBXClient.instance = new ESL.Connection()..log.onRecord.listen(print);
+  Model.PBXClient.instance = new ESL.Connection();
 
   Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
+
+  //TODO: Channel-List subscriptions.
+  Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
+
+  Model.ChannelList.event.listen(print);
 
   Model.PBXClient.instance.eventStream.listen(Model.ChannelList.instance.handleEvent);
 
@@ -82,13 +84,13 @@ void connectESLClient() {
   void tryConnect () {
     Model.PBXClient.instance.connect(config.eslHostname, config.eslPort).catchError((error, stackTrace) {
       if (error is SocketException) {
-        logger.errorContext('ESL Connection failed - reconnecting in ${period.inSeconds} seconds', context);
+        log.severe('ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
         new Timer(period, tryConnect);
 
       } else {
-        logger.errorContext('${error} : ${stackTrace != null ? stackTrace : ''}', context);
+        log.severe('Failed to connect to FreeSWTICH.', error, stackTrace);
       }
-    }).then ((_) => logger.infoContext('Connected to ${config.eslHostname}:${config.eslPort}', context));
+    }).then ((_) => log.info('Connected to ${config.eslHostname}:${config.eslPort}'));
   }
 
   tryConnect ();
