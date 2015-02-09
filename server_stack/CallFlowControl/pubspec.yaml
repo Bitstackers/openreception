@@ -10,7 +10,7 @@ dependencies:
       url: https://github.com/rostgaard/libesl-dart.git
 
   openreception_framework:
-    version: ">= 0.0.15+2"
+    version: ">= 0.0.15+7"
     git:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
