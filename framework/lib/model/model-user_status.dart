@@ -16,6 +16,7 @@ abstract class UserState {
   static const HandlingOffHook = 'handlingOffHook';
 
   static final List<String> PhoneReadyStates = [Idle, WrappingUp, HandlingOffHook];
+  static final Iterable<String> TransitionStates = [Receiving, HangingUp, Transferring, Dialing, Parking, Unparking];
 
   static phoneIsReady (String state) => PhoneReadyStates.contains(state);
 }
