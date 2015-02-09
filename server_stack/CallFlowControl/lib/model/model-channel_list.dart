@@ -3,6 +3,7 @@ part of callflowcontrol.model;
 class ChannelList extends ESL.ChannelList {
 
   static const String className = '${libraryName}.ChanneList';
+  static final Logger log       = new Logger(ChannelList.className);
 
   static ChannelList instance = new ChannelList();
 
