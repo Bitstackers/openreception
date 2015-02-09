@@ -85,22 +85,32 @@ class CallFlowControl {
   /**
    * Retrives the current Call list.
    */
-  Future<List<Model.Call>> list() =>
+  Future<Iterable<Model.Call>> callList() =>
       this._backed.get
         (appendToken
            (CallFlowControlResource.list(this._host),this._token))
       .then((String response)
-        => (JSON.decode(response) as List).map((Map map) => new Model.Call.fromMap(map)));
+        => (JSON.decode(response)['calls'] as List).map((Map map) => new Model.Call.fromMap(map)));
 
   /**
    * Retrives the current Peer list.
    */
-  Future<List<Model.Call>> peerList() =>
+  Future<Iterable<Model.Peer>> peerList() =>
       this._backed.get
         (appendToken
            (CallFlowControlResource.peerList(this._host),this._token))
       .then((String response)
-        => (JSON.decode(response) as List).map((Map map) => new Model.Call.fromMap(map)));
+        => (JSON.decode(response) as List).map((Map map) => new Model.Peer.fromMap(map)));
+
+  /**
+   * Retrives the current Channel list as a Map.
+   */
+  Future<Iterable<Map>> channelListMap() {
+    Uri uri = CallFlowControlResource.channelList(this._host);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.get (uri).then((String response) => (JSON.decode(response)['channels']));
+  }
 
   /**
    * Retrives the current Call list of queued calls.
