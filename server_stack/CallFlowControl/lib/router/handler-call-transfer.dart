@@ -2,7 +2,7 @@ part of callflowcontrol.router;
 
 void handlerCallTransfer(HttpRequest request) {
 
-  final String context = '${libraryName}.handlerCallTransfr';
+  final String context = '${libraryName}.handlerCallTransfer';
   final String token   = request.uri.queryParameters['token'];
 
   String sourceCallID        = pathParameterString(request.uri, "call");
@@ -24,13 +24,15 @@ void handlerCallTransfer(HttpRequest request) {
   }
 
   try {
-    Model.Call sourceCall      = Model.CallList.instance.get(sourceCallID);
-    Model.Call destinationCall = Model.CallList.instance.get(destinationCallID);
+    sourceCall      = Model.CallList.instance.get(sourceCallID);
+    destinationCall = Model.CallList.instance.get(destinationCallID);
   } on Model.NotFound catch (_) {
     notFound(request, {'description' : 'At least one of the calls are '
                                        'no longer available'});
     return;
   }
+
+  logger.debugContext('Transferring $sourceCall -> $destinationCall', context);
 
   /// Sanity check - are any of the calls already bridged?
   if ([sourceCall, destinationCall].every((Model.Call call) => call.state != Model.CallState.Parked)) {
@@ -38,13 +40,6 @@ void handlerCallTransfer(HttpRequest request) {
                        'non-parked call in an attended transfer. uuids:'
                        '($sourceCall => $destinationCall)',context);
   }
-
-  /// Sanity check - are any of the calls just a channel?
-  [sourceCall, destinationCall].forEach((Model.Call call) {
-    if (!call.isCall) {
-      logger.infoContext('Not a call: ${call.ID}',context);
-    }
-  });
 
   logger.debugContext('Transferring $sourceCall -> $destinationCall', context);
 

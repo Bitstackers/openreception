@@ -2,23 +2,28 @@ part of callflowcontrol.controller;
 
 abstract class PBX {
 
-  static const String className      = '${libraryName}.PBX';
-  static const String callerID       = '39990141';
-  static const int    timeOutSeconds = 120;
-  static const String dialplan       = 'xml default';
-
+  static const String className       = '${libraryName}.PBX';
+  static const String callerID        = '39990141';
+  static const int    timeOutSeconds  = 10;
+  static const String dialplan        = 'xml default';
+  static const String originationChan = 'or_origination_channel';
   /**
    * Starts an origination in the PBX.
    *
    * By first dialing the agent and then the outbound extension.
    */
   static Future originate (String extension, int contactID, int receptionID, SharedModel.User user) {
-    List<String> variables = ['reception_id=${receptionID}',
-                              'owner=${user.ID}',
-                              'contact_id=${contactID}'];
+    /// Tag the A-leg as a primitive origination channel.
+    List<String> a_legvariables = ['${originationChan}=true'];
+
+    List<String> b_legvariables = ['reception_id=${receptionID}',
+                                   'owner=${user.ID}',
+                                   'contact_id=${contactID}'];
 
     return Model.PBXClient.api
-        ('originate {${variables.join(',')}}user/${user.peer} ${extension} ${dialplan} $callerID $callerID $timeOutSeconds')
+        ('originate {${a_legvariables.join(',')}}user/${user.peer} '
+         '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}@${config.dialoutgateway}) '
+         '${dialplan} $callerID $callerID $timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -95,21 +100,23 @@ abstract class PBX {
   }
 
   /**
-   * Transfers an active call to another extension.
+   * Transfers an active call to a user.
    */
   static Future transfer (Model.Call source, String extension) {
+
     const String context = '${className}.transfer';
     ESL.Response transferResponse;
 
-    return Model.PBXClient.api ('uuid_transfer ${source.channel} ${extension}').then((response) => transferResponse = response)
-        .then ((_) => Model.PBXClient.api ('uuid_break ${source.channel}').then((_) => transferResponse));
+    return Model.PBXClient.api ('uuid_transfer ${source.channelID} ${extension}')
+                                .then((response) => transferResponse = response)
+        .then ((_) => Model.PBXClient.api ('uuid_break ${source.channelID}').then((_) => transferResponse));
   }
 
   /**
    * Kills the active channel for a call.
    */
   static Future hangup (Model.Call call) {
-    return Model.PBXClient.api('uuid_kill ${call.channel}')
+    return Model.PBXClient.api('uuid_kill ${call.channelID}')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');

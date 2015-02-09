@@ -28,14 +28,15 @@ abstract class UserState {
         return;
       }
 
-      // States that are okay to transfer to idle from.
-      List validStates = [ORModel.UserState.Unknown,
-                              ORModel.UserState.Paused]..addAll(ORModel.UserState.PhoneReadyStates);
+      /// Check user state. If the user is currently performing an action - or
+      /// has an active channel - deny the request.
+      String userState    = Model.UserStatusList.instance.get(user.ID).state;
 
-      /// Check user state. We allow the user manually change state from unknown.
-      String userState = Model.UserStatusList.instance.get(user.ID).state;
-      if (!validStates.contains(userState)) {
-        clientError(request, 'Phone is not ready.');
+      bool   inTransition = ORModel.UserState.TransitionStates.contains(userState);
+      bool   hasChannels  = Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        clientError(request, 'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
         return;
       }
 
@@ -60,13 +61,15 @@ abstract class UserState {
         return;
       }
 
-      // States that are okay to transfer to paused from.
-      List validStates = [ORModel.UserState.Unknown]..addAll(ORModel.UserState.PhoneReadyStates);
+      /// Check user state. If the user is currently performing an action - or
+      /// has an active channel - deny the request.
+      String userState    = Model.UserStatusList.instance.get(user.ID).state;
 
-      /// Check user state. We allow the user manually change state from unknown.
-      String userState = Model.UserStatusList.instance.get(user.ID).state;
-      if (!validStates.contains(userState)) {
-        clientError(request, 'Phone is not ready.');
+      bool   inTransition = ORModel.UserState.TransitionStates.contains(userState);
+      bool   hasChannels  = Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        clientError(request, 'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
         return;
       }
 

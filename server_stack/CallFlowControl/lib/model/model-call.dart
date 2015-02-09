@@ -23,13 +23,15 @@ class Call {
   static final int    noUser     = ORModel.User.nullID;
   static const int    nullReceptionID = 0;
 
+  ESL.Channel channel;
+
   String   ID              = nullCallID;
   Call     b_Leg           = null;
-  String   get channel     => this.ID; //The channel is a unique identifier. Remember to change, if ID changes.
+  String   get channelID   => this.ID; //The channel is a unique identifier. Remember to change, if ID changes.
+
   String   state           = CallState.Unknown;
   String   destination     = null;
   String   callerID        = null;
-  bool     _isCall         = null;
   bool     greetingPlayed  = false;
   bool     _locked         = false;
   bool     inbound         = null;
@@ -39,8 +41,6 @@ class Call {
   DateTime arrived         = new DateTime.now();
 
 
-  bool get isCall              => this._isCall;
-  void set isCall (bool value)   {this._isCall = value;}
   bool get locked              => this._locked;
   void set locked (bool lock)   {
     this._locked = lock;
@@ -96,13 +96,13 @@ class Call {
      "b_leg"           : (this.b_Leg != null ? this.b_Leg.ID : null),
      "locked"          : this.locked,
      "inbound"         : this.inbound,
-     "is_call"         : this.isCall,
+     "is_call"         : true,
      "destination"     : this.destination,
      "caller_id"       : this.callerID,
      "greeting_played" : this.greetingPlayed,
      "reception_id"    : this.receptionID,
      "assigned_to"     : this.assignedTo,
-     "channel"         : this.channel,
+     "channel"         : this.channelID,
      "arrival_time"    : dateTimeToUnixTimestamp (this.arrived)};
 
 
@@ -143,16 +143,11 @@ class Call {
         break;
 
       case (CallState.Hungup):
-        if (this.isCall) {
           Notification.broadcast(ClientNotification.callHangup (this));
-        }
-        //TODO: Call_List.Remove (ID => Obj.ID);
         break;
 
       case (CallState.Speaking):
-        if (this.isCall) {
-          Notification.broadcast(ClientNotification.callPickup (this));
-        }
+        Notification.broadcast(ClientNotification.callPickup (this));
         break;
 
       case (CallState.Transferred):
@@ -161,7 +156,7 @@ class Call {
 
       case  (CallState.Ringing):
         if (lastState != CallState.Ringing) {
-          Notification.broadcast(ClientNotification.callPickup (this));
+          Notification.broadcast(ClientNotification.callState (this));
         }
         break;
 

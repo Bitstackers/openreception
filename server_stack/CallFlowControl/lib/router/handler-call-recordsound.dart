@@ -41,10 +41,15 @@ void handlerCallRecordSound(HttpRequest request) {
       ((Model.Call call) => call.state == Model.CallState.Speaking), (Model.Call call) => call.park(user))
       .whenComplete(() {
 
-      /// Check user state
-      String userState = Model.UserStatusList.instance.get(user.ID).state;
-      if (!ORModel.UserState.phoneIsReady(userState)) {
-        clientError(request, 'Phone is not ready.');
+      /// Check user state. If the user is currently performing an action - or
+      /// has an active channel - deny the request.
+      String userState    = Model.UserStatusList.instance.get(user.ID).state;
+
+      bool   inTransition = ORModel.UserState.TransitionStates.contains(userState);
+      bool   hasChannels  = Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        clientError(request, 'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
         return;
       }
 

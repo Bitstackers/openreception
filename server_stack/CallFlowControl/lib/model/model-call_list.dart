@@ -28,12 +28,59 @@ class CallList extends IterableBase<Call> {
 
   List toJson() => this.toList(growable: false);
 
+  bool containsID (String callID) => this._map.containsKey(callID);
+
   void subscribe(Stream<ESL.Event> eventStream) {
     eventStream.listen(_handleEvent);
   }
 
+  void subscribeChannelEvents(Stream<ChannelEvent> eventStream) {
+    eventStream.listen(_handleChannelsEvent);
+  }
+
+  void _handleChannelsEvent(ChannelEvent channelEvent) {
+    const String context = '${className}._handleEvent';
+
+    void handleCreate () {}
+    void handleUpdate () {}
+
+
+    void handleRemove () {}
+
+    void dispatch () {
+      switch (channelEvent.eventName) {
+
+        case (ChannelEventName.CREATE):
+          handleCreate ();
+          break;
+
+        case (ChannelEventName.UPDATE):
+          handleUpdate();
+          break;
+
+        case (ChannelEventName.DESTROY):
+          handleRemove();
+          break;
+
+        case (ChannelEventName.CREATE):
+          break;
+
+        default:
+          throw new ArgumentError('Bad channel event name: ${channelEvent.eventName}');
+      }
+    }
+
+
+  try {
+    dispatch();
+  } catch (error, stackTrace) {
+    logger.errorContext('$error : $stackTrace', context);
+    }
+  }
+
   List<Call> callsOf(int userID) =>
       this.where((Call call) => call.assignedTo == userID).toList();
+
 
   Call get(String callID) {
     if (this._map.containsKey(callID)) {
@@ -71,60 +118,36 @@ class CallList extends IterableBase<Call> {
     return call;
   }
 
+  bool isCall (ESL.Channel channel) =>
+      this.containsID (channel.UUID);
+
+
   void _handleBridge(ESL.Packet packet) {
     const String context = '${className}._handleBridge';
 
-    final Call aLeg = this.get(packet.field('Bridge-A-Unique-ID'));
-    final Call bLeg = this.get(packet.field('Bridge-B-Unique-ID'));
 
-    logger.debugContext('Bridging ${aLeg.toJson()} and ${bLeg.toJson()}', context);
+    final ESL.Channel aLeg = ChannelList.instance.get(packet.field('Bridge-A-Unique-ID'));
+    final ESL.Channel bLeg = ChannelList.instance.get(packet.field('Bridge-B-Unique-ID'));
 
-    //  Inherit the context from the other channel.
-    if (aLeg.receptionID == Call.nullReceptionID) {
-      /// Inherit fields from b-Leg.
-      aLeg..receptionID = bLeg.receptionID
-          ..contactID   = bLeg.contactID
-          ..assignedTo  = bLeg.assignedTo;
-    } else if (bLeg.receptionID == Call.nullReceptionID) {
-      /// Inherit fields from a-Leg.
-      bLeg..receptionID = aLeg.receptionID
-          ..contactID   = aLeg.contactID
-          ..assignedTo  = aLeg.assignedTo;
+    logger.debugContext('Bridging channel ${aLeg} and channel ${bLeg}', context);
+
+    if (isCall(aLeg) && isCall(bLeg)) {
+      CallList.instance.get(aLeg.UUID).changeState (CallState.Transferred);
+      CallList.instance.get(bLeg.UUID).changeState (CallState.Transferred);
     }
 
-    aLeg.link(bLeg);
-
-    OriginationRequest.confirm(aLeg);
-    OriginationRequest.confirm(bLeg);
-
-    if (TransferRequest.contains (aLeg.ID, bLeg.ID)) {
-      TransferRequest.confirm (aLeg.ID, bLeg.ID);
-       aLeg.changeState (CallState.Transferred);
-       bLeg.changeState (CallState.Transferred);
+    else if (isCall(aLeg)) {
+      CallList.instance.get(aLeg.UUID).changeState (CallState.Speaking);
     }
 
-    aLeg.changeState (CallState.Speaking);
-    bLeg.changeState (CallState.Speaking);
-  }
+    else if (isCall(bLeg)) {
+      CallList.instance.get(bLeg.UUID).changeState (CallState.Speaking);
+    }
 
-  void _handleChannelState (ESL.Packet packet) {
-    const String context = '${className}._handleChannelState';
-
-     if (packet.field('Channel-Call-State') == 'RINGING') {
-       Call call = this.get(packet.uniqueID);
-       if (call.b_Leg != null && (OriginationRequest.contains (call) || OriginationRequest.contains(call.b_Leg))) {
-         if (call.receptionID == Call.nullReceptionID) {
-           /// Inherit fields from b-Leg.
-           call..receptionID = call.b_Leg.receptionID
-               ..contactID   = call.b_Leg.contactID
-               ..assignedTo  = call.b_Leg.assignedTo;
-         }
-
-         call.changeState(CallState.Ringing);
-         logger.debugContext ('${call.ID} is part of origination request '
-                              'and other_leg is ${call.b_Leg}', context);
-       }
-     }
+    // Local calls??
+    else {
+      logger.errorContext('Local calls are not supported!', context);
+    }
   }
 
   void _handleChannelDestroy (ESL.Packet packet) {
@@ -153,25 +176,26 @@ class CallList extends IterableBase<Call> {
 
     switch (packet.eventSubclass) {
       case ("AdaHeads::pre-queue-enter"):
+        this._createCall(packet);
+
         this.get(packet.uniqueID)
             ..receptionID =
               packet.contentAsMap.containsKey('variable_reception_id')
                         ? int.parse(packet.field('variable_reception_id'))
                         : 0
-            ..isCall = true
             ..changeState(CallState.Created);
 
         break;
-      case ("AdaHeads::outbound-call"):
-           logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
-           OriginationRequest.create (packet.uniqueID);
-
-          this.get(packet.uniqueID)
-               ..receptionID = int.parse(packet.field('variable_reception_id'))
-               ..contactID   = int.parse(packet.field('variable_contact_id'))
-               ..assignedTo  = int.parse(packet.field('variable_owner'));
-
-           break;
+//      case ("AdaHeads::outbound-call"):
+//           logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
+//           OriginationRequest.create (packet.uniqueID);
+//
+//          this.get(packet.uniqueID)
+//               ..receptionID = int.parse(packet.field('variable_reception_id'))
+//               ..contactID   = int.parse(packet.field('variable_contact_id'))
+//               ..assignedTo  = int.parse(packet.field('variable_owner'));
+//
+//           break;
       case ('AdaHeads::pre-queue-leave'):
         logger.debugContext('Locking ${packet.uniqueID}', context);
         CallList.instance.get (packet.uniqueID)
@@ -203,6 +227,7 @@ class CallList extends IterableBase<Call> {
   void _handleEvent(ESL.Event event) {
     const String context = '${className}._handleEvent';
 
+
     void dispatch () {
       switch (event.eventName) {
 
@@ -210,11 +235,12 @@ class CallList extends IterableBase<Call> {
           this._handleBridge(event);
           break;
 
-        case ('CHANNEL_STATE'):
-          this._handleChannelState(event);
-          break;
+//        case ('CHANNEL_STATE'):
+//          this._handleChannelState(event);
+//          break;
 
-        case ('CHANNEL_CREATE'):
+        /// OUtbound calls
+        case ('CHANNEL_ORIGINATE'):
           this._createCall(event);
           break;
 
@@ -236,21 +262,70 @@ class CallList extends IterableBase<Call> {
     }
   }
 
-  Call _createCall(ESL.Packet packet) {
-    //TODO: If channel.isExternal add to call list!
-
-
+  /**
+   * Some notes on call creation;
+   *
+   * We are using the PBX to spawn (originate channels) to the user phones
+   * to establish a connection which we can then use to dial out or transfer
+   * uuid's to.
+   * These will, in their good right, spawn CHANNEL_ORIGINATE events which we
+   * manually need to filter :-\
+   * For now, the filter for origination is done by tagging the channels with a
+   * variable ([Controller.PBX.originationChan]) by the origination request.
+   * This is picked up by this function which then filters the channels from the
+   * call list.
+   * Upon call transfer, we also create a channel, but cannot (easily) tag the
+   * channels, so we merely filter based upon whether or not they have a
+   * [Other-Leg-Username] key in the map. This is probably over-simplifying things
+   * and may be troublesome when throwing around local calls. This has yet to be
+   * tested, however.
+   */
+  void _createCall(ESL.Packet packet) {
     const String context = '${className}._createCall';
-    logger.debugContext('Creating new channel ${packet.uniqueID}', context);
+
+
+    ESL.Channel channel = ChannelList.instance.get(packet.uniqueID);
+
+    /// Skip local channels
+    if (packet.contentAsMap.containsKey ('variable_${Controller.PBX.originationChan}')) {
+      logger.debugContext('Skipping origination channel ${packet.uniqueID}', context);
+      return;
+    }
+
+    if (packet.contentAsMap.containsKey ('Other-Leg-Username')) {
+      logger.debugContext('Skipping transfer channel ${packet.uniqueID}', context);
+      return;
+    }
+
+
+
+    logger.debugContext('Creating new call ${packet.uniqueID}', context);
+
+
+    int contactID = packet.contentAsMap.containsKey('variable_contact_id')
+                     ? int.parse(packet.field('variable_contact_id'))
+                     : ORModel.Contact.noID;
+
+    int receptionID = packet.contentAsMap.containsKey('variable_reception_id')
+                       ? int.parse(packet.field('variable_reception_id'))
+                       : ORModel.Reception.noID;
+
+    int userID  = packet.contentAsMap.containsKey('variable_owner')
+                   ? int.parse(packet.field('variable_owner'))
+                   : ORModel.User.nullID;
+
     Call createdCall = new Call()
         ..ID = packet.uniqueID
-        ..isCall = false
         ..inbound = (packet.field('Call-Direction') == 'inbound' ? true : false)
         ..callerID = packet.field('Caller-Caller-ID-Number')
-        ..destination = packet.field('Caller-Destination-Number');
+        ..destination = packet.field('Caller-Destination-Number')
+        ..receptionID = receptionID
+        ..contactID   = contactID
+        ..assignedTo  = userID;
 
-    this._map[packet.uniqueID] = createdCall;
 
-    return createdCall;
+      this._map[packet.uniqueID] = createdCall;
+    }
+
   }
-}
+
