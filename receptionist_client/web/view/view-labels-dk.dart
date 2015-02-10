@@ -72,6 +72,8 @@ abstract class Label {
   static const String Context                   = 'Kontekst';
   static const String Agent                     = 'Agent';
   static const String Status                    = 'Status';
+  static const String Active                    = 'Aktive';
+  static const String Paused                    = 'Pause';
 
   static const String ReceptionAlternateNames      = 'Alternative firmanavne';
   static const String ReceptionBankingInformation  = 'Bankoplysninger';
@@ -83,4 +85,6 @@ abstract class Label {
   static const String ReceptionPhoneNumbers        = 'Hovednumre';
   static const String ReceptionRegistrationNumbers = 'CVR Numre';
   static const String ReceptionExtraData           = 'Ekstra information';
+  static const String ReceptionSearch              = 'Søg efter en virksomhed';
+
 }

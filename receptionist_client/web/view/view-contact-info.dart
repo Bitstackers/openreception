@@ -22,7 +22,6 @@ class ContactInfo {
                DivElement          body;
                Element         get header  => element.querySelector('legend');
   static const int                 incrementSteps       = 20;
-               InputElement        searchBox;
                model.Reception     nullReception        = model.Reception.noReception;
                model.Reception     reception            = model.Reception.noReception;
                List<model.Contact> filteredContactList  = new List<model.Contact>();

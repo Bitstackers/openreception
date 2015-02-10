@@ -27,7 +27,7 @@ abstract class Label {
   static final String Create                    = 'Create';
   static final String Update                    = 'Save';
   static final String Delete                    = 'Delete';
-  static final String PlaceholderSearch         = 'Searcg...';
+  static final String PlaceholderSearch         = 'Search...';
   static final String Save                      = 'Save';
   static final String Copy                      = 'Copy';
   static final String Send                      = 'Send';
@@ -72,6 +72,8 @@ abstract class Label {
   static const String Context                   = 'Context';
   static const String Agent                     = 'Agent';
   static const String Status                    = 'Status';
+  static const String Active                    = 'Active';
+  static const String Paused                    = 'Paused';
 
   static const String ReceptionAlternateNames      = 'Alternate Company Names';
   static const String ReceptionBankingInformation  = 'Banking Information';
@@ -83,4 +85,6 @@ abstract class Label {
   static const String ReceptionPhoneNumbers        = 'Phone numbers';
   static const String ReceptionRegistrationNumbers = 'VAT Numbers';
   static const String ReceptionExtraData           = 'Additional Information';
+  static const String ReceptionSearch              = 'Search Reception';
+
 }

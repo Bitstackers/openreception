@@ -20,26 +20,27 @@ class ContactInfoSearch {
 
                model.Contact       contact              = model.Contact.noContact;
                Context             context;
-               UListElement        displayedContactList;
+               UListElement    get displayedContactList => element.querySelector('#contactlist');
                DivElement          element;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
   static const int                 incrementSteps       = 20;
                model.Reception     reception            = model.Reception.noReception;
-               String              placeholder          = 'Søg...';
                List<model.Contact> contactList;
-               InputElement        searchBox;
+               InputElement    get searchBox            => this.element.querySelector('#contact-info-searchbar');
                Element             widget;
   static const String              SELECTED             = 'selected';
 
   bool hasFocus = false;
 
   ContactInfoSearch(DivElement this.element, Context this.context, Element this.widget) {
-    searchBox = element.querySelector('#contact-info-searchbar') as InputElement
-      ..disabled = true;
-
-    displayedContactList = element.querySelector('#contactlist');
+    this.searchBox.disabled = true;
 
     registerEventListeners();
+    setupLabels();
+  }
+
+  void setupLabels(){
+    this.searchBox.placeholder = Label.PlaceholderSearch;
   }
 
   /**

@@ -37,7 +37,7 @@ class ReceptionSelector {
     String searchBoxId = element.attributes['data-default-element'];
 
     search = new SearchComponent<model.ReceptionStub>(element, uiContext, searchBoxId)
-      ..searchPlaceholder = 'Søg efter en virksomhed'
+      ..searchPlaceholder = Label.ReceptionSearch
       ..whenClearSelection = whenClearSelection
       ..listElementToString = listElementToString
       ..searchFilter = searchFilter

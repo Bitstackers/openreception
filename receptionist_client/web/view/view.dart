@@ -54,7 +54,7 @@ part 'view-nudge.dart';
 part 'view-reception-events.dart';
 part 'view-message-compose.dart';
 
-part '../components/agentinfo.dart';
+part 'view-agentinfo.dart';
 part '../components/boxwithheader.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alternate_names.dart';
@@ -69,7 +69,7 @@ part 'view-reception-registration_number.dart';
 part 'view-reception-sales_calls.dart';
 part 'view-reception-telephone_numbers.dart';
 part 'view-reception-websites.dart';
-part '../components/welcomemessage.dart';
+part 'view-welcomemessage.dart';
 part 'view-contact-info.dart';
 part 'view-contact-info-search.dart';
 part 'view-contact-info-calendar.dart';
