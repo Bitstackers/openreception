@@ -53,7 +53,7 @@ class BobActive {
 
   View.ContextSwitcher contextSwitcher;
   View.ReceptionEvents receptionEvents;
-  View.Message sendMessage;
+  View.Message messageCompose;
 
   View.MessageFilter messageSearch;
   View.MessageList messageList;
@@ -85,15 +85,17 @@ class BobActive {
     /// Home context
     contactInfo              = new View.ContactInfo(querySelector('#${id.CONTACT_INFO}'), homeContext);
 
+
+    messageCompose           = new View.Message(querySelector('#message-compose'), homeContext);
     welcomeMessage           = new View.WelcomeMessage(querySelector('#${id.WELCOME_MESSAGE}'));
     agentInfo                = new View.AgentInfo(querySelector('#${id.AGENT_INFO}'));
-    companySelector          = new View.ReceptionSelector(querySelector('#${id.COMPANY_SELECTOR}'), homeContext)..onSelectReception = contactInfo.search.focus;
+    companySelector          = new View.ReceptionSelector(querySelector('#${id.COMPANY_SELECTOR}'), homeContext)
+    ..onSelectReception = messageCompose.callerNameField.focus;
     receptionEvents          = new View.ReceptionEvents(querySelector('#${id.COMPANY_EVENTS}'), homeContext);
     companyHandling          = new View.ReceptionHandling(querySelector('#${id.COMPANY_HANDLING}'), homeContext);
     companyOpeningHours      = new View.ReceptionOpeningHours(querySelector('#${id.COMPANY_OPENINGHOURS}'), homeContext);
     companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${id.COMPANY_SALESCALLS}'), homeContext);
     companyProduct           = new View.ReceptionProduct(querySelector('#${id.COMPANY_PRODUCT}'), homeContext);
-    sendMessage              = new View.Message(querySelector('#message-compose'), homeContext);
     globalQueue              = new View.CallList(querySelector('#${id.GLOBAL_QUEUE}'), homeContext);
     callManagement           = new View.CallManagement(querySelector('#${id.CALL_ORIGINATE}'), homeContext);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
