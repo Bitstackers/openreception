@@ -183,10 +183,14 @@ class ContactInfoCalendar {
 
 
   void _registerEventListeners() {
+    /// Nudge boiler plate code.
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    this.element.onClick.listen((MouseEvent e) {
-      Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.eventList.id));
+    /// Focus this widget if it is clicked.
+    element.onClick.listen((Event event) {
+      if (!this.inFocus) {
+        this._select(null);
+      }
     });
 
     void listNavigation(KeyboardEvent e) {
@@ -298,7 +302,7 @@ class ContactInfoCalendar {
       if (eventStub['contactID'] == this.currentContact.ID && eventStub['receptionID'] == this.reception.ID) {
         log.debugContext('Reloading calendarlist for ${eventStub['contactID']}@${eventStub['receptionID']}', context);
         storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.CalendarEvent> eventList) {
-            this.render(eventList);
+            this._render(eventList);
           }).catchError((error) {
             log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
           });
@@ -317,7 +321,7 @@ class ContactInfoCalendar {
       /*  */
       if (newContact != model.Contact.noContact) {
         storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.CalendarEvent> eventList) {
-          this.render(eventList);
+          this._render(eventList);
         }).catchError((error) {
           log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
         });
@@ -325,43 +329,44 @@ class ContactInfoCalendar {
     });
   }
 
-  void render(List<model.CalendarEvent> events) {
-    events.sort();
-    eventList.children.clear();
-    if (events == null) {
-      return;
-    }
+  void _render(List<model.CalendarEvent> events) {
+    List<model.CalendarEvent> listCopy = []..addAll(events)
+                                           ..sort();
 
-    for (model.CalendarEvent event in events) {
+    Element eventToDOM (model.CalendarEvent event) {
       String html = '''
-        <li class="${event.active ? 'company-events-active': ''}">
+        <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
           <table class="calendar-event-table">
             <tbody>
               <tr>
-                <td class="calendar-event-content  ${event.active ? '' : 'calendar-event-notactive'}">
+                <td class="calendar-event-content ${event.active ? '' : 'calendar-event-notactive'}">
                   ${event.content}
                 <td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td class="calendar-event-timestamp  ${event.active ? '' : 'calendar-event-notactive'}">
+                <td class="calendar-event-timestamp ${event.active ? '' : 'calendar-event-notactive'}">
                   ${event.start} - ${event.stop}
                 <td>
               </tr>
             </tfoot>
           </table>
-        <li>
+        </li>
       ''';
 
-      var frag = new DocumentFragment.html(html).children.first;
-      frag.tabIndex = -1;
-      frag.value = event.ID;
-      eventList.children.add(frag);
+      return new DocumentFragment.html(html).children.first..tabIndex = -1;
     }
+
+    eventList.children = listCopy.map((model.CalendarEvent event) {
+      Element domElement = eventToDOM(event);
+              domElement.onClick.listen((_) => this.selectedElement = domElement);
+
+      return domElement;
+    }).toList(growable: false);
+
     if (eventList.children.length > 0) {
       this.selectedElement = eventList.children.first;
     }
   }
-
 }
