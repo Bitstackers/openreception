@@ -1,7 +1,7 @@
 library constants;
 
 abstract class ID {
-  
+
   static final String CONTEXT_HOME = 'contexthome';
   static final String CONTEXT_MESSAGES = 'contextmessages';
   static final String CONTEXT_LOG = 'contextlog';
@@ -81,15 +81,9 @@ abstract class ID {
   static final SENDMESSAGE_SEND = 'sendmessagesend';
   static final SENDMESSAGE_TEXT = 'sendmessagetext';
   static final WELCOME_MESSAGE = 'welcome-message';
-  
+
   static final NOTIFICATION_PANEL = 'notifications';
-  
+
 }
 
-abstract class Label {
-  
-  static final String NOT_IN_CALL        = 'Ikke i kald';
-  static final String UNKNOWN_AGENT_NAME = 'Receptionisten';
-  
-}
 
