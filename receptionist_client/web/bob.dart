@@ -20,7 +20,6 @@ import 'dart:html';
 import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
-//import 'classes/boblogin.dart';
 import 'classes/configuration.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
@@ -37,7 +36,6 @@ import 'package:openreception_framework/model.dart' as ORModel;
 BobActive bobActive;
 BobDisaster bobDiaster;
 BobLoading bobLoading;
-//BobLogin boblogin;
 
 void main() {
 
@@ -48,9 +46,6 @@ void main() {
       notification.initialize();
     }
   });
-
-
-  //boblogin = new BobLogin(querySelector('#boblogin'));
 
   //notification.initialize();
   //configuration.initialize();
