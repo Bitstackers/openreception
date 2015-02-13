@@ -7,16 +7,6 @@ input:focus {
     outline: 0.2em solid red;
 }
 
-#agent-info-status {
-  position: absolute;
-  color: white;
-  text-shadow:
-   -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-     1px 1px 0 #000;
-}
-
 textarea {
    resize: none;
 }
@@ -66,8 +56,6 @@ fieldset legend i{
 fieldset legend span{
   font-size: 0.8em;
 }
-
-
 
 #bobloading,
 #bobdisaster,

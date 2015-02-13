@@ -1,5 +1,6 @@
 #agent-info {
   position: absolute;
+  box-shadow: 2px 2px 3px #ccc;
   left: 81%;
   top: 0%;
   height: 6%;
@@ -15,6 +16,16 @@
   font-size: 1.1em;
 }
 
+#agent-info-status {
+  position: absolute;
+  color: white;
+  text-shadow:
+   -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+}
+
 #agent-info-portrait {
   position: absolute;
   top: 0px;
@@ -23,8 +34,8 @@
 }
 
 #agent-info-portrait-image {
-  border: solid 2px #aaa; 
-  border-radius: 5px; 
-  height: 100%; 
+  border: solid 2px #aaa;
+  border-radius: 5px;
+  height: 100%;
   width: 100%;
 }

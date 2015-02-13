@@ -12,7 +12,7 @@
 }
 
 .box-with-header-outer-right {
-    background-color: #fafafa;
+  background-color: #fafafa;
   border: solid 2px #ddd;
   border-radius: 0px  4px 4px 0px;
 }
@@ -54,14 +54,12 @@
     filter: alpha(opacity=80);
 }
 
-img.loading-big {
-    width: 222px;
-    height: 222px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -111px 0 0 -111px;
-    filter: alpha(opacity=80);
+.loading-big {
+  display: block;
+  width: 222px;
+  height: 222px;
+  margin: 10% auto;
+  filter: alpha(opacity=80);
 }
 
 .overlay-notification {

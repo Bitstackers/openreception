@@ -46,7 +46,6 @@
     <div id="notifications"></div>
 
     <div id="bobactive">
-
       <ul id="contextswitcher">
         <li>
           <button id="contexthome_switcherbutton" tabindex="-1">
@@ -87,22 +86,22 @@
       <section id="contexthome" data-default-widget="companyselector" class="context">
 
       <div id="header-container" style=" height: 6%;">
-        <div id="welcome-message" class="no-chrome" style="box-shadow: 2px 2px 3px #ccc;">
+        <div id="welcome-message" class="no-chrome">
           <div>
             <span id="welcome-message-text">Ikke i kald</span>
           </div>
         </div>
 
-        <div id="agent-info" style="box-shadow: 2px 2px 3px #ccc;">
+        <div id="agent-info">
           <div id="agent-info-stats">
             <table>
               <tr>
                 <td id="agent-info-stats-active"></td>
-                <td id="agent-info-stats-active-label"> :: aktive :: </td>
+                <td id="agent-info-stats-active-label">:: aktive ::</td>
               </tr>
               <tr>
                 <td id="agent-info-stats-paused"></td>
-                <td id="agent-info-stats-paused-label"> :: pause :: </td>
+                <td id="agent-info-stats-paused-label">:: pause ::</td>
               </tr>
             </table>
             <div id="agent-info-portrait">
@@ -569,13 +568,13 @@
       <section id="contextlog" data-default-widget="logbox" class="context hidden">
         <div id="logbox" data-default-element="logbox-table"></div>
       </section>
-
     </div>
+
     <div id="bobloading" class="loading-overlay">
       <div class="overlay-notification"> :: Hold on to your bits while we load :: </div>
       <img class="loading-big" src="images/loader-big.gif">
     </div>
-    <!--<div id="bobdisaster" style="position: absolute;" class="hidden"><h1>Ups. There might be some problems with the connection.</h1></div>-->
+
     <div id="bobdisaster" class="loading-overlay hidden">
       <div class="overlay-notification"> ::   Problems detected. Trying to recover :: </div>
       <img class="loading-big" src="images/loader-big.gif">
