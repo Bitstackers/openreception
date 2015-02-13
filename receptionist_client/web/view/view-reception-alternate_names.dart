@@ -24,7 +24,7 @@ class ReceptionAlternateNames {
   bool     hasFocus  =  false;
 
   Element         get header             => this.element.querySelector('legend');
-  UListElement    get alternateNamesList => this.element.querySelector('#${id.COMPANY_ALTERNATE_NAMES_LIST}');
+  UListElement    get alternateNamesList => this.element.querySelector('#${ID.COMPANY_ALTERNATE_NAMES_LIST}');
 
   List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

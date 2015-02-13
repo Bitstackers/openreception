@@ -16,9 +16,9 @@ library location;
 import 'dart:html';
 import 'dart:math' show pow;
 
+import 'constants.dart';
 import '../view/view.dart';
 import 'events.dart' as event;
-import 'id.dart' as id;
 import 'logger.dart';
 
 Map<String, Location> _history = {};
@@ -178,7 +178,7 @@ void initialize() {
     }
   }
 
-  appDefaultLocation = _history[id.CONTEXT_HOME];
+  appDefaultLocation = _history[ID.CONTEXT_HOME];
 }
 
 void registerOnPopStateListeners() {

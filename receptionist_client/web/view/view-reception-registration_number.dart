@@ -27,7 +27,7 @@ class ReceptionRegistrationNumber {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element      get header                 => this.element.querySelector('legend');
-  UListElement get registrationNumberList => element.querySelector('#${id.COMPANY_REGISTRATION_NUMBER_LIST}');
+  UListElement get registrationNumberList => element.querySelector('#${ID.COMPANY_REGISTRATION_NUMBER_LIST}');
 
   ReceptionRegistrationNumber(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));

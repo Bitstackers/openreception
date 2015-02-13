@@ -23,7 +23,7 @@ class ReceptionOpeningHours {
   Context         context;
   Element         element;
   bool            hasFocus  = false;
-  UListElement    get openingHoursList      => this.element.querySelector('#${id.COMPANY_OPENINGHOURS_LIST}');
+  UListElement    get openingHoursList      => this.element.querySelector('#${ID.COMPANY_OPENINGHOURS_LIST}');
   Element         get header                => this.element.querySelector('legend');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

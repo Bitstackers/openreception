@@ -23,7 +23,7 @@ import 'package:openreception_framework/model.dart' as ORModel;
 
 import '../classes/events.dart' as event;
 import '../model/model.dart' as model;
-import '../constants.dart' as constant;
+import '../classes/constants.dart';
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as Storage;
 import '../classes/id.dart' as id;

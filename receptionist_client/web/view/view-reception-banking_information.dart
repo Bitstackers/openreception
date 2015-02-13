@@ -27,7 +27,7 @@ class ReceptionBankingInformation {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element         get header                 => this.element.querySelector('legend');
-  UListElement    get bankingInformationList => this.element.querySelector('#${id.COMPANY_BANKING_INFO_LIST}');
+  UListElement    get bankingInformationList => this.element.querySelector('#${ID.COMPANY_BANKING_INFO_LIST}');
 
   ReceptionBankingInformation(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));

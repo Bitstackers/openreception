@@ -26,7 +26,7 @@ class ReceptionOther {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element          get header => this.element.querySelector('legend');
-  ParagraphElement get body   => element.querySelector('#${id.COMPANY_OTHER_BODY}');
+  ParagraphElement get body   => element.querySelector('#${ID.COMPANY_OTHER_BODY}');
 
   ReceptionOther(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));

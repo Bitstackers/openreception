@@ -20,7 +20,7 @@ class Notification {
 
   model.NotificationList nl = model.NotificationList.instance;
 
-  static final String id = constant.ID.NOTIFICATION_PANEL;
+  static final String id = ID.NOTIFICATION_PANEL;
   static final String className = '${libraryName}.Notification';
   static final DivElement node  = querySelector('#$id');
 

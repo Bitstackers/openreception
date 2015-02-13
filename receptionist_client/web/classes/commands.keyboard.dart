@@ -16,6 +16,7 @@ library commands.keyboard;
 import 'dart:async';
 import 'dart:html';
 
+import 'constants.dart';
 import 'events.dart' as event;
 import 'id.dart' as id;
 import 'location.dart' as nav;
@@ -114,48 +115,48 @@ class _KeyboardHandler {
   Keyboard keyboard = new Keyboard();
 
   List<nav.Location> contextHome =
-      [new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR,            id.COMPANY_SELECTOR_SEARCHBAR),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_EVENTS,              id.COMPANY_EVENTS_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_HANDLING,            id.COMPANY_HANDLING_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_OPENINGHOURS,        id.COMPANY_OPENINGHOURS_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_SALESCALLS,          id.COMPANY_SALES_LIST),
-       new nav.Location(id.CONTEXT_HOME, id.COMPANY_PRODUCT,             id.COMPANY_PRODUCT_BODY),
-       new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,                id.CONTACT_INFO_SEARCHBAR),
-       new nav.Location(id.CONTEXT_HOME, id.CONTACT_INFO,                id.CONTACT_CALENDAR),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEARCHBOX),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_NAME),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_COMPANY),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_PHONE),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CELLPHONE),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_LOCALNO),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_TEXT),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_CANCEL),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_DRAFT),
-       new nav.Location(id.CONTEXT_HOME, id.SENDMESSAGE,                 id.SENDMESSAGE_SEND)
+      [new nav.Location(ID.CONTEXT_HOME, ID.COMPANY_SELECTOR,            ID.COMPANY_SELECTOR_SEARCHBAR),
+       new nav.Location(ID.CONTEXT_HOME, ID.COMPANY_EVENTS,              ID.COMPANY_EVENTS_LIST),
+       new nav.Location(ID.CONTEXT_HOME, ID.COMPANY_HANDLING,            ID.COMPANY_HANDLING_LIST),
+       new nav.Location(ID.CONTEXT_HOME, ID.COMPANY_OPENINGHOURS,        ID.COMPANY_OPENINGHOURS_LIST),
+       new nav.Location(ID.CONTEXT_HOME, ID.COMPANY_SALESCALLS,          ID.COMPANY_SALES_LIST),
+       new nav.Location(ID.CONTEXT_HOME, ID.COMPANY_PRODUCT,             ID.COMPANY_PRODUCT_BODY),
+       new nav.Location(ID.CONTEXT_HOME, ID.CONTACT_INFO,                ID.CONTACT_INFO_SEARCHBAR),
+       new nav.Location(ID.CONTEXT_HOME, ID.CONTACT_INFO,                ID.CONTACT_CALENDAR),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_SEARCHBOX),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_NAME),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_COMPANY),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_PHONE),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_CELLPHONE),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_LOCALNO),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_TEXT),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_CANCEL),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_DRAFT),
+       new nav.Location(ID.CONTEXT_HOME, ID.SENDMESSAGE,                 ID.SENDMESSAGE_SEND)
       ];
 
   List<nav.Location> contextHomePlus =
-      [new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_CUSTOMERTYPE,        id.COMPANY_CUSTOMERTYPE_BODY),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_TELEPHONE_NUMBERS,   id.COMPANY_TELEPHONENUMBERS_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_ADDRESSES,           id.COMPANY_ADDRESSES_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_ALTERNATENAMES,      id.COMPANY_ALTERNATE_NAMES_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_BANKING_INFORMATION, id.COMPANY_BANKING_INFO_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_EMAIL_ADDRESSES,     id.COMPANY_EMAIL_ADDRESSES_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_WEBSITES,            id.COMPANY_WEBSITES_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_REGISTRATION_NUMBER, id.COMPANY_REGISTRATION_NUMBER_LIST),
-       new nav.Location(id.CONTEXT_HOMEPLUS, id.COMPANY_OTHER,               id.COMPANY_OTHER_BODY)
+      [new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_CUSTOMERTYPE,        ID.COMPANY_CUSTOMERTYPE_BODY),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_TELEPHONE_NUMBERS,   ID.COMPANY_TELEPHONENUMBERS_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_ADDRESSES,           ID.COMPANY_ADDRESSES_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_ALTERNATENAMES,      ID.COMPANY_ALTERNATE_NAMES_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_BANKING_INFORMATION, ID.COMPANY_BANKING_INFO_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_EMAIL_ADDRESSES,     ID.COMPANY_EMAIL_ADDRESSES_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_WEBSITES,            ID.COMPANY_WEBSITES_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_REGISTRATION_NUMBER, ID.COMPANY_REGISTRATION_NUMBER_LIST),
+       new nav.Location(ID.CONTEXT_HOME_PLUS, ID.COMPANY_OTHER,               ID.COMPANY_OTHER_BODY)
        ];
 
   List<nav.Location> contextPhone =
-      [new nav.Location(id.CONTEXT_PHONE, id.PHONEBOOTH, id.PHONEBOOTH_NUMBERFIELD)];
+      [new nav.Location(ID.CONTEXT_PHONE, ID.PHONEBOOTH, ID.PHONEBOOTH_NUMBERFIELD)];
 
   Map<String, Map<nav.Location, int>> tabMap =
-      {id.CONTEXT_HOME       : new Map<nav.Location, int>(),
-       id.CONTEXT_MESSAGES   : new Map<nav.Location, int>(),
-       id.CONTEXT_LOG        : new Map<nav.Location, int>(),
-       id.CONTEXT_STATISTICS : new Map<nav.Location, int>(),
-       id.CONTEXT_PHONE      : new Map<nav.Location, int>(),
-       id.CONTEXT_VOICEMAILS : new Map<nav.Location, int>()};
+      {ID.CONTEXT_HOME       : new Map<nav.Location, int>(),
+       ID.CONTEXT_MESSAGES   : new Map<nav.Location, int>(),
+       ID.CONTEXT_LOG        : new Map<nav.Location, int>(),
+       ID.CONTEXT_STATISTICS : new Map<nav.Location, int>(),
+       ID.CONTEXT_PHONE      : new Map<nav.Location, int>(),
+       ID.CONTEXT_VOICEMAILS : new Map<nav.Location, int>()};
 
   Map<String, List<nav.Location>> locationLists;
 
@@ -173,16 +174,16 @@ class _KeyboardHandler {
    */
   void _buildTabMaps() {
     for(int index = 0; index < contextHome.length; index++) {
-      tabMap[id.CONTEXT_HOME][contextHome[index]] = index;
+      tabMap[ID.CONTEXT_HOME][contextHome[index]] = index;
     }
 
     for(int index = 0; index < contextPhone.length; index++) {
-      tabMap[id.CONTEXT_PHONE][contextPhone[index]] = index;
+      tabMap[ID.CONTEXT_PHONE][contextPhone[index]] = index;
     }
 
     locationLists =
-      {id.CONTEXT_HOME : contextHome,
-       id.CONTEXT_PHONE : contextPhone};
+      {ID.CONTEXT_HOME : contextHome,
+       ID.CONTEXT_PHONE : contextPhone};
   }
 
   void registerHandler (key, callback) {
