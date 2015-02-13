@@ -86,5 +86,6 @@ abstract class Label {
   static const String ReceptionRegistrationNumbers = 'CVR Numre';
   static const String ReceptionExtraData           = 'Ekstra information';
   static const String ReceptionSearch              = 'Søg efter en virksomhed';
+  static const String ReceptionWelcomeMsgPlacehold = '...';
 
 }

@@ -21,7 +21,7 @@ class Call {
   static const String className = '${libraryName}.Call';
 
   Duration age = new Duration(seconds: 0);
-  String reception = "...";
+
   SpanElement ageElement;
   SpanElement callElement;
   model.Call _call = model.nullCall;
@@ -66,7 +66,7 @@ class Call {
         ..text = _renderDuration(age);
 
     callElement = element.querySelector('.call-queue-element')
-        ..text = '${reception} (${call.destination}) ${call.state}';
+        ..text = '${Label.ReceptionWelcomeMsgPlacehold} (${call.destination}) ${call.state}';
 
     storage.Reception.get(call.receptionId).then((model.Reception reception) {
       callElement.text = reception.name + "(${call.destination}) - ${call.state}";

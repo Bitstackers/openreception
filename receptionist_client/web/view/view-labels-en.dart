@@ -86,5 +86,5 @@ abstract class Label {
   static const String ReceptionRegistrationNumbers = 'VAT Numbers';
   static const String ReceptionExtraData           = 'Additional Information';
   static const String ReceptionSearch              = 'Search Reception';
-
+  static const String ReceptionWelcomeMsgPlacehold = '...';
 }
