@@ -120,29 +120,36 @@ fieldset legend span{
 }
 
 #notifications {
+  width: 30%;
+  z-index: 9999;
+  position: absolute;
+  margin: 0% 35%;
 }
-#notifications>h4 {
-  font-size:0.8em;
 
+#notifications > h4 {
+  font-size:0.8em;
   padding:10px 36px;
   margin:10px;
-
   color:#555;
   border-radius: 4px;
   font-weight:bold;
 }
+
 .error {
   background:#ffecec url('../images/error.png') no-repeat 10px 50%;
   border:1px solid #f5aca6;
 }
+
 .success {
   background:#e9ffd9 url('../images/success.png') no-repeat 10px 50%;
   border:1px solid #a6ca8a;
 }
+
 .warning {
   background:#fff8c4 url('../images/warning.png') no-repeat 10px 50%;
   border:1px solid #f2c779;
 }
+
 .notice {
   background:#e3f7fc url('../images/notice.png') no-repeat 10px 50%;
   border:1px solid #8ed9f6;
