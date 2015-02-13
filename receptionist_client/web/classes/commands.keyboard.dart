@@ -18,7 +18,6 @@ import 'dart:html';
 
 import 'constants.dart';
 import 'events.dart' as event;
-import 'id.dart' as id;
 import 'location.dart' as nav;
 import 'logger.dart';
 import '../controller/controller.dart' as Controller;

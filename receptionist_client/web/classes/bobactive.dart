@@ -18,7 +18,6 @@ import 'dart:html';
 import 'constants.dart';
 import 'context.dart';
 import 'events.dart' as event;
-import 'id.dart' as id;
 import 'commands.keyboard.dart';
 import 'location.dart' as nav;
 //import 'logger.dart';

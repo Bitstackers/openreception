@@ -26,7 +26,6 @@ import '../model/model.dart' as model;
 import '../classes/constants.dart';
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as Storage;
-import '../classes/id.dart' as id;
 import '../classes/location.dart' as nav;
 import '../controller/controller.dart' as Controller;
 import '../classes/logger.dart';
