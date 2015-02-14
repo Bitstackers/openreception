@@ -244,23 +244,9 @@ class ContactInfoCalendar {
       }
     });
 
-    event.bus.on(event.Save).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden) {
-        model.saveCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
-      }
-    });
+    event.bus.on(event.Save)  .listen(this._onSaveCommand);
+    event.bus.on(event.Delete).listen(this._onDeleteCommand);
 
-    event.bus.on(event.Delete).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.noID) {
-        model.deleteCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
-      }
-    });
 
     event.bus.on(event.Edit).listen((_) {
 
@@ -329,10 +315,66 @@ class ContactInfoCalendar {
     });
   }
 
+
+  /**
+   * Delete command handler.
+   * Responds to delete commands and deletes the event currently being edited.
+   *
+   * TODO:
+   *   - Disable input fields and event handler when the save operation is
+   *     in progress and re-enable it onDone.
+   *   - Add error handling in the form of a UI notification.
+   */
+  void _onDeleteCommand(_) {
+    if (!this.inFocus || this.eventID == model.CalendarEvent.noID) {
+      return;
+    }
+
+    if (!this.newEventWidget.hidden) {
+      model.deleteCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Save command handler.
+   * Responds to save commands and stores the the data typed into the create
+   * widget if it is visible. Ignore events if the calendarwidget is not in
+   * focus.
+   *
+   * TODO:
+   *   - Disable input fields and event handler when the save operation is
+   *     in progress and re-enable it onDone.
+   *   - Add error handling in the form of a UI notification.
+   */
+  void _onSaveCommand(_) {
+    if (!this.inFocus) {
+      return;
+    }
+
+    if (!this.newEventWidget.hidden) {
+      model.saveCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Re-render the widget with [events].
+   *
+   * TODO:
+   *   - Figure out how to store which element was selected before rendering
+   *     to be able to re-select it again after the rendering.
+   */
   void _render(List<model.CalendarEvent> events) {
+    // Make a copy before sorting to preserve function purity.
     List<model.CalendarEvent> listCopy = []..addAll(events)
                                            ..sort();
 
+    /// Event-to-DOM template.
     Element eventToDOM (model.CalendarEvent event) {
       String html = '''
         <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
@@ -358,6 +400,7 @@ class ContactInfoCalendar {
       return new DocumentFragment.html(html).children.first..tabIndex = -1;
     }
 
+    // Turn every event into a DOM node and attach click handler that selects the event.
     eventList.children = listCopy.map((model.CalendarEvent event) {
       Element domElement = eventToDOM(event);
               domElement.onClick.listen((_) => this.selectedElement = domElement);
