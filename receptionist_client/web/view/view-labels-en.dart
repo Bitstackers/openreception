@@ -21,7 +21,19 @@ abstract class Label {
   static const String LocalCalls                = 'Local calls';
   static const String SalesCalls                = 'Salescalls';
   static const String ProductDescription        = 'Product description';
+
   static final String ContactCalendar           = 'Contact calendar';
+  static const String ContactWorkHours          = 'Work hours';
+  static const String ContactJobTitle           = 'Job Title';
+  static const String ContactHandling           = 'Handling';
+  static const String ContactResponsibilities   = 'Resposibilities';
+  static const String ContactDepartment         = 'Department';
+  static const String ContactPhone              = 'Phones';
+  static const String ContactRelations          = 'Relations';
+  static const String ContactEmails             = 'Emails';
+  static const String ContactExtraInfo          = 'Extra Information';
+  static const String ContactBackups            = 'Backup Contacts';
+
   static final String CreateEvent               = 'New event';
   static const String editEvent                 = 'Edit event';
   static final String Create                    = 'Create';
