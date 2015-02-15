@@ -75,6 +75,7 @@ abstract class Label {
   static const String Active                    = 'Active';
   static const String Paused                    = 'Paused';
 
+  static const String ReceptionAddresses           = 'Addresses';
   static const String ReceptionAlternateNames      = 'Alternate Company Names';
   static const String ReceptionBankingInformation  = 'Banking Information';
   static final String ReceptionContacts            = 'Employees';

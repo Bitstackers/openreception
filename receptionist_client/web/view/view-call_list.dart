@@ -35,7 +35,7 @@ class CallList {
 
   CallList(Element this.element, Context this.context) {
     this._registerEventListerns();
-    this._renderHeader;
+    this._renderHeader();
   }
 
   void _registerEventListerns() {

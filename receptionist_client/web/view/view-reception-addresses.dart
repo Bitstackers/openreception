@@ -23,7 +23,6 @@ class ReceptionAddresses {
   bool hasFocus = false;
   Element get header => this.element.querySelector('legend');
   UListElement listElement;
-  String title = 'Adresser';
 
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
@@ -33,7 +32,7 @@ class ReceptionAddresses {
 
     listElement = element.querySelector('#${id.COMPANY_ADDRESSES_LIST}');
     header.children = [Icon.MapMarker,
-                       new SpanElement()..text = title,
+                       new SpanElement()..text = Label.ReceptionAddresses,
                        new Nudge(NavShortcut).element];
 
     ///Navigation shortcuts
