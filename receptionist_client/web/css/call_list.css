@@ -35,9 +35,18 @@
   list-style-image: url("../images/phone20x20.png");
 }
 
-
-.locked {
+li.call.locked {
+  opacity : 0.3;
 }
+
+li.call.destroyed {
+  opacity : 0.8;
+  background-color: #f5aca6;
+  list-style-image: url("../images/destroyed-icon-20x20.png");
+}
+
+li.call.parked {}
+li.call.active {}
 
 .call-queue-item-seconds {
   float: right;

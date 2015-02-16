@@ -100,6 +100,7 @@ class Call implements Comparable {
   static final EventType queueLeave  = new EventType();
   static final EventType transferred = new EventType();
   static final EventType stateChange = new EventType();
+  static final EventType<bool> lock  = new EventType<bool>();
 
   static final Map<CallState, EventType> stateEventMap =
     {CallState.HUNGUP      : Call.hungup,

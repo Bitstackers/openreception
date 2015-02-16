@@ -30,7 +30,6 @@ class CallList {
 
   Element        get localCallsHeader => querySelector("#local-calls legend"); //TODO: Move this to a more local DOM scope.
 
-  model.CallList _callList;
   int callCount = 0;
 
   CallList(Element this.element, Context this.context) {
@@ -40,7 +39,7 @@ class CallList {
 
   void _registerEventListerns() {
     model.CallList.instance.events.on(model.CallList.insert).listen((model.Call call) {
-      this._addCall(call, this.queuedCallUL);
+      this._renderCall(call, this.queuedCallUL);
     });
 
     model.CallList.instance.events.on(model.CallList.delete).listen((_) {
@@ -49,30 +48,24 @@ class CallList {
 
     model.CallList.instance.events.on(model.CallList.reload).listen(this.renderList);
 
-    event.bus.on(event.focusChanged).listen((Focus value) {
-      hasFocus = handleFocusChange(value, [queuedCallUL], element);
-    });
-
-    queuedCallUL.onFocus.listen((_) {
-      setFocus(queuedCallUL.id);
-    });
-
     context.registerFocusElement(queuedCallUL);
-
   }
 
   void renderList(model.CallList callList) {
     callList.where((model.Call call) => call.availableForUser(model.User.currentUser)).forEach((model.Call call) {
       if ([model.CallState.PARKED, model.CallState.SPEAKING].contains(call.state)) {
-        this._addCall(call, this.ownedCallsUL);
+        this._renderCall(call, this.ownedCallsUL);
       } else
-        this._addCall(call, queuedCallUL);
+        this._renderCall(call, queuedCallUL);
     });
 
     _renderHeader();
   }
 
-  void _addCall(model.Call call, UListElement list) {
+  /**
+   * Renders a [model.Call] object.
+   */
+  void _renderCall(model.Call call, UListElement list) {
     Call callView = new Call(call);
 
     call.events.on(model.Call.answered).listen((_) {

@@ -37,7 +37,7 @@ class Call {
   Call(model.Call this._call) {
     DocumentFragment htmlChunk = new DocumentFragment.html(
      '''
-      <li class="call-queue-item-default">
+      <li class="call-queue-item-default call">
         <span class="call-queue-element"></span>
         <span class="call-queue-item-seconds"></span>
         <button class="pickup-button">Svar</button>
@@ -73,13 +73,26 @@ class Call {
     });
 
     Duration pollInterval = new Duration(seconds: 1);
-    new Timer.periodic(pollInterval, (_) {
+
+    Timer timer;
+    timer = new Timer.periodic(pollInterval, (_) {
+      if (this.destroyed) {
+        timer.cancel();
+        return;
+      }
+
       this.age += pollInterval;
       ageElement.text = _renderDuration(age);
     });
 
     this._renderButtons();
   }
+
+  /**
+   * Determine if this element marked for destruction.
+   */
+  bool get destroyed => this.element.classes.contains('destroyed');
+
 
   /**
    * Quick implementation of the desired visual representation of a duration (m:ss).
@@ -99,6 +112,13 @@ class Call {
     } else {
       return '0:${duration.inSeconds}';
     }
+  }
+
+  void set disabled (bool isDisabled) {
+    List widgetButtons = [this.pickupButton, this.parkButton,
+                          this.transferButton, this.hangupButton];
+
+    widgetButtons.forEach((ButtonElement button) => button.disabled = isDisabled);
   }
 
   void render() {
@@ -158,7 +178,13 @@ class Call {
   void _callHangupHandler (_) {
     const String context = '${className}._callHangupHandler';
       log.debugContext("Removing call ${this.call.ID} from call queue view.", context);
-      this.element.remove();
+
+      this.element.classes.toggle('destroyed', true);
+      print (this.element.classes);
+      this.disabled = true;
+
+      // Delay removal to show that the call is hung up before.
+      new Timer(new Duration(seconds: 3), this.element.remove);
   }
 
   /**
@@ -169,6 +195,8 @@ class Call {
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
 
     this.element.classes.toggle("transferred", true);
+
+
     this.element.hidden = true;
     this._renderButtons();
   }
