@@ -13,8 +13,6 @@
 
 part of view;
 
-const String EMPTY_FIELD = '';
-
 /**
  * Widget for displaying greetings for
  */
@@ -35,7 +33,10 @@ class WelcomeMessage {
    *
    */
   void _onReceptionChange(model.Reception reception) {
-    this._render(reception != model.Reception.noReception ? reception.greeting : EMPTY_FIELD);
+    this._render(
+        reception != model.Reception.noReception
+                     ? reception.greeting
+                     : Label.ReceptionWelcomeMsgPlacehold);
   }
 
   /**

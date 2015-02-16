@@ -21,7 +21,19 @@ abstract class Label {
   static const String LocalCalls                = 'Lokale kald';
   static const String SalesCalls                = 'Sælgere / Analyser';
   static const String ProductDescription        = 'Produktbeskrivelse';
+
   static final String ContactCalendar           = 'Medarbejderaftaler';
+  static const String ContactWorkHours          = 'Arbejdstider';
+  static const String ContactJobTitle           = 'Titel';
+  static const String ContactHandling           = 'Håndtering';
+  static const String ContactResponsibilities   = 'Ansvarsområder';
+  static const String ContactDepartment         = 'Afdeling';
+  static const String ContactPhone              = 'Telefonnumre';
+  static const String ContactRelations          = 'Relationer';
+  static const String ContactEmails             = 'Email Adresser';
+  static const String ContactExtraInfo          = 'Ekstra Information';
+  static const String ContactBackups            = 'Backup Kontakter';
+
   static final String CreateEvent               = 'Opret aftale';
   static const String editEvent                 = 'Rediger aftale';
   static final String Create                    = 'Opret';
@@ -75,6 +87,7 @@ abstract class Label {
   static const String Active                    = 'Aktive';
   static const String Paused                    = 'Pause';
 
+  static const String ReceptionAddresses           = 'Adresser';
   static const String ReceptionAlternateNames      = 'Alternative firmanavne';
   static const String ReceptionBankingInformation  = 'Bankoplysninger';
   static final String ReceptionContacts            = 'Medarbejdere';
@@ -86,5 +99,6 @@ abstract class Label {
   static const String ReceptionRegistrationNumbers = 'CVR Numre';
   static const String ReceptionExtraData           = 'Ekstra information';
   static const String ReceptionSearch              = 'Søg efter en virksomhed';
+  static const String ReceptionWelcomeMsgPlacehold = '...';
 
 }

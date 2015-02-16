@@ -183,10 +183,14 @@ class ContactInfoCalendar {
 
 
   void _registerEventListeners() {
+    /// Nudge boiler plate code.
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    this.element.onClick.listen((MouseEvent e) {
-      Controller.Context.changeLocation(new nav.Location(this.context.id, this.element.id, this.eventList.id));
+    /// Focus this widget if it is clicked.
+    element.onClick.listen((Event event) {
+      if (!this.inFocus) {
+        this._select(null);
+      }
     });
 
     void listNavigation(KeyboardEvent e) {
@@ -240,23 +244,9 @@ class ContactInfoCalendar {
       }
     });
 
-    event.bus.on(event.Save).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden) {
-        model.saveCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
-      }
-    });
+    event.bus.on(event.Save)  .listen(this._onSaveCommand);
+    event.bus.on(event.Delete).listen(this._onDeleteCommand);
 
-    event.bus.on(event.Delete).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.noID) {
-        model.deleteCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
-      }
-    });
 
     event.bus.on(event.Edit).listen((_) {
 
@@ -298,7 +288,7 @@ class ContactInfoCalendar {
       if (eventStub['contactID'] == this.currentContact.ID && eventStub['receptionID'] == this.reception.ID) {
         log.debugContext('Reloading calendarlist for ${eventStub['contactID']}@${eventStub['receptionID']}', context);
         storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.CalendarEvent> eventList) {
-            this.render(eventList);
+            this._render(eventList);
           }).catchError((error) {
             log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
           });
@@ -317,7 +307,7 @@ class ContactInfoCalendar {
       /*  */
       if (newContact != model.Contact.noContact) {
         storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.CalendarEvent> eventList) {
-          this.render(eventList);
+          this._render(eventList);
         }).catchError((error) {
           log.error('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
         });
@@ -325,43 +315,101 @@ class ContactInfoCalendar {
     });
   }
 
-  void render(List<model.CalendarEvent> events) {
-    events.sort();
-    eventList.children.clear();
-    if (events == null) {
+
+  /**
+   * Delete command handler.
+   * Responds to delete commands and deletes the event currently being edited.
+   *
+   * TODO:
+   *   - Disable input fields and event handler when the save operation is
+   *     in progress and re-enable it onDone.
+   *   - Add error handling in the form of a UI notification.
+   */
+  void _onDeleteCommand(_) {
+    if (!this.inFocus || this.eventID == model.CalendarEvent.noID) {
       return;
     }
 
-    for (model.CalendarEvent event in events) {
+    if (!this.newEventWidget.hidden) {
+      model.deleteCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Save command handler.
+   * Responds to save commands and stores the the data typed into the create
+   * widget if it is visible. Ignore events if the calendarwidget is not in
+   * focus.
+   *
+   * TODO:
+   *   - Disable input fields and event handler when the save operation is
+   *     in progress and re-enable it onDone.
+   *   - Add error handling in the form of a UI notification.
+   */
+  void _onSaveCommand(_) {
+    if (!this.inFocus) {
+      return;
+    }
+
+    if (!this.newEventWidget.hidden) {
+      model.saveCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Re-render the widget with [events].
+   *
+   * TODO:
+   *   - Figure out how to store which element was selected before rendering
+   *     to be able to re-select it again after the rendering.
+   */
+  void _render(List<model.CalendarEvent> events) {
+    // Make a copy before sorting to preserve function purity.
+    List<model.CalendarEvent> listCopy = []..addAll(events)
+                                           ..sort();
+
+    /// Event-to-DOM template.
+    Element eventToDOM (model.CalendarEvent event) {
       String html = '''
-        <li class="${event.active ? 'company-events-active': ''}">
+        <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
           <table class="calendar-event-table">
             <tbody>
               <tr>
-                <td class="calendar-event-content  ${event.active ? '' : 'calendar-event-notactive'}">
+                <td class="calendar-event-content ${event.active ? '' : 'calendar-event-notactive'}">
                   ${event.content}
                 <td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td class="calendar-event-timestamp  ${event.active ? '' : 'calendar-event-notactive'}">
+                <td class="calendar-event-timestamp ${event.active ? '' : 'calendar-event-notactive'}">
                   ${event.start} - ${event.stop}
                 <td>
               </tr>
             </tfoot>
           </table>
-        <li>
+        </li>
       ''';
 
-      var frag = new DocumentFragment.html(html).children.first;
-      frag.tabIndex = -1;
-      frag.value = event.ID;
-      eventList.children.add(frag);
+      return new DocumentFragment.html(html).children.first..tabIndex = -1;
     }
+
+    // Turn every event into a DOM node and attach click handler that selects the event.
+    eventList.children = listCopy.map((model.CalendarEvent event) {
+      Element domElement = eventToDOM(event);
+              domElement.onClick.listen((_) => this.selectedElement = domElement);
+
+      return domElement;
+    }).toList(growable: false);
+
     if (eventList.children.length > 0) {
       this.selectedElement = eventList.children.first;
     }
   }
-
 }

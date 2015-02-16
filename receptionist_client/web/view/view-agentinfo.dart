@@ -19,7 +19,7 @@ class AgentInfo {
   Box              box;
   DivElement       divFace;
   DivElement       divParent;
-  DivElement       element;
+  final DivElement element;
   TableCellElement get activeLabelTD => this.element.querySelector('#agent-info-stats-active-label');
   TableCellElement get pausedLabelTD => this.element.querySelector('#agent-info-stats-paused-label');
   String           faceURL     = 'images/face.png';

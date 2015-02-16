@@ -175,11 +175,9 @@ class ReceptionEvents {
     });
 
     element.onClick.listen((Event event) {
-        Controller.Context.changeLocation(this.location);
-
-        if (event.target is LIElement) {
-          this.selectedElement = event.target;
-        }
+      if (!this.inFocus) {
+        this._select(null);
+      }
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
@@ -340,7 +338,12 @@ class ReceptionEvents {
       return new DocumentFragment.html(html).children.first..tabIndex = -1;
     }
 
-    eventList.children = listCopy.map(eventToDOM).toList();
+    eventList.children = listCopy.map((model.CalendarEvent event) {
+      Element domElement = eventToDOM(event);
+              domElement.onClick.listen((_) => this.selectedElement = domElement);
+
+      return domElement;
+    }).toList(growable: false);
 
     if (eventList.children.length > 0) {
       this.selectedElement = eventList.children.first;
