@@ -78,7 +78,8 @@ abstract class Label {
   static final String WillCallBack              = 'Will call back';
   static final String HasCalled                 = 'Has called';
   static final String Urgent                    = 'Urgent';
-  static const String DialOut                   = 'Dial out';
+  static const String Dial                      = 'Dial';
+  static const String PhoneNumber               = 'Phone number';
   static const String ContactInformation        = 'Contact Information';
   static const String Caller                    = 'Caller';
   static const String Context                   = 'Context';

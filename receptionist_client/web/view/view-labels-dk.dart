@@ -78,7 +78,8 @@ abstract class Label {
   static final String WillCallBack              = 'Ringer selv tilbage';
   static final String HasCalled                 = 'Har ringet';
   static final String Urgent                    = 'Haster';
-  static const String DialOut                   = 'Ring ud';
+  static const String Dial                      = 'Ring op';
+  static const String PhoneNumber               = 'Nummer';
   static const String ContactInformation        = 'KontaktInformation';
   static const String Caller                    = 'Opkalder';
   static const String Context                   = 'Kontekst';

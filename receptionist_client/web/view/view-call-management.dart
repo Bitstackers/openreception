@@ -56,7 +56,7 @@ class CallManagement {
    */
   CallManagement(Element this.element, Context this.context) {
     header.children = [Icon.Dialpad,
-                       new SpanElement()..text = Label.DialOut,
+                       new SpanElement()..text = Label.Dial,
                        new Nudge('T').element];
 
 
@@ -66,7 +66,13 @@ class CallManagement {
 
     this.element.insertBefore(new Nudge('I').element, this.dialButton);
 
+    this._setupLabels();
     this._render();
+  }
+
+  void _setupLabels() {
+    this.dialButton.text = Label.Dial;
+    this.numberField.placeholder = Label.PhoneNumber;
   }
 
   void _select (_) {
