@@ -39,8 +39,6 @@ class ContactInfoCalendar {
 
   Element             get header                    => this.element.querySelector('legend');
   bool                get active         => nav.Location.isActive(this.element);
-  InputElement        get numberField    => this.element.querySelector('#call-originate-number-field');
-  ButtonElement       get dialButton     => this.element.querySelector('.call-originate-number-button');
   List<Element>       get nuges          => this.element.querySelectorAll('.nudge');
   Element             get newEventWidget => this.element.querySelector('.contactinfo-calendar-event-create');
   TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
