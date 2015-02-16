@@ -26,10 +26,10 @@ class Call {
   SpanElement callElement;
   model.Call _call = model.nullCall;
   LIElement element;
-  ButtonElement pickupButton;
-  ButtonElement parkButton;
-  ButtonElement hangupButton;
-  ButtonElement transferButton;
+  ButtonElement get pickupButton   => this.element.querySelector('.pickup-button');
+  ButtonElement get parkButton     => this.element.querySelector('.park-button');
+  ButtonElement get hangupButton   => this.element.querySelector('.hangup-button');
+  ButtonElement get transferButton => this.element.querySelector('.transfer-button');
 
   model.Call get call => _call;
   List<Element> get nuges => this.element.querySelectorAll('.nudge');
@@ -50,17 +50,11 @@ class Call {
     age = new DateTime.now().difference(call.start);
     element = htmlChunk.querySelector('.call-queue-item-default');
 
-    this.pickupButton = htmlChunk.querySelector('.pickup-button')
-     ..onClick.listen((_) => call.pickup());
-
-    this.parkButton = htmlChunk.querySelector('.park-button')
-      ..onClick.listen((_) { call.park();});
-
-    this.hangupButton = htmlChunk.querySelector('.hangup-button')
-     ..onClick.listen((_) {call.hangup();});
-
-    this.transferButton = htmlChunk.querySelector('.transfer-button')
-     ..onClick.listen((_) {call.transfer (model.Call.currentCall);});
+    // Button click handlers
+    this.pickupButton.onClick  .listen((_) => call.pickup());
+    this.parkButton.onClick    .listen((_) => call.park());
+    this.hangupButton.onClick  .listen((_) => call.hangup());
+    this.transferButton.onClick.listen((_) => call.transfer (model.Call.currentCall));
 
     ageElement = element.querySelector('.call-queue-item-seconds')
         ..text = _renderDuration(age);
