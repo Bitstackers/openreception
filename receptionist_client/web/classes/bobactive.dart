@@ -80,7 +80,7 @@ class BobActive {
     });
 
     registerContexts();
-    contextSwitcher          = new View.ContextSwitcher(querySelector('#${Id.CONTEXT_SWITCHER}'), [homeContext, homePlusContext, messageContext]);
+    contextSwitcher          = new View.ContextSwitcher(querySelector('#${Id.contextSwitcher}'), [homeContext, homePlusContext, messageContext]);
 
     /// Home context
     contactInfo              = new View.ContactInfo(querySelector('#${Id.CONTACT_INFO}'), homeContext);

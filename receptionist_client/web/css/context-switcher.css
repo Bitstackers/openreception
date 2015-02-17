@@ -1,4 +1,4 @@
-#contextswitcher {
+#context-switcher {
   top: 0%;
   left: 0%;
   height: 100%;
@@ -11,13 +11,13 @@
   border-radius: 0px 5px 5px 0px;
   list-style-type: none;
 }
-  
-#contextswitcher > li {
+
+#context-switcher > li {
   margin: 0px auto;
   width: 70%;
 }
 
-#contextswitcher > li > button {
+#context-switcher > li > button {
   background-size: contain;
   position: relative;
   height: 20px;
@@ -28,8 +28,8 @@
   cursor: pointer;
 }
 
-/* 
- * Contexthome SVG background 
+/*
+ * Contexthome SVG background
  */
 
 #contexthome_switcherbutton {
@@ -43,8 +43,8 @@
   background-size: contain;
 }
 
-/* 
- * Contexthomeplus SVG background 
+/*
+ * Contexthomeplus SVG background
  */
 
 #contexthomeplus_switcherbutton {
@@ -57,8 +57,8 @@
   background-size: contain;
 }
 
-/* 
- * Messages SVG background 
+/*
+ * Messages SVG background
  */
 
 #contextmessages_switcherbutton {
@@ -71,8 +71,8 @@
   background-size: contain;
 }
 
-/* 
- * Log SVG background 
+/*
+ * Log SVG background
  */
 
 #contextlog_switcherbutton {
@@ -117,10 +117,8 @@
 
 
 
-#contextswitcher > li > button > img {
+#context-switcher > li > button > img {
   position: absolute;
   top: 0;
   left: 0;
 }
-
-      

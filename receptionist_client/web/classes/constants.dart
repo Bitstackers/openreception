@@ -56,7 +56,7 @@ abstract class Id {
   static const COMPANY_SELECTOR_SEARCHBAR = 'company-selector-searchbar';
   static const COMPANY_TELEPHONENUMBERS_LIST = 'company-telephonenumbers-list';
   static const COMPANY_WEBSITES_LIST = 'company-websites-list';
-  static const CONTEXT_SWITCHER = 'contextswitcher';
+  static const contextSwitcher = 'context-switcher';
   static const CONTACT_ADDITIONAL_INFO = 'contactAdditionalInfo'; // TODO (TL): Bad name
   static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
   static const CONTACT_CALENDAR = 'contact-calendar';
