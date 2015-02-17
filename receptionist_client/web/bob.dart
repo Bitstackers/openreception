@@ -40,7 +40,7 @@ BobLoading bobLoading;
 
 void main() {
 
-  View.Notification notificationPanel = new View.Notification();
+  new View.Notification();
 
   configuration.initialize().then((_) {
     if(handleToken()) {
