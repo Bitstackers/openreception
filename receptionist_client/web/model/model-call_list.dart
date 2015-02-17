@@ -46,17 +46,25 @@ class CallList extends IterableBase<Call> {
    */
   Iterator<Call> get iterator => this._map.values.iterator;
 
-  List<Call> get queuedCalls {
-    List<Call> queuedCalls = new List<Call>();
-    this.forEach((Call call) {
-      //TODO: Only add non-parked calls.
-      if ([User.currentUser.ID, ORModel.User.nullID].contains(call.assignedAgent)) {
-        queuedCalls.add(call);
-      }
-    });
+  /**
+   *
+   */
+  Iterable<Call> get queuedCalls =>
+      this.where ((Call call) =>
+          [User.currentUser.ID, ORModel.User.nullID].contains(call.assignedAgent));
 
-    return queuedCalls;
-  }
+  /**
+   *
+   */
+  Iterable<Call> get ownedCalls =>
+      this.where ((Call call) =>
+          [User.currentUser.ID].contains(call.assignedAgent));
+
+  /**
+   *
+   */
+  Iterable<Call> get parkedCalls =>
+      this.ownedCalls.where ((Call call) => call.state == CallState.PARKED);
 
   /**
    * Default [CallList] constructor.

@@ -203,9 +203,9 @@ class _KeyboardHandler {
     Map<String, EventListener> keybindings = {
       'Alt+P'      : (_) => Controller.Call.pickupNext(),
       'Alt+L'      : (_) => Controller.Call.park(Model.Call.currentCall),
-      //'Alt+G'    : (_) => Controller.Call.hangup(Model.Call.currentCall),
-      'Alt+U'      : (_) => Controller.Call.pickupNext(),
-      'Alt+O'      : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
+      'Alt+G'      : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      'Alt+U'      : (_) => Controller.Call.pickupParked(Model.CallList.instance.parkedCalls.first),
+      'Alt+O'      : (_) => Controller.Call.transfer(Model.Call.currentCall, Model.CallList.instance.parkedCalls.first),
       'Alt+1'      : (_) => event.bus.fire(event.CallSelectedContact, 1),
       'Alt+2'      : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+3'      : (_) => event.bus.fire(event.CallSelectedContact, 3),
