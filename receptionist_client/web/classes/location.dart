@@ -178,7 +178,7 @@ void initialize() {
     }
   }
 
-  appDefaultLocation = _history[Id.CONTEXT_HOME];
+  appDefaultLocation = _history[Id.contextHome];
 }
 
 void registerOnPopStateListeners() {

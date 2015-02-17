@@ -128,13 +128,13 @@ class BobActive {
   }
 
   void registerContexts() {
-    homeContext       = new Context(querySelector('#contexthome'))
+    homeContext       = new Context(querySelector('#${Id.contextHome}'))
       ..lastFocusId = 'company-selector-searchbar';
-    homePlusContext   = new Context(querySelector('#contexthomeplus'))
+    homePlusContext   = new Context(querySelector('#${Id.contextHomeplus}'))
         ..lastFocusId = 'company-customertype-body';
-    messageContext   = new Context(querySelector('#contextmessages'))
+    messageContext   = new Context(querySelector('#${Id.contextMessages}'))
       ..lastFocusId = 'message-search-agent-searchbar';
-    //logContext        = new Context(querySelector('#contextlog'));
+//    logContext        = new Context(querySelector('#${Id.CONTEXT_LOG}'));
   }
 
 }

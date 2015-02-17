@@ -3,13 +3,13 @@ library constants;
 abstract class Id {
   static const String bobActive = 'bob-active';
   static const String CALL_ORIGINATE = 'call-originate';
-  static const String CONTEXT_HOME = 'contexthome';
-  static const String CONTEXT_HOME_PLUS = 'contexthomeplus';
-  static const String CONTEXT_MESSAGES = 'contextmessages';
-  static const String CONTEXT_LOG = 'contextlog';
-  static const String CONTEXT_STATISTICS = 'contextstatistics';
-  static const String CONTEXT_PHONE = 'contextphone';
-  static const String CONTEXT_VOICEMAILS = 'contextvoicemails';
+  static const String contextHome = 'context-home';
+  static const String contextHomeplus = 'context-homeplus';
+  static const String contextMessages = 'context-messages';
+  static const String contextLog = 'context-log';
+  static const String contextStatistics = 'context-statistics';
+  static const String contextPhone = 'context-phone';
+  static const String contextVoicemails = 'context-voicemails';
 
   static const String COMPANY_ADDRESSES = 'companyaddresses';
   static const String COMPANY_ALTERNATENAMES = 'companyalternatenames';
