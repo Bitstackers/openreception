@@ -36,6 +36,8 @@ abstract class Call {
   }
 
 
+  static void pickupParked (Model.Call call) => pickupSpecific(call);
+
   /**
    * Make the service layer perform a pickup request to the call-flow-control server.
    */
