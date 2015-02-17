@@ -24,7 +24,7 @@ class ReceptionSalesCalls {
   final Element   element;
   bool         hasFocus  = false;
   Element      get header           => this.element.querySelector('legend');
-  UListElement get instructionList  => this.element.querySelector('#${ID.COMPANY_SALES_LIST}');
+  UListElement get instructionList  => this.element.querySelector('#${Id.COMPANY_SALES_LIST}');
 
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

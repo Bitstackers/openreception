@@ -30,7 +30,7 @@ class ReceptionAddresses {
   ReceptionAddresses(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
 
-    listElement = element.querySelector('#${ID.COMPANY_ADDRESSES_LIST}');
+    listElement = element.querySelector('#${Id.COMPANY_ADDRESSES_LIST}');
     header.children = [Icon.MapMarker,
                        new SpanElement()..text = Label.ReceptionAddresses,
                        new Nudge(NavShortcut).element];

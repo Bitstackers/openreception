@@ -59,7 +59,7 @@ fieldset legend span{
 
 #bobloading,
 #bobdisaster,
-#bobactive {
+#bob-active {
   position: absolute;
   height: -moz-calc(100%);
   height: -webkit-calc(100%);

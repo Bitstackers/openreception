@@ -25,7 +25,7 @@ class ReceptionCustomerType {
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  ParagraphElement get body   => this.element.querySelector('#${ID.COMPANY_CUSTOMERTYPE_BODY}');
+  ParagraphElement get body   => this.element.querySelector('#${Id.COMPANY_CUSTOMERTYPE_BODY}');
   Element          get header => this.element.querySelector('legend');
 
   ReceptionCustomerType(Element this.element, Context this.context) {

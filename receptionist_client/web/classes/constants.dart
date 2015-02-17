@@ -1,6 +1,7 @@
 library constants;
 
-abstract class ID {
+abstract class Id {
+  static const String bobActive = 'bob-active';
   static const String CALL_ORIGINATE = 'call-originate';
   static const String CONTEXT_HOME = 'contexthome';
   static const String CONTEXT_HOME_PLUS = 'contexthomeplus';

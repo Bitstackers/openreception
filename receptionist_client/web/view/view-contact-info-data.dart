@@ -29,7 +29,7 @@ class ContactInfoData {
   DivElement relations;
   DivElement responsibility;
   OListElement telephoneNumberList;
-  UListElement get workHoursList => this.element.querySelector('#${ID.CONTACT_WORK_HOURS_LIST}');
+  UListElement get workHoursList => this.element.querySelector('#${Id.CONTACT_WORK_HOURS_LIST}');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
   HeadingElement get workhoursHeader        => this.element.querySelector('.contact-info-workhours-label');
@@ -44,15 +44,15 @@ class ContactInfoData {
   HeadingElement get backupsHeader          => this.element.querySelector('.contact-info-backups-label');
 
   ContactInfoData(DivElement this.element) {
-    handlingList = querySelector('#${ID.CONTACT_HANDLING_LIST}');
-    position = querySelector('#${ID.CONTACT_POSITION}');
-    responsibility = querySelector('#${ID.CONTACT_RESPONSIBILITY}');
-    department = querySelector('#${ID.CONTACT_DEPARTMENT}');
-    telephoneNumberList = querySelector('#${ID.CONTACT_TELEPHONE_NUMBER_LIST}');
-    relations = querySelector('#${ID.CONTACT_RELATIONS}');
-    emailAddressList = querySelector('#${ID.CONTACT_EMAIL_ADDRESS_LIST}');
-    info = querySelector('#${ID.CONTACT_ADDITIONAL_INFO}');
-    backupList = querySelector('#${ID.CONTACT_BACKUP_LIST}');
+    handlingList = querySelector('#${Id.CONTACT_HANDLING_LIST}');
+    position = querySelector('#${Id.CONTACT_POSITION}');
+    responsibility = querySelector('#${Id.CONTACT_RESPONSIBILITY}');
+    department = querySelector('#${Id.CONTACT_DEPARTMENT}');
+    telephoneNumberList = querySelector('#${Id.CONTACT_TELEPHONE_NUMBER_LIST}');
+    relations = querySelector('#${Id.CONTACT_RELATIONS}');
+    emailAddressList = querySelector('#${Id.CONTACT_EMAIL_ADDRESS_LIST}');
+    info = querySelector('#${Id.CONTACT_ADDITIONAL_INFO}');
+    backupList = querySelector('#${Id.CONTACT_BACKUP_LIST}');
 
     this._registerEventHandlers();
 
