@@ -17,6 +17,7 @@ abstract class Id {
   static const String COMPANY_CUSTOMERTYPE = 'companycustomertype';
   static const String COMPANY_EMAIL_ADDRESSES = 'companyemailaddresses';
   static const String receptionEvents = 'reception-events';
+  static const String receptionEventsHeader = 'reception-events-header';
   static const String COMPANY_HANDLING = 'companyhandling';
   static const String COMPANY_OPENINGHOURS = 'companyopeninghours';
   static const String COMPANY_OTHER = 'companyother';
