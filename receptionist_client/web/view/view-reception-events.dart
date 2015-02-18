@@ -61,18 +61,18 @@ class ReceptionEvents {
   TextAreaElement get newEventField    => this.element.querySelector('.contact-calendar-event-create-body');
 
   ///Dateinput starts fields:
-  InputElement get startsHourField   => this.newEventWidget.querySelector('.${Id.contactCalendarEventCreateStartsHour}');
-  InputElement get startsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-minute');
-  InputElement get startsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-day');
-  InputElement get startsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-month');
-  InputElement get startsYearField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-year');
+  InputElement get startsHourField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsHour}');
+  InputElement get startsMinuteField => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsMinute}');
+  InputElement get startsDayField    => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsDay}');
+  InputElement get startsMonthField  => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsMonth}');
+  InputElement get startsYearField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsYear}');
 
   ///Dateinput ends fields:
-  InputElement get endsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-hour');
-  InputElement get endsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-minute');
-  InputElement get endsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-day');
-  InputElement get endsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-month');
-  InputElement get endsYearField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-year');
+  InputElement get endsHourField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsHour}');
+  InputElement get endsMinuteField => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsMinute}');
+  InputElement get endsDayField    => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsDay}');
+  InputElement get endsMonthField  => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsMonth}');
+  InputElement get endsYearField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsYear}');
 
   ///Dateinput getter values
   int get startsHourValue   => int.parse(this.startsHourField.value);

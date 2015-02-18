@@ -1,5 +1,28 @@
 library constants;
 
+abstract class CssClass {
+  static const String contactCalendarEventEndsDay =
+      'contact-calendar-event-create-ends-day';
+  static const String contactCalendarEventEndsHour =
+      'contact-calendar-event-create-ends-hour';
+  static const String contactCalendarEventEndsMinute =
+      'contact-calendar-event-create-ends-minute';
+  static const String contactCalendarEventEndsMonth =
+      'contact-calendar-event-create-ends-month';
+  static const String contactCalendarEventEndsYear =
+      'contact-calendar-event-create-ends-year';
+  static const String contactCalendarEventCreateStartsDay =
+      'contact-calendar-event-create-starts-day';
+  static const String contactCalendarEventCreateStartsHour =
+      'contact-calendar-event-create-starts-hour';
+  static const String contactCalendarEventCreateStartsMinute =
+      'contact-calendar-event-create-starts-minute';
+  static const String contactCalendarEventCreateStartsMonth =
+      'contact-calendar-event-create-starts-month';
+  static const String contactCalendarEventCreateStartsYear =
+      'contact-calendar-event-create-starts-year';
+}
+
 abstract class Id {
   static const String bobActive = 'bob-active';
   static const String CALL_ORIGINATE = 'call-originate';
@@ -28,7 +51,6 @@ abstract class Id {
   static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
   static const String CONTACT_INFO = 'contactinfo';
-  static const String contactCalendarEventCreateStartsHour = 'contact-calendar-event-create-starts-hour';
   static const String GLOBAL_QUEUE = 'globalqueue';
 
 //  TODO (TL): Fix LOCAL_QUEUE so it is either a widget of it's own, or a proper
