@@ -37,8 +37,19 @@ abstract class Message {
     AuthService.userOf(token).then((Model.User user) {
       extractContent(request).then((String content) {
         try {
-          return messageStore.save(new Model.Message.fromMap(JSON.decode(content))..sender = user)
-              .then((Model.Message message) => writeAndClose(request, JSON.encode(message)));
+          Model.Message parameterMessage =
+              new Model.Message.fromMap(JSON.decode(content))..sender = user;
+
+          return messageStore.save(parameterMessage)
+              .then((Model.Message message) {
+            if (parameterMessage.ID == Model.Message.noID) {
+              Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}});
+            } else {
+              Notification.broadcast({'event' : 'messageUpdated', 'message' : {'id' : message.ID}});
+            }
+
+            writeAndClose(request, JSON.encode(message));
+           });
 
         } catch (error, stackTrace) {
           logger.errorContext('$error : $stackTrace', context);
@@ -69,6 +80,7 @@ abstract class Message {
    * parameters passed in the [queryParameters] of the request.
    */
   static void list (HttpRequest request) {
+    print (request.uri);
     Model.MessageFilter filter = new Model.MessageFilter.empty();
 
     filter.upperMessageID = pathParameter(request.uri, 'list');
@@ -76,12 +88,15 @@ abstract class Message {
 
     if (request.uri.queryParameters.containsKey('filter')) {
       try {
+
         Map map = JSON.decode(request.uri.queryParameters['filter']);
 
         filter..messageState   = map ['state']
               ..contactID      = map ['contact_id']
               ..receptionID    = map ['reception_id']
               ..userID         = map ['user_id'];
+
+        print(filter.asMap);
 
       } catch (error, stacktrace) {
         clientError(request, 'Bad filter');
@@ -115,11 +130,11 @@ abstract class Message {
         try {
           Model.Message message = new Model.Message.fromMap(JSON.decode(content))..sender = user;
           return messageStore.save(message)
-              .then((_) => messageStore.enqueue(message)
-              .then((_) => Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}}))
-              .then((_) => writeAndClose(request, '{"description" : "Saved and enqueued message." , "id" : ${message.ID} }')));
-
-
+            .then((_) => messageStore.enqueue(message)
+              .then((_) {
+                writeAndClose(request, '{"description" : "Saved and enqueued message." , "id" : ${message.ID} }');
+              })
+            );
         } catch (error, stackTrace) {
           logger.errorContext('$error : $stackTrace', context);
           clientError(request, '$error : $stackTrace');
@@ -145,6 +160,7 @@ abstract class Message {
 
         try {
           Model.Message message = new Model.Message.fromMap(JSON.decode(content))..sender = user;
+          Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}});
 
           if (message.ID != Model.Message.noID) {
             clientError(request, 'Refusing to re-create existing message. '
