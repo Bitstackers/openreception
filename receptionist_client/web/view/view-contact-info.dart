@@ -32,7 +32,7 @@ class ContactInfo {
 
 
   ContactInfoSearch search;
-  ContactInfoCalendar calendar;
+  ContactCalendar calendar;
   ContactInfoData data;
 
   ContactInfo(Element this.element, Context this.context) {
@@ -42,7 +42,7 @@ class ContactInfo {
     DivElement contactinfo_data = querySelector('#contactinfo_data');
 
     search = new ContactInfoSearch(contactinfo_search, context, element);
-    calendar = new ContactInfoCalendar(contactinfo_calendar, context, element);
+    calendar = new ContactCalendar(contactinfo_calendar, context, element);
     data = new ContactInfoData(contactinfo_data);
 
     Element contactinfopanelHeader = querySelector('#contactinfopanel legend');

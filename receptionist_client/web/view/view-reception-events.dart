@@ -61,7 +61,7 @@ class ReceptionEvents {
   TextAreaElement get newEventField    => this.element.querySelector('.contact-calendar-event-create-body');
 
   ///Dateinput starts fields:
-  InputElement get startsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-hour');
+  InputElement get startsHourField   => this.newEventWidget.querySelector('.${Id.contactCalendarEventCreateStartsHour}');
   InputElement get startsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-minute');
   InputElement get startsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-day');
   InputElement get startsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-month');

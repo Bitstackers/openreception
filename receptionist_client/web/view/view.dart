@@ -71,7 +71,7 @@ part 'view-reception-websites.dart';
 part 'view-welcomemessage.dart';
 part 'view-contact-info.dart';
 part 'view-contact-info-search.dart';
-part 'view-contact-info-calendar.dart';
+part 'view-contact-calendar.dart';
 part 'view-contact-info-data.dart';
 part '../components/constants.dart';
 part 'view-message_filter.dart';

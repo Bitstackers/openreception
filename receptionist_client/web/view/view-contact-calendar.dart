@@ -19,7 +19,7 @@ part of view;
  *  - global contactChanged events
  *  -
  */
-class ContactInfoCalendar {
+class ContactCalendar {
 
   static const String className      = '${libraryName}.ContactInfoSearch';
   static const String NavShortcut    = 'K';
@@ -49,7 +49,7 @@ class ContactInfoCalendar {
   void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
 
   ///Dateinput starts fields:
-  InputElement get startsHourField   => this.element.querySelector('.contactinfo-calendar-event-create-starts-hour');
+  InputElement get startsHourField   => this.element.querySelector('.${Id.contactCalendarEventCreateStartsHour}');
   InputElement get startsMinuteField => this.element.querySelector('.contactinfo-calendar-event-create-starts-minute');
   InputElement get startsDayField    => this.element.querySelector('.contactinfo-calendar-event-create-starts-day');
   InputElement get startsMonthField  => this.element.querySelector('.contactinfo-calendar-event-create-starts-month');
@@ -144,7 +144,7 @@ class ContactInfoCalendar {
   }
 
 
-  ContactInfoCalendar(Element this.element, Context this.context, Element this.widget) {
+  ContactCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element];
 
     this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);

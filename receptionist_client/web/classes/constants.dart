@@ -28,6 +28,7 @@ abstract class Id {
   static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
   static const String CONTACT_INFO = 'contactinfo';
+  static const String contactCalendarEventCreateStartsHour = 'contact-calendar-event-create-starts-hour';
   static const String GLOBAL_QUEUE = 'globalqueue';
 
 //  TODO (TL): Fix LOCAL_QUEUE so it is either a widget of it's own, or a proper
