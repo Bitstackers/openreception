@@ -114,7 +114,7 @@ class _KeyboardHandler {
   Keyboard keyboard = new Keyboard();
 
   List<nav.Location> contextHome =
-      [new nav.Location(Id.contextHome, Id.COMPANY_SELECTOR,            Id.COMPANY_SELECTOR_SEARCHBAR),
+      [new nav.Location(Id.contextHome, Id.receptionSelector,            Id.receptionSelectorSearchbar),
        new nav.Location(Id.contextHome, Id.COMPANY_EVENTS,              Id.COMPANY_EVENTS_LIST),
        new nav.Location(Id.contextHome, Id.COMPANY_HANDLING,            Id.COMPANY_HANDLING_LIST),
        new nav.Location(Id.contextHome, Id.COMPANY_OPENINGHOURS,        Id.COMPANY_OPENINGHOURS_LIST),

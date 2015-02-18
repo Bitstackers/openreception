@@ -18,7 +18,7 @@ import 'logger.dart';
 
 String _currentFocusId = '';
 Map<String, int> _tabIndexes =
-  {'company-selector-searchbar':        1,
+  {'reception-selector-searchbar':      1,
    'company_events_list':               2,
    'company_handling_list':             3,
    'contact-info-searchbar':            4,

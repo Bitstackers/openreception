@@ -24,7 +24,7 @@ abstract class Id {
   static const String COMPANY_REGISTRATION_NUMBER = 'companyregistrationnumber';
   static const String COMPANY_SALESCALLS = 'companysalescalls';
   static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
-  static const String COMPANY_SELECTOR = 'companyselector';
+  static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
   static const String CONTACT_INFO = 'contactinfo';
   static const String GLOBAL_QUEUE = 'globalqueue';
@@ -53,7 +53,7 @@ abstract class Id {
   static const COMPANY_PRODUCT_BODY = 'company-product-body';
   static const COMPANY_REGISTRATION_NUMBER_LIST = 'company-registration-number-list';
   static const COMPANY_SALES_LIST = 'company-sales-list';
-  static const COMPANY_SELECTOR_SEARCHBAR = 'company-selector-searchbar';
+  static const receptionSelectorSearchbar = 'reception-selector-searchbar';
   static const COMPANY_TELEPHONENUMBERS_LIST = 'company-telephonenumbers-list';
   static const COMPANY_WEBSITES_LIST = 'company-websites-list';
   static const contextSwitcher = 'context-switcher';

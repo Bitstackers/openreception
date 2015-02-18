@@ -31,7 +31,7 @@ class BobActive {
 
   View.WelcomeMessage welcomeMessage;
   View.AgentInfo agentInfo;
-  View.ReceptionSelector companySelector;
+  View.ReceptionSelector receptionSelector;
 
   View.ReceptionHandling companyHandling;
   View.ReceptionOpeningHours companyOpeningHours;
@@ -89,7 +89,7 @@ class BobActive {
     messageCompose           = new View.Message(querySelector('#message-compose'), homeContext);
     welcomeMessage           = new View.WelcomeMessage(querySelector('#${Id.WELCOME_MESSAGE}'));
     agentInfo                = new View.AgentInfo(querySelector('#${Id.AGENT_INFO}'));
-    companySelector          = new View.ReceptionSelector(querySelector('#${Id.COMPANY_SELECTOR}'), homeContext)
+    receptionSelector          = new View.ReceptionSelector(querySelector('#${Id.receptionSelector}'), homeContext)
     ..onSelectReception = messageCompose.callerNameField.focus;
     receptionEvents          = new View.ReceptionEvents(querySelector('#${Id.COMPANY_EVENTS}'), homeContext);
     companyHandling          = new View.ReceptionHandling(querySelector('#${Id.COMPANY_HANDLING}'), homeContext);
@@ -129,7 +129,7 @@ class BobActive {
 
   void registerContexts() {
     homeContext       = new Context(querySelector('#${Id.contextHome}'))
-      ..lastFocusId = 'company-selector-searchbar';
+      ..lastFocusId = 'reception-selector-searchbar';
     homePlusContext   = new Context(querySelector('#${Id.contextHomeplus}'))
         ..lastFocusId = 'company-customertype-body';
     messageContext   = new Context(querySelector('#${Id.contextMessages}'))
