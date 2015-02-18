@@ -16,7 +16,7 @@ abstract class Id {
   static const String COMPANY_BANKING_INFORMATION = 'companybankinginformation';
   static const String COMPANY_CUSTOMERTYPE = 'companycustomertype';
   static const String COMPANY_EMAIL_ADDRESSES = 'companyemailaddresses';
-  static const String COMPANY_EVENTS = 'companyevents';
+  static const String receptionEvents = 'reception-events';
   static const String COMPANY_HANDLING = 'companyhandling';
   static const String COMPANY_OPENINGHOURS = 'companyopeninghours';
   static const String COMPANY_OTHER = 'companyother';
@@ -46,7 +46,7 @@ abstract class Id {
   static const COMPANY_BANKING_INFO_LIST = 'company-banking-info-list';
   static const COMPANY_CUSTOMERTYPE_BODY = 'company-customertype-body'; // TODO (TL): Bad name. *-body????
   static const COMPANY_EMAIL_ADDRESSES_LIST = 'company-email-addresses-list';
-  static const COMPANY_EVENTS_LIST = 'company_events_list';
+  static const receptionEventsList = 'reception-events-list';
   static const COMPANY_HANDLING_LIST = 'company_handling_list';
   static const COMPANY_OPENINGHOURS_LIST = 'company-opening-hours-list';
   static const COMPANY_OTHER_BODY = 'company-other-body';

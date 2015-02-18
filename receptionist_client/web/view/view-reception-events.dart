@@ -33,7 +33,7 @@ class ReceptionEvents {
         nav.Location  location;
   final Element       element;
   Element         get header          => this.element.querySelector('#company-events-header');
-  UListElement    get eventList       => this.element.querySelector('#company_events_list');
+  UListElement    get eventList       => this.element.querySelector('#${Id.receptionEventsList}');
   List<Element>   get nudges          => this.element.querySelectorAll('.nudge');
 
   LIElement       get selectedElement
