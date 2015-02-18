@@ -375,7 +375,7 @@ class ContactInfoCalendar {
     /// Event-to-DOM template.
     Element eventToDOM (model.CalendarEvent event) {
       String html = '''
-        <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
+        <li class="${event.active ? 'reception-events-active': ''}" value=${event.ID}>
           <table class="calendar-event-table">
             <tbody>
               <tr>

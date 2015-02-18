@@ -306,7 +306,7 @@ class ReceptionEvents {
   }
 
   String getClass(model.CalendarEvent event) {
-    return event.active ? 'company-events-active' : '';
+    return event.active ? 'reception-events-active' : '';
   }
 
   void _render(List<model.CalendarEvent> events) {
@@ -315,7 +315,7 @@ class ReceptionEvents {
 
     Element eventToDOM (model.CalendarEvent event) {
       String html = '''
-        <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
+        <li class="${event.active ? 'reception-events-active': ''}" value=${event.ID}>
           <table class="calendar-event-table">
             <tbody>
               <tr>
