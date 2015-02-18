@@ -70,6 +70,7 @@ class MessageFilter {
       this.receptionID  == other.receptionID &&
       this.contactID    == other.contactID;
 
+  Map toJson() => this.asMap;
 
   Map get asMap {
     Map retval = {};

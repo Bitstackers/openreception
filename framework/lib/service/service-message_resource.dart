@@ -17,9 +17,16 @@ abstract class MessageResource {
   static Uri root(Uri host)
     => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}');
 
-  static Uri list(Uri host)
-    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/list');
+  static Uri list(Uri host, {int limit: 100, Model.MessageFilter filter : null}) {
+    return subset(host, 0, limit, filter : filter);
+  }
 
-  static Uri subset(Uri host, int upperMessageID, int count)
-    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/list/${upperMessageID}/limit/${count}');
+
+  static Uri subset(Uri host, int upperMessageID, int count, {Model.MessageFilter filter : null}) {
+    String filterParameter = filter!=null
+                                     ? '?filter=${JSON.encode(filter)}'
+                                     : '';
+
+    return Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/list/${upperMessageID}/limit/${count}${filterParameter}');
+  }
 }
