@@ -33,10 +33,19 @@ class WelcomeMessage {
    *
    */
   void _onReceptionChange(model.Reception reception) {
-    this._render(
-        reception != model.Reception.noReception
-                     ? reception.greeting
-                     : Label.ReceptionWelcomeMsgPlacehold);
+    if (model.Call.currentCall != model.nullCall) {
+      if (reception == model.Reception.noReception) {
+         log.error('Changing to null reception while in call - very suspicius.');
+      } else {
+        if (model.Call.currentCall.greetingPlayed) {
+          this._render(reception.shortGreeting);
+        } else {
+          this._render(reception.greeting);
+        }
+      }
+    } else {
+      this._render(reception.greeting);
+    }
   }
 
   /**
@@ -47,9 +56,6 @@ class WelcomeMessage {
 
     container.classes.toggle('welcome-message-active-call', call != model.nullCall);
 
-    if (call != model.nullCall ) {
-      return;
-    }
     if (call != model.nullCall && call.greetingPlayed) {
       storage.Reception.get(call.receptionId).then((model.Reception reception) {
           this._render(!call.greetingPlayed ? reception.greeting : reception.shortGreeting);

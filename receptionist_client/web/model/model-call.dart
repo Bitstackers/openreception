@@ -133,7 +133,7 @@ class Call implements Comparable {
   String get bLeg => _bLeg;
   String get callerId => _callerID;
   String get destination => _destination;
-  bool get greetingPlayed => _greetingPlayed;
+  bool get greetingPlayed => this._data['greeting_played'];
   String get ID => this._data['id'];
   bool get inbound => _inbound;
   DateTime get start => _start;
