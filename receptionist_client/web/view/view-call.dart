@@ -13,6 +13,12 @@
 
 part of view;
 
+
+abstract class CallCssClass {
+  static const String destroyed = 'destroyed';
+  static const String enqueued  = 'enqueued';
+}
+
 /**
  * Widget representing a call.
  */
@@ -149,7 +155,7 @@ class Call {
   void _callQueueRemoveHandler (_) {
     const String context = '${className}._callQueueRemoveHandler';
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
-    this.element.classes.toggle("answered", true);
+    this.element.classes.toggle('speaking', true);
 
     this.element.hidden = true;
 
@@ -162,6 +168,9 @@ class Call {
   void _callParkHandler (_) {
     const String context = '${className}._callParkHandler';
     log.debugContext("Unhiding call ${this.call.ID} from call list.", context);
+    this.element.classes.toggle('speaking', false);
+    this.element.classes.toggle('parked', true);
+
       this.element.hidden = false;
       this._renderButtons();
   }

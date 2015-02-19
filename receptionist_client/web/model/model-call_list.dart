@@ -26,8 +26,8 @@ class CallList extends IterableBase<Call> {
   static const String className = "${libraryName}.CallList";
 
   static final EventType<CallList> reload = new EventType<CallList>();
-  static final EventType<Call> insert = new EventType<Call>();
-  static final EventType<Call> delete = new EventType<Call>();
+  static final EventType<Call>     insert = new EventType<Call>();
+  static final EventType<Call>     delete = new EventType<Call>();
 
   /// Local event stream.
   EventBus _eventStream = new EventBus();
@@ -42,7 +42,7 @@ class CallList extends IterableBase<Call> {
   Map<String, Call> _map = new Map<String, Call>();
 
   /**
-   * Iterator.
+   * Iterator forward.
    */
   Iterator<Call> get iterator => this._map.values.iterator;
 
@@ -97,10 +97,10 @@ class CallList extends IterableBase<Call> {
    */
   void _registerObservers() {
     event.bus.on(Service.EventSocket.callPickup).listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callPark).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callPark)  .listen((Map map) {this.update(new Call.fromMap(map['call']));});
     event.bus.on(Service.EventSocket.callHangup).listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callState).listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callLock).listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callState) .listen((Map map) {this.update(new Call.fromMap(map['call']));});
+    event.bus.on(Service.EventSocket.callLock)  .listen((Map map) {this.update(new Call.fromMap(map['call']));});
     event.bus.on(Service.EventSocket.callUnlock).listen((Map map) {this.update(new Call.fromMap(map['call']));});
     event.bus.on(event.callCreated).listen(this.add);
     event.bus.on(event.callDestroyed).listen(this.remove);

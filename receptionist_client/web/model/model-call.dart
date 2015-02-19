@@ -94,10 +94,12 @@ class Call implements Comparable {
   static const String className = "${libraryName}.Call";
 
   static final EventType currentCallChanged = new EventType();
+
   static final EventType hungup      = new EventType();
   static final EventType answered    = new EventType();
   static final EventType parked      = new EventType();
   static final EventType queueLeave  = new EventType();
+  static final EventType queueEnter  = new EventType();
   static final EventType transferred = new EventType();
   static final EventType stateChange = new EventType();
   static final EventType<bool> lock  = new EventType<bool>();
@@ -105,6 +107,7 @@ class Call implements Comparable {
   static final Map<CallState, EventType> stateEventMap =
     {CallState.HUNGUP      : Call.hungup,
      CallState.SPEAKING    : Call.answered,
+     CallState.QUEUED      : Call.queueEnter,
      CallState.PARKED      : Call.parked,
      CallState.TRANSFERRED : Call.transferred};
 
@@ -125,6 +128,7 @@ class Call implements Comparable {
   static Call _currentCall = nullCall;
 
   int get assignedAgent => this._data['assigned_to'];
+  bool get locked => this._data['locked'];
   bool get isCall => this._data['is_call'];
   String get bLeg => _bLeg;
   String get callerId => _callerID;
@@ -206,13 +210,19 @@ class Call implements Comparable {
   void update (Call newCall) {
     const String context = '${className}.update';
 
+    bool oldLockState = this.locked;
     /* Update the current internal dataset */
     this._data = newCall._data;
 
-    log.debugContext("${this.ID}: NewState: ${this.state}", context);
+    if (oldLockState != this.locked) {
+      /* Notify of state change. */
+      this._bus.fire(lock, this.locked);
 
-    /* Perfom a state change. */
-    this._bus.fire(Call.stateEventMap[this.state], null);
+    } else {
+      log.debugContext("${this.ID}: NewState: ${this.state}", context);
+      /* Notify of state change. */
+      this._bus.fire(Call.stateEventMap[this.state], null);
+    }
   }
 
   /**

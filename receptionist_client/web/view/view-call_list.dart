@@ -78,7 +78,8 @@ class CallList {
         this.ownedCallsUL.children.add(callView.element);
         callView.element.hidden = false;
       }
-
+      callView.element.classes.toggle('parked', false);
+      callView.element.classes.toggle('speaking', true);
       this._renderHeader();
     });
 
@@ -87,15 +88,39 @@ class CallList {
       this._renderHeader();
     });
 
+    call.events.on(model.Call.queueEnter).listen((_) {
+      callView.element.classes.toggle(CallCssClass.enqueued, true);
+      this._renderHeader();
+    });
+
+    call.events.on(model.Call.queueLeave).listen((_) {
+      callView._callTransferHandler(_);
+      this._renderHeader();
+    });
+
+    call.events.on(model.Call.lock).listen((bool isLocked) {
+      callView.element.classes.toggle('locked', isLocked);
+      this._renderHeader();
+    });
+
     call.events.on(model.Call.hungup).listen((_) {
+      callView.element.classes.toggle('parked', false);
+      callView.element.classes.toggle('speaking', false);
       callView._callHangupHandler(_);
       this._renderHeader();
     });
 
     call.events.on(model.Call.parked).listen((_) {
+      callView.element.classes.toggle('speaking', false);
+      callView.element.classes.toggle('parked', true);
       callView._renderButtons();
       this._renderHeader();
     });
+
+
+    if (call.state == model.CallState.QUEUED) {
+      callView.element.classes.toggle (CallCssClass.enqueued, true);
+    }
 
 
 //    callView.element.hidden = call.state == model.CallState.SPEAKING || call.state == model.CallState.PARKED;

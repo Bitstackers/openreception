@@ -35,18 +35,38 @@
   list-style-image: url("../images/phone20x20.png");
 }
 
+li.call {
+
+}
+
 li.call.locked {
   opacity : 0.3;
+  background-color: #fff8c4;
+  list-style-image: url("../images/locked-icon-20x20.png");
+}
+
+li.call.enqueued {
+  background-color: #ffeeee;
+  list-style-image: url("../images/queue-icon-20x20.png");
 }
 
 li.call.destroyed {
   opacity : 0.8;
-  background-color: #f5aca6;
-  list-style-image: url("../images/destroyed-icon-20x20.png");
+  background-color: #ffecec;
+  list-style-image: url("../images/destroyed-icon-20x20.gif");
 }
 
-li.call.parked {}
-li.call.active {}
+li.call.parked {
+  opacity : 0.7;
+  background-color: #e3f7fc;
+  list-style-image: url("../images/parked-icon-20x20.png");
+}
+
+li.call.speaking {
+  opacity : 1.0;
+  background-color: #e9ffd9;
+  list-style-image: url("../images/speaking-icon-20x20.png");
+}
 
 .call-queue-item-seconds {
   float: right;

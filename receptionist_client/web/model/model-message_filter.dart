@@ -19,7 +19,6 @@ class MessageFilter extends ORModel.MessageFilter {
 
   MessageFilter.empty() : super.empty();
 
-  static MessageFilter get none => new MessageFilter.empty();
-
+  static final MessageFilter none = new MessageFilter.empty();
 
 }
