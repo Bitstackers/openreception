@@ -42,6 +42,10 @@ abstract class Call {
    * Make the service layer perform a pickup request to the call-flow-control server.
    */
   static void pickupSpecific(Model.Call call) {
+    if (call == Model.nullCall) {
+      log.debug('Discarding request to pickup a null call.');
+      return;
+    }
 
     event.bus.fire(event.pickupCallRequest, call);
 
@@ -76,6 +80,10 @@ abstract class Call {
   }
 
   static void hangup(Model.Call call) {
+    if (call == Model.nullCall) {
+      log.debug('Discarding request to hangup null call.');
+      return;
+    }
 
     event.bus.fire(event.hangupCallRequest, call);
 
@@ -87,6 +95,10 @@ abstract class Call {
   }
 
   static void park(Model.Call call) {
+    if (call == Model.nullCall) {
+      log.debug('Discarding request to park null call.');
+      return;
+    }
 
     event.bus.fire(event.parkCallRequest, call);
 
@@ -98,6 +110,10 @@ abstract class Call {
   }
 
   static void transfer(Model.Call source, Model.Call destination) {
+    if ([source, destination].contains(Model.nullCall)) {
+      log.debug('Discarding request to transfer null call (either source or destination is not valid.');
+      return;
+    }
 
     event.bus.fire(event.transferCallRequest, source);
 
