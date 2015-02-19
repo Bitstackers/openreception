@@ -92,7 +92,7 @@ class BobActive {
     receptionSelector          = new View.ReceptionSelector(querySelector('#${Id.receptionSelector}'), homeContext)
     ..onSelectReception = messageCompose.callerNameField.focus;
     receptionEvents          = new View.ReceptionEvents(querySelector('#${Id.receptionEvents}'), homeContext);
-    companyHandling          = new View.ReceptionHandling(querySelector('#${Id.COMPANY_HANDLING}'), homeContext);
+    companyHandling          = new View.ReceptionHandling(querySelector('#${Id.companyHandling}'), homeContext);
     companyOpeningHours      = new View.ReceptionOpeningHours(querySelector('#${Id.COMPANY_OPENINGHOURS}'), homeContext);
     companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${Id.COMPANY_SALESCALLS}'), homeContext);
     companyProduct           = new View.ReceptionProduct(querySelector('#${Id.COMPANY_PRODUCT}'), homeContext);
