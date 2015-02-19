@@ -51,8 +51,6 @@ class ContactInfo {
                             new SpanElement()..text = Label.ReceptionContacts,
                             new Nudge(ContactInfoSearch.NavShortcut).element];
 
-
-    print (Icon.Info.children);
     contactinfopanelHeader.children = [Icon.Info,
                             new SpanElement()..text = Label.ContactInformation,
                             new Nudge(ContactInfoSearch.NavShortcut).element];

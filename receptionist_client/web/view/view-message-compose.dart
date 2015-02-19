@@ -15,8 +15,8 @@ part of view;
 
 class Message {
 
-  static const String className = '${libraryName}.Message';
-  static const String NavShortcut = 'B';
+  static const String className          = '${libraryName}.Message';
+  static const String DefaultNavShortcut = 'B';
 
   final Element      element;
   final Context      context;
@@ -127,11 +127,11 @@ class Message {
     log.debugContext('Message Cleared', context);
   }
 
-  Message(Element this.element, Context this.context) {
+  Message(Element this.element, Context this.context, {String navShortcut : DefaultNavShortcut}) {
     this.location = new nav.Location(context.id, element.id, this.messageBodyField.id);
 
     ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
+    keyboardHandler.registerNavShortcut(navShortcut, this._select);
 
     element.onClick.listen((Event event) {
     if (!this.inFocus)
@@ -169,7 +169,7 @@ class Message {
     this.header.children =
         [Icon.Message,
          new SpanElement()..text =  Label.MessageCompose,
-         new Nudge(NavShortcut).element];
+         new Nudge(DefaultNavShortcut).element];
     this.callerNameField.placeholder = Label.CallerName;
     this.callerCompanyField.placeholder = Label.Company;
     this.callerPhoneField.placeholder= Label.Phone;

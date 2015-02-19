@@ -65,7 +65,6 @@ class AgentInfo {
     event.bus.on(event.userStatusChanged).listen(_updateUserState);
 
     setupLabels();
-    print (activeLabelTD.text);
   }
 
   void setupLabels() {

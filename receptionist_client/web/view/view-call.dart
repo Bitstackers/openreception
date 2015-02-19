@@ -174,7 +174,6 @@ class Call {
       log.debugContext("Removing call ${this.call.ID} from call queue view.", context);
 
       this.element.classes.toggle('destroyed', true);
-      print (this.element.classes);
       this.disabled = true;
 
       // Delay removal to show that the call is hung up before.
