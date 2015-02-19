@@ -155,7 +155,7 @@ class Location {
  * Inserts the default widgets in the History, for use when no widget, only context, is specified.
  */
 void initialize() {
-  List<HtmlElement> contexts = querySelectorAll('#bobactive > section');
+  List<HtmlElement> contexts = querySelectorAll('#${Id.bobActive} > section');
   for (HtmlElement context in contexts) {
     if (context.attributes.containsKey('data-default-widget')) {
       String widgetId = context.attributes['data-default-widget'];
@@ -178,7 +178,7 @@ void initialize() {
     }
   }
 
-  appDefaultLocation = _history[ID.CONTEXT_HOME];
+  appDefaultLocation = _history[Id.contextHome];
 }
 
 void registerOnPopStateListeners() {

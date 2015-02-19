@@ -34,7 +34,7 @@ class ContextSwitcher {
 
     int index = 0;
     for(Context uiContext in contexts) {
-      ButtonElement existingElement = querySelector ('#${uiContext.id}_switcherbutton');
+      ButtonElement existingElement = querySelector ('#${uiContext.id}-switcher-button');
 
       if (index < shortCuts.length) {
 

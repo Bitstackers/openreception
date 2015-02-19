@@ -1,4 +1,4 @@
-#contextswitcher {
+#context-switcher {
   top: 0%;
   left: 0%;
   height: 100%;
@@ -11,13 +11,13 @@
   border-radius: 0px 5px 5px 0px;
   list-style-type: none;
 }
-  
-#contextswitcher > li {
+
+#context-switcher > li {
   margin: 0px auto;
   width: 70%;
 }
 
-#contextswitcher > li > button {
+#context-switcher > li > button {
   background-size: contain;
   position: relative;
   height: 20px;
@@ -28,99 +28,101 @@
   cursor: pointer;
 }
 
-/* 
- * Contexthome SVG background 
+/*
+ * Contexthome SVG background
  */
 
-#contexthome_switcherbutton {
+#context-home-switcher-button {
   background: url(../images/contexthome.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contexthome_switcherbutton.active, #contexthome_switcherbutton:hover {
+#context-home-switcher-button.active,
+#context-home-switcher-button:hover {
   background: none;
   background: url(../images/contexthome_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-/* 
- * Contexthomeplus SVG background 
+/*
+ * Contexthomeplus SVG background
  */
 
-#contexthomeplus_switcherbutton {
+#context-homeplus-switcher-button {
   background: url(../images/contexthomeplus.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contexthomeplus_switcherbutton.active, #contexthomeplus_switcherbutton:hover {
+#context-homeplus-switcher-button.active,
+#context-homeplus-switcher-button:hover {
   background: url(../images/contexthomeplus_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-/* 
- * Messages SVG background 
+/*
+ * Messages SVG background
  */
-
-#contextmessages_switcherbutton {
+#context-messages-switcher-button {
   background: url(../images/contextmessages.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextmessages_switcherbutton.active, #contextmessages_switcherbutton:hover {
+#context-messages-switcher-button.active,
+#context-messages-switcher-button:hover {
   background: url(../images/contextmessages_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-/* 
- * Log SVG background 
+/*
+ * Log SVG background
  */
 
-#contextlog_switcherbutton {
+#context-log-switcher-button {
   background: url(../images/contextlog.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextlog_switcherbutton.active, #contextlog_switcherbutton:hover {
+#context-log-switcher-button.active,
+#context-log-switcher-button:hover {
   background: url(../images/contextlog_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextstatistics_switcherbutton {
+#context-statistics-switcher-button {
   background: url(../images/contextstatistics.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextstatistics_switcherbutton.active, #contextstatistics_switcherbutton:hover {
+#context-statistics-switcher-button.active,
+#context-statistics-switcher-button:hover {
   background: url(../images/contextstatistics_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextphone_switcherbutton {
+#context-phone-switcher-button {
   background: url(../images/contextphone.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextphone_switcherbutton.active, #contextphone_switcherbutton:hover {
+#context-phone-switcher-button.active,
+#context-phone-switcher-button:hover {
   background: url(../images/contextphone_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextvoicemails_switcherbutton {
+#context-voicemails-switcher-button {
   background: url(../images/contextvoicemails.svg) no-repeat top left;
   background-size: contain;
 }
 
-#contextvoicemails_switcherbutton.active, #contextvoicemails_switcherbutton:hover {
+#context-voicemails-switcher-button.active,
+#context-voicemails-switcher-button:hover {
   background: url(../images/contextvoicemails_active.svg) no-repeat top left;
   background-size: contain;
 }
 
-
-
-#contextswitcher > li > button > img {
+#context-switcher > li > button > img {
   position: absolute;
   top: 0;
   left: 0;
 }
-
-      

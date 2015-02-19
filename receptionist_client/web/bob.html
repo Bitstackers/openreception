@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="css/context-switcher.css?v=1">
     <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
     <link rel="stylesheet" href="css/welcomemessage.css?v=1">
-    <link rel="stylesheet" href="css/company-selector.css?v=1">
-    <link rel="stylesheet" href="css/company-events.css?v=1">
+    <link rel="stylesheet" href="css/reception-selector.css?v=1">
+    <link rel="stylesheet" href="css/reception-events.css?v=1">
     <link rel="stylesheet" href="css/box.css?v=1">
     <link rel="stylesheet" href="css/company-handling.css?v=1">
     <link rel="stylesheet" href="css/calendar.css?v=1">
@@ -45,45 +45,48 @@
 
     <div id="notifications"></div>
 
-    <div id="bobactive">
-      <ul id="contextswitcher">
+    <div id="bob-active">
+      <ul id="context-switcher">
         <li>
-          <button id="contexthome_switcherbutton" tabindex="-1">
-            <img id="contexthome_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          <button id="context-home-switcher-button" tabindex="-1">
+            <img id="contex-thome-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
          </button>
         </li>
         <li>
-          <button id="contexthomeplus_switcherbutton" tabindex="-1">
-            <img id="contexthomeplus_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
-         </button>
+          <button id="context-homeplus-switcher-button" tabindex="-1">
+            <img id="context-homeplus-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          </button>
         </li>
         <li>
-          <button id="contextmessages_switcherbutton" tabindex="-1">
-            <img id="contextmessages_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
-         </button>
-       </li>
-       <!--<li>
-         <button id="contextlog_switcherbutton">
-           <img id="contextlog_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
-         </button>
-       </li>
-       <li>
-           <img id="contextstatistics_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
-         </button>
-       </li>
-       <li>
-         <button id="contextphone_switcherbutton">
-           <img id="contextphone_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
-         </button>
-       </li>
-       <li>
-         <button id="contextvoicemails_switcherbutton">
-           <img id="contextvoicemails_alert_icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
-         </button>
-       </li> -->
+          <button id="context-messages-switcher-button" tabindex="-1">
+            <img id="context-messages-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          </button>
+        </li>
+<!--
+        <li>
+          <button id="context-log-switcher-button">
+            <img id="context-log-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          </button>
+        </li>
+        <li>
+          <button id="context-statistics-switcher-button">
+           <img id="context-statistics-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          </button>
+        </li>
+        <li>
+          <button id="context-phone-switcher-button">
+            <img id="context-phone-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          </button>
+        </li>
+        <li>
+          <button id="context-voicemails-switcher-button">
+            <img id="context-voicemails-alert-icon" src="images/contextalert.svg" class="hidden" style="height: 10px; width: 10px;">
+          </button>
+        </li>
+-->
      </ul>
 
-      <section id="contexthome" data-default-widget="companyselector" class="context">
+      <section id="context-home" data-default-widget="reception-selector" class="context">
 
       <div id="header-container" style=" height: 6%;">
         <div id="welcome-message" class="no-chrome">
@@ -117,10 +120,10 @@
          <!-- Left column -->
         <div style=" width: 35%;height: 100%; float:left;">
 
-          <div id="companyselector" data-default-element="company-selector-searchbar" style="height: 4%;"></div>
+          <div id="reception-selector" data-default-element="reception-selector-searchbar" style="height: 4%;"></div>
 
-          <fieldset id="companyevents" data-default-element="company_events_list" class="box-with-header-outer" style="height: 22%;">
-            <legend id="company-events-header"> :: Kalender :: </legend>
+          <fieldset id="reception-events" data-default-element="reception-events-list" class="box-with-header-outer" style="height: 22%;">
+            <legend id="reception-events-header"> :: Kalender :: </legend>
             <div style="height: 100%;">
 
             <fieldset id="receptioninfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
@@ -131,39 +134,39 @@
 
               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
                 <legend>:: Start::</legend>
-                <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                <input class="contact-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
                 <span style="width:1em;">:</span>
-                <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                <input class="contact-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
 
-                <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                <input class="contact-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
                 <span style="width:1em;">/</span>
-                <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                <input class="contact-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
 
-                <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                <input class="contact-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
               </fieldset>
 
               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
                 <legend>:: Slut::</legend>
-                <input class="contactinfo-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                <input class="contact-calendar-event-create-ends-hour" type="text" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
                 <span style="width:1em;">:</span>
-                <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                <input class="contact-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
 
-                <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                <input class="contact-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
                 <span style="width:1em;">/</span>
-                <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                <input class="contact-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
 
-                <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                <input class="contact-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
               </fieldset>
 
             </fieldset>
 
-            <ul id="company_events_list" class="zebra"></ul>
+            <ul id="reception-events-list" class="zebra"></ul>
             </div>
           </fieldset>
 
-          <fieldset id="companyhandling" data-default-element="company_handling_list" class="box-with-header-outer" style="height: 22%;">
+          <fieldset id="company-handling" data-default-element="company-handling-list" class="box-with-header-outer" style="height: 22%;">
             <legend>:: Håndtering ::</legend>
-            <ul id="company_handling_list" class="zebra"></ul>
+            <ul id="company-handling-list" class="zebra"></ul>
           </fieldset>
 
           <fieldset id="message-compose" data-default-element="message-compose-body" class="message-compose box-with-header-outer" style="height: 50%;">
@@ -244,28 +247,28 @@
 
                <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
                  <legend>:: Start::</legend>
-                 <input class="contactinfo-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                 <input class="contact-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
                  <span style="width:1em;">:</span>
-                 <input class="contactinfo-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                 <input class="contact-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
 
-                 <input class="contactinfo-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                 <input class="contact-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
                  <span style="width:1em;">/</span>
-                 <input class="contactinfo-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                 <input class="contact-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
 
-                 <input class="contactinfo-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                 <input class="contact-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
                </fieldset>
 
                <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
                  <legend>:: Slut::</legend>
-                 <input class="contactinfo-calendar-event-create-ends-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                 <input class="contact-calendar-event-create-ends-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
                  <span style="width:1em;">:</span>
-                 <input class="contactinfo-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                 <input class="contact-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
 
-                 <input class="contactinfo-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                 <input class="contact-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
                  <span style="width:1em;">/</span>
-                 <input class="contactinfo-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                 <input class="contact-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
 
-                 <input class="contactinfo-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                 <input class="contact-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
                </fieldset>
              </fieldset>
              <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
@@ -393,8 +396,8 @@
       </section>
 
       <!-- Context homeplus  -->
-      <section id="contexthomeplus" data-default-widget="companyother" class="context hidden">
-        <div id="context-home_plus-left" style="width: 30%; height: 99.5%%; overflow:hidden; float:left;">
+      <section id="context-homeplus" data-default-widget="companyother" class="context hidden">
+        <div id="context-homeplus-left" style="width: 30%; height: 99.5%%; overflow:hidden; float:left;">
 
           <fieldset id="companyemailaddresses" class="box-with-header-outer" data-default-element="company-email-addresses-list">
             <legend> :: Emailadresser :: </legend>
@@ -413,7 +416,7 @@
 
         </div>
 
-        <div id="context-home_plus-center" style="width: 30%; height: 100%; margin-left: 0.5%; overflow:hidden; float:left;">
+        <div id="context-homeplus-center" style="width: 30%; height: 100%; margin-left: 0.5%; overflow:hidden; float:left;">
 
           <fieldset id="companyalternatenames" class="box-with-header-outer" data-default-element="company-alternate-names-list">
             <legend> :: Alternative firmanavne :: </legend>
@@ -438,7 +441,7 @@
 
         </div>
 
-        <div id="context-home_plus-right" style="width: 39%; height: 100%; overflow:hidden; margin-left: 0.5%; float:left;">
+        <div id="context-home-plus-right" style="width: 39%; height: 100%; overflow:hidden; margin-left: 0.5%; float:left;">
           <fieldset id="companyother" class="box-with-header-outer" data-default-element="company-other-body">
             <legend> :: Ekstra data :: </legend>
             <p id="company-other-body" class="zebra" tabindex="-1"></p>
@@ -448,7 +451,7 @@
 
       <!-- Context messages -->
 
-      <section id="contextmessages" data-default-widget="message-search" class="context hidden">
+      <section id="context-messages" data-default-widget="message-search" class="context hidden">
         <div id="main-container" style="margin-top: 0%; width: 100%; height: 100%; overflow:hidden;">
 
          <!-- Context messages - left container. -->
@@ -565,7 +568,7 @@
         </div>
       </section>
 
-      <section id="contextlog" data-default-widget="logbox" class="context hidden">
+      <section id="context-log" data-default-widget="logbox" class="context hidden">
         <div id="logbox" data-default-element="logbox-table"></div>
       </section>
     </div>

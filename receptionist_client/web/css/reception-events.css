@@ -1,8 +1,8 @@
-#companyevents {
+#reception-events {
   width: 100%;
 }
 
-#company_events_list {
+#reception-events-list {
   height: 100%;
   width: 100%;
   font-size: 0.8em;
@@ -10,7 +10,7 @@
   overflow: auto;
 }
 
-.company-events-active {
+.reception-events-active {
   border-left: solid 3px red;
 }
 

@@ -21,6 +21,7 @@ import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
 import 'classes/configuration.dart';
+import 'classes/constants.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
@@ -39,7 +40,7 @@ BobLoading bobLoading;
 
 void main() {
 
-  View.Notification notificationPanel = new View.Notification();
+  new View.Notification();
 
   configuration.initialize().then((_) {
     if(handleToken()) {
@@ -56,7 +57,7 @@ void main() {
   StreamSubscription subscription;
   subscription = event.bus.on(event.stateUpdated).listen((State state) {
     if(state.isOK) {
-      bobActive = new BobActive(querySelector('#bobactive'));
+      bobActive = new BobActive(querySelector('#${Id.bobActive}'));
       subscription.cancel();
 
       nav.registerOnPopStateListeners();

@@ -1,29 +1,55 @@
 library constants;
 
-abstract class ID {
+abstract class CssClass {
+  static const String contactCalendarEventEndsDay =
+      'contact-calendar-event-create-ends-day';
+  static const String contactCalendarEventEndsHour =
+      'contact-calendar-event-create-ends-hour';
+  static const String contactCalendarEventEndsMinute =
+      'contact-calendar-event-create-ends-minute';
+  static const String contactCalendarEventEndsMonth =
+      'contact-calendar-event-create-ends-month';
+  static const String contactCalendarEventEndsYear =
+      'contact-calendar-event-create-ends-year';
+  static const String contactCalendarEventCreateStartsDay =
+      'contact-calendar-event-create-starts-day';
+  static const String contactCalendarEventCreateStartsHour =
+      'contact-calendar-event-create-starts-hour';
+  static const String contactCalendarEventCreateStartsMinute =
+      'contact-calendar-event-create-starts-minute';
+  static const String contactCalendarEventCreateStartsMonth =
+      'contact-calendar-event-create-starts-month';
+  static const String contactCalendarEventCreateStartsYear =
+      'contact-calendar-event-create-starts-year';
+}
+
+abstract class Id {
+  static const String bobActive = 'bob-active';
   static const String CALL_ORIGINATE = 'call-originate';
-  static const String CONTEXT_HOME = 'contexthome';
-  static const String CONTEXT_HOME_PLUS = 'contexthomeplus';
-  static const String CONTEXT_MESSAGES = 'contextmessages';
-  static const String CONTEXT_LOG = 'contextlog';
-  static const String CONTEXT_STATISTICS = 'contextstatistics';
-  static const String CONTEXT_PHONE = 'contextphone';
-  static const String CONTEXT_VOICEMAILS = 'contextvoicemails';
+  static const String contextHome = 'context-home';
+  static const String contextHomeplus = 'context-homeplus';
+  static const String contextMessages = 'context-messages';
+  static const String contextLog = 'context-log';
+  static const String contextStatistics = 'context-statistics';
+  static const String contextPhone = 'context-phone';
+  static const String contextVoicemails = 'context-voicemails';
 
   static const String COMPANY_ADDRESSES = 'companyaddresses';
   static const String COMPANY_ALTERNATENAMES = 'companyalternatenames';
   static const String COMPANY_BANKING_INFORMATION = 'companybankinginformation';
   static const String COMPANY_CUSTOMERTYPE = 'companycustomertype';
   static const String COMPANY_EMAIL_ADDRESSES = 'companyemailaddresses';
-  static const String COMPANY_EVENTS = 'companyevents';
-  static const String COMPANY_HANDLING = 'companyhandling';
+  static const String receptionEvents = 'reception-events';
+  static const String receptionEventsHeader = 'reception-events-header';
+  static const String companyHandling = 'company-handling';
+  static const String companyHandlingList = 'company-handling-list';
   static const String COMPANY_OPENINGHOURS = 'companyopeninghours';
   static const String COMPANY_OTHER = 'companyother';
   static const String COMPANY_PRODUCT = 'companyproduct';
   static const String COMPANY_REGISTRATION_NUMBER = 'companyregistrationnumber';
   static const String COMPANY_SALESCALLS = 'companysalescalls';
   static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
-  static const String COMPANY_SELECTOR = 'companyselector';
+  static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
   static const String CONTACT_INFO = 'contactinfo';
   static const String GLOBAL_QUEUE = 'globalqueue';
@@ -45,17 +71,16 @@ abstract class ID {
   static const COMPANY_BANKING_INFO_LIST = 'company-banking-info-list';
   static const COMPANY_CUSTOMERTYPE_BODY = 'company-customertype-body'; // TODO (TL): Bad name. *-body????
   static const COMPANY_EMAIL_ADDRESSES_LIST = 'company-email-addresses-list';
-  static const COMPANY_EVENTS_LIST = 'company_events_list';
-  static const COMPANY_HANDLING_LIST = 'company_handling_list';
+  static const receptionEventsList = 'reception-events-list';
   static const COMPANY_OPENINGHOURS_LIST = 'company-opening-hours-list';
   static const COMPANY_OTHER_BODY = 'company-other-body';
   static const COMPANY_PRODUCT_BODY = 'company-product-body';
   static const COMPANY_REGISTRATION_NUMBER_LIST = 'company-registration-number-list';
   static const COMPANY_SALES_LIST = 'company-sales-list';
-  static const COMPANY_SELECTOR_SEARCHBAR = 'company-selector-searchbar';
+  static const receptionSelectorSearchbar = 'reception-selector-searchbar';
   static const COMPANY_TELEPHONENUMBERS_LIST = 'company-telephonenumbers-list';
   static const COMPANY_WEBSITES_LIST = 'company-websites-list';
-  static const CONTEXT_SWITCHER = 'contextswitcher';
+  static const contextSwitcher = 'context-switcher';
   static const CONTACT_ADDITIONAL_INFO = 'contactAdditionalInfo'; // TODO (TL): Bad name
   static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
   static const CONTACT_CALENDAR = 'contact-calendar';

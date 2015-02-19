@@ -32,8 +32,8 @@ class ReceptionEvents {
   final Context       context;
         nav.Location  location;
   final Element       element;
-  Element         get header          => this.element.querySelector('#company-events-header');
-  UListElement    get eventList       => this.element.querySelector('#company_events_list');
+  Element         get header          => this.element.querySelector('#${Id.receptionEventsHeader}');
+  UListElement    get eventList       => this.element.querySelector('#${Id.receptionEventsList}');
   List<Element>   get nudges          => this.element.querySelectorAll('.nudge');
 
   LIElement       get selectedElement
@@ -61,18 +61,18 @@ class ReceptionEvents {
   TextAreaElement get newEventField    => this.element.querySelector('.contact-calendar-event-create-body');
 
   ///Dateinput starts fields:
-  InputElement get startsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-hour');
-  InputElement get startsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-minute');
-  InputElement get startsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-day');
-  InputElement get startsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-month');
-  InputElement get startsYearField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-starts-year');
+  InputElement get startsHourField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsHour}');
+  InputElement get startsMinuteField => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsMinute}');
+  InputElement get startsDayField    => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsDay}');
+  InputElement get startsMonthField  => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsMonth}');
+  InputElement get startsYearField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsYear}');
 
   ///Dateinput ends fields:
-  InputElement get endsHourField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-hour');
-  InputElement get endsMinuteField => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-minute');
-  InputElement get endsDayField    => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-day');
-  InputElement get endsMonthField  => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-month');
-  InputElement get endsYearField   => this.newEventWidget.querySelector('.contactinfo-calendar-event-create-ends-year');
+  InputElement get endsHourField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsHour}');
+  InputElement get endsMinuteField => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsMinute}');
+  InputElement get endsDayField    => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsDay}');
+  InputElement get endsMonthField  => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsMonth}');
+  InputElement get endsYearField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventEndsYear}');
 
   ///Dateinput getter values
   int get startsHourValue   => int.parse(this.startsHourField.value);
@@ -306,7 +306,7 @@ class ReceptionEvents {
   }
 
   String getClass(model.CalendarEvent event) {
-    return event.active ? 'company-events-active' : '';
+    return event.active ? 'reception-events-active' : '';
   }
 
   void _render(List<model.CalendarEvent> events) {
@@ -315,7 +315,7 @@ class ReceptionEvents {
 
     Element eventToDOM (model.CalendarEvent event) {
       String html = '''
-        <li class="${event.active ? 'company-events-active': ''}" value=${event.ID}>
+        <li class="${event.active ? 'reception-events-active': ''}" value=${event.ID}>
           <table class="calendar-event-table">
             <tbody>
               <tr>

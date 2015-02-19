@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library BobActive;
+library bob_active;
 
 import 'dart:html';
 
@@ -31,7 +31,7 @@ class BobActive {
 
   View.WelcomeMessage welcomeMessage;
   View.AgentInfo agentInfo;
-  View.ReceptionSelector companySelector;
+  View.ReceptionSelector receptionSelector;
 
   View.ReceptionHandling companyHandling;
   View.ReceptionOpeningHours companyOpeningHours;
@@ -80,43 +80,43 @@ class BobActive {
     });
 
     registerContexts();
-    contextSwitcher          = new View.ContextSwitcher(querySelector('#${ID.CONTEXT_SWITCHER}'), [homeContext, homePlusContext, messageContext]);
+    contextSwitcher          = new View.ContextSwitcher(querySelector('#${Id.contextSwitcher}'), [homeContext, homePlusContext, messageContext]);
 
     /// Home context
-    contactInfo              = new View.ContactInfo(querySelector('#${ID.CONTACT_INFO}'), homeContext);
+    contactInfo              = new View.ContactInfo(querySelector('#${Id.CONTACT_INFO}'), homeContext);
 
 
     messageCompose           = new View.Message(querySelector('#message-compose'), homeContext);
-    welcomeMessage           = new View.WelcomeMessage(querySelector('#${ID.WELCOME_MESSAGE}'));
-    agentInfo                = new View.AgentInfo(querySelector('#${ID.AGENT_INFO}'));
-    companySelector          = new View.ReceptionSelector(querySelector('#${ID.COMPANY_SELECTOR}'), homeContext)
+    welcomeMessage           = new View.WelcomeMessage(querySelector('#${Id.WELCOME_MESSAGE}'));
+    agentInfo                = new View.AgentInfo(querySelector('#${Id.AGENT_INFO}'));
+    receptionSelector          = new View.ReceptionSelector(querySelector('#${Id.receptionSelector}'), homeContext)
     ..onSelectReception = messageCompose.callerNameField.focus;
-    receptionEvents          = new View.ReceptionEvents(querySelector('#${ID.COMPANY_EVENTS}'), homeContext);
-    companyHandling          = new View.ReceptionHandling(querySelector('#${ID.COMPANY_HANDLING}'), homeContext);
-    companyOpeningHours      = new View.ReceptionOpeningHours(querySelector('#${ID.COMPANY_OPENINGHOURS}'), homeContext);
-    companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${ID.COMPANY_SALESCALLS}'), homeContext);
-    companyProduct           = new View.ReceptionProduct(querySelector('#${ID.COMPANY_PRODUCT}'), homeContext);
-    globalQueue              = new View.CallList(querySelector('#${ID.GLOBAL_QUEUE}'), homeContext);
-    callManagement           = new View.CallManagement(querySelector('#${ID.CALL_ORIGINATE}'), homeContext);
+    receptionEvents          = new View.ReceptionEvents(querySelector('#${Id.receptionEvents}'), homeContext);
+    companyHandling          = new View.ReceptionHandling(querySelector('#${Id.companyHandling}'), homeContext);
+    companyOpeningHours      = new View.ReceptionOpeningHours(querySelector('#${Id.COMPANY_OPENINGHOURS}'), homeContext);
+    companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${Id.COMPANY_SALESCALLS}'), homeContext);
+    companyProduct           = new View.ReceptionProduct(querySelector('#${Id.COMPANY_PRODUCT}'), homeContext);
+    globalQueue              = new View.CallList(querySelector('#${Id.GLOBAL_QUEUE}'), homeContext);
+    callManagement           = new View.CallManagement(querySelector('#${Id.CALL_ORIGINATE}'), homeContext);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
 
     /// Home Plus context
-    companyCustomerType      = new View.ReceptionCustomerType(querySelector('#${ID.COMPANY_CUSTOMERTYPE}'), homePlusContext);
-    companyTelephoneNumbers  = new View.ReceptionTelephoneNumbers(querySelector('#${ID.COMPANY_TELEPHONE_NUMBERS}'), homePlusContext);
-    companyAddresses         = new View.ReceptionAddresses(querySelector('#${ID.COMPANY_ADDRESSES}'), homeContext);
-    companyAlternateNames    = new View.ReceptionAlternateNames(querySelector('#${ID.COMPANY_ALTERNATENAMES}'), homePlusContext);
-    companyBankingInfomation = new View.ReceptionBankingInformation(querySelector('#${ID.COMPANY_BANKING_INFORMATION}'), homePlusContext);
-    companyEmailAddresses    = new View.ReceptionEmailAddresses(querySelector('#${ID.COMPANY_EMAIL_ADDRESSES}'), homePlusContext);
-    companyWebsites          = new View.ReceptionWebsites(querySelector('#${ID.COMPANY_WEBSITES}'), homePlusContext);
-    compayRegistrationNumber = new View.ReceptionRegistrationNumber(querySelector('#${ID.COMPANY_REGISTRATION_NUMBER}'), homePlusContext);
-    companyOther             = new View.ReceptionOther(querySelector('#${ID.COMPANY_OTHER}'), homePlusContext);
+    companyCustomerType      = new View.ReceptionCustomerType(querySelector('#${Id.COMPANY_CUSTOMERTYPE}'), homePlusContext);
+    companyTelephoneNumbers  = new View.ReceptionTelephoneNumbers(querySelector('#${Id.COMPANY_TELEPHONE_NUMBERS}'), homePlusContext);
+    companyAddresses         = new View.ReceptionAddresses(querySelector('#${Id.COMPANY_ADDRESSES}'), homeContext);
+    companyAlternateNames    = new View.ReceptionAlternateNames(querySelector('#${Id.COMPANY_ALTERNATENAMES}'), homePlusContext);
+    companyBankingInfomation = new View.ReceptionBankingInformation(querySelector('#${Id.COMPANY_BANKING_INFORMATION}'), homePlusContext);
+    companyEmailAddresses    = new View.ReceptionEmailAddresses(querySelector('#${Id.COMPANY_EMAIL_ADDRESSES}'), homePlusContext);
+    companyWebsites          = new View.ReceptionWebsites(querySelector('#${Id.COMPANY_WEBSITES}'), homePlusContext);
+    compayRegistrationNumber = new View.ReceptionRegistrationNumber(querySelector('#${Id.COMPANY_REGISTRATION_NUMBER}'), homePlusContext);
+    companyOther             = new View.ReceptionOther(querySelector('#${Id.COMPANY_OTHER}'), homePlusContext);
 
     /// Message context
-    messageSearch = new View.MessageFilter(querySelector('#${ID.MESSAGE_SEARCH}'), messageContext);
-    messageList   = new View.MessageList(querySelector('#${ID.MESSAGE_OVERVIEW}'), messageContext);
-    messageEdit   = new View.MessageEdit(querySelector('#${ID.MESSAGE_EDIT}'), messageContext);
+    messageSearch = new View.MessageFilter(querySelector('#${Id.MESSAGE_SEARCH}'), messageContext);
+    messageList   = new View.MessageList(querySelector('#${Id.MESSAGE_OVERVIEW}'), messageContext);
+    messageEdit   = new View.MessageEdit(querySelector('#${Id.MESSAGE_EDIT}'), messageContext);
 
-    logBox = new View.LogBox(querySelector('#${ID.LOGBOX}'));
+    logBox = new View.LogBox(querySelector('#${Id.LOGBOX}'));
 
     //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
     keyboardHandler.toString();
@@ -128,13 +128,13 @@ class BobActive {
   }
 
   void registerContexts() {
-    homeContext       = new Context(querySelector('#contexthome'))
-      ..lastFocusId = 'company-selector-searchbar';
-    homePlusContext   = new Context(querySelector('#contexthomeplus'))
+    homeContext       = new Context(querySelector('#${Id.contextHome}'))
+      ..lastFocusId = 'reception-selector-searchbar';
+    homePlusContext   = new Context(querySelector('#${Id.contextHomeplus}'))
         ..lastFocusId = 'company-customertype-body';
-    messageContext   = new Context(querySelector('#contextmessages'))
+    messageContext   = new Context(querySelector('#${Id.contextMessages}'))
       ..lastFocusId = 'message-search-agent-searchbar';
-    //logContext        = new Context(querySelector('#contextlog'));
+//    logContext        = new Context(querySelector('#${Id.CONTEXT_LOG}'));
   }
 
 }
