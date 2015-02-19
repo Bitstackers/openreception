@@ -116,7 +116,7 @@ class _KeyboardHandler {
   List<nav.Location> contextHome =
       [new nav.Location(Id.contextHome, Id.receptionSelector,    Id.receptionSelectorSearchbar),
        new nav.Location(Id.contextHome, Id.receptionEvents,      Id.receptionEventsList),
-       new nav.Location(Id.contextHome, Id.companyHandling,      Id.COMPANY_HANDLING_LIST),
+       new nav.Location(Id.contextHome, Id.companyHandling,      Id.companyHandlingList),
        new nav.Location(Id.contextHome, Id.COMPANY_OPENINGHOURS, Id.COMPANY_OPENINGHOURS_LIST),
        new nav.Location(Id.contextHome, Id.COMPANY_SALESCALLS,   Id.COMPANY_SALES_LIST),
        new nav.Location(Id.contextHome, Id.COMPANY_PRODUCT,      Id.COMPANY_PRODUCT_BODY),
@@ -259,7 +259,7 @@ class _KeyboardHandler {
 //      'Ctrl+5'    : () => event.bus.fire(event.locationChanged, new nav.Location.context(id.CONTEXT_PHONE)),
 //      'Ctrl+C'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.COMPANY_SELECTOR, id.COMPANY_SELECTOR_SEARCHBAR)),
 //      'Ctrl+E'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.receptionEvents, id.receptionEventsList)),
-//      'Ctrl+H'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.companyHandling, id.COMPANY_HANDLING_LIST)),
+//      'Ctrl+H'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, id.companyHandling, id.companyHandlingList)),
 //      'Ctrl+M'    : () => event.bus.fire(event.locationChanged, new nav.Location(id.CONTEXT_HOME, 'sendmessage', 'sendmessagecellphone')),
 //      'Ctrl+P'    : () => event.bus.fire(event.pickupNextCall, 'Keyboard'),
 //      'Tab'       : () => tab(mode: FORWARD),

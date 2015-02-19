@@ -20,7 +20,7 @@ String _currentFocusId = '';
 Map<String, int> _tabIndexes =
   {'reception-selector-searchbar':      1,
    'reception-events-list':             2,
-   'company_handling_list':             3,
+   'company-handling-list':             3,
    'contact-info-searchbar':            4,
    'contact-calendar':                  6,
    'sendmessagesearchbox':              8,
