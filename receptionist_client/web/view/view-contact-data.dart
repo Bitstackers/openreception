@@ -29,10 +29,10 @@ class ContactData {
   DivElement relations;
   DivElement responsibility;
   OListElement telephoneNumberList;
-  UListElement get workHoursList => this.element.querySelector('#${Id.CONTACT_WORK_HOURS_LIST}');
+  UListElement get workHoursList => this.element.querySelector('#${Id.contactWorkHoursList}');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
-  HeadingElement get workhoursHeader        => this.element.querySelector('.contact-info-workhours-label');
+  HeadingElement get workhoursHeader        => this.element.querySelector('.${CssClass.contactDataWorkhoursLabel}');
   HeadingElement get jobtitleHeader         => this.element.querySelector('.contact-info-jobtitle-label');
   HeadingElement get handlingHeader         => this.element.querySelector('.contact-info-handling-label');
   HeadingElement get responsibilitiesHeader => this.element.querySelector('.contact-info-responsibilities-label');

@@ -50,7 +50,7 @@ part 'view-message-list.dart';
 part 'view-message-edit.dart';
 part 'view-notification.dart';
 part 'view-nudge.dart';
-part 'view-reception-events.dart';
+part 'view-reception-calendar.dart';
 part 'view-message-compose.dart';
 
 part 'view-agentinfo.dart';

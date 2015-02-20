@@ -121,7 +121,7 @@ class _KeyboardHandler {
        new nav.Location(Id.contextHome, Id.COMPANY_SALESCALLS,   Id.COMPANY_SALES_LIST),
        new nav.Location(Id.contextHome, Id.COMPANY_PRODUCT,      Id.COMPANY_PRODUCT_BODY),
        new nav.Location(Id.contextHome, Id.contactSelector,      Id.contactSelectorInput),
-       new nav.Location(Id.contextHome, Id.contactSelector,      Id.CONTACT_CALENDAR),
+       new nav.Location(Id.contextHome, Id.contactSelector,      Id.contactCalendar),
        new nav.Location(Id.contextHome, Id.SENDMESSAGE,          Id.SENDMESSAGE_SEARCHBOX),
        new nav.Location(Id.contextHome, Id.SENDMESSAGE,          Id.SENDMESSAGE_NAME),
        new nav.Location(Id.contextHome, Id.SENDMESSAGE,          Id.SENDMESSAGE_COMPANY),

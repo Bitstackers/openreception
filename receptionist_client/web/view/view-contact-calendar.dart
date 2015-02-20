@@ -28,7 +28,6 @@ class ContactCalendar {
   static const String DeleteShortcut = 'Backspace';
   static const String SelectedClass  = 'selected';
 
-//  static final String  id        = ID.CONTACT_INFO_CALENDAR;
   final        Element element;
   final        Context context;
           nav.Location location;
@@ -40,13 +39,13 @@ class ContactCalendar {
   Element             get header         => this.element.querySelector('legend');
   bool                get active         => nav.Location.isActive(this.element);
   List<Element>       get nuges          => this.element.querySelectorAll('.nudge');
-  Element             get newEventWidget => this.element.querySelector('.contactinfo-calendar-event-create');
+  Element             get newEventWidget => this.element.querySelector('.${CssClass.contactCalendarEventCreate}');
   TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
   List<InputElement>  get inputFields    => this.element.querySelectorAll('input');
 
-  InputElement    get eventIDField     => this.element.querySelector('.calendar-event-id');
+  InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
   int             get eventID          => int.parse(this.eventIDField.value);
-  void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
+  void            set eventID (int Id)   {this.eventIDField.value = Id.toString();}
 
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.element.querySelector('.${CssClass.contactCalendarEventCreateStartsHour}');
@@ -113,7 +112,7 @@ class ContactCalendar {
   List<Element>   get nudges    => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  UListElement get eventList => this.element.querySelector("#contact-calendar");
+  UListElement get eventList => this.element.querySelector("#${Id.contactCalendarList}");
   model.Contact currentContact;
   Element widget;
 
@@ -145,7 +144,7 @@ class ContactCalendar {
 
 
   ContactCalendar(Element this.element, Context this.context, Element this.widget) {
-    this.header.children   = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element];
+    this.header.children = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element];
 
     this.location = new nav.Location(this.context.id, this.element.id, this.eventList.id);
 

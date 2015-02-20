@@ -38,20 +38,20 @@ class Contact {
   Contact(Element this.element, Context this.context) {
 
     DivElement contactSelectorSearch = querySelector('#${Id.contactSelectorSearch}');
-    Element contactinfo_calendar = querySelector('#contactinfo_calendar');
-    DivElement contactinfo_data = querySelector('#contactinfo_data');
+    Element contactCalendar = querySelector('#${Id.contactCalendar}');
+    DivElement contactData = querySelector('#${Id.contactData}');
 
     search = new ContactSearch(contactSelectorSearch, context, element);
-    calendar = new ContactCalendar(contactinfo_calendar, context, element);
-    data = new ContactData(contactinfo_data);
+    calendar = new ContactCalendar(contactCalendar, context, element);
+    data = new ContactData(contactData);
 
-    Element contactinfopanelHeader = querySelector('#contactinfopanel legend');
+    Element contactDataHeader = querySelector('#${Id.contactDataHeader} legend');
 
     this.header.children = [Icon.Contacts,
                             new SpanElement()..text = Label.ReceptionContacts,
                             new Nudge(ContactSearch.NavShortcut).element];
 
-    contactinfopanelHeader.children = [Icon.Info,
+    contactDataHeader.children = [Icon.Info,
                             new SpanElement()..text = Label.ContactInformation,
                             new Nudge(ContactSearch.NavShortcut).element];
 
