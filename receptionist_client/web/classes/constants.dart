@@ -26,6 +26,11 @@ abstract class CssClass {
 abstract class Id {
   static const String bobActive = 'bob-active';
   static const String CALL_ORIGINATE = 'call-originate';
+  static const String contactSelector = 'contact-selector';
+  static const String contactSelectorBody = 'contact-selector-body';
+  static const String contactSelectorInput = 'contact-selector-input';
+  static const String contactSelectorList = 'contact-selector-list';
+  static const String contactSelectorSearch = 'contact-selector-search';
   static const String contextHome = 'context-home';
   static const String contextHomeplus = 'context-homeplus';
   static const String contextMessages = 'context-messages';
@@ -51,7 +56,6 @@ abstract class Id {
   static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
   static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
-  static const String CONTACT_INFO = 'contactinfo';
   static const String GLOBAL_QUEUE = 'globalqueue';
 
 //  TODO (TL): Fix LOCAL_QUEUE so it is either a widget of it's own, or a proper
@@ -88,7 +92,6 @@ abstract class Id {
   static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
   static const CONTACT_HANDLING_LIST = 'contactHandlingList'; // TODO (TL): Bad name
   static const CONTACT_INFO_CALENDAR = 'contactinfo_calendar';
-  static const CONTACT_INFO_SEARCHBAR = 'contact-info-searchbar';
   static const CONTACT_POSITION = 'contactPosition'; // TODO (TL): Bad name
   static const CONTACT_RESPONSIBILITY = 'contactResponsibility'; // TODO (TL): Bad name
   static const CONTACT_RELATIONS = 'contactRelations'; // TODO (TL): Bad name

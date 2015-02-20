@@ -1,4 +1,4 @@
-#contactinfo {/*.contact-info-placing {*/
+#contact-selector {/*.contact-info-placing {*/
   height: 100%;
   width: 100%;
 }
@@ -7,7 +7,7 @@
   outline: 0.1em solid #67c1f3;
 }
 
-#contactinfo_search {
+#contact-selector-search {
   width: 100%;
 }
 
@@ -108,7 +108,7 @@ button.calendar-event-delete {
   overflow: hidden;
 }
 
-#contact-info-searchbar {
+#contact-selector-input {
   width: 100%;
   min-height: 30px;
   border: solid 2px #ccc;
@@ -117,7 +117,7 @@ button.calendar-event-delete {
   border-radius: 3px;
 }
 
-.contact-info-searchbox {
+.contact-selector-searchbox {
   width: 100%;
   padding: 10px;
 }

@@ -13,6 +13,7 @@
 
 library focus;
 
+import 'constants.dart';
 import 'events.dart' as event;
 import 'logger.dart';
 
@@ -21,7 +22,7 @@ Map<String, int> _tabIndexes =
   {'reception-selector-searchbar':      1,
    'reception-events-list':             2,
    'company-handling-list':             3,
-   'contact-info-searchbar':            4,
+   Id.contactSelectorInput:             4,
    'contact-calendar':                  6,
    'sendmessagesearchbox':              8,
    'sendmessagesearchresult':           9,

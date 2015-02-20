@@ -46,7 +46,7 @@ class BobActive {
   View.ReceptionWebsites companyWebsites;
   View.ReceptionRegistrationNumber compayRegistrationNumber;
   View.ReceptionOther companyOther;
-  View.ContactInfo contactInfo;
+  View.Contact contactInfo;
   View.CallList globalQueue;
   View.CallManagement callManagement;
   //LocalQueue localQueue;
@@ -83,7 +83,7 @@ class BobActive {
     contextSwitcher          = new View.ContextSwitcher(querySelector('#${Id.contextSwitcher}'), [homeContext, homePlusContext, messageContext]);
 
     /// Home context
-    contactInfo              = new View.ContactInfo(querySelector('#${Id.CONTACT_INFO}'), homeContext);
+    contactInfo              = new View.Contact(querySelector('#${Id.contactSelector}'), homeContext);
 
 
     messageCompose           = new View.Message(querySelector('#message-compose'), homeContext);
