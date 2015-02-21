@@ -1,7 +1,9 @@
+-include makefile.setup
+
 PWD=$(shell pwd)
 DB_SRC=${PWD}/db_src
 DB_SCHEMA=schema.sql
-DB_DATA=test_data.sql
+DB_DATA=test_data_$(TESTDATA_LANG).sql
 TIMESTAMP=$(shell date +%s)
 
 PREFIX?=/usr/local/databaseservers
@@ -19,7 +21,6 @@ NotificationBinary=NotificationServer.dart
 ReceptionBinary=ReceptionServer.dart
 SpawnerBinary=Spawner.dart
 
--include makefile.dbsetup
 
 all: $(OUTPUT_DIRECTORY) auth callflow contact log message messagedispatcher misc reception spawner notification
 
