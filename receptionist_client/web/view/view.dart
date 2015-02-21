@@ -37,7 +37,7 @@ import '../classes/focus.dart';
 import '../classes/commands.keyboard.dart';
 import '../storage/storage.dart' as storage;
 
-import 'view-labels-dk.dart';
+import 'view-labels-en.dart';
 
 part 'view-call.dart';
 part 'view-icons.dart';
