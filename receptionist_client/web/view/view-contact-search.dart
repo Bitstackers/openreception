@@ -13,26 +13,26 @@
 
 part of view;
 
-class ContactInfoSearch {
+class ContactSearch {
 
   static const String className = '${libraryName}.ContactInfoSearch';
   static const String NavShortcut = 'S';
 
                model.Contact       contact              = model.Contact.noContact;
                Context             context;
-               UListElement    get displayedContactList => element.querySelector('#contactlist');
+               UListElement    get displayedContactList => element.querySelector('#${Id.contactSelectorList}');
                DivElement          element;
                List<model.Contact> filteredContactList  = new List<model.Contact>();
   static const int                 incrementSteps       = 20;
                model.Reception     reception            = model.Reception.noReception;
                List<model.Contact> contactList;
-               InputElement    get searchBox            => this.element.querySelector('#contact-info-searchbar');
+               InputElement    get searchBox            => this.element.querySelector('#${Id.contactSelectorInput}');
                Element             widget;
   static const String              SELECTED             = 'selected';
 
   bool hasFocus = false;
 
-  ContactInfoSearch(DivElement this.element, Context this.context, Element this.widget) {
+  ContactSearch(DivElement this.element, Context this.context, Element this.widget) {
     this.searchBox.disabled = true;
 
     registerEventListeners();

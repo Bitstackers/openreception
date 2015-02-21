@@ -13,7 +13,7 @@
 
 part of view;
 
-class ContactInfo {
+class Contact {
          final Element             element;
                Box                 box;
                model.Contact       contact              = model.Contact.noContact;
@@ -31,35 +31,35 @@ class ContactInfo {
                bool get muted     => this.context != Context.current;
 
 
-  ContactInfoSearch search;
+  ContactSearch search;
   ContactCalendar calendar;
-  ContactInfoData data;
+  ContactData data;
 
-  ContactInfo(Element this.element, Context this.context) {
+  Contact(Element this.element, Context this.context) {
 
-    DivElement contactinfo_search = querySelector('#contactinfo_search');
-    Element contactinfo_calendar = querySelector('#contactinfo_calendar');
-    DivElement contactinfo_data = querySelector('#contactinfo_data');
+    DivElement contactSelectorSearch = querySelector('#${Id.contactSelectorSearch}');
+    Element contactCalendar = querySelector('#${Id.contactCalendar}');
+    DivElement contactData = querySelector('#${Id.contactData}');
 
-    search = new ContactInfoSearch(contactinfo_search, context, element);
-    calendar = new ContactCalendar(contactinfo_calendar, context, element);
-    data = new ContactInfoData(contactinfo_data);
+    search = new ContactSearch(contactSelectorSearch, context, element);
+    calendar = new ContactCalendar(contactCalendar, context, element);
+    data = new ContactData(contactData);
 
-    Element contactinfopanelHeader = querySelector('#contactinfopanel legend');
+    Element contactDataHeader = querySelector('#${Id.contactDataHeader} legend');
 
     this.header.children = [Icon.Contacts,
                             new SpanElement()..text = Label.ReceptionContacts,
-                            new Nudge(ContactInfoSearch.NavShortcut).element];
+                            new Nudge(ContactSearch.NavShortcut).element];
 
-    contactinfopanelHeader.children = [Icon.Info,
+    contactDataHeader.children = [Icon.Info,
                             new SpanElement()..text = Label.ContactInformation,
-                            new Nudge(ContactInfoSearch.NavShortcut).element];
+                            new Nudge(ContactSearch.NavShortcut).element];
 
 
     ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(ContactInfoSearch.NavShortcut, this._select);
+    keyboardHandler.registerNavShortcut(ContactSearch.NavShortcut, this._select);
 
-    body = querySelector('#contactinfobody');
+    body = querySelector('#${Id.contactSelectorBody}');
 
     _registerEventListeners();
   }

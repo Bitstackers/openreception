@@ -1,6 +1,9 @@
 library constants;
 
 abstract class CssClass {
+  static const String calendarEventId = 'calendar-event-id';
+  static const String contactCalendarEventCreate =
+      'contact-calendar-event-create';
   static const String contactCalendarEventEndsDay =
       'contact-calendar-event-create-ends-day';
   static const String contactCalendarEventEndsHour =
@@ -21,11 +24,22 @@ abstract class CssClass {
       'contact-calendar-event-create-starts-month';
   static const String contactCalendarEventCreateStartsYear =
       'contact-calendar-event-create-starts-year';
+  static const String contactDataWorkhoursLabel = 'contact-data-workhours-label';
 }
 
 abstract class Id {
   static const String bobActive = 'bob-active';
   static const String CALL_ORIGINATE = 'call-originate';
+  static const String contactCalendar = 'contact-calendar';
+  static const String contactCalendarList = 'contact-calendar-list';
+  static const String contactData = 'contact-data';
+  static const String contactDataHeader = 'contact-data-header';
+  static const String contactSelector = 'contact-selector';
+  static const String contactSelectorBody = 'contact-selector-body';
+  static const String contactSelectorInput = 'contact-selector-input';
+  static const String contactSelectorList = 'contact-selector-list';
+  static const String contactSelectorSearch = 'contact-selector-search';
+  static const String contactWorkHoursList = 'contact-work-hours-list';
   static const String contextHome = 'context-home';
   static const String contextHomeplus = 'context-homeplus';
   static const String contextMessages = 'context-messages';
@@ -51,7 +65,6 @@ abstract class Id {
   static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
   static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
-  static const String CONTACT_INFO = 'contactinfo';
   static const String GLOBAL_QUEUE = 'globalqueue';
 
 //  TODO (TL): Fix LOCAL_QUEUE so it is either a widget of it's own, or a proper
@@ -83,17 +96,13 @@ abstract class Id {
   static const contextSwitcher = 'context-switcher';
   static const CONTACT_ADDITIONAL_INFO = 'contactAdditionalInfo'; // TODO (TL): Bad name
   static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
-  static const CONTACT_CALENDAR = 'contact-calendar';
   static const CONTACT_DEPARTMENT = 'contactDepartment'; // TODO (TL): Bad name
   static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
   static const CONTACT_HANDLING_LIST = 'contactHandlingList'; // TODO (TL): Bad name
-  static const CONTACT_INFO_CALENDAR = 'contactinfo_calendar';
-  static const CONTACT_INFO_SEARCHBAR = 'contact-info-searchbar';
   static const CONTACT_POSITION = 'contactPosition'; // TODO (TL): Bad name
   static const CONTACT_RESPONSIBILITY = 'contactResponsibility'; // TODO (TL): Bad name
   static const CONTACT_RELATIONS = 'contactRelations'; // TODO (TL): Bad name
   static const CONTACT_TELEPHONE_NUMBER_LIST = 'contactTelephoneNumberList'; // TODO (TL): Bad name
-  static const CONTACT_WORK_HOURS_LIST = 'contactWorkHoursList'; // TODO (TL): Bad name
   static const LOGBOX_TABLE = 'logbox-table';
   static const MESSAGE_SEARCH = 'message-search';
   static const NOTIFICATION_PANEL = 'notifications';

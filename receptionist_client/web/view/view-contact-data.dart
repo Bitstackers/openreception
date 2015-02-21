@@ -17,7 +17,7 @@
 
 part of view;
 
-class ContactInfoData {
+class ContactData {
   UListElement backupList;
   UListElement calendarBody;
   DivElement department;
@@ -29,10 +29,10 @@ class ContactInfoData {
   DivElement relations;
   DivElement responsibility;
   OListElement telephoneNumberList;
-  UListElement get workHoursList => this.element.querySelector('#${Id.CONTACT_WORK_HOURS_LIST}');
+  UListElement get workHoursList => this.element.querySelector('#${Id.contactWorkHoursList}');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
-  HeadingElement get workhoursHeader        => this.element.querySelector('.contact-info-workhours-label');
+  HeadingElement get workhoursHeader        => this.element.querySelector('.${CssClass.contactDataWorkhoursLabel}');
   HeadingElement get jobtitleHeader         => this.element.querySelector('.contact-info-jobtitle-label');
   HeadingElement get handlingHeader         => this.element.querySelector('.contact-info-handling-label');
   HeadingElement get responsibilitiesHeader => this.element.querySelector('.contact-info-responsibilities-label');
@@ -43,7 +43,7 @@ class ContactInfoData {
   HeadingElement get extraHeader            => this.element.querySelector('.contact-info-extra-label');
   HeadingElement get backupsHeader          => this.element.querySelector('.contact-info-backups-label');
 
-  ContactInfoData(DivElement this.element) {
+  ContactData(DivElement this.element) {
     handlingList = querySelector('#${Id.CONTACT_HANDLING_LIST}');
     position = querySelector('#${Id.CONTACT_POSITION}');
     responsibility = querySelector('#${Id.CONTACT_RESPONSIBILITY}');

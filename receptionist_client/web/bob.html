@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="css/company-vat_number.css?v=1">
     <link rel="stylesheet" href="css/company-other.css?v=1">
 
-    <link rel="stylesheet" href="css/contact-info.css?v=1">
+    <link rel="stylesheet" href="css/contact.css?v=1">
     <link rel="stylesheet" href="css/message-compose.css?v=1">
     <link rel="stylesheet" href="css/call_list.css?v=1">
 
@@ -227,130 +227,136 @@
 
         <!-- Center column -->
         <div style="margin-left: 1%; width: 44%;height: 100%; float:left;">
-          <div id="contactsearchpanel" style="height: 35%;">
-            <fieldset id="contactinfo" style="width:40%; float:left; height:100%;" class="box-with-header-outer-left">
-               <legend> :: Medarbejdere :: </legend>
-               <div id="contactinfobody" class="box-with-header-content" style="height: 297px;">
-               <div id="contactinfo_search"><div class="contact-info-searchbox">
-               <input id="contact-info-searchbar" type="search" placeholder="Søg..." disabled="" tabindex="-1">
-               </div><ul id="contactlist" class="contact-list zebra"></ul></div>
+          <div id="contact-search-panel" style="height: 35%;">
+            <fieldset id="contact-selector" style="width:40%; float:left; height:100%;" class="box-with-header-outer-left">
+              <legend> :: Medarbejdere :: </legend>
+
+              <div id="contact-selector-body" class="box-with-header-content" style="height: 297px;">
+                <div id="contact-selector-search">
+                  <div class="contact-selector-searchbox">
+                    <input id="contact-selector-input" type="search" placeholder="Søg..." disabled="" tabindex="-1">
+                  </div>
+                  <ul id="contact-selector-list" class="contact-list zebra"></ul>
+                </div>
               </div>
             </fieldset>
 
-            <fieldset id="contactinfo_calendar" data-default-element="contact-calendar" style="width:60%; float:left; height:100%;" class="box-with-header-outer-right">
-             <legend> :: Medarbejderaftaler :: </legend>
-             <fieldset class="contactinfo-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
-               <legend>:: Ny aftale ::</legend>
-                 <input class="calendar-event-id" type="hidden" value="0"/>
+            <fieldset id="contact-calendar" data-default-element="contact-calendar-list" style="width:60%; float:left; height:100%;" class="box-with-header-outer-right">
+              <legend> :: Medarbejderaftaler :: </legend>
 
-                 <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
+              <fieldset class="contact-calendar-event-create" style="width:99%; float:left; margin:0.5%; padding:0.5%;">
+                <legend>:: Ny aftale ::</legend>
 
-               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
-                 <legend>:: Start::</legend>
-                 <input class="contact-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
-                 <span style="width:1em;">:</span>
-                 <input class="contact-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                <input class="calendar-event-id" type="hidden" value="0"/>
+                <textarea class="contact-calendar-event-create-body" style="width:100%; height: 4em;" placeholder=" :: Opret aftale :: " tabindex=1 maxlength=3000></textarea>
 
-                 <input class="contact-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
-                 <span style="width:1em;">/</span>
-                 <input class="contact-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 1em 0 0 1em;">
+                  <legend>:: Start::</legend>
 
-                 <input class="contact-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
-               </fieldset>
+                  <input class="contact-calendar-event-create-starts-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                  <span style="width:1em;">:</span>
+                  <input class="contact-calendar-event-create-starts-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                  <input class="contact-calendar-event-create-starts-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                  <span style="width:1em;">/</span>
+                  <input class="contact-calendar-event-create-starts-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                  <input class="contact-calendar-event-create-starts-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                </fieldset>
 
-               <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
-                 <legend>:: Slut::</legend>
-                 <input class="contact-calendar-event-create-ends-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
-                 <span style="width:1em;">:</span>
-                 <input class="contact-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                <fieldset style="width:8em; float:left; border:1px solid #dadada; padding: 0.5em; border-radius: 0 1em 1em 0;">
+                  <legend>:: Slut::</legend>
 
-                 <input class="contact-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
-                 <span style="width:1em;">/</span>
-                 <input class="contact-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                  <input class="contact-calendar-event-create-ends-hour" type="number" style="width:3em;" min="0" max="23" placeholder="tt" tabindex=1 maxlength=2/>
+                  <span style="width:1em;">:</span>
+                  <input class="contact-calendar-event-create-ends-minute" type="number" style="width:3em;" min="0" max="59" placeholder="mm" tabindex=1 maxlength=2/>
+                  <input class="contact-calendar-event-create-ends-day" type="number" style="width:3em;" min="1" max="31" placeholder="dd" tabindex=2 maxlength=2/>
+                  <span style="width:1em;">/</span>
+                  <input class="contact-calendar-event-create-ends-month" type="number" style="width:3em;" min="0" max="23" placeholder="MM" tabindex=2 maxlength=2/>
+                  <input class="contact-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
+                </fieldset>
+              </fieldset>
 
-                 <input class="contact-calendar-event-create-ends-year" type="number" style="width:5em;" min="2014" max="2024" placeholder="åååå" tabindex=3 maxlength=4/>
-               </fieldset>
-             </fieldset>
-             <ul tabindex="-1" class="contact-info-container zebra" id="contact-calendar"></ul>
+              <ul tabindex="-1" class="zebra" id="contact-calendar-list"></ul>
             </fieldset>
-
           </div>
 
-            <fieldset id="call-originate" style="height: 7%" data-default-element="call-originate-number-field" class="box-with-header-outer">
+          <div style="height: 58%;">
+            <fieldset id="call-originate" style="height: 10%" data-default-element="call-originate-number-field" class="box-with-header-outer">
               <legend> :: Opkald :: </legend>
               <input id="call-originate-number-field" name="call-originate-number-field" type="text" placeholder=":: nummer ::" style="margin-left: 0.5%;" tabindex="-1"/>
               <button class="dial pure-button"> :: Ring op :: </button>
             </fieldset>
 
-            <fieldset id="contactinfopanel" style="height: 56%" class="box-with-header-outer">
-            <legend> :: Kontaktinfo :: </legend>
-            <div id="contactinfo_data">
-              <table>
-                <tbody>
-                  <tr>
-                    <td>
-              <h5 class="contact-info-workhours-label"> :: Arbejdstider :: </h5>
-              <div class="contact-info-field">
-                <ul id="contactWorkHoursList" class="zebra"></ul>
+            <fieldset id="contact-data-header" style="height: 100%;" class="box-with-header-outer">
+              <legend>:: Kontaktinfo ::</legend>
+
+              <div id="contact-data">
+                <table style="width: 100%;">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <h5 class="contact-data-workhours-label"> :: Arbejdstider :: </h5>
+                        <div class="contact-data-field">
+                          <ul id="contact-work-hours-list" class="zebra"></ul>
+                        </div>
+                      </td>
+                      <td>
+                        <h5 class="contact-info-handling-label"> :: Kaldhåndtering :: </h5>
+                        <div class="contact-data-field">
+                          <ul id="contactHandlingList" class="zebra"></ul>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5 class="contact-info-jobtitle-label"> :: Stilling :: </h5>
+                        <div id="contactPosition" class="contact-data-field"></div>
+                      </td>
+                      <td>
+                        <h5 class="contact-info-responsibilities-label"> :: Ansvar :: </h5>
+                        <div id="contactResponsibility" class="contact-data-field"></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5 class="contact-info-department-label"> :: Afdeling :: </h5>
+                        <div id="contactDepartment" class="contact-data-field"></div>
+                      </td>
+                      <td>
+                        <h5 class="contact-info-phone-label"> :: Telefon :: </h5>
+                        <div class="contact-data-field">
+                          <ol id="contactTelephoneNumberList" class="zebra"></ol>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5 class="contact-info-relations-label"> :: Relationer :: </h5>
+                        <div id="contactRelations" class="contact-data-field"></div>
+                      </td>
+                      <td>
+                        <h5 class="contact-info-emails-label"> :: Email og kontakter :: </h5>
+                        <div class="contact-data-field">
+                          <ul id="contactEmailAddressList" class="zebra"></ul>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h5 class="contact-info-extra-label"> :: Info :: </h5>
+                        <div id="contactAdditionalInfo" class="contact-data-field"></div>
+                      </td>
+                      <td>
+                        <h5 class="contact-info-backups-label"> :: Backup :: </h5>
+                        <div class="contact-data-field">
+                          <ul id="contactBackupList" class="zebra"></ul>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </td>
-            <td>
-              <h5 class="contact-info-handling-label"> :: Kaldhåndtering :: </h5>
-              <div class="contact-info-field">
-                <ul id="contactHandlingList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5 class="contact-info-jobtitle-label"> :: Stilling :: </h5>
-              <div id="contactPosition" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5 class="contact-info-responsibilities-label"> :: Ansvar :: </h5>
-              <div id="contactResponsibility" class="contact-info-field"></div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5 class="contact-info-department-label"> :: Afdeling :: </h5>
-              <div id="contactDepartment" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5 class="contact-info-phone-label"> :: Telefon :: </h5>
-              <div class="contact-info-field">
-                <ol id="contactTelephoneNumberList" class="zebra"></ol>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5 class="contact-info-relations-label"> :: Relationer :: </h5>
-              <div id="contactRelations" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5 class="contact-info-emails-label"> :: Email og kontakter :: </h5>
-              <div class="contact-info-field">
-                <ul id="contactEmailAddressList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <h5 class="contact-info-extra-label"> :: Info :: </h5>
-              <div id="contactAdditionalInfo" class="contact-info-field"></div>
-            </td>
-            <td>
-              <h5 class="contact-info-backups-label"> :: Backup :: </h5>
-              <div class="contact-info-field">
-                <ul id="contactBackupList" class="zebra"></ul>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-        </table>
-        </div>
-        </fieldset>
+            </fieldset>
+          </div>
         </div>
 
         <!-- Right column -->
@@ -452,7 +458,7 @@
       <!-- Context messages -->
 
       <section id="context-messages" data-default-widget="message-search" class="context hidden">
-        <div id="main-container" style="margin-top: 0%; width: 100%; height: 100%; overflow:hidden;">
+        <div style="margin-top: 0%; width: 100%; height: 100%; overflow:hidden;">
 
          <!-- Context messages - left container. -->
 

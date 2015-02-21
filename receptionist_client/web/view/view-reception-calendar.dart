@@ -20,7 +20,7 @@ part of view;
  *  - ReceptionChanged
  *  - ContactChanged
  */
-class ReceptionEvents {
+class ReceptionCalendar {
 
   static const String   className   = '${libraryName}.ReceptionEvents';
   static const String NavShortcut   = 'A';
@@ -54,7 +54,7 @@ class ReceptionEvents {
 
 
   Element lastActive = null;
-  InputElement    get eventIDField     => this.element.querySelector('.calendar-event-id');
+  InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
   int             get eventID          => int.parse(this.eventIDField.value);
   void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
   FieldSetElement get newEventWidget   => this.element.querySelector('#receptioninfo-calendar-event-create');
@@ -124,7 +124,7 @@ class ReceptionEvents {
 
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  ReceptionEvents(Element this.element, Context this.context) {
+  ReceptionCalendar(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
 
     this.location = new nav.Location(context.id, element.id, eventList.id);

@@ -46,13 +46,13 @@ class BobActive {
   View.ReceptionWebsites companyWebsites;
   View.ReceptionRegistrationNumber compayRegistrationNumber;
   View.ReceptionOther companyOther;
-  View.ContactInfo contactInfo;
+  View.Contact contactInfo;
   View.CallList globalQueue;
   View.CallManagement callManagement;
   //LocalQueue localQueue;
 
   View.ContextSwitcher contextSwitcher;
-  View.ReceptionEvents receptionEvents;
+  View.ReceptionCalendar receptionEvents;
   View.Message messageCompose;
 
   View.MessageFilter messageSearch;
@@ -83,7 +83,7 @@ class BobActive {
     contextSwitcher          = new View.ContextSwitcher(querySelector('#${Id.contextSwitcher}'), [homeContext, homePlusContext, messageContext]);
 
     /// Home context
-    contactInfo              = new View.ContactInfo(querySelector('#${Id.CONTACT_INFO}'), homeContext);
+    contactInfo              = new View.Contact(querySelector('#${Id.contactSelector}'), homeContext);
 
 
     messageCompose           = new View.Message(querySelector('#message-compose'), homeContext);
@@ -91,7 +91,7 @@ class BobActive {
     agentInfo                = new View.AgentInfo(querySelector('#${Id.AGENT_INFO}'));
     receptionSelector          = new View.ReceptionSelector(querySelector('#${Id.receptionSelector}'), homeContext)
     ..onSelectReception = messageCompose.callerNameField.focus;
-    receptionEvents          = new View.ReceptionEvents(querySelector('#${Id.receptionEvents}'), homeContext);
+    receptionEvents          = new View.ReceptionCalendar(querySelector('#${Id.receptionEvents}'), homeContext);
     companyHandling          = new View.ReceptionHandling(querySelector('#${Id.companyHandling}'), homeContext);
     companyOpeningHours      = new View.ReceptionOpeningHours(querySelector('#${Id.COMPANY_OPENINGHOURS}'), homeContext);
     companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${Id.COMPANY_SALESCALLS}'), homeContext);

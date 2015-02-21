@@ -1,4 +1,4 @@
-#contactinfo {/*.contact-info-placing {*/
+#contact-selector {
   height: 100%;
   width: 100%;
 }
@@ -7,7 +7,7 @@
   outline: 0.1em solid #67c1f3;
 }
 
-#contactinfo_search {
+#contact-selector-search {
   width: 100%;
 }
 
@@ -21,22 +21,22 @@ button.calendar-event-delete {
 }
 
 
-#contactinfo_calendar {
+#contact-calendar {
   width: 100%;
   height: 100%;
 }
 
-
-#contactinfo_data {
+#contact-data-header {
   top: 180px;
   left: 40.5%;
-  width: 59%;
+  width: 100%;
+  height: 90%;
 }
 
-#contactlist {
+/*#contactlist {
   height: 110%;
   overflow: auto;
-}
+}*/
 
 .contact-info-calendarbox {
   width: 100%;
@@ -44,16 +44,14 @@ button.calendar-event-delete {
   /* padding: 10px; */
 }
 
-.contactinfo-calendar-event-create {}
+/*.contactinfo-calendar-event-create {}*/
 
-.contact-info-container {
+#contact-calendar-list {
   height: 100%;
   width: 100%;
   overflow: auto;
   font-size: 0.9em;
 }
-
-
 
 .contact-info-datacolumn {
   height: 100%;
@@ -108,7 +106,7 @@ button.calendar-event-delete {
   overflow: hidden;
 }
 
-#contact-info-searchbar {
+#contact-selector-input {
   width: 100%;
   min-height: 30px;
   border: solid 2px #ccc;
@@ -117,7 +115,7 @@ button.calendar-event-delete {
   border-radius: 3px;
 }
 
-.contact-info-searchbox {
+.contact-selector-searchbox {
   width: 100%;
   padding: 10px;
 }
@@ -151,7 +149,7 @@ ul.contact-list>li.selected {
   border: 3px solid #67c1f3;
 }
 
-.contact-info-field {
+.contact-data-field {
   min-height: 40px;
   min-width: 300px;
   overflow: auto;
