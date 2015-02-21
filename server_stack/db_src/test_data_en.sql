@@ -346,8 +346,8 @@ VALUES (5, 5, 'Meatball Ltd.', '12340005',
 
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (6, 2, 'Farmer friends', '12340006',
-	   '{
-    "short_greeting": "",
+'{
+    "short_greeting": "Howdy yer'' talkin'' to...",
     "addresses": [
         "Farmer Avenue 1 - Far away-4600"
     ],
@@ -361,27 +361,26 @@ VALUES (6, 2, 'Farmer friends', '12340006',
         "Ask them to attend the animal fair and talk to the guy"
     ],
     "customertype": "",
-    "short_greeting": "Howdy yer'' talkin'' to...",
     "emailaddresses": [
         "info@farmers.com"
     ],
-    "greeting": Farmer friends, how may I help y''all?",
+    "greeting": "Farmerfriends,how mayI help y''all?",
     "handlings": [
-        "Always take a message"
+        "Alwaystakeamessage"
     ],
     "openinghours": [
-        "Outside of harvest season"
+        "Outsideofharvestseason"
     ],
-    "other": "Don''t tease the bull",
-    "product": "Livestock and such",
+    "other": "Don''tteasethebull",
+    "product": "Livestockandsuch",
     "registrationnumbers": [
         "DK-123456"
     ],
     "telephonenumbers": [
-        "+45 66 77 88 90"
+        "+4566778890"
     ],
     "websites": [
-        "http://www.farmerfriend.com/"
+        "http: //www.farmerfriend.com/"
     ]
 }');
 
@@ -488,7 +487,7 @@ VALUES
          '[
             { "value" : "60431990",
               "kind"  : "PSTN",
-              "description" : Cellphone - work",
+              "description" : "Cellphone - work",
               "billing_type": "cell",
               "tag": null,
               "confidential": false}
