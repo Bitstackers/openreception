@@ -26,7 +26,7 @@ abstract class Label {
   static const String ContactWorkHours          = 'Work hours';
   static const String ContactJobTitle           = 'Job Title';
   static const String ContactHandling           = 'Handling';
-  static const String ContactResponsibilities   = 'Resposibilities';
+  static const String ContactResponsibilities   = 'Responsibilities';
   static const String ContactDepartment         = 'Department';
   static const String ContactPhone              = 'Phones';
   static const String ContactRelations          = 'Relations';

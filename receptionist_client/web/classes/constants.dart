@@ -24,6 +24,11 @@ abstract class CssClass {
       'contact-calendar-event-create-starts-month';
   static const String contactCalendarEventCreateStartsYear =
       'contact-calendar-event-create-starts-year';
+  static const String contactDataDepartmentLabel = 'contact-data-department-label';
+  static const String contactDataHandlingLabel = 'contact-data-handling-label';
+  static const String contactDataJobtitleLabel = 'contact-data-jobtitle-label';
+  static const String contactDataPhoneLabel = 'contact-data-phone-label';
+  static const String contactDataResponsibilityLabel = 'contact-data-responsibility-label';
   static const String contactDataWorkhoursLabel = 'contact-data-workhours-label';
 }
 
@@ -33,7 +38,11 @@ abstract class Id {
   static const String contactCalendar = 'contact-calendar';
   static const String contactCalendarList = 'contact-calendar-list';
   static const String contactData = 'contact-data';
+  static const String contactDataDepartment = 'contact-data-department';
+  static const String contactDataHandlingList = 'contact-data-handling-list';
   static const String contactDataHeader = 'contact-data-header';
+  static const String contactDataPosition = 'contact-data-position';
+  static const String contactDataResponsibility = 'contact-data-responsibility';
   static const String contactSelector = 'contact-selector';
   static const String contactSelectorBody = 'contact-selector-body';
   static const String contactSelectorInput = 'contact-selector-input';
@@ -96,11 +105,7 @@ abstract class Id {
   static const contextSwitcher = 'context-switcher';
   static const CONTACT_ADDITIONAL_INFO = 'contactAdditionalInfo'; // TODO (TL): Bad name
   static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
-  static const CONTACT_DEPARTMENT = 'contactDepartment'; // TODO (TL): Bad name
   static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
-  static const CONTACT_HANDLING_LIST = 'contactHandlingList'; // TODO (TL): Bad name
-  static const CONTACT_POSITION = 'contactPosition'; // TODO (TL): Bad name
-  static const CONTACT_RESPONSIBILITY = 'contactResponsibility'; // TODO (TL): Bad name
   static const CONTACT_RELATIONS = 'contactRelations'; // TODO (TL): Bad name
   static const CONTACT_TELEPHONE_NUMBER_LIST = 'contactTelephoneNumberList'; // TODO (TL): Bad name
   static const LOGBOX_TABLE = 'logbox-table';
