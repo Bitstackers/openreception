@@ -48,7 +48,7 @@ class ContactData {
     position = querySelector('#${Id.contactDataPosition}');
     responsibility = querySelector('#${Id.contactDataResponsibility}');
     department = querySelector('#${Id.contactDataDepartment}');
-    telephoneNumberList = querySelector('#${Id.CONTACT_TELEPHONE_NUMBER_LIST}');
+    telephoneNumberList = querySelector('#${Id.contactDataTelephoneNumberList}');
     relations = querySelector('#${Id.CONTACT_RELATIONS}');
     emailAddressList = querySelector('#${Id.CONTACT_EMAIL_ADDRESS_LIST}');
     info = querySelector('#${Id.CONTACT_ADDITIONAL_INFO}');

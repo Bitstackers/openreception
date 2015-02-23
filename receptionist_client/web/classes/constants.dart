@@ -43,6 +43,7 @@ abstract class Id {
   static const String contactDataHeader = 'contact-data-header';
   static const String contactDataPosition = 'contact-data-position';
   static const String contactDataResponsibility = 'contact-data-responsibility';
+  static const String contactDataTelephoneNumberList = 'contact-data-telephone-number-list';
   static const String contactSelector = 'contact-selector';
   static const String contactSelectorBody = 'contact-selector-body';
   static const String contactSelectorInput = 'contact-selector-input';
@@ -107,7 +108,6 @@ abstract class Id {
   static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
   static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
   static const CONTACT_RELATIONS = 'contactRelations'; // TODO (TL): Bad name
-  static const CONTACT_TELEPHONE_NUMBER_LIST = 'contactTelephoneNumberList'; // TODO (TL): Bad name
   static const LOGBOX_TABLE = 'logbox-table';
   static const MESSAGE_SEARCH = 'message-search';
   static const NOTIFICATION_PANEL = 'notifications';
