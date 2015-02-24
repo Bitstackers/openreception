@@ -11,11 +11,7 @@ Map hangupCommandOK (peerID) =>
 
 void handlerCallHangup(HttpRequest request) {
 
-       final String context = '${libraryName}.handlerCallHangup';
-
        final String token   = request.uri.queryParameters['token'];
-
-       List<String> hangupGroups = ['Administrator'];
 
        bool aclCheck (ORModel.User user) => true;
 
@@ -51,8 +47,6 @@ void handlerCallHangup(HttpRequest request) {
      }
 
 void handlerCallHangupSpecific(HttpRequest request) {
-
-  final String context = '${libraryName}.handlerCallHangupSpecific';
 
   final String callID  = pathParameterString(request.uri, 'call');
   final String token   = request.uri.queryParameters['token'];

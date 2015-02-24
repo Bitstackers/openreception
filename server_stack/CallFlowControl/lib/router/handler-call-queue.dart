@@ -2,8 +2,6 @@ part of callflowcontrol.router;
 
 void handlerCallQueue(HttpRequest request) {
 
-  final String context = '${libraryName}.handlerCallQueue';
-
   bool available(Model.Call call) => call.inbound &&
                                      (call.state == Model.CallState.Queued ||
                                       call.state == Model.CallState.Created);

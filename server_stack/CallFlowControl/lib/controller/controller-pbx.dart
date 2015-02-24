@@ -104,7 +104,6 @@ abstract class PBX {
    */
   static Future transfer (Model.Call source, String extension) {
 
-    const String context = '${className}.transfer';
     ESL.Response transferResponse;
 
     return Model.PBXClient.api ('uuid_transfer ${source.channelID} ${extension}')

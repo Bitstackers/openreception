@@ -2,8 +2,6 @@ part of callflowcontrol.router;
 
 void handlerChannelList(HttpRequest request) {
 
-  final String context = '${libraryName}.handlerChannelList';
-
   try {
     List<Map> retval = new List<Map>();
     Model.ChannelList.instance.forEach ((channel) {
@@ -13,6 +11,7 @@ void handlerChannelList(HttpRequest request) {
     writeAndClose(request, JSON.encode( { "channels" : retval}));
   } catch (error, stacktrace) {
     serverError(request, error.toString());
+    logger.error(stacktrace);
   }
 
 }

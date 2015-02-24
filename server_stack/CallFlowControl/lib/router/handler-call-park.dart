@@ -7,7 +7,6 @@ Map parkOK (Model.Call call) =>
 
 void handlerCallPark(HttpRequest request) {
 
-  final String context = '${libraryName}.handlerCallPark';
   final String token   = request.uri.queryParameters['token'];
 
   String callID = pathParameterString(request.uri, "call");

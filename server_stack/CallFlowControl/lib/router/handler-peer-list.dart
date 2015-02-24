@@ -1,8 +1,7 @@
 part of callflowcontrol.router;
 
 void handlerPeerList(HttpRequest request) {
+  List simplePeerList = Model.PeerList.simplify().toList(growable: false);
 
-  final String context = '${libraryName}.handlerPeerList';
-
-  writeAndClose(request, JSON.encode(Model.PeerList.simplify().toList(growable: false)));
+  writeAndClose(request, JSON.encode(simplePeerList));
 }
