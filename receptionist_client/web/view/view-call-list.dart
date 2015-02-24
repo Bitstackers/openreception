@@ -25,7 +25,7 @@ class CallList {
   bool hasFocus = false;
 
   Element        get header       => this.element.querySelector('legend');
-  UListElement   get queuedCallUL => this.element.querySelector("#global-queue-list");
+  UListElement   get queuedCallUL => this.element.querySelector('#${Id.globalCallQueueList}');
   UListElement   get ownedCallsUL => querySelector("#local-call-list"); //TODO: Move this to a more local DOM scope.
 
   Element        get localCallsHeader => querySelector("#local-calls legend"); //TODO: Move this to a more local DOM scope.

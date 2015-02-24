@@ -1,4 +1,8 @@
-#company-sales-list {
+fieldset#reception-opening-hours ul {
+  overflow: auto;
+}
+
+#reception-opening-hours-list {
   height: 100%;
   width: 100%;
   overflow: auto;

@@ -24,7 +24,7 @@ class ContactData {
   DivElement element;
   UListElement emailAddressList;
   UListElement handlingList;
-  DivElement info;
+  DivElement additional;
   DivElement position;
   DivElement relations;
   DivElement responsibility;
@@ -40,8 +40,8 @@ class ContactData {
   HeadingElement get phoneHeader            => this.element.querySelector('.${CssClass.contactDataPhoneLabel}');
   HeadingElement get relationsHeader        => this.element.querySelector('.${CssClass.contactDataRelationsLabel}');
   HeadingElement get emailsHeader           => this.element.querySelector('.${CssClass.contactDataEmailsLabel}');
-  HeadingElement get extraHeader            => this.element.querySelector('.contact-info-extra-label');
-  HeadingElement get backupsHeader          => this.element.querySelector('.contact-info-backups-label');
+  HeadingElement get additionalHeader       => this.element.querySelector('.${CssClass.contactDataAdditionalInfoLabel}');
+  HeadingElement get backupsHeader          => this.element.querySelector('.${CssClass.contactDataBackupsLabel}');
 
   ContactData(DivElement this.element) {
     handlingList = querySelector('#${Id.contactDataHandlingList}');
@@ -51,8 +51,8 @@ class ContactData {
     telephoneNumberList = querySelector('#${Id.contactDataTelephoneNumberList}');
     relations = querySelector('#${Id.contactDataRelations}');
     emailAddressList = querySelector('#${Id.contactDataEmailsList}');
-    info = querySelector('#${Id.CONTACT_ADDITIONAL_INFO}');
-    backupList = querySelector('#${Id.CONTACT_BACKUP_LIST}');
+    additional = querySelector('#${Id.contactDataAdditionalInfo}');
+    backupList = querySelector('#${Id.contactDataBackupsList}');
 
     this._registerEventHandlers();
 
@@ -68,7 +68,7 @@ class ContactData {
     this.phoneHeader           .text = Label.ContactPhone;
     this.relationsHeader       .text = Label.ContactRelations;
     this.emailsHeader          .text = Label.ContactEmails;
-    this.extraHeader           .text = Label.ContactExtraInfo;
+    this.additionalHeader      .text = Label.ContactExtraInfo;
     this.backupsHeader         .text = Label.ContactBackups;
   }
 
@@ -122,7 +122,7 @@ class ContactData {
     });
 
 
-    info.innerHtml = contact.info != null ? contact.info : '';
+    additional.innerHtml = contact.info != null ? contact.info : '';
     backupList.children = contact.emailaddresses.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
   }
 

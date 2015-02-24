@@ -15,7 +15,7 @@ part of view;
 
 class ReceptionOpeningHours {
 
-  static const String className   = '${libraryName}.CompanyOpeningHours';
+  static const String className   = '${libraryName}.ReceptionOpeningHours';
   static const String NavShortcut = 'X';
 
   bool get muted => this.context != Context.current;
@@ -23,7 +23,7 @@ class ReceptionOpeningHours {
   Context         context;
   Element         element;
   bool            hasFocus  = false;
-  UListElement    get openingHoursList      => this.element.querySelector('#${Id.COMPANY_OPENINGHOURS_LIST}');
+  UListElement    get openingHoursList      => this.element.querySelector('#${Id.receptionOpeningHoursList}');
   Element         get header                => this.element.querySelector('legend');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

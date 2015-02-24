@@ -22,7 +22,7 @@ class ReceptionProduct {
   static const String className   = '${libraryName}.ReceptionProduct';
   static const String NavShortcut = 'F';
 
-  ParagraphElement get body     => this.element.querySelector('#${Id.COMPANY_PRODUCT_BODY}');
+  ParagraphElement get body     => this.element.querySelector('#${Id.receptionProductBody}');
   Element          get header   => this.element.querySelector('legend');
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

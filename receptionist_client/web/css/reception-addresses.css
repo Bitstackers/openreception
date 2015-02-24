@@ -1,8 +1,4 @@
-fieldset#companyopeninghours ul {
-  overflow: auto;
-}
-
-#company-opening-hours-list {
+ #reception-addresses-list {
   height: 100%;
   width: 100%;
   overflow: auto;
