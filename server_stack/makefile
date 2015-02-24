@@ -37,7 +37,7 @@ analyze:
 	@(cd CallFlowControl; dartanalyzer --no-hints --fatal-warnings bin/callflowcontrol.dart)
 
 analyze-hints:
-	@echo "! (cd CallFlowControl;; dartanalyzer bin/callflowcontrol.dart | grep '^\[')" | bash
+	@echo "! (cd CallFlowControl; dartanalyzer bin/callflowcontrol.dart | grep '^\[')" | bash
 	@echo "! (cd AuthServer; dartanalyzer bin/authserver.dart | grep '^\[')" | bash
 
 dependency:
