@@ -150,19 +150,19 @@ class CallList extends IterableBase<Call> {
     }
   }
 
-  void _handleChannelDestroy (ESL.Packet packet) {
+  void _handleChannelDestroy (ESL.Event event) {
     const String context = '${className}._handleChannelDestroy';
     try {
       /// Remove the call assignment from user->call and call->user
-      this.get(packet.uniqueID).release();
-      this.get(packet.uniqueID).changeState(CallState.Hungup);
+      this.get(event.uniqueID).release();
+      this.get(event.uniqueID).changeState(CallState.Hungup);
 
-      logger.debugContext('Hanging up ${packet.uniqueID}', context);
-      this.remove(packet.uniqueID);
+      logger.debugContext('Hanging up ${event.uniqueID}', context);
+      this.remove(event.uniqueID);
 
     } catch (error) {
       if (error is NotFound) {
-        logger.errorContext('Tried to hang up non-existing call ${packet.uniqueID}.'
+        logger.errorContext('Tried to hang up non-existing call ${event.uniqueID}.'
                             'Call list may be inconsistent - consider reloading.', context);
       } else {
         logger.errorContext(error, context);
@@ -171,17 +171,17 @@ class CallList extends IterableBase<Call> {
   }
 
 
-  void _handleCustom (ESL.Packet packet) {
+  void _handleCustom (ESL.Event event) {
     const String context = '${className}._handleCustom';
 
-    switch (packet.eventSubclass) {
+    switch (event.eventSubclass) {
       case ("AdaHeads::pre-queue-enter"):
-        this._createCall(packet);
+        this._createCall(event);
 
-        this.get(packet.uniqueID)
+        this.get(event.uniqueID)
             ..receptionID =
-              packet.contentAsMap.containsKey('variable_reception_id')
-                        ? int.parse(packet.field('variable_reception_id'))
+              event.contentAsMap.containsKey('variable_reception_id')
+                        ? int.parse(event.field('variable_reception_id'))
                         : 0
             ..changeState(CallState.Created);
 
@@ -197,27 +197,27 @@ class CallList extends IterableBase<Call> {
 //
 //           break;
       case ('AdaHeads::pre-queue-leave'):
-        logger.debugContext('Locking ${packet.uniqueID}', context);
-        CallList.instance.get (packet.uniqueID)
+        logger.debugContext('Locking ${event.uniqueID}', context);
+        CallList.instance.get (event.uniqueID)
           ..changeState (CallState.Transferring)
           ..locked = true;
         break;
 
       case ('AdaHeads::wait-queue-enter'):
-        logger.debugContext('Unlocking ${packet.uniqueID}', context);
-        CallList.instance.get (packet.uniqueID)
+        logger.debugContext('Unlocking ${event.uniqueID}', context);
+        CallList.instance.get (event.uniqueID)
           ..locked = false
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
           ..changeState (CallState.Queued);
         break;
 
       case ('AdaHeads::parking-lot-enter'):
-        CallList.instance.get (packet.uniqueID)
+        CallList.instance.get (event.uniqueID)
           ..changeState (CallState.Parked);
         break;
 
       case ('AdaHeads::parking-lot-leave'):
-        CallList.instance.get (packet.uniqueID)
+        CallList.instance.get (event.uniqueID)
           ..changeState (CallState.Transferring);
         break;
     }
@@ -280,51 +280,48 @@ class CallList extends IterableBase<Call> {
    * and may be troublesome when throwing around local calls. This has yet to be
    * tested, however.
    */
-  void _createCall(ESL.Packet packet) {
+  void _createCall(ESL.Event event) {
     const String context = '${className}._createCall';
 
-
-    ESL.Channel channel = ChannelList.instance.get(packet.uniqueID);
-
     /// Skip local channels
-    if (packet.contentAsMap.containsKey ('variable_${Controller.PBX.originationChan}')) {
-      logger.debugContext('Skipping origination channel ${packet.uniqueID}', context);
+    if (event.contentAsMap.containsKey ('variable_${Controller.PBX.originationChan}')) {
+      logger.debugContext('Skipping origination channel ${event.uniqueID}', context);
       return;
     }
 
-    if (packet.contentAsMap.containsKey ('Other-Leg-Username')) {
-      logger.debugContext('Skipping transfer channel ${packet.uniqueID}', context);
+    if (event.contentAsMap.containsKey ('Other-Leg-Username')) {
+      logger.debugContext('Skipping transfer channel ${event.uniqueID}', context);
       return;
     }
 
 
 
-    logger.debugContext('Creating new call ${packet.uniqueID}', context);
+    logger.debugContext('Creating new call ${event.uniqueID}', context);
 
 
-    int contactID = packet.contentAsMap.containsKey('variable_contact_id')
-                     ? int.parse(packet.field('variable_contact_id'))
+    int contactID = event.contentAsMap.containsKey('variable_contact_id')
+                     ? int.parse(event.field('variable_contact_id'))
                      : ORModel.Contact.noID;
 
-    int receptionID = packet.contentAsMap.containsKey('variable_reception_id')
-                       ? int.parse(packet.field('variable_reception_id'))
+    int receptionID = event.contentAsMap.containsKey('variable_reception_id')
+                       ? int.parse(event.field('variable_reception_id'))
                        : ORModel.Reception.noID;
 
-    int userID  = packet.contentAsMap.containsKey('variable_owner')
-                   ? int.parse(packet.field('variable_owner'))
+    int userID  = event.contentAsMap.containsKey('variable_owner')
+                   ? int.parse(event.field('variable_owner'))
                    : ORModel.User.nullID;
 
     Call createdCall = new Call()
-        ..ID = packet.uniqueID
-        ..inbound = (packet.field('Call-Direction') == 'inbound' ? true : false)
-        ..callerID = packet.field('Caller-Caller-ID-Number')
-        ..destination = packet.field('Caller-Destination-Number')
+        ..ID = event.uniqueID
+        ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
+        ..callerID = event.field('Caller-Caller-ID-Number')
+        ..destination = event.field('Caller-Destination-Number')
         ..receptionID = receptionID
         ..contactID   = contactID
         ..assignedTo  = userID;
 
 
-      this._map[packet.uniqueID] = createdCall;
+      this._map[event.uniqueID] = createdCall;
     }
 
   }

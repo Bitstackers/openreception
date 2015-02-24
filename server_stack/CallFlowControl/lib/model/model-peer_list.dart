@@ -23,16 +23,16 @@ abstract class PeerList implements IterableBase<Peer> {
     Notification.broadcast(ClientNotification.peerState (peer));
   }
 
-  static void _handlePacket (ESL.Packet packet) {
-    switch (packet.eventName) {
+  static void _handlePacket (ESL.Event event) {
+    switch (event.eventName) {
       case ("CUSTOM"):
-        switch (packet.eventSubclass) {
+        switch (event.eventSubclass) {
           case ("sofia::register"):
-            registerPeer (packet.field('username'), packet.field('contact'));
+            registerPeer (event.field('username'), event.field('contact'));
             break;
 
           case ("sofia::unregister"):
-            unRegisterPeer (packet.field('username'));
+            unRegisterPeer (event.field('username'));
             break;
         }
         break;
