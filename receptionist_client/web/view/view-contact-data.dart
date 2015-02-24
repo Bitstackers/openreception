@@ -39,7 +39,7 @@ class ContactData {
   HeadingElement get departmentHeader       => this.element.querySelector('.${CssClass.contactDataDepartmentLabel}');
   HeadingElement get phoneHeader            => this.element.querySelector('.${CssClass.contactDataPhoneLabel}');
   HeadingElement get relationsHeader        => this.element.querySelector('.${CssClass.contactDataRelationsLabel}');
-  HeadingElement get emailsHeader           => this.element.querySelector('.contact-info-emails-label');
+  HeadingElement get emailsHeader           => this.element.querySelector('.${CssClass.contactDataEmailsLabel}');
   HeadingElement get extraHeader            => this.element.querySelector('.contact-info-extra-label');
   HeadingElement get backupsHeader          => this.element.querySelector('.contact-info-backups-label');
 
@@ -50,7 +50,7 @@ class ContactData {
     department = querySelector('#${Id.contactDataDepartment}');
     telephoneNumberList = querySelector('#${Id.contactDataTelephoneNumberList}');
     relations = querySelector('#${Id.contactDataRelations}');
-    emailAddressList = querySelector('#${Id.CONTACT_EMAIL_ADDRESS_LIST}');
+    emailAddressList = querySelector('#${Id.contactDataEmailsList}');
     info = querySelector('#${Id.CONTACT_ADDITIONAL_INFO}');
     backupList = querySelector('#${Id.CONTACT_BACKUP_LIST}');
 

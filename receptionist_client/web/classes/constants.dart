@@ -25,6 +25,7 @@ abstract class CssClass {
   static const String contactCalendarEventCreateStartsYear =
       'contact-calendar-event-create-starts-year';
   static const String contactDataDepartmentLabel = 'contact-data-department-label';
+  static const String contactDataEmailsLabel = 'contact-data-emails-label';
   static const String contactDataHandlingLabel = 'contact-data-handling-label';
   static const String contactDataJobtitleLabel = 'contact-data-jobtitle-label';
   static const String contactDataPhoneLabel = 'contact-data-phone-label';
@@ -40,6 +41,7 @@ abstract class Id {
   static const String contactCalendarList = 'contact-calendar-list';
   static const String contactData = 'contact-data';
   static const String contactDataDepartment = 'contact-data-department';
+  static const String contactDataEmailsList = 'contact-data-emails-list';
   static const String contactDataHandlingList = 'contact-data-handling-list';
   static const String contactDataHeader = 'contact-data-header';
   static const String contactDataPosition = 'contact-data-position';
@@ -108,7 +110,7 @@ abstract class Id {
   static const contextSwitcher = 'context-switcher';
   static const CONTACT_ADDITIONAL_INFO = 'contactAdditionalInfo'; // TODO (TL): Bad name
   static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
-  static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
+//  static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
   static const LOGBOX_TABLE = 'logbox-table';
   static const MESSAGE_SEARCH = 'message-search';
   static const NOTIFICATION_PANEL = 'notifications';
