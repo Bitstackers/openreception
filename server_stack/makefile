@@ -24,11 +24,21 @@ SpawnerBinary=Spawner.dart
 
 all: $(OUTPUT_DIRECTORY) auth callflow contact log message messagedispatcher misc reception spawner notification
 
+analyze-all: analyze analyze-hints
+
 configs: */bin/config.json.dist
 	for source in */bin/config.json.dist; do \
 	   target=$${source%%.dist}; \
 	   cp -np $${source} $${target}; \
 	done
+
+analyze:
+	@(cd AuthServer; dartanalyzer --no-hints --fatal-warnings bin/authserver.dart)
+	@(cd CallFlowControl; dartanalyzer --no-hints --fatal-warnings bin/callflowcontrol.dart)
+
+analyze-hints:
+	@echo "! (cd CallFlowControl;; dartanalyzer bin/callflowcontrol.dart | grep '^\[')" | bash
+	@echo "! (cd AuthServer; dartanalyzer bin/authserver.dart | grep '^\[')" | bash
 
 dependency:
 	cd AuthServer/ && pub get 
