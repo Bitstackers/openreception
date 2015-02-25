@@ -1,5 +1,8 @@
 part of openreception.service.io;
 
+/**
+ * HTTP Client for use with dart:io.
+ */
 class Client extends Service.WebService {
 
   static final String className = '${libraryName}.Client';
@@ -8,6 +11,10 @@ class Client extends Service.WebService {
 
   final IO.HttpClient client = new IO.HttpClient();
 
+  /**
+   * Retrives [resource] using HTTP GET.
+   * Throws subclasses of [StorageException] upon failure.
+   */
   Future<String> get(Uri resource) {
     log.finest('GET $resource');
 
@@ -16,6 +23,10 @@ class Client extends Service.WebService {
       .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
   }
 
+  /**
+   * Retrives [resource] using HTTP PUT, sending [payload].
+   * Throws subclasses of [StorageException] upon failure.
+   */
   Future<String> put(Uri resource, String payload) {
     log.finest('PUT $resource');
 
@@ -27,6 +38,10 @@ class Client extends Service.WebService {
     .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
   }
 
+  /**
+   * Retrives [resource] using HTTP POST, sending [payload].
+   * Throws subclasses of [StorageException] upon failure.
+   */
   Future<String> post(Uri resource, String payload) {
     log.finest('POST $resource');
 
@@ -38,6 +53,10 @@ class Client extends Service.WebService {
     .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
   }
 
+  /**
+   * Retrives [resource] using HTTP DELETE.
+   * Throws subclasses of [StorageException] upon failure.
+   */
   Future<String> delete(Uri resource) {
     log.finest('DELETE $resource');
 
