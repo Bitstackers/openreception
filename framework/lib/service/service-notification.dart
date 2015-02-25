@@ -51,8 +51,8 @@ class NotificationService {
 
   /**
    * Every request sent to the phone is enqueued and executed in-order without
-   * the possibility to pipeline requests. The SNOM phones does not take kindly
-   * to concurrent requests, and this is a mean to prevent this from happening.
+   * the possibility to pipeline requests. This is done to enforce strict
+   * ordering of notifications, so that they are received in-order.
    */
   Future<String> _enqueue (NotificationRequest request) {
       if (!_busy) {
