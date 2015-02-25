@@ -9,6 +9,7 @@ import 'storage.dart' as Storage;
 import 'package:logging/logging.dart';
 
 part 'service/service-auth.dart';
+part 'service/service-auth_resource.dart';
 part 'service/service-call_flow_control.dart';
 part 'service/service-call_flow_control_resource.dart';
 part 'service/service-contact.dart';

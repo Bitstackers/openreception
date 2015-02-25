@@ -1,13 +1,5 @@
 part of openreception.service;
 
-abstract class AuthResource {
-
-  static String nameSpace = 'token';
-
-  static Uri tokenToUser(Uri host, String token)
-    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}/${token}');
-}
-
 class Authentication {
 
   static final String className = '${libraryName}.Authentication';
