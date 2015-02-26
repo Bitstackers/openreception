@@ -19,18 +19,18 @@
     <link rel="stylesheet" href="css/company-handling.css?v=1">
     <link rel="stylesheet" href="css/calendar.css?v=1">
 
+    <link rel="stylesheet" href="css/reception-customer-type.css?v=1">
+    <link rel="stylesheet" href="css/reception-email-addresses.css?v=1">
+    <link rel="stylesheet" href="css/reception-extra-information.css?v=1">
     <link rel="stylesheet" href="css/reception-opening-hours.css?v=1">
     <link rel="stylesheet" href="css/reception-sales-calls.css?v=1">
     <link rel="stylesheet" href="css/reception-product.css?v=1">
-    <link rel="stylesheet" href="css/company-customer_type.css?v=1">
+    <link rel="stylesheet" href="css/reception-websites.css?v=1">
     <link rel="stylesheet" href="css/company-telephone_numbers.css?v=1">
     <link rel="stylesheet" href="css/reception-addresses.css?v=1">
     <link rel="stylesheet" href="css/company-alternate_names.css?v=1">
     <link rel="stylesheet" href="css/company-banking_information.css?v=1">
-    <link rel="stylesheet" href="css/company-email_addresses.css?v=1">
-    <link rel="stylesheet" href="css/company-websites.css?v=1">
     <link rel="stylesheet" href="css/company-vat_number.css?v=1">
-    <link rel="stylesheet" href="css/company-other.css?v=1">
 
     <link rel="stylesheet" href="css/contact.css?v=1">
     <link rel="stylesheet" href="css/message-compose.css?v=1">
@@ -392,11 +392,11 @@
             <ul id="global-call-queue-list" class="zebra" tabindex="-1"></ul>
           </fieldset>
 
-          <fieldset id="local-calls" data-default-element="local-call-list" class="box-with-header-outer" style="height:16%">
+          <fieldset id="local-call-queue" data-default-element="local-call-queue-list" class="box-with-header-outer" style="height:16%">
             <legend> :: Lokale kald :: </legend>
 
             <div>
-              <ul class="zebra" id="local-call-list" tabindex="-1"></ul>
+              <ul class="zebra" id="local-call-queue-list" tabindex="-1"></ul>
             </div>
           </fieldset>
 
@@ -405,22 +405,25 @@
       </section>
 
       <!-- Context homeplus  -->
-      <section id="context-homeplus" data-default-widget="companyother" class="context hidden">
+      <section id="context-homeplus" data-default-widget="reception-extra-information" class="context hidden">
         <div id="context-homeplus-left" style="width: 30%; height: 99.5%%; overflow:hidden; float:left;">
 
-          <fieldset id="companyemailaddresses" class="box-with-header-outer" data-default-element="company-email-addresses-list">
+          <fieldset id="reception-email-addresses" class="box-with-header-outer" data-default-element="reception-email-addresses-list">
             <legend> :: Emailadresser :: </legend>
-            <ul id="company-email-addresses-list" class="zebra"></ul>
+
+            <ul id="reception-email-addresses-list" class="zebra"></ul>
           </fieldset>
 
-          <fieldset id="companywebsites" class="box-with-header-outer" data-default-element="company-websites-list">
+          <fieldset id="reception-websites" class="box-with-header-outer" data-default-element="reception-websites-list">
             <legend> :: Websites :: </legend>
-            <ul id="company-websites-list" class="zebra""></ul>
+
+            <ul id="reception-websites-list" class="zebra""></ul>
           </fieldset>
 
-          <fieldset id="companycustomertype" class="box-with-header-outer" data-default-element="company-customertype-body">
+          <fieldset id="reception-customer-type" class="box-with-header-outer" data-default-element="reception-customer-type-body">
             <legend> :: Kundetype :: </legend>
-            <p id="company-customertype-body"></p>
+
+            <p id="reception-customer-type-body"></p>
           </fieldset>
 
         </div>
@@ -451,7 +454,7 @@
         </div>
 
         <div id="context-home-plus-right" style="width: 39%; height: 100%; overflow:hidden; margin-left: 0.5%; float:left;">
-          <fieldset id="companyother" class="box-with-header-outer" data-default-element="company-other-body">
+          <fieldset id="reception-extra-information" class="box-with-header-outer" data-default-element="company-other-body">
             <legend> :: Ekstra data :: </legend>
             <p id="company-other-body" class="zebra" tabindex="-1"></p>
           </fieldset>

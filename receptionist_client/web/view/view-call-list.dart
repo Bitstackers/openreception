@@ -26,9 +26,9 @@ class CallList {
 
   Element        get header       => this.element.querySelector('legend');
   UListElement   get queuedCallUL => this.element.querySelector('#${Id.globalCallQueueList}');
-  UListElement   get ownedCallsUL => querySelector("#local-call-list"); //TODO: Move this to a more local DOM scope.
+  UListElement   get ownedCallsUL => querySelector('#${Id.localCallQueueList}');
 
-  Element        get localCallsHeader => querySelector("#local-calls legend"); //TODO: Move this to a more local DOM scope.
+  Element        get localCallsHeader => querySelector('#${Id.localCallQueue} legend');
 
   int callCount = 0;
 

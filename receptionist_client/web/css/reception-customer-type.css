@@ -1,9 +1,9 @@
-#companycustomertype {
+#reception-customer-type {
   height: 25%;
   width: 100%;
   overflow: auto;
 }
 
-#company-customertype-body {
+#reception-customer-type-body {
   padding: 5px;
 }

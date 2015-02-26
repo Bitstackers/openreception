@@ -28,7 +28,7 @@ class ReceptionEmailAddresses {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element         get header => this.element.querySelector('legend');
-  UListElement    get emailAddressList    => this.element.querySelector('#${Id.COMPANY_EMAIL_ADDRESSES_LIST}');
+  UListElement    get emailAddressList    => this.element.querySelector('#${Id.receptionEmailAddressesList}');
 
   ReceptionEmailAddresses(Element this.element, Context this.context) {
     String defaultElementId = 'data-default-element';
