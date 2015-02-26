@@ -13,64 +13,64 @@
 
 part of view;
 
-class ReceptionAlternateNames {
-  final Context uiContext;
+class ReceptionRegistrationNumber {
+
+  final Context context;
   final Element element;
 
-  static const String className = '${libraryName}.ReceptionAlternateNames';
-  static const String NavShortcut = 'F';
-
-  bool get muted     => this.uiContext != Context.current;
   bool     hasFocus  =  false;
+  bool get muted     => this.context != Context.current;
 
-  Element         get header             => this.element.querySelector('legend');
-  UListElement    get alternateNamesList => this.element.querySelector('#${Id.COMPANY_ALTERNATE_NAMES_LIST}');
-
-  List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
+  static const String className = '${libraryName}.ReceptionRegistrationNumber';
+  static const String NavShortcut = 'C';
+  List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  ReceptionAlternateNames(Element this.element, Context this.uiContext) {
-    assert(element.attributes.containsKey(defaultElementId));
-    ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
+  Element      get header                 => this.element.querySelector('legend');
+  UListElement get registrationNumberList => element.querySelector('#${Id.receptionRegistrationNumberList}');
 
-    header.children = [Icon.Building,
-                       new SpanElement()..text = Label.ReceptionAlternateNames,
+  ReceptionRegistrationNumber(Element this.element, Context this.context) {
+    assert(element.attributes.containsKey(defaultElementId));
+
+    ///Navigation shortcuts
+    keyboardHandler.registerNavShortcut(NavShortcut, (this._select));
+
+    header.children = [Icon.Gavel,
+                       new SpanElement()..text = Label.ReceptionRegistrationNumbers,
                        new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }
 
-  void _select() {
-    if (!this.muted) {
-      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, alternateNamesList.id));
+  void _select (_) {
+    if (!muted) {
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, registrationNumberList.id));
     }
   }
 
   void registerEventListeners() {
-
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, alternateNamesList.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, registrationNumberList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        alternateNamesList.focus();
+        registrationNumberList.focus();
       }
     });
   }
 
   void render(model.Reception reception) {
-    alternateNamesList.children.clear();
+    registrationNumberList.children.clear();
 
-    for(var value in reception.alternateNames) {
-      alternateNamesList.children.add(new LIElement()
+    for(var value in reception.vatNumbers) {
+      registrationNumberList.children.add(new LIElement()
                         ..text = value);
     }
   }

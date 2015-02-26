@@ -1,10 +1,10 @@
-#companytelephonenumbers {
+#reception-telephone-numbers {
   height: 25%;
   width: 100%;
   overflow: auto;
 }
 
-#company-telephonenumbers-list {
+#reception-telephone-numbers-list {
   width: 100%;
   overflow: auto;
   font-size: 0.9em;

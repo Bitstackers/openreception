@@ -26,7 +26,7 @@ class ReceptionTelephoneNumbers {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element         get header              => this.element.querySelector('legend');
-  UListElement    get telephoneNumberList => this.element.querySelector('#${Id.COMPANY_TELEPHONENUMBERS_LIST}');
+  UListElement    get telephoneNumberList => this.element.querySelector('#${Id.receptionTelephoneNumbersList}');
 
   ReceptionTelephoneNumbers(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));

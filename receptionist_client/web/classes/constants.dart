@@ -71,10 +71,12 @@ abstract class Id {
   static const String localCallQueue = 'local-call-queue';
   static const String localCallQueueList = 'local-call-queue-list';
 
-  static const String COMPANY_ALTERNATENAMES = 'companyalternatenames';
-  static const String COMPANY_BANKING_INFORMATION = 'companybankinginformation';
   static const String receptionAddresses = 'reception-addresses';
   static const String receptionAddressesList = 'reception-addresses-list';
+  static const String receptionAlternateNames = 'reception-alternate-names';
+  static const String receptionAlternateNamesList = 'reception-alternate-names-list';
+  static const String receptionBankingInformation = 'reception-banking-information';
+  static const String receptionBankingInformationList = 'reception-banking-information-list';
   static const String receptionCustomerType = 'reception-customer-type';
   static const String receptionCustomerTypeBody = 'reception-customer-type-body';
   static const String receptionEmailAddresses = 'reception-email-addresses';
@@ -86,14 +88,16 @@ abstract class Id {
   static const String receptionOpeningHoursList = 'reception-opening-hours-list';
   static const String receptionProduct = 'reception-product';
   static const String receptionProductBody = 'reception-product-body';
+  static const String receptionRegistrationNumber = 'reception-registration-number';
+  static const String receptionRegistrationNumberList = 'reception-registration-number-list';
   static const String receptionSalesCalls = 'reception-sales-calls';
   static const String receptionSalesCallsList = 'reception-sales-calls-list';
+  static const String receptionTelephoneNumbers = 'reception-telephone-numbers';
+  static const String receptionTelephoneNumbersList = 'reception-telephone-numbers-list';
   static const String receptionWebsites = 'reception-websites';
   static const String receptionWebsitesList = 'reception-websites-list';
   static const String companyHandling = 'company-handling';
   static const String companyHandlingList = 'company-handling-list';
-  static const String COMPANY_REGISTRATION_NUMBER = 'companyregistrationnumber';
-  static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
   static const String receptionSelector = 'reception-selector';
 
   static const String LOGBOX = 'logbox';
@@ -104,13 +108,9 @@ abstract class Id {
 
   static const AGENT_INFO = 'agent-info';
 //  static final CALL_MANAGEMENT = 'call-info'; // TODO (TL): Not in use???
-  static const COMPANY_ALTERNATE_NAMES_LIST = 'company-alternate-names-list';
-  static const COMPANY_BANKING_INFO_LIST = 'company-banking-info-list';
   static const receptionEventsList = 'reception-events-list';
   static const COMPANY_OTHER_BODY = 'company-other-body';
-  static const COMPANY_REGISTRATION_NUMBER_LIST = 'company-registration-number-list';
   static const receptionSelectorSearchbar = 'reception-selector-searchbar';
-  static const COMPANY_TELEPHONENUMBERS_LIST = 'company-telephonenumbers-list';
   static const contextSwitcher = 'context-switcher';
   static const LOGBOX_TABLE = 'logbox-table';
   static const MESSAGE_SEARCH = 'message-search';

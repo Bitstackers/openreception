@@ -136,13 +136,13 @@ class _KeyboardHandler {
 
   List<nav.Location> contextHomePlus =
       [new nav.Location(Id.contextHomeplus, Id.receptionCustomerType,       Id.receptionCustomerTypeBody),
-       new nav.Location(Id.contextHomeplus, Id.COMPANY_TELEPHONE_NUMBERS,   Id.COMPANY_TELEPHONENUMBERS_LIST),
+       new nav.Location(Id.contextHomeplus, Id.receptionTelephoneNumbers,   Id.receptionTelephoneNumbersList),
        new nav.Location(Id.contextHomeplus, Id.receptionAddresses,          Id.receptionAddressesList),
-       new nav.Location(Id.contextHomeplus, Id.COMPANY_ALTERNATENAMES,      Id.COMPANY_ALTERNATE_NAMES_LIST),
-       new nav.Location(Id.contextHomeplus, Id.COMPANY_BANKING_INFORMATION, Id.COMPANY_BANKING_INFO_LIST),
+       new nav.Location(Id.contextHomeplus, Id.receptionAlternateNames,     Id.receptionAlternateNamesList),
+       new nav.Location(Id.contextHomeplus, Id.receptionBankingInformation, Id.receptionBankingInformationList),
        new nav.Location(Id.contextHomeplus, Id.receptionEmailAddresses,     Id.receptionEmailAddressesList),
        new nav.Location(Id.contextHomeplus, Id.receptionWebsites,           Id.receptionWebsitesList),
-       new nav.Location(Id.contextHomeplus, Id.COMPANY_REGISTRATION_NUMBER, Id.COMPANY_REGISTRATION_NUMBER_LIST),
+       new nav.Location(Id.contextHomeplus, Id.receptionRegistrationNumber, Id.receptionRegistrationNumberList),
        new nav.Location(Id.contextHomeplus, Id.receptionExtraInformation,   Id.COMPANY_OTHER_BODY)
        ];
 

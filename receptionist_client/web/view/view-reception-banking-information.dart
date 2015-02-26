@@ -13,38 +13,38 @@
 
 part of view;
 
-class ReceptionRegistrationNumber {
-
+class ReceptionBankingInformation {
   final Context context;
   final Element element;
 
-  bool     hasFocus  =  false;
-  bool get muted     => this.context != Context.current;
+  bool            hasFocus  = false;
 
-  static const String className = '${libraryName}.ReceptionRegistrationNumber';
-  static const String NavShortcut = 'C';
+  bool get muted => this.context != Context.current;
+
+  static const String className = '${libraryName}.ReceptionAlternateNames';
+  static const String NavShortcut = 'X';
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
-  Element      get header                 => this.element.querySelector('legend');
-  UListElement get registrationNumberList => element.querySelector('#${Id.COMPANY_REGISTRATION_NUMBER_LIST}');
+  Element         get header                 => this.element.querySelector('legend');
+  UListElement    get bankingInformationList => this.element.querySelector('#${Id.receptionBankingInformationList}');
 
-  ReceptionRegistrationNumber(Element this.element, Context this.context) {
+  ReceptionBankingInformation(Element this.element, Context this.context) {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(NavShortcut, (this._select));
+    keyboardHandler.registerNavShortcut(NavShortcut, (_) => this._select());
 
-    header.children = [Icon.Gavel,
-                       new SpanElement()..text = Label.ReceptionRegistrationNumbers,
+    header.children = [Icon.Bank,
+                       new SpanElement()..text = Label.ReceptionBankingInformation,
                        new Nudge(NavShortcut).element];
 
     registerEventListeners();
   }
 
-  void _select (_) {
+  void _select() {
     if (!muted) {
-      Controller.Context.changeLocation(new nav.Location(context.id, element.id, registrationNumberList.id));
+      Controller.Context.changeLocation(new nav.Location(context.id, element.id, bankingInformationList.id));
     }
   }
 
@@ -54,24 +54,24 @@ class ReceptionRegistrationNumber {
     event.bus.on(event.receptionChanged).listen(render);
 
     element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, registrationNumberList.id));
+      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, bankingInformationList.id));
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
       element.classes.toggle(FOCUS, active);
       if(active) {
-        registrationNumberList.focus();
+        bankingInformationList.focus();
       }
     });
   }
 
   void render(model.Reception reception) {
-    registrationNumberList.children.clear();
+    bankingInformationList.children.clear();
 
-    for(var value in reception.vatNumbers) {
-      registrationNumberList.children.add(new LIElement()
-                        ..text = value);
+    for(var bankingInformation in reception.bankingInformation) {
+      bankingInformationList.children.add(new LIElement()
+                        ..text = bankingInformation);
     }
   }
 }
