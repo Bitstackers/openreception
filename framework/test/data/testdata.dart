@@ -1,10 +1,17 @@
 Map ReceptionEvent_1_4 =
 {
-    "event": {
-        "content": "Mus samtaler",
-        "start": "2014-03-26 08:00:00.000",
-        "stop": "2014-03-28 17:00:00.000"
-    }
+        "id": 4,
+        "start": 1395817200,
+        "stop": 1396022400,
+        "content": "Mus samtaler"
+};
+
+
+Map NewReceptionEvent_1 =
+{
+        "start": 1395917200,
+        "stop": 1396122400,
+        "content": "Ged samtaler"
 };
 
 Map testContact_1_2 =

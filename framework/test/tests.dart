@@ -4,8 +4,9 @@ import 'package:unittest/unittest.dart';
 //import 'package:logging/logging.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 
-import '../lib/model.dart'   as Model;
-import '../lib/service.dart' as Service;
+import '../lib/model.dart'    as Model;
+//import '../lib/service.dart'  as Service;
+import '../lib/resource.dart' as Resource;
 
 import 'data/testdata.dart'  as Test_Data;
 
@@ -21,19 +22,19 @@ void main() {
     test('serialization', MessageObject.serialization);
   });
 
-  group('service.MessageResource', () {
-    test('singleMessage', MessageResource.singleMessage);
-    test('send', MessageResource.send);
-    test('list', MessageResource.list);
-    test('subset', MessageResource.subset);
+  group('service.ResourceMessage', () {
+    test('singleMessage', ResourceMessage.singleMessage);
+    test('send', ResourceMessage.send);
+    test('list', ResourceMessage.list);
+    test('subset', ResourceMessage.subset);
   });
 
-  group('service.ReceptionResource', () {
-    test('singleMessage', ReceptionResource.single);
-    test('list', ReceptionResource.list);
-    test('subset', ReceptionResource.subset);
-    test('calendar', ReceptionResource.calendar);
-    test('calendarEvent', ReceptionResource.calendarEvent);
+  group('service.ResourceReception', () {
+    test('singleMessage', ResourceReception.single);
+    test('list', ResourceReception.list);
+    test('subset', ResourceReception.subset);
+    test('calendar', ResourceReception.calendar);
+    test('calendarEvent', ResourceReception.calendarEvent);
   });
 
 }
@@ -56,47 +57,47 @@ abstract class ContactObject {
         equals(Test_Data.testContact_1_2));
 }
 
-abstract class ReceptionResource {
+abstract class ResourceReception {
   static Uri receptionServer = Uri.parse('http://localhost:4000');
 
   static void single () =>
-      expect(Service.ReceptionResource.single(receptionServer, 1),
+      expect(Resource.Reception.single(receptionServer, 1),
         equals(Uri.parse('${receptionServer}/reception/1')));
 
   static void list () =>
-      expect(Service.ReceptionResource.list(receptionServer),
+      expect(Resource.Reception.list(receptionServer),
         equals(Uri.parse('${receptionServer}/reception')));
 
   static void subset () =>
-      expect(Service.ReceptionResource.subset(receptionServer, 10, 20),
+      expect(Resource.Reception.subset(receptionServer, 10, 20),
         equals(Uri.parse('${receptionServer}/reception/10/limit/20')));
 
   static void calendar () =>
-      expect(Service.ReceptionResource.calendar(receptionServer, 1),
+      expect(Resource.Reception.calendar(receptionServer, 1),
         equals(Uri.parse('${receptionServer}/reception/1/calendar')));
 
   static void calendarEvent () =>
-      expect(Service.ReceptionResource.calendarEvent(receptionServer, 1, 2),
+      expect(Resource.Reception.calendarEvent(receptionServer, 1, 2),
         equals(Uri.parse('${receptionServer}/reception/1/calendar/event/2')));
 }
 
-abstract class MessageResource {
+abstract class ResourceMessage {
   static Uri messageServer = Uri.parse('http://localhost:4040');
 
   static void singleMessage () =>
-      expect(Service.MessageResource.single(messageServer, 5),
+      expect(Resource.Message.single(messageServer, 5),
         equals(Uri.parse('${messageServer}/message/5')));
 
   static void send () =>
-      expect(Service.MessageResource.send(messageServer, 5),
+      expect(Resource.Message.send(messageServer, 5),
         equals(Uri.parse('${messageServer}/message/5/send')));
 
   static void list () =>
-      expect(Service.MessageResource.list(messageServer),
+      expect(Resource.Message.list(messageServer),
         equals(Uri.parse('${messageServer}/message/list')));
 
   static void subset () =>
-      expect(Service.MessageResource.subset(messageServer, 10, 20),
+      expect(Resource.Message.subset(messageServer, 10, 20),
         equals(Uri.parse('${messageServer}/message/list/10/limit/20')));
 }
 
