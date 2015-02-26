@@ -1,5 +1,6 @@
 name: openreception_client
 description: Receptionist browser-based console for OpenReception project.
+version: 0.0.1
 dependencies:
   browser: any
   event_bus: <0.3.0
@@ -12,4 +13,4 @@ dependencies:
     git:
       ref: master
       url: https://github.com/Bitstackers/OpenReceptionFramework.git
-    version: '>=0.0.15+2'
+    version: any
