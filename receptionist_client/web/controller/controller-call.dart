@@ -1,7 +1,6 @@
 part of controller;
 
 abstract class Call {
-
   static const String className = '${libraryName}.Call';
 
   static void dialSelectedContact() {

@@ -1,7 +1,6 @@
 part of controller;
 
 abstract class User {
-
   /**
    * Notifies the UI and servers that the receptionist is now ready
    * to handle another call.
@@ -23,5 +22,4 @@ abstract class User {
     });
 
   }
-
 }
