@@ -41,7 +41,7 @@ import 'view-labels-en.dart';
 
 part 'view-call.dart';
 part 'view-icons.dart';
-part 'view-call_list.dart';
+part 'view-call-list.dart';
 part 'view-call-management.dart';
 part 'view-reception-selector.dart';
 part 'view-context_switcher.dart';
@@ -61,7 +61,7 @@ part 'view-reception-banking_information.dart';
 part 'view-reception-customer_type.dart';
 part 'view-reception-email_addresses.dart';
 part 'view-reception-handling.dart';
-part 'view-reception-opening_hours.dart';
+part 'view-reception-opening-hours.dart';
 part 'view-reception-other.dart';
 part 'view-reception-product.dart';
 part 'view-reception-registration_number.dart';

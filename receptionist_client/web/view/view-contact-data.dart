@@ -24,7 +24,7 @@ class ContactData {
   DivElement element;
   UListElement emailAddressList;
   UListElement handlingList;
-  DivElement info;
+  DivElement additional;
   DivElement position;
   DivElement relations;
   DivElement responsibility;
@@ -33,26 +33,26 @@ class ContactData {
   List<Element> get nudges => this.element.querySelectorAll('.nudge');
 
   HeadingElement get workhoursHeader        => this.element.querySelector('.${CssClass.contactDataWorkhoursLabel}');
-  HeadingElement get jobtitleHeader         => this.element.querySelector('.contact-info-jobtitle-label');
-  HeadingElement get handlingHeader         => this.element.querySelector('.contact-info-handling-label');
-  HeadingElement get responsibilitiesHeader => this.element.querySelector('.contact-info-responsibilities-label');
-  HeadingElement get departmentHeader       => this.element.querySelector('.contact-info-department-label');
-  HeadingElement get phoneHeader            => this.element.querySelector('.contact-info-phone-label');
-  HeadingElement get relationsHeader        => this.element.querySelector('.contact-info-relations-label');
-  HeadingElement get emailsHeader           => this.element.querySelector('.contact-info-emails-label');
-  HeadingElement get extraHeader            => this.element.querySelector('.contact-info-extra-label');
-  HeadingElement get backupsHeader          => this.element.querySelector('.contact-info-backups-label');
+  HeadingElement get jobtitleHeader         => this.element.querySelector('.${CssClass.contactDataJobtitleLabel}');
+  HeadingElement get handlingHeader         => this.element.querySelector('.${CssClass.contactDataHandlingLabel}');
+  HeadingElement get responsibilityHeader   => this.element.querySelector('.${CssClass.contactDataResponsibilityLabel}');
+  HeadingElement get departmentHeader       => this.element.querySelector('.${CssClass.contactDataDepartmentLabel}');
+  HeadingElement get phoneHeader            => this.element.querySelector('.${CssClass.contactDataPhoneLabel}');
+  HeadingElement get relationsHeader        => this.element.querySelector('.${CssClass.contactDataRelationsLabel}');
+  HeadingElement get emailsHeader           => this.element.querySelector('.${CssClass.contactDataEmailsLabel}');
+  HeadingElement get additionalHeader       => this.element.querySelector('.${CssClass.contactDataAdditionalInfoLabel}');
+  HeadingElement get backupsHeader          => this.element.querySelector('.${CssClass.contactDataBackupsLabel}');
 
   ContactData(DivElement this.element) {
-    handlingList = querySelector('#${Id.CONTACT_HANDLING_LIST}');
-    position = querySelector('#${Id.CONTACT_POSITION}');
-    responsibility = querySelector('#${Id.CONTACT_RESPONSIBILITY}');
-    department = querySelector('#${Id.CONTACT_DEPARTMENT}');
-    telephoneNumberList = querySelector('#${Id.CONTACT_TELEPHONE_NUMBER_LIST}');
-    relations = querySelector('#${Id.CONTACT_RELATIONS}');
-    emailAddressList = querySelector('#${Id.CONTACT_EMAIL_ADDRESS_LIST}');
-    info = querySelector('#${Id.CONTACT_ADDITIONAL_INFO}');
-    backupList = querySelector('#${Id.CONTACT_BACKUP_LIST}');
+    handlingList = querySelector('#${Id.contactDataHandlingList}');
+    position = querySelector('#${Id.contactDataPosition}');
+    responsibility = querySelector('#${Id.contactDataResponsibility}');
+    department = querySelector('#${Id.contactDataDepartment}');
+    telephoneNumberList = querySelector('#${Id.contactDataTelephoneNumberList}');
+    relations = querySelector('#${Id.contactDataRelations}');
+    emailAddressList = querySelector('#${Id.contactDataEmailsList}');
+    additional = querySelector('#${Id.contactDataAdditionalInfo}');
+    backupList = querySelector('#${Id.contactDataBackupsList}');
 
     this._registerEventHandlers();
 
@@ -63,18 +63,16 @@ class ContactData {
     this.workhoursHeader       .text = Label.ContactWorkHours;
     this.jobtitleHeader        .text = Label.ContactJobTitle;
     this.handlingHeader        .text = Label.ContactHandling;
-    this.responsibilitiesHeader.text = Label.ContactResponsibilities;
+    this.responsibilityHeader  .text = Label.ContactResponsibilities;
     this.departmentHeader      .text = Label.ContactDepartment;
     this.phoneHeader           .text = Label.ContactPhone;
     this.relationsHeader       .text = Label.ContactRelations;
     this.emailsHeader          .text = Label.ContactEmails;
-    this.extraHeader           .text = Label.ContactExtraInfo;
+    this.additionalHeader      .text = Label.ContactExtraInfo;
     this.backupsHeader         .text = Label.ContactBackups;
-
   }
 
   void render(model.Contact contact) {
-
     workHoursList.children = contact.workhours.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
 
     if (workHoursList.children.isEmpty) workHoursList.children = [new LIElement()..text = Label.UnkownWorkHours];
@@ -124,7 +122,7 @@ class ContactData {
     });
 
 
-    info.innerHtml = contact.info != null ? contact.info : '';
+    additional.innerHtml = contact.info != null ? contact.info : '';
     backupList.children = contact.emailaddresses.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
   }
 

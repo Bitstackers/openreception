@@ -24,6 +24,15 @@ abstract class CssClass {
       'contact-calendar-event-create-starts-month';
   static const String contactCalendarEventCreateStartsYear =
       'contact-calendar-event-create-starts-year';
+  static const String contactDataAdditionalInfoLabel = 'contact-data-additional-info-label';
+  static const String contactDataBackupsLabel = 'contact-data-backups-label';
+  static const String contactDataDepartmentLabel = 'contact-data-department-label';
+  static const String contactDataEmailsLabel = 'contact-data-emails-label';
+  static const String contactDataHandlingLabel = 'contact-data-handling-label';
+  static const String contactDataJobtitleLabel = 'contact-data-jobtitle-label';
+  static const String contactDataPhoneLabel = 'contact-data-phone-label';
+  static const String contactDataRelationsLabel = 'contact-data-relations-label';
+  static const String contactDataResponsibilityLabel = 'contact-data-responsibility-label';
   static const String contactDataWorkhoursLabel = 'contact-data-workhours-label';
 }
 
@@ -33,7 +42,16 @@ abstract class Id {
   static const String contactCalendar = 'contact-calendar';
   static const String contactCalendarList = 'contact-calendar-list';
   static const String contactData = 'contact-data';
+  static const String contactDataAdditionalInfo = 'contact-data-additional-info';
+  static const String contactDataBackupsList = 'contact-data-backups-list';
+  static const String contactDataDepartment = 'contact-data-department';
+  static const String contactDataEmailsList = 'contact-data-emails-list';
+  static const String contactDataHandlingList = 'contact-data-handling-list';
   static const String contactDataHeader = 'contact-data-header';
+  static const String contactDataPosition = 'contact-data-position';
+  static const String contactDataRelations = 'contact-data-relations';
+  static const String contactDataResponsibility = 'contact-data-responsibility';
+  static const String contactDataTelephoneNumberList = 'contact-data-telephone-number-list';
   static const String contactSelector = 'contact-selector';
   static const String contactSelectorBody = 'contact-selector-body';
   static const String contactSelectorInput = 'contact-selector-input';
@@ -48,27 +66,31 @@ abstract class Id {
   static const String contextPhone = 'context-phone';
   static const String contextVoicemails = 'context-voicemails';
 
-  static const String COMPANY_ADDRESSES = 'companyaddresses';
+  static const String globalCallQueue = 'global-call-queue';
+  static const String globalCallQueueList = 'global-call-queue-list';
+
   static const String COMPANY_ALTERNATENAMES = 'companyalternatenames';
   static const String COMPANY_BANKING_INFORMATION = 'companybankinginformation';
   static const String COMPANY_CUSTOMERTYPE = 'companycustomertype';
   static const String COMPANY_EMAIL_ADDRESSES = 'companyemailaddresses';
+  static const String receptionAddresses = 'reception-addresses';
+  static const String receptionAddressesList = 'reception-addresses-list';
   static const String receptionEvents = 'reception-events';
   static const String receptionEventsHeader = 'reception-events-header';
+  static const String receptionOpeningHours = 'reception-opening-hours';
+  static const String receptionOpeningHoursList = 'reception-opening-hours-list';
+  static const String receptionProduct = 'reception-product';
+  static const String receptionProductBody = 'reception-product-body';
+  static const String receptionSalesCalls = 'reception-sales-calls';
+  static const String receptionSalesCallsList = 'reception-sales-calls-list';
   static const String companyHandling = 'company-handling';
   static const String companyHandlingList = 'company-handling-list';
-  static const String COMPANY_OPENINGHOURS = 'companyopeninghours';
   static const String COMPANY_OTHER = 'companyother';
-  static const String COMPANY_PRODUCT = 'companyproduct';
   static const String COMPANY_REGISTRATION_NUMBER = 'companyregistrationnumber';
-  static const String COMPANY_SALESCALLS = 'companysalescalls';
   static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
   static const String receptionSelector = 'reception-selector';
   static const String COMPANY_WEBSITES = 'companywebsites';
-  static const String GLOBAL_QUEUE = 'globalqueue';
 
-//  TODO (TL): Fix LOCAL_QUEUE so it is either a widget of it's own, or a proper
-//  child of globalqueue.
 //  static final String LOCAL_QUEUE = 'localqueue'; Currently called local-calls in HTML
 
   static const String LOGBOX = 'logbox';
@@ -79,30 +101,17 @@ abstract class Id {
 
   static const AGENT_INFO = 'agent-info';
 //  static final CALL_MANAGEMENT = 'call-info'; // TODO (TL): Not in use???
-  static const COMPANY_ADDRESSES_LIST = 'company-addresses-list';
   static const COMPANY_ALTERNATE_NAMES_LIST = 'company-alternate-names-list';
   static const COMPANY_BANKING_INFO_LIST = 'company-banking-info-list';
   static const COMPANY_CUSTOMERTYPE_BODY = 'company-customertype-body'; // TODO (TL): Bad name. *-body????
   static const COMPANY_EMAIL_ADDRESSES_LIST = 'company-email-addresses-list';
   static const receptionEventsList = 'reception-events-list';
-  static const COMPANY_OPENINGHOURS_LIST = 'company-opening-hours-list';
   static const COMPANY_OTHER_BODY = 'company-other-body';
-  static const COMPANY_PRODUCT_BODY = 'company-product-body';
   static const COMPANY_REGISTRATION_NUMBER_LIST = 'company-registration-number-list';
-  static const COMPANY_SALES_LIST = 'company-sales-list';
   static const receptionSelectorSearchbar = 'reception-selector-searchbar';
   static const COMPANY_TELEPHONENUMBERS_LIST = 'company-telephonenumbers-list';
   static const COMPANY_WEBSITES_LIST = 'company-websites-list';
   static const contextSwitcher = 'context-switcher';
-  static const CONTACT_ADDITIONAL_INFO = 'contactAdditionalInfo'; // TODO (TL): Bad name
-  static const CONTACT_BACKUP_LIST = 'contactBackupList'; // TODO (TL): Bad name
-  static const CONTACT_DEPARTMENT = 'contactDepartment'; // TODO (TL): Bad name
-  static const CONTACT_EMAIL_ADDRESS_LIST = 'contactEmailAddressList'; // TODO (TL): Bad name
-  static const CONTACT_HANDLING_LIST = 'contactHandlingList'; // TODO (TL): Bad name
-  static const CONTACT_POSITION = 'contactPosition'; // TODO (TL): Bad name
-  static const CONTACT_RESPONSIBILITY = 'contactResponsibility'; // TODO (TL): Bad name
-  static const CONTACT_RELATIONS = 'contactRelations'; // TODO (TL): Bad name
-  static const CONTACT_TELEPHONE_NUMBER_LIST = 'contactTelephoneNumberList'; // TODO (TL): Bad name
   static const LOGBOX_TABLE = 'logbox-table';
   static const MESSAGE_SEARCH = 'message-search';
   static const NOTIFICATION_PANEL = 'notifications';

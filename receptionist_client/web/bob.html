@@ -19,12 +19,12 @@
     <link rel="stylesheet" href="css/company-handling.css?v=1">
     <link rel="stylesheet" href="css/calendar.css?v=1">
 
-    <link rel="stylesheet" href="css/company-opening_hours.css?v=1">
-    <link rel="stylesheet" href="css/company-sales_calls.css?v=1">
-    <link rel="stylesheet" href="css/company-product.css?v=1">
+    <link rel="stylesheet" href="css/reception-opening-hours.css?v=1">
+    <link rel="stylesheet" href="css/reception-sales-calls.css?v=1">
+    <link rel="stylesheet" href="css/reception-product.css?v=1">
     <link rel="stylesheet" href="css/company-customer_type.css?v=1">
     <link rel="stylesheet" href="css/company-telephone_numbers.css?v=1">
-    <link rel="stylesheet" href="css/company-addresses.css?v=1">
+    <link rel="stylesheet" href="css/reception-addresses.css?v=1">
     <link rel="stylesheet" href="css/company-alternate_names.css?v=1">
     <link rel="stylesheet" href="css/company-banking_information.css?v=1">
     <link rel="stylesheet" href="css/company-email_addresses.css?v=1">
@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="css/contact.css?v=1">
     <link rel="stylesheet" href="css/message-compose.css?v=1">
-    <link rel="stylesheet" href="css/call_list.css?v=1">
+    <link rel="stylesheet" href="css/call-list.css?v=1">
 
     <link rel="stylesheet" href="css/context-message.css?v=1">
 
@@ -300,55 +300,55 @@
                         </div>
                       </td>
                       <td>
-                        <h5 class="contact-info-handling-label"> :: Kaldhåndtering :: </h5>
+                        <h5 class="contact-data-handling-label"> :: Kaldhåndtering :: </h5>
                         <div class="contact-data-field">
-                          <ul id="contactHandlingList" class="zebra"></ul>
+                          <ul id="contact-data-handling-list" class="zebra"></ul>
                         </div>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <h5 class="contact-info-jobtitle-label"> :: Stilling :: </h5>
-                        <div id="contactPosition" class="contact-data-field"></div>
+                        <h5 class="contact-data-jobtitle-label"> :: Stilling :: </h5>
+                        <div id="contact-data-position" class="contact-data-field"></div>
                       </td>
                       <td>
-                        <h5 class="contact-info-responsibilities-label"> :: Ansvar :: </h5>
-                        <div id="contactResponsibility" class="contact-data-field"></div>
+                        <h5 class="contact-data-responsibility-label"> :: Ansvar :: </h5>
+                        <div id="contact-data-responsibility" class="contact-data-field"></div>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <h5 class="contact-info-department-label"> :: Afdeling :: </h5>
-                        <div id="contactDepartment" class="contact-data-field"></div>
+                        <h5 class="contact-data-department-label"> :: Afdeling :: </h5>
+                        <div id="contact-data-department" class="contact-data-field"></div>
                       </td>
                       <td>
-                        <h5 class="contact-info-phone-label"> :: Telefon :: </h5>
+                        <h5 class="contact-data-phone-label"> :: Telefon :: </h5>
                         <div class="contact-data-field">
-                          <ol id="contactTelephoneNumberList" class="zebra"></ol>
+                          <ol id="contact-data-telephone-number-list" class="zebra"></ol>
                         </div>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <h5 class="contact-info-relations-label"> :: Relationer :: </h5>
-                        <div id="contactRelations" class="contact-data-field"></div>
+                        <h5 class="contact-data-relations-label"> :: Relationer :: </h5>
+                        <div id="contact-data-relations" class="contact-data-field"></div>
                       </td>
                       <td>
-                        <h5 class="contact-info-emails-label"> :: Email og kontakter :: </h5>
+                        <h5 class="contact-data-emails-label"> :: Email og kontakter :: </h5>
                         <div class="contact-data-field">
-                          <ul id="contactEmailAddressList" class="zebra"></ul>
+                          <ul id="contact-data-emails-list" class="zebra"></ul>
                         </div>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <h5 class="contact-info-extra-label"> :: Info :: </h5>
-                        <div id="contactAdditionalInfo" class="contact-data-field"></div>
+                        <h5 class="contact-data-additional-info-label"> :: Info :: </h5>
+                        <div id="contact-data-additional-info" class="contact-data-field"></div>
                       </td>
                       <td>
-                        <h5 class="contact-info-backups-label"> :: Backup :: </h5>
+                        <h5 class="contact-data-backups-label"> :: Backup :: </h5>
                         <div class="contact-data-field">
-                          <ul id="contactBackupList" class="zebra"></ul>
+                          <ul id="contact-data-backups-list" class="zebra"></ul>
                         </div>
                       </td>
                     </tr>
@@ -361,39 +361,42 @@
 
         <!-- Right column -->
         <div style="margin-left: 1%;width: 18.5%;height: 100%; float:left;">
-          <fieldset id="companyopeninghours" data-default-element="company-opening-hours-list" style="height:18%" class="box-with-header-outer">
+          <fieldset id="reception-opening-hours" data-default-element="reception-opening-hours-list" style="height:18%" class="box-with-header-outer">
             <legend>:: Åbningstider :: </legend>
-            <ul id="company-opening-hours-list" class="zebra" tabindex="-1"></ul>
+
+            <ul id="reception-opening-hours-list" class="zebra" tabindex="-1"></ul>
           </fieldset>
 
-           <fieldset id="companysalescalls" data-default-element="company-sales-list" style="height:15%" class="box-with-header-outer">
+          <fieldset id="reception-sales-calls" data-default-element="reception-sales-calls-list" style="height:15%" class="box-with-header-outer">
             <legend>:: Sælgere/Analyser :: </legend>
-            <ul id="company-sales-list" class="zebra" tabindex="-1"></ul>
-           </fieldset>
 
-           <fieldset id="companyproduct" data-default-element="company-product-body" style="height:15%" class="box-with-header-outer">
+            <ul id="reception-sales-calls-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+
+          <fieldset id="reception-product" data-default-element="reception-product-body" style="height:15%" class="box-with-header-outer">
             <legend>:: Produkter :: </legend>
-             <p id="company-product-body" tabindex="-1"></p>
-           </fieldset>
 
-           <fieldset id="companyaddresses" data-default-element="company-product-body" style="height:15%" class="box-with-header-outer">
-              <legend><i class="fa fa-location-arrow"></i>:: Adresser :: </legend>
-             <ul id="company-addresses-list" class="zebra" tabindex="-1"></ul>
-           </fieldset>
+            <p id="reception-product-body" tabindex="-1"></p>
+          </fieldset>
 
-           <!-- Call List -->
-           <fieldset id="globalqueue" class="box-with-header-outer" style="height:18%" >
-             <legend>:: Opkald ::</legend>
-             <ul class="zebra" id="global-queue-list" tabindex="-1"></ul>
+          <fieldset id="reception-addresses" data-default-element="reception-addresses-list" style="height:15%" class="box-with-header-outer">
+            <legend><i class="fa fa-location-arrow"></i>:: Adresser :: </legend>
 
-           </fieldset>
+            <ul id="reception-addresses-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
+
+          <!-- Call List -->
+          <fieldset id="global-call-queue" class="box-with-header-outer" style="height:18%" >
+            <legend>:: Opkald ::</legend>
+
+            <ul id="global-call-queue-list" class="zebra" tabindex="-1"></ul>
+          </fieldset>
 
           <fieldset id="local-calls" data-default-element="local-call-list" class="box-with-header-outer" style="height:16%">
-
             <legend> :: Lokale kald :: </legend>
+
             <div>
-             <ul class="zebra" id="local-call-list" tabindex="-1">
-             </ul>
+              <ul class="zebra" id="local-call-list" tabindex="-1"></ul>
             </div>
           </fieldset>
 
@@ -429,7 +432,7 @@
             <ul id="company-alternate-names-list" class="zebra" tabindex="-1"></ul>
           </fieldset>
 
-          <fieldset id="companytelephonenumbers" class="box-with-header-outer" data-default-element="company-product-body">
+          <fieldset id="companytelephonenumbers" class="box-with-header-outer" data-default-element="company-telephonenumbers-list">
             <legend> :: Telefonnumre :: </legend>
             <ul id="company-telephonenumbers-list" class="zebra" tabindex="-1"></ul>
           </fieldset>

@@ -34,12 +34,12 @@ class BobActive {
   View.ReceptionSelector receptionSelector;
 
   View.ReceptionHandling companyHandling;
-  View.ReceptionOpeningHours companyOpeningHours;
-  View.ReceptionSalesCalls companySalesCalls;
-  View.ReceptionProduct companyProduct;
+  View.ReceptionOpeningHours receptionOpeningHours;
+  View.ReceptionSalesCalls receptionSalesCalls;
+  View.ReceptionProduct receptionProduct;
   View.ReceptionCustomerType companyCustomerType;
   View.ReceptionTelephoneNumbers companyTelephoneNumbers;
-  View.ReceptionAddresses companyAddresses;
+  View.ReceptionAddresses receptionAddresses;
   View.ReceptionAlternateNames companyAlternateNames;
   View.ReceptionBankingInformation companyBankingInfomation;
   View.ReceptionEmailAddresses companyEmailAddresses;
@@ -47,7 +47,7 @@ class BobActive {
   View.ReceptionRegistrationNumber compayRegistrationNumber;
   View.ReceptionOther companyOther;
   View.Contact contactInfo;
-  View.CallList globalQueue;
+  View.CallList globalCallQueue;
   View.CallManagement callManagement;
   //LocalQueue localQueue;
 
@@ -93,17 +93,17 @@ class BobActive {
     ..onSelectReception = messageCompose.callerNameField.focus;
     receptionEvents          = new View.ReceptionCalendar(querySelector('#${Id.receptionEvents}'), homeContext);
     companyHandling          = new View.ReceptionHandling(querySelector('#${Id.companyHandling}'), homeContext);
-    companyOpeningHours      = new View.ReceptionOpeningHours(querySelector('#${Id.COMPANY_OPENINGHOURS}'), homeContext);
-    companySalesCalls        = new View.ReceptionSalesCalls(querySelector('#${Id.COMPANY_SALESCALLS}'), homeContext);
-    companyProduct           = new View.ReceptionProduct(querySelector('#${Id.COMPANY_PRODUCT}'), homeContext);
-    globalQueue              = new View.CallList(querySelector('#${Id.GLOBAL_QUEUE}'), homeContext);
+    receptionOpeningHours    = new View.ReceptionOpeningHours(querySelector('#${Id.receptionOpeningHours}'), homeContext);
+    receptionSalesCalls      = new View.ReceptionSalesCalls(querySelector('#${Id.receptionSalesCalls}'), homeContext);
+    receptionProduct         = new View.ReceptionProduct(querySelector('#${Id.receptionProduct}'), homeContext);
+    globalCallQueue          = new View.CallList(querySelector('#${Id.globalCallQueue}'), homeContext);
     callManagement           = new View.CallManagement(querySelector('#${Id.CALL_ORIGINATE}'), homeContext);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
 
     /// Home Plus context
     companyCustomerType      = new View.ReceptionCustomerType(querySelector('#${Id.COMPANY_CUSTOMERTYPE}'), homePlusContext);
     companyTelephoneNumbers  = new View.ReceptionTelephoneNumbers(querySelector('#${Id.COMPANY_TELEPHONE_NUMBERS}'), homePlusContext);
-    companyAddresses         = new View.ReceptionAddresses(querySelector('#${Id.COMPANY_ADDRESSES}'), homeContext);
+    receptionAddresses       = new View.ReceptionAddresses(querySelector('#${Id.receptionAddresses}'), homeContext);
     companyAlternateNames    = new View.ReceptionAlternateNames(querySelector('#${Id.COMPANY_ALTERNATENAMES}'), homePlusContext);
     companyBankingInfomation = new View.ReceptionBankingInformation(querySelector('#${Id.COMPANY_BANKING_INFORMATION}'), homePlusContext);
     companyEmailAddresses    = new View.ReceptionEmailAddresses(querySelector('#${Id.COMPANY_EMAIL_ADDRESSES}'), homePlusContext);
