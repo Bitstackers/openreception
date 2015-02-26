@@ -17,7 +17,7 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:convert';
 
-import '../classes/configuration.dart';
+import '../config/configuration.dart';
 import '../classes/logger.dart';
 
 part 'protocol-log.dart';

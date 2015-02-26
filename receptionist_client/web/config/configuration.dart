@@ -19,12 +19,11 @@ import 'dart:convert';
 
 import 'package:logging/logging.dart';
 
-import 'logger.dart';
-import 'state.dart';
+import '../classes/logger.dart';
+import '../classes/state.dart';
 
-//const String CONFIGURATION_URL = 'http://service.openreception.org/configuration';
-const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
-//const String CONFIGURATION_URL = 'http://orfdemo.xlab1.txlab.net:4080/configuration';
+part 'configuration_url.dart';
+
 
 final Configuration configuration = new Configuration._internal();
 

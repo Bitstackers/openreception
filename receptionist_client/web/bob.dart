@@ -20,7 +20,7 @@ import 'dart:html';
 import 'classes/bobactive.dart';
 import 'classes/bobdisaster.dart';
 import 'classes/bobloading.dart';
-import 'classes/configuration.dart';
+import 'config/configuration.dart';
 import 'classes/constants.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;

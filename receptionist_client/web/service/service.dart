@@ -26,7 +26,7 @@ import '../classes/logger.dart';
 
 import '../protocol/protocol.dart';
 import '../model/model.dart' as model;
-import '../classes/configuration.dart';
+import '../config/configuration.dart';
 
 part 'service-authentication.dart';
 part 'service-call.dart';

@@ -19,7 +19,7 @@ import 'dart:html';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
-import 'configuration.dart';
+import '../config/configuration.dart';
 import '../protocol/protocol.dart' as protocol;
 import 'state.dart';
 

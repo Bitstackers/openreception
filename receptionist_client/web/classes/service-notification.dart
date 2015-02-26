@@ -18,7 +18,7 @@ import 'dart:async';
 import 'package:event_bus/event_bus.dart';
 
 import '../controller/controller.dart' as Controller;
-import 'configuration.dart';
+import '../config/configuration.dart';
 import 'events.dart' as event;
 import 'logger.dart';
 import '../model/model.dart' as model;

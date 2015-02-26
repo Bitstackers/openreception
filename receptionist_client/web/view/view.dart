@@ -30,7 +30,7 @@ import '../classes/location.dart' as nav;
 import '../controller/controller.dart' as Controller;
 import '../classes/logger.dart';
 
-import '../classes/configuration.dart';
+import '../config/configuration.dart';
 import '../classes/context.dart';
 import '../classes/common.dart';
 import '../classes/focus.dart';

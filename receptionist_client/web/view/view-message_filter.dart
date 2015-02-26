@@ -56,7 +56,6 @@ class MessageFilter{
       switch (text) {
         case Label.Sent:
           model.MessageFilter.current.messageState = ORModel.MessageState.Sent;
-
           break;
 
         case Label.Saved:
