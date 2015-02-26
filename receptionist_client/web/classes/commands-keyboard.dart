@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library commands.keyboard;
+library commands_keyboard;
 
 import 'dart:async';
 import 'dart:html';
@@ -116,22 +116,22 @@ class _KeyboardHandler {
   List<nav.Location> contextHome =
       [new nav.Location(Id.contextHome, Id.receptionSelector,     Id.receptionSelectorSearchbar),
        new nav.Location(Id.contextHome, Id.receptionEvents,       Id.receptionEventsList),
-       new nav.Location(Id.contextHome, Id.companyHandling,       Id.companyHandlingList),
+       new nav.Location(Id.contextHome, Id.receptionHandling,     Id.receptionHandlingList),
        new nav.Location(Id.contextHome, Id.receptionOpeningHours, Id.receptionOpeningHoursList),
        new nav.Location(Id.contextHome, Id.receptionSalesCalls,   Id.receptionSalesCallsList),
        new nav.Location(Id.contextHome, Id.receptionProduct,      Id.receptionProductBody),
        new nav.Location(Id.contextHome, Id.contactSelector,       Id.contactSelectorInput),
        new nav.Location(Id.contextHome, Id.contactSelector,       Id.contactCalendar),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_SEARCHBOX),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_NAME),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_COMPANY),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_PHONE),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_CELLPHONE),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_LOCALNO),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_TEXT),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_CANCEL),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_DRAFT),
-       new nav.Location(Id.contextHome, Id.SENDMESSAGE,           Id.SENDMESSAGE_SEND)
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageSearchBox),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageName),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageReception),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessagePhone),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageCellPhone),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageLocalNo),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageText),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageCancel),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageDraft),
+       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageSend)
       ];
 
   List<nav.Location> contextHomePlus =
@@ -147,7 +147,7 @@ class _KeyboardHandler {
        ];
 
   List<nav.Location> contextPhone =
-      [new nav.Location(Id.contextPhone, Id.PHONEBOOTH, Id.PHONEBOOTH_NUMBERFIELD)];
+      [new nav.Location(Id.contextPhone, Id.phoneBooth, Id.phoneBoothNumberField)];
 
   Map<String, Map<nav.Location, int>> tabMap =
       {Id.contextHome       : new Map<nav.Location, int>(),

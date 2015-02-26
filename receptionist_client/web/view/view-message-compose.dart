@@ -46,7 +46,7 @@ class Message {
   bool get muted     => this.context != Context.current;
   bool get inFocus   => nav.Location.isActive(this.element);
 
-  UListElement get recipientsList => this.element.querySelector('.message-recipient-list');
+  UListElement get recipientsList => this.element.querySelector('.${CssClass.messageRecipientList}');
 
   List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

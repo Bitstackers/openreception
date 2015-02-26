@@ -1,0 +1,19 @@
+#log-box table{
+  width: 100%;
+}
+
+.log-box-time-header {
+  width: 8%;
+}
+
+.log-box-level-header {
+  width: 4%;
+}
+
+.log-box-message-header {
+  text-align:left;
+}
+
+.log-box-row:nth-of-type(even) {
+  background-color: #eee;
+}

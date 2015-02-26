@@ -21,24 +21,24 @@ String _currentFocusId = '';
 Map<String, int> _tabIndexes =
   {Id.receptionSelectorSearchbar:       1,
    'reception-events-list':             2,
-   'company-handling-list':             3,
+   Id.receptionHandlingList:            3,
    Id.contactSelectorInput:             4,
    'contact-calendar':                  6,
-   'sendmessagesearchbox':              8,
+   Id.sendMessageSearchBox:             8,
    'sendmessagesearchresult':           9,
-   'sendmessagename':                  10,
-   'sendmessagecompany':               11,
-   'sendmessagephone':                 12,
-   'sendmessagecellphone':             13,
-   'sendmessagelocalno':               14,
-   'sendmessagetext':                  15,
+   Id.sendMessageName:                 10,
+   Id.sendMessageReception:            11,
+   Id.sendMessagePhone:                12,
+   Id.sendMessageCellPhone:            13,
+   Id.sendMessageLocalNo:              14,
+   Id.sendMessageText:                 15,
    'send-message-checkbox1':           16,
    'send-message-checkbox2':           17,
    'send-message-checkbox3':           18,
    'send-message-checkbox4':           19,
-   'sendmessagecancel':                20,
-   'sendmessagedraft':                 21,
-   'sendmessagesend':                  22,
+   Id.sendMessageCancel:               20,
+   Id.sendMessageDraft:                21,
+   Id.sendMessageSend:                 22,
    Id.receptionOpeningHoursList:       25,
    Id.receptionSalesCallsList:         26,
    Id.receptionProductBody:            27,
@@ -61,9 +61,9 @@ Map<String, int> _tabIndexes =
    'message-search-print':              5,
    'message-search-resend':             6,
 
-   'phonebooth-company-searchbar':      1,
-   'phonebooth-numberfield':            2,
-   'phonebooth-button':                 3};
+   'phone-booth-reception-search-bar':  1,
+   'phone-booth-number-field':          2,
+   'phone-booth-button':                3};
 
 int getTabIndex (String id) {
   if(_tabIndexes.containsKey(id)) {

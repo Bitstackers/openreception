@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library BobLoading;
+library bob_loading;
 
 import 'dart:html';
 

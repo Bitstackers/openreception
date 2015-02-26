@@ -27,8 +27,7 @@ class ContextSwitcher {
   List<Element>  get nuges => this.element.querySelectorAll('.nudge');
 
   ContextSwitcher(UListElement this.element, List<Context> contexts) {
-
-    const context = '${className}.ContextSwitcher';
+//    const context = '${className}.ContextSwitcher';
 
     List<String> shortCuts = ['Q','W','E','R'];
 

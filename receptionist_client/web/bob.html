@@ -3,46 +3,41 @@
   <head>
     <meta charset="utf-8">
     <title>openReception Client</title>
+
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/buttons-min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/tables-min.css" >
 
-    <link rel="stylesheet" href="css/nudge.css?v=1">
-    <link rel="stylesheet" href="css/button-styles.css?v=1">
-    <link rel="stylesheet" href="css/agentinfo.css?v=1">
-    <link rel="stylesheet" href="css/context-switcher.css?v=1">
-    <link rel="stylesheet" href="css/placing_and_sizing.css?v=1">
-    <link rel="stylesheet" href="css/welcomemessage.css?v=1">
-    <link rel="stylesheet" href="css/reception-selector.css?v=1">
-    <link rel="stylesheet" href="css/reception-events.css?v=1">
+    <link rel="stylesheet" href="css/agent-info.css?v=1">
     <link rel="stylesheet" href="css/box.css?v=1">
-    <link rel="stylesheet" href="css/company-handling.css?v=1">
+    <link rel="stylesheet" href="css/button-styles.css?v=1">
     <link rel="stylesheet" href="css/calendar.css?v=1">
-
+    <link rel="stylesheet" href="css/call-list.css?v=1">
+    <link rel="stylesheet" href="css/contact.css?v=1">
+    <link rel="stylesheet" href="css/context-message.css?v=1">
+    <link rel="stylesheet" href="css/context-switcher.css?v=1">
+    <link rel="stylesheet" href="css/log-box.css?v=1">
+    <link rel="stylesheet" href="css/message-compose.css?v=1">
+    <link rel="stylesheet" href="css/nudge.css?v=1">
+    <link rel="stylesheet" href="css/placing-and-sizing.css?v=1">
     <link rel="stylesheet" href="css/reception-addresses.css?v=1">
-    <link rel="stylesheet" href="css/reception-banking-information.css?v=1">
     <link rel="stylesheet" href="css/reception-alternate-names.css?v=1">
+    <link rel="stylesheet" href="css/reception-banking-information.css?v=1">
     <link rel="stylesheet" href="css/reception-customer-type.css?v=1">
     <link rel="stylesheet" href="css/reception-email-addresses.css?v=1">
+    <link rel="stylesheet" href="css/reception-events.css?v=1">
     <link rel="stylesheet" href="css/reception-extra-information.css?v=1">
+    <link rel="stylesheet" href="css/reception-handling.css?v=1">
     <link rel="stylesheet" href="css/reception-opening-hours.css?v=1">
+    <link rel="stylesheet" href="css/reception-product.css?v=1">
     <link rel="stylesheet" href="css/reception-registration-number.css?v=1">
     <link rel="stylesheet" href="css/reception-sales-calls.css?v=1">
-    <link rel="stylesheet" href="css/reception-product.css?v=1">
-    <link rel="stylesheet" href="css/reception-websites.css?v=1">
+    <link rel="stylesheet" href="css/reception-selector.css?v=1">
     <link rel="stylesheet" href="css/reception-telephone-numbers.css?v=1">
-
-    <link rel="stylesheet" href="css/contact.css?v=1">
-    <link rel="stylesheet" href="css/message-compose.css?v=1">
-    <link rel="stylesheet" href="css/call-list.css?v=1">
-
-    <link rel="stylesheet" href="css/context-message.css?v=1">
-
-    <link rel="stylesheet" href="css/logbox.css?v=1">
-
+    <link rel="stylesheet" href="css/reception-websites.css?v=1">
+    <link rel="stylesheet" href="css/welcome-message.css?v=1">
   </head>
   <body>
-
     <div id="notifications"></div>
 
     <div id="bob-active">
@@ -164,9 +159,9 @@
             </div>
           </fieldset>
 
-          <fieldset id="company-handling" data-default-element="company-handling-list" class="box-with-header-outer" style="height: 22%;">
+          <fieldset id="reception-handling" data-default-element="reception-handling-list" class="box-with-header-outer" style="height: 22%;">
             <legend>:: Håndtering ::</legend>
-            <ul id="company-handling-list" class="zebra"></ul>
+            <ul id="reception-handling-list" class="zebra"></ul>
           </fieldset>
 
           <fieldset id="message-compose" data-default-element="message-compose-body" class="message-compose box-with-header-outer" style="height: 50%;">
@@ -180,47 +175,47 @@
 
             <textarea id="message-compose-body" style="resize: none;" class="message-body" placeholder="::Besked::" tabindex="-1"></textarea>
             <div style="width: 40%;float: left;">
-                <ul send-message-checkboxes>
-                  <li>
-                    <input id="message-compose-tag-pleasecall" type="checkbox" class="message-tag pleasecall">
-                    <label for="message-compose-tag-pleasecall">:: Ring venligst ::</label>
-                  </li>
-                  <li>
-                    <input id="message-compose-tag-callsback" type="checkbox" class="message-tag callsback">
-                    <label for="message-compose-tag-callsback">:: Ringer selv tilbage ::</label>
-                  </li>
-                  <li>
-                    <input id="message-compose-tag-hascalled" type="checkbox"  class="message-tag hascalled">
-                    <label for="message-compose-tag-hascalled">:: Har ringet ::</label>
-                  </li>
-                  <li>
-                    <input id="message-compose-tag-urgent" type="checkbox" class="message-tag urgent">
-                    <label for="message-compose-tag-urgent">:: Haster ::</label>
-                  </li>
-                  <li>
-                    <input id="message-compose-tag-draft" type="checkbox" class="message-tag draft">
-                    <label for="message-compose-tag-draft">:: Kladde ::</label>
-                  </li>
-                </ul>
-                </div>
-          <div style="float:left; height: 30%; width: 60%;">
-          <ul class="message-recipient-list"> </ul>
-          </div>
-          <div style="float: right;">
-            <button style="margin:0.5em;" class="cancel pure-button" tabindex="-1">
-               <i class="fa fa-cancel"></i>
-               :: Annuller ::
-            </button>
+              <ul>
+                <li>
+                  <input id="message-compose-tag-please-call" type="checkbox" class="message-tag pleasecall">
+                  <label for="message-compose-tag-please-call">:: Ring venligst ::</label>
+                </li>
+                <li>
+                  <input id="message-compose-tag-calls-back" type="checkbox" class="message-tag callsback">
+                  <label for="message-compose-tag-calls-back">:: Ringer selv tilbage ::</label>
+                </li>
+                <li>
+                  <input id="message-compose-tag-has-called" type="checkbox"  class="message-tag hascalled">
+                  <label for="message-compose-tag-has-called">:: Har ringet ::</label>
+                </li>
+                <li>
+                  <input id="message-compose-tag-urgent" type="checkbox" class="message-tag urgent">
+                  <label for="message-compose-tag-urgent">:: Haster ::</label>
+                </li>
+                <li>
+                  <input id="message-compose-tag-draft" type="checkbox" class="message-tag draft">
+                  <label for="message-compose-tag-draft">:: Kladde ::</label>
+                </li>
+              </ul>
+            </div>
+            <div style="float:left; height: 30%; width: 60%;">
+              <ul class="message-recipient-list"></ul>
+            </div>
+            <div style="float: right;">
+              <button style="margin:0.5em;" class="cancel pure-button" tabindex="-1">
+                <i class="fa fa-cancel"></i>
+                :: Annuller ::
+              </button>
 
-            <button style="margin:0.5em;" class="save pure-button" tabindex="-1">
-               <i class="fa fa-save"></i>
-               :: Gem ::
-            </button>
+              <button style="margin:0.5em;" class="save pure-button" tabindex="-1">
+                <i class="fa fa-save"></i>
+                :: Gem ::
+              </button>
 
-            <button style="margin:0.5em;" class="send pure-button" tabindex="-1">
-               <i class="fa fa-send"></i>
-               :: Send ::
-            </button>
+              <button style="margin:0.5em;" class="send pure-button" tabindex="-1">
+                <i class="fa fa-send"></i>
+                :: Send ::
+              </button>
             </div>
           </fieldset>
         </div>
@@ -474,12 +469,13 @@
 
           <div style="margin-left: 0%; width: 30%;height: 100%; float:left;">
             <fieldset id="message-search" class="box-with-header-outer" data-default-element="message-search-agent-selector" style="height: 35%; overflow: hidden;">
-            <legend> :: Søg :: </legend>
+              <legend> :: Søg :: </legend>
+
               <div class="message-search-box">
                 <div id="message-search-agent-selector"></div>
                 <div id="message-search-agent" style="margin:0.5em;"></div>
                 <div id="message-search-type"  style="margin:0.5em;"></div>
-                <div id="message-search-company"  style="margin:0.5em;"></div>
+                <div id="message-search-reception"  style="margin:0.5em;"></div>
                 <div id="message-search-contact"  style="margin:0.5em;"></div>
               </div>
             </fieldset>
@@ -508,61 +504,62 @@
 
             <textarea id="message-edit-body" style="resize: none;" class="message-body" placeholder="::Besked::" tabindex="-1"></textarea>
             <div style="width: 40%;float: left;">
-                <ul send-message-checkboxes>
-                  <li>
-                    <input id="message-edit-tag-pleasecall" type="checkbox" class="message-tag pleasecall">
-                    <label for="message-edit-tag-pleasecall">:: Ring venligst ::</label>
-                  </li>
-                  <li>
-                    <input id="message-edit-tag-callsback" type="checkbox" class="message-tag callsback">
-                    <label for="message-edit-tag-callsback">:: Ringer selv tilbage ::</label>
-                  </li>
-                  <li>
-                    <input id="message-edit-tag-hascalled" type="checkbox"  class="message-tag hascalled">
-                    <label for="message-edit-tag-hascalled">:: Har ringet ::</label>
-                  </li>
-                  <li>
-                    <input id="message-edit-tag-urgent" type="checkbox" class="message-tag urgent">
-                    <label for="message-edit-tag-urgent">:: Haster ::</label>
-                  </li>
-                  <li>
-                    <input id="message-edit-tag-draft" type="checkbox" class="message-tag draft">
-                    <label for="message-edit-tag-draft">:: Kladde ::</label>
-                  </li>
-                </ul>
-                </div>
-          <div style="float:left; height: 40%; width: 60%;">
-          <ul class="message-recipient-list"> </ul>
-          </div>
-          <div style="float: right;">
+              <ul send-message-checkboxes>
+                <li>
+                  <input id="message-edit-tag-pleasecall" type="checkbox" class="message-tag pleasecall">
+                  <label for="message-edit-tag-pleasecall">:: Ring venligst ::</label>
+                </li>
+                <li>
+                  <input id="message-edit-tag-callsback" type="checkbox" class="message-tag callsback">
+                  <label for="message-edit-tag-callsback">:: Ringer selv tilbage ::</label>
+                </li>
+                <li>
+                  <input id="message-edit-tag-hascalled" type="checkbox"  class="message-tag hascalled">
+                  <label for="message-edit-tag-hascalled">:: Har ringet ::</label>
+                </li>
+                <li>
+                  <input id="message-edit-tag-urgent" type="checkbox" class="message-tag urgent">
+                  <label for="message-edit-tag-urgent">:: Haster ::</label>
+                </li>
+                <li>
+                  <input id="message-edit-tag-draft" type="checkbox" class="message-tag draft">
+                  <label for="message-edit-tag-draft">:: Kladde ::</label>
+                </li>
+              </ul>
+            </div>
+            <div style="float:left; height: 40%; width: 60%;">
+              <ul class="message-recipient-list"></ul>
+            </div>
+            <div style="float: right;">
 
-            <button style="margin:0.5em;" class="copy pure-button" tabindex="-1">
-               <i class="fa fa-copy"></i>
-               :: Opret Kopi ::
-            </button>
+              <button style="margin:0.5em;" class="copy pure-button" tabindex="-1">
+                <i class="fa fa-copy"></i>
+                :: Opret Kopi ::
+              </button>
 
-            <button style="margin:0.5em;" class="save pure-button" tabindex="-1">
-               <i class="fa fa-save"></i>
-               :: Gem ::
-            </button>
+              <button style="margin:0.5em;" class="save pure-button" tabindex="-1">
+                <i class="fa fa-save"></i>
+                  :: Gem ::
+              </button>
 
-            <button style="margin:0.5em;" class="resend pure-button" tabindex="-1">
-               <i class="fa fa-send"></i>
-               :: Send ::
-            </button>
+              <button style="margin:0.5em;" class="resend pure-button" tabindex="-1">
+                <i class="fa fa-send"></i>
+                :: Send ::
+              </button>
             </div>
           </fieldset>
 
           </div>
           <!-- Right column -->
           <div style="margin-left: 1%;width: 69%;height: 100%; float:left;">
-            <fieldset id="messageoverview" data-default-element="message-overview-body" class="box-with-header-outer">
-            <legend>
-              <i class="fa fa-archive"></i>
-               :: Beskedarkiv ::
-            </legend>
-            <button style="margin:0.5em;" id="message-search-print" class="print pure-button" tabindex="-1"> <i class="fa fa-print"></i> :: Print :: </button>
-            <button style="margin:0.5em;" id="message-search-resend" class="resend-multiple pure-button" tabindex="-1"> <i class="fa fa-send"></i> :: Gensend valgte:: </button>
+            <fieldset id="message-overview" data-default-element="message-overview-body" class="box-with-header-outer">
+              <legend>
+                <i class="fa fa-archive"></i>
+                :: Beskedarkiv ::
+              </legend>
+
+              <button style="margin:0.5em;" id="message-search-print" class="print pure-button" tabindex="-1"> <i class="fa fa-print"></i> :: Print :: </button>
+              <button style="margin:0.5em;" id="message-search-resend" class="resend-multiple pure-button" tabindex="-1"> <i class="fa fa-send"></i> :: Gensend valgte:: </button>
 
               <table class="pure-table pure-table-striped">
                 <thead>
@@ -584,20 +581,21 @@
         </div>
       </section>
 
-      <section id="context-log" data-default-widget="logbox" class="context hidden">
-        <div id="logbox" data-default-element="logbox-table"></div>
+      <section id="context-log" data-default-widget="log-box" class="context hidden">
+        <div id="log-box" data-default-element="log-box-table"></div>
       </section>
     </div>
 
-    <div id="bobloading" class="loading-overlay">
+    <div id="bob-loading" class="loading-overlay">
       <div class="overlay-notification"> :: Hold on to your bits while we load :: </div>
       <img class="loading-big" src="images/loader-big.gif">
     </div>
 
-    <div id="bobdisaster" class="loading-overlay hidden">
+    <div id="bob-disaster" class="loading-overlay hidden">
       <div class="overlay-notification"> ::   Problems detected. Trying to recover :: </div>
       <img class="loading-big" src="images/loader-big.gif">
     </div>
+
     <script type="application/dart" src="bob.dart"></script>
     <script src="packages/browser/dart.js"></script>
   </body>

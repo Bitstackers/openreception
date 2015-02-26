@@ -13,21 +13,18 @@
 
 library model;
 
-import 'package:event_bus/event_bus.dart';
-
 import 'dart:async';
-import 'dart:convert';
 import 'dart:collection';
-import 'dart:math' hide log;
+import 'dart:convert';
 
-import 'package:intl/intl.dart';
-
-import '../classes/service-notification.dart' as Service;
+import '../controller/controller.dart' as Controller;
 import '../classes/events.dart' as event;
 import '../classes/logger.dart';
-import '../storage/storage.dart' as storage;
+import '../classes/service-notification.dart' as Service;
 import '../service/service.dart' as Service;
-import '../controller/controller.dart' as Controller;
+import '../storage/storage.dart' as storage;
+
+import 'package:event_bus/event_bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'model-call.dart';
@@ -45,10 +42,10 @@ part 'model-origination-request.dart';
 part 'model-peer.dart';
 part 'model-peer-list.dart';
 part 'model-phone-number.dart';
+part 'model-reception.dart';
 part 'model-recipient.dart';
+part 'model-transfer-request.dart';
 part 'model-user.dart';
 part 'model-user-status.dart';
-part 'model-reception.dart';
-part 'model-transfer-request.dart';
 
 const String libraryName = "model";

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library Common;
+library common;
 
 import 'dart:async';
 import 'dart:html';

@@ -54,7 +54,7 @@ class MessageList extends IterableBase<Message> {
    * Updates or inserts a [Message] object into the [MessageList].
    */
   void updateOrInsert(Message message) {
-    const String context = '${className}.update';
+//    const String context = '${className}.update';
     this._map[message.ID] = message;
   }
 

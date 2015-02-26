@@ -18,7 +18,7 @@ import 'dart:html';
 import 'constants.dart';
 import 'context.dart';
 import 'events.dart' as event;
-import 'commands.keyboard.dart';
+import 'commands-keyboard.dart';
 import 'location.dart' as nav;
 //import 'logger.dart';
 import 'state.dart';
@@ -33,7 +33,7 @@ class BobActive {
   View.AgentInfo agentInfo;
   View.ReceptionSelector receptionSelector;
 
-  View.ReceptionHandling companyHandling;
+  View.ReceptionHandling receptionHandling;
   View.ReceptionOpeningHours receptionOpeningHours;
   View.ReceptionSalesCalls receptionSalesCalls;
   View.ReceptionProduct receptionProduct;
@@ -86,18 +86,18 @@ class BobActive {
     contactInfo              = new View.Contact(querySelector('#${Id.contactSelector}'), homeContext);
 
 
-    messageCompose           = new View.Message(querySelector('#message-compose'), homeContext);
-    welcomeMessage           = new View.WelcomeMessage(querySelector('#${Id.WELCOME_MESSAGE}'));
-    agentInfo                = new View.AgentInfo(querySelector('#${Id.AGENT_INFO}'));
+    messageCompose           = new View.Message(querySelector('#${Id.messageCompose}'), homeContext);
+    welcomeMessage           = new View.WelcomeMessage(querySelector('#${Id.welcomeMessage}'));
+    agentInfo                = new View.AgentInfo(querySelector('#${Id.agentInfo}'));
     receptionSelector        = new View.ReceptionSelector(querySelector('#${Id.receptionSelector}'), homeContext)
                                       ..onSelectReception = messageCompose.callerNameField.focus;
     receptionEvents          = new View.ReceptionCalendar(querySelector('#${Id.receptionEvents}'), homeContext);
-    companyHandling          = new View.ReceptionHandling(querySelector('#${Id.companyHandling}'), homeContext);
+    receptionHandling        = new View.ReceptionHandling(querySelector('#${Id.receptionHandling}'), homeContext);
     receptionOpeningHours    = new View.ReceptionOpeningHours(querySelector('#${Id.receptionOpeningHours}'), homeContext);
     receptionSalesCalls      = new View.ReceptionSalesCalls(querySelector('#${Id.receptionSalesCalls}'), homeContext);
     receptionProduct         = new View.ReceptionProduct(querySelector('#${Id.receptionProduct}'), homeContext);
     globalCallQueue          = new View.CallList(querySelector('#${Id.globalCallQueue}'), homeContext);
-    callManagement           = new View.CallManagement(querySelector('#${Id.CALL_ORIGINATE}'), homeContext);
+    callManagement           = new View.CallManagement(querySelector('#${Id.callOriginate}'), homeContext);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
 
     /// Home Plus context
@@ -112,11 +112,11 @@ class BobActive {
     receptionExtraInformation   = new View.ReceptionExtraInformation(querySelector('#${Id.receptionExtraInformation}'), homePlusContext);
 
     /// Message context
-    messageSearch = new View.MessageFilter(querySelector('#${Id.MESSAGE_SEARCH}'), messageContext);
-    messageList   = new View.MessageList(querySelector('#${Id.MESSAGE_OVERVIEW}'), messageContext);
-    messageEdit   = new View.MessageEdit(querySelector('#${Id.MESSAGE_EDIT}'), messageContext);
+    messageSearch = new View.MessageFilter(querySelector('#${Id.messageSearch}'), messageContext);
+    messageList   = new View.MessageList(querySelector('#${Id.messageOverview}'), messageContext);
+    messageEdit   = new View.MessageEdit(querySelector('#${Id.messageEdit}'), messageContext);
 
-    logBox = new View.LogBox(querySelector('#${Id.LOGBOX}'));
+    logBox = new View.LogBox(querySelector('#${Id.logBox}'));
 
     //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
     keyboardHandler.toString();

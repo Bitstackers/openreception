@@ -331,7 +331,7 @@ class SearchComponent<T> {
     _dataList = newList;
     _list.clear();
     for(int i = 0; i < _dataList.length; i++) {
-      T dataElement = _dataList[i];
+//      T dataElement = _dataList[i];
       LIElement myLi;
       myLi = new LIElement()
         ..classes.add('active-result')

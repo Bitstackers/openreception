@@ -17,20 +17,19 @@
 import 'dart:async';
 import 'dart:html';
 
-import 'classes/bobactive.dart';
-import 'classes/bobdisaster.dart';
-import 'classes/bobloading.dart';
+import 'classes/bob-active.dart';
+import 'classes/bob-disaster.dart';
+import 'classes/bob-loading.dart';
 import 'config/configuration.dart';
 import 'classes/constants.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
 import 'classes/logger.dart';
-import 'classes/service-notification.dart';
-import 'classes/state.dart';
-
-import 'view/view.dart'       as View;
 import 'model/model.dart'     as Model;
 import 'service/service.dart' as Service;
+import 'classes/service-notification.dart';
+import 'classes/state.dart';
+import 'view/view.dart'       as View;
 
 import 'package:openreception_framework/model.dart' as ORModel;
 
@@ -51,8 +50,8 @@ void main() {
   //notification.initialize();
   //configuration.initialize();
 
-  bobLoading = new BobLoading(querySelector('#bobloading'));
-  bobDiaster = new BobDisaster(querySelector('#bobdisaster'));
+  bobLoading = new BobLoading(querySelector('#${Id.bobLoading}'));
+  bobDiaster = new BobDisaster(querySelector('#${Id.bobDisaster}'));
 
   StreamSubscription subscription;
   subscription = event.bus.on(event.stateUpdated).listen((State state) {
@@ -80,7 +79,7 @@ bool handleToken() {
         queryParam[key] = value;
       }
     });
-    var finalUrl = new Uri(scheme: url.scheme, userInfo: url.userInfo, host: url.host, port: url.port, path: url.path, queryParameters: queryParam, fragment: url.fragment);
+//    var finalUrl = new Uri(scheme: url.scheme, userInfo: url.userInfo, host: url.host, port: url.port, path: url.path, queryParameters: queryParam, fragment: url.fragment);
     //window.location.assign(finalUrl.toString());
     //Didn't work. try localStorage.
 

@@ -16,17 +16,15 @@ library service;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
-import 'package:logging/logging.dart' show Logger, Level, LogRecord;
-import 'package:openreception_framework/service.dart'      as ORService;
-import 'package:openreception_framework/storage.dart'      as ORStorage;
-import 'package:openreception_framework/service-html.dart' as ORServiceHTML;
 
-
-import '../classes/logger.dart';
-
-import '../protocol/protocol.dart';
-import '../model/model.dart' as model;
 import '../config/configuration.dart';
+import '../classes/logger.dart';
+import '../model/model.dart' as model;
+import '../protocol/protocol.dart';
+
+import 'package:openreception_framework/service.dart'      as ORService;
+import 'package:openreception_framework/service-html.dart' as ORServiceHTML;
+import 'package:openreception_framework/storage.dart'      as ORStorage;
 
 part 'service-authentication.dart';
 part 'service-call.dart';

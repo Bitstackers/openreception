@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library notification;
+library service_notification;
 
 import 'dart:async';
 
@@ -173,13 +173,13 @@ class EventSocket {
   }
 
   void _messageCreatedEventHandler(Map map) {
-    const String context = '${className}._messageCreatedEventHandler';
+//    const String context = '${className}._messageCreatedEventHandler';
 
     event.bus.fire(event.messageCreated, map['message']['id']);
   }
 
   void _userStateEventHandler(Map map) {
-    const String context = '${className}._userStateEventHandler';
+//    const String context = '${className}._userStateEventHandler';
 
     if (model.User.currentUser.ID == map ['userID']) {
       model.UserStatus.currentStatus.update(map ['newState']);
@@ -191,10 +191,8 @@ class EventSocket {
    * [environment.call] is received on the notification socket.
    */
   void _callStateEventHandler(Map json) {
-    const String context = '${className}._callStateEventHandler';
-
-    model.Call call = new model.Call.fromMap(json['call']);
-
+//    const String context = '${className}._callStateEventHandler';
+//    model.Call call = new model.Call.fromMap(json['call']);
   }
 
 

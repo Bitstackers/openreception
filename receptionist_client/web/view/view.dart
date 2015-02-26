@@ -34,7 +34,7 @@ import '../config/configuration.dart';
 import '../classes/context.dart';
 import '../classes/common.dart';
 import '../classes/focus.dart';
-import '../classes/commands.keyboard.dart';
+import '../classes/commands-keyboard.dart';
 import '../storage/storage.dart' as storage;
 
 import 'view-labels-en.dart';
@@ -45,7 +45,7 @@ part 'view-call-list.dart';
 part 'view-call-management.dart';
 part 'view-reception-selector.dart';
 part 'view-context-switcher.dart';
-part 'view-logbox.dart';
+part 'view-log-box.dart';
 part 'view-message-list.dart';
 part 'view-message-edit.dart';
 part 'view-notification.dart';

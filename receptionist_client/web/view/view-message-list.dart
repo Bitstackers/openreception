@@ -248,11 +248,11 @@ class MessageList {
   }
 
   void _setHeaderLabels() {
-    this.element.querySelector('#message-overview-header-timestamp').text = Label.MessageTakenAt;
-    this.element.querySelector('#message-overview-header-caller')   .text = Label.Caller;
-    this.element.querySelector('#message-overview-header-context')  .text = Label.Context;
-    this.element.querySelector('#message-overview-header-agent')    .text = Label.Agent;
-    this.element.querySelector('#message-overview-header-status')   .text = Label.Status;
+    this.element.querySelector('#${Id.messageOverviewHeaderTimestamp}').text = Label.MessageTakenAt;
+    this.element.querySelector('#${Id.messageOverviewHeaderCaller}')   .text = Label.Caller;
+    this.element.querySelector('#${Id.messageOverviewHeaderContext}')  .text = Label.Context;
+    this.element.querySelector('#${Id.messageOverviewHeaderAgent}')    .text = Label.Agent;
+    this.element.querySelector('#${Id.messageOverviewHeaderStatus}')   .text = Label.Status;
 
    this.printMessageButton
      ..children = [Icon.Print,

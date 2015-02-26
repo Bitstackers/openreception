@@ -13,7 +13,6 @@
 
 library context;
 
-import 'dart:async';
 import 'dart:html';
 
 import 'package:event_bus/event_bus.dart';
