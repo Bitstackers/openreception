@@ -1,15 +1,5 @@
 part of openreception.service;
 
-abstract class NotificationResource {
-  static final broadcast    = "/broadcast";
-  static final message      = "/message";
-
-  static Uri notifications(Uri host)
-      => Uri.parse('${host}/notifications');
-
-  static Uri notification(Uri host)
-      => Uri.parse('${host}/notification');
-}
 
 /**
  * TODO: Change to reflect the pattern of message.
@@ -21,6 +11,11 @@ class NotificationRequest {
   Completer response = new Completer();
 }
 
+/**
+ * Client for Notification sending.
+ *
+ * TODO: Figure out
+ */
 class NotificationService {
 
   static final String className = '${libraryName}.Notification';
@@ -41,7 +36,7 @@ class NotificationService {
    */
   Future broadcast(Map map) {
     final String context = '${className}.broadcast';
-    Uri host = Uri.parse('${this._host}${NotificationResource.broadcast}?token=${this._token}');
+    Uri host = Uri.parse('${this._host}${Resource.Notification.broadcast}?token=${this._token}');
 
     log.finest('POST $host $map');
 
@@ -66,10 +61,14 @@ class NotificationService {
       }
   }
 
+  /**
+   * Performs the actual backend post operation.
+   *
+   */
   Future _performRequest (NotificationRequest request) {
 
     void dispatchNext() {
-      log.severe('Dispatching next.');
+      log.finest('Dispatching next.');
       if (_requestQueue.isNotEmpty) {
         log.finest('Popping request from queue.');
         NotificationRequest currentRequest = _requestQueue.removeFirst();
@@ -89,12 +88,12 @@ class NotificationService {
 
 
   /**
-   * Opens a WebSocket connection
+   * Factory shortcut for opening a [NotificationSocket] client connection.
    */
   static Future<NotificationSocket> socket(WebSocket notificationBackend, Uri host, String serverToken) {
 
     return notificationBackend.connect(
-        appendToken(NotificationResource.notifications (host),serverToken))
+        appendToken(Resource.Notification.notifications (host),serverToken))
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
 
@@ -102,6 +101,9 @@ class NotificationService {
   static bool _UriEndsWithSlash (Uri uri) => uri.toString().endsWith('/');
 }
 
+/**
+ * Notification listener socket client.
+ */
 class NotificationSocket {
   static final String className = '${libraryName}.NotificationSocket';
 
@@ -120,5 +122,4 @@ class NotificationSocket {
     log.finest('Sending object: $map');
     this._streamController.add(new Model.Event.parse(map));
   }
-
 }

@@ -11,7 +11,7 @@ class RESTContactStore implements Storage.Contact {
   RESTContactStore (Uri this._host, String this._token, this._backend);
 
   Future<List<Map>> calendarMap (int contactID, int receptionID) {
-    Uri url = ContactResource.calendar(this._host, contactID, receptionID);
+    Uri url = Resource.Contact.calendar(this._host, contactID, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) {
@@ -29,7 +29,7 @@ class RESTContactStore implements Storage.Contact {
 
 
   Future<Model.Contact> get(int contactID) {
-    Uri url = ContactResource.single(this._host, contactID);
+    Uri url = Resource.Contact.single(this._host, contactID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -37,7 +37,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.Contact> create(Model.Contact contact) {
-    Uri url = ContactResource.root(this._host);
+    Uri url = Resource.Contact.root(this._host);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(contact.asMap);
@@ -46,7 +46,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.Contact> update(Model.Contact contact) {
-    Uri url = ContactResource.single(this._host, contact.ID);
+    Uri url = Resource.Contact.single(this._host, contact.ID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(contact.asMap);
@@ -55,7 +55,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.Contact> remove(Model.Contact contact) {
-    Uri url = ContactResource.single(this._host, contact.ID);
+    Uri url = Resource.Contact.single(this._host, contact.ID);
         url = appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
@@ -63,7 +63,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<List<Model.Contact>> list() {
-    Uri url = ContactResource.list(this._host);
+    Uri url = Resource.Contact.list(this._host);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -74,7 +74,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.Contact> getByReception(int contactID, int receptionID) {
-    Uri url = ContactResource.singleByReception(this._host, contactID, receptionID);
+    Uri url = Resource.Contact.singleByReception(this._host, contactID, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -82,7 +82,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<List<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter}) {
-    Uri url = ContactResource.listByReception(this._host, receptionID);
+    Uri url = Resource.Contact.listByReception(this._host, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -96,7 +96,7 @@ class RESTContactStore implements Storage.Contact {
           maps.map((Map map) => new Model.CalendarEvent.fromMap(map, receptionID)).toList());
 
   Future<Model.CalendarEvent> calendarEvent (int receptionID, int contactID, int eventID) {
-    Uri url = ContactResource.calendarEvent(this._host, contactID, receptionID, eventID);
+    Uri url = Resource.Contact.calendarEvent(this._host, contactID, receptionID, eventID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -104,7 +104,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event) {
-    Uri url = ContactResource.calendar (this._host, event.contactID, event.receptionID);
+    Uri url = Resource.Contact.calendar (this._host, event.contactID, event.receptionID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
@@ -113,7 +113,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event) {
-    Uri url = ContactResource.calendarEvent (this._host, event.contactID, event.receptionID, event.ID);
+    Uri url = Resource.Contact.calendarEvent (this._host, event.contactID, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
@@ -122,7 +122,7 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future calendarEventRemove (Model.CalendarEvent event) {
-    Uri url = ContactResource.calendarEvent(this._host, event.contactID, event.receptionID, event.ID);
+    Uri url = Resource.Contact.calendarEvent(this._host, event.contactID, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 
     return this._backend.delete(url);

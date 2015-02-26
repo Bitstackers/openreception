@@ -15,7 +15,7 @@ class Authentication {
    * Performs a lookup of the user on the notification server via the supplied token.
    */
   Future<Model.User> userOf(String token) =>
-      this._backed.get (AuthResource.tokenToUser(this._host, token))
+      this._backed.get (Resource.Authentication.tokenToUser(this._host, token))
       .then((String response)
         => new Model.User.fromMap(JSON.decode(response)));
 }

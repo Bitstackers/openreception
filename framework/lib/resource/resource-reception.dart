@@ -1,10 +1,10 @@
-part of openreception.service;
+part of openreception.resource;
 
 /**
  * Protocol wrapper class for building homogenic REST
  * resources across servers and clients.
  */
-abstract class ReceptionResource {
+abstract class Reception {
 
   static String nameSpace = 'reception';
 
@@ -12,7 +12,7 @@ abstract class ReceptionResource {
     Uri.parse('${root(host)}/${receptionID}');
 
   static Uri root(Uri host) =>
-    Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}');
+    Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 
   static Uri list(Uri host) =>
     Uri.parse('${root(host)}');

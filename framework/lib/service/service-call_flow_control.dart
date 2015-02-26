@@ -16,7 +16,7 @@ class CallFlowControl {
    */
   Future<Map> userStatusMap(int userID) =>
       this._backed.get
-        (appendToken(CallFlowControlResource.userStatus
+        (appendToken(Resource.CallFlowControl.userStatus
            (this._host, userID), this._token))
       .then((String response)
         => JSON.decode(response));
@@ -27,7 +27,7 @@ class CallFlowControl {
    */
   Future<Model.Call> get(String callID) =>
       this._backed.get
-        (appendToken(CallFlowControlResource.single
+        (appendToken(Resource.CallFlowControl.single
            (this._host, callID), this._token))
       .then((String response)
         => new Model.Call.fromMap (JSON.decode(response)));
@@ -37,7 +37,7 @@ class CallFlowControl {
    */
   Future<Model.Call> pickup (String callID) =>
       this._backed.post
-        (appendToken(CallFlowControlResource.pickup
+        (appendToken(Resource.CallFlowControl.pickup
            (this._host, callID), this._token),'')
       .then((String response)
         => new Model.Call.fromMap (JSON.decode(response)));
@@ -47,7 +47,7 @@ class CallFlowControl {
    */
   Future<Model.Call> originate (String extension, int contactID, int receptionID) =>
       this._backed.post
-        (appendToken(CallFlowControlResource.originate
+        (appendToken(Resource.CallFlowControl.originate
            (this._host, extension, contactID, receptionID), this._token),'')
       .then((String response)
         => new Model.Call.stub (JSON.decode(response)['call']));
@@ -57,7 +57,7 @@ class CallFlowControl {
    */
   Future<Model.Call> park (String callID) =>
       this._backed.post
-        (appendToken(CallFlowControlResource.park
+        (appendToken(Resource.CallFlowControl.park
            (this._host, callID), this._token),'')
       .then((String response)
         => new Model.Call.fromMap (JSON.decode(response)));
@@ -67,7 +67,7 @@ class CallFlowControl {
    */
   Future<Model.Call> hangup (String callID) =>
       this._backed.post
-        (appendToken(CallFlowControlResource.hangup
+        (appendToken(Resource.CallFlowControl.hangup
            (this._host, callID), this._token),'')
       .then((String response)
         => new Model.Call.fromMap (JSON.decode(response)));
@@ -77,7 +77,7 @@ class CallFlowControl {
    */
   Future<Model.Call> transfer (String callID, String destination) =>
       this._backed.post
-        (appendToken(CallFlowControlResource.transfer
+        (appendToken(Resource.CallFlowControl.transfer
            (this._host, callID, destination), this._token),'')
       .then((String response)
         => new Model.Call.fromMap (JSON.decode(response)));
@@ -88,7 +88,7 @@ class CallFlowControl {
   Future<Iterable<Model.Call>> callList() =>
       this._backed.get
         (appendToken
-           (CallFlowControlResource.list(this._host),this._token))
+           (Resource.CallFlowControl.list(this._host),this._token))
       .then((String response)
         => (JSON.decode(response)['calls'] as List).map((Map map) => new Model.Call.fromMap(map)));
 
@@ -98,7 +98,7 @@ class CallFlowControl {
   Future<Iterable<Model.Peer>> peerList() =>
       this._backed.get
         (appendToken
-           (CallFlowControlResource.peerList(this._host),this._token))
+           (Resource.CallFlowControl.peerList(this._host),this._token))
       .then((String response)
         => (JSON.decode(response) as List).map((Map map) => new Model.Peer.fromMap(map)));
 
@@ -106,7 +106,7 @@ class CallFlowControl {
    * Retrives the current Channel list as a Map.
    */
   Future<Iterable<Map>> channelListMap() {
-    Uri uri = CallFlowControlResource.channelList(this._host);
+    Uri uri = Resource.CallFlowControl.channelList(this._host);
         uri = appendToken(uri, this._token);
 
     return this._backed.get (uri).then((String response) => (JSON.decode(response)['channels']));
@@ -118,7 +118,7 @@ class CallFlowControl {
   Future<List<Model.Call>> queue() =>
       this._backed.get
         (appendToken
-           (CallFlowControlResource.queue(this._host),this._token))
+           (Resource.CallFlowControl.queue(this._host),this._token))
       .then((String response)
         => (JSON.decode(response) as List).map((Map map) => new Model.Call.fromMap(map)));
 }

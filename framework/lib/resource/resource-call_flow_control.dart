@@ -1,10 +1,10 @@
-part of openreception.service;
+part of openreception.resource;
 
 /**
  * Protocol wrapper class for building homogenic REST
  * resources across servers and clients.
  */
-abstract class CallFlowControlResource {
+abstract class CallFlowControl {
 
   static String nameSpace = 'call';
 
@@ -110,5 +110,5 @@ abstract class CallFlowControlResource {
    *    http://hostname/call
    */
   static Uri root(Uri host)
-    => Uri.parse('${_removeTailingSlashes(host)}/${nameSpace}');
+    => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 }

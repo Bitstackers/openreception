@@ -12,7 +12,7 @@ class RESTMessageStore implements Storage.Message {
 
   Future<Model.Message> get(int messageID) =>
       this._backed.get
-        (appendToken(MessageResource.single
+        (appendToken(Resource.Message.single
            (this._host, messageID), this._token))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
@@ -20,33 +20,33 @@ class RESTMessageStore implements Storage.Message {
   Future enqueue(Model.Message message) =>
       this._backed.post
         (appendToken
-           (MessageResource.send(this._host, message.ID), this._token), JSON.encode (message.asMap));
+           (Resource.Message.send(this._host, message.ID), this._token), JSON.encode (message.asMap));
 
   Future<Model.Message> create(Model.Message message) =>
       this._backed.post
         (appendToken
-           (MessageResource.root(this._host), this._token), JSON.encode(message.asMap))
+           (Resource.Message.root(this._host), this._token), JSON.encode(message.asMap))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
   Future<Model.Message> save(Model.Message message) =>
       this._backed.put
         (appendToken
-           (MessageResource.single(this._host, message.ID), this._token), JSON.encode (message.asMap))
+           (Resource.Message.single(this._host, message.ID), this._token), JSON.encode (message.asMap))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
   Future<List<Model.Message>> list({int limit: 100, Model.MessageFilter filter}) =>
       this._backed.get
         (appendToken
-           (MessageResource.list(this._host, limit: limit, filter : filter),this._token))
+           (Resource.Message.list(this._host, limit: limit, filter : filter),this._token))
       .then((String response)
         => (JSON.decode(response) as List).map((Map map) => new Model.Message.fromMap(map)).toList());
 
   Future<List<Model.Message>> subset(int upperMessageID, int count) =>
       this._backed.get
         (appendToken
-           (MessageResource.subset(this._host, upperMessageID, count), this._token))
+           (Resource.Message.subset(this._host, upperMessageID, count), this._token))
       .then((String response)
         => (JSON.decode(response) as List).map((Map map) => new Model.Message.fromMap(map)));
 }

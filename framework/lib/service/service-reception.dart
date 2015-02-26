@@ -14,7 +14,7 @@ class RESTReceptionStore implements Storage.Reception {
    * Returns a reception as a pure map.
    */
   Future<Map> getMap(int receptionID) {
-    Uri url = ReceptionResource.single(this._host, receptionID);
+    Uri url = Resource.Reception.single(this._host, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response)
@@ -25,7 +25,7 @@ class RESTReceptionStore implements Storage.Reception {
    * Returns a reception list as a list of maps.
    */
   Future<List<Map>> listMap () {
-    Uri url = ReceptionResource.list(this._host);
+    Uri url = Resource.Reception.list(this._host);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -33,7 +33,7 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   Future<Map> removeMap(int receptionID) {
-    Uri url = ReceptionResource.single(this._host, receptionID);
+    Uri url = Resource.Reception.single(this._host, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
@@ -46,7 +46,7 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   Future<List<Map>> calendarMap (int receptionID) {
-    Uri url = ReceptionResource.calendar(this._host, receptionID);
+    Uri url = Resource.Reception.calendar(this._host, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) {
@@ -85,7 +85,7 @@ class RESTReceptionStore implements Storage.Reception {
 
 
   Future<Model.Reception> create(Model.Reception reception) {
-    Uri url = ReceptionResource.root(this._host);
+    Uri url = Resource.Reception.root(this._host);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(reception.asMap);
@@ -95,7 +95,7 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   Future<Model.Reception> update(Model.Reception reception) {
-    Uri url = ReceptionResource.single(this._host, reception.ID);
+    Uri url = Resource.Reception.single(this._host, reception.ID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(reception.asMap);
@@ -105,7 +105,7 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   Future<Model.Reception> remove(int receptionID) {
-    Uri url = ReceptionResource.single(this._host, receptionID);
+    Uri url = Resource.Reception.single(this._host, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
@@ -122,7 +122,7 @@ class RESTReceptionStore implements Storage.Reception {
 
   //{int limit: 100, Model.ReceptionFilter filter}
   Future<List<Model.ReceptionStub>> list() {
-    Uri url = ReceptionResource.list(this._host);
+    Uri url = Resource.Reception.list(this._host);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -140,7 +140,7 @@ class RESTReceptionStore implements Storage.Reception {
               new Model.CalendarEvent.fromMap(calendarMap, receptionID)).toList());
 
   Future<Model.CalendarEvent> calendarEvent (int receptionID, int eventID) {
-    Uri url = ReceptionResource.calendarEvent(this._host, receptionID, eventID);
+    Uri url = Resource.Reception.calendarEvent(this._host, receptionID, eventID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -148,7 +148,7 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event) {
-    Uri url = ReceptionResource.calendar (this._host, event.receptionID);
+    Uri url = Resource.Reception.calendar (this._host, event.receptionID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
@@ -158,7 +158,7 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event) {
-    Uri url = ReceptionResource.calendarEvent (this._host, event.receptionID, event.ID);
+    Uri url = Resource.Reception.calendarEvent (this._host, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
@@ -168,7 +168,7 @@ class RESTReceptionStore implements Storage.Reception {
 
 
   Future calendarEventRemove (Model.CalendarEvent event) {
-    Uri url = ReceptionResource.calendarEvent(this._host, event.receptionID, event.ID);
+    Uri url = Resource.Reception.calendarEvent(this._host, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 
     return this._backend.delete(url);
