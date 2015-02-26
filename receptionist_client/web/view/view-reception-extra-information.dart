@@ -13,7 +13,7 @@
 
 part of view;
 
-class ReceptionOther {
+class ReceptionExtraInformation {
   final Context uiContext;
   final Element element;
 
@@ -28,7 +28,7 @@ class ReceptionOther {
   Element          get header => this.element.querySelector('legend');
   ParagraphElement get body   => element.querySelector('#${Id.COMPANY_OTHER_BODY}');
 
-  ReceptionOther(Element this.element, Context this.uiContext) {
+  ReceptionExtraInformation(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));
 
     ///Navigation shortcuts

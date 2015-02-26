@@ -19,7 +19,7 @@ import 'logger.dart';
 
 String _currentFocusId = '';
 Map<String, int> _tabIndexes =
-  {'reception-selector-searchbar':      1,
+  {Id.receptionSelectorSearchbar:       1,
    'reception-events-list':             2,
    'company-handling-list':             3,
    Id.contactSelectorInput:             4,
@@ -42,13 +42,13 @@ Map<String, int> _tabIndexes =
    Id.receptionOpeningHoursList:       25,
    Id.receptionSalesCallsList:         26,
    Id.receptionProductBody:            27,
-   'company-customertype-body':        28,
+   Id.receptionCustomerTypeBody:       28,
    'company-telephonenumbers-list':    29,
    Id.receptionAddressesList:          30,
    'company-alternate-names-list':     31,
    'company-banking-info-list':        32,
-   'company-email-addresses-list':     33,
-   'company-websites-list':            34,
+   Id.receptionEmailAddressesList:     33,
+   Id.receptionWebsitesList:           34,
    'company-registration-number-list': 35,
    'company-other-body':               36,
    Id.globalCallQueueList:             37,

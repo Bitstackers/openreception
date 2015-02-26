@@ -68,30 +68,33 @@ abstract class Id {
 
   static const String globalCallQueue = 'global-call-queue';
   static const String globalCallQueueList = 'global-call-queue-list';
+  static const String localCallQueue = 'local-call-queue';
+  static const String localCallQueueList = 'local-call-queue-list';
 
   static const String COMPANY_ALTERNATENAMES = 'companyalternatenames';
   static const String COMPANY_BANKING_INFORMATION = 'companybankinginformation';
-  static const String COMPANY_CUSTOMERTYPE = 'companycustomertype';
-  static const String COMPANY_EMAIL_ADDRESSES = 'companyemailaddresses';
   static const String receptionAddresses = 'reception-addresses';
   static const String receptionAddressesList = 'reception-addresses-list';
+  static const String receptionCustomerType = 'reception-customer-type';
+  static const String receptionCustomerTypeBody = 'reception-customer-type-body';
+  static const String receptionEmailAddresses = 'reception-email-addresses';
+  static const String receptionEmailAddressesList = 'reception-email-addresses-list';
   static const String receptionEvents = 'reception-events';
   static const String receptionEventsHeader = 'reception-events-header';
+  static const String receptionExtraInformation = 'reception-extra-information';
   static const String receptionOpeningHours = 'reception-opening-hours';
   static const String receptionOpeningHoursList = 'reception-opening-hours-list';
   static const String receptionProduct = 'reception-product';
   static const String receptionProductBody = 'reception-product-body';
   static const String receptionSalesCalls = 'reception-sales-calls';
   static const String receptionSalesCallsList = 'reception-sales-calls-list';
+  static const String receptionWebsites = 'reception-websites';
+  static const String receptionWebsitesList = 'reception-websites-list';
   static const String companyHandling = 'company-handling';
   static const String companyHandlingList = 'company-handling-list';
-  static const String COMPANY_OTHER = 'companyother';
   static const String COMPANY_REGISTRATION_NUMBER = 'companyregistrationnumber';
   static const String COMPANY_TELEPHONE_NUMBERS = 'companytelephonenumbers';
   static const String receptionSelector = 'reception-selector';
-  static const String COMPANY_WEBSITES = 'companywebsites';
-
-//  static final String LOCAL_QUEUE = 'localqueue'; Currently called local-calls in HTML
 
   static const String LOGBOX = 'logbox';
   static const String MESSAGE_OVERVIEW = 'messageoverview';
@@ -103,14 +106,11 @@ abstract class Id {
 //  static final CALL_MANAGEMENT = 'call-info'; // TODO (TL): Not in use???
   static const COMPANY_ALTERNATE_NAMES_LIST = 'company-alternate-names-list';
   static const COMPANY_BANKING_INFO_LIST = 'company-banking-info-list';
-  static const COMPANY_CUSTOMERTYPE_BODY = 'company-customertype-body'; // TODO (TL): Bad name. *-body????
-  static const COMPANY_EMAIL_ADDRESSES_LIST = 'company-email-addresses-list';
   static const receptionEventsList = 'reception-events-list';
   static const COMPANY_OTHER_BODY = 'company-other-body';
   static const COMPANY_REGISTRATION_NUMBER_LIST = 'company-registration-number-list';
   static const receptionSelectorSearchbar = 'reception-selector-searchbar';
   static const COMPANY_TELEPHONENUMBERS_LIST = 'company-telephonenumbers-list';
-  static const COMPANY_WEBSITES_LIST = 'company-websites-list';
   static const contextSwitcher = 'context-switcher';
   static const LOGBOX_TABLE = 'logbox-table';
   static const MESSAGE_SEARCH = 'message-search';
