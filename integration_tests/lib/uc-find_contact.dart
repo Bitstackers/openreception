@@ -1,9 +1,8 @@
-import 'package:logging/logging.dart';
-import 'dart:async';
+part of or_test_fw;
 
-abstract class FindContact {
+abstract class Message {
 
-  static String className = 'FindContact';
+  static String className = 'Message';
 
   static DateTime startTime = null;
   static int nextStep = 1;
@@ -25,13 +24,13 @@ abstract class FindContact {
   @deprecated
   static void Postprocessing() => teardown();
 
-  static void step(String message) => log.finest('Step $nextStep++: $message');
+  static void step(String message) => log.finest('Step ${nextStep++}: $message');
 
   /**
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Finde-en-kontakt#variant-1-1
    **/
 
-  static Future findContact_1() {
+  static Future send_message_1_a() {
     return new Future(() {
       setup();
 

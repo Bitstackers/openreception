@@ -6,4 +6,5 @@ class CustomerPool extends Pool<Customer>{
   static CustomerPool instance = null;
 
   CustomerPool(Iterable<Customer> elements) : super (elements);
+
 }

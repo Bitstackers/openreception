@@ -9,7 +9,13 @@ import '../lib/managementserver.dart' as mgt;
 
 import 'package:logging/logging.dart';
 
-const String pbxHost = '192.168.1.116';
+const String pbxHost = '192.168.1.135';
+
+abstract class Config {
+  static final Uri NotificationSocketUri =
+      Uri.parse('ws://localhost:4200/notifications');
+  static const String ServerToken = 'feedabbadeadbeef0';
+}
 
 
 final SIPAccount account1107 =
@@ -40,36 +46,83 @@ final Map<String, String> SNOMphonesHostnames =
 */
 
 final Map<String, String> SNOMphonesHostnames =
-{'1107' : 'snom360-295AD1.home.greenpc.dk',
- '1108' : 'snom320-383ad8.home.greenpc.dk',
- '1109' : 'snom720-771C98.home.greenpc.dk'};
+{'1107' : 'snom360-295AD1.home.gir.dk',
+ '1108' : 'snom320-383ad8.home.gir.dk',
+ '1109' : 'snom720-771C98.home.gir.dk'};
+
+Map<String, SNOMPhone> SNOMphonesResolutionMap = {};
+
+async.Future initSNOMPhones() {
+
+  [account1107, account1108, account1109].forEach((SIPAccount account)
+      => SNOMphonesResolutionMap.addAll({account.username : account.phone}));
+
+  SNOMphonesResolutionMap.forEach((id, phone) =>
+      phone.eventStream.listen((event) => print ('EVENT: $id $event')));
+
+  SNOMActionGateway snomgw = new SNOMActionGateway(SNOMphonesResolutionMap);
+    return snomgw.start(hostname: pbxHost)
+      .then((_) => snomgw.phones.values.forEach((SNOMPhone p) {
+      p.setActionURL(snomgw.actionUrls);
+    }));
 
 
-ReceptionistPool receptionistPool;
-CustomerPool customerPool;
+//  SNOMActionGateway snomgw = new SNOMActionGateway(SNOMphonesResolutionMap);
+//  snomgw.start(hostname: pbxHost)
+//    .then((_) => snomgw.phones.values.forEach((SNOMPhone p) => p.setActionURL(snomgw.actionUrls)));
+//  SNOMPhone phone = snomgw.phones['1107'];
+//
+//
+//  snomgw.phones.values.forEach((SNOMPhone p) => p.autoAnswer(true));
+}
 
 void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
+  Transport.WebSocketClient wsc = new Transport.WebSocketClient();
+
+  Service.NotificationSocket sharedSocket = new Service.NotificationSocket(wsc);
+  wsc.connect(Uri.parse('${Config.NotificationSocketUri}?token=${Config.ServerToken}'));
+
   //testPJSUA();
   //testSNOM();
   testServerStack();
 
-  Receptionist r1 = new Receptionist(null);
 
-  r1.callFlowControl = new Service.CallFlowControl
-      (Uri.parse('http://localhost:4242'), 'feedabbadeadbeef9', new Transport.Client());
+  initSNOMPhones();
 
-  Service.Notification.socket(Uri.parse("ws://localhost:4200"), "feedabbadeadbeef0")
-    .then((ws) {
-      r1.notificationSocket = ws;
-      //r1.notificationSocket.eventStream.listen((e) => print(e.asMap));
+  List customers = [new Customer(SNOMphonesResolutionMap['1107'])];
+  List receptionists = [new Receptionist(SNOMphonesResolutionMap['1108'], sharedSocket, null, ''),
+                        new Receptionist(SNOMphonesResolutionMap['1109'], sharedSocket, null, '')];
 
+  CustomerPool.instance = new CustomerPool(customers)
+    ..onRelease = (Customer customer) => customer.hangupAll();
+  ReceptionistPool.instance = new ReceptionistPool(receptionists)
+     ..onRelease = (Receptionist receptionist) => receptionist.hangupAll();;
 
-      r1.originate('12340001', 1, 1).then(print);
-    });
+  //Message.send_message_1_a();
+  IncomingCall.incomingCall_1_a_II();
 
+  //FindContact.findContact_1();
+
+  //testPJSUA();
+  //testSNOM();
+
+//  Receptionist r1 = new Receptionist(null);
+//
+//  r1.callFlowControl = new Service.CallFlowControl
+//      (Uri.parse('http://localhost:4242'), 'feedabbadeadbeef9', new Transport.Client());
+//
+//  Service.Notification.socket(Uri.parse("ws://localhost:4200"), "feedabbadeadbeef0")
+//    .then((ws) {
+//      r1.notificationSocket = ws;
+//      //r1.notificationSocket.eventStream.listen((e) => print(e.asMap));
+//
+//
+//      r1.originate('12340001', 1, 1).then(print);
+//    });
+//
 }
 
 void testSNOM (){
@@ -77,7 +130,6 @@ void testSNOM (){
 
   [account1107, account1108, account1109].forEach((SIPAccount account)
       => SNOMphonesResolutionMap.addAll({account.username : account.phone}));
-
 
   SNOMphonesResolutionMap.forEach((id, phone) =>
       phone.eventStream.listen((event) => print ('EVENT: $id $event')));

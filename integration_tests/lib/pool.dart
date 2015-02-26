@@ -12,6 +12,9 @@ abstract class Pool<T> {
   Queue<T> available = new Queue();
   Queue<T> busy      = new Queue();
 
+  dynamic onAquire  = (T element) => null;
+  dynamic onRelease = (T element) => null;
+
   Pool (Iterable<T> element) {
     this.available.addAll(element);
   }
@@ -25,8 +28,9 @@ abstract class Pool<T> {
     T aquired = this.available.removeFirst();
     this.busy.add(aquired);
 
-    log.finest('Aquired pool objec');
+    log.finest('Aquired pool object $aquired');
 
+    onAquire (aquired);
     return aquired;
   }
 
@@ -36,9 +40,10 @@ abstract class Pool<T> {
       throw new NotAquired();
     }
 
-    log.finest('Released pool object');
+    log.finest('Released pool object $element');
 
     this.busy.remove(element);
     this.available.add(element);
+    onRelease(element);
   }
 }

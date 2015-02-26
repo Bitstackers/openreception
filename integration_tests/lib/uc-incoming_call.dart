@@ -33,13 +33,13 @@ abstract class IncomingCall {
     log.finest("Requesting a second receptionist...");
     receptionist2 = ReceptionistPool.instance.aquire();
 
-    log.finest("Requesting a customer (callee)...");
-    callee = CustomerPool.instance.aquire();
+    //log.finest("Requesting a customer (callee)...");
+    //callee = CustomerPool.instance.aquire();
 
     log.finest("Select which reception to test...");
 
     log.finest("Select a reception database connection...");
-    receptionStore = new Service.RESTReceptionStore(Configuration.receptionStoreURI, receptionist.authToken, new Transport.Client());
+    receptionStore = new Service.RESTReceptionStore(Config.receptionStoreURI, receptionist.authToken, new Transport.Client());
     ;
   }
 
@@ -53,7 +53,7 @@ abstract class IncomingCall {
 
   }
 
-  static void step(String message) => log.finest('Step $nextStep++: $message');
+  static void step(String message) => log.finest('Step ${nextStep++}: $message');
 
   static Future Caller_Places_Call(String reception) {
     step('Caller places call to $reception');
@@ -62,10 +62,10 @@ abstract class IncomingCall {
     return caller.dial(reception);
   }
 
-  static Future Caller_Hears_Dialtone() {
+  static Future<Phonio.Call> Caller_Hears_Dialtone() {
     step("Caller hears dial-tone...");
     log.finest("Caller agent waits for dial-tone...");
-    return caller.waitForIncomingCall();
+    return caller.waitForOutboundCall();
   }
 
   /**
@@ -77,7 +77,13 @@ abstract class IncomingCall {
     step('Receptionist\'s client waits for "${EventType.Call_Offer}"');
 
     //TODO: Build a call object from the event.
-    return receptionist.waitFor(eventType: EventType.Call_Offer, extension: extension);
+    return receptionist.waitFor(eventType: EventType.Call_Offer, extension: extension)
+      .then((_) {
+      Model.CallOffer event = receptionist.eventStack.firstWhere(
+            (Model.Event offerEvent) => offerEvent.eventName == EventType.Call_Offer);
+
+        return event.call;
+      }) ;
   }
 
   /**
@@ -116,7 +122,7 @@ abstract class IncomingCall {
 
 
   static Future incomingCall_1_a_II() {
-    String receptionExtension = '12340001';
+    String receptionExtension = '12340003';
 
     Model.Call trackedCall = null;
     Model.Reception reception = null;
@@ -162,11 +168,6 @@ abstract class IncomingCall {
 
   static void _dumpState(error, stackTrace) {
     log.severe(error, stackTrace);
-    log.severe(receptionist);
-    log.severe(receptionist2);
-    log.severe(callee);
-    log.severe(caller);
-    log.severe(receptionStore);
 
     throw new StateError('Test failed');
   }
@@ -187,7 +188,7 @@ abstract class IncomingCall {
   static void _validateCall(Model.Call call) {
     expect(call.assignedTo, equals (receptionist));
 
-    log.finest('FIXME: make _validateReception more elaborate');
+    log.finest('FIXME: make _validateCall more elaborate');
     if (call.assignedTo != receptionist) {
       throw new StateError ('Call does seem to be assigned to the right agent.');
     }

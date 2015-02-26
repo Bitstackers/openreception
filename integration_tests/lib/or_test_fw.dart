@@ -18,6 +18,8 @@ part 'receptionist_pool.dart';
 part 'customer.dart';
 part 'customer_pool.dart';
 
-part 'incoming_call.dart';
+part 'uc-send_message.dart';
+part 'uc-find_contact.dart';
+part 'uc-incoming_call.dart';
 
 const String libraryName = 'OpenReceptionTest';
