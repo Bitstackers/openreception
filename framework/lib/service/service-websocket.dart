@@ -15,7 +15,7 @@ abstract class WebSocket {
 
   dynamic onMessage = ID_Func;
   dynamic onError   = ID_Func;
-  dynamic onClose   = ID_Func;
+  dynamic onClose   = () => null;
 
   Future<WebSocket> connect (Uri path);
 
