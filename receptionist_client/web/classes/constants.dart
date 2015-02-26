@@ -84,6 +84,7 @@ abstract class Id {
   static const String receptionEvents = 'reception-events';
   static const String receptionEventsHeader = 'reception-events-header';
   static const String receptionExtraInformation = 'reception-extra-information';
+  static const String receptionExtraInformationBody = 'reception-extra-information-body';
   static const String receptionOpeningHours = 'reception-opening-hours';
   static const String receptionOpeningHoursList = 'reception-opening-hours-list';
   static const String receptionProduct = 'reception-product';
@@ -109,7 +110,6 @@ abstract class Id {
   static const AGENT_INFO = 'agent-info';
 //  static final CALL_MANAGEMENT = 'call-info'; // TODO (TL): Not in use???
   static const receptionEventsList = 'reception-events-list';
-  static const COMPANY_OTHER_BODY = 'company-other-body';
   static const receptionSelectorSearchbar = 'reception-selector-searchbar';
   static const contextSwitcher = 'context-switcher';
   static const LOGBOX_TABLE = 'logbox-table';

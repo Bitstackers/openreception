@@ -26,7 +26,7 @@ class ReceptionExtraInformation {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   Element          get header => this.element.querySelector('legend');
-  ParagraphElement get body   => element.querySelector('#${Id.COMPANY_OTHER_BODY}');
+  ParagraphElement get body   => element.querySelector('#${Id.receptionExtraInformationBody}');
 
   ReceptionExtraInformation(Element this.element, Context this.uiContext) {
     assert(element.attributes.containsKey(defaultElementId));

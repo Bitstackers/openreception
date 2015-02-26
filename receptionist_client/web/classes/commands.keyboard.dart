@@ -143,7 +143,7 @@ class _KeyboardHandler {
        new nav.Location(Id.contextHomeplus, Id.receptionEmailAddresses,     Id.receptionEmailAddressesList),
        new nav.Location(Id.contextHomeplus, Id.receptionWebsites,           Id.receptionWebsitesList),
        new nav.Location(Id.contextHomeplus, Id.receptionRegistrationNumber, Id.receptionRegistrationNumberList),
-       new nav.Location(Id.contextHomeplus, Id.receptionExtraInformation,   Id.COMPANY_OTHER_BODY)
+       new nav.Location(Id.contextHomeplus, Id.receptionExtraInformation,   Id.receptionExtraInformationBody)
        ];
 
   List<nav.Location> contextPhone =

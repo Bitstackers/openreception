@@ -50,7 +50,7 @@ Map<String, int> _tabIndexes =
    Id.receptionEmailAddressesList:     33,
    Id.receptionWebsitesList:           34,
    Id.receptionRegistrationNumberList: 35,
-   'company-other-body':               36,
+   Id.receptionExtraInformationBody:   36,
    Id.globalCallQueueList:             37,
    'local-queue-list':                 38,
 
