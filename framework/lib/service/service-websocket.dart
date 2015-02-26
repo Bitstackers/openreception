@@ -6,7 +6,7 @@ part of openreception.service;
  */
 abstract class WebSocket {
 
-  static final ID_Func = () => null;
+  static final ID_Func = (_) => null;
 
   static const String GET    = 'GET';
   static const String PUT    = 'PUT';
