@@ -46,6 +46,8 @@ abstract class EventTemplate {
 
 abstract class Event {
 
+  static final Logger log = new Logger('$libraryName.Event');
+
   DateTime get timestamp;
   String   get eventName;
 
@@ -93,7 +95,7 @@ abstract class Event {
         return new CallPickup.fromMap(map);
 
       default:
-        throw new UnsupportedError('Unsupported event type: ${map['event']}');
+        log.severe('Unsupported event type: ${map['event']}');
     }
   }
 }
