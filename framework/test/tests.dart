@@ -2,7 +2,7 @@
 
 import 'package:unittest/unittest.dart';
 //import 'package:logging/logging.dart';
-//import 'package:junitconfiguration/junitconfiguration.dart';
+import 'package:junitconfiguration/junitconfiguration.dart';
 
 import '../lib/model.dart'    as Model;
 //import '../lib/service.dart'  as Service;
@@ -13,7 +13,7 @@ import 'data/testdata.dart'  as Test_Data;
 void main() {
   //Logger.root.onRecord.listen(print);
 
-//  JUnitConfiguration.install();
+  JUnitConfiguration.install();
 
   test('service.ContactObject.serializationDeserialization', ContactObject.serializationDeserialization);
 
