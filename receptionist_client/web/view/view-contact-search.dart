@@ -28,7 +28,6 @@ class ContactSearch {
                List<model.Contact> contactList;
                InputElement    get searchBox            => this.element.querySelector('#${Id.contactSelectorInput}');
                Element             widget;
-  static const String              SELECTED             = 'selected';
 
   bool hasFocus = false;
 
@@ -52,7 +51,7 @@ class ContactSearch {
 
   void activeContact(model.Contact contact) {
     for(LIElement element in displayedContactList.children) {
-      element.classes.toggle(SELECTED, element.value == contact.ID);
+      element.classes.toggle(CssClass.selected, element.value == contact.ID);
     }
 
     Controller.Contact.change(contact);
@@ -90,12 +89,12 @@ class ContactSearch {
   }
 
   void previousElement(KeyboardEvent e) {
-    LIElement li = displayedContactList.querySelector('.${SELECTED}');
+    LIElement li = displayedContactList.querySelector('.${CssClass.selected}');
     LIElement previous = li.previousElementSibling;
 
     if(previous != null) {
-      li.classes.toggle(SELECTED, false);
-      previous.classes.toggle(SELECTED, true);
+      li.classes.toggle(CssClass.selected, false);
+      previous.classes.toggle(CssClass.selected, true);
       int contactId = previous.value;
       model.Contact con = model.Contact.findContact(contactId, contactList);
       if(con != null) {
@@ -107,11 +106,11 @@ class ContactSearch {
 
   void nextElement(KeyboardEvent e) {
     for(LIElement li in displayedContactList.children) {
-      if(li.classes.contains(SELECTED)) {
+      if(li.classes.contains(CssClass.selected)) {
         LIElement next = li.nextElementSibling;
         if(next != null) {
-          li.classes.remove(SELECTED);
-          next.classes.add(SELECTED);
+          li.classes.remove(CssClass.selected);
+          next.classes.add(CssClass.selected);
           int contactId = next.value;
           model.Contact con = model.Contact.findContact(contactId, contactList);
           if(con != null) {

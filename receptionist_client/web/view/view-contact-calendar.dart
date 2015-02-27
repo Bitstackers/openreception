@@ -26,7 +26,6 @@ class ContactCalendar {
   static const String EditShortcut   = 'E';
   static const String SaveShortcut   = 'S';
   static const String DeleteShortcut = 'Backspace';
-  static const String SelectedClass  = 'selected';
 
   final        Element element;
   final        Context context;
@@ -40,7 +39,7 @@ class ContactCalendar {
   bool                get active         => nav.Location.isActive(this.element);
   List<Element>       get nuges          => this.element.querySelectorAll('.nudge');
   Element             get newEventWidget => this.element.querySelector('.${CssClass.contactCalendarEventCreate}');
-  TextAreaElement     get newEventField  => this.element.querySelector('.contact-calendar-event-create-body');
+  TextAreaElement     get newEventField  => this.element.querySelector('.${CssClass.contactCalendarEventCreateBody}');
   List<InputElement>  get inputFields    => this.element.querySelectorAll('input');
 
   InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
@@ -128,14 +127,14 @@ class ContactCalendar {
 
   LIElement       get selectedElement
     => this.eventList.children.firstWhere((LIElement child)
-      => child.classes.contains(SelectedClass),
+      => child.classes.contains(CssClass.selected),
          orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.noID);
 
   void            set selectedElement (LIElement element) {
     assert (element != null);
 
-    this.selectedElement.classes.toggle(SelectedClass, false);
-    element.classes.toggle(SelectedClass, true);
+    this.selectedElement.classes.toggle(CssClass.selected, false);
+    element.classes.toggle(CssClass.selected, true);
 
     if (this.inFocus) {
       element.focus();

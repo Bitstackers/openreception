@@ -10,6 +10,7 @@ abstract class CssClass {
   static const String callSpeaking  = 'speaking';
 
   static const String contactCalendarEventCreate             = 'contact-calendar-event-create';
+  static const String contactCalendarEventCreateBody         = 'contact-calendar-event-create-body';
   static const String contactCalendarEventEndsDay            = 'contact-calendar-event-create-ends-day';
   static const String contactCalendarEventEndsHour           = 'contact-calendar-event-create-ends-hour';
   static const String contactCalendarEventEndsMinute         = 'contact-calendar-event-create-ends-minute';
@@ -35,6 +36,8 @@ abstract class CssClass {
   static const String messageRecipientList = 'message-recipient-list';
 
   static const String messageSearchBox = 'message-search-box';
+
+  static const String selected = 'selected';
 }
 
 abstract class Id {
@@ -123,6 +126,7 @@ abstract class Id {
   static const String receptionAlternateNamesList     = 'reception-alternate-names-list';
   static const String receptionBankingInformation     = 'reception-banking-information';
   static const String receptionBankingInformationList = 'reception-banking-information-list';
+  static const String receptionCalendarEventCreate    = 'reception-calendar-event-create';
   static const String receptionCustomerType           = 'reception-customer-type';
   static const String receptionCustomerTypeBody       = 'reception-customer-type-body';
   static const String receptionEmailAddresses         = 'reception-email-addresses';

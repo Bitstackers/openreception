@@ -184,6 +184,59 @@ button span {
   float: right;
 }
 
+#contact-calendar {
+  width: 100%;
+  height: 100%;
+}
+
+#contact-calendar-list {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.9em;
+}
+
+.contact-data-field {
+  min-height: 40px;
+  min-width: 300px;
+  overflow: auto;
+  font-size: small;
+}
+
+#contact-data-header {
+  top: 180px;
+  left: 40.5%;
+  width: 100%;
+  height: 90%;
+}
+
+#contact-selector {
+  height: 100%;
+  width: 100%;
+}
+
+#contact-selector-input {
+  width: 100%;
+  min-height: 30px;
+  border: solid 2px #ccc;
+  padding: 3px;
+  font-size: 1.1em;
+  border-radius: 3px;
+}
+
+#contact-selector-list .selected {
+  border: 3px solid #67c1f3;
+}
+
+#contact-selector-search {
+  width: 100%;
+}
+
+.contact-selector-search-box {
+  width: 100%;
+  padding: 10px;
+}
+
 #global-call-queue {
   height: 20%;
   width: 100%;
@@ -269,6 +322,10 @@ li.call.speaking {
   line-height: 2.0em;
   text-align : center;
   margin-top: 20px;
+}
+
+.selected {
+  outline: 0.1em solid #67c1f3;
 }
 
 .zebra {}

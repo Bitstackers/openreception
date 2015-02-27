@@ -24,7 +24,6 @@ class MessageList {
   static const String NavShortcut         = 'A';
   static const String CommandPreviousPage = 'Q';
   static const String CommandNextPage     = 'W';
-  static const String SelectedClass       = 'selected';
   static const int    viewLimit           = 30;
 
   static final TableRowElement noRow      = (new TableRowElement()..hidden = true);
@@ -73,7 +72,7 @@ class MessageList {
    */
   TableRowElement get selectedRow
     => this.tableBody.children.firstWhere((TableRowElement child)
-      => child.classes.contains(SelectedClass),
+      => child.classes.contains(CssClass.selected),
          orElse : () => noRow);
 
   TableRowElement rowOf(int messageID)
@@ -90,11 +89,11 @@ class MessageList {
     }
 
     if (this._selectedRow != null) {
-      this._selectedRow.classes.toggle(SelectedClass, false);
+      this._selectedRow.classes.toggle(CssClass.selected, false);
       newRow.focus();
     }
 
-    newRow.classes.toggle(SelectedClass, true);
+    newRow.classes.toggle(CssClass.selected, true);
     this._selectedRow = newRow;
     if (this.inFocus) {
       newRow.focus();

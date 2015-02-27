@@ -24,7 +24,6 @@ class ReceptionCalendar {
 
   static const String   className   = '${libraryName}.ReceptionEvents';
   static const String NavShortcut   = 'A';
-  static const String SelectedClass = 'selected';
 
   bool get muted   => this.context != Context.current;
   bool get inFocus => nav.Location.isActive(this.element);
@@ -38,14 +37,14 @@ class ReceptionCalendar {
 
   LIElement       get selectedElement
     => this.eventList.children.firstWhere((LIElement child)
-      => child.classes.contains(SelectedClass),
+      => child.classes.contains(CssClass.selected),
          orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.noID);
 
   void            set selectedElement (LIElement element) {
     assert (element != null);
 
-    this.selectedElement.classes.toggle(SelectedClass, false);
-    element.classes.toggle(SelectedClass, true);
+    this.selectedElement.classes.toggle(CssClass.selected, false);
+    element.classes.toggle(CssClass.selected, true);
 
     if (this.inFocus) {
       element.focus();
@@ -57,8 +56,8 @@ class ReceptionCalendar {
   InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
   int             get eventID          => int.parse(this.eventIDField.value);
   void            set eventID (int ID)   {this.eventIDField.value = ID.toString();}
-  FieldSetElement get newEventWidget   => this.element.querySelector('#receptioninfo-calendar-event-create');
-  TextAreaElement get newEventField    => this.element.querySelector('.contact-calendar-event-create-body');
+  FieldSetElement get newEventWidget   => this.element.querySelector('#${Id.receptionCalendarEventCreate}');
+  TextAreaElement get newEventField    => this.element.querySelector('.${CssClass.contactCalendarEventCreateBody}');
 
   ///Dateinput starts fields:
   InputElement get startsHourField   => this.newEventWidget.querySelector('.${CssClass.contactCalendarEventCreateStartsHour}');
