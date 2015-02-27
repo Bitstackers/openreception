@@ -33,6 +33,9 @@ abstract class CssClass {
   static const String contactDataResponsibilityLabel = 'contact-data-responsibility-label';
   static const String contactDataWorkhoursLabel      = 'contact-data-workhours-label';
 
+  static const String disabled = 'disabled';
+  static const String loading  = 'loading';
+
   static const String messageRecipientList = 'message-recipient-list';
 
   static const String messageSearchBox = 'message-search-box';

@@ -84,7 +84,7 @@ class Message {
    */
   void set loading(bool isLoading) {
     this.disabled = isLoading;
-    this.messageBodyField.classes.toggle('loading', isLoading);
+    this.messageBodyField.classes.toggle(CssClass.loading, isLoading);
   }
 
   /**

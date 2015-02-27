@@ -66,7 +66,7 @@ class MessageEdit {
 
   model.Message activeMessage = null;
 
-  bool get disabled => this.element.classes.contains('disabled');
+  bool get disabled => this.element.classes.contains(CssClass.disabled);
 
   /**
    * Update the disabled property.
@@ -99,8 +99,8 @@ class MessageEdit {
    */
   void set loading(bool isLoading) {
     this.disabled = isLoading;
-    this.element.classes.toggle("disabled", isLoading);
-    this.messageBodyField.classes.toggle('loading', isLoading);
+    this.element.classes.toggle(CssClass.disabled, isLoading);
+    this.messageBodyField.classes.toggle(CssClass.loading, isLoading);
   }
 
   /**
