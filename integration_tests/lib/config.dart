@@ -10,4 +10,7 @@ abstract class Config {
    static Uri receptionStoreURI = Default.receptionStoreURI;
    static Uri messageServerUri  = Default.messageStoreURI;
    static String authToken = Default.authToken;
+   static final Uri CallFlowControlUri = Uri.parse('http://localhost:4242');
+   static final Uri NotificationSocketUri =
+       Uri.parse('ws://localhost:4200/notifications');
 }

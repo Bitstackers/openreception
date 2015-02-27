@@ -39,8 +39,8 @@ abstract class IncomingCall {
     log.finest("Select which reception to test...");
 
     log.finest("Select a reception database connection...");
-    receptionStore = new Service.RESTReceptionStore(Config.receptionStoreURI, receptionist.authToken, new Transport.Client());
-    ;
+    receptionStore = new Service.RESTReceptionStore(Config.receptionStoreURI,
+        receptionist.authToken, new Transport.Client());
   }
 
   static void teardown() {
@@ -76,12 +76,10 @@ abstract class IncomingCall {
   static Future<Model.Call> Receptionist_Awaits_Call_Offer({String extension: null}) {
     step('Receptionist\'s client waits for "${EventType.Call_Offer}"');
 
-    //TODO: Build a call object from the event.
     return receptionist.waitFor(eventType: EventType.Call_Offer, extension: extension)
       .then((_) {
       Model.CallOffer event = receptionist.eventStack.firstWhere(
             (Model.Event offerEvent) => offerEvent.eventName == EventType.Call_Offer);
-
         return event.call;
       }) ;
   }
@@ -91,7 +89,14 @@ abstract class IncomingCall {
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Lock(Model.Call call) {
     step('Receptionist\'s client waits for "${EventType.Call_Lock}"');
-    return receptionist.waitFor(eventType: EventType.Call_Lock, callID: call.ID);
+
+    return receptionist.waitFor(eventType: EventType.Call_Lock, callID: call.ID)
+      .then((_) {
+      Model.CallLock event = receptionist.eventStack.firstWhere(
+            (Model.Event lockEvent) => lockEvent is Model.CallLock);
+
+              return event.call;
+      }) ;
   }
 
   /**
@@ -99,8 +104,15 @@ abstract class IncomingCall {
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Unlock(Model.Call call) {
     step('Call-Flow-Control sends out "${EventType.Call_Unlock}"...');
-    return receptionist.waitFor(eventType: EventType.Call_Unlock, callID: call.ID);
-  }
+
+    return receptionist.waitFor(eventType: EventType.Call_Unlock, callID: call.ID)
+      .then((_) {
+      Model.CallUnlock event = receptionist.eventStack.firstWhere(
+            (Model.Event lockEvent) => lockEvent is Model.CallUnlock);
+
+              return event.call;
+      }) ;
+}
 
   /**
    * Simulates the receptionist client answering a call. Validates the call received
@@ -112,14 +124,13 @@ abstract class IncomingCall {
     _validateCall(call);
 
     if (call.greetingPlayed) {
-      log.finest('Receptionist says "${reception.shortGreeting}');
+      log.finest('Receptionist gives short greeting: "${reception.shortGreeting}');
     } else {
-      log.finest('Receptionist says "${reception.greeting}');
+      log.finest('Receptionist gives full greeting:"${reception.greeting}');
     }
 
     return receptionist.waitFor(eventType: EventType.Call_Unlock, callID: call.ID);
   }
-
 
   static Future incomingCall_1_a_II() {
     String receptionExtension = '12340003';
@@ -151,7 +162,8 @@ abstract class IncomingCall {
       step("Client-N->Receptionist-N: Queue: <reception name> (venter)");
       step("Client-N->Receptionist-N: Queue: <reception name> (venter)");
       step("Receptionist-N->Client-N: state-switch-free");
-    }).then((_) => receptionStore.get(trackedCall.receptionID))
+    }).then((_) => receptionStore.get(trackedCall.receptionID)
+        .then((Model.Reception r) => reception = r))
       .then((_) => receptionist.pickup(trackedCall)
         .then((Model.Call pickedUpCall) => trackedCall = pickedUpCall)) // Update the local state
 
@@ -186,15 +198,10 @@ abstract class IncomingCall {
   }
 
   static void _validateCall(Model.Call call) {
-    expect(call.assignedTo, equals (receptionist));
+    expect(call.assignedTo, equals (receptionist.userID));
 
     log.finest('FIXME: make _validateCall more elaborate');
-    if (call.assignedTo != receptionist) {
-      throw new StateError ('Call does seem to be assigned to the right agent.');
-    }
-
   }
-
 }
 
 

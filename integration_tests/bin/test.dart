@@ -9,11 +9,10 @@ import '../lib/managementserver.dart' as mgt;
 
 import 'package:logging/logging.dart';
 
-const String pbxHost = '192.168.1.135';
+const String pbxHost = '192.168.1.136';
 
 abstract class Config {
-  static final Uri NotificationSocketUri =
-      Uri.parse('ws://localhost:4200/notifications');
+
   static const String ServerToken = 'feedabbadeadbeef0';
 }
 
@@ -80,21 +79,16 @@ void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  Transport.WebSocketClient wsc = new Transport.WebSocketClient();
-
-  Service.NotificationSocket sharedSocket = new Service.NotificationSocket(wsc);
-  wsc.connect(Uri.parse('${Config.NotificationSocketUri}?token=${Config.ServerToken}'));
-
   //testPJSUA();
   //testSNOM();
-  testServerStack();
+  //testServerStack();
 
 
   initSNOMPhones();
 
   List customers = [new Customer(SNOMphonesResolutionMap['1107'])];
-  List receptionists = [new Receptionist(SNOMphonesResolutionMap['1108'], sharedSocket, null, ''),
-                        new Receptionist(SNOMphonesResolutionMap['1109'], sharedSocket, null, '')];
+  List receptionists = [new Receptionist(SNOMphonesResolutionMap['1108'], 'feedabbadeadbeef8', 18),
+                        new Receptionist(SNOMphonesResolutionMap['1109'], 'feedabbadeadbeef9', 19)];
 
   CustomerPool.instance = new CustomerPool(customers)
     ..onRelease = (Customer customer) => customer.hangupAll();

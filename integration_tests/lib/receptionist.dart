@@ -4,14 +4,25 @@ class Receptionist {
 
   static final Logger log = new Logger ('Receptionist');
 
+  final int                         userID;
   final Phonio.SIPPhone             _phone;
-  final Service.NotificationSocket  notificationSocket;
-  final Service.CallFlowControl     callFlowControl;
+        Service.NotificationSocket  notificationSocket;
+        Service.CallFlowControl     callFlowControl;
   final String                      authToken;
   Queue<Model.Event>          eventStack         = new Queue();
 
-  Receptionist (this._phone, this.notificationSocket, this.callFlowControl, this.authToken) {
+  Receptionist (this._phone, this.authToken, this.userID) {
+    this.callFlowControl = new Service.CallFlowControl
+        (Config.CallFlowControlUri,this.authToken, new Transport.Client());
+
+    Transport.WebSocketClient wsc = new Transport.WebSocketClient();
+
+    this.notificationSocket =  new Service.NotificationSocket(wsc);
+    wsc.connect(Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'));
+
     this.notificationSocket.eventStream.listen(this._handleEvent);
+
+
   }
 
   Future<Model.Call> originate (String extension, int contactID, int receptionID) =>
@@ -41,7 +52,7 @@ class Receptionist {
         .timeout(new Duration(seconds: timeoutSeconds));
     }
 
-  Future pickup(Model.Call call) => this.waitFor(eventType: 'call_offer');
+  Future pickup(Model.Call call) => this.callFlowControl.pickup(call.ID);
 
   Future waitForCall() => this.waitFor(eventType: 'call_offer');
 
