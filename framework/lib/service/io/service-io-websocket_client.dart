@@ -15,4 +15,5 @@ class WebSocketClient extends Service.WebSocket {
         return this;
     });
 
+  Future close () => this._websocket.close();
 }
