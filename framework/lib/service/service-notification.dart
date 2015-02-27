@@ -117,6 +117,8 @@ class NotificationSocket {
     this._websocket.onMessage = this._parseAndDispatch;
   }
 
+  Future close() => this._websocket.close();
+
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
     log.finest('Sending object: $map');
