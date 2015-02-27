@@ -96,6 +96,8 @@ class Reception extends ReceptionStub {
   String get shortGreeting => this._shortGreeting.isNotEmpty
                                 ? this._shortGreeting
                                 : this.greeting;
+  void   set shortGreeting (String newGreeting)
+                           {this._shortGreeting = newGreeting;}
 
   String extension;
   String greeting;
