@@ -53,7 +53,7 @@ part 'view-nudge.dart';
 part 'view-reception-calendar.dart';
 part 'view-message-compose.dart';
 
-part 'view-agentinfo.dart';
+part 'view-agent-info.dart';
 part '../components/boxwithheader.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alternate-names.dart';

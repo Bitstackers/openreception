@@ -20,25 +20,25 @@ class AgentInfo {
   DivElement       divFace;
   DivElement       divParent;
   final DivElement element;
-  TableCellElement get activeLabelTD => this.element.querySelector('#agent-info-stats-active-label');
-  TableCellElement get pausedLabelTD => this.element.querySelector('#agent-info-stats-paused-label');
+  TableCellElement get activeLabelTD => this.element.querySelector('#${Id.agentInfoStatsActiveLabel}');
+  TableCellElement get pausedLabelTD => this.element.querySelector('#${Id.agentInfoStatsPausedLabel}');
   String           faceURL     = 'images/face.png';
   int              paused      = 0;
   TableCellElement pausedTD;
   ImageElement     portrait;
   TableElement     table;
 
-  Element get userStatusElement => element.querySelector('#agent-info-status');
+  Element get userStatusElement => element.querySelector('#${Id.agentInfoStatus}');
 
   AgentInfo(DivElement this.element) {
-    divParent = element.querySelector('#agent-info-stats');
+    divParent = element.querySelector('#${Id.agentInfoStats}');
     table = divParent.querySelector('table');
-    divFace = divParent.querySelector('#agent-info-portrait');
-    portrait = (divFace.querySelector('#agent-info-portrait-image') as ImageElement)
+    divFace = divParent.querySelector('#${Id.agentInfoPortrait}');
+    portrait = (divFace.querySelector('#${Id.agentInfoPortraitImage}') as ImageElement)
       ..src = faceURL;
 
-    activeTD = table.querySelector('#agent-info-stats-active');
-    pausedTD = table.querySelector('#agent-info-stats-paused');
+    activeTD = table.querySelector('#${Id.agentInfoStatsActive}');
+    pausedTD = table.querySelector('#${Id.agentInfoStatsPaused}');
 
     box = new Box.noChrome(element, divParent);
 

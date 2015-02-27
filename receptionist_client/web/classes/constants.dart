@@ -32,7 +32,15 @@ abstract class CssClass {
 }
 
 abstract class Id {
-  static const String agentInfo = 'agent-info';
+  static const String agentInfo                 = 'agent-info';
+  static const String agentInfoPortrait         = 'agent-info-portrait';
+  static const String agentInfoPortraitImage    = 'agent-info-portrait-image';
+  static const String agentInfoStats            = 'agent-info-stats';
+  static const String agentInfoStatsActive      = 'agent-info-stats-active';
+  static const String agentInfoStatsPaused      = 'agent-info-stats-paused';
+  static const String agentInfoStatsActiveLabel = 'agent-info-stats-active-label';
+  static const String agentInfoStatsPausedLabel = 'agent-info-stats-paused-label';
+  static const String agentInfoStatus           = 'agent-info-status';
 
   static const String bobActive   = 'bob-active';
   static const String bobDisaster = 'bob-disaster';
