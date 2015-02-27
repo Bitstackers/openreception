@@ -44,7 +44,7 @@
   overflow: auto;
 }
 
-/* Appears to not be in use
+/* Appears to NOT be in use
 .box-with-header-focusborder {
   border: solid 2px red;
 }
@@ -57,7 +57,7 @@
   font-weight: bold;
 }
 
-/* Appears to not be in use
+/* Appears to NOT be in use
 .box-with-header-big {
   font-size: 1.0em;
   padding: 5px 10px;
@@ -89,6 +89,54 @@
   background-color: #fafafa;
   border: solid 2px #ddd;
   border-radius: 0px  4px 4px 0px;
+}
+
+/* this global button styling seems fairly pointless */
+button {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* disables Firefox dotted line on latest clicked button element */
+button::-moz-focus-inner {
+  border: 0;
+}
+
+/* seems to be used by the context switcher for click effect */
+button:focus {
+  background-color: #fff8c4;
+  outline: 0.2em solid red;
+}
+
+/* used once to identify a single button in compose message */
+button.cancel {
+  background-color: #f5aca6;
+}
+
+button.print,
+button.save {
+  background: rgb(28, 184, 65); /* HEX ME! this is a green */
+}
+
+button.copy,
+button.phonenumber,
+button.resend,
+button.resend-multiple,
+button.send {
+  background: rgb(66, 184, 221); /* HEX ME! this is a light blue */
+}
+
+/* appears to NOT be in use
+button span {
+  margin-left: 10.5em;
+  margin-right: 10.5em;
+}
+*/
+
+legend span {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 .loading-big {
