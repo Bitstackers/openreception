@@ -134,6 +134,31 @@ button span {
 }
 */
 
+/* used in view-contact-calendar and view-reception-calendar */
+.calendar-event-content {
+  vertical-align: top;
+}
+
+/* used in view-contact-calendar and view-reception-calendar */
+.calendar-event-notactive {
+  color: #999;
+  font-weight: normal;
+}
+
+/* used in view-contact-calendar and view-reception-calendar */
+.calendar-event-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* used in view-contact-calendar and view-reception-calendar */
+.calendar-event-timestamp {
+  text-align: right;
+  vertical-align: top;
+  font-weight: bold;
+  padding-top: 5px;
+}
+
 legend span {
   margin-left: 0.5em;
   margin-right: 0.5em;
