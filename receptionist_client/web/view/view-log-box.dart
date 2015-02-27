@@ -23,7 +23,7 @@ class LogBox {
   TableElement    table;
 
   LogBox(DivElement this.element) {
-
+    // TODO (TL): Move as much as this to bob.html as possible
     table = new TableElement()
       ..id = Id.logBoxTable
       ..children.add(new TableRowElement()

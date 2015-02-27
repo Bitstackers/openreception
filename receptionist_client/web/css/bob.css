@@ -433,6 +433,31 @@ li.call.speaking {
   filter: alpha(opacity=80);
 }
 
+/* the table element is currently created in view-log-box.dart */
+#log-box table {
+  width: 100%;
+}
+
+/* see view-log-box.dart */
+.log-box-time-header {
+  width: 8%;
+}
+
+/* see view-log-box.dart */
+.log-box-level-header {
+  width: 4%;
+}
+
+/* see view-log-box.dart */
+.log-box-message-header {
+  text-align:left;
+}
+
+/* see view-log-box.dart */
+.log-box-row:nth-of-type(even) {
+  background-color: #eee;
+}
+
 #message-overview {
   height: 99%;
   width: 100%;
