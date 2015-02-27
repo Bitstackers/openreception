@@ -2,7 +2,7 @@
 
 import 'package:unittest/unittest.dart';
 //import 'package:logging/logging.dart';
-import 'package:junitconfiguration/junitconfiguration.dart';
+//import 'package:junitconfiguration/junitconfiguration.dart';
 
 import '../lib/model.dart'    as Model;
 //import '../lib/service.dart'  as Service;
@@ -13,7 +13,7 @@ import 'data/testdata.dart'  as Test_Data;
 void main() {
   //Logger.root.onRecord.listen(print);
 
-  JUnitConfiguration.install();
+//  JUnitConfiguration.install();
 
   test('service.ContactObject.serializationDeserialization', ContactObject.serializationDeserialization);
 
@@ -37,6 +37,78 @@ void main() {
     test('calendarEvent', ResourceReception.calendarEvent);
   });
 
+  group('service.ResourceCallFlowControl', () {
+    test('userStatusMap', ResourceCallFlowControl.userStatusMap);
+    test('channelList', ResourceCallFlowControl.channelList);
+    test('userStatusIdle', ResourceCallFlowControl.userStatusIdle);
+    test('peerList', ResourceCallFlowControl.peerList);
+    test('single', ResourceCallFlowControl.single);
+    test('pickup', ResourceCallFlowControl.pickup);
+    test('originate', ResourceCallFlowControl.originate);
+    test('park', ResourceCallFlowControl.park);
+    test('hangup', ResourceCallFlowControl.hangup);
+    test('transfer', ResourceCallFlowControl.transfer);
+    test('list', ResourceCallFlowControl.list);
+    test('queue', ResourceCallFlowControl.queue);
+    test('root', ResourceCallFlowControl.root);
+
+  });
+}
+
+abstract class ResourceCallFlowControl {
+  static Uri callFlowControlUri = Uri.parse('http://localhost:4242');
+
+  static void userStatusMap () =>
+      expect(Resource.CallFlowControl.userStatus(callFlowControlUri, 1),
+        equals(Uri.parse('${callFlowControlUri}/userstatus/1')));
+
+  static void channelList () =>
+      expect(Resource.CallFlowControl.channelList(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/channel/list')));
+
+  static void userStatusIdle () =>
+      expect(Resource.CallFlowControl.userStatusIdle(callFlowControlUri, 1),
+        equals(Uri.parse('${callFlowControlUri}/userstatus/1/idle')));
+
+  static void peerList () =>
+      expect(Resource.CallFlowControl.peerList(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/peer/list')));
+
+  static void single () =>
+      expect(Resource.CallFlowControl.single(callFlowControlUri, 'abcde'),
+        equals(Uri.parse('${callFlowControlUri}/call/abcde')));
+
+  static void pickup () =>
+      expect(Resource.CallFlowControl.pickup(callFlowControlUri, 'abcde'),
+        equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
+
+  static void originate () =>
+      expect(Resource.CallFlowControl.originate(callFlowControlUri, '12345678', 1, 2),
+        equals(Uri.parse('${callFlowControlUri}/call/originate/12345678/reception/2/contact/1')));
+
+  static void park () =>
+      expect(Resource.CallFlowControl.park(callFlowControlUri, 'abcde'),
+        equals(Uri.parse('${callFlowControlUri}/call/abcde/park')));
+
+  static void hangup () =>
+      expect(Resource.CallFlowControl.hangup(callFlowControlUri, 'abcde'),
+        equals(Uri.parse('${callFlowControlUri}/call/abcde/hangup')));
+
+  static void transfer () =>
+      expect(Resource.CallFlowControl.transfer(callFlowControlUri, 'abcde', 'edcba'),
+        equals(Uri.parse('${callFlowControlUri}/call/abcde/transfer/edcba')));
+
+  static void list () =>
+      expect(Resource.CallFlowControl.list(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/call/list')));
+
+  static void queue () =>
+      expect(Resource.CallFlowControl.queue(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/call/queue')));
+
+  static void root () =>
+      expect(Resource.CallFlowControl.root(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/call')));
 }
 
 abstract class MessageObject {
