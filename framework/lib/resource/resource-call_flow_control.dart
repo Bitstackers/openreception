@@ -54,7 +54,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>/pickup
    */
   static Uri pickup(Uri host, String callID)
-    =>  Uri.parse ('${single (root(host), callID)}/pickup');
+    =>  Uri.parse ('${single (host, callID)}/pickup');
 
   /**
    * Builds a Uri to originate to a specific extension.
@@ -70,7 +70,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>/park
    */
   static Uri park(Uri host, String callID)
-    =>  Uri.parse ('${single (root(host), callID)}/park');
+    =>  Uri.parse ('${single (host, callID)}/park');
 
   /**
    * Builds a Uri to hangup a specific call resource.
@@ -78,7 +78,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>/hangup
    */
   static Uri hangup(Uri host, String callID)
-    =>  Uri.parse ('${single (root(host), callID)}/hangup');
+    =>  Uri.parse ('${single (host, callID)}/hangup');
 
   /**
    * Builds a Uri to transfer a specific call resource.
@@ -86,7 +86,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>/hangup
    */
   static Uri transfer(Uri host, String callID, String destination)
-    =>  Uri.parse ('${single (root(host), callID)}/transfer/${destination}');
+    =>  Uri.parse ('${single (host, callID)}/transfer/${destination}');
 
   /**
    * Builds a Uri to retrieve a every current call resource.
