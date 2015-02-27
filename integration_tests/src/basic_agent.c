@@ -12,47 +12,150 @@
 #include <strings.h>
 #include <stdbool.h>
 #include <pjsua-lib/pjsua.h>
+#include <json/json.h>
 
-#define THIS_FILE	"BASIC_AGENT"
+#define THIS_FILE	 "BASIC_AGENT"
+#define JSON_NULL_STRING "null";
 
-typedef enum {AH_ERROR, AH_READY, AH_OK, AH_RINGING, AH_CONNECTED, AH_HANGUP, AH_CALL} ah_status_t;
+typedef enum {OR_ERROR, 
+              OR_OK,
+              OR_BUSY} or_reply_t;
+
+typedef enum {OR_READY,
+              OR_CALL_INCOMING,
+              OR_CALL_OUTGOING,              
+              OR_CALL_STATE,
+              OR_CALL_MEDIA_STATE,
+              OR_CALL_TSX_STATE} or_event_t;
 
 bool            is_registered             = false;
 bool            processing                = false;
-bool            autoanswer                = true;
+bool            autoanswer[16];
 pjsua_call_id   current_call              = PJSUA_INVALID_ID;
 pjsip_inv_state previous_invitation_state = PJSIP_INV_STATE_NULL;
 
-char *ah_status_to_string[] = {
-  [AH_ERROR] = "-ERROR",
-  [AH_READY] = "+READY",
-  [AH_OK] = "+OK",
-  [AH_RINGING] = "+RINGING",
-  [AH_CONNECTED] = "+CONNECTED",
-  [AH_HANGUP] = "+HANGUP",
-  [AH_CALL] = "+CALL"
+static char *or_event_table[] = {
+  [OR_READY]            = "!READY",
+  [OR_CALL_INCOMING]    = "CALL_INCOMING",
+  [OR_CALL_OUTGOING]    = "CALL_OUTGOING",
+  [OR_CALL_STATE]       = "CALL_STATE",
+  [OR_CALL_MEDIA_STATE] = "CALL_MEDIA",
+  [OR_CALL_TSX_STATE]   = "CALL_TSX_STATE"
 };
+
+char *or_reply_table[] = {
+  [OR_ERROR] = "-ERROR",
+  [OR_OK]    = "+OK",
+  [OR_BUSY]  = "-BUSY"
+};
+
+
+void or_event_incoming_call(char* extension, int call_id, int call_state);
+
+/* Lookup functions Primarily here to supply type hinting. */
+char *or_event_to_string (or_event_t event) {
+  return or_event_table[event];
+}
+/* Lookup function. Primarily here to supply type hinting. */
+char *or_reply_to_string (or_reply_t reply) {
+  return or_reply_table[reply];
+}
+
+void or_dump_status() {
+  char *autoanswer_text = NULL;
+  if (autoanswer[0]) {
+    autoanswer_text = "true";
+  } else {
+    autoanswer_text = "false";
+  }
+
+  fprintf (stdout, "{\"autoanswer\" : %s,"
+                    "\"currentCall\" : %d}\n", autoanswer_text, current_call);
+  fflush(stdout);
+}
 
 /*
  * status()
  *
- * Prints out the usage information.
  */
-
-void ah_status(ah_status_t status, char* message) {
-  fprintf (stdout, "%s %s \n", ah_status_to_string[status], message);
+void or_status(or_reply_t status, char* message) {
+  fprintf (stdout,
+           "{"
+           "\"reply\":\"%s\","
+           "\"message\": \"%s\""
+           "}\n", 
+           or_reply_to_string(status), message);
   fflush(stdout);
 }
+
+void or_event(or_event_t event, char* message) {
+  fprintf (stdout,
+           "{"
+           "\"event\":\"%s\","
+           "\"message\": \"%s\""
+           "}\n",
+           or_event_to_string(event), message);
+  fflush(stdout);
+}
+
+
+void or_event_call_state(int call_id, int call_state) {
+  fprintf (stdout,
+           "{"
+           "\"event\":\"%s\","
+           "\"call\":{" 
+              "\"id\":%d,"
+              "\"state\" : %d}"
+           "}\n", 
+           or_event_to_string(OR_CALL_STATE), call_id, call_state);
+
+  fflush(stdout);
+}
+
+void or_event_call_media_state (int call_id, int media_state) {
+  fprintf (stdout,
+           "{"
+           "\"event\":\"%s\","
+           "\"call\":{" 
+              "\"id\":%d,"
+              "\"media_state\" : %d}"
+           "}\n", 
+           or_event_to_string(OR_CALL_MEDIA_STATE), call_id, media_state);
+
+  fflush(stdout);
+
+}
+
+void or_event_call_tsx_state (int call_id, int tsx_status) {
+  fprintf (stdout,
+           "{"
+           "\"event\":\"%s\","
+           "\"call\":{" 
+              "\"id\":%d,"
+              "\"tsx_status\" : %d}"
+           "}\n", 
+           or_event_to_string(OR_CALL_TSX_STATE), call_id, tsx_status);
+
+  fflush(stdout);
+
+}
+
 
 /* Callback called by the library upon receiving incoming call */
 static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
                              pjsip_rx_data *rdata) {
   pjsua_call_info ci;
 
+
   PJ_UNUSED_ARG(acc_id);
   PJ_UNUSED_ARG(rdata);
 
   pjsua_call_get_info(call_id, &ci);
+
+  char buf[ci.remote_info.slen];
+  memcpy(&buf, ci.remote_info.ptr, ci.remote_info.slen);
+
+  or_event_incoming_call (buf, call_id, ci.state);
 
   current_call = call_id;
 
@@ -60,11 +163,10 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
              (int) ci.remote_info.slen,
              ci.remote_info.ptr));
 
-  ah_status(AH_CALL, "Incoming call.");
-  if (autoanswer) {
+  if (autoanswer[0]) {
     pjsua_call_answer(call_id, 200, NULL, NULL);
   } else {
-    pjsua_call_answer(call_id, 180, NULL, NULL);
+    pjsua_call_answer(call_id, 180, NULL, NULL); //Acknowledge the call.
   }
 
 }
@@ -80,8 +182,19 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e) {
              (int) ci.state_text.slen,
              ci.state_text.ptr));
 
-  if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
-    ah_status (AH_HANGUP, "Either you or the other party hung up.");
+  pjsua_call_get_info(call_id, &ci);
+
+  char buf[ci.remote_info.slen];
+  memcpy(&buf, ci.remote_info.ptr, ci.remote_info.slen);
+
+  or_event_call_state (call_id, ci.state);
+
+  if (ci.state == PJSIP_INV_STATE_CALLING) {
+    or_event_outgoing_call(buf, call_id, ci.state);
+  }
+    
+  else if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
+    //TODO: or_event (OR_HANGUP, "Either you or the other party hung up.");
   }
 }
 
@@ -94,44 +207,19 @@ static void on_call_tsx_state (pjsua_call_id      call_id,
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
 
-  if ((ci.state_text.ptr == NULL) || (ci.state_text.slen <= 0)) {
-    PJ_LOG(3, (THIS_FILE,
-               "TSX: Call %d state=<NULL>",
-               call_id));
-  } else {
-    PJ_LOG(3, (THIS_FILE,
-               "TSX: Call %d state=%.*s",
-               call_id,
-               (int) ci.state_text.slen,
-               ci.state_text.ptr));
-  }
 
   if (tsx == NULL) {
-    PJ_LOG(3, (THIS_FILE,
-               "TSX: Call %d (no TSX)",
-               call_id));
+    or_event_call_tsx_state (call_id, -1);
   } else {
-    if ((tsx->status_text.ptr == NULL) || (tsx->status_text.slen <= 0)) {
-      PJ_LOG(3, (THIS_FILE,
-                 "TSX: Call %d ; Status: %d (<NULL>)",
-                 call_id,
-                 tsx->status_code));
-    } else {
-      PJ_LOG(3, (THIS_FILE,
-                 "TSX: Call %d ; Status: %d (%.*s)",
-                 call_id,
-                 tsx->status_code,
-                 (int)(tsx->status_text.slen),
-                 tsx->status_text.ptr));
-    }
+    or_event_call_tsx_state (call_id, tsx->status_code);
 
     if ((tsx->status_code == 180) &&
         (previous_invitation_state == PJSIP_INV_STATE_CALLING)) {
-      ah_status (AH_RINGING,   "Maybe somebody will pick up the phone at the other end soon.");
+      //TODO: or_event (OR_RINGING,   "Maybe somebody will pick up the phone at the other end soon.");
     }
     else if ((tsx->status_code == 200) &&
              (ci.state == PJSIP_INV_STATE_CONFIRMED)) {
-      ah_status (AH_CONNECTED, "Somebody picked up the phone at the other end.");
+      //TODO: or_event (OR_CONNECTED, "Somebody picked up the phone at the other end.");
     }
   }
 
@@ -143,6 +231,8 @@ static void on_call_media_state(pjsua_call_id call_id) {
   pjsua_call_info ci;
 
   pjsua_call_get_info(call_id, &ci);
+
+  or_event_call_media_state (call_id, ci.media_status);
 
   if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE) {
     // When media is active, connect call to sound device.
@@ -174,7 +264,6 @@ void usage(char *command) {
  *
  */
 
-
 void register_account(pjsua_acc_id acc_id) {
 
    const int   u_resolution    = 100000;
@@ -194,13 +283,13 @@ void register_account(pjsua_acc_id acc_id) {
       pjsua_acc_get_info(acc_id, &account_info);
 
       if(usleep(u_resolution) < 0 || reconnect_count > retries) {
-        ah_status (AH_ERROR, "ACCOUNT_TIMEOUT");
+        or_status (OR_ERROR, "ACCOUNT_TIMEOUT");
         exit(1);
       }
       reconnect_count++;
    }
    is_registered = true;
-   ah_status(AH_OK, "Account registered.");
+   or_status(OR_OK, "Account registered.");
 }
 
 /**
@@ -232,7 +321,7 @@ void unregister_account(pjsua_acc_id acc_id) {
          pjsua_acc_get_info(acc_id, &account_info);
 
          if(usleep(u_resolution) < 0 || reconnect_count > retries) {
-            ah_status (AH_ERROR, "ACCOUNT_TIMEOUT");
+            or_status (OR_ERROR, "ACCOUNT_TIMEOUT");
             exit(1);
          }
          reconnect_count++;
@@ -240,7 +329,7 @@ void unregister_account(pjsua_acc_id acc_id) {
       }
       is_registered = false;
    }
-   ah_status (AH_OK, "Unregistered account ");
+   or_status (OR_OK, "Unregistered account ");
 }
 
 /*
@@ -341,21 +430,20 @@ int main(int argc, char *argv[]) {
     status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
     if (status != PJ_SUCCESS) error_exit("Error adding account", status);
 
-    ah_status(AH_READY, "Agent initialized..");
+    or_event(OR_READY, "Agent initialized..");
 
   }
 
   /* Start by muting the audio device. This a passive agent, and sound
      is just wasted CPU time and uwanted side effects. */
   pjsua_set_null_snd_dev();
-
   fflush(stdout);
   /* Wait until user press "q" to quit. */
   for (;;) {
     char option[256];
 
     if (fgets(option, sizeof (option), stdin) == NULL) {
-      ah_status (AH_ERROR, "EOF while reading stdin, will quit now..");
+      or_status (OR_ERROR, "EOF while reading stdin, will quit now..");
       break;
     }
 
@@ -364,10 +452,10 @@ int main(int argc, char *argv[]) {
       pj_str_t uri = pj_str(&option[1]);
       status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
       if (status != PJ_SUCCESS) {
-        ah_status (AH_ERROR, "Could not make call");
+        or_status (OR_ERROR, "Could not make call");
       }
       else {
-        ah_status (AH_OK, "Dialling...");
+        or_status (OR_OK, "Dialling...");
       }
     }
 
@@ -383,23 +471,27 @@ int main(int argc, char *argv[]) {
 
     /* Enable autoanswer */
     else if (option[0] == 'a') {
-      autoanswer = true;
-      ah_status(AH_OK, "Autoanswer enabled.");
+      if (option[1] == '1') {
+        autoanswer[0] = true;
+        or_status(OR_OK, "Autoanswer enabled.");
+      } else {
+        or_status(OR_ERROR, "Invalid account.");
+      }
     }
 
     /* Disable autoanswer (manual answer) */
     else if (option[0] == 'm') {
-      autoanswer = false;
-      ah_status(AH_OK, "Autoanswer disabled.");
+      autoanswer[0] = false;
+      or_status(OR_OK, "Autoanswer disabled.");
     }
 
     /* Pickup incoming call, unsupported for now. */
     else if (option[0] == 'p') {
       if (current_call != PJSUA_INVALID_ID) {
         pjsua_call_answer(current_call, 200, NULL, NULL);
-        ah_status(AH_OK, "Call picked up.");
+        or_status(OR_OK, "Call picked up.");
       } else {
-        ah_status(AH_ERROR, "No call to pick up.");
+        or_status(OR_ERROR, "No call to pick up.");
       }
     }
 
@@ -407,16 +499,21 @@ int main(int argc, char *argv[]) {
     else if (option[0] == 'H') {
       if (current_call != PJSUA_INVALID_ID) {
         pjsua_call_hangup (current_call, 0,NULL, NULL);
-        ah_status (AH_OK, "Hanging up current call...");
+        or_status (OR_OK, "Hanging up current call...");
       } else {
-        ah_status(AH_ERROR, "No call to hang up.");
+        or_status(OR_ERROR, "No call to hang up.");
       }
     }
 
     /* Full hangup.. */
     else if (option[0] == 'h') {
       pjsua_call_hangup_all();
-      ah_status (AH_OK, "Hanging up all calls...");
+      or_status (OR_OK, "Hanging up all calls...");
+    }
+
+    /* Status  */
+    else if (option[0] == 's') {
+      or_dump_status();
     }
 
     /* Exit application. */
@@ -425,11 +522,54 @@ int main(int argc, char *argv[]) {
     }
 
     else {
-      ah_status (AH_ERROR, "Unknown command:");
+      or_status (OR_ERROR, "Unknown command:");
     }
   }
   pjsua_destroy();
-  ah_status (AH_OK, "Exiting...");
+  or_status (OR_OK, "Exiting...");
 
   return 0;
 }
+
+
+void or_event_incoming_call(char* extension, int call_id, int call_state) {
+  json_object *jobj        = json_object_new_object();
+  json_object *jcall       = json_object_new_object();
+
+  json_object *jexten   = json_object_new_string(extension);
+
+  json_object_object_add(jobj,"event", 
+                         json_object_new_string(or_event_to_string(OR_CALL_INCOMING)));
+  // Build call object.
+  json_object_object_add(jcall,"extension", json_object_new_string(extension));
+  json_object_object_add(jcall,"id", json_object_new_int(call_id));
+  json_object_object_add(jcall,"state", json_object_new_int(call_state));
+ 
+  // Add call object.
+  json_object_object_add(jobj,"call", jcall); 
+
+  fprintf (stdout, "%s\n",json_object_to_json_string(jobj));
+  fflush(stdout);
+}
+
+
+void or_event_outgoing_call(char* extension, int call_id, int call_state) {
+  json_object *jobj        = json_object_new_object();
+  json_object *jcall       = json_object_new_object();
+
+  json_object *jexten   = json_object_new_string(extension);
+
+  json_object_object_add(jobj,"event", 
+                         json_object_new_string(or_event_to_string(OR_CALL_OUTGOING)));
+  // Build call object.
+  json_object_object_add(jcall,"extension", json_object_new_string(extension));
+  json_object_object_add(jcall,"id", json_object_new_int(call_id));
+  json_object_object_add(jcall,"state", json_object_new_int(call_state));
+
+  // Add call object.
+  json_object_object_add(jobj,"call", jcall); 
+
+  fprintf (stdout,"%s\n",json_object_to_json_string(jobj));
+  fflush(stdout);
+}
+
