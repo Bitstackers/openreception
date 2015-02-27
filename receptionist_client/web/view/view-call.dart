@@ -13,12 +13,6 @@
 
 part of view;
 
-
-abstract class CallCssClass {
-  static const String destroyed = 'destroyed';
-  static const String enqueued  = 'enqueued';
-}
-
 /**
  * Widget representing a call.
  */
@@ -91,7 +85,7 @@ class Call {
   /**
    * Determine if this element marked for destruction.
    */
-  bool get destroyed => this.element.classes.contains('destroyed');
+  bool get destroyed => this.element.classes.contains(CssClass.callDestroyed);
 
 
   /**
@@ -155,7 +149,7 @@ class Call {
   void _callQueueRemoveHandler (_) {
     const String context = '${className}._callQueueRemoveHandler';
     log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
-    this.element.classes.toggle('speaking', true);
+    this.element.classes.toggle(CssClass.callSpeaking, true);
 
     this.element.hidden = true;
 
@@ -168,8 +162,8 @@ class Call {
   void _callParkHandler (_) {
     const String context = '${className}._callParkHandler';
     log.debugContext("Unhiding call ${this.call.ID} from call list.", context);
-    this.element.classes.toggle('speaking', false);
-    this.element.classes.toggle('parked', true);
+    this.element.classes.toggle(CssClass.callSpeaking, false);
+    this.element.classes.toggle(CssClass.callParked, true);
 
       this.element.hidden = false;
       this._renderButtons();
@@ -182,7 +176,7 @@ class Call {
     const String context = '${className}._callHangupHandler';
       log.debugContext("Removing call ${this.call.ID} from call queue view.", context);
 
-      this.element.classes.toggle('destroyed', true);
+      this.element.classes.toggle(CssClass.callDestroyed, true);
       this.disabled = true;
 
       // Delay removal to show that the call is hung up before.

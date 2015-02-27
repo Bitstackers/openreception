@@ -78,8 +78,8 @@ class CallList {
         this.ownedCallsUL.children.add(callView.element);
         callView.element.hidden = false;
       }
-      callView.element.classes.toggle('parked', false);
-      callView.element.classes.toggle('speaking', true);
+      callView.element.classes.toggle(CssClass.callParked, false);
+      callView.element.classes.toggle(CssClass.callSpeaking, true);
       this._renderHeader();
     });
 
@@ -89,7 +89,7 @@ class CallList {
     });
 
     call.events.on(model.Call.queueEnter).listen((_) {
-      callView.element.classes.toggle(CallCssClass.enqueued, true);
+      callView.element.classes.toggle(CssClass.callEnqueued, true);
       this._renderHeader();
     });
 
@@ -99,27 +99,27 @@ class CallList {
     });
 
     call.events.on(model.Call.lock).listen((bool isLocked) {
-      callView.element.classes.toggle('locked', isLocked);
+      callView.element.classes.toggle(CssClass.callLocked, isLocked);
       this._renderHeader();
     });
 
     call.events.on(model.Call.hungup).listen((_) {
-      callView.element.classes.toggle('parked', false);
-      callView.element.classes.toggle('speaking', false);
+      callView.element.classes.toggle(CssClass.callParked, false);
+      callView.element.classes.toggle(CssClass.callSpeaking, false);
       callView._callHangupHandler(_);
       this._renderHeader();
     });
 
     call.events.on(model.Call.parked).listen((_) {
-      callView.element.classes.toggle('speaking', false);
-      callView.element.classes.toggle('parked', true);
+      callView.element.classes.toggle(CssClass.callSpeaking, false);
+      callView.element.classes.toggle(CssClass.callParked, true);
       callView._renderButtons();
       this._renderHeader();
     });
 
 
     if (call.state == model.CallState.QUEUED) {
-      callView.element.classes.toggle (CallCssClass.enqueued, true);
+      callView.element.classes.toggle (CssClass.callEnqueued, true);
     }
 
 

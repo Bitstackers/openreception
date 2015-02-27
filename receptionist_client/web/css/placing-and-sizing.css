@@ -84,16 +84,6 @@ fieldset legend span{
   font-size: 0.9em;
 }
 
-.zebra {}
-
-.zebra li {
-  padding: 5px;
-}
-
-.zebra li:nth-of-type(even) {
-  background-color:rgba(0,0,0,0.1);
-}
-
 .context {
   position: absolute;
   top: 0%;

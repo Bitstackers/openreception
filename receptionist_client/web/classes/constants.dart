@@ -3,6 +3,12 @@ library constants;
 abstract class CssClass {
   static const String calendarEventId = 'calendar-event-id';
 
+  static const String callDestroyed = 'destroyed';
+  static const String callEnqueued  = 'enqueued';
+  static const String callLocked    = 'locked';
+  static const String callParked    = 'parked';
+  static const String callSpeaking  = 'speaking';
+
   static const String contactCalendarEventCreate             = 'contact-calendar-event-create';
   static const String contactCalendarEventEndsDay            = 'contact-calendar-event-create-ends-day';
   static const String contactCalendarEventEndsHour           = 'contact-calendar-event-create-ends-hour';
