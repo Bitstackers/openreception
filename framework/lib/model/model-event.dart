@@ -27,14 +27,10 @@ abstract class EventJSONKey {
 
 const int timeScaling = 1000;
 
-int      dateTimetoTimestamp (DateTime timestamp)  => (timestamp.toUtc().millisecondsSinceEpoch ~/ timeScaling);
-DateTime timestampToDateTime (int      timestamp)  => (new DateTime.fromMillisecondsSinceEpoch(timeScaling * timestamp).toUtc());
-
-
 abstract class EventTemplate {
   static Map _rootElement(Event event) => {
     EventJSONKey.event     : event.eventName,
-    EventJSONKey.timestamp : dateTimetoTimestamp (event.timestamp)
+    EventJSONKey.timestamp : Util.dateTimeToUnixTimestamp (event.timestamp)
   };
 
   static Map call(CallEvent event) =>
@@ -113,8 +109,8 @@ abstract class CallEvent implements Event {
   Map get asMap => EventTemplate.call(this);
 
   CallEvent.fromMap (Map map) :
-    this.call      = new Call.fromMap    (map[EventJSONKey.call]),
-    this.timestamp = timestampToDateTime (map[EventJSONKey.timestamp]);
+    this.call      = new Call.fromMap             (map[EventJSONKey.call]),
+    this.timestamp = Util.unixTimestampToDateTime (map[EventJSONKey.timestamp]);
 
 }
 
@@ -132,8 +128,8 @@ class PeerState implements Event {
   Map get asMap => EventTemplate.peer(this);
 
   PeerState.fromMap (Map map) :
-    this.peer      = new Peer.fromMap    (map[EventJSONKey.peer]),
-    this.timestamp = timestampToDateTime (map[EventJSONKey.timestamp]);
+    this.peer      = new Peer.fromMap             (map[EventJSONKey.peer]),
+    this.timestamp = Util.unixTimestampToDateTime (map[EventJSONKey.timestamp]);
 
 }
 
