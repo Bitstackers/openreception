@@ -1,5 +1,5 @@
 #export TARGET_NAME := x86_64-unknown-linux-gnu
-export LIB_DIR := "$(PWD)"
+export LIB_DIR := "$(PWD)/build"
 
 PJVERSION=2.1
 
@@ -42,6 +42,7 @@ pjproject-2.1: pjproject-2.1.tar.bz2
 	touch $@
 
 pjlibs: pjproject-${PJVERSION}
+	-mkdir $(LIB_DIR)
 	(cd pjproject-${PJVERSION}; ./aconfigure --prefix=$(LIB_DIR) ${PJOPTS}  && make lib && make && make install)	
 	touch $@
 
