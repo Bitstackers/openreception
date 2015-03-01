@@ -92,7 +92,7 @@ class Call {
     this.greetingPlayed = map[CallJsonKey.greetingPlayed];
     this.receptionID = map[CallJsonKey.receptionID];
     this.assignedTo = map[CallJsonKey.assignedTo];
-    this.arrived = timestampToDateTime (map[CallJsonKey.arrivalTime]);
+    this.arrived = Util.unixTimestampToDateTime (map[CallJsonKey.arrivalTime]);
   }
 
   @override
