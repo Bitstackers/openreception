@@ -1,6 +1,6 @@
 part of or_test_fw;
 
-abstract class FindContact {
+abstract class SendMessage {
 
   static String className = 'FindContact';
 
