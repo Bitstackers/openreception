@@ -40,7 +40,7 @@ class Customer {
     log.finest('$this waits for incoming call from event stream.');
     return this._phone.eventStream.firstWhere(
         (Phonio.Event event)
-          => event.eventName == Phonio.EventJSONKey.callIncoming)
+          => event is Phonio.CallOutgoing)
           .then((_) {
             log.finest('$this got expected event, returning current call.');
             return this.currentCall;
