@@ -18,7 +18,7 @@ abstract class IncomingCall {
 
   static Logger log = new Logger(IncomingCall.className);
 
-  static void setup() {
+  static Future setup() {
     startTime = new DateTime.now();
     nextStep = 1;
 
@@ -29,6 +29,7 @@ abstract class IncomingCall {
 
     log.finest("Requesting a receptionist...");
     receptionist = ReceptionistPool.instance.aquire();
+
 
     log.finest("Requesting a second receptionist...");
     receptionist2 = ReceptionistPool.instance.aquire();
@@ -41,6 +42,10 @@ abstract class IncomingCall {
     log.finest("Select a reception database connection...");
     receptionStore = new Service.RESTReceptionStore(Config.receptionStoreURI,
         receptionist.authToken, new Transport.Client());
+
+    return receptionist.registerAccount().then((_) =>
+           receptionist2.registerAccount());
+
   }
 
   static void teardown() {
@@ -138,8 +143,8 @@ abstract class IncomingCall {
     Model.Call trackedCall = null;
     Model.Reception reception = null;
 
-    setup();
-    return Caller_Places_Call(receptionExtension).then((_) => Caller_Hears_Dialtone()).then((_) {
+    return setup().then((_) =>
+    Caller_Places_Call(receptionExtension).then((_) => Caller_Hears_Dialtone()).then((_) {
       step("FreeSWITCH         ->  FreeSWITCH        [Checks dial-plan.  Result: Queue call.]");
       step("FreeSWITCH         ->> Call-Flow-Control [event: call-offer; destination: Reception]");
       step("FreeSWITCH: pauses dial-plan processing for # seconds");
@@ -174,7 +179,7 @@ abstract class IncomingCall {
     .then((_) => step("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
     .then((_) => Receptionist_Answers(trackedCall, reception))
     .catchError(_dumpState)
-    .whenComplete(teardown);
+    .whenComplete(teardown));
 
   }
 
