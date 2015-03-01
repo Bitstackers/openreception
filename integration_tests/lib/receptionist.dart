@@ -21,7 +21,34 @@ class Receptionist {
     wsc.connect(Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'));
 
     this.notificationSocket.eventStream.listen(this._handleEvent);
+  }
 
+  void cleanState () {
+    log.finest('Cleaning up $this');
+    this._phone.hangupAll();
+    this.eventStack.clear();
+    this.notificationSocket.close();
+  }
+
+  Future shutdown() {
+    return this.notificationSocket.close();
+  }
+
+  Future registerAccount() {
+    if (this._phone is Phonio.PJSUAProcess) {
+      return (this._phone as Phonio.PJSUAProcess).registerAccount();
+    }
+
+    else if (this._phone is Phonio.SNOMPhone) {
+      log.severe('Assuming that SNOM phone is already registered.');
+      return new Future(() => null);
+    }
+
+    else {
+       return new Future.error
+           (new UnimplementedError('Unable to register phone type : '
+               '${this._phone.runtimeType}'));
+    }
 
   }
 
@@ -67,7 +94,7 @@ class Receptionist {
   }
 
   @override
-  String toString () => this._phone.ID.toString();
+  String toString () => '${this.userID}  PhoneType:${this._phone.runtimeType}';
 
 }
 
