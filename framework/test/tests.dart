@@ -1,19 +1,40 @@
-//import 'dart:async';
+import 'dart:async';
 
-import 'package:unittest/unittest.dart';
+import '../lib/bus.dart';
+import '../lib/model.dart'    as Model;
+import '../lib/resource.dart' as Resource;
+//import '../lib/service.dart'  as Service;
+import 'data/testdata.dart'  as Test_Data;
+
 //import 'package:logging/logging.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
-
-import '../lib/model.dart'    as Model;
-//import '../lib/service.dart'  as Service;
-import '../lib/resource.dart' as Resource;
-
-import 'data/testdata.dart'  as Test_Data;
+import 'package:unittest/unittest.dart';
 
 void main() {
   //Logger.root.onRecord.listen(print);
 
   JUnitConfiguration.install();
+
+  test('async openreception.bus test', () {
+    final String testEvent = 'Foo!';
+    Bus bus = new Bus<String>();
+    Stream<String> stream = bus.stream;
+    Timer timer;
+
+    timer = new Timer(new Duration(seconds: 1), () {
+      fail('testEvent not fired or caught within 1 second');
+    });
+
+    stream.listen(expectAsync((String value) {
+      expect(value, equals(testEvent));
+
+      if(timer != null) {
+        timer.cancel();
+      }
+    }));
+
+    bus.fire(testEvent);
+  });
 
   test('service.ContactObject.serializationDeserialization', ContactObject.serializationDeserialization);
 
