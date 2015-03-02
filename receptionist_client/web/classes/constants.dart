@@ -3,6 +3,11 @@ library constants;
 const String defaultElementId = 'data-default-element';
 
 abstract class CssClass {
+  static const String boxWithHeaderContent  = 'box-with-header-content';
+  static const String boxWithHeaderHeadline = 'box-with-header-headline';
+  static const String boxWithHeaderMedium   = 'box-with-header-medium';
+  static const String boxWithHeaderOuter    = 'box-with-header-outer';
+
   static const String calendarEventContent = 'calendar-event-content';
   static const String calendarEventId = 'calendar-event-id';
   static const String calendarEventNotActive = 'calendar-event-notactive';
@@ -59,7 +64,10 @@ abstract class CssClass {
 
   static const String messageSearchBox = 'message-search-box';
 
-  static const String nudge = 'nudge';
+  static const String noChrome = 'no-chrome';
+  static const String nudge    = 'nudge';
+
+  static const String phoneNumber = 'phone-number';
 
   static const String receptionEventsActive = 'reception-events-active';
 

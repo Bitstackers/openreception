@@ -51,7 +51,6 @@ class LogBox {
   void push(LogRecord record) {
     messages.insert(0, record);
     TableRowElement tr = new TableRowElement();
-    tr.classes.add('logbox-row');
     tr.children
       ..add(new TableCellElement()
               ..text = dateFormat.format(record.time)

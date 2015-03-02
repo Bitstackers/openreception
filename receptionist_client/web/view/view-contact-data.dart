@@ -88,9 +88,8 @@ class ContactData {
     int index = 1;
 
     for (var item in contact.phones) {
-
       LIElement number = new LIElement()
-          ..classes.add("phone-number")
+          ..classes.add(CssClass.phoneNumber)
           ..classes.add(item['kind']);
 
       if (index < 9) {

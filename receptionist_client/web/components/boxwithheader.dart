@@ -21,22 +21,22 @@ class Box {
   Box.noChrome(DivElement this.element, Element bodyContent) {
     element
       ..children.add(bodyContent)
-      ..classes.add('no-chrome');
+      ..classes.add(CssClass.noChrome);
   }
 
   Box.withHeader(DivElement this.element, Element headerContent, [Element bodyContent]) {
     String html = '''
-      <h1 class="box-with-header-headline box-with-header-medium">
+      <h1 class="${CssClass.boxWithHeaderHeadline} ${CssClass.boxWithHeaderMedium}">
       </h1>
-      <div class="box-with-header-content">
+      <div class="${CssClass.boxWithHeaderContent}">
       </div>
     ''';
 
     element.children.addAll(new DocumentFragment.html(html).children);
-    element.classes.add('box-with-header-outer');
+    element.classes.add(CssClass.boxWithHeaderOuter);
 
-    header = element.querySelector('.box-with-header-headline');
-    _body = element.querySelector('.box-with-header-content');
+    header = element.querySelector('.${CssClass.boxWithHeaderHeadline}');
+    _body = element.querySelector('.${CssClass.boxWithHeaderContent}');
 
     header.children.add(headerContent);
     if (bodyContent != null) {
@@ -48,9 +48,9 @@ class Box {
   }
 
   Box.withHeaderStatic(DivElement this.element, HeadingElement this.header, DivElement this._body) {
-    element.classes.add('box-with-header-outer');
-    header.classes.addAll(['box-with-header-headline','box-with-header-medium']);
-    _body.classes.add('box-with-header-content');
+    element.classes.add(CssClass.boxWithHeaderOuter);
+    header.classes.addAll([CssClass.boxWithHeaderHeadline, CssClass.boxWithHeaderMedium]);
+    _body.classes.add(CssClass.boxWithHeaderContent);
     _registerEventListeners();
     _resize();
   }
