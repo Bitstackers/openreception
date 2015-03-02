@@ -2,7 +2,6 @@
   list-style-type: none;
 }
 
-/* @group Base */
 .chosen-container {
   width: 100%;
   position: relative;
@@ -15,6 +14,7 @@
   -moz-user-select: none;
   user-select: none;
 }
+
 .chosen-container .chosen-drop {
   position: absolute;
   top: 100%;
@@ -29,15 +29,15 @@
   background: #fff;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
 }
+
 .chosen-container.chosen-with-drop .chosen-drop {
   left: 0;
 }
+
 .chosen-container a {
   cursor: pointer;
 }
 
-/* @end */
-/* @group Single Chosen */
 .chosen-container-single .chosen-single {
   position: relative;
   display: block;
@@ -60,9 +60,11 @@
   line-height: 30px;
   font-size: 1.1em;
 }
+
 .chosen-container-single .chosen-default {
   color: #999;
 }
+
 .chosen-container-single .chosen-single span {
   display: block;
   overflow: hidden;
@@ -70,27 +72,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.chosen-container-single .chosen-single-with-deselect span {
-  margin-right: 38px;
-}
-/* Not sure, what this does, and if it's needed*/
-.chosen-container-single .chosen-single abbr {
-  position: absolute;
-  top: 6px;
-  right: 26px;
-  display: block;
-  width: 12px;
-  height: 12px;
-  background: url('/images/chosen-sprite.png') -42px 1px no-repeat;
-  font-size: 1px;
-}
-.chosen-container-single .chosen-single abbr:hover {
-  background-position: -42px -10px;
-}
-.chosen-container-single.chosen-disabled .chosen-single abbr:hover {
-  background-position: -42px -10px;
-}
-/* not needed END*/
 
 .chosen-container-single .chosen-single div {
   position: absolute;
@@ -100,12 +81,14 @@
   width: 18px;
   height: 100%;
 }
+
 .chosen-container-single .chosen-single div b {
   display: block;
   width: 100%;
   height: 100%;
   background: url('/images/chosen-sprite.png') no-repeat 0px 2px;
 }
+
 .chosen-container-single .chosen-search {
   position: relative;
   z-index: 1010;
@@ -113,6 +96,7 @@
   padding: 3px 4px;
   white-space: nowrap;
 }
+
 .chosen-container-single .chosen-search input[type="text"] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -134,18 +118,13 @@
   line-height: normal;
   border-radius: 0;
 }
+
 .chosen-container-single .chosen-drop {
   margin-top: -1px;
   border-radius: 0 0 4px 4px;
   background-clip: padding-box;
 }
-.chosen-container-single.chosen-container-single-nosearch .chosen-search {
-  position: absolute;
-  left: -9999px;
-}
 
-/* @end */
-/* @group Results */
 .chosen-container .chosen-results {
   position: relative;
   overflow-x: hidden;
@@ -155,6 +134,7 @@
   max-height: 225px;
   -webkit-overflow-scrolling: touch;
 }
+
 .chosen-container .chosen-results li {
   display: none;
   margin: 0;
@@ -162,16 +142,13 @@
   list-style: none;
   line-height: 15px;
 }
+
 .chosen-container .chosen-results li.chosen-active-result {
   display: list-item;
   cursor: pointer;
   margin-bottom: 1px;
 }
-.chosen-container .chosen-results li.disabled-result {
-  display: list-item;
-  color: #ccc;
-  cursor: default;
-}
+
 .chosen-container .chosen-results li.chosen-highlighted {
   background-color: #3875d7;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #3875d7), color-stop(90%, #2a62bc));
@@ -181,22 +158,17 @@
   background-image: linear-gradient(#3875d7 20%, #2a62bc 90%);
   color: #fff;
 }
-.chosen-container .chosen-results li.no-results {
-  display: list-item;
-  background: #f4f4f4;
-}
+
 .chosen-container .chosen-results li em {
   font-style: normal;
   text-decoration: underline;
 }
 
-/* @end */
-
-/* @group Active  */
 .chosen-container-active .chosen-single {
   border: 1px solid #5897fb;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
 .chosen-container-active.chosen-with-drop .chosen-single {
   border: 1px solid #aaa;
   -moz-border-radius-bottomright: 0;
@@ -210,17 +182,21 @@
   background-image: linear-gradient(#eeeeee 20%, #ffffff 80%);
   box-shadow: 0 1px 0 #fff inset;
 }
+
 .chosen-container-active.chosen-with-drop .chosen-single div {
   border-left: none;
   background: transparent;
 }
+
 .chosen-container-active.chosen-with-drop .chosen-single div b {
   background-position: -18px 2px;
 }
+
 .chosen-container-active .chosen-choices {
   border: 1px solid #5897fb;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
 .chosen-container-active .chosen-choices li.search-field input[type="text"] {
   color: #111 !important;
 }
