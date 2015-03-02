@@ -98,7 +98,7 @@ class Location {
 
   bool setFocusState(Element widget, Element element) {
     bool active = widgetId == widget.id && elementId == element.id;
-    widget.classes.toggle(FOCUS, active);
+    widget.classes.toggle(CssClass.focus, active);
     if(active) {
       element.focus();
     }
@@ -108,7 +108,7 @@ class Location {
   /**
    * Determines whether or a widget is currently selected.
    */
-  static isActive (Element widget) => widget.classes.contains (FOCUS);
+  static isActive (Element widget) => widget.classes.contains(CssClass.focus);
 
   /**
    * Updates the url bar.

@@ -198,7 +198,7 @@ class MessageEdit {
   void _onLocationChanged(nav.Location location) {
     this.hasFocus = (location.widgetId == element.id);
 
-    element.classes.toggle('focus', this.hasFocus);
+    element.classes.toggle(CssClass.focus, this.hasFocus);
     this.tabable = this.hasFocus;
 
     if (location.elementId != null) {

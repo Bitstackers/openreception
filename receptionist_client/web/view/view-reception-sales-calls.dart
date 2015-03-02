@@ -53,7 +53,7 @@ class ReceptionSalesCalls {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == element.id;
-      element.classes.toggle(FOCUS, active);
+      element.classes.toggle(CssClass.focus, active);
       if(active) {
         instructionList.focus();
       }

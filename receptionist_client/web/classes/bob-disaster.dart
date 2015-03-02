@@ -16,6 +16,7 @@ library bob_disaster;
 import 'dart:async';
 import 'dart:html';
 
+import 'constants.dart';
 import 'events.dart' as event;
 import 'state.dart';
 
@@ -35,7 +36,7 @@ class BobDisaster {
     }
 
     event.bus.on(event.stateUpdated).listen((State value) {
-      element.classes.toggle('hidden', !value.isError);
+      element.classes.toggle(CssClass.hidden, !value.isError);
       if (value.isError) {
         new Timer(new Duration(seconds: 3), tryRedirect);
       }

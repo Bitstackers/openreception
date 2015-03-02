@@ -211,7 +211,7 @@ class ContactCalendar {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
 
-      element.classes.toggle(FOCUS, this.element.id == location.widgetId);
+      element.classes.toggle(CssClass.focus, this.element.id == location.widgetId);
       if (location.elementId == eventList.id) {
         eventList.focus();
       }

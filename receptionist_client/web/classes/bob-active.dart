@@ -20,7 +20,6 @@ import 'context.dart';
 import 'events.dart' as event;
 import 'commands-keyboard.dart';
 import 'location.dart' as nav;
-//import 'logger.dart';
 import 'state.dart';
 import '../view/view.dart' as View;
 import '../model/model.dart' as Model;
@@ -73,10 +72,10 @@ class BobActive {
     Logger.root.onRecord.listen (print);
     Logger.root.level = Level.INFO;
 
-    element.classes.remove('hidden');
+    element.classes.remove(CssClass.hidden);
 
     event.bus.on(event.stateUpdated).listen((State value) {
-      element.classes.toggle('hidden', !value.isOK);
+      element.classes.toggle(CssClass.hidden, !value.isOK);
     });
 
     registerContexts();

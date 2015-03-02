@@ -167,7 +167,7 @@ class ContactSearch {
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
       bool active = location.widgetId == widget.id;
-      widget.classes.toggle(FOCUS, active);
+      widget.classes.toggle(CssClass.focus, active);
       if(location.elementId == searchBox.id) {
         searchBox.focus();
       }

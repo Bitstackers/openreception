@@ -204,6 +204,9 @@ class Message {
     this.recipients.forEach((ORModel.MessageRecipient recipient) {
       recipientsList.children.add(new LIElement()
                                     ..text = recipient.contactName
+                                    // TODO (TL): Not a big fan of this.
+                                    // Very hard to search for. Either use text to denominate kind of recipient
+                                    // or refer to the styling class from a local map with recipient.role as key
                                     ..classes.add('email-recipient-role-${recipient.role}'));
     });
   }
@@ -214,7 +217,7 @@ class Message {
   void _onLocationChanged(nav.Location location) {
     this.hasFocus = (location.widgetId == element.id);
 
-    element.classes.toggle('focus', this.hasFocus);
+    element.classes.toggle(CssClass.focus, this.hasFocus);
     this.tabable = this.hasFocus;
 
     if (location.elementId != null) {

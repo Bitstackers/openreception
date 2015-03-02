@@ -36,6 +36,8 @@ abstract class CssClass {
   static const String contactDataWorkhoursLabel      = 'contact-data-workhours-label';
 
   static const String disabled = 'disabled';
+  static const String focus    = 'focus';
+  static const String hidden   = 'hidden';
   static const String loading  = 'loading';
 
   static const String messageRecipientList = 'message-recipient-list';

@@ -73,7 +73,6 @@ part 'view-contact.dart';
 part 'view-contact-search.dart';
 part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
-part '../components/constants.dart';
 part 'view-message-filter.dart';
 part '../components/searchcomponent.dart';
 
@@ -83,7 +82,7 @@ typedef void onCallQueueClick(MouseEvent event, Call queueItem);
 
 bool handleFocusChange(Focus value, List<Element> focusElements, Element highlightElement) {
   Element focusedElement = focusElements.firstWhere((e) => e.id == value.current, orElse: () => null);
-  highlightElement.classes.toggle(FOCUS, focusedElement != null);
+  highlightElement.classes.toggle(CssClass.focus, focusedElement != null);
   if (focusedElement != null) {
     focusedElement.focus();
   }

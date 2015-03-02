@@ -40,7 +40,7 @@ class Notification {
   int    get ID      => this._ID;
   String get message => this._message;
 
-  Notification (this._message, {String this.type : NotificationType.Warning});
+  Notification(this._message, {String this.type : NotificationType.Warning});
 
   @override
   String toString() {

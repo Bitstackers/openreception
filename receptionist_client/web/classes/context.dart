@@ -15,12 +15,12 @@ library context;
 
 import 'dart:html';
 
-import 'package:event_bus/event_bus.dart';
-
+import 'constants.dart';
 import 'events.dart' as event;
-//import 'keyboardhandler.dart';
 import 'location.dart' as nav;
 import 'logger.dart';
+
+import 'package:event_bus/event_bus.dart';
 
 /**
  * A [Context] is a top-level GUI container. It represents a collection of 0
@@ -81,7 +81,7 @@ class Context {
    */
   Context(Element this._element) {
     assert(_element != null);
-    isActive = _element.classes.contains('hidden') ? false : true;
+    isActive = _element.classes.contains(CssClass.hidden) ? false : true;
 
     _registerEventListeners();
   }
@@ -125,7 +125,7 @@ class Context {
    * (see the constructor comment) and setting [isActive] to false.
    */
   void _toggle(String newContextID) {
-    _element.classes.toggle('hidden', newContextID != id);
+    _element.classes.toggle(CssClass.hidden, newContextID != id);
   }
 
   /**

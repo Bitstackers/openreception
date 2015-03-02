@@ -15,6 +15,7 @@ library bob_loading;
 
 import 'dart:html';
 
+import 'constants.dart';
 import 'events.dart' as event;
 import 'state.dart';
 
@@ -25,7 +26,7 @@ class BobLoading {
     assert(element != null);
 
     event.bus.on(event.stateUpdated).listen((State value) {
-      element.classes.toggle('hidden', !value.isUnknown);
+      element.classes.toggle(CssClass.hidden, !value.isUnknown);
     });
   }
 }

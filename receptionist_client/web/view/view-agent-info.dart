@@ -109,7 +109,7 @@ class AgentInfo {
       ..marginLeft = '${marginLeft}px'
       ..marginTop = '${marginTop}px';
 
-    divFace.classes.toggle('hidden', divParent.client.width < 150);
+    divFace.classes.toggle(CssClass.hidden, divParent.client.width < 150);
   }
 
   void initialSetup() {

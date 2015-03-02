@@ -180,7 +180,7 @@ class ReceptionCalendar {
     });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
-      element.classes.toggle(FOCUS, location.targets(this.element));
+      element.classes.toggle(CssClass.focus, location.targets(this.element));
 
       if (location.targets(this.element)) {
         this.selectedElement.focus();

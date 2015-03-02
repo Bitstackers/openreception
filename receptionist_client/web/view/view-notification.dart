@@ -17,7 +17,6 @@ part of view;
  */
 
 class Notification {
-
   model.NotificationList nl = model.NotificationList.instance;
 
   static final String id = Id.notifications;
@@ -32,9 +31,7 @@ class Notification {
   }
 
   void registerEventListeners() {
-
     nl.events.on(model.NotificationList.insert).listen((model.Notification notification) {
-
       node.append(new HeadingElement.h4()
       ..text = notification.message..id = 'notification_${notification.ID}'
       ..classes.toggle(notification.type)
