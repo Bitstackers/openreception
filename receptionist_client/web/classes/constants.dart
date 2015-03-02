@@ -3,13 +3,28 @@ library constants;
 const String defaultElementId = 'data-default-element';
 
 abstract class CssClass {
+  static const String calendarEventContent = 'calendar-event-content';
   static const String calendarEventId = 'calendar-event-id';
+  static const String calendarEventNotActive = 'calendar-event-notactive';
+  static const String calendarEventTable = 'calendar-event-table';
+  static const String calendarEventTimestamp = 'calendar-event-timestamp';
 
   static const String callDestroyed = 'destroyed';
   static const String callEnqueued  = 'enqueued';
   static const String callLocked    = 'locked';
   static const String callParked    = 'parked';
   static const String callSpeaking  = 'speaking';
+
+  static const String chosenActiveResult    = 'chosen-active-result';
+  static const String chosenContainer       = 'chosen-container';
+  static const String chosenContainerActive = 'chosen-container-active';
+  static const String chosenContainerSingle = 'chosen-container-single';
+  static const String chosenDrop            = 'chosen-drop';
+  static const String chosenHighlighted     = 'chosen-highlighted';
+  static const String chosenResults         = 'chosen-results';
+  static const String chosenSearch          = 'chosen-search';
+  static const String chosenSingle          = 'chosen-single';
+  static const String chosenWithDrop        = 'chosen-with-drop';
 
   static const String contactCalendarEventCreate             = 'contact-calendar-event-create';
   static const String contactCalendarEventCreateBody         = 'contact-calendar-event-create-body';
@@ -46,7 +61,11 @@ abstract class CssClass {
 
   static const String nudge = 'nudge';
 
+  static const String receptionEventsActive = 'reception-events-active';
+
   static const String selected = 'selected';
+
+  static const String welcomeMessageActiveCall = 'welcome-message-active-call';
 }
 
 abstract class Id {
@@ -162,5 +181,6 @@ abstract class Id {
   static const String receptionWebsitesList           = 'reception-websites-list';
   static const String receptionSelector               = 'reception-selector';
 
-  static const String welcomeMessage = 'welcome-message';
+  static const String welcomeMessage     = 'welcome-message';
+  static const String welcomeMessageText = 'welcome-message-text';
 }

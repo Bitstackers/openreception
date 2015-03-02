@@ -18,7 +18,7 @@ part of view;
  */
 class WelcomeMessage {
   DivElement container;
-  SpanElement get message => container.querySelector('#welcome-message-text');
+  SpanElement get message => container.querySelector('#${Id.welcomeMessageText}');
 
   /**
    *
@@ -54,7 +54,7 @@ class WelcomeMessage {
   void _onCallChange(model.Call call) {
     log.debugContext("Changed to call ${call.ID}", "WelcomeMessage");
 
-    container.classes.toggle('welcome-message-active-call', call != model.nullCall);
+    container.classes.toggle(CssClass.welcomeMessageActiveCall, call != model.nullCall);
 
     if (call != model.nullCall && call.greetingPlayed) {
       storage.Reception.get(call.receptionId).then((model.Reception reception) {

@@ -305,7 +305,7 @@ class ReceptionCalendar {
   }
 
   String getClass(model.CalendarEvent event) {
-    return event.active ? 'reception-events-active' : '';
+    return event.active ? CssClass.receptionEventsActive : '';
   }
 
   void _render(List<model.CalendarEvent> events) {
@@ -314,18 +314,18 @@ class ReceptionCalendar {
 
     Element eventToDOM (model.CalendarEvent event) {
       String html = '''
-        <li class="${event.active ? 'reception-events-active': ''}" value=${event.ID}>
-          <table class="calendar-event-table">
+        <li class="${event.active ? CssClass.receptionEventsActive : ''}" value=${event.ID}>
+          <table class="${CssClass.calendarEventTable}">
             <tbody>
               <tr>
-                <td class="calendar-event-content ${event.active ? '' : 'calendar-event-notactive'}">
+                <td class="${CssClass.calendarEventContent} ${event.active ? '' : CssClass.calendarEventNotActive}">
                   ${event.content}
                 <td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td class="calendar-event-timestamp ${event.active ? '' : 'calendar-event-notactive'}">
+                <td class="${CssClass.calendarEventTimestamp} ${event.active ? '' : CssClass.calendarEventNotActive}">
                   ${event.start} - ${event.stop}
                 <td>
               </tr>

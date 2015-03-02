@@ -100,24 +100,24 @@ class SearchComponent<T> {
 
   SearchComponent(DivElement this._element, Context this._context, String inputId) {
     String html = '''
-    <div class="chosen-container chosen-container-single">
-      <a class="chosen-single" tabindex="-1">
+    <div class="${CssClass.chosenContainer} ${CssClass.chosenContainerSingle}">
+      <a class="${CssClass.chosenSingle}" tabindex="-1">
         <span></span>
         <div><b></b></div>
       </a>
-      <div class="chosen-drop">
-        <div class="chosen-search">
+      <div class="${CssClass.chosenDrop}">
+        <div class="${CssClass.chosenSearch}">
           <input id="${inputId}" type="text" autocomplete="off" tabindex="-1"></input>
         </div>
-        <ul class="chosen-results"></ul>
+        <ul class="${CssClass.chosenResults}"></ul>
       <div>
     </div>
     ''';
 
-    _container           = new DocumentFragment.html(html).querySelector('.chosen-container');
-    _selectedElementText = _container                     .querySelector('.chosen-single > span');
-    _searchBox           = _container                     .querySelector('.chosen-search > input');
-    _resultsList         = _container                     .querySelector('.chosen-results');
+    _container           = new DocumentFragment.html(html).querySelector('.${CssClass.chosenContainer}');
+    _selectedElementText = _container                     .querySelector('.${CssClass.chosenSingle} > span');
+    _searchBox           = _container                     .querySelector('.${CssClass.chosenSearch} > input');
+    _resultsList         = _container                     .querySelector('.${CssClass.chosenResults}');
     _element.children.add(_container);
 
     _selectedElementText.text = _searchPlaceholder;
@@ -126,7 +126,7 @@ class SearchComponent<T> {
   }
 
   void showDropDown() {
-    _container.classes.add('chosen-with-drop');
+    _container.classes.add(CssClass.chosenWithDrop);
     _withDropDown = true;
   }
 
@@ -147,7 +147,7 @@ class SearchComponent<T> {
   }
 
   void closeDropDown() {
-    _container.classes.remove('chosen-with-drop');
+    _container.classes.remove(CssClass.chosenWithDrop);
     _withDropDown = false;
   }
 
@@ -171,11 +171,11 @@ class SearchComponent<T> {
    */
   void _highlightElement(LIElement li) {
     if(_highlightedLi != null) {
-      _highlightedLi.classes.remove('highlighted');
+      _highlightedLi.classes.remove(CssClass.chosenHighlighted);
     }
 
     if(li != null) {
-      li.classes.add('highlighted');
+      li.classes.add(CssClass.chosenHighlighted);
       _highlightedLi = li;
     }
 
@@ -334,12 +334,12 @@ class SearchComponent<T> {
 //      T dataElement = _dataList[i];
       LIElement myLi;
       myLi = new LIElement()
-        ..classes.add('active-result')
+        ..classes.add(CssClass.chosenActiveResult)
         ..attributes[liIdTag] = i.toString()
         ..onMouseOver.listen((_) => _highlightElement(myLi))
         ..onMouseDown.listen((_) {
           _activateSelectedElement(myLi);
-          _container.classes.add('chosen-container-active');
+          _container.classes.add(CssClass.chosenContainerActive);
           new Future(_searchBox.focus);
         });
 

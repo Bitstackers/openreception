@@ -799,6 +799,121 @@ li.email-recipient-role-bcc {
   overflow: auto;
 }
 
+#reception-customer-type {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
+#reception-customer-type-body {
+  padding: 5px;
+}
+
+#reception-email-addresses {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
+#reception-events {
+  width: 100%;
+}
+
+.reception-events-active {
+  border-left: solid 3px red;
+}
+
+#reception-events-list {
+  height: 100%;
+  width: 100%;
+  font-size: 0.8em;
+  list-style-type: none;
+  overflow: auto;
+}
+
+#reception-extra-information {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+#reception-extra-information-body {
+  padding: 5px;
+}
+
+#reception-handling {
+  width  : 100%;
+  height : 20%;
+}
+
+#reception-handling-list {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.8em;
+  list-style-type: none;
+}
+
+#reception-opening-hours ul {
+  overflow: auto;
+}
+
+#reception-opening-hours-list {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.8em;
+  list-style-type: none;
+}
+
+#reception-product-body {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 5px;
+  font-size: 0.8em;
+}
+
+#reception-registration-number {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
+#reception-sales-calls-list {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.8em;
+  list-style-type: none;
+}
+
+#reception-selector {
+  border: 2px solid transparent;
+  left: 0%;
+  top: 8%;
+  width: 100%;
+}
+
+#reception-telephone-numbers {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
+#reception-telephone-numbers-list {
+  width: 100%;
+  overflow: auto;
+  font-size: 0.9em;
+  list-style-type: none;
+}
+
+#reception-websites {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
 /*
   TODO (TL): Overly generic name.
 */
@@ -846,6 +961,31 @@ textarea.message-body {
 .warning {
   background:#fff8c4 url('../images/warning.png') no-repeat 10px 50%;
   border:1px solid #f2c779;
+}
+
+#welcome-message {
+  box-shadow: 2px 2px 3px #ccc;
+  left: 0%;
+  top: 0%;
+  height: 100%;
+  width: 80%;
+}
+
+#welcome-message > div {
+  display: table;
+  height: 100%;
+  width: 100%;
+  font-size: 1.5em;
+}
+
+.welcome-message-active-call {
+  background-color: lightgreen !important;
+}
+
+#welcome-message-text {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0px 10px;
 }
 
 .zebra li {
