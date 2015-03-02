@@ -17,7 +17,6 @@ import 'dart:html';
 import 'dart:math' show pow;
 
 import 'constants.dart';
-import '../view/view.dart';
 import 'events.dart' as event;
 import 'logger.dart';
 

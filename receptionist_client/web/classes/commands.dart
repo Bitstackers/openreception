@@ -13,13 +13,6 @@
 
 library commands;
 
-import 'dart:async';
-
-import 'logger.dart';
-import '../model/model.dart' as model;
-import '../protocol/protocol.dart' as protocol;
-import '../storage/storage.dart' as storage;
-
 const CONTACTID_TYPE = 1;
 const PSTN_TYPE = 2;
 const SIP_TYPE = 3;
