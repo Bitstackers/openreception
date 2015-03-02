@@ -121,18 +121,7 @@ class _KeyboardHandler {
        new nav.Location(Id.contextHome, Id.receptionSalesCalls,   Id.receptionSalesCallsList),
        new nav.Location(Id.contextHome, Id.receptionProduct,      Id.receptionProductBody),
        new nav.Location(Id.contextHome, Id.contactSelector,       Id.contactSelectorInput),
-       new nav.Location(Id.contextHome, Id.contactSelector,       Id.contactCalendar),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageSearchBox),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageName),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageReception),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessagePhone),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageCellPhone),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageLocalNo),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageText),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageCancel),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageDraft),
-       new nav.Location(Id.contextHome, Id.messageCompose,        Id.sendMessageSend)
-      ];
+       new nav.Location(Id.contextHome, Id.contactSelector,       Id.contactCalendar)];
 
   List<nav.Location> contextHomePlus =
       [new nav.Location(Id.contextHomeplus, Id.receptionCustomerType,       Id.receptionCustomerTypeBody),
@@ -143,8 +132,7 @@ class _KeyboardHandler {
        new nav.Location(Id.contextHomeplus, Id.receptionEmailAddresses,     Id.receptionEmailAddressesList),
        new nav.Location(Id.contextHomeplus, Id.receptionWebsites,           Id.receptionWebsitesList),
        new nav.Location(Id.contextHomeplus, Id.receptionRegistrationNumber, Id.receptionRegistrationNumberList),
-       new nav.Location(Id.contextHomeplus, Id.receptionExtraInformation,   Id.receptionExtraInformationBody)
-       ];
+       new nav.Location(Id.contextHomeplus, Id.receptionExtraInformation,   Id.receptionExtraInformationBody)];
 
   List<nav.Location> contextPhone =
       [new nav.Location(Id.contextPhone, Id.phoneBooth, Id.phoneBoothNumberField)];

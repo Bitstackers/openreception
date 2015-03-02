@@ -156,15 +156,5 @@ abstract class Id {
   static const String receptionWebsitesList           = 'reception-websites-list';
   static const String receptionSelector               = 'reception-selector';
 
-  static const String sendMessageCancel    = 'send-message-cancel';
-  static const String sendMessageCellPhone = 'send-message-cell-phone';
-  static const String sendMessageDraft     = 'send-message-draft';
-  static const String sendMessageLocalNo   = 'send-message-local-no';
-  static const String sendMessageName      = 'send-message-name';
-  static const String sendMessagePhone     = 'send-message-phone';
-  static const String sendMessageReception = 'send-message-reception';
-  static const String sendMessageSearchBox = 'send-message-search-box';
-  static const String sendMessageSend      = 'send-message-send';
-  static const String sendMessageText      = 'send-message-text';
-  static const String welcomeMessage       = 'welcome-message';
+  static const String welcomeMessage = 'welcome-message';
 }

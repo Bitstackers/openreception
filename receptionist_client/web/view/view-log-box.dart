@@ -28,9 +28,9 @@ class LogBox {
       ..id = Id.logBoxTable
       ..children.add(new TableRowElement()
         ..innerHtml = '''
-          <th class="logbox-time-header">Tidspunkt</th>
-          <th class="logbox-level-header">Niveau</th>
-          <th class="logbox-message-header">Besked</th>
+          <th class="log-box-time-header">Tidspunkt</th>
+          <th class="log-box-level-header">Niveau</th>
+          <th class="log-box-message-header">Besked</th>
         ''');
 
     box = new Box.noChrome(element, table);

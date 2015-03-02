@@ -44,27 +44,18 @@
   overflow: auto;
 }
 
-/* Appears to NOT be in use
-.box-with-header-focusborder {
-  border: solid 2px red;
-}
+/*
+  TODO (TL): Only used by the boxwithheader component. Clean up!
 */
-
-/* Only used by the boxwithheader component */
 .box-with-header-headline {
   background-color: #dedede;
   color: #444;
   font-weight: bold;
 }
 
-/* Appears to NOT be in use
-.box-with-header-big {
-  font-size: 1.0em;
-  padding: 5px 10px;
-}
+/*
+  TODO (TL): Only used by the boxwithheader component. Clean up!
 */
-
-/* Only used by the boxwithheader component */
 .box-with-header-medium {
   font-size: 0.8em;
   padding: 0px 5px 2px 5px;
@@ -73,10 +64,11 @@
 .box-with-header-outer {
   background-color: #fafafa;
   border: solid 2px #ddd;
-  /* overflow: auto; */
 }
 
-/* only used once */
+/*
+  TODO (TL): Only used once. Better name.
+*/
 .box-with-header-outer-left {
   background-color: #fafafa;
   border: solid 2px #ddd;
@@ -84,39 +76,47 @@
   border-radius: 4px  0px 0px 4px;
 }
 
-/* only used once */
+/*
+  TODO (TL): Only used once. Better name.
+*/
 .box-with-header-outer-right {
   background-color: #fafafa;
   border: solid 2px #ddd;
   border-radius: 0px  4px 4px 0px;
 }
 
-/* this global button styling seems fairly pointless */
+/*
+  TODO (TL): This global button styling seems to general. Class?
+*/
 button {
   color: white;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-/* disables Firefox dotted line on latest clicked button element */
+/*
+  Disables Firefox dotted line on latest clicked button element.
+*/
 button::-moz-focus-inner {
   border: 0;
 }
 
-/* seems to be used by the context switcher for click effect */
+/*
+  TODO (TL): Seems to only be used by the context switcher for click effect.
+  Less general selector perhaps?
+*/
 button:focus {
   background-color: #fff8c4;
   outline: 0.2em solid red;
 }
 
-/* used once to identify a single button in compose message */
 button.cancel {
   background-color: #f5aca6;
 }
 
 button.print,
 button.save {
-  background: rgb(28, 184, 65); /* HEX ME! this is a green */
+  background: rgb(28, 184, 65); /* TODO (TL): HEX ME! this is a green */
 }
 
 button.copy,
@@ -127,31 +127,36 @@ button.send {
   background: rgb(66, 184, 221); /* HEX ME! this is a light blue */
 }
 
-/* appears to NOT be in use
-button span {
-  margin-left: 10.5em;
-  margin-right: 10.5em;
-}
+/*
+  Used by view-contact-calendar and view-reception-calendar.
+  TODO (TL): Bad name.
 */
-
-/* used in view-contact-calendar and view-reception-calendar */
 .calendar-event-content {
   vertical-align: top;
 }
 
-/* used in view-contact-calendar and view-reception-calendar */
+/*
+  Used by view-contact-calendar and view-reception-calendar.
+  TODO (TL): Bad name. I suppose this is a list item style. Name it accordingly.
+*/
 .calendar-event-notactive {
   color: #999;
   font-weight: normal;
 }
 
-/* used in view-contact-calendar and view-reception-calendar */
+/*
+  Used by view-contact-calendar and view-reception-calendar.
+  TODO (TL): Bad name. Is for creating/editing events. Name must infer intent!
+*/
 .calendar-event-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-/* used in view-contact-calendar and view-reception-calendar */
+/*
+  Used by view-contact-calendar and view-reception-calendar.
+  TODO (TL): Bad name once again. Start or end of calendar event?
+*/
 .calendar-event-timestamp {
   text-align: right;
   vertical-align: top;
@@ -159,7 +164,10 @@ button span {
   padding-top: 5px;
 }
 
-/* only used in view-call.dart */
+/*
+  Used by view-call.
+  TODO (TL): Bad name. Probably also bad selector. Maybe li.call-queue......
+*/
 .call-queue-item-default {
   height: 30px;
   margin: 5px;
@@ -171,7 +179,10 @@ button span {
   list-style-image: url("../images/phone20x20.png");
 }
 
-/* only used in view-call.dart */
+/*
+  Used by view-call.
+  TODO (TL): Bad name. Bad selector.
+*/
 .call-queue-item-default:hover {
   border-left: 4px solid #333;
   -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.5);
@@ -179,7 +190,10 @@ button span {
   list-style-image: url("../images/phone20x20.png");
 }
 
-/* only used in view-call.dart */
+/*
+  Used by view-call.
+  TODO (TL): Bad name. Suspect "seconds" refers to time in queue?
+*/
 .call-queue-item-seconds {
   float: right;
 }
@@ -260,7 +274,7 @@ button span {
   background-size: contain;
 }
 
-/* not currently in use
+/* Not currently in use in HTML.
 #context-log-switcher-button {
   background: url(../images/contextlog.svg) no-repeat top left;
   background-size: contain;
@@ -283,7 +297,7 @@ button span {
   background-size: contain;
 }
 
-/* not currently in use
+/* Not currently in use in HTML.
 #context-phone-switcher-button {
   background: url(../images/contextphone.svg) no-repeat top left;
   background-size: contain;
@@ -293,9 +307,8 @@ button span {
 #context-phone-switcher-button:hover {
   background: url(../images/contextphone_active.svg) no-repeat top left;
   background-size: contain;
-}*/
+}
 
-/* not currently in use
 #context-statistics-switcher-button {
   background: url(../images/contextstatistics.svg) no-repeat top left;
   background-size: contain;
@@ -305,9 +318,8 @@ button span {
 #context-statistics-switcher-button:hover {
   background: url(../images/contextstatistics_active.svg) no-repeat top left;
   background-size: contain;
-}*/
+}
 
-/* not currently in use
 #context-voicemails-switcher-button {
   background: url(../images/contextvoicemails.svg) no-repeat top left;
   background-size: contain;
@@ -317,7 +329,8 @@ button span {
 #context-voicemails-switcher-button:hover {
   background: url(../images/contextvoicemails_active.svg) no-repeat top left;
   background-size: contain;
-}*/
+}
+*/
 
 #context-switcher {
   top: 0%;
@@ -365,59 +378,81 @@ button span {
   width: 100%;
 }
 
-/* appears to NOT be in use
-.global-queue-zebra {
-  list-style-type: none;
-  width: 100%;
-}
-
-.global-queue-zebra li:nth-of-type(even) {
-  background-color: #eee;
-}
-
-.global-queue-zebra li {
-  width: 100%;
-}
+/*
+  TODO (TL): Appears to only be in use in message oriented widgets. Class?
 */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0.1em 0.2em 0.1em 0.2em;
+  vertical-align:middle;
+}
+
+/*
+  TODO (TL): Perhaps these are a bit to general? Move to class?
+*/
+input,
+textarea {
+  border: solid 2px #ccc;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 1%;
+}
 
 legend span {
   margin-left: 0.5em;
   margin-right: 0.5em;
 }
 
-/* used in view-call-list.dart */
+/*
+  Used by view-call-list
+*/
 li.call.enqueued {
   background-color: #ffeeee;
   list-style-image: url("../images/queue-icon-20x20.png");
 }
 
-/*  used in view-call.dart */
+/*
+  Used by view-call
+*/
 li.call.destroyed {
   opacity : 0.8;
   background-color: #ffecec;
   list-style-image: url("../images/destroyed-icon-20x20.gif");
 }
 
-/* used in view-call-list.dart */
+/*
+  Used by view-call-list
+*/
 li.call.locked {
   opacity : 0.3;
   background-color: #fff8c4;
   list-style-image: url("../images/locked-icon-20x20.png");
 }
 
-/* used in view-call.dart and view-call-list.dart */
+/*
+  Used by view-call and view-call-list
+*/
 li.call.parked {
   opacity : 0.7;
   background-color: #e3f7fc;
   list-style-image: url("../images/parked-icon-20x20.png");
 }
 
+/*
+  Used by view-call and view-call-list
+*/
 li.call.speaking {
   opacity : 1.0;
   background-color: #e9ffd9;
   list-style-image: url("../images/speaking-icon-20x20.png");
 }
 
+/*
+  Used by #bob-loading and #bob-disaster
+  TODO (TL): Bad name. Too generic.
+*/
 .loading-big {
   display: block;
   width: 222px;
@@ -426,6 +461,11 @@ li.call.speaking {
   filter: alpha(opacity=80);
 }
 
+/*
+  Used by #bob-loading and #bob-disaster
+  TODO (TL): Bad name. Overlay infers that something is below, which in our case
+  matters zero. Either we're up or we're in load-/failstate.
+*/
 .loading-overlay {
   width:100%;
   background: #000;
@@ -433,29 +473,69 @@ li.call.speaking {
   filter: alpha(opacity=80);
 }
 
-/* the table element is currently created in view-log-box.dart */
+/*
+  The table element is currently created in view-log-box.
+  TODO (TL): Bad name. As pointed out by KRC, we don't really "log" as such. We
+  record events.
+*/
 #log-box table {
   width: 100%;
 }
 
-/* see view-log-box.dart */
+/*
+  Used by the log-box widget.
+  TODO (TL): See "#log-box table". This needs a different name.
+*/
 .log-box-time-header {
   width: 8%;
 }
 
-/* see view-log-box.dart */
+/*
+  Used by the log-box widget.
+  TODO (TL): See "#log-box table". This needs a different name.
+*/
 .log-box-level-header {
   width: 4%;
 }
 
-/* see view-log-box.dart */
+/*
+  Used by the log-box widget.
+  TODO (TL): See "#log-box table". This needs a different name.
+*/
 .log-box-message-header {
   text-align:left;
 }
 
-/* see view-log-box.dart */
+/*
+  Used by the log-box widget.
+  TODO (TL): See "#log-box table". This needs a different name.
+*/
 .log-box-row:nth-of-type(even) {
   background-color: #eee;
+}
+
+/*
+  TODO (TL): The HTML is a mess when it comes to message compose widgets.
+  Clean up!
+*/
+.message-compose input,
+.message-compose textarea {
+  margin: 1%;
+}
+
+.message-compose input.company,
+.message-compose input.name {
+  width: 47.5%;
+}
+
+.message-compose input.cellphone,
+.message-compose input.local-extension,
+.message-compose input.phone {
+  width: 30.6666666%;
+}
+
+.message-compose textarea {
+  width: 98%;
 }
 
 #message-overview {
@@ -518,34 +598,54 @@ li.call.speaking {
   overflow: auto
 }
 
+/*
+  This was/is part of the old "Box" model.
+  TODO (TL): Get rid of this crap.
+*/
 .no-chrome {
   background-color: #fafafa;
   border: solid 2px #ddd;
   overflow: auto;
 }
 
+/*
+  TODO (TL): As with .loading-big and .loading-overlay, this name is just plain
+  wrong for what it actually does.
+*/
 .overlay-notification {
-  color:white;
+  color: white;
   font-size: 1.8em;
   line-height: 2.0em;
   text-align : center;
   margin-top: 20px;
 }
 
+/*
+  TODO (TL): Overly generic name.
+*/
 .selected {
   outline: 0.1em solid #67c1f3;
 }
 
+/*
+  TODO (TL): Overly generic name.
+*/
 textarea.loading {
   background: url(../images/loader-small.gif) no-repeat 50% 50%;
 }
 
-.zebra {}
+/*
+  TODO (TL): This is actually a message-compose related selector. Fix it.
+*/
+textarea.message-body {
+  height: 30%;
+  font-size: 0.9em;
+}
 
 .zebra li {
   padding: 5px;
 }
 
 .zebra li:nth-of-type(even) {
-  background-color:rgba(0,0,0,0.1); /* HEX ME! Or use opacity instead */
+  background-color: rgba(0,0,0,0.1); /* TODO(TL): HEX ME! Or use opacity instead */
 }
