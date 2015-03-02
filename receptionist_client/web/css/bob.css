@@ -787,6 +787,12 @@ li.email-recipient-role-bcc {
   list-style-type: none;
 }
 
+#reception-alternate-names {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
 /*
   TODO (TL): Overly generic name.
 */
