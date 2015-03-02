@@ -793,6 +793,12 @@ li.email-recipient-role-bcc {
   overflow: auto;
 }
 
+#reception-banking-information {
+  height: 25%;
+  width: 100%;
+  overflow: auto;
+}
+
 /*
   TODO (TL): Overly generic name.
 */
