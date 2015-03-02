@@ -79,16 +79,6 @@ part '../components/searchcomponent.dart';
 
 const String libraryName = "view";
 
-abstract class StyleClass {
-  static const String NUDGE = 'nudge';
-
-  static String selector(String styleClass) {
-    return '.$styleClass';
-  }
-}
-
-const String defaultElementId = 'data-default-element';
-
 typedef void onCallQueueClick(MouseEvent event, Call queueItem);
 
 bool handleFocusChange(Focus value, List<Element> focusElements, Element highlightElement) {

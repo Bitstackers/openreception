@@ -1,5 +1,7 @@
 library constants;
 
+const String defaultElementId = 'data-default-element';
+
 abstract class CssClass {
   static const String calendarEventId = 'calendar-event-id';
 
@@ -39,6 +41,8 @@ abstract class CssClass {
   static const String messageRecipientList = 'message-recipient-list';
 
   static const String messageSearchBox = 'message-search-box';
+
+  static const String nudge = 'nudge';
 
   static const String selected = 'selected';
 }

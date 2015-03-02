@@ -608,6 +608,23 @@ li.call.speaking {
   overflow: auto;
 }
 
+.nudge {
+  font-size: 0.7em;
+  font-weight:bold;
+  border:1px solid grey;
+  border-radius: 4px;
+  padding : 3px;
+  position:absolute;
+}
+
+.nudge.navigation {
+  background-color: rgba(255,255,0,0.9); /* TODO (TL): HEX ME!*/
+}
+
+.nudge.command {
+  background-color: rgba(0,255,0,0.9); /* TODO (TL): HEX ME!*/
+}
+
 /*
   TODO (TL): As with .loading-big and .loading-overlay, this name is just plain
   wrong for what it actually does.
