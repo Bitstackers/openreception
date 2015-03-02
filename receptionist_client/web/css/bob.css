@@ -779,6 +779,14 @@ li.email-recipient-role-bcc {
   margin-top: 20px;
 }
 
+#reception-addresses-list {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  font-size: 0.8em;
+  list-style-type: none;
+}
+
 /*
   TODO (TL): Overly generic name.
 */
