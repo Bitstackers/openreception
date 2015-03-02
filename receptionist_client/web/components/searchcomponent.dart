@@ -11,8 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of view;
+library components;
 
+import 'dart:async';
+import 'dart:html';
+import '../classes/constants.dart';
+import '../classes/context.dart';
+import '../classes/events.dart' as event;
+import '../classes/location.dart' as nav;
+import '../classes/commands-keyboard.dart';
+import '../classes/logger.dart';
 
 /*
  * SetViewedObject(T obj) // Writes to _selectedElementText, but don't find it in the DataList.

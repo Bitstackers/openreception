@@ -20,7 +20,7 @@ class ReceptionSelector {
 
   final DivElement                       element;
   final Context                          uiContext;
-  SearchComponent<model.ReceptionStub>   search;
+  Component.SearchComponent<model.ReceptionStub>   search;
   model.ReceptionStub                    selectedReception = new model.ReceptionStub.none();
   bool get muted     => this.uiContext != Context.current;
   dynamic onSelectReception = () => null;
@@ -36,7 +36,7 @@ class ReceptionSelector {
 
     String searchBoxId = element.attributes['data-default-element'];
 
-    search = new SearchComponent<model.ReceptionStub>(element, uiContext, searchBoxId)
+    search = new Component.SearchComponent<model.ReceptionStub>(element, uiContext, searchBoxId)
       ..searchPlaceholder = Label.ReceptionSearch
       ..whenClearSelection = whenClearSelection
       ..listElementToString = listElementToString

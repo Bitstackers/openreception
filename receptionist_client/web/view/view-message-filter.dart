@@ -19,10 +19,10 @@ class MessageFilter{
   Element element;
 
 
-  SearchComponent<String> agentSearch;
-  SearchComponent<String> typeSearch;
-  SearchComponent<model.ReceptionStub> receptionSearch;
-  SearchComponent<model.Contact> contactSearch;
+  Component.SearchComponent<String> agentSearch;
+  Component.SearchComponent<String> typeSearch;
+  Component.SearchComponent<model.ReceptionStub> receptionSearch;
+  Component.SearchComponent<model.Contact> contactSearch;
 
   Element       get header                       => this.element.querySelector('legend');
   ButtonElement get saveMessageButton            => this.element.querySelector('button.save');
@@ -35,7 +35,10 @@ class MessageFilter{
 
     this._setupLabels();
 
-    agentSearch = new SearchComponent<String>(body.querySelector('#${Id.messageSearchAgent}'), _context, 'message-search-agent-searchbar')
+    agentSearch = new Component.SearchComponent<String>
+      (body.querySelector('#${Id.messageSearchAgent}'),
+                          _context,
+                          'message-search-agent-searchbar')
       ..searchPlaceholder = 'Agent...'
       ..updateSourceList([Label.All, '1', '2', '10'])
       ..selectElement(Label.All)
@@ -48,7 +51,7 @@ class MessageFilter{
         searchParametersChanged();
     };
 
-    typeSearch = new SearchComponent<String>(body.querySelector('#${Id.messageSearchType}'), _context, 'message-search-type-searchbar')
+    typeSearch = new Component.SearchComponent<String>(body.querySelector('#${Id.messageSearchType}'), _context, 'message-search-type-searchbar')
       ..searchPlaceholder = 'Type...'
       ..updateSourceList([Label.All, Label.Sent, Label.Saved, Label.Pending])
       ..selectElement(Label.All)
@@ -75,7 +78,7 @@ class MessageFilter{
       searchParametersChanged();
     };
 
-    receptionSearch = new SearchComponent<model.ReceptionStub>(body.querySelector('#${Id.messageSearchReception}'), _context, 'message-search-company-searchbar')
+    receptionSearch = new Component.SearchComponent<model.ReceptionStub>(body.querySelector('#${Id.messageSearchReception}'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = Label.ReceptionSearch
       ..selectedElementChanged = (model.ReceptionStub receptionStub) {
       if (receptionStub.isNull()) {
@@ -107,7 +110,7 @@ class MessageFilter{
         receptionSearch.updateSourceList(receptions.toList());
       });
 
-    contactSearch = new SearchComponent<model.Contact>(body.querySelector('#${Id.messageSearchContact}'), _context, 'message-search-contact-searchbar')
+    contactSearch = new Component.SearchComponent<model.Contact>(body.querySelector('#${Id.messageSearchContact}'), _context, 'message-search-contact-searchbar')
       ..searchPlaceholder = Label.ReceptionContacts
       ..listElementToString = contactListElementToString
       ..searchFilter = (model.Contact contact, String searchText) {

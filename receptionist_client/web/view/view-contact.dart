@@ -15,7 +15,6 @@ part of view;
 
 class Contact {
          final Element             element;
-               Box                 box;
                model.Contact       contact              = model.Contact.noContact;
                Context             context;
                UListElement        displayedContactList;

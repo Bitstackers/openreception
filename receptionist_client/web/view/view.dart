@@ -36,8 +36,10 @@ import '../classes/common.dart';
 import '../classes/focus.dart';
 import '../classes/commands-keyboard.dart';
 import '../storage/storage.dart' as storage;
+import '../components/searchcomponent.dart' as Component;
 
 import 'view-labels-en.dart';
+
 
 part 'view-call.dart';
 part 'view-icons.dart';
@@ -54,7 +56,6 @@ part 'view-reception-calendar.dart';
 part 'view-message-compose.dart';
 
 part 'view-agent-info.dart';
-part '../components/boxwithheader.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alternate-names.dart';
 part 'view-reception-banking-information.dart';
@@ -74,7 +75,7 @@ part 'view-contact-search.dart';
 part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
 part 'view-message-filter.dart';
-part '../components/searchcomponent.dart';
+
 
 const String libraryName = "view";
 

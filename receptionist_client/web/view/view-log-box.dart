@@ -17,7 +17,6 @@ part of view;
  * appends each log entry to the body of the widget.
  */
 class LogBox {
-  Box             box;
   DivElement      element;
   List<LogRecord> messages = new List<LogRecord>();
   TableElement    table;
@@ -33,7 +32,6 @@ class LogBox {
           <th class="log-box-message-header">Besked</th>
         ''');
 
-    box = new Box.noChrome(element, table);
     registerEventListeners();
   }
 

@@ -16,7 +16,6 @@ part of view;
 class AgentInfo {
   int              active      = 0;
   TableCellElement activeTD;
-  Box              box;
   DivElement       divFace;
   DivElement       divParent;
   final DivElement element;
@@ -39,8 +38,6 @@ class AgentInfo {
 
     activeTD = table.querySelector('#${Id.agentInfoStatsActive}');
     pausedTD = table.querySelector('#${Id.agentInfoStatsPaused}');
-
-    box = new Box.noChrome(element, divParent);
 
     initialSetup();
 
