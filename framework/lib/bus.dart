@@ -4,6 +4,8 @@ import 'dart:async';
 
 /**
  * Type "safe" event bus, using the Dart Stream API.
+ *
+ * This is basically just a thin wrapper around [StreamController].
  */
 class Bus<Type> {
   StreamController _streamController;
@@ -25,9 +27,7 @@ class Bus<Type> {
   }
 
   /**
-   * Destroy the stream.
+   * Close the [Stream].
    */
-  void destroy() {
-    _streamController.close();
-  }
+  Future close() => _streamController.close();
 }
