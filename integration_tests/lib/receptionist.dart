@@ -11,6 +11,9 @@ class Receptionist {
   final String                      authToken;
   Queue<Model.Event>          eventStack         = new Queue();
 
+  /// The amout of time the actor will wait before answering an incoming call.
+  Duration    answerLatency = new Duration(seconds: 0);
+
   Receptionist (this._phone, this.authToken, this.userID) {
     this.callFlowControl = new Service.CallFlowControl
         (Config.CallFlowControlUri,this.authToken, new Transport.Client());

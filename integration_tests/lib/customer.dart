@@ -6,6 +6,9 @@ class Customer {
 
   Phonio.Call currentCall = null;
 
+  /// The amout of time the actor will wait before answering an incoming call.
+  Duration    answerLatency = new Duration(seconds: 0);
+
   Phonio.SIPPhone _phone = null;
   String get name => this._phone.defaultAccount.username;
 
@@ -13,6 +16,10 @@ class Customer {
     this._phone.eventStream.listen(this._onPhoneEvent);
 
   }
+
+  Future autoAnswer(bool enabled) =>
+    this._phone.autoAnswer(enabled);
+
 
   /**
    * Dials an extension and returns a future with a call object.
@@ -48,7 +55,7 @@ class Customer {
 
   }
 
-  String toString () => '${this._phone.ID}';
+  String toString () => '${this.name} PhoneType:${this._phone.runtimeType}';
 
   void _onPhoneEvent(Phonio.Event event) {
     if (event is Phonio.CallOutgoing) {
@@ -57,8 +64,26 @@ class Customer {
       log.finest('$this sets call to $call');
 
       this.currentCall = call;
-    } else {
+    }
+
+    else if (event is Phonio.CallIncoming) {
+      this._handleIncomingCall();
+    }
+
+    else {
       log.severe('$this got unhandled event ${event.eventName}');
+    }
+  }
+
+  void _handleIncomingCall() {
+    //TODO: Check if phone autoanswer is enabled and return if so.
+    if (this.answerLatency.isNegative) {
+      return;
+    } else {
+      // Schedule a pickup later on.
+      new Future.delayed(this.answerLatency,
+          () => this._phone.answerCall())
+      .catchError((error, stackTrace) => log.severe(error, stackTrace));
     }
   }
 }
