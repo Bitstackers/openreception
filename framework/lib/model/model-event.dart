@@ -5,7 +5,9 @@ part of openreception.model;
 abstract class EventJSONKey {
   static const call = 'call';
   static const peer = 'peer';
+  static const channel = 'channel';
   static const event = 'event';
+  static const ID = 'id';
   static const timestamp = 'timestamp';
 
   static const callOffer = 'call_offer';
@@ -23,9 +25,8 @@ abstract class EventJSONKey {
   static const peerState = 'peer_state';
   static const originateFailed = 'originate_failed';
   static const originateSuccess = 'originate_success';
+  static const channelState = 'channel_state';
 }
-
-const int timeScaling = 1000;
 
 abstract class EventTemplate {
   static Map _rootElement(Event event) => {
@@ -38,7 +39,11 @@ abstract class EventTemplate {
 
   static Map peer(PeerState event) =>
       _rootElement(event)..addAll( {EventJSONKey.peer : event.peer});
-}
+
+  static Map channel(ChannelState event) =>
+      _rootElement(event)..addAll(
+           {EventJSONKey.channel :
+             {EventJSONKey.ID : event.channelID}});}
 
 abstract class Event {
 
@@ -90,6 +95,9 @@ abstract class Event {
       case EventJSONKey.callPickup:
         return new CallPickup.fromMap(map);
 
+      case EventJSONKey.channelState:
+        return new ChannelState.fromMap(map);
+
       default:
         log.severe('Unsupported event type: ${map['event']}');
     }
@@ -112,6 +120,24 @@ abstract class CallEvent implements Event {
     this.call      = new Call.fromMap             (map[EventJSONKey.call]),
     this.timestamp = Util.unixTimestampToDateTime (map[EventJSONKey.timestamp]);
 
+}
+
+class ChannelState implements Event {
+  final DateTime timestamp;
+  final String   eventName = EventJSONKey.channelState;
+  final String   channelID;
+
+  Map toJson() => this.asMap;
+
+  Map get asMap => EventTemplate.channel (this);
+
+  ChannelState(String channelID) :
+      this.channelID = channelID,
+      this.timestamp = new DateTime.now();
+
+  ChannelState.fromMap (Map map) :
+    this.channelID = map[EventJSONKey.channel][EventJSONKey.ID],
+    this.timestamp = Util.unixTimestampToDateTime (map[EventJSONKey.timestamp]);
 }
 
 class PeerState implements Event {
