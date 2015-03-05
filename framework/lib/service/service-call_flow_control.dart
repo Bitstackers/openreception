@@ -21,6 +21,28 @@ class CallFlowControl {
       .then((String response)
         => JSON.decode(response));
 
+  /**
+   * Updates the [Model.UserStatus] object associated
+   * with [userID] to state idle.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
+  Future<Map> userStateIdleMap(int userID) =>
+      this._backed.post
+        (appendToken(Resource.CallFlowControl.userState
+           (this._host, userID, Model.UserState.Idle), this._token), '')
+      .then((String response)
+        => JSON.decode(response));
+
+  /**
+   * Updates the [Model.UserStatus] object associated
+   * with [userID] to state idle.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
+  Future<Model.UserStatus> userStateIdle(int userID) =>
+      userStateIdleMap(userID).then((Map map) =>
+          new Model.UserStatus.fromMap(map));
 
   /**
    * Returns a single call resource.

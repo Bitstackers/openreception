@@ -11,10 +11,19 @@ abstract class CallFlowControl {
   /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
-   *    http://hostname/userstatus/${userID}
+   *    http://hostname/userstate/${userID}
    */
   static Uri userStatus(Uri host, int userID)
-    => Uri.parse('${host}/userstatus/${userID}');
+    => Uri.parse('${host}/userstate/${userID}');
+
+  /**
+   * Builds a Uri to update a userstatus resource associated with a user.
+   * The [newState] parameter must be a valid [UserState].
+   * The output format is:
+   *    http://hostname/userstate/${userID}/${newState}
+   */
+  static Uri userState (Uri host, int userID, String newState)
+    => Uri.parse('${host}/userstate/${userID}/${newState}');
 
   /**
    * Builds a Uri to retrieve a userstatus resource.
@@ -27,7 +36,7 @@ abstract class CallFlowControl {
   /**
    * Builds a Uri to mark a userstatus resource as idle.
    * The output format is:
-   *    http://hostname/userstatus/${userID}/idle
+   *    http://hostname/userstate/${userID}/idle
    */
   static Uri userStatusIdle(Uri host, int userID)
     => Uri.parse('${userStatus(host, userID)}/idle');
