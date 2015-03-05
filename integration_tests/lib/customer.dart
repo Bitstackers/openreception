@@ -17,9 +17,10 @@ class Customer {
 
   }
 
+  Future Wait_For_Dialtone() => this.waitForInboundCall();
+
   Future autoAnswer(bool enabled) =>
     this._phone.autoAnswer(enabled);
-
 
   /**
    * Dials an extension and returns a future with a call object.
@@ -30,17 +31,22 @@ class Customer {
     return this._phone.originate(extension);
   }
 
+  pickupCall () => this._phone.answer();
+
   Future hangup(Phonio.Call call) =>
     new Future.error(new UnimplementedError());
 
   Future hangupAll() => this._phone.hangupAll();
 
 
+  /**
+   * Returns a Future that completes when an outbound call is confirmed placed.
+   */
   Future<Phonio.Call> waitForOutboundCall () {
     log.finest('$this waits for outbound call');
-    //TODO: Assert that the call is not answered.
+    //TODO: Assert that the call is not and is acutally outbound.
     if (this.currentCall != null) {
-      log.finest('$this already has call, returning.');
+      log.finest('$this already has call, returning it.');
       return new Future (() => this.currentCall);
     }
 
@@ -48,6 +54,28 @@ class Customer {
     return this._phone.eventStream.firstWhere(
         (Phonio.Event event)
           => event is Phonio.CallOutgoing)
+          .then((_) {
+            log.finest('$this got expected event, returning current call.');
+            return this.currentCall;
+          }).timeout(new Duration(seconds: 10));
+
+  }
+
+  /**
+   * Returns a Future that completes when an inbound call is received.
+   */
+  Future<Phonio.Call> waitForInboundCall () {
+    log.finest('$this waits for inbound call');
+    //TODO: Assert that the call is not answered and is acutally inbound.
+    if (this.currentCall != null) {
+      log.finest('$this already has call, returning it.');
+      return new Future (() => this.currentCall);
+    }
+
+    log.finest('$this waits for incoming call from event stream.');
+    return this._phone.eventStream.firstWhere(
+        (Phonio.Event event)
+          => event is Phonio.CallIncoming)
           .then((_) {
             log.finest('$this got expected event, returning current call.');
             return this.currentCall;
@@ -82,7 +110,8 @@ class Customer {
     } else {
       // Schedule a pickup later on.
       new Future.delayed(this.answerLatency,
-          () => this._phone.answerCall())
+          () => this._phone.answer
+          ())
       .catchError((error, stackTrace) => log.severe(error, stackTrace));
     }
   }
