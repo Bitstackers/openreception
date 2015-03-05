@@ -34,6 +34,7 @@ class MessageFilter {
   int    userID         = null;
   int    receptionID    = null;
   int    contactID      = null;
+  int    limitCount     = 100;
 
   MessageFilter.empty();
 
