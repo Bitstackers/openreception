@@ -20,7 +20,7 @@ class Client extends Service.WebService {
 
     return client.getUrl(resource)
       .then((IO.HttpClientRequest request) => request.close())
-      .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
+      .then((IO.HttpClientResponse response) => _handleResponse(response, 'GET', resource));
   }
 
   /**
@@ -35,7 +35,7 @@ class Client extends Service.WebService {
       request.write(payload);
       return request.close();
     })
-    .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
+    .then((IO.HttpClientResponse response) => _handleResponse(response, 'PUT', resource));
   }
 
   /**
@@ -50,7 +50,7 @@ class Client extends Service.WebService {
       request.write(payload);
       return request.close();
     })
-    .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
+    .then((IO.HttpClientResponse response) => _handleResponse(response, 'POST', resource));
   }
 
   /**
@@ -62,7 +62,7 @@ class Client extends Service.WebService {
 
     return client.deleteUrl(resource)
         .then((IO.HttpClientRequest request) => request.close())
-        .then((IO.HttpClientResponse response) => _handleResponse(response, resource));
+        .then((IO.HttpClientResponse response) => _handleResponse(response, 'DELETE', resource));
   }
 
 }

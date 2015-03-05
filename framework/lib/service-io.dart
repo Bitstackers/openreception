@@ -15,10 +15,13 @@ const String libraryName = "openreception.service.io";
 
 final Logger log = new Logger(libraryName);
 
-Future<String> _handleResponse(IO.HttpClientResponse response, Uri resource) {
+Future<String> _handleResponse(IO.HttpClientResponse response, String method, Uri resource) {
   try {
-    Service.WebService.checkResponseCode(response.statusCode);
-    return extractContent(response);
+
+    return extractContent(response).then((String responseBody){
+      Service.WebService.checkResponse (response.statusCode, method, resource, responseBody);
+      return responseBody;
+    });
   } catch (error, stacktrace) {
     if (!(error is Storage.NotFound    ||
           error is Storage.ClientError ||
