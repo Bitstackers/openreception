@@ -17,15 +17,11 @@ abstract class Message {
   static Uri root(Uri host)
     => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 
-  static Uri list(Uri host, {int limit: 100, Model.MessageFilter filter : null}) {
-    return subset(host, 0, limit, filter : filter);
-  }
-
-  static Uri subset(Uri host, int upperMessageID, int count, {Model.MessageFilter filter : null}) {
+  static Uri list(Uri host, {Model.MessageFilter filter : null}) {
     String filterParameter = filter!=null
                                      ? '?filter=${JSON.encode(filter)}'
                                      : '';
 
-    return Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/list/${upperMessageID}/limit/${count}${filterParameter}');
+    return Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
   }
 }

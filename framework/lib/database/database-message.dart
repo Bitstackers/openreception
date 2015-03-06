@@ -108,7 +108,7 @@ class Message implements Storage.Message {
   /**
    *
    */
-  Future<List<Model.Message>> list ({int limit : 100, Model.MessageFilter filter : null}){
+  Future<List<Model.Message>> list ({Model.MessageFilter filter : null}){
     if (filter == null) {
       filter = new Model.MessageFilter.empty();
     }
@@ -143,7 +143,7 @@ class Message implements Storage.Message {
         ${filter.asSQL}
         ORDER BY 
            message.id DESC
-        LIMIT ${limit} 
+        LIMIT ${filter.hashCode} 
     ''';
 
 

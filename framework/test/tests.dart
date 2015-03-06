@@ -47,7 +47,6 @@ void main() {
     test('singleMessage', ResourceMessage.singleMessage);
     test('send', ResourceMessage.send);
     test('list', ResourceMessage.list);
-    test('subset', ResourceMessage.subset);
   });
 
   group('service.ResourceReception', () {
@@ -188,9 +187,5 @@ abstract class ResourceMessage {
   static void list () =>
       expect(Resource.Message.list(messageServer),
         equals(Uri.parse('${messageServer}/message/list')));
-
-  static void subset () =>
-      expect(Resource.Message.subset(messageServer, 10, 20),
-        equals(Uri.parse('${messageServer}/message/list/10/limit/20')));
 }
 
