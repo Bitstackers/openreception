@@ -2,6 +2,9 @@ name: ContactServer
 description: A sample command-line application
 dependencies:
   args: any
+  http: any
+  intl: any
+  postgresql: '>= 0.3.0'
   openreception_framework:
     version: ">= 0.0.13+0"
     git:

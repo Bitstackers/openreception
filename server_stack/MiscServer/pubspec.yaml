@@ -7,5 +7,7 @@ dependencies:
       url: https://github.com/BitStackers/OpenReceptionFramework.git
   args: any
   path: any
+  http: any
+  intl: any
   postgresql: any
   route: any

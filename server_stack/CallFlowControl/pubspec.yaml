@@ -4,6 +4,7 @@ author: Kim Rostgaard Christensen
 description: Call-Flow-Control server.
 dependencies:
   args: any
+  intl: any
   esl:
     git:
       ref: master
@@ -15,5 +16,7 @@ dependencies:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
+  http: any
   route: any
   logging: any
+

@@ -2,7 +2,10 @@ name: MessageServer
 description: A simple REST-based message-store server
 dependencies:
   args: any
+  http: any
+  intl: any
   mailer: any
+  postgresql: '>= 0.3.0'
   openreception_framework:
     version: ">= 0.0.13+0"
     git:

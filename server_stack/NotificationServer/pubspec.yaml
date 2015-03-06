@@ -8,4 +8,9 @@ dependencies:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
+  intl: any
   route: any
+  http: any
+  syslog:
+    git: https://github.com/PedersenThomas/syslog.git
+

@@ -3,6 +3,9 @@ description: Message (like in email-message, not MPI) management server for Open
 version: 0.0.1
 dependencies:
   args: any
+  http: any
+  intl: any
+  postgresql: '>= 0.3.0'
   mailer: any
   openreception_framework:
     git:
