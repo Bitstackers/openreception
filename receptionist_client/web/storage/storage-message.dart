@@ -33,8 +33,13 @@ abstract class Message {
 
     final Completer completer = new Completer<List<Model.Message>>();
 
+    /// Note: the correct way of sending these parameters would probably be to
+    ///  copy the object and, update the copy and send it.
+    filter.upperMessageID = lastID;
+    filter.limitCount = limit;
+
     debugStorage("Message list not found in cache, loading from service.", context);
-    Service.Message.store.list(limit: limit, filter: filter).then((List<ORModel.Message> messages) {
+    Service.Message.store.list(filter: filter).then((List<ORModel.Message> messages) {
 
       completer.complete(messages.map((ORModel.Message message) =>
           new Model.Message.fromMap(message.asMap)).toList());

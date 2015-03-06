@@ -13,4 +13,4 @@ dependencies:
     git:
       ref: master
       url: https://github.com/Bitstackers/OpenReceptionFramework.git
-    version: any
+    version: '>= 0.0.17'
