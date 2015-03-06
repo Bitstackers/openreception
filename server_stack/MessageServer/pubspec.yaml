@@ -1,13 +1,13 @@
 name: MessageServer
-description: A sample command-line application
+description: Message (like in email-message, not MPI) management server for OpenReception system.
+version: 0.0.1
 dependencies:
   args: any
   mailer: any
   openreception_framework:
-    version: ">= 0.0.15+2"
     git:
       ref: master
-      url: https://github.com/BitStackers/OpenReceptionFramework.git
+      url: https://github.com/Bitstackers/OpenReceptionFramework.git
+    version: '>= 0.0.17+1'
   path: any
-  postgresql: any
   route: any
