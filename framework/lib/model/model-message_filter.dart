@@ -66,10 +66,12 @@ class MessageFilter {
 
   @override
   operator == (MessageFilter other) =>
-      this.messageState == other.messageState &&
-      this.userID       == other.userID &&
-      this.receptionID  == other.receptionID &&
-      this.contactID    == other.contactID;
+      this.upperMessageID == other.upperMessageID &&
+      this.limitCount     == other.limitCount &&
+      this.messageState   == other.messageState &&
+      this.userID         == other.userID &&
+      this.receptionID    == other.receptionID &&
+      this.contactID      == other.contactID;
 
   Map toJson() => this.asMap;
 
@@ -90,6 +92,14 @@ class MessageFilter {
 
     if (this.contactID != null) {
       retval['contact_id'] = this.contactID;
+    }
+
+    if (this.upperMessageID != Message.noID) {
+      retval['upper_message_id'] = upperMessageID;
+    }
+
+    if (this.limitCount != Message.noID) {
+      retval['limit'] = this.limitCount;
     }
 
     return retval;
