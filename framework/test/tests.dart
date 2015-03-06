@@ -81,7 +81,7 @@ abstract class ResourceCallFlowControl {
 
   static void userStatusMap () =>
       expect(Resource.CallFlowControl.userStatus(callFlowControlUri, 1),
-        equals(Uri.parse('${callFlowControlUri}/userstatus/1')));
+        equals(Uri.parse('${callFlowControlUri}/userstate/1')));
 
   static void channelList () =>
       expect(Resource.CallFlowControl.channelList(callFlowControlUri),
@@ -89,7 +89,7 @@ abstract class ResourceCallFlowControl {
 
   static void userStatusIdle () =>
       expect(Resource.CallFlowControl.userStatusIdle(callFlowControlUri, 1),
-        equals(Uri.parse('${callFlowControlUri}/userstatus/1/idle')));
+        equals(Uri.parse('${callFlowControlUri}/userstate/1/idle')));
 
   static void peerList () =>
       expect(Resource.CallFlowControl.peerList(callFlowControlUri),
