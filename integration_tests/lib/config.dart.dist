@@ -1,10 +1,109 @@
-part of or_test_fw;
+library config;
 
-abstract class Default {
+import 'package:phonio/phonio.dart';
 
-  static final Uri receptionStoreURI = Uri.parse('http://localhost:4000');
-}
+/**
+ * Configuration parameter of the OpenReception test framework.
+ */
+abstract class Config {
 
-abstract class Configuration {
-   static Uri receptionStoreURI = Default.receptionStoreURI;
+  /**
+   * Path to the pjsua sip agent binary.
+   */
+  static String simpleClientBinaryPath = './basic_agent';
+
+  /**
+   * The hostname or IP of the external network interface used for tests.
+   */
+  static String externalHostname = 'myhost.example.com';
+
+  /**
+   * The hostname or IP of the FreeSwitch server which the SIP agents register.
+   * Should be an external IP. Use [externalHostname] if FreeSWITCH is running
+   * on the same machine as the tests.
+   */
+  static String pbxHost = 'pbx.example.com';
+
+  /**
+   * The hostname or IP of the interface where the SNOM agents should post
+   * events to.
+   * Must be an external IP, and usually just [myExternalIP].
+   */
+  static String snomGWhost = externalHostname;
+
+  /**
+   * The token the test framework uses for fetching data outside the scope of
+   * tests. Could be replaced by [authTokens.last] if there is no need to
+   * distingush the framework from the users.
+   */
+  static String serverToken = 'secretStuff';
+
+  /**
+   * The URI of the reception store server.
+   */
+  static Uri receptionStoreURI = Uri.parse('http://reception.example.com');
+
+  /**
+   * The URI of the message store server.
+   */
+  static Uri messageServerUri = Uri.parse('http://message.example.com');
+
+  /**
+   * The URI of the callFlowControl server, which is also bound to [pbxHost].
+   */
+  static Uri CallFlowControlUri = Uri.parse('http://callflow.example.com');
+
+  /**
+   * Uri of the Notification server, where general events about the state of the
+   * system is broadcast.
+   */
+  static Uri NotificationSocketUri = Uri.parse('ws://notification.example.com');
+
+  /**
+   * Pool of SIP account used for testing. Must mirror accounts present on
+   * local FreeSwitch server configured in [pbxHost] and be mapped to a User on
+   * the server stack.
+   */
+  static List<String> localSipAccounts = [
+      new SIPAccount('1100', '1234', pbxHost),
+      new SIPAccount('1101', '1234', pbxHost),
+      new SIPAccount('1102', '1234', pbxHost)];
+
+  /**
+   * SIP accounts that serve as external peers. Can be accounts that are
+   * allowed _unauthenticated_ access to the "public" context in FreeSWITCH.
+   *
+   * Alternatively, it is entirely external accounts - such as a PSTN numbers
+   * at an external trunk.
+   */
+  static List<String> externalSipAccounts = [
+      new SIPAccount('1200', '', externalHostname),
+      new SIPAccount('1201', '', externalHostname),
+      new SIPAccount('pstn', 'secret', 'externalprovider')];
+
+  /**
+   * A pool of hostnames that resolve to SNOM phones on the network. Note that
+   * these phones _will_ have parts of their configuration overwritten, so
+   * please perform a config backup before adding to this list.
+   */
+  static List<String> snomHosts = [
+      'snom1.example.com',
+      'snom2.example.com',
+      'snom3.example.com'];
+
+  /**
+   * The pjsua agents needs to bind to a local UDP port. By default, we
+   * generate a list of ports ranging from port 5100 to 5129. Either adjust
+   * the function to suit an available range of ports or construct the list
+   * manually.
+   */
+  static List<int> pjsuaPortAvailablePorts =
+      new List.generate(30, (int index) => 5100 + index);
+
+  /**
+   * A pool of available authentication tokens pre-allocated on the
+   * authentication server. Each token should map to different user.
+   */
+  static List authTokens = ['secret1', 'secret2', 'secret3'];
+
 }
