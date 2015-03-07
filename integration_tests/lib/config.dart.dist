@@ -2,6 +2,9 @@ library config;
 
 import 'package:phonio/phonio.dart';
 
+/// Utility library.
+part 'config_pool.dart';
+
 /**
  * Configuration parameter of the OpenReception test framework.
  */
