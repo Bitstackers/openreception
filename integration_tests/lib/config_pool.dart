@@ -14,6 +14,11 @@ abstract class ConfigPool {
   static bool hasAvailableLocalSipAccount() =>
       aquiredLocalSIPAccounts < Config.localSipAccounts.length;
 
+  static bool hasAvailableExternalSipAccount() =>
+      aquiredExternalSipAccounts < Config.externalSipAccounts.length;
+
+
+
   /**
    * Request the next available local SIP account from the config.
    */
