@@ -12,7 +12,7 @@ abstract class ConfigPool {
   static int aquiredAuthTokens = 0;
 
   static bool hasAvailableLocalSipAccount() =>
-      aquiredExternalSipAccounts <= Config.localSipAccounts.length;
+      aquiredLocalSIPAccounts < Config.localSipAccounts.length;
 
   /**
    * Request the next available local SIP account from the config.
