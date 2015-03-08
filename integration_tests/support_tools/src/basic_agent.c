@@ -5,6 +5,11 @@
  * following capabilities:
  *  - SIP registration
  *  - Making and receiving call
+ *
+ * It is controlled via STDIN and uses a very primitive command format
+ * consisting of a single character followed by an optional parameter.
+ *
+ * Asynchronous events are delivered in JSON format, and are easily parseable.
  */
 
 #include <stdio.h>
@@ -17,13 +22,13 @@
 #define THIS_FILE	 "BASIC_AGENT"
 #define JSON_NULL_STRING "null";
 
-typedef enum {OR_ERROR, 
+typedef enum {OR_ERROR,
               OR_OK,
               OR_BUSY} or_reply_t;
 
 typedef enum {OR_READY,
               OR_CALL_INCOMING,
-              OR_CALL_OUTGOING,              
+              OR_CALL_OUTGOING,
               OR_CALL_STATE,
               OR_CALL_MEDIA_STATE,
               OR_CALL_TSX_STATE} or_event_t;
@@ -438,7 +443,8 @@ int main(int argc, char *argv[]) {
      is just wasted CPU time and uwanted side effects. */
   pjsua_set_null_snd_dev();
   fflush(stdout);
-  /* Wait until user press "q" to quit. */
+  
+  /* Main loop. Wait until user press "q" to quit. */
   for (;;) {
     char option[256];
 
