@@ -8,7 +8,11 @@ abstract class ConfigPool {
   static int aquiredLocalSIPAccounts = 0;
   static int aquiredExternalSipAccounts = 0;
   static int aquiredSnomHosts = 0;
-  static int aquiredPjsuaPortPorts = 0;
+  static int aquiredPjsuaPorts = 0;
+  static int aquiredAuthTokens = 0;
+
+  static bool hasAvailableLocalSipAccount() =>
+      aquiredExternalSipAccounts <= Config.localSipAccounts.length;
 
   /**
    * Request the next available local SIP account from the config.
@@ -46,9 +50,19 @@ abstract class ConfigPool {
    * Request the next available pjsua UDP port from the config.
    */
   static int requestPjsuaPort() {
-    int port = Config.pjsuaPortAvailablePorts.skip(aquiredPjsuaPortPorts).first;
-    aquiredPjsuaPortPorts++;
+    int port = Config.pjsuaPortAvailablePorts.skip(aquiredPjsuaPorts).first;
+    aquiredPjsuaPorts++;
 
     return port;
+  }
+
+  /**
+   * Request the next available authentication token from the config.
+   */
+  static String requestAuthtoken() {
+    String token = Config.authTokens.skip(aquiredAuthTokens).first;
+    aquiredAuthTokens++;
+
+    return token;
   }
 }
