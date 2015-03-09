@@ -7,6 +7,7 @@ import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'config.dart';
@@ -19,6 +20,7 @@ part 'customer_pool.dart';
 
 /// Server tests
 part 'callflowcontrol/hangup.dart';
+part 'messagestore/tests.dart';
 
 /// Use cases
 part 'uc-find_contact.dart';
