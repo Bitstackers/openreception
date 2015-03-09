@@ -49,7 +49,7 @@ abstract class Config {
   /**
    * The URI of the contact store server.
    */
-  static Uri contactStoreURI = Uri.parse('http://localhost:4010');
+  static Uri contactStoreURI = Uri.parse('http://contact.example.com');
 
   /**
    * The URI of the message store server.
