@@ -137,7 +137,7 @@ class _organization {
     return organizationStore.get(organizationId).then((Model.Organization organization) {
       expect(organization, isNotNull);
       expect(organization.id, equals(organizationId));
-      expect(organization.fullName, equals('AdaHeads K/S'));
+      expect(organization.fullName, equals('BitStackers Ltd.'));
     });
   }
 
