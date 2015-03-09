@@ -17,7 +17,7 @@ void runAllTests() {
     test('Get invalid organization', _organization.getInvalidOrganization);
     test('Get organization', _organization.getOrganization);
     test('List organizations', _organization.getOrganizationList);
-    test('Updage organization', _organization.updateOrganization);
+    test('Update organization', _organization.updateOrganization);
     test('Create organization', _organization.createOrganization);
   });
 
@@ -33,7 +33,7 @@ void runAllTests() {
     test('Get Reception', _reception.getReception);
     test('Get Invalid Reception', _reception.getInvalidReception);
     test('Get Reception List', _reception.getReceptionList);
-    test('Updage Reception', _reception.updateReception);
+    test('Update Reception', _reception.updateReception);
     test('Create Reception', _reception.createReception);
   });
 }
