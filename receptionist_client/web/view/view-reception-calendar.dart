@@ -140,6 +140,31 @@ class ReceptionCalendar {
   }
 
   /**
+   * Create a new calendar event.
+   */
+  void _createEvent() {
+    //Toggle the widget to create new calendar events.
+    this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+    //Toggle the list of events based on the widget for creatings visability.
+    this.eventList.hidden = !this.newEventWidget.hidden;
+
+    if(!this.newEventWidget.hidden) {
+      this._selectedStartDate = new DateTime.now();
+      this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
+      this.newEventField.value = "";
+      this.eventID = model.CalendarEvent.noID;
+
+      this.lastActive = document.activeElement;
+      this.newEventField.focus();
+    } else {
+      if(this.lastActive != null) {
+        this.lastActive.focus();
+      }
+    }
+  }
+
+  /**
    * Delete event handler.
    * Responds to delete commands and deletes the event currently being edited.
    */
@@ -204,6 +229,7 @@ class ReceptionCalendar {
   void _registerEventListeners() {
     hotKeys.onCtrlBackspace.listen((_) => _inFocus ? _deleteEvent() : null);
     hotKeys.onCtrlE.listen((_) => _inFocus ? _editEvent() : null);
+    hotKeys.onCtrlK.listen((_) => _inFocus ? _createEvent() : null);
     hotKeys.onCtrlS.listen((_) => _inFocus ? _saveEvent() : null);
 
     /// Nudge boiler plate code.
@@ -228,33 +254,6 @@ class ReceptionCalendar {
       if (location.targets(this.element)) {
         this.selectedElement.focus();
       }
-    });
-
-    event.bus.on(event.CreateNewContactEvent).listen((_) {
-      if(!_inFocus) {
-        return;
-      }
-
-      //Toggle the widget to create new calendar events.
-      this.newEventWidget.hidden = !this.newEventWidget.hidden;
-
-      //Toggle the list of events based on the widget for creatings visability.
-      this.eventList.hidden = !this.newEventWidget.hidden;
-
-      if (!this.newEventWidget.hidden) {
-        this._selectedStartDate = new DateTime.now();
-        this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
-        this.newEventField.value = "";
-        this.eventID = model.CalendarEvent.noID;
-
-        this.lastActive = document.activeElement;
-        this.newEventField.focus();
-      } else {
-        if (this.lastActive != null) {
-          this.lastActive.focus();
-        }
-      }
-
     });
 
     this.eventList.onKeyDown.listen((KeyboardEvent e) {

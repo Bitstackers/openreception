@@ -154,6 +154,28 @@ class ContactCalendar {
   }
 
   /**
+   * Create a new calendar event.
+   */
+  void _createEvent() {
+    eventID = model.CalendarEvent.noID;
+    this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+    this.eventList.hidden = !this.newEventWidget.hidden;
+    if(!this.newEventWidget.hidden) {
+      this._selectedStartDate = new DateTime.now();
+      this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
+      this.newEventField.value = "";
+
+      this.lastActive = document.activeElement;
+      this.newEventField.focus();
+    } else {
+      if(this.lastActive != null) {
+        this.lastActive.focus();
+      }
+    }
+  }
+
+  /**
    * Delete event handler.
    * Responds to delete commands and deletes the event currently being edited.
    *
@@ -220,6 +242,7 @@ class ContactCalendar {
   void _registerEventListeners() {
     hotKeys.onCtrlBackspace.listen((_) => _inFocus ? _deleteEvent() : null);
     hotKeys.onCtrlE.listen((_) => _inFocus ? _editEvent() : null);
+    hotKeys.onCtrlK.listen((_) => _inFocus ? _createEvent() : null);
     hotKeys.onCtrlS.listen((_) => _inFocus ? _saveEvent() : null);
 
     /// Nudge boiler plate code.
@@ -254,28 +277,6 @@ class ContactCalendar {
       element.classes.toggle(CssClass.focus, this.element.id == location.widgetId);
       if (location.elementId == eventList.id) {
         eventList.focus();
-      }
-    });
-
-    event.bus.on(event.CreateNewContactEvent).listen((_) {
-      if(nav.Location.isActive(this.element)) {
-        eventID = model.CalendarEvent.noID;
-        this.newEventWidget.hidden = !this.newEventWidget.hidden;
-
-        this.eventList.hidden = !this.newEventWidget.hidden;
-        if (!this.newEventWidget.hidden) {
-
-          this._selectedStartDate = new DateTime.now();
-          this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
-          this.newEventField.value = "";
-
-          this.lastActive = document.activeElement;
-          this.newEventField.focus();
-        } else {
-          if (this.lastActive != null) {
-            this.lastActive.focus();
-          }
-        }
       }
     });
 
