@@ -47,6 +47,11 @@ abstract class Config {
   static Uri receptionStoreURI = Uri.parse('http://reception.example.com');
 
   /**
+   * The URI of the contact store server.
+   */
+  static Uri contactStoreURI = Uri.parse('http://localhost:4010');
+
+  /**
    * The URI of the message store server.
    */
   static Uri messageServerUri = Uri.parse('http://message.example.com');
