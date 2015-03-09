@@ -4,11 +4,12 @@ class Receptionist {
 
   static final Logger log = new Logger('Receptionist');
 
-  final int userID;
+  final Model.User user;
   final Phonio.SIPPhone _phone;
   Service.NotificationSocket notificationSocket;
   Service.CallFlowControl callFlowControl;
   final String authToken;
+  Completer readyCompleter = new Completer();
 
   Phonio.Call currentCall = null;
   Queue<Model.Event> eventStack = new Queue();
@@ -16,19 +17,46 @@ class Receptionist {
   /// The amout of time the actor will wait before answering an incoming call.
   Duration answerLatency = new Duration(seconds: 0);
 
-  Receptionist(this._phone, this.authToken, this.userID) {
+  Receptionist(this._phone, this.authToken, this.user) {
     this.callFlowControl = new Service.CallFlowControl(
         Config.CallFlowControlUri,
         this.authToken,
         new Transport.Client());
 
+    _phone.eventStream.listen((event) =>  print ('EVENT (Receptionist): ${_phone.defaultAccount.username} ${event.runtimeType} $event'));
+
+  }
+
+  /**
+   *
+   */
+  Future initialize() {
     Transport.WebSocketClient wsc = new Transport.WebSocketClient();
-
     this.notificationSocket = new Service.NotificationSocket(wsc);
-    wsc.connect(
-        Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'));
 
-    this.notificationSocket.eventStream.listen(this._handleEvent);
+    return wsc.connect(
+        Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'))
+    .then((_) => this.notificationSocket.eventStream.listen(this._handleEvent))
+    .then((_) => this._phone.initialize())
+    .then((_) => this._phone.register())
+    .then((_) => this.callFlowControl.userStateIdle(this.user.ID))
+    .whenComplete((this.readyCompleter.complete));
+  }
+
+  teardown() {
+      this.notificationSocket.close();
+      this._phone.teardown();
+  }
+
+  /**
+   * Future that enables you the wait for the object to become ready.
+   */
+  Future ready() {
+    if (this.readyCompleter.isCompleted) {
+      return new Future.value(null);
+    }
+
+    return this.readyCompleter.future;
   }
 
   void cleanState() {
@@ -43,10 +71,21 @@ class Receptionist {
   }
 
   /**
+   * Dumps the current event stack of the Receptionist to log stream.
+   */
+  void dumpEventStack() {
+    log.severe('=== $this eventStack contents;');
+    log.severe(this.eventStack);
+  }
+
+  /**
    * Globally enable autoanswer on phone.
    */
   Future autoAnswer(bool enabled) => this._phone.autoAnswer(enabled);
 
+  /**
+   * Registers the phone in the PBX SIP registry.
+   */
   Future registerAccount() {
     if (this._phone is Phonio.PJSUAProcess) {
       return (this._phone as Phonio.PJSUAProcess).registerAccount();
@@ -60,12 +99,15 @@ class Receptionist {
     }
   }
 
+  Future transferCall(Model.Call inboundCall,
+      Model.Call outboundCall) => this.callFlowControl.transfer(inboundCall.ID, outboundCall.ID);
+
   /**
    * Returns a Future that completes when an inbound call is
    * received on _the phone_.
    */
   Future<Phonio.Call> waitForInboundCall() {
-    log.finest('$this waits for inbound call');
+    log.finest('Receptionist $this waits for inbound call');
     //TODO: Assert that the call is not answered and is acutally inbound.
     if (this.currentCall != null) {
       log.finest('$this already has call, returning it.');
@@ -114,16 +156,18 @@ class Receptionist {
 
   void _handleEvent(Model.Event event) {
     if (event == null) {
-      log.severe('Null event received!');
+      log.warning ('Null event received!');
       return;
     }
 
-    log.finest(
-        '$this received event ${event.eventName} from Notification server');
+    //log.finest(
+    //    '$this received event ${event.eventName} from Notification server');
     this.eventStack.add(event);
   }
 
   @override
-  String toString() => '${this.userID}  PhoneType:${this._phone.runtimeType}';
+  String toString() => 'Receptionist uid:${this.user.ID}, '
+                       'peerID:${this._phone.ID} '
+                       'PhoneType:${this._phone.runtimeType}';
 
 }
