@@ -7,7 +7,7 @@ abstract class User {
    *
    * TODO: Build logic behind this.
    */
-  static void signalReady(_) {
+  static void signalReady() {
     Service.Call.markUserStateIdle(Model.User.currentUser.ID).then((Model.UserStatus newUserStatus) {
       event.bus.fire(event.userStatusChanged, newUserStatus);
       event.bus.fire(event.receptionChanged, Model.Reception.noReception);
@@ -15,7 +15,7 @@ abstract class User {
 
   }
 
-  static void signalPaused(_) {
+  static void signalPaused() {
     Service.Call.markUserStatePaused(Model.User.currentUser.ID).then((Model.UserStatus newUserStatus) {
       event.bus.fire(event.userStatusChanged, newUserStatus);
       event.bus.fire(event.receptionChanged, Model.Reception.noReception);

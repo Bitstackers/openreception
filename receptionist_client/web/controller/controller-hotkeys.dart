@@ -19,10 +19,15 @@ class HotKeys {
   HotKeys._internal() {
     window.document.onKeyDown.listen(_keyDown.press);
 
-//    'Ctrl+K'     : (_) => event.bus.fire(event.CreateNewContactEvent, null),
-
     Map<String, EventListener> keyDownBindings =
-      {'Ctrl+Backspace' : _CtrlBackspace.fire,
+      {'Alt+g'          : Call.hangup(Model.Call.currentCall),
+       'Alt+l'          : Call.park(Model.Call.currentCall),
+       'Alt+o'          : Call.transfer(Model.Call.currentCall, Model.CallList.instance.firstParkedCall),
+       'Alt+p'          : Call.pickupNext,
+       'Alt+u'          : Call.pickupParked(Model.CallList.instance.firstParkedCall),
+       'Ctrl+Alt+Enter' : User.signalReady,
+       'Ctrl+Alt+p'     : User.signalPaused,
+       'Ctrl+Backspace' : _CtrlBackspace.fire,
        'Ctrl+e'         : _CtrlE.fire,
        'Ctrl+k'         : _CtrlK.fire,
        'Ctrl+s'         : _CtrlS.fire};
