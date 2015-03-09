@@ -50,7 +50,6 @@ final EventType<model.UserStatus> userStatusChanged             = new EventType<
 
 final EventType selectedMessagesChanged                         = new EventType();
 final EventType<State> stateUpdated                             = new EventType<State>();
-final EventType Send                                            = new EventType();
 
 // Keyboards
 final EventType<String> hangupCall                              = new EventType<String>();

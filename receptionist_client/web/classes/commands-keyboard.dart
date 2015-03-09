@@ -204,7 +204,6 @@ class _KeyboardHandler {
       'ALT+I'      : (_) => Controller.Call.dialSelectedContact(),
       'Ctrl+Alt+Enter' : Controller.User.signalReady,
       'Ctrl+Alt+P' : Controller.User.signalPaused,
-      'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),
       CommandKey   : (_) => event.bus.fire(event.keyCommand, true),
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
