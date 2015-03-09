@@ -5,13 +5,12 @@ import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Transport;
 import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;
-import 'package:openreception_framework/eventtypes.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
+import 'config.dart';
 
-part 'config.dart';
 part 'pool.dart';
 part 'receptionist.dart';
 part 'receptionist_pool.dart';
