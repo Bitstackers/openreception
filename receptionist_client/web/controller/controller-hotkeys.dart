@@ -20,13 +20,13 @@ class HotKeys {
     window.document.onKeyDown.listen(_keyDown.press);
 
     Map<String, EventListener> keyDownBindings =
-      {'Alt+g'          : Call.hangup(Model.Call.currentCall),
-       'Alt+l'          : Call.park(Model.Call.currentCall),
-       'Alt+o'          : Call.transfer(Model.Call.currentCall, Model.CallList.instance.firstParkedCall),
-       'Alt+p'          : Call.pickupNext,
-       'Alt+u'          : Call.pickupParked(Model.CallList.instance.firstParkedCall),
-       'Ctrl+Alt+Enter' : User.signalReady,
-       'Ctrl+Alt+p'     : User.signalPaused,
+      {'Alt+g'          : _AltG,
+       'Alt+l'          : _AltL,
+       'Alt+o'          : _AltO,
+       'Alt+p'          : _AltP,
+       'Alt+u'          : _AltU,
+       'Ctrl+Alt+Enter' : _CtrlAltEnter,
+       'Ctrl+Alt+p'     : _CtrlAltP,
        'Ctrl+Backspace' : _CtrlBackspace.fire,
        'Ctrl+e'         : _CtrlE.fire,
        'Ctrl+k'         : _CtrlK.fire,
@@ -39,4 +39,33 @@ class HotKeys {
       });
     });
   }
+}
+
+// TODO (TL): Temporary hacks until we've bus'ified everything in this file
+void _AltG(_) {
+  Call.hangup(Model.Call.currentCall);
+}
+
+void _AltL(_) {
+  Call.park(Model.Call.currentCall);
+}
+
+void _AltO(_) {
+  Call.transfer(Model.Call.currentCall, Model.CallList.instance.firstParkedCall);
+}
+
+void _AltP(_) {
+  Call.pickupNext();
+}
+
+void _AltU(_) {
+  Call.pickupParked(Model.CallList.instance.firstParkedCall);
+}
+
+void _CtrlAltEnter(_) {
+  User.signalReady();
+}
+
+void _CtrlAltP(_) {
+  User.signalPaused();
 }
