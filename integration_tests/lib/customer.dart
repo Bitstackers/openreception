@@ -1,8 +1,14 @@
 part of or_test_fw;
 
+/**
+ * TODO: Implement event stack here instead of just perform logic based on the
+ * current call.
+ */
 class Customer {
 
   static final Logger log = new Logger('Customer');
+
+  String get extension => '${this._phone.contact}';
 
   Phonio.Call currentCall = null;
 
@@ -12,10 +18,18 @@ class Customer {
   Phonio.SIPPhone _phone = null;
   String get name => this._phone.defaultAccount.username;
 
+
   Customer (this._phone) {
     this._phone.eventStream.listen(this._onPhoneEvent);
-
+    _phone.eventStream.listen((event) =>  print ('EVENT (Customer): ${_phone.defaultAccount.username} ${event.runtimeType} $event'));
   }
+
+  /**
+   *
+   */
+  Future initialize() => this._phone.initialize();
+
+  teardown() => this._phone.teardown();
 
   Future Wait_For_Dialtone() => this.waitForInboundCall();
 
@@ -28,7 +42,29 @@ class Customer {
   Future<Phonio.Call> dial(String extension) {
     log.finest('$this dials $extension');
 
-    return this._phone.originate(extension);
+    return this._phone.originate('$extension@${this._phone.defaultAccount.server}');
+  }
+
+  /**
+   * TODO Use event Stack instead.
+   */
+  Future waitForHangup() {
+    log.finest('$this waits for current call to vanish.');
+    //TODO: Assert that the call is not and is acutally outbound.
+    if (this.currentCall == null) {
+      log.finest('$this already has no call, returning it.');
+      return new Future.value(null);
+    }
+
+
+    log.finest('$this waits for call disconnect from event stream.');
+    return this._phone.eventStream.firstWhere(
+        (Phonio.Event event)
+          => event is Phonio.CallDisconnected)
+          .then((_) {
+            log.finest('$this got expected event, returning .');
+            return new Future.value(null);
+          }).timeout(new Duration(seconds: 10));
   }
 
   pickupCall () => this._phone.answer();
@@ -50,7 +86,8 @@ class Customer {
       return new Future (() => this.currentCall);
     }
 
-    log.finest('$this waits for incoming call from event stream.');
+
+    log.finest('$this waits for outgoing call from event stream.');
     return this._phone.eventStream.firstWhere(
         (Phonio.Event event)
           => event is Phonio.CallOutgoing)
@@ -69,10 +106,10 @@ class Customer {
     //TODO: Assert that the call is not answered and is acutally inbound.
     if (this.currentCall != null) {
       log.finest('$this already has call, returning it.');
-      return new Future (() => this.currentCall);
+      return new Future.value(this.currentCall);
     }
 
-    log.finest('$this waits for incoming call from event stream.');
+     log.finest('$this waits for incoming call from event stream.');
     return this._phone.eventStream.firstWhere(
         (Phonio.Event event)
           => event is Phonio.CallIncoming)
@@ -83,11 +120,15 @@ class Customer {
 
   }
 
-  String toString () => '${this.name} PhoneType:${this._phone.runtimeType}';
+  @override
+  String toString() => 'Customer peerID:${this._phone.ID} '
+                       'PhoneType:${this._phone.runtimeType}';
 
   void _onPhoneEvent(Phonio.Event event) {
+    print ("PHONEEVENT:: " + event.runtimeType.toString());
+
     if (event is Phonio.CallOutgoing) {
-      Phonio.CallOutgoing event1 = event;
+      log.finest('$this received call outgoing event');
       Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
       log.finest('$this sets call to $call');
 
@@ -95,12 +136,24 @@ class Customer {
     }
 
     else if (event is Phonio.CallIncoming) {
-      this._handleIncomingCall();
+      log.finest('$this received incoming call event');
+      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
+      log.finest('$this sets call to $call');
+      this.currentCall = call;
+
+      //this._handleIncomingCall();
+    }
+
+    else if (event is Phonio.CallDisconnected) {
+      log.finest('$this received call diconnect event');
+      //this._handleDisconnectedCall();
+      this.currentCall = null;
     }
 
     else {
       log.severe('$this got unhandled event ${event.eventName}');
     }
+    print ("PHONEEVENT:: " + event.runtimeType.toString());
   }
 
   void _handleIncomingCall() {
@@ -110,10 +163,14 @@ class Customer {
     } else {
       // Schedule a pickup later on.
       new Future.delayed(this.answerLatency,
-          () => this._phone.answer
-          ())
+          () => this._phone.answer())
       .catchError((error, stackTrace) => log.severe(error, stackTrace));
     }
+  }
+
+  void _handleDisconnectedCall() {
+    log.finest('Clearing current call');
+    this.currentCall = null;
   }
 }
 
