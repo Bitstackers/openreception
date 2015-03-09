@@ -12,6 +12,10 @@ abstract class Pool<T> {
   Queue<T> available = new Queue();
   Queue<T> busy      = new Queue();
 
+  Iterable get elements => (new Set()
+                           ..addAll(this.available.toSet())
+                           ..addAll(this.busy.toSet()));
+
   dynamic onAquire  = (T element) => null;
   dynamic onRelease = (T element) => null;
 
