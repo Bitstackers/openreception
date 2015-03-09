@@ -82,12 +82,12 @@ abstract class IncomingCall {
    *
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Offer({String extension: null}) {
-    step('Receptionist\'s client waits for "${EventType.Call_Offer}"');
+    step('Receptionist\'s client waits for "${Model.EventJSONKey.callOffer}"');
 
-    return receptionist.waitFor(eventType: EventType.Call_Offer, extension: extension)
+    return receptionist.waitFor(eventType: Model.EventJSONKey.callOffer, extension: extension)
       .then((_) {
       Model.CallOffer event = receptionist.eventStack.firstWhere(
-            (Model.Event offerEvent) => offerEvent.eventName == EventType.Call_Offer);
+            (Model.Event offerEvent) => offerEvent is Model.CallOffer);
         return event.call;
       }) ;
   }
@@ -96,9 +96,9 @@ abstract class IncomingCall {
    * Simulates the receptionist client waiting for the call lock.
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Lock(Model.Call call) {
-    step('Receptionist\'s client waits for "${EventType.Call_Lock}"');
+    step('Receptionist\'s client waits for "${Model.EventJSONKey.callLock}"');
 
-    return receptionist.waitFor(eventType: EventType.Call_Lock, callID: call.ID)
+    return receptionist.waitFor(eventType: Model.EventJSONKey.callLock, callID: call.ID)
       .then((_) {
       Model.CallLock event = receptionist.eventStack.firstWhere(
             (Model.Event lockEvent) => lockEvent is Model.CallLock);
@@ -111,9 +111,9 @@ abstract class IncomingCall {
    * Simulates the receptionist client waiting for the call to unlock.
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Unlock(Model.Call call) {
-    step('Call-Flow-Control sends out "${EventType.Call_Unlock}"...');
+    step('Call-Flow-Control sends out "${Model.EventJSONKey.callUnlock}"...');
 
-    return receptionist.waitFor(eventType: EventType.Call_Unlock, callID: call.ID)
+    return receptionist.waitFor(eventType: Model.EventJSONKey.callUnlock, callID: call.ID)
       .then((_) {
       Model.CallUnlock event = receptionist.eventStack.firstWhere(
             (Model.Event lockEvent) => lockEvent is Model.CallUnlock);
