@@ -12,7 +12,10 @@ abstract class IncomingCall {
   static Receptionist receptionist2 = null;
   static Customer callee = null;
 
+  static Model.Call inboundCall = null;
+
   static Storage.Reception receptionStore = null;
+  static Model.Reception currentReception = null;
 
   String Reception = null;
 
