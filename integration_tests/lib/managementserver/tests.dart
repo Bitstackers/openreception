@@ -1,16 +1,9 @@
-library mangement.server.test.dart;
+part of or_test_fw;
 
-import 'dart:async';
-
-import 'package:openreception_framework/model.dart' as Model;
-import 'package:openreception_framework/service.dart' as Service;
-import 'package:openreception_framework/storage.dart' as Storage;
-import 'package:openreception_framework/service-io.dart' as Transport;
-import 'package:unittest/unittest.dart';
 
 void runAllTests() {
   const String authToken = 'feedabbadeadbeef0';
-  final Uri serverUrl = Uri.parse('http://localhost:4100');
+  final Uri serverUrl = Config.managementServerURI;
 
   group('Management.Organization', () {
     setUp(() {

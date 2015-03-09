@@ -21,6 +21,7 @@ part 'customer_pool.dart';
 /// Server tests
 part 'callflowcontrol/hangup.dart';
 part 'messagestore/tests.dart';
+part 'managementserver/tests.dart';
 
 /// Use cases
 part 'uc-find_contact.dart';
