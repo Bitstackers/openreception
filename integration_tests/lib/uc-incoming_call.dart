@@ -137,53 +137,7 @@ abstract class IncomingCall {
       log.finest('Receptionist gives full greeting:"${reception.greeting}');
     }
 
-    return receptionist.waitFor(eventType: EventType.Call_Unlock, callID: call.ID);
-  }
-
-  static Future incomingCall_1_a_II() {
-    String receptionExtension = '12340003';
-
-    Model.Call trackedCall = null;
-    Model.Reception reception = null;
-
-    return setup().then((_) =>
-    Caller_Places_Call(receptionExtension).then((_) => Caller_Hears_Dialtone()).then((_) {
-      step("FreeSWITCH         ->  FreeSWITCH        [Checks dial-plan.  Result: Queue call.]");
-      step("FreeSWITCH         ->> Call-Flow-Control [event: call-offer; destination: Reception]");
-      step("FreeSWITCH: pauses dial-plan processing for # seconds");
-    }).then((_) => Receptionist_Awaits_Call_Offer(extension: receptionExtension)
-        .then((Model.Call nextAvailableCall) => trackedCall = nextAvailableCall)) // Update the local state
-    .then((_) {
-      step("Call-Flow-Control  ->  Call-Flow-Control [no responses to call-offer]");
-      step("Call-Flow-Control  ->> FreeSWITCH        [force-end-pause: <call_ID>]");
-      step("FreeSWITCH         ->> Call-Flow-Control [queued-unavailable: <call_ID>]");
-      step("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«");
-    }).then((_) => Receptionist_Awaits_Call_Lock(trackedCall)
-        .then((Model.Call lockedCall) => trackedCall = lockedCall)) // Update the local state
-    .then((_) {
-      step("Klient-N           ->> Receptionist-N    [Queue: <reception name> (optaget)]");
-      step("FreeSWITCH->Call-Flow-Control: call queued with dial-tone");
-      step("FreeSWITCH->Caller: playing music on hold");
-    }).then((_) => Receptionist_Awaits_Call_Unlock(trackedCall)
-        .then((Model.Call unlockedCall) => trackedCall = unlockedCall)) // Update the local state
-    .then((_) {
-      step("Client-N->Receptionist-N: Queue: <reception name> (venter)");
-      step("Client-N->Receptionist-N: Queue: <reception name> (venter)");
-      step("Receptionist-N->Client-N: state-switch-free");
-    }).then((_) => receptionStore.get(trackedCall.receptionID)
-        .then((Model.Reception r) => reception = r))
-      .then((_) => receptionist.pickup(trackedCall)
-        .then((Model.Call pickedUpCall) => trackedCall = pickedUpCall)) // Update the local state
-
-    /* Now the call should have the greetingPlayed variable set to true, as we have previously
-       * seen a 'call unlock' event.
-       */
-    .then((_) => expect(trackedCall.greetingPlayed, equals (true)))
-    .then((_) => step("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
-    .then((_) => Receptionist_Answers(trackedCall, reception))
-    .catchError(_dumpState)
-    .whenComplete(teardown));
-
+    return receptionist.waitFor(eventType: Model.EventJSONKey.callUnlock, callID: call.ID);
   }
 
   static void _dumpState(error, stackTrace) {
@@ -205,83 +159,345 @@ abstract class IncomingCall {
 
   }
 
-  static void _validateCall(Model.Call call) {
-    expect(call.assignedTo, equals (receptionist.userID));
+  static String callInfo(Model.Call call) =>
+      '${call.inbound ? 'inbound': 'outbound'} '
+          'call with destination ${call.destination}';
 
-    log.finest('FIXME: make _validateCall more elaborate');
+  static void _validateCall(Model.Call call) {
+    expect(call.assignedTo, equals (receptionist.user.ID));
+
+    log.severe('FIXME: make _validateCall more elaborate');
+  }
+
+  static Wait (int milliseconds) =>
+      new Future.delayed(new Duration(milliseconds : milliseconds));
+
+  static Future<Model.Call> Call_Announced() {
+    step("Receptionist's client waits for 'call_offer'...");
+
+    Future timeoutHandler() {
+      log.severe("Call offer didn't arrive from Call-Flow-Control.");
+      receptionist.dumpEventStack();
+      return new Future.error(new AssertionError());
+    }
+
+    return receptionist.waitFor(
+        eventType: Model.EventJSONKey.callOffer).timeout(
+            new Duration(seconds: 3),
+            onTimeout: timeoutHandler).then((Model.CallOffer event) {
+      return event.call;
+    });
+  }
+
+  static Future<Model.Call> Call_Announced_As_Locked() {
+    step("Call-Flow-Control sends out 'call_lock'...");
+
+    return receptionist.waitFor(
+        eventType: Model.EventJSONKey.callLock).timeout(
+            new Duration(seconds: 3),
+            onTimeout: () {
+      log.severe("No 'call_lock' event arrived from Call-Flow-Control.");
+      receptionist.dumpEventStack();
+      throw new AssertionError();
+    }).then((Model.CallLock event) {
+      return event.call;
+    });
+  }
+
+  static Future<Model.Call> Call_Announced_As_Unlocked() {
+    step("Call-Flow-Control sends out 'call_unlock'...");
+
+    return receptionist.waitFor(
+        eventType: Model.EventJSONKey.callUnlock).timeout(
+            new Duration(seconds: 3),
+            onTimeout: () {
+      log.severe("No 'call_unlock' event arrived from Call-Flow-Control.");
+      receptionist.dumpEventStack();
+      throw new AssertionError();
+    }).then((Model.CallLock event) {
+      return event.call;
+    });
+  }
+
+  static Future<Model.Reception> Request_Information(int Reception_ID) {
+    step(
+        "Requesting (updated) information about reception with ID $Reception_ID.");
+
+    return receptionStore.get(Reception_ID).then((Model.Reception reception) {
+      step("Received information on reception with ID $Reception_ID.");
+      return reception;
+    });
+  }
+
+  static Future<Model.Call> Offer_To_Pick_Up_Call(Receptionist receptionist,
+      Model.Call call) {
+    step("Client offers to answer call...");
+
+    return receptionist.pickup(call);
+  }
+
+  static Future Call_Allocation_Acknowledgement() {
+    step("Receptionist's client waits for 'call_pickup'...");
+
+    return receptionist.waitFor(
+        eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
+      if (event.call.assignedTo == receptionist.user.ID) {
+        fail(
+            'The arrived pickup event was for ${event.call.assignedTo},'
+                ' and not for ${receptionist.user.ID} as expected.');
+      }
+
+      log.finest('Receptionist picked up call ${callInfo(event.call)}.');
+      return (event.call);
+    });
+  }
+
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-ii1-1
+   */
+  static Future incomingCall_II_1() {
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [Checks dial-plan.  Result: Queue call.]"))
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [event: call-offer; destination: Reception]"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [wait 0.200 s]"))
+      .then((_) => Wait(200))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [no responses to call-offer]"))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [force-end-pause: <call_ID>]"))
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [queued-unavailable: <call_ID>]"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«"))
+      .then((_) => Call_Announced_As_Locked ())
+      .then((_) => step ("Klient-N           ->> Receptionist-N    [Queue: <reception name> (optaget)]"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH->Caller: pause music"))
+      .then((_) => Call_Announced_As_Unlocked ())
+      .then((_) => step ("Client-N->Receptionist-N: Queue: <reception name> (venter)"))
+      .then((_) => step ("Receptionist-N->Client-N: state-switch-free"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-ii2-1
+   */
+  static Future incomingCall_II_2() {
+
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [Checks dial-plan.  Result: Queue call.]"))
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [event: call-offer; destination: Reception]"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [wait 0.200 s]"))
+      .then((_) => Wait(200))
+      .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [no responses to call-offer]"))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [force-end-pause: <call_ID>]"))
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [queued-unavailable: <call_ID>]"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«"))
+      .then((_) => Call_Announced_As_Locked ())
+      .then((_) => step ("Klient-N           ->> Receptionist-N    [Queue: <reception naReception_ID = Reception_ID)me> (optaget)]"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH->Caller: pause music"))
+      .then((_) => Call_Announced_As_Unlocked ())
+      .then((_) => step ("Client-N->Receptionist-N: Queue: <reception name> (venter)"))
+      .then((_) => step ("Receptionist-N->Client-N: take call"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i1ai-1
+   */
+  static Future incomingCall_I_1_a_i() {
+
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH: checks dial-plan => to queue"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Client-N->Receptionist-N: Information on <reception name> (with full greeting)."))
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i1aii-1
+   */
+  static Future incomingCall_I_1_a_ii() {
+
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH: checks dial-plan => to queue"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => step ("Receptionist 2 offers to pick up call."))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist2, inboundCall))
+      .then((_) => step ("Receptionist 1 wait 210 ms to assure that client-N will miss the 200 ms time-window for responding."))
+      .then((_) => Wait(200))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Client-N->Receptionist-N: Un-queue: <reception name>."))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
+
+  }
+
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i1bi-1
+   */
+  static Future incomingCall_I_1_b_i() {
+
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH: checks dial-plan => to queue"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
+      .then((_) => step ("Receptionist-N->Client-N: state-switch-free"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Client-N->Receptionist-N: Information on <reception name> (with full greeting)."))
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i1bii-1
+   */
+  static Future incomingCall_I_1_b_ii() {
+
+    const String receptionExtension = '12340003';
+
+    return setup().then((_) => Caller_Places_Call (receptionExtension)
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH: checks dial-plan => to queue"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
+      .then((_) => step ("Receptionist-N: Busy doing other things (allowing FreeSWITCH to time out)."))
+      .then((_) => Wait(8000))
+      .then((_) => step ("FreeSWITCH: pause timed out"))
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control: queued-unavailable: <call ID>"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«"))
+      .then((_) => Call_Announced_As_Locked ())
+      .then((_) => step ("Klient-N           ->  Receptionist-N: Queue: <reception name> (optaget)"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH->Caller: pause music"))
+      .then((_) => Call_Announced_As_Unlocked ())
+      .then((_) => step ("Client-N->Receptionist-N: Queue: <reception name> (venter)"))
+      .then((_) => step ("Receptionist-N->Client-N: state-switch-free"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown));
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i2a-1
+   */
+  static Future incomingCall_I_2_a() {
+
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH: checks dial-plan => to queue"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
+      .then((_) => step ("Receptionist-N->Client-N: take call"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Client-N->Receptionist-N: Information on <reception name> (with full greeting)."))
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
+  }
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i2b-1
+   */
+  static Future incomingCall_I_2_b() {
+
+    const String receptionExtension = '12340003';
+
+    return setup()
+      .then((_) => Caller_Places_Call (receptionExtension))
+      .then((_) => Caller_Hears_Dialtone ())
+      .then((_) => step ("FreeSWITCH: checks dial-plan => to queue"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
+      .then((_) => Call_Announced ())
+      .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
+      .then((_) => step ("Receptionist-N: Busy doing other things (allowing FreeSWITCH to time out)."))
+      .then((_) => Wait(8000))
+      .then((_) => step ("FreeSWITCH: pause timed out"))
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control: queued-unavailable: <call ID>"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«"))
+      .then((_) => Call_Announced_As_Locked ())
+      .then((_) => step ("Klient-N           ->  Receptionist-N: Queue: <reception name> (optaget)"))
+      .then((_) => step ("FreeSWITCH->Call-Flow-Control: call queued with dial-tone"))
+      .then((_) => step ("FreeSWITCH->Caller: pause music"))
+      .then((_) => Call_Announced_As_Unlocked ())
+      .then((_) => step ("Client-N->Receptionist-N: Queue: <reception name> (venter)"))
+      .then((_) => step ("Receptionist-N->Client-N: take call"))
+      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => Call_Allocation_Acknowledgement ())
+      .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
+      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .catchError((error, stackTrace) => log.shout (error,stackTrace))
+      .whenComplete(teardown);
   }
 }
-
-
-
-
-
-/*
-
-      def Receptionist_Places_Call (self, Number):
-          self.Step (Message = "Receptionist places call to " + str (Number) + "...")
-
-          self.Log (Message = "Dialling through receptionist agent...")
-          self.Receptionist.dial (Number)
-
-      def Caller_Hears_Dialtone (self):
-          self.Step (Message = "Caller hears dial-tone...")
-
-          self.Log (Message = "Caller agent waits for dial-tone...")
-          self.Caller.sip_phone.Wait_For_Dialtone ()
-
-      def Receptionist_Hears_Dialtone (self):
-          self.Step (Message = "Receptionist hears dial-tone...")
-
-          self.Log (Message = "Receptionist agent waits for dial-tone...")
-          self.Receptionist.sip_phone.Wait_For_Dialtone ()
-
-
-
-      def Request_Information (self, Reception_ID):
-          self.Step (Message = "Requesting (updated) information about reception " + str (Reception_ID))
-
-          Data_On_Reception = self.Reception_Database.Single (Reception_ID)
-
-          self.Step (Message = "Received information on reception " + str (Reception_ID))
-
-          return Data_On_Reception
-
-      def Offer_To_Pick_Up_Call (self, Call_Flow_Control, Call_ID):
-          self.Step (Message = "Client offers to answer call...")
-
-          try:
-              Call_Flow_Control.PickupCall (call_id = Call_ID)
-          except:
-              self.Log (Message = "Pick-up call returned an error of some kind.")
-
-      def Call_Allocation_Acknowledgement (self, Call_ID, Receptionist_ID):
-          self.Step (Message = "Receptionist's client waits for 'call_pickup'...")
-
-          try:
-              self.Receptionist.event_stack.WaitFor (event_type = "call_pickup",
-                                                     call_id    = Call_ID)
-          except TimeOutReached:
-              logging.critical (self.Receptionist.event_stack.dump_stack ())
-              self.fail ("No 'call_pickup' event arrived from Call-Flow-Control.")
-
-          try:
-              Event = self.Receptionist.event_stack.Get_Latest_Event (Event_Type = "call_pickup",
-                                                                      Call_ID    = Call_ID)
-          except:
-              logging.critical (self.Receptionist.event_stack.dump_stack ())
-              self.fail ("Could not extract the received 'call_pickup' event from the Call-Flow-Control client.")
-
-          try:
-              if not Event['call']['assigned_to'] == Receptionist_ID:
-                  logging.critical (self.Receptionist.event_stack.dump_stack ())
-                  self.fail ("The arrived 'call_pickup' event was for " + str (Event['call']['assigned_to']) + ", and not for " + str (Receptionist_ID) + " as expected.")
-          except:
-              logging.critical (self.Receptionist.event_stack.dump_stack ())
-              raise
-
-          self.Log (Message = "Call picked up: " + pformat (Event))
-
-          return Event
-
-*/
