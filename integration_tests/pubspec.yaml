@@ -1,11 +1,12 @@
 name: openreception_acceptance_tests
+version: 0.1.0
 description: OpenReception Acceptance tests
 dependencies:
-  phonio:
-#    git: https://github.com/Bitstackers/Phonio.git
-    path: "/home/krc/Projects/Phonio"
+  http: any
   logging: any
   openreception_framework:
     git: https://github.com/Bitstackers/OpenReceptionFramework.git
+  phonio:
+    git: https://github.com/Bitstackers/Phonio.git
+  route: any
   unittest: any
- 
