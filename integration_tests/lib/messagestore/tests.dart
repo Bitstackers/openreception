@@ -22,9 +22,39 @@ abstract class RESTMessageStore {
    */
   static Future messageMapEquality
     (Storage.Message store, int id, Model.Message expectedMessage) =>
-        store.get(id).then((message) =>
-            expect(JSON.encode(message.asMap),
-                equals(JSON.encode((expectedMessage).asMap))));
+        store.get(id).then((message) {
+          expect(message.recipients.asMap,
+            equals(expectedMessage.recipients.asMap));
+          expect(message.toRecipients.asMap(),
+            equals(expectedMessage.toRecipients.asMap()));
+          expect(message.ccRecipients.asMap(),
+             equals(expectedMessage.ccRecipients.asMap()));
+          expect(message.bccRecipients.asMap(),
+             equals(expectedMessage.bccRecipients.asMap()));
+          expect(message.body,
+             equals(expectedMessage.body));
+          expect(message.createdAt.isBefore(new DateTime.now()), isTrue);
+          expect(message.caller.asMap,
+             equals(expectedMessage.caller.asMap));
+          expect(message.context.asMap,
+             equals(expectedMessage.context.asMap));
+
+          expect(message.flags,
+             equals(expectedMessage.flags));
+
+          expect(message.ID, greaterThan(Model.Message.noID));
+
+          expect(message.sender.toJson(),
+             equals(expectedMessage.sender.toJson()));
+
+          //expect(message.enqueued, isTrue);
+          //expect(message.hasRecpients, isTrue);
+          //expect(message.sent, isFalse);
+
+          expect(message.urgent,
+             equals(expectedMessage.urgent));
+  });
+
 
 
   static Future messageSave(Storage.Message store, Model.Message message) =>

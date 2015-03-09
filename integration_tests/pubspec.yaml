@@ -1,8 +1,9 @@
 name: openreception_acceptance_tests
-version: 0.1.0
+version: 0.1.1
 description: OpenReception Acceptance tests
 dependencies:
   http: any
+  junitconfiguration: any
   logging: any
   openreception_framework:
     git: https://github.com/Bitstackers/OpenReceptionFramework.git

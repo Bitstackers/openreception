@@ -5,15 +5,19 @@ import 'package:openreception_framework/storage.dart' as Storage;
 
 import '../lib/or_test_fw.dart';
 
+
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
+import 'package:junitconfiguration/junitconfiguration.dart';
 
 import '../lib/config.dart';
 import 'data/testdata.dart' as Test_Data;
 
 void main() {
-  Logger.root.level = Level.INFO;
+  //TODO: redirect every log entry to a file.
+  Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen(print);
+  JUnitConfiguration.install();
 
   group('service.ResourceMessage', () {
     Storage.Message messageStore =

@@ -1,7 +1,8 @@
-tests:
-	@echo "Nothing to do yet!"
-	@true
+dependencies:
+	pub get
 
+tests:
+	@dart bin/servertests.dart
 
 bin/basic_agent: support_tools/src/basic_agent.c
 	make -C support_tools deps_install
