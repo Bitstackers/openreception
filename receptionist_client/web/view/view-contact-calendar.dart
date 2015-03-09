@@ -140,7 +140,6 @@ class ContactCalendar {
     }
   }
 
-
   ContactCalendar(Element this.element, Context this.context, Element this.widget) {
     this.header.children = [Icon.Calendar, new SpanElement()..text = Label.ContactCalendar, new Nudge(NavShortcut).element];
 
@@ -155,11 +154,50 @@ class ContactCalendar {
   }
 
   /**
-   * Selects the widget and puts the default element in focus.
+   * Delete event handler.
+   * Responds to delete commands and deletes the event currently being edited.
+   *
+   * TODO:
+   *   - Disable input fields and event handler when the save operation is
+   *     in progress and re-enable it onDone.
+   *   - Add error handling in the form of a UI notification.
    */
-  void _select(_) {
-    if (!this.muted) {
-      Controller.Context.changeLocation(this.location);
+  void _deleteEvent() {
+    if(!this.newEventWidget.hidden) {
+      model.deleteCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Edit event handler
+   */
+  void _editEvent() {
+    //Toggle the widget to create new calendar events.
+    this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+    //Toggle the list of events based on the widget for creatings visability.
+    this.eventList.hidden = !this.newEventWidget.hidden;
+    int eventID = this.selectedElement.value;
+
+    if (!this.newEventWidget.hidden) {
+      model.Contact.selectedContact.calendarEventList().then((List<model.CalendarEvent> eventList) {
+        model.CalendarEvent event = model.CalendarEvent.findEvent(eventID, eventList);
+
+        this._selectedStartDate = event.startTime;
+        this._selectedEndDate = event.stopTime;
+        this.newEventField.value = event.content;
+        this.eventID = eventID;
+      });
+
+      this.lastActive = document.activeElement;
+      this.newEventField.focus();
+    } else {
+      if (this.lastActive != null) {
+        this.lastActive.focus();
+      }
     }
   }
 
@@ -180,6 +218,7 @@ class ContactCalendar {
    * Register all event listeners for this widget.
    */
   void _registerEventListeners() {
+    hotKeys.onCtrlBackspace.listen((_) => _inFocus ? _deleteEvent() : null);
     hotKeys.onCtrlE.listen((_) => _inFocus ? _editEvent() : null);
     hotKeys.onCtrlS.listen((_) => _inFocus ? _saveEvent() : null);
 
@@ -193,28 +232,25 @@ class ContactCalendar {
       }
     });
 
-    void listNavigation(KeyboardEvent e) {
+    this.eventList.onKeyDown.listen((KeyboardEvent e) {
       LIElement lastFocusLI = this.selectedElement;
       LIElement newFocusLI;
 
-        if (lastFocusLI == null) {
-          newFocusLI = this.eventList.children.first;
-        } else if (e.keyCode == Keys.DOWN){
-          newFocusLI = lastFocusLI.nextElementSibling;
-          e.preventDefault();
-        } else if (e.keyCode == Keys.UP){
-          newFocusLI = lastFocusLI.previousElementSibling;
-          e.preventDefault();
-        }
-        if (newFocusLI != null) {
-          selectedElement = newFocusLI;
-        }
-    }
-
-    this.eventList.onKeyDown.listen(listNavigation);
+      if (lastFocusLI == null) {
+        newFocusLI = this.eventList.children.first;
+      } else if (e.keyCode == Keys.DOWN){
+        newFocusLI = lastFocusLI.nextElementSibling;
+        e.preventDefault();
+      } else if (e.keyCode == Keys.UP){
+        newFocusLI = lastFocusLI.previousElementSibling;
+        e.preventDefault();
+      }
+      if (newFocusLI != null) {
+        selectedElement = newFocusLI;
+      }
+    });
 
     event.bus.on(event.locationChanged).listen((nav.Location location) {
-
       element.classes.toggle(CssClass.focus, this.element.id == location.widgetId);
       if (location.elementId == eventList.id) {
         eventList.focus();
@@ -222,7 +258,6 @@ class ContactCalendar {
     });
 
     event.bus.on(event.CreateNewContactEvent).listen((_) {
-
       if(nav.Location.isActive(this.element)) {
         eventID = model.CalendarEvent.noID;
         this.newEventWidget.hidden = !this.newEventWidget.hidden;
@@ -243,8 +278,6 @@ class ContactCalendar {
         }
       }
     });
-
-    event.bus.on(event.Delete).listen(this._onDeleteCommand);
 
     model.CalendarEvent.events.on(model.CalendarEvent.reload).listen((Map eventStub) {
       const String context = '${className}.reload (listener)';
@@ -279,84 +312,6 @@ class ContactCalendar {
         });
       }
     });
-  }
-
-  void _editEvent() {
-//    if(!this.inFocus) {
-//      return;
-//    }
-
-    //Toggle the widget to create new calendar events.
-    this.newEventWidget.hidden = !this.newEventWidget.hidden;
-
-    //Toggle the list of events based on the widget for creatings visability.
-    this.eventList.hidden = !this.newEventWidget.hidden;
-    int eventID = this.selectedElement.value;
-
-    if (!this.newEventWidget.hidden) {
-      model.Contact.selectedContact.calendarEventList().then((List<model.CalendarEvent> eventList) {
-        model.CalendarEvent event = model.CalendarEvent.findEvent(eventID, eventList);
-
-        this._selectedStartDate = event.startTime;
-        this._selectedEndDate = event.stopTime;
-        this.newEventField.value = event.content;
-        this.eventID = eventID;
-      });
-
-      this.lastActive = document.activeElement;
-      this.newEventField.focus();
-    } else {
-      if (this.lastActive != null) {
-        this.lastActive.focus();
-      }
-    }
-  }
-
-
-  /**
-   * Delete command handler.
-   * Responds to delete commands and deletes the event currently being edited.
-   *
-   * TODO:
-   *   - Disable input fields and event handler when the save operation is
-   *     in progress and re-enable it onDone.
-   *   - Add error handling in the form of a UI notification.
-   */
-  void _onDeleteCommand(_) {
-    if (!_inFocus || this.eventID == model.CalendarEvent.noID) {
-      return;
-    }
-
-    if (!this.newEventWidget.hidden) {
-      model.deleteCalendarEvent(this._getEvent()).then((_) {
-        this.newEventWidget.hidden = true;
-        this.eventList.hidden = !this.newEventWidget.hidden;
-      });
-    }
-  }
-
-  /**
-   * Save command handler.
-   * Responds to save commands and stores the the data typed into the create
-   * widget if it is visible. Ignore events if the calendarwidget is not in
-   * focus.
-   *
-   * TODO:
-   *   - Disable input fields and event handler when the save operation is
-   *     in progress and re-enable it onDone.
-   *   - Add error handling in the form of a UI notification.
-   */
-  void _saveEvent() {
-//    if (!this.inFocus) {
-//      return;
-//    }
-
-    if (!this.newEventWidget.hidden) {
-      model.saveCalendarEvent(this._getEvent()).then((_) {
-        this.newEventWidget.hidden = true;
-        this.eventList.hidden = !this.newEventWidget.hidden;
-      });
-    }
   }
 
   /**
@@ -407,6 +362,35 @@ class ContactCalendar {
 
     if (eventList.children.length > 0) {
       this.selectedElement = eventList.children.first;
+    }
+  }
+
+  /**
+   * Save event handler.
+   * Responds to save commands and stores the the data typed into the create
+   * widget if it is visible. Ignore events if the calendarwidget is not in
+   * focus.
+   *
+   * TODO:
+   *   - Disable input fields and event handler when the save operation is
+   *     in progress and re-enable it onDone.
+   *   - Add error handling in the form of a UI notification.
+   */
+  void _saveEvent() {
+    if (!this.newEventWidget.hidden) {
+      model.saveCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Selects the widget and puts the default element in focus.
+   */
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(this.location);
     }
   }
 }

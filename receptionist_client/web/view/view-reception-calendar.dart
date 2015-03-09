@@ -52,7 +52,6 @@ class ReceptionCalendar {
     }
   }
 
-
   Element lastActive = null;
   InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
   int             get eventID          => int.parse(this.eventIDField.value);
@@ -141,16 +140,53 @@ class ReceptionCalendar {
   }
 
   /**
-   * Selects the widget and puts the default element in focus.
+   * Delete event handler.
+   * Responds to delete commands and deletes the event currently being edited.
    */
-  void _select(_) {
-    if (!this.muted) {
-      Controller.Context.changeLocation(this.location);
+  void _deleteEvent() {
+    if(!this.newEventWidget.hidden) {
+      model.deleteCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
     }
   }
 
   /**
-   * Harvests the typed information from the widget and returns a CalendarEvent object.
+   * Edit event handler.
+   */
+  void _editEvent() {
+    //Toggle the widget to create new calendar events.
+    this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+    //Toggle the list of events based on the widget for creatings visability.
+    this.eventList.hidden = !this.newEventWidget.hidden;
+    int eventID = this.selectedElement.value;
+
+    if (!this.newEventWidget.hidden) {
+      storage.Reception.calendar(model.Reception.selectedReception.ID)
+                .then((List<model.CalendarEvent> events) {
+
+        model.CalendarEvent selectedEvent = model.findEvent(events, eventID);
+
+        this._selectedStartDate = selectedEvent.startTime;
+        this._selectedEndDate = selectedEvent.stopTime;
+        this.newEventField.value = selectedEvent.content;
+        this.eventID = eventID;
+      });
+
+      this.lastActive = document.activeElement;
+      this.newEventField.focus();
+    } else {
+      if (this.lastActive != null) {
+        this.lastActive.focus();
+      }
+    }
+  }
+
+  /**
+   * Harvests the typed information from the widget and returns a CalendarEvent
+   * object.
    */
   model.CalendarEvent _getEvent() {
     assert (_inFocus && !this.newEventWidget.hidden);
@@ -166,6 +202,7 @@ class ReceptionCalendar {
    * Register all event listeners for this widget.
    */
   void _registerEventListeners() {
+    hotKeys.onCtrlBackspace.listen((_) => _inFocus ? _deleteEvent() : null);
     hotKeys.onCtrlE.listen((_) => _inFocus ? _editEvent() : null);
     hotKeys.onCtrlS.listen((_) => _inFocus ? _saveEvent() : null);
 
@@ -220,41 +257,21 @@ class ReceptionCalendar {
 
     });
 
-    void listNavigation(KeyboardEvent e) {
+    this.eventList.onKeyDown.listen((KeyboardEvent e) {
       LIElement lastFocusLI = this.selectedElement;
       LIElement newFocusLI;
 
-        if (lastFocusLI == null) {
-          newFocusLI = this.eventList.children.first;
-        } else if (e.keyCode == Keys.DOWN){
-          newFocusLI = lastFocusLI.nextElementSibling;
-          e.preventDefault();
-        } else if (e.keyCode == Keys.UP){
-          newFocusLI = lastFocusLI.previousElementSibling;
-          e.preventDefault();
-        }
-        if (newFocusLI != null) {
-          selectedElement = newFocusLI;
-        }
-    }
-
-    this.eventList.onKeyDown.listen(listNavigation);
-
-//    event.bus.on(event.Save).listen((_) {
-//      if (this.inFocus && !this.newEventWidget.hidden) {
-//        model.saveCalendarEvent(this._getEvent()).then((_) {
-//          this.newEventWidget.hidden = true;
-//          this.eventList.hidden = !this.newEventWidget.hidden;
-//        });
-//      }
-//    });
-
-    event.bus.on(event.Delete).listen((_) {
-      if (_inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.noID) {
-        model.deleteCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
+      if (lastFocusLI == null) {
+        newFocusLI = this.eventList.children.first;
+      } else if (e.keyCode == Keys.DOWN){
+        newFocusLI = lastFocusLI.nextElementSibling;
+        e.preventDefault();
+      } else if (e.keyCode == Keys.UP){
+        newFocusLI = lastFocusLI.previousElementSibling;
+        e.preventDefault();
+      }
+      if (newFocusLI != null) {
+        selectedElement = newFocusLI;
       }
     });
 
@@ -276,39 +293,9 @@ class ReceptionCalendar {
     });
   }
 
-  void _editEvent() {
-    //Toggle the widget to create new calendar events.
-    this.newEventWidget.hidden = !this.newEventWidget.hidden;
-
-    //Toggle the list of events based on the widget for creatings visability.
-    this.eventList.hidden = !this.newEventWidget.hidden;
-    int eventID = this.selectedElement.value;
-
-    if (!this.newEventWidget.hidden) {
-      storage.Reception.calendar(model.Reception.selectedReception.ID)
-                .then((List<model.CalendarEvent> events) {
-
-        model.CalendarEvent selectedEvent = model.findEvent(events, eventID);
-
-        this._selectedStartDate = selectedEvent.startTime;
-        this._selectedEndDate = selectedEvent.stopTime;
-        this.newEventField.value = selectedEvent.content;
-        this.eventID = eventID;
-      });
-
-      this.lastActive = document.activeElement;
-      this.newEventField.focus();
-    } else {
-      if (this.lastActive != null) {
-        this.lastActive.focus();
-      }
-    }
-  }
-
-  String getClass(model.CalendarEvent event) {
-    return event.active ? CssClass.receptionEventsActive : '';
-  }
-
+  /**
+   * TODO (TL): comment
+   */
   void _render(List<model.CalendarEvent> events) {
     List<model.CalendarEvent> listCopy = []..addAll(events)
                                            ..sort();
@@ -350,12 +337,24 @@ class ReceptionCalendar {
     }
   }
 
+  /**
+   * Save event handler.
+   */
   void _saveEvent() {
     if(!this.newEventWidget.hidden) {
       model.saveCalendarEvent(this._getEvent()).then((_) {
         this.newEventWidget.hidden = true;
         this.eventList.hidden = !this.newEventWidget.hidden;
       });
+    }
+  }
+
+  /**
+   * Selects the widget and puts the default element in focus.
+   */
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(this.location);
     }
   }
 }

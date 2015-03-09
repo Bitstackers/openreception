@@ -206,7 +206,7 @@ class _KeyboardHandler {
       'Ctrl+Alt+Enter' : Controller.User.signalReady,
       'Ctrl+Alt+P' : Controller.User.signalPaused,
       'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
-      'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
+//      'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),
       CommandKey   : (_) => event.bus.fire(event.keyCommand, true),
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
