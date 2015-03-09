@@ -9,17 +9,24 @@
 
 library controller;
 
-import '../classes/events.dart' as event;
-import '../service/service.dart' as Service;
-import '../model/model.dart' as Model;
+import 'dart:async';
+import 'dart:html';
+
 import '../classes/context.dart' as UIContext;
+import '../classes/events.dart' as event;
 import '../classes/location.dart' as nav;
 import '../classes/logger.dart';
+import '../model/model.dart' as Model;
+import '../service/service.dart' as Service;
+
+import 'package:okeyee/okeyee.dart';
+import 'package:openreception_framework/bus.dart';
 
 part 'controller-call.dart';
 part 'controller-contact.dart';
 part 'controller-context.dart';
 part 'controller-extension.dart';
+part 'controller-hotkeys.dart';
 part 'controller-reception.dart';
 part 'controller-user.dart';
 

@@ -16,30 +16,27 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
+import '../classes/commands-keyboard.dart';
+import '../classes/common.dart';
+import '../config/configuration.dart';
+import '../classes/constants.dart';
+import '../classes/context.dart';
+import '../controller/controller.dart' as Controller;
+import '../classes/events.dart' as event;
+import '../classes/focus.dart';
+import '../classes/location.dart' as nav;
+import '../classes/logger.dart';
+import '../model/model.dart' as model;
+import '../components/searchcomponent.dart' as Component;
+import '../service/service.dart' as Service;
+import '../storage/storage.dart' as Storage;
+import '../storage/storage.dart' as storage;
+import 'view-labels-en.dart';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
-
-import '../classes/events.dart' as event;
-import '../model/model.dart' as model;
-import '../classes/constants.dart';
-import '../service/service.dart' as Service;
-import '../storage/storage.dart' as Storage;
-import '../classes/location.dart' as nav;
-import '../controller/controller.dart' as Controller;
-import '../classes/logger.dart';
-
-import '../config/configuration.dart';
-import '../classes/context.dart';
-import '../classes/common.dart';
-import '../classes/focus.dart';
-import '../classes/commands-keyboard.dart';
-import '../storage/storage.dart' as storage;
-import '../components/searchcomponent.dart' as Component;
-
-import 'view-labels-en.dart';
-
 
 part 'view-call.dart';
 part 'view-icons.dart';
@@ -54,7 +51,6 @@ part 'view-notification.dart';
 part 'view-nudge.dart';
 part 'view-reception-calendar.dart';
 part 'view-message-compose.dart';
-
 part 'view-agent-info.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alternate-names.dart';
@@ -75,7 +71,6 @@ part 'view-contact-search.dart';
 part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
 part 'view-message-filter.dart';
-
 
 const String libraryName = "view";
 
