@@ -19,6 +19,7 @@ void main() {
   Logger.root.onRecord.listen(print);
   JUnitConfiguration.install();
 
+  runAllTests();
   group('service.ResourceMessage', () {
     Storage.Message messageStore =
         new Service.RESTMessageStore(Config.messageServerUri,
