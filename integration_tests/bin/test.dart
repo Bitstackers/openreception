@@ -11,8 +11,17 @@ import 'package:logging/logging.dart';
 
 import '../lib/config.dart';
 
+final enabledTests = [Hangup.eventPresence
+                          //ForwardCall.forward_call_1_a_II
+                          ];
+
+
 async.Future main() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen(print);
+
   List<Receptionist> receptionists = [];
+  List<Customer> customers = [];
 
   /// Maps token to a User object.
   Map<String, Model.User> tokenMap = {};
@@ -41,39 +50,69 @@ async.Future main() {
 
       phone.addAccount(account);
 
-      receptionists.add(new Receptionist(phone, token, user));
+      Receptionist receptionist = new Receptionist(phone, token, user);
 
+      receptionists.add(receptionist);
       return ConfigPool.hasAvailableLocalSipAccount();
-    });
 
-  void printReceptionists() =>
-    receptionists.forEach((Receptionist receptionist) {
-      print (receptionist);
+    })
+    .whenComplete(() =>
+        ReceptionistPool.instance = new ReceptionistPool(receptionists));
 
-    });
+  async.Future initializeReceptionists() =>
+      async.Future.forEach (receptionists,
+          (Receptionist receptionist) => receptionist.initialize());
+
+  async.Future setupCustomers() =>
+    async.Future.doWhile(() {
+
+      SIPAccount account = ConfigPool.requestExternalSIPAccount();
+      SIPPhone phone = new PJSUAProcess(Config.simpleClientBinaryPath, ConfigPool.requestPjsuaPort());
+
+      phone.addAccount(account);
+
+      customers.add(new Customer(phone));
+
+
+      return ConfigPool.hasAvailableExternalSipAccount();
+    })
+    .whenComplete(() =>
+        CustomerPool.instance = new CustomerPool(customers));
+
+  async.Future initializeCustomers() =>
+      async.Future.forEach (customers,
+          (Customer customer) => customer.initialize());
+
+  void tearDownReceptionists () => receptionists.forEach
+      ((Receptionist receptionist) => receptionist.teardown());
+
+  void tearDownCustomers () => customers.forEach
+      ((Customer customer) => customer.teardown());
+
+
+  void printCustomers() => customers.forEach(print);
+
+  void printReceptionists() => receptionists.forEach(print);
 
   /// Construct a map of users, identified by their token.
   return
       buildUserMap()
       .then((_) => setupReceptionists())
+      .then((_) => initializeReceptionists())
       .then((_) => printReceptionists())
+      .then((_) => setupCustomers())
+      .then((_) => initializeCustomers())
+      .then((_) => printCustomers())
+      .then((_) => Hangup.eventPresence())
+      .then((_) => tearDownReceptionists())
+      .then((_) => tearDownCustomers())
+      .then((_) => print ("All tests have run."))
       .whenComplete(() {
     tokenMap.forEach ((token, user) {
       print ('$token : ${user.ID}, ${user.peer}');
     });
   });
-
 }
-
-//
-//async.Future runTests () {
-//  return ForwardCall.forward_call_1_a_II();
-//
-//  List tests = [IncomingCall.incomingCall_1_a_II,
-//                ForwardCall.forward_call_1_a_II];
-//
-//  return async.Future.forEach(tests, (_) => null);
-//}
 
 void testServerStack() {
   mgt.runAllTests();
