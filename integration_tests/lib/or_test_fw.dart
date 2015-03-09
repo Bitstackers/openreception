@@ -17,7 +17,10 @@ part 'receptionist_pool.dart';
 part 'customer.dart';
 part 'customer_pool.dart';
 
+/// Server tests
+part 'callflowcontrol/hangup.dart';
 
+/// Use cases
 part 'uc-find_contact.dart';
 part 'uc-forward_call.dart';
 part 'uc-incoming_call.dart';
