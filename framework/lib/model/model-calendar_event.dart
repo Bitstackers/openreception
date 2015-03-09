@@ -8,8 +8,7 @@ class CalendarEvent implements Comparable {
   DateTime _start;
   DateTime _stop;
 
-
-  bool get active => new DateTime.now().isAfter(this.stopTime);
+  bool get active => _active();
 
   int _ID          = CalendarEvent.noID;
   int _contactID   = Contact.noID;
@@ -41,12 +40,7 @@ class CalendarEvent implements Comparable {
     this._content = eventBody;
   }
 
-  CalendarEvent.forContact(this._contactID, this._receptionID);
-
-  CalendarEvent.forReception(this._receptionID);
-
   Map toJson() => this.asMap;
-
 
   Map get asMap =>
   {
@@ -58,6 +52,13 @@ class CalendarEvent implements Comparable {
 
 
   CalendarEvent();
+  CalendarEvent.forContact(this._contactID, this._receptionID);
+  CalendarEvent.forReception(this._receptionID);
+
+  bool _active() {
+    DateTime now = new DateTime.now();
+    return (now.isAfter(_start) && now.isBefore(_stop));
+  }
 
   /**
      * [CalendarEvent] constructor. Expects a map in the following format:
