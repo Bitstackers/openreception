@@ -84,7 +84,6 @@ abstract class Message {
     Model.MessageFilter filter = new Model.MessageFilter.empty();
 
     filter.upperMessageID = pathParameter(request.uri, 'list');
-    int limit             = pathParameter(request.uri, 'limit');
 
     if (request.uri.queryParameters.containsKey('filter')) {
       try {
@@ -94,7 +93,9 @@ abstract class Message {
         filter..messageState   = map ['state']
               ..contactID      = map ['contact_id']
               ..receptionID    = map ['reception_id']
-              ..userID         = map ['user_id'];
+              ..userID         = map ['user_id']
+              ..limitCount     = map ['limit']
+              ..upperMessageID = map ['upper_message_id'];
 
         print(filter.asMap);
 
@@ -104,7 +105,7 @@ abstract class Message {
       }
     }
 
-    messageStore.list(limit: limit, filter : filter)
+    messageStore.list(filter : filter)
       .then ((List<Model.Message> messages) {
       messages.forEach((e) => print (e.asMap));
         writeAndClose(request, JSON.encode(messages));})
