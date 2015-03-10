@@ -21,7 +21,6 @@ class Customer {
 
   Customer (this._phone) {
     this._phone.eventStream.listen(this._onPhoneEvent);
-    _phone.eventStream.listen((event) =>  print ('EVENT (Customer): ${_phone.defaultAccount.username} ${event.runtimeType} $event'));
   }
 
   /**
@@ -125,8 +124,6 @@ class Customer {
                        'PhoneType:${this._phone.runtimeType}';
 
   void _onPhoneEvent(Phonio.Event event) {
-    print ("PHONEEVENT:: " + event.runtimeType.toString());
-
     if (event is Phonio.CallOutgoing) {
       log.finest('$this received call outgoing event');
       Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
@@ -153,7 +150,6 @@ class Customer {
     else {
       log.severe('$this got unhandled event ${event.eventName}');
     }
-    print ("PHONEEVENT:: " + event.runtimeType.toString());
   }
 
   void _handleIncomingCall() {

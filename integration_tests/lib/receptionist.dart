@@ -22,9 +22,6 @@ class Receptionist {
         Config.CallFlowControlUri,
         this.authToken,
         new Transport.Client());
-
-    _phone.eventStream.listen((event) =>  print ('EVENT (Receptionist): ${_phone.defaultAccount.username} ${event.runtimeType} $event'));
-
   }
 
   /**
