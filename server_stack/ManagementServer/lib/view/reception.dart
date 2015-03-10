@@ -9,7 +9,7 @@ import '../model.dart';
 String receptionAsJson(Reception r) => JSON.encode(_receptionAsJsonMap(r));
 
 String listReceptionAsJson(List<Reception> receptions) =>
-    JSON.encode({'receptions': _listReceptionAsJsonList(receptions)});
+    JSON.encode(_listReceptionAsJsonList(receptions));
 
 String receptionIdAsJson(int id) => JSON.encode({'id': id});
 
