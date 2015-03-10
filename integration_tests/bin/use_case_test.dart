@@ -5,9 +5,9 @@ import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/service-io.dart' as Transport;
 import '../lib/or_test_fw.dart';
-import '../lib/managementserver.dart' as mgt;
 
 import 'package:logging/logging.dart';
+import 'package:unittest/unittest.dart';
 
 import '../lib/config.dart';
 
@@ -16,8 +16,8 @@ final enabledTests = [Hangup.eventPresence
                           ];
 
 
-async.Future main() {
-  Logger.root.level = Level.ALL;
+void useCaseTests() {
+  Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen(print);
 
   List<Receptionist> receptionists = [];
@@ -95,25 +95,25 @@ async.Future main() {
   void printReceptionists() => receptionists.forEach(print);
 
   /// Construct a map of users, identified by their token.
-  return
-      buildUserMap()
-      .then((_) => setupReceptionists())
-      .then((_) => initializeReceptionists())
-      .then((_) => printReceptionists())
-      .then((_) => setupCustomers())
-      .then((_) => initializeCustomers())
-      .then((_) => printCustomers())
-      .then((_) => Hangup.eventPresence())
-      .then((_) => tearDownReceptionists())
-      .then((_) => tearDownCustomers())
-      .then((_) => print ("All tests have run."))
-      .whenComplete(() {
-    tokenMap.forEach ((token, user) {
-      print ('$token : ${user.ID}, ${user.peer}');
+  void runTests() {
+    group('CallFlowControl', () {
+      setUp(() {
+        return buildUserMap()
+            .then((_) => setupReceptionists())
+            .then((_) => initializeReceptionists())
+            .then((_) => setupCustomers())
+            .then((_) => initializeCustomers());
+      });
+      tearDown(() {
+        tearDownReceptionists();
+        tearDownCustomers();
+      });
+
+      test('Hangup.eventPresence()', Hangup.eventPresence);
     });
-  });
+    ;
+  }
+  runTests();
 }
 
-void testServerStack() {
-  mgt.runAllTests();
-}
+
