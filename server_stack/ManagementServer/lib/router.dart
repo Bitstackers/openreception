@@ -95,9 +95,9 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
 
     ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
-    ..serve(receptionUrl, method: HttpMethod.PUT).listen(reception.createReception)
+    ..serve(receptionUrl, method: HttpMethod.POST).listen(reception.createReception)
     ..serve(receptionIdUrl, method: HttpMethod.GET)   .listen(reception.getReception)
-    ..serve(receptionIdUrl, method: HttpMethod.POST)  .listen(reception.updateReception)
+    ..serve(receptionIdUrl, method: HttpMethod.PUT)  .listen(reception.updateReception)
     ..serve(receptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
 
     ..serve(organizationContactUrl, method: HttpMethod.GET).listen(organization.getOrganizationContactList)
