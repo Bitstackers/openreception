@@ -193,7 +193,6 @@ class _KeyboardHandler {
       'Alt+2'      : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+3'      : (_) => event.bus.fire(event.CallSelectedContact, 3),
       'ALT+I'      : (_) => Controller.Call.dialSelectedContact(),
-      'Ctrl+Alt+P' : Controller.User.signalPaused,
       NavKey       : (_) => event.bus.fire(event.keyNav, true),
       CommandKey   : (_) => event.bus.fire(event.keyCommand, true),
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),

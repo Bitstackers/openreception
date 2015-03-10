@@ -4,13 +4,16 @@ class HotKeys {
   static final HotKeys _singleton = new HotKeys._internal();
   factory HotKeys() => _singleton;
 
-  Keyboard _keyDown = new Keyboard();
-
+  Bus<KeyboardEvent> _CtrlAltEnter  = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _CtrlAltP      = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _CtrlBackspace = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _CtrlE         = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _CtrlK         = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _CtrlS         = new Bus<KeyboardEvent>();
+  Keyboard           _keyDown       = new Keyboard();
 
+  Stream<KeyboardEvent> get onCtrlAltEnter  => _CtrlAltEnter.stream;
+  Stream<KeyboardEvent> get onCtrlAltP      => _CtrlAltP.stream;
   Stream<KeyboardEvent> get onCtrlBackspace => _CtrlBackspace.stream;
   Stream<KeyboardEvent> get onCtrlE         => _CtrlE.stream;
   Stream<KeyboardEvent> get onCtrlK         => _CtrlK.stream;
@@ -25,8 +28,8 @@ class HotKeys {
        'Alt+o'          : _AltO,
        'Alt+p'          : _AltP,
        'Alt+u'          : _AltU,
-       'Ctrl+Alt+Enter' : _CtrlAltEnter,
-       'Ctrl+Alt+p'     : _CtrlAltP,
+       'Ctrl+Alt+Enter' : _CtrlAltEnter.fire,
+       'Ctrl+Alt+p'     : _CtrlAltP.fire,
        'Ctrl+Backspace' : _CtrlBackspace.fire,
        'Ctrl+e'         : _CtrlE.fire,
        'Ctrl+k'         : _CtrlK.fire,
@@ -60,12 +63,4 @@ void _AltP(_) {
 
 void _AltU(_) {
   Call.pickupParked(Model.CallList.instance.firstParkedCall);
-}
-
-void _CtrlAltEnter(_) {
-  User.signalReady();
-}
-
-void _CtrlAltP(_) {
-  User.signalPaused();
 }
