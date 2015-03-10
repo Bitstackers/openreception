@@ -2,7 +2,7 @@ part of or_test_fw;
 
 
 void runAllTests() {
-  const String authToken = 'feedabbadeadbeef0';
+  final String authToken = Config.serverToken;
   final Uri serverUrl = Config.managementServerURI;
 
   group('Management.Organization', () {
