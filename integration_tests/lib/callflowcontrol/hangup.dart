@@ -1,5 +1,21 @@
 part of or_test_fw;
 
+void runCallFlowTests() {
+  final String authToken = Config.serverToken;
+  final Uri serverUrl = Config.managementServerURI;
+
+  group('CallFlowControl EventPresence', () {
+
+  });
+}
+
+
+abstract class CallFlowControl {
+
+  static Future hangupEventPresence() =>
+      Hangup.eventPresence().then ((_) => expect (_, isNull));
+}
+
 abstract class Hangup {
 
   static Logger log = new Logger('Test.Hangup');
