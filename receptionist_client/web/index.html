@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ReceptionistClientFlex</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div id="bob-active" class="display-flex-row">
+    <style scoped>
+      #bob-active {
+        height: 100vh;
+        width: 100vw;
+        padding: 0.7em 0.7em 0.7em 0;
+      }
+    </style>
+
+    <!--
+      Context switcher widget
+    -->
+    <div id="context-switcher" class="widget layout-margin-right">
+      <style scoped>
+        #context-switcher {
+          width: 3em;
+          padding: 0.3em;
+          border-top: solid 2px #c5d9fb;
+          border-right: solid 2px #c5d9fb;
+          border-bottom: solid 2px #c5d9fb;
+        }
+
+        #context-switcher button {
+          display: block;
+          border: solid 1px red;
+          width: 2.7em;
+          height: 2.7em;
+          margin-bottom: 0.3em;
+        }
+      </style>
+
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+    </div>
+
+    <div class="display-flex-row" style="flex-grow: 1;">
+
+      <!--
+        Context home
+      -->
+      <section id="context-home" class="display-flex-row" style="flex-grow: 1;">
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 5;">
+
+          <!--
+            Welcome message widget
+          -->
+          <div id="welcome-message" class="widget">
+            <style scoped>
+              #welcome-message {
+                position: relative;
+                height: 4em;
+              }
+
+              #welcome-message > div {
+                position: absolute;
+                border: solid 1px red;
+                height: 100%;
+                width: 100%;
+              }
+
+              #welcome-message > div > span {
+                width: 100%;
+                font-size: 1.5em;
+                padding: 0 0.7em;
+
+              }
+            </style>
+
+            <div>
+              <span>Welcome!</span>
+            </div>
+          </div>
+
+          <div class="display-flex-row layout-margin-top" style="flex-grow: 1;">
+            <div class="display-flex-column layout-margin-right" style="flex-grow: 5;">
+
+              <!--
+                Reception selector widget
+              -->
+              <div id="reception-selector" class="widget">
+                <style scoped>
+                  #reception-selector {
+                    height: 3em;
+                  }
+                </style>
+
+                reception selector
+              </div>
+
+              <!--
+                Reception calendar widget
+              -->
+              <div id="reception-calendar" class="widget layout-margin-top">
+                <style scoped>
+                  #reception-calendar {
+                    position: relative;
+                    flex-grow: 1;
+                  }
+
+                  #reception-calendar ul {
+                    padding: 5px 0;
+                    list-style-type: none;
+                    overflow: auto;
+                  }
+
+                  #reception-calendar ul li {
+                    padding: 5px;
+                  }
+                </style>
+
+                <h4 class="widget-headline">Reception Calendar</h4>
+                <ul class="widget-body zebra">
+                  <li>Some event</li>
+                  <li>Some other event</li>
+                  <li>Some event</li>
+                  <li>Some other event</li>
+                </ul>
+              </div>
+
+              <!--
+                Reception commands/handling widget
+              -->
+              <div id="reception-commands" class="widget layout-margin-top">
+                <style scoped>
+                  #reception-commands {
+                    position: relative;
+                    flex-grow: 1;
+                  }
+
+                  #reception-commands ul {
+                    padding: 5px 0;
+                    list-style-type: none;
+                    overflow: auto;
+                  }
+
+                  #reception-commands ul li {
+                    padding: 5px;
+                  }
+                </style>
+
+                <h4 class="widget-headline">Reception Commands</h4>
+                <ul class="widget-body zebra">
+                  <li>Some command</li>
+                  <li>Some other command</li>
+                  <li>Some command</li>
+                  <li>Some other command</li>
+                </ul>
+              </div>
+
+              <!--
+                Message compose widget
+              -->
+              <div id="message-compose" class="widget layout-margin-top">
+                <style scoped>
+                  #message-compose {
+                    flex-grow: 3;
+                  }
+                </style>
+
+                message-compose
+              </div>
+
+            </div>
+
+            <div class="display-flex-column" style="flex-grow: 6;">
+              <div class="display-flex-row" style="flex-grow: 2;">
+
+                <!--
+                  Contact list widget
+                -->
+                <div id="contact-list" class="widget layout-margin-right">
+                  <style scoped>
+                    #contact-list {
+                      flex-grow: 1;
+                    }
+                  </style>
+
+                  contact list
+                </div>
+
+                <!--
+                  Contact calendar widget
+                -->
+                <div id="contact-calendar" class="widget">
+                  <style scoped>
+                    #contact-calendar {
+                      flex-grow: 2;
+                    }
+                  </style>
+
+                  contact calendar
+                </div>
+
+              </div>
+
+              <!--
+                Call originate widget
+              -->
+              <div id="call-originate" class="widget layout-margin-top">
+                <style scoped>
+                  #call-originate {
+                    height: 4em;
+                  }
+                </style>
+
+                call originate
+              </div>
+
+              <!--
+                Contact data sheet widget
+              -->
+              <div id="contact-data" class="widget layout-margin-top">
+                <style scoped>
+                  #contact-data {
+                    flex-grow: 3;
+                  }
+                </style>
+
+                contact data
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="display-flex-column" style="flex-grow: 1;">
+
+          <!--
+            Agent info widget
+          -->
+          <div id="agent-info" class="widget">
+            <style scoped>
+              #agent-info {
+                height: 4em;
+              }
+            </style>
+
+            AgentInfo
+          </div>
+
+          <!--
+            Reception opening hours widget
+          -->
+          <div id="reception-opening-hours" class="widget layout-margin-top">
+            <style scoped>
+              #reception-opening-hours {
+                flex-grow: 1;
+              }
+            </style>
+
+            OpeningHours
+          </div>
+
+          <!--
+            Reception sales calls widget
+          -->
+          <div id="reception-sales-calls" class="widget layout-margin-top">
+            <style scoped>
+              #reception-sales-calls {
+                flex-grow: 1;
+              }
+            </style>
+
+            SalesCalls
+          </div>
+
+          <!--
+            Reception product description widget
+          -->
+          <div id="reception-product-description" class="widget layout-margin-top">
+            <style scoped>
+              #reception-product-description {
+                flex-grow: 1;
+              }
+            </style>
+
+            ProductDescription
+          </div>
+
+          <!--
+            Reception addresses widget
+          -->
+          <div id="reception-addresses" class="widget layout-margin-top">
+            <style scoped>
+              #reception-addresses {
+                flex-grow: 1;
+              }
+            </style>
+
+            ReceptionAddresses
+          </div>
+
+          <!--
+            Global queued calls widget
+          -->
+          <div id="global-queued-calls" class="widget layout-margin-top">
+            <style scoped>
+              #global-queued-calls {
+                flex-grow: 1;
+              }
+            </style>
+
+            GlobalQueuedCalls
+          </div>
+
+          <!--
+            My queued calls widget
+          -->
+          <div id="my-queued-calls" class="widget layout-margin-top">
+            <style scoped>
+              #my-queued-calls {
+                flex-grow: 1;
+              }
+            </style>
+
+            MyQueuedCalls
+          </div>
+
+        </div>
+      </section>
+
+      <section id="context-homeplus" style="display: none;">
+        context-homeplus
+      </section>
+
+      <section id="context-message-compose" style="display: none;">
+        context-message-compose
+      </section>
+    </div>
+  </div>
+
+  <div id="bob-disaster">
+    <style scoped>
+      #bob-disaster {
+        display: none;
+      }
+    </style>
+
+    disaster...
+  </div>
+
+  <div id="bob-loading">
+    <style scoped>
+      #bob-loading {
+        display: none;
+      }
+    </style>
+
+    loading...
+  </div>
+
+  <script type="application/dart" src="main.dart"></script>
+  <script data-pub-inline src="packages/browser/dart.js"></script>
+</body>
+</html>
