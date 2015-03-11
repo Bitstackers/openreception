@@ -149,7 +149,8 @@ class Receptionist {
 
   Future pickup(Model.Call call) => this.callFlowControl.pickup(call.ID);
 
-  Future waitForCall() => this.waitFor(eventType: 'call_offer');
+  Future waitForCall() => this.waitFor(eventType: 'call_offer')
+      .then((Model.CallOffer offered) => offered.call);
 
   void _handleEvent(Model.Event event) {
     if (event == null) {
