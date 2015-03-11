@@ -12,21 +12,21 @@ import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'config.dart';
 
-part 'pool.dart';
-part 'receptionist.dart';
-part 'receptionist_pool.dart';
-part 'customer.dart';
-part 'customer_pool.dart';
+part 'support/pool.dart';
+part 'support/receptionist.dart';
+part 'support/receptionist_pool.dart';
+part 'support/customer.dart';
+part 'support/customer_pool.dart';
 
 /// Server tests
-part 'callflowcontrol/hangup.dart';
+part 'callflowcontrol/tests.dart';
 part 'messagestore/tests.dart';
 part 'managementserver/tests.dart';
 
 /// Use cases
-part 'uc-find_contact.dart';
-part 'uc-forward_call.dart';
-part 'uc-incoming_call.dart';
-part 'uc-send_message.dart';
+part 'use_case/uc-find_contact.dart';
+part 'use_case/uc-forward_call.dart';
+part 'use_case/uc-incoming_call.dart';
+part 'use_case/uc-send_message.dart';
 const String libraryName = 'OpenReceptionTest';
 
