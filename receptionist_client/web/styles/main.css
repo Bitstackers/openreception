@@ -40,8 +40,12 @@ body {
   display: none;
 }
 
+.nudge {
+  float: right;
+}
+
 .widget {
-  background-color: #fafafa;
+  background-color: #f8f8f8;
   transition: box-shadow 0.1s ease-in-out;
 }
 
