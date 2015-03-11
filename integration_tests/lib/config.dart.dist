@@ -47,6 +47,11 @@ abstract class Config {
   static Uri managementServerURI = Uri.parse('http://management.example.com');
 
   /**
+   * The URI of the authentication server.
+   */
+  static Uri authenticationServerUri = Uri.parse('http://auth.example.com');
+    
+  /**
    * The URI of the reception store server.
    */
   static Uri receptionStoreURI = Uri.parse('http://reception.example.com');
