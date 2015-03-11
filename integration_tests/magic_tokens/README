@@ -1,0 +1,3 @@
+Magic premade tokens for injecting into an auth server's cache.
+This makes it a lot easier to test - as it bypasses the interactive
+browser-based signon.
