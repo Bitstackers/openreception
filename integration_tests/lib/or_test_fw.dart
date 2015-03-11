@@ -19,6 +19,7 @@ part 'support/customer.dart';
 part 'support/customer_pool.dart';
 
 /// Server tests
+part 'authserver/tests.dart';
 part 'callflowcontrol/tests.dart';
 part 'messagestore/tests.dart';
 part 'managementserver/tests.dart';
