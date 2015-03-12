@@ -17,7 +17,13 @@ abstract class ConfigPool {
   static bool hasAvailableExternalSipAccount() =>
       aquiredExternalSipAccounts < Config.externalSipAccounts.length;
 
-
+  static void resetCounters() {
+    aquiredLocalSIPAccounts = 0;
+    aquiredExternalSipAccounts = 0;
+    aquiredSnomHosts = 0;
+    aquiredPjsuaPorts = 0;
+    aquiredAuthTokens = 0;
+  }
 
   /**
    * Request the next available local SIP account from the config.
