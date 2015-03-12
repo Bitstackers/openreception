@@ -85,14 +85,12 @@ class CallFlowControl {
         => new Model.Call.fromMap (JSON.decode(response)));
 
   /**
-   * Parks the call identified by [callID].
+   * Hangs up the call identified by [callID].
    */
-  Future<Model.Call> hangup (String callID) =>
+  Future hangup (String callID) =>
       this._backed.post
         (appendToken(Resource.CallFlowControl.hangup
-           (this._host, callID), this._token),'')
-      .then((String response)
-        => new Model.Call.fromMap (JSON.decode(response)));
+           (this._host, callID), this._token),'');
 
   /**
    * Transfers the call identified by [callID] to active call [destination].
