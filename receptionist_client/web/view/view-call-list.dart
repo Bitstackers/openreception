@@ -38,21 +38,29 @@ class CallList {
   }
 
   void _registerEventListerns() {
+    MutationObserver listChangeObserver = new MutationObserver
+        ((List<MutationRecord> mutations, MutationObserver observer) =>
+            this._renderHeader());
+
+    listChangeObserver.observe(ownedCallsUL, childList: true);
+    listChangeObserver.observe(queuedCallUL, childList: true);
+
+
     model.CallList.instance.events.on(model.CallList.insert).listen((model.Call call) {
       this._renderCall(call, this.queuedCallUL);
-    });
-
-    model.CallList.instance.events.on(model.CallList.delete).listen((_) {
-      this._renderHeader();
     });
 
     model.CallList.instance.events.on(model.CallList.reload).listen(this.renderList);
 
     context.registerFocusElement(queuedCallUL);
+
+
+
   }
 
   void renderList(model.CallList callList) {
-    callList.where((model.Call call) => call.availableForUser(model.User.currentUser)).forEach((model.Call call) {
+    callList.where((model.Call call) =>
+        call.availableForUser(model.User.currentUser)).forEach((model.Call call) {
       if ([model.CallState.PARKED, model.CallState.SPEAKING].contains(call.state)) {
         this._renderCall(call, this.ownedCallsUL);
       } else
@@ -80,41 +88,34 @@ class CallList {
       }
       callView.element.classes.toggle(CssClass.callParked, false);
       callView.element.classes.toggle(CssClass.callSpeaking, true);
-      this._renderHeader();
     });
 
     call.events.on(model.Call.transferred).listen((_) {
       callView._callTransferHandler(_);
-      this._renderHeader();
     });
 
     call.events.on(model.Call.queueEnter).listen((_) {
       callView.element.classes.toggle(CssClass.callEnqueued, true);
-      this._renderHeader();
     });
 
     call.events.on(model.Call.queueLeave).listen((_) {
       callView._callTransferHandler(_);
-      this._renderHeader();
     });
 
     call.events.on(model.Call.lock).listen((bool isLocked) {
       callView.element.classes.toggle(CssClass.callLocked, isLocked);
-      this._renderHeader();
     });
 
     call.events.on(model.Call.hungup).listen((_) {
       callView.element.classes.toggle(CssClass.callParked, false);
       callView.element.classes.toggle(CssClass.callSpeaking, false);
       callView._callHangupHandler(_);
-      this._renderHeader();
     });
 
     call.events.on(model.Call.parked).listen((_) {
       callView.element.classes.toggle(CssClass.callSpeaking, false);
       callView.element.classes.toggle(CssClass.callParked, true);
       callView._renderButtons();
-      this._renderHeader();
     });
 
 
