@@ -1,8 +1,0 @@
-name: Utilities
-description: A utiliti package for Adaheads K/S
-dependencies:
-  http: any
-  postgresql: any
-  route: any
-  syslog: 
-    git: https://github.com/PedersenThomas/syslog.git
