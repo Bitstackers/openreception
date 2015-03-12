@@ -7,7 +7,6 @@ import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'config.dart';
@@ -17,6 +16,7 @@ part 'support/receptionist.dart';
 part 'support/receptionist_pool.dart';
 part 'support/customer.dart';
 part 'support/customer_pool.dart';
+part 'support/support_tools.dart';
 
 /// Server tests
 part 'authserver/tests.dart';
