@@ -40,10 +40,9 @@ class Receptionist {
     .whenComplete((this.readyCompleter.complete));
   }
 
-  teardown() {
-      this.notificationSocket.close();
-      this._phone.teardown();
-  }
+  Future teardown() =>
+      Future.wait([this.notificationSocket.close(),
+                   this._phone.teardown()]);
 
   /**
    * Future that enables you the wait for the object to become ready.
@@ -129,7 +128,7 @@ class Receptionist {
 
   Future hangupAll() => this._phone.hangup();
 
-  Future waitFor({String eventType: null, String callID: null, String extension:
+  Future<Model.Event> waitFor({String eventType: null, String callID: null, String extension:
       null, int receptionID: null, int timeoutSeconds: 10}) {
 
 
@@ -149,7 +148,7 @@ class Receptionist {
 
   Future pickup(Model.Call call) => this.callFlowControl.pickup(call.ID);
 
-  Future waitForCall() => this.waitFor(eventType: 'call_offer')
+  Future<Model.Call> waitForCall() => this.waitFor(eventType: 'call_offer')
       .then((Model.CallOffer offered) => offered.call);
 
   void _handleEvent(Model.Event event) {

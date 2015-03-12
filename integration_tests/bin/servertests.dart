@@ -4,7 +4,6 @@ import 'package:openreception_framework/service-io.dart' as Transport;
 import 'package:openreception_framework/storage.dart' as Storage;
 
 import '../lib/or_test_fw.dart';
-import 'use_case_test.dart';
 
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
@@ -19,7 +18,7 @@ void main() {
   Logger.root.onRecord.listen(print);
   JUnitConfiguration.install();
 
-  useCaseTests();
+  runCallFlowTests();
 
   runAllTests();
   group('service.ResourceMessage', () {
