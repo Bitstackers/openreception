@@ -21,16 +21,17 @@ part of view;
  *  - ContactChanged
  */
 class ReceptionCalendar {
-
   static const String   className   = '${libraryName}.ReceptionEvents';
   static const String NavShortcut   = 'A';
 
-  bool get muted   => this.context != Context.current;
-  bool get inFocus => nav.Location.isActive(this.element);
+  bool get muted    => this.context != Context.current;
+  bool get _inFocus => nav.Location.isActive(this.element);
 
-  final Context       context;
-        nav.Location  location;
-  final Element       element;
+  final Context            context;
+  final Element            element;
+  final Controller.HotKeys hotKeys = new Controller.HotKeys();
+        nav.Location       location;
+
   Element         get header          => this.element.querySelector('#${Id.receptionEventsHeader}');
   UListElement    get eventList       => this.element.querySelector('#${Id.receptionEventsList}');
   List<Element>   get nudges          => this.element.querySelectorAll('.nudge');
@@ -46,11 +47,10 @@ class ReceptionCalendar {
     this.selectedElement.classes.toggle(CssClass.selected, false);
     element.classes.toggle(CssClass.selected, true);
 
-    if (this.inFocus) {
+    if (_inFocus) {
       element.focus();
     }
   }
-
 
   Element lastActive = null;
   InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
@@ -140,19 +140,81 @@ class ReceptionCalendar {
   }
 
   /**
-   * Selects the widget and puts the default element in focus.
+   * Create a new calendar event.
    */
-  void _select(_) {
-    if (!this.muted) {
-      Controller.Context.changeLocation(this.location);
+  void _createEvent() {
+    //Toggle the widget to create new calendar events.
+    this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+    //Toggle the list of events based on the widget for creatings visability.
+    this.eventList.hidden = !this.newEventWidget.hidden;
+
+    if(!this.newEventWidget.hidden) {
+      this._selectedStartDate = new DateTime.now();
+      this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
+      this.newEventField.value = "";
+      this.eventID = model.CalendarEvent.noID;
+
+      this.lastActive = document.activeElement;
+      this.newEventField.focus();
+    } else {
+      if(this.lastActive != null) {
+        this.lastActive.focus();
+      }
     }
   }
 
   /**
-   * Harvests the typed information from the widget and returns a CalendarEvent object.
+   * Delete event handler.
+   * Responds to delete commands and deletes the event currently being edited.
+   */
+  void _deleteEvent() {
+    if(!this.newEventWidget.hidden) {
+      model.deleteCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Edit event handler.
+   */
+  void _editEvent() {
+    //Toggle the widget to create new calendar events.
+    this.newEventWidget.hidden = !this.newEventWidget.hidden;
+
+    //Toggle the list of events based on the widget for creatings visability.
+    this.eventList.hidden = !this.newEventWidget.hidden;
+    int eventID = this.selectedElement.value;
+
+    if (!this.newEventWidget.hidden) {
+      storage.Reception.calendar(model.Reception.selectedReception.ID)
+                .then((List<model.CalendarEvent> events) {
+
+        model.CalendarEvent selectedEvent = model.findEvent(events, eventID);
+
+        this._selectedStartDate = selectedEvent.startTime;
+        this._selectedEndDate = selectedEvent.stopTime;
+        this.newEventField.value = selectedEvent.content;
+        this.eventID = eventID;
+      });
+
+      this.lastActive = document.activeElement;
+      this.newEventField.focus();
+    } else {
+      if (this.lastActive != null) {
+        this.lastActive.focus();
+      }
+    }
+  }
+
+  /**
+   * Harvests the typed information from the widget and returns a CalendarEvent
+   * object.
    */
   model.CalendarEvent _getEvent() {
-    assert (this.inFocus && !this.newEventWidget.hidden);
+    assert (_inFocus && !this.newEventWidget.hidden);
 
     return new model.CalendarEvent.forReception(model.Reception.selectedReception.ID)
               ..ID       = this.eventID
@@ -161,7 +223,14 @@ class ReceptionCalendar {
               ..until    = this._selectedEndDate;
   }
 
+  /**
+   * Register all event listeners for this widget.
+   */
   void _registerEventListeners() {
+    hotKeys.onCtrlBackspace.listen((_) => _inFocus ? _deleteEvent() : null);
+    hotKeys.onCtrlE.listen((_) => _inFocus ? _editEvent() : null);
+    hotKeys.onCtrlK.listen((_) => _inFocus ? _createEvent() : null);
+    hotKeys.onCtrlS.listen((_) => _inFocus ? _saveEvent() : null);
 
     /// Nudge boiler plate code.
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
@@ -174,7 +243,7 @@ class ReceptionCalendar {
     });
 
     element.onClick.listen((Event event) {
-      if (!this.inFocus) {
+      if (!_inFocus) {
         this._select(null);
       }
     });
@@ -187,102 +256,21 @@ class ReceptionCalendar {
       }
     });
 
-    event.bus.on(event.CreateNewContactEvent).listen((_) {
-      if(!this.inFocus) {
-        return;
-      }
-
-      //Toggle the widget to create new calendar events.
-      this.newEventWidget.hidden = !this.newEventWidget.hidden;
-
-      //Toggle the list of events based on the widget for creatings visability.
-      this.eventList.hidden = !this.newEventWidget.hidden;
-
-      if (!this.newEventWidget.hidden) {
-        this._selectedStartDate = new DateTime.now();
-        this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
-        this.newEventField.value = "";
-        this.eventID = model.CalendarEvent.noID;
-
-        this.lastActive = document.activeElement;
-        this.newEventField.focus();
-      } else {
-        if (this.lastActive != null) {
-          this.lastActive.focus();
-        }
-      }
-
-    });
-
-    event.bus.on(event.Edit).listen((_) {
-
-      if(!this.inFocus) {
-        return;
-      }
-
-      //Toggle the widget to create new calendar events.
-      this.newEventWidget.hidden = !this.newEventWidget.hidden;
-
-      //Toggle the list of events based on the widget for creatings visability.
-      this.eventList.hidden = !this.newEventWidget.hidden;
-      int eventID = this.selectedElement.value;
-
-      if (!this.newEventWidget.hidden) {
-        storage.Reception.calendar(model.Reception.selectedReception.ID)
-                  .then((List<model.CalendarEvent> events) {
-
-          model.CalendarEvent selectedEvent = model.findEvent(events, eventID);
-
-          this._selectedStartDate = selectedEvent.startTime;
-          this._selectedEndDate = selectedEvent.stopTime;
-          this.newEventField.value = selectedEvent.content;
-          this.eventID = eventID;
-        });
-
-        this.lastActive = document.activeElement;
-        this.newEventField.focus();
-      } else {
-        if (this.lastActive != null) {
-          this.lastActive.focus();
-        }
-      }
-    });
-
-    void listNavigation(KeyboardEvent e) {
+    this.eventList.onKeyDown.listen((KeyboardEvent e) {
       LIElement lastFocusLI = this.selectedElement;
       LIElement newFocusLI;
 
-        if (lastFocusLI == null) {
-          newFocusLI = this.eventList.children.first;
-        } else if (e.keyCode == Keys.DOWN){
-          newFocusLI = lastFocusLI.nextElementSibling;
-          e.preventDefault();
-        } else if (e.keyCode == Keys.UP){
-          newFocusLI = lastFocusLI.previousElementSibling;
-          e.preventDefault();
-        }
-        if (newFocusLI != null) {
-          selectedElement = newFocusLI;
-        }
-    }
-
-    this.eventList.onKeyDown.listen(listNavigation);
-
-    event.bus.on(event.Save).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden) {
-        model.saveCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
+      if (lastFocusLI == null) {
+        newFocusLI = this.eventList.children.first;
+      } else if (e.keyCode == Keys.DOWN){
+        newFocusLI = lastFocusLI.nextElementSibling;
+        e.preventDefault();
+      } else if (e.keyCode == Keys.UP){
+        newFocusLI = lastFocusLI.previousElementSibling;
+        e.preventDefault();
       }
-    });
-
-    event.bus.on(event.Delete).listen((_) {
-      if (this.inFocus && !this.newEventWidget.hidden && this.eventID != model.CalendarEvent.noID) {
-        model.deleteCalendarEvent(this._getEvent()).then((_) {
-          this.newEventWidget.hidden = true;
-          this.eventList.hidden = !this.newEventWidget.hidden;
-        });
+      if (newFocusLI != null) {
+        selectedElement = newFocusLI;
       }
     });
 
@@ -304,10 +292,9 @@ class ReceptionCalendar {
     });
   }
 
-  String getClass(model.CalendarEvent event) {
-    return event.active ? CssClass.receptionEventsActive : '';
-  }
-
+  /**
+   * TODO (TL): comment
+   */
   void _render(List<model.CalendarEvent> events) {
     List<model.CalendarEvent> listCopy = []..addAll(events)
                                            ..sort();
@@ -346,6 +333,27 @@ class ReceptionCalendar {
 
     if (eventList.children.length > 0) {
       this.selectedElement = eventList.children.first;
+    }
+  }
+
+  /**
+   * Save event handler.
+   */
+  void _saveEvent() {
+    if(!this.newEventWidget.hidden) {
+      model.saveCalendarEvent(this._getEvent()).then((_) {
+        this.newEventWidget.hidden = true;
+        this.eventList.hidden = !this.newEventWidget.hidden;
+      });
+    }
+  }
+
+  /**
+   * Selects the widget and puts the default element in focus.
+   */
+  void _select(_) {
+    if (!this.muted) {
+      Controller.Context.changeLocation(this.location);
     }
   }
 }

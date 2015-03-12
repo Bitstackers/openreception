@@ -24,6 +24,7 @@ import '../controller/controller.dart' as Controller;
 import '../model/model.dart' as Model;
 
 import 'package:okeyee/okeyee.dart';
+import 'package:openreception_framework/bus.dart';
 
 final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
@@ -103,7 +104,6 @@ KeyboardListener customKeyboardHandler(Map<String, EventListener> keymappings) {
  * a stream.
  */
 class _KeyboardHandler {
-
   static const String NavKey     = 'Alt';
   static const String CommandKey = 'Ctrl';
 
@@ -189,26 +189,10 @@ class _KeyboardHandler {
     });
 
     Map<String, EventListener> keybindings = {
-      'Alt+P'      : (_) => Controller.Call.pickupNext(),
-      'Alt+L'      : (_) => Controller.Call.park(Model.Call.currentCall),
-      'Alt+G'      : (_) => Controller.Call.hangup(Model.Call.currentCall),
-      'Alt+U'      : (_) => Model.CallList.instance.parkedCalls.isNotEmpty
-                              ? Controller.Call.pickupParked(Model.CallList.instance.parkedCalls.first)
-                              : null,
-      'Alt+O'      : (_) => Model.CallList.instance.parkedCalls.isNotEmpty
-                              ? Controller.Call.transfer(Model.Call.currentCall, Model.CallList.instance.parkedCalls.first)
-                              : null,
       'Alt+1'      : (_) => event.bus.fire(event.CallSelectedContact, 1),
       'Alt+2'      : (_) => event.bus.fire(event.CallSelectedContact, 2),
       'Alt+3'      : (_) => event.bus.fire(event.CallSelectedContact, 3),
       'ALT+I'      : (_) => Controller.Call.dialSelectedContact(),
-      'Ctrl+K'     : (_) => event.bus.fire(event.CreateNewContactEvent, null),
-      'Ctrl+S'     : (_) => event.bus.fire(event.Save, null),
-      'Ctrl+Alt+Enter' : Controller.User.signalReady,
-      'Ctrl+Alt+P' : Controller.User.signalPaused,
-      'Ctrl+Enter' : (_) => event.bus.fire(event.Send, null),
-      'Ctrl+Backspace' : (_) => event.bus.fire(event.Delete, null),
-      'Ctrl+E'    : (_) => event.bus.fire(event.Edit, null),
       NavKey       : (_) => event.bus.fire(event.keyNav, true),
       CommandKey   : (_) => event.bus.fire(event.keyCommand, true),
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),

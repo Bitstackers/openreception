@@ -38,7 +38,6 @@ BobDisaster bobDiaster;
 BobLoading bobLoading;
 
 void main() {
-
   new View.Notification();
 
   configuration.initialize().then((_) {

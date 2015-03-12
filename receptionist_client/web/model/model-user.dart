@@ -18,7 +18,6 @@ abstract class UserConstants {
   static final String NAME = "name";
 }
 
-
 /**
  * TODO: Write up documentation for this class and refer to wiki page.
  */
@@ -44,5 +43,4 @@ abstract class User extends ORModel.User {
    * Null object constructor.
    */
   User._null() : super.fromMap({});
-
 }

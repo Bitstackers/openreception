@@ -67,6 +67,17 @@ class CallList extends IterableBase<Call> {
       this.ownedCalls.where ((Call call) => call.state == CallState.PARKED);
 
   /**
+   * Return the first parked [Call] or [nullCall] if there are no parked calls.
+   */
+  Call get firstParkedCall {
+    try {
+      return parkedCalls.first;
+    } catch(_) {
+      return nullCall;
+    }
+  }
+
+  /**
    * Default [CallList] constructor.
    */
   CallList() {

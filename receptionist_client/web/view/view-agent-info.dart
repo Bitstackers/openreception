@@ -26,6 +26,7 @@ class AgentInfo {
   TableCellElement pausedTD;
   ImageElement     portrait;
   TableElement     table;
+  Controller.User  _user = new Controller.User(); // TODO (TL): ARGH! Broken MVC pattern here...
 
   Element get userStatusElement => element.querySelector('#${Id.agentInfoStatus}');
 
@@ -44,6 +45,9 @@ class AgentInfo {
     registerEventListeners();
     resize();
 
+    // TODO (TL): I think we're breaking MVC here. We really should just get
+    // this state "forced" upon us by Model.User, and not have to call Service
+    // from here.
     new Future.delayed(new Duration(seconds: 1, milliseconds: 500), () {
       if(model.User.currentUser != null) {
         //FIXME: implement an photoUrl in the User class in the framework.
@@ -58,8 +62,6 @@ class AgentInfo {
     });
 
     userStatusElement.children = [Icon.Unknown];
-
-    event.bus.on(event.userStatusChanged).listen(_updateUserState);
 
     setupLabels();
   }
@@ -123,6 +125,8 @@ class AgentInfo {
   }
 
   void registerEventListeners() {
+    _user.onIdle   .listen((_) => userStatusElement.children = [Icon.Idle]);
+    _user.onPaused .listen((_) => userStatusElement.children = [Icon.Pause]);
     window.onResize.listen((_) => resize());
   }
 
