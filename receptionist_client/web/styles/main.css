@@ -13,6 +13,13 @@ body {
   font-weight: normal;
 }
 
+/*
+  Firefox specific: Disables dotted line on latest clicked button
+*/
+button::-moz-focus-inner {
+  border: 0;
+}
+
 .display-flex-column {
   display: flex;
   flex-direction: column;
@@ -40,11 +47,8 @@ body {
   display: none;
 }
 
-.nudge {
-  float: right;
-}
-
 .widget {
+  position: relative;
   background-color: #f8f8f8;
   transition: box-shadow 0.1s ease-in-out;
 }
@@ -64,6 +68,15 @@ body {
   padding: 2px 5px;
   font-size: 0.8em;
   color: #fff;
+}
+
+.widget-list {
+  list-style-type: none;
+  overflow: auto;
+}
+
+.widget-list > li {
+  padding: 0.3em;
 }
 
 .zebra li:nth-of-type(even) {

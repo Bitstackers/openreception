@@ -22,22 +22,56 @@
     <div id="context-switcher" class="widget layout-margin-right">
       <style scoped>
         #context-switcher {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           width: 3em;
-          padding: 0.3em;
+          padding-top: 0.5em;
         }
 
         #context-switcher > button {
-          display: block;
-          border: solid 1px red;
-          width: 2.7em;
-          height: 2.7em;
-          margin-bottom: 0.3em;
+          width: 2.5em;
+          height: 2.5em;
+          margin-bottom: 0.7em;
+          border: none;
+          background-size: contain;
+          outline: 0;
+        }
+
+        #context-switcher > button.home {
+          background: url(images/contexthome.svg);
+        }
+
+        #context-switcher > button.home:active,
+        #context-switcher > button.home:focus,
+        #context-switcher > button.home:hover {
+          background: url(images/contexthome_active.svg);
+        }
+
+        #context-switcher > button.homeplus {
+          background: url(images/contexthomeplus.svg);
+        }
+
+        #context-switcher > button.homeplus:active,
+        #context-switcher > button.homeplus:focus,
+        #context-switcher > button.homeplus:hover {
+          background: url(images/contexthomeplus_active.svg);
+        }
+
+        #context-switcher > button.messages {
+          background: url(images/contextmessages.svg);
+        }
+
+        #context-switcher > button.messages:active,
+        #context-switcher > button.messages:focus,
+        #context-switcher > button.messages:hover {
+          background: url(images/contextmessages_active.svg);
         }
       </style>
 
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
+      <button class="home"></button>
+      <button class="homeplus"></button>
+      <button class="messages"></button>
     </div>
 
     <div class="display-flex-row" style="flex-grow: 1;">
@@ -46,7 +80,7 @@
         Context home
       -->
       <section id="context-home" class="display-flex-row" style="flex-grow: 1;">
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 5;">
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
           <!--
             Welcome message widget
@@ -54,8 +88,8 @@
           <div id="welcome-message" class="widget">
             <style scoped>
               #welcome-message {
-                position: relative;
                 height: 4em;
+                overflow: auto;
               }
 
               #welcome-message > div {
@@ -80,7 +114,7 @@
           </div>
 
           <div class="display-flex-row layout-margin-top" style="flex-grow: 1;">
-            <div class="display-flex-column layout-margin-right" style="flex-grow: 5;">
+            <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
               <!--
                 Reception selector widget
@@ -105,23 +139,12 @@
               <div id="reception-calendar" class="widget layout-margin-top">
                 <style scoped>
                   #reception-calendar {
-                    position: relative;
                     flex-grow: 1;
-                  }
-
-                  #reception-calendar > ul {
-                    padding: 0.3em 0;
-                    list-style-type: none;
-                    overflow: auto;
-                  }
-
-                  #reception-calendar > ul > li {
-                    padding: 0.3em;
                   }
                 </style>
 
                 <h4 class="widget-headline">Reception Calendar</h4>
-                <ul class="widget-body zebra">
+                <ul class="widget-body widget-list zebra">
                   <li>Some event</li>
                   <li>Some other event</li>
                   <li>Some event</li>
@@ -135,23 +158,12 @@
               <div id="reception-commands" class="widget layout-margin-top">
                 <style scoped>
                   #reception-commands {
-                    position: relative;
                     flex-grow: 1;
-                  }
-
-                  #reception-commands > ul {
-                    padding: 0.3em 0;
-                    list-style-type: none;
-                    overflow: auto;
-                  }
-
-                  #reception-commands  > ul > li {
-                    padding: 0.3em;
                   }
                 </style>
 
                 <h4 class="widget-headline">Commands</h4>
-                <ul class="widget-body zebra">
+                <ul class="widget-body widget-list zebra">
                   <li>Some command</li>
                   <li>Some other command</li>
                   <li>Some command</li>
@@ -165,7 +177,6 @@
               <div id="message-compose" class="widget layout-margin-top">
                 <style scoped>
                   #message-compose {
-                    position: relative;
                     flex-grow: 3;
                   }
 
@@ -182,7 +193,7 @@
 
             </div>
 
-            <div class="display-flex-column" style="flex-grow: 6;">
+            <div class="display-flex-column" style="flex-grow: 5;">
               <div class="display-flex-row" style="flex-grow: 2;">
 
                 <!--
@@ -191,7 +202,6 @@
                 <div id="contact-list" class="widget layout-margin-right">
                   <style scoped>
                     #contact-list {
-                      position: relative;
                       flex-grow: 2;
                     }
 
@@ -204,20 +214,13 @@
 
                     #contact-list > div > ul {
                       height: calc(100% - 2.1em);
-                      padding: 0.3em 0;
-                      list-style-type: none;
-                      overflow: auto;
-                    }
-
-                    #contact-list > div > ul > li {
-                      padding: 0.3em;
                     }
                   </style>
 
                   <h4 class="widget-headline">Employees</h4>
                   <div class="widget-body">
                     <input placeholder="søg....">
-                    <ul class="zebra">
+                    <ul class="widget-list zebra">
                       <li>Arne And</li>
                       <li>Birgitte Bi</li>
                     </ul>
@@ -230,23 +233,12 @@
                 <div id="contact-calendar" class="widget">
                   <style scoped>
                     #contact-calendar {
-                      position: relative;
                       flex-grow: 3;
-                    }
-
-                    #contact-calendar > ul {
-                      padding: 0.3em 0;
-                      list-style-type: none;
-                      overflow: auto;
-                    }
-
-                    #contact-calendar > ul > li {
-                      padding: 0.3em;
                     }
                   </style>
 
                   <h4 class="widget-headline">Contact Calendar</h4>
-                  <ul class="widget-body zebra">
+                  <ul class="widget-body widget-list zebra">
                     <li>Some event</li>
                     <li>Some other event</li>
                     <li>Some event</li>
@@ -262,33 +254,31 @@
               <div id="contact-data" class="widget layout-margin-top">
                 <style scoped>
                   #contact-data {
-                    position: relative;
                     flex-grow: 4;
                   }
 
                   #contact-data .column {
                     height: 100%;
                     width: 50%;
+                    padding: 0.3em;
                   }
 
                   #contact-data .cell {
                     position: relative;
                     height: 20%;
                     width: 100%;
-                    border: solid 1px #f8f8f8;
                   }
 
                   #contact-data .cell h5 {
                     position: relative;
-                    margin: 0.2em;
+                    margin: 0.2em 0.2em 0.2em 0;
                     height: 1.2em;
                   }
 
                   #contact-data .cell ul {
                     position: relative;
                     height: calc(100% - 1.4em);
-                    margin: 0.3em 0.3em 0 0.3em;
-                    overflow: auto;
+                    margin: 0 0.3em 0 0;
                   }
 
                   #contact-data .cell ul > li {
@@ -301,26 +291,22 @@
                   <div class="column">
                     <div class="cell">
                       <h5>Work hours</h5>
-                      <ul class="zebra">
-                        <li>foo</li>
-                        <li>bar</li>
-                        <li>foobar</li>
-                        <li>foo</li>
-                        <li>bar</li>
-                        <li>foobar</li>
+                      <ul class="widget-list">
+                        <li>Er på kontoret man-fre 1000-1200</li>
+                        <li>Fri onsdag</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Title</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Department</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -328,16 +314,15 @@
 
                     <div class="cell">
                       <h5>Relations</h5>
-                      <ul>
-                        <li>foo</li>
-                        <li>bar</li>
-                        <li>foo</li>
+                      <ul class="widget-list">
+                        <li>Mand: Søren Jensen</li>
+                        <li>Søn: Andreas</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Additional info</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
@@ -346,21 +331,21 @@
                   <div class="column">
                     <div class="cell">
                       <h5>Commands</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Responsibility</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Telephone numbers</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -368,7 +353,7 @@
 
                     <div class="cell">
                       <h5>Email addresses</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -376,7 +361,7 @@
 
                     <div class="cell">
                       <h5>Backup</h5>
-                      <ul>
+                      <ul class="widget-list">
                         <li>foo</li>
                         <li>bar</li>
                         <li>foo</li>
@@ -400,9 +385,75 @@
               #agent-info {
                 height: 4em;
               }
+
+              #agent-info > div {
+                display: flex;
+                flex-direction: row;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+              }
+
+              #agent-info > div > .stats {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                position: relative;
+                height: 100%;
+                width: 100%;
+              }
+
+              #agent-info > div > .stats > table {
+                padding: 0;
+                border-collapse: collapse;
+                height: 3em;
+                margin: 0.5em;
+                font-weight: bold;
+              }
+
+              #agent-info > div > .stats > table td {
+                padding-left: 0.5em;
+              }
+
+              #agent-info > div > .state {
+                flex-grow: 1;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                position: relative;
+                height: 100%;
+                width: 100%;
+              }
+
+              #agent-info > div > .state > img {
+                min-height: 3em;
+                min-width: 3em;
+                height: 3em;
+                width: 3em;
+                margin-right: 1em;
+              }
             </style>
 
-            AgentInfo
+            <div>
+              <div class="stats">
+                <table>
+                  <tr>
+                    <td>Active:</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>Paused:</td>
+                    <td>0</td>
+                  </tr>
+                </table>
+              </div>
+
+              <div class="state">
+                <img src="images/alert.svg">
+                <img src="images/agentsactive.svg">
+                <img src="images/face.png">
+              </div>
+            </div>
           </div>
 
           <!--
@@ -415,7 +466,11 @@
               }
             </style>
 
-            OpeningHours
+            <h4 class="widget-headline">Opening Hours</h4>
+            <ul class="widget-body widget-list zebra">
+              <li>Man-tor 0800-1700, fre 0800-1400</li>
+              <li>Udstillingen er lukket hver torsdag</li>
+            </ul>
           </div>
 
           <!--
@@ -426,9 +481,14 @@
               #reception-sales-calls {
                 flex-grow: 1;
               }
+
             </style>
 
-            SalesCalls
+            <h4 class="widget-headline">Sales Calls</h4>
+            <ul class="widget-body widget-list zebra">
+              <li>Senvis til info@responsum.dk</li>
+              <li>Afvis rengøring. Dette ordnes via vores lejemål</li>
+            </ul>
           </div>
 
           <!--
@@ -439,9 +499,17 @@
               #reception-product-description {
                 flex-grow: 1;
               }
+
+              #reception-product-description > div {
+                overflow: auto;
+                padding: 0.3em;
+              }
             </style>
 
-            ProductDescription
+            <h4 class="widget-headline">Product Description</h4>
+            <div class="widget-body">
+              Vi laver gummiænder
+            </div>
           </div>
 
           <!--
@@ -450,11 +518,16 @@
           <div id="global-queued-calls" class="widget layout-margin-top">
             <style scoped>
               #global-queued-calls {
-                flex-grow: 1;
+                flex-grow: 2;
               }
             </style>
 
-            GlobalQueuedCalls
+            <h4 class="widget-headline">Queued Calls</h4>
+            <ul class="widget-body widget-list zebra">
+              <li>Et kald...</li>
+              <li>Et andet kald..</li>
+              <li>Et tredje kald..</li>
+            </ul>
           </div>
 
           <!--
@@ -467,7 +540,11 @@
               }
             </style>
 
-            MyQueuedCalls
+            <h4 class="widget-headline">My Queued Calls</h4>
+            <ul class="widget-body widget-list zebra">
+              <li>Et kald...</li>
+              <li>Et andet kald..</li>
+            </ul>
           </div>
 
         </div>
