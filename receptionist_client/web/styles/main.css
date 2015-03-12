@@ -35,6 +35,38 @@ button::-moz-focus-inner {
   box-shadow: 0.2em 0.2em 0.2em #888888;
 }
 
+.generic-widget {
+  position: relative;
+  background-color: #f8f8f8;
+  transition: box-shadow 0.1s ease-in-out;
+}
+
+.generic-widget-body {
+  position: absolute;
+  top: 20px;
+  height: calc(100% - 20px);
+  width: 100%;
+}
+
+.generic-widget-headline {
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  background-color: #a5b9db;
+  padding: 2px 5px;
+  font-size: 0.8em;
+  color: #fff;
+}
+
+.generic-widget-list {
+  list-style-type: none;
+  overflow: auto;
+}
+
+.generic-widget-list > li {
+  padding: 0.3em;
+}
+
 .layout-margin-right {
   margin-right: 0.7em;
 }
@@ -45,38 +77,6 @@ button::-moz-focus-inner {
 
 .none {
   display: none;
-}
-
-.widget {
-  position: relative;
-  background-color: #f8f8f8;
-  transition: box-shadow 0.1s ease-in-out;
-}
-
-.widget-body {
-  position: absolute;
-  top: 20px;
-  height: calc(100% - 20px);
-  width: 100%;
-}
-
-.widget-headline {
-  position: absolute;
-  height: 20px;
-  width: 100%;
-  background-color: #a5b9db;
-  padding: 2px 5px;
-  font-size: 0.8em;
-  color: #fff;
-}
-
-.widget-list {
-  list-style-type: none;
-  overflow: auto;
-}
-
-.widget-list > li {
-  padding: 0.3em;
 }
 
 .zebra li:nth-of-type(even) {

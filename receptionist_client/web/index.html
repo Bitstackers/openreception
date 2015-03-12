@@ -19,7 +19,7 @@
     <!--
       Context switcher widget
     -->
-    <div id="context-switcher" class="widget layout-margin-right">
+    <div id="context-switcher" class="generic-widget layout-margin-right">
       <style scoped>
         #context-switcher {
           display: flex;
@@ -85,7 +85,7 @@
           <!--
             Welcome message widget
           -->
-          <div id="welcome-message" class="widget">
+          <div id="welcome-message" class="generic-widget">
             <style scoped>
               #welcome-message {
                 height: 4em;
@@ -119,7 +119,7 @@
               <!--
                 Reception selector widget
               -->
-              <div id="reception-selector" class="widget">
+              <div id="reception-selector" class="generic-widget">
                 <style scoped>
                   #reception-selector > select {
                     height: 2em;
@@ -136,15 +136,15 @@
               <!--
                 Reception calendar widget
               -->
-              <div id="reception-calendar" class="widget layout-margin-top">
+              <div id="reception-calendar" class="generic-widget layout-margin-top">
                 <style scoped>
                   #reception-calendar {
                     flex-grow: 1;
                   }
                 </style>
 
-                <h4 class="widget-headline">Reception Calendar</h4>
-                <ul class="widget-body widget-list zebra">
+                <h4 class="generic-widget-headline">Reception Calendar</h4>
+                <ul class="generic-widget-body generic-widget-list zebra">
                   <li>Some event</li>
                   <li>Some other event</li>
                   <li>Some event</li>
@@ -155,15 +155,15 @@
               <!--
                 Reception commands/handling widget
               -->
-              <div id="reception-commands" class="widget layout-margin-top">
+              <div id="reception-commands" class="generic-widget layout-margin-top">
                 <style scoped>
                   #reception-commands {
                     flex-grow: 1;
                   }
                 </style>
 
-                <h4 class="widget-headline">Commands</h4>
-                <ul class="widget-body widget-list zebra">
+                <h4 class="generic-widget-headline">Commands</h4>
+                <ul class="generic-widget-body generic-widget-list zebra">
                   <li>Some command</li>
                   <li>Some other command</li>
                   <li>Some command</li>
@@ -174,7 +174,7 @@
               <!--
                 Message compose widget
               -->
-              <div id="message-compose" class="widget layout-margin-top">
+              <div id="message-compose" class="generic-widget layout-margin-top">
                 <style scoped>
                   #message-compose {
                     flex-grow: 3;
@@ -185,8 +185,8 @@
                   }
                 </style>
 
-                <h4 class="widget-headline">Message Compose</h4>
-                <div class="widget-body">
+                <h4 class="generic-widget-headline">Message Compose</h4>
+                <div class="generic-widget-body">
                   Stuff....
                 </div>
               </div>
@@ -199,7 +199,7 @@
                 <!--
                   Contact list widget
                 -->
-                <div id="contact-list" class="widget layout-margin-right">
+                <div id="contact-list" class="generic-widget layout-margin-right">
                   <style scoped>
                     #contact-list {
                       flex-grow: 2;
@@ -217,10 +217,10 @@
                     }
                   </style>
 
-                  <h4 class="widget-headline">Employees</h4>
-                  <div class="widget-body">
+                  <h4 class="generic-widget-headline">Employees</h4>
+                  <div class="generic-widget-body">
                     <input placeholder="søg....">
-                    <ul class="widget-list zebra">
+                    <ul class="generic-widget-list zebra">
                       <li>Arne And</li>
                       <li>Birgitte Bi</li>
                     </ul>
@@ -230,15 +230,15 @@
                 <!--
                   Contact calendar widget
                 -->
-                <div id="contact-calendar" class="widget">
+                <div id="contact-calendar" class="generic-widget">
                   <style scoped>
                     #contact-calendar {
                       flex-grow: 3;
                     }
                   </style>
 
-                  <h4 class="widget-headline">Contact Calendar</h4>
-                  <ul class="widget-body widget-list zebra">
+                  <h4 class="generic-widget-headline">Contact Calendar</h4>
+                  <ul class="generic-widget-body generic-widget-list zebra">
                     <li>Some event</li>
                     <li>Some other event</li>
                     <li>Some event</li>
@@ -251,7 +251,7 @@
               <!--
                 Contact data sheet widget
               -->
-              <div id="contact-data" class="widget layout-margin-top">
+              <div id="contact-data" class="generic-widget layout-margin-top">
                 <style scoped>
                   #contact-data {
                     flex-grow: 4;
@@ -286,12 +286,12 @@
                   }
                 </style>
 
-                <h4 class="widget-headline">Contact Data</h4>
-                <div class="widget-body" style="display: flex; flex-direction: row;">
+                <h4 class="generic-widget-headline">Contact Data</h4>
+                <div class="generic-widget-body" style="display: flex; flex-direction: row;">
                   <div class="column">
                     <div class="cell">
                       <h5>Work hours</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>Er på kontoret man-fre 1000-1200</li>
                         <li>Fri onsdag</li>
                       </ul>
@@ -299,14 +299,14 @@
 
                     <div class="cell">
                       <h5>Title</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Department</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -314,7 +314,7 @@
 
                     <div class="cell">
                       <h5>Relations</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>Mand: Søren Jensen</li>
                         <li>Søn: Andreas</li>
                       </ul>
@@ -322,7 +322,7 @@
 
                     <div class="cell">
                       <h5>Additional info</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
@@ -331,21 +331,21 @@
                   <div class="column">
                     <div class="cell">
                       <h5>Commands</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Responsibility</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Telephone numbers</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -353,7 +353,7 @@
 
                     <div class="cell">
                       <h5>Email addresses</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -361,7 +361,7 @@
 
                     <div class="cell">
                       <h5>Backup</h5>
-                      <ul class="widget-list">
+                      <ul class="generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                         <li>foo</li>
@@ -380,7 +380,7 @@
           <!--
             Agent info widget
           -->
-          <div id="agent-info" class="widget">
+          <div id="agent-info" class="generic-widget">
             <style scoped>
               #agent-info {
                 height: 4em;
@@ -459,15 +459,15 @@
           <!--
             Reception opening hours widget
           -->
-          <div id="reception-opening-hours" class="widget layout-margin-top">
+          <div id="reception-opening-hours" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-opening-hours {
                 flex-grow: 1;
               }
             </style>
 
-            <h4 class="widget-headline">Opening Hours</h4>
-            <ul class="widget-body widget-list zebra">
+            <h4 class="generic-widget-headline">Opening Hours</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
               <li>Man-tor 0800-1700, fre 0800-1400</li>
               <li>Udstillingen er lukket hver torsdag</li>
             </ul>
@@ -476,7 +476,7 @@
           <!--
             Reception sales calls widget
           -->
-          <div id="reception-sales-calls" class="widget layout-margin-top">
+          <div id="reception-sales-calls" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-sales-calls {
                 flex-grow: 1;
@@ -484,8 +484,8 @@
 
             </style>
 
-            <h4 class="widget-headline">Sales Calls</h4>
-            <ul class="widget-body widget-list zebra">
+            <h4 class="generic-widget-headline">Sales Calls</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
               <li>Senvis til info@responsum.dk</li>
               <li>Afvis rengøring. Dette ordnes via vores lejemål</li>
             </ul>
@@ -494,7 +494,7 @@
           <!--
             Reception product description widget
           -->
-          <div id="reception-product-description" class="widget layout-margin-top">
+          <div id="reception-product-description" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-product-description {
                 flex-grow: 1;
@@ -506,8 +506,8 @@
               }
             </style>
 
-            <h4 class="widget-headline">Product Description</h4>
-            <div class="widget-body">
+            <h4 class="generic-widget-headline">Product Description</h4>
+            <div class="generic-widget-body">
               Vi laver gummiænder
             </div>
           </div>
@@ -515,15 +515,15 @@
           <!--
             Global queued calls widget
           -->
-          <div id="global-queued-calls" class="widget layout-margin-top">
+          <div id="global-queued-calls" class="generic-widget layout-margin-top">
             <style scoped>
               #global-queued-calls {
                 flex-grow: 2;
               }
             </style>
 
-            <h4 class="widget-headline">Queued Calls</h4>
-            <ul class="widget-body widget-list zebra">
+            <h4 class="generic-widget-headline">Queued Calls</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
               <li>Et kald...</li>
               <li>Et andet kald..</li>
               <li>Et tredje kald..</li>
@@ -533,15 +533,15 @@
           <!--
             My queued calls widget
           -->
-          <div id="my-queued-calls" class="widget layout-margin-top">
+          <div id="my-queued-calls" class="generic-widget layout-margin-top">
             <style scoped>
               #my-queued-calls {
                 flex-grow: 1;
               }
             </style>
 
-            <h4 class="widget-headline">My Queued Calls</h4>
-            <ul class="widget-body widget-list zebra">
+            <h4 class="generic-widget-headline">My Queued Calls</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
               <li>Et kald...</li>
               <li>Et andet kald..</li>
             </ul>
@@ -555,7 +555,7 @@
         <!--
           Reception addresses widget
         -->
-        <!--<div id="reception-addresses" class="widget layout-margin-top">
+        <!--<div id="reception-addresses" class="generic-widget layout-margin-top">
           <style scoped>
             #reception-addresses {
               flex-grow: 1;
@@ -568,7 +568,7 @@
         <!--
           Call originate widget
         -->
-        <!--<div id="call-originate" class="widget layout-margin-top">
+        <!--<div id="call-originate" class="generic-widget layout-margin-top">
           <style scoped>
             #call-originate {
               height: 4em;
