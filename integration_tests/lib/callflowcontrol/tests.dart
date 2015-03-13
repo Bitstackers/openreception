@@ -139,12 +139,10 @@ abstract class Hangup {
     Customer     customer     = CustomerPool.instance.aquire();
 
     String       reception = "12340003";
-
-    log.finest ("Customer " + customer.name + " dials " + reception);
-
     return
       Future.wait([receptionist.initialize(),
                    customer.initialize()])
+      .then((_) => log.finest ('Customer ${customer.name} dials ${reception}'))
       .then((_) => customer.dial (reception))
       .then((_) => receptionist.waitForCall())
       .then((_) => customer.hangupAll())
