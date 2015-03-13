@@ -129,7 +129,7 @@ abstract class CallList {
  */
 abstract class Hangup {
 
-  static Logger log = new Logger('Test.Hangup');
+  static Logger log = new Logger('CallFlowControl.Hangup');
 
   /**
    * Test for the presence of hangup events when a call is hung up.
