@@ -14,8 +14,9 @@ import 'data/testdata.dart' as Test_Data;
 
 void main() {
   //TODO: redirect every log entry to a file.
-  Logger.root.level = Level.OFF;
-  Logger.root.onRecord.listen(print);
+  Logger.root.level = Level.FINEST;
+  Logger.root.onRecord.listen((LogRecord record) =>
+      logMessage(record.toString()));
   JUnitConfiguration.install();
 
   runCallFlowTests();
