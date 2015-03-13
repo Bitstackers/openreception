@@ -180,14 +180,91 @@
                     flex-grow: 3;
                   }
 
-                  #message-compose > div {
+                  #message-compose > div.generic-widget-body {
+                    display: flex;
+                    flex-direction: column;
                     padding: 0.3em;
+                  }
+
+                  #message-compose .name-hint {
+                    flex-grow: 1;
+                    border: solid 1px red;
+                  }
+
+                  #message-compose .names {
+                    flex-grow: 1;
+                    border: solid 1px red;
+                  }
+
+                  #message-compose .phone-numbers {
+                    flex-grow: 1;
+                    border: solid 1px red;
+                  }
+
+                  #message-compose .message {
+                    flex-grow: 1;
+                    border: solid 1px red;
+                  }
+
+                  #message-compose .checkboxes {
+                    flex-grow: 1;
+                    border: solid 1px red;
+                  }
+
+                  #message-compose .checkboxes ul {
+                    list-style-type: none;
                   }
                 </style>
 
                 <h4 class="generic-widget-headline">Message Compose</h4>
                 <div class="generic-widget-body">
-                  Stuff....
+                  <div class="name-hint">
+                    <input placeholder="Name Hint" disabled>
+                  </div>
+
+                  <div class="names">
+                    <input placeholder="Caller Name">
+                    <input placeholder="Company Name">
+                  </div>
+
+                  <div class="phone-numbers">
+                    <input placeholder="Phone">
+                    <input placeholder="Cell Phone">
+                    <input placeholder="local Extension">
+                  </div>
+
+                  <div class="message">
+                    <textarea placeholder="Message"></textarea>
+                  </div>
+
+                  <div class="checkboxes">
+                    <ul>
+                      <li>
+                        <input id="message-compose-pleasecall" class="pleasecall" type="checkbox">
+                        <label for="message-compose-pleasecall">::Ring venligst::</label>
+                      </li>
+                      <li>
+                        <input id="message-compose-callsback" class="pleasecall message-tag" type="checkbox">
+                        <label for="message-compose-pleasecall">::Ringer selv tilbage::</label>
+                      </li>
+                      <li>
+                        <input id="message-compose-pleasecall" class="pleasecall message-tag" type="checkbox">
+                        <label for="message-compose-pleasecall">::Ring venligst::</label>
+                      </li>
+                      <li>
+                        <input id="message-compose-pleasecall" class="pleasecall message-tag" type="checkbox">
+                        <label for="message-compose-pleasecall">::Ring venligst::</label>
+                      </li>
+                      <li>
+                        <input id="message-compose-pleasecall" class="pleasecall message-tag" type="checkbox">
+                        <label for="message-compose-pleasecall">::Ring venligst::</label>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+
+                  </div>
                 </div>
               </div>
 
@@ -207,13 +284,13 @@
 
                     #contact-list > div > input {
                       width: calc(100% - 0.6em);
-                      margin: 0.3em;
+                      margin: 0.5em 0.3em 0.3em 0.3em;
                       height: 1.5em;
                       font-size: 1em;
                     }
 
                     #contact-list > div > ul {
-                      height: calc(100% - 2.1em);
+                      height: calc(100% - 2.3em);
                     }
                   </style>
 
