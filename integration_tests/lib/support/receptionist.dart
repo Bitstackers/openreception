@@ -34,6 +34,7 @@ class Receptionist {
     return wsc.connect(
         Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'))
     .then((_) => this.notificationSocket.eventStream.listen(this._handleEvent))
+    .then((_) => this._phone.eventStream.listen(this._onPhoneEvent))
     .then((_) => this._phone.initialize())
     .then((_) => this._phone.autoAnswer(true))
     .then((_) => this._phone.register())
@@ -168,4 +169,30 @@ class Receptionist {
                        'peerID:${this._phone.ID} '
                        'PhoneType:${this._phone.runtimeType}';
 
+  void _onPhoneEvent(Phonio.Event event) {
+    if (event is Phonio.CallOutgoing) {
+      log.finest('$this received call outgoing event');
+      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
+      log.finest('$this sets call to $call');
+
+      this.currentCall = call;
+    }
+
+    else if (event is Phonio.CallIncoming) {
+      log.finest('$this received incoming call event');
+      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
+      log.finest('$this sets call to $call');
+      this.currentCall = call;
+    }
+
+    else if (event is Phonio.CallDisconnected) {
+      log.finest('$this received call diconnect event');
+
+      this.currentCall = null;
+    }
+
+    else {
+      log.severe('$this got unhandled event ${event.eventName}');
+    }
+  }
 }
