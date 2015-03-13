@@ -104,17 +104,20 @@ abstract class CallList {
                calls.firstWhere((Model.Call listCall) =>
                    listCall.ID == call.ID));
 
-
      return
        Future.wait([receptionist.initialize(),
                     customer.initialize()])
-       .then((_) => log.finest ('Customer ${customer.name} dials ${reception}'))
+       .then((_) => log.info ('Customer ${customer.name} dials ${reception}.'))
        .then((_) => customer.dial (reception))
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
        .then((_) => receptionist.waitForCall()
          .then(verifyCallIsInList))
+       .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
        .then((_) => customer.hangupAll())
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
        .then((_) => receptionist.waitFor(eventType:"call_hangup"))
        .whenComplete(() {
+         log.info ('Test complete, cleaning up.');
          ReceptionistPool.instance.release(receptionist);
          CustomerPool.instance.release(customer);
          return Future.wait([receptionist.teardown(),customer.teardown()]);
@@ -142,11 +145,14 @@ abstract class Hangup {
     return
       Future.wait([receptionist.initialize(),
                    customer.initialize()])
-      .then((_) => log.finest ('Customer ${customer.name} dials ${reception}'))
+      .then((_) => log.info ('Customer ${customer.name} dials ${reception}'))
       .then((_) => customer.dial (reception))
+      .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
       .then((_) => receptionist.waitForCall())
-      .then((_) => customer.hangupAll())
-      .then((_) => receptionist.waitFor(eventType:"call_hangup"))
+       .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
+       .then((_) => customer.hangupAll())
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
+       .then((_) => receptionist.waitFor(eventType:"call_hangup"))
       .whenComplete(() {
         ReceptionistPool.instance.release(receptionist);
         CustomerPool.instance.release(customer);
@@ -164,18 +170,20 @@ abstract class Hangup {
 
     String       reception = "12340003";
 
-    log.info ('Customer $customer dials $reception');
-
     return Future.wait([receptionist.initialize(),
                             customer.initialize()])
+        .then((_) => log.info ('Customer ${customer.name} dials ${reception}'))
         .then((_) => customer.dial (reception))
         .then((_) => receptionist.waitForCall()
           .then((Model.Call call) => inboundCall = call))
         .then((_) => receptionist.pickup(inboundCall))
-        .then((_) => receptionist.waitForInboundCall())
-        .then((_) => receptionist.hangUp(inboundCall))
-        .then((_) => receptionist.waitFor(eventType: 'call_hangup'))
-        .whenComplete(() {
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits incoming call.'))
+       .then((_) => receptionist.waitForInboundCall())
+       .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
+       .then((_) => customer.hangupAll())
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
+       .then((_) => receptionist.waitFor(eventType:"call_hangup"))
+       .whenComplete(() {
           ReceptionistPool.instance.release(receptionist);
           CustomerPool.instance.release(customer);
           return Future.wait([receptionist.teardown(),customer.teardown()]);
