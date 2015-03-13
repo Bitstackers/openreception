@@ -58,6 +58,13 @@ void runCallFlowTests() {
     /* Clear the previous setUp function. */
     setUp(() {});
 
+
+    test ('interfaceCallFound',
+        () => Hangup.interfaceCallFound().then((_) => expect('', isNotNull)));
+  });
+
+
+  group('CallFlowControl.List', () {
     /* Before the last test, we define the global tearDown function. */
     tearDown (() {
       supportTools.tearDown();
@@ -65,7 +72,7 @@ void runCallFlowTests() {
 
     /* Last test. */
     test ('interfaceCallFound',
-        () => Hangup.interfaceCallFound().then((_) => expect('', isNotNull)));
+        () => CallList.callPresence().then((_) => expect('', isNotNull)));
   });
 }
 
@@ -81,6 +88,45 @@ abstract class CallFlowControl {
 
 }
 
+
+abstract class CallList {
+  static Logger log = new Logger('CallFlowControl.List');
+
+  static Future callPresence() {
+     Receptionist receptionist = ReceptionistPool.instance.aquire();
+     Customer     customer     = CustomerPool.instance.aquire();
+
+     String       reception = "12340004";
+
+     Future verifyCallIsInList (Model.Call call) =>
+         receptionist.callFlowControl.callList()
+           .then((Iterable<Model.Call> calls) =>
+               calls.firstWhere((Model.Call listCall) =>
+                   listCall.ID == call.ID));
+
+
+     return
+       Future.wait([receptionist.initialize(),
+                    customer.initialize()])
+       .then((_) => log.finest ('Customer ${customer.name} dials ${reception}'))
+       .then((_) => customer.dial (reception))
+       .then((_) => receptionist.waitForCall()
+         .then(verifyCallIsInList))
+       .then((_) => customer.hangupAll())
+       .then((_) => receptionist.waitFor(eventType:"call_hangup"))
+       .whenComplete(() {
+         ReceptionistPool.instance.release(receptionist);
+         CustomerPool.instance.release(customer);
+         return Future.wait([receptionist.teardown(),customer.teardown()]);
+       });
+
+   }
+
+}
+
+/**
+ * Tests for the hangup interface on CallFlowControl server.
+ */
 abstract class Hangup {
 
   static Logger log = new Logger('Test.Hangup');
