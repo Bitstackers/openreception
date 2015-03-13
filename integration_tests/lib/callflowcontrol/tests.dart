@@ -5,6 +5,7 @@ void runCallFlowTests() {
 
   Uri notificationSocketURI = Uri.parse('${Config.NotificationSocketUri}'
                                         '?token=${Config.serverToken}');
+  SupportTools supportTools = null;
 
   group('CallFlowControl.Hangup', () {
     /// Variables used in tests.
@@ -15,7 +16,7 @@ void runCallFlowTests() {
 
     Transport.WebSocketClient websocket = null;
     Service.NotificationSocket notificationSocket = null;
-    SupportTools supportTools = null;
+
 
     /* Setup function for interfaceCallNotFound test. */
     setUp (() {
