@@ -37,4 +37,8 @@ void main() {
        RESTMessageStore.messageMapEquality(messageStore, 1,
            new Model.Message.fromMap(Test_Data.testMessage_1_Map)));
   });
+
+  group ('service.Reception', () {
+    test ('hat', Reception_Store.isCORSHeadersPresent);
+  });
 }
