@@ -18,9 +18,14 @@ part 'support/customer.dart';
 part 'support/customer_pool.dart';
 part 'support/support_tools.dart';
 
-/// Server tests
+/// Authserver tests
 part 'authserver/tests.dart';
-part 'callflowcontrol/tests.dart';
+
+/// Callflow server tests
+part 'callflowcontrol/all_tests.dart';
+part 'callflowcontrol/src/hangup.dart';
+part 'callflowcontrol/src/list.dart';
+
 part 'messagestore/tests.dart';
 part 'managementserver/tests.dart';
 
