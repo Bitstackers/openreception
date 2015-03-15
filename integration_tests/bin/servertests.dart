@@ -39,6 +39,10 @@ void main() {
   });
 
   group ('service.Reception', () {
-    test ('hat', Reception_Store.isCORSHeadersPresent);
+    test ('CORS headers present', Reception_Store.isCORSHeadersPresent);
+    test ('Non-existing path', Reception_Store.nonExistingPath);
+    test ('Non-existing reception', Reception_Store.nonExistingReception);
+    test ('Existing reception', Reception_Store.existingReception);
+
   });
 }

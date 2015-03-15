@@ -33,5 +33,46 @@ abstract class Reception_Store {
       }));
     });
   }
+
+
+  static Future nonExistingPath () {
+    Uri uri = Uri.parse ('${Config.receptionStoreURI}/nonexistingpath');
+    HttpClient client = new HttpClient();
+
+    log.info('Checking server behaviour on a non-existing path.');
+
+    return client.getUrl(uri)
+      .then((HttpClientRequest request) => request.close()
+      .then((HttpClientResponse response) {
+        if (response.statusCode != 404) {
+          fail ('Expected to received a 404 on path $uri');
+        }
+      }))
+      .then((_) => log.info('Got expected status code 404.'));
+  }
+
+
+  static void nonExistingReception () {
+    Storage.Reception receptionStore = new Service.RESTReceptionStore
+        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+
+
+    log.info('Checking server behaviour on a non-existing reception.');
+
+    return expect(receptionStore.get(-1),
+            throwsA(new isInstanceOf<Storage.NotFound>()));
+  }
+
+  static void existingReception () {
+    Uri uri = Uri.parse ('${Config.receptionStoreURI}/nonexistingpath');
+    Storage.Reception receptionStore = new Service.RESTReceptionStore
+        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+
+
+    log.info('Checking server behaviour on an existing reception.');
+
+    return expect(receptionStore.get(1), isNotNull);
+  }
+
 }
 
