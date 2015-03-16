@@ -19,6 +19,16 @@ void main() {
       logMessage(record.toString()));
   JUnitConfiguration.install();
 
+  group ('TestFramework', () {
+
+    tearDown (() {
+      return SupportTools.instance;
+    });
+
+    test ('Setup', () => true);
+
+  });
+
   runCallFlowTests();
 
   runAllTests();
@@ -51,5 +61,12 @@ void main() {
         Reception_Store.calendarEventNonExisting);
   });
 
+  group ('TestFramework', () {
+    tearDown (() {
+      return SupportTools.instance.then((SupportTools st) => st.tearDown());
+    });
 
+    test ('Teardown', () => true);
+
+  });
 }
