@@ -2,6 +2,9 @@ part of openreception.model;
 
 class CalendarEvent implements Comparable {
 
+  static final String className = '${libraryName}.CalendarEvent';
+  static final Logger log = new Logger(className);
+
   static const int noID = 0;
 
   String _content;
