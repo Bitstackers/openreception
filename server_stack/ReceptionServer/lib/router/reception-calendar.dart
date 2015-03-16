@@ -22,6 +22,12 @@ abstract class ReceptionCalendar {
   static void create(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
 
+    if (receptionID == Model.Reception.noID) {
+      clientError(request, JSON.encode
+          ({'error' : 'Refusing to create event with no reception'}));
+      return;
+    }
+
     extractContent(request).then((String content) {
       Map data;
 
