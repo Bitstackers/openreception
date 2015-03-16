@@ -29,6 +29,7 @@ void main() {
 
   });
 
+  runContactTests();
   runCallFlowTests();
 
   runAllTests();
