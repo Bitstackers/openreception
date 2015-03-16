@@ -5,24 +5,21 @@ void runCallFlowTests() {
 
   Uri notificationSocketURI = Uri.parse('${Config.NotificationSocketUri}'
                                         '?token=${Config.serverToken}');
+
+  /// Variables used in tests.
   SupportTools supportTools = null;
+  Transport.Client transport = null;
+  Service.CallFlowControl callFlowServer = null;
+  Transport.WebSocketClient websocket = null;
+  Service.NotificationSocket notificationSocket = null;
 
   group('CallFlowControl.Hangup', () {
-    /// Variables used in tests.
-    Service.CallFlowControl callFlowServer = null;
-        new Service.CallFlowControl
-        (Config.CallFlowControlUri, Config.serverToken,
-            new Transport.Client());
-
-    Transport.WebSocketClient websocket = null;
-    Service.NotificationSocket notificationSocket = null;
-
 
     /* Setup function for interfaceCallNotFound test. */
     setUp (() {
+      transport = new Transport.Client();
       callFlowServer = new Service.CallFlowControl
-              (Config.CallFlowControlUri, Config.serverToken,
-                  new Transport.Client());
+              (Config.CallFlowControlUri, Config.serverToken, transport);
 
       websocket = new Transport.WebSocketClient();
       notificationSocket = new Service.NotificationSocket (websocket);
@@ -33,6 +30,7 @@ void runCallFlowTests() {
     /* Teardown function for interfaceCallNotFound test. */
     tearDown (() {
       callFlowServer = null;
+      transport.client.close(force : false);
 
       return notificationSocket.close();
     });
@@ -71,16 +69,27 @@ void runCallFlowTests() {
 
   group('CallFlowControl.Peer', () {
     test ('Event presence', Peer.eventPresence);
+
+    /* Setup function for interfaceCallNotFound test. */
+    setUp (() {
+      transport = new Transport.Client();
+      callFlowServer = new Service.CallFlowControl
+              (Config.CallFlowControlUri, Config.serverToken, transport);
+
+      websocket = new Transport.WebSocketClient();
+      notificationSocket = new Service.NotificationSocket (websocket);
+
+      return websocket.connect(notificationSocketURI);
+    });
+
+    /* Teardown function for interfaceCallNotFound test. */
+    tearDown (() {
+      callFlowServer = null;
+      transport.client.close(force : false);
+
+      return notificationSocket.close();
+    });
+    test ('Peer listing', () => Peer.list(callFlowServer));
   });
 
-}
-
-
-abstract class CallFlowControl {
-
-  final String authToken = Config.serverToken;
-  final Uri serverUrl = Config.managementServerURI;
-
-  static final callFlowServer = new Service.CallFlowControl
-      (Config.CallFlowControlUri, Config.serverToken, new Transport.Client());
 }
