@@ -1,6 +1,6 @@
 * {
-  margin: 0;
-  padding: 0;
+  /*margin: 0;
+  padding: 0;*/
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -60,7 +60,7 @@ button::-moz-focus-inner {
 }
 
 .generic-widget-list {
-  list-style-type: none;
+  /*list-style-type: none;*/
   overflow: auto;
 }
 

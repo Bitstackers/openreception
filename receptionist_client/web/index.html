@@ -180,11 +180,26 @@
                     flex-grow: 3;
                   }
 
-                  #message-compose .show-recipients {
+                  #message-compose .padding03 {
+                    padding: 0.3em;
+                  }
+
+                  #message-compose input[type="text"] {
+                    flex-grow: 1;
+                    height: 2em;
+                    padding: 0 0.3em;
+                    font-size: 1em;
+                  }
+
+                  #message-compose ul {
+                    list-style-type: none;
+                  }
+
+                  #message-compose .generic-widget-headline .show-recipients {
                     float: right;
                   }
 
-                  #message-compose .show-recipients:hover {
+                  #message-compose .generic-widget-headline .show-recipients:hover {
                     cursor: pointer;
                   }
 
@@ -194,17 +209,12 @@
                     left: 49%;
                     width: 50%;
                     background-color: #f8f8f8;
-                    padding: 0.3em;
-                    box-shadow: 0.3em 0.3em 0.3em #888;
+                    box-shadow: 0.2em 0.2em 0.2em #888;
                     border: solid 1px #aaa;
                   }
 
                   #message-compose .recipients-hidden {
                     z-index: -1;
-                  }
-
-                  #message-compose .recipients ul {
-                    list-style-type: none;
                   }
 
                   #message-compose .recipients ul li {
@@ -219,28 +229,11 @@
                     content: ' (bcc)'
                   }
 
-                  #message-compose .generic-widget-body {
-                    display: flex;
-                    flex-direction: column;
-                    padding: 0.3em;
-                  }
-
-                  #message-compose input[type="text"] {
-                    flex-grow: 1;
-                    height: 2em;
-                    padding: 0 0.3em;
-                    font-size: 1em;
-                  }
-
                   #message-compose .name-hint {
-                    display: flex;
-                    flex-direction: row;
                     margin-top: 0.3em;
                   }
 
                   #message-compose .names {
-                    display: flex;
-                    flex-direction: row;
                     margin-top: 0.7em;
                   }
 
@@ -253,8 +246,6 @@
                   }
 
                   #message-compose .phone-numbers {
-                    display: flex;
-                    flex-direction: row;
                     margin-top: 0.7em;
                   }
 
@@ -273,21 +264,16 @@
 
                   #message-compose .message {
                     flex-grow: 1;
-                    display: flex;
-                    flex-direction: row;
                     margin-top: 0.7em;
                   }
 
                   #message-compose .message textarea {
                     resize: none;
                     flex-grow: 1;
-                    padding: 0.3em;
                     font-size: 1em;
                   }
 
                   #message-compose .checks-and-buttons {
-                    display: flex;
-                    flex-direction: row;
                     margin-top: 0.7em;
                     padding: 0 0 0 0.5em;
                   }
@@ -299,10 +285,6 @@
                   #message-compose .checks-and-buttons .checks label {
                     position: absolute;
                     top: -1px; /* align label with checkbox */
-                  }
-
-                  #message-compose .checks-and-buttons .checks ul {
-                    list-style-type: none;
                   }
 
                   #message-compose .checks-and-buttons .checks ul>li {
@@ -319,7 +301,6 @@
                   }
 
                   #message-compose .checks-and-buttons .buttons {
-                    display: flex;
                     justify-content: flex-end;
                     align-items: flex-end;
                     padding: 0 0.3em 0.3em 0;
@@ -336,34 +317,34 @@
                   ::Message Compose::
                   <span class="show-recipients">::show-recipients::</span>
                 </h4>
-                <div class="generic-widget-body">
-                  <div class="recipients recipients-hidden">
+                <div class="generic-widget-body display-flex-column padding03">
+                  <div class="recipients padding03 recipients-hidden">
                     <ul>
                       <li>Thomas Løcke</li>
                       <li class="cc">Trine Løcke</li>
                       <li class="bcc">Steen Løcke</li>
                     </ul>
                   </div>
-                  <div class="name-hint">
+                  <div class="name-hint display-flex-row">
                     <input type="text" placeholder="Name Hint" value="" disabled>
                   </div>
 
-                  <div class="names">
+                  <div class="names display-flex-row">
                     <input type="text" class="caller" placeholder="Caller Name">
                     <input type="text" class="company" placeholder="Company Name">
                   </div>
 
-                  <div class="phone-numbers">
+                  <div class="phone-numbers display-flex-row">
                     <input type="text" class="land" placeholder="Phone">
                     <input type="text" class="cell" placeholder="Cell Phone">
                     <input type="text" class="extension" placeholder="local Extension">
                   </div>
 
-                  <div class="message">
-                    <textarea placeholder="Message" ></textarea>
+                  <div class="message display-flex-row">
+                    <textarea class="padding03" placeholder="Message" ></textarea>
                   </div>
 
-                  <div class="checks-and-buttons">
+                  <div class="checks-and-buttons display-flex-row">
                     <div class="checks">
                       <ul>
                         <li>
@@ -389,7 +370,7 @@
                       </ul>
                     </div>
 
-                    <div class="buttons">
+                    <div class="buttons display-flex-row">
                       <button class="cancel" disabled>::Cancel::</button>
                       <button class="save" disabled>::Save::</button>
                       <button class="send" disabled>::Send::</button>
@@ -464,6 +445,13 @@
                     flex-grow: 4;
                   }
 
+                  #contact-data #foo {
+                    margin: 0;
+                    padding: 0;
+                    list-style-position: inside;
+                    list-style-position: decimal;
+                  }
+
                   #contact-data .column {
                     height: 100%;
                     width: 50%;
@@ -490,6 +478,49 @@
 
                   #contact-data .cell ul > li {
                     padding: 0.2em;
+                  }
+
+                  #contact-data .cell .telephone-numbers li {
+                    border-left: solid 2px #f8f8f8;
+                    margin-left: 0.3em;
+                  }
+
+                  #contact-data .cell .telephone-numbers li > span {
+                    padding-left: 0.5em;
+                    font-size: 0.8em;
+                  }
+
+                  #contact-data .cell .telephone-numbers .selected {
+                    border-left: solid 2px #ff5621;
+                  }
+
+                  #contact-data .cell .telephone-numbers .secret {
+                    text-decoration: line-through;
+                  }
+
+                  #contact-data .cell .telephone-numbers .secret:hover {
+                    text-decoration: none;
+                  }
+
+                  #contact-data .cell .ringing {
+                    animation-name: flash;
+                    animation-duration: 2s;
+                    animation-fill-mode: both;
+                    animation-iteration-count: infinite;
+                    -webkit-animation-name: flash;
+                    -webkit-animation-duration: 2s;
+                    -webkit-animation-fill-mode: both;
+                    -webkit-animation-iteration-count: infinite;
+                  }
+
+                  @keyframes flash {
+                    0%, 50%, 100% {opacity: 1}
+                    25%, 75% {opacity: 0.1}
+                  }
+
+                  @-webkit-keyframes flash {
+                    0%, 50%, 100% {opacity: 1}
+                    25%, 75% {opacity: 0.1}
                   }
                 </style>
 
@@ -552,10 +583,10 @@
 
                     <div class="cell">
                       <h5>Telephone numbers</h5>
-                      <ul class="generic-widget-list">
-                        <li>foo</li>
-                        <li>bar</li>
-                      </ul>
+                      <ol id="foo" class="generic-widget-list telephone-numbers zebra">
+                        <li class="selected">60431992<span>mobil</span></li>
+                        <li class="secret">00449 107-109-39995109<span>privat, hustrus nummer</span></li>
+                      </ol>
                     </div>
 
                     <div class="cell">
