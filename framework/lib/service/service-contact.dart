@@ -3,6 +3,7 @@ part of openreception.service;
 class RESTContactStore implements Storage.Contact {
 
   static final String className = '${libraryName}.RESTContactStore';
+  static final Logger log = new Logger(className);
 
   WebService _backend = null;
   Uri        _host;
