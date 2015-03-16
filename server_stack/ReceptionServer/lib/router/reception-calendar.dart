@@ -33,6 +33,9 @@ abstract class ReceptionCalendar {
 
       try {
         data = JSON.decode(content);
+
+
+
       } catch (error) {
 
         Map response = {
