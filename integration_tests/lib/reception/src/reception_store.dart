@@ -7,9 +7,9 @@ abstract class Reception_Store {
   /**
    * Test for the presence of CORS headers.
    */
-  static Future isCORSHeadersPresent() {
+  static Future isCORSHeadersPresent(HttpClient client) {
+
     Uri uri = Uri.parse ('${Config.receptionStoreURI}/nonexistingpath');
-    HttpClient client = new HttpClient();
 
     log.info('Checking CORS headers on a non-existing URL.');
     return client.getUrl(uri)
@@ -40,9 +40,9 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static Future nonExistingPath () {
+  static Future nonExistingPath (HttpClient client) {
+
     Uri uri = Uri.parse ('${Config.receptionStoreURI}/nonexistingpath');
-    HttpClient client = new HttpClient();
 
     log.info('Checking server behaviour on a non-existing path.');
 
@@ -53,7 +53,8 @@ abstract class Reception_Store {
           fail ('Expected to received a 404 on path $uri');
         }
       }))
-      .then((_) => log.info('Got expected status code 404.'));
+      .then((_) => log.info('Got expected status code 404.'))
+      .whenComplete(() => client.close(force : true));
   }
 
   /**
@@ -62,10 +63,7 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static void nonExistingReception () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
-
+  static void nonExistingReception (Storage.Reception receptionStore) {
 
     log.info('Checking server behaviour on a non-existing reception.');
 
@@ -80,9 +78,7 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the
    * Reception object.
    */
-  static void existingReception () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+  static void existingReception (Storage.Reception receptionStore) {
 
     log.info('Checking server behaviour on an existing reception.');
 
@@ -96,10 +92,7 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return a list of
    * CalendarEvent objects.
    */
-  static void existingReceptionCalendar () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
-
+  static void existingReceptionCalendar (Storage.Reception receptionStore) {
     int receptionID = 1;
 
     log.info('Looking up calendar list for reception $receptionID.');
@@ -113,11 +106,10 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the created
    * CalendarEvent object.
    */
-  static Future calendarEventCreate () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+  static Future calendarEventCreate (Storage.Reception receptionStore) {
 
     int receptionID = 1;
+
     Model.CalendarEvent event =
         new Model.CalendarEvent.forReception(receptionID)
          ..beginsAt    = new DateTime.now()
@@ -147,9 +139,7 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the updated
    * CalendarEvent object.
    */
-  static Future calendarEventUpdate () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+  static Future calendarEventUpdate (Storage.Reception receptionStore) {
 
     int receptionID = 1;
 
@@ -187,9 +177,8 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the
    * CalendarEvent object.
    */
-  static Future calendarEventExisting () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+  static Future calendarEventExisting (Storage.Reception receptionStore) {
+
     int receptionID = 1;
 
     log.info('Checking server behaviour on an existing calendar event.');
@@ -201,8 +190,10 @@ abstract class Reception_Store {
       int eventID = events.last.ID;
 
       log.info('Fetching last event in list.');
-      return
-          expect(receptionStore.calendarEvent(receptionID, eventID), isNotNull);
+      return receptionStore.calendarEvent(receptionID, eventID)
+        .then((Model.CalendarEvent receivedEvent) {
+          expect (receivedEvent.ID, equals(eventID));
+      });
     });
   }
 
@@ -212,9 +203,8 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static void calendarEventNonExisting () {
-    Storage.Reception receptionStore = new Service.RESTReceptionStore
-        (Config.receptionStoreURI, Config.serverToken, new Transport.Client());
+  static void calendarEventNonExisting (Storage.Reception receptionStore) {
+
     int receptionID = 1;
     int eventID = 0;
 

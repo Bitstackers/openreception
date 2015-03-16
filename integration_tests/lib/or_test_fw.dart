@@ -36,8 +36,8 @@ part 'callflowcontrol/src/peer.dart';
 part 'messagestore/tests.dart';
 part 'managementserver/tests.dart';
 
-/// Authserver tests
-//part 'reception/all_tests.dart';
+/// Reception server tests
+part 'reception/all_tests.dart';
 part 'reception/src/reception_store.dart';
 
 /// Use cases
