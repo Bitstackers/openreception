@@ -144,7 +144,8 @@ LIMIT 1;
 
       var row = rows.first;
 
-      return {'content' : row.message,
+      return {'id'      : eventID,
+              'content' : row.message,
               'start'   : Util.dateTimeToUnixTimestamp(row.start),
               'stop'    : Util.dateTimeToUnixTimestamp(row.stop)};
     } else {
