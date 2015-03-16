@@ -32,6 +32,10 @@ part 'callflowcontrol/src/call_hangup.dart';
 part 'callflowcontrol/src/call_list.dart';
 part 'callflowcontrol/src/peer.dart';
 
+/// Contact store tests
+part 'contact/src/contact_store.dart';
+part 'contact/all_tests.dart';
+
 /// Message store service tests
 part 'messagestore/tests.dart';
 part 'managementserver/tests.dart';
@@ -45,5 +49,6 @@ part 'use_case/uc-find_contact.dart';
 part 'use_case/uc-forward_call.dart';
 part 'use_case/uc-incoming_call.dart';
 part 'use_case/uc-send_message.dart';
-const String libraryName = 'OpenReceptionTest';
+
+const String libraryName = 'Test';
 
