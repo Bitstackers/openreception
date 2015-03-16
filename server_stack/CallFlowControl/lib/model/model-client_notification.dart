@@ -6,7 +6,8 @@ abstract class _Key {
   static const peer         = 'peer';
   static const channel      = 'channel';
   static const channelID    = 'id';
-  static const peerID       = 'peer_id';
+  static const FIXME_peerID = 'peer_id';
+  static const peerID       = 'id';
   static const registered   = 'registered';
   static const event        = 'event';
   static const timestamp    = 'timestamp';
@@ -80,7 +81,8 @@ abstract class ClientNotification {
       {_Key.timestamp : unixTimestampNow,
        _Key.event     : _Event.peerState,
        _Key.peer      :
-       { _Key.peerID     : peer.ID,
+       { _Key.FIXME_peerID : peer.ID,
+         _Key.peerID     : peer.ID,
          _Key.registered : peer.registered
          }
        };
