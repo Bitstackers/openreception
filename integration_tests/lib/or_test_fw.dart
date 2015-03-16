@@ -30,6 +30,7 @@ part 'authserver/tests.dart';
 part 'callflowcontrol/all_tests.dart';
 part 'callflowcontrol/src/call_hangup.dart';
 part 'callflowcontrol/src/call_list.dart';
+part 'callflowcontrol/src/peer.dart';
 
 /// Message store service tests
 part 'messagestore/tests.dart';
