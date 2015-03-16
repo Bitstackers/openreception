@@ -70,7 +70,7 @@ void runCallFlowTests() {
   });
 
   group('CallFlowControl.Peer', () {
-    test ('interfaceCallFound', Peer.eventPresence);
+    test ('Event presence', Peer.eventPresence);
   });
 
 }
