@@ -149,7 +149,7 @@ abstract class ContactCalendar {
         if (event == null) {
           notFound(request, {'description' : 'No calendar event found with ID $eventID'});
         } else {
-          writeAndClose(request, JSON.encode({'event' : event}));
+          writeAndClose(request, JSON.encode(event));
         }
       }).catchError((onError) {
         serverError(request, 'Failed to execute database query');
