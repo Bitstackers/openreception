@@ -34,7 +34,7 @@ abstract class ReceptionCalendar {
       try {
         data = JSON.decode(content);
       } catch (error) {
-        request.response.statusCode = 400;
+
         Map response = {
           'status': 'bad request',
           'description': 'passed message argument is too long, missing or invalid',
