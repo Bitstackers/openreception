@@ -213,4 +213,30 @@ abstract class Reception_Store {
     return expect(receptionStore.calendarEvent(receptionID, eventID),
             throwsA(new isInstanceOf<Storage.NotFound>()));
   }
+
+  /**
+   * Test server behaviour when trying to delete a calendar event object that
+   * exists.
+   *
+   * The expected behaviour is that the server should succeed.
+   */
+  static Future calendarEventDelete (Storage.Reception receptionStore) {
+
+    int receptionID = 1;
+
+    return receptionStore.calendar(receptionID)
+      .then((List <Model.CalendarEvent> events) {
+
+      // Update the last event in list.
+      Model.CalendarEvent event = events.last;
+
+      log.info
+        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+
+      log.info
+        ('Deleting last calendar event for reception $receptionID.');
+
+      return receptionStore.calendarEventRemove(event);
+    });
+  }
 }
