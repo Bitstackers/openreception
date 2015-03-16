@@ -33,9 +33,19 @@ void main() {
 
   runAllTests();
   group('service.ResourceMessage', () {
-    Storage.Message messageStore =
-        new Service.RESTMessageStore(Config.messageServerUri,
-            Config.serverToken, new Transport.Client());
+    Storage.Message messageStore = null;
+    Transport.Client transport = null;
+
+    setUp (() {
+      transport = new Transport.Client();
+      messageStore = new Service.RESTMessageStore(Config.messageServerUri,
+            Config.serverToken, transport);
+    });
+
+    tearDown (() {
+      transport.client.close(force: true);
+      messageStore = null;
+    });
 
    test('${Service.RESTMessageStore.className}.list (non-filtered)', () =>
        RESTMessageStore.messageList(messageStore));
