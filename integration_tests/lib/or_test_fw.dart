@@ -3,6 +3,7 @@ library or_test_fw;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math' show Random;
 
 import 'package:phonio/phonio.dart' as Phonio;
 import 'package:openreception_framework/service.dart' as Service;
@@ -14,11 +15,12 @@ import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'config.dart';
 
-part 'support/pool.dart';
-part 'support/receptionist.dart';
-part 'support/receptionist_pool.dart';
 part 'support/customer.dart';
 part 'support/customer_pool.dart';
+part 'support/pool.dart';
+part 'support/randomizer.dart';
+part 'support/receptionist.dart';
+part 'support/receptionist_pool.dart';
 part 'support/support_tools.dart';
 
 /// Authserver tests
