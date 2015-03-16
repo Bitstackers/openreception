@@ -10,6 +10,7 @@ class Receptionist {
   Service.CallFlowControl callFlowControl;
   final String authToken;
   Completer readyCompleter = new Completer();
+  Transport.Client _transport = null;
 
   Phonio.Call currentCall = null;
   Queue<Model.Event> eventStack = new Queue();
@@ -18,10 +19,11 @@ class Receptionist {
   Duration answerLatency = new Duration(seconds: 0);
 
   Receptionist(this._phone, this.authToken, this.user) {
+    this._transport = new Transport.Client();
     this.callFlowControl = new Service.CallFlowControl(
         Config.CallFlowControlUri,
         this.authToken,
-        new Transport.Client());
+        this._transport);
   }
 
   /**
@@ -42,9 +44,18 @@ class Receptionist {
     .whenComplete((this.readyCompleter.complete));
   }
 
-  Future teardown() =>
-      Future.wait([this.notificationSocket.close(),
-                   this._phone.teardown()]);
+  Future teardown() {
+    this._transport.client.close(force : true);
+    Future notificationSocketTeardown =
+        this.notificationSocket == null
+        ? new Future.value()
+        : this.notificationSocket.close();
+
+    Future phoneTeardown = this._phone.teardown();
+
+    return Future.wait([notificationSocketTeardown,
+                        phoneTeardown]);
+  }
 
   /**
    * Future that enables you the wait for the object to become ready.
