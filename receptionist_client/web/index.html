@@ -180,90 +180,220 @@
                     flex-grow: 3;
                   }
 
-                  #message-compose > div.generic-widget-body {
+                  #message-compose .show-recipients {
+                    float: right;
+                  }
+
+                  #message-compose .show-recipients:hover {
+                    cursor: pointer;
+                  }
+
+                  #message-compose .recipients {
+                    position: absolute;
+                    top: 1.5%;
+                    left: 49%;
+                    width: 50%;
+                    background-color: #f8f8f8;
+                    padding: 0.3em;
+                    box-shadow: 0.3em 0.3em 0.3em #888;
+                    border: solid 1px #aaa;
+                  }
+
+                  #message-compose .recipients-hidden {
+                    z-index: -1;
+                  }
+
+                  #message-compose .recipients ul {
+                    list-style-type: none;
+                  }
+
+                  #message-compose .recipients ul li {
+                    padding: 0.1em;
+                  }
+
+                  #message-compose .recipients .cc:after {
+                    content: ' (cc)'
+                  }
+
+                  #message-compose .recipients .bcc:after {
+                    content: ' (bcc)'
+                  }
+
+                  #message-compose .generic-widget-body {
                     display: flex;
                     flex-direction: column;
                     padding: 0.3em;
                   }
 
-                  #message-compose .name-hint {
+                  #message-compose input[type="text"] {
                     flex-grow: 1;
-                    border: solid 1px red;
+                    height: 2em;
+                    padding: 0 0.3em;
+                    font-size: 1em;
+                  }
+
+                  #message-compose .name-hint {
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 0.3em;
                   }
 
                   #message-compose .names {
-                    flex-grow: 1;
-                    border: solid 1px red;
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 0.7em;
+                  }
+
+                  #message-compose .names input.caller {
+                    margin-right: 0.3em;
+                  }
+
+                  #message-compose .names input.company {
+                    margin-left: 0.3em;
                   }
 
                   #message-compose .phone-numbers {
-                    flex-grow: 1;
-                    border: solid 1px red;
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 0.7em;
+                  }
+
+                  #message-compose .phone-numbers input.land {
+                    margin-right: 0.3em;
+                  }
+
+                  #message-compose .phone-numbers input.cell {
+                    margin-left: 0.3em;
+                    margin-right: 0.3em;
+                  }
+
+                  #message-compose .phone-numbers input.extension {
+                    margin-left: 0.3em;
                   }
 
                   #message-compose .message {
                     flex-grow: 1;
-                    border: solid 1px red;
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 0.7em;
                   }
 
-                  #message-compose .checkboxes {
+                  #message-compose .message textarea {
+                    resize: none;
                     flex-grow: 1;
-                    border: solid 1px red;
+                    padding: 0.3em;
+                    font-size: 1em;
                   }
 
-                  #message-compose .checkboxes ul {
+                  #message-compose .checks-and-buttons {
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 0.7em;
+                    padding: 0 0 0 0.5em;
+                  }
+
+                  #message-compose .checks-and-buttons .checks {
+                    flex-grow: 1;
+                  }
+
+                  #message-compose .checks-and-buttons .checks label {
+                    position: absolute;
+                    top: -1px; /* align label with checkbox */
+                  }
+
+                  #message-compose .checks-and-buttons .checks ul {
                     list-style-type: none;
+                  }
+
+                  #message-compose .checks-and-buttons .checks ul>li {
+                    position: relative;
+                    padding-bottom: 0.3em;
+                  }
+
+                  #message-compose .checks-and-buttons .checks ul>li:last-child {
+                    padding-bottom: 0em;
+                  }
+
+                  #message-compose .checks-and-buttons .checks input {
+                    margin-right: 0.5em;
+                  }
+
+                  #message-compose .checks-and-buttons .buttons {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: flex-end;
+                    padding: 0 0.3em 0.3em 0;
+                  }
+
+                  #message-compose .checks-and-buttons .buttons button {
+                    height: 2em;
+                    width: 5em;
+                    margin-left: 1em;
                   }
                 </style>
 
-                <h4 class="generic-widget-headline">Message Compose</h4>
+                <h4 class="generic-widget-headline">
+                  ::Message Compose::
+                  <span class="show-recipients">::show-recipients::</span>
+                </h4>
                 <div class="generic-widget-body">
+                  <div class="recipients recipients-hidden">
+                    <ul>
+                      <li>Thomas Løcke</li>
+                      <li class="cc">Trine Løcke</li>
+                      <li class="bcc">Steen Løcke</li>
+                    </ul>
+                  </div>
                   <div class="name-hint">
-                    <input placeholder="Name Hint" disabled>
+                    <input type="text" placeholder="Name Hint" value="" disabled>
                   </div>
 
                   <div class="names">
-                    <input placeholder="Caller Name">
-                    <input placeholder="Company Name">
+                    <input type="text" class="caller" placeholder="Caller Name">
+                    <input type="text" class="company" placeholder="Company Name">
                   </div>
 
                   <div class="phone-numbers">
-                    <input placeholder="Phone">
-                    <input placeholder="Cell Phone">
-                    <input placeholder="local Extension">
+                    <input type="text" class="land" placeholder="Phone">
+                    <input type="text" class="cell" placeholder="Cell Phone">
+                    <input type="text" class="extension" placeholder="local Extension">
                   </div>
 
                   <div class="message">
-                    <textarea placeholder="Message"></textarea>
+                    <textarea placeholder="Message" ></textarea>
                   </div>
 
-                  <div class="checkboxes">
-                    <ul>
-                      <li>
-                        <input id="message-compose-pleasecall" class="pleasecall" type="checkbox">
-                        <label for="message-compose-pleasecall">::Ring venligst::</label>
-                      </li>
-                      <li>
-                        <input id="message-compose-callsback" class="pleasecall message-tag" type="checkbox">
-                        <label for="message-compose-pleasecall">::Ringer selv tilbage::</label>
-                      </li>
-                      <li>
-                        <input id="message-compose-pleasecall" class="pleasecall message-tag" type="checkbox">
-                        <label for="message-compose-pleasecall">::Ring venligst::</label>
-                      </li>
-                      <li>
-                        <input id="message-compose-pleasecall" class="pleasecall message-tag" type="checkbox">
-                        <label for="message-compose-pleasecall">::Ring venligst::</label>
-                      </li>
-                      <li>
-                        <input id="message-compose-pleasecall" class="pleasecall message-tag" type="checkbox">
-                        <label for="message-compose-pleasecall">::Ring venligst::</label>
-                      </li>
-                    </ul>
-                  </div>
+                  <div class="checks-and-buttons">
+                    <div class="checks">
+                      <ul>
+                        <li>
+                          <input id="message-compose-please-call" class="please-call" type="checkbox">
+                          <label for="message-compose-please-call">::Ring venligst::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-calls-back" class="calls-back message-tag" type="checkbox">
+                          <label for="message-compose-calls-back">::Ringer selv tilbage::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-has-called" class="has-called message-tag" type="checkbox">
+                          <label for="message-compose-has-called">::Har ringet::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-urgent" class="urgent message-tag" type="checkbox">
+                          <label for="message-compose-urgent">::Haster::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-draft" class="draft message-tag" type="checkbox">
+                          <label for="message-compose-draft">::Kladde::</label>
+                        </li>
+                      </ul>
+                    </div>
 
-                  <div>
-
+                    <div class="buttons">
+                      <button class="cancel" disabled>::Cancel::</button>
+                      <button class="save" disabled>::Save::</button>
+                      <button class="send" disabled>::Send::</button>
+                    </div>
                   </div>
                 </div>
               </div>
