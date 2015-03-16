@@ -65,15 +65,14 @@ void runCallFlowTests() {
 
 
   group('CallFlowControl.List', () {
-    /* Before the last test, we define the global tearDown function. */
-    tearDown (() {
-      supportTools.tearDown();
-    });
-
-    /* Last test. */
     test ('interfaceCallFound',
         () => CallList.callPresence().then((_) => expect('', isNotNull)));
   });
+
+  group('CallFlowControl.Peer', () {
+    test ('interfaceCallFound', Peer.eventPresence);
+  });
+
 }
 
 
