@@ -43,6 +43,13 @@ void main() {
     test ('Non-existing path', Reception_Store.nonExistingPath);
     test ('Non-existing reception', Reception_Store.nonExistingReception);
     test ('Existing reception', Reception_Store.existingReception);
-
+    test ('Calendar listing', Reception_Store.existingReceptionCalendar);
+    test ('Calendar creation', Reception_Store.calendarEventCreate);
+    test ('Calendar update', Reception_Store.calendarEventUpdate);
+    test ('Calendar single', Reception_Store.calendarEventExisting);
+    test ('Calendar single (non-existing)',
+        Reception_Store.calendarEventNonExisting);
   });
+
+
 }
