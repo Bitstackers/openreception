@@ -94,14 +94,27 @@ class RESTContactStore implements Storage.Contact {
 
   Future<List<Model.CalendarEvent>> calendar (int contactID, int receptionID) =>
       calendarMap (contactID, receptionID).then((List<Map> maps) =>
-          maps.map((Map map) => new Model.CalendarEvent.fromMap(map, receptionID)).toList());
+          maps.map((Map map) =>
+              new Model.CalendarEvent.fromMap
+                (map, receptionID, contactID : contactID)).toList());
 
   Future<Model.CalendarEvent> calendarEvent (int receptionID, int contactID, int eventID) {
     Uri url = Resource.Contact.calendarEvent(this._host, contactID, receptionID, eventID);
         url = appendToken(url, this._token);
 
-    return this._backend.get(url).then((String response) =>
-        new Model.CalendarEvent.fromMap (JSON.decode(response), receptionID));
+    return this._backend.get(url).then((String response) {
+      Map responseMap = null;
+      try {
+        responseMap = JSON.decode(response);
+      } catch (error) {
+        return new Future.error
+          (new ArgumentError
+            ('Failed to response parse as JSON string : `$response`'));
+      }
+
+      return new Model.CalendarEvent.fromMap
+          (responseMap, receptionID, contactID : contactID);
+    });
   }
 
   Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event) {
