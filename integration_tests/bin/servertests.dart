@@ -10,7 +10,6 @@ import 'package:unittest/unittest.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 
 import '../lib/config.dart';
-import 'data/testdata.dart' as Test_Data;
 
 void main() {
   //TODO: redirect every log entry to a file.
