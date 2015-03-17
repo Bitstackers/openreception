@@ -2,6 +2,9 @@ part of or_test_fw;
 
 abstract class Randomizer {
 
+  static int seed = new DateTime.now().millisecondsSinceEpoch;
+  static Random rand = new Random(seed);
+
   static final List<String> events =
       ['Milk purchase',
        'Meeting with ${randomChoice(contacts)}',
@@ -75,7 +78,7 @@ abstract class Randomizer {
        'Kvak S. Alver',
        'Sigmund Sivsko'];
 
-  static final List<String> positions =
+  static final List<String> titles =
       ['Forskningsleder/seniorforsker',
         'Forsker',
         'Administrationschef',
@@ -125,6 +128,10 @@ abstract class Randomizer {
         'Pruttens ejermand'];
 
   static final List<String> companyNames = [
+        'Acme inc',
+        'Wayne Enterprise',
+        'Ghostbusters A/S',
+        'Slamtroldmanden',
         'Kødbollen A/S',
         'Blomme\'s Gartneri',
         'Hummerspecialisten ApS',
@@ -172,6 +179,51 @@ abstract class Randomizer {
         'Kasse-kompaniet',
         'Hårstiverne'];
 
+  static final List<String> messageBodies = [
+    'I\'m selling these fine leather jackets',
+    'Please call me back regarding stuff',
+    'I love the smell of pastry',
+    'Regarding your enlargement',
+    'Nigerian royalties wish to send you money',
+    'Call back soon',
+    'The cheese has started to smell',
+    'Are you paying for that?',
+    'Imagination land called',
+    'Roller coasters purchase',
+    'These are not the droids you are looking for. Come to me for new ones!',
+    'All your base are belong',
+    'I would love to change the world, but they won\'t give me the source code'];
+
+  static final List<String> callerNames = [
+    'Bob Barker',
+    'Mister Green',
+    'Walter White',
+    'Boy Wonder',
+    'Batman',
+    'Perry the Platypus',
+    'Ferb Fletcher',
+    'Phineas Flynn',
+    'Candace Flynn',
+    'Dr. Heinz Doofenshmirtz',
+    'Reed Richards (Mr. Fantastic)',
+    'Peter Parker (Spiderman)',
+    'Bruce Banner (the Hulk)',
+    'Matt Murdock (Daredevil)',
+    'Susan Storm (Invisible Girl)',
+    'Scott Summers (Cyclops)',
+    'Stephen Strange (Dr. Strange)',
+    'Darkwing Duck'];
+
+  //TODO: Check that these match the flags in the framework.
+  static final List<List<String>> flagsLists = [
+    [],
+    ["pleaseCall"],
+    ['urgent.','pleaseCall'],
+    ['hasCalled', 'pleaseCall'],
+    ["willCallBack"],
+    ["urgent"],
+    ["urgent","willCallBack"]];
+
   static final userNames = [
         'Bob Børgesen',
         'Alice Arnesen',
@@ -198,13 +250,57 @@ abstract class Randomizer {
 
   static String randomEvent() => randomChoice(events);
 
+  static String randomCompany() => randomChoice(companyNames);
+  static String randomTitle() => randomChoice(titles);
+  static String randomCallerName() => randomChoice(callerNames);
+  static String randomMessageBody() => randomChoice(messageBodies);
+  static List<String> randomMessageFlags() => randomChoice(flagsLists);
+
+
+  static String randomPhoneNumber() {
+    int firstDigit = rand.nextInt(7)+2;
+    List<int> lastDigits = new List<int>.generate(7, (_) => rand.nextInt(9));
+    List<int> digits = [firstDigit]..addAll(lastDigits);
+
+    return digits.join('');
+  }
+
+  static String randomLocalExtension() => rand.nextInt(500).toString();
+
+
+  /**
+   * Constructs and returns a [Message] object with random content.
+   *
+   * The returned object still needs to have its context, user and
+   * recipients set before it is a valid parameter to a messageStore.
+   */
+  static Model.Message randomMessage() {
+    Model.Message message = new Model.Message();
+    message..body = randomMessageBody()
+        ..caller = randomCaller()
+        ..createdAt = new DateTime.now()
+        ..flags = randomMessageFlags();
+
+    return message;
+  }
+
+  /**
+   * Construct a random MessageCaller object.
+   */
+  static Model.MessageCaller randomCaller() =>
+    new Model.MessageCaller()
+      ..cellphone = randomPhoneNumber()
+      ..company = randomCompany()
+      ..localExtension = randomLocalExtension()
+      ..name = '${randomTitle()} ${randomCallerName()}'
+      ..phone = randomPhoneNumber();
+
   static dynamic randomChoice (List pool) {
     if(pool.isEmpty) {
       throw new ArgumentError('Cannot find a random value in an empty list');
     }
 
-    int seed = new DateTime.now().millisecondsSinceEpoch;
-    int index = new Random(seed).nextInt(pool.length);
+    int index = rand.nextInt(pool.length);
 
     return  pool[index];
   }
