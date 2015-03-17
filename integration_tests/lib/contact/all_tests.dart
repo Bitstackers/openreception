@@ -2,7 +2,7 @@ part of or_test_fw;
 
 runContactTests () {
 
-  group ('service.Contact', () {
+  group ('RESTContactStore', () {
     Transport.Client transport = null;
     Service.RESTContactStore contactStore = null;
 
