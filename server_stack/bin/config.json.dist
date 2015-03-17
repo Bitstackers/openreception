@@ -6,9 +6,19 @@
     "dbhost": "localhost",
     "dbport": 5432,
     "dbname": "dbname",
-    "httpport": 8080,
+    "authserver_http_port": 4050,
+    "callflow_http_port": 4242,
     "redirecturi" : "http://localhost:8080/oauth2callback",
     "clientURL"   : "http://localhost:3030/Bob/web/bob.html",
     "cache": "/dev/shm/",
-    "tokenexpiretime": 3600
+    "tokenexpiretime": 3600,
+    "authurl"            : "http://localhost:4050/",
+    "notificationServer" : "http://localhost:4200",
+    "httpport"           : 4242,
+    "dialoutgateway"     : "trunk.example.com",
+    "eslHostname"        : "localhost",
+    "eslPort"            : 8021,
+    "eslPassword"        : "ClueCon",
+    "servertoken"        : "magickey"
+    
 }

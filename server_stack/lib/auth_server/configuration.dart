@@ -131,8 +131,8 @@ class Configuration {
         _dbname = config['dbname'];
       }
 
-      if(config.containsKey('httpport')) {
-        _httpport = config['httpport'];
+      if(config.containsKey('authserver_http_port')) {
+        _httpport = config['authserver_http_port'];
       }
 
       if(config.containsKey('servertokendir')) {
