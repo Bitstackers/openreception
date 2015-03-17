@@ -31,7 +31,9 @@ class MessageCaller {
   String get localExtension                => this.lookup('localExtension', '?');
          set localExtension (String value) => this.update('localExtension', value);
 
-  MessageCaller(Map this._map);
+  MessageCaller();
+
+  MessageCaller.fromMap(Map this._map);
 
   Map get asMap => this._map;
 
