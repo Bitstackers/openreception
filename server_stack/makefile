@@ -33,70 +33,46 @@ configs: */bin/config.json.dist
 	done
 
 analyze:
-	@(cd AuthServer; dartanalyzer --no-hints --fatal-warnings bin/authserver.dart)
-	@(cd CallFlowControl; dartanalyzer --no-hints --fatal-warnings bin/callflowcontrol.dart)
+	@(dartanalyzer --no-hints --fatal-warnings bin/*.dart)
 
 analyze-hints:
-	@echo "! (cd CallFlowControl; dartanalyzer bin/callflowcontrol.dart | grep '^\[')" | bash
-	@echo "! (cd AuthServer; dartanalyzer bin/authserver.dart | grep '^\[')" | bash
+	@echo "! (dartanalyzer bin/*dart.dart | grep '^\[')" | bash
 
 dependency:
-	cd AuthServer/ && pub get 
-	cd CallFlowControl/ && pub get 
-	cd CDRServer/ && pub get 
-	cd ContactServer/ && pub get 
-	cd LogServer/ && pub get 
-	cd ManagementServer/ && pub get
-	cd MessageServer/ && pub get
-	cd MessageDispatcher/ && pub get
-	cd MiscServer/ && pub get
-	cd NotificationServer/ && pub get
-	cd ReceptionServer/ && pub get
-	cd spawner/ && pub get
+	pub get
 
 upgrade-dependency:
-	cd AuthServer/ && pub upgrade
-	cd CallFlowControl/ && pub upgrade 
-	cd CDRServer/ && pub upgrade 
-	cd ContactServer/ && pub upgrade
-	cd LogServer/ && pub upgrade
-	cd ManagementServer/ && pub upgrade
-	cd MessageServer/ && pub upgrade
-	cd MessageDispatcher/ && pub upgrade
-	cd MiscServer/ && pub upgrade
-	cd NotificationServer/ && pub upgrade
-	cd ReceptionServer/ && pub upgrade
-	cd spawner/ && pub upgrade
+	pub upgrade
 
 auth: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server AuthServer/bin/authserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server bin/authserver.dart
 
 callflow: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server CallFlowControl/bin/callflowcontrol.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server bin/callflowcontrol.dart
 
 contact: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server ContactServer/bin/contactserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server bin/contactserver.dart
 
 log: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${LogBinary} --categories=Server LogServer/bin/logserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${LogBinary} --categories=Server bin/logserver.dart
 
 message: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server MessageServer/bin/messageserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server bin/messageserver.dart
 
 messagedispatcher: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageDispatcherBinary} --categories=Server MessageDispatcher/bin/messagedispacher.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageDispatcherBinary} --categories=Server bin/messagedispacher.dart
 
 misc: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MiscBinary} --categories=Server MiscServer/bin/miscserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MiscBinary} --categories=Server bin/configserver.dart
 
 notification:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${NotificationBinary} --categories=Server NotificationServer/bin/notificationserver.dart
+	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${NotificationBinary} --categories=Server bin/notificationserver.dart
 
 reception: 
-	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${ReceptionBinary} --categories=Server ReceptionServer/bin/receptionserver.dart
+	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${ReceptionBinary} --categories=Server bin/receptionserver.dart
 
 spawner: 
-	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${SpawnerBinary} --categories=Server spawner/bin/spawner.dart
+	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${SpawnerBinary} --categories=Server bin/spawner.dart
 
 $(OUTPUT_DIRECTORY):
 	mkdir -p $(OUTPUT_DIRECTORY)
@@ -110,14 +86,7 @@ install: all
 
 install-default-config:
 	@install --directory ${PREFIX}
-	@install AuthServer/bin/config.json.dist ${PREFIX}/authconfig.json
-	@install CallFlowControlWrapper/bin/config.json.dist ${PREFIX}/callflowcontrolconfig.json
-	@install ContactServer/bin/config.json.dist ${PREFIX}/contactconfig.json
-	@install LogServer/bin/config.json.dist ${PREFIX}/logconfig.json
-	@install MessageServer/bin/config.json.dist ${PREFIX}/messageconfig.json
-	@install MessageDispatcher/bin/config.json.dist ${PREFIX}/messagedispatcherconfig.json
-	@install MiscServer/bin/config.json.dist ${PREFIX}/miscconfig.json
-	@install ReceptionServer/bin/config.json.dist ${PREFIX}/receptionconfig.json
+	@install bin/config.json.dist ${PREFIX}/config.json
 
 install_db:
 	PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_SCHEMA} --host=${PGHOST} --username=${PGUSER} -w
