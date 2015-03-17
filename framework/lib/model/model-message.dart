@@ -130,7 +130,7 @@ class Message {
         ..recipients      = recipients
         .._messageContext = new MessageContext.fromMap(map['context'])
         .._flags          = map['flags']
-        .._callerInfo     = new MessageCaller(map['caller'])
+        .._callerInfo     = new MessageCaller.fromMap(map['caller'])
         ..body            = map['message']
         ..sent            = map['sent']
         ..enqueued        = map['enqueued']
