@@ -4,10 +4,10 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 
 import 'package:openreception_framework/common.dart';
-import '../lib/configuration.dart';
-import '../lib/database.dart';
+import '../lib/cdr_server/configuration.dart';
+import '../lib/cdr_server/database.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
-import '../lib/router.dart' as router;
+import '../lib/cdr_server/router.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();

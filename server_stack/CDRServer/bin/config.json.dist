@@ -1,9 +1,0 @@
-{
-    "authurl": "auth.example.com/",
-    "httpport": 4090,
-    "dbuser": "user",
-    "dbpassword": "Secret",
-    "dbhost": "localhost",
-    "dbport": 5432,
-    "dbname": "dbname"
-}

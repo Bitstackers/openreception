@@ -1,9 +1,0 @@
-{
-    "authurl"            : "http://localhost:4050/",
-    "notificationServer" : "http://localhost:4200",
-    "httpport"           : 4242,
-    "dialoutgateway"     : "trunk.example.com",
-    "eslHostname"        : "localhost",
-    "eslPort"            : 8021,
-    "eslPassword"        : "ClueCon"
-}

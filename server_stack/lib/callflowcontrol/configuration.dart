@@ -101,8 +101,8 @@ class Configuration {
         this._eslPassword = config['eslPassword'];
       }
 
-      if(config.containsKey('httpport')) {
-        _httpport = config['httpport'];
+      if(config.containsKey('callflow_http_port')) {
+        _httpport = config['callflow_http_port'];
       }
 
       if(config.containsKey('notificationServer')) {

@@ -4,10 +4,10 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import '../lib/configuration.dart';
+import '../lib/callflowcontrol/configuration.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
-import '../lib/router.dart' as router;
-import '../lib/model/model.dart' as Model;
+import '../lib/callflowcontrol/router.dart' as router;
+import '../lib/callflowcontrol/model/model.dart' as Model;
 import 'package:esl/esl.dart' as ESL;
 import 'package:logging/logging.dart';
 

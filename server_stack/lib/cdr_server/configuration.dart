@@ -65,8 +65,8 @@ class Configuration {
         _authUrl = Uri.parse(config['authurl']);
       }
 
-      if(config.containsKey('httpport')) {
-        _httpport = config['httpport'];
+      if(config.containsKey('cdr_server_httpport')) {
+        _httpport = config['cdr_server_httpport'];
       }
 
       if(config.containsKey('dbuser')) {

@@ -22,7 +22,7 @@ abstract class PBX {
 
     return Model.PBXClient.api
         ('originate {${a_legvariables.join(',')}}user/${user.peer} '
-         '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}@${config.dialoutgateway}) '
+         '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}) '
          '${dialplan} $callerID $callerID $timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
