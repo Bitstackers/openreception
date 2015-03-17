@@ -4,14 +4,14 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import '../lib/cache.dart' as cache;
+import '../lib/auth_server/cache.dart' as cache;
 import 'package:openreception_framework/common.dart';
-import '../lib/configuration.dart';
-import '../lib/database.dart';
+import '../lib/auth_server/configuration.dart';
+import '../lib/auth_server/database.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
-import '../lib/router.dart' as router;
-import '../lib/token_vault.dart';
-import '../lib/token_watcher.dart' as watcher;
+import '../lib/auth_server/router.dart' as router;
+import '../lib/auth_server/token_vault.dart';
+import '../lib/auth_server/token_watcher.dart' as watcher;
 
 ArgResults    parsedArgs;
 ArgParser     parser = new ArgParser();
