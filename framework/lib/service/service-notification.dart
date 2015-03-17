@@ -51,11 +51,9 @@ class NotificationService {
    */
   Future<String> _enqueue (NotificationRequest request) {
       if (!_busy) {
-        log.finest('No requests enqueued. Sending request directly.');
         _busy = true;
         return this._performRequest (request);
       } else {
-        log.finest('Requests enqueued. Enqueueing this request.');
         _requestQueue.add(request);
         return request.response.future;
       }
@@ -68,15 +66,12 @@ class NotificationService {
   Future _performRequest (NotificationRequest request) {
 
     void dispatchNext() {
-      log.finest('Dispatching next.');
       if (_requestQueue.isNotEmpty) {
-        log.finest('Popping request from queue.');
         NotificationRequest currentRequest = _requestQueue.removeFirst();
 
         _performRequest (currentRequest)
           .then((_) => currentRequest.response.complete());
       } else {
-        log.finest('queue is empty.');
         _busy = false;
       }
     }
@@ -121,7 +116,6 @@ class NotificationSocket {
 
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
-    log.finest('Sending object: $map');
     this._streamController.add(new Model.Event.parse(map));
   }
 }

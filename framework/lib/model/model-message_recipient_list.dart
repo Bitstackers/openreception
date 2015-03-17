@@ -100,7 +100,6 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
 
     // Harvest each field for recipients.
     [Role.BCC, Role.CC, Role.TO].forEach((String role) {
-      log.finest("Adding for role $role");
       if (map[role] is List && map[role] != null) {
         map[role].forEach((Map contact) => this.add(new MessageRecipient.fromMap(contact, role : role)));
       }
@@ -138,23 +137,19 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
       } else if (this.recipients[Role.BCC].contains(contact)) {
         this.replaceRole(Role.BCC, Role.TO, contact);
       } else {
-        log.finest('Adding contact $contact');
         this.recipients[contact.role].add(contact);
       }
     } else if (contact.role.toLowerCase() == Role.CC) {
       if (this.recipients[Role.BCC].contains(contact)) {
         this.replaceRole(Role.BCC, Role.CC, contact);
       } else {
-        log.finest('Adding contact $contact');
         this.recipients[contact.role].add(contact);
       }
     }
   }
 
   void replaceRole(String oldRole, String newRole, contact) {
-    const String context = '${className}.replaceRole';
-
-    log.finest('Replacing contact $contact');
+    log.finest('Replacing role $oldRole with $newRole in contact $contact');
     this.recipients[oldRole].remove(contact);
     this.recipients[newRole].add(contact);
   }
