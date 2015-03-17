@@ -35,7 +35,7 @@ abstract class SendMessage {
 
     log.finest ('Setting up a ReceptionStore...');
     contactStore= new Service.RESTContactStore(
-        Config.contactStoreURI,
+        Config.contactStoreUri,
         receptionist.authToken,
         new Transport.Client());
 

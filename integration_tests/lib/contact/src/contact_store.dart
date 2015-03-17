@@ -9,7 +9,7 @@ abstract class ContactStore {
    */
   static Future isCORSHeadersPresent(HttpClient client) {
 
-    Uri uri = Uri.parse ('${Config.contactStoreURI}/nonexistingpath');
+    Uri uri = Uri.parse ('${Config.contactStoreUri}/nonexistingpath');
 
     log.info('Checking CORS headers on a non-existing URL.');
     return client.getUrl(uri)
@@ -22,7 +22,7 @@ abstract class ContactStore {
       }))
       .then ((_) {
         log.info('Checking CORS headers on an existing URL.');
-        uri = Resource.Reception.single (Config.contactStoreURI, 1);
+        uri = Resource.Reception.single (Config.contactStoreUri, 1);
         return client.getUrl(uri)
           .then((HttpClientRequest request) => request.close()
           .then((HttpClientResponse response) {
@@ -42,7 +42,7 @@ abstract class ContactStore {
    */
   static Future nonExistingPath (HttpClient client) {
 
-    Uri uri = Uri.parse ('${Config.contactStoreURI}/nonexistingpath');
+    Uri uri = Uri.parse ('${Config.contactStoreUri}/nonexistingpath');
 
     log.info('Checking server behaviour on a non-existing path.');
 

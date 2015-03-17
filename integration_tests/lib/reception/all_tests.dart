@@ -23,7 +23,7 @@ runReceptionTests () {
     setUp (() {
       transport = new Transport.Client();
       receptionStore = new Service.RESTReceptionStore
-         (Config.receptionStoreURI, Config.serverToken, transport);
+         (Config.receptionStoreUri, Config.serverToken, transport);
 
     });
 

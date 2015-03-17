@@ -3,7 +3,7 @@ part of or_test_fw;
 
 void runAllTests() {
   final String authToken = Config.serverToken;
-  final Uri serverUrl = Config.managementServerURI;
+  final Uri serverUrl = Config.managementServerUri;
 
   group('Management.Organization', () {
     setUp(() {

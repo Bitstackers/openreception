@@ -44,7 +44,7 @@ abstract class Config {
   /**
    * The URI of the data management server.
    */
-  static Uri managementServerURI = Uri.parse('http://management.example.com');
+  static Uri managementServerUri = Uri.parse('http://management.example.com');
 
   /**
    * The URI of the authentication server.
@@ -54,17 +54,17 @@ abstract class Config {
   /**
    * The URI of the reception store server.
    */
-  static Uri receptionStoreURI = Uri.parse('http://reception.example.com');
+  static Uri receptionStoreUri = Uri.parse('http://reception.example.com');
 
   /**
    * The URI of the contact store server.
    */
-  static Uri contactStoreURI = Uri.parse('http://contact.example.com');
+  static Uri contactStoreUri = Uri.parse('http://contact.example.com');
 
   /**
    * The URI of the message store server.
    */
-  static Uri messageServerUri = Uri.parse('http://message.example.com');
+  static Uri messageStoreUri = Uri.parse('http://message.example.com');
 
   /**
    * The URI of the callFlowControl server, which is also bound to [pbxHost].

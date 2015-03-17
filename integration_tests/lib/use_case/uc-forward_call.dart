@@ -83,7 +83,7 @@ abstract class ForwardCall {
     }).then((_) {
       log.finest("Select a reception database connection...");
       receptionStore = new Service.RESTReceptionStore(
-          Config.receptionStoreURI,
+          Config.receptionStoreUri,
           receptionist.authToken,
           new Transport.Client());
 

@@ -43,7 +43,7 @@ abstract class IncomingCall {
     log.finest("Select which reception to test...");
 
     log.finest("Select a reception database connection...");
-    receptionStore = new Service.RESTReceptionStore(Config.receptionStoreURI,
+    receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
         receptionist.authToken, new Transport.Client());
 
     return receptionist.registerAccount().then((_) =>

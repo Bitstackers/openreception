@@ -23,7 +23,7 @@ runContactTests () {
     setUp (() {
       transport = new Transport.Client();
       contactStore = new Service.RESTContactStore
-         (Config.contactStoreURI, Config.serverToken, transport);
+         (Config.contactStoreUri, Config.serverToken, transport);
 
     });
 
