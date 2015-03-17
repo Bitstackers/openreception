@@ -75,8 +75,11 @@ class Message {
   User                 get sender     => this._sender;
   bool                 get urgent     => this._flags.contains('urgent');
   MessageContext       get context    => this._messageContext;
+  set context (MessageContext newContext) => this._messageContext = newContext;
   List<String>         get flags      => this._flags;
+  set flags (List<String> newFlags) => this._flags = newFlags;
   MessageCaller        get caller     => this._callerInfo;
+  set caller (MessageCaller newCallerInfo) => this._callerInfo = newCallerInfo;
 
   List<MessageRecipient> get toRecipients  => this.recipients.where((MessageRecipient recipient) => recipient.role == Role.TO).toList();
   List<MessageRecipient> get ccRecipients  => this.recipients.where((MessageRecipient recipient) => recipient.role == Role.CC).toList();
