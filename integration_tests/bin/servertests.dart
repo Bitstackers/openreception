@@ -30,34 +30,9 @@ void main() {
 
   runContactTests();
   runCallFlowTests();
+  runMessageTests();
 
   runAllTests();
-  group('service.ResourceMessage', () {
-    Storage.Message messageStore = null;
-    Transport.Client transport = null;
-
-    setUp (() {
-      transport = new Transport.Client();
-      messageStore = new Service.RESTMessageStore(Config.messageServerUri,
-            Config.serverToken, transport);
-    });
-
-    tearDown (() {
-      transport.client.close(force: true);
-      messageStore = null;
-    });
-
-   test('${Service.RESTMessageStore.className}.list (non-filtered)', () =>
-       RESTMessageStore.messageList(messageStore));
-   test('${Service.RESTMessageStore.className}.get (non-existing ID)', () =>
-       RESTMessageStore.messageNotExists(messageStore));
-   test('${Service.RESTMessageStore.className}.get (existence)', () =>
-       RESTMessageStore.messageExists(messageStore, 1));
-   test('${Service.RESTMessageStore.className}.get (equality)', () =>
-       RESTMessageStore.messageMapEquality(messageStore, 1,
-           new Model.Message.fromMap(Test_Data.testMessage_1_Map)));
-  });
-
   runReceptionTests();
 
   group ('TestFramework', () {

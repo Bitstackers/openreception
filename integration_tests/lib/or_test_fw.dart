@@ -14,6 +14,7 @@ import 'package:openreception_framework/resource.dart' as Resource;
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'config.dart';
+import 'data/testdata.dart' as Test_Data;
 
 part 'support/customer.dart';
 part 'support/customer_pool.dart';
@@ -38,6 +39,9 @@ part 'contact/all_tests.dart';
 
 /// Message store service tests
 part 'messagestore/tests.dart';
+part 'messagestore/src/rest_message_store.dart';
+
+/// Data management service tests
 part 'managementserver/tests.dart';
 
 /// Reception server tests

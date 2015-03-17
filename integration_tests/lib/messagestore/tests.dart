@@ -1,64 +1,93 @@
 part of or_test_fw;
 
-abstract class RESTMessageStore {
-  static const int invalidMessageID = -1;
 
-  static void messageNotExists(Storage.Message store) =>
-    expect(store.get(invalidMessageID),
-        throwsA(new isInstanceOf<Storage.NotFound>()));
+void runMessageTests() {
+  group('RESTMessageStore', () {
+    Transport.Client transport = null;
+    Storage.Message messageStore = null;
+    Storage.Reception receptionStore = null;
+    Storage.Contact contactStore = null;
+    Service.Authentication authServer= null;
 
-  static Future messageList(Storage.Message store) =>
-      store.list().then((List<Model.Message> messages) =>
-          expect(messages.length, greaterThan(0)));
+    setUp (() {
+      transport = new Transport.Client();
+    });
 
-  static Future messageExists(Storage.Message store, int id) =>
-      store.get(id).then((message) =>
-          expect(message.ID, equals(new Model.Message.stub(1).ID)));
+    tearDown (() {
+      transport.client.close(force : true);
+    });
 
-  /**
-   * We inherit the timestamp from the fetched message in order to avoid
-   * false negatives arising from datebase timestamps being different than our
-   * test data. (Message timestamp is generated along with the database).
-   */
-  static Future messageMapEquality
-    (Storage.Message store, int id, Model.Message expectedMessage) =>
-        store.get(id).then((message) {
-          expect(message.recipients.asMap,
-            equals(expectedMessage.recipients.asMap));
-          expect(message.toRecipients.asMap(),
-            equals(expectedMessage.toRecipients.asMap()));
-          expect(message.ccRecipients.asMap(),
-             equals(expectedMessage.ccRecipients.asMap()));
-          expect(message.bccRecipients.asMap(),
-             equals(expectedMessage.bccRecipients.asMap()));
-          expect(message.body,
-             equals(expectedMessage.body));
-          expect(message.createdAt.isBefore(new DateTime.now()), isTrue);
-          expect(message.caller.asMap,
-             equals(expectedMessage.caller.asMap));
-          expect(message.context.asMap,
-             equals(expectedMessage.context.asMap));
+    test ('CORS headers present',
+      () => RESTMessageStore.isCORSHeadersPresent(transport.client));
 
-          expect(message.flags,
-             equals(expectedMessage.flags));
+    test ('Non-existing path',
+      () => RESTMessageStore.nonExistingPath(transport.client));
 
-          expect(message.ID, greaterThan(Model.Message.noID));
+    setUp (() {
+      transport = new Transport.Client();
+      messageStore = new Service.RESTMessageStore
+        (Config.messageStoreUri, Config.serverToken, transport);
 
-          expect(message.sender.toJson(),
-             equals(expectedMessage.sender.toJson()));
+    });
 
-          //expect(message.enqueued, isTrue);
-          //expect(message.hasRecpients, isTrue);
-          //expect(message.sent, isFalse);
+    tearDown (() {
+      messageStore = null;
+      transport.client.close(force : true);
+    });
 
-          expect(message.urgent,
-             equals(expectedMessage.urgent));
+    setUp (() {
+      transport = new Transport.Client();
+      messageStore = new Service.RESTMessageStore(Config.messageStoreUri,
+            Config.serverToken, transport);
+    });
+
+    tearDown (() {
+      transport.client.close(force: true);
+      messageStore = null;
+    });
+
+   test('message listing (non-filtered)',
+     () => RESTMessageStore.messageList(messageStore));
+
+   test('message (non-existing ID)',
+     () => RESTMessageStore.nonExistingMessage(messageStore));
+
+   test('message (existing ID)',
+     () => RESTMessageStore.existingMessage(messageStore));
+
+   test('message update',
+     () => RESTMessageStore.messageUpdate (messageStore));
+
+   tearDown (() {
+     messageStore = null;
+     receptionStore = null;
+     contactStore = null;
+     authServer= null;
+     transport.client.close(force : true);
+   });
+
+   setUp (() {
+     transport = new Transport.Client();
+     messageStore = new Service.RESTMessageStore(Config.messageStoreUri,
+           Config.serverToken, transport);
+     receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
+           Config.serverToken, transport);
+     contactStore = new Service.RESTContactStore(Config.contactStoreUri,
+           Config.serverToken, transport);
+     authServer= new Service.Authentication(Config.authenticationServerUri,
+         Config.serverToken, transport);
+   });
+
+   test('message enqueue',
+     () => authServer.userOf(Config.serverToken)
+       .then((Model.User sender) =>
+         RESTMessageStore.messageCreate
+             (messageStore, contactStore, receptionStore, sender)));
+
+   test('message send',
+     () => authServer.userOf(Config.serverToken)
+       .then((Model.User sender) =>
+         RESTMessageStore.messageSend
+             (messageStore, contactStore, receptionStore, sender)));
   });
-
-
-
-  static Future messageSave(Storage.Message store, Model.Message message) =>
-      store.save(message).then((Model.Message echoedMessage) =>
-          expect(echoedMessage.asMap, equals(message.asMap)));
-
 }
