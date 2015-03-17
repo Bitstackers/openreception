@@ -1,33 +1,60 @@
 part of openreception.model;
 
+
+abstract class MessageContextJSONKey {
+  static const Reception = 'reception';
+  static const Contact = 'contact';
+  static const ID = 'id';
+  static const Name = 'name';
+}
+
 class MessageContext {
 
   final String className = libraryName + "MessageContext";
 
   /* Private fields */
-  Map _data;
+  int _contactID;
+  int _receptionID;
+  String _contactName;
+  String _receptionName;
 
   /* Getters and setters, chunk-o-boilerplate code. */
-  int    get contactID                      => this._data['contact']['id'];
-         set contactID (int newID)          => this._data['contact']['id'] = newID;
-  String get contactName                    => this._data['contact']['name'];
-         set contactName (String newName)   => this._data['contact']['name'] = newName;
-  int    get receptionID                    => this._data['reception']['id'];
-         set receptionID (int newID)        => this._data['reception']['id'] = newID;
-  String get receptionName                  => this._data['reception']['name'];
-         set receptionName (String newName) => this._data['reception']['name'] = newName;
+  int    get contactID                      => this._contactID;
+         set contactID (int newID)          => this._contactID = newID;
+  String get contactName                    => this._contactName;
+         set contactName (String newName)   => this._contactName = newName;
+  int    get receptionID                    => this._receptionID;
+         set receptionID (int newID)        => this._receptionID = newID;
+  String get receptionName                  => this._receptionName;
+         set receptionName (String newName) => this._receptionName = newName;
 
   /**
-   * Constructor.
+   * Constructor. Deserializes the object from Map representation.
    */
   MessageContext.fromMap(Map map) {
-    final String context = className + ".fromMap";
-
-    this.._data = map
-        ..validate();
+    this..contactID =
+          map[MessageContextJSONKey.Contact][MessageContextJSONKey.ID]
+        ..contactName =
+          map[MessageContextJSONKey.Contact][MessageContextJSONKey.Name]
+        ..receptionID =
+          map[MessageContextJSONKey.Reception][MessageContextJSONKey.ID]
+        ..receptionName =
+          map[MessageContextJSONKey.Reception][MessageContextJSONKey.Name];
   }
 
+  /**
+   * Creates a messagContext from a [Contact] object
+   */
+  MessageContext.fromContact(Contact contact, Reception reception) {
+    this.contactID = contact.ID;
+    this.contactName = contact.fullName;
+    this.receptionID = reception.ID;
+    this.receptionName = reception.name;
+  }
 
+  /**
+   * Returns a map representation of the object. Suitable for serialization.
+   */
   Map get asMap => {
     'contact'   : {
       'id'  : this.contactID,
@@ -45,7 +72,8 @@ class MessageContext {
   void validate() {
     if (this.contactID   == null || this.contactID   == 0 ||
         this.receptionID == null || this.receptionID == 0) {
-      throw new InvalidMessage ('Badly formatted message: ${this.asMap}');
+      throw new ArgumentError.value
+        (this.asMap, 'validate', 'Failed to validate');
     }
   }
 
