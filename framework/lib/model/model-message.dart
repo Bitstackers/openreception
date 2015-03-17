@@ -87,6 +87,8 @@ class Message {
 
   void set sender (User user) { this._sender = user;}
 
+  Message() : ID = noID;
+
   Message.stub(this.ID);
 
   bool hasFlag (String flag) => this.flags.contains(flag);
