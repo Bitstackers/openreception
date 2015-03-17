@@ -50,6 +50,8 @@ class MessageCaller {
       return defaultValue;
     }
   }
+
+  operator == (MessageCaller other) => this.asMap == other.asMap;
 }
 
 class Message {
