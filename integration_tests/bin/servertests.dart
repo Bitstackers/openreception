@@ -20,7 +20,7 @@ void main() {
 
   group ('TestFramework', () {
 
-    tearDown (() {
+    setUp (() {
       return SupportTools.instance;
     });
 
