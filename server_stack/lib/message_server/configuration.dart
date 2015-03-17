@@ -1,4 +1,4 @@
-library messagedispatcher.configuration;
+library messageserver.configuration;
 
 import 'dart:async';
 import 'dart:convert';
@@ -10,27 +10,49 @@ import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
+
+/**
+ * Default configuration values.
+ */
+abstract class Default {
+  static final String configFile           = 'config.json';
+  static final int    httpport             = 4040;
+  static final Uri    notificationServer   = Uri.parse("http://localhost:4200");
+  static final Uri    authenticationServer = Uri.parse("http://localhost:8080");
+  static final String serverToken          = 'feedabbadeadbeef0';
+}
+
 class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  Uri        _authUrl;
-  String     _configfile = 'config.json';
+  Uri        _authUrl            = Default.authenticationServer;
+  Uri        _notificationServer = Default.notificationServer;
+  String     _configfile         = Default.configFile;
   String     _dbuser;
   String     _dbpassword;
   String     _dbhost     = 'localhost';
   int        _dbport     = 5432;
   String     _dbname;
-  int        _httpport   = 4080;
+  int        _httpport   = Default.httpport;
+  String     _serverToken          = Default.serverToken;
 
-  Uri    get authUrl    => _authUrl;
-  String get configfile => _configfile;
-  String get dbuser     => _dbuser;
-  String get dbpassword => _dbpassword;
-  String get dbhost     => _dbhost;
-  int    get dbport     => _dbport;
-  String get dbname     => _dbname;
-  int    get httpport   => _httpport;
+  Uri    get authUrl            => _authUrl;
+  Uri    get notificationServer => _notificationServer;
+  String get configfile         => _configfile;
+  String get dbuser             => _dbuser;
+  String get dbpassword         => _dbpassword;
+  String get dbhost             => _dbhost;
+  int    get dbport             => _dbport;
+  String get dbname             => _dbname;
+  int    get httpport           => _httpport;
+  String get serverToken        => _serverToken;
+
+  String emailUsername;
+  String emailPassword;
+  String emailFromName;
+  String emailFrom;
+  List<String> recipients = [];
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -65,8 +87,12 @@ class Configuration {
         _authUrl = Uri.parse(config['authurl']);
       }
 
-      if(config.containsKey('cdr_server_http_port')) {
-        _httpport = config['cdr_server_http_port'];
+      if(config.containsKey('message_server_http_port')) {
+        _httpport = config['message_server_http_port'];
+      }
+
+      if(config.containsKey('serverToken')) {
+        _serverToken = config['serverToken'];
       }
 
       if(config.containsKey('dbuser')) {
@@ -81,6 +107,10 @@ class Configuration {
         _dbhost = config['dbhost'];
       }
 
+      if(config.containsKey('notificationServer')) {
+        _notificationServer = Uri.parse(config['notificationServer']);
+      }
+
       if(config.containsKey('dbport')) {
         _dbport = config['dbport'];
       }
@@ -88,7 +118,6 @@ class Configuration {
       if(config.containsKey('dbname')) {
         _dbname = config['dbname'];
       }
-
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -125,6 +154,10 @@ class Configuration {
         _dbname = _args['dbname'];
       }
 
+      if(hasArgument('servertoken')) {
+        _serverToken = _args['servertoken'];
+      }
+
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
       throw error;
@@ -141,12 +174,12 @@ dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('')
 dbhost:     $dbhost
 dbport:     $dbport
 dbname:     $dbname
-''');
+emailfrom:  $emailFromName <$emailFrom>
+mailuser:   $emailUsername
+mailpass:   $emailPassword''');
   }
 
   Future whenLoaded() {
-    return _parseConfigFile()
-        .whenComplete(_parseArgument)
-        .then((_) => _outputConfig());
+    return _parseConfigFile().whenComplete(_parseArgument);
   }
 }

@@ -14,4 +14,12 @@ dependencies:
   path: any
   route: any
   postgresql: '>= 0.3.0'
-
+  libdialplan:
+    git:
+      ref: master
+      url: https://github.com/AdaHeads/libdialplan.git
+  esl:
+    git:
+      ref: master
+      url: https://github.com/rostgaard/libesl-dart.git
+  logging: any

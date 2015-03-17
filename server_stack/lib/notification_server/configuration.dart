@@ -1,4 +1,4 @@
-library messagedispatcher.configuration;
+library notificationserver.configuration;
 
 import 'dart:async';
 import 'dart:convert';
@@ -16,20 +16,10 @@ class Configuration {
   ArgResults _args;
   Uri        _authUrl;
   String     _configfile = 'config.json';
-  String     _dbuser;
-  String     _dbpassword;
-  String     _dbhost     = 'localhost';
-  int        _dbport     = 5432;
-  String     _dbname;
-  int        _httpport   = 4080;
+  int        _httpport   = 4200;
 
   Uri    get authUrl    => _authUrl;
   String get configfile => _configfile;
-  String get dbuser     => _dbuser;
-  String get dbpassword => _dbpassword;
-  String get dbhost     => _dbhost;
-  int    get dbport     => _dbport;
-  String get dbname     => _dbname;
   int    get httpport   => _httpport;
 
   factory Configuration(ArgResults args) {
@@ -65,28 +55,8 @@ class Configuration {
         _authUrl = Uri.parse(config['authurl']);
       }
 
-      if(config.containsKey('cdr_server_http_port')) {
-        _httpport = config['cdr_server_http_port'];
-      }
-
-      if(config.containsKey('dbuser')) {
-        _dbuser = config['dbuser'];
-      }
-
-      if(config.containsKey('dbpassword')) {
-        _dbpassword = config['dbpassword'];
-      }
-
-      if(config.containsKey('dbhost')) {
-        _dbhost = config['dbhost'];
-      }
-
-      if(config.containsKey('dbport')) {
-        _dbport = config['dbport'];
-      }
-
-      if(config.containsKey('dbname')) {
-        _dbname = config['dbname'];
+      if(config.containsKey('notification_http_port')) {
+        _httpport = config['notification_http_port'];
       }
 
     })
@@ -105,26 +75,6 @@ class Configuration {
         _httpport = int.parse(_args['httpport']);
       }
 
-      if(hasArgument('dbuser')) {
-        _dbuser = _args['dbuser'];
-      }
-
-      if(hasArgument('dbpassword')) {
-        _dbpassword = _args['dbpassword'];
-      }
-
-      if(hasArgument('dbhost')) {
-        _dbhost = _args['dbhost'];
-      }
-
-      if(hasArgument('dbport')) {
-        _dbport = int.parse(_args['dbport']);
-      }
-
-      if(hasArgument('dbname')) {
-        _dbname = _args['dbname'];
-      }
-
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
       throw error;
@@ -133,14 +83,8 @@ class Configuration {
 
   void _outputConfig() {
     print('''
-httpport:   $httpport
-dbuser:     $dbuser
-dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('').first +
-    dbpassword.split('').skip(1).take(dbpassword.length-2).map((_) => '*').join('') +
-    dbpassword.substring(dbpassword.length -1) : ''}
-dbhost:     $dbhost
-dbport:     $dbport
-dbname:     $dbname
+authurl  :   $authUrl
+httpport :   $httpport
 ''');
   }
 

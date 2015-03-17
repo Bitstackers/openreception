@@ -10,6 +10,12 @@ import 'package:openreception_framework/common.dart';
 
 Configuration config;
 
+abstract class Default {
+  static const int    maxTries = 3;
+  static final int    HTTPPort = 4080;
+  static final String AuthURL  = "http://localhost:4050";
+}
+
 class Configuration {
   static Configuration _configuration;
 
@@ -17,20 +23,33 @@ class Configuration {
   Uri        _authUrl;
   String     _configfile = 'config.json';
   String     _dbuser;
+  String     _mailerScript;
+  int        _mailerPeriod;
   String     _dbpassword;
   String     _dbhost     = 'localhost';
   int        _dbport     = 5432;
   String     _dbname;
-  int        _httpport   = 4080;
+  int        _httpport   = Default.HTTPPort;
+  String     serverToken;
+  Uri        notificationServer;
 
-  Uri    get authUrl    => _authUrl;
-  String get configfile => _configfile;
-  String get dbuser     => _dbuser;
-  String get dbpassword => _dbpassword;
-  String get dbhost     => _dbhost;
-  int    get dbport     => _dbport;
-  String get dbname     => _dbname;
-  int    get httpport   => _httpport;
+  Uri    get authUrl      => _authUrl;
+  String get configfile   => _configfile;
+  String get dbuser       => _dbuser;
+  String get dbpassword   => _dbpassword;
+  String get dbhost       => _dbhost;
+  int    get dbport       => _dbport;
+  String get dbname       => _dbname;
+  int    get httpport     => _httpport;
+  String get mailerScript => _mailerScript;
+  int    get mailerPeriod => _mailerPeriod;
+  int    get maxTries     => Default.maxTries;
+
+  String emailUsername;
+  String emailPassword;
+  String emailFromName;
+  String emailFrom;
+  List<String> recipients = [];
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -55,9 +74,17 @@ class Configuration {
     }
   }
 
+  static String loadWithDefault(String key, Map map, String defaultValue) {
+    if (map.containsKey(key)) {
+      return (map['key']);
+    }
+    else {
+      return defaultValue;
+    }
+  }
+
   Future _parseConfigFile() {
     File file = new File(_configfile);
-
     return file.readAsString().then((String data) {
       Map config = JSON.decode(data);
 
@@ -65,8 +92,16 @@ class Configuration {
         _authUrl = Uri.parse(config['authurl']);
       }
 
-      if(config.containsKey('cdr_server_http_port')) {
-        _httpport = config['cdr_server_http_port'];
+      if(config.containsKey('mailerScript')) {
+        this._mailerScript = config['mailerScript'];
+      }
+
+      if(config.containsKey('mailerPeriod')) {
+        this._mailerPeriod = config['mailerPeriod'];
+      }
+
+      if(config.containsKey('message_dispatcher_http_port')) {
+        _httpport = config['message_dispatcher_http_port'];
       }
 
       if(config.containsKey('dbuser')) {
@@ -141,7 +176,9 @@ dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('')
 dbhost:     $dbhost
 dbport:     $dbport
 dbname:     $dbname
-''');
+emailfrom:  $emailFromName <$emailFrom>
+mailuser:   $emailUsername
+mailpass:   $emailPassword''');
   }
 
   Future whenLoaded() {
