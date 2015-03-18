@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
+  <!--
+    #bob-active widget
+
+    Role:
+      The user interface when the application is fully operational and the user
+      is logged in. This widget act as a container for the context switcher and
+      all the contexts.
+
+    Visibility:
+      Hidden   #bob-active display:none
+      Visible: #bob-active display:flex
+
+      Initial state is display:none.
+
+      Note that visibility on #bob-active and its siblings MUST be mutually
+      exclusive.
+  -->
   <div id="bob-active" class="display-flex-row">
     <style scoped>
       #bob-active {
@@ -17,7 +34,17 @@
     </style>
 
     <!--
-      Context switcher widget
+      #context-switcher widget
+
+      Role:
+        Exposes n <button> elements that when clicked can be used to toggle
+        context visibility.
+
+        Setting focus on one of the child <button> elements will change its
+        graphical appearance to activated.
+
+      Visibility:
+        Is controlled by the #bob-active widget.
     -->
     <div id="context-switcher" class="generic-widget layout-margin-right">
       <style scoped>
@@ -44,7 +71,8 @@
 
         #context-switcher > button.home:active,
         #context-switcher > button.home:focus,
-        #context-switcher > button.home:hover {
+        #context-switcher > button.home:hover,
+        #context-switcher > button.home.active {
           background: url(images/contexthome_active.svg);
         }
 
@@ -54,7 +82,8 @@
 
         #context-switcher > button.homeplus:active,
         #context-switcher > button.homeplus:focus,
-        #context-switcher > button.homeplus:hover {
+        #context-switcher > button.homeplus:hover,
+        #context-switcher > button.homeplus.active {
           background: url(images/contexthomeplus_active.svg);
         }
 
@@ -64,26 +93,48 @@
 
         #context-switcher > button.messages:active,
         #context-switcher > button.messages:focus,
-        #context-switcher > button.messages:hover {
+        #context-switcher > button.messages:hover,
+        #context-switcher > button.messages.active {
           background: url(images/contextmessages_active.svg);
         }
       </style>
 
-      <button class="home"></button>
-      <button class="homeplus"></button>
-      <button class="messages"></button>
+      <button class="home" tabindex="-1"></button>
+      <button class="homeplus" tabindex="-1"></button>
+      <button class="messages" tabindex="-1"></button>
     </div>
 
-    <div class="display-flex-row" style="flex-grow: 1;">
+    <div class="display-flex-row" style="flex-grow: 1; position: relative;">
 
       <!--
-        Context home
+        #context-home widget
+
+        Role:
+          Parent for all widgets that belong in the "home" context. Contexts
+          serves as a way to group widgets so as to easily handle toggling
+          visibility.
+
+        Visibility:
+          Hidden   #context-home display:none
+          Visible: #context-home display:flex
+
+          Initial state is display:none.
+
+          Note that visibility on #context-home and its siblings MUST be mutually
+          exclusive.
       -->
-      <section id="context-home" class="display-flex-row" style="flex-grow: 1;">
+      <section id="context-home" class="context display-flex-row">
         <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
           <!--
-            Welcome message widget
+            #welcome-message widget
+
+            Role:
+              Presents the reception greeting when a reception is selected or
+              a call is answered.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
           -->
           <div id="welcome-message" class="generic-widget">
             <style scoped>
@@ -117,7 +168,13 @@
             <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
               <!--
-                Reception selector widget
+                #reception-selector widget
+
+                Role:
+                  Search for and select receptions.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
               -->
               <div id="reception-selector" class="generic-widget">
                 <style scoped>
@@ -134,7 +191,13 @@
               </div>
 
               <!--
-                Reception calendar widget
+                #reception-calendar widget
+
+                Role:
+                  Show calendar events for a reception.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
               -->
               <div id="reception-calendar" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -153,7 +216,13 @@
               </div>
 
               <!--
-                Reception commands/handling widget
+                #reception-commands widget
+
+                Role:
+                  Show various call related commands for a reception.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
               -->
               <div id="reception-commands" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -172,7 +241,21 @@
               </div>
 
               <!--
-                Message compose widget
+                #message-compose widget
+
+                Role:
+                  Create and send/save messages to a contact.
+
+                Notable children;
+                  <span> #message-compose .show-recipients
+                    Span element that can be used as a trigger for toggling
+                    visibility on the recipient list.
+                  <div> #message-compose .recipients
+                    Toggle .recipients-hidden on this element to either show or
+                    hide the recipient list.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
               -->
               <div id="message-compose" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -282,6 +365,11 @@
                     flex-grow: 1;
                   }
 
+                  #message-compose .checks-and-buttons .checks ul {
+                    margin: 0;
+                    padding: 0;
+                  }
+
                   #message-compose .checks-and-buttons .checks label {
                     position: absolute;
                     top: -1px; /* align label with checkbox */
@@ -385,7 +473,13 @@
               <div class="display-flex-row" style="flex-grow: 2;">
 
                 <!--
-                  Contact list widget
+                  #contact-list widget
+
+                  Role:
+                    Search and select contacts.
+
+                  Visibility:
+                    Is controlled by the visibility of #context-home.
                 -->
                 <div id="contact-list" class="generic-widget layout-margin-right">
                   <style scoped>
@@ -416,7 +510,13 @@
                 </div>
 
                 <!--
-                  Contact calendar widget
+                  #contact-calendar widget
+
+                  Role:
+                    Show calendar events for a contact.
+
+                  Visibility:
+                    Is controlled by the visibility of #context-home.
                 -->
                 <div id="contact-calendar" class="generic-widget">
                   <style scoped>
@@ -437,19 +537,18 @@
               </div>
 
               <!--
-                Contact data sheet widget
+                #contact-data widget
+
+                Role:
+                  Show the data sheet for a contact.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
               -->
               <div id="contact-data" class="generic-widget layout-margin-top">
                 <style scoped>
                   #contact-data {
                     flex-grow: 4;
-                  }
-
-                  #contact-data #foo {
-                    margin: 0;
-                    padding: 0;
-                    list-style-position: inside;
-                    list-style-position: decimal;
                   }
 
                   #contact-data .column {
@@ -470,6 +569,7 @@
                     height: 1.2em;
                   }
 
+                  #contact-data .cell ol,
                   #contact-data .cell ul {
                     position: relative;
                     height: calc(100% - 1.4em);
@@ -480,28 +580,42 @@
                     padding: 0.2em;
                   }
 
-                  #contact-data .cell .telephone-numbers li {
-                    border-left: solid 2px #f8f8f8;
-                    margin-left: 0.3em;
+                  #contact-data .telephone-numbers {
+                    padding: 0;
+                    list-style-position: inside;
+                    list-style-position: decimal;
                   }
 
-                  #contact-data .cell .telephone-numbers li > span {
+                  #contact-data .cell .telephone-numbers li {
+                    border-left: solid 3px #f8f8f8;
+                    margin-left: 0.2em;
+                    padding: 0.3em;
+                  }
+
+                  #contact-data .cell .telephone-numbers li span.label {
                     padding-left: 0.5em;
                     font-size: 0.8em;
+                    text-decoration: none;
                   }
 
                   #contact-data .cell .telephone-numbers .selected {
-                    border-left: solid 2px #ff5621;
+                    border-left: solid 3px #ff5621;
                   }
 
                   #contact-data .cell .telephone-numbers .secret {
                     text-decoration: line-through;
+                    color: #ff2601;
                   }
 
-                  #contact-data .cell .telephone-numbers .secret:hover {
+                  #contact-data .cell .telephone-numbers li:hover .secret {
                     text-decoration: none;
+                    color: initial;
                   }
 
+                  /*
+                    TODO (TL): Remove the -webkit- specific selectors
+                    when Chrome gets rid of them.
+                  */
                   #contact-data .cell .ringing {
                     animation-name: flash;
                     animation-duration: 2s;
@@ -583,9 +697,9 @@
 
                     <div class="cell">
                       <h5>Telephone numbers</h5>
-                      <ol id="foo" class="generic-widget-list telephone-numbers zebra">
-                        <li class="selected">60431992<span>mobil</span></li>
-                        <li class="secret">00449 107-109-39995109<span>privat, hustrus nummer</span></li>
+                      <ol class="telephone-numbers zebra">
+                        <li class=""><span>60431992</span><span class="label">mobil</span></li>
+                        <li class="selected ringing"><span class="secret">00449 107-109-39995109</span><span class="label">privat, hustrus nummer</span></li>
                       </ol>
                     </div>
 
@@ -616,7 +730,15 @@
         <div class="display-flex-column" style="flex-grow: 1;">
 
           <!--
-            Agent info widget
+            #agent-info widget
+
+            Role:
+              Show the amount of active/paused agents, a warning/notification
+              indicator, the state of the current agent and a picture of the
+              current agent.
+
+            Visibility:
+              Is controlled by the visibility of #context-home
           -->
           <div id="agent-info" class="generic-widget">
             <style scoped>
@@ -695,7 +817,13 @@
           </div>
 
           <!--
-            Reception opening hours widget
+            #reception-opening-hours widget
+
+            Role:
+              Show the reception opening hours.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
           -->
           <div id="reception-opening-hours" class="generic-widget layout-margin-top">
             <style scoped>
@@ -712,7 +840,12 @@
           </div>
 
           <!--
-            Reception sales calls widget
+            #reception-sales-calls widget
+
+            Role:
+              Show the commands for handling calls from sales people.
+            Visibility:
+              Is controlled by the visibility of #context-home.
           -->
           <div id="reception-sales-calls" class="generic-widget layout-margin-top">
             <style scoped>
@@ -730,7 +863,13 @@
           </div>
 
           <!--
-            Reception product description widget
+            #reception-product-description widget
+
+            Role:
+              Show the reception product description.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
           -->
           <div id="reception-product-description" class="generic-widget layout-margin-top">
             <style scoped>
@@ -751,7 +890,14 @@
           </div>
 
           <!--
-            Global queued calls widget
+            #global-queued-calls widget
+
+            Role:
+              Show a list of currently queued calls. These are calls that are
+              waiting to be answered.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
           -->
           <div id="global-queued-calls" class="generic-widget layout-margin-top">
             <style scoped>
@@ -769,7 +915,13 @@
           </div>
 
           <!--
-            My queued calls widget
+            #my-queued-calls widget
+
+            Role:
+              Show a list of calls that the current agent have put on hold.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
           -->
           <div id="my-queued-calls" class="generic-widget layout-margin-top">
             <style scoped>
@@ -788,7 +940,24 @@
         </div>
       </section>
 
-      <section id="context-homeplus" style="display: none;">
+      <!--
+        #context-homeplus widget
+
+        Role:
+          Parent for all widgets that belong in the "homeplus" context. Contexts
+          serves as a way to group widgets so as to easily handle toggling
+          visibility.
+
+        Visibility:
+          Hidden   #context-homeplus display:none
+          Visible: #context-homeplus display:flex
+
+          Initial state is display:none.
+
+          Note that visibility on #context-homeplus and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section id="context-homeplus" class="context display-flex-row">
 
         <!--
           Reception addresses widget
@@ -819,12 +988,45 @@
         context-homeplus
       </section>
 
-      <section id="context-message-store" style="display: none;">
-        context-message-store
+      <!--
+        #context-messages widget
+
+        Role:
+          Parent for all widgets that belong in the "messages" context. Contexts
+          serves as a way to group widgets so as to easily handle toggling
+          visibility.
+
+        Visibility:
+          Hidden   #context-messages display:none
+          Visible: #context-messages display:flex
+
+          Initial state is display:none.
+
+          Note that visibility on #context-messages and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section id="context-messages" class="context display-flex-row">
+        context-messages
       </section>
     </div>
   </div>
 
+  <!--
+    #bob-disaster widget
+
+    Role:
+      Present the user with error message(s) if the application is hit by errors
+      that makes it impossible for the user to use the application.
+
+    Visibility:
+      Hidden   #bob-disaster display:none
+      Visible: #bob-disaster display:flex
+
+      Initial state is display:none.
+
+      Note that visibility on #bob-disaster and its siblings MUST be mutually
+      exclusive.
+  -->
   <div id="bob-disaster">
     <style scoped>
       #bob-disaster {
@@ -835,6 +1037,22 @@
     disaster...
   </div>
 
+  <!--
+    #bob-loading widget
+
+    Role:
+      Present the user with loading message(s) while the application is starting
+      up.
+
+    Visibility:
+      Hidden   #bob-loading display:none
+      Visible: #bob-loading display:flex
+
+      Initial state is display:none.
+
+      Note that visibility on #bob-loading and its siblings MUST be mutually
+      exclusive.
+  -->
   <div id="bob-loading">
     <style scoped>
       #bob-loading {

@@ -1,12 +1,10 @@
 * {
-  /*margin: 0;
-  padding: 0;*/
   box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
 }
 
 body {
+  padding: 0;
+  margin: 0;
   background-color: #fefefe;
   font-family: 'Open Sans', sans-serif;
   font-size: 1em;
@@ -18,6 +16,14 @@ body {
 */
 button::-moz-focus-inner {
   border: 0;
+}
+
+.context {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-color: #fefefe;
 }
 
 .display-flex-column {
@@ -52,6 +58,8 @@ button::-moz-focus-inner {
   position: absolute;
   height: 20px;
   width: 100%;
+  margin: 0;
+  padding: 0;
   background-color: #a5b9db;
   padding: 2px 5px;
   font-size: 0.8em;
@@ -60,7 +68,9 @@ button::-moz-focus-inner {
 }
 
 .generic-widget-list {
-  /*list-style-type: none;*/
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
   overflow: auto;
 }
 
