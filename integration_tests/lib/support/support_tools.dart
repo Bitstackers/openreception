@@ -4,6 +4,8 @@ class SupportTools {
   List<Receptionist> receptionists = [];
   List<Customer> customers = [];
 
+  static final Logger log = new Logger ('Test.SupportTools');
+
   static SupportTools _instance = null;
   Completer _ready = new Completer();
 
@@ -75,7 +77,6 @@ class SupportTools {
 
       customers.add(new Customer(phone));
 
-
       return ConfigPool.hasAvailableExternalSipAccount();
     })
     .whenComplete(() =>
@@ -91,22 +92,39 @@ class SupportTools {
   Future tearDownCustomers () => Future.forEach(customers,
       ((Customer customer) => customer.teardown()));
 
-
-  void printCustomers() => customers.forEach(print);
-
-  void printReceptionists() => receptionists.forEach(print);
-
   Future _initialize() =>
       this.buildUserMap()
       .then((_) => this.setupCustomers())
       .then((_) => this.setupReceptionists())
       .then((_) => this._ready.complete())
-      .catchError(this._ready.completeError);
+      .catchError(this._ready.completeError)
+      .whenComplete(() => log.info (this));
 
   Future tearDown() =>
       Future.wait([this.tearDownCustomers(),
                    this.tearDownReceptionists()])
             .then((_) => ConfigPool.resetCounters());
+
+
+  @override
+  String toString () {
+    Iterable tokenMappings =
+        tokenMap.keys.map((String key) => '$key -> ${tokenMap[key].asSender}');
+
+    Iterable peerMappings =
+        peerMap.keys.map((String key) => '$key -> ${peerMap[key]}');
+
+    return
+      'Support tools state:\n'
+      ' Token map:\n'
+      '  ${tokenMappings.join('\n  ')}\n'
+      ' Peer map:\n'
+      '  ${peerMappings.join('\n  ')}\n'
+      ' Receptionists:\n'
+      '  ${receptionists.join('\n  ')}\n'
+      ' Customers:\n'
+      '  ${customers.join('\n  ')}\n';
+  }
 }
 
 
