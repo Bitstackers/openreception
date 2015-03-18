@@ -18,14 +18,26 @@ void main() {
       logMessage(record.toString()));
   JUnitConfiguration.install();
 
+  SupportTools st;
+
+  /*
+   * We treat the test framework as a test itself. This gives us the
+   * possibility to output the test state, and to wait for setup and teardown.
+   */
   group ('TestFramework', () {
 
     setUp (() {
-      return SupportTools.instance;
+      return SupportTools.instance.then((SupportTools init) => st = init);
     });
 
-    test ('Setup', () => true);
-
+    test ('Setup', () {
+      expect(st, isNotNull);
+      expect(st.customers, isNotEmpty);
+      expect(st.peerMap, isNotEmpty);
+      expect(st.receptionists, isNotEmpty);
+      expect(st.tokenMap, isNotEmpty);
+      expect(st.tokenMap, isNotEmpty);
+    });
   });
 
   runContactTests();
