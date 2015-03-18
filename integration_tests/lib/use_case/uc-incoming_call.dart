@@ -137,7 +137,9 @@ abstract class IncomingCall {
       log.finest('Receptionist gives full greeting:"${reception.greeting}');
     }
 
-    return receptionist.waitFor(eventType: Model.EventJSONKey.callUnlock, callID: call.ID);
+    return receptionist.waitFor
+      (eventType: Model.EventJSONKey.callUnlock, callID: call.ID)
+        .then ((Model.CallUnlock event) => event.call);
   }
 
   static void _dumpState(error, stackTrace) {

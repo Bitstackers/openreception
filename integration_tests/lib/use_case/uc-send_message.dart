@@ -29,7 +29,7 @@ abstract class SendMessage {
 
     log.finest ('Setting up a MessageStore...');
     messageStore = new Service.RESTMessageStore(
-        Config.messageServerUri,
+        Config.messageStoreUri,
         receptionist.authToken,
         new Transport.Client());
 
