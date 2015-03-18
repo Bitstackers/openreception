@@ -124,6 +124,107 @@
           exclusive.
       -->
       <section id="context-home" class="context display-flex-row">
+
+        <!--
+          #calendar-event-editor widget
+
+          Role:
+            Provides a widget to create/edit/delete calendar events for contacts
+            and receptions.
+
+          Visibility:
+            TODO (TL): Write something here..
+        -->
+        <div id="calendar-event-editor" class="generic-widget" hidden>
+          <style scoped>
+            #calendar-event-editor {
+              position: absolute;
+              top: 30%;
+              left: 35%;
+              height: 15em;
+              width: 30%;
+              z-index: 1;
+              box-shadow: 0 0 5em 2em rgba(0,0,0,0.2);
+            }
+
+            #calendar-event-editor .generic-widget-body {
+              display: flex;
+              flex-direction: column;
+            }
+
+            #calendar-event-editor .generic-widget-body div {
+              flex-grow: 1;
+              display: flex;
+            }
+
+            #calendar-event-editor .padding03 {
+              padding: 0.3em;
+            }
+
+            #calendar-event-editor .event-start,
+            #calendar-event-editor .event-stop {
+              align-items: center;
+              justify-content: center;
+            }
+
+            #calendar-event-editor .event-buttons {
+              align-items: center;
+              justify-content: center;
+            }
+
+            #calendar-event-editor .event-buttons button {
+              height: 2em;
+              width: 5em;
+              margin-left: 1em;
+              font-size: 1em;
+            }
+
+            #calendar-event-editor input {
+              padding-right: 0.3em;
+              font-size: 1em;
+              padding: 0.3em;
+              margin: 0 0.3em;
+            }
+
+            #calendar-event-editor span {
+              padding-right: 0.3em;
+            }
+
+            #calendar-event-editor textarea {
+              margin-top: 0.3em;
+              resize: none;
+              width: 100%;
+              font-size: 1em;
+            }
+          </style>
+
+          <h4 class="generic-widget-headline">::create/edit/delete calendar event::</h4>
+          <div class="generic-widget-body padding03">
+            <div class="event-message">
+              <textarea class="padding03"></textarea>
+            </div>
+            <div class="event-start">
+              <span>::start::</span><input class="start-hour" type="number" placeholder="tt" min="0" max="23"> :
+              <input class="start-minute" type="number" placeholder="mm" min="0" max="59">
+              <input class="start-day" type="number" placeholder="DD" min="1" max="31"> /
+              <input class="start-month" type="number" placeholder="MM" min="1" max="12"> /
+              <input class="start-year" type="number" placeholder="YYYY" min="2014" max="2024">
+            </div>
+            <div class="event-stop">
+              <span>::stop::</span><input class="stop-hour" type="number" placeholder="tt" min="0" max="23"> :
+              <input class="stop-minute" type="number" placeholder="mm" min="0" max="59">
+              <input class="stop-day" type="number" placeholder="DD" min="1" max="31"> /
+              <input class="stop-month" type="number" placeholder="MM" min="1" max="12"> /
+              <input class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024">
+            </div>
+            <div class="event-buttons">
+              <button class="save">::save::</button>
+              <button class="delete">::delete::</button>
+              <button class="cancel">::cancel::</button>
+            </div>
+          </div>
+        </div>
+
         <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
           <!--
@@ -398,6 +499,7 @@
                     height: 2em;
                     width: 5em;
                     margin-left: 1em;
+                    font-size: 1em;
                   }
                 </style>
 
