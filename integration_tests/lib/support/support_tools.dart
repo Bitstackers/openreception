@@ -28,15 +28,18 @@ class SupportTools {
   /// Maps a peerID to a token.
   Map<String, String> peerMap = {};
 
-  Service.Authentication authService = new Service.Authentication
-      (Config.authenticationServerUri, Config.serverToken, new Transport.Client());
+  Future buildUserMap() {
+    Transport.Client transport = new Transport.Client();
+    Service.Authentication authService = new Service.Authentication
+          (Config.authenticationServerUri, Config.serverToken, transport);
 
-  Future buildUserMap() =>
-      Future.forEach(Config.authTokens, ((String token) =>
-          authService.userOf(token).then((Model.User user) {
-              tokenMap[token] = user;
-              peerMap[user.peer] = token;
-      })));
+    return Future.forEach(Config.authTokens, ((String token) =>
+      authService.userOf(token).then((Model.User user) {
+        tokenMap[token] = user;
+        peerMap[user.peer] = token;
+    })))
+    .whenComplete(() => transport.client.close(force:true));
+  }
 
 
   Future setupReceptionists() =>
