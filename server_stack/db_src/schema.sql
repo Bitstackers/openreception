@@ -85,7 +85,7 @@ CREATE TABLE receptions (
    dialplan          JSON,
    dialplan_compiled BOOLEAN NOT NULL DEFAULT FALSE,
    ivr               JSON,
-   last_check        TIMESTAMP NOT NULL DEFAULT NOW(),
+   last_check        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
    enabled           BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -159,7 +159,7 @@ CREATE TABLE messages (
    taken_from_localexten     TEXT      NOT NULL DEFAULT '',
    taken_by_agent            INTEGER   NOT NULL REFERENCES users (id),
    flags                     JSON      NOT NULL DEFAULT '[]',
-   created_at                TIMESTAMP NOT NULL DEFAULT NOW()
+   created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE message_recipients (
@@ -181,8 +181,8 @@ CREATE TABLE message_recipients (
 CREATE TABLE message_queue (
    id                  INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message_id          INTEGER   NOT NULL REFERENCES messages (id),
-   enqueued_at         TIMESTAMP NOT NULL DEFAULT NOW(),
-   last_try            TIMESTAMP     NULL DEFAULT NULL,
+   enqueued_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+   last_try            TIMESTAMPTZ     NULL DEFAULT NULL,
    unhandled_endpoints JSON      NOT NULL DEFAULT '[]',
    tries               INTEGER   NOT NULL DEFAULT 0
 );
@@ -190,9 +190,9 @@ CREATE TABLE message_queue (
 CREATE TABLE message_queue_history (
    id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message_id     INTEGER   NOT NULL REFERENCES messages (id),
-   enqueued_at    TIMESTAMP NOT NULL,
-   sent_at        TIMESTAMP NOT NULL DEFAULT NOW(),
-   last_try       TIMESTAMP     NULL DEFAULT NULL,
+   enqueued_at    TIMESTAMPTZ NOT NULL,
+   sent_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+   last_try       TIMESTAMPTZ     NULL DEFAULT NULL,
    tries          INTEGER   NOT NULL DEFAULT 0
 );
 
@@ -216,8 +216,8 @@ CREATE TABLE message_draft (
 
 CREATE TABLE calendar_events (
    id      INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   start   TIMESTAMP NOT NULL,
-   stop    TIMESTAMP NOT NULL,
+   start   TIMESTAMPTZ NOT NULL,
+   stop    TIMESTAMPTZ NOT NULL,
    message TEXT      NOT NULL
 );
 
@@ -303,7 +303,7 @@ CREATE TABLE cdr_entries (
    extension    TEXT      NOT NULL,
    duration     INTEGER   NOT NULL,
    wait_time    INTEGER   NOT NULL,
-   started_at   TIMESTAMP NOT NULL,
+   started_at   TIMESTAMPTZ NOT NULL,
    json         JSON      NOT NULL
 );
 
@@ -311,8 +311,8 @@ CREATE INDEX cdr_entries_index ON cdr_entries (started_at);
 
 CREATE TABLE cdr_checkpoints (
    id          INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   startDate   TIMESTAMP NOT NULL,
-   endDate     TIMESTAMP NOT NULL,
+   startDate   TIMESTAMPTZ NOT NULL,
+   endDate     TIMESTAMPTZ NOT NULL,
    name	       TEXT	 NOT NULL,
    UNIQUE(startDate, endDate)
 );
