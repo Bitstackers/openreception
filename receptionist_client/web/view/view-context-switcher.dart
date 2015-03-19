@@ -4,11 +4,12 @@ class ContextSwitcher {
   static final ContextSwitcher _singleton = new ContextSwitcher._internal();
   factory ContextSwitcher() => _singleton;
 
-  Bus<Navigation> bus = new Bus<Navigation>();
+  final Bus<Navigation> bus = new Bus<Navigation>();
   final Map<String, ButtonElement> buttonMap =
     {'context-home'    : querySelector('#context-switcher .home'),
      'context-homeplus': querySelector('#context-switcher .homeplus'),
      'context-messages': querySelector('#context-switcher .messages')};
+  final DivElement root = querySelector('#context-switcher');
 
   ContextSwitcher._internal() {
     registerEventListeners();

@@ -4,11 +4,11 @@ class CalendarEventEditor {
   static final CalendarEventEditor _singleton = new CalendarEventEditor._internal();
   factory CalendarEventEditor() => _singleton;
 
-  ButtonElement     cancelButton      = querySelector('.cancel');
-  ContactCalendar   contactCalendar   = new ContactCalendar();
-  ReceptionCalendar receptionCalendar = new ReceptionCalendar();
-  DivElement        root              = querySelector('#calendar-event-editor');
-  TextAreaElement   textArea          = querySelector('#calendar-event-editor textarea');
+  final ButtonElement     cancelButton      = querySelector('.cancel');
+  final ContactCalendar   contactCalendar   = new ContactCalendar();
+  final ReceptionCalendar receptionCalendar = new ReceptionCalendar();
+  final DivElement        root              = querySelector('#calendar-event-editor');
+  final TextAreaElement   textArea          = querySelector('#calendar-event-editor textarea');
 
   CalendarEventEditor._internal() {
     registerEventListeners();

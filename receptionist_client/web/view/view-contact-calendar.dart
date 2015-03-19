@@ -4,9 +4,9 @@ class ContactCalendar {
   static final ContactCalendar _singleton = new ContactCalendar._internal();
   factory ContactCalendar() => _singleton;
 
-  UListElement ul = querySelector('#contact-calendar ul');
-
-  Bus<String> bus = new Bus<String>();
+  final Bus<String>  bus = new Bus<String>();
+  final UListElement eventList = querySelector('#contact-calendar ul');
+  final DivElement   root      = querySelector('#contact-calendar');
 
   ContactCalendar._internal() {
     registerEventListeners();
@@ -15,6 +15,6 @@ class ContactCalendar {
   Stream<String> get onEdit => bus.stream;
 
   void registerEventListeners() {
-    ul.onClick.listen((_) => bus.fire('Ret event fra ContactCalendar'));
+    eventList.onClick.listen((_) => bus.fire('Ret event fra ContactCalendar'));
   }
 }

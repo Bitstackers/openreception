@@ -4,17 +4,19 @@ class ContactData {
   static final ContactData _singleton = new ContactData._internal();
   factory ContactData() => _singleton;
 
-  UListElement ul = querySelector('#reception-calendar ul');
-
-  Bus<String> bus = new Bus<String>();
+  final DivElement   root    = querySelector('#contact-data');
+  final OListElement numbers = querySelector('#contact-data .telephone-numbers');
 
   ContactData._internal() {
     registerEventListeners();
   }
 
-  Stream<String> get onEdit => bus.stream;
-
   void registerEventListeners() {
-    ul.onClick.listen((_) => bus.fire('Ret event fra ReceptionCalendar'));
+    numbers.querySelectorAll('li').forEach((LIElement number) {
+      number.onClick.listen((MouseEvent event) {
+        (event.target as LIElement).classes.toggle('selected');
+        (event.target as LIElement).classes.toggle('ringing');
+      });
+    });
   }
 }

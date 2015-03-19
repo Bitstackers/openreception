@@ -251,7 +251,7 @@
                 width: 100%;
               }
 
-              #welcome-message > div > span {
+              #welcome-message .greeting {
                 display: table-cell;
                 vertical-align: middle;
                 width: 100%;
@@ -261,7 +261,7 @@
             </style>
 
             <div>
-              <span>Welcome!</span>
+              <span class="greeting"></span>
             </div>
           </div>
 
@@ -800,8 +800,8 @@
                     <div class="cell">
                       <h5>Telephone numbers</h5>
                       <ol class="telephone-numbers zebra">
-                        <li class=""><span>60431992</span><span class="label">mobil</span></li>
-                        <li class="selected ringing"><span class="secret">00449 107-109-39995109</span><span class="label">privat, hustrus nummer</span></li>
+                        <li><span>60431992</span><span class="label">mobil</span></li>
+                        <li><span class="secret">00449 107-109-39995109</span><span class="label">privat, hustrus nummer</span></li>
                       </ol>
                     </div>
 
@@ -965,7 +965,7 @@
           </div>
 
           <!--
-            #reception-product-description widget
+            #reception-product widget
 
             Role:
               Show the reception product description.
@@ -973,13 +973,13 @@
             Visibility:
               Is controlled by the visibility of #context-home.
           -->
-          <div id="reception-product-description" class="generic-widget layout-margin-top">
+          <div id="reception-product" class="generic-widget layout-margin-top">
             <style scoped>
-              #reception-product-description {
+              #reception-product {
                 flex-grow: 1;
               }
 
-              #reception-product-description > div {
+              #reception-product > div {
                 overflow: auto;
                 padding: 0.3em;
               }
@@ -992,18 +992,18 @@
           </div>
 
           <!--
-            #global-queued-calls widget
+            #global-calls-queue widget
 
             Role:
-              Show a list of currently queued calls. These are calls that are
-              waiting to be answered.
+              Show the global list of currently queued calls. These are calls
+              that are waiting to be answered.
 
             Visibility:
               Is controlled by the visibility of #context-home.
           -->
-          <div id="global-queued-calls" class="generic-widget layout-margin-top">
+          <div id="global-call-queue" class="generic-widget layout-margin-top">
             <style scoped>
-              #global-queued-calls {
+              #global-call-queue {
                 flex-grow: 2;
               }
             </style>
@@ -1017,17 +1017,17 @@
           </div>
 
           <!--
-            #my-queued-calls widget
+            #my-call-queue widget
 
             Role:
-              Show a list of calls that the current agent have put on hold.
+              Show the list of calls that the current agent have put on hold.
 
             Visibility:
               Is controlled by the visibility of #context-home.
           -->
-          <div id="my-queued-calls" class="generic-widget layout-margin-top">
+          <div id="my-call-queue" class="generic-widget layout-margin-top">
             <style scoped>
-              #my-queued-calls {
+              #my-call-queue {
                 flex-grow: 1;
               }
             </style>
