@@ -154,8 +154,8 @@ class Configuration {
       _httpport = content['httpport'];
     }
 
-    if(content.containsKey('notificationserver')) {
-      _notificationServer = Uri.parse(content['notificationserver']);
+    if(content.containsKey('notificationServer')) {
+      _notificationServer = Uri.parse(content['notificationServer']);
     }
 
     if(content.containsKey('recordingsdirectory')) {

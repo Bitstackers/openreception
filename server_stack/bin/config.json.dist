@@ -30,7 +30,6 @@
     "authurl": "http://localhost:4050/",
     "callflowserver": "http://localhost:4242",
     "dialplancompilerserver": "http://localhost:4210",
-    "notificationserver": "http://localhost:4200",
     "notificationServer": "http://localhost:4200",
     
     "recordingsdirectory": "/usr/local/freeswitch/sounds/receptions",
