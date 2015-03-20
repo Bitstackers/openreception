@@ -1,15 +1,13 @@
 name: openreception_acceptance_tests
-version: 0.1.1
-description: OpenReception Acceptance tests
+version: 0.1.2
+description: OpenReception Acceptance and integration tests
 dependencies:
   http: any
   junitconfiguration: any
   logging: any
   openreception_framework:
-    #git: https://github.com/Bitstackers/OpenReceptionFramework.git
-    path: /home/krc/Projects/OpenReceptionFramework
+    git: https://github.com/Bitstackers/OpenReceptionFramework.git
   phonio:
-    path: /home/krc/Projects/Phonio
-    #git: https://github.com/Bitstackers/Phonio.git
+    git: https://github.com/Bitstackers/Phonio.git
   route: any
   unittest: any
