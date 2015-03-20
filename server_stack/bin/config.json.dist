@@ -1,24 +1,48 @@
 {
     "clientid": "identifier",
     "clientsecret": "secret",
-    "dbuser": "user",
-    "dbpassword": "Secret",
+    
+    "dbuser": "openreception",
+    "dbpassword": "secretstuff",
     "dbhost": "localhost",
     "dbport": 5432,
-    "dbname": "dbname",
+    "dbname": "openreception",
+
+    "cdr_server_http_port": 4090,
     "authserver_http_port": 4050,
     "callflow_http_port": 4242,
-    "redirecturi" : "http://localhost:8080/oauth2callback",
-    "clientURL"   : "http://localhost:3030/Bob/web/bob.html",
-    "cache": "/dev/shm/",
+    "reception_http_port" : 4000,
+    "contact_http_port" : 4010,
+    "log_http_port" : 4020,
+    "management_http_port" : 4100,
+    "message_dispatcher_http_port" : 4070,
+    "message_server_http_port" : 4040,
+    "config_server_http_port" : 4080,
+    "notification_http_port" : 4200,
+
+    "mailerPeriod"  : 30,
+    "mailerScript"  : "mailer.py",
+    "emailUsername" : "someone@example.com",
+    "emailPassword" : "secret",
+    "emailFromName" : "Example mail account",
+    "emailFrom"     : "noreply.someone@example.com",
+
+    "authurl": "http://localhost:4050/",
+    "callflowserver": "http://localhost:4242",
+    "dialplancompilerserver": "http://localhost:4210",
+    "notificationserver": "http://localhost:4200",
+    "notificationServer": "http://localhost:4200",
+    
+    "recordingsdirectory": "/usr/local/freeswitch/sounds/receptions",
+
+    "cache": "/dev/shm",
+    "redirecturi": "http://localhost:4050/token/oauth2callback",
+    "clientURL": "http://localhost:3030/Bob/web/bob.html",
     "tokenexpiretime": 3600,
-    "authurl"            : "http://localhost:4050/",
-    "notificationServer" : "http://localhost:4200",
-    "httpport"           : 4242,
+    
     "dialoutgateway"     : "trunk.example.com",
     "eslHostname"        : "localhost",
     "eslPort"            : 8021,
     "eslPassword"        : "ClueCon",
     "servertoken"        : "magickey"
-    
 }
