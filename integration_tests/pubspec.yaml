@@ -6,8 +6,10 @@ dependencies:
   junitconfiguration: any
   logging: any
   openreception_framework:
-    git: https://github.com/Bitstackers/OpenReceptionFramework.git
+    #git: https://github.com/Bitstackers/OpenReceptionFramework.git
+    path: /home/krc/Projects/OpenReceptionFramework
   phonio:
-    git: https://github.com/Bitstackers/Phonio.git
+    path: /home/krc/Projects/Phonio
+    #git: https://github.com/Bitstackers/Phonio.git
   route: any
   unittest: any
