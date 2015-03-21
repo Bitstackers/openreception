@@ -2,7 +2,7 @@ part of or_test_fw;
 
 abstract class Transfer {
     static Logger log = new Logger('$libraryName.CallFlowControl.Transfer');
- 
+
     static Future transferParkedInboundCall() {
       Receptionist receptionist = ReceptionistPool.instance.aquire();
       Customer     caller       = CustomerPool.instance.aquire();
@@ -10,24 +10,26 @@ abstract class Transfer {
 
       Model.Call inboundCall;
       Model.Call outboundCall;
-      
+
       String reception   = "12340003";
       int    receptionID = 1;
       int    contactID   = 2;
       return
         Future.wait([receptionist.initialize(),
-                     caller.initialize()])
+                     caller.initialize(),
+                     callee.initialize()])
         .then((_) => log.info ('Disable autoanswer for ${callee.name}'))
         .then((_) => callee.autoAnswer(false))
+        .then((_) => receptionist.autoAnswer(true))
         .then((_) => log.info ('Customer ${caller.name} dials ${reception}'))
         .then((_) => caller.dial (reception))
 
         .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
         .then((_) => receptionist.waitForCall()
-         .then((Model.Call call) => inboundCall = call)) 
-        .then((_) => log.info ('Receptionist ${receptionist} tries to pick up call $call'))
+         .then((Model.Call call) => inboundCall = call))
+        .then((_) => log.info ('Receptionist ${receptionist} tries to pick up call $inboundCall'))
         .then((_) => receptionist.pickup(inboundCall)
-          .then((Model.Call receivedCall) { 
+          .then((Model.Call receivedCall) {
              expect (inboundCall.ID, equals(receivedCall.ID));
              log.info ('Receptionist ${receptionist} got call $receivedCall');
           }))
@@ -53,6 +55,7 @@ abstract class Transfer {
             }))
         .then((_) => log.info ('Receptionist ${receptionist.user.name} transfers call $outboundCall to $inboundCall.'))
         .then((_) => receptionist.transferCall(inboundCall, outboundCall))
+        .then((_) => log.info ('Receptionist ${receptionist.user.name} transferred call $outboundCall to $inboundCall.'))
         .then((_) => receptionist.waitFor(eventType : Model.EventJSONKey.callTransfer))
         .then((_) => log.info ('Waiting for receptionist ${receptionist.user.name}\'s phone to hang up'))
         .then((_) => receptionist.waitForPhoneHangup())
@@ -69,8 +72,6 @@ abstract class Transfer {
           return Future.wait([receptionist.teardown(),caller.teardown()]);
         });
     }
-
-
 }
 
 
