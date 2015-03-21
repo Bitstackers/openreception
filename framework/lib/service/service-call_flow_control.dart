@@ -77,12 +77,10 @@ class CallFlowControl {
   /**
    * Parks the call identified by [callID].
    */
-  Future<Model.Call> park (String callID) =>
+  Future park (String callID) =>
       this._backed.post
         (appendToken(Resource.CallFlowControl.park
-           (this._host, callID), this._token),'')
-      .then((String response)
-        => new Model.Call.fromMap (JSON.decode(response)));
+           (this._host, callID), this._token),'');
 
   /**
    * Hangs up the call identified by [callID].
@@ -95,12 +93,10 @@ class CallFlowControl {
   /**
    * Transfers the call identified by [callID] to active call [destination].
    */
-  Future<Model.Call> transfer (String callID, String destination) =>
+  Future transfer (String callID, String destination) =>
       this._backed.post
         (appendToken(Resource.CallFlowControl.transfer
-           (this._host, callID, destination), this._token),'')
-      .then((String response)
-        => new Model.Call.fromMap (JSON.decode(response)));
+           (this._host, callID, destination), this._token),'');
 
   /**
    * Retrives the current Call list.
