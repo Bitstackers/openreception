@@ -13,7 +13,7 @@ class Receptionist {
   Transport.Client _transport = null;
 
   Phonio.Call currentCall = null;
-  Queue<Model.Event> eventStack = new Queue();
+  Queue<Model.Event> eventStack = new Queue<Model.Event>();
 
   /// The amout of time the actor will wait before answering an incoming call.
   Duration answerLatency = new Duration(seconds: 0);
