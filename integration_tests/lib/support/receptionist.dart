@@ -111,6 +111,9 @@ class Receptionist {
   Future transferCall(Model.Call inboundCall,
       Model.Call outboundCall) => this.callFlowControl.transfer(inboundCall.ID, outboundCall.ID);
 
+
+  Future park(Model.Call call) => this.callFlowControl.park(call.ID);
+
   /**
    * Returns a Future that completes when an inbound call is
    * received on _the phone_.
@@ -129,7 +132,21 @@ class Receptionist {
       log.finest('$this got expected event, returning current call.');
       return this.currentCall;
     }).timeout(new Duration(seconds: 10));
+  }
+  Future waitForPhoneHangup() {
+    log.finest('Receptionist $this waits for call hangup');
 
+    if (this.currentCall == null) {
+      log.finest('$this already has no call, returning.');
+      return new Future(() => null);
+    }
+
+    log.finest('$this waits for call hangup from event stream.');
+    return this._phone.eventStream.firstWhere(
+        (Phonio.Event event) => event is Phonio.CallDisconnected).then((_) {
+      log.finest('$this got expected event, returning current call.');
+      return null;
+    }).timeout(new Duration(seconds: 10));
   }
 
   Future<Model.Call> originate(String extension, int contactID,
