@@ -67,6 +67,11 @@ void runCallFlowTests() {
         () => CallList.callPresence().then((_) => expect('', isNotNull)));
   });
 
+  group('CallFlowControl.Transfer', () {
+    test ('Inbound Call', Transfer.transferParkedInboundCall);
+    test ('Outbound Call', Transfer.transferParkedOutboundCall);
+  });
+
   group('CallFlowControl.Peer', () {
     test ('Event presence', Peer.eventPresence);
 
