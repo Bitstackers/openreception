@@ -162,8 +162,9 @@ class Receptionist {
       null, int receptionID: null, int timeoutSeconds: 10}) {
 
 
-    Model.Event lookup = (this.eventStack.firstWhere(
-        (Model.Event event) => event.eventName == eventType,
+    bool matchesName (Model.Event event) => event.eventName == eventType;
+
+    Model.Event lookup = (this.eventStack.firstWhere(matchesName,
         orElse: () => null));
 
     if (lookup != null) {
