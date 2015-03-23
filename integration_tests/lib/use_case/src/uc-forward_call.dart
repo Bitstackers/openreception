@@ -57,14 +57,6 @@ abstract class ForwardCall {
     nextStep = 1;
 
     log.finest("Forward call test case: Setting up preconditions...");
-    log.finest("Requesting a customer (caller)...");
-    caller = CustomerPool.instance.aquire();
-
-    log.finest("Requesting a receptionist...");
-    receptionist = ReceptionistPool.instance.aquire();
-
-    log.finest("Requesting a customer (callee)...");
-    callee = CustomerPool.instance.aquire();
 
     log.finest("Put caller agent on manual answer...");
 
@@ -173,6 +165,7 @@ abstract class ForwardCall {
     return receptionist.waitFor(
         eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
       log.finest("Grabbing the 'call_pickup' event...");
+      log.finest(event.call.toJson());
       if (event.call.destination != outboundCall.destination) {
         log.severe(
             'Expected ${event.call.destination} == ${outboundCall.destination}');

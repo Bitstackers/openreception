@@ -26,23 +26,6 @@ abstract class IncomingCall {
     nextStep = 1;
 
     log.finest('Setting up preconditions...');
-
-    log.finest("Requesting a customer (caller)...");
-    caller = CustomerPool.instance.aquire();
-
-    log.finest("Requesting a receptionist...");
-    receptionist = ReceptionistPool.instance.aquire();
-
-
-    log.finest("Requesting a second receptionist...");
-    receptionist2 = ReceptionistPool.instance.aquire();
-
-    //log.finest("Requesting a customer (callee)...");
-    //callee = CustomerPool.instance.aquire();
-
-    log.finest("Select which reception to test...");
-
-    log.finest("Select a reception database connection...");
     receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
         receptionist.authToken, new Transport.Client());
 
@@ -125,7 +108,7 @@ abstract class IncomingCall {
   /**
    * Simulates the receptionist client answering a call. Validates the call received
    */
-  static Future<Model.Call> Receptionist_Answers(Model.Call call, Model.Reception reception) {
+  static void Receptionist_Answers(Model.Call call, Model.Reception reception) {
     step('Receptionist answers');
 
     _validateReception(reception);
@@ -137,9 +120,6 @@ abstract class IncomingCall {
       log.finest('Receptionist gives full greeting:"${reception.greeting}');
     }
 
-    return receptionist.waitFor
-      (eventType: Model.EventJSONKey.callUnlock, callID: call.ID)
-        .then ((Model.CallUnlock event) => event.call);
   }
 
   static void _dumpState(error, stackTrace) {
@@ -187,7 +167,10 @@ abstract class IncomingCall {
         eventType: Model.EventJSONKey.callOffer).timeout(
             new Duration(seconds: 3),
             onTimeout: timeoutHandler).then((Model.CallOffer event) {
-      return event.call;
+
+      inboundCall = event.call;
+
+      return inboundCall;
     });
   }
 
@@ -227,6 +210,7 @@ abstract class IncomingCall {
 
     return receptionStore.get(Reception_ID).then((Model.Reception reception) {
       step("Received information on reception with ID $Reception_ID.");
+      currentReception = reception;
       return reception;
     });
   }
@@ -243,11 +227,9 @@ abstract class IncomingCall {
 
     return receptionist.waitFor(
         eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
-      if (event.call.assignedTo == receptionist.user.ID) {
-        fail(
-            'The arrived pickup event was for ${event.call.assignedTo},'
-                ' and not for ${receptionist.user.ID} as expected.');
-      }
+
+      expect (event.call.assignedTo, equals(receptionist.user.ID));
+      inboundCall = event.call;
 
       log.finest('Receptionist picked up call ${callInfo(event.call)}.');
       return (event.call);
@@ -260,6 +242,7 @@ abstract class IncomingCall {
    */
   static Future incomingCall_II_1() {
     const String receptionExtension = '12340003';
+    Model.Reception selectedReception = null;
 
     return setup()
       .then((_) => Caller_Places_Call (receptionExtension))
@@ -282,11 +265,12 @@ abstract class IncomingCall {
       .then((_) => Call_Announced_As_Unlocked ())
       .then((_) => step ("Client-N->Receptionist-N: Queue: <reception name> (venter)"))
       .then((_) => step ("Receptionist-N->Client-N: state-switch-free"))
-      .then((_) => Request_Information (inboundCall.receptionID))
+      .then((_) => Request_Information (inboundCall.receptionID)
+        .then((Model.Reception reception) => selectedReception = reception))
       .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
       .then((_) => Call_Allocation_Acknowledgement ())
       .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
-      .then((_) => Receptionist_Answers (inboundCall, currentReception))
+      .then((_) => Receptionist_Answers (inboundCall, selectedReception))
       .catchError((error, stackTrace) => log.shout (error,stackTrace))
       .whenComplete(teardown);
   }
@@ -348,7 +332,6 @@ abstract class IncomingCall {
       .then((_) => step ("Client-N->Receptionist-N: Information on <reception name> (with full greeting)."))
       .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
       .then((_) => Receptionist_Answers (inboundCall, currentReception))
-      .catchError((error, stackTrace) => log.shout (error,stackTrace))
       .whenComplete(teardown);
   }
 
