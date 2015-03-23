@@ -66,6 +66,7 @@ abstract class Transfer {
         .then((_) => log.info ('Callee ${callee} waits for hang up'))
         .then((_) => callee.waitForHangup())
         .then((_) => log.info ('Test complete. Cleaning up'))
+        .catchError(log.shout)
         .whenComplete(() {
           ReceptionistPool.instance.release(receptionist);
           CustomerPool.instance.release(caller);
@@ -140,6 +141,7 @@ abstract class Transfer {
           .then((Model.Call receivedCall) {
              expect (inboundCall.ID, equals(receivedCall.ID));
              log.info ('Receptionist ${receptionist} got call $receivedCall');
+             return;
           }))
         .then((_) => receptionist.waitForInboundCall())
         .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup))
@@ -157,6 +159,7 @@ abstract class Transfer {
         .then((_) => log.info ('Callee ${callee} waits for hang up'))
         .then((_) => callee.waitForHangup())
         .then((_) => log.info ('Test complete. Cleaning up'))
+        .catchError(log.shout)
         .whenComplete(() {
           ReceptionistPool.instance.release(receptionist);
           CustomerPool.instance.release(caller);
