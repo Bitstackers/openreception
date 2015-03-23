@@ -53,11 +53,12 @@ part 'managementserver/tests.dart';
 part 'reception/all_tests.dart';
 part 'reception/src/reception_store.dart';
 
-/// Use cases
-part 'use_case/uc-find_contact.dart';
-part 'use_case/uc-forward_call.dart';
-part 'use_case/uc-incoming_call.dart';
-part 'use_case/uc-send_message.dart';
+/// Use case tests
+part 'use_case/all_tests.dart';
+part 'use_case/src/uc-find_contact.dart';
+part 'use_case/src/uc-forward_call.dart';
+part 'use_case/src/uc-incoming_call.dart';
+part 'use_case/src/uc-send_message.dart';
 
 const String libraryName = 'Test';
 
