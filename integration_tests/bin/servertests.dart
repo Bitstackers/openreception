@@ -46,6 +46,7 @@ void main() {
 
   runAllTests();
   runReceptionTests();
+  runUseCaseTests();
 
   group ('TestFramework', () {
     tearDown (() {
