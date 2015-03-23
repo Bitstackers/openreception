@@ -4,13 +4,19 @@ class ReceptionProduct {
   static final ReceptionProduct _singleton = new ReceptionProduct._internal();
   factory ReceptionProduct() => _singleton;
 
-  final DivElement root = querySelector('#reception-product');
-
+  /**
+   *
+   */
   ReceptionProduct._internal() {
-    registerEventListeners();
+    _registerEventListeners();
   }
 
-  void registerEventListeners() {
+  static final DivElement _root = querySelector('#reception-product');
+
+  /**
+   *
+   */
+  void _registerEventListeners() {
     // TODO (TL): Stuff...
   }
 }

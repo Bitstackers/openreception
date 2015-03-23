@@ -24,6 +24,7 @@ button::-moz-focus-inner {
   height: 100%;
   z-index: 0;
   background-color: #fefefe;
+  border: solid 2px #fefefe;
 }
 
 .display-flex-column {
@@ -37,14 +38,12 @@ button::-moz-focus-inner {
 }
 
 .focus {
-  transition: box-shadow 0.1s ease-in-out;
-  box-shadow: 0.2em 0.2em 0.2em #888;
+  box-shadow: 0.25em 0.25em 0.25em #bbb;
 }
 
 .generic-widget {
   position: relative;
   background-color: #f8f8f8;
-  transition: box-shadow 0.1s ease-in-out;
 }
 
 .generic-widget-body {

@@ -4,13 +4,19 @@ class GlobalCallQueue {
   static final GlobalCallQueue _singleton = new GlobalCallQueue._internal();
   factory GlobalCallQueue() => _singleton;
 
-  final DivElement root = querySelector('#global-call-queue');
-
+  /**
+   *
+   */
   GlobalCallQueue._internal() {
-    registerEventListeners();
+    _registerEventListeners();
   }
 
-  void registerEventListeners() {
+  static final DivElement _root = querySelector('#global-call-queue');
+
+  /**
+   *
+   */
+  void _registerEventListeners() {
     // TODO (TL): Stuff...
   }
 }

@@ -1,11 +1,13 @@
+import 'dart:html';
+
 import 'classes/navigation.dart';
 import 'view/view.dart';
 
 void main() {
   AgentInfo             agentInfo             = new AgentInfo();
-  CalendarEventEditor   calendarEventEditor   = new CalendarEventEditor();
+  CalendarEditor        calendarEditor        = new CalendarEditor();
   Contexts              contexts              = new Contexts();
-  ContextSwitcher       contextSwitcher       = new ContextSwitcher()..navigate(home);
+  ContextSwitcher       contextSwitcher       = new ContextSwitcher();
   ContactCalendar       contactCalendar       = new ContactCalendar();
   ContactData           contactData           = new ContactData();
   ContactList           contactList           = new ContactList();
@@ -19,4 +21,11 @@ void main() {
   ReceptionSalesCalls   receptionSalesCalls   = new ReceptionSalesCalls();
   ReceptionSelector     receptionSelector     = new ReceptionSelector();
   WelcomeMessage        welcomeMessage        = new WelcomeMessage();
+  Navigate              navigate              = new Navigate();
+
+  if(window.location.hash.isEmpty) {
+    navigate.goHome();
+  } else {
+    navigate.goWindowLocation();
+  }
 }

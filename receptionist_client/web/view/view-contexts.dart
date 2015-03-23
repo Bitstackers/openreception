@@ -4,31 +4,46 @@ class Contexts {
   static final Contexts _singleton = new Contexts._internal();
   factory Contexts() => _singleton;
 
-  final Map<String, HtmlElement> contextMap =
+  /**
+   *
+   */
+  Contexts._internal() {
+    _registerEventListeners();
+  }
+
+  final Map<String, HtmlElement> _contextMap =
     {'context-home'    : querySelector('#context-home'),
      'context-homeplus': querySelector('#context-homeplus'),
      'context-messages': querySelector('#context-messages')};
-  final ContextSwitcher contextSwitcher = new ContextSwitcher();
+  final Navigate _navigate = new Navigate();
 
-  Contexts._internal() {
-    registerEventListeners();
-  }
-
-  void activateContext(Navigation to) {
-    contextMap.forEach((id, element) {
-      id == to.contextId ? setVisible(element) : setHidden(element);
+  /**
+   *
+   */
+  void onNavigation(Place place) {
+    _contextMap.forEach((id, element) {
+      id == place.contextId ? _setVisible(element) : _setHidden(element);
     });
   }
 
-  void registerEventListeners() {
-    contextSwitcher.onClick.listen(activateContext);
+  /**
+   *
+   */
+  void _registerEventListeners() {
+    _navigate.onGo.listen(onNavigation);
   }
 
-  void setHidden(HtmlElement element) {
+  /**
+   *
+   */
+  void _setHidden(HtmlElement element) {
     element.style.zIndex = '0';
   }
 
-  void setVisible(HtmlElement element) {
+  /**
+   *
+   */
+  void _setVisible(HtmlElement element) {
     element.style.zIndex = '1';
   }
 }

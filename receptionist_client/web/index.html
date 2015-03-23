@@ -126,18 +126,18 @@
       <section id="context-home" class="context display-flex-row">
 
         <!--
-          #calendar-event-editor widget
+          #calendar-editor widget
 
           Role:
             Provides a widget to create/edit/delete calendar events for contacts
             and receptions.
 
           Visibility:
-            TODO (TL): Write something here..
+            Is controlled by the visibility of #context-home.
         -->
-        <div id="calendar-event-editor" class="generic-widget" hidden>
+        <div id="calendar-editor" class="generic-widget" hidden>
           <style scoped>
-            #calendar-event-editor {
+            #calendar-editor {
               position: absolute;
               top: 30%;
               left: 35%;
@@ -147,50 +147,54 @@
               box-shadow: 0 0 5em 2em rgba(0,0,0,0.2);
             }
 
-            #calendar-event-editor .generic-widget-body {
+            #calendar-editor .bad-input {
+              border-color: red;
+            }
+
+            #calendar-editor .generic-widget-body {
               display: flex;
               flex-direction: column;
             }
 
-            #calendar-event-editor .generic-widget-body div {
+            #calendar-editor .generic-widget-body div {
               flex-grow: 1;
               display: flex;
             }
 
-            #calendar-event-editor .padding03 {
+            #calendar-editor .padding03 {
               padding: 0.3em;
             }
 
-            #calendar-event-editor .event-start,
-            #calendar-event-editor .event-stop {
+            #calendar-editor .event-start,
+            #calendar-editor .event-stop {
               align-items: center;
               justify-content: center;
             }
 
-            #calendar-event-editor .event-buttons {
+            #calendar-editor .event-buttons {
               align-items: center;
               justify-content: center;
             }
 
-            #calendar-event-editor .event-buttons button {
+            #calendar-editor .event-buttons button {
               height: 2em;
               width: 5em;
               margin-left: 1em;
               font-size: 1em;
             }
 
-            #calendar-event-editor input {
+            #calendar-editor input {
               padding-right: 0.3em;
               font-size: 1em;
               padding: 0.3em;
               margin: 0 0.3em;
             }
 
-            #calendar-event-editor span {
+            #calendar-editor span {
               padding-right: 0.3em;
             }
 
-            #calendar-event-editor textarea {
+            #calendar-editor textarea {
               margin-top: 0.3em;
               resize: none;
               width: 100%;
@@ -309,7 +313,7 @@
 
                 <h4 class="generic-widget-headline">Reception Calendar</h4>
                 <ul class="generic-widget-body generic-widget-list zebra">
-                  <li>Some event</li>
+                  <li><a href="#context-home.reception-commands">Link til reception-commands</a></li>
                   <li>Some other event</li>
                   <li>Some event</li>
                   <li>Some other event</li>
@@ -589,21 +593,22 @@
                       flex-grow: 2;
                     }
 
-                    #contact-list > div > input {
+                    #contact-list .filter {
                       width: calc(100% - 0.6em);
                       margin: 0.5em 0.3em 0.3em 0.3em;
-                      height: 1.5em;
+                      height: 2em;
                       font-size: 1em;
+                      padding: 0 0.3em;
                     }
 
-                    #contact-list > div > ul {
+                    #contact-list .generic-widget-list {
                       height: calc(100% - 2.3em);
                     }
                   </style>
 
                   <h4 class="generic-widget-headline">Employees</h4>
                   <div class="generic-widget-body">
-                    <input placeholder="søg....">
+                    <input class="filter" placeholder="søg....">
                     <ul class="generic-widget-list zebra">
                       <li>Arne And</li>
                       <li>Birgitte Bi</li>
@@ -856,7 +861,7 @@
                 width: 100%;
               }
 
-              #agent-info > div > .stats {
+              #agent-info .stats {
                 flex-grow: 1;
                 display: flex;
                 align-items: center;
@@ -865,7 +870,7 @@
                 width: 100%;
               }
 
-              #agent-info > div > .stats > table {
+              #agent-info .stats > table {
                 padding: 0;
                 border-collapse: collapse;
                 height: 3em;
@@ -873,11 +878,11 @@
                 font-weight: bold;
               }
 
-              #agent-info > div > .stats > table td {
+              #agent-info .stats > table td {
                 padding-left: 0.5em;
               }
 
-              #agent-info > div > .state {
+              #agent-info .icons {
                 flex-grow: 1;
                 display: flex;
                 justify-content: flex-end;
@@ -887,7 +892,7 @@
                 width: 100%;
               }
 
-              #agent-info > div > .state > img {
+              #agent-info .icons > img {
                 min-height: 3em;
                 min-width: 3em;
                 height: 3em;
@@ -901,19 +906,19 @@
                 <table>
                   <tr>
                     <td>Active:</td>
-                    <td>0</td>
+                    <td class="active-count"></td>
                   </tr>
                   <tr>
                     <td>Paused:</td>
-                    <td>0</td>
+                    <td class="paused-count"></td>
                   </tr>
                 </table>
               </div>
 
-              <div class="state">
-                <img src="images/alert.svg">
-                <img src="images/agentsactive.svg">
-                <img src="images/face.png">
+              <div class="icons">
+                <img class="alert-state" src="">
+                <img class="agent-state" src="">
+                <img class="face" src="">
               </div>
             </div>
           </div>
@@ -946,6 +951,7 @@
 
             Role:
               Show the commands for handling calls from sales people.
+
             Visibility:
               Is controlled by the visibility of #context-home.
           -->
@@ -1061,54 +1067,316 @@
       -->
       <section id="context-homeplus" class="context display-flex-row">
 
-        <!--
-          Reception addresses widget
-        -->
-        <!--<div id="reception-addresses" class="generic-widget layout-margin-top">
-          <style scoped>
-            #reception-addresses {
-              flex-grow: 1;
-            }
-          </style>
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
-          ReceptionAddresses
-        </div>-->
+          <!--
+            #reception-alt-names widget
 
-        <!--
-          Call originate widget
-        -->
-        <!--<div id="call-originate" class="generic-widget layout-margin-top">
-          <style scoped>
-            #call-originate {
-              height: 4em;
-            }
-          </style>
+            Role:
+              Show the alternate reception/company names.
 
-          call originate
-        </div>-->
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-alt-names" class="generic-widget">
+            <style scoped>
+              #reception-alt-names {
+                flex-grow: 1;
+              }
 
-        context-homeplus
+            </style>
+
+            <h4 class="generic-widget-headline">::reception alt names::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>Huset Responsum K/S</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-addresses widget
+
+            Role:
+              Show the reception addresses.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-addresses" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-addresses {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception addresses::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>Farum Gydevej 87, 3520 Farum</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-email-addresses widget
+
+            Role:
+              Show the reception email addresses.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-email-addresses" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-email-addresses {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception email addresses::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>info@responsum.dk</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-telephone-numbers widget
+
+            Role:
+              Show the reception telephone numbers.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-telephone-numbers" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-telephone-numbers {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception telephone numbers::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>8832 9100</li>
+              <li>6043 1992</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #reception-websites widget
+
+            Role:
+              Show the reception websites.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-websites" class="generic-widget">
+            <style scoped>
+              #reception-websites {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception websites::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>www.responsum.dk</li>
+              <li>www.telefonpasning.guru</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-vat-numbers widget
+
+            Role:
+              Show the reception VAT numbers.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-vat-numbers" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-vat-numbers {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception VAT numbers::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>Responsum K/S : 4545 6565</li>
+              <li>Huset Responsum K/S : 7777 8888</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-type widget
+
+            Role:
+              Show the reception type.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-type" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-type {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception type::</h4>
+            <ul class="generic-widget-body generic-widget-list">
+              <li>Vi svarer kald for dem når de er optaget.</li>
+              <li>Bemærk: Kald har stået i kø hos dem i 3 minutter inden vi får kaldene.</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-bank-info widget
+
+            Role:
+              Show the reception banking information.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-bank-info" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-bank-info {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception bank info::</h4>
+            <ul class="generic-widget-body generic-widget-list">
+              <li>Vestjysk Bank konto 1160 987654321</li>
+              <li>Bitcoin addresse #13213498465198651651</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="display-flex-column" style="flex-grow: 2;">
+
+          <!--
+            #reception-mini-wiki widget
+
+            Role:
+              Show the reception mini wiki.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+          -->
+          <div id="reception-mini-wiki" class="generic-widget">
+            <style scoped>
+              #reception-mini-wiki {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::reception mini wiki::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              <h2>Bla bla</h2>
+              <p>Et eller andet vildt sjovt og måske <b>fed tekst?</b>
+              <p>Foo!</p>
+              <ul>
+                <li>En liste!</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
       </section>
 
-      <!--
-        #context-messages widget
-
-        Role:
-          Parent for all widgets that belong in the "messages" context. Contexts
-          serves as a way to group widgets so as to easily handle toggling
-          visibility.
-
-        Visibility:
-          Hidden   #context-messages display:none
-          Visible: #context-messages display:flex
-
-          Initial state is display:none.
-
-          Note that visibility on #context-messages and its siblings MUST be
-          mutually exclusive.
-      -->
       <section id="context-messages" class="context display-flex-row">
-        context-messages
+
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #message-archive-filter widget
+
+            Role:
+              Show the message archive filter widget.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+          -->
+          <div id="message-archive-filter" class="generic-widget">
+            <style scoped>
+              #message-archive-filter {
+                flex-grow: 2;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::message archive filter::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              message-archive-filter
+            </div>
+          </div>
+
+          <!--
+            #message-archive-edit widget
+
+            Role:
+              Show the message archive edit widget.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+          -->
+          <div id="message-archive-edit" class="generic-widget layout-margin-top">
+            <style scoped>
+              #message-archive-edit {
+                flex-grow: 3;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::message archive edit::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              message-archive-edit
+            </div>
+          </div>
+
+        </div>
+
+        <div class="display-flex-row" style="flex-grow: 3;">
+
+          <!--
+            #message-archive widget
+
+            Role:
+              Show the message archive.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+          -->
+          <div id="message-archive" class="generic-widget">
+            <style scoped>
+              #message-archive {
+                flex-grow: 1;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::message archive::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              message-archive table
+            </div>
+          </div>
+
+        </div>
+
       </section>
     </div>
   </div>

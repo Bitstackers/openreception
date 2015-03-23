@@ -4,13 +4,19 @@ class MessageCompose {
   static final MessageCompose _singleton = new MessageCompose._internal();
   factory MessageCompose() => _singleton;
 
-  final DivElement root = querySelector('#message-compose');
-
+  /**
+   *
+   */
   MessageCompose._internal() {
-    registerEventListeners();
+    _registerEventListeners();
   }
 
-  void registerEventListeners() {
+  static final DivElement _root = querySelector('#message-compose');
+
+  /**
+   *
+   */
+  void _registerEventListeners() {
     // TODO (TL): Stuff...
   }
 }

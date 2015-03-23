@@ -4,13 +4,19 @@ class MyCallQueue {
   static final MyCallQueue _singleton = new MyCallQueue._internal();
   factory MyCallQueue() => _singleton;
 
-  final DivElement root = querySelector('#my-call-queue');
-
+  /**
+   *
+   */
   MyCallQueue._internal() {
-    registerEventListeners();
+    _registerEventListeners();
   }
 
-  void registerEventListeners() {
+  static final DivElement _root = querySelector('#my-call-queue');
+
+  /**
+   *
+   */
+  void _registerEventListeners() {
     // TODO (TL): Stuff...
   }
 }
