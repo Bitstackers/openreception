@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  outline: 0;
 }
 
 body {
@@ -77,6 +78,15 @@ button::-moz-focus-inner {
   padding: 0.3em;
 }
 
+input {
+  border: solid 1px #aaa;
+}
+
+input:focus,
+input:focus  ~label {
+  background-color: #fbe7b1;
+}
+
 .layout-margin-right {
   margin-right: 0.7em;
 }
@@ -87,6 +97,14 @@ button::-moz-focus-inner {
 
 .none {
   display: none;
+}
+
+textarea {
+  border: solid 1px #aaa;
+}
+
+textarea:focus {
+  background-color: #fbe7b1;
 }
 
 .zebra li:nth-of-type(even) {

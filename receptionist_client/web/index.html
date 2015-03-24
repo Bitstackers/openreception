@@ -45,6 +45,9 @@
 
       Visibility:
         Is controlled by the #bob-active widget.
+
+      Tabindex:
+        All button elements are set at tabindex -1. Never change this.
     -->
     <div id="context-switcher" class="generic-widget layout-margin-right">
       <style scoped>
@@ -60,7 +63,7 @@
           width: 2.5em;
           height: 2.5em;
           margin-bottom: 0.7em;
-          border: none;
+          border: 0;
           background-size: contain;
           outline: 0;
         }
@@ -133,7 +136,12 @@
             and receptions.
 
           Visibility:
-            Is controlled by the visibility of #context-home.
+            Is controlled by the visibility of #context-home and the hidden
+            attribute on the root element.
+
+          Tabindex:
+            Textarea, input and button elements set to tabindex -1 on blur.
+            MUST be updated on focus.
         -->
         <div id="calendar-editor" class="generic-widget" hidden>
           <style scoped>
@@ -205,26 +213,26 @@
           <h4 class="generic-widget-headline">::create/edit/delete calendar event::</h4>
           <div class="generic-widget-body padding03">
             <div class="event-message">
-              <textarea class="padding03"></textarea>
+              <textarea class="padding03" tabindex="-1"></textarea>
             </div>
             <div class="event-start">
-              <span>::start::</span><input class="start-hour" type="number" placeholder="tt" min="0" max="23"> :
-              <input class="start-minute" type="number" placeholder="mm" min="0" max="59">
-              <input class="start-day" type="number" placeholder="DD" min="1" max="31"> /
-              <input class="start-month" type="number" placeholder="MM" min="1" max="12"> /
-              <input class="start-year" type="number" placeholder="YYYY" min="2014" max="2024">
+              <span>::start::</span><input class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <input class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
+              <input class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
+              <input class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
             <div class="event-stop">
-              <span>::stop::</span><input class="stop-hour" type="number" placeholder="tt" min="0" max="23"> :
-              <input class="stop-minute" type="number" placeholder="mm" min="0" max="59">
-              <input class="stop-day" type="number" placeholder="DD" min="1" max="31"> /
-              <input class="stop-month" type="number" placeholder="MM" min="1" max="12"> /
-              <input class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024">
+              <span>::stop::</span><input class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <input class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
+              <input class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
+              <input class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
             <div class="event-buttons">
-              <button class="save">::save::</button>
-              <button class="delete">::delete::</button>
-              <button class="cancel">::cancel::</button>
+              <button class="save" tabindex="-1">::save::</button>
+              <button class="delete" tabindex="-1">::delete::</button>
+              <button class="cancel" tabindex="-1">::cancel::</button>
             </div>
           </div>
         </div>
@@ -240,6 +248,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
           -->
           <div id="welcome-message" class="generic-widget">
             <style scoped>
@@ -280,6 +291,9 @@
 
                 Visibility:
                   Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  Select element set to -1 on blur. MUST be updated on focus.
               -->
               <div id="reception-selector" class="generic-widget">
                 <style scoped>
@@ -290,7 +304,7 @@
                   }
                 </style>
 
-                <select>
+                <select tabindex="-1">
                   <option>foo</option>
                 </select>
               </div>
@@ -303,6 +317,9 @@
 
                 Visibility:
                   Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  Ul element set to -1 on blur. MUST be updated on focus.
               -->
               <div id="reception-calendar" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -312,7 +329,7 @@
                 </style>
 
                 <h4 class="generic-widget-headline">Reception Calendar</h4>
-                <ul class="generic-widget-body generic-widget-list zebra">
+                <ul class="generic-widget-body generic-widget-list zebra" tabindex="-1">
                   <li><a href="#context-home.reception-commands">Link til reception-commands</a></li>
                   <li>Some other event</li>
                   <li>Some event</li>
@@ -328,6 +345,9 @@
 
                 Visibility:
                   Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  Ul element set to -1 on blur. MUST be updated on focus.
               -->
               <div id="reception-commands" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -337,7 +357,7 @@
                 </style>
 
                 <h4 class="generic-widget-headline">Commands</h4>
-                <ul class="generic-widget-body generic-widget-list zebra">
+                <ul class="generic-widget-body generic-widget-list zebra" tabindex="-1">
                   <li>Some command</li>
                   <li>Some other command</li>
                   <li>Some command</li>
@@ -361,6 +381,10 @@
 
                 Visibility:
                   Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  All input, textarea and button elements set to -1 on blur.
+                  MUST be Updated on focus.
               -->
               <div id="message-compose" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -437,7 +461,7 @@
                     margin-top: 0.7em;
                   }
 
-                  #message-compose .phone-numbers input.land {
+                  #message-compose .phone-numbers input.landline {
                     margin-right: 0.3em;
                   }
 
@@ -508,66 +532,66 @@
                 </style>
 
                 <h4 class="generic-widget-headline">
-                  ::Message Compose::
+                  ::message Compose::
                   <span class="show-recipients">::show-recipients::</span>
                 </h4>
                 <div class="generic-widget-body display-flex-column padding03">
                   <div class="recipients padding03 recipients-hidden">
-                    <ul>
+                    <ul class="generic-widget-list">
                       <li>Thomas Løcke</li>
                       <li class="cc">Trine Løcke</li>
                       <li class="bcc">Steen Løcke</li>
                     </ul>
                   </div>
                   <div class="name-hint display-flex-row">
-                    <input type="text" placeholder="Name Hint" value="" disabled>
+                    <input type="text" placeholder="::name hint::" value="" disabled>
                   </div>
 
                   <div class="names display-flex-row">
-                    <input type="text" class="caller" placeholder="Caller Name">
-                    <input type="text" class="company" placeholder="Company Name">
+                    <input type="text" class="caller" placeholder="::caller name::" tabindex="-1">
+                    <input type="text" class="company" placeholder="::company name::" tabindex="-1">
                   </div>
 
                   <div class="phone-numbers display-flex-row">
-                    <input type="text" class="land" placeholder="Phone">
-                    <input type="text" class="cell" placeholder="Cell Phone">
-                    <input type="text" class="extension" placeholder="local Extension">
+                    <input type="text" class="landline" placeholder="::phone::" tabindex="-1">
+                    <input type="text" class="cell" placeholder="::cell phone::" tabindex="-1">
+                    <input type="text" class="extension" placeholder="::local extension::" tabindex="-1">
                   </div>
 
                   <div class="message display-flex-row">
-                    <textarea class="padding03" placeholder="Message" ></textarea>
+                    <textarea class="padding03" placeholder="::message::" tabindex="-1"></textarea>
                   </div>
 
                   <div class="checks-and-buttons display-flex-row">
                     <div class="checks">
                       <ul>
                         <li>
-                          <input id="message-compose-please-call" class="please-call" type="checkbox">
-                          <label for="message-compose-please-call">::Ring venligst::</label>
+                          <input id="message-compose-please-call" class="please-call" type="checkbox" tabindex="-1">
+                          <label for="message-compose-please-call">::please call::</label>
                         </li>
                         <li>
-                          <input id="message-compose-calls-back" class="calls-back message-tag" type="checkbox">
-                          <label for="message-compose-calls-back">::Ringer selv tilbage::</label>
+                          <input id="message-compose-calls-back" class="calls-back" type="checkbox" tabindex="-1">
+                          <label for="message-compose-calls-back">::calls-back::</label>
                         </li>
                         <li>
-                          <input id="message-compose-has-called" class="has-called message-tag" type="checkbox">
-                          <label for="message-compose-has-called">::Har ringet::</label>
+                          <input id="message-compose-has-called" class="has-called" type="checkbox" tabindex="-1">
+                          <label for="message-compose-has-called">::has-called::</label>
                         </li>
                         <li>
-                          <input id="message-compose-urgent" class="urgent message-tag" type="checkbox">
-                          <label for="message-compose-urgent">::Haster::</label>
+                          <input id="message-compose-urgent" class="urgent" type="checkbox" tabindex="-1">
+                          <label for="message-compose-urgent">::urgent::</label>
                         </li>
                         <li>
-                          <input id="message-compose-draft" class="draft message-tag" type="checkbox">
-                          <label for="message-compose-draft">::Kladde::</label>
+                          <input id="message-compose-draft" class="draft" type="checkbox" tabindex="-1">
+                          <label for="message-compose-draft">::draft::</label>
                         </li>
                       </ul>
                     </div>
 
                     <div class="buttons display-flex-row">
-                      <button class="cancel" disabled>::Cancel::</button>
-                      <button class="save" disabled>::Save::</button>
-                      <button class="send" disabled>::Send::</button>
+                      <button class="cancel" disabled tabindex="-1">::cancel::</button>
+                      <button class="save" disabled tabindex="-1">::save::</button>
+                      <button class="send" disabled tabindex="-1">::send::</button>
                     </div>
                   </div>
                 </div>
@@ -586,6 +610,10 @@
 
                   Visibility:
                     Is controlled by the visibility of #context-home.
+
+                  Tabindex:
+                    Input and ul element set to -1 on blur. MUST be updated on
+                    focus.
                 -->
                 <div id="contact-list" class="generic-widget layout-margin-right">
                   <style scoped>
@@ -608,8 +636,8 @@
 
                   <h4 class="generic-widget-headline">Employees</h4>
                   <div class="generic-widget-body">
-                    <input class="filter" placeholder="søg....">
-                    <ul class="generic-widget-list zebra">
+                    <input class="filter" placeholder="søg...." tabindex="-1">
+                    <ul class="generic-widget-list zebra" tabindex="-1">
                       <li>Arne And</li>
                       <li>Birgitte Bi</li>
                     </ul>
@@ -624,6 +652,9 @@
 
                   Visibility:
                     Is controlled by the visibility of #context-home.
+
+                  Tabindex:
+                    Ul element set to -1 on blur. MUST be updated on focus.
                 -->
                 <div id="contact-calendar" class="generic-widget">
                   <style scoped>
@@ -651,6 +682,9 @@
 
                 Visibility:
                   Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  None set.
               -->
               <div id="contact-data" class="generic-widget layout-margin-top">
                 <style scoped>
@@ -846,6 +880,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-home
+
+            Tabindex:
+              None set.
           -->
           <div id="agent-info" class="generic-widget">
             <style scoped>
@@ -931,6 +968,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-opening-hours" class="generic-widget layout-margin-top">
             <style scoped>
@@ -954,13 +994,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-sales-calls" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-sales-calls {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">Sales Calls</h4>
@@ -978,6 +1020,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-product" class="generic-widget layout-margin-top">
             <style scoped>
@@ -1006,6 +1051,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
           -->
           <div id="global-call-queue" class="generic-widget layout-margin-top">
             <style scoped>
@@ -1030,6 +1078,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
           -->
           <div id="my-call-queue" class="generic-widget layout-margin-top">
             <style scoped>
@@ -1077,13 +1128,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-alt-names" class="generic-widget">
             <style scoped>
               #reception-alt-names {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception alt names::</h4>
@@ -1100,13 +1153,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-addresses" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-addresses {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception addresses::</h4>
@@ -1123,13 +1178,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-email-addresses" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-email-addresses {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception email addresses::</h4>
@@ -1146,13 +1203,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-telephone-numbers" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-telephone-numbers {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception telephone numbers::</h4>
@@ -1174,13 +1233,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-websites" class="generic-widget">
             <style scoped>
               #reception-websites {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception websites::</h4>
@@ -1198,13 +1259,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-vat-numbers" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-vat-numbers {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception VAT numbers::</h4>
@@ -1222,13 +1285,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-type" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-type {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception type::</h4>
@@ -1246,13 +1311,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-bank-info" class="generic-widget layout-margin-top">
             <style scoped>
               #reception-bank-info {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception bank info::</h4>
@@ -1274,13 +1341,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
           -->
           <div id="reception-mini-wiki" class="generic-widget">
             <style scoped>
               #reception-mini-wiki {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::reception mini wiki::</h4>
@@ -1310,13 +1379,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
           -->
           <div id="message-archive-filter" class="generic-widget">
             <style scoped>
               #message-archive-filter {
                 flex-grow: 2;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::message archive filter::</h4>
@@ -1333,6 +1404,9 @@
 
             Visibility:
               Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
           -->
           <div id="message-archive-edit" class="generic-widget layout-margin-top">
             <style scoped>
@@ -1360,13 +1434,15 @@
 
             Visibility:
               Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
           -->
           <div id="message-archive" class="generic-widget">
             <style scoped>
               #message-archive {
                 flex-grow: 1;
               }
-
             </style>
 
             <h4 class="generic-widget-headline">::message archive::</h4>

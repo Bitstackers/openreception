@@ -15,8 +15,7 @@ class ReceptionCalendar {
 
   final Bus<String>  _bus       = new Bus<String>();
   final UListElement _eventList = _root.querySelector('ul');
-  final Place        _here      = new Place('context-home', 'reception-calendar');
-  final Navigate     _navigate  = new Navigate();
+  final Place        _here      = new Place('context-home', _root.id);
 
   /**
    *
@@ -26,28 +25,12 @@ class ReceptionCalendar {
   /**
    *
    */
-  void onNavigate(Place place) {
-    if(_root.id == place.widgetId) {
-      _root.focus();
-      _root.classes.toggle('focus', true);
-    } else {
-      _root.blur();
-      _root.classes.toggle('focus', false);
-    }
-  }
-
-  /**
-   *
-   */
   void _registerEventListeners() {
-    _root.onClick.listen((_) {
-      if(!_root.classes.contains('focus')) {
-        _navigate.go(_here);
-      }
-    });
+    _root    .onClick.listen((_) => _activateMe(_root, _here));
+    _hotKeys .onAltA .listen((_) => _activateMe(_root, _here));
+    _navigate.onGo   .listen((Place place) => _setWidgetState(_root, _eventList, place));
 
-    _navigate.onGo.listen(onNavigate);
-
+    // TODO (TL): temporary stuff
     _eventList.onDoubleClick.listen((_) => _bus.fire('Ret event fra ReceptionCalendar'));
   }
 }

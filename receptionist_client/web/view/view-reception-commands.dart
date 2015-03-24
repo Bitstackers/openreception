@@ -14,34 +14,14 @@ class ReceptionCommands {
   static final DivElement _root = querySelector('#reception-commands');
 
   final UListElement _commandList = _root.querySelector('ul');
-  final Place        _here        = new Place('context-home', 'reception-commands');
-  final Navigate     _navigate    = new Navigate();
-
-  /**
-   *
-   */
-  void _onNavigate(Place place) {
-    if(_root.id == place.widgetId) {
-      _root.focus();
-      _root.classes.toggle('focus', true);
-    } else {
-      _root.blur();
-      _root.classes.toggle('focus', false);
-    }
-  }
+  final Place        _here        = new Place('context-home', _root.id);
 
   /**
    *
    */
   void _registerEventListeners() {
-    _root.onClick.listen((_) {
-      if(!_root.classes.contains('focus')) {
-        _navigate.go(_here);
-      } else {
-        print("ReceptionCommands I'm already active!");
-      }
-    });
-
-    _navigate.onGo.listen(_onNavigate);
+    _root    .onClick.listen((_) => _activateMe(_root, _here));
+    _hotKeys .onAltH .listen((_) => _activateMe(_root, _here));
+    _navigate.onGo   .listen((Place place) => _setWidgetState(_root, _commandList, place));
   }
 }

@@ -54,13 +54,13 @@ class Navigate {
     String hash = window.location.hash.substring(1);
 
     if(hash.isEmpty) {
-      _bus.fire(new Place('context-home', null));
+      goHome();
     } else {
       final List<String> segments  = hash.split('.');
       final String       contextId = segments.first;
       final String       widgetId  = segments.last;
 
-      _bus.fire(new Place(contextId, widgetId));
+      go(new Place(contextId, widgetId));
     }
   }
 
