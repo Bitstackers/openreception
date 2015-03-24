@@ -38,8 +38,8 @@ runUseCaseTests() {
 
 
 
-    //test('1 a I', ForwardCall.forward_call_1_a_I);
-    //test('2', FindContact.find_contact_2);
+    test('1 a I', ForwardCall.forward_call_1_a_I);
+    test('2', FindContact.find_contact_2);
   });
 
   group ('UseCase.IncomingCall', () {
@@ -70,7 +70,6 @@ runUseCaseTests() {
                           IncomingCall.caller.teardown(),
                           IncomingCall.callee.teardown()]);
     });
-
 
 
     test('I 1 a i', IncomingCall.incomingCall_I_1_a_i);
