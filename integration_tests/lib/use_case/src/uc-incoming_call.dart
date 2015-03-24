@@ -26,8 +26,6 @@ abstract class IncomingCall {
     nextStep = 1;
 
     log.finest('Setting up preconditions...');
-    receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
-        receptionist.authToken, new Transport.Client());
 
     return receptionist.registerAccount().then((_) =>
            receptionist2.registerAccount());
