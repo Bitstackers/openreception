@@ -30,6 +30,10 @@ class Receptionist {
    *
    */
   Future initialize() {
+    if (this.readyCompleter.isCompleted) {
+      this.readyCompleter = new Completer();
+    }
+
     Transport.WebSocketClient wsc = new Transport.WebSocketClient();
     this.notificationSocket = new Service.NotificationSocket(wsc);
 
