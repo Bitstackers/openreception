@@ -3,7 +3,7 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
-import '../classes/navigation.dart';
+import '../controller/controller.dart';
 
 import 'package:openreception_framework/bus.dart';
 

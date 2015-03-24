@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import 'classes/navigation.dart';
+import 'controller/controller.dart';
 import 'view/view.dart';
 
 void main() {

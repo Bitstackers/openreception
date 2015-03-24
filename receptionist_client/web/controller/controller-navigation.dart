@@ -1,14 +1,4 @@
-library navigation;
-
-import 'dart:async';
-import 'dart:html';
-
-import 'package:openreception_framework/bus.dart';
-
-final Map<String, String> _defaultWidget = {'context-home'    : 'reception-calendar',
-                                            'context-homeplus': 'reception-alt-names',
-                                            'context-messages': 'message-archive-filter'};
-final Map<String, String> _widgetHistory = {};
+part of controller;
 
 /**
  *
@@ -33,7 +23,12 @@ class Navigate {
     _registerEventListeners();
   }
 
-  final Bus<Place> _bus = new Bus<Place>();
+  final Bus<Place>          _bus           = new Bus<Place>();
+  final Map<String, String> _defaultWidget =
+    {'context-home'    : 'reception-calendar',
+     'context-homeplus': 'reception-alt-names',
+     'context-messages': 'message-archive-filter'};
+  final Map<String, String> _widgetHistory = {};
 
   /**
    *
