@@ -24,7 +24,6 @@ part 'router/handler-call-list.dart';
 part 'router/handler-call-originate.dart';
 part 'router/handler-call-park.dart';
 part 'router/handler-call-pickup.dart';
-part 'router/handler-call-queue.dart';
 part 'router/handler-call-recordsound.dart';
 part 'router/handler-call-transfer.dart';
 part 'router/handler-channel-list.dart';
@@ -42,8 +41,9 @@ final Pattern userStateResource          = new UrlPattern(r'/userstate/(\d+)');
 final Pattern userStateIdleResource      = new UrlPattern(r'/userstate/(\d+)/idle');
 final Pattern userStatePausedResource    = new UrlPattern(r'/userstate/(\d+)/paused');
 final Pattern userStateListResource      = new UrlPattern(r'/userstate');
-final Pattern callListResource           = new UrlPattern(r'/call/list');
-final Pattern callQueueResource          = new UrlPattern(r'/call/queue');
+@deprecated
+final Pattern oldCallListResource        = new UrlPattern(r'/call/list');
+final Pattern callListResource           = new UrlPattern(r'/call');
 final Pattern callHangupResource         = new UrlPattern(r'/call/hangup');
 final Pattern callHangupSpecificResource = new UrlPattern(r'/call/([a-z\-0-9]+)/hangup');
 final Pattern callPickupResource         = new UrlPattern(r'/call/([a-z\-0-9]+)/pickup');
@@ -91,8 +91,8 @@ void registerHandlers(HttpServer server) {
 
       ..serve(peerListResource,           method : "GET"  ).listen(handlerPeerList)
       ..serve(callListResource,           method : "GET"  ).listen(handlerCallList)
+      ..serve(oldCallListResource,        method : "GET"  ).listen(handlerCallList)
       ..serve(channelListResource,        method : "GET"  ).listen(handlerChannelList)
-      ..serve(callQueueResource,          method : "GET"  ).listen(handlerCallQueue)
       ..serve(callHangupResource,         method : "POST" ).listen(handlerCallHangup)
       ..serve(callHangupSpecificResource, method : "POST" ).listen(handlerCallHangupSpecific)
       ..serve(callPickupResource,         method : "POST" ).listen(handlerCallPickup)
