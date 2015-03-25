@@ -18,7 +18,7 @@ class CalendarEditor extends Widget {
   CalendarEditor._internal(UICalendarEditor this._ui) {
     _focusOnMe       = _ui.textArea;
     _firstTabElement = _ui.textArea;
-    _lastTabElement  = _ui.stopYear;
+    _lastTabElement  = _ui.cancelButton;
 
     _registerEventListeners();
   }
@@ -27,6 +27,7 @@ class CalendarEditor extends Widget {
    *
    */
   void activate(String data) {
+    _active = true;
     _setTabIndex(1);
     _setVisible();
     _ui.header.text = data;
@@ -36,6 +37,7 @@ class CalendarEditor extends Widget {
    *
    */
   void _cancel() {
+    _active = false;
     _setTabIndex(-1);
     _setHidden();
     print('view-calendar-editor.cancel() not implemented');
@@ -56,7 +58,8 @@ class CalendarEditor extends Widget {
    * Shift+Tab keyboard event is captured.
    */
   void _handleShiftTab(KeyboardEvent event) {
-    if(_focusOnMe == _firstTabElement) {
+    if(_active && _focusOnMe == _firstTabElement) {
+      print('editor ${_focusOnMe.hashCode}');
       event.preventDefault();
       _lastTabElement.focus();
     }
@@ -67,7 +70,8 @@ class CalendarEditor extends Widget {
      * keyboard event is captured.
      */
   void _handleTab(KeyboardEvent event) {
-    if(_focusOnMe == _lastTabElement) {
+    if(_active && _focusOnMe == _lastTabElement) {
+      print('editor ${_focusOnMe.hashCode}');
       event.preventDefault();
       _firstTabElement.focus();
     }
@@ -84,7 +88,6 @@ class CalendarEditor extends Widget {
 
     /// Enables focused element memory for this widget.
     _ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
-      print(element);
       element.onFocus.listen(_setFocusOnMe);
     });
 
@@ -169,6 +172,6 @@ class CalendarEditor extends Widget {
     _ui.deleteButton.disabled = toggle;
     _ui.saveButton.disabled   = toggle;
 
-    _lastTabElement = toggle ? _ui.stopYear : _ui.saveButton;
+    _lastTabElement = toggle ? _ui.cancelButton : _ui.saveButton;
   }
 }

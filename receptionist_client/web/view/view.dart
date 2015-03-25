@@ -30,6 +30,8 @@ abstract class Widget {
   final HotKeys  _hotKeys  = new HotKeys();
   final Navigate _navigate = new Navigate();
 
+  bool _active = false;
+
   /**
    * Navigate to [myPlace] if widget is not already in focus.
    */
@@ -40,12 +42,14 @@ abstract class Widget {
   }
 
   void blur() {
+    _active = false;
     root.classes.toggle('focus', false);
     focusElement.blur();
     _setTabIndex(-1);
   }
 
   void focus() {
+    _active = true;
     root.classes.toggle('focus', true);
     focusElement.focus();
     _setTabIndex(1);

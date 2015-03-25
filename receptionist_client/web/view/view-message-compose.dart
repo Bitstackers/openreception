@@ -37,7 +37,7 @@ class MessageCompose extends Widget {
    * Shift+Tab keyboard event is captured.
    */
   void _handleShiftTab(KeyboardEvent event) {
-    if(_focusOnMe == _firstTabElement) {
+    if(_active && _focusOnMe == _firstTabElement) {
       event.preventDefault();
       _lastTabElement.focus();
     }
@@ -48,7 +48,7 @@ class MessageCompose extends Widget {
      * keyboard event is captured.
      */
   void _handleTab(KeyboardEvent event) {
-    if(_focusOnMe == _lastTabElement) {
+    if(_active && _focusOnMe == _lastTabElement) {
       event.preventDefault();
       _firstTabElement.focus();
     }
