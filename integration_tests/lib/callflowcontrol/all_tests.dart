@@ -192,4 +192,40 @@ void runCallFlowTests() {
         () => Pickup.pickupNonExistingCall(receptionist));
   });
 
+  /**
+   * CallFlowControl Call originate.
+   */
+  group('CallFlowControl.Originate', () {
+    Receptionist receptionist = null;
+    Customer customer = null;
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown()]);
+    });
+
+
+    // TODO: This one requires a dialplan change.
+//    test ('originationToHostedNumber',
+//        () => Originate.originationToHostedNumber(receptionist));
+
+    test ('originationToForbiddenNumber',
+        () => Originate.originationToForbiddenNumber(receptionist));
+
+    test ('originationToPeer',
+        () => Originate.originationToPeer(receptionist, customer.extension));
+
+  });
 }
