@@ -2,12 +2,10 @@ part of or_test_fw;
 
 abstract class FindContact {
 
-  static String className = 'FindContact';
-
   static DateTime startTime = null;
   static int nextStep = 1;
 
-  static Logger log = new Logger(FindContact.className);
+  static Logger log = new Logger('$libraryName.UseCase.FindContact');
 
   @deprecated
   static void Preconditions() => setup();

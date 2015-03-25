@@ -2,8 +2,6 @@ part of or_test_fw;
 
 abstract class SendMessage {
 
-  static String className = 'FindContact';
-
   static DateTime startTime = null;
   static int nextStep = 1;
   static Customer caller = null;
@@ -11,7 +9,7 @@ abstract class SendMessage {
   static Storage.Message messageStore = null;
   static Storage.Contact contactStore = null;
 
-  static Logger log = new Logger(FindContact.className);
+  static Logger log = new Logger('$libraryName.UseCase.SendMessage');
 
   static Future Preconditions() => new Future.value (null);
 

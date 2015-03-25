@@ -2,12 +2,10 @@ part of or_test_fw;
 
 abstract class ForwardCall {
 
-  static String className = 'UseCase.ForwardCall';
-
   static DateTime startTime = null;
   static int nextStep = 1;
 
-  static Logger log = new Logger(ForwardCall.className);
+  static Logger log = new Logger('$libraryName.UseCase.ForwardCall');
 
   static Customer caller = null;
   static Receptionist receptionist = null;

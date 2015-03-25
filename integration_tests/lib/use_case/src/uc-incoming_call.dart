@@ -2,8 +2,6 @@ part of or_test_fw;
 
 abstract class IncomingCall {
 
-  static String className = 'IncomingCall';
-
   static DateTime startTime = null;
   static int nextStep = 1;
 
@@ -19,8 +17,7 @@ abstract class IncomingCall {
 
   String Reception = null;
 
-  static Logger log = new Logger(IncomingCall.className);
-
+  static Logger log = new Logger('$libraryName.UseCase.IncomingCall');
   static Future setup() {
     startTime = new DateTime.now();
     nextStep = 1;
