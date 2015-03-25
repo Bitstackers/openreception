@@ -152,4 +152,44 @@ void runCallFlowTests() {
     });
     test ('Peer listing', () => Peer.list(callFlowServer));
   });
+
+  /**
+   * CallFlowControl Call pickup.
+   */
+  group('CallFlowControl.Pickup', () {
+    Receptionist receptionist = null;
+    Customer customer = null;
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown()]);
+    });
+
+
+    /* Perform test. */
+    test ('pickupSpecified',
+        () => Pickup.pickupSpecified(receptionist, customer));
+
+    test ('pickupUnspecified',
+        () => Pickup.pickupUnspecified(receptionist, customer));
+
+    test ('pickupNonExistingSpecificCall',
+        () => Pickup.pickupNonExistingSpecificCall(receptionist));
+
+    test ('pickupNonExistingCall',
+        () => Pickup.pickupNonExistingCall(receptionist));
+  });
+
 }
