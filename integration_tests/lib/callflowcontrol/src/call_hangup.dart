@@ -5,7 +5,7 @@ part of or_test_fw;
  */
 abstract class Hangup {
 
-  static Logger log = new Logger('CallFlowControl.Hangup');
+  static Logger log = new Logger('$libraryName.CallFlowControl.Hangup');
 
   /**
    * Test for the presence of hangup events when a call is hung up.
