@@ -56,7 +56,7 @@ final Pattern channelListResource        = new UrlPattern(r'/channel/list');
 
 final List<Pattern> allUniqueUrls = [peerListResource,
                                      userStateResource, userStateListResource,
-                                     callListResource, callQueueResource, callHangupResource,
+                                     callListResource, callHangupResource,
                                      callParkResource, callOriginateResource,
                                      callPickupNextResource, callTransferResource,
                                      callRecordSoundResource];
