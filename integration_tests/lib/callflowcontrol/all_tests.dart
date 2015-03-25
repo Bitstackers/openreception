@@ -15,6 +15,9 @@ void runCallFlowTests() {
   Receptionist receptionist = null;
   Customer customer = null;
 
+  /**
+   * CallFlowControl Call hangup.
+   */
   group('CallFlowControl.Hangup', () {
 
     /* Setup function for interfaceCallNotFound test. */
@@ -63,7 +66,9 @@ void runCallFlowTests() {
         () => Hangup.interfaceCallFound().then((_) => expect('', isNotNull)));
   });
 
-
+  /**
+   * CallFlowControl Call listing.
+   */
   group('CallFlowControl.List', () {
 
     setUp (() {
@@ -93,11 +98,18 @@ void runCallFlowTests() {
         () => CallList.queueLeaveEventFromHangup(receptionist, customer));
   });
 
+
+  /**
+   * CallFlowControl Call transfer.
+   */
   group('CallFlowControl.Transfer', () {
     test ('Inbound Call', Transfer.transferParkedInboundCall);
     test ('Outbound Call', Transfer.transferParkedOutboundCall);
   });
 
+  /**
+   * CallFlowControl Peer tests.
+   */
   group('CallFlowControl.Peer', () {
     test ('Event presence', Peer.eventPresence);
 
@@ -122,5 +134,8 @@ void runCallFlowTests() {
     });
     test ('Peer listing', () => Peer.list(callFlowServer));
   });
+
+
+
 
 }
