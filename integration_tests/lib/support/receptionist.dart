@@ -205,7 +205,17 @@ class Receptionist {
         .timeout(new Duration(seconds: timeoutSeconds));
   }
 
-  Future pickup(Model.Call call) => this.callFlowControl.pickup(call.ID);
+  Future pickup(Model.Call call, {waitForEvent : false}) {
+    Future pickupAction = this.callFlowControl.pickup(call.ID);
+
+    if (waitForEvent) {
+      return pickupAction.then((_)
+          => this.waitFor(eventType : Model.EventJSONKey.callPickup,
+                          callID    : call.ID));
+    } else {
+      return pickupAction;
+    }
+  }
 
   Future<Model.Call> waitForCall() => this.waitFor(eventType: 'call_offer')
       .then((Model.CallOffer offered) => offered.call);
