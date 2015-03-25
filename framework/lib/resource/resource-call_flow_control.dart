@@ -118,6 +118,7 @@ abstract class CallFlowControl {
    * The output format is:
    *    http://hostname/call/list
    */
+  @deprecated
   static Uri queue(Uri host)
     => Uri.parse('${root(host)}/queue');
 

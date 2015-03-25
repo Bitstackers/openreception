@@ -143,6 +143,7 @@ class CallFlowControl {
   /**
    * Retrives the current Call list of queued calls.
    */
+  @deprecated
   Future<List<Model.Call>> queue() =>
       this._backed.get
         (appendToken
