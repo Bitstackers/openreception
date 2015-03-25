@@ -68,6 +68,39 @@ abstract class CallList {
          CustomerPool.instance.release(customer);
          return Future.wait([receptionist.teardown(),customer.teardown()]);
        });
-
    }
+
+  static Future queueLeaveEventFromPickup(Receptionist receptionist,
+                                          Customer caller) {
+    String receptionNumber = '12340003';
+    Model.Call inboundCall = null;
+
+    return _validateListEmpty(receptionist.callFlowControl)
+      .then((_) => caller.dial(receptionNumber))
+      .then((_) => log.info('Wating for the call to be received by the PBX.'))
+      .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callOffer)
+        .then ((Model.CallOffer event) => inboundCall = event.call))
+
+      .then((_) => log.info('Wating for the call $inboundCall to be queued.'))
+      .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.queueJoin,
+                                        callID: inboundCall.ID))
+      .then((_) => log.info('Got ${Model.EventJSONKey.queueJoin} event, checking queue interface.'))
+      .then((_) => _validateListLength(receptionist.callFlowControl, 1))
+      .then((_) => _validateListContains(receptionist.callFlowControl, [inboundCall]))
+      .then((_) => receptionist.callFlowControl.callList()
+        .then((Iterable<Model.Call> calls) =>
+            expect (calls.first.state, equals(Model.CallState.Queued))))
+      .then((_) => receptionist.pickup(inboundCall, waitForEvent: true))
+      .then((_) => receptionist.callFlowControl.callList()
+        .then((Iterable<Model.Call> calls) =>
+            expect (calls.first.state, isNot(Model.CallState.Queued))))
+      .then((_) => log.info('Waiting for ${Model.EventJSONKey.queueLeave} event.'))
+      .then((_) => log.info('Checking if the call is now absent from the call list.'))
+      .then((_) => caller.hangupAll())
+      .then((_) => log.info('Waiting for ${Model.EventJSONKey.callHangup} event.'))
+      .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callHangup,
+                                        callID: inboundCall.ID))
+      .then((_) => _validateListEmpty(receptionist.callFlowControl))
+      .then((_) => log.info('Test success. Cleaning up.'));
+    }
 }
