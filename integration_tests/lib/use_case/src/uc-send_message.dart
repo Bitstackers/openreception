@@ -21,12 +21,6 @@ abstract class SendMessage {
 
     log.finest('Setting up preconditions...');
 
-    log.finest ('Requesting a receptionist...');
-    receptionist = ReceptionistPool.instance.aquire();
-
-    log.finest("Requesting a customer (caller)...");
-    caller = CustomerPool.instance.aquire();
-
     log.finest ('Setting up a MessageStore...');
     messageStore = new Service.RESTMessageStore(
         Config.messageStoreUri,
@@ -46,12 +40,6 @@ abstract class SendMessage {
 
   static void teardown() {
     log.finest("Cleaning up after test...");
-
-    log.finest ('Releasing receptionist...');
-    receptionist != null ? ReceptionistPool.instance.release(receptionist) : null;
-
-    log.finest("Releasing customer (caller)...");
-    caller != null ? CustomerPool.instance.release(caller) : null;
   }
 
   static Future Receptionist_Send_Message () {

@@ -34,12 +34,6 @@ abstract class IncomingCall {
 
   static void teardown() {
     log.finest("Cleaning up after test...");
-    caller != null ? CustomerPool.instance.release(caller) : null;
-    callee != null ? CustomerPool.instance.release(callee) : null;
-
-    receptionist != null ? ReceptionistPool.instance.release(receptionist) : null;
-    receptionist2 != null ? ReceptionistPool.instance.release(receptionist2) : null;
-
   }
 
   static void step(String message) => log.finest('Step ${nextStep++}: $message');

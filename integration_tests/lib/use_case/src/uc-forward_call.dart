@@ -97,16 +97,16 @@ abstract class ForwardCall {
     });
   }
 
-  static void Receptionist_Places_Call(String extension) {
+  static Future<Model.Call> Receptionist_Places_Call(String extension) {
     log.finest("Receptionist places call to $extension.");
 
-    receptionist.originate(
+    return receptionist.originate(
         extension,
         contactID,
         receptionID).then((Model.Call call) {
       log.finest("Call-Flow-Control has accepted request to place call.");
 
-      call;
+      return call;
     }).catchError((error, stackTrace) {
       log.severe("Receptionist failed to originate call to $extension.");
       log.severe(error, stackTrace);
@@ -164,14 +164,8 @@ abstract class ForwardCall {
 
     return receptionist.waitFor(
         eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
-      log.finest("Grabbing the 'call_pickup' event...");
-      log.finest(event.call.toJson());
-      if (event.call.destination != outboundCall.destination) {
-        log.severe(
-            'Expected ${event.call.destination} == ${outboundCall.destination}');
-        throw new AssertionError();
-      }
 
+      //TODO More checking.
       log.finest(
           "Transfer the incoming call to the A leg of the outgoing call...");
     }).then(
@@ -297,7 +291,8 @@ abstract class ForwardCall {
     return setup()
         .then((_) => Preconditions('12340003'))
         .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
-        .then((_) => Receptionist_Places_Call (callee.extension))
+        .then((_) => Receptionist_Places_Call (callee.extension)
+          .then((Model.Call placedCall) => outboundCall = placedCall))
         .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
         .then((_) => Callee_Receives_Call ())
         .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [forbind opkald og telefon-N]"))
