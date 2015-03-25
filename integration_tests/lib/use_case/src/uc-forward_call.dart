@@ -319,7 +319,6 @@ abstract class ForwardCall {
         .then((_) => Receptionist_Waits_For_Hang_Up ())
         .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
         .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
-        .catchError((error, stackTrace) => log.shout (error,stackTrace))
         .whenComplete(teardown);
   }
 
@@ -361,7 +360,6 @@ abstract class ForwardCall {
         .then((_) => step("FreeSWITCH ->> Telefon-N [SIP: lyd]"))
         .then((_) => step("Telefon-N ->> Receptionist-N [snak]"))
         .then((_) => step("=== end loop ==="))
-        .catchError((error, stackTrace) => log.shout (error,stackTrace))
         .whenComplete(teardown);
   }
 
@@ -392,7 +390,6 @@ abstract class ForwardCall {
           .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
           .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
           .then((_) => step ("=== end loop ==="))
-          .catchError((error, stackTrace) => log.shout (error,stackTrace))
           .whenComplete(teardown);
   }
 
@@ -428,7 +425,6 @@ abstract class ForwardCall {
            .then((_) => Receptionist_Waits_For_Hang_Up ())
            .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
            .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
-           .catchError((error, stackTrace) => log.shout (error,stackTrace))
            .whenComplete(teardown);
    }
   /**
@@ -468,7 +464,6 @@ abstract class ForwardCall {
            .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
            .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
            .then((_) => step ("=== end loop ==="))
-           .catchError((error, stackTrace) => log.shout (error,stackTrace))
            .whenComplete(teardown);
    }
 
@@ -502,7 +497,6 @@ abstract class ForwardCall {
                .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
                .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
                .then((_) => step ("=== end loop ==="))
-               .catchError((error, stackTrace) => log.shout (error,stackTrace))
              .whenComplete(teardown);
 }
 
@@ -541,7 +535,6 @@ abstract class ForwardCall {
                 .then((_) => Receptionist_Waits_For_Hang_Up ())
                 .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
                 .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
-                .catchError((error, stackTrace) => log.shout (error,stackTrace))
               .whenComplete(teardown);
  }
     /**
@@ -585,7 +578,6 @@ abstract class ForwardCall {
                         .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
                         .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
                         .then((_) => step ("=== end loop ==="))
-                        .catchError((error, stackTrace) => log.shout (error,stackTrace))
                       .whenComplete(teardown);
     }
     /**
@@ -620,7 +612,6 @@ abstract class ForwardCall {
                         .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
                         .then((_) => step ("=== end loop ==="))
 
-                        .catchError((error, stackTrace) => log.shout (error,stackTrace))
                       .whenComplete(teardown);
         }
 }
