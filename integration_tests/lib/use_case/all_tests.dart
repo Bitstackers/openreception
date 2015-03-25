@@ -27,6 +27,10 @@ runUseCaseTests() {
 
     tearDown (() {
       ForwardCall.receptionStore = null;
+      ReceptionistPool.instance.release(ForwardCall.receptionist);
+      ReceptionistPool.instance.release(ForwardCall.receptionist2);
+      CustomerPool.instance.release(ForwardCall.caller);
+      CustomerPool.instance.release(ForwardCall.callee);
 
       transport.client.close(force : false);
 
@@ -62,6 +66,10 @@ runUseCaseTests() {
 
     tearDown (() {
       IncomingCall.receptionStore = null;
+      ReceptionistPool.instance.release(IncomingCall.receptionist);
+      ReceptionistPool.instance.release(IncomingCall.receptionist2);
+      CustomerPool.instance.release(IncomingCall.caller);
+      CustomerPool.instance.release(IncomingCall.callee);
 
       transport.client.close(force : false);
 
