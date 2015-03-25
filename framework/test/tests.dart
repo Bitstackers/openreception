@@ -102,6 +102,10 @@ abstract class ResourceCallFlowControl {
       expect(Resource.CallFlowControl.pickup(callFlowControlUri, 'abcde'),
         equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
 
+  static void pickupNext () =>
+      expect(Resource.CallFlowControl.pickupNext(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/call/pickup')));
+
   static void originate () =>
       expect(Resource.CallFlowControl.originate(callFlowControlUri, '12345678', 1, 2),
         equals(Uri.parse('${callFlowControlUri}/call/originate/12345678/reception/2/contact/1')));
