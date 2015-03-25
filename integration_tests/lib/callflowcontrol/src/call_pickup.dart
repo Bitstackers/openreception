@@ -5,24 +5,27 @@ abstract class Pickup {
 
 
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
-    int receptionID = 4;
+    int receptionID = 3;
     String receptionNumber = '1234000$receptionID';
-    Model.Call inboundCall = null;
+    Model.Call expectedCall = null;
 
     return Future.wait([])
     .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
     .then((_) => customer.dial (receptionNumber))
     .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
     .then((_) => receptionist.waitForCall()
-      .then((Model.Call call) => log.info ('Receptionist expects to receive call $call on a unspecified pickup.')))
+      .then((Model.Call call) => expectedCall = call))
+    .then((_) => log.info ('Receptionist expects to receive call $expectedCall on a unspecified pickup.'))
+    .then((_) => log.info ('Receptionist waits until call is available for certain.'))
+    .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callUnlock, callID: expectedCall.ID))
     .then((_) => log.info ('Receptionist picks up unspecified call'))
     .then((_) => receptionist.pickupNext (waitForEvent: false)
       .then((Model.Call call) {
-        inboundCall = call;
+        expectedCall = call;
         log.info ('Receptionist got call $call');
       }))
     .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup,
-                                      callID: inboundCall.ID)
+                                      callID: expectedCall.ID)
       .then((Model.CallPickup pickupEvent) {
         expect (pickupEvent.call.assignedTo, equals(receptionist.user.ID));
         expect (pickupEvent.call.state, equals(Model.CallState.Speaking));
