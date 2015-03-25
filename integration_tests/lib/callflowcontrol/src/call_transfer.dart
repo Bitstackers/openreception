@@ -66,7 +66,6 @@ abstract class Transfer {
         .then((_) => log.info ('Callee ${callee} waits for hang up'))
         .then((_) => callee.waitForHangup())
         .then((_) => log.info ('Test complete. Cleaning up'))
-        .catchError(log.shout)
         .whenComplete(() {
           ReceptionistPool.instance.release(receptionist);
           CustomerPool.instance.release(caller);
@@ -159,7 +158,6 @@ abstract class Transfer {
         .then((_) => log.info ('Callee ${callee} waits for hang up'))
         .then((_) => callee.waitForHangup())
         .then((_) => log.info ('Test complete. Cleaning up'))
-        .catchError(log.shout)
         .whenComplete(() {
           ReceptionistPool.instance.release(receptionist);
           CustomerPool.instance.release(caller);
