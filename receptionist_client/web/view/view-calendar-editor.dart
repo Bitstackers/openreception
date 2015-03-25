@@ -1,47 +1,42 @@
 part of view;
 
-class CalendarEditor {
-  static final CalendarEditor _singleton = new CalendarEditor._internal();
-  factory CalendarEditor() => _singleton;
+class CalendarEditor extends Widget {
+  HtmlElement           _firstTabElement;
+  HtmlElement           _focusOnMe;
+  HtmlElement           _lastTabElement;
+  static CalendarEditor _singleton;
+  UICalendarEditor      _ui;
 
-  /**
-   *
-   */
-  CalendarEditor._internal() {
+  factory CalendarEditor(UICalendarEditor ui) {
+    if(_singleton == null) {
+      _singleton = new CalendarEditor._internal(ui);
+    }
+
+    return _singleton;
+  }
+
+  CalendarEditor._internal(UICalendarEditor this._ui) {
+    _focusOnMe       = _ui.textArea;
+    _firstTabElement = _ui.textArea;
+    _lastTabElement  = _ui.stopYear;
+
     _registerEventListeners();
   }
 
-  static final DivElement _root = querySelector('#calendar-editor');
-
-  final ButtonElement     _cancelButton      = _root.querySelector('.cancel');
-  final ButtonElement     _deleteButton      = _root.querySelector('.delete');
-  final ButtonElement     _saveButton        = _root.querySelector('.save');
-  final ContactCalendar   _contactCalendar   = new ContactCalendar();
-  final ReceptionCalendar _receptionCalendar = new ReceptionCalendar();
-  final InputElement      _startHour         = _root.querySelector('.start-hour');
-  final InputElement      _startMinute       = _root.querySelector('.start-minute');
-  final InputElement      _startDay          = _root.querySelector('.start-day');
-  final InputElement      _startMonth        = _root.querySelector('.start-month');
-  final InputElement      _startYear         = _root.querySelector('.start-year');
-  final InputElement      _stopHour          = _root.querySelector('.stop-hour');
-  final InputElement      _stopMinute        = _root.querySelector('.stop-minute');
-  final InputElement      _stopDay           = _root.querySelector('.stop-day');
-  final InputElement      _stopMonth         = _root.querySelector('.stop-month');
-  final InputElement      _stopYear          = _root.querySelector('.stop-year');
-  final TextAreaElement   _textArea          = _root.querySelector('textarea');
-
   /**
    *
    */
-  void _activate(String data) {
+  void activate(String data) {
+    _setTabIndex(1);
     _setVisible();
-    _root.querySelector('h4').text = data;
+    _ui.header.text = data;
   }
 
   /**
    *
    */
   void _cancel() {
+    _setTabIndex(-1);
     _setHidden();
     print('view-calendar-editor.cancel() not implemented');
   }
@@ -54,27 +49,69 @@ class CalendarEditor {
     print('view-calendar-editor.delete() not implemented');
   }
 
+  HtmlElement get focusElement => _ui.textArea;
+
+  /**
+   * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
+   * Shift+Tab keyboard event is captured.
+   */
+  void _handleShiftTab(KeyboardEvent event) {
+    if(_focusOnMe == _firstTabElement) {
+      event.preventDefault();
+      _lastTabElement.focus();
+    }
+  }
+
+  /**
+     * Focus on [_firstTabElement] when [_lastTabElement] is in focus and a Tab
+     * keyboard event is captured.
+     */
+  void _handleTab(KeyboardEvent event) {
+    if(_focusOnMe == _lastTabElement) {
+      event.preventDefault();
+      _firstTabElement.focus();
+    }
+  }
+
+  Place get myPlace => null;
+
   /**
    *
    */
   void _registerEventListeners() {
-    _startHour.onInput  .listen((_) => _sanitizeInput(_startHour));
-    _startMinute.onInput.listen((_) => _sanitizeInput(_startMinute));
-    _startDay.onInput   .listen((_) => _sanitizeInput(_startDay));
-    _startMonth.onInput .listen((_) => _sanitizeInput(_startMonth));
-    _startYear.onInput  .listen((_) => _sanitizeInput(_startYear));
-    _stopHour.onInput   .listen((_) => _sanitizeInput(_stopHour));
-    _stopMinute.onInput .listen((_) => _sanitizeInput(_stopMinute));
-    _stopDay.onInput    .listen((_) => _sanitizeInput(_stopDay));
-    _stopMonth.onInput  .listen((_) => _sanitizeInput(_stopMonth));
-    _stopYear.onInput   .listen((_) => _sanitizeInput(_stopYear));
+    _hotKeys.onTab     .listen(_handleTab);
+    _hotKeys.onShiftTab.listen(_handleShiftTab);
 
-    _cancelButton.onClick.listen((_) => _cancel());
-    _deleteButton.onClick.listen((_) => _delete());
-    _saveButton.onClick  .listen((_) => _save());
+    /// Enables focused element memory for this widget.
+    _ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+      print(element);
+      element.onFocus.listen(_setFocusOnMe);
+    });
 
-    _contactCalendar  .onEdit.listen(_activate);
-    _receptionCalendar.onEdit.listen(_activate);
+    _ui.startHour.onInput  .listen((_) => _sanitizeInput(_ui.startHour));
+    _ui.startMinute.onInput.listen((_) => _sanitizeInput(_ui.startMinute));
+    _ui.startDay.onInput   .listen((_) => _sanitizeInput(_ui.startDay));
+    _ui.startMonth.onInput .listen((_) => _sanitizeInput(_ui.startMonth));
+    _ui.startYear.onInput  .listen((_) => _sanitizeInput(_ui.startYear));
+    _ui.stopHour.onInput   .listen((_) => _sanitizeInput(_ui.stopHour));
+    _ui.stopMinute.onInput .listen((_) => _sanitizeInput(_ui.stopMinute));
+    _ui.stopDay.onInput    .listen((_) => _sanitizeInput(_ui.stopDay));
+    _ui.stopMonth.onInput  .listen((_) => _sanitizeInput(_ui.stopMonth));
+    _ui.stopYear.onInput   .listen((_) => _sanitizeInput(_ui.stopYear));
+
+    _ui.cancelButton.onClick.listen((_) => _cancel());
+    _ui.deleteButton.onClick.listen((_) => _delete());
+    _ui.saveButton.onClick  .listen((_) => _save());
+  }
+
+  HtmlElement get root => _ui.root;
+
+  /**
+   * Enables focus memory for this widget, so we can blur the widget and come
+   * back and have the same field focused as when we left.
+   */
+  void _setFocusOnMe(Event event) {
+    _focusOnMe = (event.target as HtmlElement);
   }
 
   /**
@@ -87,6 +124,7 @@ class CalendarEditor {
       input.classes.toggle('bad-input', false);
     }
 
+    _toggleButtons();
 //    TODO (TL): Possibly do something with over-/underflow?
 //    if(input.validity.rangeOverflow) {
 //
@@ -109,15 +147,28 @@ class CalendarEditor {
    *
    */
   void _setHidden() {
-    _root.hidden = true;
-    _textArea.focus();
+    _ui.root.hidden = true;
+    _ui.textArea.focus();
   }
 
   /**
    *
    */
   void _setVisible() {
-    _root.hidden = false;
-    _textArea.focus();
+    _ui.root.hidden = false;
+    _ui.textArea.focus();
+  }
+
+  /**
+   * Enable/disable the widget buttons and as a sideeffect set the value of
+   * [_lastTabElement] as this depends on the state of the buttons.
+   */
+  void _toggleButtons() {
+    bool toggle = _ui.root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty);
+
+    _ui.deleteButton.disabled = toggle;
+    _ui.saveButton.disabled   = toggle;
+
+    _lastTabElement = toggle ? _ui.stopYear : _ui.saveButton;
   }
 }

@@ -1,27 +1,31 @@
 part of view;
 
-class ReceptionCommands {
-  static final ReceptionCommands _singleton = new ReceptionCommands._internal();
-  factory ReceptionCommands() => _singleton;
+class ReceptionCommands extends Widget {
+  Place               _myPlace;
+  UIReceptionCommands _ui;
 
   /**
    *
    */
-  ReceptionCommands._internal() {
+  ReceptionCommands(UIReceptionCommands this._ui, Place this._myPlace) {
     _registerEventListeners();
   }
 
-  static final DivElement _root = querySelector('#reception-commands');
-
-  final UListElement _commandList = _root.querySelector('ul');
-  final Place        _here        = new Place('context-home', _root.id);
-
-  /**
-   *
-   */
-  void _registerEventListeners() {
-    _root    .onClick.listen((_) => _activateMe(_root, _here));
-    _hotKeys .onAltH .listen((_) => _activateMe(_root, _here));
-    _navigate.onGo   .listen((Place place) => _setWidgetState(_root, _commandList, place));
+  void _activateMe(_) {
+    _activate();
   }
+
+  HtmlElement get focusElement => _ui.commandList;
+
+  Place get myPlace => _myPlace;
+
+  void _registerEventListeners() {
+    _navigate.onGo.listen(_setWidgetState);
+
+    _ui.root.onClick.listen(_activateMe);
+
+    _hotKeys.onAltH .listen(_activateMe);
+  }
+
+  HtmlElement get root => _ui.root;
 }

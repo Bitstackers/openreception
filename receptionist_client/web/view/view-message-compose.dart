@@ -1,68 +1,113 @@
 part of view;
 
-class MessageCompose {
-  static final MessageCompose _singleton = new MessageCompose._internal();
-  factory MessageCompose() => _singleton;
+/**
+ * Component for creating/editing and saving/sending messages.
+ */
+class MessageCompose extends Widget {
+  HtmlElement      _firstTabElement;
+  HtmlElement      _focusOnMe;
+  HtmlElement      _lastTabElement;
+  Place            _myPlace;
+  UIMessageCompose _ui;
 
   /**
-   *
+   * [root] is the parent element of the widget, and [_myPlace] is the [Place]
+   * object that this widget reacts on when Navigate.go fires.
    */
-  MessageCompose._internal() {
-    _focusOnMe = _callerName;
+  MessageCompose(UIMessageCompose this._ui, Place this._myPlace) {
+    _focusOnMe       = _ui.callerNameInput;
+    _firstTabElement = _ui.callerNameInput;
+    _lastTabElement  = _ui.draftInput;
 
     _registerEventListeners();
   }
 
-  static final DivElement _root = querySelector('#message-compose');
+  void _activateMe(_) {
+    _activate();
+  }
 
-  final InputElement    _callerName     = _root.querySelector('.names input.caller');
-  final InputElement    _callsBack      = _root.querySelector('.checks .calls-back');
-  final ButtonElement   _cancel         = _root.querySelector('.buttons .cancel');
-  final InputElement    _cell           = _root.querySelector('.phone-numbers input.cell');
-  final InputElement    _companyName    = _root.querySelector('.names input.company');
-  final InputElement    _draft          = _root.querySelector('.checks .draft');
-  final InputElement    _extension      = _root.querySelector('.phone-numbers input.extension');
-        HtmlElement     _focusOnMe;
-  final InputElement    _hasCalled      = _root.querySelector('.checks .has-called');
-  final Place           _here           = new Place('context-home', _root.id);
-  final InputElement    _landline       = _root.querySelector('.phone-numbers input.landline');
-  final TextAreaElement _message        = _root.querySelector('.message textarea');
-  final InputElement    _pleaseCall     = _root.querySelector('.checks .please-call');
-  final DivElement      _recipients     = _root.querySelector('.recipients');
-  final ButtonElement   _save           = _root.querySelector('.buttons .save');
-  final ButtonElement   _send           = _root.querySelector('.buttons .send');
-  final SpanElement     _showRecipients = _root.querySelector('.show-recipients');
-  final InputElement    _urgent         = _root.querySelector('.checks .urgent');
+  void _buttonCancelHandler() {
+
+  }
+
+  HtmlElement get focusElement => _focusOnMe;
 
   /**
-   *
+   * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
+   * Shift+Tab keyboard event is captured.
    */
-  void _registerEventListeners() {
-    _root    .onClick.listen((_) => _activateMe(_root, _here));
-    _hotKeys .onAltB .listen((_) => _activateMe(_root, _here));
-    _navigate.onGo   .listen((Place place) => _setWidgetState(_root, _focusOnMe, place));
-
-    _showRecipients.onMouseOver.listen((_) => _toggleRecipients());
-    _showRecipients.onMouseOut.listen((_) => _toggleRecipients());
-
-    /// This is here to enable the widget to remember the last focused element.
-    _root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
-      element.onFocus.listen(_setFocusOnMe);
-    });
+  void _handleShiftTab(KeyboardEvent event) {
+    if(_focusOnMe == _firstTabElement) {
+      event.preventDefault();
+      _lastTabElement.focus();
+    }
   }
 
   /**
-   * Assign [event].target to [_focusOnMe]
-   * This enables focus memory for this widget.
+     * Focus on [_firstTabElement] when [_lastTabElement] is in focus and a Tab
+     * keyboard event is captured.
+     */
+  void _handleTab(KeyboardEvent event) {
+    if(_focusOnMe == _lastTabElement) {
+      event.preventDefault();
+      _firstTabElement.focus();
+    }
+  }
+
+  Place get myPlace => _myPlace;
+
+  void _registerEventListeners() {
+    _navigate.onGo.listen(_setWidgetState);
+
+    _ui.root.onClick.listen(_activateMe);
+
+    _hotKeys.onAltB    .listen(_activateMe);
+    _hotKeys.onTab     .listen(_handleTab);
+    _hotKeys.onShiftTab.listen(_handleShiftTab);
+
+    /// Enables focused element memory for this widget.
+    _ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+      element.onFocus.listen(_setFocusOnMe);
+    });
+
+    _ui.showRecipientsSpan.onMouseOver.listen(_toggleRecipients);
+    _ui.showRecipientsSpan.onMouseOut .listen(_toggleRecipients);
+
+    _ui.callerNameInput.onInput.listen(_toggleButtons);
+    _ui.messageTextarea.onInput.listen(_toggleButtons);
+
+    _ui.cancelButton.onClick.listen(null);
+    _ui.saveButton  .onClick.listen(null);
+    _ui.sendButton  .onClick.listen(null);
+  }
+
+  HtmlElement get root => _ui.root;
+
+  /**
+   * Enables focus memory for this widget, so we can blur the widget and come
+   * back and have the same field focused as when we left.
    */
   void _setFocusOnMe(Event event) {
     _focusOnMe = (event.target as HtmlElement);
   }
 
   /**
-   *
+   * Enable/disable the widget buttons and as a sideeffect set the value of
+   * [_lastTabElement] as this depends on the state of the buttons.
    */
-  void _toggleRecipients() {
-    _recipients.classes.toggle('recipients-hidden');
+  void _toggleButtons(_) {
+    bool toggle = !(_ui.callerNameInput.value.trim().isNotEmpty && _ui.messageTextarea.value.trim().isNotEmpty);
+    _ui.cancelButton.disabled = toggle;
+    _ui.saveButton.disabled = toggle;
+    _ui.sendButton.disabled = toggle;
+
+    _lastTabElement = toggle ? _ui.draftInput : _ui.sendButton;
+  }
+
+  /**
+   * Show/hide the recipients list.
+   */
+  void _toggleRecipients(_) {
+    _ui.recipientsDiv.classes.toggle('recipients-hidden');
   }
 }

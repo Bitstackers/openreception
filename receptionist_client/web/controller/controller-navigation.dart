@@ -9,6 +9,8 @@ class Place {
 
   Place(String this.contextId, String this.widgetId);
 
+  operator == (Place other) => (this.contextId == other.contextId) && (this.widgetId == other.widgetId);
+
   String toString() => '${contextId}.${widgetId}';
 }
 

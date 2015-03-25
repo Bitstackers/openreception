@@ -230,9 +230,9 @@
               <input class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
             <div class="event-buttons">
-              <button class="save" tabindex="-1">::save::</button>
-              <button class="delete" tabindex="-1">::delete::</button>
               <button class="cancel" tabindex="-1">::cancel::</button>
+              <button class="delete" disabled tabindex="-1">::delete::</button>
+              <button class="save" disabled tabindex="-1">::save::</button>
             </div>
           </div>
         </div>
@@ -326,6 +326,10 @@
                   #reception-calendar {
                     flex-grow: 1;
                   }
+
+                  #reception-calendar ul {
+                    outline: 0;
+                  }
                 </style>
 
                 <h4 class="generic-widget-headline">Reception Calendar</h4>
@@ -353,6 +357,10 @@
                 <style scoped>
                   #reception-commands {
                     flex-grow: 1;
+                  }
+
+                  #reception-commands ul {
+                    outline: 0;
                   }
                 </style>
 
@@ -630,7 +638,7 @@
                     }
 
                     #contact-list .generic-widget-list {
-                      height: calc(100% - 2.3em);
+                      height: calc(100% - 2.8em);
                     }
                   </style>
 

@@ -8,20 +8,24 @@ class HotKeys {
     _initialize();
   }
 
-  Bus<KeyboardEvent> _AltA    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _AltB    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _AltE    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _AltH    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _AltQ    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _AltW    = new Bus<KeyboardEvent>();
-  Keyboard           _keyDown = new Keyboard();
+  Bus<KeyboardEvent> _altA     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altB     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altE     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altH     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altQ     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
+  Keyboard           _keyDown  = new Keyboard();
 
-  Stream<KeyboardEvent> get onAltA => _AltA.stream;
-  Stream<KeyboardEvent> get onAltB => _AltB.stream;
-  Stream<KeyboardEvent> get onAltE => _AltE.stream;
-  Stream<KeyboardEvent> get onAltH => _AltH.stream;
-  Stream<KeyboardEvent> get onAltQ => _AltQ.stream;
-  Stream<KeyboardEvent> get onAltW => _AltW.stream;
+  Stream<KeyboardEvent> get onAltA     => _altA.stream;
+  Stream<KeyboardEvent> get onAltB     => _altB.stream;
+  Stream<KeyboardEvent> get onAltE     => _altE.stream;
+  Stream<KeyboardEvent> get onAltH     => _altH.stream;
+  Stream<KeyboardEvent> get onAltQ     => _altQ.stream;
+  Stream<KeyboardEvent> get onAltW     => _altW.stream;
+  Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
+  Stream<KeyboardEvent> get onTab      => _tab.stream;
 
   /**
    *
@@ -29,19 +33,27 @@ class HotKeys {
   void _initialize() {
     window.document.onKeyDown.listen(_keyDown.press);
 
-    Map<String, EventListener> keyDownBindings =
-      {'Alt+a'          : _AltA.fire,
-       'Alt+b'          : _AltB.fire,
-       'Alt+e'          : _AltE.fire,
-       'Alt+h'          : _AltH.fire,
-       'Alt+q'          : _AltQ.fire,
-       'Alt+w'          : _AltW.fire};
+    final Map<String, EventListener> preventDefaultBindings =
+      {'Alt+a': _altA.fire,
+       'Alt+b': _altB.fire,
+       'Alt+e': _altE.fire,
+       'Alt+h': _altH.fire,
+       'Alt+q': _altQ.fire,
+       'Alt+w': _altW.fire};
 
-    keyDownBindings.forEach((key, callback) {
+    final Map<String, EventListener> bindings =
+        {'Tab'      : _tab.fire,
+         'Shift+Tab': _shiftTab.fire};
+
+    preventDefaultBindings.forEach((key, callback) {
       _keyDown.register(key, (Event event) {
         event.preventDefault();
         callback(event);
       });
+    });
+
+    bindings.forEach((key, callback) {
+      _keyDown.register(key, callback);
     });
   }
 }
