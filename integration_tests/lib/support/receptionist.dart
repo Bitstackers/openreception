@@ -164,21 +164,44 @@ class Receptionist {
 
   Future<Model.Event> waitFor({String eventType: null, String callID: null, String extension:
       null, int receptionID: null, int timeoutSeconds: 10}) {
+    if (eventType == null && callID == null && extension == null &&
+        receptionID == null) {
+      return new Future.error
+          (new ArgumentError('Specify at least one parameter to wait for'));
+    }
 
 
-    bool matchesName (Model.Event event) => event.eventName == eventType;
+    bool matches (Model.Event event) {
+      bool result = false;
 
-    Model.Event lookup = (this.eventStack.firstWhere(matchesName,
+      if (eventType != null) {
+        result = event.eventName == eventType;
+      }
+
+      if (callID != null && event is Model.CallEvent) {
+        result = result && event.call.ID == callID;
+      }
+
+      if (extension != null && event is Model.CallEvent) {
+        result = result && event.call.destination == extension;
+      }
+
+      if (receptionID != null && event is Model.CallEvent) {
+        result = result && event.call.receptionID == receptionID;
+      }
+
+      return result;
+    }
+
+    Model.Event lookup = (this.eventStack.firstWhere(matches,
         orElse: () => null));
 
     if (lookup != null) {
       return new Future(() => lookup);
     }
 
-    return notificationSocket.eventStream.firstWhere(
-        (Model.Event event) =>
-            event != null &&
-                event.eventName == eventType).timeout(new Duration(seconds: timeoutSeconds));
+    return notificationSocket.eventStream.firstWhere(matches)
+        .timeout(new Duration(seconds: timeoutSeconds));
   }
 
   Future pickup(Model.Call call) => this.callFlowControl.pickup(call.ID);
