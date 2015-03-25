@@ -78,11 +78,13 @@ void handlerCallPickup(HttpRequest request) {
       });
 
     }).catchError((error, stackTrace) {
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
-
-      serverErrorTrace(request, error, stackTrace: stackTrace);
+      if (error is Model.NotFound) {
+        notFound (request, {'reason' : 'No calls available.'});
+      } else {
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
+        serverErrorTrace(request, error, stackTrace: stackTrace);
+      }
     });
-
   }).catchError((error, stackTrace) {
     if (error is Model.NotFound) {
       notFound (request, {'reason' : 'No calls available.'});
@@ -157,9 +159,12 @@ void handlerCallPickupNext(HttpRequest request) {
       });
 
     }).catchError((error, stackTrace) {
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
-
-      serverErrorTrace(request, error, stackTrace: stackTrace);
+      if (error is Model.NotFound) {
+        notFound (request, {'reason' : 'No calls available.'});
+      } else {
+        Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
+        serverErrorTrace(request, error, stackTrace: stackTrace);
+      }
     });
 
   }).catchError((error, stackTrace) {
