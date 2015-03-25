@@ -42,8 +42,7 @@ runUseCaseTests() {
 
 
 
-    test('1 a I', ForwardCall.forward_call_1_a_I);
-    test('2', FindContact.find_contact_2);
+    //test('1 a I', ForwardCall.forward_call_1_a_I);
   });
 
   group ('UseCase.IncomingCall', () {
@@ -80,7 +79,7 @@ runUseCaseTests() {
     });
 
 
-    test('I 1 a i', IncomingCall.incomingCall_I_1_a_i);
+    //test('I 1 a i', IncomingCall.incomingCall_I_1_a_i);
     test('I 1 a ii', IncomingCall.incomingCall_I_1_a_ii);
     test('I 1 b i', IncomingCall.incomingCall_I_1_b_i);
     test('I 1 b ii', IncomingCall.incomingCall_I_1_b_ii);
