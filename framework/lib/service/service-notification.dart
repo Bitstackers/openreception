@@ -116,6 +116,12 @@ class NotificationSocket {
 
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
-    this._streamController.add(new Model.Event.parse(map));
+    Model.Event newEvent = new Model.Event.parse(map);
+
+    if (newEvent != null) {
+      this._streamController.add(newEvent);
+    } else {
+      log.warning('Refusing to inject null objects into event stream');
+    }
   }
 }
