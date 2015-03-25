@@ -2,7 +2,7 @@ part of or_test_fw;
 
 abstract class ForwardCall {
 
-  static String className = 'ForwardCall';
+  static String className = 'UseCase.ForwardCall';
 
   static DateTime startTime = null;
   static int nextStep = 1;
