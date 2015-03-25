@@ -220,6 +220,18 @@ class Receptionist {
     }
   }
 
+  Future pickupNext({waitForEvent : false}) {
+    Future pickupAction = this.callFlowControl.pickupNext();
+
+    if (waitForEvent) {
+      return pickupAction.then((Model.Call call)
+          => this.waitFor(eventType : Model.EventJSONKey.callPickup,
+                          callID    : call.ID));
+    } else {
+      return pickupAction;
+    }
+  }
+
   Future<Model.Call> waitForCall() => this.waitFor(eventType: 'call_offer')
       .then((Model.CallOffer offered) => offered.call);
 
