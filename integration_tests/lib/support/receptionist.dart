@@ -49,7 +49,10 @@ class Receptionist {
   }
 
   Future teardown() {
-    this._transport.client.close(force : true);
+    if (this._transport != null) {
+      this._transport.client.close(force : true);
+    }
+
     Future notificationSocketTeardown =
         this.notificationSocket == null
         ? new Future.value()
