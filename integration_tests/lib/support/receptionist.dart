@@ -77,7 +77,7 @@ class Receptionist {
   }
 
   void cleanState() {
-    log.finest('Cleaning up $this');
+    log.finest('Cleaning up state of $this');
     this._phone.hangupAll();
     this.eventStack.clear();
     this.notificationSocket.close();
@@ -205,7 +205,16 @@ class Receptionist {
     }
 
     return notificationSocket.eventStream.firstWhere(matches)
-        .timeout(new Duration(seconds: timeoutSeconds));
+        .timeout(new Duration(seconds: timeoutSeconds))
+        .catchError((error, stackTrace) {
+          log.severe(error, stackTrace);
+          log.severe('Parameters: eventType:$eventType, '
+                                 'callID:$callID, '
+                                 'extension:$extension, '
+                                 'receptionID:$receptionID');
+          this.dumpEventStack();
+        return new Future.error(error, stackTrace);
+    });
   }
 
   Future pickup(Model.Call call, {waitForEvent : false}) {
