@@ -64,6 +64,7 @@ void main() {
     test('peerList', ResourceCallFlowControl.peerList);
     test('single', ResourceCallFlowControl.single);
     test('pickup', ResourceCallFlowControl.pickup);
+    test('pickupNext', ResourceCallFlowControl.pickupNext);
     test('originate', ResourceCallFlowControl.originate);
     test('park', ResourceCallFlowControl.park);
     test('hangup', ResourceCallFlowControl.hangup);
