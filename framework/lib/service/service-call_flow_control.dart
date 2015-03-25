@@ -65,6 +65,18 @@ class CallFlowControl {
         => new Model.Call.fromMap (JSON.decode(response)));
 
   /**
+   * Picks up the call next call available to the user.
+   */
+  Future<Model.Call> pickupNext () {
+    Uri uri = Resource.CallFlowControl.pickupNext (this._host);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.post (uri ,'')
+      .then((String response)
+        => new Model.Call.fromMap (JSON.decode(response)));
+  }
+
+  /**
    * Originate a new call via the server.
    */
   Future<Model.Call> originate (String extension, int contactID, int receptionID) =>

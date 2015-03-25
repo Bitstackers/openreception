@@ -66,6 +66,14 @@ abstract class CallFlowControl {
     =>  Uri.parse ('${single (host, callID)}/pickup');
 
   /**
+   * Builds a Uri to pickup an unspecified call.
+   * The output format is:
+   *    http://hostname/call/pickup
+   */
+  static Uri pickupNext(Uri host)
+    =>  Uri.parse('${root(host)}/pickup');
+
+  /**
    * Builds a Uri to originate to a specific extension.
    * The output format is:
    *    http://hostname/call/originate/<extension>/reception/<receptionID>/contact/<contactID>
