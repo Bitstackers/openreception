@@ -5,7 +5,7 @@ abstract class Pickup {
 
 
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
-    int receptionID = 4;
+    int receptionID = 3;
     String receptionNumber = '1234000$receptionID';
     Model.Call inboundCall = null;
 
