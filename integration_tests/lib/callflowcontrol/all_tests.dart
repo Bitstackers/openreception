@@ -6,19 +6,16 @@ void runCallFlowTests() {
   Uri notificationSocketURI = Uri.parse('${Config.NotificationSocketUri}'
                                         '?token=${Config.serverToken}');
 
-  /// Variables used in tests.
-  SupportTools supportTools = null;
-  Transport.Client transport = null;
-  Service.CallFlowControl callFlowServer = null;
-  Transport.WebSocketClient websocket = null;
-  Service.NotificationSocket notificationSocket = null;
-  Receptionist receptionist = null;
-  Customer customer = null;
-
   /**
-   * CallFlowControl Call hangup.
+   * CallFlowControl Call hangup (basic).
    */
   group('CallFlowControl.Hangup', () {
+    Transport.Client transport = null;
+    Service.CallFlowControl callFlowServer = null;
+    Transport.WebSocketClient websocket = null;
+    Service.NotificationSocket notificationSocket = null;
+    Receptionist receptionist = null;
+    Customer customer = null;
 
     /* Setup function for interfaceCallNotFound test. */
     setUp (() {
@@ -44,32 +41,48 @@ void runCallFlowTests() {
     test ('interfaceCallNotFound',
        () => expect(Hangup.interfaceCallNotFound(callFlowServer),
            throwsA(new isInstanceOf<Storage.NotFound>())));
+  });
 
-    /* Setup instantiates the support tools.  */
+  /**
+   * CallFlowControl Call hangup - using Receptionist objects.
+   */
+  group('CallFlowControl.Hangup', () {
+    Receptionist receptionist = null;
+    Customer customer = null;
+
     setUp (() {
-      return SupportTools.instance
-        .then((SupportTools st) => supportTools = st);
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize()]);
     });
 
-    /* Clear the previous tearDown function. */
-    tearDown (() {});
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown()]);
+    });
+
 
     /* Perform test. */
     test ('eventPresence',
-        () => Hangup.eventPresence().then((_) => expect('', isNotNull)));
-
-    /* Clear the previous setUp function. */
-    setUp(() {});
-
+        () => Hangup.eventPresence(receptionist, customer));
 
     test ('interfaceCallFound',
-        () => Hangup.interfaceCallFound().then((_) => expect('', isNotNull)));
+        () => Hangup.interfaceCallFound(receptionist, customer));
   });
+
 
   /**
    * CallFlowControl Call listing.
    */
   group('CallFlowControl.List', () {
+    Receptionist receptionist;
+    Customer customer;
 
     setUp (() {
       receptionist = ReceptionistPool.instance.aquire();
@@ -111,6 +124,11 @@ void runCallFlowTests() {
    * CallFlowControl Peer tests.
    */
   group('CallFlowControl.Peer', () {
+    Transport.Client transport = null;
+    Service.CallFlowControl callFlowServer = null;
+    Transport.WebSocketClient websocket = null;
+    Service.NotificationSocket notificationSocket = null;
+
     test ('Event presence', Peer.eventPresence);
 
     /* Setup function for interfaceCallNotFound test. */
@@ -134,8 +152,4 @@ void runCallFlowTests() {
     });
     test ('Peer listing', () => Peer.list(callFlowServer));
   });
-
-
-
-
 }
