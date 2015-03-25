@@ -34,7 +34,6 @@ part 'callflowcontrol/src/call_list.dart';
 part 'callflowcontrol/src/call_originate.dart';
 part 'callflowcontrol/src/call_park.dart';
 part 'callflowcontrol/src/call_pickup.dart';
-part 'callflowcontrol/src/call_queue.dart';
 part 'callflowcontrol/src/call_transfer.dart';
 part 'callflowcontrol/src/peer.dart';
 
