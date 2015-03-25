@@ -26,6 +26,7 @@ abstract class EventJSONKey {
   static const originateFailed = 'originate_failed';
   static const originateSuccess = 'originate_success';
   static const channelState = 'channel_state';
+  static const userState = 'userState';
 }
 
 abstract class EventTemplate {
@@ -43,7 +44,9 @@ abstract class EventTemplate {
   static Map channel(ChannelState event) =>
       _rootElement(event)..addAll(
            {EventJSONKey.channel :
-             {EventJSONKey.ID : event.channelID}});}
+             {EventJSONKey.ID : event.channelID}});
+
+}
 
 abstract class Event {
 
@@ -97,6 +100,9 @@ abstract class Event {
 
       case EventJSONKey.channelState:
         return new ChannelState.fromMap(map);
+
+      case EventJSONKey.userState:
+        return new UserStateEvent.fromMap(map);
 
       default:
         log.severe('Unsupported event type: ${map['event']}');
@@ -158,6 +164,28 @@ class PeerState implements Event {
     this.timestamp = Util.unixTimestampToDateTime (map[EventJSONKey.timestamp]);
 
 }
+
+class UserStateEvent implements Event {
+
+  final DateTime timestamp;
+  final String   eventName = EventJSONKey.peerState;
+
+  final UserStatus   status;
+
+  UserStateEvent (UserStatus this.status) : this.timestamp = new DateTime.now();
+
+  Map toJson() => this.asMap;
+
+  Map get asMap => throw new UnimplementedError();
+
+  UserStateEvent.fromMap (Map map) :
+    this.status    = new UserStatus.fromMap (map),
+    this.timestamp = null;
+
+}
+
+
+
 
 class CallLock extends CallEvent {
 
