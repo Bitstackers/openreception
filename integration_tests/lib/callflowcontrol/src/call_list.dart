@@ -49,12 +49,6 @@ abstract class CallList {
 
      String       reception = "12340004";
 
-     Future verifyCallIsInList (Model.Call call) =>
-         receptionist.callFlowControl.callList()
-           .then((Iterable<Model.Call> calls) =>
-               calls.firstWhere((Model.Call listCall) =>
-                   listCall.ID == call.ID));
-
      return
        Future.wait([receptionist.initialize(),
                     customer.initialize()])
@@ -62,7 +56,8 @@ abstract class CallList {
        .then((_) => customer.dial (reception))
        .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
        .then((_) => receptionist.waitForCall()
-         .then(verifyCallIsInList))
+         .then((Model.Call call) =>
+             _validateListContains(receptionist.callFlowControl, [call])))
        .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
        .then((_) => customer.hangupAll())
        .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
