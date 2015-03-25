@@ -12,6 +12,8 @@ void runCallFlowTests() {
   Service.CallFlowControl callFlowServer = null;
   Transport.WebSocketClient websocket = null;
   Service.NotificationSocket notificationSocket = null;
+  Receptionist receptionist = null;
+  Customer customer = null;
 
   group('CallFlowControl.Hangup', () {
 
@@ -63,8 +65,32 @@ void runCallFlowTests() {
 
 
   group('CallFlowControl.List', () {
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown()]);
+    });
+
     test ('interfaceCallFound',
         () => CallList.callPresence().then((_) => expect('', isNotNull)));
+
+    test ('queueLeaveEventFromPickup',
+        () => CallList.queueLeaveEventFromPickup (receptionist, customer));
+
+    test ('queueLeaveEventFromHangup',
+        () => CallList.queueLeaveEventFromHangup(receptionist, customer));
   });
 
   group('CallFlowControl.Transfer', () {
