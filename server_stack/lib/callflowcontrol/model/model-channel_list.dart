@@ -121,7 +121,9 @@ class ChannelList extends ESL.ChannelList {
     } else {
       _eventController.add(new ChannelEvent(ChannelEventName.UPDATE,channel));
     }
-    Notification.broadcast(ClientNotification.channelUpdate (channel));
+    ///FIXME Disabled channel notifications for now. Should probably go into a
+    /// Separate websocket stream or be a config option.
+    //Notification.broadcast(ClientNotification.channelUpdate (channel));
   }
 
   void handleEvent(ESL.Event packet) {
