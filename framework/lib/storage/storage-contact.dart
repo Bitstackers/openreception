@@ -20,7 +20,8 @@ abstract class Contact {
 
   Future<List<Model.CalendarEvent>> calendar (int receptionID, int contactID);
 
-  Future<Model.CalendarEvent> calendarEvent (int receptionID, int contactID, eventID);
+  Future<Model.CalendarEvent> calendarEvent
+    (int receptionID, int contactID, int eventID);
 
   Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event);
 
