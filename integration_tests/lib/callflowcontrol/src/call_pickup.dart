@@ -5,7 +5,7 @@ abstract class Pickup {
 
 
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
-    int receptionID = 3;
+    int receptionID = 4;
     String receptionNumber = '1234000$receptionID';
     Model.Call inboundCall = null;
 
@@ -14,8 +14,13 @@ abstract class Pickup {
     .then((_) => customer.dial (receptionNumber))
     .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
     .then((_) => receptionist.waitForCall()
-      .then((Model.Call call) => inboundCall = call))
-    .then((_) => receptionist.pickupNext (waitForEvent: false))
+      .then((Model.Call call) => log.info ('Receptionist expects to receive call $call on a unspecified pickup.')))
+    .then((_) => log.info ('Receptionist picks up unspecified call'))
+    .then((_) => receptionist.pickupNext (waitForEvent: false)
+      .then((Model.Call call) {
+        inboundCall = call;
+        log.info ('Receptionist got call $call');
+      }))
     .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup,
                                       callID: inboundCall.ID)
       .then((Model.CallPickup pickupEvent) {
