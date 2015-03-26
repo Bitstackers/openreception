@@ -286,6 +286,43 @@ class Receptionist {
   }
 
   /**
+   * Hunts down the next available call, regardless of lockstate. The Future
+   * returned will complete only after the call has been confirmed connected
+   * via the notification socket (a call_pickup event is received).
+   */
+  Future<Model.Call> huntNextCall() {
+    Model.Call selectedCall;
+
+    Future<Model.Call> pickupAfterCallUnlock () {
+      log.info('Call not aquired. $this expects the call to be locked.');
+
+      return this.waitFor (eventType: Model.EventJSONKey.callLock,
+                           callID: selectedCall.ID,
+                           timeoutSeconds: 2)
+          .then((_) => log.info('Call $selectedCall was locked, waiting for unlock.'))
+          .then((_) => this.waitFor (eventType: Model.EventJSONKey.callUnlock,
+                                     callID: selectedCall.ID))
+          .then((_) => log.info('Call $selectedCall got unlocked, picking it up'))
+          .then((_) => this.pickup(selectedCall,waitForEvent: true));
+    }
+
+    log.info('$this goes hunting for a call.');
+    return this.waitForCall()
+      .then((Model.Call offeredCall) => selectedCall = offeredCall)
+      .then((_) => log.info('$this attempts to pickup $selectedCall.'))
+      .then((_) =>
+        this.pickup(selectedCall)
+          .catchError((error, stackTrace) {
+            if (error is Storage.NotFound) {
+              return pickupAfterCallUnlock ();
+            } else {
+              log.severe('huntNextCall experienced an unexpected error.');
+              return new Future.error(error, stackTrace);
+            }
+          }));
+  }
+
+  /**
    * Convenience function for waiting for the next call being offered to the
    * receptionist.
    */
