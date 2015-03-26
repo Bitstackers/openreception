@@ -151,12 +151,16 @@ class Receptionist {
     }
 
     log.finest('$this waits for incoming call from event stream.');
-    return this._phone.eventStream.firstWhere(
-        (Phonio.Event event) => event is Phonio.CallIncoming).then((_) {
+    return this._phone.eventStream.firstWhere(match).then((_) {
       log.finest('$this got expected event, returning current call.');
       return this.currentCall;
     }).timeout(new Duration(seconds: 10));
   }
+
+  /**
+   * Returns a Future that completes when the phone associated with the
+   * receptionist is hung up.
+   */
   Future waitForPhoneHangup() {
     log.finest('Receptionist $this waits for call hangup');
 
@@ -207,7 +211,6 @@ class Receptionist {
 
     bool matches (Model.Event event) {
       bool result = false;
-
       if (eventType != null) {
         result = event.eventName == eventType;
       }
@@ -223,7 +226,6 @@ class Receptionist {
       if (receptionID != null && event is Model.CallEvent) {
         result = result && event.call.receptionID == receptionID;
       }
-
       return result;
     }
 
@@ -233,6 +235,7 @@ class Receptionist {
     if (lookup != null) {
       return new Future(() => lookup);
     }
+    log.finest('Event is not yet received, waiting for maximum $timeoutSeconds seconds');
 
     return notificationSocket.eventStream.firstWhere(matches)
         .timeout(new Duration(seconds: timeoutSeconds))
@@ -279,7 +282,7 @@ class Receptionist {
 
       return this.waitFor (eventType: Model.EventJSONKey.callLock,
                            callID: selectedCall.ID,
-                           timeoutSeconds: 2)
+                           timeoutSeconds: 10)
           .then((_) => log.info('Call $selectedCall was locked, waiting for unlock.'))
           .then((_) => this.waitFor (eventType: Model.EventJSONKey.callUnlock,
                                      callID: selectedCall.ID))
