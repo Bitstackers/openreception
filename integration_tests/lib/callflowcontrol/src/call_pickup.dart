@@ -7,7 +7,6 @@ abstract class Pickup {
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
     int receptionID = 2;
     String receptionNumber = '1234000$receptionID';
-    Model.Call expectedCall = null;
 
     return Future.wait([])
     .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
