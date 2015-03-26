@@ -47,6 +47,7 @@ final Pattern callListResource           = new UrlPattern(r'/call');
 final Pattern callHangupResource         = new UrlPattern(r'/call/hangup');
 final Pattern callHangupSpecificResource = new UrlPattern(r'/call/([a-z\-0-9]+)/hangup');
 final Pattern callPickupResource         = new UrlPattern(r'/call/([a-z\-0-9]+)/pickup');
+final Pattern callResource               = new UrlPattern(r'/call/([a-z\-0-9]+)');
 final Pattern callParkResource           = new UrlPattern(r'/call/([a-z\-0-9]+)/park');
 final Pattern callTransferResource       = new UrlPattern(r'/call/([a-z\-0-9]+)/transfer/([a-z\-0-9]+)');
 final Pattern callOriginateResource      = new UrlPattern(r'/call/originate/([a-z\-\:\.\@0-9]+)/reception/(\d+)/contact/(\d+)');
@@ -90,8 +91,9 @@ void registerHandlers(HttpServer server) {
 
 
       ..serve(peerListResource,           method : "GET"  ).listen(handlerPeerList)
-      ..serve(callListResource,           method : "GET"  ).listen(handlerCallList)
-      ..serve(oldCallListResource,        method : "GET"  ).listen(handlerCallList)
+      ..serve(callResource,               method : "GET"  ).listen(Call.get)
+      ..serve(callListResource,           method : "GET"  ).listen(Call.list)
+      ..serve(oldCallListResource,        method : "GET"  ).listen(Call.list)
       ..serve(channelListResource,        method : "GET"  ).listen(handlerChannelList)
       ..serve(callHangupResource,         method : "POST" ).listen(handlerCallHangup)
       ..serve(callHangupSpecificResource, method : "POST" ).listen(handlerCallHangupSpecific)
