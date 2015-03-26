@@ -326,7 +326,8 @@ class Receptionist {
    * Convenience function for waiting for the next call being offered to the
    * receptionist.
    */
-  Future<Model.Call> waitForCall() => this.waitFor(eventType: 'call_offer')
+  Future<Model.Call> waitForCall() =>
+    this.waitFor(eventType: Model.EventJSONKey.callOffer)
       .then((Model.CallOffer offered) => offered.call);
 
   /**
