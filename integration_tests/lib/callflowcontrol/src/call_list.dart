@@ -43,15 +43,11 @@ abstract class CallList {
         expect(calls, isNotEmpty));
   }
 
-  static Future callPresence() {
-     Receptionist receptionist = ReceptionistPool.instance.aquire();
-     Customer     customer     = CustomerPool.instance.aquire();
-
+  static Future callPresence(Receptionist receptionist, Customer customer) {
      String       reception = "12340004";
 
      return
-       Future.wait([receptionist.initialize(),
-                    customer.initialize()])
+       Future.wait([])
        .then((_) => log.info ('Customer ${customer.name} dials ${reception}.'))
        .then((_) => customer.dial (reception))
        .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
@@ -62,12 +58,7 @@ abstract class CallList {
        .then((_) => customer.hangupAll())
        .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
        .then((_) => receptionist.waitFor(eventType:"call_hangup"))
-       .whenComplete(() {
-         log.info ('Test complete, cleaning up.');
-         ReceptionistPool.instance.release(receptionist);
-         CustomerPool.instance.release(customer);
-         return Future.wait([receptionist.teardown(),customer.teardown()]);
-       });
+       .then((_) =>  log.info ('Test complete, cleaning up.'));
    }
 
   static Future queueLeaveEventFromPickup(Receptionist receptionist,
