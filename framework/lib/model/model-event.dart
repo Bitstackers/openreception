@@ -176,7 +176,7 @@ class PeerState implements Event {
 class UserStateEvent implements Event {
 
   final DateTime timestamp;
-  final String   eventName = EventJSONKey.peerState;
+  final String   eventName = EventJSONKey.userState;
 
   final UserStatus   status;
 
@@ -188,7 +188,7 @@ class UserStateEvent implements Event {
 
   UserStateEvent.fromMap (Map map) :
     this.status    = new UserStatus.fromMap (map),
-    this.timestamp = null;
+    this.timestamp = Util.unixTimestampToDateTime (map[EventJSONKey.timestamp]);
 
 }
 
