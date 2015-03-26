@@ -186,9 +186,6 @@ void runCallFlowTests() {
     test ('pickupUnspecified',
         () => Pickup.pickupUnspecified(receptionist, customer));
 
-    test ('pickupNonExistingSpecificCall',
-        () => Pickup.pickupNonExistingSpecificCall(receptionist));
-
     test ('pickupNonExistingCall',
         () => Pickup.pickupNonExistingCall(receptionist));
   });

@@ -5,7 +5,7 @@ abstract class Pickup {
 
 
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
-    int receptionID = 3;
+    int receptionID = 2;
     String receptionNumber = '1234000$receptionID';
     Model.Call expectedCall = null;
 
@@ -13,22 +13,15 @@ abstract class Pickup {
     .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
     .then((_) => customer.dial (receptionNumber))
     .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
-    .then((_) => receptionist.waitForCall()
-      .then((Model.Call call) => expectedCall = call))
-    .then((_) => log.info ('Receptionist expects to receive call $expectedCall on a unspecified pickup.'))
-    .then((_) => log.info ('Receptionist waits until call is available for certain.'))
-    .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callUnlock, callID: expectedCall.ID))
-    .then((_) => log.info ('Receptionist picks up unspecified call'))
-    .then((_) => receptionist.pickupNext (waitForEvent: false)
-      .then((Model.Call call) {
-        expectedCall = call;
-        log.info ('Receptionist got call $call');
-      }))
-    .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup,
-                                      callID: expectedCall.ID)
-      .then((Model.CallPickup pickupEvent) {
-        expect (pickupEvent.call.assignedTo, equals(receptionist.user.ID));
-        expect (pickupEvent.call.state, equals(Model.CallState.Speaking));
+    .then((_) => receptionist.huntNextCall()
+      .then((Model.Call receivedCall) {
+        log.info ('Receptionist ${receptionist.user.name} got call $receivedCall.');
+        log.info ('Receptionist ${receptionist.user.name} retrieves the call information from the server.');
+        return receptionist.callFlowControl.get (receivedCall.ID)
+          .then((Model.Call remoteCall) {
+          expect (remoteCall.assignedTo, equals(receptionist.user.ID));
+          expect (remoteCall.state, equals(Model.CallState.Speaking));
+        });
     }));
 
   }
@@ -54,12 +47,8 @@ abstract class Pickup {
   }
 
   static void pickupNonExistingCall(Receptionist receptionist) {
-    return expect(receptionist.callFlowControl.pickupNext(),
-        throwsA(new isInstanceOf<Storage.NotFound>()));
-  }
-
-  static void pickupNonExistingSpecificCall(Receptionist receptionist) {
     return expect(receptionist.callFlowControl.pickup('nothing'),
         throwsA(new isInstanceOf<Storage.NotFound>()));
   }
+
 }

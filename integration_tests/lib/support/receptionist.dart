@@ -267,25 +267,6 @@ class Receptionist {
   }
 
   /**
-   * Perform a call pickup via the [CallFlowControl] service. May optionally
-   * set [waitForEvent] that will make this method wait until the notification
-   * socket confirms the the call was picked up.
-   * This method picks up the next call available for the receptionist.
-   */
-  Future pickupNext({waitForEvent : false}) {
-    Future pickupAction = this.callFlowControl.pickupNext();
-
-    if (waitForEvent) {
-      return pickupAction.then((Model.Call call)
-          => this.waitFor(eventType : Model.EventJSONKey.callPickup,
-                          callID    : call.ID))
-            .then((Model.CallPickup pickupEvent) => pickupEvent.call);
-    } else {
-      return pickupAction;
-    }
-  }
-
-  /**
    * Hunts down the next available call, regardless of lockstate. The Future
    * returned will complete only after the call has been confirmed connected
    * via the notification socket (a call_pickup event is received).
