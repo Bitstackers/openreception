@@ -3,46 +3,6 @@ part of or_test_fw;
 
 void runCallFlowTests() {
 
-  Uri notificationSocketURI = Uri.parse('${Config.NotificationSocketUri}'
-                                        '?token=${Config.serverToken}');
-
-  /**
-   * CallFlowControl Call hangup (basic).
-   */
-  group('CallFlowControl.Hangup', () {
-    Transport.Client transport = null;
-    Service.CallFlowControl callFlowServer = null;
-    Transport.WebSocketClient websocket = null;
-    Service.NotificationSocket notificationSocket = null;
-    Receptionist receptionist = null;
-    Customer customer = null;
-
-    /* Setup function for interfaceCallNotFound test. */
-    setUp (() {
-      transport = new Transport.Client();
-      callFlowServer = new Service.CallFlowControl
-              (Config.CallFlowControlUri, Config.serverToken, transport);
-
-      websocket = new Transport.WebSocketClient();
-      notificationSocket = new Service.NotificationSocket (websocket);
-
-      return websocket.connect(notificationSocketURI);
-    });
-
-    /* Teardown function for interfaceCallNotFound test. */
-    tearDown (() {
-      callFlowServer = null;
-      transport.client.close(force : false);
-
-      return notificationSocket.close();
-    });
-
-    /* Actual test. */
-    test ('interfaceCallNotFound',
-       () => expect(Hangup.interfaceCallNotFound(callFlowServer),
-           throwsA(new isInstanceOf<Storage.NotFound>())));
-  });
-
   /**
    * CallFlowControl Call hangup - using Receptionist objects.
    */
@@ -51,6 +11,7 @@ void runCallFlowTests() {
     Customer customer = null;
 
     setUp (() {
+
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
       return Future.wait(
@@ -67,7 +28,9 @@ void runCallFlowTests() {
          customer.teardown()]);
     });
 
-
+    test ('interfaceCallNotFound',
+       () => expect(Hangup.interfaceCallNotFound(receptionist.callFlowControl),
+           throwsA(new isInstanceOf<Storage.NotFound>())));
     /* Perform test. */
     test ('eventPresence',
         () => Hangup.eventPresence(receptionist, customer));
@@ -102,7 +65,7 @@ void runCallFlowTests() {
     });
 
     test ('interfaceCallFound',
-        () => CallList.callPresence().then((_) => expect('', isNotNull)));
+        () => CallList.callPresence(receptionist, customer));
 
     test ('queueLeaveEventFromPickup',
         () => CallList.queueLeaveEventFromPickup (receptionist, customer));
@@ -116,41 +79,61 @@ void runCallFlowTests() {
    * CallFlowControl Call transfer.
    */
   group('CallFlowControl.Transfer', () {
-    test ('Inbound Call', Transfer.transferParkedInboundCall);
-    test ('Outbound Call', Transfer.transferParkedOutboundCall);
+    Receptionist receptionist = null;
+    Customer caller = null;
+    Customer callee = null;
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      caller = CustomerPool.instance.aquire();
+      callee = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         caller.initialize(),
+         callee.initialize()]);
+    });
+
+    tearDown (() {
+
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(caller);
+      CustomerPool.instance.release(callee);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         caller.teardown(),
+         callee.teardown()]);
+    });
+
+    test ('Inbound Call',
+        () => Transfer.transferParkedInboundCall(receptionist, caller, callee));
+    test ('Outbound Call',
+        () => Transfer.transferParkedOutboundCall(receptionist, caller, callee));
   });
 
   /**
    * CallFlowControl Peer tests.
    */
   group('CallFlowControl.Peer', () {
-    Transport.Client transport = null;
-    Service.CallFlowControl callFlowServer = null;
-    Transport.WebSocketClient websocket = null;
-    Service.NotificationSocket notificationSocket = null;
-
-    test ('Event presence', Peer.eventPresence);
+    Receptionist receptionist = null;
 
     /* Setup function for interfaceCallNotFound test. */
     setUp (() {
-      transport = new Transport.Client();
-      callFlowServer = new Service.CallFlowControl
-              (Config.CallFlowControlUri, Config.serverToken, transport);
-
-      websocket = new Transport.WebSocketClient();
-      notificationSocket = new Service.NotificationSocket (websocket);
-
-      return websocket.connect(notificationSocketURI);
-    });
+      receptionist = ReceptionistPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize()]);
+      });
 
     /* Teardown function for interfaceCallNotFound test. */
     tearDown (() {
-      callFlowServer = null;
-      transport.client.close(force : false);
+      ReceptionistPool.instance.release(receptionist);
 
-      return notificationSocket.close();
+      return Future.wait(
+        [receptionist.teardown()]);
     });
-    test ('Peer listing', () => Peer.list(callFlowServer));
+
+    test ('Event presence', () => Peer.eventPresence (receptionist));
+    test ('Peer listing', () => Peer.list(receptionist.callFlowControl));
   });
 
   /**
@@ -198,6 +181,7 @@ void runCallFlowTests() {
     Customer customer = null;
 
     setUp (() {
+
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
       return Future.wait(
@@ -223,7 +207,7 @@ void runCallFlowTests() {
         () => Originate.originationToForbiddenNumber(receptionist));
 
     //TODO: Figure out why this fails on the ci-server and not locally
-//    test ('originationToPeer',
-//        () => Originate.originationToPeer(receptionist, customer.extension));
+    test ('originationToPeer',
+        () => Originate.originationToPeer(receptionist, customer.extension));
   });
 }
