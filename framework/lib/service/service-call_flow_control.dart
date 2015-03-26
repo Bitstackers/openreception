@@ -118,7 +118,8 @@ class CallFlowControl {
         (appendToken
            (Resource.CallFlowControl.list(this._host),this._token))
       .then((String response)
-        => (JSON.decode(response)['calls'] as List).map((Map map) => new Model.Call.fromMap(map)));
+        => (JSON.decode(response) as List).map
+          ((Map map) => new Model.Call.fromMap(map)));
 
   /**
    * Retrives the current Peer list.

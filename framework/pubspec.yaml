@@ -1,14 +1,10 @@
 name: openreception_framework
-version: 0.0.20+0
+version: 0.0.20+1
 author: BitStackers
-description: 
-  A utility package for the OpenReception application that provides data model
-  service and storage layer.
-
+description: A utility package for the OpenReception application that provides data model service and storage layer.
 dependencies:
   syslog:
     git: https://github.com/PedersenThomas/syslog.git
-
 dev_dependencies:
   http: any
   junitconfiguration: '>=1.0.0 <2.0.0'
