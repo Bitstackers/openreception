@@ -183,8 +183,8 @@ void runCallFlowTests() {
         () => Pickup.pickupSpecified(receptionist, customer));
 
     //TODO: Figure out why this fails on the ci-server and not locally
-//    test ('pickupUnspecified',
-//        () => Pickup.pickupUnspecified(receptionist, customer));
+    test ('pickupUnspecified',
+        () => Pickup.pickupUnspecified(receptionist, customer));
 
     test ('pickupNonExistingSpecificCall',
         () => Pickup.pickupNonExistingSpecificCall(receptionist));
