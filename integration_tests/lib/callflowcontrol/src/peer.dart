@@ -8,11 +8,11 @@ abstract class Peer {
    * Test for the presence of hangup events when a peer
    * changes registration status.
    */
-  static Future eventPresence() {
-    Receptionist receptionist = ReceptionistPool.instance.aquire();
+  static Future eventPresence(Receptionist receptionist) {
     String peerName = receptionist._phone.defaultAccount.username;
+
     return
-      Future.wait([receptionist.initialize()])
+      Future.wait([])
       .then((_) => log.info ('Unregistering peer $peerName to assert state'))
       .then((_) => receptionist._phone.unregister())
       .then((_) => log.info ('Flushing event stack'))
@@ -39,12 +39,7 @@ abstract class Peer {
             expect (peerStateEvent.peer.registered, isFalse);
             expect (peerStateEvent.peer.ID, equals(peerName));
           }))
-      .then((_) => log.info ('Test done. Cleaning up'))
-      .whenComplete(() {
-        ReceptionistPool.instance.release(receptionist);
-        return Future.wait([receptionist.teardown()])
-            .catchError(log.severe);
-      });
+      .then((_) => log.info ('Test done.'));
   }
 
   static Future list (Service.CallFlowControl callFlowControl) =>
