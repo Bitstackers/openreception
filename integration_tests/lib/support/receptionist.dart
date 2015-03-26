@@ -102,8 +102,9 @@ class Receptionist {
    * Dumps the current event stack of the Receptionist to log stream.
    */
   void dumpEventStack() {
-    log.severe('=== $this eventStack contents;');
-    log.severe(this.eventStack);
+    log.severe('=== $this eventStack contents:' +
+        this.eventStack.map((Model.Event event) =>
+        event.toJson()).join('\n'));
   }
 
   /**
