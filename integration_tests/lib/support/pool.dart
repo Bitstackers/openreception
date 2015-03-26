@@ -10,7 +10,7 @@ abstract class Pool<T> {
   Logger log = new Logger(Pool.className);
 
   Queue<T> available = new Queue();
-  Queue<T> busy      = new Queue();
+  Set<T> busy        = new Set();
 
   Iterable get elements => (new Set()
                            ..addAll(this.available.toSet())
