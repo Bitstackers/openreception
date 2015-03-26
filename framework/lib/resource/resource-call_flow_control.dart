@@ -55,7 +55,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>
    */
   static Uri single(Uri host, String callID)
-    => Uri.parse('${root(host)}/${callID}');
+    => Uri.parse('${_root(host)}/${callID}');
 
   /**
    * Builds a Uri to pickup a specific call resource.
@@ -66,20 +66,16 @@ abstract class CallFlowControl {
     =>  Uri.parse ('${single (host, callID)}/pickup');
 
   /**
-   * Builds a Uri to pickup an unspecified call.
-   * The output format is:
-   *    http://hostname/call/pickup
-   */
-  static Uri pickupNext(Uri host)
-    =>  Uri.parse('${root(host)}/pickup');
-
-  /**
    * Builds a Uri to originate to a specific extension.
    * The output format is:
    *    http://hostname/call/originate/<extension>/reception/<receptionID>/contact/<contactID>
    */
-  static Uri originate(Uri host, String extension, int contactID, int receptionID)
-    =>  Uri.parse ('${root(host)}/originate/${extension}/reception/${receptionID}/contact/${contactID}');
+  static Uri originate(Uri host, String extension,
+                       int contactID, int receptionID)
+    =>  Uri.parse ('${_root(host)}'
+                    '/originate/${extension}'
+                    '/reception/${receptionID}'
+                    '/contact/${contactID}');
 
   /**
    * Builds a Uri to park a specific call resource.
@@ -108,25 +104,15 @@ abstract class CallFlowControl {
   /**
    * Builds a Uri to retrieve a every current call resource.
    * The output format is:
-   *    http://hostname/call/list
+   *    http://hostname/call
    */
-  static Uri list(Uri host)
-    => Uri.parse('${root(host)}/list');
-
-  /**
-   * Builds a Uri to retrieve a every current queued call resource.
-   * The output format is:
-   *    http://hostname/call/list
-   */
-  @deprecated
-  static Uri queue(Uri host)
-    => Uri.parse('${root(host)}/queue');
+  static Uri list(Uri host) => _root(host);
 
   /**
    * Builds up the root resource.
    * The output format is:
    *    http://hostname/call
    */
-  static Uri root(Uri host)
+  static Uri _root(Uri host)
     => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 }

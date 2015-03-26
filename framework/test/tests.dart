@@ -64,15 +64,11 @@ void main() {
     test('peerList', ResourceCallFlowControl.peerList);
     test('single', ResourceCallFlowControl.single);
     test('pickup', ResourceCallFlowControl.pickup);
-    test('pickupNext', ResourceCallFlowControl.pickupNext);
     test('originate', ResourceCallFlowControl.originate);
     test('park', ResourceCallFlowControl.park);
     test('hangup', ResourceCallFlowControl.hangup);
     test('transfer', ResourceCallFlowControl.transfer);
     test('list', ResourceCallFlowControl.list);
-    test('queue', ResourceCallFlowControl.queue);
-    test('root', ResourceCallFlowControl.root);
-
   });
 }
 
@@ -103,10 +99,6 @@ abstract class ResourceCallFlowControl {
       expect(Resource.CallFlowControl.pickup(callFlowControlUri, 'abcde'),
         equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
 
-  static void pickupNext () =>
-      expect(Resource.CallFlowControl.pickupNext(callFlowControlUri),
-        equals(Uri.parse('${callFlowControlUri}/call/pickup')));
-
   static void originate () =>
       expect(Resource.CallFlowControl.originate(callFlowControlUri, '12345678', 1, 2),
         equals(Uri.parse('${callFlowControlUri}/call/originate/12345678/reception/2/contact/1')));
@@ -125,15 +117,8 @@ abstract class ResourceCallFlowControl {
 
   static void list () =>
       expect(Resource.CallFlowControl.list(callFlowControlUri),
-        equals(Uri.parse('${callFlowControlUri}/call/list')));
-
-  static void queue () =>
-      expect(Resource.CallFlowControl.queue(callFlowControlUri),
-        equals(Uri.parse('${callFlowControlUri}/call/queue')));
-
-  static void root () =>
-      expect(Resource.CallFlowControl.root(callFlowControlUri),
         equals(Uri.parse('${callFlowControlUri}/call')));
+
 }
 
 abstract class MessageObject {

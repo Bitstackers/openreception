@@ -3,6 +3,7 @@ part of openreception.service;
 class CallFlowControl {
 
   static final String className = '${libraryName}.CallFlowControl';
+  static final log = new Logger (className);
 
   WebService _backed = null;
   Uri        _host;
@@ -47,12 +48,23 @@ class CallFlowControl {
   /**
    * Returns a single call resource.
    */
-  Future<Model.Call> get(String callID) =>
-      this._backed.get
-        (appendToken(Resource.CallFlowControl.single
-           (this._host, callID), this._token))
-      .then((String response)
-        => new Model.Call.fromMap (JSON.decode(response)));
+  Future<Model.Call> get(String callID) {
+    Uri uri = Resource.CallFlowControl.single (this._host, callID);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.get (uri)
+    .then((String response) {
+      Model.Call call;
+      try {
+        call = new Model.Call.fromMap (JSON.decode(response));
+      } catch (error,stackTrace) {
+        log.severe('Failed to parse \"$response\" as call object.');
+        return new Future.error(error, stackTrace);
+      }
+
+      return call;
+    });
+  }
 
   /**
    * Picks up the call identified by [callID].
@@ -63,18 +75,6 @@ class CallFlowControl {
            (this._host, callID), this._token),'')
       .then((String response)
         => new Model.Call.fromMap (JSON.decode(response)));
-
-  /**
-   * Picks up the call next call available to the user.
-   */
-  Future<Model.Call> pickupNext () {
-    Uri uri = Resource.CallFlowControl.pickupNext (this._host);
-        uri = appendToken(uri, this._token);
-
-    return this._backed.post (uri ,'')
-      .then((String response)
-        => new Model.Call.fromMap (JSON.decode(response)));
-  }
 
   /**
    * Originate a new call via the server.
@@ -139,15 +139,4 @@ class CallFlowControl {
 
     return this._backed.get (uri).then((String response) => (JSON.decode(response)['channels']));
   }
-
-  /**
-   * Retrives the current Call list of queued calls.
-   */
-  @deprecated
-  Future<List<Model.Call>> queue() =>
-      this._backed.get
-        (appendToken
-           (Resource.CallFlowControl.queue(this._host),this._token))
-      .then((String response)
-        => (JSON.decode(response) as List).map((Map map) => new Model.Call.fromMap(map)));
 }
