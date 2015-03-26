@@ -25,14 +25,17 @@ abstract class UserState {
 abstract class UserStatusJSONKey {
   static const String UserID        = 'userID';
   static const String State         = 'state';
+  static const String lastState     = 'lastState';
   static const String LastActivity  = 'lastActivity';
   static const String CallsHandled  = 'callsHandled';
   static const String AssignedCalls = 'assignedCalls';
+
 }
 
 class UserStatus {
   int          userID       = User.nullID;
   String       _state       = UserState.Unknown;
+  String       lastState    = UserState.Unknown;
   DateTime     lastActivity = null;
   int          callsHandled = 0;
 
@@ -41,6 +44,7 @@ class UserStatus {
 
   String get state => this._state;
          set state (String newState) {
+           this.lastState = this._state;
            this._state = newState;
          }
 
@@ -57,9 +61,12 @@ class UserStatus {
 
   Map get asMap =>
       {
-          'userID'        : this.userID,
-          'state'         : this._state,
-          'lastActivity'  : this.lastActivity != null ? Util.dateTimeToUnixTimestamp(this.lastActivity) : null,
-          'callsHandled'  : this.callsHandled
+          UserStatusJSONKey.UserID       : this.userID,
+          UserStatusJSONKey.State        : this._state,
+          UserStatusJSONKey.lastState    : this.lastState,
+          UserStatusJSONKey.LastActivity : this.lastActivity != null
+            ? Util.dateTimeToUnixTimestamp(this.lastActivity)
+            : null,
+          UserStatusJSONKey.CallsHandled : this.callsHandled
       };
 }
