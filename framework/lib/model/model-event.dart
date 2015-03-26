@@ -41,6 +41,10 @@ abstract class EventTemplate {
   static Map peer(PeerState event) =>
       _rootElement(event)..addAll( {EventJSONKey.peer : event.peer});
 
+  static Map userState(UserStateEvent event) =>
+      _rootElement(event)..addAll(event.status.asMap);
+
+
   static Map channel(ChannelState event) =>
       _rootElement(event)..addAll(
            {EventJSONKey.channel :
@@ -176,7 +180,7 @@ class UserStateEvent implements Event {
 
   Map toJson() => this.asMap;
 
-  Map get asMap => throw new UnimplementedError();
+  Map get asMap => EventTemplate.userState(this);
 
   UserStateEvent.fromMap (Map map) :
     this.status    = new UserStatus.fromMap (map),
