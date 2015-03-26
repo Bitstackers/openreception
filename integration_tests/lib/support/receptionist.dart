@@ -54,8 +54,8 @@ class Receptionist {
     return wsc.connect(
         Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'))
     .then((_) => this.notificationSocket.eventStream.listen(this._handleEvent))
-    .then((_) => this._phone.eventStream.listen(this._onPhoneEvent))
     .then((_) => this._phone.initialize())
+    .then((_) => this._phone.eventStream.listen(this._onPhoneEvent))
     .then((_) => this._phone.autoAnswer(true))
     .then((_) => this._phone.register())
     .then((_) => this.callFlowControl.userStateIdle(this.user.ID))

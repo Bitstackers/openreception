@@ -19,16 +19,16 @@ class Customer {
   String get name => this._phone.defaultAccount.username;
 
 
-  Customer (this._phone) {
-    this._phone.eventStream.listen(this._onPhoneEvent);
-  }
+  Customer (this._phone);
 
   /**
    *
    */
-  Future initialize() => this._phone.initialize();
+  Future initialize() => this._phone.initialize()
+      .then((_) => this._phone.eventStream.listen(this._onPhoneEvent));
 
-  teardown() => this._phone.teardown();
+  teardown() => this._phone.teardown()
+      .then((_) => this.currentCall = null);
 
   Future Wait_For_Dialtone() => this.waitForInboundCall();
 
