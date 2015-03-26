@@ -64,52 +64,56 @@ abstract class Event {
   Event.fromMap(Map map);
 
   factory Event.parse (Map map) {
-    switch (map['event']) {
+    try {
+      switch (map['event']) {
+        case EventJSONKey.peerState:
+          return new PeerState.fromMap(map);
 
-      case EventJSONKey.peerState:
-        return new PeerState.fromMap(map);
+        case EventJSONKey.queueJoin:
+          return new QueueJoin.fromMap(map);
 
-      case EventJSONKey.queueJoin:
-        return new QueueJoin.fromMap(map);
+        case EventJSONKey.queueLeave:
+          return new QueueLeave.fromMap(map);
 
-      case EventJSONKey.queueLeave:
-        return new QueueLeave.fromMap(map);
+        case EventJSONKey.callLock:
+          return new CallLock.fromMap(map);
 
-      case EventJSONKey.callLock:
-        return new CallLock.fromMap(map);
+        case EventJSONKey.callUnlock:
+          return new CallUnlock.fromMap(map);
 
-      case EventJSONKey.callUnlock:
-        return new CallUnlock.fromMap(map);
+        case EventJSONKey.callOffer:
+          return new CallOffer.fromMap(map);
 
-      case EventJSONKey.callOffer:
-        return new CallOffer.fromMap(map);
+        case EventJSONKey.callTransfer:
+          return new CallTransfer.fromMap(map);
 
-      case EventJSONKey.callTransfer:
-        return new CallTransfer.fromMap(map);
+        case EventJSONKey.callUnpark:
+          return new CallUnpark.fromMap(map);
 
-      case EventJSONKey.callUnpark:
-        return new CallUnpark.fromMap(map);
+        case EventJSONKey.callPark:
+          return new CallPark.fromMap(map);
 
-      case EventJSONKey.callPark:
-        return new CallPark.fromMap(map);
+        case EventJSONKey.callHangup:
+          return new CallHangup.fromMap(map);
 
-      case EventJSONKey.callHangup:
-        return new CallHangup.fromMap(map);
+        case EventJSONKey.callState:
+          return new CallStateChanged.fromMap(map);
 
-      case EventJSONKey.callState:
-        return new CallStateChanged.fromMap(map);
+        case EventJSONKey.callPickup:
+          return new CallPickup.fromMap(map);
 
-      case EventJSONKey.callPickup:
-        return new CallPickup.fromMap(map);
+        case EventJSONKey.channelState:
+          return new ChannelState.fromMap(map);
 
-      case EventJSONKey.channelState:
-        return new ChannelState.fromMap(map);
+        case EventJSONKey.userState:
+          return new UserStateEvent.fromMap(map);
 
-      case EventJSONKey.userState:
-        return new UserStateEvent.fromMap(map);
-
-      default:
-        log.severe('Unsupported event type: ${map['event']}');
+        default:
+          log.severe('Unsupported event type: ${map['event']}');
+      }
+    } catch (error, stackTrace) {
+      log.severe('Failed to parse $map');
+      log.severe(error, stackTrace);
     }
   }
 }
