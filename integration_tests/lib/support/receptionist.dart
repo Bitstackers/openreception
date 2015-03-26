@@ -1,27 +1,41 @@
 part of or_test_fw;
 
+/**
+ * Class modeling the domain actor "Receptionist".
+ * Contains references to resources needed in order to make the actor perform
+ * the actions described in the use cases.
+ * Actions are outlined by public functions such as [pickup].
+ */
 class Receptionist {
 
   static final Logger log = new Logger('Receptionist');
 
   final Model.User user;
   final Phonio.SIPPhone _phone;
+  final String authToken;
+
   Service.NotificationSocket notificationSocket;
   Service.CallFlowControl callFlowControl;
-  final String authToken;
-  Completer readyCompleter = new Completer();
   Transport.Client _transport = null;
 
-  Phonio.Call currentCall = null;
+  Completer readyCompleter = new Completer();
   Queue<Model.Event> eventStack = new Queue<Model.Event>();
+
+  Phonio.Call currentCall = null;
 
   /// The amout of time the actor will wait before answering an incoming call.
   Duration answerLatency = new Duration(seconds: 0);
 
+  /**
+   * Default constructor. Provides an _uninitialized_ [Receptionist] object.
+   */
   Receptionist(this._phone, this.authToken, this.user);
 
   /**
-   *
+   * Perform object initialization.
+   * Return a future that completes when the initialization process is done.
+   * This method should only be called by once, and other callers should
+   * use the [whenReady] function to wait for the object to become ready.
    */
   Future initialize() {
     this._transport = new Transport.Client();
@@ -48,6 +62,11 @@ class Receptionist {
     .whenComplete((this.readyCompleter.complete));
   }
 
+  /**
+   * Perform object teardown.
+   * Return a future that completes when the teardown process is done.
+   * After teardown is completed, the object may be initialized again.
+   */
   Future teardown() {
     if (this._transport != null) {
       this._transport.client.close(force : true);
@@ -74,17 +93,6 @@ class Receptionist {
     }
 
     return this.readyCompleter.future;
-  }
-
-  void cleanState() {
-    log.finest('Cleaning up state of $this');
-    this._phone.hangupAll();
-    this.eventStack.clear();
-    this.notificationSocket.close();
-  }
-
-  Future shutdown() {
-    return this.notificationSocket.close();
   }
 
   /**
@@ -116,10 +124,18 @@ class Receptionist {
     }
   }
 
-  Future transferCall(Model.Call inboundCall,
-      Model.Call outboundCall) => this.callFlowControl.transfer(inboundCall.ID, outboundCall.ID);
+  /**
+   * Transfers active [callA] to active [callB] via the
+   * [CallFlowControl] service.
+   */
+  Future transferCall(Model.Call callA,
+      Model.Call callB) =>
+          this.callFlowControl.transfer(callA.ID, callB.ID);
 
-
+  /**
+   * Parks [call] in the parking lot associated with the user via the
+   * [CallFlowControl] service.
+   */
   Future park(Model.Call call) => this.callFlowControl.park(call.ID);
 
   /**
@@ -157,17 +173,31 @@ class Receptionist {
     }).timeout(new Duration(seconds: 10));
   }
 
+  /**
+   * Originates a new call to [extension] via the [CallFlowControl] service.
+   */
   Future<Model.Call> originate(String extension, int contactID,
       int receptionID) =>
       this.callFlowControl.originate(extension, contactID, receptionID);
 
+  /**
+   * Hangup [call]  via the [CallFlowControl] service.
+   */
   Future hangUp(Model.Call call) => this.callFlowControl.hangup(call.ID);
 
-
+  /**
+   * Hangup all active calls currently connected to the phone.
+   */
   Future hangupAll() => this._phone.hangup();
 
-  Future<Model.Event> waitFor({String eventType: null, String callID: null, String extension:
-      null, int receptionID: null, int timeoutSeconds: 10}) {
+  /**
+   * Waits for an arbitrary event identified either by [eventType], [callID],
+   * [extension], [receptionID], or a combination of them. The method will
+   * wait for, at most, [timeoutSeconds] before returning a Future error.
+   */
+  Future<Model.Event> waitFor({String eventType: null, String callID: null,
+                               String extension: null, int receptionID: null,
+                               int timeoutSeconds: 10}) {
     if (eventType == null && callID == null && extension == null &&
         receptionID == null) {
       return new Future.error
@@ -217,6 +247,12 @@ class Receptionist {
     });
   }
 
+  /**
+   * Perform a call pickup via the [CallFlowControl] service. May optionally
+   * set [waitForEvent] that will make this method wait until the notification
+   * socket confirms the the call was picked up.
+   * This method picks up a specific call.
+   */
   Future pickup(Model.Call call, {waitForEvent : false}) {
     Future pickupAction = this.callFlowControl.pickup(call.ID);
 
@@ -229,6 +265,12 @@ class Receptionist {
     }
   }
 
+  /**
+   * Perform a call pickup via the [CallFlowControl] service. May optionally
+   * set [waitForEvent] that will make this method wait until the notification
+   * socket confirms the the call was picked up.
+   * This method picks up the next call available for the receptionist.
+   */
   Future pickupNext({waitForEvent : false}) {
     Future pickupAction = this.callFlowControl.pickupNext();
 
@@ -241,25 +283,37 @@ class Receptionist {
     }
   }
 
+  /**
+   * Convenience function for waiting for the next call being offered to the
+   * receptionist.
+   */
   Future<Model.Call> waitForCall() => this.waitFor(eventType: 'call_offer')
       .then((Model.CallOffer offered) => offered.call);
 
+  /**
+   * Event handler for events coming from the notification server.
+   * Merely pushes events onto a stack.
+   */
   void _handleEvent(Model.Event event) {
+    // Only push actual events to the event stack.
     if (event == null) {
       log.warning ('Null event received!');
       return;
     }
-
-    //log.finest(
-    //    '$this received event ${event.eventName} from Notification server');
     this.eventStack.add(event);
   }
 
+  /**
+   * Debug-friendly representation of the receptionist.
+   */
   @override
-  String toString() => 'Receptionist uid:${this.user.ID}, '
-                       'peerID:${this._phone.ID} '
-                       'PhoneType:${this._phone.runtimeType}';
+  String toString() => 'Receptionist:${this.user.name}, uid:${this.user.ID}, '
+                       'Phone:${this._phone}';
 
+  /**
+   * Event handler for events coming from the phone. Updates the call state
+   * of the receptionist.
+   */
   void _onPhoneEvent(Phonio.Event event) {
     if (event is Phonio.CallOutgoing) {
       log.finest('$this received call outgoing event');
