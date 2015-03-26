@@ -259,7 +259,8 @@ class Receptionist {
     if (waitForEvent) {
       return pickupAction.then((_)
           => this.waitFor(eventType : Model.EventJSONKey.callPickup,
-                          callID    : call.ID));
+                          callID    : call.ID))
+            .then((Model.CallPickup pickupEvent) => pickupEvent.call);
     } else {
       return pickupAction;
     }
@@ -277,7 +278,8 @@ class Receptionist {
     if (waitForEvent) {
       return pickupAction.then((Model.Call call)
           => this.waitFor(eventType : Model.EventJSONKey.callPickup,
-                          callID    : call.ID));
+                          callID    : call.ID))
+            .then((Model.CallPickup pickupEvent) => pickupEvent.call);
     } else {
       return pickupAction;
     }
