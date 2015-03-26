@@ -15,14 +15,10 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
          ((Call call) => call.state == CallState.Speaking);
 
   void update (int userID, String newState) {
-    Notification.broadcast({'event'    : 'userState',
-                            'userID'   : userID,
-                            'oldState' : this.get (userID).state,
-                            'newState' : newState});
-
     this.get (userID).lastActivity = new DateTime.now();
     this.get (userID).state = newState;
 
+    Notification.broadcast(new ORModel.UserStateEvent (this.get (userID)).asMap);
   }
 
   ORModel.UserStatus get (int userID) {
