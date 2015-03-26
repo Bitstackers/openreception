@@ -3,11 +3,9 @@ part of or_test_fw;
 abstract class Transfer {
     static Logger log = new Logger('$libraryName.CallFlowControl.Transfer');
 
-    static Future transferParkedInboundCall() {
-      Receptionist receptionist = ReceptionistPool.instance.aquire();
-      Customer     caller       = CustomerPool.instance.aquire();
-      Customer     callee       = CustomerPool.instance.aquire();
-
+    static Future transferParkedInboundCall(Receptionist receptionist,
+                                            Customer     caller,
+                                            Customer     callee) {
       Model.Call inboundCall;
       Model.Call outboundCall;
 
@@ -15,9 +13,7 @@ abstract class Transfer {
       int    receptionID = 1;
       int    contactID   = 2;
       return
-        Future.wait([receptionist.initialize(),
-                     caller.initialize(),
-                     callee.initialize()])
+        Future.wait([])
         .then((_) => log.info ('Disable autoanswer for ${callee.name}'))
         .then((_) => callee.autoAnswer(false))
         .then((_) => receptionist.autoAnswer(true))
@@ -65,24 +61,12 @@ abstract class Transfer {
         .then((_) => caller.waitForHangup())
         .then((_) => log.info ('Callee ${callee} waits for hang up'))
         .then((_) => callee.waitForHangup())
-        .then((_) => log.info ('Test complete. Cleaning up'))
-        .whenComplete(() {
-          ReceptionistPool.instance.release(receptionist);
-          CustomerPool.instance.release(caller);
-          CustomerPool.instance.release(callee);
-          return Future.wait(
-              [receptionist.teardown(),
-               caller.teardown(),
-               callee.teardown()]);
-        });
+        .then((_) => log.info ('Test complete.'));
     }
 
-    static Future transferParkedOutboundCall() {
-
-      Receptionist receptionist = ReceptionistPool.instance.aquire();
-      Customer     caller       = CustomerPool.instance.aquire();
-      Customer     callee       = CustomerPool.instance.aquire();
-
+    static Future transferParkedOutboundCall(Receptionist receptionist,
+                                             Customer     caller,
+                                             Customer     callee) {
       Model.Call inboundCall;
       Model.Call outboundCall;
 
@@ -91,9 +75,7 @@ abstract class Transfer {
       int    contactID   = 2;
 
       return
-        Future.wait([receptionist.initialize(),
-                     caller.initialize(),
-                     callee.initialize()])
+        Future.wait([])
         .then((_) => log.info ('Disable autoanswer for ${callee.name}'))
         .then((_) => callee.autoAnswer(false))
         .then((_) => receptionist.autoAnswer(true))
@@ -157,16 +139,7 @@ abstract class Transfer {
         .then((_) => caller.waitForHangup())
         .then((_) => log.info ('Callee ${callee} waits for hang up'))
         .then((_) => callee.waitForHangup())
-        .then((_) => log.info ('Test complete. Cleaning up'))
-        .whenComplete(() {
-          ReceptionistPool.instance.release(receptionist);
-          CustomerPool.instance.release(caller);
-          CustomerPool.instance.release(callee);
-          return Future.wait(
-              [receptionist.teardown(),
-               caller.teardown(),
-               callee.teardown()]);
-        });
+        .then((_) => log.info ('Test complete.'));
     }
 
 }
