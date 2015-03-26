@@ -302,7 +302,7 @@ class Receptionist {
       .then((Model.Call offeredCall) => selectedCall = offeredCall)
       .then((_) => log.info('$this attempts to pickup $selectedCall.'))
       .then((_) =>
-        this.pickup(selectedCall)
+        this.pickup(selectedCall,waitForEvent: true)
           .catchError((error, stackTrace) {
             if (error is Storage.NotFound) {
               return pickupAfterCallUnlock ();
