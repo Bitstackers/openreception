@@ -72,6 +72,9 @@ class Receptionist {
       this._transport.client.close(force : true);
     }
 
+    this.eventStack.clear();
+    this.currentCall = null;
+
     Future notificationSocketTeardown =
         this.notificationSocket == null
         ? new Future.value()
