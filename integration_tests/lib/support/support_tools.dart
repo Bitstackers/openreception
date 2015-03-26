@@ -63,10 +63,6 @@ class SupportTools {
     .whenComplete(() =>
         ReceptionistPool.instance = new ReceptionistPool(receptionists));
 
-  Future initializeReceptionists() =>
-      Future.forEach (receptionists,
-          (Receptionist receptionist) => receptionist.initialize());
-
   Future setupCustomers() =>
     Future.doWhile(() {
 
@@ -81,10 +77,6 @@ class SupportTools {
     })
     .whenComplete(() =>
         CustomerPool.instance = new CustomerPool(customers));
-
-  Future initializeCustomers() =>
-      Future.forEach (customers,
-          (Customer customer) => customer.initialize());
 
   Future tearDownReceptionists () => Future.forEach(receptionists,
       ((Receptionist receptionist) => receptionist.teardown()));
