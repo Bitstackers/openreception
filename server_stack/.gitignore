@@ -7,6 +7,7 @@ pubspec.lock
 # Don't track config files.
 bin/bob_configuration.json
 bin/mailer_conf.py
+bin/mailer_conf.pyc
 *mailer_conf.py
 *config.json
 
@@ -28,7 +29,7 @@ out/
 MessageDispatcher/bin/mailer_conf.pyc
 
 # Local makefile configuration.
-makefile.dbsetup
+makefile.setup
 
 # DartEditor settings
 .settings
