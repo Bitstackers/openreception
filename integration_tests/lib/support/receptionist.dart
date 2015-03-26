@@ -148,6 +148,9 @@ class Receptionist {
    */
   Future<Phonio.Call> waitForInboundCall() {
     log.finest('Receptionist $this waits for inbound call');
+
+    bool match (Phonio.Event event) => event is Phonio.CallIncoming;
+
     //TODO: Assert that the call is not answered and is acutally inbound.
     if (this.currentCall != null) {
       log.finest('$this already has call, returning it.');
