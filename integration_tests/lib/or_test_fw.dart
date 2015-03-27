@@ -36,6 +36,7 @@ part 'callflowcontrol/src/call_park.dart';
 part 'callflowcontrol/src/call_pickup.dart';
 part 'callflowcontrol/src/call_transfer.dart';
 part 'callflowcontrol/src/peer.dart';
+part 'callflowcontrol/src/user_state.dart';
 
 /// Contact store tests
 part 'contact/src/contact_store.dart';
