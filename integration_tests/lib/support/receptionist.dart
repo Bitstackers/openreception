@@ -139,9 +139,23 @@ class Receptionist {
 
   /**
    * Parks [call] in the parking lot associated with the user via the
-   * [CallFlowControl] service.
+   * [CallFlowControl] service. May optionally
+   * set [waitForEvent] that will make this method wait until the notification
+   * socket confirms the the call was sucessfully parked.
    */
-  Future park(Model.Call call) => this.callFlowControl.park(call.ID);
+  Future park(Model.Call call, {bool waitForEvent : false}) {
+    Future parkAction = this.callFlowControl.park(call.ID);
+
+    if (waitForEvent) {
+      return parkAction.then((_)
+          => this.waitFor(eventType : Model.EventJSONKey.callPark,
+                          callID    : call.ID,
+                          timeoutSeconds: 2))
+            .then((Model.CallPark parkEvent) => parkEvent.call);
+    } else {
+      return parkAction;
+    }
+  }
 
   /**
    * Returns a Future that completes when an inbound call is
