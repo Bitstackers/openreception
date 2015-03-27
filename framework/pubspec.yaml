@@ -9,6 +9,6 @@ dev_dependencies:
   http: any
   junitconfiguration: '>=1.0.0 <2.0.0'
   logging: any
-  postgresql: '>= 0.3.0'
+  postgresql: '>= 0.3.0 <4.0.0'
   route: any
   unittest: any
