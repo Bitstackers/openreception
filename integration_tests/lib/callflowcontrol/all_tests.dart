@@ -210,4 +210,43 @@ void runCallFlowTests() {
     test ('originationToPeer',
         () => Originate.originationToPeer(receptionist, customer.extension));
   });
+
+  /**
+   * CallFlowControl Call Park.
+   */
+  group('CallFlowControl.Park', () {
+    Receptionist receptionist = null;
+    Customer customer = null;
+    Customer customer2 = null;
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      customer2 = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize(),
+         customer2.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown(),
+         customer2.teardown()]);
+    });
+
+    test ('explicitParkPickup',
+        () => CallPark.explicitParkPickup(receptionist, customer));
+
+    test ('unparkEventFromHangup',
+        () => CallPark.unparkEventFromHangup(receptionist, customer));
+
+    test ('parkNonexistingCall',
+        () => CallPark.parkNonexistingCall(receptionist));
+
+  });
 }
