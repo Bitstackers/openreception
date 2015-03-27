@@ -229,7 +229,7 @@ class CallPark extends CallEvent {
 
 class CallUnpark extends CallEvent {
 
-  final String   eventName = EventJSONKey.callUnlock;
+  final String   eventName = EventJSONKey.callUnpark;
 
   CallUnpark (Call call) : super (call);
   CallUnpark.fromMap (Map map) : super.fromMap (map);
