@@ -58,8 +58,9 @@ abstract class Event {
 
   DateTime get timestamp;
   String   get eventName;
+  Map      get asMap;
 
-  Map toJson();
+  Map toJson() => this.asMap;
 
   Event.fromMap(Map map);
 

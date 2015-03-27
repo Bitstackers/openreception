@@ -1,5 +1,5 @@
 name: openreception_framework
-version: 0.0.20+3
+version: 0.0.20+4
 author: BitStackers
 description: A utility package for the OpenReception application that provides data model service and storage layer.
 dependencies:
