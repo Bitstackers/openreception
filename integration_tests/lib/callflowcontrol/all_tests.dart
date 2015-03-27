@@ -217,6 +217,41 @@ void runCallFlowTests() {
   group('CallFlowControl.Park', () {
     Receptionist receptionist = null;
     Customer customer = null;
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown()]);
+    });
+
+    test ('explicitParkPickup',
+        () => CallPark.explicitParkPickup(receptionist, customer));
+
+    test ('unparkEventFromHangup',
+        () => CallPark.unparkEventFromHangup(receptionist, customer));
+
+    test ('parkNonexistingCall',
+        () => CallPark.parkNonexistingCall(receptionist));
+
+  });
+
+  /**
+   * CallFlowControl user state.
+   */
+  group('CallFlowControl.UserState', () {
+    Receptionist receptionist = null;
+    Customer customer = null;
     Customer customer2 = null;
 
     setUp (() {
@@ -239,14 +274,11 @@ void runCallFlowTests() {
          customer2.teardown()]);
     });
 
-    test ('explicitParkPickup',
-        () => CallPark.explicitParkPickup(receptionist, customer));
+    test ('originateForbidden',
+        () => UserState.originateForbidden(receptionist, customer, customer2));
 
-    test ('unparkEventFromHangup',
-        () => CallPark.unparkEventFromHangup(receptionist, customer));
-
-    test ('parkNonexistingCall',
-        () => CallPark.parkNonexistingCall(receptionist));
+    test ('pickupForbidden',
+        () => UserState.pickupForbidden(receptionist, customer, customer2));
 
   });
 }
