@@ -27,9 +27,10 @@ class Navigate {
 
   final Bus<Place>          _bus           = new Bus<Place>();
   final Map<String, String> _defaultWidget =
-    {'context-home'    : 'reception-calendar',
-     'context-homeplus': 'reception-alt-names',
-     'context-messages': 'message-archive-filter'};
+    {'context-calendar-edit': 'calendar-edit-foo',
+     'context-home'         : 'reception-calendar',
+     'context-homeplus'     : 'reception-alt-names',
+     'context-messages'     : 'message-archive-filter'};
   final Map<String, String> _widgetHistory = {};
 
   /**
@@ -67,25 +68,12 @@ class Navigate {
   }
 
   /**
-   *
+   * A bunch of convenience Navigate.go calls.
    */
-  void goHome() {
-    go(new Place('context-home', null));
-  }
-
-  /**
-   *
-   */
-  void goHomeplus() {
-    go(new Place('context-homeplus', null));
-  }
-
-  /**
-   *
-   */
-  void goMessages() {
-    go(new Place('context-messages', null));
-  }
+  void goCalendarEdit() {go(new Place('context-calendar-edit', null));}
+  void goHome() {go(new Place('context-home', null));}
+  void goHomeplus() {go(new Place('context-homeplus', null));}
+  void goMessages() {go(new Place('context-messages', null));}
 
   /**
    *

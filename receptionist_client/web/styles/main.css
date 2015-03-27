@@ -5,7 +5,7 @@
 body {
   padding: 0;
   margin: 0;
-  background-color: #fefefe;
+  background-color: #fdfdfd;
   font-family: 'Open Sans', sans-serif;
   font-size: 1em;
   font-weight: normal;
@@ -22,9 +22,9 @@ button::-moz-focus-inner {
   position: absolute;
   width: 100%;
   height: 100%;
+  padding: 1em;
   z-index: 0;
-  background-color: #fefefe;
-  border: solid 2px #fefefe;
+  background-color: #fdfdfd;
 }
 
 .display-flex-column {
@@ -38,19 +38,44 @@ button::-moz-focus-inner {
 }
 
 .focus {
-  box-shadow: 0.25em 0.25em 0.25em #bbb;
+  animation-name: focus;
+  animation-duration: 3s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  -webkit-animation-name: focus;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-fill-mode: both;
+  -webkit-animation-iteration-count: infinite;
+}
+
+@keyframes focus {
+  0%, 50%, 100% {
+    box-shadow: 0.0em 0.0em 0em rgba(255,255,255,0);
+  }
+  25%, 75% {
+    box-shadow: 0.0em 0.0em 1em rgba(165,185,219,1);
+  }
+}
+
+@-webkit-keyframes focus {
+  0%, 50%, 100% {
+    box-shadow: 0.0em 0.0em 0em rgba(255,255,255,0);
+  }
+  25%, 75% {
+    box-shadow: 0.0em 0.0em 1em rgba(165,185,219,1);
+  }
 }
 
 .generic-widget {
   position: relative;
-  background-color: #f8f8f8;
+  background-color: #f7f7f7;
 }
 
 .generic-widget-body {
   position: absolute;
   top: 20px;
   height: calc(100% - 20px);
-  width: 100%;
+  width: 100%;f
 }
 
 .generic-widget-headline {
@@ -87,15 +112,16 @@ input:focus  ~label {
 }
 
 .layout-margin-right {
-  margin-right: 0.7em;
+  margin-right: 1em;
 }
 
 .layout-margin-top {
-  margin-top: 0.7em;
+  margin-top: 1em;
 }
 
-.none {
-  display: none;
+.modal {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 3em;
 }
 
 textarea {

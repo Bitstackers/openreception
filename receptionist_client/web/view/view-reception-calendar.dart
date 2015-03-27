@@ -1,7 +1,7 @@
 part of view;
 
 class ReceptionCalendar extends Widget {
-  final CalendarEditor _calendarEditor = new CalendarEditor(new UICalendarEditor(querySelector('#calendar-editor')));
+//  final CalendarEditor _calendarEditor = new CalendarEditor(new UICalendarEditor(querySelector('#calendar-editor')));
   Place               _myPlace;
   UIReceptionCalendar _ui;
 
@@ -29,10 +29,7 @@ class ReceptionCalendar extends Widget {
     _hotKeys.onAltA.listen(_activateMe);
 
     // TODO (TL): temporary stuff
-    _ui.eventList.onDoubleClick.listen((_) {
-//      _bus.fire('Ret event fra ReceptionCalendar');
-      _calendarEditor.activate('Event from reception calendar');
-    });
+    _ui.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
   }
 
   HtmlElement get root => _ui.root;

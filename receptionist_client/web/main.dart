@@ -19,15 +19,11 @@ void main() {
 
   AgentInfo             agentInfo             = new AgentInfo();
   Contexts              contexts              = new Contexts();
-  ContextSwitcher       contextSwitcher       = new ContextSwitcher();
   ContactCalendar       contactCalendar       = new ContactCalendar();
   ContactData           contactData           = new ContactData();
   ContactList           contactList           = new ContactList();
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();
-
   MyCallQueue           myCallQueue           = new MyCallQueue();
-
-
   ReceptionOpeningHours receptionOpeningHours = new ReceptionOpeningHours();
   ReceptionProduct      receptionProduct      = new ReceptionProduct();
   ReceptionSalesCalls   receptionSalesCalls   = new ReceptionSalesCalls();

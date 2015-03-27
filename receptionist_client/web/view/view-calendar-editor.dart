@@ -29,7 +29,7 @@ class CalendarEditor extends Widget {
   void activate(String data) {
     _active = true;
     _setTabIndex(1);
-    _setVisible();
+//    _setVisible();
     _ui.header.text = data;
   }
 
@@ -39,7 +39,7 @@ class CalendarEditor extends Widget {
   void _cancel() {
     _active = false;
     _setTabIndex(-1);
-    _setHidden();
+//    _setHidden();
     print('view-calendar-editor.cancel() not implemented');
   }
 
@@ -47,7 +47,7 @@ class CalendarEditor extends Widget {
    *
    */
   void _delete() {
-    _setHidden();
+//    _setHidden();
     print('view-calendar-editor.delete() not implemented');
   }
 
@@ -142,25 +142,25 @@ class CalendarEditor extends Widget {
    *
    */
   void _save() {
-    _setHidden();
+//    _setHidden();
     print('view-calendar-editor.save() not implemented');
   }
 
   /**
    *
    */
-  void _setHidden() {
-    _ui.root.hidden = true;
-    _ui.textArea.focus();
-  }
+//  void _setHidden() {
+//    _ui.root.hidden = true;
+//    _ui.textArea.focus();
+//  }
 
   /**
    *
    */
-  void _setVisible() {
-    _ui.root.hidden = false;
-    _ui.textArea.focus();
-  }
+//  void _setVisible() {
+//    _ui.root.hidden = false;
+//    _ui.textArea.focus();
+//  }
 
   /**
    * Enable/disable the widget buttons and as a sideeffect set the value of
