@@ -127,6 +127,7 @@ abstract class CallEvent implements Event {
   CallEvent (Call this.call) : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.call(this);
 
@@ -142,6 +143,7 @@ class ChannelState implements Event {
   final String   channelID;
 
   Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.channel (this);
 
@@ -164,6 +166,7 @@ class PeerState implements Event {
   PeerState (Peer this.peer) : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.peer(this);
 
@@ -183,6 +186,7 @@ class UserStateEvent implements Event {
   UserStateEvent (UserStatus this.status) : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.userState(this);
 
