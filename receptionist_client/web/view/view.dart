@@ -35,20 +35,20 @@ abstract class Widget {
   /**
    * Navigate to [myPlace] if widget is not already in focus.
    */
-  void _activate() {
-    if(!root.classes.contains('focus')) {
+  void _navigateToMyPlace() {
+    if(!_active) {
       _navigate.go(myPlace);
     }
   }
 
-  void blur() {
+  void _blur() {
     _active = false;
     root.classes.toggle('focus', false);
     focusElement.blur();
     _setTabIndex(-1);
   }
 
-  void focus() {
+  void _focus() {
     _active = true;
     root.classes.toggle('focus', true);
     focusElement.focus();
@@ -73,9 +73,9 @@ abstract class Widget {
    */
   void _setWidgetState(Place place) {
     if(myPlace == place) {
-      focus();
+      _focus();
     } else {
-      blur();
+      _blur();
     }
   }
 }

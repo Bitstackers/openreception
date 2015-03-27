@@ -12,7 +12,7 @@ class ReceptionCommands extends Widget {
   }
 
   void _activateMe(_) {
-    _activate();
+    _navigateToMyPlace();
   }
 
   HtmlElement get focusElement => _ui.commandList;

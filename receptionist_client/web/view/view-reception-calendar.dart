@@ -1,7 +1,6 @@
 part of view;
 
 class ReceptionCalendar extends Widget {
-//  final Bus<String>   _bus = new Bus<String>();
   final CalendarEditor _calendarEditor = new CalendarEditor(new UICalendarEditor(querySelector('#calendar-editor')));
   Place               _myPlace;
   UIReceptionCalendar _ui;
@@ -15,17 +14,12 @@ class ReceptionCalendar extends Widget {
   }
 
   void _activateMe(_) {
-    _activate();
+    _navigateToMyPlace();
   }
 
   HtmlElement get focusElement => _ui.eventList;
 
   Place get myPlace => _myPlace;
-
-  /**
-   *
-   */
-//  Stream<String> get onEdit => _bus.stream;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);

@@ -23,7 +23,7 @@ class MessageCompose extends Widget {
   }
 
   void _activateMe(_) {
-    _activate();
+    _navigateToMyPlace();
   }
 
   void _buttonCancelHandler() {
