@@ -37,32 +37,42 @@ button::-moz-focus-inner {
   flex-direction: row;
 }
 
-.focus {
+.focus .spinning-box {
+  top: -2px;
+  left: -2px;
   animation-name: focus;
   animation-duration: 3s;
-  animation-fill-mode: both;
   animation-iteration-count: infinite;
   -webkit-animation-name: focus;
   -webkit-animation-duration: 3s;
-  -webkit-animation-fill-mode: both;
   -webkit-animation-iteration-count: infinite;
 }
 
 @keyframes focus {
-  0%, 50%, 100% {
-    box-shadow: 0.0em 0.0em 0em rgba(255,255,255,0);
+  0% {
+    transform: rotate(0deg);
   }
-  25%, 75% {
-    box-shadow: 0.0em 0.0em 1em rgba(165,185,219,1);
+
+  50% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
   }
 }
 
 @-webkit-keyframes focus {
-  0%, 50%, 100% {
-    box-shadow: 0.0em 0.0em 0em rgba(255,255,255,0);
+  0% {
+    transform: rotate(0deg);
   }
-  25%, 75% {
-    box-shadow: 0.0em 0.0em 1em rgba(165,185,219,1);
+
+  50% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
   }
 }
 
@@ -122,6 +132,14 @@ input:focus  ~label {
 .modal {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 3em;
+}
+
+.spinning-box {
+  position: absolute;
+  z-index: -1;
+  width: 1em;
+  height: 1em;
+  background-color: red;
 }
 
 textarea {

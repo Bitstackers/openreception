@@ -8,5 +8,5 @@ class DomContactCalendar extends DomModel {
   UListElement get eventList => _root.querySelector('ul');
 
   @override
-  HtmlElement  get root      => _root;
+  HtmlElement get root => _root;
 }

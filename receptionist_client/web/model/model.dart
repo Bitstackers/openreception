@@ -5,6 +5,7 @@ import 'dart:html';
 part 'model-dom-agent-info.dart';
 part 'model-dom-calendar-editor.dart';
 part 'model-dom-contact-calendar.dart';
+part 'model-dom-contact-list.dart';
 part 'model-dom-contexts.dart';
 part 'model-dom-message-compose.dart';
 part 'model-dom-reception-calendar.dart';

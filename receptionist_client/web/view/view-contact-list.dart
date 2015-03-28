@@ -1,22 +1,30 @@
 part of view;
 
-class ContactList {
-  static final ContactList _singleton = new ContactList._internal();
-  factory ContactList() => _singleton;
+class ContactList extends Widget {
+  DomContactList _dom;
+  Place          _myPlace;
 
-  /**
-   *
-   */
-  ContactList._internal() {
+  ContactList(DomContactList this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 
-  static final DivElement _root = querySelector('#contact-list');
+  void _activateMe(_) {
+    _navigateToMyPlace();
+  }
 
-  final InputElement _filter = _root.querySelector('.filter');
-  final UListElement _list   = _root.querySelector('.generic-widget-list');
+  @override
+  HtmlElement get focusElement => _dom.filter;
+
+  @override
+  Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
-    // TODO (TL): Stuff...
+    _navigate.onGo.listen(_setWidgetState);
+
+    _dom.root.onClick.listen(_activateMe);
+    _hotKeys.onAltS.listen(_activateMe);
   }
+
+  @override
+  HtmlElement get root => _dom.root;
 }

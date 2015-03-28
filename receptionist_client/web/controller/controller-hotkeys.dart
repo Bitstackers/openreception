@@ -14,6 +14,7 @@ class HotKeys {
   Bus<KeyboardEvent> _altH     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altK     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altQ     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altS     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
@@ -25,6 +26,7 @@ class HotKeys {
   Stream<KeyboardEvent> get onAltH     => _altH.stream;
   Stream<KeyboardEvent> get onAltK     => _altK.stream;
   Stream<KeyboardEvent> get onAltQ     => _altQ.stream;
+  Stream<KeyboardEvent> get onAltS     => _altS.stream;
   Stream<KeyboardEvent> get onAltW     => _altW.stream;
   Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
   Stream<KeyboardEvent> get onTab      => _tab.stream;
@@ -42,6 +44,7 @@ class HotKeys {
        'Alt+h': _altH.fire,
        'Alt+k': _altK.fire,
        'Alt+q': _altQ.fire,
+       'Alt+s': _altS.fire,
        'Alt+w': _altW.fire};
 
     final Map<String, EventListener> bindings =
