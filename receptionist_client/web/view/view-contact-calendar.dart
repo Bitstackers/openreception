@@ -1,7 +1,6 @@
 part of view;
 
 class ContactCalendar extends Widget {
-  final Bus<String>  _bus = new Bus<String>();
   DomContactCalendar _dom;
   Place              _myPlace;
 
@@ -22,11 +21,6 @@ class ContactCalendar extends Widget {
   /**
    *
    */
-  Stream<String> get onEdit => _bus.stream;
-
-  /**
-   *
-   */
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
 
@@ -35,7 +29,7 @@ class ContactCalendar extends Widget {
     _hotKeys.onAltK.listen(_activateMe);
 
     // TODO (TL): temporary stuff
-    _dom.eventList.onClick.listen((_) => _bus.fire('Ret event fra ContactCalendar'));
+    _dom.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
   }
 
   @override
