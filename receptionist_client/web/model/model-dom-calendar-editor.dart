@@ -1,9 +1,9 @@
 part of model;
 
-class UICalendarEditor extends UIModel {
+class DomCalendarEditor extends DomModel {
   final DivElement _root;
 
-  UICalendarEditor(DivElement this._root);
+  DomCalendarEditor(DivElement this._root);
 
   ButtonElement   get cancelButton => _root.querySelector('.cancel');
   ButtonElement   get deleteButton => _root.querySelector('.delete');
@@ -20,5 +20,7 @@ class UICalendarEditor extends UIModel {
   InputElement    get stopMonth    => _root.querySelector('.stop-month');
   InputElement    get stopYear     => _root.querySelector('.stop-year');
   TextAreaElement get textArea     => _root.querySelector('textarea');
+
+  @override
   HtmlElement     get root         => _root;
 }

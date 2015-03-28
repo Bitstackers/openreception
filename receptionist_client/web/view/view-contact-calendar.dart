@@ -1,20 +1,23 @@
 part of view;
 
-class ContactCalendar {
-  static final ContactCalendar _singleton = new ContactCalendar._internal();
-  factory ContactCalendar() => _singleton;
+class ContactCalendar extends Widget {
+  final Bus<String>  _bus = new Bus<String>();
+  DomContactCalendar _dom;
+  Place              _myPlace;
 
-  /**
-   *
-   */
-  ContactCalendar._internal() {
+  ContactCalendar(DomContactCalendar this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 
-  static final DivElement _root = querySelector('#contact-calendar');
+  void _activateMe(_) {
+    _navigateToMyPlace();
+  }
 
-  final Bus<String>  _bus       = new Bus<String>();
-  final UListElement _eventList = _root.querySelector('ul');
+  @override
+  HtmlElement get focusElement => _dom.eventList;
+
+  @override
+  Place get myPlace => _myPlace;
 
   /**
    *
@@ -25,6 +28,16 @@ class ContactCalendar {
    *
    */
   void _registerEventListeners() {
-    _eventList.onClick.listen((_) => _bus.fire('Ret event fra ContactCalendar'));
+    _navigate.onGo.listen(_setWidgetState);
+
+    _dom.root.onClick.listen(_activateMe);
+
+    _hotKeys.onAltK.listen(_activateMe);
+
+    // TODO (TL): temporary stuff
+    _dom.eventList.onClick.listen((_) => _bus.fire('Ret event fra ContactCalendar'));
   }
+
+  @override
+  HtmlElement get root => _dom.root;
 }

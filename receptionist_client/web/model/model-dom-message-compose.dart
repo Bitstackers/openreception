@@ -1,9 +1,9 @@
 part of model;
 
-class UIMessageCompose extends UIModel {
+class DomMessageCompose extends DomModel {
   final DivElement _root;
 
-  UIMessageCompose(DivElement this._root);
+  DomMessageCompose(DivElement this._root);
 
   InputElement    get callerNameInput    => _root.querySelector('.names input.caller');
   InputElement    get callsBackInput     => _root.querySelector('.checks .calls-back');
@@ -17,7 +17,10 @@ class UIMessageCompose extends UIModel {
   TextAreaElement get messageTextarea    => _root.querySelector('.message textarea');
   InputElement    get pleaseCallInput    => _root.querySelector('.checks .please-call');
   DivElement      get recipientsDiv      => _root.querySelector('.recipients');
+
+  @override
   DivElement      get root               => _root;
+
   ButtonElement   get saveButton         => _root.querySelector('.buttons .save');
   ButtonElement   get sendButton         => _root.querySelector('.buttons .send');
   SpanElement     get showRecipientsSpan => _root.querySelector('.show-recipients');

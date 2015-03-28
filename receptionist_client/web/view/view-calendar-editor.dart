@@ -5,9 +5,9 @@ class CalendarEditor extends Widget {
   HtmlElement           _focusOnMe;
   HtmlElement           _lastTabElement;
   static CalendarEditor _singleton;
-  UICalendarEditor      _ui;
+  DomCalendarEditor     _dom;
 
-  factory CalendarEditor(UICalendarEditor ui) {
+  factory CalendarEditor(DomCalendarEditor ui) {
     if(_singleton == null) {
       _singleton = new CalendarEditor._internal(ui);
     }
@@ -15,10 +15,10 @@ class CalendarEditor extends Widget {
     return _singleton;
   }
 
-  CalendarEditor._internal(UICalendarEditor this._ui) {
-    _focusOnMe       = _ui.textArea;
-    _firstTabElement = _ui.textArea;
-    _lastTabElement  = _ui.cancelButton;
+  CalendarEditor._internal(DomCalendarEditor this._dom) {
+    _focusOnMe       = _dom.textArea;
+    _firstTabElement = _dom.textArea;
+    _lastTabElement  = _dom.cancelButton;
 
     _registerEventListeners();
   }
@@ -29,8 +29,13 @@ class CalendarEditor extends Widget {
   void activate(String data) {
     _active = true;
     _setTabIndex(1);
+<<<<<<< Updated upstream
     _setVisible();
     _ui.header.text = data;
+=======
+//    _setVisible();
+    _dom.header.text = data;
+>>>>>>> Stashed changes
   }
 
   /**
@@ -51,7 +56,8 @@ class CalendarEditor extends Widget {
     print('view-calendar-editor.delete() not implemented');
   }
 
-  HtmlElement get focusElement => _ui.textArea;
+  @override
+  HtmlElement get focusElement => _dom.textArea;
 
   /**
    * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
@@ -77,8 +83,6 @@ class CalendarEditor extends Widget {
     }
   }
 
-  Place get myPlace => null;
-
   /**
    *
    */
@@ -87,27 +91,28 @@ class CalendarEditor extends Widget {
     _hotKeys.onShiftTab.listen(_handleShiftTab);
 
     /// Enables focused element memory for this widget.
-    _ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    _dom.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
       element.onFocus.listen(_setFocusOnMe);
     });
 
-    _ui.startHour.onInput  .listen((_) => _sanitizeInput(_ui.startHour));
-    _ui.startMinute.onInput.listen((_) => _sanitizeInput(_ui.startMinute));
-    _ui.startDay.onInput   .listen((_) => _sanitizeInput(_ui.startDay));
-    _ui.startMonth.onInput .listen((_) => _sanitizeInput(_ui.startMonth));
-    _ui.startYear.onInput  .listen((_) => _sanitizeInput(_ui.startYear));
-    _ui.stopHour.onInput   .listen((_) => _sanitizeInput(_ui.stopHour));
-    _ui.stopMinute.onInput .listen((_) => _sanitizeInput(_ui.stopMinute));
-    _ui.stopDay.onInput    .listen((_) => _sanitizeInput(_ui.stopDay));
-    _ui.stopMonth.onInput  .listen((_) => _sanitizeInput(_ui.stopMonth));
-    _ui.stopYear.onInput   .listen((_) => _sanitizeInput(_ui.stopYear));
+    _dom.startHour.onInput  .listen((_) => _sanitizeInput(_dom.startHour));
+    _dom.startMinute.onInput.listen((_) => _sanitizeInput(_dom.startMinute));
+    _dom.startDay.onInput   .listen((_) => _sanitizeInput(_dom.startDay));
+    _dom.startMonth.onInput .listen((_) => _sanitizeInput(_dom.startMonth));
+    _dom.startYear.onInput  .listen((_) => _sanitizeInput(_dom.startYear));
+    _dom.stopHour.onInput   .listen((_) => _sanitizeInput(_dom.stopHour));
+    _dom.stopMinute.onInput .listen((_) => _sanitizeInput(_dom.stopMinute));
+    _dom.stopDay.onInput    .listen((_) => _sanitizeInput(_dom.stopDay));
+    _dom.stopMonth.onInput  .listen((_) => _sanitizeInput(_dom.stopMonth));
+    _dom.stopYear.onInput   .listen((_) => _sanitizeInput(_dom.stopYear));
 
-    _ui.cancelButton.onClick.listen((_) => _cancel());
-    _ui.deleteButton.onClick.listen((_) => _delete());
-    _ui.saveButton.onClick  .listen((_) => _save());
+    _dom.cancelButton.onClick.listen((_) => _cancel());
+    _dom.deleteButton.onClick.listen((_) => _delete());
+    _dom.saveButton.onClick  .listen((_) => _save());
   }
 
-  HtmlElement get root => _ui.root;
+  @override
+  HtmlElement get root => _dom.root;
 
   /**
    * Enables focus memory for this widget, so we can blur the widget and come
@@ -167,11 +172,11 @@ class CalendarEditor extends Widget {
    * [_lastTabElement] as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    bool toggle = _ui.root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty);
+    bool toggle = _dom.root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty);
 
-    _ui.deleteButton.disabled = toggle;
-    _ui.saveButton.disabled   = toggle;
+    _dom.deleteButton.disabled = toggle;
+    _dom.saveButton.disabled   = toggle;
 
-    _lastTabElement = toggle ? _ui.cancelButton : _ui.saveButton;
+    _lastTabElement = toggle ? _dom.cancelButton : _dom.saveButton;
   }
 }

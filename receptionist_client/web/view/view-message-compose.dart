@@ -4,20 +4,20 @@ part of view;
  * Component for creating/editing and saving/sending messages.
  */
 class MessageCompose extends Widget {
-  HtmlElement      _firstTabElement;
-  HtmlElement      _focusOnMe;
-  HtmlElement      _lastTabElement;
-  Place            _myPlace;
-  UIMessageCompose _ui;
+  HtmlElement       _firstTabElement;
+  HtmlElement       _focusOnMe;
+  HtmlElement       _lastTabElement;
+  Place             _myPlace;
+  DomMessageCompose _dom;
 
   /**
    * [root] is the parent element of the widget, and [_myPlace] is the [Place]
    * object that this widget reacts on when Navigate.go fires.
    */
-  MessageCompose(UIMessageCompose this._ui, Place this._myPlace) {
-    _focusOnMe       = _ui.callerNameInput;
-    _firstTabElement = _ui.callerNameInput;
-    _lastTabElement  = _ui.draftInput;
+  MessageCompose(DomMessageCompose this._dom, Place this._myPlace) {
+    _focusOnMe       = _dom.callerNameInput;
+    _firstTabElement = _dom.callerNameInput;
+    _lastTabElement  = _dom.draftInput;
 
     _registerEventListeners();
   }
@@ -30,6 +30,7 @@ class MessageCompose extends Widget {
 
   }
 
+  @override
   HtmlElement get focusElement => _focusOnMe;
 
   /**
@@ -54,34 +55,36 @@ class MessageCompose extends Widget {
     }
   }
 
+  @override
   Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.root.onClick.listen(_activateMe);
+    _dom.root.onClick.listen(_activateMe);
 
     _hotKeys.onAltB    .listen(_activateMe);
     _hotKeys.onTab     .listen(_handleTab);
     _hotKeys.onShiftTab.listen(_handleShiftTab);
 
     /// Enables focused element memory for this widget.
-    _ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    _dom.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
       element.onFocus.listen(_setFocusOnMe);
     });
 
-    _ui.showRecipientsSpan.onMouseOver.listen(_toggleRecipients);
-    _ui.showRecipientsSpan.onMouseOut .listen(_toggleRecipients);
+    _dom.showRecipientsSpan.onMouseOver.listen(_toggleRecipients);
+    _dom.showRecipientsSpan.onMouseOut .listen(_toggleRecipients);
 
-    _ui.callerNameInput.onInput.listen(_toggleButtons);
-    _ui.messageTextarea.onInput.listen(_toggleButtons);
+    _dom.callerNameInput.onInput.listen(_toggleButtons);
+    _dom.messageTextarea.onInput.listen(_toggleButtons);
 
-    _ui.cancelButton.onClick.listen(null);
-    _ui.saveButton  .onClick.listen(null);
-    _ui.sendButton  .onClick.listen(null);
+    _dom.cancelButton.onClick.listen(null);
+    _dom.saveButton  .onClick.listen(null);
+    _dom.sendButton  .onClick.listen(null);
   }
 
-  HtmlElement get root => _ui.root;
+  @override
+  HtmlElement get root => _dom.root;
 
   /**
    * Enables focus memory for this widget, so we can blur the widget and come
@@ -96,18 +99,18 @@ class MessageCompose extends Widget {
    * [_lastTabElement] as this depends on the state of the buttons.
    */
   void _toggleButtons(_) {
-    bool toggle = !(_ui.callerNameInput.value.trim().isNotEmpty && _ui.messageTextarea.value.trim().isNotEmpty);
-    _ui.cancelButton.disabled = toggle;
-    _ui.saveButton.disabled = toggle;
-    _ui.sendButton.disabled = toggle;
+    bool toggle = !(_dom.callerNameInput.value.trim().isNotEmpty && _dom.messageTextarea.value.trim().isNotEmpty);
+    _dom.cancelButton.disabled = toggle;
+    _dom.saveButton.disabled = toggle;
+    _dom.sendButton.disabled = toggle;
 
-    _lastTabElement = toggle ? _ui.draftInput : _ui.sendButton;
+    _lastTabElement = toggle ? _dom.draftInput : _dom.sendButton;
   }
 
   /**
    * Show/hide the recipients list.
    */
   void _toggleRecipients(_) {
-    _ui.recipientsDiv.classes.toggle('recipients-hidden');
+    _dom.recipientsDiv.classes.toggle('recipients-hidden');
   }
 }

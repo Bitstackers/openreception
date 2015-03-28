@@ -26,11 +26,54 @@ part 'view-reception-sales-calls.dart';
 part 'view-reception-selector.dart';
 part 'view-welcome-message.dart';
 
+<<<<<<< Updated upstream
+=======
+final HotKeys  _hotKeys  = new HotKeys();
+final Navigate _navigate = new Navigate();
+
+// TODO (TL): Decide if we need to check for null on widgets that have no actual
+// activation and/or no Place. It's probably a wasted check, since it will fail
+// hard an early.
+
+>>>>>>> Stashed changes
 abstract class Widget {
   final HotKeys  _hotKeys  = new HotKeys();
   final Navigate _navigate = new Navigate();
 
   bool _active = false;
+
+  /**
+   * Blur the widget.
+   */
+  void _blur() {
+    _active = false;
+    root.classes.toggle('focus', false);
+    focusElement.blur();
+    _setTabIndex(-1);
+  }
+
+  /**
+   * Focus the widget.
+   */
+  void _focus() {
+    _active = true;
+    root.classes.toggle('focus', true);
+    focusElement.focus();
+    _setTabIndex(1);
+  }
+
+  /**
+   * SHOULD return the element that will focus when the widget is activated.
+   * MAY return null if no specific element needs focus on widget activation or
+   * if the widget has no [Place] associated with it.
+   */
+  HtmlElement get focusElement => null;
+
+  /**
+   * SHOULD return the widgets [Place]. MAY return null if the widget has no
+   * [Place] associated with it.
+   */
+  Place get myPlace => null;
 
   /**
    * Navigate to [myPlace] if widget is not already in focus.
@@ -41,23 +84,11 @@ abstract class Widget {
     }
   }
 
-  void _blur() {
-    _active = false;
-    root.classes.toggle('focus', false);
-    focusElement.blur();
-    _setTabIndex(-1);
-  }
-
-  void _focus() {
-    _active = true;
-    root.classes.toggle('focus', true);
-    focusElement.focus();
-    _setTabIndex(1);
-  }
-
-  HtmlElement get focusElement;
-  Place       get myPlace;
-  HtmlElement get root;
+  /**
+   * SHOULD return the widgets root element. MAY return null if the widget has
+   * no [Place] associated with it.
+   */
+  HtmlElement get root => null;
 
   /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.

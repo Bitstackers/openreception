@@ -1,13 +1,13 @@
 part of view;
 
 class ReceptionCommands extends Widget {
-  Place               _myPlace;
-  UIReceptionCommands _ui;
+  Place                _myPlace;
+  DomReceptionCommands _dom;
 
   /**
    *
    */
-  ReceptionCommands(UIReceptionCommands this._ui, Place this._myPlace) {
+  ReceptionCommands(DomReceptionCommands this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 
@@ -15,17 +15,20 @@ class ReceptionCommands extends Widget {
     _navigateToMyPlace();
   }
 
-  HtmlElement get focusElement => _ui.commandList;
+  @override
+  HtmlElement get focusElement => _dom.commandList;
 
+  @override
   Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.root.onClick.listen(_activateMe);
+    _dom.root.onClick.listen(_activateMe);
 
     _hotKeys.onAltH .listen(_activateMe);
   }
 
-  HtmlElement get root => _ui.root;
+  @override
+  HtmlElement get root => _dom.root;
 }
