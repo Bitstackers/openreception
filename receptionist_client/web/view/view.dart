@@ -14,7 +14,6 @@ part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
 part 'view-contact-list.dart';
 part 'view-contexts.dart';
-part 'view-context-switcher.dart';
 part 'view-global-call-queue.dart';
 part 'view-message-compose.dart';
 part 'view-my-call-queue.dart';
@@ -26,8 +25,6 @@ part 'view-reception-sales-calls.dart';
 part 'view-reception-selector.dart';
 part 'view-welcome-message.dart';
 
-<<<<<<< Updated upstream
-=======
 final HotKeys  _hotKeys  = new HotKeys();
 final Navigate _navigate = new Navigate();
 
@@ -35,11 +32,7 @@ final Navigate _navigate = new Navigate();
 // activation and/or no Place. It's probably a wasted check, since it will fail
 // hard an early.
 
->>>>>>> Stashed changes
 abstract class Widget {
-  final HotKeys  _hotKeys  = new HotKeys();
-  final Navigate _navigate = new Navigate();
-
   bool _active = false;
 
   /**

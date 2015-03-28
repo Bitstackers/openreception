@@ -29,106 +29,32 @@
       #bob-active {
         height: 100vh;
         width: 100vw;
-        padding: 0.7em 0.7em 0.7em 0;
+        /*padding: 0.7em 0.7em 0.7em 0;*/
       }
     </style>
 
-    <!--
-      #context-switcher widget
-
-      Role:
-        Exposes n <button> elements that when clicked can be used to toggle
-        context visibility.
-
-        Setting focus on one of the child <button> elements will change its
-        graphical appearance to activated.
-
-      Visibility:
-        Is controlled by the #bob-active widget.
-
-      Tabindex:
-        All button elements are set at tabindex -1. Never change this.
-    -->
-    <div id="context-switcher" class="generic-widget layout-margin-right">
-      <style scoped>
-        #context-switcher {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 3em;
-          padding-top: 0.5em;
-        }
-
-        #context-switcher > button {
-          width: 2.5em;
-          height: 2.5em;
-          margin-bottom: 0.7em;
-          border: 0;
-          background-size: contain;
-          outline: 0;
-        }
-
-        #context-switcher > button.home {
-          background: url(images/contexthome.svg);
-        }
-
-        #context-switcher > button.home:active,
-        #context-switcher > button.home:focus,
-        #context-switcher > button.home:hover,
-        #context-switcher > button.home.active {
-          background: url(images/contexthome_active.svg);
-        }
-
-        #context-switcher > button.homeplus {
-          background: url(images/contexthomeplus.svg);
-        }
-
-        #context-switcher > button.homeplus:active,
-        #context-switcher > button.homeplus:focus,
-        #context-switcher > button.homeplus:hover,
-        #context-switcher > button.homeplus.active {
-          background: url(images/contexthomeplus_active.svg);
-        }
-
-        #context-switcher > button.messages {
-          background: url(images/contextmessages.svg);
-        }
-
-        #context-switcher > button.messages:active,
-        #context-switcher > button.messages:focus,
-        #context-switcher > button.messages:hover,
-        #context-switcher > button.messages.active {
-          background: url(images/contextmessages_active.svg);
-        }
-      </style>
-
-      <button class="home" tabindex="-1"></button>
-      <button class="homeplus" tabindex="-1"></button>
-      <button class="messages" tabindex="-1"></button>
-    </div>
+    <!-- context switcher was here -->
 
     <div class="display-flex-row" style="flex-grow: 1; position: relative;">
 
       <!--
-        #context-home widget
+        #context-calendar-edit modal
 
         Role:
-          Parent for all widgets that belong in the "home" context. Contexts
-          serves as a way to group widgets so as to easily handle toggling
-          visibility.
+          Parent for all widgets that belong in the "calendar-edit" context.
 
         Visibility:
-          Hidden   #context-home display:none
-          Visible: #context-home display:flex
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
 
-          Initial state is display:none.
-
-          Note that visibility on #context-home and its siblings MUST be mutually
-          exclusive.
+          Note that visibility on #context-calendar-edit and its siblings MUST be
+          mutually exclusive.
       -->
-      <section id="context-home" class="context display-flex-row">
+      <section id="context-calendar-edit" class="context modal display-flex-row">
 
-        <!--
+        <!--<div class="display-flex-column layout-margin-right" style="flex-grow: 1;">-->
+
+          <!--
           #calendar-editor widget
 
           Role:
@@ -143,7 +69,7 @@
             Textarea, input and button elements set to tabindex -1 on blur.
             MUST be updated on focus.
         -->
-        <div id="calendar-editor" class="generic-widget" hidden>
+        <div id="calendar-editor" class="generic-widget focus">
           <style scoped>
             #calendar-editor {
               position: absolute;
@@ -152,7 +78,6 @@
               height: 15em;
               width: 30%;
               z-index: 1;
-              box-shadow: 0 0 5em 2em rgba(0,0,0,0.2);
             }
 
             #calendar-editor .bad-input {
@@ -236,6 +161,392 @@
             </div>
           </div>
         </div>
+
+        <!--</div>-->
+
+      </section>
+
+      <!--
+        #context-homeplus modal
+
+        Role:
+          Parent for all widgets that belong in the "homeplus" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-homeplus and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section id="context-homeplus" class="context modal display-flex-row">
+
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #reception-alt-names widget
+
+            Role:
+              Show the alternate reception/company names.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-alt-names" class="generic-widget">
+            <style scoped>
+              #reception-alt-names {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception alt names::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>Huset Responsum K/S</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-addresses widget
+
+            Role:
+              Show the reception addresses.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-addresses" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-addresses {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception addresses::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>Farum Gydevej 87, 3520 Farum</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-email-addresses widget
+
+            Role:
+              Show the reception email addresses.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-email-addresses" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-email-addresses {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception email addresses::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>info@responsum.dk</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-telephone-numbers widget
+
+            Role:
+              Show the reception telephone numbers.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-telephone-numbers" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-telephone-numbers {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception telephone numbers::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>8832 9100</li>
+              <li>6043 1992</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #reception-websites widget
+
+            Role:
+              Show the reception websites.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-websites" class="generic-widget">
+            <style scoped>
+              #reception-websites {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception websites::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>www.responsum.dk</li>
+              <li>www.telefonpasning.guru</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-vat-numbers widget
+
+            Role:
+              Show the reception VAT numbers.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-vat-numbers" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-vat-numbers {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception VAT numbers::</h4>
+            <ul class="generic-widget-body generic-widget-list zebra">
+              <li>Responsum K/S : 4545 6565</li>
+              <li>Huset Responsum K/S : 7777 8888</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-type widget
+
+            Role:
+              Show the reception type.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-type" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-type {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception type::</h4>
+            <ul class="generic-widget-body generic-widget-list">
+              <li>Vi svarer kald for dem når de er optaget.</li>
+              <li>Bemærk: Kald har stået i kø hos dem i 3 minutter inden vi får kaldene.</li>
+            </ul>
+          </div>
+
+          <!--
+            #reception-bank-info widget
+
+            Role:
+              Show the reception banking information.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-bank-info" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-bank-info {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception bank info::</h4>
+            <ul class="generic-widget-body generic-widget-list">
+              <li>Vestjysk Bank konto 1160 987654321</li>
+              <li>Bitcoin addresse #13213498465198651651</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="display-flex-column" style="flex-grow: 2.5;">
+
+          <!--
+            #reception-mini-wiki widget
+
+            Role:
+              Show the reception mini wiki.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-mini-wiki" class="generic-widget">
+            <style scoped>
+              #reception-mini-wiki {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::reception mini wiki::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              <h2>Bla bla</h2>
+              <p>Et eller andet vildt sjovt og måske <b>fed tekst?</b>
+              <p>Foo!</p>
+              <ul>
+                <li>En liste!</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!--
+        #context-messages widget
+
+        Role:
+          Parent for all widgets that belong in the "messages" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-messages and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section id="context-messages" class="context modal display-flex-row">
+
+        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #message-archive-filter widget
+
+            Role:
+              Show the message archive filter widget.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="message-archive-filter" class="generic-widget">
+            <style scoped>
+              #message-archive-filter {
+                flex-grow: 2;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::message archive filter::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              message-archive-filter
+            </div>
+          </div>
+
+          <!--
+            #message-archive-edit widget
+
+            Role:
+              Show the message archive edit widget.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="message-archive-edit" class="generic-widget layout-margin-top">
+            <style scoped>
+              #message-archive-edit {
+                flex-grow: 3;
+              }
+
+            </style>
+
+            <h4 class="generic-widget-headline">::message archive edit::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              message-archive-edit
+            </div>
+          </div>
+
+        </div>
+
+        <div class="display-flex-row" style="flex-grow: 3;">
+
+          <!--
+            #message-archive widget
+
+            Role:
+              Show the message archive.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="message-archive" class="generic-widget">
+            <style scoped>
+              #message-archive {
+                flex-grow: 1;
+              }
+            </style>
+
+            <h4 class="generic-widget-headline">::message archive::</h4>
+            <div class="generic-widget-body generic-widget-list">
+              message-archive table
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!--
+        #context-home widget
+
+        Role:
+          Parent for all widgets that belong in the "home" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-home and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section id="context-home" class="context display-flex-row">
+
+        <!-- calendar editor widget was here -->
 
         <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
@@ -428,7 +739,7 @@
                     top: 1.5%;
                     left: 49%;
                     width: 50%;
-                    background-color: #f8f8f8;
+                    background-color: #f7f7f7;
                     box-shadow: 0.2em 0.2em 0.2em #888;
                     border: solid 1px #aaa;
                   }
@@ -639,6 +950,7 @@
 
                     #contact-list .generic-widget-list {
                       height: calc(100% - 2.8em);
+                      outline: 0;
                     }
                   </style>
 
@@ -736,7 +1048,7 @@
                   }
 
                   #contact-data .cell .telephone-numbers li {
-                    border-left: solid 3px #f8f8f8;
+                    border-left: solid 3px #f7f7f7;
                     margin-left: 0.2em;
                     padding: 0.3em;
                   }
@@ -1107,361 +1419,6 @@
         </div>
       </section>
 
-      <!--
-        #context-homeplus widget
-
-        Role:
-          Parent for all widgets that belong in the "homeplus" context. Contexts
-          serves as a way to group widgets so as to easily handle toggling
-          visibility.
-
-        Visibility:
-          Hidden   #context-homeplus display:none
-          Visible: #context-homeplus display:flex
-
-          Initial state is display:none.
-
-          Note that visibility on #context-homeplus and its siblings MUST be
-          mutually exclusive.
-      -->
-      <section id="context-homeplus" class="context display-flex-row">
-
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
-
-          <!--
-            #reception-alt-names widget
-
-            Role:
-              Show the alternate reception/company names.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-alt-names" class="generic-widget">
-            <style scoped>
-              #reception-alt-names {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception alt names::</h4>
-            <ul class="generic-widget-body generic-widget-list zebra">
-              <li>Huset Responsum K/S</li>
-            </ul>
-          </div>
-
-          <!--
-            #reception-addresses widget
-
-            Role:
-              Show the reception addresses.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-addresses" class="generic-widget layout-margin-top">
-            <style scoped>
-              #reception-addresses {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception addresses::</h4>
-            <ul class="generic-widget-body generic-widget-list zebra">
-              <li>Farum Gydevej 87, 3520 Farum</li>
-            </ul>
-          </div>
-
-          <!--
-            #reception-email-addresses widget
-
-            Role:
-              Show the reception email addresses.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-email-addresses" class="generic-widget layout-margin-top">
-            <style scoped>
-              #reception-email-addresses {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception email addresses::</h4>
-            <ul class="generic-widget-body generic-widget-list zebra">
-              <li>info@responsum.dk</li>
-            </ul>
-          </div>
-
-          <!--
-            #reception-telephone-numbers widget
-
-            Role:
-              Show the reception telephone numbers.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-telephone-numbers" class="generic-widget layout-margin-top">
-            <style scoped>
-              #reception-telephone-numbers {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception telephone numbers::</h4>
-            <ul class="generic-widget-body generic-widget-list zebra">
-              <li>8832 9100</li>
-              <li>6043 1992</li>
-            </ul>
-          </div>
-
-        </div>
-
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
-
-          <!--
-            #reception-websites widget
-
-            Role:
-              Show the reception websites.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-websites" class="generic-widget">
-            <style scoped>
-              #reception-websites {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception websites::</h4>
-            <ul class="generic-widget-body generic-widget-list zebra">
-              <li>www.responsum.dk</li>
-              <li>www.telefonpasning.guru</li>
-            </ul>
-          </div>
-
-          <!--
-            #reception-vat-numbers widget
-
-            Role:
-              Show the reception VAT numbers.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-vat-numbers" class="generic-widget layout-margin-top">
-            <style scoped>
-              #reception-vat-numbers {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception VAT numbers::</h4>
-            <ul class="generic-widget-body generic-widget-list zebra">
-              <li>Responsum K/S : 4545 6565</li>
-              <li>Huset Responsum K/S : 7777 8888</li>
-            </ul>
-          </div>
-
-          <!--
-            #reception-type widget
-
-            Role:
-              Show the reception type.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-type" class="generic-widget layout-margin-top">
-            <style scoped>
-              #reception-type {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception type::</h4>
-            <ul class="generic-widget-body generic-widget-list">
-              <li>Vi svarer kald for dem når de er optaget.</li>
-              <li>Bemærk: Kald har stået i kø hos dem i 3 minutter inden vi får kaldene.</li>
-            </ul>
-          </div>
-
-          <!--
-            #reception-bank-info widget
-
-            Role:
-              Show the reception banking information.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-bank-info" class="generic-widget layout-margin-top">
-            <style scoped>
-              #reception-bank-info {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception bank info::</h4>
-            <ul class="generic-widget-body generic-widget-list">
-              <li>Vestjysk Bank konto 1160 987654321</li>
-              <li>Bitcoin addresse #13213498465198651651</li>
-            </ul>
-          </div>
-
-        </div>
-
-        <div class="display-flex-column" style="flex-grow: 2;">
-
-          <!--
-            #reception-mini-wiki widget
-
-            Role:
-              Show the reception mini wiki.
-
-            Visibility:
-              Is controlled by the visibility of #context-homeplus.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="reception-mini-wiki" class="generic-widget">
-            <style scoped>
-              #reception-mini-wiki {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::reception mini wiki::</h4>
-            <div class="generic-widget-body generic-widget-list">
-              <h2>Bla bla</h2>
-              <p>Et eller andet vildt sjovt og måske <b>fed tekst?</b>
-              <p>Foo!</p>
-              <ul>
-                <li>En liste!</li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-
-      </section>
-
-      <section id="context-messages" class="context display-flex-row">
-
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
-
-          <!--
-            #message-archive-filter widget
-
-            Role:
-              Show the message archive filter widget.
-
-            Visibility:
-              Is controlled by the visibility of #context-messages.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="message-archive-filter" class="generic-widget">
-            <style scoped>
-              #message-archive-filter {
-                flex-grow: 2;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::message archive filter::</h4>
-            <div class="generic-widget-body generic-widget-list">
-              message-archive-filter
-            </div>
-          </div>
-
-          <!--
-            #message-archive-edit widget
-
-            Role:
-              Show the message archive edit widget.
-
-            Visibility:
-              Is controlled by the visibility of #context-messages.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="message-archive-edit" class="generic-widget layout-margin-top">
-            <style scoped>
-              #message-archive-edit {
-                flex-grow: 3;
-              }
-
-            </style>
-
-            <h4 class="generic-widget-headline">::message archive edit::</h4>
-            <div class="generic-widget-body generic-widget-list">
-              message-archive-edit
-            </div>
-          </div>
-
-        </div>
-
-        <div class="display-flex-row" style="flex-grow: 3;">
-
-          <!--
-            #message-archive widget
-
-            Role:
-              Show the message archive.
-
-            Visibility:
-              Is controlled by the visibility of #context-messages.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="message-archive" class="generic-widget">
-            <style scoped>
-              #message-archive {
-                flex-grow: 1;
-              }
-            </style>
-
-            <h4 class="generic-widget-headline">::message archive::</h4>
-            <div class="generic-widget-body generic-widget-list">
-              message-archive table
-            </div>
-          </div>
-
-        </div>
-
-      </section>
     </div>
   </div>
 

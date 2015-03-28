@@ -14,12 +14,6 @@ void main() {
   Place placeReceptionCalendar = new Place('context-home', 'reception-calendar');
   Place placeReceptionCommands = new Place('context-home', 'reception-commands');
 
-<<<<<<< Updated upstream
-  AgentInfo             agentInfo             = new AgentInfo();
-  Contexts              contexts              = new Contexts();
-  ContextSwitcher       contextSwitcher       = new ContextSwitcher();
-  ContactCalendar       contactCalendar       = new ContactCalendar();
-=======
   DomAgentInfo         domAgentInfo         = new DomAgentInfo(querySelector('#agent-info'));
   DomContactCalendar   domContactCalendar   = new DomContactCalendar(querySelector('#contact-calendar'));
   DomMessageCompose    domMessageCompose    = new DomMessageCompose(querySelector('#message-compose'));
@@ -32,14 +26,10 @@ void main() {
   ReceptionCalendar receptionCalendar = new ReceptionCalendar(domReceptionCalendar, placeReceptionCalendar);
   ReceptionCommands receptionCommands = new ReceptionCommands(domReceptionCommands, placeReceptionCommands);
 
->>>>>>> Stashed changes
   ContactData           contactData           = new ContactData();
   ContactList           contactList           = new ContactList();
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();
-
   MyCallQueue           myCallQueue           = new MyCallQueue();
-
-
   ReceptionOpeningHours receptionOpeningHours = new ReceptionOpeningHours();
   ReceptionProduct      receptionProduct      = new ReceptionProduct();
   ReceptionSalesCalls   receptionSalesCalls   = new ReceptionSalesCalls();

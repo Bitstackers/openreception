@@ -16,15 +16,6 @@ class Contexts {
     _registerEventListeners();
   }
 
-<<<<<<< Updated upstream
-  final Map<String, HtmlElement> _contextMap =
-    {'context-home'    : querySelector('#context-home'),
-     'context-homeplus': querySelector('#context-homeplus'),
-     'context-messages': querySelector('#context-messages')};
-  final Navigate _navigate = new Navigate();
-
-=======
->>>>>>> Stashed changes
   /**
    *
    */
@@ -39,6 +30,10 @@ class Contexts {
    */
   void _registerEventListeners() {
     _navigate.onGo.listen(onNavigation);
+
+    _hotKeys.onAltQ.listen((_) => _navigate.goHome());
+    _hotKeys.onAltW.listen((_) => _navigate.goHomeplus());
+    _hotKeys.onAltE.listen((_) => _navigate.goMessages());
   }
 
   /**
