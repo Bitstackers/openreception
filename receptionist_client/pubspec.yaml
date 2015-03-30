@@ -1,6 +1,8 @@
-name: openreception_client
+name: ReceptionistClient
 description: Receptionist browser-based console for OpenReception project.
 version: 0.0.1
+environment:
+  sdk: '>=1.0.0 <2.0.0'
 dependencies:
   browser: any
   event_bus: <0.3.0
@@ -8,6 +10,8 @@ dependencies:
   js: any
   logging: any
   meta: any
+dependencies:
+  browser: any
   okeyee: any
   openreception_framework:
     git:

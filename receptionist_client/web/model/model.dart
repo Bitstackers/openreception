@@ -16,6 +16,8 @@ library model;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:html';
+
 
 import '../controller/controller.dart' as Controller;
 import '../classes/events.dart' as event;
@@ -48,4 +50,23 @@ part 'model-transfer-request.dart';
 part 'model-user.dart';
 part 'model-user-status.dart';
 
+part 'model-dom-agent-info.dart';
+part 'model-dom-calendar-editor.dart';
+part 'model-dom-contact-calendar.dart';
+part 'model-dom-contact-list.dart';
+part 'model-dom-contexts.dart';
+part 'model-dom-message-compose.dart';
+part 'model-dom-reception-calendar.dart';
+part 'model-dom-reception-commands.dart';
+
 const String libraryName = "model";
+
+
+
+abstract class DomModel {
+  /**
+   * SHOULD return the root element for this specific DomModel. MAY return null
+   * if the root doesn't matter.
+   */
+  HtmlElement get root => null;
+}

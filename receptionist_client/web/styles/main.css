@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #fdfdfd;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1em;
+  font-weight: normal;
+}
+
+/*
+  Firefox specific: Disables dotted line on latest clicked button
+*/
+button::-moz-focus-inner {
+  border: 0;
+}
+
+.context {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+  z-index: 0;
+  background-color: #fdfdfd;
+}
+
+.display-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.display-flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.focus .spinning-box {
+  top: -2px;
+  left: -2px;
+  animation-name: focus;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  -webkit-animation-name: focus;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+}
+
+@keyframes focus {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@-webkit-keyframes focus {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.generic-widget {
+  position: relative;
+  background-color: #f7f7f7;
+}
+
+.generic-widget-body {
+  position: absolute;
+  top: 20px;
+  height: calc(100% - 20px);
+  width: 100%;f
+}
+
+.generic-widget-headline {
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #a5b9db;
+  padding: 2px 5px;
+  font-size: 0.8em;
+  color: #fff;
+  box-shadow: 0px 2px 2px 0px #aaa;
+}
+
+.generic-widget-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow: auto;
+}
+
+.generic-widget-list > li {
+  padding: 0.3em;
+}
+
+input {
+  border: solid 1px #aaa;
+}
+
+input:focus,
+input:focus  ~label {
+  background-color: #fbe7b1;
+}
+
+.layout-margin-right {
+  margin-right: 1em;
+}
+
+.layout-margin-top {
+  margin-top: 1em;
+}
+
+.modal {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 3em;
+}
+
+.spinning-box {
+  position: absolute;
+  z-index: -1;
+  width: 1em;
+  height: 1em;
+  background-color: red;
+}
+
+textarea {
+  border: solid 1px #aaa;
+}
+
+textarea:focus {
+  background-color: #fbe7b1;
+}
+
+.zebra li:nth-of-type(even) {
+  background-color: #f0f0f0;
+}

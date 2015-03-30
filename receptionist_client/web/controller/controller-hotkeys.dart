@@ -4,63 +4,62 @@ class HotKeys {
   static final HotKeys _singleton = new HotKeys._internal();
   factory HotKeys() => _singleton;
 
-  Bus<KeyboardEvent> _CtrlAltEnter  = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlAltP      = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlBackspace = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlE         = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlK         = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlS         = new Bus<KeyboardEvent>();
-  Keyboard           _keyDown       = new Keyboard();
-
-  Stream<KeyboardEvent> get onCtrlAltEnter  => _CtrlAltEnter.stream;
-  Stream<KeyboardEvent> get onCtrlAltP      => _CtrlAltP.stream;
-  Stream<KeyboardEvent> get onCtrlBackspace => _CtrlBackspace.stream;
-  Stream<KeyboardEvent> get onCtrlE         => _CtrlE.stream;
-  Stream<KeyboardEvent> get onCtrlK         => _CtrlK.stream;
-  Stream<KeyboardEvent> get onCtrlS         => _CtrlS.stream;
-
   HotKeys._internal() {
+    _initialize();
+  }
+
+  Bus<KeyboardEvent> _altA     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altB     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altE     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altH     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altK     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altQ     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altS     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
+  Keyboard           _keyDown  = new Keyboard();
+
+  Stream<KeyboardEvent> get onAltA     => _altA.stream;
+  Stream<KeyboardEvent> get onAltB     => _altB.stream;
+  Stream<KeyboardEvent> get onAltE     => _altE.stream;
+  Stream<KeyboardEvent> get onAltH     => _altH.stream;
+  Stream<KeyboardEvent> get onAltK     => _altK.stream;
+  Stream<KeyboardEvent> get onAltQ     => _altQ.stream;
+  Stream<KeyboardEvent> get onAltS     => _altS.stream;
+  Stream<KeyboardEvent> get onAltW     => _altW.stream;
+  Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
+  Stream<KeyboardEvent> get onTab      => _tab.stream;
+
+  /**
+   *
+   */
+  void _initialize() {
     window.document.onKeyDown.listen(_keyDown.press);
 
-    Map<String, EventListener> keyDownBindings =
-      {'Alt+g'          : _AltG,
-       'Alt+l'          : _AltL,
-       'Alt+o'          : _AltO,
-       'Alt+p'          : _AltP,
-       'Alt+u'          : _AltU,
-       'Ctrl+Alt+Enter' : _CtrlAltEnter.fire,
-       'Ctrl+Alt+p'     : _CtrlAltP.fire,
-       'Ctrl+Backspace' : _CtrlBackspace.fire,
-       'Ctrl+e'         : _CtrlE.fire,
-       'Ctrl+k'         : _CtrlK.fire,
-       'Ctrl+s'         : _CtrlS.fire};
+    final Map<String, EventListener> preventDefaultBindings =
+      {'Alt+a': _altA.fire,
+       'Alt+b': _altB.fire,
+       'Alt+e': _altE.fire,
+       'Alt+h': _altH.fire,
+       'Alt+k': _altK.fire,
+       'Alt+q': _altQ.fire,
+       'Alt+s': _altS.fire,
+       'Alt+w': _altW.fire};
 
-    keyDownBindings.forEach((key, callback) {
-      _keyDown.register(key, (KeyboardEvent event) {
+    final Map<String, EventListener> bindings =
+        {'Tab'      : _tab.fire,
+         'Shift+Tab': _shiftTab.fire};
+
+    preventDefaultBindings.forEach((key, callback) {
+      _keyDown.register(key, (Event event) {
         event.preventDefault();
         callback(event);
       });
     });
+
+    bindings.forEach((key, callback) {
+      _keyDown.register(key, callback);
+    });
   }
-}
-
-// TODO (TL): Temporary hacks until we've bus'ified everything in this file
-void _AltG(_) {
-  Call.hangup(Model.Call.currentCall);
-}
-
-void _AltL(_) {
-  Call.park(Model.Call.currentCall);
-}
-
-void _AltO(_) {
-  Call.transfer(Model.Call.currentCall, Model.CallList.instance.firstParkedCall);
-}
-
-void _AltP(_) {
-  Call.pickupNext();
-}
-
-void _AltU(_) {
-  Call.pickupParked(Model.CallList.instance.firstParkedCall);
 }
