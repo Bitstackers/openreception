@@ -46,7 +46,10 @@ part 'messagestore/tests.dart';
 part 'messagestore/src/rest_message_store.dart';
 
 /// Data management service tests
-part 'managementserver/tests.dart';
+part 'managementserver/all_tests.dart';
+part 'managementserver/src/contact.dart';
+part 'managementserver/src/organization.dart';
+part 'managementserver/src/reception.dart';
 
 /// Reception server tests
 part 'reception/all_tests.dart';
