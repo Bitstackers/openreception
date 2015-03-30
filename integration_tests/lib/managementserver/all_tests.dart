@@ -36,19 +36,19 @@ void runAllTests() {
     test('Create Reception', _reception.createReception);
   });
 
-//  group('Management.Contact', () {
-//    setUp(() {
-//      Contact.client = new Transport.Client();
-//      Contact.contactStore = new Service.RESTContactStore(serverUrl, authToken, _reception.client);
-//    });
-//    tearDown(() {
-//      _reception.client.client.close(force: true);
-//    });
-//
-//    test('Get Contact', Contact.getContact);
-//    test('Get Non-Existing Contact', Contact.getNonExistingContact);
-//    test('Get Contact List', Contact.getContactList);
-//    test('Update Contact', Contact.updateContact);
-//    test('Create Contact', Contact.createContact);
-//  });
+  group('Management.Contact', () {
+    setUp(() {
+      Contact.client = new Transport.Client();
+      Contact.contactStore = new Service.RESTContactStore(serverUrl, authToken, _reception.client);
+    });
+    tearDown(() {
+      _reception.client.client.close(force: true);
+    });
+
+    test('Get Contact', Contact.getContact);
+    test('Get Non-Existing Contact', Contact.getNonExistingContact);
+    test('Get Contact List', Contact.getContactList);
+    test('Update Contact', Contact.updateContact);
+    test('Create Contact', Contact.createContact);
+  });
 }
