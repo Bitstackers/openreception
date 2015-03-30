@@ -4,7 +4,7 @@ abstract class Contact {
 
   Future<List<Map>> calendarMap (int contactID, int receptionID);
 
-  Future<Model.Contact> get(int organizationID);
+  Future<Model.Contact> get(int contactID);
 
   Future<List<Model.Contact>> list();
 
