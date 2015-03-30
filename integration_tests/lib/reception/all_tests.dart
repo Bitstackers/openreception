@@ -35,7 +35,10 @@ runReceptionTests () {
     test ('Non-existing reception',
         () => Reception_Store.nonExistingReception(receptionStore));
     test ('Existing reception',
-        () => Reception_Store.existingReception);
+        () => Reception_Store.existingReception(receptionStore));
+    test ('List receptions',
+        () => Reception_Store.listReceptions(receptionStore));
+
     test ('Calendar event listing',
         () => Reception_Store.existingReceptionCalendar(receptionStore));
     test ('Calendar event creation',
