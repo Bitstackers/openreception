@@ -79,10 +79,61 @@ abstract class ContactStore {
    * Reception object.
    */
   static void existingContact (Storage.Contact contactStore) {
+    const int contactID = 1;
+    log.info('Checking server behaviour on an existing contact $contactID.');
 
-    log.info('Checking server behaviour on an existing contact.');
+    return expect(contactStore.get(contactID), isNotNull);
+  }
 
-    return expect(contactStore.get(1), isNotNull);
+  /**
+   * Test server behaviour when trying to aquire a list of contact objects.
+   *
+   * The expected behaviour is that the server should return a list of
+   * contact objects.
+   *
+   * REMARK: I'm not sure this is a supported operation on the contact server,
+   * but it's part of the Framework.
+   */
+  static Future listContacts (Storage.Contact contactStore) {
+
+    log.info('Checking server behaviour on list of contacts.');
+
+    return contactStore.list().then((List<Model.Contact> contacts) {
+      expect(contacts, isNotNull);
+      expect(contacts, isNotEmpty);
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to aquire a list of contact objects from
+   * a reception.
+   *
+   * The expected behaviour is that the server should return a list of
+   * contact objects.
+   */
+  static Future listContactsByExistingReception (Storage.Contact contactStore) {
+    const int receptionID = 1;
+    log.info('Checking server behaviour on list of contacts in reception $receptionID.');
+
+    return contactStore.listByReception(receptionID)
+        .then((List<Model.Contact> contacts) {
+      expect(contacts, isNotNull);
+      expect(contacts, isNotEmpty);
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to aquire a list of contact objects from
+   * a non existing reception.
+   *
+   * The expected behaviour is that the server should return a Not Found error.
+   */
+  static void listContactsByNonExistingReception (Storage.Contact contactStore) {
+    const int receptionID = -1;
+    log.info('Checking server behaviour on list of contacts in reception $receptionID.');
+
+    return expect(contactStore.listByReception(receptionID),
+            throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**
