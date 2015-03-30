@@ -8,13 +8,9 @@ class MessageCompose extends Widget {
   HtmlElement       _focusOnMe;
   HtmlElement       _lastTabElement;
   Place             _myPlace;
-  DomMessageCompose _dom;
+  UIMessageCompose _dom;
 
-  /**
-   * [root] is the parent element of the widget, and [_myPlace] is the [Place]
-   * object that this widget reacts on when Navigate.go fires.
-   */
-  MessageCompose(DomMessageCompose this._dom, Place this._myPlace) {
+  MessageCompose(UIMessageCompose this._dom, Place this._myPlace) {
     _focusOnMe       = _dom.callerNameInput;
     _firstTabElement = _dom.callerNameInput;
     _lastTabElement  = _dom.draftInput;
@@ -27,7 +23,7 @@ class MessageCompose extends Widget {
   }
 
   void _buttonCancelHandler() {
-
+    /// TODO (TL): Stub
   }
 
   @override

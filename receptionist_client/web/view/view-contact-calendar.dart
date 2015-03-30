@@ -1,10 +1,10 @@
 part of view;
 
 class ContactCalendar extends Widget {
-  DomContactCalendar _dom;
   Place              _myPlace;
+  UIContactCalendar _ui;
 
-  ContactCalendar(DomContactCalendar this._dom, Place this._myPlace) {
+  ContactCalendar(UIModel this._ui, Place this._myPlace) {
     _registerEventListeners();
   }
 
@@ -13,7 +13,7 @@ class ContactCalendar extends Widget {
   }
 
   @override
-  HtmlElement get focusElement => _dom.eventList;
+  HtmlElement get focusElement => _ui.eventList;
 
   @override
   Place get myPlace => _myPlace;
@@ -24,14 +24,14 @@ class ContactCalendar extends Widget {
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _dom.root.onClick.listen(_activateMe);
+    _ui.root.onClick.listen(_activateMe);
 
     _hotKeys.onAltK.listen(_activateMe);
 
     // TODO (TL): temporary stuff
-    _dom.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
+    _ui.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
   }
 
   @override
-  HtmlElement get root => _dom.root;
+  HtmlElement get root => _ui.root;
 }

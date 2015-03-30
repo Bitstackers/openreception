@@ -1,9 +1,9 @@
 part of model;
 
-class DomContactList extends DomModel {
+class UIContactList extends UIModel {
   final DivElement _root;
 
-  DomContactList(DivElement this._root);
+  UIContactList(DivElement this._root);
 
   UListElement get contactList => _root.querySelector('.generic-widget-list');
   InputElement get filter      => _root.querySelector('.filter');

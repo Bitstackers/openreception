@@ -67,7 +67,7 @@
             Textarea, input and button elements set to tabindex -1 on blur.
             MUST be updated on focus.
         -->
-        <div id="calendar-editor" class="generic-widget focus">
+        <div id="calendar-editor" class="generic-widget">
           <style scoped>
             #calendar-editor {
               position: absolute;
@@ -1075,34 +1075,44 @@
                     padding: 0.2em;
                   }
 
-                  #contact-data .telephone-numbers {
+                  #contact-data .telephone-number {
                     padding: 0;
                     list-style-position: inside;
                     list-style-position: decimal;
+                    overflow: auto;
                   }
 
-                  #contact-data .cell .telephone-numbers li {
+                  #contact-data .telephone-number:focus,
+                  #contact-data .cell .telephone-number li:focus {
+                    outline: 0;
+                  }
+
+                  #contact-data .cell .telephone-number li {
                     border-left: solid 3px #f7f7f7;
                     margin-left: 0.2em;
                     padding: 0.3em;
                   }
 
-                  #contact-data .cell .telephone-numbers li span.label {
+                  #contact-data .cell .telephone-number li:hover {
+                    cursor: pointer;
+                  }
+
+                  #contact-data .cell .telephone-number li span.label {
                     padding-left: 0.5em;
                     font-size: 0.8em;
                     text-decoration: none;
                   }
 
-                  #contact-data .cell .telephone-numbers .selected {
+                  #contact-data .cell .telephone-number .selected {
                     border-left: solid 3px #ff5621;
                   }
 
-                  #contact-data .cell .telephone-numbers .secret {
+                  #contact-data .cell .telephone-number .secret {
                     text-decoration: line-through;
                     color: #ff2601;
                   }
 
-                  #contact-data .cell .telephone-numbers li:hover .secret {
+                  #contact-data .cell .telephone-number li:hover .secret {
                     text-decoration: none;
                     color: initial;
                   }
@@ -1140,7 +1150,7 @@
                   <div class="column">
                     <div class="cell">
                       <h5>Work hours</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="work-hours generic-widget-list">
                         <li>Er på kontoret man-fre 1000-1200</li>
                         <li>Fri onsdag</li>
                       </ul>
@@ -1148,14 +1158,14 @@
 
                     <div class="cell">
                       <h5>Title</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="title generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Department</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="department generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -1163,7 +1173,7 @@
 
                     <div class="cell">
                       <h5>Relations</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="relations generic-widget-list">
                         <li>Mand: Søren Jensen</li>
                         <li>Søn: Andreas</li>
                       </ul>
@@ -1171,7 +1181,7 @@
 
                     <div class="cell">
                       <h5>Additional info</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="additional-info generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
@@ -1180,29 +1190,26 @@
                   <div class="column">
                     <div class="cell">
                       <h5>Commands</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="commands generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Responsibility</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="responsibility generic-widget-list">
                         <li>foo</li>
                       </ul>
                     </div>
 
                     <div class="cell">
                       <h5>Telephone numbers</h5>
-                      <ol class="telephone-numbers zebra">
-                        <li><span>60431992</span><span class="label">mobil</span></li>
-                        <li><span class="secret">00449 107-109-39995109</span><span class="label">privat, hustrus nummer</span></li>
-                      </ol>
+                      <ol class="telephone-number zebra" tabindex="-1"></ol>
                     </div>
 
                     <div class="cell">
                       <h5>Email addresses</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="email-addresses generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                       </ul>
@@ -1210,7 +1217,7 @@
 
                     <div class="cell">
                       <h5>Backup</h5>
-                      <ul class="generic-widget-list">
+                      <ul class="backups generic-widget-list">
                         <li>foo</li>
                         <li>bar</li>
                         <li>foo</li>
@@ -1311,7 +1318,7 @@
               <div class="icons">
                 <img class="alert-state" src="">
                 <img class="agent-state" src="">
-                <img class="face" src="">
+                <img class="portrait" src="">
               </div>
             </div>
           </div>

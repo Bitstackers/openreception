@@ -1,25 +1,41 @@
 part of view;
 
 class AgentInfo extends Widget {
-  DomAgentInfo _dom;
+  UIAgentInfo _ui;
 
-  /**
-   *
-   */
-  AgentInfo(DomAgentInfo this._dom) {
-    _dom.activeCount.text = '0';
-    _dom.pausedCount.text = '0';
-    _dom.agentState.src = 'images/agentsactive.svg';
-    _dom.alertState.src = 'images/alert.svg';
-    _dom.face.src = 'images/face.png';
+  AgentInfo(UIModel this._ui) {
+    _ui.activeCount = 0;
+    _ui.pausedCount = 0;
+    _ui.agentState = AgentState.UNKNOWN;
+    _ui.alertState = AlertState.ON;
+    _ui.portrait = 'images/face.png';
 
     _registerEventListeners();
   }
 
-  /**
-   *
-   */
+  HtmlElement get focusElement => null;
+
+  Place get myPlace => null;
+
   void _registerEventListeners() {
-    // TODO (TL): Stuff...
+    /// TODO (TL): Add relevant listeners
+  }
+
+  HtmlElement get root => null;
+
+  void _updateActiveCount(int activeCount) {
+     _ui.activeCount = activeCount;
+   }
+
+  void _updateAgentState(AgentState agentState) {
+    _ui.agentState = agentState;
+  }
+
+  void _updateAlertState(AlertState alertState) {
+    _ui.alertState = alertState;
+  }
+
+  void _updatePausedCount(int pausedCount) {
+    _ui.pausedCount = pausedCount;
   }
 }

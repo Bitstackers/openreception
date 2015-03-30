@@ -1,7 +1,7 @@
 part of model;
 
-class DomContexts extends DomModel {
-  DomContexts();
+class UIContexts extends UIModel {
+  UIContexts();
 
   HtmlElement get contextCalendarEdit => querySelector('#context-calendar-edit');
   HtmlElement get contextHome         => querySelector('#context-home');

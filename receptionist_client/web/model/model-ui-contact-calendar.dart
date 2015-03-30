@@ -1,9 +1,9 @@
 part of model;
 
-class DomContactCalendar extends DomModel {
+class UIContactCalendar extends UIModel {
   final DivElement _root;
 
-  DomContactCalendar(DivElement this._root);
+  UIContactCalendar(DivElement this._root);
 
   UListElement get eventList => _root.querySelector('ul');
 

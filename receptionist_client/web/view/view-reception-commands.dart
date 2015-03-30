@@ -2,12 +2,12 @@ part of view;
 
 class ReceptionCommands extends Widget {
   Place                _myPlace;
-  DomReceptionCommands _dom;
+  UIReceptionCommands _dom;
 
   /**
    *
    */
-  ReceptionCommands(DomReceptionCommands this._dom, Place this._myPlace) {
+  ReceptionCommands(UIReceptionCommands this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 

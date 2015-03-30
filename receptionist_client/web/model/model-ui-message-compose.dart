@@ -1,9 +1,9 @@
 part of model;
 
-class DomMessageCompose extends DomModel {
+class UIMessageCompose extends UIModel {
   final DivElement _root;
 
-  DomMessageCompose(DivElement this._root);
+  UIMessageCompose(DivElement this._root);
 
   InputElement    get callerNameInput    => _root.querySelector('.names input.caller');
   InputElement    get callsBackInput     => _root.querySelector('.checks .calls-back');

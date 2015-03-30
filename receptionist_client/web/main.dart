@@ -5,31 +5,35 @@ import 'model/model.dart';
 import 'view/view.dart';
 
 void main() {
-  DomContexts domContexts = new DomContexts();
-  Contexts    contexts    = new Contexts(domContexts);
+  Contexts contexts = new Contexts(new UIContexts());
 
-  Place placeAgentInto         = new Place('context-home', 'agent-info');
-  Place placeContactCalendar   = new Place('context-home', 'contact-calendar');
-  Place placeContactList       = new Place('context-home', 'contact-list');
-  Place placeMessageCompose    = new Place('context-home', 'message-compose');
-  Place placeReceptionCalendar = new Place('context-home', 'reception-calendar');
-  Place placeReceptionCommands = new Place('context-home', 'reception-commands');
+  AgentInfo         agentInfo        = new AgentInfo(new UIAgentInfo(querySelector('#agent-info')));
+  CalendarEditor    calendarEditor   =
+      new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
+                          new Place('context-calendar-edit', 'calendar-editor'));
+  ContactCalendar   contactCalendar   =
+      new ContactCalendar(new UIContactCalendar(querySelector('#contact-calendar')),
+                          new Place('context-home', 'contact-calendar'));
+  ContactData       contactData       =
+      new ContactData(new UIContactData(querySelector('#contact-data')),
+                      new Place('context-home', 'contact-data'));
+  ContactList       contactList       =
+      new ContactList(new UIContactList(querySelector('#contact-list')),
+                      new Place('context-home', 'contact-list'));
+  MessageCompose    messageCompose    =
+      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
+                         new Place('context-home', 'message-compose'));
+  ReceptionCalendar receptionCalendar =
+      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
+                            new Place('context-home', 'reception-calendar'));
+  ReceptionCommands receptionCommands =
+      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
+                            new Place('context-home', 'reception-commands'));
 
-  DomAgentInfo         domAgentInfo         = new DomAgentInfo(querySelector('#agent-info'));
-  DomContactCalendar   domContactCalendar   = new DomContactCalendar(querySelector('#contact-calendar'));
-  DomContactList       domContactList       = new DomContactList(querySelector('#contact-list'));
-  DomMessageCompose    domMessageCompose    = new DomMessageCompose(querySelector('#message-compose'));
-  DomReceptionCalendar domReceptionCalendar = new DomReceptionCalendar(querySelector('#reception-calendar'));
-  DomReceptionCommands domReceptionCommands = new DomReceptionCommands(querySelector('#reception-commands'));
 
-  AgentInfo         agentInfo         = new AgentInfo(domAgentInfo);
-  ContactCalendar   contactCalendar   = new ContactCalendar(domContactCalendar, placeContactCalendar);
-  ContactList       contactList       = new ContactList(domContactList, placeContactList);
-  MessageCompose    messageCompose    = new MessageCompose(domMessageCompose, placeMessageCompose);
-  ReceptionCalendar receptionCalendar = new ReceptionCalendar(domReceptionCalendar, placeReceptionCalendar);
-  ReceptionCommands receptionCommands = new ReceptionCommands(domReceptionCommands, placeReceptionCommands);
 
-  ContactData           contactData           = new ContactData();
+
+
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();
   MyCallQueue           myCallQueue           = new MyCallQueue();
   ReceptionOpeningHours receptionOpeningHours = new ReceptionOpeningHours();
