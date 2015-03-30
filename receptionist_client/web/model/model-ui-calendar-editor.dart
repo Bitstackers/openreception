@@ -27,9 +27,6 @@ class UICalendarEditor extends UIModel {
   InputElement    get stopMonthElement    => _root.querySelector('.stop-month');
   InputElement    get stopYearElement     => _root.querySelector('.stop-year');
   TextAreaElement get textAreaElement     => _root.querySelector('textarea');
-  bool            get validInput =>
-      !_root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty) &&
-          textAreaElement.value.isNotEmpty;
 
   set firstTabElement(HtmlElement element) => _firstTabElement = element;
   set focusElement   (HtmlElement element) => _focusElement    = element;

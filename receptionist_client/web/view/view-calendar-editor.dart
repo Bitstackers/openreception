@@ -92,13 +92,17 @@ class CalendarEditor extends Widget {
    * [_lastTabElement] as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    bool toggle = _ui.validInput;
+    bool toggle = _validInput();
 
     _ui.deleteButtonElement.disabled = !toggle;
     _ui.saveButtonElement.disabled   = !toggle;
 
     _ui.lastTabElement = toggle ? _ui.saveButtonElement : _ui.cancelButtonElement;
   }
+
+  bool _validInput() =>
+      !_ui.root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty) &&
+          _ui.textAreaElement.value.isNotEmpty;
 
   UIModel get ui => _ui;
 }
