@@ -258,14 +258,14 @@ abstract class Randomizer {
 
 
   static String randomPhoneNumber() {
-    int firstDigit = rand.nextInt(7)+2;
-    List<int> lastDigits = new List<int>.generate(7, (_) => rand.nextInt(9));
+    int firstDigit = rand.nextInt(8)+2;
+    List<int> lastDigits = new List<int>.generate(8, (_) => rand.nextInt(10));
     List<int> digits = [firstDigit]..addAll(lastDigits);
 
     return digits.join('');
   }
 
-  static String randomLocalExtension() => rand.nextInt(500).toString();
+  static String randomLocalExtension() => rand.nextInt(501).toString();
 
 
   /**
@@ -302,6 +302,6 @@ abstract class Randomizer {
 
     int index = rand.nextInt(pool.length);
 
-    return  pool[index];
+    return pool[index];
   }
 }

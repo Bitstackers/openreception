@@ -72,17 +72,35 @@ abstract class ContactStore {
   }
 
   /**
-   * Test server behaviour when trying to aquire a contact object that
-   * exists.
+   * Test server behaviour when trying to aquire a list of contact objects from
+   * a reception.
    *
-   * The expected behaviour is that the server should return the
-   * Reception object.
+   * The expected behaviour is that the server should return a list of
+   * contact objects.
    */
-  static void existingContact (Storage.Contact contactStore) {
+  static Future listContactsByExistingReception (Storage.Contact contactStore) {
+    const int receptionID = 1;
+    log.info('Checking server behaviour on list of contacts in reception $receptionID.');
 
-    log.info('Checking server behaviour on an existing contact.');
+    return contactStore.listByReception(receptionID)
+        .then((List<Model.Contact> contacts) {
+      expect(contacts, isNotNull);
+      expect(contacts, isNotEmpty);
+    });
+  }
 
-    return expect(contactStore.get(1), isNotNull);
+  /**
+   * Test server behaviour when trying to aquire a list of contact objects from
+   * a non existing reception.
+   *
+   * The expected behaviour is that the server should return a Not Found error.
+   */
+  static void listContactsByNonExistingReception (Storage.Contact contactStore) {
+    const int receptionID = -1;
+    log.info('Checking server behaviour on list of contacts in reception $receptionID.');
+
+    return expect(contactStore.listByReception(receptionID),
+            throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**

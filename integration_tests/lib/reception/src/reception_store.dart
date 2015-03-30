@@ -79,10 +79,25 @@ abstract class Reception_Store {
    * Reception object.
    */
   static void existingReception (Storage.Reception receptionStore) {
-
+    const int receptionID = 1;
     log.info('Checking server behaviour on an existing reception.');
 
-    return expect(receptionStore.get(1), isNotNull);
+    return expect(receptionStore.get(receptionID), isNotNull);
+  }
+
+  /**
+   * Test server behaviour when trying to aquire a list of reception objects
+   *
+   * The expected behaviour is that the server should return a list of
+   * Reception objects.
+   */
+  static Future listReceptions (Storage.Reception receptionStore) {
+    log.info('Checking server behaviour on list of receptions.');
+
+    return receptionStore.list().then((List<Model.ReceptionStub> receptions) {
+      expect(receptions, isNotNull);
+      expect(receptions, isNotEmpty);
+    });
   }
 
   /**
