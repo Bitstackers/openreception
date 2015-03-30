@@ -161,7 +161,7 @@ class ContactSearch {
       }).catchError((error) => contactList = []);
     });
 
-    event.bus.on(model.Contact.activeContactChanged).listen((model.Contact value) {
+    model.Contact.onContactChange.listen((model.Contact value) {
       contact = value;
     });
 

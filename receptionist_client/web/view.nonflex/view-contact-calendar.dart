@@ -301,7 +301,7 @@ class ContactCalendar {
       this.reception = reception;
     });
 
-    event.bus.on(model.Contact.activeContactChanged).listen((model.Contact newContact) {
+    model.Contact.onContactChange.listen((model.Contact newContact) {
       this.currentContact = newContact;
 
       /*  */

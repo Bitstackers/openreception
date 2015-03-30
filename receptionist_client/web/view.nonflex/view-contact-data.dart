@@ -144,7 +144,7 @@ class ContactData {
       telephoneNumberList.children [index-1].querySelector('button').click();
     });
 
-    event.bus.on(model.Contact.activeContactChanged).listen(render);
+    model.Contact.onContactChange.listen(render);
 
   }
 }

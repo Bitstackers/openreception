@@ -254,7 +254,7 @@ class Message {
 
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
-    event.bus.on(model.Contact.activeContactChanged).listen(this._renderContact);
+    model.Contact.onContactChange.listen(this._renderContact);
 
     event.bus.on(event.callChanged).listen((model.Call value) {
       if (value.callerId != null ) {

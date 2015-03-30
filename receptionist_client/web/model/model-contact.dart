@@ -24,12 +24,13 @@ class Contact extends ORModel.Contact implements Comparable{
 
   static Contact _selectedContact = Contact.noContact;
 
-  static final EventType<Contact> activeContactChanged = new EventType<Contact>();
+  static Bus<Contact> _contactChange = new Bus<Contact>();
+  static Stream<Contact> get onContactChange => _contactChange.stream;
 
   static Contact get selectedContact => _selectedContact;
   static set selectedContact(Contact contact) {
     _selectedContact = contact;
-    event.bus.fire(activeContactChanged, _selectedContact);
+    _contactChange.fire(_selectedContact);
   }
 
   static Future<Contact> get(int contactID, int receptionID) {

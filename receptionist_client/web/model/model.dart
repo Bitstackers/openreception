@@ -25,7 +25,6 @@ import '../classes/logger.dart';
 import '../classes/service-notification.dart' as Service;
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as storage;
-
 import 'package:event_bus/event_bus.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
