@@ -4,7 +4,7 @@ lib/config.dart
 # Dart-specific files.
 .pub/
 build/
-packages/
+packages
 pubspec.lock
 
 
