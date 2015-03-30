@@ -45,7 +45,7 @@ class ReceptionSalesCalls {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen(render);
+    model.Reception.onReceptionChange.listen(render);
 
     element.onClick.listen((_) {
       Controller.Context.changeLocation(new nav.Location(context.id, element.id, instructionList.id));

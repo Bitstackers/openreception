@@ -65,7 +65,7 @@ class ReceptionSelector {
   void _registerEventlisteners(_) {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
+    model.Reception.onReceptionChange.listen((model.Reception value) {
       if(value == model.Reception.noReception && selectedReception.isNotNull()) {
         search.clearSelection();
 

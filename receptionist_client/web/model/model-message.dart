@@ -54,5 +54,4 @@ class Message extends ORModel.Message {
       .then((ORModel.Message message) => new Message.fromMap(message.asMap));
 
   Future sendTMP() => Service.Message.store.enqueue(this);
-
 }

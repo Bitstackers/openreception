@@ -55,7 +55,7 @@ class ReceptionExtraInformation {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
 
-    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception selectedReception) {
+    model.Reception.onReceptionChange..listen((model.Reception selectedReception) {
       if (selectedReception.extraData != null) {
         //this.body.children = [new ProgressElement()];
         this.body.children =

@@ -17,6 +17,19 @@ abstract class Call {
 
   static const className = '${libraryName}.Call';
 
+  static ORService.CallFlowControl _service = null;
+
+  static ORService.CallFlowControl get service {
+    if (_service == null) {
+      _service = new ORService.CallFlowControl
+          (configuration.callFlowBaseUrl,
+           configuration.token,
+           new ORServiceHTML.Client());
+    }
+
+    return _service;
+  }
+
   /**
    * Fetches a userStates of all users
    */
@@ -232,7 +245,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.CallList.fromJson(JSON.decode(request.responseText), 'calls'));
+              completer.complete(new model.CallList.fromList(JSON.decode(request.responseText)));
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));
@@ -273,7 +286,7 @@ abstract class Call {
     final String base = configuration.callFlowBaseUrl.toString();
     final Completer<model.CallList> completer = new Completer<model.CallList>();
     final List<String> fragments = new List<String>();
-    final String path = '/call/list';
+    final String path = '/call';
     HttpRequest request;
     String url;
 
@@ -285,7 +298,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.CallList.fromJson(JSON.decode(request.responseText), 'calls'));
+              completer.complete(new model.CallList.fromList(JSON.decode(request.responseText)));
               break;
 
             case 400:

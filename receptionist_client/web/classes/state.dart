@@ -45,13 +45,13 @@ class State {
   /**
    * Clones myself.
    */
-  State _clone() {
-    return new State()
+  State _clone() =>
+      new State()
       .._immutable = true
       .._config    = _config
       .._logger    = _logger
       .._websocket = _websocket;
-  }
+
 
   /**
    * Update configuration state to OK

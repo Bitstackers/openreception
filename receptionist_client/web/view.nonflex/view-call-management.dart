@@ -107,7 +107,7 @@ class CallManagement {
     event.bus.on(event.dialSelectedContact).listen(this._dialSelectedNumber);
 
     // When a reception changes - clear the number to avoid stale information in the UI.
-    event.bus.on(event.receptionChanged).listen((_) {
+    model.Reception.onReceptionChange.listen((_) {
       this.numberField.value = '';
       this._render();
     });

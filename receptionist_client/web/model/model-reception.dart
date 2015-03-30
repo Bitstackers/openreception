@@ -35,13 +35,13 @@ class Reception extends ORModel.Reception {
 
   static Reception _selectedReception = noReception;
 
-  static final EventType<Reception> activeReceptionChanged = new EventType<Reception>();
+  static Bus<Reception> _receptionChange = new Bus<Reception>();
+  static Stream<Reception> get onReceptionChange => _receptionChange.stream;
 
   static Reception get selectedReception                       =>  _selectedReception;
   static           set selectedReception (ORModel.Reception reception) {
     _selectedReception = reception;
-    event.bus.fire(event.receptionChanged, _selectedReception);
-    event.bus.fire(activeReceptionChanged, _selectedReception);
+    _receptionChange.fire(_selectedReception);
   }
 
   Reception.fromMap(Map map) : super.fromMap(map);
@@ -54,5 +54,4 @@ class Reception extends ORModel.Reception {
   ReceptionStub toStub() =>
     new ReceptionStub()..ID       = this.ID
                        ..fullName = this.fullName;
-
 }

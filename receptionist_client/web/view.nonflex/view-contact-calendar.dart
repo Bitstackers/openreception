@@ -297,7 +297,7 @@ class ContactCalendar {
       }
     });
 
-    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception reception) {
+    model.Reception.onReceptionChange..listen((model.Reception reception) {
       this.reception = reception;
     });
 

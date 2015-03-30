@@ -45,7 +45,6 @@ final EventType<Location> locationChanged                       = new EventType<
 final EventType<UIContext.Context> contextChanged               = new EventType<UIContext.Context>();
 final EventType<model.MessageFilter> messageFilterChanged       = new EventType<model.MessageFilter>();
 final EventType<int> messageCreated                             = new EventType<int>();
-final EventType<model.Reception>  receptionChanged              = new EventType<model.Reception>();
 final EventType<model.UserStatus> userStatusChanged             = new EventType<model.UserStatus>();
 
 final EventType selectedMessagesChanged                         = new EventType();

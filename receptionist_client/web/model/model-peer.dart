@@ -33,45 +33,27 @@ class PeerState  {
   String toString () => this._name;
 }
 
-class Peer {
+class Peer extends ORModel.Peer {
 
   static const String className = "${libraryName}.Peer";
 
-  String         get ID   => this._cachedData['userid'];
-  int            expires  =  null;
-  PeerState _currentState =  PeerState.UNKNOWN;
-  Map _cachedData         =  {};
+  static Bus<Peer> _stateChange = new Bus<Peer>();
+  static Stream<Peer> get onReceptionChange => _stateChange.stream;
 
-  static final EventType<PeerState> stateChange = new EventType<PeerState>();
+  DateTime lastSeen = null;
 
-  EventBus _eventStream = event.bus; // Just hook into the global event bus.
-  EventBus get events   => _eventStream;
-
-  PeerState get state => _currentState;
-  void set state (PeerState newState) {
-    if (this._currentState != newState) {
-      this._currentState = newState;
-      this.events.fire(stateChange, newState);
-    }
-  }
-
-  Peer.fromMap(Map map) {
-    this._currentState = (map['registered'] ? PeerState.REGISTERED : PeerState.UNREGISTERED);
-    this._cachedData = map;
-  }
+  Peer.fromMap(Map map) : super.fromMap(map);
 
   void update (Peer newPeer) {
     assert (this.ID == newPeer.ID);
 
-    this.expires     = newPeer.expires;
-    this._cachedData = newPeer._cachedData;
-    this.state       = newPeer.state;
-  }
+    if (newPeer.registered) {
+      this.lastSeen = new DateTime.now();
+    }
 
-  /**
-   * Serialization function.
-   */
-  Map toJson() =>  this._cachedData;
+    this.registered = newPeer.registered;
+    _stateChange.fire(this);
+  }
 
   /**
    * Two peers are considered equal, if their ID's are.
@@ -91,6 +73,6 @@ class Peer {
    * Returns string with the format "ID - status".
    */
   @override
-  String toString () => '${this.ID} - ${this.state}.';
+  String toString () => '${this.ID} - registered:${this.registered}.';
 
 }

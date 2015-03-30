@@ -42,7 +42,7 @@ class ReceptionAddresses {
   }
 
   void _registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen(render);
+    model.Reception.onReceptionChange.listen(render);
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 

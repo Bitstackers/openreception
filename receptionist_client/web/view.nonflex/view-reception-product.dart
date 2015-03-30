@@ -51,7 +51,7 @@ class ReceptionProduct {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception value) {
+    model.Reception.onReceptionChange.listen((model.Reception value) {
       body.text = value.product;
     });
 

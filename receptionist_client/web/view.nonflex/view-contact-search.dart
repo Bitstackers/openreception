@@ -148,7 +148,7 @@ class ContactSearch {
 
   void registerEventListeners() {
 
-    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception newReception) {
+    model.Reception.onReceptionChange..listen((model.Reception newReception) {
       reception = newReception;
       searchBox.disabled = newReception == model.Reception.noReception;
       if(newReception == model.Reception.noReception) {

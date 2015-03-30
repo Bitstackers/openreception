@@ -53,7 +53,7 @@ class ReceptionTelephoneNumbers {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(event.receptionChanged).listen(render);
+    model.Reception.onReceptionChange.listen(render);
 
     element.onClick.listen((_) {
       event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, telephoneNumberList.id));

@@ -2,11 +2,11 @@ import 'dart:html';
 
 import 'controller/controller.dart';
 import 'model/model.dart';
-import 'view/view.dart';
+import 'view/view.dart' as View;
 
 void main() {
   DomContexts domContexts = new DomContexts();
-  Contexts    contexts    = new Contexts(domContexts);
+  View.Contexts    contexts    = new View.Contexts(domContexts);
 
   Place placeAgentInto         = new Place('context-home', 'agent-info');
   Place placeContactCalendar   = new Place('context-home', 'contact-calendar');
@@ -22,21 +22,21 @@ void main() {
   DomReceptionCalendar domReceptionCalendar = new DomReceptionCalendar(querySelector('#reception-calendar'));
   DomReceptionCommands domReceptionCommands = new DomReceptionCommands(querySelector('#reception-commands'));
 
-  AgentInfo         agentInfo         = new AgentInfo(domAgentInfo);
-  ContactCalendar   contactCalendar   = new ContactCalendar(domContactCalendar, placeContactCalendar);
-  ContactList       contactList       = new ContactList(domContactList, placeContactList);
-  MessageCompose    messageCompose    = new MessageCompose(domMessageCompose, placeMessageCompose);
-  ReceptionCalendar receptionCalendar = new ReceptionCalendar(domReceptionCalendar, placeReceptionCalendar);
-  ReceptionCommands receptionCommands = new ReceptionCommands(domReceptionCommands, placeReceptionCommands);
+  View.AgentInfo         agentInfo         = new View.AgentInfo(domAgentInfo);
+  View. ContactCalendar   contactCalendar  = new View.ContactCalendar(domContactCalendar, placeContactCalendar);
+  View.ContactList       contactList       = new View.ContactList(domContactList, placeContactList);
+  View.MessageCompose    messageCompose    = new View.MessageCompose(domMessageCompose, placeMessageCompose);
+  View.ReceptionCalendar receptionCalendar = new View.ReceptionCalendar(domReceptionCalendar, placeReceptionCalendar);
+  View.ReceptionCommands receptionCommands = new View.ReceptionCommands(domReceptionCommands, placeReceptionCommands);
 
-  ContactData           contactData           = new ContactData();
-  GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();
-  MyCallQueue           myCallQueue           = new MyCallQueue();
-  ReceptionOpeningHours receptionOpeningHours = new ReceptionOpeningHours();
-  ReceptionProduct      receptionProduct      = new ReceptionProduct();
-  ReceptionSalesCalls   receptionSalesCalls   = new ReceptionSalesCalls();
-  ReceptionSelector     receptionSelector     = new ReceptionSelector();
-  WelcomeMessage        welcomeMessage        = new WelcomeMessage();
+  View.ContactData           contactData           = new View.ContactData();
+  View.GlobalCallQueue       globalCallQueue       = new View.GlobalCallQueue();
+  View.MyCallQueue           myCallQueue           = new View.MyCallQueue();
+  View.ReceptionOpeningHours receptionOpeningHours = new View.ReceptionOpeningHours();
+  View.ReceptionProduct      receptionProduct      = new View.ReceptionProduct();
+  View.ReceptionSalesCalls   receptionSalesCalls   = new View.ReceptionSalesCalls();
+  View.ReceptionSelector     receptionSelector     = new View.ReceptionSelector();
+  View.WelcomeMessage        welcomeMessage        = new View.WelcomeMessage();
   Navigate              navigate              = new Navigate();
 
   if(window.location.hash.isEmpty) {

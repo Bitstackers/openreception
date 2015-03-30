@@ -49,7 +49,7 @@ class ReceptionHandling {
   void hideNudges(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   void _registerEventListeners() {
-    event.bus.on(model.Reception.activeReceptionChanged).listen(render);
+    model.Reception.onReceptionChange..listen(render);
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, listElement));
     element.onClick.listen((_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
   }

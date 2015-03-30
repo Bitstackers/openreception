@@ -85,25 +85,6 @@ class CallList extends IterableBase<Call> {
   }
 
   /**
-   * [CallList] constructor. Builds a list of [Call] objects from the
-   * contents of json[key].
-   */
-  factory CallList.fromJson(Map json, String key) {
-    const String context = '${className}.CallList.fromJson';
-
-    CallList callList = new CallList();
-
-    if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.CallList.fromJson key: ${key} list: ${json[key]}');
-      callList = new CallList._fromList(json[key]);
-    } else {
-      log.criticalContext('model.CallList.fromJson bad data key: ${key} map: ${json}', context);
-    }
-
-    return callList;
-  }
-
-  /**
    * Registers the internal observers.
    */
   void _registerObservers() {
@@ -120,7 +101,7 @@ class CallList extends IterableBase<Call> {
   /**
    * [CallList] Constructor.
    */
-  CallList._fromList(List<Map> list) {
+  CallList.fromList(List<Map> list) {
     const String context = '${className}.CallList._fromList';
 
     this._map.clear();

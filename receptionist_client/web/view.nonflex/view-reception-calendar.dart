@@ -235,7 +235,7 @@ class ReceptionCalendar {
     /// Nudge boiler plate code.
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception reception) {
+    model.Reception.onReceptionChange..listen((model.Reception reception) {
       Storage.Reception.calendar(reception.ID).then((List<model.CalendarEvent> events) {
         print(events);
         _render(events);

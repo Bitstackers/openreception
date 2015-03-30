@@ -24,7 +24,7 @@ class WelcomeMessage {
    *
    */
   WelcomeMessage(DivElement this.container) {
-    event.bus.on(model.Reception.activeReceptionChanged).listen(this._onReceptionChange);
+    model.Reception.onReceptionChange.listen(this._onReceptionChange);
 
     event.bus.on(model.Call.currentCallChanged).listen(_onCallChange);
   }

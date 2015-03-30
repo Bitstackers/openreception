@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:html';
 
 import '../controller/controller.dart';
-import '../model/model.dart';
+import '../model/model.dart' as Model;
 
 import 'package:openreception_framework/bus.dart';
 

@@ -61,6 +61,7 @@ void main() {
       nav.registerOnPopStateListeners();
       /// Reload the model.
       Model.CallList.instance.reloadFromServer();
+      Model.PeerList.instance.reloadFromServer().then(print);
     }
   });
 }

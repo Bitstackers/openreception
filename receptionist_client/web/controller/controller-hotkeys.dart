@@ -20,6 +20,15 @@ class HotKeys {
   Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
   Keyboard           _keyDown  = new Keyboard();
 
+  Bus<KeyboardEvent> _onCtrlBackspace     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _onCtrlAltEnter     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _onCtrlAltP     = new Bus<KeyboardEvent>();
+
+  Bus<KeyboardEvent> _onCtrlE     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _onCtrlK     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _onCtrlS     = new Bus<KeyboardEvent>();
+
+
   Stream<KeyboardEvent> get onAltA     => _altA.stream;
   Stream<KeyboardEvent> get onAltB     => _altB.stream;
   Stream<KeyboardEvent> get onAltE     => _altE.stream;
@@ -30,6 +39,14 @@ class HotKeys {
   Stream<KeyboardEvent> get onAltW     => _altW.stream;
   Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
   Stream<KeyboardEvent> get onTab      => _tab.stream;
+
+  Stream<KeyboardEvent> get onCtrlBackspace => _onCtrlBackspace.stream;
+  Stream<KeyboardEvent> get onCtrlAltEnter => _onCtrlAltEnter.stream;
+  Stream<KeyboardEvent> get onCtrlAltP => _onCtrlAltP.stream;
+
+  Stream<KeyboardEvent> get onCtrlE => _onCtrlE.stream;
+  Stream<KeyboardEvent> get onCtrlK => _onCtrlK.stream;
+  Stream<KeyboardEvent> get onCtrlS => _onCtrlS.stream;
 
   /**
    *

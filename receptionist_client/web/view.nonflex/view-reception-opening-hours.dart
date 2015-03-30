@@ -45,7 +45,7 @@ class ReceptionOpeningHours {
   void registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    event.bus.on(model.Reception.activeReceptionChanged).listen((model.Reception reception) {
+    model.Reception.onReceptionChange..listen((model.Reception reception) {
       render(reception);
     });
 
