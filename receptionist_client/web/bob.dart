@@ -29,7 +29,7 @@ import 'model/model.dart'     as Model;
 import 'service/service.dart' as Service;
 import 'classes/service-notification.dart';
 import 'classes/state.dart';
-import 'view/view.dart'       as View;
+import 'view.nonflex/view.dart' as View;
 
 import 'package:openreception_framework/model.dart' as ORModel;
 

@@ -21,7 +21,7 @@ import 'events.dart' as event;
 import 'commands-keyboard.dart';
 import 'location.dart' as nav;
 import 'state.dart';
-import '../view/view.dart' as View;
+import '../view.nonflex/view.dart' as View;
 import '../model/model.dart' as Model;
 import 'package:logging/logging.dart';
 
