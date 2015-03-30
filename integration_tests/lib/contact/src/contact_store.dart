@@ -72,39 +72,6 @@ abstract class ContactStore {
   }
 
   /**
-   * Test server behaviour when trying to aquire a contact object that
-   * exists.
-   *
-   * The expected behaviour is that the server should return the
-   * Reception object.
-   */
-  static void existingContact (Storage.Contact contactStore) {
-    const int contactID = 1;
-    log.info('Checking server behaviour on an existing contact $contactID.');
-
-    return expect(contactStore.get(contactID), isNotNull);
-  }
-
-  /**
-   * Test server behaviour when trying to aquire a list of contact objects.
-   *
-   * The expected behaviour is that the server should return a list of
-   * contact objects.
-   *
-   * REMARK: I'm not sure this is a supported operation on the contact server,
-   * but it's part of the Framework.
-   */
-  static Future listContacts (Storage.Contact contactStore) {
-
-    log.info('Checking server behaviour on list of contacts.');
-
-    return contactStore.list().then((List<Model.Contact> contacts) {
-      expect(contacts, isNotNull);
-      expect(contacts, isNotEmpty);
-    });
-  }
-
-  /**
    * Test server behaviour when trying to aquire a list of contact objects from
    * a reception.
    *

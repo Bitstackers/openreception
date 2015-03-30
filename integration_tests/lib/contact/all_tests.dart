@@ -34,10 +34,6 @@ runContactTests () {
 
     test ('Non-existing contact',
         () => ContactStore.nonExistingContact(contactStore));
-    test ('Existing contact',
-        () => ContactStore.existingContact(contactStore));
-    test ('List contact',
-        () => ContactStore.listContacts(contactStore));
     test ('List contacts by reception',
         () => ContactStore.listContactsByExistingReception(contactStore));
     test ('List contacts by Non-existing reception',
