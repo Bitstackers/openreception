@@ -43,6 +43,16 @@ class Call {
           new Model.Call.fromMap(map)));
 
 
+
+  /**
+   * Fetches a list of peers.
+   */
+  Future<Iterable<Model.Peer>> peerList() =>
+    _service.peerListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.Peer.fromMap(map)));
+
   /**
    * Fetches a userStates of all users
    */
@@ -55,21 +65,21 @@ class Call {
   /**
    * Fetches a userState associated with userID.
    */
-  static Future<Model.UserStatus> userState(int userID) =>
+  Future<Model.UserStatus> userState(int userID) =>
       _service.userStatusMap(userID)
         .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Updates userState associated with userID to Idle state.
    */
-  static Future<Model.UserStatus> markUserStateIdle(int userID) =>
+  Future<Model.UserStatus> markUserStateIdle(int userID) =>
       _service.userStateIdleMap(userID)
         .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Updates userState associated with userID to Paused state.
    */
-  static Future<Model.UserStatus> markUserStatePaused(int userID) =>
+  Future<Model.UserStatus> markUserStatePaused(int userID) =>
       _service.userStatePausedMap(userID)
         .then((Map map) => new Model.UserStatus.fromMap(map));
 }

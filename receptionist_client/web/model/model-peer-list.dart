@@ -60,11 +60,11 @@ class PeerList extends IterableBase<Peer> {
    * Returns a Future with the [PeerList] instance - updated with new elements.
    */
   Future<PeerList> reloadFromServer() {
-    return Service.Peer.service.peerListMaps().then ((Iterable<Map> peerMaps){
+    return Service.Peer.instance.peerList().then ((Iterable<Peer> peerMaps){
       this._map.clear();
 
-      peerMaps.forEach((Map peerMap) {
-        this.updateOrInsert(new Peer.fromMap(peerMap));
+      peerMaps.forEach((Peer peer) {
+        this.updateOrInsert(peer);
       });
 
       _reload.fire(this);
