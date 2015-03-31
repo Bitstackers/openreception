@@ -17,6 +17,10 @@ abstract class UIModel {
   HtmlElement get focusElement;
   HtmlElement get lastTabElement;
   HtmlElement get root;
+
+  set firstTabElement(HtmlElement element);
+  set focusElement   (HtmlElement element);
+  set lastTabElement (HtmlElement element);
 }
 
 enum AgentState {BUSY, IDLE, PAUSE, UNKNOWN}

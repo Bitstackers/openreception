@@ -13,9 +13,6 @@ class ContactCalendar extends Widget {
   }
 
   @override
-  HtmlElement get focusElement => _ui.eventList;
-
-  @override
   Place get myPlace => _myPlace;
 
   /**
@@ -33,5 +30,5 @@ class ContactCalendar extends Widget {
   }
 
   @override
-  HtmlElement get root => _ui.root;
+  UIModel get ui => _ui;
 }

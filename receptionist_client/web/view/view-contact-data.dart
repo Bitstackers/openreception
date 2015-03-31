@@ -11,16 +11,13 @@ class ContactData extends Widget {
   }
 
   void _activateMe(_) {
-    focusElement.focus(); // NOTE (TL): Sticky focus on focusElement
+    _ui.focusElement.focus(); // NOTE (TL): Sticky focus on focusElement
     _navigateToMyPlace();
   }
 
   void _addTelephoneNumber(TelephoneNumber number) {
     _ui.telephoneNumberList.append(number.element);
   }
-
-  @override
-  HtmlElement get focusElement => _ui.telephoneNumberList;
 
   LIElement _getListElement(int index) {
     try {
@@ -72,9 +69,6 @@ class ContactData extends Widget {
     _ui.telephoneNumberList.onKeyDown.listen(_handleUpDown);
   }
 
-  @override
-  HtmlElement get root => _ui.root;
-
   void _selectTelephoneNumber(LIElement selectedElement) {
     if(selectedElement != null && _active && !_ui.telephoneNumberList.children.any((e) => e.classes.contains('ringing'))) {
       if(selectedElement.classes.contains('selected')) {
@@ -101,6 +95,9 @@ class ContactData extends Widget {
     _active = true; // NOTE (TL): fake _active true for first child selection
     _selectTelephoneNumber(_ui.telephoneNumberList.children.first);
   }
+
+  @override
+  UIModel get ui => _ui;
 }
 
 class TelephoneNumber {

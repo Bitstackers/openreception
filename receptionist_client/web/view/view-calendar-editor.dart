@@ -37,7 +37,7 @@ class CalendarEditor extends Widget {
     _hotKeys.onShiftTab.listen(_handleShiftTab);
 
     /// Enables focused element memory for this widget.
-    _ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    _ui.tabElements.forEach((HtmlElement element) {
       element.onFocus.listen(_setFocusOnMe);
     });
 
@@ -89,7 +89,7 @@ class CalendarEditor extends Widget {
 
   /**
    * Enable/disable the widget buttons and as a sideeffect set the value of
-   * [_lastTabElement] as this depends on the state of the buttons.
+   * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
     bool toggle = _validInput();
@@ -100,9 +100,13 @@ class CalendarEditor extends Widget {
     _ui.lastTabElement = toggle ? _ui.saveButtonElement : _ui.cancelButtonElement;
   }
 
+  /**
+   * Return true when all input fields and the textarea contain data.
+   */
   bool _validInput() =>
-      !_ui.root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty) &&
+      !_ui.inputElements.any((InputElement element) => element.value.isEmpty) &&
           _ui.textAreaElement.value.isNotEmpty;
 
+  @override
   UIModel get ui => _ui;
 }
