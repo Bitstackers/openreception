@@ -7,7 +7,7 @@ abstract class ContactCalendar {
   /**
    * Creates or updates a calendar entry object associated with a contact.
    */
-  Future<Model.ContactCalendarEntry> save(Model.ContactCalendarEntry entry) {
+  static Future<Model.ContactCalendarEntry> save(Model.ContactCalendarEntry entry) {
 
     if (entry.contactID == Model.Contact.noContact.ID) {
       Error error = new ArgumentError.value(entry, 'entry',
@@ -31,7 +31,7 @@ abstract class ContactCalendar {
   /**
    * Delete a calendar entry object associated with a contact.
    */
-  Future delete(Model.ContactCalendarEntry entry) {
+  static Future delete(Model.ContactCalendarEntry entry) {
     if (entry.ID == Model.ContactCalendarEntry.noID) {
       Error error = new ArgumentError.value(entry, 'entry',
           'Trying to delete an a contact calendar entry '
