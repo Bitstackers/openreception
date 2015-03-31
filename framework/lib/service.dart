@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'model.dart' as Model;
 import 'resource.dart' as Resource;
 import 'storage.dart' as Storage;
-
+import 'event.dart' as Event;
 
 import 'package:logging/logging.dart';
 

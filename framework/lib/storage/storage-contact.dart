@@ -18,15 +18,15 @@ abstract class Contact {
 
   Future<Model.Contact> update(Model.Contact Contact);
 
-  Future<List<Model.CalendarEvent>> calendar (int receptionID, int contactID);
+  Future<List<Model.CalendarEntry>> calendar (int receptionID, int contactID);
 
-  Future<Model.CalendarEvent> calendarEvent
+  Future<Model.CalendarEntry> calendarEvent
     (int receptionID, int contactID, int eventID);
 
-  Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event);
+  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event);
 
-  Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event);
+  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event);
 
-  Future calendarEventRemove (Model.CalendarEvent event);
+  Future calendarEventRemove (Model.CalendarEntry event);
 
 }

@@ -103,8 +103,8 @@ class NotificationSocket {
   static final String className = '${libraryName}.NotificationSocket';
 
   WebSocket                     _websocket        = null;
-  StreamController<Model.Event> _streamController = new StreamController.broadcast();
-  Stream<Model.Event> get       eventStream       => this._streamController.stream;
+  StreamController<Event.Event> _streamController = new StreamController.broadcast();
+  Stream<Event.Event> get       eventStream       => this._streamController.stream;
   static Logger                 log               = new Logger (NotificationSocket.className);
 
   NotificationSocket (this._websocket) {
@@ -116,7 +116,7 @@ class NotificationSocket {
 
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
-    Model.Event newEvent = new Model.Event.parse(map);
+    Event.Event newEvent = new Event.Event.parse(map);
 
     if (newEvent != null) {
       this._streamController.add(newEvent);

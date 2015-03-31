@@ -40,7 +40,7 @@ class Call {
   static final int    noUser     = User.nullID;
   static const int    nullReceptionID = 0;
 
-  final StreamController<Event> _streamController = new StreamController.broadcast();
+  final StreamController<Event.Event> _streamController = new StreamController.broadcast();
 
   Stream get event => this._streamController.stream;
 
@@ -69,9 +69,9 @@ class Call {
     this._locked = lock;
 
     if (lock) {
-      notifyEvent(new CallLock((this)));
+      notifyEvent(new Event.CallLock((this)));
     }else {
-      notifyEvent(new CallUnlock(this));
+      notifyEvent(new Event.CallUnlock(this));
     }
   }
 
@@ -107,7 +107,7 @@ class Call {
     }
   }
 
-  void notifyEvent (Event event) => this._streamController.add(event);
+  void notifyEvent (Event.Event event) => this._streamController.add(event);
 
   void assignTo (User user) {
     this.assignedTo = user.ID;
@@ -152,42 +152,42 @@ class Call {
     log.finest ('UUID: ${this.ID}: ${lastState} => ${newState}');
 
     if (lastState == CallState.Queued) {
-      notifyEvent (new QueueLeave(this));
+      notifyEvent (new Event.QueueLeave(this));
     } else if (lastState == CallState.Parked) {
-      notifyEvent (new CallUnpark(this));
+      notifyEvent (new Event.CallUnpark(this));
     }
 
     switch (newState) {
       case (CallState.Created):
-        notifyEvent(new CallOffer(this));
+        notifyEvent(new Event.CallOffer(this));
         break;
 
       case (CallState.Parked):
-        notifyEvent(new CallPark(this));
+        notifyEvent(new Event.CallPark(this));
         break;
 
       case (CallState.Unparked):
-        notifyEvent(new CallUnpark(this));
+        notifyEvent(new Event.CallUnpark(this));
         break;
 
       case (CallState.Queued):
-        notifyEvent(new QueueJoin(this));
+        notifyEvent(new Event.QueueJoin(this));
         break;
 
       case (CallState.Hungup):
-        notifyEvent (new CallHangup(this));
+        notifyEvent (new Event.CallHangup(this));
         break;
 
       case (CallState.Speaking):
-        notifyEvent(new CallPickup(this));
+        notifyEvent(new Event.CallPickup(this));
         break;
 
       case (CallState.Transferred):
-        notifyEvent(new CallTransfer(this));
+        notifyEvent(new Event.CallTransfer(this));
         break;
 
       case  (CallState.Ringing):
-        notifyEvent(new CallStateChanged(this));
+        notifyEvent(new Event.CallStateChanged(this));
         break;
 
       case (CallState.Transferring):

@@ -134,40 +134,39 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    * Retrieves and autocasts a calendar list from the store.
    */
-  Future<List<Model.CalendarEvent>> calendar (int receptionID) =>
+  Future<List<Model.CalendarEntry>> calendar (int receptionID) =>
       this.calendarMap(receptionID).then((List<Map> calendarMaps) =>
           calendarMaps.map((Map calendarMap) =>
-              new Model.CalendarEvent.fromMap(calendarMap, receptionID)).toList());
+              new Model.CalendarEntry.fromMap(calendarMap)).toList());
 
-  Future<Model.CalendarEvent> calendarEvent (int receptionID, int eventID) {
+  Future<Model.CalendarEntry> calendarEvent (int receptionID, int eventID) {
     Uri url = Resource.Reception.calendarEvent(this._host, receptionID, eventID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        new Model.CalendarEvent.fromMap (JSON.decode(response), receptionID));
+        new Model.CalendarEntry.fromMap (JSON.decode(response)));
   }
 
-  Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event) {
+  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event) {
     Uri url = Resource.Reception.calendar (this._host, event.receptionID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
 
     return this._backend.post(url, data).then((String response) =>
-        new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID));
+        new Model.CalendarEntry.fromMap (JSON.decode(response)));
   }
 
-  Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event) {
+  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event) {
     Uri url = Resource.Reception.calendarEvent (this._host, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
     return this._backend.put(url, data).then((String response) =>
-        new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID));
+        new Model.CalendarEntry.fromMap (JSON.decode(response)));
   }
 
-
-  Future calendarEventRemove (Model.CalendarEvent event) {
+  Future calendarEventRemove (Model.CalendarEntry event) {
     Uri url = Resource.Reception.calendarEvent(this._host, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 

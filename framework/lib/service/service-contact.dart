@@ -92,13 +92,12 @@ class RESTContactStore implements Storage.Contact {
             .toList() );
   }
 
-  Future<List<Model.CalendarEvent>> calendar (int contactID, int receptionID) =>
+  Future<List<Model.CalendarEntry>> calendar (int contactID, int receptionID) =>
       calendarMap (contactID, receptionID).then((List<Map> maps) =>
           maps.map((Map map) =>
-              new Model.CalendarEvent.fromMap
-                (map, receptionID, contactID : contactID)).toList());
+              new Model.CalendarEntry.fromMap (map)).toList());
 
-  Future<Model.CalendarEvent> calendarEvent (int receptionID, int contactID, int eventID) {
+  Future<Model.CalendarEntry> calendarEvent (int receptionID, int contactID, int eventID) {
     Uri url = Resource.Contact.calendarEvent(this._host, contactID, receptionID, eventID);
         url = appendToken(url, this._token);
 
@@ -112,30 +111,29 @@ class RESTContactStore implements Storage.Contact {
             ('Failed to response parse as JSON string : `$response`'));
       }
 
-      return new Model.CalendarEvent.fromMap
-          (responseMap, receptionID, contactID : contactID);
+      return new Model.CalendarEntry.fromMap (responseMap);
     });
   }
 
-  Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event) {
+  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event) {
     Uri url = Resource.Contact.calendar (this._host, event.contactID, event.receptionID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
     return this._backend.post(url, data).then((String response) =>
-        new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID, contactID : event.contactID));
+        new Model.CalendarEntry.fromMap (JSON.decode(response)));
   }
 
-  Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event) {
+  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event) {
     Uri url = Resource.Contact.calendarEvent (this._host, event.contactID, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 
     String data = JSON.encode(event);
     return this._backend.put(url, data).then((String response) =>
-        new Model.CalendarEvent.fromMap (JSON.decode(response), event.receptionID, contactID : event.contactID));
+        new Model.CalendarEntry.fromMap (JSON.decode(response)));
   }
 
-  Future calendarEventRemove (Model.CalendarEvent event) {
+  Future calendarEventRemove (Model.CalendarEntry event) {
     Uri url = Resource.Contact.calendarEvent(this._host, event.contactID, event.receptionID, event.ID);
         url = appendToken(url, this._token);
 

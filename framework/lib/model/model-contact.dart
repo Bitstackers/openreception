@@ -40,7 +40,7 @@ class Contact {
   static const String  className   = '${libraryName}.Contact';
   static final Logger  log         = new Logger(Contact.className);
 
-  final StreamController<Event> _streamController = new StreamController.broadcast();
+  final StreamController<Event.Event> _streamController = new StreamController.broadcast();
 
   Stream get event => this._streamController.stream;
 

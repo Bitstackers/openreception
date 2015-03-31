@@ -1,8 +1,8 @@
 part of openreception.model;
 
-class CalendarEvent implements Comparable {
+class CalendarEntry implements Comparable {
 
-  static final String className = '${libraryName}.CalendarEvent';
+  static final String className = '${libraryName}.CalendarEntry';
   static final Logger log = new Logger(className);
 
   static const int noID = 0;
@@ -13,7 +13,7 @@ class CalendarEvent implements Comparable {
 
   bool get active => _active();
 
-  int _ID          = CalendarEvent.noID;
+  int _ID          = CalendarEntry.noID;
   int _contactID   = Contact.noID;
   int _receptionID = Reception.noID;
 
@@ -45,18 +45,26 @@ class CalendarEvent implements Comparable {
 
   Map toJson() => this.asMap;
 
-  Map get asMap =>
-  {
-    'id'     : this.ID,
-    'start'  : Util.dateTimeToUnixTimestamp(this._start),
-    'stop'   : Util.dateTimeToUnixTimestamp(this._stop),
-    'content': this._content
-  };
+  Map get asMap {
+    Map map=  {
+       'id'     : this.ID,
+       'reception_id' : this.receptionID,
+       'start'  : Util.dateTimeToUnixTimestamp(this._start),
+       'stop'   : Util.dateTimeToUnixTimestamp(this._stop),
+       'content': this._content
+       };
+
+    if (this.contactID != Contact.noID) {
+      map['contact_id'] = this.contactID;
+    }
+
+    return map;
+  }
 
 
-  CalendarEvent();
-  CalendarEvent.forContact(this._contactID, this._receptionID);
-  CalendarEvent.forReception(this._receptionID);
+  CalendarEntry();
+  CalendarEntry.forContact(this._contactID, this._receptionID);
+  CalendarEntry.forReception(this._receptionID);
 
   bool _active() {
     DateTime now = new DateTime.now();
@@ -64,7 +72,7 @@ class CalendarEvent implements Comparable {
   }
 
   /**
-     * [CalendarEvent] constructor. Expects a map in the following format:
+     * [CalendarEntry] constructor. Expects a map in the following format:
      *
      *  {
      *    'start'   : DateTime String,
@@ -75,10 +83,10 @@ class CalendarEvent implements Comparable {
      *  'start' and 'stop' MUST be in a format that can be parsed by the
      *  [DateTime.parse] method. 'content' is the actual event description.
      */
-  CalendarEvent.fromMap(Map json, int receptionID, {int contactID : Contact.noID}) {
+  CalendarEntry.fromMap(Map json) {
     this.._ID          = json['id']
-        .._receptionID = receptionID
-        .._contactID   = contactID
+        .._receptionID = json['reception_id']
+        .._contactID   = json['contact_id'] != null ? json['contact_id'] : Contact.noID
         .._start       = Util.unixTimestampToDateTime(json['start'])
         .._stop        = Util.unixTimestampToDateTime(json['stop'])
         .._content     = json['content'];
@@ -111,9 +119,9 @@ class CalendarEvent implements Comparable {
   }
 
   /**
-     * Enables a [CalendarEvent] to sort itself compared to other calendar events.
+     * Enables a [CalendarEntry] to sort itself compared to other calendar events.
      */
-  int compareTo(CalendarEvent other) {
+  int compareTo(CalendarEntry other) {
     if (_start.isAtSameMomentAs(other._start)) {
       return 0;
     }
@@ -122,7 +130,7 @@ class CalendarEvent implements Comparable {
   }
 
   /**
-     * [CalendarEvent] as String, for debug/log purposes.
+     * [CalendarEntry] as String, for debug/log purposes.
      */
   String toString() => 'start: ${this.start}, '
                        'stop: ${this.stop}, '

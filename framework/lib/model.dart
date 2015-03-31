@@ -5,15 +5,15 @@ import 'dart:collection';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
+import 'event.dart'   as Event;
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
-part 'model/model-calendar_event.dart';
+part 'model/model-calendar_entry.dart';
 part 'model/model-call.dart';
 part 'model/model-channel.dart';
 part 'model/model-contact.dart';
 part 'model/model-contact_filter.dart';
-part 'model/model-event.dart';
 part 'model/model-message.dart';
 part 'model/model-message_context.dart';
 part 'model/model-message_header.dart';

@@ -30,14 +30,14 @@ abstract class Reception {
 
   Future<Model.Reception> save (Model.Reception reception);
 
-  Future<List<Model.CalendarEvent>> calendar (int receptionID);
+  Future<List<Model.CalendarEntry>> calendar (int receptionID);
 
-  Future<Model.CalendarEvent> calendarEvent (int receptionID, eventID);
+  Future<Model.CalendarEntry> calendarEvent (int receptionID, eventID);
 
-  Future<Model.CalendarEvent> calendarEventCreate (Model.CalendarEvent event);
+  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event);
 
-  Future<Model.CalendarEvent> calendarEventUpdate (Model.CalendarEvent event);
+  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event);
 
-  Future calendarEventRemove (Model.CalendarEvent event);
+  Future calendarEventRemove (Model.CalendarEntry event);
 
 }
