@@ -19,9 +19,14 @@ import 'dart:html';
 
 import '../config/configuration.dart';
 import '../classes/logger.dart';
-import '../model/model.dart' as model;
+import '../model/model.dart' as Model;
 import '../protocol/protocol.dart';
 
+import 'package:logging/logging.dart';
+
+import 'package:openreception_framework/bus.dart';
+import 'package:openreception_framework/event.dart'        as OREvent;
+import 'package:openreception_framework/model.dart'        as ORModel;
 import 'package:openreception_framework/service.dart'      as ORService;
 import 'package:openreception_framework/service-html.dart' as ORServiceHTML;
 import 'package:openreception_framework/storage.dart'      as ORStorage;
@@ -30,10 +35,11 @@ part 'service-authentication.dart';
 part 'service-call.dart';
 part 'service-contact.dart';
 part 'service-message.dart';
+part 'service-notification.dart';
 part 'service-peer.dart';
 part 'service-reception.dart';
 
-const String libraryName = "service";
+const String libraryName = "Service";
 
 abstract class HTTPError extends Error {
   final String message;
@@ -67,19 +73,19 @@ class UndefinedError extends HTTPError {
 
 Error _badRequest(String resource) {
   Error error = new BadRequest(resource);
-  model.NotificationList.instance.add(new model.Notification(error.toString()));
+  Model.NotificationList.instance.add(new Model.Notification(error.toString()));
   return error;
 }
 
 Error _notFound(String resource) {
   Error error = new NotFound(resource);
-  model.NotificationList.instance.add(new model.Notification(error.toString()));
+  Model.NotificationList.instance.add(new Model.Notification(error.toString()));
   return error;
 }
 
 Error _serverError(String resource) {
   Error error = new ServerError(resource);
-  model.NotificationList.instance.add(new model.Notification(error.toString()));
+  Model.NotificationList.instance.add(new Model.Notification(error.toString()));
   return error;
 }
 

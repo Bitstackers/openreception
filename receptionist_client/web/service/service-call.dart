@@ -33,12 +33,12 @@ abstract class Call {
   /**
    * Fetches a userStates of all users
    */
-  static Future<Iterable<model.UserStatus>> userStateList() {
+  static Future<Iterable<Model.UserStatus>> userStateList() {
 
     const String context = '${className}.userState';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<Iterable<model.UserStatus>> completer = new Completer<Iterable<model.UserStatus>>();
+    final Completer<Iterable<Model.UserStatus>> completer = new Completer<Iterable<Model.UserStatus>>();
     final List<String> fragments = new List<String>();
     final String path = '/userstate';
     HttpRequest request;
@@ -53,7 +53,7 @@ abstract class Call {
           switch (request.status) {
             case 200:
               List<Map> responseList = JSON.decode(request.responseText);
-              completer.complete(responseList.map((Map element) => new model.UserStatus.fromMap(element)));
+              completer.complete(responseList.map((Map element) => new Model.UserStatus.fromMap(element)));
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));
@@ -82,12 +82,12 @@ abstract class Call {
   /**
    * Fetches a userState associated with userID.
    */
-  static Future<model.UserStatus> userState(int userID) {
+  static Future<Model.UserStatus> userState(int userID) {
 
     const String context = '${className}.userState';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
+    final Completer<Model.UserStatus> completer = new Completer<Model.UserStatus>();
     final List<String> fragments = new List<String>();
     final String path = '/userstate/${userID}';
     HttpRequest request;
@@ -101,7 +101,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
+              completer.complete(new Model.UserStatus.fromMap(JSON.decode(request.responseText)));
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));
@@ -130,12 +130,12 @@ abstract class Call {
   /**
    * Updates userState associated with userID to Idle state.
    */
-  static Future<model.UserStatus> markUserStateIdle(int userID) {
+  static Future<Model.UserStatus> markUserStateIdle(int userID) {
 
     const String context = '${className}.userState';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
+    final Completer<Model.UserStatus> completer = new Completer<Model.UserStatus>();
     final List<String> fragments = new List<String>();
     final String path = '/userstate/${userID}/idle';
     HttpRequest request;
@@ -149,7 +149,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
+              completer.complete(new Model.UserStatus.fromMap(JSON.decode(request.responseText)));
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));
@@ -178,12 +178,12 @@ abstract class Call {
   /**
    * Updates userState associated with userID to Paused state.
    */
-  static Future<model.UserStatus> markUserStatePaused(int userID) {
+  static Future<Model.UserStatus> markUserStatePaused(int userID) {
 
     const String context = '${className}.userState';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
+    final Completer<Model.UserStatus> completer = new Completer<Model.UserStatus>();
     final List<String> fragments = new List<String>();
     final String path = '/userstate/${userID}/paused';
     HttpRequest request;
@@ -197,7 +197,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
+              completer.complete(new Model.UserStatus.fromMap(JSON.decode(request.responseText)));
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));
@@ -226,12 +226,12 @@ abstract class Call {
   /**
    * Fetches a list of currently queued calls from the Server.
    */
-  static Future<model.CallList> queue() {
+  static Future<Model.CallList> queue() {
 
     const String context = '${className}.queue';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.CallList> completer = new Completer<model.CallList>();
+    final Completer<Model.CallList> completer = new Completer<Model.CallList>();
     final List<String> fragments = new List<String>();
     final String path = '/call/queue';
     HttpRequest request;
@@ -245,7 +245,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.CallList.fromList(JSON.decode(request.responseText)));
+              completer.complete(new Model.CallList.fromList(JSON.decode(request.responseText)));
               break;
             case 400:
               completer.completeError(_badRequest('Resource ${base}${path}'));
@@ -279,12 +279,12 @@ abstract class Call {
    *  On success: [Response] object with status OK
    *  On error  : [Response] object with status ERROR or CRITICALERROR
    */
-  static Future<model.CallList> list() {
+  static Future<Model.CallList> list() {
 
     const String context = '${className}.list';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.CallList> completer = new Completer<model.CallList>();
+    final Completer<Model.CallList> completer = new Completer<Model.CallList>();
     final List<String> fragments = new List<String>();
     final String path = '/call';
     HttpRequest request;
@@ -298,7 +298,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.CallList.fromList(JSON.decode(request.responseText)));
+              completer.complete(new Model.CallList.fromList(JSON.decode(request.responseText)));
               break;
 
             case 400:
@@ -326,18 +326,18 @@ abstract class Call {
   }
 
 
-  static Future<model.Call> next() {
+  static Future<Model.Call> next() {
     return pickup(null);
   }
   /**
    * Park [call].
    */
-  static Future<model.Call> park(model.Call call) {
+  static Future<Model.Call> park(Model.Call call) {
 
     const String context = '${className}.park';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
+    final Completer<Model.Call> completer = new Completer<Model.Call>();
     final List<String> fragments = new List<String>();
     final String path = '/call/${call.ID}/park';
     HttpRequest request;
@@ -383,14 +383,14 @@ abstract class Call {
    * If no callId is specified, then the next call in line will be dispatched
    * to the agent.
    */
-  static Future<model.Call> pickup(model.Call call) {
+  static Future<Model.Call> pickup(Model.Call call) {
 
     const String context = '${className}.pickup';
 
     log.debugContext('Requesting to pickup ${call == null ? 'unspecifed call':'call with ID ${call.ID}'}', context);
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
+    final Completer<Model.Call> completer = new Completer<Model.Call>();
     final List<String> fragments = new List<String>();
     final String path = '/call/${(call != null && call.ID != null) ? call.ID+"/" : ''}pickup';
     HttpRequest request;
@@ -404,7 +404,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.Call.fromMap(JSON.decode(request.responseText)));
+              completer.complete(new Model.Call.fromMap(JSON.decode(request.responseText)));
               break;
 
             case 400:
@@ -437,14 +437,14 @@ abstract class Call {
    *
    * Sends a request to make a new call.
    */
-  static Future<model.OriginationRequest> originate(int contactID, int receptionID, String extension) {
+  static Future<Model.OriginationRequest> originate(int contactID, int receptionID, String extension) {
 
     const String context = '${className}.originate';
 
     assert(extension != null && extension.isNotEmpty);
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.OriginationRequest> completer = new Completer<model.OriginationRequest>();
+    final Completer<Model.OriginationRequest> completer = new Completer<Model.OriginationRequest>();
     final List<String> fragments = new List<String>();
     final String path = '/call/originate/${extension}/reception/${receptionID}${contactID != null ? '/contact/${contactID}' : ''}';
     HttpRequest request;
@@ -459,7 +459,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.OriginationRequest(JSON.decode(request.responseText)['call']['id']));
+              completer.complete(new Model.OriginationRequest(JSON.decode(request.responseText)['call']['id']));
               break;
 
             case 400:
@@ -489,12 +489,12 @@ abstract class Call {
    * Hangup [call].
    */
 
-  static Future<model.Call> hangup(model.Call call) {
+  static Future<Model.Call> hangup(Model.Call call) {
 
     const String context = '${className}.hangup';
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
+    final Completer<Model.Call> completer = new Completer<Model.Call>();
     final List<String> fragments = new List<String>();
     final String path = '/call/${call.ID}/hangup';
     HttpRequest request;
@@ -540,14 +540,14 @@ abstract class Call {
    * TODO Not implemented in Alice, as far as i can see. 2013-02-27 Thomas P.
    * Gives the status of a call.
    */
-  static Future<model.Call> get(model.Call call) {
+  static Future<Model.Call> get(Model.Call call) {
 
     const String context = '${className}.get';
 
     assert(call != null);
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
+    final Completer<Model.Call> completer = new Completer<Model.Call>();
     final List<String> fragments = new List<String>();
     final String path = '/call/${call.ID}';
     HttpRequest request;
@@ -561,7 +561,7 @@ abstract class Call {
         ..onLoad.listen((_) {
           switch (request.status) {
             case 200:
-              completer.complete(new model.Call.fromMap(JSON.decode(request.responseText)));
+              completer.complete(new Model.Call.fromMap(JSON.decode(request.responseText)));
               break;
 
             case 400:
@@ -591,15 +591,15 @@ abstract class Call {
   /**
  * Sends a request to transfer a call.
  */
-  static Future<model.Call> transfer(model.Call source, model.Call destination) {
+  static Future<Model.Call> transfer(Model.Call source, Model.Call destination) {
 
     const String context = '${className}.transfer';
 
-    assert(source != null && source != model.nullCall);
-    assert(destination != null && destination != model.nullCall);
+    assert(source != null && source != Model.nullCall);
+    assert(destination != null && destination != Model.nullCall);
 
     final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
+    final Completer<Model.Call> completer = new Completer<Model.Call>();
     final List<String> fragments = new List<String>();
     final String path = '/call/${source.ID}/transfer/${destination.ID}';
     HttpRequest request;
@@ -639,7 +639,7 @@ abstract class Call {
 
     return completer.future;
   }
-  Future<model.CallList> listParked(model.User ofUser) {
+  Future<Model.CallList> listParked(Model.User ofUser) {
 //    const String context = '${className}.listParked';
 
     throw new StateError('Not implemented!');
