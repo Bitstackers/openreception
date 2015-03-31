@@ -1,5 +1,6 @@
 name: ServerStack
-description: A sample command-line application
+description: Server stack for the OpenReception application.
+version: 0.1.1+beta
 dependencies:
   args: any
   crypto: any
@@ -7,13 +8,13 @@ dependencies:
   http: any
   oauth2: any
   openreception_framework:
-    version: ">= 0.0.13+0"
+    version: ">= 0.0.21+0"
     git:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
   path: any
   route: any
-  postgresql: '>= 0.3.0'
+  postgresql: '>= 0.3.0 <4.0.0'
   libdialplan:
     git:
       ref: master

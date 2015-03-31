@@ -18,7 +18,7 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     this.get (userID).lastActivity = new DateTime.now();
     this.get (userID).state = newState;
 
-    Notification.broadcast(new ORModel.UserStateEvent (this.get (userID)).asMap);
+    Notification.broadcast(new OREvent.UserState (this.get (userID)).asMap);
   }
 
   ORModel.UserStatus get (int userID) {

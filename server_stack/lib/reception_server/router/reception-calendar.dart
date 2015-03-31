@@ -8,7 +8,7 @@ abstract class ReceptionCalendar {
   static void list(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
 
-    db.ReceptionCalendar.list(receptionID).then((List<Model.CalendarEvent> event) {
+    db.ReceptionCalendar.list(receptionID).then((List<Model.CalendarEntry> event) {
       writeAndClose(request, JSON.encode(event));
     }).catchError((error) {
       serverError(request, error.toString());
@@ -150,7 +150,7 @@ abstract class ReceptionCalendar {
     int receptionID = pathParameter(request.uri, 'reception');
     int eventID = pathParameter(request.uri, 'event');
 
-    db.ReceptionCalendar.getEvent(receptionID: receptionID, eventID: eventID).then((Model.CalendarEvent event) {
+    db.ReceptionCalendar.getEvent(receptionID: receptionID, eventID: eventID).then((Model.CalendarEntry event) {
       if (event == null) {
         notFound(request, {
           'description': 'No calendar event found with ID $eventID'
