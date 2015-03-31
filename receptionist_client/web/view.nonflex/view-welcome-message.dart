@@ -17,6 +17,8 @@ part of view;
  * Widget for displaying greetings for
  */
 class WelcomeMessage {
+  static final Logger log = new Logger('${libraryName}.WelcomeMessage');
+
   DivElement container;
   SpanElement get message => container.querySelector('#${Id.welcomeMessageText}');
 
@@ -26,18 +28,18 @@ class WelcomeMessage {
   WelcomeMessage(DivElement this.container) {
     model.Reception.onReceptionChange.listen(this._onReceptionChange);
 
-    event.bus.on(model.Call.currentCallChanged).listen(_onCallChange);
+    model.Call.activeCallChanged.listen(_onCallChange);
   }
 
   /**
    *
    */
   void _onReceptionChange(model.Reception reception) {
-    if (model.Call.currentCall != model.nullCall) {
+    if (model.Call.activeCall != model.noCall) {
       if (reception == model.Reception.noReception) {
-         log.error('Changing to null reception while in call - very suspicius.');
+         log.severe('Changing to null reception while in call - very suspicius.');
       } else {
-        if (model.Call.currentCall.greetingPlayed) {
+        if (model.Call.activeCall.greetingPlayed) {
           this._render(reception.shortGreeting);
         } else {
           this._render(reception.greeting);
@@ -52,12 +54,12 @@ class WelcomeMessage {
    * Marks the widget as being active.
    */
   void _onCallChange(model.Call call) {
-    log.debugContext("Changed to call ${call.ID}", "WelcomeMessage");
+    log.finest("Changed to call ${call.ID}", "WelcomeMessage");
 
-    container.classes.toggle(CssClass.welcomeMessageActiveCall, call != model.nullCall);
+    container.classes.toggle(CssClass.welcomeMessageActiveCall, call != model.noCall);
 
-    if (call != model.nullCall && call.greetingPlayed) {
-      storage.Reception.get(call.receptionId).then((model.Reception reception) {
+    if (call != model.noCall && call.greetingPlayed) {
+      storage.Reception.get(call.receptionID).then((model.Reception reception) {
           this._render(!call.greetingPlayed ? reception.greeting : reception.shortGreeting);
         });
     }

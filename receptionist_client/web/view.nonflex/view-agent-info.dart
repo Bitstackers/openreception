@@ -14,6 +14,9 @@
 part of view;
 
 class AgentInfo {
+
+  Logger log = new Logger ('$libraryName.AgentInfo');
+
   int              active      = 0;
   TableCellElement activeTD;
   DivElement       divFace;
@@ -53,12 +56,12 @@ class AgentInfo {
         //FIXME: implement an photoUrl in the User class in the framework.
         portrait.src = model.User.currentUser.toJson()['remote_attributes']['picture'];
 
-        Service.Call.userState(model.User.currentUser.ID).then((model.UserStatus newUserStatus) {
+        Service.Call.instance.userState(model.User.currentUser.ID).then((model.UserStatus newUserStatus) {
           this._updateUserState(newUserStatus);
         });
       }
     }).catchError((error) {
-      log.error('components.AgentInfo() Updating Agent image failed with "${error}"');
+      log.severe('components.AgentInfo() Updating Agent image failed with "${error}"');
     });
 
     userStatusElement.children = [Icon.Unknown];
@@ -112,7 +115,7 @@ class AgentInfo {
   }
 
   void initialSetup() {
-    Service.Call.userStateList().then((Iterable<model.UserStatus> userStates) {
+    Service.Call.instance.userStateList().then((Iterable<model.UserStatus> userStates) {
       this.active = userStates.where((model.UserStatus user)
           => user.state != ORModel.UserState.Idle).length;
 
@@ -120,7 +123,7 @@ class AgentInfo {
           => user.state != ORModel.UserState.Paused).length;
 
     })
-    .catchError((error) => log.critical('AgentInfo ERROR ${error.toString()}'))
+    .catchError((error) => log.shout('AgentInfo ERROR ${error.toString()}'))
     .whenComplete(updateCounters);
   }
 

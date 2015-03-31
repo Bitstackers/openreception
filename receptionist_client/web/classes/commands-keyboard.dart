@@ -23,6 +23,10 @@ import '../controller/controller.dart' as Controller;
 import '../model/model.dart' as Model;
 
 import 'package:okeyee/okeyee.dart';
+import 'package:logging/logging.dart';
+
+Logger log = new Logger('commands_keyboard');
+
 
 final _KeyboardHandler keyboardHandler = new _KeyboardHandler();
 
@@ -251,11 +255,11 @@ class _KeyboardHandler {
         int index = (map[_currentLocation] + (mode ? 1 : -1)) % map.length;
         event.bus.fire(event.locationChanged, list[index]);
       } else {
-        log.error('keyboard.tab() bad location ${_currentLocation}');
+        log.severe('keyboard.tab() bad location ${_currentLocation}');
       }
 
     } else {
-      log.error('keyboard.tab() bad context ${_currentLocation}');
+      log.severe('keyboard.tab() bad context ${_currentLocation}');
     }
   }
 }

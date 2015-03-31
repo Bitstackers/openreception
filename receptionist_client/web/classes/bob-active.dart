@@ -119,7 +119,7 @@ class BobActive {
     messageList   = new View.MessageList(querySelector('#${Id.messageOverview}'), messageContext);
     messageEdit   = new View.MessageEdit(querySelector('#${Id.messageEdit}'), messageContext);
 
-    logBox = new View.LogBox(querySelector('#${Id.logBox}'));
+    logBox = new View.LogBox(querySelector('#${Id.logBox}'), callList);
 
     //Don't remove. Objects are lazily loaded and no one else access keyboardHandler.
     keyboardHandler.toString();

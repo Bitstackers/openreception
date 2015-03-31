@@ -31,7 +31,6 @@ class Contact {
 
 
   ContactSearch search;
-  ContactCalendar calendar;
   ContactData data;
 
   Contact(Element this.element, Context this.context) {
@@ -41,7 +40,6 @@ class Contact {
     DivElement contactData = querySelector('#${Id.contactData}');
 
     search = new ContactSearch(contactSelectorSearch, context, element);
-    calendar = new ContactCalendar(contactCalendar, context, element);
     data = new ContactData(contactData);
 
     Element contactDataHeader = querySelector('#${Id.contactDataHeader} legend');
@@ -73,7 +71,7 @@ class Contact {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
     //TODO old but is it required in some way?
     element.onClick.listen((_) {
-      if(!search.hasFocus && !calendar.hasFocus) {
+      if(!search.hasFocus) {
         setFocus(search.searchBox.id);
       }
     });

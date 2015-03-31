@@ -39,7 +39,7 @@ class ReceptionCalendar {
   LIElement       get selectedElement
     => this.eventList.children.firstWhere((LIElement child)
       => child.classes.contains(CssClass.selected),
-         orElse : () => new LIElement()..hidden = true..value = model.CalendarEvent.noID);
+         orElse : () => new LIElement()..hidden = true..value = model.ContactCalendarEntry.noID);
 
   void            set selectedElement (LIElement element) {
     assert (element != null);
@@ -153,7 +153,7 @@ class ReceptionCalendar {
       this._selectedStartDate = new DateTime.now();
       this._selectedEndDate = new DateTime.now().add(new Duration(hours: 1));
       this.newEventField.value = "";
-      this.eventID = model.CalendarEvent.noID;
+      this.eventID = model.ContactCalendarEntry.noID;
 
       this.lastActive = document.activeElement;
       this.newEventField.focus();
@@ -170,7 +170,7 @@ class ReceptionCalendar {
    */
   void _deleteEvent() {
     if(!this.newEventWidget.hidden) {
-      model.deleteCalendarEvent(this._getEvent()).then((_) {
+      Controller.ReceptionCalendar.save(this._getEvent()).then((_) {
         this.newEventWidget.hidden = true;
         this.eventList.hidden = !this.newEventWidget.hidden;
       });
@@ -190,9 +190,10 @@ class ReceptionCalendar {
 
     if (!this.newEventWidget.hidden) {
       storage.Reception.calendar(model.Reception.selectedReception.ID)
-                .then((List<model.CalendarEvent> events) {
+                .then((List<model.ContactCalendarEntry> events) {
 
-        model.CalendarEvent selectedEvent = model.findEvent(events, eventID);
+        model.ContactCalendarEntry selectedEvent =
+            Controller.findEvent(events, eventID);
 
         this._selectedStartDate = selectedEvent.startTime;
         this._selectedEndDate = selectedEvent.stopTime;
@@ -213,10 +214,10 @@ class ReceptionCalendar {
    * Harvests the typed information from the widget and returns a CalendarEvent
    * object.
    */
-  model.CalendarEvent _getEvent() {
+  model.ReceptionCalendarEntry _getEvent() {
     assert (_inFocus && !this.newEventWidget.hidden);
 
-    return new model.CalendarEvent.forReception(model.Reception.selectedReception.ID)
+    return new model.ReceptionCalendarEntry(model.Reception.selectedReception.ID)
               ..ID       = this.eventID
               ..content  = this.newEventField.value
               ..beginsAt = this._selectedStartDate
@@ -236,7 +237,7 @@ class ReceptionCalendar {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
     model.Reception.onReceptionChange..listen((model.Reception reception) {
-      Storage.Reception.calendar(reception.ID).then((List<model.CalendarEvent> events) {
+      Storage.Reception.calendar(reception.ID).then((List<model.ContactCalendarEntry> events) {
         print(events);
         _render(events);
       });
@@ -274,32 +275,32 @@ class ReceptionCalendar {
       }
     });
 
-    model.CalendarEvent.events.on(model.CalendarEvent.reload).listen((Map eventStub) {
-      const String context = '${className}.reload (listener)';
-
-      log.debugContext(eventStub.toString(), context);
-
-      if (eventStub['receptionID'] == model.Reception.selectedReception.ID && !eventStub.containsKey('contactID')) {
-        log.debugContext('Reloading calendarlist for ${eventStub['receptionID']}', context);
-        storage.Reception.calendar(model.Reception.selectedReception.ID).then((List<model.CalendarEvent> events) {
-            this._render(events);
-          }).catchError((error) {
-            log.error('${className}._registerEventListeners Error while fetching reception calendar ${error}');
-          });
-      } else {
-        log.debugContext('Skipping reloading calendarlist for ${eventStub['receptionID']} (not selected)', context);
-      }
-    });
+//    model.ReceptionCalendar.onReload.listen((Map eventStub) {
+//      const String context = '${className}.reload (listener)';
+//
+//      log.debugContext(eventStub.toString(), context);
+//
+//      if (eventStub['receptionID'] == model.Reception.selectedReception.ID && !eventStub.containsKey('contactID')) {
+//        log.debugContext('Reloading calendarlist for ${eventStub['receptionID']}', context);
+//        storage.Reception.calendar(model.Reception.selectedReception.ID).then((List<model.ContactCalendarEntry> events) {
+//            this._render(events);
+//          }).catchError((error) {
+//            log.error('${className}._registerEventListeners Error while fetching reception calendar ${error}');
+//          });
+//      } else {
+//        log.debugContext('Skipping reloading calendarlist for ${eventStub['receptionID']} (not selected)', context);
+//      }
+//    });
   }
 
   /**
    * TODO (TL): comment
    */
-  void _render(List<model.CalendarEvent> events) {
-    List<model.CalendarEvent> listCopy = []..addAll(events)
+  void _render(List<model.ContactCalendarEntry> events) {
+    List<model.ContactCalendarEntry> listCopy = []..addAll(events)
                                            ..sort();
 
-    Element eventToDOM (model.CalendarEvent event) {
+    Element eventToDOM (model.ContactCalendarEntry event) {
       String html = '''
         <li class="${event.active ? CssClass.receptionEventsActive : ''}" value=${event.ID}>
           <table class="${CssClass.calendarEventTable}">
@@ -324,7 +325,7 @@ class ReceptionCalendar {
       return new DocumentFragment.html(html).children.first..tabIndex = -1;
     }
 
-    eventList.children = listCopy.map((model.CalendarEvent event) {
+    eventList.children = listCopy.map((model.ContactCalendarEntry event) {
       Element domElement = eventToDOM(event);
               domElement.onClick.listen((_) => this.selectedElement = domElement);
 
@@ -341,7 +342,7 @@ class ReceptionCalendar {
    */
   void _saveEvent() {
     if(!this.newEventWidget.hidden) {
-      model.saveCalendarEvent(this._getEvent()).then((_) {
+      Controller.ReceptionCalendar.save(this._getEvent()).then((_) {
         this.newEventWidget.hidden = true;
         this.eventList.hidden = !this.newEventWidget.hidden;
       });

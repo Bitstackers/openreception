@@ -20,6 +20,9 @@ part of view;
  */
 
 class MessageList {
+
+  static final Logger log = new Logger('${libraryName}.MessageList');
+
   static const String className           = '${libraryName}.MessageList';
   static const String NavShortcut         = 'A';
   static const String CommandPreviousPage = 'Q';
@@ -161,8 +164,6 @@ class MessageList {
     });
 
     model.MessageList.instance.events.on(model.MessageList.add).listen((int messageID) {
-      const String context = '${className}.add (listener)';
-
       /// Hacky way of fetching message and determining if is affected by the current filter.
       Storage.Message.list (filter: model.MessageFilter.current, lastID: messageID, limit: 1)
         .then ((List<model.Message> messages) {
@@ -179,7 +180,7 @@ class MessageList {
           }
         });
 
-      log.debugContext('Got new message with ID ${messageID}', context);
+      log.finest ('Got new message with ID ${messageID}');
     });
 
     void listNavigation(KeyboardEvent e) {

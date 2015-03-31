@@ -14,6 +14,7 @@
 part of view;
 
 class ReceptionSelector {
+  static final Logger log = new Logger('${libraryName}.ReceptionSelector');
 
   static const String className = '${libraryName}.ReceptionSelector';
   static const String NavShortcut = 'V';
@@ -47,8 +48,7 @@ class ReceptionSelector {
   }
 
   void _select (_) {
-    const String context = '${className}._select';
-    log.debugContext('${this.uiContext} : ${Context.current}', context);
+    log.finest('${this.uiContext} : ${Context.current}');
 
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, element.attributes[defaultElementId]));

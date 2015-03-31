@@ -18,8 +18,8 @@ part of view;
  * events and render the selected message.
  */
 class MessageEdit {
+  static final Logger log = new Logger('${libraryName}.MessageEdit');
 
-  static const String className = '${libraryName}.Message';
   static const String NavShortcut = 'B';
 
   final Element      element;
@@ -126,14 +126,11 @@ class MessageEdit {
    * Clears out the content of the input fields and textareas within the widget.
    */
   void _clearInputFields() {
-
-    const String context = '${className}._clear';
-
     this.element.querySelectorAll('textarea').forEach((TextAreaElement element) => element.value = "");
     this.element.querySelectorAll('input').forEach((InputElement element) => element..value   = ""
                                                                                     ..checked = false);
 
-    log.debugContext('Message Cleared', context);
+    log.finest('Message Cleared', context);
   }
 
   /**
@@ -341,7 +338,7 @@ class MessageEdit {
     }).catchError((error, stackTrace) {
 
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
-      log.debug('Failed to complete save operation: ${error} : $stackTrace');
+      log.severe('Failed to complete save operation', error, stackTrace);
     })
     .whenComplete(() => this.loading = false);
   }
@@ -366,7 +363,7 @@ class MessageEdit {
     }).catchError((error, stackTrace) {
 
       model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
-      log.debug('Failed to complete copy operation: ${error} : $stackTrace');
+      log.severe('Failed to complete copy operation', error, stackTrace);
     })
     .whenComplete(() => this.loading = false);
   }
@@ -388,7 +385,7 @@ class MessageEdit {
 
       }).catchError((error, stackTrace) {
         model.NotificationList.instance.add(new model.Notification(Label.MessageNotEnqueued, type : model.NotificationType.Error));
-        log.debug('Failed to complete enqueue operation: ${error} : $stackTrace');
+        log.severe('Failed to complete enqueue operation', error, stackTrace);
       }).whenComplete(() => this.loading = false);;
   }
 }

@@ -14,6 +14,8 @@
 part of view;
 
 class MessageFilter{
+  static final Logger log = new Logger('${libraryName}.MessageFilter');
+
   DivElement body;
   Context _context;
   Element element;
@@ -159,7 +161,7 @@ class MessageFilter{
   }
 
   void searchParametersChanged() {
-    log.debug('messagesearch. The search parameters have changed.');
+    log.finest('messagesearch. The search parameters have changed.');
     event.bus.fire(event.messageFilterChanged, model.MessageFilter.current);
   }
 }

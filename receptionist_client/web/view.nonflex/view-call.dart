@@ -18,13 +18,15 @@ part of view;
  */
 class Call {
 
+  static final Logger log = new Logger('$libraryName.Call');
+
   static const String className = '${libraryName}.Call';
 
   Duration age = new Duration(seconds: 0);
 
   SpanElement ageElement;
   SpanElement callElement;
-  model.Call _call = model.nullCall;
+  model.Call _call = model.noCall;
   LIElement element;
   ButtonElement get pickupButton   => this.element.querySelector('.pickup-button');
   ButtonElement get parkButton     => this.element.querySelector('.park-button');
@@ -47,14 +49,14 @@ class Call {
       </li>
     ''');
 
-    age = new DateTime.now().difference(call.start);
+    age = new DateTime.now().difference(call.arrived);
     element = htmlChunk.querySelector('.call-queue-item-default');
 
     // Button click handlers
     this.pickupButton.onClick  .listen((_) => call.pickup());
     this.parkButton.onClick    .listen((_) => call.park());
     this.hangupButton.onClick  .listen((_) => call.hangup());
-    this.transferButton.onClick.listen((_) => call.transfer (model.Call.currentCall));
+    this.transferButton.onClick.listen((_) => call.transfer (model.Call.activeCall));
 
     ageElement = element.querySelector('.call-queue-item-seconds')
         ..text = _renderDuration(age);
@@ -62,7 +64,7 @@ class Call {
     callElement = element.querySelector('.call-queue-element')
         ..text = '${Label.ReceptionWelcomeMsgPlacehold} (${call.destination}) ${call.state}';
 
-    storage.Reception.get(call.receptionId).then((model.Reception reception) {
+    storage.Reception.get(call.receptionID).then((model.Reception reception) {
       callElement.text = reception.name + "(${call.destination}) - ${call.state}";
     });
 
@@ -124,8 +126,8 @@ class Call {
                                     call.state != model.CallState.SPEAKING);
     this.parkButton.hidden     = ! (call.availableForUser(model.User.currentUser) &&
                                     call.state == model.CallState.SPEAKING);
-    this.hangupButton.hidden   = ! (call.assignedAgent == model.User.currentUser);
-    this.transferButton.hidden = ! (call.assignedAgent == model.User.currentUser);
+    this.hangupButton.hidden   = ! (call.assignedTo == model.User.currentUser.ID);
+    this.transferButton.hidden = ! (call.assignedTo == model.User.currentUser.ID);
   }
 
   /**
@@ -138,7 +140,7 @@ class Call {
     const String context = '${className}._callQueueJoinHandler';
 
     if (this.call == queuedCall) {
-      log.debugContext("Unhiding call ${queuedCall.ID} from call queue.", context);
+      log.finest("Unhiding call ${queuedCall.ID} from call queue.");
       this.element.hidden = false;
     }
   }
@@ -148,7 +150,7 @@ class Call {
    */
   void _callQueueRemoveHandler (_) {
     const String context = '${className}._callQueueRemoveHandler';
-    log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
+    log.finest("Hiding call ${this.call.ID} from call queue.");
     this.element.classes.toggle(CssClass.callSpeaking, true);
 
     this.element.hidden = true;
@@ -161,7 +163,7 @@ class Call {
    */
   void _callParkHandler (_) {
     const String context = '${className}._callParkHandler';
-    log.debugContext("Unhiding call ${this.call.ID} from call list.", context);
+    log.finest("Unhiding call ${this.call.ID} from call list.", context);
     this.element.classes.toggle(CssClass.callSpeaking, false);
     this.element.classes.toggle(CssClass.callParked, true);
 
@@ -174,7 +176,7 @@ class Call {
    */
   void _callHangupHandler (_) {
     const String context = '${className}._callHangupHandler';
-      log.debugContext("Removing call ${this.call.ID} from call queue view.", context);
+      log.finest("Removing call ${this.call.ID} from call queue view.", context);
 
       this.element.classes.toggle(CssClass.callDestroyed, true);
       this.disabled = true;
@@ -188,7 +190,7 @@ class Call {
    */
   void _callTransferHandler (_) {
     const String context = '${className}._callTransferHandler ';
-    log.debugContext("Hiding call ${this.call.ID} from call queue.", context);
+    log.finest("Hiding call ${this.call.ID} from call queue.", context);
 
     this.element.classes.toggle("transferred", true);
 

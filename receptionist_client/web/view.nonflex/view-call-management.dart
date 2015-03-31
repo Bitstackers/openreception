@@ -29,8 +29,8 @@ class CallManagement {
   InputElement        get numberField  => this.element.querySelector('#call-originate-number-field');
   ButtonElement       get dialButton   => this.element.querySelector('button.dial');
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
-  List<InputElement>  get inputFields  => this.element.querySelectorAll('input');
-  List<ButtonElement> get buttons      => this.element.querySelectorAll('button');
+  ElementList<InputElement>  get inputFields  => this.element.querySelectorAll('input');
+  ElementList<ButtonElement> get buttons      => this.element.querySelectorAll('button');
   Element             get header       => this.element.querySelector('legend');
 
   //TODO: Perform a more elaborate check for a valid extension.
@@ -87,7 +87,7 @@ class CallManagement {
 
   _dialSelectedNumber(_) {
     if (!this.disabled) {
-      Controller.Call.dial(new model.Extension (this.numberField.value), model.Reception.selectedReception, model.Contact.selectedContact);
+      Controller.Call.dial(this.numberField.value, model.Reception.selectedReception, model.Contact.selectedContact);
     }
   }
 
@@ -112,12 +112,7 @@ class CallManagement {
       this._render();
     });
 
-    event.bus.on(model.Extension.activeExtensionChanged).listen((model.Extension extension) {
-        this.numberField.value = extension.dialString;
-        this._render();
-    });
-
-    event.bus.on(model.Call.currentCallChanged).listen(_changeActiveCall);
+    model.Call.activeCallChanged.listen(_changeActiveCall);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationDone);
     event.bus.on(event.originateCallRequestFailure).listen(_originationDone);

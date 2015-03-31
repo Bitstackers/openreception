@@ -15,7 +15,8 @@ part of view;
 
 class Message {
 
-  static const String className          = '${libraryName}.Message';
+  static final Logger log = new Logger('${libraryName}.Message');
+
   static const String DefaultNavShortcut = 'B';
 
   final Element      element;
@@ -111,8 +112,6 @@ class Message {
    */
   void _clearInputFields() {
 
-    const String context = '${className}._clear';
-
     this.element.querySelectorAll('input').forEach((InputElement element) {
       element.value = "";
       element.checked = false;
@@ -124,7 +123,7 @@ class Message {
 
     recipientsList.children.clear();
 
-    log.debugContext('Message Cleared', context);
+    log.finest('Message Cleared', context);
   }
 
   Message(Element this.element, Context this.context, {String navShortcut : DefaultNavShortcut}) {
@@ -257,8 +256,8 @@ class Message {
     model.Contact.onContactChange.listen(this._renderContact);
 
     event.bus.on(event.callChanged).listen((model.Call value) {
-      if (value.callerId != null ) {
-        callerPhoneField.value = '${value.callerId}';
+      if (value.callerID != null ) {
+        callerPhoneField.value = '${value.callerID}';
       } else {
         callerPhoneField.value;
       }

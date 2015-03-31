@@ -32,12 +32,13 @@ class CallList {
 
   int callCount = 0;
 
-  CallList(Element this.element, Context this.context) {
-    this._registerEventListerns();
+  CallList(Element this.element, Context this.context,
+      model.CallList observedCallList) {
+    this._registerEventListerns(observedCallList);
     this._renderHeader();
   }
 
-  void _registerEventListerns() {
+  void _registerEventListerns(model.CallList callList) {
     MutationObserver listChangeObserver = new MutationObserver
         ((List<MutationRecord> mutations, MutationObserver observer) =>
             this._renderHeader());
@@ -46,26 +47,25 @@ class CallList {
     listChangeObserver.observe(queuedCallUL, childList: true);
 
 
-    model.CallList.instance.events.on(model.CallList.insert).listen((model.Call call) {
+    callList.onInsert.listen((model.Call call) {
       this._renderCall(call, this.queuedCallUL);
     });
 
-    model.CallList.instance.events.on(model.CallList.reload).listen(this.renderList);
+    callList.onReload.listen(this.renderList);
 
     context.registerFocusElement(queuedCallUL);
-
-
 
   }
 
   void renderList(model.CallList callList) {
     callList.where((model.Call call) =>
-        call.availableForUser(model.User.currentUser)).forEach((model.Call call) {
-      if ([model.CallState.PARKED, model.CallState.SPEAKING].contains(call.state)) {
-        this._renderCall(call, this.ownedCallsUL);
-      } else
-        this._renderCall(call, queuedCallUL);
-    });
+      call.availableForUser(model.User.currentUser))
+      .forEach((model.Call call) {
+        if ([model.CallState.PARKED, model.CallState.SPEAKING].contains(call.state)) {
+          this._renderCall(call, this.ownedCallsUL);
+        } else
+          this._renderCall(call, queuedCallUL);
+      });
 
     _renderHeader();
   }
@@ -76,50 +76,50 @@ class CallList {
   void _renderCall(model.Call call, UListElement list) {
     Call callView = new Call(call);
 
-    call.events.on(model.Call.answered).listen((_) {
-      callView._callQueueRemoveHandler(_);
+//    call.callState.listen(onData).on(model.Call.answered).listen((_) {
+//      callView._callQueueRemoveHandler(_);
+//
+//      if (callView.call.assignedAgent == model.User.currentUser.ID) {
+//        this.queuedCallUL.children.remove(callView.element);
+//
+//
+//        this.ownedCallsUL.children.add(callView.element);
+//        callView.element.hidden = false;
+//      }
+//      callView.element.classes.toggle(CssClass.callParked, false);
+//      callView.element.classes.toggle(CssClass.callSpeaking, true);
+//    });
+//
+//    call.events.on(model.Call.transferred).listen((_) {
+//      callView._callTransferHandler(_);
+//    });
+//
+//    call.events.on(model.Call.queueEnter).listen((_) {
+//      callView.element.classes.toggle(CssClass.callEnqueued, true);
+//    });
+//
+//    call.events.on(model.Call.queueLeave).listen((_) {
+//      callView._callTransferHandler(_);
+//    });
+//
+//    call.events.on(model.Call.lock).listen((bool isLocked) {
+//      callView.element.classes.toggle(CssClass.callLocked, isLocked);
+//    });
+//
+//    call.events.on(model.Call.hungup).listen((_) {
+//      callView.element.classes.toggle(CssClass.callParked, false);
+//      callView.element.classes.toggle(CssClass.callSpeaking, false);
+//      callView._callHangupHandler(_);
+//    });
+//
+//    call.events.on(model.Call.parked).listen((_) {
+//      callView.element.classes.toggle(CssClass.callSpeaking, false);
+//      callView.element.classes.toggle(CssClass.callParked, true);
+//      callView._renderButtons();
+//    });
 
-      if (callView.call.assignedAgent == model.User.currentUser.ID) {
-        this.queuedCallUL.children.remove(callView.element);
 
-
-        this.ownedCallsUL.children.add(callView.element);
-        callView.element.hidden = false;
-      }
-      callView.element.classes.toggle(CssClass.callParked, false);
-      callView.element.classes.toggle(CssClass.callSpeaking, true);
-    });
-
-    call.events.on(model.Call.transferred).listen((_) {
-      callView._callTransferHandler(_);
-    });
-
-    call.events.on(model.Call.queueEnter).listen((_) {
-      callView.element.classes.toggle(CssClass.callEnqueued, true);
-    });
-
-    call.events.on(model.Call.queueLeave).listen((_) {
-      callView._callTransferHandler(_);
-    });
-
-    call.events.on(model.Call.lock).listen((bool isLocked) {
-      callView.element.classes.toggle(CssClass.callLocked, isLocked);
-    });
-
-    call.events.on(model.Call.hungup).listen((_) {
-      callView.element.classes.toggle(CssClass.callParked, false);
-      callView.element.classes.toggle(CssClass.callSpeaking, false);
-      callView._callHangupHandler(_);
-    });
-
-    call.events.on(model.Call.parked).listen((_) {
-      callView.element.classes.toggle(CssClass.callSpeaking, false);
-      callView.element.classes.toggle(CssClass.callParked, true);
-      callView._renderButtons();
-    });
-
-
-    if (call.state == model.CallState.QUEUED) {
+    if (call.currentState == model.CallState.QUEUED) {
       callView.element.classes.toggle (CssClass.callEnqueued, true);
     }
 

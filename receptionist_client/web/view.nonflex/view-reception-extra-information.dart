@@ -14,6 +14,8 @@
 part of view;
 
 class ReceptionExtraInformation {
+  static final Logger log = new Logger('${libraryName}.ReceptionExtraInformation');
+
   final Context uiContext;
   final Element element;
 
@@ -42,8 +44,7 @@ class ReceptionExtraInformation {
   }
 
   void _select (_) {
-    const String context = '${className}._select';
-    log.debugContext('${this.uiContext} : ${Context.current}', context);
+    log.finest('${this.uiContext} : ${Context.current}');
 
     if (!this.muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, body.id));

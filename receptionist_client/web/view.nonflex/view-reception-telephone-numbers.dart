@@ -14,6 +14,8 @@
 part of view;
 
 class ReceptionTelephoneNumbers {
+  static final Logger log = new Logger('${libraryName}.ReceptionTelephoneNumbers');
+
   final Context   uiContext;
   final Element   element;
 
@@ -39,12 +41,10 @@ class ReceptionTelephoneNumbers {
   }
 
   void _select(_) {
-    const String context = '${className}._select';
-
     if (!muted) {
       Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, telephoneNumberList.id));
     } else {
-      log.debugContext('${this.uiContext} : ${Context.current}', context);
+      log.finest('${this.uiContext} : ${Context.current}');
     }
   }
 

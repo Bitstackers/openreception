@@ -18,14 +18,13 @@ import 'dart:html';
 
 import '../classes/commands-keyboard.dart';
 import '../classes/common.dart';
-import '../config/configuration.dart';
+import '../config/configuration.dart' hide log;
 import '../classes/constants.dart';
 import '../classes/context.dart';
 import '../controller/controller.dart' as Controller;
 import '../classes/events.dart' as event;
-import '../classes/focus.dart';
+import '../classes/focus.dart' hide log;
 import '../classes/location.dart' as nav;
-import '../classes/logger.dart';
 import '../model/model.dart' as model;
 import '../components/searchcomponent.dart' as Component;
 import '../service/service.dart' as Service;
