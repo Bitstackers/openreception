@@ -6,7 +6,16 @@ enum CallCommand {
   PICKUPFAILURE,
   DIAL,
   DIALSUCCESS,
-  DIALFAILURE
+  DIALFAILURE,
+  HANGUP,
+  HANGUPSUCCESS,
+  HANGUPFAILURE,
+  PARK,
+  PARKSUCCESS,
+  PARKFAILURE,
+  TRANSFER,
+  TRANSFERSUCCESS,
+  TRANSFERFAILURE
 }
 
 abstract class Call {
@@ -16,95 +25,65 @@ abstract class Call {
   static Stream<CallCommand> get commandStream => _command.stream;
 
   static Future dial(String extension, Model.Reception reception, Model.Contact contact) {
-    log.info('Dialing extension.');
+    log.info('Dialing $extension.');
 
     _command.fire(CallCommand.DIAL);
-    return Service.Call.originate(contact.ID, reception.ID, extension)
-      .then(() => _command.fire(CallCommand.DIALSUCCESS))
+    return Service.Call.instance.originate(contact, reception, extension)
+      .then((_) => _command.fire(CallCommand.DIALSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
-        _command.fire(CallCommand.DIALSUCCESS);
+        _command.fire(CallCommand.DIALFAILURE);
       });
-
   }
 
-  static void dialSelectedContact() {
-    event.bus.fire(event.dialSelectedContact, null);
-  }
+  static Future<Model.Call> pickupParked (Model.Call call) => pickup (call);
 
-  static void completeTransfer(Model.TransferRequest request, Model.Call destination) {
-    request.confirm(destination);
-  }
-
-
-  static void pickupParked (Model.Call call) => pickupSpecific(call);
 
   /**
-   * Make the service layer perform a pickup request to the call-flow-control server.
+   * Make the service layer perform a pickup request to the
+   * call-flow-control server.
    */
-  static void pickupSpecific(Model.Call call) {
-    if (call == Model.noCall) {
-      log.info('Discarding request to pickup a null call.');
-      return;
-    }
+  static Future<Model.Call> pickup(Model.Call call) {
+    log.info('Picking up $call.');
 
-    event.bus.fire(event.pickupCallRequest, call);
+    _command.fire(CallCommand.PICKUP);
+    return Service.Call.instance.pickup(call)
+      .then((_) => _command.fire(CallCommand.PICKUPSUCCESS))
+      .catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        _command.fire(CallCommand.PICKUPFAILURE);
+      });
+  }
 
-    // Verify that the user does not already have a call.
-    if (Model.Call.activeCall.isActive) {
-      event.bus.fire(event.pickupCallFailure, null);
-    }
-    else {
-      Service.Call.instance.pickup(call).then((Model.Call call) {
-        event.bus.fire(event.pickupCallSuccess, null);
-      }).catchError((error) {
-        event.bus.fire(event.pickupCallFailure, null);
+  static Future hangup(Model.Call call) {
+    log.info('Hanging up $call.');
+
+    _command.fire(CallCommand.HANGUP);
+    return Service.Call.instance.hangup(call)
+      .then((_) => _command.fire(CallCommand.HANGUPSUCCESS))
+      .catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        _command.fire(CallCommand.HANGUPFAILURE);
+      });
+  }
+
+  static Future park(Model.Call call) {
+    _command.fire(CallCommand.PARK);
+    return Service.Call.instance.park(call)
+      .then((_) => _command.fire(CallCommand.PARKSUCCESS))
+      .catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        _command.fire(CallCommand.PARKFAILURE);
+      });
+  }
+
+  static Future transfer(Model.Call source, Model.Call destination) {
+    _command.fire(CallCommand.TRANSFER);
+    return Service.Call.instance.transfer(source, destination)
+      .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
+      .catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        _command.fire(CallCommand.TRANSFERFAILURE);
       });
     }
-  }
-
-  static void hangup(Model.Call call) {
-    if (call == Model.noCall) {
-      log.info('Discarding request to hangup null call.');
-      return;
-    }
-
-    event.bus.fire(event.hangupCallRequest, call);
-
-    Service.Call.instance.hangup(call).then((Model.Call call) {
-      event.bus.fire(event.hangupCallRequestSuccess, call);
-    }).catchError((error) {
-      event.bus.fire(event.hangupCallRequestFailure, call);
-    });
-  }
-
-  static void park(Model.Call call) {
-    if (call == Model.noCall) {
-      log.info('Discarding request to park null call.');
-      return;
-    }
-
-    event.bus.fire(event.parkCallRequest, call);
-
-    Service.Call.instance.park(call).then((Model.Call call) {
-        event.bus.fire(event.parkCallRequestSuccess, call);
-    }).catchError((error) {
-      event.bus.fire(event.parkCallRequestSuccess, call);
-    });
-  }
-
-  static void transfer(Model.Call source, Model.Call destination) {
-    if ([source, destination].contains(Model.noCall)) {
-      log.info('Discarding request to transfer null call (either source or destination is not valid.');
-      return;
-    }
-
-    event.bus.fire(event.transferCallRequest, source);
-
-    Service.Call.instance.transfer(source, destination).then((Model.Call call) {
-        event.bus.fire(event.transferCallRequestSuccess, call);
-    }).catchError((error) {
-      event.bus.fire(event.transferCallRequestSuccess, source);
-    });
-  }
 }
