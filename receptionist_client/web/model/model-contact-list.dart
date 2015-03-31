@@ -45,8 +45,6 @@ class ContactList extends IterableBase<Contact>{
   ContactList._fromList(List<ORModel.Contact> list, int receptionID) {
     list.forEach((item) => _list.add((item..receptionID = receptionID) as Contact));
     _list.sort();
-
-    log.debug('ContactList._internal build ContactList from ${list}');
   }
 
   /**

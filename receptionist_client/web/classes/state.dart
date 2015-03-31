@@ -14,7 +14,7 @@
 library state;
 
 import 'events.dart' as event;
-import 'logger.dart';
+import 'package:logging/logging.dart';
 
 const int _ERROR   = -1;
 const int _UNKNOWN = 0;
@@ -23,6 +23,8 @@ const int _OK      = 1;
 State _state = new State();
 
 State get state => _state;
+
+Logger log = new Logger('state');
 
 /**
  * Describes the state of bob.
@@ -158,7 +160,7 @@ class State {
    * Updates the overall statevalue for Bob.
    */
   void _update() {
-    log.debug('State updated ${this}');
+    log.finest('State updated ${this}');
     event.bus.fire(event.stateUpdated, _clone());
   }
 }

@@ -20,7 +20,9 @@ import '../classes/context.dart';
 import '../classes/events.dart' as event;
 import '../classes/location.dart' as nav;
 import '../classes/commands-keyboard.dart';
-import '../classes/logger.dart';
+import 'package:logging/logging.dart';
+
+Logger log = new Logger('components');
 
 /*
  * SetViewedObject(T obj) // Writes to _selectedElementText, but don't find it in the DataList.
@@ -334,7 +336,7 @@ class SearchComponent<T> {
   }
 
   void updateSourceList(List<T> newList) {
-    log.debug('SearchComponent. updateSourceList. numberOfElements: ${newList.length}');
+    log.finest('SearchComponent. updateSourceList. numberOfElements: ${newList.length}');
     clearSelection();
     _dataList = newList;
     _list.clear();

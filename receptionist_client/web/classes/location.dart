@@ -18,7 +18,9 @@ import 'dart:math' show pow;
 
 import 'constants.dart';
 import 'events.dart' as event;
-import 'logger.dart';
+import 'package:logging/logging.dart';
+
+Logger log = new Logger('location');
 
 Map<String, Location> _history = {};
 Location appDefaultLocation;
@@ -58,7 +60,7 @@ class Location {
       return _history[contextId];
 
     } else {
-      log.error('Location.context unknown context "${contextId}"');
+      log.severe('Location.context unknown context "${contextId}"');
       return appDefaultLocation;
     }
   }
@@ -84,7 +86,7 @@ class Location {
       }
 
     } catch(error) {
-      log.error('location.Location.fromPopState() threw ${error} "${hash}" returning default "${appDefaultLocation}"');
+      log.severe('location.Location.fromPopState() threw ${error} "${hash}" returning default "${appDefaultLocation}"');
       return new Location(appDefaultLocation.contextId, appDefaultLocation.widgetId, appDefaultLocation.elementId)
         .._pushable = false;
     }
@@ -130,19 +132,19 @@ class Location {
   static bool validLocation(String contextId, String widgetId, String elementId) {
     Element contextElement = querySelector('section#$contextId');
     if(contextElement == null) {
-      log.error('location.Location() bad context "${contextId}" returning default "${appDefaultLocation}"');
+      log.severe('location.Location() bad context "${contextId}" returning default "${appDefaultLocation}"');
       return false;
     }
 
     Element widgetElement = contextElement.querySelector('#${widgetId}');
     if(widgetElement == null) {
-      log.error('location.Location() bad widget "${contextId}.${widgetId}" returning default "${appDefaultLocation}"');
+      log.severe('location.Location() bad widget "${contextId}.${widgetId}" returning default "${appDefaultLocation}"');
       return false;
     }
 
     Element elementElement = elementId.isEmpty ? null : widgetElement.querySelector('#${elementId}');
     if(elementElement == null) {
-      log.error('location.Location() bad element "${contextId}.${widgetId}.${elementId}" returning default "${appDefaultLocation}"');
+      log.severe('location.Location() bad element "${contextId}.${widgetId}.${elementId}" returning default "${appDefaultLocation}"');
       return false;
     }
 
@@ -164,16 +166,16 @@ void initialize() {
           if (querySelector('#$elementId') != null) {
             _history[context.id] = new Location(context.id, widgetId, elementId);
           } else {
-            log.critical('location.initialize() Widget ${widgetId} has bad default element');
+            log.shout('location.initialize() Widget ${widgetId} has bad default element');
           }
         } else {
-          log.critical('location.initialize() widget ${widgetId} is missing default element');
+          log.shout('location.initialize() widget ${widgetId} is missing default element');
         }
       } else {
-        log.critical('location.initialize() Context ${context.id} has bad default widget');
+        log.shout('location.initialize() Context ${context.id} has bad default widget');
       }
     } else {
-      log.critical('location.initialize() Context ${context.id} is missing default widget');
+      log.shout('location.initialize() Context ${context.id} is missing default widget');
     }
   }
 

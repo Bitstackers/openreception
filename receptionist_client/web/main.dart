@@ -1,41 +1,43 @@
 import 'dart:html';
 
-import 'controller/controller.dart' as Controller;
-import 'model/model.dart' as Model;
+import 'controller/controller.dart';
+import 'model/model.dart';
 import 'view/view.dart';
 
 void main() {
-  Contexts contexts = new Contexts(new Model.UIContexts());
+  Contexts contexts = new Contexts(new UIContexts());
 
-  AgentInfo agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
+  AgentInfo agentInfo = new AgentInfo(new UIAgentInfo(querySelector('#agent-info')));
 
   CalendarEditor calendarEditor =
-      new CalendarEditor (new Model.UICalendarEditor(querySelector('#calendar-editor')),
-                          new Controller.Place('context-calendar-edit', 'calendar-editor'));
+      new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
+                          new Place('context-calendar-edit', 'calendar-editor'));
 
   ContactCalendar contactCalendar =
-      new ContactCalendar(new Model.UIContactCalendar(querySelector('#contact-calendar')),
-                          new Controller.Place('context-home', 'contact-calendar'));
+      new ContactCalendar(new UIContactCalendar(querySelector('#contact-calendar')),
+                          new Place('context-home', 'contact-calendar'));
 
   ContactData contactData =
-      new ContactData(new Model.UIContactData(querySelector('#contact-data')),
-                      new Controller.Place('context-home', 'contact-data'));
+      new ContactData(new UIContactData(querySelector('#contact-data')),
+                      new Place('context-home', 'contact-data'));
 
   ContactList contactList =
-      new ContactList(new Model.UIContactList(querySelector('#contact-list')),
-                      new Controller.Place('context-home', 'contact-list'));
+      new ContactList(new UIContactList(querySelector('#contact-list')),
+                      new Place('context-home', 'contact-list'));
 
   MessageCompose messageCompose =
-      new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
-                         new Controller.Place('context-home', 'message-compose'));
+      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
+                         new Place('context-home', 'message-compose'));
 
   ReceptionCalendar receptionCalendar =
-      new ReceptionCalendar(new Model.UIReceptionCalendar(querySelector('#reception-calendar')),
-                            new Controller.Place('context-home', 'reception-calendar'));
+      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
+                            new Place('context-home', 'reception-calendar'));
 
   ReceptionCommands receptionCommands =
-      new ReceptionCommands(new Model.UIReceptionCommands(querySelector('#reception-commands')),
-                            new Controller.Place('context-home', 'reception-commands'));
+      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
+                            new Place('context-home', 'reception-commands'));
+
+
 
 
 
@@ -46,7 +48,7 @@ void main() {
   ReceptionSalesCalls   receptionSalesCalls   = new ReceptionSalesCalls();
   ReceptionSelector     receptionSelector     = new ReceptionSelector();
   WelcomeMessage        welcomeMessage        = new WelcomeMessage();
-  Controller.Navigate   navigate              = new Controller.Navigate();
+  Navigate              navigate              = new Navigate();
 
   if(window.location.hash.isEmpty) {
     navigate.goHome();

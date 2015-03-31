@@ -18,9 +18,9 @@ import 'dart:html';
 import 'constants.dart';
 import 'events.dart' as event;
 import 'location.dart' as nav;
-import 'logger.dart';
 
 import 'package:event_bus/event_bus.dart';
+import 'package:logging/logging.dart';
 
 /**
  * A [Context] is a top-level GUI container. It represents a collection of 0
@@ -42,7 +42,7 @@ final EventType<int> alertUpdated = new EventType<int>();
 
 class Context {
 
-  static const String context = 'Context';
+  static Logger log = new Logger('Context');
 
   EventBus _bus = new EventBus();
   EventBus get bus => _bus;
@@ -57,7 +57,7 @@ class Context {
   static Context    _current = null;
   static Context get current => _current;
   static    void set current (Context newUIContext) {
-    log.debugContext('Changing active context to ${newUIContext.id}', context);
+    log.finest('Changing active context to ${newUIContext.id}');
     _current = newUIContext;
   }
 
@@ -102,7 +102,7 @@ class Context {
     if (_alertCounter > 0) {
       _alertCounter--;
       _bus.fire(alertUpdated, _alertCounter);
-      log.debug('Context.decreaseAlert - ${id} level now at ${alertCounter}');
+      log.finest('Context.decreaseAlert - ${id} level now at ${alertCounter}');
     }
   }
 
@@ -112,7 +112,7 @@ class Context {
   void increaseAlert() {
     _alertCounter++;
     _bus.fire(alertUpdated, _alertCounter);
-    log.debug('Context.increaseAlert - ${id} level now at ${alertCounter}');
+    log.finest('Context.increaseAlert - ${id} level now at ${alertCounter}');
   }
 
   /**
@@ -158,7 +158,7 @@ class Context {
 
   void registerFocusElement(Element element) {
     if (focusElements.containsKey(element.id)) {
-      log.error('Context registerFocusElement. The element is already registered: ${element.id}');
+      log.finest('Context registerFocusElement. The element is already registered: ${element.id}');
     } else {
       focusElements[element.id] = element;
       element.tabIndex = -1;

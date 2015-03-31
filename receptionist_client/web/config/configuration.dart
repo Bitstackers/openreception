@@ -19,11 +19,12 @@ import 'dart:convert';
 
 import 'package:logging/logging.dart';
 
-import '../classes/logger.dart';
+import 'package:logging/logging.dart';
 import '../classes/state.dart';
 
 part 'configuration_url.dart';
 
+Logger log = new Logger ('configuration');
 
 final Configuration configuration = new Configuration._internal();
 
@@ -93,7 +94,7 @@ class Configuration {
         .then(_onComplete)
         .catchError((error) {
           if (!state.isConfigurationError) {
-            log.critical('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
+            log.shout('_Configuration() HttpRequest.request failed with ${error} url: ${CONFIGURATION_URL}');
             state.configurationError();
           }
           return new Future.delayed(new Duration(seconds:5),() => initialize());
@@ -117,7 +118,7 @@ class Configuration {
 
       default:
         if (!state.isConfigurationError) {
-          log.critical('_Configuration._onComplete failed ${CONFIGURATION_URL}-${req.status}-${req.statusText}');
+          log.shout('_Configuration._onComplete failed ${CONFIGURATION_URL}-${req.status}-${req.statusText}');
           state.configurationError();
         }
     }
@@ -127,7 +128,7 @@ class Configuration {
    * Parse and validate the configuration JSON from Config server.
    */
   void _parseConfiguration(Map json) {
-    log.debug('_Configuration._parseConfiguration ${json}');
+    log.finest('_Configuration._parseConfiguration ${json}');
 
     String    criticalPath;
     String    errorPath;
@@ -154,20 +155,20 @@ class Configuration {
 
     switch (serverLogMap['level'].toLowerCase()) {
       case 'info':
-        _serverLogLevel = Log.INFO;
+        _serverLogLevel = Level.INFO;
         break;
 
       case 'error':
-        _serverLogLevel = Log.ERROR;
+        _serverLogLevel = Level.SEVERE;
         break;
 
       case 'critical':
-        _serverLogLevel = Log.CRITICAL;
+        _serverLogLevel = Level.SHOUT;
         break;
 
       default:
         _serverLogLevel = Level.INFO;
-        log.error('_Configuration._parseConfiguration INVALID level ${serverLogMap['level']} - defaulting to Level.INFO');
+        log.severe('_Configuration._parseConfiguration INVALID level ${serverLogMap['level']} - defaulting to Level.INFO');
     }
 
     criticalPath = _stringValue(serverLogMap['interface'], 'critical', '/log/critical');
@@ -193,7 +194,7 @@ class Configuration {
       return configMap[key];
 
     } else {
-      log.error('_Configuration._boolValue ${key} is not a bool, its ${configMap[key].runtimeType}');
+      log.severe('_Configuration._boolValue ${key} is not a bool, its ${configMap[key].runtimeType}');
       return defaultValue;
     }
   }
@@ -209,7 +210,7 @@ class Configuration {
       return configMap[key];
 
     } else {
-      log.error('_Configuration._intValue ${key} is not an int, its ${configMap[key].runtimeType}');
+      log.severe('_Configuration._intValue ${key} is not an int, its ${configMap[key].runtimeType}');
       return defaultValue;
     }
   }
@@ -227,7 +228,7 @@ class Configuration {
       return (configMap[key].trim().isEmpty) ? defaultValue : configMap[key];
 
     } else {
-      log.error("_Configuration._stringValue ${key} is not a String, its ${configMap[key].runtimeType}");
+      log.severe("_Configuration._stringValue ${key} is not a String, its ${configMap[key].runtimeType}");
       return defaultValue;
     }
   }

@@ -63,9 +63,6 @@ class MessageList extends IterableBase<Message> {
     const String context = '${className}.registerObservers';
 
     event.bus.on(event.messageCreated).listen((int id) {
-
-
-      log.debugContext('Notifying about new message ${id}', context);
       this._eventStream.fire(add, id);
     });
   }
@@ -76,16 +73,9 @@ class MessageList extends IterableBase<Message> {
    */
   MessageList.fromList (List<ORModel.Message> messages) {
     const String context = '${className}.fromList';
-
-    try {
-      messages.forEach((ORModel.Message message) {
-        this.updateOrInsert(new Message.fromMap(message.asMap));
-      });
-    } catch (error, stacktrace) {
-      log.criticalError(error, context);
-      print(stacktrace);
-      throw(error);
-    }
+    messages.forEach((ORModel.Message message) {
+      this.updateOrInsert(new Message.fromMap(message.asMap));
+    });
   }
 
   /**

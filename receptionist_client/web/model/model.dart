@@ -20,11 +20,11 @@ import 'dart:html';
 
 
 import '../controller/controller.dart' as Controller;
-import '../classes/logger.dart';
 import '../classes/events.dart' as event;
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as storage;
 
+import 'package:logging/logging.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';

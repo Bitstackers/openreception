@@ -18,7 +18,6 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../config/configuration.dart';
-import '../classes/logger.dart';
 import '../model/model.dart' as Model;
 import '../protocol/protocol.dart';
 

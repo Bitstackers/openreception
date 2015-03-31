@@ -15,7 +15,9 @@ library focus;
 
 import 'constants.dart';
 import 'events.dart' as event;
-import 'logger.dart';
+import 'package:logging/logging.dart';
+
+Logger log = new Logger ('focus');
 
 String _currentFocusId = '';
 Map<String, int> _tabIndexes =
@@ -59,7 +61,7 @@ int getTabIndex (String id) {
   if(_tabIndexes.containsKey(id)) {
     return _tabIndexes[id];
   } else {
-    log.error('Focus getTabIndex: Unknown id asked for tabIndex: ${id}');
+    log.severe('Focus getTabIndex: Unknown id asked for tabIndex: ${id}');
     return -1;
   }
 }

@@ -18,8 +18,10 @@ import 'dart:html';
 import 'dart:convert';
 
 import '../config/configuration.dart';
-import 'logger.dart';
+import 'package:logging/logging.dart';
 import 'state.dart';
+
+Logger log = new Logger ('socket');
 
 /**
  * The Socket singleton handles the WebSocket connection to the Notification server.
@@ -66,11 +68,11 @@ class Socket {
    */
   void _connect() {
     if (!state.isWebsocketError) {
-      log.debug('Socket._connect ${_url}');
+      log.finest('Socket._connect ${_url}');
     }
     _reconnectScheduled = false;
     String url = _url.toString();
-    log.debug('Socket Opening a websocket on url: ${url}');
+    log.finest('Socket Opening a websocket on url: ${url}');
     _channel = new WebSocket(url)
         ..onMessage.listen(_onMessage)
         ..onError.listen(_onError)
@@ -82,7 +84,7 @@ class Socket {
    * Update the state when WebSocket is connected.
    */
   void _onOpen(Event event) {
-    log.debug('socket._onOpen');
+    log.finest('socket._onOpen');
     state.websocketOK();
   }
 
@@ -93,7 +95,7 @@ class Socket {
     if(!state.isScheduledShutdown) {
       if (!state.isWebsocketError) {
         state.websocketError();
-        log.critical('Socket Lost connecting. Tring to connect.');
+        log.shout('Socket Lost connecting. Tring to connect.');
       }
       _reconnect();
     }
@@ -106,13 +108,13 @@ class Socket {
    */
   void _onMessage(MessageEvent event) {
     try {
-      log.debug('socket._onMessage() ${event.data}');
+      log.finest('socket._onMessage() ${event.data}');
       Map notificationEvent = JSON.decode(event.data);
       _messageStream.sink.add(notificationEvent);
     } on FormatException {
-      log.error('Socket._onMessage bad MessageEvent ${event.data}');
+      log.finest('Socket._onMessage bad MessageEvent ${event.data}');
     } catch(e) {
-      log.error('Socket._onMessage exception ${e}');
+      log.finest('Socket._onMessage exception ${e}');
     }
   }
 

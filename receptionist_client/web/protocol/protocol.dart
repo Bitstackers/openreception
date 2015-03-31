@@ -18,11 +18,12 @@ import 'dart:html';
 import 'dart:convert';
 
 import '../config/configuration.dart';
-import '../classes/logger.dart';
+import 'package:logging/logging.dart';
 
 part 'protocol-log.dart';
 
 const String libraryName = 'protocol';
+Logger log = new Logger(libraryName);
 
 const String GET    = "GET";
 const String PUT    = "PUT";
@@ -68,7 +69,7 @@ String _buildUrl(String base, String path, [List<String> fragments]) {
     fragments.skip(1).forEach((fragment) => buffer.write('&${fragment}'));
   }
 
-  log.debug('protocol._buildUrl ${url}${buffer.toString()}');
+  log.finest('protocol._buildUrl ${url}${buffer.toString()}');
   return '${url}${buffer.toString()}';
 }
 
@@ -79,7 +80,7 @@ Map _parseJson(String responseText) {
   try {
     return JSON.decode(responseText);
   } catch(e) {
-    log.critical('protocol._parseJson exception: ${e}');
+    log.shout('protocol._parseJson exception: ${e}');
     return null;
   }
 }
@@ -88,6 +89,6 @@ Map _parseJson(String responseText) {
  * Log [request] and [url] to [log.critical]
  */
 void _logError(HttpRequest request, String url) {
-  log.critical('Protocol failed. Status: [${request.status}] URL: ${url} ${
+  log.shout('Protocol failed. Status: [${request.status}] URL: ${url} ${
     request.responseText != null && request.responseText.isNotEmpty ? 'body: ${request.responseText}' : ''}');
 }
