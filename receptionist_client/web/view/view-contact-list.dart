@@ -1,10 +1,10 @@
 part of view;
 
 class ContactList extends Widget {
-  DomContactList _dom;
+  UIContactList _dom;
   Place          _myPlace;
 
-  ContactList(DomContactList this._dom, Place this._myPlace) {
+  ContactList(UIModel this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 

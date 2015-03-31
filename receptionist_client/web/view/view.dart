@@ -33,6 +33,7 @@ final Navigate _navigate = new Navigate();
 // hard an early.
 
 abstract class Widget {
+  /// TODO (TL): Perhaps move this to DOM?
   bool _active = false;
 
   /**
@@ -40,8 +41,8 @@ abstract class Widget {
    */
   void _blur() {
     _active = false;
-    root.classes.toggle('focus', false);
-    focusElement.blur();
+    ui.root.classes.toggle('focus', false);
+    ui.focusElement.blur();
     _setTabIndex(-1);
   }
 
@@ -50,23 +51,38 @@ abstract class Widget {
    */
   void _focus() {
     _active = true;
-    root.classes.toggle('focus', true);
-    focusElement.focus();
+    ui.root.classes.toggle('focus', true);
+    ui.focusElement.focus();
     _setTabIndex(1);
   }
 
   /**
-   * SHOULD return the element that will focus when the widget is activated.
-   * MAY return null if no specific element needs focus on widget activation or
-   * if the widget has no [Place] associated with it.
+   * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
+   * Shift+Tab keyboard event is captured.
    */
-  HtmlElement get focusElement => null;
+  void _handleShiftTab(KeyboardEvent event) {
+    if(_active && ui.focusElement == ui.firstTabElement) {
+      event.preventDefault();
+      ui.lastTabElement.focus();
+    }
+  }
+
+  /**
+     * Focus on [_firstTabElement] when [_lastTabElement] is in focus and a Tab
+     * keyboard event is captured.
+     */
+  void _handleTab(KeyboardEvent event) {
+    if(_active && ui.focusElement == ui.lastTabElement) {
+      event.preventDefault();
+      ui.firstTabElement.focus();
+    }
+  }
 
   /**
    * SHOULD return the widgets [Place]. MAY return null if the widget has no
    * [Place] associated with it.
    */
-  Place get myPlace => null;
+  Place get myPlace;
 
   /**
    * Navigate to [myPlace] if widget is not already in focus.
@@ -78,16 +94,10 @@ abstract class Widget {
   }
 
   /**
-   * SHOULD return the widgets root element. MAY return null if the widget has
-   * no [Place] associated with it.
-   */
-  HtmlElement get root => null;
-
-  /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
    */
   void _setTabIndex(int index) {
-    root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
       element.tabIndex = index;
     });
   }
@@ -102,4 +112,6 @@ abstract class Widget {
       _blur();
     }
   }
+
+  UIModel get ui;
 }

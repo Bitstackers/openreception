@@ -1,7 +1,7 @@
 part of controller;
 
 /**
- *
+ * TODO (TL): Comment
  */
 class Place {
   String contextId = null;
@@ -15,7 +15,7 @@ class Place {
 }
 
 /**
- *
+ * TODO (TL): Comment
  */
 class Navigate {
   static final Navigate _singleton = new Navigate._internal();
@@ -26,16 +26,16 @@ class Navigate {
   }
 
   final Bus<Place>          _bus           = new Bus<Place>();
+
+  /// TODO (TL): Feels ugly having this map here. Maybe allow widgets to
+  /// register themselves? Seems more explicit that way. Hmmm..
   final Map<String, String> _defaultWidget =
-    {'context-calendar-edit': 'calendar-edit-foo',
+    {'context-calendar-edit': 'calendar-editor',
      'context-home'         : 'reception-calendar',
      'context-homeplus'     : 'reception-alt-names',
      'context-messages'     : 'message-archive-filter'};
   final Map<String, String> _widgetHistory = {};
 
-  /**
-   *
-   */
   void go(Place place) {
     if(place.widgetId == null) {
       if(_widgetHistory.containsKey(place.contextId)) {
@@ -50,15 +50,13 @@ class Navigate {
     _bus.fire(place);
   }
 
-  /**
-   *
-   */
   void goWindowLocation() {
     String hash = window.location.hash.substring(1);
 
     if(hash.isEmpty) {
       goHome();
     } else {
+      /// TODO (TL): This is really not very robust.
       final List<String> segments  = hash.split('.');
       final String       contextId = segments.first;
       final String       widgetId  = segments.last;
@@ -67,22 +65,13 @@ class Navigate {
     }
   }
 
-  /**
-   * A bunch of convenience Navigate.go calls.
-   */
   void goCalendarEdit() {go(new Place('context-calendar-edit', null));}
   void goHome() {go(new Place('context-home', null));}
   void goHomeplus() {go(new Place('context-homeplus', null));}
   void goMessages() {go(new Place('context-messages', null));}
 
-  /**
-   *
-   */
   Stream<Place> get onGo => _bus.stream;
 
-  /**
-   *
-   */
   void _registerEventListeners() {
     window.onPopState.listen((_) => goWindowLocation());
   }

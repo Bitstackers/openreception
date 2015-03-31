@@ -51,16 +51,15 @@ part 'model-transfer-request.dart';
 part 'model-user.dart';
 part 'model-user-status.dart';
 
-part 'model-dom-agent-info.dart';
-part 'model-dom-calendar-editor.dart';
-part 'model-dom-contact-calendar.dart';
-part 'model-dom-contact-list.dart';
-part 'model-dom-contexts.dart';
-part 'model-dom-message-compose.dart';
-part 'model-dom-reception-calendar.dart';
-part 'model-dom-reception-commands.dart';
-
-const String libraryName = "model";
+part 'model-ui-agent-info.dart';
+part 'model-ui-calendar-editor.dart';
+part 'model-ui-contact-calendar.dart';
+part 'model-ui-contact-data.dart';
+part 'model-ui-contact-list.dart';
+part 'model-ui-contexts.dart';
+part 'model-ui-message-compose.dart';
+part 'model-ui-reception-calendar.dart';
+part 'model-ui-reception-commands.dart';
 
 
 
@@ -71,3 +70,19 @@ abstract class DomModel {
    */
   HtmlElement get root => null;
 }
+
+abstract class UIModel {
+  HtmlElement get firstTabElement;
+  HtmlElement get focusElement;
+  HtmlElement get lastTabElement;
+  HtmlElement get root;
+
+  set firstTabElement(HtmlElement element);
+  set focusElement   (HtmlElement element);
+  set lastTabElement (HtmlElement element);
+}
+
+enum AgentState {BUSY, IDLE, PAUSE, UNKNOWN}
+enum AlertState {OFF, ON}
+
+const String libraryName = "model";

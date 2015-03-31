@@ -1,43 +1,52 @@
 import 'dart:html';
 
-import 'controller/controller.dart';
-import 'model/model.dart';
-import 'view/view.dart' as View;
+import 'controller/controller.dart' as Controller;
+import 'model/model.dart' as Model;
+import 'view/view.dart';
 
 void main() {
-  DomContexts domContexts = new DomContexts();
-  View.Contexts    contexts    = new View.Contexts(domContexts);
+  Contexts contexts = new Contexts(new Model.UIContexts());
 
-  Place placeAgentInto         = new Place('context-home', 'agent-info');
-  Place placeContactCalendar   = new Place('context-home', 'contact-calendar');
-  Place placeContactList       = new Place('context-home', 'contact-list');
-  Place placeMessageCompose    = new Place('context-home', 'message-compose');
-  Place placeReceptionCalendar = new Place('context-home', 'reception-calendar');
-  Place placeReceptionCommands = new Place('context-home', 'reception-commands');
+  AgentInfo agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
 
-  DomAgentInfo         domAgentInfo         = new DomAgentInfo(querySelector('#agent-info'));
-  DomContactCalendar   domContactCalendar   = new DomContactCalendar(querySelector('#contact-calendar'));
-  DomContactList       domContactList       = new DomContactList(querySelector('#contact-list'));
-  DomMessageCompose    domMessageCompose    = new DomMessageCompose(querySelector('#message-compose'));
-  DomReceptionCalendar domReceptionCalendar = new DomReceptionCalendar(querySelector('#reception-calendar'));
-  DomReceptionCommands domReceptionCommands = new DomReceptionCommands(querySelector('#reception-commands'));
+  CalendarEditor calendarEditor =
+      new CalendarEditor (new Model.UICalendarEditor(querySelector('#calendar-editor')),
+                          new Controller.Place('context-calendar-edit', 'calendar-editor'));
 
-  View.AgentInfo         agentInfo         = new View.AgentInfo(domAgentInfo);
-  View. ContactCalendar   contactCalendar  = new View.ContactCalendar(domContactCalendar, placeContactCalendar);
-  View.ContactList       contactList       = new View.ContactList(domContactList, placeContactList);
-  View.MessageCompose    messageCompose    = new View.MessageCompose(domMessageCompose, placeMessageCompose);
-  View.ReceptionCalendar receptionCalendar = new View.ReceptionCalendar(domReceptionCalendar, placeReceptionCalendar);
-  View.ReceptionCommands receptionCommands = new View.ReceptionCommands(domReceptionCommands, placeReceptionCommands);
+  ContactCalendar contactCalendar =
+      new ContactCalendar(new Model.UIContactCalendar(querySelector('#contact-calendar')),
+                          new Controller.Place('context-home', 'contact-calendar'));
 
-  View.ContactData           contactData           = new View.ContactData();
-  View.GlobalCallQueue       globalCallQueue       = new View.GlobalCallQueue();
-  View.MyCallQueue           myCallQueue           = new View.MyCallQueue();
-  View.ReceptionOpeningHours receptionOpeningHours = new View.ReceptionOpeningHours();
-  View.ReceptionProduct      receptionProduct      = new View.ReceptionProduct();
-  View.ReceptionSalesCalls   receptionSalesCalls   = new View.ReceptionSalesCalls();
-  View.ReceptionSelector     receptionSelector     = new View.ReceptionSelector();
-  View.WelcomeMessage        welcomeMessage        = new View.WelcomeMessage();
-  Navigate              navigate              = new Navigate();
+  ContactData contactData =
+      new ContactData(new Model.UIContactData(querySelector('#contact-data')),
+                      new Controller.Place('context-home', 'contact-data'));
+
+  ContactList contactList =
+      new ContactList(new Model.UIContactList(querySelector('#contact-list')),
+                      new Controller.Place('context-home', 'contact-list'));
+
+  MessageCompose messageCompose =
+      new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
+                         new Controller.Place('context-home', 'message-compose'));
+
+  ReceptionCalendar receptionCalendar =
+      new ReceptionCalendar(new Model.UIReceptionCalendar(querySelector('#reception-calendar')),
+                            new Controller.Place('context-home', 'reception-calendar'));
+
+  ReceptionCommands receptionCommands =
+      new ReceptionCommands(new Model.UIReceptionCommands(querySelector('#reception-commands')),
+                            new Controller.Place('context-home', 'reception-commands'));
+
+
+
+  GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();
+  MyCallQueue           myCallQueue           = new MyCallQueue();
+  ReceptionOpeningHours receptionOpeningHours = new ReceptionOpeningHours();
+  ReceptionProduct      receptionProduct      = new ReceptionProduct();
+  ReceptionSalesCalls   receptionSalesCalls   = new ReceptionSalesCalls();
+  ReceptionSelector     receptionSelector     = new ReceptionSelector();
+  WelcomeMessage        welcomeMessage        = new WelcomeMessage();
+  Controller.Navigate   navigate              = new Controller.Navigate();
 
   if(window.location.hash.isEmpty) {
     navigate.goHome();

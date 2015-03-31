@@ -1,120 +1,69 @@
 part of view;
 
 class CalendarEditor extends Widget {
-  HtmlElement           _firstTabElement;
-  HtmlElement           _focusOnMe;
-  HtmlElement           _lastTabElement;
-  static CalendarEditor _singleton;
-  DomCalendarEditor     _dom;
+  Place                 _myPlace;
+  UICalendarEditor      _ui;
 
-  factory CalendarEditor(DomCalendarEditor ui) {
-    if(_singleton == null) {
-      _singleton = new CalendarEditor._internal(ui);
-    }
-
-    return _singleton;
-  }
-
-  CalendarEditor._internal(DomCalendarEditor this._dom) {
-    _focusOnMe       = _dom.textArea;
-    _firstTabElement = _dom.textArea;
-    _lastTabElement  = _dom.cancelButton;
+  CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
+    _ui.focusElement    = _ui.textAreaElement;
+    _ui.firstTabElement = _ui.textAreaElement;
+    _ui.lastTabElement  = _ui.cancelButtonElement;
 
     _registerEventListeners();
   }
 
-  /**
-   *
-   */
-  void activate(String data) {
-    _active = true;
-    _setTabIndex(1);
-//    _setVisible();
-    _dom.header.text = data;
+  void _cancel(_) {
+    /// TODO (TL):
+    /// Clear form.
+    /// Set focusElement to default.
+    /// Navigate away (history.back perhaps??)
+    print('view.CalendarEditor._cancel not fully implemented');
   }
 
-  /**
-   *
-   */
-  void _cancel() {
-    _active = false;
-    _setTabIndex(-1);
-//    _setHidden();
-    print('view-calendar-editor.cancel() not implemented');
-  }
-
-  /**
-   *
-   */
-  void _delete() {
-//    _setHidden();
-    print('view-calendar-editor.delete() not implemented');
+  void _delete(_) {
+    /// TODO (TL):
+    /// Delete calendar entry.
+    /// Call _cancel().
+    print('view.CalendarEditor._delete not fully implemented');
   }
 
   @override
-  HtmlElement get focusElement => _dom.textArea;
+  Place get myPlace => _myPlace;
 
-  /**
-   * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
-   * Shift+Tab keyboard event is captured.
-   */
-  void _handleShiftTab(KeyboardEvent event) {
-    if(_active && _focusOnMe == _firstTabElement) {
-      print('editor ${_focusOnMe.hashCode}');
-      event.preventDefault();
-      _lastTabElement.focus();
-    }
-  }
-
-  /**
-     * Focus on [_firstTabElement] when [_lastTabElement] is in focus and a Tab
-     * keyboard event is captured.
-     */
-  void _handleTab(KeyboardEvent event) {
-    if(_active && _focusOnMe == _lastTabElement) {
-      print('editor ${_focusOnMe.hashCode}');
-      event.preventDefault();
-      _firstTabElement.focus();
-    }
-  }
-
-  /**
-   *
-   */
   void _registerEventListeners() {
+    _navigate.onGo.listen(_setWidgetState);
+
     _hotKeys.onTab     .listen(_handleTab);
     _hotKeys.onShiftTab.listen(_handleShiftTab);
 
     /// Enables focused element memory for this widget.
-    _dom.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    _ui.tabElements.forEach((HtmlElement element) {
       element.onFocus.listen(_setFocusOnMe);
     });
 
-    _dom.startHour.onInput  .listen((_) => _sanitizeInput(_dom.startHour));
-    _dom.startMinute.onInput.listen((_) => _sanitizeInput(_dom.startMinute));
-    _dom.startDay.onInput   .listen((_) => _sanitizeInput(_dom.startDay));
-    _dom.startMonth.onInput .listen((_) => _sanitizeInput(_dom.startMonth));
-    _dom.startYear.onInput  .listen((_) => _sanitizeInput(_dom.startYear));
-    _dom.stopHour.onInput   .listen((_) => _sanitizeInput(_dom.stopHour));
-    _dom.stopMinute.onInput .listen((_) => _sanitizeInput(_dom.stopMinute));
-    _dom.stopDay.onInput    .listen((_) => _sanitizeInput(_dom.stopDay));
-    _dom.stopMonth.onInput  .listen((_) => _sanitizeInput(_dom.stopMonth));
-    _dom.stopYear.onInput   .listen((_) => _sanitizeInput(_dom.stopYear));
+    _ui.textAreaElement.onInput   .listen((_) => _toggleButtons());
+    _ui.startHourElement.onInput  .listen((_) => _sanitizeInput(_ui.startHourElement));
+    _ui.startMinuteElement.onInput.listen((_) => _sanitizeInput(_ui.startMinuteElement));
+    _ui.startDayElement.onInput   .listen((_) => _sanitizeInput(_ui.startDayElement));
+    _ui.startMonthElement.onInput .listen((_) => _sanitizeInput(_ui.startMonthElement));
+    _ui.startYearElement.onInput  .listen((_) => _sanitizeInput(_ui.startYearElement));
+    _ui.stopHourElement.onInput   .listen((_) => _sanitizeInput(_ui.stopHourElement));
+    _ui.stopMinuteElement.onInput .listen((_) => _sanitizeInput(_ui.stopMinuteElement));
+    _ui.stopDayElement.onInput    .listen((_) => _sanitizeInput(_ui.stopDayElement));
+    _ui.stopMonthElement.onInput  .listen((_) => _sanitizeInput(_ui.stopMonthElement));
+    _ui.stopYearElement.onInput   .listen((_) => _sanitizeInput(_ui.stopYearElement));
 
-    _dom.cancelButton.onClick.listen((_) => _cancel());
-    _dom.deleteButton.onClick.listen((_) => _delete());
-    _dom.saveButton.onClick  .listen((_) => _save());
+    _ui.cancelButtonElement.onClick.listen(_cancel);
+    _ui.deleteButtonElement.onClick.listen(_delete);
+    _ui.saveButtonElement  .onClick.listen(_save);
   }
-
-  @override
-  HtmlElement get root => _dom.root;
 
   /**
    * Enables focus memory for this widget, so we can blur the widget and come
    * back and have the same field focused as when we left.
    */
   void _setFocusOnMe(Event event) {
-    _focusOnMe = (event.target as HtmlElement);
+    _ui.focusElement = (event.target as HtmlElement);
   }
 
   /**
@@ -128,50 +77,36 @@ class CalendarEditor extends Widget {
     }
 
     _toggleButtons();
-//    TODO (TL): Possibly do something with over-/underflow?
-//    if(input.validity.rangeOverflow) {
-//
-//    }
-//
-//    if(input.validity.rangeUnderflow) {
-//
-//    }
   }
 
-  /**
-   *
-   */
-  void _save() {
-//    _setHidden();
-    print('view-calendar-editor.save() not implemented');
+  void _save(_) {
+    /// TODO (TL):
+    /// Validate input data
+    /// Save calendar entry.
+    /// Call _cancel().
+    print('view.CalendarEditor._save not fully implemented');
   }
-
-  /**
-   *
-   */
-//  void _setHidden() {
-//    _ui.root.hidden = true;
-//    _ui.textArea.focus();
-//  }
-
-  /**
-   *
-   */
-//  void _setVisible() {
-//    _ui.root.hidden = false;
-//    _ui.textArea.focus();
-//  }
 
   /**
    * Enable/disable the widget buttons and as a sideeffect set the value of
-   * [_lastTabElement] as this depends on the state of the buttons.
+   * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    bool toggle = _dom.root.querySelectorAll('input').any((InputElement element) => element.value.isEmpty);
+    bool toggle = _validInput();
 
-    _dom.deleteButton.disabled = toggle;
-    _dom.saveButton.disabled   = toggle;
+    _ui.deleteButtonElement.disabled = !toggle;
+    _ui.saveButtonElement.disabled   = !toggle;
 
-    _lastTabElement = toggle ? _dom.cancelButton : _dom.saveButton;
+    _ui.lastTabElement = toggle ? _ui.saveButtonElement : _ui.cancelButtonElement;
   }
+
+  /**
+   * Return true when all input fields and the textarea contain data.
+   */
+  bool _validInput() =>
+      !_ui.inputElements.any((InputElement element) => element.value.isEmpty) &&
+          _ui.textAreaElement.value.isNotEmpty;
+
+  @override
+  UIModel get ui => _ui;
 }

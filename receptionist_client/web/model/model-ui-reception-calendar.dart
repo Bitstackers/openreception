@@ -1,9 +1,9 @@
 part of model;
 
-class DomReceptionCalendar extends DomModel {
+class UIReceptionCalendar extends UIModel {
   final DivElement _root;
 
-  DomReceptionCalendar(DivElement this._root);
+  UIReceptionCalendar(DivElement this._root);
 
   UListElement get eventList => _root.querySelector('ul');
 
