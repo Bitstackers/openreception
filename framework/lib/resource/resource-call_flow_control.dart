@@ -17,6 +17,14 @@ abstract class CallFlowControl {
     => Uri.parse('${host}/userstate/${userID}');
 
   /**
+   * Builds a Uri to retrieve a list of userstatus resources.
+   * The output format is:
+   *    http://hostname/userstate
+   */
+  static Uri userStatusList(Uri host)
+    => Uri.parse('${host}/userstate');
+
+  /**
    * Builds a Uri to update a userstatus resource associated with a user.
    * The [newState] parameter must be a valid [UserState].
    * The output format is:

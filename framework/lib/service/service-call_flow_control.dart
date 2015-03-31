@@ -23,6 +23,27 @@ class CallFlowControl {
         => JSON.decode(response));
 
   /**
+   * Returns an Iterable representation of the all the [Model.UserStatus]
+   * objects currently known to the CallFlowControl server as maps.
+   */
+  Future<Iterable<Map>> userStatusListMaps() {
+    Uri uri = Resource.CallFlowControl.userStatusList(this._host);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.get (uri).then(JSON.decode);
+  }
+
+  /**
+   * Returns an Iterable representation of the all the [Model.UserStatus]
+   * objects currently known to the CallFlowControl server.
+   */
+  Future<Iterable<Model.UserStatus>> userStatusList() =>
+    this.userStatusListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map ((Map map) =>
+          new Model.UserStatus.fromMap(map)));
+
+  /**
    * Updates the [Model.UserStatus] object associated
    * with [userID] to state idle.
    * The update is conditioned by the server and phone state and may throw
@@ -34,6 +55,20 @@ class CallFlowControl {
            (this._host, userID, Model.UserState.Idle), this._token), '')
       .then((String response)
         => JSON.decode(response));
+
+  /**
+   * Updates the [Model.UserStatus] object associated
+   * with [userID] to state paused.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
+  Future<Map> userStatePausedMap(int userID) {
+    Uri uri = Resource.CallFlowControl.userState
+        (this._host, userID, Model.UserState.Paused);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.post(uri, '').then(JSON.decode);
+  }
 
   /**
    * Updates the [Model.UserStatus] object associated
@@ -70,11 +105,20 @@ class CallFlowControl {
    * Picks up the call identified by [callID].
    */
   Future<Model.Call> pickup (String callID) =>
-      this._backed.post
-        (appendToken(Resource.CallFlowControl.pickup
-           (this._host, callID), this._token),'')
-      .then((String response)
-        => new Model.Call.fromMap (JSON.decode(response)));
+    this.pickupMap(callID).then ((Map callMap)
+        => new Model.Call.fromMap (callMap));
+
+  /**
+   * Picks up the call identified by [callID].
+   * Returns a Map representation of the Call object.
+   */
+  Future<Map> pickupMap (String callID) {
+    Uri uri = Resource.CallFlowControl.pickup (this._host, callID);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.post (uri,'').then(JSON.decode);
+  }
+
 
   /**
    * Originate a new call via the server.
@@ -114,13 +158,21 @@ class CallFlowControl {
    * Retrives the current Call list.
    */
   Future<Iterable<Model.Call>> callList() =>
-      this._backed.get
-        (appendToken
-           (Resource.CallFlowControl.list(this._host),this._token))
-      .then((String response)
-        => (JSON.decode(response) as List).map
-          ((Map map) => new Model.Call.fromMap(map)));
+      this.callListMaps()
+        .then((Iterable<Map> callMaps) =>
+          callMaps.map ((Map map) =>
+            new Model.Call.fromMap(map)));
 
+  /**
+   * Retrives the current Call list as maps
+   */
+  Future<Iterable<Map>> callListMaps() {
+    Uri uri = Resource.CallFlowControl.list(this._host);
+        uri = appendToken (uri, this._token);
+
+    return this._backed.get (uri).then((String response)
+        => (JSON.decode(response)));
+  }
   /**
    * Retrives the current Peer list.
    */
