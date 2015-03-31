@@ -32,7 +32,6 @@ Logger log = new Logger('state');
 class State {
   bool _immutable         = false;
   int  _config            = _UNKNOWN;
-  int  _logger            = _UNKNOWN;
   bool _scheduledShutdown = false;
   int  _websocket         = _UNKNOWN;
 
@@ -51,7 +50,6 @@ class State {
       new State()
       .._immutable = true
       .._config    = _config
-      .._logger    = _logger
       .._websocket = _websocket;
 
 
@@ -84,10 +82,10 @@ class State {
    */
   int _getOverallState() {
     if (!_scheduledShutdown) {
-      if (_config == _OK && _logger == _OK && _websocket == _OK) {
+      if (_config == _OK && _websocket == _OK) {
         return _OK;
 
-      } else if (_config == _ERROR || _logger == _ERROR || _websocket == _ERROR) {
+      } else if (_config == _ERROR || _websocket == _ERROR) {
         return _ERROR;
 
       } else {
@@ -96,24 +94,6 @@ class State {
     } else {
       return _OK;
     }
-  }
-
-  void loggerError() {
-    if (_immutable) {
-      throw new Exception('loggerError not allowed. Bobstate is immutable');
-    }
-
-    _logger = _ERROR;
-    _update();
-  }
-
-  void loggerOK() {
-    if (_immutable) {
-      throw new Exception('loggerOK not allowed. Bobstate is immutable');
-    }
-
-    _logger = _OK;
-    _update();
   }
 
   /**
@@ -129,7 +109,7 @@ class State {
   }
 
   String toString() {
-    return 'BobState configuration: ${_config} websocket: ${_websocket} logger: ${_logger} overall: ${_getOverallState()}';
+    return 'BobState configuration: ${_config} websocket: ${_websocket} overall: ${_getOverallState()}';
   }
 
   /**
