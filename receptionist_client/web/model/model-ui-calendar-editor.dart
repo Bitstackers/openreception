@@ -8,18 +8,19 @@ class UICalendarEditor extends UIModel {
 
   UICalendarEditor(DivElement this._root);
 
+  @override HtmlElement get firstTabElement => _firstTabElement;
+  @override HtmlElement get focusElement    => _focusElement;
+  @override HtmlElement get lastTabElement  => _lastTabElement;
+  @override HtmlElement get root            => _root;
+
+  @override set firstTabElement(HtmlElement element) => _firstTabElement = element;
+  @override set focusElement   (HtmlElement element) => _focusElement    = element;
+  @override set lastTabElement (HtmlElement element) => _lastTabElement  = element;
+
   ButtonElement        get cancelButtonElement => _root.querySelector('.cancel');
   ButtonElement        get deleteButtonElement => _root.querySelector('.delete');
-  @override
-  HtmlElement          get firstTabElement     => _firstTabElement;
-  @override
-  HtmlElement          get focusElement        => _focusElement;
   HeadingElement       get headerElement       => _root.querySelector('h4');
   ElementList<Element> get inputElements       => _root.querySelectorAll('input');
-  @override
-  HtmlElement          get lastTabElement      => _lastTabElement;
-  @override
-  HtmlElement          get root                => _root;
   ButtonElement        get saveButtonElement   => _root.querySelector('.save');
   InputElement         get startHourElement    => _root.querySelector('.start-hour');
   InputElement         get startMinuteElement  => _root.querySelector('.start-minute');
@@ -33,11 +34,4 @@ class UICalendarEditor extends UIModel {
   InputElement         get stopYearElement     => _root.querySelector('.stop-year');
   ElementList<Element> get tabElements         => _root.querySelectorAll('[tabindex]');
   TextAreaElement      get textAreaElement     => _root.querySelector('textarea');
-
-  @override
-  set firstTabElement(HtmlElement element) => _firstTabElement = element;
-  @override
-  set focusElement   (HtmlElement element) => _focusElement    = element;
-  @override
-  set lastTabElement (HtmlElement element) => _lastTabElement  = element;
 }

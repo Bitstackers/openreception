@@ -21,21 +21,21 @@ void main() {
       new ContactData(new UIContactData(querySelector('#contact-data')),
                       new Place('context-home', 'contact-data'));
 
-  ContactList contactList =
-      new ContactList(new UIContactList(querySelector('#contact-list')),
-                      new Place('context-home', 'contact-list'));
-
-  MessageCompose messageCompose =
-      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
-                         new Place('context-home', 'message-compose'));
-
-  ReceptionCalendar receptionCalendar =
-      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
-                            new Place('context-home', 'reception-calendar'));
-
-  ReceptionCommands receptionCommands =
-      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
-                            new Place('context-home', 'reception-commands'));
+//  ContactList contactList =
+//      new ContactList(new UIContactList(querySelector('#contact-list')),
+//                      new Place('context-home', 'contact-list'));
+//
+//  MessageCompose messageCompose =
+//      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
+//                         new Place('context-home', 'message-compose'));
+//
+//  ReceptionCalendar receptionCalendar =
+//      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
+//                            new Place('context-home', 'reception-calendar'));
+//
+//  ReceptionCommands receptionCommands =
+//      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
+//                            new Place('context-home', 'reception-commands'));
 
 
 

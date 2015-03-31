@@ -11,15 +11,13 @@ class ReceptionCommands extends Widget {
     _registerEventListeners();
   }
 
+  @override HtmlElement get root => _dom.root;
+  @override HtmlElement get focusElement => _dom.commandList;
+  @override Place get myPlace => _myPlace;
+
   void _activateMe(_) {
     _navigateToMyPlace();
   }
-
-  @override
-  HtmlElement get focusElement => _dom.commandList;
-
-  @override
-  Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
@@ -28,7 +26,4 @@ class ReceptionCommands extends Widget {
 
     _hotKeys.onAltH .listen(_activateMe);
   }
-
-  @override
-  HtmlElement get root => _dom.root;
 }

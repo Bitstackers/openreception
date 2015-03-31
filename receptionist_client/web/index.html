@@ -56,7 +56,7 @@
           #calendar-editor widget
 
           Role:
-            Provides a widget to create/edit/delete calendar events for contacts
+            Provides a widget to create/edit/delete calendar entries for contacts
             and receptions.
 
           Visibility:
@@ -97,18 +97,18 @@
               padding: 0.3em;
             }
 
-            #calendar-editor .event-start,
-            #calendar-editor .event-stop {
+            #calendar-editor .entry-start,
+            #calendar-editor .entry-stop {
               align-items: center;
               justify-content: center;
             }
 
-            #calendar-editor .event-buttons {
+            #calendar-editor .entry-buttons {
               align-items: center;
               justify-content: center;
             }
 
-            #calendar-editor .event-buttons button {
+            #calendar-editor .entry-buttons button {
               height: 2em;
               width: 5em;
               margin-left: 1em;
@@ -136,26 +136,26 @@
 
           <div class="spinning-box"></div>
 
-          <h4 class="generic-widget-headline">::create/edit/delete calendar event::</h4>
+          <h4 class="generic-widget-headline">::create/edit/delete calendar entry::</h4>
           <div class="generic-widget-body padding03">
-            <div class="event-message">
+            <div class="entry-message">
               <textarea class="padding03" tabindex="-1"></textarea>
             </div>
-            <div class="event-start">
+            <div class="entry-start">
               <span>::start::</span><input class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
               <input class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
               <input class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
               <input class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
-            <div class="event-stop">
+            <div class="entry-stop">
               <span>::stop::</span><input class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
               <input class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
               <input class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
               <input class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
-            <div class="event-buttons">
+            <div class="entry-buttons">
               <button class="cancel" tabindex="-1">::cancel::</button>
               <button class="delete" disabled tabindex="-1">::delete::</button>
               <button class="save" disabled tabindex="-1">::save::</button>
@@ -649,7 +649,7 @@
                 #reception-calendar widget
 
                 Role:
-                  Show calendar events for a reception.
+                  Show calendar entries for a reception.
 
                 Visibility:
                   Is controlled by the visibility of #context-home.
@@ -673,9 +673,9 @@
                 <h4 class="generic-widget-headline">Reception Calendar</h4>
                 <ul class="generic-widget-body generic-widget-list zebra" tabindex="-1">
                   <li><a href="#context-home.reception-commands">Link til reception-commands</a></li>
-                  <li>Some other event</li>
-                  <li>Some event</li>
-                  <li>Some other event</li>
+                  <li>Some other entry</li>
+                  <li>Some entry</li>
+                  <li>Some other entry</li>
                 </ul>
               </div>
 
@@ -1001,7 +1001,7 @@
                   #contact-calendar widget
 
                   Role:
-                    Show calendar events for a contact.
+                    Show calendar entries for a contact.
 
                   Visibility:
                     Is controlled by the visibility of #context-home.
@@ -1020,10 +1020,10 @@
 
                   <h4 class="generic-widget-headline">Contact Calendar</h4>
                   <ul class="generic-widget-body generic-widget-list zebra">
-                    <li>Some event</li>
-                    <li>Some other event</li>
-                    <li>Some event</li>
-                    <li>Some other event</li>
+                    <li>Some entry</li>
+                    <li>Some other entry</li>
+                    <li>Some entry</li>
+                    <li>Some other entry</li>
                   </ul>
                 </div>
 

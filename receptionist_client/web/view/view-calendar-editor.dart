@@ -12,6 +12,9 @@ class CalendarEditor extends Widget {
     _registerEventListeners();
   }
 
+  @override Place   get myPlace => _myPlace;
+  @override UIModel get ui      => _ui;
+
   void _cancel(_) {
     /// TODO (TL):
     /// Clear form.
@@ -27,10 +30,12 @@ class CalendarEditor extends Widget {
     print('view.CalendarEditor._delete not fully implemented');
   }
 
-  @override
-  Place get myPlace => _myPlace;
-
   void _registerEventListeners() {
+    /// TODO (TL): On navigation to this widget:
+    /// Figure out whether I got started from contact or reception calendar.
+    /// Figure out whether this is a new calendar entry or an edit?
+    /// If new: Add "now" data to the widget.
+    /// If edit: Add data from the calendar entry to the widget.
     _navigate.onGo.listen(_setWidgetState);
 
     _hotKeys.onTab     .listen(_handleTab);
@@ -106,7 +111,4 @@ class CalendarEditor extends Widget {
   bool _validInput() =>
       !_ui.inputElements.any((InputElement element) => element.value.isEmpty) &&
           _ui.textAreaElement.value.isNotEmpty;
-
-  @override
-  UIModel get ui => _ui;
 }

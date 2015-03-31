@@ -13,8 +13,8 @@ class AgentInfo extends Widget {
     _registerEventListeners();
   }
 
-  @override
-  Place get myPlace => null;
+  @override Place   get myPlace => null;
+  @override UIModel get ui      => _ui;
 
   void _registerEventListeners() {
     /// TODO (TL): Add relevant listeners
@@ -35,7 +35,4 @@ class AgentInfo extends Widget {
   void _updatePausedCount(int pausedCount) {
     _ui.pausedCount = pausedCount;
   }
-
-  @override
-  UIModel get ui => _ui;
 }

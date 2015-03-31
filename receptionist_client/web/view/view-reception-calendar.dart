@@ -12,15 +12,13 @@ class ReceptionCalendar extends Widget {
     _registerEventListeners();
   }
 
+  @override HtmlElement get focusElement => _dom.eventList;
+  @override Place get myPlace => _myPlace;
+  @override HtmlElement get root => _dom.root;
+
   void _activateMe(_) {
     _navigateToMyPlace();
   }
-
-  @override
-  HtmlElement get focusElement => _dom.eventList;
-
-  @override
-  Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
@@ -32,7 +30,4 @@ class ReceptionCalendar extends Widget {
     // TODO (TL): temporary stuff
     _dom.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
   }
-
-  @override
-  HtmlElement get root => _dom.root;
 }
