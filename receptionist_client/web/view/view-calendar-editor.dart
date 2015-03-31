@@ -1,16 +1,19 @@
 part of view;
 
 class CalendarEditor extends Widget {
-  Place                  _myPlace;
-  Model.UICalendarEditor _ui;
+  Place                 _myPlace;
+  UICalendarEditor      _ui;
 
-  CalendarEditor(Model.UICalendarEditor this._ui, this._myPlace) {
+  CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
     _ui.focusElement    = _ui.textAreaElement;
     _ui.firstTabElement = _ui.textAreaElement;
     _ui.lastTabElement  = _ui.cancelButtonElement;
 
     _registerEventListeners();
   }
+
+  @override Place   get myPlace => _myPlace;
+  @override UIModel get ui      => _ui;
 
   void _cancel(_) {
     /// TODO (TL):
@@ -27,10 +30,12 @@ class CalendarEditor extends Widget {
     print('view.CalendarEditor._delete not fully implemented');
   }
 
-  @override
-  Place get myPlace => _myPlace;
-
   void _registerEventListeners() {
+    /// TODO (TL): On navigation to this widget:
+    /// Figure out whether I got started from contact or reception calendar.
+    /// Figure out whether this is a new calendar entry or an edit?
+    /// If new: Add "now" data to the widget.
+    /// If edit: Add data from the calendar entry to the widget.
     _navigate.onGo.listen(_setWidgetState);
 
     _hotKeys.onTab     .listen(_handleTab);
@@ -106,7 +111,4 @@ class CalendarEditor extends Widget {
   bool _validInput() =>
       !_ui.inputElements.any((InputElement element) => element.value.isEmpty) &&
           _ui.textAreaElement.value.isNotEmpty;
-
-  @override
-  Model.UIModel get ui => _ui;
 }

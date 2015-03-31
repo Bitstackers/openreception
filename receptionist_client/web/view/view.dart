@@ -34,45 +34,39 @@ final Navigate _navigate = new Navigate();
 
 abstract class Widget {
   /// TODO (TL): Perhaps move this to DOM?
-  bool _active = false;
+//  bool _active = false;
+
+//  void _blur() {
+//    _active = false;
+//    ui.root.classes.toggle('focus', false);
+//    ui.focusElement.blur();
+//    _setTabIndex(-1);
+//  }
+
+//  void _focus() {
+//    _active = true;
+//    ui.root.classes.toggle('focus', true);
+//    ui.focusElement.focus();
+//    _setTabIndex(1);
+//  }
 
   /**
-   * Blur the widget.
-   */
-  void _blur() {
-    _active = false;
-    ui.root.classes.toggle('focus', false);
-    ui.focusElement.blur();
-    _setTabIndex(-1);
-  }
-
-  /**
-   * Focus the widget.
-   */
-  void _focus() {
-    _active = true;
-    ui.root.classes.toggle('focus', true);
-    ui.focusElement.focus();
-    _setTabIndex(1);
-  }
-
-  /**
-   * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
+   * Focus on ui.lastTabElement when ui.firstTabElement is in focus and a
    * Shift+Tab keyboard event is captured.
    */
   void _handleShiftTab(KeyboardEvent event) {
-    if(_active && ui.focusElement == ui.firstTabElement) {
+    if(ui.active && ui.focusElement == ui.firstTabElement) {
       event.preventDefault();
       ui.lastTabElement.focus();
     }
   }
 
   /**
-     * Focus on [_firstTabElement] when [_lastTabElement] is in focus and a Tab
+     * Focus on ui.firstTabElement when ui.lastTabElement is in focus and a Tab
      * keyboard event is captured.
      */
   void _handleTab(KeyboardEvent event) {
-    if(_active && ui.focusElement == ui.lastTabElement) {
+    if(ui.active && ui.focusElement == ui.lastTabElement) {
       event.preventDefault();
       ui.firstTabElement.focus();
     }
@@ -88,7 +82,7 @@ abstract class Widget {
    * Navigate to [myPlace] if widget is not already in focus.
    */
   void _navigateToMyPlace() {
-    if(!_active) {
+    if(!ui.active) {
       _navigate.go(myPlace);
     }
   }
@@ -96,20 +90,20 @@ abstract class Widget {
   /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
    */
-  void _setTabIndex(int index) {
-    ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
-      element.tabIndex = index;
-    });
-  }
+//  void _setTabIndex(int index) {
+//    ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+//      element.tabIndex = index;
+//    });
+//  }
 
   /**
    * Figure out if [place] is here and set focus and tabindexes accordingly.
    */
   void _setWidgetState(Place place) {
     if(myPlace == place) {
-      _focus();
+      ui.focus();
     } else {
-      _blur();
+      ui.blur();
     }
   }
 

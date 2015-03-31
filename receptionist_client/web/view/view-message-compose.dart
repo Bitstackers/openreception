@@ -18,6 +18,10 @@ class MessageCompose extends Widget {
     _registerEventListeners();
   }
 
+  @override Place get myPlace => _myPlace;
+  @override HtmlElement get focusElement => _focusOnMe;
+  @override HtmlElement get root => _dom.root;
+
   void _activateMe(_) {
     _navigateToMyPlace();
   }
@@ -25,9 +29,6 @@ class MessageCompose extends Widget {
   void _buttonCancelHandler() {
     /// TODO (TL): Stub
   }
-
-  @override
-  HtmlElement get focusElement => _focusOnMe;
 
   /**
    * Focus on [_lastTabElement] when [_firstTabElement] is in focus and a
@@ -50,9 +51,6 @@ class MessageCompose extends Widget {
       _firstTabElement.focus();
     }
   }
-
-  @override
-  Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
@@ -78,9 +76,6 @@ class MessageCompose extends Widget {
     _dom.saveButton  .onClick.listen(null);
     _dom.sendButton  .onClick.listen(null);
   }
-
-  @override
-  HtmlElement get root => _dom.root;
 
   /**
    * Enables focus memory for this widget, so we can blur the widget and come

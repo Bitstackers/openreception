@@ -2,25 +2,23 @@ part of view;
 
 class ReceptionCalendar extends Widget {
   Place                _myPlace;
-  Model.UIReceptionCalendar _dom;
+  UIReceptionCalendar _dom;
 
   /**
    * [root] is the parent element of the widget, and [_myPlace] is the [Place]
    * object that this widget reacts on when Navigate.go fires.
    */
-  ReceptionCalendar(Model.UIReceptionCalendar this._dom, Place this._myPlace) {
+  ReceptionCalendar(UIReceptionCalendar this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
+
+  @override HtmlElement get focusElement => _dom.eventList;
+  @override Place get myPlace => _myPlace;
+  @override HtmlElement get root => _dom.root;
 
   void _activateMe(_) {
     _navigateToMyPlace();
   }
-
-  @override
-  HtmlElement get focusElement => _dom.eventList;
-
-  @override
-  Place get myPlace => _myPlace;
 
   void _registerEventListeners() {
     _navigate.onGo.listen(_setWidgetState);
@@ -32,10 +30,4 @@ class ReceptionCalendar extends Widget {
     // TODO (TL): temporary stuff
     _dom.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
   }
-
-  @override
-  HtmlElement get root => _dom.root;
-
-  @override
-  Model.UIModel get ui => _dom;
 }

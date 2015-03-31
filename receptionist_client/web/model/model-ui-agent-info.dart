@@ -5,12 +5,20 @@ class UIAgentInfo extends UIModel {
 
   UIAgentInfo(DivElement this._root);
 
+  @override HtmlElement get firstTabElement => null;
+  @override HtmlElement get lastTabElement  => null;
+  @override HtmlElement get focusElement    => _root;
+  @override HtmlElement get root            => _root;
+
+  @override set firstTabElement(_) => null;
+  @override set focusElement(_)    => null;
+  @override set lastTabElement(_)  => null;
+
   TableCellElement get activeCountElement => _root.querySelector('.active-count');
   ImageElement     get agentStateElement  => _root.querySelector('.agent-state');
   ImageElement     get alertStateElement  => _root.querySelector('.alert-state');
   TableCellElement get pausedCountElement => _root.querySelector('.paused-count');
   ImageElement     get portraitElement    => _root.querySelector('.portrait');
-  HtmlElement      get rootElement        => _root;
 
   set activeCount (int value) => activeCountElement.text = value.toString();
 

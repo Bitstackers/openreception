@@ -2,18 +2,18 @@ part of view;
 
 class ContactCalendar extends Widget {
   Place              _myPlace;
-  Model.UIContactCalendar _ui;
+  UIContactCalendar _ui;
 
-  ContactCalendar(Model.UIModel this._ui, Place this._myPlace) {
+  ContactCalendar(UIModel this._ui, Place this._myPlace) {
     _registerEventListeners();
   }
+
+  @override Place   get myPlace => _myPlace;
+  @override UIModel get ui      => _ui;
 
   void _activateMe(_) {
     _navigateToMyPlace();
   }
-
-  @override
-  Place get myPlace => _myPlace;
 
   /**
    *
@@ -26,9 +26,6 @@ class ContactCalendar extends Widget {
     _hotKeys.onAltK.listen(_activateMe);
 
     // TODO (TL): temporary stuff
-    _ui.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
+    _ui.entryList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
   }
-
-  @override
-  Model.UIModel get ui => _ui;
 }

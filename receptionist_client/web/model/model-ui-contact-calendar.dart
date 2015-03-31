@@ -5,8 +5,14 @@ class UIContactCalendar extends UIModel {
 
   UIContactCalendar(DivElement this._root);
 
-  UListElement get eventList => _root.querySelector('ul');
+  @override HtmlElement get firstTabElement => null;
+  @override HtmlElement get lastTabElement  => null;
+  @override HtmlElement get focusElement    => entryList;
+  @override HtmlElement get root            => _root;
 
-  @override
-  HtmlElement get root => _root;
+  @override set firstTabElement(_) => null;
+  @override set focusElement(_)    => null;
+  @override set lastTabElement(_)  => null;
+
+  UListElement get entryList => _root.querySelector('ul');
 }
