@@ -25,7 +25,7 @@ import '../classes/logger.dart';
 import '../classes/service-notification.dart' as Service;
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as storage;
-import 'package:event_bus/event_bus.dart';
+//import 'package:event_bus/event_bus.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
@@ -34,7 +34,6 @@ part 'model-call-list.dart';
 part 'model-contact.dart';
 part 'model-contact-calendar.dart';
 part 'model-contact-list.dart';
-part 'model-extension.dart';
 part 'model-message.dart';
 part 'model-message-filter.dart';
 part 'model-message-list.dart';
