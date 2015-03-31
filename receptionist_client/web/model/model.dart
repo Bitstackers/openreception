@@ -31,8 +31,8 @@ import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'model-call.dart';
 part 'model-call-list.dart';
-part 'model-calendar-event.dart';
 part 'model-contact.dart';
+part 'model-contact-calendar.dart';
 part 'model-contact-list.dart';
 part 'model-extension.dart';
 part 'model-message.dart';
@@ -45,6 +45,7 @@ part 'model-peer.dart';
 part 'model-peer-list.dart';
 part 'model-phone-number.dart';
 part 'model-reception.dart';
+part 'model-reception-calendar.dart';
 part 'model-recipient.dart';
 part 'model-transfer-request.dart';
 part 'model-user.dart';

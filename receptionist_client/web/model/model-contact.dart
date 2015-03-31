@@ -41,7 +41,7 @@ class Contact extends ORModel.Contact implements Comparable{
     return storage.Contact.list(receptionID);
   }
 
-  Future<List<CalendarEvent>> calendarEventList() {
+  Future<List<ContactCalendarEntry>> calendarEventList() {
     return storage.Contact.calendar(this.ID, this.receptionID);
   }
 

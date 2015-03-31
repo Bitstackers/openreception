@@ -44,8 +44,6 @@ class Message extends ORModel.Message {
 
   static Set<int> selectedMessages = new Set<int>();
 
-  static final EventType<Message> stateChange = new EventType<Message>();
-
   void clearRecipients() => this.recipients.recipients.clear();
 
   Message.fromMap(Map map) : super.fromMap(map);
