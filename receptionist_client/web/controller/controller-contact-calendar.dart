@@ -2,7 +2,7 @@ part of controller;
 
 abstract class ContactCalendar {
 
-  Logger log = new Logger('$libraryName.ContactCalendar');
+  static final Logger log = new Logger('$libraryName.ContactCalendar');
 
   /**
    * Creates or updates a calendar entry object associated with a contact.

@@ -1,33 +1,10 @@
 part of controller;
 
 abstract class Call {
-  static const String className = '${libraryName}.Call';
+  static final Logger log = new Logger ('${libraryName}.Call');
 
   static void dialSelectedContact() {
     event.bus.fire(event.dialSelectedContact, null);
-  }
-
-  static void dial(Model.Extension extension, Model.Reception reception, [Model.Contact contact]) {
-
-    const String context = '${className}.dial';
-
-    if (Model.Call.currentCall.isActive) {
-      Model.Call.currentCall.park();
-    }
-
-    event.bus.fire(event.originateCallRequest, extension.dialString);
-
-    if (!extension.valid || extension == null) {
-      log.errorContext("Trying to dial an invalid extension!", context);
-      event.bus.fire(event.originateCallRequestFailure, null);
-      return;
-    }
-
-    Service.Call.originate((contact == null ? Model.Contact.noContact : contact).ID, reception.ID, extension.dialString).then((_) {
-      event.bus.fire(event.originateCallRequestSuccess, null);
-    }).catchError((error) {
-      event.bus.fire(event.originateCallRequestFailure, null);
-    });
   }
 
   static void completeTransfer(Model.TransferRequest request, Model.Call destination) {
@@ -42,7 +19,7 @@ abstract class Call {
    */
   static void pickupSpecific(Model.Call call) {
     if (call == Model.nullCall) {
-      log.debug('Discarding request to pickup a null call.');
+      log.info('Discarding request to pickup a null call.');
       return;
     }
 
@@ -80,7 +57,7 @@ abstract class Call {
 
   static void hangup(Model.Call call) {
     if (call == Model.nullCall) {
-      log.debug('Discarding request to hangup null call.');
+      log.info('Discarding request to hangup null call.');
       return;
     }
 
@@ -95,7 +72,7 @@ abstract class Call {
 
   static void park(Model.Call call) {
     if (call == Model.nullCall) {
-      log.debug('Discarding request to park null call.');
+      log.info('Discarding request to park null call.');
       return;
     }
 
@@ -110,7 +87,7 @@ abstract class Call {
 
   static void transfer(Model.Call source, Model.Call destination) {
     if ([source, destination].contains(Model.nullCall)) {
-      log.debug('Discarding request to transfer null call (either source or destination is not valid.');
+      log.info('Discarding request to transfer null call (either source or destination is not valid.');
       return;
     }
 

@@ -2,7 +2,7 @@ part of controller;
 
 abstract class ReceptionCalendar {
 
-  Logger log = new Logger('$libraryName.ReceptionCalendar');
+  static final Logger log = new Logger('$libraryName.ReceptionCalendar');
 
   /**
    * Creates or updates a calendar entry object associated with a reception.

@@ -19,7 +19,6 @@ import 'package:openreception_framework/model.dart' as ORModel;
 import '../classes/context.dart' as UIContext;
 import '../classes/events.dart' as event;
 import '../classes/location.dart' as nav;
-import '../classes/logger.dart';
 import '../model/model.dart' as Model;
 import '../service/service.dart' as Service;
 
@@ -27,7 +26,6 @@ part 'controller-call.dart';
 part 'controller-contact.dart';
 part 'controller-contact-calendar.dart';
 part 'controller-context.dart';
-part 'controller-extension.dart';
 part 'controller-hotkeys.dart';
 part 'controller-navigation.dart';
 part 'controller-reception.dart';
