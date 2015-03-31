@@ -15,9 +15,7 @@ part of service;
 
 abstract class Peer {
 
-  static ORService.CallFlowControl _service = null;
-
   /// Peers are located at the CallFlowControl service, so just
   /// forward the request.
-  static ORService.CallFlowControl get service => Call.service;
+  static Call get instance => Call.instance;
 }
