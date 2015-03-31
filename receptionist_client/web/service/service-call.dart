@@ -15,9 +15,7 @@ part of service;
 
 class Call {
 
-  static const className = '${libraryName}.Call';
-
-  static ORService.CallFlowControl _service = null;
+  ORService.CallFlowControl _service = null;
 
   static Call _instance;
 
@@ -82,5 +80,22 @@ class Call {
   Future<Model.UserStatus> markUserStatePaused(int userID) =>
       _service.userStatePausedMap(userID)
         .then((Map map) => new Model.UserStatus.fromMap(map));
+
+  Future originate
+    (Model.Contact contact, Model.Reception reception, String extension) =>
+      _service.originate(extension, contact.ID, reception.ID);
+
+  Future<Model.Call> pickup (Model.Call call) =>
+      _service.pickupMap (call.ID).then((Map callMap) =>
+          new Model.Call.fromMap(callMap));
+
+  Future hangup (Model.Call call) =>
+      _service.hangup(call.ID);
+
+  Future park (Model.Call call) =>
+      _service.park(call.ID);
+
+  Future transfer (Model.Call source, Model.Call destination) =>
+      _service.transfer(source.ID, destination.ID);
 }
 

@@ -100,8 +100,7 @@ class ContactData {
       //TODO: Check if the phone number is confidential, and add the appropriate LI class.
       number.children.add(new ButtonElement()
           ..text = item['value']
-          ..classes = ['pure-button', 'phonenumber']
-          ..onClick.listen((_) => Controller.Extension.change (new model.Extension (item['value']))));
+          ..classes = ['pure-button', 'phonenumber']);
 
       telephoneNumberList.children.add(number);
 

@@ -36,7 +36,7 @@ class User {
    * the Service.Call.markUserStateIdle Future.
    */
   void _setIdle() {
-    Service.Call.markUserStateIdle(Model.User.currentUser.ID).then(_idle.fire);
+    Service.Call.instance.markUserStateIdle(Model.User.currentUser.ID).then(_idle.fire);
   }
 
   /**
@@ -46,6 +46,6 @@ class User {
    * the Service.Call.markUserStatePaused Future.
    */
   void _setPaused() {
-    Service.Call.markUserStatePaused(Model.User.currentUser.ID).then(_paused.fire);
+    Service.Call.instance.markUserStatePaused(Model.User.currentUser.ID).then(_paused.fire);
   }
 }

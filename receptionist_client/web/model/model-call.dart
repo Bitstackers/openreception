@@ -211,7 +211,7 @@ class Call extends ORModel.Call implements Comparable {
       return;
     }
 
-    Controller.Call.pickupSpecific(this);
+    Controller.Call.pickup(this);
 
   }
 
