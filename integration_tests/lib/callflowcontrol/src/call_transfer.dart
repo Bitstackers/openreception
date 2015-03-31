@@ -30,11 +30,11 @@ abstract class Transfer {
              log.info ('Receptionist ${receptionist} got call $receivedCall');
           }))
         .then((_) => receptionist.waitForInboundCall())
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup))
         .then((_) => receptionist.eventStack.clear())
         .then((_) => log.info ('Receptionist ${receptionist.user.name} parks call $inboundCall.'))
         .then((_) => receptionist.park (inboundCall))
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPark, callID: inboundCall.ID))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPark, callID: inboundCall.ID))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => receptionist.originate(callee.extension, contactID, receptionID)
           .then((Model.Call call) {
@@ -42,8 +42,8 @@ abstract class Transfer {
           }))
         .then((_) => callee.waitForInboundCall())
         .then((_) => callee.pickupCall())
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup)
-            .then((Model.CallPickup event) {
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup)
+            .then((Event.CallPickup event) {
               outboundCall = event.call;
               log.info('Receptionist ${receptionist} picked up outbound call: $outboundCall');
               expect(outboundCall.receptionID, equals(receptionID));
@@ -52,7 +52,7 @@ abstract class Transfer {
         .then((_) => log.info ('Receptionist ${receptionist.user.name} transfers call $outboundCall to $inboundCall.'))
         .then((_) => receptionist.transferCall(inboundCall, outboundCall))
         .then((_) => log.info ('Receptionist ${receptionist.user.name} transferred call $outboundCall to $inboundCall.'))
-        .then((_) => receptionist.waitFor(eventType : Model.EventJSONKey.callTransfer))
+        .then((_) => receptionist.waitFor(eventType : Event.Key.callTransfer))
         .then((_) => log.info ('Waiting for receptionist ${receptionist.user.name}\'s phone to hang up'))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => log.info ('Caller ${caller} hangs up'))
@@ -92,11 +92,11 @@ abstract class Transfer {
              log.info ('Receptionist ${receptionist} got call $receivedCall');
           }))
         .then((_) => receptionist.waitForInboundCall())
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup))
         .then((_) => receptionist.eventStack.clear())
         .then((_) => log.info ('Receptionist ${receptionist.user.name} parks call $inboundCall.'))
         .then((_) => receptionist.park (inboundCall))
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPark, callID: inboundCall.ID))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPark, callID: inboundCall.ID))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => receptionist.eventStack.clear())
         .then((_) => receptionist.originate(callee.extension, contactID, receptionID)
@@ -105,8 +105,8 @@ abstract class Transfer {
           }))
         .then((_) => callee.waitForInboundCall())
         .then((_) => callee.pickupCall())
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup)
-            .then((Model.CallPickup event) {
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup)
+            .then((Event.CallPickup event) {
               outboundCall = event.call;
               log.info('Receptionist ${receptionist} picked up outbound call: $outboundCall');
               expect(outboundCall.receptionID, equals(receptionID));
@@ -114,7 +114,7 @@ abstract class Transfer {
             }))
         .then((_) => log.info ('Receptionist ${receptionist.user.name} parks call $outboundCall.'))
         .then((_) => receptionist.park (outboundCall))
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPark, callID: outboundCall.ID))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPark, callID: outboundCall.ID))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => receptionist.eventStack.clear())
         .then((_) => log.info ('Receptionist ${receptionist.user.name} pickup the inbound call $inboundCall again'))
@@ -125,12 +125,12 @@ abstract class Transfer {
              return;
           }))
         .then((_) => receptionist.waitForInboundCall())
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup))
         .then((_) => receptionist.eventStack.clear())
         .then((_) => log.info ('Receptionist ${receptionist.user.name} transfers call $inboundCall to $outboundCall.'))
         .then((_) => receptionist.transferCall(outboundCall, inboundCall))
         .then((_) => log.info ('Receptionist ${receptionist.user.name} transferred call $inboundCall to $outboundCall.'))
-        .then((_) => receptionist.waitFor(eventType : Model.EventJSONKey.callTransfer))
+        .then((_) => receptionist.waitFor(eventType : Event.Key.callTransfer))
         .then((_) => log.info ('Waiting for receptionist ${receptionist.user.name}\'s phone to hang up'))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => log.info ('Caller ${caller} hangs up'))

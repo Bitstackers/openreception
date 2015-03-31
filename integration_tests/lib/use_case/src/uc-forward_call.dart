@@ -135,7 +135,7 @@ abstract class ForwardCall {
 
   static Future Receptionist_Waits_For_Hang_Up() {
     step("Receptionist waits for hangs up...");
-    return receptionist.waitFor(eventType: Model.EventJSONKey.callHangup);
+    return receptionist.waitFor(eventType: Event.Key.callHangup);
   }
 
   static Future<Model.Call> Receptionist_Receives_Call() {
@@ -161,7 +161,7 @@ abstract class ForwardCall {
     log.finest("Waiting for 'call_pickup' event...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
+        eventType: Event.Key.callPickup).then((Event.CallPickup event) {
 
       //TODO More checking.
       log.finest(
@@ -171,7 +171,7 @@ abstract class ForwardCall {
       log.finest("Waiting for the 'call_transfer' event...");
 
       return receptionist.waitFor(
-          eventType: Model.EventJSONKey.callTransfer).then((_) {
+          eventType: Event.Key.callTransfer).then((_) {
         log.finest("Receptionist has forwarded call.");
       });
     });
@@ -212,9 +212,9 @@ abstract class ForwardCall {
     }
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callOffer).timeout(
+        eventType: Event.Key.callOffer).timeout(
             new Duration(seconds: 3),
-            onTimeout: timeoutHandler).then((Model.CallOffer event) {
+            onTimeout: timeoutHandler).then((Event.CallOffer event) {
       return event.call;
     });
   }
@@ -223,13 +223,13 @@ abstract class ForwardCall {
     step("Call-Flow-Control sends out 'call_lock'...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callLock).timeout(
+        eventType: Event.Key.callLock).timeout(
             new Duration(seconds: 3),
             onTimeout: () {
       log.severe("No 'call_lock' event arrived from Call-Flow-Control.");
       receptionist.dumpEventStack();
       throw new AssertionError();
-    }).then((Model.CallLock event) {
+    }).then((Event.CallLock event) {
       return event.call;
     });
   }
@@ -238,13 +238,13 @@ abstract class ForwardCall {
     step("Call-Flow-Control sends out 'call_unlock'...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callUnlock).timeout(
+        eventType: Event.Key.callUnlock).timeout(
             new Duration(seconds: 3),
             onTimeout: () {
       log.severe("No 'call_unlock' event arrived from Call-Flow-Control.");
       receptionist.dumpEventStack();
       throw new AssertionError();
-    }).then((Model.CallLock event) {
+    }).then((Event.CallLock event) {
       return event.call;
     });
   }
@@ -270,7 +270,7 @@ abstract class ForwardCall {
     step("Receptionist's client waits for 'call_pickup'...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
+        eventType: Event.Key.callPickup).then((Event.CallPickup event) {
       if (event.call.assignedTo == receptionist.user.ID) {
         fail(
             'The arrived pickup event was for ${event.call.assignedTo},'

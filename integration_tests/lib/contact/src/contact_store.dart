@@ -108,7 +108,7 @@ abstract class ContactStore {
    * a given contact.
    *
    * The expected behaviour is that the server should return a list of
-   * CalendarEvent objects.
+   * CalendarEntry objects.
    */
   static void existingContactCalendar (Storage.Contact contactStore) {
     int receptionID = 1;
@@ -123,23 +123,23 @@ abstract class ContactStore {
    * Test server behaviour when trying to create a new calendar event object.
    *
    * The expected behaviour is that the server should return the created
-   * CalendarEvent object.
+   * CalendarEntry object.
    */
-  static Future calendarEventCreate (Storage.Contact contactStore) {
+  static Future calendarEntryCreate (Storage.Contact contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
 
-    Model.CalendarEvent event =
-        new Model.CalendarEvent.forContact(contactID, receptionID)
+    Model.CalendarEntry event =
+        new Model.CalendarEntry.forContact(contactID, receptionID)
          ..beginsAt    = new DateTime.now()
          ..until       = new DateTime.now().add(new Duration(hours: 2))
          ..content     = Randomizer.randomEvent();
 
     log.info('Creating a calendar event for contact $contactID@$receptionID.');
 
-    return contactStore.calendarEventCreate (event)
-        .then((Model.CalendarEvent createdEvent) {
+    return contactStore.calendarEventCreate(event)
+        .then((Model.CalendarEntry createdEvent) {
           expect(event.content, equals(createdEvent.content));
 
           // We round to the nearest second, and have to compensate for skew.
@@ -158,18 +158,18 @@ abstract class ContactStore {
    * exists.
    *
    * The expected behaviour is that the server should return the updated
-   * CalendarEvent object.
+   * CalendarEntry object.
    */
-  static Future calendarEventUpdate (Storage.Contact contactStore) {
+  static Future calendarEntryUpdate (Storage.Contact contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEvent> events) {
+      .then((List <Model.CalendarEntry> events) {
 
       // Update the last event in list.
-      Model.CalendarEvent event = events.last
+      Model.CalendarEntry event = events.last
           ..beginsAt    = new DateTime.now()
           ..until       = new DateTime.now().add(new Duration(hours: 2))
           ..content     = Randomizer.randomEvent();
@@ -180,8 +180,8 @@ abstract class ContactStore {
       log.info
         ('Updating a calendar event for contact $contactID@$receptionID.');
 
-      return contactStore.calendarEventUpdate (event)
-          .then((Model.CalendarEvent updatedEvent) {
+      return contactStore.calendarEventRemove(event)
+          .then((Model.CalendarEntry updatedEvent) {
             expect(event.content, equals(updatedEvent.content));
             expect(event.ID, equals(updatedEvent.ID));
 
@@ -201,9 +201,9 @@ abstract class ContactStore {
    * exists.
    *
    * The expected behaviour is that the server should return the
-   * CalendarEvent object.
+   * CalendarEntry object.
    */
-  static Future calendarEventExisting (Storage.Contact contactStore) {
+  static Future calendarEntryExisting (Storage.Contact contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -212,14 +212,14 @@ abstract class ContactStore {
 
     log.info('Listing all events');
     return contactStore.calendar(contactID, receptionID)
-        .then ((List<Model.CalendarEvent> events) {
+        .then ((List<Model.CalendarEntry> events) {
       log.info('Selecting last event in list');
       int eventID = events.last.ID;
 
       log.info('Selected ${events.last.asMap}, fetching it');
 
       return contactStore.calendarEvent(receptionID, contactID , eventID)
-        .then((Model.CalendarEvent receivedEvent) {
+        .then((Model.CalendarEntry receivedEvent) {
         log.info('Received ${receivedEvent}');
           expect (receivedEvent.ID, equals(eventID));
       });
@@ -232,7 +232,7 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static void calendarEventNonExisting (Storage.Contact contactStore) {
+  static void calendarEntryNonExisting (Storage.Contact contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -250,16 +250,16 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future calendarEventDelete (Storage.Contact contactStore) {
+  static Future calendarEntryDelete (Storage.Contact contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEvent> events) {
+      .then((List <Model.CalendarEntry> events) {
 
       // Update the last event in list.
-      Model.CalendarEvent event = events.last;
+      Model.CalendarEntry event = events.last;
 
       log.info
         ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');

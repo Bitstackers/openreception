@@ -42,15 +42,15 @@ runContactTests () {
     test ('Calendar event listing',
         () => ContactStore.existingContactCalendar(contactStore));
     test ('Calendar event creation',
-        () => ContactStore.calendarEventCreate(contactStore));
+        () => ContactStore.calendarEntryCreate(contactStore));
     test ('Calendar event update',
-        () => ContactStore.calendarEventUpdate(contactStore));
+        () => ContactStore.calendarEntryUpdate(contactStore));
     test ('Calendar event',
-        () => ContactStore.calendarEventExisting(contactStore));
+        () => ContactStore.calendarEntryExisting(contactStore));
     test ('Calendar event (non-existing)',
-        () => ContactStore.calendarEventNonExisting(contactStore));
+        () => ContactStore.calendarEntryNonExisting(contactStore));
     test ('Calendar event removal',
-        () => ContactStore.calendarEventDelete(contactStore));
+        () => ContactStore.calendarEntryDelete(contactStore));
 
   });
 }

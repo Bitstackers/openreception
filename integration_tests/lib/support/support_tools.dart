@@ -9,6 +9,8 @@ class SupportTools {
   static SupportTools _instance = null;
   Completer _ready = new Completer();
 
+  static SupportTools fig = _instance;
+
   static Future<SupportTools> get instance {
     if (_instance == null) {
       SupportTools testFramework = new SupportTools();
@@ -22,6 +24,10 @@ class SupportTools {
     } else {
       return _instance._ready.future.then((_) => _instance);
     }
+  }
+
+  void outputState() {
+    log.shout('Receptionists: ${ReceptionistPool.instance.busy.length}/${ReceptionistPool.instance.available.length}, Customers: ${CustomerPool.instance.busy.length}/${CustomerPool.instance.available.length}');
   }
 
   /// Maps token to a User object.

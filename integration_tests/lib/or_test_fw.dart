@@ -10,6 +10,7 @@ import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Transport;
 import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception_framework/event.dart' as Event;
 import 'package:openreception_framework/resource.dart' as Resource;
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';

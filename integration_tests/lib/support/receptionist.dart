@@ -19,7 +19,7 @@ class Receptionist {
   Transport.Client _transport = null;
 
   Completer readyCompleter = new Completer();
-  Queue<Model.Event> eventStack = new Queue<Model.Event>();
+  Queue<Event.Event> eventStack = new Queue<Event.Event>();
 
   Phonio.Call currentCall = null;
 
@@ -148,10 +148,10 @@ class Receptionist {
 
     if (waitForEvent) {
       return parkAction.then((_)
-          => this.waitFor(eventType : Model.EventJSONKey.callPark,
+          => this.waitFor(eventType : Event.Key.callPark,
                           callID    : call.ID,
                           timeoutSeconds: 2))
-            .then((Model.CallPark parkEvent) => parkEvent.call);
+            .then((Event.CallPark parkEvent) => parkEvent.call);
     } else {
       return parkAction;
     }
@@ -221,7 +221,7 @@ class Receptionist {
    * [extension], [receptionID], or a combination of them. The method will
    * wait for, at most, [timeoutSeconds] before returning a Future error.
    */
-  Future<Model.Event> waitFor({String eventType: null, String callID: null,
+  Future<Event.Event> waitFor({String eventType: null, String callID: null,
                                String extension: null, int receptionID: null,
                                int timeoutSeconds: 10}) {
     if (eventType == null && callID == null && extension == null &&
@@ -231,27 +231,27 @@ class Receptionist {
     }
 
 
-    bool matches (Model.Event event) {
+    bool matches (Event.Event event) {
       bool result = false;
       if (eventType != null) {
         result = event.eventName == eventType;
       }
 
-      if (callID != null && event is Model.CallEvent) {
+      if (callID != null && event is Event.CallEvent) {
         result = result && event.call.ID == callID;
       }
 
-      if (extension != null && event is Model.CallEvent) {
+      if (extension != null && event is Event.CallEvent) {
         result = result && event.call.destination == extension;
       }
 
-      if (receptionID != null && event is Model.CallEvent) {
+      if (receptionID != null && event is Event.CallEvent) {
         result = result && event.call.receptionID == receptionID;
       }
       return result;
     }
 
-    Model.Event lookup = (this.eventStack.firstWhere(matches,
+    Event.Event lookup = (this.eventStack.firstWhere(matches,
         orElse: () => null));
 
     if (lookup != null) {
@@ -283,9 +283,9 @@ class Receptionist {
 
     if (waitForEvent) {
       return pickupAction.then((_)
-          => this.waitFor(eventType : Model.EventJSONKey.callPickup,
+          => this.waitFor(eventType : Event.Key.callPickup,
                           callID    : call.ID))
-            .then((Model.CallPickup pickupEvent) => pickupEvent.call);
+            .then((Event.CallPickup pickupEvent) => pickupEvent.call);
     } else {
       return pickupAction;
     }
@@ -302,11 +302,11 @@ class Receptionist {
     Future<Model.Call> pickupAfterCallUnlock () {
       log.info('Call not aquired. $this expects the call to be locked.');
 
-      return this.waitFor (eventType: Model.EventJSONKey.callLock,
+      return this.waitFor (eventType: Event.Key.callLock,
                            callID: selectedCall.ID,
                            timeoutSeconds: 10)
           .then((_) => log.info('Call $selectedCall was locked, waiting for unlock.'))
-          .then((_) => this.waitFor (eventType: Model.EventJSONKey.callUnlock,
+          .then((_) => this.waitFor (eventType: Event.Key.callUnlock,
                                      callID: selectedCall.ID))
           .then((_) => log.info('Call $selectedCall got unlocked, picking it up'))
           .then((_) => this.pickup(selectedCall,waitForEvent: true));
@@ -333,14 +333,14 @@ class Receptionist {
    * receptionist.
    */
   Future<Model.Call> waitForCall() =>
-    this.waitFor(eventType: Model.EventJSONKey.callOffer)
-      .then((Model.CallOffer offered) => offered.call);
+    this.waitFor(eventType: Event.Key.callOffer)
+      .then((Event.CallOffer offered) => offered.call);
 
   /**
    * Event handler for events coming from the notification server.
    * Merely pushes events onto a stack.
    */
-  void _handleEvent(Model.Event event) {
+  void _handleEvent(Event.Event event) {
     // Only push actual events to the event stack.
     if (event == null) {
       log.warning ('Null event received!');

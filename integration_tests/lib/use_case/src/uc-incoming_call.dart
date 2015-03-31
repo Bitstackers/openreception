@@ -54,12 +54,12 @@ abstract class IncomingCall {
    *
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Offer({String extension: null}) {
-    step('Receptionist\'s client waits for "${Model.EventJSONKey.callOffer}"');
+    step('Receptionist\'s client waits for "${Event.Key.callOffer}"');
 
-    return receptionist.waitFor(eventType: Model.EventJSONKey.callOffer, extension: extension)
+    return receptionist.waitFor(eventType: Event.Key.callOffer, extension: extension)
       .then((_) {
-      Model.CallOffer event = receptionist.eventStack.firstWhere(
-            (Model.Event offerEvent) => offerEvent is Model.CallOffer);
+      Event.CallOffer event = receptionist.eventStack.firstWhere(
+            (Event.Event offerEvent) => offerEvent is Event.CallOffer);
         return event.call;
       }) ;
   }
@@ -68,12 +68,12 @@ abstract class IncomingCall {
    * Simulates the receptionist client waiting for the call lock.
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Lock(Model.Call call) {
-    step('Receptionist\'s client waits for "${Model.EventJSONKey.callLock}"');
+    step('Receptionist\'s client waits for "${Event.Key.callLock}"');
 
-    return receptionist.waitFor(eventType: Model.EventJSONKey.callLock, callID: call.ID)
+    return receptionist.waitFor(eventType: Event.Key.callLock, callID: call.ID)
       .then((_) {
-      Model.CallLock event = receptionist.eventStack.firstWhere(
-            (Model.Event lockEvent) => lockEvent is Model.CallLock);
+      Event.CallLock event = receptionist.eventStack.firstWhere(
+            (Event.Event lockEvent) => lockEvent is Event.CallLock);
 
               return event.call;
       }) ;
@@ -83,12 +83,12 @@ abstract class IncomingCall {
    * Simulates the receptionist client waiting for the call to unlock.
    */
   static Future<Model.Call> Receptionist_Awaits_Call_Unlock(Model.Call call) {
-    step('Call-Flow-Control sends out "${Model.EventJSONKey.callUnlock}"...');
+    step('Call-Flow-Control sends out "${Event.Key.callUnlock}"...');
 
-    return receptionist.waitFor(eventType: Model.EventJSONKey.callUnlock, callID: call.ID)
+    return receptionist.waitFor(eventType: Event.Key.callUnlock, callID: call.ID)
       .then((_) {
-      Model.CallUnlock event = receptionist.eventStack.firstWhere(
-            (Model.Event lockEvent) => lockEvent is Model.CallUnlock);
+      Event.CallUnlock event = receptionist.eventStack.firstWhere(
+            (Event.Event lockEvent) => lockEvent is Event.CallUnlock);
 
               return event.call;
       }) ;
@@ -153,9 +153,9 @@ abstract class IncomingCall {
     }
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callOffer).timeout(
+        eventType: Event.Key.callOffer).timeout(
             new Duration(seconds: 3),
-            onTimeout: timeoutHandler).then((Model.CallOffer event) {
+            onTimeout: timeoutHandler).then((Event.CallOffer event) {
 
       inboundCall = event.call;
 
@@ -167,13 +167,13 @@ abstract class IncomingCall {
     step("Call-Flow-Control sends out 'call_lock'...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callLock).timeout(
+        eventType: Event.Key.callLock).timeout(
             new Duration(seconds: 3),
             onTimeout: () {
       log.severe("No 'call_lock' event arrived from Call-Flow-Control.");
       receptionist.dumpEventStack();
       throw new AssertionError();
-    }).then((Model.CallLock event) {
+    }).then((Event.CallLock event) {
       return event.call;
     });
   }
@@ -182,13 +182,13 @@ abstract class IncomingCall {
     step("Call-Flow-Control sends out 'call_unlock'...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callUnlock).timeout(
+        eventType: Event.Key.callUnlock).timeout(
             new Duration(seconds: 3),
             onTimeout: () {
       log.severe("No 'call_unlock' event arrived from Call-Flow-Control.");
       receptionist.dumpEventStack();
       throw new AssertionError();
-    }).then((Model.CallLock event) {
+    }).then((Event.CallLock event) {
       return event.call;
     });
   }
@@ -215,7 +215,7 @@ abstract class IncomingCall {
     step("Receptionist's client waits for 'call_pickup'...");
 
     return receptionist.waitFor(
-        eventType: Model.EventJSONKey.callPickup).then((Model.CallPickup event) {
+        eventType: Event.Key.callPickup).then((Event.CallPickup event) {
 
       expect (event.call.assignedTo, equals(receptionist.user.ID));
       inboundCall = event.call;

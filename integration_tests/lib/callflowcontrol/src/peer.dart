@@ -21,8 +21,8 @@ abstract class Peer {
       .then((_) => receptionist._phone.register())
       .then((_) => log.info ('Waiting for peer state event'))
       .then((_) =>
-          receptionist.waitFor(eventType: Model.EventJSONKey.peerState)
-          .then((Model.PeerState peerStateEvent) {
+          receptionist.waitFor(eventType: Event.Key.peerState)
+          .then((Event.PeerState peerStateEvent) {
             log.info ('Got event ${peerStateEvent.asMap}');
             expect (peerStateEvent.peer.registered, isTrue);
             expect (peerStateEvent.peer.ID, equals(peerName));
@@ -33,8 +33,8 @@ abstract class Peer {
       .then((_) => receptionist._phone.unregister())
       .then((_) => log.info ('Waiting for peer state event'))
       .then((_) =>
-          receptionist.waitFor(eventType: Model.EventJSONKey.peerState)
-          .then((Model.PeerState peerStateEvent) {
+          receptionist.waitFor(eventType: Event.Key.peerState)
+          .then((Event.PeerState peerStateEvent) {
             log.info ('Got event ${peerStateEvent.asMap}');
             expect (peerStateEvent.peer.registered, isFalse);
             expect (peerStateEvent.peer.ID, equals(peerName));

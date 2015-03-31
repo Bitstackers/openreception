@@ -26,7 +26,7 @@ abstract class FindContact {
 
   /**
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Finde-en-kontakt#variant-1-1
-   **/
+   */
 
   static Future find_contact_1() {
     return new Future(() {
@@ -45,7 +45,7 @@ abstract class FindContact {
 
   /**
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Finde-en-kontakt#variant-2-1
-   **/
+   */
 
   static Future find_contact_2() {
     return new Future(() {

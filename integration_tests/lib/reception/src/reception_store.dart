@@ -125,24 +125,24 @@ abstract class Reception_Store {
 
     int receptionID = 1;
 
-    Model.CalendarEvent event =
-        new Model.CalendarEvent.forReception(receptionID)
+    Model.CalendarEntry entry =
+        new Model.CalendarEntry.forReception(receptionID)
          ..beginsAt    = new DateTime.now()
          ..until       = new DateTime.now().add(new Duration(hours: 2))
          ..content     = Randomizer.randomEvent();
 
     log.info('Creating a calendar event for reception $receptionID.');
 
-    return receptionStore.calendarEventCreate (event)
-        .then((Model.CalendarEvent createdEvent) {
-          expect(event.content, equals(createdEvent.content));
+    return receptionStore.calendarEventCreate (entry)
+        .then((Model.CalendarEntry createdEvent) {
+          expect(entry.content, equals(createdEvent.content));
 
           // We round to the nearest second, and have to compensate for skew.
-          expect(event.startTime.difference(createdEvent.startTime),
+          expect(entry.startTime.difference(createdEvent.startTime),
               lessThan(new Duration(seconds : 1)));
-          expect(event.stopTime.difference(createdEvent.stopTime),
+          expect(entry.stopTime.difference(createdEvent.stopTime),
               lessThan(new Duration(seconds : 1)));
-          expect(event.receptionID, equals(createdEvent.receptionID));
+          expect(entry.receptionID, equals(createdEvent.receptionID));
 
     });
   }
@@ -159,10 +159,10 @@ abstract class Reception_Store {
     int receptionID = 1;
 
     return receptionStore.calendar(receptionID)
-      .then((List <Model.CalendarEvent> events) {
+      .then((List <Model.CalendarEntry> entries) {
 
       // Update the last event in list.
-      Model.CalendarEvent event = events.last
+      Model.CalendarEntry event = entries.last
           ..beginsAt    = new DateTime.now()
           ..until       = new DateTime.now().add(new Duration(hours: 2))
           ..content     = Randomizer.randomEvent();
@@ -170,7 +170,7 @@ abstract class Reception_Store {
       log.info('Updating a calendar event for reception $receptionID.');
 
       return receptionStore.calendarEventUpdate (event)
-          .then((Model.CalendarEvent updatedEvent) {
+          .then((Model.CalendarEntry updatedEvent) {
             expect(event.content, equals(updatedEvent.content));
             expect(event.ID, equals(updatedEvent.ID));
 
@@ -200,13 +200,13 @@ abstract class Reception_Store {
 
     log.info('Listing all events');
     return receptionStore.calendar(receptionID)
-        .then ((List<Model.CalendarEvent> events) {
+        .then ((List<Model.CalendarEntry> events) {
       log.info('Selecting last event in list');
       int eventID = events.last.ID;
 
       log.info('Fetching last event in list.');
       return receptionStore.calendarEvent(receptionID, eventID)
-        .then((Model.CalendarEvent receivedEvent) {
+        .then((Model.CalendarEntry receivedEvent) {
           expect (receivedEvent.ID, equals(eventID));
       });
     });
@@ -240,10 +240,10 @@ abstract class Reception_Store {
     int receptionID = 1;
 
     return receptionStore.calendar(receptionID)
-      .then((List <Model.CalendarEvent> events) {
+      .then((List <Model.CalendarEntry> events) {
 
       // Update the last event in list.
-      Model.CalendarEvent event = events.last;
+      Model.CalendarEntry event = events.last;
 
       log.info
         ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');

@@ -31,12 +31,12 @@ abstract class CallPark {
       .then((_) => receptionist.waitForPhoneHangup())
       .then((_) => log.info ('Receptionist expects call to unpark'))
       .then((_) => receptionist.waitFor(
-          eventType: Model.EventJSONKey.callUnpark,
+          eventType: Event.Key.callUnpark,
           callID: targetedCall.ID,
           timeoutSeconds: 1))
       .then((_) => log.info ('Receptionist expects call to hang up'))
       .then((_) => receptionist.waitFor(
-          eventType: Model.EventJSONKey.callHangup,
+          eventType: Event.Key.callHangup,
           callID: targetedCall.ID,
           timeoutSeconds: 1));
 
@@ -95,12 +95,12 @@ abstract class CallPark {
       .then((_) => receptionist.waitForPhoneHangup())
       .then((_) => log.info ('Receptionist expects call to unpark'))
       .then((_) => receptionist.waitFor(
-          eventType: Model.EventJSONKey.callUnpark,
+          eventType: Event.Key.callUnpark,
           callID: targetedCall.ID,
           timeoutSeconds: 1))
       .then((_) => log.info ('Receptionist expects call to hang up'))
       .then((_) => receptionist.waitFor(
-          eventType: Model.EventJSONKey.callHangup,
+          eventType: Event.Key.callHangup,
           callID: targetedCall.ID,
           timeoutSeconds: 1));
 

@@ -13,8 +13,8 @@ abstract class Originate {
     int receptionID = 1;
 
     return receptionist.originate(receptionNumber, contactID, receptionID)
-        .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callOffer)
-          .then((Model.CallOffer event) {
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callOffer)
+          .then((Event.CallOffer event) {
             //TODO: Assert that callerID is the correct one
             expect (event.call.inbound, isTrue);
     }));

@@ -37,9 +37,9 @@ abstract class Pickup {
     .then((_) => receptionist.waitForCall()
       .then((Model.Call call) => inboundCall = call))
     .then((_) => receptionist.pickup (inboundCall, waitForEvent: false))
-    .then((_) => receptionist.waitFor(eventType: Model.EventJSONKey.callPickup,
+    .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup,
                                       callID: inboundCall.ID)
-      .then((Model.CallPickup pickupEvent) {
+      .then((Event.CallPickup pickupEvent) {
         expect (pickupEvent.call.assignedTo, equals(receptionist.user.ID));
         expect (pickupEvent.call.state, equals(Model.CallState.Speaking));
     }));
