@@ -39,7 +39,7 @@ class ContactCalendar {
   List<Element>       get nuges          => this.element.querySelectorAll('.nudge');
   Element             get newEventWidget => this.element.querySelector('.${CssClass.contactCalendarEventCreate}');
   TextAreaElement     get newEventField  => this.element.querySelector('.${CssClass.contactCalendarEventCreateBody}');
-  List<InputElement>  get inputFields    => this.element.querySelectorAll('input');
+  ElementList<InputElement>  get inputFields    => this.element.querySelectorAll('input');
 
   InputElement    get eventIDField     => this.element.querySelector('.${CssClass.calendarEventId}');
   int             get eventID          => int.parse(this.eventIDField.value);

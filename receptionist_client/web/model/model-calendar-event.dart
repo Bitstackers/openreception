@@ -12,11 +12,14 @@
 */
 part of model;
 
-class CalendarEvent extends ORModel.CalendarEvent {
+class CalendarEvent extends ORModel.CalendarEntry {
 
-  static int get noID => ORModel.CalendarEvent.noID;
+  static int get noID => ORModel.CalendarEntry.noID;
 
-  CalendarEvent.fromMap(Map map, int receptionID, {int contactID : ORModel.CalendarEvent.noID}) : super.fromMap(map, receptionID, contactID : contactID);
+  CalendarEvent.fromMap(Map map, int receptionID,
+      {int contactID : ORModel.CalendarEntry.noID}) :
+         super.fromMap(map..addAll({'contact_id' : contactID,
+                                    'reception_id' : receptionID}));
 
   CalendarEvent.forReception(int receptionID) : super.forReception(receptionID);
 
@@ -75,7 +78,7 @@ class CalendarEvent extends ORModel.CalendarEvent {
 }
 
 
-Future saveCalendarEvent(ORModel.CalendarEvent event) {
+Future saveCalendarEvent(ORModel.CalendarEntry event) {
   /// Dispatch to the correct service.
   if (event.contactID != Contact.noContact.ID) {
     if (event.ID == Contact.noContact.ID) {
@@ -84,7 +87,7 @@ Future saveCalendarEvent(ORModel.CalendarEvent event) {
       return Service.Contact.store.calendarEventUpdate(event);
     }
   } else if (event.receptionID != Reception.noReception.ID) {
-    if (event.ID == ORModel.CalendarEvent.noID) {
+    if (event.ID == ORModel.CalendarEntry.noID) {
       return Service.Reception.store.calendarEventCreate(event);
     } else {
       return Service.Reception.store.calendarEventUpdate(event);
@@ -96,7 +99,7 @@ Future saveCalendarEvent(ORModel.CalendarEvent event) {
   }
 }
 
-Future deleteCalendarEvent(ORModel.CalendarEvent event) {
+Future deleteCalendarEvent(ORModel.CalendarEntry event) {
   /// Dispatch to the correct service.
   if (event.contactID != Contact.noContact.ID) {
     return Service.Contact.store.calendarEventRemove(event);
@@ -109,5 +112,5 @@ Future deleteCalendarEvent(ORModel.CalendarEvent event) {
   }
 }
 
-findEvent (List<ORModel.CalendarEvent> events, int eventID) =>
-   events.firstWhere((ORModel.CalendarEvent event) => event.ID == eventID);
+findEvent (List<ORModel.CalendarEntry> events, int eventID) =>
+   events.firstWhere((ORModel.CalendarEntry event) => event.ID == eventID);

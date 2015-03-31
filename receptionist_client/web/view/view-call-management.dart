@@ -29,8 +29,8 @@ class CallManagement {
   InputElement        get numberField  => this.element.querySelector('#call-originate-number-field');
   ButtonElement       get dialButton   => this.element.querySelector('button.dial');
   List<Element>       get nuges        => this.element.querySelectorAll('.nudge');
-  List<InputElement>  get inputFields  => this.element.querySelectorAll('input');
-  List<ButtonElement> get buttons      => this.element.querySelectorAll('button');
+  ElementList<InputElement>  get inputFields  => this.element.querySelectorAll('input');
+  ElementList<ButtonElement> get buttons      => this.element.querySelectorAll('button');
   Element             get header       => this.element.querySelector('legend');
 
   //TODO: Perform a more elaborate check for a valid extension.
