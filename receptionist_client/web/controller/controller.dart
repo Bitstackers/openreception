@@ -11,8 +11,10 @@ library controller;
 
 import 'dart:async';
 import 'dart:html';
+import 'package:logging/logging.dart';
 import 'package:okeyee/okeyee.dart';
 import 'package:openreception_framework/bus.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 import '../classes/context.dart' as UIContext;
 import '../classes/events.dart' as event;
@@ -23,12 +25,14 @@ import '../service/service.dart' as Service;
 
 part 'controller-call.dart';
 part 'controller-contact.dart';
+part 'controller-contact-calendar.dart';
 part 'controller-context.dart';
 part 'controller-extension.dart';
 part 'controller-hotkeys.dart';
 part 'controller-navigation.dart';
 part 'controller-reception.dart';
+part 'controller-reception-calendar.dart';
 part 'controller-user.dart';
 
-const String libraryName = 'controller';
+const String libraryName = 'Controller';
 
