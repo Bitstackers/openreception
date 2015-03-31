@@ -19,7 +19,7 @@ abstract class Reception {
   /* Local cache objects. */
   static List<Model.ReceptionStub> _receptionListCache  = [];
   static Map<int, Model.Reception> _receptionCache      = {};
-  static Map<int, List<Model.CalendarEvent>> _calendarCache = {};
+  static Map<int, List<Model.ContactCalendarEntry>> _calendarCache = {};
 
   /**
    * Removes the cached calendar.
@@ -102,10 +102,10 @@ abstract class Reception {
    * Retrives the [model.calendarList].
    *
    */
-  static Future<List<Model.CalendarEvent>> calendar(int receptionID) {
+  static Future<List<Model.ContactCalendarEntry>> calendar(int receptionID) {
     const String context = '${libraryName}.get';
 
-    final Completer completer = new Completer<List<Model.CalendarEvent>>();
+    final Completer completer = new Completer<List<Model.ContactCalendarEntry>>();
 
     if (_calendarCache.containsKey(receptionID)) {
       debugStorage("Loading calendar from cache.", context);
@@ -115,7 +115,7 @@ abstract class Reception {
 
       Service.Reception.store.calendarMap(receptionID).then((List<Map> eventList) {
         _calendarCache[receptionID] = eventList.map((Map eventMap)
-            => new Model.CalendarEvent.fromMap(eventMap, receptionID)).toList();
+            => new Model.ContactCalendarEntry.fromMap(eventMap)).toList();
         completer.complete(_calendarCache[receptionID]);
       }).catchError((error) {
         completer.completeError(error);

@@ -24,25 +24,32 @@ import 'config/configuration.dart';
 import 'classes/constants.dart';
 import 'classes/events.dart' as event;
 import 'classes/location.dart' as nav;
-import 'classes/logger.dart';
 import 'model/model.dart'     as Model;
 import 'service/service.dart' as Service;
-import 'classes/service-notification.dart';
 import 'classes/state.dart';
 import 'view.nonflex/view.dart' as View;
 
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
 BobActive bobActive;
 BobDisaster bobDiaster;
 BobLoading bobLoading;
 
+Logger log = new Logger('Main');
+
 void main() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen(print);
+
+
   new View.Notification();
 
   configuration.initialize().then((_) {
     if(handleToken()) {
-      notification.initialize();
+      Service.Notification.instance.connected()
+        .then((_) => log.info('Notification socket connected.'))
+        .then((_) => state.websocketOK());
     }
   });
 
@@ -60,7 +67,6 @@ void main() {
 
       nav.registerOnPopStateListeners();
       /// Reload the model.
-      Model.CallList.instance.reloadFromServer();
       Model.PeerList.instance.reloadFromServer().then(print);
     }
   });
@@ -83,11 +89,12 @@ bool handleToken() {
     //window.location.assign(finalUrl.toString());
     //Didn't work. try localStorage.
 
-    Service.Authentication.store.userOf(configuration.token).then((ORModel.User user) {
+    Service.Authentication.instance.userOf(configuration.token).then((Model.User user) {
         Model.User.currentUser = user;
 
     }).catchError((error, stackTrace) {
-      log.error('Failed to load user. $error : $stackTrace');
+      log.severe('Failed to load user');
+      log.severe (error, stackTrace);
     });
       /*
     protocol.userInfo(configuration.token).then((protocol.Response<Map> response) {

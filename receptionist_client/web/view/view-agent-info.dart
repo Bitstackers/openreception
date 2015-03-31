@@ -1,13 +1,13 @@
 part of view;
 
 class AgentInfo extends Widget {
-  UIAgentInfo _ui;
+  Model.UIAgentInfo _ui;
 
-  AgentInfo(UIModel this._ui) {
+  AgentInfo(Model.UIModel this._ui) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = AgentState.UNKNOWN;
-    _ui.alertState = AlertState.ON;
+    _ui.agentState = Model.AgentState.UNKNOWN;
+    _ui.alertState = Model.AlertState.ON;
     _ui.portrait = 'images/face.png';
 
     _registerEventListeners();
@@ -24,11 +24,11 @@ class AgentInfo extends Widget {
      _ui.activeCount = activeCount;
    }
 
-  void _updateAgentState(AgentState agentState) {
+  void _updateAgentState(Model.AgentState agentState) {
     _ui.agentState = agentState;
   }
 
-  void _updateAlertState(AlertState alertState) {
+  void _updateAlertState(Model.AlertState alertState) {
     _ui.alertState = alertState;
   }
 
@@ -37,5 +37,5 @@ class AgentInfo extends Widget {
   }
 
   @override
-  UIModel get ui => _ui;
+  Model.UIModel get ui => _ui;
 }

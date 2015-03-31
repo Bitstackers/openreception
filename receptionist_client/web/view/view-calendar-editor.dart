@@ -1,10 +1,10 @@
 part of view;
 
 class CalendarEditor extends Widget {
-  Place                 _myPlace;
-  UICalendarEditor      _ui;
+  Place                  _myPlace;
+  Model.UICalendarEditor _ui;
 
-  CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
+  CalendarEditor(Model.UICalendarEditor this._ui, this._myPlace) {
     _ui.focusElement    = _ui.textAreaElement;
     _ui.firstTabElement = _ui.textAreaElement;
     _ui.lastTabElement  = _ui.cancelButtonElement;
@@ -108,5 +108,5 @@ class CalendarEditor extends Widget {
           _ui.textAreaElement.value.isNotEmpty;
 
   @override
-  UIModel get ui => _ui;
+  Model.UIModel get ui => _ui;
 }

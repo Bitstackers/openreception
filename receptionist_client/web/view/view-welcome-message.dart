@@ -27,8 +27,8 @@ class WelcomeMessage {
   }
 
   void _render(Model.Reception reception) {
-    if (Model.Call.currentCall != Model.nullCall &&
-        Model.Call.currentCall.greetingPlayed) {
+    if (Model.Call.activeCall != Model.noCall &&
+        Model.Call.activeCall.greetingPlayed) {
       this.greetingText = reception.shortGreeting;
     }
     else {

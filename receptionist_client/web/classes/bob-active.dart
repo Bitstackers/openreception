@@ -23,6 +23,8 @@ import 'location.dart' as nav;
 import 'state.dart';
 import '../view.nonflex/view.dart' as View;
 import '../model/model.dart' as Model;
+import '../service/service.dart' as Service;
+
 import 'package:logging/logging.dart';
 
 class BobActive {
@@ -46,6 +48,7 @@ class BobActive {
   View.ReceptionRegistrationNumber receptionRegistrationNumber;
   View.ReceptionExtraInformation receptionExtraInformation;
   View.Contact contactInfo;
+  View.ContactCalendar contactCalendar;
   View.CallList globalCallQueue;
   View.CallManagement callManagement;
   //LocalQueue localQueue;
@@ -68,22 +71,23 @@ class BobActive {
   Context phone;
   Context voicemails;
 
-  BobActive(DivElement this.element) {
-    Logger.root.onRecord.listen (print);
-    Logger.root.level = Level.INFO;
+  Model.CallList callList = new Model.CallList (Service.Notification.instance);
 
+  BobActive(DivElement this.element) {
     element.classes.remove(CssClass.hidden);
 
     event.bus.on(event.stateUpdated).listen((State value) {
       element.classes.toggle(CssClass.hidden, !value.isOK);
     });
 
+    callList.reloadFromServer(Service.Call.instance);
+
     registerContexts();
     contextSwitcher          = new View.ContextSwitcher(querySelector('#${Id.contextSwitcher}'), [homeContext, homePlusContext, messageContext]);
 
     /// Home context
     contactInfo              = new View.Contact(querySelector('#${Id.contactSelector}'), homeContext);
-
+    contactCalendar          = new View.ContactCalendar(querySelector('#${Id.contactCalendar}'), homeContext, new Model.ContactCalendar (Service.Notification.instance));
 
     messageCompose           = new View.Message(querySelector('#${Id.messageCompose}'), homeContext);
     welcomeMessage           = new View.WelcomeMessage(querySelector('#${Id.welcomeMessage}'));
@@ -95,7 +99,7 @@ class BobActive {
     receptionOpeningHours    = new View.ReceptionOpeningHours(querySelector('#${Id.receptionOpeningHours}'), homeContext);
     receptionSalesCalls      = new View.ReceptionSalesCalls(querySelector('#${Id.receptionSalesCalls}'), homeContext);
     receptionProduct         = new View.ReceptionProduct(querySelector('#${Id.receptionProduct}'), homeContext);
-    globalCallQueue          = new View.CallList(querySelector('#${Id.globalCallQueue}'), homeContext);
+    globalCallQueue          = new View.CallList(querySelector('#${Id.globalCallQueue}'), homeContext, callList);
     callManagement           = new View.CallManagement(querySelector('#${Id.callOriginate}'), homeContext);
     //localQueue               = new LocalQueue(querySelector('#${id.LOCAL_QUEUE}'), home);
 
@@ -122,7 +126,7 @@ class BobActive {
 
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
-    Model.CalendarEvent.registerObservers();
+
     Model.MessageList.instance.registerObservers();
   }
 

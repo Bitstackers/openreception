@@ -2,13 +2,13 @@ part of view;
 
 class ReceptionCalendar extends Widget {
   Place                _myPlace;
-  UIReceptionCalendar _dom;
+  Model.UIReceptionCalendar _dom;
 
   /**
    * [root] is the parent element of the widget, and [_myPlace] is the [Place]
    * object that this widget reacts on when Navigate.go fires.
    */
-  ReceptionCalendar(UIReceptionCalendar this._dom, Place this._myPlace) {
+  ReceptionCalendar(Model.UIReceptionCalendar this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 
@@ -35,4 +35,7 @@ class ReceptionCalendar extends Widget {
 
   @override
   HtmlElement get root => _dom.root;
+
+  @override
+  Model.UIModel get ui => _dom;
 }

@@ -13,21 +13,34 @@
 
 part of service;
 
-abstract class Call {
+class Call {
 
   static const className = '${libraryName}.Call';
 
   static ORService.CallFlowControl _service = null;
 
-  static ORService.CallFlowControl get service {
-    if (_service == null) {
-      _service = new ORService.CallFlowControl
-          (configuration.callFlowBaseUrl,
-           configuration.token,
-           new ORServiceHTML.Client());
+  static Call _instance;
+
+  static Call get instance {
+    if (_instance == null) {
+      _instance = new Call();
     }
 
-    return _service;
+    return _instance;
+  }
+
+  Call () {
+    _service = new ORService.CallFlowControl
+        (configuration.callFlowBaseUrl,
+         configuration.token,
+         new ORServiceHTML.Client());
+  }
+
+  Future<Iterable<Model.Call>> listCalls() {
+    return _service.callListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.Call.fromMap(map)));
   }
 
   /**
@@ -595,8 +608,8 @@ abstract class Call {
 
     const String context = '${className}.transfer';
 
-    assert(source != null && source != Model.nullCall);
-    assert(destination != null && destination != Model.nullCall);
+    assert(source != null && source != Model.noCall);
+    assert(destination != null && destination != Model.noCall);
 
     final String base = configuration.callFlowBaseUrl.toString();
     final Completer<Model.Call> completer = new Completer<Model.Call>();

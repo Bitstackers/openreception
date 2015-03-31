@@ -1,10 +1,10 @@
 part of view;
 
 class ContactData extends Widget {
-  UIContactData _ui;
+  Model.UIContactData _ui;
   Place         _myPlace;
 
-  ContactData(UIModel this._ui, Place this._myPlace) {
+  ContactData(Model.UIModel this._ui, Place this._myPlace) {
     test(); // TODO (TL): Get rid of this testing code...
 
     _registerEventListeners();
@@ -97,7 +97,7 @@ class ContactData extends Widget {
   }
 
   @override
-  UIModel get ui => _ui;
+  Model.UIModel get ui => _ui;
 }
 
 class TelephoneNumber {

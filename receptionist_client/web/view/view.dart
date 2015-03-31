@@ -113,5 +113,5 @@ abstract class Widget {
     }
   }
 
-  UIModel get ui;
+  Model.UIModel get ui;
 }

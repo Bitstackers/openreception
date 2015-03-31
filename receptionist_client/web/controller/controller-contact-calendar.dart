@@ -46,7 +46,7 @@ abstract class ContactCalendar {
       return Service.Contact.store.calendarEventRemove(entry);
     }
   }
-
-  static findEvent (List<ORModel.CalendarEntry> events, int eventID) =>
-     events.firstWhere((ORModel.CalendarEntry event) => event.ID == eventID);
 }
+
+findEvent (List<ORModel.CalendarEntry> events, int eventID) =>
+   events.firstWhere((ORModel.CalendarEntry event) => event.ID == eventID);

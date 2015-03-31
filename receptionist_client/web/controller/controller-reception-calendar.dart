@@ -7,7 +7,7 @@ abstract class ReceptionCalendar {
   /**
    * Creates or updates a calendar entry object associated with a reception.
    */
-  Future<Model.ReceptionCalendarEntry> save(Model.ReceptionCalendarEntry entry){
+  static Future<Model.ReceptionCalendarEntry> save(Model.ReceptionCalendarEntry entry){
     if (entry.receptionID == Model.Reception.noReception.ID) {
       Error error = new ArgumentError.value(entry, 'entry',
           'Trying to update an a reception calendar entry '
@@ -30,7 +30,7 @@ abstract class ReceptionCalendar {
   /**
    * Delete a calendar entry object associated with a reception.
    */
-  Future delete(Model.ReceptionCalendarEntry entry) {
+  static Future delete(Model.ReceptionCalendarEntry entry) {
     if (entry.ID == Model.ReceptionCalendarEntry.noID) {
       Error error = new ArgumentError.value(entry, 'entry',
           'Trying to delete an a reception calendar entry '

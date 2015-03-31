@@ -18,7 +18,7 @@ abstract class Contact {
 
   static Map<int, List<Model.Contact>> _contactListCache = {};
 
-  static Map<int, Map<int, List<Model.CalendarEvent>>> _calendarCache = {};
+  static Map<int, Map<int, List<Model.ContactCalendarEntry>>> _calendarCache = {};
 
   static void invalidateCalendar (int contactID, int receptionID) {
     if (_calendarCache.containsKey(receptionID)) {
@@ -57,10 +57,10 @@ abstract class Contact {
     return completer.future;
   }
 
-  static Future<List<Model.CalendarEvent>> calendar(int contactID, int receptionID) {
+  static Future<List<Model.ContactCalendarEntry>> calendar(int contactID, int receptionID) {
     const String context = '${libraryName}.calendar';
 
-    final Completer completer = new Completer<List<Model.CalendarEvent>>();
+    final Completer completer = new Completer<List<Model.ContactCalendarEntry>>();
 
     if (_calendarCache.containsKey(receptionID) && _calendarCache[receptionID].containsKey(contactID)) {
       debugStorage("Loading contact calendar from cache.", context);
@@ -75,7 +75,7 @@ abstract class Contact {
         }
 
         _calendarCache[receptionID][contactID] = eventList.map((Map eventMap) =>
-            new Model.CalendarEvent.fromMap (eventMap, receptionID, contactID : contactID)).toList();
+            new Model.ContactCalendarEntry.fromMap (eventMap)).toList();
 
         completer.complete(_calendarCache[receptionID][contactID]);
       }).catchError((error) {

@@ -46,14 +46,10 @@ class PeerList extends IterableBase<Peer> {
    * Updates or inserts a [Peer] object into the [PeerList].
    */
   void updateOrInsert(Peer peer) {
-    const String context = '${className}.update';
-
     if (!this._map.containsKey(peer.ID)) {
-      log.debugContext("Inserting peer ${peer.ID}", context);
       this._map[peer.ID] = peer;
     }
 
-    log.debugContext("Updating peer ${peer.ID}", context);
     this._map[peer.ID].update(peer);
   }
 

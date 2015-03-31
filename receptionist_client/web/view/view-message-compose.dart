@@ -8,9 +8,9 @@ class MessageCompose extends Widget {
   HtmlElement       _focusOnMe;
   HtmlElement       _lastTabElement;
   Place             _myPlace;
-  UIMessageCompose _dom;
+  Model.UIMessageCompose _dom;
 
-  MessageCompose(UIMessageCompose this._dom, Place this._myPlace) {
+  MessageCompose(Model.UIMessageCompose this._dom, Place this._myPlace) {
     _focusOnMe       = _dom.callerNameInput;
     _firstTabElement = _dom.callerNameInput;
     _lastTabElement  = _dom.draftInput;
@@ -109,4 +109,7 @@ class MessageCompose extends Widget {
   void _toggleRecipients(_) {
     _dom.recipientsDiv.classes.toggle('recipients-hidden');
   }
+
+  @override
+  Model.UIModel get ui => _dom;
 }

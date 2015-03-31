@@ -2,12 +2,12 @@ part of view;
 
 class ReceptionCommands extends Widget {
   Place                _myPlace;
-  UIReceptionCommands _dom;
+  Model.UIReceptionCommands _dom;
 
   /**
    *
    */
-  ReceptionCommands(UIReceptionCommands this._dom, Place this._myPlace) {
+  ReceptionCommands(Model.UIReceptionCommands this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 
@@ -31,4 +31,7 @@ class ReceptionCommands extends Widget {
 
   @override
   HtmlElement get root => _dom.root;
+
+  @override
+  Model.UIModel get ui => _dom;
 }

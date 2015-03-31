@@ -22,224 +22,118 @@
 
 part of model;
 
-final Call nullCall = new Call._null();
+final Call noCall = new Call._null();
 
 class InvalidCallState extends StateError {
 
   InvalidCallState (String message) : super (message);
 }
 
-class CallState {
-  final String _name;
-
-  static final CallState UNKNOWN      = new CallState._internal ('unknown'.toUpperCase());
-  static final CallState CREATED      = new CallState._internal ('created'.toUpperCase());
-  static final CallState RINGING      = new CallState._internal ('ringing'.toUpperCase());
-  static final CallState QUEUED       = new CallState._internal ('queued'.toUpperCase());
-  static final CallState HUNGUP       = new CallState._internal ('hungup'.toUpperCase());
-  static final CallState TRANSFERRING = new CallState._internal ('transferring'.toUpperCase());
-  static final CallState TRANSFERRED  = new CallState._internal ('TRANSFERRED');
-  static final CallState SPEAKING     = new CallState._internal ('speaking'.toUpperCase());
-  static final CallState PARKED       = new CallState._internal ('parked'.toUpperCase());
-
-  static final List<CallState> _validStates =
-       [UNKNOWN, CREATED, RINGING, QUEUED, HUNGUP, TRANSFERRING,
-        TRANSFERRED, SPEAKING, PARKED];
-
-  /**
-   * Default private constructor.
-   */
-  CallState._internal (this._name);
-
-  /**
-   * Basic constructor. Normalizes the "enum" and performs checks.
-   */
-  factory CallState (String name) {
-
-    CallState newItem = new CallState._internal(name.toUpperCase());
-
-    if (!_validStates.contains (newItem)) {
-      throw new InvalidCallState(newItem.toString());
-    }
-
-    return newItem;
-  }
-
-  @override
-  operator == (CallState other) {
-    return this._name == other._name;
-  }
-
-  @override
-  int get hashCode {
-    return this._name.hashCode;
-  }
-
-
-  @override
-  String toString () {
-    return this._name;
-  }
-
-  static CallState parse (String value) {
-    return new CallState(value);
-  }
+enum CallState {
+  UNKNOWN,
+  CREATED,
+  RINGING,
+  QUEUED,
+  HUNGUP,
+  TRANSFERRING,
+  TRANSFERRED,
+  SPEAKING,
+  PARKED,
+  LOCKED,
+  UNLOCKED
 }
+
+Map<String,CallState> ORCallStateToCallState = {
+  ORModel.CallState.Unknown : CallState.UNKNOWN,
+  ORModel.CallState.Created : CallState.CREATED,
+  ORModel.CallState.Ringing : CallState.RINGING,
+  ORModel.CallState.Queued  : CallState.QUEUED,
+  ORModel.CallState.Unparked : CallState.TRANSFERRING,
+  ORModel.CallState.Hungup  : CallState.HUNGUP,
+  ORModel.CallState.Transferring : CallState.TRANSFERRING,
+  ORModel.CallState.Transferred : CallState.TRANSFERRED,
+  ORModel.CallState.Speaking : CallState.SPEAKING,
+  ORModel.CallState.Parked :CallState.PARKED,
+};
 
 /**
  * A call.
  */
-class Call implements Comparable {
+class Call extends ORModel.Call implements Comparable {
 
-  static const String className = "${libraryName}.Call";
+  static final Logger log = new Logger ('${libraryName}.Call');
+  static final noCall = new Call._null();
 
-  static final EventType currentCallChanged = new EventType();
+  static Call _activeCall = noCall;
+  static Bus<Call> _activeCallChanged = new Bus<Call>();
+  static Stream<Call> get activeCallChanged => _activeCallChanged.stream;
 
-  static final EventType hungup      = new EventType();
-  static final EventType answered    = new EventType();
-  static final EventType parked      = new EventType();
-  static final EventType queueLeave  = new EventType();
-  static final EventType queueEnter  = new EventType();
-  static final EventType transferred = new EventType();
-  static final EventType stateChange = new EventType();
-  static final EventType<bool> lock  = new EventType<bool>();
+  Bus<CallState> _callState = new Bus<CallState>();
+  Stream<CallState> get callState => _callState.stream;
 
-  static final Map<CallState, EventType> stateEventMap =
-    {CallState.HUNGUP      : Call.hungup,
-     CallState.SPEAKING    : Call.answered,
-     CallState.QUEUED      : Call.queueEnter,
-     CallState.PARKED      : Call.parked,
-     CallState.TRANSFERRED : Call.transferred};
+  static Call get activeCall => _activeCall;
 
-  EventBus _bus = new EventBus();
-  EventBus get events => _bus;
-
-  Map _data = {};
-  CallState _currentState = CallState.UNKNOWN;
-  String _bLeg;
-  String _callerID;
-  String _destination;
-  bool _greetingPlayed = false;
-  String _ID;
-  bool _inbound;
-  DateTime _start;
-  int _receptionID;
-
-  static Call _currentCall = nullCall;
-
-  int get assignedAgent => this._data['assigned_to'];
-  bool get locked => this._data['locked'];
-  bool get isCall => this._data['is_call'];
-  String get bLeg => _bLeg;
-  String get callerId => _callerID;
-  String get destination => _destination;
-  bool get greetingPlayed => this._data['greeting_played'];
-  String get ID => this._data['id'];
-  bool get inbound => _inbound;
-  DateTime get start => _start;
-  int get receptionId => _receptionID;
-  CallState get state => CallState.parse(this._data['state']);
-
-  static Call get currentCall => _currentCall;
-
-  static set currentCall(Call newCall) {
-    _currentCall = newCall;
-    event.bus.fire(currentCallChanged, _currentCall);
+  static set activeCall(Call newCall) {
+    _activeCall = newCall;
+    _activeCallChanged.fire(_activeCall);
+    log.finest('Changing active call to ${_activeCall.ID}:');
   }
 
-  bool get isActive => this != nullCall;
+  bool get isActive => this != noCall;
+
+  CallState _currentState = CallState.UNKNOWN;
+  CallState get currentState  => _currentState;
+
+  set currentState (CallState newState) {
+    this._currentState = newState;
+    this._callState.fire(newState);
+  }
 
   /**
-   * [Call] constructor. Expects a map in the following format:
-   *
-   *  {
-   *    'assigned_to' : String,
-   *    'id'          : String,
-   *    'start'       : DateTime String
-   *  }
-   *
-   * 'assigned_to' is the String agent ID. 'id' is the ID of the call.'start'
-   * is a timestamp of when the call was started. It MUST be in a format that
-   * can be parsed by the [DateTime.parse] method.
-   *
-   * TODO Obviously the above map format should be in the docs/wiki, and completed.
+   * [Call] constructor. Merely forwards to the framework contructor.
    */
-  Call.fromMap(Map map) {
+  Call.fromMap(Map map) : super.fromMap(map);
 
-    if (map.containsKey('reception_id') && map['reception_id'] != null) {
-      _receptionID = map['reception_id'];
-    }
+  /**
+   * [Call] constructor.
+   * TODO: Optimize this one.
+   */
+  Call.fromORModel(ORModel.Call call) : this.fromMap(call.toJson());
 
-    if (map.containsKey('b_leg')) {
-      _bLeg = map['b_leg'];
-    }
-
-    if (map.containsKey('caller_id')) {
-      _callerID = map['caller_id'];
-    }
-
-    if (map.containsKey('destination')) {
-      _destination = map['destination'];
-    }
-
-    if (map.containsKey('inbound')) {
-      _inbound = map['inbound'];
-    }
-
-    if (map.containsKey('greeting_played')) {
-      _greetingPlayed = map['greeting_played'];
-    }
-
-    _ID = map['id'];
-
-    log.debug('Model.call Call.fromJson: ${map['arrival_time']} => ${new DateTime.fromMillisecondsSinceEpoch(map['arrival_time']*1000)}');
-    _start = new DateTime.fromMillisecondsSinceEpoch(map['arrival_time'] * 1000);
-
-    this._data = map;
-    }
 
   /**
    * Determine whether or not a call available for the user.
    *
    */
-  bool availableForUser(ORModel.User user) {
-    //return this.assignedAgent == user.ID || this.assignedAgent == User.nullUser.ID
-    return ([ORModel.User.nullID, user.ID].contains(this.assignedAgent));
-  }
+  bool availableForUser(User user) =>
+    ([User.noID, user.ID].contains(this.assignedTo));
 
-  void update (Call newCall) {
-    const String context = '${className}.update';
-
+  void update (Call newInfo) {
     bool oldLockState = this.locked;
-    /* Update the current internal dataset */
-    this._data = newCall._data;
+
+    /// Update local fields with new information.
+    this.assignedTo = newInfo.assignedTo;
+    this.b_Leg = newInfo.b_Leg;
+    this.contactID = newInfo.contactID;
+    this.greetingPlayed = newInfo.greetingPlayed;
 
     if (oldLockState != this.locked) {
       /* Notify of state change. */
-      this._bus.fire(lock, this.locked);
-
+      this.currentState = this.locked ? CallState.LOCKED : CallState.UNLOCKED;
     } else {
-      log.debugContext("${this.ID}: NewState: ${this.state}", context);
-      /* Notify of state change. */
-      this._bus.fire(Call.stateEventMap[this.state], null);
+      this.currentState = ORCallStateToCallState[newInfo.state.toString()];
     }
   }
 
   /**
    * [Call] null constructor.
    */
-  Call._null() {
-    _ID = null;
-    _start = null;
-  }
-
-  Call.stub(this._ID);
+  Call._null() : super.stub({ORModel.CallJsonKey.ID : ORModel.Call.nullCallID});
 
   /**
    * Enables a [Call] to sort itself compared to other calls.
    */
-  int compareTo(Call other) => _start.compareTo(other._start);
-
+  int compareTo(Call other) => this.arrived.compareTo(other.arrived);
 
   /**
    * TODO: Document.
@@ -272,8 +166,8 @@ class Call implements Comparable {
   void hangup() {
 
     // See note on assertions.
-    if (this == nullCall) {
-      log.debug('Cowardly refusing ask the call-flow-control server to hangup a null call.');
+    if (this == noCall) {
+      log.info('Cowardly refusing ask the call-flow-control server to hangup a null call.');
       return;
     }
 
@@ -286,8 +180,8 @@ class Call implements Comparable {
   void park() {
 
     // See note on assertions.
-    if (this == nullCall) {
-      log.debug('Cowardly refusing ask the call-flow-control server to park a null call.');
+    if (this == noCall) {
+      log.info('Cowardly refusing ask the call-flow-control server to park a null call.');
       return;
     }
     Controller.Call.park(this);
@@ -299,8 +193,8 @@ class Call implements Comparable {
   void transfer(Call destination) {
 
     // See note on assertions.
-    if (this == nullCall) {
-      log.debug('Cowardly refusing ask the call-flow-control server to park a null call.');
+    if (this == noCall) {
+      log.info('Cowardly refusing ask the call-flow-control server to park a null call.');
       return;
     }
     Controller.Call.transfer (this, destination);
@@ -312,8 +206,8 @@ class Call implements Comparable {
   void pickup() {
 
     // See note on assertions.
-    if (this == nullCall) {
-      log.debug('Cowardly refusing ask the call-flow-control server to pickup a null call.');
+    if (this == noCall) {
+      log.info('Cowardly refusing ask the call-flow-control server to pickup a null call.');
       return;
     }
 
@@ -324,5 +218,9 @@ class Call implements Comparable {
   /**
    * [Call] as String, for debug/log purposes.
    */
-  String toString() => 'Call ${this.ID} - ${_start} - ${this.state}';
+  String toString() => this == noCall
+                       ? 'no Call'
+                       : 'Call ID:${this.ID}, state:${this.state}, '
+                         'destination:${this.destination}';
+
 }

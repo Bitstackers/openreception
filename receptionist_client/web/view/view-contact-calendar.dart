@@ -2,9 +2,9 @@ part of view;
 
 class ContactCalendar extends Widget {
   Place              _myPlace;
-  UIContactCalendar _ui;
+  Model.UIContactCalendar _ui;
 
-  ContactCalendar(UIModel this._ui, Place this._myPlace) {
+  ContactCalendar(Model.UIModel this._ui, Place this._myPlace) {
     _registerEventListeners();
   }
 
@@ -30,5 +30,5 @@ class ContactCalendar extends Widget {
   }
 
   @override
-  UIModel get ui => _ui;
+  Model.UIModel get ui => _ui;
 }

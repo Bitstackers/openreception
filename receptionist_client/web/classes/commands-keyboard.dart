@@ -197,7 +197,7 @@ class _KeyboardHandler {
       CommandKey   : (_) => event.bus.fire(event.keyCommand, true),
       [Key.NumMult]  : (_) => Controller.Call.dialSelectedContact(),
       [Key.NumPlus]  : (_) => Controller.Call.pickupNext(),
-      [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.currentCall),
+      [Key.NumDiv]   : (_) => Controller.Call.hangup(Model.Call.activeCall),
       [Key.NumMinus] : (_) => event.bus.fire(event.TransferFirstParkedCall, null),
           //Controller.Call.completeTransfer(Model.TransferRequest.current,  Model.Call.currentCall)
 
