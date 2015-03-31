@@ -13,15 +13,13 @@
 part of view;
 
 /**
- * LogBox widget. Subscribes into the [userLogStream] of the [logger] and
- * appends each log entry to the body of the widget.
+ * LogBox widget.
  */
 class LogBox {
   DivElement      element;
-  List<LogRecord> messages = new List<LogRecord>();
   TableElement    table;
 
-  LogBox(DivElement this.element) {
+  LogBox(DivElement this.element, model.CallList observedCallList) {
     // TODO (TL): Move as much as this to bob.html as possible
     table = new TableElement()
       ..id = Id.logBoxTable
@@ -32,22 +30,29 @@ class LogBox {
           <th class="log-box-message-header">Besked</th>
         ''');
 
-    registerEventListeners();
+    registerEventListeners(observedCallList);
   }
 
-  void registerEventListeners() {
-    log.userLogStream.listen((LogRecord record) {
-      push(record);
-      // TODO: change messages to a Queue or ListQueue
+  void registerEventListeners(model.CallList observedCallList) {
 
-      while (messages.length > configuration.userLogSizeLimit) {
-        pop();
-      }
-    });
+    observedCallList.onInsert.listen(this._pushCallRecord);
   }
+
+  void _pushCallRecord(model.Call newCall) {
+    TableRowElement tr = new TableRowElement();
+    tr.children
+      ..add(new TableCellElement()
+              ..text = dateFormat.format(newCall.arrived)
+              ..style.textAlign = 'center')
+      ..add(new TableCellElement()
+              ..text = newCall.callerID
+              ..style.textAlign = 'center')
+      ..add(new TableCellElement()..text = newCall.receptionID.toString());
+    table.children.insert(1, tr);
+  }
+
 
   void push(LogRecord record) {
-    messages.insert(0, record);
     TableRowElement tr = new TableRowElement();
     tr.children
       ..add(new TableCellElement()
@@ -59,10 +64,4 @@ class LogBox {
       ..add(new TableCellElement()..text = record.message);
     table.children.insert(1, tr);
   }
-
-  LogRecord pop() {
-    table.children.removeLast();
-    return messages.removeLast();
-  }
-
 }
