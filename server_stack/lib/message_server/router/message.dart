@@ -2,6 +2,8 @@ part of messageserver.router;
 
 abstract class Message {
 
+  static final Logger log = new Logger ('$libraryName.Message');
+
   static const String className = '${libraryName}.Message';
 
   /**
@@ -12,7 +14,6 @@ abstract class Message {
 
     messageStore.get(messageID)
       .then((Model.Message message) {
-        print(message.asMap);
         writeAndClose(request, JSON.encode(message));
       })
       .catchError((error, stackTrace) {
@@ -32,7 +33,6 @@ abstract class Message {
   static void update(HttpRequest request) {
              int messageID = pathParameter(request.uri, 'message');
     final String     token = request.uri.queryParameters['token'];
-    final String   context = '${className}.update';
 
     AuthService.userOf(token).then((Model.User user) {
       extractContent(request).then((String content) {
@@ -52,7 +52,7 @@ abstract class Message {
            });
 
         } catch (error, stackTrace) {
-          logger.errorContext('$error : $stackTrace', context);
+          log.severe(error, stackTrace);
           clientError(request, '$error : $stackTrace');
         }
 
@@ -70,8 +70,8 @@ abstract class Message {
       .then ((List<Model.Message> messages) =>
         writeAndClose(request, JSON.encode(messages)))
       .catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
         serverError(request, error.toString());
-        print('$error : $stackTrace');
     });
   }
 
@@ -80,7 +80,6 @@ abstract class Message {
    * parameters passed in the [queryParameters] of the request.
    */
   static void list (HttpRequest request) {
-    print (request.uri);
     Model.MessageFilter filter = new Model.MessageFilter.empty();
 
     filter.upperMessageID = pathParameter(request.uri, 'list');
@@ -96,9 +95,6 @@ abstract class Message {
               ..userID         = map ['user_id']
               ..limitCount     = map ['limit']
               ..upperMessageID = map ['upper_message_id'];
-
-        print(filter.asMap);
-
       } catch (error, stacktrace) {
         clientError(request, 'Bad filter');
         return;
@@ -107,11 +103,10 @@ abstract class Message {
 
     messageStore.list(filter : filter)
       .then ((List<Model.Message> messages) {
-      messages.forEach((e) => print (e.asMap));
         writeAndClose(request, JSON.encode(messages));})
       .catchError((error, stackTrace) {
         serverError(request, error.toString());
-        print('$error : $stackTrace');
+        log.severe (error, stackTrace);
     });
   }
 

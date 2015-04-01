@@ -89,7 +89,6 @@ Future<List<Model.Contact>> getReceptionContactList(int receptionId) {
           attributes.forEach((key, value) => contact.putIfAbsent(key, () => value));
 
           var tmp = new Model.MessageRecipientList.empty();
-          print (contact['distribution_list']);
 
           Model.Role.RECIPIENT_ROLES.forEach((String role) {
               if (contact['distribution_list'][role] is List) {
