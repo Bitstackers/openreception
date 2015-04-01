@@ -10,29 +10,29 @@ class AgentInfo extends Widget {
     _ui.alertState = AlertState.ON;
     _ui.portrait = 'images/face.png';
 
-    _registerEventListeners();
+    registerEventListeners();
   }
 
-  @override Place   get myPlace => null;
+  @override Place   get myPlace => throw new UnsupportedError('');
   @override UIModel get ui      => _ui;
 
-  void _registerEventListeners() {
+  void registerEventListeners() {
     /// TODO (TL): Add relevant listeners
   }
 
-  void _updateActiveCount(int activeCount) {
+  void updateActiveCount(int activeCount) {
      _ui.activeCount = activeCount;
    }
 
-  void _updateAgentState(AgentState agentState) {
+  void updateAgentState(AgentState agentState) {
     _ui.agentState = agentState;
   }
 
-  void _updateAlertState(AlertState alertState) {
+  void updateAlertState(AlertState alertState) {
     _ui.alertState = alertState;
   }
 
-  void _updatePausedCount(int pausedCount) {
+  void updatePausedCount(int pausedCount) {
     _ui.pausedCount = pausedCount;
   }
 }
