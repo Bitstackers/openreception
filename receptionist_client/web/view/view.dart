@@ -25,36 +25,19 @@ part 'view-reception-sales-calls.dart';
 part 'view-reception-selector.dart';
 part 'view-welcome-message.dart';
 
-final HotKeys  _hotKeys  = new HotKeys();
-final Navigate _navigate = new Navigate();
+final HotKeys  hotKeys  = new HotKeys();
+final Navigate navigate = new Navigate();
 
 // TODO (TL): Decide if we need to check for null on widgets that have no actual
 // activation and/or no Place. It's probably a wasted check, since it will fail
 // hard an early.
 
 abstract class Widget {
-  /// TODO (TL): Perhaps move this to DOM?
-//  bool _active = false;
-
-//  void _blur() {
-//    _active = false;
-//    ui.root.classes.toggle('focus', false);
-//    ui.focusElement.blur();
-//    _setTabIndex(-1);
-//  }
-
-//  void _focus() {
-//    _active = true;
-//    ui.root.classes.toggle('focus', true);
-//    ui.focusElement.focus();
-//    _setTabIndex(1);
-//  }
-
   /**
    * Focus on ui.lastTabElement when ui.firstTabElement is in focus and a
    * Shift+Tab keyboard event is captured.
    */
-  void _handleShiftTab(KeyboardEvent event) {
+  void handleShiftTab(KeyboardEvent event) {
     if(ui.active && ui.focusElement == ui.firstTabElement) {
       event.preventDefault();
       ui.lastTabElement.focus();
@@ -65,7 +48,7 @@ abstract class Widget {
      * Focus on ui.firstTabElement when ui.lastTabElement is in focus and a Tab
      * keyboard event is captured.
      */
-  void _handleTab(KeyboardEvent event) {
+  void handleTab(KeyboardEvent event) {
     if(ui.active && ui.focusElement == ui.lastTabElement) {
       event.preventDefault();
       ui.firstTabElement.focus();
@@ -81,25 +64,16 @@ abstract class Widget {
   /**
    * Navigate to [myPlace] if widget is not already in focus.
    */
-  void _navigateToMyPlace() {
+  void navigateToMyPlace() {
     if(!ui.active) {
-      _navigate.go(myPlace);
+      navigate.go(myPlace);
     }
   }
 
   /**
-   * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
-   */
-//  void _setTabIndex(int index) {
-//    ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
-//      element.tabIndex = index;
-//    });
-//  }
-
-  /**
    * Figure out if [place] is here and set focus and tabindexes accordingly.
    */
-  void _setWidgetState(Place place) {
+  void setWidgetState(Place place) {
     if(myPlace == place) {
       ui.focus();
     } else {

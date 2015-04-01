@@ -1,5 +1,6 @@
 library model;
 
+import 'dart:async';
 import 'dart:html';
 
 part 'model-ui-agent-info.dart';

@@ -15,7 +15,7 @@ class CalendarEditor extends Widget {
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
 
-  void _cancel(_) {
+  void cancel(_) {
     /// TODO (TL):
     /// Clear form.
     /// Set focusElement to default.
@@ -23,7 +23,7 @@ class CalendarEditor extends Widget {
     print('view.CalendarEditor._cancel not fully implemented');
   }
 
-  void _delete(_) {
+  void delete(_) {
     /// TODO (TL):
     /// Delete calendar entry.
     /// Call _cancel().
@@ -36,55 +36,55 @@ class CalendarEditor extends Widget {
     /// Figure out whether this is a new calendar entry or an edit?
     /// If new: Add "now" data to the widget.
     /// If edit: Add data from the calendar entry to the widget.
-    _navigate.onGo.listen(_setWidgetState);
+    navigate.onGo.listen(setWidgetState);
 
-    _hotKeys.onTab     .listen(_handleTab);
-    _hotKeys.onShiftTab.listen(_handleShiftTab);
+    hotKeys.onTab     .listen(handleTab);
+    hotKeys.onShiftTab.listen(handleShiftTab);
 
     /// Enables focused element memory for this widget.
     _ui.tabElements.forEach((HtmlElement element) {
-      element.onFocus.listen(_setFocusOnMe);
+      element.onFocus.listen(setFocusOnMe);
     });
 
-    _ui.textAreaElement.onInput   .listen((_) => _toggleButtons());
-    _ui.startHourElement.onInput  .listen((_) => _sanitizeInput(_ui.startHourElement));
-    _ui.startMinuteElement.onInput.listen((_) => _sanitizeInput(_ui.startMinuteElement));
-    _ui.startDayElement.onInput   .listen((_) => _sanitizeInput(_ui.startDayElement));
-    _ui.startMonthElement.onInput .listen((_) => _sanitizeInput(_ui.startMonthElement));
-    _ui.startYearElement.onInput  .listen((_) => _sanitizeInput(_ui.startYearElement));
-    _ui.stopHourElement.onInput   .listen((_) => _sanitizeInput(_ui.stopHourElement));
-    _ui.stopMinuteElement.onInput .listen((_) => _sanitizeInput(_ui.stopMinuteElement));
-    _ui.stopDayElement.onInput    .listen((_) => _sanitizeInput(_ui.stopDayElement));
-    _ui.stopMonthElement.onInput  .listen((_) => _sanitizeInput(_ui.stopMonthElement));
-    _ui.stopYearElement.onInput   .listen((_) => _sanitizeInput(_ui.stopYearElement));
+    _ui.textAreaElement.onInput   .listen((_) => toggleButtons());
+    _ui.startHourElement.onInput  .listen((_) => sanitizeInput(_ui.startHourElement));
+    _ui.startMinuteElement.onInput.listen((_) => sanitizeInput(_ui.startMinuteElement));
+    _ui.startDayElement.onInput   .listen((_) => sanitizeInput(_ui.startDayElement));
+    _ui.startMonthElement.onInput .listen((_) => sanitizeInput(_ui.startMonthElement));
+    _ui.startYearElement.onInput  .listen((_) => sanitizeInput(_ui.startYearElement));
+    _ui.stopHourElement.onInput   .listen((_) => sanitizeInput(_ui.stopHourElement));
+    _ui.stopMinuteElement.onInput .listen((_) => sanitizeInput(_ui.stopMinuteElement));
+    _ui.stopDayElement.onInput    .listen((_) => sanitizeInput(_ui.stopDayElement));
+    _ui.stopMonthElement.onInput  .listen((_) => sanitizeInput(_ui.stopMonthElement));
+    _ui.stopYearElement.onInput   .listen((_) => sanitizeInput(_ui.stopYearElement));
 
-    _ui.cancelButtonElement.onClick.listen(_cancel);
-    _ui.deleteButtonElement.onClick.listen(_delete);
-    _ui.saveButtonElement  .onClick.listen(_save);
+    _ui.cancelButtonElement.onClick.listen(cancel);
+    _ui.deleteButtonElement.onClick.listen(delete);
+    _ui.saveButtonElement  .onClick.listen(save);
   }
 
   /**
    * Enables focus memory for this widget, so we can blur the widget and come
    * back and have the same field focused as when we left.
    */
-  void _setFocusOnMe(Event event) {
+  void setFocusOnMe(Event event) {
     _ui.focusElement = (event.target as HtmlElement);
   }
 
   /**
    *
    */
-  void _sanitizeInput(InputElement input) {
+  void sanitizeInput(InputElement input) {
     if(input.validity.badInput) {
       input.classes.toggle('bad-input', true);
     } else {
       input.classes.toggle('bad-input', false);
     }
 
-    _toggleButtons();
+    toggleButtons();
   }
 
-  void _save(_) {
+  void save(_) {
     /// TODO (TL):
     /// Validate input data
     /// Save calendar entry.
@@ -96,8 +96,8 @@ class CalendarEditor extends Widget {
    * Enable/disable the widget buttons and as a sideeffect set the value of
    * last tab element as this depends on the state of the buttons.
    */
-  void _toggleButtons() {
-    bool toggle = _validInput();
+  void toggleButtons() {
+    bool toggle = validInput();
 
     _ui.deleteButtonElement.disabled = !toggle;
     _ui.saveButtonElement.disabled   = !toggle;
@@ -108,7 +108,7 @@ class CalendarEditor extends Widget {
   /**
    * Return true when all input fields and the textarea contain data.
    */
-  bool _validInput() =>
+  bool validInput() =>
       !_ui.inputElements.any((InputElement element) => element.value.isEmpty) &&
           _ui.textAreaElement.value.isNotEmpty;
 }

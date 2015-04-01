@@ -21,11 +21,11 @@ class Contexts {
   }
 
   void _registerEventListeners() {
-    _navigate.onGo.listen(onNavigation);
+    navigate.onGo.listen(onNavigation);
 
-    _hotKeys.onAltQ.listen((_) => _navigate.goHome());
-    _hotKeys.onAltW.listen((_) => _navigate.goHomeplus());
-    _hotKeys.onAltE.listen((_) => _navigate.goMessages());
+    hotKeys.onAltQ.listen((_) => navigate.goHome());
+    hotKeys.onAltW.listen((_) => navigate.goHomeplus());
+    hotKeys.onAltE.listen((_) => navigate.goMessages());
   }
 
   void _setHidden(HtmlElement element) {

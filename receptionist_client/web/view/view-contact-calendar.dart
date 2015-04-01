@@ -12,20 +12,20 @@ class ContactCalendar extends Widget {
   @override UIModel get ui      => _ui;
 
   void _activateMe(_) {
-    _navigateToMyPlace();
+    navigateToMyPlace();
   }
 
   /**
    *
    */
   void _registerEventListeners() {
-    _navigate.onGo.listen(_setWidgetState);
+    navigate.onGo.listen(setWidgetState);
 
     _ui.root.onClick.listen(_activateMe);
 
-    _hotKeys.onAltK.listen(_activateMe);
+    hotKeys.onAltK.listen(_activateMe);
 
-    // TODO (TL): temporary stuff
-    _ui.entryList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
+    // TODO (TL): temporary test dbl click
+    _ui.entryList.onDoubleClick.listen((_) => navigate.goCalendarEdit());
   }
 }

@@ -7,67 +7,86 @@ class ContactData extends Widget {
   ContactData(UIModel this._ui, Place this._myPlace) {
     test(); // TODO (TL): Get rid of this testing code...
 
-    _registerEventListeners();
+    registerEventListeners();
   }
 
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
 
-  void _activateMe(_) {
-    _ui.focusElement.focus(); /// NOTE (TL): Sticky focus on focusElement
-    _navigateToMyPlace();
+  void activateMe(_) {
+    ui.focusElement.focus(); /// NOTE (TL): Sticky focus on focusElement
+    navigateToMyPlace();
   }
 
-  void _handleMouseClick(MouseEvent event) {
-    selectOrRing(_ui.getTelNoFromClick(event));
+  void handleMouseClick(MouseEvent event) {
+    select(_ui.getTelNumFromClick(event));
   }
 
-  void _handleUpDown(KeyboardEvent event) {
-    switch(event.keyCode) {
+  void handleUpDown(KeyboardEvent event) {
+    if(_ui.active) {
+      event.preventDefault();
+      switch(event.keyCode) {
         case KeyCode.DOWN:
-          event.preventDefault();
-          selectOrRing(_ui.nextTelNoInList());
+          select(_ui.nextTelNumInList());
           break;
         case KeyCode.UP:
-          event.preventDefault();
-          selectOrRing(_ui.previousTelNoInList());
+          select(_ui.previousTelNumInList());
           break;
       }
+    }
   }
 
-  void _registerEventListeners() {
-    /// TODO (TL): Maybe navigate to _myPlace on alt+1-3?
-    _navigate.onGo.listen(_setWidgetState);
+  void registerEventListeners() {
+    navigate.onGo.listen(setWidgetState);
 
-    _ui.root.onClick.listen(_activateMe);
+    ui.root.onClick.listen(activateMe);
 
-    _hotKeys.onAltT.listen(_activateMe);
+    hotKeys.onAltT.listen(activateMe);
 
-    /// TODO (TL): Hangup on alt+1-3/mouseclick if number is already ringing?
-    _hotKeys.onAlt1.listen((_) => selectOrRing(_ui.getTelNoFromIndex(0)));
-    _hotKeys.onAlt2.listen((_) => selectOrRing(_ui.getTelNoFromIndex(1)));
-    _hotKeys.onAlt3.listen((_) => selectOrRing(_ui.getTelNoFromIndex(2)));
+    hotKeys.onAlt1.listen((_) => select(_ui.getTelNumFromIndex(0)));
+    hotKeys.onAlt2.listen((_) => select(_ui.getTelNumFromIndex(1)));
+    hotKeys.onAlt3.listen((_) => select(_ui.getTelNumFromIndex(2)));
+    hotKeys.onAlt4.listen((_) => select(_ui.getTelNumFromIndex(3)));
+    hotKeys.onDown.listen(handleUpDown);
+    hotKeys.onUp  .listen(handleUpDown);
 
-    _ui.telNoList.onClick.listen(_handleMouseClick);
+    hotKeys.onStar.listen((_) => ring(_ui.getSelectedTelNum()));
 
-    _ui.telNoList.onKeyDown.listen(_handleUpDown);
+    _ui.clickSelect.listen(handleMouseClick);
+
+    /// TODO (TL): Add listener for selected contacts
+    /// TODO (TL): Add listener for call events to detect pickup/hangup
   }
 
-  void selectOrRing(TelNo telNo) {
-    if(_ui.active && telNo != null && _ui.noRinging) {
-      if(_ui.isSelected(telNo)) {
-        _ui.markRinging(telNo);
-      } else {
-        _ui.markSelected(telNo);
-      }
+  void ring(TelNum telNum) {
+    if(_ui.active && _ui.noRinging && telNum != null) {
+      _ui.markRinging(telNum);
+      /// TODO (TL): Call Controller.Call or something like that?
+    }
+  }
+
+  void select(TelNum telNum) {
+    if(_ui.active && _ui.noRinging && telNum != null) {
+      _ui.markSelected(telNum);
     }
   }
 
   /// TODO (TL): Get rid of this. It's just here to test stuff.
   void test() {
-    TelNo foo = new TelNo('45454545', 'some number', false);
-    _ui.addTelNo(foo);
-    TelNo bar = new TelNo('123456768', 'some number', true);
-    _ui.addTelNo(bar);
+    _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
+    _ui.backups = ['backup 1', 'backup 2'];
+    _ui.commands = ['command 1', 'command 2'];
+    _ui.departments = ['department 1', 'department 2'];
+    _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
+    _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
+    _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
+    _ui.telnums = [new TelNum('45454545', 'some number', false),
+                   new TelNum('23456768', 'secret stuff', true),
+                   new TelNum('60431992', 'personal cell', false),
+                   new TelNum('60431993', 'wife cell', false)];
+    _ui.titles = ['Nørd', 'Tekniker'];
+    _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
+
+    _ui.markSelected(_ui.getTelNumFromIndex(0));
   }
 }
