@@ -180,7 +180,7 @@ abstract class ContactStore {
       log.info
         ('Updating a calendar event for contact $contactID@$receptionID.');
 
-      return contactStore.calendarEventRemove(event)
+      return contactStore.calendarEventUpdate(event)
           .then((Model.CalendarEntry updatedEvent) {
             expect(event.content, equals(updatedEvent.content));
             expect(event.ID, equals(updatedEvent.ID));
