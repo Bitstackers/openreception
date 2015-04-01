@@ -94,9 +94,6 @@ Future<Model.Contact> getContact(int receptionId, int contactId) {
 
         //FIXME: The format should be changed in the SQL return value.
 
-
-        //print (new Model.MessageRecipientList.fromMap(data['distribution_list']).asMap);
-
         var tmp = new Model.MessageRecipientList.empty();
 
         Model.Role.RECIPIENT_ROLES.forEach((String role) {

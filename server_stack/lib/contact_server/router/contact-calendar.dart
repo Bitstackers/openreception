@@ -2,11 +2,9 @@ part of contactserver.router;
 
 abstract class ContactCalendar {
 
-  static const String className = '${libraryName}.ContactCalendar';
+  static final Logger log = new Logger ('${libraryName}.ContactCalendar');
 
   static void create(HttpRequest request) {
-
-    const String context = '${className}.create';
 
     int contactID   = pathParameter(request.uri, 'contact');
     int receptionID = pathParameter(request.uri, 'reception');
@@ -31,7 +29,7 @@ abstract class ContactCalendar {
 
       db.ContactCalendar.createEvent(entry)
         .then((_) {
-          logger.debugContext('Created event for ${contactID}@${receptionID}', context);
+          log.finest('Created event for ${contactID}@${receptionID}');
 
           Notification.broadcast (
               {'event'         : 'contactCalendarEventCreated',
@@ -42,11 +40,11 @@ abstract class ContactCalendar {
               });
           writeAndClose(request, JSON.encode(entry));
         }).catchError((error, stackTrace) {
-          print (error);
-          print (stackTrace);
+          log.severe(error, stackTrace);
           serverError(request, 'Failed to store event in database');
         });
-    }).catchError((onError) {
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
       serverError(request, 'Failed to extract client request');
     });
   }
@@ -89,13 +87,16 @@ abstract class ContactCalendar {
                }
               });
           writeAndClose(request, JSON.encode(entry));
-        }).catchError((onError) {
+        }).catchError((error, stackTrace) {
+          log.severe(error, stackTrace);
           serverError(request, 'Failed to update event in database');
         });
-      }).catchError((onError) {
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
         serverError(request, 'Failed to execute database query');
       });
-    }).catchError((onError) {
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
       serverError(request, 'Failed to extract client request');
     });
   }
@@ -126,10 +127,12 @@ abstract class ContactCalendar {
             });
             writeAndClose(request, JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
-          }).catchError((onError) {
-          serverError(request, 'Failed to removed event from database');
+          }).catchError((error, stackTrace) {
+           log.severe(error, stackTrace);
+           serverError(request, 'Failed to removed event from database');
         });
-    }).catchError((onError) {
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
       serverError(request, 'Failed to execute database query');
     });
   }
@@ -149,8 +152,7 @@ abstract class ContactCalendar {
           writeAndClose(request, JSON.encode(event));
         }
       }).catchError((error, stackTrace) {
-        print (error);
-        print (stackTrace);
+        log.severe(error, stackTrace);
         serverError(request, 'Failed to execute database query');
       });
   }
@@ -165,10 +167,10 @@ abstract class ContactCalendar {
           writeAndClose(request, JSON.encode(value));
         });
       } else {
-        request.response.statusCode = HttpStatus.NOT_FOUND;
-        writeAndClose(request, JSON.encode({'description' : 'no such contact ${contactID}@${receptionID}'}));
+        notFound(request, {'description' : 'no such contact ${contactID}@${receptionID}'});
       }
-    }).catchError((error) {
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
       serverError(request, error.toString());
     });
   }
