@@ -11,6 +11,8 @@ class HotKeys {
     _initialize();
   }
 
+  Keyboard _keyDown  = new Keyboard();
+
   Bus<KeyboardEvent> _alt1     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _alt2     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _alt3     = new Bus<KeyboardEvent>();
@@ -25,13 +27,13 @@ class HotKeys {
   Bus<KeyboardEvent> _altS     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altT     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _ctrlE    = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _down     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _esc      = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _star     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _up       = new Bus<KeyboardEvent>();
-
-  Keyboard           _keyDown  = new Keyboard();
 
   Stream<KeyboardEvent> get onAlt1     => _alt1.stream;
   Stream<KeyboardEvent> get onAlt2     => _alt2.stream;
@@ -47,7 +49,9 @@ class HotKeys {
   Stream<KeyboardEvent> get onAltS     => _altS.stream;
   Stream<KeyboardEvent> get onAltT     => _altT.stream;
   Stream<KeyboardEvent> get onAltW     => _altW.stream;
+  Stream<KeyboardEvent> get onCtrlE    => _ctrlE.stream;
   Stream<KeyboardEvent> get onDown     => _down.stream;
+  Stream<KeyboardEvent> get onEsc      => _esc.stream;
   Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
   Stream<KeyboardEvent> get onStar     => _star.stream;
   Stream<KeyboardEvent> get onTab      => _tab.stream;
@@ -72,12 +76,14 @@ class HotKeys {
        'Alt+s'      : _altS.fire,
        'Alt+t'      : _altT.fire,
        'Alt+w'      : _altW.fire,
-       'down'       : _down.fire,
-       'up'         : _up.fire};
+       'Ctrl+e'     : _ctrlE.fire,
+       'Esc'        : _esc.fire};
 
     final Map<String, EventListener> bindings =
-        {'Tab'      : _tab.fire,
-         'Shift+Tab': _shiftTab.fire};
+        {'down'     : _down.fire,
+         'Shift+Tab': _shiftTab.fire,
+         'Tab'      : _tab.fire,
+         'up'       : _up.fire};
 
     preventDefaultBindings.forEach((key, callback) {
       _keyDown.register(key, (Event event) {

@@ -5,27 +5,26 @@ class ContactCalendar extends Widget {
   UIContactCalendar _ui;
 
   ContactCalendar(UIModel this._ui, Place this._myPlace) {
-    _registerEventListeners();
+    registerEventListeners();
   }
 
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
 
-  void _activateMe(_) {
+  /**
+   * Simply navigate to my [Place]. Matters not if this widget is already
+   * focused.
+   */
+  void activateMe(_) {
     navigateToMyPlace();
   }
 
-  /**
-   *
-   */
-  void _registerEventListeners() {
-    navigate.onGo.listen(setWidgetState);
+  void registerEventListeners() {
+    _navigate.onGo.listen(setWidgetState);
 
-    _ui.root.onClick.listen(_activateMe);
+    _ui.onClick.listen(activateMe);
 
-    hotKeys.onAltK.listen(_activateMe);
-
-    // TODO (TL): temporary test dbl click
-    _ui.entryList.onDoubleClick.listen((_) => navigate.goCalendarEdit());
+    _hotKeys.onAltK .listen(activateMe);
+    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit() : null);
   }
 }

@@ -14,35 +14,68 @@ part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
 
 abstract class UIModel {
-  bool        get active => root.classes.contains('focus');
-  HtmlElement get firstTabElement;
-  HtmlElement get focusElement;
-  HtmlElement get lastTabElement;
-  HtmlElement get root;
+  HtmlElement _firstTabElement;
+  HtmlElement _focusElement;
+  HtmlElement _lastTabElement;
 
-  set firstTabElement(HtmlElement element);
-  set focusElement   (HtmlElement element);
-  set lastTabElement (HtmlElement element);
+  HtmlElement get _root;
 
+  /**
+   * Return true if the widget is in focus.
+   */
+  bool get active => _root.classes.contains('focus');
+
+  /**
+   * Blur the widget and set tabindex to -1.
+   */
   void blur() {
-    root.classes.toggle('focus', false);
-    focusElement.blur();
+    _root.classes.toggle('focus', false);
+    _focusElement.blur();
     _setTabIndex(-1);
   }
 
+  /**
+   * Focus the widget and set tabindex to 1.
+   */
   void focus() {
-    root.classes.toggle('focus', true);
-    focusElement.focus();
     _setTabIndex(1);
+    _root.classes.toggle('focus', true);
+    _focusElement.focus();
   }
+
+  /**
+   * Return true if the currently focused element is the first element with
+   * tabindex set for this widget.
+   */
+  bool get focusIsOnFirst => _focusElement == _firstTabElement;
+
+  /**
+   * Return true if the currently focused element is the last element with
+   * tabindex set for this widget.
+   */
+  bool get focusIsOnLast  => _focusElement == _lastTabElement;
 
   /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
    */
   void _setTabIndex(int index) {
-    root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    _root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
       element.tabIndex = index;
     });
+  }
+
+  /**
+   * Focus the first element with tabindex set for this widget.
+   */
+  void tabToFirst() {
+    _firstTabElement.focus();
+  }
+
+  /**
+   * Focus the last element with tabindex set for this widget.
+   */
+  void tabToLast() {
+    _lastTabElement.focus();
   }
 }
 

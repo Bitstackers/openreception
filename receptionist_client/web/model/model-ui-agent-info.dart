@@ -1,18 +1,11 @@
 part of model;
 
 class UIAgentInfo extends UIModel {
-  final DivElement _root;
+  final DivElement _myRoot;
 
-  UIAgentInfo(DivElement this._root);
+  UIAgentInfo(DivElement this._myRoot);
 
-  @override HtmlElement get firstTabElement => throw new UnsupportedError('');
-  @override HtmlElement get lastTabElement  => throw new UnsupportedError('');
-  @override HtmlElement get focusElement    => _root;
-  @override HtmlElement get root            => _root;
-
-  @override set firstTabElement(_) => throw new UnsupportedError('');
-  @override set focusElement(_)    => throw new UnsupportedError('');
-  @override set lastTabElement(_)  => throw new UnsupportedError('');
+  @override HtmlElement get _root => _myRoot;
 
   TableCellElement get _activeCountElement => _root.querySelector('.active-count');
   ImageElement     get _agentStateElement  => _root.querySelector('.agent-state');
@@ -20,8 +13,14 @@ class UIAgentInfo extends UIModel {
   TableCellElement get _pausedCountElement => _root.querySelector('.paused-count');
   ImageElement     get _portraitElement    => _root.querySelector('.portrait');
 
+  /**
+   * Set the ::active:: count.
+   */
   set activeCount (int value) => _activeCountElement.text = value.toString();
 
+  /**
+   * Set the visual representation of the current agents state.
+   */
   set agentState (AgentState agentState) {
     switch(agentState) {
       case AgentState.BUSY:
@@ -41,6 +40,9 @@ class UIAgentInfo extends UIModel {
     }
   }
 
+  /**
+   * Toggle the alert state graphic.
+   */
   set alertState (AlertState alertState) {
     switch(alertState) {
       case AlertState.OFF:
@@ -52,7 +54,13 @@ class UIAgentInfo extends UIModel {
     }
   }
 
+  /**
+   * Set the ::paused:: count.
+   */
   set pausedCount (int value) => _pausedCountElement.text = value.toString();
 
+  /**
+   * Set the agent portrait. [path] must be a valid source path to an image.
+   */
   set portrait (String path) => _portraitElement.src = path;
 }

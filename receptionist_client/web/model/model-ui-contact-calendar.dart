@@ -1,18 +1,18 @@
 part of model;
 
 class UIContactCalendar extends UIModel {
-  final DivElement _root;
+  final DivElement _myRoot;
 
-  UIContactCalendar(DivElement this._root);
+  UIContactCalendar(DivElement this._myRoot) {
+    _focusElement = _entryList;
+  }
 
-  @override HtmlElement get firstTabElement => null;
-  @override HtmlElement get lastTabElement  => null;
-  @override HtmlElement get focusElement    => entryList;
-  @override HtmlElement get root            => _root;
+  @override HtmlElement get _root => _myRoot;
 
-  @override set firstTabElement(_) => null;
-  @override set focusElement(_)    => null;
-  @override set lastTabElement(_)  => null;
+  UListElement get _entryList => _root.querySelector('ul');
 
-  UListElement get entryList => _root.querySelector('ul');
+  /**
+   * Return the mouse click event stream for this widget.
+   */
+  Stream<MouseEvent> get onClick => _myRoot.onClick;
 }

@@ -25,48 +25,45 @@ part 'view-reception-sales-calls.dart';
 part 'view-reception-selector.dart';
 part 'view-welcome-message.dart';
 
-final HotKeys  hotKeys  = new HotKeys();
-final Navigate navigate = new Navigate();
-
-// TODO (TL): Decide if we need to check for null on widgets that have no actual
-// activation and/or no Place. It's probably a wasted check, since it will fail
-// hard an early.
+final HotKeys  _hotKeys  = new HotKeys();
+final Navigate _navigate = new Navigate();
 
 abstract class Widget {
-  /**
-   * Focus on ui.lastTabElement when ui.firstTabElement is in focus and a
-   * Shift+Tab keyboard event is captured.
-   */
-  void handleShiftTab(KeyboardEvent event) {
-    if(ui.active && ui.focusElement == ui.firstTabElement) {
-      event.preventDefault();
-      ui.lastTabElement.focus();
-    }
-  }
-
-  /**
-     * Focus on ui.firstTabElement when ui.lastTabElement is in focus and a Tab
-     * keyboard event is captured.
-     */
-  void handleTab(KeyboardEvent event) {
-    if(ui.active && ui.focusElement == ui.lastTabElement) {
-      event.preventDefault();
-      ui.firstTabElement.focus();
-    }
-  }
-
   /**
    * SHOULD return the widgets [Place]. MAY return null if the widget has no
    * [Place] associated with it.
    */
-  Place get myPlace;
+  Place   get myPlace;
+  UIModel get ui;
+
+  /**
+   * Tab from first to last tab element when first is in focus an a Shift+Tab
+   * event is caught.
+   */
+  void handleShiftTab(KeyboardEvent event) {
+    if(ui.active && ui.focusIsOnFirst) {
+      event.preventDefault();
+      ui.tabToLast();
+    }
+  }
+
+  /**
+   * Tab from last to first tab element when last is in focus an a Tab event
+   * is caught.
+   */
+  void handleTab(KeyboardEvent event) {
+    if(ui.active && ui.focusIsOnLast) {
+      event.preventDefault();
+      ui.tabToFirst();
+    }
+  }
 
   /**
    * Navigate to [myPlace] if widget is not already in focus.
    */
   void navigateToMyPlace() {
     if(!ui.active) {
-      navigate.go(myPlace);
+      _navigate.go(myPlace);
     }
   }
 
@@ -80,6 +77,4 @@ abstract class Widget {
       ui.blur();
     }
   }
-
-  UIModel get ui;
 }

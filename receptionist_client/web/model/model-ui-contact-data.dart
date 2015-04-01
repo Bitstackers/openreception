@@ -1,18 +1,13 @@
 part of model;
 
 class UIContactData extends UIModel {
-  final DivElement _root;
+  final DivElement _myRoot;
 
-  UIContactData(DivElement this._root);
+  UIContactData(DivElement this._myRoot) {
+    _focusElement = _telNumList;
+  }
 
-  @override HtmlElement get firstTabElement => throw new UnsupportedError('');
-  @override HtmlElement get lastTabElement  => throw new UnsupportedError('');
-  @override HtmlElement get focusElement    => _telNumList;
-  @override HtmlElement get root            => _root;
-
-  @override set firstTabElement(_) => throw new UnsupportedError('');
-  @override set focusElement(_)    => throw new UnsupportedError('');
-  @override set lastTabElement(_)  => throw new UnsupportedError('');
+  @override HtmlElement get _root => _myRoot;
 
   UListElement get _additionalInfoList => _root.querySelector('.additional-info');
   UListElement get _backupsList        => _root.querySelector('.backups');
@@ -25,14 +20,42 @@ class UIContactData extends UIModel {
   UListElement get _titleList          => _root.querySelector('.title');
   UListElement get _workHoursList      => _root.querySelector('.work-hours');
 
+  /**
+   *
+   */
   set additionalInfo(List<String> items) => _populateList(_additionalInfoList, items);
-  set backups       (List<String> items) => _populateList(_backupsList, items);
 
-  Stream<MouseEvent> get clickSelect => _telNumList.onClick;
+  /**
+   *
+   */
+  set backups (List<String> items) => _populateList(_backupsList, items);
 
+  /**
+   * Returns the onClick stream for the telephone numbers list.
+   */
+  Stream<MouseEvent> get clickSelectTelNum => _telNumList.onClick;
+
+  /**
+   *
+   */
   set commands      (List<String> items) => _populateList(_commandsList, items);
+
+  /**
+   *
+   */
   set departments   (List<String> items) => _populateList(_departmentList, items);
+
+  /**
+   *
+   */
   set emailAddresses(List<String> items) => _populateList(_emailAddressesList, items);
+
+  /**
+   *
+   */
+  void focusOnTelNumList() {
+    _telNumList.focus();
+  }
 
   /**
    * Return the selected [TelNum] from [_telNumList]
@@ -133,6 +156,14 @@ class UIContactData extends UIModel {
    */
   bool get noRinging => !_telNumList.children.any((e) => e.classes.contains('ringing'));
 
+  /**
+   * Return the mouse click event stream for this widget.
+   */
+  Stream<MouseEvent> get onClick => _myRoot.onClick;
+
+  /**
+   *
+   */
   void _populateList(UListElement parent, List<String> list) {
     list.forEach((String item) {
       parent.append(new LIElement()..text = item);
@@ -153,10 +184,29 @@ class UIContactData extends UIModel {
     }
   }
 
+  /**
+   *
+   */
   set relations     (List<String> items) => _populateList(_relationsList, items);
+
+  /**
+   *
+   */
   set responsibility(List<String> items) => _populateList(_responsibilityList, items);
+
+  /**
+   *
+   */
   set telnums       (List<TelNum> items) => items.forEach((TelNum item) {_telNumList.append(item._li);});
+
+  /**
+   *
+   */
   set titles        (List<String> items) => _populateList(_titleList, items);
+
+  /**
+   *
+   */
   set workHours     (List<String> items) => _populateList(_workHoursList, items);
 }
 

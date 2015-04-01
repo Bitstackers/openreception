@@ -1,8 +1,8 @@
 part of view;
 
 class ContactData extends Widget {
-  UIContactData _ui;
   Place         _myPlace;
+  UIContactData _ui;
 
   ContactData(UIModel this._ui, Place this._myPlace) {
     test(); // TODO (TL): Get rid of this testing code...
@@ -13,16 +13,26 @@ class ContactData extends Widget {
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
 
+  /**
+   * Simply navigate to my [Place]. Matters not if this widget is already
+   * focused.
+   */
   void activateMe(_) {
-    ui.focusElement.focus(); /// NOTE (TL): Sticky focus on focusElement
+    _ui.focusOnTelNumList();
     navigateToMyPlace();
   }
 
+  /**
+   *
+   */
   void handleMouseClick(MouseEvent event) {
     select(_ui.getTelNumFromClick(event));
   }
 
-  void handleUpDown(KeyboardEvent event) {
+  /**
+   *
+   */
+  void _handleUpDown(KeyboardEvent event) {
     if(_ui.active) {
       event.preventDefault();
       switch(event.keyCode) {
@@ -36,28 +46,34 @@ class ContactData extends Widget {
     }
   }
 
+  /**
+   *
+   */
   void registerEventListeners() {
-    navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(setWidgetState);
 
-    ui.root.onClick.listen(activateMe);
+    _ui.onClick.listen(activateMe);
 
-    hotKeys.onAltT.listen(activateMe);
+    _hotKeys.onAltT.listen(activateMe);
 
-    hotKeys.onAlt1.listen((_) => select(_ui.getTelNumFromIndex(0)));
-    hotKeys.onAlt2.listen((_) => select(_ui.getTelNumFromIndex(1)));
-    hotKeys.onAlt3.listen((_) => select(_ui.getTelNumFromIndex(2)));
-    hotKeys.onAlt4.listen((_) => select(_ui.getTelNumFromIndex(3)));
-    hotKeys.onDown.listen(handleUpDown);
-    hotKeys.onUp  .listen(handleUpDown);
+    _hotKeys.onAlt1.listen((_) => select(_ui.getTelNumFromIndex(0)));
+    _hotKeys.onAlt2.listen((_) => select(_ui.getTelNumFromIndex(1)));
+    _hotKeys.onAlt3.listen((_) => select(_ui.getTelNumFromIndex(2)));
+    _hotKeys.onAlt4.listen((_) => select(_ui.getTelNumFromIndex(3)));
+    _hotKeys.onDown.listen(_handleUpDown);
+    _hotKeys.onUp  .listen(_handleUpDown);
 
-    hotKeys.onStar.listen((_) => ring(_ui.getSelectedTelNum()));
+    _hotKeys.onStar.listen((_) => ring(_ui.getSelectedTelNum()));
 
-    _ui.clickSelect.listen(handleMouseClick);
+    _ui.clickSelectTelNum.listen(handleMouseClick);
 
     /// TODO (TL): Add listener for selected contacts
     /// TODO (TL): Add listener for call events to detect pickup/hangup
   }
 
+  /**
+   *
+   */
   void ring(TelNum telNum) {
     if(_ui.active && _ui.noRinging && telNum != null) {
       _ui.markRinging(telNum);
@@ -65,6 +81,9 @@ class ContactData extends Widget {
     }
   }
 
+  /**
+   *
+   */
   void select(TelNum telNum) {
     if(_ui.active && _ui.noRinging && telNum != null) {
       _ui.markSelected(telNum);

@@ -18,21 +18,9 @@ class AgentInfo extends Widget {
 
   void registerEventListeners() {
     /// TODO (TL): Add relevant listeners
-  }
-
-  void updateActiveCount(int activeCount) {
-     _ui.activeCount = activeCount;
-   }
-
-  void updateAgentState(AgentState agentState) {
-    _ui.agentState = agentState;
-  }
-
-  void updateAlertState(AlertState alertState) {
-    _ui.alertState = alertState;
-  }
-
-  void updatePausedCount(int pausedCount) {
-    _ui.pausedCount = pausedCount;
+    ///   _ui.activeCount = activeCount
+    ///   _ui.agentState = agentState
+    ///   _ui.alertState = alertState
+    ///   _ui.pausedCount = pausedCount
   }
 }

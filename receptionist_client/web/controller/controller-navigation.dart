@@ -45,6 +45,29 @@ class Navigate {
       }
     }
 
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * Fix it so we don't add history.back() calls to our current history.
+     *
+     * We need some sort of "pushable" parameter that defaults to true but can
+     * be set to false if need be.
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
     _widgetHistory[place.contextId] = place.widgetId;
     window.history.pushState(null, '${place.contextId}.${place.widgetId}', '#${place.contextId}.${place.widgetId}');
     _bus.fire(place);
