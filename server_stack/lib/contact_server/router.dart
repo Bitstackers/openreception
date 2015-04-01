@@ -11,12 +11,12 @@ import 'cache.dart' as cache;
 import 'configuration.dart';
 import 'package:openreception_framework/common.dart';
 import 'database.dart' as db;
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/httpserver.dart';
 import 'package:openreception_framework/model.dart'   as Model;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
-part 'router/getcalendar.dart';
 part 'router/getcontact.dart';
 part 'router/getcontactlist.dart';
 part 'router/getcontactsphones.dart';
@@ -59,9 +59,9 @@ void connectNotificationService() {
 void setup(HttpServer server) {
   Router router = new Router(server)
       ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
-      ..serve(              receptionContactResource, method: 'GET'   ).listen(getContact)
+      ..serve(              receptionContactResource, method: 'GET'   ).listen(Contact.get)
       ..serve(          receptionContactListResource, method: 'GET'   ).listen(getContactList)
-      ..serve(  receptionContactCalendarListResource, method: 'GET'   ).listen(getContactCalendar)
+      ..serve(  receptionContactCalendarListResource, method: 'GET'   ).listen(ContactCalendar.list)
       ..serve(    receptionContactInvalidateResource, method: 'POST'  ).listen(invalidateReception)
       ..serve(      receptionContactCalendarResource, method: 'GET'   ).listen(ContactCalendar.get)
       ..serve(      receptionContactCalendarResource, method: 'PUT'   ).listen(ContactCalendar.update)

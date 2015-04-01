@@ -12,12 +12,12 @@ abstract class ContactCalendar {
     int receptionID = pathParameter(request.uri, 'reception');
 
     extractContent(request).then((String content) {
-      Map data;
 
-      print (content);
+      Model.CalendarEntry entry;
 
       try {
-        data = JSON.decode(content);
+        Map data = JSON.decode(content);
+        entry = new Model.CalendarEntry.fromMap(data);
       }
       catch(error) {
         request.response.statusCode = 400;
@@ -28,11 +28,8 @@ abstract class ContactCalendar {
         return;
 
       }
-      print (data);
 
-      db.ContactCalendar.createEvent(contactID        : contactID,
-                                     receptionID      : receptionID,
-                                     event            : data)
+      db.ContactCalendar.createEvent(entry)
         .then((_) {
           logger.debugContext('Created event for ${contactID}@${receptionID}', context);
 
@@ -43,8 +40,10 @@ abstract class ContactCalendar {
                  'receptionID' : receptionID
                }
               });
-          writeAndClose(request, JSON.encode(data));
-        }).catchError((onError) {
+          writeAndClose(request, JSON.encode(entry));
+        }).catchError((error, stackTrace) {
+          print (error);
+          print (stackTrace);
           serverError(request, 'Failed to store event in database');
         });
     }).catchError((onError) {
@@ -58,10 +57,11 @@ abstract class ContactCalendar {
     int eventID     = pathParameter(request.uri, 'event');
 
     extractContent(request).then((String content) {
-      Map data;
+      Model.CalendarEntry entry;
 
       try {
-        data = JSON.decode(content);
+        Map data = JSON.decode(content);
+        entry = new Model.CalendarEntry.fromMap(data);
       }
       catch(error) {
         request.response.statusCode = 400;
@@ -79,10 +79,7 @@ abstract class ContactCalendar {
           notFound(request, {'error' : 'not found'});
           return;
         }
-        db.ContactCalendar.updateEvent(contactID        : contactID,
-                                     receptionID      : receptionID,
-                                     eventID          : eventID,
-                                     event            : data)
+        db.ContactCalendar.updateEvent(entry)
         .then((_) {
           Notification.broadcast (
               {'event'         : 'contactCalendarEventUpdated',
@@ -91,7 +88,7 @@ abstract class ContactCalendar {
                  'receptionID' : receptionID
                }
               });
-          writeAndClose(request, JSON.encode(data));
+          writeAndClose(request, JSON.encode(entry));
         }).catchError((onError) {
           serverError(request, 'Failed to update event in database');
         });
@@ -145,15 +142,34 @@ abstract class ContactCalendar {
     db.ContactCalendar.getEvent(contactID        : contactID,
                                 receptionID      : receptionID,
                                 eventID          : eventID)
-      .then((Map event) {
+      .then((Model.CalendarEntry event) {
         if (event == null) {
           notFound(request, {'description' : 'No calendar event found with ID $eventID'});
         } else {
           writeAndClose(request, JSON.encode(event));
         }
-      }).catchError((onError) {
+      }).catchError((error, stackTrace) {
+        print (error);
+        print (stackTrace);
         serverError(request, 'Failed to execute database query');
       });
   }
 
+  static void list(HttpRequest request) {
+    int contactID   = pathParameter(request.uri, 'contact');
+    int receptionID = pathParameter(request.uri, 'reception');
+
+    Contact.exists (contactID : contactID, receptionID : receptionID).then((bool exists) {
+      if(exists) {
+        return db.ContactCalendar.list(receptionID, contactID).then((List<Map> value) {
+          writeAndClose(request, JSON.encode(value));
+        });
+      } else {
+        request.response.statusCode = HttpStatus.NOT_FOUND;
+        writeAndClose(request, JSON.encode({'description' : 'no such contact ${contactID}@${receptionID}'}));
+      }
+    }).catchError((error) {
+      serverError(request, error.toString());
+    });
+  }
 }

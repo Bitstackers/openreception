@@ -15,7 +15,6 @@ void getContact(HttpRequest request) {
 Future _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) {
   return db.getContact(receptionId, contactId).then((Model.Contact contact) {
 
-
     if(contact == Model.Contact.nullContact) {
       request.response.statusCode = HttpStatus.NOT_FOUND;
       return writeAndClose(request, JSON.encode({}));

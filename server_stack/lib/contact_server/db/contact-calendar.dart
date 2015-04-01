@@ -37,7 +37,7 @@ LIMIT 1;
 
   }
 
-  static Future createEvent({int contactID, int receptionID, Map event, Map distributionList : null}) {
+  static Future createEvent(Model.CalendarEntry entry, {Map distributionList : null}) {
     String sql = '''
 START TRANSACTION;
 
@@ -54,20 +54,19 @@ START TRANSACTION;
 COMMIT;''';
 
     Map parameters =
-      {'receptionID'      : receptionID,
-       'contactID'        : contactID,
+      {'receptionID'      : entry.receptionID,
+       'contactID'        : entry.contactID,
        'distributionList' : distributionList,
-       'start'            : Util.unixTimestampToDateTime(event['start']),
-       'end'              : Util.unixTimestampToDateTime(event['stop']),
-       'content'          : event['content']};
+       'start'            : entry.startTime,
+       'end'              : entry.stopTime,
+       'content'          : entry.content};
 
-    print (sql);
-  return connection.execute(sql, parameters);
+    return connection.execute(sql, parameters);
 
   }
 
 
-  static Future<int> updateEvent({int contactID, int receptionID, int eventID, Map event, Map distributionList : null}) {
+  static Future<int> updateEvent(Model.CalendarEntry entry, {Map distributionList : null}) {
     String sql = '''
    UPDATE calendar_events ce
       SET
@@ -80,13 +79,13 @@ COMMIT;''';
         AND cc.reception_id = @receptionID;''';
 
     Map parameters =
-      {'receptionID'      : receptionID,
-       'contactID'        : contactID,
-       'eventID'          : eventID,
+      {'receptionID'      : entry.receptionID,
+       'contactID'        : entry.contactID,
+       'eventID'          : entry.ID,
        'distributionList' : distributionList,
-       'start'            : Util.unixTimestampToDateTime(event['start']),
-       'end'              : Util.unixTimestampToDateTime(event['stop']),
-       'content'          : event['content']};
+       'start'            : entry.startTime,
+       'end'              : entry.stopTime,
+       'content'          : entry.content};
 
   return connection.execute(sql, parameters).then((int rowsAffected) => rowsAffected);
 
@@ -117,7 +116,7 @@ COMMIT; ''';
 
   }
 
-  static Future<Map> getEvent({int contactID, int receptionID, int eventID}) {
+  static Future<Model.CalendarEntry> getEvent({int contactID, int receptionID, int eventID}) {
     String sql = '''
 SELECT 
   start, stop, message 
@@ -144,14 +143,45 @@ LIMIT 1;
 
       var row = rows.first;
 
-      return {'id'      : eventID,
-              'content' : row.message,
-              'start'   : Util.dateTimeToUnixTimestamp(row.start),
-              'stop'    : Util.dateTimeToUnixTimestamp(row.stop)};
+      Map map =
+                {'id'      : eventID,
+                 'start'   : Util.dateTimeToUnixTimestamp(row.start),
+                 'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
+                 'contact_id' : contactID,
+                 'reception_id' : receptionID,
+                 'content' : row.message};
+
+      return new Model.CalendarEntry.fromMap(map);
     } else {
       return null;
     }
-  });
+    });
+  }
 
+  //TODO: Convert to objects.
+  static Future<List<Map>> list(int receptionId, int contactId) {
+    String sql = '''
+    SELECT cal.id, cal.start, cal.stop, cal.message
+    FROM calendar_events cal join contact_calendar con on cal.id = con.event_id
+    WHERE con.reception_id = @receptionid AND con.contact_id = @contactid''';
+
+    Map parameters = {'receptionid' : receptionId,
+                      'contactid'   : contactId};
+
+    return connection.query(sql, parameters).then((rows) {
+      List events = new List();
+      for(var row in rows) {
+        Map event =
+          {'id'      : row.id,
+           'start'   : Util.dateTimeToUnixTimestamp(row.start),
+           'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
+           'contact_id' : contactId,
+           'reception_id' : receptionId,
+           'content' : row.message};
+        events.add(event);
+      }
+
+      return events;
+    });
   }
 }
