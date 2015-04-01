@@ -4,12 +4,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/cache.dart' as IO;
 import 'package:openreception_framework/common.dart';
 
 TokenVault vault = new TokenVault();
 
+const String libraryName = 'AuthServer.TokenVault';
+
 class TokenVault {
+
+  static final Logger log = new Logger ('$libraryName.TokenVault');
+
   Map<String, Map> _userTokens = new Map<String, Map>();
   Map<String, Map> _serverTokens = new Map<String, Map>();
 
@@ -24,8 +30,9 @@ class TokenVault {
   }
 
   void insertToken(String token, Map data) {
-    print(data);
+    log.finest ('Inserting new token: $data');
     if(_userTokens.containsKey(token)) {
+      log.severe('Duplicate token: $token');
       throw new Exception('insertToken. Token allready exists: $token');
     } else {
       _userTokens[token] = data;
@@ -70,9 +77,9 @@ class TokenVault {
               String token = item.path.split('/').last.split('.').first;
               Map data = JSON.decode(text);
               _serverTokens[token] = data;
-              print ('Loaded ${_serverTokens[token]}');
+              log.finest ('Loaded ${_serverTokens[token]}');
             }).catchError((error) {
-              log('TokenVault.loadFromDirectory() ${error}');
+              log.severe ('TokenVault.loadFromDirectory() ${error}');
             });
           }
         });

@@ -4,19 +4,23 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import '../lib/callflowcontrol/configuration.dart';
+import '../lib/callflowcontrol/configuration.dart' as callflow;
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/callflowcontrol/router.dart' as router;
 import '../lib/callflowcontrol/model/model.dart' as Model;
 import 'package:esl/esl.dart' as ESL;
 import 'package:logging/logging.dart';
+import '../lib/configuration.dart';
 
-Logger log = new Logger ('CallFlowControl')..onRecord.listen(print);
+Logger log = new Logger ('CallFlowControl');
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
 void main(List<String> args) {
-  Logger.root.level = Level.ALL;
+
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.logDefaults.level;
+  Logger.root.onRecord.listen(Configuration.logDefaults.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -26,12 +30,12 @@ void main(List<String> args) {
     if (showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
+      callflow.config = new callflow.Configuration(parsedArgs);
+      callflow.config.whenLoaded()
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
         .then((_) => connectESLClient())
-        .then((_) => http.start(config.httpport, router.registerHandlers))
+        .then((_) => http.start(callflow.config.httpport, router.registerHandlers))
         .catchError((e) => log.info('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch (e) {
@@ -51,7 +55,7 @@ void connectESLClient() {
 
   Duration period = new Duration(seconds : 3);
 
-  log.info('Connecting to ${config.eslHostname}:${config.eslPort}');
+  log.info('Connecting to ${callflow.config.eslHostname}:${callflow.config.eslPort}');
 
   Model.PBXClient.instance = new ESL.Connection();
 
@@ -59,8 +63,6 @@ void connectESLClient() {
 
   //TODO: Channel-List subscriptions.
   Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
-
-  Model.ChannelList.event.listen(print);
 
   Model.PBXClient.instance.eventStream.listen(Model.ChannelList.instance.handleEvent);
 
@@ -70,7 +72,7 @@ void connectESLClient() {
   Model.PBXClient.instance.requestStream.listen((ESL.Packet packet) {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
-        Model.PBXClient.instance.authenticate(config.eslPassword)
+        Model.PBXClient.instance.authenticate(callflow.config.eslPassword)
           .then((_) => Model.PBXClient.instance.event(['all'], format : ESL.EventFormat.Json))
           .then((_) => Model.PBXClient.instance.api('list_users')
             .then(loadPeerListFromPacket));
@@ -82,7 +84,7 @@ void connectESLClient() {
   });
 
   void tryConnect () {
-    Model.PBXClient.instance.connect(config.eslHostname, config.eslPort).catchError((error, stackTrace) {
+    Model.PBXClient.instance.connect(callflow.config.eslHostname, callflow.config.eslPort).catchError((error, stackTrace) {
       if (error is SocketException) {
         log.severe('ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
         new Timer(period, tryConnect);
@@ -90,7 +92,7 @@ void connectESLClient() {
       } else {
         log.severe('Failed to connect to FreeSWTICH.', error, stackTrace);
       }
-    }).then ((_) => log.info('Connected to ${config.eslHostname}:${config.eslPort}'));
+    }).then ((_) => log.info('Connected to ${callflow.config.eslHostname}:${callflow.config.eslPort}'));
   }
 
   tryConnect ();
@@ -99,7 +101,7 @@ void connectESLClient() {
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser..addFlag('help', abbr: 'h', help: 'Output this help')
         ..addOption('configfile', help: 'The JSON configuration file. Defaults to config.json')
-        ..addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${Default.httpport}')
+        ..addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${callflow.Default.httpport}')
         ..addOption('servertoken', help: 'servertoken');
 
   parsedArgs = parser.parse(arguments);
@@ -108,5 +110,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
 bool showHelp() => parsedArgs['help'];
 
 void loadPeerListFromPacket (ESL.Response response) {
-  Model.PeerList.instance = new ESL.PeerList.fromMultilineBuffer(response.rawBody);
+  Model.PeerList.instance =
+      new ESL.PeerList.fromMultilineBuffer(response.rawBody);
+  log.info('Loaded ${Model.PeerList.instance.length} peers from FreeSWITCH');
 }

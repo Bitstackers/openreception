@@ -6,11 +6,13 @@ import 'dart:convert';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:openreception_framework/common.dart';
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
 
-import '../lib/message_dispatcher/configuration.dart';
+import '../lib/message_dispatcher/configuration.dart' as msgdisp;
 import '../lib/message_dispatcher/router.dart' as Router;
+
+import '../lib/configuration.dart';
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -19,7 +21,14 @@ ArgParser parser = new ArgParser();
  * TODO: Initialize serverToken
  */
 
+final Logger log = new Logger ('MessageDispatcher');
+
 void main(List<String> args) {
+
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.messageDispatcher.log.level;
+  Logger.root.onRecord.listen(Configuration.messageDispatcher.log.onRecord);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -31,26 +40,26 @@ void main(List<String> args) {
       exit(1);
 
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
+      msgdisp.config = new msgdisp.Configuration(parsedArgs);
+      msgdisp.config.whenLoaded()
         .then((_) => Router.startDatabase())
         .then((_) => Router.connectNotificationService())
 
         // HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
-      .then((_) => periodicEmailSend()).catchError((e, stackTrace) => logger.errorContext('${e} : ${stackTrace}', 'main'));
+      .then((_) => periodicEmailSend()).catchError((e, stackTrace) => log.shout (e, stackTrace));
     }
   } on ArgumentError catch (e, stackTrace) {
-    logger.errorContext('main() ArgumentError ${e} : ${stackTrace}', 'main');
+    log.shout ('main() ArgumentError ${e} : ${stackTrace}');
     print(parser.usage);
 
   } on FormatException catch (e, stackTrace) {
-    logger.errorContext('main() FormatException ${e} : ${stackTrace}', 'main');
+    log.shout ('main() FormatException ${e} : ${stackTrace}');
     print(parser.usage);
 
   } catch (e, stackTrace) {
 
-    logger.errorContext('Unhandled exception ${e} : ${stackTrace}', 'main');
+    log.shout ('Unhandled exception ${e} : ${stackTrace}');
   }
 }
 
@@ -61,40 +70,40 @@ List<Model.MessageEndpoint> emailEndpoints(List<Model.MessageEndpoint> endpoints
 
 List<Model.MessageRecipient> smsRecipients(Model.Message message) => message.recipients.where((Model.MessageRecipient recipient) => recipient.endpoints.contains(Model.MessageEndpointType.SMS)).toList();
 
-Timer reSchedule() => new Timer(new Duration(seconds: config.mailerPeriod), periodicEmailSend);
+Timer reSchedule() => new Timer(new Duration(seconds: msgdisp.config.mailerPeriod), periodicEmailSend);
 
 
 Future tryDispatch(Model.MessageQueueItem queueItem) {
-  final String context = "tryDispatch";
-
   return queueItem.message(Router.messageStore).then((Model.Message message) {
 
     if (!message.recipients.hasRecipients) {
-      logger.errorContext("No recipients detected on message with ID ${message.ID}!", context);
-
+      log.severe ("No recipients detected on message with ID ${message.ID}!");
+      queueItem.tries++;
       queueItem.save(Router.messageQueueStore);
 
     } else {
 
-      logger.debugContext('Dispatching to email recipients message with id ${message.ID} - queueID: ${queueItem.ID} ', context);
+      log.fine('Dispatching to email recipients message with id ${message.ID} - queueID: ${queueItem.ID} ');
 
       Model.Template email = new Model.TemplateEmail(message)..endpoints = emailEndpoints(queueItem.unhandledEndpoints);
 
       String json = JSON.encode(email);
 
       /* Kick off a mailer process */
-      return Process.start('python', [config.mailerScript, json]).then((process) {
+      return Process.start('python', [msgdisp.config.mailerScript, json]).then((process) {
 
-        logger.errorContext('Kicking off mailer process', context);
+        log.finest('Kicking off mailer process');
         /// Redirect the output from the mailer to the logger.
-        process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) => logger.errorContext('Python mailer (stdout): ${line}', context));
-        process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) => logger.errorContext('Python mailer (stderr): ${line}', context));
+        process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) =>
+            log.finest('Python mailer (stdout): ${line}'));
+        process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) =>
+            log.severe('Python mailer (stderr): ${line}'));
 
         process.exitCode.then((int exitCode) {
           if (exitCode != 0) {
-            logger.errorContext('Python mailer prematurely exits with code: ${exitCode},', context);
+            log.severe('Python mailer prematurely exits with code: ${exitCode},');
           } else {
-            /// Remove the email endpoints, as they are now handled.
+            /// Remove the email endpoints, as they are now dispatched to.
             queueItem.unhandledEndpoints.removeWhere((Model.MessageEndpoint ep)
                 => emailEndpoints(queueItem.unhandledEndpoints).contains(ep));
           }
@@ -106,10 +115,18 @@ Future tryDispatch(Model.MessageQueueItem queueItem) {
             queueItem.archive(Router.messageQueueStore);
           }
           else {
+            if (queueItem.tries >= msgdisp.config.maxTries) {
+              //TODO: Figure out what to do with the message, once it reaches
+              // this point.
+
+            }
             queueItem.save(Router.messageQueueStore);
           }
         });
-      }).catchError((onError) => logger.errorContext("Failed to run mailer process. Error: ${onError}", context));
+      }).catchError((error, stackTrace) {
+        log.shout('Failed to run mailer process');
+        log.shout(error, stackTrace);
+      });
     }
   });
 }
@@ -121,23 +138,23 @@ Future tryDispatch(Model.MessageQueueItem queueItem) {
  */
 void periodicEmailSend() {
 
-  int messageCount = null;
   DateTime start = new DateTime.now();
 
-  final String context = "periodicEmailSend";
-
-  Router.messageQueueStore.list(maxTries : config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
+  Router.messageQueueStore.list(maxTries : msgdisp.config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
-      logger.infoContext('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.mailerPeriod} seconds', context);
+      log.info('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${msgdisp.config.mailerPeriod} seconds');
       reSchedule();
     });
-  }).catchError((onError, stacktrace) => logger.errorContext("Failed to load database message. Error: ${onError}. Trace: ${stacktrace}", context));
+  }).catchError((error, stackTrace) {
+    log.severe('Failed to load database message');
+    log.severe (error, stackTrace);
+  });
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addFlag('help', abbr: 'h', help: 'Output this help');
   parser.addOption('configfile', help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${Default.HTTPPort}');
+  parser.addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${msgdisp.Default.HTTPPort}');
   parser.addOption('dbuser', help: 'The database user');
   parser.addOption('dbpassword', help: 'The database password');
   parser.addOption('dbhost', help: 'The database host. Defaults to localhost');

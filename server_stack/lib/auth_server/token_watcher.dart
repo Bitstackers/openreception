@@ -2,15 +2,19 @@ library tokenWatch;
 
 import 'dart:async';
 
+import 'package:logging/logging.dart';
 import 'configuration.dart';
 import 'token_vault.dart';
 import 'package:openreception_framework/common.dart';
 
+const String libraryName = 'AuthServer.tokenWatch';
+
+final Logger log = new Logger ('$libraryName');
+
 void setup() {
-  logger.debug('Watcher started');
-  //TODO this should be an isolate
   int minutes = 10;
   new Timer.periodic(new Duration(seconds: minutes), _timerTick);
+  log.info('Periodic timer started');
 }
 
 void seen(String token) {
@@ -27,7 +31,7 @@ void _timerTick(Timer timer) {
 
     int now = new DateTime.now().millisecondsSinceEpoch;
     if(now > expiresAt.millisecondsSinceEpoch) {
-      logger.debug('tokenWatch._timerTick() This token ${token} expired ${expiresAt}');
+      log.info('This token ${token} expired ${expiresAt} - removing it');
       vault.removeToken(token);
     }
   }

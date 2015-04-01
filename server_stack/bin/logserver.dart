@@ -3,15 +3,23 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:openreception_framework/common.dart';
-import '../lib/log_server/configuration.dart';
+import '../lib/log_server/configuration.dart' as logserver;
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/log_server/router.dart' as router;
+import 'package:logging/logging.dart';
+import '../lib/configuration.dart';
+
+Logger log = new Logger ('LogServer');
 
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
+
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.logDefaults.level;
+  Logger.root.onRecord.listen(Configuration.logDefaults.onRecord);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -20,23 +28,23 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
-        .then((_) => print(config))
-        .then((_) => config.validate())
-        .then((_) => http.start(config.httpport, router.setup))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+      logserver.config = new logserver.Configuration(parsedArgs);
+      logserver.config.whenLoaded()
+        .then((_) => print(logserver.config))
+        .then((_) => logserver.config.validate())
+        .then((_) => http.start(logserver.config.httpport, router.setup))
+        .catchError((e) => log.shout ('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch(e) {
-    log('main() ArgumentError ${e}.');
+    log.shout ('main() ArgumentError ${e}.');
     print(parser.usage);
 
   } on FormatException catch(e) {
-    log('main() FormatException ${e}');
+    log.shout ('main() FormatException ${e}');
     print(parser.usage);
 
   } catch(e) {
-    log('main() exception ${e}');
+    log.shout ('main() exception ${e}');
   }
 }
 

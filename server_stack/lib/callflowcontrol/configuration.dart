@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/common.dart';
 
@@ -32,6 +33,9 @@ abstract class Default {
 }
 
 class Configuration {
+
+  static final Logger log = new Logger ('callflowcontrol.configuration');
+
   static Configuration _configuration;
 
   ArgResults _args;
@@ -114,8 +118,10 @@ class Configuration {
       }
 
     })
-    .catchError((err) {
-      log('Failed to read "$configfile". Error: $err');
+    .catchError((error, stackTrace) {
+      log.shout ('Failed to read "$configfile".');
+      log.shout (error, stackTrace);
+      return new Future.error(error, stackTrace);
     });
   }
 
@@ -135,14 +141,15 @@ class Configuration {
 
       assert (this.serverToken != null);
 
-    }).catchError((error) {
-      log('Failed loading commandline arguments. $error');
+    }).catchError((error, stacktrace) {
+      log.shout ('Failed loading commandline arguments.');
+      log.shout (error, stacktrace);
       throw error;
     });
   }
 
   void _outputConfig() {
-    print('''
+    log.fine('''
 authurl            : ${this.authUrl}
 httpport           : ${this.httpport}
 notificationServer : ${this.notificationServer}

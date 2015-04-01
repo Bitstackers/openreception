@@ -1,12 +1,12 @@
 import 'dart:io';
-import 'dart:async';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
+import 'package:logging/logging.dart';
 import '../lib/auth_server/cache.dart' as cache;
-import 'package:openreception_framework/common.dart';
-import '../lib/auth_server/configuration.dart';
+import '../lib/auth_server/configuration.dart' as auth;
+import '../lib/configuration.dart';
 import '../lib/auth_server/database.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/auth_server/router.dart' as router;
@@ -16,7 +16,14 @@ import '../lib/auth_server/token_watcher.dart' as watcher;
 ArgResults    parsedArgs;
 ArgParser     parser = new ArgParser();
 
+final Logger log = new Logger ('AuthServer');
+
 void main(List<String> args) {
+
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.logDefaults.level;
+  Logger.root.onRecord.listen(Configuration.logDefaults.onRecord);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -25,30 +32,29 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
-        .then((_) => handleLogger())
-        .then((_) => log(config.toString()))
+      auth.config = new auth.Configuration(parsedArgs);
+      auth.config.whenLoaded()
+        .then((_) => log.fine(auth.config.toString()))
         .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => watcher.setup())
-        .then((_) => vault.loadFromDirectory(config.serverTokenDir))
-        .then((_) => http.start(config.httpport, router.setup))
+        .then((_) => vault.loadFromDirectory(auth.config.serverTokenDir))
+        .then((_) => http.start(auth.config.httpport, router.setup))
         .catchError((e) {
-          log('main() -> config.whenLoaded() ${e}');
+          print ('main() -> config.whenLoaded() ${e}');
           throw e;
         });
     }
   } on ArgumentError catch(e) {
-    log('main() ArgumentError ${e}.');
-    print(parser.usage);
+    log.severe('main() ArgumentError ${e}.');
+    print (parser.usage);
 
   } on FormatException catch(e) {
-    log('main() FormatException ${e}');
+    log.severe('main() FormatException ${e}');
     print(parser.usage);
 
   } catch(e) {
-    log('main() exception ${e}');
+    log.severe('main() exception ${e}');
   }
 }
 
@@ -69,5 +75,3 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
 }
 
 bool showHelp() => parsedArgs['help'];
-
-Future handleLogger() => config.useSyslog ? activateSyslog(config.syslogHost) : new Future.value(null);
