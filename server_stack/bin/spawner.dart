@@ -38,10 +38,10 @@ void main(List<String> arguments) {
       'path': 'bin/cdrserver.dart',
       'args': []
     },
-//    'ContactServer': {
-//      'path': 'bin/contactserver.dart',
-//      'args': ['--servertoken', tokens[index++]]
-//    },
+    'ContactServer': {
+      'path': 'bin/contactserver.dart',
+      'args': ['--servertoken', tokens[index++]]
+    },
     'LogServer': {
       'path': 'bin/logserver.dart',
       'args': []
