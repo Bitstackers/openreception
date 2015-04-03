@@ -45,10 +45,10 @@ void runAllTests() {
       _reception.client.client.close(force: true);
     });
 
-    test('Get Contact', Contact.getContact);
+//    test('Get Contact', Contact.getContact);
     test('Get Non-Existing Contact', Contact.getNonExistingContact);
-    test('Get Contact List', Contact.getContactList);
-    test('Update Contact', Contact.updateContact);
-    test('Create Contact', Contact.createContact);
+//    test('Get Contact List', Contact.getContactList);
+//    test('Update Contact', Contact.updateContact);
+//    test('Create Contact', Contact.createContact);
   });
 }
