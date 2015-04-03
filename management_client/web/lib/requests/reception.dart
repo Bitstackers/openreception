@@ -11,8 +11,7 @@ Future<List<Reception>> getReceptionList() {
       ..onLoad.listen((_) {
         String body = request.responseText;
         if (request.status == 200) {
-          Map rawData = JSON.decode(body);
-          List<Map> rawReceptions = rawData['receptions'];
+          List<Map> rawReceptions = JSON.decode(body);
           completer.complete(rawReceptions.map((r) => new Reception.fromJson(r)).toList());
         } else if (request.status == 403) {
           completer.completeError(new ForbiddenException(body));
