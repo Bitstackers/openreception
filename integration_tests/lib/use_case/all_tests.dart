@@ -83,6 +83,11 @@ runUseCaseTests() {
     test('I 1 a ii', IncomingCall.incomingCall_I_1_a_ii);
     test('I 1 b i', IncomingCall.incomingCall_I_1_b_i);
     test('I 1 b ii', IncomingCall.incomingCall_I_1_b_ii);
+    test('I 2 a', IncomingCall.incomingCall_I_2_a);
+    test('I 2 b', IncomingCall.incomingCall_I_2_b);
+    test('II 1', IncomingCall.incomingCall_II_1);
+    test('II 2', IncomingCall.incomingCall_II_2);
+
     test('2', FindContact.find_contact_2);
   });
 
