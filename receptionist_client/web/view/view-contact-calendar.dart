@@ -1,6 +1,6 @@
 part of view;
 
-class ContactCalendar extends Widget {
+class ContactCalendar extends ViewWidget {
   Place              _myPlace;
   UIContactCalendar _ui;
 
@@ -19,12 +19,15 @@ class ContactCalendar extends Widget {
     navigateToMyPlace();
   }
 
+  @override void onBlur(_){}
+  @override void onFocus(_){}
+
   void registerEventListeners() {
     _navigate.onGo.listen(setWidgetState);
 
     _ui.onClick.listen(activateMe);
 
     _hotKeys.onAltK .listen(activateMe);
-    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit() : null);
+    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
   }
 }

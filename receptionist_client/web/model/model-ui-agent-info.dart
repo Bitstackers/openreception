@@ -5,7 +5,10 @@ class UIAgentInfo extends UIModel {
 
   UIAgentInfo(DivElement this._myRoot);
 
-  @override HtmlElement get _root => _myRoot;
+  @override HtmlElement get _firstTabElement => null;
+  @override HtmlElement get _focusElement    => null;
+  @override HtmlElement get _lastTabElement  => null;
+  @override HtmlElement get _root            => _myRoot;
 
   TableCellElement get _activeCountElement => _root.querySelector('.active-count');
   ImageElement     get _agentStateElement  => _root.querySelector('.agent-state');
@@ -23,17 +26,17 @@ class UIAgentInfo extends UIModel {
    */
   set agentState (AgentState agentState) {
     switch(agentState) {
-      case AgentState.BUSY:
+      case AgentState.Busy:
         _agentStateElement.src = 'images/agentsactive.svg';
         break;
-      case AgentState.IDLE:
+      case AgentState.Idle:
         /// TODO (TL): Need idle state graphic
         _agentStateElement.src = 'images/agentsactive.svg';
         break;
-      case AgentState.PAUSE:
+      case AgentState.Pause:
         _agentStateElement.src = 'images/agentssleep.svg';
         break;
-      case AgentState.UNKNOWN:
+      case AgentState.Unknown:
         /// TODO (TL): Need unknown state graphic
         _agentStateElement.src = 'images/agentsactive.svg';
         break;
@@ -45,10 +48,10 @@ class UIAgentInfo extends UIModel {
    */
   set alertState (AlertState alertState) {
     switch(alertState) {
-      case AlertState.OFF:
+      case AlertState.Off:
         /// TODO (TL): Need alert state OFF graphic
         break;
-      case AlertState.ON:
+      case AlertState.On:
         _alertStateElement.src = 'images/alert.svg';
         break;
     }

@@ -1,6 +1,6 @@
 part of view;
 
-class CalendarEditor extends Widget {
+class CalendarEditor extends ViewWidget {
   Place                 _myPlace;
   UICalendarEditor      _ui;
 
@@ -27,6 +27,24 @@ class CalendarEditor extends Widget {
     print('view.CalendarEditor._delete not fully implemented');
   }
 
+  @override void onBlur(Place place){
+    /// Cleanup stuff
+  }
+
+  @override void onFocus(Place place){
+    switch(place.widget) {
+      case Widget.ContactCalendar:
+        print('CalendarEditor opened from ContactCalendar');
+        break;
+      case Widget.ReceptionCalendar:
+        print('CalendarEditor opened from ReceptionCalendar');
+        break;
+      default:
+        /// TODO (TL): Do something sane here...
+        break;
+    }
+  }
+
   void registerEventListeners() {
     /// TODO (TL): On navigation to this widget:
     /// Figure out whether I got started from contact or reception calendar.
@@ -37,7 +55,7 @@ class CalendarEditor extends Widget {
 
     _hotKeys.onTab     .listen(handleTab);
     _hotKeys.onShiftTab.listen(handleShiftTab);
-    _hotKeys.onEsc.listen(cancel);
+    _hotKeys.onEsc     .listen(cancel);
 
     _ui.onCancel.listen(cancel);
     _ui.onDelete.listen(delete);

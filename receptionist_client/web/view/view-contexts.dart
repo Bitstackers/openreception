@@ -6,17 +6,17 @@ class Contexts {
 
   Contexts(UIModel this._ui) {
     /// TODO (TL): Perhaps take this map in as a constructor parameter?
-    _contextMap = {'context-calendar-edit': _ui.contextCalendarEdit,
-                   'context-home'         : _ui.contextHome,
-                   'context-homeplus'     : _ui.contextHomeplus,
-                   'context-messages'     : _ui.contextMessages};
+    _contextMap = {Context.CalendarEdit: _ui.contextCalendarEdit,
+                   Context.Home        : _ui.contextHome,
+                   Context.Homeplus    : _ui.contextHomeplus,
+                   Context.Messages    : _ui.contextMessages};
 
     _registerEventListeners();
   }
 
   void onNavigation(Place place) {
     _contextMap.forEach((id, element) {
-      id == place.contextId ? _setVisible(element) : _setHidden(element);
+      id == place.context ? _setVisible(element) : _setHidden(element);
     });
   }
 

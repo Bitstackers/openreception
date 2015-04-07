@@ -1,6 +1,6 @@
 part of view;
 
-class ReceptionCommands extends Widget {
+class ReceptionCommands extends ViewWidget {
   Place                _myPlace;
   UIReceptionCommands _dom;
 

@@ -28,12 +28,26 @@ part 'view-welcome-message.dart';
 final HotKeys  _hotKeys  = new HotKeys();
 final Navigate _navigate = new Navigate();
 
-abstract class Widget {
+abstract class ViewWidget {
   /**
    * SHOULD return the widgets [Place]. MAY return null if the widget has no
    * [Place] associated with it.
    */
-  Place   get myPlace;
+  Place get myPlace;
+
+  /**
+   * What to do when the widget blurs.
+   */
+  void onBlur(Place place);
+
+  /**
+   * What to do when the widget is focused.
+   */
+  void onFocus(Place place);
+
+  /**
+   * MUST return the widgets [UIModel].
+   */
   UIModel get ui;
 
   /**
@@ -68,13 +82,21 @@ abstract class Widget {
   }
 
   /**
-   * Figure out if [place] is here and set focus and tabindexes accordingly.
+   * If [place] is here:
+   *  call ui.focus()
+   *  call onFocus()
+   *
+   * if [place] is not here:
+   *  call ui.blur()
+   *  call onBlur();
    */
   void setWidgetState(Place place) {
     if(myPlace == place) {
       ui.focus();
+      onFocus(place);
     } else {
       ui.blur();
+      onBlur(place);
     }
   }
 }

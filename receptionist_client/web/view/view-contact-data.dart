@@ -1,6 +1,6 @@
 part of view;
 
-class ContactData extends Widget {
+class ContactData extends ViewWidget {
   Place         _myPlace;
   UIContactData _ui;
 
@@ -46,9 +46,9 @@ class ContactData extends Widget {
     }
   }
 
-  /**
-   *
-   */
+  @override void onBlur(_){}
+  @override void onFocus(_){}
+
   void registerEventListeners() {
     _navigate.onGo.listen(setWidgetState);
 
@@ -72,7 +72,8 @@ class ContactData extends Widget {
   }
 
   /**
-   *
+   * Mark [telNum] ringing if we're in focus, not already ringing and [telNum]
+   * is not null.
    */
   void ring(TelNum telNum) {
     if(_ui.active && _ui.noRinging && telNum != null) {

@@ -3,7 +3,7 @@ part of view;
 /**
  * Component for creating/editing and saving/sending messages.
  */
-class MessageCompose extends Widget {
+class MessageCompose extends ViewWidget {
   HtmlElement       _firstTabElement;
   HtmlElement       _focusOnMe;
   HtmlElement       _lastTabElement;

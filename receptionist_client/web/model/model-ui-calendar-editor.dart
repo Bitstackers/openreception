@@ -1,17 +1,23 @@
 part of model;
 
 class UICalendarEditor extends UIModel {
+  HtmlElement _myFirstTabElement;
+  HtmlElement _myFocusElement;
+  HtmlElement _myLastTabElement;
   final DivElement _myRoot;
 
   UICalendarEditor(DivElement this._myRoot) {
-    _focusElement    = _textAreaElement;
-    _firstTabElement = _textAreaElement;
-    _lastTabElement  = _cancelButtonElement;
+    _myFocusElement    = _textAreaElement;
+    _myFirstTabElement = _textAreaElement;
+    _myLastTabElement  = _cancelButtonElement;
 
     _registerEventListeners();
   }
 
-  @override HtmlElement get _root => _myRoot;
+  @override HtmlElement get _firstTabElement => _myFirstTabElement;
+  @override HtmlElement get _focusElement    => _myFocusElement;
+  @override HtmlElement get _lastTabElement  => _myLastTabElement;
+  @override HtmlElement get _root            => _myRoot;
 
   ButtonElement        get _cancelButtonElement => _root.querySelector('.cancel');
   ButtonElement        get _deleteButtonElement => _root.querySelector('.delete');
@@ -32,6 +38,11 @@ class UICalendarEditor extends UIModel {
   TextAreaElement      get _textAreaElement     => _root.querySelector('textarea');
 
   /**
+   * Set the widget header.
+   */
+  set header(String headline) => _headerElement.text = headline;
+
+  /**
    * Return the click event stream for the cancel button.
    */
   Stream<MouseEvent> get onCancel => _cancelButtonElement.onClick;
@@ -49,13 +60,14 @@ class UICalendarEditor extends UIModel {
   void _registerEventListeners() {
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {
-      element.onFocus.listen((Event event) => _focusElement = (event.target as HtmlElement));
+      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    /// NOTE (TL): This is here because it's a bit of a pain to put it in the
-    /// view. Also I don't think it's too insane to consider the inputs of this
-    /// widget to have some intrinsic management of which values are allowed and
-    /// which are not, especially considering the HTML5 type="number" attribute.
+    /// NOTE (TL): These onInput listeners is here because it's a bit of a pain
+    /// to put them in the view. Also I don't think it's too insane to consider
+    /// the inputs of this widget to have some intrinsic management of which
+    /// values are allowed and which are not, especially considering the HTML5
+    /// type="number" attribute.
     _textAreaElement.onInput   .listen((_) => _toggleButtons());
     _startHourElement.onInput  .listen((_) => _sanitizeInput(_startHourElement));
     _startMinuteElement.onInput.listen((_) => _sanitizeInput(_startMinuteElement));
@@ -89,6 +101,6 @@ class UICalendarEditor extends UIModel {
     _deleteButtonElement.disabled = !toggle;
     _saveButtonElement.disabled   = !toggle;
 
-    _lastTabElement = toggle ? _saveButtonElement : _cancelButtonElement;
+    _myLastTabElement = toggle ? _saveButtonElement : _cancelButtonElement;
   }
 }

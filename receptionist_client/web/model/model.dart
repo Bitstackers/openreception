@@ -13,11 +13,13 @@ part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
 
-abstract class UIModel {
-  HtmlElement _firstTabElement;
-  HtmlElement _focusElement;
-  HtmlElement _lastTabElement;
+enum AgentState {Busy, Idle, Pause, Unknown}
+enum AlertState {Off, On}
 
+abstract class UIModel {
+  HtmlElement get _firstTabElement;
+  HtmlElement get _focusElement;
+  HtmlElement get _lastTabElement;
   HtmlElement get _root;
 
   /**
@@ -29,18 +31,22 @@ abstract class UIModel {
    * Blur the widget and set tabindex to -1.
    */
   void blur() {
-    _root.classes.toggle('focus', false);
-    _focusElement.blur();
-    _setTabIndex(-1);
+    if(active) {
+      _root.classes.toggle('focus', false);
+      _focusElement.blur();
+      _setTabIndex(-1);
+    }
   }
 
   /**
    * Focus the widget and set tabindex to 1.
    */
   void focus() {
-    _setTabIndex(1);
-    _root.classes.toggle('focus', true);
-    _focusElement.focus();
+    if(!active) {
+      _setTabIndex(1);
+      _root.classes.toggle('focus', true);
+      _focusElement.focus();
+    }
   }
 
   /**
@@ -78,6 +84,3 @@ abstract class UIModel {
     _lastTabElement.focus();
   }
 }
-
-enum AgentState {BUSY, IDLE, PAUSE, UNKNOWN}
-enum AlertState {OFF, ON}

@@ -1,6 +1,6 @@
 part of view;
 
-class ContactList extends Widget {
+class ContactList extends ViewWidget {
   UIContactList _dom;
   Place          _myPlace;
 

@@ -11,15 +11,15 @@ void main() {
 
   CalendarEditor calendarEditor =
       new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
-                          new Place('context-calendar-edit', 'calendar-editor'));
+                          new Place(Context.CalendarEdit, Widget.CalendarEditor));
 
   ContactCalendar contactCalendar =
       new ContactCalendar(new UIContactCalendar(querySelector('#contact-calendar')),
-                          new Place('context-home', 'contact-calendar'));
+                          new Place(Context.Home, Widget.ContactCalendar));
 
   ContactData contactData =
       new ContactData(new UIContactData(querySelector('#contact-data')),
-                      new Place('context-home', 'contact-data'));
+                      new Place(Context.Home, Widget.ContactData));
 
 //  ContactList contactList =
 //      new ContactList(new UIContactList(querySelector('#contact-list')),

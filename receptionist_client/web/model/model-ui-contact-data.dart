@@ -3,32 +3,34 @@ part of model;
 class UIContactData extends UIModel {
   final DivElement _myRoot;
 
-  UIContactData(DivElement this._myRoot) {
-    _focusElement = _telNumList;
-  }
+  UIContactData(DivElement this._myRoot);
 
-  @override HtmlElement get _root => _myRoot;
+  @override HtmlElement get _firstTabElement => null;
+  @override HtmlElement get _focusElement    => _telNumList;
+  @override HtmlElement get _lastTabElement  => null;
+  @override HtmlElement get _root            => _myRoot;
 
-  UListElement get _additionalInfoList => _root.querySelector('.additional-info');
-  UListElement get _backupsList        => _root.querySelector('.backups');
-  UListElement get _commandsList       => _root.querySelector('.commands');
-  UListElement get _departmentList     => _root.querySelector('.department');
-  UListElement get _emailAddressesList => _root.querySelector('.email-addresses');
-  UListElement get _relationsList      => _root.querySelector('.relations');
-  UListElement get _responsibilityList => _root.querySelector('.responsibility');
-  OListElement get _telNumList         => _root.querySelector('.telephone-number');
-  UListElement get _titleList          => _root.querySelector('.title');
-  UListElement get _workHoursList      => _root.querySelector('.work-hours');
+  UListElement   get _additionalInfoList => _root.querySelector('.additional-info');
+  UListElement   get _backupsList        => _root.querySelector('.backups');
+  UListElement   get _commandsList       => _root.querySelector('.commands');
+  UListElement   get _departmentList     => _root.querySelector('.department');
+  UListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
+  HeadingElement get _headerElement      => _root.querySelector('h4');
+  UListElement   get _relationsList      => _root.querySelector('.relations');
+  UListElement   get _responsibilityList => _root.querySelector('.responsibility');
+  OListElement   get _telNumList         => _root.querySelector('.telephone-number');
+  UListElement   get _titleList          => _root.querySelector('.title');
+  UListElement   get _workHoursList      => _root.querySelector('.work-hours');
 
   /**
-   *
+   * Add [items] to the additional info list.
    */
   set additionalInfo(List<String> items) => _populateList(_additionalInfoList, items);
 
   /**
-   *
+   * Add [items] to the backups list.
    */
-  set backups (List<String> items) => _populateList(_backupsList, items);
+  set backups(List<String> items) => _populateList(_backupsList, items);
 
   /**
    * Returns the onClick stream for the telephone numbers list.
@@ -36,22 +38,22 @@ class UIContactData extends UIModel {
   Stream<MouseEvent> get clickSelectTelNum => _telNumList.onClick;
 
   /**
-   *
+   * Add [items] ot the commands list.
    */
-  set commands      (List<String> items) => _populateList(_commandsList, items);
+  set commands(List<String> items) => _populateList(_commandsList, items);
 
   /**
-   *
+   * Add [items] to the departments list.
    */
-  set departments   (List<String> items) => _populateList(_departmentList, items);
+  set departments(List<String> items) => _populateList(_departmentList, items);
 
   /**
-   *
+   * Add [items] to the email addresses list.
    */
   set emailAddresses(List<String> items) => _populateList(_emailAddressesList, items);
 
   /**
-   *
+   * Focus on the telNumList.
    */
   void focusOnTelNumList() {
     _telNumList.focus();
@@ -101,6 +103,11 @@ class UIContactData extends UIModel {
       return null;
     }
   }
+
+  /**
+   * Set the widget header.
+   */
+  set header(String headline) => _headerElement.text = headline;
 
   /**
    * Return true if [telNum] is marked ringing.
@@ -185,29 +192,29 @@ class UIContactData extends UIModel {
   }
 
   /**
-   *
+   * Add [items] to the relations list.
    */
-  set relations     (List<String> items) => _populateList(_relationsList, items);
+  set relations(List<String> items) => _populateList(_relationsList, items);
 
   /**
-   *
+   * Add [items] to the responsibility list.
    */
   set responsibility(List<String> items) => _populateList(_responsibilityList, items);
 
   /**
-   *
+   * Add [items] to the telnums list.
    */
-  set telnums       (List<TelNum> items) => items.forEach((TelNum item) {_telNumList.append(item._li);});
+  set telnums(List<TelNum> items) => items.forEach((TelNum item) {_telNumList.append(item._li);});
 
   /**
-   *
+   * Add [items] to the titles list.
    */
-  set titles        (List<String> items) => _populateList(_titleList, items);
+  set titles(List<String> items) => _populateList(_titleList, items);
 
   /**
-   *
+   * Add [items] to the workhours list.
    */
-  set workHours     (List<String> items) => _populateList(_workHoursList, items);
+  set workHours(List<String> items) => _populateList(_workHoursList, items);
 }
 
 /**
