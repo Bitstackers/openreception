@@ -14,26 +14,12 @@ abstract class ForwardCall {
   static Storage.Reception receptionStore = null;
   static int contactID = 2;
   static int receptionID = 1;
-  static Model.Call inboundCall;
-  static Model.Call outboundCall;
 
   static Future<Model.Call> Preconditions(String receptionNumber) {
-
-    nextStep = 0;
-    return Caller_Places_Call(receptionNumber).then((_) {
-
-      nextStep = 0;
-      return Call_Announced().then((Model.Call call) {
-        nextStep = 0;
-        return Offer_To_Pick_Up_Call(
-            receptionist,
-            call).then((Model.Call call) {
-          log.finest("Preconditions set up.");
-          inboundCall = call;
-          return call;
-        });
-      });
-    });
+      return caller.dial(receptionNumber)
+          .then((_) => receptionist.huntNextCall()
+          .then((Model.Call call) => receptionist.park(call)
+            .then((_) => call)));
   }
 
   static void teardown() => log.finest("Cleaning up after test...");
@@ -95,19 +81,17 @@ abstract class ForwardCall {
     });
   }
 
-  static Future<Model.Call> Receptionist_Places_Call(String extension) {
+  static Future Receptionist_Places_Call(String extension) {
     log.finest("Receptionist places call to $extension.");
+    receptionist.eventStack.clear();
 
-    return receptionist.originate(
-        extension,
-        contactID,
-        receptionID).then((Model.Call call) {
-      log.finest("Call-Flow-Control has accepted request to place call.");
-
-      return call;
-    }).catchError((error, stackTrace) {
+    return receptionist.originate(extension, contactID, receptionID)
+      .then((_) => log.finest("Call-Flow-Control has accepted request to place call."))
+      .then((_) => receptionist.waitForInboundCall())
+    .catchError((error, stackTrace) {
       log.severe("Receptionist failed to originate call to $extension.");
       log.severe(error, stackTrace);
+      return new Future.error(error, stackTrace);
     });
   }
 
@@ -130,12 +114,9 @@ abstract class ForwardCall {
     });
   }
 
-  static Future Receptionist_Hangs_Up_Outbound_Call() =>
-      Receptionist_Hangs_Up(outboundCall);
-
-  static Future Receptionist_Waits_For_Hang_Up() {
+  static Future Receptionist_Waits_For_Phone_Hang_Up() {
     step("Receptionist waits for hangs up...");
-    return receptionist.waitFor(eventType: Event.Key.callHangup);
+    return receptionist.waitForPhoneHangup();
   }
 
   static Future<Model.Call> Receptionist_Receives_Call() {
@@ -154,6 +135,8 @@ abstract class ForwardCall {
     }
   }
 
+  static Future Receptionist_Hangs_Up_Phone() =>
+    receptionist._phone.hangupAll();
 
   static Future Receptionist_Forwards_Call(Model.Call inboundCall,
       Model.Call outboundCall) {
@@ -266,6 +249,14 @@ abstract class ForwardCall {
     return receptionist.pickup(call);
   }
 
+  static Future<Model.Call> Receptionist_Gets_Pickup() {
+    step('Receptionist expects pickup');
+
+    return receptionist.waitFor(eventType: 'call_pickup')
+        .then((Event.CallPickup pickupEvent) => pickupEvent.call);
+  }
+
+
   static Future Call_Allocation_Acknowledgement(Call_ID, Receptionist_ID) {
     step("Receptionist's client waits for 'call_pickup'...");
 
@@ -286,74 +277,83 @@ abstract class ForwardCall {
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-1ai-1
    */
   static Future forward_call_1_a_I() {
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
     return setup()
-        .then((_) => Preconditions('12340003'))
-        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
-        .then((_) => Receptionist_Places_Call (callee.extension)
-          .then((Model.Call placedCall) => outboundCall = placedCall))
-        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
-        .then((_) => Callee_Receives_Call ())
-        .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [forbind opkald og telefon-N]"))
-        .then((_) => Receptionist_Hears_Dialtone ())
-        .then((_) => step ("Callee phone rings."))
-        .then((_) => Callee_Accepts_Call ())
-        .then((_) => step ("=== loop ==="))
-        .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-        .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-        .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
-        .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
-        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-        .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-        .then((_) => step ("=== end loop ==="))
-        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: stil-igennem]"))
-        .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall ))
-        .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
-        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [connect: incoming, outgoing]"))
-        .then((_) => Receptionist_Waits_For_Hang_Up ())
-        .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
-        .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
-        .whenComplete(teardown);
+      .then((_) => Preconditions('12340003')
+        .then((Model.Call call) => inboundCall = call))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
+      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
+      .then((_) => Callee_Receives_Call ())
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [forbind opkald og telefon-N]"))
+      .then((_) => Receptionist_Hears_Dialtone ())
+      .then((_) => step ("Callee phone rings."))
+      .then((_) => Callee_Accepts_Call ())
+      .then((_) => Receptionist_Gets_Pickup ()
+        .then((Model.Call placedCall) => outboundCall = placedCall))
+      .then((_) => step ("=== loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+      .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
+      .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+      .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+      .then((_) => step ("=== end loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: stil-igennem]"))
+      .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall))
+      .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [connect: incoming, outgoing]"))
+      .then((_) => Receptionist_Waits_For_Phone_Hang_Up ())
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"));
   }
 
 
   /**
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-1aii-1
    */
-
   static Future forward_call_1_a_II() {
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
     return setup()
-        .then((_) => Preconditions('12340003'))
-        .then((_) => step("Receptionist-N ->> Klient-N [genvej: ring-til-primaert-nummer]"))
-        .then((_) => Receptionist_Places_Call(callee.extension))
-        .then((_) => step("Call-Flow-Control ->> FreeSWITCH [ring-op: telefon-N, nummer]"))
-        .then((_) => Callee_Receives_Call())
-        .then((_) => step("FreeSWITCH ->> FreeSWITCH [forbind opkald og telefon-N]"))
-        .then((_) => Receptionist_Hears_Dialtone())
-        .then((_) => step("Callee phone rings."))
-        .then((_) => Callee_Accepts_Call())
-        .then((_) => step("=== loop ==="))
-        .then((_) => step("Receptionist-N ->> Telefon-N [snak]"))
-        .then((_) => step("Telefon-N ->> FreeSWITCH [SIP: lyd]"))
-        .then((_) => step("FreeSWITCH ->> Medarbejder [SIP: lyd]"))
-        .then((_) => step("Medarbejder ->> FreeSWITCH [SIP: lyd]"))
-        .then((_) => step("FreeSWITCH ->> Telefon-N [SIP: lyd]"))
-        .then((_) => step("Telefon-N ->> Receptionist-N [snak]"))
-        .then((_) => step("=== end loop ==="))
-        .then((_) => step("Receptionist-N ->> Klient-N [genvej: afslut-udgaaende-samtale]"))
-        .then((_) => Receptionist_Hangs_Up_Outbound_Call())
-        .then((_) => step("Call-Flow-Control ->> FreeSWITCH [afslut telefon-N's udgaaende samtale]"))
-        .then((_) => Callee_Receives_Hang_Up())
-        .then((_) => Receptionist_Waits_For_Hang_Up())
-        .then((_) => step("FreeSWITCH -> FreeSWITCH [forbind opkalder og telefon-N]"))
-        .then((_) => step("=== loop ==="))
-        .then((_) => step("Receptionist-N ->> Telefon-N [snak]"))
-        .then((_) => step("Telefon-N ->> FreeSWITCH [SIP: lyd]"))
-        .then((_) => step("FreeSWITCH ->> Opkalder [SIP: lyd]"))
-        .then((_) => step("Opkalder ->> FreeSWITCH [SIP: lyd]"))
-        .then((_) => step("FreeSWITCH ->> Telefon-N [SIP: lyd]"))
-        .then((_) => step("Telefon-N ->> Receptionist-N [snak]"))
-        .then((_) => step("=== end loop ==="))
-        .whenComplete(teardown);
+      .then((_) => Preconditions('12340003')
+        .then((Model.Call call) => inboundCall = call))
+      .then((_) => step("Receptionist-N ->> Klient-N [genvej: ring-til-primaert-nummer]"))
+      .then((_) => Receptionist_Places_Call(callee.extension))
+      .then((_) => step("Call-Flow-Control ->> FreeSWITCH [ring-op: telefon-N, nummer]"))
+      .then((_) => Callee_Receives_Call())
+      .then((_) => step("FreeSWITCH ->> FreeSWITCH [forbind opkald og telefon-N]"))
+      .then((_) => Receptionist_Hears_Dialtone())
+      .then((_) => step("Callee phone rings."))
+      .then((_) => Callee_Accepts_Call())
+      .then((_) => step("=== loop ==="))
+      .then((_) => step("Receptionist-N ->> Telefon-N [snak]"))
+      .then((_) => step("Telefon-N ->> FreeSWITCH [SIP: lyd]"))
+      .then((_) => step("FreeSWITCH ->> Medarbejder [SIP: lyd]"))
+      .then((_) => step("Medarbejder ->> FreeSWITCH [SIP: lyd]"))
+      .then((_) => step("FreeSWITCH ->> Telefon-N [SIP: lyd]"))
+      .then((_) => step("Telefon-N ->> Receptionist-N [snak]"))
+      .then((_) => step("=== end loop ==="))
+      .then((_) => step("Receptionist-N ->> Klient-N [genvej: afslut-udgaaende-samtale]"))
+      .then((_) => Receptionist_Gets_Pickup ()
+        .then((Model.Call placedCall) => outboundCall = placedCall))
+      .then((_) => Receptionist_Hangs_Up(outboundCall))
+      .then((_) => step("Call-Flow-Control ->> FreeSWITCH [afslut telefon-N's udgaaende samtale]"))
+      .then((_) => Callee_Receives_Hang_Up())
+      .then((_) => Receptionist_Waits_For_Phone_Hang_Up())
+      .then((_) => step("FreeSWITCH -> FreeSWITCH [forbind opkalder og telefon-N]"))
+      .then((_) => step("=== loop ==="))
+      .then((_) => step("Receptionist-N ->> Telefon-N [snak]"))
+      .then((_) => step("Telefon-N ->> FreeSWITCH [SIP: lyd]"))
+      .then((_) => step("FreeSWITCH ->> Opkalder [SIP: lyd]"))
+      .then((_) => step("Opkalder ->> FreeSWITCH [SIP: lyd]"))
+      .then((_) => step("FreeSWITCH ->> Telefon-N [SIP: lyd]"))
+      .then((_) => step("Telefon-N ->> Receptionist-N [snak]"))
+      .then((_) => step("=== end loop ==="))
+      .whenComplete(teardown);
   }
 
  /**
@@ -361,29 +361,33 @@ abstract class ForwardCall {
   */
 
   static Future forward_call_1_b() {
-      return setup()
-          .then((_) => Preconditions('12340003'))
-          .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
-          .then((_) => Receptionist_Places_Call (callee.extension))
-          .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
-          .then((_) => Callee_Receives_Call ())
-          .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [forbind opkald og telefon-N]"))
-          .then((_) => Receptionist_Hears_Dialtone ())
-          .then((_) => step ("Callee phone rings."))
-          .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: opgiv-opkald]"))
-          .then((_) => Receptionist_Hangs_Up (outboundCall))
-          .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende opkald]"))
-          .then((_) => Callee_Receives_Hang_Up ())
-          .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
-          .then((_) => step ("=== loop ==="))
-          .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-          .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-          .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
-          .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
-          .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-          .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-          .then((_) => step ("=== end loop ==="))
-          .whenComplete(teardown);
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
+    return setup()
+      .then((_) => Preconditions('12340003')
+        .then((Model.Call call) => inboundCall = call))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
+      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
+      .then((_) => Callee_Receives_Call ())
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [forbind opkald og telefon-N]"))
+      .then((_) => Receptionist_Hears_Dialtone ())
+      .then((_) => step ("Callee phone rings."))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: opgiv-opkald]"))
+      .then((_) => Receptionist_Hangs_Up_Phone ())
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende opkald]"))
+      .then((_) => Callee_Receives_Hang_Up ())
+      .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
+      .then((_) => step ("=== loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+      .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
+      .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+      .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+      .then((_) => step ("=== end loop ==="))
+      .whenComplete(teardown);
   }
 
 
@@ -391,73 +395,84 @@ abstract class ForwardCall {
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-2ai-1
    */
    static Future forward_call_2_a_I() {
-       return setup()
-           .then((_) => Preconditions('12340003'))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
-           .then((_) => Receptionist_Places_Call (callee.extension))
-           .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
-           .then((_) => Callee_Receives_Call ())
-           .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
-           .then((_) => Receptionist_Hears_Dialtone ())
-           .then((_) => step ("Callee phone rings."))
-           .then((_) => Callee_Accepts_Call ())
-           .then((_) => step ("=== loop ==="))
-           .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-           .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-           .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
-           .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
-           .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-           .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-           .then((_) => step ("=== end loop ==="))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: stil-igennem]"))
-           .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall))
-           .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
-           .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [connect: incoming, outgoing]"))
-           .then((_) => Receptionist_Waits_For_Hang_Up ())
-           .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
-           .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
-           .whenComplete(teardown);
+     Model.Call inboundCall;
+     Model.Call outboundCall;
+
+     return setup()
+       .then((_) => Preconditions('12340003')
+         .then((Model.Call call) => inboundCall = call))
+       .then((_) => Preconditions('12340003'))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
+       .then((_) => Receptionist_Places_Call (callee.extension))
+       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
+       .then((_) => Callee_Receives_Call ())
+       .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
+       .then((_) => Receptionist_Hears_Dialtone ())
+       .then((_) => step ("Callee phone rings."))
+       .then((_) => Callee_Accepts_Call ())
+       .then((_) => Receptionist_Gets_Pickup ()
+        .then((Model.Call placedCall) => outboundCall = placedCall))
+       .then((_) => step ("=== loop ==="))
+       .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+       .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+       .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
+       .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
+       .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+       .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+       .then((_) => step ("=== end loop ==="))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: stil-igennem]"))
+       .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall))
+       .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
+       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [connect: incoming, outgoing]"))
+       .then((_) => Receptionist_Waits_For_Phone_Hang_Up ())
+       .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
+       .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
+       .whenComplete(teardown);
    }
   /**
    *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-2aii-1
    */
    static Future forward_call_2_a_II() {
-       return setup()
-           .then((_) => Preconditions('12340003'))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
-           .then((_) => Receptionist_Places_Call (callee.extension))
-           .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
-           .then((_) => Callee_Receives_Call ())
-           .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
-           .then((_) => Receptionist_Hears_Dialtone ())
-           .then((_) => step ("Callee phone rings."))
-           .then((_) => Callee_Accepts_Call ())
-           .then((_) => step ("=== loop ==="))
-           .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-           .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-           .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
-           .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
-           .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-           .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-           .then((_) => step ("=== end loop ==="))
-           .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: afslut-udgaaende-samtale]"))
-           .then((_) => Receptionist_Hangs_Up (outboundCall))
-           .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende samtale]"))
-           .then((_) => Callee_Receives_Hang_Up())
-           .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
-           .then((_) => step ("=== loop ==="))
-           .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-           .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-           .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
-           .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
-           .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-           .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-           .then((_) => step ("=== end loop ==="))
-           .whenComplete(teardown);
+     Model.Call outboundCall;
+
+     return setup()
+       .then((_) => Preconditions('12340003'))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
+       .then((_) => Receptionist_Places_Call (callee.extension))
+       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
+       .then((_) => Callee_Receives_Call ())
+       .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
+       .then((_) => Receptionist_Hears_Dialtone ())
+       .then((_) => step ("Callee phone rings."))
+       .then((_) => Callee_Accepts_Call ())
+       .then((_) => Receptionist_Gets_Pickup ()
+        .then((Model.Call placedCall) => outboundCall = placedCall))
+       .then((_) => step ("=== loop ==="))
+       .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+       .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+       .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
+       .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
+       .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+       .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+       .then((_) => step ("=== end loop ==="))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: afslut-udgaaende-samtale]"))
+       .then((_) => Receptionist_Hangs_Up (outboundCall))
+       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende samtale]"))
+       .then((_) => Callee_Receives_Hang_Up())
+       .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
+       .then((_) => step ("=== loop ==="))
+       .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+       .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+       .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
+       .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
+       .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+       .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+       .then((_) => step ("=== end loop ==="))
+       .whenComplete(teardown);
    }
 
 
@@ -466,145 +481,166 @@ abstract class ForwardCall {
     *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-2b-1
     */
     static Future forward_call_2_b() {
-        return setup()
-            .then((_) => Preconditions('12340003'))
-            .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
-            .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
-            .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
-            .then((_) => Receptionist_Places_Call (callee.extension))
-               .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
-               .then((_) => Callee_Receives_Call ())
-               .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
-               .then((_) => Receptionist_Hears_Dialtone ())
-               .then((_) => step ("Callee phone rings."))
-               .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: opgiv-opkald]"))
-               .then((_) => Receptionist_Hangs_Up (outboundCall))
-               .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende opkald]"))
-               .then((_) => Callee_Receives_Hang_Up ())
-               .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
-               .then((_) => step ("=== loop ==="))
-               .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-               .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-               .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
-               .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
-               .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-               .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-               .then((_) => step ("=== end loop ==="))
-             .whenComplete(teardown);
-}
+      Model.Call inboundCall;
+      Model.Call outboundCall;
 
-    /**
-     *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-3ai-1
-     */
-    static Future forward_call_3_a_I() {
-        return setup()
-            .then((_) => Preconditions('12340003'))
-                .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
-                .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
-                .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
-                .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
-                    .then((_) => Receptionist_Places_Call (callee.extension))
-                .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
-                .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
-                .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
-                .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [Brokobler opkald.]"))
-                .then((_) => Receptionist_Receives_Call ())
-                .then((_) => Receptionist_Hears_Dialtone ())
-                .then((_) => step ("Callee phone rings."))
-                .then((_) => Callee_Receives_Call())
-                .then((_) => Callee_Accepts_Call ())
-                .then((_) => step ("=== loop ==="))
-                .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-                .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-                .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
-                .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
-                .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-                .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-                .then((_) => step ("=== end loop ==="))
-                .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: stil-igennem]"))
-                .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall))
-                .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
-                .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [connect: incoming, outgoing]"))
-                .then((_) => Receptionist_Waits_For_Hang_Up ())
-                .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
-                .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
-              .whenComplete(teardown);
- }
-    /**
-     * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-3aii-1
-     */
-    static Future forward_call_3_a_II() {
-        return setup()
-            .then((_) => Preconditions('12340003'))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
-                        .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
-                            .then((_) => Receptionist_Places_Call (callee.extension))
-                        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
-                        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
-                        .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
-                        .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [Brokobler opkald.]"))
-                        .then((_) => Receptionist_Receives_Call ())
-                        .then((_) => Receptionist_Hears_Dialtone ())
-                        .then((_) => step ("Callee phone rings."))
-                        .then((_) => Callee_Receives_Call())
-                        .then((_) => Callee_Accepts_Call ())
-                        .then((_) => step ("=== loop ==="))
-                        .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-                        .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-                        .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
-                        .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
-                        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-                        .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-                        .then((_) => step ("=== end loop ==="))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: afslut-udgaaende-samtale]"))
-                        .then((_) => Receptionist_Hangs_Up (outboundCall))
-                        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende samtale]"))
-                        .then((_) => Callee_Receives_Hang_Up())
-                        .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
-                        .then((_) => step ("=== loop ==="))
-                        .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-                        .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-                        .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
-                        .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
-                        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-                        .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-                        .then((_) => step ("=== end loop ==="))
-                      .whenComplete(teardown);
-    }
-    /**
-     * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-3b-1
-     */
-    static Future forward_call_3_b() {
-        return setup()
-            .then((_) => Preconditions('12340003'))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
-                        .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
-                            .then((_) => Receptionist_Places_Call (callee.extension))
-                        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
-                        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
-                        .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
-                        .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [Brokobler opkald.]"))
-                        .then((_) => Receptionist_Receives_Call ())
-                        .then((_) => Receptionist_Hears_Dialtone ())
-                        .then((_) => step ("Callee phone rings."))
-                        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: opgiv-opkald]"))
-                        .then((_) => Receptionist_Hangs_Up (outboundCall))
-                        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende opkald]"))
-                        .then((_) => Callee_Receives_Hang_Up ())
-                        .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
-                        .then((_) => step ("=== loop ==="))
-                        .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
-                        .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
-                        .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
-                        .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
-                        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
-                        .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
-                        .then((_) => step ("=== end loop ==="))
+      return setup()
+        .then((_) => Preconditions('12340003')
+          .then((Model.Call call) => inboundCall = call))
+        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
+        .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
+        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
+        .then((_) => Receptionist_Places_Call (callee.extension))
+        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
+        .then((_) => Callee_Receives_Call ())
+        .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
+        .then((_) => Receptionist_Hears_Dialtone ())
+        .then((_) => step ("Callee phone rings."))
+        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: opgiv-opkald]"))
+        .then((_) => Receptionist_Hangs_Up_Phone())
+        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende opkald]"))
+        .then((_) => Callee_Receives_Hang_Up ())
+        .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
+        .then((_) => step ("=== loop ==="))
+        .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+        .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+        .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
+        .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
+        .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+        .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+        .then((_) => step ("=== end loop ==="))
+        .whenComplete(teardown);
+  }
 
-                      .whenComplete(teardown);
-        }
+  /**
+   *  https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-3ai-1
+   */
+  static Future forward_call_3_a_I() {
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
+    return setup()
+      .then((_) => Preconditions('12340003')
+        .then((Model.Call call) => inboundCall = call))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
+      .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
+      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
+      .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [Brokobler opkald.]"))
+      .then((_) => Receptionist_Receives_Call ())
+      .then((_) => Receptionist_Hears_Dialtone ())
+      .then((_) => step ("Callee phone rings."))
+      .then((_) => Callee_Receives_Call())
+      .then((_) => Callee_Accepts_Call ())
+       .then((_) => Receptionist_Gets_Pickup ()
+        .then((Model.Call placedCall) => outboundCall = placedCall))
+      .then((_) => step ("=== loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+      .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
+      .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+      .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+      .then((_) => step ("=== end loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: stil-igennem]"))
+      .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall))
+      .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [connect: incoming, outgoing]"))
+      .then((_) => Receptionist_Waits_For_Phone_Hang_Up ())
+      .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [free: telefon-N]"))
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [connect: incoming, outgoing]"))
+      .whenComplete(teardown);
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-3aii-1
+   */
+  static Future forward_call_3_a_II() {
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
+    return setup()
+      .then((_) => Preconditions('12340003')
+        .then((Model.Call call) => inboundCall = call))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
+      .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
+      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
+      .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [Brokobler opkald.]"))
+      .then((_) => Receptionist_Receives_Call ())
+      .then((_) => Receptionist_Hears_Dialtone ())
+      .then((_) => step ("Callee phone rings."))
+      .then((_) => Callee_Receives_Call())
+      .then((_) => Callee_Accepts_Call ())
+       .then((_) => Receptionist_Gets_Pickup ()
+        .then((Model.Call placedCall) => outboundCall = placedCall))
+      .then((_) => step ("=== loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+      .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: lyd]"))
+      .then((_) => step ("Medarbejder        ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+      .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+      .then((_) => step ("=== end loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: afslut-udgaaende-samtale]"))
+      .then((_) => Receptionist_Hangs_Up (outboundCall))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende samtale]"))
+      .then((_) => Callee_Receives_Hang_Up())
+      .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
+      .then((_) => step ("=== loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+      .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
+      .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+      .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+      .then((_) => step ("=== end loop ==="))
+      .whenComplete(teardown);
+  }
+
+  /**
+   * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Sende-opkald-videre#variant-3b-1
+   */
+  static Future forward_call_3_b() {
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
+    return setup()
+      .then((_) => Preconditions('12340003')
+        .then((Model.Call call) => inboundCall = call))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
+      .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
+      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
+      .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
+      .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [Brokobler opkald.]"))
+      .then((_) => Receptionist_Receives_Call ())
+      .then((_) => Receptionist_Hears_Dialtone ())
+      .then((_) => step ("Callee phone rings."))
+      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: opgiv-opkald]"))
+      .then((_) => Receptionist_Hangs_Up_Phone())
+      .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [afslut telefon-N's udgaaende opkald]"))
+      .then((_) => Callee_Receives_Hang_Up ())
+      .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkalder og telefon-N]"))
+      .then((_) => step ("=== loop ==="))
+      .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
+      .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Opkalder          [SIP: lyd]"))
+      .then((_) => step ("Opkalder           ->> FreeSWITCH        [SIP: lyd]"))
+      .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: lyd]"))
+      .then((_) => step ("Telefon-N          ->> Receptionist-N    [snak]"))
+      .then((_) => step ("=== end loop ==="))
+      .whenComplete(teardown);
+  }
 }
