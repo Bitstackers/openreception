@@ -1,21 +1,34 @@
 part of controller;
 
+final Map<String, Place> _Places =
+  {'${Context.Home}-${Widget.ReceptionCalendar}'       : new Place(Context.Home, Widget.ReceptionCalendar),
+   '${Context.Home}-${Widget.ContactCalendar}'         : new Place(Context.Home, Widget.ContactCalendar),
+   '${Context.Home}-${Widget.ContactData}'             : new Place(Context.Home, Widget.ContactData),
+   '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Place(Context.Homeplus, Widget.ReceptionAltNames),
+   '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Place(Context.CalendarEdit, Widget.CalendarEditor),
+   '${Context.Messages}-${Widget.MessageArchiveFilter}': new Place(Context.Messages, Widget.MessageArchiveFilter)};
+
 /**
- * TODO (TL): Comment
+ * A [Place] points to a location in the application. It does this by utilizing
+ * the [Context] and [Widget] enum's.
+ *
+ * The optional [from] Place MAY be used to inform a widget from whence it was
+ * brought into focus.
  */
 class Place {
-  String contextId = null;
-  String widgetId  = null;
+  Context context = null;
+  Place   from    = null;
+  Widget  widget  = null;
 
-  Place(String this.contextId, String this.widgetId);
+  Place(Context this.context, Widget this.widget, {Place this.from});
 
-  operator == (Place other) => (this.contextId == other.contextId) && (this.widgetId == other.widgetId);
+  operator == (Place other) => (context == other.context) && (widget == other.widget);
 
-  String toString() => '${contextId}.${widgetId}';
+  String toString() => '${context}-${widget}';
 }
 
 /**
- * TODO (TL): Comment
+ * Handles navigation for the application. This is a singleton.
  */
 class Navigate {
   static final Navigate _singleton = new Navigate._internal();
@@ -25,54 +38,84 @@ class Navigate {
     _registerEventListeners();
   }
 
-  final Bus<Place>          _bus           = new Bus<Place>();
+  final Bus<Place> _bus = new Bus<Place>();
 
   /// TODO (TL): Feels ugly having this map here. Maybe allow widgets to
   /// register themselves? Seems more explicit that way. Hmmm..
-  final Map<String, String> _defaultWidget =
-    {'context-calendar-edit': 'calendar-editor',
-     'context-home'         : 'reception-calendar',
-     'context-homeplus'     : 'reception-alt-names',
-     'context-messages'     : 'message-archive-filter'};
-  final Map<String, String> _widgetHistory = {};
+  final Map<Context, Widget> _defaultWidget =
+    {Context.CalendarEdit: Widget.CalendarEditor,
+     Context.Home        : Widget.ReceptionCalendar,
+     Context.Homeplus    : Widget.ReceptionAltNames,
+     Context.Messages    : Widget.MessageArchiveFilter};
+  final Map<Context, Widget> _widgetHistory = {};
 
-  void go(Place place) {
-    if(place.widgetId == null) {
-      if(_widgetHistory.containsKey(place.contextId)) {
-        place.widgetId = _widgetHistory[place.contextId];
+  /**
+   * Push [place] to the [onGo] stream. If [pushState] is true, then also add
+   * [place] to the browser history.
+   */
+  void go(Place place, {bool pushState: true}) {
+    if(place.widget == null) {
+      if(_widgetHistory.containsKey(place.context)) {
+        place.widget = _widgetHistory[place.context];
       } else {
-        place.widgetId = _defaultWidget[place.contextId];
+        place.widget = _defaultWidget[place.context];
       }
     }
 
-    _widgetHistory[place.contextId] = place.widgetId;
-    window.history.pushState(null, '${place.contextId}.${place.widgetId}', '#${place.contextId}.${place.widgetId}');
+    _widgetHistory[place.context] = place.widget;
+
+    if(pushState) {
+      window.history.pushState(null, '${place}', '#${place}');
+    }
+
     _bus.fire(place);
   }
 
-  void goWindowLocation() {
-    String hash = window.location.hash.substring(1);
+  /**
+   * Turn the current window.location into a [Place] and call [go] using that.
+   * If [pushState] is true, then also add the resulting [Place] to the browser
+   * history.
+   */
+  void goWindowLocation({bool pushState: true}) {
+    String hash = '';
 
-    if(hash.isEmpty) {
+    if(window.location.hash.isNotEmpty) {
+      hash = window.location.hash.substring(1);
+    }
+
+    if(hash.isEmpty || !_Places.containsKey(hash)) {
       goHome();
     } else {
-      /// TODO (TL): This is really not very robust.
-      final List<String> segments  = hash.split('.');
-      final String       contextId = segments.first;
-      final String       widgetId  = segments.last;
-
-      go(new Place(contextId, widgetId));
+      go(_Places[hash], pushState: pushState);
     }
   }
 
-  void goCalendarEdit() {go(new Place('context-calendar-edit', null));}
-  void goHome() {go(new Place('context-home', null));}
-  void goHomeplus() {go(new Place('context-homeplus', null));}
-  void goMessages() {go(new Place('context-messages', null));}
+  /**
+   * Convenience method to navigate to [Context.CalendarEdit].
+   */
+  void goCalendarEdit(Place from) {go(new Place(Context.CalendarEdit, null, from: from));}
 
+  /**
+   * Convenience method to navigate to [Context.Home].
+   */
+  void goHome() {go(new Place(Context.Home, null));}
+
+  /**
+     * Convenience method to navigate to [Context.Homeplus].
+     */
+  void goHomeplus() {go(new Place(Context.Homeplus, null));}
+
+  /**
+   * Convenience method to navigate to [Context.Messages].
+   */
+  void goMessages() {go(new Place(Context.Messages, null));}
+
+  /**
+   * Fires a [Place] whenever navigation is happening.
+   */
   Stream<Place> get onGo => _bus.stream;
 
   void _registerEventListeners() {
-    window.onPopState.listen((_) => goWindowLocation());
+    window.onPopState.listen((_) => goWindowLocation(pushState: false));
   }
 }

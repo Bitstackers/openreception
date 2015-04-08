@@ -139,21 +139,21 @@
           <h4 class="generic-widget-headline">::create/edit/delete calendar entry::</h4>
           <div class="generic-widget-body padding03">
             <div class="entry-message">
-              <textarea class="padding03" tabindex="-1"></textarea>
+              <textarea input-field class="padding03" tabindex="-1"></textarea>
             </div>
             <div class="entry-start">
-              <span>::start::</span><input class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
-              <input class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
-              <input class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
-              <input class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
-              <input class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
+              <span>::start::</span><input input-field class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input input-field class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <input input-field class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
+              <input input-field class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
+              <input input-field class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
             <div class="entry-stop">
-              <span>::stop::</span><input class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
-              <input class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
-              <input class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
-              <input class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
-              <input class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
+              <span>::stop::</span><input input-field class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input input-field class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <input input-field class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
+              <input input-field class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
+              <input input-field class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
             </div>
             <div class="entry-buttons">
               <button class="cancel" tabindex="-1">::cancel::</button>
@@ -670,7 +670,7 @@
 
                 <div class="spinning-box"></div>
 
-                <h4 class="generic-widget-headline">Reception Calendar</h4>
+                <h4 class="generic-widget-headline">::reception calendar::</h4>
                 <ul class="generic-widget-body generic-widget-list zebra" tabindex="-1">
                   <li><a href="#context-home.reception-commands">Link til reception-commands</a></li>
                   <li>Some other entry</li>
@@ -704,7 +704,7 @@
 
                 <div class="spinning-box"></div>
 
-                <h4 class="generic-widget-headline">Commands</h4>
+                <h4 class="generic-widget-headline">::reception commands::</h4>
                 <ul class="generic-widget-body generic-widget-list zebra" tabindex="-1">
                   <li>Some command</li>
                   <li>Some other command</li>
@@ -882,7 +882,7 @@
                 <div class="spinning-box"></div>
 
                 <h4 class="generic-widget-headline">
-                  ::message Compose::
+                  ::message compose::
                   <span class="show-recipients">::show-recipients::</span>
                 </h4>
                 <div class="generic-widget-body display-flex-column padding03">
@@ -987,7 +987,7 @@
 
                   <div class="spinning-box"></div>
 
-                  <h4 class="generic-widget-headline">Employees</h4>
+                  <h4 class="generic-widget-headline">::contact list::</h4>
                   <div class="generic-widget-body">
                     <input class="filter" placeholder="søg...." tabindex="-1">
                     <ul class="generic-widget-list zebra" tabindex="-1">
@@ -1018,7 +1018,7 @@
 
                   <div class="spinning-box"></div>
 
-                  <h4 class="generic-widget-headline">Contact Calendar</h4>
+                  <h4 class="generic-widget-headline">::contact calendar::</h4>
                   <ul class="generic-widget-body generic-widget-list zebra">
                     <li>Some entry</li>
                     <li>Some other entry</li>
@@ -1061,14 +1061,14 @@
 
                   #contact-data .cell h5 {
                     position: relative;
-                    margin: 0.2em 0.2em 0.2em 0;
+                    margin: 0.1em 0.2em 0.2em 0;
                     height: 1.2em;
                   }
 
                   #contact-data .cell ol,
                   #contact-data .cell ul {
                     position: relative;
-                    height: calc(100% - 1.4em);
+                    height: calc(100% - 1.8em);
                     margin: 0 0.3em 0 0;
                   }
 
@@ -1102,6 +1102,10 @@
                     padding-left: 0.5em;
                     font-size: 0.8em;
                     text-decoration: none;
+                  }
+
+                  #contact-data .cell .telephone-number li span.number {
+                    padding-left: 0.5em;
                   }
 
                   #contact-data .cell .telephone-number .selected {
@@ -1146,84 +1150,59 @@
 
                 <div class="spinning-box"></div>
 
-                <h4 class="generic-widget-headline">Contact Data</h4>
+                <h4 class="generic-widget-headline">::contact data::</h4>
                 <div class="generic-widget-body" style="display: flex; flex-direction: row;">
                   <div class="column">
                     <div class="cell">
-                      <h5>Work hours</h5>
-                      <ul class="work-hours generic-widget-list">
-                        <li>Er på kontoret man-fre 1000-1200</li>
-                        <li>Fri onsdag</li>
-                      </ul>
+                      <h5>::work hours::</h5>
+                      <ul class="work-hours generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Title</h5>
-                      <ul class="title generic-widget-list">
-                        <li>foo</li>
-                      </ul>
+                      <h5>::title::</h5>
+                      <ul class="title generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Department</h5>
-                      <ul class="department generic-widget-list">
-                        <li>foo</li>
-                        <li>bar</li>
-                      </ul>
+                      <h5>::department::</h5>
+                      <ul class="department generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Relations</h5>
-                      <ul class="relations generic-widget-list">
-                        <li>Mand: Søren Jensen</li>
-                        <li>Søn: Andreas</li>
-                      </ul>
+                      <h5>::relations::</h5>
+                      <ul class="relations generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Additional info</h5>
-                      <ul class="additional-info generic-widget-list">
-                        <li>foo</li>
-                      </ul>
+                      <h5>::additional info::</h5>
+                      <ul class="additional-info generic-widget-list"></ul>
                     </div>
                   </div>
 
                   <div class="column">
                     <div class="cell">
-                      <h5>Commands</h5>
-                      <ul class="commands generic-widget-list">
-                        <li>foo</li>
-                      </ul>
+                      <h5>::commands::</h5>
+                      <ul class="commands generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Responsibility</h5>
-                      <ul class="responsibility generic-widget-list">
-                        <li>foo</li>
-                      </ul>
+                      <h5>::responsibility::</h5>
+                      <ul class="responsibility generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Telephone numbers</h5>
+                      <h5>::telephone numbers::</h5>
                       <ol class="telephone-number zebra" tabindex="-1"></ol>
                     </div>
 
                     <div class="cell">
-                      <h5>Email addresses</h5>
-                      <ul class="email-addresses generic-widget-list">
-                        <li>foo</li>
-                        <li>bar</li>
-                      </ul>
+                      <h5>::email addresses::</h5>
+                      <ul class="email-addresses generic-widget-list"></ul>
                     </div>
 
                     <div class="cell">
-                      <h5>Backup</h5>
-                      <ul class="backups generic-widget-list">
-                        <li>foo</li>
-                        <li>bar</li>
-                        <li>foo</li>
-                        <li>bar</li>
-                      </ul>
+                      <h5>::backup::</h5>
+                      <ul class="backups generic-widget-list"></ul>
                     </div>
                   </div>
                 </div>
@@ -1306,11 +1285,11 @@
               <div class="stats">
                 <table>
                   <tr>
-                    <td>Active:</td>
+                    <td>::active::</td>
                     <td class="active-count"></td>
                   </tr>
                   <tr>
-                    <td>Paused:</td>
+                    <td>::paused::</td>
                     <td class="paused-count"></td>
                   </tr>
                 </table>
@@ -1345,7 +1324,7 @@
 
             <div class="spinning-box"></div>
 
-            <h4 class="generic-widget-headline">Opening Hours</h4>
+            <h4 class="generic-widget-headline">::reception opening hours::</h4>
             <ul class="generic-widget-body generic-widget-list zebra">
               <li>Man-tor 0800-1700, fre 0800-1400</li>
               <li>Udstillingen er lukket hver torsdag</li>
@@ -1373,7 +1352,7 @@
 
             <div class="spinning-box"></div>
 
-            <h4 class="generic-widget-headline">Sales Calls</h4>
+            <h4 class="generic-widget-headline">::reception sales calls::</h4>
             <ul class="generic-widget-body generic-widget-list zebra">
               <li>Senvis til info@responsum.dk</li>
               <li>Afvis rengøring. Dette ordnes via vores lejemål</li>
@@ -1406,7 +1385,7 @@
 
             <div class="spinning-box"></div>
 
-            <h4 class="generic-widget-headline">Product Description</h4>
+            <h4 class="generic-widget-headline">::reception product description::</h4>
             <div class="generic-widget-body">
               Vi laver gummiænder
             </div>
@@ -1434,7 +1413,7 @@
 
             <div class="spinning-box"></div>
 
-            <h4 class="generic-widget-headline">Queued Calls</h4>
+            <h4 class="generic-widget-headline">::queued calls::</h4>
             <ul class="generic-widget-body generic-widget-list zebra">
               <li>Et kald...</li>
               <li>Et andet kald..</li>
@@ -1463,7 +1442,7 @@
 
             <div class="spinning-box"></div>
 
-            <h4 class="generic-widget-headline">My Queued Calls</h4>
+            <h4 class="generic-widget-headline">::my queued calls::</h4>
             <ul class="generic-widget-body generic-widget-list zebra">
               <li>Et kald...</li>
               <li>Et andet kald..</li>

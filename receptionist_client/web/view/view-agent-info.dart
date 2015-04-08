@@ -1,38 +1,29 @@
 part of view;
 
-class AgentInfo extends Widget {
+class AgentInfo extends ViewWidget {
   UIAgentInfo _ui;
 
   AgentInfo(UIModel this._ui) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = AgentState.UNKNOWN;
-    _ui.alertState = AlertState.ON;
+    _ui.agentState = AgentState.Unknown;
+    _ui.alertState = AlertState.On;
     _ui.portrait = 'images/face.png';
 
-    _registerEventListeners();
+    registerEventListeners();
   }
 
-  @override Place   get myPlace => null;
+  @override Place   get myPlace => throw new UnsupportedError('');
   @override UIModel get ui      => _ui;
 
-  void _registerEventListeners() {
+  @override void onBlur(_){}
+  @override void onFocus(_){}
+
+  void registerEventListeners() {
     /// TODO (TL): Add relevant listeners
-  }
-
-  void _updateActiveCount(int activeCount) {
-     _ui.activeCount = activeCount;
-   }
-
-  void _updateAgentState(AgentState agentState) {
-    _ui.agentState = agentState;
-  }
-
-  void _updateAlertState(AlertState alertState) {
-    _ui.alertState = alertState;
-  }
-
-  void _updatePausedCount(int pausedCount) {
-    _ui.pausedCount = pausedCount;
+    ///   _ui.activeCount = activeCount
+    ///   _ui.agentState = agentState
+    ///   _ui.alertState = alertState
+    ///   _ui.pausedCount = pausedCount
   }
 }

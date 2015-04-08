@@ -1,6 +1,6 @@
 part of view;
 
-class ReceptionCalendar extends Widget {
+class ReceptionCalendar extends ViewWidget {
   Place                _myPlace;
   UIReceptionCalendar _dom;
 

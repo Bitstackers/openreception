@@ -1,10 +1,10 @@
 part of view;
 
-class ContactList extends Widget {
-  Model.UIContactList _dom;
+class ContactList extends ViewWidget {
+  UIContactList _dom;
   Place          _myPlace;
 
-  ContactList(Model.UIModel this._dom, Place this._myPlace) {
+  ContactList(UIModel this._dom, Place this._myPlace) {
     _registerEventListeners();
   }
 
@@ -27,7 +27,4 @@ class ContactList extends Widget {
 
   @override
   HtmlElement get root => _dom.root;
-
-  @override
-  Model.UIModel get ui => _dom;
 }

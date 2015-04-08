@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:html';
 
 import '../controller/controller.dart';
-import '../model/model.dart' as Model;
+import '../model/model.dart';
 
 import 'package:openreception_framework/bus.dart';
 
@@ -28,50 +28,7 @@ part 'view-welcome-message.dart';
 final HotKeys  _hotKeys  = new HotKeys();
 final Navigate _navigate = new Navigate();
 
-// TODO (TL): Decide if we need to check for null on widgets that have no actual
-// activation and/or no Place. It's probably a wasted check, since it will fail
-// hard an early.
-
-abstract class Widget {
-  /// TODO (TL): Perhaps move this to DOM?
-//  bool _active = false;
-
-//  void _blur() {
-//    _active = false;
-//    ui.root.classes.toggle('focus', false);
-//    ui.focusElement.blur();
-//    _setTabIndex(-1);
-//  }
-
-//  void _focus() {
-//    _active = true;
-//    ui.root.classes.toggle('focus', true);
-//    ui.focusElement.focus();
-//    _setTabIndex(1);
-//  }
-
-  /**
-   * Focus on ui.lastTabElement when ui.firstTabElement is in focus and a
-   * Shift+Tab keyboard event is captured.
-   */
-  void _handleShiftTab(KeyboardEvent event) {
-    if(ui.active && ui.focusElement == ui.firstTabElement) {
-      event.preventDefault();
-      ui.lastTabElement.focus();
-    }
-  }
-
-  /**
-     * Focus on ui.firstTabElement when ui.lastTabElement is in focus and a Tab
-     * keyboard event is captured.
-     */
-  void _handleTab(KeyboardEvent event) {
-    if(ui.active && ui.focusElement == ui.lastTabElement) {
-      event.preventDefault();
-      ui.firstTabElement.focus();
-    }
-  }
-
+abstract class ViewWidget {
   /**
    * SHOULD return the widgets [Place]. MAY return null if the widget has no
    * [Place] associated with it.
@@ -79,33 +36,67 @@ abstract class Widget {
   Place get myPlace;
 
   /**
+   * What to do when the widget blurs.
+   */
+  void onBlur(Place place);
+
+  /**
+   * What to do when the widget is focused.
+   */
+  void onFocus(Place place);
+
+  /**
+   * MUST return the widgets [UIModel].
+   */
+  UIModel get ui;
+
+  /**
+   * Tab from first to last tab element when first is in focus an a Shift+Tab
+   * event is caught.
+   */
+  void handleShiftTab(KeyboardEvent event) {
+    if(ui.active && ui.focusIsOnFirst) {
+      event.preventDefault();
+      ui.tabToLast();
+    }
+  }
+
+  /**
+   * Tab from last to first tab element when last is in focus an a Tab event
+   * is caught.
+   */
+  void handleTab(KeyboardEvent event) {
+    if(ui.active && ui.focusIsOnLast) {
+      event.preventDefault();
+      ui.tabToFirst();
+    }
+  }
+
+  /**
    * Navigate to [myPlace] if widget is not already in focus.
    */
-  void _navigateToMyPlace() {
+  void navigateToMyPlace() {
     if(!ui.active) {
       _navigate.go(myPlace);
     }
   }
 
   /**
-   * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
+   * If [place] is here:
+   *  call ui.focus()
+   *  call onFocus()
+   *
+   * if [place] is not here:
+   *  call ui.blur()
+   *  call onBlur();
    */
-//  void _setTabIndex(int index) {
-//    ui.root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
-//      element.tabIndex = index;
-//    });
-//  }
-
-  /**
-   * Figure out if [place] is here and set focus and tabindexes accordingly.
-   */
-  void _setWidgetState(Place place) {
+  void setWidgetState(Place place) {
     if(myPlace == place) {
       ui.focus();
+      onFocus(place);
     } else {
       ui.blur();
+      onBlur(place);
     }
   }
-
-  Model.UIModel get ui;
 }

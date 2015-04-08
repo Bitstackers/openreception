@@ -1,31 +1,33 @@
 part of view;
 
-class ContactCalendar extends Widget {
+class ContactCalendar extends ViewWidget {
   Place              _myPlace;
   UIContactCalendar _ui;
 
   ContactCalendar(UIModel this._ui, Place this._myPlace) {
-    _registerEventListeners();
+    registerEventListeners();
   }
 
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
 
-  void _activateMe(_) {
-    _navigateToMyPlace();
+  /**
+   * Simply navigate to my [Place]. Matters not if this widget is already
+   * focused.
+   */
+  void activateMe(_) {
+    navigateToMyPlace();
   }
 
-  /**
-   *
-   */
-  void _registerEventListeners() {
-    _navigate.onGo.listen(_setWidgetState);
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
-    _ui.root.onClick.listen(_activateMe);
+  void registerEventListeners() {
+    _navigate.onGo.listen(setWidgetState);
 
-    _hotKeys.onAltK.listen(_activateMe);
+    _ui.onClick.listen(activateMe);
 
-    // TODO (TL): temporary stuff
-    _ui.entryList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
+    _hotKeys.onAltK .listen(activateMe);
+    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
   }
 }
