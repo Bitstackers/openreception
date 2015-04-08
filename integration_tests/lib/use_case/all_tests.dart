@@ -42,7 +42,16 @@ runUseCaseTests() {
 
 
 
-    //test('1 a I', ForwardCall.forward_call_1_a_I);
+    test('1 a I', ForwardCall.forward_call_1_a_I);
+    test('1 a II', ForwardCall.forward_call_1_a_II);
+    test('1 b', ForwardCall.forward_call_1_b);
+    test('2 a I', ForwardCall.forward_call_2_a_I);
+    test('2 a II', ForwardCall.forward_call_2_a_II);
+    test('2 b', ForwardCall.forward_call_2_b);
+    test('3 a I', ForwardCall.forward_call_3_a_I);
+    test('3 a II', ForwardCall.forward_call_3_a_II);
+    test('3 b', ForwardCall.forward_call_3_b);
+
   });
 
   group ('UseCase.IncomingCall', () {
