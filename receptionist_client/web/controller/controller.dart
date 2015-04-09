@@ -18,6 +18,7 @@ enum Widget {AgentInfo,
              CalendarEditor,
              ContactCalendar,
              ContactData,
+             ContactSelector,
              ReceptionCalendar,
              ReceptionAltNames,
              MessageArchiveFilter}

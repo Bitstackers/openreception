@@ -4,6 +4,7 @@ final Map<String, Place> _Places =
   {'${Context.Home}-${Widget.ReceptionCalendar}'       : new Place(Context.Home, Widget.ReceptionCalendar),
    '${Context.Home}-${Widget.ContactCalendar}'         : new Place(Context.Home, Widget.ContactCalendar),
    '${Context.Home}-${Widget.ContactData}'             : new Place(Context.Home, Widget.ContactData),
+   '${Context.Home}-${Widget.ContactSelector}'         : new Place(Context.Home, Widget.ContactSelector),
    '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Place(Context.Homeplus, Widget.ReceptionAltNames),
    '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Place(Context.CalendarEdit, Widget.CalendarEditor),
    '${Context.Messages}-${Widget.MessageArchiveFilter}': new Place(Context.Messages, Widget.MessageArchiveFilter)};

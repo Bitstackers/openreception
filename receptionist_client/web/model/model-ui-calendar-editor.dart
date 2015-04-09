@@ -1,9 +1,9 @@
 part of model;
 
 class UICalendarEditor extends UIModel {
-  HtmlElement _myFirstTabElement;
-  HtmlElement _myFocusElement;
-  HtmlElement _myLastTabElement;
+  HtmlElement      _myFirstTabElement;
+  HtmlElement      _myFocusElement;
+  HtmlElement      _myLastTabElement;
   final DivElement _myRoot;
 
   UICalendarEditor(DivElement this._myRoot) {

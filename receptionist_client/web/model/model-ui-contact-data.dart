@@ -15,7 +15,7 @@ class UIContactData extends UIModel {
   UListElement   get _commandsList       => _root.querySelector('.commands');
   UListElement   get _departmentList     => _root.querySelector('.department');
   UListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
-  HeadingElement get _headerElement      => _root.querySelector('h4');
+  HeadingElement get _header             => _root.querySelector('h4');
   UListElement   get _relationsList      => _root.querySelector('.relations');
   UListElement   get _responsibilityList => _root.querySelector('.responsibility');
   OListElement   get _telNumList         => _root.querySelector('.telephone-number');
@@ -33,9 +33,9 @@ class UIContactData extends UIModel {
   set backups(List<String> items) => _populateList(_backupsList, items);
 
   /**
-   * Returns the onClick stream for the telephone numbers list.
+   * Returns the mousedown click stream for the telephone numbers list.
    */
-  Stream<MouseEvent> get clickSelectTelNum => _telNumList.onClick;
+  Stream<MouseEvent> get clickSelectTelNum => _telNumList.onMouseDown;
 
   /**
    * Add [items] ot the commands list.
@@ -107,7 +107,42 @@ class UIContactData extends UIModel {
   /**
    * Set the widget header.
    */
-  set header(String headline) => _headerElement.text = headline;
+
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///  TODO (TL): Add Contact name to the header in some meaningful way. We
+  ///  can't select/copy using the mouse in the contact selector, and
+  ///  receptionists might on occassion need to copy a contacts name for use
+  ///  in a message. Placing the name in the header of this widget seems like
+  ///  a good solution for this.
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  set header(String headline) => _header.text = headline;
 
   /**
    * Return true if [telNum] is marked ringing.
@@ -121,11 +156,14 @@ class UIContactData extends UIModel {
   bool isSelected(TelNum telNo) =>
       telNo._li.classes.contains('selected');
 
+  /**
+   * Add the [mark] class to the [telNum].
+   */
   void _mark(TelNum telNum, String mark) {
     if(telNum != null) {
       _telNumList.children.forEach((Element element) => element.classes.remove(mark));
       telNum._li.classes.add(mark);
-      telNum._li.focus();
+      telNum._li.scrollIntoView();
     }
   }
 
@@ -219,6 +257,7 @@ class UIContactData extends UIModel {
 
 /**
  * A telephone number.
+ * TODO (TL): Replace this with the actual object. This is just a placeholder.
  */
 class TelNum {
   LIElement   _li         = new LIElement()..tabIndex = -1;

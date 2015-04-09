@@ -7,7 +7,7 @@ part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';
 part 'model-ui-contact-calendar.dart';
 part 'model-ui-contact-data.dart';
-part 'model-ui-contact-list.dart';
+part 'model-ui-contact-selector.dart';
 part 'model-ui-contexts.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';

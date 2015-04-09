@@ -953,7 +953,7 @@
               <div class="display-flex-row" style="flex-grow: 2;">
 
                 <!--
-                  #contact-list widget
+                  #contact-selector widget
 
                   Role:
                     Search and select contacts.
@@ -965,13 +965,13 @@
                     Input and ul element set to -1 on blur. MUST be updated on
                     focus.
                 -->
-                <div id="contact-list" class="generic-widget layout-margin-right">
+                <div id="contact-selector" class="generic-widget layout-margin-right">
                   <style scoped>
-                    #contact-list {
+                    #contact-selector {
                       flex-grow: 2;
                     }
 
-                    #contact-list .filter {
+                    #contact-selector .filter {
                       width: calc(100% - 0.6em);
                       margin: 0.5em 0.3em 0.3em 0.3em;
                       height: 2em;
@@ -979,9 +979,28 @@
                       padding: 0 0.3em;
                     }
 
-                    #contact-list .generic-widget-list {
+                    #contact-selector .generic-widget-list {
                       height: calc(100% - 2.8em);
                       outline: 0;
+                    }
+
+                    #contact-selector .generic-widget-list:focus,
+                    #contact-selector .generic-widget-list li:focus {
+                      outline: 0;
+                    }
+
+                    #contact-selector .generic-widget-list li {
+                      border-left: solid 3px #f7f7f7;
+                      margin-left: 0.2em;
+                      padding: 0.3em;
+                    }
+
+                    #contact-selector .generic-widget-list li:hover {
+                      cursor: pointer;
+                    }
+
+                    #contact-selector .generic-widget-list .selected {
+                      border-left: solid 3px #ff5621;
                     }
                   </style>
 
@@ -990,10 +1009,7 @@
                   <h4 class="generic-widget-headline">::contact list::</h4>
                   <div class="generic-widget-body">
                     <input class="filter" placeholder="søg...." tabindex="-1">
-                    <ul class="generic-widget-list zebra" tabindex="-1">
-                      <li>Arne And</li>
-                      <li>Birgitte Bi</li>
-                    </ul>
+                    <ul class="generic-widget-list zebra" tabindex="-1"></ul>
                   </div>
                 </div>
 

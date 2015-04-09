@@ -1,10 +1,11 @@
 part of view;
 
 class ContactCalendar extends ViewWidget {
-  Place              _myPlace;
+  ContactSelector   _contactSelector;
+  Place             _myPlace;
   UIContactCalendar _ui;
 
-  ContactCalendar(UIModel this._ui, Place this._myPlace) {
+  ContactCalendar(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
     registerEventListeners();
   }
 
@@ -29,5 +30,14 @@ class ContactCalendar extends ViewWidget {
 
     _hotKeys.onAltK .listen(activateMe);
     _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
+
+    _contactSelector.onSelect.listen(render);
+  }
+
+  /**
+   * Render the widget with [Contact].
+   */
+  void render(Contact contact) {
+    print('ContactCalendar received ${contact.name}');
   }
 }

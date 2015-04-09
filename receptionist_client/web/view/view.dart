@@ -12,7 +12,7 @@ part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';
 part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
-part 'view-contact-list.dart';
+part 'view-contact-selector.dart';
 part 'view-contexts.dart';
 part 'view-global-call-queue.dart';
 part 'view-message-compose.dart';

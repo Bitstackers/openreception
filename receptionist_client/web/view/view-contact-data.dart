@@ -1,10 +1,11 @@
 part of view;
 
 class ContactData extends ViewWidget {
-  Place         _myPlace;
-  UIContactData _ui;
+  ContactSelector _contactSelector;
+  Place           _myPlace;
+  UIContactData   _ui;
 
-  ContactData(UIModel this._ui, Place this._myPlace) {
+  ContactData(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
     test(); // TODO (TL): Get rid of this testing code...
 
     registerEventListeners();
@@ -14,7 +15,7 @@ class ContactData extends ViewWidget {
   @override UIModel get ui      => _ui;
 
   /**
-   * Simply navigate to my [Place]. Matters not if this widget is already
+   * Simply navigate to my [_myPlace]. Matters not if this widget is already
    * focused.
    */
   void activateMe(_) {
@@ -23,16 +24,26 @@ class ContactData extends ViewWidget {
   }
 
   /**
-   *
+   * Select the [event].target and navigate to my [_myPlace].
    */
-  void handleMouseClick(MouseEvent event) {
-    select(_ui.getTelNumFromClick(event));
+  void activateMeFromClick(MouseEvent event) {
+    clickSelect(_ui.getTelNumFromClick(event));
+    navigateToMyPlace();
   }
 
   /**
-   *
+   * Mark [TelNum] selected.
    */
-  void _handleUpDown(KeyboardEvent event) {
+  void clickSelect(TelNum telNum) {
+    if(telNum != null) {
+      _ui.markSelected(telNum);
+    }
+  }
+
+  /**
+   * Deal with arrow up/down.
+   */
+  void handleUpDown(KeyboardEvent event) {
     if(_ui.active) {
       event.preventDefault();
       switch(event.keyCode) {
@@ -60,15 +71,23 @@ class ContactData extends ViewWidget {
     _hotKeys.onAlt2.listen((_) => select(_ui.getTelNumFromIndex(1)));
     _hotKeys.onAlt3.listen((_) => select(_ui.getTelNumFromIndex(2)));
     _hotKeys.onAlt4.listen((_) => select(_ui.getTelNumFromIndex(3)));
-    _hotKeys.onDown.listen(_handleUpDown);
-    _hotKeys.onUp  .listen(_handleUpDown);
+    _hotKeys.onDown.listen(handleUpDown);
+    _hotKeys.onUp  .listen(handleUpDown);
 
     _hotKeys.onStar.listen((_) => ring(_ui.getSelectedTelNum()));
 
-    _ui.clickSelectTelNum.listen(handleMouseClick);
+    _ui.clickSelectTelNum.listen(activateMeFromClick);
 
-    /// TODO (TL): Add listener for selected contacts
+    _contactSelector.onSelect.listen(render);
+
     /// TODO (TL): Add listener for call events to detect pickup/hangup
+  }
+
+  /**
+   * Render the widget with [Contact].
+   */
+  void render(Contact contact) {
+    print('ContactData received ${contact.name}');
   }
 
   /**
@@ -83,7 +102,7 @@ class ContactData extends ViewWidget {
   }
 
   /**
-   *
+   * If the we're active and not ringing, mark [telNum] active.
    */
   void select(TelNum telNum) {
     if(_ui.active && _ui.noRinging && telNum != null) {
