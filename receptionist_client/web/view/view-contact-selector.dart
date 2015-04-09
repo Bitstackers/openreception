@@ -89,14 +89,14 @@ class ContactSelector extends ViewWidget {
 
   /// TODO (TL): Get rid of this. It's just here to test stuff.
   void test() {
-    _ui.contacts = [new Contact('Trine Løcke Snøcke'),
-                    new Contact('Thomas Løcke'),
-                    new Contact('Hoop Karaoke'),
-                    new Contact('Simpleton McNuggin')];
+    _ui.contacts = [new Contact('Trine Løcke Snøcke', tags:['Oplæring','Service']),
+                    new Contact('Thomas Løcke', tags:['Teknik', 'Service', 'Farum', 'salg']),
+                    new Contact('Hoop Karaoke', tags:['Entertainment', 'International Business', 'teknik']),
+                    new Contact('Simpleton McNuggin', tags:['Teknik', 'Glostrup', 'salg', 'løn', 'kreditor'])];
 
-    _ui.markSelected(_ui.getContactFromIndex(0));
+    _ui.markSelected(_ui.getContactFirstVisible());
     new Future.delayed((new Duration(seconds: 1))).then((_) {
-      _bus.fire(_ui.getContactFromIndex(0));
+      _bus.fire(_ui.getContactFirstVisible());
     });
   }
 }

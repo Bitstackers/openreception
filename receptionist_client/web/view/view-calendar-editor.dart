@@ -16,8 +16,10 @@ class CalendarEditor extends ViewWidget {
     /// Clear form.
     /// Set focusElement to default.
     /// Navigate away (history.back perhaps??)
-    window.history.back();
-    print('view.CalendarEditor._cancel not fully implemented');
+    if(_ui.active) {
+      window.history.back();
+      print('view.CalendarEditor._cancel not fully implemented');
+    }
   }
 
   void delete(_) {

@@ -4,7 +4,7 @@ class UIContactSelector extends UIModel {
   final DivElement _myRoot;
 
   UIContactSelector(DivElement this._myRoot) {
-    _filter.onInput.listen(filter);
+    _registerEventListeners();
   }
 
   @override HtmlElement get _firstTabElement => _filter;
@@ -20,21 +20,78 @@ class UIContactSelector extends UIModel {
    */
   set contacts(List<Contact> items) {
     items.forEach((Contact item) {
-      String initials = item.name.trim().split(' ').fold('', (prev, element) => '${prev} ${element.substring(0,1)}');
-      item._li.dataset['searchstring'] = '${initials}-${item.name}'.trim().toLowerCase();
+      String initials = item.name.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
+
+      item._li.dataset['initials'] = initials;
+      item._li.dataset['firstinitial'] = initials.substring(0,1);
+      item._li.dataset['otherinitials'] = initials.substring(1);
+
+      /// TODO  (TL): This is perhaps not the best idea in the world, but it
+      /// works right now.
+      ///
+      /// Add contact name to tags. We simply treat the name as just another tag
+      /// when searching for contacts.
+      item.tags.addAll(item.name.split(' '));
+      item._li.dataset['tags'] = item.tags.join(',').toLowerCase();
+
       _contactList.append(item._li);
     });
   }
 
   /**
-   * TODO (TL): Comment this..
+   * Filter the contact list whenever the user enters data into the [_filter]
+   * input field.
    */
   void filter(_) {
-    String searchTerm = _filter.value.trim();
+    String filter = _filter.value.toLowerCase();
+    String trimmedFilter = filter.trim();
 
-    if(searchTerm.isNotEmpty) {
+    if(filter.length == 0 || trimmedFilter.isEmpty) {
+      /// Empty filter. Remove .hide from all list elements.
+      _contactList.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+    } else if(trimmedFilter.length == 1 && !filter.startsWith(' ')) {
+      /// Pattern: one non-space character followed by zero or more spaces
+      _contactList.children.forEach((LIElement li) {
+        if(li.dataset['firstinitial'] == trimmedFilter) {
+          li.classes.toggle('hide', false);
+        } else {
+          li.classes.toggle('hide', true);
+        }
+      });
+    } else if(trimmedFilter.length ==1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
+      /// Pattern: one or more spaces followed by one non-space character
+      _contactList.children.forEach((LIElement li) {
+        if(li.dataset['otherinitials'].contains(trimmedFilter)) {
+          li.classes.toggle('hide', false);
+        } else {
+          li.classes.toggle('hide', true);
+        }
+      });
+    } else if(trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
+      /// Pattern: one character, one space, one character
+      _contactList.children.forEach((LIElement li) {
+        if(li.dataset['firstinitial'] == trimmedFilter.substring(0,1) && li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
+          li.classes.toggle('hide', false);
+        } else {
+          li.classes.toggle('hide', true);
+        }
+      });
+    } else {
+      /// Split filter string on space and search for contacts that have all
+      /// the resulting parts in their tag list.
+      List<String> parts = trimmedFilter.split(' ');
 
+      _contactList.children.forEach((LIElement li) {
+        if(parts.every((String part) => li.dataset['tags'].contains(part))) {
+          li.classes.toggle('hide', false);
+        } else {
+          li.classes.toggle('hide', true);
+        }
+      });
     }
+
+    /// Select the first item on the list
+    markSelected(getContactFirstVisible());
   }
 
   /**
@@ -63,16 +120,16 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Return the [index] [Contact] from [_contactList]
-   * MAY return null if index does not exist in the list.
+   * Return the first visible [Contact] from [_contactList]
+   * MAY return null if the list is empty.
    */
-  Contact getContactFromIndex(int index) {
-    try {
-      return new Contact.fromElement(_contactList.children[index]);
-    } catch(e) {
-      print(e);
-      return null;
+  Contact getContactFirstVisible() {
+    LIElement li = _contactList.children.firstWhere((LIElement li) => !li.classes.contains('hide'), orElse: () => null);
+    if(li != null) {
+      return new Contact.fromElement(li);
     }
+
+    return null;
   }
 
   /**
@@ -98,17 +155,12 @@ class UIContactSelector extends UIModel {
   Contact nextContactInList() {
     try {
       LIElement li = _contactList.querySelector('.selected').nextElementSibling;
-      return li != null ? new Contact.fromElement(li) : null;
+      return li == null || li.classes.contains('hide') ? null : new Contact.fromElement(li);
     } catch(e) {
       print(e);
       return null;
     }
   }
-
-  /**
-   * TODO (TL): comment this..
-   */
-  Stream<Event> get onInput => _filter.onInput;
 
   /**
    * Return the [Contact] preceeding the currently selected [Contact].
@@ -117,11 +169,15 @@ class UIContactSelector extends UIModel {
   Contact previousContactInList() {
     try {
       LIElement li = _contactList.querySelector('.selected').previousElementSibling;
-      return li != null ? new Contact.fromElement(li) : null;
+      return li == null || li.classes.contains('hide') ? null : new Contact.fromElement(li);
     } catch(e) {
       print(e);
       return null;
     }
+  }
+
+  void _registerEventListeners() {
+    _filter.onInput.listen(filter);
   }
 }
 
@@ -130,17 +186,22 @@ class UIContactSelector extends UIModel {
  * TODO (TL): Replace this with the actual object. This is just a placeholder.
  */
 class Contact {
-  LIElement _li = new LIElement()..tabIndex = -1;
-  String    name;
+  LIElement    _li = new LIElement()..tabIndex = -1;
+  String       name;
+  List<String> tags;
 
-  Contact(String this.name) {
+  Contact(String this.name, {List<String> this.tags}) {
     _li.text = name;
+    if(tags == null) {
+      tags = new List<String>();
+    }
   }
 
   Contact.fromElement(LIElement element) {
     if(element != null && element is LIElement) {
       _li = element;
       name = _li.text;
+      tags = _li.dataset['tags'].split(',');
     } else {
       throw new ArgumentError('element is not a LIElement');
     }
