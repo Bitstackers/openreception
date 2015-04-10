@@ -40,6 +40,7 @@ void main() {
     });
   });
 
+  runAuthServerTests();
   runContactTests();
   runCallFlowTests();
   runMessageTests();
