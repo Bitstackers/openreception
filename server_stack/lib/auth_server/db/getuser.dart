@@ -2,7 +2,7 @@ part of authenticationserver.database;
 
 Future<Map> getUser(String userEmail) {
   String sql = '''
-SELECT u.id, u.name, u.extension, 
+SELECT u.id, u.name, u.extension, u.send_from as address, 
   coalesce (
     (SELECT array_to_json(array_agg(name)) 
      FROM user_groups JOIN groups ON user_groups.group_id = groups.id
@@ -12,7 +12,7 @@ SELECT u.id, u.name, u.extension,
    FROM auth_identities 
    WHERE user_id = u.id) AS identities
 FROM auth_identities JOIN users u ON auth_identities.user_id = u.id 
-WHERE identity = @email;''';
+WHERE identity = = @email;''';
 
   Map parameters = {'email' : userEmail};
 
@@ -23,6 +23,7 @@ WHERE identity = @email;''';
       data =
         {'id'        : row.id,
          'name'      : row.name,
+         'address'   : row.address,
          'extension' : row.extension,
          'groups'    : row.groups,
          'identities': row.identities};
