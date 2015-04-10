@@ -6,11 +6,12 @@ class User {
 
 
   Map _map = {};
-  String       get peer    => this._map['extension'];
-  String       get name    => this._map['name'];
-  String       get address => this._map['address'];
-  int          get ID      => this._map['id'];
-  List<String> get groups  => this._map['groups'];
+  String       get peer      => this._map['extension'];
+  String       get name      => this._map['name'];
+  String       get address   => this._map['address'];
+  int          get ID        => this._map['id'];
+  List<String> get groups    => this._map['groups'];
+  List<String> get identites => this._map['identites'];
 
   static Future<User> load (String identity, Storage.User userStore) => userStore.get (identity);
 
