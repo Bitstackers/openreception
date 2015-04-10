@@ -26,7 +26,7 @@ void runAuthServerTests() {
          (Config.authenticationServerUri, Config.serverToken, transport);
       receptionist = ReceptionistPool.instance.aquire();
 
-      return receptionist.ready();
+      return receptionist.initialize();
     });
 
     tearDown (() {
