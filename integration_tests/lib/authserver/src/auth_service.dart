@@ -78,7 +78,7 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a User object.
    */
-  static void existingToken (Service.Authentication authService,
+  static Future existingToken (Service.Authentication authService,
                              Receptionist receptionist) {
 
     log.info('Checking server behaviour on a non-existing contact.');
