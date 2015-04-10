@@ -26,6 +26,7 @@ part 'support/receptionist_pool.dart';
 part 'support/support_tools.dart';
 
 /// Authserver tests
+part 'authserver/src/auth_service.dart';
 part 'authserver/tests.dart';
 
 /// Callflow server tests
