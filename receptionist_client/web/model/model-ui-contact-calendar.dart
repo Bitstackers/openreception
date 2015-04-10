@@ -10,13 +10,13 @@ class UIContactCalendar extends UIModel {
   @override HtmlElement get _lastTabElement  => null;
   @override HtmlElement get _root            => _myRoot;
 
-  UListElement   get _entryList     => _root.querySelector('ul');
-  HeadingElement get _headerElement => _root.querySelector('h4');
+  UListElement   get _entryList => _root.querySelector('ul');
+  HeadingElement get _header    => _root.querySelector('h4');
 
   /**
    * Set the widget header.
    */
-  set header(String headline) => _headerElement.text = headline;
+  set header(String headline) => _header.text = headline;
 
   /**
    * Return the mouse click event stream for this widget.

@@ -26,8 +26,8 @@ class UIContactSelector extends UIModel {
       item._li.dataset['firstinitial'] = initials.substring(0,1);
       item._li.dataset['otherinitials'] = initials.substring(1);
 
-      /// TODO  (TL): This is perhaps not the best idea in the world, but it
-      /// works right now.
+      /// TODO  (TL): Adding the name as "tags" is perhaps not the best idea in
+      /// the world, but it works right now.
       ///
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
@@ -39,12 +39,28 @@ class UIContactSelector extends UIModel {
   }
 
   /**
+   * Return true if the [event].target is the filter input field.
+   */
+  bool eventTargetIsFilterInput(MouseEvent event) {
+    if(event.target == _filter) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Filter the contact list whenever the user enters data into the [_filter]
    * input field.
    */
   void filter(_) {
     String filter = _filter.value.toLowerCase();
     String trimmedFilter = filter.trim();
+
+    /// TODO (TL): This filtering model is a bit "meh". What we probably should
+    /// do is leverage the CSS :not() selector and simply add/remove CSS rules
+    /// based on the given filter values. That way we don't do any kind of
+    /// looping, and all hiding/unhiding is left entirely to the browser.
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
@@ -178,6 +194,10 @@ class UIContactSelector extends UIModel {
 
   void _registerEventListeners() {
     _filter.onInput.listen(filter);
+
+    /// These are here to prevent tab'ing out of the filter input.
+    _hotKeys.onTab     .listen(handleTab);
+    _hotKeys.onShiftTab.listen(handleShiftTab);
   }
 }
 

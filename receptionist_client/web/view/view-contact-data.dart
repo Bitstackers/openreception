@@ -14,6 +14,9 @@ class ContactData extends ViewWidget {
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
 
+  @override void onBlur(_){}
+  @override void onFocus(_){}
+
   /**
    * Simply navigate to my [_myPlace]. Matters not if this widget is already
    * focused.
@@ -57,9 +60,6 @@ class ContactData extends ViewWidget {
     }
   }
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
-
   void registerEventListeners() {
     _navigate.onGo.listen(setWidgetState);
 
@@ -88,6 +88,7 @@ class ContactData extends ViewWidget {
    */
   void render(Contact contact) {
     print('ContactData received ${contact.name}');
+    _ui.contactName = contact.name;
   }
 
   /**

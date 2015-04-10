@@ -1,12 +1,25 @@
 part of model;
 
 class UIReceptionCalendar extends UIModel {
-  final DivElement _root;
+  final DivElement _myRoot;
 
-  UIReceptionCalendar(DivElement this._root);
+  UIReceptionCalendar(DivElement this._myRoot);
 
-  UListElement get eventList => _root.querySelector('ul');
+  @override HtmlElement get _firstTabElement => null;
+  @override HtmlElement get _focusElement    => _entryList;
+  @override HtmlElement get _lastTabElement  => null;
+  @override HtmlElement get _root            => _myRoot;
 
-  @override
-  HtmlElement  get root      => _root;
+  UListElement   get _entryList => _root.querySelector('ul');
+  HeadingElement get _header    => _root.querySelector('h4');
+
+  /**
+   * Set the widget header.
+   */
+  set header(String headline) => _header.text = headline;
+
+  /**
+   * Return the mouse click event stream for this widget.
+   */
+  Stream<MouseEvent> get onClick => _myRoot.onClick;
 }

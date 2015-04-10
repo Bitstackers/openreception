@@ -28,20 +28,20 @@ void main() {
                             new Place(Context.CalendarEdit, Widget.CalendarEditor));
 
 
-//  MessageCompose messageCompose =
-//      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
-//                         new Place('context-home', 'message-compose'));
-//
-//  ReceptionCalendar receptionCalendar =
-//      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
-//                            new Place('context-home', 'reception-calendar'));
-//
-//  ReceptionCommands receptionCommands =
-//      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
-//                            new Place('context-home', 'reception-commands'));
+  ReceptionCalendar receptionCalendar =
+      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
+                            new Place(Context.Home, Widget.ReceptionCalendar));
+
+  ReceptionCommands receptionCommands =
+      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
+                            new Place(Context.Home, Widget.ReceptionCommands));
+
+  MessageCompose messageCompose =
+      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
+                         new Place(Context.Home, Widget.MessageCompose));
 
 
-
+  Help help = new Help();
 
 
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();

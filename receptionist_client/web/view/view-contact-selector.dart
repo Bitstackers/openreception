@@ -17,12 +17,21 @@ class ContactSelector extends ViewWidget {
   @override void onBlur(_){}
   @override void onFocus(_){}
 
+  /**
+   * Activate this widget if it's not already activated.
+   */
   void activateMe(_) {
     navigateToMyPlace();
   }
 
+  /**
+   * Activate this widget if it's not already active. Also mark a contact in the
+   * list selected, if one such is the target of the [event].
+   */
   void activateMeFromClick(MouseEvent event) {
-    event.preventDefault();
+    if(!_ui.eventTargetIsFilterInput(event)) {
+      event.preventDefault();
+    }
     clickSelect(_ui.getContactFromClick(event));
     navigateToMyPlace();
   }
@@ -70,10 +79,6 @@ class ContactSelector extends ViewWidget {
 
     _hotKeys.onDown.listen(_handleUpDown);
     _hotKeys.onUp  .listen(_handleUpDown);
-
-    /// These are here to prevent tab'ing out of the filter input.
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
   }
 
   /**

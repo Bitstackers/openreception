@@ -21,9 +21,9 @@ class AgentInfo extends ViewWidget {
 
   void registerEventListeners() {
     /// TODO (TL): Add relevant listeners
-    ///   _ui.activeCount = activeCount
-    ///   _ui.agentState = agentState
-    ///   _ui.alertState = alertState
-    ///   _ui.pausedCount = pausedCount
+    ///   _ui.activeCount = active count
+    ///   _ui.agentState = agent state
+    ///   _ui.alertState = alert state
+    ///   _ui.pausedCount = paused count
   }
 }

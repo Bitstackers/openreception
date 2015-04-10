@@ -13,6 +13,7 @@ class UIContactData extends UIModel {
   UListElement   get _additionalInfoList => _root.querySelector('.additional-info');
   UListElement   get _backupsList        => _root.querySelector('.backups');
   UListElement   get _commandsList       => _root.querySelector('.commands');
+  SpanElement    get _headerContactName  => _root.querySelector('h4 span');
   UListElement   get _departmentList     => _root.querySelector('.department');
   UListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
   HeadingElement get _header             => _root.querySelector('h4');
@@ -41,6 +42,11 @@ class UIContactData extends UIModel {
    * Add [items] ot the commands list.
    */
   set commands(List<String> items) => _populateList(_commandsList, items);
+
+  /**
+   * Set the [Contact].name in the widget header.
+   */
+  set contactName(String name) => _headerContactName.text = name;
 
   /**
    * Add [items] to the departments list.
@@ -107,41 +113,6 @@ class UIContactData extends UIModel {
   /**
    * Set the widget header.
    */
-
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///  TODO (TL): Add Contact name to the header in some meaningful way. We
-  ///  can't select/copy using the mouse in the contact selector, and
-  ///  receptionists might on occassion need to copy a contacts name for use
-  ///  in a message. Placing the name in the header of this widget seems like
-  ///  a good solution for this.
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
   set header(String headline) => _header.text = headline;
 
   /**
