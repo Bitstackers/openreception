@@ -14,10 +14,12 @@ class UIMessageCompose extends UIModel {
     _registerEventListeners();
   }
 
-  @override HtmlElement get _firstTabElement => _myFirstTabElement;
-  @override HtmlElement get _focusElement    => _myFocusElement;
-  @override HtmlElement get _lastTabElement  => _myLastTabElement;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement    get _firstTabElement => _myFirstTabElement;
+  @override HtmlElement    get _focusElement    => _myFocusElement;
+  @override HeadingElement get _header          => _root.querySelector('h4');
+  @override DivElement     get _help            => _root.querySelector('div.help');
+  @override HtmlElement    get _lastTabElement  => _myLastTabElement;
+  @override HtmlElement    get _root            => _myRoot;
 
   InputElement         get _callerNameInput    => _root.querySelector('.names input.caller');
   InputElement         get _callsBackInput     => _root.querySelector('.checks .calls-back');
@@ -26,7 +28,6 @@ class UIMessageCompose extends UIModel {
   InputElement         get _companyNameInput   => _root.querySelector('.names input.company');
   InputElement         get _draftInput         => _root.querySelector('.checks .draft');
   InputElement         get _extensionInput     => _root.querySelector('.phone-numbers input.extension');
-  HeadingElement       get _headerElement      => _root.querySelector('h4');
   InputElement         get _hasCalledInput     => _root.querySelector('.checks .has-called');
   InputElement         get _landlineInput      => _root.querySelector('.phone-numbers input.landline');
   TextAreaElement      get _messageTextarea    => _root.querySelector('.message textarea');
@@ -37,16 +38,6 @@ class UIMessageCompose extends UIModel {
   SpanElement          get _showRecipientsSpan => _root.querySelector('.show-recipients');
   ElementList<Element> get _tabElements        => _root.querySelectorAll('[tabindex]');
   InputElement         get _urgentInput        => _root.querySelector('.checks .urgent');
-
-  /**
-   * Set the widget header.
-   */
-  set header(String headline) => _headerElement.text = headline;
-
-  /**
-   * Return the mouse click event stream for this widget.
-   */
-  Stream<MouseEvent> get onClick => _myRoot.onClick;
 
   /**
    * Return the click event stream for the cancel button.

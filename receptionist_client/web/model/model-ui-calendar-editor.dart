@@ -14,14 +14,15 @@ class UICalendarEditor extends UIModel {
     _registerEventListeners();
   }
 
-  @override HtmlElement get _firstTabElement => _myFirstTabElement;
-  @override HtmlElement get _focusElement    => _myFocusElement;
-  @override HtmlElement get _lastTabElement  => _myLastTabElement;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement    get _firstTabElement => _myFirstTabElement;
+  @override HtmlElement    get _focusElement    => _myFocusElement;
+  @override HeadingElement get _header          => _root.querySelector('h4');
+  @override DivElement     get _help            => _root.querySelector('div.help');
+  @override HtmlElement    get _lastTabElement  => _myLastTabElement;
+  @override HtmlElement    get _root            => _myRoot;
 
   ButtonElement        get _cancelButton     => _root.querySelector('.cancel');
   ButtonElement        get _deleteButton     => _root.querySelector('.delete');
-  HeadingElement       get _header           => _root.querySelector('h4');
   ElementList<Element> get _inputFields      => _root.querySelectorAll('[input-field]');
   ButtonElement        get _saveButton       => _root.querySelector('.save');
   InputElement         get _startHourInput   => _root.querySelector('.start-hour');
@@ -36,11 +37,6 @@ class UICalendarEditor extends UIModel {
   InputElement         get _stopYearInput    => _root.querySelector('.stop-year');
   ElementList<Element> get _tabElements      => _root.querySelectorAll('[tabindex]');
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
-
-  /**
-   * Set the widget header.
-   */
-  set header(String headline) => _header.text = headline;
 
   /**
    * Return the click event stream for the cancel button.

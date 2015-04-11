@@ -5,6 +5,8 @@ class CalendarEditor extends ViewWidget {
   UICalendarEditor      _ui;
 
   CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
+    _ui.help = 'some help';
+
     registerEventListeners();
   }
 

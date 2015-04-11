@@ -8,6 +8,8 @@ class ContactSelector extends ViewWidget {
   ContactSelector(UIModel this._ui, Place this._myPlace) {
     test(); // TODO (TL): Get rid of this testing code...
 
+    _ui.help = 'alt+s';
+
     _registerEventListeners();
   }
 

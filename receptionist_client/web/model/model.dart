@@ -11,6 +11,7 @@ part 'model-ui-contact-calendar.dart';
 part 'model-ui-contact-data.dart';
 part 'model-ui-contact-selector.dart';
 part 'model-ui-contexts.dart';
+part 'model-ui-help.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
@@ -21,10 +22,12 @@ enum AgentState {Busy, Idle, Pause, Unknown}
 enum AlertState {Off, On}
 
 abstract class UIModel {
-  HtmlElement get _firstTabElement;
-  HtmlElement get _focusElement;
-  HtmlElement get _lastTabElement;
-  HtmlElement get _root;
+  HtmlElement    get _firstTabElement;
+  HtmlElement    get _focusElement;
+  HeadingElement get _header;
+  DivElement     get _help;
+  HtmlElement    get _lastTabElement;
+  HtmlElement    get _root;
 
   /**
    * Return true if the widget is in focus.
@@ -86,6 +89,24 @@ abstract class UIModel {
       tabToFirst();
     }
   }
+
+  /**
+   * Set the widget header.
+   */
+  set header(String headline) => _header.text = headline;
+
+  /**
+   * Set the help text.
+   *
+   * TODO (TL): Do some placing/sizing magic, so the help box is always centered,
+   * no matter the length of the help text.
+   */
+  set help(String help) => _help.text = help;
+
+  /**
+   * Return the mouse click event stream for this widget.
+   */
+  Stream<MouseEvent> get onClick => _root.onClick;
 
   /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.

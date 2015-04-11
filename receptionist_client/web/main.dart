@@ -41,7 +41,7 @@ void main() {
                          new Place(Context.Home, Widget.MessageCompose));
 
 
-  Help help = new Help();
+  Help help = new Help(new UIHelp());
 
 
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();

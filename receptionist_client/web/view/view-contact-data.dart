@@ -8,6 +8,8 @@ class ContactData extends ViewWidget {
   ContactData(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
     test(); // TODO (TL): Get rid of this testing code...
 
+    _ui.help = 'alt+t';
+
     registerEventListeners();
   }
 

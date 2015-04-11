@@ -5,6 +5,8 @@ class ReceptionCommands extends ViewWidget {
   UIReceptionCommands _ui;
 
   ReceptionCommands(UIModel this._ui, Place this._myPlace) {
+    _ui.help = 'alt+h';
+
     registerEventListeners();
   }
 

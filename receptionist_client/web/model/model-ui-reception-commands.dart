@@ -5,21 +5,12 @@ class UIReceptionCommands extends UIModel {
 
   UIReceptionCommands(DivElement this._myRoot);
 
-  @override HtmlElement get _firstTabElement => null;
-  @override HtmlElement get _focusElement    => _commandList;
-  @override HtmlElement get _lastTabElement  => null;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement    get _firstTabElement => null;
+  @override HtmlElement    get _focusElement    => _commandList;
+  @override HeadingElement get _header          => _root.querySelector('h4');
+  @override DivElement     get _help            => _root.querySelector('div.help');
+  @override HtmlElement    get _lastTabElement  => null;
+  @override HtmlElement    get _root            => _myRoot;
 
-  UListElement   get _commandList => _root.querySelector('ul');
-  HeadingElement get _header      => _root.querySelector('h4');
-
-  /**
-   * Set the widget header.
-   */
-  set header(String headline) => _header.text = headline;
-
-  /**
-   * Return the mouse click event stream for this widget.
-   */
-  Stream<MouseEvent> get onClick => _myRoot.onClick;
+  UListElement get _commandList => _root.querySelector('ul');
 }

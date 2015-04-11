@@ -6,6 +6,8 @@ class ContactCalendar extends ViewWidget {
   UIContactCalendar _ui;
 
   ContactCalendar(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
+    _ui.help = 'alt+k';
+
     registerEventListeners();
   }
 

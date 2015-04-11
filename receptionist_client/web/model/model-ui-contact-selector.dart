@@ -7,10 +7,18 @@ class UIContactSelector extends UIModel {
     _registerEventListeners();
   }
 
-  @override HtmlElement get _firstTabElement => _filter;
-  @override HtmlElement get _focusElement    => _filter;
-  @override HtmlElement get _lastTabElement  => _filter;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement    get _firstTabElement => _filter;
+  @override HtmlElement    get _focusElement    => _filter;
+  @override HeadingElement get _header          => _root.querySelector('h4');
+  @override DivElement     get _help            => _root.querySelector('div.help');
+  @override HtmlElement    get _lastTabElement  => _filter;
+  /**
+   * Return the mousedown click event stream for this widget. We capture
+   * mousedown instead of regular click to avoid the ugly focus/blur flicker
+   * on the filter input whenever a contact li element is clicked.
+   */
+  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
+  @override HtmlElement        get _root   => _myRoot;
 
   UListElement get _contactList => _root.querySelector('.generic-widget-list');
   InputElement get _filter      => _root.querySelector('.filter');
@@ -147,11 +155,6 @@ class UIContactSelector extends UIModel {
 
     return null;
   }
-
-  /**
-   * Return the mousedown click event stream for this widget.
-   */
-  Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
 
   /**
    * Mark [contact] selected.

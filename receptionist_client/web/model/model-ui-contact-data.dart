@@ -5,10 +5,12 @@ class UIContactData extends UIModel {
 
   UIContactData(DivElement this._myRoot);
 
-  @override HtmlElement get _firstTabElement => null;
-  @override HtmlElement get _focusElement    => _telNumList;
-  @override HtmlElement get _lastTabElement  => null;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement    get _firstTabElement => null;
+  @override HtmlElement    get _focusElement    => _telNumList;
+  @override HeadingElement get _header          => _root.querySelector('h4');
+  @override DivElement     get _help            => _root.querySelector('div.help');
+  @override HtmlElement    get _lastTabElement  => null;
+  @override HtmlElement    get _root            => _myRoot;
 
   UListElement   get _additionalInfoList => _root.querySelector('.additional-info');
   UListElement   get _backupsList        => _root.querySelector('.backups');
@@ -16,7 +18,6 @@ class UIContactData extends UIModel {
   SpanElement    get _headerContactName  => _root.querySelector('h4 span');
   UListElement   get _departmentList     => _root.querySelector('.department');
   UListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
-  HeadingElement get _header             => _root.querySelector('h4');
   UListElement   get _relationsList      => _root.querySelector('.relations');
   UListElement   get _responsibilityList => _root.querySelector('.responsibility');
   OListElement   get _telNumList         => _root.querySelector('.telephone-number');
@@ -111,11 +112,6 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Set the widget header.
-   */
-  set header(String headline) => _header.text = headline;
-
-  /**
    * Return true if [telNum] is marked ringing.
    */
   bool isRinging(TelNum telNum) =>
@@ -171,11 +167,6 @@ class UIContactData extends UIModel {
    * Return true if no telNumList items are marked "ringing".
    */
   bool get noRinging => !_telNumList.children.any((e) => e.classes.contains('ringing'));
-
-  /**
-   * Return the mouse click event stream for this widget.
-   */
-  Stream<MouseEvent> get onClick => _myRoot.onClick;
 
   /**
    *

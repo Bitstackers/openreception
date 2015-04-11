@@ -5,6 +5,8 @@ class ReceptionCalendar extends ViewWidget {
   UIReceptionCalendar _ui;
 
   ReceptionCalendar(UIModel this._ui, Place this._myPlace) {
+    _ui.help = 'alt+a';
+
     registerEventListeners();
   }
 
