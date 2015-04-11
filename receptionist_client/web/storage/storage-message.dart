@@ -16,9 +16,6 @@ part of storage;
 abstract class Message {
 
   static const String className = '${libraryName}.Message';
-
-  static Model.MessageList _messageCache = new Model.MessageList();
-
   /**
    * Get a [MessageList] starting from [lastID] and downward of max size [limit].
    *
@@ -26,19 +23,13 @@ abstract class Message {
    * messageID 12, downto (including) 3.
    *
    */
-  static Future<List<Model.Message>> list({int lastID                 : Model.Message.noID,
-                                         int limit                  : 100,
-                                         Model.MessageFilter filter : null}) {
-    const String context = '${className}.list';
-
+  static Future<List<Model.Message>> list({Model.MessageFilter filter : null}) {
     final Completer completer = new Completer<List<Model.Message>>();
 
     /// Note: the correct way of sending these parameters would probably be to
     ///  copy the object and, update the copy and send it.
     filter.upperMessageID = lastID;
     filter.limitCount = limit;
-
-    debugStorage("Message list not found in cache, loading from service.", context);
     Service.Message.store.list(filter: filter).then((List<ORModel.Message> messages) {
 
       completer.complete(messages.map((ORModel.Message message) =>
