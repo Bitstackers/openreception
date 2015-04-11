@@ -17,22 +17,10 @@ class WelcomeMessage {
 
   final SpanElement _greeting = _root.querySelector('.greeting');
 
-  set greetingText(String text) => this._greeting.text = text;
-
   /**
    *
    */
   void _registerEventListeners() {
-    Model.Reception.onReceptionChange.listen(this._render);
-  }
-
-  void _render(Model.Reception reception) {
-    if (Model.Call.activeCall != Model.noCall &&
-        Model.Call.activeCall.greetingPlayed) {
-      this.greetingText = reception.shortGreeting;
-    }
-    else {
-      this.greetingText = reception.greeting;
-    }
+    // TODO (TL): Get me some data!
   }
 }

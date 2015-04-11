@@ -2,9 +2,9 @@ part of view;
 
 class Contexts {
   Map<String, HtmlElement> _contextMap;
-  Model.UIContexts         _ui;
+  UIContexts              _ui;
 
-  Contexts(Model.UIModel this._ui) {
+  Contexts(UIModel this._ui) {
     /// TODO (TL): Perhaps take this map in as a constructor parameter?
     _contextMap = {Context.CalendarEdit: _ui.contextCalendarEdit,
                    Context.Home        : _ui.contextHome,
