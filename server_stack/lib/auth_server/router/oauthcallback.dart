@@ -78,8 +78,6 @@ Future<Map> getUserInfo(String access_token) {
 
   return http.get(url).then((http.Response response) {
     Map googleProfile = JSON.decode(response.body);
-    //TODO DELETE
-    print(response.body);
     return db.getUser(googleProfile['email']).then((Map agent) {
       if(agent.isNotEmpty) {
         agent['remote_attributes'] = googleProfile;
