@@ -3,10 +3,12 @@ part of model;
 class UIContexts extends UIModel {
   UIContexts();
 
-  @override HtmlElement get _firstTabElement => null;
-  @override HtmlElement get _focusElement    => null;
-  @override HtmlElement get _lastTabElement  => null;
-  @override HtmlElement get _root            => null;
+  @override HtmlElement    get _firstTabElement => null;
+  @override HtmlElement    get _focusElement    => null;
+  @override HeadingElement get _header          => null;
+  @override DivElement     get _help            => null;
+  @override HtmlElement    get _lastTabElement  => null;
+  @override HtmlElement    get _root            => null;
 
   /// TODO (TL): get rid of the String selectors. Move to constants.dart or
   /// something similar. Perhaps use/abuse the navigation Context enum?

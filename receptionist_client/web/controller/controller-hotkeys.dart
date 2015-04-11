@@ -30,6 +30,7 @@ class HotKeys {
   Bus<KeyboardEvent> _ctrlE    = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _down     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _esc      = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _f1       = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _star     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
@@ -61,6 +62,7 @@ class HotKeys {
   Stream<KeyboardEvent> get onCtrlE    => _ctrlE.stream;
   Stream<KeyboardEvent> get onDown     => _down.stream;
   Stream<KeyboardEvent> get onEsc      => _esc.stream;
+  Stream<KeyboardEvent> get onF1       => _f1.stream;
   Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
   Stream<KeyboardEvent> get onStar     => _star.stream;
   Stream<KeyboardEvent> get onTab      => _tab.stream;
@@ -97,7 +99,8 @@ class HotKeys {
        'Alt+t'      : _altT.fire,
        'Alt+w'      : _altW.fire,
        'Ctrl+e'     : _ctrlE.fire,
-       'Esc'        : _esc.fire};
+       'Esc'        : _esc.fire,
+       'F1'         : _f1.fire};
 
     final Map<String, EventListener> bindings =
         {'down'     : _down.fire,

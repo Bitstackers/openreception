@@ -12,10 +12,11 @@ part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';
 part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
-part 'view-contact-list.dart';
+part 'view-contact-selector.dart';
 part 'view-contexts.dart';
 part 'view-global-call-queue.dart';
 part 'view-message-compose.dart';
+part 'view-help.dart';
 part 'view-my-call-queue.dart';
 part 'view-reception-calendar.dart';
 part 'view-reception-commands.dart';
@@ -49,28 +50,6 @@ abstract class ViewWidget {
    * MUST return the widgets [UIModel].
    */
   UIModel get ui;
-
-  /**
-   * Tab from first to last tab element when first is in focus an a Shift+Tab
-   * event is caught.
-   */
-  void handleShiftTab(KeyboardEvent event) {
-    if(ui.active && ui.focusIsOnFirst) {
-      event.preventDefault();
-      ui.tabToLast();
-    }
-  }
-
-  /**
-   * Tab from last to first tab element when last is in focus an a Tab event
-   * is caught.
-   */
-  void handleTab(KeyboardEvent event) {
-    if(ui.active && ui.focusIsOnLast) {
-      event.preventDefault();
-      ui.tabToFirst();
-    }
-  }
 
   /**
    * Navigate to [myPlace] if widget is not already in focus.

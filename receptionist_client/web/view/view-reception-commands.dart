@@ -1,29 +1,39 @@
 part of view;
 
 class ReceptionCommands extends ViewWidget {
-  Place                _myPlace;
-  UIReceptionCommands _dom;
+  Place               _myPlace;
+  UIReceptionCommands _ui;
+
+  ReceptionCommands(UIModel this._ui, Place this._myPlace) {
+    _ui.help = 'alt+h';
+
+    registerEventListeners();
+  }
+
+  @override Place   get myPlace => _myPlace;
+  @override UIModel get ui      => _ui;
 
   /**
-   *
+   * Simply navigate to my [Place]. Matters not if this widget is already
+   * focused.
    */
-  ReceptionCommands(UIReceptionCommands this._dom, Place this._myPlace) {
-    _registerEventListeners();
+  void activateMe(_) {
+    navigateToMyPlace();
   }
 
-  @override HtmlElement get root => _dom.root;
-  @override HtmlElement get focusElement => _dom.commandList;
-  @override Place get myPlace => _myPlace;
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
-  void _activateMe(_) {
-    _navigateToMyPlace();
+  void registerEventListeners() {
+    _navigate.onGo.listen(setWidgetState);
+
+    _ui.onClick.listen(activateMe);
+
+    _hotKeys.onAltH .listen(activateMe);
   }
 
-  void _registerEventListeners() {
-    _navigate.onGo.listen(_setWidgetState);
-
-    _dom.root.onClick.listen(_activateMe);
-
-    _hotKeys.onAltH .listen(_activateMe);
-  }
+  /**
+   * Render the widget with .....
+   */
+  void render() {}
 }

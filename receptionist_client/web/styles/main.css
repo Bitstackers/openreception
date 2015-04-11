@@ -37,7 +37,7 @@ button::-moz-focus-inner {
   flex-direction: row;
 }
 
-.focus .spinning-box {
+.focus .spinning-focus-box {
   top: -2px;
   left: -2px;
   animation-name: focus;
@@ -134,7 +134,24 @@ input:focus  ~label {
   padding: 3em;
 }
 
-.spinning-box {
+.help {
+  position: absolute;
+  z-index: 1;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 0.8em;
+  font-weight: bold;
+  left: calc(50% - 2em);
+  top: -0.5em;
+  text-align: center;
+  background-color: #f3b300;
+}
+
+.help.hidden {
+  display: none;
+}
+
+.spinning-focus-box {
   position: absolute;
   z-index: -1;
   width: 1em;

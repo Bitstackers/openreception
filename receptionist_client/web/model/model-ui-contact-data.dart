@@ -5,17 +5,19 @@ class UIContactData extends UIModel {
 
   UIContactData(DivElement this._myRoot);
 
-  @override HtmlElement get _firstTabElement => null;
-  @override HtmlElement get _focusElement    => _telNumList;
-  @override HtmlElement get _lastTabElement  => null;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement    get _firstTabElement => null;
+  @override HtmlElement    get _focusElement    => _telNumList;
+  @override HeadingElement get _header          => _root.querySelector('h4');
+  @override DivElement     get _help            => _root.querySelector('div.help');
+  @override HtmlElement    get _lastTabElement  => null;
+  @override HtmlElement    get _root            => _myRoot;
 
   UListElement   get _additionalInfoList => _root.querySelector('.additional-info');
   UListElement   get _backupsList        => _root.querySelector('.backups');
   UListElement   get _commandsList       => _root.querySelector('.commands');
+  SpanElement    get _headerContactName  => _root.querySelector('h4 span');
   UListElement   get _departmentList     => _root.querySelector('.department');
   UListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
-  HeadingElement get _headerElement      => _root.querySelector('h4');
   UListElement   get _relationsList      => _root.querySelector('.relations');
   UListElement   get _responsibilityList => _root.querySelector('.responsibility');
   OListElement   get _telNumList         => _root.querySelector('.telephone-number');
@@ -33,14 +35,19 @@ class UIContactData extends UIModel {
   set backups(List<String> items) => _populateList(_backupsList, items);
 
   /**
-   * Returns the onClick stream for the telephone numbers list.
+   * Returns the mousedown click stream for the telephone numbers list.
    */
-  Stream<MouseEvent> get clickSelectTelNum => _telNumList.onClick;
+  Stream<MouseEvent> get clickSelectTelNum => _telNumList.onMouseDown;
 
   /**
    * Add [items] ot the commands list.
    */
   set commands(List<String> items) => _populateList(_commandsList, items);
+
+  /**
+   * Set the [Contact].name in the widget header.
+   */
+  set contactName(String name) => _headerContactName.text = name;
 
   /**
    * Add [items] to the departments list.
@@ -105,11 +112,6 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Set the widget header.
-   */
-  set header(String headline) => _headerElement.text = headline;
-
-  /**
    * Return true if [telNum] is marked ringing.
    */
   bool isRinging(TelNum telNum) =>
@@ -121,11 +123,14 @@ class UIContactData extends UIModel {
   bool isSelected(TelNum telNo) =>
       telNo._li.classes.contains('selected');
 
+  /**
+   * Add the [mark] class to the [telNum].
+   */
   void _mark(TelNum telNum, String mark) {
     if(telNum != null) {
       _telNumList.children.forEach((Element element) => element.classes.remove(mark));
       telNum._li.classes.add(mark);
-      telNum._li.focus();
+      telNum._li.scrollIntoView();
     }
   }
 
@@ -162,11 +167,6 @@ class UIContactData extends UIModel {
    * Return true if no telNumList items are marked "ringing".
    */
   bool get noRinging => !_telNumList.children.any((e) => e.classes.contains('ringing'));
-
-  /**
-   * Return the mouse click event stream for this widget.
-   */
-  Stream<MouseEvent> get onClick => _myRoot.onClick;
 
   /**
    *
@@ -219,6 +219,7 @@ class UIContactData extends UIModel {
 
 /**
  * A telephone number.
+ * TODO (TL): Replace this with the actual object. This is just a placeholder.
  */
 class TelNum {
   LIElement   _li         = new LIElement()..tabIndex = -1;

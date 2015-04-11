@@ -34,22 +34,27 @@ part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';
 part 'model-ui-contact-calendar.dart';
 part 'model-ui-contact-data.dart';
-part 'model-ui-contact-list.dart';
+part 'model-ui-contact-selector.dart';
 part 'model-ui-contexts.dart';
+part 'model-ui-help.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
 
 const String libraryName = "model";
 
+final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
+
 enum AgentState {Busy, Idle, Pause, Unknown}
 enum AlertState {Off, On}
 
 abstract class UIModel {
-  HtmlElement get _firstTabElement;
-  HtmlElement get _focusElement;
-  HtmlElement get _lastTabElement;
-  HtmlElement get _root;
+  HtmlElement    get _firstTabElement;
+  HtmlElement    get _focusElement;
+  HeadingElement get _header;
+  DivElement     get _help;
+  HtmlElement    get _lastTabElement;
+  HtmlElement    get _root;
 
   /**
    * Return true if the widget is in focus.
@@ -89,6 +94,46 @@ abstract class UIModel {
    * tabindex set for this widget.
    */
   bool get focusIsOnLast  => _focusElement == _lastTabElement;
+
+  /**
+   * Tab from first to last tab element when first is in focus an a Shift+Tab
+   * event is caught.
+   */
+  void handleShiftTab(KeyboardEvent event) {
+    if(active && focusIsOnFirst) {
+      event.preventDefault();
+      tabToLast();
+    }
+  }
+
+  /**
+   * Tab from last to first tab element when last is in focus an a Tab event
+   * is caught.
+   */
+  void handleTab(KeyboardEvent event) {
+    if(active && focusIsOnLast) {
+      event.preventDefault();
+      tabToFirst();
+    }
+  }
+
+  /**
+   * Set the widget header.
+   */
+  set header(String headline) => _header.text = headline;
+
+  /**
+   * Set the help text.
+   *
+   * TODO (TL): Do some placing/sizing magic, so the help box is always centered,
+   * no matter the length of the help text.
+   */
+  set help(String help) => _help.text = help;
+
+  /**
+   * Return the mouse click event stream for this widget.
+   */
+  Stream<MouseEvent> get onClick => _root.onClick;
 
   /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.

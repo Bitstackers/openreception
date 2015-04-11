@@ -1,33 +1,40 @@
 part of view;
 
 class ReceptionCalendar extends ViewWidget {
-  Place                _myPlace;
-  UIReceptionCalendar _dom;
+  Place               _myPlace;
+  UIReceptionCalendar _ui;
+
+  ReceptionCalendar(UIModel this._ui, Place this._myPlace) {
+    _ui.help = 'alt+a';
+
+    registerEventListeners();
+  }
+
+  @override Place   get myPlace => _myPlace;
+  @override UIModel get ui      => _ui;
 
   /**
-   * [root] is the parent element of the widget, and [_myPlace] is the [Place]
-   * object that this widget reacts on when Navigate.go fires.
+   * Simply navigate to my [Place]. Matters not if this widget is already
+   * focused.
    */
-  ReceptionCalendar(UIReceptionCalendar this._dom, Place this._myPlace) {
-    _registerEventListeners();
+  void activateMe(_) {
+    navigateToMyPlace();
   }
 
-  @override HtmlElement get focusElement => _dom.eventList;
-  @override Place get myPlace => _myPlace;
-  @override HtmlElement get root => _dom.root;
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
-  void _activateMe(_) {
-    _navigateToMyPlace();
+  void registerEventListeners() {
+    _navigate.onGo.listen(setWidgetState);
+
+    _ui.onClick.listen(activateMe);
+
+    _hotKeys.onAltA .listen(activateMe);
+    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
   }
 
-  void _registerEventListeners() {
-    _navigate.onGo.listen(_setWidgetState);
-
-    _dom.root.onClick.listen(_activateMe);
-
-    _hotKeys.onAltA.listen(_activateMe);
-
-    // TODO (TL): temporary stuff
-    _dom.eventList.onDoubleClick.listen((_) => _navigate.goCalendarEdit());
-  }
+  /**
+   * Render the widget with .....
+   */
+  void render() {}
 }

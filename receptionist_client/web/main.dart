@@ -9,36 +9,39 @@ void main() {
 
   AgentInfo agentInfo = new AgentInfo(new UIAgentInfo(querySelector('#agent-info')));
 
-  CalendarEditor calendarEditor =
-      new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
-                          new Place(Context.CalendarEdit, Widget.CalendarEditor));
+  ContactSelector contactSelector =
+        new ContactSelector(new UIContactSelector(querySelector('#contact-selector')),
+                            new Place(Context.Home, Widget.ContactSelector));
 
   ContactCalendar contactCalendar =
       new ContactCalendar(new UIContactCalendar(querySelector('#contact-calendar')),
-                          new Place(Context.Home, Widget.ContactCalendar));
+                          new Place(Context.Home, Widget.ContactCalendar),
+                          contactSelector);
 
   ContactData contactData =
       new ContactData(new UIContactData(querySelector('#contact-data')),
-                      new Place(Context.Home, Widget.ContactData));
+                      new Place(Context.Home, Widget.ContactData),
+                      contactSelector);
 
-//  ContactList contactList =
-//      new ContactList(new UIContactList(querySelector('#contact-list')),
-//                      new Place('context-home', 'contact-list'));
-//
-//  MessageCompose messageCompose =
-//      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
-//                         new Place('context-home', 'message-compose'));
-//
-//  ReceptionCalendar receptionCalendar =
-//      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
-//                            new Place('context-home', 'reception-calendar'));
-//
-//  ReceptionCommands receptionCommands =
-//      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
-//                            new Place('context-home', 'reception-commands'));
+  CalendarEditor calendarEditor =
+        new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
+                            new Place(Context.CalendarEdit, Widget.CalendarEditor));
 
 
+  ReceptionCalendar receptionCalendar =
+      new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
+                            new Place(Context.Home, Widget.ReceptionCalendar));
 
+  ReceptionCommands receptionCommands =
+      new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
+                            new Place(Context.Home, Widget.ReceptionCommands));
+
+  MessageCompose messageCompose =
+      new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
+                         new Place(Context.Home, Widget.MessageCompose));
+
+
+  Help help = new Help(new UIHelp());
 
 
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();

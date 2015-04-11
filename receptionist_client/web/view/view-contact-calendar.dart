@@ -1,15 +1,21 @@
 part of view;
 
 class ContactCalendar extends ViewWidget {
-  Place              _myPlace;
+  ContactSelector   _contactSelector;
+  Place             _myPlace;
   UIContactCalendar _ui;
 
-  ContactCalendar(UIModel this._ui, Place this._myPlace) {
+  ContactCalendar(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
+    _ui.help = 'alt+k';
+
     registerEventListeners();
   }
 
   @override Place   get myPlace => _myPlace;
   @override UIModel get ui      => _ui;
+
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
   /**
    * Simply navigate to my [Place]. Matters not if this widget is already
@@ -19,9 +25,6 @@ class ContactCalendar extends ViewWidget {
     navigateToMyPlace();
   }
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
-
   void registerEventListeners() {
     _navigate.onGo.listen(setWidgetState);
 
@@ -29,5 +32,14 @@ class ContactCalendar extends ViewWidget {
 
     _hotKeys.onAltK .listen(activateMe);
     _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
+
+    _contactSelector.onSelect.listen(render);
+  }
+
+  /**
+   * Render the widget with [Contact].
+   */
+  void render(Contact contact) {
+    print('ContactCalendar received ${contact.name}');
   }
 }
