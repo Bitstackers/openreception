@@ -85,7 +85,7 @@ button::-moz-focus-inner {
   position: absolute;
   top: 20px;
   height: calc(100% - 20px);
-  width: 100%;f
+  width: 100%;
 }
 
 .generic-widget-headline {
@@ -104,6 +104,7 @@ button::-moz-focus-inner {
 .generic-widget-list {
   margin: 0;
   padding: 0;
+  padding-top: 3px;
   list-style-type: none;
   overflow: auto;
 }

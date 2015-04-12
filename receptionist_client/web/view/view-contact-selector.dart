@@ -6,11 +6,11 @@ class ContactSelector extends ViewWidget {
   UIContactSelector _ui;
 
   ContactSelector(UIModel this._ui, Place this._myPlace) {
-    test(); // TODO (TL): Get rid of this testing code...
-
     _ui.help = 'alt+s';
 
     _registerEventListeners();
+
+    test(); // TODO (TL): Get rid of this testing code...
   }
 
   @override Place   get myPlace => _myPlace;
@@ -84,8 +84,8 @@ class ContactSelector extends ViewWidget {
   }
 
   /**
-   * Mark [Contact] selected. This call checks if we're active. Do not use this
-   * to select contacts using the mouse.
+   * Mark [Contact] selected.
+   * MouseClick selection is handled by [clickSelect], not by this method.
    */
   void select(Contact contact) {
     if(_ui.active && contact != null) {

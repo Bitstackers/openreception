@@ -20,7 +20,7 @@ class UIContactSelector extends UIModel {
   @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
   @override HtmlElement        get _root   => _myRoot;
 
-  UListElement get _contactList => _root.querySelector('.generic-widget-list');
+  OListElement get _contactList => _root.querySelector('.generic-widget-list');
   InputElement get _filter      => _root.querySelector('.filter');
 
   /**
@@ -201,32 +201,5 @@ class UIContactSelector extends UIModel {
     /// These are here to prevent tab'ing out of the filter input.
     _hotKeys.onTab     .listen(handleTab);
     _hotKeys.onShiftTab.listen(handleShiftTab);
-  }
-}
-
-/**
- * A contact.
- * TODO (TL): Replace this with the actual object. This is just a placeholder.
- */
-class Contact {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       name;
-  List<String> tags;
-
-  Contact(String this.name, {List<String> this.tags}) {
-    _li.text = name;
-    if(tags == null) {
-      tags = new List<String>();
-    }
-  }
-
-  Contact.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-      name = _li.text;
-      tags = _li.dataset['tags'].split(',');
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
   }
 }
