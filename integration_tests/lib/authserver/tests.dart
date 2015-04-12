@@ -24,6 +24,23 @@ void runAuthServerTests() {
       transport = new Transport.Client();
       authService = new Service.Authentication
          (Config.authenticationServerUri, Config.serverToken, transport);
+    });
+
+    tearDown (() {
+      authService = null;
+      transport.client.close(force : true);
+    });
+
+    test ('Non-existing token',
+        () => AuthService.nonExistingToken(authService));
+
+    test ('Validate non-existing token',
+        () => AuthService.validateNonExistingToken(authService));
+
+    setUp (() {
+      transport = new Transport.Client();
+      authService = new Service.Authentication
+         (Config.authenticationServerUri, Config.serverToken, transport);
       receptionist = ReceptionistPool.instance.aquire();
 
       return receptionist.initialize();
@@ -37,11 +54,12 @@ void runAuthServerTests() {
       return receptionist.teardown();
     });
 
-    test ('Non-existing token',
-        () => AuthService.nonExistingToken(authService));
-
     test ('Existing token',
         () => AuthService.existingToken(authService, receptionist));
+
+    test ('Validate existing token',
+        () => AuthService.validateExistingToken(authService, receptionist));
+
   });
 }
 
