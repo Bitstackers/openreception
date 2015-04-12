@@ -91,4 +91,30 @@ abstract class AuthService {
       expect (user.peer, isNotEmpty);
     });
   }
+
+  /**
+   * Test server behaviour when trying to validae a token that does not exist.
+   *
+   * The expected behaviour is that the server should return a Not Found error.
+   */
+  static void validateNonExistingToken (Service.Authentication authService) {
+
+    log.info('Checking server behaviour on a non-existing contact.');
+
+    return expect(authService.userOf(badToken),
+            throwsA(new isInstanceOf<Storage.NotFound>()));
+  }
+
+  /**
+   * Test server behaviour when trying to validate a token that exists.
+   *
+   * The expected behaviour is that the server should normally.
+   */
+  static Future validateExistingToken (Service.Authentication authService,
+                                       Receptionist receptionist) {
+
+    log.info('Checking server behaviour on a non-existing contact.');
+
+    return authService.userOf(receptionist.authToken);
+  }
 }
