@@ -43,13 +43,18 @@ void main() {
     test('serialization', MessageObject.serialization);
   });
 
-  group('service.ResourceMessage', () {
+  group('Resource.Authentication', () {
+    test('userOf', ResourceAuthentication.userOf);
+    test('validate', ResourceAuthentication.validate);
+  });
+
+  group('Resource.Message', () {
     test('singleMessage', ResourceMessage.singleMessage);
     test('send', ResourceMessage.send);
     test('list', ResourceMessage.list);
   });
 
-  group('service.ResourceReception', () {
+  group('Resource.Reception', () {
     test('singleMessage', ResourceReception.single);
     test('list', ResourceReception.list);
     test('subset', ResourceReception.subset);
