@@ -5,6 +5,8 @@ import 'model/model.dart';
 import 'view/view.dart';
 
 void main() {
+  Help help = new Help(new UIHelp());
+
   Contexts contexts = new Contexts(new UIContexts());
 
   AgentInfo agentInfo = new AgentInfo(new UIAgentInfo(querySelector('#agent-info')));
@@ -39,10 +41,6 @@ void main() {
   MessageCompose messageCompose =
       new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
                          new Place(Context.Home, Widget.MessageCompose));
-
-
-  Help help = new Help(new UIHelp());
-
 
   GlobalCallQueue       globalCallQueue       = new GlobalCallQueue();
   MyCallQueue           myCallQueue           = new MyCallQueue();
