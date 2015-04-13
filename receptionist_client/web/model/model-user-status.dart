@@ -15,15 +15,20 @@ part of model;
 
 class UserStatus extends ORModel.UserStatus {
 
-  static UserStatus currentStatus = new UserStatus._null();
+  Bus<UserStatus> _statusChange = new Bus<UserStatus>();
+
+  Stream<UserStatus> get onStateChange => this._statusChange.stream;
 
   UserStatus.fromMap(Map map) : super.fromMap(map);
 
   UserStatus._null() : super();
 
-  void update (String newState) {
-    this.state = newState;
+  void update (UserStatus newValues) {
+    this.lastState = this.state;
+    this.state = newValues.state;
+    this.callsHandled = newValues.callsHandled;
+    this.lastActivity = newValues.lastActivity;
 
-    event.bus.fire(event.userStatusChanged, this);
+    this._statusChange.fire(this);
   }
 }
