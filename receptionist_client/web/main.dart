@@ -29,7 +29,6 @@ void main() {
         new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
                             new Place(Context.CalendarEdit, Widget.CalendarEditor));
 
-
   ReceptionCalendar receptionCalendar =
       new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
                             new Place(Context.Home, Widget.ReceptionCalendar));
