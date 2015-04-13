@@ -5,11 +5,11 @@ import 'dart:collection';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../classes/events.dart' as event;
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as storage;
-import 'package:event_bus/event_bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/bus.dart';
+import 'package:logging/logging.dart';
 
 part 'model-call.dart';
 part 'model-call-list.dart';
