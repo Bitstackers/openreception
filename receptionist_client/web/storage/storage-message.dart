@@ -19,17 +19,13 @@ abstract class Message {
   /**
    * Get a [MessageList] starting from [lastID] and downward of max size [limit].
    *
-   * So, for instance, parameters {[lastID] : 12 [limit] : 10,} will fetch a messageList starting from
+   * So, for instance, parameters {[lastID] : 12 [limit] : 10,} will fetch a
+   * messageList starting from
    * messageID 12, downto (including) 3.
    *
    */
   static Future<List<Model.Message>> list({Model.MessageFilter filter : null}) {
     final Completer completer = new Completer<List<Model.Message>>();
-
-    /// Note: the correct way of sending these parameters would probably be to
-    ///  copy the object and, update the copy and send it.
-    filter.upperMessageID = lastID;
-    filter.limitCount = limit;
     Service.Message.store.list(filter: filter).then((List<ORModel.Message> messages) {
 
       completer.complete(messages.map((ORModel.Message message) =>
@@ -58,36 +54,4 @@ abstract class Message {
 
     return completer.future;
   }
-
-
-  /**
-   * Get the [MessageList] from cache.
-   * TODO: implement.
-   */
-  static Future<Model.MessageList> listCached({int lastID                 : Model.Message.noID,
-                                               int maxRows                : 100,
-                                               Model.MessageFilter filter : null}) {
-    const String context = '${className}.list';
-
-    final Completer completer = new Completer<Model.MessageList>();
-
-    if (_messageCache.contains(lastID)) {
-      debugStorage("Loading message list from cache.", context);
-      completer.complete( new Model.MessageList.fromMessageMap(_messageCache.take(maxRows)));
-    } else {
-      throw new StateError('Not implemeted!');
-      debugStorage("Message list not found in cache, loading from service.", context);
-      Service.Message.store.list().then((List<Model.Message> messages) {
-        /*
-        _messageCache.addAll(messages.values);
-        _contactListCache[receptionID] = contactList;
-        completer.complete(contactList); */
-      }).catchError((error) {
-        completer.completeError(error);
-      });
-    }
-
-    return completer.future;
-  }
-
 }
