@@ -12,7 +12,7 @@ SELECT u.id, u.name, u.extension, u.send_from as address,
    FROM auth_identities 
    WHERE user_id = u.id) AS identities
 FROM auth_identities JOIN users u ON auth_identities.user_id = u.id 
-WHERE identity = = @email;''';
+WHERE identity = @email;''';
 
   Map parameters = {'email' : userEmail};
 
