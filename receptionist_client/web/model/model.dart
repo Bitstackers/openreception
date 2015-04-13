@@ -17,7 +17,6 @@ part 'model-contact.dart';
 part 'model-contact-list.dart';
 part 'model-message.dart';
 part 'model-message-filter.dart';
-part 'model-message-list.dart';
 part 'model-notification.dart';
 part 'model-notification-list.dart';
 part 'model-origination-request.dart';
