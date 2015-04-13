@@ -1,7 +1,14 @@
 part of model;
 
 class UIContexts extends UIModel {
-  UIContexts();
+  Map<String, HtmlElement> _contextMap;
+
+  UIContexts() {
+    _contextMap = {Context.CalendarEdit: contextCalendarEdit,
+                   Context.Home        : contextHome,
+                   Context.Homeplus    : contextHomeplus,
+                   Context.Messages    : contextMessages};
+  }
 
   @override HtmlElement    get _firstTabElement => null;
   @override HtmlElement    get _focusElement    => null;
@@ -16,4 +23,10 @@ class UIContexts extends UIModel {
   HtmlElement get contextHome         => querySelector('#context-home');
   HtmlElement get contextHomeplus     => querySelector('#context-homeplus');
   HtmlElement get contextMessages     => querySelector('#context-messages');
+
+  void toggleContext(Place place) {
+    _contextMap.forEach((id, element) {
+      id == place.context ? element.style.zIndex = '1' : element.style.zIndex = '0';
+    });
+  }
 }

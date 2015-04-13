@@ -48,6 +48,15 @@ final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 enum AgentState {Busy, Idle, Pause, Unknown}
 enum AlertState {Off, On}
 
+///
+///
+///
+/// TODO (TL): Look into whether the similar functionality of selecting items in
+/// a list (contact and calendar list for example) can be moved to UIModel.
+///
+///
+///
+
 abstract class UIModel {
   HtmlElement    get _firstTabElement;
   HtmlElement    get _focusElement;
@@ -156,5 +165,81 @@ abstract class UIModel {
    */
   void tabToLast() {
     _lastTabElement.focus();
+  }
+}
+
+/**
+ * Dummy calendar entry class
+ */
+class CalendarEntry {
+  LIElement    _li = new LIElement()..tabIndex = -1;
+  String       content;
+
+  CalendarEntry(String this.content) {
+    _li.text = content;
+  }
+
+  CalendarEntry.fromElement(LIElement element) {
+    if(element != null) {
+      _li = element;
+    }
+  }
+}
+
+/**
+ * Dummy contact class
+ */
+class Contact {
+  LIElement    _li = new LIElement()..tabIndex = -1;
+  String       name;
+  List<String> tags;
+
+  Contact(String this.name, {List<String> this.tags}) {
+    _li.text = name;
+    if(tags == null) {
+      tags = new List<String>();
+    }
+  }
+
+  Contact.fromElement(LIElement element) {
+    if(element != null && element is LIElement) {
+      _li = element;
+      name = _li.text;
+      tags = _li.dataset['tags'].split(',');
+    } else {
+      throw new ArgumentError('element is not a LIElement');
+    }
+  }
+}
+
+/**
+ * A dummy telephone number.
+ */
+class TelNum {
+  LIElement   _li         = new LIElement()..tabIndex = -1;
+  bool        _secret;
+  SpanElement _spanLabel  = new SpanElement();
+  SpanElement _spanNumber = new SpanElement();
+
+  TelNum(String number, String label, this._secret) {
+    if(_secret) {
+      _spanNumber.classes.add('secret');
+    }
+
+    _spanNumber.text = number;
+    _spanNumber.classes.add('number');
+    _spanLabel.text = label;
+    _spanLabel.classes.add('label');
+
+    _li.children.addAll([_spanNumber, _spanLabel]);
+    _li.dataset['number'] = number;
+  }
+
+  TelNum.fromElement(LIElement element) {
+    if(element != null && element is LIElement) {
+      _li = element;
+    } else {
+      throw new ArgumentError('element is not a LIElement');
+    }
   }
 }

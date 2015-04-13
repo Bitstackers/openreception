@@ -12,17 +12,17 @@ class UIContactData extends UIModel {
   @override HtmlElement    get _lastTabElement  => null;
   @override HtmlElement    get _root            => _myRoot;
 
-  UListElement   get _additionalInfoList => _root.querySelector('.additional-info');
-  UListElement   get _backupsList        => _root.querySelector('.backups');
-  UListElement   get _commandsList       => _root.querySelector('.commands');
+  OListElement   get _additionalInfoList => _root.querySelector('.additional-info');
+  OListElement   get _backupsList        => _root.querySelector('.backups');
+  OListElement   get _commandsList       => _root.querySelector('.commands');
   SpanElement    get _headerContactName  => _root.querySelector('h4 span');
-  UListElement   get _departmentList     => _root.querySelector('.department');
-  UListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
-  UListElement   get _relationsList      => _root.querySelector('.relations');
-  UListElement   get _responsibilityList => _root.querySelector('.responsibility');
+  OListElement   get _departmentList     => _root.querySelector('.department');
+  OListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
+  OListElement   get _relationsList      => _root.querySelector('.relations');
+  OListElement   get _responsibilityList => _root.querySelector('.responsibility');
   OListElement   get _telNumList         => _root.querySelector('.telephone-number');
-  UListElement   get _titleList          => _root.querySelector('.title');
-  UListElement   get _workHoursList      => _root.querySelector('.work-hours');
+  OListElement   get _titleList          => _root.querySelector('.title');
+  OListElement   get _workHoursList      => _root.querySelector('.work-hours');
 
   /**
    * Add [items] to the additional info list.
@@ -171,7 +171,7 @@ class UIContactData extends UIModel {
   /**
    *
    */
-  void _populateList(UListElement parent, List<String> list) {
+  void _populateList(OListElement parent, List<String> list) {
     list.forEach((String item) {
       parent.append(new LIElement()..text = item);
     });
@@ -215,37 +215,4 @@ class UIContactData extends UIModel {
    * Add [items] to the workhours list.
    */
   set workHours(List<String> items) => _populateList(_workHoursList, items);
-}
-
-/**
- * A telephone number.
- * TODO (TL): Replace this with the actual object. This is just a placeholder.
- */
-class TelNum {
-  LIElement   _li         = new LIElement()..tabIndex = -1;
-  bool        _secret;
-  SpanElement _spanLabel  = new SpanElement();
-  SpanElement _spanNumber = new SpanElement();
-
-  TelNum(String number, String label, this._secret) {
-    if(_secret) {
-      _spanNumber.classes.add('secret');
-    }
-
-    _spanNumber.text = number;
-    _spanNumber.classes.add('number');
-    _spanLabel.text = label;
-    _spanLabel.classes.add('label');
-
-    _li.children.addAll([_spanNumber, _spanLabel]);
-    _li.dataset['number'] = number;
-  }
-
-  TelNum.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
 }

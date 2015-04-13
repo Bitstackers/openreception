@@ -29,6 +29,16 @@ part 'view-welcome-message.dart';
 final HotKeys  _hotKeys  = new HotKeys();
 final Navigate _navigate = new Navigate();
 
+///
+///
+///
+/// TODO (TL): For widgets with with selectable list items, for example contact
+/// and calendar lists, we have a bunch of similar functionality implemented in
+/// each view object. This can and should probably be moved to ViewWidget.
+///
+///
+///
+
 abstract class ViewWidget {
   /**
    * SHOULD return the widgets [Place]. MAY return null if the widget has no
