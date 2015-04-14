@@ -48,6 +48,10 @@ void main() {
     test('validate', ResourceAuthentication.validate);
   });
 
+  group('Resource.Config', () {
+    test('get', ResourceConfig.get);
+  });
+
   group('Resource.Message', () {
     test('singleMessage', ResourceMessage.singleMessage);
     test('send', ResourceMessage.send);
@@ -195,3 +199,14 @@ abstract class ResourceAuthentication {
       expect(Resource.Authentication.validate(authServer, 'testtest'),
         equals(Uri.parse('${authServer}/token/testtest/validate')));
 }
+
+
+abstract class ResourceConfig {
+  static final Uri configServer = Uri.parse('http://localhost:4080');
+
+  static void get () =>
+      expect(Resource.Config.get(configServer),
+        equals(Uri.parse('${configServer}/configuration')));
+
+}
+
