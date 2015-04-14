@@ -83,8 +83,8 @@ button::-moz-focus-inner {
 
 .generic-widget-body {
   position: absolute;
-  top: 20px;
-  height: calc(100% - 20px);
+  top: 24px;
+  height: calc(100% - 24px);
   width: 100%;
 }
 
@@ -92,7 +92,7 @@ button::-moz-focus-inner {
   position: absolute;
   height: 20px;
   width: 100%;
-  margin: 0;
+  margin: 0 0 4px 0;
   padding: 0;
   background-color: #a5b9db;
   padding: 2px 5px;
@@ -104,12 +104,13 @@ button::-moz-focus-inner {
 .generic-widget-list {
   margin: 0;
   padding: 0;
-  padding-top: 3px;
   list-style-type: none;
   overflow: auto;
 }
 
 .generic-widget-list > li {
+  margin-left: 0.2em;
+  margin-right: 0.2em;
   padding: 0.3em;
 }
 

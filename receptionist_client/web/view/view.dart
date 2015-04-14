@@ -24,6 +24,9 @@ part 'view-reception-opening-hours.dart';
 part 'view-reception-product.dart';
 part 'view-reception-sales-calls.dart';
 part 'view-reception-selector.dart';
+part 'view-receptionistclient-ready.dart';
+part 'view-receptionistclient-disaster.dart';
+part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
 
 final HotKeys  _hotKeys  = new HotKeys();

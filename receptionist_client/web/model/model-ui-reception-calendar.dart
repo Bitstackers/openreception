@@ -24,6 +24,13 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
+   * Remove all entries from the entry list.
+   */
+  void clearList() {
+    _entryList.children.clear();
+  }
+
+  /**
    * Return the first [CalendarEntry] from [_entryList]
    * MAY return null if the list is empty.
    */

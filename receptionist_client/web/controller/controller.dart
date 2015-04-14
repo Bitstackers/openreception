@@ -9,6 +9,8 @@ import 'package:openreception_framework/bus.dart';
 part 'controller-hotkeys.dart';
 part 'controller-navigation.dart';
 
+enum AppState {Disaster, Loading, Ready}
+
 enum Context {Home,
               Homeplus,
               CalendarEdit,
@@ -22,5 +24,6 @@ enum Widget {AgentInfo,
              MessageCompose,
              ReceptionCalendar,
              ReceptionCommands,
+             ReceptionSelector,
              ReceptionAltNames,
              MessageArchiveFilter}
