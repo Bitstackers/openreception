@@ -42,6 +42,11 @@ abstract class Config {
   static String serverToken = 'secretStuff';
 
   /**
+   * The URI of the config server.
+   */
+  static Uri configServerUri = Uri.parse('http://localhost:4080');
+
+  /**
    * The URI of the data management server.
    */
   static Uri managementServerUri = Uri.parse('http://management.example.com');
