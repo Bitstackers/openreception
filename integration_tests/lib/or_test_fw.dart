@@ -2,6 +2,7 @@ library or_test_fw;
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show Random;
 
@@ -39,6 +40,10 @@ part 'callflowcontrol/src/call_pickup.dart';
 part 'callflowcontrol/src/call_transfer.dart';
 part 'callflowcontrol/src/peer.dart';
 part 'callflowcontrol/src/user_state.dart';
+
+/// Config service tests
+part 'configserver/src/config_service.dart';
+part 'configserver/tests.dart';
 
 /// Contact store tests
 part 'contact/src/contact_store.dart';
