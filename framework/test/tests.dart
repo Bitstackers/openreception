@@ -36,9 +36,9 @@ void main() {
     bus.fire(testEvent);
   });
 
-  test('service.ContactObject.serializationDeserialization', ContactObject.serializationDeserialization);
+  test('Model.Contact serializationDeserialization', ContactObject.serializationDeserialization);
 
-  group('service.MessageObject', () {
+  group('Model.Message', () {
     test('serializationDeserialization', MessageObject.serializationDeserialization);
     test('serialization', MessageObject.serialization);
   });
@@ -62,7 +62,7 @@ void main() {
     test('calendarEvent', ResourceReception.calendarEvent);
   });
 
-  group('service.ResourceCallFlowControl', () {
+  group('Resource.CallFlowControl', () {
     test('userStatusMap', ResourceCallFlowControl.userStatusMap);
     test('channelList', ResourceCallFlowControl.channelList);
     test('userStatusIdle', ResourceCallFlowControl.userStatusIdle);
