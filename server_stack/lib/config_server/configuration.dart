@@ -16,11 +16,25 @@ class Configuration {
   ArgResults _args;
   String     _bobconfigfile = 'bob_configuration.json';
   String     _configfile    = 'config.json';
-  int        _httpport      = 8080;
+  int        _httpport      = 4080;
+  Uri        _callFlowServerUri = Uri.parse('http://localhost:4242/');
+  Uri        _receptionServerUri = Uri.parse('http://localhost:4000/');
+  Uri        _contactServerUri = Uri.parse('http://localhost:4000/');
+  Uri        _messageServerUri = Uri.parse('http://localhost:4000/');
+  Uri        _logServerUri = Uri.parse('http://localhost:4000/');
+  Uri        _authServerUri = Uri.parse('http://localhost:4000/');
+  Uri        _notificationSocketUri = Uri.parse('ws://localhost:4200/notifications');
 
   String get bobConfigfile => _bobconfigfile;
   String get configfile    => _configfile;
   int    get httpport      => _httpport;
+  Uri    get callFlowServerUri => _callFlowServerUri;
+  Uri    get receptionServerUri => _receptionServerUri;
+  Uri    get contactServerUri => _contactServerUri;
+  Uri    get messageServerUri => _messageServerUri;
+  Uri    get logServerUri => _logServerUri;
+  Uri    get authServerUri => _authServerUri;
+  Uri    get notificationSocketUri => _notificationSocketUri;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -53,6 +67,34 @@ class Configuration {
 
       if(config.containsKey('config_server_http_port')) {
         _httpport = config['config_server_http_port'];
+      }
+
+      if(config.containsKey('callflowserver')) {
+        _callFlowServerUri = Uri.parse(config['callflowserver']);
+      }
+
+      if(config.containsKey('notificationSocketUri')) {
+        notificationSocketUri = Uri.parse(config['notificationSocketUri']);
+      }
+
+      if(config.containsKey('receptionServerUri')) {
+        _receptionServerUri = Uri.parse(config['receptionServerUri']);
+      }
+
+      if(config.containsKey('contactServerUri')) {
+        _contactServerUri = Uri.parse(config['contactServerUri']);
+      }
+
+      if(config.containsKey('messageServerUri')) {
+        _messageServerUri = Uri.parse(config['messageServerUri']);
+      }
+
+      if(config.containsKey('logServerUri')) {
+        _logServerUri = Uri.parse(config['logServerUri']);
+      }
+
+      if(config.containsKey('authServerUri')) {
+        _authServerUri = Uri.parse(config['authServerUri']);
       }
 
       if(config.containsKey('bobconfigfile')) {

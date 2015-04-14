@@ -1,6 +1,6 @@
 name: ServerStack
 description: Server stack for the OpenReception application.
-version: 0.1.1+beta
+version: 0.1.3+beta
 dependencies:
   args: any
   crypto: any
