@@ -74,7 +74,7 @@ class Configuration {
       }
 
       if(config.containsKey('notificationSocketUri')) {
-        notificationSocketUri = Uri.parse(config['notificationSocketUri']);
+        _notificationSocketUri = Uri.parse(config['notificationSocketUri']);
       }
 
       if(config.containsKey('receptionServerUri')) {
