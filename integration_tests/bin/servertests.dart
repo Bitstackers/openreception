@@ -41,6 +41,7 @@ void main() {
   });
 
   runAuthServerTests();
+  runConfigServerTests();
   runContactTests();
   runCallFlowTests();
   runMessageTests();
