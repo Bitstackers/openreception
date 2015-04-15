@@ -1,3 +1,25 @@
+Map configMap = {
+  "standardGreeting": "Velkommen til...",
+  "callFlowServerURI": "http://localhost:4242",
+  "receptionServerURI": "http://localhost:4000",
+  "contactServerURI": "http://localhost:4010",
+  "messageServerURI": "http://localhost:4040",
+  "logServerURI": "http://localhost:4020",
+  "authServerURI": "http://localhost:4050",
+  "notificationSocket": {
+    "interface": "ws://localhost:4200/notifications",
+    "reconnectInterval": 2000
+  },
+  "serverLog": {
+    "level": "info",
+    "interface": {
+      "critical": "/log/critical",
+      "error": "/log/error",
+      "info": "/log/info"
+    }
+  }
+};
+
 Map ReceptionEvent_1_4 = {
   "id": 4,
   "start": 1395817200,
