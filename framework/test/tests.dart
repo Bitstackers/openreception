@@ -43,6 +43,11 @@ void main() {
     test('serialization', MessageObject.serialization);
   });
 
+  group('Model.Config', () {
+    test('serializationDeserialization', ConfigObject.serializationDeserialization);
+    test('serialization', ConfigObject.serialization);
+  });
+
   group('Resource.Authentication', () {
     test('userOf', ResourceAuthentication.userOf);
     test('validate', ResourceAuthentication.validate);
@@ -210,3 +215,14 @@ abstract class ResourceConfig {
 
 }
 
+abstract class ConfigObject {
+  static void serializationDeserialization () =>
+      expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap).asMap,
+        equals(Test_Data.configMap));
+
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void serialization () =>
+      expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap), isNotNull);
+}
