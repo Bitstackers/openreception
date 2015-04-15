@@ -8,19 +8,28 @@ enum AppState {
 
 class AppClientState {
 
+  static final Logger log = new Logger ('$libraryName.AppClientState');
+
   Bus<AppState> _stateChange = new Bus<AppState>();
   Stream<AppState> get onStateChange => this._stateChange.stream;
 
-  Iterable<Future> _components = [];
+  AppClientState();
 
-  AppClientState(Iterable<Future> requiredComponents) {
-    this._components = requiredComponents;
+  void addError (Error error, [StackTrace stackTrace]) {
+    log.severe(error, stackTrace);
+
+    this.changeState(AppState.ERROR);
   }
 
-  Future load() =>
-    Future.wait(this._components)
+  Future load(Iterable<Future> requiredComponents) {
+    log.info('Loading ${requiredComponents.length} required components.');
+
+    this.changeState(AppState.LOADING);
+
+    return Future.wait(requiredComponents)
       .then((_) => this.changeState(AppState.READY))
       .catchError((_) => this.changeState(AppState.ERROR));
+  }
 
   void changeState(AppState newState) {
     this._stateChange.fire(newState);
