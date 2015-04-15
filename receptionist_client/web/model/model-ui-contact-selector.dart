@@ -30,20 +30,24 @@ class UIContactSelector extends UIModel {
     items.forEach((Contact item) {
       String initials = item.name.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
 
-      item._li.dataset['initials'] = initials;
-      item._li.dataset['firstinitial'] = initials.substring(0,1);
-      item._li.dataset['otherinitials'] = initials.substring(1);
-
-      /// TODO  (TL): Adding the name as "tags" is perhaps not the best idea in
-      /// the world, but it works right now.
-      ///
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
       item.tags.addAll(item.name.split(' '));
-      item._li.dataset['tags'] = item.tags.join(',').toLowerCase();
 
-      _contactList.append(item._li);
+      _contactList.append(new LIElement()
+          ..dataset['initials']      = initials
+          ..dataset['firstinitial']  = initials.substring(0,1)
+          ..dataset['otherinitials'] = initials.substring(1)
+          ..dataset['tags']          = item.tags.join(',').toLowerCase()
+          ..dataset['object']        = JSON.encode(item));
     });
+  }
+
+  /**
+   * Remove all entries from the contact list.
+   */
+  void clearList() {
+    _contactList.children.clear();
   }
 
   /**
@@ -115,7 +119,7 @@ class UIContactSelector extends UIModel {
     }
 
     /// Select the first item on the list
-    markSelected(getContactFirstVisible());
+    _markSelected(_getFirstVisibleEntry());
   }
 
   /**
@@ -124,72 +128,186 @@ class UIContactSelector extends UIModel {
    */
   Contact getSelectedContact() {
     try {
-      return new Contact.fromElement(_contactList.querySelector('.selected'));
+      return new Contact.fromJson(JSON.decode(_contactList.querySelector('.selected').dataset['object']));
     } catch (e) {
       print(e);
       return null;
     }
   }
 
+//  /**
+//   * Return the [Contact] the user clicked on.
+//   * MAY return null if the user did not click on an actual valid [Contact].
+//   */
+//  Contact getContactFromClick(MouseEvent event) {
+//    if(event.target is LIElement) {
+//      return new Contact.fromElement(event.target);
+//    }
+//
+//    return null;
+//  }
+
   /**
-   * Return the [Contact] the user clicked on.
-   * MAY return null if the user did not click on an actual valid [Contact].
+   * Return the [LIElement] the user clicked on.
+   * MAY return null if the user did not click on a [LIElement].
    */
-  Contact getContactFromClick(MouseEvent event) {
+  LIElement _getEntryFromClick(MouseEvent event) {
     if(event.target is LIElement) {
-      return new Contact.fromElement(event.target);
+      return event.target;
     }
 
     return null;
   }
 
+//  /**
+//   * Return the first visible [Contact] from [_contactList]
+//   * MAY return null if the list is empty.
+//   */
+//  Contact _getContactFirstVisible() {
+//    LIElement li = _scanAheadForVisibleSibling(_contactList.firstChild);// _contactList.children.firstWhere((LIElement li) => !li.classes.contains('hide'), orElse: () => null);
+//    if(li != null) {
+//      return new Contact.fromJson(JSON.decode(li.dataset['object']));
+//    }
+//
+//    return null;
+//  }
+
   /**
-   * Return the first visible [Contact] from [_contactList]
+   * Return the first visible [LIELement] from [_contactList]
    * MAY return null if the list is empty.
    */
-  Contact getContactFirstVisible() {
-    LIElement li = _contactList.children.firstWhere((LIElement li) => !li.classes.contains('hide'), orElse: () => null);
-    if(li != null) {
-      return new Contact.fromElement(li);
-    }
-
-    return null;
+  LIElement _getFirstVisibleEntry() {
+    LIElement li = _scanAheadForVisibleSibling(_contactList.firstChild);
+    return li == null ? null : li;
   }
 
   /**
-   * Mark [contact] selected.
+   * Deal with arrow up/down.
    */
-  void markSelected(Contact contact) {
-    if(contact != null) {
-      _contactList.children.forEach((Element element) => element.classes.remove('selected'));
-      contact._li.classes.add('selected');
-      contact._li.scrollIntoView();
+  void _handleUpDown(KeyboardEvent event) {
+    if(active) {
+      event.preventDefault();
+      switch(event.keyCode) {
+        case KeyCode.DOWN:
+          _select(_nextEntryInList());
+          break;
+        case KeyCode.UP:
+          _select(_previousEntryInList());
+          break;
+      }
     }
   }
 
+//  /**
+//   * Mark [contact] selected.
+//   */
+//  void markSelected(Contact contact) {
+//    if(contact != null) {
+//      _contactList.children.forEach((Element element) => element.classes.remove('selected'));
+//      contact.li.classes.add('selected');
+//      contact.li.scrollIntoView();
+//    }
+//  }
+
   /**
-   * Return the [Contact] following the currently selected [Contact].
+   * Mark [entry] selected.
+   */
+  void _markSelected(LIElement entry) {
+    if(entry != null) {
+      _contactList.children.forEach((Element element) => element.classes.remove('selected'));
+      entry.classes.add('selected');
+      entry.scrollIntoView();
+    }
+  }
+
+//  /**
+//   * Return the [Contact] following the currently selected [Contact].
+//   * Return null if we're at last element.
+//   */
+//  Contact nextContactInList() {
+//    LIElement li = _scanAheadForVisibleSibling(_contactList.querySelector('.selected'));
+//    return li == null ? null : new Contact.fromElement(li);
+//  }
+
+  /**
+   * Return the [LIElement] following the currently selected [LIElement].
    * Return null if we're at last element.
    */
-  Contact nextContactInList() {
-    LIElement li = scanAheadForVisibleSibling(_contactList.querySelector('.selected'));
-    return li == null ? null : new Contact.fromElement(li);
+  LIElement _nextEntryInList() {
+    LIElement li = _scanAheadForVisibleSibling(_contactList.querySelector('.selected'));
+    return li == null ? null : li;
+//    try {
+//      LIElement li = _entryList.querySelector('.selected').nextElementSibling;
+//      return li == null || li.classes.contains('hide') ? null : li;
+//    } catch(e) {
+//      print(e);
+//      return null;
+//    }
   }
 
   /**
-   * Return the [Contact] preceeding the currently selected [Contact].
-   * Return null if we're at first element.
+   * Observers
    */
-  Contact previousContactInList() {
-    LIElement li = scanBackForVisibleSibling(_contactList.querySelector('.selected'));
-    return li == null ? null : new Contact.fromElement(li);
-  }
-
-  void _registerEventListeners() {
+  void _observers() {
     _filter.onInput.listen(filter);
 
     /// These are here to prevent tab'ing out of the filter input.
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
+    _hotKeys.onTab     .listen(_handleTab);
+    _hotKeys.onShiftTab.listen(_handleShiftTab);
+
+    _hotKeys.onDown.listen(_handleUpDown);
+    _hotKeys.onUp  .listen(_handleUpDown);
+
+    _root.onClick.listen((MouseEvent event) => _select(_getEntryFromClick(event)));
   }
+
+//  /**
+//   * Return the [Contact] preceeding the currently selected [Contact].
+//   * Return null if we're at first element.
+//   */
+//  Contact previousContactInList() {
+//    LIElement li = _scanBackForVisibleSibling(_contactList.querySelector('.selected'));
+//    return li == null ? null : new Contact.fromElement(li);
+//  }
+
+  /**
+   * Return the [LIElement] preceeding the currently selected [LIElement].
+   * Return null if we're at first element.
+   */
+  LIElement _previousEntryInList() {
+    LIElement li = _scanBackForVisibleSibling(_contactList.querySelector('.selected'));
+    return li == null ? null : li;
+//    try {
+//      LIElement li = _entryList.querySelector('.selected').previousElementSibling;
+//      return li == null || li.classes.contains('hide') ? null : li;
+//    } catch(e) {
+//      print(e);
+//      return null;
+//    }
+  }
+
+  /**
+   * Mark [entry] selected, if it is !null. This method does not check whether
+   * the widget is active or not.
+   */
+  void _select(LIElement entry) {
+    if(entry != null) {
+      _markSelected(entry);
+    }
+  }
+
+  /**
+   * Mark the first element of the calendar event list selected.
+   */
+  void selectFirstEntry() {
+    _markSelected(_contactList.children.first);
+  }
+
+//  void _registerEventListeners() {
+//    _filter.onInput.listen(filter);
+//
+//    /// These are here to prevent tab'ing out of the filter input.
+//    _hotKeys.onTab     .listen(_handleTab);
+//    _hotKeys.onShiftTab.listen(_handleShiftTab);
+//  }
 }

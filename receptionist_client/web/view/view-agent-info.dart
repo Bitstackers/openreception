@@ -6,8 +6,8 @@ class AgentInfo extends ViewWidget {
   AgentInfo(UIModel this._ui) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = AgentState.Unknown;
-    _ui.alertState = AlertState.On;
+    _ui.agentState = AgentState.UNKNOWN;
+    _ui.alertState = AlertState.ON;
     _ui.portrait = 'images/face.png';
 
     registerEventListeners();

@@ -60,8 +60,8 @@ class UIMessageCompose extends UIModel {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
+    _hotKeys.onTab     .listen(_handleTab);
+    _hotKeys.onShiftTab.listen(_handleShiftTab);
 
     _showRecipientsSpan.onMouseOver.listen(_toggleRecipients);
     _showRecipientsSpan.onMouseOut .listen(_toggleRecipients);

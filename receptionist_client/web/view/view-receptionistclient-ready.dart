@@ -1,7 +1,7 @@
 part of view;
 
 class ReceptionistclientReady {
-  ApplicationState                _appState;
+  AppClientState                  _appState;
   AgentInfo                       agentInfo;
   CalendarEditor                  calendarEditor;
   ContactCalendar                 contactCalendar;
@@ -25,7 +25,7 @@ class ReceptionistclientReady {
   /**
    * Constructor.
    */
-  factory ReceptionistclientReady(ApplicationState appState) {
+  factory ReceptionistclientReady(AppClientState appState) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState);
     } else {
@@ -36,7 +36,7 @@ class ReceptionistclientReady {
   /**
    * Internal constructor.
    */
-  ReceptionistclientReady._internal(ApplicationState appState) {
+  ReceptionistclientReady._internal(AppClientState appState) {
     _appState = appState;
     _observers();
   }
@@ -45,8 +45,8 @@ class ReceptionistclientReady {
    * Observers.
    */
   void _observers() {
-    _appState.onChange.listen((AppState appState) =>
-        appState == AppState.Ready ? _runApp() : _ui.visible = false);
+    _appState.onStateChange.listen((AppState appState) =>
+        appState == AppState.READY ? _runApp() : _ui.visible = false);
   }
 
   /**

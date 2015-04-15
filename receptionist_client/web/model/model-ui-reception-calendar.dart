@@ -3,7 +3,9 @@ part of model;
 class UIReceptionCalendar extends UIModel {
   final DivElement _myRoot;
 
-  UIReceptionCalendar(DivElement this._myRoot);
+  UIReceptionCalendar(DivElement this._myRoot) {
+    _observers();
+  }
 
   @override HtmlElement    get _firstTabElement => null;
   @override HtmlElement    get _focusElement    => _entryList;
@@ -17,9 +19,11 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Add [items] to the entry list.
    */
-  set calendarEntries(List<CalendarEntry> items) {
-    items.forEach((CalendarEntry item) {
-      _entryList.append(item._li);
+  set calendarEntries(List<CalendarEvent> items) {
+    items.forEach((CalendarEvent item) {
+      _entryList.append(new LIElement()
+          ..text = item.content
+          ..dataset['object'] = JSON.encode(item));
     });
   }
 
@@ -31,49 +35,53 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Return the first [CalendarEntry] from [_entryList]
-   * MAY return null if the list is empty.
+   * Return the [LIElement] the user clicked on.
+   * MAY return null if the user did not click on a [LIElement].
    */
-  CalendarEntry getFirstEntry() {
-    LIElement li = _entryList.children.first;
-    if(li != null) {
-      return new CalendarEntry.fromElement(li);
-    }
-
-    return null;
-  }
-
-  /**
-   * Return the [CalendarEntry] the user clicked on.
-   * MAY return null if the user did not click on an actual valid [CalendarEntry].
-   */
-  CalendarEntry getEntryFromClick(MouseEvent event) {
+  LIElement _getEntryFromClick(MouseEvent event) {
     if(event.target is LIElement) {
-      return new CalendarEntry.fromElement(event.target);
+      return event.target;
     }
 
     return null;
   }
 
   /**
-   * Mark [CalendarEntry] selected.
+   * Deal with arrow up/down.
    */
-  void markSelected(CalendarEntry entry) {
+  void _handleUpDown(KeyboardEvent event) {
+    if(active) {
+      event.preventDefault();
+      switch(event.keyCode) {
+        case KeyCode.DOWN:
+          _select(_nextEntryInList());
+          break;
+        case KeyCode.UP:
+          _select(_previousEntryInList());
+          break;
+      }
+    }
+  }
+
+  /**
+   * Mark [entry] selected.
+   */
+  void _markSelected(LIElement entry) {
     if(entry != null) {
       _entryList.children.forEach((Element element) => element.classes.remove('selected'));
-      entry._li.classes.add('selected');
-      entry._li.scrollIntoView();
+      entry.classes.add('selected');
+      entry.scrollIntoView();
     }
   }
 
   /**
-   * Return the [CalendarEntry] following the currently selected [CalendarEntry].
+   * Return the [LIElement] following the currently selected [LIElement].
    * Return null if we're at last element.
    */
-  CalendarEntry nextEntryInList() {
+  LIElement _nextEntryInList() {
     try {
       LIElement li = _entryList.querySelector('.selected').nextElementSibling;
-      return li == null || li.classes.contains('hide') ? null : new CalendarEntry.fromElement(li);
+      return li == null || li.classes.contains('hide') ? null : li;
     } catch(e) {
       print(e);
       return null;
@@ -81,16 +89,43 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Return the [CalendarEntry] preceeding the currently selected [CalendarEntry].
+   * Observers
+   */
+  void _observers() {
+    _hotKeys.onDown.listen(_handleUpDown);
+    _hotKeys.onUp  .listen(_handleUpDown);
+
+    _root.onClick.listen((MouseEvent event) => _select(_getEntryFromClick(event)));
+  }
+
+  /**
+   * Return the [LIElement] preceeding the currently selected [LIElement].
    * Return null if we're at first element.
    */
-  CalendarEntry previousEntryInList() {
+  LIElement _previousEntryInList() {
     try {
       LIElement li = _entryList.querySelector('.selected').previousElementSibling;
-      return li == null || li.classes.contains('hide') ? null : new CalendarEntry.fromElement(li);
+      return li == null || li.classes.contains('hide') ? null : li;
     } catch(e) {
       print(e);
       return null;
     }
+  }
+
+  /**
+   * Mark [entry] selected, if it is !null. This method does not check whether
+   * the widget is active or not.
+   */
+  void _select(LIElement entry) {
+    if(entry != null) {
+      _markSelected(entry);
+    }
+  }
+
+  /**
+   * Mark the first element of the calendar event list selected.
+   */
+  void selectFirstCalendarEntry() {
+    _markSelected(_entryList.children.first);
   }
 }

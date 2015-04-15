@@ -1,11 +1,12 @@
 library model;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
-import '../controller/controller.dart';
+import 'dummies.dart';
 
-import 'package:openreception_framework/bus.dart';
+import '../controller/controller.dart';
 
 part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';
@@ -23,18 +24,6 @@ part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';
 
 final HotKeys  _hotKeys  = new HotKeys();
-
-enum AgentState {Busy, Idle, Pause, Unknown}
-enum AlertState {Off, On}
-
-///
-///
-///
-/// TODO (TL): Look into whether the similar functionality of selecting items in
-/// a list (contact and calendar list for example) can be moved to UIModel.
-///
-///
-///
 
 abstract class UIModel {
   HtmlElement    get _firstTabElement;
@@ -87,7 +76,7 @@ abstract class UIModel {
    * Tab from first to last tab element when first is in focus an a Shift+Tab
    * event is caught.
    */
-  void handleShiftTab(KeyboardEvent event) {
+  void _handleShiftTab(KeyboardEvent event) {
     if(active && focusIsOnFirst) {
       event.preventDefault();
       tabToLast();
@@ -98,7 +87,7 @@ abstract class UIModel {
    * Tab from last to first tab element when last is in focus an a Tab event
    * is caught.
    */
-  void handleTab(KeyboardEvent event) {
+  void _handleTab(KeyboardEvent event) {
     if(active && focusIsOnLast) {
       event.preventDefault();
       tabToFirst();
@@ -126,11 +115,11 @@ abstract class UIModel {
   /**
    * Find the first proceeding sibling that is not hidden.
    */
-  LIElement scanAheadForVisibleSibling(LIElement li) {
+  LIElement _scanAheadForVisibleSibling(LIElement li) {
     LIElement next = li.nextElementSibling;
 
     if(next != null && next.classes.contains('hide')) {
-      return scanAheadForVisibleSibling(next);
+      return _scanAheadForVisibleSibling(next);
     } else {
       return next;
     }
@@ -139,11 +128,11 @@ abstract class UIModel {
   /**
    * Find the first preceeding sibling that is not hidden.
    */
-  LIElement scanBackForVisibleSibling(LIElement li) {
+  LIElement _scanBackForVisibleSibling(LIElement li) {
     LIElement previous = li.previousElementSibling;
 
     if(previous != null && previous.classes.contains('hide')) {
-      return scanBackForVisibleSibling(previous);
+      return _scanBackForVisibleSibling(previous);
     } else {
       return previous;
     }
@@ -170,118 +159,5 @@ abstract class UIModel {
    */
   void tabToLast() {
     _lastTabElement.focus();
-  }
-}
-
-/**
- * Dummy ApplicationState class
- */
-class ApplicationState {
-  static final ApplicationState _singleton = new ApplicationState._internal();
-  factory ApplicationState() => _singleton;
-
-  Bus<AppState> _bus = new Bus<AppState>();
-
-  ApplicationState._internal();
-
-  Stream<AppState> get onChange => _bus.stream;
-
-  set state(AppState state) => _bus.fire(state);
-}
-
-/**
- * Dummy calendar entry class
- */
-class CalendarEntry {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       content;
-
-  CalendarEntry(String this.content) {
-    _li.text = content;
-  }
-
-  CalendarEntry.fromElement(LIElement element) {
-    if(element != null) {
-      _li = element;
-    }
-  }
-}
-
-/**
- * Dummy contact class
- */
-class Contact {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       name;
-  List<String> tags;
-
-  Contact(String this.name, {List<String> this.tags}) {
-    _li.text = name;
-    if(tags == null) {
-      tags = new List<String>();
-    }
-  }
-
-  Contact.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-      name = _li.text;
-      tags = _li.dataset['tags'].split(',');
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
-}
-
-/**
- * Dummy reception class
- */
-class Reception {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       name;
-
-  Reception(String this.name) {
-    _li.text = name;
-  }
-
-  Reception.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-      name = _li.text;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
-}
-
-/**
- * A dummy telephone number.
- */
-class TelNum {
-  LIElement   _li         = new LIElement()..tabIndex = -1;
-  bool        _secret;
-  SpanElement _spanLabel  = new SpanElement();
-  SpanElement _spanNumber = new SpanElement();
-
-  TelNum(String number, String label, this._secret) {
-    if(_secret) {
-      _spanNumber.classes.add('secret');
-    }
-
-    _spanNumber.text = number;
-    _spanNumber.classes.add('number');
-    _spanLabel.text = label;
-    _spanLabel.classes.add('label');
-
-    _li.children.addAll([_spanNumber, _spanLabel]);
-    _li.dataset['number'] = number;
-  }
-
-  TelNum.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
   }
 }

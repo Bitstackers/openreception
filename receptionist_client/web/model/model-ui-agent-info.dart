@@ -28,17 +28,17 @@ class UIAgentInfo extends UIModel {
    */
   set agentState (AgentState agentState) {
     switch(agentState) {
-      case AgentState.Busy:
+      case AgentState.BUSY:
         _agentState.src = 'images/agentsactive.svg';
         break;
-      case AgentState.Idle:
+      case AgentState.IDLE:
         /// TODO (TL): Need idle state graphic
         _agentState.src = 'images/agentsactive.svg';
         break;
-      case AgentState.Pause:
+      case AgentState.PAUSE:
         _agentState.src = 'images/agentssleep.svg';
         break;
-      case AgentState.Unknown:
+      case AgentState.UNKNOWN:
         /// TODO (TL): Need unknown state graphic
         _agentState.src = 'images/agentsactive.svg';
         break;
@@ -50,10 +50,10 @@ class UIAgentInfo extends UIModel {
    */
   set alertState (AlertState alertState) {
     switch(alertState) {
-      case AlertState.Off:
+      case AlertState.OFF:
         /// TODO (TL): Need alert state OFF graphic
         break;
-      case AlertState.On:
+      case AlertState.ON:
         _alertState.src = 'images/alert.svg';
         break;
     }

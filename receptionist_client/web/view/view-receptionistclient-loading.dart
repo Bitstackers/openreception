@@ -1,14 +1,14 @@
 part of view;
 
 class ReceptionistclientLoading {
-  ApplicationState                  _appState;
+  AppClientState                    _appState;
   static ReceptionistclientLoading  _singleton;
   final UIReceptionistclientLoading _ui = new UIReceptionistclientLoading('receptionistclient-loading');
 
   /**
    * Constructor.
    */
-  factory ReceptionistclientLoading(ApplicationState appState) {
+  factory ReceptionistclientLoading(AppClientState appState) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientLoading._internal(appState);
     } else {
@@ -19,7 +19,7 @@ class ReceptionistclientLoading {
   /**
    * Internal constructor.
    */
-  ReceptionistclientLoading._internal(ApplicationState appState) {
+  ReceptionistclientLoading._internal(AppClientState appState) {
     _appState = appState;
     _observers();
   }
@@ -28,7 +28,7 @@ class ReceptionistclientLoading {
    * Observers.
    */
   void _observers() {
-    _appState.onChange.listen((AppState appState) =>
-        appState == AppState.Loading ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((AppState appState) =>
+        appState == AppState.LOADING ? _ui.visible = true : _ui.visible = false);
   }
 }

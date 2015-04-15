@@ -126,8 +126,8 @@ class UIReceptionSelector extends UIModel {
   void markSelected(Reception reception) {
     if(reception != null) {
       _receptionList.children.forEach((Element element) => element.classes.remove('selected'));
-      reception._li.classes.add('selected');
-      reception._li.scrollIntoView();
+      reception.li.classes.add('selected');
+      reception.li.scrollIntoView();
     }
   }
 
@@ -141,7 +141,7 @@ class UIReceptionSelector extends UIModel {
     if(selected == null) {
       return getReceptionFirstVisible();
     } else {
-      LIElement li = scanAheadForVisibleSibling(selected);
+      LIElement li = _scanAheadForVisibleSibling(selected);
       return li == null ? null : new Reception.fromElement(li);
     }
   }
@@ -156,7 +156,7 @@ class UIReceptionSelector extends UIModel {
     if(selected == null) {
       return getReceptionLastVisible();
     } else {
-      LIElement li = scanBackForVisibleSibling(selected);
+      LIElement li = _scanBackForVisibleSibling(selected);
       return li == null ? null : new Reception.fromElement(li);
     }
   }
@@ -166,8 +166,8 @@ class UIReceptionSelector extends UIModel {
    */
   set receptions(List<Reception> items) {
     items.forEach((Reception item) {
-      item._li.dataset['name'] = item.name.toLowerCase();
-      _receptionList.append(item._li);
+      item.li.dataset['name'] = item.name.toLowerCase();
+      _receptionList.append(item.li);
     });
   }
 
@@ -175,8 +175,8 @@ class UIReceptionSelector extends UIModel {
     _filter.onInput.listen(filter);
 
     /// These are here to prevent tab'ing out of the filter input.
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
+    _hotKeys.onTab     .listen(_handleTab);
+    _hotKeys.onShiftTab.listen(_handleShiftTab);
   }
 
   /**

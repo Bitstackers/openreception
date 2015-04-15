@@ -115,13 +115,13 @@ class UIContactData extends UIModel {
    * Return true if [telNum] is marked ringing.
    */
   bool isRinging(TelNum telNum) =>
-      telNum._li.classes.contains('ringing');
+      telNum.li.classes.contains('ringing');
 
   /**
    * Return true if [telNum] is marked selected.
    */
   bool isSelected(TelNum telNo) =>
-      telNo._li.classes.contains('selected');
+      telNo.li.classes.contains('selected');
 
   /**
    * Add the [mark] class to the [telNum].
@@ -129,8 +129,8 @@ class UIContactData extends UIModel {
   void _mark(TelNum telNum, String mark) {
     if(telNum != null) {
       _telNumList.children.forEach((Element element) => element.classes.remove(mark));
-      telNum._li.classes.add(mark);
-      telNum._li.scrollIntoView();
+      telNum.li.classes.add(mark);
+      telNum.li.scrollIntoView();
     }
   }
 
@@ -204,7 +204,7 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the telnums list.
    */
-  set telnums(List<TelNum> items) => items.forEach((TelNum item) {_telNumList.append(item._li);});
+  set telnums(List<TelNum> items) => items.forEach((TelNum item) {_telNumList.append(item.li);});
 
   /**
    * Add [items] to the titles list.

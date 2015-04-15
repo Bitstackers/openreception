@@ -3,6 +3,8 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
+import '../model/dummies.dart';
+
 import '../controller/controller.dart';
 import '../model/model.dart';
 
