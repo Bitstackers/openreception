@@ -12,6 +12,7 @@ import 'util.dart'    as Util;
 part 'model/model-calendar_entry.dart';
 part 'model/model-call.dart';
 part 'model/model-channel.dart';
+part 'model/model-client_configuration.dart';
 part 'model/model-contact.dart';
 part 'model/model-contact_filter.dart';
 part 'model/model-message.dart';
