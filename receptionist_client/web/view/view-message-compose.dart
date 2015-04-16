@@ -8,7 +8,7 @@ class MessageCompose extends ViewWidget {
   UIMessageCompose _ui;
 
   MessageCompose(UIMessageCompose this._ui, Place this._myPlace) {
-    _ui.help = 'alt-b';
+    _ui.help = 'alt+b';
 
     _registerEventListeners();
   }
