@@ -6,10 +6,8 @@ class RESTConfiguration {
 
   WebService _backed = null;
   Uri        _host;
-  String     _token = '';
 
-
-  RESTConfiguration (Uri this._host, String this._token, this._backed);
+  RESTConfiguration (Uri this._host, this._backed);
 
   /**
    * Returns a [ClientConfiguration] object.
