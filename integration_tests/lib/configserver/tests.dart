@@ -1,40 +1,39 @@
 part of or_test_fw;
 
 void runConfigServerTests() {
-  group ('RESTConfigService', () {
+  group('RESTConfigService', () {
     Transport.Client transport = null;
     Service.RESTConfiguration configServer;
 
-    setUp (() {
+    setUp(() {
       transport = new Transport.Client();
     });
 
-    tearDown (() {
-      transport.client.close(force : true);
+    tearDown(() {
+      transport.client.close(force: true);
     });
 
-    test ('CORS headers present',
+    test('CORS headers present',
         () => ConfigService.isCORSHeadersPresent(transport.client));
 
-    test ('Non-existing path',
+    test('Non-existing path',
         () => ConfigService.nonExistingPath(transport.client));
 
-    setUp (() {
+    setUp(() {
       transport = new Transport.Client();
-      configServer = new Service.RESTConfiguration
-          (Config.configServerUri, transport);
+      configServer =
+          new Service.RESTConfiguration(Config.configServerUri, transport);
     });
 
-    tearDown (() {
-      transport.client.close(force : true);
+    tearDown(() {
+      transport.client.close(force: true);
       configServer = null;
     });
 
-    test ('Get',
-          () => configServer.clientConfig()
-            .then((Model.ClientConfiguration configuration) {
-              expect (configuration, isNotNull);
-            }));
+    test('Get', () => configServer
+        .clientConfig()
+        .then((Model.ClientConfiguration configuration) {
+      expect(configuration, isNotNull);
+    }));
   });
 }
-
