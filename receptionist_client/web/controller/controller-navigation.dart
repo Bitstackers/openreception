@@ -6,6 +6,7 @@ final Map<String, Place> _Places =
    '${Context.Home}-${Widget.ContactSelector}'         : new Place(Context.Home, Widget.ContactSelector),
    '${Context.Home}-${Widget.MessageCompose}'          : new Place(Context.Home, Widget.MessageCompose),
    '${Context.Home}-${Widget.ReceptionCalendar}'       : new Place(Context.Home, Widget.ReceptionCalendar),
+   '${Context.Home}-${Widget.ReceptionSelector}'       : new Place(Context.Home, Widget.ReceptionSelector),
    '${Context.Home}-${Widget.ReceptionCommands}'       : new Place(Context.Home, Widget.ReceptionCommands),
    '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Place(Context.Homeplus, Widget.ReceptionAltNames),
    '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Place(Context.CalendarEdit, Widget.CalendarEditor),
@@ -15,7 +16,7 @@ final Map<String, Place> _Places =
  * A [Place] points to a location in the application. It does this by utilizing
  * the [Context] and [Widget] enum's.
  *
- * The optional [from] Place MAY be used to inform a widget from whence it was
+ * The optional [from] Place MAY be used to inform a widget from where it was
  * brought into focus.
  */
 class Place {
@@ -47,7 +48,7 @@ class Navigate {
   /// register themselves? Seems more explicit that way. Hmmm..
   final Map<Context, Widget> _defaultWidget =
     {Context.CalendarEdit: Widget.CalendarEditor,
-     Context.Home        : Widget.ReceptionCalendar,
+     Context.Home        : Widget.ReceptionSelector,
      Context.Homeplus    : Widget.ReceptionAltNames,
      Context.Messages    : Widget.MessageArchiveFilter};
   final Map<Context, Widget> _widgetHistory = {};

@@ -1,7 +1,10 @@
 library model;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
+
+import 'dummies.dart';
 
 import '../controller/controller.dart';
 
@@ -15,11 +18,12 @@ part 'model-ui-help.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
+part 'model-ui-reception-selector.dart';
+part 'model-ui-receptionistclient-ready.dart';
+part 'model-ui-receptionistclient-disaster.dart';
+part 'model-ui-receptionistclient-loading.dart';
 
 final HotKeys  _hotKeys  = new HotKeys();
-
-enum AgentState {Busy, Idle, Pause, Unknown}
-enum AlertState {Off, On}
 
 abstract class UIModel {
   HtmlElement    get _firstTabElement;
@@ -72,7 +76,7 @@ abstract class UIModel {
    * Tab from first to last tab element when first is in focus an a Shift+Tab
    * event is caught.
    */
-  void handleShiftTab(KeyboardEvent event) {
+  void _handleShiftTab(KeyboardEvent event) {
     if(active && focusIsOnFirst) {
       event.preventDefault();
       tabToLast();
@@ -83,7 +87,7 @@ abstract class UIModel {
    * Tab from last to first tab element when last is in focus an a Tab event
    * is caught.
    */
-  void handleTab(KeyboardEvent event) {
+  void _handleTab(KeyboardEvent event) {
     if(active && focusIsOnLast) {
       event.preventDefault();
       tabToFirst();
@@ -107,6 +111,32 @@ abstract class UIModel {
    * Return the mouse click event stream for this widget.
    */
   Stream<MouseEvent> get onClick => _root.onClick;
+
+  /**
+   * Find the first proceeding sibling that is not hidden.
+   */
+  LIElement _scanAheadForVisibleSibling(LIElement li) {
+    LIElement next = li.nextElementSibling;
+
+    if(next != null && next.classes.contains('hide')) {
+      return _scanAheadForVisibleSibling(next);
+    } else {
+      return next;
+    }
+  }
+
+  /**
+   * Find the first preceeding sibling that is not hidden.
+   */
+  LIElement _scanBackForVisibleSibling(LIElement li) {
+    LIElement previous = li.previousElementSibling;
+
+    if(previous != null && previous.classes.contains('hide')) {
+      return _scanBackForVisibleSibling(previous);
+    } else {
+      return previous;
+    }
+  }
 
   /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.

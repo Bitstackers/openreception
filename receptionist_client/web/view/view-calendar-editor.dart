@@ -4,6 +4,10 @@ class CalendarEditor extends ViewWidget {
   Place                 _myPlace;
   UICalendarEditor      _ui;
 
+  /// TODO (TL): Should consume UIReceptionCalendar and UIContactCalendar so it
+  /// can find the calendar entry that is  being edited/deleted.
+  /// This keeps state in the DOM, where it already is. We can't get rid of state
+  /// there anywhere, so we might as well work with that.
   CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
     _ui.help = 'some help';
 

@@ -59,8 +59,8 @@ class UICalendarEditor extends UIModel {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
+    _hotKeys.onTab     .listen(_handleTab);
+    _hotKeys.onShiftTab.listen(_handleShiftTab);
 
     /// NOTE (TL): These onInput listeners is here because it's a bit of a pain
     /// to put them in the view. Also I don't think it's too insane to consider

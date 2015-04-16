@@ -3,6 +3,8 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
+import '../model/dummies.dart';
+
 import '../controller/controller.dart';
 import '../model/model.dart';
 
@@ -24,10 +26,23 @@ part 'view-reception-opening-hours.dart';
 part 'view-reception-product.dart';
 part 'view-reception-sales-calls.dart';
 part 'view-reception-selector.dart';
+part 'view-receptionistclient-ready.dart';
+part 'view-receptionistclient-disaster.dart';
+part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
 
 final HotKeys  _hotKeys  = new HotKeys();
 final Navigate _navigate = new Navigate();
+
+///
+///
+///
+/// TODO (TL): For widgets with with selectable list items, for example contact
+/// and calendar lists, we have a bunch of similar functionality implemented in
+/// each view object. This can and should probably be moved to ViewWidget.
+///
+///
+///
 
 abstract class ViewWidget {
   /**

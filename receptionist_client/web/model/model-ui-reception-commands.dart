@@ -12,5 +12,5 @@ class UIReceptionCommands extends UIModel {
   @override HtmlElement    get _lastTabElement  => null;
   @override HtmlElement    get _root            => _myRoot;
 
-  UListElement get _commandList => _root.querySelector('ul');
+  OListElement get _commandList => _root.querySelector('.generic-widget-list');
 }
