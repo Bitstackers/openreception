@@ -1,17 +1,17 @@
 part of view;
 
 class ReceptionCommands extends ViewWidget {
-  Place               _myPlace;
-  UIReceptionCommands _ui;
+  Controller.Place          _myPlace;
+  Model.UIReceptionCommands _ui;
 
-  ReceptionCommands(UIModel this._ui, Place this._myPlace) {
+  ReceptionCommands(Model.UIModel this._ui, Controller.Place this._myPlace) {
     _ui.help = 'alt+h';
 
     registerEventListeners();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => _myPlace;
+  @override Model.UIModel    get ui      => _ui;
 
   /**
    * Simply navigate to my [Place]. Matters not if this widget is already

@@ -3,16 +3,17 @@ import 'dart:html';
 
 import 'model/dummies.dart';
 
-import 'controller/controller.dart';
-import 'model/model.dart';
-import 'view/view.dart';
+import 'controller/controller.dart' as Controller;
+import 'enums.dart';
+import 'model/model.dart' as Model;
+import 'view/view.dart' as View;
 
 void main() {
   AppClientState appState = new AppClientState();
 
-  ReceptionistclientDisaster appDisaster = new ReceptionistclientDisaster(appState);
-  ReceptionistclientLoading  appLoading  = new ReceptionistclientLoading(appState);
-  ReceptionistclientReady    appReady    = new ReceptionistclientReady(appState);
+  View.ReceptionistclientDisaster appDisaster = new View.ReceptionistclientDisaster(appState);
+  View.ReceptionistclientLoading  appLoading  = new View.ReceptionistclientLoading(appState);
+  View.ReceptionistclientReady    appReady    = new View.ReceptionistclientReady(appState);
 
   /// TODO (TL): The loading context is visible by default. Switch to ready after
   /// 1 second.

@@ -1,9 +1,9 @@
 part of view;
 
 class AgentInfo extends ViewWidget {
-  UIAgentInfo _ui;
+  Model.UIAgentInfo _ui;
 
-  AgentInfo(UIModel this._ui) {
+  AgentInfo(Model.UIModel this._ui) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = AgentState.UNKNOWN;
@@ -13,8 +13,8 @@ class AgentInfo extends ViewWidget {
     registerEventListeners();
   }
 
-  @override Place   get myPlace => null;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => null;
+  @override Model.UIModel    get ui      => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}

@@ -1,21 +1,21 @@
 part of view;
 
 class ContactCalendar extends ViewWidget {
-  ContactSelector   _contactSelector;
-  Place             _myPlace;
-  UIContactCalendar _ui;
+  Model.UIContactSelector _contactSelector;
+  Controller.Place        _myPlace;
+  Model.UIContactCalendar _ui;
 
   /**
    * Constructor.
    */
-  ContactCalendar(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
+  ContactCalendar(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector) {
     _ui.help = 'alt+k';
 
     _observers();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => _myPlace;
+  @override Model.UIModel    get ui      => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
@@ -53,6 +53,5 @@ class ContactCalendar extends ViewWidget {
                            new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
                            new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
 
-    _ui.selectFirstCalendarEntry();
   }
 }

@@ -121,11 +121,4 @@ class UIReceptionCalendar extends UIModel {
       _markSelected(entry);
     }
   }
-
-  /**
-   * Mark the first element of the calendar event list selected.
-   */
-  void selectFirstCalendarEntry() {
-    _markSelected(_entryList.children.first);
-  }
 }

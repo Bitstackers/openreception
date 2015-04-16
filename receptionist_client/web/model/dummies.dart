@@ -1,13 +1,11 @@
+library dummies;
+
 import 'dart:async';
 import 'dart:html';
 
-import '../controller/controller.dart';
+import '../enums.dart';
 
 import 'package:openreception_framework/bus.dart';
-
-enum AgentState {BUSY, IDLE, PAUSE, UNKNOWN}
-enum AlertState {OFF, ON}
-enum AppState   {LOADING, ERROR, READY}
 
 /**
  * A generic list entry.

@@ -24,7 +24,7 @@ class UIContexts extends UIModel {
   HtmlElement get contextHomeplus     => querySelector('#context-homeplus');
   HtmlElement get contextMessages     => querySelector('#context-messages');
 
-  void toggleContext(Place place) {
+  void toggleContext(Controller.Place place) {
     _contextMap.forEach((id, element) {
       id == place.context ? element.style.zIndex = '1' : element.style.zIndex = '0';
     });

@@ -1,11 +1,10 @@
 part of view;
 
 class ReceptionSelector extends ViewWidget {
-  Bus<Reception>      _bus = new Bus<Reception>();
-  Place               _myPlace;
-  UIReceptionSelector _ui;
+  Controller.Place          _myPlace;
+  Model.UIReceptionSelector _ui;
 
-  ReceptionSelector(UIModel this._ui, Place this._myPlace) {
+  ReceptionSelector(Model.UIModel this._ui, Controller.Place this._myPlace) {
     _ui.help = 'alt+v';
 
     _registerEventListeners();
@@ -13,8 +12,8 @@ class ReceptionSelector extends ViewWidget {
     test(); // TODO (TL): Get rid of this testing code...
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => _myPlace;
+  @override Model.UIModel    get ui      => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
@@ -46,7 +45,7 @@ class ReceptionSelector extends ViewWidget {
   void clickSelect(Reception reception) {
     if(reception != null) {
       _ui.markSelected(reception);
-      _bus.fire(reception);
+      _ui.bus.fire(reception); // TODO (TL): Move this to model
     }
   }
 
@@ -67,11 +66,6 @@ class ReceptionSelector extends ViewWidget {
     }
   }
 
-  /**
-   * Fires the selected [Reception].
-   */
-  Stream<Reception> get onSelect => _bus.stream;
-
   void _registerEventListeners() {
     _navigate.onGo.listen(setWidgetState);
 
@@ -91,7 +85,7 @@ class ReceptionSelector extends ViewWidget {
    */
   void reset(_) {
     _ui.reset();
-    _bus.fire(new Reception('')); // TODO (TL): fire an actual null reception.
+    _ui.bus.fire(new Reception('')); // TODO (TL): fire an actual null reception and move to model
   }
 
   /**
@@ -101,7 +95,7 @@ class ReceptionSelector extends ViewWidget {
   void select(Reception reception) {
     if(_ui.active && reception != null) {
       _ui.markSelected(reception);
-      _bus.fire(reception);
+      _ui.bus.fire(reception); // TODO (TL): move to model
     }
   }
 

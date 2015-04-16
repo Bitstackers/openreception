@@ -1,6 +1,7 @@
 part of model;
 
 class UIReceptionSelector extends UIModel {
+  Bus<Reception>   bus = new Bus<Reception>(); // TODO (TL): Make private
   final DivElement _myRoot;
 
   UIReceptionSelector(DivElement this._myRoot) {
@@ -141,10 +142,15 @@ class UIReceptionSelector extends UIModel {
     if(selected == null) {
       return getReceptionFirstVisible();
     } else {
-      LIElement li = _scanAheadForVisibleSibling(selected);
+      LIElement li = _scanForwardForVisibleElement(selected);
       return li == null ? null : new Reception.fromElement(li);
     }
   }
+
+  /**
+   * Fires the selected [Reception].
+   */
+  Stream<Reception> get onSelect => bus.stream;
 
   /**
    * Return the [Reception] preceeding the currently selected [Reception].
@@ -156,7 +162,7 @@ class UIReceptionSelector extends UIModel {
     if(selected == null) {
       return getReceptionLastVisible();
     } else {
-      LIElement li = _scanBackForVisibleSibling(selected);
+      LIElement li = _scanBackwardsForVisibleElement(selected);
       return li == null ? null : new Reception.fromElement(li);
     }
   }

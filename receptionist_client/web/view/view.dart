@@ -3,10 +3,10 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
+import '../controller/controller.dart' as Controller;
 import '../model/dummies.dart';
-
-import '../controller/controller.dart';
-import '../model/model.dart';
+import '../enums.dart';
+import '../model/model.dart' as Model;
 
 import 'package:openreception_framework/bus.dart';
 
@@ -31,8 +31,8 @@ part 'view-receptionistclient-disaster.dart';
 part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
 
-final HotKeys  _hotKeys  = new HotKeys();
-final Navigate _navigate = new Navigate();
+final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
+final Controller.Navigate _navigate = new Controller.Navigate();
 
 ///
 ///
@@ -49,22 +49,22 @@ abstract class ViewWidget {
    * SHOULD return the widgets [Place]. MAY return null if the widget has no
    * [Place] associated with it.
    */
-  Place get myPlace;
+  Controller.Place get myPlace;
 
   /**
    * What to do when the widget blurs.
    */
-  void onBlur(Place place);
+  void onBlur(Controller.Place place);
 
   /**
    * What to do when the widget is focused.
    */
-  void onFocus(Place place);
+  void onFocus(Controller.Place place);
 
   /**
    * MUST return the widgets [UIModel].
    */
-  UIModel get ui;
+  Model.UIModel get ui;
 
   /**
    * Navigate to [myPlace] if widget is not already in focus.
@@ -84,7 +84,7 @@ abstract class ViewWidget {
    *  call ui.blur()
    *  call onBlur();
    */
-  void setWidgetState(Place place) {
+  void setWidgetState(Controller.Place place) {
     if(myPlace == place) {
       ui.focus();
       onFocus(place);

@@ -1,11 +1,11 @@
 part of view;
 
 class ContactData extends ViewWidget {
-  ContactSelector _contactSelector;
-  Place           _myPlace;
-  UIContactData   _ui;
+  Model.UIContactSelector _contactSelector;
+  Controller.Place        _myPlace;
+  Model.UIContactData     _ui;
 
-  ContactData(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
+  ContactData(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector) {
     test(); // TODO (TL): Get rid of this testing code...
 
     _ui.help = 'alt+t';
@@ -13,8 +13,8 @@ class ContactData extends ViewWidget {
     registerEventListeners();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => _myPlace;
+  @override Model.UIModel    get ui      => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}

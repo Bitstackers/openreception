@@ -20,7 +20,8 @@ class ReceptionistclientReady {
   ReceptionSelector               receptionSelector;
   static ReceptionistclientReady  _singleton;
   WelcomeMessage                  welcomeMessage;
-  final UIReceptionistclientReady _ui = new UIReceptionistclientReady('receptionistclient-ready');
+
+  final Model.UIReceptionistclientReady _ui = new Model.UIReceptionistclientReady('receptionistclient-ready');
 
   /**
    * Constructor.
@@ -55,38 +56,41 @@ class ReceptionistclientReady {
   void _runApp() {
     _ui.visible = true;
 
-    help = new Help(new UIHelp());
+    help = new Help(new Model.UIHelp());
 
-    contexts = new Contexts(new UIContexts());
+    contexts = new Contexts(new Model.UIContexts());
 
-    receptionSelector = new ReceptionSelector(new UIReceptionSelector(querySelector('#reception-selector')),
-                                              new Place(Context.Home, Widget.ReceptionSelector));
+    Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
+    receptionSelector = new ReceptionSelector(uiReceptionSelector,
+                                              new Controller.Place(Context.Home, Widget.ReceptionSelector));
 
-    agentInfo = new AgentInfo(new UIAgentInfo(querySelector('#agent-info')));
+    agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
 
-    contactSelector = new ContactSelector(new UIContactSelector(querySelector('#contact-selector')),
-                      new Place(Context.Home, Widget.ContactSelector));
+    Model.UIContactSelector uiContactSelector = new Model.UIContactSelector(querySelector('#contact-selector'));
+    contactSelector = new ContactSelector(uiContactSelector,
+                                          new Controller.Place(Context.Home, Widget.ContactSelector),
+                                          uiReceptionSelector);
 
-    contactCalendar = new ContactCalendar(new UIContactCalendar(querySelector('#contact-calendar')),
-                                          new Place(Context.Home, Widget.ContactCalendar),
-                                          contactSelector);
+    contactCalendar = new ContactCalendar(new Model.UIContactCalendar(querySelector('#contact-calendar')),
+                                          new Controller.Place(Context.Home, Widget.ContactCalendar),
+                                          uiContactSelector);
 
-    contactData = new ContactData(new UIContactData(querySelector('#contact-data')),
-                                  new Place(Context.Home, Widget.ContactData),
-                                  contactSelector);
+    contactData = new ContactData(new Model.UIContactData(querySelector('#contact-data')),
+                                  new Controller.Place(Context.Home, Widget.ContactData),
+                                  uiContactSelector);
 
-    calendarEditor = new CalendarEditor (new UICalendarEditor(querySelector('#calendar-editor')),
-                                         new Place(Context.CalendarEdit, Widget.CalendarEditor));
+    calendarEditor = new CalendarEditor (new Model.UICalendarEditor(querySelector('#calendar-editor')),
+                                         new Controller.Place(Context.CalendarEdit, Widget.CalendarEditor));
 
-    receptionCalendar = new ReceptionCalendar(new UIReceptionCalendar(querySelector('#reception-calendar')),
-                                              new Place(Context.Home, Widget.ReceptionCalendar),
-                                              receptionSelector);
+    receptionCalendar = new ReceptionCalendar(new Model.UIReceptionCalendar(querySelector('#reception-calendar')),
+                                              new Controller.Place(Context.Home, Widget.ReceptionCalendar),
+                                              uiReceptionSelector);
 
-    receptionCommands = new ReceptionCommands(new UIReceptionCommands(querySelector('#reception-commands')),
-                                              new Place(Context.Home, Widget.ReceptionCommands));
+    receptionCommands = new ReceptionCommands(new Model.UIReceptionCommands(querySelector('#reception-commands')),
+                                              new Controller.Place(Context.Home, Widget.ReceptionCommands));
 
-    messageCompose = new MessageCompose(new UIMessageCompose(querySelector('#message-compose')),
-                                        new Place(Context.Home, Widget.MessageCompose));
+    messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
+                                        new Controller.Place(Context.Home, Widget.MessageCompose));
 
     // TODO (TL): The following widgets have not yet been UIModel'ified.
 //    globalCallQueue       = new GlobalCallQueue();

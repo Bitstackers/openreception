@@ -3,7 +3,8 @@ part of view;
 class ReceptionistclientLoading {
   AppClientState                    _appState;
   static ReceptionistclientLoading  _singleton;
-  final UIReceptionistclientLoading _ui = new UIReceptionistclientLoading('receptionistclient-loading');
+
+  final Model.UIReceptionistclientLoading _ui = new Model.UIReceptionistclientLoading('receptionistclient-loading');
 
   /**
    * Constructor.

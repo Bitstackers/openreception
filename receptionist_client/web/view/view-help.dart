@@ -1,13 +1,13 @@
 part of view;
 
 class Help {
-  UIHelp _ui;
+  Model.UIHelp _ui;
 
-  Help(UIHelp this._ui) {
-    registerEventListeners();
+  Help(Model.UIHelp this._ui) {
+    _observers();
   }
 
-  void registerEventListeners() {
+  void _observers() {
     _hotKeys.onF1.listen((_) => _ui.toggleHelp());
   }
 }

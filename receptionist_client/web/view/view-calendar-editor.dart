@@ -1,25 +1,25 @@
 part of view;
 
 class CalendarEditor extends ViewWidget {
-  Place                 _myPlace;
-  UICalendarEditor      _ui;
+  Controller.Place       _myPlace;
+  Model.UICalendarEditor _ui;
 
   /// TODO (TL): Should consume UIReceptionCalendar and UIContactCalendar so it
   /// can find the calendar entry that is  being edited/deleted.
   /// This keeps state in the DOM, where it already is. We can't get rid of state
   /// there anywhere, so we might as well work with that.
-  CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
+  CalendarEditor(Model.UICalendarEditor this._ui, this._myPlace) {
     _ui.help = 'some help';
 
     registerEventListeners();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => _myPlace;
+  @override Model.UIModel    get ui      => _ui;
 
-  @override void onBlur(Place place) {}
+  @override void onBlur(_) {}
 
-  @override void onFocus(Place place){
+  @override void onFocus(Controller.Place place){
     setup(place.from.widget);
   }
 

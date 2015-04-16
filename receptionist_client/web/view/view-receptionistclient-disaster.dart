@@ -3,7 +3,8 @@ part of view;
 class ReceptionistclientDisaster {
   AppClientState                     _appState;
   static ReceptionistclientDisaster  _singleton;
-  final UIReceptionistclientDisaster _ui = new UIReceptionistclientDisaster('receptionistclient-disaster');
+
+  final Model.UIReceptionistclientDisaster _ui = new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
 
   /**
    * Constructor.

@@ -4,17 +4,17 @@ part of view;
  * Component for creating/editing and saving/sending messages.
  */
 class MessageCompose extends ViewWidget {
-  Place            _myPlace;
-  UIMessageCompose _ui;
+  Controller.Place       _myPlace;
+  Model.UIMessageCompose _ui;
 
-  MessageCompose(UIMessageCompose this._ui, Place this._myPlace) {
+  MessageCompose(Model.UIMessageCompose this._ui, Controller.Place this._myPlace) {
     _ui.help = 'alt+b';
 
     _registerEventListeners();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Place get myPlace => _myPlace;
+  @override Model.UIModel    get ui      => _ui;
 
   @override void onBlur(_) {}
   @override void onFocus(_) {}

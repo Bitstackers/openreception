@@ -4,9 +4,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import '../controller/controller.dart' as Controller;
 import 'dummies.dart';
+import '../enums.dart';
 
-import '../controller/controller.dart';
+import 'package:openreception_framework/bus.dart';
 
 part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';
@@ -23,7 +25,7 @@ part 'model-ui-receptionistclient-ready.dart';
 part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';
 
-final HotKeys  _hotKeys  = new HotKeys();
+final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 
 abstract class UIModel {
   HtmlElement    get _firstTabElement;
@@ -113,28 +115,26 @@ abstract class UIModel {
   Stream<MouseEvent> get onClick => _root.onClick;
 
   /**
-   * Find the first proceeding sibling that is not hidden.
+   * Return the first [LIElement] that is not hidden. Search is forward,
+   * starting with and including [li].
    */
-  LIElement _scanAheadForVisibleSibling(LIElement li) {
-    LIElement next = li.nextElementSibling;
-
-    if(next != null && next.classes.contains('hide')) {
-      return _scanAheadForVisibleSibling(next);
+  LIElement _scanForwardForVisibleElement(LIElement li) {
+    if(li != null && li.classes.contains('hide')) {
+      return _scanForwardForVisibleElement(li.nextElementSibling);
     } else {
-      return next;
+      return li;
     }
   }
 
   /**
-   * Find the first preceeding sibling that is not hidden.
+   * Return the first [LIElement] that is not hidden. Search is backwards,
+   * starting with and including [li].
    */
-  LIElement _scanBackForVisibleSibling(LIElement li) {
-    LIElement previous = li.previousElementSibling;
-
-    if(previous != null && previous.classes.contains('hide')) {
-      return _scanBackForVisibleSibling(previous);
+  LIElement _scanBackwardsForVisibleElement(LIElement li) {
+    if(li != null && li.classes.contains('hide')) {
+      return _scanBackwardsForVisibleElement(li.previousElementSibling);
     } else {
-      return previous;
+      return li;
     }
   }
 
