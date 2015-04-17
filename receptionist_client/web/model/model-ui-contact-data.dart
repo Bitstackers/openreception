@@ -35,6 +35,23 @@ class UIContactData extends UIModel {
   set backups(List<String> items) => _populateList(_backupsList, items);
 
   /**
+   * Remove all data from the widget.
+   */
+  void clear() {
+    _additionalInfoList.children.clear();
+    _backupsList.children.clear();
+    _commandsList.children.clear();
+    _headerContactName.text = '';
+    _departmentList.children.clear();
+    _emailAddressesList.children.clear();
+    _relationsList.children.clear();
+    _responsibilityList.children.clear();
+    _telNumList.children.clear();
+    _titleList.children.clear();
+    _workHoursList.children.clear();
+  }
+
+  /**
    * Returns the mousedown click stream for the telephone numbers list.
    */
   Stream<MouseEvent> get clickSelectTelNum => _telNumList.onMouseDown;

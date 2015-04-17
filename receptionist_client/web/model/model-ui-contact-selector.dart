@@ -35,9 +35,12 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Add [items] to the contacts list.
+   * Add [items] to the [Contact] list. Note that this method does not clear the
+   * list before adding new items. It merely appends to the list.
    */
   set contacts(List<Contact> items) {
+    List<LIElement> list = new List<LIElement>();
+
     items.forEach((Contact item) {
       String initials = item.name.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
 
@@ -45,28 +48,25 @@ class UIContactSelector extends UIModel {
       /// when searching for contacts.
       item.tags.addAll(item.name.split(' '));
 
-      _contactList.append(new LIElement()
-          ..dataset['initials']      = initials
-          ..dataset['firstinitial']  = initials.substring(0,1)
-          ..dataset['otherinitials'] = initials.substring(1)
-          ..dataset['tags']          = item.tags.join(',').toLowerCase()
-          ..dataset['object']        = JSON.encode(item)
-          ..text = item.name);
+      list.add(new LIElement()
+                 ..dataset['initials']      = initials
+                 ..dataset['firstinitial']  = initials.substring(0,1)
+                 ..dataset['otherinitials'] = initials.substring(1)
+                 ..dataset['tags']          = item.tags.join(',').toLowerCase()
+                 ..dataset['object']        = JSON.encode(item)
+                 ..text = item.name);
     });
+
+    _contactList.children = list;
   }
 
   /**
    * Filter the contact list whenever the user enters data into the [_filter]
    * input field.
    */
-  void filter(_) {
+  void _filterList(_) {
     String filter = _filter.value.toLowerCase();
     String trimmedFilter = filter.trim();
-
-    /// TODO (TL): This filtering model is a bit "meh". What we probably should
-    /// do is leverage the CSS :not() selector and simply add/remove CSS rules
-    /// based on the given filter values. That way we don't do any kind of
-    /// looping, and all hiding/unhiding is left entirely to the browser.
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
@@ -121,13 +121,15 @@ class UIContactSelector extends UIModel {
    */
   void _handleUpDown(KeyboardEvent event) {
     if(active && _contactList.children.isNotEmpty) {
+      LIElement selected = _contactList.querySelector('.selected');
       event.preventDefault();
+
       switch(event.keyCode) {
         case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(_contactList.querySelector('.selected').nextElementSibling));
+          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
           break;
         case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(_contactList.querySelector('.selected').previousElementSibling));
+          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
           break;
       }
     }
@@ -136,6 +138,7 @@ class UIContactSelector extends UIModel {
   /**
    * Mark [li] selected, scroll it into view and fire the [Contact] contained
    * in the [li] on the [onSelect] bus.
+   * Does nothing if [li] is null or [li] is already selected.
    */
   void _markSelected(LIElement li) {
     if(li != null && !li.classes.contains('selected')) {
@@ -150,7 +153,7 @@ class UIContactSelector extends UIModel {
    * Observers
    */
   void _observers() {
-    _filter.onInput.listen(filter);
+    _filter.onInput.listen(_filterList);
 
     /// These are here to prevent tab'ing out of the filter input.
     _hotKeys.onTab     .listen(_handleTab);

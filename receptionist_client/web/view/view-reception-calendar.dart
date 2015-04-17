@@ -8,7 +8,9 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Constructor.
    */
-  ReceptionCalendar(Model.UIModel this._ui, Controller.Place this._myPlace, this._receptionSelector) {
+  ReceptionCalendar(Model.UIModel this._ui,
+                    Controller.Place this._myPlace,
+                    Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+a';
 
     observers();
@@ -37,6 +39,9 @@ class ReceptionCalendar extends ViewWidget {
     _ui.onClick    .listen(activateMe);
     _hotKeys.onAltA.listen(activateMe);
 
+    /// Delete and Edit. The actual edit/delete decision is made in the Calendar
+    /// Editor.
+    _hotKeys.onCtrlD.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
     _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
 
     _receptionSelector.onSelect.listen(render);
@@ -48,12 +53,14 @@ class ReceptionCalendar extends ViewWidget {
   void render(Reception reception) {
     _ui.clearList();
 
-    if(reception.name.isNotEmpty) {
+    if(!reception.isNull) {
       _ui.calendarEntries =
           [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${reception.name})'}),
            new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${reception.name})'}),
            new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${reception.name})'}),
            new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${reception.name})'})];
+
+      _ui.selectFirstCalendarEvent();
     }
   }
 }

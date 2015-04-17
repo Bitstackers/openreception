@@ -28,7 +28,10 @@ class HotKeys {
   Bus<KeyboardEvent> _altT     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altV     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _ctrlD    = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _ctrlE    = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _ctrlN    = new Bus<KeyboardEvent>();
+  Bus<KeyboardEvent> _ctrlS    = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _down     = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _enter    = new Bus<KeyboardEvent>();
   Bus<KeyboardEvent> _esc      = new Bus<KeyboardEvent>();
@@ -53,9 +56,12 @@ class HotKeys {
   Stream<KeyboardEvent> get onAltT     => _altT.stream;
   Stream<KeyboardEvent> get onAltV     => _altV.stream;
   Stream<KeyboardEvent> get onAltW     => _altW.stream;
+  Stream<KeyboardEvent> get onCtrlD    => _ctrlD.stream;
   Stream<KeyboardEvent> get onCtrlE    => _ctrlE.stream;
+  Stream<KeyboardEvent> get onCtrlN    => _ctrlN.stream;
+  Stream<KeyboardEvent> get onCtrlS    => _ctrlS.stream;
   Stream<KeyboardEvent> get onDown     => _down.stream;
-  Stream<KeyboardEvent> get onEenter   => _enter.stream;
+  Stream<KeyboardEvent> get onEnter    => _enter.stream;
   Stream<KeyboardEvent> get onEsc      => _esc.stream;
   Stream<KeyboardEvent> get onF1       => _f1.stream;
   Stream<KeyboardEvent> get onShiftTab => _shiftTab.stream;
@@ -83,7 +89,10 @@ class HotKeys {
        'Alt+t'      : _altT.fire,
        'Alt+v'      : _altV.fire,
        'Alt+w'      : _altW.fire,
+       'Ctrl+d'     : _ctrlD.fire,
        'Ctrl+e'     : _ctrlE.fire,
+       'Ctrl+n'     : _ctrlN.fire,
+       'Ctrl+s'     : _ctrlS.fire,
        'Enter'      : _enter.fire,
        'Esc'        : _esc.fire,
        'F1'         : _f1.fire};

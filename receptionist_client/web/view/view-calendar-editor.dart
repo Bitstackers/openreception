@@ -1,26 +1,45 @@
 part of view;
 
 class CalendarEditor extends ViewWidget {
-  Controller.Place       _myPlace;
-  Model.UICalendarEditor _ui;
+  Model.UIContactCalendar   _contactCalendar;
+  Controller.Place          _myPlace;
+  Widget                    _openedFrom;
+  Model.UIReceptionCalendar _receptionCalendar;
+  Model.UICalendarEditor    _ui;
 
-  /// TODO (TL): Should consume UIReceptionCalendar and UIContactCalendar so it
-  /// can find the calendar entry that is  being edited/deleted.
-  /// This keeps state in the DOM, where it already is. We can't get rid of state
-  /// there anywhere, so we might as well work with that.
-  CalendarEditor(Model.UICalendarEditor this._ui, this._myPlace) {
+  /**
+   * Constructor
+   */
+  CalendarEditor(Model.UICalendarEditor this._ui,
+                 this._myPlace,
+                 Model.UIContactCalendar this._contactCalendar,
+                 Model.UIReceptionCalendar this._receptionCalendar) {
     _ui.help = 'some help';
 
-    registerEventListeners();
+    _observers();
   }
 
   @override Controller.Place get myPlace => _myPlace;
   @override Model.UIModel    get ui      => _ui;
 
-  @override void onBlur(_) {}
+  /**
+   * Reset the [_openedFrom] variable on blur.
+   */
+  @override void onBlur(_) {
+    _openedFrom = null;
+  }
 
+  /**
+   * When we get focus, figure out where from we were called. If we weren't
+   * called from anywhere ie. the place.from.widget is null, then navigate to
+   * home.
+   */
   @override void onFocus(Controller.Place place){
-    setup(place.from.widget);
+    if(place.from != null) {
+      setup(place.from.widget);
+    } else {
+      _navigate.goHome();
+    }
   }
 
   /**
@@ -51,15 +70,10 @@ class CalendarEditor extends ViewWidget {
     print('view.CalendarEditor._delete not fully implemented');
   }
 
-  void registerEventListeners() {
-    /// TODO (TL): On navigation to this widget:
-    /// Figure out whether I got started from contact or reception calendar.
-    /// Figure out whether this is a new calendar entry or an edit?
-    /// If new: Add "now" data to the widget.
-    /// If edit: Add data from the calendar entry to the widget.
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _hotKeys.onEsc     .listen(cancel);
+    _hotKeys.onEsc.listen(cancel);
 
     _ui.onCancel.listen(cancel);
     _ui.onDelete.listen(delete);
@@ -80,6 +94,14 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
+   * Render the widget with a [CalendarEvent]. Note if the [CalendarEvent] is a
+   * null event, then the widgets renders with its default values.
+   */
+  void render(CalendarEvent calendarEvent) {
+    _ui.content = calendarEvent;
+  }
+
+  /**
    * Setup the widget accordingly to where it was opened from. [initiator] MUST
    * be the [Widget] that activated CalendarEditor.
    *
@@ -88,15 +110,18 @@ class CalendarEditor extends ViewWidget {
    * with the calendar entry we're either editing or creating.
    */
   void setup(Widget initiator) {
-    switch(initiator) {
+    _openedFrom = initiator;
+
+    switch(_openedFrom) {
       case Widget.ContactCalendar:
-        print('CalendarEditor opened from ContactCalendar');
+        render(_contactCalendar.selected);
         break;
       case Widget.ReceptionCalendar:
-        print('CalendarEditor opened from ReceptionCalendar');
+        render(_receptionCalendar.selected);
         break;
       default:
-        /// TODO (TL): Do something sane here...
+        /// No valid initiator. Go home.
+        _navigate.goHome();
         break;
     }
   }

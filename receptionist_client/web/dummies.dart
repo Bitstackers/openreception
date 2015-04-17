@@ -3,18 +3,9 @@ library dummies;
 import 'dart:async';
 import 'dart:html';
 
-import '../enums.dart';
+import 'enums.dart';
 
 import 'package:openreception_framework/bus.dart';
-
-/**
- * A generic list entry.
- */
-class ListEntry<T> {
-  T object;
-
-  ListEntry(this.object);
-}
 
 /**
  * Dummy application state class
@@ -48,6 +39,10 @@ class CalendarEvent {
     content     = json['content'];
   }
 
+  CalendarEvent.Null();
+
+  bool get isNull => id == null;
+
   Map toJson() {
     return {'id'         : id,
             'contactId'  : contactId,
@@ -64,25 +59,6 @@ class Contact {
   int          receptionId = null;
   String       name;
   List<String> tags;
-
-  LIElement           li = new LIElement()..tabIndex = -1;
-
-//  Contact(String this.name, {List<String> this.tags}) {
-//    li.text = name;
-//    if(tags == null) {
-//      tags = new List<String>();
-//    }
-//  }
-//
-//  Contact.fromElement(LIElement element) {
-//    if(element != null && element is LIElement) {
-//      li = element;
-//      name = li.text;
-//      tags = li.dataset['tags'].split(',');
-//    } else {
-//      throw new ArgumentError('element is not a LIElement');
-//    }
-//  }
 
   Contact.fromJson(Map json) {
     id          = json['id'];
@@ -103,21 +79,21 @@ class Contact {
  * Dummy reception class
  */
 class Reception {
-  LIElement    li = new LIElement()..tabIndex = -1;
-  String       name;
+  int    id;
+  String name;
 
-  Reception(String this.name) {
-    li.text = name;
+  Reception(int this.id, String this.name);
+
+  Reception.fromJson(Map json) {
+    id   = json['id'];
+    name = json['name'];
   }
 
-  Reception.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      li = element;
-      name = li.text;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
+  Reception.Null();
+
+  bool get isNull => name == null;
+
+  Map toJson() => {'id': id, 'name': name};
 }
 
 /**

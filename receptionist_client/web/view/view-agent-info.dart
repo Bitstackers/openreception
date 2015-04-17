@@ -3,6 +3,9 @@ part of view;
 class AgentInfo extends ViewWidget {
   Model.UIAgentInfo _ui;
 
+  /**
+   * Constructor.
+   */
   AgentInfo(Model.UIModel this._ui) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
@@ -10,7 +13,7 @@ class AgentInfo extends ViewWidget {
     _ui.alertState = AlertState.ON;
     _ui.portrait = 'images/face.png';
 
-    registerEventListeners();
+    _observers();
   }
 
   @override Controller.Place get myPlace => null;
@@ -19,7 +22,7 @@ class AgentInfo extends ViewWidget {
   @override void onBlur(_){}
   @override void onFocus(_){}
 
-  void registerEventListeners() {
+  void _observers() {
     /// TODO (TL): Add relevant listeners
     ///   _ui.activeCount = active count
     ///   _ui.agentState = agent state

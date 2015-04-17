@@ -3,6 +3,9 @@ part of model;
 class UIAgentInfo extends UIModel {
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UIAgentInfo(DivElement this._myRoot);
 
   @override HtmlElement    get _firstTabElement => null;

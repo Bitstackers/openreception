@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../model/dummies.dart';
+import '../dummies.dart';
 import '../enums.dart';
 import '../model/model.dart' as Model;
 
@@ -33,16 +33,6 @@ part 'view-welcome-message.dart';
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();
-
-///
-///
-///
-/// TODO (TL): For widgets with with selectable list items, for example contact
-/// and calendar lists, we have a bunch of similar functionality implemented in
-/// each view object. This can and should probably be moved to ViewWidget.
-///
-///
-///
 
 abstract class ViewWidget {
   /**

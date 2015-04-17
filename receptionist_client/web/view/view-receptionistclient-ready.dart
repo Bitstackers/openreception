@@ -54,35 +54,43 @@ class ReceptionistclientReady {
    * Go visible and setup all the app widgets.
    */
   void _runApp() {
+    Model.UIContactCalendar   uiContactCalendar   = new Model.UIContactCalendar(querySelector('#contact-calendar'));
+    Model.UIContactSelector   uiContactSelector   = new Model.UIContactSelector(querySelector('#contact-selector'));
+    Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'));
+    Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
+
     _ui.visible = true;
 
     help = new Help(new Model.UIHelp());
 
     contexts = new Contexts(new Model.UIContexts());
 
-    Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
+
     receptionSelector = new ReceptionSelector(uiReceptionSelector,
                                               new Controller.Place(Context.Home, Widget.ReceptionSelector));
 
     agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
 
-    Model.UIContactSelector uiContactSelector = new Model.UIContactSelector(querySelector('#contact-selector'));
     contactSelector = new ContactSelector(uiContactSelector,
                                           new Controller.Place(Context.Home, Widget.ContactSelector),
                                           uiReceptionSelector);
 
-    contactCalendar = new ContactCalendar(new Model.UIContactCalendar(querySelector('#contact-calendar')),
+    contactCalendar = new ContactCalendar(uiContactCalendar,
                                           new Controller.Place(Context.Home, Widget.ContactCalendar),
-                                          uiContactSelector);
+                                          uiContactSelector,
+                                          uiReceptionSelector);
 
     contactData = new ContactData(new Model.UIContactData(querySelector('#contact-data')),
                                   new Controller.Place(Context.Home, Widget.ContactData),
-                                  uiContactSelector);
+                                  uiContactSelector,
+                                  uiReceptionSelector);
 
     calendarEditor = new CalendarEditor (new Model.UICalendarEditor(querySelector('#calendar-editor')),
-                                         new Controller.Place(Context.CalendarEdit, Widget.CalendarEditor));
+                                         new Controller.Place(Context.CalendarEdit, Widget.CalendarEditor),
+                                         uiContactCalendar,
+                                         uiReceptionCalendar);
 
-    receptionCalendar = new ReceptionCalendar(new Model.UIReceptionCalendar(querySelector('#reception-calendar')),
+    receptionCalendar = new ReceptionCalendar(uiReceptionCalendar,
                                               new Controller.Place(Context.Home, Widget.ReceptionCalendar),
                                               uiReceptionSelector);
 

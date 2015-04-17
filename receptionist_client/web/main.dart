@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:html';
 
-import 'model/dummies.dart';
+import 'dummies.dart';
 
 import 'controller/controller.dart' as Controller;
 import 'enums.dart';

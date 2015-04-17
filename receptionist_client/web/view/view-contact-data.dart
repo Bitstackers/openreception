@@ -1,16 +1,15 @@
 part of view;
 
 class ContactData extends ViewWidget {
-  Model.UIContactSelector _contactSelector;
-  Controller.Place        _myPlace;
-  Model.UIContactData     _ui;
+  Model.UIContactSelector   _contactSelector;
+  Controller.Place          _myPlace;
+  Model.UIReceptionSelector _receptionSelector;
+  Model.UIContactData       _ui;
 
-  ContactData(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector) {
-    test(); // TODO (TL): Get rid of this testing code...
-
+  ContactData(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector, Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+t';
 
-    registerEventListeners();
+    _observers();
   }
 
   @override Controller.Place get myPlace => _myPlace;
@@ -34,6 +33,15 @@ class ContactData extends ViewWidget {
   void activateMeFromClick(MouseEvent event) {
     clickSelect(_ui.getTelNumFromClick(event));
     navigateToMyPlace();
+  }
+
+  /**
+   * Clear the widget on null [Reception].
+   */
+  void clearOnNullReception(Reception reception) {
+    if(reception.isNull) {
+      _ui.clear();
+    }
   }
 
   /**
@@ -62,7 +70,10 @@ class ContactData extends ViewWidget {
     }
   }
 
-  void registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
     _ui.onClick.listen(activateMe);
@@ -82,15 +93,31 @@ class ContactData extends ViewWidget {
 
     _contactSelector.onSelect.listen(render);
 
-    /// TODO (TL): Add listener for call events to detect pickup/hangup
+    _receptionSelector.onSelect.listen(clearOnNullReception);
   }
 
   /**
    * Render the widget with [Contact].
    */
   void render(Contact contact) {
-    print('ContactData received ${contact.name}');
+    _ui.clear();
+
     _ui.contactName = contact.name;
+    _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
+    _ui.backups = ['backup 1', 'backup 2'];
+    _ui.commands = ['command 1', 'command 2'];
+    _ui.departments = ['department 1', 'department 2'];
+    _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
+    _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
+    _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
+    _ui.telnums = [new TelNum('45454545', 'some number', false),
+                   new TelNum('23456768', 'secret stuff', true),
+                   new TelNum('60431992', 'personal cell', false),
+                   new TelNum('60431993', 'wife cell', false)];
+    _ui.titles = ['Nørd', 'Tekniker'];
+    _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
+
+    _ui.markSelected(_ui.getTelNumFromIndex(0));
   }
 
   /**
@@ -111,24 +138,5 @@ class ContactData extends ViewWidget {
     if(_ui.active && _ui.noRinging && telNum != null) {
       _ui.markSelected(telNum);
     }
-  }
-
-  /// TODO (TL): Get rid of this. It's just here to test stuff.
-  void test() {
-    _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
-    _ui.backups = ['backup 1', 'backup 2'];
-    _ui.commands = ['command 1', 'command 2'];
-    _ui.departments = ['department 1', 'department 2'];
-    _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
-    _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
-    _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
-    _ui.telnums = [new TelNum('45454545', 'some number', false),
-                   new TelNum('23456768', 'secret stuff', true),
-                   new TelNum('60431992', 'personal cell', false),
-                   new TelNum('60431993', 'wife cell', false)];
-    _ui.titles = ['Nørd', 'Tekniker'];
-    _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
-
-    _ui.markSelected(_ui.getTelNumFromIndex(0));
   }
 }

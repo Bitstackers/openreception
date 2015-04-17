@@ -39,6 +39,11 @@ class UICalendarEditor extends UIModel {
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
 
   /**
+   * Populate the calendar editor fields with a [CalendarEvent].
+   */
+  set content(CalendarEvent calendarEvent) => _textArea.text = calendarEvent.toJson().toString();
+
+  /**
    * Return the click event stream for the cancel button.
    */
   Stream<MouseEvent> get onCancel => _cancelButton.onClick;

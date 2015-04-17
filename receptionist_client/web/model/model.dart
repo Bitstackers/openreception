@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import 'dummies.dart';
+import '../dummies.dart';
 import '../enums.dart';
 
 import 'package:openreception_framework/bus.dart';

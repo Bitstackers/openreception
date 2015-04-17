@@ -1,14 +1,18 @@
 part of view;
 
 class ContactCalendar extends ViewWidget {
-  Model.UIContactSelector _contactSelector;
-  Controller.Place        _myPlace;
-  Model.UIContactCalendar _ui;
+  Model.UIContactSelector   _contactSelector;
+  Controller.Place          _myPlace;
+  Model.UIReceptionSelector _receptionSelector;
+  Model.UIContactCalendar   _ui;
 
   /**
    * Constructor.
    */
-  ContactCalendar(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector) {
+  ContactCalendar(Model.UIModel this._ui,
+                  Controller.Place this._myPlace,
+                  Model.UIContactSelector this._contactSelector,
+                  Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+k';
 
     _observers();
@@ -21,11 +25,19 @@ class ContactCalendar extends ViewWidget {
   @override void onFocus(_){}
 
   /**
-   * Simply navigate to my [Place]. Matters not if this widget is already
-   * focused.
+   * Activate this widget if it's not already activated.
    */
   void activateMe(_) {
     navigateToMyPlace();
+  }
+
+  /**
+   * Empty the [CalendarEvent] list on null [Reception].
+   */
+  void clearOnNullReception(Reception reception) {
+    if(reception.isNull) {
+      _ui.clearList();
+    }
   }
 
   /**
@@ -37,9 +49,13 @@ class ContactCalendar extends ViewWidget {
     _ui.onClick    .listen(activateMe);
     _hotKeys.onAltK.listen(activateMe);
 
+    /// Delete and Edit. The actual edit/delete decision is made in the Calendar
+    /// Editor.
+    _hotKeys.onCtrlD.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
     _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
 
     _contactSelector.onSelect.listen(render);
+    _receptionSelector.onSelect.listen(clearOnNullReception);
   }
 
   /**
@@ -48,10 +64,11 @@ class ContactCalendar extends ViewWidget {
   void render(Contact contact) {
     _ui.clearList();
 
-    _ui.calendarEntries = [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
-                           new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),
-                           new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
-                           new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
+    _ui.calendarEvents = [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
+                          new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),
+                          new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
+                          new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
 
+    _ui.selectFirstCalendarEvent();
   }
 }

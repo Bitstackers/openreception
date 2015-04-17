@@ -1,8 +1,8 @@
 part of view;
 
 class ContactSelector extends ViewWidget {
-  Controller.Place        _myPlace;
-  Model.UIContactSelector _ui;
+  Controller.Place          _myPlace;
+  Model.UIContactSelector   _ui;
   Model.UIReceptionSelector _receptionSelector;
 
   /**
@@ -45,11 +45,13 @@ class ContactSelector extends ViewWidget {
   void render(Reception reception) {
     _ui.clearList();
 
-    _ui.contacts = [new Contact.fromJson({'id': 1, 'name': 'Trine Løcke Snøcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Oplæring','Service']}),
-                    new Contact.fromJson({'id': 2, 'name': 'Hoop Karaoke ${(reception.name)}', 'receptionId': 2, 'tags': ['Entertainment', 'International Business', 'teknik']}),
-                    new Contact.fromJson({'id': 3, 'name': 'Thomas Løcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Farum', 'salg']}),
-                    new Contact.fromJson({'id': 4, 'name': 'Simpleton McNuggin ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Glostrup', 'Service', 'løn', 'kreditor']})];
+    if(!reception.isNull) {
+      _ui.contacts = [new Contact.fromJson({'id': 1, 'name': 'Trine Løcke Snøcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Oplæring','Service']}),
+                      new Contact.fromJson({'id': 2, 'name': 'Hoop Karaoke ${(reception.name)}', 'receptionId': 2, 'tags': ['Entertainment', 'International Business', 'teknik']}),
+                      new Contact.fromJson({'id': 3, 'name': 'Thomas Løcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Farum', 'salg']}),
+                      new Contact.fromJson({'id': 4, 'name': 'Simpleton McNuggin ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Glostrup', 'Service', 'løn', 'kreditor']})];
 
-    _ui.selectFirstContact();
+      _ui.selectFirstContact();
+    }
   }
 }
