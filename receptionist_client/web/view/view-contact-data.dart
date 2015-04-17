@@ -6,6 +6,9 @@ class ContactData extends ViewWidget {
   Model.UIReceptionSelector _receptionSelector;
   Model.UIContactData       _ui;
 
+  /**
+   * Constructor.
+   */
   ContactData(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector, Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+t';
 
