@@ -30,3 +30,8 @@ final Map client_config =
 shelf.Response getBobConfig(shelf.Request request) =>
   new shelf.Response.ok(JSON.encode(client_config));
 
+shelf.Response send404(shelf.Request request) {
+  return new shelf.Response.notFound(JSON.encode({"error" : "Not Found"}));
+}
+
+

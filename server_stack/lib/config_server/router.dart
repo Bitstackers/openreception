@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:io' as IO;
 import 'dart:convert';
 
-import 'package:route/server.dart';
 import 'configuration.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -28,7 +27,7 @@ shelf.Response _options(shelf.Request request) =>
 shelf.Response _cors(shelf.Response response) => response.change(headers: CORSHeader);
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
-  var router = route.router()
+  var router = route.router(fallbackHandler : send404)
       ..get(configurationUrl, getBobConfig);
 
   var handler = const shelf.Pipeline()
