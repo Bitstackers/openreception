@@ -5,6 +5,7 @@ import 'dart:io' as IO;
 import 'dart:convert';
 
 import 'configuration.dart';
+import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
@@ -12,6 +13,7 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 part 'router/getconfiguration.dart';
 
 final String configurationUrl = '/configuration';
+final Logger log = new Logger ('configserver.router');
 
 shelf.Middleware addCORSHeaders =
   shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
@@ -35,7 +37,8 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
       .addMiddleware(addCORSHeaders)
       .addHandler(router.handler);
 
-  shelf_route.printRoutes(router);
+  log.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer : log.fine);
 
   return shelf_io.serve(handler, hostname, port);
 }
