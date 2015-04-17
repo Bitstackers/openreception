@@ -95,7 +95,7 @@ class UIReceptionSelector extends UIModel {
    * Does nothing if [li] is null or [li] is already selected.
    */
   void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
+    if(active && li != null && !li.classes.contains('selected')) {
       _receptionList.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
