@@ -1,21 +1,42 @@
 library miscserver.router;
 
-import 'dart:io';
+import 'dart:async';
+import 'dart:io' as IO;
 import 'dart:convert';
 
 import 'package:route/server.dart';
-
 import 'configuration.dart';
-import 'package:openreception_framework/httpserver.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_route/shelf_route.dart' as route;
 
 part 'router/getconfiguration.dart';
 
-final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern configurationUrl = new UrlPattern('/configuration');
+final String configurationUrl = '/configuration';
 
-void setup(HttpServer server) {
-  Router router = new Router(server)
-    ..serve(configurationUrl, method: 'GET').listen(getBobConfig)
-    ..serve(anything, method: 'OPTIONS').listen(preFlight)
-    ..defaultStream.listen(page404);
+shelf.Middleware addCORSHeaders =
+  shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
+
+const Map<String, String> textHtmlHeader = const {IO.HttpHeaders.CONTENT_TYPE: 'text/html'};
+const Map<String, String> CORSHeader = const {'Access-Control-Allow-Origin': '*'};
+
+shelf.Response _options(shelf.Request request) =>
+    (request.method == 'OPTIONS')
+      ? new shelf.Response.ok(null, headers: CORSHeader)
+      : null;
+
+shelf.Response _cors(shelf.Response response) => response.change(headers: CORSHeader);
+
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
+  var router = route.router()
+      ..get(configurationUrl, getBobConfig);
+
+  var handler = const shelf.Pipeline()
+      .addMiddleware(shelf.logRequests())
+      .addMiddleware(addCORSHeaders)
+      .addHandler(router.handler);
+
+  route.printRoutes(router);
+
+  return shelf_io.serve(handler, hostname, port);
 }

@@ -27,9 +27,6 @@ final Map client_config =
   };
 
 
-void getBobConfig(HttpRequest request) {
-  writeAndClose(request, JSON.encode(client_config))
-  .catchError((error) {
-    serverError(request, error.toString());
-  });
-}
+shelf.Response getBobConfig(shelf.Request request) =>
+  new shelf.Response.ok(JSON.encode(client_config));
+

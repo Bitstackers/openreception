@@ -5,7 +5,6 @@ import 'package:path/path.dart';
 
 import 'package:openreception_framework/common.dart';
 import '../lib/config_server/configuration.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/config_server/router.dart' as router;
 
 ArgResults    parsedArgs;
@@ -22,7 +21,7 @@ void main(List<String> args) {
     } else {
       config = new Configuration(parsedArgs);
       config.whenLoaded()
-        .then((_) => http.start(config.httpport, router.setup))
+        .then((_) => router.start(port : config.httpport))
         .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
     }
   } on ArgumentError catch(e) {
