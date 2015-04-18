@@ -28,12 +28,22 @@ shelf.Response _options(shelf.Request request) =>
 
 shelf.Response _cors(shelf.Response response) => response.change(headers: CORSHeader);
 
+/// Simple access logging.
+void _accessLogger(String msg, bool isError) {
+  if (isError) {
+    log.severe(msg);
+  } else {
+    log.finest(msg);
+  }
+}
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
+  Logger.root.onRecord.listen(print);
+  Logger.root.level = Level.ALL;
   var router = shelf_route.router(fallbackHandler : send404)
       ..get(configurationUrl, getBobConfig);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf.logRequests())
+      .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addMiddleware(addCORSHeaders)
       .addHandler(router.handler);
 
