@@ -37,8 +37,6 @@ void _accessLogger(String msg, bool isError) {
   }
 }
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
-  Logger.root.onRecord.listen(print);
-  Logger.root.level = Level.ALL;
   var router = shelf_route.router(fallbackHandler : send404)
       ..get(configurationUrl, getBobConfig);
 
