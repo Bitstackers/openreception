@@ -1,8 +1,8 @@
 part of model;
 
 class UIReceptionSelector extends UIModel {
-  Bus<Reception>   _bus = new Bus<Reception>(); // TODO (TL): Make private
-  final DivElement _myRoot;
+  final Bus<Reception> _bus = new Bus<Reception>();
+  final DivElement     _myRoot;
 
   /**
    * Constructor.
@@ -32,13 +32,8 @@ class UIReceptionSelector extends UIModel {
    * input field.
    */
   void filter(_) {
-    String filter = _filter.value.toLowerCase();
-    String trimmedFilter = filter.trim();
-
-    /// TODO (TL): This filtering model is a bit "meh". What we probably should
-    /// do is leverage the CSS :not() selector and simply add/remove CSS rules
-    /// based on the given filter values. That way we don't do any kind of
-    /// looping, and all hiding/unhiding is left entirely to the browser.
+    final String filter = _filter.value.toLowerCase();
+    final String trimmedFilter = filter.trim();
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
@@ -66,10 +61,10 @@ class UIReceptionSelector extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(active && _receptionList.children.isNotEmpty) {
+    if(isFocused && _receptionList.children.isNotEmpty) {
       event.preventDefault();
 
-      LIElement selected = _receptionList.querySelector('.selected');
+      final LIElement selected = _receptionList.querySelector('.selected');
 
       /// Special case for this widget. If nothing is selected, simply select
       /// the first element in the list and return.
@@ -95,7 +90,7 @@ class UIReceptionSelector extends UIModel {
    * Does nothing if [li] is null or [li] is already selected.
    */
   void _markSelected(LIElement li) {
-    if(active && li != null && !li.classes.contains('selected')) {
+    if(isFocused && li != null && !li.classes.contains('selected')) {
       _receptionList.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
@@ -134,7 +129,7 @@ class UIReceptionSelector extends UIModel {
    * Add [items] to the receptions list.
    */
   set receptions(List<Reception> items) {
-    List<LIElement> list = new List<LIElement>();
+    final List<LIElement> list = new List<LIElement>();
 
     items.forEach((Reception item) {
       list.add(new LIElement()
@@ -151,7 +146,7 @@ class UIReceptionSelector extends UIModel {
    * [Reception].
    */
   void reset(_) {
-    if(active) {
+    if(isFocused) {
       _filter.value = '';
       filter('');
       _receptionList.children.forEach((Element e) => e.classes.toggle('selected', false));

@@ -11,9 +11,16 @@ import 'view/view.dart' as View;
 void main() {
   AppClientState appState = new AppClientState();
 
-  View.ReceptionistclientDisaster appDisaster = new View.ReceptionistclientDisaster(appState);
-  View.ReceptionistclientLoading  appLoading  = new View.ReceptionistclientLoading(appState);
-  View.ReceptionistclientReady    appReady    = new View.ReceptionistclientReady(appState);
+  final Model.UIReceptionistclientDisaster uiDisaster = new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
+  final Model.UIReceptionistclientLoading  uiLoading  = new Model.UIReceptionistclientLoading('receptionistclient-loading');
+  final Model.UIReceptionistclientReady    uiReady    = new Model.UIReceptionistclientReady('receptionistclient-ready');
+
+  View.ReceptionistclientDisaster appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
+  View.ReceptionistclientLoading  appLoading  = new View.ReceptionistclientLoading(appState, uiLoading);
+
+  /// This is where it all starts. Every single widget is instantiated in
+  /// appReady.
+  View.ReceptionistclientReady appReady = new View.ReceptionistclientReady(appState, uiReady);
 
   /// TODO (TL): The loading context is visible by default. Switch to ready after
   /// 1 second.

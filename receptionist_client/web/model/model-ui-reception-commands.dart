@@ -3,6 +3,9 @@ part of model;
 class UIReceptionCommands extends UIModel {
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UIReceptionCommands(DivElement this._myRoot);
 
   @override HtmlElement    get _firstTabElement => null;

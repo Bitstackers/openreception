@@ -7,39 +7,42 @@ class HotKeys {
   static final HotKeys _singleton = new HotKeys._internal();
   factory HotKeys() => _singleton;
 
+  /**
+   * Internal constructor.
+   */
   HotKeys._internal() {
     _initialize();
   }
 
-  Keyboard _keyDown  = new Keyboard();
+  final Keyboard _keyDown = new Keyboard();
 
-  Bus<KeyboardEvent> _alt1     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _alt2     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _alt3     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _alt4     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altA     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altB     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altE     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altH     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altI     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altK     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altQ     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altS     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altT     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altV     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _ctrlD    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _ctrlE    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _ctrlN    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _ctrlS    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _down     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _enter    = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _esc      = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _f1       = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _star     = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _up       = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _alt1     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _alt2     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _alt3     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _alt4     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altA     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altB     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altE     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altH     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altI     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altK     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altQ     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altS     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altT     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altV     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _ctrlD    = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _ctrlE    = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _ctrlN    = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _ctrlS    = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _down     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _enter    = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _esc      = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _f1       = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _shiftTab = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _star     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _tab      = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _up       = new Bus<KeyboardEvent>();
 
   Stream<KeyboardEvent> get onAlt1     => _alt1.stream;
   Stream<KeyboardEvent> get onAlt2     => _alt2.stream;
@@ -93,12 +96,12 @@ class HotKeys {
        'Ctrl+e'     : _ctrlE.fire,
        'Ctrl+n'     : _ctrlN.fire,
        'Ctrl+s'     : _ctrlS.fire,
-       'Enter'      : _enter.fire,
        'Esc'        : _esc.fire,
        'F1'         : _f1.fire};
 
     final Map<String, EventListener> bindings =
         {'down'     : _down.fire,
+         'Enter'      : _enter.fire,
          'Shift+Tab': _shiftTab.fire,
          'Tab'      : _tab.fire,
          'up'       : _up.fire};

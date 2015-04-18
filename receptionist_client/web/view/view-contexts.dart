@@ -1,9 +1,19 @@
 part of view;
 
 class Contexts {
-  Model.UIContexts _ui;
+  final Model.UIContexts _ui;
 
+  /**
+   * Constructor.
+   */
   Contexts(Model.UIModel this._ui) {
+    _observers();
+  }
+
+  /**
+   * Observers.
+   */
+  void _observers() {
     _navigate.onGo.listen(_ui.toggleContext);
 
     _hotKeys.onAltQ.listen((_) => _navigate.goHome());

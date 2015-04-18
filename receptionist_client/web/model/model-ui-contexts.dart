@@ -3,6 +3,9 @@ part of model;
 class UIContexts extends UIModel {
   Map<String, HtmlElement> _contextMap;
 
+  /**
+   * Constructor.
+   */
   UIContexts() {
     _contextMap = {Context.CalendarEdit: contextCalendarEdit,
                    Context.Home        : contextHome,

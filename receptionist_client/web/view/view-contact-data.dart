@@ -1,15 +1,18 @@
 part of view;
 
 class ContactData extends ViewWidget {
-  Model.UIContactSelector   _contactSelector;
-  Controller.Place          _myPlace;
-  Model.UIReceptionSelector _receptionSelector;
-  Model.UIContactData       _ui;
+  final Model.UIContactSelector   _contactSelector;
+  final Controller.Place          _myPlace;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIContactData       _ui;
 
   /**
    * Constructor.
    */
-  ContactData(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIContactSelector this._contactSelector, Model.UIReceptionSelector this._receptionSelector) {
+  ContactData(Model.UIModel this._ui,
+              Controller.Place this._myPlace,
+              Model.UIContactSelector this._contactSelector,
+              Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+t';
 
     _observers();
@@ -60,7 +63,7 @@ class ContactData extends ViewWidget {
    * Deal with arrow up/down.
    */
   void handleUpDown(KeyboardEvent event) {
-    if(_ui.active) {
+    if(_ui.isFocused) {
       event.preventDefault();
       switch(event.keyCode) {
         case KeyCode.DOWN:
@@ -128,7 +131,7 @@ class ContactData extends ViewWidget {
    * is not null.
    */
   void ring(TelNum telNum) {
-    if(_ui.active && _ui.noRinging && telNum != null) {
+    if(_ui.isFocused && _ui.noRinging && telNum != null) {
       _ui.markRinging(telNum);
       /// TODO (TL): Call Controller.Call or something like that?
     }
@@ -138,7 +141,7 @@ class ContactData extends ViewWidget {
    * If the we're active and not ringing, mark [telNum] active.
    */
   void select(TelNum telNum) {
-    if(_ui.active && _ui.noRinging && telNum != null) {
+    if(_ui.isFocused && _ui.noRinging && telNum != null) {
       _ui.markSelected(telNum);
     }
   }

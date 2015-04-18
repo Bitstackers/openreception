@@ -5,18 +5,18 @@ class ReceptionProduct {
   factory ReceptionProduct() => _singleton;
 
   /**
-   *
+   * Construct.
    */
   ReceptionProduct._internal() {
-    _registerEventListeners();
+    _observers();
   }
 
   static final DivElement _root = querySelector('#reception-product');
 
   /**
-   *
+   * Observers.
    */
-  void _registerEventListeners() {
+  void _observers() {
     // TODO (TL): Stuff...
   }
 }

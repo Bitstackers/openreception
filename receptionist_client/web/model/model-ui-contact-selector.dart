@@ -1,8 +1,8 @@
 part of model;
 
 class UIContactSelector extends UIModel {
-  Bus<Contact> _bus = new Bus<Contact>();
-  final DivElement _myRoot;
+  final Bus<Contact> _bus = new Bus<Contact>();
+  final DivElement   _myRoot;
 
   /**
    * Constructor.
@@ -39,7 +39,7 @@ class UIContactSelector extends UIModel {
    * list before adding new items. It merely appends to the list.
    */
   set contacts(List<Contact> items) {
-    List<LIElement> list = new List<LIElement>();
+    final List<LIElement> list = new List<LIElement>();
 
     items.forEach((Contact item) {
       String initials = item.name.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
@@ -65,8 +65,8 @@ class UIContactSelector extends UIModel {
    * input field.
    */
   void _filterList(_) {
-    String filter = _filter.value.toLowerCase();
-    String trimmedFilter = filter.trim();
+    final String filter = _filter.value.toLowerCase();
+    final String trimmedFilter = filter.trim();
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
@@ -101,7 +101,7 @@ class UIContactSelector extends UIModel {
     } else {
       /// Split filter string on space and search for contacts that have all
       /// the resulting parts in their tag list.
-      List<String> parts = trimmedFilter.split(' ');
+      final List<String> parts = trimmedFilter.split(' ');
 
       _contactList.children.forEach((LIElement li) {
         if(parts.every((String part) => li.dataset['tags'].contains(part))) {
@@ -120,9 +120,10 @@ class UIContactSelector extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(active && _contactList.children.isNotEmpty) {
-      LIElement selected = _contactList.querySelector('.selected');
+    if(isFocused && _contactList.children.isNotEmpty) {
       event.preventDefault();
+
+      final LIElement selected = _contactList.querySelector('.selected');
 
       switch(event.keyCode) {
         case KeyCode.DOWN:
@@ -178,8 +179,7 @@ class UIContactSelector extends UIModel {
    */
   void selectFirstContact() {
     if(_contactList.children.isNotEmpty) {
-      LIElement li = _scanForwardForVisibleElement(_contactList.children.first);
-      _markSelected(li);
+      _markSelected(_scanForwardForVisibleElement(_contactList.children.first));
     }
   }
 

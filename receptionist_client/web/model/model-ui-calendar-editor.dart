@@ -6,12 +6,15 @@ class UICalendarEditor extends UIModel {
   HtmlElement      _myLastTabElement;
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UICalendarEditor(DivElement this._myRoot) {
     _myFocusElement    = _textArea;
     _myFirstTabElement = _textArea;
     _myLastTabElement  = _cancelButton;
 
-    _registerEventListeners();
+    _observers();
   }
 
   @override HtmlElement    get _firstTabElement => _myFirstTabElement;
@@ -58,7 +61,10 @@ class UICalendarEditor extends UIModel {
    */
   Stream<MouseEvent> get onSave => _saveButton.onClick;
 
-  void _registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
@@ -72,27 +78,29 @@ class UICalendarEditor extends UIModel {
     /// the inputs of this widget to have some intrinsic management of which
     /// values are allowed and which are not, especially considering the HTML5
     /// type="number" attribute.
-    _textArea.onInput   .listen((_) => _toggleButtons());
-    _startHourInput.onInput  .listen((_) => _sanitizeInput(_startHourInput));
-    _startMinuteInput.onInput.listen((_) => _sanitizeInput(_startMinuteInput));
-    _startDayInput.onInput   .listen((_) => _sanitizeInput(_startDayInput));
-    _startMonthInput.onInput .listen((_) => _sanitizeInput(_startMonthInput));
-    _startYearInput.onInput  .listen((_) => _sanitizeInput(_startYearInput));
-    _stopHourInput.onInput   .listen((_) => _sanitizeInput(_stopHourInput));
-    _stopMinuteInput.onInput .listen((_) => _sanitizeInput(_stopMinuteInput));
-    _stopDayInput.onInput    .listen((_) => _sanitizeInput(_stopDayInput));
-    _stopMonthInput.onInput  .listen((_) => _sanitizeInput(_stopMonthInput));
-    _stopYearInput.onInput   .listen((_) => _sanitizeInput(_stopYearInput));
+    _textArea.onInput        .listen((_) => _toggleButtons());
+    _startHourInput.onInput  .listen((_) => _checkInput(_startHourInput));
+    _startMinuteInput.onInput.listen((_) => _checkInput(_startMinuteInput));
+    _startDayInput.onInput   .listen((_) => _checkInput(_startDayInput));
+    _startMonthInput.onInput .listen((_) => _checkInput(_startMonthInput));
+    _startYearInput.onInput  .listen((_) => _checkInput(_startYearInput));
+    _stopHourInput.onInput   .listen((_) => _checkInput(_stopHourInput));
+    _stopMinuteInput.onInput .listen((_) => _checkInput(_stopMinuteInput));
+    _stopDayInput.onInput    .listen((_) => _checkInput(_stopDayInput));
+    _stopMonthInput.onInput  .listen((_) => _checkInput(_stopMonthInput));
+    _stopYearInput.onInput   .listen((_) => _checkInput(_stopYearInput));
   }
 
-  void _sanitizeInput(InputElement input) {
-    if(input.validity.badInput) {
-      input.classes.toggle('bad-input', true);
-    } else {
-      input.classes.toggle('bad-input', false);
+  /**
+   * Mark [input] with the bad-input class if the validity of the data does not
+   * match the requirements defined by the input attributes.
+   * If [input] is OK, then call [_toggleButtons].
+   */
+  void _checkInput(InputElement input) {
+    input.classes.toggle('bad-input', input.validity.badInput);
+    if(!input.validity.badInput) {
+      _toggleButtons();
     }
-
-    _toggleButtons();
   }
 
   /**
@@ -100,7 +108,7 @@ class UICalendarEditor extends UIModel {
    * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    bool toggle = !_inputFields.any((element) => element.value.isEmpty);
+    final bool toggle = !_inputFields.any((element) => element.value.isEmpty);
 
     _deleteButton.disabled = !toggle;
     _saveButton.disabled   = !toggle;

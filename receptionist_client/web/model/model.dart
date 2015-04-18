@@ -38,13 +38,13 @@ abstract class UIModel {
   /**
    * Return true if the widget is in focus.
    */
-  bool get active => _root.classes.contains('focus');
+  bool get isFocused => _root.classes.contains('focus');
 
   /**
    * Blur the widget and set tabindex to -1.
    */
   void blur() {
-    if(active) {
+    if(isFocused) {
       _root.classes.toggle('focus', false);
       _focusElement.blur();
       _setTabIndex(-1);
@@ -55,7 +55,7 @@ abstract class UIModel {
    * Focus the widget and set tabindex to 1.
    */
   void focus() {
-    if(!active) {
+    if(!isFocused) {
       _setTabIndex(1);
       _root.classes.toggle('focus', true);
       _focusElement.focus();
@@ -79,7 +79,7 @@ abstract class UIModel {
    * event is caught.
    */
   void _handleShiftTab(KeyboardEvent event) {
-    if(active && focusIsOnFirst) {
+    if(isFocused && focusIsOnFirst) {
       event.preventDefault();
       tabToLast();
     }
@@ -90,7 +90,7 @@ abstract class UIModel {
    * is caught.
    */
   void _handleTab(KeyboardEvent event) {
-    if(active && focusIsOnLast) {
+    if(isFocused && focusIsOnLast) {
       event.preventDefault();
       tabToFirst();
     }

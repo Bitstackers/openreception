@@ -1,9 +1,9 @@
 part of view;
 
 class ReceptionCalendar extends ViewWidget {
-  Controller.Place          _myPlace;
-  Model.UIReceptionSelector _receptionSelector;
-  Model.UIReceptionCalendar _ui;
+  final Controller.Place          _myPlace;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIReceptionCalendar _ui;
 
   /**
    * Constructor.
@@ -41,8 +41,8 @@ class ReceptionCalendar extends ViewWidget {
 
     /// Delete and Edit. The actual edit/delete decision is made in the Calendar
     /// Editor.
-    _hotKeys.onCtrlD.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
-    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
+    _hotKeys.onCtrlD.listen((_) => _ui.isFocused ? _navigate.goCalendarEdit(_myPlace) : null);
+    _hotKeys.onCtrlE.listen((_) => _ui.isFocused ? _navigate.goCalendarEdit(_myPlace) : null);
 
     _receptionSelector.onSelect.listen(render);
   }

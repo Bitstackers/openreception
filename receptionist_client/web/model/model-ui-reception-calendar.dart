@@ -23,7 +23,7 @@ class UIReceptionCalendar extends UIModel {
    * Add [items] to the entry list.
    */
   set calendarEntries(List<CalendarEvent> items) {
-    List<LIElement> list = new List<LIElement>();
+    final List<LIElement> list = new List<LIElement>();
 
     items.forEach((CalendarEvent item) {
       list.add(new LIElement()
@@ -46,7 +46,7 @@ class UIReceptionCalendar extends UIModel {
    * is selected.
    */
   CalendarEvent get selected {
-    LIElement selected = _eventList.querySelector('.selected');
+    final LIElement selected = _eventList.querySelector('.selected');
 
     if(selected != null) {
       return new CalendarEvent.fromJson(JSON.decode(selected.dataset['object']));
@@ -59,9 +59,10 @@ class UIReceptionCalendar extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(active && _eventList.children.isNotEmpty) {
-      LIElement selected = _eventList.querySelector('.selected');
+    if(isFocused && _eventList.children.isNotEmpty) {
       event.preventDefault();
+
+      final LIElement selected = _eventList.querySelector('.selected');
 
       switch(event.keyCode) {
         case KeyCode.DOWN:
@@ -101,8 +102,7 @@ class UIReceptionCalendar extends UIModel {
    */
   void selectFirstCalendarEvent() {
     if(_eventList.children.isNotEmpty) {
-      LIElement li = _scanForwardForVisibleElement(_eventList.children.first);
-      _markSelected(li);
+      _markSelected(_scanForwardForVisibleElement(_eventList.children.first));
     }
   }
 

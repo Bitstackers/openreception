@@ -5,18 +5,18 @@ class ReceptionOpeningHours {
   factory ReceptionOpeningHours() => _singleton;
 
   /**
-   *
+   * Constructor.
    */
   ReceptionOpeningHours._internal() {
-    _registerEventListeners();
+    _observers();
   }
 
   static final DivElement _root = querySelector('#reception-opening-hours');
 
   /**
-   *
+   * Observers.
    */
-  void _registerEventListeners() {
+  void _observers() {
     // TODO (TL): Stuff...
   }
 }

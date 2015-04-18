@@ -1,11 +1,10 @@
 part of view;
 
 class CalendarEditor extends ViewWidget {
-  Model.UIContactCalendar   _contactCalendar;
-  Controller.Place          _myPlace;
-  Widget                    _openedFrom;
-  Model.UIReceptionCalendar _receptionCalendar;
-  Model.UICalendarEditor    _ui;
+  final Model.UIContactCalendar   _contactCalendar;
+  final Controller.Place          _myPlace;
+  final Model.UIReceptionCalendar _receptionCalendar;
+  final Model.UICalendarEditor    _ui;
 
   /**
    * Constructor
@@ -22,12 +21,7 @@ class CalendarEditor extends ViewWidget {
   @override Controller.Place get myPlace => _myPlace;
   @override Model.UIModel    get ui      => _ui;
 
-  /**
-   * Reset the [_openedFrom] variable on blur.
-   */
-  @override void onBlur(_) {
-    _openedFrom = null;
-  }
+  @override void onBlur(_) {}
 
   /**
    * When we get focus, figure out where from we were called. If we weren't
@@ -52,7 +46,7 @@ class CalendarEditor extends ViewWidget {
     /// Clear form.
     /// Set focusElement to default.
     /// Navigate away (history.back perhaps??)
-    if(_ui.active) {
+    if(_ui.isFocused) {
       window.history.back();
       print('view.CalendarEditor._cancel not fully implemented');
     }
@@ -70,6 +64,9 @@ class CalendarEditor extends ViewWidget {
     print('view.CalendarEditor._delete not fully implemented');
   }
 
+  /**
+   * Observers.
+   */
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
@@ -110,9 +107,7 @@ class CalendarEditor extends ViewWidget {
    * with the calendar entry we're either editing or creating.
    */
   void setup(Widget initiator) {
-    _openedFrom = initiator;
-
-    switch(_openedFrom) {
+    switch(initiator) {
       case Widget.ContactCalendar:
         render(_contactCalendar.selected);
         break;

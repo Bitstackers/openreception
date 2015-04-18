@@ -1,8 +1,8 @@
 part of view;
 
 class ReceptionSelector extends ViewWidget {
-  Controller.Place          _myPlace;
-  Model.UIReceptionSelector _ui;
+  final Controller.Place          _myPlace;
+  final Model.UIReceptionSelector _ui;
 
   /**
    * Constructor.

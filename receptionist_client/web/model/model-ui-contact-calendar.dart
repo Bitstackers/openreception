@@ -24,7 +24,7 @@ class UIContactCalendar extends UIModel {
    * clear the list before adding new items. It merely appends to the list.
    */
   set calendarEvents(List<CalendarEvent> items) {
-    List<LIElement> list =  new List<LIElement>();
+    final List<LIElement> list =  new List<LIElement>();
 
     items.forEach((CalendarEvent item) {
       list.add(new LIElement()
@@ -47,7 +47,7 @@ class UIContactCalendar extends UIModel {
    * is selected.
    */
   CalendarEvent get selected {
-    LIElement selected = _eventList.querySelector('.selected');
+    final LIElement selected = _eventList.querySelector('.selected');
 
     if(selected != null) {
       return new CalendarEvent.fromJson(JSON.decode(selected.dataset['object']));
@@ -60,8 +60,8 @@ class UIContactCalendar extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(active && _eventList.children.isNotEmpty) {
-      LIElement selected = _eventList.querySelector('.selected');
+    if(isFocused && _eventList.children.isNotEmpty) {
+      final LIElement selected = _eventList.querySelector('.selected');
       event.preventDefault();
 
       switch(event.keyCode) {
@@ -102,8 +102,7 @@ class UIContactCalendar extends UIModel {
    */
   void selectFirstCalendarEvent() {
     if(_eventList.children.isNotEmpty) {
-      LIElement li = _scanForwardForVisibleElement(_eventList.children.first);
-      _markSelected(li);
+      _markSelected(_scanForwardForVisibleElement(_eventList.children.first));
     }
   }
 

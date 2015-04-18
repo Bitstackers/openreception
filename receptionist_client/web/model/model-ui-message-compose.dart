@@ -6,12 +6,15 @@ class UIMessageCompose extends UIModel {
   HtmlElement      _myLastTabElement;
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UIMessageCompose(DivElement this._myRoot) {
     _myFocusElement    = _messageTextarea;
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement  = _draftInput;
 
-    _registerEventListeners();
+    _observers();
   }
 
   @override HtmlElement    get _firstTabElement => _myFirstTabElement;
@@ -54,7 +57,10 @@ class UIMessageCompose extends UIModel {
    */
   Stream<MouseEvent> get onSend => _sendButton.onClick;
 
-  void _registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
@@ -75,7 +81,7 @@ class UIMessageCompose extends UIModel {
    * [_myLastTabElement] as this depends on the state of the buttons.
    */
   void _toggleButtons(_) {
-    bool toggle = !(_callerNameInput.value.trim().isNotEmpty && _messageTextarea.value.trim().isNotEmpty);
+    final bool toggle = !(_callerNameInput.value.trim().isNotEmpty && _messageTextarea.value.trim().isNotEmpty);
 
     _cancelButton.disabled = toggle;
     _saveButton.disabled = toggle;

@@ -5,18 +5,18 @@ class GlobalCallQueue {
   factory GlobalCallQueue() => _singleton;
 
   /**
-   *
+   * Constructor.
    */
   GlobalCallQueue._internal() {
-    _registerEventListeners();
+    _observers();
   }
 
   static final DivElement _root = querySelector('#global-call-queue');
 
   /**
-   *
+   * Observers.
    */
-  void _registerEventListeners() {
+  void _observers() {
     // TODO (TL): Stuff...
   }
 }

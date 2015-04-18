@@ -3,6 +3,9 @@ part of model;
 class UIContactData extends UIModel {
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UIContactData(DivElement this._myRoot);
 
   @override HtmlElement    get _firstTabElement => null;

@@ -5,12 +5,12 @@ class WelcomeMessage {
   factory WelcomeMessage() => _singleton;
 
   /**
-   *
+   * Constructor.
    */
   WelcomeMessage._internal() {
     _greeting.text = 'Welcome!';
 
-    _registerEventListeners();
+    _observers();
   }
 
   static final DivElement _root = querySelector('#welcome-message');
@@ -18,9 +18,9 @@ class WelcomeMessage {
   final SpanElement _greeting = _root.querySelector('.greeting');
 
   /**
-   *
+   * Observers.
    */
-  void _registerEventListeners() {
+  void _observers() {
     // TODO (TL): Get me some data!
   }
 }

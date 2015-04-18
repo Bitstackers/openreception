@@ -1,34 +1,34 @@
 part of view;
 
 class ReceptionistclientReady {
-  AppClientState                  _appState;
-  AgentInfo                       agentInfo;
-  CalendarEditor                  calendarEditor;
-  ContactCalendar                 contactCalendar;
-  ContactData                     contactData;
-  ContactSelector                 contactSelector;
-  Contexts                        contexts;
-  GlobalCallQueue                 globalCallQueue;
-  Help                            help;
-  MessageCompose                  messageCompose;
-  MyCallQueue                     myCallQueue;
-  ReceptionCalendar               receptionCalendar;
-  ReceptionCommands               receptionCommands;
-  ReceptionOpeningHours           receptionOpeningHours;
-  ReceptionProduct                receptionProduct;
-  ReceptionSalesCalls             receptionSalesCalls;
-  ReceptionSelector               receptionSelector;
-  static ReceptionistclientReady  _singleton;
-  WelcomeMessage                  welcomeMessage;
-
-  final Model.UIReceptionistclientReady _ui = new Model.UIReceptionistclientReady('receptionistclient-ready');
+  final AppClientState                  _appState;
+  AgentInfo                             agentInfo;
+  CalendarEditor                        calendarEditor;
+  ContactCalendar                       contactCalendar;
+  ContactData                           contactData;
+  ContactSelector                       contactSelector;
+  Contexts                              contexts;
+  GlobalCallQueue                       globalCallQueue;
+  Help                                  help;
+  MessageCompose                        messageCompose;
+  MyCallQueue                           myCallQueue;
+  ReceptionCalendar                     receptionCalendar;
+  ReceptionCommands                     receptionCommands;
+  ReceptionOpeningHours                 receptionOpeningHours;
+  ReceptionProduct                      receptionProduct;
+  ReceptionSalesCalls                   receptionSalesCalls;
+  ReceptionSelector                     receptionSelector;
+  static ReceptionistclientReady        _singleton;
+  WelcomeMessage                        welcomeMessage;
+  final Model.UIReceptionistclientReady _ui;
 
   /**
    * Constructor.
    */
-  factory ReceptionistclientReady(AppClientState appState) {
+  factory ReceptionistclientReady(AppClientState appState,
+                                  Model.UIReceptionistclientReady uiReady) {
     if(_singleton == null) {
-      _singleton = new ReceptionistclientReady._internal(appState);
+      _singleton = new ReceptionistclientReady._internal(appState, uiReady);
     } else {
       return _singleton;
     }
@@ -37,8 +37,8 @@ class ReceptionistclientReady {
   /**
    * Internal constructor.
    */
-  ReceptionistclientReady._internal(AppClientState appState) {
-    _appState = appState;
+  ReceptionistclientReady._internal(AppClientState this._appState,
+                                    Model.UIReceptionistclientReady this._ui) {
     _observers();
   }
 

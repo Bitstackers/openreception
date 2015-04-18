@@ -60,7 +60,7 @@ abstract class ViewWidget {
    * Navigate to [myPlace] if widget is not already in focus.
    */
   void navigateToMyPlace() {
-    if(!ui.active) {
+    if(!ui.isFocused) {
       _navigate.go(myPlace);
     }
   }

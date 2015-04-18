@@ -1,14 +1,16 @@
 part of view;
 
 class ContactSelector extends ViewWidget {
-  Controller.Place          _myPlace;
-  Model.UIContactSelector   _ui;
-  Model.UIReceptionSelector _receptionSelector;
+  final Controller.Place          _myPlace;
+  final Model.UIContactSelector   _ui;
+  final Model.UIReceptionSelector _receptionSelector;
 
   /**
    * Constructor.
    */
-  ContactSelector(Model.UIModel this._ui, Controller.Place this._myPlace, Model.UIReceptionSelector this._receptionSelector) {
+  ContactSelector(Model.UIModel this._ui,
+                  Controller.Place this._myPlace,
+                  Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+s';
 
     _observers();

@@ -4,13 +4,16 @@ part of view;
  * Component for creating/editing and saving/sending messages.
  */
 class MessageCompose extends ViewWidget {
-  Controller.Place       _myPlace;
-  Model.UIMessageCompose _ui;
+  final Controller.Place       _myPlace;
+  final Model.UIMessageCompose _ui;
 
+  /**
+   * Constructor.
+   */
   MessageCompose(Model.UIMessageCompose this._ui, Controller.Place this._myPlace) {
     _ui.help = 'alt+b';
 
-    _registerEventListeners();
+    _observers();
   }
 
   @override Controller.Place get myPlace => _myPlace;
@@ -19,6 +22,10 @@ class MessageCompose extends ViewWidget {
   @override void onBlur(_) {}
   @override void onFocus(_) {}
 
+  /**
+   * Simply navigate to my [_myPlace]. Matters not if this widget is already
+   * focused.
+   */
   void activateMe(_) {
     navigateToMyPlace();
   }
@@ -30,7 +37,10 @@ class MessageCompose extends ViewWidget {
     print('MessageCompose.cancel() not implemented yet');
   }
 
-  void _registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
     _ui.onClick.listen(activateMe);

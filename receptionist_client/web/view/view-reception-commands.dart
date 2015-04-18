@@ -1,17 +1,23 @@
 part of view;
 
 class ReceptionCommands extends ViewWidget {
-  Controller.Place          _myPlace;
-  Model.UIReceptionCommands _ui;
+  final Controller.Place          _myPlace;
+  final Model.UIReceptionCommands _ui;
 
+  /**
+   * Constructor.
+   */
   ReceptionCommands(Model.UIModel this._ui, Controller.Place this._myPlace) {
     _ui.help = 'alt+h';
 
-    registerEventListeners();
+    _observers();
   }
 
   @override Controller.Place get myPlace => _myPlace;
   @override Model.UIModel    get ui      => _ui;
+
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
   /**
    * Simply navigate to my [Place]. Matters not if this widget is already
@@ -21,10 +27,10 @@ class ReceptionCommands extends ViewWidget {
     navigateToMyPlace();
   }
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
-
-  void registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
     _ui.onClick.listen(activateMe);
@@ -35,5 +41,7 @@ class ReceptionCommands extends ViewWidget {
   /**
    * Render the widget with .....
    */
-  void render() {}
+  void render() {
+    /// TODO (TL): Set up a listener for receptionSelector and add test data
+  }
 }

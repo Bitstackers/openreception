@@ -1,7 +1,7 @@
 part of view;
 
 class AgentInfo extends ViewWidget {
-  Model.UIAgentInfo _ui;
+  final Model.UIAgentInfo _ui;
 
   /**
    * Constructor.
@@ -22,6 +22,9 @@ class AgentInfo extends ViewWidget {
   @override void onBlur(_){}
   @override void onFocus(_){}
 
+  /**
+   * Observers.
+   */
   void _observers() {
     /// TODO (TL): Add relevant listeners
     ///   _ui.activeCount = active count

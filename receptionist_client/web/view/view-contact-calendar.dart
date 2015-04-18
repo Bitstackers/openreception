@@ -1,10 +1,10 @@
 part of view;
 
 class ContactCalendar extends ViewWidget {
-  Model.UIContactSelector   _contactSelector;
-  Controller.Place          _myPlace;
-  Model.UIReceptionSelector _receptionSelector;
-  Model.UIContactCalendar   _ui;
+  final Model.UIContactSelector   _contactSelector;
+  final Controller.Place          _myPlace;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIContactCalendar   _ui;
 
   /**
    * Constructor.
@@ -51,8 +51,8 @@ class ContactCalendar extends ViewWidget {
 
     /// Delete and Edit. The actual edit/delete decision is made in the Calendar
     /// Editor.
-    _hotKeys.onCtrlD.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
-    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
+    _hotKeys.onCtrlD.listen((_) => _ui.isFocused ? _navigate.goCalendarEdit(_myPlace) : null);
+    _hotKeys.onCtrlE.listen((_) => _ui.isFocused ? _navigate.goCalendarEdit(_myPlace) : null);
 
     _contactSelector.onSelect.listen(render);
     _receptionSelector.onSelect.listen(clearOnNullReception);
