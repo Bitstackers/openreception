@@ -69,7 +69,7 @@ class UIReceptionSelector extends UIModel {
       /// Special case for this widget. If nothing is selected, simply select
       /// the first element in the list and return.
       if(selected == null) {
-        _markSelected(_receptionList.children.first);
+        _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
         return;
       }
 
