@@ -2,12 +2,15 @@ part of view;
 
 class ReceptionCommands extends ViewWidget {
   final Controller.Place          _myPlace;
+  final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCommands _ui;
 
   /**
    * Constructor.
    */
-  ReceptionCommands(Model.UIModel this._ui, Controller.Place this._myPlace) {
+  ReceptionCommands(Model.UIModel this._ui,
+                    Controller.Place this._myPlace,
+                    Model.UIReceptionSelector this._receptionSelector) {
     _ui.help = 'alt+h';
 
     _observers();
@@ -33,15 +36,17 @@ class ReceptionCommands extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onClick.listen(activateMe);
-
+    _ui.onClick     .listen(activateMe);
     _hotKeys.onAltH .listen(activateMe);
+
+    _receptionSelector.onSelect.listen(render);
   }
 
   /**
    * Render the widget with .....
    */
-  void render() {
-    /// TODO (TL): Set up a listener for receptionSelector and add test data
+  void render(Reception reception) {
+    _ui.header = 'Kommandoer for ${reception.name}';
+    _ui.commands = reception.commands;
   }
 }

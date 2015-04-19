@@ -18,7 +18,6 @@ class UIContactData extends UIModel {
   OListElement   get _additionalInfoList => _root.querySelector('.additional-info');
   OListElement   get _backupsList        => _root.querySelector('.backups');
   OListElement   get _commandsList       => _root.querySelector('.commands');
-  SpanElement    get _headerContactName  => _root.querySelector('h4 span');
   OListElement   get _departmentList     => _root.querySelector('.department');
   OListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
   OListElement   get _relationsList      => _root.querySelector('.relations');
@@ -41,10 +40,10 @@ class UIContactData extends UIModel {
    * Remove all data from the widget.
    */
   void clear() {
+    _header.text = '';
     _additionalInfoList.children.clear();
     _backupsList.children.clear();
     _commandsList.children.clear();
-    _headerContactName.text = '';
     _departmentList.children.clear();
     _emailAddressesList.children.clear();
     _relationsList.children.clear();
@@ -63,11 +62,6 @@ class UIContactData extends UIModel {
    * Add [items] ot the commands list.
    */
   set commands(List<String> items) => _populateList(_commandsList, items);
-
-  /**
-   * Set the [Contact].name in the widget header.
-   */
-  set contactName(String name) => _headerContactName.text = name;
 
   /**
    * Add [items] to the departments list.

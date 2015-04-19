@@ -95,7 +95,8 @@ class ReceptionistclientReady {
                                               uiReceptionSelector);
 
     receptionCommands = new ReceptionCommands(new Model.UIReceptionCommands(querySelector('#reception-commands')),
-                                              new Controller.Place(Context.Home, Widget.ReceptionCommands));
+                                              new Controller.Place(Context.Home, Widget.ReceptionCommands),
+                                              uiReceptionSelector);
 
     messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
                                         new Controller.Place(Context.Home, Widget.MessageCompose));

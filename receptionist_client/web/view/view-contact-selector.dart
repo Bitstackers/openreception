@@ -2,8 +2,8 @@ part of view;
 
 class ContactSelector extends ViewWidget {
   final Controller.Place          _myPlace;
-  final Model.UIContactSelector   _ui;
   final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIContactSelector   _ui;
 
   /**
    * Constructor.

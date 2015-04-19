@@ -36,7 +36,7 @@ class ContactCalendar extends ViewWidget {
    */
   void clearOnNullReception(Reception reception) {
     if(reception.isNull) {
-      _ui.clearList();
+      _ui.clear();
     }
   }
 
@@ -62,7 +62,7 @@ class ContactCalendar extends ViewWidget {
    * Render the widget with [contact] [CalendarEvent]s.
    */
   void render(Contact contact) {
-    _ui.clearList();
+    _ui.header = 'Kalender for ${contact.name}';
 
     _ui.calendarEvents = [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
                           new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),

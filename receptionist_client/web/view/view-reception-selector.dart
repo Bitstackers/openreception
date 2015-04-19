@@ -41,12 +41,18 @@ class ReceptionSelector extends ViewWidget {
   /// TODO (TL): Get rid of this. It's just here to test stuff. These
   /// [Reception] objects should come from one of Kims service methods.
   void test() {
-    _ui.receptions = [new Reception(1, 'Responsum K/S'),
-                      new Reception(2, 'Bitstackers K/S'),
-                      new Reception(3, 'Loecke K/S'),
-                      new Reception(4, 'Another Loecke K/S'),
-                      new Reception(5, 'Another Responsum K/S'),
-                      new Reception(6, 'FooBar K/S')];
+    List<Command> commands = [new Command.fromJson({'command':'Command 1'}),
+                              new Command.fromJson({'command':'Command 2'}),
+                              new Command.fromJson({'command':'Command 3'}),
+                              new Command.fromJson({'command':'Command 4'}),
+                              new Command.fromJson({'command':'Command 5'})];
+
+    _ui.receptions = [new Reception(1, 'Responsum K/S', commands),
+                      new Reception(2, 'Bitstackers K/S', commands),
+                      new Reception(3, 'Loecke K/S', commands),
+                      new Reception(4, 'Another Loecke K/S', commands),
+                      new Reception(5, 'Another Responsum K/S', commands),
+                      new Reception(6, 'FooBar K/S', commands)];
 
   }
 }

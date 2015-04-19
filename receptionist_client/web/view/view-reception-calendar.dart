@@ -51,7 +51,7 @@ class ReceptionCalendar extends ViewWidget {
    * Render the widget with [reception] [CalendarEvent]s.
    */
   void render(Reception reception) {
-    _ui.clearList();
+//    _ui.clearList();
 
     if(!reception.isNull) {
       _ui.calendarEntries =

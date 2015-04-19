@@ -52,6 +52,21 @@ class CalendarEvent {
 }
 
 /**
+ * Dummy reception command class
+ */
+class Command {
+  String command;
+
+  Command.fromJson(Map json) {
+    command = json['command'];
+  }
+
+  Map toJson() {
+    return {'command': command};
+  }
+}
+
+/**
  * Dummy contact class
  */
 class Contact {
@@ -79,21 +94,25 @@ class Contact {
  * Dummy reception class
  */
 class Reception {
-  int    id;
-  String name;
+  List<Command> commands = new List<Command>();
+  int           id;
+  String        name;
 
-  Reception(int this.id, String this.name);
+  Reception(int this.id, String this.name, this.commands);
 
   Reception.fromJson(Map json) {
-    id   = json['id'];
-    name = json['name'];
+    (json['commands'] as Iterable).forEach((Map item) {
+      commands.add(new Command.fromJson(item));
+    });
+    id       = json['id'];
+    name     = json['name'];
   }
 
   Reception.Null();
 
   bool get isNull => name == null;
 
-  Map toJson() => {'id': id, 'name': name};
+  Map toJson() => {'commands': commands, 'id': id, 'name': name};
 }
 
 /**

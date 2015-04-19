@@ -36,9 +36,10 @@ class UIContactCalendar extends UIModel {
   }
 
   /**
-   * Remove all entries from the entry list.
+   * Remove all entries from the entry list and clear the header.
    */
-  void clearList() {
+  void clear() {
+    _header.text = '';
     _eventList.children.clear();
   }
 

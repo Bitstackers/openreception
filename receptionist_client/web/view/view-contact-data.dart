@@ -108,7 +108,8 @@ class ContactData extends ViewWidget {
   void render(Contact contact) {
     _ui.clear();
 
-    _ui.contactName = contact.name;
+    _ui.header = 'Kontaktdata for ${contact.name}';
+
     _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
     _ui.backups = ['backup 1', 'backup 2'];
     _ui.commands = ['command 1', 'command 2'];
