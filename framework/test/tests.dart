@@ -242,7 +242,7 @@ abstract class ResourceNotification {
         equals(Uri.parse('${notificationSocket}/notifications')));
 
   static void notificationsBadSchema () =>
-      expect(Resource.Notification.notifications(notificationServer),
+      expect(() => Resource.Notification.notifications(notificationServer),
         throwsA(new isInstanceOf<ArgumentError>()));
 
   static void send () =>
