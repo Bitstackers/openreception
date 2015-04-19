@@ -63,6 +63,13 @@ void main() {
     test('list', ResourceMessage.list);
   });
 
+  group('Resource.Notification', () {
+    test('socket', ResourceNotification.notifications);
+    test('socket (bad schema)', ResourceNotification.notificationsBadSchema);
+    test('send', ResourceNotification.send);
+    test('broadcast', ResourceNotification.broadcast);
+  });
+
   group('Resource.Reception', () {
     test('singleMessage', ResourceReception.single);
     test('list', ResourceReception.list);
@@ -205,7 +212,6 @@ abstract class ResourceAuthentication {
         equals(Uri.parse('${authServer}/token/testtest/validate')));
 }
 
-
 abstract class ResourceConfig {
   static final Uri configServer = Uri.parse('http://localhost:4080');
 
@@ -226,3 +232,25 @@ abstract class ConfigObject {
   static void serialization () =>
       expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap), isNotNull);
 }
+
+abstract class ResourceNotification {
+  static final Uri notificationServer = Uri.parse('http://localhost:4242');
+  static final Uri notificationSocket = Uri.parse('ws://localhost:4242');
+
+  static void notifications () =>
+      expect(Resource.Notification.notifications(notificationSocket),
+        equals(Uri.parse('${notificationSocket}/notifications')));
+
+  static void notificationsBadSchema () =>
+      expect(Resource.Notification.notifications(notificationServer),
+        throwsA(new isInstanceOf<ArgumentError>()));
+
+  static void send () =>
+      expect(Resource.Notification.send(notificationServer),
+        equals(Uri.parse('${notificationServer}/send')));
+
+  static void broadcast () =>
+      expect(Resource.Notification.broadcast(notificationServer),
+        equals(Uri.parse('${notificationServer}/broadcast')));
+}
+
