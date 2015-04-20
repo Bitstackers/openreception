@@ -13,8 +13,6 @@ class NotificationRequest {
 
 /**
  * Client for Notification sending.
- *
- * TODO: Figure out
  */
 class NotificationService {
 
@@ -35,7 +33,6 @@ class NotificationService {
    * Performs a broadcat via the notification server.
    */
   Future broadcast(Map map) {
-    final String context = '${className}.broadcast';
     Uri uri = Resource.Notification.broadcast(this._host);
         uri = appendToken(uri, this._token);
 
@@ -93,8 +90,6 @@ class NotificationService {
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
 
-
-  static bool _UriEndsWithSlash (Uri uri) => uri.toString().endsWith('/');
 }
 
 /**
