@@ -67,39 +67,39 @@ class ReceptionistclientReady {
 
 
     receptionSelector = new ReceptionSelector(uiReceptionSelector,
-                                              new Controller.Place(Context.Home, Widget.ReceptionSelector));
+                                              new Controller.Destination(Context.Home, Widget.ReceptionSelector));
 
     agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
 
     contactSelector = new ContactSelector(uiContactSelector,
-                                          new Controller.Place(Context.Home, Widget.ContactSelector),
+                                          new Controller.Destination(Context.Home, Widget.ContactSelector),
                                           uiReceptionSelector);
 
     contactCalendar = new ContactCalendar(uiContactCalendar,
-                                          new Controller.Place(Context.Home, Widget.ContactCalendar),
+                                          new Controller.Destination(Context.Home, Widget.ContactCalendar),
                                           uiContactSelector,
                                           uiReceptionSelector);
 
     contactData = new ContactData(new Model.UIContactData(querySelector('#contact-data')),
-                                  new Controller.Place(Context.Home, Widget.ContactData),
+                                  new Controller.Destination(Context.Home, Widget.ContactData),
                                   uiContactSelector,
                                   uiReceptionSelector);
 
     calendarEditor = new CalendarEditor (new Model.UICalendarEditor(querySelector('#calendar-editor')),
-                                         new Controller.Place(Context.CalendarEdit, Widget.CalendarEditor),
+                                         new Controller.Destination(Context.CalendarEdit, Widget.CalendarEditor),
                                          uiContactCalendar,
                                          uiReceptionCalendar);
 
     receptionCalendar = new ReceptionCalendar(uiReceptionCalendar,
-                                              new Controller.Place(Context.Home, Widget.ReceptionCalendar),
+                                              new Controller.Destination(Context.Home, Widget.ReceptionCalendar),
                                               uiReceptionSelector);
 
     receptionCommands = new ReceptionCommands(new Model.UIReceptionCommands(querySelector('#reception-commands')),
-                                              new Controller.Place(Context.Home, Widget.ReceptionCommands),
+                                              new Controller.Destination(Context.Home, Widget.ReceptionCommands),
                                               uiReceptionSelector);
 
     messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
-                                        new Controller.Place(Context.Home, Widget.MessageCompose));
+                                        new Controller.Destination(Context.Home, Widget.MessageCompose));
 
     // TODO (TL): The following widgets have not yet been UIModel'ified.
 //    globalCallQueue       = new GlobalCallQueue();

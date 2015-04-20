@@ -8,6 +8,7 @@ import '../controller/controller.dart' as Controller;
 import '../dummies.dart';
 import '../enums.dart';
 
+import 'package:okeyee/okeyee.dart';
 import 'package:openreception_framework/bus.dart';
 
 part 'model-ui-agent-info.dart';
@@ -27,13 +28,17 @@ part 'model-ui-receptionistclient-loading.dart';
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 
+/**
+ * TODO (TL): Comment
+ */
 abstract class UIModel {
-  HtmlElement    get _firstTabElement;
-  HtmlElement    get _focusElement;
-  HeadingElement get _header;
-  DivElement     get _help;
-  HtmlElement    get _lastTabElement;
-  HtmlElement    get _root;
+  HtmlElement get _firstTabElement;
+  HtmlElement get _focusElement;
+  SpanElement get _header;
+  SpanElement get _headerExtra;
+  DivElement  get _help;
+  HtmlElement get _lastTabElement;
+  HtmlElement get _root;
 
   /**
    * Return true if the widget is in focus.
@@ -102,12 +107,10 @@ abstract class UIModel {
   set header(String headline) => _header.text = headline;
 
   /**
-   * Set the help text.
-   *
-   * TODO (TL): Do some placing/sizing magic, so the help box is always centered,
-   * no matter the length of the help text.
+   * Set the widgets extra header. This one can be used for a bit of extra data
+   * to decorate the widget.
    */
-  set help(String help) => _help.text = help;
+  set headerExtra(String headlineExtra) => _headerExtra.text = headlineExtra;
 
   /**
    * Return the mouse click event stream for this widget.

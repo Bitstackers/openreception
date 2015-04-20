@@ -12,6 +12,11 @@ enum AppState {LOADING,
                ERROR,
                READY}
 
+enum Cmd {DELETE,
+          EDIT,
+          NEW,
+          SAVE}
+
 enum Context {Home,
               Homeplus,
               CalendarEdit,

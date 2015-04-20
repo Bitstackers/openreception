@@ -34,22 +34,25 @@ part 'view-welcome-message.dart';
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();
 
+/**
+ * TODO (TL): Comment
+ */
 abstract class ViewWidget {
   /**
-   * SHOULD return the widgets [Place]. MAY return null if the widget has no
-   * [Place] associated with it.
+   * SHOULD return the widgets [Destination]. MAY return null if the widget has
+   * no [Destination] associated with it.
    */
-  Controller.Place get myPlace;
+  Controller.Destination get myDestination;
 
   /**
    * What to do when the widget blurs.
    */
-  void onBlur(Controller.Place place);
+  void onBlur(Controller.Destination destination);
 
   /**
    * What to do when the widget is focused.
    */
-  void onFocus(Controller.Place place);
+  void onFocus(Controller.Destination destination);
 
   /**
    * MUST return the widgets [UIModel].
@@ -57,30 +60,30 @@ abstract class ViewWidget {
   Model.UIModel get ui;
 
   /**
-   * Navigate to [myPlace] if widget is not already in focus.
+   * Navigate to [myDestination] if widget is not already in focus.
    */
-  void navigateToMyPlace() {
+  void navigateToMyDestination() {
     if(!ui.isFocused) {
-      _navigate.go(myPlace);
+      _navigate.go(myDestination);
     }
   }
 
   /**
-   * If [place] is here:
+   * If [destination] is here:
    *  call ui.focus()
    *  call onFocus()
    *
-   * if [place] is not here:
+   * if [destination] is not here:
    *  call ui.blur()
    *  call onBlur();
    */
-  void setWidgetState(Controller.Place place) {
-    if(myPlace == place) {
+  void setWidgetState(Controller.Destination destination) {
+    if(myDestination == destination) {
       ui.focus();
-      onFocus(place);
+      onFocus(destination);
     } else {
       ui.blur();
-      onBlur(place);
+      onBlur(destination);
     }
   }
 }

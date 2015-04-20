@@ -1,22 +1,24 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ReceptionSelector extends ViewWidget {
-  final Controller.Place          _myPlace;
+  final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _ui;
 
   /**
    * Constructor.
    */
-  ReceptionSelector(Model.UIModel this._ui, Controller.Place this._myPlace) {
-    _ui.help = 'alt+v';
-
+  ReceptionSelector(Model.UIModel this._ui,
+                    Controller.Destination this._myDestination) {
     _observers();
 
     test(); // TODO (TL): Get rid of this testing code...
   }
 
-  @override Controller.Place get myPlace => _myPlace;
-  @override Model.UIModel    get ui      => _ui;
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
@@ -25,7 +27,7 @@ class ReceptionSelector extends ViewWidget {
    * Activate this widget if it's not already activated.
    */
   void activateMe(_) {
-    navigateToMyPlace();
+    navigateToMyDestination();
   }
 
   /**
@@ -34,8 +36,9 @@ class ReceptionSelector extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onClick    .listen(activateMe);
     _hotKeys.onAltV.listen(activateMe);
+
+    _ui.onClick.listen(activateMe);
   }
 
   /// TODO (TL): Get rid of this. It's just here to test stuff. These

@@ -16,8 +16,8 @@ class AgentInfo extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Place get myPlace => null;
-  @override Model.UIModel    get ui      => _ui;
+  @override Controller.Destination get myDestination => null;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}

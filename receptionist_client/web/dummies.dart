@@ -119,30 +119,22 @@ class Reception {
  * A dummy telephone number.
  */
 class TelNum {
-  LIElement   li         = new LIElement()..tabIndex = -1;
-  bool        secret;
-  SpanElement spanLabel  = new SpanElement();
-  SpanElement spanNumber = new SpanElement();
+  String label;
+  String number;
+  bool   secret;
 
-  TelNum(String number, String label, this.secret) {
-    if(secret) {
-      spanNumber.classes.add('secret');
-    }
+  TelNum(String this.number, String this.label, this.secret);
 
-    spanNumber.text = number;
-    spanNumber.classes.add('number');
-    spanLabel.text = label;
-    spanLabel.classes.add('label');
-
-    li.children.addAll([spanNumber, spanLabel]);
-    li.dataset['number'] = number;
+  TelNum.fromJson(Map json) {
+    label  = json['label'];
+    number = json['number'];
+    secret = json['secret'];
   }
 
-  TelNum.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      li = element;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
+  TelNum.Null();
+
+  Map toJson() =>
+      {'label' : label,
+       'number': number,
+       'secret': secret};
 }

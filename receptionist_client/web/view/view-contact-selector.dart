@@ -1,7 +1,7 @@
 part of view;
 
 class ContactSelector extends ViewWidget {
-  final Controller.Place          _myPlace;
+  final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactSelector   _ui;
 
@@ -9,15 +9,13 @@ class ContactSelector extends ViewWidget {
    * Constructor.
    */
   ContactSelector(Model.UIModel this._ui,
-                  Controller.Place this._myPlace,
+                  Controller.Destination this._myDestination,
                   Model.UIReceptionSelector this._receptionSelector) {
-    _ui.help = 'alt+s';
-
     _observers();
   }
 
-  @override Controller.Place get myPlace => _myPlace;
-  @override Model.UIModel    get ui      => _ui;
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
@@ -26,7 +24,7 @@ class ContactSelector extends ViewWidget {
    * Activate this widget if it's not already activated.
    */
   void activateMe(_) {
-    navigateToMyPlace();
+    navigateToMyDestination();
   }
 
   /**
@@ -35,8 +33,9 @@ class ContactSelector extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onClick    .listen(activateMe);
     _hotKeys.onAltS.listen(activateMe);
+
+    _ui.onClick.listen(activateMe);
 
     _receptionSelector.onSelect.listen(render);
   }

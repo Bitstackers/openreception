@@ -6,7 +6,7 @@ class Contexts {
   /**
    * Constructor.
    */
-  Contexts(Model.UIModel this._ui) {
+  Contexts(Model.UIContexts this._ui) {
     _observers();
   }
 

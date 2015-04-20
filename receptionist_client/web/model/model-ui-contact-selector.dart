@@ -8,14 +8,17 @@ class UIContactSelector extends UIModel {
    * Constructor.
    */
   UIContactSelector(DivElement this._myRoot) {
+    _help.text = 'alt+s';
+
     _observers();
   }
 
-  @override HtmlElement    get _firstTabElement => _filter;
-  @override HtmlElement    get _focusElement    => _filter;
-  @override HeadingElement get _header          => _root.querySelector('h4');
-  @override DivElement     get _help            => _root.querySelector('div.help');
-  @override HtmlElement    get _lastTabElement  => _filter;
+  @override HtmlElement get _firstTabElement => _filter;
+  @override HtmlElement get _focusElement    => _filter;
+  @override SpanElement get _header          => _root.querySelector('h4 > span');
+  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
+  @override DivElement  get _help            => _root.querySelector('div.help');
+  @override HtmlElement get _lastTabElement  => _filter;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker

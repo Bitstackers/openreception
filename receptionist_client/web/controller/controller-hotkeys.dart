@@ -99,22 +99,37 @@ class HotKeys {
        'Esc'        : _esc.fire,
        'F1'         : _f1.fire};
 
+    registerKeysPreventDefault(_keyDown, preventDefaultBindings);
+
     final Map<String, EventListener> bindings =
         {'down'     : _down.fire,
-         'Enter'      : _enter.fire,
+         'Enter'    : _enter.fire,
          'Shift+Tab': _shiftTab.fire,
          'Tab'      : _tab.fire,
          'up'       : _up.fire};
 
-    preventDefaultBindings.forEach((key, callback) {
-      _keyDown.register(key, (Event event) {
+    registerKeys(_keyDown, bindings);
+  }
+
+  /**
+   * Register the [keyMap] keybindings to [keyboard].
+   */
+  void registerKeys(Keyboard keyboard, Map<String, EventListener> keyMap) {
+    keyMap.forEach((key, callback) {
+      keyboard.register(key, callback);
+    });
+  }
+
+  /**
+   * Register the [keyMap] key bindings to [keyboard]. Prevent default on all
+   * key events.
+   */
+  void registerKeysPreventDefault(Keyboard keyboard, Map<String, EventListener> keyMap) {
+    keyMap.forEach((key, callback) {
+      keyboard.register(key, (Event event) {
         event.preventDefault();
         callback(event);
       });
-    });
-
-    bindings.forEach((key, callback) {
-      _keyDown.register(key, callback);
     });
   }
 }

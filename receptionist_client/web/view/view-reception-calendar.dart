@@ -1,7 +1,7 @@
 part of view;
 
 class ReceptionCalendar extends ViewWidget {
-  final Controller.Place          _myPlace;
+  final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCalendar _ui;
 
@@ -9,25 +9,23 @@ class ReceptionCalendar extends ViewWidget {
    * Constructor.
    */
   ReceptionCalendar(Model.UIModel this._ui,
-                    Controller.Place this._myPlace,
+                    Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
-    _ui.help = 'alt+a';
-
     observers();
   }
 
-  @override Controller.Place get myPlace => _myPlace;
+  @override Controller.Destination get myDestination => _myDestination;
   @override Model.UIModel    get ui      => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
 
   /**
-   * Simply navigate to my [Place]. Matters not if this widget is already
+   * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
   void activateMe(_) {
-    navigateToMyPlace();
+    navigateToMyDestination();
   }
 
   /**
@@ -36,13 +34,12 @@ class ReceptionCalendar extends ViewWidget {
   void observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onClick    .listen(activateMe);
     _hotKeys.onAltA.listen(activateMe);
 
-    /// Delete and Edit. The actual edit/delete decision is made in the Calendar
-    /// Editor.
-    _hotKeys.onCtrlD.listen((_) => _ui.isFocused ? _navigate.goCalendarEdit(_myPlace) : null);
-    _hotKeys.onCtrlE.listen((_) => _ui.isFocused ? _navigate.goCalendarEdit(_myPlace) : null);
+    _ui.onClick .listen(activateMe);
+    _ui.onDelete.listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.DELETE));
+    _ui.onEdit  .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.EDIT));
+    _ui.onNew   .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.NEW));
 
     _receptionSelector.onSelect.listen(render);
   }
@@ -51,7 +48,8 @@ class ReceptionCalendar extends ViewWidget {
    * Render the widget with [reception] [CalendarEvent]s.
    */
   void render(Reception reception) {
-//    _ui.clearList();
+    _ui.header = 'Kalender';
+    _ui.headerExtra = 'for ${reception.name}';
 
     if(!reception.isNull) {
       _ui.calendarEntries =

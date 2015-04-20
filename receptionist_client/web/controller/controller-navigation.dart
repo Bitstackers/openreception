@@ -1,32 +1,36 @@
 part of controller;
 
-final Map<String, Place> _Places =
-  {'${Context.Home}-${Widget.ContactCalendar}'         : new Place(Context.Home, Widget.ContactCalendar),
-   '${Context.Home}-${Widget.ContactData}'             : new Place(Context.Home, Widget.ContactData),
-   '${Context.Home}-${Widget.ContactSelector}'         : new Place(Context.Home, Widget.ContactSelector),
-   '${Context.Home}-${Widget.MessageCompose}'          : new Place(Context.Home, Widget.MessageCompose),
-   '${Context.Home}-${Widget.ReceptionCalendar}'       : new Place(Context.Home, Widget.ReceptionCalendar),
-   '${Context.Home}-${Widget.ReceptionSelector}'       : new Place(Context.Home, Widget.ReceptionSelector),
-   '${Context.Home}-${Widget.ReceptionCommands}'       : new Place(Context.Home, Widget.ReceptionCommands),
-   '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Place(Context.Homeplus, Widget.ReceptionAltNames),
-   '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Place(Context.CalendarEdit, Widget.CalendarEditor),
-   '${Context.Messages}-${Widget.MessageArchiveFilter}': new Place(Context.Messages, Widget.MessageArchiveFilter)};
+final Map<String, Destination> _destinations =
+  {'${Context.Home}-${Widget.ContactCalendar}'         : new Destination(Context.Home, Widget.ContactCalendar),
+   '${Context.Home}-${Widget.ContactData}'             : new Destination(Context.Home, Widget.ContactData),
+   '${Context.Home}-${Widget.ContactSelector}'         : new Destination(Context.Home, Widget.ContactSelector),
+   '${Context.Home}-${Widget.MessageCompose}'          : new Destination(Context.Home, Widget.MessageCompose),
+   '${Context.Home}-${Widget.ReceptionCalendar}'       : new Destination(Context.Home, Widget.ReceptionCalendar),
+   '${Context.Home}-${Widget.ReceptionSelector}'       : new Destination(Context.Home, Widget.ReceptionSelector),
+   '${Context.Home}-${Widget.ReceptionCommands}'       : new Destination(Context.Home, Widget.ReceptionCommands),
+   '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Destination(Context.Homeplus, Widget.ReceptionAltNames),
+   '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Destination(Context.CalendarEdit, Widget.CalendarEditor),
+   '${Context.Messages}-${Widget.MessageArchiveFilter}': new Destination(Context.Messages, Widget.MessageArchiveFilter)};
 
 /**
- * A [Place] points to a location in the application. It does this by utilizing
- * the [Context] and [Widget] enum's.
+ * A [Destination] points to a location in the application. It does this by
+ * utilizing the [context] and [widget] enum's.
  *
- * The optional [from] Place MAY be used to inform a widget from where it was
- * brought into focus.
+ * The optional [from] [Destination] MAY be used to inform a widget from where
+ * it was brought into focus.
+ *
+ * The optional [cmd] [Cmd] can be used as a lightweight payload given
+ * to the destination.
  */
-class Place {
-  Context context = null;
-  Place   from    = null;
-  Widget  widget  = null;
+class Destination {
+  Context     context = null;
+  Cmd         cmd     = null;
+  Destination from    = null;
+  Widget      widget  = null;
 
-  Place(Context this.context, Widget this.widget, {Place this.from});
+  Destination(Context this.context, Widget this.widget, {Destination this.from, Cmd this.cmd});
 
-  operator == (Place other) => (context == other.context) && (widget == other.widget);
+  operator == (Destination other) => (context == other.context) && (widget == other.widget);
 
   String toString() => '${context}-${widget}';
 }
@@ -42,7 +46,7 @@ class Navigate {
     _registerEventListeners();
   }
 
-  final Bus<Place> _bus = new Bus<Place>();
+  final Bus<Destination> _bus = new Bus<Destination>();
 
   /// TODO (TL): Feels ugly having this map here. Maybe allow widgets to
   /// register themselves? Seems more explicit that way. Hmmm..
@@ -54,31 +58,32 @@ class Navigate {
   final Map<Context, Widget> _widgetHistory = {};
 
   /**
-   * Push [place] to the [onGo] stream. If [pushState] is true, then also add
-   * [place] to the browser history.
+   * Push [destination] to the [onGo] stream. If [pushState] is true, then also
+   * add [destination] to the browser history.
    */
-  void go(Place place, {bool pushState: true}) {
-    if(place.widget == null) {
-      if(_widgetHistory.containsKey(place.context)) {
-        place.widget = _widgetHistory[place.context];
+  void go(Destination destination, {bool pushState: true}) {
+    if(destination.widget == null) {
+      if(_widgetHistory.containsKey(destination.context)) {
+        destination.widget = _widgetHistory[destination.context];
       } else {
-        place.widget = _defaultWidget[place.context];
+        destination.widget = _defaultWidget[destination.context];
       }
     }
 
-    _widgetHistory[place.context] = place.widget;
+    _widgetHistory[destination.context] = destination.widget;
 
     if(pushState) {
-      window.history.pushState(null, '${place}', '#${place}');
+      window.history.pushState(null, '${destination}', '#${destination}');
     }
 
-    _bus.fire(place);
+    _bus.fire(destination);
   }
 
   /**
-   * Turn the current window.location into a [Place] and call [go] using that.
-   * If [pushState] is true, then also add the resulting [Place] to the browser
-   * history.
+   * Turn the current window.location into a [Destination] and call [go] using
+   * that.
+   * If [pushState] is true, then also add the resulting [Destination] to the
+   * browser history.
    */
   void goWindowLocation({bool pushState: true}) {
     String hash = '';
@@ -87,37 +92,37 @@ class Navigate {
       hash = window.location.hash.substring(1);
     }
 
-    if(hash.isEmpty || !_Places.containsKey(hash)) {
+    if(hash.isEmpty || !_destinations.containsKey(hash)) {
       goHome();
     } else {
-      go(_Places[hash], pushState: pushState);
+      go(_destinations[hash], pushState: pushState);
     }
   }
 
   /**
    * Convenience method to navigate to [Context.CalendarEdit].
    */
-  void goCalendarEdit(Place from) {go(new Place(Context.CalendarEdit, null, from: from));}
+  void goCalendarEdit({Destination from}) {go(new Destination(Context.CalendarEdit, null, from: from, cmd: from.cmd));}
 
   /**
    * Convenience method to navigate to [Context.Home].
    */
-  void goHome() {go(new Place(Context.Home, null));}
+  void goHome() {go(new Destination(Context.Home, null));}
 
   /**
      * Convenience method to navigate to [Context.Homeplus].
      */
-  void goHomeplus() {go(new Place(Context.Homeplus, null));}
+  void goHomeplus() {go(new Destination(Context.Homeplus, null));}
 
   /**
    * Convenience method to navigate to [Context.Messages].
    */
-  void goMessages() {go(new Place(Context.Messages, null));}
+  void goMessages() {go(new Destination(Context.Messages, null));}
 
   /**
-   * Fires a [Place] whenever navigation is happening.
+   * Fires a [Destination] whenever navigation is happening.
    */
-  Stream<Place> get onGo => _bus.stream;
+  Stream<Destination> get onGo => _bus.stream;
 
   void _registerEventListeners() {
     window.onPopState.listen((_) => goWindowLocation(pushState: false));

@@ -1,21 +1,29 @@
 part of model;
 
 class UIReceptionCalendar extends UIModel {
-  final DivElement _myRoot;
+  final Bus<KeyboardEvent> _busDelete = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _busEdit   = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _busNew    = new Bus<KeyboardEvent>();
+  final Keyboard           _keyboard  = new Keyboard();
+  final DivElement         _myRoot;
 
   /**
    * Constructor.
    */
   UIReceptionCalendar(DivElement this._myRoot) {
+    _help.text = 'alt+a';
+
+    _setupWidgetKeys();
     _observers();
   }
 
-  @override HtmlElement    get _firstTabElement => null;
-  @override HtmlElement    get _focusElement    => _eventList;
-  @override HeadingElement get _header          => _root.querySelector('h4');
-  @override DivElement     get _help            => _root.querySelector('div.help');
-  @override HtmlElement    get _lastTabElement  => null;
-  @override HtmlElement    get _root            => _myRoot;
+  @override HtmlElement get _firstTabElement => _root;
+  @override HtmlElement get _focusElement    => _root;
+  @override SpanElement get _header          => _root.querySelector('h4 > span');
+  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
+  @override DivElement  get _help            => _root.querySelector('div.help');
+  @override HtmlElement get _lastTabElement  => _root;
+  @override HtmlElement get _root            => _myRoot;
 
   OListElement get _eventList => _root.querySelector('.generic-widget-list');
 
@@ -38,14 +46,15 @@ class UIReceptionCalendar extends UIModel {
    * Remove all entries from the entry list.
    */
   void clearList() {
+    _header.text = '';
     _eventList.children.clear();
   }
 
   /**
-   * Return currently selected [CalendarEvent]. Return null event if nothing
-   * is selected.
+   * Return currently selected [CalendarEvent]. Return [CalendarEvent.Null]
+   * if nothing is selected.
    */
-  CalendarEvent get selected {
+  CalendarEvent get selectedCalendarEvent {
     final LIElement selected = _eventList.querySelector('.selected');
 
     if(selected != null) {
@@ -59,9 +68,7 @@ class UIReceptionCalendar extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(isFocused && _eventList.children.isNotEmpty) {
-      event.preventDefault();
-
+    if(_eventList.children.isNotEmpty) {
       final LIElement selected = _eventList.querySelector('.selected');
 
       switch(event.keyCode) {
@@ -91,11 +98,24 @@ class UIReceptionCalendar extends UIModel {
    * Observers
    */
   void _observers() {
-    _hotKeys.onDown.listen(_handleUpDown);
-    _hotKeys.onUp  .listen(_handleUpDown);
-
+    _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen(_selectFromClick);
   }
+
+  /**
+   * Fires when a [CalendarEvent] delete is requested from somewhere.
+   */
+  Stream<KeyboardEvent> get onDelete => _busDelete.stream;
+
+  /**
+   * Fires when a [CalendarEvent] edit is requested from somewhere.
+   */
+  Stream<KeyboardEvent> get onEdit => _busEdit.stream;
+
+  /**
+   * Fires when a [CalendarEvent] new is requested from somewhere.
+   */
+  Stream<KeyboardEvent> get onNew => _busNew.stream;
 
   /**
    * Select the first [CalendarEvent] in the list.
@@ -114,5 +134,21 @@ class UIReceptionCalendar extends UIModel {
     if(event.target is LIElement) {
       _markSelected(event.target);
     }
+  }
+
+  /**
+   * Setup keys and bindings to methods specific for this widget.
+   */
+  void _setupWidgetKeys() {
+    final Map<String, EventListener> bindings =
+        {'Ctrl+d'   : _busDelete.fire,
+         'Ctrl+e'   : _busEdit.fire,
+         'Ctrl+k'   : _busNew.fire,
+         'down'     : _handleUpDown,
+         'Shift+Tab': _handleShiftTab,
+         'Tab'      : _handleTab,
+         'up'       : _handleUpDown};
+
+    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
   }
 }

@@ -2,7 +2,7 @@ part of view;
 
 class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
-  final Controller.Place          _myPlace;
+  final Controller.Destination    _myDestination;
   final Model.UIReceptionCalendar _receptionCalendar;
   final Model.UICalendarEditor    _ui;
 
@@ -10,27 +10,25 @@ class CalendarEditor extends ViewWidget {
    * Constructor
    */
   CalendarEditor(Model.UICalendarEditor this._ui,
-                 this._myPlace,
+                 Controller.Destination this._myDestination,
                  Model.UIContactCalendar this._contactCalendar,
                  Model.UIReceptionCalendar this._receptionCalendar) {
-    _ui.help = 'some help';
-
     _observers();
   }
 
-  @override Controller.Place get myPlace => _myPlace;
-  @override Model.UIModel    get ui      => _ui;
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_) {}
 
   /**
    * When we get focus, figure out where from we were called. If we weren't
-   * called from anywhere ie. the place.from.widget is null, then navigate to
-   * home.
+   * called from anywhere ie. the [destination].from.widget is null, then
+   * navigate to home.
    */
-  @override void onFocus(Controller.Place place){
-    if(place.from != null) {
-      setup(place.from.widget);
+  @override void onFocus(Controller.Destination destination){
+    if(destination.from != null) {
+      setup(destination.from.widget, destination.cmd);
     } else {
       _navigate.goHome();
     }
@@ -70,8 +68,6 @@ class CalendarEditor extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _hotKeys.onEsc.listen(cancel);
-
     _ui.onCancel.listen(cancel);
     _ui.onDelete.listen(delete);
     _ui.onSave  .listen(save);
@@ -104,15 +100,25 @@ class CalendarEditor extends ViewWidget {
    *
    * This widget is only ever opened from other widgets, and as such we need to
    * know who activated us, in order to properly know how to find and deal
-   * with the calendar entry we're either editing or creating.
+   * with the calendar entry we're either deleting/editing or creating.
    */
-  void setup(Widget initiator) {
+  void setup(Widget initiator, Cmd cmd) {
     switch(initiator) {
       case Widget.ContactCalendar:
-        render(_contactCalendar.selected);
+        if(cmd == Cmd.DELETE || cmd == Cmd.EDIT) {
+          render(_contactCalendar.selectedCalendarEvent);
+        } else {
+          /// TODO (TL): Create a real calendar event, with date/time fields set.
+          render(new CalendarEvent.Null()..contactId = 42);
+        }
         break;
       case Widget.ReceptionCalendar:
-        render(_receptionCalendar.selected);
+        if(cmd == Cmd.DELETE || cmd == Cmd.EDIT) {
+          render(_receptionCalendar.selectedCalendarEvent);
+        } else {
+          /// TODO (TL): Create a real calendar event, with date/time fields set.
+          render(new CalendarEvent.Null()..receptionId = 42);
+        }
         break;
       default:
         /// No valid initiator. Go home.
