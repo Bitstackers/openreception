@@ -70,5 +70,9 @@ part 'use_case/src/uc-forward_call.dart';
 part 'use_case/src/uc-incoming_call.dart';
 part 'use_case/src/uc-send_message.dart';
 
+/// Notification server tests
+part 'notificationserver/src/notificationserver.dart';
+part 'notificationserver/tests.dart';
+
 const String libraryName = 'Test';
 
