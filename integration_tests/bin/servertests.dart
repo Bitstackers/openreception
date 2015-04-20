@@ -45,6 +45,7 @@ void main() {
   runContactTests();
   runCallFlowTests();
   runMessageTests();
+  runNotificationTests();
 
   runAllTests();
   runReceptionTests();
