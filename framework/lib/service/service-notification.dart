@@ -36,12 +36,13 @@ class NotificationService {
    */
   Future broadcast(Map map) {
     final String context = '${className}.broadcast';
-    Uri host = Uri.parse('${this._host}${Resource.Notification.broadcast}?token=${this._token}');
+    Uri uri = Resource.Notification.broadcast(this._host);
+        uri = appendToken(uri, this._token);
 
-    log.finest('POST $host $map');
+    log.finest('POST $uri $map');
 
     return _enqueue (new NotificationRequest()..body     = map
-                                              ..resource = host);
+                                              ..resource = uri);
   }
 
   /**
