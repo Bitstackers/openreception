@@ -28,9 +28,6 @@ Map parkOK(Model.Call call) => {
 
 
 Map pickupOK(Model.Call call) => call.toJson();
-//{'status' : 'ok',
-// 'call'   : call};
-
 
 Map<int, ORModel.UserState> userMap = {};
 
