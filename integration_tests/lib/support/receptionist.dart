@@ -386,4 +386,10 @@ class Receptionist {
       log.severe('$this got unhandled event ${event.eventName}');
     }
   }
+
+  /**
+   * Sets the userstate to 'paused'.
+   */
+
+  Future paused () => this.callFlowControl.userStatePausedMap(this.user.ID);
 }
