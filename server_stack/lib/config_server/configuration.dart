@@ -14,7 +14,6 @@ class Configuration {
   static Configuration _configuration;
 
   ArgResults _args;
-  String     _bobconfigfile = 'bob_configuration.json';
   String     _configfile    = 'config.json';
   int        _httpport      = 4080;
   Uri        _callFlowServerUri = Uri.parse('http://localhost:4242/');
@@ -25,7 +24,6 @@ class Configuration {
   Uri        _authServerUri = Uri.parse('http://localhost:4000/');
   Uri        _notificationSocketUri = Uri.parse('ws://localhost:4200/notifications');
 
-  String get bobConfigfile => _bobconfigfile;
   String get configfile    => _configfile;
   int    get httpport      => _httpport;
   Uri    get callFlowServerUri => _callFlowServerUri;
@@ -97,10 +95,6 @@ class Configuration {
         _authServerUri = Uri.parse(config['authServerUri']);
       }
 
-      if(config.containsKey('bobconfigfile')) {
-        _bobconfigfile = config['bobconfigfile'];
-      }
-
     })
     .catchError((err) {
       log('Failed to read "$configfile". Error: $err');
@@ -113,10 +107,6 @@ class Configuration {
         _httpport = int.parse(_args['httpport']);
       }
 
-      if(hasArgument('bobconfigfile')) {
-        _bobconfigfile = _args['bobconfigfile'];
-      }
-
     }).catchError((error) {
       log('Failed loading commandline arguments. $error');
       throw error;
@@ -124,8 +114,7 @@ class Configuration {
   }
 
   String toString() =>'''
-    httpport:      $httpport
-    bobconfigfile: $bobConfigfile''';
+  httpport:      $httpport''';
 
   Future whenLoaded() => _parseConfigFile().whenComplete(_parseArgument).then((_) => print(config));
 }
