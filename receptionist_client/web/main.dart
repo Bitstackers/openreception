@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'dummies.dart';
 
-import 'controller/controller.dart' as Controller;
 import 'enums.dart';
 import 'model/model.dart' as Model;
 import 'view/view.dart' as View;
