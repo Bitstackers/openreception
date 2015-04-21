@@ -8,6 +8,16 @@ class Log {
   final onRecord = logEntryDispatch;
 }
 
+class ConfigServerDefault {
+  int HttpPort = 4080;
+}
+
+class ConfigServer {
+  final ConfigServerDefault defaults = new ConfigServerDefault ();
+
+  final Log log = Configuration.logDefaults;
+}
+
 class MessageDispatcher {
   final Log log = Configuration.logDefaults;
 }
@@ -23,5 +33,6 @@ void logEntryDispatch(LogRecord record) {
 abstract class Configuration {
   static final logDefaults = new Log();
 
+  static final ConfigServer configserver = new ConfigServer();
   static final MessageDispatcher messageDispatcher = new MessageDispatcher();
 }
