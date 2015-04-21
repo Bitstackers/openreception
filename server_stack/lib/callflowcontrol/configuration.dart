@@ -7,9 +7,6 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart';
-
-
 abstract class PhoneType {
   static const String SNOM = 'snom';
 }

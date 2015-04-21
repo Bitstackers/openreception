@@ -12,7 +12,7 @@ abstract class Channel {
       writeAndClose(request, JSON.encode(retval));
     } catch (error, stacktrace) {
       serverError(request, error.toString());
-      logger.error(stacktrace);
+      log.severe(error, stacktrace);
     }
   }
 }

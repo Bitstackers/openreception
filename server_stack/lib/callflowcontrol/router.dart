@@ -8,7 +8,7 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'package:openreception_framework/common.dart';
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/httpserver.dart';
 
 import 'controller/controller.dart' as Controller;
@@ -24,6 +24,7 @@ part 'router/handler-channel.dart';
 part 'router/handler-peer.dart';
 
 const String libraryName = "callflowcontrol.router";
+final Logger log = new Logger (libraryName);
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 Service.Authentication AuthService = null;
@@ -64,8 +65,8 @@ void connectNotificationService() {
 }
 
 void registerHandlers(HttpServer server) {
-    logger.debugContext("CallFlowControl REST interface is listening on "
-             "'http://${server.address.address}:${config.httpport}/'", "registerHandlers");
+    log.info('CallFlowControl REST interface is listening on '
+             '"http://${server.address.address}:${config.httpport}/"');
     var router = new Router(server);
 
     router

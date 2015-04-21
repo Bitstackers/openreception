@@ -165,16 +165,13 @@ abstract class Call {
 
   static void originate(HttpRequest request) {
 
-    const String context = '${libraryName}.handlerCallOriginate';
-
     final int receptionID = pathParameter(request.uri, 'reception');
     final int contactID = pathParameter(request.uri, 'contact');
     final String extension = pathParameterString(request.uri, 'originate');
     final String token = request.uri.queryParameters['token'];
 
-    logger.debugContext(
-        'Originating to ${extension} in context ${contactID}@${receptionID}',
-        context);
+    log.finest('Originating to ${extension} in context '
+               '${contactID}@${receptionID}');
 
     /// Any authenticated user is allowed to originate new calls.
     bool aclCheck(ORModel.User user) => true;
@@ -321,8 +318,6 @@ abstract class Call {
       clientError(request, "Empty call_id in path.");
       return;
     }
-    final String context = '${libraryName}.handlerCallPickup';
-
     final String token = request.uri.queryParameters['token'];
 
     bool aclCheck(ORModel.User user) => true;
@@ -340,9 +335,8 @@ abstract class Call {
         }
       } catch (error) {
         clientError(request, "User with ${user.ID} has no peer available");
-        logger.errorContext(
-            'Failed to lookup peer for user with ID ${user.ID}. Error : $error',
-            context);
+        log.severe
+          ('Failed to lookup peer for user with ID ${user.ID}. Error : $error');
         return;
       }
 
@@ -372,9 +366,8 @@ abstract class Call {
         Model.Call assignedCall =
             Model.CallList.instance.requestSpecificCall(callID, user);
 
-        logger.debugContext(
-            'Assigned call ${assignedCall.ID} to user with ID ${user.ID}',
-            context);
+        log.finest('Assigned call ${assignedCall.ID} to user with '
+                   'ID ${user.ID}');
 
         /// Update the user state
         Model.UserStatusList.instance.update(
@@ -425,7 +418,6 @@ abstract class Call {
 
   static void recordSound(HttpRequest request) {
 
-    const String context = '${libraryName}.handlerCallOrignate';
     const String recordExtension = 'slowrecordmenu';
 
     int receptionID;
@@ -445,9 +437,8 @@ abstract class Call {
       return;
     }
 
-    logger.debugContext(
-        'Originating to ${recordExtension} with path ${recordPath} for reception ${receptionID}',
-        context);
+    log.finest('Originating to ${recordExtension} with path '
+               '${recordPath} for reception ${receptionID}');
 
     /// Any authenticated user is allowed to originate new calls.
     bool aclCheck(ORModel.User user) => true;
@@ -524,7 +515,6 @@ abstract class Call {
 
   static void transfer(HttpRequest request) {
 
-    final String context = '${libraryName}.handlerCallTransfer';
     final String token = request.uri.queryParameters['token'];
 
     String sourceCallID = pathParameterString(request.uri, "call");
@@ -555,25 +545,20 @@ abstract class Call {
       return;
     }
 
-    logger.debugContext(
-        'Transferring $sourceCall -> $destinationCall',
-        context);
+    log.finest('Transferring $sourceCall -> $destinationCall');
 
     /// Sanity check - are any of the calls already bridged?
     if ([
         sourceCall,
         destinationCall].every(
             (Model.Call call) => call.state != Model.CallState.Parked)) {
-      logger.infoContext(
+      log.warning(
           'Potential invalid state detected; trying to bridge a '
               'non-parked call in an attended transfer. uuids:'
-              '($sourceCall => $destinationCall)',
-          context);
+              '($sourceCall => $destinationCall)');
     }
 
-    logger.debugContext(
-        'Transferring $sourceCall -> $destinationCall',
-        context);
+    log.finest('Transferring $sourceCall -> $destinationCall');
 
     AuthService.userOf(token).then((ORModel.User user) {
       /// Update user state.
