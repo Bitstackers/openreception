@@ -119,13 +119,15 @@ class Reception {
  * A dummy telephone number.
  */
 class TelNum {
+  int    id;
   String label;
   String number;
   bool   secret;
 
-  TelNum(String this.number, String this.label, this.secret);
+  TelNum(this.id, String this.number, String this.label, this.secret);
 
   TelNum.fromJson(Map json) {
+    id     = json['id'];
     label  = json['label'];
     number = json['number'];
     secret = json['secret'];
@@ -134,7 +136,8 @@ class TelNum {
   TelNum.Null();
 
   Map toJson() =>
-      {'label' : label,
+      {'id'    : id,
+       'label' : label,
        'number': number,
        'secret': secret};
 }

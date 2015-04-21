@@ -48,7 +48,7 @@ class UIContactData extends UIModel {
    * Remove all data from the widget.
    */
   void clear() {
-    _header.text = '';
+    _headerExtra.text = '';
     _additionalInfoList.children.clear();
     _backupsList.children.clear();
     _commandsList.children.clear();
@@ -80,20 +80,6 @@ class UIContactData extends UIModel {
    * Add [items] to the email addresses list.
    */
   set emailAddresses(List<String> items) => _populateList(_emailAddressesList, items);
-
-  /**
-   * Return currently selected [TelNum]. Return [TelNum.Null] if nothing
-   * is selected.
-   */
-//  TelNum get selectedTelNum {
-//    final LIElement selected = _telNumList.querySelector('.selected');
-//
-//    if(selected != null) {
-//      return new TelNum.fromJson(JSON.decode(selected.dataset['object']));
-//    } else {
-//      return new TelNum.Null();
-//    }
-//  }
 
   /**
    * Deal with arrow up/down.
@@ -140,44 +126,6 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Return true if [telNum] is marked ringing.
-   */
-//  bool isRinging(TelNum telNum) =>
-//      telNum.li.classes.contains('ringing');
-
-  /**
-   * Return true if [telNum] is marked selected.
-   */
-//  bool isSelected(TelNum telNo) =>
-//      telNo.li.classes.contains('selected');
-
-  /**
-   * Add the [mark] class to the [telNum].
-   */
-//  void _mark(TelNum telNum, String mark) {
-//    if(telNum != null) {
-//      _telNumList.children.forEach((Element element) => element.classes.remove(mark));
-//      telNum.li.classes.add(mark);
-//      telNum.li.scrollIntoView();
-//    }
-//  }
-
-  /**
-   * Mark [telNum] ringing. This is NOT the same as actually ringing. It is
-   * mere a visual effect.
-   */
-//  void markRinging(TelNum telNum) {
-//    _mark(telNum, 'ringing');
-//  }
-
-  /**
-   * Mark [telNum] selected.
-   */
-//  void markSelected(TelNum telNum) {
-//    _mark(telNum, 'selected');
-//  }
-
-  /**
    * Return true if no telNumList items are marked "ringing".
    */
   bool get noRinging => !_telNumList.children.any((e) => e.classes.contains('ringing'));
@@ -188,6 +136,16 @@ class UIContactData extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen(_selectFromClick);
+
+    ///
+    ///
+    ///
+    /// TODO (TL): Listen for call notifications here? Possibly mark ringing?
+    /// Or put this in view-contact-data.dart?
+    ///
+    ///
+    ///
+    ///
   }
 
   /**
@@ -218,10 +176,14 @@ class UIContactData extends UIModel {
    * Mark selected [TelNum] ringing if we're not already ringing.
    */
   void _ring(_) {
-    /// TODO (TL): Push selected TelNum to _busRinging
-    /// TODO (TL): Handle case where no element is selected.
-    /// TODO (TL): Handle case where we already have one number ringing.
-    _telNumList.querySelector('.selected').classes.toggle('ringing');
+    LIElement li = _telNumList.querySelector('.selected');
+
+    if(li != null) {
+      if(!_telNumList.children.any((LIElement li) => li.classes.contains('ringing'))) {
+        li.classes.toggle('ringing');
+        _busRinging.fire(new TelNum.fromJson(JSON.decode(li.dataset['object'])));
+      }
+    }
   }
 
   /**
@@ -230,6 +192,16 @@ class UIContactData extends UIModel {
   void selectFirstTelNum() {
     if(_telNumList.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_telNumList.children.first));
+    }
+  }
+
+  /**
+   * Select the [index] [TelNum] from [_telNumList]. If [index] is out of range,
+   * select nothing.
+   */
+  void selectFromIndex(int index) {
+    if(_telNumList.children.length >= index) {
+      _markSelected(_scanForwardForVisibleElement(_telNumList.children[index]));
     }
   }
 
@@ -251,6 +223,10 @@ class UIContactData extends UIModel {
   void _setupWidgetKeys() {
     final Map<String, EventListener> bindings =
         {[Key.NumMult]: _ring,
+         'Alt+1'      : (_) => selectFirstTelNum(),
+         'Alt+2'      : (_) => selectFromIndex(1),
+         'Alt+3'      : (_) => selectFromIndex(2),
+         'Alt+4'      : (_) => selectFromIndex(3),
          'down'       : _handleUpDown,
          'Shift+Tab'  : _handleShiftTab,
          'Tab'        : _handleTab,
@@ -279,6 +255,7 @@ class UIContactData extends UIModel {
 
       list.add(new LIElement()
                 ..children.addAll([spanNumber, spanLabel])
+                ..dataset['id'] = item.id.toString()
                 ..dataset['object'] = JSON.encode(item));
     });
 

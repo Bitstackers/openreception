@@ -2,6 +2,7 @@ part of model;
 
 class UIContactSelector extends UIModel {
   final Bus<Contact> _bus = new Bus<Contact>();
+  final Keyboard     _keyboard = new Keyboard();
   final DivElement   _myRoot;
 
   /**
@@ -10,6 +11,7 @@ class UIContactSelector extends UIModel {
   UIContactSelector(DivElement this._myRoot) {
     _help.text = 'alt+s';
 
+    _setupWidgetKeys();
     _observers();
   }
 
@@ -123,9 +125,7 @@ class UIContactSelector extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(isFocused && _contactList.children.isNotEmpty) {
-      event.preventDefault();
-
+    if(_contactList.children.isNotEmpty) {
       final LIElement selected = _contactList.querySelector('.selected');
 
       switch(event.keyCode) {
@@ -157,14 +157,9 @@ class UIContactSelector extends UIModel {
    * Observers
    */
   void _observers() {
+    _filter.onKeyDown.listen(_keyboard.press);
+
     _filter.onInput.listen(_filterList);
-
-    /// These are here to prevent tab'ing out of the filter input.
-    _hotKeys.onTab     .listen(_handleTab);
-    _hotKeys.onShiftTab.listen(_handleShiftTab);
-
-    _hotKeys.onDown.listen(_handleUpDown);
-    _hotKeys.onUp  .listen(_handleUpDown);
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -200,5 +195,18 @@ class UIContactSelector extends UIModel {
         _markSelected(event.target);
       }
     }
+  }
+
+  /**
+   * Setup keys and bindings to methods specific for this widget.
+   */
+  void _setupWidgetKeys() {
+    final Map<String, EventListener> bindings =
+        {'down'     : _handleUpDown,
+         'Shift+Tab': _handleShiftTab,
+         'Tab'      : _handleTab,
+         'up'       : _handleUpDown};
+
+    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
   }
 }

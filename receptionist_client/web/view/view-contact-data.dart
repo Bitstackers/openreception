@@ -13,6 +13,8 @@ class ContactData extends ViewWidget {
               Controller.Destination this._myDestination,
               Model.UIContactSelector this._contactSelector,
               Model.UIReceptionSelector this._receptionSelector) {
+    _ui.header = 'Kontakt data';
+
     _observers();
   }
 
@@ -27,15 +29,6 @@ class ContactData extends ViewWidget {
    * already focused.
    */
   void activateMe(_) {
-//    _ui.focusOnTelNumList();
-    navigateToMyDestination();
-  }
-
-  /**
-   * Select the [event].target and navigate to my [_myDestination].
-   */
-  void activateMeFromClick(MouseEvent event) {
-//    clickSelect(_ui.getTelNumFromClick(event));
     navigateToMyDestination();
   }
 
@@ -48,32 +41,6 @@ class ContactData extends ViewWidget {
     }
   }
 
-//  /**
-//   * Mark [TelNum] selected.
-//   */
-//  void clickSelect(TelNum telNum) {
-//    if(telNum != null) {
-//      _ui.markSelected(telNum);
-//    }
-//  }
-
-//  /**
-//   * Deal with arrow up/down.
-//   */
-//  void handleUpDown(KeyboardEvent event) {
-//    if(_ui.isFocused) {
-//      event.preventDefault();
-//      switch(event.keyCode) {
-//        case KeyCode.DOWN:
-//          select(_ui.nextTelNumInList());
-//          break;
-//        case KeyCode.UP:
-//          select(_ui.previousTelNumInList());
-//          break;
-//      }
-//    }
-//  }
-
   /**
    * Observers.
    */
@@ -82,21 +49,21 @@ class ContactData extends ViewWidget {
 
     _hotKeys.onAltT.listen(activateMe);
 
-    _ui.onClick          .listen(activateMe);
-    _ui.clickSelectTelNum.listen(activateMeFromClick);
-
-//    _hotKeys.onAlt1.listen((_) => select(_ui.getTelNumFromIndex(0)));
-//    _hotKeys.onAlt2.listen((_) => select(_ui.getTelNumFromIndex(1)));
-//    _hotKeys.onAlt3.listen((_) => select(_ui.getTelNumFromIndex(2)));
-//    _hotKeys.onAlt4.listen((_) => select(_ui.getTelNumFromIndex(3)));
-//    _hotKeys.onDown.listen(handleUpDown);
-//    _hotKeys.onUp  .listen(handleUpDown);
-
-//    _hotKeys.onStar.listen((_) => ring(_ui.getSelectedTelNum()));
+    _ui.onClick.listen(activateMe);
 
     _contactSelector.onSelect.listen(render);
 
     _receptionSelector.onSelect.listen(clearOnNullReception);
+
+    _ui.onMarkedRinging.listen(_call);
+    ///
+    ///
+    ///
+    /// TODO (TL): Listen for call notifications here? Possibly mark ringing?
+    /// Or put this in model-ui-contact-data.dart?
+    ///
+    ///
+    ///
   }
 
   /**
@@ -115,34 +82,21 @@ class ContactData extends ViewWidget {
     _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
     _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
     _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
-    _ui.telephoneNumbers = [new TelNum('45454545', 'some number', false),
-                            new TelNum('23456768', 'secret stuff', true),
-                            new TelNum('60431992', 'personal cell', false),
-                            new TelNum('60431993', 'wife cell', false)];
+    _ui.telephoneNumbers = [new TelNum(1, '45454545', 'some number', false),
+                            new TelNum(2, '23456768', 'secret stuff', true),
+                            new TelNum(3, '60431992', 'personal cell', false),
+                            new TelNum(4, '60431993', 'wife cell', false)];
     _ui.titles = ['Nørd', 'Tekniker'];
     _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
 
     _ui.selectFirstTelNum();
-//    _ui.markSelected(_ui.getTelNumFromIndex(0));
   }
 
-//  /**
-//   * Mark [telNum] ringing if we're in focus, not already ringing and [telNum]
-//   * is not null.
-//   */
-//  void ring(TelNum telNum) {
-//    if(_ui.isFocused && _ui.noRinging && telNum != null) {
-//      _ui.markRinging(telNum);
-//      /// TODO (TL): Call Controller.Call or something like that?
-//    }
-//  }
-
-//  /**
-//   * If the we're active and not ringing, mark [telNum] active.
-//   */
-//  void select(TelNum telNum) {
-//    if(_ui.isFocused && _ui.noRinging && telNum != null) {
-//      _ui.markSelected(telNum);
-//    }
-//  }
+  /**
+   * This is called when the [_ui] fires a [TelNum] as marked ringing.
+   */
+  void _call(TelNum telNum) {
+    print('view-contact-data.call() ${telNum}');
+    /// TODO (TL): Call the Controller layer to actually get the call going.
+  }
 }
