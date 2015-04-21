@@ -15,7 +15,7 @@ class ReceptionCalendar extends ViewWidget {
   }
 
   @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel    get ui      => _ui;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
@@ -37,7 +37,6 @@ class ReceptionCalendar extends ViewWidget {
     _hotKeys.onAltA.listen(activateMe);
 
     _ui.onClick .listen(activateMe);
-    _ui.onDelete.listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.DELETE));
     _ui.onEdit  .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.EDIT));
     _ui.onNew   .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.NEW));
 
@@ -48,10 +47,10 @@ class ReceptionCalendar extends ViewWidget {
    * Render the widget with [reception] [CalendarEvent]s.
    */
   void render(Reception reception) {
-    _ui.header = 'Kalender';
-    _ui.headerExtra = 'for ${reception.name}';
-
-    if(!reception.isNull) {
+    if(reception.isNull) {
+      _ui.clear();
+    } else {
+      _ui.headerExtra = 'for ${reception.name}';
       _ui.calendarEntries =
           [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${reception.name})'}),
            new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${reception.name})'}),

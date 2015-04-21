@@ -47,7 +47,6 @@ class ContactCalendar extends ViewWidget {
     _hotKeys.onAltK.listen(activateMe);
 
     _ui.onClick .listen(activateMe);
-    _ui.onDelete.listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.DELETE));
     _ui.onEdit  .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.EDIT));
     _ui.onNew   .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.NEW));
 
@@ -60,7 +59,6 @@ class ContactCalendar extends ViewWidget {
    * Render the widget with [contact] [CalendarEvent]s.
    */
   void render(Contact contact) {
-    _ui.header = 'Kalender';
     _ui.headerExtra = 'for ${contact.name}';
 
     _ui.calendarEvents =

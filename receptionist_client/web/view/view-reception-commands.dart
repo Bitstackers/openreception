@@ -45,7 +45,11 @@ class ReceptionCommands extends ViewWidget {
    * Render the widget with .....
    */
   void render(Reception reception) {
-    _ui.header = 'Kommandoer for ${reception.name}';
-    _ui.commands = reception.commands;
+    if(reception.isNull) {
+      _ui.clear();
+    } else {
+      _ui.headerExtra = 'for ${reception.name}';
+      _ui.commands = reception.commands;
+    }
   }
 }

@@ -43,7 +43,6 @@ class CalendarEditor extends ViewWidget {
     /// TODO (TL):
     /// Clear form.
     /// Set focusElement to default.
-    /// Navigate away (history.back perhaps??)
     if(_ui.isFocused) {
       window.history.back();
       print('view.CalendarEditor._cancel not fully implemented');
@@ -105,17 +104,21 @@ class CalendarEditor extends ViewWidget {
   void setup(Widget initiator, Cmd cmd) {
     switch(initiator) {
       case Widget.ContactCalendar:
-        if(cmd == Cmd.DELETE || cmd == Cmd.EDIT) {
+        if(cmd == Cmd.EDIT) {
+          _ui.headerExtra = '(ret/slet)';
           render(_contactCalendar.selectedCalendarEvent);
         } else {
+          _ui.headerExtra = '(ny)';
           /// TODO (TL): Create a real calendar event, with date/time fields set.
           render(new CalendarEvent.Null()..contactId = 42);
         }
         break;
       case Widget.ReceptionCalendar:
-        if(cmd == Cmd.DELETE || cmd == Cmd.EDIT) {
+        if(cmd == Cmd.EDIT) {
+          _ui.headerExtra = '(ret/slet)';
           render(_receptionCalendar.selectedCalendarEvent);
         } else {
+          _ui.headerExtra = '(ny)';
           /// TODO (TL): Create a real calendar event, with date/time fields set.
           render(new CalendarEvent.Null()..receptionId = 42);
         }

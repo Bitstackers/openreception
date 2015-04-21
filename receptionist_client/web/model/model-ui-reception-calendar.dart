@@ -1,7 +1,6 @@
 part of model;
 
 class UIReceptionCalendar extends UIModel {
-  final Bus<KeyboardEvent> _busDelete = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _busEdit   = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _busNew    = new Bus<KeyboardEvent>();
   final Keyboard           _keyboard  = new Keyboard();
@@ -43,10 +42,10 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Remove all entries from the entry list.
+   * Remove all entries from the entry list and clear the header.
    */
-  void clearList() {
-    _header.text = '';
+  void clear() {
+    _headerExtra.text = '';
     _eventList.children.clear();
   }
 
@@ -103,11 +102,6 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Fires when a [CalendarEvent] delete is requested from somewhere.
-   */
-  Stream<KeyboardEvent> get onDelete => _busDelete.stream;
-
-  /**
    * Fires when a [CalendarEvent] edit is requested from somewhere.
    */
   Stream<KeyboardEvent> get onEdit => _busEdit.stream;
@@ -141,8 +135,7 @@ class UIReceptionCalendar extends UIModel {
    */
   void _setupWidgetKeys() {
     final Map<String, EventListener> bindings =
-        {'Ctrl+d'   : _busDelete.fire,
-         'Ctrl+e'   : _busEdit.fire,
+        {'Ctrl+e'   : _busEdit.fire,
          'Ctrl+k'   : _busNew.fire,
          'down'     : _handleUpDown,
          'Shift+Tab': _handleShiftTab,

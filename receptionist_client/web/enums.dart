@@ -12,8 +12,7 @@ enum AppState {LOADING,
                ERROR,
                READY}
 
-enum Cmd {DELETE,
-          EDIT,
+enum Cmd {EDIT,
           NEW,
           SAVE}
 

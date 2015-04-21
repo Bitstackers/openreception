@@ -36,7 +36,6 @@ class UIMessageCompose extends UIModel {
   InputElement         get _companyNameInput   => _root.querySelector('.names input.company');
   InputElement         get _draftInput         => _root.querySelector('.checks .draft');
   InputElement         get _extensionInput     => _root.querySelector('.phone-numbers input.extension');
-  InputElement         get _hasCalledInput     => _root.querySelector('.checks .has-called');
   InputElement         get _landlineInput      => _root.querySelector('.phone-numbers input.landline');
   TextAreaElement      get _messageTextarea    => _root.querySelector('.message textarea');
   InputElement         get _pleaseCallInput    => _root.querySelector('.checks .please-call');

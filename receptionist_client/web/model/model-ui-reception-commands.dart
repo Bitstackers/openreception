@@ -25,6 +25,14 @@ class UIReceptionCommands extends UIModel {
   OListElement get _commandList => _root.querySelector('.generic-widget-list');
 
   /**
+   * Remove all entries from the command list and clear the header.
+   */
+  void clear() {
+    _headerExtra.text = '';
+    _commandList.children.clear();
+  }
+
+  /**
    * Add [items] to the commands list.
    */
   set commands(List<Command> items) {

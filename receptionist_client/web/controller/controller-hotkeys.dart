@@ -53,10 +53,17 @@ class HotKeys {
        'Alt+t'      : _altT.fire,
        'Alt+v'      : _altV.fire,
        'Alt+w'      : _altW.fire,
-       'F1'         : _f1.fire};
+       'F1'         : _f1.fire,
+       'Ctrl+d'     : _null,
+       'Ctrl+l'     : _null};
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
   }
+
+  /**
+   * Black hole for hotkey combos we don't want.
+   */
+  void _null(_) => null;
 
   /**
    * Register the [keyMap] keybindings to [keyboard].

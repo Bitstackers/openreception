@@ -13,8 +13,6 @@ class ContactData extends ViewWidget {
               Controller.Destination this._myDestination,
               Model.UIContactSelector this._contactSelector,
               Model.UIReceptionSelector this._receptionSelector) {
-    _ui.header = 'Kontakt data';
-
     _observers();
   }
 
@@ -72,7 +70,6 @@ class ContactData extends ViewWidget {
   void render(Contact contact) {
     _ui.clear();
 
-    _ui.header = 'Kontaktdata';
     _ui.headerExtra = 'for ${contact.name}';
 
     _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];

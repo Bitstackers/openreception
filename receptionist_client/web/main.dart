@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:html';
 
 import 'dummies.dart';
 
 import 'enums.dart';
+import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
 import 'view/view.dart' as View;
 
 void main() {
+  /// Translate the static labels of the app.
+  translate();
+
   AppClientState appState = new AppClientState();
 
   final Model.UIReceptionistclientDisaster uiDisaster = new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
@@ -22,7 +27,22 @@ void main() {
 
   /// TODO (TL): The loading context is visible by default. Switch to ready after
   /// 1 second.
-  new Future.delayed(new Duration(milliseconds: 200)).then((_) {
+  new Future.delayed(new Duration(milliseconds: 500)).then((_) {
     appState.state = AppState.READY;
+  });
+}
+
+/**
+ * Worlds most simple method to translate widget labels to supported languages.
+ */
+void translate() {
+  Map<String, String> langMap = Lang.da;
+
+  querySelectorAll('[data-lang-text]').forEach((HtmlElement element) {
+    element.text = langMap[element.dataset['lang-text']];
+  });
+
+  querySelectorAll('[data-lang-placeholder]').forEach((HtmlElement element) {
+    element.setAttribute('placeholder', langMap[element.dataset['lang-placeholder']]);
   });
 }
