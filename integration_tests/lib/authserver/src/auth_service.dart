@@ -10,7 +10,7 @@ abstract class AuthService {
    */
   static Future isCORSHeadersPresent(HttpClient client) {
 
-    Uri uri = Uri.parse ('${Config.contactStoreUri}/nonexistingpath');
+    Uri uri = Uri.parse ('${Config.authenticationServerUri}/nonexistingpath');
 
     log.info('Checking CORS headers on a non-existing URL.');
     return client.getUrl(uri)
@@ -23,7 +23,7 @@ abstract class AuthService {
       }))
       .then ((_) {
         log.info('Checking CORS headers on an existing URL.');
-        uri = Resource.Reception.single (Config.contactStoreUri, 1);
+        uri = Resource.Reception.single (Config.authenticationServerUri, 1);
         return client.getUrl(uri)
           .then((HttpClientRequest request) => request.close()
           .then((HttpClientResponse response) {
@@ -43,7 +43,7 @@ abstract class AuthService {
    */
   static Future nonExistingPath (HttpClient client) {
 
-    Uri uri = Uri.parse ('${Config.contactStoreUri}/nonexistingpath');
+    Uri uri = Uri.parse ('${Config.authenticationServerUri}/nonexistingpath');
 
     log.info('Checking server behaviour on a non-existing path.');
 
@@ -66,7 +66,7 @@ abstract class AuthService {
    */
   static void nonExistingToken (Service.Authentication authService) {
 
-    log.info('Checking server behaviour on a non-existing contact.');
+    log.info('Checking server behaviour on a non-existing token.');
 
     return expect(authService.userOf(badToken),
             throwsA(new isInstanceOf<Storage.NotFound>()));
@@ -81,7 +81,7 @@ abstract class AuthService {
   static Future existingToken (Service.Authentication authService,
                              Receptionist receptionist) {
 
-    log.info('Checking server behaviour on a non-existing contact.');
+    log.info('Checking server behaviour on a non-existing token.');
 
     return authService.userOf(receptionist.authToken).then((Model.User user) {
       expect (user.ID, equals(receptionist.user.ID));
@@ -99,7 +99,7 @@ abstract class AuthService {
    */
   static void validateNonExistingToken (Service.Authentication authService) {
 
-    log.info('Checking server behaviour on a non-existing contact.');
+    log.info('Checking server behaviour on a non-existing token.');
 
     return expect(authService.userOf(badToken),
             throwsA(new isInstanceOf<Storage.NotFound>()));
@@ -113,7 +113,7 @@ abstract class AuthService {
   static Future validateExistingToken (Service.Authentication authService,
                                        Receptionist receptionist) {
 
-    log.info('Checking server behaviour on a non-existing contact.');
+    log.info('Checking server behaviour on a non-existing token.');
 
     return authService.userOf(receptionist.authToken);
   }
