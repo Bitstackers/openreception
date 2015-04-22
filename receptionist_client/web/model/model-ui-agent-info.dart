@@ -3,14 +3,18 @@ part of model;
 class UIAgentInfo extends UIModel {
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UIAgentInfo(DivElement this._myRoot);
 
-  @override HtmlElement    get _firstTabElement => null;
-  @override HtmlElement    get _focusElement    => null;
-  @override HeadingElement get _header          => null;
-  @override DivElement     get _help            => null;
-  @override HtmlElement    get _lastTabElement  => null;
-  @override HtmlElement    get _root            => _myRoot;
+  @override HtmlElement get _firstTabElement => null;
+  @override HtmlElement get _focusElement    => null;
+  @override SpanElement get _header          => null;
+  @override SpanElement get _headerExtra     => null;
+  @override DivElement  get _help            => null;
+  @override HtmlElement get _lastTabElement  => null;
+  @override HtmlElement get _root            => _myRoot;
 
   TableCellElement get _activeCount => _root.querySelector('.active-count');
   ImageElement     get _agentState  => _root.querySelector('.agent-state');
@@ -28,17 +32,17 @@ class UIAgentInfo extends UIModel {
    */
   set agentState (AgentState agentState) {
     switch(agentState) {
-      case AgentState.Busy:
+      case AgentState.BUSY:
         _agentState.src = 'images/agentsactive.svg';
         break;
-      case AgentState.Idle:
+      case AgentState.IDLE:
         /// TODO (TL): Need idle state graphic
         _agentState.src = 'images/agentsactive.svg';
         break;
-      case AgentState.Pause:
+      case AgentState.PAUSE:
         _agentState.src = 'images/agentssleep.svg';
         break;
-      case AgentState.Unknown:
+      case AgentState.UNKNOWN:
         /// TODO (TL): Need unknown state graphic
         _agentState.src = 'images/agentsactive.svg';
         break;
@@ -50,10 +54,10 @@ class UIAgentInfo extends UIModel {
    */
   set alertState (AlertState alertState) {
     switch(alertState) {
-      case AlertState.Off:
+      case AlertState.OFF:
         /// TODO (TL): Need alert state OFF graphic
         break;
-      case AlertState.On:
+      case AlertState.ON:
         _alertState.src = 'images/alert.svg';
         break;
     }

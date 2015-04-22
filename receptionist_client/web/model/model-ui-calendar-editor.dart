@@ -1,25 +1,33 @@
 part of model;
 
 class UICalendarEditor extends UIModel {
+  final Keyboard   _keyboard = new Keyboard();
   HtmlElement      _myFirstTabElement;
   HtmlElement      _myFocusElement;
   HtmlElement      _myLastTabElement;
   final DivElement _myRoot;
 
+  /**
+   * Constructor.
+   */
   UICalendarEditor(DivElement this._myRoot) {
+    _help.text = 'some help';
+
     _myFocusElement    = _textArea;
     _myFirstTabElement = _textArea;
     _myLastTabElement  = _cancelButton;
 
-    _registerEventListeners();
+    _setupWidgetKeys();
+    _observers();
   }
 
-  @override HtmlElement    get _firstTabElement => _myFirstTabElement;
-  @override HtmlElement    get _focusElement    => _myFocusElement;
-  @override HeadingElement get _header          => _root.querySelector('h4');
-  @override DivElement     get _help            => _root.querySelector('div.help');
-  @override HtmlElement    get _lastTabElement  => _myLastTabElement;
-  @override HtmlElement    get _root            => _myRoot;
+  @override HtmlElement get _firstTabElement => _myFirstTabElement;
+  @override HtmlElement get _focusElement    => _myFocusElement;
+  @override SpanElement get _header          => _root.querySelector('h4 > span');
+  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
+  @override DivElement  get _help            => _root.querySelector('div.help');
+  @override HtmlElement get _lastTabElement  => _myLastTabElement;
+  @override HtmlElement get _root            => _myRoot;
 
   ButtonElement        get _cancelButton     => _root.querySelector('.cancel');
   ButtonElement        get _deleteButton     => _root.querySelector('.delete');
@@ -39,6 +47,11 @@ class UICalendarEditor extends UIModel {
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
 
   /**
+   * Populate the calendar editor fields with a [CalendarEvent].
+   */
+  set content(CalendarEvent calendarEvent) => _textArea.text = calendarEvent.toJson().toString();
+
+  /**
    * Return the click event stream for the cancel button.
    */
   Stream<MouseEvent> get onCancel => _cancelButton.onClick;
@@ -53,41 +66,52 @@ class UICalendarEditor extends UIModel {
    */
   Stream<MouseEvent> get onSave => _saveButton.onClick;
 
-  void _registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
+    _root.onKeyDown.listen(_keyboard.press);
+
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
-
-    /// NOTE (TL): These onInput listeners is here because it's a bit of a pain
-    /// to put them in the view. Also I don't think it's too insane to consider
-    /// the inputs of this widget to have some intrinsic management of which
-    /// values are allowed and which are not, especially considering the HTML5
-    /// type="number" attribute.
-    _textArea.onInput   .listen((_) => _toggleButtons());
-    _startHourInput.onInput  .listen((_) => _sanitizeInput(_startHourInput));
-    _startMinuteInput.onInput.listen((_) => _sanitizeInput(_startMinuteInput));
-    _startDayInput.onInput   .listen((_) => _sanitizeInput(_startDayInput));
-    _startMonthInput.onInput .listen((_) => _sanitizeInput(_startMonthInput));
-    _startYearInput.onInput  .listen((_) => _sanitizeInput(_startYearInput));
-    _stopHourInput.onInput   .listen((_) => _sanitizeInput(_stopHourInput));
-    _stopMinuteInput.onInput .listen((_) => _sanitizeInput(_stopMinuteInput));
-    _stopDayInput.onInput    .listen((_) => _sanitizeInput(_stopDayInput));
-    _stopMonthInput.onInput  .listen((_) => _sanitizeInput(_stopMonthInput));
-    _stopYearInput.onInput   .listen((_) => _sanitizeInput(_stopYearInput));
+    _textArea.onInput        .listen((_) => _toggleButtons());
+    _startHourInput.onInput  .listen((_) => _checkInput(_startHourInput));
+    _startMinuteInput.onInput.listen((_) => _checkInput(_startMinuteInput));
+    _startDayInput.onInput   .listen((_) => _checkInput(_startDayInput));
+    _startMonthInput.onInput .listen((_) => _checkInput(_startMonthInput));
+    _startYearInput.onInput  .listen((_) => _checkInput(_startYearInput));
+    _stopHourInput.onInput   .listen((_) => _checkInput(_stopHourInput));
+    _stopMinuteInput.onInput .listen((_) => _checkInput(_stopMinuteInput));
+    _stopDayInput.onInput    .listen((_) => _checkInput(_stopDayInput));
+    _stopMonthInput.onInput  .listen((_) => _checkInput(_stopMonthInput));
+    _stopYearInput.onInput   .listen((_) => _checkInput(_stopYearInput));
   }
 
-  void _sanitizeInput(InputElement input) {
-    if(input.validity.badInput) {
-      input.classes.toggle('bad-input', true);
-    } else {
-      input.classes.toggle('bad-input', false);
+  /**
+   * Mark [input] with the bad-input class if the validity of the data does not
+   * match the requirements defined by the input attributes.
+   * If [input] is OK, then call [_toggleButtons].
+   */
+  void _checkInput(InputElement input) {
+    input.classes.toggle('bad-input', input.validity.badInput);
+    if(!input.validity.badInput) {
+      _toggleButtons();
     }
+  }
 
-    _toggleButtons();
+  /**
+   * Setup keys and bindings to methods specific for this widget.
+   */
+  void _setupWidgetKeys() {
+    final Map<String, EventListener> bindings =
+        {'Esc'      : (_) => _cancelButton.click(),
+         'Shift+Tab': _handleShiftTab,
+         'Tab'      : _handleTab};
+
+    _hotKeys.registerKeys(_keyboard, bindings);
   }
 
   /**
@@ -95,7 +119,7 @@ class UICalendarEditor extends UIModel {
    * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    bool toggle = !_inputFields.any((element) => element.value.isEmpty);
+    final bool toggle = !_inputFields.any((element) => element.value.isEmpty);
 
     _deleteButton.disabled = !toggle;
     _saveButton.disabled   = !toggle;

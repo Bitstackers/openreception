@@ -1,26 +1,37 @@
 part of view;
 
 class CalendarEditor extends ViewWidget {
-  Place                 _myPlace;
-  UICalendarEditor      _ui;
+  final Model.UIContactCalendar   _contactCalendar;
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionCalendar _receptionCalendar;
+  final Model.UICalendarEditor    _ui;
 
-  /// TODO (TL): Should consume UIReceptionCalendar and UIContactCalendar so it
-  /// can find the calendar entry that is  being edited/deleted.
-  /// This keeps state in the DOM, where it already is. We can't get rid of state
-  /// there anywhere, so we might as well work with that.
-  CalendarEditor(UICalendarEditor this._ui, this._myPlace) {
-    _ui.help = 'some help';
-
-    registerEventListeners();
+  /**
+   * Constructor
+   */
+  CalendarEditor(Model.UICalendarEditor this._ui,
+                 Controller.Destination this._myDestination,
+                 Model.UIContactCalendar this._contactCalendar,
+                 Model.UIReceptionCalendar this._receptionCalendar) {
+    _observers();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
-  @override void onBlur(Place place) {}
+  @override void onBlur(_) {}
 
-  @override void onFocus(Place place){
-    setup(place.from.widget);
+  /**
+   * When we get focus, figure out where from we were called. If we weren't
+   * called from anywhere ie. the [destination].from.widget is null, then
+   * navigate to home.
+   */
+  @override void onFocus(Controller.Destination destination){
+    if(destination.from != null) {
+      setup(destination.from.widget, destination.cmd);
+    } else {
+      _navigate.goHome();
+    }
   }
 
   /**
@@ -32,8 +43,7 @@ class CalendarEditor extends ViewWidget {
     /// TODO (TL):
     /// Clear form.
     /// Set focusElement to default.
-    /// Navigate away (history.back perhaps??)
-    if(_ui.active) {
+    if(_ui.isFocused) {
       window.history.back();
       print('view.CalendarEditor._cancel not fully implemented');
     }
@@ -51,15 +61,11 @@ class CalendarEditor extends ViewWidget {
     print('view.CalendarEditor._delete not fully implemented');
   }
 
-  void registerEventListeners() {
-    /// TODO (TL): On navigation to this widget:
-    /// Figure out whether I got started from contact or reception calendar.
-    /// Figure out whether this is a new calendar entry or an edit?
-    /// If new: Add "now" data to the widget.
-    /// If edit: Add data from the calendar entry to the widget.
+  /**
+   * Observers.
+   */
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
-
-    _hotKeys.onEsc     .listen(cancel);
 
     _ui.onCancel.listen(cancel);
     _ui.onDelete.listen(delete);
@@ -80,23 +86,46 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
+   * Render the widget with a [CalendarEvent]. Note if the [CalendarEvent] is a
+   * null event, then the widgets renders with its default values.
+   */
+  void render(CalendarEvent calendarEvent) {
+    _ui.content = calendarEvent;
+  }
+
+  /**
    * Setup the widget accordingly to where it was opened from. [initiator] MUST
    * be the [Widget] that activated CalendarEditor.
    *
    * This widget is only ever opened from other widgets, and as such we need to
    * know who activated us, in order to properly know how to find and deal
-   * with the calendar entry we're either editing or creating.
+   * with the calendar entry we're either deleting/editing or creating.
    */
-  void setup(Widget initiator) {
+  void setup(Widget initiator, Cmd cmd) {
     switch(initiator) {
       case Widget.ContactCalendar:
-        print('CalendarEditor opened from ContactCalendar');
+        if(cmd == Cmd.EDIT) {
+          _ui.headerExtra = '(ret/slet)';
+          render(_contactCalendar.selectedCalendarEvent);
+        } else {
+          _ui.headerExtra = '(ny)';
+          /// TODO (TL): Create a real calendar event, with date/time fields set.
+          render(new CalendarEvent.Null()..contactId = 42);
+        }
         break;
       case Widget.ReceptionCalendar:
-        print('CalendarEditor opened from ReceptionCalendar');
+        if(cmd == Cmd.EDIT) {
+          _ui.headerExtra = '(ret/slet)';
+          render(_receptionCalendar.selectedCalendarEvent);
+        } else {
+          _ui.headerExtra = '(ny)';
+          /// TODO (TL): Create a real calendar event, with date/time fields set.
+          render(new CalendarEvent.Null()..receptionId = 42);
+        }
         break;
       default:
-        /// TODO (TL): Do something sane here...
+        /// No valid initiator. Go home.
+        _navigate.goHome();
         break;
     }
   }

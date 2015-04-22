@@ -1,36 +1,14 @@
 library model;
 
 import 'dart:async';
-import 'dart:collection';
+import 'dart:convert';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../service/service.dart' as Service;
-import '../storage/storage.dart' as storage;
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/bus.dart';
-import 'package:logging/logging.dart';
+import '../dummies.dart';
+import '../enums.dart';
 
-part 'model-app-state.dart';
-part 'model-call.dart';
-part 'model-call-list.dart';
-part 'model-contact.dart';
-part 'model-contact-calendar.dart';
-part 'model-contact-list.dart';
-part 'model-context.dart';
-part 'model-message.dart';
-part 'model-message-filter.dart';
-part 'model-notification.dart';
-part 'model-notification-list.dart';
-part 'model-origination-request.dart';
-part 'model-peer.dart';
-part 'model-peer-list.dart';
-part 'model-reception.dart';
-part 'model-reception-calendar.dart';
-part 'model-transfer-request.dart';
-part 'model-user.dart';
-part 'model-user-status.dart';
-
+import 'package:okeyee/okeyee.dart';
 import 'package:openreception_framework/bus.dart';
 
 part 'model-ui-agent-info.dart';
@@ -48,40 +26,30 @@ part 'model-ui-receptionistclient-ready.dart';
 part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';
 
-const String libraryName = "model";
-
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 
-enum AgentState {Busy, Idle, Pause, Unknown}
-enum AlertState {Off, On}
-
-///
-///
-///
-/// TODO (TL): Look into whether the similar functionality of selecting items in
-/// a list (contact and calendar list for example) can be moved to UIModel.
-///
-///
-///
-
+/**
+ * TODO (TL): Comment
+ */
 abstract class UIModel {
-  HtmlElement    get _firstTabElement;
-  HtmlElement    get _focusElement;
-  HeadingElement get _header;
-  DivElement     get _help;
-  HtmlElement    get _lastTabElement;
-  HtmlElement    get _root;
+  HtmlElement get _firstTabElement;
+  HtmlElement get _focusElement;
+  SpanElement get _header;
+  SpanElement get _headerExtra;
+  DivElement  get _help;
+  HtmlElement get _lastTabElement;
+  HtmlElement get _root;
 
   /**
    * Return true if the widget is in focus.
    */
-  bool get active => _root.classes.contains('focus');
+  bool get isFocused => _root.classes.contains('focus');
 
   /**
    * Blur the widget and set tabindex to -1.
    */
   void blur() {
-    if(active) {
+    if(isFocused) {
       _root.classes.toggle('focus', false);
       _focusElement.blur();
       _setTabIndex(-1);
@@ -92,7 +60,7 @@ abstract class UIModel {
    * Focus the widget and set tabindex to 1.
    */
   void focus() {
-    if(!active) {
+    if(!isFocused) {
       _setTabIndex(1);
       _root.classes.toggle('focus', true);
       _focusElement.focus();
@@ -115,8 +83,8 @@ abstract class UIModel {
    * Tab from first to last tab element when first is in focus an a Shift+Tab
    * event is caught.
    */
-  void handleShiftTab(KeyboardEvent event) {
-    if(active && focusIsOnFirst) {
+  void _handleShiftTab(KeyboardEvent event) {
+    if(isFocused && focusIsOnFirst) {
       event.preventDefault();
       tabToLast();
     }
@@ -126,8 +94,8 @@ abstract class UIModel {
    * Tab from last to first tab element when last is in focus an a Tab event
    * is caught.
    */
-  void handleTab(KeyboardEvent event) {
-    if(active && focusIsOnLast) {
+  void _handleTab(KeyboardEvent event) {
+    if(isFocused && focusIsOnLast) {
       event.preventDefault();
       tabToFirst();
     }
@@ -139,12 +107,10 @@ abstract class UIModel {
   set header(String headline) => _header.text = headline;
 
   /**
-   * Set the help text.
-   *
-   * TODO (TL): Do some placing/sizing magic, so the help box is always centered,
-   * no matter the length of the help text.
+   * Set the widgets extra header. This one can be used for a bit of extra data
+   * to decorate the widget.
    */
-  set help(String help) => _help.text = help;
+  set headerExtra(String headlineExtra) => _headerExtra.text = headlineExtra;
 
   /**
    * Return the mouse click event stream for this widget.
@@ -152,28 +118,26 @@ abstract class UIModel {
   Stream<MouseEvent> get onClick => _root.onClick;
 
   /**
-   * Find the first proceeding sibling that is not hidden.
+   * Return the first [LIElement] that is not hidden. Search is forward,
+   * starting with and including [li].
    */
-  LIElement scanAheadForVisibleSibling(LIElement li) {
-    LIElement next = li.nextElementSibling;
-
-    if(next != null && next.classes.contains('hide')) {
-      return scanAheadForVisibleSibling(next);
+  LIElement _scanForwardForVisibleElement(LIElement li) {
+    if(li != null && li.classes.contains('hide')) {
+      return _scanForwardForVisibleElement(li.nextElementSibling);
     } else {
-      return next;
+      return li;
     }
   }
 
   /**
-   * Find the first preceeding sibling that is not hidden.
+   * Return the first [LIElement] that is not hidden. Search is backwards,
+   * starting with and including [li].
    */
-  LIElement scanBackForVisibleSibling(LIElement li) {
-    LIElement previous = li.previousElementSibling;
-
-    if(previous != null && previous.classes.contains('hide')) {
-      return scanBackForVisibleSibling(previous);
+  LIElement _scanBackwardsForVisibleElement(LIElement li) {
+    if(li != null && li.classes.contains('hide')) {
+      return _scanBackwardsForVisibleElement(li.previousElementSibling);
     } else {
-      return previous;
+      return li;
     }
   }
 
@@ -198,118 +162,5 @@ abstract class UIModel {
    */
   void tabToLast() {
     _lastTabElement.focus();
-  }
-}
-
-/**
- * Dummy ApplicationState class
- */
-class ApplicationState {
-  static final ApplicationState _singleton = new ApplicationState._internal();
-  factory ApplicationState() => _singleton;
-
-  Bus<AppState> _bus = new Bus<AppState>();
-
-  ApplicationState._internal();
-
-  Stream<AppState> get onChange => _bus.stream;
-
-  set state(AppState state) => _bus.fire(state);
-}
-
-/**
- * Dummy calendar entry class
- */
-class CalendarEntry {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       content;
-
-  CalendarEntry(String this.content) {
-    _li.text = content;
-  }
-
-  CalendarEntry.fromElement(LIElement element) {
-    if(element != null) {
-      _li = element;
-    }
-  }
-}
-
-/**
- * Dummy contact class
- */
-class Contact {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       name;
-  List<String> tags;
-
-  Contact(String this.name, {List<String> this.tags}) {
-    _li.text = name;
-    if(tags == null) {
-      tags = new List<String>();
-    }
-  }
-
-  Contact.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-      name = _li.text;
-      tags = _li.dataset['tags'].split(',');
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
-}
-
-/**
- * Dummy reception class
- */
-class Reception {
-  LIElement    _li = new LIElement()..tabIndex = -1;
-  String       name;
-
-  Reception(String this.name) {
-    _li.text = name;
-  }
-
-  Reception.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-      name = _li.text;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
-  }
-}
-
-/**
- * A dummy telephone number.
- */
-class TelNum {
-  LIElement   _li         = new LIElement()..tabIndex = -1;
-  bool        _secret;
-  SpanElement _spanLabel  = new SpanElement();
-  SpanElement _spanNumber = new SpanElement();
-
-  TelNum(String number, String label, this._secret) {
-    if(_secret) {
-      _spanNumber.classes.add('secret');
-    }
-
-    _spanNumber.text = number;
-    _spanNumber.classes.add('number');
-    _spanLabel.text = label;
-    _spanLabel.classes.add('label');
-
-    _li.children.addAll([_spanNumber, _spanLabel]);
-    _li.dataset['number'] = number;
-  }
-
-  TelNum.fromElement(LIElement element) {
-    if(element != null && element is LIElement) {
-      _li = element;
-    } else {
-      throw new ArgumentError('element is not a LIElement');
-    }
   }
 }

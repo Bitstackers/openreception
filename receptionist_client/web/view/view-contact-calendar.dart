@@ -1,107 +1,72 @@
 part of view;
 
 class ContactCalendar extends ViewWidget {
-  ContactSelector   _contactSelector;
-  Place             _myPlace;
-  UIContactCalendar _ui;
+  final Model.UIContactSelector   _contactSelector;
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIContactCalendar   _ui;
 
-  ContactCalendar(UIModel this._ui, Place this._myPlace, ContactSelector this._contactSelector) {
-    _ui.help = 'alt+k';
-
-    registerEventListeners();
-
-    test(); // TODO (TL): Get rid of this testing code...
+  /**
+   * Constructor.
+   */
+  ContactCalendar(Model.UIModel this._ui,
+                  Controller.Destination this._myDestination,
+                  Model.UIContactSelector this._contactSelector,
+                  Model.UIReceptionSelector this._receptionSelector) {
+    _observers();
   }
 
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
 
   /**
-   * Simply navigate to my [Place]. Matters not if this widget is already
-   * focused.
+   * Activate this widget if it's not already activated.
    */
   void activateMe(_) {
-    navigateToMyPlace();
+    navigateToMyDestination();
   }
 
   /**
-   * Activate this widget if it's not already active. Also mark an entry in the
-   * list selected, if one such is the target of the [event].
+   * Empty the [CalendarEvent] list on null [Reception].
    */
-  void activateMeFromClick(MouseEvent event) {
-    clickSelect(_ui.getEntryFromClick(event));
-    navigateToMyPlace();
-  }
-
-  /**
-   * Mark [CalendarEntry] selected. This call does not check if we're active. Use
-   * this to select a contact using the mouse, else use the plain [select]
-   * function.
-   */
-  void clickSelect(CalendarEntry entry) {
-    if(entry != null) {
-      _ui.markSelected(entry);
+  void clearOnNullReception(Reception reception) {
+    if(reception.isNull) {
+      _ui.clear();
     }
   }
 
   /**
-   * Deal with arrow up/down.
+   * Observers.
    */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_ui.active) {
-      event.preventDefault();
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          select(_ui.nextEntryInList());
-          break;
-        case KeyCode.UP:
-          select(_ui.previousEntryInList());
-          break;
-      }
-    }
-  }
-
-  void registerEventListeners() {
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onClick.listen(activateMeFromClick);
+    _hotKeys.onAltK.listen(activateMe);
 
-    _hotKeys.onAltK .listen(activateMe);
-    _hotKeys.onCtrlE.listen((_) => _ui.active ? _navigate.goCalendarEdit(_myPlace) : null);
-
-    _hotKeys.onDown.listen(_handleUpDown);
-    _hotKeys.onUp  .listen(_handleUpDown);
+    _ui.onClick .listen(activateMe);
+    _ui.onEdit  .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.EDIT));
+    _ui.onNew   .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.NEW));
 
     _contactSelector.onSelect.listen(render);
+
+    _receptionSelector.onSelect.listen(clearOnNullReception);
   }
 
   /**
-   * Render the widget with [Contact].
+   * Render the widget with [contact] [CalendarEvent]s.
    */
   void render(Contact contact) {
-    print('ContactCalendar received ${contact.name}');
-  }
+    _ui.headerExtra = 'for ${contact.name}';
 
-  /**
-   * Mark [CalendarEntry] selected. This call checks if we're active. Do not use this
-   * to select items using the mouse.
-   */
-  void select(CalendarEntry entry) {
-    if(_ui.active && entry != null) {
-      _ui.markSelected(entry);
-    }
-  }
+    _ui.calendarEvents =
+        [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
+        new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),
+        new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
+        new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
 
-  /// TODO (TL): Get rid of this. It's just here to test stuff.
-  void test() {
-    _ui.calendarEntries = [new CalendarEntry('First entry'),
-                           new CalendarEntry('Second entry'),
-                           new CalendarEntry('Third entry'),
-                           new CalendarEntry('Fourth entry')];
-
-    _ui.markSelected(_ui.getFirstEntry());
+    _ui.selectFirstCalendarEvent();
   }
 }

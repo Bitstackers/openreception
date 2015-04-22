@@ -1,17 +1,26 @@
 part of model;
 
 class UIReceptionSelector extends UIModel {
-  final DivElement _myRoot;
+  final Bus<Reception> _bus      = new Bus<Reception>();
+  final Keyboard       _keyboard = new Keyboard();
+  final DivElement     _myRoot;
 
+  /**
+   * Constructor.
+   */
   UIReceptionSelector(DivElement this._myRoot) {
-    _registerEventListeners();
+    _help.text = 'alt+v';
+
+    _setupWidgetKeys();
+    _observers();
   }
 
-  @override HtmlElement    get _firstTabElement => _filter;
-  @override HtmlElement    get _focusElement    => _filter;
-  @override HeadingElement get _header          => _root.querySelector('h4');
-  @override DivElement     get _help            => _root.querySelector('div.help');
-  @override HtmlElement    get _lastTabElement  => _filter;
+  @override HtmlElement get _firstTabElement => _filter;
+  @override HtmlElement get _focusElement    => _filter;
+  @override SpanElement get _header          => _root.querySelector('h4 > span');
+  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
+  @override DivElement  get _help            => _root.querySelector('div.help');
+  @override HtmlElement get _lastTabElement  => _filter;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
@@ -24,28 +33,12 @@ class UIReceptionSelector extends UIModel {
   InputElement get _filter        => _root.querySelector('.filter');
 
   /**
-   * Return true if the [event].target is the filter input field.
-   */
-  bool eventTargetIsFilterInput(MouseEvent event) {
-    if(event.target == _filter) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Filter the contact list whenever the user enters data into the [_filter]
+   * Filter the reception list whenever the user enters data into the [_filter]
    * input field.
    */
   void filter(_) {
-    String filter = _filter.value.toLowerCase();
-    String trimmedFilter = filter.trim();
-
-    /// TODO (TL): This filtering model is a bit "meh". What we probably should
-    /// do is leverage the CSS :not() selector and simply add/remove CSS rules
-    /// based on the given filter values. That way we don't do any kind of
-    /// looping, and all hiding/unhiding is left entirely to the browser.
+    final String filter = _filter.value.toLowerCase();
+    final String trimmedFilter = filter.trim();
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
@@ -70,121 +63,125 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Return the selected [Reception] from [_contactList]
-   * MAY return null if nothing is selected.
+   * Deal with enter.
    */
-  Reception getSelectedReception() {
-    try {
-      return new Reception.fromElement(_receptionList.querySelector('.selected'));
-    } catch (e) {
-      print(e);
-      return null;
+  void _handleEnter(KeyboardEvent event) {
+    _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
+  }
+
+  /**
+   * Deal with arrow up/down.
+   */
+  void _handleUpDown(KeyboardEvent event) {
+    if(_receptionList.children.isNotEmpty) {
+      final LIElement selected = _receptionList.querySelector('.selected');
+
+      /// Special case for this widget. If nothing is selected, simply select
+      /// the first element in the list and return.
+      if(selected == null) {
+        _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
+        return;
+      }
+
+      switch(event.keyCode) {
+        case KeyCode.DOWN:
+          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
+          break;
+        case KeyCode.UP:
+          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
+          break;
+      }
     }
   }
 
   /**
-   * Return the [Reception] the user clicked on.
-   * MAY return null if the user did not click on an actual valid [Reception].
+   * Mark [li] selected, scroll it into view and fire the [Reception] contained
+   * in the [li] on the [onSelect] bus.
+   * Does nothing if [li] is null or [li] is already selected.
    */
-  Reception getReceptionFromClick(MouseEvent event) {
-    if(event.target is LIElement) {
-      return new Reception.fromElement(event.target);
-    }
-
-    return null;
-  }
-
-  /**
-   * Return the first visible [Reception] from [_receptionList]
-   * MAY return null if the list is empty.
-   */
-  Reception getReceptionFirstVisible() {
-    LIElement li = _receptionList.children.firstWhere((LIElement li) => !li.classes.contains('hide'), orElse: () => null);
-    if(li != null) {
-      return new Reception.fromElement(li);
-    }
-
-    return null;
-  }
-
-  /**
-   * Return the last visible [Reception] from [_receptionList]
-   * MAY return null if the list is empty.
-   */
-  Reception getReceptionLastVisible() {
-    LIElement li = _receptionList.children.lastWhere((LIElement li) => !li.classes.contains('hide'), orElse: () => null);
-    if(li != null) {
-      return new Reception.fromElement(li);
-    }
-
-    return null;
-  }
-
-  /**
-   * Mark [Reception] selected.
-   */
-  void markSelected(Reception reception) {
-    if(reception != null) {
+  void _markSelected(LIElement li) {
+    if(li != null && !li.classes.contains('selected')) {
       _receptionList.children.forEach((Element element) => element.classes.remove('selected'));
-      reception._li.classes.add('selected');
-      reception._li.scrollIntoView();
+      li.classes.add('selected');
+      li.scrollIntoView();
+      _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
     }
   }
 
   /**
-   * Return the [Reception] following the currently selected [Reception].
-   * Return null if we're at last element.
+   * Observers
    */
-  Reception nextReceptionInList() {
-    LIElement selected = _receptionList.querySelector('.selected');
+  void _observers() {
+    _filter.onKeyDown.listen(_keyboard.press);
 
-    if(selected == null) {
-      return getReceptionFirstVisible();
-    } else {
-      LIElement li = scanAheadForVisibleSibling(selected);
-      return li == null ? null : new Reception.fromElement(li);
-    }
+    _filter.onInput.listen(filter);
+
+    /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
+    /// event, not the mouseclick event. We want to keep focus on the filter at
+    /// all times.
+    onClick.listen(_selectFromClick);
   }
 
   /**
-   * Return the [Reception] preceeding the currently selected [Reception].
-   * Return null if we're at first element.
+   * Fires the selected [Reception].
    */
-  Reception previousReceptionInList() {
-    LIElement selected = _receptionList.querySelector('.selected');
-
-    if(selected == null) {
-      return getReceptionLastVisible();
-    } else {
-      LIElement li = scanBackForVisibleSibling(selected);
-      return li == null ? null : new Reception.fromElement(li);
-    }
-  }
+  Stream<Reception> get onSelect => _bus.stream;
 
   /**
    * Add [items] to the receptions list.
    */
   set receptions(List<Reception> items) {
+    final List<LIElement> list = new List<LIElement>();
+
     items.forEach((Reception item) {
-      item._li.dataset['name'] = item.name.toLowerCase();
-      _receptionList.append(item._li);
+      list.add(new LIElement()
+                ..dataset['name'] = item.name.toLowerCase()
+                ..dataset['object'] = JSON.encode(item)
+                ..text = item.name);
     });
-  }
 
-  void _registerEventListeners() {
-    _filter.onInput.listen(filter);
-
-    /// These are here to prevent tab'ing out of the filter input.
-    _hotKeys.onTab     .listen(handleTab);
-    _hotKeys.onShiftTab.listen(handleShiftTab);
+    _receptionList.children = list;
   }
 
   /**
-   * Remove selections, scroll to top and empty filter input.
+   * Remove selections, scroll to top, empty filter input and fire a null
+   * [Reception].
    */
-  void reset() {
+  void _reset(_) {
     _filter.value = '';
     filter('');
     _receptionList.children.forEach((Element e) => e.classes.toggle('selected', false));
+    _bus.fire(new Reception.Null());
+  }
+
+  /**
+   * Mark a [LIElement] in the reception list selected, if one such is the target
+   * of the [event].
+   */
+  void _selectFromClick(MouseEvent event) {
+    if(event.target != _filter) {
+      /// NOTE (TL): This keeps focus on the _filter field, despite clicks on
+      /// other elements.
+      event.preventDefault();
+
+      if(event.target is LIElement) {
+        _markSelected(event.target);
+      }
+    }
+  }
+
+  /**
+   * Setup keys and bindings to methods specific for this widget.
+   */
+  void _setupWidgetKeys() {
+    final Map<String, EventListener> bindings =
+        {'down'     : _handleUpDown,
+         'Enter'    : _handleEnter,
+         'Esc'      : _reset,
+         'Shift+Tab': _handleShiftTab,
+         'Tab'      : _handleTab,
+         'up'       : _handleUpDown};
+
+    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
   }
 }

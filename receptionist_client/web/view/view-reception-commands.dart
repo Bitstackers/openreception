@@ -1,39 +1,55 @@
 part of view;
 
 class ReceptionCommands extends ViewWidget {
-  Place               _myPlace;
-  UIReceptionCommands _ui;
-
-  ReceptionCommands(UIModel this._ui, Place this._myPlace) {
-    _ui.help = 'alt+h';
-
-    registerEventListeners();
-  }
-
-  @override Place   get myPlace => _myPlace;
-  @override UIModel get ui      => _ui;
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIReceptionCommands _ui;
 
   /**
-   * Simply navigate to my [Place]. Matters not if this widget is already
-   * focused.
+   * Constructor.
    */
-  void activateMe(_) {
-    navigateToMyPlace();
+  ReceptionCommands(Model.UIModel this._ui,
+                    Controller.Destination this._myDestination,
+                    Model.UIReceptionSelector this._receptionSelector) {
+    _observers();
   }
+
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
 
-  void registerEventListeners() {
+  /**
+   * Simply navigate to my [Destination]. Matters not if this widget is already
+   * focused.
+   */
+  void activateMe(_) {
+    navigateToMyDestination();
+  }
+
+  /**
+   * Observers.
+   */
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
+
+    _hotKeys.onAltH.listen(activateMe);
 
     _ui.onClick.listen(activateMe);
 
-    _hotKeys.onAltH .listen(activateMe);
+    _receptionSelector.onSelect.listen(render);
   }
 
   /**
    * Render the widget with .....
    */
-  void render() {}
+  void render(Reception reception) {
+    if(reception.isNull) {
+      _ui.clear();
+    } else {
+      _ui.headerExtra = 'for ${reception.name}';
+      _ui.commands = reception.commands;
+    }
+  }
 }

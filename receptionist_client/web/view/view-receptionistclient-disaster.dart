@@ -1,16 +1,17 @@
 part of view;
 
 class ReceptionistclientDisaster {
-  ApplicationState                   _appState;
+  final AppClientState               _appState;
   static ReceptionistclientDisaster  _singleton;
-  final UIReceptionistclientDisaster _ui = new UIReceptionistclientDisaster('receptionistclient-disaster');
+  Model.UIReceptionistclientDisaster _ui;
 
   /**
    * Constructor.
    */
-  factory ReceptionistclientDisaster(ApplicationState appState) {
+  factory ReceptionistclientDisaster(AppClientState appClientState,
+                                     Model.UIReceptionistclientDisaster uiDisaster) {
     if(_singleton == null) {
-      _singleton = new ReceptionistclientDisaster._internal(appState);
+      _singleton = new ReceptionistclientDisaster._internal(appClientState, uiDisaster);
     } else {
       return _singleton;
     }
@@ -19,16 +20,16 @@ class ReceptionistclientDisaster {
   /**
    * Internal constructor.
    */
-  ReceptionistclientDisaster._internal(ApplicationState appState) {
-    _appState = appState;
-    _observers();
+  ReceptionistclientDisaster._internal(AppClientState this._appState,
+                                       Model.UIReceptionistclientDisaster this._ui) {
+   _observers();
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _appState.onChange.listen((AppState appState) =>
-        appState == AppState.Disaster ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((AppState appState) =>
+        appState == AppState.ERROR ? _ui.visible = true : _ui.visible = false);
   }
 }

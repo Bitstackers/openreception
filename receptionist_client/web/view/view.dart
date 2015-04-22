@@ -3,8 +3,10 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
-import '../controller/controller.dart';
-import '../model/model.dart';
+import '../controller/controller.dart' as Controller;
+import '../dummies.dart';
+import '../enums.dart';
+import '../model/model.dart' as Model;
 
 import 'package:openreception_framework/bus.dart';
 
@@ -29,66 +31,59 @@ part 'view-receptionistclient-disaster.dart';
 part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
 
-final HotKeys  _hotKeys  = new HotKeys();
-final Navigate _navigate = new Navigate();
+final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
+final Controller.Navigate _navigate = new Controller.Navigate();
 
-///
-///
-///
-/// TODO (TL): For widgets with with selectable list items, for example contact
-/// and calendar lists, we have a bunch of similar functionality implemented in
-/// each view object. This can and should probably be moved to ViewWidget.
-///
-///
-///
-
+/**
+ * TODO (TL): Comment
+ */
 abstract class ViewWidget {
   /**
-   * SHOULD return the widgets [Place]. MAY return null if the widget has no
-   * [Place] associated with it.
+   * SHOULD return the widgets [Destination]. MAY return null if the widget has
+   * no [Destination] associated with it.
    */
-  Place get myPlace;
+  Controller.Destination get myDestination;
 
   /**
    * What to do when the widget blurs.
    */
-  void onBlur(Place place);
+  void onBlur(Controller.Destination destination);
 
   /**
    * What to do when the widget is focused.
    */
-  void onFocus(Place place);
+  void onFocus(Controller.Destination destination);
 
   /**
    * MUST return the widgets [UIModel].
    */
-  UIModel get ui;
+  Model.UIModel get ui;
 
   /**
-   * Navigate to [myPlace] if widget is not already in focus.
+   * Navigate to [myDestination] if widget is not already in focus.
    */
-  void navigateToMyPlace() {
-    if(!ui.active) {
-      _navigate.go(myPlace);
+  void navigateToMyDestination() {
+    if(!ui.isFocused) {
+      _navigate.go(myDestination);
     }
   }
 
   /**
-   * If [place] is here:
+   * If [destination] is here:
    *  call ui.focus()
    *  call onFocus()
    *
-   * if [place] is not here:
+   * if [destination] is not here:
    *  call ui.blur()
    *  call onBlur();
    */
-  void setWidgetState(Place place) {
-    if(myPlace == place) {
+  void setWidgetState(Controller.Destination destination) {
+    if(myDestination == destination) {
       ui.focus();
-      onFocus(place);
+      onFocus(destination);
     } else {
       ui.blur();
-      onBlur(place);
+      onBlur(destination);
     }
   }
 }

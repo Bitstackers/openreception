@@ -1,25 +1,31 @@
 part of view;
 
 class AgentInfo extends ViewWidget {
-  UIAgentInfo _ui;
+  final Model.UIAgentInfo _ui;
 
-  AgentInfo(UIModel this._ui) {
+  /**
+   * Constructor.
+   */
+  AgentInfo(Model.UIModel this._ui) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = AgentState.Unknown;
-    _ui.alertState = AlertState.On;
+    _ui.agentState = AgentState.UNKNOWN;
+    _ui.alertState = AlertState.ON;
     _ui.portrait = 'images/face.png';
 
-    registerEventListeners();
+    _observers();
   }
 
-  @override Place   get myPlace => null;
-  @override UIModel get ui      => _ui;
+  @override Controller.Destination get myDestination => null;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
 
-  void registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     /// TODO (TL): Add relevant listeners
     ///   _ui.activeCount = active count
     ///   _ui.agentState = agent state

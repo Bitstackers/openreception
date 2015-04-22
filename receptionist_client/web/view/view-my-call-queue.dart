@@ -5,18 +5,18 @@ class MyCallQueue {
   factory MyCallQueue() => _singleton;
 
   /**
-   *
+   * Constructor.
    */
   MyCallQueue._internal() {
-    _registerEventListeners();
+    _observers();
   }
 
   static final DivElement _root = querySelector('#my-call-queue');
 
   /**
-   *
+   * Observers.
    */
-  void _registerEventListeners() {
+  void _observers() {
     // TODO (TL): Stuff...
   }
 }
