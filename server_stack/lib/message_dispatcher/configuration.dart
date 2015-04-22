@@ -6,8 +6,6 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:openreception_framework/common.dart';
-
 Configuration config;
 
 abstract class Default {
@@ -126,7 +124,8 @@ class Configuration {
 
     })
     .catchError((err) {
-      log('Failed to read "$configfile". Error: $err');
+      stderr.writeln('Failed to read "$configfile". Error: $err');
+      throw err;
     });
   }
 
@@ -161,7 +160,7 @@ class Configuration {
       }
 
     }).catchError((error) {
-      log('Failed loading commandline arguments. $error');
+      stderr.writeln('Failed loading commandline arguments. $error');
       throw error;
     });
   }
