@@ -11,4 +11,4 @@ dev_dependencies:
   logging: any
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
-  unittest: any
+  unittest: '>= 0.11.5 < 0.12.0'
