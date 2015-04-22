@@ -91,7 +91,7 @@ class ChannelList extends ESL.ChannelList {
       this.any((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID);
 
   /**
-   * Determine if a peer has any active channels.
+   * Determine the number of active channels a peer has.
    */
   int activeChannelCount (String peerID) =>
       this.where((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID).length;
