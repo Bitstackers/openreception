@@ -15,15 +15,15 @@ part of view;
 
 class Contact {
          final Element             element;
-               model.Contact       contact              = model.Contact.noContact;
+               Model.Contact       contact              = Model.Contact.noContact;
                Context             context;
                UListElement        displayedContactList;
                DivElement          body;
                Element         get header  => element.querySelector('legend');
   static const int                 incrementSteps       = 20;
-               model.Reception     nullReception        = model.Reception.noReception;
-               model.Reception     reception            = model.Reception.noReception;
-               List<model.Contact> filteredContactList  = new List<model.Contact>();
+               Model.Reception     nullReception        = Model.Reception.noReception;
+               Model.Reception     reception            = Model.Reception.noReception;
+               List<Model.Contact> filteredContactList  = new List<Model.Contact>();
 
                List<Element>   get nudges         => this.element.querySelectorAll('.nudge');
                void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);

@@ -52,7 +52,7 @@ class ReceptionWebsites {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.Reception.onReceptionChange.listen(renderReception);
+    Model.Reception.onReceptionChange.listen(renderReception);
 
     element.onClick.listen((_) {
       event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, websiteList.id));
@@ -67,7 +67,7 @@ class ReceptionWebsites {
     });
   }
 
-  void renderReception(model.Reception reception) {
+  void renderReception(Model.Reception reception) {
     websiteList.children.clear();
 
     for(var value in reception.websites) {

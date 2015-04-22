@@ -72,7 +72,7 @@ class ContactData {
     this.backupsHeader         .text = Label.ContactBackups;
   }
 
-  void render(model.Contact contact) {
+  void render(Model.Contact contact) {
     workHoursList.children = contact.workhours.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
 
     if (workHoursList.children.isEmpty) workHoursList.children = [new LIElement()..text = Label.UnkownWorkHours];
@@ -143,7 +143,7 @@ class ContactData {
       telephoneNumberList.children [index-1].querySelector('button').click();
     });
 
-    model.Contact.onContactChange.listen(render);
+    Model.Contact.onContactChange.listen(render);
 
   }
 }

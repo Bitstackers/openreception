@@ -25,14 +25,13 @@ import '../controller/controller.dart' as Controller;
 import '../classes/events.dart' as event;
 import '../classes/focus.dart' hide log;
 import '../classes/location.dart' as nav;
-import '../model/model.dart' as model;
+import '../model/model.dart' as Model;
 import '../components/searchcomponent.dart' as Component;
 import '../service/service.dart' as Service;
 import '../storage/storage.dart' as Storage;
 import '../storage/storage.dart' as storage;
 import 'view-labels-en.dart';
 
-import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -89,8 +88,8 @@ bool handleFocusChange(Focus value, List<Element> focusElements, Element highlig
 class MessageSearchFilter {
   String agent;
   String type;
-  model.ReceptionStub reception;
-  model.Contact contact;
+  Model.ReceptionStub reception;
+  Model.Contact contact;
 
   MessageSearchFilter(this.agent, this.type, this.reception, this.contact);
 }

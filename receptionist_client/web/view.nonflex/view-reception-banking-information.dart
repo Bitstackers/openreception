@@ -51,7 +51,7 @@ class ReceptionBankingInformation {
   void registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.Reception.onReceptionChange.listen(render);
+    Model.Reception.onReceptionChange.listen(render);
 
     element.onClick.listen((_) {
       event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, bankingInformationList.id));
@@ -66,7 +66,7 @@ class ReceptionBankingInformation {
     });
   }
 
-  void render(model.Reception reception) {
+  void render(Model.Reception reception) {
     bankingInformationList.children.clear();
 
     for(var bankingInformation in reception.bankingInformation) {

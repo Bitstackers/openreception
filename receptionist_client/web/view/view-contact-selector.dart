@@ -97,8 +97,8 @@ class ContactSelector extends ViewWidget {
   /// TODO (TL): Get rid of this. It's just here to test stuff.
   void test() {
     _ui.contacts = [new Contact('Trine Løcke Snøcke', tags:['Oplæring','Service']),
-                    new Contact('Thomas Løcke', tags:['Teknik', 'Service', 'Farum', 'salg']),
                     new Contact('Hoop Karaoke', tags:['Entertainment', 'International Business', 'teknik']),
+                    new Contact('Thomas Løcke', tags:['Teknik', 'Service', 'Farum', 'salg']),
                     new Contact('Simpleton McNuggin', tags:['Teknik', 'Glostrup', 'salg', 'løn', 'kreditor'])];
 
     _ui.markSelected(_ui.getContactFirstVisible());

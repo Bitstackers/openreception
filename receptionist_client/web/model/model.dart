@@ -31,6 +31,8 @@ part 'model-transfer-request.dart';
 part 'model-user.dart';
 part 'model-user-status.dart';
 
+import 'package:openreception_framework/bus.dart';
+
 part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';
 part 'model-ui-contact-calendar.dart';
@@ -41,6 +43,10 @@ part 'model-ui-help.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
+part 'model-ui-reception-selector.dart';
+part 'model-ui-receptionistclient-ready.dart';
+part 'model-ui-receptionistclient-disaster.dart';
+part 'model-ui-receptionistclient-loading.dart';
 
 const String libraryName = "model";
 
@@ -146,6 +152,32 @@ abstract class UIModel {
   Stream<MouseEvent> get onClick => _root.onClick;
 
   /**
+   * Find the first proceeding sibling that is not hidden.
+   */
+  LIElement scanAheadForVisibleSibling(LIElement li) {
+    LIElement next = li.nextElementSibling;
+
+    if(next != null && next.classes.contains('hide')) {
+      return scanAheadForVisibleSibling(next);
+    } else {
+      return next;
+    }
+  }
+
+  /**
+   * Find the first preceeding sibling that is not hidden.
+   */
+  LIElement scanBackForVisibleSibling(LIElement li) {
+    LIElement previous = li.previousElementSibling;
+
+    if(previous != null && previous.classes.contains('hide')) {
+      return scanBackForVisibleSibling(previous);
+    } else {
+      return previous;
+    }
+  }
+
+  /**
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
    */
   void _setTabIndex(int index) {
@@ -167,6 +199,22 @@ abstract class UIModel {
   void tabToLast() {
     _lastTabElement.focus();
   }
+}
+
+/**
+ * Dummy ApplicationState class
+ */
+class ApplicationState {
+  static final ApplicationState _singleton = new ApplicationState._internal();
+  factory ApplicationState() => _singleton;
+
+  Bus<AppState> _bus = new Bus<AppState>();
+
+  ApplicationState._internal();
+
+  Stream<AppState> get onChange => _bus.stream;
+
+  set state(AppState state) => _bus.fire(state);
 }
 
 /**
@@ -207,6 +255,27 @@ class Contact {
       _li = element;
       name = _li.text;
       tags = _li.dataset['tags'].split(',');
+    } else {
+      throw new ArgumentError('element is not a LIElement');
+    }
+  }
+}
+
+/**
+ * Dummy reception class
+ */
+class Reception {
+  LIElement    _li = new LIElement()..tabIndex = -1;
+  String       name;
+
+  Reception(String this.name) {
+    _li.text = name;
+  }
+
+  Reception.fromElement(LIElement element) {
+    if(element != null && element is LIElement) {
+      _li = element;
+      name = _li.text;
     } else {
       throw new ArgumentError('element is not a LIElement');
     }

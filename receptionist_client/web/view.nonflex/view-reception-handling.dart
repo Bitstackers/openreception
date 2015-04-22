@@ -20,7 +20,7 @@ part of view;
  * It is a selectable context, and thus subscribes for
  * [event.locationChanged] events.
  *
- * The data used in this widget is [model.Reception].
+ * The data used in this widget is [Model.Reception].
  */
 class ReceptionHandling {
 
@@ -49,12 +49,12 @@ class ReceptionHandling {
   void hideNudges(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   void _registerEventListeners() {
-    model.Reception.onReceptionChange..listen(render);
+    Model.Reception.onReceptionChange..listen(render);
     event.bus.on(event.locationChanged).listen((nav.Location location) => location.setFocusState(element, listElement));
     element.onClick.listen((_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
   }
 
-  void render(model.Reception reception) {
+  void render(Model.Reception reception) {
     listElement.children.clear();
     event.bus.on(event.keyNav).listen((bool isPressed) => this.hideNudges(!isPressed));
 

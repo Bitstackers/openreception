@@ -21,8 +21,8 @@ class ReceptionSelector {
 
   final DivElement                       element;
   final Context                          uiContext;
-  Component.SearchComponent<model.ReceptionStub>   search;
-  model.ReceptionStub                    selectedReception = new model.ReceptionStub.none();
+  Component.SearchComponent<Model.ReceptionStub>   search;
+  Model.ReceptionStub                    selectedReception = new Model.ReceptionStub.none();
   bool get muted     => this.uiContext != Context.current;
   dynamic onSelectReception = () => null;
 
@@ -37,7 +37,7 @@ class ReceptionSelector {
 
     String searchBoxId = element.attributes['data-default-element'];
 
-    search = new Component.SearchComponent<model.ReceptionStub>(element, uiContext, searchBoxId)
+    search = new Component.SearchComponent<Model.ReceptionStub>(element, uiContext, searchBoxId)
       ..searchPlaceholder = Label.ReceptionSearch
       ..whenClearSelection = whenClearSelection
       ..listElementToString = listElementToString
@@ -56,7 +56,7 @@ class ReceptionSelector {
   }
 
   Future initialFill() {
-    return storage.Reception.list().then((List<model.ReceptionStub> list) {
+    return storage.Reception.list().then((List<Model.ReceptionStub> list) {
       search.updateSourceList(list.toList(growable: false));
       return this.element.append(new Nudge(NavShortcut).element);
     });
@@ -65,8 +65,8 @@ class ReceptionSelector {
   void _registerEventlisteners(_) {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.Reception.onReceptionChange.listen((model.Reception value) {
-      if(value == model.Reception.noReception && selectedReception.isNotNull()) {
+    Model.Reception.onReceptionChange.listen((Model.Reception value) {
+      if(value == Model.Reception.noReception && selectedReception.isNotNull()) {
         search.clearSelection();
 
       } else {
@@ -76,13 +76,13 @@ class ReceptionSelector {
     });
   }
 
-  bool _receptionEquality(model.ReceptionStub x, model.ReceptionStub y) => x.ID == y.ID;
+  bool _receptionEquality(Model.ReceptionStub x, Model.ReceptionStub y) => x.ID == y.ID;
 
   void whenClearSelection() {
-    new Future(() => Controller.Reception.change (model.Reception.noReception));
+    new Future(() => Controller.Reception.change (Model.Reception.noReception));
   }
 
-  String listElementToString(model.ReceptionStub reception, String searchText) {
+  String listElementToString(Model.ReceptionStub reception, String searchText) {
     if(searchText == null || searchText.isEmpty) {
       return reception.name;
     } else {
@@ -95,12 +95,12 @@ class ReceptionSelector {
     }
   }
 
-  bool searchFilter(model.ReceptionStub reception, String searchText) {
+  bool searchFilter(Model.ReceptionStub reception, String searchText) {
     return reception.name.toLowerCase().contains(searchText.toLowerCase());
   }
 
-  void elementSelected(model.ReceptionStub receptionStub) {
-    storage.Reception.get(receptionStub.ID).then((model.Reception reception) {
+  void elementSelected(Model.ReceptionStub receptionStub) {
+    storage.Reception.get(receptionStub.ID).then((Model.Reception reception) {
       Controller.Reception.change (reception);
       this.onSelectReception(); //Callback function.
 

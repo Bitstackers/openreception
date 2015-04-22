@@ -23,6 +23,12 @@ abstract class UserConstants {
  */
 class User extends ORModel.User {
 
+  Bus _idle = new Bus();
+  Stream get onIdle => this._idle.stream;
+
+  Bus _pause = new Bus();
+  Stream get onPause => this._pause.stream;
+
   static final className = '${libraryName}.User';
   static final int noID = ORModel.User.nullID;
 
@@ -40,7 +46,7 @@ class User extends ORModel.User {
   static              set currentUser (ORModel.User newUser) => _currentUser = newUser;
 
   /**
-   * Null object constructor.
+   * Object constructor.
    */
   User.fromMap(Map map) : super.fromMap(map);
 

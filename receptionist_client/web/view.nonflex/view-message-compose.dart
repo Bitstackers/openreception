@@ -54,7 +54,7 @@ class Message {
 
   List<Element> focusElements;
 
-  model.Contact contact = model.Contact.noContact;
+  Model.Contact contact = Model.Contact.noContact;
   ORModel.MessageRecipientList recipients = new ORModel.MessageRecipientList.empty();
 
   /**
@@ -231,11 +231,11 @@ class Message {
   /**
    * Event handler responsible for updating the recipient list (and UI) when a contact is changed.
    */
-  void _renderContact(model.Contact contact) {
+  void _renderContact(Model.Contact contact) {
     this.contact = contact;
 
     this.recipients = new ORModel.MessageRecipientList.empty();
-    if (this.contact != model.Contact.noContact) {
+    if (this.contact != Model.Contact.noContact) {
       this.disabled = false;
         contact.distributionList.forEach((ORModel.MessageRecipient recipient) {
           this.recipients.add(recipient);
@@ -253,9 +253,9 @@ class Message {
 
     event.bus.on(event.locationChanged).listen(this._onLocationChanged);
 
-    model.Contact.onContactChange.listen(this._renderContact);
+    Model.Contact.onContactChange.listen(this._renderContact);
 
-    event.bus.on(event.callChanged).listen((model.Call value) {
+    event.bus.on(event.callChanged).listen((Model.Call value) {
       if (value.callerID != null ) {
         callerPhoneField.value = '${value.callerID}';
       } else {
@@ -270,9 +270,9 @@ class Message {
   /**
    * Extracts a Message from the information stored in the widget
    */
-  Future<model.Message> _harvestMessage() {
+  Future<Model.Message> _harvestMessage() {
     return contact.contextMap().then((Map contextMap) {
-      model.Message pendingMessage = new model.Message.fromMap({
+      Model.Message pendingMessage = new Model.Message.fromMap({
         'message': messageBodyField.value,
         'phone': callerPhoneField.value,
         'caller': {
@@ -288,10 +288,10 @@ class Message {
       });
 
       /// Check if tags should be added to the message and if so; add them.
-      pleaseCall.checked ? pendingMessage.addFlag(model.MessageFlag.PleaseCall)   : null;
-      callsBack.checked  ? pendingMessage.addFlag(model.MessageFlag.willCallBack) : null;
-      hasCalled.checked  ? pendingMessage.addFlag(model.MessageFlag.Called)       : null;
-      urgent.checked     ? pendingMessage.addFlag(model.MessageFlag.Urgent)       : null;
+      pleaseCall.checked ? pendingMessage.addFlag(Model.MessageFlag.PleaseCall)   : null;
+      callsBack.checked  ? pendingMessage.addFlag(Model.MessageFlag.willCallBack) : null;
+      hasCalled.checked  ? pendingMessage.addFlag(Model.MessageFlag.Called)       : null;
+      urgent.checked     ? pendingMessage.addFlag(Model.MessageFlag.Urgent)       : null;
 
       /// For now, draft is merely a flag we tag the message with.
       draft.checked      ? pendingMessage.addFlag('draft') : null;
@@ -300,7 +300,7 @@ class Message {
         pendingMessage.recipients.add(recipient);
       }
 
-      pendingMessage.sender = model.User.currentUser;
+      pendingMessage.sender = Model.User.currentUser;
 
       return pendingMessage;
     });
@@ -312,14 +312,14 @@ class Message {
   void _sendHandler(_) {
     this.loading  = true;
 
-    this._harvestMessage().then ((model.Message message) {
+    this._harvestMessage().then ((Model.Message message) {
       message.sendTMP().then((_) {
-        model.NotificationList.instance.add(new model.Notification
-            (Label.MessageSent, type : model.NotificationType.Success));
+        Model.NotificationList.instance.add(new Model.Notification
+            (Label.MessageSent, type : Model.NotificationType.Success));
         this._clearInputFields();
       }).catchError(() {
-        model.NotificationList.instance.add(new model.Notification
-            (Label.MessageNotUpdated, type : model.NotificationType.Error));
+        Model.NotificationList.instance.add(new Model.Notification
+            (Label.MessageNotUpdated, type : Model.NotificationType.Error));
       })
       .whenComplete(() => this.loading = false);
     });
@@ -331,14 +331,14 @@ class Message {
   void _saveHandler(_) {
     this.disabled = true;
 
-    this._harvestMessage().then ((model.Message message) {
+    this._harvestMessage().then ((Model.Message message) {
       message.saveTMP().then((_) {
-        model.NotificationList.instance.add(new model.Notification
-            (Label.MessageSent, type : model.NotificationType.Success));
+        Model.NotificationList.instance.add(new Model.Notification
+            (Label.MessageSent, type : Model.NotificationType.Success));
         this._clearInputFields();
       }).catchError((error, stackTrace) {
-        model.NotificationList.instance.add(new model.Notification
-            (Label.MessageNotUpdated, type : model.NotificationType.Error));
+        Model.NotificationList.instance.add(new Model.Notification
+            (Label.MessageNotUpdated, type : Model.NotificationType.Error));
       }).whenComplete(() => this.disabled = false);
     });
   }

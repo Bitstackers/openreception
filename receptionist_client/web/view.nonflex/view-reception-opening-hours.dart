@@ -45,7 +45,7 @@ class ReceptionOpeningHours {
   void registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.Reception.onReceptionChange..listen((model.Reception reception) {
+    Model.Reception.onReceptionChange..listen((Model.Reception reception) {
       render(reception);
     });
 
@@ -68,7 +68,7 @@ class ReceptionOpeningHours {
     }
   }
 
-  void render(model.Reception reception) {
+  void render(Model.Reception reception) {
     openingHoursList.children.clear();
 
     for(var value in reception.openingHours) {

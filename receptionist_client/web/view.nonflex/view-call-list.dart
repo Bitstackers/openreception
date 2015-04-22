@@ -33,12 +33,12 @@ class CallList {
   int callCount = 0;
 
   CallList(Element this.element, Context this.context,
-      model.CallList observedCallList) {
+      Model.CallList observedCallList) {
     this._registerEventListerns(observedCallList);
     this._renderHeader();
   }
 
-  void _registerEventListerns(model.CallList callList) {
+  void _registerEventListerns(Model.CallList callList) {
     MutationObserver listChangeObserver = new MutationObserver
         ((List<MutationRecord> mutations, MutationObserver observer) =>
             this._renderHeader());
@@ -47,7 +47,7 @@ class CallList {
     listChangeObserver.observe(queuedCallUL, childList: true);
 
 
-    callList.onInsert.listen((model.Call call) {
+    callList.onInsert.listen((Model.Call call) {
       this._renderCall(call, this.queuedCallUL);
     });
 
@@ -57,11 +57,11 @@ class CallList {
 
   }
 
-  void renderList(model.CallList callList) {
-    callList.where((model.Call call) =>
-      call.availableForUser(model.User.currentUser))
-      .forEach((model.Call call) {
-        if ([model.CallState.PARKED, model.CallState.SPEAKING].contains(call.state)) {
+  void renderList(Model.CallList callList) {
+    callList.where((Model.Call call) =>
+      call.availableForUser(Model.User.currentUser))
+      .forEach((Model.Call call) {
+        if ([Model.CallState.PARKED, Model.CallState.SPEAKING].contains(call.state)) {
           this._renderCall(call, this.ownedCallsUL);
         } else
           this._renderCall(call, queuedCallUL);
@@ -71,9 +71,9 @@ class CallList {
   }
 
   /**
-   * Renders a [model.Call] object.
+   * Renders a [Model.Call] object.
    */
-  void _renderCall(model.Call call, UListElement list) {
+  void _renderCall(Model.Call call, UListElement list) {
     Call callView = new Call(call);
 
 //    call.callState.listen(onData).on(model.Call.answered).listen((_) {
@@ -119,7 +119,7 @@ class CallList {
 //    });
 
 
-    if (call.currentState == model.CallState.QUEUED) {
+    if (call.currentState == Model.CallState.QUEUED) {
       callView.element.classes.toggle (CssClass.callEnqueued, true);
     }
 

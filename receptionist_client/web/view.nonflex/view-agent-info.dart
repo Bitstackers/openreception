@@ -29,11 +29,11 @@ class AgentInfo {
   TableCellElement pausedTD;
   ImageElement     portrait;
   TableElement     table;
-  Controller.User  _user = new Controller.User(); // TODO (TL): ARGH! Broken MVC pattern here...
+  Model.User       user;
 
   Element get userStatusElement => element.querySelector('#${Id.agentInfoStatus}');
 
-  AgentInfo(DivElement this.element) {
+  AgentInfo(DivElement this.element, this.user) {
     divParent = element.querySelector('#${Id.agentInfoStats}');
     table = divParent.querySelector('table');
     divFace = divParent.querySelector('#${Id.agentInfoPortrait}');
@@ -52,11 +52,11 @@ class AgentInfo {
     // this state "forced" upon us by Model.User, and not have to call Service
     // from here.
     new Future.delayed(new Duration(seconds: 1, milliseconds: 500), () {
-      if(model.User.currentUser != null) {
+      if(Model.User.currentUser != null) {
         //FIXME: implement an photoUrl in the User class in the framework.
-        portrait.src = model.User.currentUser.toJson()['remote_attributes']['picture'];
+        portrait.src = Model.User.currentUser.toJson()['remote_attributes']['picture'];
 
-        Service.Call.instance.userState(model.User.currentUser.ID).then((model.UserStatus newUserStatus) {
+        Service.Call.instance.userState(Model.User.currentUser.ID).then((Model.UserStatus newUserStatus) {
           this._updateUserState(newUserStatus);
         });
       }
@@ -74,7 +74,7 @@ class AgentInfo {
     this.pausedLabelTD.text = ': ${Label.Paused}';
   }
 
-  _updateUserState (model.UserStatus newUserStatus) {
+  _updateUserState (Model.UserStatus newUserStatus) {
     switch (newUserStatus.state) {
       case (ORModel.UserState.Unknown):
         userStatusElement.children = [Icon.Unknown];
@@ -115,11 +115,11 @@ class AgentInfo {
   }
 
   void initialSetup() {
-    Service.Call.instance.userStateList().then((Iterable<model.UserStatus> userStates) {
-      this.active = userStates.where((model.UserStatus user)
+    Service.Call.instance.userStateList().then((Iterable<Model.UserStatus> userStates) {
+      this.active = userStates.where((Model.UserStatus user)
           => user.state != ORModel.UserState.Idle).length;
 
-      this.paused= userStates.where((model.UserStatus user)
+      this.paused= userStates.where((Model.UserStatus user)
           => user.state != ORModel.UserState.Paused).length;
 
     })
@@ -128,8 +128,8 @@ class AgentInfo {
   }
 
   void registerEventListeners() {
-    _user.onIdle   .listen((_) => userStatusElement.children = [Icon.Idle]);
-    _user.onPaused .listen((_) => userStatusElement.children = [Icon.Pause]);
+    user.onIdle    .listen((_) => userStatusElement.children = [Icon.Idle]);
+    user.onPause   .listen((_) => userStatusElement.children = [Icon.Pause]);
     window.onResize.listen((_) => resize());
   }
 

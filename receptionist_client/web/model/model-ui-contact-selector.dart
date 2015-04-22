@@ -172,13 +172,8 @@ class UIContactSelector extends UIModel {
    * Return null if we're at last element.
    */
   Contact nextContactInList() {
-    try {
-      LIElement li = _contactList.querySelector('.selected').nextElementSibling;
-      return li == null || li.classes.contains('hide') ? null : new Contact.fromElement(li);
-    } catch(e) {
-      print(e);
-      return null;
-    }
+    LIElement li = scanAheadForVisibleSibling(_contactList.querySelector('.selected'));
+    return li == null ? null : new Contact.fromElement(li);
   }
 
   /**
@@ -186,13 +181,8 @@ class UIContactSelector extends UIModel {
    * Return null if we're at first element.
    */
   Contact previousContactInList() {
-    try {
-      LIElement li = _contactList.querySelector('.selected').previousElementSibling;
-      return li == null || li.classes.contains('hide') ? null : new Contact.fromElement(li);
-    } catch(e) {
-      print(e);
-      return null;
-    }
+    LIElement li = scanBackForVisibleSibling(_contactList.querySelector('.selected'));
+    return li == null ? null : new Contact.fromElement(li);
   }
 
   void _registerEventListeners() {

@@ -26,20 +26,20 @@ class WelcomeMessage {
    *
    */
   WelcomeMessage(DivElement this.container) {
-    model.Reception.onReceptionChange.listen(this._onReceptionChange);
+    Model.Reception.onReceptionChange.listen(this._onReceptionChange);
 
-    model.Call.activeCallChanged.listen(_onCallChange);
+    Model.Call.activeCallChanged.listen(_onCallChange);
   }
 
   /**
    *
    */
-  void _onReceptionChange(model.Reception reception) {
-    if (model.Call.activeCall != model.noCall) {
-      if (reception == model.Reception.noReception) {
+  void _onReceptionChange(Model.Reception reception) {
+    if (Model.Call.activeCall != Model.noCall) {
+      if (reception == Model.Reception.noReception) {
          log.severe('Changing to null reception while in call - very suspicius.');
       } else {
-        if (model.Call.activeCall.greetingPlayed) {
+        if (Model.Call.activeCall.greetingPlayed) {
           this._render(reception.shortGreeting);
         } else {
           this._render(reception.greeting);
@@ -53,13 +53,13 @@ class WelcomeMessage {
   /**
    * Marks the widget as being active.
    */
-  void _onCallChange(model.Call call) {
+  void _onCallChange(Model.Call call) {
     log.finest("Changed to call ${call.ID}", "WelcomeMessage");
 
-    container.classes.toggle(CssClass.welcomeMessageActiveCall, call != model.noCall);
+    container.classes.toggle(CssClass.welcomeMessageActiveCall, call != Model.noCall);
 
-    if (call != model.noCall && call.greetingPlayed) {
-      storage.Reception.get(call.receptionID).then((model.Reception reception) {
+    if (call != Model.noCall && call.greetingPlayed) {
+      storage.Reception.get(call.receptionID).then((Model.Reception reception) {
           this._render(!call.greetingPlayed ? reception.greeting : reception.shortGreeting);
         });
     }

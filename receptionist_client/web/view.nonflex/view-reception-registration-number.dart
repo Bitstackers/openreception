@@ -51,7 +51,7 @@ class ReceptionRegistrationNumber {
   void registerEventListeners() {
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.Reception.onReceptionChange.listen(render);
+    Model.Reception.onReceptionChange.listen(render);
 
     element.onClick.listen((_) {
       event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, registrationNumberList.id));
@@ -66,7 +66,7 @@ class ReceptionRegistrationNumber {
     });
   }
 
-  void render(model.Reception reception) {
+  void render(Model.Reception reception) {
     registrationNumberList.children.clear();
 
     for(var value in reception.vatNumbers) {

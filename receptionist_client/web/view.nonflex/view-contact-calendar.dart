@@ -114,11 +114,11 @@ class ContactCalendar {
   void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
 
   UListElement get eventList => this.element.querySelector("#${Id.contactCalendarList}");
-  model.Contact currentContact;
+  Model.Contact currentContact;
 
-  model.Reception reception;
+  Model.Reception reception;
 
-  model.ContactCalendar observedContactCalendar;
+  Model.ContactCalendar observedContactCalendar;
 
   bool hasFocus = false;
 
@@ -131,7 +131,7 @@ class ContactCalendar {
   LIElement       get selectedElement
     => this.eventList.children.firstWhere((LIElement child)
       => child.classes.contains(CssClass.selected),
-         orElse : () => new LIElement()..hidden = true..value = model.ContactCalendarEntry.noID);
+         orElse : () => new LIElement()..hidden = true..value = Model.ContactCalendarEntry.noID);
 
   void            set selectedElement (LIElement element) {
     assert (element != null);
@@ -161,7 +161,7 @@ class ContactCalendar {
    * Create a new calendar event.
    */
   void _createEvent() {
-    eventID = model.ContactCalendarEntry.noID;
+    eventID = Model.ContactCalendarEntry.noID;
     this.newEventWidget.hidden = !this.newEventWidget.hidden;
 
     this.eventList.hidden = !this.newEventWidget.hidden;
@@ -209,8 +209,8 @@ class ContactCalendar {
     int eventID = this.selectedElement.value;
 
     if (!this.newEventWidget.hidden) {
-      model.Contact.selectedContact.calendarEventList().then((List<model.ContactCalendarEntry> eventList) {
-        model.ContactCalendarEntry event = Controller.findEvent(eventList, eventID);
+      Model.Contact.selectedContact.calendarEventList().then((List<Model.ContactCalendarEntry> eventList) {
+        Model.ContactCalendarEntry event = Controller.findEvent(eventList, eventID);
 
         this._selectedStartDate = event.startTime;
         this._selectedEndDate = event.stopTime;
@@ -230,10 +230,10 @@ class ContactCalendar {
   /**
    * Harvests the typed information from the widget and returns a CalendarEvent object.
    */
-  model.ContactCalendarEntry _getEvent() {
+  Model.ContactCalendarEntry _getEvent() {
     assert (_inFocus && !this.newEventWidget.hidden);
 
-    return new model.ContactCalendarEntry (this.currentContact.ID, this.currentContact.receptionID)
+    return new Model.ContactCalendarEntry (this.currentContact.ID, this.currentContact.receptionID)
               ..ID       = this.eventID
               ..content = this.newEventField.value
               ..beginsAt = this._selectedStartDate
@@ -285,12 +285,12 @@ class ContactCalendar {
     });
 
     this.observedContactCalendar.onCalendarEventCreate
-      .listen((model.ContactCalendarEntry newEntry) {
-        if (newEntry.contactID == model.Contact.selectedContact.ID &&
-            newEntry.receptionID == model.Reception.selectedReception.ID) {
+      .listen((Model.ContactCalendarEntry newEntry) {
+        if (newEntry.contactID == Model.Contact.selectedContact.ID &&
+            newEntry.receptionID == Model.Reception.selectedReception.ID) {
 
           log.finest('Reloading calendarlist for ${newEntry.contactID}@${newEntry.receptionID}');
-        storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.ContactCalendarEntry> eventList) {
+        storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<Model.ContactCalendarEntry> eventList) {
             this._render(eventList);
           }).catchError((error) {
             log.severe('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
@@ -302,16 +302,16 @@ class ContactCalendar {
 
 
 
-    model.Reception.onReceptionChange..listen((model.Reception reception) {
+    Model.Reception.onReceptionChange..listen((Model.Reception reception) {
       this.reception = reception;
     });
 
-    model.Contact.onContactChange.listen((model.Contact newContact) {
+    Model.Contact.onContactChange.listen((Model.Contact newContact) {
       this.currentContact = newContact;
 
       /*  */
-      if (newContact != model.Contact.noContact) {
-        storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<model.ContactCalendarEntry> eventList) {
+      if (newContact != Model.Contact.noContact) {
+        storage.Contact.calendar(this.currentContact.ID, reception.ID).then((List<Model.ContactCalendarEntry> eventList) {
           this._render(eventList);
         }).catchError((error) {
           log.shout('components.ContactInfoCalendar._registerEventListeners Error while fetching contact calendar ${error}');
@@ -327,13 +327,13 @@ class ContactCalendar {
    *   - Figure out how to store which element was selected before rendering
    *     to be able to re-select it again after the rendering.
    */
-  void _render(List<model.ContactCalendarEntry> events) {
+  void _render(List<Model.ContactCalendarEntry> events) {
     // Make a copy before sorting to preserve function purity.
-    List<model.ContactCalendarEntry> listCopy = []..addAll(events)
+    List<Model.ContactCalendarEntry> listCopy = []..addAll(events)
                                            ..sort();
 
     /// Event-to-DOM template.
-    Element eventToDOM (model.ContactCalendarEntry event) {
+    Element eventToDOM (Model.ContactCalendarEntry event) {
       String html = '''
         <li class="${event.active ? CssClass.receptionEventsActive : ''}" value=${event.ID}>
           <table class="${CssClass.calendarEventTable}">
@@ -359,7 +359,7 @@ class ContactCalendar {
     }
 
     // Turn every event into a DOM node and attach click handler that selects the event.
-    eventList.children = listCopy.map((model.ContactCalendarEntry event) {
+    eventList.children = listCopy.map((Model.ContactCalendarEntry event) {
       Element domElement = eventToDOM(event);
               domElement.onClick.listen((_) => this.selectedElement = domElement);
 

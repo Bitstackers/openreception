@@ -31,7 +31,7 @@ part 'service-authentication.dart';
 part 'service-call.dart';
 part 'service-contact.dart';
 part 'service-message.dart';
-part 'service-notification.dart';
+part '../classes/service-notification.dart';
 part 'service-peer.dart';
 part 'service-reception.dart';
 

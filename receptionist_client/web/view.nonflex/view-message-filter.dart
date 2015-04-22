@@ -23,8 +23,8 @@ class MessageFilter{
 
   Component.SearchComponent<String> agentSearch;
   Component.SearchComponent<String> typeSearch;
-  Component.SearchComponent<model.ReceptionStub> receptionSearch;
-  Component.SearchComponent<model.Contact> contactSearch;
+  Component.SearchComponent<Model.ReceptionStub> receptionSearch;
+  Component.SearchComponent<Model.Contact> contactSearch;
 
   Element       get header                       => this.element.querySelector('legend');
   ButtonElement get saveMessageButton            => this.element.querySelector('button.save');
@@ -46,9 +46,9 @@ class MessageFilter{
       ..selectElement(Label.All)
       ..selectedElementChanged = (String text) {
         if (text != Label.All) {
-          model.MessageFilter.current.userID = int.parse(text);
+          Model.MessageFilter.current.userID = int.parse(text);
         } else {
-          model.MessageFilter.current.userID = null;
+          Model.MessageFilter.current.userID = null;
         }
         searchParametersChanged();
     };
@@ -60,19 +60,19 @@ class MessageFilter{
       ..selectedElementChanged = (String text) {
       switch (text) {
         case Label.Sent:
-          model.MessageFilter.current.messageState = ORModel.MessageState.Sent;
+          Model.MessageFilter.current.messageState = ORModel.MessageState.Sent;
           break;
 
         case Label.Saved:
-          model.MessageFilter.current.messageState = ORModel.MessageState.Saved;
+          Model.MessageFilter.current.messageState = ORModel.MessageState.Saved;
           break;
 
         case Label.Pending:
-          model.MessageFilter.current.messageState = ORModel.MessageState.Pending;
+          Model.MessageFilter.current.messageState = ORModel.MessageState.Pending;
           break;
 
         default:
-          model.MessageFilter.current.messageState = null;
+          Model.MessageFilter.current.messageState = null;
           break;
 
       }
@@ -80,49 +80,49 @@ class MessageFilter{
       searchParametersChanged();
     };
 
-    receptionSearch = new Component.SearchComponent<model.ReceptionStub>(body.querySelector('#${Id.messageSearchReception}'), _context, 'message-search-company-searchbar')
+    receptionSearch = new Component.SearchComponent<Model.ReceptionStub>(body.querySelector('#${Id.messageSearchReception}'), _context, 'message-search-company-searchbar')
       ..searchPlaceholder = Label.ReceptionSearch
-      ..selectedElementChanged = (model.ReceptionStub receptionStub) {
+      ..selectedElementChanged = (Model.ReceptionStub receptionStub) {
       if (receptionStub.isNull()) {
-        model.MessageFilter.current.receptionID = null;
-        model.MessageFilter.current.contactID = null;
-        contactSearch.updateSourceList([model.Contact.noContact]);
+        Model.MessageFilter.current.receptionID = null;
+        Model.MessageFilter.current.contactID = null;
+        contactSearch.updateSourceList([Model.Contact.noContact]);
         searchParametersChanged();
         return;
       }
-        storage.Reception.get(receptionStub.ID).then((model.Reception reception) {
+        storage.Reception.get(receptionStub.ID).then((Model.Reception reception) {
 
-          model.MessageFilter.current.receptionID = reception.ID;
-          model.MessageFilter.current.contactID = null;
+          Model.MessageFilter.current.receptionID = reception.ID;
+          Model.MessageFilter.current.contactID = null;
           searchParametersChanged();
 
-          model.Contact.list(reception.ID).then((List<model.Contact> contacts) {
-            contactSearch.updateSourceList([model.Contact.noContact..fullName = Label.All]..addAll(contacts));
+          Model.Contact.list(reception.ID).then((List<Model.Contact> contacts) {
+            contactSearch.updateSourceList([Model.Contact.noContact..fullName = Label.All]..addAll(contacts));
           }).catchError((error) {
-            contactSearch.updateSourceList(new model.ContactList.emptyList().toList(growable: false));
+            contactSearch.updateSourceList(new Model.ContactList.emptyList().toList(growable: false));
           });
         });
       }
-      ..searchFilter = (model.ReceptionStub reception, String searchText) {
+      ..searchFilter = (Model.ReceptionStub reception, String searchText) {
         return reception.name.toLowerCase().contains(searchText.toLowerCase());
       }
       ..listElementToString = companyListElementToString;
 
-      storage.Reception.list().then((List<model.ReceptionStub> receptions) {
+      storage.Reception.list().then((List<Model.ReceptionStub> receptions) {
         receptionSearch.updateSourceList(receptions.toList());
       });
 
-    contactSearch = new Component.SearchComponent<model.Contact>(body.querySelector('#${Id.messageSearchContact}'), _context, 'message-search-contact-searchbar')
+    contactSearch = new Component.SearchComponent<Model.Contact>(body.querySelector('#${Id.messageSearchContact}'), _context, 'message-search-contact-searchbar')
       ..searchPlaceholder = Label.ReceptionContacts
       ..listElementToString = contactListElementToString
-      ..searchFilter = (model.Contact contact, String searchText) {
+      ..searchFilter = (Model.Contact contact, String searchText) {
         return contact.fullName.toLowerCase().contains(searchText.toLowerCase());
       }
-      ..selectedElementChanged = (model.Contact contact) {
-        if (contact == model.Contact.noContact) {
-          model.MessageFilter.current.contactID = null;
+      ..selectedElementChanged = (Model.Contact contact) {
+        if (contact == Model.Contact.noContact) {
+          Model.MessageFilter.current.contactID = null;
         } else {
-          model.MessageFilter.current.contactID = contact.ID;
+          Model.MessageFilter.current.contactID = contact.ID;
         }
 
         searchParametersChanged();
@@ -134,7 +134,7 @@ class MessageFilter{
                             new SpanElement()..text = Label.MessageFilter];
   }
 
-  String companyListElementToString(model.ReceptionStub reception, String searchText) {
+  String companyListElementToString(Model.ReceptionStub reception, String searchText) {
     if(searchText == null || searchText.isEmpty) {
       return reception.name;
     } else {
@@ -147,7 +147,7 @@ class MessageFilter{
     }
   }
 
-  String contactListElementToString(model.Contact contact, String searchText) {
+  String contactListElementToString(Model.Contact contact, String searchText) {
     if(searchText == null || searchText.isEmpty) {
       return contact.fullName;
     } else {
@@ -162,6 +162,6 @@ class MessageFilter{
 
   void searchParametersChanged() {
     log.finest('messagesearch. The search parameters have changed.');
-    event.bus.fire(event.messageFilterChanged, model.MessageFilter.current);
+    event.bus.fire(event.messageFilterChanged, Model.MessageFilter.current);
   }
 }

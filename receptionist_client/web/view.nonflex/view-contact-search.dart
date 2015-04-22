@@ -18,14 +18,14 @@ class ContactSearch {
   static const String className = '${libraryName}.ContactInfoSearch';
   static const String NavShortcut = 'S';
 
-               model.Contact       contact              = model.Contact.noContact;
+               Model.Contact       contact              = Model.Contact.noContact;
                Context             context;
                UListElement    get displayedContactList => element.querySelector('#${Id.contactSelectorList}');
                DivElement          element;
-               List<model.Contact> filteredContactList  = new List<model.Contact>();
+               List<Model.Contact> filteredContactList  = new List<Model.Contact>();
   static const int                 incrementSteps       = 20;
-               model.Reception     reception            = model.Reception.noReception;
-               List<model.Contact> contactList;
+               Model.Reception     reception            = Model.Reception.noReception;
+               List<Model.Contact> contactList;
                InputElement    get searchBox            => this.element.querySelector('#${Id.contactSelectorInput}');
                Element             widget;
 
@@ -49,7 +49,7 @@ class ContactSearch {
     event.bus.fire(event.locationChanged, new nav.Location(context.id, widget.id, searchBox.id));
   }
 
-  void activeContact(model.Contact contact) {
+  void activeContact(Model.Contact contact) {
     for(LIElement element in displayedContactList.children) {
       element.classes.toggle(CssClass.selected, element.value == contact.ID);
     }
@@ -65,7 +65,7 @@ class ContactSearch {
 
   void contactClick(Event e) {
     LIElement element = e.target;
-    model.Contact contact = model.Contact.findContact(element.value, contactList);
+    Model.Contact contact = Model.Contact.findContact(element.value, contactList);
     activeContact(contact);
     if(!hasFocus) {
       this.focus();
@@ -74,7 +74,7 @@ class ContactSearch {
 
   bool _overflows(Element element) => element.scrollHeight > element.clientHeight;
 
-  LIElement makeContactElement(model.Contact contact) =>
+  LIElement makeContactElement(Model.Contact contact) =>
     new LIElement()
       ..text = contact.fullName
       ..value = contact.ID
@@ -96,7 +96,7 @@ class ContactSearch {
       li.classes.toggle(CssClass.selected, false);
       previous.classes.toggle(CssClass.selected, true);
       int contactId = previous.value;
-      model.Contact con = model.Contact.findContact(contactId, contactList);
+      Model.Contact con = Model.Contact.findContact(contactId, contactList);
       if(con != null) {
         Controller.Contact.change(con);
       }
@@ -112,7 +112,7 @@ class ContactSearch {
           li.classes.remove(CssClass.selected);
           next.classes.add(CssClass.selected);
           int contactId = next.value;
-          model.Contact con = model.Contact.findContact(contactId, contactList);
+          Model.Contact con = Model.Contact.findContact(contactId, contactList);
           if(con != null) {
             Controller.Contact.change(con);
           }
@@ -124,7 +124,7 @@ class ContactSearch {
   }
 
   void _performSearch(String search) {
-    model.Contact _selectedContact = model.Contact.noContact;
+    Model.Contact _selectedContact = Model.Contact.noContact;
     //Clear filtered list
     filteredContactList.clear();
 
@@ -132,7 +132,7 @@ class ContactSearch {
     if(search.isEmpty) {
       filteredContactList.addAll(contactList);
     } else {
-      filteredContactList.addAll(contactList.where((model.Contact contact) => contactMatches(contact, search)));
+      filteredContactList.addAll(contactList.where((Model.Contact contact) => contactMatches(contact, search)));
     }
 
     _clearDisplayedContactList();
@@ -141,27 +141,27 @@ class ContactSearch {
       _selectedContact = filteredContactList.first;
       _showMoreElements(incrementSteps);
     } else {
-      _selectedContact = model.Contact.noContact;
+      _selectedContact = Model.Contact.noContact;
     }
     activeContact(_selectedContact);
   }
 
   void registerEventListeners() {
 
-    model.Reception.onReceptionChange..listen((model.Reception newReception) {
+    Model.Reception.onReceptionChange..listen((Model.Reception newReception) {
       reception = newReception;
-      searchBox.disabled = newReception == model.Reception.noReception;
-      if(newReception == model.Reception.noReception) {
+      searchBox.disabled = newReception == Model.Reception.noReception;
+      if(newReception == Model.Reception.noReception) {
         searchBox.value = '';
       }
 
-      model.Contact.list(reception.ID).then((List<model.Contact> list) {
+      Model.Contact.list(reception.ID).then((List<Model.Contact> list) {
         contactList = list;
         _performSearch(searchBox.value);
       }).catchError((error) => contactList = []);
     });
 
-    model.Contact.onContactChange.listen((model.Contact value) {
+    Model.Contact.onContactChange.listen((Model.Contact value) {
       contact = value;
     });
 
@@ -195,7 +195,7 @@ class ContactSearch {
     }
   }
 
-  bool contactMatches(model.Contact value, String search) {
+  bool contactMatches(Model.Contact value, String search) {
     String searchTerm = search.trim();
     if(searchTerm.contains(' ')) {
       var terms = searchTerm.toLowerCase().split(' ');

@@ -51,7 +51,7 @@ class ReceptionAlternateNames {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.Reception.onReceptionChange.listen(render);
+    Model.Reception.onReceptionChange.listen(render);
 
     element.onClick.listen((_) {
       event.bus.fire(event.locationChanged, new nav.Location(uiContext.id, element.id, alternateNamesList.id));
@@ -66,7 +66,7 @@ class ReceptionAlternateNames {
     });
   }
 
-  void render(model.Reception reception) {
+  void render(Model.Reception reception) {
     alternateNamesList.children.clear();
 
     for(var value in reception.alternateNames) {

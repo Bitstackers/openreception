@@ -2,14 +2,13 @@ part of view;
 
 class ReceptionCalendar extends ViewWidget {
   Place               _myPlace;
+  ReceptionSelector   _receptionSelector;
   UIReceptionCalendar _ui;
 
-  ReceptionCalendar(UIModel this._ui, Place this._myPlace) {
+  ReceptionCalendar(UIModel this._ui, Place this._myPlace, this._receptionSelector) {
     _ui.help = 'alt+a';
 
-    registerEventListeners();
-
-    test(); // TODO (TL): Get rid of this testing code...
+    observers();
   }
 
   @override Place   get myPlace => _myPlace;
@@ -63,7 +62,7 @@ class ReceptionCalendar extends ViewWidget {
     }
   }
 
-  void registerEventListeners() {
+  void observers() {
     _navigate.onGo.listen(setWidgetState);
 
     _ui.onClick.listen(activateMeFromClick);
@@ -73,12 +72,27 @@ class ReceptionCalendar extends ViewWidget {
 
     _hotKeys.onDown.listen(_handleUpDown);
     _hotKeys.onUp  .listen(_handleUpDown);
+
+    _receptionSelector.onSelect.listen(render);
   }
 
   /**
    * Render the widget with .....
    */
-  void render() {}
+  void render(Reception reception) {
+    _ui.clearList();
+
+    if(reception.name.isNotEmpty) {
+      _ui.calendarEntries = [new CalendarEntry('First entry (${reception.name})'),
+                             new CalendarEntry('Second entry (${reception.name})'),
+                             new CalendarEntry('Third entry (${reception.name})'),
+                             new CalendarEntry('Fourth entry (${reception.name})'),
+                             new CalendarEntry('Fifth entry (${reception.name})'),
+                             new CalendarEntry('Sixth entry (${reception.name})')];
+
+      _ui.markSelected(_ui.getFirstEntry());
+    }
+  }
 
   /**
    * Mark [CalendarEntry] selected. This call checks if we're active. Do not use this
@@ -88,15 +102,5 @@ class ReceptionCalendar extends ViewWidget {
     if(_ui.active && entry != null) {
       _ui.markSelected(entry);
     }
-  }
-
-  /// TODO (TL): Get rid of this. It's just here to test stuff.
-  void test() {
-    _ui.calendarEntries = [new CalendarEntry('First entry'),
-                           new CalendarEntry('Second entry'),
-                           new CalendarEntry('Third entry'),
-                           new CalendarEntry('Fourth entry')];
-
-    _ui.markSelected(_ui.getFirstEntry());
   }
 }

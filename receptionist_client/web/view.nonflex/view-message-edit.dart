@@ -62,9 +62,9 @@ class MessageEdit {
 
   List<Element> focusElements;
 
-  model.Contact contact = model.Contact.noContact;
+  Model.Contact contact = Model.Contact.noContact;
 
-  model.Message activeMessage = null;
+  Model.Message activeMessage = null;
 
   bool get disabled => this.element.classes.contains(CssClass.disabled);
 
@@ -247,7 +247,7 @@ class MessageEdit {
   /**
    * Extracts a Message from the information stored in the widget
    */
-  model.Message _harvestMessage() {
+  Model.Message _harvestMessage() {
 
     // Update the cached message with the information from the
     // fields in the widget.
@@ -260,19 +260,19 @@ class MessageEdit {
         ..caller.localExtension = callerLocalExtensionField.value
         ..flags.clear();
 
-    pleaseCall.checked ? this.activeMessage.flags.add(model.MessageFlag.PleaseCall)   : null;
-    callsBack.checked  ? this.activeMessage.flags.add(model.MessageFlag.willCallBack) : null;
-    hasCalled.checked  ? this.activeMessage.flags.add(model.MessageFlag.Called)       : null;
-    urgent.checked     ? this.activeMessage.flags.add(model.MessageFlag.Urgent)       : null;
+    pleaseCall.checked ? this.activeMessage.flags.add(Model.MessageFlag.PleaseCall)   : null;
+    callsBack.checked  ? this.activeMessage.flags.add(Model.MessageFlag.willCallBack) : null;
+    hasCalled.checked  ? this.activeMessage.flags.add(Model.MessageFlag.Called)       : null;
+    urgent.checked     ? this.activeMessage.flags.add(Model.MessageFlag.Urgent)       : null;
 
-    draft.checked      ? this.activeMessage.flags.add(model.MessageFlag.Draft) : null;
+    draft.checked      ? this.activeMessage.flags.add(Model.MessageFlag.Draft) : null;
 
     return this.activeMessage;
   }
 
   void _fetchAndRender (_) {
-    if (model.Message.selectedMessages.length == 1) {
-      Storage.Message.get(model.Message.selectedMessages.first).then(_renderMessage);
+    if (Model.Message.selectedMessages.length == 1) {
+      Storage.Message.get(Model.Message.selectedMessages.first).then(_renderMessage);
       this.loading = false;
 
     } else {
@@ -285,7 +285,7 @@ class MessageEdit {
   /**
    * Renders a message
    */
-  void _renderMessage (model.Message message) {
+  void _renderMessage (Model.Message message) {
     this.activeMessage = message;
 
     this.messageBodyField.value = message.body;
@@ -295,11 +295,11 @@ class MessageEdit {
     this.callerCellphoneField.value = message.caller.cellphone;
     this.callerLocalExtensionField.value = message.caller.localExtension;
 
-    this.pleaseCall.checked = message.hasFlag(model.MessageFlag.PleaseCall);
-    this.callsBack.checked  = message.hasFlag(model.MessageFlag.willCallBack);
-    this.hasCalled.checked  = message.hasFlag(model.MessageFlag.Called);
-    this.urgent.checked     = message.hasFlag(model.MessageFlag.Urgent);
-    this.draft.checked      = message.hasFlag(model.MessageFlag.Draft);
+    this.pleaseCall.checked = message.hasFlag(Model.MessageFlag.PleaseCall);
+    this.callsBack.checked  = message.hasFlag(Model.MessageFlag.willCallBack);
+    this.hasCalled.checked  = message.hasFlag(Model.MessageFlag.Called);
+    this.urgent.checked     = message.hasFlag(Model.MessageFlag.Urgent);
+    this.draft.checked      = message.hasFlag(Model.MessageFlag.Draft);
 
     this.disabled = !this.draft.checked;
 
@@ -330,14 +330,14 @@ class MessageEdit {
    */
   void _saveHandler(_) {
     this.loading = true;
-    model.Message message = this._harvestMessage();
+    Model.Message message = this._harvestMessage();
     message.saveTMP().then((_) {
-      model.NotificationList.instance.add(new model.Notification(Label.MessageUpdated, type : model.NotificationType.Success));
+      Model.NotificationList.instance.add(new Model.Notification(Label.MessageUpdated, type : Model.NotificationType.Success));
 
       return Storage.Message.get(message.ID).then(this._renderMessage);
     }).catchError((error, stackTrace) {
 
-      model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
+      Model.NotificationList.instance.add(new Model.Notification(Label.MessageNotUpdated, type : Model.NotificationType.Error));
       log.severe('Failed to complete save operation', error, stackTrace);
     })
     .whenComplete(() => this.loading = false);
@@ -349,20 +349,20 @@ class MessageEdit {
    */
   void _copyHandler(_) {
     this.loading = true;
-    model.Message message = this._harvestMessage();
-    message.ID = model.Message.noID;
+    Model.Message message = this._harvestMessage();
+    message.ID = Model.Message.noID;
     message.flags.add('draft');
 
-    message.saveTMP().then((model.Message savedMessage) {
-      model.NotificationList.instance.add(
-          new model.Notification(Label.MessageUpdated,
-              type : model.NotificationType.Success));
+    message.saveTMP().then((Model.Message savedMessage) {
+      Model.NotificationList.instance.add(
+          new Model.Notification(Label.MessageUpdated,
+              type : Model.NotificationType.Success));
 
       //TODO: Fetch the new message ID and render the new message.
       return Storage.Message.get(savedMessage.ID).then(this._renderMessage);
     }).catchError((error, stackTrace) {
 
-      model.NotificationList.instance.add(new model.Notification(Label.MessageNotUpdated, type : model.NotificationType.Error));
+      Model.NotificationList.instance.add(new Model.Notification(Label.MessageNotUpdated, type : Model.NotificationType.Error));
       log.severe('Failed to complete copy operation', error, stackTrace);
     })
     .whenComplete(() => this.loading = false);
@@ -374,17 +374,17 @@ class MessageEdit {
   void _sendHandler(_) {
     this.loading = true;
 
-    model.Message message = this._harvestMessage();
+    Model.Message message = this._harvestMessage();
 
     message.sendTMP().then((_) {
-      model.NotificationList.instance.add(new model.Notification(Label.MessageEnqueued, type : model.NotificationType.Success));
+      Model.NotificationList.instance.add(new Model.Notification(Label.MessageEnqueued, type : Model.NotificationType.Success));
       this._clearInputFields();
 
-      model.Message.selectedMessages.clear();
+      Model.Message.selectedMessages.clear();
       event.bus.fire(event.selectedMessagesChanged, null);
 
       }).catchError((error, stackTrace) {
-        model.NotificationList.instance.add(new model.Notification(Label.MessageNotEnqueued, type : model.NotificationType.Error));
+        Model.NotificationList.instance.add(new Model.Notification(Label.MessageNotEnqueued, type : Model.NotificationType.Error));
         log.severe('Failed to complete enqueue operation', error, stackTrace);
       }).whenComplete(() => this.loading = false);;
   }

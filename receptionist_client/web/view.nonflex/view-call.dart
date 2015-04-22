@@ -26,17 +26,17 @@ class Call {
 
   SpanElement ageElement;
   SpanElement callElement;
-  model.Call _call = model.noCall;
+  Model.Call _call = Model.noCall;
   LIElement element;
   ButtonElement get pickupButton   => this.element.querySelector('.pickup-button');
   ButtonElement get parkButton     => this.element.querySelector('.park-button');
   ButtonElement get hangupButton   => this.element.querySelector('.hangup-button');
   ButtonElement get transferButton => this.element.querySelector('.transfer-button');
 
-  model.Call get call => _call;
+  Model.Call get call => _call;
   List<Element> get nuges => this.element.querySelectorAll('.nudge');
 
-  Call(model.Call this._call) {
+  Call(Model.Call this._call) {
     DocumentFragment htmlChunk = new DocumentFragment.html(
      '''
       <li class="call-queue-item-default call">
@@ -56,7 +56,7 @@ class Call {
     this.pickupButton.onClick  .listen((_) => call.pickup());
     this.parkButton.onClick    .listen((_) => call.park());
     this.hangupButton.onClick  .listen((_) => call.hangup());
-    this.transferButton.onClick.listen((_) => call.transfer (model.Call.activeCall));
+    this.transferButton.onClick.listen((_) => call.transfer (Model.Call.activeCall));
 
     ageElement = element.querySelector('.call-queue-item-seconds')
         ..text = _renderDuration(age);
@@ -64,7 +64,7 @@ class Call {
     callElement = element.querySelector('.call-queue-element')
         ..text = '${Label.ReceptionWelcomeMsgPlacehold} (${call.destination}) ${call.state}';
 
-    storage.Reception.get(call.receptionID).then((model.Reception reception) {
+    storage.Reception.get(call.receptionID).then((Model.Reception reception) {
       callElement.text = reception.name + "(${call.destination}) - ${call.state}";
     });
 
@@ -122,12 +122,12 @@ class Call {
   }
 
   void _renderButtons () {
-    this.pickupButton.hidden   = ! (call.availableForUser(model.User.currentUser) &&
-                                    call.state != model.CallState.SPEAKING);
-    this.parkButton.hidden     = ! (call.availableForUser(model.User.currentUser) &&
-                                    call.state == model.CallState.SPEAKING);
-    this.hangupButton.hidden   = ! (call.assignedTo == model.User.currentUser.ID);
-    this.transferButton.hidden = ! (call.assignedTo == model.User.currentUser.ID);
+    this.pickupButton.hidden   = ! (call.availableForUser(Model.User.currentUser) &&
+                                    call.state != Model.CallState.SPEAKING);
+    this.parkButton.hidden     = ! (call.availableForUser(Model.User.currentUser) &&
+                                    call.state == Model.CallState.SPEAKING);
+    this.hangupButton.hidden   = ! (call.assignedTo == Model.User.currentUser.ID);
+    this.transferButton.hidden = ! (call.assignedTo == Model.User.currentUser.ID);
   }
 
   /**
@@ -136,7 +136,7 @@ class Call {
    * Simply hides the call from sight, as it should be removed only by a
    * callHangup event.
    */
-  void _callQueueJoinHandler (model.Call queuedCall) {
+  void _callQueueJoinHandler (Model.Call queuedCall) {
     const String context = '${className}._callQueueJoinHandler';
 
     if (this.call == queuedCall) {

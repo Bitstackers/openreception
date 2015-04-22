@@ -87,11 +87,12 @@ class BobActive {
 
     /// Home context
     contactInfo              = new View.Contact(querySelector('#${Id.contactSelector}'), homeContext);
-    contactCalendar          = new View.ContactCalendar(querySelector('#${Id.contactCalendar}'), homeContext, new Model.ContactCalendar (Service.Notification.instance));
+    contactCalendar          = new View.ContactCalendar(querySelector('#${Id.contactCalendar}'), homeContext,
+        new Model.ContactCalendar (Service.Notification.instance));
 
     messageCompose           = new View.Message(querySelector('#${Id.messageCompose}'), homeContext);
     welcomeMessage           = new View.WelcomeMessage(querySelector('#${Id.welcomeMessage}'));
-    agentInfo                = new View.AgentInfo(querySelector('#${Id.agentInfo}'));
+    agentInfo                = new View.AgentInfo(querySelector('#${Id.agentInfo}'), Model.User.currentUser);
     receptionSelector        = new View.ReceptionSelector(querySelector('#${Id.receptionSelector}'), homeContext)
                                       ..onSelectReception = messageCompose.callerNameField.focus;
     receptionEvents          = new View.ReceptionCalendar(querySelector('#${Id.receptionEvents}'), homeContext);
@@ -127,7 +128,6 @@ class BobActive {
     //TODO move this to Bob.dart when we have no dynamic default elements.
     nav.initialize();
 
-    Model.MessageList.instance.registerObservers();
   }
 
   void registerContexts() {

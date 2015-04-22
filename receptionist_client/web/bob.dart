@@ -42,83 +42,51 @@ void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
+  Model.AppClientState appState;
 
   new View.Notification();
 
   configuration.initialize().then((_) {
-    if(handleToken()) {
-      Service.Notification.instance.connected()
+    appState = new Model.AppClientState(
+                [login(),
+                 Service.Notification.instance.connected()]);
+
+    appState.load()
         .then((_) => log.info('Notification socket connected.'))
         .then((_) => state.websocketOK());
-    }
-  });
 
-  //notification.initialize();
-  //configuration.initialize();
 
-  bobLoading = new BobLoading(querySelector('#${Id.bobLoading}'));
-  bobDiaster = new BobDisaster(querySelector('#${Id.bobDisaster}'));
+    bobLoading = new BobLoading(querySelector('#${Id.bobLoading}'));
+    bobDiaster = new BobDisaster(querySelector('#${Id.bobDisaster}'));
 
-  StreamSubscription subscription;
-  subscription = event.bus.on(event.stateUpdated).listen((State state) {
-    if(state.isOK) {
-      bobActive = new BobActive(querySelector('#${Id.bobActive}'));
-      subscription.cancel();
+    StreamSubscription subscription;
+    subscription = event.bus.on(event.stateUpdated).listen((State state) {
+      if(state.isOK) {
+        bobActive = new BobActive(querySelector('#${Id.bobActive}'));
+        subscription.cancel();
 
-      nav.registerOnPopStateListeners();
-      /// Reload the model.
-      Model.PeerList.instance.reloadFromServer().then(print);
-    }
+        nav.registerOnPopStateListeners();
+        /// Reload the model.
+        Model.PeerList.instance.reloadFromServer().then(print);
+      }
+    });
   });
 }
 
-bool handleToken() {
+Future login() {
   Uri url = Uri.parse(window.location.href);
-  //TODO Save to localStorage.
+
   if(url.queryParameters.containsKey('settoken')) {
     configuration.token = url.queryParameters['settoken'];
-
-    //Remove ?settoken from the URL
-    Map queryParam = {};
-    url.queryParameters.forEach((key, value) {
-      if(key != 'settoken') {
-        queryParam[key] = value;
-      }
-    });
-//    var finalUrl = new Uri(scheme: url.scheme, userInfo: url.userInfo, host: url.host, port: url.port, path: url.path, queryParameters: queryParam, fragment: url.fragment);
-    //window.location.assign(finalUrl.toString());
-    //Didn't work. try localStorage.
-
-    Service.Authentication.instance.userOf(configuration.token).then((Model.User user) {
-        Model.User.currentUser = user;
-
-    }).catchError((error, stackTrace) {
-      log.severe('Failed to load user');
-      log.severe (error, stackTrace);
-    });
-      /*
-    protocol.userInfo(configuration.token).then((protocol.Response<Map> response) {
-      Map data = response.data;
-      configuration.profile = data;
-      if(data.containsKey('id')) {
-        //TODO: remove these.
-        configuration.userId = data['id'];
-        configuration.userName = data['name'];
-
-        Model.User.currentUser = new Model.User (data['id'],data['name']);
-
-
-      } else {
-        //TODO: Panic action.
-        log.error('bob.dart userInfo did not contain an id');
-      }
-    });*/
-    return true;
   } else {
     String loginUrl = '${configuration.authBaseUrl}/token/create?returnurl=${window.location.toString()}';
-    window.location.assign(loginUrl);
-    return false;
+    window.location.replace(loginUrl);
   }
+
+  return Service.Authentication.instance.userOf(configuration.token).then((Model.User user) {
+    Model.User.currentUser = user;
+  }).catchError((error, stackTrace) {
+    log.severe('Failed to load user');
+    log.severe (error, stackTrace);
+  });
 }
-
-

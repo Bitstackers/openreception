@@ -17,7 +17,7 @@ part of view;
  */
 
 class Notification {
-  model.NotificationList nl = model.NotificationList.instance;
+  Model.NotificationList nl = Model.NotificationList.instance;
 
   static final String id = Id.notifications;
   static final String className = '${libraryName}.Notification';
@@ -31,14 +31,14 @@ class Notification {
   }
 
   void registerEventListeners() {
-    nl.events.on(model.NotificationList.insert).listen((model.Notification notification) {
+    Model.NotificationList.instance.onInsert.listen((Model.Notification notification) {
       node.append(new HeadingElement.h4()
       ..text = notification.message..id = 'notification_${notification.ID}'
       ..classes.toggle(notification.type)
       ..onClick.listen((_) {nl.remove(notification);}));
     });
 
-    nl.events.on(model.NotificationList.delete).listen((model.Notification notification) {
+    Model.NotificationList.instance.onDelete.listen((Model.Notification notification) {
       try {
         querySelector('#notification_${notification.ID}').remove();
       } catch (error){

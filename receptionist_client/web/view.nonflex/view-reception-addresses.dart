@@ -42,7 +42,7 @@ class ReceptionAddresses {
   }
 
   void _registerEventListeners() {
-    model.Reception.onReceptionChange.listen(render);
+    Model.Reception.onReceptionChange.listen(render);
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
@@ -59,7 +59,7 @@ class ReceptionAddresses {
     });
   }
 
-  void render(model.Reception reception) {
+  void render(Model.Reception reception) {
     listElement.children.clear();
 
     for (var value in reception.addresses) {

@@ -13,7 +13,7 @@ class AgentInfo extends ViewWidget {
     registerEventListeners();
   }
 
-  @override Place   get myPlace => throw new UnsupportedError('');
+  @override Place   get myPlace => null;
   @override UIModel get ui      => _ui;
 
   @override void onBlur(_){}

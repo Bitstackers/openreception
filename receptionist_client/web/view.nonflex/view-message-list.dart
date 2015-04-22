@@ -66,8 +66,6 @@ class MessageList {
   TableRowElement get firstRow => this.tableBody.children.first;
   TableRowElement get lastRow  => this.tableBody.children.last;
 
-  static final EventType selectedMessageChanged = new EventType();
-
   /**
    * Extracts the currently selected row.
    * Returns a non-visible dummy row if no row i selected to avoid null
@@ -102,7 +100,7 @@ class MessageList {
       newRow.focus();
     }
 
-    model.Message.selectedMessages = [int.parse(newRow.dataset['messageID'])].toSet();
+    Model.Message.selectedMessages = [int.parse(newRow.dataset['messageID'])].toSet();
     event.bus.fire(event.selectedMessagesChanged, null);
   }
 
@@ -129,15 +127,8 @@ class MessageList {
 
     event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
 
-    model.MessageList.instance.events.on(model.MessageList.stateChange).listen((model.Message message) {
-      TableRowElement messageRow = this.rowOf(message.ID);
-      if(messageRow != noRow) {
-          messageRow = this.createRow(message);
-      }
-    });
-
-    event.bus.on(event.messageFilterChanged).listen((model.MessageFilter filter) {
-      this.loadData(model.Message.noID);
+    event.bus.on(event.messageFilterChanged).listen((Model.MessageFilter filter) {
+      this.loadData(Model.Message.noID);
     });
 
     /**
@@ -163,12 +154,10 @@ class MessageList {
 
     });
 
-    model.MessageList.instance.events.on(model.MessageList.add).listen((int messageID) {
-      /// Hacky way of fetching message and determining if is affected by the current filter.
-      Storage.Message.list (filter: model.MessageFilter.current, lastID: messageID, limit: 1)
-        .then ((List<model.Message> messages) {
-
-        TableRowElement existingRow = this.tableBody.children.firstWhere((TableRowElement row) => row.dataset['messageID'] == messageID.toString(), orElse: () => null);
+    Model.Message.onCreate.listen((int messageID) {
+      TableRowElement existingRow =
+          this.tableBody.children.firstWhere((TableRowElement row) =>
+              row.dataset['messageID'] == messageID.toString(), orElse: () => null);
 
         if (existingRow != null) {
           existingRow = this.createRow(messages.first);
@@ -178,10 +167,9 @@ class MessageList {
               this.selectedRow == this.firstRow;
             this.lastRow.remove();
           }
-        });
-
-      log.finest ('Got new message with ID ${messageID}');
+        log.finest ('Got new message with ID ${messageID}');
     });
+
 
     void listNavigation(KeyboardEvent e) {
 
@@ -209,10 +197,10 @@ class MessageList {
             e.preventDefault();
           }
           else if (this._selectedRow.nextNode == null) {
-            if (!this._busy && this.lowerID-1 != model.Message.noID ) {
+            if (!this._busy && this.lowerID-1 != Model.Message.noID ) {
               this._busy = true;
-              Storage.Message.list(lastID : this.lowerID-1, limit: viewLimit , filter : model.MessageFilter.current).then((List<model.Message> messages) {
-                messages.forEach((model.Message message) => this.tableBody.append(createRow(message)));
+              Storage.Message.list(lastID : this.lowerID-1, limit: viewLimit , filter : Model.MessageFilter.current).then((List<Model.Message> messages) {
+                messages.forEach((Model.Message message) => this.tableBody.append(createRow(message)));
 
               }).whenComplete(() => this._busy = false);
             }
@@ -228,18 +216,18 @@ class MessageList {
 
     this.tableBody.onKeyDown.listen(listNavigation);
 
-    this.loadData(model.Message.noID);
+    this.loadData(Model.Message.noID);
   }
 
   void loadData(int fromID) {
-    if (fromID != model.Message.noID  && fromID < model.Message.noID) {
+    if (fromID != Model.Message.noID  && fromID < Model.Message.noID) {
       return;
     }
 
-    Storage.Message.list(lastID: fromID, limit: viewLimit, filter : model.MessageFilter.current)
-      .then((List<model.Message> messageList) {
+    Storage.Message.list(lastID: fromID, limit: viewLimit, filter : Model.MessageFilter.current)
+      .then((List<Model.Message> messageList) {
       tableBody.children.clear();
-      messageList.forEach ((model.Message message) {
+      messageList.forEach ((Model.Message message) {
         tableBody.children.add(createRow(message));
       });
     }).then((_) {
@@ -267,7 +255,7 @@ class MessageList {
                    new SpanElement()..text = Label.MessageArchive];
   }
 
-  TableRowElement createRow(model.Message message) {
+  TableRowElement createRow(Model.Message message) {
 
     // Formatting helper function.
     String callerInfo () {
@@ -306,7 +294,7 @@ class MessageList {
    *
    */
 
-  Element _messageStatusIcon (model.Message message) {
+  Element _messageStatusIcon (Model.Message message) {
     if (message.enqueued) {
       return Icon.Enqueued..title = Label.MessageToolTipEnqueued;
     }

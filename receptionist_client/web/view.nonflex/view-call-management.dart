@@ -81,13 +81,13 @@ class CallManagement {
     }
   }
 
-  _changeActiveCall(model.Call call) {
+  _changeActiveCall(Model.Call call) {
     //To be defined.
   }
 
   _dialSelectedNumber(_) {
     if (!this.disabled) {
-      Controller.Call.dial(this.numberField.value, model.Reception.selectedReception, model.Contact.selectedContact);
+      Controller.Call.dial(this.numberField.value, Model.Reception.selectedReception, Model.Contact.selectedContact);
     }
   }
 
@@ -96,7 +96,7 @@ class CallManagement {
   }
 
   void _originationDone(_) {
-    this.disabled = (model.Reception.selectedReception == model.Reception.noReception);
+    this.disabled = (Model.Reception.selectedReception == Model.Reception.noReception);
   }
 
   void registerEventListeners() {
@@ -107,12 +107,12 @@ class CallManagement {
     event.bus.on(event.dialSelectedContact).listen(this._dialSelectedNumber);
 
     // When a reception changes - clear the number to avoid stale information in the UI.
-    model.Reception.onReceptionChange.listen((_) {
+    Model.Reception.onReceptionChange.listen((_) {
       this.numberField.value = '';
       this._render();
     });
 
-    model.Call.activeCallChanged.listen(_changeActiveCall);
+    Model.Call.activeCallChanged.listen(_changeActiveCall);
     event.bus.on(event.originateCallRequest).listen(_originationStarted);
     event.bus.on(event.originateCallRequestSuccess).listen(_originationDone);
     event.bus.on(event.originateCallRequestFailure).listen(_originationDone);
@@ -130,6 +130,6 @@ class CallManagement {
   }
 
   void _render() {
-    this.dialButton.disabled = !isValidExtension(this.numberField.value) || model.Reception.selectedReception == model.Reception.noReception;
+    this.dialButton.disabled = !isValidExtension(this.numberField.value) || Model.Reception.selectedReception == Model.Reception.noReception;
   }
 }

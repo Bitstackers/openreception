@@ -19,7 +19,7 @@ class LogBox {
   DivElement      element;
   TableElement    table;
 
-  LogBox(DivElement this.element, model.CallList observedCallList) {
+  LogBox(DivElement this.element, Model.CallList observedCallList) {
     // TODO (TL): Move as much as this to bob.html as possible
     table = new TableElement()
       ..id = Id.logBoxTable
@@ -33,12 +33,12 @@ class LogBox {
     registerEventListeners(observedCallList);
   }
 
-  void registerEventListeners(model.CallList observedCallList) {
+  void registerEventListeners(Model.CallList observedCallList) {
 
     observedCallList.onInsert.listen(this._pushCallRecord);
   }
 
-  void _pushCallRecord(model.Call newCall) {
+  void _pushCallRecord(Model.Call newCall) {
     TableRowElement tr = new TableRowElement();
     tr.children
       ..add(new TableCellElement()
