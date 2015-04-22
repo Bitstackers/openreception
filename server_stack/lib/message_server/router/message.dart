@@ -23,7 +23,7 @@ abstract class Message {
       } else {
         serverError(request, '$error : $stackTrace');
       }
-      });
+    });
   }
 
 
@@ -31,7 +31,6 @@ abstract class Message {
    * HTTP Request handler for updating a single message resource.
    */
   static void update(HttpRequest request) {
-             int messageID = pathParameter(request.uri, 'message');
     final String     token = request.uri.queryParameters['token'];
 
     AuthService.userOf(token).then((Model.User user) {
@@ -56,9 +55,16 @@ abstract class Message {
           clientError(request, '$error : $stackTrace');
         }
 
-      }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
-    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
-
+      }).catchError((error, stackTrace) {
+        log.severe('Failed to extract content of request.');
+        log.severe (error, stackTrace);
+        serverError(request, 'Failed to extract content of request.');
+      });
+    }).catchError((error, stackTrace) {
+      log.severe('Failed to perform user lookup.');
+      log.severe (error, stackTrace);
+      serverError(request, 'Failed to perform user lookup.');
+    });
   }
 
   /**
@@ -110,14 +116,12 @@ abstract class Message {
     });
   }
 
-  /**    final String context = '${className}.send';
-
+  /**
    * Enqueues a messages for dispathing via the transport layer specified in
    * the endpoints belonging to the message recipients.
    */
   static void send (HttpRequest request) {
 
-    final String context = '${className}.send';
     final String token   = request.uri.queryParameters['token'];
 
     AuthService.userOf(token).then((Model.User user) {
@@ -132,19 +136,26 @@ abstract class Message {
               })
             );
         } catch (error, stackTrace) {
-          logger.errorContext('$error : $stackTrace', context);
+          log.severe(error, stackTrace);
           clientError(request, '$error : $stackTrace');
         }
 
-      }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
-    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
+      }).catchError((error, stackTrace) {
+        log.severe('Failed to extract content of request.');
+        log.severe (error, stackTrace);
+        serverError(request, 'Failed to extract content of request.');
+      });
+    }).catchError((error, stackTrace) {
+      log.severe('Failed to perform user lookup.');
+      log.severe (error, stackTrace);
+      serverError(request, 'Failed to perform user lookup.');
+    });
    }
 
 
   /**
    * Persistently stores a messages. If the message already exists, the
    * message - and the it's contents - are replaced by the one passed by the client.
-   *
    */
   static void save (HttpRequest request) {
 
@@ -169,12 +180,20 @@ abstract class Message {
               .then((Model.Message message) => writeAndClose(request, JSON.encode(message)));
 
         } catch (error, stackTrace) {
-          logger.errorContext('$error : $stackTrace', context);
+          log.warning (error, stackTrace);
           clientError(request, '$error : $stackTrace');
         }
 
-      }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
-    }).catchError((error, stackTrace) => serverErrorTrace(request, error, stackTrace : stackTrace));
+      }).catchError((error, stackTrace) {
+        log.severe('Failed to extract content of request.');
+        log.severe (error, stackTrace);
+        serverError(request, 'Failed to extract content of request.');
+      });
+    }).catchError((error, stackTrace) {
+      log.severe('Failed to perform user lookup.');
+      log.severe (error, stackTrace);
+      serverError(request, 'Failed to perform user lookup.');
+    });
   }
 }
 
