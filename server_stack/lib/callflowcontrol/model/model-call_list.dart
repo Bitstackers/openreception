@@ -18,7 +18,7 @@ class Forbidden implements Exception {
 
 class CallList extends IterableBase<Call> {
 
-  static const String className = '${libraryName}.CallList';
+  static final Logger log = new Logger('${libraryName}.CallList');
 
   Map<String, Call> _map = new Map<String, Call>();
 
@@ -182,16 +182,13 @@ class CallList extends IterableBase<Call> {
             ..changeState(CallState.Created);
 
         break;
+
 //      case ("AdaHeads::outbound-call"):
-//           logger.debugContext ('Outbound call: ${packet.uniqueID}', context);
-//           OriginationRequest.create (packet.uniqueID);
+//         log.finest('Outbound call: ${event.uniqueID}');
+//         this._createCall(event);
 //
-//          this.get(packet.uniqueID)
-//               ..receptionID = int.parse(packet.field('variable_reception_id'))
-//               ..contactID   = int.parse(packet.field('variable_contact_id'))
-//               ..assignedTo  = int.parse(packet.field('variable_owner'));
-//
-//           break;
+//         break;
+
       case ('AdaHeads::pre-queue-leave'):
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
