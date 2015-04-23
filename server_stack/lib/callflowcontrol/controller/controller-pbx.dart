@@ -37,6 +37,51 @@ abstract class PBX {
   }
 
   /**
+   * Spawns a channel to an agent.
+   *
+   * By first dialing the agent, and parking him/her.
+   *
+   * Returns the UUID of the new channel.
+   */
+  static Future<String> createAgentChannel (String extension, SharedModel.User user) {
+    return Model.PBXClient.api('create_uuid').then((ESL.Response response) {
+      final String new_call_uuid = response.rawBody;
+
+      log.finest ('New uuid: $new_call_uuid');
+      log.finest ('Dialing receptionist at user/${user.peer}');
+
+      return Model.PBXClient.api('originate '
+                                  '{ignore_early_media=true,'
+                                  '${originationChan}=true,'
+                                  'origination_uuid=$new_call_uuid,'
+                                  'originate_timeout=$timeOutSeconds,'
+                                  'origination_caller_id_name=$callerID,'
+                                  'origination_caller_id_number=$callerID}'
+                                  'user/${user.peer}'
+                                  ' &park()')
+       .then((ESL.Response response) {
+         if (response.status == ESL.Response.OK) {
+           return new_call_uuid;
+         } else {
+           return new Future.error(
+               new StateError('PBX responded: ${response.status}'));
+         }
+       });
+     });
+  }
+
+  static Future transferUUIDToExtension
+    (String uuid, String extension, SharedModel.User user) {
+    return
+      Model.PBXClient.api
+        ('uuid_setvar $uuid effective_caller_id_number test')
+        .then((_) => Model.PBXClient.api
+          ('uuid_setvar $uuid effective_caller_id_name testname'))
+        .then((_) => Model.PBXClient.bgapi
+          ('uuid_transfer $uuid $extension ${dialplan}'));
+  }
+
+  /**
    * Starts an origination in the PBX.
    *
    * By first dialing the agent and then the recordingsmenu.
