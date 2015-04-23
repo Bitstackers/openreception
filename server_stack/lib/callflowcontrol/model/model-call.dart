@@ -17,7 +17,7 @@ abstract class CallState {
 
 class Call {
 
-  static const String className  = '${libraryName}.Call';
+  static final Logger log = new Logger('${libraryName}.Call');
 
   static final String nullCallID = null;
   static final int    noUser     = ORModel.User.nullID;
@@ -70,7 +70,7 @@ class Call {
   }
 
   void release() {
-    logger.debugContext('Releasing call assigned to: ${this.assignedTo}', 'RELEASE');
+    log.finest('Releasing call assigned to: ${this.assignedTo}');
 
     if (this.assignedTo != noUser) {
       UserStatusList.instance.get (this.assignedTo).callsHandled++;
@@ -103,8 +103,7 @@ class Call {
      "reception_id"    : this.receptionID,
      "assigned_to"     : this.assignedTo,
      "channel"         : this.channelID,
-     "arrival_time"    : dateTimeToUnixTimestamp (this.arrived)};
-
+     "arrival_time"    : Util.dateTimeToUnixTimestamp (this.arrived)};
 
    Future park (ORModel.User user) {
      return Controller.PBX.park (this, user);
@@ -112,12 +111,10 @@ class Call {
 
   void changeState (String newState) {
 
-    const String context   = '${className}.changeState';
     final String lastState = this.state;
-
     this.state = newState;
 
-    logger.debugContext('UUID: ${this.ID}: ${lastState} => ${newState}',context);
+    log.finest('UUID: ${this.ID}: ${lastState} => ${newState}');
 
     if (lastState == CallState.Queued) {
       Notification.broadcast(ClientNotification.queueLeave (this));
@@ -164,7 +161,7 @@ class Call {
          break;
 
       default:
-        logger.errorContext('Changing call ${this} to Unkown state!' , context);
+        log.severe('Changing call ${this} to Unkown state!');
       break;
 
     }

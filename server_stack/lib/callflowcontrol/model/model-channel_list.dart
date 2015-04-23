@@ -73,8 +73,7 @@ class ChannelEvent {
 
 class ChannelList extends ESL.ChannelList {
 
-  static const String className = '${libraryName}.ChanneList';
-  static final Logger log       = new Logger(ChannelList.className);
+  static final Logger log       = new Logger('${libraryName}.ChanneList');
 
   static ChannelList instance = new ChannelList();
 
@@ -127,7 +126,6 @@ class ChannelList extends ESL.ChannelList {
   }
 
   void handleEvent(ESL.Event packet) {
-    const String context = '${className}._handleEvent';
 
     void dispatch() {
       switch (packet.eventName) {
@@ -153,8 +151,8 @@ class ChannelList extends ESL.ChannelList {
     try {
       dispatch();
     } catch (error, stackTrace) {
-      logger.errorContext('$error : $stackTrace', context);
+      log.severe('Failed to dispatch ${packet.eventName}');
+      log.severe(error, stackTrace);
     }
   }
-  //sofia/internal/1002@192.168.2.172
 }

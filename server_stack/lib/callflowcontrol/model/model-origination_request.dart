@@ -2,27 +2,24 @@ part of callflowcontrol.model;
 
 abstract class OriginationRequest {
 
-  static const classname = '${libraryName}.OriginationRequest';
+  static final Logger log = new Logger('${libraryName}.OriginationRequest');
 
   static Set<String> _storage = new Set<String>();
 
   static create (String sourceCallID) {
-    const String context = '${classname}.create';
-
     _storage.add(sourceCallID);
-    logger.debugContext(sourceCallID, context);
+    log.finest('Creating origination request with ID $sourceCallID');
   }
 
   static bool contains (Call sourceCall) => _storage.contains(sourceCall.ID);
 
   static void confirm (Call sourceCall) {
-    const String context = '${classname}.confirm';
 
     if (!_storage.contains(sourceCall.ID)) {
       return;
     }
 
-    logger.debugContext(sourceCall.ID, context);
+    log.finest('Confirming origination request for ID ${sourceCall.ID}');
     _storage.remove(sourceCall.ID);
     }
 

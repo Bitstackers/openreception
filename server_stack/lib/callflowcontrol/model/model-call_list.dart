@@ -39,7 +39,6 @@ class CallList extends IterableBase<Call> {
   }
 
   void _handleChannelsEvent(ChannelEvent channelEvent) {
-    const String context = '${className}._handleEvent';
 
     void handleCreate () {}
     void handleUpdate () {}
@@ -66,7 +65,8 @@ class CallList extends IterableBase<Call> {
           break;
 
         default:
-          throw new ArgumentError('Bad channel event name: ${channelEvent.eventName}');
+          throw new ArgumentError('Bad channel event name: '
+                                  ' ${channelEvent.eventName}');
       }
     }
 
@@ -74,7 +74,8 @@ class CallList extends IterableBase<Call> {
   try {
     dispatch();
   } catch (error, stackTrace) {
-    logger.errorContext('$error : $stackTrace', context);
+    log.severe('Failed to dispatch channelEvent $channelEvent');
+    log.severe(error, stackTrace);
     }
   }
 
@@ -100,18 +101,18 @@ class CallList extends IterableBase<Call> {
 
   Call requestCall(user) =>
     //TODO: Implement a real algorithm for selecting calls.
-    this.firstWhere((Call call) => call.assignedTo == Call.noUser && !call.locked, orElse: () => throw new NotFound ("No calls available"));
+    this.firstWhere((Call call) => call.assignedTo == Call.noUser &&
+      !call.locked, orElse: () => throw new NotFound ("No calls available"));
 
   Call requestSpecificCall(String callID, ORModel.User user )  {
-    const String context = '${className}.requestSpecificCall';
 
     Call call = this.get(callID);
 
     if (![user.ID, Call.noUser].contains(call.assignedTo)) {
-      logger.errorContext('Call ${callID} already assigned to ${call.assignedTo}', context);
+      log.warning('Call ${callID} already assigned to uid: ${call.assignedTo}');
       throw new Forbidden(callID);
     } else if (call.locked) {
-      logger.debugContext('Requested locked call $callID', context);
+      log.fine('Uid ${user.ID} requested locked call $callID');
       throw new NotFound(callID);
     }
 
@@ -123,13 +124,11 @@ class CallList extends IterableBase<Call> {
 
 
   void _handleBridge(ESL.Packet packet) {
-    const String context = '${className}._handleBridge';
-
 
     final ESL.Channel aLeg = ChannelList.instance.get(packet.field('Bridge-A-Unique-ID'));
     final ESL.Channel bLeg = ChannelList.instance.get(packet.field('Bridge-B-Unique-ID'));
 
-    logger.debugContext('Bridging channel ${aLeg} and channel ${bLeg}', context);
+    log.finest('Bridging channel ${aLeg} and channel ${bLeg}');
 
     if (isCall(aLeg) && isCall(bLeg)) {
       CallList.instance.get(aLeg.UUID).changeState (CallState.Transferred);
@@ -146,34 +145,31 @@ class CallList extends IterableBase<Call> {
 
     // Local calls??
     else {
-      logger.errorContext('Local calls are not supported!', context);
+      log.severe('Local calls are not supported!');
     }
   }
 
   void _handleChannelDestroy (ESL.Event event) {
-    const String context = '${className}._handleChannelDestroy';
     try {
       /// Remove the call assignment from user->call and call->user
       this.get(event.uniqueID).release();
       this.get(event.uniqueID).changeState(CallState.Hungup);
 
-      logger.debugContext('Hanging up ${event.uniqueID}', context);
+      log.finest('Hanging up ${event.uniqueID}');
       this.remove(event.uniqueID);
 
-    } catch (error) {
+    } catch (error, stackTrace) {
       if (error is NotFound) {
-        logger.errorContext('Tried to hang up non-existing call ${event.uniqueID}.'
-                            'Call list may be inconsistent - consider reloading.', context);
+        log.warning('Tried to hang up non-existing call ${event.uniqueID}.'
+                    'Call list may be inconsistent - consider reloading.');
       } else {
-        logger.errorContext(error, context);
+        log.severe(error, stackTrace);
       }
     }
   }
 
 
   void _handleCustom (ESL.Event event) {
-    const String context = '${className}._handleCustom';
-
     switch (event.eventSubclass) {
       case ("AdaHeads::pre-queue-enter"):
         this._createCall(event);
@@ -197,14 +193,14 @@ class CallList extends IterableBase<Call> {
 //
 //           break;
       case ('AdaHeads::pre-queue-leave'):
-        logger.debugContext('Locking ${event.uniqueID}', context);
+        log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..changeState (CallState.Transferring)
           ..locked = true;
         break;
 
       case ('AdaHeads::wait-queue-enter'):
-        logger.debugContext('Unlocking ${event.uniqueID}', context);
+        log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..locked = false
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
@@ -225,8 +221,6 @@ class CallList extends IterableBase<Call> {
 
 
   void _handleEvent(ESL.Event event) {
-    const String context = '${className}._handleEvent';
-
 
     void dispatch () {
       switch (event.eventName) {
@@ -255,10 +249,12 @@ class CallList extends IterableBase<Call> {
     }
 
 
-  try {
-    dispatch();
-  } catch (error, stackTrace) {
-    logger.errorContext('$error : $stackTrace', context);
+    try {
+      dispatch();
+    }
+    catch (error, stackTrace) {
+      log.severe('Failed to dispatch event ${event.eventName}');
+      log.severe(error, stackTrace);
     }
   }
 
@@ -281,22 +277,20 @@ class CallList extends IterableBase<Call> {
    * tested, however.
    */
   void _createCall(ESL.Event event) {
-    const String context = '${className}._createCall';
-
     /// Skip local channels
     if (event.contentAsMap.containsKey ('variable_${Controller.PBX.originationChan}')) {
-      logger.debugContext('Skipping origination channel ${event.uniqueID}', context);
+      log.finest('Skipping origination channel ${event.uniqueID}');
       return;
     }
 
     if (event.contentAsMap.containsKey ('Other-Leg-Username')) {
-      logger.debugContext('Skipping transfer channel ${event.uniqueID}', context);
+      log.finest('Skipping transfer channel ${event.uniqueID}');
       return;
     }
 
 
 
-    logger.debugContext('Creating new call ${event.uniqueID}', context);
+    log.finest('Creating new call ${event.uniqueID}');
 
 
     int contactID = event.contentAsMap.containsKey('variable_contact_id')
