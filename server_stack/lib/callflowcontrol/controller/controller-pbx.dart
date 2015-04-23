@@ -2,17 +2,20 @@ part of callflowcontrol.controller;
 
 abstract class PBX {
 
-  static const String className       = '${libraryName}.PBX';
+  static final Logger log             = new Logger('${libraryName}.PBX');
   static const String callerID        = '39990141';
   static const int    timeOutSeconds  = 10;
   static const String dialplan        = 'xml default';
   static const String originationChan = 'or_origination_channel';
+
   /**
    * Starts an origination in the PBX.
    *
    * By first dialing the agent and then the outbound extension.
+   *
+   * Returns the UUID of the call.
    */
-  static Future originate (String extension, int contactID, int receptionID, SharedModel.User user) {
+  static Future<String> originate (String extension, int contactID, int receptionID, SharedModel.User user) {
     /// Tag the A-leg as a primitive origination channel.
     List<String> a_legvariables = ['${originationChan}=true'];
 
