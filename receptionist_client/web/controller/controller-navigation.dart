@@ -8,6 +8,8 @@ final Map<String, Destination> _destinations =
    '${Context.Home}-${Widget.ReceptionCalendar}'       : new Destination(Context.Home, Widget.ReceptionCalendar),
    '${Context.Home}-${Widget.ReceptionCommands}'       : new Destination(Context.Home, Widget.ReceptionCommands),
    '${Context.Home}-${Widget.ReceptionOpeningHours}'   : new Destination(Context.Home, Widget.ReceptionOpeningHours),
+   '${Context.Home}-${Widget.ReceptionProduct}'        : new Destination(Context.Home, Widget.ReceptionProduct),
+   '${Context.Home}-${Widget.ReceptionSalesmen}'       : new Destination(Context.Home, Widget.ReceptionSalesmen),
    '${Context.Home}-${Widget.ReceptionSelector}'       : new Destination(Context.Home, Widget.ReceptionSelector),
    '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Destination(Context.Homeplus, Widget.ReceptionAltNames),
    '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Destination(Context.CalendarEdit, Widget.CalendarEditor),

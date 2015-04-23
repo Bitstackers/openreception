@@ -1,16 +1,16 @@
 part of view;
 
-class ReceptionProduct extends ViewWidget {
+class ReceptionSalesmen extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionProduct  _ui;
+  final Model.UIReceptionSalesmen _ui;
 
   /**
    * Constructor.
    */
-  ReceptionProduct(Model.UIReceptionProduct this._ui,
-                   Controller.Destination this._myDestination,
-                   Model.UIReceptionSelector this._receptionSelector) {
+  ReceptionSalesmen(Model.UIReceptionSalesmen this._ui,
+                    Controller.Destination this._myDestination,
+                    Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
@@ -34,7 +34,7 @@ class ReceptionProduct extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _hotKeys.onAltF.listen(activateMe);
+    _hotKeys.onAltC.listen(activateMe);
 
     _ui.onClick.listen(activateMe);
 
@@ -49,7 +49,7 @@ class ReceptionProduct extends ViewWidget {
       _ui.clear();
     } else {
       _ui.headerExtra = 'for ${reception.name}';
-      _ui.productDescription = reception.product;
+      _ui.salesMen = reception.salesMen;
     }
   }
 }

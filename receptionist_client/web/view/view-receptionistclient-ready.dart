@@ -16,7 +16,7 @@ class ReceptionistclientReady {
   ReceptionCommands                     receptionCommands;
   ReceptionOpeningHours                 receptionOpeningHours;
   ReceptionProduct                      receptionProduct;
-  ReceptionSalesCalls                   receptionSalesCalls;
+  ReceptionSalesmen                     receptionSalesmen;
   ReceptionSelector                     receptionSelector;
   static ReceptionistclientReady        _singleton;
   WelcomeMessage                        welcomeMessage;
@@ -102,14 +102,21 @@ class ReceptionistclientReady {
                                                       new Controller.Destination(Context.Home, Widget.ReceptionOpeningHours),
                                                       uiReceptionSelector);
 
+    receptionProduct = new ReceptionProduct(new Model.UIReceptionProduct(querySelector('#reception-product')),
+                                            new Controller.Destination(Context.Home, Widget.ReceptionProduct),
+                                            uiReceptionSelector);
+
+    receptionSalesmen = new ReceptionSalesmen(new Model.UIReceptionSalesmen(querySelector('#reception-salesmen')),
+                                              new Controller.Destination(Context.Home, Widget.ReceptionSalesmen),
+                                              uiReceptionSelector);
+
     messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
                                         new Controller.Destination(Context.Home, Widget.MessageCompose));
 
     // TODO (TL): The following widgets have not yet been UIModel'ified.
 //    globalCallQueue       = new GlobalCallQueue();
 //    myCallQueue           = new MyCallQueue();
-//    receptionProduct      = new ReceptionProduct();
-//    receptionSalesCalls   = new ReceptionSalesCalls();
+
 //    welcomeMessage        = new WelcomeMessage();
 
     window.location.hash.isEmpty ? _navigate.goHome() : _navigate.goWindowLocation();

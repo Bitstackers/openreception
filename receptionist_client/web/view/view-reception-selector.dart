@@ -50,18 +50,54 @@ class ReceptionSelector extends ViewWidget {
                              'Command 4',
                              'Command 5'];
 
+    String product = 'Vi sælger gummiænder og andet hurlumhej til fester i badekar\nFooBar og stads';
+
     List<String> openingHours = ['Opening hour 1',
                                  'Opening hour 2',
                                  'Opening hour 3',
                                  'Opening hour 4',
                                  'Opening hour 5'];
 
-    _ui.receptions = [new Reception(1, 'Responsum K/S', commands, openingHours),
-                      new Reception(2, 'Bitstackers K/S', commands, openingHours),
-                      new Reception(3, 'Loecke K/S', commands, openingHours),
-                      new Reception(4, 'Another Loecke K/S', commands, openingHours),
-                      new Reception(5, 'Another Responsum K/S', commands, openingHours),
-                      new Reception(6, 'FooBar K/S', commands, openingHours)];
+    List<String> salesMen = ['Salesmen 1',
+                             'Salesmen 2',
+                             'Salesmen 3',
+                             'Salesmen 4',
+                             'Salesmen 5'];
+
+    _ui.receptions = [new Reception(1, 'Responsum K/S')
+                        ..commands = commands
+                        ..openingHours = openingHours
+                        ..product = product
+                        ..salesMen = salesMen
+                      ,
+                      new Reception(2, 'Bitstackers K/S')
+                        ..commands = commands
+                        ..openingHours = openingHours
+                        ..product = product
+                        ..salesMen = salesMen
+                      ,
+                      new Reception(3, 'Loecke K/S')
+                        ..commands = commands
+                        ..openingHours = openingHours
+                        ..product = product
+                        ..salesMen = salesMen
+                      ,
+                      new Reception(4, 'Another Loecke K/S')
+                        ..commands = commands
+                        ..openingHours = openingHours
+                        ..product = product
+                        ..salesMen = salesMen
+                      ,
+                      new Reception(5, 'Another Responsum K/S')
+                        ..commands = commands
+                        ..openingHours = openingHours
+                        ..product = product
+                        ..salesMen = salesMen
+                      ,
+                      new Reception(6, 'FooBar K/S')
+                        ..commands = commands
+                        ..openingHours = openingHours
+                        ..salesMen = salesMen];
 
   }
 }

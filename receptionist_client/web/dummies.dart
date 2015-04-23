@@ -75,12 +75,14 @@ class Contact {
  * Dummy reception class
  */
 class Reception {
-  List<String> commands = new List<String>();
+  List<String> commands     = new List<String>();
   int          id;
-  String       name;
+  String       name         = '';
   List<String> openingHours = new List<String>();
+  String       product      = '';
+  List<String> salesMen     = new List<String>();
 
-  Reception(int this.id, String this.name, this.commands, this.openingHours);
+  Reception(int this.id, String this.name);
 
   Reception.fromJson(Map json) {
     (json['commands'] as Iterable).forEach((String item) {
@@ -91,6 +93,10 @@ class Reception {
     (json['openingHours'] as Iterable).forEach((String item) {
       openingHours.add(item);
     });
+    product  = json['product'];
+    (json['salesMen'] as Iterable).forEach((String item) {
+      salesMen.add(item);
+    });
   }
 
   Reception.Null();
@@ -100,7 +106,9 @@ class Reception {
   Map toJson() => {'commands'    : commands,
                    'id'          : id,
                    'name'        : name,
-                   'openingHours': openingHours};
+                   'openingHours': openingHours,
+                   'product'     : product,
+                   'salesMen'    : salesMen};
 }
 
 /**

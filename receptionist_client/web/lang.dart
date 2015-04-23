@@ -61,7 +61,7 @@ abstract class Key {
   static const String receptionEmailsHeader           = 'reception-emails-header';
   static const String receptionMiniWikiHeader         = 'reception-mini-wiki-header';
   static const String receptionOpeningHoursHeader     = 'reception-opening-hours-header';
-  static const String receptionProductDescHeader      = 'reception-product-desc-header';
+  static const String receptionProductHeader          = 'reception-product-header';
   static const String receptionSalesmenHeader         = 'reception-salesmen-header';
   static const String receptionSelectorHeader         = 'reception-selector-header';
   static const String receptionTelephoneNumbersHeader = 'reception-telephone-numbers-header';
@@ -139,7 +139,7 @@ Map<String, String> da =
    Key.receptionEmailsHeader          : 'Emailadresser',
    Key.receptionMiniWikiHeader        : 'Mini wiki',
    Key.receptionOpeningHoursHeader    : 'Åbningstider',
-   Key.receptionProductDescHeader     : 'Produkt',
+   Key.receptionProductHeader     : 'Produkt',
    Key.receptionSalesmenHeader        : 'Sælgere',
    Key.receptionSelectorHeader        : 'Receptioner',
    Key.receptionTelephoneNumbersHeader: 'Telefonnumre',
@@ -216,7 +216,7 @@ Map<String, String> en =
    Key.receptionEmailsHeader          : 'Email addresses',
    Key.receptionMiniWikiHeader        : 'Mini wiki',
    Key.receptionOpeningHoursHeader    : 'Opening hours',
-   Key.receptionProductDescHeader     : 'Product',
+   Key.receptionProductHeader     : 'Product',
    Key.receptionSalesmenHeader        : 'Salesmen',
    Key.receptionSelectorHeader        : 'Receptions',
    Key.receptionTelephoneNumbersHeader: 'Telephone numbers',

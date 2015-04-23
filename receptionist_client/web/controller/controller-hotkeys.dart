@@ -11,7 +11,9 @@ class HotKeys {
 
   final Bus<KeyboardEvent> _altA = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altB = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altC = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altE = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altF = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altH = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altI = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altK = new Bus<KeyboardEvent>();
@@ -25,7 +27,9 @@ class HotKeys {
 
   Stream<KeyboardEvent> get onAltA => _altA.stream;
   Stream<KeyboardEvent> get onAltB => _altB.stream;
+  Stream<KeyboardEvent> get onAltC => _altC.stream;
   Stream<KeyboardEvent> get onAltE => _altE.stream;
+  Stream<KeyboardEvent> get onAltF => _altF.stream;
   Stream<KeyboardEvent> get onAltH => _altH.stream;
   Stream<KeyboardEvent> get onAltI => _altI.stream;
   Stream<KeyboardEvent> get onAltK => _altK.stream;
@@ -46,7 +50,9 @@ class HotKeys {
     final Map<String, EventListener> preventDefaultBindings =
       {'Alt+a'      : _altA.fire,
        'Alt+b'      : _altB.fire,
+       'Alt+c'      : _altC.fire,
        'Alt+e'      : _altE.fire,
+       'Alt+f'      : _altF.fire,
        'Alt+h'      : _altH.fire,
        'Alt+i'      : _altI.fire,
        'Alt+k'      : _altK.fire,

@@ -22,6 +22,8 @@ part 'model-ui-message-compose.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
 part 'model-ui-reception-opening-hours.dart';
+part 'model-ui-reception-product.dart';
+part 'model-ui-reception-salesmen.dart';
 part 'model-ui-reception-selector.dart';
 part 'model-ui-receptionistclient-ready.dart';
 part 'model-ui-receptionistclient-disaster.dart';

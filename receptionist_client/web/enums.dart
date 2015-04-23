@@ -30,6 +30,8 @@ enum Widget {AgentInfo,
              ReceptionCalendar,
              ReceptionCommands,
              ReceptionOpeningHours,
+             ReceptionProduct,
+             ReceptionSalesmen,
              ReceptionSelector,
              ReceptionAltNames,
              MessageArchiveFilter}

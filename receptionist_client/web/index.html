@@ -689,11 +689,16 @@
                     flex-grow: 1;
                   }
 
-                  #reception-selector .filter {
+                  #reception-selector .generic-widget-body div {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
                     position: absolute;
-                    left: 58%;
-                    width: calc(40% - 0.6em);
-                    margin: 0.5em 0.3em 0.3em 0.3em;
+                    width: calc(100% - 1.5em);
+                  }
+
+                  #reception-selector .generic-widget-body div .filter {
+                    margin: 0.7em 0;
                     height: 2em;
                     font-size: 1em;
                     padding: 0 0.3em;
@@ -734,7 +739,9 @@
                   <span></span>
                 </h4>
                 <div class="generic-widget-body">
-                  <input class="filter" data-lang-placeholder="filter" placeholder="::filter....::" tabindex="-1">
+                  <div>
+                    <input class="filter" data-lang-placeholder="filter" placeholder="::filter....::" tabindex="-1">
+                  </div>
                   <ol class="generic-widget-list zebra" tabindex="-1"></ol>
                 </div>
               </div>
@@ -1504,6 +1511,10 @@
               #reception-salesmen {
                 flex-grow: 1;
               }
+
+              #reception-salesmen .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -1513,10 +1524,7 @@
               <span data-lang-text="reception-salesmen-header">::reception salesmen::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Senvis til info@responsum.dk</li>
-              <li>Afvis rengøring. Dette ordnes via vores lejemål</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -1538,6 +1546,7 @@
               }
 
               #reception-product > div {
+                outline: 0;
                 overflow: auto;
                 padding: 0.3em;
               }
@@ -1547,12 +1556,10 @@
             <div class="help hidden"></div>
 
             <h4 class="generic-widget-headline">
-              <span data-lang-text="reception-product-desc-header">::reception product description::</span>
+              <span data-lang-text="reception-product-header">::reception product description::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body">
-              Vi laver gummiænder
-            </div>
+            <div class="generic-widget-body" tabindex="-1"></div>
           </div>
 
           <!--

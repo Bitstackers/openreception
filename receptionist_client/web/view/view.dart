@@ -24,7 +24,7 @@ part 'view-reception-calendar.dart';
 part 'view-reception-commands.dart';
 part 'view-reception-opening-hours.dart';
 part 'view-reception-product.dart';
-part 'view-reception-sales-calls.dart';
+part 'view-reception-salesmen.dart';
 part 'view-reception-selector.dart';
 part 'view-receptionistclient-ready.dart';
 part 'view-receptionistclient-disaster.dart';
