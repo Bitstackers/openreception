@@ -30,7 +30,7 @@ class NotificationService {
   NotificationService (Uri this._host, String this._token, this._backed);
 
   /**
-   * Performs a broadcat via the notification server.
+   * Performs a broadcast via the notification server.
    */
   Future broadcast(Map map) {
     Uri uri = Resource.Notification.broadcast(this._host);
@@ -40,6 +40,18 @@ class NotificationService {
 
     return _enqueue (new NotificationRequest()..body     = map
                                               ..resource = uri);
+  }
+
+  /**
+   * Sends an event via the notification server to [recipients]
+   *
+   * TODO: Implement and add test.
+   */
+  Future send(Iterable <int> recipients, Event.Event event) {
+    Uri uri = Resource.Notification.send(this._host);
+        uri = appendToken(uri, this._token);
+
+        return new Future.error(new UnimplementedError());
   }
 
   /**
