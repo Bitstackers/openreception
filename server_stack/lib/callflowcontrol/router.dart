@@ -82,7 +82,7 @@ void registerHandlers(HttpServer server) {
       ..serve(callHangupSpecificResource, method : "POST" ).listen(Call.hangupSpecific)
       ..serve(callPickupResource,         method : "POST" ).listen(Call.pickup)
       ..serve(callParkResource,           method : "POST" ).listen(Call.park)
-      ..serve(callOriginateResource,      method : "POST" ).listen(Call.originate)
+      ..serve(callOriginateResource,      method : "POST" ).listen(Call.originateViaPark)
       ..serve(callTransferResource,       method : "POST" ).listen(Call.transfer)
       ..serve(callRecordSoundResource,    method : "POST" ).listen(Call.recordSound)
       ..serve(anything,                   method : 'OPTIONS').listen(preFlight)
