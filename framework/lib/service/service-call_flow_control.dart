@@ -122,13 +122,22 @@ class CallFlowControl {
 
   /**
    * Originate a new call via the server.
+   *
+   * TODO: Remove the if/else branch, once the protocol has converged.
    */
   Future<Model.Call> originate (String extension, int contactID, int receptionID) =>
       this._backed.post
         (appendToken(Resource.CallFlowControl.originate
            (this._host, extension, contactID, receptionID), this._token),'')
-      .then((String response)
-        => new Model.Call.stub (JSON.decode(response)['call']));
+      .then((String response) {
+         Map map = JSON.decode(response);
+           if (map.containsKey('call')) {
+             return new Model.Call.stub (map['call']);
+           } else {
+             return new Model.Call.fromMap(map);
+           }
+  });
+
 
   /**
    * Parks the call identified by [callID].
