@@ -28,7 +28,7 @@ class MessageDispatcher {
 }
 
 void logEntryDispatch(LogRecord record) {
-  if (record.level.value > Level.WARNING.value) {
+  if (record.level.value > Level.INFO.value) {
     IO.stderr.writeln(record);
   } else {
     IO.stdout.writeln(record);
