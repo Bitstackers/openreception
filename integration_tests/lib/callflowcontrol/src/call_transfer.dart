@@ -17,24 +17,27 @@ abstract class Transfer {
         .then((_) => log.info ('Disable autoanswer for ${callee.name}'))
         .then((_) => callee.autoAnswer(false))
         .then((_) => receptionist.autoAnswer(true))
-        .then((_) => log.info ('Customer ${caller.name} dials ${reception}'))
+        .then((_) => log.info ('Customer ${caller} dials ${reception}'))
         .then((_) => caller.dial (reception))
 
-        .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
+        .then((_) => log.info ('Receptionist $receptionist waits for call.'))
         .then((_) => receptionist.waitForCall()
          .then((Model.Call call) => inboundCall = call))
-        .then((_) => log.info ('Receptionist ${receptionist} tries to pick up call $inboundCall'))
+        .then((_) => log.info ('Receptionist $receptionist tries to pick up call $inboundCall'))
         .then((_) => receptionist.pickup(inboundCall)
           .then((Model.Call receivedCall) {
              expect (inboundCall.ID, equals(receivedCall.ID));
-             log.info ('Receptionist ${receptionist} got call $receivedCall');
+             log.info ('Receptionist $receptionist got call $receivedCall');
           }))
         .then((_) => receptionist.waitForInboundCall())
         .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup))
         .then((_) => receptionist.eventStack.clear())
-        .then((_) => log.info ('Receptionist ${receptionist.user.name} parks call $inboundCall.'))
+        .then((_) => log.info ('Receptionist ${receptionist} parks call $inboundCall.'))
         .then((_) => receptionist.park (inboundCall))
+        .then((_) => log.info ('Receptionist ${receptionist} awaits parking confirmation of $inboundCall.'))
         .then((_) => receptionist.waitFor(eventType: Event.Key.callPark, callID: inboundCall.ID))
+        .then((_) => log.info ('Receptionist ${receptionist} got parking confirmation of $inboundCall.'))
+        .then((_) => log.info ('Receptionist ${receptionist} awaits phone disconnect.'))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => receptionist.originate(callee.extension, contactID, receptionID)
           .then((Model.Call call) {
@@ -53,7 +56,7 @@ abstract class Transfer {
         .then((_) => receptionist.transferCall(inboundCall, outboundCall))
         .then((_) => log.info ('Receptionist ${receptionist.user.name} transferred call $outboundCall to $inboundCall.'))
         .then((_) => receptionist.waitFor(eventType : Event.Key.callTransfer))
-        .then((_) => log.info ('Waiting for receptionist ${receptionist.user.name}\'s phone to hang up'))
+        .then((_) => log.info ('Waiting for ${receptionist} phone to hang up'))
         .then((_) => receptionist.waitForPhoneHangup())
         .then((_) => log.info ('Caller ${caller} hangs up'))
         .then((_) => caller.hangupAll())
