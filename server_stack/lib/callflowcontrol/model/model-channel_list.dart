@@ -36,6 +36,28 @@ String ownedByPeer (ESL.Channel channel) {
   return cName.split('/')[2];
 }
 
+String channelOwnedByPeer (String channelName) {
+  if (!channelName.startsWith('sofia/')) {
+    throw new ArgumentError('only sofia channels are supported.');
+  }
+
+  return channelName.split('/')[2];
+}
+
+String channelUUIDOfPeer (ESL.Channel channel, String peerName) {
+  String channelName = channel.fields['Channel-Name'];
+  String otherChannelName = channel.fields['Other-Leg-Channel-Name'];
+
+  if (channelOwnedByPeer (channelName) == peerName) {
+    return channel.fields['Channel-UUID'];
+  } else if (otherChannelName != null)
+    if (channelOwnedByPeer (otherChannelName) == peerName) {
+      return channel.fields['Other-Leg-Channel-UUID'];
+  }
+
+  throw new ArgumentError('Peer $peerName has no relation to Channel $channel');
+}
+
 String simplePeerName (String peerName) =>
   peerName.split('@')[0].replaceAll('sip:', '');
 
