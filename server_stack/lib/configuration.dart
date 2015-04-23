@@ -12,6 +12,11 @@ class ConfigServerDefault {
   int HttpPort = 4080;
 }
 
+class CallFlowControl {
+  final Log log = Configuration.logDefaults;
+  final String dialoutPrefix = '';
+}
+
 class ConfigServer {
   final ConfigServerDefault defaults = new ConfigServerDefault ();
 
@@ -33,6 +38,7 @@ void logEntryDispatch(LogRecord record) {
 abstract class Configuration {
   static final logDefaults = new Log();
 
+  static final CallFlowControl callFlowControl = new CallFlowControl();
   static final ConfigServer configserver = new ConfigServer();
   static final MessageDispatcher messageDispatcher = new MessageDispatcher();
 }
