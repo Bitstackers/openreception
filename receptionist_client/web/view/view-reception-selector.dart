@@ -44,18 +44,24 @@ class ReceptionSelector extends ViewWidget {
   /// TODO (TL): Get rid of this. It's just here to test stuff. These
   /// [Reception] objects should come from one of Kims service methods.
   void test() {
-    List<Command> commands = [new Command.fromJson({'command':'Command 1'}),
-                              new Command.fromJson({'command':'Command 2'}),
-                              new Command.fromJson({'command':'Command 3'}),
-                              new Command.fromJson({'command':'Command 4'}),
-                              new Command.fromJson({'command':'Command 5'})];
+    List<String> commands = ['Command 1',
+                             'Command 2',
+                             'Command 3',
+                             'Command 4',
+                             'Command 5'];
 
-    _ui.receptions = [new Reception(1, 'Responsum K/S', commands),
-                      new Reception(2, 'Bitstackers K/S', commands),
-                      new Reception(3, 'Loecke K/S', commands),
-                      new Reception(4, 'Another Loecke K/S', commands),
-                      new Reception(5, 'Another Responsum K/S', commands),
-                      new Reception(6, 'FooBar K/S', commands)];
+    List<String> openingHours = ['Opening hour 1',
+                                 'Opening hour 2',
+                                 'Opening hour 3',
+                                 'Opening hour 4',
+                                 'Opening hour 5'];
+
+    _ui.receptions = [new Reception(1, 'Responsum K/S', commands, openingHours),
+                      new Reception(2, 'Bitstackers K/S', commands, openingHours),
+                      new Reception(3, 'Loecke K/S', commands, openingHours),
+                      new Reception(4, 'Another Loecke K/S', commands, openingHours),
+                      new Reception(5, 'Another Responsum K/S', commands, openingHours),
+                      new Reception(6, 'FooBar K/S', commands, openingHours)];
 
   }
 }

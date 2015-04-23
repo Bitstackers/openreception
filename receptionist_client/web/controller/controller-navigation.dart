@@ -6,8 +6,9 @@ final Map<String, Destination> _destinations =
    '${Context.Home}-${Widget.ContactSelector}'         : new Destination(Context.Home, Widget.ContactSelector),
    '${Context.Home}-${Widget.MessageCompose}'          : new Destination(Context.Home, Widget.MessageCompose),
    '${Context.Home}-${Widget.ReceptionCalendar}'       : new Destination(Context.Home, Widget.ReceptionCalendar),
-   '${Context.Home}-${Widget.ReceptionSelector}'       : new Destination(Context.Home, Widget.ReceptionSelector),
    '${Context.Home}-${Widget.ReceptionCommands}'       : new Destination(Context.Home, Widget.ReceptionCommands),
+   '${Context.Home}-${Widget.ReceptionOpeningHours}'   : new Destination(Context.Home, Widget.ReceptionOpeningHours),
+   '${Context.Home}-${Widget.ReceptionSelector}'       : new Destination(Context.Home, Widget.ReceptionSelector),
    '${Context.Homeplus}-${Widget.ReceptionAltNames}'   : new Destination(Context.Homeplus, Widget.ReceptionAltNames),
    '${Context.CalendarEdit}-${Widget.CalendarEditor}'  : new Destination(Context.CalendarEdit, Widget.CalendarEditor),
    '${Context.Messages}-${Widget.MessageArchiveFilter}': new Destination(Context.Messages, Widget.MessageArchiveFilter)};

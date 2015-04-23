@@ -29,6 +29,7 @@ enum Widget {AgentInfo,
              MessageCompose,
              ReceptionCalendar,
              ReceptionCommands,
+             ReceptionOpeningHours,
              ReceptionSelector,
              ReceptionAltNames,
              MessageArchiveFilter}

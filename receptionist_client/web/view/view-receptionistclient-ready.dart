@@ -98,13 +98,16 @@ class ReceptionistclientReady {
                                               new Controller.Destination(Context.Home, Widget.ReceptionCommands),
                                               uiReceptionSelector);
 
+    receptionOpeningHours = new ReceptionOpeningHours(new Model.UIReceptionOpeningHours(querySelector('#reception-opening-hours')),
+                                                      new Controller.Destination(Context.Home, Widget.ReceptionOpeningHours),
+                                                      uiReceptionSelector);
+
     messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
                                         new Controller.Destination(Context.Home, Widget.MessageCompose));
 
     // TODO (TL): The following widgets have not yet been UIModel'ified.
 //    globalCallQueue       = new GlobalCallQueue();
 //    myCallQueue           = new MyCallQueue();
-//    receptionOpeningHours = new ReceptionOpeningHours();
 //    receptionProduct      = new ReceptionProduct();
 //    receptionSalesCalls   = new ReceptionSalesCalls();
 //    welcomeMessage        = new WelcomeMessage();

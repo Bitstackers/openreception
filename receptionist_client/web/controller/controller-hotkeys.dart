@@ -20,6 +20,7 @@ class HotKeys {
   final Bus<KeyboardEvent> _altT = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altV = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _altW = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altX = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _f1   = new Bus<KeyboardEvent>();
 
   Stream<KeyboardEvent> get onAltA => _altA.stream;
@@ -33,6 +34,7 @@ class HotKeys {
   Stream<KeyboardEvent> get onAltT => _altT.stream;
   Stream<KeyboardEvent> get onAltV => _altV.stream;
   Stream<KeyboardEvent> get onAltW => _altW.stream;
+  Stream<KeyboardEvent> get onAltX => _altX.stream;
   Stream<KeyboardEvent> get onF1   => _f1.stream;
 
   /**
@@ -53,6 +55,7 @@ class HotKeys {
        'Alt+t'      : _altT.fire,
        'Alt+v'      : _altV.fire,
        'Alt+w'      : _altW.fire,
+       'Alt+x'      : _altX.fire,
        'F1'         : _f1.fire,
        'Ctrl+d'     : _null,
        'Ctrl+l'     : _null};

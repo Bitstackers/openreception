@@ -1,14 +1,14 @@
 part of model;
 
-class UIReceptionCommands extends UIModel {
+class UIReceptionOpeningHours extends UIModel {
   final Keyboard   _keyboard = new Keyboard();
   final DivElement _myRoot;
 
   /**
    * Constructor.
    */
-  UIReceptionCommands(DivElement this._myRoot) {
-    _help.text = 'alt+h';
+  UIReceptionOpeningHours(DivElement this._myRoot) {
+    _help.text = 'alt+x';
 
     _setupLocalKeys();
     _observers();
@@ -25,7 +25,7 @@ class UIReceptionCommands extends UIModel {
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
-   * Remove all entries from the command list and clear the header.
+   * Remove all entries from the list and clear the header.
    */
   void clear() {
     _headerExtra.text = '';
@@ -33,9 +33,9 @@ class UIReceptionCommands extends UIModel {
   }
 
   /**
-   * Add [items] to the command list.
+   * Add [items] to the opening hours list.
    */
-  set commands(List<String> items) {
+  set openingHours(List<String> items) {
     final List<LIElement> list = new List<LIElement>();
 
     items.forEach((String item) {

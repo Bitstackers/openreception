@@ -43,27 +43,10 @@ class CalendarEvent {
 
   bool get isNull => id == null;
 
-  Map toJson() {
-    return {'id'         : id,
-            'contactId'  : contactId,
-            'receptionId': receptionId,
-            'content'    : content};
-  }
-}
-
-/**
- * Dummy reception command class
- */
-class Command {
-  String command;
-
-  Command.fromJson(Map json) {
-    command = json['command'];
-  }
-
-  Map toJson() {
-    return {'command': command};
-  }
+  Map toJson() => {'id'         : id,
+                   'contactId'  : contactId,
+                   'receptionId': receptionId,
+                   'content'    : content};
 }
 
 /**
@@ -82,37 +65,42 @@ class Contact {
     tags        = json['tags'];
   }
 
-  Map toJson() {
-    return {'id'         : id,
-            'name'       : name,
-            'receptionId': receptionId,
-            'tags'       : tags};
-  }
+  Map toJson() => {'id'         : id,
+                   'name'       : name,
+                   'receptionId': receptionId,
+                   'tags'       : tags};
 }
 
 /**
  * Dummy reception class
  */
 class Reception {
-  List<Command> commands = new List<Command>();
-  int           id;
-  String        name;
+  List<String> commands = new List<String>();
+  int          id;
+  String       name;
+  List<String> openingHours = new List<String>();
 
-  Reception(int this.id, String this.name, this.commands);
+  Reception(int this.id, String this.name, this.commands, this.openingHours);
 
   Reception.fromJson(Map json) {
-    (json['commands'] as Iterable).forEach((Map item) {
-      commands.add(new Command.fromJson(item));
+    (json['commands'] as Iterable).forEach((String item) {
+      commands.add(item);
     });
     id       = json['id'];
     name     = json['name'];
+    (json['openingHours'] as Iterable).forEach((String item) {
+      openingHours.add(item);
+    });
   }
 
   Reception.Null();
 
   bool get isNull => name == null;
 
-  Map toJson() => {'commands': commands, 'id': id, 'name': name};
+  Map toJson() => {'commands'    : commands,
+                   'id'          : id,
+                   'name'        : name,
+                   'openingHours': openingHours};
 }
 
 /**
@@ -135,9 +123,8 @@ class TelNum {
 
   TelNum.Null();
 
-  Map toJson() =>
-      {'id'    : id,
-       'label' : label,
-       'number': number,
-       'secret': secret};
+  Map toJson() => {'id'    : id,
+                   'label' : label,
+                   'number': number,
+                   'secret': secret};
 }
