@@ -101,7 +101,7 @@ class Reception {
 
   Reception.Null();
 
-  bool get isNull => name == null;
+  bool get isNull => name.isEmpty || name == null;
 
   Map toJson() => {'commands'    : commands,
                    'id'          : id,

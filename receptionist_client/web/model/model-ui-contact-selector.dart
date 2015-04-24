@@ -29,14 +29,14 @@ class UIContactSelector extends UIModel {
   @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
   @override HtmlElement        get _root   => _myRoot;
 
-  OListElement get _contactList => _root.querySelector('.generic-widget-list');
-  InputElement get _filter      => _root.querySelector('.filter');
+  OListElement get _list   => _root.querySelector('.generic-widget-list');
+  InputElement get _filter => _root.querySelector('.filter');
 
   /**
    * Remove all entries from the contact list.
    */
-  void clearList() {
-    _contactList.children.clear();
+  void clear() {
+    _list.children.clear();
   }
 
   /**
@@ -62,7 +62,7 @@ class UIContactSelector extends UIModel {
                  ..text = item.name);
     });
 
-    _contactList.children = list;
+    _list.children = list;
   }
 
   /**
@@ -75,10 +75,10 @@ class UIContactSelector extends UIModel {
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _contactList.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
     } else if(trimmedFilter.length == 1 && !filter.startsWith(' ')) {
       /// Pattern: one non-space character followed by zero or more spaces
-      _contactList.children.forEach((LIElement li) {
+      _list.children.forEach((LIElement li) {
         if(li.dataset['firstinitial'] == trimmedFilter) {
           li.classes.toggle('hide', false);
         } else {
@@ -87,7 +87,7 @@ class UIContactSelector extends UIModel {
       });
     } else if(trimmedFilter.length ==1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
       /// Pattern: one or more spaces followed by one non-space character
-      _contactList.children.forEach((LIElement li) {
+      _list.children.forEach((LIElement li) {
         if(li.dataset['otherinitials'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -96,7 +96,7 @@ class UIContactSelector extends UIModel {
       });
     } else if(trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
       /// Pattern: one character, one space, one character
-      _contactList.children.forEach((LIElement li) {
+      _list.children.forEach((LIElement li) {
         if(li.dataset['firstinitial'] == trimmedFilter.substring(0,1) && li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
           li.classes.toggle('hide', false);
         } else {
@@ -108,7 +108,7 @@ class UIContactSelector extends UIModel {
       /// the resulting parts in their tag list.
       final List<String> parts = trimmedFilter.split(' ');
 
-      _contactList.children.forEach((LIElement li) {
+      _list.children.forEach((LIElement li) {
         if(parts.every((String part) => li.dataset['tags'].contains(part))) {
           li.classes.toggle('hide', false);
         } else {
@@ -118,15 +118,15 @@ class UIContactSelector extends UIModel {
     }
 
     /// Select the first visible item on the list
-    _markSelected(_scanForwardForVisibleElement(_contactList.children.first));
+    _markSelected(_scanForwardForVisibleElement(_list.children.first));
   }
 
   /**
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(_contactList.children.isNotEmpty) {
-      final LIElement selected = _contactList.querySelector('.selected');
+    if(_list.children.isNotEmpty) {
+      final LIElement selected = _list.querySelector('.selected');
 
       switch(event.keyCode) {
         case KeyCode.DOWN:
@@ -146,7 +146,7 @@ class UIContactSelector extends UIModel {
    */
   void _markSelected(LIElement li) {
     if(li != null && !li.classes.contains('selected')) {
-      _contactList.children.forEach((Element element) => element.classes.remove('selected'));
+      _list.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
       _bus.fire(new Contact.fromJson(JSON.decode(li.dataset['object'])));
@@ -176,8 +176,8 @@ class UIContactSelector extends UIModel {
    * Select the first [Contact] in the list.
    */
   void selectFirstContact() {
-    if(_contactList.children.isNotEmpty) {
-      _markSelected(_scanForwardForVisibleElement(_contactList.children.first));
+    if(_list.children.isNotEmpty) {
+      _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
 

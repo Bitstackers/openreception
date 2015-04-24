@@ -44,9 +44,9 @@ class ContactSelector extends ViewWidget {
    * Render the widget with [Contact]s.
    */
   void render(Reception reception) {
-    _ui.clearList();
-
-    if(!reception.isNull) {
+    if(reception.isNull) {
+      _ui.clear();
+    } else {
       _ui.contacts = [new Contact.fromJson({'id': 1, 'name': 'Trine Løcke Snøcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Oplæring','Service']}),
                       new Contact.fromJson({'id': 2, 'name': 'Hoop Karaoke ${(reception.name)}', 'receptionId': 2, 'tags': ['Entertainment', 'International Business', 'teknik']}),
                       new Contact.fromJson({'id': 3, 'name': 'Thomas Løcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Farum', 'salg']}),

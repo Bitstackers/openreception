@@ -29,8 +29,8 @@ class UIReceptionSelector extends UIModel {
   @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
   @override HtmlElement        get _root   => _myRoot;
 
-  OListElement get _receptionList => _root.querySelector('.generic-widget-list');
-  InputElement get _filter        => _root.querySelector('.filter');
+  OListElement get _list   => _root.querySelector('.generic-widget-list');
+  InputElement get _filter => _root.querySelector('.filter');
 
   /**
    * Filter the reception list whenever the user enters data into the [_filter]
@@ -42,9 +42,12 @@ class UIReceptionSelector extends UIModel {
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _receptionList.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.classes.toggle('zebra', true);
     } else if(trimmedFilter.length == 1) {
-      _receptionList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['name'].startsWith(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -52,7 +55,9 @@ class UIReceptionSelector extends UIModel {
         }
       });
     } else {
-      _receptionList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['name'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -66,20 +71,20 @@ class UIReceptionSelector extends UIModel {
    * Deal with enter.
    */
   void _handleEnter(KeyboardEvent event) {
-    _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
+    _markSelected(_scanForwardForVisibleElement(_list.children.first));
   }
 
   /**
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(_receptionList.children.isNotEmpty) {
-      final LIElement selected = _receptionList.querySelector('.selected');
+    if(_list.children.isNotEmpty) {
+      final LIElement selected = _list.querySelector('.selected');
 
       /// Special case for this widget. If nothing is selected, simply select
       /// the first element in the list and return.
       if(selected == null) {
-        _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
+        _markSelected(_scanForwardForVisibleElement(_list.children.first));
         return;
       }
 
@@ -101,7 +106,7 @@ class UIReceptionSelector extends UIModel {
    */
   void _markSelected(LIElement li) {
     if(li != null && !li.classes.contains('selected')) {
-      _receptionList.children.forEach((Element element) => element.classes.remove('selected'));
+      _list.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
       _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
@@ -140,7 +145,7 @@ class UIReceptionSelector extends UIModel {
                 ..text = item.name);
     });
 
-    _receptionList.children = list;
+    _list.children = list;
   }
 
   /**
@@ -150,7 +155,7 @@ class UIReceptionSelector extends UIModel {
   void _reset(_) {
     _filter.value = '';
     filter('');
-    _receptionList.children.forEach((Element e) => e.classes.toggle('selected', false));
+    _list.children.forEach((Element e) => e.classes.toggle('selected', false));
     _bus.fire(new Reception.Null());
   }
 
