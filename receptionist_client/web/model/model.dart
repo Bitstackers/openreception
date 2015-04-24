@@ -21,6 +21,8 @@ part 'model-ui-global-call-queue.dart';
 part 'model-ui-help.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-my-call-queue.dart';
+part 'model-ui-reception-addresses.dart';
+part 'model-ui-reception-alt-names.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
 part 'model-ui-reception-opening-hours.dart';

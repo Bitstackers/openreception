@@ -44,6 +44,10 @@ class ReceptionSelector extends ViewWidget {
   /// TODO (TL): Get rid of this. It's just here to test stuff. These
   /// [Reception] objects should come from one of Kims service methods.
   void test() {
+    List<String> addresses = ['Et eller andet sted i Stenløse', 'Et eller andet sted i Hundested'];
+
+    List<String> altNames = ['Chaching A/S', 'FooBar ApS'];
+
     List<String> commands = ['Command 1',
                              'Command 2',
                              'Command 3',
@@ -65,36 +69,48 @@ class ReceptionSelector extends ViewWidget {
                              'Salesmen 5'];
 
     _ui.receptions = [new Reception(1, 'Responsum K/S')
+                        ..addresses = addresses
+                        ..altNames = altNames
                         ..commands = commands
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
                       ,
                       new Reception(2, 'Bitstackers K/S')
+                        ..addresses = addresses
+                        ..altNames = altNames
                         ..commands = commands
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
                       ,
                       new Reception(3, 'Loecke K/S')
+                        ..addresses = addresses
+                        ..altNames = altNames
                         ..commands = commands
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
                       ,
                       new Reception(4, 'Another Loecke K/S')
+                        ..addresses = addresses
+                        ..altNames = altNames
                         ..commands = commands
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
                       ,
                       new Reception(5, 'Another Responsum K/S')
+                        ..addresses = addresses
+                        ..altNames = altNames
                         ..commands = commands
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
                       ,
                       new Reception(6, 'FooBar K/S')
+                        ..addresses = addresses
+                        ..altNames = altNames
                         ..commands = commands
                         ..openingHours = openingHours
                         ..product = product

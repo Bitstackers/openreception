@@ -12,6 +12,8 @@ class ReceptionistclientReady {
   Help                                  help;
   MessageCompose                        messageCompose;
   MyCallQueue                           myCallQueue;
+  ReceptionAddresses                    receptionAddresses;
+  ReceptionAltNames                     receptionAltNames;
   ReceptionCalendar                     receptionCalendar;
   ReceptionCommands                     receptionCommands;
   ReceptionOpeningHours                 receptionOpeningHours;
@@ -91,6 +93,14 @@ class ReceptionistclientReady {
 
     myCallQueue = new MyCallQueue(new Model.UIMyCallQueue(querySelector('#my-call-queue')),
                                   new Controller.Destination(Context.Home, Widget.MyCallQueue));
+
+    receptionAddresses = new ReceptionAddresses(new Model.UIReceptionAddresses(querySelector('#reception-addresses')),
+                                                new Controller.Destination(Context.Homeplus, Widget.ReceptionEmailAddresses),
+                                                uiReceptionSelector);
+
+    receptionAltNames = new ReceptionAltNames(new Model.UIReceptionAltNames(querySelector('#reception-alt-names')),
+                                              new Controller.Destination(Context.Homeplus, Widget.ReceptionAltNames),
+                                              uiReceptionSelector);
 
     receptionCalendar = new ReceptionCalendar(uiReceptionCalendar,
                                               new Controller.Destination(Context.Home, Widget.ReceptionCalendar),

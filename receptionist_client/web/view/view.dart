@@ -20,6 +20,8 @@ part 'view-global-call-queue.dart';
 part 'view-message-compose.dart';
 part 'view-help.dart';
 part 'view-my-call-queue.dart';
+part 'view-reception-addresses.dart';
+part 'view-reception-alt-names.dart';
 part 'view-reception-calendar.dart';
 part 'view-reception-commands.dart';
 part 'view-reception-opening-hours.dart';

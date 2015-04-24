@@ -79,6 +79,8 @@ class Contact {
  * Dummy reception class
  */
 class Reception {
+  List<String> addresses    = new List<String>();
+  List<String> altNames     = new List<String>();
   List<String> commands     = new List<String>();
   int          id;
   String       name         = '';
@@ -89,6 +91,12 @@ class Reception {
   Reception(int this.id, String this.name);
 
   Reception.fromJson(Map json) {
+    (json['addresses'] as Iterable).forEach((String item) {
+      addresses.add(item);
+    });
+    (json['altNames'] as Iterable).forEach((String item) {
+      altNames.add(item);
+    });
     (json['commands'] as Iterable).forEach((String item) {
       commands.add(item);
     });
@@ -107,7 +115,9 @@ class Reception {
 
   bool get isNull => name.isEmpty || name == null;
 
-  Map toJson() => {'commands'    : commands,
+  Map toJson() => {'addresses'   : addresses,
+                   'altNames'    : altNames,
+                   'commands'    : commands,
                    'id'          : id,
                    'name'        : name,
                    'openingHours': openingHours,
