@@ -97,6 +97,7 @@ class ReceptionSelector extends ViewWidget {
                       new Reception(6, 'FooBar K/S')
                         ..commands = commands
                         ..openingHours = openingHours
+                        ..product = product
                         ..salesMen = salesMen];
 
   }
