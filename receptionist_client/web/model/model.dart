@@ -30,6 +30,7 @@ part 'model-ui-reception-selector.dart';
 part 'model-ui-receptionistclient-ready.dart';
 part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';
+part 'model-ui-welcome-message.dart';
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 

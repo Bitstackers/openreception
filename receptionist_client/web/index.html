@@ -6,7 +6,7 @@
     <title>ReceptionistClientFlex</title>
     <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body IdgnoreClickFocus>
   <!--
     #receptionistclient-ready state
 
@@ -23,7 +23,7 @@
       Note that visibility on #receptionistclient-ready and its siblings MUST
       be mutually exclusive.
   -->
-  <div id="receptionistclient-ready" class="display-flex-row">
+  <div IgnoreClickFocus id="receptionistclient-ready" class="display-flex-row">
     <style scoped>
       #receptionistclient-ready {
         display: none;
@@ -32,7 +32,7 @@
       }
     </style>
 
-    <div class="display-flex-row" style="flex-grow: 1; position: relative;">
+    <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 1; position: relative;">
 
       <!--
         #context-calendar-edit modal
@@ -47,7 +47,7 @@
           Note that visibility on #context-calendar-edit and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-calendar-edit" class="context modal display-flex-row">
+      <section IgnoreClickFocus id="context-calendar-edit" class="context modal display-flex-row">
 
         <!--<div class="display-flex-column layout-margin-right" style="flex-grow: 1;">-->
 
@@ -184,9 +184,9 @@
           Note that visibility on #context-homeplus and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-homeplus" class="context modal display-flex-row">
+      <section IgnoreClickFocus id="context-homeplus" class="context modal display-flex-row">
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
           <!--
             #reception-alt-names widget
@@ -501,9 +501,9 @@
           Note that visibility on #context-messages and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-messages" class="context modal display-flex-row">
+      <section IgnoreClickFocus id="context-messages" class="context modal display-flex-row">
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
           <!--
             #message-archive-filter widget
@@ -570,7 +570,7 @@
 
         </div>
 
-        <div class="display-flex-row" style="flex-grow: 3;">
+        <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 3;">
 
           <!--
             #message-archive widget
@@ -620,11 +620,11 @@
           Note that visibility on #context-home and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-home" class="context display-flex-row">
+      <section IgnoreClickFocus id="context-home" class="context display-flex-row">
 
         <!-- calendar editor widget was here -->
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
           <!--
             #welcome-message widget
@@ -644,6 +644,7 @@
               #welcome-message {
                 height: 4em;
                 overflow: auto;
+                pointer-events: none; /* ignore mouse click events */
               }
 
               #welcome-message > div {
@@ -667,8 +668,8 @@
             </div>
           </div>
 
-          <div class="display-flex-row layout-margin-top" style="flex-grow: 1;">
-            <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
+          <div IgnoreClickFocus class="display-flex-row layout-margin-top" style="flex-grow: 1;">
+            <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
               <!--
                 #reception-selector widget
@@ -703,6 +704,7 @@
                     height: 2em;
                     font-size: 1em;
                     padding: 0 0.3em;
+                    pointer-events: auto;
                   }
 
                   #reception-selector .generic-widget-list {
@@ -1063,8 +1065,8 @@
 
             </div>
 
-            <div class="display-flex-column" style="flex-grow: 5;">
-              <div class="display-flex-row" style="flex-grow: 2;">
+            <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 5;">
+              <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 2;">
 
                 <!--
                   #contact-selector widget
@@ -1370,7 +1372,7 @@
             </div>
           </div>
         </div>
-        <div class="display-flex-column" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 1;">
 
           <!--
             #agent-info widget
@@ -1390,6 +1392,7 @@
             <style scoped>
               #agent-info {
                 height: 4em;
+                pointer-events: none; /* ignore mouse click events */
               }
 
               #agent-info > div {
@@ -1588,7 +1591,7 @@
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="help hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="global-call-queue-header">::queued calls::</span>
@@ -1621,7 +1624,7 @@
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="help hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="my-queued-calls-header">::my queued calls::</span>
@@ -1652,7 +1655,7 @@
       Note that visibility on #receptionistclient-disaster and its siblings MUST
       be mutually exclusive.
   -->
-  <div id="receptionistclient-disaster">
+  <div IgnoreClickFocus id="receptionistclient-disaster">
     <style scoped>
       #receptionistclient-disaster {
         display: none;
@@ -1694,7 +1697,7 @@
       Note that visibility on #receptionistclient-loading and its siblings MUST
       be mutually exclusive.
   -->
-  <div id="receptionistclient-loading">
+  <div IgnoreClickFocus id="receptionistclient-loading">
     <style scoped>
       #receptionistclient-loading {
         display: flex;

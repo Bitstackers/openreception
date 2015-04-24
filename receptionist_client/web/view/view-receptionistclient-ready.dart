@@ -113,10 +113,10 @@ class ReceptionistclientReady {
                                               uiReceptionSelector);
 
     receptionSelector = new ReceptionSelector(uiReceptionSelector,
-                                                  new Controller.Destination(Context.Home, Widget.ReceptionSelector));
+                                              new Controller.Destination(Context.Home, Widget.ReceptionSelector));
 
-    // TODO (TL): The following widgets have not yet been UIModel'ified
-//    welcomeMessage        = new WelcomeMessage();
+    welcomeMessage = new WelcomeMessage(new Model.UIWelcomeMessage(querySelector('#welcome-message')),
+                                        uiReceptionSelector);
 
     _ui.visible = true;
 
