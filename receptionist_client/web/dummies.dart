@@ -55,7 +55,7 @@ class CalendarEvent {
 class Contact {
   int          id          = null;
   int          receptionId = null;
-  String       name;
+  String       name        = '';
   List<String> tags;
 
   Contact.fromJson(Map json) {
@@ -64,6 +64,10 @@ class Contact {
     name        = json['name'];
     tags        = json['tags'];
   }
+
+  Contact.Null();
+
+  bool get isNull => name.isEmpty || name == null;
 
   Map toJson() => {'id'         : id,
                    'name'       : name,

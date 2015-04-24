@@ -33,7 +33,7 @@ class ContactData extends ViewWidget {
   /**
    * Clear the widget on null [Reception].
    */
-  void clearOnNullReception(Reception reception) {
+  void clear(Reception reception) {
     if(reception.isNull) {
       _ui.clear();
     }
@@ -51,7 +51,7 @@ class ContactData extends ViewWidget {
 
     _contactSelector.onSelect.listen(render);
 
-    _receptionSelector.onSelect.listen(clearOnNullReception);
+    _receptionSelector.onSelect.listen(clear);
 
     _ui.onMarkedRinging.listen(_call);
     ///
@@ -68,25 +68,29 @@ class ContactData extends ViewWidget {
    * Render the widget with [Contact].
    */
   void render(Contact contact) {
-    _ui.clear();
+    if(contact.isNull) {
+      _ui.clear();
+    } else {
+      _ui.clear();
 
-    _ui.headerExtra = 'for ${contact.name}';
+      _ui.headerExtra = 'for ${contact.name}';
 
-    _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
-    _ui.backups = ['backup 1', 'backup 2'];
-    _ui.commands = ['command 1', 'command 2'];
-    _ui.departments = ['department 1', 'department 2'];
-    _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
-    _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
-    _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
-    _ui.telephoneNumbers = [new TelNum(1, '45454545', 'some number', false),
-                            new TelNum(2, '23456768', 'secret stuff', true),
-                            new TelNum(3, '60431992', 'personal cell', false),
-                            new TelNum(4, '60431993', 'wife cell', false)];
-    _ui.titles = ['Nørd', 'Tekniker'];
-    _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
+      _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
+      _ui.backups = ['backup 1', 'backup 2'];
+      _ui.commands = ['command 1', 'command 2'];
+      _ui.departments = ['department 1', 'department 2'];
+      _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
+      _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
+      _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
+      _ui.telephoneNumbers = [new TelNum(1, '45454545', 'some number', false),
+                              new TelNum(2, '23456768', 'secret stuff', true),
+                              new TelNum(3, '60431992', 'personal cell', false),
+                              new TelNum(4, '60431993', 'wife cell', false)];
+      _ui.titles = ['Nørd', 'Tekniker'];
+      _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
 
-    _ui.selectFirstTelNum();
+      _ui.selectFirstTelNum();
+    }
   }
 
   /**

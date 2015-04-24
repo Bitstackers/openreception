@@ -69,15 +69,18 @@ class UIContactSelector extends UIModel {
    * Filter the contact list whenever the user enters data into the [_filter]
    * input field.
    */
-  void _filterList(_) {
+  void filter(_) {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
       _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.classes.toggle('zebra', true);
     } else if(trimmedFilter.length == 1 && !filter.startsWith(' ')) {
       /// Pattern: one non-space character followed by zero or more spaces
+      _list.classes.toggle('zebra', false);
+
       _list.children.forEach((LIElement li) {
         if(li.dataset['firstinitial'] == trimmedFilter) {
           li.classes.toggle('hide', false);
@@ -87,6 +90,8 @@ class UIContactSelector extends UIModel {
       });
     } else if(trimmedFilter.length ==1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
       /// Pattern: one or more spaces followed by one non-space character
+      _list.classes.toggle('zebra', false);
+
       _list.children.forEach((LIElement li) {
         if(li.dataset['otherinitials'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
@@ -96,6 +101,8 @@ class UIContactSelector extends UIModel {
       });
     } else if(trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
       /// Pattern: one character, one space, one character
+      _list.classes.toggle('zebra', false);
+
       _list.children.forEach((LIElement li) {
         if(li.dataset['firstinitial'] == trimmedFilter.substring(0,1) && li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
           li.classes.toggle('hide', false);
@@ -107,6 +114,8 @@ class UIContactSelector extends UIModel {
       /// Split filter string on space and search for contacts that have all
       /// the resulting parts in their tag list.
       final List<String> parts = trimmedFilter.split(' ');
+
+      _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
         if(parts.every((String part) => li.dataset['tags'].contains(part))) {
@@ -159,7 +168,7 @@ class UIContactSelector extends UIModel {
   void _observers() {
     _filter.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen(_filterList);
+    _filter.onInput.listen(filter);
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -173,11 +182,23 @@ class UIContactSelector extends UIModel {
   Stream<Contact> get onSelect => _bus.stream;
 
   /**
+   * Remove selections, scroll to top, empty filter input and then select the
+   * first contact.
+   */
+  void _reset(_) {
+    _filter.value = '';
+    filter('');
+    selectFirstContact();
+  }
+
+  /**
    * Select the first [Contact] in the list.
    */
   void selectFirstContact() {
     if(_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
+    } else {
+      _bus.fire(new Contact.Null());
     }
   }
 
@@ -203,6 +224,7 @@ class UIContactSelector extends UIModel {
   void _setupWidgetKeys() {
     final Map<String, EventListener> bindings =
         {'down'     : _handleUpDown,
+         'Esc'      : _reset,
          'Shift+Tab': _handleShiftTab,
          'Tab'      : _handleTab,
          'up'       : _handleUpDown};
