@@ -59,21 +59,10 @@ class ReceptionistclientReady {
     Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'));
     Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
-    _ui.visible = true;
-
-    help = new Help(new Model.UIHelp());
-
     contexts = new Contexts(new Model.UIContexts());
-
-
-    receptionSelector = new ReceptionSelector(uiReceptionSelector,
-                                              new Controller.Destination(Context.Home, Widget.ReceptionSelector));
+    help     = new Help(new Model.UIHelp());
 
     agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
-
-    contactSelector = new ContactSelector(uiContactSelector,
-                                          new Controller.Destination(Context.Home, Widget.ContactSelector),
-                                          uiReceptionSelector);
 
     contactCalendar = new ContactCalendar(uiContactCalendar,
                                           new Controller.Destination(Context.Home, Widget.ContactCalendar),
@@ -89,6 +78,19 @@ class ReceptionistclientReady {
                                          new Controller.Destination(Context.CalendarEdit, Widget.CalendarEditor),
                                          uiContactCalendar,
                                          uiReceptionCalendar);
+
+    contactSelector = new ContactSelector(uiContactSelector,
+                                          new Controller.Destination(Context.Home, Widget.ContactSelector),
+                                          uiReceptionSelector);
+
+    globalCallQueue = new GlobalCallQueue(new Model.UIGlobalCallQueue(querySelector('#global-call-queue')),
+                                          new Controller.Destination(Context.Home, Widget.GlobalCallQueue));
+
+    messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
+                                        new Controller.Destination(Context.Home, Widget.MessageCompose));
+
+    myCallQueue = new MyCallQueue(new Model.UIMyCallQueue(querySelector('#my-call-queue')),
+                                  new Controller.Destination(Context.Home, Widget.MyCallQueue));
 
     receptionCalendar = new ReceptionCalendar(uiReceptionCalendar,
                                               new Controller.Destination(Context.Home, Widget.ReceptionCalendar),
@@ -110,14 +112,13 @@ class ReceptionistclientReady {
                                               new Controller.Destination(Context.Home, Widget.ReceptionSalesmen),
                                               uiReceptionSelector);
 
-    messageCompose = new MessageCompose(new Model.UIMessageCompose(querySelector('#message-compose')),
-                                        new Controller.Destination(Context.Home, Widget.MessageCompose));
+    receptionSelector = new ReceptionSelector(uiReceptionSelector,
+                                                  new Controller.Destination(Context.Home, Widget.ReceptionSelector));
 
-    // TODO (TL): The following widgets have not yet been UIModel'ified.
-//    globalCallQueue       = new GlobalCallQueue();
-//    myCallQueue           = new MyCallQueue();
-
+    // TODO (TL): The following widgets have not yet been UIModel'ified
 //    welcomeMessage        = new WelcomeMessage();
+
+    _ui.visible = true;
 
     window.location.hash.isEmpty ? _navigate.goHome() : _navigate.goWindowLocation();
   }

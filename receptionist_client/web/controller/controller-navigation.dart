@@ -4,6 +4,7 @@ final Map<String, Destination> _destinations =
   {'${Context.Home}-${Widget.ContactCalendar}'         : new Destination(Context.Home, Widget.ContactCalendar),
    '${Context.Home}-${Widget.ContactData}'             : new Destination(Context.Home, Widget.ContactData),
    '${Context.Home}-${Widget.ContactSelector}'         : new Destination(Context.Home, Widget.ContactSelector),
+   '${Context.Home}-${Widget.GlobalCallQueue}'         : new Destination(Context.Home, Widget.GlobalCallQueue),
    '${Context.Home}-${Widget.MessageCompose}'          : new Destination(Context.Home, Widget.MessageCompose),
    '${Context.Home}-${Widget.ReceptionCalendar}'       : new Destination(Context.Home, Widget.ReceptionCalendar),
    '${Context.Home}-${Widget.ReceptionCommands}'       : new Destination(Context.Home, Widget.ReceptionCommands),

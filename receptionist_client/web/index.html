@@ -1581,6 +1581,10 @@
               #global-call-queue {
                 flex-grow: 2;
               }
+
+              #global-call-queue .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -1590,11 +1594,7 @@
               <span data-lang-text="global-call-queue-header">::queued calls::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Et kald...</li>
-              <li>Et andet kald..</li>
-              <li>Et tredje kald..</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -1614,6 +1614,10 @@
               #my-call-queue {
                 flex-grow: 1;
               }
+
+              #my-call-queue .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -1623,10 +1627,7 @@
               <span data-lang-text="my-queued-calls-header">::my queued calls::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Et kald...</li>
-              <li>Et andet kald..</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
         </div>
