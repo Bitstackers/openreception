@@ -3,17 +3,24 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart';
-import '../lib/contact_server/configuration.dart';
+import '../lib/contact_server/configuration.dart' as json;
 import '../lib/contact_server/database.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/contact_server/router.dart' as router;
+import '../lib/configuration.dart';
 
+Logger log = new Logger ('ConfigServer');
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
+
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.contactServer.log.level;
+  Logger.root.onRecord.listen(Configuration.contactServer.log.onRecord);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -22,26 +29,17 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
+      json.config = new json.Configuration(parsedArgs);
+      json.config.whenLoaded()
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
-        .then((_) => handleLogger())
-        .then((_) => log(config.toString()))
+        .then((_) => log.finest(json.config.toString()))
         .then((_) => startDatabase())
-        .then((_) => http.start(config.httpport, router.setup))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+        .then((_) => http.start(json.config.httpport, router.setup))
+        .catchError(log.shout);
     }
-  } on ArgumentError catch(e) {
-    log('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch(e) {
-    log('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch(e) {
-    log('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.severe(error, stackTrace);
   }
 }
 
@@ -65,5 +63,3 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
 }
 
 bool showHelp() => parsedArgs['help'];
-
-Future handleLogger() => config.useSyslog ? activateSyslog(config.syslogHost) : new Future.value(null);
