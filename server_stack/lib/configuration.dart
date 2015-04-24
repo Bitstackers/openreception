@@ -12,6 +12,10 @@ class ConfigServerDefault {
   int HttpPort = 4080;
 }
 
+class ContactServer {
+  final Log log = Configuration.logDefaults;
+}
+
 class CallFlowControl {
   final Log log = Configuration.logDefaults;
   final String dialoutPrefix = '';
@@ -28,7 +32,7 @@ class MessageDispatcher {
 }
 
 void logEntryDispatch(LogRecord record) {
-  if (record.level.value > Level.WARNING.value) {
+  if (record.level.value > Level.INFO.value) {
     IO.stderr.writeln(record);
   } else {
     IO.stdout.writeln(record);
@@ -40,5 +44,6 @@ abstract class Configuration {
 
   static final CallFlowControl callFlowControl = new CallFlowControl();
   static final ConfigServer configserver = new ConfigServer();
+  static final ContactServer contactServer = new ContactServer();
   static final MessageDispatcher messageDispatcher = new MessageDispatcher();
 }
