@@ -82,6 +82,7 @@ class Reception {
   List<String> addresses    = new List<String>();
   List<String> altNames     = new List<String>();
   List<String> commands     = new List<String>();
+  List<String> email        = new List<String>();
   int          id;
   String       name         = '';
   List<String> openingHours = new List<String>();
@@ -100,6 +101,9 @@ class Reception {
     (json['commands'] as Iterable).forEach((String item) {
       commands.add(item);
     });
+    (json['email'] as Iterable).forEach((String item) {
+        email.add(item);
+      });
     id       = json['id'];
     name     = json['name'];
     (json['openingHours'] as Iterable).forEach((String item) {
@@ -118,6 +122,7 @@ class Reception {
   Map toJson() => {'addresses'   : addresses,
                    'altNames'    : altNames,
                    'commands'    : commands,
+                   'email'       : email,
                    'id'          : id,
                    'name'        : name,
                    'openingHours': openingHours,

@@ -54,6 +54,8 @@ class ReceptionSelector extends ViewWidget {
                              'Command 4',
                              'Command 5'];
 
+    List<String> email = ['foo@somedomain.host', 'bar@otherdomain.host'];
+
     String product = 'Vi sælger gummiænder og andet hurlumhej til fester i badekar\nFooBar og stads';
 
     List<String> openingHours = ['Opening hour 1',
@@ -72,6 +74,7 @@ class ReceptionSelector extends ViewWidget {
                         ..addresses = addresses
                         ..altNames = altNames
                         ..commands = commands
+                        ..email = email
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
@@ -80,6 +83,7 @@ class ReceptionSelector extends ViewWidget {
                         ..addresses = addresses
                         ..altNames = altNames
                         ..commands = commands
+                        ..email = email
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
@@ -88,6 +92,7 @@ class ReceptionSelector extends ViewWidget {
                         ..addresses = addresses
                         ..altNames = altNames
                         ..commands = commands
+                        ..email = email
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
@@ -96,6 +101,7 @@ class ReceptionSelector extends ViewWidget {
                         ..addresses = addresses
                         ..altNames = altNames
                         ..commands = commands
+                        ..email = email
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
@@ -104,6 +110,7 @@ class ReceptionSelector extends ViewWidget {
                         ..addresses = addresses
                         ..altNames = altNames
                         ..commands = commands
+                        ..email = email
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
@@ -112,6 +119,7 @@ class ReceptionSelector extends ViewWidget {
                         ..addresses = addresses
                         ..altNames = altNames
                         ..commands = commands
+                        ..email = email
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen];

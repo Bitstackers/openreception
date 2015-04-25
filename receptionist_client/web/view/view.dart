@@ -24,6 +24,7 @@ part 'view-reception-addresses.dart';
 part 'view-reception-alt-names.dart';
 part 'view-reception-calendar.dart';
 part 'view-reception-commands.dart';
+part 'view-reception-email.dart';
 part 'view-reception-opening-hours.dart';
 part 'view-reception-product.dart';
 part 'view-reception-salesmen.dart';

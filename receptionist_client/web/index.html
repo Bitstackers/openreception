@@ -255,7 +255,7 @@
           </div>
 
           <!--
-            #reception-emails widget
+            #reception-email widget
 
             Role:
               Show the reception email addresses.
@@ -266,10 +266,14 @@
             Tabindex:
               None set.
           -->
-          <div id="reception-emails" class="generic-widget layout-margin-top">
+          <div id="reception-email" class="generic-widget layout-margin-top">
             <style scoped>
-              #reception-emails {
+              #reception-email {
                 flex-grow: 1;
+              }
+
+              #reception-email .generic-widget-list {
+                outline: 0;
               }
             </style>
 
@@ -277,12 +281,10 @@
             <!--<div class="help hidden"></div>-->
 
             <h4 class="generic-widget-headline">
-              <span data-lang-text="reception-emails-header">::reception emails::</span>
+              <span data-lang-text="reception-email-header">::reception email::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>info@responsum.dk</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--

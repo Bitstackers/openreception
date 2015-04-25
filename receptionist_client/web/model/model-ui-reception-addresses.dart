@@ -23,6 +23,19 @@ class UIReceptionAddresses extends UIModel {
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
+   * Add [items] to the reception addresses list.
+   */
+  set addresses(List<String> items) {
+    final List<LIElement> list = new List<LIElement>();
+
+    items.forEach((String item) {
+      list.add(new LIElement()..text = item);
+    });
+
+    _list.children = list;
+  }
+
+  /**
    * Remove all entries from the list and clear the header.
    */
   void clear() {
@@ -36,19 +49,6 @@ class UIReceptionAddresses extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
-  }
-
-  /**
-   * Add [items] to the reception addresses list.
-   */
-  set addresses(List<String> items) {
-    final List<LIElement> list = new List<LIElement>();
-
-    items.forEach((String item) {
-      list.add(new LIElement()..text = item);
-    });
-
-    _list.children = list;
   }
 
   /**

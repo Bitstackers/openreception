@@ -25,6 +25,7 @@ part 'model-ui-reception-addresses.dart';
 part 'model-ui-reception-alt-names.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
+part 'model-ui-reception-email.dart';
 part 'model-ui-reception-opening-hours.dart';
 part 'model-ui-reception-product.dart';
 part 'model-ui-reception-salesmen.dart';

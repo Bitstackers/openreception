@@ -16,6 +16,7 @@ class ReceptionistclientReady {
   ReceptionAltNames                     receptionAltNames;
   ReceptionCalendar                     receptionCalendar;
   ReceptionCommands                     receptionCommands;
+  ReceptionEmail                        receptionEmail;
   ReceptionOpeningHours                 receptionOpeningHours;
   ReceptionProduct                      receptionProduct;
   ReceptionSalesmen                     receptionSalesmen;
@@ -95,7 +96,7 @@ class ReceptionistclientReady {
                                   new Controller.Destination(Context.Home, Widget.MyCallQueue));
 
     receptionAddresses = new ReceptionAddresses(new Model.UIReceptionAddresses(querySelector('#reception-addresses')),
-                                                new Controller.Destination(Context.Homeplus, Widget.ReceptionEmailAddresses),
+                                                new Controller.Destination(Context.Homeplus, Widget.ReceptionAddresses),
                                                 uiReceptionSelector);
 
     receptionAltNames = new ReceptionAltNames(new Model.UIReceptionAltNames(querySelector('#reception-alt-names')),
@@ -109,6 +110,10 @@ class ReceptionistclientReady {
     receptionCommands = new ReceptionCommands(new Model.UIReceptionCommands(querySelector('#reception-commands')),
                                               new Controller.Destination(Context.Home, Widget.ReceptionCommands),
                                               uiReceptionSelector);
+
+    receptionEmail = new ReceptionEmail(new Model.UIReceptionEmail(querySelector('#reception-email')),
+                                        new Controller.Destination(Context.Homeplus, Widget.ReceptionEmail),
+                                        uiReceptionSelector);
 
     receptionOpeningHours = new ReceptionOpeningHours(new Model.UIReceptionOpeningHours(querySelector('#reception-opening-hours')),
                                                       new Controller.Destination(Context.Home, Widget.ReceptionOpeningHours),
