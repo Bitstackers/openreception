@@ -42,8 +42,8 @@ void connectNotificationService() {
       (config.notificationServer, config.serverToken, new Service_IO.Client());
 }
 
-void setup(HttpServer server) {
-  Router router = new Router(server)
+Router setup(HttpServer server) =>
+  new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(                   receptionResource, method: 'GET'   ).listen(getReception)
     ..serve(                   receptionResource, method: 'DELETE').listen(deleteReception)
@@ -58,4 +58,3 @@ void setup(HttpServer server) {
     ..serve(      receptionCalendarEventResource, method: 'DELETE').listen(ReceptionCalendar.remove)
     ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
-}

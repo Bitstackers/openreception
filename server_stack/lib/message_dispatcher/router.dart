@@ -26,9 +26,8 @@ final Pattern messageDispatchAllResource = new UrlPattern(r'/message/queue/dispa
 
 final List<Pattern> allUniqueUrls = [messageQueueListResource, messageQueueItemResource, messageDispatchAllResource];
 
-void setup(HttpServer server) {
-
-  Router router = new Router(server)
+Router setup(HttpServer server) =>
+  new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(messageQueueListResource,   method: 'GET'   ).listen(messageQueueList)
     ..serve(messageDispatchAllResource, method: 'GET'   ).listen(messageDispatchAll)
@@ -36,7 +35,6 @@ void setup(HttpServer server) {
     //..serve(messageQueueItemResource, method: 'GET'   ).listen(messageQueueSingle)
    ..serve(anything, method: 'OPTIONS').listen(preFlight)
    ..defaultStream.listen(page404);
-}
 
 Database.Connection connection = null;
 
