@@ -273,8 +273,8 @@ class ReceptionContactController {
 
   void deleteDistributionListEntry(HttpRequest request) {
     const String context  = '${libraryName}.deleteDistributionListEntry';
-    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    final int contactId   = orf_http.pathParameter(request.uri, 'contact');
+//    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+//    final int contactId   = orf_http.pathParameter(request.uri, 'contact');
     final int entryId   = orf_http.pathParameter(request.uri, 'distributionlist');
 
     db.deleteDistributionListEntry(entryId)
@@ -337,8 +337,8 @@ class ReceptionContactController {
 
   void deleteCalendarEvent(HttpRequest request) {
     const String context = '${libraryName}.deleteCalendarEvent';
-    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+//    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+//    final int contactId = orf_http.pathParameter(request.uri, 'contact');
     final int eventId = orf_http.pathParameter(request.uri, 'calendar');
 
     db.deleteCalendarEvent(eventId).then((int rowsAffted) {
@@ -351,8 +351,8 @@ class ReceptionContactController {
 
   void updateCalendarEvent(HttpRequest request) {
     const String context = '${libraryName}.updateCalendarEvent';
-    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    final int contactId = orf_http.pathParameter(request.uri, 'contact');
+//    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
+//    final int contactId = orf_http.pathParameter(request.uri, 'contact');
     final int eventId = orf_http.pathParameter(request.uri, 'calendar');
 
     orf_http.extractContent(request)

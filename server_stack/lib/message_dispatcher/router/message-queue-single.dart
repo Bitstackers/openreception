@@ -1,7 +1,7 @@
 part of messagedispatcher.router;
 
 void messageDraftSingle(HttpRequest request) {
-  int messageID  = pathParameter(request.uri, 'draft');
+  //int messageID  = pathParameter(request.uri, 'draft');
 
   resourceNotFound (request);
 }
@@ -10,8 +10,6 @@ void messageDraftSingle(HttpRequest request) {
  * TODO: Reimplement this.
  */
 void messageDispatchAll(HttpRequest request) {
-
-  final String context = ".messageDispatchAll";
 
   serverError(request, JSON.encode({"error" : "not implemented"}));
 }

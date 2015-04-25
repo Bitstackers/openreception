@@ -3,7 +3,6 @@ library receptionserver.database;
 import 'dart:async';
 
 import 'configuration.dart';
-import 'package:openreception_framework/common.dart';
 import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/model.dart'    as Model;
 import 'package:openreception_framework/util.dart'     as Util;

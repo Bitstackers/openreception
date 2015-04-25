@@ -151,8 +151,6 @@ LIMIT 1;
     return connection.query(sql, parameters).then((rows) {
       List<Model.CalendarEntry> entries = [];
       for(var row in rows) {
-        DateTime now = new DateTime.now();
-
         Map event =
           {'id'      : row.id,
            'start'   : Util.dateTimeToUnixTimestamp(row.start),

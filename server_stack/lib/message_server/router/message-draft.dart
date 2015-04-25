@@ -12,14 +12,14 @@ abstract class MessageDraft {
       Database.MessageDraft.create(userID, JSON.decode(content), connection).then((value) {
         writeAndClose(request, JSON.encode(value));
       });
-    }).catchError((error) => serverError(request, error.runtimeType +  error.toString()));
+    }).catchError((error) => serverError(request, error));
   }
 
   static void update(HttpRequest request) {
     int draftID  = pathParameter(request.uri, 'draft');
 
     extractContent(request).then((String content) {
-      Map data = JSON.decode(content);
+      //Map data = JSON.decode(content);
       Database.MessageDraft.update(draftID, content, connection).then((value) {
         writeAndClose(request, JSON.encode(value));
       });

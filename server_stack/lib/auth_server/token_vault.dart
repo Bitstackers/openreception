@@ -6,7 +6,6 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/cache.dart' as IO;
-import 'package:openreception_framework/common.dart';
 
 TokenVault vault = new TokenVault();
 

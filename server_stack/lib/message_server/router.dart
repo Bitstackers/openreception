@@ -9,7 +9,6 @@ import 'package:route/server.dart';
 import 'package:logging/logging.dart';
 
 import 'configuration.dart';
-import 'package:logging/logging.dart';
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/storage.dart' as Storage;
