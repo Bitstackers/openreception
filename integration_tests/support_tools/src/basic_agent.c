@@ -12,6 +12,9 @@
  * Asynchronous events are delivered in JSON format, and are easily parseable.
  */
 
+// Remove usleep warnings. 
+#define _BSD_SOURCE
+
 #include <stdio.h>
 #include <unistd.h>
 #include <strings.h>
@@ -56,6 +59,7 @@ char *or_reply_table[] = {
 
 
 void or_event_incoming_call(char* extension, int call_id, int call_state);
+void or_event_outgoing_call(char* extension, int call_id, int call_state);
 
 /* Lookup functions Primarily here to supply type hinting. */
 char *or_event_to_string (or_event_t event) {
@@ -305,8 +309,6 @@ void register_account(pjsua_acc_id acc_id) {
 
 void unregister_account(pjsua_acc_id acc_id) {
 
-   pj_status_t status = !PJ_SUCCESS;
-
    if (is_registered) {
 
       const int   u_resolution    = 100000;
@@ -542,8 +544,6 @@ void or_event_incoming_call(char* extension, int call_id, int call_state) {
   json_object *jobj        = json_object_new_object();
   json_object *jcall       = json_object_new_object();
 
-  json_object *jexten   = json_object_new_string(extension);
-
   json_object_object_add(jobj,"event", 
                          json_object_new_string(or_event_to_string(OR_CALL_INCOMING)));
   // Build call object.
@@ -562,8 +562,6 @@ void or_event_incoming_call(char* extension, int call_id, int call_state) {
 void or_event_outgoing_call(char* extension, int call_id, int call_state) {
   json_object *jobj        = json_object_new_object();
   json_object *jcall       = json_object_new_object();
-
-  json_object *jexten   = json_object_new_string(extension);
 
   json_object_object_add(jobj,"event", 
                          json_object_new_string(or_event_to_string(OR_CALL_OUTGOING)));
