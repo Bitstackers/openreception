@@ -81,14 +81,19 @@ class Contact {
 class Reception {
   List<String> addresses        = new List<String>();
   List<String> altNames         = new List<String>();
+  List<String> bankInfo         = new List<String>();
   List<String> commands         = new List<String>();
   List<String> email            = new List<String>();
   int          id;
+  String       miniWikiMarkdown = '';
   String       name             = '';
   List<String> openingHours     = new List<String>();
   String       product          = '';
   List<String> salesMen         = new List<String>();
   List<TelNum> telephoneNumbers = new List<TelNum>();
+  List<String> type             = new List<String>();
+  List<String> VATNumbers       = new List<String>();
+  List<String> websites         = new List<String>();
 
   Reception(int this.id, String this.name);
 
@@ -99,14 +104,20 @@ class Reception {
     (json['altNames'] as Iterable).forEach((String item) {
       altNames.add(item);
     });
+    (json['bankInfo'] as Iterable).forEach((String item) {
+      bankInfo.add(item);
+    });
     (json['commands'] as Iterable).forEach((String item) {
       commands.add(item);
     });
     (json['email'] as Iterable).forEach((String item) {
-        email.add(item);
-      });
-    id       = json['id'];
-    name     = json['name'];
+      email.add(item);
+    });
+
+    id               = json['id'];
+    miniWikiMarkdown = json['miniWikiMarkdown'];
+    name             = json['name'];
+
     (json['openingHours'] as Iterable).forEach((String item) {
       openingHours.add(item);
     });
@@ -117,6 +128,15 @@ class Reception {
     (json['telephoneNumbers'] as Iterable).forEach((Map json) {
       telephoneNumbers.add(new TelNum.fromJson(json));
     });
+    (json['type'] as Iterable).forEach((String item) {
+      type.add(item);
+    });
+    (json['VATNumbers'] as Iterable).forEach((String item) {
+      VATNumbers.add(item);
+    });
+    (json['websites'] as Iterable).forEach((String item) {
+      websites.add(item);
+    });
   }
 
   Reception.Null();
@@ -125,14 +145,19 @@ class Reception {
 
   Map toJson() => {'addresses'       : addresses,
                    'altNames'        : altNames,
+                   'bankInfo'        : bankInfo,
                    'commands'        : commands,
                    'email'           : email,
                    'id'              : id,
+                   'miniWikiMarkdown': miniWikiMarkdown,
                    'name'            : name,
                    'openingHours'    : openingHours,
                    'product'         : product,
                    'salesMen'        : salesMen,
-                   'telephoneNumbers': telephoneNumbers};
+                   'telephoneNumbers': telephoneNumbers,
+                   'type'            : type,
+                   'VATNumbers'      : VATNumbers,
+                   'websites'        : websites};
 }
 
 /**

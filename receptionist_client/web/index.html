@@ -6,7 +6,7 @@
     <title>ReceptionistClientFlex</title>
     <link rel="stylesheet" href="styles/main.css">
 </head>
-<body IdgnoreClickFocus>
+<body IgnoreClickFocus>
   <!--
     #receptionistclient-ready state
 
@@ -49,9 +49,7 @@
       -->
       <section IgnoreClickFocus id="context-calendar-edit" class="context modal display-flex-row">
 
-        <!--<div class="display-flex-column layout-margin-right" style="flex-grow: 1;">-->
-
-          <!--
+        <!--
           #calendar-editor widget
 
           Role:
@@ -166,8 +164,6 @@
             </div>
           </div>
         </div>
-
-        <!--</div>-->
 
       </section>
 
@@ -338,7 +334,7 @@
 
         </div>
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
           <!--
             #reception-websites widget
@@ -357,6 +353,10 @@
               #reception-websites {
                 flex-grow: 1;
               }
+
+              #reception-websites .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -366,10 +366,7 @@
               <span data-lang-text="reception-websites-header">::reception websites::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>www.responsum.dk</li>
-              <li>www.telefonpasning.guru</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -389,6 +386,10 @@
               #reception-vat-numbers {
                 flex-grow: 1;
               }
+
+              #reception-vat-numbers .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -398,10 +399,7 @@
               <span data-lang-text="reception-vat-numbers-header">::reception VAT numbers::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Responsum K/S : 4545 6565</li>
-              <li>Huset Responsum K/S : 7777 8888</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -421,6 +419,10 @@
               #reception-type {
                 flex-grow: 1;
               }
+
+              #reception-type .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -430,10 +432,7 @@
               <span data-lang-text="reception-type-header">::reception type::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list">
-              <li>Vi svarer kald for dem når de er optaget.</li>
-              <li>Bemærk: Kald har stået i kø hos dem i 3 minutter inden vi får kaldene.</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -453,6 +452,10 @@
               #reception-bank-info {
                 flex-grow: 1;
               }
+
+              #reception-bank-info .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -462,15 +465,12 @@
               <span data-lang-text="reception-bank-info-header">::reception bank info::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list">
-              <li>Vestjysk Bank konto 1160 987654321</li>
-              <li>Bitcoin addresse #13213498465198651651</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
         </div>
 
-        <div class="display-flex-column" style="flex-grow: 2.5;">
+        <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 2.5;">
 
           <!--
             #reception-mini-wiki widget
@@ -489,6 +489,21 @@
               #reception-mini-wiki {
                 flex-grow: 1;
               }
+
+              #reception-mini-wiki .generic-widget-body {
+                outline: 0;
+                padding: 0 0.5em;
+                overflow: auto;
+              }
+
+              #reception-mini-wiki .generic-widget-body h1,
+              #reception-mini-wiki .generic-widget-body h2,
+              #reception-mini-wiki .generic-widget-body h3,
+              #reception-mini-wiki .generic-widget-body h4,
+              #reception-mini-wiki .generic-widget-body h5,
+              #reception-mini-wiki .generic-widget-body h6 {
+                margin: 0.3em;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -498,14 +513,7 @@
               <span data-lang-text="reception-mini-wiki-header">::reception mini wiki::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body generic-widget-list">
-              <h2>Bla bla</h2>
-              <p>Et eller andet vildt sjovt og måske <b>fed tekst?</b>
-              <p>Foo!</p>
-              <ol>
-                <li>En liste!</li>
-              </ol>
-            </div>
+            <div class="generic-widget-body" tabindex="-1"></div>
           </div>
 
         </div>

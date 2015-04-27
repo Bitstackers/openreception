@@ -5,6 +5,7 @@ environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
   browser: any
+  markdown: any
   okeyee: any
   openreception_framework:
     git:

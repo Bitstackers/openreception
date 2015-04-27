@@ -8,6 +8,7 @@ import '../controller/controller.dart' as Controller;
 import '../dummies.dart';
 import '../enums.dart';
 
+import 'package:markdown/markdown.dart' as Markdown;
 import 'package:okeyee/okeyee.dart';
 import 'package:openreception_framework/bus.dart';
 
@@ -23,14 +24,19 @@ part 'model-ui-message-compose.dart';
 part 'model-ui-my-call-queue.dart';
 part 'model-ui-reception-addresses.dart';
 part 'model-ui-reception-alt-names.dart';
+part 'model-ui-reception-bank-info.dart';
 part 'model-ui-reception-calendar.dart';
 part 'model-ui-reception-commands.dart';
 part 'model-ui-reception-email.dart';
+part 'model-ui-reception-mini-wiki.dart';
 part 'model-ui-reception-opening-hours.dart';
 part 'model-ui-reception-product.dart';
 part 'model-ui-reception-salesmen.dart';
 part 'model-ui-reception-selector.dart';
 part 'model-ui-reception-telephone-numbers.dart';
+part 'model-ui-reception-type.dart';
+part 'model-ui-reception-vat-numbers.dart';
+part 'model-ui-reception-websites.dart';
 part 'model-ui-receptionistclient-ready.dart';
 part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';

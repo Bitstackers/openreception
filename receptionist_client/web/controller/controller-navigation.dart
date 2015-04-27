@@ -7,16 +7,20 @@ final Map<String, Destination> _destinations =
    '${Context.Home}-${Widget.GlobalCallQueue}'              : new Destination(Context.Home, Widget.GlobalCallQueue),
    '${Context.Home}-${Widget.MessageCompose}'               : new Destination(Context.Home, Widget.MessageCompose),
    '${Context.Homeplus}-${Widget.ReceptionAddresses}'       : new Destination(Context.Homeplus, Widget.ReceptionAddresses),
+   '${Context.Homeplus}-${Widget.ReceptionAltNames}'        : new Destination(Context.Homeplus, Widget.ReceptionAltNames),
+   '${Context.Homeplus}-${Widget.ReceptionBankInfo}'        : new Destination(Context.Homeplus, Widget.ReceptionBankInfo),
    '${Context.Home}-${Widget.ReceptionCalendar}'            : new Destination(Context.Home, Widget.ReceptionCalendar),
    '${Context.Home}-${Widget.ReceptionCommands}'            : new Destination(Context.Home, Widget.ReceptionCommands),
-   '${Context.Home}-${Widget.ReceptionCommands}'            : new Destination(Context.Home, Widget.ReceptionCommands),
    '${Context.Homeplus}-${Widget.ReceptionEmail}'           : new Destination(Context.Homeplus, Widget.ReceptionEmail),
+   '${Context.Homeplus}-${Widget.ReceptionMiniWiki}'        : new Destination(Context.Homeplus, Widget.ReceptionMiniWiki),
    '${Context.Home}-${Widget.ReceptionOpeningHours}'        : new Destination(Context.Home, Widget.ReceptionOpeningHours),
    '${Context.Home}-${Widget.ReceptionProduct}'             : new Destination(Context.Home, Widget.ReceptionProduct),
    '${Context.Home}-${Widget.ReceptionSalesmen}'            : new Destination(Context.Home, Widget.ReceptionSalesmen),
    '${Context.Home}-${Widget.ReceptionSelector}'            : new Destination(Context.Home, Widget.ReceptionSelector),
    '${Context.Homeplus}-${Widget.ReceptionTelephoneNumbers}': new Destination(Context.Homeplus, Widget.ReceptionTelephoneNumbers),
-   '${Context.Homeplus}-${Widget.ReceptionAltNames}'        : new Destination(Context.Homeplus, Widget.ReceptionAltNames),
+   '${Context.Homeplus}-${Widget.ReceptionType}'            : new Destination(Context.Homeplus, Widget.ReceptionType),
+   '${Context.Homeplus}-${Widget.ReceptionVATNumbers}'      : new Destination(Context.Homeplus, Widget.ReceptionVATNumbers),
+   '${Context.Homeplus}-${Widget.ReceptionWebsites}'        : new Destination(Context.Homeplus, Widget.ReceptionWebsites),
    '${Context.CalendarEdit}-${Widget.CalendarEditor}'       : new Destination(Context.CalendarEdit, Widget.CalendarEditor),
    '${Context.Messages}-${Widget.MessageArchiveFilter}'     : new Destination(Context.Messages, Widget.MessageArchiveFilter)};
 
@@ -61,7 +65,7 @@ class Navigate {
   final Map<Context, Widget> _defaultWidget =
     {Context.CalendarEdit: Widget.CalendarEditor,
      Context.Home        : Widget.ReceptionSelector,
-     Context.Homeplus    : Widget.ReceptionAltNames,
+     Context.Homeplus    : Widget.ReceptionMiniWiki,
      Context.Messages    : Widget.MessageArchiveFilter};
   final Map<Context, Widget> _widgetHistory = {};
 
