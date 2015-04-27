@@ -45,6 +45,8 @@ part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';
 part 'model-ui-welcome-message.dart';
 
+typedef selectCallback(LIElement li);
+
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 
 /**
@@ -57,6 +59,14 @@ abstract class UIModel {
   HtmlElement get _focusElement;
   HtmlElement get _lastTabElement;
   HtmlElement get _root;
+
+  /**
+   * TODO (TL): Comment.
+   *
+   * Also I'm not liking this name. This target is also used when for example
+   * clicking or for "Enter", as can be seen in model-ui-reception-selector.dart
+   */
+  HtmlElement get _arrowTarget => null;
 
   /**
    * Return true if the widget is in focus.
@@ -72,6 +82,28 @@ abstract class UIModel {
       _focusElement.blur();
       _setTabIndex(-1);
     }
+  }
+
+  /**
+   * The map returned from this method ALWAYS contains "Tab" and "Shift+Tab".
+   * These two maps to [_handleTab] and [_handleShiftTab] respectively.
+   *
+   * It MAY contain "down" and "up", if [_arrowTarget] is not null. These two
+   * are mapped to [_handleUpDown].
+   */
+  Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
+    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab,
+                                      'Tab'      : _handleTab};
+    if(_arrowTarget != null) {
+      map.addAll({'down': _handleUpDown,
+                  'up'  : _handleUpDown});
+    }
+
+    if(myKeys != null) {
+      map.addAll(myKeys);
+    }
+
+    return map;
   }
 
   /**
@@ -120,6 +152,32 @@ abstract class UIModel {
   }
 
   /**
+   * This method can be used to handle up/down arrow events with [_arrowTarget]
+   * as the target list. If [_arrowTarget] is not empty, then scan forward
+   * for "down" arrow and backwards for "up" arrow. Call [_markSelected] on the
+   * first element found that is visible and not selected.
+   */
+  void _handleUpDown(KeyboardEvent event) {
+    if(_arrowTarget.children.isNotEmpty) {
+      final LIElement selected = _arrowTarget.querySelector('.selected');
+
+      if(selected == null) {
+        _markSelected(_scanForwardForVisibleElement(_arrowTarget.children.first));
+        return;
+      }
+
+      switch(event.keyCode) {
+        case KeyCode.DOWN:
+          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
+          break;
+        case KeyCode.UP:
+          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
+          break;
+      }
+    }
+  }
+
+  /**
    * Return the header element.
    */
   SpanElement get _header => _root.querySelector('h4 > span');
@@ -146,19 +204,16 @@ abstract class UIModel {
   DivElement get _hint => _root.querySelector('div.hint');
 
   /**
-   * "Tab" and "Shift+Tab" are already in this map, pointing to [_handleTab] and
-   * [_handleShiftTab] respectively.
-   * To change this simply add those to [myKeys] or override the [_handleTab]
-   * and/or [_handleShiftTab] methods.
+   * Mark [li] selected, scroll it into view and call [selectCallback].
+   * Does nothing if [li] is null or [li] is already selected.
    */
-  Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
-    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab,
-                                      'Tab'      : _handleTab};
-    if(myKeys != null) {
-      map.addAll(myKeys);
+  void _markSelected(LIElement li) {
+    if(li != null && !li.classes.contains('selected')) {
+      _arrowTarget.children.forEach((Element element) => element.classes.remove('selected'));
+      li.classes.add('selected');
+      li.scrollIntoView();
+      _selectCallback(li);
     }
-
-    return map;
   }
 
   /**
@@ -189,6 +244,12 @@ abstract class UIModel {
       return li;
     }
   }
+
+  /**
+   * Is called by [_markSelected] whenever a [LIElement] is selected in the
+   * [_arrowTarget] element.
+   */
+  selectCallback get _selectCallback => (LIElement li) => null;
 
   /**
    * Set hint text

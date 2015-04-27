@@ -16,6 +16,7 @@ class UIContactCalendar extends UIModel {
     _observers();
   }
 
+  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
   @override HtmlElement get _lastTabElement  => _root;
@@ -61,36 +62,6 @@ class UIContactCalendar extends UIModel {
   }
 
   /**
-   * Deal with arrow up/down.
-   */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_list.children.isNotEmpty) {
-      final LIElement selected = _list.querySelector('.selected');
-
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
-          break;
-        case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
-          break;
-      }
-    }
-  }
-
-  /**
-   * Mark [li] selected, scroll it into view.
-   * Does nothing if [li] is null or [li] is already selected.
-   */
-  void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
-      _list.children.forEach((Element element) => element.classes.remove('selected'));
-      li.classes.add('selected');
-      li.scrollIntoView();
-    }
-  }
-
-  /**
    * Observers
    */
   void _observers() {
@@ -132,10 +103,8 @@ class UIContactCalendar extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'Ctrl+e'   : _busEdit.fire,
-         'Ctrl+k'   : _busNew.fire,
-         'down'     : _handleUpDown,
-         'up'       : _handleUpDown};
+        {'Ctrl+e': _busEdit.fire,
+         'Ctrl+k': _busNew.fire};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }

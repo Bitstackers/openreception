@@ -15,6 +15,7 @@ class UIReceptionSelector extends UIModel {
     _observers();
   }
 
+  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _filter;
   @override HtmlElement get _focusElement    => _filter;
   @override HtmlElement get _lastTabElement  => _filter;
@@ -23,11 +24,19 @@ class UIReceptionSelector extends UIModel {
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
    * on the filter input whenever a reception li element is clicked.
    */
-  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
-  @override HtmlElement        get _root   => _myRoot;
+  @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
+  @override selectCallback     get _selectCallback => _arrowSelectCallback;
+  @override HtmlElement        get _root           => _myRoot;
 
   OListElement get _list   => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
+
+  /**
+   * TODO (TL): Comment
+   */
+  void _arrowSelectCallback(LIElement li) {
+    _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
+  }
 
   /**
    * Filter the reception list whenever the user enters data into the [_filter]
@@ -69,45 +78,6 @@ class UIReceptionSelector extends UIModel {
    */
   void _handleEnter(KeyboardEvent event) {
     _markSelected(_scanForwardForVisibleElement(_list.children.first));
-  }
-
-  /**
-   * Deal with arrow up/down.
-   */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_list.children.isNotEmpty) {
-      final LIElement selected = _list.querySelector('.selected');
-
-      /// Special case for this widget. If nothing is selected, simply select
-      /// the first element in the list and return.
-      if(selected == null) {
-        _markSelected(_scanForwardForVisibleElement(_list.children.first));
-        return;
-      }
-
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
-          break;
-        case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
-          break;
-      }
-    }
-  }
-
-  /**
-   * Mark [li] selected, scroll it into view and fire the [Reception] contained
-   * in the [li] on the [onSelect] bus.
-   * Does nothing if [li] is null or [li] is already selected.
-   */
-  void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
-      _list.children.forEach((Element element) => element.classes.remove('selected'));
-      li.classes.add('selected');
-      li.scrollIntoView();
-      _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
-    }
   }
 
   /**
@@ -177,10 +147,8 @@ class UIReceptionSelector extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'down'     : _handleUpDown,
-         'Enter'    : _handleEnter,
-         'Esc'      : _reset,
-         'up'       : _handleUpDown};
+        {'Enter': _handleEnter,
+         'Esc'  : _reset};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
