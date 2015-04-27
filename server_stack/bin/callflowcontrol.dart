@@ -56,7 +56,9 @@ void connectESLClient() {
   //TODO: Channel-List subscriptions.
   Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
 
-  Model.PBXClient.instance.eventStream.listen(Model.ChannelList.instance.handleEvent);
+  Model.PBXClient.instance.eventStream
+    .listen(Model.ChannelList.instance.handleEvent)
+    .onDone(connectESLClient); // Reconnect
 
   Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
 
