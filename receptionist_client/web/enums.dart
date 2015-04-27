@@ -38,4 +38,5 @@ enum Widget {AgentInfo,
              ReceptionOpeningHours,
              ReceptionProduct,
              ReceptionSalesmen,
-             ReceptionSelector}
+             ReceptionSelector,
+             ReceptionTelephoneNumbers}

@@ -29,6 +29,7 @@ part 'view-reception-opening-hours.dart';
 part 'view-reception-product.dart';
 part 'view-reception-salesmen.dart';
 part 'view-reception-selector.dart';
+part 'view-reception-telephone-numbers.dart';
 part 'view-receptionistclient-ready.dart';
 part 'view-receptionistclient-disaster.dart';
 part 'view-receptionistclient-loading.dart';

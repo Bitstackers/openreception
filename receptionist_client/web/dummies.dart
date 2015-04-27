@@ -79,15 +79,16 @@ class Contact {
  * Dummy reception class
  */
 class Reception {
-  List<String> addresses    = new List<String>();
-  List<String> altNames     = new List<String>();
-  List<String> commands     = new List<String>();
-  List<String> email        = new List<String>();
+  List<String> addresses        = new List<String>();
+  List<String> altNames         = new List<String>();
+  List<String> commands         = new List<String>();
+  List<String> email            = new List<String>();
   int          id;
-  String       name         = '';
-  List<String> openingHours = new List<String>();
-  String       product      = '';
-  List<String> salesMen     = new List<String>();
+  String       name             = '';
+  List<String> openingHours     = new List<String>();
+  String       product          = '';
+  List<String> salesMen         = new List<String>();
+  List<TelNum> telephoneNumbers = new List<TelNum>();
 
   Reception(int this.id, String this.name);
 
@@ -113,21 +114,25 @@ class Reception {
     (json['salesMen'] as Iterable).forEach((String item) {
       salesMen.add(item);
     });
+    (json['telephoneNumbers'] as Iterable).forEach((Map json) {
+      telephoneNumbers.add(new TelNum.fromJson(json));
+    });
   }
 
   Reception.Null();
 
   bool get isNull => name.isEmpty || name == null;
 
-  Map toJson() => {'addresses'   : addresses,
-                   'altNames'    : altNames,
-                   'commands'    : commands,
-                   'email'       : email,
-                   'id'          : id,
-                   'name'        : name,
-                   'openingHours': openingHours,
-                   'product'     : product,
-                   'salesMen'    : salesMen};
+  Map toJson() => {'addresses'       : addresses,
+                   'altNames'        : altNames,
+                   'commands'        : commands,
+                   'email'           : email,
+                   'id'              : id,
+                   'name'            : name,
+                   'openingHours'    : openingHours,
+                   'product'         : product,
+                   'salesMen'        : salesMen,
+                   'telephoneNumbers': telephoneNumbers};
 }
 
 /**

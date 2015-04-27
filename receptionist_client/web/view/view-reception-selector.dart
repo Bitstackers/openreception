@@ -70,6 +70,11 @@ class ReceptionSelector extends ViewWidget {
                              'Salesmen 4',
                              'Salesmen 5'];
 
+    List<TelNum> telephoneNumbers = [new TelNum(1, '60431990', 'label 1', false),
+                                     new TelNum(2, '60431991', 'label 2', false),
+                                     new TelNum(3, '60431992', 'label 3', true),
+                                     new TelNum(4, '60431993', 'label 4', false)];
+
     _ui.receptions = [new Reception(1, 'Responsum K/S')
                         ..addresses = addresses
                         ..altNames = altNames
@@ -78,6 +83,7 @@ class ReceptionSelector extends ViewWidget {
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
+                        ..telephoneNumbers = telephoneNumbers
                       ,
                       new Reception(2, 'Bitstackers K/S')
                         ..addresses = addresses
@@ -87,6 +93,7 @@ class ReceptionSelector extends ViewWidget {
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
+                        ..telephoneNumbers = telephoneNumbers
                       ,
                       new Reception(3, 'Loecke K/S')
                         ..addresses = addresses
@@ -96,6 +103,7 @@ class ReceptionSelector extends ViewWidget {
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
+                        ..telephoneNumbers = telephoneNumbers
                       ,
                       new Reception(4, 'Another Loecke K/S')
                         ..addresses = addresses
@@ -105,6 +113,7 @@ class ReceptionSelector extends ViewWidget {
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
+                        ..telephoneNumbers = telephoneNumbers
                       ,
                       new Reception(5, 'Another Responsum K/S')
                         ..addresses = addresses
@@ -114,6 +123,7 @@ class ReceptionSelector extends ViewWidget {
                         ..openingHours = openingHours
                         ..product = product
                         ..salesMen = salesMen
+                        ..telephoneNumbers = telephoneNumbers
                       ,
                       new Reception(6, 'FooBar K/S')
                         ..addresses = addresses
@@ -122,7 +132,8 @@ class ReceptionSelector extends ViewWidget {
                         ..email = email
                         ..openingHours = openingHours
                         ..product = product
-                        ..salesMen = salesMen];
+                        ..salesMen = salesMen
+                        ..telephoneNumbers = telephoneNumbers];
 
   }
 }

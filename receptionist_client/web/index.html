@@ -304,6 +304,26 @@
               #reception-telephone-numbers {
                 flex-grow: 1;
               }
+
+              #reception-telephone-numbers .generic-widget-list {
+                outline: 0;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li span.label {
+                padding-left: 0.5em;
+                font-size: 0.8em;
+                text-decoration: none;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li .secret {
+                text-decoration: line-through;
+                color: #ff2601;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li:hover .secret {
+                text-decoration: none;
+                color: initial;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
@@ -313,10 +333,7 @@
               <span data-lang-text="reception-telephone-numbers-header">::reception telephone numbers::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>8832 9100</li>
-              <li>6043 1992</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
         </div>

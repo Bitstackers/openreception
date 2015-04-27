@@ -30,6 +30,7 @@ part 'model-ui-reception-opening-hours.dart';
 part 'model-ui-reception-product.dart';
 part 'model-ui-reception-salesmen.dart';
 part 'model-ui-reception-selector.dart';
+part 'model-ui-reception-telephone-numbers.dart';
 part 'model-ui-receptionistclient-ready.dart';
 part 'model-ui-receptionistclient-disaster.dart';
 part 'model-ui-receptionistclient-loading.dart';

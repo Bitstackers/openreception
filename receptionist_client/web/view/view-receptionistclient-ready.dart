@@ -21,6 +21,7 @@ class ReceptionistclientReady {
   ReceptionProduct                      receptionProduct;
   ReceptionSalesmen                     receptionSalesmen;
   ReceptionSelector                     receptionSelector;
+  ReceptionTelephoneNumbers             receptionTelephoneNumbers;
   static ReceptionistclientReady        _singleton;
   WelcomeMessage                        welcomeMessage;
   final Model.UIReceptionistclientReady _ui;
@@ -129,6 +130,11 @@ class ReceptionistclientReady {
 
     receptionSelector = new ReceptionSelector(uiReceptionSelector,
                                               new Controller.Destination(Context.Home, Widget.ReceptionSelector));
+
+    receptionTelephoneNumbers = new ReceptionTelephoneNumbers
+        (new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),
+         new Controller.Destination(Context.Homeplus, Widget.ReceptionTelephoneNumbers),
+         uiReceptionSelector);
 
     welcomeMessage = new WelcomeMessage(new Model.UIWelcomeMessage(querySelector('#welcome-message')),
                                         uiReceptionSelector);
