@@ -8,17 +8,12 @@ class UIReceptionOpeningHours extends UIModel {
    * Constructor.
    */
   UIReceptionOpeningHours(DivElement this._myRoot) {
-    _help.text = 'alt+x';
-
     _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _list;
   @override HtmlElement get _focusElement    => _list;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _list;
   @override HtmlElement get _root            => _myRoot;
 

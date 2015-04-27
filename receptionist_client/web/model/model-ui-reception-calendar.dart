@@ -10,21 +10,16 @@ class UIReceptionCalendar extends UIModel {
    * Constructor.
    */
   UIReceptionCalendar(DivElement this._myRoot) {
-    _help.text = 'alt+a';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _root;
   @override HtmlElement get _root            => _myRoot;
 
-  OListElement get _eventList => _root.querySelector('.generic-widget-list');
+  OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
    * Add [items] to the entry list.
@@ -38,7 +33,7 @@ class UIReceptionCalendar extends UIModel {
                 ..dataset['object'] = JSON.encode(item));
     });
 
-    _eventList.children = list;
+    _list.children = list;
   }
 
   /**
@@ -46,7 +41,7 @@ class UIReceptionCalendar extends UIModel {
    */
   void clear() {
     _headerExtra.text = '';
-    _eventList.children.clear();
+    _list.children.clear();
   }
 
   /**
@@ -54,7 +49,7 @@ class UIReceptionCalendar extends UIModel {
    * if nothing is selected.
    */
   CalendarEvent get selectedCalendarEvent {
-    final LIElement selected = _eventList.querySelector('.selected');
+    final LIElement selected = _list.querySelector('.selected');
 
     if(selected != null) {
       return new CalendarEvent.fromJson(JSON.decode(selected.dataset['object']));
@@ -67,8 +62,8 @@ class UIReceptionCalendar extends UIModel {
    * Deal with arrow up/down.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(_eventList.children.isNotEmpty) {
-      final LIElement selected = _eventList.querySelector('.selected');
+    if(_list.children.isNotEmpty) {
+      final LIElement selected = _list.querySelector('.selected');
 
       switch(event.keyCode) {
         case KeyCode.DOWN:
@@ -87,7 +82,7 @@ class UIReceptionCalendar extends UIModel {
    */
   void _markSelected(LIElement li) {
     if(li != null && !li.classes.contains('selected')) {
-      _eventList.children.forEach((Element element) => element.classes.remove('selected'));
+      _list.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
     }
@@ -115,8 +110,8 @@ class UIReceptionCalendar extends UIModel {
    * Select the first [CalendarEvent] in the list.
    */
   void selectFirstCalendarEvent() {
-    if(_eventList.children.isNotEmpty) {
-      _markSelected(_scanForwardForVisibleElement(_eventList.children.first));
+    if(_list.children.isNotEmpty) {
+      _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
 
@@ -133,7 +128,7 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
         {'Ctrl+e'   : _busEdit.fire,
          'Ctrl+k'   : _busNew.fire,

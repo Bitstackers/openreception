@@ -17,9 +17,6 @@ class UIMessageArchiveFilter extends UIModel {
 
   @override HtmlElement get _firstTabElement => _body;
   @override HtmlElement get _focusElement    => _body;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _body;
   @override HtmlElement get _root            => _myRoot;
 

@@ -11,21 +11,16 @@ class UICalendarEditor extends UIModel {
    * Constructor.
    */
   UICalendarEditor(DivElement this._myRoot) {
-    _help.text = 'some help';
-
     _myFocusElement    = _textArea;
     _myFirstTabElement = _textArea;
     _myLastTabElement  = _cancelButton;
 
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _myFirstTabElement;
   @override HtmlElement get _focusElement    => _myFocusElement;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _myLastTabElement;
   @override HtmlElement get _root            => _myRoot;
 
@@ -105,7 +100,7 @@ class UICalendarEditor extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
         {'Esc'      : (_) => _cancelButton.click(),
          'Shift+Tab': _handleShiftTab,

@@ -9,7 +9,7 @@ class ReceptionistclientReady {
   ContactSelector                       contactSelector;
   Contexts                              contexts;
   GlobalCallQueue                       globalCallQueue;
-  Help                                  help;
+  Hint                                  help;
   MessageArchive                        messageArchive;
   MessageArchiveEdit                    messageArchiveEdit;
   MessageArchiveFilter                  messageArchiveFilter;
@@ -72,7 +72,7 @@ class ReceptionistclientReady {
     Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
     contexts = new Contexts(new Model.UIContexts());
-    help     = new Help(new Model.UIHelp());
+    help     = new Hint(new Model.UIHint());
 
     agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
 

@@ -18,7 +18,7 @@ part 'view-contact-selector.dart';
 part 'view-contexts.dart';
 part 'view-global-call-queue.dart';
 part 'view-message-compose.dart';
-part 'view-help.dart';
+part 'view-hint.dart';
 part 'view-message-archive.dart';
 part 'view-message-archive-edit.dart';
 part 'view-message-archive-filter.dart';

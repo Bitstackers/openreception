@@ -10,9 +10,6 @@ class UIAgentInfo extends UIModel {
 
   @override HtmlElement        get _firstTabElement => null;
   @override HtmlElement        get _focusElement    => null;
-  @override SpanElement        get _header          => null;
-  @override SpanElement        get _headerExtra     => null;
-  @override DivElement         get _help            => null;
   @override HtmlElement        get _lastTabElement  => null;
   @override HtmlElement        get _root            => _myRoot;
 

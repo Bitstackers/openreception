@@ -12,6 +12,7 @@ class ReceptionSelector extends ViewWidget {
    */
   ReceptionSelector(Model.UIModel this._ui,
                     Controller.Destination this._myDestination) {
+    _ui.setHint('alt+v');
     _observers();
 
     test(); // TODO (TL): Get rid of this testing code...

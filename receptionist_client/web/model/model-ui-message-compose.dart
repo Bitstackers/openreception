@@ -11,21 +11,16 @@ class UIMessageCompose extends UIModel {
    * Constructor.
    */
   UIMessageCompose(DivElement this._myRoot) {
-    _help.text = 'alt+b';
-
     _myFocusElement    = _messageTextarea;
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement  = _draftInput;
 
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _myFirstTabElement;
   @override HtmlElement get _focusElement    => _myFocusElement;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _myLastTabElement;
   @override HtmlElement get _root            => _myRoot;
 
@@ -96,7 +91,7 @@ class UIMessageCompose extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
         {'Shift+Tab': _handleShiftTab,
          'Tab'      : _handleTab};

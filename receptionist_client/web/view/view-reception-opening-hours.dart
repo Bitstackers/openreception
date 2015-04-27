@@ -11,6 +11,7 @@ class ReceptionOpeningHours extends ViewWidget {
   ReceptionOpeningHours(Model.UIModel this._ui,
                         Controller.Destination this._myDestination,
                         Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+x');
     _observers();
   }
 

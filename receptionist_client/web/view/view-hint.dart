@@ -1,12 +1,12 @@
 part of view;
 
-class Help {
-  final Model.UIHelp _ui;
+class Hint {
+  final Model.UIHint _ui;
 
   /**
    * Constructor.
    */
-  Help(Model.UIHelp this._ui) {
+  Hint(Model.UIHint this._ui) {
     _observers();
   }
 
@@ -14,6 +14,6 @@ class Help {
    * Observers.
    */
   void _observers() {
-    _hotKeys.onF1.listen((_) => _ui.toggleHelp());
+    _hotKeys.onF1.listen((_) => _ui.toggleHint());
   }
 }

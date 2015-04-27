@@ -19,7 +19,7 @@ part 'model-ui-contact-data.dart';
 part 'model-ui-contact-selector.dart';
 part 'model-ui-contexts.dart';
 part 'model-ui-global-call-queue.dart';
-part 'model-ui-help.dart';
+part 'model-ui-hint.dart';
 part 'model-ui-message-archive.dart';
 part 'model-ui-message-archive-edit.dart';
 part 'model-ui-message-archive-filter.dart';
@@ -53,9 +53,9 @@ final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 abstract class UIModel {
   HtmlElement get _firstTabElement;
   HtmlElement get _focusElement;
-  SpanElement get _header;
-  SpanElement get _headerExtra;
-  DivElement  get _help;
+  SpanElement get _header      => _root.querySelector('h4 > span');
+  SpanElement get _headerExtra => _root.querySelector('h4 > span + span');
+  DivElement  get _hint        => _root.querySelector('div.hint');
   HtmlElement get _lastTabElement;
   HtmlElement get _root;
 
@@ -158,6 +158,13 @@ abstract class UIModel {
     } else {
       return li;
     }
+  }
+
+  /**
+   * Set hint text
+   */
+  void setHint(String hint) {
+    _hint.text = hint;
   }
 
   /**

@@ -9,17 +9,12 @@ class UIReceptionSelector extends UIModel {
    * Constructor.
    */
   UIReceptionSelector(DivElement this._myRoot) {
-    _help.text = 'alt+v';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _filter;
   @override HtmlElement get _focusElement    => _filter;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _filter;
   /**
    * Return the mousedown click event stream for this widget. We capture
@@ -178,7 +173,7 @@ class UIReceptionSelector extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
         {'down'     : _handleUpDown,
          'Enter'    : _handleEnter,

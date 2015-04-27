@@ -11,6 +11,7 @@ class ReceptionCalendar extends ViewWidget {
   ReceptionCalendar(Model.UIModel this._ui,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+a');
     observers();
   }
 

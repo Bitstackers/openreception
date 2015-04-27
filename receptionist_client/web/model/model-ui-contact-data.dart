@@ -9,17 +9,12 @@ class UIContactData extends UIModel {
    * Constructor.
    */
   UIContactData(DivElement this._myRoot) {
-    _help.text = 'alt+t';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _root;
   @override HtmlElement get _root            => _myRoot;
 
@@ -220,7 +215,7 @@ class UIContactData extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
         {[Key.NumMult]: _ring,
          'Alt+1'      : (_) => selectFirstTelNum(),

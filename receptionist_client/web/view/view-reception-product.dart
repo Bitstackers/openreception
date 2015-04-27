@@ -11,6 +11,7 @@ class ReceptionProduct extends ViewWidget {
   ReceptionProduct(Model.UIReceptionProduct this._ui,
                    Controller.Destination this._myDestination,
                    Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+f');
     _observers();
   }
 
@@ -42,7 +43,7 @@ class ReceptionProduct extends ViewWidget {
   }
 
   /**
-   * Render the widget with .....
+   * Render the widget [reception].
    */
   void render(Reception reception) {
     if(reception.isNull) {
