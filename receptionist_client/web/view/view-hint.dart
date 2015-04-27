@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class Hint {
   final Model.UIHint _ui;
 

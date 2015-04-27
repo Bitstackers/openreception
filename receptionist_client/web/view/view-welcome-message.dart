@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class WelcomeMessage extends ViewWidget {
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIWelcomeMessage    _ui;
@@ -26,7 +29,7 @@ class WelcomeMessage extends ViewWidget {
   }
 
   /**
-   * Render the widget with .....
+   * Render the widget with [reception].
    */
   void render(Reception reception) {
     if(reception.isNull) {

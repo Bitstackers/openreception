@@ -1,8 +1,11 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class MyCallQueue extends ViewWidget {
   final Controller.Destination _myDestination;
-  final Model.UIMyCallQueue _ui;
+  final Model.UIMyCallQueue    _ui;
 
   /**
    * Constructor.

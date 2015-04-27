@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ContactCalendar extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
@@ -57,7 +60,7 @@ class ContactCalendar extends ViewWidget {
   }
 
   /**
-   * Render the widget with [contact] [CalendarEvent]s.
+   * Render the widget with [contact].
    */
   void render(Contact contact) {
     if(contact.isNull) {

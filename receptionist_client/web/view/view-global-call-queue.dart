@@ -1,7 +1,10 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class GlobalCallQueue extends ViewWidget {
-  final Controller.Destination _myDestination;
+  final Controller.Destination  _myDestination;
   final Model.UIGlobalCallQueue _ui;
 
   /**

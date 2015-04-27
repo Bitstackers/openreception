@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ReceptionistclientReady {
   final AppClientState                  _appState;
   AgentInfo                             agentInfo;

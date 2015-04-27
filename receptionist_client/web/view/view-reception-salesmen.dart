@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ReceptionSalesmen extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
@@ -43,7 +46,7 @@ class ReceptionSalesmen extends ViewWidget {
   }
 
   /**
-   * Render the widget with .....
+   * Render the widget with [reception].
    */
   void render(Reception reception) {
     if(reception.isNull) {

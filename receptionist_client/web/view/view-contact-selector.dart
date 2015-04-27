@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ContactSelector extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
@@ -42,12 +45,13 @@ class ContactSelector extends ViewWidget {
   }
 
   /**
-   * Render the widget with [Contact]s.
+   * Render the widget with [reception].
    */
   void render(Reception reception) {
     if(reception.isNull) {
       _ui.clear();
     } else {
+      /// TODO (TL): Get these contacts from the server.
       _ui.contacts = [new Contact.fromJson({'id': 1, 'name': 'Trine Løcke Snøcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Oplæring','Service']}),
                       new Contact.fromJson({'id': 2, 'name': 'Hoop Karaoke ${(reception.name)}', 'receptionId': 2, 'tags': ['Entertainment', 'International Business', 'teknik']}),
                       new Contact.fromJson({'id': 3, 'name': 'Thomas Løcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Farum', 'salg']}),
