@@ -10,7 +10,7 @@ import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/contact_server/router.dart' as router;
 import '../lib/configuration.dart';
 
-Logger log = new Logger ('ConfigServer');
+Logger log = new Logger ('ContactServer');
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 

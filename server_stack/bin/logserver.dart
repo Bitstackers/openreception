@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:logging/logging.dart';
 
 import '../lib/log_server/configuration.dart' as logserver;
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/log_server/router.dart' as router;
-import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 
 Logger log = new Logger ('LogServer');
@@ -30,21 +30,13 @@ void main(List<String> args) {
     } else {
       logserver.config = new logserver.Configuration(parsedArgs);
       logserver.config.whenLoaded()
-        .then((_) => print(logserver.config))
+        .then((_) => log.fine(logserver.config))
         .then((_) => logserver.config.validate())
         .then((_) => http.start(logserver.config.httpport, router.setup))
-        .catchError((e) => log.shout ('main() -> config.whenLoaded() ${e}'));
+        .catchError(log.shout);
     }
-  } on ArgumentError catch(e) {
-    log.shout ('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch(e) {
-    log.shout ('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch(e) {
-    log.shout ('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.shout(error, stackTrace);
   }
 }
 

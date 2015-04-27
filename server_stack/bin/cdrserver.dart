@@ -2,17 +2,24 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart';
-import '../lib/cdr_server/configuration.dart';
+import '../lib/cdr_server/configuration.dart' as json;
+import '../lib/configuration.dart';
 import '../lib/cdr_server/database.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/cdr_server/router.dart' as router;
 
+
+Logger log = new Logger ('CDRServer');
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
+  ///Init logging.
+  Logger.root.level = Configuration.cdrServer.log.level;
+  Logger.root.onRecord.listen(Configuration.cdrServer.log.onRecord);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -21,22 +28,14 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
+      json.config = new json.Configuration(parsedArgs);
+      json.config.whenLoaded()
         .then((_) => startDatabase())
-        .then((_) => http.start(config.httpport, router.setup))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+        .then((_) => http.start(json.config.httpport, router.setup))
+        .catchError(log.shout);
     }
-  } on ArgumentError catch(e) {
-    log('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch(e) {
-    log('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch(e) {
-    log('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.shout (error, stackTrace);
   }
 }
 
