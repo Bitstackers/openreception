@@ -64,6 +64,7 @@ void connectESLClient() {
   Model.PBXClient.instance.requestStream.listen((ESL.Packet packet) {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
+        log.info('Connected to ${callflow.config.eslHostname}:${callflow.config.eslPort}');
         Model.PBXClient.instance.authenticate(callflow.config.eslPassword)
           .then((_) => Model.PBXClient.instance.event(['all'], format : ESL.EventFormat.Json))
           .then((_) => Model.PBXClient.instance.api('list_users')
@@ -84,7 +85,7 @@ void connectESLClient() {
       } else {
         log.severe('Failed to connect to FreeSWTICH.', error, stackTrace);
       }
-    }).then ((_) => log.info('Connected to ${callflow.config.eslHostname}:${callflow.config.eslPort}'));
+    });
   }
 
   tryConnect ();
