@@ -51,6 +51,8 @@ final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
  * TODO (TL): Comment
  */
 abstract class UIModel {
+  final Keyboard _keyboard = new Keyboard();
+
   HtmlElement get _firstTabElement;
   HtmlElement get _focusElement;
   SpanElement get _header      => _root.querySelector('h4 > span');

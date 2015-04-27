@@ -1,7 +1,9 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIReceptionBankInfo extends UIModel {
-  final Keyboard   _keyboard = new Keyboard();
   final DivElement _myRoot;
 
   /**

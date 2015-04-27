@@ -1,9 +1,11 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIContactCalendar extends UIModel {
-  final Bus<KeyboardEvent> _busEdit   = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _busNew    = new Bus<KeyboardEvent>();
-  final Keyboard           _keyboard  = new Keyboard();
+  final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _busNew  = new Bus<KeyboardEvent>();
   final DivElement         _myRoot;
 
   /**

@@ -1,5 +1,8 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIReceptionistclientLoading {
   DivElement _myRoot;
 

@@ -1,8 +1,10 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIReceptionSelector extends UIModel {
-  final Bus<Reception> _bus      = new Bus<Reception>();
-  final Keyboard       _keyboard = new Keyboard();
+  final Bus<Reception> _bus = new Bus<Reception>();
   final DivElement     _myRoot;
 
   /**

@@ -1,8 +1,10 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIContactData extends UIModel {
   final Bus<TelNum> _busRinging = new Bus<TelNum>();
-  final Keyboard    _keyboard   = new Keyboard();
   final DivElement  _myRoot;
 
   /**

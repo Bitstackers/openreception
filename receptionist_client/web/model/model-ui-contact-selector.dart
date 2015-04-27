@@ -1,8 +1,10 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIContactSelector extends UIModel {
   final Bus<Contact> _bus = new Bus<Contact>();
-  final Keyboard     _keyboard = new Keyboard();
   final DivElement   _myRoot;
 
   /**

@@ -1,7 +1,9 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIMessageCompose extends UIModel {
-  final Keyboard   _keyboard = new Keyboard();
   HtmlElement      _myFirstTabElement;
   HtmlElement      _myFocusElement;
   HtmlElement      _myLastTabElement;

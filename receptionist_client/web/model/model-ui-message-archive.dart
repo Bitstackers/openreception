@@ -4,7 +4,6 @@ part of model;
  * TODO (TL): Comment
  */
 class UIMessageArchive extends UIModel {
-  final Keyboard   _keyboard = new Keyboard();
   final DivElement _myRoot;
 
   /**

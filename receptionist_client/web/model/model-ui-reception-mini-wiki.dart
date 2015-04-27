@@ -1,7 +1,9 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIReceptionMiniWiki extends UIModel {
-  final Keyboard             _keyboard = new Keyboard();
   final DivElement           _myRoot;
   final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
                                                 ..allowHtml5()
