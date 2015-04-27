@@ -1,18 +1,13 @@
-name: ReceptionistClient
-description: Receptionist browser-based console for OpenReception project.
+name: ReceptionistClientFlex
 version: 0.0.1
+description: An absolute bare-bones web app.
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
   browser: any
-  event_bus: <0.3.0
-  intl: any
-  js: any
-  logging: any
-  meta: any
+  markdown: any
   okeyee: any
   openreception_framework:
     git:
       ref: master
-      url: https://github.com/Bitstackers/OpenReceptionFramework.git
-    version: '>= 0.0.17'
+      url: https://github.com/Bitstackers/OpenreceptionFramework.git

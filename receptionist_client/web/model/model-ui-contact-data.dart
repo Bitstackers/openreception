@@ -1,38 +1,36 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIContactData extends UIModel {
   final Bus<TelNum> _busRinging = new Bus<TelNum>();
-  final Keyboard    _keyboard   = new Keyboard();
   final DivElement  _myRoot;
 
   /**
    * Constructor.
    */
   UIContactData(DivElement this._myRoot) {
-    _help.text = 'alt+t';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
+  @override HtmlElement get _arrowTarget     => _telNumList;
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _root;
   @override HtmlElement get _root            => _myRoot;
 
-  OListElement   get _additionalInfoList => _root.querySelector('.additional-info');
-  OListElement   get _backupsList        => _root.querySelector('.backups');
-  OListElement   get _commandsList       => _root.querySelector('.commands');
-  OListElement   get _departmentList     => _root.querySelector('.department');
-  OListElement   get _emailAddressesList => _root.querySelector('.email-addresses');
-  OListElement   get _relationsList      => _root.querySelector('.relations');
-  OListElement   get _responsibilityList => _root.querySelector('.responsibility');
-  OListElement   get _telNumList         => _root.querySelector('.telephone-number');
-  OListElement   get _titleList          => _root.querySelector('.title');
-  OListElement   get _workHoursList      => _root.querySelector('.work-hours');
+  OListElement get _additionalInfoList => _root.querySelector('.additional-info');
+  OListElement get _backupsList        => _root.querySelector('.backups');
+  OListElement get _commandsList       => _root.querySelector('.commands');
+  OListElement get _departmentList     => _root.querySelector('.department');
+  OListElement get _emailAddressesList => _root.querySelector('.email-addresses');
+  OListElement get _relationsList      => _root.querySelector('.relations');
+  OListElement get _responsibilityList => _root.querySelector('.responsibility');
+  OListElement get _telNumList         => _root.querySelector('.telephone-number');
+  OListElement get _titleList          => _root.querySelector('.title');
+  OListElement get _workHoursList      => _root.querySelector('.work-hours');
 
   /**
    * Add [items] to the additional info list.
@@ -82,26 +80,6 @@ class UIContactData extends UIModel {
   set emailAddresses(List<String> items) => _populateList(_emailAddressesList, items);
 
   /**
-   * Deal with arrow up/down.
-   */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_telNumList.children.isNotEmpty) {
-      final LIElement selected = _telNumList.querySelector('.selected');
-
-      /// TODO (TL): Handle selected == null.
-
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
-          break;
-        case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
-          break;
-      }
-    }
-  }
-
-  /**
    * Mark [li] ringing, scroll it into view.
    * Does nothing if [li] is null or [li] is already ringing.
    */
@@ -109,18 +87,6 @@ class UIContactData extends UIModel {
     if(li != null && !li.classes.contains('ringing')) {
       _telNumList.children.forEach((Element element) => element.classes.remove('ringing'));
       li.classes.add('ringing');
-      li.scrollIntoView();
-    }
-  }
-
-  /**
-   * Mark [li] selected, scroll it into view.
-   * Does nothing if [li] is null or [li] is already selected.
-   */
-  void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
-      _telNumList.children.forEach((Element element) => element.classes.remove('selected'));
-      li.classes.add('selected');
       li.scrollIntoView();
     }
   }
@@ -220,19 +186,15 @@ class UIContactData extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {[Key.NumMult]: _ring,
+        {[Key.NumMult]: _ring, /// TODO (TL): Not too sure about this here...
          'Alt+1'      : (_) => selectFirstTelNum(),
          'Alt+2'      : (_) => selectFromIndex(1),
          'Alt+3'      : (_) => selectFromIndex(2),
-         'Alt+4'      : (_) => selectFromIndex(3),
-         'down'       : _handleUpDown,
-         'Shift+Tab'  : _handleShiftTab,
-         'Tab'        : _handleTab,
-         'up'         : _handleUpDown};
+         'Alt+4'      : (_) => selectFromIndex(3)};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 
   /**

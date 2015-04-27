@@ -43,27 +43,10 @@ class CalendarEvent {
 
   bool get isNull => id == null;
 
-  Map toJson() {
-    return {'id'         : id,
-            'contactId'  : contactId,
-            'receptionId': receptionId,
-            'content'    : content};
-  }
-}
-
-/**
- * Dummy reception command class
- */
-class Command {
-  String command;
-
-  Command.fromJson(Map json) {
-    command = json['command'];
-  }
-
-  Map toJson() {
-    return {'command': command};
-  }
+  Map toJson() => {'id'         : id,
+                   'contactId'  : contactId,
+                   'receptionId': receptionId,
+                   'content'    : content};
 }
 
 /**
@@ -72,7 +55,7 @@ class Command {
 class Contact {
   int          id          = null;
   int          receptionId = null;
-  String       name;
+  String       name        = '';
   List<String> tags;
 
   Contact.fromJson(Map json) {
@@ -82,37 +65,99 @@ class Contact {
     tags        = json['tags'];
   }
 
-  Map toJson() {
-    return {'id'         : id,
-            'name'       : name,
-            'receptionId': receptionId,
-            'tags'       : tags};
-  }
+  Contact.Null();
+
+  bool get isNull => name.isEmpty || name == null;
+
+  Map toJson() => {'id'         : id,
+                   'name'       : name,
+                   'receptionId': receptionId,
+                   'tags'       : tags};
 }
 
 /**
  * Dummy reception class
  */
 class Reception {
-  List<Command> commands = new List<Command>();
-  int           id;
-  String        name;
+  List<String> addresses        = new List<String>();
+  List<String> altNames         = new List<String>();
+  List<String> bankInfo         = new List<String>();
+  List<String> commands         = new List<String>();
+  List<String> email            = new List<String>();
+  int          id;
+  String       miniWikiMarkdown = '';
+  String       name             = '';
+  List<String> openingHours     = new List<String>();
+  String       product          = '';
+  List<String> salesMen         = new List<String>();
+  List<TelNum> telephoneNumbers = new List<TelNum>();
+  List<String> type             = new List<String>();
+  List<String> VATNumbers       = new List<String>();
+  List<String> websites         = new List<String>();
 
-  Reception(int this.id, String this.name, this.commands);
+  Reception(int this.id, String this.name);
 
   Reception.fromJson(Map json) {
-    (json['commands'] as Iterable).forEach((Map item) {
-      commands.add(new Command.fromJson(item));
+    (json['addresses'] as Iterable).forEach((String item) {
+      addresses.add(item);
     });
-    id       = json['id'];
-    name     = json['name'];
+    (json['altNames'] as Iterable).forEach((String item) {
+      altNames.add(item);
+    });
+    (json['bankInfo'] as Iterable).forEach((String item) {
+      bankInfo.add(item);
+    });
+    (json['commands'] as Iterable).forEach((String item) {
+      commands.add(item);
+    });
+    (json['email'] as Iterable).forEach((String item) {
+      email.add(item);
+    });
+
+    id               = json['id'];
+    miniWikiMarkdown = json['miniWikiMarkdown'];
+    name             = json['name'];
+
+    (json['openingHours'] as Iterable).forEach((String item) {
+      openingHours.add(item);
+    });
+    product  = json['product'];
+    (json['salesMen'] as Iterable).forEach((String item) {
+      salesMen.add(item);
+    });
+    (json['telephoneNumbers'] as Iterable).forEach((Map json) {
+      telephoneNumbers.add(new TelNum.fromJson(json));
+    });
+    (json['type'] as Iterable).forEach((String item) {
+      type.add(item);
+    });
+    (json['VATNumbers'] as Iterable).forEach((String item) {
+      VATNumbers.add(item);
+    });
+    (json['websites'] as Iterable).forEach((String item) {
+      websites.add(item);
+    });
   }
 
   Reception.Null();
 
-  bool get isNull => name == null;
+  bool get isNull => name.isEmpty || name == null;
 
-  Map toJson() => {'commands': commands, 'id': id, 'name': name};
+  Map toJson() => {'addresses'       : addresses,
+                   'altNames'        : altNames,
+                   'bankInfo'        : bankInfo,
+                   'commands'        : commands,
+                   'email'           : email,
+                   'id'              : id,
+                   'miniWikiMarkdown': miniWikiMarkdown,
+                   'name'            : name,
+                   'openingHours'    : openingHours,
+                   'product'         : product,
+                   'salesMen'        : salesMen,
+                   'telephoneNumbers': telephoneNumbers,
+                   'type'            : type,
+                   'VATNumbers'      : VATNumbers,
+                   'websites'        : websites};
 }
 
 /**
@@ -135,9 +180,8 @@ class TelNum {
 
   TelNum.Null();
 
-  Map toJson() =>
-      {'id'    : id,
-       'label' : label,
-       'number': number,
-       'secret': secret};
+  Map toJson() => {'id'    : id,
+                   'label' : label,
+                   'number': number,
+                   'secret': secret};
 }

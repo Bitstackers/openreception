@@ -136,7 +136,7 @@ input:focus  ~label {
   padding: 3em;
 }
 
-.help {
+.hint {
   position: absolute;
   z-index: 1;
   border-radius: 4px;
@@ -149,7 +149,7 @@ input:focus  ~label {
   background-color: #f3b300;
 }
 
-.help.hidden {
+.hint.hidden {
   display: none;
 }
 

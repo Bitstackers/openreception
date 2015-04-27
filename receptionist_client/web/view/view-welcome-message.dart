@@ -1,26 +1,41 @@
 part of view;
 
-class WelcomeMessage {
-  static final WelcomeMessage _singleton = new WelcomeMessage._internal();
-  factory WelcomeMessage() => _singleton;
+/**
+ * TODO (TL): Comment
+ */
+class WelcomeMessage extends ViewWidget {
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIWelcomeMessage    _ui;
 
   /**
    * Constructor.
    */
-  WelcomeMessage._internal() {
-    _greeting.text = 'Welcome!';
-
+  WelcomeMessage(Model.UIModel this._ui,
+                 Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  static final DivElement _root = querySelector('#welcome-message');
+  @override Controller.Destination get myDestination => null;
+  @override Model.UIModel          get ui            => _ui;
 
-  final SpanElement _greeting = _root.querySelector('.greeting');
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
   /**
    * Observers.
    */
   void _observers() {
-    // TODO (TL): Get me some data!
+    _receptionSelector.onSelect.listen(render);
+  }
+
+  /**
+   * Render the widget with [reception].
+   */
+  void render(Reception reception) {
+    if(reception.isNull) {
+      _ui.clear();
+    } else {
+      _ui.greeting = 'Velkommen til ${reception.name}';
+    }
   }
 }

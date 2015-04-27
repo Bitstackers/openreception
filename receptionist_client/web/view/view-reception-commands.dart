@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ReceptionCommands extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
@@ -11,6 +14,7 @@ class ReceptionCommands extends ViewWidget {
   ReceptionCommands(Model.UIModel this._ui,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+h');
     _observers();
   }
 
@@ -42,7 +46,7 @@ class ReceptionCommands extends ViewWidget {
   }
 
   /**
-   * Render the widget with .....
+   * Render the widget with [reception].
    */
   void render(Reception reception) {
     if(reception.isNull) {

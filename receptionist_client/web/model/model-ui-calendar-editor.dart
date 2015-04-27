@@ -1,7 +1,9 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UICalendarEditor extends UIModel {
-  final Keyboard   _keyboard = new Keyboard();
   HtmlElement      _myFirstTabElement;
   HtmlElement      _myFocusElement;
   HtmlElement      _myLastTabElement;
@@ -11,21 +13,16 @@ class UICalendarEditor extends UIModel {
    * Constructor.
    */
   UICalendarEditor(DivElement this._myRoot) {
-    _help.text = 'some help';
-
     _myFocusElement    = _textArea;
     _myFirstTabElement = _textArea;
     _myLastTabElement  = _cancelButton;
 
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _myFirstTabElement;
   @override HtmlElement get _focusElement    => _myFocusElement;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _myLastTabElement;
   @override HtmlElement get _root            => _myRoot;
 
@@ -47,9 +44,15 @@ class UICalendarEditor extends UIModel {
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
 
   /**
-   * Populate the calendar editor fields with a [CalendarEvent].
+   * Populate the calendar editor fields with [calendarEvent].  Note if the
+   * [calendarEvent] is a null event, then the widget renders with its default
+   * values.
    */
-  set content(CalendarEvent calendarEvent) => _textArea.text = calendarEvent.toJson().toString();
+  set calendarEvent(CalendarEvent calendarEvent) {
+    /// TODO (TL): Add the actual calendar event data to the widget.
+    /// Distinguish between null events and actual events.
+    _textArea.text = calendarEvent.toJson().toString();
+  }
 
   /**
    * Return the click event stream for the cancel button.
@@ -105,13 +108,8 @@ class UICalendarEditor extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
-    final Map<String, EventListener> bindings =
-        {'Esc'      : (_) => _cancelButton.click(),
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab};
-
-    _hotKeys.registerKeys(_keyboard, bindings);
+  void _setupLocalKeys() {
+    _hotKeys.registerKeys(_keyboard, _defaultKeyMap(myKeys: {'Esc': (_) => _cancelButton.click()}));
   }
 
   /**

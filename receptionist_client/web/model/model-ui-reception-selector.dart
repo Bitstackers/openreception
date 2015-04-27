@@ -1,36 +1,42 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIReceptionSelector extends UIModel {
-  final Bus<Reception> _bus      = new Bus<Reception>();
-  final Keyboard       _keyboard = new Keyboard();
+  final Bus<Reception> _bus = new Bus<Reception>();
   final DivElement     _myRoot;
 
   /**
    * Constructor.
    */
   UIReceptionSelector(DivElement this._myRoot) {
-    _help.text = 'alt+v';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
+  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _filter;
   @override HtmlElement get _focusElement    => _filter;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _filter;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
    * on the filter input whenever a reception li element is clicked.
    */
-  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
-  @override HtmlElement        get _root   => _myRoot;
+  @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
+  @override selectCallback     get _selectCallback => _arrowSelectCallback;
+  @override HtmlElement        get _root           => _myRoot;
 
-  OListElement get _receptionList => _root.querySelector('.generic-widget-list');
-  InputElement get _filter        => _root.querySelector('.filter');
+  OListElement get _list   => _root.querySelector('.generic-widget-list');
+  InputElement get _filter => _root.querySelector('.filter');
+
+  /**
+   * TODO (TL): Comment
+   */
+  void _arrowSelectCallback(LIElement li) {
+    _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
+  }
 
   /**
    * Filter the reception list whenever the user enters data into the [_filter]
@@ -42,9 +48,12 @@ class UIReceptionSelector extends UIModel {
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _receptionList.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.classes.toggle('zebra', true);
     } else if(trimmedFilter.length == 1) {
-      _receptionList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['name'].startsWith(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -52,7 +61,9 @@ class UIReceptionSelector extends UIModel {
         }
       });
     } else {
-      _receptionList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['name'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -66,46 +77,7 @@ class UIReceptionSelector extends UIModel {
    * Deal with enter.
    */
   void _handleEnter(KeyboardEvent event) {
-    _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
-  }
-
-  /**
-   * Deal with arrow up/down.
-   */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_receptionList.children.isNotEmpty) {
-      final LIElement selected = _receptionList.querySelector('.selected');
-
-      /// Special case for this widget. If nothing is selected, simply select
-      /// the first element in the list and return.
-      if(selected == null) {
-        _markSelected(_scanForwardForVisibleElement(_receptionList.children.first));
-        return;
-      }
-
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
-          break;
-        case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
-          break;
-      }
-    }
-  }
-
-  /**
-   * Mark [li] selected, scroll it into view and fire the [Reception] contained
-   * in the [li] on the [onSelect] bus.
-   * Does nothing if [li] is null or [li] is already selected.
-   */
-  void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
-      _receptionList.children.forEach((Element element) => element.classes.remove('selected'));
-      li.classes.add('selected');
-      li.scrollIntoView();
-      _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
-    }
+    _markSelected(_scanForwardForVisibleElement(_list.children.first));
   }
 
   /**
@@ -140,7 +112,7 @@ class UIReceptionSelector extends UIModel {
                 ..text = item.name);
     });
 
-    _receptionList.children = list;
+    _list.children = list;
   }
 
   /**
@@ -150,7 +122,7 @@ class UIReceptionSelector extends UIModel {
   void _reset(_) {
     _filter.value = '';
     filter('');
-    _receptionList.children.forEach((Element e) => e.classes.toggle('selected', false));
+    _list.children.forEach((Element e) => e.classes.toggle('selected', false));
     _bus.fire(new Reception.Null());
   }
 
@@ -173,15 +145,11 @@ class UIReceptionSelector extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'down'     : _handleUpDown,
-         'Enter'    : _handleEnter,
-         'Esc'      : _reset,
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab,
-         'up'       : _handleUpDown};
+        {'Enter': _handleEnter,
+         'Esc'  : _reset};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

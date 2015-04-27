@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class AgentInfo extends ViewWidget {
   final Model.UIAgentInfo _ui;
 

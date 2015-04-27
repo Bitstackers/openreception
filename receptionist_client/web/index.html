@@ -6,7 +6,7 @@
     <title>ReceptionistClientFlex</title>
     <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body IgnoreClickFocus>
   <!--
     #receptionistclient-ready state
 
@@ -23,7 +23,7 @@
       Note that visibility on #receptionistclient-ready and its siblings MUST
       be mutually exclusive.
   -->
-  <div id="receptionistclient-ready" class="display-flex-row">
+  <div IgnoreClickFocus id="receptionistclient-ready" class="display-flex-row">
     <style scoped>
       #receptionistclient-ready {
         display: none;
@@ -32,7 +32,7 @@
       }
     </style>
 
-    <div class="display-flex-row" style="flex-grow: 1; position: relative;">
+    <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 1; position: relative;">
 
       <!--
         #context-calendar-edit modal
@@ -47,11 +47,9 @@
           Note that visibility on #context-calendar-edit and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-calendar-edit" class="context modal display-flex-row">
+      <section IgnoreClickFocus id="context-calendar-edit" class="context modal display-flex-row">
 
-        <!--<div class="display-flex-column layout-margin-right" style="flex-grow: 1;">-->
-
-          <!--
+        <!--
           #calendar-editor widget
 
           Role:
@@ -135,7 +133,7 @@
           </style>
 
           <div class="spinning-focus-box"></div>
-          <div class="help hidden"></div>
+          <!--<div class="hint hidden"></div>-->
 
           <h4 class="generic-widget-headline">
             <span data-lang-text="calendar-editor-header">::create/edit/delete calendar entry::</span>
@@ -167,8 +165,6 @@
           </div>
         </div>
 
-        <!--</div>-->
-
       </section>
 
       <!--
@@ -184,9 +180,9 @@
           Note that visibility on #context-homeplus and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-homeplus" class="context modal display-flex-row">
+      <section IgnoreClickFocus id="context-homeplus" class="context modal display-flex-row">
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
           <!--
             #reception-alt-names widget
@@ -205,18 +201,20 @@
               #reception-alt-names {
                 flex-grow: 1;
               }
+
+              #reception-alt-names .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-alt-names-header">::reception alt names::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Huset Responsum K/S</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -236,22 +234,24 @@
               #reception-addresses {
                 flex-grow: 1;
               }
+
+              #reception-addresses .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-addresses-header">::reception addresses::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Farum Gydevej 87, 3520 Farum</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
-            #reception-emails widget
+            #reception-email widget
 
             Role:
               Show the reception email addresses.
@@ -262,23 +262,25 @@
             Tabindex:
               None set.
           -->
-          <div id="reception-emails" class="generic-widget layout-margin-top">
+          <div id="reception-email" class="generic-widget layout-margin-top">
             <style scoped>
-              #reception-emails {
+              #reception-email {
                 flex-grow: 1;
+              }
+
+              #reception-email .generic-widget-list {
+                outline: 0;
               }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
-              <span data-lang-text="reception-emails-header">::reception emails::</span>
+              <span data-lang-text="reception-email-header">::reception email::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>info@responsum.dk</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -298,24 +300,41 @@
               #reception-telephone-numbers {
                 flex-grow: 1;
               }
+
+              #reception-telephone-numbers .generic-widget-list {
+                outline: 0;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li span.label {
+                padding-left: 0.5em;
+                font-size: 0.8em;
+                text-decoration: none;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li .secret {
+                text-decoration: line-through;
+                color: #ff2601;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li:hover .secret {
+                text-decoration: none;
+                color: initial;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-telephone-numbers-header">::reception telephone numbers::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>8832 9100</li>
-              <li>6043 1992</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
         </div>
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
           <!--
             #reception-websites widget
@@ -334,19 +353,20 @@
               #reception-websites {
                 flex-grow: 1;
               }
+
+              #reception-websites .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-websites-header">::reception websites::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>www.responsum.dk</li>
-              <li>www.telefonpasning.guru</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -366,19 +386,20 @@
               #reception-vat-numbers {
                 flex-grow: 1;
               }
+
+              #reception-vat-numbers .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-vat-numbers-header">::reception VAT numbers::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Responsum K/S : 4545 6565</li>
-              <li>Huset Responsum K/S : 7777 8888</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -398,19 +419,20 @@
               #reception-type {
                 flex-grow: 1;
               }
+
+              #reception-type .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-type-header">::reception type::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list">
-              <li>Vi svarer kald for dem når de er optaget.</li>
-              <li>Bemærk: Kald har stået i kø hos dem i 3 minutter inden vi får kaldene.</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -430,23 +452,25 @@
               #reception-bank-info {
                 flex-grow: 1;
               }
+
+              #reception-bank-info .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
-
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-bank-info-header">::reception bank info::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list">
-              <li>Vestjysk Bank konto 1160 987654321</li>
-              <li>Bitcoin addresse #13213498465198651651</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
         </div>
 
-        <div class="display-flex-column" style="flex-grow: 2.5;">
+        <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 2.5;">
 
           <!--
             #reception-mini-wiki widget
@@ -465,23 +489,31 @@
               #reception-mini-wiki {
                 flex-grow: 1;
               }
+
+              #reception-mini-wiki .generic-widget-body {
+                outline: 0;
+                padding: 0 0.5em;
+                overflow: auto;
+              }
+
+              #reception-mini-wiki .generic-widget-body h1,
+              #reception-mini-wiki .generic-widget-body h2,
+              #reception-mini-wiki .generic-widget-body h3,
+              #reception-mini-wiki .generic-widget-body h4,
+              #reception-mini-wiki .generic-widget-body h5,
+              #reception-mini-wiki .generic-widget-body h6 {
+                margin: 0.3em;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <div class="hint hidden"></div>
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-mini-wiki-header">::reception mini wiki::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body generic-widget-list">
-              <h2>Bla bla</h2>
-              <p>Et eller andet vildt sjovt og måske <b>fed tekst?</b>
-              <p>Foo!</p>
-              <ol>
-                <li>En liste!</li>
-              </ol>
-            </div>
+            <div class="generic-widget-body" tabindex="-1"></div>
           </div>
 
         </div>
@@ -501,9 +533,9 @@
           Note that visibility on #context-messages and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-messages" class="context modal display-flex-row">
+      <section IgnoreClickFocus id="context-messages" class="context modal display-flex-row">
 
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
 
           <!--
             #message-archive-filter widget
@@ -522,16 +554,20 @@
               #message-archive-filter {
                 flex-grow: 2;
               }
+
+              #message-archive-filter .generic-widget-body {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="message-archive-filter-header">::message archive filter::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body generic-widget-list">
+            <div class="generic-widget-body" tabindex="-1">
               message-archive-filter
             </div>
           </div>
@@ -554,23 +590,26 @@
                 flex-grow: 3;
               }
 
+              #message-archive-edit .generic-widget-body {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="message-archive-edit-header">::message archive edit::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body generic-widget-list">
+            <div class="generic-widget-body" tabindex="-1">
               message-archive-edit
             </div>
           </div>
 
         </div>
 
-        <div class="display-flex-row" style="flex-grow: 3;">
+        <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 3;">
 
           <!--
             #message-archive widget
@@ -589,16 +628,20 @@
               #message-archive {
                 flex-grow: 1;
               }
+
+              #message-archive .generic-widget-body {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="message-archive-header">::message archive::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body generic-widget-list">
+            <div class="generic-widget-body" tabindex="-1">
               message-archive table
             </div>
           </div>
@@ -620,11 +663,9 @@
           Note that visibility on #context-home and its siblings MUST be
           mutually exclusive.
       -->
-      <section id="context-home" class="context display-flex-row">
+      <section IgnoreClickFocus id="context-home" class="context display-flex-row">
 
-        <!-- calendar editor widget was here -->
-
-        <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
           <!--
             #welcome-message widget
@@ -644,6 +685,7 @@
               #welcome-message {
                 height: 4em;
                 overflow: auto;
+                pointer-events: none; /* ignore mouse click events */
               }
 
               #welcome-message > div {
@@ -667,8 +709,8 @@
             </div>
           </div>
 
-          <div class="display-flex-row layout-margin-top" style="flex-grow: 1;">
-            <div class="display-flex-column layout-margin-right" style="flex-grow: 4;">
+          <div IgnoreClickFocus class="display-flex-row layout-margin-top" style="flex-grow: 1;">
+            <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 4;">
 
               <!--
                 #reception-selector widget
@@ -683,20 +725,27 @@
                   Input and ol element set to -1 on blur. MUST be updated on
                   focus.
               -->
-              <div id="reception-selector" class="generic-widget" tabindex="-1">
+              <div id="reception-selector" class="generic-widget">
                 <style scoped>
                   #reception-selector {
                     flex-grow: 1;
                   }
 
-                  #reception-selector .filter {
+                  #reception-selector .generic-widget-body div {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
                     position: absolute;
-                    left: 58%;
-                    width: calc(40% - 0.6em);
-                    margin: 0.5em 0.3em 0.3em 0.3em;
+                    width: calc(100% - 1.5em);
+                    pointer-events: none;
+                  }
+
+                  #reception-selector .generic-widget-body div .filter {
+                    margin: 0.7em 0;
                     height: 2em;
                     font-size: 1em;
                     padding: 0 0.3em;
+                    pointer-events: auto;
                   }
 
                   #reception-selector .generic-widget-list {
@@ -704,7 +753,6 @@
                     outline: 0;
                   }
 
-                  #reception-selector,
                   #reception-selector .generic-widget-list:focus,
                   #reception-selector .generic-widget-list li:focus {
                     outline: 0;
@@ -728,14 +776,16 @@
                 </style>
 
                 <div class="spinning-focus-box"></div>
-                <div class="help hidden"></div>
+                <div class="hint hidden"></div>
 
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="reception-selector-header">::reception-selector::</span>
                   <span></span>
                 </h4>
                 <div class="generic-widget-body">
-                  <input class="filter" data-lang-placeholder="filter" placeholder="::filter....::" tabindex="-1">
+                  <div>
+                    <input class="filter" data-lang-placeholder="filter" placeholder="::filter....::" tabindex="-1">
+                  </div>
                   <ol class="generic-widget-list zebra" tabindex="-1"></ol>
                 </div>
               </div>
@@ -779,7 +829,7 @@
                 </style>
 
                 <div class="spinning-focus-box"></div>
-                <div class="help hidden"></div>
+                <div class="hint hidden"></div>
 
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="reception-calendar-header">::reception calendar::</span>
@@ -800,20 +850,19 @@
                 Tabindex:
                   ol element set to -1 on blur. MUST be updated on focus.
               -->
-              <div id="reception-commands" class="generic-widget layout-margin-top" tabindex="-1">
+              <div id="reception-commands" class="generic-widget layout-margin-top">
                 <style scoped>
                   #reception-commands {
                     flex-grow: 1;
                   }
 
-                  #reception-commands,
                   #reception-commands .generic-widget-list {
                     outline: 0;
                   }
                 </style>
 
                 <div class="spinning-focus-box"></div>
-                <div class="help hidden"></div>
+                <div class="hint hidden"></div>
 
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="reception-commands-header">::reception commands::</span>
@@ -991,7 +1040,7 @@
                 </style>
 
                 <div class="spinning-focus-box"></div>
-                <div class="help hidden"></div>
+                <div class="hint hidden"></div>
 
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="message-compose-header">::message compose::</span>
@@ -1057,8 +1106,8 @@
 
             </div>
 
-            <div class="display-flex-column" style="flex-grow: 5;">
-              <div class="display-flex-row" style="flex-grow: 2;">
+            <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 5;">
+              <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 2;">
 
                 <!--
                   #contact-selector widget
@@ -1115,7 +1164,7 @@
                   </style>
 
                   <div class="spinning-focus-box"></div>
-                  <div class="help hidden"></div>
+                  <div class="hint hidden"></div>
 
                   <h4 class="generic-widget-headline">
                     <span data-lang-text="contact-selector-header">::contact list::</span>
@@ -1166,7 +1215,7 @@
                   </style>
 
                   <div class="spinning-focus-box"></div>
-                  <div class="help hidden"></div>
+                  <div class="hint hidden"></div>
 
                   <h4 class="generic-widget-headline">
                     <span data-lang-text="contact-calendar-header">::contact calendar::</span>
@@ -1298,7 +1347,7 @@
                 </style>
 
                 <div class="spinning-focus-box"></div>
-                <div class="help hidden"></div>
+                <div class="hint hidden"></div>
 
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="contact-data-header">::contact data::</span>
@@ -1364,7 +1413,7 @@
             </div>
           </div>
         </div>
-        <div class="display-flex-column" style="flex-grow: 1;">
+        <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 1;">
 
           <!--
             #agent-info widget
@@ -1384,6 +1433,7 @@
             <style scoped>
               #agent-info {
                 height: 4em;
+                pointer-events: none; /* ignore mouse click events */
               }
 
               #agent-info > div {
@@ -1473,19 +1523,20 @@
               #reception-opening-hours {
                 flex-grow: 1;
               }
+
+              #reception-opening-hours .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <div class="hint hidden"></div>
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-opening-hours-header">::reception opening hours::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Man-tor 0800-1700, fre 0800-1400</li>
-              <li>Udstillingen er lukket hver torsdag</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -1505,19 +1556,20 @@
               #reception-salesmen {
                 flex-grow: 1;
               }
+
+              #reception-salesmen .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <div class="hint hidden"></div>
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="reception-salesmen-header">::reception salesmen::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Senvis til info@responsum.dk</li>
-              <li>Afvis rengøring. Dette ordnes via vores lejemål</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -1539,21 +1591,20 @@
               }
 
               #reception-product > div {
+                outline: 0;
                 overflow: auto;
                 padding: 0.3em;
               }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <div class="hint hidden"></div>
 
             <h4 class="generic-widget-headline">
-              <span data-lang-text="reception-product-desc-header">::reception product description::</span>
+              <span data-lang-text="reception-product-header">::reception product description::</span>
               <span></span>
             </h4>
-            <div class="generic-widget-body">
-              Vi laver gummiænder
-            </div>
+            <div class="generic-widget-body" tabindex="-1"></div>
           </div>
 
           <!--
@@ -1574,20 +1625,20 @@
               #global-call-queue {
                 flex-grow: 2;
               }
+
+              #global-call-queue .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="global-call-queue-header">::queued calls::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Et kald...</li>
-              <li>Et andet kald..</li>
-              <li>Et tredje kald..</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
           <!--
@@ -1607,19 +1658,20 @@
               #my-call-queue {
                 flex-grow: 1;
               }
+
+              #my-call-queue .generic-widget-list {
+                outline: 0;
+              }
             </style>
 
             <div class="spinning-focus-box"></div>
-            <div class="help hidden"></div>
+            <!--<div class="hint hidden"></div>-->
 
             <h4 class="generic-widget-headline">
               <span data-lang-text="my-queued-calls-header">::my queued calls::</span>
               <span></span>
             </h4>
-            <ol class="generic-widget-body generic-widget-list zebra">
-              <li>Et kald...</li>
-              <li>Et andet kald..</li>
-            </ol>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
 
         </div>
@@ -1644,7 +1696,7 @@
       Note that visibility on #receptionistclient-disaster and its siblings MUST
       be mutually exclusive.
   -->
-  <div id="receptionistclient-disaster">
+  <div IgnoreClickFocus id="receptionistclient-disaster">
     <style scoped>
       #receptionistclient-disaster {
         display: none;
@@ -1686,7 +1738,7 @@
       Note that visibility on #receptionistclient-loading and its siblings MUST
       be mutually exclusive.
   -->
-  <div id="receptionistclient-loading">
+  <div IgnoreClickFocus id="receptionistclient-loading">
     <style scoped>
       #receptionistclient-loading {
         display: flex;

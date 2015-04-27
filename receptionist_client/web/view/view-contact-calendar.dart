@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ContactCalendar extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
@@ -13,6 +16,7 @@ class ContactCalendar extends ViewWidget {
                   Controller.Destination this._myDestination,
                   Model.UIContactSelector this._contactSelector,
                   Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+k');
     _observers();
   }
 
@@ -32,7 +36,7 @@ class ContactCalendar extends ViewWidget {
   /**
    * Empty the [CalendarEvent] list on null [Reception].
    */
-  void clearOnNullReception(Reception reception) {
+  void clear(Reception reception) {
     if(reception.isNull) {
       _ui.clear();
     }
@@ -52,21 +56,25 @@ class ContactCalendar extends ViewWidget {
 
     _contactSelector.onSelect.listen(render);
 
-    _receptionSelector.onSelect.listen(clearOnNullReception);
+    _receptionSelector.onSelect.listen(clear);
   }
 
   /**
-   * Render the widget with [contact] [CalendarEvent]s.
+   * Render the widget with [contact].
    */
   void render(Contact contact) {
-    _ui.headerExtra = 'for ${contact.name}';
+    if(contact.isNull) {
+      _ui.clear();
+    } else {
+      _ui.headerExtra = 'for ${contact.name}';
 
-    _ui.calendarEvents =
-        [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
-        new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),
-        new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
-        new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
+      _ui.calendarEvents =
+          [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
+           new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),
+           new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
+           new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
 
-    _ui.selectFirstCalendarEvent();
+      _ui.selectFirstCalendarEvent();
+    }
   }
 }

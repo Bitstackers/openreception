@@ -1,42 +1,48 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIContactSelector extends UIModel {
   final Bus<Contact> _bus = new Bus<Contact>();
-  final Keyboard     _keyboard = new Keyboard();
   final DivElement   _myRoot;
 
   /**
    * Constructor.
    */
   UIContactSelector(DivElement this._myRoot) {
-    _help.text = 'alt+s';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
+  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _filter;
   @override HtmlElement get _focusElement    => _filter;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _filter;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
    * on the filter input whenever a contact li element is clicked.
    */
-  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
-  @override HtmlElement        get _root   => _myRoot;
+  @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
+  @override selectCallback     get _selectCallback => _arrowSelectCallback;
+  @override HtmlElement        get _root           => _myRoot;
 
-  OListElement get _contactList => _root.querySelector('.generic-widget-list');
-  InputElement get _filter      => _root.querySelector('.filter');
+  OListElement get _list   => _root.querySelector('.generic-widget-list');
+  InputElement get _filter => _root.querySelector('.filter');
+
+  /**
+   * TODO (TL): Comment
+   */
+  void _arrowSelectCallback(LIElement li) {
+    _bus.fire(new Contact.fromJson(JSON.decode(li.dataset['object'])));
+  }
 
   /**
    * Remove all entries from the contact list.
    */
-  void clearList() {
-    _contactList.children.clear();
+  void clear() {
+    _list.children.clear();
   }
 
   /**
@@ -62,23 +68,26 @@ class UIContactSelector extends UIModel {
                  ..text = item.name);
     });
 
-    _contactList.children = list;
+    _list.children = list;
   }
 
   /**
    * Filter the contact list whenever the user enters data into the [_filter]
    * input field.
    */
-  void _filterList(_) {
+  void filter(_) {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
     if(filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _contactList.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.classes.toggle('zebra', true);
     } else if(trimmedFilter.length == 1 && !filter.startsWith(' ')) {
       /// Pattern: one non-space character followed by zero or more spaces
-      _contactList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['firstinitial'] == trimmedFilter) {
           li.classes.toggle('hide', false);
         } else {
@@ -87,7 +96,9 @@ class UIContactSelector extends UIModel {
       });
     } else if(trimmedFilter.length ==1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
       /// Pattern: one or more spaces followed by one non-space character
-      _contactList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['otherinitials'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -96,7 +107,9 @@ class UIContactSelector extends UIModel {
       });
     } else if(trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
       /// Pattern: one character, one space, one character
-      _contactList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(li.dataset['firstinitial'] == trimmedFilter.substring(0,1) && li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
           li.classes.toggle('hide', false);
         } else {
@@ -108,7 +121,9 @@ class UIContactSelector extends UIModel {
       /// the resulting parts in their tag list.
       final List<String> parts = trimmedFilter.split(' ');
 
-      _contactList.children.forEach((LIElement li) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((LIElement li) {
         if(parts.every((String part) => li.dataset['tags'].contains(part))) {
           li.classes.toggle('hide', false);
         } else {
@@ -118,39 +133,7 @@ class UIContactSelector extends UIModel {
     }
 
     /// Select the first visible item on the list
-    _markSelected(_scanForwardForVisibleElement(_contactList.children.first));
-  }
-
-  /**
-   * Deal with arrow up/down.
-   */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_contactList.children.isNotEmpty) {
-      final LIElement selected = _contactList.querySelector('.selected');
-
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
-          break;
-        case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
-          break;
-      }
-    }
-  }
-
-  /**
-   * Mark [li] selected, scroll it into view and fire the [Contact] contained
-   * in the [li] on the [onSelect] bus.
-   * Does nothing if [li] is null or [li] is already selected.
-   */
-  void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
-      _contactList.children.forEach((Element element) => element.classes.remove('selected'));
-      li.classes.add('selected');
-      li.scrollIntoView();
-      _bus.fire(new Contact.fromJson(JSON.decode(li.dataset['object'])));
-    }
+    _markSelected(_scanForwardForVisibleElement(_list.children.first));
   }
 
   /**
@@ -159,7 +142,7 @@ class UIContactSelector extends UIModel {
   void _observers() {
     _filter.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen(_filterList);
+    _filter.onInput.listen(filter);
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -173,11 +156,23 @@ class UIContactSelector extends UIModel {
   Stream<Contact> get onSelect => _bus.stream;
 
   /**
+   * Remove selections, scroll to top, empty filter input and then select the
+   * first contact.
+   */
+  void _reset(_) {
+    _filter.value = '';
+    filter('');
+    selectFirstContact();
+  }
+
+  /**
    * Select the first [Contact] in the list.
    */
   void selectFirstContact() {
-    if(_contactList.children.isNotEmpty) {
-      _markSelected(_scanForwardForVisibleElement(_contactList.children.first));
+    if(_list.children.isNotEmpty) {
+      _markSelected(_scanForwardForVisibleElement(_list.children.first));
+    } else {
+      _bus.fire(new Contact.Null());
     }
   }
 
@@ -200,13 +195,10 @@ class UIContactSelector extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'down'     : _handleUpDown,
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab,
-         'up'       : _handleUpDown};
+        {'Esc': _reset};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

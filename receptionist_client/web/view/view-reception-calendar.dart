@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ReceptionCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
@@ -11,6 +14,7 @@ class ReceptionCalendar extends ViewWidget {
   ReceptionCalendar(Model.UIModel this._ui,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+a');
     observers();
   }
 
@@ -44,7 +48,7 @@ class ReceptionCalendar extends ViewWidget {
   }
 
   /**
-   * Render the widget with [reception] [CalendarEvent]s.
+   * Render the widget with [reception].
    */
   void render(Reception reception) {
     if(reception.isNull) {

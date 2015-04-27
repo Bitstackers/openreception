@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class ReceptionistclientDisaster {
   final AppClientState               _appState;
   static ReceptionistclientDisaster  _singleton;

@@ -1,30 +1,28 @@
 part of model;
 
+/**
+ * TODO (TL): Comment
+ */
 class UIContactCalendar extends UIModel {
-  final Bus<KeyboardEvent> _busEdit   = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _busNew    = new Bus<KeyboardEvent>();
-  final Keyboard           _keyboard  = new Keyboard();
+  final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _busNew  = new Bus<KeyboardEvent>();
   final DivElement         _myRoot;
 
   /**
    * Constructor.
    */
   UIContactCalendar(DivElement this._myRoot) {
-    _help.text = 'alt+k';
-
-    _setupWidgetKeys();
+    _setupLocalKeys();
     _observers();
   }
 
+  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
-  @override SpanElement get _header          => _root.querySelector('h4 > span');
-  @override SpanElement get _headerExtra     => _root.querySelector('h4 > span + span');
-  @override DivElement  get _help            => _root.querySelector('div.help');
   @override HtmlElement get _lastTabElement  => _root;
   @override HtmlElement get _root            => _myRoot;
 
-  OListElement get _eventList => _root.querySelector('.generic-widget-list');
+  OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
    * Add [items] to the [CalendarEvent] list.
@@ -38,7 +36,7 @@ class UIContactCalendar extends UIModel {
                 ..dataset['object'] = JSON.encode(item));
     });
 
-    _eventList.children = list;
+    _list.children = list;
   }
 
   /**
@@ -46,7 +44,7 @@ class UIContactCalendar extends UIModel {
    */
   void clear() {
     _headerExtra.text = '';
-    _eventList.children.clear();
+    _list.children.clear();
   }
 
   /**
@@ -54,42 +52,12 @@ class UIContactCalendar extends UIModel {
    * is selected.
    */
   CalendarEvent get selectedCalendarEvent {
-    final LIElement selected = _eventList.querySelector('.selected');
+    final LIElement selected = _list.querySelector('.selected');
 
     if(selected != null) {
       return new CalendarEvent.fromJson(JSON.decode(selected.dataset['object']));
     } else {
       return new CalendarEvent.Null();
-    }
-  }
-
-  /**
-   * Deal with arrow up/down.
-   */
-  void _handleUpDown(KeyboardEvent event) {
-    if(_eventList.children.isNotEmpty) {
-      final LIElement selected = _eventList.querySelector('.selected');
-
-      switch(event.keyCode) {
-        case KeyCode.DOWN:
-          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
-          break;
-        case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
-          break;
-      }
-    }
-  }
-
-  /**
-   * Mark [li] selected, scroll it into view.
-   * Does nothing if [li] is null or [li] is already selected.
-   */
-  void _markSelected(LIElement li) {
-    if(li != null && !li.classes.contains('selected')) {
-      _eventList.children.forEach((Element element) => element.classes.remove('selected'));
-      li.classes.add('selected');
-      li.scrollIntoView();
     }
   }
 
@@ -115,8 +83,8 @@ class UIContactCalendar extends UIModel {
    * Select the first [CalendarEvent] in the list.
    */
   void selectFirstCalendarEvent() {
-    if(_eventList.children.isNotEmpty) {
-      _markSelected(_scanForwardForVisibleElement(_eventList.children.first));
+    if(_list.children.isNotEmpty) {
+      _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
 
@@ -133,15 +101,11 @@ class UIContactCalendar extends UIModel {
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
-  void _setupWidgetKeys() {
+  void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'Ctrl+e'   : _busEdit.fire,
-         'Ctrl+k'   : _busNew.fire,
-         'down'     : _handleUpDown,
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab,
-         'up'       : _handleUpDown};
+        {'Ctrl+e': _busEdit.fire,
+         'Ctrl+k': _busNew.fire};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

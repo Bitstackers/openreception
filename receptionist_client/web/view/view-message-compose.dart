@@ -12,11 +12,12 @@ class MessageCompose extends ViewWidget {
    */
   MessageCompose(Model.UIMessageCompose this._ui,
                  Controller.Destination this._myDestination) {
+    _ui.setHint('alt+b');
     _observers();
   }
 
   @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel    get ui      => _ui;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_) {}
   @override void onFocus(_) {}

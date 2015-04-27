@@ -1,5 +1,8 @@
 part of view;
 
+/**
+ * TODO (TL): Comment
+ */
 class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
   final Controller.Destination    _myDestination;
@@ -86,11 +89,10 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
-   * Render the widget with a [CalendarEvent]. Note if the [CalendarEvent] is a
-   * null event, then the widgets renders with its default values.
+   * Render the widget with [calendarEvent].
    */
   void render(CalendarEvent calendarEvent) {
-    _ui.content = calendarEvent;
+    _ui.calendarEvent = calendarEvent;
   }
 
   /**

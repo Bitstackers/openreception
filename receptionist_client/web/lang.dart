@@ -58,10 +58,10 @@ abstract class Key {
   static const String receptionBankInfoHeader         = 'reception-bank-info-header';
   static const String receptionCalendarHeader         = 'reception-calendar-header';
   static const String receptionCommandsHeader         = 'reception-commands-header';
-  static const String receptionEmailsHeader           = 'reception-emails-header';
+  static const String receptionEmailHeader            = 'reception-email-header';
   static const String receptionMiniWikiHeader         = 'reception-mini-wiki-header';
   static const String receptionOpeningHoursHeader     = 'reception-opening-hours-header';
-  static const String receptionProductDescHeader      = 'reception-product-desc-header';
+  static const String receptionProductHeader          = 'reception-product-header';
   static const String receptionSalesmenHeader         = 'reception-salesmen-header';
   static const String receptionSelectorHeader         = 'reception-selector-header';
   static const String receptionTelephoneNumbersHeader = 'reception-telephone-numbers-header';
@@ -136,10 +136,10 @@ Map<String, String> da =
    Key.receptionBankInfoHeader        : 'Bank',
    Key.receptionCalendarHeader        : 'Receptions Kalender',
    Key.receptionCommandsHeader        : 'Kommandoer',
-   Key.receptionEmailsHeader          : 'Emailadresser',
+   Key.receptionEmailHeader           : 'Emailadresser',
    Key.receptionMiniWikiHeader        : 'Mini wiki',
    Key.receptionOpeningHoursHeader    : 'Åbningstider',
-   Key.receptionProductDescHeader     : 'Produkt',
+   Key.receptionProductHeader     : 'Produkt',
    Key.receptionSalesmenHeader        : 'Sælgere',
    Key.receptionSelectorHeader        : 'Receptioner',
    Key.receptionTelephoneNumbersHeader: 'Telefonnumre',
@@ -213,10 +213,10 @@ Map<String, String> en =
    Key.receptionBankInfoHeader        : 'Bank',
    Key.receptionCalendarHeader        : 'Reception Calendar',
    Key.receptionCommandsHeader        : 'Commands',
-   Key.receptionEmailsHeader          : 'Email addresses',
+   Key.receptionEmailHeader           : 'Email addresses',
    Key.receptionMiniWikiHeader        : 'Mini wiki',
    Key.receptionOpeningHoursHeader    : 'Opening hours',
-   Key.receptionProductDescHeader     : 'Product',
+   Key.receptionProductHeader     : 'Product',
    Key.receptionSalesmenHeader        : 'Salesmen',
    Key.receptionSelectorHeader        : 'Receptions',
    Key.receptionTelephoneNumbersHeader: 'Telephone numbers',

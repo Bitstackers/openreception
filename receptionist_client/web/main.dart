@@ -9,6 +9,15 @@ import 'model/model.dart' as Model;
 import 'view/view.dart' as View;
 
 void main() {
+  /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
+  /// elements. This is simply done by searching for the "ignoreclickfocus"
+  /// attribute and ignoring mousedown events for those elements.
+  document.onMouseDown.listen((MouseEvent event) {
+    if((event.target as HtmlElement).attributes.keys.contains('ignoreclickfocus')) {
+      event.preventDefault();
+    }
+  });
+
   /// Translate the static labels of the app.
   translate();
 
