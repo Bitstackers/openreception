@@ -19,8 +19,8 @@ ArgParser parser = new ArgParser();
 void main(List<String> args) {
 
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.logDefaults.level;
-  Logger.root.onRecord.listen(Configuration.logDefaults.onRecord);
+  Logger.root.level = Configuration.callFlowControl.log.level;
+  Logger.root.onRecord.listen(Configuration.callFlowControl.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -36,18 +36,10 @@ void main(List<String> args) {
         .then((_) => router.connectNotificationService())
         .then((_) => connectESLClient())
         .then((_) => http.start(callflow.config.httpport, router.registerHandlers))
-        .catchError((e) => log.info('main() -> config.whenLoaded() ${e}'));
+        .catchError(log.shout);
     }
-  } on ArgumentError catch (e) {
-    log.shout ('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch (e) {
-    log.shout('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch (e) {
-    log.shout('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.shout(error, stackTrace);
   }
 }
 
