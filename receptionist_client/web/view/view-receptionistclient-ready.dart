@@ -10,6 +10,9 @@ class ReceptionistclientReady {
   Contexts                              contexts;
   GlobalCallQueue                       globalCallQueue;
   Help                                  help;
+  MessageArchive                        messageArchive;
+  MessageArchiveEdit                    messageArchiveEdit;
+  MessageArchiveFilter                  messageArchiveFilter;
   MessageCompose                        messageCompose;
   MyCallQueue                           myCallQueue;
   ReceptionAddresses                    receptionAddresses;
@@ -99,6 +102,18 @@ class ReceptionistclientReady {
     globalCallQueue = new GlobalCallQueue
         (new Model.UIGlobalCallQueue(querySelector('#global-call-queue')),
          new Controller.Destination(Context.Home, Widget.GlobalCallQueue));
+
+    messageArchive = new MessageArchive
+        (new Model.UIMessageArchive(querySelector('#message-archive')),
+         new Controller.Destination(Context.Messages, Widget.MessageArchive));
+
+    messageArchiveEdit = new MessageArchiveEdit
+        (new Model.UIMessageArchiveEdit(querySelector('#message-archive-edit')),
+         new Controller.Destination(Context.Messages, Widget.MessageArchiveEdit));
+
+    messageArchiveFilter = new MessageArchiveFilter
+        (new Model.UIMessageArchiveFilter(querySelector('#message-archive-filter')),
+         new Controller.Destination(Context.Messages, Widget.MessageArchiveFilter));
 
     messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),

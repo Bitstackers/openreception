@@ -16,7 +16,7 @@ class MessageCompose extends ViewWidget {
   }
 
   @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel    get ui      => _ui;
+  @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_) {}
   @override void onFocus(_) {}
