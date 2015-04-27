@@ -109,12 +109,7 @@ class UICalendarEditor extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Esc'      : (_) => _cancelButton.click(),
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab};
-
-    _hotKeys.registerKeys(_keyboard, bindings);
+    _hotKeys.registerKeys(_keyboard, _defaultKeyMap(myKeys: {'Esc': (_) => _cancelButton.click()}));
   }
 
   /**

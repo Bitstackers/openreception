@@ -220,12 +220,10 @@ class UIContactSelector extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'down'     : _handleUpDown,
-         'Esc'      : _reset,
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab,
-         'up'       : _handleUpDown};
+        {'down': _handleUpDown,
+         'Esc' : _reset,
+         'up'  : _handleUpDown};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

@@ -85,8 +85,6 @@ class UIContactData extends UIModel {
     if(_telNumList.children.isNotEmpty) {
       final LIElement selected = _telNumList.querySelector('.selected');
 
-      /// TODO (TL): Handle selected == null.
-
       switch(event.keyCode) {
         case KeyCode.DOWN:
           _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
@@ -219,17 +217,15 @@ class UIContactData extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {[Key.NumMult]: _ring,
+        {[Key.NumMult]: _ring, /// TODO (TL): Not too sure about this here...
          'Alt+1'      : (_) => selectFirstTelNum(),
          'Alt+2'      : (_) => selectFromIndex(1),
          'Alt+3'      : (_) => selectFromIndex(2),
          'Alt+4'      : (_) => selectFromIndex(3),
          'down'       : _handleUpDown,
-         'Shift+Tab'  : _handleShiftTab,
-         'Tab'        : _handleTab,
          'up'         : _handleUpDown};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 
   /**

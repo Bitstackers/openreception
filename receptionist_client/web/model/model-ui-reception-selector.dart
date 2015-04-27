@@ -180,10 +180,8 @@ class UIReceptionSelector extends UIModel {
         {'down'     : _handleUpDown,
          'Enter'    : _handleEnter,
          'Esc'      : _reset,
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab,
          'up'       : _handleUpDown};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

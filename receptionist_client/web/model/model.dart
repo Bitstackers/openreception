@@ -55,9 +55,6 @@ abstract class UIModel {
 
   HtmlElement get _firstTabElement;
   HtmlElement get _focusElement;
-  SpanElement get _header      => _root.querySelector('h4 > span');
-  SpanElement get _headerExtra => _root.querySelector('h4 > span + span');
-  DivElement  get _hint        => _root.querySelector('div.hint');
   HtmlElement get _lastTabElement;
   HtmlElement get _root;
 
@@ -123,15 +120,46 @@ abstract class UIModel {
   }
 
   /**
+   * Return the header element.
+   */
+  SpanElement get _header => _root.querySelector('h4 > span');
+
+  /**
    * Set the widget header.
    */
   set header(String headline) => _header.text = headline;
+
+  /**
+   * Return the headerExtra element.
+   */
+  SpanElement get _headerExtra => _root.querySelector('h4 > span + span');
 
   /**
    * Set the widgets extra header. This one can be used for a bit of extra data
    * to decorate the widget.
    */
   set headerExtra(String headlineExtra) => _headerExtra.text = headlineExtra;
+
+  /**
+   * Return the hint element.
+   */
+  DivElement get _hint => _root.querySelector('div.hint');
+
+  /**
+   * "Tab" and "Shift+Tab" are already in this map, pointing to [_handleTab] and
+   * [_handleShiftTab] respectively.
+   * To change this simply add those to [myKeys] or override the [_handleTab]
+   * and/or [_handleShiftTab] methods.
+   */
+  Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
+    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab,
+                                      'Tab'      : _handleTab};
+    if(myKeys != null) {
+      map.addAll(myKeys);
+    }
+
+    return map;
+  }
 
   /**
    * Return the mouse click event stream for this widget.

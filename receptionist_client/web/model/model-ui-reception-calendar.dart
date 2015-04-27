@@ -135,10 +135,8 @@ class UIReceptionCalendar extends UIModel {
         {'Ctrl+e'   : _busEdit.fire,
          'Ctrl+k'   : _busNew.fire,
          'down'     : _handleUpDown,
-         'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab,
          'up'       : _handleUpDown};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

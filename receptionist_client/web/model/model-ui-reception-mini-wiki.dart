@@ -52,10 +52,6 @@ class UIReceptionMiniWiki extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab};
-
-    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap());
   }
 }
