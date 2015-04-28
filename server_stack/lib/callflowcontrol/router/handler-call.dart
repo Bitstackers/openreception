@@ -320,8 +320,8 @@ abstract class Call {
           outboundCall =
               Model.PBXClient.instance.eventStream.firstWhere
               (outboundCallWithUuid).then((ESL.Event event) =>
-                Model.CallList.instance.get(event.uniqueID))
-              .timeout(new Duration (seconds : 10));
+                Model.CallList.instance.get(event.uniqueID));
+          outboundCall.timeout(new Duration (seconds : 10));
 
           /// Perform the origination via the PBX.
           Controller.PBX.transferUUIDToExtension(uuid, extension, user)
