@@ -13,5 +13,5 @@
 
 part of openreceptionclient;
 
-const String CONFIGURATION_URL = 'http://localhost:4080/';
+final Uri CONFIGURATION_URL = Uri.parse('http://localhost:4080/');
 
