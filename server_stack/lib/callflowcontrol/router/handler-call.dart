@@ -250,6 +250,10 @@ abstract class Call {
             serverErrorTrace(request, error, stackTrace: stackTrace));
   }
 
+  /**
+   * Originate a new call by first creating a parked phone channel to the
+   * agent and then perform the orgination in the background.
+   */
   static Future originateViaPark(HttpRequest request) {
 
     final int receptionID = pathParameter(request.uri, 'reception');
