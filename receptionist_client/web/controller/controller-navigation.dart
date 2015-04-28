@@ -46,6 +46,11 @@ class Destination {
 
   operator == (Destination other) => (context == other.context) && (widget == other.widget);
 
+  /**
+   * TODO: TL: Verify that this is sound. Implemented to avoid warning.
+   */
+  int get hashCode => this.toString().hashCode;
+
   String toString() => '${context}-${widget}';
 }
 
