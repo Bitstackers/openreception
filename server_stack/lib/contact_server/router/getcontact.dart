@@ -4,12 +4,7 @@ void getContact(HttpRequest request) {
   int contactId  = pathParameter(request.uri, 'contact');
   int receptionId = pathParameter(request.uri, 'reception');
 
-  cache.loadContact(receptionId, contactId).then((String reception) {
-    writeAndClose(request, reception);
-
-  }).catchError((_) {
-    return _fetchAndCacheContact(receptionId, contactId, request);
-  });
+  _fetchAndCacheContact(receptionId, contactId, request);
 }
 
 Future _fetchAndCacheContact(int receptionId, int contactId, HttpRequest request) {

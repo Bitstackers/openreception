@@ -7,7 +7,6 @@ import 'dart:io';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
-import 'cache.dart' as cache;
 import 'configuration.dart';
 import 'database.dart' as db;
 import 'package:logging/logging.dart';
@@ -20,14 +19,12 @@ part 'router/getcontact.dart';
 part 'router/getcontactlist.dart';
 part 'router/getcontactsphones.dart';
 part 'router/getphone.dart';
-part 'router/invalidatecontact.dart';
 part 'router/contact-calendar.dart';
 part 'router/contact.dart';
 
 const String libraryName = 'contactserver.router';
 
 final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern receptionContactInvalidateResource     = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/invalidate');
 final Pattern receptionContactResource               = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
 final Pattern receptionContactListResource           = new UrlPattern(r'/contact/list/reception/(\d+)');
 final Pattern receptionContactCalendarResource       = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event/(\d+)');
@@ -35,8 +32,7 @@ final Pattern receptionContactCalendarCreateResource = new UrlPattern(r'/contact
 final Pattern receptionContactCalendarListResource   = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
 
 final List<Pattern> allUniqueUrls =
-   [receptionContactInvalidateResource,
-    receptionContactResource,
+   [receptionContactResource,
     receptionContactListResource,
     receptionContactCalendarResource,
     receptionContactCalendarListResource];
@@ -60,7 +56,6 @@ Router setup(HttpServer server) =>
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(              receptionContactResource, method: 'GET'   ).listen(Contact.get)
     ..serve(          receptionContactListResource, method: 'GET'   ).listen(getContactList)
-    ..serve(    receptionContactInvalidateResource, method: 'POST'  ).listen(invalidateReception)
     ..serve(  receptionContactCalendarListResource, method: 'GET'   ).listen(ContactCalendar.list)
     ..serve(      receptionContactCalendarResource, method: 'GET'   ).listen(ContactCalendar.get)
     ..serve(      receptionContactCalendarResource, method: 'PUT'   ).listen(ContactCalendar.update)
