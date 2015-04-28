@@ -319,7 +319,8 @@ abstract class Call {
 
           outboundCall =
               Model.PBXClient.instance.eventStream.firstWhere
-              (outboundCallWithUuid).then((ESL.Event event) =>
+              (outboundCallWithUuid, defaultValue : () => null)
+              .then((ESL.Event event) =>
                 Model.CallList.instance.get(event.uniqueID));
           outboundCall.timeout(new Duration (seconds : 10));
 
