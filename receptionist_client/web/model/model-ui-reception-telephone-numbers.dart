@@ -58,17 +58,16 @@ class UIReceptionTelephoneNumbers extends UIModel {
       final SpanElement spanLabel  = new SpanElement();
       final SpanElement spanNumber = new SpanElement();
 
-      spanNumber.classes.toggle('secret', item.secret);
+      spanNumber.classes.toggle('secret', item.confidential);
       spanNumber.classes.add('number');
-      spanNumber.text = item.number;
+      spanNumber.text = item.value;
 
       spanLabel.classes.add('label');
-      spanLabel.text = item.label;
+      spanLabel.text = item.description;
 
 
       list.add(new LIElement()
                 ..children.addAll([spanNumber, spanLabel])
-                ..dataset['id'] = item.id.toString()
                 ..dataset['object'] = JSON.encode(item));
     });
 

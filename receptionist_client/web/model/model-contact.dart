@@ -20,7 +20,7 @@ class Contact extends ORModel.Contact implements Comparable{
 
   static const String className = '${libraryName}.Contact';
 
-  static final Contact noContact = new Contact._null();
+  static final Contact noContact = new Contact.empty();
 
   static Contact _selectedContact = Contact.noContact;
 
@@ -33,25 +33,12 @@ class Contact extends ORModel.Contact implements Comparable{
     _contactChange.fire(_selectedContact);
   }
 
-  static Future<Contact> get(int contactID, int receptionID) {
-    return storage.Contact.get(contactID, receptionID);
-  }
-
-  static Future<List<Contact>> list(int receptionID) {
-    return storage.Contact.list(receptionID);
-  }
-
-  Future<List<ContactCalendarEntry>> calendarEventList() {
-    return storage.Contact.calendar(this.ID, this.receptionID);
-  }
-
   Contact.fromMap(Map map) : super.fromMap (map);
 
-  Contact._null() : super.none() {
+  Contact.empty() : super.none() {
     this.ID         = ORModel.Contact.nullContact.ID;
     this.contactType= ORModel.Contact.nullContact.contactType;
   }
-
 
   /**
    * Enables a [Contact] to sort itself compared to other contacts.
@@ -62,23 +49,6 @@ class Contact extends ORModel.Contact implements Comparable{
    * [Contact] as String, for debug/log purposes.
    */
   String toString() => '${this.fullName}-${this.ID}-${this.contactType}';
-
-  Future<Map> contextMap() {
-
-    return storage.Reception.get(this.receptionID).then((Reception reception) {
-      return {
-        'contact': {
-          'id': this.ID,
-          'name': this.fullName
-        },
-        'reception': {
-          'id': this.receptionID,
-          'name': reception.name
-        }
-      };
-    });
-
-  }
 
   /**
    * Return the [id] [Contact] or [noContact] if [id] does not exist.
@@ -93,6 +63,6 @@ class Contact extends ORModel.Contact implements Comparable{
     return Contact.noContact;
   }
 
-  bool isNull () => this == noContact;
+  bool get isEmpty => this.ID == noContact.ID;
 
 }

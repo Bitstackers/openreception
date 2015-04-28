@@ -22,8 +22,8 @@ class ReceptionStub extends ORModel.ReceptionStub {
   ReceptionStub.fromMap(Map map) : super.fromMap(map);
 
   ReceptionStub.none() : super.none();
-  bool isNotNull() => !this.isNull();
-  bool isNull()    => this.ID == Reception.noReception.ID;
+  bool get isNotEmpty => !this.isEmpty;
+  bool get isEmpty    => this.ID == Reception.noReception.ID;
 }
 
 /**
@@ -48,10 +48,13 @@ class Reception extends ORModel.Reception {
 
   Reception.none() : super.none();
 
-  bool isNotNull() => !this.isNull();
-  bool isNull()    => this.ID == Reception.noReception.ID;
+  bool get isNotEmpty => !this.isEmpty;
+  bool get isEmpty    => this.ID == Reception.noReception.ID;
 
   ReceptionStub toStub() =>
     new ReceptionStub()..ID       = this.ID
                        ..fullName = this.fullName;
+
+  //FIXME: Please, I am sooo broken.
+  String get miniWikiMarkdown => "##FIXME";
 }

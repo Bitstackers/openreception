@@ -7,13 +7,15 @@ class ContactSelector extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactSelector   _ui;
+  final Controller.Contact        _contactController;
 
   /**
    * Constructor.
    */
   ContactSelector(Model.UIModel this._ui,
                   Controller.Destination this._myDestination,
-                  Model.UIReceptionSelector this._receptionSelector) {
+                  Model.UIReceptionSelector this._receptionSelector,
+                  Controller.Contact this._contactController) {
     _ui.setHint('alt+s');
     _observers();
   }
@@ -47,17 +49,21 @@ class ContactSelector extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(Reception reception) {
-    if(reception.isNull) {
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     } else {
-      /// TODO (TL): Get these contacts from the server.
-      _ui.contacts = [new Contact.fromJson({'id': 1, 'name': 'Trine Løcke Snøcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Oplæring','Service']}),
-                      new Contact.fromJson({'id': 2, 'name': 'Hoop Karaoke ${(reception.name)}', 'receptionId': 2, 'tags': ['Entertainment', 'International Business', 'teknik']}),
-                      new Contact.fromJson({'id': 3, 'name': 'Thomas Løcke ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Farum', 'salg']}),
-                      new Contact.fromJson({'id': 4, 'name': 'Simpleton McNuggin ${(reception.name)}', 'receptionId': 2, 'tags': ['Teknik', 'Glostrup', 'Service', 'løn', 'kreditor']})];
+      _contactController.list(reception)
+        .then ((Iterable<Model.Contact> contacts) {
 
-      _ui.selectFirstContact();
+        List<Model.Contact> sortedContacts = contacts.toList()
+          ..sort((Model.Contact x , Model.Contact y) =>
+              x.fullName.compareTo(y.fullName));
+
+        this._ui.contacts = sortedContacts;
+      }).then((_) {
+        _ui.selectFirstContact();
+      });
     }
   }
 }

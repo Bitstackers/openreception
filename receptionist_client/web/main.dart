@@ -1,3 +1,5 @@
+library openreceptionclient;
+
 import 'dart:async';
 import 'dart:html';
 
@@ -6,14 +8,18 @@ import 'dummies.dart';
 import 'enums.dart';
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
+import 'controller/controller.dart' as Controller;
 import 'view/view.dart' as View;
-import 'config/configuration_url.dart';
-
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/service-html.dart' as ORTransport;
+
+part 'configuration_url.dart';
+
+const String libraryName = 'openreceptionclient';
+final Logger log = new Logger (libraryName);
 
 void main() {
   // Init logging
@@ -31,9 +37,12 @@ void main() {
   ORService.NotificationSocket notificationSocket;
   ORService.Authentication authService;
 
+  ORService.RESTContactStore contactStore;
+  ORService.RESTReceptionStore receptionStore;
+
   Future downloadClientConfig = configService.clientConfig()
     .then((ORModel.ClientConfiguration config) {
-      Logger.root.info ('Loaded client config: ${config.asMap}');
+      log.info ('Loaded client config: ${config.asMap}');
       clientConfig = config;
     });
 
@@ -45,7 +54,7 @@ void main() {
 
     String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
     window.location.replace(loginUrl);
-    return new Future.error(new StateError('This should not happen. No. REALLY!'));
+    log.info('No token detected, redirecting user to $loginUrl');;
   }
 
   void connectAuthService() {
@@ -53,6 +62,19 @@ void main() {
         (clientConfig.authServerUri, myToken, new ORTransport.Client());
   }
 
+  void connectContactService() {
+    contactStore = new ORService.RESTContactStore
+        (clientConfig.contactServerUri,
+         myToken,
+         new ORTransport.Client());
+  }
+
+  void connectReceptionService() {
+    receptionStore = new ORService.RESTReceptionStore
+        (clientConfig.receptionServerUri,
+         myToken,
+         new ORTransport.Client());
+  }
 
   Future connectWebsocket(ORModel.ClientConfiguration config) {
     ORTransport.WebSocketClient ws = new ORTransport.WebSocketClient();
@@ -85,28 +107,27 @@ void main() {
   View.ReceptionistclientDisaster appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
   View.ReceptionistclientLoading  appLoading  = new View.ReceptionistclientLoading(appState, uiLoading);
 
-  /// This is where it all starts. Every single widget is instantiated in
-  /// appReady.
-  View.ReceptionistclientReady appReady = new View.ReceptionistclientReady(appState, uiReady);
 
   downloadClientConfig
     .then((_) => connectAuthService())
     .then((_) => loadUser())
     .then((_) => connectWebsocket(clientConfig))
+    .then((_) => connectContactService())
+    .then((_) => connectReceptionService())
     .then((_) {
+      /// This is where it all starts. Every single widget is instantiated in
+      /// appReady.
+      View.ReceptionistclientReady appReady =
+          new View.ReceptionistclientReady
+            (appState, uiReady, new Controller.Contact(contactStore),
+                new Controller.Reception(receptionStore));
+
       appState.changeState(Model.AppState.READY);
     })
     .catchError((error, stacktrace) {
-      Logger.root.shout(error, stacktrace);
+      log.shout(error, stacktrace);
       appState.changeState(Model.AppState.ERROR);
   });
-
-
-  /// TODO (TL): The loading context is visible by default. Switch to ready after
-  /// 1 second.
-//  new Future.delayed(new Duration(milliseconds: 500)).then((_) {
-//    appState.state = AppState.READY;
-//  });
 }
 
 /**

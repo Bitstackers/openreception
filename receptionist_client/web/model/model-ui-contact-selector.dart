@@ -35,7 +35,7 @@ class UIContactSelector extends UIModel {
    * TODO (TL): Comment
    */
   void _arrowSelectCallback(LIElement li) {
-    _bus.fire(new Contact.fromJson(JSON.decode(li.dataset['object'])));
+    _bus.fire(new Contact.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
@@ -46,18 +46,18 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Add [items] to the [Contact] list. Note that this method does not clear the
-   * list before adding new items. It merely appends to the list.
+   * Add [contacts] to the [Contact] list.
    */
-  set contacts(List<Contact> items) {
+  set contacts(Iterable<Contact> contacts) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((Contact item) {
-      String initials = item.name.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
+    contacts.forEach((Contact item) {
+      //TODO: TL, handle folks without 'dem fancy surnames.
+      String initials = item.fullName.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
 
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
-      item.tags.addAll(item.name.split(' '));
+      item.tags.addAll(item.fullName.split(' '));
 
       list.add(new LIElement()
                  ..dataset['initials']      = initials
@@ -65,7 +65,7 @@ class UIContactSelector extends UIModel {
                  ..dataset['otherinitials'] = initials.substring(1)
                  ..dataset['tags']          = item.tags.join(',').toLowerCase()
                  ..dataset['object']        = JSON.encode(item)
-                 ..text = item.name);
+                 ..text = item.fullName);
     });
 
     _list.children = list;
@@ -172,7 +172,7 @@ class UIContactSelector extends UIModel {
     if(_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new Contact.Null());
+      _bus.fire(new Contact.empty());
     }
   }
 

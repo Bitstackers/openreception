@@ -89,10 +89,10 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
-   * Render the widget with [calendarEvent].
+   * Render the widget with [calendarEntry].
    */
-  void render(CalendarEvent calendarEvent) {
-    _ui.calendarEvent = calendarEvent;
+  void render(Model.CalendarEntry calendarEntry) {
+    _ui.calendarEntry = calendarEntry;
   }
 
   /**
@@ -108,21 +108,21 @@ class CalendarEditor extends ViewWidget {
       case Widget.ContactCalendar:
         if(cmd == Cmd.EDIT) {
           _ui.headerExtra = '(ret/slet)';
-          render(_contactCalendar.selectedCalendarEvent);
+          render(_contactCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
-          /// TODO (TL): Create a real calendar event, with date/time fields set.
-          render(new CalendarEvent.Null()..contactId = 42);
+          /// TODO (TL): Create a real calendar entry, with date/time fields set.
+          render(new Model.ContactCalendarEntry(42, 2));
         }
         break;
       case Widget.ReceptionCalendar:
         if(cmd == Cmd.EDIT) {
           _ui.headerExtra = '(ret/slet)';
-          render(_receptionCalendar.selectedCalendarEvent);
+          render(_receptionCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
-          /// TODO (TL): Create a real calendar event, with date/time fields set.
-          render(new CalendarEvent.Null()..receptionId = 42);
+          /// TODO (TL): Create a real calendar entry, with date/time fields set.
+          render(new Model.ReceptionCalendarEntry(42));
         }
         break;
       default:

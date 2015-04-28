@@ -2,7 +2,7 @@
 pubspec.lock
 
 # Don't track local config file.
-web/config/configuration_url.dart
+web/configuration_url.dart
 
 # Don't track .settings and .buildlog
 .settings

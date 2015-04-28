@@ -35,7 +35,7 @@ class UIReceptionSelector extends UIModel {
    * TODO (TL): Comment
    */
   void _arrowSelectCallback(LIElement li) {
-    _bus.fire(new Reception.fromJson(JSON.decode(li.dataset['object'])));
+    _bus.fire(new Reception.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
@@ -123,7 +123,7 @@ class UIReceptionSelector extends UIModel {
     _filter.value = '';
     filter('');
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
-    _bus.fire(new Reception.Null());
+    _bus.fire(new Reception.none());
   }
 
   /**

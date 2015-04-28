@@ -12,11 +12,11 @@
 */
 part of model;
 
-class ReceptionCalendarEntry extends ORModel.CalendarEntry{
-
-  static int get noID => ORModel.CalendarEntry.noID;
+class ReceptionCalendarEntry extends CalendarEntry{
 
   ReceptionCalendarEntry.fromMap(Map map) : super.fromMap(map);
+
+  ReceptionCalendarEntry.empty() : super.empty();
 
   ReceptionCalendarEntry (int receptionID) :
     super.forReception(receptionID);

@@ -45,12 +45,13 @@ class ReceptionType extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(Reception reception) {
-    if(reception.isNull) {
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = 'for ${reception.name}';
-      _ui.type = reception.type;
+      //TODO: reception.customertype should be List<String>.
+      _ui.type = [reception.customertype];
     }
   }
 }

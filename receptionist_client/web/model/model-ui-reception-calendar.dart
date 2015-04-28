@@ -27,10 +27,10 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Add [items] to the entry list.
    */
-  set calendarEntries(List<CalendarEvent> items) {
+  set calendarEntries(Iterable<ReceptionCalendarEntry> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((CalendarEvent item) {
+    items.forEach((ReceptionCalendarEntry item) {
       list.add(new LIElement()
                 ..text = item.content
                 ..dataset['object'] = JSON.encode(item));
@@ -48,16 +48,16 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Return currently selected [CalendarEvent]. Return [CalendarEvent.Null]
-   * if nothing is selected.
+   * Return currently selected [ReceptionCalendarEntry].
+   * Return [ReceptionCalendarEntry.empty] if nothing is selected.
    */
-  CalendarEvent get selectedCalendarEvent {
+  ReceptionCalendarEntry get selectedCalendarEntry {
     final LIElement selected = _list.querySelector('.selected');
 
     if(selected != null) {
-      return new CalendarEvent.fromJson(JSON.decode(selected.dataset['object']));
+      return new ReceptionCalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
     } else {
-      return new CalendarEvent.Null();
+      return new ReceptionCalendarEntry.empty();
     }
   }
 
@@ -70,27 +70,27 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Fires when a [CalendarEvent] edit is requested from somewhere.
+   * Fires when a [ReceptionCalendarEntry] edit is requested from somewhere.
    */
   Stream<KeyboardEvent> get onEdit => _busEdit.stream;
 
   /**
-   * Fires when a [CalendarEvent] new is requested from somewhere.
+   * Fires when a [ReceptionCalendarEntry] new is requested from somewhere.
    */
   Stream<KeyboardEvent> get onNew => _busNew.stream;
 
   /**
-   * Select the first [CalendarEvent] in the list.
+   * Select the first [ReceptionCalendarEntry] in the list.
    */
-  void selectFirstCalendarEvent() {
+  void selectFirstCalendarEntry() {
     if(_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
 
   /**
-   * Mark a [LIElement] in the event list selected, if one such is the target
-   * of the [event].
+   * Mark a [LIElement] in the calendar entry list selected, if one such is the
+   * target of the [event].
    */
   void _selectFromClick(MouseEvent event) {
     if(event.target is LIElement) {

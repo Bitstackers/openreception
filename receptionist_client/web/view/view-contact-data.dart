@@ -37,8 +37,8 @@ class ContactData extends ViewWidget {
   /**
    * Clear the widget on null [Reception].
    */
-  void clear(Reception reception) {
-    if(reception.isNull) {
+  void clear(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     }
   }
@@ -71,13 +71,13 @@ class ContactData extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void render(Contact contact) {
-    if(contact.isNull) {
+  void render(Model.Contact contact) {
+    if(contact.isEmpty) {
       _ui.clear();
     } else {
       _ui.clear();
 
-      _ui.headerExtra = 'for ${contact.name}';
+      _ui.headerExtra = 'for ${contact.fullName}';
 
       _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
       _ui.backups = ['backup 1', 'backup 2'];
@@ -86,10 +86,10 @@ class ContactData extends ViewWidget {
       _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
       _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
       _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
-      _ui.telephoneNumbers = [new TelNum(1, '45454545', 'some number', false),
-                              new TelNum(2, '23456768', 'secret stuff', true),
-                              new TelNum(3, '60431992', 'personal cell', false),
-                              new TelNum(4, '60431993', 'wife cell', false)];
+      _ui.telephoneNumbers = [new TelNum('45454545', 'some number', false),
+                              new TelNum('23456768', 'secret stuff', true),
+                              new TelNum('60431992', 'personal cell', false),
+                              new TelNum('60431993', 'wife cell', false)];
       _ui.titles = ['Nørd', 'Tekniker'];
       _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
 

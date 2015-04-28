@@ -48,8 +48,8 @@ class ReceptionProduct extends ViewWidget {
   /**
    * Render the widget [reception].
    */
-  void render(Reception reception) {
-    if(reception.isNull) {
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = 'for ${reception.name}';

@@ -15,7 +15,6 @@ library service;
 
 import 'dart:async';
 
-import '../config/configuration.dart';
 import '../model/model.dart' as Model;
 
 import 'package:logging/logging.dart';
@@ -33,6 +32,5 @@ part 'service-contact.dart';
 part 'service-message.dart';
 part 'service-notification.dart';
 part 'service-peer.dart';
-part 'service-reception.dart';
 
 const String libraryName = "Service";

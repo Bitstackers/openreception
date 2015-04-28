@@ -7,13 +7,15 @@ class ReceptionCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCalendar _ui;
+  final Controller.Reception      _receptionController;
 
   /**
    * Constructor.
    */
   ReceptionCalendar(Model.UIModel this._ui,
                     Controller.Destination this._myDestination,
-                    Model.UIReceptionSelector this._receptionSelector) {
+                    Model.UIReceptionSelector this._receptionSelector,
+                    Controller.Reception this._receptionController) {
     _ui.setHint('alt+a');
     observers();
   }
@@ -50,18 +52,21 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(Reception reception) {
-    if(reception.isNull) {
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = 'for ${reception.name}';
-      _ui.calendarEntries =
-          [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${reception.name})'}),
-           new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${reception.name})'}),
-           new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${reception.name})'}),
-           new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${reception.name})'})];
 
-      _ui.selectFirstCalendarEvent();
+      _receptionController.calendar(reception)
+        .then ((Iterable<Model.ReceptionCalendarEntry> entries) {
+          Iterable<Model.ReceptionCalendarEntry> sortedEntries = entries.toList()
+            ..sort((x,y) => x.startTime.isBefore(y.startTime));
+
+          _ui.calendarEntries = sortedEntries;
+      });
+
+      _ui.selectFirstCalendarEntry();
     }
   }
 }

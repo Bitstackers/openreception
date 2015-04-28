@@ -8,6 +8,8 @@ class AgentInfo extends ViewWidget {
 
   /**
    * Constructor.
+   * TODO: Add Model.User as parameter. (For portrait)
+   * Add Iterable<UserStatus> as parameter for extraction of global user state.
    */
   AgentInfo(Model.UIModel this._ui) {
     _ui.activeCount = 0;
@@ -34,5 +36,8 @@ class AgentInfo extends ViewWidget {
     ///   _ui.agentState = agent state
     ///   _ui.alertState = alert state
     ///   _ui.pausedCount = paused count
+    ///   Listen on Notification socket UserStatus events and update DOM
+    ///   accordingly
+    ///
   }
 }

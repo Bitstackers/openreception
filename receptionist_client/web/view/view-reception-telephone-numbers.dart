@@ -45,12 +45,13 @@ class ReceptionTelephoneNumbers extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(Reception reception) {
-    if(reception.isNull) {
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = 'for ${reception.name}';
-      _ui.telephoneNumbers = reception.telephoneNumbers;
+      _ui.telephoneNumbers = reception.telephonenumbers.map((String number) =>
+          new TelNum(number, 'stuff', false)).toList();
     }
   }
 }

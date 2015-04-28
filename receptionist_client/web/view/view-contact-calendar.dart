@@ -8,6 +8,7 @@ class ContactCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactCalendar   _ui;
+  final Controller.Contact        _contactController;
 
   /**
    * Constructor.
@@ -15,7 +16,8 @@ class ContactCalendar extends ViewWidget {
   ContactCalendar(Model.UIModel this._ui,
                   Controller.Destination this._myDestination,
                   Model.UIContactSelector this._contactSelector,
-                  Model.UIReceptionSelector this._receptionSelector) {
+                  Model.UIReceptionSelector this._receptionSelector,
+                  Controller.Contact this._contactController) {
     _ui.setHint('alt+k');
     _observers();
   }
@@ -36,8 +38,8 @@ class ContactCalendar extends ViewWidget {
   /**
    * Empty the [CalendarEvent] list on null [Reception].
    */
-  void clear(Reception reception) {
-    if(reception.isNull) {
+  void clear(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     }
   }
@@ -62,19 +64,22 @@ class ContactCalendar extends ViewWidget {
   /**
    * Render the widget with [contact].
    */
-  void render(Contact contact) {
-    if(contact.isNull) {
+  void render(Model.Contact contact) {
+    if(contact.isEmpty) {
       _ui.clear();
     } else {
-      _ui.headerExtra = 'for ${contact.name}';
+      _ui.headerExtra = 'for ${contact.fullName}';
 
-      _ui.calendarEvents =
-          [new CalendarEvent.fromJson({'id': 1, 'contactId': 1, 'receptionId': 1, 'content': 'First entry (${contact.name})'}),
-           new CalendarEvent.fromJson({'id': 2, 'contactId': 1, 'receptionId': 1, 'content': 'Second entry (${contact.name})'}),
-           new CalendarEvent.fromJson({'id': 3, 'contactId': 1, 'receptionId': 1, 'content': 'Third entry (${contact.name})'}),
-           new CalendarEvent.fromJson({'id': 4, 'contactId': 1, 'receptionId': 1, 'content': 'Fourth entry (${contact.name})'})];
+      this._contactController.getCalendar(contact)
+        .then((Iterable<Model.ContactCalendarEntry> entries) {
 
-      _ui.selectFirstCalendarEvent();
+        Iterable<Model.ContactCalendarEntry> sortedEntries = entries.toList()
+          ..sort((x,y) => x.startTime.compareTo(y.startTime));
+
+        _ui.calendarEntries = sortedEntries;
+      });
+
+      _ui.selectFirstCalendarEntry();
     }
   }
 }

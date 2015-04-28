@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
+import '../service/service.dart' as Service;
+
 import '../dummies.dart';
 import '../enums.dart';
 
@@ -12,8 +14,17 @@ import 'package:markdown/markdown.dart' as Markdown;
 import 'package:okeyee/okeyee.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'model-app-state.dart';
+part 'model-call.dart';
+part 'model-contact.dart';
+part 'model-contact-calendar.dart';
+part 'model-calendar-entry.dart';
+part 'model-reception.dart';
+part 'model-reception-calendar.dart';
+part 'model-user.dart';
+part 'model-user-status.dart';
 
 part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';

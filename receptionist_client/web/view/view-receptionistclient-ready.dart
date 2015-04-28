@@ -36,14 +36,18 @@ class ReceptionistclientReady {
   static ReceptionistclientReady        _singleton;
   WelcomeMessage                        welcomeMessage;
   final Model.UIReceptionistclientReady _ui;
-
+  final Controller.Contact              _contactController;
+  final Controller.Reception            _receptionController;
   /**
    * Constructor.
    */
   factory ReceptionistclientReady(Model.AppClientState appState,
-                                  Model.UIReceptionistclientReady uiReady) {
+                                  Model.UIReceptionistclientReady uiReady,
+                                  Controller.Contact _contactController,
+                                  Controller.Reception _receptionController) {
     if(_singleton == null) {
-      _singleton = new ReceptionistclientReady._internal(appState, uiReady);
+      _singleton = new ReceptionistclientReady._internal
+          (appState, uiReady, _contactController, _receptionController);
     } else {
       return _singleton;
     }
@@ -53,7 +57,9 @@ class ReceptionistclientReady {
    * Internal constructor.
    */
   ReceptionistclientReady._internal(Model.AppClientState this._appState,
-                                    Model.UIReceptionistclientReady this._ui) {
+                                    Model.UIReceptionistclientReady this._ui,
+                                    this._contactController,
+                                    this._receptionController) {
     _observers();
   }
 
@@ -83,7 +89,8 @@ class ReceptionistclientReady {
         (uiContactCalendar,
          new Controller.Destination(Context.Home, Widget.ContactCalendar),
          uiContactSelector,
-         uiReceptionSelector);
+         uiReceptionSelector,
+         _contactController);
 
     contactData = new ContactData
         (new Model.UIContactData(querySelector('#contact-data')),
@@ -100,7 +107,8 @@ class ReceptionistclientReady {
     contactSelector = new ContactSelector
         (uiContactSelector,
          new Controller.Destination(Context.Home, Widget.ContactSelector),
-         uiReceptionSelector);
+         uiReceptionSelector,
+         _contactController);
 
     globalCallQueue = new GlobalCallQueue
         (new Model.UIGlobalCallQueue(querySelector('#global-call-queue')),
@@ -144,7 +152,8 @@ class ReceptionistclientReady {
     receptionCalendar = new ReceptionCalendar
         (uiReceptionCalendar,
          new Controller.Destination(Context.Home, Widget.ReceptionCalendar),
-         uiReceptionSelector);
+         uiReceptionSelector,
+         this._receptionController);
 
     receptionCommands = new ReceptionCommands
         (new Model.UIReceptionCommands(querySelector('#reception-commands')),
@@ -177,8 +186,9 @@ class ReceptionistclientReady {
          uiReceptionSelector);
 
     receptionSelector = new ReceptionSelector
-        (uiReceptionSelector,
-         new Controller.Destination(Context.Home, Widget.ReceptionSelector));
+        (new Controller.Destination(Context.Home, Widget.ReceptionSelector),
+         uiReceptionSelector,
+         _receptionController);
 
     receptionTelephoneNumbers = new ReceptionTelephoneNumbers
         (new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),

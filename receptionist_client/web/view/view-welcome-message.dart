@@ -31,11 +31,11 @@ class WelcomeMessage extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(Reception reception) {
-    if(reception.isNull) {
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
       _ui.clear();
     } else {
-      _ui.greeting = 'Velkommen til ${reception.name}';
+      _ui.greeting = reception.greeting;
     }
   }
 }

@@ -44,14 +44,15 @@ class UICalendarEditor extends UIModel {
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
 
   /**
-   * Populate the calendar editor fields with [calendarEvent].  Note if the
-   * [calendarEvent] is a null event, then the widget renders with its default
+   * Populate the calendar editor fields with [calendarEntry].  Note if the
+   * [calendarEntry] is a empty entry, then the widget renders with its default
    * values.
    */
-  set calendarEvent(CalendarEvent calendarEvent) {
-    /// TODO (TL): Add the actual calendar event data to the widget.
-    /// Distinguish between null events and actual events.
-    _textArea.text = calendarEvent.toJson().toString();
+  set calendarEntry(ORModel.CalendarEntry calendarEntry) {
+    /// TODO (TL): Add the actual calendar entry data to the widget.
+    /// Distinguish between empty entry and actual entry.
+    /// Add switch case on calendarEntry type (ContactCalendarEntry/ReceptionCalendarEntry)
+    _textArea.text = calendarEntry.content;
   }
 
   /**

@@ -16,19 +16,12 @@ class Notification {
 
   Logger log = new Logger('$libraryName.Notification');
 
-  static Notification _instance;
-
-  static Notification get instance {
-    if (_instance == null) {
-      _instance = new Notification();
-    }
-
-    return _instance;
-  }
 
   ORService.NotificationSocket _socket = null;
-  ORService.WebSocket _webSocket;
-  Completer _connected = new Completer();
+
+  Notification (this._socket) {
+    _socket.eventStream.listen(_dispatch);
+  }
 
   /// Contact calendar entry create
   Bus<Model.Call> _callStateChange = new Bus<Model.Call>();
@@ -70,29 +63,6 @@ class Notification {
       new Bus<Model.ReceptionCalendarEntry>();
   Stream<Model.ReceptionCalendarEntry> get onReceptionCalendarEventDelete =>
       _onReceptionCalendarEventDelete.stream;
-
-  Notification() {
-    if (_socket == null) {
-      _webSocket = new ORServiceHTML.WebSocketClient()
-        ..onClose = (closeEvent) => log.info('Closed websocket: $closeEvent');
-
-      Uri uri = Uri.parse('${configuration.notificationSocketInterface}'
-                          '?token=${configuration.token}');
-
-      _webSocket.connect(uri).then((_) => this._connected.complete());
-      _socket = new ORService.NotificationSocket (_webSocket);
-
-      _socket.eventStream.listen(_dispatch);
-    };
-  }
-
-  Future connected() {
-    if (this._connected.isCompleted) {
-      return new Future.value(null);
-    }
-
-    return _connected.future;
-  }
 
   void _dispatch (OREvent.Event event) {
     if (event is OREvent.CallEvent) {

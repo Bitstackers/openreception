@@ -70,15 +70,15 @@ class Call {
   /**
    * Updates userState associated with userID to Idle state.
    */
-  Future<Model.UserStatus> markUserStateIdle(int userID) =>
-      _service.userStateIdleMap(userID)
+  Future<Model.UserStatus> markUserStateIdle(Model.User user) =>
+      _service.userStateIdleMap(user.ID)
         .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Updates userState associated with userID to Paused state.
    */
-  Future<Model.UserStatus> markUserStatePaused(int userID) =>
-      _service.userStatePausedMap(userID)
+  Future<Model.UserStatus> markUserStatePaused(Model.User user) =>
+      _service.userStatePausedMap(user.ID)
         .then((Map map) => new Model.UserStatus.fromMap(map));
 
   Future originate
