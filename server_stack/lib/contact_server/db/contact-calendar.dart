@@ -158,8 +158,7 @@ LIMIT 1;
     });
   }
 
-  //TODO: Convert to objects.
-  static Future<List<Map>> list(int receptionId, int contactId) {
+  static Future<Iterable<Model.CalendarEntry>> list(int receptionId, int contactId) {
     String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal join contact_calendar con on cal.id = con.event_id
@@ -169,19 +168,16 @@ LIMIT 1;
                       'contactid'   : contactId};
 
     return connection.query(sql, parameters).then((rows) {
-      List events = new List();
-      for(var row in rows) {
-        Map event =
+      return (rows as List).map((row) {
+        Map map =
           {'id'      : row.id,
            'start'   : Util.dateTimeToUnixTimestamp(row.start),
            'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
            'contact_id' : contactId,
            'reception_id' : receptionId,
            'content' : row.message};
-        events.add(event);
-      }
-
-      return events;
+        return new Model.CalendarEntry.fromMap(map);
+      });
     });
   }
 }

@@ -163,8 +163,8 @@ abstract class ContactCalendar {
 
     Contact.exists (contactID : contactID, receptionID : receptionID).then((bool exists) {
       if(exists) {
-        return db.ContactCalendar.list(receptionID, contactID).then((List<Map> value) {
-          writeAndClose(request, JSON.encode(value));
+        return db.ContactCalendar.list(receptionID, contactID).then((Iterable<Model.CalendarEntry> entries) {
+          writeAndClose(request, JSON.encode(entries.toList()));
         });
       } else {
         notFound(request, {'description' : 'no such contact ${contactID}@${receptionID}'});
