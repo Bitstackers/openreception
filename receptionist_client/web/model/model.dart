@@ -10,7 +10,10 @@ import '../enums.dart';
 
 import 'package:markdown/markdown.dart' as Markdown;
 import 'package:okeyee/okeyee.dart';
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
+
+part 'model-app-state.dart';
 
 part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';
@@ -48,6 +51,7 @@ part 'model-ui-welcome-message.dart';
 typedef selectCallback(LIElement li);
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
+const libraryName = 'model';
 
 /**
  * TODO (TL): Comment

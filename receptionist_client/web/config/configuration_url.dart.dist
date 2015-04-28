@@ -13,5 +13,5 @@
 
 part of configuration;
 
-const String CONFIGURATION_URL = 'http://localhost:4080/configuration';
+const String CONFIGURATION_URL = 'http://localhost:4080/';
 

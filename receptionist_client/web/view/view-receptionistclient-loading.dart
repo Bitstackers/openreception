@@ -4,14 +4,14 @@ part of view;
  * TODO (TL): Comment
  */
 class ReceptionistclientLoading {
-  final  AppClientState                    _appState;
+  final  Model.AppClientState                    _appState;
   static ReceptionistclientLoading         _singleton;
   final  Model.UIReceptionistclientLoading _ui;
 
   /**
    * Constructor.
    */
-  factory ReceptionistclientLoading(AppClientState appState,
+  factory ReceptionistclientLoading(Model.AppClientState appState,
                                     Model.UIReceptionistclientLoading uiLoading) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientLoading._internal(appState, uiLoading);
@@ -23,7 +23,7 @@ class ReceptionistclientLoading {
   /**
    * Internal constructor.
    */
-  ReceptionistclientLoading._internal(AppClientState this._appState,
+  ReceptionistclientLoading._internal(Model.AppClientState this._appState,
                                       Model.UIReceptionistclientLoading this._ui) {
     _observers();
   }
@@ -32,7 +32,7 @@ class ReceptionistclientLoading {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((AppState appState) =>
-        appState == AppState.LOADING ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((Model.AppState appState) =>
+        appState == Model.AppState.LOADING ? _ui.visible = true : _ui.visible = false);
   }
 }

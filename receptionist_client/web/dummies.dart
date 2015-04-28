@@ -1,27 +1,13 @@
 library dummies;
 
+
 import 'dart:async';
 import 'dart:html';
 
 import 'enums.dart';
 
 import 'package:openreception_framework/bus.dart';
-
-/**
- * Dummy application state class
- */
-class AppClientState {
-  static final AppClientState _singleton = new AppClientState._internal();
-  factory AppClientState() => _singleton;
-
-  Bus<AppState> _bus = new Bus<AppState>();
-
-  AppClientState._internal();
-
-  Stream<AppState> get onStateChange => _bus.stream;
-
-  set state(AppState state) => _bus.fire(state);
-}
+import 'package:logging/logging.dart';
 
 /**
  * Dummy calendar event class

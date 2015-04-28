@@ -26,13 +26,24 @@ class AppClientState {
 
     this.changeState(AppState.LOADING);
 
-    return Future.wait(requiredComponents)
+    return Future.forEach(requiredComponents, waitForCompletion)
       .then((_) => this.changeState(AppState.READY))
-      .catchError((_) => this.changeState(AppState.ERROR));
+      .catchError((error, stackTrace) {
+        log.severe('Failed to load required component.');
+        this.addError(error, stackTrace);
+
+        return new Future.error(error, stackTrace);
+      });
   }
 
   void changeState(AppState newState) {
     this._stateChange.fire(newState);
+  }
+
+  Future waitForCompletion(Future f) {
+    print (f);
+
+    return f;
   }
 
 }

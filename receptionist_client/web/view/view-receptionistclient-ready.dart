@@ -4,7 +4,7 @@ part of view;
  * TODO (TL): Comment
  */
 class ReceptionistclientReady {
-  final AppClientState                  _appState;
+  final Model.AppClientState                  _appState;
   AgentInfo                             agentInfo;
   CalendarEditor                        calendarEditor;
   ContactCalendar                       contactCalendar;
@@ -40,7 +40,7 @@ class ReceptionistclientReady {
   /**
    * Constructor.
    */
-  factory ReceptionistclientReady(AppClientState appState,
+  factory ReceptionistclientReady(Model.AppClientState appState,
                                   Model.UIReceptionistclientReady uiReady) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState, uiReady);
@@ -52,7 +52,7 @@ class ReceptionistclientReady {
   /**
    * Internal constructor.
    */
-  ReceptionistclientReady._internal(AppClientState this._appState,
+  ReceptionistclientReady._internal(Model.AppClientState this._appState,
                                     Model.UIReceptionistclientReady this._ui) {
     _observers();
   }
@@ -61,8 +61,8 @@ class ReceptionistclientReady {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((AppState appState) =>
-        appState == AppState.READY ? _runApp() : _ui.visible = false);
+    _appState.onStateChange.listen((Model.AppState appState) =>
+        appState == Model.AppState.READY ? _runApp() : _ui.visible = false);
   }
 
   /**

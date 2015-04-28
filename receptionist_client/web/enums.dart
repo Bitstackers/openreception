@@ -8,10 +8,6 @@ enum AgentState {BUSY,
 enum AlertState {OFF,
                  ON}
 
-enum AppState {LOADING,
-               ERROR,
-               READY}
-
 enum Cmd {EDIT,
           NEW,
           SAVE}
