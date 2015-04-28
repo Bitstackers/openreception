@@ -250,7 +250,7 @@ abstract class Call {
             serverErrorTrace(request, error, stackTrace: stackTrace));
   }
 
-  static void originateViaPark(HttpRequest request) {
+  static Future originateViaPark(HttpRequest request) {
 
     final int receptionID = pathParameter(request.uri, 'reception');
     final int contactID = pathParameter(request.uri, 'contact');
@@ -266,15 +266,15 @@ abstract class Call {
     bool validExtension(String extension) =>
         extension != null && extension.length > 1;
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(token).then((ORModel.User user) {
       if (!aclCheck(user)) {
         forbidden(request, 'Insufficient privileges.');
-        return;
+        return new Future.value(null);
       }
 
       if (!validExtension(extension)) {
         clientError(request, 'Invalid extension: $extension');
-        return;
+        return new Future.value(null);
       }
 
 
@@ -284,7 +284,7 @@ abstract class Call {
       Future parkIt (Model.Call call) => call.park(user);
 
       /// Park all the users calls.
-      Future.forEach
+      return Future.forEach
         (Model.CallList.instance.callsOf(user.ID).where(isSpeaking), parkIt)
         .whenComplete(() {
 
@@ -302,7 +302,7 @@ abstract class Call {
           clientError(
               request,
               'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
-          return;
+          return new Future.value(null);
         }
 
         /// Update the user state
@@ -310,7 +310,7 @@ abstract class Call {
             user.ID,
             ORModel.UserState.Dialing);
 
-        Controller.PBX.createAgentChannel(extension, user)
+        return Controller.PBX.createAgentChannel(extension, user)
           .then((String uuid) {
           bool outboundCallWithUuid (ESL.Event event) {
             return event.eventName == 'CHANNEL_ORIGINATE' &&
@@ -325,7 +325,7 @@ abstract class Call {
           outboundCall.timeout(new Duration (seconds : 10));
 
           /// Perform the origination via the PBX.
-          Controller.PBX.transferUUIDToExtension(uuid, extension, user)
+          return Controller.PBX.transferUUIDToExtension(uuid, extension, user)
             .then((_) {
               /// Update the user state
               Model.UserStatusList.instance.update(
