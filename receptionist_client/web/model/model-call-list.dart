@@ -23,22 +23,18 @@ class CallNotFound extends StateError {
 
 class CallList extends IterableBase<Call> {
 
-  static const String className = "${libraryName}.CallList";
+  Logger log  = new Logger('${libraryName}.CallList');
 
-  static final EventType<CallList> reload = new EventType<CallList>();
-  static final EventType<Call>     insert = new EventType<Call>();
-  static final EventType<Call>     delete = new EventType<Call>();
+  Bus<CallList> _reload = new Bus<CallList>();
+  Stream<CallList> get onReload => _reload.stream;
 
-  /// Local event stream.
-  EventBus _eventStream = new EventBus();
-  EventBus get events => _eventStream;
+  Bus<Call> _insert = new Bus<Call>();
+  Stream<Call> get onInsert => _insert.stream;
 
-  /// Singleton instance - for quick and easy reference.
-  static CallList _instance = new CallList();
-  static CallList get instance => _instance;
-  static set instance(CallList newList) => _instance = newList;
+  Bus<Call> _remove = new Bus<Call>();
+  Stream<Call> get onRemove => _remove.stream;
 
-  /// A set would have been a better fit here, but it makes the code read terrible.
+  /// Internal call storage.
   Map<String, Call> _map = new Map<String, Call>();
 
   /**
@@ -49,120 +45,80 @@ class CallList extends IterableBase<Call> {
   /**
    *
    */
-  Iterable<Call> get queuedCalls =>
+  Iterable<Call> get pendingCalls =>
       this.where ((Call call) =>
-          [User.currentUser.ID, ORModel.User.nullID].contains(call.assignedAgent));
+          [User.currentUser.ID, ORModel.User.nullID].contains(call.assignedTo));
 
   /**
    *
    */
   Iterable<Call> get ownedCalls =>
       this.where ((Call call) =>
-          [User.currentUser.ID].contains(call.assignedAgent));
+          [User.currentUser.ID].contains(call.assignedTo));
 
   /**
    *
    */
   Iterable<Call> get parkedCalls =>
-      this.ownedCalls.where ((Call call) => call.state == CallState.PARKED);
+      this.ownedCalls.where
+        ((Call call) => call.currentState == CallState.PARKED);
 
   /**
-   * Return the first parked [Call] or [nullCall] if there are no parked calls.
+   * Return the first parked [Call] or [noCall] if there are no parked calls.
    */
   Call get firstParkedCall {
     try {
       return parkedCalls.first;
     } catch(_) {
-      return nullCall;
+      return noCall;
     }
   }
 
   /**
    * Default [CallList] constructor.
    */
-  CallList() {
-    this._registerObservers();
-  }
-
-  /**
-   * [CallList] constructor. Builds a list of [Call] objects from the
-   * contents of json[key].
-   */
-  factory CallList.fromJson(Map json, String key) {
-    const String context = '${className}.CallList.fromJson';
-
-    CallList callList = new CallList();
-
-    if (json.containsKey(key) && json[key] is List) {
-      log.debug('model.CallList.fromJson key: ${key} list: ${json[key]}');
-      callList = new CallList._fromList(json[key]);
-    } else {
-      log.criticalContext('model.CallList.fromJson bad data key: ${key} map: ${json}', context);
-    }
-
-    return callList;
+  CallList(Service.Notification notification) {
+    this._registerObservers(notification);
   }
 
   /**
    * Registers the internal observers.
    */
-  void _registerObservers() {
-    event.bus.on(Service.EventSocket.callPickup).listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callPark)  .listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callHangup).listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callState) .listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callLock)  .listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(Service.EventSocket.callUnlock).listen((Map map) {this.update(new Call.fromMap(map['call']));});
-    event.bus.on(event.callCreated).listen(this.add);
-    event.bus.on(event.callDestroyed).listen(this.remove);
+  void _registerObservers(Service.Notification notification) {
+    log.finest('Registering observers.');
+    notification.onAnyCallStateChange.listen((this.update));
   }
 
   /**
    * [CallList] Constructor.
    */
-  CallList._fromList(List<Map> list) {
-    const String context = '${className}.CallList._fromList';
-
+  void replaceAll(Iterable<Call> calls) {
     this._map.clear();
 
-    list.forEach((item){
-      Call newCall = new Call.fromMap(item);
+    calls.forEach((Call call) {
+      this._map[call.ID] = call;
+        /// Look for the currently active call - if any.
+        this.forEach((Call call) {
+          if (call.assignedTo == User.currentUser.ID &&
+              call.state == CallState.SPEAKING) {
 
-      if (newCall.isCall) {
-      _map[newCall.ID] = newCall;
-      }
+            log.info("Found an already active call.");
+            Call.activeCall = call;
+          }
+        });
     });
 
-    log.debugContext('Populated list with ${list.length} elements.', context);
+    log.info('Reloaded call list with ${calls.length} elements.');
+    this._reload.fire(this);
   }
 
   /**
    * Reloads the Call list from the server.
    */
-  Future<CallList> reloadFromServer() {
+  Future<CallList> reloadFromServer(Service.Call callService) {
 
-    const String context = '${className}.reloadFromServer';
-
-    return Service.Call.list().then((CallList callList) {
-      this._map = callList._map;
-
-      /* Notify observers.*/
-      this._eventStream.fire(CallList.reload, this);
-
-      /// Look for the currently active call - if any.
-      this.forEach((Call call) {
-        if (call.assignedAgent != ORModel.User.nullID &&
-            call.assignedAgent == User.currentUser.ID &&
-            call.state == CallState.SPEAKING) {
-
-          log.debugContext("Found an already active call.", context);
-          Call.currentCall = call;
-
-          storage.Reception.get(call.receptionId).then((Reception reception) {
-            Reception.selectedReception = reception;
-          });
-        }
-      });
+    return callService.listCalls().then((Iterable<Call> calls) {
+      this.replaceAll(calls);
 
       return this;
     });
@@ -171,43 +127,41 @@ class CallList extends IterableBase<Call> {
   /**
    * Updates the [Call] in the list with the values from the supplied object.
    */
-  void update (Call call) {
-    const String context = '${className}.update';
-    log.debugContext('Updating call ${call.ID}', context);
+  void update (ORModel.Call call) {
+    log.finest('Updating call ${call}');
     try {
       if (!this._map.containsKey(call.ID)) {
-        this._map[call.ID] = call;
-      } else {
+        this.add(call);
+      }
         this._map[call.ID].update(call);
       }
-    }
+
     catch (error, stacktrace) {
-      log.errorContext('Failed to Update call ${call}, stacktrace ${stacktrace}', context);
+      log.severe('Failed to Update call ${call}');
+      log.severe(error, stacktrace);
     }
+
+    if (this._map[call.ID].currentState == CallState.HUNGUP) {
+      this.remove(call);
+    }
+
   }
 
   /**
    * Appends [call] to the list.
    */
   void add(Call call) {
-    const String context = '${className}.add';
+    this._map[call.ID] = call;
+    this._insert.fire(call);
 
-    if (!this._map.containsKey(call.ID)) {
-      this._map[call.ID] = call;
-
-      /* Notify observers.*/
-      this._eventStream.fire(CallList.insert, call);
-
-      log.debugContext('Added ${call}', context);
+    log.finest('Added ${call}');
     }
-  }
 
   /**
-   * Return the [id] [Call] or [nullCall] if [id] does not exist.
+   * Return the [id] [Call] or [noCall] if [id] does not exist.
    */
   Call get(String ID) {
     try {
-
       return this._map[ID];
     } catch (_) {
       throw new CallNotFound('ID: ${ID}');
@@ -218,18 +172,15 @@ class CallList extends IterableBase<Call> {
    * Removes [call] from the list.
    */
   void remove(Call call) {
-    const String context = '${className}.remove';
-
     try {
       this._map.remove(call);
 
     } catch (_) {
-      log.errorContext('Call ${call.ID} not found in list', context);
+      log.severe('Call ${call} not found in list - so cannot remove');
       throw new CallNotFound('ID: ${call.ID}');
     }
 
     /* Notify observers.*/
-    this._eventStream.fire(CallList.delete, call);
-
+    this._remove.fire(call);
   }
 }

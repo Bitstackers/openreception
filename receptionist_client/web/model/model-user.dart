@@ -21,13 +21,19 @@ abstract class UserConstants {
 /**
  * TODO: Write up documentation for this class and refer to wiki page.
  */
-abstract class User extends ORModel.User {
+class User extends ORModel.User {
+
+  Bus _idle = new Bus();
+  Stream get onIdle => this._idle.stream;
+
+  Bus _pause = new Bus();
+  Stream get onPause => this._pause.stream;
 
   static final className = '${libraryName}.User';
+  static final int noID = ORModel.User.nullID;
 
   /* Singleton representing the current user. */
-  static ORModel.User _currentUser = null;
-  //static User _currentUser = ORModel.User.noUser;
+  static User _currentUser = null;
 
   Map identityMap () {
     return {UserConstants.ID : this.ID, UserConstants.NAME : this.name};
@@ -40,7 +46,9 @@ abstract class User extends ORModel.User {
   static              set currentUser (ORModel.User newUser) => _currentUser = newUser;
 
   /**
-   * Null object constructor.
+   * Object constructor.
    */
-  User._null() : super.fromMap({});
+  User.fromMap(Map map) : super.fromMap(map);
+
+  User.fromORModel(ORModel.User user) : this.fromMap (user.toJson());
 }

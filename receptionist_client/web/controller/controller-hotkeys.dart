@@ -1,66 +1,101 @@
 part of controller;
 
+/**
+ * TODO (TL): Comment
+ */
 class HotKeys {
   static final HotKeys _singleton = new HotKeys._internal();
   factory HotKeys() => _singleton;
 
-  Bus<KeyboardEvent> _CtrlAltEnter  = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlAltP      = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlBackspace = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlE         = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlK         = new Bus<KeyboardEvent>();
-  Bus<KeyboardEvent> _CtrlS         = new Bus<KeyboardEvent>();
-  Keyboard           _keyDown       = new Keyboard();
+  final Keyboard _keyDown = new Keyboard();
 
-  Stream<KeyboardEvent> get onCtrlAltEnter  => _CtrlAltEnter.stream;
-  Stream<KeyboardEvent> get onCtrlAltP      => _CtrlAltP.stream;
-  Stream<KeyboardEvent> get onCtrlBackspace => _CtrlBackspace.stream;
-  Stream<KeyboardEvent> get onCtrlE         => _CtrlE.stream;
-  Stream<KeyboardEvent> get onCtrlK         => _CtrlK.stream;
-  Stream<KeyboardEvent> get onCtrlS         => _CtrlS.stream;
+  final Bus<KeyboardEvent> _altA     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altB     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altC     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altE     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altF     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altH     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altI     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altK     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altM     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altQ     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altS     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altT     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altV     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altW     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _altX     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _f1       = new Bus<KeyboardEvent>();
 
+  Stream<KeyboardEvent> get onAltA     => _altA.stream;
+  Stream<KeyboardEvent> get onAltB     => _altB.stream;
+  Stream<KeyboardEvent> get onAltC     => _altC.stream;
+  Stream<KeyboardEvent> get onAltE     => _altE.stream;
+  Stream<KeyboardEvent> get onAltF     => _altF.stream;
+  Stream<KeyboardEvent> get onAltH     => _altH.stream;
+  Stream<KeyboardEvent> get onAltI     => _altI.stream;
+  Stream<KeyboardEvent> get onAltK     => _altK.stream;
+  Stream<KeyboardEvent> get onAltM     => _altM.stream;
+  Stream<KeyboardEvent> get onAltQ     => _altQ.stream;
+  Stream<KeyboardEvent> get onAltS     => _altS.stream;
+  Stream<KeyboardEvent> get onAltT     => _altT.stream;
+  Stream<KeyboardEvent> get onAltV     => _altV.stream;
+  Stream<KeyboardEvent> get onAltW     => _altW.stream;
+  Stream<KeyboardEvent> get onAltX     => _altX.stream;
+  Stream<KeyboardEvent> get onF1       => _f1.stream;
+
+  /**
+   * Internal constructor.
+   */
   HotKeys._internal() {
     window.document.onKeyDown.listen(_keyDown.press);
 
-    Map<String, EventListener> keyDownBindings =
-      {'Alt+g'          : _AltG,
-       'Alt+l'          : _AltL,
-       'Alt+o'          : _AltO,
-       'Alt+p'          : _AltP,
-       'Alt+u'          : _AltU,
-       'Ctrl+Alt+Enter' : _CtrlAltEnter.fire,
-       'Ctrl+Alt+p'     : _CtrlAltP.fire,
-       'Ctrl+Backspace' : _CtrlBackspace.fire,
-       'Ctrl+e'         : _CtrlE.fire,
-       'Ctrl+k'         : _CtrlK.fire,
-       'Ctrl+s'         : _CtrlS.fire};
+    final Map<String, EventListener> preventDefaultBindings =
+      {'Alt+a'      : _altA.fire,
+       'Alt+b'      : _altB.fire,
+       'Alt+c'      : _altC.fire,
+       'Alt+e'      : _altE.fire,
+       'Alt+f'      : _altF.fire,
+       'Alt+h'      : _altH.fire,
+       'Alt+i'      : _altI.fire,
+       'Alt+k'      : _altK.fire,
+       'Alt+m'      : _altM.fire,
+       'Alt+q'      : _altQ.fire,
+       'Alt+s'      : _altS.fire,
+       'Alt+t'      : _altT.fire,
+       'Alt+v'      : _altV.fire,
+       'Alt+w'      : _altW.fire,
+       'Alt+x'      : _altX.fire,
+       'Ctrl+d'     : _null, // Blackhole this
+       'Ctrl+l'     : _null, // Blackhole this
+       'F1'         : _f1.fire};
 
-    keyDownBindings.forEach((key, callback) {
-      _keyDown.register(key, (KeyboardEvent event) {
+    registerKeysPreventDefault(_keyDown, preventDefaultBindings);
+  }
+
+  /**
+   * Black hole for hotkey combos we don't want.
+   */
+  void _null(_) => null;
+
+  /**
+   * Register the [keyMap] keybindings to [keyboard].
+   */
+  void registerKeys(Keyboard keyboard, Map<String, EventListener> keyMap) {
+    keyMap.forEach((key, callback) {
+      keyboard.register(key, callback);
+    });
+  }
+
+  /**
+   * Register the [keyMap] key bindings to [keyboard]. Prevent default on all
+   * key events.
+   */
+  void registerKeysPreventDefault(Keyboard keyboard, Map<String, EventListener> keyMap) {
+    keyMap.forEach((key, callback) {
+      keyboard.register(key, (Event event) {
         event.preventDefault();
         callback(event);
       });
     });
   }
-}
-
-// TODO (TL): Temporary hacks until we've bus'ified everything in this file
-void _AltG(_) {
-  Call.hangup(Model.Call.currentCall);
-}
-
-void _AltL(_) {
-  Call.park(Model.Call.currentCall);
-}
-
-void _AltO(_) {
-  Call.transfer(Model.Call.currentCall, Model.CallList.instance.firstParkedCall);
-}
-
-void _AltP(_) {
-  Call.pickupNext();
-}
-
-void _AltU(_) {
-  Call.pickupParked(Model.CallList.instance.firstParkedCall);
 }

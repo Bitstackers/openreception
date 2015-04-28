@@ -22,8 +22,8 @@ class ReceptionStub extends ORModel.ReceptionStub {
   ReceptionStub.fromMap(Map map) : super.fromMap(map);
 
   ReceptionStub.none() : super.none();
-  bool isNotNull() => !this.isNull();
-  bool isNull()    => this.ID == Reception.noReception.ID;
+  bool get isNotEmpty => !this.isEmpty;
+  bool get isEmpty    => this.ID == Reception.noReception.ID;
 }
 
 /**
@@ -35,24 +35,26 @@ class Reception extends ORModel.Reception {
 
   static Reception _selectedReception = noReception;
 
-  static final EventType<Reception> activeReceptionChanged = new EventType<Reception>();
+  static Bus<Reception> _receptionChange = new Bus<Reception>();
+  static Stream<Reception> get onReceptionChange => _receptionChange.stream;
 
   static Reception get selectedReception                       =>  _selectedReception;
   static           set selectedReception (ORModel.Reception reception) {
     _selectedReception = reception;
-    event.bus.fire(event.receptionChanged, _selectedReception);
-    event.bus.fire(activeReceptionChanged, _selectedReception);
+    _receptionChange.fire(_selectedReception);
   }
 
   Reception.fromMap(Map map) : super.fromMap(map);
 
   Reception.none() : super.none();
 
-  bool isNotNull() => !this.isNull();
-  bool isNull()    => this.ID == Reception.noReception.ID;
+  bool get isNotEmpty => !this.isEmpty;
+  bool get isEmpty    => this.ID == Reception.noReception.ID;
 
   ReceptionStub toStub() =>
     new ReceptionStub()..ID       = this.ID
                        ..fullName = this.fullName;
 
+  //FIXME: Please, I am sooo broken.
+  String get miniWikiMarkdown => "##FIXME";
 }

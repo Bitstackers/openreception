@@ -20,13 +20,11 @@ class NotificationList extends IterableBase<Notification> {
 
   Iterator<Notification> get iterator => _list.iterator;
 
-  static final EventType<Notification> insert = new EventType<Notification>();
-  static final EventType<Notification> delete = new EventType<Notification>();
+  Bus<Notification> _insert = new Bus<Notification>();
+  Stream<Notification> get onInsert => this._insert.stream;
 
-  EventBus _bus = new EventBus();
-  EventBus get events => _bus;
-
-  EventBus _eventStream = event.bus;
+  Bus<Notification> _delete = new Bus<Notification>();
+  Stream<Notification> get onDelete => this._delete.stream;
 
   /* Singleton instance - for quick and easy reference. */
   static NotificationList _instance    = new NotificationList();
@@ -42,12 +40,8 @@ class NotificationList extends IterableBase<Notification> {
    *
    */
   void add(Notification notification) {
-    const String context = '${className}.add';
-
     this._list.add(notification);
-    this._bus.fire(insert, notification);
-
-    log.debugContext("Insering notification ${notification.ID}", context);
+    this._insert.fire(notification);
 
     /* Schedule the notification for removal. */
     new Timer(new Duration(seconds: 3), () {
@@ -59,14 +53,8 @@ class NotificationList extends IterableBase<Notification> {
    *
    */
   void remove(Notification notification) {
-    const String context = '${className}.remove';
-
     if (this._list.remove(notification)) {
-      this._bus.fire(delete, notification);
-
-      log.debugContext("Removing notification ${notification.ID}", context);
-    } else {
-      log.debugContext("Skipping scheduled removal of already removed ${notification.ID}", context);
+      this._delete.fire(notification);
     }
   }
 }

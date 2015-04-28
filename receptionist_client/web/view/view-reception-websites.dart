@@ -1,78 +1,56 @@
-/*                  This file is part of OpenReception
-                   Copyright (C) 2012-, BitStackers K/S
-
-  This is free software;  you can redistribute it and/or modify it
-  under terms of the  GNU General Public License  as published by the
-  Free Software  Foundation;  either version 3,  or (at your  option) any
-  later version. This software is distributed in the hope that it will be
-  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  You should have received a copy of the GNU General Public License along with
-  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
-*/
-
 part of view;
 
-class ReceptionWebsites {
-  final Context context;
-  final Element element;
+/**
+ * TODO (TL): Comment
+ */
+class ReceptionWebsites extends ViewWidget {
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIReceptionWebsites _ui;
 
-  bool     hasFocus  = false;
-  bool get muted     => this.context != Context.current;
-
-  static const String className = '${libraryName}.ReceptionTelephoneNumbers';
-  static const String NavShortcut = 'S';
-  List<Element> get nudges => this.element.querySelectorAll('.nudge');
-  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
-
-  Element         get header      => this.element.querySelector('legend');
-  UListElement    get websiteList => element.querySelector('#${Id.receptionWebsitesList}');
-
-  ReceptionWebsites(Element this.element, Context this.context) {
-    assert(element.attributes.containsKey(defaultElementId));
-
-    ///Navigation shortcuts
-    this.element.insertBefore(new Nudge(NavShortcut).element,  this.header);
-    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-
-
-    header.children = [Icon.Globe,
-                       new SpanElement()..text = Label.WebSites];
-
-    registerEventListeners();
+  /**
+   * Constructor.
+   */
+  ReceptionWebsites(Model.UIModel this._ui,
+                    Controller.Destination this._myDestination,
+                    Model.UIReceptionSelector this._receptionSelector) {
+    _observers();
   }
 
-  void _select(_) {
-    if (!muted) {
-       Controller.Context.changeLocation(new nav.Location(context.id, element.id, websiteList.id));
-    }
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
+
+  @override void onBlur(_){}
+  @override void onFocus(_){}
+
+  /**
+   * Simply navigate to my [Destination]. Matters not if this widget is already
+   * focused.
+   */
+  void activateMe(_) {
+    navigateToMyDestination();
   }
 
-  void registerEventListeners() {
+  /**
+   * Observers.
+   */
+  void _observers() {
+    _navigate.onGo.listen(setWidgetState);
 
-    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+    _ui.onClick.listen(activateMe);
 
-    event.bus.on(event.receptionChanged).listen(renderReception);
-
-    element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, websiteList.id));
-    });
-
-    event.bus.on(event.locationChanged).listen((nav.Location location) {
-      bool active = location.widgetId == element.id;
-      element.classes.toggle(CssClass.focus, active);
-      if(active) {
-        websiteList.focus();
-      }
-    });
+    _receptionSelector.onSelect.listen(render);
   }
 
-  void renderReception(model.Reception reception) {
-    websiteList.children.clear();
-
-    for(var value in reception.websites) {
-      websiteList.children.add(new LIElement()
-                        ..text = value);
+  /**
+   * Render the widget with [reception].
+   */
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
+      _ui.clear();
+    } else {
+      _ui.headerExtra = 'for ${reception.name}';
+      _ui.websites = reception.websites;
     }
   }
 }

@@ -13,623 +13,89 @@
 
 part of service;
 
-abstract class Call {
+class Call {
 
-  static const className = '${libraryName}.Call';
+  ORService.CallFlowControl _service = null;
+
+  static Call _instance;
+
+  static Call get instance {
+    if (_instance == null) {
+      _instance = new Call();
+    }
+
+    return _instance;
+  }
+
+  Call () {
+    _service = new ORService.CallFlowControl
+        (configuration.callFlowBaseUrl,
+         configuration.token,
+         new ORServiceHTML.Client());
+  }
+
+  Future<Iterable<Model.Call>> listCalls() =>
+    _service.callListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.Call.fromMap(map)));
+
+
+
+  /**
+   * Fetches a list of peers.
+   */
+  Future<Iterable<Model.Peer>> peerList() =>
+    _service.peerListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.Peer.fromMap(map)));
 
   /**
    * Fetches a userStates of all users
    */
-  static Future<Iterable<model.UserStatus>> userStateList() {
-
-    const String context = '${className}.userState';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<Iterable<model.UserStatus>> completer = new Completer<Iterable<model.UserStatus>>();
-    final List<String> fragments = new List<String>();
-    final String path = '/userstate';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(GET, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              List<Map> responseList = JSON.decode(request.responseText);
-              completer.complete(responseList.map((Map element) => new model.UserStatus.fromMap(element)));
-              break;
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
+  Future<Iterable<Model.UserStatus>> userStateList() =>
+    _service.userStatusListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.UserStatus.fromMap(map)));
 
   /**
    * Fetches a userState associated with userID.
    */
-  static Future<model.UserStatus> userState(int userID) {
-
-    const String context = '${className}.userState';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
-    final List<String> fragments = new List<String>();
-    final String path = '/userstate/${userID}';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(GET, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
-              break;
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
+  Future<Model.UserStatus> userState(int userID) =>
+      _service.userStatusMap(userID)
+        .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Updates userState associated with userID to Idle state.
    */
-  static Future<model.UserStatus> markUserStateIdle(int userID) {
-
-    const String context = '${className}.userState';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
-    final List<String> fragments = new List<String>();
-    final String path = '/userstate/${userID}/idle';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
-              break;
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
+  Future<Model.UserStatus> markUserStateIdle(Model.User user) =>
+      _service.userStateIdleMap(user.ID)
+        .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Updates userState associated with userID to Paused state.
    */
-  static Future<model.UserStatus> markUserStatePaused(int userID) {
+  Future<Model.UserStatus> markUserStatePaused(Model.User user) =>
+      _service.userStatePausedMap(user.ID)
+        .then((Map map) => new Model.UserStatus.fromMap(map));
 
-    const String context = '${className}.userState';
+  Future originate
+    (Model.Contact contact, Model.Reception reception, String extension) =>
+      _service.originate(extension, contact.ID, reception.ID);
 
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.UserStatus> completer = new Completer<model.UserStatus>();
-    final List<String> fragments = new List<String>();
-    final String path = '/userstate/${userID}/paused';
-    HttpRequest request;
-    String url;
+  Future<Model.Call> pickup (Model.Call call) =>
+      _service.pickupMap (call.ID).then((Map callMap) =>
+          new Model.Call.fromMap(callMap));
 
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
+  Future hangup (Model.Call call) =>
+      _service.hangup(call.ID);
 
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.UserStatus.fromMap(JSON.decode(request.responseText)));
-              break;
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
+  Future park (Model.Call call) =>
+      _service.park(call.ID);
 
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-  /**
-   * Fetches a list of currently queued calls from the Server.
-   */
-  static Future<model.CallList> queue() {
-
-    const String context = '${className}.queue';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.CallList> completer = new Completer<model.CallList>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/queue';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(GET, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.CallList.fromJson(JSON.decode(request.responseText), 'calls'));
-              break;
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-
-  /**
-   * Get a list of every active call.
-   *
-   * Completes with:
-   *  On success: [Response] object with status OK
-   *  On error  : [Response] object with status ERROR or CRITICALERROR
-   */
-  static Future<model.CallList> list() {
-
-    const String context = '${className}.list';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.CallList> completer = new Completer<model.CallList>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/list';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(GET, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.CallList.fromJson(JSON.decode(request.responseText), 'calls'));
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-
-  static Future<model.Call> next() {
-    return pickup(null);
-  }
-  /**
-   * Park [call].
-   */
-  static Future<model.Call> park(model.Call call) {
-
-    const String context = '${className}.park';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/${call.ID}/park';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(call);
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-  /**
-   * Sends a call based on the [callId], if present, to the agent with [AgentId].
-   * If no callId is specified, then the next call in line will be dispatched
-   * to the agent.
-   */
-  static Future<model.Call> pickup(model.Call call) {
-
-    const String context = '${className}.pickup';
-
-    log.debugContext('Requesting to pickup ${call == null ? 'unspecifed call':'call with ID ${call.ID}'}', context);
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/${(call != null && call.ID != null) ? call.ID+"/" : ''}pickup';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.Call.fromMap(JSON.decode(request.responseText)));
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-
-  /**
-   * Place a new call to an arbitrary PSTN number or a SIP phone.
-   *
-   * Sends a request to make a new call.
-   */
-  static Future<model.OriginationRequest> originate(int contactID, int receptionID, String extension) {
-
-    const String context = '${className}.originate';
-
-    assert(extension != null && extension.isNotEmpty);
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.OriginationRequest> completer = new Completer<model.OriginationRequest>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/originate/${extension}/reception/${receptionID}${contactID != null ? '/contact/${contactID}' : ''}';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.OriginationRequest(JSON.decode(request.responseText)['call']['id']));
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-  /**
-   * Hangup [call].
-   */
-
-  static Future<model.Call> hangup(model.Call call) {
-
-    const String context = '${className}.hangup';
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/${call.ID}/hangup';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    fragments.add('call_id=${call.ID}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(call);
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-  /**
-   * TODO Not implemented in Alice, as far as i can see. 2013-02-27 Thomas P.
-   * Gives the status of a call.
-   */
-  static Future<model.Call> get(model.Call call) {
-
-    const String context = '${className}.get';
-
-    assert(call != null);
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/${call.ID}';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(GET, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(new model.Call.fromMap(JSON.decode(request.responseText)));
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-
-  /**
- * Sends a request to transfer a call.
- */
-  static Future<model.Call> transfer(model.Call source, model.Call destination) {
-
-    const String context = '${className}.transfer';
-
-    assert(source != null && source != model.nullCall);
-    assert(destination != null && destination != model.nullCall);
-
-    final String base = configuration.callFlowBaseUrl.toString();
-    final Completer<model.Call> completer = new Completer<model.Call>();
-    final List<String> fragments = new List<String>();
-    final String path = '/call/${source.ID}/transfer/${destination.ID}';
-    HttpRequest request;
-    String url;
-
-    fragments.add('token=${configuration.token}');
-    url = _buildUrl(base, path, fragments);
-
-    request = new HttpRequest()
-        ..open(POST, url)
-        ..onLoad.listen((_) {
-          switch (request.status) {
-            case 200:
-              completer.complete(source);
-              break;
-
-            case 400:
-              completer.completeError(_badRequest('Resource ${base}${path}'));
-              break;
-
-            case 404:
-              completer.completeError(_notFound('Resource ${base}${path}'));
-              break;
-
-            case 500:
-              completer.completeError(_serverError('Resource ${base}${path}'));
-              break;
-            default:
-              completer.completeError(new UndefinedError('Status (${request.status}): Resource ${base}${path}'));
-          }
-        })
-        ..onError.listen((e) {
-          log.errorContext('Status (${request.status}): Resource ${base}${path}', context);
-          completer.completeError(e);
-        })
-        ..send();
-
-    return completer.future;
-  }
-  Future<model.CallList> listParked(model.User ofUser) {
-//    const String context = '${className}.listParked';
-
-    throw new StateError('Not implemented!');
-  }
+  Future transfer (Model.Call source, Model.Call destination) =>
+      _service.transfer(source.ID, destination.ID);
 }
 

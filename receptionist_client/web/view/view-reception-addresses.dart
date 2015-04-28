@@ -1,69 +1,56 @@
-/*                  This file is part of OpenReception
-                   Copyright (C) 2012-, BitStackers K/S
-
-  This is free software;  you can redistribute it and/or modify it
-  under terms of the  GNU General Public License  as published by the
-  Free Software  Foundation;  either version 3,  or (at your  option) any
-  later version. This software is distributed in the hope that it will be
-  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  You should have received a copy of the GNU General Public License along with
-  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
-*/
-
 part of view;
 
-class ReceptionAddresses {
+/**
+ * TODO (TL): Comment
+ */
+class ReceptionAddresses extends ViewWidget {
+  final Controller.Destination     _myDestination;
+  final Model.UIReceptionSelector  _receptionSelector;
+  final Model.UIReceptionAddresses _ui;
 
-  static const String className = '${libraryName}.ReceptionProduct';
-  static const String NavShortcut = 'G';
-
-  Context context;
-  Element element;
-  bool hasFocus = false;
-  Element get header => this.element.querySelector('legend');
-  UListElement listElement;
-
-  List<Element> get nudges => this.element.querySelectorAll('.nudge');
-  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
-
-  ReceptionAddresses(Element this.element, Context this.context) {
-    assert(element.attributes.containsKey(defaultElementId));
-
-    listElement = element.querySelector('#${Id.receptionAddressesList}');
-    header.children = [Icon.MapMarker,
-                       new SpanElement()..text = Label.ReceptionAddresses,
-                       new Nudge(NavShortcut).element];
-
-    ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(NavShortcut, (_) => Controller.Context.changeLocation(new nav.Location(context.id, element.id, listElement.id)));
-
-    _registerEventListeners();
+  /**
+   * Constructor.
+   */
+  ReceptionAddresses(Model.UIModel this._ui,
+                     Controller.Destination this._myDestination,
+                     Model.UIReceptionSelector this._receptionSelector) {
+    _observers();
   }
 
-  void _registerEventListeners() {
-    event.bus.on(event.receptionChanged).listen(render);
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
-    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
-    element.onClick.listen((_) {
-      event.bus.fire(event.locationChanged, new nav.Location(context.id, element.id, listElement.id));
-    });
-
-    event.bus.on(event.locationChanged).listen((nav.Location location) {
-      bool active = location.widgetId == element.id;
-      element.classes.toggle(CssClass.focus, active);
-      if (active) {
-        listElement.focus();
-      }
-    });
+  /**
+   * Simply navigate to my [Destination]. Matters not if this widget is already
+   * focused.
+   */
+  void activateMe(_) {
+    navigateToMyDestination();
   }
 
-  void render(model.Reception reception) {
-    listElement.children.clear();
+  /**
+   * Observers.
+   */
+  void _observers() {
+    _navigate.onGo.listen(setWidgetState);
 
-    for (var value in reception.addresses) {
-      listElement.children.add(new LIElement()..text = value);
+    _ui.onClick.listen(activateMe);
+
+    _receptionSelector.onSelect.listen(render);
+  }
+
+  /**
+   * Render the widget with [reception].
+   */
+  void render(Model.Reception reception) {
+    if(reception.isEmpty) {
+      _ui.clear();
+    } else {
+      _ui.headerExtra = 'for ${reception.name}';
+      _ui.addresses = reception.addresses;
     }
   }
 }

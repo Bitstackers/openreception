@@ -1,109 +1,53 @@
-/*                  This file is part of OpenReception
-                   Copyright (C) 2014-, BitStackers K/S
-
-  This is free software;  you can redistribute it and/or modify it
-  under terms of the  GNU General Public License  as published by the
-  Free Software  Foundation;  either version 3,  or (at your  option) any
-  later version. This software is distributed in the hope that it will be
-  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  You should have received a copy of the GNU General Public License along with
-  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
-*/
-
 part of view;
 
-class ReceptionSelector {
+/**
+ * TODO (TL): Comment
+ */
+class ReceptionSelector extends ViewWidget {
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionSelector _ui;
+  final Controller.Reception      _receptionController;
 
-  static const String className = '${libraryName}.ReceptionSelector';
-  static const String NavShortcut = 'V';
+  /**
+   * Constructor.
+   */
+  ReceptionSelector(Controller.Destination this._myDestination,
+                    Model.UIModel this._ui,
+                    Controller.Reception this._receptionController) {
+    _ui.setHint('alt+v');
+    _observers();
 
-  final DivElement                       element;
-  final Context                          uiContext;
-  Component.SearchComponent<model.ReceptionStub>   search;
-  model.ReceptionStub                    selectedReception = new model.ReceptionStub.none();
-  bool get muted     => this.uiContext != Context.current;
-  dynamic onSelectReception = () => null;
+    this._receptionController.list()
+      .then((Iterable<Model.Reception> receptions) {
 
-  List<Element> get nudges => this.element.querySelectorAll('.nudge');
-  void set nudgesHidden(bool hidden) => this.nudges.forEach((Element element) => element.hidden = hidden);
+      Iterable<Model.Reception> sortedReceptions = receptions.toList()
+          ..sort((x,y) => x.name.compareTo(y.name));
 
-  ReceptionSelector(DivElement this.element, Context this.uiContext) {
-    assert (element.attributes.containsKey(defaultElementId));
-
-    ///Navigation shortcuts
-    keyboardHandler.registerNavShortcut(NavShortcut, this._select);
-
-    String searchBoxId = element.attributes['data-default-element'];
-
-    search = new Component.SearchComponent<model.ReceptionStub>(element, uiContext, searchBoxId)
-      ..searchPlaceholder = Label.ReceptionSearch
-      ..whenClearSelection = whenClearSelection
-      ..listElementToString = listElementToString
-      ..searchFilter = searchFilter
-      ..selectedElementChanged = elementSelected;
-
-    this.initialFill().then(this._registerEventlisteners);
-  }
-
-  void _select (_) {
-    const String context = '${className}._select';
-    log.debugContext('${this.uiContext} : ${Context.current}', context);
-
-    if (!this.muted) {
-      Controller.Context.changeLocation(new nav.Location(uiContext.id, element.id, element.attributes[defaultElementId]));
-    }
-  }
-
-  Future initialFill() {
-    return storage.Reception.list().then((List<model.ReceptionStub> list) {
-      search.updateSourceList(list.toList(growable: false));
-      return this.element.append(new Nudge(NavShortcut).element);
+      this._ui.receptions = sortedReceptions;
     });
   }
 
-  void _registerEventlisteners(_) {
-    event.bus.on(event.keyNav).listen((bool isPressed) => this.nudgesHidden = !isPressed);
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
 
-    event.bus.on(event.receptionChanged).listen((model.Reception value) {
-      if(value == model.Reception.noReception && selectedReception.isNotNull()) {
-        search.clearSelection();
+  @override void onBlur(_){}
+  @override void onFocus(_){}
 
-      } else {
-        search.selectElement(value.toStub(), _receptionEquality);
-      }
-      selectedReception = value.toStub();
-    });
+  /**
+   * Activate this widget if it's not already activated.
+   */
+  void activateMe(_) {
+    navigateToMyDestination();
   }
 
-  bool _receptionEquality(model.ReceptionStub x, model.ReceptionStub y) => x.ID == y.ID;
+  /**
+   * Observers.
+   */
+  void _observers() {
+    _navigate.onGo.listen(setWidgetState);
 
-  void whenClearSelection() {
-    new Future(() => Controller.Reception.change (model.Reception.noReception));
-  }
+    _hotKeys.onAltV.listen(activateMe);
 
-  String listElementToString(model.ReceptionStub reception, String searchText) {
-    if(searchText == null || searchText.isEmpty) {
-      return reception.name;
-    } else {
-      String text = reception.name;
-      int matchIndex = text.toLowerCase().indexOf(searchText.toLowerCase());
-      String before  = text.substring(0, matchIndex);
-      String match   = text.substring(matchIndex, matchIndex + searchText.length);
-      String after   = text.substring(matchIndex + searchText.length, text.length);
-      return '${before}<em>${match}</em>${after}';
-    }
-  }
-
-  bool searchFilter(model.ReceptionStub reception, String searchText) {
-    return reception.name.toLowerCase().contains(searchText.toLowerCase());
-  }
-
-  void elementSelected(model.ReceptionStub receptionStub) {
-    storage.Reception.get(receptionStub.ID).then((model.Reception reception) {
-      Controller.Reception.change (reception);
-      this.onSelectReception(); //Callback function.
-
-    });
+    _ui.onClick.listen(activateMe);
   }
 }

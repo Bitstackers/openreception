@@ -13,18 +13,29 @@
 
 part of service;
 
-abstract class Authentication {
+class Authentication {
 
-  static ORService.Authentication _store = null;
+  static Authentication _instance = null;
 
-  static ORService.Authentication get store {
-    if (_store == null) {
-      _store = new ORService.Authentication
+  static Authentication get instance {
+    if (_instance == null) {
+      _instance = new Authentication();
+    }
+
+    return _instance;
+  }
+
+  ORService.Authentication _store = null;
+
+  Authentication () {
+    this._store = new ORService.Authentication
           (configuration.authBaseUrl,
            configuration.token,
            new ORServiceHTML.Client());
     }
 
-    return _store;
-  }
+  Future<Model.User> userOf (String token) =>
+    this._store.userOf(token).then((ORModel.User user) =>
+        new Model.User.fromORModel(user));
+
 }

@@ -1,150 +1,107 @@
-/*                  This file is part of OpenReception
-                   Copyright (C) 2012-, BitStackers K/S
-
-  This is free software;  you can redistribute it and/or modify it
-  under terms of the  GNU General Public License  as published by the
-  Free Software  Foundation;  either version 3,  or (at your  option) any
-  later version. This software is distributed in the hope that it will be
-  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  You should have received a copy of the GNU General Public License along with
-  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
-*/
-
-/**
- * View of the contact's data.
- */
-
 part of view;
 
-class ContactData {
-  UListElement backupList;
-  UListElement calendarBody;
-  DivElement department;
-  DivElement element;
-  UListElement emailAddressList;
-  UListElement handlingList;
-  DivElement additional;
-  DivElement position;
-  DivElement relations;
-  DivElement responsibility;
-  OListElement telephoneNumberList;
-  UListElement get workHoursList => this.element.querySelector('#${Id.contactWorkHoursList}');
-  List<Element> get nudges => this.element.querySelectorAll('.nudge');
+/**
+ * TODO (TL): Comment
+ */
+class ContactData extends ViewWidget {
+  final Model.UIContactSelector   _contactSelector;
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIContactData       _ui;
 
-  HeadingElement get workhoursHeader        => this.element.querySelector('.${CssClass.contactDataWorkhoursLabel}');
-  HeadingElement get jobtitleHeader         => this.element.querySelector('.${CssClass.contactDataJobtitleLabel}');
-  HeadingElement get handlingHeader         => this.element.querySelector('.${CssClass.contactDataHandlingLabel}');
-  HeadingElement get responsibilityHeader   => this.element.querySelector('.${CssClass.contactDataResponsibilityLabel}');
-  HeadingElement get departmentHeader       => this.element.querySelector('.${CssClass.contactDataDepartmentLabel}');
-  HeadingElement get phoneHeader            => this.element.querySelector('.${CssClass.contactDataPhoneLabel}');
-  HeadingElement get relationsHeader        => this.element.querySelector('.${CssClass.contactDataRelationsLabel}');
-  HeadingElement get emailsHeader           => this.element.querySelector('.${CssClass.contactDataEmailsLabel}');
-  HeadingElement get additionalHeader       => this.element.querySelector('.${CssClass.contactDataAdditionalInfoLabel}');
-  HeadingElement get backupsHeader          => this.element.querySelector('.${CssClass.contactDataBackupsLabel}');
-
-  ContactData(DivElement this.element) {
-    handlingList = querySelector('#${Id.contactDataHandlingList}');
-    position = querySelector('#${Id.contactDataPosition}');
-    responsibility = querySelector('#${Id.contactDataResponsibility}');
-    department = querySelector('#${Id.contactDataDepartment}');
-    telephoneNumberList = querySelector('#${Id.contactDataTelephoneNumberList}');
-    relations = querySelector('#${Id.contactDataRelations}');
-    emailAddressList = querySelector('#${Id.contactDataEmailsList}');
-    additional = querySelector('#${Id.contactDataAdditionalInfo}');
-    backupList = querySelector('#${Id.contactDataBackupsList}');
-
-    this._registerEventHandlers();
-
-    this._setupLabels();
+  /**
+   * Constructor.
+   */
+  ContactData(Model.UIModel this._ui,
+              Controller.Destination this._myDestination,
+              Model.UIContactSelector this._contactSelector,
+              Model.UIReceptionSelector this._receptionSelector) {
+    _ui.setHint('alt+t');
+    _observers();
   }
 
-  void _setupLabels() {
-    this.workhoursHeader       .text = Label.ContactWorkHours;
-    this.jobtitleHeader        .text = Label.ContactJobTitle;
-    this.handlingHeader        .text = Label.ContactHandling;
-    this.responsibilityHeader  .text = Label.ContactResponsibilities;
-    this.departmentHeader      .text = Label.ContactDepartment;
-    this.phoneHeader           .text = Label.ContactPhone;
-    this.relationsHeader       .text = Label.ContactRelations;
-    this.emailsHeader          .text = Label.ContactEmails;
-    this.additionalHeader      .text = Label.ContactExtraInfo;
-    this.backupsHeader         .text = Label.ContactBackups;
+  @override Controller.Destination get myDestination => _myDestination;
+  @override Model.UIModel          get ui            => _ui;
+
+  @override void onBlur(_){}
+  @override void onFocus(_){}
+
+  /**
+   * Simply navigate to my [_myDestination]. Matters not if this widget is
+   * already focused.
+   */
+  void activateMe(_) {
+    navigateToMyDestination();
   }
 
-  void render(model.Contact contact) {
-    workHoursList.children = contact.workhours.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
-
-    if (workHoursList.children.isEmpty) workHoursList.children = [new LIElement()..text = Label.UnkownWorkHours];
-
-    handlingList .children = contact.handling .map((String hourDesc) => new LIElement()..text = hourDesc).toList();
-
-    position.innerHtml = contact.position != null ? contact.position : '';
-    responsibility.innerHtml = contact.responsibility != null ? contact.responsibility : '';
-    department.innerHtml = contact.department != null ? contact.department : '';
-
-    telephoneNumberList.children.clear();
-
-    int index = 1;
-
-    for (var item in contact.phones) {
-      LIElement number = new LIElement()
-          ..classes.add(CssClass.phoneNumber)
-          ..classes.add(item['kind']);
-
-      if (index < 9) {
-        number.children.add(new Nudge(index.toString()).element);
-      }
-      index++;
-
-      //TODO: Check if the phone number is confidential, and add the appropriate LI class.
-      number.children.add(new ButtonElement()
-          ..text = item['value']
-          ..classes = ['pure-button', 'phonenumber']
-          ..onClick.listen((_) => Controller.Extension.change (new model.Extension (item['value']))));
-
-      telephoneNumberList.children.add(number);
-
-      //TODO: Hide the phonenumber if it is private.
+  /**
+   * Clear the widget on null [Reception].
+   */
+  void clear(Model.Reception reception) {
+    if(reception.isEmpty) {
+      _ui.clear();
     }
-
-
-    relations.innerHtml = contact.relations != null ? contact.relations : '';
-
-    /* Add all contacts from the contacts distribution list.*/
-    emailAddressList.children.clear();
-    contact.distributionList.forEach((ORModel.MessageRecipient recipient) {
-      LIElement li = new LIElement()
-                   ..text = '${recipient.contactName} (${recipient.receptionName})'
-                   ..classes.add(recipient.role);
-        emailAddressList.children.add(li);
-    });
-
-
-    additional.innerHtml = contact.info != null ? contact.info : '';
-    backupList.children = contact.emailaddresses.map((String hourDesc) => new LIElement()..text = hourDesc).toList();
   }
 
-  void hideNudges(bool hidden) {
-    nudges.forEach((Element element) {
-      element.hidden = hidden;
-    });
+  /**
+   * Observers.
+   */
+  void _observers() {
+    _navigate.onGo.listen(setWidgetState);
+
+    _hotKeys.onAltT.listen(activateMe);
+
+    _ui.onClick.listen(activateMe);
+
+    _contactSelector.onSelect.listen(render);
+
+    _receptionSelector.onSelect.listen(clear);
+
+    _ui.onMarkedRinging.listen(_call);
+    ///
+    ///
+    ///
+    /// TODO (TL): Listen for call notifications here? Possibly mark ringing?
+    /// Or put this in model-ui-contact-data.dart?
+    ///
+    ///
+    ///
   }
 
-  _registerEventHandlers() {
-    event.bus.on(event.keyNav).listen((bool isPressed) {
-      this.hideNudges(!isPressed);
-    });
+  /**
+   * Render the widget with [Contact].
+   */
+  void render(Model.Contact contact) {
+    if(contact.isEmpty) {
+      _ui.clear();
+    } else {
+      _ui.clear();
 
-    event.bus.on(event.CallSelectedContact).listen((int index) {
-      if (telephoneNumberList.children.length < index) {
-        return;
-      }
+      _ui.headerExtra = 'for ${contact.fullName}';
 
-      telephoneNumberList.children [index-1].querySelector('button').click();
-    });
+      _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
+      _ui.backups = ['backup 1', 'backup 2'];
+      _ui.commands = ['command 1', 'command 2'];
+      _ui.departments = ['department 1', 'department 2'];
+      _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
+      _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
+      _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
+      _ui.telephoneNumbers = [new TelNum('45454545', 'some number', false),
+                              new TelNum('23456768', 'secret stuff', true),
+                              new TelNum('60431992', 'personal cell', false),
+                              new TelNum('60431993', 'wife cell', false)];
+      _ui.titles = ['Nørd', 'Tekniker'];
+      _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
 
-    event.bus.on(model.Contact.activeContactChanged).listen(render);
+      _ui.selectFirstTelNum();
+    }
+  }
 
+  /**
+   * This is called when the [_ui] fires a [TelNum] as marked ringing.
+   */
+  void _call(TelNum telNum) {
+    print('view-contact-data.call() ${telNum}');
+    /// TODO (TL): Call the Controller layer to actually get the call going.
   }
 }

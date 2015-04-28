@@ -17,11 +17,8 @@ class PeerList extends IterableBase<Peer> {
 
   static const String className = "${libraryName}.PeerList";
 
-  static final EventType reload = new EventType();
-  static final EventType<Peer> stateChange = new EventType<Peer>();
-
-  EventBus _eventStream =  event.bus; // Hooks into the global event bus.
-  EventBus get events   => _eventStream;
+  static Bus<PeerList> _reload = new Bus<PeerList>();
+  static Stream<PeerList> get onReload => _reload.stream;
 
   /// Singleton instance - for quick and easy reference.
   static PeerList _instance = new PeerList();
@@ -49,34 +46,13 @@ class PeerList extends IterableBase<Peer> {
    * Updates or inserts a [Peer] object into the [PeerList].
    */
   void updateOrInsert(Peer peer) {
-    const String context = '${className}.update';
-
-    if (this._map.containsKey(peer.ID)) {
-      log.debugContext("Updating peer ${peer.ID}", context);
-      this._map[peer.ID].update(peer);
-    } else {
-      log.debugContext("Inserting peer ${peer.ID}", context);
+    if (!this._map.containsKey(peer.ID)) {
       this._map[peer.ID] = peer;
     }
+
+    this._map[peer.ID].update(peer);
   }
 
-  /**
-   * Reloads the PeerList from a List of Maps.
-   *
-   * TODO: Document the map format in the wiki.
-   */
-  PeerList.fromList (List<Map> peerMaps) {
-    const String context = '${className}.fromList';
-
-    try {
-      peerMaps.forEach((Map peerMap) {
-        this.updateOrInsert(new Peer.fromMap(peerMap));
-      });
-    } catch (error) {
-      log.criticalError(error, context);
-      throw(error);
-    }
-  }
 
   /**
    * Reloads the instance from the server
@@ -84,10 +60,14 @@ class PeerList extends IterableBase<Peer> {
    * Returns a Future with the [PeerList] instance - updated with new elements.
    */
   Future<PeerList> reloadFromServer() {
-    return Service.Peer.list().then ((PeerList peerList){
-      this._map = peerList._map;
+    return Service.Peer.instance.peerList().then ((Iterable<Peer> peerMaps){
+      this._map.clear();
 
-      this._eventStream.fire(PeerList.reload, null);
+      peerMaps.forEach((Peer peer) {
+        this.updateOrInsert(peer);
+      });
+
+      _reload.fire(this);
       return this;
     });
   }

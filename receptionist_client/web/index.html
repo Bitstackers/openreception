@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ReceptionistClientFlex</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body IgnoreClickFocus>
+  <!--
+    #receptionistclient-ready state
+
+    Role:
+      The user interface when the application is fully operational and the user
+      is logged in. This state act as a container for all the contexts.
+
+    Visibility:
+      Hidden   #receptionistclient-ready display:none
+      Visible: #receptionistclient-ready display:flex
+
+      Initial state is display:none.
+
+      Note that visibility on #receptionistclient-ready and its siblings MUST
+      be mutually exclusive.
+  -->
+  <div IgnoreClickFocus id="receptionistclient-ready" class="display-flex-row">
+    <style scoped>
+      #receptionistclient-ready {
+        display: none;
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+
+    <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 1; position: relative;">
+
+      <!--
+        #context-calendar-edit modal
+
+        Role:
+          Parent for all widgets that belong in the "calendar-edit" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-calendar-edit and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section IgnoreClickFocus id="context-calendar-edit" class="context modal display-flex-row">
+
+        <!--
+          #calendar-editor widget
+
+          Role:
+            Provides a widget to create/edit/delete calendar entries for contacts
+            and receptions.
+
+          Visibility:
+            Is controlled by the visibility of #context-home and the hidden
+            attribute on the root element.
+
+          Tabindex:
+            Textarea, input and button elements set to tabindex -1 on blur.
+            MUST be updated on focus.
+        -->
+        <div id="calendar-editor" class="generic-widget" tabindex="-1">
+          <style scoped>
+            #calendar-editor {
+              position: absolute;
+              top: 30%;
+              left: 35%;
+              height: 15em;
+              width: 30%;
+              z-index: 1;
+              outline: 0;
+            }
+
+            #calendar-editor .bad-input {
+              border-color: red;
+              background-color: red;
+            }
+
+            #calendar-editor .generic-widget-body {
+              display: flex;
+              flex-direction: column;
+            }
+
+            #calendar-editor .generic-widget-body div {
+              flex-grow: 1;
+              display: flex;
+            }
+
+            #calendar-editor .padding03 {
+              padding: 0.3em;
+            }
+
+            #calendar-editor .entry-start,
+            #calendar-editor .entry-stop {
+              align-items: center;
+              justify-content: center;
+            }
+
+            #calendar-editor .entry-buttons {
+              align-items: center;
+              justify-content: center;
+            }
+
+            #calendar-editor .entry-buttons button {
+              height: 2em;
+              width: 5em;
+              margin-left: 1em;
+              font-size: 1em;
+            }
+
+            #calendar-editor input {
+              padding-right: 0.3em;
+              font-size: 1em;
+              padding: 0.3em;
+              margin: 0 0.3em;
+            }
+
+            #calendar-editor span {
+              padding-right: 0.3em;
+            }
+
+            #calendar-editor textarea {
+              margin-top: 0.3em;
+              resize: none;
+              width: 100%;
+              font-size: 1em;
+            }
+          </style>
+
+          <div class="spinning-focus-box"></div>
+          <!--<div class="hint hidden"></div>-->
+
+          <h4 class="generic-widget-headline">
+            <span data-lang-text="calendar-editor-header">::create/edit/delete calendar entry::</span>
+            <span></span>
+          </h4>
+          <div class="generic-widget-body padding03">
+            <div class="entry-message">
+              <textarea input-field class="padding03" tabindex="-1"></textarea>
+            </div>
+            <div class="entry-start">
+              <span data-lang-text="calendar-editor-start">::start::</span><input input-field class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input input-field class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <input input-field class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
+              <input input-field class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
+              <input input-field class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
+            </div>
+            <div class="entry-stop">
+              <span data-lang-text="calendar-editor-stop">::stop::</span><input input-field class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input input-field class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <input input-field class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
+              <input input-field class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
+              <input input-field class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
+            </div>
+            <div class="entry-buttons">
+              <button class="cancel" tabindex="-1" data-lang-text="calendar-editor-cancel">::cancel::</button>
+              <button class="delete" disabled tabindex="-1" data-lang-text="calendar-editor-delete">::delete::</button>
+              <button class="save" disabled tabindex="-1" data-lang-text="calendar-editor-save">::save::</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!--
+        #context-homeplus modal
+
+        Role:
+          Parent for all widgets that belong in the "homeplus" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-homeplus and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section IgnoreClickFocus id="context-homeplus" class="context modal display-flex-row">
+
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #reception-alt-names widget
+
+            Role:
+              Show the alternate reception/company names.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-alt-names" class="generic-widget">
+            <style scoped>
+              #reception-alt-names {
+                flex-grow: 1;
+              }
+
+              #reception-alt-names .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-alt-names-header">::reception alt names::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-addresses widget
+
+            Role:
+              Show the reception addresses.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-addresses" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-addresses {
+                flex-grow: 1;
+              }
+
+              #reception-addresses .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-addresses-header">::reception addresses::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-email widget
+
+            Role:
+              Show the reception email addresses.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-email" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-email {
+                flex-grow: 1;
+              }
+
+              #reception-email .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-email-header">::reception email::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-telephone-numbers widget
+
+            Role:
+              Show the reception telephone numbers.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-telephone-numbers" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-telephone-numbers {
+                flex-grow: 1;
+              }
+
+              #reception-telephone-numbers .generic-widget-list {
+                outline: 0;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li span.label {
+                padding-left: 0.5em;
+                font-size: 0.8em;
+                text-decoration: none;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li .secret {
+                text-decoration: line-through;
+                color: #ff2601;
+              }
+
+              #reception-telephone-numbers .generic-widget-list li:hover .secret {
+                text-decoration: none;
+                color: initial;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-telephone-numbers-header">::reception telephone numbers::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+        </div>
+
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #reception-websites widget
+
+            Role:
+              Show the reception websites.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-websites" class="generic-widget">
+            <style scoped>
+              #reception-websites {
+                flex-grow: 1;
+              }
+
+              #reception-websites .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-websites-header">::reception websites::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-vat-numbers widget
+
+            Role:
+              Show the reception VAT numbers.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-vat-numbers" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-vat-numbers {
+                flex-grow: 1;
+              }
+
+              #reception-vat-numbers .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-vat-numbers-header">::reception VAT numbers::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-type widget
+
+            Role:
+              Show the reception type.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-type" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-type {
+                flex-grow: 1;
+              }
+
+              #reception-type .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-type-header">::reception type::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-bank-info widget
+
+            Role:
+              Show the reception banking information.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-bank-info" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-bank-info {
+                flex-grow: 1;
+              }
+
+              #reception-bank-info .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-bank-info-header">::reception bank info::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+        </div>
+
+        <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 2.5;">
+
+          <!--
+            #reception-mini-wiki widget
+
+            Role:
+              Show the reception mini wiki.
+
+            Visibility:
+              Is controlled by the visibility of #context-homeplus.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-mini-wiki" class="generic-widget">
+            <style scoped>
+              #reception-mini-wiki {
+                flex-grow: 1;
+              }
+
+              #reception-mini-wiki .generic-widget-body {
+                outline: 0;
+                padding: 0 0.5em;
+                overflow: auto;
+              }
+
+              #reception-mini-wiki .generic-widget-body h1,
+              #reception-mini-wiki .generic-widget-body h2,
+              #reception-mini-wiki .generic-widget-body h3,
+              #reception-mini-wiki .generic-widget-body h4,
+              #reception-mini-wiki .generic-widget-body h5,
+              #reception-mini-wiki .generic-widget-body h6 {
+                margin: 0.3em;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <div class="hint hidden"></div>
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-mini-wiki-header">::reception mini wiki::</span>
+              <span></span>
+            </h4>
+            <div class="generic-widget-body" tabindex="-1"></div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!--
+        #context-messages widget
+
+        Role:
+          Parent for all widgets that belong in the "messages" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-messages and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section IgnoreClickFocus id="context-messages" class="context modal display-flex-row">
+
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+
+          <!--
+            #message-archive-filter widget
+
+            Role:
+              Show the message archive filter widget.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="message-archive-filter" class="generic-widget">
+            <style scoped>
+              #message-archive-filter {
+                flex-grow: 2;
+              }
+
+              #message-archive-filter .generic-widget-body {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="message-archive-filter-header">::message archive filter::</span>
+              <span></span>
+            </h4>
+            <div class="generic-widget-body" tabindex="-1">
+              message-archive-filter
+            </div>
+          </div>
+
+          <!--
+            #message-archive-edit widget
+
+            Role:
+              Show the message archive edit widget.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="message-archive-edit" class="generic-widget layout-margin-top">
+            <style scoped>
+              #message-archive-edit {
+                flex-grow: 3;
+              }
+
+              #message-archive-edit .generic-widget-body {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="message-archive-edit-header">::message archive edit::</span>
+              <span></span>
+            </h4>
+            <div class="generic-widget-body" tabindex="-1">
+              message-archive-edit
+            </div>
+          </div>
+
+        </div>
+
+        <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 3;">
+
+          <!--
+            #message-archive widget
+
+            Role:
+              Show the message archive.
+
+            Visibility:
+              Is controlled by the visibility of #context-messages.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="message-archive" class="generic-widget">
+            <style scoped>
+              #message-archive {
+                flex-grow: 1;
+              }
+
+              #message-archive .generic-widget-body {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="message-archive-header">::message archive::</span>
+              <span></span>
+            </h4>
+            <div class="generic-widget-body" tabindex="-1">
+              message-archive table
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!--
+        #context-home widget
+
+        Role:
+          Parent for all widgets that belong in the "home" context.
+
+        Visibility:
+          Visibility is controlled by the z-index of the context. 0 is hidden,
+          1 is visible.
+
+          Note that visibility on #context-home and its siblings MUST be
+          mutually exclusive.
+      -->
+      <section IgnoreClickFocus id="context-home" class="context display-flex-row">
+
+        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 4;">
+
+          <!--
+            #welcome-message widget
+
+            Role:
+              Presents the reception greeting when a reception is selected or
+              a call is answered.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="welcome-message" class="generic-widget">
+            <style scoped>
+              #welcome-message {
+                height: 4em;
+                overflow: auto;
+                pointer-events: none; /* ignore mouse click events */
+              }
+
+              #welcome-message > div {
+                position: absolute;
+                display: table;
+                height: 100%;
+                width: 100%;
+              }
+
+              #welcome-message .greeting {
+                display: table-cell;
+                vertical-align: middle;
+                width: 100%;
+                font-size: 1.5em;
+                padding: 0 0.7em;
+              }
+            </style>
+
+            <div>
+              <span class="greeting" data-lang-text="welcome-message">::welcome-message::</span>
+            </div>
+          </div>
+
+          <div IgnoreClickFocus class="display-flex-row layout-margin-top" style="flex-grow: 1;">
+            <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 4;">
+
+              <!--
+                #reception-selector widget
+
+                Role:
+                  Search for and select receptions.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  Input and ol element set to -1 on blur. MUST be updated on
+                  focus.
+              -->
+              <div id="reception-selector" class="generic-widget">
+                <style scoped>
+                  #reception-selector {
+                    flex-grow: 1;
+                  }
+
+                  #reception-selector .generic-widget-body div {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
+                    position: absolute;
+                    width: calc(100% - 1.5em);
+                    pointer-events: none;
+                  }
+
+                  #reception-selector .generic-widget-body div .filter {
+                    margin: 0.7em 0;
+                    height: 2em;
+                    font-size: 1em;
+                    padding: 0 0.3em;
+                    pointer-events: auto;
+                  }
+
+                  #reception-selector .generic-widget-list {
+                    height: 100%;
+                    outline: 0;
+                  }
+
+                  #reception-selector .generic-widget-list:focus,
+                  #reception-selector .generic-widget-list li:focus {
+                    outline: 0;
+                  }
+
+                  #reception-selector .generic-widget-list li {
+                    border-left: solid 3px #f7f7f7;
+                  }
+
+                  #reception-selector .generic-widget-list li:hover {
+                    cursor: pointer;
+                  }
+
+                  #reception-selector .generic-widget-list .selected {
+                    border-left: solid 3px #ff5621;
+                  }
+
+                  #reception-selector .generic-widget-list li.hide {
+                    display: none;
+                  }
+                </style>
+
+                <div class="spinning-focus-box"></div>
+                <div class="hint hidden"></div>
+
+                <h4 class="generic-widget-headline">
+                  <span data-lang-text="reception-selector-header">::reception-selector::</span>
+                  <span></span>
+                </h4>
+                <div class="generic-widget-body">
+                  <div>
+                    <input class="filter" data-lang-placeholder="filter" placeholder="::filter....::" tabindex="-1">
+                  </div>
+                  <ol class="generic-widget-list zebra" tabindex="-1"></ol>
+                </div>
+              </div>
+
+              <!--
+                #reception-calendar widget
+
+                Role:
+                  Show calendar entries for a reception.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  ol element set to -1 on blur. MUST be updated on focus.
+              -->
+              <div id="reception-calendar" class="generic-widget layout-margin-top" tabindex="-1">
+                <style scoped>
+                  #reception-calendar {
+                    flex-grow: 1;
+                  }
+
+                  #reception-calendar,
+                  #reception-calendar .generic-widget-list,
+                  #reception-calendar .generic-widget-list:focus,
+                  #reception-calendar .generic-widget-list li:focus {
+                    outline: 0;
+                  }
+
+                  #reception-calendar .generic-widget-list li {
+                    border-left: solid 3px #f7f7f7;
+                  }
+
+                  #reception-calendar .generic-widget-list li:hover {
+                    cursor: pointer;
+                  }
+
+                  #reception-calendar .generic-widget-list .selected {
+                    border-left: solid 3px #ff5621;
+                  }
+                </style>
+
+                <div class="spinning-focus-box"></div>
+                <div class="hint hidden"></div>
+
+                <h4 class="generic-widget-headline">
+                  <span data-lang-text="reception-calendar-header">::reception calendar::</span>
+                  <span></span>
+                </h4>
+                <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+              </div>
+
+              <!--
+                #reception-commands widget
+
+                Role:
+                  Show various call related commands for a reception.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  ol element set to -1 on blur. MUST be updated on focus.
+              -->
+              <div id="reception-commands" class="generic-widget layout-margin-top">
+                <style scoped>
+                  #reception-commands {
+                    flex-grow: 1;
+                  }
+
+                  #reception-commands .generic-widget-list {
+                    outline: 0;
+                  }
+                </style>
+
+                <div class="spinning-focus-box"></div>
+                <div class="hint hidden"></div>
+
+                <h4 class="generic-widget-headline">
+                  <span data-lang-text="reception-commands-header">::reception commands::</span>
+                  <span></span>
+                </h4>
+                <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+              </div>
+
+              <!--
+                #message-compose widget
+
+                Role:
+                  Create and send/save messages to a contact.
+
+                Notable children;
+                  <span> #message-compose .show-recipients
+                    Span element that can be used as a trigger for toggling
+                    visibility on the recipient list.
+                  <div> #message-compose .recipients
+                    Toggle .recipients-hidden on this element to either show or
+                    hide the recipient list.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  All input, textarea and button elements set to -1 on blur.
+                  MUST be Updated on focus.
+              -->
+              <div id="message-compose" class="generic-widget layout-margin-top" tabindex="-1">
+                <style scoped>
+                  #message-compose {
+                    flex-grow: 3;
+                    outline: 0;
+                  }
+
+                  #message-compose .padding03 {
+                    padding: 0.3em;
+                  }
+
+                  #message-compose input[type="text"] {
+                    flex-grow: 1;
+                    height: 2em;
+                    padding: 0 0.3em;
+                    font-size: 1em;
+                  }
+
+                  #message-compose ol {
+                    list-style-type: none;
+                  }
+
+                  #message-compose .generic-widget-headline .show-recipients {
+                    float: right;
+                    text-decoration: underline;
+                  }
+
+                  #message-compose .generic-widget-headline .show-recipients:hover {
+                    cursor: pointer;
+                  }
+
+                  #message-compose .recipients {
+                    position: absolute;
+                    top: 1.5%;
+                    left: 49%;
+                    width: 50%;
+                    background-color: #f7f7f7;
+                    box-shadow: 0.2em 0.2em 0.2em #888;
+                    border: solid 1px #aaa;
+                  }
+
+                  #message-compose .recipients-hidden {
+                    z-index: -1;
+                  }
+
+                  #message-compose .recipients ol li {
+                    padding: 0.1em;
+                  }
+
+                  #message-compose .recipients .cc:after {
+                    content: ' (cc)'
+                  }
+
+                  #message-compose .recipients .bcc:after {
+                    content: ' (bcc)'
+                  }
+
+                  #message-compose .name-hint {
+                    margin-top: 0.3em;
+                  }
+
+                  #message-compose .names {
+                    margin-top: 0.7em;
+                  }
+
+                  #message-compose .names input.caller {
+                    margin-right: 0.3em;
+                  }
+
+                  #message-compose .names input.company {
+                    margin-left: 0.3em;
+                  }
+
+                  #message-compose .phone-numbers {
+                    margin-top: 0.7em;
+                  }
+
+                  #message-compose .phone-numbers input.landline {
+                    margin-right: 0.3em;
+                  }
+
+                  #message-compose .phone-numbers input.cell {
+                    margin-left: 0.3em;
+                    margin-right: 0.3em;
+                  }
+
+                  #message-compose .phone-numbers input.extension {
+                    margin-left: 0.3em;
+                  }
+
+                  #message-compose .message {
+                    flex-grow: 1;
+                    margin-top: 0.7em;
+                  }
+
+                  #message-compose .message textarea {
+                    resize: none;
+                    flex-grow: 1;
+                    font-size: 1em;
+                  }
+
+                  #message-compose .checks-and-buttons {
+                    margin-top: 0.7em;
+                    padding: 0 0 0 0.5em;
+                  }
+
+                  #message-compose .checks-and-buttons .checks {
+                    flex-grow: 1;
+                  }
+
+                  #message-compose .checks-and-buttons .checks ol {
+                    margin: 0;
+                    padding: 0;
+                  }
+
+                  #message-compose .checks-and-buttons .checks label {
+                    position: absolute;
+                    top: -1px; /* align label with checkbox */
+                  }
+
+                  #message-compose .checks-and-buttons .checks ol>li {
+                    position: relative;
+                    padding-bottom: 0.3em;
+                  }
+
+                  #message-compose .checks-and-buttons .checks ol>li:last-child {
+                    padding-bottom: 0em;
+                  }
+
+                  #message-compose .checks-and-buttons .checks input {
+                    margin-right: 0.5em;
+                  }
+
+                  #message-compose .checks-and-buttons .buttons {
+                    justify-content: flex-end;
+                    align-items: flex-end;
+                    padding: 0 0.3em 0.3em 0;
+                  }
+
+                  #message-compose .checks-and-buttons .buttons button {
+                    height: 2em;
+                    width: 5em;
+                    margin-left: 1em;
+                    font-size: 1em;
+                  }
+                </style>
+
+                <div class="spinning-focus-box"></div>
+                <div class="hint hidden"></div>
+
+                <h4 class="generic-widget-headline">
+                  <span data-lang-text="message-compose-header">::message compose::</span>
+                  <span class="show-recipients" data-lang-text="message-compose-show-recipients">::show-recipients::</span>
+                </h4>
+                <div class="generic-widget-body display-flex-column padding03">
+                  <div class="recipients padding03 recipients-hidden">
+                    <ol class="generic-widget-list">
+                      <li>Thomas Løcke</li>
+                      <li class="cc">Trine Løcke</li>
+                      <li class="bcc">Steen Løcke</li>
+                    </ol>
+                  </div>
+                  <div class="name-hint display-flex-row">
+                    <input type="text" placeholder="::name hint::" value="" disabled data-lang-placeholder="message-compose-name-hint">
+                  </div>
+
+                  <div class="names display-flex-row">
+                    <input type="text" class="caller" placeholder="::caller name::" tabindex="-1" data-lang-placeholder="message-compose-caller-name">
+                    <input type="text" class="company" placeholder="::company name::" tabindex="-1" data-lang-placeholder="message-compose-company-name">
+                  </div>
+
+                  <div class="phone-numbers display-flex-row">
+                    <input type="text" class="landline" placeholder="::phone::" tabindex="-1" data-lang-placeholder="message-compose-phone">
+                    <input type="text" class="cell" placeholder="::cell phone::" tabindex="-1" data-lang-placeholder="message-compose-cell-phone">
+                    <input type="text" class="extension" placeholder="::local extension::" tabindex="-1" data-lang-placeholder="message-compose-local-ext">
+                  </div>
+
+                  <div class="message display-flex-row">
+                    <textarea class="padding03" placeholder="::message::" tabindex="-1" data-lang-placeholder="message-compose-message"></textarea>
+                  </div>
+
+                  <div class="checks-and-buttons display-flex-row">
+                    <div class="checks">
+                      <ol>
+                        <li>
+                          <input id="message-compose-please-call" class="please-call" type="checkbox" tabindex="-1">
+                          <label for="message-compose-please-call" data-lang-text="message-compose-please-call">::please call::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-calls-back" class="calls-back" type="checkbox" tabindex="-1">
+                          <label for="message-compose-calls-back" data-lang-text="message-compose-calls-back">::calls-back::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-urgent" class="urgent" type="checkbox" tabindex="-1">
+                          <label for="message-compose-urgent" data-lang-text="message-compose-urgent">::urgent::</label>
+                        </li>
+                        <li>
+                          <input id="message-compose-draft" class="draft" type="checkbox" tabindex="-1">
+                          <label for="message-compose-draft" data-lang-text="message-compose-draft">::draft::</label>
+                        </li>
+                      </ol>
+                    </div>
+
+                    <div class="buttons display-flex-row">
+                      <button class="cancel" disabled tabindex="-1" data-lang-text="message-compose-cancel">::cancel::</button>
+                      <button class="save" disabled tabindex="-1" data-lang-text="message-compose-save">::save::</button>
+                      <button class="send" disabled tabindex="-1" data-lang-text="message-compose-send">::send::</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 5;">
+              <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 2;">
+
+                <!--
+                  #contact-selector widget
+
+                  Role:
+                    Search and select contacts.
+
+                  Visibility:
+                    Is controlled by the visibility of #context-home.
+
+                  Tabindex:
+                    Input and ol element set to -1 on blur. MUST be updated on
+                    focus.
+                -->
+                <div id="contact-selector" class="generic-widget layout-margin-right">
+                  <style scoped>
+                    #contact-selector {
+                      flex-grow: 2;
+                    }
+
+                    #contact-selector .filter {
+                      width: calc(100% - 0.6em);
+                      margin: 0.2em 0.3em 0.3em 0.3em;
+                      height: 2em;
+                      font-size: 1em;
+                      padding: 0 0.3em;
+                    }
+
+                    #contact-selector .generic-widget-list {
+                      height: calc(100% - 2.8em);
+                      outline: 0;
+                    }
+
+                    #contact-selector .generic-widget-list:focus,
+                    #contact-selector .generic-widget-list li:focus {
+                      outline: 0;
+                    }
+
+                    #contact-selector .generic-widget-list li {
+                      border-left: solid 3px #f7f7f7;
+                    }
+
+                    #contact-selector .generic-widget-list li:hover {
+                      cursor: pointer;
+                    }
+
+                    #contact-selector .generic-widget-list .selected {
+                      border-left: solid 3px #ff5621;
+                    }
+
+                    #contact-selector .generic-widget-list li.hide {
+                      display: none;
+                    }
+                  </style>
+
+                  <div class="spinning-focus-box"></div>
+                  <div class="hint hidden"></div>
+
+                  <h4 class="generic-widget-headline">
+                    <span data-lang-text="contact-selector-header">::contact list::</span>
+                    <span></span>
+                  </h4>
+                  <div class="generic-widget-body">
+                    <input class="filter" placeholder="::filter....::" tabindex="-1" data-lang-placeholder="filter">
+                    <ol class="generic-widget-list zebra" tabindex="-1"></ol>
+                  </div>
+                </div>
+
+                <!--
+                  #contact-calendar widget
+
+                  Role:
+                    Show calendar entries for a contact.
+
+                  Visibility:
+                    Is controlled by the visibility of #context-home.
+
+                  Tabindex:
+                    ol element set to -1 on blur. MUST be updated on focus.
+                -->
+                <div id="contact-calendar" class="generic-widget" tabindex="-1">
+                  <style scoped>
+                    #contact-calendar {
+                      flex-grow: 3;
+                    }
+
+                    #contact-calendar,
+                    #contact-calendar .generic-widget-list,
+                    #contact-calendar .generic-widget-list:focus,
+                    #contact-calendar .generic-widget-list li:focus {
+                      outline: 0;
+                    }
+
+                    #contact-calendar .generic-widget-list li {
+                      border-left: solid 3px #f7f7f7;
+                    }
+
+                    #contact-calendar .generic-widget-list li:hover {
+                      cursor: pointer;
+                    }
+
+                    #contact-calendar .generic-widget-list .selected {
+                      border-left: solid 3px #ff5621;
+                    }
+                  </style>
+
+                  <div class="spinning-focus-box"></div>
+                  <div class="hint hidden"></div>
+
+                  <h4 class="generic-widget-headline">
+                    <span data-lang-text="contact-calendar-header">::contact calendar::</span>
+                    <span></span>
+                  </h4>
+                  <ol class="generic-widget-body generic-widget-list zebra"></ol>
+                </div>
+
+              </div>
+
+              <!--
+                #contact-data widget
+
+                Role:
+                  Show the data sheet for a contact.
+
+                Visibility:
+                  Is controlled by the visibility of #context-home.
+
+                Tabindex:
+                  None set.
+              -->
+              <div id="contact-data" class="generic-widget layout-margin-top" tabindex="-1">
+                <style scoped>
+                  #contact-data {
+                    flex-grow: 4;
+                  }
+
+                  #contact-data .column {
+                    height: 100%;
+                    width: 50%;
+                    padding: 0.3em;
+                  }
+
+                  #contact-data .cell {
+                    position: relative;
+                    height: 20%;
+                    width: 100%;
+                  }
+
+                  #contact-data .cell h5 {
+                    position: relative;
+                    margin: 0.1em 0.2em 0.2em 0;
+                    height: 1.2em;
+                  }
+
+                  #contact-data .cell ol,
+                  #contact-data .cell ol {
+                    position: relative;
+                    height: calc(100% - 1.8em);
+                    margin: 0 0.3em 0 0;
+                  }
+
+                  #contact-data .cell ol > li {
+                    padding: 0.2em;
+                  }
+
+                  #contact-data .telephone-number {
+                    padding: 0;
+                    list-style-position: inside;
+                    list-style-position: decimal;
+                    overflow: auto;
+                  }
+
+                  #contact-data,
+                  #contact-data .telephone-number:focus,
+                  #contact-data .cell .telephone-number li:focus {
+                    outline: 0;
+                  }
+
+                  #contact-data .cell .telephone-number li {
+                    border-left: solid 3px #f7f7f7;
+                    margin-left: 0.2em;
+                    padding: 0.3em;
+                  }
+
+                  #contact-data .cell .telephone-number li:hover {
+                    cursor: pointer;
+                  }
+
+                  #contact-data .cell .telephone-number li span.label {
+                    padding-left: 0.5em;
+                    font-size: 0.8em;
+                    text-decoration: none;
+                  }
+
+                  #contact-data .cell .telephone-number li span.number {
+                    padding-left: 0.5em;
+                  }
+
+                  #contact-data .cell .telephone-number .selected {
+                    border-left: solid 3px #ff5621;
+                  }
+
+                  #contact-data .cell .telephone-number .secret {
+                    text-decoration: line-through;
+                    color: #ff2601;
+                  }
+
+                  #contact-data .cell .telephone-number li:hover .secret {
+                    text-decoration: none;
+                    color: initial;
+                  }
+
+                  /*
+                    TODO (TL): Remove the -webkit- specific selectors
+                    when Chrome gets rid of them.
+                  */
+                  #contact-data .cell .ringing {
+                    animation-name: flash;
+                    animation-duration: 2s;
+                    animation-fill-mode: both;
+                    animation-iteration-count: infinite;
+                    -webkit-animation-name: flash;
+                    -webkit-animation-duration: 2s;
+                    -webkit-animation-fill-mode: both;
+                    -webkit-animation-iteration-count: infinite;
+                  }
+
+                  @keyframes flash {
+                    0%, 50%, 100% {opacity: 1}
+                    25%, 75% {opacity: 0.1}
+                  }
+
+                  @-webkit-keyframes flash {
+                    0%, 50%, 100% {opacity: 1}
+                    25%, 75% {opacity: 0.1}
+                  }
+                </style>
+
+                <div class="spinning-focus-box"></div>
+                <div class="hint hidden"></div>
+
+                <h4 class="generic-widget-headline">
+                  <span data-lang-text="contact-data-header">::contact data::</span>
+                  <span></span>
+                </h4>
+                <div class="generic-widget-body" style="display: flex; flex-direction: row;">
+                  <div class="column">
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-work-hours">::work hours::</h5>
+                      <ol class="work-hours generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-title">::title::</h5>
+                      <ol class="title generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-department">::department::</h5>
+                      <ol class="department generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-relations">::relations::</h5>
+                      <ol class="relations generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-add-info">::additional info::</h5>
+                      <ol class="additional-info generic-widget-list"></ol>
+                    </div>
+                  </div>
+
+                  <div class="column">
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-commands">::commands::</h5>
+                      <ol class="commands generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-responsibility">::responsibility::</h5>
+                      <ol class="responsibility generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-telephone-numbers">::telephone numbers::</h5>
+                      <ol class="telephone-number zebra" tabindex="-1"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-email-addresses">::email addresses::</h5>
+                      <ol class="email-addresses generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell">
+                      <h5 data-lang-text="contact-data-backup">::backup::</h5>
+                      <ol class="backups generic-widget-list"></ol>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- Contact data end -->
+
+            </div>
+          </div>
+        </div>
+        <div IgnoreClickFocus class="display-flex-column" style="flex-grow: 1;">
+
+          <!--
+            #agent-info widget
+
+            Role:
+              Show the amount of active/paused agents, a warning/notification
+              indicator, the state of the current agent and a picture of the
+              current agent.
+
+            Visibility:
+              Is controlled by the visibility of #context-home
+
+            Tabindex:
+              None set.
+          -->
+          <div id="agent-info" class="generic-widget">
+            <style scoped>
+              #agent-info {
+                height: 4em;
+                pointer-events: none; /* ignore mouse click events */
+              }
+
+              #agent-info > div {
+                display: flex;
+                flex-direction: row;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+              }
+
+              #agent-info .stats {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                position: relative;
+                height: 100%;
+                width: 100%;
+              }
+
+              #agent-info .stats > table {
+                padding: 0;
+                border-collapse: collapse;
+                height: 3em;
+                margin: 0.5em;
+                font-weight: bold;
+              }
+
+              #agent-info .stats > table td {
+                padding-left: 0.5em;
+              }
+
+              #agent-info .icons {
+                flex-grow: 1;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                position: relative;
+                height: 100%;
+                width: 100%;
+              }
+
+              #agent-info .icons > img {
+                min-height: 3em;
+                min-width: 3em;
+                height: 3em;
+                width: 3em;
+                margin-right: 1em;
+              }
+            </style>
+
+            <div>
+              <div class="stats">
+                <table>
+                  <tr>
+                    <td data-lang-text="agent-info-active">::active::</td>
+                    <td class="active-count"></td>
+                  </tr>
+                  <tr>
+                    <td data-lang-text="agent-info-paused">::paused::</td>
+                    <td class="paused-count"></td>
+                  </tr>
+                </table>
+              </div>
+
+              <div class="icons">
+                <img class="alert-state" src="">
+                <img class="agent-state" src="">
+                <img class="portrait" src="">
+              </div>
+            </div>
+          </div>
+
+          <!--
+            #reception-opening-hours widget
+
+            Role:
+              Show the reception opening hours.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-opening-hours" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-opening-hours {
+                flex-grow: 1;
+              }
+
+              #reception-opening-hours .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <div class="hint hidden"></div>
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-opening-hours-header">::reception opening hours::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-salesmen widget
+
+            Role:
+              Show the commands for handling calls from sales people.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-salesmen" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-salesmen {
+                flex-grow: 1;
+              }
+
+              #reception-salesmen .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <div class="hint hidden"></div>
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-salesmen-header">::reception salesmen::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #reception-product widget
+
+            Role:
+              Show the reception product description.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="reception-product" class="generic-widget layout-margin-top">
+            <style scoped>
+              #reception-product {
+                flex-grow: 1;
+              }
+
+              #reception-product > div {
+                outline: 0;
+                overflow: auto;
+                padding: 0.3em;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <div class="hint hidden"></div>
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="reception-product-header">::reception product description::</span>
+              <span></span>
+            </h4>
+            <div class="generic-widget-body" tabindex="-1"></div>
+          </div>
+
+          <!--
+            #global-calls-queue widget
+
+            Role:
+              Show the global list of currently queued calls. These are calls
+              that are waiting to be answered.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="global-call-queue" class="generic-widget layout-margin-top">
+            <style scoped>
+              #global-call-queue {
+                flex-grow: 2;
+              }
+
+              #global-call-queue .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="global-call-queue-header">::queued calls::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+          <!--
+            #my-call-queue widget
+
+            Role:
+              Show the list of calls that the current agent have put on hold.
+
+            Visibility:
+              Is controlled by the visibility of #context-home.
+
+            Tabindex:
+              None set.
+          -->
+          <div id="my-call-queue" class="generic-widget layout-margin-top">
+            <style scoped>
+              #my-call-queue {
+                flex-grow: 1;
+              }
+
+              #my-call-queue .generic-widget-list {
+                outline: 0;
+              }
+            </style>
+
+            <div class="spinning-focus-box"></div>
+            <!--<div class="hint hidden"></div>-->
+
+            <h4 class="generic-widget-headline">
+              <span data-lang-text="my-queued-calls-header">::my queued calls::</span>
+              <span></span>
+            </h4>
+            <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!--
+    #receptionistclient-disaster state
+
+    Role:
+      Present the user with error message(s) if the application is hit by errors
+      that makes it impossible for the user to use the application.
+
+    Visibility:
+      Hidden   #receptionistclient-disaster display:none
+      Visible: #receptionistclient-disaster display:flex
+
+      Initial state is display:none.
+
+      Note that visibility on #receptionistclient-disaster and its siblings MUST
+      be mutually exclusive.
+  -->
+  <div IgnoreClickFocus id="receptionistclient-disaster">
+    <style scoped>
+      #receptionistclient-disaster {
+        display: none;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        padding: 5em;
+      }
+
+      h1 {
+        margin: 0 auto;
+      }
+
+      img {
+        display: block;
+        width: 300px;
+        height: 300px;
+        margin: 5em auto;
+      }
+    </style>
+
+    <h1 data-lang-text="state-disaster-header"></h1>
+    <img src="images/animated-bitstack.gif">
+  </div>
+
+  <!--
+    #receptionistclient-loading state
+
+    Role:
+      Present the user with loading message(s) while the application is starting
+      up.
+
+    Visibility:
+      Hidden   #receptionistclient-loading display:none
+      Visible: #receptionistclient-loading display:flex
+
+      Initial state is display:none.
+
+      Note that visibility on #receptionistclient-loading and its siblings MUST
+      be mutually exclusive.
+  -->
+  <div IgnoreClickFocus id="receptionistclient-loading">
+    <style scoped>
+      #receptionistclient-loading {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        padding: 5em;
+      }
+
+      h1 {
+        margin: 0 auto;
+      }
+
+      img {
+        display: block;
+        width: 300px;
+        height: 300px;
+        margin: 5em auto;
+      }
+    </style>
+
+    <h1 data-lang-text="state-loading-header"></h1>
+    <img src="images/animated-bitstack.gif">
+  </div>
+
+  <script type="application/dart" src="main.dart"></script>
+  <script data-pub-inline src="packages/browser/dart.js"></script>
+</body>
+</html>
