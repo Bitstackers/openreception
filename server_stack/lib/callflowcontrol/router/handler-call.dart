@@ -291,7 +291,7 @@ abstract class Call {
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
         String userState = Model.UserStatusList.instance.get(user.ID).state;
-        Future<Call> outboundCall;
+        Future<Model.Call> outboundCall;
 
         bool inTransition =
             ORModel.UserState.TransitionStates.contains(userState);
