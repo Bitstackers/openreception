@@ -9,7 +9,6 @@ import 'package:route/server.dart';
 import 'package:logging/logging.dart';
 
 import 'configuration.dart';
-import 'package:logging/logging.dart';
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/storage.dart' as Storage;
@@ -38,8 +37,8 @@ final List<Pattern> allUniqueUrls = [messageDraftListResource, messageDraftResou
                                      messageResource, messageSaveResource,
                                      messageSendResource, messageResendResource];
 
-void setup(HttpServer server) {
-  Router router = new Router(server)
+Router setup(HttpServer server) =>
+  new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(messageDraftResource,        method: 'GET'   ).listen(MessageDraft.get)
     ..serve(messageDraftResource,        method: 'PUT'   ).listen(MessageDraft.update)
@@ -56,7 +55,6 @@ void setup(HttpServer server) {
 
     ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
-}
 
 Database.Connection connection = null;
 Storage.Message messageStore = new Database.Message (connection);

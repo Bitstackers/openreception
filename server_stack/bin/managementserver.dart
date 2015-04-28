@@ -4,18 +4,22 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart' as orf;
-
-import '../lib/management_server/configuration.dart';
+import '../lib/management_server/configuration.dart' as json;
+import '../lib/configuration.dart';
 import '../lib/management_server/database.dart';
 import '../lib/management_server/router.dart';
 import '../lib/management_server/utilities/http.dart';
 
 const libraryName = 'managementserver';
+Logger log = new Logger ('managementserver.main');
 
 void main(List<String> args) {
-  const context = '${libraryName}.main';
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.managementServer.log.level;
+  Logger.root.onRecord.listen(Configuration.managementServer.log.onRecord);
+
   Directory.current = dirname(Platform.script.toFilePath());
 
   ArgParser parser = new ArgParser();
@@ -25,18 +29,17 @@ void main(List<String> args) {
     print(parser.usage);
   }
 
-  config = new Configuration(parsedArgs)
+  json.config = new json.Configuration(parsedArgs)
     ..parse();
-  orf.logger.debugContext(config, context);
+  log.fine(json.config);
 
-  setupDatabase(config)
-    .then((db) => setupControllers(db, config))
+  setupDatabase(json.config)
+    .then((db) => setupControllers(db, json.config))
     .then((_) => connectNotificationService())
-    .then((_) => makeServer(config.httpport))
+    .then((_) => makeServer(json.config.httpport))
     .then((HttpServer server) {
-      setupRoutes(server, config);
-
-      orf.logger.debugContext('Server started up!', context);
+      setupRoutes(server, json.config);
+      log.fine('Server listening on ${server.address}, port ${server.port}');
     });
 }
 

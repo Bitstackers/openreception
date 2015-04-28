@@ -40,10 +40,7 @@ void main(List<String> args) {
         .then((_) => watcher.setup())
         .then((_) => vault.loadFromDirectory(auth.config.serverTokenDir))
         .then((_) => http.start(auth.config.httpport, router.setup))
-        .catchError((e) {
-          print ('main() -> config.whenLoaded() ${e}');
-          throw e;
-        });
+        .catchError(log.shout);
     }
   } on ArgumentError catch(e) {
     log.severe('main() ArgumentError ${e}.');

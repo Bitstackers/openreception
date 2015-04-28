@@ -88,8 +88,8 @@ void connectNotificationService() {
 }
 
 
-void setupRoutes(HttpServer server, Configuration config) {
-  Router router = new Router(server)
+Router setupRoutes(HttpServer server, Configuration config) =>
+  new Router(server)
     ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
 
     ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
@@ -187,7 +187,6 @@ void setupRoutes(HttpServer server, Configuration config) {
     ..serve(anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
 
     ..defaultStream.listen(orf_http.page404);
-}
 
 void setupControllers(Database db, Configuration config) {
   contact = new ContactController(db, config);

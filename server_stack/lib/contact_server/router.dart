@@ -55,17 +55,16 @@ void connectNotificationService() {
 }
 
 
-void setup(HttpServer server) {
-  Router router = new Router(server)
-      ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
-      ..serve(              receptionContactResource, method: 'GET'   ).listen(Contact.get)
-      ..serve(          receptionContactListResource, method: 'GET'   ).listen(getContactList)
-      ..serve(    receptionContactInvalidateResource, method: 'POST'  ).listen(invalidateReception)
-      ..serve(  receptionContactCalendarListResource, method: 'GET'   ).listen(ContactCalendar.list)
-      ..serve(      receptionContactCalendarResource, method: 'GET'   ).listen(ContactCalendar.get)
-      ..serve(      receptionContactCalendarResource, method: 'PUT'   ).listen(ContactCalendar.update)
-      ..serve(receptionContactCalendarCreateResource, method: 'POST'  ).listen(ContactCalendar.create)
-      ..serve(      receptionContactCalendarResource, method: 'DELETE').listen(ContactCalendar.remove)
-      ..serve(anything, method: 'OPTIONS').listen(preFlight)
-      ..defaultStream.listen(page404);
-}
+Router setup(HttpServer server) =>
+  new Router(server)
+    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
+    ..serve(              receptionContactResource, method: 'GET'   ).listen(Contact.get)
+    ..serve(          receptionContactListResource, method: 'GET'   ).listen(getContactList)
+    ..serve(    receptionContactInvalidateResource, method: 'POST'  ).listen(invalidateReception)
+    ..serve(  receptionContactCalendarListResource, method: 'GET'   ).listen(ContactCalendar.list)
+    ..serve(      receptionContactCalendarResource, method: 'GET'   ).listen(ContactCalendar.get)
+    ..serve(      receptionContactCalendarResource, method: 'PUT'   ).listen(ContactCalendar.update)
+    ..serve(receptionContactCalendarCreateResource, method: 'POST'  ).listen(ContactCalendar.create)
+    ..serve(      receptionContactCalendarResource, method: 'DELETE').listen(ContactCalendar.remove)
+    ..serve(anything, method: 'OPTIONS').listen(preFlight)
+    ..defaultStream.listen(page404);

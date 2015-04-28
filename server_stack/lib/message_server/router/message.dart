@@ -101,7 +101,8 @@ abstract class Message {
               ..userID         = map ['user_id']
               ..limitCount     = map ['limit']
               ..upperMessageID = map ['upper_message_id'];
-      } catch (error, stacktrace) {
+      } catch (error, stackTrace) {
+        log.severe(error, stackTrace);
         clientError(request, 'Bad filter');
         return;
       }
@@ -158,8 +159,6 @@ abstract class Message {
    * message - and the it's contents - are replaced by the one passed by the client.
    */
   static void save (HttpRequest request) {
-
-    final String context = '${className}.save';
     final String token   = request.uri.queryParameters['token'];
 
     AuthService.userOf(token).then((Model.User user) {

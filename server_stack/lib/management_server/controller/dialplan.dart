@@ -64,7 +64,7 @@ class DialplanController {
   void updateDialplan(HttpRequest request) {
     const String context = '${libraryName}.updateDialplan';
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    final String token = request.uri.queryParameters['token'];
+    //final String token = request.uri.queryParameters['token'];
 
     orf_http.extractContent(request)
       .then(JSON.decode)
@@ -227,7 +227,7 @@ class DialplanController {
   }
 
   void recordSound(HttpRequest request) {
-    const String context = '${libraryName}.getReception';
+    //const String context = '${libraryName}.getReception';
     final String token = request.uri.queryParameters['token'];
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 
@@ -253,7 +253,7 @@ class DialplanController {
   }
 
   void deleteSoundFile(HttpRequest request) {
-    const String context = '${libraryName}.getReception';
+    //const String context = '${libraryName}.getReception';
     final String token = request.uri.queryParameters['token'];
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
 

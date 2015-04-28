@@ -164,8 +164,8 @@ class Configuration {
     });
   }
 
-  void _outputConfig() {
-    print('''
+  @override
+  String  toString() =>'''
 httpport:   $httpport
 dbuser:     $dbuser
 dbpassword: ${dbpassword != null && dbpassword.isNotEmpty ? dbpassword.split('').first +
@@ -176,8 +176,7 @@ dbport:     $dbport
 dbname:     $dbname
 emailfrom:  $emailFromName <$emailFrom>
 mailuser:   $emailUsername
-mailpass:   $emailPassword''');
-  }
+mailpass:   $emailPassword''';
 
   Future whenLoaded() {
     return _parseConfigFile().whenComplete(_parseArgument);

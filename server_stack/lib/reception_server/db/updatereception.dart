@@ -12,7 +12,7 @@ Future<Map> updateReception(int id, String full_name, String uri, Map attributes
        'uri'       : uri,
        'attributes': attributes == null ? '{}' : attributes,
        'enabled'   : enabled};
-    return connection.execute(sql).then((rowsAffected) {
+    return connection.execute(sql, parameters).then((rowsAffected) {
       return {'rowsAffected': rowsAffected};
     });
 }

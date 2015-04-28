@@ -24,8 +24,8 @@ final Pattern checkpointResource = new UrlPattern(r'/checkpoint');
 
 final List<Pattern> allUniqueUrls = [cdrResource, checkpointResource];
 
-void setup(HttpServer server) {
-  Router router = new Router(server)
+Router setup(HttpServer server) =>
+  new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(cdrResource,    method: 'GET').listen(cdrHandler)
     ..serve(newcdrResource, method: 'POST').listen(insertCdrData)
@@ -33,5 +33,4 @@ void setup(HttpServer server) {
     ..serve(checkpointResource, method: 'PUT').listen(createCheckpoint)
     ..serve(anything,       method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
-}
 

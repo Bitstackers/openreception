@@ -2,16 +2,22 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart';
-import '../lib/notification_server/configuration.dart';
+import '../lib/notification_server/configuration.dart' as json;
+import '../lib/configuration.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/notification_server/router.dart' as router;
 
+Logger log = new Logger ('NotificationServer');
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.notificationServer.log.level;
+  Logger.root.onRecord.listen(Configuration.notificationServer.log.onRecord);
+
   try {
     Directory.current = dirname(Platform.script.toFilePath());
 
@@ -20,22 +26,14 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
+      json.config = new json.Configuration(parsedArgs);
+      json.config.whenLoaded()
         .then((_)       => router.connectAuthService())
-        .then((_)       => http.start(config.httpport, router.registerHandlers))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+        .then((_)       => http.start(json.config.httpport, router.registerHandlers))
+        .catchError(log.shout);
     }
-  } on ArgumentError catch(e) {
-    log('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch(e) {
-    log('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch(e) {
-    log('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.shout(error, stackTrace);
   }
 }
 

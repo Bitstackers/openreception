@@ -3,18 +3,20 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 
-import 'package:openreception_framework/common.dart';
 import 'package:logging/logging.dart';
-import '../lib/message_server/configuration.dart';
+import '../lib/message_server/configuration.dart' as json;
+import '../lib/configuration.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/message_server/router.dart' as router;
 
+Logger log = new Logger ('MessageServer');
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
-  Logger.root.level = Level.ALL;
-  Logger.root.onRecord.listen(print);
+  ///Init logging. Inherit standard values.
+  Logger.root.level = Configuration.messageServer.log.level;
+  Logger.root.onRecord.listen(Configuration.messageServer.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -24,25 +26,16 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      config = new Configuration(parsedArgs);
-      config.whenLoaded()
+      json.config = new json.Configuration(parsedArgs);
+      json.config.whenLoaded()
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
         .then((_) => router.startDatabase())
-        .then((_) => http.start(config.httpport, router.setup))
-        .then((_) => print ('MessageServer listening on port ${config.httpport}'))
-        .catchError((e) => log('main() -> config.whenLoaded() ${e}'));
+        .then((_) => http.start(json.config.httpport, router.setup))
+        .catchError(log.shout);
     }
-  } on ArgumentError catch(e) {
-    log('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch(e) {
-    log('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch(e) {
-    log('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.shout(error, stackTrace);
   }
 }
 

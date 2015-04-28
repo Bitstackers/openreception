@@ -47,19 +47,11 @@ void main(List<String> args) {
 
         // HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
-      .then((_) => periodicEmailSend()).catchError((e, stackTrace) => log.shout (e, stackTrace));
+      .then((_) => periodicEmailSend())
+      .catchError(log.shout);
     }
-  } on ArgumentError catch (e, stackTrace) {
-    log.shout ('main() ArgumentError ${e} : ${stackTrace}');
-    print(parser.usage);
-
-  } on FormatException catch (e, stackTrace) {
-    log.shout ('main() FormatException ${e} : ${stackTrace}');
-    print(parser.usage);
-
-  } catch (e, stackTrace) {
-
-    log.shout ('Unhandled exception ${e} : ${stackTrace}');
+  } catch(error, stackTrace) {
+    log.shout(error, stackTrace);
   }
 }
 

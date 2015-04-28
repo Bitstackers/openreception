@@ -19,8 +19,8 @@ ArgParser parser = new ArgParser();
 void main(List<String> args) {
 
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.logDefaults.level;
-  Logger.root.onRecord.listen(Configuration.logDefaults.onRecord);
+  Logger.root.level = Configuration.callFlowControl.log.level;
+  Logger.root.onRecord.listen(Configuration.callFlowControl.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -36,18 +36,10 @@ void main(List<String> args) {
         .then((_) => router.connectNotificationService())
         .then((_) => connectESLClient())
         .then((_) => http.start(callflow.config.httpport, router.registerHandlers))
-        .catchError((e) => log.info('main() -> config.whenLoaded() ${e}'));
+        .catchError(log.shout);
     }
-  } on ArgumentError catch (e) {
-    log.shout ('main() ArgumentError ${e}.');
-    print(parser.usage);
-
-  } on FormatException catch (e) {
-    log.shout('main() FormatException ${e}');
-    print(parser.usage);
-
-  } catch (e) {
-    log.shout('main() exception ${e}');
+  } catch(error, stackTrace) {
+    log.shout(error, stackTrace);
   }
 }
 
@@ -64,7 +56,9 @@ void connectESLClient() {
   //TODO: Channel-List subscriptions.
   Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
 
-  Model.PBXClient.instance.eventStream.listen(Model.ChannelList.instance.handleEvent);
+  Model.PBXClient.instance.eventStream
+    .listen(Model.ChannelList.instance.handleEvent)
+    .onDone(connectESLClient); // Reconnect
 
   Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
 
@@ -72,6 +66,7 @@ void connectESLClient() {
   Model.PBXClient.instance.requestStream.listen((ESL.Packet packet) {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
+        log.info('Connected to ${callflow.config.eslHostname}:${callflow.config.eslPort}');
         Model.PBXClient.instance.authenticate(callflow.config.eslPassword)
           .then((_) => Model.PBXClient.instance.event(['all'], format : ESL.EventFormat.Json))
           .then((_) => Model.PBXClient.instance.api('list_users')
@@ -92,7 +87,7 @@ void connectESLClient() {
       } else {
         log.severe('Failed to connect to FreeSWTICH.', error, stackTrace);
       }
-    }).then ((_) => log.info('Connected to ${callflow.config.eslHostname}:${callflow.config.eslPort}'));
+    });
   }
 
   tryConnect ();

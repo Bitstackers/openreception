@@ -36,7 +36,7 @@ analyze:
 	@(dartanalyzer --no-hints --fatal-warnings bin/*.dart)
 
 analyze-hints:
-	@echo "! (dartanalyzer bin/*dart.dart | grep '^\[')" | bash
+	@echo "! (dartanalyzer bin/*.dart | grep '^\[')" | bash
 
 dependency:
 	pub get

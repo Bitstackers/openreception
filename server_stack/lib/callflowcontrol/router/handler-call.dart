@@ -561,9 +561,6 @@ abstract class Call {
     /// Any authenticated user is allowed to originate new calls.
     bool aclCheck(ORModel.User user) => true;
 
-    bool validExtension(String extension) =>
-        extension != null && extension.length > 1;
-
     AuthService.userOf(token).then((ORModel.User user) {
       if (!aclCheck(user)) {
         forbidden(request, 'Insufficient privileges.');

@@ -19,8 +19,8 @@ final Pattern errorUrl = new UrlPattern('/log/error');
 final Pattern criticalUrl = new UrlPattern('/log/critical');
 final List<Pattern> allUniqueUrls = [debugUrl, infoUrl, errorUrl, criticalUrl];
 
-void setup(HttpServer server) {
-  Router router = new Router(server)
+Router setup(HttpServer server) =>
+  new Router(server)
     ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
     ..serve(debugUrl, method: 'POST').listen(logDebug)
     ..serve(infoUrl, method: 'POST').listen(logInfo)
@@ -28,4 +28,4 @@ void setup(HttpServer server) {
     ..serve(criticalUrl, method: 'POST').listen(logCritical)
     ..serve(anything, method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
-}
+
