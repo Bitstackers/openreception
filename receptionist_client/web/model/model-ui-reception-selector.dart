@@ -38,18 +38,11 @@ class UIReceptionSelector extends UIModel {
    * on the filter input whenever a reception li element is clicked.
    */
   @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
-  @override selectCallback     get _selectCallback => _arrowSelectCallback;
+  @override selectCallback     get _selectCallback => _receptionSelectCallback;
   @override HtmlElement        get _root           => _myRoot;
 
   OListElement get _list   => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
-
-  /**
-   * TODO (TL): Comment
-   */
-  void _arrowSelectCallback(LIElement li) {
-    _bus.fire(new Reception.fromMap(JSON.decode(li.dataset['object'])));
-  }
 
   /**
    * Filter the reception list whenever the user enters data into the [_filter]
@@ -126,6 +119,14 @@ class UIReceptionSelector extends UIModel {
     });
 
     _list.children = list;
+  }
+
+  /**
+   * Fire a [Reception] on [_bus]. The [Reception] is constructed from JSON found
+   * in the data-object attribute of [li].
+   */
+  void _receptionSelectCallback(LIElement li) {
+    _bus.fire(new Reception.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**

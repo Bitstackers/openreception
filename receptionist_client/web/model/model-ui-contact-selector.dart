@@ -38,18 +38,11 @@ class UIContactSelector extends UIModel {
    * on the filter input whenever a contact li element is clicked.
    */
   @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
-  @override selectCallback     get _selectCallback => _arrowSelectCallback;
+  @override selectCallback     get _selectCallback => _contactSelectCallback;
   @override HtmlElement        get _root           => _myRoot;
 
   OListElement get _list   => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
-
-  /**
-   * TODO (TL): Comment
-   */
-  void _arrowSelectCallback(LIElement li) {
-    _bus.fire(new Contact.fromMap(JSON.decode(li.dataset['object'])));
-  }
 
   /**
    * Remove all entries from the contact list.
@@ -82,6 +75,14 @@ class UIContactSelector extends UIModel {
     });
 
     _list.children = list;
+  }
+
+  /**
+   * Fire a [Contact] on [_bus]. The [Contact] is constructed from JSON found
+   * in the data-object attribute of [li].
+   */
+  void _contactSelectCallback(LIElement li) {
+    _bus.fire(new Contact.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
