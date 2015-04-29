@@ -1,8 +1,8 @@
 library openreception.service.io;
 
-import 'httpserver.dart';
-
 import 'dart:async';
+import 'dart:convert';
+
 import 'dart:io' as IO;
 import 'storage.dart' as Storage;
 import 'service.dart' as Service;
@@ -35,3 +35,20 @@ Future<String> _handleResponse(IO.HttpClientResponse response, String method, Ur
   }
 }
 
+Future<String> extractContent(Stream<List<int>> request) {
+  Completer completer = new Completer();
+  List<int> completeRawContent = new List<int>();
+
+  request.listen(completeRawContent.addAll,
+     onError: (error) => completer.completeError(error),
+     onDone: () {
+       try {
+         String content = UTF8.decode(completeRawContent);
+         completer.complete(content);
+       } catch(error) {
+         completer.completeError(error);
+       }
+  }, cancelOnError: true);
+
+  return completer.future;
+}
