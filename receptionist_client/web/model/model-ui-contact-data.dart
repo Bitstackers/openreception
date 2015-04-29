@@ -185,14 +185,12 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Mark a [LIElement] in the event list selected, if one such is the target
-   * of the [event].
+   * Mark a [LIElement] in the telephone number list selected, if one such is
+   * the target of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if(event.target is LIElement || (event.target is SpanElement)) {
-      LIElement clickedElement =
-          (event.target is SpanElement) ? (event.target as Element).parentNode : event.target;
-      _markSelected(clickedElement);
+    if(event.target is LIElement && (event.target as LIElement).parent == _telNumList) {
+      _markSelected(event.target);
     }
   }
 
