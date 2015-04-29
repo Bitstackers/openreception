@@ -93,14 +93,16 @@ abstract class ContactStore {
    * Test server behaviour when trying to aquire a list of contact objects from
    * a non existing reception.
    *
-   * The expected behaviour is that the server should return a Not Found error.
+   * The expected behaviour is that the server should return an empty list.
    */
-  static void listContactsByNonExistingReception (Storage.Contact contactStore) {
+  static Future listContactsByNonExistingReception (Storage.Contact contactStore) {
     const int receptionID = -1;
     log.info('Checking server behaviour on list of contacts in reception $receptionID.');
 
-    return expect(contactStore.listByReception(receptionID),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+    return contactStore.listByReception(receptionID)
+      .then((Iterable<Contact> contacts) {
+        expect(contacts, isEmpty);
+      });
   }
 
   /**
