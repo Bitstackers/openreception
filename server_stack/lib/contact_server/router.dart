@@ -2,40 +2,31 @@ library contactserver.router;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' as IO;
 
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
+import 'package:uri/uri.dart' as uri;
 
 import 'configuration.dart';
 import 'database.dart' as db;
+
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/httpserver.dart';
 import 'package:openreception_framework/model.dart'   as Model;
+import 'package:openreception_framework/storage.dart'  as Storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
-part 'router/getcontact.dart';
-part 'router/getcontactlist.dart';
-part 'router/getcontactsphones.dart';
-part 'router/getphone.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
+
 part 'router/contact-calendar.dart';
 part 'router/contact.dart';
 
 const String libraryName = 'contactserver.router';
-
-final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern receptionContactResource               = new UrlPattern(r'/contact/(\d+)/reception/(\d+)');
-final Pattern receptionContactListResource           = new UrlPattern(r'/contact/list/reception/(\d+)');
-final Pattern receptionContactCalendarResource       = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar/event/(\d+)');
-final Pattern receptionContactCalendarCreateResource = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
-final Pattern receptionContactCalendarListResource   = new UrlPattern(r'/contact/(\d+)/reception/(\d+)/calendar');
-
-final List<Pattern> allUniqueUrls =
-   [receptionContactResource,
-    receptionContactListResource,
-    receptionContactCalendarResource,
-    receptionContactCalendarListResource];
+final Logger log = new Logger (libraryName);
 
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
@@ -50,16 +41,60 @@ void connectNotificationService() {
       (config.notificationServer, config.serverToken, new Service_IO.Client());
 }
 
+shelf.Middleware checkAuthentication =
+  shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
-Router setup(HttpServer server) =>
-  new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
-    ..serve(              receptionContactResource, method: 'GET'   ).listen(Contact.get)
-    ..serve(          receptionContactListResource, method: 'GET'   ).listen(getContactList)
-    ..serve(  receptionContactCalendarListResource, method: 'GET'   ).listen(ContactCalendar.list)
-    ..serve(      receptionContactCalendarResource, method: 'GET'   ).listen(ContactCalendar.get)
-    ..serve(      receptionContactCalendarResource, method: 'PUT'   ).listen(ContactCalendar.update)
-    ..serve(receptionContactCalendarCreateResource, method: 'POST'  ).listen(ContactCalendar.create)
-    ..serve(      receptionContactCalendarResource, method: 'DELETE').listen(ContactCalendar.remove)
-    ..serve(anything, method: 'OPTIONS').listen(preFlight)
-    ..defaultStream.listen(page404);
+
+Future<shelf.Response> _lookupToken(shelf.Request request) {
+  var token = request.requestedUri.queryParameters['token'];
+
+  return AuthService.validate(token).then((_) => null)
+  .catchError((error) {
+    print (error);
+    if (error is Storage.NotFound) {
+      return new shelf.Response.forbidden('Invalid token');
+    }
+    else if (error is IO.SocketException) {
+      return new shelf.Response.internalServerError(body : 'Cannot reach authserver');
+    }
+    else {
+      return new shelf.Response.internalServerError(body : error.toString());
+    }
+  });
+}
+
+
+/// Simple access logging.
+void _accessLogger(String msg, bool isError) {
+  if (isError) {
+    log.severe(msg);
+  } else {
+    log.finest(msg);
+  }
+}
+
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
+  var router = shelf_route.router()
+    ..get('/contact/list/reception/{rid}', Contact.list)
+    ..get('/contact/{cid}/reception/{rid}/endpoints', Contact.endpoints)
+    ..get('/contact/{cid}/reception/{rid}/phones', Contact.phones)
+    ..get('/contact/{cid}/reception/{rid}', Contact.get)
+    ..get('/contact/reception/{rid}', Contact.list)
+    ..get('/contact/{cid}/reception/{rid}/calendar', ContactCalendar.list)
+    ..get('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.get)
+    ..put('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.update)
+    ..post('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.create)
+    ..delete('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.remove);
+
+  var handler = const shelf.Pipeline()
+      .addMiddleware(checkAuthentication)
+      .addMiddleware(shelf.logRequests(logger : _accessLogger))
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+
+      .addHandler(router.handler);
+
+  log.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer : log.fine);
+
+  return shelf_io.serve(handler, hostname, port);
+}

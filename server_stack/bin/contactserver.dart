@@ -6,7 +6,6 @@ import 'package:logging/logging.dart';
 
 import '../lib/contact_server/configuration.dart' as json;
 import '../lib/contact_server/database.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/contact_server/router.dart' as router;
 import '../lib/configuration.dart';
 
@@ -34,7 +33,7 @@ void main(List<String> args) {
         .then((_) => router.connectNotificationService())
         .then((_) => log.finest(json.config.toString()))
         .then((_) => startDatabase())
-        .then((_) => http.start(json.config.httpport, router.setup))
+        .then((_) => router.start())
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {

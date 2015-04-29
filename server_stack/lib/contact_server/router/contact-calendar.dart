@@ -4,12 +4,12 @@ abstract class ContactCalendar {
 
   static final Logger log = new Logger ('${libraryName}.ContactCalendar');
 
-  static void create(HttpRequest request) {
+  static Future create(shelf.Request request) {
 
-    int contactID   = pathParameter(request.uri, 'contact');
-    int receptionID = pathParameter(request.uri, 'reception');
+    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    extractContent(request).then((String content) {
+    return request.readAsString().then((String content) {
 
       Model.CalendarEntry entry;
 
@@ -18,13 +18,11 @@ abstract class ContactCalendar {
         entry = new Model.CalendarEntry.fromMap(data);
       }
       catch(error) {
-        request.response.statusCode = 400;
         Map response = {'status'     : 'bad request',
                         'description': 'passed message argument is too long, missing or invalid',
                         'error'      : error.toString()};
-        clientError(request, JSON.encode(response));
-        return;
 
+        return new shelf.Response (400, body : JSON.encode(response));
       }
 
       db.ContactCalendar.createEvent(entry)
@@ -38,23 +36,23 @@ abstract class ContactCalendar {
                  'receptionID' : receptionID
                }
               });
-          writeAndClose(request, JSON.encode(entry));
+          return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
           log.severe(error, stackTrace);
-          serverError(request, 'Failed to store event in database');
+          return new shelf.Response.internalServerError(body : 'Failed to store event in database');
         });
     }).catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      serverError(request, 'Failed to extract client request');
+      return new shelf.Response.internalServerError(body : 'Failed to extract client request');
     });
   }
 
-  static void update(HttpRequest request) {
-    int contactID   = pathParameter(request.uri, 'contact');
-    int receptionID = pathParameter(request.uri, 'reception');
-    int eventID     = pathParameter(request.uri, 'event');
+  static Future update(shelf.Request request) {
+    int contactID   = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    extractContent(request).then((String content) {
+    return request.readAsString().then((String content) {
       Model.CalendarEntry entry;
 
       try {
@@ -62,20 +60,18 @@ abstract class ContactCalendar {
         entry = new Model.CalendarEntry.fromMap(data);
       }
       catch(error) {
-        request.response.statusCode = 400;
+
         Map response = {'status'     : 'bad request',
                         'description': 'passed message argument is too long, missing or invalid',
                         'error'      : error.toString()};
-        clientError(request, JSON.encode(response));
-        return;
+        return new shelf.Response (400, body : JSON.encode(response));
       }
 
       db.ContactCalendar.exists(contactID        : contactID,
                                 receptionID      : receptionID,
                                 eventID          : eventID).then((bool eventExists) {
         if (!eventExists) {
-          notFound(request, {'error' : 'not found'});
-          return;
+          return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
         }
         db.ContactCalendar.updateEvent(entry)
         .then((_) {
@@ -86,35 +82,34 @@ abstract class ContactCalendar {
                  'receptionID' : receptionID
                }
               });
-          writeAndClose(request, JSON.encode(entry));
+          return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
           log.severe(error, stackTrace);
-          serverError(request, 'Failed to update event in database');
+          return new shelf.Response.internalServerError(body : 'Failed to update event in database');
         });
       }).catchError((error, stackTrace) {
         log.severe(error, stackTrace);
-        serverError(request, 'Failed to execute database query');
+        return new shelf.Response.internalServerError(body : 'Failed to execute database query');
       });
     }).catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      serverError(request, 'Failed to extract client request');
+      return new shelf.Response.internalServerError(body : 'Failed to extract client request');
     });
   }
 
-  static void remove(HttpRequest request) {
-    int contactID   = pathParameter(request.uri, 'contact');
-    int receptionID = pathParameter(request.uri, 'reception');
-    int eventID     = pathParameter(request.uri, 'event');
+  static Future remove(shelf.Request request) {
+    int contactID   = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    db.ContactCalendar.exists(contactID        : contactID,
+    return db.ContactCalendar.exists(contactID        : contactID,
                               receptionID      : receptionID,
                               eventID          : eventID).then((bool eventExists) {
       if (!eventExists) {
-        notFound(request, {'error' : 'not found'});
-        return;
+        return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
       }
 
-      db.ContactCalendar.removeEvent(contactID        : contactID,
+      return db.ContactCalendar.removeEvent(contactID        : contactID,
                                      receptionID      : receptionID,
                                      eventID          : eventID)
           .then((_) {
@@ -125,53 +120,53 @@ abstract class ContactCalendar {
                'receptionID' : receptionID
              }
             });
-            writeAndClose(request, JSON.encode({'status' : 'ok',
+            return new shelf.Response.ok(JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
           }).catchError((error, stackTrace) {
            log.severe(error, stackTrace);
-           serverError(request, 'Failed to removed event from database');
+           return new shelf.Response.internalServerError(body : 'Failed to removed event from database');
         });
     }).catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      serverError(request, 'Failed to execute database query');
+      return new shelf.Response.internalServerError(body : 'Failed to execute database query');
     });
   }
 
-  static void get(HttpRequest request) {
-    int contactID   = pathParameter(request.uri, 'contact');
-    int receptionID = pathParameter(request.uri, 'reception');
-    int eventID     = pathParameter(request.uri, 'event');
+  static Future get(shelf.Request request) {
+    int contactID   = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    db.ContactCalendar.getEvent(contactID        : contactID,
+    return db.ContactCalendar.getEvent(contactID        : contactID,
                                 receptionID      : receptionID,
                                 eventID          : eventID)
       .then((Model.CalendarEntry event) {
         if (event == null) {
-          notFound(request, {'description' : 'No calendar event found with ID $eventID'});
+          return new shelf.Response.notFound(JSON.encode({'description' : 'No calendar event found with ID $eventID'}));
         } else {
-          writeAndClose(request, JSON.encode(event));
+          return new shelf.Response.ok(JSON.encode(event));
         }
       }).catchError((error, stackTrace) {
         log.severe(error, stackTrace);
-        serverError(request, 'Failed to execute database query');
+        return new shelf.Response.internalServerError(body : 'Failed to execute database query');
       });
   }
 
-  static void list(HttpRequest request) {
-    int contactID   = pathParameter(request.uri, 'contact');
-    int receptionID = pathParameter(request.uri, 'reception');
+  static Future list(shelf.Request request) {
+    int contactID   = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    Contact.exists (contactID : contactID, receptionID : receptionID).then((bool exists) {
+    return Contact.exists (contactID : contactID, receptionID : receptionID).then((bool exists) {
       if(exists) {
         return db.ContactCalendar.list(receptionID, contactID).then((Iterable<Model.CalendarEntry> entries) {
-          writeAndClose(request, JSON.encode(entries.toList()));
+          return new shelf.Response.ok(JSON.encode(entries.toList()));
         });
       } else {
-        notFound(request, {'description' : 'no such contact ${contactID}@${receptionID}'});
+        return new shelf.Response.notFound(JSON.encode({'description' : 'no such contact ${contactID}@${receptionID}'}));
       }
     }).catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      serverError(request, error.toString());
+      return new shelf.Response.internalServerError(body : error.toString());
     });
   }
 }
