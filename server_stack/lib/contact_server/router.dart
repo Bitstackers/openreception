@@ -79,14 +79,13 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/contact/{cid}/reception/{rid}/calendar', ContactCalendar.list)
     ..get('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.get)
     ..put('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.update)
-    ..post('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.create)
+    ..post('/contact/{cid}/reception/{rid}/calendar', ContactCalendar.create)
     ..delete('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.remove);
 
   var handler = const shelf.Pipeline()
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
-
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
