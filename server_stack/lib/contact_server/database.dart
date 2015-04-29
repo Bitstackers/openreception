@@ -1,7 +1,6 @@
 library contactserver.database;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/model.dart'    as Model;

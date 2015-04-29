@@ -4,10 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as IO;
 
-import 'package:route/pattern.dart';
-import 'package:route/server.dart';
-import 'package:uri/uri.dart' as uri;
-
 import 'configuration.dart';
 import 'database.dart' as db;
 
