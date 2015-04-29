@@ -46,5 +46,4 @@ class Notification {
   String toString() {
     return this._message;
   }
-
 }

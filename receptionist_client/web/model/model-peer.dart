@@ -74,5 +74,4 @@ class Peer extends ORModel.Peer {
    */
   @override
   String toString () => '${this.ID} - registered:${this.registered}.';
-
 }

@@ -13,5 +13,4 @@
 
 part of model;
 
-class Context {
-}
+class Context {}

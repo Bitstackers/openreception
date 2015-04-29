@@ -28,5 +28,4 @@ class TransferRequest {
   void cancel(){
     this.source.pickup();
   }
-
 }
