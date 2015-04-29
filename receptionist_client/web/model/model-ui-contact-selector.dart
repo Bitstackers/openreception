@@ -28,10 +28,10 @@ class UIContactSelector extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _filter;
   @override HtmlElement get _focusElement    => _filter;
   @override HtmlElement get _lastTabElement  => _filter;
+  @override HtmlElement get _listTarget      => _list;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker

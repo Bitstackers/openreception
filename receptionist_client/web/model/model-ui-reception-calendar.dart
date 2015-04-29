@@ -29,10 +29,10 @@ class UIReceptionCalendar extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _arrowTarget     => _list;
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
   @override HtmlElement get _lastTabElement  => _root;
+  @override HtmlElement get _listTarget      => _list;
   @override HtmlElement get _root            => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');

@@ -90,19 +90,6 @@ abstract class UIModel {
   HtmlElement get _root;
 
   /**
-   * TODO (TL): Comment.
-   *
-   * Also I'm not liking this name. This target is also used when for example
-   * clicking or for "Enter", as can be seen in model-ui-reception-selector.dart
-   */
-  HtmlElement get _arrowTarget => null;
-
-  /**
-   * Return true if the widget is in focus.
-   */
-  bool get isFocused => _root.classes.contains('focus');
-
-  /**
    * Blur the widget and set tabindex to -1.
    */
   void blur() {
@@ -117,13 +104,13 @@ abstract class UIModel {
    * The map returned from this method ALWAYS contains "Tab" and "Shift+Tab".
    * These two maps to [_handleTab] and [_handleShiftTab] respectively.
    *
-   * It MAY contain "down" and "up", if [_arrowTarget] is not null. These two
+   * It MAY contain "down" and "up", if [_listTarget] is not null. These two
    * are mapped to [_handleUpDown].
    */
   Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
     Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab,
                                       'Tab'      : _handleTab};
-    if(_arrowTarget != null) {
+    if(_listTarget != null) {
       map.addAll({'down': _handleUpDown,
                   'up'  : _handleUpDown});
     }
@@ -181,17 +168,17 @@ abstract class UIModel {
   }
 
   /**
-   * This method can be used to handle up/down arrow events with [_arrowTarget]
-   * as the target list. If [_arrowTarget] is not empty, then scan forward
+   * This method can be used to handle up/down arrow events with [_listTarget]
+   * as the target list. If [_listTarget] is not empty, then scan forward
    * for "down" arrow and backwards for "up" arrow. Call [_markSelected] on the
    * first element found that is visible and not selected.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(_arrowTarget.children.isNotEmpty) {
-      final LIElement selected = _arrowTarget.querySelector('.selected');
+    if(_listTarget.children.isNotEmpty) {
+      final LIElement selected = _listTarget.querySelector('.selected');
 
       if(selected == null) {
-        _markSelected(_scanForwardForVisibleElement(_arrowTarget.children.first));
+        _markSelected(_scanForwardForVisibleElement(_listTarget.children.first));
         return;
       }
 
@@ -233,12 +220,24 @@ abstract class UIModel {
   DivElement get _hint => _root.querySelector('div.hint');
 
   /**
+   * Return true if the widget is in focus.
+   */
+  bool get isFocused => _root.classes.contains('focus');
+
+  /**
+   * MUST return a [HtmlElement] that contains [LIElement]'s. This is used by
+   * other methods as the parent for selectable elements, normally a list of
+   * items that can be clicked on and/or chosen by "up" / "down" keyboard events.
+   */
+  HtmlElement get _listTarget => null;
+
+  /**
    * Mark [li] selected, scroll it into view and call [selectCallback].
    * Does nothing if [li] is null or [li] is already selected.
    */
   void _markSelected(LIElement li) {
     if(li != null && !li.classes.contains('selected')) {
-      _arrowTarget.children.forEach((Element element) => element.classes.remove('selected'));
+      _listTarget.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
       _selectCallback(li);
@@ -276,7 +275,7 @@ abstract class UIModel {
 
   /**
    * Is called by [_markSelected] whenever a [LIElement] is selected in the
-   * [_arrowTarget] element.
+   * [_listTarget] element.
    */
   selectCallback get _selectCallback => (LIElement li) => null;
 

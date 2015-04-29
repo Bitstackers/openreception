@@ -28,10 +28,10 @@ class UIContactData extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _arrowTarget     => _telNumList;
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
   @override HtmlElement get _lastTabElement  => _root;
+  @override HtmlElement get _listTarget      => _telNumList;
   @override HtmlElement get _root            => _myRoot;
 
   OListElement get _additionalInfoList => _root.querySelector('.additional-info');
