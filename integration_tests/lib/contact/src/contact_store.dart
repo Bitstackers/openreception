@@ -42,7 +42,7 @@ abstract class ContactStore {
    */
   static Future nonExistingPath (HttpClient client) {
 
-    Uri uri = Uri.parse ('${Config.contactStoreUri}/nonexistingpath');
+    Uri uri = Uri.parse ('${Config.contactStoreUri}/nonexistingpath?token=${Config.serverToken}');
 
     log.info('Checking server behaviour on a non-existing path.');
 
