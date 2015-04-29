@@ -25,7 +25,7 @@ abstract class ContactCalendar {
         return new shelf.Response (400, body : JSON.encode(response));
       }
 
-      db.ContactCalendar.createEvent(entry)
+      return db.ContactCalendar.createEvent(entry)
         .then((_) {
           log.finest('Created event for ${contactID}@${receptionID}');
 
@@ -67,13 +67,13 @@ abstract class ContactCalendar {
         return new shelf.Response (400, body : JSON.encode(response));
       }
 
-      db.ContactCalendar.exists(contactID        : contactID,
+      return db.ContactCalendar.exists(contactID        : contactID,
                                 receptionID      : receptionID,
                                 eventID          : eventID).then((bool eventExists) {
         if (!eventExists) {
           return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
         }
-        db.ContactCalendar.updateEvent(entry)
+        return db.ContactCalendar.updateEvent(entry)
         .then((_) {
           Notification.broadcast (
               {'event'         : 'contactCalendarEventUpdated',
