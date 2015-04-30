@@ -29,114 +29,117 @@ import 'package:openreception_framework/service-html.dart' as ORTransport;
 part 'configuration_url.dart';
 
 const String libraryName = 'openreceptionclient';
-final Logger log = new Logger(libraryName);
+final Logger log         = new Logger(libraryName);
 
-void main() {
+main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  Model.AppClientState appState = new Model.AppClientState();
+  final Model.AppClientState   appState = new Model.AppClientState();
+  ORModel.ClientConfiguration  clientConfig;
 
-  ORService.RESTConfiguration configService = new ORService.RESTConfiguration(
-      CONFIGURATION_URL, new ORTransport.Client());
-  ORModel.ClientConfiguration clientConfig;
-  String myToken = null;
+  clientConfig = await getClientConfiguration();
 
-  ORService.NotificationSocket notificationSocket;
-  ORService.Authentication authService;
-
-  ORService.RESTContactStore contactStore;
-  ORService.RESTReceptionStore receptionStore;
-
-  Future downloadClientConfig = configService
-      .clientConfig()
-      .then((ORModel.ClientConfiguration config) {
-    log.info('Loaded client config: ${config.asMap}');
-    clientConfig = config;
-  });
-
-  Future<ORModel.User> loadUser() {
-    myToken = getToken();
-    if (myToken != null) {
-      return authService.userOf(myToken);
-    }
-
-    String loginUrl =
-        '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
-    window.location.replace(loginUrl);
+  if(token == null) {
+    String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
     log.info('No token detected, redirecting user to $loginUrl');
-    ;
-  }
+    window.location.replace(loginUrl);
+  } else {
+    try {
+      ORService.RESTContactStore   contactStore;
+      ORService.NotificationSocket notificationSocket;
+      ORService.RESTReceptionStore receptionStore;
+      ORService.WebSocket          webSocket;
+      ORTransport.WebSocketClient  ws;
 
-  void connectAuthService() {
-    authService = new ORService.Authentication(
-        clientConfig.authServerUri, myToken, new ORTransport.Client());
-  }
+      // Translate the static labels of the app.
+      translate();
 
-  void connectContactService() {
-    contactStore = new ORService.RESTContactStore(
-        clientConfig.contactServerUri, myToken, new ORTransport.Client());
-  }
+      final Model.UIReceptionistclientDisaster uiDisaster =
+          new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
+      final Model.UIReceptionistclientLoading uiLoading =
+          new Model.UIReceptionistclientLoading('receptionistclient-loading');
+      final Model.UIReceptionistclientReady uiReady =
+          new Model.UIReceptionistclientReady('receptionistclient-ready');
 
-  void connectReceptionService() {
-    receptionStore = new ORService.RESTReceptionStore(
-        clientConfig.receptionServerUri, myToken, new ORTransport.Client());
-  }
+      View.ReceptionistclientDisaster appDisaster =
+          new View.ReceptionistclientDisaster(appState, uiDisaster);
+      View.ReceptionistclientLoading appLoading =
+          new View.ReceptionistclientLoading(appState, uiLoading);
 
-  Future connectWebsocket(ORModel.ClientConfiguration config) {
-    ORTransport.WebSocketClient ws = new ORTransport.WebSocketClient();
-    notificationSocket = new ORService.NotificationSocket(ws);
+      Model.User.currentUser = await getUser(clientConfig.authServerUri);
 
-    //FIXME: In the framework.
-    ws.onMessage = print;
-    Uri uri = Uri.parse('${config.notificationSocketUri}?token=${myToken}');
+      ws = new ORTransport.WebSocketClient();
+      notificationSocket = new ORService.NotificationSocket(ws);
+      ws.onMessage = print; //FIXME (KRC): In the framework.
+      Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
+      ws.connect(uri).then((_) {
+        log.info('NotificationSocket up');
+      });
 
-    return ws.connect(uri);
-  }
+      contactStore = new ORService.RESTContactStore
+          (clientConfig.contactServerUri, token, new ORTransport.Client());
 
-  /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
-  /// elements. This is simply done by searching for the "ignoreclickfocus"
-  /// attribute and ignoring mousedown events for those elements.
-  document.onMouseDown.listen((MouseEvent event) {
-    if ((event.target as HtmlElement).attributes.keys
-        .contains('ignoreclickfocus')) {
-      event.preventDefault();
+      receptionStore = new ORService.RESTReceptionStore
+          (clientConfig.receptionServerUri, token, new ORTransport.Client());
+
+      /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
+      /// elements. This is simply done by searching for the "ignoreclickfocus"
+      /// attribute and ignoring mousedown events for those elements.
+      document.onMouseDown.listen((MouseEvent event) {
+        if ((event.target as HtmlElement).attributes.keys
+            .contains('ignoreclickfocus')) {
+          event.preventDefault();
+        }
+      });
+
+      /// This is where it all starts. Every single widget is instantiated in
+      /// appReady.
+      View.ReceptionistclientReady appReady = new View.ReceptionistclientReady(
+          appState, uiReady, new Controller.Contact(contactStore),
+          new Controller.Reception(receptionStore));
+
+      appState.changeState(Model.AppState.READY);
+    } catch(error, stackTrace) {
+      log.shout(error, stackTrace);
+      appState.changeState(Model.AppState.ERROR);
+      /// TODO (TL): Do something sensible here. Redirect in 10 seconds or so?
     }
+  }
+}
+
+/**
+ *
+ */
+Future<ORModel.ClientConfiguration> getClientConfiguration() async {
+  ORService.RESTConfiguration configService =
+      new ORService.RESTConfiguration(CONFIGURATION_URL, new ORTransport.Client());
+
+  return configService.clientConfig().then((ORModel.ClientConfiguration config) {
+      log.info('Loaded client config: ${config.asMap}');
+      return config;
   });
+}
 
-  /// Translate the static labels of the app.
-  translate();
+/**
+ *
+ */
+Future<ORModel.User> getUser(Uri authServerUri) async {
+  ORService.Authentication authService =
+      new ORService.Authentication(authServerUri, token, new ORTransport.Client());
 
-  final Model.UIReceptionistclientDisaster uiDisaster =
-      new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
-  final Model.UIReceptionistclientLoading uiLoading =
-      new Model.UIReceptionistclientLoading('receptionistclient-loading');
-  final Model.UIReceptionistclientReady uiReady =
-      new Model.UIReceptionistclientReady('receptionistclient-ready');
-
-  View.ReceptionistclientDisaster appDisaster =
-      new View.ReceptionistclientDisaster(appState, uiDisaster);
-  View.ReceptionistclientLoading appLoading =
-      new View.ReceptionistclientLoading(appState, uiLoading);
-
-  downloadClientConfig
-      .then((_) => connectAuthService())
-      .then((_) => loadUser().then((ORModel.User user) {Model.User.currentUser = new Model.User.fromORModel(user);}))
-      .then((_) => connectWebsocket(clientConfig))
-      .then((_) => connectContactService())
-      .then((_) => connectReceptionService())
-      .then((_) {
-    /// This is where it all starts. Every single widget is instantiated in
-    /// appReady.
-    View.ReceptionistclientReady appReady = new View.ReceptionistclientReady(
-        appState, uiReady, new Controller.Contact(contactStore),
-        new Controller.Reception(receptionStore));
-
-    appState.changeState(Model.AppState.READY);
-  }).catchError((error, stacktrace) {
-    log.shout(error, stacktrace);
-    appState.changeState(Model.AppState.ERROR);
+  return authService.userOf(token).then((ORModel.User user) {
+    return new Model.User.fromORModel(user);
   });
+}
+
+/**
+ * Return the value of the URL path parameter 'settoken'
+ */
+String get token {
+  Uri url = Uri.parse(window.location.href);
+
+  return url.queryParameters['settoken'];
 }
 
 /**
@@ -153,13 +156,4 @@ void translate() {
     element.setAttribute(
         'placeholder', langMap[element.dataset['lang-placeholder']]);
   });
-}
-
-/**
- * Return the value of the URL path parameter 'settoken'
- */
-String getToken() {
-  Uri url = Uri.parse(window.location.href);
-
-  return url.queryParameters['settoken'];
 }
