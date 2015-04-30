@@ -140,4 +140,26 @@ class RESTContactStore implements Storage.Contact {
     return this._backend.delete(url);
   }
 
+  Future<Iterable<Map>> endpointsMap (int contactID, int receptionID) {
+    Uri url = Resource.Contact.endpoints(this._host, contactID, receptionID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(JSON.decode);
+  }
+
+  Future<Iterable<Model.MessageEndpoint>> endpoints (int contactID, int receptionID) =>
+    this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
+        maps.map((Map map) => new Model.MessageEndpoint.fromMap(map)));
+
+  Future<Iterable<Map>> phonesMap (int contactID, int receptionID) {
+    Uri url = Resource.Contact.phones(this._host, contactID, receptionID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(JSON.decode);
+  }
+
+  Future<Iterable<Model.PhoneNumber>> phones (int contactID, int receptionID) =>
+    this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
+        maps.map((Map map) => new Model.PhoneNumber.fromMap(map)));
+
 }
