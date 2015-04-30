@@ -34,6 +34,8 @@ part 'model-call.dart';
 part 'model-contact.dart';
 part 'model-contact-calendar.dart';
 part 'model-calendar-entry.dart';
+part 'model-message-endpoint.dart';
+part 'model-phone-number.dart';
 part 'model-reception.dart';
 part 'model-reception-calendar.dart';
 part 'model-user.dart';

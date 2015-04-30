@@ -31,4 +31,17 @@ class Contact {
       .then((Iterable<ORModel.Contact> contacts) =>
         contacts.map((ORModel.Contact contact) =>
           new Model.Contact.fromMap(contact.asMap)));
+
+  Future<Iterable<Model.PhoneNumber>> phones(Model.Contact contact) =>
+    this._store.phonesMap(contact.ID, contact.receptionID)
+      .then((Iterable<Map> contactMaps) =>
+          contactMaps.map((Map map) =>
+          new Model.PhoneNumber.fromMap(map)));
+
+  Future<Iterable<Model.MessageEndpoint>> endpoints(Model.Contact contact) =>
+    this._store.endpointsMap(contact.ID, contact.receptionID)
+      .then((Iterable<Map> endpointMaps) =>
+          endpointMaps.map((Map map) =>
+          new Model.MessageEndpoint.fromMap(map)));
+
 }
