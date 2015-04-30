@@ -41,10 +41,11 @@ class PhoneNumber {
   Map toJson () => this.asMap;
 
   Map get asMap => {
-    PhoneNumberJSONKey.Description: description,
     PhoneNumberJSONKey.Value: value,
     PhoneNumberJSONKey.Type: type,
+    PhoneNumberJSONKey.Description: description,
     PhoneNumberJSONKey.Billing_type: billing_type,
     PhoneNumberJSONKey.Tag: tags,
+    PhoneNumberJSONKey.Confidential: confidential
   };
 }
