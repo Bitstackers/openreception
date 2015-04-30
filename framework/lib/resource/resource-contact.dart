@@ -28,4 +28,10 @@ abstract class Contact {
 
   static Uri calendarEvent(Uri host, int contactID, int receptionID, int eventID) =>
     Uri.parse('${singleByReception(host, contactID, receptionID)}/calendar/event/${eventID}');
+
+  static Uri endpoints(Uri host, int contactID, int receptionID) =>
+    Uri.parse('${singleByReception(host, contactID, receptionID)}/endpoints');
+
+  static Uri phones(Uri host, int contactID, int receptionID) =>
+    Uri.parse('${singleByReception(host, contactID, receptionID)}/phones}');
 }
