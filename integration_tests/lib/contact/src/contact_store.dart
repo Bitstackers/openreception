@@ -274,4 +274,37 @@ abstract class ContactStore {
 
   }
 
+  /**
+   * Test server behaviour when trying to retrieve an endpoint list of a
+   * contact.
+   *
+   * The expected behaviour is that the server should succeed.
+   */
+  static Future endpoints (Service.RESTContactStore contactStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return contactStore.endpoints(contactID, receptionID)
+      .then((Iterable <Model.MessageEndpoint> endpoints) {
+        expect(endpoints, isNotNull);
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to retrieve an phone list of a
+   * contact.
+   *
+   * The expected behaviour is that the server should succeed.
+   */
+  static Future phones (Service.RESTContactStore contactStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return contactStore.phones(contactID, receptionID)
+      .then((Iterable <Model.MessageEndpoint> endpoints) {
+        expect(endpoints, isNotNull);
+    });
+  }
 }
