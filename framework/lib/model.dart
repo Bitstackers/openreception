@@ -25,6 +25,7 @@ part 'model/model-message_recipient.dart';
 part 'model/model-message_recipient_list.dart';
 part 'model/model-organization.dart';
 part 'model/model-peer.dart';
+part 'model/model-phone_number.dart';
 part 'model/model-reception.dart';
 part 'model/model-reception_filter.dart';
 part 'model/model-template.dart';
