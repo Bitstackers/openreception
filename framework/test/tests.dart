@@ -254,3 +254,35 @@ abstract class ResourceNotification {
         equals(Uri.parse('${notificationServer}/broadcast')));
 }
 
+abstract class ResourceContact {
+  static final Uri contactServer = Uri.parse('http://localhost:4010');
+
+  static void single () =>
+      expect(Resource.Contact.single(contactServer, 999),
+        equals(Uri.parse('${contactServer}/contact/999')));
+
+  static void list () =>
+      expect(Resource.Contact.list(contactServer),
+        equals(Uri.parse('${contactServer}/contact')));
+
+  static void singleByReception () =>
+      expect(Resource.Contact.singleByReception(contactServer, 999, 456),
+        equals(Uri.parse('${contactServer}/contact/999/reception/456')));
+
+  static void calendar () =>
+      expect(Resource.Contact.calendar(contactServer, 999, 888),
+        equals(Uri.parse('${contactServer}/contact/999/reception/888/calendar')));
+
+  static void calendarEvent () =>
+      expect(Resource.Contact.calendarEvent(contactServer, 999, 777, 123),
+        equals(Uri.parse('${contactServer}/contact/999/reception/777/calendar/event/123')));
+
+  static void endpoints () =>
+      expect(Resource.Contact.endpoints(contactServer, 123, 456),
+        equals(Uri.parse('${contactServer}/contact/123/reception/456/endpoints')));
+
+  static void phones () =>
+      expect(Resource.Contact.phones(contactServer, 123,456),
+          equals(Uri.parse('${contactServer}/contact/123/reception/456/phones')));
+
+}
