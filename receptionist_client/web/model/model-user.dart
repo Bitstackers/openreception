@@ -22,33 +22,45 @@ abstract class UserConstants {
  * TODO: Write up documentation for this class and refer to wiki page.
  */
 class User extends ORModel.User {
-
-  Bus _idle = new Bus();
-  Stream get onIdle => this._idle.stream;
-
-  Bus _pause = new Bus();
-  Stream get onPause => this._pause.stream;
-
-  static final className = '${libraryName}.User';
-  static final int noID = ORModel.User.nullID;
-
-  /* Singleton representing the current user. */
-  static User _currentUser = null;
-
-  Map identityMap () {
-    return {UserConstants.ID : this.ID, UserConstants.NAME : this.name};
-  }
-
-  /*
-   * Getter and setters for the singleton user object.
-   */
-  static ORModel.User get currentUser => _currentUser;
-  static              set currentUser (ORModel.User newUser) => _currentUser = newUser;
+  static final String className    = '${libraryName}.User';
+  static       User   _currentUser = null; // Singleton User
+  final        Bus    _idle        = new Bus();
+  static final int    noID         = ORModel.User.nullID;
+  final        Bus    _pause       = new Bus();
 
   /**
-   * Object constructor.
+   * Constructor fromMap.
    */
   User.fromMap(Map map) : super.fromMap(map);
 
+  /**
+   * Constructor fromORModel.
+   */
   User.fromORModel(ORModel.User user) : this.fromMap (user.toJson());
+
+  /**
+   * Get the current user.
+   */
+  static ORModel.User get currentUser => _currentUser;
+
+  /**
+   * Set the current user.
+   */
+  static set currentUser (ORModel.User newUser) => _currentUser = newUser;
+
+  /**
+   * Fires when [currentUser] goes idle.
+   */
+  Stream get onIdle => this._idle.stream;
+
+  /**
+   * Fires when [currentUser] pauses.
+   */
+  Stream get onPause => this._pause.stream;
+
+  /**
+   * Returne the identity map for the [currentUser]. This contains the user Id
+   * and the user name.
+   */
+  Map identityMap() => {UserConstants.ID : this.ID, UserConstants.NAME : this.name};
 }

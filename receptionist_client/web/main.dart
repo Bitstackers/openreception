@@ -121,7 +121,7 @@ void main() {
 
   downloadClientConfig
       .then((_) => connectAuthService())
-      .then((_) => loadUser())
+      .then((_) => loadUser().then((ORModel.User user) {Model.User.currentUser = new Model.User.fromORModel(user);}))
       .then((_) => connectWebsocket(clientConfig))
       .then((_) => connectContactService())
       .then((_) => connectReceptionService())

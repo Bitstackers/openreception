@@ -17,11 +17,11 @@ part of view;
  * TODO (TL): Comment
  */
 class AgentInfo extends ViewWidget {
+  final Logger            _log = new Logger('$libraryName.AgentInfo');
   final Model.UIAgentInfo _ui;
 
   /**
    * Constructor.
-   * TODO: Add Model.User as parameter. (For portrait)
    * Add Iterable<UserStatus> as parameter for extraction of global user state.
    */
   AgentInfo(Model.UIModel this._ui) {
@@ -30,6 +30,9 @@ class AgentInfo extends ViewWidget {
     _ui.agentState = AgentState.UNKNOWN;
     _ui.alertState = AlertState.ON;
     _ui.portrait = 'images/face.png';
+
+    /// TODO (TL): Add a portrait getter to Model.User.
+    _ui.portrait = Model.User.currentUser.toJson()['remote_attributes']['picture'];
 
     _observers();
   }

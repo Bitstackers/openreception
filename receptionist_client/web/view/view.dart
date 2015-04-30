@@ -17,14 +17,12 @@ import 'dart:async';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-
-//TODO: Refactor out.
-import '../service/service.dart' as Service;
-
-import '../dummies.dart';
-import '../enums.dart';
+import '../dummies.dart'; // TODO (KRC): Refactor out
+import '../enums.dart'; // TODO (KRC): Refactor out
 import '../model/model.dart' as Model;
+import '../service/service.dart' as Service; // TODO (KRC): Refactor out
 
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 
 part 'view-agent-info.dart';
@@ -59,6 +57,8 @@ part 'view-receptionistclient-ready.dart';
 part 'view-receptionistclient-disaster.dart';
 part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
+
+const String libraryName = "View";
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();
