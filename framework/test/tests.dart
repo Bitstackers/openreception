@@ -91,6 +91,16 @@ void main() {
     test('transfer', ResourceCallFlowControl.transfer);
     test('list', ResourceCallFlowControl.list);
   });
+
+  group('Resource.Contact', () {
+    test('calendar', ResourceContact.calendar);
+    test('calendarEvent', ResourceContact.calendarEvent);
+    test('endpoints', ResourceContact.endpoints);
+    test('list', ResourceContact.list);
+    test('phones', ResourceContact.phones);
+    test('single', ResourceContact.single);
+    test('singleByReception', ResourceContact.singleByReception);
+  });
 }
 
 abstract class ResourceCallFlowControl {
