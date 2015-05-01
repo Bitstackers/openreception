@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
+import 'package:uri/uri.dart';
+
 import 'configuration.dart';
 import 'package:logging/logging.dart';
 
@@ -91,13 +93,14 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..post('/userstate/{uid}/paused', UserState.markPaused)
     ..get('/userstate', UserState.list)
     ..get('/call/{callid}', Call.get)
-    ..get('/call/{callid}', Call.list)
+    ..get('/call', Call.list)
     ..get('/channel/list', Channel.list)
     ..get('/channel', Channel.list)
     ..post('/call/{callid}/hangup', Call.hangupSpecific)
     ..post('/call/{callid}/pickup', Call.pickup)
     ..post('/call/{callid}/park', Call.park)
-    ..post('/call/orignate/{extension}', Call.originate)
+    ..post('/call/originate/{extension}/reception/{rid}/contact/{cid}', Call.originate)
+    ..post('/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}', Call.originate)
     ..post('/call/{aleg}/transfer/{bleg}', Call.transfer)
     ..post('/call/reception/{rid}/record', Call.recordSound);
 
@@ -113,3 +116,5 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   return shelf_io.serve(handler, hostname, port);
 }
 
+String _tokenFrom(shelf.Request request) =>
+    request.requestedUri.queryParameters['token'];
