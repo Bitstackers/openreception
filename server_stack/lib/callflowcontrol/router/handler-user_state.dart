@@ -8,7 +8,7 @@ abstract class UserState {
     return new shelf.Response.ok(JSON.encode(Model.UserStatusList.instance));
   }
 
-  static void get(shelf.Request request) {
+  static shelf.Response get(shelf.Request request) {
     final int    userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
     return new shelf.Response.ok(JSON.encode(Model.UserStatusList.instance.get(userID)));
@@ -25,7 +25,6 @@ abstract class UserState {
 
       if (!aclCheck(user)) {
         return new shelf.Response.forbidden('Insufficient privileges.');
-        return;
       }
 
       /// Check user state. If the user is currently performing an action - or
@@ -60,7 +59,6 @@ abstract class UserState {
 
       if (!aclCheck(user)) {
         return new shelf.Response.forbidden('Insufficient privileges.');
-        return;
       }
 
       /// Check user state. If the user is currently performing an action - or

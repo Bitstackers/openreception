@@ -300,7 +300,8 @@ abstract class Call {
     final String callID = shelf_route.getPathParameter(request, 'callid');
 
     if (callID == null || callID == "") {
-      return new shelf.Response(400, body : 'Empty call_id in path.');
+      return new Future.value
+          (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
 
     bool aclCheck(ORModel.User user) => true;
@@ -315,10 +316,9 @@ abstract class Call {
           return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
         }
       } catch (error) {
-        return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
         log.severe
           ('Failed to lookup peer for user with ID ${user.ID}. Error : $error');
-        return;
+        return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
       }
 
 
@@ -415,11 +415,13 @@ abstract class Call {
       recordPath = request.requestedUri.queryParameters['recordpath'];
       token = request.requestedUri.queryParameters['token'];
     } catch (error, stack) {
-      return new shelf.Response(400, body : 'Parameter error. ${error} ${stack}');
+      return new Future.value
+        (new shelf.Response(400, body : 'Parameter error. ${error} ${stack}'));
     }
 
     if (recordPath == null) {
-      return new shelf.Response(400, body : 'Missing parameter "recordpath".');
+      return new Future.value
+        (new shelf.Response(400, body : 'Missing parameter "recordpath".'));
     }
 
     log.finest('Originating to ${recordExtension} with path '
@@ -506,14 +508,17 @@ abstract class Call {
     Model.Call destinationCall = null;
 
     if (sourceCallID == null || sourceCallID == "") {
-      return new shelf.Response(400, body : 'Empty call_id in path.');
+      return new Future.value
+          (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
 
     ///Check valitity of the call. (Will raise exception on invalid).
     try {
       [sourceCallID, destinationCallID].forEach(Model.Call.validateID);
     } on FormatException catch (_) {
-      return new shelf.Response(400, body : 'Error in call id format (empty, null, nullID)');
+      return new Future.value
+       (new shelf.Response
+           (400, body : 'Error in call id format (empty, null, nullID)'));
     }
 
     try {
