@@ -29,87 +29,80 @@ import 'package:openreception_framework/service-html.dart' as ORTransport;
 part 'configuration_url.dart';
 
 const String libraryName = 'openreceptionclient';
-final Logger log         = new Logger(libraryName);
+
+final Model.AppClientState appState = new Model.AppClientState();
+final Logger               log      = new Logger(libraryName);
+
+View.ReceptionistclientDisaster appDisaster;
+View.ReceptionistclientLoading  appLoading;
+View.ReceptionistclientReady    appReady;
+Uri                             appUri;
+ORModel.ClientConfiguration     clientConfig;
+ORService.NotificationSocket    notificationSocket;
+String                          token;
+ORTransport.WebSocketClient     webSocketClient;
 
 main() async {
-  Logger.root.level = Level.ALL;
-  Logger.root.onRecord.listen(print);
+  try {
+    Logger.root.level = Level.ALL;
+    Logger.root.onRecord.listen(print);
 
-  final Model.AppClientState   appState = new Model.AppClientState();
-  ORModel.ClientConfiguration  clientConfig;
+    appUri = Uri.parse(window.location.href);
 
-  clientConfig = await getClientConfiguration();
+    /// This is the 'settoken' URL path parameter.
+    token = getToken();
 
-  if(token == null) {
-    String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
-    log.info('No token detected, redirecting user to $loginUrl');
-    window.location.replace(loginUrl);
-  } else {
-    try {
-      ORService.RESTContactStore   contactStore;
-      ORService.NotificationSocket notificationSocket;
-      ORService.RESTReceptionStore receptionStore;
-      ORService.WebSocket          webSocket;
-      ORTransport.WebSocketClient  ws;
+    /// Translate the static labels of the app. We do this early to have correct
+    /// labels set while loading.
+    translate();
 
-      // Translate the static labels of the app.
-      translate();
+    /// Hang here until the client configuration has been loaded from the server.
+    clientConfig = await getClientConfiguration();
 
-      final Model.UIReceptionistclientDisaster uiDisaster =
-          new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
-      final Model.UIReceptionistclientLoading uiLoading =
-          new Model.UIReceptionistclientLoading('receptionistclient-loading');
-      final Model.UIReceptionistclientReady uiReady =
-          new Model.UIReceptionistclientReady('receptionistclient-ready');
+    /// Get the main app views up and running. From this point the disaster,
+    /// loading and ready views listen for [appState] changes.
+    registerAppViews();
 
-      View.ReceptionistclientDisaster appDisaster =
-          new View.ReceptionistclientDisaster(appState, uiDisaster);
-      View.ReceptionistclientLoading appLoading =
-          new View.ReceptionistclientLoading(appState, uiLoading);
+    /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
+    /// elements. This is simply done by searching for the "ignoreclickfocus"
+    /// attribute and ignoring mousedown events for those elements.
+    document.onMouseDown.listen((MouseEvent event) {
+      if((event.target as HtmlElement).attributes.keys.contains('ignoreclickfocus')) {
+        event.preventDefault();
+      }
+    });
 
+    if(token != null) {
       Model.User.currentUser = await getUser(clientConfig.authServerUri);
 
-      ws = new ORTransport.WebSocketClient();
-      notificationSocket = new ORService.NotificationSocket(ws);
-      ws.onMessage = print; //FIXME (KRC): In the framework.
+      webSocketClient    = new ORTransport.WebSocketClient();
+      notificationSocket = new ORService.NotificationSocket(webSocketClient);
+      webSocketClient.onMessage = print; /// FIXME (KRC): In the framework.
+
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
-      ws.connect(uri).then((_) {
-        log.info('NotificationSocket up');
+      webSocketClient.connect(uri).then((_) {
+        log.info('WebSocketClient connect succeeded - NotificationSocket up');
       });
-
-      contactStore = new ORService.RESTContactStore
-          (clientConfig.contactServerUri, token, new ORTransport.Client());
-
-      receptionStore = new ORService.RESTReceptionStore
-          (clientConfig.receptionServerUri, token, new ORTransport.Client());
-
-      /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
-      /// elements. This is simply done by searching for the "ignoreclickfocus"
-      /// attribute and ignoring mousedown events for those elements.
-      document.onMouseDown.listen((MouseEvent event) {
-        if ((event.target as HtmlElement).attributes.keys
-            .contains('ignoreclickfocus')) {
-          event.preventDefault();
-        }
-      });
-
-      /// This is where it all starts. Every single widget is instantiated in
-      /// appReady.
-      View.ReceptionistclientReady appReady = new View.ReceptionistclientReady(
-          appState, uiReady, new Controller.Contact(contactStore),
-          new Controller.Reception(receptionStore));
 
       appState.changeState(Model.AppState.READY);
-    } catch(error, stackTrace) {
-      log.shout(error, stackTrace);
-      appState.changeState(Model.AppState.ERROR);
-      /// TODO (TL): Do something sensible here. Redirect in 10 seconds or so?
+    } else {
+      String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
+      log.info('No token detected, redirecting user to $loginUrl');
+      window.location.replace(loginUrl);
     }
+  } catch(error, stackTrace) {
+    log.shout('Could not fully initialize application. Trying again in 2 seconds');
+    log.shout(error, stackTrace);
+    appState.changeState(Model.AppState.ERROR);
+
+    new Future.delayed(new Duration(seconds: 10)).then((_) {
+      window.location.replace('${appUri.origin}${appUri.path}');
+    });
   }
 }
 
 /**
- *
+ * Return the configuration object for the client.
  */
 Future<ORModel.ClientConfiguration> getClientConfiguration() async {
   ORService.RESTConfiguration configService =
@@ -122,7 +115,12 @@ Future<ORModel.ClientConfiguration> getClientConfiguration() async {
 }
 
 /**
- *
+ * Return the value of the URL path parameter 'settoken'
+ */
+String getToken() => appUri.queryParameters['settoken'];
+
+/**
+ * Return the current user.
  */
 Future<ORModel.User> getUser(Uri authServerUri) async {
   ORService.Authentication authService =
@@ -134,12 +132,35 @@ Future<ORModel.User> getUser(Uri authServerUri) async {
 }
 
 /**
- * Return the value of the URL path parameter 'settoken'
+ * Register the main app view objects:
+ *  [View.ReceptionistclientDisaster]
+ *  [View.ReceptionistclientLoading]
+ *  [View.ReceptionistclientReady]
+ *
+ * NOTE: This depends on [clientConfig] being set.
  */
-String get token {
-  Uri url = Uri.parse(window.location.href);
+void registerAppViews() {
+  Model.UIReceptionistclientDisaster uiDisaster =
+      new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
+  Model.UIReceptionistclientLoading  uiLoading =
+      new Model.UIReceptionistclientLoading('receptionistclient-loading');
+  Model.UIReceptionistclientReady    uiReady =
+      new Model.UIReceptionistclientReady('receptionistclient-ready');
+  ORService.RESTContactStore   contactStore = new ORService.RESTContactStore
+      (clientConfig.contactServerUri, token, new ORTransport.Client());
+  ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
+      (clientConfig.receptionServerUri, token, new ORTransport.Client());
 
-  return url.queryParameters['settoken'];
+  appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
+  appLoading  = new View.ReceptionistclientLoading(appState, uiLoading);
+
+  /// This is where it all starts. Every single widget is instantiated in
+  /// appReady.
+  appReady = new View.ReceptionistclientReady
+      (appState,
+       uiReady,
+       new Controller.Contact(contactStore),
+       new Controller.Reception(receptionStore));
 }
 
 /**

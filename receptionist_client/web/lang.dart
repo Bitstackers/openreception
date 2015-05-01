@@ -154,7 +154,7 @@ Map<String, String> da =
    Key.receptionEmailHeader           : 'Emailadresser',
    Key.receptionMiniWikiHeader        : 'Mini wiki',
    Key.receptionOpeningHoursHeader    : 'Åbningstider',
-   Key.receptionProductHeader     : 'Produkt',
+   Key.receptionProductHeader         : 'Produkt',
    Key.receptionSalesmenHeader        : 'Sælgere',
    Key.receptionSelectorHeader        : 'Receptioner',
    Key.receptionTelephoneNumbersHeader: 'Telefonnumre',
@@ -162,7 +162,7 @@ Map<String, String> da =
    Key.receptionVATNumbersHeader      : 'CVR-numre',
    Key.receptionWebsitesHeader        : 'WWW',
 
-   Key.stateDisasterHeader            : 'Vi har problemer - prøve at genstarte hvert 10 sekund',
+   Key.stateDisasterHeader            : 'Vi har problemer - prøver at genstarte hvert 10 sekund',
    Key.stateLoadingHeader             : 'Hold på bits og bytes mens vi starter programmet',
 
    Key.welcomeMessage                 : 'Velkomst....'};
@@ -231,7 +231,7 @@ Map<String, String> en =
    Key.receptionEmailHeader           : 'Email addresses',
    Key.receptionMiniWikiHeader        : 'Mini wiki',
    Key.receptionOpeningHoursHeader    : 'Opening hours',
-   Key.receptionProductHeader     : 'Product',
+   Key.receptionProductHeader         : 'Product',
    Key.receptionSalesmenHeader        : 'Salesmen',
    Key.receptionSelectorHeader        : 'Receptions',
    Key.receptionTelephoneNumbersHeader: 'Telephone numbers',
