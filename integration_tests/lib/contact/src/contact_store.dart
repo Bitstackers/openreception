@@ -303,7 +303,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.phones(contactID, receptionID)
-      .then((Iterable <Model.MessageEndpoint> endpoints) {
+      .then((Iterable <Model.PhoneNumber> endpoints) {
         expect(endpoints, isNotNull);
     });
   }
