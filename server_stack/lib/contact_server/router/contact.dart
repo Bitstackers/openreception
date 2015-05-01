@@ -53,7 +53,7 @@ abstract class Contact{
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     return db.Contact.phones(contactID, receptionID)
-      .then((Iterable<Map> phones) {
+      .then((Iterable<Model.PhoneNumber> phones) {
         return new shelf.Response.ok(JSON.encode(phones.toList()));
     }).catchError((error, stacktrace) {
         log.severe(error, stacktrace);

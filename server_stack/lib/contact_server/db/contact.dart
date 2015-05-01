@@ -2,7 +2,7 @@ part of contactserver.database;
 
 abstract class Contact {
 
-  static Future<Iterable<Map>> phones(int contactID, int receptionID) {
+  static Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
     String sql = '''
         SELECT phonenumbers
         FROM reception_contacts
@@ -18,9 +18,24 @@ abstract class Contact {
                                    ' in reception with ID $receptionID');
       }
 
-      List list = []..addAll((rows as Iterable).first.phonenumbers);
+      Iterable<Map> phonesMap = (rows as Iterable).first.phonenumbers;
 
-      return list;
+      Model.PhoneNumber mapToPhone (Map map) {
+
+        Model.PhoneNumber p =
+          new Model.PhoneNumber.empty()
+            ..billing_type = map['billing_type']
+            ..description = map['description']
+            ..value = map['value']
+            ..type = map['kind'];
+        if(map['tag'] != null) {
+          p.tags.add(map['tag']);
+        }
+
+        return p;
+      }
+
+      return phonesMap.map(mapToPhone);
     });
   }
 
