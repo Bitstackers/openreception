@@ -26,7 +26,7 @@ abstract class Originate {
     int receptionID = 1;
 
     return expect(receptionist.originate(receptionNumber, contactID, receptionID),
-          throwsA(new isInstanceOf<Storage.NotFound>()));
+          throwsA(new isInstanceOf<Storage.ClientError>()));
   }
 
   static Future originationToPeer(Receptionist receptionist, String peerUri) {
