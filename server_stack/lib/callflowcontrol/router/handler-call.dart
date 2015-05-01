@@ -33,72 +33,59 @@ Map<int, ORModel.UserState> userMap = {};
 
 abstract class Call {
 
-  static void get(HttpRequest request) {
-    String callID = pathParameterString(request.uri, 'call');
+  static shelf.Response get(shelf.Request request) {
+    String callID = shelf_route.getPathParameter(request, 'callid');
 
     try {
       Model.Call call = Model.CallList.instance.get(callID);
-      writeAndClose(request, JSON.encode(call));
+      return new shelf.Response.ok(JSON.encode(call));
     } catch (error, stackTrace) {
       if (error is Model.NotFound) {
-        notFound(request, {});
+        return new shelf.Response.notFound('{}');
       } else {
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       }
     }
   }
 
-  static void hangup(HttpRequest request) {
+  static Future<shelf.Response> hangup(shelf.Request request) {
 
-    final String token = request.uri.queryParameters['token'];
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
 
-    bool aclCheck(ORModel.User user) => true;
+      ESL.Peer peer = Model.PeerList.get(user.peer);
 
-    AuthService.userOf(token).then((ORModel.User user) {
+      Model.UserStatusList.instance.update
+        (user.ID, ORModel.UserState.HangingUp);
 
-      if (!aclCheck(user)) {
-        forbidden(request, 'Insufficient privileges.');
-        return;
-      }
+      return Controller.PBX.hangupCommand(peer)
+        .then((_) {
+          Model.UserStatusList.instance.update
+            (user.ID, ORModel.UserState.HandlingOffHook);
 
-      try {
-        ESL.Peer peer = Model.PeerList.get(user.peer);
+          return new shelf.Response.ok(JSON.encode(hangupCommandOK(peer.ID)));
 
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.HangingUp);
+        })
+        .catchError((error, stackTrace) {
+          Model.UserStatusList.instance.update
+            (user.ID, ORModel.UserState.Unknown);
 
-        Controller.PBX.hangupCommand(peer).then((_) {
-
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.HandlingOffHook);
-
-          writeAndClose(request, JSON.encode(hangupCommandOK(peer.ID)));
-
-        }).catchError((error, stackTrace) {
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Unknown);
-          serverErrorTrace(request, error, stackTrace: stackTrace);
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
 
         });
 
-      } catch (error, stackTrace) {
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Unknown);
-        serverErrorTrace(request, error, stackTrace: stackTrace);
-      }
-    }).catchError(
-        (error, stackTrace) =>
-            serverErrorTrace(request, error, stackTrace: stackTrace));
+    })
+    .catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError();
+
+    });
   }
 
-  static void hangupSpecific(HttpRequest request) {
+  static Future<shelf.Response> hangupSpecific(shelf.Request request) {
 
-    final String callID = pathParameterString(request.uri, 'call');
-    final String token = request.uri.queryParameters['token'];
+    final String callID = shelf_route.getPathParameter(request, 'callid');
 
     List<String> hangupGroups = ['Administrator'];
 
@@ -107,68 +94,68 @@ abstract class Call {
             Model.CallList.instance.get(callID).assignedTo == user.ID;
 
     if (callID == null || callID == "") {
-      clientError(request, "Empty call_id in path.");
-      return;
+      return new Future.value
+          (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(_tokenFrom(request))
+      .then((ORModel.User user) {
+        if (!aclCheck(user)) {
+          return new shelf.Response.forbidden ('Insufficient privileges.');
+        }
 
-      if (!aclCheck(user)) {
-        forbidden(request, 'Insufficient privileges.');
-        return;
-      }
-
-      /// Verify existence of call targeted for hangup.
-      Model.Call targetCall = null;
-      try {
-        targetCall = Model.CallList.instance.get(callID);
-      } on Model.NotFound catch (_) {
-        notFound(request, {
-          'call_id': callID
-        });
-        return;
-      }
-
-      /// Update user state.
-      Model.UserStatusList.instance.update(
-          user.ID,
-          ORModel.UserState.HangingUp);
-
-      Controller.PBX.hangup(targetCall).then((_) {
+        /// Verify existence of call targeted for hangup.
+        Model.Call targetCall = null;
+        try {
+          targetCall = Model.CallList.instance.get(callID);
+        } on Model.NotFound catch (_) {
+          return new shelf.Response.notFound
+            (JSON.encode({'call_id': callID}));
+        }
 
         /// Update user state.
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.WrappingUp);
-        writeAndClose(request, JSON.encode(hangupCallIDOK(callID)));
+        Model.UserStatusList.instance.update
+          (user.ID, ORModel.UserState.HangingUp);
 
-      }).catchError((error, stackTrace) {
-        /// Update user state.
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Unknown);
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+        return Controller.PBX.hangup(targetCall)
+          .then((_) {
 
+            /// Update user state.
+            Model.UserStatusList.instance.update
+              (user.ID, ORModel.UserState.WrappingUp);
+
+            return new shelf.Response.ok(JSON.encode(hangupCallIDOK(callID)));
+
+          })
+          .catchError((error, stackTrace) {
+            /// Update user state.
+            Model.UserStatusList.instance.update
+              (user.ID, ORModel.UserState.Unknown);
+
+            log.severe(error, stackTrace);
+            return new shelf.Response.internalServerError();
+          });
+      })
+      .catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       });
-    }).catchError(
-        (error, stackTrace) =>
-            serverErrorTrace(request, error, stackTrace: stackTrace));
   }
 
-  static void list(HttpRequest request) {
-    try {
-      writeAndClose(request, JSON.encode(Model.CallList.instance));
-    } catch (error, stackTrace) {
-      serverErrorTrace(request, error, stackTrace: stackTrace);
+  static shelf.Response list(shelf.Request request) =>
+    new shelf.Response.ok(JSON.encode(Model.CallList.instance));
+
+  static Future<shelf.Response> originate(shelf.Request request) {
+
+    final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    final int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    String extension = shelf_route.getPathParameter(request, 'extension');
+    final String host = shelf_route.getPathParameter(request, 'host');
+    final String port = shelf_route.getPathParameter(request, 'port');
+
+    if (host != null) {
+      extension = '$extension@$host:$port';
     }
-  }
-
-  static void originate(HttpRequest request) {
-
-    final int receptionID = pathParameter(request.uri, 'reception');
-    final int contactID = pathParameter(request.uri, 'contact');
-    final String extension = pathParameterString(request.uri, 'originate');
-    final String token = request.uri.queryParameters['token'];
 
     log.finest('Originating to ${extension} in context '
                '${contactID}@${receptionID}');
@@ -179,83 +166,79 @@ abstract class Call {
     bool validExtension(String extension) =>
         extension != null && extension.length > 1;
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
       if (!aclCheck(user)) {
-        forbidden(request, 'Insufficient privileges.');
-        return;
+        return new shelf.Response.forbidden ('Insufficient privileges.');
       }
 
       if (!validExtension(extension)) {
-        clientError(request, 'Invalid extension: $extension');
-        return;
+        return new shelf.Response(400, body : 'Invalid extension: $extension');
       }
       /// Park all the users calls.
-      Future.forEach(
-          Model.CallList.instance.callsOf(
-              user.ID).where((Model.Call call) => call.state == Model.CallState.Speaking),
-          (Model.Call call) => call.park(user)).whenComplete(() {
+      return Future.forEach
+        (Model.CallList.instance.callsOf(user.ID).where((Model.Call call) =>
+          call.state == Model.CallState.Speaking), (Model.Call call) =>
+            call.park(user))
+        .then((_) {
 
-        /// Check user state. If the user is currently performing an action - or
-        /// has an active channel - deny the request.
-        String userState = Model.UserStatusList.instance.get(user.ID).state;
+          /// Check user state. If the user is currently performing an action - or
+          /// has an active channel - deny the request.
+          String userState = Model.UserStatusList.instance.get(user.ID).state;
 
-        bool inTransition =
+          bool inTransition =
             ORModel.UserState.TransitionStates.contains(userState);
-        bool hasChannels =
+          bool hasChannels =
             Model.ChannelList.instance.hasActiveChannels(user.peer);
 
-        if (inTransition || hasChannels) {
-          clientError(
-              request,
-              'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
-          return;
-        }
-
-        /// Update the user state
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Dialing);
-
-        /// Perform the origination via the PBX.
-        Controller.PBX.originate(
-            extension,
-            contactID,
-            receptionID,
-            user).then((String channelUUID) {
+          if (inTransition || hasChannels) {
+            return new shelf.Response(400, body : 'Phone is not ready. '
+              'state:{$userState}, hasChannels:{$hasChannels}');
+          }
 
           /// Update the user state
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Speaking);
+          Model.UserStatusList.instance.update
+            (user.ID, ORModel.UserState.Dialing);
 
-          writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
+          /// Perform the origination via the PBX.
+          return Controller.PBX.originate (extension, contactID, receptionID, user)
+            .then((String channelUUID) {
 
-        }).catchError((error, stackTrace) {
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Unknown);
+              /// Update the user state
+              Model.UserStatusList.instance.update
+                (user.ID, ORModel.UserState.Speaking);
 
-          serverErrorTrace(request, error, stackTrace: stackTrace);
-        });
+              return new shelf.Response.ok(JSON.encode(orignateOK(channelUUID)));
 
-      }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Unknown);
+            })
+            .catchError((error, stackTrace) {
+              Model.UserStatusList.instance.update
+                (user.ID, ORModel.UserState.Unknown);
 
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+              log.severe(error, stackTrace);
+              return new shelf.Response.internalServerError();
+            });
+
+        })
+        .catchError((error, stackTrace) {
+          Model.UserStatusList.instance.update
+            (user.ID, ORModel.UserState.Unknown);
+
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
       });
-    }).catchError(
-        (error, stackTrace) =>
-            serverErrorTrace(request, error, stackTrace: stackTrace));
+    })
+    .catchError(
+        (error, stackTrace) {
+
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError();
+    });
   }
 
 
-  static void park(HttpRequest request) {
+  static Future<shelf.Response> park(shelf.Request request) {
 
-    final String token = request.uri.queryParameters['token'];
-
-    String callID = pathParameterString(request.uri, "call");
+    final String callID = shelf_route.getPathParameter(request, "callid");
 
     List<String> parkGroups = [
         'Administrator',
@@ -266,85 +249,83 @@ abstract class Call {
         user.groups.any((group) => parkGroups.contains(group)) ||
             Model.CallList.instance.get(callID).assignedTo == user.ID;
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
       if (callID == null || callID == "") {
-        clientError(request, "Empty call_id in path.");
-        return;
+        return new Future.value(
+            new shelf.Response(400, body : 'Empty call_id in path.'));
       }
 
       Model.Call call = Model.CallList.instance.get(callID);
 
       if (!aclCheck(user)) {
-        forbidden(request, 'Insufficient privileges.');
-        return;
+        return new Future.value(
+            new shelf.Response.forbidden('Insufficient privileges.'));
       }
 
       Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Parking);
 
-      Controller.PBX.park(call, user).then((_) {
+      return Controller.PBX.park(call, user).then((_) {
         Model.UserStatusList.instance.update(
             user.ID,
             ORModel.UserState.HandlingOffHook);
 
-        writeAndClose(request, JSON.encode(parkOK(call)));
+        return new shelf.Response.ok(JSON.encode(parkOK(call)));
 
       }).catchError((error, stackTrace) {
         Model.UserStatusList.instance.update(
             user.ID,
             ORModel.UserState.Unknown);
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       });
 
     }).catchError((error, stackTrace) {
       if (error is Model.NotFound) {
-        notFound(request, {
-          'description': 'callID : $callID'
-        });
+        return new shelf.Response.notFound
+            (JSON.encode({'description': 'callID : $callID'}));
       } else {
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       }
     }).catchError(
-        (error, stackTrace) =>
-            serverErrorTrace(request, error, stackTrace: stackTrace));
+        (error, stackTrace) {
 
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError();
+    });
   }
 
+  static Future<shelf.Response> pickup(shelf.Request request) {
 
-  static void pickup(HttpRequest request) {
-
-    String callID = pathParameterString(request.uri, "call");
+    final String callID = shelf_route.getPathParameter(request, 'callid');
 
     if (callID == null || callID == "") {
-      clientError(request, "Empty call_id in path.");
-      return;
+      return new Future.value
+          (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
-    final String token = request.uri.queryParameters['token'];
 
     bool aclCheck(ORModel.User user) => true;
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
       if (!aclCheck(user)) {
-        forbidden(request, 'Insufficient privileges.');
-        return;
+        return new shelf.Response.forbidden('Insufficient privileges.');
       }
 
       try {
         if (!Model.PeerList.get(user.peer).registered) {
-          clientError(request, "User with ${user.ID} has no peer available");
-          return;
+          return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
         }
       } catch (error) {
-        clientError(request, "User with ${user.ID} has no peer available");
         log.severe
           ('Failed to lookup peer for user with ID ${user.ID}. Error : $error');
-        return;
+        return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
       }
 
 
       /// Park all the users calls.
-      Future.forEach(
+      return Future.forEach(
           Model.UserStatusList.instance.activeCallsAt(user.ID),
-          (Model.Call call) => call.park(user)).whenComplete(() {
+          (Model.Call call) => call.park(user)).then((_) {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
@@ -356,10 +337,9 @@ abstract class Call {
             Model.ChannelList.instance.hasActiveChannels(user.peer);
 
         if (inTransition || hasChannels) {
-          clientError(
-              request,
-              'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
-          return;
+          return new shelf.Response
+              (400, body : 'Phone is not ready. '
+                'state:{$userState}, hasChannels:{$hasChannels}');
         }
 
         /// Request the specified call.
@@ -374,49 +354,55 @@ abstract class Call {
             user.ID,
             ORModel.UserState.Receiving);
 
-        Controller.PBX.transfer(assignedCall, user.peer).then((_) {
+        return Controller.PBX.transfer(assignedCall, user.peer).then((_) {
           assignedCall.assignedTo = user.ID;
 
           Model.UserStatusList.instance.update(
               user.ID,
               ORModel.UserState.Speaking);
 
-          writeAndClose(request, JSON.encode(pickupOK(assignedCall)));
+          return new shelf.Response.ok(JSON.encode(pickupOK(assignedCall)));
 
         }).catchError((error, stackTrace) {
           Model.UserStatusList.instance.update(
               user.ID,
               ORModel.UserState.Unknown);
 
-          serverErrorTrace(request, error, stackTrace: stackTrace);
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
         });
 
       }).catchError((error, stackTrace) {
         if (error is Model.NotFound) {
-          notFound(request, {
+          return new shelf.Response.notFound(JSON.encode({
             'reason': 'No calls available.'
-          });
+          }));
         } else {
           Model.UserStatusList.instance.update(
               user.ID,
               ORModel.UserState.Unknown);
-          serverErrorTrace(request, error, stackTrace: stackTrace);
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
         }
       });
     }).catchError((error, stackTrace) {
       if (error is Model.NotFound) {
-        notFound(request, {
+        return new shelf.Response.notFound(JSON.encode({
           'reason': 'No calls available.'
-        });
+        }));
       } else {
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       }
-    }).catchError(
-        (error, stackTrace) =>
-            serverErrorTrace(request, error, stackTrace: stackTrace));
+    })
+    .catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError();
+    });
   }
 
-  static void recordSound(HttpRequest request) {
+  static Future<shelf.Response> recordSound(shelf.Request request) {
 
     const String recordExtension = 'slowrecordmenu';
 
@@ -425,16 +411,17 @@ abstract class Call {
     String token;
 
     try {
-      receptionID = pathParameter(request.uri, 'reception');
-      recordPath = request.uri.queryParameters['recordpath'];
-      token = request.uri.queryParameters['token'];
+      receptionID = shelf_route.getPathParameter(request, 'rid');
+      recordPath = request.requestedUri.queryParameters['recordpath'];
+      token = request.requestedUri.queryParameters['token'];
     } catch (error, stack) {
-      clientError(request, 'Parameter error. ${error} ${stack}');
+      return new Future.value
+        (new shelf.Response(400, body : 'Parameter error. ${error} ${stack}'));
     }
 
     if (recordPath == null) {
-      clientError(request, 'Missing parameter "recordpath".');
-      return;
+      return new Future.value
+        (new shelf.Response(400, body : 'Missing parameter "recordpath".'));
     }
 
     log.finest('Originating to ${recordExtension} with path '
@@ -443,18 +430,18 @@ abstract class Call {
     /// Any authenticated user is allowed to originate new calls.
     bool aclCheck(ORModel.User user) => true;
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(token).then((ORModel.User user) {
       if (!aclCheck(user)) {
-        forbidden(request, 'Insufficient privileges.');
-        return;
+        return new shelf.Response.forbidden('Insufficient privileges.');
+
       }
 
 
       /// Park all the users calls.
-      Future.forEach(
+      return Future.forEach(
           Model.CallList.instance.callsOf(
               user.ID).where((Model.Call call) => call.state == Model.CallState.Speaking),
-          (Model.Call call) => call.park(user)).whenComplete(() {
+          (Model.Call call) => call.park(user)).then((_) {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
@@ -466,10 +453,8 @@ abstract class Call {
             Model.ChannelList.instance.hasActiveChannels(user.peer);
 
         if (inTransition || hasChannels) {
-          clientError(
-              request,
-              'Phone is not ready. state:{$userState}, hasChannels:{$hasChannels}');
-          return;
+          return new shelf.Response(400, body : 'Phone is not ready. '
+            'state:{$userState}, hasChannels:{$hasChannels}');
         }
 
         /// Update the user state
@@ -477,7 +462,7 @@ abstract class Call {
             user.ID,
             ORModel.UserState.Receiving);
 
-        Controller.PBX.originateRecording(
+        return Controller.PBX.originateRecording(
             receptionID,
             recordExtension,
             recordPath,
@@ -487,14 +472,15 @@ abstract class Call {
               user.ID,
               ORModel.UserState.Speaking);
 
-          writeAndClose(request, JSON.encode(orignateOK(channelUUID)));
+          return new shelf.Response.ok(JSON.encode(orignateOK(channelUUID)));
 
         }).catchError((error, stackTrace) {
           Model.UserStatusList.instance.update(
               user.ID,
               ORModel.UserState.Unknown);
 
-          serverErrorTrace(request, error, stackTrace: stackTrace);
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
         });
 
       }).catchError((error, stackTrace) {
@@ -502,44 +488,46 @@ abstract class Call {
             user.ID,
             ORModel.UserState.Unknown);
 
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       });
 
-    }).catchError(
-        (error, stackTrace) =>
-            serverErrorTrace(request, error, stackTrace: stackTrace));
+    })
+    .catchError((error, stackTrace) {
+
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError();
+    });
   }
 
-  static void transfer(HttpRequest request) {
+  static Future<shelf.Response> transfer(shelf.Request request) {
 
-    final String token = request.uri.queryParameters['token'];
-
-    String sourceCallID = pathParameterString(request.uri, "call");
-    String destinationCallID = pathParameterString(request.uri, 'transfer');
+    String sourceCallID = shelf_route.getPathParameter(request, "aleg");
+    String destinationCallID = shelf_route.getPathParameter(request, 'bleg');
     Model.Call sourceCall = null;
     Model.Call destinationCall = null;
 
     if (sourceCallID == null || sourceCallID == "") {
-      clientError(request, "Empty call_id in path.");
-      return;
+      return new Future.value
+          (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
 
     ///Check valitity of the call. (Will raise exception on invalid).
     try {
       [sourceCallID, destinationCallID].forEach(Model.Call.validateID);
     } on FormatException catch (_) {
-      clientError(request, 'Error in call id format (empty, null, nullID)');
-      return;
+      return new Future.value
+       (new shelf.Response
+           (400, body : 'Error in call id format (empty, null, nullID)'));
     }
 
     try {
       sourceCall = Model.CallList.instance.get(sourceCallID);
       destinationCall = Model.CallList.instance.get(destinationCallID);
     } on Model.NotFound catch (_) {
-      notFound(request, {
+      return new Future.value(new shelf.Response.notFound(JSON.encode({
         'description': 'At least one of the calls are ' 'no longer available'
-      });
-      return;
+      })));
     }
 
     log.finest('Transferring $sourceCall -> $destinationCall');
@@ -557,29 +545,32 @@ abstract class Call {
 
     log.finest('Transferring $sourceCall -> $destinationCall');
 
-    AuthService.userOf(token).then((ORModel.User user) {
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
       /// Update user state.
       Model.UserStatusList.instance.update(
           user.ID,
           ORModel.UserState.Transferring);
 
-      Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
+      return Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
         /// Update user state.
         Model.UserStatusList.instance.update(
             user.ID,
             ORModel.UserState.WrappingUp);
-        writeAndClose(request, '{"status" : "ok"}');
+        return new shelf.Response.ok('{"status" : "ok"}');
 
       }).catchError((error, stackTrace) {
         /// Update user state.
         Model.UserStatusList.instance.update(
             user.ID,
             ORModel.UserState.Unknown);
-        serverErrorTrace(request, error, stackTrace: stackTrace);
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError();
       });
 
-    }).catchError((error, stackTrace) {
-      serverErrorTrace(request, error, stackTrace: stackTrace);
+    })
+    .catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError();
     });
 
   }
