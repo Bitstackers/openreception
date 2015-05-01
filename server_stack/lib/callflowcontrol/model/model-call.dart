@@ -36,10 +36,16 @@ class Call {
   bool     _locked         = false;
   bool     inbound         = null;
   int      receptionID     = nullReceptionID;
-  int      assignedTo      = noUser;
+  int      _assignedTo     = noUser;
   int      contactID       = null;
   DateTime arrived         = new DateTime.now();
 
+  void set assignedTo(int userID) {
+    log.finest('Assigning $this to $userID');
+    this._assignedTo = userID;
+  }
+
+  int get assignedTo => this._assignedTo;
 
   bool get locked              => this._locked;
   void set locked (bool lock)   {
@@ -63,10 +69,6 @@ class Call {
     if (callID == null || callID == nullCallID || callID.isEmpty) {
       throw new FormatException('Invalid Call ID: ${callID}');
     }
-  }
-
-  void assignTo (ORModel.User user) {
-    this.assignedTo = user.ID;
   }
 
   void release() {
@@ -114,7 +116,7 @@ class Call {
     final String lastState = this.state;
     this.state = newState;
 
-    log.finest('UUID: ${this.ID}: ${lastState} => ${newState}');
+    log.finest('UUID: ${this.ID}: uid:${this.assignedTo} ${lastState} => ${newState}');
 
     if (lastState == CallState.Queued) {
       Notification.broadcast(ClientNotification.queueLeave (this));

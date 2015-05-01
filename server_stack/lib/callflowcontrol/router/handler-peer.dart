@@ -1,9 +1,10 @@
 part of callflowcontrol.router;
 
 abstract class Peer {
-  static void list(HttpRequest request) {
+
+  static shelf.Response list(shelf.Request request) {
     List simplePeerList = Model.PeerList.simplify().toList(growable: false);
 
-    writeAndClose(request, JSON.encode(simplePeerList));
+    return new shelf.Response.ok(JSON.encode(simplePeerList));
   }
 }

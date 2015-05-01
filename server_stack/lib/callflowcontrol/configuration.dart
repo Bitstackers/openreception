@@ -114,7 +114,10 @@ class Configuration {
         _dialoutgateway = config['dialoutgateway'];
       }
 
-    })
+      if(config.containsKey('servertoken')) {
+        _serverToken = config['servertoken'];
+      }
+})
     .catchError((error, stackTrace) {
       log.shout ('Failed to read "$configfile".');
       log.shout (error, stackTrace);
