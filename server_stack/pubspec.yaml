@@ -26,4 +26,5 @@ dependencies:
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
   shelf: any
+  shelf_cors: any
   shelf_route: any
