@@ -163,6 +163,7 @@ class Call extends ORModel.Call implements Comparable {
   /**
    * Hangup the [call].
    */
+  @deprecated
   void hangup() {
 
     // See note on assertions.
@@ -171,12 +172,13 @@ class Call extends ORModel.Call implements Comparable {
       return;
     }
 
-    Controller.Call.hangup(this);
+    throw new UnimplementedError('No longer supported');
   }
 
   /**
    * Park call.
    */
+  @deprecated
   void park() {
 
     // See note on assertions.
@@ -184,12 +186,13 @@ class Call extends ORModel.Call implements Comparable {
       log.info('Cowardly refusing ask the call-flow-control server to park a null call.');
       return;
     }
-    Controller.Call.park(this);
+    throw new UnimplementedError('No longer supported');
   }
 
   /**
    * Park call.
    */
+  @deprecated
   void transfer(Call destination) {
 
     // See note on assertions.
@@ -197,12 +200,13 @@ class Call extends ORModel.Call implements Comparable {
       log.info('Cowardly refusing ask the call-flow-control server to park a null call.');
       return;
     }
-    Controller.Call.transfer (this, destination);
+    throw new UnimplementedError('No longer supported');
   }
 
   /**
    * Pickup call.
    */
+  @deprecated
   void pickup() {
 
     // See note on assertions.
@@ -211,8 +215,7 @@ class Call extends ORModel.Call implements Comparable {
       return;
     }
 
-    Controller.Call.pickup(this);
-
+    throw new UnimplementedError('No longer supported');
   }
 
   /**
