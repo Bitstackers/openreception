@@ -21,6 +21,7 @@ class ReceptionistclientReady {
   AgentInfo                             _agentInfo;
   CalendarEditor                        _calendarEditor;
   ContactCalendar                       _contactCalendar;
+  final Controller.Call                 _callController;
   final Controller.Contact              _contactController;
   ContactData                           _contactData;
   ContactSelector                       _contactSelector;
@@ -60,13 +61,15 @@ class ReceptionistclientReady {
                                   Model.UIReceptionistclientReady uiReady,
                                   Controller.Contact contactController,
                                   Controller.Reception receptionController,
-                                  Controller.User userController) {
+                                  Controller.User userController,
+                                  Controller.Call callController) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
                                                          uiReady,
                                                          contactController,
                                                          receptionController,
-                                                         userController);
+                                                         userController,
+                                                         callController);
     } else {
       return _singleton;
     }
@@ -79,7 +82,8 @@ class ReceptionistclientReady {
                                     Model.UIReceptionistclientReady this._ui,
                                     this._contactController,
                                     this._receptionController,
-                                    this._userController) {
+                                    this._userController,
+                                    this._callController) {
     _observers();
   }
 

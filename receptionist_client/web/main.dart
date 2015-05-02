@@ -60,12 +60,6 @@ main() async {
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
 
-    /// FIXME (TL): I suspect this should not be here, but I needed to get to
-    /// the Service.Call methods for user state, and since it was missing
-    /// both config and token to actually work, I hacked together a temporary
-    /// solution that seems to do the trick.
-    Controller.call = new Service.Call(clientConfig, token);
-
     /// Get the main app views up and running. From this point the disaster,
     /// loading and ready views listen for [appState] changes.
     registerAppViews();
@@ -157,6 +151,8 @@ void registerAppViews() {
       (clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
+  ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
+      (clientConfig.callFlowServerUri, token, new ORTransport.Client());
 
   appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
   appLoading  = new View.ReceptionistclientLoading(appState, uiLoading);
@@ -168,7 +164,8 @@ void registerAppViews() {
        uiReady,
        new Controller.Contact(contactStore),
        new Controller.Reception(receptionStore),
-       new Controller.User(new Service.Call(clientConfig, token)));
+       new Controller.User(callFlowControl),
+       new Controller.Call(callFlowControl));
   ///
   ///
   ///

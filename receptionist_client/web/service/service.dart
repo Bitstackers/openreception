@@ -21,16 +21,8 @@ import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/event.dart'        as OREvent;
-import 'package:openreception_framework/model.dart'        as ORModel;
 import 'package:openreception_framework/service.dart'      as ORService;
-import 'package:openreception_framework/service-html.dart' as ORServiceHTML;
-import 'package:openreception_framework/storage.dart'      as ORStorage;
 
-part 'service-authentication.dart';
-part 'service-call.dart';
-part 'service-contact.dart';
-part 'service-message.dart';
 part 'service-notification.dart';
-part 'service-peer.dart';
 
 const String libraryName = "Service";

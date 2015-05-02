@@ -18,15 +18,16 @@ part of controller;
  */
 class User {
 
-  final Service.Call _userStateService;
+  final ORService.CallFlowControl _service;
 
-  User(this._userStateService);
+  User(this._service);
 
   /**
    * Get the [Model.UserStatus] for the current user.
    */
   Future<Model.UserStatus> getState(Model.User user) =>
-      _userStateService.userState(user.ID);
+    this._service.userStatusMap(user.ID)
+      .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Set the user idle.
@@ -35,7 +36,8 @@ class User {
    * the Service.Call.markUserStateIdle Future.
    */
   Future<Model.UserStatus> setIdle(Model.User user) =>
-    this._userStateService.markUserStateIdle(user);
+    this._service.userStateIdleMap(user.ID)
+      .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Set the user paused.
@@ -44,6 +46,15 @@ class User {
    * the Service.Call.markUserStatePaused Future.
    */
   Future<Model.UserStatus> setPaused(Model.User user) =>
-      this._userStateService.markUserStatePaused(user);
+    this._service.userStatePausedMap(user.ID)
+      .then((Map map) => new Model.UserStatus.fromMap(map));
 
+  /**
+   * Fetches a userStates of all users
+   */
+  Future<Iterable<Model.UserStatus>> userStateList() =>
+    _service.userStatusListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.UserStatus.fromMap(map)));
 }

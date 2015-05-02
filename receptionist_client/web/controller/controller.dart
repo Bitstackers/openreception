@@ -18,7 +18,6 @@ import 'dart:html';
 
 import '../enums.dart';
 import '../model/model.dart' as Model;
-import '../service/service.dart' as Service;
 
 import 'package:okeyee/okeyee.dart';
 import 'package:logging/logging.dart';
@@ -35,5 +34,10 @@ part 'controller-user.dart';
 
 const String libraryName = 'controller';
 
-Service.Call _call;
-set call(Service.Call call) => _call = call;
+class ControllerError implements Exception {
+
+  final String message;
+  const ControllerError([this.message = ""]);
+
+  String toString() => "ControllerError: $message";
+}
