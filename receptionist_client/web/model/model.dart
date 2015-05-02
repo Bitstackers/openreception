@@ -39,6 +39,7 @@ part 'model-phone-number.dart';
 part 'model-reception.dart';
 part 'model-reception-calendar.dart';
 part 'model-user.dart';
+part 'model-peer.dart';
 part 'model-user-status.dart';
 
 part 'model-ui-agent-info.dart';
