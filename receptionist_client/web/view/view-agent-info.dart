@@ -19,12 +19,13 @@ part of view;
 class AgentInfo extends ViewWidget {
   final Logger            _log = new Logger('$libraryName.AgentInfo');
   final Model.UIAgentInfo _ui;
+  final Controller.User   _user;
 
   /**
    * Constructor.
    * Add Iterable<UserStatus> as parameter for extraction of global user state.
    */
-  AgentInfo(Model.UIModel this._ui) {
+  AgentInfo(Model.UIModel this._ui, Controller.User this._user) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = AgentState.UNKNOWN;
@@ -33,6 +34,8 @@ class AgentInfo extends ViewWidget {
 
     /// TODO (TL): Add a portrait getter to Model.User.
     _ui.portrait = Model.User.currentUser.toJson()['remote_attributes']['picture'];
+
+    _user.getState(Model.User.currentUser).then(_updateUserState);
 
     _observers();
   }
@@ -44,15 +47,63 @@ class AgentInfo extends ViewWidget {
   @override void onFocus(_){}
 
   /**
+   * Set the users state to [AgentState.IDLE].
+   *
+   * TODO (TL): Deal with the fact that we currently don't handle conditions
+   * where changing to idle fails.
+   */
+  void _setIdle(_) {
+    /// TODO (TL): Only call this if state != idle
+    _user.setIdle(Model.User.currentUser).then(_updateUserState);
+  }
+
+  /**
+   * Set the users state to [AgentState.PAUSED].
+   *
+   * TODO (TL): Deal with the fact that we currently don't handle conditions
+   * where changing to paused fails.
+   */
+  void _setPaused(_) {
+    /// TODO (TL): Only call this if state is != paused
+    _user.setPaused(Model.User.currentUser).then(_updateUserState);
+  }
+
+  /**
+   * Update the users state in the UI.
+   */
+  void _updateUserState(Model.UserStatus userStatus) {
+    /// TODO (TL): This entire switch goes away when Model.UserStatus.state
+    /// return the AgentState enum. Currently it is a String.
+    switch(userStatus.state) {
+      case 'busy':
+        _ui.agentState = AgentState.BUSY;
+        break;
+      case 'idle':
+        /// TODO (TL): Idle graphic is currently the same as BUSY. Fix!
+        _ui.agentState = AgentState.IDLE;
+        break;
+      case 'paused':
+        _ui.agentState = AgentState.PAUSED;
+        break;
+      default:
+        /// TODO (TL): Unknown graphic is currently the same as IDLE. Fix!
+        _ui.agentState = AgentState.UNKNOWN;
+        break;
+    }
+  }
+
+  /**
    * Observers.
    */
   void _observers() {
+    _hotKeys.onCtrlAltEnter.listen(_setIdle);
+    _hotKeys.onCtrlAltP.listen(_setPaused);
+
     /// TODO (TL): Add relevant listeners
     ///   _ui.activeCount = active count
-    ///   _ui.agentState = agent state
     ///   _ui.alertState = alert state
     ///   _ui.pausedCount = paused count
-    ///   Listen on Notification socket UserStatus events and update DOM
+    ///   Listen on Notification socket UserStatus events and update UI
     ///   accordingly
     ///
   }

@@ -17,50 +17,56 @@ part of view;
  * TODO (TL): Comment
  */
 class ReceptionistclientReady {
-  final Model.AppClientState                  _appState;
-  AgentInfo                             agentInfo;
-  CalendarEditor                        calendarEditor;
-  ContactCalendar                       contactCalendar;
-  ContactData                           contactData;
-  ContactSelector                       contactSelector;
-  Contexts                              contexts;
-  GlobalCallQueue                       globalCallQueue;
-  Hint                                  help;
-  MessageArchive                        messageArchive;
-  MessageArchiveEdit                    messageArchiveEdit;
-  MessageArchiveFilter                  messageArchiveFilter;
-  MessageCompose                        messageCompose;
-  MyCallQueue                           myCallQueue;
-  ReceptionAddresses                    receptionAddresses;
-  ReceptionAltNames                     receptionAltNames;
-  ReceptionBankInfo                     receptionBankInfo;
-  ReceptionCalendar                     receptionCalendar;
-  ReceptionCommands                     receptionCommands;
-  ReceptionEmail                        receptionEmail;
-  ReceptionMiniWiki                     receptionMiniWiki;
-  ReceptionOpeningHours                 receptionOpeningHours;
-  ReceptionProduct                      receptionProduct;
-  ReceptionSalesmen                     receptionSalesmen;
-  ReceptionSelector                     receptionSelector;
-  ReceptionTelephoneNumbers             receptionTelephoneNumbers;
-  ReceptionType                         receptionType;
-  ReceptionVATNumbers                   receptionVATNumbers;
-  ReceptionWebsites                     receptionWebsites;
-  static ReceptionistclientReady        _singleton;
-  WelcomeMessage                        welcomeMessage;
-  final Model.UIReceptionistclientReady _ui;
+  final Model.AppClientState            _appState;
+  AgentInfo                             _agentInfo;
+  CalendarEditor                        _calendarEditor;
+  ContactCalendar                       _contactCalendar;
   final Controller.Contact              _contactController;
+  ContactData                           _contactData;
+  ContactSelector                       _contactSelector;
+  Contexts                              _contexts;
+  GlobalCallQueue                       _globalCallQueue;
+  Hint                                  _help;
+  MessageArchive                        _messageArchive;
+  MessageArchiveEdit                    _messageArchiveEdit;
+  MessageArchiveFilter                  _messageArchiveFilter;
+  MessageCompose                        _messageCompose;
+  MyCallQueue                           _myCallQueue;
+  ReceptionAddresses                    _receptionAddresses;
+  ReceptionAltNames                     _receptionAltNames;
+  ReceptionBankInfo                     _receptionBankInfo;
+  ReceptionCalendar                     _receptionCalendar;
+  ReceptionCommands                     _receptionCommands;
   final Controller.Reception            _receptionController;
+  ReceptionEmail                        _receptionEmail;
+  ReceptionMiniWiki                     _receptionMiniWiki;
+  ReceptionOpeningHours                 _receptionOpeningHours;
+  ReceptionProduct                      _receptionProduct;
+  ReceptionSalesmen                     _receptionSalesmen;
+  ReceptionSelector                     _receptionSelector;
+  ReceptionTelephoneNumbers             _receptionTelephoneNumbers;
+  ReceptionType                         _receptionType;
+  ReceptionVATNumbers                   _receptionVATNumbers;
+  ReceptionWebsites                     _receptionWebsites;
+  static ReceptionistclientReady        _singleton;
+  final Controller.User                 _userController;
+  final Model.UIReceptionistclientReady _ui;
+  WelcomeMessage                        _welcomeMessage;
+
   /**
    * Constructor.
    */
   factory ReceptionistclientReady(Model.AppClientState appState,
                                   Model.UIReceptionistclientReady uiReady,
-                                  Controller.Contact _contactController,
-                                  Controller.Reception _receptionController) {
+                                  Controller.Contact contactController,
+                                  Controller.Reception receptionController,
+                                  Controller.User userController) {
     if(_singleton == null) {
-      _singleton = new ReceptionistclientReady._internal
-          (appState, uiReady, _contactController, _receptionController);
+      _singleton = new ReceptionistclientReady._internal(appState,
+                                                         uiReady,
+                                                         contactController,
+                                                         receptionController,
+                                                         userController);
     } else {
       return _singleton;
     }
@@ -72,7 +78,8 @@ class ReceptionistclientReady {
   ReceptionistclientReady._internal(Model.AppClientState this._appState,
                                     Model.UIReceptionistclientReady this._ui,
                                     this._contactController,
-                                    this._receptionController) {
+                                    this._receptionController,
+                                    this._userController) {
     _observers();
   }
 
@@ -93,137 +100,137 @@ class ReceptionistclientReady {
     Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'));
     Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
-    contexts = new Contexts(new Model.UIContexts());
-    help     = new Hint(new Model.UIHint());
+    _contexts = new Contexts(new Model.UIContexts());
+    _help     = new Hint(new Model.UIHint());
 
-    agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')));
+    _agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')), _userController);
 
-    contactCalendar = new ContactCalendar
+    _contactCalendar = new ContactCalendar
         (uiContactCalendar,
          new Controller.Destination(Context.Home, Widget.ContactCalendar),
          uiContactSelector,
          uiReceptionSelector,
          _contactController);
 
-    contactData = new ContactData
+    _contactData = new ContactData
         (new Model.UIContactData(querySelector('#contact-data')),
          new Controller.Destination(Context.Home, Widget.ContactData),
          uiContactSelector,
          uiReceptionSelector);
 
-    calendarEditor = new CalendarEditor
+    _calendarEditor = new CalendarEditor
         (new Model.UICalendarEditor(querySelector('#calendar-editor')),
          new Controller.Destination(Context.CalendarEdit, Widget.CalendarEditor),
          uiContactCalendar,
          uiReceptionCalendar);
 
-    contactSelector = new ContactSelector
+    _contactSelector = new ContactSelector
         (uiContactSelector,
          new Controller.Destination(Context.Home, Widget.ContactSelector),
          uiReceptionSelector,
          _contactController);
 
-    globalCallQueue = new GlobalCallQueue
+    _globalCallQueue = new GlobalCallQueue
         (new Model.UIGlobalCallQueue(querySelector('#global-call-queue')),
          new Controller.Destination(Context.Home, Widget.GlobalCallQueue));
 
-    messageArchive = new MessageArchive
+    _messageArchive = new MessageArchive
         (new Model.UIMessageArchive(querySelector('#message-archive')),
          new Controller.Destination(Context.Messages, Widget.MessageArchive));
 
-    messageArchiveEdit = new MessageArchiveEdit
+    _messageArchiveEdit = new MessageArchiveEdit
         (new Model.UIMessageArchiveEdit(querySelector('#message-archive-edit')),
          new Controller.Destination(Context.Messages, Widget.MessageArchiveEdit));
 
-    messageArchiveFilter = new MessageArchiveFilter
+    _messageArchiveFilter = new MessageArchiveFilter
         (new Model.UIMessageArchiveFilter(querySelector('#message-archive-filter')),
          new Controller.Destination(Context.Messages, Widget.MessageArchiveFilter));
 
-    messageCompose = new MessageCompose
+    _messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),
          new Controller.Destination(Context.Home, Widget.MessageCompose));
 
-    myCallQueue = new MyCallQueue
+    _myCallQueue = new MyCallQueue
         (new Model.UIMyCallQueue(querySelector('#my-call-queue')),
          new Controller.Destination(Context.Home, Widget.MyCallQueue));
 
-    receptionAddresses = new ReceptionAddresses
+    _receptionAddresses = new ReceptionAddresses
         (new Model.UIReceptionAddresses(querySelector('#reception-addresses')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionAddresses),
          uiReceptionSelector);
 
-    receptionAltNames = new ReceptionAltNames
+    _receptionAltNames = new ReceptionAltNames
         (new Model.UIReceptionAltNames(querySelector('#reception-alt-names')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionAltNames),
          uiReceptionSelector);
 
-    receptionBankInfo = new ReceptionBankInfo
+    _receptionBankInfo = new ReceptionBankInfo
         (new Model.UIReceptionBankInfo(querySelector('#reception-bank-info')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionBankInfo),
          uiReceptionSelector);
 
-    receptionCalendar = new ReceptionCalendar
+    _receptionCalendar = new ReceptionCalendar
         (uiReceptionCalendar,
          new Controller.Destination(Context.Home, Widget.ReceptionCalendar),
          uiReceptionSelector,
          this._receptionController);
 
-    receptionCommands = new ReceptionCommands
+    _receptionCommands = new ReceptionCommands
         (new Model.UIReceptionCommands(querySelector('#reception-commands')),
          new Controller.Destination(Context.Home, Widget.ReceptionCommands),
          uiReceptionSelector);
 
-    receptionEmail = new ReceptionEmail
+    _receptionEmail = new ReceptionEmail
         (new Model.UIReceptionEmail(querySelector('#reception-email')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionEmail),
          uiReceptionSelector);
 
-    receptionMiniWiki = new ReceptionMiniWiki
+    _receptionMiniWiki = new ReceptionMiniWiki
         (new Model.UIReceptionMiniWiki(querySelector('#reception-mini-wiki')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionMiniWiki),
          uiReceptionSelector);
 
-    receptionOpeningHours = new ReceptionOpeningHours
+    _receptionOpeningHours = new ReceptionOpeningHours
         (new Model.UIReceptionOpeningHours(querySelector('#reception-opening-hours')),
          new Controller.Destination(Context.Home, Widget.ReceptionOpeningHours),
          uiReceptionSelector);
 
-    receptionProduct = new ReceptionProduct
+    _receptionProduct = new ReceptionProduct
         (new Model.UIReceptionProduct(querySelector('#reception-product')),
          new Controller.Destination(Context.Home, Widget.ReceptionProduct),
          uiReceptionSelector);
 
-    receptionSalesmen = new ReceptionSalesmen
+    _receptionSalesmen = new ReceptionSalesmen
         (new Model.UIReceptionSalesmen(querySelector('#reception-salesmen')),
          new Controller.Destination(Context.Home, Widget.ReceptionSalesmen),
          uiReceptionSelector);
 
-    receptionSelector = new ReceptionSelector
+    _receptionSelector = new ReceptionSelector
         (new Controller.Destination(Context.Home, Widget.ReceptionSelector),
          uiReceptionSelector,
          _receptionController);
 
-    receptionTelephoneNumbers = new ReceptionTelephoneNumbers
+    _receptionTelephoneNumbers = new ReceptionTelephoneNumbers
         (new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionTelephoneNumbers),
          uiReceptionSelector);
 
-    receptionType = new ReceptionType
+    _receptionType = new ReceptionType
         (new Model.UIReceptionType(querySelector('#reception-type')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionType),
          uiReceptionSelector);
 
-    receptionVATNumbers = new ReceptionVATNumbers
+    _receptionVATNumbers = new ReceptionVATNumbers
         (new Model.UIReceptionVATNumbers(querySelector('#reception-vat-numbers')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionVATNumbers),
          uiReceptionSelector);
 
-    receptionWebsites = new ReceptionWebsites
+    _receptionWebsites = new ReceptionWebsites
         (new Model.UIReceptionWebsites(querySelector('#reception-websites')),
          new Controller.Destination(Context.Homeplus, Widget.ReceptionWebsites),
          uiReceptionSelector);
 
-    welcomeMessage = new WelcomeMessage
+    _welcomeMessage = new WelcomeMessage
         (new Model.UIWelcomeMessage(querySelector('#welcome-message')),
          uiReceptionSelector);
 

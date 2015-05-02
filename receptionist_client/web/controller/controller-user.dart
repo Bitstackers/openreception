@@ -23,12 +23,18 @@ class User {
   User(this._userStateService);
 
   /**
+   * Get the [Model.UserStatus] for the current user.
+   */
+  Future<Model.UserStatus> getState(Model.User user) =>
+      _userStateService.userState(user.ID);
+
+  /**
    * Set the user idle.
    *
    * TODO (TL): Proper error handling. We're not doing anything with errors from
    * the Service.Call.markUserStateIdle Future.
    */
-  Future setIdle(Model.User user) =>
+  Future<Model.UserStatus> setIdle(Model.User user) =>
     this._userStateService.markUserStateIdle(user);
 
   /**
@@ -37,7 +43,7 @@ class User {
    * TODO (TL): Proper error handling. We're not doing anyting with errors from
    * the Service.Call.markUserStatePaused Future.
    */
-  Future setPaused(Model.User user) =>
+  Future<Model.UserStatus> setPaused(Model.User user) =>
       this._userStateService.markUserStatePaused(user);
 
 }

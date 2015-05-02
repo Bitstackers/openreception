@@ -85,12 +85,12 @@ class UIContactCalendar extends UIModel {
   /**
    * Fires when a [CalendarEntry] edit is requested from somewhere.
    */
-  Stream<KeyboardEvent> get onEdit   => _busEdit.stream;
+  Stream<KeyboardEvent> get onEdit => _busEdit.stream;
 
   /**
    * Fires when a [CalendarEvent] new is requested from somewhere.
    */
-  Stream<KeyboardEvent> get onNew    => _busNew.stream;
+  Stream<KeyboardEvent> get onNew => _busNew.stream;
 
   /**
    * Select the first [ContactCalendarEntry] in the list.

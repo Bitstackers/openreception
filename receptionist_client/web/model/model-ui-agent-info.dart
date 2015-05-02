@@ -52,7 +52,7 @@ class UIAgentInfo extends UIModel {
         /// TODO (TL): Need idle state graphic
         _agentState.src = 'images/agentsactive.svg';
         break;
-      case AgentState.PAUSE:
+      case AgentState.PAUSED:
         _agentState.src = 'images/agentssleep.svg';
         break;
       case AgentState.UNKNOWN:

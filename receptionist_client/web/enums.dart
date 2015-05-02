@@ -2,7 +2,7 @@ library enums;
 
 enum AgentState {BUSY,
                  IDLE,
-                 PAUSE,
+                 PAUSED,
                  UNKNOWN}
 
 enum AlertState {OFF,

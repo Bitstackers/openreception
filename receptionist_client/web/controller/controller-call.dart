@@ -28,7 +28,8 @@ abstract class Call {
     log.info('Dialing $extension.');
 
     _command.fire(CallCommand.DIAL);
-    return Service.Call.instance.originate(contact, reception, extension)
+//    return Service.Call.instance.originate(contact, reception, extension)
+    return _call.originate(contact, reception, extension)
       .then((_) => _command.fire(CallCommand.DIALSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -47,7 +48,8 @@ abstract class Call {
     log.info('Picking up $call.');
 
     _command.fire(CallCommand.PICKUP);
-    return Service.Call.instance.pickup(call)
+//    return Service.Call.instance.pickup(call)
+    return _call.pickup(call)
       .then((_) => _command.fire(CallCommand.PICKUPSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -59,7 +61,8 @@ abstract class Call {
     log.info('Hanging up $call.');
 
     _command.fire(CallCommand.HANGUP);
-    return Service.Call.instance.hangup(call)
+//    return Service.Call.instance.hangup(call)
+    return _call.hangup(call)
       .then((_) => _command.fire(CallCommand.HANGUPSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -69,7 +72,8 @@ abstract class Call {
 
   static Future park(Model.Call call) {
     _command.fire(CallCommand.PARK);
-    return Service.Call.instance.park(call)
+//    return Service.Call.instance.park(call)
+    return _call.park(call)
       .then((_) => _command.fire(CallCommand.PARKSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -79,7 +83,8 @@ abstract class Call {
 
   static Future transfer(Model.Call source, Model.Call destination) {
     _command.fire(CallCommand.TRANSFER);
-    return Service.Call.instance.transfer(source, destination)
+//    return Service.Call.instance.transfer(source, destination)
+    return _call.transfer(source, destination)
       .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);

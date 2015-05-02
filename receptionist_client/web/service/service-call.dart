@@ -14,23 +14,33 @@
 part of service;
 
 class Call {
+  final ORModel.ClientConfiguration _configuration;
+  ORService.CallFlowControl         _service = null;
+  static Call                       _singleton;
+  final String                      _token;
 
-  ORService.CallFlowControl _service = null;
+//  static Call _instance;
+//
+//  static Call get instance {
+//    if (_instance == null) {
+//      _instance = new Call();
+//    }
+//
+//    return _instance;
+//  }
 
-  static Call _instance;
-
-  static Call get instance {
-    if (_instance == null) {
-      _instance = new Call();
+  factory Call(ORModel.ClientConfiguration configuration, String token) {
+    if(_singleton == null) {
+      _singleton = new Call._internal(configuration, token);
+    } else {
+      return _singleton;
     }
-
-    return _instance;
   }
 
-  Call () {
+  Call._internal(ORModel.ClientConfiguration this._configuration, String this._token) {
     _service = new ORService.CallFlowControl
-        (configuration.callFlowBaseUrl,
-         configuration.token,
+        (_configuration.callFlowServerUri,
+         _token,
          new ORServiceHTML.Client());
   }
 
@@ -45,11 +55,11 @@ class Call {
   /**
    * Fetches a list of peers.
    */
-  Future<Iterable<Model.Peer>> peerList() =>
-    _service.peerListMaps()
-      .then((Iterable<Map> maps) =>
-        maps.map((Map map) =>
-          new Model.Peer.fromMap(map)));
+//  Future<Iterable<Model.Peer>> peerList() =>
+//    _service.peerListMaps()
+//      .then((Iterable<Map> maps) =>
+//        maps.map((Map map) =>
+//          new Model.Peer.fromMap(map)));
 
   /**
    * Fetches a userStates of all users

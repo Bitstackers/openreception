@@ -19,6 +19,7 @@ import 'dart:html';
 import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
+import 'service/service.dart' as Service;
 import 'view/view.dart' as View;
 
 import 'package:logging/logging.dart';
@@ -58,6 +59,12 @@ main() async {
 
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
+
+    /// FIXME (TL): I suspect this should not be here, but I needed to get to
+    /// the Service.Call methods for user state, and since it was missing
+    /// both config and token to actually work, I hacked together a temporary
+    /// solution that seems to do the trick.
+    Controller.call = new Service.Call(clientConfig, token);
 
     /// Get the main app views up and running. From this point the disaster,
     /// loading and ready views listen for [appState] changes.
@@ -160,7 +167,21 @@ void registerAppViews() {
       (appState,
        uiReady,
        new Controller.Contact(contactStore),
-       new Controller.Reception(receptionStore));
+       new Controller.Reception(receptionStore),
+       new Controller.User(new Service.Call(clientConfig, token)));
+  ///
+  ///
+  ///
+  ///
+  ///
+  /// TODO (TL): It seems somewhat unwieldy to pass in all these controllers here.
+  /// Why not just pass in config and token, and then let the individual widgets
+  /// instantiate whatever they need?
+  ///
+  ///
+  ///
+  ///
+  ///
 }
 
 /**

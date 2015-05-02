@@ -34,3 +34,6 @@ part 'controller-reception.dart';
 part 'controller-user.dart';
 
 const String libraryName = 'controller';
+
+Service.Call _call;
+set call(Service.Call call) => _call = call;
