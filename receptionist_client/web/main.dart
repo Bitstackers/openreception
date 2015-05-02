@@ -175,6 +175,9 @@ void registerAppViews() {
   /// Why not just pass in config and token, and then let the individual widgets
   /// instantiate whatever they need?
   ///
+  ///  - (KRC): Because we need single point of entry in order to assert that
+  ///    requests to the server stack happens in-order.
+  ///
   ///
   ///
   ///
