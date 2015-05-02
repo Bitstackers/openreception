@@ -110,4 +110,10 @@ class Call {
         return new Future.error(new ControllerError(error.toString()));
       });
     }
+
+  Future<Iterable<Model.Call>> listCalls() =>
+    this._service.callListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.Call.fromMap(map)));
 }
