@@ -33,6 +33,9 @@ Map<int, ORModel.UserState> userMap = {};
 
 abstract class Call {
 
+  /**
+   * Retrieves a single call from the call list.
+   */
   static shelf.Response get(shelf.Request request) {
     String callID = shelf_route.getPathParameter(request, 'callid');
 
@@ -49,6 +52,9 @@ abstract class Call {
     }
   }
 
+  /**
+   * Hangup the current call of the agent.
+   */
   static Future<shelf.Response> hangup(shelf.Request request) {
 
     return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
@@ -83,6 +89,9 @@ abstract class Call {
     });
   }
 
+  /**
+   * Hangup a specific call identified by the supplied call id.
+   */
   static Future<shelf.Response> hangupSpecific(shelf.Request request) {
 
     final String callID = shelf_route.getPathParameter(request, 'callid');
@@ -142,9 +151,15 @@ abstract class Call {
       });
   }
 
+  /**
+   * Lists every active call in system.
+   */
   static shelf.Response list(shelf.Request request) =>
     new shelf.Response.ok(JSON.encode(Model.CallList.instance));
 
+  /**
+   * Originate a new call to the supplied extension.
+   */
   static Future<shelf.Response> originate(shelf.Request request) {
 
     final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
@@ -235,7 +250,9 @@ abstract class Call {
     });
   }
 
-
+  /**
+   * Park a specific call.
+   */
   static Future<shelf.Response> park(shelf.Request request) {
 
     final String callID = shelf_route.getPathParameter(request, "callid");
@@ -295,6 +312,9 @@ abstract class Call {
     });
   }
 
+  /**
+   * Pickup a specific call.
+   */
   static Future<shelf.Response> pickup(shelf.Request request) {
 
     final String callID = shelf_route.getPathParameter(request, 'callid');
@@ -402,6 +422,9 @@ abstract class Call {
     });
   }
 
+  /**
+   * Originate a call to record-sound extension in the PBX.
+   */
   static Future<shelf.Response> recordSound(shelf.Request request) {
 
     const String recordExtension = 'slowrecordmenu';
@@ -500,6 +523,9 @@ abstract class Call {
     });
   }
 
+  /**
+   * Transfer (bridge) two calls in the PBX.
+   */
   static Future<shelf.Response> transfer(shelf.Request request) {
 
     String sourceCallID = shelf_route.getPathParameter(request, "aleg");
