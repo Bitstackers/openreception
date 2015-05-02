@@ -116,4 +116,14 @@ class Call {
       .then((Iterable<Map> maps) =>
         maps.map((Map map) =>
           new Model.Call.fromMap(map)));
+
+  /**
+   * Fetches a list of peers.
+   */
+  Future<Iterable<Model.Peer>> peerList() =>
+    this._service.peerListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.Peer.fromMap(map)));
+
 }
