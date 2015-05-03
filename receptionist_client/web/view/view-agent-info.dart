@@ -33,7 +33,12 @@ class AgentInfo extends ViewWidget {
     _ui.portrait = 'images/face.png';
 
     /// TODO (TL): Add a portrait getter to Model.User.
-    _ui.portrait = Model.User.currentUser.toJson()['remote_attributes']['picture'];
+    Map userMap = Model.User.currentUser.toJson();
+    if (userMap.containsKey('remote_attributes')) {
+      if ((userMap['remote_attributes'] as Map).containsKey('picture')) {
+        _ui.portrait = userMap['remote_attributes']['picture'];
+      }
+    }
 
     _user.getState(Model.User.currentUser).then(_updateUserState);
 
