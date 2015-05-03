@@ -12,12 +12,15 @@ class WebSocketClient extends Service.WebSocket {
     Completer ready = new Completer();
 
     this._websocket
-        ..onMessage.listen(this.onMessage)
+        ..onMessage.listen(this._onMessage)
         ..onError.listen(this.onError)
         ..onOpen.listen((_) => ready.complete());
 
     return ready.future;
   }
+
+  void _onMessage (HTML.MessageEvent e) =>
+    this.onMessage(e.data.toString());
 
   Future close () => new Future.sync(() => this._websocket.close());
 }
