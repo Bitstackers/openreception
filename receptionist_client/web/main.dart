@@ -57,12 +57,11 @@ main() async {
     /// labels set while loading.
     translate();
 
+    /// Get the app Disaster and Loading views up and running.
+    registerDisasterAndLoadingViews();
+
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
-
-    /// Get the main app views up and running. From this point the disaster,
-    /// loading and ready views listen for [appState] changes.
-    registerAppViews();
 
     /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
     /// elements. This is simply done by searching for the "ignoreclickfocus"
@@ -82,9 +81,11 @@ main() async {
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
       webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
-      });
 
-      appState.changeState(Model.AppState.READY);
+        /// Get the app Ready view up and running.
+        registerReadyView();
+        appState.changeState(Model.AppState.READY);
+      });
     } else {
       String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
       log.info('No token detected, redirecting user to $loginUrl');
@@ -132,18 +133,27 @@ Future<ORModel.User> getUser(Uri authServerUri) async {
 }
 
 /**
- * Register the main app view objects:
- *  [View.ReceptionistclientDisaster]
- *  [View.ReceptionistclientLoading]
- *  [View.ReceptionistclientReady]
+ * Register the [View.ReceptionistclientDisaster] and [View.ReceptionistclientLoading]
+ * app view objects.
  *
  * NOTE: This depends on [clientConfig] being set.
  */
-void registerAppViews() {
+void registerDisasterAndLoadingViews() {
   Model.UIReceptionistclientDisaster uiDisaster =
       new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
   Model.UIReceptionistclientLoading  uiLoading =
       new Model.UIReceptionistclientLoading('receptionistclient-loading');
+
+  appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
+  appLoading  = new View.ReceptionistclientLoading(appState, uiLoading);
+}
+
+/**
+ * Register the [View.ReceptionistclientReady] app view object.
+ *
+ * NOTE: This depends on [clientConfig] being set.
+ */
+void registerReadyView() {
   Model.UIReceptionistclientReady    uiReady =
       new Model.UIReceptionistclientReady('receptionistclient-ready');
   ORService.RESTContactStore   contactStore = new ORService.RESTContactStore
@@ -153,9 +163,6 @@ void registerAppViews() {
   ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
       (clientConfig.callFlowServerUri, token, new ORTransport.Client());
 
-  appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
-  appLoading  = new View.ReceptionistclientLoading(appState, uiLoading);
-
   /// This is where it all starts. Every single widget is instantiated in
   /// appReady.
   appReady = new View.ReceptionistclientReady
@@ -164,23 +171,8 @@ void registerAppViews() {
        new Controller.Contact(contactStore),
        new Controller.Reception(receptionStore),
        new Controller.User(callFlowControl),
-       new Controller.Call(callFlowControl));
-  ///
-  ///
-  ///
-  ///
-  ///
-  /// TODO (TL): It seems somewhat unwieldy to pass in all these controllers here.
-  /// Why not just pass in config and token, and then let the individual widgets
-  /// instantiate whatever they need?
-  ///
-  ///  - (KRC): Because we need single point of entry in order to assert that
-  ///    requests to the server stack happens in-order.
-  ///
-  ///
-  ///
-  ///
-  ///
+       new Controller.Call(callFlowControl),
+       notificationSocket);
 }
 
 /**
