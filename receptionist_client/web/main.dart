@@ -78,7 +78,6 @@ main() async {
 
       webSocketClient    = new ORTransport.WebSocketClient();
       notificationSocket = new ORService.NotificationSocket(webSocketClient);
-      webSocketClient.onMessage = print; /// FIXME (KRC): In the framework.
 
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
       webSocketClient.connect(uri).then((_) {
