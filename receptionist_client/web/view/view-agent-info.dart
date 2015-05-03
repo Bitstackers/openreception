@@ -37,6 +37,15 @@ class AgentInfo extends ViewWidget {
 
     _user.getState(Model.User.currentUser).then(_updateUserState);
 
+    _user.userStateList().then((Iterable<Model.UserStatus> userStates) {
+      _ui.activeCount = userStates.where((Model.UserStatus user)
+        => user.state == ORModel.UserState.Idle).length;
+
+      _ui.pausedCount = userStates.where((Model.UserStatus user)
+      => user.state == ORModel.UserState.Paused).length;
+    })
+    .catchError((error) => _log.warning('${error.toString()}'));
+
     _observers();
   }
 
@@ -98,6 +107,8 @@ class AgentInfo extends ViewWidget {
   void _observers() {
     _hotKeys.onCtrlAltEnter.listen(_setIdle);
     _hotKeys.onCtrlAltP.listen(_setPaused);
+
+
 
     /// TODO (TL): Add relevant listeners
     ///   _ui.activeCount = active count

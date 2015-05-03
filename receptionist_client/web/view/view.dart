@@ -24,6 +24,7 @@ import '../service/service.dart' as Service; // TODO (KRC): Refactor out
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';
