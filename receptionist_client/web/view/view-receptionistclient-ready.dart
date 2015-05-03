@@ -33,6 +33,7 @@ class ReceptionistclientReady {
   MessageArchiveFilter                  _messageArchiveFilter;
   MessageCompose                        _messageCompose;
   MyCallQueue                           _myCallQueue;
+  ORService.NotificationSocket          _notificationSocket;
   ReceptionAddresses                    _receptionAddresses;
   ReceptionAltNames                     _receptionAltNames;
   ReceptionBankInfo                     _receptionBankInfo;
@@ -62,14 +63,16 @@ class ReceptionistclientReady {
                                   Controller.Contact contactController,
                                   Controller.Reception receptionController,
                                   Controller.User userController,
-                                  Controller.Call callController) {
+                                  Controller.Call callController,
+                                  ORService.NotificationSocket notificationSocket) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
                                                          uiReady,
                                                          contactController,
                                                          receptionController,
                                                          userController,
-                                                         callController);
+                                                         callController,
+                                                         notificationSocket);
     } else {
       return _singleton;
     }
@@ -83,7 +86,8 @@ class ReceptionistclientReady {
                                     this._contactController,
                                     this._receptionController,
                                     this._userController,
-                                    this._callController) {
+                                    this._callController,
+                                    this._notificationSocket) {
     _observers();
   }
 
@@ -107,7 +111,10 @@ class ReceptionistclientReady {
     _contexts = new Contexts(new Model.UIContexts());
     _help     = new Hint(new Model.UIHint());
 
-    _agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')), _userController);
+    _agentInfo = new AgentInfo
+        (new Model.UIAgentInfo(querySelector('#agent-info')),
+        _userController,
+        _notificationSocket);
 
     _contactCalendar = new ContactCalendar
         (uiContactCalendar,

@@ -14,18 +14,21 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The agent info view. This contains information about the amount of agents
+ * currently logged in and how many are active/paused.
  */
 class AgentInfo extends ViewWidget {
-  final Logger            _log = new Logger('$libraryName.AgentInfo');
-  final Model.UIAgentInfo _ui;
-  final Controller.User   _user;
+  final Logger                 _log = new Logger('$libraryName.AgentInfo');
+  ORService.NotificationSocket _notificationSocket;
+  final Model.UIAgentInfo      _ui;
+  final Controller.User        _user;
 
   /**
    * Constructor.
-   * Add Iterable<UserStatus> as parameter for extraction of global user state.
    */
-  AgentInfo(Model.UIModel this._ui, Controller.User this._user) {
+  AgentInfo(Model.UIModel this._ui,
+            Controller.User this._user,
+            ORService.NotificationSocket this._notificationSocket) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = AgentState.UNKNOWN;
@@ -37,14 +40,7 @@ class AgentInfo extends ViewWidget {
 
     _user.getState(Model.User.currentUser).then(_updateUserState);
 
-    _user.userStateList().then((Iterable<Model.UserStatus> userStates) {
-      _ui.activeCount = userStates.where((Model.UserStatus user)
-        => user.state == ORModel.UserState.Idle).length;
-
-      _ui.pausedCount = userStates.where((Model.UserStatus user)
-      => user.state == ORModel.UserState.Paused).length;
-    })
-    .catchError((error) => _log.warning('${error.toString()}'));
+    _updateCounters();
 
     _observers();
   }
@@ -108,14 +104,30 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltEnter.listen(_setIdle);
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
-
+    _notificationSocket.eventStream.listen((OREvent.Event event) {
+      if(event is OREvent.UserState) {
+        _updateCounters();
+      }
+    });
 
     /// TODO (TL): Add relevant listeners
-    ///   _ui.activeCount = active count
     ///   _ui.alertState = alert state
-    ///   _ui.pausedCount = paused count
-    ///   Listen on Notification socket UserStatus events and update UI
-    ///   accordingly
-    ///
+  }
+
+  /**
+   * Update active/paused counters.
+   *
+   * We do this by fetching a list of all users state, and count each of their
+   * state.
+   */
+  void _updateCounters() {
+    _user.userStateList().then((Iterable<Model.UserStatus> userStates) {
+      _ui.activeCount = userStates.where((Model.UserStatus user)
+        => user.state == ORModel.UserState.Idle).length;
+
+      _ui.pausedCount = userStates.where((Model.UserStatus user)
+      => user.state == ORModel.UserState.Paused).length;
+    })
+    .catchError((error) => _log.warning('${error.toString()}'));
   }
 }
