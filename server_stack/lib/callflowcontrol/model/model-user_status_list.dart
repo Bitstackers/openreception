@@ -13,7 +13,7 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
   Map<int, ORModel.UserStatus> _userStatus = {};
 
   UserStatusList() {
-    this.timeoutDetector = _checkTimestamps();
+    _checkTimestamps();
   }
 
   Iterable<Call> activeCallsAt (int userID) =>
@@ -40,13 +40,16 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
   }
 
   Future _checkTimestamps() {
+
     DateTime now = new DateTime.now();
     this.forEach((ORModel.UserStatus status) {
-      Duration timeSinceLastActivity = status.lastActivity.difference(now);
-      if (timeSinceLastActivity > keepAliveTimeout){
-        log.info ('User with id ${status.userID} was timed out due to '
-                'inactivity. Time since last activty: $timeSinceLastActivity');
-        status.state = ORModel.UserState.Unknown;
+      if (status.lastActivity != null) {
+        Duration timeSinceLastActivity = status.lastActivity.difference(now);
+        if (timeSinceLastActivity > keepAliveTimeout){
+          log.info ('User with id ${status.userID} was timed out due to '
+                  'inactivity. Time since last activty: $timeSinceLastActivity');
+          status.state = ORModel.UserState.Unknown;
+        }
       }
     });
 
