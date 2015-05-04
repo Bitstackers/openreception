@@ -82,6 +82,8 @@ void main() {
     test('userStatusMap', ResourceCallFlowControl.userStatusMap);
     test('channelList', ResourceCallFlowControl.channelList);
     test('userStatusIdle', ResourceCallFlowControl.userStatusIdle);
+    test('userStatusKeepAlive', ResourceCallFlowControl.userStatusKeepAlive);
+    test('userStatusLoggedOut', ResourceCallFlowControl.userStatusLogout);
     test('peerList', ResourceCallFlowControl.peerList);
     test('single', ResourceCallFlowControl.single);
     test('pickup', ResourceCallFlowControl.pickup);
@@ -117,6 +119,14 @@ abstract class ResourceCallFlowControl {
   static void userStatusIdle () =>
       expect(Resource.CallFlowControl.userStatusIdle(callFlowControlUri, 1),
         equals(Uri.parse('${callFlowControlUri}/userstate/1/idle')));
+
+  static void userStatusKeepAlive () =>
+      expect(Resource.CallFlowControl.userStateKeepAlive(callFlowControlUri, 1),
+        equals(Uri.parse('${callFlowControlUri}/userstate/1/keep-alive')));
+
+  static void userStatusLogout() =>
+      expect(Resource.CallFlowControl.userStateLoggedOut(callFlowControlUri, 1),
+        equals(Uri.parse('${callFlowControlUri}/userstate/1/loggedOut')));
 
   static void peerList () =>
       expect(Resource.CallFlowControl.peerList(callFlowControlUri),
