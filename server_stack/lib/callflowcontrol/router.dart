@@ -86,6 +86,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..post('/userstate/{uid}/idle', UserState.markIdle)
     ..post('/userstate/{uid}/loggedOut', UserState.logOut)
     ..post('/userstate/{uid}/paused', UserState.markPaused)
+    ..post('/userstate/{uid}/keep-alive', UserState.keepAlive)
     ..get('/userstate', UserState.list)
     ..get('/call/{callid}', Call.get)
     ..get('/call', Call.list)
