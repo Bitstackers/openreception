@@ -6,11 +6,15 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
 
   Iterator get iterator => this._userStatus.values.iterator;
   List         toJson() => this.toList(growable: false);
-  Future   timeoutDetector = _checkTimestamps();
+  Future   timeoutDetector;
   final Duration keepAliveTimeout = new Duration(seconds : 10);
 
   /// Singleton reference.
   Map<int, ORModel.UserStatus> _userStatus = {};
+
+  UserStatusList() {
+    this.timeoutDetector = _checkTimestamps();
+  }
 
   Iterable<Call> activeCallsAt (int userID) =>
       CallList.instance.callsOf (userID).where
