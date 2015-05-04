@@ -12,6 +12,7 @@ abstract class UserState {
   static const Dialing         = 'dialing';
   static const Parking         = 'parking';
   static const Unparking       = 'unParking';
+  static const LoggedOut       = 'loggedOut';
   static const WrappingUp      = 'wrappingUp';
   static const HandlingOffHook = 'handlingOffHook';
 

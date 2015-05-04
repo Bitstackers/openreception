@@ -32,6 +32,7 @@ class NotificationService {
   /**
    * Performs a broadcast via the notification server.
    */
+  @deprecated('The signature of this function will change. Move to broadcastEvent temporarily.')
   Future broadcast(Map map) {
     Uri uri = Resource.Notification.broadcast(this._host);
         uri = appendToken(uri, this._token);
@@ -39,6 +40,19 @@ class NotificationService {
     log.finest('POST $uri $map');
 
     return _enqueue (new NotificationRequest()..body     = map
+                                              ..resource = uri);
+  }
+
+  /**
+   * Performs a broadcast via the notification server.
+   */
+  Future broadcastEvent(Event.Event event) {
+    Uri uri = Resource.Notification.broadcast(this._host);
+        uri = appendToken(uri, this._token);
+
+    log.finest('POST $uri body:${event.asMap}');
+
+    return _enqueue (new NotificationRequest()..body     = event.asMap
                                               ..resource = uri);
   }
 

@@ -72,6 +72,29 @@ class CallFlowControl {
 
   /**
    * Updates the [Model.UserStatus] object associated
+   * with [userID] to state logged-out.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
+  Future<Map> userStateLoggedOutMap(int userID) =>
+      this._backed.post
+        (appendToken(Resource.CallFlowControl.userState
+           (this._host, userID, Model.UserState.LoggedOut), this._token), '')
+      .then((String response)
+        => JSON.decode(response));
+
+  /**
+   * Updates the [Model.UserStatus] object associated
+   * with [userID] to state logged-out.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
+  Future<Model.UserStatus> userStateLogedOut(int userID) =>
+      userStateLoggedOutMap(userID).then((Map map) =>
+          new Model.UserStatus.fromMap(map));
+
+  /**
+   * Updates the [Model.UserStatus] object associated
    * with [userID] to state idle.
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
