@@ -9,7 +9,7 @@ abstract class Peer {
   }
 
   static shelf.Response get(shelf.Request request) {
-    int peerid = int.parse(shelf_route.getPathParameter(request, 'peerid'));
+    String peerid = shelf_route.getPathParameter(request, 'peerid');
 
     return new Model.Peer.fromESLPeer(Model.PeerList.get(peerid));
   }
