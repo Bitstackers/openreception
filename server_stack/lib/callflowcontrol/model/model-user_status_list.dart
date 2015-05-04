@@ -45,10 +45,12 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     this.forEach((ORModel.UserStatus status) {
       if (status.lastActivity != null) {
         Duration timeSinceLastActivity = status.lastActivity.difference(now);
-        if (timeSinceLastActivity > keepAliveTimeout){
+        if (keepAliveTimeout > timeSinceLastActivity){
           log.info ('User with id ${status.userID} was timed out due to '
-                  'inactivity. Time since last activty: $timeSinceLastActivity');
+                 'inactivity. Time since last activty: $timeSinceLastActivity');
           status.state = ORModel.UserState.Unknown;
+          Notification.broadcast(new OREvent.UserState
+              (this.get (status.userID)).asMap);
         }
       }
     });
