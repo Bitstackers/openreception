@@ -76,12 +76,14 @@ class CallFlowControl {
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
    */
-  Future<Map> userStateLoggedOutMap(int userID) =>
-      this._backed.post
-        (appendToken(Resource.CallFlowControl.userState
-           (this._host, userID, Model.UserState.LoggedOut), this._token), '')
+  Future<Map> userStateLoggedOutMap(int userID) {
+    Uri uri = Resource.CallFlowControl.userStateLoggedOut (this._host, userID);
+        uri = appendToken(uri, this._token);
+
+    return this._backed.post (uri, '')
       .then((String response)
         => JSON.decode(response));
+  }
 
   /**
    * Updates the last-updted timestamp ont the [Model.UserStatus] object
