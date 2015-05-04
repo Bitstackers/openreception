@@ -32,7 +32,7 @@ class NotificationService {
   /**
    * Performs a broadcast via the notification server.
    */
-  @deprecated('The signature of this function will change. Move to broadcastEvent temporarily.')
+  @deprecated
   Future broadcast(Map map) {
     Uri uri = Resource.Notification.broadcast(this._host);
         uri = appendToken(uri, this._token);
