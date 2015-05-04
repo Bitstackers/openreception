@@ -7,4 +7,11 @@ abstract class Peer {
 
     return new shelf.Response.ok(JSON.encode(simplePeerList));
   }
+
+  static shelf.Response get(shelf.Request request) {
+    int peerid = int.parse(shelf_route.getPathParameter(request, 'peerid'));
+
+    return new Model.Peer.fromESLPeer(Model.PeerList.get(peerid));
+  }
+
 }

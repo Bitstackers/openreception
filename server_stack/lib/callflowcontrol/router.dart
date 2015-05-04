@@ -80,7 +80,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
     ..get('/peer/list', Peer.list)
     ..get('/peer', Peer.list)
-//    ..get('/peer/{peerid}', Peer.get)
+    ..get('/peer/{peerid}', Peer.get)
     ..get('/userstate/{uid}', UserState.get)
     //TODO: Dispatch to general UserState handler.
     ..post('/userstate/{uid}/idle', UserState.markIdle)
