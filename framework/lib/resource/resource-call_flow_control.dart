@@ -34,6 +34,15 @@ abstract class CallFlowControl {
     => Uri.parse('${host}/userstate/${userID}/${newState}');
 
   /**
+   * Builds a Uri to keep alive a userstatus resource associated with a user.
+   * The [newState] parameter must be a valid [UserState].
+   * The output format is:
+   *    http://hostname/userstate/${userID}/keep-alive
+   */
+  static Uri userStateKeepAlive (Uri host, int userID)
+    => Uri.parse('${host}/userstate/${userID}/keep-alive');
+
+  /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
    *    http://hostname/channel/list

@@ -84,6 +84,18 @@ class CallFlowControl {
         => JSON.decode(response));
 
   /**
+   * Updates the last-updted timestamp ont the [Model.UserStatus] object
+   * associated with [userID].
+   * The call fails if the user is logged out, or has no state on the server.
+   */
+  Future userStateKeepAlive(int userID) =>
+      this._backed.post
+        (appendToken(Resource.CallFlowControl.userStateKeepAlive
+           (this._host, userID), this._token), '')
+      .then((String response)
+        => JSON.decode(response));
+
+  /**
    * Updates the [Model.UserStatus] object associated
    * with [userID] to state logged-out.
    * The update is conditioned by the server and phone state and may throw
