@@ -101,7 +101,7 @@ class CallFlowControl {
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
    */
-  Future<Model.UserStatus> userStateLogedOut(int userID) =>
+  Future<Model.UserStatus> userStateLoggedOut(int userID) =>
       userStateLoggedOutMap(userID).then((Map map) =>
           new Model.UserStatus.fromMap(map));
 
