@@ -151,6 +151,9 @@ void registerDisasterAndLoadingViews() {
 /**
  * Register the [View.ReceptionistclientReady] app view object.
  *
+ * This also registers the [window.onBeforeUnload] and [window.onUnload]
+ * listeners that is responsible for logging out the user when she exits.
+ *
  * NOTE: This depends on [clientConfig] being set.
  */
 void registerReadyView() {
@@ -163,6 +166,18 @@ void registerReadyView() {
   ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
       (clientConfig.callFlowServerUri, token, new ORTransport.Client());
 
+  Controller.User _controllerUser = new Controller.User(callFlowControl);
+
+  window.onBeforeUnload.listen((Event event) {
+    return ''; // Empty string is fine - we just want the popup warning.
+  });
+
+  window.onUnload.listen((_) {
+    /// TODO (TL): Set to unknown first, then logout. setPaused is just a temp
+    /// placeholder.
+    _controllerUser.setPaused(Model.User.currentUser);
+  });
+
   /// This is where it all starts. Every single widget is instantiated in
   /// appReady.
   appReady = new View.ReceptionistclientReady
@@ -170,7 +185,7 @@ void registerReadyView() {
        uiReady,
        new Controller.Contact(contactStore),
        new Controller.Reception(receptionStore),
-       new Controller.User(callFlowControl),
+       _controllerUser,
        new Controller.Call(callFlowControl),
        notificationSocket);
 }
