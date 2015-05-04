@@ -18,8 +18,9 @@ class Reception {
 
   Reception (this._store);
 
-  Future calendar(Model.Reception reception) =>
-    this._store.calendar(reception.ID);
+  Future<Iterable<Model.ReceptionCalendarEntry>> calendar(Model.Reception reception) =>
+    this._store.calendarMap(reception.ID).then((Iterable<Map> maps) =>
+      maps.map((Map map) => new Model.ReceptionCalendarEntry.fromMap(map)));
 
   Future<Iterable<Model.Reception>> list() {
     Completer<Iterable<Model.Reception>> completer =
