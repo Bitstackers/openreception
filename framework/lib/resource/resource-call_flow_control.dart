@@ -43,6 +43,15 @@ abstract class CallFlowControl {
     => Uri.parse('${host}/userstate/${userID}/keep-alive');
 
   /**
+   * Builds a Uri to logout userstatus resource associated with a user.
+   * The [newState] parameter must be a valid [UserState].
+   * The output format is:
+   *    http://hostname/userstate/${userID}/loggedOut
+   */
+  static Uri userStateLoggedOut (Uri host, int userID)
+    => userState(host, userID, Model.UserState.LoggedOut);
+
+  /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
    *    http://hostname/channel/list
