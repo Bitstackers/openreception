@@ -82,7 +82,9 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/peer', Peer.list)
 //    ..get('/peer/{peerid}', Peer.get)
     ..get('/userstate/{uid}', UserState.get)
+    //TODO: Dispatch to general UserState handler.
     ..post('/userstate/{uid}/idle', UserState.markIdle)
+    ..post('/userstate/{uid}/loggedOut', UserState.logOut)
     ..post('/userstate/{uid}/paused', UserState.markPaused)
     ..get('/userstate', UserState.list)
     ..get('/call/{callid}', Call.get)
