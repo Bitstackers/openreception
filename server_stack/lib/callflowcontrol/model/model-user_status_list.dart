@@ -24,7 +24,7 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     this.updatetimeStamp(userID);
     this.get (userID).state = newState;
 
-    Notification.broadcast(new OREvent.UserState (this.get (userID)).asMap);
+    Notification.broadcastEvent(new OREvent.UserState (this.get (userID)));
   }
 
   void updatetimeStamp (int userID) {
@@ -50,8 +50,8 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
           log.info ('User with id ${status.userID} was timed out due to '
                  'inactivity. Time since last activty: $timeSinceLastActivity');
           status.state = ORModel.UserState.Unknown;
-          Notification.broadcast(new OREvent.UserState
-              (this.get (status.userID)).asMap);
+          Notification.broadcastEvent(new OREvent.UserState
+              (this.get (status.userID)));
           //Remove the user from the map
           //TODO: Check if the user has an active websocket first.
           markedForRemoval.add(status);
