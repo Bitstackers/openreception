@@ -40,6 +40,7 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
   }
 
   Future _checkTimestamps() {
+    List<UserState> markedForRemoval = [];
 
     DateTime now = new DateTime.now();
     this.forEach((ORModel.UserStatus status) {
@@ -51,9 +52,18 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
           status.state = ORModel.UserState.Unknown;
           Notification.broadcast(new OREvent.UserState
               (this.get (status.userID)).asMap);
+          //Remove the user from the map
+          //TODO: Check if the user has an active websocket first.
+          markedForRemoval.add(status);
         }
       }
     });
+
+    if (markedForRemoval.isNotEmpty) {
+      markedForRemoval.map((ORModel.UserStatus status) =>
+          this._userStatus.remove(status));
+      markedForRemoval.clear();
+    }
 
     return new Future.delayed(keepAliveTimeout, this._checkTimestamps);
   }
