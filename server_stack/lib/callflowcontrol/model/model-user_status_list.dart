@@ -40,7 +40,7 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
   }
 
   Future _checkTimestamps() {
-    List<UserState> markedForRemoval = [];
+    List<ORModel.UserStatus> markedForRemoval = [];
 
     DateTime now = new DateTime.now();
     this.forEach((ORModel.UserStatus status) {
