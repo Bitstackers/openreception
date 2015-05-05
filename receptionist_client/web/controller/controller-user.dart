@@ -49,7 +49,7 @@ class User {
    * the Service.Call.markUserStateIdle Future.
    */
   Future<Model.UserStatus> setLoggedOut(Model.User user) =>
-    this._service.userStateLogedOut(user.ID)
+    this._service.userStateLoggedOut(user.ID)
       .then((Model.UserStatus status) => status);
 
   /**
