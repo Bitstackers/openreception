@@ -19,7 +19,6 @@ import 'dart:html';
 import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
-import 'service/service.dart' as Service;
 import 'view/view.dart' as View;
 
 import 'package:logging/logging.dart';
@@ -31,37 +30,37 @@ part 'configuration_url.dart';
 
 const String libraryName = 'openreceptionclient';
 
-final Model.AppClientState appState = new Model.AppClientState();
-final Logger               log      = new Logger(libraryName);
-
 View.ReceptionistclientDisaster appDisaster;
 View.ReceptionistclientLoading  appLoading;
 View.ReceptionistclientReady    appReady;
-Uri                             appUri;
-ORModel.ClientConfiguration     clientConfig;
-ORService.NotificationSocket    notificationSocket;
-String                          token;
-ORTransport.WebSocketClient     webSocketClient;
+final Logger                    log = new Logger(libraryName);
 
 main() async {
+  final Model.AppClientState   appState = new Model.AppClientState();
+  Uri                          appUri;
+  ORModel.ClientConfiguration  clientConfig;
+  ORService.NotificationSocket notificationSocket;
+  String                       token;
+  ORTransport.WebSocketClient  webSocketClient;
+
   try {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
-
-    appUri = Uri.parse(window.location.href);
-
-    /// This is the 'settoken' URL path parameter.
-    token = getToken();
 
     /// Translate the static labels of the app. We do this early to have correct
     /// labels set while loading.
     translate();
 
     /// Get the app Disaster and Loading views up and running.
-    registerDisasterAndLoadingViews();
+    registerDisasterAndLoadingViews(appState);
 
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
+
+    appUri = Uri.parse(window.location.href);
+
+    /// This is the 'settoken' URL path parameter.
+    token = getToken(appUri);
 
     /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
     /// elements. This is simply done by searching for the "ignoreclickfocus"
@@ -73,17 +72,29 @@ main() async {
     });
 
     if(token != null) {
-      Model.User.currentUser = await getUser(clientConfig.authServerUri);
+      Model.User.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient    = new ORTransport.WebSocketClient();
       notificationSocket = new ORService.NotificationSocket(webSocketClient);
 
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
+
       webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
 
-        /// Get the app Ready view up and running.
-        registerReadyView();
+        ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
+            (clientConfig.callFlowServerUri, token, new ORTransport.Client());
+        Controller.User controllerUser = new Controller.User(callFlowControl);
+
+        observers(controllerUser);
+        registerReadyView(appState,
+                          clientConfig,
+                          controllerUser,
+                          callFlowControl,
+                          notificationSocket,
+                          token);
+        setupUserKeepAlive(controllerUser);
+
         appState.changeState(Model.AppState.READY);
       });
     } else {
@@ -118,12 +129,12 @@ Future<ORModel.ClientConfiguration> getClientConfiguration() async {
 /**
  * Return the value of the URL path parameter 'settoken'
  */
-String getToken() => appUri.queryParameters['settoken'];
+String getToken(Uri appUri) => appUri.queryParameters['settoken'];
 
 /**
  * Return the current user.
  */
-Future<ORModel.User> getUser(Uri authServerUri) async {
+Future<ORModel.User> getUser(Uri authServerUri, String token) async {
   ORService.Authentication authService =
       new ORService.Authentication(authServerUri, token, new ORTransport.Client());
 
@@ -133,12 +144,29 @@ Future<ORModel.User> getUser(Uri authServerUri) async {
 }
 
 /**
+ * Observers.
+ *
+ * Registers the [window.onBeforeUnload] and [window.onUnload] listeners that is
+ * responsible for popping a warning on refresh/page close and logging out the
+ * user when she exits the application.
+ */
+void observers(Controller.User controllerUser) {
+  window.onBeforeUnload.listen((BeforeUnloadEvent event) {
+    event.returnValue = '';
+  });
+
+  window.onUnload.listen((_) {
+    controllerUser.setLoggedOut(Model.User.currentUser);
+  });
+}
+
+/**
  * Register the [View.ReceptionistclientDisaster] and [View.ReceptionistclientLoading]
  * app view objects.
  *
  * NOTE: This depends on [clientConfig] being set.
  */
-void registerDisasterAndLoadingViews() {
+void registerDisasterAndLoadingViews(Model.AppClientState appState) {
   Model.UIReceptionistclientDisaster uiDisaster =
       new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
   Model.UIReceptionistclientLoading  uiLoading =
@@ -150,35 +178,20 @@ void registerDisasterAndLoadingViews() {
 
 /**
  * Register the [View.ReceptionistclientReady] app view object.
- *
- * This also registers the [window.onBeforeUnload] and [window.onUnload]
- * listeners that is responsible for logging out the user when she exits.
- *
  * NOTE: This depends on [clientConfig] being set.
  */
-void registerReadyView() {
-  Model.UIReceptionistclientReady    uiReady =
+void registerReadyView(Model.AppClientState appState,
+                       ORModel.ClientConfiguration clientConfig,
+                       Controller.User controllerUser,
+                       ORService.CallFlowControl callFlowControl,
+                       ORService.NotificationSocket notificationSocket,
+                       String token) {
+  Model.UIReceptionistclientReady uiReady =
       new Model.UIReceptionistclientReady('receptionistclient-ready');
-  ORService.RESTContactStore   contactStore = new ORService.RESTContactStore
+  ORService.RESTContactStore contactStore = new ORService.RESTContactStore
       (clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
-  ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
-      (clientConfig.callFlowServerUri, token, new ORTransport.Client());
-
-  Controller.User _controllerUser = new Controller.User(callFlowControl);
-
-  window.onBeforeUnload.listen((BeforeUnloadEvent event) {
-    event.returnValue = '';
-  });
-
-  window.onUnload.listen((_) {
-    _controllerUser.setLoggedOut(Model.User.currentUser);
-  });
-
-  setupUserKeepAlive(_controllerUser);
-
-  _controllerUser.userStateKeepAlive(Model.User.currentUser);
 
   /// This is where it all starts. Every single widget is instantiated in
   /// appReady.
@@ -187,7 +200,7 @@ void registerReadyView() {
        uiReady,
        new Controller.Contact(contactStore),
        new Controller.Reception(receptionStore),
-       _controllerUser,
+       controllerUser,
        new Controller.Call(callFlowControl),
        notificationSocket);
 }
@@ -195,14 +208,14 @@ void registerReadyView() {
 /**
  * Start a periodic timer that phones home on regular intervals.
  */
-void setupUserKeepAlive(Controller.User _controllerUser) {
+void setupUserKeepAlive(Controller.User controllerUser) {
   new Timer.periodic(new Duration(seconds: 5), (Timer timer) {
-    _controllerUser.userStateKeepAlive(Model.User.currentUser)
+    controllerUser.userStateKeepAlive(Model.User.currentUser)
       .then((_) => log.info('User id ${Model.User.currentUser.ID} kept alive'))
       .catchError((error) {
         timer.cancel();
         log.warning('User id ${Model.User.currentUser.ID} failed keep alive call');
-        setupUserKeepAlive(_controllerUser);
+        setupUserKeepAlive(controllerUser);
       });
   });
 }
@@ -218,7 +231,6 @@ void translate() {
   });
 
   querySelectorAll('[data-lang-placeholder]').forEach((HtmlElement element) {
-    element.setAttribute(
-        'placeholder', langMap[element.dataset['lang-placeholder']]);
+    element.setAttribute('placeholder', langMap[element.dataset['lang-placeholder']]);
   });
 }
