@@ -168,15 +168,17 @@ void registerReadyView() {
 
   Controller.User _controllerUser = new Controller.User(callFlowControl);
 
-  window.onBeforeUnload.listen((Event event) {
-    return ''; // Empty string is fine - we just want the popup warning.
+  window.onBeforeUnload.listen((BeforeUnloadEvent event) {
+    event.returnValue = '';
   });
 
   window.onUnload.listen((_) {
-    /// TODO (TL): Set to unknown first, then logout. setPaused is just a temp
-    /// placeholder.
-    _controllerUser.setPaused(Model.User.currentUser);
+    _controllerUser.setLoggedOut(Model.User.currentUser);
   });
+
+  setupUserKeepAlive(_controllerUser);
+
+  _controllerUser.userStateKeepAlive(Model.User.currentUser);
 
   /// This is where it all starts. Every single widget is instantiated in
   /// appReady.
@@ -188,6 +190,21 @@ void registerReadyView() {
        _controllerUser,
        new Controller.Call(callFlowControl),
        notificationSocket);
+}
+
+/**
+ * Start a periodic timer that phones home on regular intervals.
+ */
+void setupUserKeepAlive(Controller.User _controllerUser) {
+  new Timer.periodic(new Duration(seconds: 5), (Timer timer) {
+    _controllerUser.userStateKeepAlive(Model.User.currentUser)
+      .then((_) => log.info('User id ${Model.User.currentUser.ID} kept alive'))
+      .catchError((error) {
+        timer.cancel();
+        log.warning('User id ${Model.User.currentUser.ID} failed keep alive call');
+        setupUserKeepAlive(_controllerUser);
+      });
+  });
 }
 
 /**

@@ -14,12 +14,15 @@
 part of controller;
 
 /**
- * TODO (TL): Missing description of class and what it does.
+ * Methods for getting and setting user state.
  */
 class User {
 
   final ORService.CallFlowControl _service;
 
+  /**
+   * Constructor.
+   */
   User(this._service);
 
   /**
@@ -40,6 +43,16 @@ class User {
       .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
+   * Set the user logged out.
+   *
+   * TODO (TL): Proper error handling. We're not doing anything with errors from
+   * the Service.Call.markUserStateIdle Future.
+   */
+  Future<Model.UserStatus> setLoggedOut(Model.User user) =>
+    this._service.userStateLogedOut(user.ID)
+      .then((Model.UserStatus status) => status);
+
+  /**
    * Set the user paused.
    *
    * TODO (TL): Proper error handling. We're not doing anyting with errors from
@@ -48,6 +61,14 @@ class User {
   Future<Model.UserStatus> setPaused(Model.User user) =>
     this._service.userStatePausedMap(user.ID)
       .then((Map map) => new Model.UserStatus.fromMap(map));
+
+  /**
+   * Ping the server and update the last-updated timestamp on the
+   * [Model.UserStatus] object. The call fails if [user] is logged out or has no
+   * state on the server.
+   */
+  Future userStateKeepAlive(Model.User user) =>
+      _service.userStateKeepAlive(user.ID);
 
   /**
    * Fetches a userStates of all users

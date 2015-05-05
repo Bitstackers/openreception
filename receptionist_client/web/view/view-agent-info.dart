@@ -82,21 +82,17 @@ class AgentInfo extends ViewWidget {
    * Update the users state in the UI.
    */
   void _updateUserState(Model.UserStatus userStatus) {
-    /// TODO (TL): This entire switch goes away when Model.UserStatus.state
-    /// return the AgentState enum. Currently it is a String.
     switch(userStatus.state) {
       case 'busy':
         _ui.agentState = AgentState.BUSY;
         break;
       case 'idle':
-        /// TODO (TL): Idle graphic is currently the same as BUSY. Fix!
         _ui.agentState = AgentState.IDLE;
         break;
       case 'paused':
         _ui.agentState = AgentState.PAUSED;
         break;
       default:
-        /// TODO (TL): Unknown graphic is currently the same as IDLE. Fix!
         _ui.agentState = AgentState.UNKNOWN;
         break;
     }
@@ -110,7 +106,9 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
     _notificationSocket.eventStream.listen((OREvent.Event event) {
+      print('!!!!!!!!!!!!!!!!!!!!!!!! ${event.asMap} !!!!!!!!!!!!!!!!!!!!!!!!');
       if(event is OREvent.UserState) {
+        _updateUserState(new Model.UserStatus.fromMap(event.asMap));
         _updateCounters();
       }
     });

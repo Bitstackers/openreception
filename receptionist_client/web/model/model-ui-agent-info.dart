@@ -46,18 +46,16 @@ class UIAgentInfo extends UIModel {
   set agentState (AgentState agentState) {
     switch(agentState) {
       case AgentState.BUSY:
-        _agentState.src = 'images/agentsactive.svg';
+        _agentState.src = 'images/agent_speaking.svg';
         break;
       case AgentState.IDLE:
-        /// TODO (TL): Need idle state graphic
-        _agentState.src = 'images/agentsactive.svg';
+        _agentState.src = 'images/agent_idle.svg';
         break;
       case AgentState.PAUSED:
-        _agentState.src = 'images/agentssleep.svg';
+        _agentState.src = 'images/agent_pause.svg';
         break;
-      case AgentState.UNKNOWN:
-        /// TODO (TL): Need unknown state graphic
-        _agentState.src = 'images/agentsactive.svg';
+      default:
+        _agentState.src = 'images/agent_unknown.svg';
         break;
     }
   }
