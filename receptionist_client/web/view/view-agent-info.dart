@@ -63,7 +63,6 @@ class AgentInfo extends ViewWidget {
    * where changing to idle fails.
    */
   void _setIdle(_) {
-    /// TODO (TL): Only call this if state != idle
     _user.setIdle(Model.User.currentUser).then(_updateUserState);
   }
 
@@ -74,7 +73,6 @@ class AgentInfo extends ViewWidget {
    * where changing to paused fails.
    */
   void _setPaused(_) {
-    /// TODO (TL): Only call this if state is != paused
     _user.setPaused(Model.User.currentUser).then(_updateUserState);
   }
 
@@ -106,15 +104,11 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
     _notificationSocket.eventStream.listen((OREvent.Event event) {
-      print('!!!!!!!!!!!!!!!!!!!!!!!! ${event.asMap} !!!!!!!!!!!!!!!!!!!!!!!!');
       if(event is OREvent.UserState) {
         _updateUserState(new Model.UserStatus.fromMap(event.asMap));
         _updateCounters();
       }
     });
-
-    /// TODO (TL): Add relevant listeners
-    ///   _ui.alertState = alert state
   }
 
   /**
