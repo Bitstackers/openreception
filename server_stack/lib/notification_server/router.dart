@@ -1,5 +1,6 @@
 library notificationserver.router;
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
@@ -21,8 +22,9 @@ final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern notificationSocketResource = new UrlPattern(r'/notifications');
 final Pattern broadcastResource          = new UrlPattern(r'/broadcast');
 final Pattern sendResource               = new UrlPattern(r'/send');
+final Pattern statusResource             = new UrlPattern(r'/status');
 
-final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, sendResource];
+final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, sendResource, statusResource];
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 Service.Authentication AuthService = null;
@@ -40,6 +42,7 @@ void registerHandlers(HttpServer server) {
       ..serve(notificationSocketResource, method : "GET" ).listen(Notification.connect) // The upgrade-request is found in the header of a GET request.
       ..serve(         broadcastResource, method : "POST").listen(Notification.broadcast)
       ..serve(              sendResource, method : "POST").listen(Notification.send)
+      ..serve(            statusResource, method : "GET" ).listen(Notification.status)
       ..serve(anything, method: 'OPTIONS').listen(ORhttp.preFlight)
       ..defaultStream.listen(ORhttp.page404);
 }

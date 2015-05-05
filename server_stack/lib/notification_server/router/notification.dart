@@ -100,6 +100,7 @@ abstract class Notification {
    * in the 'recipients' field. The 'message' field is also mandatory for obvious reasons.
    */
   static void send(HttpRequest request) {
+
     ORhttp.extractContent(request).then((String content) {
       List<int> recipients = new List<int>();
 
@@ -142,4 +143,15 @@ abstract class Notification {
     });
   }
 
+  /**
+   * Status for every connected websocket.
+   */
+  static Future status(HttpRequest request) {
+    List<Map> clients = [];
+      clientRegistry.forEach((int uid, List<WebSocket> clientSockets) {
+        Map client = {'uid' : uid, 'socketCount' : clientSockets.length};
+        clients.add(client);
+      });
+      ORhttp.writeAndClose(request, JSON.encode(clients));
+  }
 }
