@@ -44,9 +44,18 @@ class UIContactCalendar extends UIModel {
     final List<LIElement> list =  new List<LIElement>();
 
     items.forEach((ContactCalendarEntry item) {
+      DivElement content = new DivElement()
+                            ..text = item.content;
+
+      DivElement timeStamps = new DivElement()
+                                ..classes.add('timestamps')
+                                ..text = '${item.start} - ${item.stop}';
+
       list.add(new LIElement()
-                ..text = item.content
-                ..dataset['object'] = JSON.encode(item));
+                ..children.addAll([content, timeStamps])
+                ..title = 'Id: ${item.ID.toString()}'
+                ..dataset['object'] = JSON.encode(item)
+                ..classes.toggle('active', item.active));
     });
 
     _list.children = list;
@@ -91,15 +100,6 @@ class UIContactCalendar extends UIModel {
    * Fires when a [CalendarEvent] new is requested from somewhere.
    */
   Stream<KeyboardEvent> get onNew => _busNew.stream;
-
-  /**
-   * Select the first [ContactCalendarEntry] in the list.
-   */
-  void selectFirstCalendarEntry() {
-    if(_list.children.isNotEmpty) {
-      _markSelected(_scanForwardForVisibleElement(_list.children.first));
-    }
-  }
 
   /**
    * Mark a [LIElement] in the calendar entry list selected, if one such is the

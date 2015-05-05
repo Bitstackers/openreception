@@ -55,9 +55,9 @@ class ReceptionCalendar extends ViewWidget {
 
     _hotKeys.onAltA.listen(activateMe);
 
-    _ui.onClick .listen(activateMe);
-    _ui.onEdit  .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.EDIT));
-    _ui.onNew   .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.NEW));
+    _ui.onClick.listen(activateMe);
+    _ui.onEdit .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.EDIT));
+    _ui.onNew  .listen((_) => _navigate.goCalendarEdit(from: _myDestination..cmd = Cmd.NEW));
 
     _receptionSelector.onSelect.listen(render);
   }
@@ -73,13 +73,9 @@ class ReceptionCalendar extends ViewWidget {
 
       _receptionController.calendar(reception)
         .then ((Iterable<Model.ReceptionCalendarEntry> entries) {
-          Iterable<Model.ReceptionCalendarEntry> sortedEntries = entries.toList()
-            ..sort((x,y) => x.startTime.isBefore(y.startTime));
-
-          _ui.calendarEntries = sortedEntries;
-      });
-
-      _ui.selectFirstCalendarEntry();
+          _ui.calendarEntries = entries.toList()
+              ..sort((a,b) => a.startTime.compareTo(b.startTime));
+        });
     }
   }
 }

@@ -830,6 +830,23 @@
 
                   #reception-calendar .generic-widget-list li {
                     border-left: solid 3px #f7f7f7;
+                    color: #999;
+                  }
+
+                  #reception-calendar .generic-widget-list li .timestamps {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-top: 0.3em;
+                    color: #999;
+                  }
+
+                  #reception-calendar .generic-widget-list li.active {
+                    color: inherit;
+                  }
+
+                  #reception-calendar .generic-widget-list li.active .timestamps {
+                    color: #ff5621;
+                    font-weight: bold;
                   }
 
                   #reception-calendar .generic-widget-list li:hover {
@@ -838,6 +855,11 @@
 
                   #reception-calendar .generic-widget-list .selected {
                     border-left: solid 3px #ff5621;
+                  }
+
+                  #reception-calendar .generic-widget-list li div,
+                  #reception-calendar .generic-widget-list li span {
+                    pointer-events: none;
                   }
                 </style>
 
@@ -1216,6 +1238,16 @@
 
                     #contact-calendar .generic-widget-list li {
                       border-left: solid 3px #f7f7f7;
+                      color: #999;
+                    }
+
+                    #contact-calendar .generic-widget-list li.active {
+                      color: inherit;
+                    }
+
+                    #contact-calendar .generic-widget-list li.active .timestamps {
+                      color: #ff5621;
+                      font-weight: bold;
                     }
 
                     #contact-calendar .generic-widget-list li:hover {
@@ -1224,6 +1256,18 @@
 
                     #contact-calendar .generic-widget-list .selected {
                       border-left: solid 3px #ff5621;
+                    }
+
+                    #contact-calendar .generic-widget-list li .timestamps {
+                      display: flex;
+                      justify-content: flex-end;
+                      margin-top: 0.3em;
+                      color: #999;
+                    }
+
+                    #contact-calendar .generic-widget-list li div,
+                    #contact-calendar .generic-widget-list li span {
+                      pointer-events: none;
                     }
                   </style>
 
