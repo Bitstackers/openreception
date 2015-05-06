@@ -147,7 +147,7 @@ abstract class Notification {
    * Status for every connected websocket.
    * TODO: Add a type for this in the framework.
    */
-  static Future status(HttpRequest request) {
+  static void status(HttpRequest request) {
     List<Map> clients = [];
       clientRegistry.forEach((int uid, List<WebSocket> clientSockets) {
         Map client = {'uid' : uid, 'socketCount' : clientSockets.length};
