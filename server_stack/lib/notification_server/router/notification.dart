@@ -145,6 +145,7 @@ abstract class Notification {
 
   /**
    * Status for every connected websocket.
+   * TODO: Add a type for this in the framework.
    */
   static Future status(HttpRequest request) {
     List<Map> clients = [];
