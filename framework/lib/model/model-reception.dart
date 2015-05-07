@@ -35,7 +35,7 @@ abstract class ReceptionJSONKey {
 
 }
 
-class ReceptionStub implements Comparable {
+class ReceptionStub {
 
   int    ID       = Reception.noID;
   String fullName = null;

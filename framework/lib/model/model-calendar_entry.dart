@@ -1,6 +1,6 @@
 part of openreception.model;
 
-class CalendarEntry implements Comparable {
+class CalendarEntry {
 
   static final String className = '${libraryName}.CalendarEntry';
   static final Logger log = new Logger(className);
