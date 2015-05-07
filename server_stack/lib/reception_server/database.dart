@@ -13,6 +13,7 @@ part 'db/deletereception.dart';
 part 'db/updatereception.dart';
 part 'db/getreceptionlist.dart';
 part 'db/reception-calendar.dart';
+part 'db/reception.dart';
 
 Database.Connection connection = null;
 
