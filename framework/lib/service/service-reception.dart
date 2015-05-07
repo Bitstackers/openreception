@@ -32,6 +32,17 @@ class RESTReceptionStore implements Storage.Reception {
         (JSON.decode(response) as List));
   }
 
+  /**
+   * Temporary function used for migrating to full reception returning.
+   */
+  Future<Iterable<Map>> listFullTMPMap () {
+    Uri url = Uri.parse('${this._host}/reception/TMPfullList');
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url)
+      .then((String response) => (JSON.decode(response)));
+  }
+
   Future<Map> removeMap(int receptionID) {
     Uri url = Resource.Reception.single(this._host, receptionID);
         url = appendToken(url, this._token);
