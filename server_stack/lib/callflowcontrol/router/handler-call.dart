@@ -198,7 +198,8 @@ abstract class Call {
 
           /// Check user state. If the user is currently performing an action - or
           /// has an active channel - deny the request.
-          String userState = Model.UserStatusList.instance.get(user.ID).state;
+          String userState =
+              Model.UserStatusList.instance.getOrCreate(user.ID).state;
 
           bool inTransition =
             ORModel.UserState.TransitionStates.contains(userState);
@@ -341,7 +342,6 @@ abstract class Call {
         return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
       }
 
-
       /// Park all the users calls.
       return Future.forEach(
           Model.UserStatusList.instance.activeCallsAt(user.ID),
@@ -349,7 +349,7 @@ abstract class Call {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
-        String userState = Model.UserStatusList.instance.get(user.ID).state;
+        String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
 
         bool inTransition =
             ORModel.UserState.TransitionStates.contains(userState);
@@ -370,9 +370,8 @@ abstract class Call {
                    'ID ${user.ID}');
 
         /// Update the user state
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Receiving);
+        Model.UserStatusList.instance.update
+          (user.ID, ORModel.UserState.Receiving);
 
         return Controller.PBX.transfer(assignedCall, user.peer).then((_) {
           assignedCall.assignedTo = user.ID;
@@ -468,7 +467,7 @@ abstract class Call {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
-        String userState = Model.UserStatusList.instance.get(user.ID).state;
+        String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
 
         bool inTransition =
             ORModel.UserState.TransitionStates.contains(userState);

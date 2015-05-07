@@ -73,7 +73,7 @@ class Call {
     log.finest('Releasing call assigned to: ${this.assignedTo}');
 
     if (this.assignedTo != noUser) {
-      UserStatusList.instance.get (this.assignedTo).callsHandled++;
+      //UserStatusList.instance.getOrCreate (this.assignedTo).callsHandled++;
       UserStatusList.instance.update(this.assignedTo, ORModel.UserState.WrappingUp);
     }
 

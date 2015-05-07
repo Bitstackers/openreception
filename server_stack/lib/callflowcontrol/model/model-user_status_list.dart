@@ -16,24 +16,45 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     _checkTimestamps();
   }
 
+  bool has (int userID) => this._userStatus.containsKey(userID);
+
   Iterable<Call> activeCallsAt (int userID) =>
       CallList.instance.callsOf (userID).where
          ((Call call) => call.state == CallState.Speaking);
 
   void update (int userID, String newState) {
-    this.updatetimeStamp(userID);
-    this.get (userID).state = newState;
+    ORModel.UserStatus status = this.getOrCreate(userID);
+    status.state = newState;
+    status.lastActivity = new DateTime.now();
 
-    Notification.broadcastEvent(new OREvent.UserState (this.get (userID)));
+    Notification.broadcastEvent(new OREvent.UserState(status));
   }
+
+  void logout (int userID) {
+    ORModel.UserStatus status = this.getOrCreate (userID);
+    status.state = ORModel.UserState.LoggedOut;
+
+    Notification.broadcastEvent(new OREvent.UserState(status));
+  }
+
+  void remove (int userID) {
+    log.finest('removing uid:$userID from map');
+    this._userStatus.remove(userID);
+  }
+
 
   void updatetimeStamp (int userID) {
-    this.get (userID).lastActivity = new DateTime.now();
+    if (this.getOrCreate (userID) == null) {
+      throw new ORStorage.NotFound('');
+    }
+
+    this.getOrCreate (userID).lastActivity = new DateTime.now();
   }
 
-  ORModel.UserStatus get (int userID) {
+  ORModel.UserStatus getOrCreate (int userID) {
     if (!this._userStatus.containsKey(userID)) {
-      this._userStatus[userID] = new ORModel.UserStatus()..userID = userID;
+      this._userStatus[userID] =
+         new ORModel.UserStatus()..userID = userID;
     }
 
     return this._userStatus[userID];
@@ -45,23 +66,23 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     DateTime now = new DateTime.now();
     this.forEach((ORModel.UserStatus status) {
       if (status.lastActivity != null) {
-        Duration timeSinceLastActivity = status.lastActivity.difference(now);
-        if (keepAliveTimeout > timeSinceLastActivity){
+        int secondsSinceLastActivity = status.lastActivity
+          .difference(now).inSeconds.abs();
+        if (secondsSinceLastActivity > keepAliveTimeout.inSeconds){
           log.info ('User with id ${status.userID} was timed out due to '
-                 'inactivity. Time since last activty: $timeSinceLastActivity');
-          status.state = ORModel.UserState.Unknown;
-          Notification.broadcastEvent(new OREvent.UserState
-              (this.get (status.userID)));
-          //Remove the user from the map
+                    'inactivity. Time since last activity: '
+                    '${secondsSinceLastActivity}s');
+
           //TODO: Check if the user has an active websocket first.
+          this.logout(status.userID);
           markedForRemoval.add(status);
         }
       }
     });
 
     if (markedForRemoval.isNotEmpty) {
-      markedForRemoval.map((ORModel.UserStatus status) =>
-          this._userStatus.remove(status));
+      markedForRemoval.forEach((ORModel.UserStatus status) =>
+          this.remove(status.userID));
       markedForRemoval.clear();
     }
 
