@@ -32,6 +32,8 @@ import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'model-app-state.dart';
 part 'model-call.dart';
+//part 'model-call-list.dart';
+part 'model-client-connection-state.dart';
 part 'model-contact.dart';
 part 'model-contact-calendar.dart';
 part 'model-calendar-entry.dart';
