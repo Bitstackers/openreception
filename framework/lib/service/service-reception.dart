@@ -25,7 +25,7 @@ class RESTReceptionStore implements Storage.Reception {
    * Returns a reception list as a list of maps.
    */
   Future<Iterable<Map>> listMap () {
-    Uri url = Uri.parse('${this._host}/reception/TMPfullList');
+    Uri url = Resource.Reception.list(this._host);
         url = appendToken(url, this._token);
 
     return this._backend.get(url)
