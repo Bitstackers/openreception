@@ -24,7 +24,7 @@ abstract class EventTemplate {
              {Key.ID : event.channelID}});
   
   static Map connection(ClientConnectionState event) =>
-      _rootElement(event)..addAll({Key.state : event.asMap});
+      _rootElement(event)..addAll({Key.state : event.conn});
 }
 
 class ClientConnectionState implements Event {

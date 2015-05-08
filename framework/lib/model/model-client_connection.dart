@@ -10,6 +10,8 @@ class ClientConnection {
     userID = map[Event.Key.userID];
     connectionCount = map[Event.Key.connectionCount];
   }
+  
+  Map toJson() => this.asMap;
 
   Map get asMap => {
     Event.Key.userID : userID,
