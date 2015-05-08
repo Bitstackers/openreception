@@ -24,7 +24,7 @@ abstract class Reception {
   // Autocasting versions of the retriever functions.
   Future<Model.Reception> get (int receptionID);
 
-  Future<List<Model.ReceptionStub>> list (); //{int limit: 100, Model.ReceptionFilter filter}
+  Future<Iterable<Model.Reception>> list ();
 
   Future<Model.Reception> remove(int receptionID);
 

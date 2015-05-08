@@ -24,18 +24,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    * Returns a reception list as a list of maps.
    */
-  Future<List<Map>> listMap () {
-    Uri url = Resource.Reception.list(this._host);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as List));
-  }
-
-  /**
-   * Temporary function used for migrating to full reception returning.
-   */
-  Future<Iterable<Map>> listFullTMPMap () {
+  Future<Iterable<Map>> listMap () {
     Uri url = Uri.parse('${this._host}/reception/TMPfullList');
         url = appendToken(url, this._token);
 
@@ -131,15 +120,13 @@ class RESTReceptionStore implements Storage.Reception {
     }
   }
 
-  //{int limit: 100, Model.ReceptionFilter filter}
-  Future<List<Model.ReceptionStub>> list() {
+  Future<Iterable<Model.Reception>> list() {
     Uri url = Resource.Reception.list(this._host);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
         (JSON.decode(response) as List)
-          .map((Map map) => new Model.ReceptionStub.fromMap(map))
-          .toList());
+          .map((Map map) => new Model.Reception.fromMap(map)));
   }
 
   /**
