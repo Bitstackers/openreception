@@ -20,6 +20,8 @@ class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
+  final Controller.Contact        _contactController;
+  final Controller.Reception      _receptionController;
   final Model.UIReceptionCalendar _receptionCalendar;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor    _ui;
@@ -32,7 +34,9 @@ class CalendarEditor extends ViewWidget {
                  Model.UIContactCalendar this._contactCalendar,
                  Model.UIContactSelector this._contactSelector,
                  Model.UIReceptionCalendar this._receptionCalendar,
-                 Model.UIReceptionSelector this._receptionSelector) {
+                 Model.UIReceptionSelector this._receptionSelector,
+                 final Controller.Contact this._contactController,
+                 final Controller.Reception this._receptionController) {
     _observers();
   }
 
@@ -77,10 +81,14 @@ class CalendarEditor extends ViewWidget {
    * Clear the form and navigate one step back in history.
    */
   void _delete(_) {
-    /// TODO (TL):
-    /// Delete calendar entry.
-    /// Call _cancel().
-    print('view.CalendarEditor._delete not fully implemented');
+//    var entry = this._getEntry();
+//    
+//    if (entry is Model.ReceptionCalendarEntry) {
+//      this._receptionController.deleteCalendarEvent(entry);
+//    }
+//    else if (entry is Model.ContactCalendarEntry) {
+//      this._contactController.deleteCalendarEvent(entry);
+//    }
   }
 
   /**

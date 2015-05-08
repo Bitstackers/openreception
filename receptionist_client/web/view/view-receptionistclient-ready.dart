@@ -135,7 +135,9 @@ class ReceptionistclientReady {
          uiContactCalendar,
          uiContactSelector,
          uiReceptionCalendar,
-         uiReceptionSelector);
+         uiReceptionSelector,
+         _contactController,
+         _receptionController);
 
     _contactSelector = new ContactSelector
         (uiContactSelector,
