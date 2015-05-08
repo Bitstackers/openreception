@@ -27,6 +27,8 @@ class Notification {
   Bus<Model.Call> _callStateChange = new Bus<Model.Call>();
   Stream<Model.Call> get onAnyCallStateChange => _callStateChange.stream;
 
+  Bus<Model.ClientConnectionState> _clientConnectionState = new Bus<Model.ClientConnectionState>();
+  Stream<Model.ClientConnectionState> get onClientConnectionStateChange => _clientConnectionState.stream;
 
   /// Contact calendar entry create
   Bus<Model.ContactCalendarEntry> _onContactCalendarEventCreate =
@@ -98,6 +100,10 @@ class Notification {
 
     else if (event is OREvent.ReceptionCalendarEntryDelete) {
       _onReceptionCalendarEventDelete.fire (event.calendarEntry);
+    }
+    
+    else if (event is OREvent.ClientConnectionState) {
+      _clientConnectionState.fire (event.conn);
     }
 
   }
