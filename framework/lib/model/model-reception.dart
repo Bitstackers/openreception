@@ -167,23 +167,25 @@ class Reception extends ReceptionStub {
    * Returns a Map representation of the Reception.
    */
   Map get asMap {
-    attributes[ReceptionJSONKey.ADDRESSES]             = this.addresses;
-    attributes[ReceptionJSONKey.ALT_NAMES]             = this.alternateNames;
-    attributes[ReceptionJSONKey.BANKING_INFO]          = this.bankingInformation;
-    attributes[ReceptionJSONKey.CUSTOMER_TYPE]         = this.customertype;
-    attributes[ReceptionJSONKey.EMAIL_ADDRESSES]       = this.emailAddresses;
-    attributes[ReceptionJSONKey.GREETING]              = this.greeting;
-    attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS] = this.handlingInstructions;
-    attributes[ReceptionJSONKey.OPENING_HOURS]         = this.openingHours;
-    attributes[ReceptionJSONKey.OTHER]                 = this.otherData;
-    attributes[ReceptionJSONKey.PRODUCT]               = this.product;
-    attributes[ReceptionJSONKey.SALES_MARKET_HANDLING] = this.salesMarketingHandling;
-    attributes[ReceptionJSONKey.SHORT_GREETING]        = this.shortGreeting;
-    attributes[ReceptionJSONKey.VAT_NUMBERS]           = this.vatNumbers;
-    attributes[ReceptionJSONKey.PHONE_NUMBERS]         = this.telephonenumbers;
-    attributes[ReceptionJSONKey.WEBSITES]              = this.websites;
+    Map attributes = {
+      ReceptionJSONKey.ADDRESSES :  this.addresses,
+    ReceptionJSONKey.ALT_NAMES :this.alternateNames,
+    ReceptionJSONKey.BANKING_INFO          : this.bankingInformation,
+    ReceptionJSONKey.CUSTOMER_TYPE         : this.customertype,
+    ReceptionJSONKey.ORGANIZATION_ID       : this.organizationId,
+    ReceptionJSONKey.EMAIL_ADDRESSES       : this.emailAddresses,
+    ReceptionJSONKey.GREETING              : this.greeting,
+    ReceptionJSONKey.HANDLING_INSTRUCTIONS : this.handlingInstructions,
+    ReceptionJSONKey.OPENING_HOURS         : this.openingHours,
+    ReceptionJSONKey.OTHER                 : this.otherData,
+    ReceptionJSONKey.PRODUCT               : this.product,
+    ReceptionJSONKey.SALES_MARKET_HANDLING : this.salesMarketingHandling,
+    ReceptionJSONKey.SHORT_GREETING        : this.shortGreeting,
+    ReceptionJSONKey.VAT_NUMBERS           : this.vatNumbers,
+    ReceptionJSONKey.PHONE_NUMBERS         : this.telephonenumbers,
+    ReceptionJSONKey.WEBSITES              : this.websites};
 
-    Map map = {
+    return {
       ReceptionJSONKey.ID              : this.ID,
       ReceptionJSONKey.ORGANIZATION_ID : this.organizationId,
       ReceptionJSONKey.FULL_NAME       : this.fullName,
@@ -193,13 +195,13 @@ class Reception extends ReceptionStub {
       ReceptionJSONKey.LAST_CHECK      : this.lastChecked.toUtc().millisecondsSinceEpoch,
       ReceptionJSONKey.ATTRIBUTES      : attributes
     };
-    return map;
   }
 
 
   void validate() {
-    //if (this.shortGreeting == null || this.shortGreeting.isEmpty) throw new StateError('Short greeting not allowed to be empty. Value: "${this.shortGreeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
-    if (this.greeting      == null || this.greeting.isEmpty)      throw new StateError('Greeting not allowed to be empty. Value: "${this.greeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
+    if (this.greeting == null || this.greeting.isEmpty)
+      throw new StateError('Greeting not allowed to be empty. '
+        'Value: "${this.greeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
   }
 
   @override

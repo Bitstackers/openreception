@@ -22,4 +22,27 @@ abstract class EventTemplate {
       _rootElement(event)..addAll(
            {Key.channel :
              {Key.ID : event.channelID}});
+  
+  static Map connection(ClientConnectionState event) =>
+      _rootElement(event)..addAll({Key.state : event.asMap});
+}
+
+class ClientConnectionState implements Event {
+ 
+  final DateTime timestamp;
+
+  final ClientConnection conn;
+  String get eventName => Key.connectionState;
+ 
+  ClientConnectionState (ClientConnection this.conn) : 
+    this.timestamp = new DateTime.now();
+
+  Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
+
+  Map get asMap => EventTemplate.connection(this);
+
+  ClientConnectionState.fromMap (Map map) :
+    this.conn      = new ClientConnection.fromMap (map[Key.state]),
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }

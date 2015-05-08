@@ -22,7 +22,10 @@ abstract class Key {
   static const calendarEntry = 'calendarEntry';
   static const ID = 'id';
   static const timestamp = 'timestamp';
+  static const userID = 'userID';
+  static const connectionCount = 'connectionCount';
 
+  static const connectionState = 'connectionState';
   static const callOffer = 'call_offer';
   static const callLock = 'call_lock';
   static const callUnlock = 'call_unlock';
@@ -40,6 +43,7 @@ abstract class Key {
   static const originateSuccess = 'originate_success';
   static const channelState = 'channel_state';
   static const userState = 'userState';
+  static const state = 'state';
 
   static const contactCalendarEntryCreate = 'contactCalendarEntryCreate';
   static const contactCalendarEntryUpdate = 'contactCalendarEntryUpdate';
@@ -106,6 +110,9 @@ abstract class Event {
 
         case Key.userState:
           return new UserState.fromMap(map);
+
+        case Key.connectionState:
+          return new ClientConnectionState.fromMap(map);
 
         default:
           log.severe('Unsupported event type: ${map['event']}');
