@@ -130,12 +130,13 @@ class CalendarEditor extends ViewWidget {
           _render(_contactCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
-          final  Map map = {'reception_id': _receptionSelector.selectedReception.ID,
-                            'contact_id': _contactSelector.selectedContact.ID,
-                            'start': (new DateTime.now().millisecondsSinceEpoch~/1000),
-                            'stop': (new DateTime.now().millisecondsSinceEpoch~/1000) + 3600,
-                            'content': ''};
-          _render(new Model.ContactCalendarEntry.fromMap(map));
+          final Model.ContactCalendarEntry entry = new Model.ContactCalendarEntry
+            (_contactSelector.selectedContact.ID, _receptionSelector.selectedReception.ID)
+              ..beginsAt = new DateTime.now()
+              ..until = new DateTime.now().add(new Duration(hours : 1))
+              ..content = '';
+          
+          _render(entry);
         }
         break;
       case Widget.ReceptionCalendar:
@@ -144,12 +145,13 @@ class CalendarEditor extends ViewWidget {
           _render(_receptionCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
-          final Map map = {'reception_id': _receptionSelector.selectedReception.ID,
-                           'contact_id': null,
-                           'start': (new DateTime.now().millisecondsSinceEpoch~/1000),
-                           'stop': (new DateTime.now().millisecondsSinceEpoch~/1000) + 3600,
-                           'content': ''};
-          _render(new Model.ReceptionCalendarEntry.fromMap(map));
+          final Model.ReceptionCalendarEntry entry = new Model.ReceptionCalendarEntry
+            (_receptionSelector.selectedReception.ID)
+              ..beginsAt = new DateTime.now()
+              ..until = new DateTime.now().add(new Duration(hours : 1))
+              ..content = '';
+          
+          _render(entry);
         }
         break;
       default:
