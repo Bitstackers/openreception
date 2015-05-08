@@ -4,6 +4,8 @@ class ClientConnection {
   int userID;
   int connectionCount;
   
+  ClientConnection();
+  
   ClientConnection.fromMap(Map map) {
     userID = map[Event.Key.userID];
     connectionCount = map[Event.Key.connectionCount];
