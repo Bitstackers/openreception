@@ -43,7 +43,7 @@ abstract class PBX {
    *
    * Returns the UUID of the new channel.
    */
-  static Future<String> createAgentChannel (String extension, SharedModel.User user) {
+  static Future<String> createAgentChannel (SharedModel.User user) {
     return Model.PBXClient.api('create_uuid').then((ESL.Response response) {
       final String new_call_uuid = response.rawBody;
 

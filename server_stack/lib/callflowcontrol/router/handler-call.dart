@@ -314,7 +314,7 @@ abstract class Call {
             user.ID,
             ORModel.UserState.Dialing);
 
-        return Controller.PBX.createAgentChannel(extension, user)
+        return Controller.PBX.createAgentChannel(user)
           .then((String uuid) {
           bool outboundCallWithUuid (ESL.Event event) {
             return event.eventName == 'CHANNEL_ORIGINATE' &&
