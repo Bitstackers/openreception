@@ -48,7 +48,7 @@ class UIReceptionSelector extends UIModel {
    * Filter the reception list whenever the user enters data into the [_filter]
    * input field.
    */
-  void filter(_) {
+  void _filterList(_) {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
@@ -92,7 +92,7 @@ class UIReceptionSelector extends UIModel {
   void _observers() {
     _filter.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen(filter);
+    _filter.onInput.listen(_filterList);
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -113,6 +113,7 @@ class UIReceptionSelector extends UIModel {
 
     items.forEach((Reception item) {
       list.add(new LIElement()
+                ..dataset['id'] = item.ID.toString()
                 ..dataset['name'] = item.name.toLowerCase()
                 ..dataset['object'] = JSON.encode(item)
                 ..text = item.name);
@@ -135,7 +136,7 @@ class UIReceptionSelector extends UIModel {
    */
   void _reset(_) {
     _filter.value = '';
-    filter('');
+    _filterList('');
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
     _bus.fire(new Reception.none());
   }
@@ -165,5 +166,20 @@ class UIReceptionSelector extends UIModel {
          'Esc'  : _reset};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+  }
+
+  /**
+   * Returns the currently selected [Reception].
+   *
+   * Return [Reception.none] if no [Reception] is selected.
+   */
+  Reception get selectedReception {
+    LIElement li = _list.querySelector('.selected');
+
+    if(li != null) {
+      return new Reception.fromMap(JSON.decode(li.dataset['object']));
+    } else {
+      return new Reception.none();
+    }
   }
 }

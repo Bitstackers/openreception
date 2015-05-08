@@ -30,6 +30,8 @@ class ReceptionSelector extends ViewWidget {
     _ui.setHint('alt+v');
     _observers();
 
+    /// TODO (TL): Move this outside, so grabbing the initial list is a part of
+    /// the app loading time.
     this._receptionController.list()
       .then((Iterable<Model.Reception> receptions) {
 

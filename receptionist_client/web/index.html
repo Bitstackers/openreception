@@ -83,7 +83,7 @@
               position: absolute;
               top: 30%;
               left: 35%;
-              height: 15em;
+              height: 18em;
               width: 30%;
               z-index: 1;
               outline: 0;
@@ -108,6 +108,11 @@
               padding: 0.3em;
             }
 
+            #calendar-editor .readable {
+              margin: 0.5em 0 0 0;
+            }
+
+            #calendar-editor .readable,
             #calendar-editor .entry-start,
             #calendar-editor .entry-stop {
               align-items: center;
@@ -134,7 +139,7 @@
             }
 
             #calendar-editor span {
-              padding-right: 0.3em;
+              padding: 0 0.3em;
             }
 
             #calendar-editor textarea {
@@ -156,19 +161,24 @@
             <div class="entry-message">
               <textarea input-field class="padding03" tabindex="-1"></textarea>
             </div>
+            <div class="readable">
+              <span class="start"></span>-<span class="stop"></span>
+            </div>
             <div class="entry-start">
-              <span data-lang-text="calendar-editor-start">::start::</span><input input-field class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
-              <input input-field class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <span data-lang-text="calendar-editor-start">::start::</span>
               <input input-field class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input input-field class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
               <input input-field class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
+              <input input-field class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input input-field class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
             </div>
             <div class="entry-stop">
-              <span data-lang-text="calendar-editor-stop">::stop::</span><input input-field class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
-              <input input-field class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
+              <span data-lang-text="calendar-editor-stop">::stop::</span>
               <input input-field class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input input-field class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
               <input input-field class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
+              <input input-field class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
+              <input input-field class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
             </div>
             <div class="entry-buttons">
               <button class="cancel" tabindex="-1" data-lang-text="calendar-editor-cancel">::cancel::</button>

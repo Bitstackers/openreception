@@ -18,8 +18,10 @@ part of view;
  */
 class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
+  final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
   final Model.UIReceptionCalendar _receptionCalendar;
+  final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor    _ui;
 
   /**
@@ -28,14 +30,18 @@ class CalendarEditor extends ViewWidget {
   CalendarEditor(Model.UICalendarEditor this._ui,
                  Controller.Destination this._myDestination,
                  Model.UIContactCalendar this._contactCalendar,
-                 Model.UIReceptionCalendar this._receptionCalendar) {
+                 Model.UIContactSelector this._contactSelector,
+                 Model.UIReceptionCalendar this._receptionCalendar,
+                 Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
   @override Controller.Destination get myDestination => _myDestination;
   @override Model.UIModel          get ui            => _ui;
 
-  @override void onBlur(_) {}
+  @override void onBlur(_) {
+    _ui.reset();
+  }
 
   /**
    * When we get focus, figure out where from we were called. If we weren't
@@ -44,7 +50,7 @@ class CalendarEditor extends ViewWidget {
    */
   @override void onFocus(Controller.Destination destination){
     if(destination.from != null) {
-      setup(destination.from.widget, destination.cmd);
+      _setup(destination.from.widget, destination.cmd);
     } else {
       _navigate.goHome();
     }
@@ -55,7 +61,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void cancel(_) {
+  void _cancel(_) {
     /// TODO (TL):
     /// Clear form.
     /// Set focusElement to default.
@@ -70,7 +76,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void delete(_) {
+  void _delete(_) {
     /// TODO (TL):
     /// Delete calendar entry.
     /// Call _cancel().
@@ -83,9 +89,9 @@ class CalendarEditor extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onCancel.listen(cancel);
-    _ui.onDelete.listen(delete);
-    _ui.onSave  .listen(save);
+    _ui.onCancel.listen(_cancel);
+    _ui.onDelete.listen(_delete);
+    _ui.onSave  .listen(_save);
   }
 
   /**
@@ -93,7 +99,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form when done, and then navigate one step back in history.
    */
-  void save(_) {
+  void _save(_) {
     /// TODO (TL):
     /// Validate input data
     /// Save calendar entry.
@@ -104,7 +110,7 @@ class CalendarEditor extends ViewWidget {
   /**
    * Render the widget with [calendarEntry].
    */
-  void render(Model.CalendarEntry calendarEntry) {
+  void _render(Model.CalendarEntry calendarEntry) {
     _ui.calendarEntry = calendarEntry;
   }
 
@@ -116,26 +122,34 @@ class CalendarEditor extends ViewWidget {
    * know who activated us, in order to properly know how to find and deal
    * with the calendar entry we're either deleting/editing or creating.
    */
-  void setup(Widget initiator, Cmd cmd) {
+  void _setup(Widget initiator, Cmd cmd) {
     switch(initiator) {
       case Widget.ContactCalendar:
         if(cmd == Cmd.EDIT) {
           _ui.headerExtra = '(ret/slet)';
-          render(_contactCalendar.selectedCalendarEntry);
+          _render(_contactCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
-          /// TODO (TL): Create a real calendar entry, with date/time fields set.
-          render(new Model.ContactCalendarEntry(42, 2));
+          final  Map map = {'reception_id': _receptionSelector.selectedReception.ID,
+                            'contact_id': _contactSelector.selectedContact.ID,
+                            'start': (new DateTime.now().millisecondsSinceEpoch~/1000),
+                            'stop': (new DateTime.now().millisecondsSinceEpoch~/1000) + 3600,
+                            'content': ''};
+          _render(new Model.ContactCalendarEntry.fromMap(map));
         }
         break;
       case Widget.ReceptionCalendar:
         if(cmd == Cmd.EDIT) {
           _ui.headerExtra = '(ret/slet)';
-          render(_receptionCalendar.selectedCalendarEntry);
+          _render(_receptionCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
-          /// TODO (TL): Create a real calendar entry, with date/time fields set.
-          render(new Model.ReceptionCalendarEntry(42));
+          final Map map = {'reception_id': _receptionSelector.selectedReception.ID,
+                           'contact_id': null,
+                           'start': (new DateTime.now().millisecondsSinceEpoch~/1000),
+                           'stop': (new DateTime.now().millisecondsSinceEpoch~/1000) + 3600,
+                           'content': ''};
+          _render(new Model.ReceptionCalendarEntry.fromMap(map));
         }
         break;
       default:

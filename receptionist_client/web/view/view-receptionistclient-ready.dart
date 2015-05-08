@@ -133,7 +133,9 @@ class ReceptionistclientReady {
         (new Model.UICalendarEditor(querySelector('#calendar-editor')),
          new Controller.Destination(Context.CalendarEdit, Widget.CalendarEditor),
          uiContactCalendar,
-         uiReceptionCalendar);
+         uiContactSelector,
+         uiReceptionCalendar,
+         uiReceptionSelector);
 
     _contactSelector = new ContactSelector
         (uiContactSelector,

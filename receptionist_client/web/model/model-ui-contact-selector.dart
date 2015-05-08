@@ -180,6 +180,21 @@ class UIContactSelector extends UIModel {
   }
 
   /**
+   * Returns the currently selected [Contact].
+   *
+   * Return [Contact.none] if no [Contact] is selected.
+   */
+  Contact get selectedContact {
+    LIElement li = _list.querySelector('.selected');
+
+    if(li != null) {
+      return new Contact.fromMap(JSON.decode(li.dataset['object']));
+    } else {
+      return new Contact.empty();
+    }
+  }
+
+  /**
    * Select the first [Contact] in the list.
    */
   void selectFirstContact() {

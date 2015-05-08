@@ -47,6 +47,8 @@ class UICalendarEditor extends UIModel {
   InputElement         get _startMinuteInput => _root.querySelector('.start-minute');
   InputElement         get _startDayInput    => _root.querySelector('.start-day');
   InputElement         get _startMonthInput  => _root.querySelector('.start-month');
+  SpanElement          get _startReadable    => _root.querySelector('div.readable .start');
+  SpanElement          get _stopReadable     => _root.querySelector('div.readable .stop');
   InputElement         get _startYearInput   => _root.querySelector('.start-year');
   InputElement         get _stopHourInput    => _root.querySelector('.stop-hour');
   InputElement         get _stopMinuteInput  => _root.querySelector('.stop-minute');
@@ -57,15 +59,27 @@ class UICalendarEditor extends UIModel {
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
 
   /**
-   * Populate the calendar editor fields with [calendarEntry].  Note if the
-   * [calendarEntry] is a empty entry, then the widget renders with its default
-   * values.
+   * Populate the calendar editor fields with [calendarEntry].
    */
   set calendarEntry(ORModel.CalendarEntry calendarEntry) {
-    /// TODO (TL): Add the actual calendar entry data to the widget.
-    /// Distinguish between empty entry and actual entry.
-    /// Add switch case on calendarEntry type (ContactCalendarEntry/ReceptionCalendarEntry)
+    _startReadable.text = _humanReadableTimestamp(calendarEntry.startTime);
+    _stopReadable.text = _humanReadableTimestamp(calendarEntry.stopTime);
+
     _textArea.text = calendarEntry.content;
+
+    _startHourInput.value = calendarEntry.startTime.hour.toString();
+    _startMinuteInput.value = calendarEntry.startTime.minute.toString();
+    _startDayInput.value = calendarEntry.startTime.day.toString();
+    _startMonthInput.value = calendarEntry.startTime.month.toString();
+    _startYearInput.value = calendarEntry.startTime.year.toString();
+
+    _stopHourInput.value = calendarEntry.stopTime.hour.toString();
+    _stopMinuteInput.value = calendarEntry.stopTime.minute.toString();
+    _stopDayInput.value = calendarEntry.stopTime.day.toString();
+    _stopMonthInput.value = calendarEntry.stopTime.month.toString();
+    _stopYearInput.value = calendarEntry.stopTime.year.toString();
+
+    _toggleButtons();
   }
 
   /**
@@ -114,9 +128,96 @@ class UICalendarEditor extends UIModel {
    */
   void _checkInput(InputElement input) {
     input.classes.toggle('bad-input', input.validity.badInput);
-    if(!input.validity.badInput) {
-      _toggleButtons();
+
+    try {
+    _startReadable.text = _humanReadableTimestamp(_harvestStartDateTime());
+    } catch(_) {
+      _startReadable.text = 'fejl';
     }
+
+    try {
+    _stopReadable.text = _humanReadableTimestamp(_harvestStopDateTime());
+    } catch(_) {
+      _stopReadable.text = 'fejl';
+    }
+
+    _toggleButtons();
+  }
+
+  /**
+   *
+   */
+  DateTime _harvestStartDateTime() {
+    return new DateTime.utc(_startYearInput.valueAsNumber.toInt(),
+                            _startMonthInput.valueAsNumber.toInt(),
+                            _startDayInput.valueAsNumber.toInt(),
+                            _startHourInput.valueAsNumber.toInt(),
+                            _startMinuteInput.valueAsNumber.toInt());
+  }
+
+  /**
+   *
+   */
+  DateTime _harvestStopDateTime() {
+    return new DateTime.utc(_stopYearInput.valueAsNumber.toInt(),
+                            _stopMonthInput.valueAsNumber.toInt(),
+                            _stopDayInput.valueAsNumber.toInt(),
+                            _stopHourInput.valueAsNumber.toInt(),
+                            _stopMinuteInput.valueAsNumber.toInt());
+  }
+
+  /**
+   * Return the [timestamp] in a human readable format.
+   *
+   * TODO (TL): Use lang package for language specific words.
+   * TODO (TL): Fix so this can handle different output formats.
+   */
+  String _humanReadableTimestamp(DateTime timestamp) {
+    final StringBuffer sb = new StringBuffer();
+
+    final Map<int, String> dayName = {1: 'Mandag',
+                                      2: 'Tirsdag',
+                                      3: 'Onsdag',
+                                      4: 'Torsdag',
+                                      5: 'Fredag',
+                                      6: 'Lørdag',
+                                      7: 'Søndag'};
+
+    final String day = new DateFormat.d().format(timestamp);
+    final String hourMinute = new DateFormat.Hm().format(timestamp);
+    final String month = new DateFormat.M().format(timestamp);
+    final String year = new DateFormat.y().format(timestamp);
+
+    sb.write(dayName[timestamp.weekday]);
+    sb.write(' d. ');
+    sb.write('${day}-${month}-${year}');
+    sb.write(' kl. ');
+    sb.write(hourMinute);
+
+    return sb.toString();
+  }
+
+  /**
+   * Clear the widget of all data and reset focus element.
+   */
+  void reset() {
+    _myFocusElement = _myFirstTabElement;
+
+    _startReadable.text = '';
+    _stopReadable.text = '';
+    _textArea.text = '';
+    _startHourInput.value = '';
+    _startMinuteInput.value = '';
+    _startDayInput.value = '';
+    _startMonthInput.value = '';
+    _startYearInput.value = '';
+    _stopHourInput.value = '';
+    _stopMinuteInput.value = '';
+    _stopDayInput.value = '';
+    _stopMonthInput.value = '';
+    _stopYearInput.value = '';
+
+    _toggleButtons();
   }
 
   /**
@@ -131,7 +232,8 @@ class UICalendarEditor extends UIModel {
    * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    final bool toggle = !_inputFields.any((element) => element.value.isEmpty);
+    final bool toggle = !_inputFields.any((element) => element.value.isEmpty)
+        && !_inputFields.any((element) => element.validity.badInput);
 
     _deleteButton.disabled = !toggle;
     _saveButton.disabled   = !toggle;
