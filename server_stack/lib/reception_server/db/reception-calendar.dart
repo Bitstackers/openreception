@@ -73,7 +73,7 @@ RETURNING event_id
   }
 
 
-  static Future<int> updateEvent({int receptionID, int eventID, Map event}) {
+  static Future<int> updateEvent(int receptionID, Model.CalendarEntry event) {
     String sql = '''
    UPDATE calendar_events ce
       SET
@@ -86,16 +86,16 @@ RETURNING event_id
 
     Map parameters =
       {'receptionID'      : receptionID,
-       'eventID'          : eventID,
-       'start'            : Util.unixTimestampToDateTime(event['start']),
-       'end'              : Util.unixTimestampToDateTime(event['stop']),
-       'content'          : event['content']};
+       'eventID'          : event.ID,
+       'start'            : event.startTime,
+       'end'              : event.stopTime,
+       'content'          : event.content};
 
-  return connection.execute(sql, parameters).then((int rowsAffected) => rowsAffected);
+  return connection.execute(sql, parameters);
 
   }
 
-  static Future removeEvent({int receptionID, int eventID}) {
+  static Future removeEvent(int receptionID, int eventID) {
     String sql = '''
 START TRANSACTION;
   DELETE FROM 

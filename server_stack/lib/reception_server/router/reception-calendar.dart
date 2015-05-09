@@ -67,10 +67,12 @@ abstract class ReceptionCalendar {
     int eventID = pathParameter(request.uri, 'event');
 
     extractContent(request).then((String content) {
-      Map data;
+      Model.CalendarEntry entry;
 
       try {
-        data = JSON.decode(content);
+        Map serializedEntry = JSON.decode(content);
+        entry = new Model.CalendarEntry.fromMap(serializedEntry);        
+        
       } catch (error) {
         request.response.statusCode = 400;
         Map response = {
@@ -89,16 +91,20 @@ abstract class ReceptionCalendar {
           });
           return;
         }
-        db.ReceptionCalendar.updateEvent(receptionID: receptionID, eventID: eventID, event: data).then((_) {
-          Map event = {
-            'event': 'receptionCalendarEventUpdated',
-            'calendarEvent': {
-              'eventID': eventID,
-              'receptionID': receptionID
-            }
-          };
-          Notification.broadcast(event);
-          writeAndClose(request, JSON.encode(data));
+        db.ReceptionCalendar.updateEvent(receptionID, entry).then((int changeCount) {
+          
+          if (changeCount == 0) {
+            notFound(request, {
+              'error': 'not found'
+            });
+            return;
+          }
+          
+          Event.CalendarEvent event = new Event.ReceptionCalendarEntryUpdate (entry); 
+          
+          Notification.broadcastEvent(event);
+
+          writeAndClose(request, JSON.encode(entry));
         }).catchError((onError) {
           serverError(request, 'Failed to update event in database');
         });
@@ -122,21 +128,29 @@ abstract class ReceptionCalendar {
         return;
       }
 
-      db.ReceptionCalendar.removeEvent(receptionID: receptionID, eventID: eventID).then((_) {
-        Map event = {
-          'event': 'receptionCalendarEventDeleted',
-          'calendarEvent': {
-            'eventID': eventID,
-            'receptionID': receptionID
-          }
-        };
-        Notification.broadcast(event);
+      db.ReceptionCalendar.removeEvent(receptionID, eventID).then((int changeCount) {
+        if (changeCount == 0) {
+          notFound(request, {
+            'error': 'not found'
+          });
+          return;
+        }
+        
+        Model.CalendarEntry dummy = new Model.CalendarEntry.forReception(receptionID)
+          ..ID = eventID
+          ..beginsAt = new DateTime.fromMillisecondsSinceEpoch(0)
+          ..until = new DateTime.fromMillisecondsSinceEpoch(0)
+          ..content = '';
+        Event.CalendarEvent event = new Event.ReceptionCalendarEntryDelete (dummy); 
+        
+        Notification.broadcastEvent(event);
 
         writeAndClose(request, JSON.encode({
           'status': 'ok',
           'description': 'Event deleted'
         }));
-      }).catchError((onError) {
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
         serverError(request, 'Failed to removed event from database');
       });
     }).catchError((onError) {
