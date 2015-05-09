@@ -49,6 +49,12 @@ void main() {
     test('buildObject', ReceptionObject.buildObject);
   });
 
+  group('Model.CalendarEntry', () {
+    test('serializationDeserialization', CalendarEntryObject.serializationDeserialization);
+    test('serialization', CalendarEntryObject.serialization);
+    test('contactEntryBuild', CalendarEntryObject.contactEntryBuild);
+  });
+  
   group('Model.Config', () {
     test('serializationDeserialization', ConfigObject.serializationDeserialization);
     test('serialization', ConfigObject.serialization);
