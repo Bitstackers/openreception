@@ -11,40 +11,54 @@ abstract class Notification {
   static void broadcast(HttpRequest request) {
 
     ORhttp.extractContent(request).then((String content) {
+      Map contentMap = {};
       try {
-        JSON.decode(content);
+        contentMap = JSON.decode(content);
       } catch (exeption) {
         ORhttp.clientError(request, "Malformed JSON body");
         return;
       }
 
-      int successCount = 0;
-      int failCount = 0;
-      clientRegistry.forEach((int uid, List<WebSocket> clientSockets) {
-        clientSockets.forEach((WebSocket clientSocket) {
-          try {
-            clientSocket.add(content);
-            successCount++;
-          } catch (error) {
-            failCount++;
-            log.finest("Failed to send message to client $uid - error: $error");
-          }
-        });
-      });
-      ORhttp.writeAndClose(request, JSON.encode({
-        "status": {
-          "success": successCount,
-          "failed": failCount
-        }
-      }));
+      Map result = _broadcast(contentMap);
+      ORhttp.writeAndClose(request, JSON.encode(result));
     });
+  }
+  
+  static Map _broadcast(Map content) {
+    int success = 0;
+    int failure = 0;
+
+    clientRegistry.keys.map((int uid) {
+      return clientRegistry[uid].map((WebSocket ws) {
+        try {
+          String contentString = JSON.encode(content);
+          
+          ws.add(contentString);
+          success++;
+          
+          return true;
+        } catch (error, stackTrace) {
+          failure++;
+          log.severe ("Failed to send message to client $uid - error: $error");
+          log.severe (error, stackTrace);
+          return false;
+        }
+      }).toList();
+    }).toList();
+    
+    return {
+            "status": {
+              "success": success,
+              "failed": failure
+            }
+    };
   }
 
   /**
    * WebSocket registration handling.
    * Registers and un-registers the the websocket in the global registry.
    */
-  static void _register(WebSocket webSocket, int uid) {
+  static _register(WebSocket webSocket, int uid) {
     log.info('New WebSocket connection from uid $uid');
 
     /// Make sure that there is a list to insert into.
@@ -73,24 +87,39 @@ abstract class Notification {
     }, onDone: () {
       log.info('Disconnected WebSocket connection from uid $uid', "handleWebsocket");
       clientRegistry[uid].remove(webSocket);
+      
+      
+      Model.ClientConnection conn = new Model.ClientConnection()
+        ..userID = uid
+        ..connectionCount = clientRegistry[uid].length;
+      Event.ClientConnectionState event = new Event.ClientConnectionState(conn);
+      
+      _broadcast (event.asMap);
     });
   }
 
   /**
    * Upgrades an incoming HTTP request to a webSocket and attaches the appropriate event handlers.
    */
-  static void connect(HttpRequest request) {
+  static Future connect(HttpRequest request) {
     final String token = request.uri.queryParameters['token'];
 
     if (WebSocketTransformer.isUpgradeRequest(request)) {
-      AuthService.userOf(token).then((Model.User user) {
-        WebSocketTransformer.upgrade(request).then((WebSocket webSocket) {
-          Notification._register(webSocket, user.ID);
+      return AuthService.userOf(token).then((Model.User user) {
+        return WebSocketTransformer.upgrade(request).then((WebSocket webSocket) {
+          return Notification._register(webSocket, user.ID);
+        }).then((_) {
+          Model.ClientConnection conn = new Model.ClientConnection()
+            ..userID = user.ID
+            ..connectionCount = clientRegistry[user.ID].length;
+          Event.ClientConnectionState event = new Event.ClientConnectionState(conn);
+
+          _broadcast (event.asMap);
         });
       });
     } else {
       ORhttp.clientError(request, "This interface is meant for webSocket clients.");
-      return;
+      return new Future.error("This interface is meant for webSocket clients.");
     }
   }
 
@@ -98,9 +127,9 @@ abstract class Notification {
   /**
    * Send primitive. Expects the request body to be a JSON string with a list of recipients
    * in the 'recipients' field. The 'message' field is also mandatory for obvious reasons.
+   * TODO: Implement delivery status object in the framework.
    */
   static void send(HttpRequest request) {
-
     ORhttp.extractContent(request).then((String content) {
       List<int> recipients = new List<int>();
 
