@@ -23,9 +23,11 @@ final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern notificationSocketResource = new UrlPattern(r'/notifications');
 final Pattern broadcastResource          = new UrlPattern(r'/broadcast');
 final Pattern sendResource               = new UrlPattern(r'/send');
-final Pattern statusResource             = new UrlPattern(r'/status');
+final Pattern connectionsResource        = new UrlPattern(r'/connection');
+final Pattern connectionResource         = new UrlPattern(r'/connection/(\d+)');
 
-final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, sendResource, statusResource];
+final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, 
+            sendResource, statusResource, connectionResource, connectionsResource];
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 Service.Authentication AuthService = null;
@@ -43,7 +45,8 @@ void registerHandlers(HttpServer server) {
       ..serve(notificationSocketResource, method : "GET" ).listen(Notification.connect) // The upgrade-request is found in the header of a GET request.
       ..serve(         broadcastResource, method : "POST").listen(Notification.broadcast)
       ..serve(              sendResource, method : "POST").listen(Notification.send)
-      ..serve(            statusResource, method : "GET" ).listen(Notification.status)
+      ..serve(       connectionsResource, method : "GET" ).listen(Notification.connectionList)
+      ..serve(        connectionResource, method : "GET" ).listen(Notification.connection)
       ..serve(anything, method: 'OPTIONS').listen(ORhttp.preFlight)
       ..defaultStream.listen(ORhttp.page404);
 }

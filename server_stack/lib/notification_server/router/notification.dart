@@ -149,7 +149,6 @@ abstract class Notification {
         if (clientRegistry[uid] != null) {
           int count = 0;
           clientRegistry[uid].forEach((WebSocket clientSocket) {
-            print("Sending to user $uid");
             clientSocket.add(json['message']);
             count++;
           });
@@ -172,16 +171,27 @@ abstract class Notification {
     });
   }
 
-  /**
-   * Status for every connected websocket.
-   * TODO: Add a type for this in the framework.
-   */
-  static void status(HttpRequest request) {
-    List<Map> clients = [];
-      clientRegistry.forEach((int uid, List<WebSocket> clientSockets) {
-        Map client = {'uid' : uid, 'socketCount' : clientSockets.length};
-        clients.add(client);
-      });
-      ORhttp.writeAndClose(request, JSON.encode(clients));
+  static void connectionList (HttpRequest request) {
+    Iterable<Model.ClientConnection> connections = 
+      clientRegistry.keys.map((int uid) => 
+        new Model.ClientConnection ()
+          ..userID = uid
+          ..connectionCount = clientRegistry[uid].length); 
+    
+    ORhttp.writeAndClose(request, JSON.encode(connections.toList(growable: false)));
+  }
+  
+  static void connection (HttpRequest request) {
+    int uid  = ORhttp.pathParameter(request.uri, 'connection');
+    if (clientRegistry.containsKey(uid)) {
+      Model.ClientConnection conn = new Model.ClientConnection ()
+        ..userID = uid
+        ..connectionCount = clientRegistry[uid].length; 
+      
+      ORhttp.writeAndClose(request, JSON.encode(conn));
+    }
+    else {
+      ORhttp.notFound(request, {'error' : 'No connections for uid $uid'});
+    }
   }
 }
