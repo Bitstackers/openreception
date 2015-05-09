@@ -43,6 +43,12 @@ void main() {
     test('serialization', MessageObject.serialization);
   });
 
+  group('Model.Reception', () {
+    test('serializationDeserialization', ReceptionObject.serializationDeserialization);
+    test('serialization', ReceptionObject.serialization);
+    test('buildObject', ReceptionObject.buildObject);
+  });
+
   group('Model.Config', () {
     test('serializationDeserialization', ConfigObject.serializationDeserialization);
     test('serialization', ConfigObject.serialization);
