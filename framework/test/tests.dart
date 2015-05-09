@@ -220,6 +220,42 @@ abstract class ReceptionObject {
   }
 }
 
+abstract class CalendarEntryObject {
+  static void serializationDeserialization () =>
+      expect(new Model.CalendarEntry.fromMap(Test_Data.testReceptionCalendarEntry).asMap,
+        equals(Test_Data.testReceptionCalendarEntry));
+
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void serialization () =>
+      expect(() => new Model.CalendarEntry.fromMap(Test_Data.testReceptionCalendarEntry), returnsNormally);
+  
+  static void contactEntryBuild () {
+    final int id = 1;
+    final int rid = 2;
+    final int cid = 3;
+    final String body = 'test test test';
+    final DateTime begin = new DateTime.now();
+    final DateTime end = new DateTime.now().add(new Duration(hours : 1));
+    
+    Model.CalendarEntry testEntry = new Model.CalendarEntry.forContact(cid, rid)
+      ..ID = id
+      ..content = body
+      ..beginsAt = begin
+      ..until = end;
+    
+    expect(testEntry.ID, equals (id));
+    expect(testEntry.contactID, equals (cid));
+    expect(testEntry.receptionID, equals (rid));
+    expect(testEntry.content, equals (body));
+    expect(testEntry.startTime, equals (begin));
+    expect(testEntry.stopTime, equals (end));
+    
+  }
+}
+
+
 abstract class ContactObject {
   static void serializationDeserialization () =>
       expect(new Model.Contact.fromMap(Test_Data.testContact_1_2).asMap,
