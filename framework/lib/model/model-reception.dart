@@ -172,7 +172,6 @@ class Reception extends ReceptionStub {
     ReceptionJSONKey.ALT_NAMES :this.alternateNames,
     ReceptionJSONKey.BANKING_INFO          : this.bankingInformation,
     ReceptionJSONKey.CUSTOMER_TYPE         : this.customertype,
-    ReceptionJSONKey.ORGANIZATION_ID       : this.organizationId,
     ReceptionJSONKey.EMAIL_ADDRESSES       : this.emailAddresses,
     ReceptionJSONKey.GREETING              : this.greeting,
     ReceptionJSONKey.HANDLING_INSTRUCTIONS : this.handlingInstructions,
