@@ -13,6 +13,7 @@ import 'configuration.dart';
 import 'database.dart' as db;
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/httpserver.dart';
+import 'package:openreception_framework/event.dart'      as Event;
 import 'package:openreception_framework/model.dart'      as Model;
 import 'package:openreception_framework/service.dart'    as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;

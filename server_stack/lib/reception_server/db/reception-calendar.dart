@@ -36,30 +36,40 @@ LIMIT 1;
 
   }
 
-  //TODO: Return ID
-  static Future createEvent({int receptionID, Map event}) {
+  static Future<Model.CalendarEntry> createEvent(int receptionID, Model.CalendarEntry event) {
     String sql = '''
-START TRANSACTION;
-
-   INSERT INTO calendar_events 
-     ("id", "start", "stop", "message") 
-   VALUES 
-     (DEFAULT, @start, @end, @content);
-
-   INSERT INTO reception_calendar 
-     ("reception_id", "event_id")
-   VALUES
-     (@receptionID, lastval());
-COMMIT;''';
+WITH new_event AS(
+INSERT INTO calendar_events (start, stop, message)
+    VALUES (@start, @end, @content)
+    RETURNING id as event_id
+)
+INSERT INTO reception_calendar
+SELECT @receptionID, event_id
+FROM new_event
+RETURNING event_id
+''';
 
     Map parameters =
       {'receptionID'      : receptionID,
-        'start'            : Util.unixTimestampToDateTime(event['start']),
-        'end'              : Util.unixTimestampToDateTime(event['stop']),
-       'content'           : event['content']};
+        'start'            : event.startTime,
+        'end'              : event.stopTime,
+       'content'           : event.content};
 
-  return connection.execute(sql, parameters);
+  return connection.query(sql, parameters)
+    .then((Iterable rows) {
+      if(rows.isEmpty) {
+        //TODO: Log parameters SQL.
+        return new Future.error(new StateError('Failed to insert event'));
+      }
+      
+      event.ID  = rows.first.event_id;
 
+      return event;
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new Future.error(error, stackTrace);
+    });
+      
   }
 
 

@@ -31,13 +31,11 @@ abstract class ReceptionCalendar {
     }
 
     extractContent(request).then((String content) {
-      Map data;
+      Model.CalendarEntry newEntry;
 
       try {
-        data = JSON.decode(content);
-
-
-
+        Map serializedEntry = JSON.decode(content);
+        newEntry = new Model.CalendarEntry.fromMap(serializedEntry);
       } catch (error) {
 
         Map response = {
@@ -49,18 +47,15 @@ abstract class ReceptionCalendar {
         return;
       }
 
-      db.ReceptionCalendar.createEvent(receptionID: receptionID, event: data).then((_) {
-        Map event = {
-          'event': 'receptionCalendarEventCreated',
-          'calendarEvent': {
-            'receptionID': receptionID
-          }
-        };
-        Notification.broadcast(event);
+      db.ReceptionCalendar.createEvent(newEntry.receptionID, newEntry).then((Model.CalendarEntry savedEntry) {
+        Event.CalendarEvent event = new Event.ReceptionCalendarEntryCreate(savedEntry); 
+        
+        Notification.broadcastEvent(event);
 
         //Echo created event back.
-        writeAndClose(request, JSON.encode(data));
-      }).catchError((onError) {
+        writeAndClose(request, JSON.encode(savedEntry));
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
         serverError(request, 'Failed to store event in database');
       });
     });
