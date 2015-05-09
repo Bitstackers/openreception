@@ -171,7 +171,47 @@ abstract class MessageObject {
    * Merely asserts that no exceptions arise.
    */
   static void serialization () =>
-      expect(new Model.Message.fromMap(Test_Data.testMessage_1_Map), isNotNull);
+      expect(() => new Model.Message.fromMap(Test_Data.testMessage_1_Map), returnsNormally);
+}
+
+abstract class ReceptionObject {
+  static void serializationDeserialization () =>
+      expect(new Model.Reception.fromMap(Test_Data.testReception).asMap,
+        equals(Test_Data.testReception));
+
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void serialization () =>
+      expect(() => new Model.Reception.fromMap(Test_Data.testReception), returnsNormally);
+  
+  static void buildObject () {
+    Model.Reception testReception = new Model.Reception()
+      ..addresses = []
+      ..alternateNames = []
+      ..attributes = {}
+      ..bankingInformation = []
+      ..customertype = 'Not defined'
+      ..emailAddresses = []
+      ..enabled = true
+      ..extension = '12340001'
+      ..extraData = Uri.parse ('http://localhost/test')
+      ..fullName = 'Test test'
+      ..greeting = 'Go away'
+      ..handlingInstructions = ['Hang up']
+      ..ID = 999
+      ..lastChecked = new DateTime.now()
+      ..openingHours = []
+      ..organizationId  = 888
+      ..otherData = 'Nope'
+      ..product = 'Butter'
+      ..salesMarketingHandling = []
+      ..shortGreeting = 'Please go'
+      ..telephonenumbers = []
+      ..vatNumbers = []
+      ..websites = [];
+    expect(testReception.toJson, returnsNormally);
+  }
 }
 
 abstract class ContactObject {
