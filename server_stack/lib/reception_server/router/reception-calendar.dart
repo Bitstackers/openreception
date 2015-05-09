@@ -10,9 +10,10 @@ abstract class ReceptionCalendar {
   static void list(HttpRequest request) {
     int receptionID = pathParameter(request.uri, 'reception');
 
-    db.ReceptionCalendar.list(receptionID).then((List<Model.CalendarEntry> event) {
-      writeAndClose(request, JSON.encode(event));
-    }).catchError((error) {
+    db.ReceptionCalendar.list(receptionID).then((Iterable<Model.CalendarEntry> event) {
+      writeAndClose(request, JSON.encode(event.toList(growable: false)));
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);  
       serverError(request, error.toString());
     });
   }

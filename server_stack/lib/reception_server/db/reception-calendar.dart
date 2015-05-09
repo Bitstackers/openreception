@@ -6,7 +6,7 @@ part of receptionserver.database;
 abstract class ReceptionCalendar {
   
   static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
-
+  
   static Future<bool> exists({int receptionID, int eventID}) {
     String sql = '''
 SELECT 
@@ -153,26 +153,21 @@ LIMIT 1;
   });
   }
 
-  static Future<List<Model.CalendarEntry>> list(int receptionID) {
+  static Future<Iterable<Model.CalendarEntry>> list(int receptionID) {
     String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal JOIN reception_calendar org ON cal.id = org.event_id
     WHERE org.reception_id = @receptionid''';
 
-    Map parameters = {'receptionid' : receptionID};
-    return connection.query(sql, parameters).then((rows) {
-      List<Model.CalendarEntry> entries = [];
-      for(var row in rows) {
-        Map event =
-          {'id'      : row.id,
-           'start'   : Util.dateTimeToUnixTimestamp(row.start),
-           'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
-           'content' : row.message,
-           'reception_id' : receptionID};
-        entries.add(new Model.CalendarEntry.fromMap(event));
-      }
+    Model.CalendarEntry rowToCalendarEvent(var row) =>
+      new Model.CalendarEntry.forReception(receptionID)
+        ..ID = row.id
+        ..beginsAt = row.start
+        ..until = row.stop
+        ..content = row.message;
 
-      return entries;
-    });
+    Map parameters = {'receptionid' : receptionID};
+    return connection.query(sql, parameters).then((Iterable rows) =>
+      rows.map(rowToCalendarEvent));
   }
 }
