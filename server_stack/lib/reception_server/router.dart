@@ -20,14 +20,12 @@ part 'router/reception-calendar.dart';
 part 'router/getreception.dart';
 part 'router/updatereception.dart';
 part 'router/deletereception.dart';
-part 'router/getreceptionlist.dart';
 part 'router/invalidatereception.dart';
 part 'router/reception.dart';
 
 final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern receptionResource                     = new UrlPattern(r'/reception/(\d+)');
 final Pattern receptionUrl                          = new UrlPattern(r'/reception');
-final Pattern TMPreceptionUrl                       = new UrlPattern(r'/reception/TMPfullList');
 final Pattern receptionListResource                 = new UrlPattern(r'/reception/list');
 final Pattern receptionInvalidateResource           = new UrlPattern(r'/reception/(\d+)/invalidate');
 final Pattern receptionCalendarListResource         = new UrlPattern(r'/reception/(\d+)/calendar');
@@ -37,8 +35,7 @@ final Pattern receptionCalendarEventCreateResource  = new UrlPattern(r'/receptio
 final List<Pattern> allUniqueUrls = [receptionResource, receptionListResource,
                                      receptionUrl, receptionInvalidateResource,
                                      receptionCalendarListResource,
-                                     receptionCalendarEventResource,
-                                     TMPreceptionUrl];
+                                     receptionCalendarEventResource];
 
 Service.NotificationService Notification = null;
 const String libraryName = 'receptionserver.router';
@@ -55,8 +52,7 @@ Router setup(HttpServer server) =>
     ..serve(                   receptionResource, method: 'DELETE').listen(deleteReception)
     ..serve(                   receptionResource, method: 'PUT'   ).listen(updateReception)
     ..serve(                        receptionUrl, method: 'GET'   ).listen(Reception.list)
-    ..serve(                     TMPreceptionUrl, method: 'GET'   ).listen(getReceptionList)
-    ..serve(               receptionListResource, method: 'GET'   ).listen(getReceptionList)
+    ..serve(               receptionListResource, method: 'GET'   ).listen(Reception.list)
     ..serve(         receptionInvalidateResource, method: 'POST'  ).listen(invalidateReception)
     ..serve(       receptionCalendarListResource, method: 'GET'   ).listen(ReceptionCalendar.list)
     ..serve(      receptionCalendarEventResource, method: 'GET'   ).listen(ReceptionCalendar.get)
