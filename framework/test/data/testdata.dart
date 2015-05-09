@@ -1,3 +1,43 @@
+Map testReception = {
+  "id": 2,
+  "full_name": "Friends of the fisher Ltd.",
+  "enabled": true,
+  'organization_id': 2,
+  "extradatauri": null,
+  "reception_telephonenumber": "12340002",
+  "last_check": 0,
+  "attributes": {
+    "short_greeting": "You're speaking with...",
+    "addresses": [
+      "Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK",
+      "Valora Trade Denmark A/S Transformervej 16 2730 Herlev",
+      "Somewhere on the Atlantic"
+    ],
+    "alternatenames": ["Fishermans Friend"],
+    "bankinginformation": [
+      "A casket on a remote isle",
+      "The British are currently holding on to \"their\" gold"
+    ],
+    "salescalls": ["Stil dem videre til marketingsafdelingen"],
+    "customertype": "",
+    "emailaddresses": ["info@fiskermans.com"],
+    "greeting":
+        "Fishermans Friends you're speaking with... How may I help you?",
+    "handlings": [
+      "Let phone ring 4-5 times and then ask: Polly wants a cracker?",
+      "Entrance is located near the brig",
+      "Customers needs to be adressed in a pirate voice, including hook and eye patch"
+    ],
+    "openinghours": ["Dusk till dawn"],
+    "other": "Bonusinfo",
+    "product":
+        "ORIGINAL, MINTSUGARFREE, LIQUORICESUGRAFREE, SWEETLIQUORICESUGRAFREE, EXSTRASTRONG",
+    "registrationnumbers": ["UK-781277"],
+    "telephonenumbers": ["+4511223344", "+4521324355"],
+    "websites": ["http: //www.fishermansfriend.com/"]
+  }
+};
+
 Map configMap = {
   "standardGreeting": "Velkommen til...",
   "callFlowServerURI": "http://localhost:4242",
