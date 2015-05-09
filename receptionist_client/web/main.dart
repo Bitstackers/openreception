@@ -93,7 +93,6 @@ main() async {
                           callFlowControl,
                           notificationSocket,
                           token);
-        setupUserKeepAlive(controllerUser);
 
         appState.changeState(Model.AppState.READY);
       });
@@ -103,11 +102,12 @@ main() async {
       window.location.replace(loginUrl);
     }
   } catch(error, stackTrace) {
-    log.shout('Could not fully initialize application. Trying again in 2 seconds');
+    log.shout('Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
     appState.changeState(Model.AppState.ERROR);
 
     new Future.delayed(new Duration(seconds: 10)).then((_) {
+      appUri = Uri.parse(window.location.href);
       window.location.replace('${appUri.origin}${appUri.path}');
     });
   }
@@ -203,21 +203,6 @@ void registerReadyView(Model.AppClientState appState,
        controllerUser,
        new Controller.Call(callFlowControl),
        notificationSocket);
-}
-
-/**
- * Start a periodic timer that phones home on regular intervals.
- */
-void setupUserKeepAlive(Controller.User controllerUser) {
-  new Timer.periodic(new Duration(seconds: 5), (Timer timer) {
-    controllerUser.userStateKeepAlive(Model.User.currentUser)
-      .then((_) => log.info('User id ${Model.User.currentUser.ID} kept alive'))
-      .catchError((error) {
-        timer.cancel();
-        log.warning('User id ${Model.User.currentUser.ID} failed keep alive call');
-        setupUserKeepAlive(controllerUser);
-      });
-  });
 }
 
 /**

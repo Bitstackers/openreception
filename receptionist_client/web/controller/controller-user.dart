@@ -63,14 +63,6 @@ class User {
       .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
-   * Ping the server and update the last-updated timestamp on the
-   * [Model.UserStatus] object. The call fails if [user] is logged out or has no
-   * state on the server.
-   */
-  Future userStateKeepAlive(Model.User user) =>
-      _service.userStateKeepAlive(user.ID);
-
-  /**
    * Fetches a userStates of all users
    */
   Future<Iterable<Model.UserStatus>> userStateList() =>
