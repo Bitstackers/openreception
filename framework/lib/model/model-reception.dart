@@ -191,7 +191,7 @@ class Reception extends ReceptionStub {
       ReceptionJSONKey.ENABLED         : this.enabled,
       ReceptionJSONKey.EXTRADATA_URI   : this.extraData == null ? null : this.extraData.toString(),
       ReceptionJSONKey.EXTENSION       : this.extension,
-      ReceptionJSONKey.LAST_CHECK      : this.lastChecked.toUtc().millisecondsSinceEpoch,
+      ReceptionJSONKey.LAST_CHECK      : this.lastChecked.millisecondsSinceEpoch,
       ReceptionJSONKey.ATTRIBUTES      : attributes
     };
   }
