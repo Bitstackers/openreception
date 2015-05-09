@@ -1,3 +1,11 @@
+Map testReceptionCalendarEntry = {
+  "id": 134,
+  "reception_id": 1,
+  "start": 1431196256,
+  "stop": 1431203456,
+  "content": "Milk purchase"
+};
+
 Map testReception = {
   "id": 2,
   "full_name": "Friends of the fisher Ltd.",
