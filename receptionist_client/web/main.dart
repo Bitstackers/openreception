@@ -86,6 +86,12 @@ main() async {
             (clientConfig.callFlowServerUri, token, new ORTransport.Client());
         Controller.User controllerUser = new Controller.User(callFlowControl);
 
+        controllerUser.setPaused(Model.User.currentUser)
+          .then((Model.UserStatus userStatus) {
+            log.info('Initial user state set to ${userStatus.state}');
+          })
+          .catchError((error) => log.shout('Failed setting user state with error ${error}'));
+
         observers(controllerUser);
         registerReadyView(appState,
                           clientConfig,
