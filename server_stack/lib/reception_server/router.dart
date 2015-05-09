@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
+import 'package:logging/logging.dart';
 
 import 'cache.dart' as cache;
 import 'configuration.dart';

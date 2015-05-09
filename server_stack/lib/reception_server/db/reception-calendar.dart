@@ -4,6 +4,8 @@ part of receptionserver.database;
 /// to extract the latest ID, or rowcount.
 
 abstract class ReceptionCalendar {
+  
+  static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
 
   static Future<bool> exists({int receptionID, int eventID}) {
     String sql = '''

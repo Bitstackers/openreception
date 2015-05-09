@@ -1,6 +1,8 @@
 part of receptionserver.router;
 
 abstract class ReceptionCalendar {
+  
+  static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
 
   /**
    * Lists every calendar event associated with reception identified by [receptionID].
