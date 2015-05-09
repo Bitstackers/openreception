@@ -27,7 +27,7 @@ final Pattern connectionsResource        = new UrlPattern(r'/connection');
 final Pattern connectionResource         = new UrlPattern(r'/connection/(\d+)');
 
 final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, 
-            sendResource, statusResource, connectionResource, connectionsResource];
+            sendResource, connectionResource, connectionsResource];
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 Service.Authentication AuthService = null;
