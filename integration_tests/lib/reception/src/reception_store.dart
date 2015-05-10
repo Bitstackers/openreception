@@ -143,7 +143,7 @@ abstract class Reception_Store {
           expect(entry.stopTime.difference(createdEvent.stopTime),
               lessThan(new Duration(seconds : 1)));
           expect(entry.receptionID, equals(createdEvent.receptionID));
-
+          expect(createdEvent.ID, greaterThan(Model.CalendarEntry.noID));
     });
   }
 
