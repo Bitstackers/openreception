@@ -37,7 +37,9 @@ LIMIT 1;
 
   }
 
-  static Future createEvent(Model.CalendarEntry entry, {Map distributionList : null}) {
+  //TODO: Extract the eventID from the database and add it to the returned
+  //  CalendarEntry
+  static Future<Model.CalendarEntry> createEvent(Model.CalendarEntry entry, {Map distributionList : null}) {
     String sql = '''
 START TRANSACTION;
 
@@ -61,8 +63,7 @@ COMMIT;''';
        'end'              : entry.stopTime,
        'content'          : entry.content};
 
-    return connection.execute(sql, parameters);
-
+    return connection.execute(sql, parameters).then((_) => entry);
   }
 
 

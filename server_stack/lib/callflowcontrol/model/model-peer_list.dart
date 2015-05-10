@@ -14,6 +14,8 @@ abstract class PeerList implements IterableBase<Peer> {
     ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
 
     peer.register (contact);
+
+    OREvent.PeerState event;
     Notification.broadcast(ClientNotification.peerState (peer));
   }
 

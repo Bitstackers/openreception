@@ -1,5 +1,6 @@
 library notificationserver.router;
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
@@ -10,6 +11,7 @@ import 'configuration.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/httpserver.dart' as ORhttp;
 import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception_framework/event.dart' as Event;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
@@ -21,8 +23,11 @@ final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern notificationSocketResource = new UrlPattern(r'/notifications');
 final Pattern broadcastResource          = new UrlPattern(r'/broadcast');
 final Pattern sendResource               = new UrlPattern(r'/send');
+final Pattern connectionsResource        = new UrlPattern(r'/connection');
+final Pattern connectionResource         = new UrlPattern(r'/connection/(\d+)');
 
-final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, sendResource];
+final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource, 
+            sendResource, connectionResource, connectionsResource];
 
 Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
 Service.Authentication AuthService = null;
@@ -40,6 +45,8 @@ void registerHandlers(HttpServer server) {
       ..serve(notificationSocketResource, method : "GET" ).listen(Notification.connect) // The upgrade-request is found in the header of a GET request.
       ..serve(         broadcastResource, method : "POST").listen(Notification.broadcast)
       ..serve(              sendResource, method : "POST").listen(Notification.send)
+      ..serve(       connectionsResource, method : "GET" ).listen(Notification.connectionList)
+      ..serve(        connectionResource, method : "GET" ).listen(Notification.connection)
       ..serve(anything, method: 'OPTIONS').listen(ORhttp.preFlight)
       ..defaultStream.listen(ORhttp.page404);
 }

@@ -1,6 +1,8 @@
 part of receptionserver.router;
 
 abstract class ReceptionCalendar {
+  
+  static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
 
   /**
    * Lists every calendar event associated with reception identified by [receptionID].
@@ -50,6 +52,7 @@ abstract class ReceptionCalendar {
           (400 , body: JSON.encode(response));
       }
 
+      
       return db.ReceptionCalendar.createEvent(newEntry.receptionID, newEntry)
         .then((Model.CalendarEntry savedEntry) {
           Event.CalendarEvent event = new Event.ReceptionCalendarEntryCreate(savedEntry); 
@@ -74,7 +77,9 @@ abstract class ReceptionCalendar {
       Model.CalendarEntry entry;
 
       try {
-        data = JSON.decode(content);
+        Map serializedEntry = JSON.decode(content);
+        entry = new Model.CalendarEntry.fromMap(serializedEntry);        
+        
       } catch (error) {
         Map response = {
           'status': 'bad request',
