@@ -22,6 +22,10 @@ abstract class Reception {
         return new shelf.Response.ok (JSON.encode(reception));
       })
       .catchError((error, stackTrace) {
+        if (error is Storage.NotFound) {
+          return new shelf.Response.notFound (JSON.encode({'error' : error.toString()}));
+        }
+      
         log.severe (error, stackTrace);
         return new shelf.Response.internalServerError 
           (body : 'receptionserver.router.getReception: $error');

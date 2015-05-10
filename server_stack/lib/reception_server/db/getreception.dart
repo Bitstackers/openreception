@@ -9,11 +9,14 @@ Future<Model.Reception> getReception(int id) {
 
   Map parameters = {'id' : id};
 
-  return connection.query(sql, parameters).then((rows) {
-    Map data = {};
-    if(rows.length == 1) {
-      var row = rows.first;
-      data =
+  return connection.query(sql, parameters).then((Iterable rows) {
+    
+    if (rows.isEmpty) {
+      throw new Storage.NotFound('No reception with ID $id');
+    }
+    
+    var row = rows.first;
+    Map data =
         {'id'           : row.id,
          'full_name'    : row.full_name,
          'enabled'      : row.enabled,
@@ -21,7 +24,7 @@ Future<Model.Reception> getReception(int id) {
          'reception_telephonenumber': row.reception_telephonenumber,
          'last_check'   : row.last_check.toString(),
          'attributes'   : row.attributes};
-    }
+    
 
     return new Model.Reception.fromMap(data);
   });
