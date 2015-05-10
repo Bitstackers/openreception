@@ -52,9 +52,12 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Add [contacts] to the [Contact] list.
+   * Add [contacts] to the [Contact] list. Always resets the filter input to
+   * empty string.
    */
   set contacts(Iterable<Contact> contacts) {
+    _filter.value = '';
+
     final List<LIElement> list = new List<LIElement>();
 
     contacts.forEach((Contact item) {
@@ -146,8 +149,10 @@ class UIContactSelector extends UIModel {
       });
     }
 
-    /// Select the first visible item on the list
-    _markSelected(_scanForwardForVisibleElement(_list.children.first));
+    if(_list.children.isNotEmpty) {
+      /// Select the first visible item on the list
+      _markSelected(_scanForwardForVisibleElement(_list.children.first));
+    }
   }
 
   /**

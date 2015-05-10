@@ -70,6 +70,15 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
+   * Fire the [onEdit] stream if an event is selected, else don't do anything.
+   */
+  void _maybeEdit(KeyboardEvent event) {
+    if(_list.querySelector('.selected') != null) {
+      _busEdit.fire(event);
+    }
+  }
+
+  /**
    * Return currently selected [ReceptionCalendarEntry].
    * Return [ReceptionCalendarEntry.empty] if nothing is selected.
    */
@@ -116,7 +125,7 @@ class UIReceptionCalendar extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {'Ctrl+e': _busEdit.fire,
+        {'Ctrl+e': _maybeEdit,
          'Ctrl+k': _busNew.fire};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));

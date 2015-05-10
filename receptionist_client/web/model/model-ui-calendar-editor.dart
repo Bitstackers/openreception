@@ -14,13 +14,14 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * The calendar editor UI model.
  */
 class UICalendarEditor extends UIModel {
-  HtmlElement      _myFirstTabElement;
-  HtmlElement      _myFocusElement;
-  HtmlElement      _myLastTabElement;
-  final DivElement _myRoot;
+  ORModel.CalendarEntry _loadedEntry;
+  HtmlElement           _myFirstTabElement;
+  HtmlElement           _myFocusElement;
+  HtmlElement           _myLastTabElement;
+  final DivElement      _myRoot;
 
   /**
    * Constructor.
@@ -62,10 +63,12 @@ class UICalendarEditor extends UIModel {
    * Populate the calendar editor fields with [calendarEntry].
    */
   set calendarEntry(ORModel.CalendarEntry calendarEntry) {
+    _loadedEntry = calendarEntry;
+
     _startReadable.text = _humanReadableTimestamp(calendarEntry.startTime);
     _stopReadable.text = _humanReadableTimestamp(calendarEntry.stopTime);
 
-    _textArea.text = calendarEntry.content;
+    _textArea.value = calendarEntry.content;
 
     _startHourInput.value = calendarEntry.startTime.hour.toString();
     _startMinuteInput.value = calendarEntry.startTime.minute.toString();
@@ -80,45 +83,6 @@ class UICalendarEditor extends UIModel {
     _stopYearInput.value = calendarEntry.stopTime.year.toString();
 
     _toggleButtons();
-  }
-
-  /**
-   * Return the click event stream for the cancel button.
-   */
-  Stream<MouseEvent> get onCancel => _cancelButton.onClick;
-
-  /**
-   * Return the click event stream for the delete button.
-   */
-  Stream<MouseEvent> get onDelete => _deleteButton.onClick;
-
-  /**
-   * Return the click event stream for the save button.
-   */
-  Stream<MouseEvent> get onSave => _saveButton.onClick;
-
-  /**
-   * Observers.
-   */
-  void _observers() {
-    _root.onKeyDown.listen(_keyboard.press);
-
-    /// Enables focused element memory for this widget.
-    _tabElements.forEach((HtmlElement element) {
-      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
-    });
-
-    _textArea.onInput        .listen((_) => _toggleButtons());
-    _startHourInput.onInput  .listen((_) => _checkInput(_startHourInput));
-    _startMinuteInput.onInput.listen((_) => _checkInput(_startMinuteInput));
-    _startDayInput.onInput   .listen((_) => _checkInput(_startDayInput));
-    _startMonthInput.onInput .listen((_) => _checkInput(_startMonthInput));
-    _startYearInput.onInput  .listen((_) => _checkInput(_startYearInput));
-    _stopHourInput.onInput   .listen((_) => _checkInput(_stopHourInput));
-    _stopMinuteInput.onInput .listen((_) => _checkInput(_stopMinuteInput));
-    _stopDayInput.onInput    .listen((_) => _checkInput(_stopDayInput));
-    _stopMonthInput.onInput  .listen((_) => _checkInput(_stopMonthInput));
-    _stopYearInput.onInput   .listen((_) => _checkInput(_stopYearInput));
   }
 
   /**
@@ -142,6 +106,24 @@ class UICalendarEditor extends UIModel {
     }
 
     _toggleButtons();
+  }
+
+  /**
+   *
+   */
+  ORModel.CalendarEntry get harvestedEntry {
+
+    ///
+    ///
+    ///
+    ///
+    /// TODO: Harvest the data from DOM and create/return a new calendar entry
+    /// from these data.
+    ///
+    ///
+    ///
+
+    return null;
   }
 
   /**
@@ -198,24 +180,60 @@ class UICalendarEditor extends UIModel {
   }
 
   /**
+   *
+   */
+  ORModel.CalendarEntry get loadedEntry => _loadedEntry;
+
+  /**
+   * Observers.
+   */
+  void _observers() {
+    _root.onKeyDown.listen(_keyboard.press);
+
+    /// Enables focused element memory for this widget.
+    _tabElements.forEach((HtmlElement element) {
+      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
+    });
+
+    _textArea.onInput        .listen((_) => _toggleButtons());
+    _startHourInput.onInput  .listen((_) => _checkInput(_startHourInput));
+    _startMinuteInput.onInput.listen((_) => _checkInput(_startMinuteInput));
+    _startDayInput.onInput   .listen((_) => _checkInput(_startDayInput));
+    _startMonthInput.onInput .listen((_) => _checkInput(_startMonthInput));
+    _startYearInput.onInput  .listen((_) => _checkInput(_startYearInput));
+    _stopHourInput.onInput   .listen((_) => _checkInput(_stopHourInput));
+    _stopMinuteInput.onInput .listen((_) => _checkInput(_stopMinuteInput));
+    _stopDayInput.onInput    .listen((_) => _checkInput(_stopDayInput));
+    _stopMonthInput.onInput  .listen((_) => _checkInput(_stopMonthInput));
+    _stopYearInput.onInput   .listen((_) => _checkInput(_stopYearInput));
+  }
+
+  /**
+   * Return the click event stream for the cancel button.
+   */
+  Stream<MouseEvent> get onCancel => _cancelButton.onClick;
+
+  /**
+   * Return the click event stream for the delete button.
+   */
+  Stream<MouseEvent> get onDelete => _deleteButton.onClick;
+
+  /**
+   * Return the click event stream for the save button.
+   */
+  Stream<MouseEvent> get onSave => _saveButton.onClick;
+
+  /**
    * Clear the widget of all data and reset focus element.
    */
   void reset() {
+    _loadedEntry = null;
     _myFocusElement = _myFirstTabElement;
 
     _startReadable.text = '';
     _stopReadable.text = '';
-    _textArea.text = '';
-    _startHourInput.value = '';
-    _startMinuteInput.value = '';
-    _startDayInput.value = '';
-    _startMonthInput.value = '';
-    _startYearInput.value = '';
-    _stopHourInput.value = '';
-    _stopMinuteInput.value = '';
-    _stopDayInput.value = '';
-    _stopMonthInput.value = '';
-    _stopYearInput.value = '';
+
+    _inputFields.forEach((element) => element.value = '');
 
     _toggleButtons();
   }
@@ -235,7 +253,7 @@ class UICalendarEditor extends UIModel {
     final bool toggle = !_inputFields.any((element) => element.value.isEmpty)
         && !_inputFields.any((element) => element.validity.badInput);
 
-    _deleteButton.disabled = !toggle;
+    _deleteButton.disabled = !toggle || (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
     _saveButton.disabled   = !toggle;
 
     _myLastTabElement = toggle ? _saveButton : _cancelButton;

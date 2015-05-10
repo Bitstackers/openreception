@@ -14,11 +14,13 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The calendar editor widget. Note that this handles editing of calendar entries
+ * for both receptions and contacts.
  */
 class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
   final Model.UIContactSelector   _contactSelector;
+  final Logger                    _log = new Logger('$libraryName.CalendarEditor');
   final Controller.Destination    _myDestination;
   final Controller.Contact        _contactController;
   final Controller.Reception      _receptionController;
@@ -44,7 +46,9 @@ class CalendarEditor extends ViewWidget {
   @override Model.UIModel          get ui            => _ui;
 
   @override void onBlur(_) {
-    _ui.reset();
+    if(_ui.isFocused) {
+      _ui.reset();
+    }
   }
 
   /**
@@ -61,18 +65,13 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
-   * Cancel edit/create calendar entry.
+   * Close the widget and cancel edit/create calendar entry.
    *
    * Clear the form and navigate one step back in history.
    */
-  void _cancel(_) {
-    /// TODO (TL):
-    /// Clear form.
-    /// Set focusElement to default.
-    if(_ui.isFocused) {
-      window.history.back();
-      print('view.CalendarEditor._cancel not fully implemented');
-    }
+  void _close(_) {
+    _ui.reset();
+    window.history.back();
   }
 
   /**
@@ -81,14 +80,18 @@ class CalendarEditor extends ViewWidget {
    * Clear the form and navigate one step back in history.
    */
   void _delete(_) {
-//    var entry = this._getEntry();
-//    
-//    if (entry is Model.ReceptionCalendarEntry) {
-//      this._receptionController.deleteCalendarEvent(entry);
-//    }
-//    else if (entry is Model.ContactCalendarEntry) {
-//      this._contactController.deleteCalendarEvent(entry);
-//    }
+    Future deleteEntry;
+
+    if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
+      deleteEntry = _receptionController.deleteCalendarEvent(_ui.loadedEntry);
+    } else if(_ui.loadedEntry is Model.ContactCalendarEntry) {
+      deleteEntry = _contactController.deleteCalendarEvent(_ui.loadedEntry);
+    }
+
+    deleteEntry
+      .then((_) => _log.info('${_ui.loadedEntry} successfully deleted from database'))
+      .catchError((error) => _log.shout('Could not delete calendar entry ${_ui.loadedEntry}'))
+      .whenComplete(() => _close(_));
   }
 
   /**
@@ -97,7 +100,7 @@ class CalendarEditor extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _ui.onCancel.listen(_cancel);
+    _ui.onCancel.listen(_close);
     _ui.onDelete.listen(_delete);
     _ui.onSave  .listen(_save);
   }
@@ -108,11 +111,18 @@ class CalendarEditor extends ViewWidget {
    * Clear the form when done, and then navigate one step back in history.
    */
   void _save(_) {
-    /// TODO (TL):
-    /// Validate input data
-    /// Save calendar entry.
-    /// Call _cancel().
-    print('view.CalendarEditor._save not fully implemented');
+    Future saveEntry;
+
+    if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
+      saveEntry = _receptionController.saveCalendarEvent(_ui.loadedEntry);
+    } else if(_ui.loadedEntry is Model.ContactCalendarEntry) {
+      saveEntry = _contactController.saveCalendarEvent(_ui.loadedEntry);
+    }
+
+    saveEntry
+      .then((_) => _log.info('${_ui.loadedEntry} successfully saved to database'))
+      .catchError((error) => _log.shout('Could not save calendar entry ${_ui.loadedEntry}'))
+      .whenComplete(() => _close(_));
   }
 
   /**
@@ -123,27 +133,28 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
-   * Setup the widget accordingly to where it was opened from. [initiator] MUST
-   * be the [Widget] that activated CalendarEditor.
+   * Setup the widget accordingly to where it was opened from. [from] MUST be
+   * the [Widget] that activated CalendarEditor.
    *
    * This widget is only ever opened from other widgets, and as such we need to
    * know who activated us, in order to properly know how to find and deal
    * with the calendar entry we're either deleting/editing or creating.
    */
-  void _setup(Widget initiator, Cmd cmd) {
-    switch(initiator) {
+  void _setup(Widget from, Cmd cmd) {
+    switch(from) {
       case Widget.ContactCalendar:
         if(cmd == Cmd.EDIT) {
           _ui.headerExtra = '(ret/slet)';
           _render(_contactCalendar.selectedCalendarEntry);
         } else {
           _ui.headerExtra = '(ny)';
+
           final Model.ContactCalendarEntry entry = new Model.ContactCalendarEntry
             (_contactSelector.selectedContact.ID, _receptionSelector.selectedReception.ID)
               ..beginsAt = new DateTime.now()
               ..until = new DateTime.now().add(new Duration(hours : 1))
               ..content = '';
-          
+
           _render(entry);
         }
         break;
@@ -158,7 +169,7 @@ class CalendarEditor extends ViewWidget {
               ..beginsAt = new DateTime.now()
               ..until = new DateTime.now().add(new Duration(hours : 1))
               ..content = '';
-          
+
           _render(entry);
         }
         break;

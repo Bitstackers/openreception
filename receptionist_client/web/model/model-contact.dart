@@ -63,6 +63,7 @@ class Contact extends ORModel.Contact implements Comparable{
     return Contact.noContact;
   }
 
-  bool get isEmpty => this.ID == noContact.ID;
+  bool get isEmpty    => this.ID == noContact.ID;
+  bool get isNotEmpty => this.ID != noContact.ID;
 
 }
