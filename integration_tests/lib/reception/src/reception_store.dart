@@ -94,7 +94,7 @@ abstract class Reception_Store {
   static Future listReceptions (Storage.Reception receptionStore) {
     log.info('Checking server behaviour on list of receptions.');
 
-    return receptionStore.list().then((List<Model.ReceptionStub> receptions) {
+    return receptionStore.list().then((List<Model.Reception> receptions) {
       expect(receptions, isNotNull);
       expect(receptions, isNotEmpty);
     });
