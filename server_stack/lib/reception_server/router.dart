@@ -1,60 +1,93 @@
 library receptionserver.router;
 
-import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io' as IO;
 
-import 'package:route/pattern.dart';
-import 'package:route/server.dart';
-
-import 'cache.dart' as cache;
 import 'configuration.dart';
 import 'database.dart' as db;
-import 'package:openreception_framework/httpserver.dart';
-import 'package:openreception_framework/model.dart'      as Model;
-import 'package:openreception_framework/service.dart'    as Service;
+
+import 'package:logging/logging.dart';
+import 'package:openreception_framework/model.dart'   as Model;
+import 'package:openreception_framework/event.dart'   as Event;
+import 'package:openreception_framework/storage.dart'  as Storage;
+import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
+
 part 'router/reception-calendar.dart';
-part 'router/getreception.dart';
-part 'router/updatereception.dart';
-part 'router/deletereception.dart';
-part 'router/getreceptionlist.dart';
-part 'router/invalidatereception.dart';
+part 'router/reception.dart';
 
-final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern receptionResource                     = new UrlPattern(r'/reception/(\d+)');
-final Pattern receptionUrl                          = new UrlPattern(r'/reception');
-final Pattern receptionListResource                 = new UrlPattern(r'/reception/list');
-final Pattern receptionInvalidateResource           = new UrlPattern(r'/reception/(\d+)/invalidate');
-final Pattern receptionCalendarListResource         = new UrlPattern(r'/reception/(\d+)/calendar');
-final Pattern receptionCalendarEventResource        = new UrlPattern(r'/reception/(\d+)/calendar/event/(\d+)');
-final Pattern receptionCalendarEventCreateResource  = new UrlPattern(r'/reception/(\d+)/calendar');
+const String libraryName = 'receptionserver.router';
+final Logger log = new Logger (libraryName);
 
-final List<Pattern> allUniqueUrls = [receptionResource, receptionListResource,
-                                     receptionUrl, receptionInvalidateResource,
-                                     receptionCalendarListResource,
-                                     receptionCalendarEventResource];
-
+Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
+
+void connectAuthService() {
+  AuthService = new Service.Authentication
+      (config.authUrl, config.serverToken, new Service_IO.Client());
+}
 
 void connectNotificationService() {
   Notification = new Service.NotificationService
       (config.notificationServer, config.serverToken, new Service_IO.Client());
 }
 
-Router setup(HttpServer server) =>
-  new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
-    ..serve(                   receptionResource, method: 'GET'   ).listen(getReception)
-    ..serve(                   receptionResource, method: 'DELETE').listen(deleteReception)
-    ..serve(                   receptionResource, method: 'PUT'   ).listen(updateReception)
-    ..serve(                        receptionUrl, method: 'GET'   ).listen(getReceptionList)
-    ..serve(               receptionListResource, method: 'GET'   ).listen(getReceptionList)
-    ..serve(         receptionInvalidateResource, method: 'POST'  ).listen(invalidateReception)
-    ..serve(       receptionCalendarListResource, method: 'GET'   ).listen(ReceptionCalendar.list)
-    ..serve(      receptionCalendarEventResource, method: 'GET'   ).listen(ReceptionCalendar.get)
-    ..serve(      receptionCalendarEventResource, method: 'PUT'   ).listen(ReceptionCalendar.update)
-    ..serve(receptionCalendarEventCreateResource, method: 'POST'  ).listen(ReceptionCalendar.create)
-    ..serve(      receptionCalendarEventResource, method: 'DELETE').listen(ReceptionCalendar.remove)
-    ..serve(anything, method: 'OPTIONS').listen(preFlight)
-    ..defaultStream.listen(page404);
+shelf.Middleware checkAuthentication =
+  shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
+
+
+Future<shelf.Response> _lookupToken(shelf.Request request) {
+  var token = request.requestedUri.queryParameters['token'];
+
+  return AuthService.validate(token).then((_) => null)
+  .catchError((error) {
+    print (error);
+    if (error is Storage.NotFound) {
+      return new shelf.Response.forbidden('Invalid token');
+    }
+    else if (error is IO.SocketException) {
+      return new shelf.Response.internalServerError(body : 'Cannot reach authserver');
+    }
+    else {
+      return new shelf.Response.internalServerError(body : error.toString());
+    }
+  });
+}
+
+
+/// Simple access logging.
+void _accessLogger(String msg, bool isError) {
+  if (isError) {
+    log.severe(msg);
+  } else {
+    log.finest(msg);
+  }
+}
+
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
+  var router = shelf_route.router()
+    ..get('/reception', Reception.list)
+    ..get('/reception/{rid}', Reception.get)
+    ..get('/reception/{rid}/calendar', ReceptionCalendar.list)
+    ..get('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.get)
+    ..put('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.update)
+    ..post('/reception/{rid}/calendar', ReceptionCalendar.create)
+    ..delete('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.remove);
+
+  var handler = const shelf.Pipeline()
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+      .addMiddleware(checkAuthentication)
+      .addMiddleware(shelf.logRequests(logger : _accessLogger))
+      .addHandler(router.handler);
+
+  log.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer : log.fine);
+
+  return shelf_io.serve(handler, hostname, port);
+}

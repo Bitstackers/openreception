@@ -1,6 +1,6 @@
 part of receptionserver.database;
 
-Future<Map> getReception(int id) {
+Future<Model.Reception> getReception(int id) {
   String sql = '''
       SELECT id, full_name, attributes, enabled, extradatauri, reception_telephonenumber, last_check
       FROM receptions
@@ -23,6 +23,6 @@ Future<Map> getReception(int id) {
          'attributes'   : row.attributes};
     }
 
-    return data;
+    return new Model.Reception.fromMap(data);
   });
 }
