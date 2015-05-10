@@ -4,11 +4,9 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/reception_server/cache.dart' as cache;
 import '../lib/reception_server/configuration.dart' as json;
 import '../lib/configuration.dart';
 import '../lib/reception_server/database.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/reception_server/router.dart' as router;
 
 Logger log = new Logger ('ReceptionServer');
@@ -30,11 +28,11 @@ void main(List<String> args) {
     } else {
       json.config = new json.Configuration(parsedArgs);
       json.config.whenLoaded()
+        .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
         .then((_) => log.fine(json.config))
-        .then((_) => cache.setup())
         .then((_) => startDatabase())
-        .then((_) => http.start(json.config.httpport, router.setup))
+        .then((_) => router.start(port : json.config.httpport))
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {
