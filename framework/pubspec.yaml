@@ -3,6 +3,7 @@ version: 0.0.22+15
 author: BitStackers
 description: A utility package for the OpenReception application that provides data model service and storage layer.
 dependencies:
+  intl: any
   syslog:
     git: https://github.com/PedersenThomas/syslog.git
 dev_dependencies:
