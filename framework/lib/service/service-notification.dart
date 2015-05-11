@@ -57,6 +57,45 @@ class NotificationService {
   }
 
   /**
+   * Retrieves the [ClientConnection]'s currently active on the server as an
+   * [Iterable<Map>] 
+   */
+  Future<Iterable<Map>> clientConnectionsMap() {
+    Uri uri = Resource.Notification.clientConnections(this._host);
+        uri = appendToken(uri, this._token);
+
+    log.finest('GET $uri');
+
+    return this._backed.get(uri).then(JSON.decode);
+  }
+
+  /**
+   * Retrieves the [ClientConnection]'s currently active on the server.
+   */
+  Future<Iterable<Model.ClientConnection>> clientConnections() =>
+    this.clientConnectionsMap().then((Iterable<Map> maps) => 
+      maps.map ((Map map) => new Model.ClientConnection.fromMap(map))); 
+  
+  /**
+   * Retrieves the [ClientConnection] currently associated with [uid].
+   */
+  Future<Map> clientConnectionMap(int uid) {
+    Uri uri = Resource.Notification.clientConnection(this._host, uid);
+        uri = appendToken(uri, this._token);
+
+    log.finest('GET $uri');
+
+    return this._backed.get(uri).then(JSON.decode);
+  }
+
+  /**
+   * Retrieves the [ClientConnections] currently active on the server.
+   */
+  Future<Model.ClientConnection> clientConnection(uid) =>
+    this.clientConnectionMap(uid).then((Map map) => 
+      new Model.ClientConnection.fromMap(map)); 
+
+  /**
    * Sends an event via the notification server to [recipients]
    *
    * TODO: Implement and add test.
