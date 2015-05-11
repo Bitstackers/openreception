@@ -24,8 +24,6 @@ abstract class NotificationService {
     
     
     return notificationService.clientConnections().then((Iterable<Model.ClientConnection> connections) {
-      connections.forEach((conn) => print(conn.asMap));
-      
       expect(receptionists.every((Receptionist r) => receptionistHasConnection(r, connections)), isTrue);
       expect(connections.every((Model.ClientConnection conn) => conn.userID > 0), isTrue);
     });
