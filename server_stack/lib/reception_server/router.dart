@@ -61,6 +61,10 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
   });
 }
 
+final Map corsHeaders = 
+  {'Access-Control-Allow-Origin': '*' , 
+   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
+
 
 /// Simple access logging.
 void _accessLogger(String msg, bool isError) {
@@ -82,7 +86,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..delete('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.remove);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders : corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addHandler(router.handler);
