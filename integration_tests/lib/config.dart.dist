@@ -83,6 +83,13 @@ abstract class Config {
   static Uri NotificationSocketUri = Uri.parse('ws://notification.example.com');
 
   /**
+   * Uri of the Notification server, where general events about the state of the
+   * system is broadcasted from.
+   */
+  static Uri notificationServiceUri =
+      Uri.parse('http://localhost:4200');
+
+  /**
    * Pool of SIP account used for testing. Must mirror accounts present on
    * local FreeSwitch server configured in [pbxHost] and be mapped to a User on
    * the server stack.
