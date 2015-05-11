@@ -28,6 +28,10 @@ final Logger log = new Logger (libraryName);
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
 
+const Map corsHeaders = const
+  {'Access-Control-Allow-Origin': '*',
+   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
+
 void connectAuthService() {
   AuthService = new Service.Authentication
       (config.authUrl, config.serverToken, new Service_IO.Client());
@@ -84,7 +88,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..delete('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.remove);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addHandler(router.handler);
