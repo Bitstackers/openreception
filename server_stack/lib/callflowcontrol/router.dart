@@ -30,6 +30,10 @@ part 'router/handler-peer.dart';
 const String libraryName = "callflowcontrol.router";
 final Logger log = new Logger (libraryName);
 
+const Map corsHeaders = const
+  {'Access-Control-Allow-Origin': '*',
+   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
+
 Service.Authentication AuthService = null;
 Service.NotificationService Notification = null;
 
@@ -101,7 +105,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..post('/call/reception/{rid}/record', Call.recordSound);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addHandler(router.handler);
