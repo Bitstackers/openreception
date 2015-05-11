@@ -15,4 +15,10 @@ abstract class Notification {
 
   static Uri broadcast(Uri host)
       => Uri.parse('${host}/broadcast');
+  
+  static Uri clientConnections(Uri host)
+      => Uri.parse('${host}/connection');
+  
+  static Uri clientConnection(Uri host, int uid)
+      => Uri.parse('${host}/connection/${uid}');
 }
