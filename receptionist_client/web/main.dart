@@ -50,9 +50,9 @@ main() async {
 
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
-
+print(clientConfig.systemLanguage);
     /// Set the app language
-    language = Lang.da;  // TODO (TL): Get this from clientConfig
+    language = getLanguageMap(clientConfig.systemLanguage);
 
     /// Translate the static labels of the app. We do this early to have correct
     /// labels set while loading.
@@ -135,6 +135,28 @@ Future<ORModel.ClientConfiguration> getClientConfiguration() async {
       log.info('Loaded client config: ${config.asMap}');
       return config;
   });
+}
+
+/**
+ * Return the language map that corresponds to [language]. If [language] doesn't
+ * exist, then return the english language map.
+ */
+Map<String, String> getLanguageMap(String language) {
+  Map<String, String> map;
+
+  switch(language) {
+    case 'da':
+      map = Lang.da;
+      break;
+    case 'en':
+      map = Lang.en;
+      break;
+    default:
+      map = Lang.en;
+      break;
+  }
+
+  return map;
 }
 
 /**

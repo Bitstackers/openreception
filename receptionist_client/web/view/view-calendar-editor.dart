@@ -113,12 +113,21 @@ class CalendarEditor extends ViewWidget {
    * Clear the form when done, and then navigate one step back in history.
    */
   void _save(_) {
+    final ORModel.CalendarEntry entry = _ui.harvestedEntry;
     Future saveEntry;
 
     if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
-      saveEntry = _receptionController.saveCalendarEvent(_ui.loadedEntry);
+      if(entry.ID == ORModel.CalendarEntry.noID) {
+        saveEntry = _receptionController.createCalendarEvent(entry);
+      } else {
+        saveEntry = _receptionController.saveCalendarEvent(entry);
+      }
     } else if(_ui.loadedEntry is Model.ContactCalendarEntry) {
-      saveEntry = _contactController.saveCalendarEvent(_ui.loadedEntry);
+      if(entry.ID == ORModel.CalendarEntry.noID) {
+        saveEntry = _contactController.createCalendarEvent(entry);
+      } else {
+        saveEntry = _contactController.saveCalendarEvent(entry);
+      }
     }
 
     saveEntry

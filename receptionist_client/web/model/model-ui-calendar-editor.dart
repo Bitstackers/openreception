@@ -45,6 +45,7 @@ class UICalendarEditor extends UIModel {
 
   ButtonElement        get _cancelButton     => _root.querySelector('.cancel');
   ButtonElement        get _deleteButton     => _root.querySelector('.delete');
+  SpanElement          get _entryDuration    => _root.querySelector('div.entry-duration-container .entry-duration');
   ElementList<Element> get _inputFields      => _root.querySelectorAll('[input-field]');
   ButtonElement        get _saveButton       => _root.querySelector('.save');
   InputElement         get _startHourInput   => _root.querySelector('div.entry-start-container .start-hour');
@@ -68,9 +69,6 @@ class UICalendarEditor extends UIModel {
   set calendarEntry(ORModel.CalendarEntry calendarEntry) {
     _loadedEntry = calendarEntry;
 
-    _startReadable.text = ORUtil.humanReadableTimestamp(calendarEntry.start, _weekDays);
-    _stopReadable.text = ORUtil.humanReadableTimestamp(calendarEntry.stop, _weekDays);
-
     _textArea.value = calendarEntry.content;
 
     _startHourInput.value = calendarEntry.start.hour.toString();
@@ -85,71 +83,38 @@ class UICalendarEditor extends UIModel {
     _stopMonthInput.value = calendarEntry.stop.month.toString();
     _stopYearInput.value = calendarEntry.stop.year.toString();
 
-    _toggleButtons();
-  }
-
-  /**
-   * Mark [input] with the bad-input class if the validity of the data does not
-   * match the requirements defined by the input attributes.
-   * If [input] is OK, then call [_toggleButtons].
-   */
-  void _checkInput(InputElement input) {
-    input.classes.toggle('bad-input', input.validity.badInput);
-
-    try {
-      _startReadable.text = ORUtil.humanReadableTimestamp(_harvestStartDateTime(), _weekDays);
-    } catch(_) {
-      _startReadable.text = '';
-    }
-
-    try {
-      _stopReadable.text = ORUtil.humanReadableTimestamp(_harvestStopDateTime(), _weekDays);
-    } catch(_) {
-      _stopReadable.text = '';
-    }
-
+    _updateReadableAndDuration();
     _toggleButtons();
   }
 
   /**
    *
    */
-  ORModel.CalendarEntry get harvestedEntry {
-
-    ///
-    ///
-    ///
-    ///
-    /// TODO: Harvest the data from DOM and create/return a new calendar entry
-    /// from these data.
-    ///
-    ///
-    ///
-
-    return null;
-  }
+  ORModel.CalendarEntry get harvestedEntry =>
+      _loadedEntry
+        ..beginsAt = _harvestStartDateTime
+        ..until    = _harvestStopDateTime
+        ..content  = _textArea.value;
 
   /**
    *
    */
-  DateTime _harvestStartDateTime() {
-    return new DateTime.utc(_startYearInput.valueAsNumber.toInt(),
-                            _startMonthInput.valueAsNumber.toInt(),
-                            _startDayInput.valueAsNumber.toInt(),
-                            _startHourInput.valueAsNumber.toInt(),
-                            _startMinuteInput.valueAsNumber.toInt());
-  }
+  DateTime get _harvestStartDateTime =>
+      new DateTime(_startYearInput.valueAsNumber.toInt(),
+                   _startMonthInput.valueAsNumber.toInt(),
+                   _startDayInput.valueAsNumber.toInt(),
+                   _startHourInput.valueAsNumber.toInt(),
+                   _startMinuteInput.valueAsNumber.toInt());
 
   /**
    *
    */
-  DateTime _harvestStopDateTime() {
-    return new DateTime.utc(_stopYearInput.valueAsNumber.toInt(),
-                            _stopMonthInput.valueAsNumber.toInt(),
-                            _stopDayInput.valueAsNumber.toInt(),
-                            _stopHourInput.valueAsNumber.toInt(),
-                            _stopMinuteInput.valueAsNumber.toInt());
-  }
+  DateTime get _harvestStopDateTime =>
+      new DateTime(_stopYearInput.valueAsNumber.toInt(),
+                   _stopMonthInput.valueAsNumber.toInt(),
+                   _stopDayInput.valueAsNumber.toInt(),
+                   _stopHourInput.valueAsNumber.toInt(),
+                   _stopMinuteInput.valueAsNumber.toInt());
 
   /**
    *
@@ -168,16 +133,16 @@ class UICalendarEditor extends UIModel {
     });
 
     _textArea.onInput        .listen((_) => _toggleButtons());
-    _startHourInput.onInput  .listen((_) => _checkInput(_startHourInput));
-    _startMinuteInput.onInput.listen((_) => _checkInput(_startMinuteInput));
-    _startDayInput.onInput   .listen((_) => _checkInput(_startDayInput));
-    _startMonthInput.onInput .listen((_) => _checkInput(_startMonthInput));
-    _startYearInput.onInput  .listen((_) => _checkInput(_startYearInput));
-    _stopHourInput.onInput   .listen((_) => _checkInput(_stopHourInput));
-    _stopMinuteInput.onInput .listen((_) => _checkInput(_stopMinuteInput));
-    _stopDayInput.onInput    .listen((_) => _checkInput(_stopDayInput));
-    _stopMonthInput.onInput  .listen((_) => _checkInput(_stopMonthInput));
-    _stopYearInput.onInput   .listen((_) => _checkInput(_stopYearInput));
+    _startHourInput.onInput  .listen((_) => _update(_startHourInput));
+    _startMinuteInput.onInput.listen((_) => _update(_startMinuteInput));
+    _startDayInput.onInput   .listen((_) => _update(_startDayInput));
+    _startMonthInput.onInput .listen((_) => _update(_startMonthInput));
+    _startYearInput.onInput  .listen((_) => _update(_startYearInput));
+    _stopHourInput.onInput   .listen((_) => _update(_stopHourInput));
+    _stopMinuteInput.onInput .listen((_) => _update(_stopMinuteInput));
+    _stopDayInput.onInput    .listen((_) => _update(_stopDayInput));
+    _stopMonthInput.onInput  .listen((_) => _update(_stopMonthInput));
+    _stopYearInput.onInput   .listen((_) => _update(_stopYearInput));
   }
 
   /**
@@ -210,7 +175,8 @@ class UICalendarEditor extends UIModel {
       element.classes.remove('bad-input');
     });
 
-    _toggleButtons();
+    _deleteButton.disabled = true;
+    _saveButton.disabled   = true;
   }
 
   /**
@@ -231,11 +197,62 @@ class UICalendarEditor extends UIModel {
    */
   void _toggleButtons() {
     final bool toggle = !_inputFields.any((element) => element.value.isEmpty)
-        && !_inputFields.any((element) => element.validity.badInput);
+        && !_inputFields.any((element) => element.validity.badInput)
+        && _harvestStartDateTime.isBefore(_harvestStopDateTime);
 
     _deleteButton.disabled = !toggle || (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
     _saveButton.disabled   = !toggle;
 
     _myLastTabElement = toggle ? _saveButton : _cancelButton;
+  }
+
+  /**
+   * Mark [input] with the bad-input class if the validity of the data does not
+   * match the requirements defined by the input attributes.
+   *
+   * Output readable timestamps.
+   *
+   * Update duration.
+   *
+   * If [input] is OK, then call [_toggleButtons].
+   */
+  void _update(InputElement input) {
+    input.classes.toggle('bad-input', input.validity.badInput);
+
+    _updateReadableAndDuration();
+
+    _toggleButtons();
+  }
+
+  /**
+   *
+   */
+  void _updateReadableAndDuration() {
+    final StringBuffer duration = new StringBuffer();
+    final DateTime start = _harvestStartDateTime;
+    final DateTime stop = _harvestStopDateTime;
+
+    try {
+       _startReadable.text = ORUtil.humanReadableTimestamp(start, _weekDays);
+     } catch(_) {
+       _startReadable.text = '';
+     }
+
+     try {
+       _stopReadable.text = ORUtil.humanReadableTimestamp(stop, _weekDays);
+     } catch(_) {
+       _stopReadable.text = '';
+     }
+
+     duration.write(stop.difference(start).inDays);
+     duration.write(' ');
+     duration.write(stop.difference(start).inHours.remainder(24));
+     duration.write(':');
+     duration.write(stop.difference(start).inMinutes.remainder(60));
+
+     _entryDuration.text = duration.toString();
+
+     _startReadable.classes.toggle('bad-input', stop.isBefore(start));
+     _entryDuration.classes.toggle('bad-input', stop.isBefore(start));
   }
 }
