@@ -145,9 +145,9 @@ abstract class ContactStore {
           expect(event.content, equals(createdEvent.content));
 
           // We round to the nearest second, and have to compensate for skew.
-          expect(event.startTime.difference(createdEvent.startTime),
+          expect(event.start.difference(createdEvent.start),
               lessThan(new Duration(seconds : 1)));
-          expect(event.stopTime.difference(createdEvent.stopTime),
+          expect(event.stop.difference(createdEvent.stop),
               lessThan(new Duration(seconds : 1)));
           expect(event.receptionID, equals(createdEvent.receptionID));
           expect(event.contactID, equals(createdEvent.contactID));
@@ -188,9 +188,9 @@ abstract class ContactStore {
             expect(event.ID, equals(updatedEvent.ID));
 
             // We round to the nearest second, and have to compensate for skew.
-            expect(event.startTime.difference(updatedEvent.startTime),
+            expect(event.start.difference(updatedEvent.start),
                 lessThan(new Duration(seconds : 1)));
-            expect(event.stopTime.difference(updatedEvent.stopTime),
+            expect(event.stop.difference(updatedEvent.stop),
                 lessThan(new Duration(seconds : 1)));
             expect(event.receptionID, equals(updatedEvent.receptionID));
             expect(event.contactID, equals(updatedEvent.contactID));

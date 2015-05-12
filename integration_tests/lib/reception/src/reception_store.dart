@@ -138,9 +138,9 @@ abstract class Reception_Store {
           expect(entry.content, equals(createdEvent.content));
 
           // We round to the nearest second, and have to compensate for skew.
-          expect(entry.startTime.difference(createdEvent.startTime),
+          expect(entry.start.difference(createdEvent.start),
               lessThan(new Duration(seconds : 1)));
-          expect(entry.stopTime.difference(createdEvent.stopTime),
+          expect(entry.stop.difference(createdEvent.stop),
               lessThan(new Duration(seconds : 1)));
           expect(entry.receptionID, equals(createdEvent.receptionID));
           expect(createdEvent.ID, greaterThan(Model.CalendarEntry.noID));
@@ -175,9 +175,9 @@ abstract class Reception_Store {
             expect(event.ID, equals(updatedEvent.ID));
 
             // We round to the nearest second, and have to compensate for skew.
-            expect(event.startTime.difference(updatedEvent.startTime),
+            expect(event.start.difference(updatedEvent.start),
                 lessThan(new Duration(seconds : 1)));
-            expect(event.stopTime.difference(updatedEvent.stopTime),
+            expect(event.stop.difference(updatedEvent.stop),
                 lessThan(new Duration(seconds : 1)));
             expect(event.receptionID, equals(updatedEvent.receptionID));
 
