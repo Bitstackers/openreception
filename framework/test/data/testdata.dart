@@ -47,7 +47,7 @@ Map testReception = {
 };
 
 Map configMap = {
-  "standardGreeting": "Velkommen til...",
+  "systemLanguage": "en",
   "callFlowServerURI": "http://localhost:4242",
   "receptionServerURI": "http://localhost:4000",
   "contactServerURI": "http://localhost:4010",
