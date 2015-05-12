@@ -4,9 +4,9 @@ part of receptionserver.database;
 /// to extract the latest ID, or rowcount.
 
 abstract class ReceptionCalendar {
-  
+
   static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
-  
+
   static Future<bool> exists({int receptionID, int eventID}) {
     String sql = '''
 SELECT 
@@ -51,8 +51,8 @@ RETURNING event_id
 
     Map parameters =
       {'receptionID'      : receptionID,
-        'start'            : event.startTime,
-        'end'              : event.stopTime,
+        'start'            : event.start,
+        'end'              : event.stop,
        'content'           : event.content};
 
   return connection.query(sql, parameters)
@@ -61,7 +61,7 @@ RETURNING event_id
         //TODO: Log parameters SQL.
         return new Future.error(new StateError('Failed to insert event'));
       }
-      
+
       event.ID  = rows.first.event_id;
 
       return event;
@@ -69,7 +69,7 @@ RETURNING event_id
       log.severe(error, stackTrace);
       return new Future.error(error, stackTrace);
     });
-      
+
   }
 
 
@@ -87,8 +87,8 @@ RETURNING event_id
     Map parameters =
       {'receptionID'      : receptionID,
        'eventID'          : event.ID,
-       'start'            : event.startTime,
-       'end'              : event.stopTime,
+       'start'            : event.start,
+       'end'              : event.stop,
        'content'          : event.content};
 
   return connection.execute(sql, parameters);
