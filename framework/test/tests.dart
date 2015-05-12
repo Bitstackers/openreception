@@ -54,7 +54,7 @@ void main() {
     test('serialization', CalendarEntryObject.serialization);
     test('contactEntryBuild', CalendarEntryObject.contactEntryBuild);
   });
-  
+
   group('Model.Config', () {
     test('serializationDeserialization', ConfigObject.serializationDeserialization);
     test('serialization', ConfigObject.serialization);
@@ -196,7 +196,7 @@ abstract class ReceptionObject {
    */
   static void serialization () =>
       expect(() => new Model.Reception.fromMap(Test_Data.testReception), returnsNormally);
-  
+
   static void buildObject () {
     Model.Reception testReception = new Model.Reception()
       ..addresses = []
@@ -236,7 +236,7 @@ abstract class CalendarEntryObject {
    */
   static void serialization () =>
       expect(() => new Model.CalendarEntry.fromMap(Test_Data.testReceptionCalendarEntry), returnsNormally);
-  
+
   static void contactEntryBuild () {
     final int id = 1;
     final int rid = 2;
@@ -244,20 +244,20 @@ abstract class CalendarEntryObject {
     final String body = 'test test test';
     final DateTime begin = new DateTime.now();
     final DateTime end = new DateTime.now().add(new Duration(hours : 1));
-    
+
     Model.CalendarEntry testEntry = new Model.CalendarEntry.forContact(cid, rid)
       ..ID = id
       ..content = body
       ..beginsAt = begin
       ..until = end;
-    
+
     expect(testEntry.ID, equals (id));
     expect(testEntry.contactID, equals (cid));
     expect(testEntry.receptionID, equals (rid));
     expect(testEntry.content, equals (body));
-    expect(testEntry.startTime, equals (begin));
-    expect(testEntry.stopTime, equals (end));
-    
+    expect(testEntry.start, equals (begin));
+    expect(testEntry.stop, equals (end));
+
   }
 }
 

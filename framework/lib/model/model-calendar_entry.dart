@@ -1,70 +1,55 @@
 part of openreception.model;
 
 class CalendarEntry {
-
   static final String className = '${libraryName}.CalendarEntry';
-  static final Logger log = new Logger(className);
+  static final Logger log       = new Logger(className);
 
-  static const int noID = 0;
+  int              _contactID   = Contact.noID;
+  String           _content;
+  int              _ID          = CalendarEntry.noID;
+  static const int noID         = 0;
+  int              _receptionID = Reception.noID;
+  DateTime         _start;
+  DateTime         _stop;
 
-  String _content;
-  DateTime _start;
-  DateTime _stop;
-
-  bool get active => _active();
-
-  int _ID          = CalendarEntry.noID;
-  int _contactID   = Contact.noID;
-  int _receptionID = Reception.noID;
-
-  int get ID => this._ID;
-
-  void set ID(int newID) {
-    this._ID = newID;
-  }
-
-  String get start => _formatTimestamp(this.startTime);
-  String get stop  => _formatTimestamp(this.stopTime);
-  DateTime get startTime => this._start;
-  DateTime get stopTime => this._stop;
-  String get content => this._content;
-  int get contactID => this._contactID;
-  int get receptionID => this._receptionID;
-
-  void set beginsAt(DateTime start) {
-    this._start = start;
-  }
-
-  void set until(DateTime stop) {
-    this._stop = stop;
-  }
-
-  void set content(String eventBody) {
-    this._content = eventBody;
-  }
-
-  Map toJson() => this.asMap;
-
-  Map get asMap {
-    Map map=  {
-       'id'     : this.ID,
-       'reception_id' : this.receptionID,
-       'start'  : Util.dateTimeToUnixTimestamp(this._start),
-       'stop'   : Util.dateTimeToUnixTimestamp(this._stop),
-       'content': this._content
-       };
-
-    if (this.contactID != Contact.noID) {
-      map['contact_id'] = this.contactID;
-    }
-
-    return map;
-  }
-
-
+  /**
+   * Constructor.
+   */
   CalendarEntry();
+
+  /**
+   * Constructor for [Contact] calendar entries.
+   */
   CalendarEntry.forContact(this._contactID, this._receptionID);
+
+  /**
+   * Constructor for [Reception] calendar entries.
+   */
   CalendarEntry.forReception(this._receptionID);
+
+  /**
+   * [CalendarEntry] constructor. Expects a map in the following format:
+   *
+   *  {
+   *    'id'          : int entry id,
+   *    'reception_id': int reception id,
+   *    'contact_id'  : int contact id (optional),
+   *    'start'       : DateTime String,
+   *    'stop'        : DateTime String,
+   *    'content'     : String
+   *  }
+   *
+   *  'start' and 'stop' MUST be in a format that can be parsed by the
+   *  [DateTime.parse] method. 'content' is the actual event description.
+   */
+  CalendarEntry.fromMap(Map json) {
+    _ID          = json['id'];
+    _receptionID = json['reception_id'];
+    _contactID   = json['contact_id'] != null ? json['contact_id'] : Contact.noID;
+    _start       = Util.unixTimestampToDateTime(json['start']);
+    _stop        = Util.unixTimestampToDateTime(json['stop']);
+    _content     = json['content'];
+  }
 
   bool _active() {
     DateTime now = new DateTime.now();
@@ -72,69 +57,85 @@ class CalendarEntry {
   }
 
   /**
-     * [CalendarEntry] constructor. Expects a map in the following format:
-     *
-     *  {
-     *    'start'   : DateTime String,
-     *    'stop'    : DateTime String,
-     *    'content' : String
-     *  }
-     *
-     *  'start' and 'stop' MUST be in a format that can be parsed by the
-     *  [DateTime.parse] method. 'content' is the actual event description.
-     */
-  CalendarEntry.fromMap(Map json) {
-    this.._ID          = json['id']
-        .._receptionID = json['reception_id']
-        .._contactID   = json['contact_id'] != null ? json['contact_id'] : Contact.noID
-        .._start       = Util.unixTimestampToDateTime(json['start'])
-        .._stop        = Util.unixTimestampToDateTime(json['stop'])
-        .._content     = json['content'];
+   * Return true if now is between after [startTime] and before [stopTime].
+   */
+  bool get active => _active();
+
+  Map get asMap => {'id'          : ID,
+                    'contact_id'  : contactID != Contact.noID ? contactID : null,
+                    'reception_id': receptionID,
+                    'start'       : Util.dateTimeToUnixTimestamp(start),
+                    'stop'        : Util.dateTimeToUnixTimestamp(stop),
+                    'content'     : content};
+
+  /**
+   * The calendar entry starts at [start].
+   */
+  void set beginsAt(DateTime start) {
+    _start = start;
   }
 
   /**
-     * Format the [DateTime] [stamp] timestamp into a string. If [stamp] is today
-     * then return hour:minute, else return day/month hour:minute. Append year if
-     * [stamp] is in another year than now.
-     */
-  String _formatTimestamp(DateTime stamp) {
-    final String day = new DateFormat.d().format(stamp);
-    final String hourMinute = new DateFormat.Hm().format(stamp);
-    final String month = new DateFormat.M().format(stamp);
-    final DateTime now = new DateTime.now();
-    final StringBuffer output = new StringBuffer();
-    final String year = new DateFormat.y().format(stamp);
-
-    if (new DateFormat.yMd().format(stamp) != new DateFormat.yMd().format(now)) {
-      output.write('${day}/${month}');
-    }
-
-    if (new DateFormat.y().format(stamp) != new DateFormat.y().format(now)) {
-      output.write('/${year.substring(2)}');
-    }
-
-    output.write(' ${hourMinute}');
-
-    return output.toString();
-  }
-
-  /**
-     * Enables a [CalendarEntry] to sort itself compared to other calendar events.
-     */
+   * Enables a [CalendarEntry] to sort itself compared to other calendar events.
+   */
   int compareTo(CalendarEntry other) {
     if (_start.isAtSameMomentAs(other._start)) {
       return 0;
     }
-
     return _start.isBefore(other._start) ? 1 : -1;
   }
 
   /**
-     * [CalendarEntry] as String, for debug/log purposes.
-     */
-  String toString() => 'start: ${this.start}, '
-                       'stop: ${this.stop}, '
-                       'rid: ${this.receptionID}, '
-                       'cid: ${this.contactID}, '
-                       'content: ${this.content}';
+   * Return the contact id for this calendar entry. MAY be [Contact.noID] if
+   * this is a reception only entry.
+   */
+  int get contactID => _contactID;
+
+  /**
+   * Get the actual calendar entry text content.
+   */
+  String get content => _content;
+
+  /**
+   * Set the calendar entry text content.
+   */
+  void set content(String eventBody) {
+    _content = eventBody;
+  }
+
+  int get ID => _ID;
+
+  void set ID(int newID) {
+    _ID = newID;
+  }
+
+  int get receptionID => _receptionID;
+
+  /**
+   * When this calendar entry begins.
+   */
+  DateTime get start => _start;
+
+  /**
+   * When this calendar entry ends.
+   */
+  DateTime get stop => _stop;
+
+  Map toJson() => asMap;
+
+  /**
+   * [CalendarEntry] as String, for debug/log purposes.
+   */
+  String toString() => 'start: ${start.toIso8601String()}, '
+                       'stop: ${stop.toIso8601String()}, '
+                       'rid: ${receptionID}, '
+                       'cid: ${contactID}, '
+                       'content: ${content}';
+
+  /**
+   * The calendar entry ends at [stop].
+   */
+  void set until(DateTime stop) {
+    _stop = stop;
+  }
 }
