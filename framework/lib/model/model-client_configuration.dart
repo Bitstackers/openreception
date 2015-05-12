@@ -1,7 +1,6 @@
 part of openreception.model;
 
 abstract class ClientConfigJSONKey {
-  static final StandardGreeting = 'standardGreeting';
   static final CallFlowServerURI = 'callFlowServerURI';
   static final ReceptionServerURI = 'receptionServerURI';
   static final ContactServerURI = 'contactServerURI';
@@ -9,11 +8,12 @@ abstract class ClientConfigJSONKey {
   static final LogServerURI = 'logServerURI';
   static final AuthServerURI = 'authServerURI';
   static final Interface = 'interface';
+  static const SystemLanguage = 'systemLanguage';
 }
 
 class ClientConfiguration {
 
-  String welcomeMessage;
+  String systemLanguage;
   Uri callFlowServerUri;
   Uri receptionServerUri;
   Uri contactServerUri;
@@ -23,13 +23,13 @@ class ClientConfiguration {
   Uri notificationSocketUri;
 
   Map get asMap =>
-    {ClientConfigJSONKey.StandardGreeting : this.welcomeMessage,
-     ClientConfigJSONKey.CallFlowServerURI : this.callFlowServerUri.toString(),
+    {ClientConfigJSONKey.CallFlowServerURI : this.callFlowServerUri.toString(),
      ClientConfigJSONKey.ReceptionServerURI : this.receptionServerUri.toString(),
      ClientConfigJSONKey.ContactServerURI : this.contactServerUri.toString(),
      ClientConfigJSONKey.MessageServerURI  : this.messageServerUri.toString(),
      ClientConfigJSONKey.LogServerURI : this.logServerUri.toString(),
      ClientConfigJSONKey.AuthServerURI  : this.authServerUri.toString(),
+     ClientConfigJSONKey.SystemLanguage : this.systemLanguage,
 
       "notificationSocket": {
         ClientConfigJSONKey.Interface: this.notificationSocketUri.toString(),
@@ -48,8 +48,8 @@ class ClientConfiguration {
 
 
   ClientConfiguration.fromMap (Map map) {
-    this.welcomeMessage =
-        map [ClientConfigJSONKey.StandardGreeting];
+    this.systemLanguage =
+        map [ClientConfigJSONKey.SystemLanguage];
     this.callFlowServerUri =
         Uri.parse(map [ClientConfigJSONKey.CallFlowServerURI]);
     this.receptionServerUri =
