@@ -23,6 +23,8 @@
     "mailerPeriod"  : 30,
     "mailerScript"  : "mailer.py",
     
+    "systemLanguage" : "en",
+    
     "emailUsername" : "someone@example.com",
     "emailPassword" : "secret",
     "emailFromName" : "Example mail account",
