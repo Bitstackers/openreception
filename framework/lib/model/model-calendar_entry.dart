@@ -57,7 +57,7 @@ class CalendarEntry {
   }
 
   /**
-   * Return true if now is between after [startTime] and before [stopTime].
+   * Return true if now is between after [start] and before [stop].
    */
   bool get active => _active();
 
