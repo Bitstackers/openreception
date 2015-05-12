@@ -1,5 +1,6 @@
 Map testReceptionCalendarEntry = {
   "id": 134,
+  "contact_id": null,
   "reception_id": 1,
   "start": 1431196256,
   "stop": 1431203456,
