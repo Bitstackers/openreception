@@ -37,7 +37,11 @@ abstract class WebService {
       case 403:
         throw new Storage.Forbidden ('$method $path - $response');
         break;
-
+      
+      case 409:
+        throw new Storage.Conflict ('$method $path - $response');
+        break;
+        
       case 404:
        throw new Storage.NotFound('$method  $path - $response');
        break;

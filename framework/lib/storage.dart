@@ -37,6 +37,15 @@ class Forbidden implements StorageException {
   String toString() => "Forbidden: $message";
 }
 
+class Conflict implements StorageException {
+
+  final String message;
+  const Conflict([this.message = ""]);
+
+  String toString() => "Conflict: $message";
+}
+
+
 class NotAuthorized implements StorageException {
 
   final String message;
