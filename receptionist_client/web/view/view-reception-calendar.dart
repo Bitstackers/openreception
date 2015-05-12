@@ -84,7 +84,7 @@ class ReceptionCalendar extends ViewWidget {
       _receptionController.calendar(reception)
         .then ((Iterable<Model.ReceptionCalendarEntry> entries) {
           _ui.calendarEntries = entries.toList()
-              ..sort((a,b) => a.startTime.compareTo(b.startTime));
+              ..sort((a,b) => a.start.compareTo(b.start));
         });
     }
   }

@@ -19,14 +19,14 @@ import 'dart:html';
 import '../controller/controller.dart' as Controller;
 import '../dummies.dart'; // TODO (KRC): Refactor out
 import '../enums.dart'; // TODO (KRC): Refactor out
+import '../lang.dart';
 import '../model/model.dart' as Model;
-import '../service/service.dart' as Service; // TODO (KRC): Refactor out
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/event.dart' as OREvent;
 import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:openreception_framework/service.dart' as ORService;
+import 'package:openreception_framework/util.dart' as ORUtil;
 
 part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';

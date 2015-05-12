@@ -96,7 +96,7 @@ class ContactCalendar extends ViewWidget {
       this._contactController.getCalendar(contact)
         .then((Iterable<Model.ContactCalendarEntry> entries) {
           _ui.calendarEntries = entries.toList()
-              ..sort((a,b) => a.startTime.compareTo(b.startTime));
+              ..sort((a,b) => a.start.compareTo(b.start));
         });
     }
   }

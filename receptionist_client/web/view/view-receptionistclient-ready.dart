@@ -14,7 +14,8 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * This class is responsible for instantiating all the widgets when then
+ * [Model.AppClientState] is [Model.AppState.READY].
  */
 class ReceptionistclientReady {
   final Model.AppClientState            _appState;
@@ -28,6 +29,7 @@ class ReceptionistclientReady {
   Contexts                              _contexts;
   GlobalCallQueue                       _globalCallQueue;
   Hint                                  _help;
+  Map<String, String>                   _langMap;
   MessageArchive                        _messageArchive;
   MessageArchiveEdit                    _messageArchiveEdit;
   MessageArchiveFilter                  _messageArchiveFilter;
@@ -64,7 +66,8 @@ class ReceptionistclientReady {
                                   Controller.Reception receptionController,
                                   Controller.User userController,
                                   Controller.Call callController,
-                                  ORService.NotificationSocket notificationSocket) {
+                                  ORService.NotificationSocket notificationSocket,
+                                  Map<String, String> langMap) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
                                                          uiReady,
@@ -72,7 +75,8 @@ class ReceptionistclientReady {
                                                          receptionController,
                                                          userController,
                                                          callController,
-                                                         notificationSocket);
+                                                         notificationSocket,
+                                                         langMap);
     } else {
       return _singleton;
     }
@@ -87,7 +91,8 @@ class ReceptionistclientReady {
                                     this._receptionController,
                                     this._userController,
                                     this._callController,
-                                    this._notificationSocket) {
+                                    this._notificationSocket,
+                                    this._langMap) {
     _observers();
   }
 
@@ -103,9 +108,17 @@ class ReceptionistclientReady {
    * Go visible and setup all the app widgets.
    */
   void _runApp() {
-    Model.UIContactCalendar   uiContactCalendar   = new Model.UIContactCalendar(querySelector('#contact-calendar'));
+    final ORUtil.WeekDays _weekDays =
+        new ORUtil.WeekDays(_langMap[Key.dayMonday],
+                            _langMap[Key.dayTuesday],
+                            _langMap[Key.dayWednesday],
+                            _langMap[Key.dayThursday],
+                            _langMap[Key.dayFriday],
+                            _langMap[Key.daySaturday],
+                            _langMap[Key.daySunday]);
+    Model.UIContactCalendar   uiContactCalendar   = new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays);
     Model.UIContactSelector   uiContactSelector   = new Model.UIContactSelector(querySelector('#contact-selector'));
-    Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'));
+    Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays);
     Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
     _contexts = new Contexts(new Model.UIContexts());
@@ -130,14 +143,15 @@ class ReceptionistclientReady {
          uiReceptionSelector);
 
     _calendarEditor = new CalendarEditor
-        (new Model.UICalendarEditor(querySelector('#calendar-editor')),
+        (new Model.UICalendarEditor(querySelector('#calendar-editor'), _weekDays),
          new Controller.Destination(Context.CalendarEdit, Widget.CalendarEditor),
          uiContactCalendar,
          uiContactSelector,
          uiReceptionCalendar,
          uiReceptionSelector,
          _contactController,
-         _receptionController);
+         _receptionController,
+         _langMap);
 
     _contactSelector = new ContactSelector
         (uiContactSelector,

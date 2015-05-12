@@ -39,6 +39,7 @@ main() async {
   final Model.AppClientState   appState = new Model.AppClientState();
   Uri                          appUri;
   ORModel.ClientConfiguration  clientConfig;
+  Map<String, String>          language;
   ORService.NotificationSocket notificationSocket;
   String                       token;
   ORTransport.WebSocketClient  webSocketClient;
@@ -47,15 +48,18 @@ main() async {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
 
+    /// Hang here until the client configuration has been loaded from the server.
+    clientConfig = await getClientConfiguration();
+
+    /// Set the app language
+    language = Lang.da;  // TODO (TL): Get this from clientConfig
+
     /// Translate the static labels of the app. We do this early to have correct
     /// labels set while loading.
-    translate();
+    translate(language);
 
     /// Get the app Disaster and Loading views up and running.
     registerDisasterAndLoadingViews(appState);
-
-    /// Hang here until the client configuration has been loaded from the server.
-    clientConfig = await getClientConfiguration();
 
     appUri = Uri.parse(window.location.href);
 
@@ -98,6 +102,7 @@ main() async {
                           controllerUser,
                           callFlowControl,
                           notificationSocket,
+                          language,
                           token);
 
         appState.changeState(Model.AppState.READY);
@@ -191,6 +196,7 @@ void registerReadyView(Model.AppClientState appState,
                        Controller.User controllerUser,
                        ORService.CallFlowControl callFlowControl,
                        ORService.NotificationSocket notificationSocket,
+                       Map<String, String> langMap,
                        String token) {
   Model.UIReceptionistclientReady uiReady =
       new Model.UIReceptionistclientReady('receptionistclient-ready');
@@ -208,15 +214,14 @@ void registerReadyView(Model.AppClientState appState,
        new Controller.Reception(receptionStore),
        controllerUser,
        new Controller.Call(callFlowControl),
-       notificationSocket);
+       notificationSocket,
+       langMap);
 }
 
 /**
  * Worlds most simple method to translate widget labels to supported languages.
  */
-void translate() {
-  Map<String, String> langMap = Lang.da;
-
+void translate(Map<String, String> langMap) {
   querySelectorAll('[data-lang-text]').forEach((HtmlElement element) {
     element.text = langMap[element.dataset['lang-text']];
   });

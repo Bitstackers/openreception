@@ -23,12 +23,12 @@ import '../service/service.dart' as Service;
 import '../dummies.dart';
 import '../enums.dart';
 
-import 'package:intl/intl.dart';
 import 'package:markdown/markdown.dart' as Markdown;
 import 'package:okeyee/okeyee.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/util.dart' as ORUtil;
 
 part 'model-app-state.dart';
 part 'model-call.dart';
@@ -80,7 +80,8 @@ part 'model-ui-welcome-message.dart';
 
 const libraryName = 'model';
 
-typedef selectCallback(LIElement li);
+typedef String HumanReadableTimestamp(DateTime timestamp, Map<int, String> dayMap);
+typedef void selectCallback(LIElement li);
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 

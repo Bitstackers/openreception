@@ -17,7 +17,7 @@ part of view;
  * TODO (TL): Comment
  */
 class ReceptionistclientLoading {
-  final  Model.AppClientState                    _appState;
+  final  Model.AppClientState              _appState;
   static ReceptionistclientLoading         _singleton;
   final  Model.UIReceptionistclientLoading _ui;
 

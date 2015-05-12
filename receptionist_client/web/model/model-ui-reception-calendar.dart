@@ -20,11 +20,12 @@ class UIReceptionCalendar extends UIModel {
   final Bus<KeyboardEvent> _busEdit   = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _busNew    = new Bus<KeyboardEvent>();
   final DivElement         _myRoot;
+  final ORUtil.WeekDays    _weekDays;
 
   /**
    * Constructor.
    */
-  UIReceptionCalendar(DivElement this._myRoot) {
+  UIReceptionCalendar(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
     _setupLocalKeys();
     _observers();
   }
@@ -44,12 +45,13 @@ class UIReceptionCalendar extends UIModel {
     final List<LIElement> list = new List<LIElement>();
 
     items.forEach((ReceptionCalendarEntry item) {
-      DivElement content = new DivElement()
-                            ..text = item.content;
+      final DivElement content = new DivElement()..text = item.content;
 
-      DivElement timeStamps = new DivElement()
-                                ..classes.add('timestamps')
-                                ..text = '${item.start} - ${item.stop}';
+      final String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
+      final String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
+      final DivElement timeStamps = new DivElement()
+                                      ..classes.add('timestamps')
+                                      ..text = '${start} - ${stop}';
 
       list.add(new LIElement()
                 ..children.addAll([content, timeStamps])

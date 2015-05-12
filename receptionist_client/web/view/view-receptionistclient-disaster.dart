@@ -17,7 +17,7 @@ part of view;
  * TODO (TL): Comment
  */
 class ReceptionistclientDisaster {
-  final Model.AppClientState               _appState;
+  final Model.AppClientState         _appState;
   static ReceptionistclientDisaster  _singleton;
   Model.UIReceptionistclientDisaster _ui;
 

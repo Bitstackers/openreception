@@ -21,6 +21,7 @@ abstract class Key {
 
   static const String calendarEditorCancel            = 'calendar-editor-cancel';
   static const String calendarEditorDelete            = 'calendar-editor-delete';
+  static const String calendarEditorEntryDuration     = 'calendar-editor-entry-duration';
   static const String calendarEditorHeader            = 'calendar-editor-header';
   static const String calendarEditorSave              = 'calendar-editor-save';
   static const String calendarEditorStart             = 'calendar-editor-start';
@@ -40,6 +41,19 @@ abstract class Key {
   static const String contactDataTitle                = 'contact-data-title';
   static const String contactDataWorkHours            = 'contact-data-work-hours';
   static const String contactSelectorHeader           = 'contact-selector-header';
+
+  static const String dayMonday                       = 'day-monday';
+  static const String dayTuesday                      = 'day-tuesday';
+  static const String dayWednesday                    = 'day-wednesday';
+  static const String dayThursday                     = 'day-thursday';
+  static const String dayFriday                       = 'day-friday';
+  static const String daySaturday                     = 'day-saturday';
+  static const String daySunday                       = 'day-sunday';
+
+  static const String editorNew                       = 'editor-new';
+  static const String editorEditDelete                = 'editor-edit-delete';
+
+  static const String error                           = 'error';
 
   static const String filter                          = 'filter';
 
@@ -84,10 +98,10 @@ abstract class Key {
   static const String receptionVATNumbersHeader       = 'reception-vat-numbers-header';
   static const String receptionWebsitesHeader         = 'reception-websites-header';
 
+  static const String standardGreeting                = 'standard-greeting';
+
   static const String stateDisasterHeader             = 'state-disaster-header';
   static const String stateLoadingHeader              = 'state-loading-header';
-
-  static const String welcomeMessage                  = 'welcome-message';
 }
 
 /**
@@ -99,6 +113,7 @@ Map<String, String> da =
 
    Key.calendarEditorCancel           : 'Annuller',
    Key.calendarEditorDelete           : 'Slet',
+   Key.calendarEditorEntryDuration    : 'Varighed',
    Key.calendarEditorHeader           : 'Kalenderaftale',
    Key.calendarEditorSave             : 'Gem',
    Key.calendarEditorStart            : 'Start',
@@ -118,6 +133,19 @@ Map<String, String> da =
    Key.contactDataTitle               : 'Titel',
    Key.contactDataWorkHours           : 'Arbejdstider',
    Key.contactSelectorHeader          : 'Kontakter',
+
+   Key.dayMonday                      : 'Mandag',
+   Key.dayTuesday                     : 'Tirsdag',
+   Key.dayWednesday                   : 'Onsdag',
+   Key.dayThursday                    : 'Torsdag',
+   Key.dayFriday                      : 'Fredag',
+   Key.daySaturday                    : 'Lørdag',
+   Key.daySunday                      : 'Søndag',
+
+   Key.editorEditDelete               : 'ret/slet',
+   Key.editorNew                      : 'ny',
+
+   Key.error                          : 'fejl',
 
    Key.filter                         : 'Søg....',
 
@@ -162,10 +190,10 @@ Map<String, String> da =
    Key.receptionVATNumbersHeader      : 'CVR-numre',
    Key.receptionWebsitesHeader        : 'WWW',
 
-   Key.stateDisasterHeader            : 'Vi har problemer - prøver at genstarte hvert 10 sekund',
-   Key.stateLoadingHeader             : 'Hold på bits og bytes mens vi starter programmet',
+   Key.standardGreeting               : 'Velkommen til....',
 
-   Key.welcomeMessage                 : 'Velkomst....'};
+   Key.stateDisasterHeader            : 'Vi har problemer - prøver at genstarte hvert 10 sekund',
+   Key.stateLoadingHeader             : 'Hold på bits og bytes mens vi starter programmet'};
 
 /**
  * English translation map.
@@ -176,6 +204,7 @@ Map<String, String> en =
 
    Key.calendarEditorCancel           : 'Cancel',
    Key.calendarEditorDelete           : 'Delete',
+   Key.calendarEditorEntryDuration    : 'Duration',
    Key.calendarEditorHeader           : 'Calendar event',
    Key.calendarEditorSave             : 'Save',
    Key.calendarEditorStart            : 'Start',
@@ -195,6 +224,19 @@ Map<String, String> en =
    Key.contactDataTitle               : 'Title',
    Key.contactDataWorkHours           : 'Work hours',
    Key.contactSelectorHeader          : 'Contacts',
+
+   Key.dayMonday                      : 'Monday',
+   Key.dayTuesday                     : 'Tuesday',
+   Key.dayWednesday                   : 'Wednesday',
+   Key.dayThursday                    : 'Thursday',
+   Key.dayFriday                      : 'Friday',
+   Key.daySaturday                    : 'Saturday',
+   Key.daySunday                      : 'Sunday',
+
+   Key.editorEditDelete               : 'edit/delete',
+   Key.editorNew                      : 'new',
+
+   Key.error                          : 'error',
 
    Key.filter                         : 'search....',
 
@@ -239,7 +281,7 @@ Map<String, String> en =
    Key.receptionVATNumbersHeader      : 'VAT numbers',
    Key.receptionWebsitesHeader        : 'WWW',
 
-   Key.stateDisasterHeader            : 'Problems discovered. Trying to recover every 10 seconds',
-   Key.stateLoadingHeader             : 'Hold on to your bits while we\'re loading the application',
+   Key.standardGreeting               : 'You\'ve called....',
 
-   Key.welcomeMessage                 : 'Greeting....'};
+   Key.stateDisasterHeader            : 'Problems discovered. Trying to recover every 10 seconds',
+   Key.stateLoadingHeader             : 'Hold on to your bits while we\'re loading the application'};

@@ -83,8 +83,8 @@
               position: absolute;
               top: 30%;
               left: 35%;
-              height: 18em;
-              width: 30%;
+              height: 20em;
+              width: 35%;
               z-index: 1;
               outline: 0;
             }
@@ -108,23 +108,29 @@
               padding: 0.3em;
             }
 
-            #calendar-editor .readable {
+            #calendar-editor .readable-container {
               margin: 0.5em 0 0 0;
             }
 
-            #calendar-editor .readable,
-            #calendar-editor .entry-start,
-            #calendar-editor .entry-stop {
+            #calendar-editor .entry-duration {
+              font-weight: bold;
+              font-size: 1.1em;
+            }
+
+            #calendar-editor .entry-duration-container,
+            #calendar-editor .readable-container,
+            #calendar-editor .entry-start-container,
+            #calendar-editor .entry-stop-container {
               align-items: center;
               justify-content: center;
             }
 
-            #calendar-editor .entry-buttons {
+            #calendar-editor .entry-buttons-container {
               align-items: center;
               justify-content: center;
             }
 
-            #calendar-editor .entry-buttons button {
+            #calendar-editor .entry-buttons-container button {
               height: 2em;
               width: 5em;
               margin-left: 1em;
@@ -161,10 +167,13 @@
             <div class="entry-message">
               <textarea input-field class="padding03" tabindex="-1"></textarea>
             </div>
-            <div class="readable">
-              <span class="start"></span>-<span class="stop"></span>
+            <div class="readable-container">
+              <span class="readable-start"></span>-<span class="readable-stop"></span>
             </div>
-            <div class="entry-start">
+            <div class="entry-duration-container">
+              <span data-lang-text="calendar-editor-entry-duration">::entry-duration::</span><span class="entry-duration">0 0:0</span>
+            </div>
+            <div class="entry-start-container">
               <span data-lang-text="calendar-editor-start">::start::</span>
               <input input-field class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input input-field class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
@@ -172,7 +181,7 @@
               <input input-field class="start-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
               <input input-field class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
             </div>
-            <div class="entry-stop">
+            <div class="entry-stop-container">
               <span data-lang-text="calendar-editor-stop">::stop::</span>
               <input input-field class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input input-field class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
@@ -180,7 +189,7 @@
               <input input-field class="stop-hour" type="number" placeholder="tt" min="0" max="23" tabindex="-1"> :
               <input input-field class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
             </div>
-            <div class="entry-buttons">
+            <div class="entry-buttons-container">
               <button class="cancel" tabindex="-1" data-lang-text="calendar-editor-cancel">::cancel::</button>
               <button class="delete" disabled tabindex="-1" data-lang-text="calendar-editor-delete">::delete::</button>
               <button class="save" disabled tabindex="-1" data-lang-text="calendar-editor-save">::save::</button>
@@ -728,7 +737,7 @@
             </style>
 
             <div>
-              <span class="greeting" data-lang-text="welcome-message">::welcome-message::</span>
+              <span class="greeting" data-lang-text="standard-greeting">::standard-greeting::</span>
             </div>
           </div>
 

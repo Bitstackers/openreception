@@ -19,12 +19,13 @@ part of view;
  */
 class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
+  final Controller.Contact        _contactController;
   final Model.UIContactSelector   _contactSelector;
+  final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.CalendarEditor');
   final Controller.Destination    _myDestination;
-  final Controller.Contact        _contactController;
-  final Controller.Reception      _receptionController;
   final Model.UIReceptionCalendar _receptionCalendar;
+  final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor    _ui;
 
@@ -37,8 +38,9 @@ class CalendarEditor extends ViewWidget {
                  Model.UIContactSelector this._contactSelector,
                  Model.UIReceptionCalendar this._receptionCalendar,
                  Model.UIReceptionSelector this._receptionSelector,
-                 final Controller.Contact this._contactController,
-                 final Controller.Reception this._receptionController) {
+                 Controller.Contact this._contactController,
+                 Controller.Reception this._receptionController,
+                 Map<String, String> this._langMap) {
     _observers();
   }
 
@@ -144,10 +146,10 @@ class CalendarEditor extends ViewWidget {
     switch(from) {
       case Widget.ContactCalendar:
         if(cmd == Cmd.EDIT) {
-          _ui.headerExtra = '(ret/slet)';
+          _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
           _render(_contactCalendar.selectedCalendarEntry);
         } else {
-          _ui.headerExtra = '(ny)';
+          _ui.headerExtra = '(${_langMap[Key.editorNew]})';
 
           final Model.ContactCalendarEntry entry = new Model.ContactCalendarEntry
             (_contactSelector.selectedContact.ID, _receptionSelector.selectedReception.ID)
@@ -160,10 +162,10 @@ class CalendarEditor extends ViewWidget {
         break;
       case Widget.ReceptionCalendar:
         if(cmd == Cmd.EDIT) {
-          _ui.headerExtra = '(ret/slet)';
+          _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
           _render(_receptionCalendar.selectedCalendarEntry);
         } else {
-          _ui.headerExtra = '(ny)';
+          _ui.headerExtra = '(${_langMap[Key.editorNew]})';
           final Model.ReceptionCalendarEntry entry = new Model.ReceptionCalendarEntry
             (_receptionSelector.selectedReception.ID)
               ..beginsAt = new DateTime.now()
