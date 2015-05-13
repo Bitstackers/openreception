@@ -18,9 +18,10 @@ part of view;
  */
 class ReceptionCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
+  final Service.Notification      _notification;
+  final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCalendar _ui;
-  final Controller.Reception      _receptionController;
 
   /**
    * Constructor.
@@ -28,9 +29,10 @@ class ReceptionCalendar extends ViewWidget {
   ReceptionCalendar(Model.UIModel this._ui,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector,
-                    Controller.Reception this._receptionController) {
+                    Controller.Reception this._receptionController,
+                    Service.Notification this._notification) {
     _ui.setHint('alt+a');
-    observers();
+    _observers();
   }
 
   @override Controller.Destination get myDestination => _myDestination;
@@ -43,8 +45,19 @@ class ReceptionCalendar extends ViewWidget {
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
+  void _activateMe(_) {
     navigateToMyDestination();
+  }
+
+  /**
+   * Fetch all calendar entries for [reception].
+   */
+  void _fetchCalendar(Model.Reception reception) {
+    _receptionController.calendar(reception)
+      .then ((Iterable<Model.ReceptionCalendarEntry> entries) {
+        _ui.calendarEntries = entries.toList()
+            ..sort((a,b) => a.start.compareTo(b.start));
+      });
   }
 
   /**
@@ -60,32 +73,41 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Observers.
    */
-  void observers() {
+  void _observers() {
     _navigate.onGo.listen(setWidgetState);
 
-    _hotKeys.onAltA.listen(activateMe);
+    _hotKeys.onAltA.listen(_activateMe);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
     _ui.onEdit .listen((_) => _maybeNavigateToEditor(Cmd.EDIT));
     _ui.onNew  .listen((_) => _maybeNavigateToEditor(Cmd.NEW));
 
-    _receptionSelector.onSelect.listen(render);
+    _receptionSelector.onSelect.listen(_render);
+
+    _notification.onCalendarChange.listen(_updateOnChange);
   }
 
   /**
    * Render the widget with [reception].
    */
-  void render(Model.Reception reception) {
+  void _render(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = 'for ${reception.name}';
+      _fetchCalendar(reception);
+    }
+  }
 
-      _receptionController.calendar(reception)
-        .then ((Iterable<Model.ReceptionCalendarEntry> entries) {
-          _ui.calendarEntries = entries.toList()
-              ..sort((a,b) => a.start.compareTo(b.start));
-        });
+  /**
+   * Check if changes to the reception calendar matches the currently selected
+   * reception, and update accordingly if so.
+   */
+  void _updateOnChange(OREvent.CalendarChange calendarChange) {
+    final Model.Reception currentReception = _receptionSelector.selectedReception;
+
+    if(calendarChange.receptionID == currentReception.ID) {
+      _fetchCalendar(currentReception);
     }
   }
 }

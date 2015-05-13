@@ -20,9 +20,8 @@ import '../model/model.dart' as Model;
 import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/bus.dart';
-import 'package:openreception_framework/event.dart'        as OREvent;
-import 'package:openreception_framework/model.dart'        as ORModel;
-import 'package:openreception_framework/service.dart'      as ORService;
+import 'package:openreception_framework/event.dart'   as OREvent;
+import 'package:openreception_framework/service.dart' as ORService;
 
 part 'service-notification.dart';
 

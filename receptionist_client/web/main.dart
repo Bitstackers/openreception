@@ -19,6 +19,7 @@ import 'dart:html';
 import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
+import 'service/service.dart' as Service;
 import 'view/view.dart' as View;
 
 import 'package:logging/logging.dart';
@@ -40,6 +41,7 @@ main() async {
   Uri                          appUri;
   ORModel.ClientConfiguration  clientConfig;
   Map<String, String>          language;
+  Service.Notification         notification;
   ORService.NotificationSocket notificationSocket;
   String                       token;
   ORTransport.WebSocketClient  webSocketClient;
@@ -50,7 +52,7 @@ main() async {
 
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
-print(clientConfig.systemLanguage);
+
     /// Set the app language
     language = getLanguageMap(clientConfig.systemLanguage);
 
@@ -80,6 +82,7 @@ print(clientConfig.systemLanguage);
 
       webSocketClient    = new ORTransport.WebSocketClient();
       notificationSocket = new ORService.NotificationSocket(webSocketClient);
+      notification       = new Service.Notification(notificationSocket);
 
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
@@ -101,6 +104,7 @@ print(clientConfig.systemLanguage);
                           clientConfig,
                           controllerUser,
                           callFlowControl,
+                          notification,
                           notificationSocket,
                           language,
                           token);
@@ -217,6 +221,7 @@ void registerReadyView(Model.AppClientState appState,
                        ORModel.ClientConfiguration clientConfig,
                        Controller.User controllerUser,
                        ORService.CallFlowControl callFlowControl,
+                       Service.Notification notification,
                        ORService.NotificationSocket notificationSocket,
                        Map<String, String> langMap,
                        String token) {
@@ -236,6 +241,7 @@ void registerReadyView(Model.AppClientState appState,
        new Controller.Reception(receptionStore),
        controllerUser,
        new Controller.Call(callFlowControl),
+       notification,
        notificationSocket,
        langMap);
 }

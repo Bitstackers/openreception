@@ -21,6 +21,7 @@ import '../dummies.dart'; // TODO (KRC): Refactor out
 import '../enums.dart'; // TODO (KRC): Refactor out
 import '../lang.dart';
 import '../model/model.dart' as Model;
+import '../service/service.dart' as Service;
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/event.dart' as OREvent;

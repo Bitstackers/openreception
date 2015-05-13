@@ -35,6 +35,7 @@ class ReceptionistclientReady {
   MessageArchiveFilter                  _messageArchiveFilter;
   MessageCompose                        _messageCompose;
   MyCallQueue                           _myCallQueue;
+  Service.Notification                  _notification;
   ORService.NotificationSocket          _notificationSocket;
   ReceptionAddresses                    _receptionAddresses;
   ReceptionAltNames                     _receptionAltNames;
@@ -66,6 +67,7 @@ class ReceptionistclientReady {
                                   Controller.Reception receptionController,
                                   Controller.User userController,
                                   Controller.Call callController,
+                                  Service.Notification notification,
                                   ORService.NotificationSocket notificationSocket,
                                   Map<String, String> langMap) {
     if(_singleton == null) {
@@ -75,6 +77,7 @@ class ReceptionistclientReady {
                                                          receptionController,
                                                          userController,
                                                          callController,
+                                                         notification,
                                                          notificationSocket,
                                                          langMap);
     } else {
@@ -91,6 +94,7 @@ class ReceptionistclientReady {
                                     this._receptionController,
                                     this._userController,
                                     this._callController,
+                                    this._notification,
                                     this._notificationSocket,
                                     this._langMap) {
     _observers();
@@ -202,7 +206,8 @@ class ReceptionistclientReady {
         (uiReceptionCalendar,
          new Controller.Destination(Context.Home, Widget.ReceptionCalendar),
          uiReceptionSelector,
-         this._receptionController);
+         _receptionController,
+         _notification);
 
     _receptionCommands = new ReceptionCommands
         (new Model.UIReceptionCommands(querySelector('#reception-commands')),
