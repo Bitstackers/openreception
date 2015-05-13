@@ -29,7 +29,7 @@ class CalendarChange implements Event {
 
   final DateTime timestamp;
 
-  String get eventName => 'CalendarChange';
+  String get eventName => Key.CalendarChange;
   
   final int entryID;
   final int contactID;
