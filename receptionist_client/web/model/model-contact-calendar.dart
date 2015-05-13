@@ -23,24 +23,3 @@ class ContactCalendarEntry extends CalendarEntry {
     super.forContact(contactID, receptionID);
 }
 
-class ContactCalendar {
-  /// Local event streams.
-  Bus<ContactCalendarEntry> _calendarEventCreate = new Bus<ContactCalendarEntry>();
-  Stream<ContactCalendarEntry> get onCalendarEventCreate => _calendarEventCreate.stream;
-
-  Bus<ContactCalendarEntry> _calendarEventUpdate = new Bus<ContactCalendarEntry>();
-  Stream<ContactCalendarEntry> get onCalendarEventUpdate => _calendarEventUpdate.stream;
-
-  Bus<ContactCalendarEntry> _calendarEventDelete = new Bus<ContactCalendarEntry>();
-  Stream<ContactCalendarEntry> get onCalendarEventDelete => _calendarEventDelete.stream;
-
-  ContactCalendar (Service.Notification notification) {
-    this._registerObservers(notification);
-  }
-
-  void _registerObservers (Service.Notification notification) {
-    notification.onContactCalendarEventCreate.listen (_calendarEventCreate.fire);
-    notification.onContactCalendarEventUpdate.listen (_calendarEventUpdate.fire);
-    notification.onContactCalendarEventDelete.listen (_calendarEventDelete.fire);
-  }
-}

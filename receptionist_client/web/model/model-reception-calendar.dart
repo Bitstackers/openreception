@@ -22,29 +22,3 @@ class ReceptionCalendarEntry extends CalendarEntry{
   ReceptionCalendarEntry (int receptionID) :
     super.forReception(receptionID);
 }
-
-class ReceptionCalendar {
-  /// Local event streams.
-  Bus<ReceptionCalendarEntry> _calendarEventCreate = new Bus<ReceptionCalendarEntry>();
-  Stream<ReceptionCalendarEntry> get onCalendarEventCreate => _calendarEventCreate.stream;
-
-  Bus<ReceptionCalendarEntry> _calendarEventUpdate = new Bus<ReceptionCalendarEntry>();
-  Stream<ReceptionCalendarEntry> get onCalendarEventUpdate => _calendarEventUpdate.stream;
-
-  Bus<ReceptionCalendarEntry> _calendarEventDelete = new Bus<ReceptionCalendarEntry>();
-  Stream<ReceptionCalendarEntry> get onCalendarEventDelete => _calendarEventDelete.stream;
-
-  Bus<Iterable<ReceptionCalendarEntry>> _reload = new Bus<Iterable<ReceptionCalendarEntry>>();
-  Stream<Iterable<ReceptionCalendarEntry>> get onReload => _reload.stream;
-
-
-  ReceptionCalendar (Service.Notification notification) {
-    this._registerObservers(notification);
-  }
-
-  void _registerObservers (Service.Notification notification) {
-    notification.onReceptionCalendarEventCreate.listen (_calendarEventCreate.fire);
-    notification.onReceptionCalendarEventUpdate.listen (_calendarEventUpdate.fire);
-    notification.onReceptionCalendarEventDelete.listen (_calendarEventDelete.fire);
-  }
-}

@@ -23,89 +23,28 @@ class Notification {
     _socket.eventStream.listen(_dispatch);
   }
 
-  /// Contact calendar entry create
+  /// Call state change
   Bus<Model.Call> _callStateChange = new Bus<Model.Call>();
   Stream<Model.Call> get onAnyCallStateChange => _callStateChange.stream;
 
+  /// Client connection state change
   Bus<Model.ClientConnectionState> _clientConnectionState = new Bus<Model.ClientConnectionState>();
   Stream<Model.ClientConnectionState> get onClientConnectionStateChange => _clientConnectionState.stream;
 
-  /// Contact calendar entry create
-  Bus<Model.ContactCalendarEntry> _onContactCalendarEventCreate =
-      new Bus<Model.ContactCalendarEntry>();
-  Stream<Model.ContactCalendarEntry> get onContactCalendarEventCreate =>
-      _onContactCalendarEventCreate.stream;
-
-  /// Contact calendar entry update
-  Bus<Model.ContactCalendarEntry> _onContactCalendarEventUpdate =
-      new Bus<Model.ContactCalendarEntry>();
-  Stream<Model.ContactCalendarEntry> get onContactCalendarEventUpdate =>
-      _onContactCalendarEventUpdate.stream;
-
-  /// Contact calendar entry delete
-  Bus<Model.ContactCalendarEntry> _onContactCalendarEventDelete =
-      new Bus<Model.ContactCalendarEntry>();
-  Stream<Model.ContactCalendarEntry> get onContactCalendarEventDelete =>
-      _onContactCalendarEventDelete.stream;
-
-  /// Reception calendar entry create
-  Bus<Model.ReceptionCalendarEntry> _onReceptionCalendarEventCreate =
-      new Bus<Model.ReceptionCalendarEntry>();
-  Stream<Model.ReceptionCalendarEntry> get onReceptionCalendarEventCreate =>
-      _onReceptionCalendarEventCreate.stream;
-
-  /// Reception calendar entry update
-  Bus<Model.ReceptionCalendarEntry> _onReceptionCalendarEventUpdate =
-      new Bus<Model.ReceptionCalendarEntry>();
-  Stream<Model.ReceptionCalendarEntry> get onReceptionCalendarEventUpdate =>
-      _onReceptionCalendarEventUpdate.stream;
-
-  /// Reception calendar entry delete
-  Bus<Model.ReceptionCalendarEntry> _onReceptionCalendarEventDelete =
-      new Bus<Model.ReceptionCalendarEntry>();
-  Stream<Model.ReceptionCalendarEntry> get onReceptionCalendarEventDelete =>
-      _onReceptionCalendarEventDelete.stream;
+  /// Calendar Event changes
+  Bus<OREvent.CalendarChange> _calendarChange = new Bus<OREvent.CalendarChange>();
+  Stream<OREvent.CalendarChange> get onCalendarChange => _calendarChange.stream;
 
   void _dispatch (OREvent.Event event) {
     if (event is OREvent.CallEvent) {
       _dispatchCall(event);
     }
-    else if(event is OREvent.CalendarEvent) {
-      _dispatchCalender(event);
+    else if(event is OREvent.CalendarChange) {
+      this._calendarChange.fire(event);
     }
     else {
       log.severe('Failed to dispatch event ${event}');
     }
-  }
-
-  _dispatchCalender(event) {
-    if (event is OREvent.ContactCalendarEntryCreate) {
-      _onContactCalendarEventCreate.fire (event.calendarEntry);
-    }
-
-    else if (event is OREvent.ContactCalendarEntryUpdate) {
-      _onContactCalendarEventUpdate.fire (event.calendarEntry);
-    }
-
-    else if (event is OREvent.ContactCalendarEntryDelete) {
-      _onContactCalendarEventDelete.fire (event.calendarEntry);
-    }
-    else if (event is OREvent.ReceptionCalendarEntryCreate) {
-      _onReceptionCalendarEventCreate.fire (event.calendarEntry);
-    }
-
-    else if (event is OREvent.ReceptionCalendarEntryUpdate) {
-      _onReceptionCalendarEventUpdate.fire (event.calendarEntry);
-    }
-
-    else if (event is OREvent.ReceptionCalendarEntryDelete) {
-      _onReceptionCalendarEventDelete.fire (event.calendarEntry);
-    }
-    
-    else if (event is OREvent.ClientConnectionState) {
-      _clientConnectionState.fire (event.conn);
-    }
-
   }
 
   void _dispatchCall (OREvent.CallEvent event) {
