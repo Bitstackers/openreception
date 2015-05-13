@@ -106,6 +106,10 @@ class AgentInfo extends ViewWidget {
       _updateUserState(userStatus);
       _updateCounters();
     });
+
+    _notification.onClientConnectionStateChange.listen((Model.ClientConnectionState state) {
+      print('View.AgentInfo got Model.ClientConnectionState: ${state.asMap}');
+    });
   }
 
   /**
