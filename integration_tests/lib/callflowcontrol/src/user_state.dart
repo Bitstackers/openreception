@@ -16,7 +16,9 @@ abstract class UserState {
       .then((_) => caller.dial(receptionNumber))
       .then((_) => log.info ('Receptionist tries to hunt down the next call'))
       .then((_) => receptionist.huntNextCall()
-        .then((Model.Call call) => firstCall = call))
+        .then((Model.Call call) {
+           firstCall = call;
+        }))
       .then((_) => log.info ('Receptionist tries to orignate a new call to $callee'))
       .then((_) =>
         expect (receptionist.originate(callee.extension, 4, 2),

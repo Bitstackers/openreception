@@ -103,6 +103,15 @@ class Receptionist {
   }
 
   /**
+   * Receptionist state
+   */
+  String _state = Model.UserState.Unknown;
+  void set state (String newState) {
+    log.finest('$this changes state from $_state to $newState');
+    this._state = newState;
+  }
+  
+  /**
    * Dumps the current event stack of the Receptionist to log stream.
    */
   void dumpEventStack() {
@@ -321,7 +330,11 @@ class Receptionist {
       .then((Model.Call offeredCall) => selectedCall = offeredCall)
       .then((_) => log.info('$this attempts to pickup $selectedCall.'))
       .then((_) =>
-        this.pickup(selectedCall,waitForEvent: true)
+        this.pickup(selectedCall, waitForEvent: true)
+          .then((Model.Call pickedUpCall) {
+            log.info('$this got call $pickedUpCall');
+            return pickedUpCall;
+          })
           .catchError((error, stackTrace) {
             if (error is Storage.Conflict) { // Call is locked.
               return pickupAfterCallUnlock ();
@@ -375,6 +388,11 @@ class Receptionist {
       log.warning ('Null event received!');
       return;
     }
+    
+    if (event is Event.UserState) {
+      this.state = event.status.state;
+    }
+    
     this.eventStack.add(event);
   }
 
