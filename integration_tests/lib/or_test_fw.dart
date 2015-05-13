@@ -30,6 +30,10 @@ part 'support/support_tools.dart';
 part 'authserver/src/auth_service.dart';
 part 'authserver/tests.dart';
 
+/// Benchmark tests
+part 'benchmark/src/tests.dart';
+part 'benchmark/all_tests.dart';
+
 /// Callflow server tests
 part 'callflowcontrol/all_tests.dart';
 part 'callflowcontrol/src/call_hangup.dart';
