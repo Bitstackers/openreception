@@ -14,4 +14,3 @@
 part of openreceptionclient;
 
 final Uri CONFIGURATION_URL = Uri.parse('http://localhost:4080/');
-
