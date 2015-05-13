@@ -18,7 +18,6 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../service/service.dart' as Service;
 
 import '../dummies.dart';
 import '../enums.dart';
@@ -86,7 +85,7 @@ typedef void selectCallback(LIElement li);
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 
 /**
- * TODO (TL): Comment
+ * Base class for all UI model classes.
  */
 abstract class UIModel {
   final Keyboard _keyboard = new Keyboard();

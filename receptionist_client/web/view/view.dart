@@ -26,7 +26,6 @@ import '../service/service.dart' as Service;
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/event.dart' as OREvent;
 import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/util.dart' as ORUtil;
 
 part 'view-agent-info.dart';
@@ -62,7 +61,7 @@ part 'view-receptionistclient-disaster.dart';
 part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
 
-const String libraryName = "View";
+const String libraryName = "view";
 
 final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();

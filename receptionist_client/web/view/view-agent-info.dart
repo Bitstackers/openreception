@@ -106,13 +106,6 @@ class AgentInfo extends ViewWidget {
       _updateUserState(userStatus);
       _updateCounters();
     });
-
-//    _notificationSocket.eventStream.listen((OREvent.Event event) {
-//      if(event is OREvent.UserState) {
-//        _updateUserState(new Model.UserStatus.fromMap(event.asMap));
-//        _updateCounters();
-//      }
-//    });
   }
 
   /**

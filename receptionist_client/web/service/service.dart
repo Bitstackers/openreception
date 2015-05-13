@@ -25,4 +25,4 @@ import 'package:openreception_framework/service.dart' as ORService;
 
 part 'service-notification.dart';
 
-const String libraryName = "Service";
+const String libraryName = "service";
