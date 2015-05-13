@@ -370,9 +370,12 @@ abstract class Call {
           Model.UserStatusList.instance.activeCallsAt(user.ID),
           (Model.Call call) => call.park(user)).then((_) {
 
+        log.fine(Model.CallList.instance.get(callID).toJson());
+
         /// Request the specified call.
         Model.Call assignedCall =
             Model.CallList.instance.requestSpecificCall(callID, user);
+        assignedCall.assignedTo = user.ID;
 
         log.finest('Assigned call ${assignedCall.ID} to user with '
                    'ID ${user.ID}');
@@ -382,8 +385,6 @@ abstract class Call {
           (user.ID, ORModel.UserState.Receiving);
 
         return Controller.PBX.transfer(assignedCall, user.peer).then((_) {
-          assignedCall.assignedTo = user.ID;
-
           Model.UserStatusList.instance.update(
               user.ID,
               ORModel.UserState.Speaking);
