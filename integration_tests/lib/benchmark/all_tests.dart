@@ -2,7 +2,7 @@ part of or_test_fw;
 
 void runBenchmarkTests () {
   
-  group('NotificationService', () {
+  group('Benchmark', () {
     //TODO: Clean the sets on every run.
     Set<Receptionist> receptionists;
     Set<Customer> customers;
