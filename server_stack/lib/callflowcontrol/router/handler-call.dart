@@ -370,8 +370,6 @@ abstract class Call {
           Model.UserStatusList.instance.activeCallsAt(user.ID),
           (Model.Call call) => call.park(user)).then((_) {
 
-        log.fine(Model.CallList.instance.get(callID).toJson());
-
         /// Request the specified call.
         Model.Call assignedCall =
             Model.CallList.instance.requestSpecificCall(callID, user);
