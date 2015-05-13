@@ -36,7 +36,6 @@ class ReceptionistclientReady {
   MessageCompose                        _messageCompose;
   MyCallQueue                           _myCallQueue;
   Service.Notification                  _notification;
-  ORService.NotificationSocket          _notificationSocket;
   ReceptionAddresses                    _receptionAddresses;
   ReceptionAltNames                     _receptionAltNames;
   ReceptionBankInfo                     _receptionBankInfo;
@@ -68,7 +67,6 @@ class ReceptionistclientReady {
                                   Controller.User userController,
                                   Controller.Call callController,
                                   Service.Notification notification,
-                                  ORService.NotificationSocket notificationSocket,
                                   Map<String, String> langMap) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
@@ -78,7 +76,6 @@ class ReceptionistclientReady {
                                                          userController,
                                                          callController,
                                                          notification,
-                                                         notificationSocket,
                                                          langMap);
     } else {
       return _singleton;
@@ -95,7 +92,6 @@ class ReceptionistclientReady {
                                     this._userController,
                                     this._callController,
                                     this._notification,
-                                    this._notificationSocket,
                                     this._langMap) {
     _observers();
   }
@@ -131,7 +127,7 @@ class ReceptionistclientReady {
     _agentInfo = new AgentInfo
         (new Model.UIAgentInfo(querySelector('#agent-info')),
         _userController,
-        _notificationSocket);
+        _notification);
 
     _contactCalendar = new ContactCalendar
         (uiContactCalendar,

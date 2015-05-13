@@ -18,17 +18,17 @@ part of view;
  * currently logged in and how many are active/paused.
  */
 class AgentInfo extends ViewWidget {
-  final Logger                 _log = new Logger('$libraryName.AgentInfo');
-  ORService.NotificationSocket _notificationSocket;
-  final Model.UIAgentInfo      _ui;
-  final Controller.User        _user;
+  final Logger            _log = new Logger('$libraryName.AgentInfo');
+  Service.Notification    _notification;
+  final Model.UIAgentInfo _ui;
+  final Controller.User   _user;
 
   /**
    * Constructor.
    */
   AgentInfo(Model.UIModel this._ui,
             Controller.User this._user,
-            ORService.NotificationSocket this._notificationSocket) {
+            Service.Notification this._notification) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = AgentState.UNKNOWN;
@@ -102,12 +102,17 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltEnter.listen(_setIdle);
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
-    _notificationSocket.eventStream.listen((OREvent.Event event) {
-      if(event is OREvent.UserState) {
-        _updateUserState(new Model.UserStatus.fromMap(event.asMap));
-        _updateCounters();
-      }
+    _notification.onAgentStateChange.listen((Model.UserStatus userStatus) {
+      _updateUserState(userStatus);
+      _updateCounters();
     });
+
+//    _notificationSocket.eventStream.listen((OREvent.Event event) {
+//      if(event is OREvent.UserState) {
+//        _updateUserState(new Model.UserStatus.fromMap(event.asMap));
+//        _updateCounters();
+//      }
+//    });
   }
 
   /**

@@ -23,6 +23,10 @@ class Notification {
     _socket.eventStream.listen(_dispatch);
   }
 
+  /// Agent state change
+  Bus<Model.UserStatus> _agentStateChange = new Bus<Model.UserStatus>();
+  Stream<Model.UserStatus> get onAgentStateChange => _agentStateChange.stream;
+
   /// Call state change
   Bus<Model.Call> _callStateChange = new Bus<Model.Call>();
   Stream<Model.Call> get onAnyCallStateChange => _callStateChange.stream;
@@ -42,7 +46,9 @@ class Notification {
     else if(event is OREvent.CalendarChange) {
       this._calendarChange.fire(event);
     }
-    else {
+    else if(event is OREvent.UserState) {
+      _agentStateChange.fire(new Model.UserStatus.fromMap(event.asMap));
+    } else {
       log.severe('Failed to dispatch event ${event}');
     }
   }

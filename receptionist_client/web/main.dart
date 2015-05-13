@@ -42,7 +42,7 @@ main() async {
   ORModel.ClientConfiguration  clientConfig;
   Map<String, String>          language;
   Service.Notification         notification;
-  ORService.NotificationSocket notificationSocket;
+//  ORService.NotificationSocket notificationSocket;
   String                       token;
   ORTransport.WebSocketClient  webSocketClient;
 
@@ -80,9 +80,8 @@ main() async {
     if(token != null) {
       Model.User.currentUser = await getUser(clientConfig.authServerUri, token);
 
-      webSocketClient    = new ORTransport.WebSocketClient();
-      notificationSocket = new ORService.NotificationSocket(webSocketClient);
-      notification       = new Service.Notification(notificationSocket);
+      webSocketClient = new ORTransport.WebSocketClient();
+      notification    = new Service.Notification(new ORService.NotificationSocket(webSocketClient));
 
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
@@ -105,7 +104,6 @@ main() async {
                           controllerUser,
                           callFlowControl,
                           notification,
-                          notificationSocket,
                           language,
                           token);
 
@@ -222,7 +220,6 @@ void registerReadyView(Model.AppClientState appState,
                        Controller.User controllerUser,
                        ORService.CallFlowControl callFlowControl,
                        Service.Notification notification,
-                       ORService.NotificationSocket notificationSocket,
                        Map<String, String> langMap,
                        String token) {
   Model.UIReceptionistclientReady uiReady =
@@ -242,7 +239,6 @@ void registerReadyView(Model.AppClientState appState,
        controllerUser,
        new Controller.Call(callFlowControl),
        notification,
-       notificationSocket,
        langMap);
 }
 
