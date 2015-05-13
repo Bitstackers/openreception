@@ -141,6 +141,7 @@ void runCallFlowTests() {
    */
   group('CallFlowControl.Pickup', () {
     Receptionist receptionist = null;
+    Receptionist receptionist2 = null;
     Customer customer = null;
 
     setUp (() {
@@ -173,6 +174,33 @@ void runCallFlowTests() {
 
     test ('pickupLockedCall',
         () => Pickup.pickupLockedCall(receptionist, customer));
+
+    test ('pickupCallTwice',
+        () => Pickup.pickupCallTwice(receptionist, customer));
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      receptionist2 = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+          receptionist2.initialize(),
+         customer.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      ReceptionistPool.instance.release(receptionist2);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         receptionist2.teardown(),
+         customer.teardown()]);
+    });
+
+    test ('pickupAllocatedCall',
+        () => Pickup.pickupAllocatedCall(receptionist, receptionist2, customer));
 
   });
 

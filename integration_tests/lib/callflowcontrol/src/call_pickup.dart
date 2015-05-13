@@ -21,7 +21,39 @@ abstract class Pickup {
     }));
   }
 
-  
+  /**
+   * Tests the case where a receptionist tries to pick up a locked call.
+   */
+  static Future pickupCallTwice(Receptionist receptionist, Customer customer) {
+    int receptionID = 2;
+    String receptionNumber = '1234000$receptionID';
+
+    return Future.wait([])
+    .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
+    .then((_) => customer.dial (receptionNumber))
+    .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
+    .then((_) => receptionist.huntNextCall()
+      .then((Model.Call receivedCall) {
+        log.info ('Receptionist ${receptionist.user.name} got call $receivedCall.');
+        log.info ('Receptionist ${receptionist.user.name} retrieves the call information from the server.');
+        return expect (receptionist.pickup(receivedCall), throwsA(new isInstanceOf<Storage.ClientError>()));
+    }));
+  }
+
+  static Future pickupAllocatedCall(Receptionist receptionist, Receptionist receptionist2, Customer customer) {
+    int receptionID = 2;
+    String receptionNumber = '1234000$receptionID';
+
+    return Future.wait([])
+    .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
+    .then((_) => customer.dial (receptionNumber))
+    .then((_) => log.info ('Receptionist ${receptionist.user.name} hunts call.'))
+    .then((_) => receptionist.huntNextCall().then((Model.Call call) {
+      return expect (receptionist2.pickup(call), throwsA(new isInstanceOf<Storage.Forbidden>()));
+    }))
+    .whenComplete(() => log.info('Test done'));
+  }
+
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
     int receptionID = 2;
     String receptionNumber = '1234000$receptionID';
