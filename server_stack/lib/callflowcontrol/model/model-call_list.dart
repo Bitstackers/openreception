@@ -32,6 +32,9 @@ class CallList extends IterableBase<Call> {
 
   Iterator get iterator => this._map.values.iterator;
 
+  Bus<Call> _callStateChange = new Bus<Call>();
+  Stream<Call> get onCallStateChange => this._callStateChange.stream;
+
   static CallList instance = new CallList();
 
   List toJson() => this.toList(growable: false);
@@ -164,6 +167,7 @@ class CallList extends IterableBase<Call> {
       this.get(event.uniqueID).changeState(CallState.Hungup);
 
       log.finest('Hanging up ${event.uniqueID}');
+      this._callStateChange.fire(this.get(event.uniqueID));
       this.remove(event.uniqueID);
 
     } catch (error, stackTrace) {

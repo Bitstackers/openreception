@@ -126,14 +126,26 @@ abstract class Call {
         Model.UserStatusList.instance.update
           (user.ID, ORModel.UserState.HangingUp);
 
+        Completer<Model.Call> completer = new Completer<Model.Call>();
+        StreamSubscription<Model.Call> callHangup =
+          Model.CallList.instance.onCallStateChange.listen
+              ((Model.Call call) {
+                if (call.state == Model.CallState.Hungup && call.ID == callID) {
+                  completer.complete(call);
+                }
+              });
+
         return Controller.PBX.hangup(targetCall)
           .then((_) {
 
-            /// Update user state.
-            Model.UserStatusList.instance.update
-              (user.ID, ORModel.UserState.WrappingUp);
+            return completer.future.then((Model.Call hungupCall) {
+              /// Update user state.
+              Model.UserStatusList.instance.update
+                (user.ID, ORModel.UserState.WrappingUp);
 
-            return new shelf.Response.ok(JSON.encode(hangupCallIDOK(callID)));
+              return new shelf.Response.ok(JSON.encode(hungupCall));
+            }).timeout(new Duration(seconds : 3));
+
 
           })
           .catchError((error, stackTrace) {
@@ -189,27 +201,28 @@ abstract class Call {
       if (!validExtension(extension)) {
         return new shelf.Response(400, body : 'Invalid extension: $extension');
       }
+
+      /// Check user state. If the user is currently performing an action - or
+      /// has an active channel - deny the request.
+      String userState =
+          Model.UserStatusList.instance.getOrCreate(user.ID).state;
+
+      bool inTransition =
+        ORModel.UserState.TransitionStates.contains(userState);
+      bool hasChannels =
+        Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        return new shelf.Response(400, body : 'Phone is not ready. '
+          'state:{$userState}, hasChannels:{$hasChannels}');
+      }
+
       /// Park all the users calls.
       return Future.forEach
         (Model.CallList.instance.callsOf(user.ID).where((Model.Call call) =>
           call.state == Model.CallState.Speaking), (Model.Call call) =>
             call.park(user))
         .then((_) {
-
-          /// Check user state. If the user is currently performing an action - or
-          /// has an active channel - deny the request.
-          String userState =
-              Model.UserStatusList.instance.getOrCreate(user.ID).state;
-
-          bool inTransition =
-            ORModel.UserState.TransitionStates.contains(userState);
-          bool hasChannels =
-            Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-          if (inTransition || hasChannels) {
-            return new shelf.Response(400, body : 'Phone is not ready. '
-              'state:{$userState}, hasChannels:{$hasChannels}');
-          }
 
           /// Update the user state
           Model.UserStatusList.instance.update
@@ -315,6 +328,7 @@ abstract class Call {
 
   /**
    * Pickup a specific call.
+   * TODO: Wait with parking until the channelchek is done
    */
   static Future<shelf.Response> pickup(shelf.Request request) {
 
@@ -336,25 +350,25 @@ abstract class Call {
         return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
       }
 
+      /// Check user state. If the user is currently performing an action - or
+      /// has an active channel - deny the request.
+      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+
+      bool inTransition =
+          ORModel.UserState.TransitionStates.contains(userState);
+      bool hasChannels =
+          Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        return new shelf.Response
+            (400, body : 'Phone is not ready. '
+              'state:{$userState}, hasChannels:{$hasChannels}');
+      }
+
       /// Park all the users calls.
       return Future.forEach(
           Model.UserStatusList.instance.activeCallsAt(user.ID),
           (Model.Call call) => call.park(user)).then((_) {
-
-        /// Check user state. If the user is currently performing an action - or
-        /// has an active channel - deny the request.
-        String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
-
-        bool inTransition =
-            ORModel.UserState.TransitionStates.contains(userState);
-        bool hasChannels =
-            Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-        if (inTransition || hasChannels) {
-          return new shelf.Response
-              (400, body : 'Phone is not ready. '
-                'state:{$userState}, hasChannels:{$hasChannels}');
-        }
 
         /// Request the specified call.
         Model.Call assignedCall =
@@ -394,6 +408,11 @@ abstract class Call {
         else if (error is Model.NotFound) {
             return new shelf.Response.notFound(JSON.encode({
               'error': 'No calls available.'
+            }));
+        }
+        else if (error is Model.Forbidden) {
+          return new shelf.Response.forbidden(JSON.encode({
+              'error': 'Call already assigned.'
             }));
         } else {
           Model.UserStatusList.instance.update(
