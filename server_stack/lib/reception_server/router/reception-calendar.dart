@@ -55,7 +55,9 @@ abstract class ReceptionCalendar {
       
       return db.ReceptionCalendar.createEvent(newEntry.receptionID, newEntry)
         .then((Model.CalendarEntry savedEntry) {
-          Event.CalendarEvent event = new Event.ReceptionCalendarEntryCreate(savedEntry); 
+          Event.CalendarChange event = 
+            new Event.CalendarChange 
+              (newEntry.ID, Model.Contact.noID, newEntry.receptionID, Event.CalendarEntryState.CREATED); 
         
           Notification.broadcastEvent(event);
 
@@ -104,7 +106,9 @@ abstract class ReceptionCalendar {
             return new shelf.Response.notFound(JSON.encode({'error': 'not found'}));
           }
           
-          Event.CalendarEvent event = new Event.ReceptionCalendarEntryUpdate (entry); 
+          Event.CalendarChange event = 
+            new Event.CalendarChange 
+              (entry.ID, Model.Contact.noID, entry.receptionID, Event.CalendarEntryState.UPDATED); 
           
           Notification.broadcastEvent(event);
 
@@ -128,26 +132,23 @@ abstract class ReceptionCalendar {
 
   static Future<shelf.Response> remove(shelf.Request request) {
     final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
-    final int eventID = int.parse(shelf_route.getPathParameter(request, 'eid'));
+    final int entryID = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ReceptionCalendar.exists(receptionID: receptionID, eventID: eventID)
+    return db.ReceptionCalendar.exists(receptionID: receptionID, eventID: entryID)
       .then((bool eventExists) {
         if (!eventExists) {
           return new shelf.Response.notFound(JSON.encode({'error': 'not found'}));
         }
 
-        return db.ReceptionCalendar.removeEvent(receptionID, eventID).then((int changeCount) {
+        return db.ReceptionCalendar.removeEvent(receptionID, entryID).then((int changeCount) {
         if (changeCount == 0) {
           return new shelf.Response.notFound(JSON.encode({'error': 'not found'}));
         }
         
         //TODO: change the events so that they do not contain full event obects.
-        Model.CalendarEntry dummy = new Model.CalendarEntry.forReception(receptionID)
-          ..ID = eventID
-          ..beginsAt = new DateTime.fromMillisecondsSinceEpoch(0)
-          ..until = new DateTime.fromMillisecondsSinceEpoch(0)
-          ..content = '';
-        Event.CalendarEvent event = new Event.ReceptionCalendarEntryDelete (dummy); 
+        Event.CalendarChange event = 
+          new Event.CalendarChange 
+            (entryID, Model.Contact.noID, receptionID, Event.CalendarEntryState.DELETED); 
         
         Notification.broadcastEvent(event);
 
