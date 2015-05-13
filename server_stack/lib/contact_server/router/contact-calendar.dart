@@ -27,12 +27,12 @@ abstract class ContactCalendar {
 
       return db.ContactCalendar.createEvent(entry)
         .then((Model.CalendarEntry createdEvent) {
-          Event.CalendarEvent ce =
-              new Event.ContactCalendarEntryCreate (entry);
+          Event.CalendarChange changeEvent =
+              new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.CREATED);
 
           log.finest('Created event for ${contactID}@${receptionID}');
 
-          Notification.broadcastEvent (ce);
+          Notification.broadcastEvent (changeEvent);
 
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
@@ -74,9 +74,10 @@ abstract class ContactCalendar {
 
         return db.ContactCalendar.updateEvent(entry)
         .then((_) {
-          Event.CalendarEvent ce =
-              new Event.ContactCalendarEntryUpdate (entry);
-          Notification.broadcastEvent (ce);
+          Event.CalendarChange changeEvent =
+              new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.UPDATED);
+
+          Notification.broadcastEvent (changeEvent);
 
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
@@ -110,10 +111,10 @@ abstract class ContactCalendar {
                                      receptionID      : receptionID,
                                      eventID          : eventID)
           .then((_) {
-            Event.CalendarEvent ce =
-              new Event.ContactCalendarEntryDelete(entry);
+        Event.CalendarChange changeEvent =
+            new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.DELETED);
 
-            Notification.broadcastEvent (ce);
+            Notification.broadcastEvent (changeEvent);
             return new shelf.Response.ok(JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
           }).catchError((error, stackTrace) {
