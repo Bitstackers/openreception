@@ -26,16 +26,14 @@ abstract class ContactCalendar {
       }
 
       return db.ContactCalendar.createEvent(entry)
-        .then((_) {
+        .then((Model.CalendarEntry createdEvent) {
+          Event.CalendarChange changeEvent =
+              new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.CREATED);
+
           log.finest('Created event for ${contactID}@${receptionID}');
 
-          Notification.broadcast (
-              {'event'         : 'contactCalendarEventCreated',
-               'calendarEvent' :  {
-                 'contactID'   : contactID,
-                 'receptionID' : receptionID
-               }
-              });
+          Notification.broadcastEvent (changeEvent);
+
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
           log.severe(error, stackTrace);
@@ -73,15 +71,14 @@ abstract class ContactCalendar {
         if (!eventExists) {
           return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
         }
+
         return db.ContactCalendar.updateEvent(entry)
         .then((_) {
-          Notification.broadcast (
-              {'event'         : 'contactCalendarEventUpdated',
-               'calendarEvent' :  {
-                 'contactID'   : contactID,
-                 'receptionID' : receptionID
-               }
-              });
+          Event.CalendarChange changeEvent =
+              new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.UPDATED);
+
+          Notification.broadcastEvent (changeEvent);
+
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
           log.severe(error, stackTrace);
@@ -102,10 +99,11 @@ abstract class ContactCalendar {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ContactCalendar.exists(contactID        : contactID,
-                              receptionID      : receptionID,
-                              eventID          : eventID).then((bool eventExists) {
-      if (!eventExists) {
+    return db.ContactCalendar.getEvent
+        (contactID        : contactID,
+         receptionID      : receptionID,
+         eventID          : eventID).then((Model.CalendarEntry entry) {
+      if (entry == null) {
         return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
       }
 
@@ -113,13 +111,10 @@ abstract class ContactCalendar {
                                      receptionID      : receptionID,
                                      eventID          : eventID)
           .then((_) {
-        Notification.broadcast (
-            {'event'         : 'contactCalendarEventDeleted',
-             'calendarEvent' :  {
-               'contactID'   : contactID,
-               'receptionID' : receptionID
-             }
-            });
+        Event.CalendarChange changeEvent =
+            new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.DELETED);
+
+            Notification.broadcastEvent (changeEvent);
             return new shelf.Response.ok(JSON.encode({'status' : 'ok',
                                                 'description' : 'Event deleted'}));
           }).catchError((error, stackTrace) {

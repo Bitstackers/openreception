@@ -23,7 +23,9 @@ class Configuration {
   Uri        _logServerUri = Uri.parse('http://localhost:4000/');
   Uri        _authServerUri = Uri.parse('http://localhost:4000/');
   Uri        _notificationSocketUri = Uri.parse('ws://localhost:4200/notifications');
+  String     _systemLanguage = 'en';
 
+  String get systemLanguage => _systemLanguage;
   String get configfile    => _configfile;
   int    get httpport      => _httpport;
   Uri    get callFlowServerUri => _callFlowServerUri;
@@ -93,6 +95,10 @@ class Configuration {
 
       if(config.containsKey('authServerUri')) {
         _authServerUri = Uri.parse(config['authServerUri']);
+      }
+      
+      if(config.containsKey('systemLanguage')) {
+        _systemLanguage = config['systemLanguage'];
       }
 
     })

@@ -9,6 +9,7 @@ import 'database.dart' as db;
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart'   as Model;
+import 'package:openreception_framework/event.dart'   as Event;
 import 'package:openreception_framework/storage.dart'  as Storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
@@ -26,6 +27,10 @@ final Logger log = new Logger (libraryName);
 
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
+
+const Map corsHeaders = const
+  {'Access-Control-Allow-Origin': '*',
+   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
 
 void connectAuthService() {
   AuthService = new Service.Authentication
@@ -83,7 +88,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..delete('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.remove);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addHandler(router.handler);

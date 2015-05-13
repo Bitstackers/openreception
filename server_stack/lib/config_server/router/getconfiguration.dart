@@ -2,14 +2,13 @@ part of miscserver.router;
 
 final Map client_config =
   {
-      "standardGreeting"  : "Velkommen til...",
-
       "callFlowServerURI"     : config.callFlowServerUri.toString(),
       "receptionServerURI"    : config.receptionServerUri.toString(),
       "contactServerURI"      : config.contactServerUri.toString(),
       "messageServerURI"      : config.messageServerUri.toString(),
       "logServerURI"          : config.logServerUri.toString(),
       "authServerURI"         : config.authServerUri.toString(),
+      "systemLanguage"        : config.systemLanguage,
 
       "notificationSocket": {
           "interface": config.notificationSocketUri.toString(),

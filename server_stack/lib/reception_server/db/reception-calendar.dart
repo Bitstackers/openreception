@@ -5,6 +5,8 @@ part of receptionserver.database;
 
 abstract class ReceptionCalendar {
 
+  static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
+
   static Future<bool> exists({int receptionID, int eventID}) {
     String sql = '''
 SELECT 
@@ -34,34 +36,44 @@ LIMIT 1;
 
   }
 
-  //TODO: Return ID
-  static Future createEvent({int receptionID, Map event}) {
+  static Future<Model.CalendarEntry> createEvent(int receptionID, Model.CalendarEntry event) {
     String sql = '''
-START TRANSACTION;
-
-   INSERT INTO calendar_events 
-     ("id", "start", "stop", "message") 
-   VALUES 
-     (DEFAULT, @start, @end, @content);
-
-   INSERT INTO reception_calendar 
-     ("reception_id", "event_id")
-   VALUES
-     (@receptionID, lastval());
-COMMIT;''';
+WITH new_event AS(
+INSERT INTO calendar_events (start, stop, message)
+    VALUES (@start, @end, @content)
+    RETURNING id as event_id
+)
+INSERT INTO reception_calendar
+SELECT @receptionID, event_id
+FROM new_event
+RETURNING event_id
+''';
 
     Map parameters =
       {'receptionID'      : receptionID,
-        'start'            : Util.unixTimestampToDateTime(event['start']),
-        'end'              : Util.unixTimestampToDateTime(event['stop']),
-       'content'           : event['content']};
+        'start'            : event.start,
+        'end'              : event.stop,
+       'content'           : event.content};
 
-  return connection.execute(sql, parameters);
+  return connection.query(sql, parameters)
+    .then((Iterable rows) {
+      if(rows.isEmpty) {
+        //TODO: Log parameters SQL.
+        return new Future.error(new StateError('Failed to insert event'));
+      }
+
+      event.ID  = rows.first.event_id;
+
+      return event;
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new Future.error(error, stackTrace);
+    });
 
   }
 
 
-  static Future<int> updateEvent({int receptionID, int eventID, Map event}) {
+  static Future<int> updateEvent(int receptionID, Model.CalendarEntry event) {
     String sql = '''
    UPDATE calendar_events ce
       SET
@@ -74,16 +86,16 @@ COMMIT;''';
 
     Map parameters =
       {'receptionID'      : receptionID,
-       'eventID'          : eventID,
-       'start'            : Util.unixTimestampToDateTime(event['start']),
-       'end'              : Util.unixTimestampToDateTime(event['stop']),
-       'content'          : event['content']};
+       'eventID'          : event.ID,
+       'start'            : event.start,
+       'end'              : event.stop,
+       'content'          : event.content};
 
-  return connection.execute(sql, parameters).then((int rowsAffected) => rowsAffected);
+  return connection.execute(sql, parameters);
 
   }
 
-  static Future removeEvent({int receptionID, int eventID}) {
+  static Future removeEvent(int receptionID, int eventID) {
     String sql = '''
 START TRANSACTION;
   DELETE FROM 
@@ -141,26 +153,21 @@ LIMIT 1;
   });
   }
 
-  static Future<List<Model.CalendarEntry>> list(int receptionID) {
+  static Future<Iterable<Model.CalendarEntry>> list(int receptionID) {
     String sql = '''
     SELECT cal.id, cal.start, cal.stop, cal.message
     FROM calendar_events cal JOIN reception_calendar org ON cal.id = org.event_id
     WHERE org.reception_id = @receptionid''';
 
-    Map parameters = {'receptionid' : receptionID};
-    return connection.query(sql, parameters).then((rows) {
-      List<Model.CalendarEntry> entries = [];
-      for(var row in rows) {
-        Map event =
-          {'id'      : row.id,
-           'start'   : Util.dateTimeToUnixTimestamp(row.start),
-           'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
-           'content' : row.message,
-           'reception_id' : receptionID};
-        entries.add(new Model.CalendarEntry.fromMap(event));
-      }
+    Model.CalendarEntry rowToCalendarEvent(var row) =>
+      new Model.CalendarEntry.forReception(receptionID)
+        ..ID = row.id
+        ..beginsAt = row.start
+        ..until = row.stop
+        ..content = row.message;
 
-      return entries;
-    });
+    Map parameters = {'receptionid' : receptionID};
+    return connection.query(sql, parameters).then((Iterable rows) =>
+      rows.map(rowToCalendarEvent));
   }
 }

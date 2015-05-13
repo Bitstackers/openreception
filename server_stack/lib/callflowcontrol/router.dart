@@ -9,7 +9,7 @@ import 'configuration.dart';
 import 'controller/controller.dart' as Controller;
 import 'model/model.dart' as Model;
 
-import 'package:openreception_framework/storage.dart'  as Storage;
+import 'package:openreception_framework/storage.dart'  as ORStorage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -29,6 +29,10 @@ part 'router/handler-peer.dart';
 
 const String libraryName = "callflowcontrol.router";
 final Logger log = new Logger (libraryName);
+
+const Map corsHeaders = const
+  {'Access-Control-Allow-Origin': '*',
+   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
 
 Service.Authentication AuthService = null;
 Service.NotificationService Notification = null;
@@ -53,7 +57,7 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
   return AuthService.validate(token).then((_) => null)
   .catchError((error) {
     print (error);
-    if (error is Storage.NotFound) {
+    if (error is ORStorage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');
     }
     else if (error is IO.SocketException) {
@@ -80,10 +84,13 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
     ..get('/peer/list', Peer.list)
     ..get('/peer', Peer.list)
-//    ..get('/peer/{peerid}', Peer.get)
+    ..get('/peer/{peerid}', Peer.get)
     ..get('/userstate/{uid}', UserState.get)
+    //TODO: Dispatch to general UserState handler.
     ..post('/userstate/{uid}/idle', UserState.markIdle)
+    ..post('/userstate/{uid}/loggedOut', UserState.logOut)
     ..post('/userstate/{uid}/paused', UserState.markPaused)
+    ..post('/userstate/{uid}/keep-alive', UserState.keepAlive)
     ..get('/userstate', UserState.list)
     ..get('/call/{callid}', Call.get)
     ..get('/call', Call.list)
@@ -98,7 +105,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..post('/call/reception/{rid}/record', Call.recordSound);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addHandler(router.handler);
