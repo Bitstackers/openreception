@@ -20,6 +20,10 @@ abstract class Key {
   static const channel = 'channel';
   static const event = 'event';
   static const calendarEntry = 'calendarEntry';
+  static const CalendarChange = 'calendarChange';
+  static const ReceptionID = 'rid';
+  static const ContactID = 'cid';
+  static const EntryID = 'eid';
   static const ID = 'id';
   static const timestamp = 'timestamp';
   static const userID = 'userID';
@@ -111,6 +115,9 @@ abstract class Event {
         case Key.userState:
           return new UserState.fromMap(map);
 
+        case Key.CalendarChange:
+          return new CalendarChange.fromMap(map);
+          
         case Key.connectionState:
           return new ClientConnectionState.fromMap(map);
 

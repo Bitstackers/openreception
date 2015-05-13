@@ -19,6 +19,50 @@ abstract class CalendarEvent implements Event {
     this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }
 
+abstract class CalendarEntryState {
+  static const String CREATED = 'created';
+  static const String UPDATED = 'updated';
+  static const String DELETED = 'deleted';
+}
+
+class CalendarChange implements Event {
+
+  final DateTime timestamp;
+
+  String get eventName => 'CalendarChange';
+  
+  final int entryID;
+  final int contactID;
+  final int receptionID;
+  final String state;
+
+  CalendarChange (this.entryID, this.contactID, this.receptionID, this.state) :
+    this.timestamp = new DateTime.now();
+
+  Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
+
+  Map get asMap {
+    Map template = EventTemplate._rootElement(this);
+    
+    Map body = {Key.EntryID     : this.entryID,
+                Key.ReceptionID : this.receptionID,
+                Key.ContactID   : this.contactID,
+                Key.state       : this.state};
+    
+    template[Key.CalendarChange] = body;
+    
+    return template;
+  }
+      
+  CalendarChange.fromMap (Map map) :
+    this.entryID = map[Key.CalendarChange][Key.EntryID],
+    this.contactID = map[Key.CalendarChange][Key.ContactID],
+    this.receptionID = map[Key.CalendarChange][Key.ReceptionID],
+    this.state = map[Key.CalendarChange][Key.state],
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+}
+
 class ContactCalendarEntryCreate extends CalendarEvent {
 
   final String   eventName = Key.contactCalendarEntryCreate;
