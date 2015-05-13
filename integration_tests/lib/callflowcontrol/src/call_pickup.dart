@@ -3,7 +3,25 @@ part of or_test_fw;
 abstract class Pickup {
   static Logger log = new Logger('$libraryName.CallFlowControl.Pickup');
 
+  /**
+   * Tests the case where a receptionist tries to pick up a locked call.
+   */
+  static Future pickupLockedCall(Receptionist receptionist, Customer customer) {
+    int receptionID = 2;
+    String receptionNumber = '1234000$receptionID';
 
+    return Future.wait([])
+    .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
+    .then((_) => customer.dial (receptionNumber))
+    .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
+    .then((_) => receptionist.waitFor(eventType: Event.Key.callLock)
+      .then((Event.CallLock lockEvent) {
+        Model.Call lockedCall = lockEvent.call;
+        return expect (receptionist.pickup(lockedCall), throwsA(new isInstanceOf<Storage.Conflict>()));
+    }));
+  }
+
+  
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
     int receptionID = 2;
     String receptionNumber = '1234000$receptionID';
@@ -22,7 +40,6 @@ abstract class Pickup {
           expect (remoteCall.state, equals(Model.CallState.Speaking));
         });
     }));
-
   }
 
   static Future pickupSpecified(Receptionist receptionist, Customer customer) {
