@@ -319,10 +319,35 @@ class Receptionist {
       .then((_) =>
         this.pickup(selectedCall,waitForEvent: true)
           .catchError((error, stackTrace) {
-            if (error is Storage.NotFound) {
+            if (error is Storage.Conflict) { // Call is locked.
               return pickupAfterCallUnlock ();
-            } else {
+            } 
+            else if (error is Storage.NotFound) { // Call is hungup
+             
+              callEventsOnSelecteCall (Event.Event event) {
+                if (event is Event.CallEvent)
+                  return event.call.ID == selectedCall.ID;
+              }
+
+              log.info('$this waits for $selectedCall to hangup');
+              this.waitFor(eventType : Event.Key.callHangup,
+                           callID    : selectedCall.ID, 
+                           timeoutSeconds: 2)
+                .then((Event.CallHangup hangupEvent) {
+                this.eventStack.removeWhere(callEventsOnSelecteCall);
+                
+                // Reschedule the hunting.
+                return this.huntNextCall();
+              });
+              
+              
+              this.dumpEventStack();
+              throw new StateError('Expected call to hung up, but no hangup event was received.');
+              
+            }
+            else {
               log.severe('huntNextCall experienced an unexpected error.');
+              log.severe(error, stackTrace);
               return new Future.error(error, stackTrace);
             }
           }));
