@@ -16,6 +16,14 @@ class Forbidden implements Exception {
   String toString() => "Forbidden: $message";
 }
 
+class Busy implements Exception {
+
+  final String message;
+  const Busy([this.message = ""]);
+
+  String toString() => "Forbidden: $message";
+}
+
 class CallList extends IterableBase<Call> {
 
   static final Logger log = new Logger('${libraryName}.CallList');
@@ -113,7 +121,7 @@ class CallList extends IterableBase<Call> {
       throw new Forbidden(callID);
     } else if (call.locked) {
       log.fine('Uid ${user.ID} requested locked call $callID');
-      throw new NotFound(callID);
+      throw new Busy(callID);
     }
 
     return call;

@@ -325,13 +325,7 @@ abstract class Call {
           (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
 
-    bool aclCheck(ORModel.User user) => true;
-
     return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
-      if (!aclCheck(user)) {
-        return new shelf.Response.forbidden('Insufficient privileges.');
-      }
-
       try {
         if (!Model.PeerList.get(user.peer).registered) {
           return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
@@ -392,10 +386,15 @@ abstract class Call {
         });
 
       }).catchError((error, stackTrace) {
-        if (error is Model.NotFound) {
-          return new shelf.Response.notFound(JSON.encode({
-            'reason': 'No calls available.'
+        if (error is Model.Busy) {
+          return new shelf.Response(409, body : JSON.encode({
+            'error': 'Call not currently available.'
           }));
+        }
+        else if (error is Model.NotFound) {
+            return new shelf.Response.notFound(JSON.encode({
+              'error': 'No calls available.'
+            }));
         } else {
           Model.UserStatusList.instance.update(
               user.ID,
@@ -412,12 +411,12 @@ abstract class Call {
       } else {
 
         log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError();
+        return new shelf.Response.internalServerError(body : error.toString());
       }
     })
     .catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError();
+      return new shelf.Response.internalServerError(body : error.toString());
     });
   }
 
