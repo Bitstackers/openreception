@@ -8,7 +8,7 @@ abstract class Benchmark {
   static Future _receptionistRequestsCall (Receptionist r) {
     
     bool callAvailable(Model.Call call) => 
-      call.assignedTo == Model.User.nullID; 
+      call.assignedTo == Model.User.nullID && !call.locked; 
     
     return r.callFlowControl.callList().then((Iterable<Model.Call> calls) {
       if (calls.isEmpty) {
@@ -23,8 +23,19 @@ abstract class Benchmark {
       if (nextCall == null) {
         return new Future.delayed(new Duration (milliseconds : 100), () => _receptionistRequestsCall(r));
       } else {
-        return r.pickup(nextCall).then((_) => 
-          new Future.delayed(new Duration (milliseconds : 100), () => r.hangUp(nextCall)));
+        return r.pickup(nextCall)
+          .then((_) => 
+            new Future.delayed(new Duration (milliseconds : 100), () => r.hangUp(nextCall)))
+          .catchError((error, stackTrace) {
+            if (error is Storage.Conflict) {
+              log.info('$nextCall is already assigned, trying the next one.');
+              return new Future.delayed(new Duration (milliseconds : 100), () => r.hangUp(nextCall));
+            }
+            else if (error is Storage.NotFound) {
+              log.info('$nextCall is hung up, trying the next one.');
+              return new Future.delayed(new Duration (milliseconds : 100), () => r.hangUp(nextCall));
+            }
+        });
       }
     });
   }
@@ -34,7 +45,7 @@ abstract class Benchmark {
     
     // Each customer spawns a call
     return Future.forEach(customers, (Customer customer) {
-      return customer.dial('12340004');
+      return customer.dial('12340003');
     })
     .then((_) {
       log.info('Waiting for call list to fill');
