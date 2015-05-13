@@ -41,7 +41,6 @@ abstract class Benchmark {
       return Future.doWhile((() => new Future.delayed(new Duration (milliseconds : 100), 
           () => callWaiter.callFlowControl.callList()
           .then((Iterable<Model.Call> calls) {
-        print (calls.length);
         return calls.length != customers.length;}
       ))));
     })
