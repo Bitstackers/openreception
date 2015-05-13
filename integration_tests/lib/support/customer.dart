@@ -28,7 +28,12 @@ class Customer {
       .then((_) => this._phone.eventStream.listen(this._onPhoneEvent));
 
   teardown() => this._phone.teardown()
-      .then((_) => this.currentCall = null);
+      .then((_) => this.currentCall = null)
+      .catchError((error, stackTrace) {
+        log.severe('Potential race condition in teardown of Customer, ignoring as test error, but logging it');
+        log.severe(error, stackTrace);
+      });
+
 
   Future Wait_For_Dialtone() => this.waitForInboundCall();
 
