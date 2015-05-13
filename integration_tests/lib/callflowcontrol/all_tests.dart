@@ -170,6 +170,10 @@ void runCallFlowTests() {
 
     test ('pickupNonExistingCall',
         () => Pickup.pickupNonExistingCall(receptionist));
+
+    test ('pickupLockedCall',
+        () => Pickup.pickupLockedCall(receptionist, customer));
+
   });
 
   /**
