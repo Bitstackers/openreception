@@ -39,6 +39,7 @@ abstract class Transfer {
         .then((_) => log.info ('Receptionist ${receptionist} got parking confirmation of $inboundCall.'))
         .then((_) => log.info ('Receptionist ${receptionist} awaits phone disconnect.'))
         .then((_) => receptionist.waitForPhoneHangup())
+        .then((_) => receptionist.eventStack.clear())
         .then((_) => receptionist.originate(callee.extension, contactID, receptionID)
           .then((Model.Call call) {
             log.info('Outbound call: $call');
