@@ -202,6 +202,9 @@ void runCallFlowTests() {
     test ('pickupAllocatedCall',
         () => Pickup.pickupAllocatedCall(receptionist, receptionist2, customer));
 
+    test ('pickupRace',
+        () => Pickup.pickupRace(receptionist, receptionist2, customer));
+
   });
 
   /**

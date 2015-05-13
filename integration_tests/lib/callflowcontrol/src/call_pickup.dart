@@ -54,6 +54,58 @@ abstract class Pickup {
     .whenComplete(() => log.info('Test done'));
   }
 
+  static Future pickupRace(Receptionist receptionist, Receptionist receptionist2, Customer customer) {
+    int receptionID = 4;
+    String receptionNumber = '12340004';
+
+    Completer c1 = new Completer();
+    Completer c2 = new Completer();
+
+    return Future.wait([])
+    .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
+    .then((_) => customer.dial (receptionNumber))
+    .then((_) => log.info ('Receptionist ${receptionist.user.name} hunts call.'))
+    .then((_) => receptionist.waitForCall()
+      .then((Model.Call offeredCall) {
+        log.info ('Receptionist 1 and 2 both tries to get the call');
+        receptionist.pickup(offeredCall)
+        .then((Model.Call call) {
+          log.info('Receptionist 1 got call $call');
+          c1.complete();
+        })
+        .catchError((error, stackTrace) {
+          if (error is Storage.Forbidden) {
+            log.info('Receptionist 1 got call Forbidden');
+            c1.complete();
+          } else {
+            c1.completeError(error, stackTrace);
+          }
+        });
+
+      receptionist2.pickup(offeredCall)
+        .then((Model.Call call) {
+          log.info('Receptionist 2 got call $call');
+          c2.complete();
+        })
+        .catchError((error, stackTrace) {
+          if (error is Storage.Forbidden) {
+            log.info('Receptionist 2 got call Forbidden');
+            c2.complete();
+          } else {
+            c2.completeError(error, stackTrace);
+          }
+        });
+
+      return Future.wait([c1.future, c2.future])
+        .then((_) => receptionist.callFlowControl.get(offeredCall.ID)
+          .then((Model.Call pickedUpCall) {
+            expect([receptionist.user.ID, receptionist2.user.ID ]
+                   .contains(pickedUpCall.assignedTo), isTrue);
+          }));
+      }))
+    .whenComplete(() => log.info('Test done'));
+  }
+
   static Future pickupUnspecified(Receptionist receptionist, Customer customer) {
     int receptionID = 2;
     String receptionNumber = '1234000$receptionID';
