@@ -42,7 +42,6 @@ main() async {
   ORModel.ClientConfiguration  clientConfig;
   Map<String, String>          language;
   Service.Notification         notification;
-//  ORService.NotificationSocket notificationSocket;
   String                       token;
   ORTransport.WebSocketClient  webSocketClient;
 
