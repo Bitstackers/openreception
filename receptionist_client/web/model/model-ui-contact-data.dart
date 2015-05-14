@@ -209,7 +209,8 @@ class UIContactData extends UIModel {
          'Alt+1'      : (_) => selectFirstTelNum(),
          'Alt+2'      : (_) => selectFromIndex(1),
          'Alt+3'      : (_) => selectFromIndex(2),
-         'Alt+4'      : (_) => selectFromIndex(3)};
+         'Alt+4'      : (_) => selectFromIndex(3),
+         'Ctrl+Space' : _toggleTags};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
@@ -256,6 +257,7 @@ class UIContactData extends UIModel {
   void _toggleTags(_) {
     if(_tagsList.children.isNotEmpty) {
       _tagsDiv.classes.toggle('tags-hidden');
+      _showTagsSpan.classes.toggle('active');
     }
   }
 

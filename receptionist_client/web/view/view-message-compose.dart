@@ -25,7 +25,7 @@ class MessageCompose extends ViewWidget {
    */
   MessageCompose(Model.UIMessageCompose this._ui,
                  Controller.Destination this._myDestination) {
-    _ui.setHint('alt+b');
+    _ui.setHint('alt+b, ctrl+space');
     _observers();
   }
 

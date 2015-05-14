@@ -50,6 +50,7 @@ class UIMessageCompose extends UIModel {
   TextAreaElement      get _messageTextarea    => _root.querySelector('.message textarea');
   InputElement         get _pleaseCallInput    => _root.querySelector('.checks .please-call');
   DivElement           get _recipientsDiv      => _root.querySelector('.recipients');
+  OListElement         get _recipientsList     => _root.querySelector('.recipients .generic-widget-list');
   ButtonElement        get _saveButton         => _root.querySelector('.buttons .save');
   ButtonElement        get _sendButton         => _root.querySelector('.buttons .send');
   SpanElement          get _showRecipientsSpan => _root.querySelector('.show-recipients');
@@ -96,8 +97,7 @@ class UIMessageCompose extends UIModel {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _showRecipientsSpan.onMouseOver.listen(_toggleRecipients);
-    _showRecipientsSpan.onMouseOut .listen(_toggleRecipients);
+    _showRecipientsSpan.onClick.listen(_toggleRecipients);
 
     _callerNameInput.onInput.listen(_toggleButtons);
     _messageTextarea.onInput.listen(_toggleButtons);
@@ -107,6 +107,10 @@ class UIMessageCompose extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
+    final Map<String, EventListener> bindings =
+        {'Ctrl+Space' : _toggleRecipients};
+
+    _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
     _hotKeys.registerKeys(_keyboard, _defaultKeyMap());
   }
 
@@ -128,6 +132,9 @@ class UIMessageCompose extends UIModel {
    * Show/hide the recipients list.
    */
   void _toggleRecipients(_) {
-    _recipientsDiv.classes.toggle('recipients-hidden');
+    if(_recipientsList.children.isNotEmpty) {
+      _recipientsDiv.classes.toggle('recipients-hidden');
+      _showRecipientsSpan.classes.toggle('active');
+    }
   }
 }
