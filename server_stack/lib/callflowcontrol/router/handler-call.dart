@@ -297,6 +297,21 @@ abstract class Call {
         return new shelf.Response(400, body : 'Invalid extension: $extension');
       }
 
+      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+
+      bool inTransition =
+          ORModel.UserState.TransitionStates.contains(userState);
+      bool hasChannels =
+          Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        return new shelf.Response(400, body : 'Phone is not ready. '
+          'state:{$userState}, hasChannels:{$hasChannels}');
+      }
+
+      /// Update the user state
+      Model.UserStatusList.instance.update
+        (user.ID, ORModel.UserState.Dialing);
 
       bool isSpeaking (Model.Call call) =>
           call.state == Model.CallState.Speaking;
@@ -310,23 +325,7 @@ abstract class Call {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
-        String userState = Model.UserStatusList.instance.get(user.ID).state;
         Future<Model.Call> outboundCall;
-
-        bool inTransition =
-            ORModel.UserState.TransitionStates.contains(userState);
-        bool hasChannels =
-            Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-        if (inTransition || hasChannels) {
-          return new shelf.Response(400, body : 'Phone is not ready. '
-            'state:{$userState}, hasChannels:{$hasChannels}');
-        }
-
-        /// Update the user state
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Dialing);
 
         return Controller.PBX.createAgentChannel(user)
           .then((String uuid) {
@@ -359,12 +358,14 @@ abstract class Call {
                 return new shelf.Response.ok(JSON.encode(call));
               })
               .catchError((error, stackTrace) {
+                log.severe(error, stackTrace);
                 Model.UserStatusList.instance.update(
                     user.ID,
                     ORModel.UserState.Unknown);
               });
             })
             .catchError((error, stackTrace) {
+              log.severe(error, stackTrace);
               Model.UserStatusList.instance.update(
                   user.ID,
                   ORModel.UserState.Unknown);
@@ -372,6 +373,7 @@ abstract class Call {
             });
           })
           .catchError((error, stackTrace) {
+            log.severe(error, stackTrace);
             Model.UserStatusList.instance.update(
                 user.ID,
                 ORModel.UserState.Unknown);
