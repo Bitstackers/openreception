@@ -37,6 +37,7 @@ abstract class Key {
   static const String contactDataHeader               = 'contact-data-header';
   static const String contactDataRelations            = 'contact-data-relations';
   static const String contactDataResponsibility       = 'contact-data-responsibility';
+  static const String contactDataShowTags             = 'contact-data-show-tags';
   static const String contactDataTelephoneNumbers     = 'contact-data-telephone-numbers';
   static const String contactDataTitle                = 'contact-data-title';
   static const String contactDataWorkHours            = 'contact-data-work-hours';
@@ -129,6 +130,7 @@ Map<String, String> da =
    Key.contactDataHeader              : 'Kontakt datablad',
    Key.contactDataRelations           : 'Relationer',
    Key.contactDataResponsibility      : 'Ansvarsområde',
+   Key.contactDataShowTags            : 'Tags',
    Key.contactDataTelephoneNumbers    : 'Telefonnumre',
    Key.contactDataTitle               : 'Titel',
    Key.contactDataWorkHours           : 'Arbejdstider',
@@ -220,6 +222,7 @@ Map<String, String> en =
    Key.contactDataHeader              : 'Contact data',
    Key.contactDataRelations           : 'Relations',
    Key.contactDataResponsibility      : 'Responsibility',
+   Key.contactDataShowTags            : 'Tags',
    Key.contactDataTelephoneNumbers    : 'Telephone numbers',
    Key.contactDataTitle               : 'Title',
    Key.contactDataWorkHours           : 'Work hours',
