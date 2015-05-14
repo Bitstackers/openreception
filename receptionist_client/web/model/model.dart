@@ -212,7 +212,7 @@ abstract class UIModel {
   /**
    * Return the headerExtra element.
    */
-  SpanElement get _headerExtra => _root.querySelector('h4 > span + span');
+  SpanElement get _headerExtra => _root.querySelector('h4 span.extra-header');
 
   /**
    * Set the widgets extra header. This one can be used for a bit of extra data
