@@ -262,7 +262,8 @@ class ReceptionistclientReady {
 
     _welcomeMessage = new WelcomeMessage
         (new Model.UIWelcomeMessage(querySelector('#welcome-message')),
-         uiReceptionSelector);
+         uiReceptionSelector,
+         _langMap);
 
     _ui.visible = true;
 

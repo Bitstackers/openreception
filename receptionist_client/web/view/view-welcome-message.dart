@@ -17,6 +17,7 @@ part of view;
  * TODO (TL): Comment
  */
 class WelcomeMessage extends ViewWidget {
+  final Map<String, String>       _langMap;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIWelcomeMessage    _ui;
 
@@ -24,7 +25,8 @@ class WelcomeMessage extends ViewWidget {
    * Constructor.
    */
   WelcomeMessage(Model.UIModel this._ui,
-                 Model.UIReceptionSelector this._receptionSelector) {
+                 Model.UIReceptionSelector this._receptionSelector,
+                 Map<String, String> this._langMap) {
     _observers();
   }
 
@@ -47,6 +49,7 @@ class WelcomeMessage extends ViewWidget {
   void render(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
+      _ui.greeting = _langMap[Key.standardGreeting];
     } else {
       _ui.greeting = reception.greeting;
     }
