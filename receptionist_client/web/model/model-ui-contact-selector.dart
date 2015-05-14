@@ -66,13 +66,15 @@ class UIContactSelector extends UIModel {
 
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
-      item.tags.addAll(item.fullName.split(' '));
+      final List<String> tags = new List<String>()
+          ..addAll(item.tags)
+          ..addAll(item.fullName.split(' '));
 
       list.add(new LIElement()
                  ..dataset['initials']      = initials
                  ..dataset['firstinitial']  = initials.substring(0,1)
                  ..dataset['otherinitials'] = initials.substring(1)
-                 ..dataset['tags']          = item.tags.join(',').toLowerCase()
+                 ..dataset['tags']          = tags.join(',').toLowerCase()
                  ..dataset['object']        = JSON.encode(item)
                  ..text = item.fullName);
     });
@@ -111,7 +113,7 @@ class UIContactSelector extends UIModel {
           li.classes.toggle('hide', true);
         }
       });
-    } else if(trimmedFilter.length ==1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
+    } else if(trimmedFilter.length == 1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
       /// Pattern: one or more spaces followed by one non-space character
       _list.classes.toggle('zebra', false);
 
