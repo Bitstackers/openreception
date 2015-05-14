@@ -99,6 +99,7 @@ class ContactData extends ViewWidget {
       _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
       _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
       _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
+      _ui.tags = contact.tags;
       _ui.telephoneNumbers = [new TelNum('45454545', 'some number', false),
                               new TelNum('23456768', 'secret stuff', true),
                               new TelNum('60431992', 'personal cell', false),

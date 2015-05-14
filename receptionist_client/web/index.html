@@ -1429,6 +1429,10 @@
                     text-decoration: underline;
                   }
 
+                  #contact-data .generic-widget-headline .show-tags:active {
+                    font-weight: normal;
+                  }
+
                   #contact-data .generic-widget-headline .show-tags:hover {
                     cursor: pointer;
                   }
@@ -1438,10 +1442,12 @@
                     top: 1.5%;
                     left: 49%;
                     width: 50%;
+                    max-height: 98%;
                     background-color: #f7f7f7;
                     box-shadow: 0.2em 0.2em 0.2em #888;
                     border: solid 1px #aaa;
                     z-index: 2;
+                    overflow: auto;
                   }
 
                   #contact-data .tags-hidden {
@@ -1463,11 +1469,7 @@
                 </h4>
                 <div class="generic-widget-body" style="display: flex; flex-direction: row;">
                   <div class="tags padding03 tags-hidden">
-                    <ol class="generic-widget-list">
-                      <li>Thomas Løcke</li>
-                      <li>Trine Løcke</li>
-                      <li>Steen Løcke</li>
-                    </ol>
+                    <ol class="generic-widget-list"></ol>
                   </div>
                   <div class="column">
                     <div class="cell">

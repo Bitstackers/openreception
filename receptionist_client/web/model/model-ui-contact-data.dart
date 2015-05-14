@@ -43,6 +43,7 @@ class UIContactData extends UIModel {
   OListElement get _responsibilityList => _root.querySelector('.responsibility');
   SpanElement  get _showTagsSpan       => _root.querySelector('.show-tags');
   DivElement   get _tagsDiv            => _root.querySelector('.tags');
+  OListElement get _tagsList           => _root.querySelector('.tags .generic-widget-list');
   OListElement get _telNumList         => _root.querySelector('.telephone-number');
   OListElement get _titleList          => _root.querySelector('.title');
   OListElement get _workHoursList      => _root.querySelector('.work-hours');
@@ -69,6 +70,7 @@ class UIContactData extends UIModel {
     _emailAddressesList.children.clear();
     _relationsList.children.clear();
     _responsibilityList.children.clear();
+    _tagsList.children.clear();
     _telNumList.children.clear();
     _titleList.children.clear();
     _workHoursList.children.clear();
@@ -118,8 +120,7 @@ class UIContactData extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen(_selectFromClick);
 
-    _showTagsSpan.onMouseOver.listen(_toggleTags);
-    _showTagsSpan.onMouseOut .listen(_toggleTags);
+    _showTagsSpan.onClick.listen(_toggleTags);
 
     ///
     ///
@@ -214,6 +215,11 @@ class UIContactData extends UIModel {
   }
 
   /**
+   * Add [items] to the tags list.
+   */
+  set tags(List<String> items) => _populateList(_tagsList, items);
+
+  /**
    * Add [items] to the telephone number list.
    */
   set telephoneNumbers(List<TelNum> items) {
@@ -248,7 +254,9 @@ class UIContactData extends UIModel {
    * Show/hide the tags.
    */
   void _toggleTags(_) {
-    _tagsDiv.classes.toggle('tags-hidden');
+    if(_tagsList.children.isNotEmpty) {
+      _tagsDiv.classes.toggle('tags-hidden');
+    }
   }
 
   /**
