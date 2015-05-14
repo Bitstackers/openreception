@@ -246,6 +246,6 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.channelList(this._host);
         uri = appendToken(uri, this._token);
 
-    return this._backed.get (uri).then((String response) => (JSON.decode(response)['channels']));
+    return this._backed.get (uri).then((String response) => (JSON.decode(response)));
   }
 }
