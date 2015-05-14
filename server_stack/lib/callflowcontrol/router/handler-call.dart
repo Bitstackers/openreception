@@ -127,8 +127,8 @@ abstract class Call {
           (user.ID, ORModel.UserState.HangingUp);
 
         Completer<Model.Call> completer = new Completer<Model.Call>();
-        StreamSubscription<Model.Call> callHangup =
-          Model.CallList.instance.onCallStateChange.listen
+
+        Model.CallList.instance.onCallStateChange.listen
               ((Model.Call call) {
                 if (call.state == Model.CallState.Hungup && call.ID == callID) {
                   completer.complete(call);
