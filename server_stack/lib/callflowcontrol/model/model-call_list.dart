@@ -161,22 +161,11 @@ class CallList extends IterableBase<Call> {
   }
 
   void _handleChannelDestroy (ESL.Event event) {
-    try {
-      /// Remove the call assignment from user->call and call->user
-      this.get(event.uniqueID).release();
+    if (this.containsID(event.uniqueID)) {
       this.get(event.uniqueID).changeState(CallState.Hungup);
-
       log.finest('Hanging up ${event.uniqueID}');
       this._callStateChange.fire(this.get(event.uniqueID));
       this.remove(event.uniqueID);
-
-    } catch (error, stackTrace) {
-      if (error is NotFound) {
-        log.warning('Tried to hang up non-existing call ${event.uniqueID}.'
-                    'Call list may be inconsistent - consider reloading.');
-      } else {
-        log.severe(error, stackTrace);
-      }
     }
   }
 

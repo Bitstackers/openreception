@@ -22,5 +22,4 @@ abstract class OriginationRequest {
     log.finest('Confirming origination request for ID ${sourceCall.ID}');
     _storage.remove(sourceCall.ID);
     }
-
 }

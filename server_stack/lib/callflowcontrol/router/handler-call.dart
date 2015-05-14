@@ -258,10 +258,135 @@ abstract class Call {
     })
     .catchError(
         (error, stackTrace) {
-
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError();
     });
+  }
+
+  /**
+   * Originate a new call by first creating a parked phone channel to the
+   * agent and then perform the orgination in the background.
+   */
+  static Future<shelf.Response> originateViaPark(shelf.Request request) {
+
+    final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    final int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    String extension = shelf_route.getPathParameter(request, 'extension');
+    final String host = shelf_route.getPathParameter(request, 'host');
+    final String port = shelf_route.getPathParameter(request, 'port');
+
+    if (host != null) {
+      extension = '$extension@$host:$port';
+    }
+
+    log.finest('Originating to ${extension} in context '
+               '${contactID}@${receptionID}');
+
+    /// Any authenticated user is allowed to originate new calls.
+    bool aclCheck(ORModel.User user) => true;
+
+    bool validExtension(String extension) =>
+        extension != null && extension.length > 1;
+
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
+      if (!aclCheck(user)) {
+        return new shelf.Response.forbidden ('Insufficient privileges.');
+      }
+
+      if (!validExtension(extension)) {
+        return new shelf.Response(400, body : 'Invalid extension: $extension');
+      }
+
+      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+
+      bool inTransition =
+          ORModel.UserState.TransitionStates.contains(userState);
+      bool hasChannels =
+          Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        return new shelf.Response(400, body : 'Phone is not ready. '
+          'state:{$userState}, hasChannels:{$hasChannels}');
+      }
+
+      /// Update the user state
+      Model.UserStatusList.instance.update
+        (user.ID, ORModel.UserState.Dialing);
+
+      bool isSpeaking (Model.Call call) =>
+          call.state == Model.CallState.Speaking;
+
+      Future parkIt (Model.Call call) => call.park(user);
+
+      /// Park all the users calls.
+      return Future.forEach
+        (Model.CallList.instance.callsOf(user.ID).where(isSpeaking), parkIt)
+        .then((_) {
+
+        /// Check user state. If the user is currently performing an action - or
+        /// has an active channel - deny the request.
+        Future<Model.Call> outboundCall;
+
+        return Controller.PBX.createAgentChannel(user)
+          .then((String uuid) {
+          bool outboundCallWithUuid (ESL.Event event) {
+            return event.eventName == 'CHANNEL_ORIGINATE' &&
+                event.channel.fields['Other-Leg-Unique-ID'] == uuid;
+          }
+
+          outboundCall =
+              Model.PBXClient.instance.eventStream.firstWhere
+              (outboundCallWithUuid, defaultValue : () => null)
+              .then((ESL.Event event) =>
+                Model.CallList.instance.get(event.uniqueID));
+          outboundCall.timeout(new Duration (seconds : 10));
+
+          /// Perform the origination via the PBX.
+          return Controller.PBX.transferUUIDToExtension(uuid, extension, user)
+            .then((_) {
+              /// Update the user state
+              Model.UserStatusList.instance.update(
+                user.ID,
+                ORModel.UserState.Speaking);
+
+              return outboundCall
+                .then((Model.Call call) {
+                call.assignedTo = user.ID;
+                call.receptionID = receptionID;
+                call.contactID = contactID;
+
+                return new shelf.Response.ok(JSON.encode(call));
+              })
+              .catchError((error, stackTrace) {
+                log.severe(error, stackTrace);
+                Model.UserStatusList.instance.update(
+                    user.ID,
+                    ORModel.UserState.Unknown);
+              });
+            })
+            .catchError((error, stackTrace) {
+              log.severe(error, stackTrace);
+              Model.UserStatusList.instance.update(
+                  user.ID,
+                  ORModel.UserState.Unknown);
+
+            });
+          })
+          .catchError((error, stackTrace) {
+            log.severe(error, stackTrace);
+            Model.UserStatusList.instance.update(
+                user.ID,
+                ORModel.UserState.Unknown);
+        });
+        })
+        .catchError((error, stackTrace) {
+          Model.UserStatusList.instance.update
+            (user.ID, ORModel.UserState.Unknown);
+
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
+        });
+      });
   }
 
   /**
@@ -300,7 +425,12 @@ abstract class Call {
             user.ID,
             ORModel.UserState.HandlingOffHook);
 
-        return new shelf.Response.ok(JSON.encode(parkOK(call)));
+
+        String reply = JSON.encode(parkOK(call));
+
+        log.finest('Parked call ${reply}');
+
+        return new shelf.Response.ok(reply);
 
       }).catchError((error, stackTrace) {
         Model.UserStatusList.instance.update(
