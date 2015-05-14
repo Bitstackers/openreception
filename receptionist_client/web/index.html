@@ -977,14 +977,22 @@
                     cursor: pointer;
                   }
 
+                  #message-compose .generic-widget-headline .show-recipients:active,
+                  #message-compose .generic-widget-headline .show-recipients.active {
+                    font-weight: normal;
+                  }
+
                   #message-compose .recipients {
                     position: absolute;
                     top: 1.5%;
                     left: 49%;
                     width: 50%;
+                    max-height: 98%;
                     background-color: #f7f7f7;
                     box-shadow: 0.2em 0.2em 0.2em #888;
                     border: solid 1px #aaa;
+                    z-index: 2;
+                    overflow: auto;
                   }
 
                   #message-compose .recipients-hidden {
@@ -1429,7 +1437,8 @@
                     text-decoration: underline;
                   }
 
-                  #contact-data .generic-widget-headline .show-tags:active {
+                  #contact-data .generic-widget-headline .show-tags:active,
+                  #contact-data .generic-widget-headline .show-tags.active {
                     font-weight: normal;
                   }
 
