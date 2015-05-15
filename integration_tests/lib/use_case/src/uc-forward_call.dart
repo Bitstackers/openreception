@@ -81,13 +81,16 @@ abstract class ForwardCall {
     });
   }
 
-  static Future Receptionist_Places_Call(String extension) {
+  static Future<Model.Call> Receptionist_Places_Call(String extension) {
     log.finest("Receptionist places call to $extension.");
     receptionist.eventStack.clear();
 
     return receptionist.originate(extension, contactID, receptionID)
-      .then((_) => log.finest("Call-Flow-Control has accepted request to place call."))
-      .then((_) => receptionist.waitForInboundCall())
+      .then((Model.Call newCall) {
+        log.finest("Call-Flow-Control has accepted request to place call.");
+        return receptionist.waitForInboundCall()
+          .then((_) => newCall);
+      })
     .catchError((error, stackTrace) {
       log.severe("Receptionist failed to originate call to $extension.");
       log.severe(error, stackTrace);
@@ -249,10 +252,10 @@ abstract class ForwardCall {
     return receptionist.pickup(call);
   }
 
-  static Future<Model.Call> Receptionist_Gets_Pickup() {
+  static Future<Model.Call> Receptionist_Gets_Pickup(Model.Call call) {
     step('Receptionist expects pickup');
 
-    return receptionist.waitFor(eventType: 'call_pickup')
+    return receptionist.waitFor(eventType: 'call_pickup', callID:  call)
         .then((Event.CallPickup pickupEvent) => pickupEvent.call);
   }
 
@@ -284,15 +287,15 @@ abstract class ForwardCall {
       .then((_) => Preconditions('12340003')
         .then((Model.Call call) => inboundCall = call))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
-      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => Receptionist_Places_Call (callee.extension)
+        .then((Model.Call placedCall) => outboundCall = placedCall))
       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
       .then((_) => Callee_Receives_Call ())
       .then((_) => step ("FreeSWITCH         ->> FreeSWITCH        [forbind opkald og telefon-N]"))
       .then((_) => Receptionist_Hears_Dialtone ())
       .then((_) => step ("Callee phone rings."))
       .then((_) => Callee_Accepts_Call ())
-      .then((_) => Receptionist_Gets_Pickup ()
-        .then((Model.Call placedCall) => outboundCall = placedCall))
+      .then((_) => Receptionist_Gets_Pickup (outboundCall))
       .then((_) => step ("=== loop ==="))
       .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
       .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
@@ -322,7 +325,8 @@ abstract class ForwardCall {
       .then((_) => Preconditions('12340003')
         .then((Model.Call call) => inboundCall = call))
       .then((_) => step("Receptionist-N ->> Klient-N [genvej: ring-til-primaert-nummer]"))
-      .then((_) => Receptionist_Places_Call(callee.extension))
+      .then((_) => Receptionist_Places_Call(callee.extension)
+        .then((Model.Call placedCall) => outboundCall = placedCall))
       .then((_) => step("Call-Flow-Control ->> FreeSWITCH [ring-op: telefon-N, nummer]"))
       .then((_) => Callee_Receives_Call())
       .then((_) => step("FreeSWITCH ->> FreeSWITCH [forbind opkald og telefon-N]"))
@@ -338,8 +342,7 @@ abstract class ForwardCall {
       .then((_) => step("Telefon-N ->> Receptionist-N [snak]"))
       .then((_) => step("=== end loop ==="))
       .then((_) => step("Receptionist-N ->> Klient-N [genvej: afslut-udgaaende-samtale]"))
-      .then((_) => Receptionist_Gets_Pickup ()
-        .then((Model.Call placedCall) => outboundCall = placedCall))
+      .then((_) => Receptionist_Gets_Pickup (outboundCall))
       .then((_) => Receptionist_Hangs_Up(outboundCall))
       .then((_) => step("Call-Flow-Control ->> FreeSWITCH [afslut telefon-N's udgaaende samtale]"))
       .then((_) => Callee_Receives_Hang_Up())
@@ -402,15 +405,15 @@ abstract class ForwardCall {
        .then((_) => Preconditions('12340003')
          .then((Model.Call call) => inboundCall = call))
        .then((_) => Preconditions('12340003'))
-       .then((_) => Receptionist_Places_Call (callee.extension))
+       .then((_) => Receptionist_Places_Call (callee.extension)
+         .then((Model.Call placedCall) => outboundCall = placedCall))
        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
        .then((_) => Callee_Receives_Call ())
        .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
        .then((_) => Receptionist_Hears_Dialtone ())
        .then((_) => step ("Callee phone rings."))
        .then((_) => Callee_Accepts_Call ())
-       .then((_) => Receptionist_Gets_Pickup ()
-        .then((Model.Call placedCall) => outboundCall = placedCall))
+       .then((_) => Receptionist_Gets_Pickup (outboundCall))
        .then((_) => step ("=== loop ==="))
        .then((_) => Receptionist_Forwards_Call (inboundCall, outboundCall))
        .then((_) => step ("Klient-N           ->> Klient-N          [ny tilstand: ledig]"))
@@ -431,15 +434,15 @@ abstract class ForwardCall {
        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
        .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
        .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
-       .then((_) => Receptionist_Places_Call (callee.extension))
+       .then((_) => Receptionist_Places_Call (callee.extension)
+         .then((Model.Call placedCall) => outboundCall = placedCall))
        .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: nummer, telefon-N]"))
        .then((_) => Callee_Receives_Call ())
        .then((_) => step ("FreeSWITCH         ->  FreeSWITCH        [forbind opkald med telefon-N]"))
        .then((_) => Receptionist_Hears_Dialtone ())
        .then((_) => step ("Callee phone rings."))
        .then((_) => Callee_Accepts_Call ())
-       .then((_) => Receptionist_Gets_Pickup ()
-        .then((Model.Call placedCall) => outboundCall = placedCall))
+       .then((_) => Receptionist_Gets_Pickup (outboundCall))
        .then((_) => step ("=== loop ==="))
        .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
        .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
@@ -515,7 +518,8 @@ abstract class ForwardCall {
       .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
-      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => Receptionist_Places_Call (callee.extension)
+        .then((Model.Call placedCall) => outboundCall = placedCall))
       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
       .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
       .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
@@ -525,8 +529,7 @@ abstract class ForwardCall {
       .then((_) => step ("Callee phone rings."))
       .then((_) => Callee_Receives_Call())
       .then((_) => Callee_Accepts_Call ())
-       .then((_) => Receptionist_Gets_Pickup ()
-        .then((Model.Call placedCall) => outboundCall = placedCall))
+       .then((_) => Receptionist_Gets_Pickup (outboundCall))
       .then((_) => step ("=== loop ==="))
       .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
       .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
@@ -559,7 +562,8 @@ abstract class ForwardCall {
       .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-op]"))
-      .then((_) => Receptionist_Places_Call (callee.extension))
+      .then((_) => Receptionist_Places_Call (callee.extension)
+        .then((Model.Call placedCall) => outboundCall = placedCall))
       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [samtale: telefon-N, <nummer>]"))
       .then((_) => step ("FreeSWITCH         ->> Telefon-N         [SIP: opkald]"))
       .then((_) => step ("FreeSWITCH         ->> Medarbejder       [SIP: opkald]"))
@@ -569,8 +573,7 @@ abstract class ForwardCall {
       .then((_) => step ("Callee phone rings."))
       .then((_) => Callee_Receives_Call())
       .then((_) => Callee_Accepts_Call ())
-       .then((_) => Receptionist_Gets_Pickup ()
-        .then((Model.Call placedCall) => outboundCall = placedCall))
+       .then((_) => Receptionist_Gets_Pickup (outboundCall))
       .then((_) => step ("=== loop ==="))
       .then((_) => step ("Receptionist-N     ->> Telefon-N         [snak]"))
       .then((_) => step ("Telefon-N          ->> FreeSWITCH        [SIP: lyd]"))
