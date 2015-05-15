@@ -255,7 +255,7 @@ abstract class ForwardCall {
   static Future<Model.Call> Receptionist_Gets_Pickup(Model.Call call) {
     step('Receptionist expects pickup');
 
-    return receptionist.waitFor(eventType: 'call_pickup', callID:  call)
+    return receptionist.waitFor(eventType: 'call_pickup', callID:  call.ID)
         .then((Event.CallPickup pickupEvent) => pickupEvent.call);
   }
 
