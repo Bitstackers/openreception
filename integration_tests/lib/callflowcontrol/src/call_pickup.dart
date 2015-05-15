@@ -151,4 +151,17 @@ abstract class Pickup {
         throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
+  static Future pickupEventInboundCall(Receptionist receptionist, Customer customer) {
+    int receptionID = 2;
+    String receptionNumber = '1234000$receptionID';
+
+    return Future.wait([])
+    .then((_) => log.info ('Customer ${customer.name} dials ${receptionNumber}'))
+    .then((_) => customer.dial (receptionNumber))
+    .then((_) => log.info ('Receptionist ${receptionist.user.name} hunts call.'))
+    .then((_) => receptionist.huntNextCall().then((Model.Call call) =>
+      receptionist.waitFor(callID: call.ID, eventType: Event.Key.callPickup)))
+    .whenComplete(() => log.info('Test done'));
+  }
+
 }
