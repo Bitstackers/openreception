@@ -181,6 +181,9 @@ void runCallFlowTests() {
     test ('pickupEventInboundCall',
         () => Pickup.pickupEventInboundCall(receptionist, customer));
 
+    test ('pickupEventOutboundCall',
+        () => Pickup.pickupEventOutboundCall(receptionist, customer));
+
     setUp (() {
       receptionist = ReceptionistPool.instance.aquire();
       receptionist2 = ReceptionistPool.instance.aquire();
