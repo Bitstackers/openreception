@@ -164,4 +164,19 @@ abstract class Pickup {
     .whenComplete(() => log.info('Test done'));
   }
 
+  static Future pickupEventOutboundCall(Receptionist receptionist, Customer customer) {
+    Model.Call outboundCall;
+    return Future.wait([])
+    .then((_) => log.info ('Receptionist dials contact'))
+    .then((_) => receptionist.originate(customer.extension, 1, 2)
+      .then((Model.Call newCall) {
+        outboundCall = newCall;
+        log.info('$receptionist got new call $outboundCall');
+      }))
+    .then((_) => customer.waitForInboundCall())
+    .then((_) => log.info('$customer got inbound call'))
+    .then((_) => customer.pickupCall())
+    .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup, timeoutSeconds: 2, callID: outboundCall.ID))
+    .whenComplete(() => log.info('Test done'));
+  }
 }
