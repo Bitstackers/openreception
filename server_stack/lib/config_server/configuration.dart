@@ -89,10 +89,6 @@ class Configuration {
         _messageServerUri = Uri.parse(config['messageServerUri']);
       }
 
-      if(config.containsKey('logServerUri')) {
-        _logServerUri = Uri.parse(config['logServerUri']);
-      }
-
       if(config.containsKey('authServerUri')) {
         _authServerUri = Uri.parse(config['authServerUri']);
       }
