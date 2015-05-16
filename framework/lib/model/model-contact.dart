@@ -102,10 +102,7 @@ class Contact {
     /// PhoneNumber deserializing.
     Iterable<Map> phoneMaps = map[ContactJSONKey.phones];
     Iterable<PhoneNumber> phones = phoneMaps.map((Map phoneMap) {
-      print (phoneMap);
       return new PhoneNumber.fromMap(phoneMap);});
-
-
 
     this.phones.addAll(phones.toList());
 
