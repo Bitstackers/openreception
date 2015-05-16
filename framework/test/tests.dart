@@ -120,7 +120,7 @@ void main() {
     test('single', ResourceContact.single);
     test('singleByReception', ResourceContact.singleByReception);
   });
-  
+
   group('Event.CalendarChangeEvent', () {
     test('buildObject', CalendarChangeEvent.buildObject);
     test('serialization', CalendarChangeEvent.serialization);
@@ -274,14 +274,14 @@ abstract class CalendarEntryObject {
 }
 
 abstract class CalendarChangeEvent {
-  
+
   static void buildObject () {
     final int id = 1;
     final int rid = 2;
     final int cid = 3;
     final state = Event.CalendarEntryState.CREATED;
 
-    Event.CalendarChange testEvent = 
+    Event.CalendarChange testEvent =
         new Event.CalendarChange (id, cid, rid, state);
 
     expect(testEvent.entryID, equals (id));
@@ -296,7 +296,7 @@ abstract class CalendarChangeEvent {
     final int cid = 3;
     final state = Event.CalendarEntryState.CREATED;
 
-    Event.CalendarChange testEvent = 
+    Event.CalendarChange testEvent =
         new Event.CalendarChange (id, cid, rid, state);
 
     expect (testEvent.toJson, returnsNormally);
@@ -308,11 +308,11 @@ abstract class CalendarChangeEvent {
     final int cid = 3;
     final state = Event.CalendarEntryState.CREATED;
 
-    Event.CalendarChange testEvent = 
+    Event.CalendarChange testEvent =
         new Event.CalendarChange (id, cid, rid, state);
 
     Map serialized = testEvent.toJson();
-    
+
     expect (new Event.CalendarChange.fromMap(serialized).asMap, equals(serialized));
   }
 

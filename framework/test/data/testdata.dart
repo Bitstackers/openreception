@@ -82,44 +82,91 @@ Map NewReceptionEvent_1 = {
   "content": "Ged samtaler"
 };
 
-Map testContact_1_2 = {
-  "reception_id": 2,
-  "contact_id": 1,
+Map testContact_4_1 = {
+  "contact_id": 4,
+  "reception_id": 1,
+  "department": "Development",
   "wants_messages": true,
   "enabled": true,
-  "full_name": "Thomas Løcke",
+  "full_name": "Kim Rostgaard Christensen",
   "distribution_list": {
-    "to": [
-      {
-        "reception": {"id": 2, "name": "Test"},
-        "contact": {"id": 1, "name": "Other guy"}
-      }
-    ],
-    "cc": [],
-    "bcc": []
+      "to": [
+          {
+              "contact": {
+                  "id": 4,
+                  "name": "Kim Rostgaard Christensen"
+              },
+              "reception": {
+                  "id": 1,
+                  "name": "BitStackers"
+              }
+          }
+      ],
+      "cc": [
+          {
+              "contact": {
+                  "id": 2,
+                  "name": null
+              },
+              "reception": {
+                  "id": 1,
+                  "name": "BitStackers"
+              }
+          }
+      ],
+      "bcc": []
   },
   "contact_type": "human",
-  "phones": [],
-  "endpoints": [
-    {
-      "address": "+4588329100",
-      "address_type": "sms",
-      "confidential": false,
-      "enabled": false,
-      "priority": 0,
-      "description": null
-    }
+  "phones": [
+      {
+          "value": "30481150",
+          "kind": "PSTN",
+          "description": "Cellphone - work",
+          "billing_type": "cell",
+          "tag": [],
+          "confidential": false
+      },
+      {
+          "value": "40966024",
+          "kind": "PSTN",
+          "description": "Cellphone - private",
+          "billing_type": "cell",
+          "tag": [],
+          "confidential": true
+      }
   ],
-  "backup": ["Steen Løcke"],
-  "emailaddresses": ["tl@ff.dk"],
-  "handling": ["spørg ikke ind til ekstra stærk varianten"],
-  "workhours": [],
-  "tags": ["Fisker", "sømand", "pirat"],
-  "department": "Fangst",
-  "info": "Tidligere fisker I militæret; sværdfisker.",
-  "position": "Key fishing manager",
-  "relations": "Gift med Trine Løcke",
-  "responsibility": "Fersk fisk, Trolling"
+  "endpoints": [
+      {
+          "address": "krc@bitstack.dk",
+          "type": "email",
+          "confidential": false,
+          "enabled": true,
+          "description": null
+      }
+  ],
+  "backup": [
+      "Thomas Løcke"
+  ],
+  "emailaddresses": [
+      "krc@bitstack.dk"
+  ],
+  "handling": [
+      "Always end a call with; have a nice day"
+  ],
+  "workhours": [
+      "Business days 07:00 – 18:00",
+      "Weekends: 10:00 - 14:00"
+  ],
+  "tags": [
+      "mail",
+      "SIP",
+      "Linux",
+      "FreeSWITCH"
+  ],
+  "info": "Takes care of the code",
+  "position": "Software engineer",
+  "relations": "Kids with Sidsel Schomacker",
+  "responsibility": "Server, client, FreeSWITCH and SNOM phones"
 };
 
 Map testMessage_1_Map = {
