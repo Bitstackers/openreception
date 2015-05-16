@@ -14,7 +14,8 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for handling the contact data widget in terms of focus,
+ * navigation and rendering via the UIContactData class.
  */
 class ContactData extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
