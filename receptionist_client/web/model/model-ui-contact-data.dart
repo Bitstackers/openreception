@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the contact data UI widget.
  */
 class UIContactData extends UIModel {
   final Bus<TelNum> _busRinging = new Bus<TelNum>();
