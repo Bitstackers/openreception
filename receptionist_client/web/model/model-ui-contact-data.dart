@@ -282,10 +282,8 @@ class UIContactData extends UIModel {
    * Show/hide the tags.
    */
   void _toggleTags(_) {
-    if(_tagsList.children.isNotEmpty) {
-      _tagsDiv.classes.toggle('tags-hidden');
-      _showTagsSpan.classes.toggle('active');
-    }
+    _tagsDiv.classes.toggle('tags-hidden');
+    _showTagsSpan.classes.toggle('active');
   }
 
   /**

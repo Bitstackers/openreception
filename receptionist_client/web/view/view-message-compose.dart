@@ -17,14 +17,18 @@ part of view;
  * Component for creating/editing and saving/sending messages.
  */
 class MessageCompose extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIMessageCompose _ui;
+  final Model.UIContactSelector   _contactSelector;
+  final Controller.Destination    _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIMessageCompose    _ui;
 
   /**
    * Constructor.
    */
   MessageCompose(Model.UIMessageCompose this._ui,
-                 Controller.Destination this._myDestination) {
+                 Controller.Destination this._myDestination,
+                 Model.UIContactSelector this._contactSelector,
+                 Model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+b, ctrl+space');
     _observers();
   }
@@ -58,10 +62,24 @@ class MessageCompose extends ViewWidget {
 
     _hotKeys.onAltB.listen(activateMe);
 
+    _contactSelector.onSelect.listen(render);
+
     _ui.onCancel.listen(cancel);
     _ui.onClick .listen(activateMe);
     _ui.onSave  .listen(save);
     _ui.onSend  .listen(send);
+  }
+
+  /**
+   * Render the widget with [Contact].
+   */
+  void render(Model.Contact contact) {
+    if(contact.isEmpty) {
+      print('View.MessageCompose got an empty contact - undecided on what to do');
+      /// TODO (TL): What should we do here?
+    } else {
+      _ui.endpoints = contact.endpoints;
+    }
   }
 
   /**

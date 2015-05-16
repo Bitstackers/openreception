@@ -58,6 +58,19 @@ class UIMessageCompose extends UIModel {
   InputElement         get _urgentInput        => _root.querySelector('.checks .urgent');
 
   /**
+   * Add [endpoints] to the recipients list.
+   */
+  void set endpoints(List<Map> endpoints) {
+    List<LIElement> list = new List<LIElement>();
+
+    endpoints.forEach((endpoint) => list.add(new LIElement()..text = endpoint['address']));
+
+    _recipientsList.children = list;
+
+    _toggleButtons(null);
+  }
+
+  /**
    * Make sure we never take focus away from an already focused element, unless
    * we're [event].target is another widget member with tabindex set > 0.
    */
@@ -123,7 +136,7 @@ class UIMessageCompose extends UIModel {
 
     _cancelButton.disabled = toggle;
     _saveButton.disabled = toggle;
-    _sendButton.disabled = toggle;
+    _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
 
     _myLastTabElement = toggle ? _draftInput : _sendButton;
   }
@@ -132,9 +145,7 @@ class UIMessageCompose extends UIModel {
    * Show/hide the recipients list.
    */
   void _toggleRecipients(_) {
-    if(_recipientsList.children.isNotEmpty) {
-      _recipientsDiv.classes.toggle('recipients-hidden');
-      _showRecipientsSpan.classes.toggle('active');
-    }
+    _recipientsDiv.classes.toggle('recipients-hidden');
+    _showRecipientsSpan.classes.toggle('active');
   }
 }

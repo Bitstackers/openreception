@@ -177,7 +177,9 @@ class ReceptionistclientReady {
 
     _messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),
-         new Controller.Destination(Context.Home, Widget.MessageCompose));
+         new Controller.Destination(Context.Home, Widget.MessageCompose),
+         uiContactSelector,
+         uiReceptionSelector);
 
     _myCallQueue = new MyCallQueue
         (new Model.UIMyCallQueue(querySelector('#my-call-queue')),
