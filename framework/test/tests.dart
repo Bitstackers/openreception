@@ -61,6 +61,10 @@ void main() {
     test('serialization', ConfigObject.serialization);
   });
 
+  group('Model.PhoneNumber', () {
+    test('buildObject', ModelPhoneNumber.buildObject);
+  });
+
   group('Resource.Authentication', () {
     test('userOf', ResourceAuthentication.userOf);
     test('validate', ResourceAuthentication.validate);
@@ -317,8 +321,36 @@ abstract class CalendarChangeEvent {
 
 abstract class ContactObject {
   static void serializationDeserialization () =>
-      expect(new Model.Contact.fromMap(Test_Data.testContact_1_2).asMap,
-        equals(Test_Data.testContact_1_2));
+      expect(new Model.Contact.fromMap(Test_Data.testContact_4_1).asMap,
+        equals(Test_Data.testContact_4_1));
+}
+
+abstract class ModelPhoneNumber {
+  static void buildObject () {
+    final String description =  'Cell Phone - work';
+    final String value = '+45 44 88 1231';
+    final String type = 'pstn';
+    final bool confidential = false;
+    final String billing_type = 'cell';
+    final List<String> tags = ['work', 'official'];
+
+
+    Model.PhoneNumber phoneNumber =
+      new Model.PhoneNumber.empty()
+        ..billing_type = billing_type
+        ..confidential = confidential
+        ..description = description
+        ..tags = tags
+        ..type = type
+        ..value = value;
+
+    expect (phoneNumber.billing_type, equals(billing_type));
+    expect (phoneNumber.confidential, equals(confidential));
+    expect (phoneNumber.description, equals(description));
+    expect (phoneNumber.tags, equals(tags));
+    expect (phoneNumber.type, equals(type));
+    expect (phoneNumber.value, equals(value));
+  }
 }
 
 abstract class ResourceReception {
