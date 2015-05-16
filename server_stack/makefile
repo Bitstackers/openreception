@@ -13,7 +13,6 @@ OUTPUT_DIRECTORY=out
 AuthBinary=AuthServer.dart
 CallFlowBinary=CallFlow.dart
 ContactBinary=ContactServer.dart
-LogBinary=LogServer.dart
 MessageBinary=MessageServer.dart
 MessageDispatcherBinary=MessageDispatcher.dart
 MiscBinary=MiscServer.dart
@@ -22,7 +21,7 @@ ReceptionBinary=ReceptionServer.dart
 SpawnerBinary=Spawner.dart
 
 
-all: $(OUTPUT_DIRECTORY) auth callflow contact log message messagedispatcher misc reception spawner notification
+all: $(OUTPUT_DIRECTORY) auth callflow contact message messagedispatcher misc reception spawner notification
 
 analyze-all: analyze analyze-hints
 
@@ -52,9 +51,6 @@ callflow:
 
 contact: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server bin/contactserver.dart
-
-log: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${LogBinary} --categories=Server bin/logserver.dart
 
 message: 
 	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server bin/messageserver.dart
