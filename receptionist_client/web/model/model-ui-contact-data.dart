@@ -87,6 +87,33 @@ class UIContactData extends UIModel {
   set commands(List<String> items) => _populateList(_commandsList, items);
 
   /**
+   * Populate widget with [contact] data.
+   */
+  set contact(Contact contact) {
+    clear();
+
+    headerExtra = 'for ${contact.fullName}';
+
+    additionalInfo = [contact.info]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/122
+    backups = contact.backupContacts;
+    commands = contact.handling;
+    departments = [contact.department]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/123
+    emailAddresses = contact.emailaddresses;
+    relations = [contact.relations]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/124
+    responsibility = [contact.responsibility]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/125
+    tags = contact.tags;
+
+    List<TelNum> telNums = new List<TelNum>();
+    contact.phones.forEach((Map map) {
+      telNums.add(new TelNum(map['value'], map['description'], map['confidential']));
+    });
+    telephoneNumbers = telNums;
+
+    titles = [contact.position];
+    workHours = contact.workhours;
+  }
+
+  /**
    * Add [items] to the departments list.
    */
   set departments(List<String> items) => _populateList(_departmentList, items);

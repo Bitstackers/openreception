@@ -89,23 +89,7 @@ class ContactData extends ViewWidget {
       _ui.clear();
     } else {
       _ui.clear();
-
-      _ui.headerExtra = 'for ${contact.fullName}';
-
-      _ui.additionalInfo = ['additionalInfo 1', 'additionalInfo 2'];
-      _ui.backups = ['backup 1', 'backup 2'];
-      _ui.commands = ['command 1', 'command 2'];
-      _ui.departments = ['department 1', 'department 2'];
-      _ui.emailAddresses = ['thomas@responsum.dk', 'thomas.granvej6@gmail.com'];
-      _ui.relations = ['Hustru: Trine Løcke', 'Far: Steen Løcke'];
-      _ui.responsibility = ['Teknik og skidt der generelt ikke fungerer', 'Regelmæssig genstart af Windows'];
-      _ui.tags = contact.tags;
-      _ui.telephoneNumbers = [new TelNum('45454545', 'some number', false),
-                              new TelNum('23456768', 'secret stuff', true),
-                              new TelNum('60431992', 'personal cell', false),
-                              new TelNum('60431993', 'wife cell', false)];
-      _ui.titles = ['Nørd', 'Tekniker'];
-      _ui.workHours = ['Hele tiden', 'Svarer sjældent telefonen om lørdagen'];
+      _ui.contact = contact;
 
       _ui.selectFirstTelNum();
     }
