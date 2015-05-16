@@ -21,7 +21,7 @@ class PhoneNumber {
   PhoneNumber.fromMap(Map map) {
     description = map[PhoneNumberJSONKey.Description];
     value = map[PhoneNumberJSONKey.Value];
-    confidential = map[PhoneNumberJSONKey.Description];
+    confidential = map[PhoneNumberJSONKey.Confidential];
     type = map[PhoneNumberJSONKey.Type];
     billing_type = map[PhoneNumberJSONKey.Billing_type];
 

@@ -56,19 +56,17 @@ class Contact {
   String  fullName = '';
   String  contactType = '';
 
-  List<Map> phones = [];
+  List<PhoneNumber> phones = [];
   List<String> backupContacts = [];
   String position = '';
   String relations = '';
   String responsibility = '';
 
-  List<Map>    endpoints = [];
+  List<MessageEndpoint>    endpoints = [];
   List<String> tags = new List<String>();
   List<String> emailaddresses = new List<String>();
   List<String> handling = new List<String>();
   List<String> workhours = new List<String>();
-
-  //List<PhoneNumber> _phoneNumberList = new List<PhoneNumber>();
 
   MessageRecipientList _distributionList    = new MessageRecipientList.empty();
   MessageRecipientList get distributionList => this._distributionList;
@@ -87,8 +85,8 @@ class Contact {
         ContactJSONKey.fullName         : this.fullName,
         ContactJSONKey.distributionList : this.distributionList.asMap,
         ContactJSONKey.contactType      : this.contactType,
-        ContactJSONKey.phones           : this.phones,
-        ContactJSONKey.endpoints        : this.endpoints,
+        ContactJSONKey.phones           : this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
+        ContactJSONKey.endpoints        : this.endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
         ContactJSONKey.backup           : this.backupContacts,
         ContactJSONKey.emailaddresses   : this.emailaddresses,
         ContactJSONKey.handling         : this.handling,
@@ -101,6 +99,16 @@ class Contact {
       };
 
   Contact.fromMap(Map map) {
+    /// PhoneNumber deserializing.
+    Iterable<Map> phoneMaps = map[ContactJSONKey.phones];
+    Iterable<PhoneNumber> phones = phoneMaps.map((Map phoneMap) {
+      print (phoneMap);
+      return new PhoneNumber.fromMap(phoneMap);});
+
+
+
+    this.phones.addAll(phones.toList());
+
     this.ID                = mapValue(ContactJSONKey.contactID, map);
     this.receptionID       = mapValue(ContactJSONKey.receptionID, map);
     this.department        = mapValue(ContactJSONKey.department, map);
@@ -109,8 +117,9 @@ class Contact {
     this.fullName          = mapValue(ContactJSONKey.fullName, map);
     this._distributionList = new MessageRecipientList.fromMap(mapValue(ContactJSONKey.distributionList, map));
     this.contactType       = mapValue(ContactJSONKey.contactType, map);
-    this.phones            = mapValue(ContactJSONKey.phones, map, defaultValue: ContactDefault.phones);
-    this.endpoints         = mapValue(ContactJSONKey.endpoints, map);
+
+
+
     this.backupContacts    = mapValue(ContactJSONKey.backup, map);
     this.emailaddresses    = mapValue(ContactJSONKey.emailaddresses, map);
     this.handling          = mapValue(ContactJSONKey.handling, map);
@@ -121,6 +130,10 @@ class Contact {
     this.position          = mapValue(ContactJSONKey.position, map);
     this.relations         = mapValue(ContactJSONKey.relations, map);
     this.responsibility    = mapValue(ContactJSONKey.responsibility, map);
+
+    Iterable ep = mapValue(ContactJSONKey.endpoints, map);
+    this.endpoints = ep.map((Map map) =>
+      new MessageEndpoint.fromMap(map)).toList();
   }
 
   static dynamic mapValue (String key, Map map, {dynamic defaultValue : null}) {
