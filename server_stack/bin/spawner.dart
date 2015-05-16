@@ -42,10 +42,6 @@ void main(List<String> arguments) {
       'path': 'bin/contactserver.dart',
       'args': ['--servertoken', tokens[index++]]
     },
-    'LogServer': {
-      'path': 'bin/logserver.dart',
-      'args': []
-    },
     'ManagementServer': {
       'path': 'bin/managementserver.dart',
       'args': ['--servertoken', tokens[index++]]
