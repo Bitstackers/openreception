@@ -56,7 +56,6 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
 
   return AuthService.validate(token).then((_) => null)
   .catchError((error) {
-    print (error);
     if (error is ORStorage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');
     }

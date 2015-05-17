@@ -67,7 +67,6 @@ abstract class Contact{
    */
   static Future list(shelf.Request request) {
     var rid = shelf_route.getPathParameter(request, 'rid');
-    print (rid);
     int receptionID = int.parse(rid);
 
     return db.Contact.list(receptionID)
