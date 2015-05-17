@@ -65,7 +65,7 @@ abstract class Contact {
 
   }
 
-  static Future<List<Model.Contact>> list(int receptionId) {
+  static Future<Iterable<Model.Contact>> list(int receptionId) {
     String sql = '''
     SELECT rcpcon.reception_id, 
            rcpcon.contact_id, 
@@ -121,12 +121,17 @@ abstract class Contact {
            con.enabled as conenabled,
            rcpcon.phonenumbers as phone,
 
-           (SELECT coalesce(array_to_json(array_agg(row_to_json(contact_end_point))), '[]')
-            FROM (SELECT address, address_type, confidential, enabled, priority, description
-                  FROM messaging_end_points
-                  WHERE reception_id = rcpcon.reception_id AND
-                        contact_id = rcpcon.contact_id
-                  ORDER BY priority ASC) contact_end_point) AS endpoints
+             (SELECT coalesce(array_to_json(array_agg(row_to_json(contact_end_point))), '[]')
+              FROM (SELECT address, 
+                           address_type AS type, 
+                           confidential, 
+                           enabled,
+                           priority,
+                           description
+                    FROM messaging_end_points
+                    WHERE reception_id = rcpcon.reception_id AND
+                          contact_id = rcpcon.contact_id
+                    ORDER BY priority ASC) contact_end_point) AS endpoints
 
     FROM contacts con 
       JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
@@ -134,50 +139,8 @@ abstract class Contact {
 
     Map parameters = {'receptionid' : receptionId};
 
-    return connection.query(sql, parameters).then((rows) {
-      List<Model.Contact> contacts = new List<Model.Contact>();
-      for(var row in rows) {
-        Map contact =
-          {'reception_id'      : row.reception_id,
-           'contact_id'        : row.contact_id,
-           'wants_messages'    : row.wants_messages,
-           'enabled'           : row.rcpenabled && row.conenabled,
-           'full_name'         : row.full_name,
-           'distribution_list' : row.distribution_list != null ? row.distribution_list : [],
-           'contact_type'      : row.contact_type,
-           'phones'            : row.phone != null ? row.phone : [],
-           'endpoints'         : row.endpoints};
-
-        if (row.attributes != null) {
-          Map attributes = row.attributes;
-          if(attributes != null) {
-            attributes.forEach((key, value) => contact.putIfAbsent(key, () => value));
-
-            var tmp = new Model.MessageRecipientList.empty();
-
-            Model.Role.RECIPIENT_ROLES.forEach((String role) {
-                if (contact['distribution_list'][role] is List) {
-                  (contact['distribution_list'][role] as List).forEach((Map dlistMap) {
-                                tmp.add(new Model.MessageRecipient.fromMap({'reception' :
-                                {'id'   : dlistMap['reception_id'],
-                                 'name' : dlistMap['reception_name']},
-                               'contact'   :
-                                {'id'   : dlistMap['contact_id'],
-                                 'name' : dlistMap['contact_name']}},
-                                 role : role));
-                              });
-                }
-              });
-
-            contact['distribution_list'] = tmp.asMap;
-
-          }
-        }
-        contacts.add(new Model.Contact.fromMap(contact));
-      }
-
-      return contacts;
-    });
+    return connection.query(sql, parameters).then((rows) =>
+      (rows as Iterable).map(_rowToContact));
   }
 
   static Future<Model.Contact> get(int receptionId, int contactId) {
@@ -237,7 +200,12 @@ abstract class Contact {
              rcpcon.phonenumbers as phone,
 
              (SELECT coalesce(array_to_json(array_agg(row_to_json(contact_end_point))), '[]')
-              FROM (SELECT address, address_type, confidential, enabled, priority, description
+              FROM (SELECT address, 
+                           address_type AS type, 
+                           confidential, 
+                           enabled,
+                           priority,
+                           description
                     FROM messaging_end_points
                     WHERE reception_id = rcpcon.reception_id AND
                           contact_id = rcpcon.contact_id
@@ -253,49 +221,137 @@ abstract class Contact {
 
       return connection.query(sql, parameters).then((rows) {
 
-        Map data = {};
         if(rows != null && rows.length == 1) {
-          var row = rows.first;
-
-          data =
-            {'reception_id'      : row.reception_id,
-             'contact_id'        : row.contact_id,
-             'wants_messages'    : row.wants_messages,
-             'enabled'           : row.rcpenabled && row.conenabled,
-             'full_name'         : row.full_name,
-             'distribution_list' : row.distribution_list != null ? row.distribution_list : [],
-             'contact_type'      : row.contact_type,
-             'phones'            : row.phone != null ? row.phone : [],
-             'endpoints'         : row.endpoints};
-
-          if(row.attributes != null) {
-            row.attributes.forEach((key, value) => data.putIfAbsent(key, () => value));
-          }
-
-          //FIXME: The format should be changed in the SQL return value.
-
-          var tmp = new Model.MessageRecipientList.empty();
-
-          Model.Role.RECIPIENT_ROLES.forEach((String role) {
-              if (data['distribution_list'][role] is List) {
-                (data['distribution_list'][role] as List).forEach((Map dlistMap) {
-                              tmp.add(new Model.MessageRecipient.fromMap({'reception' :
-                              {'id'   : dlistMap['reception_id'],
-                               'name' : dlistMap['reception_name']},
-                             'contact'   :
-                              {'id'   : dlistMap['contact_id'],
-                               'name' : dlistMap['contact_name']}},
-                               role : role));
-                            });
-              }
-            });
-
-          data['distribution_list'] = tmp.asMap;
-          return new Model.Contact.fromMap(data);
+          return (_rowToContact(rows.first));
         } else {
-          return Model.Contact.noContact;
+          throw new Storage.NotFound
+            ('ContactID: $contactId, ReceptionID: $receptionId');
         }
       });
+  }
+
+  static Model.Contact _rowToContact (var row) {
+    var distributionList = new Model.MessageRecipientList.empty();
+
+    Model.Role.RECIPIENT_ROLES.forEach((String role) {
+       Iterable nextVal = row.distribution_list[role] == null
+         ? []
+         : row.distribution_list[role];
+
+       nextVal.forEach((Map dlistMap) {
+                        distributionList.add(new Model.MessageRecipient.fromMap({'reception' :
+                        {'id'   : dlistMap['reception_id'],
+                         'name' : dlistMap['reception_name']},
+                       'contact'   :
+                        {'id'   : dlistMap['contact_id'],
+                         'name' : dlistMap['contact_name']}},
+                         role : role));
+                    });
+      });
+
+    Iterable<Model.MessageEndpoint> endpointIterable =
+      row.endpoints.map((Map map) =>
+        new Model.MessageEndpoint.fromMap(map));
+
+    Iterable<Model.PhoneNumber> phoneIterable = row.phone == null
+       ? []
+       : row.phone.map ((Map map) =>
+           new Model.PhoneNumber.fromMap(map));
+
+    List backupContacts = [];
+    List emailaddresses = [];
+    List handling = [];
+    List tags = [];
+    List workhours = [];
+
+    String department = '';
+    String info = '';
+    String title = '';
+    String relations = '';
+    String responsibility = '';
+
+    if(row.attributes != null) {
+      backupContacts
+        = row.attributes.containsKey (Model.ContactJSONKey.backup)
+          ? row.attributes[Model.ContactJSONKey.backup]
+          : [];
+
+      emailaddresses
+        = row.attributes.containsKey (Model.ContactJSONKey.emailaddresses)
+          ? row.attributes[Model.ContactJSONKey.emailaddresses]
+          : [];
+
+      handling
+        = row.attributes.containsKey (Model.ContactJSONKey.handling)
+          ? row.attributes[Model.ContactJSONKey.handling]
+          : [];
+
+
+      tags
+        = row.attributes.containsKey (Model.ContactJSONKey.tags)
+          ? row.attributes[Model.ContactJSONKey.tags]
+          : [];
+
+      workhours
+        = row.attributes.containsKey (Model.ContactJSONKey.workhours)
+          ? row.attributes[Model.ContactJSONKey.workhours]
+          : [];
+
+      department
+        = row.attributes.containsKey (Model.ContactJSONKey.department)
+          ? row.attributes[Model.ContactJSONKey.department]
+          : '';
+
+      info
+        = row.attributes.containsKey (Model.ContactJSONKey.info)
+          ? row.attributes[Model.ContactJSONKey.info]
+          : '';
+
+      title
+        = row.attributes.containsKey (Model.ContactJSONKey.position)
+          ? row.attributes[Model.ContactJSONKey.position]
+          : '';
+
+      relations
+        = row.attributes.containsKey (Model.ContactJSONKey.relations)
+          ? row.attributes[Model.ContactJSONKey.relations]
+          : '';
+
+      responsibility
+        = row.attributes.containsKey (Model.ContactJSONKey.responsibility)
+          ? row.attributes[Model.ContactJSONKey.responsibility]
+          : '';
+
+    }
+
+
+    Model.Contact contact = new Model.Contact.none()
+      ..receptionID = row.reception_id
+      ..ID = row.contact_id
+      ..wantsMessage = row.wants_messages
+      ..enabled = row.rcpenabled && row.conenabled
+      ..fullName = row.full_name
+      ..contactType = row.contact_type
+      ..phones = ([]..addAll(phoneIterable))
+      ..endpoints = ([]..addAll(endpointIterable))
+      ..distributionList = distributionList
+      ..backupContacts = backupContacts
+      ..department = department
+      ..emailaddresses = emailaddresses
+      ..handling = handling
+      ..info = info
+      ..position = title
+      ..relations = relations
+      ..responsibility = responsibility
+      ..tags = tags
+      ..workhours = workhours;
+
+    //TODO: Add attributes.
+
+
+    //FIXME: The format should be changed in the SQL return value.
+
+    return contact;
   }
 
 }
