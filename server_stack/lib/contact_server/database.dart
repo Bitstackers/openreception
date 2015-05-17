@@ -2,6 +2,7 @@ library contactserver.database;
 
 import 'dart:async';
 
+import 'package:logging/logging.dart';
 import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/model.dart'    as Model;
 import 'package:openreception_framework/storage.dart'  as Storage;
@@ -12,6 +13,8 @@ import 'configuration.dart';
 //part 'db/getreceptioncontactlist.dart';
 part 'db/contact.dart';
 part 'db/contact-calendar.dart';
+
+const String libraryName = 'contactserver.database';
 
 Database.Connection connection = null;
 

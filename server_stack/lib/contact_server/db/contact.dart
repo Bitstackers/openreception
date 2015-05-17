@@ -2,6 +2,8 @@ part of contactserver.database;
 
 abstract class Contact {
 
+  Logger log = new Logger('$libraryName.Contact');
+
   static Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
     String sql = '''
         SELECT phonenumbers
