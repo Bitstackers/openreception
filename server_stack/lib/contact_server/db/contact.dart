@@ -2,7 +2,7 @@ part of contactserver.database;
 
 abstract class Contact {
 
-  Logger log = new Logger('$libraryName.Contact');
+  static final Logger log = new Logger('$libraryName.Contact');
 
   static Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
     String sql = '''
@@ -22,22 +22,8 @@ abstract class Contact {
 
       Iterable<Map> phonesMap = (rows as Iterable).first.phonenumbers;
 
-      Model.PhoneNumber mapToPhone (Map map) {
 
-        Model.PhoneNumber p =
-          new Model.PhoneNumber.empty()
-            ..billing_type = map['billing_type']
-            ..description = map['description']
-            ..value = map['value']
-            ..type = map['kind'];
-        if(map['tag'] != null) {
-          p.tags.add(map['tag']);
-        }
-
-        return p;
-      }
-
-      return phonesMap.map(mapToPhone);
+      return phonesMap.map(_mapToPhone);
     });
   }
 
@@ -229,6 +215,9 @@ abstract class Contact {
           throw new Storage.NotFound
             ('ContactID: $contactId, ReceptionID: $receptionId');
         }
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        return new Future.error(error, stackTrace);
       });
   }
 
@@ -266,65 +255,83 @@ abstract class Contact {
     List tags = [];
     List workhours = [];
 
-    String department = '';
-    String info = '';
-    String title = '';
-    String relations = '';
-    String responsibility = '';
+    List departments = [];
+    List infos = [];
+    List titles = [];
+    List relations = [];
+    List responsibilities = [];
 
     if(row.attributes != null) {
-      backupContacts
-        = row.attributes.containsKey (Model.ContactJSONKey.backup)
-          ? row.attributes[Model.ContactJSONKey.backup]
-          : [];
+      if (row.attributes.containsKey (Model.ContactJSONKey.backup)) {
+        backupContacts = row.attributes[Model.ContactJSONKey.backup];
+      }
 
-      emailaddresses
-        = row.attributes.containsKey (Model.ContactJSONKey.emailaddresses)
-          ? row.attributes[Model.ContactJSONKey.emailaddresses]
-          : [];
+      if (row.attributes.containsKey (Model.ContactJSONKey.emailaddresses)) {
+        emailaddresses = row.attributes[Model.ContactJSONKey.emailaddresses];
+      }
 
-      handling
-        = row.attributes.containsKey (Model.ContactJSONKey.handling)
-          ? row.attributes[Model.ContactJSONKey.handling]
-          : [];
+      if(row.attributes.containsKey (Model.ContactJSONKey.handling)) {
+        handling = row.attributes[Model.ContactJSONKey.handling];
+      }
 
+      // Tags
+      if (row.attributes.containsKey (Model.ContactJSONKey.tags)) {
+        tags = row.attributes[Model.ContactJSONKey.tags];
+      }
 
-      tags
-        = row.attributes.containsKey (Model.ContactJSONKey.tags)
-          ? row.attributes[Model.ContactJSONKey.tags]
-          : [];
+      // Work hours
+      if (row.attributes.containsKey (Model.ContactJSONKey.workhours)) {
+        workhours = row.attributes[Model.ContactJSONKey.workhours];
+      }
 
-      workhours
-        = row.attributes.containsKey (Model.ContactJSONKey.workhours)
-          ? row.attributes[Model.ContactJSONKey.workhours]
-          : [];
+      // Department
+      if(row.attributes.containsKey (Model.ContactJSONKey.department)) {
+        departments = [row.attributes[Model.ContactJSONKey.department]];
+      }
+      else if (row.attributes.containsKey (Model.ContactJSONKey.departments)) {
+        departments = row.attributes[Model.ContactJSONKey.departments];
+      }
 
-      department
-        = row.attributes.containsKey (Model.ContactJSONKey.department)
-          ? row.attributes[Model.ContactJSONKey.department]
-          : '';
+      // Info's
+      if (row.attributes.containsKey (Model.ContactJSONKey.info)) {
+        infos = [row.attributes[Model.ContactJSONKey.info]];
+      }
+      else if (row.attributes.containsKey (Model.ContactJSONKey.infos)) {
+        infos = row.attributes[Model.ContactJSONKey.infos];
+      }
 
-      info
-        = row.attributes.containsKey (Model.ContactJSONKey.info)
-          ? row.attributes[Model.ContactJSONKey.info]
-          : '';
+      // Titles
+      if (row.attributes.containsKey (Model.ContactJSONKey.position)) {
+        titles = [row.attributes[Model.ContactJSONKey.position]];
+      }
+      else if (row.attributes.containsKey (Model.ContactJSONKey.titles)) {
+        titles = row.attributes[Model.ContactJSONKey.titles];
+      }
 
-      title
-        = row.attributes.containsKey (Model.ContactJSONKey.position)
-          ? row.attributes[Model.ContactJSONKey.position]
-          : '';
+      // Relations
+      if (row.attributes.containsKey (Model.ContactJSONKey.relations)) {
+        var relationValue = row.attributes[Model.ContactJSONKey.relations];
 
-      relations
-        = row.attributes.containsKey (Model.ContactJSONKey.relations)
-          ? row.attributes[Model.ContactJSONKey.relations]
-          : '';
+        if (relationValue is String) {
+          relations = [row.attributes[Model.ContactJSONKey.relations]];
+        }
+        else if (relationValue is Iterable) {
+          relations = row.attributes[Model.ContactJSONKey.relations];
+        }
+        else {
+          log.severe ('Bad relations value: $relationValue');
+        }
+      }
 
-      responsibility
-        = row.attributes.containsKey (Model.ContactJSONKey.responsibility)
-          ? row.attributes[Model.ContactJSONKey.responsibility]
-          : '';
-
+      // Responsiblities
+      if (row.attributes.containsKey (Model.ContactJSONKey.responsibility)) {
+        infos = [row.attributes[Model.ContactJSONKey.responsibility]];
+      }
+      else if(row.attributes.containsKey (Model.ContactJSONKey.responsibilities)) {
+        infos = row.attributes[Model.ContactJSONKey.responsibilities];
+      }
     }
+
 
 
     Model.Contact contact = new Model.Contact.none()
@@ -334,26 +341,35 @@ abstract class Contact {
       ..enabled = row.rcpenabled && row.conenabled
       ..fullName = row.full_name
       ..contactType = row.contact_type
-      ..phones = ([]..addAll(phoneIterable))
-      ..endpoints = ([]..addAll(endpointIterable))
+      ..phones.addAll(phoneIterable)
+      ..endpoints.addAll(endpointIterable)
       ..distributionList = distributionList
       ..backupContacts = backupContacts
-      ..department = department
+      ..departments = departments
       ..emailaddresses = emailaddresses
       ..handling = handling
-      ..info = info
-      ..position = title
-      ..relations = relations
-      ..responsibility = responsibility
+      ..infos = infos
+      ..titles = titles
+      ..relations.addAll(relations)
+      ..responsibilities = responsibilities
       ..tags = tags
       ..workhours = workhours;
-
-    //TODO: Add attributes.
-
-
-    //FIXME: The format should be changed in the SQL return value.
 
     return contact;
   }
 
+  static Model.PhoneNumber _mapToPhone (Map map) {
+
+    Model.PhoneNumber p =
+      new Model.PhoneNumber.empty()
+        ..billing_type = map['billing_type']
+        ..description = map['description']
+        ..value = map['value']
+        ..type = map['kind'];
+    if(map['tag'] != null) {
+      p.tags.add(map['tag']);
+    }
+
+    return p;
+  }
 }
