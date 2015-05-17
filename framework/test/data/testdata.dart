@@ -85,7 +85,7 @@ Map NewReceptionEvent_1 = {
 Map testContact_4_1 = {
   "contact_id": 4,
   "reception_id": 1,
-  "department": "Development",
+  "departments": ["Development"],
   "wants_messages": true,
   "enabled": true,
   "full_name": "Kim Rostgaard Christensen",
@@ -163,10 +163,10 @@ Map testContact_4_1 = {
       "Linux",
       "FreeSWITCH"
   ],
-  "info": "Takes care of the code",
-  "position": "Software engineer",
-  "relations": "Kids with Sidsel Schomacker",
-  "responsibility": "Server, client, FreeSWITCH and SNOM phones"
+  "infos": ["Takes care of the code"],
+  "titles": ["Software engineer"],
+  "relations": ["Kids with Sidsel Schomacker"],
+  "responsibilities": ["Server", "client", "FreeSWITCH", "SNOM phones"]
 };
 
 Map testMessage_1_Map = {

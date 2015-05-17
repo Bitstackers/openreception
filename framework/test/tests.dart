@@ -37,7 +37,7 @@ void main() {
     bus.fire(testEvent);
   });
 
-  test('Model.Contact serializationDeserialization', ContactObject.serializationDeserialization);
+  test('Model.Contact serializationDeserialization', ModelContact.serializationDeserialization);
 
   group('Model.Message', () {
     test('serializationDeserialization', MessageObject.serializationDeserialization);
@@ -319,7 +319,8 @@ abstract class CalendarChangeEvent {
 }
 
 
-abstract class ContactObject {
+abstract class ModelContact {
+
   static void serializationDeserialization () =>
       expect(new Model.Contact.fromMap(Test_Data.testContact_4_1).asMap,
         equals(Test_Data.testContact_4_1));
