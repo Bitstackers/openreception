@@ -70,6 +70,9 @@ class Contact {
 
   MessageRecipientList _distributionList    = new MessageRecipientList.empty();
   MessageRecipientList get distributionList => this._distributionList;
+  void set distributionList (MessageRecipientList newList) {
+    this._distributionList = newList;
+  }
 
   static final Contact noContact = nullContact;
 
