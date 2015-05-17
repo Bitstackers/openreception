@@ -22,7 +22,9 @@ abstract class ContactJSONKey {
   static const workhours = 'workhours';
   static const tags = 'tags';
   static const info = 'info';
+  @deprecated
   static const position = 'position';
+  static const titles = 'titles';
   static const relations = 'relations';
   static const responsibility = 'responsibility';
 
@@ -58,6 +60,8 @@ class Contact {
 
   List<PhoneNumber> phones = [];
   List<String> backupContacts = [];
+
+  @deprecated
   String position = '';
   String relations = '';
   String responsibility = '';
@@ -67,6 +71,7 @@ class Contact {
   List<String> emailaddresses = new List<String>();
   List<String> handling = new List<String>();
   List<String> workhours = new List<String>();
+  List<String> titles = [];
 
   MessageRecipientList _distributionList    = new MessageRecipientList.empty();
   MessageRecipientList get distributionList => this._distributionList;
@@ -96,7 +101,7 @@ class Contact {
         ContactJSONKey.workhours        : this.workhours,
         ContactJSONKey.tags             : this.tags,
         ContactJSONKey.info             : this.info,
-        ContactJSONKey.position         : this.position,
+        ContactJSONKey.titles           : this.titles,
         ContactJSONKey.relations        : this.relations,
         ContactJSONKey.responsibility   : this.responsibility
       };
@@ -127,7 +132,7 @@ class Contact {
     this.handling          = mapValue(ContactJSONKey.handling, map);
     this.tags              = mapValue(ContactJSONKey.tags, map);
     this.info              = mapValue(ContactJSONKey.info, map);
-    this.position          = mapValue(ContactJSONKey.position, map);
+    this.titles            = mapValue(ContactJSONKey.titles, map);
     this.relations         = mapValue(ContactJSONKey.relations, map);
     this.responsibility    = mapValue(ContactJSONKey.responsibility, map);
 
