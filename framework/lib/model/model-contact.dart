@@ -26,7 +26,9 @@ abstract class ContactJSONKey {
   static const position = 'position';
   static const titles = 'titles';
   static const relations = 'relations';
+  @deprecated
   static const responsibility = 'responsibility';
+  static const responsibilities = 'responsibilities';
 
   static const Contact_LIST = 'contacts';
 }
@@ -64,6 +66,8 @@ class Contact {
   @deprecated
   String position = '';
   String relations = '';
+
+  @deprecated
   String responsibility = '';
 
   List<MessageEndpoint>    endpoints = [];
@@ -72,6 +76,7 @@ class Contact {
   List<String> handling = new List<String>();
   List<String> workhours = new List<String>();
   List<String> titles = [];
+  List<String> responsibilities = [];
 
   MessageRecipientList _distributionList    = new MessageRecipientList.empty();
   MessageRecipientList get distributionList => this._distributionList;
@@ -103,7 +108,7 @@ class Contact {
         ContactJSONKey.info             : this.info,
         ContactJSONKey.titles           : this.titles,
         ContactJSONKey.relations        : this.relations,
-        ContactJSONKey.responsibility   : this.responsibility
+        ContactJSONKey.responsibilities : this.responsibilities
       };
 
   Contact.fromMap(Map map) {
@@ -134,7 +139,7 @@ class Contact {
     this.info              = mapValue(ContactJSONKey.info, map);
     this.titles            = mapValue(ContactJSONKey.titles, map);
     this.relations         = mapValue(ContactJSONKey.relations, map);
-    this.responsibility    = mapValue(ContactJSONKey.responsibility, map);
+    this.responsibilities  = mapValue(ContactJSONKey.responsibilities, map);
 
     Iterable ep = mapValue(ContactJSONKey.endpoints, map);
     this.endpoints = ep.map((Map map) =>
