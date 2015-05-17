@@ -12,8 +12,6 @@ class MessageQueue implements Storage.MessageQueue {
 
   Future archive(Model.MessageQueueItem queueItem) {
 
-    final context = '${className}.archive';
-
     String sql = '''
   WITH moved_rows AS (
       DELETE FROM 
@@ -45,8 +43,6 @@ class MessageQueue implements Storage.MessageQueue {
   }
 
   Future<List<Model.MessageQueueItem>> list({int limit: 100, int maxTries : 10}) {
-
-    final context = '${className}.list';
 
     String sql = '''
    SELECT
@@ -87,8 +83,6 @@ class MessageQueue implements Storage.MessageQueue {
 
   Future<Model.MessageQueueItem> get(int queueID) {
 
-    final context = '$className.get';
-
     String sql = '''
    SELECT 
        mq.id,
@@ -102,8 +96,6 @@ class MessageQueue implements Storage.MessageQueue {
       mq.id = queueID''';
 
     return this._connection.query(sql).then((rows) {
-
-      List queue = new List();
 
       var row = rows.first;
 
@@ -122,8 +114,6 @@ class MessageQueue implements Storage.MessageQueue {
    */
   Future remove(int queueID) {
 
-    final context = className + ".remove";
-
     String sql = 'DELETE FROM message_queue WHERE id = ${queueID};';
 
     return this._connection.execute(sql).then((rowsAffected) {
@@ -139,8 +129,6 @@ class MessageQueue implements Storage.MessageQueue {
    * Updates a single queue entry in the database.
    */
   Future<Model.MessageQueueItem> save(Model.MessageQueueItem queueItem) {
-
-    final context = className + ".save";
 
     /// We have to serialize the ID's of the contact along with the endpoint ID
     /// to avoid losing the name of the endpoint.
@@ -162,8 +150,6 @@ class MessageQueue implements Storage.MessageQueue {
    * Returns a list of endpoints associated with the message with id [messageID].
    */
   Future<List<Model.MessageEndpoint>> endpoints(int messageID) {
-    final context = '${className}.endpoints';
-
     String sql = '''
     SELECT
       mr.contact_name as name,

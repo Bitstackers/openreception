@@ -144,7 +144,6 @@ class Call {
 
   void changeState (String newState) {
 
-    const String context   = '${className}.changeState';
     final String lastState = this.state;
 
     this.state = newState;

@@ -54,7 +54,6 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
    *         (optional) endpoint[] } ... ]
    */
   MessageRecipientList.fromlist(List<Map> list) {
-    const String context = '${className}.fromList';
 
     /// Initialize the internal object.
     this.recipients = {
@@ -89,7 +88,6 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
    *    List<Recipients> bccRecipients}
    */
   MessageRecipientList.fromMap(Map map) {
-    const String context = '${className}.fromMap';
 
     /// Initialize the internal object.
     this.recipients = {
@@ -116,8 +114,6 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
    * [contact] The new contact to add. See method documentation for adding policy.
    */
   void add(MessageRecipient contact) {
-
-    const String context = '${className}.add';
 
     /// Skip adding duplicated recipients.
     if (!(contact.role is String)) {

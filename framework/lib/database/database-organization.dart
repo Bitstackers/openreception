@@ -11,8 +11,6 @@ class Organization implements Storage.Organization {
   Organization(Connection this._connection);
 
   Future<Model.Organization> get(int organizationID) {
-    final context = '${className}.get';
-
     String sql = '''
     SELECT id, full_name, billing_type, flag
     FROM organizations
@@ -35,8 +33,6 @@ class Organization implements Storage.Organization {
   }
 
   Future<List<Model.Organization>> list() {
-    final context = '${className}.list';
-
     String sql = '''
       SELECT id, full_name, billing_type, flag
       FROM organizations
@@ -85,8 +81,6 @@ class Organization implements Storage.Organization {
   }
 
   Future<Model.Organization> create(Model.Organization organization) {
-    final context = '${className}.create';
-
     String sql = '''
       INSERT INTO organizations (full_name, billing_type, flag)
       VALUES (@full_name, @billing_type, @flag)

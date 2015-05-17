@@ -85,8 +85,6 @@ class Message implements Storage.Message {
   Future<Model.Message> enqueue (Model.Message message) {
     assert (message.ID != Model.Message.noID);
 
-    final String context = '${className}.enqueue';
-
     String sql = '''INSERT INTO message_queue (message_id) VALUES (${message.ID})''';
 
     return this._database.execute(sql).then((rowsAffected) {

@@ -209,7 +209,6 @@ void start(int port, void setupRoutes(HttpServer server)) {
 }
 
 Future writeAndClose(HttpRequest request, String text) {
-  String time = new DateTime.now().toString();
 
   StringBuffer sb        = new StringBuffer();
   final String logPrefix = request.response.statusCode == 200 ? 'Access' : 'Error';

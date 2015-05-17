@@ -15,8 +15,6 @@ abstract class MessageDraft {
    */
   static Future<Map> create(int userID, Map jsonBody, Connection connection) {
 
-    final String context = className + ".createDraft";
-
     String sql = '''
         INSERT INTO message_draft
         (owner, json) 
@@ -56,8 +54,6 @@ abstract class MessageDraft {
    */
   static Future<Map> delete(int draftID, Connection connection) {
 
-    final String context = className + ".deleteDraft";
-
     String sql = '''
     DELETE FROM 
            message_draft 
@@ -81,8 +77,6 @@ abstract class MessageDraft {
    * Lists drafts from the database.
    */
   static Future<Map> list(int offset, int count, Connection connection) {
-
-    final String context = className+ ".messageDraftList";
 
     String sql = '''
     SELECT id, owner, json
