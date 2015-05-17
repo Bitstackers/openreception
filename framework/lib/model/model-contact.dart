@@ -7,7 +7,9 @@ part of openreception.model;
 abstract class ContactJSONKey {
   static const receptionID   = 'reception_id';
   static const contactID     = 'contact_id';
+  @deprecated
   static const department    = 'department';
+  static const departments    = 'departments';
   static const wantsMessages = 'wants_messages';
   static const enabled       = 'enabled';
   static const fullName      = 'full_name';
@@ -21,7 +23,9 @@ abstract class ContactJSONKey {
   static const handling = 'handling';
   static const workhours = 'workhours';
   static const tags = 'tags';
+  @deprecated
   static const info = 'info';
+  static const infos = 'infos';
   @deprecated
   static const position = 'position';
   static const titles = 'titles';
@@ -51,11 +55,13 @@ class Contact {
   int ID            = noID;
   int receptionID   = Reception.noID;
 
+  @deprecated
   String department = '';
   bool wantsMessage = true;
   bool enabled      = true;
 
 
+  @deprecated
   String  info = '';
   String  fullName = '';
   String  contactType = '';
@@ -65,7 +71,7 @@ class Contact {
 
   @deprecated
   String position = '';
-  String relations = '';
+
 
   @deprecated
   String responsibility = '';
@@ -77,6 +83,10 @@ class Contact {
   List<String> workhours = new List<String>();
   List<String> titles = [];
   List<String> responsibilities = [];
+  List<String> relations = [];
+  List<String> departments = [];
+  List<String> infos = [];
+
 
   MessageRecipientList _distributionList    = new MessageRecipientList.empty();
   MessageRecipientList get distributionList => this._distributionList;
@@ -92,7 +102,7 @@ class Contact {
       {
         ContactJSONKey.contactID        : this.ID,
         ContactJSONKey.receptionID      : this.receptionID,
-        ContactJSONKey.department       : this.department,
+        ContactJSONKey.departments      : this.departments,
         ContactJSONKey.wantsMessages    : this.wantsMessage,
         ContactJSONKey.enabled          : this.enabled,
         ContactJSONKey.fullName         : this.fullName,
@@ -105,7 +115,7 @@ class Contact {
         ContactJSONKey.handling         : this.handling,
         ContactJSONKey.workhours        : this.workhours,
         ContactJSONKey.tags             : this.tags,
-        ContactJSONKey.info             : this.info,
+        ContactJSONKey.infos            : this.infos,
         ContactJSONKey.titles           : this.titles,
         ContactJSONKey.relations        : this.relations,
         ContactJSONKey.responsibilities : this.responsibilities
@@ -121,7 +131,7 @@ class Contact {
 
     this.ID                = mapValue(ContactJSONKey.contactID, map);
     this.receptionID       = mapValue(ContactJSONKey.receptionID, map);
-    this.department        = mapValue(ContactJSONKey.department, map);
+    this.departments       = mapValue(ContactJSONKey.departments, map);
     this.wantsMessage      = mapValue(ContactJSONKey.wantsMessages, map);
     this.enabled           = mapValue(ContactJSONKey.enabled, map);
     this.fullName          = mapValue(ContactJSONKey.fullName, map);
@@ -136,7 +146,7 @@ class Contact {
     this.workhours         = mapValue(ContactJSONKey.workhours, map);
     this.handling          = mapValue(ContactJSONKey.handling, map);
     this.tags              = mapValue(ContactJSONKey.tags, map);
-    this.info              = mapValue(ContactJSONKey.info, map);
+    this.infos             = mapValue(ContactJSONKey.infos, map);
     this.titles            = mapValue(ContactJSONKey.titles, map);
     this.relations         = mapValue(ContactJSONKey.relations, map);
     this.responsibilities  = mapValue(ContactJSONKey.responsibilities, map);
