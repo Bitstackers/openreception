@@ -1,6 +1,8 @@
 all: fetch-dependencies upgrade-dependencies
 	@echo Nothing to do for a library, how about 'make tests' instead?
 
+
+
 fetch-dependencies:
 	@echo ============================
 	@echo == Getting dependencies.. ==
@@ -23,3 +25,14 @@ upgrade-dependencies:
 
 tests:
 	@dart test/tests.dart
+
+analyze:
+	@dartanalyzer --no-hints --fatal-warnings lib/*.dart
+	@dartanalyzer --no-hints --fatal-warnings test/*.dart
+
+analyze-hints:
+	@echo "! (dartanalyzer lib/*.dart | grep '^\[')" | bash
+	@echo "! (dartanalyzer test/*.dart | grep '^\[')" | bash
+
+analyze-all: analyze analyze-hints
+
