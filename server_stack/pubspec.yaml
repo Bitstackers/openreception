@@ -20,7 +20,7 @@ dependencies:
   openreception_framework:
     git:
       ref: master
-     url: https://github.com/BitStackers/OpenReceptionFramework.git
+      url: https://github.com/BitStackers/OpenReceptionFramework.git
     version: '> 0.0.22+21'
   path: any
   postgresql: '>= 0.3.0 <4.0.0'
