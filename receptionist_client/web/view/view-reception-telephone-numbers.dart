@@ -64,7 +64,7 @@ class ReceptionTelephoneNumbers extends ViewWidget {
     } else {
       _ui.headerExtra = 'for ${reception.name}';
       _ui.telephoneNumbers = reception.telephonenumbers.map((String number) =>
-          new TelNum(number, 'stuff', false)).toList();
+          new ORModel.PhoneNumber.fromMap({'value': number,'description': 'Description', 'confidential': false})).toList();
     }
   }
 }

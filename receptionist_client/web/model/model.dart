@@ -19,7 +19,6 @@ import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
 
-import '../dummies.dart';
 import '../enums.dart';
 
 import 'package:markdown/markdown.dart' as Markdown;

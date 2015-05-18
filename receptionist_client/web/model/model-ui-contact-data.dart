@@ -17,8 +17,8 @@ part of model;
  * Provides methods for manipulating the contact data UI widget.
  */
 class UIContactData extends UIModel {
-  final Bus<TelNum> _busRinging = new Bus<TelNum>();
-  final DivElement  _myRoot;
+  final Bus<ORModel.PhoneNumber> _busRinging = new Bus<ORModel.PhoneNumber>();
+  final DivElement               _myRoot;
 
   /**
    * Constructor.
@@ -31,7 +31,7 @@ class UIContactData extends UIModel {
   @override HtmlElement get _firstTabElement => _root;
   @override HtmlElement get _focusElement    => _root;
   @override HtmlElement get _lastTabElement  => _root;
-  @override HtmlElement get _listTarget      => _telNumList;
+  @override HtmlElement get _listTarget      => _phoneNumberList;
   @override HtmlElement get _root            => _myRoot;
 
   OListElement get _additionalInfoList => _root.querySelector('.additional-info');
@@ -44,7 +44,7 @@ class UIContactData extends UIModel {
   SpanElement  get _showTagsSpan       => _root.querySelector('.show-tags');
   DivElement   get _tagsDiv            => _root.querySelector('.tags');
   OListElement get _tagsList           => _root.querySelector('.tags .generic-widget-list');
-  OListElement get _telNumList         => _root.querySelector('.telephone-number');
+  OListElement get _phoneNumberList    => _root.querySelector('.telephone-number');
   OListElement get _titleList          => _root.querySelector('.title');
   OListElement get _workHoursList      => _root.querySelector('.work-hours');
 
@@ -71,7 +71,7 @@ class UIContactData extends UIModel {
     _relationsList.children.clear();
     _responsibilityList.children.clear();
     _tagsList.children.clear();
-    _telNumList.children.clear();
+    _phoneNumberList.children.clear();
     _titleList.children.clear();
     _workHoursList.children.clear();
   }
@@ -79,7 +79,7 @@ class UIContactData extends UIModel {
   /**
    * Returns the mousedown click stream for the telephone numbers list.
    */
-  Stream<MouseEvent> get clickSelectTelNum => _telNumList.onMouseDown;
+  Stream<MouseEvent> get clickSelectPhoneNumber => _phoneNumberList.onMouseDown;
 
   /**
    * Add [items] ot the commands list.
@@ -94,20 +94,15 @@ class UIContactData extends UIModel {
 
     headerExtra = 'for ${contact.fullName}';
 
-    additionalInfo = [contact.info]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/122
+    additionalInfo = contact.infos;
     backups = contact.backupContacts;
     commands = contact.handling;
-    departments = [contact.department]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/123
+    departments = contact.departments;
     emailAddresses = contact.emailaddresses;
-    relations = [contact.relations]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/124
-    responsibility = [contact.responsibility]; // TODO (TL): Bug report https://github.com/Bitstackers/ReceptionistClient/issues/125
+    relations = contact.relations;
+    responsibility = contact.responsibilities;
     tags = contact.tags;
-
-    List<TelNum> telNums = new List<TelNum>();
-    contact.phones.forEach((Map map) {
-      telNums.add(new TelNum(map['value'], map['description'], map['confidential']));
-    });
-    telephoneNumbers = telNums;
+    telephoneNumbers = contact.phones;
 
     titles = [contact.position];
     workHours = contact.workhours;
@@ -129,16 +124,16 @@ class UIContactData extends UIModel {
    */
   void _markRinging(LIElement li) {
     if(li != null && !li.classes.contains('ringing')) {
-      _telNumList.children.forEach((Element element) => element.classes.remove('ringing'));
+      _phoneNumberList.children.forEach((Element element) => element.classes.remove('ringing'));
       li.classes.add('ringing');
       li.scrollIntoView();
     }
   }
 
   /**
-   * Return true if no telNumList items are marked "ringing".
+   * Return true if no phonenumbers are marked "ringing".
    */
-  bool get noRinging => !_telNumList.children.any((e) => e.classes.contains('ringing'));
+  bool get noRinging => !_phoneNumberList.children.any((e) => e.classes.contains('ringing'));
 
   /**
    * Observers
@@ -161,9 +156,9 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Fires when a [TelNum] is marked ringing.
+   * Fires when a [ORModel.PhoneNumber] is marked ringing.
    */
-  Stream<TelNum> get onMarkedRinging => _busRinging.stream;
+  Stream<ORModel.PhoneNumber> get onMarkedRinging => _busRinging.stream;
 
   /**
    * TODO (TL): Comment
@@ -185,35 +180,35 @@ class UIContactData extends UIModel {
   set responsibility(List<String> items) => _populateList(_responsibilityList, items);
 
   /**
-   * Mark selected [TelNum] ringing if we're not already ringing.
+   * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing.
    */
   void _ring(_) {
-    LIElement li = _telNumList.querySelector('.selected');
+    LIElement li = _phoneNumberList.querySelector('.selected');
 
     if(li != null) {
-      if(!_telNumList.children.any((LIElement li) => li.classes.contains('ringing'))) {
+      if(!_phoneNumberList.children.any((LIElement li) => li.classes.contains('ringing'))) {
         li.classes.toggle('ringing');
-        _busRinging.fire(new TelNum.fromJson(JSON.decode(li.dataset['object'])));
+        _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
       }
     }
   }
 
   /**
-   * Select the first [TelNum] in the list.
+   * Select the first [ORModel.PhoneNumber] in the list.
    */
-  void selectFirstTelNum() {
-    if(_telNumList.children.isNotEmpty) {
-      _markSelected(_scanForwardForVisibleElement(_telNumList.children.first));
+  void selectFirstPhoneNumber() {
+    if(_phoneNumberList.children.isNotEmpty) {
+      _markSelected(_scanForwardForVisibleElement(_phoneNumberList.children.first));
     }
   }
 
   /**
-   * Select the [index] [TelNum] from [_telNumList]. If [index] is out of range,
-   * select nothing.
+   * Select the [index] [ORModel.PhoneNumber] from [_phoneNumberList]. If
+   * [index] is out of range, select nothing.
    */
   void selectFromIndex(int index) {
-    if(_telNumList.children.length >= index) {
-      _markSelected(_scanForwardForVisibleElement(_telNumList.children[index]));
+    if(_phoneNumberList.children.length >= index) {
+      _markSelected(_scanForwardForVisibleElement(_phoneNumberList.children[index]));
     }
   }
 
@@ -222,7 +217,7 @@ class UIContactData extends UIModel {
    * the target of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if(event.target is LIElement && (event.target as LIElement).parent == _telNumList) {
+    if(event.target is LIElement && (event.target as LIElement).parent == _phoneNumberList) {
       _markSelected(event.target);
     }
   }
@@ -233,7 +228,7 @@ class UIContactData extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
         {[Key.NumMult]: _ring, /// TODO (TL): Not too sure about this here...
-         'Alt+1'      : (_) => selectFirstTelNum(),
+         'Alt+1'      : (_) => selectFirstPhoneNumber(),
          'Alt+2'      : (_) => selectFromIndex(1),
          'Alt+3'      : (_) => selectFromIndex(2),
          'Alt+4'      : (_) => selectFromIndex(3),
@@ -250,10 +245,10 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the telephone number list.
    */
-  set telephoneNumbers(List<TelNum> items) {
+  set telephoneNumbers(List<ORModel.PhoneNumber> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((TelNum item) {
+    items.forEach((ORModel.PhoneNumber item) {
       final SpanElement spanLabel  = new SpanElement();
       final SpanElement spanNumber = new SpanElement();
 
@@ -270,7 +265,7 @@ class UIContactData extends UIModel {
                 ..dataset['object'] = JSON.encode(item));
     });
 
-    _telNumList.children = list;
+    _phoneNumberList.children = list;
   }
 
   /**

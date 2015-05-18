@@ -58,19 +58,6 @@ class UIMessageCompose extends UIModel {
   InputElement         get _urgentInput        => _root.querySelector('.checks .urgent');
 
   /**
-   * Add [endpoints] to the recipients list.
-   */
-  void set endpoints(List<Map> endpoints) {
-    List<LIElement> list = new List<LIElement>();
-
-    endpoints.forEach((endpoint) => list.add(new LIElement()..text = endpoint['address']));
-
-    _recipientsList.children = list;
-
-    _toggleButtons(null);
-  }
-
-  /**
    * Make sure we never take focus away from an already focused element, unless
    * we're [event].target is another widget member with tabindex set > 0.
    */
@@ -114,6 +101,36 @@ class UIMessageCompose extends UIModel {
 
     _callerNameInput.onInput.listen(_toggleButtons);
     _messageTextarea.onInput.listen(_toggleButtons);
+  }
+
+  /**
+   * Add [recipients] to the recipients list.
+   */
+  void set recipients(ORModel.MessageRecipientList recipientList) {
+    List<LIElement> list = new List<LIElement>();
+
+    Map<String, List> map = recipientList.asMap;
+
+    map[ORModel.Role.TO].forEach((Map recipient) {
+      list.add(new LIElement()..text = '${recipient['contact']['name']} (${recipient['reception']['name']})');
+    });
+
+    map[ORModel.Role.CC].forEach((Map recipient) {
+      list.add(new LIElement()
+                    ..text = '${recipient['contact']['name']} (${recipient['reception']['name']})'
+                    ..classes.add('cc'));
+
+    });
+
+    map[ORModel.Role.BCC].forEach((Map recipient) {
+      list.add(new LIElement()
+                    ..text = '${recipient['contact']['name']} (${recipient['reception']['name']})'
+                    ..classes.add('bcc'));
+    });
+
+    _recipientsList.children = list;
+
+    _toggleButtons(null);
   }
 
   /**

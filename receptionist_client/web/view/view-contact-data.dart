@@ -92,15 +92,16 @@ class ContactData extends ViewWidget {
       _ui.clear();
       _ui.contact = contact;
 
-      _ui.selectFirstTelNum();
+      _ui.selectFirstPhoneNumber();
     }
   }
 
   /**
-   * This is called when the [_ui] fires a [TelNum] as marked ringing.
+   * This is called when the [_ui] fires a [ORModel.PhoneNumber] as marked
+   * ringing.
    */
-  void _call(TelNum telNum) {
-    print('view-contact-data.call() ${telNum}');
+  void _call(ORModel.PhoneNumber phoneNumber) {
+    print('view-contact-data.call() ${phoneNumber}');
     /// TODO (TL): Call the Controller layer to actually get the call going.
   }
 }

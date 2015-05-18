@@ -64,10 +64,10 @@ class UIReceptionTelephoneNumbers extends UIModel {
   /**
    * Add [items] to the telephone number list.
    */
-  set telephoneNumbers(List<TelNum> items) {
+  set telephoneNumbers(List<ORModel.PhoneNumber> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((TelNum item) {
+    items.forEach((ORModel.PhoneNumber item) {
       final SpanElement spanLabel  = new SpanElement();
       final SpanElement spanNumber = new SpanElement();
 

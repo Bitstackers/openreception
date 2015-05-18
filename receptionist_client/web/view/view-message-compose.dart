@@ -78,7 +78,7 @@ class MessageCompose extends ViewWidget {
       print('View.MessageCompose got an empty contact - undecided on what to do');
       /// TODO (TL): What should we do here?
     } else {
-      _ui.endpoints = contact.endpoints;
+      _ui.recipients = contact.distributionList;
     }
   }
 

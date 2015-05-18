@@ -994,6 +994,7 @@
                     border: solid 1px #aaa;
                     z-index: 2;
                     overflow: auto;
+                    font-size: 0.9em;
                   }
 
                   #message-compose .recipients-hidden {
@@ -1004,12 +1005,12 @@
                     padding: 0.1em;
                   }
 
-                  #message-compose .recipients .cc:after {
-                    content: ' (cc)'
+                  #message-compose .recipients .cc:before {
+                    content: '(cc) '
                   }
 
-                  #message-compose .recipients .bcc:after {
-                    content: ' (bcc)'
+                  #message-compose .recipients .bcc:before {
+                    content: '(bcc) '
                   }
 
                   #message-compose .name-hint {
