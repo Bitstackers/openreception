@@ -32,7 +32,51 @@ class UIMyCallQueue extends UIModel {
   @override HtmlElement get _lastTabElement  => _list;
   @override HtmlElement get _root            => _myRoot;
 
-  OListElement get _list => _root.querySelector('.generic-widget-list');
+  SpanElement  get _queueLength => _root.querySelector('.generic-widget-headline span.queue-length');
+  OListElement get _list        => _root.querySelector('.generic-widget-list');
+
+  /**
+   * Read all .call-wait-time values in _list and increment them by one.
+   */
+  void _callAgeUpdate() {
+    new Timer.periodic(new Duration(seconds: 1), (_) {
+      _list.querySelectorAll('li span.call-wait-time').forEach((SpanElement span) {
+        if(span.text.isEmpty) {
+          span.text = '0';
+        } else {
+          span.text = (int.parse(span.text) + 1).toString();
+        }
+      });
+    });
+  }
+
+  /**
+   * Add [calls] to the calls list.
+   */
+  set calls(List<ORModel.Call> calls) {
+    final List<LIElement> list = new List<LIElement>();
+
+    calls.forEach((ORModel.Call call) {
+      SpanElement callDesc = new SpanElement()
+                                  ..classes.add('call-description')
+                                  ..text = call.callerID;
+      /// TODO (TL): When we get VIP, add class .flag-vip to callDesc on VIP calls.
+
+      SpanElement callWait = new SpanElement()
+                                  ..classes.add('call-wait-time')
+                                  ..text = call.arrived.difference(new DateTime.now()).inSeconds.toString();
+
+      list.add(new LIElement()
+                    ..dataset['id'] = call.ID
+                    ..dataset['object'] = JSON.encode(call)
+                    ..children.addAll([callDesc, callWait])
+                    ..classes.toggle('locked', call.locked));
+    });
+
+    _list.children = list;
+
+    _queueLengthUpdate();
+  }
 
   /**
    * Remove all entries from the list and clear the header.
@@ -48,19 +92,15 @@ class UIMyCallQueue extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
+
+    _callAgeUpdate();
   }
 
   /**
-   * Add [items] to the calls list.
+   * Update the queue length counter in the widget.
    */
-  set calls(List<String> items) {
-    final List<LIElement> list = new List<LIElement>();
-
-    items.forEach((String item) {
-      list.add(new LIElement()..text = item);
-    });
-
-    _list.children = list;
+  void _queueLengthUpdate() {
+    _queueLength.text = _list.querySelectorAll('li').length.toString();
   }
 
   /**

@@ -1755,8 +1755,31 @@
                 flex-grow: 2;
               }
 
+              #global-call-queue .generic-widget-headline span.queue-length {
+                float: right;
+              }
+
               #global-call-queue .generic-widget-list {
                 outline: 0;
+              }
+
+              #global-call-queue .generic-widget-list li.locked {
+                opacity: 0.2;
+              }
+
+              #global-call-queue .generic-widget-list li span.flag-vip:before {
+                content: '! ';
+                font-weight: bold;
+                font-size: 1.1em;
+                color: red;
+              }
+
+              #global-call-queue .generic-widget-list li span.call-description {
+                padding-right: 10px;
+              }
+
+              #global-call-queue .generic-widget-list li span.call-wait-time {
+                float: right;
               }
             </style>
 
@@ -1766,6 +1789,7 @@
             <h4 class="generic-widget-headline">
               <span data-lang-text="global-call-queue-header">::queued calls::</span>
               <span class="extra-header"></span>
+              <span class="queue-length">0</span>
             </h4>
             <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>
@@ -1788,8 +1812,31 @@
                 flex-grow: 1;
               }
 
+              #my-call-queue .generic-widget-headline span.queue-length {
+                float: right;
+              }
+
               #my-call-queue .generic-widget-list {
                 outline: 0;
+              }
+
+              #my-call-queue .generic-widget-list li.locked {
+                opacity: 0.2;
+              }
+
+              #my-call-queue .generic-widget-list li span.flag-vip:before {
+                content: '! ';
+                font-weight: bold;
+                font-size: 1.1em;
+                color: red;
+              }
+
+              #my-call-queue .generic-widget-list li span.call-description {
+                padding-right: 10px;
+              }
+
+              #my-call-queue .generic-widget-list li span.call-wait-time {
+                float: right;
               }
             </style>
 
@@ -1799,6 +1846,7 @@
             <h4 class="generic-widget-headline">
               <span data-lang-text="my-queued-calls-header">::my queued calls::</span>
               <span class="extra-header"></span>
+              <span class="queue-length">0</span>
             </h4>
             <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
           </div>

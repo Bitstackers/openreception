@@ -55,6 +55,9 @@ class GlobalCallQueue extends ViewWidget {
 
   // TODO (TL): Remove this testing code
   void test() {
-    _ui.calls = ['Call 1', 'Call 2', 'Call 3','Call 4', 'Call 5', 'Call 6'];
+    ORModel.Call call1 = new ORModel.Call.fromMap({'id': '1', 'caller_id': '60431992', 'arrival_time': new DateTime.now().millisecondsSinceEpoch~/1000});
+    ORModel.Call call2 = new ORModel.Call.fromMap({'id': '2', 'caller_id': '60431990', 'arrival_time': new DateTime.now().millisecondsSinceEpoch~/1000});
+
+    _ui.calls = [call1, call2];
   }
 }

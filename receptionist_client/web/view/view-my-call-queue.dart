@@ -55,6 +55,9 @@ class MyCallQueue extends ViewWidget {
 
   // TODO (TL): Remove this testing code
   void test() {
-    _ui.calls = ['Call 10', 'Call 11', 'Call 12','Call 13', 'Call 14', 'Call 15'];
+    ORModel.Call call1 = new ORModel.Call.fromMap({'id': '3', 'caller_id': '88329100', 'arrival_time': new DateTime.now().millisecondsSinceEpoch~/1000});
+    ORModel.Call call2 = new ORModel.Call.fromMap({'id': '4', 'caller_id': '88329101', 'arrival_time': new DateTime.now().millisecondsSinceEpoch~/1000});
+
+    _ui.calls = [call1, call2];
   }
 }
