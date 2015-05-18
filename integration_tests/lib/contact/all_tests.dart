@@ -5,6 +5,7 @@ runContactTests () {
   group ('RESTContactStore', () {
     Transport.Client transport = null;
     Service.RESTContactStore contactStore = null;
+    Receptionist r;
 
     setUp (() {
       transport = new Transport.Client();
@@ -57,5 +58,33 @@ runContactTests () {
 
     test ('Phone listing',
         () => ContactStore.phones(contactStore));
+
+
+    setUp (() {
+      transport = new Transport.Client();
+      contactStore = new Service.RESTContactStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+      r = ReceptionistPool.instance.aquire();
+
+      return r.initialize();
+    });
+
+    tearDown (() {
+      contactStore = null;
+      transport.client.close(force : true);
+
+
+      return r.teardown();
+    });
+
+    test ('CalendarEntry creation (event presence)',
+        () => ContactStore.calendarEntryCreateEvent(contactStore, r));
+
+    test ('CalendarEntry update (event presence)',
+        () => ContactStore.calendarEntryUpdateEvent(contactStore, r));
+
+    test ('CalendarEntry creation (event presence)',
+        () => ContactStore.calendarEntryDeleteEvent(contactStore, r));
+
 });
 }
