@@ -161,7 +161,9 @@ class ReceptionistclientReady {
 
     _globalCallQueue = new GlobalCallQueue
         (new Model.UIGlobalCallQueue(querySelector('#global-call-queue')),
-         new Controller.Destination(Context.Home, Widget.GlobalCallQueue));
+         new Controller.Destination(Context.Home, Widget.GlobalCallQueue),
+         _notification,
+        _callController);
 
     _messageArchive = new MessageArchive
         (new Model.UIMessageArchive(querySelector('#message-archive')),
@@ -183,7 +185,9 @@ class ReceptionistclientReady {
 
     _myCallQueue = new MyCallQueue
         (new Model.UIMyCallQueue(querySelector('#my-call-queue')),
-         new Controller.Destination(Context.Home, Widget.MyCallQueue));
+         new Controller.Destination(Context.Home, Widget.MyCallQueue),
+         _notification,
+         _callController);
 
     _receptionAddresses = new ReceptionAddresses
         (new Model.UIReceptionAddresses(querySelector('#reception-addresses')),

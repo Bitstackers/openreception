@@ -19,13 +19,18 @@ part of view;
 class GlobalCallQueue extends ViewWidget {
   final Controller.Destination  _myDestination;
   final Model.UIGlobalCallQueue _ui;
+  final Controller.Call         _callController;
+  final Service.Notification    _notifications;
 
   /**
    * Constructor.
    */
   GlobalCallQueue(Model.UIGlobalCallQueue this._ui,
-                  Controller.Destination this._myDestination) {
-    test(); // TODO (TL): get rid of this testing code.
+                  Controller.Destination this._myDestination,
+                  Service.Notification this._notifications,
+                  Controller.Call this._callController) {
+
+    this._reloadCallList();
 
     _observers();
   }
@@ -51,13 +56,20 @@ class GlobalCallQueue extends ViewWidget {
     _navigate.onGo.listen(setWidgetState);
 
     _ui.onClick.listen(activateMe);
+
+    ///Call Observers
+    this._notifications.onAnyCallStateChange.listen((Model.Call call) {
+      ///TODO (TL): delegate the call changes to UI component.
+    });
   }
 
-  // TODO (TL): Remove this testing code
-  void test() {
-    ORModel.Call call1 = new ORModel.Call.fromMap({'id': '1', 'caller_id': '60431992', 'arrival_time': new DateTime.now().millisecondsSinceEpoch~/1000});
-    ORModel.Call call2 = new ORModel.Call.fromMap({'id': '2', 'caller_id': '60431990', 'arrival_time': new DateTime.now().millisecondsSinceEpoch~/1000});
+  Future _reloadCallList() {
 
-    _ui.calls = [call1, call2];
+    bool unassigned(Model.Call call) => call.assignedTo == Model.User.noID;
+
+    return this._callController.listCalls()
+      .then((Iterable<Model.Call> calls) {
+        _ui.calls = calls.where(unassigned).toList(growable: false);
+    });
   }
 }
