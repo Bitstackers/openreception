@@ -13,7 +13,7 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
 
   Map<String, List<MessageRecipient>> recipients = {};
 
-  Map get asMap =>
+  Map<String, List<Map>> get asMap =>
       {
         Role.TO  : this.recipients[Role.TO].map((MessageRecipient recipient) => recipient.asMap).toList(),
         Role.CC  : this.recipients[Role.CC].map((MessageRecipient recipient) => recipient.asMap).toList(),
