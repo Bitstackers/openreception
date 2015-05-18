@@ -64,7 +64,7 @@ class UIMyCallQueue extends UIModel {
 
       SpanElement callWait = new SpanElement()
                                   ..classes.add('call-wait-time')
-                                  ..text = call.arrived.difference(new DateTime.now()).inSeconds.toString();
+                                  ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
 
       list.add(new LIElement()
                     ..dataset['id'] = call.ID
