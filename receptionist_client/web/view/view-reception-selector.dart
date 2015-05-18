@@ -24,8 +24,8 @@ class ReceptionSelector extends ViewWidget {
   /**
    * Constructor.
    */
-  ReceptionSelector(Controller.Destination this._myDestination,
-                    Model.UIModel this._ui,
+  ReceptionSelector(Model.UIModel this._ui,
+                    Controller.Destination this._myDestination,
                     Controller.Reception this._receptionController) {
     _ui.setHint('alt+v');
     _observers();

@@ -238,8 +238,8 @@ class ReceptionistclientReady {
          uiReceptionSelector);
 
     _receptionSelector = new ReceptionSelector
-        (new Controller.Destination(Context.Home, Widget.ReceptionSelector),
-         uiReceptionSelector,
+        (uiReceptionSelector,
+         new Controller.Destination(Context.Home, Widget.ReceptionSelector),
          _receptionController);
 
     _receptionTelephoneNumbers = new ReceptionTelephoneNumbers
