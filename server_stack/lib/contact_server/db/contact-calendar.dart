@@ -5,6 +5,8 @@ part of contactserver.database;
 
 abstract class ContactCalendar {
 
+  static final Logger log = new Logger ('$libraryName.ContactCalendar');
+
   static Future<bool> exists({int contactID, int receptionID, int eventID}) {
     String sql = '''
 SELECT 
@@ -37,34 +39,47 @@ LIMIT 1;
 
   }
 
-  //TODO: Extract the eventID from the database and add it to the returned
-  //  CalendarEntry
-  static Future<Model.CalendarEntry> createEvent(Model.CalendarEntry entry, {Map distributionList : null}) {
+  static Future<Model.CalendarEntry> createEvent(Model.CalendarEntry entry) {
     String sql = '''
-START TRANSACTION;
-
-   INSERT INTO calendar_events 
-     ("id", "start", "stop", "message") 
-   VALUES 
-     (DEFAULT, @start, @end, @content);
-
-   INSERT INTO contact_calendar 
-     ("reception_id", "contact_id", 
-"distribution_list", "event_id")
-   VALUES
-     (@receptionID, @contactID, @distributionList, lastval());
-COMMIT;''';
+WITH new_event AS(
+INSERT INTO calendar_events (start, stop, message)
+    VALUES (@start, @end, @content)
+    RETURNING id as event_id
+)
+INSERT INTO contact_calendar 
+  (reception_id, 
+   contact_id, 
+   event_id)
+SELECT 
+  @receptionID,
+  @contactID, 
+  event_id
+FROM new_event
+RETURNING event_id
+''';
 
     Map parameters =
       {'receptionID'      : entry.receptionID,
        'contactID'        : entry.contactID,
-       'distributionList' : distributionList,
        'start'            : entry.start,
        'end'              : entry.stop,
        'content'          : entry.content};
 
-    return connection.execute(sql, parameters).then((_) => entry);
-  }
+    return connection.query(sql, parameters)
+        .then((Iterable rows) {
+          if(rows.isEmpty) {
+            //TODO: Log parameters SQL.
+            return new Future.error(new StateError('Failed to insert event'));
+          }
+
+          entry.ID  = rows.first.event_id;
+
+          return entry;
+        }).catchError((error, stackTrace) {
+          log.severe(error, stackTrace);
+          return new Future.error(error, stackTrace);
+        });
+    }
 
 
   static Future<int> updateEvent(Model.CalendarEntry entry, {Map distributionList : null}) {
