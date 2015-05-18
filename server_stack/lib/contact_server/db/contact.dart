@@ -79,7 +79,7 @@ abstract class Contact {
                             FROM (SELECT 
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
-                                    contact.full_name      as conctact_name,
+                                    contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
                                                             JOIN contacts contact ON (recipient_contact_id = contact.id) 
@@ -93,7 +93,7 @@ abstract class Contact {
                             FROM (SELECT 
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
-                                    contact.full_name      as conctact_name,
+                                    contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
                                                             JOIN contacts contact ON (recipient_contact_id = contact.id) 
@@ -157,7 +157,7 @@ abstract class Contact {
                             FROM (SELECT 
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
-                                    contact.full_name      as conctact_name,
+                                    contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
                                                             JOIN contacts contact ON (recipient_contact_id = contact.id) 
@@ -171,7 +171,7 @@ abstract class Contact {
                             FROM (SELECT 
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
-                                    contact.full_name      as conctact_name,
+                                    contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
                                                             JOIN contacts contact ON (recipient_contact_id = contact.id) 
