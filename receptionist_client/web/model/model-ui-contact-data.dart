@@ -103,8 +103,7 @@ class UIContactData extends UIModel {
     responsibility = contact.responsibilities;
     tags = contact.tags;
     telephoneNumbers = contact.phones;
-
-    titles = [contact.position];
+    titles = contact.titles;
     workHours = contact.workhours;
   }
 
