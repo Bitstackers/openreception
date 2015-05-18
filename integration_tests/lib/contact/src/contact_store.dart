@@ -156,6 +156,49 @@ abstract class ContactStore {
   }
 
   /**
+   * Test server behaviour when trying to create a new calendar event object.
+   *
+   * The expected behaviour is that the server should return the created
+   * CalendarEntry object and send out a CalendarEvent notification.
+   */
+  static Future calendarEntryCreateEvent (Storage.Contact contactStore,
+                                          Receptionist receptionist) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.CalendarEntry event =
+        new Model.CalendarEntry.forContact(contactID, receptionID)
+         ..beginsAt    = new DateTime.now()
+         ..until       = new DateTime.now().add(new Duration(hours: 2))
+         ..content     = Randomizer.randomEvent();
+
+    log.info('Creating a calendar event for contact $contactID@$receptionID.');
+
+    return contactStore.calendarEventCreate(event)
+        .then((Model.CalendarEntry createdEvent) {
+          expect(event.content, equals(createdEvent.content));
+
+          // We round to the nearest second, and have to compensate for skew.
+          expect(event.start.difference(createdEvent.start),
+              lessThan(new Duration(seconds : 1)));
+          expect(event.stop.difference(createdEvent.stop),
+              lessThan(new Duration(seconds : 1)));
+          expect(event.receptionID, equals(createdEvent.receptionID));
+          expect(event.contactID, equals(createdEvent.contactID));
+
+          return receptionist.waitFor(eventType: Event.Key.CalendarChange)
+            .then((Event.CalendarChange event) {
+              expect (event.contactID, equals(contactID));
+              expect (event.receptionID, equals(receptionID));
+              expect (event.entryID, greaterThan(Model.CalendarEntry.noID));
+              expect (event.state, equals(Event.CalendarEntryState.CREATED));
+           });
+    });
+  }
+
+
+  /**
    * Test server behaviour when trying to update a calendar event object that
    * exists.
    *
@@ -194,6 +237,60 @@ abstract class ContactStore {
                 lessThan(new Duration(seconds : 1)));
             expect(event.receptionID, equals(updatedEvent.receptionID));
             expect(event.contactID, equals(updatedEvent.contactID));
+
+      });
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to update a calendar event object that
+   * exists.
+   *
+   * The expected behaviour is that the server should return the updated
+   * CalendarEntry object and send out a CalendarEvent notification.
+   */
+  static Future calendarEntryUpdateEvent (Storage.Contact contactStore,
+                                          Receptionist receptionist) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return contactStore.calendar(contactID, receptionID)
+      .then((List <Model.CalendarEntry> events) {
+
+      // Update the last event in list.
+      Model.CalendarEntry event = events.last
+          ..beginsAt    = new DateTime.now()
+          ..until       = new DateTime.now().add(new Duration(hours: 2))
+          ..content     = Randomizer.randomEvent();
+
+      log.info
+        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+
+      log.info
+        ('Updating a calendar event for contact $contactID@$receptionID.');
+
+      return contactStore.calendarEventUpdate(event)
+          .then((Model.CalendarEntry updatedEvent) {
+            expect(event.content, equals(updatedEvent.content));
+            expect(event.ID, equals(updatedEvent.ID));
+
+            // We round to the nearest second, and have to compensate for skew.
+            expect(event.start.difference(updatedEvent.start),
+                lessThan(new Duration(seconds : 1)));
+            expect(event.stop.difference(updatedEvent.stop),
+                lessThan(new Duration(seconds : 1)));
+            expect(event.receptionID, equals(updatedEvent.receptionID));
+            expect(event.contactID, equals(updatedEvent.contactID));
+
+            return receptionist.waitFor(eventType: Event.Key.CalendarChange)
+              .then((Event.CalendarChange event) {
+                expect (event.contactID, equals(contactID));
+                expect (event.receptionID, equals(receptionID));
+                expect (event.entryID, greaterThan(Model.CalendarEntry.noID));
+                expect (event.state, equals(Event.CalendarEntryState.UPDATED));
+             });
+
       });
     });
   }
@@ -270,6 +367,44 @@ abstract class ContactStore {
         ('Deleting last calendar event for contact $contactID@$receptionID.');
 
       return contactStore.calendarEventRemove(event);
+    });
+
+  }
+
+  /**
+   * Test server behaviour when trying to delete a calendar event object that
+   * exists.
+   *
+   * The expected behaviour is that the server should succeed and send out a
+   * CalendarChange Notification.
+   */
+  static Future calendarEntryDeleteEvent (Storage.Contact contactStore,
+                                          Receptionist receptionist) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return contactStore.calendar(contactID, receptionID)
+      .then((List <Model.CalendarEntry> events) {
+
+      // Update the last event in list.
+      Model.CalendarEntry event = events.last;
+
+      log.info
+        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+
+      log.info
+        ('Deleting last calendar event for contact $contactID@$receptionID.');
+
+      return contactStore.calendarEventRemove(event).then((_) {
+        return receptionist.waitFor(eventType: Event.Key.CalendarChange)
+          .then((Event.CalendarChange event) {
+            expect (event.contactID, equals(contactID));
+            expect (event.receptionID, equals(receptionID));
+            expect (event.entryID, greaterThan(Model.CalendarEntry.noID));
+            expect (event.state, equals(Event.CalendarEntryState.DELETED));
+         });
+      });
     });
 
   }
