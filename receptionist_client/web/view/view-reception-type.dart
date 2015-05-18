@@ -62,8 +62,7 @@ class ReceptionType extends ViewWidget {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
-      _ui.headerExtra = 'for ${reception.name}';
-      //TODO: reception.customertype should be List<String>.
+      _ui.headerExtra = ': ${reception.name}';
       _ui.type = [reception.customertype];
     }
   }

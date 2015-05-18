@@ -94,7 +94,7 @@ class ReceptionCalendar extends ViewWidget {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
-      _ui.headerExtra = 'for ${reception.name}';
+      _ui.headerExtra = ': ${reception.name}';
       _fetchCalendar(reception);
     }
   }

@@ -62,7 +62,7 @@ class ReceptionEmail extends ViewWidget {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
-      _ui.headerExtra = 'for ${reception.name}';
+      _ui.headerExtra = ': ${reception.name}';
       _ui.email = reception.emailAddresses;
     }
   }

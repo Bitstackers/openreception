@@ -90,10 +90,6 @@ class UIContactData extends UIModel {
    * Populate widget with [contact] data.
    */
   set contact(Contact contact) {
-    clear();
-
-    headerExtra = 'for ${contact.fullName}';
-
     additionalInfo = contact.infos;
     backups = contact.backupContacts;
     commands = contact.handling;

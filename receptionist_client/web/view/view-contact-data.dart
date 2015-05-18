@@ -90,6 +90,7 @@ class ContactData extends ViewWidget {
       _ui.clear();
     } else {
       _ui.clear();
+      _ui.headerExtra = ': ${contact.fullName}';
       _ui.contact = contact;
 
       _ui.selectFirstPhoneNumber();

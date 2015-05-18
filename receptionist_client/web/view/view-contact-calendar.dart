@@ -91,7 +91,7 @@ class ContactCalendar extends ViewWidget {
     if(contact.isEmpty) {
       _ui.clear();
     } else {
-      _ui.headerExtra = 'for ${contact.fullName}';
+      _ui.headerExtra = ': ${contact.fullName}';
 
       this._contactController.getCalendar(contact)
         .then((Iterable<Model.ContactCalendarEntry> entries) {
