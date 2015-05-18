@@ -325,10 +325,10 @@ abstract class Contact {
 
       // Responsiblities
       if (row.attributes.containsKey (Model.ContactJSONKey.responsibility)) {
-        infos = [row.attributes[Model.ContactJSONKey.responsibility]];
+        responsibilities = [row.attributes[Model.ContactJSONKey.responsibility]];
       }
       else if(row.attributes.containsKey (Model.ContactJSONKey.responsibilities)) {
-        infos = row.attributes[Model.ContactJSONKey.responsibilities];
+        responsibilities = row.attributes[Model.ContactJSONKey.responsibilities];
       }
     }
 
