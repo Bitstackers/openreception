@@ -21,21 +21,18 @@ abstract class Transfer {
         .then((_) => caller.dial (reception))
 
         .then((_) => log.info ('Receptionist $receptionist waits for call.'))
-        .then((_) => receptionist.waitForCall()
-         .then((Model.Call call) => inboundCall = call))
-        .then((_) => log.info ('Receptionist $receptionist tries to pick up call $inboundCall'))
-        .then((_) => receptionist.pickup(inboundCall)
-          .then((Model.Call receivedCall) {
+        .then((_) => receptionist.huntNextCall()
+         .then((Model.Call receivedCall) {
+             inboundCall = receivedCall;
              expect (inboundCall.ID, equals(receivedCall.ID));
              log.info ('Receptionist $receptionist got call $receivedCall');
           }))
         .then((_) => receptionist.waitForInboundCall())
-        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup, callID: inboundCall.ID))
         .then((_) => receptionist.eventStack.clear())
         .then((_) => log.info ('Receptionist ${receptionist} parks call $inboundCall.'))
-        .then((_) => receptionist.park (inboundCall))
+        .then((_) => receptionist.park (inboundCall, waitForEvent: true))
         .then((_) => log.info ('Receptionist ${receptionist} awaits parking confirmation of $inboundCall.'))
-        .then((_) => receptionist.waitFor(eventType: Event.Key.callPark, callID: inboundCall.ID))
         .then((_) => log.info ('Receptionist ${receptionist} got parking confirmation of $inboundCall.'))
         .then((_) => log.info ('Receptionist ${receptionist} awaits phone disconnect.'))
         .then((_) => receptionist.waitForPhoneHangup())
@@ -59,6 +56,11 @@ abstract class Transfer {
         .then((_) => receptionist.waitFor(eventType : Event.Key.callTransfer))
         .then((_) => log.info ('Waiting for ${receptionist} phone to hang up'))
         .then((_) => receptionist.waitForPhoneHangup())
+        .then((_) {
+            log.info ('Expecting both caller and callee to have an active call');
+            expect (caller.currentCall, isNotNull);
+            expect (callee.currentCall, isNotNull);
+          })
         .then((_) => log.info ('Caller ${caller} hangs up'))
         .then((_) => caller.hangupAll())
         .then((_) => log.info ('Caller ${caller} waits for hang up'))
