@@ -13,11 +13,11 @@ abstract class Reception {
       return new shelf.Response.internalServerError (body : 'db.getreceptionListReturn failed: $error');
     });
   }
-  
+
   static Future<shelf.Response> get(shelf.Request request) {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return db.getReception(receptionID)
+    return db.Reception.get(receptionID)
       .then((Model.Reception reception) {
         return new shelf.Response.ok (JSON.encode(reception));
       })
@@ -25,9 +25,9 @@ abstract class Reception {
         if (error is Storage.NotFound) {
           return new shelf.Response.notFound (JSON.encode({'error' : error.toString()}));
         }
-      
+
         log.severe (error, stackTrace);
-        return new shelf.Response.internalServerError 
+        return new shelf.Response.internalServerError
           (body : 'receptionserver.router.getReception: $error');
       });
   }
