@@ -9,61 +9,75 @@ abstract class Message {
   /**
    * HTTP Request handler for returning a single message resource.
    */
-  static void get(HttpRequest request) {
-    int messageID  = pathParameter(request.uri, 'message');
+  static Future<shelf.Response> get(shelf.Request request) {
+    int messageID  = int.parse(shelf_route.getPathParameter(request, 'mid'));
 
-    messageStore.get(messageID)
+    return _messageStore.get(messageID)
       .then((Model.Message message) {
-        writeAndClose(request, JSON.encode(message));
+        return new shelf.Response.ok (JSON.encode(message));
       })
       .catchError((error, stackTrace) {
 
-      if (error is Storage.NotFound) {
-        notFound(request, {'description' : error.message});
-      } else {
-        serverError(request, '$error : $stackTrace');
-      }
-    });
+        if (error is Storage.NotFound) {
+          return new shelf.Response.notFound
+              (JSON.encode({'description' : error.message}));
+        } else {
+          log.severe('Failed to retrieve message with '
+                     'ID $messageID', error, stackTrace);
+          return new shelf.Response.internalServerError
+              (body : '$error : $stackTrace');
+        }
+      });
   }
 
 
   /**
    * HTTP Request handler for updating a single message resource.
    */
-  static void update(HttpRequest request) {
-    final String     token = request.uri.queryParameters['token'];
+  static Future<shelf.Response> update(shelf.Request request) {
 
-    AuthService.userOf(token).then((Model.User user) {
-      extractContent(request).then((String content) {
+    return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
+      request.readAsString().then((String content) {
         try {
           Model.Message parameterMessage =
               new Model.Message.fromMap(JSON.decode(content))..sender = user;
 
-          return messageStore.save(parameterMessage)
+          return _messageStore.save(parameterMessage)
               .then((Model.Message message) {
             if (parameterMessage.ID == Model.Message.noID) {
-              Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}});
+              Event.MessageChange event =
+                new Event.MessageChange
+                  (message.ID, Event.MessageChangeState.CREATED);
+
+              _notification.broadcastEvent(event);
             } else {
-              Notification.broadcast({'event' : 'messageUpdated', 'message' : {'id' : message.ID}});
+              Event.MessageChange event =
+                new Event.MessageChange
+                  (message.ID, Event.MessageChangeState.UPDATED);
+
+              _notification.broadcastEvent(event);
             }
 
-            writeAndClose(request, JSON.encode(message));
+            return new shelf.Response.ok(JSON.encode(message));
            });
 
         } catch (error, stackTrace) {
-          log.severe(error, stackTrace);
-          clientError(request, '$error : $stackTrace');
+          log.warning
+            ('Failed to parse message in POST body', error, stackTrace);
+          return new shelf.Response
+            (400, body : 'Failed to parse message in POST body');
+
         }
 
       }).catchError((error, stackTrace) {
-        log.severe('Failed to extract content of request.');
-        log.severe (error, stackTrace);
-        serverError(request, 'Failed to extract content of request.');
+        log.severe('Failed to extract content of request.', error, stackTrace);
+        return new shelf.Response.internalServerError
+          (body : 'Failed to extract content of request.');
       });
     }).catchError((error, stackTrace) {
-      log.severe('Failed to perform user lookup.');
-      log.severe (error, stackTrace);
-      serverError(request, 'Failed to perform user lookup.');
+      log.severe('Failed to perform user lookup.', error, stackTrace);
+      return new shelf.Response.internalServerError
+        (body : 'Failed to perform user lookup.');
     });
   }
 
@@ -71,13 +85,14 @@ abstract class Message {
    * Lists the most recently stored messages. Limits on number of fetched messages
    * are enforced by the persistant storage layer.
    */
-  static void listNewest (HttpRequest request) {
-    messageStore.list()
+  static Future<shelf.Response> listNewest (shelf.Request request) {
+    return _messageStore.list()
       .then ((List<Model.Message> messages) =>
-        writeAndClose(request, JSON.encode(messages)))
+        new shelf.Response.ok(JSON.encode(messages)))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
-        serverError(request, error.toString());
+        return new shelf.Response.internalServerError
+          (body : error.toString());
     });
   }
 
@@ -85,15 +100,16 @@ abstract class Message {
    * Builds a list of previously stored messages, filtering by the
    * parameters passed in the [queryParameters] of the request.
    */
-  static void list (HttpRequest request) {
+  static Future<shelf.Response> list (shelf.Request request) {
     Model.MessageFilter filter = new Model.MessageFilter.empty();
+    int messageID  = int.parse(shelf_route.getPathParameter(request, 'mid'));
 
-    filter.upperMessageID = pathParameter(request.uri, 'list');
 
-    if (request.uri.queryParameters.containsKey('filter')) {
+    filter.upperMessageID = messageID;
+
+    if (shelf_route.getPathParameters(request).containsKey('filter')) {
       try {
-
-        Map map = JSON.decode(request.uri.queryParameters['filter']);
+        Map map = JSON.decode(shelf_route.getPathParameter(request, 'filter'));
 
         filter..messageState   = map ['state']
               ..contactID      = map ['contact_id']
@@ -102,18 +118,19 @@ abstract class Message {
               ..limitCount     = map ['limit']
               ..upperMessageID = map ['upper_message_id'];
       } catch (error, stackTrace) {
-        log.severe(error, stackTrace);
-        clientError(request, 'Bad filter');
-        return;
+        log.warning(error, stackTrace);
+        return new Future.value(new shelf.Response(400, body : 'Bad filter'));
       }
     }
 
-    messageStore.list(filter : filter)
-      .then ((List<Model.Message> messages) {
-        writeAndClose(request, JSON.encode(messages));})
+    return _messageStore.list(filter : filter)
+      .then ((List<Model.Message> messages) =>
+        new shelf.Response.ok (JSON.encode(messages)))
+
       .catchError((error, stackTrace) {
-        serverError(request, error.toString());
         log.severe (error, stackTrace);
+        return new shelf.Response.internalServerError
+         (body :  error.toString());
     });
   }
 
@@ -121,35 +138,37 @@ abstract class Message {
    * Enqueues a messages for dispathing via the transport layer specified in
    * the endpoints belonging to the message recipients.
    */
-  static void send (HttpRequest request) {
+  static Future<shelf.Response> send (shelf.Request request) {
 
-    final String token   = request.uri.queryParameters['token'];
-
-    AuthService.userOf(token).then((Model.User user) {
-      extractContent(request).then((String content) {
+    return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
+      request.readAsString().then((String content) {
+        Model.Message message;
 
         try {
-          Model.Message message = new Model.Message.fromMap(JSON.decode(content))..sender = user;
-          return messageStore.save(message)
-            .then((_) => messageStore.enqueue(message)
-              .then((_) {
-                writeAndClose(request, '{"description" : "Saved and enqueued message." , "id" : ${message.ID} }');
-              })
-            );
+          message = new Model.Message.fromMap(JSON.decode(content))
+            ..sender = user;
         } catch (error, stackTrace) {
           log.severe(error, stackTrace);
-          clientError(request, '$error : $stackTrace');
+          return new shelf.Response(400, body : '$error : $stackTrace');
         }
 
+        return _messageStore.save(message)
+          .then((_) => _messageStore.enqueue(message)
+            .then((_) {
+              return new shelf.Response.ok
+                (JSON.encode({'description' : 'Saved and enqueued message.',
+                              'id' : message.ID}));
+              }));
+
       }).catchError((error, stackTrace) {
-        log.severe('Failed to extract content of request.');
-        log.severe (error, stackTrace);
-        serverError(request, 'Failed to extract content of request.');
+        log.severe('Failed to extract content of request.', error, stackTrace);
+        return new shelf.Response.internalServerError
+          (body : 'Failed to extract content of request.');
       });
     }).catchError((error, stackTrace) {
-      log.severe('Failed to perform user lookup.');
-      log.severe (error, stackTrace);
-      serverError(request, 'Failed to perform user lookup.');
+      log.severe('Failed to perform user lookup.', error, stackTrace);
+      return new shelf.Response.internalServerError
+        (body : 'Failed to perform user lookup.');
     });
    }
 
@@ -158,40 +177,47 @@ abstract class Message {
    * Persistently stores a messages. If the message already exists, the
    * message - and the it's contents - are replaced by the one passed by the client.
    */
-  static void save (HttpRequest request) {
-    final String token   = request.uri.queryParameters['token'];
+  static Future<shelf.Response> save (shelf.Request request) {
 
-    AuthService.userOf(token).then((Model.User user) {
-      extractContent(request).then((String content) {
+    return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
+      request.readAsString().then((String content) {
 
         try {
-          Model.Message message = new Model.Message.fromMap(JSON.decode(content))..sender = user;
-          Notification.broadcast({'event' : 'messageCreated', 'message' : {'id' : message.ID}});
+          Model.Message message =
+              new Model.Message.fromMap(JSON.decode(content))..sender = user;
 
           if (message.ID != Model.Message.noID) {
-            clientError(request, 'Refusing to re-create existing message. '
-                                 'Remove messageID or use the PUT method instead.');
-            return;
+            return new shelf.Response(400, body :
+              'Refusing to re-create existing message. '
+              'Remove messageID or use the PUT method instead.');
           }
 
 
-          messageStore.save(message)
-              .then((Model.Message message) => writeAndClose(request, JSON.encode(message)));
+          return _messageStore.save(message)
+            .then((Model.Message message) {
+              Event.MessageChange event = new Event.MessageChange
+                  (message.ID, Event.MessageChangeState.UPDATED);
+
+              _notification.broadcastEvent(event);
+
+              return new shelf.Response.ok(JSON.encode(message));
+            });
+
 
         } catch (error, stackTrace) {
           log.warning (error, stackTrace);
-          clientError(request, '$error : $stackTrace');
+          return new shelf.Response(400, body : '$error : $stackTrace');
         }
 
       }).catchError((error, stackTrace) {
-        log.severe('Failed to extract content of request.');
-        log.severe (error, stackTrace);
-        serverError(request, 'Failed to extract content of request.');
+        log.severe('Failed to extract content of request.', error, stackTrace);
+        return new shelf.Response.internalServerError
+          (body : 'Failed to extract content of request.');
       });
     }).catchError((error, stackTrace) {
-      log.severe('Failed to perform user lookup.');
-      log.severe (error, stackTrace);
-      serverError(request, 'Failed to perform user lookup.');
+      log.severe('Failed to perform user lookup.', error, stackTrace);
+      return new shelf.Response.internalServerError
+        (body : 'Failed to perform user lookup.');
     });
   }
 }
