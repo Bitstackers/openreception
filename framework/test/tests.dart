@@ -215,7 +215,7 @@ abstract class ReceptionObject {
       ..alternateNames = []
       ..attributes = {}
       ..bankingInformation = []
-      ..customertype = 'Not defined'
+      ..customerTypes = ['Not defined']
       ..emailAddresses = []
       ..enabled = true
       ..extension = '12340001'
