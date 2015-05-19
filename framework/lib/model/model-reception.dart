@@ -19,7 +19,9 @@ abstract class ReceptionJSONKey {
   static const String ATTRIBUTES            = 'attributes';
 
   static const String ALT_NAMES             = 'alternatenames';
+  @deprecated
   static const String CUSTOMER_TYPE         = 'customertype';
+  static const String CUSTOMER_TYPES        = 'customertypes';
   static const String PRODUCT               = 'product';
   static const String BANKING_INFO          = 'bankinginformation';
   static const String SALES_MARKET_HANDLING = 'salescalls';
@@ -92,6 +94,7 @@ class Reception extends ReceptionStub {
   List<String> vatNumbers             = [];
   List<String> telephonenumbers       = [];
   List<String> websites               = [];
+  List<String> customerTypes          = [];
 
   String get shortGreeting => this._shortGreeting.isNotEmpty
                                 ? this._shortGreeting
@@ -103,7 +106,8 @@ class Reception extends ReceptionStub {
   String greeting;
   String otherData;
   String _shortGreeting = '';
-  String customertype;
+  @deprecated
+  String customertype; //Use customertypes
   String product;
   bool   enabled = false;
 
@@ -139,7 +143,7 @@ class Reception extends ReceptionStub {
          this..addresses              = extractValues(attributes[ReceptionJSONKey.ADDRESSES])
              ..alternateNames         = extractValues(attributes[ReceptionJSONKey.ALT_NAMES])
              ..bankingInformation     = extractValues(attributes[ReceptionJSONKey.BANKING_INFO])
-             ..customertype           = attributes[ReceptionJSONKey.CUSTOMER_TYPE]
+             ..customerTypes          = attributes[ReceptionJSONKey.CUSTOMER_TYPES]
              ..emailAddresses         = extractValues(attributes[ReceptionJSONKey.EMAIL_ADDRESSES])
              ..greeting               = attributes[ReceptionJSONKey.GREETING]
              ..handlingInstructions   = extractValues(attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS])
@@ -171,7 +175,7 @@ class Reception extends ReceptionStub {
       ReceptionJSONKey.ADDRESSES :  this.addresses,
     ReceptionJSONKey.ALT_NAMES :this.alternateNames,
     ReceptionJSONKey.BANKING_INFO          : this.bankingInformation,
-    ReceptionJSONKey.CUSTOMER_TYPE         : this.customertype,
+    ReceptionJSONKey.CUSTOMER_TYPES        : this.customerTypes,
     ReceptionJSONKey.EMAIL_ADDRESSES       : this.emailAddresses,
     ReceptionJSONKey.GREETING              : this.greeting,
     ReceptionJSONKey.HANDLING_INSTRUCTIONS : this.handlingInstructions,
