@@ -8,6 +8,7 @@ import 'model.dart';
 part 'event/event-calendar.dart';
 part 'event/event-call.dart';
 part 'event/event-channel.dart';
+part 'event/event-message.dart';
 part 'event/event-user_state.dart';
 part 'event/event-peer_state.dart';
 part 'event/event-template.dart';
@@ -21,8 +22,11 @@ abstract class Key {
   static const event = 'event';
   static const calendarEntry = 'calendarEntry';
   static const CalendarChange = 'calendarChange';
+  static const MessageChange = 'messageChange';
   static const ReceptionID = 'rid';
   static const ContactID = 'cid';
+  static const MessageID = 'mid';
+
   static const EntryID = 'eid';
   static const ID = 'id';
   static const timestamp = 'timestamp';
@@ -117,7 +121,7 @@ abstract class Event {
 
         case Key.CalendarChange:
           return new CalendarChange.fromMap(map);
-          
+
         case Key.connectionState:
           return new ClientConnectionState.fromMap(map);
 
