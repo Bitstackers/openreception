@@ -5,6 +5,7 @@ runReceptionTests () {
   group ('service.Reception', () {
     Transport.Client transport = null;
     Service.RESTReceptionStore receptionStore = null;
+    Receptionist r;
 
     setUp (() {
       transport = new Transport.Client();
@@ -52,5 +53,31 @@ runReceptionTests () {
     test ('Calendar event removal',
         () => Reception_Store.calendarEventDelete(receptionStore));
 
+
+    setUp (() {
+      transport = new Transport.Client();
+      receptionStore = new Service.RESTReceptionStore
+         (Config.receptionStoreUri, Config.serverToken, transport);
+      r = ReceptionistPool.instance.aquire();
+
+      return r.initialize();
+    });
+
+    tearDown (() {
+      receptionStore = null;
+      transport.client.close(force : true);
+
+
+      return r.teardown();
+    });
+
+    test ('CalendarEntry creation (event presence)',
+        () => Reception_Store.calendarEntryCreateEvent(receptionStore, r));
+
+    test ('CalendarEntry update (event presence)',
+        () => Reception_Store.calendarEntryUpdateEvent(receptionStore, r));
+
+    test ('CalendarEntry creation (event presence)',
+        () => Reception_Store.calendarEntryDeleteEvent(receptionStore, r));
   });
 }
