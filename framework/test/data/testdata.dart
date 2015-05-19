@@ -42,7 +42,24 @@ Map testReception = {
     "product":
         "ORIGINAL, MINTSUGARFREE, LIQUORICESUGRAFREE, SWEETLIQUORICESUGRAFREE, EXSTRASTRONG",
     "registrationnumbers": ["UK-781277"],
-    "telephonenumbers": ["+4511223344", "+4521324355"],
+    "telephonenumbers": [
+      {
+        'value': '+4511223344',
+        'kind': 'pstn',
+        'description': 'Official main number',
+        'billing_type': 'landline',
+        'tag': [],
+        'confidential': false
+      },
+      {
+        'value': '+4521324355',
+        'kind': 'pstn',
+        'description': 'Swindon branch',
+        'billing_type': 'landline',
+        'tag': [],
+        'confidential': false
+      }
+    ],
     "websites": ["http: //www.fishermansfriend.com/"]
   }
 };

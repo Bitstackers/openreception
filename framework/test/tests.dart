@@ -7,13 +7,14 @@ import '../lib/resource.dart' as Resource;
 //import '../lib/service.dart'  as Service;
 import 'data/testdata.dart'  as Test_Data;
 
-//import 'package:logging/logging.dart';
+import 'package:logging/logging.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 import 'package:unittest/unittest.dart';
 
 void main() {
-  //Logger.root.onRecord.listen(print);
-
+  Logger.root.level = Level.FINEST;
+  Logger.root.onRecord.listen((LogRecord record) =>
+      logMessage(record.toString()));
   JUnitConfiguration.install();
 
   test('async openreception.bus test', () {
@@ -231,7 +232,8 @@ abstract class ReceptionObject {
       ..product = 'Butter'
       ..salesMarketingHandling = []
       ..shortGreeting = 'Please go'
-      ..telephonenumbers = []
+      ..telephoneNumbers = [new Model.PhoneNumber.empty()
+                              ..value = '56 33 21 44']
       ..vatNumbers = []
       ..websites = [];
     expect(testReception.toJson, returnsNormally);
