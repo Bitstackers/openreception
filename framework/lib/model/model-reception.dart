@@ -140,10 +140,16 @@ class Reception extends ReceptionStub {
        if (receptionMap[ReceptionJSONKey.ATTRIBUTES] != null) {
          attributes = receptionMap[ReceptionJSONKey.ATTRIBUTES];
 
+         //Temporary workaround for customertype to customerTypes transition.
+         if (attributes.containsKey(ReceptionJSONKey.CUSTOMER_TYPE)) {
+           this.customerTypes = [attributes[ReceptionJSONKey.CUSTOMER_TYPE]];
+         } else {
+           this.customerTypes = attributes[ReceptionJSONKey.CUSTOMER_TYPES];
+         }
+
          this..addresses              = extractValues(attributes[ReceptionJSONKey.ADDRESSES])
              ..alternateNames         = extractValues(attributes[ReceptionJSONKey.ALT_NAMES])
              ..bankingInformation     = extractValues(attributes[ReceptionJSONKey.BANKING_INFO])
-             ..customerTypes          = attributes[ReceptionJSONKey.CUSTOMER_TYPES]
              ..emailAddresses         = extractValues(attributes[ReceptionJSONKey.EMAIL_ADDRESSES])
              ..greeting               = attributes[ReceptionJSONKey.GREETING]
              ..handlingInstructions   = extractValues(attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS])
