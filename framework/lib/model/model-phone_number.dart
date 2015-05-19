@@ -11,11 +11,11 @@ abstract class PhoneNumberJSONKey {
 }
 
 class PhoneNumber {
-  String description;
-  String value;
-  String type;
-  bool confidential;
-  String billing_type;
+  String description = '';
+  String value = '';
+  String type = '';
+  bool confidential = false;
+  String billing_type = '';
   List<String> tags = [];
 
   PhoneNumber.fromMap(Map map) {
