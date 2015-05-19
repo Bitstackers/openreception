@@ -42,8 +42,7 @@ abstract class RESTMessageStore {
    * The expected behaviour is that the server should return a Not Found error.
    */
   static Future nonExistingPath (HttpClient client) {
-
-    Uri uri = Uri.parse ('${Config.messageStoreUri}/nonexistingpath');
+    Uri uri = Uri.parse ('${Config.messageStoreUri}/nonexistingpath?token=${Config.serverToken}');
 
     log.info('Checking server behaviour on a non-existing path.');
 
