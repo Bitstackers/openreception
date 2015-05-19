@@ -25,7 +25,7 @@ abstract class ContactCalendar {
         return new shelf.Response (400, body : JSON.encode(response));
       }
 
-      return db.ContactCalendar.createEvent(entry)
+      return db.ContactCalendar.createEntry(entry)
         .then((Model.CalendarEntry createdEvent) {
           Event.CalendarChange changeEvent =
               new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.CREATED);
@@ -65,14 +65,7 @@ abstract class ContactCalendar {
         return new shelf.Response (400, body : JSON.encode(response));
       }
 
-      return db.ContactCalendar.exists(contactID        : contactID,
-                                receptionID      : receptionID,
-                                eventID          : eventID).then((bool eventExists) {
-        if (!eventExists) {
-          return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
-        }
-
-        return db.ContactCalendar.updateEvent(entry)
+      return db.ContactCalendar.updateEntry(entry)
         .then((_) {
           Event.CalendarChange changeEvent =
               new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.UPDATED);
@@ -81,6 +74,11 @@ abstract class ContactCalendar {
 
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
+          if (error is Storage.NotFound) {
+            return new
+                shelf.Response.notFound('Event with id $eventID not found');
+          }
+
           log.severe(error, stackTrace);
           return new shelf.Response.internalServerError(body : 'Failed to update event in database');
         });
@@ -88,10 +86,6 @@ abstract class ContactCalendar {
         log.severe(error, stackTrace);
         return new shelf.Response.internalServerError(body : 'Failed to execute database query');
       });
-    }).catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(body : 'Failed to extract client request');
-    });
   }
 
   static Future remove(shelf.Request request) {
@@ -99,17 +93,13 @@ abstract class ContactCalendar {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ContactCalendar.getEvent
-        (contactID        : contactID,
-         receptionID      : receptionID,
-         eventID          : eventID).then((Model.CalendarEntry entry) {
+    return db.ContactCalendar.getEntry (contactID, receptionID, eventID)
+      .then((Model.CalendarEntry entry) {
       if (entry == null) {
         return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
       }
 
-      return db.ContactCalendar.removeEvent(contactID        : contactID,
-                                     receptionID      : receptionID,
-                                     eventID          : eventID)
+      return db.ContactCalendar.removeEntry(contactID, receptionID, eventID)
           .then((_) {
         Event.CalendarChange changeEvent =
             new Event.CalendarChange (entry.ID, entry.contactID, entry.receptionID, Event.CalendarEntryState.DELETED);
@@ -132,9 +122,7 @@ abstract class ContactCalendar {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ContactCalendar.getEvent(contactID        : contactID,
-                                receptionID      : receptionID,
-                                eventID          : eventID)
+    return db.ContactCalendar.getEntry(contactID, receptionID, eventID)
       .then((Model.CalendarEntry event) {
         if (event == null) {
           return new shelf.Response.notFound(JSON.encode({'description' : 'No calendar event found with ID $eventID'}));
