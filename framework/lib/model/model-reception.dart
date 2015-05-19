@@ -92,9 +92,13 @@ class Reception extends ReceptionStub {
   List<String> handlingInstructions   = [];
   List<String> openingHours           = [];
   List<String> vatNumbers             = [];
-  List<String> telephonenumbers       = [];
+  @deprecated
+  List<String> get telephonenumbers   => this.telephoneNumbers
+                                           .map((PhoneNumber pn) => pn.value)
+                                           .toList();
   List<String> websites               = [];
   List<String> customerTypes          = [];
+  List<PhoneNumber> telephoneNumbers  = [];
 
   String get shortGreeting => this._shortGreeting.isNotEmpty
                                 ? this._shortGreeting
@@ -147,6 +151,25 @@ class Reception extends ReceptionStub {
            this.customerTypes = attributes[ReceptionJSONKey.CUSTOMER_TYPES];
          }
 
+         //Temporary workaround for telephonenumbers to telephoneNumbers transition.
+         if (attributes.containsKey(ReceptionJSONKey.PHONE_NUMBERS)) {
+           Iterable values = attributes[ReceptionJSONKey.PHONE_NUMBERS];
+           List<PhoneNumber> pns = [];
+
+           try {
+             pns = values.map ((Map map) =>
+                 new PhoneNumber.fromMap(map)).toList();
+           }
+           catch (_) {
+             log.warning('Failed to extract phoneNumber map, trying String');
+             pns = values.map ((String number) =>
+                 new PhoneNumber.empty()..value = number).toList();
+           }
+
+           this.telephoneNumbers.addAll(pns);
+         }
+
+
          this..addresses              = extractValues(attributes[ReceptionJSONKey.ADDRESSES])
              ..alternateNames         = extractValues(attributes[ReceptionJSONKey.ALT_NAMES])
              ..bankingInformation     = extractValues(attributes[ReceptionJSONKey.BANKING_INFO])
@@ -159,7 +182,6 @@ class Reception extends ReceptionStub {
              ..salesMarketingHandling = extractValues(attributes[ReceptionJSONKey.SALES_MARKET_HANDLING])
              .._shortGreeting         = attributes[ReceptionJSONKey.SHORT_GREETING] != null ? attributes[ReceptionJSONKey.SHORT_GREETING] : ''
              ..vatNumbers             = extractValues(attributes[ReceptionJSONKey.VAT_NUMBERS])
-             ..telephonenumbers       = extractValues(attributes[ReceptionJSONKey.PHONE_NUMBERS])
              ..websites               = extractValues(attributes[ReceptionJSONKey.WEBSITES]);
        }
 
@@ -191,7 +213,9 @@ class Reception extends ReceptionStub {
     ReceptionJSONKey.SALES_MARKET_HANDLING : this.salesMarketingHandling,
     ReceptionJSONKey.SHORT_GREETING        : this.shortGreeting,
     ReceptionJSONKey.VAT_NUMBERS           : this.vatNumbers,
-    ReceptionJSONKey.PHONE_NUMBERS         : this.telephonenumbers,
+    ReceptionJSONKey.PHONE_NUMBERS         : this.telephoneNumbers
+                                             .map((PhoneNumber pn) => pn.asMap)
+                                             .toList(growable: false),
     ReceptionJSONKey.WEBSITES              : this.websites};
 
     return {
