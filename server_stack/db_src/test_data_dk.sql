@@ -114,7 +114,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "Bed dem om at ringe igen, ved næste fuldmåne",
         "Begynd at snakke om din hund, og hvor godt du har oplært den osv."
     ],
-    "customertype": "Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring.",
+    "customertype": ["Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring."],
     "emailaddresses": [
         "mail@bitstack.dk",
         "support@bitstack.dk",
@@ -153,8 +153,22 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "PL-9792559265"
     ],
     "telephonenumbers": [
-        "+45 10 20 30 40",
-        "+45 20 40 60 80"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Gammelt hovednummer",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://bitstackers.dk",
@@ -186,7 +200,7 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
     "salescalls": [
         "Stil dem videre til marketingsafdelingen"
     ],
-    "customertype": "",
+    "customertype": ["Klassisk kundetype"],
     "short_greeting": "Du taler med...",
     "emailaddresses": [
         "info@fiskermans.com"
@@ -206,8 +220,22 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
         "UK-781277"
     ],
     "telephonenumbers": [
-        "+4511223344",
-        "+4521324355"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Gammelt hovednummer",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http: //www.fishermansfriend.com/"
@@ -233,7 +261,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
     "salescalls": [
         "Stil dem videre til Thomas Løcke"
     ],
-    "customertype": "",
+    "customertype": ["Kundetype Foo", "Bar i ny og næ"],
     "emailaddresses": [
         "info@responsum.com"
     ],
@@ -252,8 +280,22 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
         "DK-123456"
     ],
     "telephonenumbers": [
-        "sip:thomas@responsum.dk",
-        "+45 13 37 13 37"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Gammelt hovednummer",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://responsum.dk"
@@ -277,7 +319,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
     "salescalls": [
         "Send en mail til mario@hansenvvs.dk"
     ],
-    "customertype": "",
+    "customertype": [],
     "emailaddresses": [
         "info@hansenvvs.com"
     ],
@@ -294,7 +336,22 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
         "Reg no. 223344"
     ],
     "telephonenumbers": [
-        "+45 87 53 93 19"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Gammelt hovednummer",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://hansenvvs.dk"
@@ -318,11 +375,11 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
     "salescalls": [
         "Stil dem videre til Thomas Løcke"
     ],
-    "customertype": "",
+    "customertype": ["Omstil altid til support"],
     "emailaddresses": [
         "info@koedbollen.dk"
     ],
-    "greeting": "Kødbollenn - du taler med ...",
+    "greeting": "Kødbollen - du taler med ...",
     "handlings": [
         "De kender godt til stavefejlen på deres reklamebanner på køge bugt motorvejen",
         "Man kan ikke møde op på adressen, før der er aftalt et møde.",
@@ -337,8 +394,22 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
         "DK-123456"
     ],
     "telephonenumbers": [
-        "sip:pent@koedbollen.dk",
-        "+45 13 37 13 37"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Gammelt hovednummer",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://meatbun.com"
@@ -349,7 +420,7 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
 INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
 VALUES (6, 2, 'Landmandens venner A/S', '12340006',
 	   '{
-    "short_greeting": "",
+    "short_greeting": "Hej, du taler med...",
     "addresses": [
         "Landmandsvej 1 - langt-ude 4600"
     ],
@@ -362,8 +433,7 @@ VALUES (6, 2, 'Landmandens venner A/S', '12340006',
     "salescalls": [
         "Bed dem om at komme til dyrskuet og snakke med tyren"
     ],
-    "customertype": "",
-    "short_greeting": "Goddag du taler med...",
+    "customertype": [],
     "emailaddresses": [
         "info@landmænd.com"
     ],
@@ -380,7 +450,22 @@ VALUES (6, 2, 'Landmandens venner A/S', '12340006',
         "DK-123456"
     ],
     "telephonenumbers": [
-        "+45 66 77 88 90"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Gammelt hovednummer",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://www.farmerfriend.com/"
@@ -415,11 +500,11 @@ VALUES
         "Linux",
         "Yolk"
     ],
-    "department": "Development",
-    "info": "Yolk forfatter",
-    "position": "Softwareudvikler",
-    "relations": "Gift med Trine Løcke",
-    "responsibility": "Server og klient udvikling"
+    "department": ["Development"],
+    "info": ["Yolk forfatter", "Landsbytosse"],
+    "position": ["Softwareudvikler"],
+    "relations": ["Gift med Trine Løcke"],
+    "responsibility": ["Server og klient udvikling","Salg"]
 }',
 '[
     {
@@ -452,11 +537,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": "Development",
-    "info": "Laver alt det flotte I programmet",
-    "position": "Designer",
-    "relations": "Gift med Thomas",
-    "responsibility": "Brugerfladedesign."
+    "department": ["Usability/Design", "Development"],
+    "info": ["Laver alt det flotte I programmet"],
+    "position": ["Designer"],
+    "relations": ["Gift med Thomas"],
+    "responsibility": ["Brugerfladedesign", "Oplæring"]
 }',
          '[]' ),
 
@@ -481,11 +566,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": "Regnskab",
-    "info": "Kigger efter pengene",
-    "position": "CFO",
-    "relations": "Far til Thomas Løcke",
-    "responsibility": "Regnskab"
+    "department": ["Regnskab"],
+    "info": ["Kigger efter pengene"],
+    "position": ["CFO"],
+    "relations": ["Far til Thomas Løcke"],
+    "responsibility": ["Regnskab"]
 }',
          '[
             { "value" : "60431990",
@@ -517,11 +602,11 @@ VALUES
         "Linux",
         "FreeSWITCH"
     ],
-    "department": "Development",
-    "info": "Kigger efter koden",
-    "position": "Software udvikler",
-    "relations": "Børn med Sidsel Schomacker",
-    "responsibility": "Server, klient, FreeSWITCH og SNOM telefoner"
+    "department": ["Engineering", "Development"],
+    "info": ["Kigger efter koden"],
+    "position": ["Softwareudvikler"],
+    "relations": ["Børn med Sidsel Schomacker", "Ven med Peter L."],
+    "responsibility": ["Server", "Klient", "FreeSWITCH", "SNOM"]
 }',
          '[
             { "value" : "30481150",
@@ -561,11 +646,11 @@ VALUES
         "Fransk",
         "ost"
     ],
-    "department": "Development",
-    "info": "Kigger efter koden",
-    "position": "Software udvikler",
-    "relations": "Har engang haft en hund",
-    "responsibility": "Bitstableri"
+    "department": ["Physics", "Development"],
+    "info": ["Kigger efter koden"],
+    "position": ["Softwareudvikler"],
+    "relations": ["Har engang haft en hund"],
+    "responsibility": ["Bitstableri"]
 }','[]'),
 
        (1, 6, '{
@@ -580,11 +665,11 @@ VALUES
         "hatte",
         "Tegneserier"
     ],
-    "department": "Design",
-    "info": "",
-    "position": "Designer",
-    "relations": "Børn med Kim Rostgaard Christensen",
-    "responsibility": "UI design"
+    "department": ["Design"],
+    "info": [],
+    "position": ["Designer", "Tegner/Grafiker"],
+    "relations": ["Børn med Kim Rostgaard Christensen"],
+    "responsibility": ["UI design", "Striben"]
 }','[]'),
 
        (1, 7, '{
@@ -596,11 +681,11 @@ VALUES
         "Granvej",
         "Mosekrogen"
     ],
-    "department": "",
-    "info": "",
-    "position": "",
-    "relations": "",
-    "responsibility": ""
+    "department": [],
+    "info": [],
+    "position": [],
+    "relations": [],
+    "responsibility": []
 }','[]');
 
 /*Fishermans Friends*/
@@ -622,11 +707,11 @@ VALUES
         "sømand",
         "pirat"
     ],
-    "department": "Fangst",
-    "info": "Tidligere fisker I militæret",
-    "position": "Key fishing manager",
-    "relations": "Gift med Trine Løcke",
-    "responsibility": "Fersk fisk"
+    "department": ["Fangst"],
+    "info": ["Tidligere fisker I militæret"],
+    "position": ["Key fishing manager"],
+    "relations": ["Gift med Trine Løcke"],
+    "responsibility": ["Fersk fisk"]
 }','[]' ),
 
        (2, 2, '{
@@ -650,11 +735,11 @@ VALUES
         "Tux",
         "Pingvinen"
     ],
-    "department": "Båden",
-    "info": "Klap for den venstre øje",
-    "position": "CFO (Cheif fishing officer)",
-    "relations": "Papegøjen Diego ",
-    "responsibility": "Saltvands fisk"
+    "department": ["Båden"],
+    "info": ["Klap for den venstre øje"],
+    "position": ["CFO (Cheif fishing officer)"],
+    "relations": ["Papegøjen Diego"],
+    "responsibility": ["Saltvandsfisk"]
 }','[]'),
 
        (2, 4, '{
@@ -675,11 +760,11 @@ VALUES
         "Tux",
         "Pingvinen"
     ],
-    "department": "Båden",
-    "info": "Klap for den venstre øje",
-    "position": "CFO (Cheif fishing officer)",
-    "relations": "Papegøjen Diego ",
-    "responsibility": "Saltvands fisk"
+    "department": ["Båden"],
+    "info": ["Klap for den venstre øje"],
+    "position": ["CFO (Cheif fishing officer)"],
+    "relations": ["Papegøjen Diego "],
+    "responsibility": ["Saltvandsfisk", "Sugemaller"]
 }','[]');
 
 /*Responsum*/
@@ -709,11 +794,11 @@ VALUES
         "Slackware",
         "Linux"
     ],
-    "department": "HQ",
-    "info": "Something",
-    "position": "CTO",
-    "relations": "Gift med Trine Løcke",
-    "responsibility": "IT afdellingen"
+    "department": ["HQ"],
+    "info": ["Something", "Elsker Shadowrun"],
+    "position": ["CTO"],
+    "relations": ["Gift med Trine Løcke"],
+    "responsibility": ["IT afdellingen"]
 }','[]'),
 
        (3, 2, '{
@@ -738,11 +823,11 @@ VALUES
         "IT",
         "Speaker"
     ],
-    "department": "Produktion",
-    "info": "Går altid I blå sko",
-    "position": "CRO (Cheif receptionist officer)",
-    "relations": "Gift med Thomas Løcke",
-    "responsibility": "Printeren"
+    "department": ["Produktion"],
+    "info": ["Går altid I blå sko"],
+    "position": ["CRO (Cheif receptionist officer)"],
+    "relations": ["Gift med Thomas Løcke"],
+    "responsibility": ["Printeren", "Frokost til TL, som ellers dør af sult"]
 }','[]'),
 
        (3, 3, '{
@@ -765,11 +850,11 @@ VALUES
         "3660",
         "3520"
     ],
-    "department": "Produktion",
-    "info": "Ham I glasburet. We do not ask questions.",
-    "position": "CEO & CFO",
-    "relations": "Far til Thomas Løcke, men det kan han jo ikke gøre for.",
-    "responsibility": "Regnskab"
+    "department": ["Produktion"],
+    "info": ["Ham I glasburet. We do not ask questions."],
+    "position": ["CEO & CFO"],
+    "relations": ["Far til Thomas Løcke, men det kan han jo ikke gøre for."],
+    "responsibility": ["Regnskab"]
 }','[]'),
 
        (3, 4, '{
@@ -791,11 +876,11 @@ VALUES
         "Salg",
         "Uadresserede"
     ],
-    "department": "Produktion",
-    "info": "Ham med håret",
-    "position": "Backup software maintainer",
-    "relations": "ven med alle",
-    "responsibility": "mail"
+    "department": ["Produktion"],
+    "info": ["Ham med håret"],
+    "position": ["Backup software maintainer"],
+    "relations": ["ven med alle"],
+    "responsibility": ["mail"]
 }','[]');
 
 /* Hansen VVS */
@@ -821,11 +906,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": "Hovedafdelingen",
-    "info": "Alt-mulig-mand",
-    "position": "CPO (Cheif pluming officer)",
-    "relations": "Bror til Luigi Mario",
-    "responsibility": "Alt"
+    "department": ["Hovedafdelingen"],
+    "info": ["Alt-mulig-mand"],
+    "position": ["CPO (Cheif pluming officer)"],
+    "relations": ["Bror til Luigi Mario"],
+    "responsibility": ["Alt", "42"]
 }','[]' ),
 
        (4, 67, '{
@@ -846,11 +931,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": "Hovedafdelingen",
-    "info": "Alt-mulig-mand",
-    "position": "Assistent",
-    "relations": "Bror til Mario Mario",
-    "responsibility": "Alt"
+    "department": ["Hovedafdelingen"],
+    "info": ["Alt-mulig-mand"],
+    "position": ["Assistent"],
+    "relations": ["Bror til Mario Mario"],
+    "responsibility": ["Næsten alt"]
 }','[]');
 
 /* Kødbollen A/S */
@@ -873,11 +958,11 @@ VALUES
     "tags": [
         "byggemand"
     ],
-    "department": "Tuen",
-    "info": "Er rigtig god til holdarbejde",
-    "position": "Boss",
-    "relations": "",
-    "responsibility": "Tuen"
+    "department": ["Tuen"],
+    "info": ["Er rigtig god til holdarbejde"],
+    "position": ["Boss"],
+    "relations": [],
+    "responsibility": ["Tuen mm."]
 }','[]');
 
 /* Farmer Friends */
@@ -904,11 +989,11 @@ VALUES
         "Køer",
         "Gris"
     ],
-    "department": "Stalden",
-    "info": "Har speciale i grise",
-    "position": "Bondemanden",
-    "relations": "Gift med Maren",
-    "responsibility": "Marken og alt i stalden"
+    "department": ["Stalden"],
+    "info": ["Har speciale i grise"],
+    "position": ["Bondemanden"],
+    "relations": ["Gift med Maren"],
+    "responsibility": ["Marken og alt i stalden"]
 }','[]'),
 
       (6, 35,
@@ -933,11 +1018,11 @@ VALUES
         "Fars",
         "Steg"
     ],
-    "department": "Efterbehandling",
-    "info": "Arbejder med efterbehandling af råvarene",
-    "position": "Medarbejder",
-    "relations": "Gift med Bondemand Jensen",
-    "responsibility": "Alt efterbehandling"
+    "department": ["Efterbehandling"],
+    "info": ["Arbejder med efterbehandling af råvarene"],
+    "position": ["Medarbejder"],
+    "relations": ["Gift med Bondemand Jensen"],
+    "responsibility": ["Alt efterbehandling"]
 }','[]');
 
 INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id) VALUES

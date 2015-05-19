@@ -114,7 +114,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "Tell then to call again at the next full moon",
         "Start talking about your dog, how well it is trained and so on"
     ],
-    "customertype": "Depends. Sometimes they sell cats, other times computer software and even sometimes parachute jumps.",
+    "customertype": ["Depends. Sometimes they sell cats, other times computer software and even sometimes parachute jumps."],
     "emailaddresses": [
         "mail@bitstack.dk",
         "support@bitstack.dk",
@@ -153,8 +153,22 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "PL-9792559265"
     ],
     "telephonenumbers": [
-        "+45 10 20 30 40",
-        "+45 20 40 60 80"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://bitstackers.dk",
@@ -186,7 +200,7 @@ VALUES (2, 2, 'Friends of the fisher Ltd.', '12340002',
     "salescalls": [
         "Stil dem videre til marketingsafdelingen"
     ],
-    "customertype": "",
+    "customertype": ["Classic customer type"],
     "short_greeting": "You''re speaking with...",
     "emailaddresses": [
         "info@fiskermans.com"
@@ -206,8 +220,22 @@ VALUES (2, 2, 'Friends of the fisher Ltd.', '12340002',
         "UK-781277"
     ],
     "telephonenumbers": [
-        "+4511223344",
-        "+4521324355"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http: //www.fishermansfriend.com/"
@@ -233,7 +261,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
     "salescalls": [
         "Put then through to Thomas Løcke"
     ],
-    "customertype": "",
+    "customertype": ["Customer type Foo", "Sometimes Bar"],
     "emailaddresses": [
         "info@responsum.com"
     ],
@@ -252,8 +280,22 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
         "DK-123456"
     ],
     "telephonenumbers": [
-        "sip:thomas@responsum.dk",
-        "+45 13 37 13 37"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://responsum.dk"
@@ -277,7 +319,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
     "salescalls": [
         "Send an email to mario@hansenvvs.dk"
     ],
-    "customertype": "",
+    "customertype": [],
     "emailaddresses": [
         "info@hansenvvs.com"
     ],
@@ -294,7 +336,22 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
         "Reg no. 223344"
     ],
     "telephonenumbers": [
-        "+45 87 53 93 19"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://hansenvvs.dk"
@@ -318,13 +375,15 @@ VALUES (5, 5, 'Meatball Ltd.', '12340005',
     "salescalls": [
         "Send them to Thomas Løcke"
     ],
-    "customertype": "",
+    "customertype": ["Always redirect calls to support"],
     "emailaddresses": [
         "info@koedbollen.dk"
     ],
     "greeting": "The Meatball you''re speaking with...",
     "handlings": [
-        "Meat purchases should be adressed to Steen"
+        "They are aware of the spelling mistake on their highway banner",
+        "Do not show up on their address without prior agreement",
+        "Meat purchase calls must be directed to Steen"
     ],
     "openinghours": [
         "Business days 08:00 - 17:00"
@@ -335,8 +394,22 @@ VALUES (5, 5, 'Meatball Ltd.', '12340005',
         "DK-123456"
     ],
     "telephonenumbers": [
-        "sip:pent@koedbollen.dk",
-        "+45 13 37 13 37"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http://meatbun.com"
@@ -360,7 +433,7 @@ VALUES (6, 2, 'Farmer friends', '12340006',
     "salescalls": [
         "Ask them to attend the animal fair and talk to the guy"
     ],
-    "customertype": "",
+    "customertype": [],
     "emailaddresses": [
         "info@farmers.com"
     ],
@@ -377,7 +450,22 @@ VALUES (6, 2, 'Farmer friends', '12340006',
         "DK-123456"
     ],
     "telephonenumbers": [
-        "+4566778890"
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
     ],
     "websites": [
         "http: //www.farmerfriend.com/"
@@ -412,11 +500,11 @@ VALUES
         "Linux",
         "Yolk"
     ],
-    "department": "Development",
-    "info": "Yolk maintainer",
-    "position": "Software developer",
-    "relations": "Married to Trine Løcke",
-    "responsibility": "Server and client development"
+    "department": ["Development"],
+    "info": ["Yolk author", "Village idiot"],
+    "position": ["Software Developer"],
+    "relations": ["Married to Trine Løcke"],
+    "responsibility": ["Server og client development","Sales"]
 }',
 '[
     {
@@ -449,11 +537,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": "Development",
-    "info": "Makes the graphic pretty",
-    "position": "Designer",
-    "relations": "Married to Thomas",
-    "responsibility": "UI-design"
+    "department": ["Usability/Design", "Development"],
+    "info": ["Do nice stuff in programs"],
+    "position": ["Designer"],
+    "relations": ["Married to Thomas"],
+    "responsibility": ["UX Design", "Internal education/training"]
 }',
          '[]' ),
 
@@ -478,11 +566,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": "Accounting",
-    "info": "Keeps the money safe",
-    "position": "CFO",
-    "relations": "Father of Thomas Løcke",
-    "responsibility": "Accounting, Bookkeeping"
+    "department": ["Bookkeeping"],
+    "info": ["Eyes on the money"],
+    "position": ["CFO"],
+    "relations": ["Dad to Thomas Løcke"],
+    "responsibility": ["Accounting"]
 }',
          '[
             { "value" : "60431990",
@@ -514,11 +602,11 @@ VALUES
         "Linux",
         "FreeSWITCH"
     ],
-    "department": "Development",
-    "info": "Takes care of the code",
-    "position": "Software engineer",
-    "relations": "Kids with Sidsel Schomacker",
-    "responsibility": "Server, client, FreeSWITCH and SNOM phones"
+    "department": ["Engineering", "Development"],
+    "info": ["A bit OCD with the code"],
+    "position": ["Software Developer"],
+    "relations": ["Children with Sidsel Schomacker", "Friends with Peter L."],
+    "responsibility": ["Servers", "Client", "FreeSWITCH", "SNOM"]
 }',
          '[
             { "value" : "30481150",
@@ -558,11 +646,11 @@ VALUES
         "French",
         "Cheese"
     ],
-    "department": "Development",
-    "info": "Code seer",
-    "position": "Software developer",
-    "relations": "Had a dog once named Bingo",
-    "responsibility": "Bitstacking"
+    "department": ["Physics", "Development"],
+    "info": ["Looks after the code"],
+    "position": ["Software Develper"],
+    "relations": ["Once had a dog"],
+    "responsibility": ["Bitstacking"]
 }','[]'),
 
        (1, 6, '{
@@ -577,11 +665,11 @@ VALUES
         "hatte",
         "Tegneserier"
     ],
-    "department": "Design",
-    "info": "Very smart",
-    "position": "Designer",
-    "relations": "Kids with Kim Rostgaard Christensen",
-    "responsibility": "UI design"
+    "department": ["Design"],
+    "info": [],
+    "position": ["Designer", "Art/Graphics"],
+    "relations": ["Children with Kim Rostgaard Christensen"],
+    "responsibility": ["UI design", "Striben"]
 }','[]'),
 
        (1, 7, '{
@@ -593,11 +681,11 @@ VALUES
         "Granvej",
         "Mosekrogen"
     ],
-    "department": "",
-    "info": "",
-    "position": "",
-    "relations": "",
-    "responsibility": ""
+    "department": [],
+    "info": [],
+    "position": [],
+    "relations": [],
+    "responsibility": []
 }','[]');
 
 /*Fishermans Friends*/
@@ -619,11 +707,11 @@ VALUES
         "Seeman",
         "Pirate"
     ],
-    "department": "Fishing",
-    "info": "Ex-miltary fisher",
-    "position": "Key fishing manager",
-    "relations": "Married to Trine Løcke",
-    "responsibility": "Fresh fish"
+    "department": ["Catch"],
+    "info": ["Former military fisherman"],
+    "position": ["Key fishing manager"],
+    "relations": ["Married to Trine Løcke"],
+    "responsibility": ["Fresh fish"]
 }','[]' ),
 
        (2, 2, '{
@@ -647,11 +735,11 @@ VALUES
         "Tux",
         "Penguin"
     ],
-    "department": "The boat",
-    "info": "Patch on both eyes, but full eye sight. Don''t ask.",
-    "position": "CFO (Cheif fishing officer)",
-    "relations": "Diego the parrot",
-    "responsibility": "Salt water fish"
+    "department": ["The Boat"],
+    "info": ["Eye patch and parrot"],
+    "position": ["CFO (Cheif fishing officer)"],
+    "relations": ["Diego the Parrot"],
+    "responsibility": ["Salt water fish"]
 }','[]'),
 
        (2, 4, '{
@@ -672,11 +760,11 @@ VALUES
         "Tux",
         "Penguin"
     ],
-    "department": "The boat",
-    "info": "Path on the left eye",
-    "position": "CFO (Cheif fishing officer)",
-    "relations": "Diego the parrot",
-    "responsibility": "Freshwater fish"
+    "department": ["The Boat"],
+    "info": ["Eye patch on the left eye"],
+    "position": ["CFO (Cheif fishing officer)"],
+    "relations": ["Diego the Parrot"],
+    "responsibility": ["Salt water fish", "Cod and sharks"]
 }','[]');
 
 /*Responsum*/
@@ -706,11 +794,11 @@ VALUES
         "Slackware",
         "Linux"
     ],
-    "department": "HQ",
-    "info": "Try turning it off and on again",
-    "position": "CTO",
-    "relations": "Married to Trine Løcke",
-    "responsibility": "IT department"
+    "department": ["HQ"],
+    "info": ["Something", "Loves Shadowrun"],
+    "position": ["CTO"],
+    "relations": ["Married to Trine Løcke"],
+    "responsibility": ["IT stuff"]
 }','[]'),
 
        (3, 2, '{
@@ -735,11 +823,11 @@ VALUES
         "IT",
         "Speaker"
     ],
-    "department": "Production",
-    "info": "Always wears blue suede shoes",
-    "position": "CRO (Cheif receptionist officer)",
-    "relations": "Married to Thomas Løcke",
-    "responsibility": "The Printer"
+    "department": ["Production"],
+    "info": ["Always wears blue shoes"],
+    "position": ["CRO (Cheif receptionist officer)"],
+    "relations": ["Married to Thomas Løcke"],
+    "responsibility": ["The printer", "Lunch for TL, to keep him from starving"]
 }','[]'),
 
        (3, 3, '{
@@ -762,11 +850,11 @@ VALUES
         "3660",
         "3520"
     ],
-    "department": "Production",
-    "info": "The guy in the glass cage. We do not ask questions",
-    "position": "CEO & CFO",
-    "relations": "Father of Thomas Løcke, but we do not blame him for that",
-    "responsibility": "Accounting"
+    "department": ["Production"],
+    "info": ["The guy in the glass cage. We do not ask questions."],
+    "position": ["CEO & CFO"],
+    "relations": ["Dad to Thomas Løcke."],
+    "responsibility": ["Accounting"]
 }','[]'),
 
        (3, 4, '{
@@ -788,11 +876,11 @@ VALUES
         "Sales",
         "Unaddressed"
     ],
-    "department": "Production",
-    "info": "The guy with the hair",
-    "position": "Backup software maintainer",
-    "relations": "Friends with everybody",
-    "responsibility": "Snail-mail"
+    "department": ["Production"],
+    "info": ["The hair guy"],
+    "position": ["Backup software maintainer"],
+    "relations": ["Friends with everybody"],
+    "responsibility": ["mail"]
 }','[]');
 
 /* Hansen VVS */
@@ -818,11 +906,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": "Main branch",
-    "info": "Jack of all trades",
-    "position": "CPO (Cheif pluming officer)",
-    "relations": "Brother of Luigi Mario",
-    "responsibility": "Anything"
+    "department": ["Main branch"],
+    "info": ["Octoman!"],
+    "position": ["CPO (Cheif pluming officer)"],
+    "relations": ["Brother of Luigi Mario"],
+    "responsibility": ["Everything", "42"]
 }','[]' ),
 
        (4, 67, '{
@@ -843,11 +931,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": "Main branch",
-    "info": "Handyman",
-    "position": "Assistant",
-    "relations": "Brother of Mario Mario",
-    "responsibility": "Everything"
+    "department": ["HQ"],
+    "info": ["Janitor"],
+    "position": ["Assistent"],
+    "relations": ["Brother of Mario Mario"],
+    "responsibility": ["Almost everything"]
 }','[]');
 
 /* Kødbollen A/S */
@@ -870,11 +958,11 @@ VALUES
     "tags": [
         "builder"
     ],
-    "department": "The Hive",
-    "info": "Good at teamwork",
-    "position": "Boss",
-    "relations": "Running solo",
-    "responsibility": "The hive"
+    "department": ["Tuen"],
+    "info": ["Ace at teamwork"],
+    "position": ["Boss"],
+    "relations": [],
+    "responsibility": ["Tuen mm."]
 }','[]');
 
 /* Farmer Friends */
@@ -901,11 +989,11 @@ VALUES
         "Cow",
         "Pig"
     ],
-    "department": "Stable",
-    "info": "Specialized in pigs",
-    "position": "The farmer",
-    "relations": "Married to Maren",
-    "responsibility": "The fields and stables"
+    "department": ["Stable"],
+    "info": ["Specialized in pigs"],
+    "position": ["Farmer"],
+    "relations": ["Married to Maren"],
+    "responsibility": ["The fields and everything in the stables"]
 }','[]'),
 
       (6, 35,
@@ -930,11 +1018,11 @@ VALUES
         "Meatloaf",
         "Roast"
     ],
-    "department": "Post-processing",
-    "info": "Post-processes the food",
-    "position": "Employee",
-    "relations": "Married to Farmer Bill",
-    "responsibility": "Post-processing"
+    "department": ["Postprocessing"],
+    "info": ["Works with postprocessing all materials"],
+    "position": ["Employee"],
+    "relations": ["Married to farmer Jensen"],
+    "responsibility": ["EVerything postprocessing"]
 }','[]');
 
 INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id) VALUES
