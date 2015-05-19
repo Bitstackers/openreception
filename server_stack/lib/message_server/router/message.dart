@@ -37,7 +37,7 @@ abstract class Message {
   static Future<shelf.Response> update(shelf.Request request) {
 
     return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
-      request.readAsString().then((String content) {
+      return request.readAsString().then((String content) {
         try {
           Model.Message parameterMessage =
               new Model.Message.fromMap(JSON.decode(content))..sender = user;
@@ -141,7 +141,7 @@ abstract class Message {
   static Future<shelf.Response> send (shelf.Request request) {
 
     return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
-      request.readAsString().then((String content) {
+      return request.readAsString().then((String content) {
         Model.Message message;
 
         try {
@@ -180,7 +180,7 @@ abstract class Message {
   static Future<shelf.Response> save (shelf.Request request) {
 
     return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
-      request.readAsString().then((String content) {
+      return request.readAsString().then((String content) {
 
         try {
           Model.Message message =
