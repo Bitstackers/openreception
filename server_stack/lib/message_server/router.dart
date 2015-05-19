@@ -82,12 +82,12 @@ void _accessLogger(String msg, bool isError) {
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
     ..get('/message/list/{mid}/limit/{limit}', Message.list)
+    ..get('/message/list', Message.listNewest)
     ..get('/message/{mid}', Message.get)
     ..put('/message/{mid}', Message.update)
     ..post('/message/{mid}/send', Message.send)
     ..post('/message/send', Message.send)
-    ..post('/message', Message.save)
-    ..get('/message/list', Message.listNewest);
+    ..post('/message', Message.save);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
