@@ -28,7 +28,7 @@ Map testReception = {
       "The British are currently holding on to \"their\" gold"
     ],
     "salescalls": ["Stil dem videre til marketingsafdelingen"],
-    "customertype": "",
+    "customertypes": ["Fishers"],
     "emailaddresses": ["info@fiskermans.com"],
     "greeting":
         "Fishermans Friends you're speaking with... How may I help you?",
