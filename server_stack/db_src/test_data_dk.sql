@@ -500,11 +500,11 @@ VALUES
         "Linux",
         "Yolk"
     ],
-    "department": ["Development"],
-    "info": ["Yolk forfatter", "Landsbytosse"],
-    "position": ["Softwareudvikler"],
+    "departments": ["Development"],
+    "infos": ["Yolk forfatter", "Landsbytosse"],
+    "positions": ["Softwareudvikler"],
     "relations": ["Gift med Trine Løcke"],
-    "responsibility": ["Server og klient udvikling","Salg"]
+    "responsibilities": ["Server og klient udvikling","Salg"]
 }',
 '[
     {
@@ -537,11 +537,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": ["Usability/Design", "Development"],
-    "info": ["Laver alt det flotte I programmet"],
-    "position": ["Designer"],
+    "departments": ["Usability/Design", "Development"],
+    "infos": ["Laver alt det flotte I programmet"],
+    "positions": ["Designer"],
     "relations": ["Gift med Thomas"],
-    "responsibility": ["Brugerfladedesign", "Oplæring"]
+    "responsibilities": ["Brugerfladedesign", "Oplæring"]
 }',
          '[]' ),
 
@@ -566,11 +566,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": ["Regnskab"],
-    "info": ["Kigger efter pengene"],
-    "position": ["CFO"],
+    "departments": ["Regnskab"],
+    "infos": ["Kigger efter pengene"],
+    "positions": ["CFO"],
     "relations": ["Far til Thomas Løcke"],
-    "responsibility": ["Regnskab"]
+    "responsibilities": ["Regnskab"]
 }',
          '[
             { "value" : "60431990",
@@ -602,11 +602,11 @@ VALUES
         "Linux",
         "FreeSWITCH"
     ],
-    "department": ["Engineering", "Development"],
-    "info": ["Kigger efter koden"],
-    "position": ["Softwareudvikler"],
+    "departments": ["Engineering", "Development"],
+    "infos": ["Kigger efter koden"],
+    "positions": ["Softwareudvikler"],
     "relations": ["Børn med Sidsel Schomacker", "Ven med Peter L."],
-    "responsibility": ["Server", "Klient", "FreeSWITCH", "SNOM"]
+    "responsibilities": ["Server", "Klient", "FreeSWITCH", "SNOM"]
 }',
          '[
             { "value" : "30481150",
@@ -646,11 +646,11 @@ VALUES
         "Fransk",
         "ost"
     ],
-    "department": ["Physics", "Development"],
-    "info": ["Kigger efter koden"],
-    "position": ["Softwareudvikler"],
+    "departments": ["Physics", "Development"],
+    "infos": ["Kigger efter koden"],
+    "positions": ["Softwareudvikler"],
     "relations": ["Har engang haft en hund"],
-    "responsibility": ["Bitstableri"]
+    "responsibilities": ["Bitstableri"]
 }','[]'),
 
        (1, 6, '{
@@ -665,11 +665,11 @@ VALUES
         "hatte",
         "Tegneserier"
     ],
-    "department": ["Design"],
-    "info": [],
-    "position": ["Designer", "Tegner/Grafiker"],
+    "departments": ["Design"],
+    "infos": [],
+    "positions": ["Designer", "Tegner/Grafiker"],
     "relations": ["Børn med Kim Rostgaard Christensen"],
-    "responsibility": ["UI design", "Striben"]
+    "responsibilities": ["UI design", "Striben"]
 }','[]'),
 
        (1, 7, '{
@@ -681,11 +681,11 @@ VALUES
         "Granvej",
         "Mosekrogen"
     ],
-    "department": [],
-    "info": [],
-    "position": [],
+    "departments": [],
+    "infos": [],
+    "positions": [],
     "relations": [],
-    "responsibility": []
+    "responsibilities": []
 }','[]');
 
 /*Fishermans Friends*/
@@ -707,11 +707,11 @@ VALUES
         "sømand",
         "pirat"
     ],
-    "department": ["Fangst"],
-    "info": ["Tidligere fisker I militæret"],
-    "position": ["Key fishing manager"],
+    "departments": ["Fangst"],
+    "infos": ["Tidligere fisker I militæret"],
+    "positions": ["Key fishing manager"],
     "relations": ["Gift med Trine Løcke"],
-    "responsibility": ["Fersk fisk"]
+    "responsibilities": ["Fersk fisk"]
 }','[]' ),
 
        (2, 2, '{
@@ -735,11 +735,11 @@ VALUES
         "Tux",
         "Pingvinen"
     ],
-    "department": ["Båden"],
-    "info": ["Klap for den venstre øje"],
-    "position": ["CFO (Cheif fishing officer)"],
+    "departments": ["Båden"],
+    "infos": ["Klap for den venstre øje"],
+    "positions": ["CFO (Cheif fishing officer)"],
     "relations": ["Papegøjen Diego"],
-    "responsibility": ["Saltvandsfisk"]
+    "responsibilities": ["Saltvandsfisk"]
 }','[]'),
 
        (2, 4, '{
@@ -760,11 +760,11 @@ VALUES
         "Tux",
         "Pingvinen"
     ],
-    "department": ["Båden"],
-    "info": ["Klap for den venstre øje"],
-    "position": ["CFO (Cheif fishing officer)"],
+    "departments": ["Båden"],
+    "infos": ["Klap for den venstre øje"],
+    "positions": ["CFO (Cheif fishing officer)"],
     "relations": ["Papegøjen Diego "],
-    "responsibility": ["Saltvandsfisk", "Sugemaller"]
+    "responsibilities": ["Saltvandsfisk", "Sugemaller"]
 }','[]');
 
 /*Responsum*/
@@ -794,11 +794,11 @@ VALUES
         "Slackware",
         "Linux"
     ],
-    "department": ["HQ"],
-    "info": ["Something", "Elsker Shadowrun"],
-    "position": ["CTO"],
+    "departments": ["HQ"],
+    "infos": ["Something", "Elsker Shadowrun"],
+    "positions": ["CTO"],
     "relations": ["Gift med Trine Løcke"],
-    "responsibility": ["IT afdellingen"]
+    "responsibilities": ["IT afdellingen"]
 }','[]'),
 
        (3, 2, '{
@@ -823,11 +823,11 @@ VALUES
         "IT",
         "Speaker"
     ],
-    "department": ["Produktion"],
-    "info": ["Går altid I blå sko"],
-    "position": ["CRO (Cheif receptionist officer)"],
+    "departments": ["Produktion"],
+    "infos": ["Går altid I blå sko"],
+    "positions": ["CRO (Cheif receptionist officer)"],
     "relations": ["Gift med Thomas Løcke"],
-    "responsibility": ["Printeren", "Frokost til TL, som ellers dør af sult"]
+    "responsibilities": ["Printeren", "Frokost til TL, som ellers dør af sult"]
 }','[]'),
 
        (3, 3, '{
@@ -850,11 +850,11 @@ VALUES
         "3660",
         "3520"
     ],
-    "department": ["Produktion"],
-    "info": ["Ham I glasburet. We do not ask questions."],
-    "position": ["CEO & CFO"],
+    "departments": ["Produktion"],
+    "infos": ["Ham I glasburet. We do not ask questions."],
+    "positions": ["CEO & CFO"],
     "relations": ["Far til Thomas Løcke, men det kan han jo ikke gøre for."],
-    "responsibility": ["Regnskab"]
+    "responsibilities": ["Regnskab"]
 }','[]'),
 
        (3, 4, '{
@@ -876,11 +876,11 @@ VALUES
         "Salg",
         "Uadresserede"
     ],
-    "department": ["Produktion"],
-    "info": ["Ham med håret"],
-    "position": ["Backup software maintainer"],
+    "departments": ["Produktion"],
+    "infos": ["Ham med håret"],
+    "positions": ["Backup software maintainer"],
     "relations": ["ven med alle"],
-    "responsibility": ["mail"]
+    "responsibilities": ["mail"]
 }','[]');
 
 /* Hansen VVS */
@@ -906,11 +906,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": ["Hovedafdelingen"],
-    "info": ["Alt-mulig-mand"],
-    "position": ["CPO (Cheif pluming officer)"],
+    "departments": ["Hovedafdelingen"],
+    "infos": ["Alt-mulig-mand"],
+    "positions": ["CPO (Cheif pluming officer)"],
     "relations": ["Bror til Luigi Mario"],
-    "responsibility": ["Alt", "42"]
+    "responsibilities": ["Alt", "42"]
 }','[]' ),
 
        (4, 67, '{
@@ -931,11 +931,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": ["Hovedafdelingen"],
-    "info": ["Alt-mulig-mand"],
-    "position": ["Assistent"],
+    "departments": ["Hovedafdelingen"],
+    "infos": ["Alt-mulig-mand"],
+    "positions": ["Assistent"],
     "relations": ["Bror til Mario Mario"],
-    "responsibility": ["Næsten alt"]
+    "responsibilities": ["Næsten alt"]
 }','[]');
 
 /* Kødbollen A/S */
@@ -958,11 +958,11 @@ VALUES
     "tags": [
         "byggemand"
     ],
-    "department": ["Tuen"],
-    "info": ["Er rigtig god til holdarbejde"],
-    "position": ["Boss"],
+    "departments": ["Tuen"],
+    "infos": ["Er rigtig god til holdarbejde"],
+    "positions": ["Boss"],
     "relations": [],
-    "responsibility": ["Tuen mm."]
+    "responsibilities": ["Tuen mm."]
 }','[]');
 
 /* Farmer Friends */
@@ -989,11 +989,11 @@ VALUES
         "Køer",
         "Gris"
     ],
-    "department": ["Stalden"],
-    "info": ["Har speciale i grise"],
-    "position": ["Bondemanden"],
+    "departments": ["Stalden"],
+    "infos": ["Har speciale i grise"],
+    "positions": ["Bondemanden"],
     "relations": ["Gift med Maren"],
-    "responsibility": ["Marken og alt i stalden"]
+    "responsibilities": ["Marken og alt i stalden"]
 }','[]'),
 
       (6, 35,
@@ -1018,11 +1018,11 @@ VALUES
         "Fars",
         "Steg"
     ],
-    "department": ["Efterbehandling"],
-    "info": ["Arbejder med efterbehandling af råvarene"],
-    "position": ["Medarbejder"],
+    "departments": ["Efterbehandling"],
+    "infos": ["Arbejder med efterbehandling af råvarene"],
+    "positions": ["Medarbejder"],
     "relations": ["Gift med Bondemand Jensen"],
-    "responsibility": ["Alt efterbehandling"]
+    "responsibilities": ["Alt efterbehandling"]
 }','[]');
 
 INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id) VALUES

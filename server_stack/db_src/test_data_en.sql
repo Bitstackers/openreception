@@ -500,11 +500,11 @@ VALUES
         "Linux",
         "Yolk"
     ],
-    "department": ["Development"],
-    "info": ["Yolk author", "Village idiot"],
-    "position": ["Software Developer"],
+    "departments": ["Development"],
+    "infos": ["Yolk author", "Village idiot"],
+    "positions": ["Software Developer"],
     "relations": ["Married to Trine Løcke"],
-    "responsibility": ["Server og client development","Sales"]
+    "responsibilities": ["Server og client development","Sales"]
 }',
 '[
     {
@@ -537,11 +537,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": ["Usability/Design", "Development"],
-    "info": ["Do nice stuff in programs"],
-    "position": ["Designer"],
+    "departments": ["Usability/Design", "Development"],
+    "infos": ["Do nice stuff in programs"],
+    "positions": ["Designer"],
     "relations": ["Married to Thomas"],
-    "responsibility": ["UX Design", "Internal education/training"]
+    "responsibilities": ["UX Design", "Internal education/training"]
 }',
          '[]' ),
 
@@ -566,11 +566,11 @@ VALUES
         "SIP",
         "Linux"
     ],
-    "department": ["Bookkeeping"],
-    "info": ["Eyes on the money"],
-    "position": ["CFO"],
+    "departments": ["Bookkeeping"],
+    "infos": ["Eyes on the money"],
+    "positions": ["CFO"],
     "relations": ["Dad to Thomas Løcke"],
-    "responsibility": ["Accounting"]
+    "responsibilities": ["Accounting"]
 }',
          '[
             { "value" : "60431990",
@@ -602,11 +602,11 @@ VALUES
         "Linux",
         "FreeSWITCH"
     ],
-    "department": ["Engineering", "Development"],
-    "info": ["A bit OCD with the code"],
-    "position": ["Software Developer"],
+    "departments": ["Engineering", "Development"],
+    "infos": ["A bit OCD with the code"],
+    "positions": ["Software Developer"],
     "relations": ["Children with Sidsel Schomacker", "Friends with Peter L."],
-    "responsibility": ["Servers", "Client", "FreeSWITCH", "SNOM"]
+    "responsibilities": ["Servers", "Client", "FreeSWITCH", "SNOM"]
 }',
          '[
             { "value" : "30481150",
@@ -646,11 +646,11 @@ VALUES
         "French",
         "Cheese"
     ],
-    "department": ["Physics", "Development"],
-    "info": ["Looks after the code"],
-    "position": ["Software Develper"],
+    "departments": ["Physics", "Development"],
+    "infos": ["Looks after the code"],
+    "positions": ["Software Develper"],
     "relations": ["Once had a dog"],
-    "responsibility": ["Bitstacking"]
+    "responsibilities": ["Bitstacking"]
 }','[]'),
 
        (1, 6, '{
@@ -665,11 +665,11 @@ VALUES
         "hatte",
         "Tegneserier"
     ],
-    "department": ["Design"],
-    "info": [],
-    "position": ["Designer", "Art/Graphics"],
+    "departments": ["Design"],
+    "infos": [],
+    "positions": ["Designer", "Art/Graphics"],
     "relations": ["Children with Kim Rostgaard Christensen"],
-    "responsibility": ["UI design", "Striben"]
+    "responsibilities": ["UI design", "Striben"]
 }','[]'),
 
        (1, 7, '{
@@ -681,11 +681,11 @@ VALUES
         "Granvej",
         "Mosekrogen"
     ],
-    "department": [],
-    "info": [],
-    "position": [],
+    "departments": [],
+    "infos": [],
+    "positions": [],
     "relations": [],
-    "responsibility": []
+    "responsibilities": []
 }','[]');
 
 /*Fishermans Friends*/
@@ -707,11 +707,11 @@ VALUES
         "Seeman",
         "Pirate"
     ],
-    "department": ["Catch"],
-    "info": ["Former military fisherman"],
-    "position": ["Key fishing manager"],
+    "departments": ["Catch"],
+    "infos": ["Former military fisherman"],
+    "positions": ["Key fishing manager"],
     "relations": ["Married to Trine Løcke"],
-    "responsibility": ["Fresh fish"]
+    "responsibilities": ["Fresh fish"]
 }','[]' ),
 
        (2, 2, '{
@@ -735,11 +735,11 @@ VALUES
         "Tux",
         "Penguin"
     ],
-    "department": ["The Boat"],
-    "info": ["Eye patch and parrot"],
-    "position": ["CFO (Cheif fishing officer)"],
+    "departments": ["The Boat"],
+    "infos": ["Eye patch and parrot"],
+    "positions": ["CFO (Cheif fishing officer)"],
     "relations": ["Diego the Parrot"],
-    "responsibility": ["Salt water fish"]
+    "responsibilities": ["Salt water fish"]
 }','[]'),
 
        (2, 4, '{
@@ -760,11 +760,11 @@ VALUES
         "Tux",
         "Penguin"
     ],
-    "department": ["The Boat"],
-    "info": ["Eye patch on the left eye"],
-    "position": ["CFO (Cheif fishing officer)"],
+    "departments": ["The Boat"],
+    "infos": ["Eye patch on the left eye"],
+    "positions": ["CFO (Cheif fishing officer)"],
     "relations": ["Diego the Parrot"],
-    "responsibility": ["Salt water fish", "Cod and sharks"]
+    "responsibilities": ["Salt water fish", "Cod and sharks"]
 }','[]');
 
 /*Responsum*/
@@ -794,11 +794,11 @@ VALUES
         "Slackware",
         "Linux"
     ],
-    "department": ["HQ"],
-    "info": ["Something", "Loves Shadowrun"],
-    "position": ["CTO"],
+    "departments": ["HQ"],
+    "infos": ["Something", "Loves Shadowrun"],
+    "positions": ["CTO"],
     "relations": ["Married to Trine Løcke"],
-    "responsibility": ["IT stuff"]
+    "responsibilities": ["IT stuff"]
 }','[]'),
 
        (3, 2, '{
@@ -823,11 +823,11 @@ VALUES
         "IT",
         "Speaker"
     ],
-    "department": ["Production"],
-    "info": ["Always wears blue shoes"],
-    "position": ["CRO (Cheif receptionist officer)"],
+    "departments": ["Production"],
+    "infos": ["Always wears blue shoes"],
+    "positions": ["CRO (Cheif receptionist officer)"],
     "relations": ["Married to Thomas Løcke"],
-    "responsibility": ["The printer", "Lunch for TL, to keep him from starving"]
+    "responsibilities": ["The printer", "Lunch for TL, to keep him from starving"]
 }','[]'),
 
        (3, 3, '{
@@ -850,11 +850,11 @@ VALUES
         "3660",
         "3520"
     ],
-    "department": ["Production"],
-    "info": ["The guy in the glass cage. We do not ask questions."],
-    "position": ["CEO & CFO"],
+    "departments": ["Production"],
+    "infos": ["The guy in the glass cage. We do not ask questions."],
+    "positions": ["CEO & CFO"],
     "relations": ["Dad to Thomas Løcke."],
-    "responsibility": ["Accounting"]
+    "responsibilities": ["Accounting"]
 }','[]'),
 
        (3, 4, '{
@@ -876,11 +876,11 @@ VALUES
         "Sales",
         "Unaddressed"
     ],
-    "department": ["Production"],
-    "info": ["The hair guy"],
-    "position": ["Backup software maintainer"],
+    "departments": ["Production"],
+    "infos": ["The hair guy"],
+    "positions": ["Backup software maintainer"],
     "relations": ["Friends with everybody"],
-    "responsibility": ["mail"]
+    "responsibilities": ["mail"]
 }','[]');
 
 /* Hansen VVS */
@@ -906,11 +906,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": ["Main branch"],
-    "info": ["Octoman!"],
-    "position": ["CPO (Cheif pluming officer)"],
+    "departments": ["Main branch"],
+    "infos": ["Octoman!"],
+    "positions": ["CPO (Cheif pluming officer)"],
     "relations": ["Brother of Luigi Mario"],
-    "responsibility": ["Everything", "42"]
+    "responsibilities": ["Everything", "42"]
 }','[]' ),
 
        (4, 67, '{
@@ -931,11 +931,11 @@ VALUES
     "tags": [
         "Super"
     ],
-    "department": ["HQ"],
-    "info": ["Janitor"],
-    "position": ["Assistent"],
+    "departments": ["HQ"],
+    "infos": ["Janitor"],
+    "positions": ["Assistent"],
     "relations": ["Brother of Mario Mario"],
-    "responsibility": ["Almost everything"]
+    "responsibilities": ["Almost everything"]
 }','[]');
 
 /* Kødbollen A/S */
@@ -958,11 +958,11 @@ VALUES
     "tags": [
         "builder"
     ],
-    "department": ["Tuen"],
-    "info": ["Ace at teamwork"],
-    "position": ["Boss"],
+    "departments": ["Tuen"],
+    "infos": ["Ace at teamwork"],
+    "positions": ["Boss"],
     "relations": [],
-    "responsibility": ["Tuen mm."]
+    "responsibilities": ["Tuen mm."]
 }','[]');
 
 /* Farmer Friends */
@@ -989,11 +989,11 @@ VALUES
         "Cow",
         "Pig"
     ],
-    "department": ["Stable"],
-    "info": ["Specialized in pigs"],
-    "position": ["Farmer"],
+    "departments": ["Stable"],
+    "infos": ["Specialized in pigs"],
+    "positions": ["Farmer"],
     "relations": ["Married to Maren"],
-    "responsibility": ["The fields and everything in the stables"]
+    "responsibilities": ["The fields and everything in the stables"]
 }','[]'),
 
       (6, 35,
@@ -1018,11 +1018,11 @@ VALUES
         "Meatloaf",
         "Roast"
     ],
-    "department": ["Postprocessing"],
-    "info": ["Works with postprocessing all materials"],
-    "position": ["Employee"],
+    "departments": ["Postprocessing"],
+    "infos": ["Works with postprocessing all materials"],
+    "positions": ["Employee"],
     "relations": ["Married to farmer Jensen"],
-    "responsibility": ["EVerything postprocessing"]
+    "responsibilities": ["EVerything postprocessing"]
 }','[]');
 
 INSERT INTO distribution_list (owner_reception_id, owner_contact_id, role, recipient_reception_id, recipient_contact_id) VALUES
