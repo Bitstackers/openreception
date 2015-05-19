@@ -1,6 +1,6 @@
 part of or_test_fw;
 
-abstract class Reception_Store {
+abstract class ReceptionStore {
 
   static Logger log = new Logger('Test.Reception_Store');
 
