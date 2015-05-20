@@ -44,6 +44,10 @@ class UIReceptionSelector extends UIModel {
   OListElement get _list   => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
 
+  void changeActiveReception(int receptionID) {
+    this._markSelected(_list.querySelector('[data-id="$receptionID"]'));
+  }
+
   /**
    * Filter the reception list whenever the user enters data into the [_filter]
    * input field.

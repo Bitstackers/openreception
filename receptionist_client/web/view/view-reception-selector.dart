@@ -64,5 +64,11 @@ class ReceptionSelector extends ViewWidget {
     _hotKeys.onAltV.listen(activateMe);
 
     _ui.onClick.listen(activateMe);
+
+    Model.Call.activeCallChanged.listen((Model.Call newCall) {
+      if (newCall != Model.Call.noCall) {
+        _ui.changeActiveReception(newCall.receptionID);
+      }
+    });
   }
 }
