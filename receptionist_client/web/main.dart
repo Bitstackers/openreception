@@ -91,12 +91,6 @@ main() async {
             (clientConfig.callFlowServerUri, token, new ORTransport.Client());
         Controller.User controllerUser = new Controller.User(callFlowControl);
 
-        controllerUser.setPaused(Model.User.currentUser)
-          .then((Model.UserStatus userStatus) {
-            log.info('Initial user state set to ${userStatus.state}');
-          })
-          .catchError((error) => log.shout('Failed setting user state with error ${error}'));
-
         observers(controllerUser);
         registerReadyView(appState,
                           clientConfig,
@@ -106,7 +100,23 @@ main() async {
                           language,
                           token);
 
+        StreamSubscription initialStateLoader;
+        initialStateLoader = appState.onStateChange.listen((Model.AppState newState) {
+          if (newState == Model.AppState.READY) {
+            loadCallState(callFlowControl);
+            initialStateLoader.cancel();
+
+            controllerUser.setPaused(Model.User.currentUser)
+              .then((Model.UserStatus userStatus) {
+                log.info('Initial user state set to ${userStatus.state}');
+              })
+              .catchError((error) => log.shout('Failed setting user state with error ${error}'));
+
+          }
+        });
+
         appState.changeState(Model.AppState.READY);
+
       });
     } else {
       String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
@@ -124,6 +134,20 @@ main() async {
     });
   }
 }
+
+Future loadCallState(ORService.CallFlowControl callFlowControl) async {
+  return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
+    ORModel.Call myActiveCall =
+      calls.firstWhere((ORModel.Call call) =>
+          call.assignedTo == Model.User.currentUser.ID &&
+          call.state      == ORModel.CallState.Speaking, orElse: () => null);
+
+    if(myActiveCall != null) {
+      Model.Call.activeCall = new Model.Call.fromORModel(myActiveCall);
+    }
+  });
+}
+
 
 /**
  * Return the configuration object for the client.
