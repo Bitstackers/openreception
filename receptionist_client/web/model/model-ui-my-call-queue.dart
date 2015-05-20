@@ -57,9 +57,12 @@ class UIMyCallQueue extends UIModel {
     final List<LIElement> list = new List<LIElement>();
 
     calls.forEach((ORModel.Call call) {
+      //TODO Remove these in production.
+      String callDirection = call.inbound ? '←' : '→';
+
       SpanElement callDesc = new SpanElement()
                                   ..classes.add('call-description')
-                                  ..text = call.callerID;
+                                  ..text = '$callDirection ${call.callerID} ${call.state}';
       /// TODO (TL): When we get VIP, add class .flag-vip to callDesc on VIP calls.
 
       SpanElement callWait = new SpanElement()
