@@ -502,7 +502,7 @@ VALUES
     ],
     "departments": ["Development"],
     "infos": ["Yolk author", "Village idiot"],
-    "positions": ["Software Developer"],
+    "titles": ["Software Developer"],
     "relations": ["Married to Trine Løcke"],
     "responsibilities": ["Server og client development","Sales"]
 }',
@@ -539,7 +539,7 @@ VALUES
     ],
     "departments": ["Usability/Design", "Development"],
     "infos": ["Do nice stuff in programs"],
-    "positions": ["Designer"],
+    "titles": ["Designer"],
     "relations": ["Married to Thomas"],
     "responsibilities": ["UX Design", "Internal education/training"]
 }',
@@ -568,7 +568,7 @@ VALUES
     ],
     "departments": ["Bookkeeping"],
     "infos": ["Eyes on the money"],
-    "positions": ["CFO"],
+    "titles": ["CFO"],
     "relations": ["Dad to Thomas Løcke"],
     "responsibilities": ["Accounting"]
 }',
@@ -604,7 +604,7 @@ VALUES
     ],
     "departments": ["Engineering", "Development"],
     "infos": ["A bit OCD with the code"],
-    "positions": ["Software Developer"],
+    "titles": ["Software Developer"],
     "relations": ["Children with Sidsel Schomacker", "Friends with Peter L."],
     "responsibilities": ["Servers", "Client", "FreeSWITCH", "SNOM"]
 }',
@@ -648,7 +648,7 @@ VALUES
     ],
     "departments": ["Physics", "Development"],
     "infos": ["Looks after the code"],
-    "positions": ["Software Develper"],
+    "titles": ["Software Develper"],
     "relations": ["Once had a dog"],
     "responsibilities": ["Bitstacking"]
 }','[]'),
@@ -667,7 +667,7 @@ VALUES
     ],
     "departments": ["Design"],
     "infos": [],
-    "positions": ["Designer", "Art/Graphics"],
+    "titles": ["Designer", "Art/Graphics"],
     "relations": ["Children with Kim Rostgaard Christensen"],
     "responsibilities": ["UI design", "Striben"]
 }','[]'),
@@ -683,7 +683,7 @@ VALUES
     ],
     "departments": [],
     "infos": [],
-    "positions": [],
+    "titles": [],
     "relations": [],
     "responsibilities": []
 }','[]');
@@ -709,7 +709,7 @@ VALUES
     ],
     "departments": ["Catch"],
     "infos": ["Former military fisherman"],
-    "positions": ["Key fishing manager"],
+    "titles": ["Key fishing manager"],
     "relations": ["Married to Trine Løcke"],
     "responsibilities": ["Fresh fish"]
 }','[]' ),
@@ -737,7 +737,7 @@ VALUES
     ],
     "departments": ["The Boat"],
     "infos": ["Eye patch and parrot"],
-    "positions": ["CFO (Cheif fishing officer)"],
+    "titles": ["CFO (Cheif fishing officer)"],
     "relations": ["Diego the Parrot"],
     "responsibilities": ["Salt water fish"]
 }','[]'),
@@ -762,7 +762,7 @@ VALUES
     ],
     "departments": ["The Boat"],
     "infos": ["Eye patch on the left eye"],
-    "positions": ["CFO (Cheif fishing officer)"],
+    "titles": ["CFO (Cheif fishing officer)"],
     "relations": ["Diego the Parrot"],
     "responsibilities": ["Salt water fish", "Cod and sharks"]
 }','[]');
@@ -796,7 +796,7 @@ VALUES
     ],
     "departments": ["HQ"],
     "infos": ["Something", "Loves Shadowrun"],
-    "positions": ["CTO"],
+    "titles": ["CTO"],
     "relations": ["Married to Trine Løcke"],
     "responsibilities": ["IT stuff"]
 }','[]'),
@@ -825,7 +825,7 @@ VALUES
     ],
     "departments": ["Production"],
     "infos": ["Always wears blue shoes"],
-    "positions": ["CRO (Cheif receptionist officer)"],
+    "titles": ["CRO (Cheif receptionist officer)"],
     "relations": ["Married to Thomas Løcke"],
     "responsibilities": ["The printer", "Lunch for TL, to keep him from starving"]
 }','[]'),
@@ -852,7 +852,7 @@ VALUES
     ],
     "departments": ["Production"],
     "infos": ["The guy in the glass cage. We do not ask questions."],
-    "positions": ["CEO & CFO"],
+    "titles": ["CEO & CFO"],
     "relations": ["Dad to Thomas Løcke."],
     "responsibilities": ["Accounting"]
 }','[]'),
@@ -878,7 +878,7 @@ VALUES
     ],
     "departments": ["Production"],
     "infos": ["The hair guy"],
-    "positions": ["Backup software maintainer"],
+    "titles": ["Backup software maintainer"],
     "relations": ["Friends with everybody"],
     "responsibilities": ["mail"]
 }','[]');
@@ -908,7 +908,7 @@ VALUES
     ],
     "departments": ["Main branch"],
     "infos": ["Octoman!"],
-    "positions": ["CPO (Cheif pluming officer)"],
+    "titles": ["CPO (Cheif pluming officer)"],
     "relations": ["Brother of Luigi Mario"],
     "responsibilities": ["Everything", "42"]
 }','[]' ),
@@ -933,7 +933,7 @@ VALUES
     ],
     "departments": ["HQ"],
     "infos": ["Janitor"],
-    "positions": ["Assistent"],
+    "titles": ["Assistent"],
     "relations": ["Brother of Mario Mario"],
     "responsibilities": ["Almost everything"]
 }','[]');
@@ -960,7 +960,7 @@ VALUES
     ],
     "departments": ["Tuen"],
     "infos": ["Ace at teamwork"],
-    "positions": ["Boss"],
+    "titles": ["Boss"],
     "relations": [],
     "responsibilities": ["Tuen mm."]
 }','[]');
@@ -991,7 +991,7 @@ VALUES
     ],
     "departments": ["Stable"],
     "infos": ["Specialized in pigs"],
-    "positions": ["Farmer"],
+    "titles": ["Farmer"],
     "relations": ["Married to Maren"],
     "responsibilities": ["The fields and everything in the stables"]
 }','[]'),
@@ -1020,7 +1020,7 @@ VALUES
     ],
     "departments": ["Postprocessing"],
     "infos": ["Works with postprocessing all materials"],
-    "positions": ["Employee"],
+    "titles": ["Employee"],
     "relations": ["Married to farmer Jensen"],
     "responsibilities": ["EVerything postprocessing"]
 }','[]');
