@@ -41,6 +41,9 @@ class WelcomeMessage extends ViewWidget {
    */
   void _observers() {
     _receptionSelector.onSelect.listen(render);
+    Model.Call.activeCallChanged.listen((Model.Call newCall) {
+      this._ui.inActiveCall = newCall != Model.Call.noCall;
+    });
   }
 
   /**
@@ -51,7 +54,14 @@ class WelcomeMessage extends ViewWidget {
       _ui.clear();
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
-      _ui.greeting = reception.greeting;
+      if (Model.Call.activeCall != Model.Call.noCall) {
+        _ui.greeting = Model.Call.activeCall.greetingPlayed
+           ? reception.greeting
+           : reception.shortGreeting;
+      } else {
+        _ui.greeting = reception.greeting;
+      }
+
     }
   }
 }

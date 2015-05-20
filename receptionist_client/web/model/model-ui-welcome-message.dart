@@ -31,6 +31,10 @@ class UIWelcomeMessage extends UIModel {
 
   SpanElement get _greeting => _root.querySelector('.greeting');
 
+  set inActiveCall (bool inCall) {
+    _root.classes.toggle('incall', inCall);
+  }
+
   /**
    * Clear the welcome message widget.
    */
