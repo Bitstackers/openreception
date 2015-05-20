@@ -18,7 +18,7 @@ part of view;
  */
 class ReceptionCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
-  final Service.Notification      _notification;
+  final Controller.Notification      _notification;
   final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCalendar _ui;
@@ -30,7 +30,7 @@ class ReceptionCalendar extends ViewWidget {
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector,
                     Controller.Reception this._receptionController,
-                    Service.Notification this._notification) {
+                    Controller.Notification this._notification) {
     _ui.setHint('alt+a');
     _observers();
   }

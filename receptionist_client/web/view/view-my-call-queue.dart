@@ -20,14 +20,14 @@ class MyCallQueue extends ViewWidget {
   final Controller.Destination _myDestination;
   final Model.UIMyCallQueue    _ui;
   final Controller.Call         _callController;
-  final Service.Notification    _notifications;
+  final Controller.Notification    _notifications;
 
   /**
    * Constructor.
    */
   MyCallQueue(Model.UIMyCallQueue this._ui,
               Controller.Destination this._myDestination,
-              Service.Notification this._notifications,
+              Controller.Notification this._notifications,
               Controller.Call this._callController) {
 
     this._reloadCallList();

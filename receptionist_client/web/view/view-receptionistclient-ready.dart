@@ -35,7 +35,7 @@ class ReceptionistclientReady {
   MessageArchiveFilter                  _messageArchiveFilter;
   MessageCompose                        _messageCompose;
   MyCallQueue                           _myCallQueue;
-  Service.Notification                  _notification;
+  Controller.Notification               _notification;
   ReceptionAddresses                    _receptionAddresses;
   ReceptionAltNames                     _receptionAltNames;
   ReceptionBankInfo                     _receptionBankInfo;
@@ -66,7 +66,7 @@ class ReceptionistclientReady {
                                   Controller.Reception receptionController,
                                   Controller.User userController,
                                   Controller.Call callController,
-                                  Service.Notification notification,
+                                  Controller.Notification notification,
                                   Map<String, String> langMap) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,

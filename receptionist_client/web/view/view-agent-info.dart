@@ -19,7 +19,7 @@ part of view;
  */
 class AgentInfo extends ViewWidget {
   final Logger            _log = new Logger('$libraryName.AgentInfo');
-  Service.Notification    _notification;
+  Controller.Notification    _notification;
   final Model.UIAgentInfo _ui;
   final Controller.User   _user;
 
@@ -28,7 +28,7 @@ class AgentInfo extends ViewWidget {
    */
   AgentInfo(Model.UIModel this._ui,
             Controller.User this._user,
-            Service.Notification this._notification) {
+            Controller.Notification this._notification) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = AgentState.UNKNOWN;

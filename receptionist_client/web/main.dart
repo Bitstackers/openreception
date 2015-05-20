@@ -19,7 +19,6 @@ import 'dart:html';
 import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
-import 'service/service.dart' as Service;
 import 'view/view.dart' as View;
 
 import 'package:logging/logging.dart';
@@ -41,7 +40,7 @@ main() async {
   Uri                          appUri;
   ORModel.ClientConfiguration  clientConfig;
   Map<String, String>          language;
-  Service.Notification         notification;
+  Controller.Notification      notification;
   String                       token;
   ORTransport.WebSocketClient  webSocketClient;
 
@@ -80,7 +79,7 @@ main() async {
       Model.User.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient = new ORTransport.WebSocketClient();
-      notification    = new Service.Notification(new ORService.NotificationSocket(webSocketClient));
+      notification    = new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
 
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
@@ -242,7 +241,7 @@ void registerReadyView(Model.AppClientState appState,
                        ORModel.ClientConfiguration clientConfig,
                        Controller.User controllerUser,
                        ORService.CallFlowControl callFlowControl,
-                       Service.Notification notification,
+                       Controller.Notification notification,
                        Map<String, String> langMap,
                        String token) {
   Model.UIReceptionistclientReady uiReady =

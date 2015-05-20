@@ -20,14 +20,14 @@ class GlobalCallQueue extends ViewWidget {
   final Controller.Destination  _myDestination;
   final Model.UIGlobalCallQueue _ui;
   final Controller.Call         _callController;
-  final Service.Notification    _notifications;
+  final Controller.Notification    _notifications;
 
   /**
    * Constructor.
    */
   GlobalCallQueue(Model.UIGlobalCallQueue this._ui,
                   Controller.Destination this._myDestination,
-                  Service.Notification this._notifications,
+                  Controller.Notification this._notifications,
                   Controller.Call this._callController) {
 
     this._reloadCallList();
