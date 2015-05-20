@@ -59,7 +59,7 @@ class MyCallQueue extends ViewWidget {
 
     ///Call Observers
     this._notifications.onAnyCallStateChange.listen((Model.Call call) {
-      ///TODO (TL): delegate the call changes to UI component.
+      _reloadCallList();
     });
   }
 
