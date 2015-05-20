@@ -6,7 +6,6 @@ import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 import '../lib/message_server/configuration.dart' as json;
 import '../lib/configuration.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/message_server/router.dart' as router;
 
 Logger log = new Logger ('MessageServer');
@@ -31,7 +30,7 @@ void main(List<String> args) {
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
         .then((_) => router.startDatabase())
-        .then((_) => http.start(json.config.httpport, router.setup))
+        .then((_) => router.start(port : json.config.httpport))
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {
