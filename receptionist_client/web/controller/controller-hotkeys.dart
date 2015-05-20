@@ -40,6 +40,12 @@ class HotKeys {
   final Bus<KeyboardEvent> _ctrlAltEnter = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _ctrlAltP     = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _f1           = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _plus         = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _minus        = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _div          = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _mult         = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _f7           = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _f8           = new Bus<KeyboardEvent>();
 
   Stream<KeyboardEvent> get onAltA         => _altA.stream;
   Stream<KeyboardEvent> get onAltB         => _altB.stream;
@@ -59,6 +65,13 @@ class HotKeys {
   Stream<KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
   Stream<KeyboardEvent> get onCtrlAltP     => _ctrlAltP.stream;
   Stream<KeyboardEvent> get onF1           => _f1.stream;
+  Stream<KeyboardEvent> get onPlus         => _plus.stream;
+  Stream<KeyboardEvent> get onMinus        => _minus.stream;
+  Stream<KeyboardEvent> get onDiv          => _div.stream;
+  Stream<KeyboardEvent> get onMult         => _mult.stream;
+  Stream<KeyboardEvent> get onF7           => _f7.stream;
+  Stream<KeyboardEvent> get onF8           => _f8.stream;
+
 
   /**
    * Internal constructor.
@@ -66,7 +79,7 @@ class HotKeys {
   HotKeys._internal() {
     window.document.onKeyDown.listen(_keyDown.press);
 
-    final Map<String, EventListener> preventDefaultBindings =
+    final Map<dynamic, EventListener> preventDefaultBindings =
       {'Alt+a'         : _altA.fire,
        'Alt+b'         : _altB.fire,
        'Alt+c'         : _altC.fire,
@@ -86,7 +99,13 @@ class HotKeys {
        'Ctrl+d'        : _null, // Blackhole this
        'Ctrl+l'        : _null, // Blackhole this
        'Ctrl+Alt+P'    : _ctrlAltP.fire,
-       'F1'            : _f1.fire};
+       'F1'            : _f1.fire,
+       'F7'            : _f7.fire,
+       'F8'            : _f8.fire,
+       [Key.NumPlus]   : _plus.fire,
+       [Key.NumMinus]  : _minus.fire,
+       [Key.NumDiv]    : _div.fire,
+       [Key.NumMult]   : _mult.fire};
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
   }
@@ -99,7 +118,7 @@ class HotKeys {
   /**
    * Register the [keyMap] keybindings to [keyboard].
    */
-  void registerKeys(Keyboard keyboard, Map<String, EventListener> keyMap) {
+  void registerKeys(Keyboard keyboard, Map<dynamic, EventListener> keyMap) {
     keyMap.forEach((key, callback) {
       keyboard.register(key, callback);
     });
@@ -109,7 +128,7 @@ class HotKeys {
    * Register the [keyMap] key bindings to [keyboard]. Prevent default on all
    * key events.
    */
-  void registerKeysPreventDefault(Keyboard keyboard, Map<String, EventListener> keyMap) {
+  void registerKeysPreventDefault(Keyboard keyboard, Map<dynamic, EventListener> keyMap) {
     keyMap.forEach((key, callback) {
       keyboard.register(key, (Event event) {
         event.preventDefault();
