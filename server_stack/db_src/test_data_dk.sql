@@ -1,4 +1,4 @@
-BEGIN TRANSACTION;
+        BEGIN TRANSACTION;
 
 INSERT INTO contacts (id, full_name, contact_type)
 VALUES (1,  'Thomas Løcke', 'human'),
@@ -114,7 +114,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "Bed dem om at ringe igen, ved næste fuldmåne",
         "Begynd at snakke om din hund, og hvor godt du har oplært den osv."
     ],
-    "customertype": ["Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring."],
+    "customertypes": ["Kundetypen. Det afhænger med at situationen. Nogle gange skal der sælges katte, andre gange er det måske computer programmer, og andre dage kan det være faldskærmsudspring."],
     "emailaddresses": [
         "mail@bitstack.dk",
         "support@bitstack.dk",
@@ -200,7 +200,7 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
     "salescalls": [
         "Stil dem videre til marketingsafdelingen"
     ],
-    "customertype": ["Klassisk kundetype"],
+    "customertypes": ["Klassisk kundetype"],
     "short_greeting": "Du taler med...",
     "emailaddresses": [
         "info@fiskermans.com"
@@ -261,7 +261,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
     "salescalls": [
         "Stil dem videre til Thomas Løcke"
     ],
-    "customertype": ["Kundetype Foo", "Bar i ny og næ"],
+    "customertypes": ["Kundetype Foo", "Bar i ny og næ"],
     "emailaddresses": [
         "info@responsum.com"
     ],
@@ -319,7 +319,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
     "salescalls": [
         "Send en mail til mario@hansenvvs.dk"
     ],
-    "customertype": [],
+    "customertypes": [],
     "emailaddresses": [
         "info@hansenvvs.com"
     ],
@@ -375,7 +375,7 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
     "salescalls": [
         "Stil dem videre til Thomas Løcke"
     ],
-    "customertype": ["Omstil altid til support"],
+    "customertypes": ["Omstil altid til support"],
     "emailaddresses": [
         "info@koedbollen.dk"
     ],
@@ -433,7 +433,7 @@ VALUES (6, 2, 'Landmandens venner A/S', '12340006',
     "salescalls": [
         "Bed dem om at komme til dyrskuet og snakke med tyren"
     ],
-    "customertype": [],
+    "customertypes": [],
     "emailaddresses": [
         "info@landmænd.com"
     ],

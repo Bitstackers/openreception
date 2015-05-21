@@ -114,7 +114,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
         "Tell then to call again at the next full moon",
         "Start talking about your dog, how well it is trained and so on"
     ],
-    "customertype": ["Depends. Sometimes they sell cats, other times computer software and even sometimes parachute jumps."],
+    "customertypes": ["Depends. Sometimes they sell cats, other times computer software and even sometimes parachute jumps."],
     "emailaddresses": [
         "mail@bitstack.dk",
         "support@bitstack.dk",
@@ -200,7 +200,7 @@ VALUES (2, 2, 'Friends of the fisher Ltd.', '12340002',
     "salescalls": [
         "Stil dem videre til marketingsafdelingen"
     ],
-    "customertype": ["Classic customer type"],
+    "customertypes": ["Classic customer type"],
     "short_greeting": "You''re speaking with...",
     "emailaddresses": [
         "info@fiskermans.com"
@@ -261,7 +261,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
     "salescalls": [
         "Put then through to Thomas Løcke"
     ],
-    "customertype": ["Customer type Foo", "Sometimes Bar"],
+    "customertypes": ["Customer type Foo", "Sometimes Bar"],
     "emailaddresses": [
         "info@responsum.com"
     ],
@@ -319,7 +319,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
     "salescalls": [
         "Send an email to mario@hansenvvs.dk"
     ],
-    "customertype": [],
+    "customertypes": [],
     "emailaddresses": [
         "info@hansenvvs.com"
     ],
@@ -375,7 +375,7 @@ VALUES (5, 5, 'Meatball Ltd.', '12340005',
     "salescalls": [
         "Send them to Thomas Løcke"
     ],
-    "customertype": ["Always redirect calls to support"],
+    "customertypes": ["Always redirect calls to support"],
     "emailaddresses": [
         "info@koedbollen.dk"
     ],
@@ -433,7 +433,7 @@ VALUES (6, 2, 'Farmer friends', '12340006',
     "salescalls": [
         "Ask them to attend the animal fair and talk to the guy"
     ],
-    "customertype": [],
+    "customertypes": [],
     "emailaddresses": [
         "info@farmers.com"
     ],
