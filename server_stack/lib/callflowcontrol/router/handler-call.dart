@@ -355,6 +355,8 @@ abstract class Call {
                 call.receptionID = receptionID;
                 call.contactID = contactID;
 
+                call.changeState(Model.CallState.Ringing);
+
                 return new shelf.Response.ok(JSON.encode(call));
               })
               .catchError((error, stackTrace) {
@@ -527,6 +529,126 @@ abstract class Call {
           log.severe(error, stackTrace);
           return new shelf.Response.internalServerError();
         });
+
+      }).catchError((error, stackTrace) {
+        if (error is Model.Busy) {
+          return new shelf.Response(409, body : JSON.encode({
+            'error': 'Call not currently available.'
+          }));
+        }
+        else if (error is Model.NotFound) {
+            return new shelf.Response.notFound(JSON.encode({
+              'error': 'No calls available.'
+            }));
+        }
+        else if (error is Model.Forbidden) {
+          return new shelf.Response.forbidden(JSON.encode({
+              'error': 'Call already assigned.'
+            }));
+        } else {
+          Model.UserStatusList.instance.update(
+              user.ID,
+              ORModel.UserState.Unknown);
+          log.severe(error, stackTrace);
+          return new shelf.Response.internalServerError();
+        }
+      });
+    }).catchError((error, stackTrace) {
+      if (error is Model.NotFound) {
+        return new shelf.Response.notFound(JSON.encode({
+          'reason': 'No calls available.'
+        }));
+      } else {
+
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError(body : error.toString());
+      }
+    })
+    .catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(body : error.toString());
+    });
+  }
+
+  /**
+   * Pickup a specific call.
+   * TODO: Wait with parking until the channelchek is done
+   */
+  static Future<shelf.Response> pickupViaPark(shelf.Request request) {
+
+    final String callID = shelf_route.getPathParameter(request, 'callid');
+
+    if (callID == null || callID == "") {
+      return new Future.value
+          (new shelf.Response(400, body : 'Empty call_id in path.'));
+    }
+
+    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
+      try {
+        if (!Model.PeerList.get(user.peer).registered) {
+          return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
+        }
+      } catch (error) {
+        log.severe
+          ('Failed to lookup peer for user with ID ${user.ID}. Error : $error');
+        return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
+      }
+
+      /// Check user state. If the user is currently performing an action - or
+      /// has an active channel - deny the request.
+      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+
+      bool inTransition =
+          ORModel.UserState.TransitionStates.contains(userState);
+      bool hasChannels =
+          Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+      if (inTransition || hasChannels) {
+        return new shelf.Response
+            (400, body : 'Phone is not ready. '
+              'state:{$userState}, hasChannels:{$hasChannels}');
+      }
+
+      /// Park all the users calls.
+      return Future.forEach(
+          Model.UserStatusList.instance.activeCallsAt(user.ID),
+          (Model.Call call) => call.park(user)).then((_) {
+
+        /// Request the specified call.
+        Model.Call assignedCall =
+            Model.CallList.instance.requestSpecificCall(callID, user);
+        assignedCall.assignedTo = user.ID;
+
+        log.finest('Assigned call ${assignedCall.ID} to user with '
+                   'ID ${user.ID}');
+
+        /// Update the user state
+        Model.UserStatusList.instance.update
+          (user.ID, ORModel.UserState.Receiving);
+
+        return Controller.PBX.createAgentChannel(user)
+          .then((String uuid) {
+            /// Channel bridging
+            return Controller.PBX.bridgeChannel(uuid, assignedCall)
+              .then((_) {
+                /// Update the user state
+                Model.UserStatusList.instance.update
+                  (user.ID, ORModel.UserState.Speaking);
+
+                return new shelf.Response.ok(JSON.encode(assignedCall));
+              })
+              .catchError((error, stackTrace) {
+                log.severe(error, stackTrace);
+                Model.UserStatusList.instance.update
+                  (user.ID, ORModel.UserState.Unknown);
+              });
+          })
+          .catchError((error, stackTrace) {
+            log.severe(error, stackTrace);
+            Model.UserStatusList.instance.update(
+            user.ID,
+            ORModel.UserState.Unknown);
+            });
 
       }).catchError((error, stackTrace) {
         if (error is Model.Busy) {
