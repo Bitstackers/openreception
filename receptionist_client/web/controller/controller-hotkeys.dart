@@ -14,7 +14,7 @@
 part of controller;
 
 /**
- * TODO (TL): Comment
+ * Setup global keyboard shortcuts and associated event streams.
  */
 class HotKeys {
   static final HotKeys _singleton = new HotKeys._internal();
@@ -39,13 +39,14 @@ class HotKeys {
   final Bus<KeyboardEvent> _altX         = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _ctrlAltEnter = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _ctrlAltP     = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _ctrlNumMinus = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _f1           = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _plus         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _minus        = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _div          = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _mult         = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _f7           = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _f8           = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _f9           = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _numDiv       = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _numMult      = new Bus<KeyboardEvent>();
+  final Bus<KeyboardEvent> _numPlus      = new Bus<KeyboardEvent>();
 
   Stream<KeyboardEvent> get onAltA         => _altA.stream;
   Stream<KeyboardEvent> get onAltB         => _altB.stream;
@@ -64,13 +65,14 @@ class HotKeys {
   Stream<KeyboardEvent> get onAltX         => _altX.stream;
   Stream<KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
   Stream<KeyboardEvent> get onCtrlAltP     => _ctrlAltP.stream;
+  Stream<KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
   Stream<KeyboardEvent> get onF1           => _f1.stream;
-  Stream<KeyboardEvent> get onPlus         => _plus.stream;
-  Stream<KeyboardEvent> get onMinus        => _minus.stream;
-  Stream<KeyboardEvent> get onDiv          => _div.stream;
-  Stream<KeyboardEvent> get onMult         => _mult.stream;
   Stream<KeyboardEvent> get onF7           => _f7.stream;
   Stream<KeyboardEvent> get onF8           => _f8.stream;
+  Stream<KeyboardEvent> get onF9           => _f9.stream;
+  Stream<KeyboardEvent> get onNumDiv       => _numDiv.stream;
+  Stream<KeyboardEvent> get onNumMult      => _numMult.stream;
+  Stream<KeyboardEvent> get onNumPlus      => _numPlus.stream;
 
 
   /**
@@ -80,32 +82,33 @@ class HotKeys {
     window.document.onKeyDown.listen(_keyDown.press);
 
     final Map<dynamic, EventListener> preventDefaultBindings =
-      {'Alt+a'         : _altA.fire,
-       'Alt+b'         : _altB.fire,
-       'Alt+c'         : _altC.fire,
-       'Alt+e'         : _altE.fire,
-       'Alt+f'         : _altF.fire,
-       'Alt+h'         : _altH.fire,
-       'Alt+i'         : _altI.fire,
-       'Alt+k'         : _altK.fire,
-       'Alt+m'         : _altM.fire,
-       'Alt+q'         : _altQ.fire,
-       'Alt+s'         : _altS.fire,
-       'Alt+t'         : _altT.fire,
-       'Alt+v'         : _altV.fire,
-       'Alt+w'         : _altW.fire,
-       'Alt+x'         : _altX.fire,
-       'Ctrl+Alt+Enter': _ctrlAltEnter.fire,
-       'Ctrl+d'        : _null, // Blackhole this
-       'Ctrl+l'        : _null, // Blackhole this
-       'Ctrl+Alt+P'    : _ctrlAltP.fire,
-       'F1'            : _f1.fire,
-       'F7'            : _f7.fire,
-       'F8'            : _f8.fire,
-       [Key.NumPlus]   : _plus.fire,
-       [Key.NumMinus]  : _minus.fire,
-       [Key.NumDiv]    : _div.fire,
-       [Key.Ctrl, Key.NumMult]   : _mult.fire};
+      {'Alt+a'                 : _altA.fire,
+       'Alt+b'                 : _altB.fire,
+       'Alt+c'                 : _altC.fire,
+       'Alt+e'                 : _altE.fire,
+       'Alt+f'                 : _altF.fire,
+       'Alt+h'                 : _altH.fire,
+       'Alt+i'                 : _altI.fire,
+       'Alt+k'                 : _altK.fire,
+       'Alt+m'                 : _altM.fire,
+       'Alt+q'                 : _altQ.fire,
+       'Alt+s'                 : _altS.fire,
+       'Alt+t'                 : _altT.fire,
+       'Alt+v'                 : _altV.fire,
+       'Alt+w'                 : _altW.fire,
+       'Alt+x'                 : _altX.fire,
+       'Ctrl+Alt+Enter'        : _ctrlAltEnter.fire,
+       'Ctrl+d'                : _null, // Blackhole this
+       'Ctrl+l'                : _null, // Blackhole this
+       'Ctrl+Alt+P'            : _ctrlAltP.fire,
+       [Key.Ctrl, Key.NumMinus]: _ctrlNumMinus.fire,
+       'F1'                    : _f1.fire,
+       'F7'                    : _f7.fire,
+       'F8'                    : _f8.fire,
+       'F9'                    : _f9.fire,
+       [Key.NumPlus]           : _numPlus.fire,
+       [Key.NumDiv]            : _numDiv.fire,
+       [Key.NumMult]           : _numMult.fire};
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
   }
