@@ -140,7 +140,8 @@ class ReceptionistclientReady {
         (new Model.UIContactData(querySelector('#contact-data')),
          new Controller.Destination(Context.Home, Widget.ContactData),
          uiContactSelector,
-         uiReceptionSelector);
+         uiReceptionSelector,
+         _callController);
 
     _calendarEditor = new CalendarEditor
         (new Model.UICalendarEditor(querySelector('#calendar-editor'), _weekDays),

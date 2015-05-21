@@ -22,6 +22,7 @@ class ContactData extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactData       _ui;
+  final Controller.Call           _callController;
 
   /**
    * Constructor.
@@ -29,7 +30,8 @@ class ContactData extends ViewWidget {
   ContactData(Model.UIModel this._ui,
               Controller.Destination this._myDestination,
               Model.UIContactSelector this._contactSelector,
-              Model.UIReceptionSelector this._receptionSelector) {
+              Model.UIReceptionSelector this._receptionSelector,
+              Controller.Call this._callController) {
     _ui.setHint('alt+t, ctrl+space');
     _observers();
   }
