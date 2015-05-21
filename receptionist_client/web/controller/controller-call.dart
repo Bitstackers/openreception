@@ -28,14 +28,16 @@ class Call {
 
   Call(this._service);
 
-  Future dial(String extension, Model.Reception reception, Model.Contact contact) {
-    log.info('Dialing $extension.');
+  Future dial(ORModel.PhoneNumber phoneNumber, Model.Reception reception, Model.Contact contact) {
+    log.info('Dialing ${phoneNumber.value}.');
 
     _command.fire(CallCommand.DIAL);
-    return this._service.originate(extension, contact.ID, reception.ID)
+    return this._service.originate(phoneNumber.value, contact.ID, reception.ID)
       .then((ORModel.Call orCall) {
         _command.fire(CallCommand.DIALSUCCESS);
-        return new Model.Call.fromORModel(orCall);
+        Model.Call.activeCall = new Model.Call.fromORModel(orCall);
+
+        return Model.Call.activeCall;
       })
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -95,10 +97,7 @@ class Call {
    *
    */
   Future<Model.Call> pickupFirstParkedCall() {
-    return this._service.callList().then((Iterable<ORModel.Call> calls) {
-      ORModel.Call parkedCall = calls.firstWhere((ORModel.Call call) =>
-      call.assignedTo == Model.User.currentUser.ID &&
-      call.state == ORModel.CallState.Parked, orElse: null);
+    return _firstParkedCall().then((Model.Call parkedCall) {
 
       if (parkedCall != null) {
         this.pickup(new Model.Call.fromORModel(parkedCall));
@@ -130,6 +129,8 @@ class Call {
     return this._service.park(call.ID)
       .then((String stuff) {
         _command.fire(CallCommand.PARKSUCCESS);
+
+        Model.Call.activeCall = Model.Call.noCall;
         return new Model.Call.fromMap(JSON.decode(stuff));
       })
       .catchError((error, stackTrace) {
@@ -140,7 +141,32 @@ class Call {
       });
   }
 
-  Future transfer(Model.Call source, Model.Call destination) {
+  Future<Model.Call> _firstParkedCall()=>
+    this._service.callList().then((Iterable<ORModel.Call> calls) {
+    ORModel.Call parkedCall = calls.firstWhere((ORModel.Call call) =>
+      call.assignedTo == Model.User.currentUser.ID &&
+      call.state == ORModel.CallState.Parked, orElse: () => null);
+
+    return new Model.Call.fromORModel(parkedCall);
+   });
+
+
+  Future transferToFirstParkedCall(Model.Call source) {
+    return _firstParkedCall().then((Model.Call parkedCall) {
+
+      if (parkedCall != null) {
+        return _transfer(source, parkedCall)
+          .then((_) {
+            Model.Call.activeCall = Model.Call.noCall;
+        });
+      }
+      else {
+        return new Future.value(null);
+      }
+    });
+  }
+
+  Future _transfer(Model.Call source, Model.Call destination) {
     _command.fire(CallCommand.TRANSFER);
 
     return this._service.transfer(source.ID, destination.ID)
