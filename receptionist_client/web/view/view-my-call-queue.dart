@@ -70,7 +70,8 @@ class MyCallQueue extends ViewWidget {
   Future _reloadCallList() {
 
     bool isMine(Model.Call call) =>
-      call.assignedTo == Model.User.currentUser.ID;
+      call.assignedTo == Model.User.currentUser.ID &&
+      call.state != ORModel.CallState.Transferred;
 
     return this._callController.listCalls()
       .then((Iterable<Model.Call> calls) {
