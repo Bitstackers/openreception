@@ -57,9 +57,28 @@ class UIGlobalCallQueue extends UIModel {
     final List<LIElement> list = new List<LIElement>();
 
     calls.forEach((ORModel.Call call) {
+      /// TODO: Change this in production
+      String callDirection = call.inbound ? '←' : '→';
+
+      String callStateIcon = '?';
+
+      switch (call.state) {
+        case ORModel.CallState.Created:
+          callStateIcon = '…';
+          break;
+
+        case ORModel.CallState.Queued:
+          callStateIcon = '♫';
+          break;
+
+        case ORModel.CallState.Transferring:
+          callStateIcon = '⌛';
+          break;
+
+      }
       SpanElement callDesc = new SpanElement()
                                   ..classes.add('call-description')
-                                  ..text = call.callerID;
+                                  ..text = '$callDirection $callStateIcon ${call.state} ${call.callerID} ';
       /// TODO (TL): When we get VIP, add class flag-vip to callDesc on VIP calls.
 
       SpanElement callWait = new SpanElement()

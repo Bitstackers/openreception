@@ -59,10 +59,25 @@ class UIMyCallQueue extends UIModel {
     calls.forEach((ORModel.Call call) {
       //TODO Remove these in production.
       String callDirection = call.inbound ? '←' : '→';
+      String callStateIcon = '?';
+
+      switch (call.state) {
+        case ORModel.CallState.Speaking:
+          callStateIcon = '▶';
+          break;
+
+        case ORModel.CallState.Parked:
+          callStateIcon = '▌▌';
+          break;
+
+        case ORModel.CallState.Ringing:
+          callStateIcon = '..';
+          break;
+      }
 
       SpanElement callDesc = new SpanElement()
                                   ..classes.add('call-description')
-                                  ..text = '$callDirection ${call.callerID} ${call.state}';
+                                  ..text = '$callDirection $callStateIcon ${call.callerID} ${call.state}';
       /// TODO (TL): When we get VIP, add class .flag-vip to callDesc on VIP calls.
 
       SpanElement callWait = new SpanElement()
@@ -73,7 +88,8 @@ class UIMyCallQueue extends UIModel {
                     ..dataset['id'] = call.ID
                     ..dataset['object'] = JSON.encode(call)
                     ..children.addAll([callDesc, callWait])
-                    ..classes.toggle('locked', call.locked));
+                    ..classes.toggle('locked', call.locked)
+                    ..classes.toggle('parked', call.state == 'PARKED'));
     });
 
     _list.children = list;
