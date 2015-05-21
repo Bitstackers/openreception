@@ -74,6 +74,9 @@ class ContactData extends ViewWidget {
     _receptionSelector.onSelect.listen(clear);
 
     _ui.onMarkedRinging.listen(_call);
+
+    _hotKeys.onMult.listen((_) => _ui.ring());
+
     ///
     ///
     ///
@@ -104,7 +107,10 @@ class ContactData extends ViewWidget {
    * ringing.
    */
   void _call(ORModel.PhoneNumber phoneNumber) {
-    print('view-contact-data.call() ${phoneNumber}');
-    /// TODO (TL): Call the Controller layer to actually get the call going.
+    _callController.dial(
+        phoneNumber,
+        _receptionSelector.selectedReception,
+        _contactSelector.selectedContact)
+        .whenComplete(_ui.callConnected);
   }
 }
