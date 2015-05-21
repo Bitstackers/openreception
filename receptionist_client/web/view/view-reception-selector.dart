@@ -19,26 +19,19 @@ part of view;
 class ReceptionSelector extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _uiModel;
-  final Controller.Reception      _receptionController;
+  final List<Model.Reception>     _receptions;
 
   /**
    * Constructor.
    */
   ReceptionSelector(Model.UIReceptionSelector this._uiModel,
                     Controller.Destination this._myDestination,
-                    Controller.Reception this._receptionController) {
+                    List<Model.Reception> this._receptions) {
     _ui.setHint('alt+v');
+
+    _ui.receptions = _receptions;
+
     _observers();
-
-    /// TODO (TL): Move this outside, so grabbing the initial list is a part of
-    /// the app loading time.
-    _receptionController.list()
-        .then((Iterable<Model.Reception> receptions) {
-          Iterable<Model.Reception> sortedReceptions = receptions.toList()
-              ..sort((x,y) => x.name.compareTo(y.name));
-
-          _ui.receptions = sortedReceptions;
-        });
   }
 
   @override Controller.Destination    get _destination => _myDestination;

@@ -53,6 +53,7 @@ class ReceptionistclientReady {
   ReceptionVATNumbers                   _receptionVATNumbers;
   ReceptionWebsites                     _receptionWebsites;
   static ReceptionistclientReady        _singleton;
+  List<Model.Reception>                 _sortedReceptions;
   final Controller.User                 _userController;
   final Model.UIReceptionistclientReady _ui;
   WelcomeMessage                        _welcomeMessage;
@@ -64,6 +65,7 @@ class ReceptionistclientReady {
                                   Model.UIReceptionistclientReady uiReady,
                                   Controller.Contact contactController,
                                   Controller.Reception receptionController,
+                                  List<Model.Reception> sortedReceptions,
                                   Controller.User userController,
                                   Controller.Call callController,
                                   Controller.Notification notification,
@@ -73,6 +75,7 @@ class ReceptionistclientReady {
                                                          uiReady,
                                                          contactController,
                                                          receptionController,
+                                                         sortedReceptions,
                                                          userController,
                                                          callController,
                                                          notification,
@@ -89,6 +92,7 @@ class ReceptionistclientReady {
                                     Model.UIReceptionistclientReady this._ui,
                                     this._contactController,
                                     this._receptionController,
+                                    this._sortedReceptions,
                                     this._userController,
                                     this._callController,
                                     this._notification,
@@ -245,7 +249,7 @@ class ReceptionistclientReady {
     _receptionSelector = new ReceptionSelector
         (uiReceptionSelector,
          new Controller.Destination(Context.Home, Widget.ReceptionSelector),
-         _receptionController);
+         _sortedReceptions);
 
     _receptionTelephoneNumbers = new ReceptionTelephoneNumbers
         (new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),

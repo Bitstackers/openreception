@@ -91,31 +91,24 @@ main() async {
         Controller.User controllerUser = new Controller.User(callFlowControl);
 
         observers(controllerUser);
-        registerReadyView(appState,
-                          clientConfig,
-                          controllerUser,
-                          callFlowControl,
-                          notification,
-                          language,
-                          token);
 
-        StreamSubscription initialStateLoader;
-        initialStateLoader = appState.onStateChange.listen((Model.AppState newState) {
-          if (newState == Model.AppState.READY) {
-            loadCallState(callFlowControl);
-            initialStateLoader.cancel();
+        Future rRV = registerReadyView(appState,
+                                       clientConfig,
+                                       controllerUser,
+                                       callFlowControl,
+                                       notification,
+                                       language,
+                                       token);
+        Future lCS = loadCallState(callFlowControl);
+        Future sP = controllerUser.setPaused(Model.User.currentUser);
 
-            controllerUser.setPaused(Model.User.currentUser)
-              .then((Model.UserStatus userStatus) {
-                log.info('Initial user state set to ${userStatus.state}');
-              })
-              .catchError((error) => log.shout('Failed setting user state with error ${error}'));
-
-          }
+        Future.wait([rRV, lCS, sP]).then((_) {
+          appState.changeState(Model.AppState.READY);
+        })
+        .catchError((error) {
+          log.shout('Loading of app failed with ${error}');
+          appState.changeState(Model.AppState.ERROR);
         });
-
-        appState.changeState(Model.AppState.READY);
-
       });
     } else {
       String loginUrl = '${clientConfig.authServerUri}/token/create?returnurl=${window.location.toString()}';
@@ -133,20 +126,6 @@ main() async {
     });
   }
 }
-
-Future loadCallState(ORService.CallFlowControl callFlowControl) async {
-  return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
-    ORModel.Call myActiveCall =
-      calls.firstWhere((ORModel.Call call) =>
-          call.assignedTo == Model.User.currentUser.ID &&
-          call.state      == ORModel.CallState.Speaking, orElse: () => null);
-
-    if(myActiveCall != null) {
-      Model.Call.activeCall = new Model.Call.fromORModel(myActiveCall);
-    }
-  });
-}
-
 
 /**
  * Return the configuration object for the client.
@@ -201,6 +180,22 @@ Future<ORModel.User> getUser(Uri authServerUri, String token) async {
 }
 
 /**
+ * Load call state for current user.
+ */
+Future loadCallState(ORService.CallFlowControl callFlowControl) {
+  return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
+    ORModel.Call myActiveCall =
+      calls.firstWhere((ORModel.Call call) =>
+          call.assignedTo == Model.User.currentUser.ID &&
+          call.state      == ORModel.CallState.Speaking, orElse: () => null);
+
+    if(myActiveCall != null) {
+      Model.Call.activeCall = new Model.Call.fromORModel(myActiveCall);
+    }
+  });
+}
+
+/**
  * Observers.
  *
  * Registers the [window.onBeforeUnload] and [window.onUnload] listeners that is
@@ -237,31 +232,37 @@ void registerDisasterAndLoadingViews(Model.AppClientState appState) {
  * Register the [View.ReceptionistclientReady] app view object.
  * NOTE: This depends on [clientConfig] being set.
  */
-void registerReadyView(Model.AppClientState appState,
-                       ORModel.ClientConfiguration clientConfig,
-                       Controller.User controllerUser,
-                       ORService.CallFlowControl callFlowControl,
-                       Controller.Notification notification,
-                       Map<String, String> langMap,
-                       String token) {
+Future registerReadyView(Model.AppClientState appState,
+                         ORModel.ClientConfiguration clientConfig,
+                         Controller.User controllerUser,
+                         ORService.CallFlowControl callFlowControl,
+                         Controller.Notification notification,
+                         Map<String, String> langMap,
+                         String token) {
   Model.UIReceptionistclientReady uiReady =
       new Model.UIReceptionistclientReady('receptionistclient-ready');
   ORService.RESTContactStore contactStore = new ORService.RESTContactStore
       (clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
+  Controller.Reception receptionController = new Controller.Reception(receptionStore);
 
-  /// This is where it all starts. Every single widget is instantiated in
-  /// appReady.
-  appReady = new View.ReceptionistclientReady
-      (appState,
-       uiReady,
-       new Controller.Contact(contactStore),
-       new Controller.Reception(receptionStore),
-       controllerUser,
-       new Controller.Call(callFlowControl),
-       notification,
-       langMap);
+  return receptionController.list()
+      .then((Iterable<Model.Reception> receptions) {
+        Iterable<Model.Reception> sortedReceptions = receptions.toList()
+            ..sort((x,y) => x.name.compareTo(y.name));
+
+        appReady = new View.ReceptionistclientReady
+            (appState,
+             uiReady,
+             new Controller.Contact(contactStore),
+             receptionController,
+             sortedReceptions,
+             controllerUser,
+             new Controller.Call(callFlowControl),
+             notification,
+             langMap);
+      });
 }
 
 /**
