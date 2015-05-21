@@ -154,9 +154,7 @@ class Call {
         break;
 
       case  (CallState.Ringing):
-        if (lastState != CallState.Ringing) {
-          Notification.broadcast(ClientNotification.callState (this));
-        }
+        Notification.broadcast(ClientNotification.callState (this));
         break;
 
       case (CallState.Transferring):
