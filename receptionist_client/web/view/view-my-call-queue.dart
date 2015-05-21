@@ -14,68 +14,69 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Show the local call queue and registers keyboard shortcut for hanging up
+ * calls.
  */
 class MyCallQueue extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIMyCallQueue    _ui;
+  final Controller.Destination  _myDestination;
+  final Model.UIMyCallQueue     _uiModel;
   final Controller.Call         _callController;
-  final Controller.Notification    _notifications;
+  final Controller.Notification _notifications;
 
   /**
    * Constructor.
    */
-  MyCallQueue(Model.UIMyCallQueue this._ui,
+  MyCallQueue(Model.UIMyCallQueue this._uiModel,
               Controller.Destination this._myDestination,
               Controller.Notification this._notifications,
               Controller.Call this._callController) {
-
-    this._reloadCallList();
+    _loadCallList();
 
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIMyCallQueue    get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
+  }
+
+  /**
+   * Load the list of calls assigned to current user and not being transferred.
+   */
+  void _loadCallList() {
+    bool isMine(Model.Call call) =>
+        call.assignedTo == Model.User.currentUser.ID &&
+        call.state != ORModel.CallState.Transferred;
+
+    _callController.listCalls()
+      .then((Iterable<Model.Call> calls) {
+        _ui.calls = calls.where(isMine).toList(growable: false);
+      });
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
 
     _hotKeys.onCtrlNumMinus.listen((_) {
       _callController.transferToFirstParkedCall(Model.Call.activeCall);
     });
 
-    ///Call Observers
-    this._notifications.onAnyCallStateChange.listen((Model.Call call) {
-      _reloadCallList();
-    });
-  }
-
-  Future _reloadCallList() {
-
-    bool isMine(Model.Call call) =>
-      call.assignedTo == Model.User.currentUser.ID &&
-      call.state != ORModel.CallState.Transferred;
-
-    return this._callController.listCalls()
-      .then((Iterable<Model.Call> calls) {
-        _ui.calls = calls.where(isMine).toList(growable: false);
+    _notifications.onAnyCallStateChange.listen((Model.Call call) {
+      _loadCallList();
     });
   }
 }

@@ -14,54 +14,52 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The reception greeting widget.
  */
 class WelcomeMessage extends ViewWidget {
   final Map<String, String>       _langMap;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIWelcomeMessage    _ui;
+  final Model.UIWelcomeMessage    _uiModel;
 
   /**
    * Constructor.
    */
-  WelcomeMessage(Model.UIModel this._ui,
+  WelcomeMessage(Model.UIWelcomeMessage this._uiModel,
                  Model.UIReceptionSelector this._receptionSelector,
                  Map<String, String> this._langMap) {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => null;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination get _destination => null;
+  @override Model.UIWelcomeMessage get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Observers.
    */
   void _observers() {
-    _receptionSelector.onSelect.listen(render);
+    _receptionSelector.onSelect.listen(_render);
     Model.Call.activeCallChanged.listen((Model.Call newCall) {
-      this._ui.inActiveCall = newCall != Model.Call.noCall;
+      _ui.inActiveCall = newCall != Model.Call.noCall;
     });
   }
 
   /**
    * Render the widget with [reception].
    */
-  void render(Model.Reception reception) {
+  void _render(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
-      if (Model.Call.activeCall != Model.Call.noCall) {
-        _ui.greeting = Model.Call.activeCall.greetingPlayed
-           ? reception.greeting
-           : reception.shortGreeting;
+      if(Model.Call.activeCall != Model.Call.noCall) {
+        _ui.greeting =
+            Model.Call.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
       } else {
         _ui.greeting = reception.greeting;
       }
-
     }
   }
 }

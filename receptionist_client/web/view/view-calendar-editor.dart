@@ -27,12 +27,12 @@ class CalendarEditor extends ViewWidget {
   final Model.UIReceptionCalendar _receptionCalendar;
   final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UICalendarEditor    _ui;
+  final Model.UICalendarEditor    _uiModel;
 
   /**
    * Constructor
    */
-  CalendarEditor(Model.UICalendarEditor this._ui,
+  CalendarEditor(Model.UICalendarEditor this._uiModel,
                  Controller.Destination this._myDestination,
                  Model.UIContactCalendar this._contactCalendar,
                  Model.UIContactSelector this._contactSelector,
@@ -44,10 +44,10 @@ class CalendarEditor extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UICalendarEditor get _ui          => _uiModel;
 
-  @override void onBlur(_) {
+  @override void _onBlur(_) {
     if(_ui.isFocused) {
       _ui.reset();
     }
@@ -58,7 +58,7 @@ class CalendarEditor extends ViewWidget {
    * called from anywhere ie. the [destination].from.widget is null, then
    * navigate to home.
    */
-  @override void onFocus(Controller.Destination destination){
+  @override void _onFocus(Controller.Destination destination){
     if(destination.from != null) {
       _setup(destination.from.widget, destination.cmd);
     } else {
@@ -100,7 +100,7 @@ class CalendarEditor extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
     _ui.onCancel.listen(_close);
     _ui.onDelete.listen(_delete);

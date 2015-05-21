@@ -14,40 +14,40 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The message archive list.
  */
 class MessageArchive extends ViewWidget {
   final Controller.Destination _myDestination;
-  final Model.UIMessageArchive _ui;
+  final Model.UIMessageArchive _uiModel;
 
   /**
    * Constructor.
    */
-  MessageArchive(Model.UIMessageArchive this._ui,
+  MessageArchive(Model.UIMessageArchive this._uiModel,
                  Controller.Destination this._myDestination) {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIMessageArchive get _ui          => _uiModel;
 
-  @override void onBlur(_) {}
-  @override void onFocus(_) {}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick .listen(activateMe);
+    _ui.onClick .listen(_activateMe);
   }
 }

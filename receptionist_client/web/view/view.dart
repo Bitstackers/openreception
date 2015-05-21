@@ -65,36 +65,36 @@ final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();
 
 /**
- * TODO (TL): Comment
+ * Commen methods for all view widgets.
  */
 abstract class ViewWidget {
   /**
    * SHOULD return the widgets [Destination]. MAY return null if the widget has
    * no [Destination] associated with it.
    */
-  Controller.Destination get myDestination;
+  Controller.Destination get _destination;
 
   /**
    * What to do when the widget blurs.
    */
-  void onBlur(Controller.Destination destination);
+  void _onBlur(Controller.Destination destination);
 
   /**
    * What to do when the widget is focused.
    */
-  void onFocus(Controller.Destination destination);
+  void _onFocus(Controller.Destination destination);
 
   /**
    * MUST return the widgets [UIModel].
    */
-  Model.UIModel get ui;
+  Model.UIModel get _ui;
 
   /**
-   * Navigate to [myDestination] if widget is not already in focus.
+   * Navigate to [_destination] if widget is not already in focus.
    */
-  void navigateToMyDestination() {
-    if(!ui.isFocused) {
-      _navigate.go(myDestination);
+  void _navigateToMyDestination() {
+    if(!_ui.isFocused) {
+      _navigate.go(_destination);
     }
   }
 
@@ -107,13 +107,13 @@ abstract class ViewWidget {
    *  call ui.blur()
    *  call onBlur();
    */
-  void setWidgetState(Controller.Destination destination) {
-    if(myDestination == destination) {
-      ui.focus();
-      onFocus(destination);
+  void _setWidgetState(Controller.Destination destination) {
+    if(_destination == destination) {
+      _ui.focus();
+      _onFocus(destination);
     } else {
-      ui.blur();
-      onBlur(destination);
+      _ui.blur();
+      _onBlur(destination);
     }
   }
 }

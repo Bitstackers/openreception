@@ -14,51 +14,51 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The list a reception alternative names.
  */
 class ReceptionAltNames extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionAltNames _ui;
+  final Model.UIReceptionAltNames _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionAltNames(Model.UIModel this._ui,
+  ReceptionAltNames(Model.UIReceptionAltNames this._uiModel,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination    get _destination => _myDestination;
+  @override Model.UIReceptionAltNames get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
 
-    _receptionSelector.onSelect.listen(render);
+    _receptionSelector.onSelect.listen(_render);
   }
 
   /**
    * Render the widget with [reception].
    */
-  void render(Model.Reception reception) {
+  void _render(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {

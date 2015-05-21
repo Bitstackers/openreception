@@ -14,41 +14,41 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The list of reception addresses.
  */
 class ReceptionAddresses extends ViewWidget {
   final Controller.Destination     _myDestination;
   final Model.UIReceptionSelector  _receptionSelector;
-  final Model.UIReceptionAddresses _ui;
+  final Model.UIReceptionAddresses _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionAddresses(Model.UIModel this._ui,
+  ReceptionAddresses(Model.UIReceptionAddresses this._uiModel,
                      Controller.Destination this._myDestination,
                      Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination     get _destination => _myDestination;
+  @override Model.UIReceptionAddresses get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
   void activateMe(_) {
-    navigateToMyDestination();
+    _navigateToMyDestination();
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen(activateMe);
 

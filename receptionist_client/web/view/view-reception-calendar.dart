@@ -14,19 +14,19 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The reception calendar.
  */
 class ReceptionCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
-  final Controller.Notification      _notification;
+  final Controller.Notification   _notification;
   final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionCalendar _ui;
+  final Model.UIReceptionCalendar _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionCalendar(Model.UIModel this._ui,
+  ReceptionCalendar(Model.UIReceptionCalendar this._uiModel,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector,
                     Controller.Reception this._receptionController,
@@ -35,18 +35,18 @@ class ReceptionCalendar extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination    get _destination => _myDestination;
+  @override Model.UIReceptionCalendar get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
   void _activateMe(_) {
-    navigateToMyDestination();
+    _navigateToMyDestination();
   }
 
   /**
@@ -74,7 +74,7 @@ class ReceptionCalendar extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
     _hotKeys.onAltA.listen(_activateMe);
 

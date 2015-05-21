@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Toggle hints on/off.
  */
 class Hint {
   final Model.UIHint _ui;

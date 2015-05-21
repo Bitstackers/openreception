@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Registers keyboard shortcuts for managing context visibility.
  */
 class Contexts {
   final Model.UIContexts _ui;

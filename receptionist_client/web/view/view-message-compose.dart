@@ -20,12 +20,12 @@ class MessageCompose extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIMessageCompose    _ui;
+  final Model.UIMessageCompose    _uiModel;
 
   /**
    * Constructor.
    */
-  MessageCompose(Model.UIMessageCompose this._ui,
+  MessageCompose(Model.UIMessageCompose this._uiModel,
                  Controller.Destination this._myDestination,
                  Model.UIContactSelector this._contactSelector,
                  Model.UIReceptionSelector this._receptionSelector) {
@@ -33,24 +33,24 @@ class MessageCompose extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIMessageCompose get _ui          => _uiModel;
 
-  @override void onBlur(_) {}
-  @override void onFocus(_) {}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
-   * TODO (TL): implement and comment
+   * Cancel sending a message.
    */
-  void cancel(_) {
+  void _cancel(_) {
     print('MessageCompose.cancel() not implemented yet');
   }
 
@@ -58,22 +58,22 @@ class MessageCompose extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onAltB.listen(activateMe);
+    _hotKeys.onAltB.listen(_activateMe);
 
-    _contactSelector.onSelect.listen(render);
+    _contactSelector.onSelect.listen(_render);
 
-    _ui.onCancel.listen(cancel);
-    _ui.onClick .listen(activateMe);
-    _ui.onSave  .listen(save);
-    _ui.onSend  .listen(send);
+    _ui.onCancel.listen(_cancel);
+    _ui.onClick .listen(_activateMe);
+    _ui.onSave  .listen(_save);
+    _ui.onSend  .listen(_send);
   }
 
   /**
    * Render the widget with [Contact].
    */
-  void render(Model.Contact contact) {
+  void _render(Model.Contact contact) {
     if(contact.isEmpty) {
       print('View.MessageCompose got an empty contact - undecided on what to do');
       /// TODO (TL): What should we do here?
@@ -83,16 +83,16 @@ class MessageCompose extends ViewWidget {
   }
 
   /**
-   * TODO (TL): implement and comment
+   * Save message in the message archive.
    */
-  void save(_) {
+  void _save(_) {
     print('MessageCompose.save() not implemented yet');
   }
 
   /**
-   * TODO (TL): implement and comment
+   * Send message.
    */
-  void send(_) {
+  void _send(_) {
     print('MessageCompose.send() not implemented yet');
   }
 }

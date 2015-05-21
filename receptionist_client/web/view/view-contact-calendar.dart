@@ -20,13 +20,13 @@ class ContactCalendar extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactCalendar   _ui;
+  final Model.UIContactCalendar   _uiModel;
   final Controller.Contact        _contactController;
 
   /**
    * Constructor.
    */
-  ContactCalendar(Model.UIModel this._ui,
+  ContactCalendar(Model.UIContactCalendar this._uiModel,
                   Controller.Destination this._myDestination,
                   Model.UIContactSelector this._contactSelector,
                   Model.UIReceptionSelector this._receptionSelector,
@@ -35,23 +35,23 @@ class ContactCalendar extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination  get _destination => _myDestination;
+  @override Model.UIContactCalendar get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Activate this widget if it's not already activated.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
    * Empty the [CalendarEvent] list on null [Reception].
    */
-  void clear(Model.Reception reception) {
+  void _clear(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     }
@@ -71,33 +71,33 @@ class ContactCalendar extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onAltK.listen(activateMe);
+    _hotKeys.onAltK.listen(_activateMe);
 
-    _ui.onClick .listen(activateMe);
+    _ui.onClick .listen(_activateMe);
     _ui.onEdit  .listen((_) => _maybeNavigateToEditor(Cmd.EDIT));
     _ui.onNew   .listen((_) => _maybeNavigateToEditor(Cmd.NEW));
 
-    _contactSelector.onSelect.listen(render);
+    _contactSelector.onSelect.listen(_render);
 
-    _receptionSelector.onSelect.listen(clear);
+    _receptionSelector.onSelect.listen(_clear);
   }
 
   /**
    * Render the widget with [contact].
    */
-  void render(Model.Contact contact) {
+  void _render(Model.Contact contact) {
     if(contact.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${contact.fullName}';
 
-      this._contactController.getCalendar(contact)
-        .then((Iterable<Model.ContactCalendarEntry> entries) {
-          _ui.calendarEntries = entries.toList()
-              ..sort((a,b) => a.start.compareTo(b.start));
-        });
+      _contactController.getCalendar(contact)
+          .then((Iterable<Model.ContactCalendarEntry> entries) {
+            _ui.calendarEntries = entries.toList()
+                ..sort((a,b) => a.start.compareTo(b.start));
+          });
     }
   }
 }

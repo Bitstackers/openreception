@@ -14,7 +14,9 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Toggle visibility of contexts. Basically all this does is set the z-index
+ * to 1 of the latest [Controller.Destination].context and z-index 0 on all
+ * other contexts.
  */
 class UIContexts {
   Map<String, HtmlElement> _contextMap;
@@ -36,6 +38,9 @@ class UIContexts {
   HtmlElement get contextHomeplus     => querySelector('#context-homeplus');
   HtmlElement get contextMessages     => querySelector('#context-messages');
 
+  /**
+   * Make [destination].context visible and all other contexts invisible.
+   */
   void toggleContext(Controller.Destination destination) {
     _contextMap.forEach((id, element) {
       id == destination.context ? element.style.zIndex = '1' : element.style.zIndex = '0';

@@ -14,52 +14,62 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Show the global call queue and registers keyboard shortcuts for call handling
  */
 class GlobalCallQueue extends ViewWidget {
   final Controller.Destination  _myDestination;
-  final Model.UIGlobalCallQueue _ui;
+  final Model.UIGlobalCallQueue _uiModel;
   final Controller.Call         _callController;
-  final Controller.Notification    _notifications;
+  final Controller.Notification _notifications;
 
   /**
    * Constructor.
    */
-  GlobalCallQueue(Model.UIGlobalCallQueue this._ui,
+  GlobalCallQueue(Model.UIGlobalCallQueue this._uiModel,
                   Controller.Destination this._myDestination,
                   Controller.Notification this._notifications,
                   Controller.Call this._callController) {
-
-    this._reloadCallList();
+    _loadCallList();
 
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination  get _destination => _myDestination;
+  @override Model.UIGlobalCallQueue get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
+  }
+
+  /**
+   * Load the list of calls not currently assigned to anybody.
+   */
+  void _loadCallList() {
+    bool unassigned(Model.Call call) => call.assignedTo == Model.User.noID;
+
+    _callController.listCalls()
+      .then((Iterable<Model.Call> calls) {
+        _ui.calls = calls.where(unassigned).toList(growable: false);
+      });
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
 
-    ///Call Observers
-    this._notifications.onAnyCallStateChange.listen((Model.Call call) {
-      _reloadCallList();
+    _notifications.onAnyCallStateChange.listen((Model.Call call) {
+      _loadCallList();
     });
 
     _hotKeys.onNumPlus.listen((_) {
@@ -76,16 +86,6 @@ class GlobalCallQueue extends ViewWidget {
 
     _hotKeys.onF8.listen((_) {
       _callController.pickupFirstParkedCall();
-    });
-  }
-
-  Future _reloadCallList() {
-
-    bool unassigned(Model.Call call) => call.assignedTo == Model.User.noID;
-
-    return this._callController.listCalls()
-      .then((Iterable<Model.Call> calls) {
-        _ui.calls = calls.where(unassigned).toList(growable: false);
     });
   }
 }

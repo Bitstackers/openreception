@@ -22,12 +22,12 @@ class ContactData extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactData       _ui;
+  final Model.UIContactData       _uiModel;
 
   /**
    * Constructor.
    */
-  ContactData(Model.UIContactData this._ui,
+  ContactData(Model.UIContactData this._uiModel,
               Controller.Destination this._myDestination,
               Model.UIContactSelector this._contactSelector,
               Model.UIReceptionSelector this._receptionSelector,
@@ -36,18 +36,18 @@ class ContactData extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIContactData    get ui            => _ui;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIContactData    get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is
    * already focused.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
@@ -61,13 +61,13 @@ class ContactData extends ViewWidget {
         phoneNumber,
         _receptionSelector.selectedReception,
         _contactSelector.selectedContact)
-      .whenComplete(_ui.removeRinging);
+        .whenComplete(_ui.removeRinging);
   }
 
   /**
    * Clear the widget on null [Reception].
    */
-  void clear(Model.Reception reception) {
+  void _clear(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     }
@@ -77,15 +77,15 @@ class ContactData extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onAltT.listen(activateMe);
+    _hotKeys.onAltT.listen(_activateMe);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
 
-    _contactSelector.onSelect.listen(render);
+    _contactSelector.onSelect.listen(_render);
 
-    _receptionSelector.onSelect.listen(clear);
+    _receptionSelector.onSelect.listen(_clear);
 
     _hotKeys.onNumMult.listen(_setRinging);
 
@@ -95,7 +95,7 @@ class ContactData extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void render(Model.Contact contact) {
+  void _render(Model.Contact contact) {
     if(contact.isEmpty) {
       _ui.clear();
     } else {
@@ -109,6 +109,6 @@ class ContactData extends ViewWidget {
    * number ringing.
    */
   void _setRinging(_) {
-    ui.ring();
+    _ui.ring();
   }
 }

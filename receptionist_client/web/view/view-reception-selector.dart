@@ -14,17 +14,17 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The reception selector widget.
  */
 class ReceptionSelector extends ViewWidget {
   final Controller.Destination    _myDestination;
-  final Model.UIReceptionSelector _ui;
+  final Model.UIReceptionSelector _uiModel;
   final Controller.Reception      _receptionController;
 
   /**
    * Constructor.
    */
-  ReceptionSelector(Model.UIModel this._ui,
+  ReceptionSelector(Model.UIReceptionSelector this._uiModel,
                     Controller.Destination this._myDestination,
                     Controller.Reception this._receptionController) {
     _ui.setHint('alt+v');
@@ -32,38 +32,37 @@ class ReceptionSelector extends ViewWidget {
 
     /// TODO (TL): Move this outside, so grabbing the initial list is a part of
     /// the app loading time.
-    this._receptionController.list()
-      .then((Iterable<Model.Reception> receptions) {
+    _receptionController.list()
+        .then((Iterable<Model.Reception> receptions) {
+          Iterable<Model.Reception> sortedReceptions = receptions.toList()
+              ..sort((x,y) => x.name.compareTo(y.name));
 
-      Iterable<Model.Reception> sortedReceptions = receptions.toList()
-          ..sort((x,y) => x.name.compareTo(y.name));
-
-      this._ui.receptions = sortedReceptions;
-    });
+          _ui.receptions = sortedReceptions;
+        });
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination    get _destination => _myDestination;
+  @override Model.UIReceptionSelector get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Activate this widget if it's not already activated.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onAltV.listen(activateMe);
+    _hotKeys.onAltV.listen(_activateMe);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
 
     Model.Call.activeCallChanged.listen((Model.Call newCall) {
       if (newCall != Model.Call.noCall) {

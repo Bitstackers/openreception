@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The receptionist client loading "widget". Activates on AppState.LOADING
  */
 class ReceptionistclientLoading {
   final  Model.AppClientState              _appState;

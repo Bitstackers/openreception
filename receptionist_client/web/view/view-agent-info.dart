@@ -19,14 +19,14 @@ part of view;
  */
 class AgentInfo extends ViewWidget {
   final Logger            _log = new Logger('$libraryName.AgentInfo');
-  Controller.Notification    _notification;
-  final Model.UIAgentInfo _ui;
+  Controller.Notification _notification;
+  final Model.UIAgentInfo _uiModel;
   final Controller.User   _user;
 
   /**
    * Constructor.
    */
-  AgentInfo(Model.UIModel this._ui,
+  AgentInfo(Model.UIAgentInfo this._uiModel,
             Controller.User this._user,
             Controller.Notification this._notification) {
     _ui.activeCount = 0;
@@ -49,11 +49,11 @@ class AgentInfo extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => null;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination get _destination => null;
+  @override Model.UIAgentInfo      get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Set the users state to [AgentState.IDLE].
@@ -119,13 +119,14 @@ class AgentInfo extends ViewWidget {
    * state.
    */
   void _updateCounters() {
-    _user.userStateList().then((Iterable<Model.UserStatus> userStates) {
-      _ui.activeCount = userStates.where((Model.UserStatus user)
-        => user.state == ORModel.UserState.Idle).length;
+    _user.userStateList()
+        .then((Iterable<Model.UserStatus> userStates) {
+          _ui.activeCount = userStates.where((Model.UserStatus user) =>
+              user.state == ORModel.UserState.Idle).length;
 
-      _ui.pausedCount = userStates.where((Model.UserStatus user)
-      => user.state == ORModel.UserState.Paused).length;
-    })
-    .catchError((error) => _log.warning('${error.toString()}'));
+          _ui.pausedCount = userStates.where((Model.UserStatus user)=>
+              user.state == ORModel.UserState.Paused).length;
+        })
+        .catchError((error) => _log.warning('${error.toString()}'));
   }
 }

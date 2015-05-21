@@ -14,7 +14,7 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * The receptionist client disaster "widget". Activates on AppState.ERROR
  */
 class ReceptionistclientDisaster {
   final Model.AppClientState         _appState;

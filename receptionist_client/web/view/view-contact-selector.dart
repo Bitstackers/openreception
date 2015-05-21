@@ -19,13 +19,13 @@ part of view;
 class ContactSelector extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactSelector   _ui;
+  final Model.UIContactSelector   _uiModel;
   final Controller.Contact        _contactController;
 
   /**
    * Constructor.
    */
-  ContactSelector(Model.UIModel this._ui,
+  ContactSelector(Model.UIContactSelector this._uiModel,
                   Controller.Destination this._myDestination,
                   Model.UIReceptionSelector this._receptionSelector,
                   Controller.Contact this._contactController) {
@@ -33,50 +33,47 @@ class ContactSelector extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Controller.Destination  get _destination => _myDestination;
+  @override Model.UIContactSelector get _ui          => _uiModel;
 
-  @override void onBlur(_){}
-  @override void onFocus(_){}
+  @override void _onBlur(_){}
+  @override void _onFocus(_){}
 
   /**
    * Activate this widget if it's not already activated.
    */
-  void activateMe(_) {
-    navigateToMyDestination();
+  void _activateMe(_) {
+    _navigateToMyDestination();
   }
 
   /**
    * Observers.
    */
   void _observers() {
-    _navigate.onGo.listen(setWidgetState);
+    _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onAltS.listen(activateMe);
+    _hotKeys.onAltS.listen(_activateMe);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen(_activateMe);
 
-    _receptionSelector.onSelect.listen(render);
+    _receptionSelector.onSelect.listen(_render);
   }
 
   /**
    * Render the widget with [reception].
    */
-  void render(Model.Reception reception) {
+  void _render(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
       _contactController.list(reception)
-        .then ((Iterable<Model.Contact> contacts) {
+          .then((Iterable<Model.Contact> contacts) {
+            List<Model.Contact> sortedContacts = contacts.toList()
+                ..sort((Model.Contact x , Model.Contact y) => x.fullName.compareTo(y.fullName));
 
-        List<Model.Contact> sortedContacts = contacts.toList()
-          ..sort((Model.Contact x , Model.Contact y) =>
-              x.fullName.compareTo(y.fullName));
-
-        this._ui.contacts = sortedContacts;
-      }).then((_) {
-        _ui.selectFirstContact();
-      });
+            _ui.contacts = sortedContacts;
+            _ui.selectFirstContact();
+          });
     }
   }
 }
