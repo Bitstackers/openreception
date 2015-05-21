@@ -57,7 +57,7 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(activateMe);
 
-    _hotKeys.onMinus.listen((_) {
+    _hotKeys.onCtrlNumMinus.listen((_) {
       _callController.transferToFirstParkedCall(Model.Call.activeCall);
     });
 

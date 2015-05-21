@@ -18,16 +18,16 @@ part of view;
  * navigation and rendering via the UIContactData class.
  */
 class ContactData extends ViewWidget {
+  final Controller.Call           _callController;
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactData       _ui;
-  final Controller.Call           _callController;
 
   /**
    * Constructor.
    */
-  ContactData(Model.UIModel this._ui,
+  ContactData(Model.UIContactData this._ui,
               Controller.Destination this._myDestination,
               Model.UIContactSelector this._contactSelector,
               Model.UIReceptionSelector this._receptionSelector,
@@ -37,7 +37,7 @@ class ContactData extends ViewWidget {
   }
 
   @override Controller.Destination get myDestination => _myDestination;
-  @override Model.UIModel          get ui            => _ui;
+  @override Model.UIContactData    get ui            => _ui;
 
   @override void onBlur(_){}
   @override void onFocus(_){}
@@ -48,6 +48,20 @@ class ContactData extends ViewWidget {
    */
   void activateMe(_) {
     navigateToMyDestination();
+  }
+
+  /**
+   * Tries to dial the [phoneNumber].
+   *
+   * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as
+   * marked ringing.
+   */
+  void _call(ORModel.PhoneNumber phoneNumber) {
+    _callController.dial(
+        phoneNumber,
+        _receptionSelector.selectedReception,
+        _contactSelector.selectedContact)
+      .whenComplete(_ui.removeRinging);
   }
 
   /**
@@ -73,18 +87,9 @@ class ContactData extends ViewWidget {
 
     _receptionSelector.onSelect.listen(clear);
 
+    _hotKeys.onNumMult.listen(_setRinging);
+
     _ui.onMarkedRinging.listen(_call);
-
-    _hotKeys.onMult.listen((_) => _ui.ring());
-
-    ///
-    ///
-    ///
-    /// TODO (TL): Listen for call notifications here? Possibly mark ringing?
-    /// Or put this in model-ui-contact-data.dart?
-    ///
-    ///
-    ///
   }
 
   /**
@@ -94,23 +99,16 @@ class ContactData extends ViewWidget {
     if(contact.isEmpty) {
       _ui.clear();
     } else {
-      _ui.clear();
-      _ui.headerExtra = ': ${contact.fullName}';
       _ui.contact = contact;
-
       _ui.selectFirstPhoneNumber();
     }
   }
 
   /**
-   * This is called when the [_ui] fires a [ORModel.PhoneNumber] as marked
-   * ringing.
+   * If no phonenumber is marked ringing, mark the currently selected phone-
+   * number ringing.
    */
-  void _call(ORModel.PhoneNumber phoneNumber) {
-    _callController.dial(
-        phoneNumber,
-        _receptionSelector.selectedReception,
-        _contactSelector.selectedContact)
-        .whenComplete(_ui.callConnected);
+  void _setRinging(_) {
+    ui.ring();
   }
 }

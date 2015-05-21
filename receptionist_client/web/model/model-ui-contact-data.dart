@@ -90,6 +90,9 @@ class UIContactData extends UIModel {
    * Populate widget with [contact] data.
    */
   set contact(Contact contact) {
+    clear();
+
+    headerExtra = ': ${contact.fullName}';
     additionalInfo = contact.infos;
     backups = contact.backupContacts;
     commands = contact.handling;
@@ -138,30 +141,12 @@ class UIContactData extends UIModel {
     _root.onClick.listen(_selectFromClick);
 
     _showTagsSpan.onClick.listen(_toggleTags);
-
-    ///
-    ///
-    ///
-    /// TODO (TL): Listen for call notifications here? Possibly mark ringing?
-    /// Or put this in view-contact-data.dart?
-    ///
-    ///
-    ///
-    ///
   }
 
   /**
    * Fires when a [ORModel.PhoneNumber] is marked ringing.
    */
   Stream<ORModel.PhoneNumber> get onMarkedRinging => _busRinging.stream;
-
-  void callConnected() {
-    LIElement li = _phoneNumberList.querySelector('.ringing');
-
-    if (li != null) {
-      li.classes.toggle('ringing', false);
-    }
-  }
 
   /**
    * TODO (TL): Comment
@@ -179,18 +164,36 @@ class UIContactData extends UIModel {
   set relations(List<String> items) => _populateList(_relationsList, items);
 
   /**
+   * Removes the ringing effect from whatever element that might currently be
+   * marked ringing.
+   *
+   * Removing the effect is delayed by 200ms for usability reasons.
+   */
+  void removeRinging() {
+    LIElement li = _phoneNumberList.querySelector('.ringing');
+
+    if(li != null) {
+      new Future.delayed(new Duration(milliseconds: 200), () {
+        li.classes.toggle('ringing', false);
+      });
+    }
+  }
+
+  /**
    * Add [items] to the responsibility list.
    */
   set responsibility(List<String> items) => _populateList(_responsibilityList, items);
 
   /**
    * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing.
+   *
+   * This fires a [ORModel.PhoneNumber] object on the [onMarkedRinging] stream.
    */
   void ring() {
     LIElement li = _phoneNumberList.querySelector('.selected');
 
     if(li != null) {
-      if(!_phoneNumberList.children.any((LIElement li) => li.classes.contains('ringing'))) {
+      if(noRinging) {
         li.classes.toggle('ringing');
         _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
       }

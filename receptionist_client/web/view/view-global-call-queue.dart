@@ -62,11 +62,11 @@ class GlobalCallQueue extends ViewWidget {
       _reloadCallList();
     });
 
-    _hotKeys.onPlus.listen((_) {
+    _hotKeys.onNumPlus.listen((_) {
       _callController.pickupNext();
     });
 
-    _hotKeys.onDiv.listen((_) {
+    _hotKeys.onNumDiv.listen((_) {
       _callController.hangup(Model.Call.activeCall);
     });
 
