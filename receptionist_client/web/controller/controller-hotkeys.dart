@@ -105,7 +105,7 @@ class HotKeys {
        [Key.NumPlus]   : _plus.fire,
        [Key.NumMinus]  : _minus.fire,
        [Key.NumDiv]    : _div.fire,
-       [Key.NumMult]   : _mult.fire};
+       [Key.Ctrl, Key.NumMult]   : _mult.fire};
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
   }
