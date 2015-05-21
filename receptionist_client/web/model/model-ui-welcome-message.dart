@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * UI model for welcome message.
  */
 class UIWelcomeMessage extends UIModel {
   final DivElement _myRoot;
@@ -31,8 +31,11 @@ class UIWelcomeMessage extends UIModel {
 
   SpanElement get _greeting => _root.querySelector('.greeting');
 
-  set inActiveCall (bool inCall) {
-    _root.classes.toggle('incall', inCall);
+  /**
+   * Color the greeting box background when in active call.
+   */
+  set inActiveCall(bool inCall) {
+    _greeting.classes.toggle('incall', inCall);
   }
 
   /**

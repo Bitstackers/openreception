@@ -41,6 +41,7 @@ class WelcomeMessage extends ViewWidget {
    */
   void _observers() {
     _receptionSelector.onSelect.listen(_render);
+
     Model.Call.activeCallChanged.listen((Model.Call newCall) {
       _ui.inActiveCall = newCall != Model.Call.noCall;
     });
