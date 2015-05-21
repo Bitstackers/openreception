@@ -148,6 +148,21 @@ abstract class PBX {
   }
 
   /**
+   * Bridges two active calls.
+   */
+  static Future bridgeChannel (String uuid, Model.Call destination) {
+    Model.TransferRequest.create (uuid, destination.ID);
+
+    ESL.Response bridgeResponse;
+
+    return
+        Model.PBXClient.api ('uuid_answer ${destination.channelID}')
+        .then ((_) => Model.PBXClient.api ('uuid_bridge ${destination.channelID} ${uuid}')
+          .then((response) => bridgeResponse = response))
+        .then ((_) => Model.PBXClient.api ('uuid_break ${destination.channelID}').then((_) => bridgeResponse));
+ }
+
+  /**
    * Transfers an active call to a user.
    */
   static Future transfer (Model.Call source, String extension) {
