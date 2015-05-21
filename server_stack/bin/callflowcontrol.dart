@@ -104,7 +104,16 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
 bool showHelp() => parsedArgs['help'];
 
 void loadPeerListFromPacket (ESL.Response response) {
-  Model.PeerList.instance =
-      new ESL.PeerList.fromMultilineBuffer(response.rawBody);
+
+  bool peerIsInAcceptedContext(ESL.Peer peer) {
+    return peer.context == 'default';
+  }
+
+  ESL.PeerList loadedList = new ESL.PeerList.fromMultilineBuffer(response.rawBody);
+
+  loadedList.where(peerIsInAcceptedContext).forEach((ESL.Peer peer) {
+    Model.PeerList.instance.add(peer);
+  });
+
   log.info('Loaded ${Model.PeerList.instance.length} peers from FreeSWITCH');
 }
