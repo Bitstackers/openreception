@@ -59,7 +59,23 @@ class GlobalCallQueue extends ViewWidget {
 
     ///Call Observers
     this._notifications.onAnyCallStateChange.listen((Model.Call call) {
-      ///TODO (TL): delegate the call changes to UI component.
+      _reloadCallList();
+    });
+
+    _hotKeys.onPlus.listen((_) {
+      _callController.pickupNext();
+    });
+
+    _hotKeys.onDiv.listen((_) {
+      _callController.hangup(Model.Call.activeCall);
+    });
+
+    _hotKeys.onF7.listen((_) {
+      _callController.park(Model.Call.activeCall);
+    });
+
+    _hotKeys.onF8.listen((_) {
+      _callController.pickupFirstParkedCall();
     });
   }
 
