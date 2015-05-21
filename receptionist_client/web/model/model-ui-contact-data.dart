@@ -186,7 +186,7 @@ class UIContactData extends UIModel {
   /**
    * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing.
    */
-  void _ring(_) {
+  void ring() {
     LIElement li = _phoneNumberList.querySelector('.selected');
 
     if(li != null) {
@@ -231,8 +231,7 @@ class UIContactData extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings =
-        {[Key.NumMult]: _ring, /// TODO (TL): Not too sure about this here...
-         'Alt+1'      : (_) => selectFirstPhoneNumber(),
+        {'Alt+1'      : (_) => selectFirstPhoneNumber(),
          'Alt+2'      : (_) => selectFromIndex(1),
          'Alt+3'      : (_) => selectFromIndex(2),
          'Alt+4'      : (_) => selectFromIndex(3),
