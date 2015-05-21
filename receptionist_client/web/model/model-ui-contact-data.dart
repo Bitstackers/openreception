@@ -155,11 +155,20 @@ class UIContactData extends UIModel {
    */
   Stream<ORModel.PhoneNumber> get onMarkedRinging => _busRinging.stream;
 
+  void callConnected() {
+    LIElement li = _phoneNumberList.querySelector('.ringing');
+
+    if (li != null) {
+      li.classes.toggle('ringing', false);
+    }
+  }
+
   /**
    * TODO (TL): Comment
    */
   void _populateList(OListElement parent, List<String> list) {
     list.forEach((String item) {
+
       parent.append(new LIElement()..text = item);
     });
   }
