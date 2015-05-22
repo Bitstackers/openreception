@@ -1219,6 +1219,18 @@ INSERT INTO calendar_events (id, start, stop, message) VALUES
 (9, '2014-3-25 16:00:00', '2014-3-25 20:00:00', 'Brandtest'),
 (10, '2014-3-25 16:00:00', '2014-3-25 20:00:00', 'Dyreskue');
 
+INSERT INTO calendar_entry_changes (id, entry_id, user_id) VALUES
+(1,1,3),
+(2,2,2),
+(3,3,1),
+(4,4,4),
+(5,5,5),
+(6,6,6),
+(7,7,3),
+(8,8,2),
+(9,9,1),
+(10,10,6);
+
 INSERT INTO contact_calendar (reception_id, contact_id, event_id) VALUES
 (1, 1, 1),
 (1, 1, 2),
@@ -1267,6 +1279,7 @@ SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);
 SELECT setval('message_draft_id_sequence', (SELECT max(id)+1 FROM message_draft), FALSE);
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
 SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
+SELECT setval('calendar_entry_changes_id_sequence', (SELECT max(id)+1 FROM calendar_entry_changes), FALSE);
 
 COMMIT;
 --  Set ownership:

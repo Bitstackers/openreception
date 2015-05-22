@@ -148,8 +148,8 @@ INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 CREATE TABLE messages (
    id                        INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message                   TEXT      NOT NULL,
-   context_contact_id        INTEGER       NULL REFERENCES contacts   (id),  
-   context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),  
+   context_contact_id        INTEGER       NULL REFERENCES contacts   (id),
+   context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),
    context_contact_name      TEXT          NULL DEFAULT NULL, --  Dereferenced contact name.
    context_reception_name    TEXT      NOT NULL,              --  Dereferenced reception name.
    taken_from_name           TEXT      NOT NULL DEFAULT '',
@@ -173,7 +173,7 @@ CREATE TABLE message_recipients (
    PRIMARY KEY (contact_id, reception_id, message_id)
 );
 
---  The message_queue is a simple job-stack that, when a item is present in the 
+--  The message_queue is a simple job-stack that, when a item is present in the
 --  table, indicates that is has not been delived to a transport agent.
 --  'unhandled_endpoints' stores a list of recipient endpoints, still waiting
 --  to be dispatched.
@@ -221,13 +221,21 @@ CREATE TABLE calendar_events (
    message TEXT      NOT NULL
 );
 
+CREATE TABLE calendar_entry_changes (
+   id         INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   entry_id   INTEGER   NOT NULL,
+   user_id    INTEGER   NOT NULL,
+   last_check TIMESTAMPTZ NOT NULL DEFAULT NOW()
+
+);
+
 CREATE TABLE contact_calendar (
    reception_id      INTEGER NOT NULL,
    contact_id        INTEGER NOT NULL,
-   distribution_list JSON        NULL DEFAULT NULL, 
+   distribution_list JSON        NULL DEFAULT NULL,
    --  A not-null distribution list will override the distribution list for the
    --  contact for the duration of the calendar event.
-   event_id          INTEGER NOT NULL REFERENCES calendar_events (id) 
+   event_id          INTEGER NOT NULL REFERENCES calendar_events (id)
                 ON UPDATE CASCADE ON DELETE CASCADE,
 
    PRIMARY KEY (contact_id, reception_id, event_id),
@@ -240,7 +248,7 @@ CREATE TABLE contact_calendar (
 CREATE TABLE reception_calendar (
    reception_id INTEGER NOT NULL REFERENCES receptions (id)
        ON UPDATE CASCADE ON DELETE CASCADE,
-   event_id     INTEGER NOT NULL REFERENCES calendar_events (id) 
+   event_id     INTEGER NOT NULL REFERENCES calendar_events (id)
        ON UPDATE CASCADE ON DELETE CASCADE,
 
    PRIMARY KEY (reception_id, event_id)
@@ -259,7 +267,7 @@ CREATE TABLE distribution_list (
   recipient_reception_id INTEGER NOT NULL,
   recipient_contact_id   INTEGER NOT NULL,
   UNIQUE(owner_reception_id, owner_contact_id, recipient_reception_id, recipient_contact_id),
-  
+
   FOREIGN KEY (owner_contact_id, owner_reception_id)
       REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE,
@@ -449,6 +457,15 @@ CREATE SEQUENCE playlists_id_sequence
 ALTER SEQUENCE playlists_id_sequence OWNED BY playlists.id;
 ALTER TABLE ONLY playlists ALTER COLUMN id SET DEFAULT nextval ('playlists_id_sequence'::regclass);
 
+CREATE SEQUENCE calendar_entry_changes_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE calendar_entry_changes_id_sequence OWNED BY calendar_entry_changes.id;
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval ('users_id_sequence'::regclass);
+
 -------------------------------------------------------------------------------
 --  Set ownership:
 
@@ -481,6 +498,7 @@ ALTER TABLE contact_phone_numbers OWNER TO openreception;
 ALTER TABLE cdr_entries OWNER TO openreception;
 ALTER TABLE cdr_checkpoints OWNER TO openreception;
 ALTER TABLE playlists OWNER TO openreception;
+ALTER TABLE calendar_entry_changes OWNER TO openreception;
 
 ALTER SEQUENCE users_id_sequence OWNER TO openreception;
 ALTER SEQUENCE groups_id_sequence OWNER TO openreception;
@@ -496,5 +514,6 @@ ALTER SEQUENCE calendar_events_id_sequence OWNER TO openreception;
 ALTER SEQUENCE distribution_list_id_sequence OWNER TO openreception;
 ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO openreception;
 ALTER SEQUENCE playlists_id_sequence OWNER TO openreception;
+ALTER SEQUENCE calendar_entry_changes_id_sequence OWNER TO openreception;
 
 -------------------------------------------------------------------------------
