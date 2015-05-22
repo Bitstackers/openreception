@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides access to the global call queue widget.
  */
 class UIGlobalCallQueue extends UIModel {
   final DivElement _myRoot;
@@ -36,60 +36,33 @@ class UIGlobalCallQueue extends UIModel {
   OListElement get _list        => _root.querySelector('.generic-widget-list');
 
   /**
-   * Read all .call-wait-time values in _list and increment them by one.
-   */
-  void _callAgeUpdate() {
-    new Timer.periodic(new Duration(seconds: 1), (_) {
-      _list.querySelectorAll('li span.call-wait-time').forEach((SpanElement span) {
-        if(span.text.isEmpty) {
-          span.text = '0';
-        } else {
-          span.text = (int.parse(span.text) + 1).toString();
-        }
-      });
-    });
-  }
-
-  /**
    * Add [calls] to the calls list.
    */
   set calls(List<ORModel.Call> calls) {
     final List<LIElement> list = new List<LIElement>();
 
     calls.forEach((ORModel.Call call) {
-      /// TODO: Change this in production
-      String callDirection = call.inbound ? '←' : '→';
+      final SpanElement callState = new SpanElement()
+                                          ..classes.add('call-state')
+                                          ..text = '${call.state.toLowerCase()}';
 
-      String callStateIcon = '?';
+      final SpanElement callDesc = new SpanElement()
+                                        ..classes.add('call-description')
+                                        ..text = '${call.callerID}'
+                                        ..children.add(callState);
 
-      switch (call.state) {
-        case ORModel.CallState.Created:
-          callStateIcon = '…';
-          break;
-
-        case ORModel.CallState.Queued:
-          callStateIcon = '♫';
-          break;
-
-        case ORModel.CallState.Transferring:
-          callStateIcon = '⌛';
-          break;
-
-      }
-      SpanElement callDesc = new SpanElement()
-                                  ..classes.add('call-description')
-                                  ..text = '$callDirection $callStateIcon ${call.state} ${call.callerID} ';
-      /// TODO (TL): When we get VIP, add class flag-vip to callDesc on VIP calls.
-
-      SpanElement callWait = new SpanElement()
-                                  ..classes.add('call-wait-time')
-                                  ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
+      final SpanElement callWaitTimer =
+          new SpanElement()
+                ..classes.add('call-wait-time')
+                ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
 
       list.add(new LIElement()
                     ..dataset['id'] = call.ID
                     ..dataset['object'] = JSON.encode(call)
-                    ..children.addAll([callDesc, callWait])
-                    ..classes.toggle('locked', call.locked));
+                    ..children.addAll([callDesc, callWaitTimer])
+                    ..classes.add(call.inbound ? 'inbound' : 'outbound')
+                    ..classes.toggle('locked', call.locked)
+                    ..title = '${call.inbound ? 'inbound' : 'outbound'}');
     });
 
     _list.children = list;
@@ -111,8 +84,6 @@ class UIGlobalCallQueue extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
-
-    _callAgeUpdate();
   }
 
   /**

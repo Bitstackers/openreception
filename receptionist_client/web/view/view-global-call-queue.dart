@@ -14,13 +14,16 @@
 part of view;
 
 /**
- * Show the global call queue and registers keyboard shortcuts for call handling
+ * Show the global call queue and registers keyboard shortcuts for call handling.
+ *
+ * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class GlobalCallQueue extends ViewWidget {
   final Controller.Destination  _myDestination;
   final Model.UIGlobalCallQueue _uiModel;
   final Controller.Call         _callController;
   final Controller.Notification _notifications;
+  final int                     _refreshRate = 1000;
 
   /**
    * Constructor.
@@ -29,8 +32,6 @@ class GlobalCallQueue extends ViewWidget {
                   Controller.Destination this._myDestination,
                   Controller.Notification this._notifications,
                   Controller.Call this._callController) {
-    _loadCallList();
-
     _observers();
   }
 
@@ -54,10 +55,9 @@ class GlobalCallQueue extends ViewWidget {
   void _loadCallList() {
     bool unassigned(Model.Call call) => call.assignedTo == Model.User.noID;
 
-    _callController.listCalls()
-      .then((Iterable<Model.Call> calls) {
-        _ui.calls = calls.where(unassigned).toList(growable: false);
-      });
+    _callController.listCalls().then((Iterable<Model.Call> calls) {
+      _ui.calls = calls.where(unassigned).toList(growable: false);
+    });
   }
 
   /**
@@ -68,24 +68,21 @@ class GlobalCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    _notifications.onAnyCallStateChange.listen((Model.Call call) {
+    /// Load the call list every 1 second.
+    new Timer.periodic(new Duration(milliseconds: _refreshRate), (_) {
       _loadCallList();
     });
 
-    _hotKeys.onNumPlus.listen((_) {
-      _callController.pickupNext();
-    });
+    /// TODO (KRC): What to do here? Do we even care about these when the call
+    /// list is now loaded at a fixed refresh rate?
+    _notifications.onAnyCallStateChange.listen((_) => null);
 
-    _hotKeys.onNumDiv.listen((_) {
-      _callController.hangup(Model.Call.activeCall);
-    });
+    _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
 
-    _hotKeys.onF7.listen((_) {
-      _callController.park(Model.Call.activeCall);
-    });
+    _hotKeys.onNumDiv.listen((_) => _callController.hangup(Model.Call.activeCall));
 
-    _hotKeys.onF8.listen((_) {
-      _callController.pickupFirstParkedCall();
-    });
+    _hotKeys.onF7.listen((_) => _callController.park(Model.Call.activeCall));
+
+    _hotKeys.onF8.listen((_) => _callController.pickupFirstParkedCall());
   }
 }

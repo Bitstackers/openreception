@@ -1771,19 +1771,22 @@
                 opacity: 0.2;
               }
 
-              #global-call-queue .generic-widget-list li.parked {
-                opacity: 0.2;
+              #global-call-queue .generic-widget-list li.inbound:before {
+                content: '→';
               }
 
-              #global-call-queue .generic-widget-list li span.flag-vip:before {
-                content: '! ';
-                font-weight: bold;
-                font-size: 1.1em;
-                color: red;
+              #global-call-queue .generic-widget-list li.outbound:before {
+                content: '←';
               }
 
               #global-call-queue .generic-widget-list li span.call-description {
                 padding-right: 10px;
+              }
+
+              #global-call-queue .generic-widget-list li span.call-description span.call-state {
+                padding-left: 1em;
+                font-size: 0.7em;
+                color: #aaa;
               }
 
               #global-call-queue .generic-widget-list li span.call-wait-time {
