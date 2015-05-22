@@ -76,16 +76,6 @@ class CalendarEntry {
   }
 
   /**
-   * Enables a [CalendarEntry] to sort itself compared to other calendar events.
-   */
-  int compareTo(CalendarEntry other) {
-    if (_start.isAtSameMomentAs(other._start)) {
-      return 0;
-    }
-    return _start.isBefore(other._start) ? 1 : -1;
-  }
-
-  /**
    * Return the contact id for this calendar entry. MAY be [Contact.noID] if
    * this is a reception only entry.
    */

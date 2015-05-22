@@ -45,11 +45,6 @@ class ReceptionStub {
   String get name => this.fullName;
 
   /**
-   * Enables a [ReceptionStub] to sort itself based on its [name].
-   */
-   int compareTo(ReceptionStub other) => this.name.compareTo(other.name);
-
-  /**
    * [Reception] as String, for debug/log purposes.
    */
    String toString() => '${name}-${ID}';
