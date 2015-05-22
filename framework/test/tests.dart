@@ -46,9 +46,9 @@ void main() {
   });
 
   group('Model.Reception', () {
-    test('serializationDeserialization', ReceptionObject.serializationDeserialization);
-    test('serialization', ReceptionObject.serialization);
-    test('buildObject', ReceptionObject.buildObject);
+    test('serializationDeserialization', ModelReception.serializationDeserialization);
+    test('serialization', ModelReception.serialization);
+    test('buildObject', ModelReception.buildObject);
   });
 
   group('Model.CalendarEntry', () {
@@ -205,10 +205,16 @@ abstract class MessageObject {
       expect(() => new Model.Message.fromMap(Test_Data.testMessage_1_Map), returnsNormally);
 }
 
-abstract class ReceptionObject {
-  static void serializationDeserialization () =>
+abstract class ModelReception {
+  static void serializationDeserialization () {
       expect(new Model.Reception.fromMap(Test_Data.testReception).asMap,
         equals(Test_Data.testReception));
+
+      expect(new Model.Reception.fromMap(Test_Data.testReception2).asMap,
+        equals(Test_Data.testReception2));
+
+   }
+
 
   /**
    * Merely asserts that no exceptions arise.

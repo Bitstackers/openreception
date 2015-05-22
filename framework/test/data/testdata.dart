@@ -7,6 +7,115 @@ Map testReceptionCalendarEntry = {
   "content": "Milk purchase"
 };
 
+Map testReception2 = {
+  "id": 1,
+  "organization_id": null,
+  "full_name": "BitStackers",
+  "enabled": true,
+  "extradatauri":
+      "https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true",
+  "reception_telephonenumber": "12340001",
+  "last_check": 0,
+  "attributes": {
+    "addresses": [
+      "At the end of the rainbow",
+      "Lovelace street",
+      "Farum Gydevej",
+      "Place of kings"
+    ],
+    "alternatenames": [
+      "Code monkeys",
+      "Software Developers",
+      "Awesome dudes",
+      "Bug Hunters",
+      "SuperHeroes"
+    ],
+    "bankinginformation": [
+      "The Bank 123456789",
+      "Trojan bank 123456789",
+      "Ostdea 123456789",
+      "Tyste Bank 123456789",
+      "Bank Bank Bank 123456789"
+    ],
+    "customertypes": [
+      ["Depends. Sometimes they sell cats, other times computer software and even sometimes parachute jumps."]
+    ],
+    "emailaddresses": [
+      "mail@bitstack.dk",
+      "support@bitstack.dk",
+      "finance@bitstack.dk",
+      "research@bitstack.dk",
+      "production@bitstack.dk",
+      "denmark-department@bitstack.dk"
+    ],
+    "greeting": "Welcome to BitStackers, how may I help?",
+    "handlings": [
+      "Let the phone ring 4-5 times",
+      "Office entrance is located in the back of the building",
+      "Customer needs to addressed formally, using both first and last name",
+      "Cars should be parked next door",
+      "Ask for an order identification",
+      "Customers needs to be over age 18 to do business with them",
+      "The goat in the front yard is there to keep the grass down"
+    ],
+    "openinghours": [
+      "Monday 08:00:00 - 17:10:00",
+      "Tuesday 08:00:00 - 17:05:00",
+      "Wednesday 08:00:00 - 17:02:00",
+      "Thursday 08:00:00 - 17:08:00",
+      "Friday 08:00:00 - 16:30:00",
+      "Saturday 08:00:00 - 18:00:00",
+      "Closed for the remainder of the week"
+    ],
+    "other":
+        "Bonus info: 40.5 Billion LEGO bricks are needed to build a tower to the moon. The game Ludo was created in 1896, when it was patented in England. A study from late 2008 shows that we use about 30% of our free time on online activities. The male brain volume is about 1300 ml.",
+    "product":
+        "Software products, but not just any software products. They are of the highest quality mankind has ever seen. Their products has been used to avoid 4 comet collisions with the earth that, otherwise, would have changed the world as we know it",
+    "salescalls": [
+      "Put then through to Thomas",
+      "Ask how many liters of milk are in the refrigerator nearest then right now",
+      "Tell then, it sounds very interesting, and they may send an email to gtfo@bitstack.dk",
+      "Tell then to call again at the next full moon",
+      "Start talking about your dog, how well it is trained and so on"
+    ],
+    "short_greeting": "You are speaking to...",
+    "registrationnumbers": [
+      "DK-123456789",
+      "SE-2835629523",
+      "DE-385973572",
+      "UK-1035798361",
+      "PL-9792559265"
+    ],
+    "telephonenumbers": [
+      {
+        "value": "+45 88329100",
+        "kind": "pstn",
+        "description": "Farum Gydevej 87",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      },
+      {
+        "value": "+45 33488241",
+        "kind": "pstn",
+        "description": "Old main number",
+        "billing_type": "landline",
+        "tag": [],
+        "confidential": false
+      }
+    ],
+    "websites": [
+      "http://bitstackers.dk",
+      "http://bitstack.dk",
+      "http://bitstack.me",
+      "http://bitstackers.org",
+      "http://bitstackers.stuff",
+      "http://bitstack.software",
+      "http://bitstack.welldone"
+    ]
+  }
+};
+
 Map testReception = {
   "id": 2,
   "full_name": "Friends of the fisher Ltd.",
@@ -107,79 +216,53 @@ Map testContact_4_1 = {
   "enabled": true,
   "full_name": "Kim Rostgaard Christensen",
   "distribution_list": {
-      "to": [
-          {
-              "contact": {
-                  "id": 4,
-                  "name": "Kim Rostgaard Christensen"
-              },
-              "reception": {
-                  "id": 1,
-                  "name": "BitStackers"
-              }
-          }
-      ],
-      "cc": [
-          {
-              "contact": {
-                  "id": 2,
-                  "name": null
-              },
-              "reception": {
-                  "id": 1,
-                  "name": "BitStackers"
-              }
-          }
-      ],
-      "bcc": []
+    "to": [
+      {
+        "contact": {"id": 4, "name": "Kim Rostgaard Christensen"},
+        "reception": {"id": 1, "name": "BitStackers"}
+      }
+    ],
+    "cc": [
+      {
+        "contact": {"id": 2, "name": null},
+        "reception": {"id": 1, "name": "BitStackers"}
+      }
+    ],
+    "bcc": []
   },
   "contact_type": "human",
   "phones": [
-      {
-          "value": "30481150",
-          "kind": "PSTN",
-          "description": "Cellphone - work",
-          "billing_type": "cell",
-          "tag": [],
-          "confidential": false
-      },
-      {
-          "value": "40966024",
-          "kind": "PSTN",
-          "description": "Cellphone - private",
-          "billing_type": "cell",
-          "tag": [],
-          "confidential": true
-      }
+    {
+      "value": "30481150",
+      "kind": "PSTN",
+      "description": "Cellphone - work",
+      "billing_type": "cell",
+      "tag": [],
+      "confidential": false
+    },
+    {
+      "value": "40966024",
+      "kind": "PSTN",
+      "description": "Cellphone - private",
+      "billing_type": "cell",
+      "tag": [],
+      "confidential": true
+    }
   ],
   "endpoints": [
-      {
-          "address": "krc@bitstack.dk",
-          "type": "email",
-          "confidential": false,
-          "enabled": true,
-          "description": null
-      }
+    {
+      "address": "krc@bitstack.dk",
+      "type": "email",
+      "confidential": false,
+      "enabled": true,
+      "description": null
+    }
   ],
-  "backup": [
-      "Thomas Løcke"
-  ],
-  "emailaddresses": [
-      "krc@bitstack.dk"
-  ],
-  "handling": [
-      "Always end a call with; have a nice day"
-  ],
-  "workhours": [
-      "Business days 07:00 – 18:00",
-      "Weekends: 10:00 - 14:00"
-  ],
-  "tags": [
-      "mail",
-      "SIP",
-      "Linux",
-      "FreeSWITCH"
-  ],
+  "backup": ["Thomas Løcke"],
+  "emailaddresses": ["krc@bitstack.dk"],
+  "handling": ["Always end a call with; have a nice day"],
+  "workhours": ["Business days 07:00 – 18:00", "Weekends: 10:00 - 14:00"],
+  "tags": ["mail", "SIP", "Linux", "FreeSWITCH"],
   "infos": ["Takes care of the code"],
   "titles": ["Software engineer"],
   "relations": ["Kids with Sidsel Schomacker"],
