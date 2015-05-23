@@ -4,7 +4,9 @@ Map testReceptionCalendarEntry = {
   "reception_id": 1,
   "start": 1431196256,
   "stop": 1431203456,
-  "content": "Milk purchase"
+  "content": "Milk purchase",
+  "last_modified" : 1431196141,
+  "last_modified_by" : 2
 };
 
 Map testReception2 = {
