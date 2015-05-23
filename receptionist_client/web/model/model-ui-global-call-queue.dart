@@ -17,12 +17,13 @@ part of model;
  * Provides access to the global call queue widget.
  */
 class UIGlobalCallQueue extends UIModel {
+  final Map<String, String> _langMap;
   final DivElement _myRoot;
 
   /**
    * Constructor.
    */
-  UIGlobalCallQueue(DivElement this._myRoot) {
+  UIGlobalCallQueue(DivElement this._myRoot, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -44,7 +45,7 @@ class UIGlobalCallQueue extends UIModel {
     calls.forEach((ORModel.Call call) {
       final SpanElement callState = new SpanElement()
                                           ..classes.add('call-state')
-                                          ..text = '${call.state.toLowerCase()}';
+                                          ..text = _langMap['callstate-${call.state.toLowerCase()}'];
 
       final SpanElement callDesc = new SpanElement()
                                         ..classes.add('call-description')
@@ -62,7 +63,7 @@ class UIGlobalCallQueue extends UIModel {
                     ..children.addAll([callDesc, callWaitTimer])
                     ..classes.add(call.inbound ? 'inbound' : 'outbound')
                     ..classes.toggle('locked', call.locked)
-                    ..title = '${call.inbound ? 'inbound' : 'outbound'}');
+                    ..title = '${call.inbound ? _langMap[Lang.Key.callStateInbound] : _langMap[Lang.Key.callStateOutbound]}');
     });
 
     _list.children = list;

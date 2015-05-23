@@ -14,15 +14,16 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides access to the my call queue widget.
  */
 class UIMyCallQueue extends UIModel {
-  final DivElement _myRoot;
+  final Map<String, String> _langMap;
+  final DivElement          _myRoot;
 
   /**
    * Constructor.
    */
-  UIMyCallQueue(DivElement this._myRoot) {
+  UIMyCallQueue(DivElement this._myRoot, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -36,60 +37,34 @@ class UIMyCallQueue extends UIModel {
   OListElement get _list        => _root.querySelector('.generic-widget-list');
 
   /**
-   * Read all .call-wait-time values in _list and increment them by one.
-   */
-  void _callAgeUpdate() {
-    new Timer.periodic(new Duration(seconds: 1), (_) {
-      _list.querySelectorAll('li span.call-wait-time').forEach((SpanElement span) {
-        if(span.text.isEmpty) {
-          span.text = '0';
-        } else {
-          span.text = (int.parse(span.text) + 1).toString();
-        }
-      });
-    });
-  }
-
-  /**
    * Add [calls] to the calls list.
    */
   set calls(List<ORModel.Call> calls) {
     final List<LIElement> list = new List<LIElement>();
 
     calls.forEach((ORModel.Call call) {
-      //TODO Remove these in production.
-      String callDirection = call.inbound ? '←' : '→';
-      String callStateIcon = '?';
+      final SpanElement callState = new SpanElement()
+                                          ..classes.add('call-state')
+                                          ..text = _langMap['callstate-${call.state.toLowerCase()}'];
 
-      switch (call.state) {
-        case ORModel.CallState.Speaking:
-          callStateIcon = '▶';
-          break;
+      final SpanElement callDesc = new SpanElement()
+                                        ..classes.add('call-description')
+                                        ..text = '${call.callerID}'
+                                        ..children.add(callState);
 
-        case ORModel.CallState.Parked:
-          callStateIcon = '▌▌';
-          break;
-
-        case ORModel.CallState.Ringing:
-          callStateIcon = '..';
-          break;
-      }
-
-      SpanElement callDesc = new SpanElement()
-                                  ..classes.add('call-description')
-                                  ..text = '$callDirection $callStateIcon ${call.callerID} ${call.state}';
-      /// TODO (TL): When we get VIP, add class .flag-vip to callDesc on VIP calls.
-
-      SpanElement callWait = new SpanElement()
-                                  ..classes.add('call-wait-time')
-                                  ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
+      final SpanElement callWaitTimer =
+          new SpanElement()
+                ..classes.add('call-wait-time')
+                ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
 
       list.add(new LIElement()
                     ..dataset['id'] = call.ID
                     ..dataset['object'] = JSON.encode(call)
-                    ..children.addAll([callDesc, callWait])
+                    ..children.addAll([callDesc, callWaitTimer])
+                    ..classes.add(call.inbound ? 'inbound' : 'outbound')
                     ..classes.toggle('locked', call.locked)
-                    ..classes.toggle('parked', call.state == 'PARKED'));
+                    ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
+                    ..title = '${call.inbound ? _langMap[Lang.Key.callStateInbound] : _langMap[Lang.Key.callStateOutbound]}');
     });
 
     _list.children = list;
@@ -111,8 +86,6 @@ class UIMyCallQueue extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
-
-    _callAgeUpdate();
   }
 
   /**

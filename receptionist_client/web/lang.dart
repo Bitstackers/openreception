@@ -27,6 +27,19 @@ abstract class Key {
   static const String calendarEditorStart             = 'calendar-editor-start';
   static const String calendarEditorStop              = 'calendar-editor-stop';
 
+  static const String callStateCreated                = 'callstate-created';
+  static const String callStateHungup                 = 'callstate-hungup';
+  static const String callStateInbound                = 'callstate-inbound';
+  static const String callStateOutbound               = 'callstate-outbound';
+  static const String callStateParked                 = 'callstate-parked';
+  static const String callStateQueued                 = 'callstate-queued';
+  static const String callStateRinging                = 'callstate-ringing';
+  static const String callStateSpeaking               = 'callstate-speaking';
+  static const String callStateTransferred            = 'callstate-transferred';
+  static const String callStateTransferring           = 'callstate-transferring';
+  static const String callStateUnknown                = 'callstate-unknown';
+  static const String callStateUnparked               = 'callstate-unparked';
+
   static const String contactCalendarHeader           = 'contact-calendar-header';
 
   static const String contactDataAddInfo              = 'contact-data-add-info';
@@ -120,6 +133,19 @@ Map<String, String> da =
    Key.calendarEditorStart            : 'Start',
    Key.calendarEditorStop             : 'Stop',
 
+   Key.callStateCreated               : 'Oprettet',
+   Key.callStateHungup                : 'Lagt på',
+   Key.callStateInbound               : 'Indgående',
+   Key.callStateOutbound              : 'Udgående',
+   Key.callStateParked                : 'Parkeret',
+   Key.callStateQueued                : 'I kø',
+   Key.callStateRinging               : 'Ringer',
+   Key.callStateSpeaking              : 'Taler',
+   Key.callStateTransferred           : 'Overført',
+   Key.callStateTransferring          : 'Overfører',
+   Key.callStateUnknown               : 'Ukendt',
+   Key.callStateUnparked              : 'Ikke parkeret',
+
    Key.contactCalendarHeader          : 'Kontakt kalender',
 
    Key.contactDataAddInfo             : 'Diverse',
@@ -211,6 +237,19 @@ Map<String, String> en =
    Key.calendarEditorSave             : 'Save',
    Key.calendarEditorStart            : 'Start',
    Key.calendarEditorStop             : 'Stop',
+
+   Key.callStateCreated               : 'Created',
+   Key.callStateHungup                : 'Hungup',
+   Key.callStateInbound               : 'Inbound',
+   Key.callStateOutbound              : 'Outbound',
+   Key.callStateParked                : 'Parked',
+   Key.callStateQueued                : 'Queued',
+   Key.callStateRinging               : 'Ringing',
+   Key.callStateSpeaking              : 'Speaking',
+   Key.callStateTransferred           : 'Transferred',
+   Key.callStateTransferring          : 'Transferring',
+   Key.callStateUnknown               : 'Unknown',
+   Key.callStateUnparked              : 'Unparked',
 
    Key.contactCalendarHeader          : 'Contact calendar',
 

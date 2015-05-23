@@ -1835,19 +1835,27 @@
                 opacity: 0.2;
               }
 
-              #my-call-queue .generic-widget-list li.parked {
-                color: red;
+              #my-call-queue .generic-widget-list li.speaking {
+                color: #ff5621;
+                font-weight: bold;
               }
 
-              #my-call-queue .generic-widget-list li span.flag-vip:before {
-                content: '! ';
-                font-weight: bold;
-                font-size: 1.1em;
-                color: red;
+              #my-call-queue .generic-widget-list li.inbound:before {
+                content: '→';
+              }
+
+              #my-call-queue .generic-widget-list li.outbound:before {
+                content: '←';
               }
 
               #my-call-queue .generic-widget-list li span.call-description {
                 padding-right: 10px;
+              }
+
+              #my-call-queue .generic-widget-list li span.call-description span.call-state {
+                padding-left: 1em;
+                font-size: 0.7em;
+                color: #aaa;
               }
 
               #my-call-queue .generic-widget-list li span.call-wait-time {

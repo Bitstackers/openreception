@@ -165,7 +165,7 @@ class ReceptionistclientReady {
          _contactController);
 
     _globalCallQueue = new GlobalCallQueue
-        (new Model.UIGlobalCallQueue(querySelector('#global-call-queue')),
+        (new Model.UIGlobalCallQueue(querySelector('#global-call-queue'), _langMap),
          new Controller.Destination(Context.Home, Widget.GlobalCallQueue),
          _notification,
         _callController);
@@ -189,7 +189,7 @@ class ReceptionistclientReady {
          uiReceptionSelector);
 
     _myCallQueue = new MyCallQueue
-        (new Model.UIMyCallQueue(querySelector('#my-call-queue')),
+        (new Model.UIMyCallQueue(querySelector('#my-call-queue'), _langMap),
          new Controller.Destination(Context.Home, Widget.MyCallQueue),
          _notification,
          _callController);

@@ -14,14 +14,16 @@
 part of view;
 
 /**
- * Show the local call queue and registers keyboard shortcut for hanging up
- * calls.
+ * Show the my call queue and registers keyboard shortcuts for call handling.
+ *
+ * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class MyCallQueue extends ViewWidget {
   final Controller.Destination  _myDestination;
   final Model.UIMyCallQueue     _uiModel;
   final Controller.Call         _callController;
   final Controller.Notification _notifications;
+  final int                     _refreshRate = 1000;
 
   /**
    * Constructor.
@@ -30,8 +32,6 @@ class MyCallQueue extends ViewWidget {
               Controller.Destination this._myDestination,
               Controller.Notification this._notifications,
               Controller.Call this._callController) {
-    _loadCallList();
-
     _observers();
   }
 
@@ -57,10 +57,9 @@ class MyCallQueue extends ViewWidget {
         call.assignedTo == Model.User.currentUser.ID &&
         call.state != ORModel.CallState.Transferred;
 
-    _callController.listCalls()
-      .then((Iterable<Model.Call> calls) {
-        _ui.calls = calls.where(isMine).toList(growable: false);
-      });
+    _callController.listCalls().then((Iterable<Model.Call> calls) {
+      _ui.calls = calls.where(isMine).toList(growable: false);
+    });
   }
 
   /**
@@ -71,12 +70,14 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    _hotKeys.onCtrlNumMinus.listen((_) {
-      _callController.transferToFirstParkedCall(Model.Call.activeCall);
-    });
-
-    _notifications.onAnyCallStateChange.listen((Model.Call call) {
+    /// Load the call list every 1 second.
+    new Timer.periodic(new Duration(milliseconds: _refreshRate), (_) {
       _loadCallList();
     });
+
+    _hotKeys.onCtrlNumMinus.listen((_) =>
+        _callController.transferToFirstParkedCall(Model.Call.activeCall));
+
+    _notifications.onAnyCallStateChange.listen((Model.Call call) => _loadCallList());
   }
 }
