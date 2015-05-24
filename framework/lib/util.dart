@@ -44,16 +44,19 @@ class WeekDays {
 /**
  *
  */
-int dateTimeToUnixTimestamp(DateTime time) {
-  return time.millisecondsSinceEpoch~/1000;
-}
+int dateTimeToUnixTimestamp(DateTime time) =>
+  time != null
+    ? time.millisecondsSinceEpoch~/1000
+    : null;
 
 /**
  *
  */
-DateTime unixTimestampToDateTime(int secondsSinceEpoch) {
-  return new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch*1000);
-}
+DateTime unixTimestampToDateTime(int secondsSinceEpoch) =>
+  secondsSinceEpoch != null
+    ? new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch*1000)
+    : null;
+
 
 /**
  *
