@@ -42,7 +42,9 @@ class WeekDays {
 }
 
 /**
- *
+ * Serialization function for transferring time from server to client and visa
+ * versa.
+ * May return null to indicate 'never';
  */
 int dateTimeToUnixTimestamp(DateTime time) =>
   time != null
@@ -50,7 +52,9 @@ int dateTimeToUnixTimestamp(DateTime time) =>
     : null;
 
 /**
- *
+ * De-serialization function for transferring time from server to client and
+ * visa versa.
+ * May return null to indicate 'never';
  */
 DateTime unixTimestampToDateTime(int secondsSinceEpoch) =>
   secondsSinceEpoch != null
