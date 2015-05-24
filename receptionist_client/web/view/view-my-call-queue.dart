@@ -23,7 +23,6 @@ class MyCallQueue extends ViewWidget {
   final Model.UIMyCallQueue     _uiModel;
   final Controller.Call         _callController;
   final Controller.Notification _notifications;
-  final int                     _refreshRate = 1000;
 
   /**
    * Constructor.
@@ -32,6 +31,7 @@ class MyCallQueue extends ViewWidget {
               Controller.Destination this._myDestination,
               Controller.Notification this._notifications,
               Controller.Call this._callController) {
+    _loadCallList();
     _observers();
   }
 
@@ -70,14 +70,10 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    /// Load the call list every 1 second.
-    new Timer.periodic(new Duration(milliseconds: _refreshRate), (_) {
-      _loadCallList();
-    });
-
     _hotKeys.onCtrlNumMinus.listen((_) =>
         _callController.transferToFirstParkedCall(Model.Call.activeCall));
 
-    _notifications.onAnyCallStateChange.listen((Model.Call call) => _loadCallList());
+    /// TODO (KRC): Do stuff here...
+    _notifications.onAnyCallStateChange.listen((_) => null);
   }
 }

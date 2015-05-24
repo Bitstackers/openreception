@@ -37,34 +37,65 @@ class UIMyCallQueue extends UIModel {
   OListElement get _list        => _root.querySelector('.generic-widget-list');
 
   /**
+   * Append [call] to the calls list.
+   */
+  appendCall(ORModel.Call call) {
+    _list.children.add(_buildCallElement(call));
+    _queueLengthUpdate();
+  }
+
+  /**
+   * Construct a call [LIElement] from [call]
+   */
+  LIElement _buildCallElement(ORModel.Call call) {
+    final SpanElement callState = new SpanElement()
+                                    ..classes.add('call-state')
+                                    ..text = _langMap['callstate-${call.state.toLowerCase()}'];
+
+    final SpanElement callDesc = new SpanElement()
+                                  ..classes.add('call-description')
+                                  ..text = '${call.callerID}'
+                                  ..children.add(callState);
+
+    final SpanElement callWaitTimer =
+        new SpanElement()
+          ..classes.add('call-wait-time')
+          ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
+
+    return(new LIElement()
+            ..dataset['id'] = call.ID
+            ..dataset['object'] = JSON.encode(call)
+            ..children.addAll([callDesc, callWaitTimer])
+            ..classes.add(call.inbound ? 'inbound' : 'outbound')
+            ..classes.toggle('locked', call.locked)
+            ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
+            ..title = '${call.inbound ? _langMap[Lang.Key.callStateInbound] : _langMap[Lang.Key.callStateOutbound]}');
+  }
+
+  /**
+   * Read all .call-wait-time values in _list and increment them by one.
+   */
+  void _callAgeUpdate() {
+    new Timer.periodic(new Duration(seconds: 1), (_) {
+      _list.querySelectorAll('li span.call-wait-time').forEach((SpanElement span) {
+
+        if(span.text.isEmpty) {
+          span.text = '0';
+        } else {
+          span.text = (int.parse(span.text) + 1).toString();
+        }
+      });
+    });
+  }
+
+  /**
    * Add [calls] to the calls list.
    */
   set calls(List<ORModel.Call> calls) {
     final List<LIElement> list = new List<LIElement>();
 
     calls.forEach((ORModel.Call call) {
-      final SpanElement callState = new SpanElement()
-                                          ..classes.add('call-state')
-                                          ..text = _langMap['callstate-${call.state.toLowerCase()}'];
-
-      final SpanElement callDesc = new SpanElement()
-                                        ..classes.add('call-description')
-                                        ..text = '${call.callerID}'
-                                        ..children.add(callState);
-
-      final SpanElement callWaitTimer =
-          new SpanElement()
-                ..classes.add('call-wait-time')
-                ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
-
-      list.add(new LIElement()
-                    ..dataset['id'] = call.ID
-                    ..dataset['object'] = JSON.encode(call)
-                    ..children.addAll([callDesc, callWaitTimer])
-                    ..classes.add(call.inbound ? 'inbound' : 'outbound')
-                    ..classes.toggle('locked', call.locked)
-                    ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
-                    ..title = '${call.inbound ? _langMap[Lang.Key.callStateInbound] : _langMap[Lang.Key.callStateOutbound]}');
+      list.add(_buildCallElement(call));
     });
 
     _list.children = list;
@@ -86,6 +117,8 @@ class UIMyCallQueue extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
+
+    _callAgeUpdate();
   }
 
   /**
@@ -96,9 +129,34 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
+   * Remove [call] from the call list. Does nothing if [call] does not exist
+   * in the call list.
+   */
+  void removeCall(ORModel.Call call ) {
+    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+
+    if(li != null) {
+      li.remove();
+      _queueLengthUpdate();
+    }
+  }
+
+  /**
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap());
+  }
+
+  /**
+   * Update [call] in the call list. Does nothing if [call] does not exist in
+   * the call list.
+   */
+  void updateCall(ORModel.Call call) {
+    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+
+    if(li != null) {
+      li.replaceWith(_buildCallElement(call));
+    }
   }
 }

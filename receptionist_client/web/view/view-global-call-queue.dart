@@ -23,7 +23,6 @@ class GlobalCallQueue extends ViewWidget {
   final Model.UIGlobalCallQueue _uiModel;
   final Controller.Call         _callController;
   final Controller.Notification _notifications;
-  final int                     _refreshRate = 1000;
 
   /**
    * Constructor.
@@ -32,6 +31,7 @@ class GlobalCallQueue extends ViewWidget {
                   Controller.Destination this._myDestination,
                   Controller.Notification this._notifications,
                   Controller.Call this._callController) {
+    _loadCallList();
     _observers();
   }
 
@@ -68,13 +68,7 @@ class GlobalCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    /// Load the call list every 1 second.
-    new Timer.periodic(new Duration(milliseconds: _refreshRate), (_) {
-      _loadCallList();
-    });
-
-    /// TODO (KRC): What to do here? Do we even care about these when the call
-    /// list is now loaded at a fixed refresh rate?
+    /// TODO (KRC): Do stuff here...
     _notifications.onAnyCallStateChange.listen((_) => null);
 
     _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
