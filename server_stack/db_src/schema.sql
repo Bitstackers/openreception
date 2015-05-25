@@ -223,9 +223,10 @@ CREATE TABLE calendar_events (
 
 CREATE TABLE calendar_entry_changes (
    id         INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   entry_id   INTEGER   NOT NULL,
+   entry_id   INTEGER   NOT NULL REFERENCES calendar_events (id)
+     ON UPDATE CASCADE ON DELETE CASCADE,
    user_id    INTEGER   NOT NULL,
-   last_check TIMESTAMPTZ NOT NULL DEFAULT NOW()
+   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 
 );
 
@@ -464,7 +465,7 @@ CREATE SEQUENCE calendar_entry_changes_id_sequence
   NO MAXVALUE
   CACHE 1;
 ALTER SEQUENCE calendar_entry_changes_id_sequence OWNED BY calendar_entry_changes.id;
-ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval ('users_id_sequence'::regclass);
+ALTER TABLE ONLY calendar_entry_changes ALTER COLUMN id SET DEFAULT nextval ('calendar_entry_changes_id_sequence'::regclass);
 
 -------------------------------------------------------------------------------
 --  Set ownership:
