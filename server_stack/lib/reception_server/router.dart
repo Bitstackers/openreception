@@ -82,8 +82,9 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.get)
     ..put('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.update)
     ..post('/reception/{rid}/calendar', ReceptionCalendar.create)
-    ..delete('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.remove);
-
+    ..delete('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.remove)
+    ..get('/calendarentry/{eid}/change', ReceptionCalendar.listChanges)
+    ..get('/calendarentry/{eid}/change/latest', ReceptionCalendar.latestChange);
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders : corsHeaders))
       .addMiddleware(checkAuthentication)
@@ -95,3 +96,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
 
   return shelf_io.serve(handler, hostname, port);
 }
+
+String _tokenFrom(shelf.Request request) =>
+    request.requestedUri.queryParameters['token'];
+

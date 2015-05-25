@@ -10,22 +10,29 @@ abstract class ContactCalendar {
    *
    * TODO: Implement the distribution list.
    */
-  static Future<Model.CalendarEntry> createEntry(Model.CalendarEntry entry) {
+  static Future<Model.CalendarEntry> createEntry(Model.CalendarEntry entry, Model.User user) {
     String sql = '''
 WITH new_event AS(
-INSERT INTO calendar_events (start, stop, message)
+  INSERT INTO calendar_events (start, stop, message)
     VALUES (@start, @end, @content)
     RETURNING id as event_id
+),
+entry_change AS (
+  INSERT INTO calendar_entry_changes (user_id, entry_id)
+    SELECT @userID, event_id
+    FROM new_event
+    RETURNING entry_id as event_id
 )
+
 INSERT INTO contact_calendar 
   (reception_id, 
    contact_id,
    event_id)
 SELECT 
   @receptionID,
-  @contactID, 
+  @contactID,
   event_id
-FROM new_event
+FROM entry_change
 RETURNING event_id
 ''';
 
@@ -34,6 +41,7 @@ RETURNING event_id
        'contactID'        : entry.contactID,
        'start'            : entry.start,
        'end'              : entry.stop,
+       'userID'           : user.ID,
        'content'          : entry.content};
 
     return connection.query(sql, parameters)
@@ -54,28 +62,39 @@ RETURNING event_id
   /**
    * Updates a single [Model.CalendarEntry] from the database based on
    * [receptionID], [contactID] and [eventID] members of [entry].
+   *
+   * TODO: Take the distribution list into accout.
    */
   static Future<int> updateEntry(Model.CalendarEntry entry,
+                                 Model.User user,
                                  {Map distributionList : null}) {
     String sql = '''
+WITH updated_event AS (
    UPDATE calendar_events ce
       SET
-          "start"   = @start, 
-          "stop"    = @end, 
-          "message" = @content
-      FROM contact_calendar cc
-      WHERE ce.id = @eventID 
-        AND cc.contact_id   = @contactID
-        AND cc.reception_id = @receptionID;''';
+          start   = @start,
+          stop    = @stop,
+          message = @content
+      WHERE ce.id = @eventID
+      RETURNING ce.id AS entry_id
+),
+changed_entry AS (
+  INSERT INTO calendar_entry_changes (user_id, entry_id)
+  SELECT @userID, entry_id
+  FROM updated_event
+  RETURNING entry_id
+)
+
+SELECT entry_id FROM changed_entry;
+''';
 
     Map parameters =
-      {'receptionID'      : entry.receptionID,
-       'contactID'        : entry.contactID,
-       'eventID'          : entry.ID,
+      {'eventID'          : entry.ID,
        'distributionList' : distributionList,
        'start'            : entry.start,
-       'end'              : entry.stop,
-       'content'          : entry.content};
+       'stop'             : entry.stop,
+       'content'          : entry.content,
+       'userID'           : user.ID};
 
   return connection.execute(sql, parameters)
     .then((int rowsAffected) =>
@@ -98,24 +117,19 @@ RETURNING event_id
    * Removes a single [Model.CalendarEntry] from the database based on
    * [receptionID], [contactID] and [eventID].
    *
-   * Calendar entry object will be deleted by CASCADE rule in database.
+   * Contact Calendar entry associations will be deleted by CASCADE rule in
+   * the database.
    */
   static Future removeEntry(int contactID, int receptionID, int eventID) {
     String sql = '''
   DELETE FROM 
-     contact_calendar 
+     calendar_events 
   WHERE 
-    reception_id = @receptionID 
-  AND 
-    contact_id   = @contactID
-  AND 
-    event_id     = @eventID
+    id     = @eventID
 ''';
 
     Map parameters =
-      {'receptionID' : receptionID,
-       'contactID'   : contactID,
-       'eventID'     : eventID};
+      {'eventID'     : eventID};
 
     return connection.execute(sql, parameters)
       .then((int rowsAffected) =>
@@ -226,10 +240,60 @@ LIMIT 1;
     });
   }
 
+  static Future<Iterable<Map>> changes (int entryID) {
+    String sql = '''
+    SELECT 
+      user_id, 
+      updated_at 
+    FROM 
+      calendar_entry_changes 
+    WHERE
+      entry_id = @entryID 
+    ORDER BY 
+      updated_at 
+    DESC;''';
+
+    Map parameters = {'entryID' : entryID};
+    return connection.query(sql, parameters).then((Iterable rows) =>
+      rows.map(_rowToCalendarEventChange));
+  }
+
+  /**
+   * NOTE: This is potentially inefficient, as it may compute and order every
+   *   row associated with eventID. The primary gain from this function, however
+   *   would be easy access to the latest change from the client.
+   */
+  static Future<Map> latestChange (int entryID) {
+    String sql = '''
+    SELECT 
+      user_id, 
+      updated_at 
+    FROM 
+      calendar_entry_changes 
+    WHERE
+      entry_id = @entryID 
+    ORDER BY 
+      updated_at 
+    DESC
+    LIMIT 1;''';
+
+    Map parameters = {'entryID' : entryID};
+    return connection.query(sql, parameters).then((Iterable rows) =>
+      rows.length > 0
+        ? _rowToCalendarEventChange (rows.first)
+        : throw new Storage.NotFound('entryID:$entryID'));
+  }
+
+  static Map _rowToCalendarEventChange(var row) => {
+    'uid'     : row.user_id,
+    'updated' : Util.dateTimeToUnixTimestamp(row.updated_at)
+  };
+
   static _rowToCalendarEntry (var row) =>
     new Model.CalendarEntry.forContact(row.contact_id, row.reception_id)
         ..ID = row.id
         ..beginsAt = row.start
         ..until = row.stop
         ..content = row.message;
+
 }
