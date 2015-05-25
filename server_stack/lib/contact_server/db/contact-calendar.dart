@@ -132,9 +132,9 @@ COMMIT; ''';
    * Retrieve a single [Model.CalendarEntry] from the database based on
    * [receptionID], [contactID] and [eventID].
    */
-  static Future<Model.CalendarEntry> getEntry(int contactID,
-                                              int receptionID,
-                                              int eventID) {
+  static Future<Model.CalendarEntry> get(int contactID,
+                                         int receptionID,
+                                         int entryID) {
     String sql = '''
 SELECT 
   start, stop, message 

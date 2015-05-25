@@ -93,7 +93,7 @@ abstract class ContactCalendar {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ContactCalendar.getEntry (contactID, receptionID, eventID)
+    return db.ContactCalendar.get (contactID, receptionID, eventID)
       .then((Model.CalendarEntry entry) {
       if (entry == null) {
         return new shelf.Response.notFound(JSON.encode({'error' : 'not found'}));
@@ -122,7 +122,7 @@ abstract class ContactCalendar {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ContactCalendar.getEntry(contactID, receptionID, eventID)
+    return db.ContactCalendar.get(contactID, receptionID, eventID)
       .then((Model.CalendarEntry event) {
         if (event == null) {
           return new shelf.Response.notFound(JSON.encode({'description' : 'No calendar event found with ID $eventID'}));
