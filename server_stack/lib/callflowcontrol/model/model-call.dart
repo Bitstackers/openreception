@@ -2,52 +2,44 @@ part of callflowcontrol.model;
 
 abstract class CallState {
 
-   static const String Unknown = 'UNKNOWN';
-   static const String Created = 'CREATED';
-   static const String Ringing = 'RINGING';
-   static const String Queued  = 'QUEUED';
-   static const String Unparked = 'UNPARKED';
-   static const String Hungup  = 'HUNGUP';
+   static const String Unknown      = 'UNKNOWN';
+   static const String Created      = 'CREATED';
+   static const String Ringing      = 'RINGING';
+   static const String Queued       = 'QUEUED';
+   static const String Unparked     = 'UNPARKED';
+   static const String Hungup       = 'HUNGUP';
    static const String Transferring = 'TRANSFERRING';
-   static const String Transferred = 'TRANSFERRED';
-   static const String Speaking = 'SPEAKING';
-   static const String Parked = 'PARKED';
+   static const String Transferred  = 'TRANSFERRED';
+   static const String Speaking     = 'SPEAKING';
+   static const String Parked       = 'PARKED';
 }
 
 
-class Call {
+class Call extends ORModel.Call {
 
+  @override
   static final Logger log = new Logger('${libraryName}.Call');
 
-  static final String nullCallID = null;
-  static final int    noUser     = ORModel.User.nullID;
-  static const int    nullReceptionID = 0;
+  @override
+  bool     _locked     = false;
+  @override
+  int      _assignedTo = ORModel.User.nullID;
 
-  ESL.Channel channel;
+  @override
+  String get channel => this.ID;
 
-  String   ID              = nullCallID;
-  Call     b_Leg           = null;
-  String   get channelID   => this.ID; //The channel is a unique identifier. Remember to change, if ID changes.
-
-  String   state           = CallState.Unknown;
-  String   destination     = null;
-  String   callerID        = null;
-  bool     greetingPlayed  = false;
-  bool     _locked         = false;
-  bool     inbound         = null;
-  int      receptionID     = nullReceptionID;
-  int      _assignedTo     = noUser;
-  int      contactID       = null;
-  DateTime arrived         = new DateTime.now();
 
   void set assignedTo(int userID) {
     log.finest('Assigning $this to $userID');
     this._assignedTo = userID;
   }
 
+  @override
   int get assignedTo => this._assignedTo;
 
+  @override
   bool get locked              => this._locked;
+  @override
   void set locked (bool lock)   {
     this._locked = lock;
 
@@ -58,19 +50,13 @@ class Call {
     }
   }
 
-
   @override
   operator == (Call other) => this.ID == other.ID;
 
   @override
   int get hashCode => this.ID.hashCode;
 
-  static void validateID (String callID) {
-    if (callID == null || callID == nullCallID || callID.isEmpty) {
-      throw new FormatException('Invalid Call ID: ${callID}');
-    }
-  }
-
+  @override
   void release() {
     log.finest('Releasing call assigned to: ${this.assignedTo}');
 
@@ -95,7 +81,7 @@ class Call {
    Map toJson () => {
      'id'              : this.ID,
      "state"           : this.state,
-     "b_leg"           : (this.b_Leg != null ? this.b_Leg.ID : null),
+     "b_leg"           : (this.b_Leg != null ? this.b_Leg : null),
      "locked"          : this.locked,
      "inbound"         : this.inbound,
      "is_call"         : true,
@@ -104,7 +90,7 @@ class Call {
      "greeting_played" : this.greetingPlayed,
      "reception_id"    : this.receptionID,
      "assigned_to"     : this.assignedTo,
-     "channel"         : this.channelID,
+     "channel"         : this.channel,
      "arrival_time"    : Util.dateTimeToUnixTimestamp (this.arrived)};
 
    Future park (ORModel.User user) {
