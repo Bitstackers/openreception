@@ -37,17 +37,13 @@ RETURNING event_id
        'content'          : entry.content};
 
     return connection.query(sql, parameters)
-        .then((Iterable rows) {
-          if(rows.isEmpty) {
-            log.severe('Query did not return any rows! SQL Statement: $sql');
-            log.severe('parameters: $parameters');
-            return new Future.error(new StateError('Failed to insert event'));
-          }
+        .then((Iterable rows) =>
+          rows.isEmpty
+            ? new Future.error
+                (new StateError('Query did not return any rows!'))
+            : (entry..ID = rows.first.event_id))
 
-          entry.ID  = rows.first.event_id;
-
-          return entry;
-        }).catchError((error, stackTrace) {
+        .catchError((error, stackTrace) {
           log.severe('Query Failed! SQL Statement: $sql');
           log.severe('parameters: $parameters');
           log.severe(error, stackTrace);
@@ -82,31 +78,30 @@ RETURNING event_id
        'content'          : entry.content};
 
   return connection.execute(sql, parameters)
-    .then((int rowsAffected) {
-      if (rowsAffected == 0) {
-        throw new Storage.NotFound('No event with id ${entry.ID}');
-      }
+    .then((int rowsAffected) =>
+      rowsAffected > 0
+        ? null
+        : new Future.error
+            (new Storage.NotFound('No event with id ${entry.ID}')))
 
-    })
     .catchError((error, stackTrace) {
-      log.severe('Query failed! SQL Statement: $sql');
-      log.severe('parameters: $parameters');
-      log.severe(error, stackTrace);
+      if (error is! Storage.NotFound) {
+        log.severe('Query failed! SQL Statement: $sql');
+        log.severe('parameters: $parameters');
+        log.severe(error, stackTrace);
+      }
       return new Future.error(error, stackTrace);
     });
-
   }
 
   /**
    * Removes a single [Model.CalendarEntry] from the database based on
    * [receptionID], [contactID] and [eventID].
    *
-   * TODO: Build a WITH expression that handles the removal atomically without
-   *   using explicit transactions.
+   * Calendar entry object will be deleted by CASCADE rule in database.
    */
   static Future removeEntry(int contactID, int receptionID, int eventID) {
     String sql = '''
-START TRANSACTION;
   DELETE FROM 
      contact_calendar 
   WHERE 
@@ -114,41 +109,7 @@ START TRANSACTION;
   AND 
     contact_id   = @contactID
   AND 
-    event_id     = @eventID;
-  
-  DELETE FROM calendar_events WHERE id = @eventID;
-COMMIT; ''';
-
-    Map parameters =
-      {'receptionID' : receptionID,
-       'contactID'   : contactID,
-       'eventID'     : eventID};
-
-    return connection.execute(sql, parameters);
-
-  }
-
-  /**
-   * Retrieve a single [Model.CalendarEntry] from the database based on
-   * [receptionID], [contactID] and [eventID].
-   */
-  static Future<Model.CalendarEntry> get(int contactID,
-                                         int receptionID,
-                                         int entryID) {
-    String sql = '''
-SELECT 
-  start, stop, message 
-FROM 
-  contact_calendar 
-JOIN calendar_events event 
-  ON event.id = contact_calendar.event_id
-WHERE 
-  reception_id = @receptionID 
-AND 
-  contact_id   = @contactID
-AND 
-  event.id     = @eventID
-LIMIT 1;
+    event_id     = @eventID
 ''';
 
     Map parameters =
@@ -156,28 +117,70 @@ LIMIT 1;
        'contactID'   : contactID,
        'eventID'     : eventID};
 
-  return connection.query(sql, parameters).then((rows) {
-    if (rows.length > 0) {
+    return connection.execute(sql, parameters)
+      .then((int rowsAffected) =>
+        rowsAffected > 0
+          ? null
+          : new Future.error(new Storage.NotFound('en')))
 
-      var row = rows.first;
+      .catchError((error, stackTrace) {
+        if (error is! Storage.NotFound) {
+          log.severe('Query failed! SQL Statement: $sql');
+          log.severe('parameters: $parameters');
+          log.severe(error, stackTrace);
+        }
 
-      Map map =
-                {'id'      : eventID,
-                 'start'   : Util.dateTimeToUnixTimestamp(row.start),
-                 'stop'    : Util.dateTimeToUnixTimestamp(row.stop),
-                 'contact_id' : contactID,
-                 'reception_id' : receptionID,
-                 'content' : row.message};
+        return new Future.error(error, stackTrace);
+      });
 
-      return new Model.CalendarEntry.fromMap(map);
-    } else {
-      return null;
-    }
-    })
+  }
+
+  /**
+   * Retrieve a single [Model.CalendarEntry] from the database based on
+   * [receptionID], [contactID] and [entryID].
+   * Returns null if no entry is found.
+   */
+  static Future<Model.CalendarEntry> get(int contactID,
+                                         int receptionID,
+                                         int entryID) {
+    String sql = '''
+SELECT 
+  entry.id, 
+  entry.start, 
+  entry.stop, 
+  entry.message, 
+  owner.reception_id,
+  owner.contact_id
+FROM 
+  contact_calendar owner
+JOIN calendar_events entry 
+  ON entry.id = owner.event_id
+WHERE 
+  owner.reception_id = @receptionID 
+AND 
+  owner.contact_id   = @contactID
+AND 
+  entry.id     = @entryID
+LIMIT 1;
+''';
+
+    Map parameters =
+      {'receptionID' : receptionID,
+       'contactID'   : contactID,
+       'entryID'     : entryID};
+
+  return connection.query(sql, parameters)
+    .then((rows) =>
+      rows.length > 0
+        ? _rowToCalendarEntry(rows.first)
+        : new Future.error(new Storage.NotFound('eid:$entryID')))
+
     .catchError((error, stackTrace) {
-      log.severe('Query failed! SQL Statement: $sql');
-      log.severe('parameters: $parameters');
-      log.severe(error, stackTrace);
+      if (error is! Storage.NotFound) {
+        log.severe('Query failed! SQL Statement: $sql');
+        log.severe('parameters: $parameters');
+        log.severe(error, stackTrace);
+      }
       return new Future.error(error, stackTrace);
     });
   }
@@ -194,7 +197,9 @@ LIMIT 1;
       cal.id, 
       cal.start,  
       cal.stop,
-      cal.message
+      cal.message,
+      con.reception_id,
+      con.contact_id
     FROM 
       calendar_events cal 
     JOIN 
@@ -211,12 +216,7 @@ LIMIT 1;
 
     return connection.query(sql, parameters)
       .then((rows) =>
-        (rows as List).map((row) =>
-          new Model.CalendarEntry.forContact(contactID, receptionID)
-            ..ID = row.id
-            ..beginsAt = row.start
-            ..until = row.stop
-            ..content = row.message))
+        (rows as List).map(_rowToCalendarEntry))
 
     .catchError((error, stackTrace) {
       log.severe('Query failed! SQL Statement: $sql');
@@ -225,4 +225,11 @@ LIMIT 1;
       return new Future.error(error, stackTrace);
     });
   }
+
+  static _rowToCalendarEntry (var row) =>
+    new Model.CalendarEntry.forContact(row.contact_id, row.reception_id)
+        ..ID = row.id
+        ..beginsAt = row.start
+        ..until = row.stop
+        ..content = row.message;
 }
