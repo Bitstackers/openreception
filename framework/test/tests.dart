@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import '../lib/bus.dart';
 import '../lib/event.dart'    as Event;
@@ -55,6 +56,13 @@ void main() {
     test('serializationDeserialization', CalendarEntryObject.serializationDeserialization);
     test('serialization', CalendarEntryObject.serialization);
     test('contactEntryBuild', CalendarEntryObject.contactEntryBuild);
+  });
+
+
+  group('Model.CalendarEntryChange', () {
+    test('serializationDeserialization', ModelCalendarEntryChange.serializationDeserialization);
+    test('serialization', ModelCalendarEntryChange.serialization);
+    test('buildObject', ModelCalendarEntryChange.buildObject);
   });
 
   group('Model.Config', () {
@@ -374,6 +382,33 @@ abstract class EventMessageChange {
         equals(serialized));
   }
 
+}
+
+
+abstract class ModelCalendarEntryChange {
+  static void serializationDeserialization () =>
+      expect(new Model.CalendarEntryChange.fromMap
+        (Test_Data.calendarEntryChange).asMap,
+          equals(Test_Data.calendarEntryChange));
+
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void serialization () =>
+      expect(() => JSON.encode(new Model.CalendarEntryChange.fromMap
+          (Test_Data.calendarEntryChange)), returnsNormally);
+
+  static void buildObject () {
+    DateTime changedAt = new DateTime.now();
+    int changedBy = 2;
+
+    Model.CalendarEntryChange testChange = new Model.CalendarEntryChange()
+      ..changedAt = changedAt
+      ..userID    = changedBy;
+
+    expect(testChange.userID, equals(changedBy));
+    expect(testChange.changedAt, equals(changedAt));
+  }
 }
 
 

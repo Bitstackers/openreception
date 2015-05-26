@@ -1,3 +1,5 @@
+Map calendarEntryChange = {"uid": 3, "updated": 1432588010};
+
 Map testReceptionCalendarEntry = {
   "id": 134,
   "contact_id": null,
