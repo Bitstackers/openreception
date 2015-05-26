@@ -11,8 +11,6 @@ class CalendarEntry {
   int              _receptionID = Reception.noID;
   DateTime         _start;
   DateTime         _stop;
-  DateTime         lastModified;
-  int              lastModifiedBy = User.nullID;
 
   /**
    * Constructor.
@@ -53,12 +51,6 @@ class CalendarEntry {
     _start           = Util.unixTimestampToDateTime(json['start']);
     _stop            = Util.unixTimestampToDateTime(json['stop']);
     _content         = json['content'];
-    lastModified     = json['last_modified'] != null 
-      ? Util.unixTimestampToDateTime(json['last_modified'])
-      : null;
-    lastModifiedBy = json['last_modified_by'] != null
-      ? json['last_modified_by']
-      : User.nullID;
   }
 
   bool _active() {
@@ -71,15 +63,13 @@ class CalendarEntry {
    */
   bool get active => _active();
 
-  Map get asMap => 
+  Map get asMap =>
       {'id'               : ID,
        'contact_id'       : contactID != Contact.noID ? contactID : null,
        'reception_id'     : receptionID,
        'start'            : Util.dateTimeToUnixTimestamp(start),
        'stop'             : Util.dateTimeToUnixTimestamp(stop),
-       'content'          : content,
-       'last_modified'    : Util.dateTimeToUnixTimestamp(lastModified),
-       'last_modified_by' : lastModifiedBy
+       'content'          : content
       };
 
   /**
