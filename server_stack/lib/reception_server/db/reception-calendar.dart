@@ -230,7 +230,7 @@ LIMIT 1;
     WHERE
       entry_id = @entryID 
     ORDER BY 
-      last_check 
+      updated_at 
     DESC;''';
 
     Map parameters = {'entryID' : entryID};
@@ -253,7 +253,7 @@ LIMIT 1;
     WHERE
       entry_id = @entryID 
     ORDER BY 
-      last_check 
+      updated_at 
     DESC
     LIMIT 1;''';
 
