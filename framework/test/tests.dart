@@ -56,7 +56,7 @@ void main() {
     test('serialization', CalendarEntryObject.serialization);
     test('contactEntryBuild', CalendarEntryObject.contactEntryBuild);
   });
-  
+
   group('Model.Config', () {
     test('serializationDeserialization', ConfigObject.serializationDeserialization);
     test('serialization', ConfigObject.serialization);
@@ -270,16 +270,12 @@ abstract class CalendarEntryObject {
     final String body = 'test test test';
     final DateTime begin = new DateTime.now().add(new Duration(hours : 1));
     final DateTime end = new DateTime.now().add(new Duration(hours : 2));
-    final DateTime lastUpdated = new DateTime.now();
-    final int lastUpdatedBy = 2;
 
     Model.CalendarEntry testEntry = new Model.CalendarEntry.forContact(cid, rid)
       ..ID = id
       ..content = body
       ..beginsAt = begin
-      ..until = end
-      ..lastModified = lastUpdated
-      ..lastModifiedBy = lastUpdatedBy;
+      ..until = end;
 
     expect(testEntry.ID, equals (id));
     expect(testEntry.contactID, equals (cid));
@@ -287,8 +283,6 @@ abstract class CalendarEntryObject {
     expect(testEntry.content, equals (body));
     expect(testEntry.start, equals (begin));
     expect(testEntry.stop, equals (end));
-    expect(testEntry.lastModified, equals (lastUpdated));
-    expect(testEntry.lastModifiedBy, equals (lastUpdatedBy));
   }
 }
 
