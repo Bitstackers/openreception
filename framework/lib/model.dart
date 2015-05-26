@@ -10,6 +10,7 @@ import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
 part 'model/model-calendar_entry.dart';
+part 'model/model-calendar_entry_change.dart';
 part 'model/model-call.dart';
 part 'model/model-channel.dart';
 part 'model/model-client_configuration.dart';
