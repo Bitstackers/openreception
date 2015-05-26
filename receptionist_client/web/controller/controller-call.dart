@@ -147,7 +147,12 @@ class Call {
       call.assignedTo == Model.User.currentUser.ID &&
       call.state == ORModel.CallState.Parked, orElse: () => null);
 
-    return new Model.Call.fromORModel(parkedCall);
+    if (parkedCall != null) {
+      return new Model.Call.fromORModel(parkedCall);
+    }
+    else {
+      return Model.Call.noCall;
+    }
    });
 
 

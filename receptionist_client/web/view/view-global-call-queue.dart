@@ -69,7 +69,25 @@ class GlobalCallQueue extends ViewWidget {
     _ui.onClick.listen(_activateMe);
 
     /// TODO (KRC): Do stuff here...
-    _notifications.onAnyCallStateChange.listen((_) => null);
+    _notifications.onAnyCallStateChange.listen((Model.Call call) {
+      switch(call.state) {
+        case ORModel.CallState.Created:
+          this._ui.appendCall(call);
+          break;
+
+        case ORModel.CallState.Hungup:
+          this._ui.removeCall(call);
+          break;
+
+        case ORModel.CallState.Speaking:
+          this._ui.removeCall(call);
+          break;
+
+        default:
+          this._ui.updateCall(call);
+          break;
+      }
+    });
 
     _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
 

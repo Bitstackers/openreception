@@ -73,7 +73,26 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onCtrlNumMinus.listen((_) =>
         _callController.transferToFirstParkedCall(Model.Call.activeCall));
 
-    /// TODO (KRC): Do stuff here...
-    _notifications.onAnyCallStateChange.listen((_) => null);
+    _notifications.onAnyCallStateChange.listen((Model.Call call) {
+
+      /// Check if this even concerns me:
+      if (call.assignedTo != Model.User.currentUser.ID) {
+        return;
+      }
+
+      /// This is my outbound call:
+      else if(call.state == ORModel.CallState.Created && !call.inbound) {
+        this._ui.appendCall(call);
+      }
+
+      else if(call.state == ORModel.CallState.Hungup ||
+              call.state == ORModel.CallState.Transferred) {
+        this._ui.removeCall(call);
+      }
+
+      else {
+        this._ui.updateCall(call);
+      }
+    });
   }
 }

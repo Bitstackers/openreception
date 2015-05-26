@@ -37,6 +37,12 @@ class Notification {
   void _dispatch (OREvent.Event event) {
     if(event is OREvent.CallEvent) {
       _callStateChange.fire(new Model.Call.fromORModel(event.call));
+
+      /// If my call was hung up, update the model.
+      if (event is OREvent.CallHangup &&
+          Model.Call.activeCall == new Model.Call.fromORModel(event.call)) {
+        Model.Call.activeCall = Model.Call.noCall;
+      }
     } else if(event is OREvent.CalendarChange) {
       _calendarChange.fire(event);
     } else if(event is OREvent.ClientConnectionState) {

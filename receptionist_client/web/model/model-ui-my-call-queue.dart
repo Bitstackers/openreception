@@ -158,5 +158,8 @@ class UIMyCallQueue extends UIModel {
     if(li != null) {
       li.replaceWith(_buildCallElement(call));
     }
+    else {
+      this.appendCall(call);
+    }
   }
 }
