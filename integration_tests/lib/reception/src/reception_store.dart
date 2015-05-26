@@ -251,7 +251,11 @@ abstract class Reception_Store {
       log.info
         ('Deleting last calendar event for reception $receptionID.');
 
-      return receptionStore.calendarEventRemove(event);
+      return receptionStore.calendarEventRemove(event)
+        .then((_) {
+          return expect(receptionStore.calendarEvent(receptionID, event.ID),
+                  throwsA(new isInstanceOf<Storage.NotFound>()));
+        });
     });
   }
 

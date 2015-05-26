@@ -366,9 +366,13 @@ abstract class ContactStore {
       log.info
         ('Deleting last calendar event for contact $contactID@$receptionID.');
 
-      return contactStore.calendarEventRemove(event);
-    });
+      return contactStore.calendarEventRemove(event)
+        .then((_) {
 
+        return expect(contactStore.calendarEvent(receptionID, contactID, event.ID),
+                throwsA(new isInstanceOf<Storage.NotFound>()));
+      });
+    });
   }
 
   /**
