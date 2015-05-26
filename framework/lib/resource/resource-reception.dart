@@ -25,4 +25,10 @@ abstract class Reception {
 
   static Uri subset(Uri host, int upperReceptionID, int count) =>
     Uri.parse('${list(host)}/${upperReceptionID}/limit/${count}');
+
+  static Uri calendarEventChanges(Uri host, int eventID) =>
+    Uri.parse('${Util.removeTailingSlashes(host)}/calendarentry/${eventID}/change');
+
+  static Uri calendarEventLatestChange(Uri host, int eventID) =>
+    Uri.parse('${Util.removeTailingSlashes(host)}/calendarentry/${eventID}/change/latest');
 }

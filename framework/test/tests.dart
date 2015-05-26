@@ -94,7 +94,9 @@ void main() {
     test('subset', ResourceReception.subset);
     test('calendar', ResourceReception.calendar);
     test('calendarEvent', ResourceReception.calendarEvent);
-  });
+    test('calendarEntryChanges', ResourceReception.calendarEntryChanges);
+    test('calendarEntryLatestChange', ResourceReception.calendarEntryLatestChange);
+});
 
   group('Resource.CallFlowControl', () {
     test('userStatusMap', ResourceCallFlowControl.userStatusMap);
@@ -120,6 +122,8 @@ void main() {
     test('phones', ResourceContact.phones);
     test('single', ResourceContact.single);
     test('singleByReception', ResourceContact.singleByReception);
+    test('calendarEntryChanges', ResourceReception.calendarEntryChanges);
+    test('calendarEntryLatestChange', ResourceReception.calendarEntryLatestChange);
   });
 
   group('Event.CalendarChangeEvent', () {
@@ -430,6 +434,15 @@ abstract class ResourceReception {
   static void calendarEvent () =>
       expect(Resource.Reception.calendarEvent(receptionServer, 1, 2),
         equals(Uri.parse('${receptionServer}/reception/1/calendar/event/2')));
+
+  static void calendarEntryChanges () =>
+      expect(Resource.Reception.calendarEventChanges(receptionServer, 123),
+          equals(Uri.parse('${receptionServer}/calendarentry/123/change')));
+
+  static void calendarEntryLatestChange () =>
+      expect(Resource.Reception.calendarEventLatestChange(receptionServer, 123),
+          equals(Uri.parse('${receptionServer}/calendarentry/123/change/latest')));
+
 }
 
 abstract class ResourceMessage {
@@ -533,4 +546,11 @@ abstract class ResourceContact {
       expect(Resource.Contact.phones(contactServer, 123,456),
           equals(Uri.parse('${contactServer}/contact/123/reception/456/phones')));
 
+  static void calendarEntryChanges () =>
+      expect(Resource.Contact.calendarEventChanges(contactServer, 123),
+          equals(Uri.parse('${contactServer}/calendarentry/change/123')));
+
+  static void calendarEntryLatestChange () =>
+      expect(Resource.Contact.calendarEventLatestChange(contactServer, 123),
+          equals(Uri.parse('${contactServer}/calendarentry/123/change/latest')));
 }
