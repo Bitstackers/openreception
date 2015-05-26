@@ -53,6 +53,16 @@ runContactTests () {
     test ('Calendar event removal',
         () => ContactStore.calendarEntryDelete(contactStore));
 
+    test ('Calendar event changes (create)',
+        () => ContactStore.calendarEntryChangeCreate(contactStore));
+
+    test ('Calendar event changes (update)',
+        () => ContactStore.calendarEntryChangeUpdate(contactStore));
+
+    test ('Calendar event changes (delete)',
+        () => ContactStore.calendarEntryChangeDelete(contactStore));
+
+
     test ('Endpoint listing',
         () => ContactStore.endpoints(contactStore));
 

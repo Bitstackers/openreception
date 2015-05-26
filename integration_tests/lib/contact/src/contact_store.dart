@@ -446,4 +446,111 @@ abstract class ContactStore {
         expect(endpoints, isNotNull);
     });
   }
+
+  /**
+   * Test server behaviour with regards to calendar changes.
+   * This function creates an entry and asserts that a change is also present.
+   */
+  static Future calendarEntryChangeCreate
+    (Service.RESTContactStore contactStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.CalendarEntry entry =
+        new Model.CalendarEntry.forContact(contactID, receptionID)
+         ..beginsAt    = new DateTime.now()
+         ..until       = new DateTime.now().add(new Duration(hours: 2))
+         ..content     = Randomizer.randomEvent();
+
+    log.info('Creating a calendar event for $contactID@$receptionID.');
+
+    return contactStore.calendarEventCreate (entry)
+      .then((Model.CalendarEntry createdEvent) {
+        return contactStore.calendarEntryChanges(createdEvent.ID)
+          .then((Iterable<Model.CalendarEntryChange> changes) {
+            expect (changes.length, equals(1));
+            expect (changes.first.changedAt.millisecondsSinceEpoch,
+                    lessThan(new DateTime.now().millisecondsSinceEpoch));
+            expect (changes.first.userID, isNot(Model.User.nullID));
+        });
+    });
+  }
+
+  /**
+   * Test server behaviour with regards to calendar changes.
+   * This function update an entry and asserts that another change is present.
+   */
+  static Future calendarEntryChangeUpdate
+    (Service.RESTContactStore contactStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return contactStore.calendar(contactID, receptionID)
+      .then((List <Model.CalendarEntry> entries) {
+
+      // Update the last event in list.
+      Model.CalendarEntry entry = entries.last
+          ..beginsAt    = new DateTime.now()
+          ..until       = new DateTime.now().add(new Duration(hours: 2))
+          ..content     = Randomizer.randomEvent();
+
+      int updateCount = -1;
+
+
+
+      log.info('Updating a calendar event for reception $receptionID.');
+
+      return contactStore.calendarEntryChanges(entry.ID)
+        .then((Iterable<Model.CalendarEntryChange> changes) =>
+          updateCount = changes.length)
+        .then((_) => contactStore.calendarEventUpdate (entry)
+        .then((Model.CalendarEntry updatedEvent) {
+          return contactStore.calendarEntryChanges(updatedEvent.ID)
+            .then((Iterable<Model.CalendarEntryChange> changes) {
+              expect (changes.length, equals(updateCount+1));
+              expect (changes.first.changedAt.millisecondsSinceEpoch,
+                      lessThan(new DateTime.now().millisecondsSinceEpoch));
+              expect (changes.first.userID, isNot(Model.User.nullID));
+          });
+
+      }));
+    });
+  }
+
+  /**
+   * Test server behaviour with regards to calendar changes.
+   * This function removes an entry and asserts that no changes are present.
+   */
+  static Future calendarEntryChangeDelete
+    (Service.RESTContactStore contactStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return contactStore.calendar(contactID, receptionID)
+      .then((List <Model.CalendarEntry> events) {
+
+      // Update the last event in list.
+      Model.CalendarEntry event = events.last;
+
+      log.info
+        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+
+      log.info
+        ('Deleting last (in list) calendar event for reception $receptionID.');
+
+      return contactStore.calendarEventRemove(event)
+        .then((_) {
+        return contactStore.calendarEntryChanges(event.ID)
+          .then((Iterable<Model.CalendarEntryChange> changes) {
+            expect (changes.length, equals(0));
+
+            return expect(contactStore.calendarEntryLatestChange(event.ID),
+                throwsA(new isInstanceOf<Storage.NotFound>()));
+          });
+        });
+    });
+  }
 }

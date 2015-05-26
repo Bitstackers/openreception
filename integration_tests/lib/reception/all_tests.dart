@@ -53,6 +53,15 @@ runReceptionTests () {
     test ('Calendar event removal',
         () => Reception_Store.calendarEventDelete(receptionStore));
 
+    test ('Calendar event changes (create)',
+        () => Reception_Store.calendarEntryChangeCreate(receptionStore));
+
+    test ('Calendar event changes (update)',
+        () => Reception_Store.calendarEntryChangeUpdate(receptionStore));
+
+    test ('Calendar event changes (delete)',
+        () => Reception_Store.calendarEntryChangeDelete(receptionStore));
+
 
     setUp (() {
       transport = new Transport.Client();
