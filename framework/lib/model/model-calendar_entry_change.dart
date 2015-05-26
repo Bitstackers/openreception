@@ -10,9 +10,11 @@ class CalendarEntryChange {
   int userID = User.nullID;
   DateTime changedAt;
 
+  CalendarEntryChange();
+
   CalendarEntryChange.fromMap(Map map) {
     this.userID = map[CalendarEntryChangeKey.userID];
-    this.changedAt = map[CalendarEntryChangeKey.updatedAt];
+    this.changedAt = Util.unixTimestampToDateTime(map[CalendarEntryChangeKey.updatedAt]);
   }
 
   Map get asMap => {
