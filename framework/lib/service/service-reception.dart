@@ -170,4 +170,26 @@ class RESTReceptionStore implements Storage.Reception {
 
     return this._backend.delete(url);
   }
+
+  Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID) {
+    Uri url = Resource.Reception.calendarEventChanges(this._host, entryID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url)
+      .then(JSON.decode)
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.CalendarEntryChange.fromMap(map)));
+
+  }
+
+  Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID) {
+    Uri url = Resource.Reception.calendarEventLatestChange(this._host, entryID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url)
+      .then(JSON.decode)
+      .then((Map map) =>
+        new Model.CalendarEntryChange.fromMap(map));
+  }
 }

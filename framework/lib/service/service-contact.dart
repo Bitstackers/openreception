@@ -162,4 +162,26 @@ class RESTContactStore implements Storage.Contact {
     this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
         maps.map((Map map) => new Model.PhoneNumber.fromMap(map)));
 
+  Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID) {
+    Uri url = Resource.Contact.calendarEventChanges(this._host, entryID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url)
+      .then(JSON.decode)
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new Model.CalendarEntryChange.fromMap(map)));
+
+  }
+
+  Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID) {
+    Uri url = Resource.Contact.calendarEventLatestChange(this._host, entryID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url)
+      .then(JSON.decode)
+      .then((Map map) =>
+        new Model.CalendarEntryChange.fromMap(map));
+  }
+
 }
