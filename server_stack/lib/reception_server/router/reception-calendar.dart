@@ -32,6 +32,11 @@ abstract class ReceptionCalendar {
         return new shelf.Response.ok(JSON.encode(change));
       })
       .catchError((error, stackTrace) {
+        if(error is Storage.NotFound) {
+          return new shelf.Response.notFound
+            (JSON.encode({'description' : 'No changes found for entry '
+                                          'with ID $entryID'}));
+        }
         log.severe(error, stackTrace);
         return new shelf.Response.internalServerError(body : error.toString());
     });
