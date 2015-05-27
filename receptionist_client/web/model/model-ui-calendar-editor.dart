@@ -237,9 +237,14 @@ class UICalendarEditor extends UIModel {
   void _update(InputElement input) {
     input.classes.toggle('bad-input', input.validity.badInput);
 
-    _updateReadableAndDuration();
-
     _toggleButtons();
+
+    try {
+      _updateReadableAndDuration();
+    } catch(_) {
+      /// NOTE (TL): Errors caught here of the NaN type due to bad input in the
+      /// start/stop fields.
+    }
   }
 
   /**
