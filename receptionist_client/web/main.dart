@@ -130,7 +130,7 @@ main() async {
 /**
  * Return the configuration object for the client.
  */
-Future<ORModel.ClientConfiguration> getClientConfiguration() async {
+Future<ORModel.ClientConfiguration> getClientConfiguration() {
   ORService.RESTConfiguration configService =
       new ORService.RESTConfiguration(CONFIGURATION_URL, new ORTransport.Client());
 
