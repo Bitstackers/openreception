@@ -13,30 +13,52 @@
 
 part of controller;
 
+/**
+ * Provides services to get, delete and update calendar events.
+ */
 class Reception {
   final ORService.RESTReceptionStore _store;
 
+  /**
+   * Constructor.
+   */
   Reception (this._store);
 
+  /**
+   *
+   */
   Future<Iterable<Model.ReceptionCalendarEntry>> calendar(Model.Reception reception) =>
-    this._store.calendarMap(reception.ID).then((Iterable<Map> maps) =>
-      maps.map((Map map) => new Model.ReceptionCalendarEntry.fromMap(map)));
+      _store.calendarMap(reception.ID).then((Iterable<Map> maps) =>
+          maps.map((Map map) => new Model.ReceptionCalendarEntry.fromMap(map)));
 
-  Future<Iterable<Model.Reception>> list() {
-    return this._store.listMap()
-      .then((Iterable<Map> receptionMaps) =>
-        receptionMaps.map ((Map map) {
-          return new Model.Reception.fromMap(map);
-        }));
-  }
-  
-  Future deleteCalendarEvent (Model.ReceptionCalendarEntry entry) =>
-    this._store.calendarEventRemove (entry);
-  
-  Future saveCalendarEvent (Model.ReceptionCalendarEntry entry) =>
-    this._store.calendarEventUpdate(entry);
+  /**
+   * Return the latest entry change information for the [entryId] calendar entry.
+   */
+  Future<ORModel.CalendarEntryChange> calendarEntryLatestChange(int entryId) =>
+      _store.calendarEntryLatestChange(entryId);
 
-  Future createCalendarEvent (Model.ReceptionCalendarEntry entry) =>
-    this._store.calendarEventCreate (entry);
+  /**
+   *
+   */
+  Future createCalendarEvent(Model.ReceptionCalendarEntry entry) =>
+      _store.calendarEventCreate(entry);
 
+  /**
+   *
+   */
+  Future deleteCalendarEvent(Model.ReceptionCalendarEntry entry) =>
+      _store.calendarEventRemove(entry);
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Reception>> list() =>
+      _store.listMap().then((Iterable<Map> receptionMaps) =>
+          receptionMaps.map((Map map) => new Model.Reception.fromMap(map)));
+
+  /**
+   *
+   */
+  Future saveCalendarEvent(Model.ReceptionCalendarEntry entry) =>
+      _store.calendarEventUpdate(entry);
 }
