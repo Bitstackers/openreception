@@ -144,6 +144,17 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
+   * Set the [_ui.authorStamp]. This is populated with data from the latest
+   * calendar entry change object for [entryId].
+   */
+  void _setAuthorStamp(int entryId) {
+    _receptionController.calendarEntryLatestChange(entryId)
+        .then((ORModel.CalendarEntryChange latestChange) {
+          _ui.authorStamp(latestChange.username, latestChange.changedAt);
+        });
+  }
+
+  /**
    * Setup the widget accordingly to where it was opened from. [from] MUST be
    * the [Widget] that activated CalendarEditor.
    *
@@ -152,34 +163,46 @@ class CalendarEditor extends ViewWidget {
    * with the calendar entry we're either deleting/editing or creating.
    */
   void _setup(Widget from, Cmd cmd) {
+    ORModel.CalendarEntry entry;
+
     switch(from) {
       case Widget.ContactCalendar:
         if(cmd == Cmd.EDIT) {
-          _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
-          _render(_contactCalendar.selectedCalendarEntry);
-        } else {
-          _ui.headerExtra = '(${_langMap[Key.editorNew]})';
+          entry = _contactCalendar.selectedCalendarEntry;
 
-          final Model.ContactCalendarEntry entry = new Model.ContactCalendarEntry
-            (_contactSelector.selectedContact.ID, _receptionSelector.selectedReception.ID)
-              ..beginsAt = new DateTime.now()
-              ..until = new DateTime.now().add(new Duration(hours : 1))
-              ..content = '';
+          _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
+          _setAuthorStamp(entry.ID);
+
+          _render(entry);
+        } else {
+          entry = new Model.ContactCalendarEntry(_contactSelector.selectedContact.ID,
+                                                 _receptionSelector.selectedReception.ID)
+                    ..beginsAt = new DateTime.now()
+                    ..until = new DateTime.now().add(new Duration(hours : 1))
+                    ..content = '';
+
+          _ui.headerExtra = '(${_langMap[Key.editorNew]})';
+          _ui.authorStamp(null, null);
 
           _render(entry);
         }
         break;
       case Widget.ReceptionCalendar:
         if(cmd == Cmd.EDIT) {
+          entry = _receptionCalendar.selectedCalendarEntry;
+
           _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
-          _render(_receptionCalendar.selectedCalendarEntry);
+          _setAuthorStamp(entry.ID);
+
+          _render(entry);
         } else {
+          entry = new Model.ReceptionCalendarEntry(_receptionSelector.selectedReception.ID)
+                    ..beginsAt = new DateTime.now()
+                    ..until = new DateTime.now().add(new Duration(hours : 1))
+                    ..content = '';
+
           _ui.headerExtra = '(${_langMap[Key.editorNew]})';
-          final Model.ReceptionCalendarEntry entry = new Model.ReceptionCalendarEntry
-            (_receptionSelector.selectedReception.ID)
-              ..beginsAt = new DateTime.now()
-              ..until = new DateTime.now().add(new Duration(hours : 1))
-              ..content = '';
+          _ui.authorStamp(null, null);
 
           _render(entry);
         }

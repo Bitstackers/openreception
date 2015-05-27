@@ -43,6 +43,7 @@ class UICalendarEditor extends UIModel {
   @override HtmlElement get _lastTabElement  => _myLastTabElement;
   @override HtmlElement get _root            => _myRoot;
 
+  SpanElement          get _authorStamp      => _root.querySelector('.author-stamp');
   ButtonElement        get _cancelButton     => _root.querySelector('.cancel');
   ButtonElement        get _deleteButton     => _root.querySelector('.delete');
   SpanElement          get _entryDuration    => _root.querySelector('div.entry-duration-container .entry-duration');
@@ -62,6 +63,21 @@ class UICalendarEditor extends UIModel {
   InputElement         get _stopYearInput    => _root.querySelector('div.entry-stop-container .stop-year');
   ElementList<Element> get _tabElements      => _root.querySelectorAll('[tabindex]');
   TextAreaElement      get _textArea         => _root.querySelector('textarea');
+
+  /**
+   * Set the authorStamp part of the widget header. The format of the String is:
+   *
+   *  name @ humanreadable timestamp
+   *
+   * Set [userName] and [timestamp] to null to set an empty authorStamp.
+   */
+  void authorStamp(String userName, DateTime timestamp) {
+    if(userName == null && timestamp == null) {
+      _authorStamp.text = '';
+    } else {
+      _authorStamp.text = '${userName} @ ${ORUtil.humanReadableTimestamp(timestamp, _weekDays)}';
+    }
+  }
 
   /**
    * Populate the calendar editor fields with [calendarEntry].
@@ -166,6 +182,8 @@ class UICalendarEditor extends UIModel {
   void reset() {
     _loadedEntry = null;
     _myFocusElement = _myFirstTabElement;
+
+    _authorStamp.text = '';
 
     _startReadable.text = '';
     _stopReadable.text = '';
