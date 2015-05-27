@@ -21,13 +21,13 @@ class AgentInfo extends ViewWidget {
   final Logger            _log = new Logger('$libraryName.AgentInfo');
   Controller.Notification _notification;
   final Model.UIAgentInfo _uiModel;
-  final Controller.User   _user;
+  final Controller.User   _userController;
 
   /**
    * Constructor.
    */
   AgentInfo(Model.UIAgentInfo this._uiModel,
-            Controller.User this._user,
+            Controller.User this._userController,
             Controller.Notification this._notification) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
@@ -42,7 +42,7 @@ class AgentInfo extends ViewWidget {
       }
     }
 
-    _user.getState(Model.User.currentUser).then(_updateUserState);
+    _userController.getState(Model.User.currentUser).then(_updateUserState);
 
     _updateCounters();
 
@@ -62,7 +62,7 @@ class AgentInfo extends ViewWidget {
    * where changing to idle fails.
    */
   void _setIdle(_) {
-    _user.setIdle(Model.User.currentUser).then(_updateUserState);
+    _userController.setIdle(Model.User.currentUser).then(_updateUserState);
   }
 
   /**
@@ -72,7 +72,7 @@ class AgentInfo extends ViewWidget {
    * where changing to paused fails.
    */
   void _setPaused(_) {
-    _user.setPaused(Model.User.currentUser).then(_updateUserState);
+    _userController.setPaused(Model.User.currentUser).then(_updateUserState);
   }
 
   /**
@@ -119,7 +119,7 @@ class AgentInfo extends ViewWidget {
    * state.
    */
   void _updateCounters() {
-    _user.userStateList()
+    _userController.userStateList()
         .then((Iterable<Model.UserStatus> userStates) {
           _ui.activeCount = userStates.where((Model.UserStatus user) =>
               user.state == ORModel.UserState.Idle).length;
