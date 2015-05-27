@@ -401,13 +401,16 @@ abstract class ModelCalendarEntryChange {
   static void buildObject () {
     DateTime changedAt = new DateTime.now();
     int changedBy = 2;
+    String changedByName = 'That guy';
 
     Model.CalendarEntryChange testChange = new Model.CalendarEntryChange()
       ..changedAt = changedAt
-      ..userID    = changedBy;
+      ..userID    = changedBy
+      ..username  = changedByName;
 
     expect(testChange.userID, equals(changedBy));
     expect(testChange.changedAt, equals(changedAt));
+    expect(testChange.username, equals(changedByName));
   }
 }
 
