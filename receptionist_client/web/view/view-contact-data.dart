@@ -32,7 +32,8 @@ class ContactData extends ViewWidget {
               Model.UIContactSelector this._contactSelector,
               Model.UIReceptionSelector this._receptionSelector,
               Controller.Call this._callController) {
-    _ui.setHint('alt+t, ctrl+space');
+    _ui.setHint('alt+t | ctrl+space');
+
     _observers();
   }
 

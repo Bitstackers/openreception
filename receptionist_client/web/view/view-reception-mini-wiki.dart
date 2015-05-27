@@ -28,6 +28,7 @@ class ReceptionMiniWiki extends ViewWidget {
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+m');
+
     _observers();
   }
 

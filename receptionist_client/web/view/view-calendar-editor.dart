@@ -41,6 +41,8 @@ class CalendarEditor extends ViewWidget {
                  Controller.Contact this._contactController,
                  Controller.Reception this._receptionController,
                  Map<String, String> this._langMap) {
+    _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
+
     _observers();
   }
 

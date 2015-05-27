@@ -28,6 +28,7 @@ class ReceptionCommands extends ViewWidget {
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+h');
+
     _observers();
   }
 

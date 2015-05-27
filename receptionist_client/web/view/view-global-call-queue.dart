@@ -32,6 +32,7 @@ class GlobalCallQueue extends ViewWidget {
                   Controller.Notification this._notifications,
                   Controller.Call this._callController) {
     _loadCallList();
+
     _observers();
   }
 

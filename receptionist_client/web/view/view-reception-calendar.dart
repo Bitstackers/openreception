@@ -32,6 +32,7 @@ class ReceptionCalendar extends ViewWidget {
                     Controller.Reception this._receptionController,
                     Controller.Notification this._notification) {
     _ui.setHint('alt+a');
+
     _observers();
   }
 

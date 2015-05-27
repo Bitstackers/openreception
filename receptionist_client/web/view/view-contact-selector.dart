@@ -30,6 +30,7 @@ class ContactSelector extends ViewWidget {
                   Model.UIReceptionSelector this._receptionSelector,
                   Controller.Contact this._contactController) {
     _ui.setHint('alt+s');
+
     _observers();
   }
 

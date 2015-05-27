@@ -34,6 +34,7 @@ class ContactCalendar extends ViewWidget {
                   Controller.Contact this._contactController,
                   Controller.Notification this._notification) {
     _ui.setHint('alt+k');
+
     _observers();
   }
 
