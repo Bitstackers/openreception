@@ -60,12 +60,12 @@ class Call extends ORModel.Call {
   void release() {
     log.finest('Releasing call assigned to: ${this.assignedTo}');
 
-    if (this.assignedTo != noUser) {
+    if (this.assignedTo != ORModel.User.nullID) {
       //UserStatusList.instance.getOrCreate (this.assignedTo).callsHandled++;
       UserStatusList.instance.update(this.assignedTo, ORModel.UserState.WrappingUp);
     }
 
-    this.assignedTo = noUser;
+    this.assignedTo = ORModel.User.nullID;
   }
 
   void link (Call other) {
