@@ -138,7 +138,8 @@ class ReceptionistclientReady {
          new Controller.Destination(Context.Home, Widget.ContactCalendar),
          uiContactSelector,
          uiReceptionSelector,
-         _contactController);
+         _contactController,
+         _notification);
 
     _contactData = new ContactData
         (new Model.UIContactData(querySelector('#contact-data')),

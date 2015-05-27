@@ -14,11 +14,12 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Handles the contact calendar entries.
  */
 class ContactCalendar extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Controller.Destination    _myDestination;
+  final Controller.Notification   _notification;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactCalendar   _uiModel;
   final Controller.Contact        _contactController;
@@ -30,7 +31,8 @@ class ContactCalendar extends ViewWidget {
                   Controller.Destination this._myDestination,
                   Model.UIContactSelector this._contactSelector,
                   Model.UIReceptionSelector this._receptionSelector,
-                  Controller.Contact this._contactController) {
+                  Controller.Contact this._contactController,
+                  Controller.Notification this._notification) {
     _ui.setHint('alt+k');
     _observers();
   }
@@ -58,6 +60,17 @@ class ContactCalendar extends ViewWidget {
   }
 
   /**
+   * Fetch all calendar entries for [contact].
+   */
+  void _fetchCalendar(Model.Contact contact) {
+    _contactController.getCalendar(contact)
+        .then((Iterable<Model.ContactCalendarEntry> entries) {
+          _ui.calendarEntries = entries.toList()
+              ..sort((a,b) => a.start.compareTo(b.start));
+        });
+  }
+
+  /**
    * If a contact is selected in [_contactSelector], then navigate to the
    * calendar editor with [cmd] set.
    */
@@ -79,6 +92,8 @@ class ContactCalendar extends ViewWidget {
     _ui.onEdit  .listen((_) => _maybeNavigateToEditor(Cmd.EDIT));
     _ui.onNew   .listen((_) => _maybeNavigateToEditor(Cmd.NEW));
 
+    _notification.onCalendarChange.listen(_updateOnChange);
+
     _contactSelector.onSelect.listen(_render);
 
     _receptionSelector.onSelect.listen(_clear);
@@ -92,12 +107,19 @@ class ContactCalendar extends ViewWidget {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${contact.fullName}';
+      _fetchCalendar(contact);
+    }
+  }
 
-      _contactController.getCalendar(contact)
-          .then((Iterable<Model.ContactCalendarEntry> entries) {
-            _ui.calendarEntries = entries.toList()
-                ..sort((a,b) => a.start.compareTo(b.start));
-          });
+  /**
+   * Check if changes to the contact calendar matches the currently selected
+   * contact, and update accordingly if so.
+   */
+  void _updateOnChange(OREvent.CalendarChange calendarChange) {
+    final Model.Contact currentContact = _contactSelector.selectedContact;
+
+    if(calendarChange.contactID == currentContact.ID) {
+      _fetchCalendar(currentContact);
     }
   }
 }
