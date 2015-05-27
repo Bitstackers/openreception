@@ -75,6 +75,8 @@ class Call {
     }
   }
 
+  Call ();
+
   Call.stub (Map map) {
     this.ID = map[CallJsonKey.ID];
     isStub = true;
