@@ -244,14 +244,19 @@ LIMIT 1;
     String sql = '''
     SELECT 
       user_id, 
-      updated_at 
+      updated_at,
+      name
     FROM 
       calendar_entry_changes 
+    JOIN
+      users
+    ON 
+      users.id = user_id
     WHERE
-      entry_id = @entryID 
+      entry_id = @entryID
     ORDER BY 
       updated_at 
-    DESC;''';
+    DESC''';
 
     Map parameters = {'entryID' : entryID};
     return connection.query(sql, parameters).then((Iterable rows) =>
@@ -267,15 +272,20 @@ LIMIT 1;
     String sql = '''
     SELECT 
       user_id, 
-      updated_at 
+      updated_at,
+      name
     FROM 
       calendar_entry_changes 
+    JOIN
+      users
+    ON 
+      users.id = user_id
     WHERE
-      entry_id = @entryID 
+      entry_id = @entryID
     ORDER BY 
       updated_at 
     DESC
-    LIMIT 1;''';
+    LIMIT 1''';
 
     Map parameters = {'entryID' : entryID};
     return connection.query(sql, parameters).then((Iterable rows) =>
@@ -285,8 +295,9 @@ LIMIT 1;
   }
 
   static Map _rowToCalendarEventChange(var row) => {
-    'uid'     : row.user_id,
-    'updated' : Util.dateTimeToUnixTimestamp(row.updated_at)
+    'uid'      : row.user_id,
+    'updated'  : Util.dateTimeToUnixTimestamp(row.updated_at),
+    'username' : row.name
   };
 
   static _rowToCalendarEntry (var row) =>
