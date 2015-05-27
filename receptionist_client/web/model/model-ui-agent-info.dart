@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the agent info UIX parts.
  */
 class UIAgentInfo extends UIModel {
   final DivElement _myRoot;
@@ -66,7 +66,7 @@ class UIAgentInfo extends UIModel {
   set alertState (AlertState alertState) {
     switch(alertState) {
       case AlertState.OFF:
-        /// TODO (TL): Need alert state OFF graphic
+        _alertState.style.visibility = 'hidden';
         break;
       case AlertState.ON:
         _alertState.src = 'images/alert.svg';

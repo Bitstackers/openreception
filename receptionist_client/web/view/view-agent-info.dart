@@ -32,7 +32,7 @@ class AgentInfo extends ViewWidget {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = AgentState.UNKNOWN;
-    _ui.alertState = AlertState.ON;
+    _ui.alertState = AlertState.OFF;
     _ui.portrait = 'images/face.png';
 
     Map userMap = Model.User.currentUser.toJson();
