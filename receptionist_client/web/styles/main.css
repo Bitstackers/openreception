@@ -128,6 +128,22 @@ button::-moz-focus-inner {
   padding: 0.3em;
 }
 
+.hint {
+  position: absolute;
+  z-index: 1;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 0.8em;
+  font-weight: bold;
+  top: -0.5em;
+  text-align: center;
+  background-color: #f3b300;
+}
+
+.hint.hidden {
+  display: none;
+}
+
 input {
   border: solid 1px #aaa;
 }
@@ -148,23 +164,6 @@ input:focus  ~label {
 .modal {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 3em;
-}
-
-.hint {
-  position: absolute;
-  z-index: 1;
-  border-radius: 4px;
-  padding: 2px 5px;
-  font-size: 0.8em;
-  font-weight: bold;
-  left: calc(50% - 2em);
-  top: -0.5em;
-  text-align: center;
-  background-color: #f3b300;
-}
-
-.hint.hidden {
-  display: none;
 }
 
 .spinning-focus-box {

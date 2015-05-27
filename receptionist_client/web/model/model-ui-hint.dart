@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the hint related UIX parts.
  */
 class UIHint {
   /**
@@ -28,6 +28,15 @@ class UIHint {
    * Toggle the hidden class on all the [_hintElements]
    */
   void toggleHint() {
-    _hintElements.forEach((DivElement hint) => hint.classes.toggle('hidden'));
+    _hintElements.forEach((DivElement hint) {
+      hint.classes.toggle('hidden');
+
+      if(!hint.classes.contains('hidden')) {
+        final double parentWidth = hint.parent.getClientRects().first.width;
+        final double hintWidth   = hint.getClientRects().first.width;
+
+        hint.style.left = '${(parentWidth - hintWidth)~/2}px';
+      }
+    });
   }
 }
