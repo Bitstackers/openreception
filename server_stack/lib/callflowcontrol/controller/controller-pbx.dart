@@ -157,6 +157,10 @@ abstract class PBX {
 
     return
         Model.PBXClient.api ('uuid_answer ${destination.channelID}')
+        .then ((_) => Model.PBXClient.api ('uuid_setvar ${destination.channelID} hangup_after_bridge true')
+          .then((response) => bridgeResponse = response))
+        .then ((_) => Model.PBXClient.api ('uuid_setvar ${uuid} hangup_after_bridge true')
+          .then((response) => bridgeResponse = response))
         .then ((_) => Model.PBXClient.api ('uuid_bridge ${destination.channelID} ${uuid}')
           .then((response) => bridgeResponse = response))
         .then ((_) => Model.PBXClient.api ('uuid_break ${destination.channelID}').then((_) => bridgeResponse));
