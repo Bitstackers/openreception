@@ -170,7 +170,7 @@ String getToken(Uri appUri) => appUri.queryParameters['settoken'];
 /**
  * Return the current user.
  */
-Future<ORModel.User> getUser(Uri authServerUri, String token) async {
+Future<ORModel.User> getUser(Uri authServerUri, String token) {
   ORService.Authentication authService =
       new ORService.Authentication(authServerUri, token, new ORTransport.Client());
 
