@@ -71,8 +71,8 @@ class Call extends ORModel.Call {
   void link (Call other) {
     this.locked = false;
 
-    this.b_Leg  = other;
-    other.b_Leg = this;
+    this.b_Leg  = other.ID;
+    other.b_Leg = this.ID;
   }
 
    @override
