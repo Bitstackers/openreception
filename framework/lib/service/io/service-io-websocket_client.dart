@@ -10,7 +10,8 @@ class WebSocketClient extends Service.WebSocket {
   Future<Service.WebSocket> connect (Uri path) =>
       IO.WebSocket.connect(path.toString()).then((IO.WebSocket ws) {
         this._websocket = ws;
-        this._websocket.listen(this.onMessage, onError: this.onError);
+        this._websocket.listen(this.onMessage, onError: this.onError,
+            onDone: () => this.onClose);
 
         return this;
     });

@@ -58,7 +58,7 @@ class NotificationService {
 
   /**
    * Retrieves the [ClientConnection]'s currently active on the server as an
-   * [Iterable<Map>] 
+   * [Iterable<Map>]
    */
   Future<Iterable<Map>> clientConnectionsMap() {
     Uri uri = Resource.Notification.clientConnections(this._host);
@@ -73,9 +73,9 @@ class NotificationService {
    * Retrieves the [ClientConnection]'s currently active on the server.
    */
   Future<Iterable<Model.ClientConnection>> clientConnections() =>
-    this.clientConnectionsMap().then((Iterable<Map> maps) => 
-      maps.map ((Map map) => new Model.ClientConnection.fromMap(map))); 
-  
+    this.clientConnectionsMap().then((Iterable<Map> maps) =>
+      maps.map ((Map map) => new Model.ClientConnection.fromMap(map)));
+
   /**
    * Retrieves the [ClientConnection] currently associated with [uid].
    */
@@ -92,8 +92,8 @@ class NotificationService {
    * Retrieves the [ClientConnections] currently active on the server.
    */
   Future<Model.ClientConnection> clientConnection(uid) =>
-    this.clientConnectionMap(uid).then((Map map) => 
-      new Model.ClientConnection.fromMap(map)); 
+    this.clientConnectionMap(uid).then((Map map) =>
+      new Model.ClientConnection.fromMap(map));
 
   /**
    * Sends an event via the notification server to [recipients]
@@ -171,6 +171,7 @@ class NotificationSocket {
   NotificationSocket (this._websocket) {
     log.finest('Created a new WebSocket.');
     this._websocket.onMessage = this._parseAndDispatch;
+    this._websocket.onClose = () => this._streamController.close();
   }
 
   Future close() => this._websocket.close();

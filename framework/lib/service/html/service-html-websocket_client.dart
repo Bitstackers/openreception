@@ -14,7 +14,8 @@ class WebSocketClient extends Service.WebSocket {
     this._websocket
         ..onMessage.listen(this._onMessage)
         ..onError.listen(this.onError)
-        ..onOpen.listen((_) => ready.complete());
+        ..onOpen.listen((_) => ready.complete())
+        ..onClose.listen((_) => this.onClose());
 
     return ready.future;
   }
