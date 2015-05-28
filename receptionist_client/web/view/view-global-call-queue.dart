@@ -51,6 +51,29 @@ class GlobalCallQueue extends ViewWidget {
   }
 
   /**
+   * Add, remove, update the queue list, depending on the [call] state.
+   */
+  void _handleCallStateChanges(Model.Call call) {
+    switch(call.state) {
+      case ORModel.CallState.Created:
+        _ui.appendCall(call);
+        break;
+
+      case ORModel.CallState.Hungup:
+        _ui.removeCall(call);
+        break;
+
+      case ORModel.CallState.Speaking:
+        _ui.removeCall(call);
+        break;
+
+      default:
+        _ui.updateCall(call);
+        break;
+    }
+  }
+
+  /**
    * Load the list of calls not currently assigned to anybody.
    */
   void _loadCallList() {
@@ -69,26 +92,7 @@ class GlobalCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    /// TODO (KRC): Do stuff here...
-    _notifications.onAnyCallStateChange.listen((Model.Call call) {
-      switch(call.state) {
-        case ORModel.CallState.Created:
-          this._ui.appendCall(call);
-          break;
-
-        case ORModel.CallState.Hungup:
-          this._ui.removeCall(call);
-          break;
-
-        case ORModel.CallState.Speaking:
-          this._ui.removeCall(call);
-          break;
-
-        default:
-          this._ui.updateCall(call);
-          break;
-      }
-    });
+    _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
 
     _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
 

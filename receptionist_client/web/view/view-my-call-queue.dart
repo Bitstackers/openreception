@@ -51,6 +51,33 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
+   * Add, remove, update the queue list, depending on the [call] state.
+   */
+  void _handleCallStateChanges(Model.Call call) {
+    if (call.assignedTo != Model.User.currentUser.ID) {
+      return;
+    }
+
+    switch(call.state) {
+      case ORModel.CallState.Created:
+        if(!call.inbound) {
+          /// My outbound call.
+          _ui.appendCall(call);
+        }
+        break;
+
+      case ORModel.CallState.Hungup:
+      case ORModel.CallState.Transferred:
+        _ui.removeCall(call);
+        break;
+
+      default:
+        _ui.updateCall(call);
+        break;
+    }
+  }
+
+  /**
    * Load the list of calls assigned to current user and not being transferred.
    */
   void _loadCallList() {
@@ -74,26 +101,6 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onCtrlNumMinus.listen((_) =>
         _callController.transferToFirstParkedCall(Model.Call.activeCall));
 
-    _notifications.onAnyCallStateChange.listen((Model.Call call) {
-
-      /// Check if this even concerns me:
-      if (call.assignedTo != Model.User.currentUser.ID) {
-        return;
-      }
-
-      /// This is my outbound call:
-      else if(call.state == ORModel.CallState.Created && !call.inbound) {
-        this._ui.appendCall(call);
-      }
-
-      else if(call.state == ORModel.CallState.Hungup ||
-              call.state == ORModel.CallState.Transferred) {
-        this._ui.removeCall(call);
-      }
-
-      else {
-        this._ui.updateCall(call);
-      }
-    });
+    _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
   }
 }
