@@ -4,10 +4,10 @@ class RESTConfiguration {
 
   static final String className = '${libraryName}.RESTConfiguration';
 
-  WebService _backed = null;
+  WebService _backend = null;
   Uri        _host;
 
-  RESTConfiguration (Uri this._host, this._backed);
+  RESTConfiguration (Uri this._host, this._backend);
 
   /**
    * Returns a [ClientConfiguration] object.
@@ -15,7 +15,7 @@ class RESTConfiguration {
   Future<Model.ClientConfiguration> clientConfig() {
     Uri uri = Resource.Config.get(this._host);
 
-    return this._backed.get (uri)
+    return this._backend.get (uri)
       .then((String response)
         => new Model.ClientConfiguration.fromMap(JSON.decode(response)));
   }

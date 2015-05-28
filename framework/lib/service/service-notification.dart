@@ -23,11 +23,11 @@ class NotificationService {
   static Logger log   = new Logger (className);
 
 
-  WebService _backed = null;
+  WebService _backend = null;
   Uri        _host;
   String     _token = '';
 
-  NotificationService (Uri this._host, String this._token, this._backed);
+  NotificationService (Uri this._host, String this._token, this._backend);
 
   /**
    * Performs a broadcast via the notification server.
@@ -66,7 +66,7 @@ class NotificationService {
 
     log.finest('GET $uri');
 
-    return this._backed.get(uri).then(JSON.decode);
+    return this._backend.get(uri).then(JSON.decode);
   }
 
   /**
@@ -85,7 +85,7 @@ class NotificationService {
 
     log.finest('GET $uri');
 
-    return this._backed.get(uri).then(JSON.decode);
+    return this._backend.get(uri).then(JSON.decode);
   }
 
   /**
@@ -139,7 +139,7 @@ class NotificationService {
       }
     }
 
-    return this._backed.post (request.resource, JSON.encode(request.body))
+    return this._backend.post (request.resource, JSON.encode(request.body))
            .whenComplete(dispatchNext);
            //.catchError((error, StackTrace) => print('${error} : ${StackTrace}'))
     }

@@ -4,12 +4,12 @@ class Authentication {
 
   static final String className = '${libraryName}.Authentication';
 
-  WebService _backed = null;
+  WebService _backend = null;
   Uri        _host;
   String     _token = '';
 
 
-  Authentication (Uri this._host, String this._token, this._backed);
+  Authentication (Uri this._host, String this._token, this._backend);
 
   /**
    * Performs a lookup of the user on the notification server from the
@@ -18,7 +18,7 @@ class Authentication {
   Future<Model.User> userOf(String token) {
     Uri uri = Resource.Authentication.tokenToUser(this._host, token);
 
-    return this._backed.get (uri)
+    return this._backend.get (uri)
       .then((String response)
         => new Model.User.fromMap(JSON.decode(response)));
   }
@@ -29,7 +29,7 @@ class Authentication {
   Future validate(String token) {
     Uri uri = Resource.Authentication.validate(this._host, token);
 
-    return this._backed.get (uri);
+    return this._backend.get (uri);
   }
 
 }

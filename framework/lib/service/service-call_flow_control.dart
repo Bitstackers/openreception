@@ -5,18 +5,18 @@ class CallFlowControl {
   static final String className = '${libraryName}.CallFlowControl';
   static final log = new Logger (className);
 
-  WebService _backed = null;
+  WebService _backend = null;
   Uri        _host;
   String     _token = '';
 
-  CallFlowControl (Uri this._host, String this._token, this._backed);
+  CallFlowControl (Uri this._host, String this._token, this._backend);
 
   /**
    * Returns a Map representation of the [Model.UserStatus] object associated
    * with [userID].
    */
   Future<Map> userStatusMap(int userID) =>
-      this._backed.get
+      this._backend.get
         (appendToken(Resource.CallFlowControl.userStatus
            (this._host, userID), this._token))
       .then((String response)
@@ -30,7 +30,7 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.userStatusList(this._host);
         uri = appendToken(uri, this._token);
 
-    return this._backed.get (uri).then(JSON.decode);
+    return this._backend.get (uri).then(JSON.decode);
   }
 
   /**
@@ -50,7 +50,7 @@ class CallFlowControl {
    * [ClientError] exeptions.
    */
   Future<Map> userStateIdleMap(int userID) =>
-      this._backed.post
+      this._backend.post
         (appendToken(Resource.CallFlowControl.userState
            (this._host, userID, Model.UserState.Idle), this._token), '')
       .then((String response)
@@ -67,7 +67,7 @@ class CallFlowControl {
         (this._host, userID, Model.UserState.Paused);
         uri = appendToken(uri, this._token);
 
-    return this._backed.post(uri, '').then(JSON.decode);
+    return this._backend.post(uri, '').then(JSON.decode);
   }
 
   /**
@@ -80,7 +80,7 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.userStateLoggedOut (this._host, userID);
         uri = appendToken(uri, this._token);
 
-    return this._backed.post (uri, '')
+    return this._backend.post (uri, '')
       .then((String response)
         => JSON.decode(response));
   }
@@ -91,7 +91,7 @@ class CallFlowControl {
    * The call fails if the user is logged out, or has no state on the server.
    */
   Future userStateKeepAlive(int userID) =>
-      this._backed.post
+      this._backend.post
         (appendToken(Resource.CallFlowControl.userStateKeepAlive
            (this._host, userID), this._token), '')
       .then((String response)
@@ -124,7 +124,7 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.single (this._host, callID);
         uri = appendToken(uri, this._token);
 
-    return this._backed.get (uri)
+    return this._backend.get (uri)
     .then((String response) {
       Model.Call call;
       try {
@@ -153,7 +153,7 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.pickup (this._host, callID);
         uri = appendToken(uri, this._token);
 
-    return this._backed.post (uri,'').then(JSON.decode);
+    return this._backend.post (uri,'').then(JSON.decode);
   }
 
 
@@ -163,7 +163,7 @@ class CallFlowControl {
    * TODO: Remove the if/else branch, once the protocol has converged.
    */
   Future<Model.Call> originate (String extension, int contactID, int receptionID) =>
-      this._backed.post
+      this._backend.post
         (appendToken(Resource.CallFlowControl.originate
            (this._host, extension, contactID, receptionID), this._token),'')
       .then((String response) {
@@ -180,7 +180,7 @@ class CallFlowControl {
    * Parks the call identified by [callID].
    */
   Future park (String callID) =>
-      this._backed.post
+      this._backend.post
         (appendToken(Resource.CallFlowControl.park
            (this._host, callID), this._token),'');
 
@@ -188,7 +188,7 @@ class CallFlowControl {
    * Hangs up the call identified by [callID].
    */
   Future hangup (String callID) =>
-      this._backed.post
+      this._backend.post
         (appendToken(Resource.CallFlowControl.hangup
            (this._host, callID), this._token),'');
 
@@ -196,7 +196,7 @@ class CallFlowControl {
    * Transfers the call identified by [callID] to active call [destination].
    */
   Future transfer (String callID, String destination) =>
-      this._backed.post
+      this._backend.post
         (appendToken(Resource.CallFlowControl.transfer
            (this._host, callID, destination), this._token),'');
 
@@ -216,7 +216,7 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.list(this._host);
         uri = appendToken (uri, this._token);
 
-    return this._backed.get (uri).then((String response)
+    return this._backend.get (uri).then((String response)
         => (JSON.decode(response)));
   }
   /**
@@ -234,7 +234,7 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.peerList(this._host);
         uri = appendToken (uri, this._token);
 
-    return this._backed.get (uri)
+    return this._backend.get (uri)
       .then((String response)
         => (JSON.decode(response) as List));
   }
@@ -246,6 +246,6 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.channelList(this._host);
         uri = appendToken(uri, this._token);
 
-    return this._backed.get (uri).then((String response) => (JSON.decode(response)));
+    return this._backend.get (uri).then((String response) => (JSON.decode(response)));
   }
 }
