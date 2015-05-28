@@ -46,7 +46,7 @@ class Notification {
     } else if(event is OREvent.CalendarChange) {
       _calendarChange.fire(event);
     } else if(event is OREvent.ClientConnectionState) {
-      _clientConnectionState.fire(new Model.ClientConnectionState.fromMap(event.asMap));
+      _clientConnectionState.fire(new Model.ClientConnectionState.fromMap(event.conn.asMap));
     } else if(event is OREvent.UserState) {
       _agentStateChange.fire(new Model.UserStatus.fromMap(event.asMap));
     } else {
