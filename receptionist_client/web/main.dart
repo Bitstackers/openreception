@@ -34,6 +34,8 @@ View.ReceptionistclientDisaster appDisaster;
 View.ReceptionistclientLoading  appLoading;
 View.ReceptionistclientReady    appReady;
 final Logger                    log = new Logger(libraryName);
+StreamSubscription<Event>       windowOnBeforeUnload;
+StreamSubscription<Event>       windowOnUnload;
 
 main() async {
   final Model.AppClientState   appState = new Model.AppClientState();
@@ -79,7 +81,13 @@ main() async {
       Model.User.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient = new ORTransport.WebSocketClient();
-      notification    = new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
+      notification = new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
+
+      webSocketClient.onClose = () {
+        log.shout('Websocket connection died. Trying reload in 10 seconds');
+        appState.changeState(Model.AppState.ERROR);
+        restartAppInTenSeconds(appUri);
+      };
 
       Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
@@ -119,11 +127,7 @@ main() async {
     log.shout('Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
     appState.changeState(Model.AppState.ERROR);
-
-    new Future.delayed(new Duration(seconds: 10)).then((_) {
-      appUri = Uri.parse(window.location.href);
-      window.location.replace('${appUri.origin}${appUri.path}');
-    });
+    restartAppInTenSeconds(appUri);
   }
 }
 
@@ -203,11 +207,11 @@ Future loadCallState(ORService.CallFlowControl callFlowControl) {
  * user when she exits the application.
  */
 void observers(Controller.User controllerUser) {
-  window.onBeforeUnload.listen((BeforeUnloadEvent event) {
+  windowOnBeforeUnload = window.onBeforeUnload.listen((BeforeUnloadEvent event) {
     event.returnValue = '';
   });
 
-  window.onUnload.listen((_) {
+  windowOnUnload = window.onUnload.listen((_) {
     controllerUser.setLoggedOut(Model.User.currentUser);
   });
 }
@@ -263,6 +267,24 @@ Future registerReadyView(Model.AppClientState appState,
              notification,
              langMap);
       });
+}
+
+/**
+ * Tries to reload the application at [appUri] in 10 seconds.
+ */
+void restartAppInTenSeconds(Uri appUri) {
+  if(windowOnBeforeUnload != null) {
+    windowOnBeforeUnload.cancel();
+  }
+
+  if(windowOnUnload != null) {
+    windowOnUnload.cancel();
+  }
+
+  new Future.delayed(new Duration(seconds: 10)).then((_) {
+    appUri = Uri.parse(window.location.href);
+    window.location.replace('${appUri.origin}${appUri.path}');
+  });
 }
 
 /**
