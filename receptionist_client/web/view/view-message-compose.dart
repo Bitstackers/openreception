@@ -87,7 +87,8 @@ class MessageCompose extends ViewWidget {
    * Save message in the message archive.
    */
   void _save(_) {
-    print('MessageCompose.save() not implemented yet');
+    print('MessageCompose.save() not fully implemented yet');
+    print(_ui.harvestMessageDataFromForm());
   }
 
   /**
@@ -95,5 +96,6 @@ class MessageCompose extends ViewWidget {
    */
   void _send(_) {
     print('MessageCompose.send() not implemented yet');
+    print(_ui.harvestMessageDataFromForm());
   }
 }

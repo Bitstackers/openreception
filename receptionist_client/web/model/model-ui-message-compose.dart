@@ -30,6 +30,8 @@ class UIMessageCompose extends UIModel {
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement  = _draftInput;
 
+    _haveCalledInput.checked = true;
+
     _setupLocalKeys();
     _observers();
   }
@@ -46,6 +48,7 @@ class UIMessageCompose extends UIModel {
   InputElement         get _companyNameInput   => _root.querySelector('.names input.company');
   InputElement         get _draftInput         => _root.querySelector('.checks .draft');
   InputElement         get _extensionInput     => _root.querySelector('.phone-numbers input.extension');
+  InputElement         get _haveCalledInput    => _root.querySelector('.checks .have-called');
   InputElement         get _landlineInput      => _root.querySelector('.phone-numbers input.landline');
   TextAreaElement      get _messageTextarea    => _root.querySelector('.message textarea');
   InputElement         get _pleaseCallInput    => _root.querySelector('.checks .please-call');
@@ -68,6 +71,30 @@ class UIMessageCompose extends UIModel {
       event.preventDefault();
     }
   }
+
+  /**
+   * Extracts a Message from the information stored in the widget.
+   *
+   * This does NOT set the context and recipients fields.
+   */
+  Map harvestMessageDataFromForm() =>
+      {'message'   : _messageTextarea.value,
+       'caller'    : {
+                      'name'          : _callerNameInput.value,
+                      'company'       : _companyNameInput.value,
+                      'phone'         : _landlineInput.value,
+                      'cellphone'     : _cellphoneInput.value,
+                      'localExtension': _extensionInput.value
+                     },
+       'context'   : null,
+       'flags'     : [
+                      _pleaseCallInput.checked ? MessageFlag.PleaseCall  : null,
+                      _callsBackInput.checked  ? MessageFlag.willCallBack: null,
+                      _haveCalledInput.checked ? MessageFlag.Called      : null,
+                      _urgentInput.checked     ? MessageFlag.Urgent      : null,
+                      _draftInput.checked      ? MessageFlag.Draft       : null
+                     ].where((element) => element != null),
+       'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
 
   /**
    * Return the click event stream for the cancel button.
@@ -151,8 +178,7 @@ class UIMessageCompose extends UIModel {
   void _toggleButtons(_) {
     final bool toggle = !(_callerNameInput.value.trim().isNotEmpty && _messageTextarea.value.trim().isNotEmpty);
 
-    _cancelButton.disabled = toggle;
-    _saveButton.disabled = toggle;
+    _saveButton.disabled = toggle || _recipientsList.children.isEmpty;
     _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
 
     _myLastTabElement = toggle ? _draftInput : _sendButton;

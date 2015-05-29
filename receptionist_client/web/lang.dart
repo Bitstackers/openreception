@@ -83,6 +83,7 @@ abstract class Key {
   static const String messageComposeCellPhone         = 'message-compose-cell-phone';
   static const String messageComposeCompanyName       = 'message-compose-company-name';
   static const String messageComposeDraft             = 'message-compose-draft';
+  static const String messageComposeHaveCalled        = 'message-compose-have-called';
   static const String messageComposeHeader            = 'message-compose-header';
   static const String messageComposeLocalExt          = 'message-compose-local-ext';
   static const String messageComposeMessage           = 'message-compose-message';
@@ -189,6 +190,7 @@ Map<String, String> da =
    Key.messageComposeCellPhone        : 'Mobilnummer',
    Key.messageComposeCompanyName      : 'Virksomhed',
    Key.messageComposeDraft            : 'Kladde',
+   Key.messageComposeHaveCalled       : 'Har ringet',
    Key.messageComposeHeader           : 'Besked',
    Key.messageComposeLocalExt         : 'Lokalnummer',
    Key.messageComposeMessage          : 'Besked...',
@@ -294,6 +296,7 @@ Map<String, String> en =
    Key.messageComposeCellPhone        : 'Cell phone',
    Key.messageComposeCompanyName      : 'Company',
    Key.messageComposeDraft            : 'Draft',
+   Key.messageComposeHaveCalled       : 'Have called',
    Key.messageComposeHeader           : 'Message',
    Key.messageComposeLocalExt         : 'Extension',
    Key.messageComposeMessage          : 'Message',

@@ -36,6 +36,7 @@ part 'model-client-connection-state.dart';
 part 'model-contact.dart';
 part 'model-contact-calendar.dart';
 part 'model-calendar-entry.dart';
+part 'model-message.dart';
 part 'model-message-endpoint.dart';
 part 'model-phone-number.dart';
 part 'model-reception.dart';
