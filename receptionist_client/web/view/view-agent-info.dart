@@ -110,8 +110,8 @@ class AgentInfo extends ViewWidget {
     });
 
     _notification.onClientConnectionStateChange.listen((Model.ClientConnectionState state) {
-      print('View.AgentInfo got Model.ClientConnectionState: ${state.asMap}');
-      _updateCounters();
+      _log.info('View.AgentInfo got Model.ClientConnectionState: ${state.asMap}');
+      _updateCounters(connectionState: state);
     });
   }
 
@@ -121,14 +121,24 @@ class AgentInfo extends ViewWidget {
    * We do this by fetching a list of all users state, and count each of their
    * state.
    */
-  void _updateCounters() {
+  void _updateCounters({Model.ClientConnectionState connectionState}) {
     _userController.userStateList()
         .then((Iterable<Model.UserStatus> userStates) {
-          _ui.activeCount = userStates.where((Model.UserStatus user) =>
-              user.state == ORModel.UserState.Idle).length;
+          if(connectionState != null && connectionState.connectionCount == 0) {
+            _ui.activeCount = userStates.where((Model.UserStatus user) =>
+                user.userID != connectionState.userID &&
+                user.state == ORModel.UserState.Idle).length;
 
-          _ui.pausedCount = userStates.where((Model.UserStatus user)=>
-              user.state == ORModel.UserState.Paused).length;
+            _ui.pausedCount = userStates.where((Model.UserStatus user)=>
+                user.userID != connectionState.userID &&
+                user.state == ORModel.UserState.Paused).length;
+          } else {
+            _ui.activeCount = userStates.where((Model.UserStatus user) =>
+                user.state == ORModel.UserState.Idle).length;
+
+            _ui.pausedCount = userStates.where((Model.UserStatus user)=>
+                user.state == ORModel.UserState.Paused).length;
+          }
         })
         .catchError((error) => _log.warning('${error.toString()}'));
   }
