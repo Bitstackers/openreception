@@ -1,3 +1,5 @@
+library openreception.test;
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -12,32 +14,15 @@ import 'package:logging/logging.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 import 'package:unittest/unittest.dart';
 
+part 'src/bus.dart';
+
 void main() {
   Logger.root.level = Level.FINEST;
   Logger.root.onRecord.listen((LogRecord record) =>
       logMessage(record.toString()));
   JUnitConfiguration.install();
 
-  test('async openreception.bus test', () {
-    final String testEvent = 'Foo!';
-    Bus bus = new Bus<String>();
-    Stream<String> stream = bus.stream;
-    Timer timer;
-
-    timer = new Timer(new Duration(seconds: 1), () {
-      fail('testEvent not fired or caught within 1 second');
-    });
-
-    stream.listen(expectAsync((String value) {
-      expect(value, equals(testEvent));
-
-      if(timer != null) {
-        timer.cancel();
-      }
-    }));
-
-    bus.fire(testEvent);
-  });
+  testBus();
 
   test('Model.Contact serializationDeserialization', ModelContact.serializationDeserialization);
 
