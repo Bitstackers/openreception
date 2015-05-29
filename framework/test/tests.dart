@@ -15,6 +15,31 @@ import 'package:junitconfiguration/junitconfiguration.dart';
 import 'package:unittest/unittest.dart';
 
 part 'src/bus.dart';
+part 'src/model-calendar_entry.dart';
+part 'src/model-calendar_entry_change.dart';
+part 'src/model-call.dart';
+//part 'src/model-channel.dart';
+part 'src/model-client_configuration.dart';
+//part 'src/model-client_connection.dart';
+part 'src/model-contact.dart';
+//part 'src/model-contact_filter.dart';
+part 'src/model-message.dart';
+//part 'src/model-message_context.dart';
+//part 'src/model-message_header.dart';
+//part 'src/model-message_endpoint.dart';
+//part 'src/model-message_filter.dart';
+//part 'src/model-message_queue_item.dart';
+//part 'src/model-message_recipient.dart';
+//part 'src/model-message_recipient_list.dart';
+//part 'src/model-organization.dart';
+//part 'src/model-peer.dart';
+//part 'src/model-phone_number.dart';
+part 'src/model-reception.dart';
+//part 'src/model-reception_filter.dart';
+//part 'src/model-template.dart';
+//part 'src/model-template_email.dart';
+//part 'src/model-user.dart';
+//part 'src/model-user_status.dart';
 
 void main() {
   Logger.root.level = Level.FINEST;
@@ -23,37 +48,12 @@ void main() {
   JUnitConfiguration.install();
 
   testBus();
-
-  test('Model.Contact serializationDeserialization', ModelContact.serializationDeserialization);
-
-  group('Model.Message', () {
-    test('serializationDeserialization', MessageObject.serializationDeserialization);
-    test('serialization', MessageObject.serialization);
-  });
-
-  group('Model.Reception', () {
-    test('serializationDeserialization', ModelReception.serializationDeserialization);
-    test('serialization', ModelReception.serialization);
-    test('buildObject', ModelReception.buildObject);
-  });
-
-  group('Model.CalendarEntry', () {
-    test('serializationDeserialization', CalendarEntryObject.serializationDeserialization);
-    test('serialization', CalendarEntryObject.serialization);
-    test('contactEntryBuild', CalendarEntryObject.contactEntryBuild);
-  });
-
-
-  group('Model.CalendarEntryChange', () {
-    test('serializationDeserialization', ModelCalendarEntryChange.serializationDeserialization);
-    test('serialization', ModelCalendarEntryChange.serialization);
-    test('buildObject', ModelCalendarEntryChange.buildObject);
-  });
-
-  group('Model.Config', () {
-    test('serializationDeserialization', ConfigObject.serializationDeserialization);
-    test('serialization', ConfigObject.serialization);
-  });
+  testModelContact();
+  testModelReception();
+  testModelMessage();
+  testModelCalendarEntry();
+  testModelCalendarEntryChange();
+  testModelClientConfiguration();
 
   group('Model.PhoneNumber', () {
     test('buildObject', ModelPhoneNumber.buildObject);
@@ -190,98 +190,6 @@ abstract class ResourceCallFlowControl {
 
 }
 
-abstract class MessageObject {
-  static void serializationDeserialization () =>
-      expect(new Model.Message.fromMap(Test_Data.testMessage_1_Map).asMap,
-        equals(Test_Data.testMessage_1_Map));
-
-  /**
-   * Merely asserts that no exceptions arise.
-   */
-  static void serialization () =>
-      expect(() => new Model.Message.fromMap(Test_Data.testMessage_1_Map), returnsNormally);
-}
-
-abstract class ModelReception {
-  static void serializationDeserialization () {
-      expect(new Model.Reception.fromMap(Test_Data.testReception).asMap,
-        equals(Test_Data.testReception));
-
-      expect(new Model.Reception.fromMap(Test_Data.testReception2).asMap,
-        equals(Test_Data.testReception2));
-
-   }
-
-
-  /**
-   * Merely asserts that no exceptions arise.
-   */
-  static void serialization () =>
-      expect(() => new Model.Reception.fromMap(Test_Data.testReception), returnsNormally);
-
-  static void buildObject () {
-    Model.Reception testReception = new Model.Reception()
-      ..addresses = []
-      ..alternateNames = []
-      ..attributes = {}
-      ..bankingInformation = []
-      ..customerTypes = ['Not defined']
-      ..emailAddresses = []
-      ..enabled = true
-      ..extension = '12340001'
-      ..extraData = Uri.parse ('http://localhost/test')
-      ..fullName = 'Test test'
-      ..greeting = 'Go away'
-      ..handlingInstructions = ['Hang up']
-      ..ID = 999
-      ..lastChecked = new DateTime.now()
-      ..openingHours = []
-      ..organizationId  = 888
-      ..otherData = 'Nope'
-      ..product = 'Butter'
-      ..salesMarketingHandling = []
-      ..shortGreeting = 'Please go'
-      ..telephoneNumbers = [new Model.PhoneNumber.empty()
-                              ..value = '56 33 21 44']
-      ..vatNumbers = []
-      ..websites = [];
-    expect(testReception.toJson, returnsNormally);
-  }
-}
-
-abstract class CalendarEntryObject {
-  static void serializationDeserialization () =>
-      expect(new Model.CalendarEntry.fromMap(Test_Data.testReceptionCalendarEntry).asMap,
-        equals(Test_Data.testReceptionCalendarEntry));
-
-  /**
-   * Merely asserts that no exceptions arise.
-   */
-  static void serialization () =>
-      expect(() => new Model.CalendarEntry.fromMap(Test_Data.testReceptionCalendarEntry), returnsNormally);
-
-  static void contactEntryBuild () {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final String body = 'test test test';
-    final DateTime begin = new DateTime.now().add(new Duration(hours : 1));
-    final DateTime end = new DateTime.now().add(new Duration(hours : 2));
-
-    Model.CalendarEntry testEntry = new Model.CalendarEntry.forContact(cid, rid)
-      ..ID = id
-      ..content = body
-      ..beginsAt = begin
-      ..until = end;
-
-    expect(testEntry.ID, equals (id));
-    expect(testEntry.contactID, equals (cid));
-    expect(testEntry.receptionID, equals (rid));
-    expect(testEntry.content, equals (body));
-    expect(testEntry.start, equals (begin));
-    expect(testEntry.stop, equals (end));
-  }
-}
 
 abstract class CalendarChangeEvent {
 
@@ -369,44 +277,6 @@ abstract class EventMessageChange {
 
 }
 
-
-abstract class ModelCalendarEntryChange {
-  static void serializationDeserialization () =>
-      expect(new Model.CalendarEntryChange.fromMap
-        (Test_Data.calendarEntryChange).asMap,
-          equals(Test_Data.calendarEntryChange));
-
-  /**
-   * Merely asserts that no exceptions arise.
-   */
-  static void serialization () =>
-      expect(() => JSON.encode(new Model.CalendarEntryChange.fromMap
-          (Test_Data.calendarEntryChange)), returnsNormally);
-
-  static void buildObject () {
-    DateTime changedAt = new DateTime.now();
-    int changedBy = 2;
-    String changedByName = 'That guy';
-
-    Model.CalendarEntryChange testChange = new Model.CalendarEntryChange()
-      ..changedAt = changedAt
-      ..userID    = changedBy
-      ..username  = changedByName;
-
-    expect(testChange.userID, equals(changedBy));
-    expect(testChange.changedAt, equals(changedAt));
-    expect(testChange.username, equals(changedByName));
-  }
-}
-
-
-abstract class ModelContact {
-
-  static void serializationDeserialization () =>
-      expect(new Model.Contact.fromMap(Test_Data.testContact_4_1).asMap,
-        equals(Test_Data.testContact_4_1));
-}
-
 abstract class ModelPhoneNumber {
   static void buildObject () {
     final String description =  'Cell Phone - work';
@@ -435,38 +305,6 @@ abstract class ModelPhoneNumber {
   }
 }
 
-abstract class ResourceReception {
-  static Uri receptionServer = Uri.parse('http://localhost:4000');
-
-  static void single () =>
-      expect(Resource.Reception.single(receptionServer, 1),
-        equals(Uri.parse('${receptionServer}/reception/1')));
-
-  static void list () =>
-      expect(Resource.Reception.list(receptionServer),
-        equals(Uri.parse('${receptionServer}/reception')));
-
-  static void subset () =>
-      expect(Resource.Reception.subset(receptionServer, 10, 20),
-        equals(Uri.parse('${receptionServer}/reception/10/limit/20')));
-
-  static void calendar () =>
-      expect(Resource.Reception.calendar(receptionServer, 1),
-        equals(Uri.parse('${receptionServer}/reception/1/calendar')));
-
-  static void calendarEvent () =>
-      expect(Resource.Reception.calendarEvent(receptionServer, 1, 2),
-        equals(Uri.parse('${receptionServer}/reception/1/calendar/event/2')));
-
-  static void calendarEntryChanges () =>
-      expect(Resource.Reception.calendarEventChanges(receptionServer, 123),
-          equals(Uri.parse('${receptionServer}/calendarentry/123/change')));
-
-  static void calendarEntryLatestChange () =>
-      expect(Resource.Reception.calendarEventLatestChange(receptionServer, 123),
-          equals(Uri.parse('${receptionServer}/calendarentry/123/change/latest')));
-
-}
 
 abstract class ResourceMessage {
   static Uri messageServer = Uri.parse('http://localhost:4040');
@@ -503,18 +341,6 @@ abstract class ResourceConfig {
       expect(Resource.Config.get(configServer),
         equals(Uri.parse('${configServer}/configuration')));
 
-}
-
-abstract class ConfigObject {
-  static void serializationDeserialization () =>
-      expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap).asMap,
-        equals(Test_Data.configMap));
-
-  /**
-   * Merely asserts that no exceptions arise.
-   */
-  static void serialization () =>
-      expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap), isNotNull);
 }
 
 abstract class ResourceNotification {
@@ -576,4 +402,34 @@ abstract class ResourceContact {
   static void calendarEntryLatestChange () =>
       expect(Resource.Contact.calendarEventLatestChange(contactServer, 123),
           equals(Uri.parse('${contactServer}/calendarentry/123/change/latest')));
+}
+
+abstract class ResourceReception {
+  static Uri receptionServer = Uri.parse('http://localhost:4000');
+
+  static void single() => expect(Resource.Reception.single(receptionServer, 1),
+      equals(Uri.parse('${receptionServer}/reception/1')));
+
+  static void list() => expect(Resource.Reception.list(receptionServer),
+      equals(Uri.parse('${receptionServer}/reception')));
+
+  static void subset() => expect(
+      Resource.Reception.subset(receptionServer, 10, 20),
+      equals(Uri.parse('${receptionServer}/reception/10/limit/20')));
+
+  static void calendar() => expect(
+      Resource.Reception.calendar(receptionServer, 1),
+      equals(Uri.parse('${receptionServer}/reception/1/calendar')));
+
+  static void calendarEvent() => expect(
+      Resource.Reception.calendarEvent(receptionServer, 1, 2),
+      equals(Uri.parse('${receptionServer}/reception/1/calendar/event/2')));
+
+  static void calendarEntryChanges() => expect(
+      Resource.Reception.calendarEventChanges(receptionServer, 123),
+      equals(Uri.parse('${receptionServer}/calendarentry/123/change')));
+
+  static void calendarEntryLatestChange() => expect(
+      Resource.Reception.calendarEventLatestChange(receptionServer, 123),
+      equals(Uri.parse('${receptionServer}/calendarentry/123/change/latest')));
 }
