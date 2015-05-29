@@ -57,9 +57,6 @@ class AgentInfo extends ViewWidget {
 
   /**
    * Set the users state to [AgentState.IDLE].
-   *
-   * TODO (TL): Deal with the fact that we currently don't handle conditions
-   * where changing to idle fails.
    */
   void _setIdle(_) {
     _userController.setIdle(Model.User.currentUser).then(_updateUserState);
@@ -67,9 +64,6 @@ class AgentInfo extends ViewWidget {
 
   /**
    * Set the users state to [AgentState.PAUSED].
-   *
-   * TODO (TL): Deal with the fact that we currently don't handle conditions
-   * where changing to paused fails.
    */
   void _setPaused(_) {
     _userController.setPaused(Model.User.currentUser).then(_updateUserState);
