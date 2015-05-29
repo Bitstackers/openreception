@@ -214,7 +214,7 @@ class UIContactData extends UIModel {
    * [index] is out of range, select nothing.
    */
   void selectFromIndex(int index) {
-    if(_phoneNumberList.children.length >= index) {
+    if(_phoneNumberList.children.length > index) {
       _markSelected(_scanForwardForVisibleElement(_phoneNumberList.children[index]));
     }
   }
