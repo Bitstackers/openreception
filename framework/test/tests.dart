@@ -50,6 +50,8 @@ part 'src/resource-notification.dart';
 part 'src/resource-organization.dart';
 part 'src/resource-reception.dart';
 
+part 'src/event-calendar_change.dart';
+part 'src/event-message_change.dart';
 
 void main() {
   Logger.root.level = Level.FINEST;
@@ -58,6 +60,9 @@ void main() {
   JUnitConfiguration.install();
 
   testBus();
+
+  testEventMessageChange();
+  testEventCalendarChange();
 
   testModelContact();
   testModelReception();
@@ -74,119 +79,4 @@ void main() {
   testResourceMessage();
   testResourceNotification();
   testResourceReception();
-
-  group('Event.CalendarChangeEvent', () {
-    test('buildObject', CalendarChangeEvent.buildObject);
-    test('serialization', CalendarChangeEvent.serialization);
-    test('serializationDeserialization', CalendarChangeEvent.serializationDeserialization);
-  });
-
-  group('Event.MessageChange', () {
-    test('buildObject', EventMessageChange.buildObject);
-    test('serialization', EventMessageChange.serialization);
-    test('serializationDeserialization', EventMessageChange.serializationDeserialization);
-  });
-
 }
-
-
-
-
-abstract class CalendarChangeEvent {
-
-  static void buildObject () {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
-
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange (id, cid, rid, state);
-
-    expect(testEvent.entryID, equals (id));
-    expect(testEvent.contactID, equals (cid));
-    expect(testEvent.receptionID, equals (rid));
-    expect(testEvent.state, equals (state));
-  }
-
-  static void serialization () {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
-
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange (id, cid, rid, state);
-
-    expect (testEvent.toJson, returnsNormally);
-  }
-
-  static void serializationDeserialization () {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
-
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange (id, cid, rid, state);
-
-    Map serialized = testEvent.toJson();
-
-    expect (new Event.CalendarChange.fromMap(serialized).asMap, equals(serialized));
-  }
-
-}
-
-abstract class EventMessageChange {
-
-  static void buildObject () {
-    final int mid = 1;
-    final state = Event.MessageChangeState.CREATED;
-
-    Event.MessageChange testEvent =
-        new Event.MessageChange (mid, state);
-
-    expect(testEvent.messageID, equals (mid));
-    expect(testEvent.state, equals (state));
-  }
-
-  static void serialization () {
-    final int mid = 1;
-    final state = Event.MessageChangeState.CREATED;
-
-    Event.MessageChange testEvent =
-        new Event.MessageChange (mid, state);
-
-    expect (testEvent.toJson, returnsNormally);
-  }
-
-  static void serializationDeserialization () {
-    final int mid = 1;
-    final state = Event.MessageChangeState.CREATED;
-
-    Event.MessageChange testEvent =
-        new Event.MessageChange (mid, state);
-
-    expect(testEvent.messageID, equals (mid));
-    expect(testEvent.state, equals (state));
-
-    Map serialized = testEvent.toJson();
-
-    expect (new Event.MessageChange.fromMap(serialized).asMap,
-        equals(serialized));
-  }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
