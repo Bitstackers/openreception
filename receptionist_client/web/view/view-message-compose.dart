@@ -57,24 +57,35 @@ class MessageCompose extends ViewWidget {
   }
 
   /**
-   * Return a [Model.Message] build from the form data and the currently selected
+   * Return a [ORModel.Message] build from the form data and the currently selected
    * contact.
    */
-  Model.Message get _message {
+  ORModel.Message get _message {
     final Model.Contact   contact    = _contactSelector.selectedContact;
     final Map             messageMap = _ui.messageDataFromForm;
     final Model.Reception reception  = _receptionSelector.selectedReception;
 
     final ORModel.MessageContext messageContext =
-            new ORModel.MessageContext.fromContact(contact, reception);
+      new ORModel.MessageContext.fromContact(contact, reception);
 
-    messageMap['context'] = messageContext.asMap;
+    final ORModel.MessageCaller callerInfo =
+      new ORModel.MessageCaller.fromMap(messageMap['caller']);
 
-    /// TODO (KRC): Fill in the missing stuff here or mayhaps provide me with
-    /// some pointers?  :o)
 
-    return new Model.Message.fromMap(messageMap)
-                ..sender = Model.User.currentUser;
+    final ORModel.MessageRecipientList recipients =
+      new ORModel.MessageRecipientList.empty();
+
+    ///TODO (TL): Extract message recipients and add them to 'recipients' above
+    ///  as MessageRecipient objects.
+
+    return new ORModel.Message()
+      ..recipients = recipients
+      ..context    = messageContext
+      ..body       = messageMap['message']
+      ..flags      = messageMap['flags']
+      ..createdAt  = new DateTime.now()
+      ..caller     = callerInfo
+      ..sender     = Model.User.currentUser;
   }
 
   /**
