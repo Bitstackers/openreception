@@ -13,5 +13,8 @@ dependencies:
   phonio:
     git: https://github.com/Bitstackers/Phonio.git
   route: any
+  shelf: any
+  shelf_cors: any
+  shelf_route: any
 dev_dependencies:
   unittest: '>= 0.11.5 < 0.12.0'
