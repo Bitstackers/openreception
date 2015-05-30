@@ -5,7 +5,7 @@ class NotAquired implements Exception {}
 
 abstract class Pool<T> {
 
-  static const String className = '$libraryName.CustomerPool';
+  static const String className = '$libraryName.Pool';
 
   Logger log = new Logger(Pool.className);
 
