@@ -48,13 +48,13 @@ Future<IO.HttpServer> start(
     handler.Customer customerHandler,
     {String hostname : '0.0.0.0', int port : 4224}) {
   var router = shelf_route.router()
-    ..get('/resource/receptionist/aquire', receptionistHandler.aquire)
-    ..get('/resource/receptionist/{rid}/release', receptionistHandler.release)
+    ..post('/resource/receptionist/aquire', receptionistHandler.aquire)
+    ..post('/resource/receptionist/{rid}/release', receptionistHandler.release)
     ..get('/resource/receptionist/{rid}', receptionistHandler.get)
-    ..get('/resource/customer/aquire', customerHandler.aquire)
-    ..get('/resource/customer/{cid}/release', customerHandler.release)
-    ..get('/resource/customer/{cid}/dial/{extension}', customerHandler.dial)
-    ..get('/resource/customer/{cid}/hangupAll', customerHandler.hangupAll)
+    ..post('/resource/customer/aquire', customerHandler.aquire)
+    ..post('/resource/customer/{cid}/release', customerHandler.release)
+    ..post('/resource/customer/{cid}/dial/{extension}', customerHandler.dial)
+    ..post('/resource/customer/{cid}/hangupAll', customerHandler.hangupAll)
     ..get('/resource/customer/{cid}', customerHandler.get);
 
   var handler = const shelf.Pipeline()
