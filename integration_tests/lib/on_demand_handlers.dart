@@ -118,6 +118,9 @@ class Customer {
   int _cidParameter (shelf.Request request) =>
     int.parse(shelf_route.getPathParameter(request, 'cid'));
 
+  String _extensionParameter (shelf.Request request) =>
+    shelf_route.getPathParameter(request, 'extension');
+
   /**
    *
    */
@@ -140,6 +143,7 @@ class Customer {
     }
 
     log.finest ('Allocated customer $c');
+    log.finest (c.toJson());
     log.finest ('Current usage: ${_availableCount} available of ${_totalCount}');
 
     return c.initialize().then((_) => new shelf.Response.ok (JSON.encode(c)));
@@ -149,13 +153,13 @@ class Customer {
    *
    */
   Future<shelf.Response> release (shelf.Request request) {
-    int receptionistHandle = _cidParameter(request);
+    int customerHandle = _cidParameter(request);
 
     test_fw.Customer c;
 
     try {
       c = _customerPool.busy.firstWhere((test_fw.Customer cu) =>
-        cu.hashCode == receptionistHandle);
+        cu.hashCode == customerHandle);
       _customerPool.release(c);
     }
     on test_fw.NotAquired {
@@ -172,20 +176,21 @@ class Customer {
     log.finest ('Deallocated customer $c');
     log.finest ('Current usage: ${_availableCount} available of ${_totalCount}');
 
-    return c.teardown().then((_) => new shelf.Response.ok (JSON.encode(c)));
+    return c.teardown().then((_) =>
+      new shelf.Response.ok (JSON.encode({'status' : 'ok'})));
   }
 
   /**
    *
    */
   shelf.Response get (shelf.Request request) {
-    int receptionistHandle = _cidParameter(request);
+    int customerHandle = _cidParameter(request);
 
     test_fw.Customer c;
 
     try {
       c = _customerPool.busy.firstWhere((test_fw.Customer cu) =>
-        cu.hashCode == receptionistHandle);
+        cu.hashCode == customerHandle);
     }
     catch (error, stackTrace) {
       log.severe(error, stackTrace);
@@ -198,26 +203,29 @@ class Customer {
   /**
    *
    */
-  shelf.Response dial (shelf.Request request) {
-    int receptionistHandle = _cidParameter(request);
+  Future<shelf.Response> dial (shelf.Request request) {
+    int customerHandle = _cidParameter(request);
+    String extension = _extensionParameter(request);
 
     test_fw.Customer c;
 
     try {
       c = _customerPool.busy.firstWhere((test_fw.Customer cu) =>
-        cu.hashCode == receptionistHandle);
+        cu.hashCode == customerHandle);
     }
     catch (error, stackTrace) {
       log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(body : error.toString());
+      return new Future.value
+        (new shelf.Response.internalServerError(body : error.toString()));
     }
 
-    return new shelf.Response.ok (JSON.encode(c));
+    return c.dial(extension).then((_) =>
+        new shelf.Response.ok (JSON.encode({'status' : 'ok'})));
   }
   /**
    *
    */
-  shelf.Response hangup (shelf.Request request) {
+  Future<shelf.Response> hangupAll (shelf.Request request) {
     int receptionistHandle = _cidParameter(request);
 
     test_fw.Customer c;
@@ -228,9 +236,11 @@ class Customer {
     }
     catch (error, stackTrace) {
       log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(body : error.toString());
+      return new Future.value
+        (new shelf.Response.internalServerError(body : error.toString()));
     }
 
-    return new shelf.Response.ok (JSON.encode(c));
+    return c.hangupAll().then((_) =>
+      new shelf.Response.ok (JSON.encode({'status' : 'ok'})));
   }
 }

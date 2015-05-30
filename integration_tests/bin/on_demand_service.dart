@@ -11,7 +11,8 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
-import '../lib/or_test_fw.dart';
+import '../lib/config.dart';
+import '../lib/or_test_fw.dart' as test_fw;
 import '../lib/on_demand_handlers.dart' as handler;
 
 const String libraryName = 'support_tools.on_demand_service';
@@ -24,7 +25,7 @@ shelf.Middleware checkAuthentication =
 shelf.Response _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  if (token != 'magic') {
+  if (token != Config.magicRESTToken) {
       return new shelf.Response.forbidden('Invalid token');
   }
 
@@ -53,7 +54,7 @@ Future<IO.HttpServer> start(
     ..get('/resource/customer/aquire', customerHandler.aquire)
     ..get('/resource/customer/{cid}/release', customerHandler.release)
     ..get('/resource/customer/{cid}/dial/{extension}', customerHandler.dial)
-    ..get('/resource/customer/{cid}/hangupAll', customerHandler.hangup)
+    ..get('/resource/customer/{cid}/hangupAll', customerHandler.hangupAll)
     ..get('/resource/customer/{cid}', customerHandler.get);
 
   var handler = const shelf.Pipeline()
@@ -74,19 +75,21 @@ void main ()  {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  SupportTools st;
+  test_fw.SupportTools st;
   handler.Receptionist receptionistHandler;
   handler.Customer customerHandler;
 
   void setupHandlers() {
-    receptionistHandler = new handler.Receptionist(ReceptionistPool.instance);
-    customerHandler = new handler.Customer(CustomerPool.instance);
+    receptionistHandler = new handler.Receptionist(test_fw.ReceptionistPool.instance);
+    customerHandler = new handler.Customer(test_fw.CustomerPool.instance);
   }
 
-  SupportTools.instance
-    .then((SupportTools init) => st = init)
+  test_fw.SupportTools.instance
+    .then((test_fw.SupportTools init) => st = init)
     .then((_) => print(st))
     .then((_) => setupHandlers())
-    .then((_) => start(receptionistHandler,customerHandler));
-
+    .then((_) => start
+      (receptionistHandler, customerHandler,
+       hostname: Config.listenRESTAddress,
+       port: Config.listenRESTport));
 }
