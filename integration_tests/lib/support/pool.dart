@@ -7,7 +7,7 @@ abstract class Pool<T> {
 
   static const String className = '$libraryName.Pool';
 
-  Logger log = new Logger(Pool.className);
+  static final Logger log = new Logger(Pool.className);
 
   Queue<T> available = new Queue();
   Set<T> busy        = new Set();
