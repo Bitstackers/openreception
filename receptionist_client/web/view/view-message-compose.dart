@@ -18,6 +18,7 @@ part of view;
  */
 class MessageCompose extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
+  final Logger                    _log = new Logger('$libraryName.MessageCompose');
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMessageCompose    _uiModel;
@@ -26,9 +27,9 @@ class MessageCompose extends ViewWidget {
    * Constructor.
    */
   MessageCompose(Model.UIMessageCompose this._uiModel,
-                 Controller.Destination this._myDestination,
-                 Model.UIContactSelector this._contactSelector,
-                 Model.UIReceptionSelector this._receptionSelector) {
+      Controller.Destination this._myDestination,
+      Model.UIContactSelector this._contactSelector,
+      Model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+b | ctrl+space');
 
     _observers();
@@ -56,6 +57,27 @@ class MessageCompose extends ViewWidget {
   }
 
   /**
+   * Return a [Model.Message] build from the form data and the currently selected
+   * contact.
+   */
+  Model.Message get _message {
+    final Model.Contact   contact    = _contactSelector.selectedContact;
+    final Map             messageMap = _ui.messageDataFromForm;
+    final Model.Reception reception  = _receptionSelector.selectedReception;
+
+    final ORModel.MessageContext messageContext =
+            new ORModel.MessageContext.fromContact(contact, reception);
+
+    messageMap['context'] = messageContext.asMap;
+    messageMap['sender']  = Model.User.currentUser.asSender;
+
+    /// TODO (KRC): Fill in the missing stuff here or mayhaps provide me with
+    /// some pointers?  :o)
+
+    return new Model.Message.fromMap(messageMap);
+  }
+
+  /**
    * Observers.
    */
   void _observers() {
@@ -66,9 +88,9 @@ class MessageCompose extends ViewWidget {
     _contactSelector.onSelect.listen(_render);
 
     _ui.onCancel.listen(_cancel);
-    _ui.onClick .listen(_activateMe);
-    _ui.onSave  .listen(_save);
-    _ui.onSend  .listen(_send);
+    _ui.onClick.listen(_activateMe);
+    _ui.onSave.listen(_save);
+    _ui.onSend.listen(_send);
   }
 
   /**
@@ -76,8 +98,7 @@ class MessageCompose extends ViewWidget {
    */
   void _render(Model.Contact contact) {
     if(contact.isEmpty) {
-      print('View.MessageCompose got an empty contact - undecided on what to do');
-      /// TODO (TL): What should we do here?
+      _log.info('Got an empty contact - undecided on what to do');
     } else {
       _ui.recipients = contact.distributionList;
     }
@@ -88,7 +109,10 @@ class MessageCompose extends ViewWidget {
    */
   void _save(_) {
     print('MessageCompose.save() not fully implemented yet');
-    print(_ui.harvestMessageDataFromForm());
+
+    print(_message.asMap);
+
+    /// TODO (KRC): How to save?
   }
 
   /**
@@ -96,6 +120,9 @@ class MessageCompose extends ViewWidget {
    */
   void _send(_) {
     print('MessageCompose.send() not implemented yet');
-    print(_ui.harvestMessageDataFromForm());
+
+    print(_message.asMap);
+
+    /// TODO (KRC): How to send?
   }
 }

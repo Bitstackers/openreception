@@ -75,9 +75,10 @@ class UIMessageCompose extends UIModel {
   /**
    * Extracts a Message from the information stored in the widget.
    *
-   * This does NOT set the context and recipients fields.
+   * This does NOT set the 'context' and 'recipients' fields. Only what can be
+   * harvested from the form is set.
    */
-  Map harvestMessageDataFromForm() =>
+  Map get messageDataFromForm =>
       {'message'   : _messageTextarea.value,
        'caller'    : {
                       'name'          : _callerNameInput.value,
@@ -93,7 +94,7 @@ class UIMessageCompose extends UIModel {
                       _haveCalledInput.checked ? MessageFlag.Called      : null,
                       _urgentInput.checked     ? MessageFlag.Urgent      : null,
                       _draftInput.checked      ? MessageFlag.Draft       : null
-                     ].where((element) => element != null),
+                     ].where((element) => element != null).toList(growable: false),
        'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
 
   /**
