@@ -18,8 +18,16 @@ class Customer {
   Phonio.SIPPhone _phone = null;
   String get name => this._phone.defaultAccount.username;
 
-
   Customer (this._phone);
+
+  Map toJson() => {
+    'id' : this.hashCode,
+    'current_call' : currentCall,
+    'extension' : extension
+  };
+
+  @override
+  int get hashCode => this._phone.contact.hashCode;
 
   /**
    *
