@@ -69,12 +69,12 @@ class MessageCompose extends ViewWidget {
             new ORModel.MessageContext.fromContact(contact, reception);
 
     messageMap['context'] = messageContext.asMap;
-    messageMap['sender']  = Model.User.currentUser.asSender;
 
     /// TODO (KRC): Fill in the missing stuff here or mayhaps provide me with
     /// some pointers?  :o)
 
-    return new Model.Message.fromMap(messageMap);
+    return new Model.Message.fromMap(messageMap)
+                ..sender = Model.User.currentUser;
   }
 
   /**
