@@ -42,6 +42,11 @@ abstract class Config {
   static String serverToken = 'secretStuff';
 
   /**
+   * REST interface magic token.
+   */
+  static String magicRESTToken = 'domagic';
+
+  /**
    * The URI of the config server.
    */
   static Uri configServerUri = Uri.parse('http://localhost:4080');
