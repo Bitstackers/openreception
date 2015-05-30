@@ -23,6 +23,16 @@ class Receptionist {
 
   Phonio.Call currentCall = null;
 
+  Map toJson() => {
+    'id' : this.hashCode,
+    'user' : user,
+    'auth_token' : authToken,
+    'phone' : _phone,
+    'event_stack' : eventStack.toList()
+  };
+
+  int get hashCode => user.ID;
+
   /// The amout of time the actor will wait before answering an incoming call.
   Duration answerLatency = new Duration(seconds: 0);
 
