@@ -44,9 +44,9 @@ class Call extends ORModel.Call {
     this._locked = lock;
 
     if (lock) {
-      Notification.broadcast(ClientNotification.callLock(this));
+      Notification.broadcastEvent(new OREvent.CallLock(this));
     }else {
-      Notification.broadcast(ClientNotification.callUnlock(this));
+      Notification.broadcastEvent(new OREvent.CallUnlock(this));
     }
   }
 
@@ -105,42 +105,42 @@ class Call extends ORModel.Call {
     log.finest('UUID: ${this.ID}: uid:${this.assignedTo} ${lastState} => ${newState}');
 
     if (lastState == CallState.Queued) {
-      Notification.broadcast(ClientNotification.queueLeave (this));
+      Notification.broadcastEvent(new OREvent.QueueLeave(this));
     } else if (lastState == CallState.Parked) {
-      Notification.broadcast(ClientNotification.callUnpark (this));
+      Notification.broadcastEvent(new OREvent.CallUnpark (this));
     }
 
     switch (newState) {
       case (CallState.Created):
-        Notification.broadcast(ClientNotification.callOffer (this));
+        Notification.broadcastEvent(new OREvent.CallOffer (this));
         break;
 
       case (CallState.Parked):
-        Notification.broadcast(ClientNotification.callPark (this));
+        Notification.broadcastEvent(new OREvent.CallPark (this));
         break;
 
       case (CallState.Unparked):
-        Notification.broadcast(ClientNotification.callUnpark (this));
+        Notification.broadcastEvent(new OREvent.CallUnpark (this));
         break;
 
       case (CallState.Queued):
-        Notification.broadcast(ClientNotification.queueJoin (this));
+        Notification.broadcastEvent(new OREvent.QueueJoin (this));
         break;
 
       case (CallState.Hungup):
-          Notification.broadcast(ClientNotification.callHangup (this));
+          Notification.broadcastEvent(new OREvent.CallHangup (this));
         break;
 
       case (CallState.Speaking):
-        Notification.broadcast(ClientNotification.callPickup (this));
+        Notification.broadcastEvent(new OREvent.CallPickup (this));
         break;
 
       case (CallState.Transferred):
-        Notification.broadcast(ClientNotification.callTransfer (this));
+        Notification.broadcastEvent(new OREvent.CallTransfer (this));
         break;
 
       case  (CallState.Ringing):
-        Notification.broadcast(ClientNotification.callState (this));
+        Notification.broadcastEvent(new OREvent.CallStateChanged (this));
         break;
 
       case (CallState.Transferring):

@@ -15,14 +15,17 @@ abstract class PeerList implements IterableBase<Peer> {
 
     peer.register (contact);
 
-    OREvent.PeerState event;
-    Notification.broadcast(ClientNotification.peerState (peer));
+    Notification.broadcastEvent
+      (new OREvent.PeerState
+        (new ORModel.Peer(peer.ID, -1)..registered = peer.registered));
   }
 
   static unRegisterPeer (String peerID) {
     ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
     peer.unregister();
-    Notification.broadcast(ClientNotification.peerState (peer));
+    Notification.broadcastEvent
+      (new OREvent.PeerState
+        (new ORModel.Peer(peer.ID, -1)..registered = peer.registered));
   }
 
   static void _handlePacket (ESL.Event event) {

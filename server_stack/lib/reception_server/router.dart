@@ -91,3 +91,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
 
   return shelf_io.serve(handler, hostname, port);
 }
+
+String _tokenFrom(shelf.Request request) =>
+    request.requestedUri.queryParameters['token'];
+
