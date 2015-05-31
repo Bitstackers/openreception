@@ -50,6 +50,7 @@ part 'src/resource-notification.dart';
 part 'src/resource-organization.dart';
 part 'src/resource-reception.dart';
 
+part 'src/event.dart';
 part 'src/event-calendar_change.dart';
 part 'src/event-message_change.dart';
 
@@ -61,6 +62,7 @@ void main() {
 
   testBus();
 
+  testEvent();
   testEventMessageChange();
   testEventCalendarChange();
 

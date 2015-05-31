@@ -10,6 +10,7 @@ void testEventMessageChange() {
 }
 
 abstract class EventMessageChange {
+
   static void buildObject() {
     final int mid = 1;
     final state = Event.MessageChangeState.CREATED;

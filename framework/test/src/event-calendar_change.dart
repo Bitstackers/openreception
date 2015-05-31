@@ -10,6 +10,7 @@ void testEventCalendarChange() {
 }
 
 abstract class EventCalendarChange {
+
   static void buildObject() {
     final int id = 1;
     final int rid = 2;
