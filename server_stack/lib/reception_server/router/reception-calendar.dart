@@ -1,8 +1,7 @@
 part of receptionserver.router;
 
 abstract class ReceptionCalendar {
-
-  static final Logger log = new Logger ('$libraryName.ReceptionCalendar');
+  static final Logger log = new Logger('$libraryName.ReceptionCalendar');
 
   /**
    *
@@ -10,14 +9,14 @@ abstract class ReceptionCalendar {
   static Future<shelf.Response> listChanges(shelf.Request request) {
     final int entryID = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ReceptionCalendar.changes(entryID)
-      .then((Iterable<Map> changesMaps) {
-        return new shelf.Response.ok
-          (JSON.encode(changesMaps.toList(growable: false)));
-      })
-      .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(body : error.toString());
+    return db.ReceptionCalendar
+        .changes(entryID)
+        .then((Iterable<Map> changesMaps) {
+      return new shelf.Response.ok(
+          JSON.encode(changesMaps.toList(growable: false)));
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(body: error.toString());
     });
   }
 
@@ -27,35 +26,35 @@ abstract class ReceptionCalendar {
   static Future<shelf.Response> latestChange(shelf.Request request) {
     final int entryID = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ReceptionCalendar.latestChange(entryID)
-      .then((Map change) {
-        return new shelf.Response.ok(JSON.encode(change));
-      })
-      .catchError((error, stackTrace) {
-        if(error is Storage.NotFound) {
-          return new shelf.Response.notFound
-            (JSON.encode({'description' : 'No changes found for entry '
-                                          'with ID $entryID'}));
-        }
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(body : error.toString());
+    return db.ReceptionCalendar.latestChange(entryID).then((Map change) {
+      return new shelf.Response.ok(JSON.encode(change));
+    }).catchError((error, stackTrace) {
+      if (error is Storage.NotFound) {
+        return new shelf.Response.notFound(JSON.encode({
+          'description': 'No changes found for entry '
+              'with ID $entryID'
+        }));
+      }
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(body: error.toString());
     });
   }
 
-
   /**
-   * Lists every calendar event associated with reception identified by [receptionID].
+   * Lists every calendar event associated with reception identified by
+   * [receptionID].
    */
   static Future<shelf.Response> list(shelf.Request request) {
-    final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    final int receptionID =
+        int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return db.ReceptionCalendar.list(receptionID)
-      .then((Iterable<Model.CalendarEntry> event) {
-        return new shelf.Response.ok(JSON.encode(event.toList(growable: false)));
-      })
-      .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(body : error.toString());
+    return db.ReceptionCalendar
+        .list(receptionID)
+        .then((Iterable<Model.CalendarEntry> event) {
+      return new shelf.Response.ok(JSON.encode(event.toList(growable: false)));
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(body: error.toString());
     });
   }
 
@@ -64,52 +63,50 @@ abstract class ReceptionCalendar {
    * the reception.
    */
   static Future create(shelf.Request request) {
-
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     Model.User user;
 
-    return AuthService.userOf(_tokenFrom(request))
-      .then((Model.User fetchedUser) => user = fetchedUser)
-      .then((_) =>
-        request.readAsString().then((String content) {
-
+    return AuthService
+        .userOf(_tokenFrom(request))
+        .then((Model.User fetchedUser) => user = fetchedUser)
+        .then((_) => request.readAsString().then((String content) {
       Model.CalendarEntry entry;
 
       try {
         Map data = JSON.decode(content);
         entry = new Model.CalendarEntry.fromMap(data);
+      } catch (error) {
+        Map response = {
+          'status': 'bad request',
+          'description': 'passed message argument is too long, '
+              'missing or invalid',
+          'error': error.toString()
+        };
+
+        return new shelf.Response(400, body: JSON.encode(response));
       }
-      catch(error) {
-        Map response = {'status'     : 'bad request',
-                        'description': 'passed message argument is too long, '
-                                       'missing or invalid',
-                        'error'      : error.toString()};
 
-        return new shelf.Response (400, body : JSON.encode(response));
-      }
+      return db.ReceptionCalendar
+          .createEntry(entry, user)
+          .then((Model.CalendarEntry createdEvent) {
+        Event.CalendarChange changeEvent = new Event.CalendarChange(entry.ID,
+            entry.contactID, entry.receptionID,
+            Event.CalendarEntryState.CREATED);
 
-      return db.ReceptionCalendar.createEntry(entry, user)
-        .then((Model.CalendarEntry createdEvent) {
-          Event.CalendarChange changeEvent =
-              new Event.CalendarChange
-                (entry.ID, entry.contactID, entry.receptionID,
-                  Event.CalendarEntryState.CREATED);
+        log.finest('Created event for rid:${receptionID}');
 
-          log.finest('Created event for rid:${receptionID}');
+        Notification.broadcastEvent(changeEvent);
 
-          Notification.broadcastEvent (changeEvent);
-
-          return new shelf.Response.ok(JSON.encode(entry));
-        }).catchError((error, stackTrace) {
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError
-            (body : 'Failed to store event in database');
-        });
-    }))
-    .catchError((error, stackTrace) {
+        return new shelf.Response.ok(JSON.encode(entry));
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError(
+            body: 'Failed to store event in database');
+      });
+    })).catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError
-        (body : 'Failed to extract client request');
+      return new shelf.Response.internalServerError(
+          body: 'Failed to extract client request');
     });
   }
 
@@ -117,100 +114,96 @@ abstract class ReceptionCalendar {
    * TODO: remove the reception ID from router.
    */
   static Future update(shelf.Request request) {
-    int eventID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
+    int eventID = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
     Model.User user;
 
-    return AuthService.userOf(_tokenFrom(request))
-      .then((Model.User fetchedUser) => user = fetchedUser)
-      .then((_) => request.readAsString().then((String content) {
+    return AuthService
+        .userOf(_tokenFrom(request))
+        .then((Model.User fetchedUser) => user = fetchedUser)
+        .then((_) => request.readAsString().then((String content) {
       Model.CalendarEntry entry;
 
       try {
         Map data = JSON.decode(content);
         entry = new Model.CalendarEntry.fromMap(data);
+      } catch (error) {
+        Map response = {
+          'status': 'bad request',
+          'description': 'passed message argument '
+              'is too long, missing or invalid',
+          'error': error.toString()
+        };
+        return new shelf.Response(400, body: JSON.encode(response));
       }
-      catch(error) {
 
-        Map response = {'status'     : 'bad request',
-                        'description': 'passed message argument '
-                                       'is too long, missing or invalid',
-                        'error'      : error.toString()};
-        return new shelf.Response (400, body : JSON.encode(response));
-      }
+      return db.ReceptionCalendar.updateEntry(entry, user).then((_) {
+        Event.CalendarChange changeEvent = new Event.CalendarChange(entry.ID,
+            entry.contactID, entry.receptionID,
+            Event.CalendarEntryState.UPDATED);
 
-      return db.ReceptionCalendar.updateEntry(entry, user)
-        .then((_) {
-          Event.CalendarChange changeEvent =
-            new Event.CalendarChange
-              (entry.ID, entry.contactID, entry.receptionID,
-               Event.CalendarEntryState.UPDATED);
+        Notification.broadcastEvent(changeEvent);
 
-          Notification.broadcastEvent (changeEvent);
+        return new shelf.Response.ok(JSON.encode(entry));
+      }).catchError((error, stackTrace) {
+        if (error is Storage.NotFound) {
+          return new shelf.Response.notFound(
+              'Event with id $eventID not found');
+        }
 
-          return new shelf.Response.ok(JSON.encode(entry));
-        }).catchError((error, stackTrace) {
-          if (error is Storage.NotFound) {
-            return new
-                shelf.Response.notFound('Event with id $eventID not found');
-          }
-
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError
-              (body : 'Failed to update event in database');
-        });
-      }))
-      .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError
-            (body : 'Failed to execute database query');
+        return new shelf.Response.internalServerError(
+            body: 'Failed to update event in database');
       });
+    })).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(
+          body: 'Failed to execute database query');
+    });
   }
 
   static Future remove(shelf.Request request) {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
-    int entryID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
+    int entryID = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ReceptionCalendar.removeEntry(entryID)
-      .then((_) {
-        Event.CalendarChange changeEvent =
-          new Event.CalendarChange
-            (entryID, Model.Contact.noID, receptionID,
-              Event.CalendarEntryState.DELETED);
+    return db.ReceptionCalendar.removeEntry(entryID).then((_) {
+      Event.CalendarChange changeEvent = new Event.CalendarChange(entryID,
+          Model.Contact.noID, receptionID, Event.CalendarEntryState.DELETED);
 
-            Notification.broadcastEvent (changeEvent);
-            return new shelf.Response.ok
-              (JSON.encode({'status' : 'ok', 'description' : 'Event deleted'}));
-        })
-      .catchError((error, stackTrace) {
-        if(error is Storage.NotFound) {
-          return new shelf.Response.notFound
-            (JSON.encode({'description' : 'No calendar event '
-                                          'found with ID $entryID'}));
-        }
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError
-          (body : 'Failed to execute database query');
+      Notification.broadcastEvent(changeEvent);
+      return new shelf.Response.ok(
+          JSON.encode({'status': 'ok', 'description': 'Event deleted'}));
+    }).catchError((error, stackTrace) {
+      if (error is Storage.NotFound) {
+        return new shelf.Response.notFound(JSON.encode({
+          'description': 'No calendar event '
+              'found with ID $entryID'
+        }));
+      }
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(
+          body: 'Failed to execute database query');
     });
   }
 
   static Future get(shelf.Request request) {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
-    int entryID     = int.parse(shelf_route.getPathParameter(request, 'eid'));
+    int entryID = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return db.ReceptionCalendar.get(receptionID, entryID)
-      .then((Model.CalendarEntry event) =>
-        new shelf.Response.ok(JSON.encode(event)))
-      .catchError((error, stackTrace) {
-        if(error is Storage.NotFound) {
-          return new shelf.Response.notFound
-            (JSON.encode({'description' : 'No calendar event '
-                                        'found with ID $entryID'}));
-        }
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError
-          (body : 'Failed to execute database query');
-      });
+    return db.ReceptionCalendar
+        .get(receptionID, entryID)
+        .then((Model.CalendarEntry event) =>
+            new shelf.Response.ok(JSON.encode(event)))
+        .catchError((error, stackTrace) {
+      if (error is Storage.NotFound) {
+        return new shelf.Response.notFound(JSON.encode({
+          'description': 'No calendar event '
+              'found with ID $entryID'
+        }));
+      }
+      log.severe(error, stackTrace);
+      return new shelf.Response.internalServerError(
+          body: 'Failed to execute database query');
+    });
   }
-
 }
