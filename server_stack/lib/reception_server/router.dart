@@ -2,7 +2,6 @@ library receptionserver.router;
 
 import 'dart:async';
 import 'dart:convert';
-
 import 'dart:io' as IO;
 
 import 'configuration.dart';
@@ -48,6 +47,7 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
 
   return AuthService.validate(token).then((_) => null)
   .catchError((error) {
+    print (error);
     if (error is Storage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');
     }
@@ -59,10 +59,6 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
     }
   });
 }
-
-final Map corsHeaders =
-  {'Access-Control-Allow-Origin': '*' ,
-   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
 
 
 /// Simple access logging.
@@ -82,11 +78,10 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.get)
     ..put('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.update)
     ..post('/reception/{rid}/calendar', ReceptionCalendar.create)
-    ..delete('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.remove)
-    ..get('/calendarentry/{eid}/change', ReceptionCalendar.listChanges)
-    ..get('/calendarentry/{eid}/change/latest', ReceptionCalendar.latestChange);
+    ..delete('/reception/{rid}/calendar/event/{eid}', ReceptionCalendar.remove);
+
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders : corsHeaders))
+      .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger : _accessLogger))
       .addHandler(router.handler);

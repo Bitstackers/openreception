@@ -16,7 +16,6 @@ import '../router.dart';
 part 'model-call.dart';
 part 'model-call_list.dart';
 part 'model-pbx_client.dart';
-part 'model-client_notification.dart';
 part 'model-channel_list.dart';
 part 'model-origination_request.dart';
 part 'model-peer.dart';

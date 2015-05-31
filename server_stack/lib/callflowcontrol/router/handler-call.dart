@@ -31,6 +31,11 @@ Map pickupOK(Model.Call call) => call.toJson();
 
 Map<int, ORModel.UserState> userMap = {};
 
+void _validateID (String callID) {
+  if (callID == null || callID == ORModel.Call.nullCallID || callID.isEmpty) {
+    throw new FormatException('Invalid Call ID: ${callID}');
+  }
+}
 abstract class Call {
 
   /**
@@ -808,7 +813,7 @@ abstract class Call {
 
     ///Check valitity of the call. (Will raise exception on invalid).
     try {
-      [sourceCallID, destinationCallID].forEach(Model.Call.validateID);
+      [sourceCallID, destinationCallID].forEach(_validateID);
     } on FormatException catch (_) {
       return new Future.value
        (new shelf.Response

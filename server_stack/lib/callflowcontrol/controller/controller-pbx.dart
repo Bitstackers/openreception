@@ -156,14 +156,14 @@ abstract class PBX {
     ESL.Response bridgeResponse;
 
     return
-        Model.PBXClient.api ('uuid_answer ${destination.channelID}')
-        .then ((_) => Model.PBXClient.api ('uuid_setvar ${destination.channelID} hangup_after_bridge true')
+        Model.PBXClient.api ('uuid_answer ${destination.channel}')
+        .then ((_) => Model.PBXClient.api ('uuid_setvar ${destination.channel} hangup_after_bridge true')
           .then((response) => bridgeResponse = response))
         .then ((_) => Model.PBXClient.api ('uuid_setvar ${uuid} hangup_after_bridge true')
           .then((response) => bridgeResponse = response))
-        .then ((_) => Model.PBXClient.api ('uuid_bridge ${destination.channelID} ${uuid}')
+        .then ((_) => Model.PBXClient.api ('uuid_bridge ${destination.channel} ${uuid}')
           .then((response) => bridgeResponse = response))
-        .then ((_) => Model.PBXClient.api ('uuid_break ${destination.channelID}').then((_) => bridgeResponse));
+        .then ((_) => Model.PBXClient.api ('uuid_break ${destination.channel}').then((_) => bridgeResponse));
  }
 
   /**
@@ -173,16 +173,16 @@ abstract class PBX {
 
     ESL.Response transferResponse;
 
-    return Model.PBXClient.api ('uuid_transfer ${source.channelID} ${extension}')
+    return Model.PBXClient.api ('uuid_transfer ${source.channel} ${extension}')
                                 .then((response) => transferResponse = response)
-        .then ((_) => Model.PBXClient.api ('uuid_break ${source.channelID}').then((_) => transferResponse));
+        .then ((_) => Model.PBXClient.api ('uuid_break ${source.channel}').then((_) => transferResponse));
   }
 
   /**
    * Kills the active channel for a call.
    */
   static Future hangup (Model.Call call) {
-    return Model.PBXClient.api('uuid_kill ${call.channelID}')
+    return Model.PBXClient.api('uuid_kill ${call.channel}')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
