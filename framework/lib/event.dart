@@ -125,6 +125,8 @@ abstract class Event {
         case Key.connectionState:
           return new ClientConnectionState.fromMap(map);
 
+        case Key.MessageChange:
+          return new MessageChange.fromMap(map);
         default:
           log.severe('Unsupported event type: ${map['event']}');
       }
