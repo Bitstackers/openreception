@@ -94,7 +94,7 @@ class MessageCompose extends ViewWidget {
     _hotKeys.onAltB.listen(_activateMe);
 
     _contactSelector.onSelect.listen(_render);
-    _receptionSelector.onSelect.listen(_reset);
+    _receptionSelector.onSelect.listen(_resetOnEmpty);
 
     _ui.onClick.listen(_activateMe);
     _ui.onSave.listen(_save);
@@ -115,7 +115,7 @@ class MessageCompose extends ViewWidget {
   /**
    * If we get an empty reception then reset the widget to it's pristine state.
    */
-  void _reset(Model.Reception reception) {
+  void _resetOnEmpty(Model.Reception reception) {
     if(reception.isEmpty) {
       _ui.reset(pristine: true);
     }
