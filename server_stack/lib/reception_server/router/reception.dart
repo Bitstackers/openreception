@@ -22,7 +22,13 @@ abstract class Reception {
         return new shelf.Response.ok (JSON.encode(reception));
       })
       .catchError((error, stackTrace) {
-        log.severe (error, stackTrace);
+      if(error is Storage.NotFound) {
+        return new shelf.Response.notFound
+        (JSON.encode({'description' : 'No reception '
+          'found with ID $receptionID'}));
+        }
+
+      log.severe (error, stackTrace);
         return new shelf.Response.internalServerError
           (body : 'receptionserver.router.getReception: $error');
       });
