@@ -155,6 +155,16 @@ abstract class Message {
         return _messageStore.save(message)
           .then((_) => _messageStore.enqueue(message)
             .then((_) {
+          Event.MessageChange event =
+            new Event.MessageChange
+              (message.ID, Event.MessageChangeState.UPDATED);
+
+          _notification.broadcastEvent(event);
+              Event.MessageChange updateEvent =
+                new Event.MessageChange
+                  (message.ID, Event.MessageChangeState.UPDATED);
+
+              _notification.broadcastEvent(updateEvent);
               return new shelf.Response.ok
                 (JSON.encode({'description' : 'Saved and enqueued message.',
                               'id' : message.ID}));
