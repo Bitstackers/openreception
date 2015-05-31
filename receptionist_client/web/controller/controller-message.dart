@@ -24,22 +24,20 @@ class Message {
   /**
    * Saves a [ORModel.Message] object.
    */
-  Future<ORModel.Message> save(ORModel.Message message) =>
-    this._store.save(message);
+  Future<ORModel.Message> save(ORModel.Message message) => _store.save(message);
 
   /**
    * Enqueues a [ORModel.Message] object.
    */
-  Future<ORModel.Message> enqueue(ORModel.Message message) =>
-    this._store.enqueue(message);
+  Future<Map> enqueue(ORModel.Message message) => _store.enqueue(message);
 
   /**
    *
    */
-  Future<Iterable<ORModel.Message>> list() => this._store.list();
+  Future<Iterable<ORModel.Message>> list() => _store.list();
 
   /**
    *
    */
-  Future<ORModel.Message> get(int messageID) => this._store.get(messageID);
+  Future<ORModel.Message> get(int messageID) => _store.get(messageID);
 }

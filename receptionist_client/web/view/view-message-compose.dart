@@ -19,6 +19,7 @@ part of view;
 class MessageCompose extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
   final Logger                    _log = new Logger('$libraryName.MessageCompose');
+  final Controller.Message        _messageController;
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMessageCompose    _uiModel;
@@ -29,7 +30,8 @@ class MessageCompose extends ViewWidget {
   MessageCompose(Model.UIMessageCompose this._uiModel,
       Controller.Destination this._myDestination,
       Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector) {
+      Model.UIReceptionSelector this._receptionSelector,
+      Controller.Message this._messageController) {
     _ui.setHint('alt+b | ctrl+space');
 
     _observers();
@@ -71,12 +73,7 @@ class MessageCompose extends ViewWidget {
     final ORModel.MessageCaller callerInfo =
       new ORModel.MessageCaller.fromMap(messageMap['caller']);
 
-
-    final ORModel.MessageRecipientList recipients =
-      new ORModel.MessageRecipientList.empty();
-
-    ///TODO (TL): Extract message recipients and add them to 'recipients' above
-    ///  as MessageRecipient objects.
+    final ORModel.MessageRecipientList recipients = _ui.recipients;
 
     return new ORModel.Message()
       ..recipients = recipients
@@ -97,8 +94,8 @@ class MessageCompose extends ViewWidget {
     _hotKeys.onAltB.listen(_activateMe);
 
     _contactSelector.onSelect.listen(_render);
+    _receptionSelector.onSelect.listen(_reset);
 
-    _ui.onCancel.listen(_cancel);
     _ui.onClick.listen(_activateMe);
     _ui.onSave.listen(_save);
     _ui.onSend.listen(_send);
@@ -116,24 +113,41 @@ class MessageCompose extends ViewWidget {
   }
 
   /**
+   * If we get an empty reception then reset the widget to it's pristine state.
+   */
+  void _reset(Model.Reception reception) {
+    if(reception.isEmpty) {
+      _ui.reset(pristine: true);
+    }
+  }
+
+  /**
    * Save message in the message archive.
    */
   void _save(_) {
-    print('MessageCompose.save() not fully implemented yet');
+    final ORModel.Message message = _message;
 
-    print(_message.asMap);
-
-    /// TODO (KRC): How to save?
+    _messageController.save(message)
+      .then((ORModel.Message msg) {
+        _log.info('Message id ${msg.ID} successfully saved');
+        _ui.reset();
+        _ui.focusOnCurrentFocusElement();
+      })
+      .catchError((error) => _log.shout('Could not save ${message.asMap}'));
   }
 
   /**
    * Send message.
    */
   void _send(_) {
-    print('MessageCompose.send() not implemented yet');
+    final ORModel.Message message = _message;
 
-    print(_message.asMap);
-
-    /// TODO (KRC): How to send?
+    _messageController.enqueue(message)
+      .then((Map response) {
+        _log.info('Message id ${response['id']} successfully enqueued');
+        _ui.reset();
+        _ui.focusOnCurrentFocusElement();
+      })
+      .catchError((error) => _log.shout('Could not enqueue ${message.asMap}'));
   }
 }

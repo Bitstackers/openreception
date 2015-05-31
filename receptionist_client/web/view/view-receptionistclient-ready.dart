@@ -34,6 +34,7 @@ class ReceptionistclientReady {
   MessageArchiveEdit                    _messageArchiveEdit;
   MessageArchiveFilter                  _messageArchiveFilter;
   MessageCompose                        _messageCompose;
+  Controller.Message                    _messageController;
   MyCallQueue                           _myCallQueue;
   Controller.Notification               _notification;
   ReceptionAddresses                    _receptionAddresses;
@@ -69,6 +70,7 @@ class ReceptionistclientReady {
                                   Controller.User userController,
                                   Controller.Call callController,
                                   Controller.Notification notification,
+                                  Controller.Message message,
                                   Map<String, String> langMap) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
@@ -79,6 +81,7 @@ class ReceptionistclientReady {
                                                          userController,
                                                          callController,
                                                          notification,
+                                                         message,
                                                          langMap);
     } else {
       return _singleton;
@@ -96,6 +99,7 @@ class ReceptionistclientReady {
                                     this._userController,
                                     this._callController,
                                     this._notification,
+                                    this._messageController,
                                     this._langMap) {
     _observers();
   }
@@ -187,7 +191,8 @@ class ReceptionistclientReady {
         (new Model.UIMessageCompose(querySelector('#message-compose')),
          new Controller.Destination(Context.Home, Widget.MessageCompose),
          uiContactSelector,
-         uiReceptionSelector);
+         uiReceptionSelector,
+         _messageController);
 
     _myCallQueue = new MyCallQueue
         (new Model.UIMyCallQueue(querySelector('#my-call-queue'), _langMap),

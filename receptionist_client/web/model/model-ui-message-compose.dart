@@ -43,7 +43,6 @@ class UIMessageCompose extends UIModel {
 
   InputElement         get _callerNameInput    => _root.querySelector('.names input.caller');
   InputElement         get _callsBackInput     => _root.querySelector('.checks .calls-back');
-  ButtonElement        get _cancelButton       => _root.querySelector('.buttons .cancel');
   InputElement         get _cellphoneInput     => _root.querySelector('.phone-numbers input.cell');
   InputElement         get _companyNameInput   => _root.querySelector('.names input.company');
   InputElement         get _draftInput         => _root.querySelector('.checks .draft');
@@ -59,6 +58,14 @@ class UIMessageCompose extends UIModel {
   SpanElement          get _showRecipientsSpan => _root.querySelector('.show-recipients');
   ElementList<Element> get _tabElements        => _root.querySelectorAll('[tabindex]');
   InputElement         get _urgentInput        => _root.querySelector('.checks .urgent');
+
+  /**
+   * Sets focus on whichever widget element is currently considered the widget
+   * default.
+   */
+  void focusOnCurrentFocusElement() {
+    _focusElement.focus();
+  }
 
   /**
    * Make sure we never take focus away from an already focused element, unless
@@ -98,11 +105,6 @@ class UIMessageCompose extends UIModel {
        'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
 
   /**
-   * Return the click event stream for the cancel button.
-   */
-  Stream<MouseEvent> get onCancel => _cancelButton.onClick;
-
-  /**
    * Return the click event stream for the save button.
    */
   Stream<MouseEvent> get onSave => _saveButton.onClick;
@@ -132,12 +134,26 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
+   * Return the [ORModel.MessageRecipientList]. May return an empty list object.
+   */
+  ORModel.MessageRecipientList get recipients {
+    final String recipientsList = _recipientsList.dataset['recipients-list'];
+
+    if(recipientsList != null && recipientsList.isNotEmpty) {
+      return new ORModel.MessageRecipientList.fromMap(JSON.decode(recipientsList));
+    } else {
+      return new ORModel.MessageRecipientList.empty();
+    }
+  }
+
+  /**
    * Add [recipients] to the recipients list.
    */
   void set recipients(ORModel.MessageRecipientList recipientList) {
     List<LIElement> list = new List<LIElement>();
 
     Map<String, List> map = recipientList.asMap;
+    _recipientsList.dataset['recipients-list'] = JSON.encode(map);
 
     map[ORModel.Role.TO].forEach((Map recipient) {
       list.add(new LIElement()..text = '${recipient['contact']['name']} (${recipient['reception']['name']})');
@@ -159,6 +175,37 @@ class UIMessageCompose extends UIModel {
     _recipientsList.children = list;
 
     _toggleButtons(null);
+  }
+
+  /**
+   * Reset the widget fields to their pristine state and set focus on the
+   * message body field. By default shis maintains the recipient list of the
+   * currently selected contact.
+   *
+   * If [pristine] is true, then also clear the recipient list.
+   */
+  void reset({pristine: false}) {
+    _callerNameInput.value = '';
+    _callsBackInput.checked = false;
+    _cellphoneInput.value = '';
+    _companyNameInput.value = '';
+    _draftInput.checked = false;
+    _extensionInput.value = '';
+    _haveCalledInput.checked = true;
+    _landlineInput.value = '';
+    _messageTextarea.value = '';
+    _pleaseCallInput.checked = false;
+    _urgentInput.checked = false;
+
+    _myFocusElement    = _messageTextarea;
+    _myFirstTabElement = _callerNameInput;
+    _myLastTabElement  = _draftInput;
+
+    _toggleButtons(null);
+
+    if(pristine) {
+      _recipientsList.dataset['recipients-list'] = '';
+    }
   }
 
   /**

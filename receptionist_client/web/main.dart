@@ -98,6 +98,8 @@ main() async {
             (clientConfig.callFlowServerUri, token, new ORTransport.Client());
         Controller.User controllerUser = new Controller.User(callFlowControl);
 
+
+
         observers(controllerUser);
 
         Future rRV = registerReadyView(appState,
@@ -247,6 +249,9 @@ Future registerReadyView(Model.AppClientState appState,
       new Model.UIReceptionistclientReady('receptionistclient-ready');
   ORService.RESTContactStore contactStore = new ORService.RESTContactStore
       (clientConfig.contactServerUri, token, new ORTransport.Client());
+  ORService.RESTMessageStore messageStore = new ORService.RESTMessageStore
+        (clientConfig.messageServerUri, token, new ORTransport.Client());
+  Controller.Message messageController = new Controller.Message(messageStore);
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
@@ -265,6 +270,7 @@ Future registerReadyView(Model.AppClientState appState,
              controllerUser,
              new Controller.Call(callFlowControl),
              notification,
+             messageController,
              langMap);
       });
 }
