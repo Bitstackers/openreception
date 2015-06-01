@@ -145,38 +145,33 @@ class Message implements Storage.Message {
     ''';
 
 
-    return this._database.query(sql).then((rows) {
-      List<Model.Message> messages = new List();
+    Model.Message rowToMessage (var row) =>
+      new Model.Message.fromMap(
+        {'id'                    : row.id,
+                   'message'               : row.message,
+                   'recipients'            : row.json_recipients != null ?row.json_recipients : [],
+                   'context'               : {'contact'   :
+                                               {'id'   : row.context_contact_id,
+                                                'name' : row.context_contact_name},
+                                              'reception' :
+                                               {'id'   : row.context_reception_id,
+                                                'name' : row.context_reception_name}},
+                   'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
+                                              'id'      : row.taken_by_agent_id,
+                                              'address' : row.agent_address},
+                   'caller'                : {'name'           : row.taken_from_name,
+                                              'company'        : row.taken_from_company,
+                                              'phone'          : row.taken_from_phone,
+                                              'cellphone'      : row.taken_from_cellphone,
+                                              'localExtension' : row.taken_from_localexten},
+                   'flags'                 : row.flags,
+                   'enqueued'              : row.enqueued,
+                   'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
+                   'sent'                  : row.sent}
+  );
 
-      for(var row in rows) {
-        Model.Message message = new Model.Message.fromMap(
-            {'id'                    : row.id,
-                       'message'               : row.message,
-                       'recipients'            : row.json_recipients != null ?row.json_recipients : [],
-                       'context'               : {'contact'   :
-                                                   {'id'   : row.context_contact_id,
-                                                    'name' : row.context_contact_name},
-                                                  'reception' :
-                                                   {'id'   : row.context_reception_id,
-                                                    'name' : row.context_reception_name}},
-                       'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
-                                                  'id'      : row.taken_by_agent_id,
-                                                  'address' : row.agent_address},
-                       'caller'                : {'name'           : row.taken_from_name,
-                                                  'company'        : row.taken_from_company,
-                                                  'phone'          : row.taken_from_phone,
-                                                  'cellphone'      : row.taken_from_cellphone,
-                                                  'localExtension' : row.taken_from_localexten},
-                       'flags'                 : row.flags,
-                       'enqueued'              : row.enqueued,
-                       'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
-                       'sent'                  : row.sent}
-      );
-        messages.add(message);
-      }
-
-      return messages;
-    });
+    return this._database.query(sql).then((Iterable rows) =>
+      rows.map(rowToMessage));
   }
 
   /**
