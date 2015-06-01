@@ -12,7 +12,7 @@ abstract class Message {
     => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}');
 
   static Uri send(Uri host, int messageID)
-    => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID != Model.Message.noID ? '${messageID}/' : ''}send');
+    => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}/send');
 
   static Uri root(Uri host)
     => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
