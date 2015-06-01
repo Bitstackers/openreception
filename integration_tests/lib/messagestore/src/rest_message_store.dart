@@ -152,7 +152,7 @@ abstract class RESTMessageStore {
   static Future messageCreate(Storage.Message messageStore,
                               Storage.Contact contactStore,
                               Storage.Reception receptionStore,
-                              Model.User sender) {
+                              Receptionist sender) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -165,7 +165,7 @@ abstract class RESTMessageStore {
               ..context = new Model.MessageContext.fromContact
                             (contact, reception)
               ..recipients = contact.distributionList
-              ..sender = sender;
+              ..sender = sender.user;
 
             return messageStore.save(newMessage);
     }));
@@ -174,7 +174,7 @@ abstract class RESTMessageStore {
   static Future messageSend(Storage.Message messageStore,
                               Storage.Contact contactStore,
                               Storage.Reception receptionStore,
-                              Model.User sender) {
+                              Receptionist sender) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -187,7 +187,7 @@ abstract class RESTMessageStore {
               ..context = new Model.MessageContext.fromContact
                             (contact, reception)
               ..recipients = contact.distributionList
-              ..sender = sender;
+              ..sender = sender.user;
 
             return messageStore.enqueue(newMessage);
     }));
@@ -234,5 +234,109 @@ abstract class RESTMessageStore {
           expect (savedMessage.flags, message.flags);
       });
     });
+  }
+
+  static Future messageCreateEvent(Storage.Message messageStore,
+                                   Storage.Contact contactStore,
+                                   Storage.Reception receptionStore,
+                                   Receptionist sender) {
+
+    log.info('Started messageCreateEvent test');
+
+    int receptionID = 1;
+    int contactID = 4;
+    int messageID;
+    Model.Reception reception;
+    Model.Contact contact;
+
+    return contactStore.getByReception(contactID, receptionID)
+        .then((Model.Contact c) =>
+          contact = c)
+      .then((_) => receptionStore.get(receptionID)
+        .then((Model.Reception r) =>
+            reception = r)
+      .then((_) {
+         Model.Message newMessage = Randomizer.randomMessage()
+           ..context = new Model.MessageContext.fromContact
+                       (contact, reception)
+           ..recipients = contact.distributionList
+           ..sender = sender.user;
+
+           return messageStore.save(newMessage).then((Model.Message message) =>
+             messageID = message.ID);
+     }))
+     .then((_) {
+      return sender.waitFor(eventType : Event.Key.MessageChange)
+        .then((Event.MessageChange changeEvent) {
+          expect (changeEvent.messageID, isNotNull);
+          expect (changeEvent.messageID, equals(messageID));
+      });
+    })
+    .whenComplete(() => log.info('Finished messageCreateEvent test'));
+  }
+
+  static Future messageEnqueueEvent(Storage.Message messageStore,
+                                   Storage.Contact contactStore,
+                                   Storage.Reception receptionStore,
+                                   Receptionist sender) {
+    int receptionID = 1;
+    int contactID = 4;
+    int messageID;
+    Model.Reception reception;
+    Model.Contact contact;
+
+    log.info('Starting messageEnqueueEvent test');
+
+    return contactStore.getByReception(contactID, receptionID)
+        .then((Model.Contact c) =>
+          contact = c)
+      .then((_) => receptionStore.get(receptionID)
+        .then((Model.Reception r) =>
+            reception = r)
+      .then((_) {
+         Model.Message newMessage = Randomizer.randomMessage()
+           ..context = new Model.MessageContext.fromContact
+                       (contact, reception)
+           ..recipients = contact.distributionList
+           ..sender = sender.user;
+         return messageStore.save(newMessage)
+           .then((Model.Message savedMessage) =>
+             sender.waitFor(eventType: Event.Key.MessageChange)
+             .then((Event.MessageChange event) {
+
+                newMessage.ID = savedMessage.ID;
+                messageID = savedMessage.ID;
+                log.finest(savedMessage.asMap);
+                log.finest(newMessage.asMap);
+                sender.eventStack.clear();
+         }))
+           .then((_) => messageStore.enqueue(newMessage)
+             .then((_) => sender.waitFor(eventType: Event.Key.MessageChange)
+                 .then((Event.MessageChange event) {
+                    expect (event.messageID, equals(messageID));
+           })));
+     }))
+     .whenComplete(() => log.info('Finished messageEnqueueEvent test'));
+  }
+  static Future messageUpdateEvent(Storage.Message messageStore,
+                                   Receptionist sender) {
+
+    log.info('Started messageUpdateEvent test');
+
+    return messageStore.list()
+        .then((Iterable<Model.Message> messages) {
+      Model.Message message = messages.last;
+
+      message..body = Randomizer.randomMessageBody()
+             ..caller = Randomizer.randomCaller()
+             ..flags = Randomizer.randomMessageFlags();
+
+      return messageStore.save(message)
+        .then((_) => sender.waitFor(eventType: Event.Key.MessageChange)
+          .then((Event.MessageChange event) {
+            expect(event.messageID, equals(message.ID));
+      }));
+    })
+    .whenComplete(() => log.info('Finished messageUpdateEvent test'));
   }
 }

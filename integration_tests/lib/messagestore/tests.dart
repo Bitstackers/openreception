@@ -7,7 +7,7 @@ void runMessageTests() {
     Storage.Message messageStore = null;
     Storage.Reception receptionStore = null;
     Storage.Contact contactStore = null;
-    Service.Authentication authServer= null;
+    Receptionist r;
 
     setUp (() {
       transport = new Transport.Client();
@@ -22,18 +22,6 @@ void runMessageTests() {
 
     test ('Non-existing path',
       () => RESTMessageStore.nonExistingPath(transport.client));
-
-    setUp (() {
-      transport = new Transport.Client();
-      messageStore = new Service.RESTMessageStore
-        (Config.messageStoreUri, Config.serverToken, transport);
-
-    });
-
-    tearDown (() {
-      messageStore = null;
-      transport.client.close(force : true);
-    });
 
     setUp (() {
       transport = new Transport.Client();
@@ -62,8 +50,10 @@ void runMessageTests() {
      messageStore = null;
      receptionStore = null;
      contactStore = null;
-     authServer= null;
      transport.client.close(force : true);
+
+     ReceptionistPool.instance.release(r);
+     return r.teardown();
    });
 
    setUp (() {
@@ -74,20 +64,29 @@ void runMessageTests() {
            Config.serverToken, transport);
      contactStore = new Service.RESTContactStore(Config.contactStoreUri,
            Config.serverToken, transport);
-     authServer= new Service.Authentication(Config.authenticationServerUri,
-         Config.serverToken, transport);
+
+     r = ReceptionistPool.instance.aquire();
+
+     return r.initialize();
    });
 
    test('message enqueue',
-     () => authServer.userOf(Config.serverToken)
-       .then((Model.User sender) =>
-         RESTMessageStore.messageCreate
-             (messageStore, contactStore, receptionStore, sender)));
+     () => RESTMessageStore.messageCreate
+             (messageStore, contactStore, receptionStore, r));
 
    test('message send',
-     () => authServer.userOf(Config.serverToken)
-       .then((Model.User sender) =>
-         RESTMessageStore.messageSend
-             (messageStore, contactStore, receptionStore, sender)));
+     () => RESTMessageStore.messageSend
+             (messageStore, contactStore, receptionStore, r));
+
+   test('message enqueue (event presence)',
+     () => RESTMessageStore.messageEnqueueEvent
+             (messageStore, contactStore, receptionStore, r));
+
+   test('message update (event presence)',
+     () => RESTMessageStore.messageUpdateEvent (messageStore, r));
+
+   test('message create (event presence)',
+     () => RESTMessageStore.messageCreateEvent
+             (messageStore, contactStore, receptionStore, r));
   });
 }
