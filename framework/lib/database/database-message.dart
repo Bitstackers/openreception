@@ -82,19 +82,28 @@ class Message implements Storage.Message {
   /**
    *
    */
-  Future<Model.Message> enqueue (Model.Message message) {
-    assert (message.ID != Model.Message.noID);
+  Future<Model.MessageQueueItem> enqueue (Model.Message message) {
+    if (message.ID != Model.Message.noID) {
+      return new Future.error(new ArgumentError.value(message.ID, 'message.ID', 'Message.ID cannot be noID'));
+    }
 
-    String sql = '''INSERT INTO message_queue (message_id) VALUES (${message.ID})''';
+    String sql = '''INSERT INTO message_queue (message_id) VALUES (${message.ID}) RETURNING id''';
 
-    return this._database.execute(sql).then((rowsAffected) {
-      log.finest('Enqueued message with ID ${message.ID} for sending $rowsAffected rows affected.');
-
-      if (rowsAffected < 1) {
-        throw new Storage.SaveFailed('Enqueue failed on id ${message.ID}');
+    return this._database.query(sql).then((Iterable rows) {
+      if (rows.length < 1) {
+        return new Future.value
+          (new Storage.SaveFailed('Enqueue failed on id ${message.ID}'));
       }
 
-      return message;
+      log.finest('Enqueued message with ID ${message.ID} for sending. '
+                 'Queue id ${rows.first.id}');
+
+      Model.MessageQueueItem queueItem =
+        new Model.MessageQueueItem()
+          ..ID = rows.first.id
+          ..messageID = message.ID;
+
+      return queueItem;
 
 
     }).catchError((error, stackTrace) {
