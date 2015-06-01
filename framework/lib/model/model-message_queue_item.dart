@@ -3,7 +3,7 @@ part of openreception.model;
 class MessageQueueItem {
 
   int                   ID;
-  int                   tries              = null;
+  int                   tries              = 0;
   int                   messageID          = Message.noID;
   List<MessageEndpoint> unhandledEndpoints = [];
   Message                _cachedMessage    = null;
