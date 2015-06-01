@@ -8,6 +8,12 @@ class MessageQueueItem {
   List<MessageEndpoint> unhandledEndpoints = [];
   Message                _cachedMessage    = null;
 
+
+  /**
+   * Default constructor.
+   */
+  MessageQueueItem();
+
   /**
    * Creates a message from the information given in [map].
    * The expected map format is:
