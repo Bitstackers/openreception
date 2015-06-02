@@ -95,6 +95,11 @@ abstract class Key {
   static const String messageComposeShowRecipients    = 'message-compose-show-recipients';
   static const String messageComposeUrgent            = 'message-compose-urgent';
 
+  static const String messageSaveErrorTitle           = 'message-save-error';
+  static const String messageSendErrorTitle           = 'message-send-error';
+  static const String messageSaveSuccessTitle         = 'message-save-success';
+  static const String messageSendSuccessTitle         = 'message-send-success';
+
   static const String myQueuedCallsHeader             = 'my-queued-calls-header';
 
   static const String receptionAddressesHeader        = 'reception-addresses-header';
@@ -202,6 +207,11 @@ Map<String, String> da =
    Key.messageComposeShowRecipients   : 'Vis modtagere',
    Key.messageComposeUrgent           : 'Haster',
 
+   Key.messageSaveErrorTitle          : 'Beskeden blev ikke gemt',
+   Key.messageSendErrorTitle          : 'Beskeden blev ikke sendt',
+   Key.messageSaveSuccessTitle        : 'Beskeden blev gemt',
+   Key.messageSendSuccessTitle        : 'Beskeden blev sendt',
+
    Key.myQueuedCallsHeader            : 'Mine kald',
 
    Key.receptionAddressesHeader       : 'Adresser',
@@ -307,6 +317,11 @@ Map<String, String> en =
    Key.messageComposeSend             : 'Send',
    Key.messageComposeShowRecipients   : 'Show recipients',
    Key.messageComposeUrgent           : 'Urgent',
+
+   Key.messageSaveErrorTitle          : 'Message not saved',
+   Key.messageSendErrorTitle          : 'Message not sent',
+   Key.messageSaveSuccessTitle        : 'Message saved',
+   Key.messageSendSuccessTitle        : 'Message sent',
 
    Key.myQueuedCallsHeader            : 'My calls',
 
