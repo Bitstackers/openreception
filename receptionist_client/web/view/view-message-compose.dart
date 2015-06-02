@@ -18,9 +18,11 @@ part of view;
  */
 class MessageCompose extends ViewWidget {
   final Model.UIContactSelector   _contactSelector;
+  final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.MessageCompose');
   final Controller.Message        _messageController;
   final Controller.Destination    _myDestination;
+  final Popup                     _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMessageCompose    _uiModel;
 
@@ -28,10 +30,12 @@ class MessageCompose extends ViewWidget {
    * Constructor.
    */
   MessageCompose(Model.UIMessageCompose this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Message this._messageController) {
+                 Controller.Destination this._myDestination,
+                 Model.UIContactSelector this._contactSelector,
+                 Model.UIReceptionSelector this._receptionSelector,
+                 Controller.Message this._messageController,
+                 Popup this._popup,
+                 Map<String, String> this._langMap) {
     _ui.setHint('alt+b | ctrl+space | ctrl+s | ctrl+enter');
 
     _observers();
@@ -122,11 +126,15 @@ class MessageCompose extends ViewWidget {
     final ORModel.Message message = _message;
 
     _messageController.save(message).then((ORModel.Message savedMessage) {
-      _log.info('Message id ${savedMessage.ID} successfully saved');
       _ui.reset();
       _ui.focusOnCurrentFocusElement();
+      _log.info('Message id ${savedMessage.ID} successfully saved');
+      _popup.success(_langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.ID}');
     })
-    .catchError((error) => _log.shout('Could not save ${message.asMap}'));
+    .catchError((error) {
+      _log.shout('Could not save ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.ID}');
+    });
   }
 
   /**
@@ -137,12 +145,19 @@ class MessageCompose extends ViewWidget {
 
     _messageController.save(message).then((ORModel.Message savedMessage) {
       _messageController.enqueue(savedMessage).then((ORModel.MessageQueueItem response) {
-        _log.info('Message id ${response.messageID} successfully enqueued');
         _ui.reset();
         _ui.focusOnCurrentFocusElement();
+        _log.info('Message id ${response.messageID} successfully enqueued');
+        _popup.success(_langMap[Key.messageSendSuccessTitle], 'ID ${savedMessage.ID}');
       })
-      .catchError((error) => _log.shout('$error Could not enqueue ${savedMessage.asMap}'));
+      .catchError((error) {
+        _log.shout('$error Could not enqueue ${savedMessage.asMap} $error');
+        _popup.error(_langMap[Key.messageSendErrorTitle], 'ID ${savedMessage.ID}');
+      });
     })
-    .catchError((error) => _log.shout('Could not save ${message.asMap}'));
+    .catchError((error) {
+      _log.shout('Could not save ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.ID}');
+    });
   }
 }

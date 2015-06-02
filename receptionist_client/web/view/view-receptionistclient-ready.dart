@@ -37,6 +37,7 @@ class ReceptionistclientReady {
   Controller.Message                    _messageController;
   MyCallQueue                           _myCallQueue;
   Controller.Notification               _notification;
+  Popup                                 _popup;
   ReceptionAddresses                    _receptionAddresses;
   ReceptionAltNames                     _receptionAltNames;
   ReceptionBankInfo                     _receptionBankInfo;
@@ -71,6 +72,7 @@ class ReceptionistclientReady {
                                   Controller.Call callController,
                                   Controller.Notification notification,
                                   Controller.Message message,
+                                  Popup popup,
                                   Map<String, String> langMap) {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
@@ -82,6 +84,7 @@ class ReceptionistclientReady {
                                                          callController,
                                                          notification,
                                                          message,
+                                                         popup,
                                                          langMap);
     } else {
       return _singleton;
@@ -100,6 +103,7 @@ class ReceptionistclientReady {
                                     this._callController,
                                     this._notification,
                                     this._messageController,
+                                    this._popup,
                                     this._langMap) {
     _observers();
   }
@@ -192,7 +196,9 @@ class ReceptionistclientReady {
          new Controller.Destination(Context.Home, Widget.MessageCompose),
          uiContactSelector,
          uiReceptionSelector,
-         _messageController);
+         _messageController,
+         _popup,
+         _langMap);
 
     _myCallQueue = new MyCallQueue
         (new Model.UIMyCallQueue(querySelector('#my-call-queue'), _langMap),

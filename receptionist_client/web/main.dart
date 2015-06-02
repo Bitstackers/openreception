@@ -50,6 +50,14 @@ main() async {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
 
+    /// Verify that we support HTMl5 notifications
+    if(Notification.supported) {
+      Notification.requestPermission().then((String perm) =>
+          log.info('HTML5 permission ${perm}'));
+    } else {
+      log.shout('HTML5 notifications not supported.');
+    }
+
     /// Hang here until the client configuration has been loaded from the server.
     clientConfig = await getClientConfiguration();
 
@@ -255,6 +263,9 @@ Future registerReadyView(Model.AppClientState appState,
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
+  View.Popup popup  = new View.Popup(new Uri.file('/images/popup_error.png'),
+                                     new Uri.file('/images/popup_info.png'),
+                                     new Uri.file('/images/popup_success.png'));
 
   return receptionController.list()
       .then((Iterable<Model.Reception> receptions) {
@@ -271,6 +282,7 @@ Future registerReadyView(Model.AppClientState appState,
              new Controller.Call(callFlowControl),
              notification,
              messageController,
+             popup,
              langMap);
       });
 }
