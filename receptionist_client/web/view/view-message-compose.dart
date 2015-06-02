@@ -136,12 +136,12 @@ class MessageCompose extends ViewWidget {
     final ORModel.Message message = _message;
 
     _messageController.save(message).then((ORModel.Message savedMessage) {
-      _messageController.enqueue(message).then((ORModel.MessageQueueItem response) {
+      _messageController.enqueue(savedMessage).then((ORModel.MessageQueueItem response) {
         _log.info('Message id ${response.messageID} successfully enqueued');
         _ui.reset();
         _ui.focusOnCurrentFocusElement();
       })
-      .catchError((error) => _log.shout('$error Could not enqueue ${message.asMap}'));
+      .catchError((error) => _log.shout('$error Could not enqueue ${savedMessage.asMap}'));
     })
     .catchError((error) => _log.shout('Could not save ${message.asMap}'));
   }
