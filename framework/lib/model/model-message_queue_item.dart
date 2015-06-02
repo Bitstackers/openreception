@@ -36,6 +36,16 @@ class MessageQueueItem {
     }
   }
 
+  /**
+   * Serialization function
+   */
+  Map toJson() => {
+    'id' : ID,
+    'message_id' : messageID,
+    'tries' : tries
+  };
+
+
  /**
   * Asyncronously fetches the message associated with the queue entry.
   * The message will be cached, and thus, only fetched once.
