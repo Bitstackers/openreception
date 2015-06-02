@@ -32,7 +32,7 @@ class MessageCompose extends ViewWidget {
       Model.UIContactSelector this._contactSelector,
       Model.UIReceptionSelector this._receptionSelector,
       Controller.Message this._messageController) {
-    _ui.setHint('alt+b | ctrl+space');
+    _ui.setHint('alt+b | ctrl+space | ctrl+s | ctrl+enter');
 
     _observers();
   }
@@ -49,13 +49,6 @@ class MessageCompose extends ViewWidget {
    */
   void _activateMe(_) {
     _navigateToMyDestination();
-  }
-
-  /**
-   * Cancel sending a message.
-   */
-  void _cancel(_) {
-    print('MessageCompose.cancel() not implemented yet');
   }
 
   /**
