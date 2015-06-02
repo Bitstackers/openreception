@@ -29,7 +29,8 @@ class Message {
   /**
    * Enqueues a [ORModel.Message] object.
    */
-  Future<Map> enqueue(ORModel.Message message) => _store.enqueue(message);
+  Future<ORModel.MessageQueueItem> enqueue(ORModel.Message message) =>
+      _store.enqueue(message);
 
   /**
    *
