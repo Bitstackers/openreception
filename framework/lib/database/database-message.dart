@@ -83,11 +83,13 @@ class Message implements Storage.Message {
    *
    */
   Future<Model.MessageQueueItem> enqueue (Model.Message message) {
-    if (message.ID != Model.Message.noID) {
+
+    if (message.ID == Model.Message.noID) {
       return new Future.error(new ArgumentError.value(message.ID, 'message.ID', 'Message.ID cannot be noID'));
     }
 
     String sql = '''INSERT INTO message_queue (message_id) VALUES (${message.ID}) RETURNING id''';
+
 
     return this._database.query(sql).then((Iterable rows) {
       if (rows.length < 1) {
