@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods to manipulate and extract data from the widget UX parts.
  */
 class UIMessageCompose extends UIModel {
   HtmlElement      _myFirstTabElement;
@@ -60,23 +60,23 @@ class UIMessageCompose extends UIModel {
   InputElement         get _urgentInput        => _root.querySelector('.checks .urgent');
 
   /**
+   * If a valid input field detects a mouse click, focus it. Valid input fields
+   * are those that are part of the [_tabElements] list.
+   */
+  void _focusFromClick(MouseEvent event) {
+    if(_tabElements.contains(event.target) || (event.target is LabelElement)) {
+      (event.target as HtmlElement).focus();
+    } else {
+      event.preventDefault();
+    }
+  }
+
+  /**
    * Sets focus on whichever widget element is currently considered the widget
    * default.
    */
   void focusOnCurrentFocusElement() {
     _focusElement.focus();
-  }
-
-  /**
-   * Make sure we never take focus away from an already focused element, unless
-   * we're [event].target is another widget member with tabindex set > 0.
-   */
-  void _handleMouseDown(MouseEvent event) {
-    if((event.target as HtmlElement).tabIndex < 1) {
-      /// NOTE (TL): This keeps focus on the currently focused field when
-      /// clicking the _root.
-      event.preventDefault();
-    }
   }
 
   /**
@@ -120,7 +120,7 @@ class UIMessageCompose extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
 
-    _root.onMouseDown.listen(_handleMouseDown);
+    _root.onMouseDown.listen(_focusFromClick);
 
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {

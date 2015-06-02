@@ -91,12 +91,13 @@ class MessageCompose extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
+    _ui.onClick.listen(_activateMe);
+
     _hotKeys.onAltB.listen(_activateMe);
 
     _contactSelector.onSelect.listen(_render);
     _receptionSelector.onSelect.listen(_resetOnEmpty);
 
-    _ui.onClick.listen(_activateMe);
     _ui.onSave.listen(_save);
     _ui.onSend.listen(_send);
   }
@@ -127,27 +128,28 @@ class MessageCompose extends ViewWidget {
   void _save(_) {
     final ORModel.Message message = _message;
 
-    _messageController.save(message)
-      .then((ORModel.Message msg) {
-        _log.info('Message id ${msg.ID} successfully saved');
-        _ui.reset();
-        _ui.focusOnCurrentFocusElement();
-      })
-      .catchError((error) => _log.shout('Could not save ${message.asMap}'));
+    _messageController.save(message).then((ORModel.Message savedMessage) {
+      _log.info('Message id ${savedMessage.ID} successfully saved');
+      _ui.reset();
+      _ui.focusOnCurrentFocusElement();
+    })
+    .catchError((error) => _log.shout('Could not save ${message.asMap}'));
   }
 
   /**
-   * Send message.
+   * Send message. This entails first saving and the enqueueing the message.
    */
   void _send(_) {
     final ORModel.Message message = _message;
 
-    _messageController.enqueue(message)
-      .then((Map response) {
-        _log.info('Message id ${response['id']} successfully enqueued');
+    _messageController.save(message).then((ORModel.Message savedMessage) {
+      _messageController.enqueue(message).then((ORModel.MessageQueueItem response) {
+        _log.info('Message id ${response.messageID} successfully enqueued');
         _ui.reset();
         _ui.focusOnCurrentFocusElement();
       })
-      .catchError((error) => _log.shout('Could not enqueue ${message.asMap}'));
+      .catchError((error) => _log.shout('$error Could not enqueue ${message.asMap}'));
+    })
+    .catchError((error) => _log.shout('Could not save ${message.asMap}'));
   }
 }
