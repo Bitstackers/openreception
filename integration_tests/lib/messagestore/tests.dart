@@ -70,7 +70,7 @@ void runMessageTests() {
      return r.initialize();
    });
 
-   test('message enqueue',
+   test('message create',
      () => RESTMessageStore.messageCreate
              (messageStore, contactStore, receptionStore, r));
 
