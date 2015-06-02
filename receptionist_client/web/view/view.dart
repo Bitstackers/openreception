@@ -65,7 +65,7 @@ final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();
 
 /**
- * Commen methods for all view widgets.
+ * Common methods for all view widgets.
  */
 abstract class ViewWidget {
   /**
