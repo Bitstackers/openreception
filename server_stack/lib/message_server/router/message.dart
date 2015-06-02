@@ -87,8 +87,8 @@ abstract class Message {
    */
   static Future<shelf.Response> listNewest (shelf.Request request) {
     return _messageStore.list()
-      .then ((List<Model.Message> messages) =>
-        new shelf.Response.ok(JSON.encode(messages)))
+      .then ((Iterable<Model.Message> messages) =>
+        new shelf.Response.ok(JSON.encode(messages.toList())))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
         return new shelf.Response.internalServerError
@@ -124,8 +124,8 @@ abstract class Message {
     }
 
     return _messageStore.list(filter : filter)
-      .then ((List<Model.Message> messages) =>
-        new shelf.Response.ok (JSON.encode(messages)))
+      .then ((Iterable<Model.Message> messages) =>
+        new shelf.Response.ok (JSON.encode(messages.toList())))
 
       .catchError((error, stackTrace) {
         log.severe (error, stackTrace);
@@ -147,14 +147,18 @@ abstract class Message {
         try {
           message = new Model.Message.fromMap(JSON.decode(content))
             ..sender = user;
+
+          if ([Model.Message.noID, null].contains(message.ID)) {
+            return new shelf.Response(400, body : 'Invalid message ID');
+          }
         } catch (error, stackTrace) {
           log.severe(error, stackTrace);
           return new shelf.Response(400, body : '$error : $stackTrace');
         }
 
-        return _messageStore.save(message)
-          .then((_) => _messageStore.enqueue(message)
-            .then((_) {
+        return _messageStore.enqueue(message)
+            .then((Model.MessageQueueItem queueItem) {
+
           Event.MessageChange event =
             new Event.MessageChange
               (message.ID, Event.MessageChangeState.UPDATED);
@@ -165,10 +169,10 @@ abstract class Message {
                   (message.ID, Event.MessageChangeState.UPDATED);
 
               _notification.broadcastEvent(updateEvent);
-              return new shelf.Response.ok
-                (JSON.encode({'description' : 'Saved and enqueued message.',
-                              'id' : message.ID}));
-              }));
+
+
+              return new shelf.Response.ok (JSON.encode(queueItem));
+              });
 
       }).catchError((error, stackTrace) {
         log.severe('Failed to extract content of request.', error, stackTrace);
