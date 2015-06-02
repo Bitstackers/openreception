@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods to manipulate and extract data from the widget UX parts.
  */
 class UIReceptionSelector extends UIModel {
   final Bus<Reception> _bus = new Bus<Reception>();
