@@ -189,7 +189,9 @@ abstract class RESTMessageStore {
               ..recipients = contact.distributionList
               ..sender = sender.user;
 
-            return messageStore.enqueue(newMessage);
+            return messageStore.save(newMessage)
+              .then((Model.Message savedMessage) =>
+                messageStore.enqueue(savedMessage));
     }));
   }
 
@@ -310,11 +312,13 @@ abstract class RESTMessageStore {
                 log.finest(newMessage.asMap);
                 sender.eventStack.clear();
          }))
-           .then((_) => messageStore.enqueue(newMessage)
-             .then((_) => sender.waitFor(eventType: Event.Key.MessageChange)
+           .then((_) => messageStore.save(newMessage)
+               .then((Model.Message savedMessage) =>
+                 messageStore.enqueue(savedMessage)
+               .then((_) => sender.waitFor(eventType: Event.Key.MessageChange)
                  .then((Event.MessageChange event) {
                     expect (event.messageID, equals(messageID));
-           })));
+           }))));
      }))
      .whenComplete(() => log.info('Finished messageEnqueueEvent test'));
   }
