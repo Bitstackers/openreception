@@ -165,6 +165,7 @@ class ReceptionistclientReady {
          uiReceptionSelector,
          _contactController,
          _receptionController,
+         _popup,
          _langMap);
 
     _contactSelector = new ContactSelector

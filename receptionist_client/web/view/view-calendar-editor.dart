@@ -24,6 +24,7 @@ class CalendarEditor extends ViewWidget {
   final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.CalendarEditor');
   final Controller.Destination    _myDestination;
+  final Popup                     _popup;
   final Model.UIReceptionCalendar _receptionCalendar;
   final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
@@ -40,6 +41,7 @@ class CalendarEditor extends ViewWidget {
                  Model.UIReceptionSelector this._receptionSelector,
                  Controller.Contact this._contactController,
                  Controller.Reception this._receptionController,
+                 Popup this._popup,
                  Map<String, String> this._langMap) {
     _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
 
@@ -84,7 +86,8 @@ class CalendarEditor extends ViewWidget {
    * Clear the form and navigate one step back in history.
    */
   void _delete(_) {
-    Future deleteEntry;
+    Future                      deleteEntry;
+    final ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
 
     if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
       deleteEntry = _receptionController.deleteCalendarEvent(_ui.loadedEntry);
@@ -93,8 +96,14 @@ class CalendarEditor extends ViewWidget {
     }
 
     deleteEntry
-      .then((_) => _log.info('${_ui.loadedEntry} successfully deleted from database'))
-      .catchError((error) => _log.shout('Could not delete calendar entry ${_ui.loadedEntry}'))
+      .then((_) {
+        _log.info('${loadedEntry} successfully deleted from database');
+        _popup.success(_langMap[Key.calendarEditorDelSuccessTitle], 'ID ${loadedEntry.ID}');
+      })
+      .catchError((error) {
+        _log.shout('Could not delete calendar entry ${loadedEntry}');
+        _popup.error(_langMap[Key.calendarEditorDelErrorTitle], 'ID ${loadedEntry.ID}');
+      })
       .whenComplete(() => _close(_));
   }
 
@@ -116,7 +125,7 @@ class CalendarEditor extends ViewWidget {
    */
   void _save(_) {
     final ORModel.CalendarEntry entry = _ui.harvestedEntry;
-    Future saveEntry;
+    Future                      saveEntry;
 
     if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
       if(entry.ID == ORModel.CalendarEntry.noID) {
@@ -133,8 +142,15 @@ class CalendarEditor extends ViewWidget {
     }
 
     saveEntry
-      .then((_) => _log.info('${_ui.loadedEntry} successfully saved to database'))
-      .catchError((error) => _log.shout('Could not save calendar entry ${_ui.loadedEntry}'))
+      .then((ORModel.CalendarEntry savedEntry) {
+        _log.info('${savedEntry} successfully saved to database');
+        _popup.success(_langMap[Key.calendarEditorSaveSuccessTitle], 'ID ${savedEntry.ID}');
+      })
+      .catchError((error) {
+        ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
+        _log.shout('Could not save calendar entry ${loadedEntry}');
+        _popup.error(_langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.ID}');
+      })
       .whenComplete(() => _close(_));
   }
 

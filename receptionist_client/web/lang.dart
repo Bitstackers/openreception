@@ -20,10 +20,14 @@ abstract class Key {
   static const String agentInfoPaused                 = 'agent-info-paused';
 
   static const String calendarEditorCancel            = 'calendar-editor-cancel';
+  static const String calendarEditorDelErrorTitle     = 'calendar-editor-del-error';
+  static const String calendarEditorDelSuccessTitle   = 'calendar-editor-del-success';
   static const String calendarEditorDelete            = 'calendar-editor-delete';
   static const String calendarEditorEntryDuration     = 'calendar-editor-entry-duration';
   static const String calendarEditorHeader            = 'calendar-editor-header';
   static const String calendarEditorSave              = 'calendar-editor-save';
+  static const String calendarEditorSaveErrorTitle    = 'calendar-editor-save-error';
+  static const String calendarEditorSaveSuccessTitle  = 'calendar-editor-save-success';
   static const String calendarEditorStart             = 'calendar-editor-start';
   static const String calendarEditorStop              = 'calendar-editor-stop';
 
@@ -132,10 +136,14 @@ Map<String, String> da =
    Key.agentInfoPaused                : 'Pause',
 
    Key.calendarEditorCancel           : 'Annuller',
+   Key.calendarEditorDelErrorTitle    : 'Kalenderaftalen blev ikke slettet',
+   Key.calendarEditorDelSuccessTitle  : 'Kalenderaftalen blev slettet',
    Key.calendarEditorDelete           : 'Slet',
    Key.calendarEditorEntryDuration    : 'Varighed',
    Key.calendarEditorHeader           : 'Kalenderaftale',
    Key.calendarEditorSave             : 'Gem',
+   Key.calendarEditorSaveErrorTitle   : 'Kalenderaftalen blev ikke gemt',
+   Key.calendarEditorSaveSuccessTitle : 'Kalenderaftalen blev gemt',
    Key.calendarEditorStart            : 'Start',
    Key.calendarEditorStop             : 'Stop',
 
@@ -244,9 +252,13 @@ Map<String, String> en =
 
    Key.calendarEditorCancel           : 'Cancel',
    Key.calendarEditorDelete           : 'Delete',
+   Key.calendarEditorDelErrorTitle    : 'Calendar entry not deleted',
+   Key.calendarEditorDelSuccessTitle  : 'Calendar entry deleted',
    Key.calendarEditorEntryDuration    : 'Duration',
    Key.calendarEditorHeader           : 'Calendar event',
    Key.calendarEditorSave             : 'Save',
+   Key.calendarEditorSaveErrorTitle   : 'Calendar entry not saved',
+   Key.calendarEditorSaveSuccessTitle : 'Calendar entry saved',
    Key.calendarEditorStart            : 'Start',
    Key.calendarEditorStop             : 'Stop',
 
