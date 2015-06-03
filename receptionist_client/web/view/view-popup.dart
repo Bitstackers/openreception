@@ -24,11 +24,11 @@ class Popup {
    */
   Popup(this._errorIcon, this._infoIcon, this._successIcon);
 
-  error(String title, String body, {Duration closeAfter}) {
+  void error(String title, String body, {Duration closeAfter}) {
     _schedulePopupForClose(new Notification(title, body: body, icon: _errorIcon.path), closeAfter);
   }
 
-  info(String title, String body, {Duration closeAfter}) {
+  void info(String title, String body, {Duration closeAfter}) {
     _schedulePopupForClose(new Notification(title, body: body, icon: _infoIcon.path), closeAfter);
   }
 
@@ -44,7 +44,7 @@ class Popup {
     });
   }
 
-  success(String title, String body, {Duration closeAfter}) {
+  void success(String title, String body, {Duration closeAfter}) {
     _schedulePopupForClose(new Notification(title, body: body, icon: _successIcon.path), closeAfter);
   }
 }
