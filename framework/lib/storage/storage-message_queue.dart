@@ -6,5 +6,5 @@ abstract class MessageQueue {
 
   Future archive (Model.MessageQueueItem queueItem);
 
-  Future <List<Model.MessageQueueItem>> list ({int limit : 100, int maxTries : 10});
+  Future <Iterable<Model.MessageQueueItem>> list ({int limit : 100, int maxTries : 10});
 }

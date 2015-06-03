@@ -5,13 +5,13 @@ abstract class Reception {
   // Map versions of the retriever functions.
   Future<Map> getMap (int receptionID);
 
-  Future<List<Map>> listMap ();
+  Future<Iterable<Map>> listMap ();
 
   Future<Map> removeMap(int receptionID);
 
   Future<Map> saveMap (Map receptionMap);
 
-  Future<List<Map>> calendarMap (int receptionID);
+  Future<Iterable<Map>> calendarMap (int receptionID);
 
   Future<Map> calendarEventMap (int receptionID, int eventID);
 
@@ -30,7 +30,7 @@ abstract class Reception {
 
   Future<Model.Reception> save (Model.Reception reception);
 
-  Future<List<Model.CalendarEntry>> calendar (int receptionID);
+  Future<Iterable<Model.CalendarEntry>> calendar (int receptionID);
 
   Future<Model.CalendarEntry> calendarEvent (int receptionID, eventID);
 

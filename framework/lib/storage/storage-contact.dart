@@ -2,13 +2,13 @@ part of openreception.storage;
 
 abstract class Contact {
 
-  Future<List<Map>> calendarMap (int contactID, int receptionID);
+  Future<Iterable<Map>> calendarMap (int contactID, int receptionID);
 
   Future<Model.Contact> get(int contactID);
 
-  Future<List<Model.Contact>> list();
+  Future<Iterable<Model.Contact>> list();
 
-  Future<List<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter});
+  Future<Iterable<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter});
 
   Future<Model.Contact> getByReception(int contactID, int receptionID);
 
@@ -18,7 +18,7 @@ abstract class Contact {
 
   Future<Model.Contact> update(Model.Contact Contact);
 
-  Future<List<Model.CalendarEntry>> calendar (int receptionID, int contactID);
+  Future<Iterable<Model.CalendarEntry>> calendar (int receptionID, int contactID);
 
   Future<Model.CalendarEntry> calendarEvent
     (int receptionID, int contactID, int eventID);
