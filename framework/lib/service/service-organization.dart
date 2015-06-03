@@ -52,14 +52,13 @@ class RESTOrganizationStore implements Storage.Organization {
     }
   }
 
-  Future<List<Model.Organization>> list() {
+  Future<Iterable<Model.Organization>> list() {
     Uri url = Resource.Organization.list(this._host, token: this._token);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
         (JSON.decode(response) as Map)
           [Model.OrganizationJSONKey.ORGANIZATION_LIST]
-          .map((Map map) => new Model.Organization.fromMap(map))
-          .toList() );
+          .map((Map map) => new Model.Organization.fromMap(map)));
   }
 }

@@ -45,7 +45,7 @@ class RESTReceptionStore implements Storage.Reception {
     return new Future.error(new UnimplementedError());
   }
 
-  Future<List<Map>> calendarMap (int receptionID) {
+  Future<Iterable<Map>> calendarMap (int receptionID) {
     Uri url = Resource.Reception.calendar(this._host, receptionID);
         url = appendToken(url, this._token);
 
@@ -54,10 +54,10 @@ class RESTReceptionStore implements Storage.Reception {
 
       if (decodedData is Map) {
         return  (JSON.decode(response)
-            ['CalendarEvents'] as List);
+            ['CalendarEvents'] as Iterable);
 
       } else {
-        return (JSON.decode(response) as List);
+        return (JSON.decode(response) as Iterable);
       }
     });
   }
@@ -125,17 +125,17 @@ class RESTReceptionStore implements Storage.Reception {
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as List)
+        (JSON.decode(response) as Iterable)
           .map((Map map) => new Model.Reception.fromMap(map)));
   }
 
   /**
    * Retrieves and autocasts a calendar list from the store.
    */
-  Future<List<Model.CalendarEntry>> calendar (int receptionID) =>
-      this.calendarMap(receptionID).then((List<Map> calendarMaps) =>
+  Future<Iterable<Model.CalendarEntry>> calendar (int receptionID) =>
+      this.calendarMap(receptionID).then((Iterable<Map> calendarMaps) =>
           calendarMaps.map((Map calendarMap) =>
-              new Model.CalendarEntry.fromMap(calendarMap)).toList());
+              new Model.CalendarEntry.fromMap(calendarMap)));
 
   Future<Model.CalendarEntry> calendarEvent (int receptionID, int eventID) {
     Uri url = Resource.Reception.calendarEvent(this._host, receptionID, eventID);

@@ -11,7 +11,7 @@ class RESTContactStore implements Storage.Contact {
 
   RESTContactStore (Uri this._host, String this._token, this._backend);
 
-  Future<List<Map>> calendarMap (int contactID, int receptionID) {
+  Future<Iterable<Map>> calendarMap (int contactID, int receptionID) {
     Uri url = Resource.Contact.calendar(this._host, contactID, receptionID);
         url = appendToken(url, this._token);
 
@@ -20,10 +20,10 @@ class RESTContactStore implements Storage.Contact {
 
       if (decodedData is Map) {
         return  (JSON.decode(response)
-            ['CalendarEvents'] as List);
+            ['CalendarEvents'] as Iterable);
 
       } else {
-        return (JSON.decode(response) as List);
+        return (JSON.decode(response) as Iterable);
       }
     });
   }
@@ -63,15 +63,14 @@ class RESTContactStore implements Storage.Contact {
         new Model.Contact.fromMap (JSON.decode(response)));
   }
 
-  Future<List<Model.Contact>> list() {
+  Future<Iterable<Model.Contact>> list() {
     Uri url = Resource.Contact.list(this._host);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
         (JSON.decode(response) as Map)
           [Model.ContactJSONKey.Contact_LIST]
-          .map((Map map) => new Model.Contact.fromMap(map))
-          .toList() );
+          .map((Map map) => new Model.Contact.fromMap(map)));
   }
 
   Future<Model.Contact> getByReception(int contactID, int receptionID) {
@@ -82,20 +81,19 @@ class RESTContactStore implements Storage.Contact {
         new Model.Contact.fromMap (JSON.decode(response)));
   }
 
-  Future<List<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter}) {
+  Future<Iterable<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter}) {
     Uri url = Resource.Contact.listByReception(this._host, receptionID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-       (JSON.decode(response) as List)
-            .map((Map map) => new Model.Contact.fromMap(map))
-            .toList() );
+       (JSON.decode(response) as Iterable)
+            .map((Map map) => new Model.Contact.fromMap(map)));
   }
 
-  Future<List<Model.CalendarEntry>> calendar (int contactID, int receptionID) =>
-      calendarMap (contactID, receptionID).then((List<Map> maps) =>
+  Future<Iterable<Model.CalendarEntry>> calendar (int contactID, int receptionID) =>
+      calendarMap (contactID, receptionID).then((Iterable<Map> maps) =>
           maps.map((Map map) =>
-              new Model.CalendarEntry.fromMap (map)).toList());
+              new Model.CalendarEntry.fromMap (map)));
 
   Future<Model.CalendarEntry> calendarEvent (int receptionID, int contactID, int eventID) {
     Uri url = Resource.Contact.calendarEvent(this._host, contactID, receptionID, eventID);
