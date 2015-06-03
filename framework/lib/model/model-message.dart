@@ -16,6 +16,14 @@ class InvalidMessage implements Exception {
   String toString() => message;
 }
 
+abstract class MessageFlag {
+  static final String PleaseCall     = 'pleaseCall';
+  static final String willCallBack   = 'willCallBack';
+  static final String Called         = 'called';
+  static final String Urgent         = 'urgent';
+  static final String ManuallyClosed = 'manuallyClosed';
+}
+
 class MessageCaller {
 
   Map    _map = {};
@@ -72,8 +80,11 @@ class Message {
   bool                 enqueued        = null;
   bool                 sent            = null;
 
+  bool                 get closed => enqueued || sent || manuallyClosed;
+
   User                 get sender     => this._sender;
-  bool                 get urgent     => this._flags.contains('urgent');
+  bool                 get urgent     => this._flags.contains(MessageFlag.Urgent);
+  bool                 get manuallyClosed => this._flags.contains(MessageFlag.ManuallyClosed);
   MessageContext       get context    => this._messageContext;
   set context (MessageContext newContext) => this._messageContext = newContext;
   List<String>         get flags      => this._flags;

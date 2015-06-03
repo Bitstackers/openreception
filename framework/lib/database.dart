@@ -12,7 +12,6 @@ import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
 part 'database/database-message.dart';
-part 'database/database-message_draft.dart';
 part 'database/database-message_queue.dart';
 part 'database/database-organization.dart';
 part 'database/database-user.dart';
