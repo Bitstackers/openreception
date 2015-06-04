@@ -26,7 +26,5 @@ class MessageRecipient extends MessageContext {
     }
   }
 
-  //Map get asMap => super.asMap;
-
   String toString() => '${this.role}: ${super.toString()}, endpoints: ${this.endpoints}';
 }
