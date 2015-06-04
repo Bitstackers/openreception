@@ -32,20 +32,6 @@ class NotificationService {
   /**
    * Performs a broadcast via the notification server.
    */
-  @deprecated
-  Future broadcast(Map map) {
-    Uri uri = Resource.Notification.broadcast(this._host);
-        uri = appendToken(uri, this._token);
-
-    log.finest('POST $uri $map');
-
-    return _enqueue (new NotificationRequest()..body     = map
-                                              ..resource = uri);
-  }
-
-  /**
-   * Performs a broadcast via the notification server.
-   */
   Future broadcastEvent(Event.Event event) {
     Uri uri = Resource.Notification.broadcast(this._host);
         uri = appendToken(uri, this._token);
