@@ -260,6 +260,7 @@ abstract class Contact {
     List titles = [];
     List relations = [];
     List responsibilities = [];
+    List messagePrerequisites = [];
 
     if(row.attributes != null) {
       if (row.attributes.containsKey (Model.ContactJSONKey.backup)) {
@@ -330,6 +331,12 @@ abstract class Contact {
       else if(row.attributes.containsKey (Model.ContactJSONKey.responsibilities)) {
         responsibilities = row.attributes[Model.ContactJSONKey.responsibilities];
       }
+
+      // messagePrerequisites
+      if (row.attributes.containsKey (Model.ContactJSONKey.messagePrerequisites)) {
+        messagePrerequisites = [row.attributes[Model.ContactJSONKey.messagePrerequisites]];
+      }
+
     }
 
 
@@ -353,7 +360,8 @@ abstract class Contact {
       ..relations.addAll(relations)
       ..responsibilities = responsibilities
       ..tags = tags
-      ..workhours = workhours;
+      ..workhours = workhours
+      ..messagePrerequisites = messagePrerequisites;
 
     return contact;
   }
