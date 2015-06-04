@@ -272,7 +272,8 @@ Map testContact_4_1 = {
   "infos": ["Takes care of the code"],
   "titles": ["Software engineer"],
   "relations": ["Kids with Sidsel Schomacker"],
-  "responsibilities": ["Server", "client", "FreeSWITCH", "SNOM phones"]
+  "responsibilities": ["Server", "client", "FreeSWITCH", "SNOM phones"],
+  "messagePrerequisites" : []
 };
 
 Map testMessage_1_Map = {
