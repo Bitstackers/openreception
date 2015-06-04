@@ -268,7 +268,7 @@ abstract class RESTMessageStore {
              messageID = message.ID);
      }))
      .then((_) {
-      return sender.waitFor(eventType : Event.Key.MessageChange)
+      return sender.waitFor(eventType : Event.Key.messageChange)
         .then((Event.MessageChange changeEvent) {
           expect (changeEvent.messageID, isNotNull);
           expect (changeEvent.messageID, equals(messageID));
@@ -303,7 +303,7 @@ abstract class RESTMessageStore {
            ..sender = sender.user;
          return messageStore.save(newMessage)
            .then((Model.Message savedMessage) =>
-             sender.waitFor(eventType: Event.Key.MessageChange)
+             sender.waitFor(eventType: Event.Key.messageChange)
              .then((Event.MessageChange event) {
 
                 newMessage.ID = savedMessage.ID;
@@ -315,7 +315,7 @@ abstract class RESTMessageStore {
            .then((_) => messageStore.save(newMessage)
                .then((Model.Message savedMessage) =>
                  messageStore.enqueue(savedMessage)
-               .then((_) => sender.waitFor(eventType: Event.Key.MessageChange)
+               .then((_) => sender.waitFor(eventType: Event.Key.messageChange)
                  .then((Event.MessageChange event) {
                     expect (event.messageID, equals(messageID));
            }))));
@@ -336,7 +336,7 @@ abstract class RESTMessageStore {
              ..flags = Randomizer.randomMessageFlags();
 
       return messageStore.save(message)
-        .then((_) => sender.waitFor(eventType: Event.Key.MessageChange)
+        .then((_) => sender.waitFor(eventType: Event.Key.messageChange)
           .then((Event.MessageChange event) {
             expect(event.messageID, equals(message.ID));
       }));

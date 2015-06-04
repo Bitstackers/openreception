@@ -83,7 +83,7 @@ abstract class ContactStore {
     log.info('Checking server behaviour on list of contacts in reception $receptionID.');
 
     return contactStore.listByReception(receptionID)
-        .then((List<Model.Contact> contacts) {
+        .then((Iterable<Model.Contact> contacts) {
       expect(contacts, isNotNull);
       expect(contacts, isNotEmpty);
     });
@@ -100,7 +100,7 @@ abstract class ContactStore {
     log.info('Checking server behaviour on list of contacts in reception $receptionID.');
 
     return contactStore.listByReception(receptionID)
-      .then((Iterable<Contact> contacts) {
+      .then((Iterable<Model.Contact> contacts) {
         expect(contacts, isEmpty);
       });
   }
@@ -187,7 +187,7 @@ abstract class ContactStore {
           expect(event.receptionID, equals(createdEvent.receptionID));
           expect(event.contactID, equals(createdEvent.contactID));
 
-          return receptionist.waitFor(eventType: Event.Key.CalendarChange)
+          return receptionist.waitFor(eventType: Event.Key.calendarChange)
             .then((Event.CalendarChange event) {
               expect (event.contactID, equals(contactID));
               expect (event.receptionID, equals(receptionID));
@@ -211,7 +211,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEntry> events) {
+      .then((Iterable <Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last
@@ -256,7 +256,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEntry> events) {
+      .then((Iterable <Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last
@@ -283,7 +283,7 @@ abstract class ContactStore {
             expect(event.receptionID, equals(updatedEvent.receptionID));
             expect(event.contactID, equals(updatedEvent.contactID));
 
-            return receptionist.waitFor(eventType: Event.Key.CalendarChange)
+            return receptionist.waitFor(eventType: Event.Key.calendarChange)
               .then((Event.CalendarChange event) {
                 expect (event.contactID, equals(contactID));
                 expect (event.receptionID, equals(receptionID));
@@ -311,7 +311,7 @@ abstract class ContactStore {
 
     log.info('Listing all events');
     return contactStore.calendar(contactID, receptionID)
-        .then ((List<Model.CalendarEntry> events) {
+        .then ((Iterable<Model.CalendarEntry> events) {
       log.info('Selecting last event in list');
       int eventID = events.last.ID;
 
@@ -355,7 +355,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEntry> events) {
+      .then((Iterable <Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last;
@@ -389,7 +389,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEntry> events) {
+      .then((Iterable <Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last;
@@ -401,7 +401,7 @@ abstract class ContactStore {
         ('Deleting last calendar event for contact $contactID@$receptionID.');
 
       return contactStore.calendarEventRemove(event).then((_) {
-        return receptionist.waitFor(eventType: Event.Key.CalendarChange)
+        return receptionist.waitFor(eventType: Event.Key.calendarChange)
           .then((Event.CalendarChange event) {
             expect (event.contactID, equals(contactID));
             expect (event.receptionID, equals(receptionID));
@@ -488,7 +488,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEntry> entries) {
+      .then((Iterable <Model.CalendarEntry> entries) {
 
       // Update the last event in list.
       Model.CalendarEntry entry = entries.last
@@ -530,7 +530,7 @@ abstract class ContactStore {
     int contactID = 4;
 
     return contactStore.calendar(contactID, receptionID)
-      .then((List <Model.CalendarEntry> events) {
+      .then((Iterable <Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last;
