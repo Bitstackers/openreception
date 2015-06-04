@@ -2,6 +2,10 @@ part of openreception.test;
 
 void testEvent() {
   group('Event.parse', () {
+    test('contactChangeState', EventTests.contactChangeState);
+    test('organizationChangeState', EventTests.organizationChangeState);
+    test('receptionChangeState', EventTests.receptionChangeState);
+    test('receptionContactChangeState', EventTests.receptionContactChangeState);
     test('messageChangeState', EventTests.messageChangeState);
     test('calendarEntryState', EventTests.calendarEntryState);
   });
@@ -9,6 +13,55 @@ void testEvent() {
 
 abstract class EventTests {
 
+  static void contactChangeState() {
+    final int cid = 1;
+    final state = Event.ContactState.CREATED;
+
+    Event.ContactChange testEvent = new Event.ContactChange(cid, state);
+
+    Event.ContactChange builtEvent = new Event.Event.parse(testEvent.asMap);
+
+    expect(builtEvent.contactID, equals(cid));
+    expect(builtEvent.state, equals(state));
+  }
+
+  static void organizationChangeState() {
+    final int oid = 1;
+    final state = Event.OrganizationState.CREATED;
+
+    Event.OrganizationChange testEvent = new Event.OrganizationChange(oid, state);
+
+    Event.OrganizationChange builtEvent = new Event.Event.parse(testEvent.asMap);
+
+    expect(builtEvent.orgID, equals(oid));
+    expect(builtEvent.state, equals(state));
+  }
+
+  static void receptionChangeState() {
+    final int rid = 1;
+    final state = Event.ReceptionState.CREATED;
+
+    Event.ReceptionChange testEvent = new Event.ReceptionChange(rid, state);
+
+    Event.ReceptionChange builtEvent = new Event.Event.parse(testEvent.asMap);
+
+    expect(builtEvent.receptionID, equals(rid));
+    expect(builtEvent.state, equals(state));
+  }
+
+  static void receptionContactChangeState() {
+    final int cid = 1;
+    final int rid = 2;
+    final state = Event.ReceptionContactState.CREATED;
+
+    Event.ReceptionContactChange testEvent = new Event.ReceptionContactChange(cid, rid, state);
+
+    Event.ReceptionContactChange builtEvent = new Event.Event.parse(testEvent.asMap);
+
+    expect(builtEvent.contactID, equals(cid));
+    expect(builtEvent.receptionID, equals(rid));
+    expect(builtEvent.state, equals(state));
+  }
   static void messageChangeState() {
     final int mid = 1;
     final state = Event.MessageChangeState.CREATED;
