@@ -10,7 +10,7 @@ class MessageChange implements Event {
 
   final DateTime timestamp;
 
-  String get eventName => _Key.messageChange;
+  String get eventName => Key.messageChange;
 
   final int messageID;
   final String state;
@@ -24,8 +24,8 @@ class MessageChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {_Key.messageID   : this.messageID,
-                _Key.state       : this.state};
+    Map body = {Key.messageID   : this.messageID,
+                Key.state       : this.state};
 
     template[this.eventName] = body;
 
@@ -33,7 +33,7 @@ class MessageChange implements Event {
   }
 
   MessageChange.fromMap (Map map) :
-    this.messageID = map[_Key.messageChange][_Key.messageID],
-    this.state = map[_Key.messageChange][_Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
+    this.messageID = map[Key.messageChange][Key.messageID],
+    this.state = map[Key.messageChange][Key.state],
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }

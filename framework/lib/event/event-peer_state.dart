@@ -4,7 +4,7 @@ part of openreception.event;
 class PeerState implements Event {
 
   final DateTime timestamp;
-  final String   eventName = _Key.peerState;
+  final String   eventName = Key.peerState;
 
   final Peer     peer;
 
@@ -16,7 +16,7 @@ class PeerState implements Event {
   Map get asMap => EventTemplate.peer(this);
 
   PeerState.fromMap (Map map) :
-    this.peer      = new Peer.fromMap             (map[_Key.peer]),
-    this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
+    this.peer      = new Peer.fromMap             (map[Key.peer]),
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 
 }

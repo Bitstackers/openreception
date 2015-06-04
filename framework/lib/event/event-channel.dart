@@ -2,7 +2,7 @@ part of openreception.event;
 
 class ChannelState implements Event {
   final DateTime timestamp;
-  final String   eventName = _Key.channelState;
+  final String   eventName = Key.channelState;
   final String   channelID;
 
   Map toJson() => this.asMap;
@@ -15,8 +15,8 @@ class ChannelState implements Event {
       this.timestamp = new DateTime.now();
 
   ChannelState.fromMap (Map map) :
-    this.channelID = map[_Key.channel][_Key.ID],
-    this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
+    this.channelID = map[Key.channel][Key.ID],
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }
 
 

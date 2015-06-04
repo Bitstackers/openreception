@@ -10,7 +10,7 @@ class OrganizationChange implements Event {
 
   final DateTime timestamp;
 
-  String get eventName => _Key.organizationChange;
+  String get eventName => Key.organizationChange;
 
   final int orgID;
   final String state;
@@ -24,8 +24,8 @@ class OrganizationChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {_Key.organizationID : this.orgID,
-                _Key.state          : this.state};
+    Map body = {Key.organizationID : this.orgID,
+                Key.state          : this.state};
 
     template[this.eventName] = body;
 
@@ -33,7 +33,7 @@ class OrganizationChange implements Event {
   }
 
   OrganizationChange.fromMap (Map map) :
-    this.orgID = map[_Key.organizationChange ][_Key.organizationID],
-    this.state = map[_Key.organizationChange ][_Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
+    this.orgID = map[Key.organizationChange ][Key.organizationID],
+    this.state = map[Key.organizationChange ][Key.state],
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }

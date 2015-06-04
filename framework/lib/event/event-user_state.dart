@@ -3,7 +3,7 @@ part of openreception.event;
 class UserState implements Event {
 
   final DateTime timestamp;
-  final String eventName = _Key.userState;
+  final String eventName = Key.userState;
 
   final UserStatus status;
 
@@ -16,6 +16,6 @@ class UserState implements Event {
 
   UserState.fromMap(Map map)
       : this.status = new UserStatus.fromMap(map),
-        this.timestamp = Util.unixTimestampToDateTime(map[_Key.timestamp]);
+        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 
 }

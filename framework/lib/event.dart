@@ -19,7 +19,7 @@ part 'event/event-template.dart';
 
 /// Keys for the map.
 
-abstract class _Key {
+abstract class Key {
   static const call = 'call';
   static const peer = 'peer';
   static const channel = 'channel';
@@ -85,68 +85,68 @@ abstract class Event {
 
   factory Event.parse (Map map) {
     try {
-      switch (map[_Key.event]) {
-        case _Key.peerState:
+      switch (map[Key.event]) {
+        case Key.peerState:
           return new PeerState.fromMap(map);
 
-        case _Key.queueJoin:
+        case Key.queueJoin:
           return new QueueJoin.fromMap(map);
 
-        case _Key.queueLeave:
+        case Key.queueLeave:
           return new QueueLeave.fromMap(map);
 
-        case _Key.callLock:
+        case Key.callLock:
           return new CallLock.fromMap(map);
 
-        case _Key.callUnlock:
+        case Key.callUnlock:
           return new CallUnlock.fromMap(map);
 
-        case _Key.callOffer:
+        case Key.callOffer:
           return new CallOffer.fromMap(map);
 
-        case _Key.callTransfer:
+        case Key.callTransfer:
           return new CallTransfer.fromMap(map);
 
-        case _Key.callUnpark:
+        case Key.callUnpark:
           return new CallUnpark.fromMap(map);
 
-        case _Key.callPark:
+        case Key.callPark:
           return new CallPark.fromMap(map);
 
-        case _Key.callHangup:
+        case Key.callHangup:
           return new CallHangup.fromMap(map);
 
-        case _Key.callState:
+        case Key.callState:
           return new CallStateChanged.fromMap(map);
 
-        case _Key.callPickup:
+        case Key.callPickup:
           return new CallPickup.fromMap(map);
 
-        case _Key.channelState:
+        case Key.channelState:
           return new ChannelState.fromMap(map);
 
-        case _Key.userState:
+        case Key.userState:
           return new UserState.fromMap(map);
 
-        case _Key.calendarChange:
+        case Key.calendarChange:
           return new CalendarChange.fromMap(map);
 
-        case _Key.contactChange:
+        case Key.contactChange:
           return new ContactChange.fromMap(map);
 
-        case _Key.organizationChange:
+        case Key.organizationChange:
           return new OrganizationChange.fromMap(map);
 
-        case _Key.receptionChange:
+        case Key.receptionChange:
           return new ReceptionChange.fromMap(map);
 
-        case _Key.receptionContactChange:
+        case Key.receptionContactChange:
           return new ReceptionContactChange.fromMap(map);
 
-        case _Key.connectionState:
+        case Key.connectionState:
           return new ClientConnectionState.fromMap(map);
 
-        case _Key.messageChange:
+        case Key.messageChange:
           return new MessageChange.fromMap(map);
         default:
           log.severe('Unsupported event type: ${map['event']}');

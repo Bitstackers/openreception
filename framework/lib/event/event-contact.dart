@@ -10,7 +10,7 @@ class ContactChange implements Event {
 
   final DateTime timestamp;
 
-  String get eventName => _Key.contactChange;
+  String get eventName => Key.contactChange;
 
   final int contactID;
   final String state;
@@ -24,16 +24,16 @@ class ContactChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {_Key.contactID   : this.contactID,
-                _Key.state       : this.state};
+    Map body = {Key.contactID   : this.contactID,
+                Key.state       : this.state};
 
-    template[_Key.calendarChange] = body;
+    template[Key.calendarChange] = body;
 
     return template;
   }
 
   ContactChange.fromMap (Map map) :
-    this.contactID = map[_Key.calendarChange][_Key.contactID],
-    this.state = map[_Key.calendarChange][_Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
+    this.contactID = map[Key.calendarChange][Key.contactID],
+    this.state = map[Key.calendarChange][Key.state],
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }

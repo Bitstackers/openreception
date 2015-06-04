@@ -10,7 +10,7 @@ class ReceptionChange implements Event {
 
   final DateTime timestamp;
 
-  String get eventName => _Key.receptionChange;
+  String get eventName => Key.receptionChange;
 
   final int receptionID;
   final String state;
@@ -24,8 +24,8 @@ class ReceptionChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {_Key.receptionID : this.receptionID,
-                _Key.state       : this.state};
+    Map body = {Key.receptionID : this.receptionID,
+                Key.state       : this.state};
 
     template[this.eventName] = body;
 
@@ -33,7 +33,7 @@ class ReceptionChange implements Event {
   }
 
   ReceptionChange.fromMap (Map map) :
-    this.receptionID = map[_Key.receptionChange][_Key.receptionID],
-    this.state = map[_Key.receptionChange][_Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
+    this.receptionID = map[Key.receptionChange][Key.receptionID],
+    this.state = map[Key.receptionChange][Key.state],
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }
