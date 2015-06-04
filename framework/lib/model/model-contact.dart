@@ -35,6 +35,7 @@ abstract class ContactJSONKey {
   static const responsibilities = 'responsibilities';
 
   static const Contact_LIST = 'contacts';
+  static const messagePrerequisites = 'messagePrerequisites';
 }
 
 abstract class ContactDefault {
@@ -68,6 +69,7 @@ class Contact {
 
   List<PhoneNumber> phones = [];
   List<String> backupContacts = [];
+  List<String> messagePrerequisites = [];
 
   @deprecated
   String position = '';
@@ -118,7 +120,8 @@ class Contact {
         ContactJSONKey.infos            : this.infos,
         ContactJSONKey.titles           : this.titles,
         ContactJSONKey.relations        : this.relations,
-        ContactJSONKey.responsibilities : this.responsibilities
+        ContactJSONKey.responsibilities : this.responsibilities,
+        ContactJSONKey.messagePrerequisites : messagePrerequisites
       };
 
   Contact.fromMap(Map map) {
@@ -138,7 +141,8 @@ class Contact {
     this._distributionList = new MessageRecipientList.fromMap(mapValue(ContactJSONKey.distributionList, map));
     this.contactType       = mapValue(ContactJSONKey.contactType, map);
 
-
+    this.messagePrerequisites =
+      mapValue(ContactJSONKey.messagePrerequisites, map, defaultValue : []);
 
     this.backupContacts    = mapValue(ContactJSONKey.backup, map);
     this.emailaddresses    = mapValue(ContactJSONKey.emailaddresses, map);
@@ -161,7 +165,7 @@ class Contact {
       throw new StateError('No value for required key "$key"');
     }
 
-    return map[key];
+    return map.containsKey(key) ? map[key] : defaultValue;
   }
 
   /**
