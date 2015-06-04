@@ -1,5 +1,9 @@
 part of openreception.model;
 
+/**
+ * CalendarEntry class representing a single entry in a calendar. Can be owned
+ * by either a contact or a reception.
+ */
 class CalendarEntry {
   static final String className = '${libraryName}.CalendarEntry';
   static final Logger log       = new Logger(className);
@@ -41,8 +45,9 @@ class CalendarEntry {
    *    'last_modified_by' : int user id
    *  }
    *
-   *  'start' and 'stop' MUST be in a format that can be parsed by the
-   *  [DateTime.parse] method. 'content' is the actual event description.
+   * 'start' and 'stop' MUST be in a format that can be parsed by the
+   * [DateTime.parse] method. Please use the methods in the [Util] library to
+   * help getting the right format. 'content' is the actual entry body.
    */
   CalendarEntry.fromMap(Map json) {
     _ID              = json['id'];
@@ -53,16 +58,18 @@ class CalendarEntry {
     _content         = json['content'];
   }
 
-  bool _active() {
+  /**
+   * Return true if now is between after [start] and before [stop].
+   */
+  bool get active {
     DateTime now = new DateTime.now();
     return (now.isAfter(_start) && now.isBefore(_stop));
   }
 
   /**
-   * Return true if now is between after [start] and before [stop].
+   * Returns a map representation of the calendar entry.
+   * Suitable for serialization.
    */
-  bool get active => _active();
-
   Map get asMap =>
       {'id'               : ID,
        'contact_id'       : contactID != Contact.noID ? contactID : null,
@@ -93,16 +100,26 @@ class CalendarEntry {
   /**
    * Set the calendar entry text content.
    */
-  void set content(String eventBody) {
-    _content = eventBody;
+  void set content(String entryBody) {
+    _content = entryBody;
   }
 
+  /**
+   * The current id of the entry. Note that entries with [noID] will be created
+   * in the store and given an id upon return.
+   */
   int get ID => _ID;
 
+  /**
+   * Update the entry id.
+   */
   void set ID(int newID) {
     _ID = newID;
   }
 
+  /**
+   * ID of owning reception.
+   */
   int get receptionID => _receptionID;
 
   /**
@@ -115,6 +132,9 @@ class CalendarEntry {
    */
   DateTime get stop => _stop;
 
+  /**
+   * Serialization function.
+   */
   Map toJson() => asMap;
 
   /**
