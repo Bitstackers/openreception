@@ -1,21 +1,21 @@
 part of openreception.event;
 
-abstract class MessageChangeState {
+abstract class ReceptionState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';
   static const String DELETED = 'deleted';
 }
 
-class MessageChange implements Event {
+class ReceptionChange implements Event {
 
   final DateTime timestamp;
 
-  String get eventName => _Key.messageChange;
+  String get eventName => _Key.receptionChange;
 
-  final int messageID;
+  final int receptionID;
   final String state;
 
-  MessageChange (this.messageID, this.state) :
+  ReceptionChange (this.receptionID, this.state) :
     this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
@@ -24,7 +24,7 @@ class MessageChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {_Key.messageID   : this.messageID,
+    Map body = {_Key.receptionID : this.receptionID,
                 _Key.state       : this.state};
 
     template[this.eventName] = body;
@@ -32,8 +32,8 @@ class MessageChange implements Event {
     return template;
   }
 
-  MessageChange.fromMap (Map map) :
-    this.messageID = map[_Key.messageChange][_Key.messageID],
-    this.state = map[_Key.messageChange][_Key.state],
+  ReceptionChange.fromMap (Map map) :
+    this.receptionID = map[_Key.receptionChange][_Key.receptionID],
+    this.state = map[_Key.receptionChange][_Key.state],
     this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
 }
