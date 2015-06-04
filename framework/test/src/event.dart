@@ -3,6 +3,7 @@ part of openreception.test;
 void testEvent() {
   group('Event.parse', () {
     test('contactChangeState', EventTests.contactChangeState);
+    test('endpointChange', EventTests.endpointChange);
     test('organizationChangeState', EventTests.organizationChangeState);
     test('receptionChangeState', EventTests.receptionChangeState);
     test('receptionContactChangeState', EventTests.receptionContactChangeState);
@@ -12,6 +13,24 @@ void testEvent() {
 }
 
 abstract class EventTests {
+
+  static void endpointChange() {
+    final int cid = 1;
+    final int rid = 2;
+    final state = Event.EndpointState.CREATED;
+    final address = 'someone@somewhere';
+    final addressType = 'email';
+
+    Event.EndpointChange testEvent = new Event.EndpointChange(cid, rid, state, address, addressType);
+
+    Event.EndpointChange builtEvent = new Event.Event.parse(testEvent.asMap);
+
+    expect(builtEvent.contactID, equals(cid));
+    expect(builtEvent.receptionID, equals(rid));
+    expect(builtEvent.state, equals(state));
+    expect(builtEvent.address, equals(address));
+    expect(builtEvent.addressType, equals(addressType));
+  }
 
   static void contactChangeState() {
     final int cid = 1;
