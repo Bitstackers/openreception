@@ -114,6 +114,11 @@ class CalendarEntry {
    * Update the entry id.
    */
   void set ID(int newID) {
+    if (_ID != noID) {
+      throw new ArgumentError.value(newID, 'newID',
+          'Cannot set ID of a ''CalendarEntry that already has an ID');
+    }
+
     _ID = newID;
   }
 
