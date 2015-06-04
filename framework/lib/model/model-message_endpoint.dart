@@ -16,6 +16,8 @@ class MessageEndpoint {
   //TODO: Check if this is still needed.
   MessageRecipient recipient = null;
 
+  MessageEndpoint.empty();
+
   MessageEndpoint.fromMap(Map map) {
     /// Map validation.
     assert(['type','address'].every((String key) => map.containsKey(key)));

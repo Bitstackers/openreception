@@ -8,6 +8,11 @@ class MessageRecipient extends MessageContext {
   List<MessageEndpoint> endpoints = [];
 
   /**
+   * Default constructor.
+   */
+  MessageRecipient();
+
+  /**
    * Parsing constructor. Takes in an object similar to MessageContext, with the
    * exception of having an extra 'role' field.
    */

@@ -29,6 +29,11 @@ class MessageContext {
          set receptionName (String newName) => this._receptionName = newName;
 
   /**
+   * Default constructor.
+   */
+  MessageContext();
+
+  /**
    * Constructor. Deserializes the object from Map representation.
    */
   MessageContext.fromMap(Map map) {
