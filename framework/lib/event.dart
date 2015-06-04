@@ -9,6 +9,7 @@ part 'event/event-calendar.dart';
 part 'event/event-call.dart';
 part 'event/event-channel.dart';
 part 'event/event-contact.dart';
+part 'event/event-endpoint.dart';
 part 'event/event-message.dart';
 part 'event/event-organization.dart';
 part 'event/event-user_state.dart';
@@ -26,6 +27,7 @@ abstract class Key {
   static const event = 'event';
   static const calendarEntry = 'calendarEntry';
   static const calendarChange = 'calendarChange';
+  static const endpointChange = 'endpointChange';
   static const messageChange = 'messageChange';
   static const contactChange = 'contactChange';
   static const receptionContactChange = 'receptionContactChange';
@@ -35,6 +37,9 @@ abstract class Key {
   static const contactID = 'cid';
   static const messageID = 'mid';
   static const organizationID = 'oid';
+
+  static const address = 'address';
+  static const addressType = 'addressType';
 
   static const entryID = 'eid';
   static const ID = 'id';
@@ -142,6 +147,9 @@ abstract class Event {
 
         case Key.receptionContactChange:
           return new ReceptionContactChange.fromMap(map);
+
+        case Key.endpointChange:
+          return new EndpointChange.fromMap(map);
 
         case Key.connectionState:
           return new ClientConnectionState.fromMap(map);
