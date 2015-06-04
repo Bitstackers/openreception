@@ -12,6 +12,7 @@ import '../router.dart';
 import '../view/organization.dart';
 import '../view/reception_contact_reduced_reception.dart';
 import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/event.dart' as orf_event;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'contactController';
@@ -30,8 +31,7 @@ class ContactController {
       .then((Map data) => db.createContact(data['full_name'], data['contact_type'], data['enabled']))
       .then((int id) =>
           orf_http.writeAndClose(request, contactIdAsJson(id)).then((_) {
-            Map data = {'event' : 'contactEventCreated', 'contactEvent' : {'contactId' : id}};
-            Notification.broadcast(data)
+            Notification.broadcastEvent(new orf_event.ContactChange (id, orf_event.ContactState.CREATED))
               .catchError((error) {
                 orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
               });
@@ -49,9 +49,8 @@ class ContactController {
     db.deleteContact(contactId)
       .then((_) => orf_http.allOk(request))
       .then((_) {
-        Map data = {'event' : 'contactEventDeleted', 'contactEvent' : {'contactId' : contactId}};
-        return Notification.broadcast(data)
-          .catchError((error) {
+        Notification.broadcastEvent(new orf_event.ContactChange (contactId, orf_event.ContactState.DELETED))
+         .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });
       })
@@ -155,8 +154,7 @@ class ContactController {
       .then((Map data) => db.updateContact(contactId, data['full_name'], data['contact_type'], data['enabled']))
       .then((int id) => orf_http.writeAndClose(request, contactIdAsJson(id)))
       .then((_) {
-        Map data = {'event' : 'contactEventUpdated', 'contactEvent' : {'contactId' : contactId}};
-        Notification.broadcast(data)
+        Notification.broadcastEvent(new orf_event.ContactChange (contactId, orf_event.ContactState.UPDATED))
           .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });

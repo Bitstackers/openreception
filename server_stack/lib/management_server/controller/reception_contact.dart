@@ -12,6 +12,7 @@ import '../view/complete_reception_contact.dart';
 import '../view/endpoint.dart';
 import '../view/distribution_list.dart';
 import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/event.dart' as orf_event;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'receptionContactController';
@@ -62,9 +63,8 @@ class ReceptionContactController {
         receptionId, contactId, data['wants_messages'],
         data['phonenumbers'], data['attributes'], data['enabled'])
     .then((_) {
-        Map data = {'event' : 'receptionContactEventCreated', 'receptionContactEvent' : {'receptionId': receptionId, 'contactId': contactId}};
-        Notification.broadcast(data)
-          .catchError((error) {
+        Notification.broadcastEvent(new orf_event.ReceptionContactChange (contactId, receptionId, orf_event.ReceptionContactState.CREATED))
+        .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });
       }))
@@ -86,8 +86,7 @@ class ReceptionContactController {
         receptionId, contactId, data['wants_messages'],
         data['phonenumbers'], data['attributes'], data['enabled'])
     .then((_) {
-        Map data = {'event' : 'receptionContactEventUpdated', 'receptionContactEvent' : {'receptionId': receptionId, 'contactId': contactId}};
-        Notification.broadcast(data)
+      Notification.broadcastEvent(new orf_event.ReceptionContactChange (contactId, receptionId, orf_event.ReceptionContactState.UPDATED))
           .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });
@@ -107,8 +106,7 @@ class ReceptionContactController {
     db.deleteReceptionContact(receptionId, contactId)
     .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({}))
     .then((_) {
-        Map data = {'event' : 'receptionContactEventDeleted', 'receptionContactEvent' : {'receptionId': receptionId, 'contactId': contactId}};
-          Notification.broadcast(data)
+      Notification.broadcastEvent(new orf_event.ReceptionContactChange (contactId, receptionId, orf_event.ReceptionContactState.DELETED))
           .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });
@@ -128,8 +126,7 @@ class ReceptionContactController {
       .then(JSON.decode)
       .then((Map data) => db.createEndpoint(receptionId, contactId, data['address'], data['address_type'], data['confidential'], data['enabled'], data['priority'], data['description'])
         .then((_) {
-            Map event = {'event' : 'endpointEventCreated', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': data['address'], 'address_type': data['address_type']}};
-            Notification.broadcast(event)
+          Notification.broadcastEvent(new orf_event.EndpointChange (contactId, receptionId, orf_event.EndpointState.UPDATED, data['address'], data['address_type']))
               .catchError((error) {
                 orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
               });
@@ -206,8 +203,7 @@ class ReceptionContactController {
             data['description']);
       })
       .then((_) {
-          Map data = {'event' : 'endpointEventUpdated', 'endpointEvent' : {'reception_id': newreceptionId, 'contact_id': newContactId, 'address': newAddress, 'address_type': newAddressType}};
-          Notification.broadcast(data)
+          Notification.broadcastEvent(new orf_event.EndpointChange (newreceptionId, newContactId, orf_event.EndpointState.UPDATED, newAddress, newAddressType))
             .catchError((error) {
               orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
             });
@@ -229,8 +225,7 @@ class ReceptionContactController {
     db.deleteEndpoint(receptionId, contactId, address, addressType)
       .then((int rowsAffected) => orf_http.writeAndClose(request, JSON.encode({}))
       .then((_) {
-          Map data = {'event' : 'endpointEventDeleted', 'endpointEvent' : {'receptionId': receptionId, 'contactId': contactId, 'address': address, 'address_type': addressType}};
-          Notification.broadcast(data)
+          Notification.broadcastEvent(new orf_event.EndpointChange (receptionId, contactId, orf_event.EndpointState.DELETED, address, addressType))
             .catchError((error) {
               orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
             });

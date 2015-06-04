@@ -9,6 +9,7 @@ import '../model.dart';
 import '../view/reception.dart';
 import '../router.dart';
 import 'package:openreception_framework/common.dart' as orf;
+import 'package:openreception_framework/event.dart' as orf_event;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'receptionController';
@@ -66,8 +67,7 @@ class ReceptionController {
           .then(db.getReception)
           .then((Reception reception) => orf_http.writeAndClose(request, receptionAsJson(reception))
           .then((_) {
-              Map data = {'event' : 'receptionEventCreated', 'receptionEvent' : {'receptionId' : reception.id}};
-              Notification.broadcast(data)
+              Notification.broadcastEvent(new orf_event.ReceptionChange (reception.id, orf_event.ReceptionState.CREATED))
                 .catchError((error) {
                   orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
                 });
@@ -90,9 +90,8 @@ class ReceptionController {
       .then(db.getReception)
       .then((Reception reception) => orf_http.writeAndClose(request, receptionAsJson(reception)))
       .then((_) {
-          Map data = {'event' : 'receptionEventUpdated', 'receptionEvent' : {'receptionId' : receptionId}};
-          Notification.broadcast(data)
-            .catchError((error) {
+          Notification.broadcastEvent(new orf_event.ReceptionChange (receptionId, orf_event.ReceptionState.UPDATED))
+          .catchError((error) {
               orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
             });
           })
@@ -110,9 +109,8 @@ class ReceptionController {
     db.deleteReception(receptionId)
       .then((_) => orf_http.writeAndClose(request, receptionAsJson(reception))
       .then((_) {
-          Map data = {'event' : 'receptionEventDeleted', 'receptionEvent' : {'receptionId' : receptionId}};
-          Notification.broadcast(data)
-            .catchError((error) {
+          Notification.broadcastEvent(new orf_event.ReceptionChange (receptionId, orf_event.ReceptionState.CREATED))
+          .catchError((error) {
               orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
             });
         }))

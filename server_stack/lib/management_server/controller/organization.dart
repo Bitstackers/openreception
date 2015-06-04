@@ -11,6 +11,7 @@ import '../view/contact.dart';
 import '../router.dart';
 import 'package:openreception_framework/common.dart' as orf;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
+import 'package:openreception_framework/event.dart' as orf_event;
 
 const libraryName = 'organizationController';
 
@@ -56,8 +57,7 @@ class OrganizationController {
       .then((Map data) => db.createOrganization(data['full_name'], data['billing_type'], data['flag']))
       .then(db.getOrganization)
       .then((Organization organization) => orf_http.writeAndClose(request, organizationAsJson(organization)).then((_) {
-        Map data = {'event': 'organizationEventCreated', 'organizationEvent' : {'organizationId' : organization.id}};
-        Notification.broadcast(data)
+        Notification.broadcastEvent(new orf_event.OrganizationChange (organization.id, orf_event.OrganizationState.CREATED))
           .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });
@@ -77,8 +77,7 @@ class OrganizationController {
       .then(db.getOrganization)
       .then((Organization organization) => orf_http.writeAndClose(request, organizationAsJson(organization))
         .then((_) {
-          Map data = {'event' : 'organizationEventupdated', 'organizationEvent' : {'organizationId' : organization.id}};
-          Notification.broadcast(data)
+      Notification.broadcastEvent(new orf_event.OrganizationChange (organization.id, orf_event.OrganizationState.UPDATED))
             .catchError((error) {
               orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
             });
@@ -97,8 +96,7 @@ class OrganizationController {
     db.deleteOrganization(organizationId)
       .then((int id) => orf_http.writeAndClose(request, organizationAsJson(organization))
       .then((_) {
-        Map data = {'event' : 'organizationEventDeleted', 'organizationEvent' : {'organizationId' : organizationId}};
-        Notification.broadcast(data)
+        Notification.broadcastEvent(new orf_event.OrganizationChange (organization.id, orf_event.OrganizationState.DELETED))
           .catchError((error) {
             orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
           });
