@@ -8,9 +8,13 @@ import 'model.dart';
 part 'event/event-calendar.dart';
 part 'event/event-call.dart';
 part 'event/event-channel.dart';
+part 'event/event-contact.dart';
 part 'event/event-message.dart';
+part 'event/event-organization.dart';
 part 'event/event-user_state.dart';
 part 'event/event-peer_state.dart';
+part 'event/event-reception.dart';
+part 'event/event-reception_contact.dart';
 part 'event/event-template.dart';
 
 /// Keys for the map.
@@ -30,6 +34,7 @@ abstract class _Key {
   static const receptionID = 'rid';
   static const contactID = 'cid';
   static const messageID = 'mid';
+  static const organizationID = 'oid';
 
   static const entryID = 'eid';
   static const ID = 'id';

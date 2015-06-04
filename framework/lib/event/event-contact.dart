@@ -1,6 +1,6 @@
 part of openreception.event;
 
-abstract class ContactEntryState {
+abstract class ContactState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';
   static const String DELETED = 'deleted';

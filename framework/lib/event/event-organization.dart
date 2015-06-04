@@ -33,7 +33,7 @@ class OrganizationChange implements Event {
   }
 
   OrganizationChange.fromMap (Map map) :
-    this.orgID = map[this.eventName][_Key.organizationID],
-    this.state = map[this.eventName][_Key.state],
+    this.orgID = map[_Key.organizationChange ][_Key.organizationID],
+    this.state = map[_Key.organizationChange ][_Key.state],
     this.timestamp = Util.unixTimestampToDateTime (map[_Key.timestamp]);
 }
