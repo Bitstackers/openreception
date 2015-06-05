@@ -36,6 +36,14 @@ class PhoneNumber {
 
   }
 
+  @override
+  operator == (PhoneNumber other) =>
+    this.value == other.value &&
+    this.type== other.type
+    ;
+
+
+
   PhoneNumber.empty();
 
   Map toJson () => this.asMap;
