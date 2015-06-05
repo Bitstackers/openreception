@@ -2,20 +2,70 @@ part of openreception.test;
 
 testModelContact() {
   group('Model.Contact', () {
+    test('deserialization', ModelContact.deserialization);
+
     test('serializationDeserialization',
         ModelContact.serializationDeserialization);
 
-    test('Model.Contact buildObject',
-        ModelContact.buildObject);
+    test('Model.Contact buildObject', ModelContact.buildObject);
   });
 }
 
 abstract class ModelContact {
-  static void serializationDeserialization() => expect(
+  static void deserialization() => expect(
       new Model.Contact.fromMap(Test_Data.testContact_4_1).asMap,
       equals(Test_Data.testContact_4_1));
 
-  static void buildObject() {
+  static void serializationDeserialization() {
+    Model.Contact builtObject = buildObject();
+    Model.Contact deserializedObject =
+        new Model.Contact.fromMap(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.receptionID, equals(deserializedObject.receptionID));
+    expect(builtObject.ID, equals(deserializedObject.ID));
+    expect(builtObject.wantsMessage, equals(deserializedObject.wantsMessage));
+    expect(builtObject.enabled, equals(deserializedObject.enabled));
+    expect(builtObject.fullName, equals(deserializedObject.fullName));
+    expect(builtObject.contactType, equals(deserializedObject.contactType));
+
+    {
+      Iterable<Map> lhsPn =
+          builtObject.phones.map((Model.PhoneNumber pn) => pn.asMap);
+      Iterable<Map> rhsPn =
+          deserializedObject.phones.map((Model.PhoneNumber pn) => pn.asMap);
+
+      expect(lhsPn, equals(rhsPn));
+    }
+
+    {
+      Iterable<Map> lhsEp =
+          builtObject.endpoints.map((Model.MessageEndpoint ep) => ep.asMap);
+      Iterable<Map> rhsEp = deserializedObject.endpoints
+          .map((Model.MessageEndpoint ep) => ep.asMap);
+
+      expect(lhsEp, equals(rhsEp));
+    }
+
+    expect(builtObject.distributionList,
+        equals(deserializedObject.distributionList));
+    expect(
+        builtObject.backupContacts, equals(deserializedObject.backupContacts));
+    expect(builtObject.departments, equals(deserializedObject.departments));
+    expect(
+        builtObject.emailaddresses, equals(deserializedObject.emailaddresses));
+    expect(builtObject.handling, equals(deserializedObject.handling));
+    expect(builtObject.infos, equals(deserializedObject.infos));
+    expect(builtObject.titles, equals(deserializedObject.titles));
+    expect(builtObject.relations, equals(deserializedObject.relations));
+    expect(builtObject.responsibilities,
+        equals(deserializedObject.responsibilities));
+    expect(builtObject.tags, equals(deserializedObject.tags));
+    expect(builtObject.workhours, equals(deserializedObject.workhours));
+    expect(builtObject.messagePrerequisites,
+        equals(deserializedObject.messagePrerequisites));
+  }
+
+  static Model.Contact buildObject() {
     final int receptionID = 2;
     final int contactID = 2;
     final bool wantsMessages = false;
@@ -102,5 +152,7 @@ abstract class ModelContact {
     expect(builtObject.tags, equals(tags));
     expect(builtObject.workhours, equals(workhours));
     expect(builtObject.messagePrerequisites, equals(messagePrerequisites));
+
+    return builtObject;
   }
 }
