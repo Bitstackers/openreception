@@ -174,18 +174,18 @@ class CalendarEditor extends ViewWidget {
 
   /**
    * Setup the widget accordingly to where it was opened from. [from] MUST be
-   * the [Widget] that activated CalendarEditor.
+   * the [Controller.Widget] that activated CalendarEditor.
    *
    * This widget is only ever opened from other widgets, and as such we need to
    * know who activated us, in order to properly know how to find and deal
    * with the calendar entry we're either deleting/editing or creating.
    */
-  void _setup(Widget from, Cmd cmd) {
+  void _setup(Controller.Widget from, Controller.Cmd cmd) {
     ORModel.CalendarEntry entry;
 
     switch(from) {
-      case Widget.ContactCalendar:
-        if(cmd == Cmd.EDIT) {
+      case Controller.Widget.ContactCalendar:
+        if(cmd == Controller.Cmd.EDIT) {
           entry = _contactCalendar.selectedCalendarEntry;
 
           _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
@@ -205,8 +205,8 @@ class CalendarEditor extends ViewWidget {
           _render(entry);
         }
         break;
-      case Widget.ReceptionCalendar:
-        if(cmd == Cmd.EDIT) {
+      case Controller.Widget.ReceptionCalendar:
+        if(cmd == Controller.Cmd.EDIT) {
           entry = _receptionCalendar.selectedCalendarEntry;
 
           _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';

@@ -18,7 +18,6 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../enums.dart';
 import '../lang.dart' as Lang;
 
 import 'package:markdown/markdown.dart' as Markdown;

@@ -13,6 +13,38 @@
 
 part of controller;
 
+enum Context {Home,
+              Homeplus,
+              CalendarEdit,
+              Messages}
+
+enum Widget {AgentInfo,
+             CalendarEditor,
+             ContactCalendar,
+             ContactData,
+             ContactSelector,
+             GlobalCallQueue,
+             MessageArchive,
+             MessageArchiveEdit,
+             MessageArchiveFilter,
+             MessageCompose,
+             MyCallQueue,
+             ReceptionAddresses,
+             ReceptionAltNames,
+             ReceptionBankInfo,
+             ReceptionCalendar,
+             ReceptionCommands,
+             ReceptionEmail,
+             ReceptionMiniWiki,
+             ReceptionOpeningHours,
+             ReceptionProduct,
+             ReceptionSalesmen,
+             ReceptionSelector,
+             ReceptionTelephoneNumbers,
+             ReceptionType,
+             ReceptionVATNumbers,
+             ReceptionWebsites}
+
 final Map<String, Destination> _destinations =
   {'${Context.CalendarEdit}-${Widget.CalendarEditor}'       : new Destination(Context.CalendarEdit, Widget.CalendarEditor),
    '${Context.Home}-${Widget.ContactCalendar}'              : new Destination(Context.Home, Widget.ContactCalendar),
@@ -41,7 +73,7 @@ final Map<String, Destination> _destinations =
 
 /**
  * A [Destination] points to a location in the application. It does this by
- * utilizing the [context] and [widget] enum's.
+ * utilizing the [Context] and [Widget] enum's.
  *
  * The optional [from] [Destination] MAY be used to inform a widget from where
  * it was brought into focus.

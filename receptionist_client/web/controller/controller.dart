@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import '../enums.dart';
 import '../model/model.dart' as Model;
 
 import 'package:okeyee/okeyee.dart';
@@ -37,6 +36,10 @@ part 'controller-reception.dart';
 part 'controller-user.dart';
 
 const String libraryName = 'controller';
+
+enum Cmd {EDIT,
+          NEW,
+          SAVE}
 
 class ControllerError implements Exception {
 

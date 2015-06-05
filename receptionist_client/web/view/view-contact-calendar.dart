@@ -75,7 +75,7 @@ class ContactCalendar extends ViewWidget {
    * If a contact is selected in [_contactSelector], then navigate to the
    * calendar editor with [cmd] set.
    */
-  void _maybeNavigateToEditor(Cmd cmd) {
+  void _maybeNavigateToEditor(Controller.Cmd cmd) {
     if(_contactSelector.selectedContact.isNotEmpty) {
       _navigate.goCalendarEdit(from: _myDestination..cmd = cmd);
     }
@@ -90,8 +90,8 @@ class ContactCalendar extends ViewWidget {
     _hotKeys.onAltK.listen(_activateMe);
 
     _ui.onClick .listen(_activateMe);
-    _ui.onEdit  .listen((_) => _maybeNavigateToEditor(Cmd.EDIT));
-    _ui.onNew   .listen((_) => _maybeNavigateToEditor(Cmd.NEW));
+    _ui.onEdit  .listen((_) => _maybeNavigateToEditor(Controller.Cmd.EDIT));
+    _ui.onNew   .listen((_) => _maybeNavigateToEditor(Controller.Cmd.NEW));
 
     _notification.onCalendarChange.listen(_updateOnChange);
 

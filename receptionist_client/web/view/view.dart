@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../enums.dart'; // TODO (KRC): Refactor out
 import '../lang.dart';
 import '../model/model.dart' as Model;
 

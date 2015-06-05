@@ -31,8 +31,8 @@ class AgentInfo extends ViewWidget {
             Controller.Notification this._notification) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = AgentState.UNKNOWN;
-    _ui.alertState = AlertState.OFF;
+    _ui.agentState = Model.AgentState.UNKNOWN;
+    _ui.alertState = Model.AlertState.OFF;
     _ui.portrait = 'images/face.png';
 
     Map userMap = Model.User.currentUser.toJson();
@@ -75,16 +75,16 @@ class AgentInfo extends ViewWidget {
   void _updateUserState(Model.UserStatus userStatus) {
     switch(userStatus.state) {
       case 'busy':
-        _ui.agentState = AgentState.BUSY;
+        _ui.agentState = Model.AgentState.BUSY;
         break;
       case 'idle':
-        _ui.agentState = AgentState.IDLE;
+        _ui.agentState = Model.AgentState.IDLE;
         break;
       case 'paused':
-        _ui.agentState = AgentState.PAUSED;
+        _ui.agentState = Model.AgentState.PAUSED;
         break;
       default:
-        _ui.agentState = AgentState.UNKNOWN;
+        _ui.agentState = Model.AgentState.UNKNOWN;
         break;
     }
   }

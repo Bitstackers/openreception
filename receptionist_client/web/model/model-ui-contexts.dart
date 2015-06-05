@@ -25,14 +25,12 @@ class UIContexts {
    * Constructor.
    */
   UIContexts() {
-    _contextMap = {Context.CalendarEdit: contextCalendarEdit,
-                   Context.Home        : contextHome,
-                   Context.Homeplus    : contextHomeplus,
-                   Context.Messages    : contextMessages};
+    _contextMap = {Controller.Context.CalendarEdit: contextCalendarEdit,
+                   Controller.Context.Home        : contextHome,
+                   Controller.Context.Homeplus    : contextHomeplus,
+                   Controller.Context.Messages    : contextMessages};
   }
 
-  /// TODO (TL): get rid of the String selectors. Move to constants.dart or
-  /// something similar. Perhaps use/abuse the navigation Context enum?
   HtmlElement get contextCalendarEdit => querySelector('#context-calendar-edit');
   HtmlElement get contextHome         => querySelector('#context-home');
   HtmlElement get contextHomeplus     => querySelector('#context-homeplus');

@@ -13,6 +13,14 @@
 
 part of model;
 
+enum AgentState {BUSY,
+                 IDLE,
+                 PAUSED,
+                 UNKNOWN}
+
+enum AlertState {OFF,
+                 ON}
+
 /**
  * Provides methods for manipulating the agent info UIX parts.
  */
