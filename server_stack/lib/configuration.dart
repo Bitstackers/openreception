@@ -17,6 +17,10 @@ abstract class StandardConfig {
 
 class CallFlowControl extends StandardConfig {
   final String dialoutPrefix = '';
+
+  /// The user contexts to load peers from. All other contexts will be ignored.
+  final Iterable<String> peerContexts =
+    ['default', 'receptions', 'test-receptions'];
 }
 
 class ConfigServer extends StandardConfig {
