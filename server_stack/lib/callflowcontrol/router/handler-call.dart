@@ -344,7 +344,6 @@ abstract class Call {
               (outboundCallWithUuid, defaultValue : () => null)
               .then((ESL.Event event) =>
                 Model.CallList.instance.get(event.uniqueID));
-          outboundCall.timeout(new Duration (seconds : 10));
 
           /// Perform the origination via the PBX.
           return Controller.PBX.transferUUIDToExtension(uuid, extension, user)
@@ -364,19 +363,7 @@ abstract class Call {
 
                 return new shelf.Response.ok(JSON.encode(call));
               })
-              .catchError((error, stackTrace) {
-                log.severe(error, stackTrace);
-                Model.UserStatusList.instance.update(
-                    user.ID,
-                    ORModel.UserState.Unknown);
-              });
-            })
-            .catchError((error, stackTrace) {
-              log.severe(error, stackTrace);
-              Model.UserStatusList.instance.update(
-                  user.ID,
-                  ORModel.UserState.Unknown);
-
+              .timeout(new Duration (seconds : 3));
             });
           })
           .catchError((error, stackTrace) {
