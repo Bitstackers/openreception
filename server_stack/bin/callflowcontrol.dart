@@ -105,9 +105,8 @@ bool showHelp() => parsedArgs['help'];
 
 void loadPeerListFromPacket (ESL.Response response) {
 
-  bool peerIsInAcceptedContext(ESL.Peer peer) {
-    return peer.context == 'default';
-  }
+  bool peerIsInAcceptedContext(ESL.Peer peer) =>
+    Configuration.callFlowControl.peerContexts.contains(peer.context);
 
   ESL.PeerList loadedList = new ESL.PeerList.fromMultilineBuffer(response.rawBody);
 
@@ -115,5 +114,6 @@ void loadPeerListFromPacket (ESL.Response response) {
     Model.PeerList.instance.add(peer);
   });
 
-  log.info('Loaded ${Model.PeerList.instance.length} peers from FreeSWITCH');
+  log.info('Loaded ${Model.PeerList.instance.length} of ${loadedList.length} '
+           'peers from FreeSWITCH');
 }
