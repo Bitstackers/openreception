@@ -1,5 +1,30 @@
 part of callflowcontrol.controller;
 
+class PBXException implements Exception {
+  final String message;
+  const PBXException([this.message = ""]);
+
+  @override
+  String toString() => "PBXException: $message";
+}
+
+class NoAnswer extends PBXException {
+
+  const NoAnswer([message = ""]);
+
+  @override
+  String toString() => "NoAnswer: $message";
+}
+
+
+class CallRejected extends PBXException {
+
+  const CallRejected([message = ""]);
+
+  @override
+  String toString() => "CallRejected: $message";
+}
+
 abstract class PBX {
 
   static final Logger log             = new Logger('${libraryName}.PBX');
