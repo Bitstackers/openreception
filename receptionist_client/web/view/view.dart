@@ -35,8 +35,6 @@ part 'view-global-call-queue.dart';
 part 'view-message-compose.dart';
 part 'view-hint.dart';
 part 'view-message-archive.dart';
-part 'view-message-archive-edit.dart';
-part 'view-message-archive-filter.dart';
 part 'view-my-call-queue.dart';
 part 'view-popup.dart';
 part 'view-reception-addresses.dart';

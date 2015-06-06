@@ -52,8 +52,6 @@ part 'model-ui-contexts.dart';
 part 'model-ui-global-call-queue.dart';
 part 'model-ui-hint.dart';
 part 'model-ui-message-archive.dart';
-part 'model-ui-message-archive-edit.dart';
-part 'model-ui-message-archive-filter.dart';
 part 'model-ui-message-compose.dart';
 part 'model-ui-my-call-queue.dart';
 part 'model-ui-reception-addresses.dart';

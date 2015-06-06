@@ -31,8 +31,6 @@ class ReceptionistclientReady {
   Hint                                  _help;
   Map<String, String>                   _langMap;
   MessageArchive                        _messageArchive;
-  MessageArchiveEdit                    _messageArchiveEdit;
-  MessageArchiveFilter                  _messageArchiveFilter;
   MessageCompose                        _messageCompose;
   Controller.Message                    _messageController;
   MyCallQueue                           _myCallQueue;
@@ -183,14 +181,6 @@ class ReceptionistclientReady {
     _messageArchive = new MessageArchive
         (new Model.UIMessageArchive(querySelector('#message-archive')),
          new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchive));
-
-    _messageArchiveEdit = new MessageArchiveEdit
-        (new Model.UIMessageArchiveEdit(querySelector('#message-archive-edit')),
-         new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchiveEdit));
-
-    _messageArchiveFilter = new MessageArchiveFilter
-        (new Model.UIMessageArchiveFilter(querySelector('#message-archive-filter')),
-         new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchiveFilter));
 
     _messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),

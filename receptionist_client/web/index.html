@@ -574,117 +574,39 @@
       -->
       <section IgnoreClickFocus id="context-messages" class="context modal display-flex-row">
 
-        <div IgnoreClickFocus class="display-flex-column layout-margin-right" style="flex-grow: 1;">
+        <!--
+          #message-archive widget
 
-          <!--
-            #message-archive-filter widget
+          Role:
+            Show the message archive.
 
-            Role:
-              Show the message archive filter widget.
+          Visibility:
+            Is controlled by the visibility of #context-messages.
 
-            Visibility:
-              Is controlled by the visibility of #context-messages.
+          Tabindex:
+            None set.
+        -->
+        <div id="message-archive" class="generic-widget">
+          <style scoped>
+            #message-archive {
+              flex-grow: 1;
+            }
 
-            Tabindex:
-              None set.
-          -->
-          <div id="message-archive-filter" class="generic-widget">
-            <style scoped>
-              #message-archive-filter {
-                flex-grow: 2;
-              }
+            #message-archive .generic-widget-body {
+              outline: 0;
+            }
+          </style>
 
-              #message-archive-filter .generic-widget-body {
-                outline: 0;
-              }
-            </style>
+          <div class="spinning-focus-box"></div>
+          <!--<div class="hint hidden"></div>-->
 
-            <div class="spinning-focus-box"></div>
-            <!--<div class="hint hidden"></div>-->
-
-            <h4 class="generic-widget-headline">
-              <span data-lang-text="message-archive-filter-header">::message archive filter::</span>
-              <span class="extra-header"></span>
-            </h4>
-            <div class="generic-widget-body" tabindex="-1">
-              message-archive-filter
-            </div>
+          <h4 class="generic-widget-headline">
+            <span data-lang-text="message-archive-header">::message archive::</span>
+            <span class="extra-header"></span>
+          </h4>
+          <div class="generic-widget-body" tabindex="-1">
+            message-archive table
           </div>
-
-          <!--
-            #message-archive-edit widget
-
-            Role:
-              Show the message archive edit widget.
-
-            Visibility:
-              Is controlled by the visibility of #context-messages.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="message-archive-edit" class="generic-widget layout-margin-top">
-            <style scoped>
-              #message-archive-edit {
-                flex-grow: 3;
-              }
-
-              #message-archive-edit .generic-widget-body {
-                outline: 0;
-              }
-            </style>
-
-            <div class="spinning-focus-box"></div>
-            <!--<div class="hint hidden"></div>-->
-
-            <h4 class="generic-widget-headline">
-              <span data-lang-text="message-archive-edit-header">::message archive edit::</span>
-              <span class="extra-header"></span>
-            </h4>
-            <div class="generic-widget-body" tabindex="-1">
-              message-archive-edit
-            </div>
-          </div>
-
-        </div>
-
-        <div IgnoreClickFocus class="display-flex-row" style="flex-grow: 3;">
-
-          <!--
-            #message-archive widget
-
-            Role:
-              Show the message archive.
-
-            Visibility:
-              Is controlled by the visibility of #context-messages.
-
-            Tabindex:
-              None set.
-          -->
-          <div id="message-archive" class="generic-widget">
-            <style scoped>
-              #message-archive {
-                flex-grow: 1;
-              }
-
-              #message-archive .generic-widget-body {
-                outline: 0;
-              }
-            </style>
-
-            <div class="spinning-focus-box"></div>
-            <!--<div class="hint hidden"></div>-->
-
-            <h4 class="generic-widget-headline">
-              <span data-lang-text="message-archive-header">::message archive::</span>
-              <span class="extra-header"></span>
-            </h4>
-            <div class="generic-widget-body" tabindex="-1">
-              message-archive table
-            </div>
-          </div>
-
         </div>
 
       </section>
