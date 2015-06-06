@@ -71,6 +71,7 @@ abstract class PBX {
   static Future<String> createAgentChannel (SharedModel.User user) {
     return Model.PBXClient.api('create_uuid').then((ESL.Response response) {
       final String new_call_uuid = response.rawBody;
+      final String destination = 'user/${user.peer}';
 
       log.finest ('New uuid: $new_call_uuid');
       log.finest ('Dialing receptionist at user/${user.peer}');
@@ -82,15 +83,33 @@ abstract class PBX {
                                   'originate_timeout=$timeOutSeconds,'
                                   'origination_caller_id_name=$callerID,'
                                   'origination_caller_id_number=$callerID}'
-                                  'user/${user.peer}'
+                                  '${destination}'
                                   ' &park()')
        .then((ESL.Response response) {
+         var error;
+
          if (response.status == ESL.Response.OK) {
            return new_call_uuid;
-         } else {
-           return new Future.error(
-               new StateError('PBX responded: ${response.status}'));
          }
+
+
+         else if (response.rawBody.contains('CALL_REJECTED')) {
+           error = new CallRejected('destination: $destination');
+         }
+
+         else if (response.rawBody.contains('NO_ANSWER')) {
+           error = new NoAnswer('destination: $destination');
+         }
+
+         else {
+           error = new PBXException('Creation of agent channel failed '
+               '($destination). PBX responded: ${response.status}');
+         }
+
+         log.warning('Bad reply from PBX', error);
+
+         return new Future.error(error);
+
        });
      });
   }
@@ -236,11 +255,6 @@ abstract class PBX {
    * TODO: Log NO_ANSWER events and figure out why they are coming.
    */
   static Future park (Model.Call call, SharedModel.User user) {
-    return transfer(call, _parkinglot (user));
+    return transfer(call, 'park');
   }
-
-  /**
-   * Parking lot identifier for a user.
-   */
-  static String _parkinglot (SharedModel.User user) => 'park+${user.ID}';
 }
