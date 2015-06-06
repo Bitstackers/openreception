@@ -365,20 +365,44 @@ abstract class Call {
               })
               .timeout(new Duration (seconds : 3));
             });
-          })
-          .catchError((error, stackTrace) {
-            log.severe(error, stackTrace);
-            Model.UserStatusList.instance.update(
-                user.ID,
-                ORModel.UserState.Unknown);
-        });
+          });
         })
         .catchError((error, stackTrace) {
+          shelf.Response response;
+
           Model.UserStatusList.instance.update
             (user.ID, ORModel.UserState.Unknown);
 
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError();
+          if (error is Controller.NoAnswer) {
+            response = new shelf.Response(400, body : 'Phone is not reachable'
+              ' (no answer). Check autoanswer.');
+          }
+
+          else if (error is TimeoutException) {
+            int channelCount =
+              Model.ChannelList.instance.activeChannelCount(user.peer);
+
+            if (channelCount > 0) {
+              log.shout('Phone has lingering channels, and '
+                         'CallFlow state may be inconsistent');
+            }
+
+            response = new shelf.Response.internalServerError
+              (body : 'Failed to originate to'
+                ' $extension. Check PBX configuration.');
+          }
+
+          else if (error is Controller.CallRejected) {
+            response =  new shelf.Response(400, body : 'Phone is not reachable'
+            ' (call rejected). Check configuration.');
+          }
+
+          else {
+            log.severe(error, stackTrace);
+            response = new shelf.Response.internalServerError();
+          }
+
+          return response;
         });
       });
   }
