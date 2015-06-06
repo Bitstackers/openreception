@@ -13,6 +13,11 @@ abstract class PeerList implements IterableBase<Peer> {
   static registerPeer (String peerID, String contact) {
     ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
 
+    if (peer == null) {
+      log.fine('Skipping registration of peer ($peerID) from ignored context;');
+      return;
+    }
+
     peer.register (contact);
 
     Notification.broadcastEvent
@@ -22,6 +27,12 @@ abstract class PeerList implements IterableBase<Peer> {
 
   static unRegisterPeer (String peerID) {
     ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
+
+    if (peer == null) {
+      log.fine('Skipping registration of peer ($peerID) from ignored context;');
+      return;
+    }
+
     peer.unregister();
     Notification.broadcastEvent
       (new OREvent.PeerState
