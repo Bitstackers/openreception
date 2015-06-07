@@ -286,26 +286,17 @@ abstract class Contact {
       }
 
       // Department
-      if(row.attributes.containsKey (Model.ContactJSONKey.department)) {
-        departments = [row.attributes[Model.ContactJSONKey.department]];
-      }
-      else if (row.attributes.containsKey (Model.ContactJSONKey.departments)) {
+      if (row.attributes.containsKey (Model.ContactJSONKey.departments)) {
         departments = row.attributes[Model.ContactJSONKey.departments];
       }
 
       // Info's
-      if (row.attributes.containsKey (Model.ContactJSONKey.info)) {
-        infos = [row.attributes[Model.ContactJSONKey.info]];
-      }
-      else if (row.attributes.containsKey (Model.ContactJSONKey.infos)) {
+      if (row.attributes.containsKey (Model.ContactJSONKey.infos)) {
         infos = row.attributes[Model.ContactJSONKey.infos];
       }
 
       // Titles
-      if (row.attributes.containsKey (Model.ContactJSONKey.position)) {
-        titles = [row.attributes[Model.ContactJSONKey.position]];
-      }
-      else if (row.attributes.containsKey (Model.ContactJSONKey.titles)) {
+      if (row.attributes.containsKey (Model.ContactJSONKey.titles)) {
         titles = row.attributes[Model.ContactJSONKey.titles];
       }
 
@@ -325,10 +316,7 @@ abstract class Contact {
       }
 
       // Responsiblities
-      if (row.attributes.containsKey (Model.ContactJSONKey.responsibility)) {
-        responsibilities = [row.attributes[Model.ContactJSONKey.responsibility]];
-      }
-      else if(row.attributes.containsKey (Model.ContactJSONKey.responsibilities)) {
+      if(row.attributes.containsKey (Model.ContactJSONKey.responsibilities)) {
         responsibilities = row.attributes[Model.ContactJSONKey.responsibilities];
       }
 
