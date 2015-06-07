@@ -28,7 +28,7 @@ class UIMessageCompose extends UIModel {
   UIMessageCompose(DivElement this._myRoot) {
     _myFocusElement    = _messageTextarea;
     _myFirstTabElement = _callerNameInput;
-    _myLastTabElement  = _draftInput;
+    _myLastTabElement  = _urgentInput;
 
     _haveCalledInput.checked = true;
 
@@ -45,7 +45,6 @@ class UIMessageCompose extends UIModel {
   InputElement         get _callsBackInput     => _root.querySelector('.checks .calls-back');
   InputElement         get _cellphoneInput     => _root.querySelector('.phone-numbers input.cell');
   InputElement         get _companyNameInput   => _root.querySelector('.names input.company');
-  InputElement         get _draftInput         => _root.querySelector('.checks .draft');
   InputElement         get _extensionInput     => _root.querySelector('.phone-numbers input.extension');
   InputElement         get _haveCalledInput    => _root.querySelector('.checks .have-called');
   InputElement         get _landlineInput      => _root.querySelector('.phone-numbers input.landline');
@@ -99,8 +98,7 @@ class UIMessageCompose extends UIModel {
                       _pleaseCallInput.checked ? MessageFlag.PleaseCall  : null,
                       _callsBackInput.checked  ? MessageFlag.willCallBack: null,
                       _haveCalledInput.checked ? MessageFlag.Called      : null,
-                      _urgentInput.checked     ? MessageFlag.Urgent      : null,
-                      _draftInput.checked      ? MessageFlag.Draft       : null
+                      _urgentInput.checked     ? MessageFlag.Urgent      : null
                      ].where((element) => element != null).toList(growable: false),
        'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
 
@@ -196,7 +194,6 @@ class UIMessageCompose extends UIModel {
     _callsBackInput.checked = false;
     _cellphoneInput.value = '';
     _companyNameInput.value = '';
-    _draftInput.checked = false;
     _extensionInput.value = '';
     _haveCalledInput.checked = true;
     _landlineInput.value = '';
@@ -206,7 +203,7 @@ class UIMessageCompose extends UIModel {
 
     _myFocusElement    = _messageTextarea;
     _myFirstTabElement = _callerNameInput;
-    _myLastTabElement  = _draftInput;
+    _myLastTabElement  = _urgentInput;
 
     _toggleButtons(null);
 
@@ -238,7 +235,7 @@ class UIMessageCompose extends UIModel {
     _saveButton.disabled = toggle || _recipientsList.children.isEmpty;
     _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
 
-    _myLastTabElement = toggle ? _draftInput : _sendButton;
+    _myLastTabElement = toggle ? _urgentInput : _sendButton;
   }
 
   /**
