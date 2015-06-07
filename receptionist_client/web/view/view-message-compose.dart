@@ -107,6 +107,7 @@ class MessageCompose extends ViewWidget {
       _log.info('Got an empty contact - undecided on what to do');
     } else {
       _ui.recipients = contact.distributionList;
+      _ui.messagePrerequisites = contact.messagePrerequisites;
     }
   }
 

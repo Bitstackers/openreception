@@ -134,6 +134,13 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
+   * Set the message prerequisites for the current contact.
+   */
+  void set messagePrerequisites(List<String> prerequisites) {
+    _messageTextarea.value = prerequisites.join("\n");
+  }
+
+  /**
    * Return the [ORModel.MessageRecipientList]. May return an empty list object.
    */
   ORModel.MessageRecipientList get recipients {
