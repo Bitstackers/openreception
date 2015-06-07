@@ -7,8 +7,6 @@ part of openreception.model;
 abstract class ContactJSONKey {
   static const receptionID   = 'reception_id';
   static const contactID     = 'contact_id';
-  @deprecated
-  static const department    = 'department';
   static const departments    = 'departments';
   static const wantsMessages = 'wants_messages';
   static const enabled       = 'enabled';
@@ -23,15 +21,9 @@ abstract class ContactJSONKey {
   static const handling = 'handling';
   static const workhours = 'workhours';
   static const tags = 'tags';
-  @deprecated
-  static const info = 'info';
   static const infos = 'infos';
-  @deprecated
-  static const position = 'position';
   static const titles = 'titles';
   static const relations = 'relations';
-  @deprecated
-  static const responsibility = 'responsibility';
   static const responsibilities = 'responsibilities';
 
   static const Contact_LIST = 'contacts';
@@ -56,14 +48,9 @@ class Contact {
   int ID            = noID;
   int receptionID   = Reception.noID;
 
-  @deprecated
-  String department = '';
   bool wantsMessage = true;
   bool enabled      = true;
 
-
-  @deprecated
-  String  info = '';
   String  fullName = '';
   String  contactType = '';
 
@@ -71,14 +58,7 @@ class Contact {
   List<String> backupContacts = [];
   List<String> messagePrerequisites = [];
 
-  @deprecated
-  String position = '';
-
-
-  @deprecated
-  String responsibility = '';
-
-  List<MessageEndpoint>    endpoints = [];
+  List<MessageEndpoint> endpoints = [];
   List<String> tags = new List<String>();
   List<String> emailaddresses = new List<String>();
   List<String> handling = new List<String>();

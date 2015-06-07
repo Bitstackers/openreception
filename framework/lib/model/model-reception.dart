@@ -19,8 +19,6 @@ abstract class ReceptionJSONKey {
   static const String ATTRIBUTES            = 'attributes';
 
   static const String ALT_NAMES             = 'alternatenames';
-  @deprecated
-  static const String CUSTOMER_TYPE         = 'customertype';
   static const String CUSTOMER_TYPES        = 'customertypes';
   static const String PRODUCT               = 'product';
   static const String BANKING_INFO          = 'bankinginformation';
@@ -87,10 +85,6 @@ class Reception extends ReceptionStub {
   List<String> handlingInstructions   = [];
   List<String> openingHours           = [];
   List<String> vatNumbers             = [];
-  @deprecated
-  List<String> get telephonenumbers   => this.telephoneNumbers
-                                           .map((PhoneNumber pn) => pn.value)
-                                           .toList();
   List<String> websites               = [];
   List<String> customerTypes          = [];
   List<PhoneNumber> telephoneNumbers  = [];
@@ -105,8 +99,6 @@ class Reception extends ReceptionStub {
   String greeting;
   String otherData;
   String _shortGreeting = '';
-  @deprecated
-  String customertype; //Use customertypes
   String product;
   bool   enabled = false;
 
@@ -139,12 +131,7 @@ class Reception extends ReceptionStub {
        if (receptionMap[ReceptionJSONKey.ATTRIBUTES] != null) {
          attributes = receptionMap[ReceptionJSONKey.ATTRIBUTES];
 
-         //Temporary workaround for customertype to customerTypes transition.
-         if (attributes.containsKey(ReceptionJSONKey.CUSTOMER_TYPE)) {
-           this.customerTypes = [attributes[ReceptionJSONKey.CUSTOMER_TYPE]];
-         } else {
-           this.customerTypes = attributes[ReceptionJSONKey.CUSTOMER_TYPES];
-         }
+         this.customerTypes = attributes[ReceptionJSONKey.CUSTOMER_TYPES];
 
          //Temporary workaround for telephonenumbers to telephoneNumbers transition.
          if (attributes.containsKey(ReceptionJSONKey.PHONE_NUMBERS)) {
