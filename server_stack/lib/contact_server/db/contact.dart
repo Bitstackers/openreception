@@ -334,7 +334,7 @@ abstract class Contact {
 
       // messagePrerequisites
       if (row.attributes.containsKey (Model.ContactJSONKey.messagePrerequisites)) {
-        messagePrerequisites = [row.attributes[Model.ContactJSONKey.messagePrerequisites]];
+        messagePrerequisites = row.attributes[Model.ContactJSONKey.messagePrerequisites];
       }
 
     }
