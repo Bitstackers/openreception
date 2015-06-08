@@ -243,6 +243,12 @@ void runCallFlowTests() {
 //    test ('originationToHostedNumber',
 //        () => Originate.originationToHostedNumber(receptionist));
 
+    test ('originationOnAgentCallRejected',
+        () => Originate.originationOnAgentCallRejected(receptionist));
+
+    test ('originationOnAgentAutoAnswer',
+        () => Originate.originationOnAgentAutoAnswer(receptionist));
+
     test ('originationToForbiddenNumber',
         () => Originate.originationToForbiddenNumber(receptionist));
 
