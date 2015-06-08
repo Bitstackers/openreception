@@ -252,7 +252,6 @@ void runCallFlowTests() {
     test ('originationToForbiddenNumber',
         () => Originate.originationToForbiddenNumber(receptionist));
 
-    //TODO: Figure out why this fails on the ci-server and not locally
     test ('originationToPeer',
         () => Originate.originationToPeer(receptionist, customer.extension));
   });
