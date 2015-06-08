@@ -1,13 +1,15 @@
 part of openreception.service;
 
+/**
+ * Client for configuation service.
+ */
 class RESTConfiguration {
-
   static final String className = '${libraryName}.RESTConfiguration';
 
   WebService _backend = null;
-  Uri        _host;
+  Uri _host;
 
-  RESTConfiguration (Uri this._host, this._backend);
+  RESTConfiguration(Uri this._host, this._backend);
 
   /**
    * Returns a [ClientConfiguration] object.
@@ -15,8 +17,7 @@ class RESTConfiguration {
   Future<Model.ClientConfiguration> clientConfig() {
     Uri uri = Resource.Config.get(this._host);
 
-    return this._backend.get (uri)
-      .then((String response)
-        => new Model.ClientConfiguration.fromMap(JSON.decode(response)));
+    return this._backend.get(uri).then((String response) =>
+        new Model.ClientConfiguration.fromMap(JSON.decode(response)));
   }
 }
