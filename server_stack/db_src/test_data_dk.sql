@@ -86,6 +86,7 @@ INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumbe
 VALUES (1, 1, 'BitStackers', '12340001',
            'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
            '{
+    "miniwiki": "# BitStackers Mini Wiki\nHer har vi en liste:\n\n* Ting 1\n* Ting 2\n\nOg hvad med et [link til dr.dk](http://dr.dk)?\n\nVi kan også klare **fed** og *skrå* skrift.\n",
     "short_greeting": "",
     "addresses": [
         "For enden af regnbuen",
