@@ -12,11 +12,7 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
   /// Singleton reference.
   Map<int, ORModel.UserStatus> _userStatus = {};
 
-  UserStatusList() {
-    /// Removed keep-alive for now. User connection status is more reliable
-    /// from WebSocket connections.
-    //_checkTimestamps();
-  }
+  UserStatusList();
 
   bool has (int userID) => this._userStatus.containsKey(userID);
 
@@ -60,34 +56,5 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     }
 
     return this._userStatus[userID];
-  }
-
-  Future _checkTimestamps() {
-    List<ORModel.UserStatus> markedForRemoval = [];
-
-    DateTime now = new DateTime.now();
-    this.forEach((ORModel.UserStatus status) {
-      if (status.lastActivity != null) {
-        int secondsSinceLastActivity = status.lastActivity
-          .difference(now).inSeconds.abs();
-        if (secondsSinceLastActivity > keepAliveTimeout.inSeconds){
-          log.info ('User with id ${status.userID} was timed out due to '
-                    'inactivity. Time since last activity: '
-                    '${secondsSinceLastActivity}s');
-
-          //TODO: Check if the user has an active websocket first.
-          this.logout(status.userID);
-          markedForRemoval.add(status);
-        }
-      }
-    });
-
-    if (markedForRemoval.isNotEmpty) {
-      markedForRemoval.forEach((ORModel.UserStatus status) =>
-          this.remove(status.userID));
-      markedForRemoval.clear();
-    }
-
-    return new Future.delayed(keepAliveTimeout, this._checkTimestamps);
   }
 }
