@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides access to methods and fields in the mini wiki UX component.
  */
 class UIReceptionMiniWiki extends UIModel {
   final DivElement           _myRoot;
@@ -50,7 +50,11 @@ class UIReceptionMiniWiki extends UIModel {
    * Add [miniWiki] markdown to the widget.
    */
   set miniWiki(String miniWiki) {
-    _body.setInnerHtml(Markdown.markdownToHtml(miniWiki), validator: _validator);
+    if(miniWiki != null && miniWiki.isNotEmpty) {
+      _body.setInnerHtml(Markdown.markdownToHtml(miniWiki), validator: _validator);
+    } else {
+      _body.text = '';
+    }
   }
 
   /**

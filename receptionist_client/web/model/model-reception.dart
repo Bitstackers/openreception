@@ -54,7 +54,4 @@ class Reception extends ORModel.Reception {
   ReceptionStub toStub() =>
     new ReceptionStub()..ID       = this.ID
                        ..fullName = this.fullName;
-
-  //FIXME: Please, I am sooo broken.
-  String get miniWikiMarkdown => "##FIXME";
 }

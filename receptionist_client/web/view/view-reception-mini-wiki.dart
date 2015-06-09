@@ -67,7 +67,7 @@ class ReceptionMiniWiki extends ViewWidget {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';
-      _ui.miniWiki = reception.miniWikiMarkdown;
+      _ui.miniWiki = reception.miniWiki;
     }
   }
 }
