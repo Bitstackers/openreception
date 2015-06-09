@@ -504,7 +504,8 @@ VALUES
     "infos": ["Yolk author", "Village idiot"],
     "titles": ["Software Developer"],
     "relations": ["Married to Trine Løcke"],
-    "responsibilities": ["Server og client development","Sales"]
+    "responsibilities": ["Server og client development","Sales"],
+    "messagePrerequisites": ["Licenseplate","Customer ID"]
 }',
 '[
     {
@@ -570,7 +571,8 @@ VALUES
     "infos": ["Eyes on the money"],
     "titles": ["CFO"],
     "relations": ["Dad to Thomas Løcke"],
-    "responsibilities": ["Accounting"]
+    "responsibilities": ["Accounting"],
+    "messagePrerequisites": ["Customer number","Invoice number"]
 }',
          '[
             { "value" : "60431990",

@@ -504,7 +504,8 @@ VALUES
     "infos": ["Yolk forfatter", "Landsbytosse"],
     "titles": ["Softwareudvikler"],
     "relations": ["Gift med Trine Løcke"],
-    "responsibilities": ["Server og klient udvikling","Salg"]
+    "responsibilities": ["Server og klient udvikling","Salg"],
+    "messagePrerequisites": ["Nummerplade","Kundenr."]
 }',
 '[
     {
@@ -570,7 +571,8 @@ VALUES
     "infos": ["Kigger efter pengene"],
     "titles": ["CFO"],
     "relations": ["Far til Thomas Løcke"],
-    "responsibilities": ["Regnskab"]
+    "responsibilities": ["Regnskab"],
+    "messagePrerequisites": ["Debitornr.","Fakturanr."]
 }',
          '[
             { "value" : "60431990",
