@@ -30,6 +30,7 @@ abstract class ReceptionJSONKey {
   static const String OTHER                 = 'other';
   static const String PHONE_NUMBERS         = 'telephonenumbers';
   static const String WEBSITES              = 'websites';
+  static const String MINI_WIKI             = 'miniwiki';
 
   static const String RECEPTION_LIST        = 'receptions';
 
@@ -88,6 +89,7 @@ class Reception extends ReceptionStub {
   List<String> websites               = [];
   List<String> customerTypes          = [];
   List<PhoneNumber> telephoneNumbers  = [];
+  String       miniWiki               = '';
 
   String get shortGreeting => this._shortGreeting.isNotEmpty
                                 ? this._shortGreeting
@@ -104,7 +106,7 @@ class Reception extends ReceptionStub {
 
   Map attributes = {};
 
-  // Default intiliazing contructor
+  /// Default initializing contructor
   Reception() : super._null();
 
   Reception.fromMap(Map receptionMap) : super.fromMap(receptionMap) {
@@ -164,7 +166,8 @@ class Reception extends ReceptionStub {
              ..salesMarketingHandling = extractValues(attributes[ReceptionJSONKey.SALES_MARKET_HANDLING])
              .._shortGreeting         = attributes[ReceptionJSONKey.SHORT_GREETING] != null ? attributes[ReceptionJSONKey.SHORT_GREETING] : ''
              ..vatNumbers             = extractValues(attributes[ReceptionJSONKey.VAT_NUMBERS])
-             ..websites               = extractValues(attributes[ReceptionJSONKey.WEBSITES]);
+             ..websites               = extractValues(attributes[ReceptionJSONKey.WEBSITES])
+             ..miniWiki               = attributes[ReceptionJSONKey.MINI_WIKI];
        }
 
     } catch (error, stacktrace) {
@@ -198,7 +201,8 @@ class Reception extends ReceptionStub {
     ReceptionJSONKey.PHONE_NUMBERS         : this.telephoneNumbers
                                              .map((PhoneNumber pn) => pn.asMap)
                                              .toList(growable: false),
-    ReceptionJSONKey.WEBSITES              : this.websites};
+    ReceptionJSONKey.WEBSITES              : this.websites,
+    ReceptionJSONKey.MINI_WIKI             : this.miniWiki};
 
     return {
       ReceptionJSONKey.ID              : this.ID,
