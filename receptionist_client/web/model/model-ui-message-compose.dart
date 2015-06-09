@@ -50,6 +50,7 @@ class UIMessageCompose extends UIModel {
   InputElement         get _landlineInput      => _root.querySelector('.phone-numbers input.landline');
   TextAreaElement      get _messageTextarea    => _root.querySelector('.message textarea');
   InputElement         get _pleaseCallInput    => _root.querySelector('.checks .please-call');
+  DivElement           get _prerequisites      => _root.querySelector('.prerequisites');
   DivElement           get _recipientsDiv      => _root.querySelector('.recipients');
   OListElement         get _recipientsList     => _root.querySelector('.recipients .generic-widget-list');
   ButtonElement        get _saveButton         => _root.querySelector('.buttons .save');
@@ -135,7 +136,14 @@ class UIMessageCompose extends UIModel {
    * Set the message prerequisites for the current contact.
    */
   void set messagePrerequisites(List<String> prerequisites) {
-    _messageTextarea.value = prerequisites.join("\n");
+    final String pre = prerequisites.join(", ");
+
+    if(pre != null && pre.isNotEmpty) {
+      _prerequisites.style.display = '';
+      _prerequisites.text = prerequisites.join(", ");
+    } else {
+      _prerequisites.style.display = 'none';
+    }
   }
 
   /**

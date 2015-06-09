@@ -979,6 +979,12 @@
                     margin-left: 0.3em;
                   }
 
+                  #message-compose .prerequisites {
+                    margin: 0.7em 0.3em 0 0.3em;
+                    color: #ff5621;;
+                    font-weight: bold;
+                  }
+
                   #message-compose .message {
                     flex-grow: 1;
                     margin-top: 0.7em;
@@ -1062,6 +1068,8 @@
                     <input type="text" class="cell" placeholder="::cell phone::" tabindex="-1" data-lang-placeholder="message-compose-cell-phone">
                     <input type="text" class="extension" placeholder="::local extension::" tabindex="-1" data-lang-placeholder="message-compose-local-ext">
                   </div>
+
+                  <div class="prerequisites display-flex-row"></div>
 
                   <div class="message display-flex-row">
                     <textarea class="padding03" placeholder="::message::" tabindex="-1" data-lang-placeholder="message-compose-message"></textarea>
