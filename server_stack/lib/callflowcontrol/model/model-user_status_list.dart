@@ -13,7 +13,9 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
   Map<int, ORModel.UserStatus> _userStatus = {};
 
   UserStatusList() {
-    _checkTimestamps();
+    /// Removed keep-alive for now. User connection status is more reliable
+    /// from WebSocket connections.
+    //_checkTimestamps();
   }
 
   bool has (int userID) => this._userStatus.containsKey(userID);
