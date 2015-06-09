@@ -23,6 +23,7 @@ Map testReception2 = {
   "reception_telephonenumber": "12340001",
   "last_check": 0,
   "attributes": {
+    "miniwiki": "http://nomansland",
     "addresses": [
       "At the end of the rainbow",
       "Lovelace street",
@@ -131,6 +132,7 @@ Map testReception = {
   "reception_telephonenumber": "12340002",
   "last_check": 0,
   "attributes": {
+    "miniwiki": "http://nomansland",
     "short_greeting": "You're speaking with...",
     "addresses": [
       "Lofthouse of Fleetwood Ltd. Maritime Street Fleetwood Lancs. FY7 7LP UK",
