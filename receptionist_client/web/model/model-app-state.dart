@@ -20,7 +20,7 @@ enum AppState {
 }
 
 class AppClientState {
-  ORModel.User        currentUser  = new ORModel.User.empty();
+  ORModel.User        _currentUser = new ORModel.User.empty();
   final Bus<AppState> _stateChange = new Bus<AppState>();
 
   /**
@@ -34,6 +34,16 @@ class AppClientState {
   void changeState(AppState newState) {
     _stateChange.fire(newState);
   }
+
+  /**
+   *
+   */
+  ORModel.User get currentUser => _currentUser;
+
+  /**
+   *
+   */
+  set currentUser(ORModel.User newUser) => _currentUser = newUser;
 
   /**
    * Listen for [AppState] change events.
