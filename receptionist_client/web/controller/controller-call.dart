@@ -19,19 +19,29 @@ enum CallCommand {
 }
 
 class Call {
-  static final Logger log = new Logger ('${libraryName}.Call');
-
-  Bus<CallCommand> _command = new Bus<CallCommand>();
-  Stream<CallCommand> get commandStream => _command.stream;
-
+  final Model.AppClientState      _appState;
+  final Bus<CallCommand>          _command = new Bus<CallCommand>();
+  static final Logger             _log = new Logger ('${libraryName}.Call');
   final ORService.CallFlowControl _service;
 
-  Call(this._service);
+  /**
+   * Constructor.
+   */
+  Call(ORService.CallFlowControl this._service, Model.AppClientState this._appState);
 
+  /**
+   *
+   */
+  Stream<CallCommand> get commandStream => _command.stream;
+
+  /**
+   *
+   */
   Future dial(ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact) {
-    log.info('Dialing ${phoneNumber.value}.');
+     _log.info('Dialing ${phoneNumber.value}.');
 
-    _command.fire(CallCommand.DIAL);
+     _command.fire(CallCommand.DIAL);
+
     return _service.originate(phoneNumber.value, contact.ID, reception.ID)
       .then((ORModel.Call call) {
         _command.fire(CallCommand.DIALSUCCESS);
@@ -40,23 +50,96 @@ class Call {
         return ORModel.Call.activeCall;
       })
       .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
+        _log.severe(error, stackTrace);
         _command.fire(CallCommand.DIALFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
       });
   }
 
-  Future<ORModel.Call> pickupParked (ORModel.Call call) => pickup (call);
+  /**
+   *
+   */
+  Future<ORModel.Call> _firstParkedCall() =>
+    _service.callList().then((Iterable<ORModel.Call> calls) {
+      ORModel.Call parkedCall = calls.firstWhere((ORModel.Call call) =>
+        call.assignedTo == _appState.currentUser.ID &&
+        call.state == ORModel.CallState.Parked, orElse: () => null);
+
+      if (parkedCall != null) {
+        return parkedCall;
+      }
+      else {
+        return ORModel.Call.noCall;
+      }
+   });
+
+  /**
+   *
+   */
+  Future hangup(ORModel.Call call) {
+    _command.fire(CallCommand.HANGUP);
+
+    _log.info('Hanging up $call.');
+
+    return _service.hangup(call.ID)
+      .then((_) => _command.fire(CallCommand.HANGUPSUCCESS))
+      .catchError((error, stackTrace) {
+        _log.severe(error, stackTrace);
+        _command.fire(CallCommand.HANGUPFAILURE);
+
+        return new Future.error(new ControllerError(error.toString()));
+      });
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<ORModel.Call>> listCalls() => _service.callList();
+
+  /**
+   *
+   */
+  Future park(ORModel.Call call) {
+    if (call == ORModel.Call.noCall) {
+      return new Future.value(ORModel.Call.noCall);
+    }
+
+    _command.fire(CallCommand.PARK);
+
+    return _service.park(call.ID)
+      .then((ORModel.Call parkedCall) {
+        _command.fire(CallCommand.PARKSUCCESS);
+
+        ORModel.Call.activeCall = ORModel.Call.noCall;
+        return parkedCall;
+      })
+      .catchError((error, stackTrace) {
+        _log.severe(error, stackTrace);
+        _command.fire(CallCommand.PARKFAILURE);
+
+        return new Future.error(new ControllerError(error.toString()));
+      });
+  }
+
+  /**
+   * Fetches a list of peers.
+   */
+  Future<Iterable<ORModel.Peer>> peerList() =>
+    _service.peerListMaps()
+      .then((Iterable<Map> maps) =>
+        maps.map((Map map) =>
+          new ORModel.Peer.fromMap(map)));
 
   /**
    * Make the service layer perform a pickup request to the
    * call-flow-control server.
    */
   Future<ORModel.Call> pickup(ORModel.Call call) {
-    log.info('Picking up $call.');
-
     _command.fire(CallCommand.PICKUP);
+
+    _log.info('Picking up $call.');
+
     return _service.pickup(call.ID)
       .then((ORModel.Call call) {
         _command.fire(CallCommand.PICKUPSUCCESS);
@@ -65,7 +148,7 @@ class Call {
         return ORModel.Call.activeCall;
       })
       .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
+        _log.severe(error, stackTrace);
         _command.fire(CallCommand.PICKUPFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
@@ -75,8 +158,19 @@ class Call {
   /**
    *
    */
-  Future<ORModel.Call> pickupNext() {
+  Future<ORModel.Call> pickupFirstParkedCall() {
+    return _firstParkedCall().then((ORModel.Call parkedCall) {
 
+      if (parkedCall != null) {
+        this.pickup(parkedCall);
+      }
+    });
+  }
+
+  /**
+   *
+   */
+  Future<ORModel.Call> pickupNext() {
     bool availableForPickup (ORModel.Call call) =>
       call.assignedTo == ORModel.User.noID && !call.locked;
 
@@ -96,66 +190,27 @@ class Call {
   /**
    *
    */
-  Future<ORModel.Call> pickupFirstParkedCall() {
-    return _firstParkedCall().then((ORModel.Call parkedCall) {
+  Future<ORModel.Call> pickupParked (ORModel.Call call) => pickup (call);
 
-      if (parkedCall != null) {
-        this.pickup(parkedCall);
-      }
-    });
-  }
+  /**
+   *
+   */
+  Future _transfer(ORModel.Call source, ORModel.Call destination) {
+    _command.fire(CallCommand.TRANSFER);
 
-  Future hangup(ORModel.Call call) {
-    log.info('Hanging up $call.');
-
-    _command.fire(CallCommand.HANGUP);
-    return _service.hangup(call.ID)
-      .then((_) => _command.fire(CallCommand.HANGUPSUCCESS))
+    return _service.transfer(source.ID, destination.ID)
+      .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
       .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        _command.fire(CallCommand.HANGUPFAILURE);
+        _log.severe(error, stackTrace);
+        _command.fire(CallCommand.TRANSFERFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
       });
   }
 
-  Future park(ORModel.Call call) {
-    if (call == ORModel.Call.noCall) {
-      return new Future.value(ORModel.Call.noCall);
-    }
-
-    _command.fire(CallCommand.PARK);
-
-    return _service.park(call.ID)
-      .then((ORModel.Call parkedCall) {
-        _command.fire(CallCommand.PARKSUCCESS);
-
-        ORModel.Call.activeCall = ORModel.Call.noCall;
-        return parkedCall;
-      })
-      .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        _command.fire(CallCommand.PARKFAILURE);
-
-        return new Future.error(new ControllerError(error.toString()));
-      });
-  }
-
-  Future<ORModel.Call> _firstParkedCall() =>
-    _service.callList().then((Iterable<ORModel.Call> calls) {
-    ORModel.Call parkedCall = calls.firstWhere((ORModel.Call call) =>
-      call.assignedTo == ORModel.User.currentUser.ID &&
-      call.state == ORModel.CallState.Parked, orElse: () => null);
-
-    if (parkedCall != null) {
-      return parkedCall;
-    }
-    else {
-      return ORModel.Call.noCall;
-    }
-   });
-
-
+  /**
+   *
+   */
   Future transferToFirstParkedCall(ORModel.Call source) {
     return _firstParkedCall().then((ORModel.Call parkedCall) {
 
@@ -169,29 +224,4 @@ class Call {
       return null;
     });
   }
-
-  Future _transfer(ORModel.Call source, ORModel.Call destination) {
-    _command.fire(CallCommand.TRANSFER);
-
-    return _service.transfer(source.ID, destination.ID)
-      .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
-      .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        _command.fire(CallCommand.TRANSFERFAILURE);
-
-        return new Future.error(new ControllerError(error.toString()));
-      });
-    }
-
-  Future<Iterable<ORModel.Call>> listCalls() => _service.callList();
-
-  /**
-   * Fetches a list of peers.
-   */
-  Future<Iterable<ORModel.Peer>> peerList() =>
-    _service.peerListMaps()
-      .then((Iterable<Map> maps) =>
-        maps.map((Map map) =>
-          new ORModel.Peer.fromMap(map)));
-
 }

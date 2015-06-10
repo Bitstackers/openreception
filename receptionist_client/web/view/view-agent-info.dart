@@ -18,15 +18,17 @@ part of view;
  * currently logged in and how many are active/paused.
  */
 class AgentInfo extends ViewWidget {
-  final Logger            _log = new Logger('$libraryName.AgentInfo');
-  Controller.Notification _notification;
-  final Model.UIAgentInfo _uiModel;
-  final Controller.User   _userController;
+  final Model.AppClientState _appState;
+  final Logger               _log = new Logger('$libraryName.AgentInfo');
+  Controller.Notification    _notification;
+  final Model.UIAgentInfo    _uiModel;
+  final Controller.User      _userController;
 
   /**
    * Constructor.
    */
   AgentInfo(Model.UIAgentInfo this._uiModel,
+            Model.AppClientState this._appState,
             Controller.User this._userController,
             Controller.Notification this._notification) {
     _ui.activeCount = 0;
@@ -35,14 +37,14 @@ class AgentInfo extends ViewWidget {
     _ui.alertState = Model.AlertState.OFF;
     _ui.portrait = 'images/face.png';
 
-    Map userMap = ORModel.User.currentUser.toJson();
+    Map userMap = _appState.currentUser.toJson();
     if (userMap.containsKey('remote_attributes')) {
       if ((userMap['remote_attributes'] as Map).containsKey('picture')) {
         _ui.portrait = userMap['remote_attributes']['picture'];
       }
     }
 
-    _userController.getState(ORModel.User.currentUser).then(_updateUserState);
+    _userController.getState(_appState.currentUser).then(_updateUserState);
 
     _updateCounters();
 
@@ -59,14 +61,14 @@ class AgentInfo extends ViewWidget {
    * Set the users state to [AgentState.IDLE].
    */
   void _setIdle(_) {
-    _userController.setIdle(ORModel.User.currentUser).then(_updateUserState);
+    _userController.setIdle(_appState.currentUser).then(_updateUserState);
   }
 
   /**
    * Set the users state to [AgentState.PAUSED].
    */
   void _setPaused(_) {
-    _userController.setPaused(ORModel.User.currentUser).then(_updateUserState);
+    _userController.setPaused(_appState.currentUser).then(_updateUserState);
   }
 
   /**
@@ -97,7 +99,7 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
-      if(userStatus.userID == ORModel.User.currentUser.ID) {
+      if(userStatus.userID == _appState.currentUser.ID) {
         _updateUserState(userStatus);
       }
       _updateCounters();

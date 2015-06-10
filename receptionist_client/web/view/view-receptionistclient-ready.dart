@@ -140,8 +140,9 @@ class ReceptionistclientReady {
 
     _agentInfo = new AgentInfo
         (new Model.UIAgentInfo(querySelector('#agent-info')),
-        _userController,
-        _notification);
+         _appState,
+         _userController,
+         _notification);
 
     _contactCalendar = new ContactCalendar
         (uiContactCalendar,
@@ -187,6 +188,7 @@ class ReceptionistclientReady {
 
     _messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),
+         _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.MessageCompose),
          uiContactSelector,
          uiReceptionSelector,
@@ -196,6 +198,7 @@ class ReceptionistclientReady {
 
     _myCallQueue = new MyCallQueue
         (new Model.UIMyCallQueue(querySelector('#my-call-queue'), _langMap),
+         _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.MyCallQueue),
          _notification,
          _callController);

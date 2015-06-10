@@ -17,6 +17,7 @@ part of view;
  * Component for creating/editing and saving/sending messages.
  */
 class MessageCompose extends ViewWidget {
+  final Model.AppClientState      _appState;
   final Model.UIContactSelector   _contactSelector;
   final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.MessageCompose');
@@ -30,6 +31,7 @@ class MessageCompose extends ViewWidget {
    * Constructor.
    */
   MessageCompose(Model.UIMessageCompose this._uiModel,
+                 Model.AppClientState this._appState,
                  Controller.Destination this._myDestination,
                  Model.UIContactSelector this._contactSelector,
                  Model.UIReceptionSelector this._receptionSelector,
@@ -79,7 +81,7 @@ class MessageCompose extends ViewWidget {
       ..flags      = messageMap['flags']
       ..createdAt  = new DateTime.now()
       ..caller     = callerInfo
-      ..sender     = ORModel.User.currentUser;
+      ..sender     = _appState.currentUser;
   }
 
   /**

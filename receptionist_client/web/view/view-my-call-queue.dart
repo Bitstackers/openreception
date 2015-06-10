@@ -19,6 +19,7 @@ part of view;
  * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class MyCallQueue extends ViewWidget {
+  final Model.AppClientState    _appState;
   final Controller.Destination  _myDestination;
   final Model.UIMyCallQueue     _uiModel;
   final Controller.Call         _callController;
@@ -28,6 +29,7 @@ class MyCallQueue extends ViewWidget {
    * Constructor.
    */
   MyCallQueue(Model.UIMyCallQueue this._uiModel,
+              Model.AppClientState this._appState,
               Controller.Destination this._myDestination,
               Controller.Notification this._notifications,
               Controller.Call this._callController) {
@@ -54,7 +56,7 @@ class MyCallQueue extends ViewWidget {
    * Add, remove, update the queue list, depending on the [call] state.
    */
   void _handleCallStateChanges(ORModel.Call call) {
-    if (call.assignedTo != ORModel.User.currentUser.ID) {
+    if (call.assignedTo != _appState.currentUser.ID) {
       return;
     }
 
@@ -82,7 +84,7 @@ class MyCallQueue extends ViewWidget {
    */
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
-        call.assignedTo == ORModel.User.currentUser.ID &&
+        call.assignedTo == _appState.currentUser.ID &&
         call.state != ORModel.CallState.Transferred;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {

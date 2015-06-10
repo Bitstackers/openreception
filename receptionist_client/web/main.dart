@@ -86,7 +86,7 @@ main() async {
     });
 
     if(token != null) {
-      ORModel.User.currentUser = await getUser(clientConfig.authServerUri, token);
+      appState.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient = new ORTransport.WebSocketClient();
       notification = new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
@@ -108,7 +108,7 @@ main() async {
 
 
 
-        observers(controllerUser);
+        observers(controllerUser, appState);
 
         Future rRV = registerReadyView(appState,
                                        clientConfig,
@@ -117,8 +117,8 @@ main() async {
                                        notification,
                                        language,
                                        token);
-        Future lCS = loadCallState(callFlowControl);
-        Future sP = controllerUser.setPaused(ORModel.User.currentUser);
+        Future lCS = loadCallState(callFlowControl, appState);
+        Future sP = controllerUser.setPaused(appState.currentUser);
 
         Future.wait([rRV, lCS, sP]).then((_) {
           appState.changeState(Model.AppState.READY);
@@ -194,11 +194,11 @@ Future<ORModel.User> getUser(Uri authServerUri, String token) {
 /**
  * Load call state for current user.
  */
-Future loadCallState(ORService.CallFlowControl callFlowControl) {
+Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientState appState) {
   return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
     ORModel.Call myActiveCall =
       calls.firstWhere((ORModel.Call call) =>
-          call.assignedTo == ORModel.User.currentUser.ID &&
+          call.assignedTo == appState.currentUser.ID &&
           call.state      == ORModel.CallState.Speaking, orElse: () => null);
 
     if(myActiveCall != null) {
@@ -214,13 +214,13 @@ Future loadCallState(ORService.CallFlowControl callFlowControl) {
  * responsible for popping a warning on refresh/page close and logging out the
  * user when she exits the application.
  */
-void observers(Controller.User controllerUser) {
+void observers(Controller.User controllerUser, Model.AppClientState appState) {
   windowOnBeforeUnload = window.onBeforeUnload.listen((BeforeUnloadEvent event) {
     event.returnValue = '';
   });
 
   windowOnUnload = window.onUnload.listen((_) {
-    controllerUser.setLoggedOut(ORModel.User.currentUser);
+    controllerUser.setLoggedOut(appState.currentUser);
   });
 }
 
@@ -280,7 +280,7 @@ Future registerReadyView(Model.AppClientState appState,
              receptionController,
              sortedReceptions,
              controllerUser,
-             new Controller.Call(callFlowControl),
+             new Controller.Call(callFlowControl, appState),
              notification,
              messageController,
              popup,
