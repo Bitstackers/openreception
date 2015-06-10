@@ -6,8 +6,12 @@ import 'dart:html';
 
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
+import 'package:openreception_framework/service.dart' as ORService;
+import 'package:openreception_framework/service-html.dart' as Transport;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 import 'configuration.dart';
+import 'controller.dart' as Controller;
 import 'model.dart';
 
 part 'requests/calendar.dart';
@@ -18,6 +22,10 @@ part 'requests/organization.dart';
 part 'requests/reception.dart';
 part 'requests/reception_contact.dart';
 part 'requests/user.dart';
+
+Controller.Reception receptionController =
+  new Controller.Reception(new ORService.RESTManagementStore
+    (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
 
 class HttpMethod {
   static const String GET = 'GET';

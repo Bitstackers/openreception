@@ -3,6 +3,7 @@ library model;
 import 'dart:convert';
 
 import 'package:libdialplan/libdialplan.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 import 'logger.dart' as log;
 import 'utilities.dart';
