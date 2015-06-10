@@ -41,8 +41,8 @@ class Call {
   static const int    nullReceptionID = 0;
   static final Call noCall = new Call.empty();
 
-  Bus<CallState> _callState = new Bus<CallState>();
-  Stream<CallState> get callState => _callState.stream;
+  Bus<String> _callState = new Bus<String>();
+  Stream<String> get callState => _callState.stream;
 
   static Call _activeCall = new Call.empty();
   static Call get activeCall => _activeCall;
