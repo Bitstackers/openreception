@@ -112,14 +112,14 @@ class CallList extends IterableBase<Call> {
 
   Call requestCall(user) =>
     //TODO: Implement a real algorithm for selecting calls.
-    this.firstWhere((Call call) => call.assignedTo == ORModel.User.nullID &&
+    this.firstWhere((Call call) => call.assignedTo == ORModel.User.noID &&
       !call.locked, orElse: () => throw new NotFound ("No calls available"));
 
   Call requestSpecificCall(String callID, ORModel.User user )  {
 
     Call call = this.get(callID);
 
-    if (![user.ID, ORModel.User.nullID].contains(call.assignedTo)) {
+    if (![user.ID, ORModel.User.noID].contains(call.assignedTo)) {
       log.warning('Call ${callID} already assigned to uid: ${call.assignedTo}');
       throw new Forbidden(callID);
     } else if (call.locked) {
@@ -301,7 +301,7 @@ class CallList extends IterableBase<Call> {
 
     int userID  = event.contentAsMap.containsKey('variable_owner')
                    ? int.parse(event.field('variable_owner'))
-                   : ORModel.User.nullID;
+                   : ORModel.User.noID;
 
     Call createdCall = new Call()
         ..ID = event.uniqueID

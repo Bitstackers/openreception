@@ -301,7 +301,7 @@ LIMIT 1;
   };
 
   static _rowToCalendarEntry (var row) =>
-    new Model.CalendarEntry.forContact(row.contact_id, row.reception_id)
+    new Model.CalendarEntry.contact(row.contact_id, row.reception_id)
         ..ID = row.id
         ..beginsAt = row.start
         ..until = row.stop
