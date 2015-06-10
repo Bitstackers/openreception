@@ -21,6 +21,11 @@ class User {
 
   static Future<User> load (String identity, Storage.User userStore) => userStore.get (identity);
 
+  /**
+   * Constructor for creating an empty object.
+   */
+  User.empty();
+
   Map get asSender =>
       { 'name'    : this.name,
         'id'      : this.ID,
