@@ -2,132 +2,105 @@ library eventbus;
 
 import 'package:event_bus/event_bus.dart';
 
-final EventType<Map> windowChanged = new EventType<Map>();
+abstract class BaseEvent {}
 
-class Invalidate {
-  /**
-   * The presence of the event is enough to tell the story,
-   *   so no addional information is transported with it.
-   */
-  static final EventType organizationAdded = new EventType();
+class OrganizationAddedEvent implements BaseEvent {
+  final int organizationId;
 
-  /**
-   * Contains the id of the delete organization.
-   */
-  static final EventType<int> organizationRemoved = new EventType<int>();
+  OrganizationAddedEvent([int this.organizationId]);
+}
 
-  /**
-   * Contains organization Id the reception is added to.
-   */
-  static final EventType<int> receptionAdded = new EventType<int>();
+/**
+ * Contains the id of the delete organization.
+ */
+class OrganizationRemovedEvent implements BaseEvent {
+  final int organizationId;
 
-  /**
-   * Contains the organization- and reception-id of the removed reception.
-   *
-   * Example:
-   * {
-   *   "organizationId": 1,
-   *   "receptionId": 2
-   * }
-   */
-  static final EventType<Map> receptionRemoved = new EventType<Map>();
+  OrganizationRemovedEvent(int this.organizationId);
+}
 
-  /**
-   * The presence of the event is enough to tell the story,
-   *   so no addional information is transported with it.
-   */
-  static final EventType<int> contactAdded = new EventType<int>();
+class ReceptionAddedEvent implements BaseEvent {
+  final int organizationId;
 
-  /**
-   * Contains the id of the contact removed.
-   */
-  static final EventType<int> contactRemoved = new EventType<int>();
+  ReceptionAddedEvent(int this.organizationId);
+}
 
-  /**
-   * Contains the reception- and contact-id of the added reception-contact.
-   *
-   * Example:
-   * {
-   *   "receptionId": 1,
-   *   "contactId": 2
-   * }
-   */
-  static final EventType<Map> receptionContactAdded = new EventType<Map>();
+class ReceptionRemovedEvent implements BaseEvent {
+  final int organizationId;
+  final int receptionId;
 
-  /**
-   * Contains the reception- and contact-id of the removed reception-contact.
-   *
-   * Example:
-   * {
-   *   "receptionId": 1,
-   *   "contactId": 2
-   * }
-   */
-  static final EventType<Map> receptionContactRemoved = new EventType<Map>();
+  ReceptionRemovedEvent(int this.organizationId, int this.receptionId);
+}
 
-  /**
-   * Contains the user id from the newly created user.
-   *
-   * Example:
-   * {
-   *   "id": 1
-   * }
-   */
-  static final EventType<Map> userAdded = new EventType<Map>();
+class ContactAddedEvent implements BaseEvent {
+  final int contactId;
 
-  /**
-   * Contains the user id from the deleted user.
-   *
-   * Example:
-   * {
-   *   "id": 1
-   * }
-   */
-  static final EventType<Map> userRemoved = new EventType<Map>();
+  ContactAddedEvent([int this.contactId]);
+}
+/**
+ * Contains the id of the contact removed.
+ */
+class ContactRemovedEvent implements BaseEvent {
+  final int contactId;
 
-  /**
-   * Contains the reception id where the dialplan is updated.
-   *
-   * Example:
-   * {
-   *   "id": 1
-   * }
-   *
-   */
-  static final EventType<Map> dialplanChanged = new EventType<Map>();
+  ContactRemovedEvent([int this.contactId]);
+}
 
-  /**
-   * Contains the playlist id for the updated playlist.
-   *
-   * Example:
-   * {
-   *   "id": 1
-   * }
-   *
-   */
-  static final EventType<Map> playlistChanged = new EventType<Map>();
+class ReceptionContactAddedEvent implements BaseEvent {
+  final int receptionId;
+  final int contactId;
 
-  /**
-   * Contains the playlist id for the added playlist.
-   *
-   * Example:
-   * {
-   *   "id": 1
-   * }
-   *
-   */
-  static final EventType<Map> playlistAdded = new EventType<Map>();
+  ReceptionContactAddedEvent(int this.receptionId, int this.contactId);
+}
 
-  /**
-   * Contains the playlist id for the removed playlist.
-   *
-   * Example:
-   * {
-   *   "id": 1
-   * }
-   *
-   */
-  static final EventType<Map> playlistRemoved = new EventType<Map>();
+class ReceptionContactRemovedEvent implements BaseEvent {
+  final int receptionId;
+  final int contactId;
+
+  ReceptionContactRemovedEvent(int this.receptionId, int this.contactId);
+}
+
+class UserAddedEvent implements BaseEvent {
+  final int userId;
+
+  UserAddedEvent(int this.userId);
+}
+
+class UserRemovedEvent implements BaseEvent {
+  final int userId;
+
+  UserRemovedEvent(int this.userId);
+}
+
+class DialplanChangedEvent implements BaseEvent {
+  final int receptionId;
+
+  DialplanChangedEvent(int this.receptionId);
+}
+
+class PlaylistChangedEvent implements BaseEvent {
+  final int playlistId;
+
+  PlaylistChangedEvent(int this.playlistId);
+}
+
+class PlaylistAddedEvent implements BaseEvent {
+  final int playlistId;
+
+  PlaylistAddedEvent(int this.playlistId);
+}
+
+class PlaylistRemovedEvent implements BaseEvent {
+  final int playlistId;
+
+  PlaylistRemovedEvent(int this.playlistId);
+}
+
+class WindowChanged implements BaseEvent {
+  final Map data;
+  final String window;
+
+  WindowChanged(String this.window, [Map this.data = const {}]);
 }
 
 EventBus _bus = new EventBus();

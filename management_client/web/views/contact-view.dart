@@ -14,6 +14,7 @@ import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
+import '../menu.dart';
 
 part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
@@ -93,18 +94,18 @@ class ContactView {
   }
 
   void registrateEventHandlers() {
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
-      if (event.containsKey('contact_id')) {
-        activateContact(event['contact_id'], event['reception_id']);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
+      if (event.data.containsKey('contact_id')) {
+        activateContact(event.data['contact_id'], event.data['reception_id']);
       }
     });
 
-    bus.on(Invalidate.receptionAdded).listen((_) {
+    bus.on(ReceptionAddedEvent).listen((_) {
       fillSearchComponent();
     });
 
-    bus.on(Invalidate.receptionRemoved).listen((_) {
+    bus.on(ReceptionRemovedEvent).listen((_) {
       fillSearchComponent();
     });
 
@@ -217,12 +218,8 @@ class ContactView {
 
   Future receptionContactCreate(ContactAttribute ca) {
     return request.createReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
-      Map event = {
-        "receptionId": ca.receptionId,
-        "contactId": ca.contactId
-      };
       notify.info('Lageringen gik godt.');
-      bus.fire(Invalidate.receptionContactAdded, event);
+      bus.fire(new ReceptionContactAddedEvent(ca.receptionId, ca.contactId));
     }).catchError((error, stack) {
       notify.error('Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
       log.error('Tried to update a Reception Contact, but failed with "$error" ${stack}');
@@ -250,11 +247,7 @@ class ContactView {
           saveList[attribute.receptionId] = () {
             return request.deleteReceptionContact(attribute.receptionId,
                 contactId).then((_) {
-              Map event = {
-                "receptionId": attribute.receptionId,
-                "contactId": contactId
-              };
-              bus.fire(Invalidate.receptionContactRemoved, event);
+              bus.fire(new ReceptionContactRemovedEvent(attribute.receptionId, contactId));
             }).catchError((error) {
               log.error('deleteReceptionContact error: "error"');
             });
@@ -619,10 +612,10 @@ class ContactView {
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      request.createContact(JSON.encode(newContact)).then((Map response) {
-        bus.fire(Invalidate.contactAdded, null);
+      request.createContact(JSON.encode(newContact)).then((Contact responseContact) {
+        bus.fire(new ContactAddedEvent(responseContact.id));
         refreshList();
-        activateContact(response['id']);
+        activateContact(responseContact.id);
         notify.info('Kontaktpersonen blev oprettet.');
       }).catchError((error) {
         notify.info('Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
@@ -685,12 +678,11 @@ class ContactView {
       ..classes.add('clickable')
       ..text = reception.fullName
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'reception',
+        Map data = {
           'organization_id': reception.organizationId,
           'reception_id': reception.id
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
 
     UListElement contacts = new UListElement()
@@ -707,12 +699,11 @@ class ContactView {
       ..classes.add('colleague')
       ..text = collegue.fullName
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'contact',
+        Map data = {
           'contact_id': collegue.id,
           'reception_id': receptionId
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
   }
 
@@ -721,11 +712,10 @@ class ContactView {
       ..classes.add('clickable')
       ..text = '${organization.fullName}'
       ..onClick.listen((_) {
-        Map event = {
-          'window': 'organization',
+        Map data = {
           'organization_id': organization.id,
         };
-        bus.fire(windowChanged, event);
+        bus.fire(new WindowChanged(Menu.ORGANIZATION_WINDOW, data));
       });
     return li;
   }
@@ -733,7 +723,7 @@ class ContactView {
   void deleteSelectedContact() {
     if (!createNew && selectedContactId > 0) {
       request.deleteContact(selectedContactId).then((_) {
-        bus.fire(Invalidate.contactRemoved, selectedContactId);
+        bus.fire(new ContactRemovedEvent(selectedContactId));
         refreshList();
         clearContent();
         buttonSave.disabled = true;

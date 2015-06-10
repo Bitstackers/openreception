@@ -7,6 +7,7 @@ import 'dart:html';
 import 'package:html5_dnd/html5_dnd.dart';
 
 import '../lib/eventbus.dart';
+import 'ivr-view.dart';
 import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart' as request;
@@ -17,24 +18,24 @@ import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
 
 class _ControlLookUp {
-  static const int TIME_CONTROL = 0;
-  static const int DATE_CONTROL = 1;
-  static const int TRANSFER = 2;
-  static const int RECEPTIONIST = 3;
-  static const int VOICEMAIL = 4;
+  static const int TIME_CONTROL    = 0;
+  static const int DATE_CONTROL    = 1;
+  static const int TRANSFER        = 2;
+  static const int RECEPTIONIST    = 3;
+  static const int VOICEMAIL       = 4;
   static const int PLAY_AUDIO_FILE = 5;
-  static const int IVR = 6;
+  static const int IVR             = 6;
 }
 
 class _ControlImage {
   static const String bendedArrow = 'image/dialplan/bended_arrow.svg';
-  static const String calendar = 'image/dialplan/calendar.svg';
-  static const String group = 'image/dialplan/group.svg';
-  static const String IVR = 'image/dialplan/IVR.svg';
-  static const String microphone = 'image/dialplan/microphone.svg';
-  static const String speaker = 'image/dialplan/speaker.svg';
-  static const String tape = 'image/dialplan/tape.svg';
-  static const String watch = 'image/dialplan/watch.svg';
+  static const String calendar    = 'image/dialplan/calendar.svg';
+  static const String group       = 'image/dialplan/group.svg';
+  static const String IVR         = 'image/dialplan/IVR.svg';
+  static const String microphone  = 'image/dialplan/microphone.svg';
+  static const String speaker     = 'image/dialplan/speaker.svg';
+  static const String tape        = 'image/dialplan/tape.svg';
+  static const String watch       = 'image/dialplan/watch.svg';
 }
 
 class DialplanView {
@@ -51,9 +52,10 @@ class DialplanView {
   StreamSubscription<Event> commentTextSubscription;
   DivElement receptionOuterSelector;
   ButtonElement saveButton;
+  ButtonElement compileButton;
   SpanElement extensionListHeader;
 
-  SearchComponent receptionPicker;
+  SearchComponent<Reception> receptionPicker;
   Dialplan dialplan;
   Extension selectedExtension;
   List<Playlist> playlists;
@@ -62,6 +64,9 @@ class DialplanView {
   List<DialplanTemplate> dialplanTemplates;
   SelectElement templatePicker;
   ButtonElement loadDialplanTemplate;
+
+  ButtonElement showIvrView;
+  IvrView ivrView;
 
   DialplanView(DivElement this.element) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
@@ -72,9 +77,11 @@ class DialplanView {
     settingPanel         = element.querySelector('#dialplan-settings');
     commentTextarea      = element.querySelector('#dialplan-comment');
     saveButton           = element.querySelector('#dialplan-savebutton');
+    compileButton        = element.querySelector('#dialplan-compile');
     extensionListHeader  = element.querySelector('#dialplan-extensionlist-header');
     templatePicker       = element.querySelector('#dialplan-templates');
     loadDialplanTemplate = element.querySelector('#dialplan-loadtemplate');
+    showIvrView          = element.querySelector('#dialplan-showivr');
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
@@ -83,6 +90,8 @@ class DialplanView {
         ..searchFilter = receptionSearchHandler
         ..searchPlaceholder = 'Søg...';
 
+    ivrView = new IvrView(element.querySelector('#ivr-page'));
+
     fillSearchComponent();
     fillDialplanTempalte();
 
@@ -90,10 +99,10 @@ class DialplanView {
   }
 
   void registrateEventHandlers() {
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
-      if (event.containsKey('receptionid')) {
-        activateDialplan(event['receptionid']);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
+      if (event.data.containsKey('receptionid')) {
+        activateDialplan(event.data['receptionid']);
       }
     });
 
@@ -101,6 +110,10 @@ class DialplanView {
 
     saveButton.onClick.listen((_) {
       saveDialplan();
+    });
+
+    compileButton.onClick.listen((_) {
+      compileDialplan();
     });
 
     controlListCondition.children.forEach((LIElement li) {
@@ -155,6 +168,15 @@ class DialplanView {
         }
       }
     });
+
+    showIvrView.onClick.listen((_) {
+      ivrView.loadReception(selectedReceptionId, dialplan, ivrMenus)
+      .then((bool changesMade) {
+        if (changesMade) {
+          enabledSaveButton();
+        }
+      });
+    });
   }
 
   void SearchComponentChanged(Reception reception) {
@@ -191,6 +213,19 @@ class DialplanView {
     loadDialplanTemplate.disabled = false;
   }
 
+  void markAsCompiled(bool toggle) {
+    compileButton.classes.toggle('dialplan-iscompiled', toggle);
+    compileButton.classes.toggle('dialplan-isnotcompiled', !toggle);
+  }
+
+  void enabledCompile() {
+    compileButton.disabled = false;
+  }
+
+  void disableCompile() {
+    compileButton.disabled = true;
+  }
+
   void enabledSaveButton() {
     saveButton.disabled = false;
   }
@@ -205,10 +240,14 @@ class DialplanView {
     request.getDialplan(receptionId).then((Dialplan value) {
       enableTemplateLoadButton();
       disableSaveButton();
+      enabledCompile();
       dialplan = value;
       selectedReceptionId = receptionId;
       renderExtensionList(value);
       activateExtension(null);
+      markAsCompiled(dialplan.isCompiled);
+
+      showIvrView.disabled = false;
 
       request.getPlaylistList().then((List<Playlist> list) {
             list.sort();
@@ -288,14 +327,28 @@ class DialplanView {
     extensions.add(new Extension()..name = genericName);
   }
 
+  Future compileDialplan() {
+    if (selectedReceptionId != null && selectedReceptionId > 0) {
+      return request.markDialplanAsCompiled(selectedReceptionId).then((_) {
+        dialplan.isCompiled = true;
+        markAsCompiled(dialplan.isCompiled);
+      });
+    } else {
+      return new Future.value();
+    }
+  }
+
   Future saveDialplan() {
     if (selectedReceptionId != null && selectedReceptionId > 0) {
       return request.updateDialplan(selectedReceptionId, JSON.encode(dialplan))
         .then((_) {
         notify.info('Dialplan er blevet opdateret.');
-        Map event = {'id': selectedReceptionId};
-        bus.fire(Invalidate.dialplanChanged, event);
+        bus.fire(new DialplanChangedEvent(selectedReceptionId));
         disableSaveButton();
+        dialplan.isCompiled = false;
+        markAsCompiled(dialplan.isCompiled);
+      }).then((_) {
+        return request.updateIvr(selectedReceptionId, JSON.encode(ivrMenus));
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med opdateringen af dialplanen.');
         log.error('Update Dialplan gave ${error}');

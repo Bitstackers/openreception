@@ -3,7 +3,6 @@ import 'dart:html';
 import 'views/contact-view.dart' as conView;
 import 'views/billing-view.dart' as billView;
 import 'views/dialplan-view.dart' as diaView;
-import 'views/ivr-view.dart' as ivrView;
 import 'views/music-view.dart' as musicView;
 import 'views/organization-view.dart' as orgView;
 import 'views/reception-view.dart' as recepView;
@@ -21,7 +20,6 @@ void main() {
     new recepView.ReceptionView(querySelector('#reception-page'));
     new conView.ContactView(querySelector('#contact-page'));
     new diaView.DialplanView(querySelector('#dialplan-page'));
-    new ivrView.IvrView(querySelector('#ivr-page'));
     new recordView.RecordView(querySelector('#record-page'));
     new userView.UserView(querySelector('#user-page'));
     new billView.BillingView(querySelector('#billing-page'));

@@ -84,7 +84,8 @@ Future<Map> updateContact(int contactId, String body) {
   return completer.future;
 }
 
-Future<Map> createContact(String data) {
+Future<Contact> createContact(String data) {
+  final String context = 'requests.createContant';
   final Completer completer = new Completer();
 
   HttpRequest request;
@@ -104,6 +105,7 @@ Future<Map> createContact(String data) {
       })
       ..onError.listen((error) {
         //TODO logging.
+        log.error('$context Failed with error: $error');
         completer.completeError(error);
       })
       ..send(data);

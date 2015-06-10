@@ -47,15 +47,15 @@ class UserView {
   }
 
   void registrateEventHandlers() {
-    bus.on(windowChanged).listen((Map event) {
-      element.classes.toggle('hidden', event['window'] != viewName);
+    bus.on(WindowChanged).listen((WindowChanged event) {
+      element.classes.toggle('hidden', event.window != viewName);
     });
 
-    bus.on(Invalidate.userAdded).listen((Map event) {
+    bus.on(UserAddedEvent).listen((UserAddedEvent event) {
       refreshList();
     });
 
-    bus.on(Invalidate.userRemoved).listen((Map event) {
+    bus.on(UserRemovedEvent).listen((UserRemovedEvent event) {
       refreshList();
     });
 
@@ -132,7 +132,7 @@ class UserView {
           int userId = user['id'];
           selectedUserId = userId;
           isNewUser = false;
-          bus.fire(Invalidate.userAdded, user);
+          bus.fire(new UserAddedEvent(userId));
           notify.info('Brugeren blev oprettet');
       }).catchError((error, stack) {
         log.error('Tried to create a new user from data: "${JSON.encode(user)}" but got: ${error} ${stack}');
@@ -165,7 +165,7 @@ class UserView {
     if(!isNewUser && selectedUserId != null) {
       request.deleteUser(selectedUserId)
         .then((_) {
-          bus.fire(Invalidate.userRemoved, {'id': selectedUserId});
+          bus.fire(new UserRemovedEvent(selectedUserId));
           selectedUserId = null;
           notify.info('Brugeren er slettet.');
         })

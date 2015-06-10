@@ -71,8 +71,7 @@ Future<List<Reception>> getAnOrganizationsReceptionList(int organizationId) {
     ..onLoad.listen((_) {
       String body = request.responseText;
       if (request.status == 200) {
-        Map rawData = JSON.decode(body);
-        List<Map> rawReceptions = rawData['receptions'];
+        List<Map> rawReceptions = JSON.decode(body);
         completer.complete(rawReceptions.map((reception) => new Reception.fromJson(reception)).toList());
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));

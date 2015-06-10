@@ -12,21 +12,6 @@
   margin-top: 5px;
 }
 
-#music-CRUD {
-  border: 1px solid grey;
-  border-radius: 2px;
-}
-
-#music-CRUD > button {
-  width: 32%;
-  width: -moz-calc(33% - 4px);
-  width: -webkit-calc(33% - 4px);
-
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 2px;
-}
-
 #music-listing {
   height: 95%;
   height: -moz-calc(100% - 40px);

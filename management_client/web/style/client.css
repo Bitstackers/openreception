@@ -46,8 +46,7 @@ nav#navigation img {
 .hidden {
   /*display: none;*/
   position: absolute;
-  left: -99999px
-
+  left: -99999px;
 }
 
 .dnd-placeholder {
@@ -121,12 +120,21 @@ nav#navigation img {
   top: 3px;
 }
 
-/*
-.notifyDeActivate {
+.basic3controls {
+  width: calc(100% - 2px);
+  width: -moz-calc(100% - 2px);
+  width: -webkit-calc(100% - 2px);
 
-  animation-duration: 3s;
-  animation-name: slideout;
+  display: flex;
+  margin: 5px 1px;
 
-  top: -5000px;
+  border: 1px solid grey;
+  border-radius: 5px;
+
+  padding: 1px 2px;
 }
-*/
+
+.basic3controls > button {
+    flex-grow: 1;
+    margin: 1px 2px;
+}

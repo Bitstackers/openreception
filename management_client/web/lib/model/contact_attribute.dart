@@ -16,28 +16,28 @@ class ContactAttribute implements Comparable<ContactAttribute> {
 
   Map get attributes => _attributes;
 
-  List<String> get backup => priorityListFromJson(_attributes, 'backup');
+  List<String> get backup => _attributes['backup'];
   void set backup(List<String> list) {
     if(_attributes == null) {
       _attributes = {};
     }
-    _attributes['backup'] = priorityListToJson(list);
+    _attributes['backup'] = list;
   }
 
-  List<String> get handling => priorityListFromJson(_attributes, 'handling');
+  List<String> get handling => _attributes['handling'];
   void set handling(List<String> list) {
     if(_attributes == null) {
       _attributes = {};
     }
-    _attributes['handling'] = priorityListToJson(list);
+    _attributes['handling'] = list;
   }
 
-  List<String> get workhours => priorityListFromJson(_attributes, 'workhours');
+  List<String> get workhours => _attributes['workhours'];
   void set workhours(List<String> list) {
     if(_attributes == null) {
       _attributes = {};
     }
-    _attributes['workhours'] = priorityListToJson(list);
+    _attributes['workhours'] = list;
   }
 
   List<String> get tags => _attributes['tags'];
