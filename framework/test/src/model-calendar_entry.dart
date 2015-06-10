@@ -30,7 +30,7 @@ abstract class ModelCalendarEntry {
     final DateTime begin = new DateTime.now().add(new Duration(hours: 1));
     final DateTime end = new DateTime.now().add(new Duration(hours: 2));
 
-    Model.CalendarEntry testEntry = new Model.CalendarEntry.forContact(cid, rid)
+    Model.CalendarEntry testEntry = new Model.CalendarEntry.contact(cid, rid)
       ..ID = id
       ..content = body
       ..beginsAt = begin

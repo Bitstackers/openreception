@@ -26,15 +26,11 @@ class CalendarEntry {
   /**
    * Constructor for [Contact] calendar entries.
    */
-  @deprecated
-  CalendarEntry.forContact(this._contactID, this._receptionID);
   CalendarEntry.contact(this._contactID, this._receptionID);
 
   /**
    * Constructor for [Reception] calendar entries.
    */
-  @deprecated
-  CalendarEntry.forReception(this._receptionID);
   CalendarEntry.reception(this._receptionID);
 
   /**
