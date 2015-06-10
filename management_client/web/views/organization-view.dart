@@ -9,6 +9,7 @@ import '../lib/model.dart';
 import '../lib/request.dart';
 import '../notification.dart' as notify;
 import '../menu.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 class OrganizationView {
   static const String viewName = 'organization';
@@ -22,11 +23,11 @@ class OrganizationView {
 
   bool createNew = false;
 
-  List<Organization> organizations = new List<Organization>();
+  List<ORModel.Organization> organizations = new List<ORModel.Organization>();
   int selectedOrganizationId;
 
-  List<Contact> currentContactList = new List<Contact>();
-  List<Reception> currentReceptionList = new List<Reception>();
+  List<ORModel.Contact> currentContactList = new List<ORModel.Contact>();
+  List<ORModel.Reception> currentReceptionList = new List<ORModel.Reception>();
 
   OrganizationView(DivElement this.element) {
     searchBox = element.querySelector('#organization-search-box');
@@ -176,7 +177,7 @@ class OrganizationView {
 
   void performSearch() {
     String searchText = searchBox.value;
-    List<Organization> filteredList = organizations.where((Organization org) =>
+    List<ORModel.Organization> filteredList = organizations.where((ORModel.Organization org) =>
         org.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderOrganizationList(filteredList);
   }
@@ -190,7 +191,7 @@ class OrganizationView {
         'flag': inputFlag.value
       };
       String newOrganization = JSON.encode(organization);
-      updateOrganization(selectedOrganizationId, newOrganization).then((_) {
+      organizationController.update(newOrganization).then((_) {
         notify.info('Ændringerne blev gemt.');
         refreshList();
       }).catchError((error) {
@@ -204,7 +205,7 @@ class OrganizationView {
         'flag': inputFlag.value
       };
       String newOrganization = JSON.encode(organization);
-      createOrganization(newOrganization).then((Map response) {
+      organizationController.create(newOrganization).then((Map response) {
         notify.info('Organisationen blev oprettet.');
         int organizationId = response['id'];
         refreshList();
@@ -218,23 +219,26 @@ class OrganizationView {
   }
 
   void refreshList() {
-    getOrganizationList().then((List<Organization> organizations) {
-      organizations.sort();
-      this.organizations = organizations;
-      renderOrganizationList(organizations);
+    organizationController.list().then((Iterable<ORModel.Organization> organizations) {
+
+      int compareTo (ORModel.Organization org1, ORModel.Organization org2) => org1.fullName.compareTo(org2.fullName);
+
+      List list = organizations.toList()..sort(compareTo);
+      this.organizations = list;
+      renderOrganizationList(list);
     }).catchError((error) {
       notify.error('Organisationerne blev ikke hentet da der er sket en fejl.');
       log.error('Tried to fetch organization list, got error: $error');
     });
   }
 
-  void renderOrganizationList(List<Organization> organizations) {
+  void renderOrganizationList(List<ORModel.Organization> organizations) {
     uiList.children
       ..clear()
       ..addAll(organizations.map(makeOrganizationNode));
   }
 
-  LIElement makeOrganizationNode(Organization organization) {
+  LIElement makeOrganizationNode(ORModel.Organization organization) {
     return new LIElement()
       ..classes.add('clickable')
       ..dataset['organizationid'] = '${organization.id}'
@@ -249,7 +253,7 @@ class OrganizationView {
   }
 
   void activateOrganization(int organizationId) {
-    getOrganization(organizationId).then((Organization organization) {
+    organizationController.get(organizationId).then((ORModel.Organization organization) {
       highlightOrganizationInList(organizationId);
       selectedOrganizationId = organizationId;
       createNew = false;
@@ -269,25 +273,26 @@ class OrganizationView {
   }
 
   void updateReceptionList(int organizationId) {
-    getAnOrganizationsReceptionList(organizationId).then((List<Reception> receptions) {
-      receptions.sort();
-      currentReceptionList = receptions;
+    organizationController.receptions(organizationId).then((Iterable<ORModel.Reception> receptions) {
+
+      int compareTo (ORModel.Reception r1, ORModel.Reception r2) => r1.fullName.compareTo(r2.fullName);
+
+      List list = receptions.toList()..sort(compareTo);
+      currentReceptionList = list;
       ulReceptionList.children
           ..clear()
           ..addAll(receptions.map(makeReceptionNode));
-    }).catchError((error) {
-      log.error('Tried to fetch the receptionlist Error: $error');
     });
   }
 
-  LIElement makeReceptionNode(Reception reception) {
+  LIElement makeReceptionNode(ORModel.Reception reception) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${reception.fullName}'
       ..onClick.listen((_) {
         Map data = {
           'organization_id': reception.organizationId,
-          'reception_id': reception.id
+          'reception_id': reception.ID
         };
         bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
@@ -295,19 +300,22 @@ class OrganizationView {
   }
 
   void updateContactList(int organizationId) {
-    getOrganizationContactList(organizationId).then((List<Contact> contacts) {
-      contacts.sort();
-      currentContactList = contacts;
+    organizationController.contacts(organizationId).then((Iterable<ORModel.BaseContact> contacts) {
+      int compareTo (ORModel.BaseContact c1, ORModel.BaseContact c2) => c1.fullName.compareTo(c2.fullName);
+
+      List list = contacts.toList()..sort(compareTo);
+
+      currentContactList = list;
       ulContactList.children
           ..clear()
-          ..addAll(contacts.map(makeContactNode));
+          ..addAll(list.map(makeContactNode));
     }).catchError((error) {
       notify.error('Der skete en fejl i forbindelse med at hente kontakterne tilknyttet organisationen.');
       log.error('Tried to fetch the contactlist from an organization Error: $error');
     });
   }
 
-  LIElement makeContactNode(Contact contact) {
+  LIElement makeContactNode(ORModel.BaseContact contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${contact.fullName}'

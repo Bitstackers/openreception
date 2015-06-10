@@ -9,6 +9,7 @@ import '../lib/eventbus.dart';
 import '../lib/model.dart';
 import '../notification.dart' as notify;
 import '../lib/request.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 class MusicView {
   static const String viewName = 'music';

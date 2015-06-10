@@ -8,12 +8,13 @@ import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart' as request;
 import '../notification.dart' as notify;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 class RecordView {
   static const String viewName = 'record';
   DivElement element;
 
-  List<Reception> receptions = new List<Reception>();
+  List<ORModel.Reception> receptions = new List<ORModel.Reception>();
   UListElement receptionListUL;
   InputElement receptionSearchBox;
   LIElement highlightedReceptionLI;
@@ -58,26 +59,26 @@ class RecordView {
     });
   }
 
-  LIElement makeReceptionNode(Reception reception) {
+  LIElement makeReceptionNode(ORModel.Reception reception) {
     LIElement li = new LIElement();
     return li
       ..classes.add('clickable')
-      ..dataset['receptionid'] = '${reception.id}'
+      ..dataset['receptionid'] = '${reception.ID}'
       ..text = '${reception.fullName}'
       ..onClick.listen((_) {
-        activateReception(reception.organizationId, reception.id);
+        activateReception(reception.organizationId, reception.ID);
       });
   }
 
   void performSearch() {
     String searchText = receptionSearchBox.value;
-    List<Reception> filteredList = receptions.where((Reception recep) =>
+    List<ORModel.Reception> filteredList = receptions.where((ORModel.Reception recep) =>
         recep.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderReceptionList(filteredList);
   }
 
   Future refreshList() {
-    return request.getReceptionList().then((List<Reception> receptions) {
+    return request.getReceptionList().then((List<ORModel.Reception> receptions) {
       receptions.sort();
       this.receptions = receptions;
       performSearch();
@@ -86,7 +87,7 @@ class RecordView {
     });
   }
 
-  void renderReceptionList(List<Reception> receptions) {
+  void renderReceptionList(List<ORModel.Reception> receptions) {
     receptionListUL.children
         ..clear()
         ..addAll(receptions.map(makeReceptionNode));

@@ -11,6 +11,7 @@ import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/view_utilities.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 class IvrView {
   Dialplan _dialplan;

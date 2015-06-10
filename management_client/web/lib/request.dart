@@ -11,20 +11,31 @@ import 'package:openreception_framework/service-html.dart' as Transport;
 import 'package:openreception_framework/model.dart' as ORModel;
 
 import 'configuration.dart';
-import 'controller.dart' as Controller;
+import 'model/controller.dart' as Controller;
 import 'model.dart';
+import 'package:logging/logging.dart';
 
 part 'requests/calendar.dart';
 part 'requests/cdr.dart';
 part 'requests/contact.dart';
 part 'requests/dialplan.dart';
-part 'requests/organization.dart';
+//part 'requests/organization.dart';
 part 'requests/reception.dart';
 part 'requests/reception_contact.dart';
 part 'requests/user.dart';
 
+Logger log = new Logger('request');
+
 Controller.Reception receptionController =
-  new Controller.Reception(new ORService.RESTManagementStore
+  new Controller.Reception(new ORService.RESTReceptionStore
+    (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
+
+Controller.Contact contactController =
+  new Controller.Contact(new ORService.RESTContactStore
+    (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
+
+Controller.Organization organizationController =
+  new Controller.Organization(new ORService.RESTOrganizationStore
     (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
 
 class HttpMethod {

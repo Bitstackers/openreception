@@ -9,6 +9,7 @@ import '../lib/eventbus.dart';
 import '../lib/model.dart';
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 final DateFormat inputDateFormat = new DateFormat('yyyy-MM-dd');
 

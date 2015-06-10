@@ -16,6 +16,7 @@ import 'package:libdialplan/ivr.dart';
 import '../notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 class _ControlLookUp {
   static const int TIME_CONTROL    = 0;
@@ -55,7 +56,7 @@ class DialplanView {
   ButtonElement compileButton;
   SpanElement extensionListHeader;
 
-  SearchComponent<Reception> receptionPicker;
+  SearchComponent<ORModel.Reception> receptionPicker;
   Dialplan dialplan;
   Extension selectedExtension;
   List<Playlist> playlists;
@@ -85,7 +86,7 @@ class DialplanView {
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
-    receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'dialplan-reception-searchbox')
+    receptionPicker = new SearchComponent<ORModel.Reception>(receptionOuterSelector, 'dialplan-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
         ..searchFilter = receptionSearchHandler
         ..searchPlaceholder = 'Søg...';
@@ -179,21 +180,24 @@ class DialplanView {
     });
   }
 
-  void SearchComponentChanged(Reception reception) {
-    activateDialplan(reception.id);
+  void SearchComponentChanged(ORModel.Reception reception) {
+    activateDialplan(reception.ID);
   }
 
-  String receptionToSearchboxString(Reception reception, String searchterm) {
+  String receptionToSearchboxString(ORModel.Reception reception, String searchterm) {
     return '${reception.fullName}';
   }
 
-  bool receptionSearchHandler(Reception reception, String searchTerm) {
+  bool receptionSearchHandler(ORModel.Reception reception, String searchTerm) {
     return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
   void fillSearchComponent() {
-    request.getReceptionList().then((List<Reception> list) {
-      list.sort();
+    request.getReceptionList().then((Iterable<ORModel.Reception> rs) {
+
+      int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
+
+      List list = rs.toList()..sort(compareTo);
       receptionPicker.updateSourceList(list);
     });
   }
@@ -235,7 +239,7 @@ class DialplanView {
   }
 
   void activateDialplan(int receptionId) {
-    receptionPicker.selectElement(null, (Reception a, _) => a.id == receptionId);
+    receptionPicker.selectElement(null, (ORModel.Reception a, _) => a.ID == receptionId);
 
     request.getDialplan(receptionId).then((Dialplan value) {
       enableTemplateLoadButton();

@@ -105,7 +105,7 @@ Future<Contact> createContact(String data) {
       })
       ..onError.listen((error) {
         //TODO logging.
-        log.error('$context Failed with error: $error');
+        log.warning('$context Failed with error: $error');
         completer.completeError(error);
       })
       ..send(data);
@@ -142,7 +142,7 @@ Future<List<ContactAttribute>> getContactWithAttributes(int contactId) {
   return completer.future;
 }
 
-Future<List<Reception>> getColleagues(int contactId) {
+Future<Iterable<ORModel.Reception>> getColleagues(int contactId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
@@ -155,7 +155,7 @@ Future<List<Reception>> getColleagues(int contactId) {
       if (request.status == 200) {
         Map rawData = JSON.decode(body);
         List<Map> rawReceptions = rawData['receptions'];
-        completer.complete(rawReceptions.map((r) => new Reception.fromJson(r)).toList());
+        completer.complete(rawReceptions.map((r) => new ORModel.Reception.fromMap(r)));
       } else if (request.status == 403) {
         completer.completeError(new ForbiddenException(body));
       } else {
@@ -256,7 +256,7 @@ Future deleteContact(int contactId) {
   return completer.future;
 }
 
-Future<List<Organization>> getContactsOrganizationList(int contactId) {
+Future<List<ORModel.Organization>> getContactsOrganizationList(int contactId) {
   final Completer completer = new Completer();
 
   HttpRequest request;
@@ -271,7 +271,7 @@ Future<List<Organization>> getContactsOrganizationList(int contactId) {
           Map rawData = JSON.decode(body);
           List<Map> rawOrganizations = rawData['organizations'];
           completer.complete(rawOrganizations.map((Map r) =>
-              new Organization.fromJson(r)).toList());
+              new ORModel.Organization.fromMap(r)).toList());
         } else if (request.status == 403) {
           completer.completeError(new ForbiddenException(body));
         } else {

@@ -15,6 +15,7 @@ import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 import '../menu.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
@@ -41,7 +42,7 @@ class ContactView {
   ButtonElement buttonSave, buttonCreate, buttonDelete, buttonJoinReception;
   DivElement receptionOuterSelector;
 
-  SearchComponent<Reception> SC;
+  SearchComponent<ORModel.Reception> SC;
   int selectedContactId;
   bool createNew = false;
 
@@ -66,7 +67,7 @@ class ContactView {
     searchBox = element.querySelector('#contact-search-box');
     receptionOuterSelector = element.querySelector('#contact-reception-selector');
 
-    SC = new SearchComponent<Reception>(receptionOuterSelector, 'contact-reception-searchbox')
+    SC = new SearchComponent<ORModel.Reception>(receptionOuterSelector, 'contact-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
         ..searchFilter = receptionSearchHandler
         ..searchPlaceholder = 'Søg...';
@@ -85,11 +86,11 @@ class ContactView {
     EndpointsComponent.loadAddressTypes();
   }
 
-  String receptionToSearchboxString(Reception reception, String searchterm) {
+  String receptionToSearchboxString(ORModel.Reception reception, String searchterm) {
     return '${reception.fullName}';
   }
 
-  bool receptionSearchHandler(Reception reception, String searchTerm) {
+  bool receptionSearchHandler(ORModel.Reception reception, String searchTerm) {
     return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
@@ -175,7 +176,7 @@ class ContactView {
                   receptionContactBox(contact.id, contactAttribute, receptionContactUpdate, selected: contactAttribute.receptionId == reception_id)));
 
         //Rightbar
-        request.getContactsOrganizationList(id).then((List<Organization> organizations) {
+        request.getContactsOrganizationList(id).then((List<ORModel.Organization> organizations) {
           organizations.sort();
           ulOrganizationList.children
               ..clear()
@@ -184,7 +185,7 @@ class ContactView {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
-        return request.getColleagues(id).then((List<Reception> Receptions) {
+        return request.getColleagues(id).then((List<ORModel.Reception> Receptions) {
           ulReceptionList.children.clear();
 
           if(Receptions.isNotEmpty) {
@@ -201,9 +202,13 @@ class ContactView {
   }
 
   void fillSearchComponent() {
-    request.getReceptionList().then((List<Reception> receptions) {
-      receptions.sort();
-      SC.updateSourceList(receptions);
+    request.getReceptionList().then((Iterable<ORModel.Reception> receptions) {
+      int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
+
+      List list = receptions.toList()..sort(compareTo);
+
+
+      SC.updateSourceList(list);
     });
   }
 
@@ -644,11 +649,11 @@ class ContactView {
 
   void addReceptionToContact() {
     if (SC.currentElement != null && selectedContactId > 0) {
-      Reception reception = SC.currentElement;
+      ORModel.Reception reception = SC.currentElement;
 
       ContactAttribute template =
           new ContactAttribute()
-          ..receptionId = reception.id
+          ..receptionId = reception.ID
           ..receptionName = reception.fullName
           ..receptionEnabled = reception.enabled
           ..wantsMessages = true
@@ -670,7 +675,7 @@ class ContactView {
     }
   }
 
-  LIElement createReceptionNode(Reception reception) {
+  LIElement createReceptionNode(ORModel.Reception reception) {
     // First node is the receptionname. Clickable to the reception
     //   Second node is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
     LIElement rootNode = new LIElement();
@@ -680,7 +685,7 @@ class ContactView {
       ..onClick.listen((_) {
         Map data = {
           'organization_id': reception.organizationId,
-          'reception_id': reception.id
+          'reception_id': reception.ID
         };
         bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
@@ -707,7 +712,7 @@ class ContactView {
       });
   }
 
-  LIElement createOrganizationNode(Organization organization) {
+  LIElement createOrganizationNode(ORModel.Organization organization) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${organization.fullName}'

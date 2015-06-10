@@ -13,6 +13,8 @@ import '../lib/searchcomponent.dart';
 import '../notification.dart' as notify;
 import '../menu.dart';
 
+import 'package:openreception_framework/model.dart' as ORModel;
+
 class ReceptionView {
   static const String viewName = 'reception';
   DivElement element;
@@ -29,9 +31,9 @@ class ReceptionView {
   UListElement ulContactList;
   DivElement organizationOuterSelector;
 
-  List<Reception> receptions = new List<Reception>();
+  List<ORModel.Reception> receptions = new List<ORModel.Reception>();
 
-  SearchComponent<Organization> SC;
+  SearchComponent<ORModel.Organization> SC;
   int selectedReceptionId   = 0,
       currentOrganizationId = 0;
   bool createNew = false;
@@ -69,7 +71,7 @@ class ReceptionView {
 
     organizationOuterSelector = element.querySelector('#reception-organization-selector');
 
-    SC = new SearchComponent<Organization>(organizationOuterSelector, 'reception-organization-searchbox')
+    SC = new SearchComponent<ORModel.Organization>(organizationOuterSelector, 'reception-organization-searchbox')
       ..selectedElementChanged = selectedElementChanged
       ..listElementToString = organizationToSearchboxString
       ..searchFilter = organizationSearchHandler
@@ -86,21 +88,24 @@ class ReceptionView {
   }
 
   void fillSearchComponent() {
-    getOrganizationList().then((List<Organization> list) {
-      list.sort();
+    organizationController.list().then((Iterable<ORModel.Organization> orgs) {
+
+      int compareTo (ORModel.Organization org1, ORModel.Organization org2) => org1.fullName.compareTo(org2.fullName);
+
+      List list = orgs.toList()..sort(compareTo);
       SC.updateSourceList(list);
     });
   }
 
-  String organizationToSearchboxString(Organization organization, String searchterm) {
+  String organizationToSearchboxString(ORModel.Organization organization, String searchterm) {
     return '${organization.fullName}';
   }
 
-  bool organizationSearchHandler(Organization organization, String searchTerm) {
+  bool organizationSearchHandler(ORModel.Organization organization, String searchTerm) {
     return organization.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
-  void selectedElementChanged(Organization organization) {
+  void selectedElementChanged(ORModel.Organization organization) {
     OnContentChange();
   }
 
@@ -188,12 +193,12 @@ class ReceptionView {
 
   void performSearch() {
     String searchText = searchBox.value;
-    List<Reception> filteredList = receptions.where((Reception recep) =>
+    List<ORModel.Reception> filteredList = receptions.where((ORModel.Reception recep) =>
         recep.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderReceptionList(filteredList);
   }
 
-  void renderReceptionList(List<Reception> receptions) {
+  void renderReceptionList(List<ORModel.Reception> receptions) {
     uiReceptionList.children
       ..clear()
       ..addAll(receptions.map(makeReceptionNode));
@@ -262,9 +267,9 @@ class ReceptionView {
 
   void saveChanges() {
     if (selectedReceptionId > 0) {
-      Reception updatedReception = extractValues();
+      ORModel.Reception updatedReception = extractValues();
 
-      updateReception(selectedReceptionId, JSON.encode(updatedReception)).then((_) {
+      updateReception(updatedReception).then((_) {
         //Show a message that tells the user, that the changes went threw.
         notify.info('Receptionens ændringer er gemt.');
         refreshList();
@@ -273,16 +278,16 @@ class ReceptionView {
         log.error('Tried to update reception ${selectedReceptionId} but got "${error}" "${stack}"');
       });
     } else if (createNew && selectedReceptionId == 0 && currentOrganizationId == 0) {
-      Reception newReception = extractValues();
+      ORModel.Reception newReception = extractValues();
       if (SC.currentElement != null) {
-        int organizationId = SC.currentElement.id;
-        newReception.organizationId = organizationId;
-        createReception(JSON.encode(newReception)).then((Map data) {
+        newReception.organizationId = SC.currentElement.id;
+        createReception(newReception).then((ORModel.Reception createdReception) {
+
           notify.info('Receptionen blev oprettet.');
-          int receptionId = data['id'];
-          bus.fire( new ReceptionAddedEvent(organizationId) );
+
+          bus.fire( new ReceptionAddedEvent(createdReception.organizationId) );
           return refreshList().then((_) {
-            return activateReception(organizationId, receptionId);
+            return activateReception(createdReception.organizationId, createdReception.ID);
           });
         }).catchError((error) {
           notify.error('Der skete en fejl, så receptionen blev ikke oprettet.');
@@ -292,34 +297,35 @@ class ReceptionView {
     }
   }
 
-  Reception extractValues() {
-    return new Reception()
+  ORModel.Reception extractValues() {
+    return new ORModel.Reception.empty()
       ..organizationId = currentOrganizationId
       ..fullName = inputFullName.value
       ..enabled = inputEnabled.checked
-      ..receptionNumber = inputReceptionNumber.value
+      //TODO: Add this to framework.
+      //..receptionNumber = inputReceptionNumber.value
 
-      ..customertype = inputCostumerstype.value
+      ..customerTypes = [inputCostumerstype.value]
       ..shortGreeting = inputShortGreeting.value
       ..greeting = inputGreeting.value
-      ..other = inputOther.value
+      ..otherData = inputOther.value
       ..product = inputProduct.value
-      ..extradatauri = extradataUrl.value
-
+      ..extraData = Uri.parse(extradataUrl.value)
       ..addresses = getListValues(ulAddresses)
       ..alternateNames = getListValues(ulAlternatenames)
-      ..bankinginformation = getListValues(ulBankinginformation)
-      ..salesCalls = getListValues(ulSalesCalls)
-      ..emailaddresses = getListValues(ulEmailaddresses)
-      ..handlings = getListValues(ulHandlings)
-      ..openinghours = getListValues(ulOpeninghours)
-      ..registrationnumbers = getListValues(ulRegistrationNumbers)
-      ..telephonenumbers = getListValues(ulTelephonenumbers)
+      ..bankingInformation = getListValues(ulBankinginformation)
+      ..salesMarketingHandling = getListValues(ulSalesCalls)
+      ..emailAddresses = getListValues(ulEmailaddresses)
+      ..handlingInstructions = getListValues(ulHandlings)
+      ..openingHours = getListValues(ulOpeninghours)
+      ..vatNumbers = getListValues(ulRegistrationNumbers)
+      //TODO: Convert these to types.
+      //..telephoneNumbers = getListValues(ulTelephonenumbers)
       ..websites = getListValues(ulWebsites);
   }
 
   Future refreshList() {
-    return getReceptionList().then((List<Reception> receptions) {
+    return getReceptionList().then((List<ORModel.Reception> receptions) {
       receptions.sort();
       this.receptions = receptions;
       performSearch();
@@ -329,13 +335,13 @@ class ReceptionView {
     });
   }
 
-  LIElement makeReceptionNode(Reception reception) {
+  LIElement makeReceptionNode(ORModel.Reception reception) {
     return new LIElement()
       ..classes.add('clickable')
-      ..dataset['receptionid'] = '${reception.id}'
+      ..dataset['receptionid'] = '${reception.ID}'
       ..text = reception.fullName
       ..onClick.listen((_) {
-        activateReception(reception.organizationId, reception.id);
+        activateReception(reception.organizationId, reception.ID);
       });
   }
 
@@ -353,34 +359,38 @@ class ReceptionView {
     buttonSave.text = 'Gem';
     createNew = false;
 
-    SC.selectElement(null, (Organization listItem, _) {
+    SC.selectElement(null, (ORModel.Organization listItem, _) {
       return listItem.id == organizationId;
     });
 
     if (receptionId > 0) {
-      getReception(selectedReceptionId).then((Reception response) {
+      getReception(selectedReceptionId).then((ORModel.Reception response) {
         buttonDialplan.disabled = false;
 
         highlightContactInList(receptionId);
 
         inputFullName.value = response.fullName;
         inputEnabled.checked = response.enabled;
-        inputReceptionNumber.value = response.receptionNumber;
-        inputCostumerstype.value = response.customertype;
+        //TODO: ADD
+        //inputReceptionNumber.value = response.receptionNumber;
+
+        //TODO: Listify
+        inputCostumerstype.value = response.customerTypes.first;
         inputShortGreeting.value = response.shortGreeting;
         inputGreeting.value = response.greeting;
-        inputOther.value = response.other;
+        inputOther.value = response.otherData;
         inputProduct.value = response.product;
-        extradataUrl.value = response.extradatauri;
+        extradataUrl.value = response.extraData.toString();
         fillList(ulAddresses, response.addresses, onChange: OnContentChange);
         fillList(ulAlternatenames, response.alternateNames, onChange: OnContentChange);
-        fillList(ulBankinginformation, response.bankinginformation, onChange: OnContentChange);
-        fillList(ulSalesCalls, response.salesCalls, onChange: OnContentChange);
-        fillList(ulEmailaddresses, response.emailaddresses, onChange: OnContentChange);
-        fillList(ulHandlings, response.handlings, onChange: OnContentChange);
-        fillList(ulOpeninghours, response.openinghours, onChange: OnContentChange);
-        fillList(ulRegistrationNumbers, response.registrationnumbers, onChange: OnContentChange);
-        fillList(ulTelephonenumbers, response.telephonenumbers, onChange: OnContentChange);
+        fillList(ulBankinginformation, response.bankingInformation, onChange: OnContentChange);
+        fillList(ulSalesCalls, response.salesMarketingHandling, onChange: OnContentChange);
+        fillList(ulEmailaddresses, response.emailAddresses, onChange: OnContentChange);
+        fillList(ulHandlings, response.handlingInstructions, onChange: OnContentChange);
+        fillList(ulOpeninghours, response.openingHours, onChange: OnContentChange);
+        fillList(ulRegistrationNumbers, response.vatNumbers, onChange: OnContentChange);
+        //TODO: Make visual representation of this one.
+        //fillList(ulTelephonenumbers, response.telephoneNumbers, onChange: OnContentChange);
         fillList(ulWebsites, response.websites, onChange: OnContentChange);
       });
 
@@ -392,23 +402,23 @@ class ReceptionView {
   }
 
   void updateContactList(int receptionId) {
-    getReceptionContactList(receptionId).then((List<Contact> contacts) {
+    getReceptionContactList(receptionId).then((List<ORModel.Contact> contacts) {
       contacts.sort();
       ulContactList.children
           ..clear()
-          ..addAll(contacts.map((Contact contact) => makeContactNode(contact, receptionId)));
+          ..addAll(contacts.map((ORModel.Contact contact) => makeContactNode(contact, receptionId)));
     }).catchError((error) {
       log.error('Tried to fetch the contactlist from an reception Error: $error');
     });
   }
 
-  LIElement makeContactNode(Contact contact, int receptionId) {
+  LIElement makeContactNode(ORModel.Contact contact, int receptionId) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = contact.fullName
       ..onClick.listen((_) {
         Map data = {
-          'contact_id': contact.id,
+          'contact_id': contact.ID,
           'reception_id': receptionId
         };
         bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));

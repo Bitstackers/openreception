@@ -4,13 +4,12 @@ Future<Iterable<ORModel.Reception>> getReceptionList() =>
     receptionController.list();
 
 Future<Iterable<ORModel.Contact>> getReceptionContactList(int receptionId) =>
-    receptionController.contacts(receptionId);
+    contactController.list(receptionId);
 
 Future<ORModel.Reception> getReception(int receptionId) =>
     receptionController.get(receptionId);
 
-Future<ORModel.Reception> createReception(
-        int organizationId, ORModel.Reception reception) =>
+Future<ORModel.Reception> createReception(ORModel.Reception reception) =>
     receptionController.create(reception);
 
 Future updateReception(ORModel.Reception reception) =>

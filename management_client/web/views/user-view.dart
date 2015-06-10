@@ -10,6 +10,7 @@ import '../lib/model.dart';
 import '../lib/request.dart' as request;
 import '../lib/view_utilities.dart';
 import '../notification.dart' as notify;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'components/user_groups.dart';
 part 'components/user_identity.dart';

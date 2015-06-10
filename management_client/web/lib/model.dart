@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:libdialplan/libdialplan.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/model.dart' as ORF;
 
 import 'logger.dart' as log;
 import 'utilities.dart';
@@ -17,8 +18,7 @@ part 'model/contact_attribute.dart';
 part 'model/dialplan_template.dart';
 part 'model/distributionlist.dart';
 part 'model/endpoint.dart';
-part 'model/organization.dart';
-part 'model/reception.dart';
+//part 'model/organization.dart';
 part 'model/phone.dart';
 part 'model/playlist.dart';
 part 'model/user.dart';
