@@ -23,7 +23,7 @@ class Call extends ORModel.Call {
   @override
   bool     _locked     = false;
   @override
-  int      _assignedTo = ORModel.User.nullID;
+  int      _assignedTo = ORModel.User.noID;
 
   @override
   String get channel => this.ID;
@@ -60,12 +60,12 @@ class Call extends ORModel.Call {
   void release() {
     log.finest('Releasing call assigned to: ${this.assignedTo}');
 
-    if (this.assignedTo != ORModel.User.nullID) {
+    if (this.assignedTo != ORModel.User.noID) {
       //UserStatusList.instance.getOrCreate (this.assignedTo).callsHandled++;
       UserStatusList.instance.update(this.assignedTo, ORModel.UserState.WrappingUp);
     }
 
-    this.assignedTo = ORModel.User.nullID;
+    this.assignedTo = ORModel.User.noID;
   }
 
   void link (Call other) {

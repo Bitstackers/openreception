@@ -329,7 +329,7 @@ abstract class Contact {
 
 
 
-    Model.Contact contact = new Model.Contact.none()
+    Model.Contact contact = new Model.Contact.empty()
       ..receptionID = row.reception_id
       ..ID = row.contact_id
       ..wantsMessage = row.wants_messages

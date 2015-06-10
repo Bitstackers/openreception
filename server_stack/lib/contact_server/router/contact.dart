@@ -6,7 +6,7 @@ abstract class Contact{
 
   static Future<bool> exists({int contactID, int receptionID}) =>
       db.Contact.get(receptionID, contactID).then((Model.Contact contact) =>
-          contact != Model.Contact.nullContact);
+          contact != Model.Contact.noContact);
 
   /**
    * Retrives a single contact based on receptionID and contactID.
@@ -17,7 +17,7 @@ abstract class Contact{
 
     return db.Contact.get(receptionID, contactID).then((Model.Contact contact) {
 
-      if(contact == Model.Contact.nullContact) {
+      if(contact == Model.Contact.noContact) {
         return new shelf.Response.notFound({'description' : 'no contact $contactID@$receptionID'});
 
       } else {
