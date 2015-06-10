@@ -33,7 +33,7 @@ class Contact {
     const String full_name = '..Test-Create Mandela A/S';
     const String contactType = 'human';
 
-    Model.Contact contact = new Model.Contact.none()
+    Model.Contact contact = new Model.Contact.empty()
       ..fullName = full_name
       ..contactType = contactType
       ..enabled = false;
@@ -55,7 +55,7 @@ class Contact {
     const String full_name = '..Test-Create Mandela A/S';
     const String contactType = 'human';
 
-    Model.Contact contact = new Model.Contact.none()
+    Model.Contact contact = new Model.Contact.empty()
       ..fullName = full_name
       ..contactType = contactType
       ..enabled = false;

@@ -398,7 +398,7 @@ abstract class Reception_Store {
     int receptionID = 1;
 
     Model.CalendarEntry entry =
-        new Model.CalendarEntry.forReception(receptionID)
+        new Model.CalendarEntry.reception(receptionID)
          ..beginsAt    = new DateTime.now()
          ..until       = new DateTime.now().add(new Duration(hours: 2))
          ..content     = Randomizer.randomEvent();
@@ -412,7 +412,7 @@ abstract class Reception_Store {
             expect (changes.length, equals(1));
             expect (changes.first.changedAt.millisecondsSinceEpoch,
                     lessThan(new DateTime.now().millisecondsSinceEpoch));
-            expect (changes.first.userID, isNot(Model.User.nullID));
+            expect (changes.first.userID, isNot(Model.User.noID));
         });
     });
   }
@@ -451,7 +451,7 @@ abstract class Reception_Store {
               expect (changes.length, equals(updateCount+1));
               expect (changes.first.changedAt.millisecondsSinceEpoch,
                       lessThan(new DateTime.now().millisecondsSinceEpoch));
-              expect (changes.first.userID, isNot(Model.User.nullID));
+              expect (changes.first.userID, isNot(Model.User.noID));
           });
 
       }));
