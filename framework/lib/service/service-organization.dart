@@ -10,6 +10,24 @@ class RESTOrganizationStore implements Storage.Organization {
 
   RESTOrganizationStore (Uri this._host, String this._token, this._backend);
 
+  Future<Iterable<Model.BaseContact>> contacts(int organizationID) {
+    Uri url = Resource.Organization.contacts(this._host, organizationID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) =>
+      (JSON.decode(response)['contacts'] as Iterable).map((Map map) =>
+        new Model.BaseContact.fromMap (map)));
+  }
+
+  Future<Iterable<Model.Reception>> receptions(int organizationID) {
+    Uri url = Resource.Organization.receptions(_host, organizationID);
+        url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) =>
+      (JSON.decode(response) as Iterable).map((Map map) =>
+        new Model.Reception.fromMap (map)));
+  }
+
   Future<Model.Organization> get(int organizationID) {
     Uri url = Resource.Organization.single(this._host, organizationID);
         url = appendToken(url, this._token);
