@@ -60,9 +60,9 @@ class MessageCompose extends ViewWidget {
    * contact.
    */
   ORModel.Message get _message {
-    final Model.Contact   contact    = _contactSelector.selectedContact;
+    final ORModel.Contact contact    = _contactSelector.selectedContact;
     final Map             messageMap = _ui.messageDataFromForm;
-    final Model.Reception reception  = _receptionSelector.selectedReception;
+    final ORModel.Reception reception  = _receptionSelector.selectedReception;
 
     final ORModel.MessageContext messageContext =
       new ORModel.MessageContext.fromContact(contact, reception);
@@ -79,7 +79,7 @@ class MessageCompose extends ViewWidget {
       ..flags      = messageMap['flags']
       ..createdAt  = new DateTime.now()
       ..caller     = callerInfo
-      ..sender     = Model.User.currentUser;
+      ..sender     = ORModel.User.currentUser;
   }
 
   /**
@@ -102,7 +102,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void _render(Model.Contact contact) {
+  void _render(ORModel.Contact contact) {
     if(contact.isEmpty) {
       _log.info('Got an empty contact - undecided on what to do');
     } else {
@@ -114,7 +114,7 @@ class MessageCompose extends ViewWidget {
   /**
    * If we get an empty reception then reset the widget to it's pristine state.
    */
-  void _resetOnEmpty(Model.Reception reception) {
+  void _resetOnEmpty(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.reset(pristine: true);
     }

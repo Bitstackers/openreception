@@ -17,7 +17,7 @@ part of model;
  * Provides methods to manipulate and extract data from the widget UX parts.
  */
 class UIReceptionSelector extends UIModel {
-  final Bus<Reception> _bus = new Bus<Reception>();
+  final Bus<ORModel.Reception> _bus = new Bus<ORModel.Reception>();
   final DivElement     _myRoot;
 
   /**
@@ -107,15 +107,15 @@ class UIReceptionSelector extends UIModel {
   /**
    * Fires the selected [Reception].
    */
-  Stream<Reception> get onSelect => _bus.stream;
+  Stream<ORModel.Reception> get onSelect => _bus.stream;
 
   /**
    * Add [items] to the receptions list.
    */
-  set receptions(List<Reception> items) {
+  set receptions(List<ORModel.Reception> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((Reception item) {
+    items.forEach((ORModel.Reception item) {
       list.add(new LIElement()
                 ..dataset['id'] = item.ID.toString()
                 ..dataset['name'] = item.name.toLowerCase()
@@ -131,7 +131,7 @@ class UIReceptionSelector extends UIModel {
    * in the data-object attribute of [li].
    */
   void _receptionSelectCallback(LIElement li) {
-    _bus.fire(new Reception.fromMap(JSON.decode(li.dataset['object'])));
+    _bus.fire(new ORModel.Reception.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
@@ -142,7 +142,7 @@ class UIReceptionSelector extends UIModel {
     _filter.value = '';
     _filterList('');
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
-    _bus.fire(new Reception.none());
+    _bus.fire(new ORModel.Reception.empty());
   }
 
   /**
@@ -177,13 +177,13 @@ class UIReceptionSelector extends UIModel {
    *
    * Return [Reception.none] if no [Reception] is selected.
    */
-  Reception get selectedReception {
+  ORModel.Reception get selectedReception {
     LIElement li = _list.querySelector('.selected');
 
     if(li != null) {
-      return new Reception.fromMap(JSON.decode(li.dataset['object']));
+      return new ORModel.Reception.fromMap(JSON.decode(li.dataset['object']));
     } else {
-      return new Reception.none();
+      return new ORModel.Reception.empty();
     }
   }
 }

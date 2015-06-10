@@ -54,7 +54,7 @@ class ContactCalendar extends ViewWidget {
   /**
    * Empty the [CalendarEvent] list on null [Reception].
    */
-  void _clear(Model.Reception reception) {
+  void _clear(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     }
@@ -63,9 +63,9 @@ class ContactCalendar extends ViewWidget {
   /**
    * Fetch all calendar entries for [contact].
    */
-  void _fetchCalendar(Model.Contact contact) {
+  void _fetchCalendar(ORModel.Contact contact) {
     _contactController.getCalendar(contact)
-        .then((Iterable<Model.ContactCalendarEntry> entries) {
+        .then((Iterable<ORModel.CalendarEntry> entries) {
           _ui.calendarEntries = entries.toList()
               ..sort((a,b) => a.start.compareTo(b.start));
         });
@@ -103,7 +103,7 @@ class ContactCalendar extends ViewWidget {
   /**
    * Render the widget with [contact].
    */
-  void _render(Model.Contact contact) {
+  void _render(ORModel.Contact contact) {
     if(contact.isEmpty) {
       _ui.clear();
     } else {
@@ -117,7 +117,7 @@ class ContactCalendar extends ViewWidget {
    * contact, and update accordingly if so.
    */
   void _updateOnChange(OREvent.CalendarChange calendarChange) {
-    final Model.Contact currentContact = _contactSelector.selectedContact;
+    final ORModel.Contact currentContact = _contactSelector.selectedContact;
 
     if(calendarChange.contactID == currentContact.ID) {
       _fetchCalendar(currentContact);

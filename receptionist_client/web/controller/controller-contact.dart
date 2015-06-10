@@ -24,54 +24,42 @@ class Contact {
   /**
    * Save [entry] to the database.
    */
-  Future createCalendarEvent (Model.ContactCalendarEntry entry) =>
+  Future createCalendarEvent (ORModel.CalendarEntry entry) =>
       _store.calendarEventCreate (entry);
 
   /**
    * Delete [entry] from the database.
    */
-  Future deleteCalendarEvent (Model.ContactCalendarEntry entry) =>
+  Future deleteCalendarEvent (ORModel.CalendarEntry entry) =>
       _store.calendarEventRemove (entry);
 
   /**
-   * Return all the [contact] [Model.ContactCalendarEntry]'s.
+   * Return all the [contact] [ORModel.CalendarEntry]'s.
    */
-  Future<Iterable<Model.ContactCalendarEntry>> getCalendar(Model.Contact contact) =>
-      _store.calendarMap(contact.ID, contact.receptionID)
-        .then((Iterable<Map> collection) {
-           return collection.map((Map map) => new Model.ContactCalendarEntry.fromMap(map));
-        });
+  Future<Iterable<ORModel.CalendarEntry>> getCalendar(ORModel.Contact contact) =>
+      _store.calendar(contact.ID, contact.receptionID);
 
   /**
    * Return all the [Model.Contact]'s that belong to [reception].
    */
-  Future<Iterable<Model.Contact>> list(Model.Reception reception) =>
-      _store.listByReception(reception.ID)
-        .then((Iterable<ORModel.Contact> contacts) {
-          return contacts.map((ORModel.Contact contact) => new Model.Contact.fromMap(contact.asMap));
-        });
+  Future<Iterable<ORModel.Contact>> list(ORModel.Reception reception) =>
+      _store.listByReception(reception.ID);
 
   /**
-   * Return all the [contact] [Model.MessageEndpoint]'s.
+   * Return all the [contact] [ORModel.MessageEndpoint]'s.
    */
-  Future<Iterable<Model.MessageEndpoint>> endpoints(Model.Contact contact) =>
-      _store.endpointsMap(contact.ID, contact.receptionID)
-        .then((Iterable<Map> endpointMaps) {
-          return endpointMaps.map((Map map) => new Model.MessageEndpoint.fromMap(map));
-        });
+  Future<Iterable<ORModel.MessageEndpoint>> endpoints(ORModel.Contact contact) =>
+      _store.endpoints(contact.ID, contact.receptionID);
 
   /**
-   * Return all the [contact] [Model.PhoneNumber]'s.
+   * Return all the [contact] [ORModel.PhoneNumber]'s.
    */
-  Future<Iterable<Model.PhoneNumber>> phones(Model.Contact contact) =>
-      _store.phonesMap(contact.ID, contact.receptionID)
-        .then((Iterable<Map> contactMaps) {
-          return contactMaps.map((Map map) => new Model.PhoneNumber.fromMap(map));
-        });
+  Future<Iterable<ORModel.PhoneNumber>> phones(ORModel.Contact contact) =>
+      _store.phones(contact.ID, contact.receptionID);
 
   /**
    * Save [entry] to the database.
    */
-  Future saveCalendarEvent (Model.ContactCalendarEntry entry) =>
+  Future saveCalendarEvent (ORModel.CalendarEntry entry) =>
       _store.calendarEventUpdate(entry);
 }

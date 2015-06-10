@@ -96,10 +96,10 @@ class UIMessageCompose extends UIModel {
                      },
        'context'   : null,
        'flags'     : [
-                      _pleaseCallInput.checked ? MessageFlag.PleaseCall  : null,
-                      _callsBackInput.checked  ? MessageFlag.willCallBack: null,
-                      _haveCalledInput.checked ? MessageFlag.Called      : null,
-                      _urgentInput.checked     ? MessageFlag.Urgent      : null
+                      _pleaseCallInput.checked ? ORModel.MessageFlag.PleaseCall  : null,
+                      _callsBackInput.checked  ? ORModel.MessageFlag.willCallBack: null,
+                      _haveCalledInput.checked ? ORModel.MessageFlag.Called      : null,
+                      _urgentInput.checked     ? ORModel.MessageFlag.Urgent      : null
                      ].where((element) => element != null).toList(growable: false),
        'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
 

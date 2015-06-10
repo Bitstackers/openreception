@@ -26,6 +26,7 @@ import 'package:openreception_framework/event.dart' as OREvent;
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/model.dart' as ORModel;
 
+part 'controller-calendar.dart';
 part 'controller-call.dart';
 part 'controller-contact.dart';
 part 'controller-hotkeys.dart';

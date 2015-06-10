@@ -19,14 +19,14 @@ part of view;
 class ReceptionSelector extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Model.UIReceptionSelector _uiModel;
-  final List<Model.Reception>     _receptions;
+  final List<ORModel.Reception>     _receptions;
 
   /**
    * Constructor.
    */
   ReceptionSelector(Model.UIReceptionSelector this._uiModel,
                     Controller.Destination this._myDestination,
-                    List<Model.Reception> this._receptions) {
+                    List<ORModel.Reception> this._receptions) {
     _ui.setHint('alt+v');
 
     _ui.receptions = _receptions;
@@ -57,8 +57,8 @@ class ReceptionSelector extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    Model.Call.activeCallChanged.listen((Model.Call newCall) {
-      if (newCall != Model.Call.noCall) {
+    ORModel.Call.activeCallChanged.listen((ORModel.Call newCall) {
+      if (newCall != ORModel.Call.noCall) {
         _ui.changeActiveReception(newCall.receptionID);
       }
     });

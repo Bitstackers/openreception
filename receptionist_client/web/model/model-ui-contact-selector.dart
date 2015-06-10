@@ -17,7 +17,7 @@ part of model;
  * TODO (TL): Comment
  */
 class UIContactSelector extends UIModel {
-  final Bus<Contact> _bus = new Bus<Contact>();
+  final Bus<ORModel.Contact> _bus = new Bus<ORModel.Contact>();
   final DivElement   _myRoot;
 
   /**
@@ -55,12 +55,12 @@ class UIContactSelector extends UIModel {
    * Add [contacts] to the [Contact] list. Always resets the filter input to
    * empty string.
    */
-  set contacts(Iterable<Contact> contacts) {
+  set contacts(Iterable<ORModel.Contact> contacts) {
     _filter.value = '';
 
     final List<LIElement> list = new List<LIElement>();
 
-    contacts.forEach((Contact item) {
+    contacts.forEach((ORModel.Contact item) {
       //TODO: TL, handle folks without 'dem fancy surnames.
       String initials = item.fullName.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
 
@@ -87,7 +87,7 @@ class UIContactSelector extends UIModel {
    * in the data-object attribute of [li].
    */
   void _contactSelectCallback(LIElement li) {
-    _bus.fire(new Contact.fromMap(JSON.decode(li.dataset['object'])));
+    _bus.fire(new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
@@ -174,7 +174,7 @@ class UIContactSelector extends UIModel {
   /**
    * Fires the selected [Contact].
    */
-  Stream<Contact> get onSelect => _bus.stream;
+  Stream<ORModel.Contact> get onSelect => _bus.stream;
 
   /**
    * Remove selections, scroll to top, empty filter input and then select the
@@ -191,13 +191,13 @@ class UIContactSelector extends UIModel {
    *
    * Return [Contact.none] if no [Contact] is selected.
    */
-  Contact get selectedContact {
+  ORModel.Contact get selectedContact {
     LIElement li = _list.querySelector('.selected');
 
     if(li != null) {
-      return new Contact.fromMap(JSON.decode(li.dataset['object']));
+      return new ORModel.Contact.fromMap(JSON.decode(li.dataset['object']));
     } else {
-      return new Contact.empty();
+      return new ORModel.Contact.empty();
     }
   }
 
@@ -208,7 +208,7 @@ class UIContactSelector extends UIModel {
     if(_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new Contact.empty());
+      _bus.fire(new ORModel.Contact.empty());
     }
   }
 

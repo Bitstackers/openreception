@@ -89,7 +89,7 @@ class UIContactData extends UIModel {
   /**
    * Populate widget with [contact] data.
    */
-  set contact(Contact contact) {
+  set contact(ORModel.Contact contact) {
     clear();
 
     headerExtra = ': ${contact.fullName}';

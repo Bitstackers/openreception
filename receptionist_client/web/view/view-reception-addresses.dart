@@ -58,7 +58,7 @@ class ReceptionAddresses extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(Model.Reception reception) {
+  void render(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {

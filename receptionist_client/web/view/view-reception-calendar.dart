@@ -19,7 +19,7 @@ part of view;
 class ReceptionCalendar extends ViewWidget {
   final Controller.Destination    _myDestination;
   final Controller.Notification   _notification;
-  final Controller.Reception      _receptionController;
+  final Controller.Calendar       _calendarController;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCalendar _uiModel;
 
@@ -29,7 +29,7 @@ class ReceptionCalendar extends ViewWidget {
   ReceptionCalendar(Model.UIReceptionCalendar this._uiModel,
                     Controller.Destination this._myDestination,
                     Model.UIReceptionSelector this._receptionSelector,
-                    Controller.Reception this._receptionController,
+                    Controller.Calendar this._calendarController,
                     Controller.Notification this._notification) {
     _ui.setHint('alt+a');
 
@@ -53,9 +53,9 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Fetch all calendar entries for [reception].
    */
-  void _fetchCalendar(Model.Reception reception) {
-    _receptionController.calendar(reception)
-      .then ((Iterable<Model.ReceptionCalendarEntry> entries) {
+  void _fetchCalendar(ORModel.Reception reception) {
+    _calendarController.receptionCalendar(reception)
+      .then ((Iterable<ORModel.CalendarEntry> entries) {
         _ui.calendarEntries = entries.toList()
             ..sort((a,b) => a.start.compareTo(b.start));
       });
@@ -91,7 +91,7 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(Model.Reception reception) {
+  void _render(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
@@ -105,7 +105,7 @@ class ReceptionCalendar extends ViewWidget {
    * reception, and update accordingly if so.
    */
   void _updateOnChange(OREvent.CalendarChange calendarChange) {
-    final Model.Reception currentReception = _receptionSelector.selectedReception;
+    final ORModel.Reception currentReception = _receptionSelector.selectedReception;
 
     if(calendarChange.receptionID == currentReception.ID) {
       _fetchCalendar(currentReception);

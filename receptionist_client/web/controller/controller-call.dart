@@ -28,16 +28,16 @@ class Call {
 
   Call(this._service);
 
-  Future dial(ORModel.PhoneNumber phoneNumber, Model.Reception reception, Model.Contact contact) {
+  Future dial(ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact) {
     log.info('Dialing ${phoneNumber.value}.');
 
     _command.fire(CallCommand.DIAL);
-    return this._service.originate(phoneNumber.value, contact.ID, reception.ID)
-      .then((ORModel.Call orCall) {
+    return _service.originate(phoneNumber.value, contact.ID, reception.ID)
+      .then((ORModel.Call call) {
         _command.fire(CallCommand.DIALSUCCESS);
-        Model.Call.activeCall = new Model.Call.fromORModel(orCall);
+        ORModel.Call.activeCall = call;
 
-        return Model.Call.activeCall;
+        return ORModel.Call.activeCall;
       })
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -47,22 +47,22 @@ class Call {
       });
   }
 
-  Future<Model.Call> pickupParked (Model.Call call) => pickup (call);
+  Future<ORModel.Call> pickupParked (ORModel.Call call) => pickup (call);
 
   /**
    * Make the service layer perform a pickup request to the
    * call-flow-control server.
    */
-  Future<Model.Call> pickup(Model.Call call) {
+  Future<ORModel.Call> pickup(ORModel.Call call) {
     log.info('Picking up $call.');
 
     _command.fire(CallCommand.PICKUP);
-    return this._service.pickupMap(call.ID)
-      .then((Map callMap) {
+    return _service.pickup(call.ID)
+      .then((ORModel.Call call) {
         _command.fire(CallCommand.PICKUPSUCCESS);
-        Model.Call.activeCall = new Model.Call.fromMap(callMap);
+        ORModel.Call.activeCall = call;
 
-        return Model.Call.activeCall;
+        return ORModel.Call.activeCall;
       })
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -75,20 +75,20 @@ class Call {
   /**
    *
    */
-  Future<Model.Call> pickupNext() {
+  Future<ORModel.Call> pickupNext() {
 
     bool availableForPickup (ORModel.Call call) =>
-      call.assignedTo == Model.User.noID && !call.locked;
+      call.assignedTo == ORModel.User.noID && !call.locked;
 
-    return this._service.callList().then((Iterable<ORModel.Call> calls) {
+    return _service.callList().then((Iterable<ORModel.Call> calls) {
       ORModel.Call foundCall = calls.firstWhere
         (availableForPickup, orElse: () => null);
 
       if (foundCall != null) {
-        return pickup(new Model.Call.fromORModel(foundCall));
+        return pickup(foundCall);
       }
       else {
-        return Model.Call.noCall;
+        return ORModel.Call.noCall;
       }
     });
   }
@@ -96,20 +96,20 @@ class Call {
   /**
    *
    */
-  Future<Model.Call> pickupFirstParkedCall() {
-    return _firstParkedCall().then((Model.Call parkedCall) {
+  Future<ORModel.Call> pickupFirstParkedCall() {
+    return _firstParkedCall().then((ORModel.Call parkedCall) {
 
       if (parkedCall != null) {
-        this.pickup(new Model.Call.fromORModel(parkedCall));
+        this.pickup(parkedCall);
       }
     });
   }
 
-  Future hangup(Model.Call call) {
+  Future hangup(ORModel.Call call) {
     log.info('Hanging up $call.');
 
     _command.fire(CallCommand.HANGUP);
-    return this._service.hangup(call.ID)
+    return _service.hangup(call.ID)
       .then((_) => _command.fire(CallCommand.HANGUPSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -119,19 +119,19 @@ class Call {
       });
   }
 
-  Future park(Model.Call call) {
-    if (call == Model.Call.noCall) {
-      return new Future.value(Model.Call.noCall);
+  Future park(ORModel.Call call) {
+    if (call == ORModel.Call.noCall) {
+      return new Future.value(ORModel.Call.noCall);
     }
 
     _command.fire(CallCommand.PARK);
 
-    return this._service.park(call.ID)
-      .then((String stuff) {
+    return _service.park(call.ID)
+      .then((ORModel.Call parkedCall) {
         _command.fire(CallCommand.PARKSUCCESS);
 
-        Model.Call.activeCall = Model.Call.noCall;
-        return new Model.Call.fromMap(JSON.decode(stuff));
+        ORModel.Call.activeCall = ORModel.Call.noCall;
+        return parkedCall;
       })
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -141,40 +141,39 @@ class Call {
       });
   }
 
-  Future<Model.Call> _firstParkedCall()=>
-    this._service.callList().then((Iterable<ORModel.Call> calls) {
+  Future<ORModel.Call> _firstParkedCall() =>
+    _service.callList().then((Iterable<ORModel.Call> calls) {
     ORModel.Call parkedCall = calls.firstWhere((ORModel.Call call) =>
-      call.assignedTo == Model.User.currentUser.ID &&
+      call.assignedTo == ORModel.User.currentUser.ID &&
       call.state == ORModel.CallState.Parked, orElse: () => null);
 
     if (parkedCall != null) {
-      return new Model.Call.fromORModel(parkedCall);
+      return parkedCall;
     }
     else {
-      return Model.Call.noCall;
+      return ORModel.Call.noCall;
     }
    });
 
 
-  Future transferToFirstParkedCall(Model.Call source) {
-    return _firstParkedCall().then((Model.Call parkedCall) {
+  Future transferToFirstParkedCall(ORModel.Call source) {
+    return _firstParkedCall().then((ORModel.Call parkedCall) {
 
       if (parkedCall != null) {
         return _transfer(source, parkedCall)
           .then((_) {
-            Model.Call.activeCall = Model.Call.noCall;
+            ORModel.Call.activeCall = ORModel.Call.noCall;
         });
       }
-      else {
-        return new Future.value(null);
-      }
+
+      return null;
     });
   }
 
-  Future _transfer(Model.Call source, Model.Call destination) {
+  Future _transfer(ORModel.Call source, ORModel.Call destination) {
     _command.fire(CallCommand.TRANSFER);
 
-    return this._service.transfer(source.ID, destination.ID)
+    return _service.transfer(source.ID, destination.ID)
       .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
       .catchError((error, stackTrace) {
         log.severe(error, stackTrace);
@@ -184,19 +183,15 @@ class Call {
       });
     }
 
-  Future<Iterable<Model.Call>> listCalls() =>
-    this._service.callListMaps()
-      .then((Iterable<Map> maps) =>
-        maps.map((Map map) =>
-          new Model.Call.fromMap(map)));
+  Future<Iterable<ORModel.Call>> listCalls() => _service.callList();
 
   /**
    * Fetches a list of peers.
    */
-  Future<Iterable<Model.Peer>> peerList() =>
-    this._service.peerListMaps()
+  Future<Iterable<ORModel.Peer>> peerList() =>
+    _service.peerListMaps()
       .then((Iterable<Map> maps) =>
         maps.map((Map map) =>
-          new Model.Peer.fromMap(map)));
+          new ORModel.Peer.fromMap(map)));
 
 }

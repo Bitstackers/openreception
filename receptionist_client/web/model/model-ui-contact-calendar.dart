@@ -41,10 +41,10 @@ class UIContactCalendar extends UIModel {
   /**
    * Add [items] to the [CalendarEntry] list.
    */
-  set calendarEntries(Iterable<ContactCalendarEntry> items) {
+  set calendarEntries(Iterable<ORModel.CalendarEntry> items) {
     final List<LIElement> list =  new List<LIElement>();
 
-    items.forEach((ContactCalendarEntry item) {
+    items.forEach((ORModel.CalendarEntry item) {
       final DivElement content = new DivElement()..text = item.content;
 
       final String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
@@ -84,13 +84,13 @@ class UIContactCalendar extends UIModel {
    * Return currently selected [ContactCalendarEntry]. Return empty entry if
    * nothing is selected.
    */
-  ContactCalendarEntry get selectedCalendarEntry {
+  ORModel.CalendarEntry get selectedCalendarEntry {
     final LIElement selected = _list.querySelector('.selected');
 
     if(selected != null) {
-      return new ContactCalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
+      return new ORModel.CalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
     } else {
-      return new ContactCalendarEntry.empty();
+      return new ORModel.CalendarEntry.empty();
     }
   }
 

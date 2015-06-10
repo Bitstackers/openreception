@@ -19,14 +19,13 @@ part of view;
  */
 class CalendarEditor extends ViewWidget {
   final Model.UIContactCalendar   _contactCalendar;
-  final Controller.Contact        _contactController;
+  final Controller.Calendar       _calendarController;
   final Model.UIContactSelector   _contactSelector;
   final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.CalendarEditor');
   final Controller.Destination    _myDestination;
   final Popup                     _popup;
   final Model.UIReceptionCalendar _receptionCalendar;
-  final Controller.Reception      _receptionController;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor    _uiModel;
 
@@ -39,8 +38,7 @@ class CalendarEditor extends ViewWidget {
                  Model.UIContactSelector this._contactSelector,
                  Model.UIReceptionCalendar this._receptionCalendar,
                  Model.UIReceptionSelector this._receptionSelector,
-                 Controller.Contact this._contactController,
-                 Controller.Reception this._receptionController,
+                 Controller.Calendar  this._calendarController,
                  Popup this._popup,
                  Map<String, String> this._langMap) {
     _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
@@ -86,16 +84,9 @@ class CalendarEditor extends ViewWidget {
    * Clear the form and navigate one step back in history.
    */
   void _delete(_) {
-    Future                      deleteEntry;
     final ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
 
-    if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
-      deleteEntry = _receptionController.deleteCalendarEvent(_ui.loadedEntry);
-    } else if(_ui.loadedEntry is Model.ContactCalendarEntry) {
-      deleteEntry = _contactController.deleteCalendarEvent(_ui.loadedEntry);
-    }
-
-    deleteEntry
+    _calendarController.deleteCalendarEvent(_ui.loadedEntry)
       .then((_) {
         _log.info('${loadedEntry} successfully deleted from database');
         _popup.success(_langMap[Key.calendarEditorDelSuccessTitle], 'ID ${loadedEntry.ID}');
@@ -125,23 +116,8 @@ class CalendarEditor extends ViewWidget {
    */
   void _save(_) {
     final ORModel.CalendarEntry entry = _ui.harvestedEntry;
-    Future                      saveEntry;
 
-    if(_ui.loadedEntry is Model.ReceptionCalendarEntry) {
-      if(entry.ID == ORModel.CalendarEntry.noID) {
-        saveEntry = _receptionController.createCalendarEvent(entry);
-      } else {
-        saveEntry = _receptionController.saveCalendarEvent(entry);
-      }
-    } else if(_ui.loadedEntry is Model.ContactCalendarEntry) {
-      if(entry.ID == ORModel.CalendarEntry.noID) {
-        saveEntry = _contactController.createCalendarEvent(entry);
-      } else {
-        saveEntry = _contactController.saveCalendarEvent(entry);
-      }
-    }
-
-    saveEntry
+    _calendarController.saveCalendarEvent(entry)
       .then((ORModel.CalendarEntry savedEntry) {
         _log.info('${savedEntry} successfully saved to database');
         _popup.success(_langMap[Key.calendarEditorSaveSuccessTitle], 'ID ${savedEntry.ID}');
@@ -157,7 +133,7 @@ class CalendarEditor extends ViewWidget {
   /**
    * Render the widget with [calendarEntry].
    */
-  void _render(Model.CalendarEntry calendarEntry) {
+  void _render(ORModel.CalendarEntry calendarEntry) {
     _ui.calendarEntry = calendarEntry;
   }
 
@@ -165,8 +141,8 @@ class CalendarEditor extends ViewWidget {
    * Set the [_ui.authorStamp]. This is populated with data from the latest
    * calendar entry change object for [entryId].
    */
-  void _setAuthorStamp(int entryId) {
-    _receptionController.calendarEntryLatestChange(entryId)
+  void _setAuthorStamp(ORModel.CalendarEntry entry) {
+    _calendarController.calendarEntryLatestChange(entry)
         .then((ORModel.CalendarEntryChange latestChange) {
           _ui.authorStamp(latestChange.username, latestChange.changedAt);
         });
@@ -189,12 +165,13 @@ class CalendarEditor extends ViewWidget {
           entry = _contactCalendar.selectedCalendarEntry;
 
           _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
-          _setAuthorStamp(entry.ID);
+          _setAuthorStamp(entry);
 
           _render(entry);
         } else {
-          entry = new Model.ContactCalendarEntry(_contactSelector.selectedContact.ID,
-                                                 _receptionSelector.selectedReception.ID)
+          entry = new ORModel.CalendarEntry.contact
+              (_contactSelector.selectedContact.ID,
+               _receptionSelector.selectedReception.ID)
                     ..beginsAt = new DateTime.now()
                     ..until = new DateTime.now().add(new Duration(hours : 1))
                     ..content = '';
@@ -210,11 +187,12 @@ class CalendarEditor extends ViewWidget {
           entry = _receptionCalendar.selectedCalendarEntry;
 
           _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
-          _setAuthorStamp(entry.ID);
+          _setAuthorStamp(entry);
 
           _render(entry);
         } else {
-          entry = new Model.ReceptionCalendarEntry(_receptionSelector.selectedReception.ID)
+          entry = new ORModel.CalendarEntry.reception
+              (_receptionSelector.selectedReception.ID)
                     ..beginsAt = new DateTime.now()
                     ..until = new DateTime.now().add(new Duration(hours : 1))
                     ..content = '';

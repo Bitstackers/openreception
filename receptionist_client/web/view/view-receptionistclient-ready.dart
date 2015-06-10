@@ -22,6 +22,7 @@ class ReceptionistclientReady {
   AgentInfo                             _agentInfo;
   CalendarEditor                        _calendarEditor;
   ContactCalendar                       _contactCalendar;
+  final Controller.Calendar             _calendarController;
   final Controller.Call                 _callController;
   final Controller.Contact              _contactController;
   ContactData                           _contactData;
@@ -53,7 +54,7 @@ class ReceptionistclientReady {
   ReceptionVATNumbers                   _receptionVATNumbers;
   ReceptionWebsites                     _receptionWebsites;
   static ReceptionistclientReady        _singleton;
-  List<Model.Reception>                 _sortedReceptions;
+  List<ORModel.Reception>               _sortedReceptions;
   final Controller.User                 _userController;
   final Model.UIReceptionistclientReady _ui;
   WelcomeMessage                        _welcomeMessage;
@@ -63,9 +64,10 @@ class ReceptionistclientReady {
    */
   factory ReceptionistclientReady(Model.AppClientState appState,
                                   Model.UIReceptionistclientReady uiReady,
+                                  Controller.Calendar calendarController,
                                   Controller.Contact contactController,
                                   Controller.Reception receptionController,
-                                  List<Model.Reception> sortedReceptions,
+                                  List<ORModel.Reception> sortedReceptions,
                                   Controller.User userController,
                                   Controller.Call callController,
                                   Controller.Notification notification,
@@ -75,6 +77,7 @@ class ReceptionistclientReady {
     if(_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(appState,
                                                          uiReady,
+                                                         calendarController,
                                                          contactController,
                                                          receptionController,
                                                          sortedReceptions,
@@ -94,6 +97,7 @@ class ReceptionistclientReady {
    */
   ReceptionistclientReady._internal(Model.AppClientState this._appState,
                                     Model.UIReceptionistclientReady this._ui,
+                                    this._calendarController,
                                     this._contactController,
                                     this._receptionController,
                                     this._sortedReceptions,
@@ -161,8 +165,7 @@ class ReceptionistclientReady {
          uiContactSelector,
          uiReceptionCalendar,
          uiReceptionSelector,
-         _contactController,
-         _receptionController,
+         _calendarController,
          _popup,
          _langMap);
 
@@ -216,7 +219,7 @@ class ReceptionistclientReady {
         (uiReceptionCalendar,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionCalendar),
          uiReceptionSelector,
-         _receptionController,
+         _calendarController,
          _notification);
 
     _receptionCommands = new ReceptionCommands

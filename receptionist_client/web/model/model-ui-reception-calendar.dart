@@ -41,10 +41,10 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Add [items] to the entry list.
    */
-  set calendarEntries(Iterable<ReceptionCalendarEntry> items) {
+  set calendarEntries(Iterable<ORModel.CalendarEntry> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((ReceptionCalendarEntry item) {
+    items.forEach((ORModel.CalendarEntry item) {
       final DivElement content = new DivElement()..text = item.content;
 
       final String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
@@ -84,13 +84,13 @@ class UIReceptionCalendar extends UIModel {
    * Return currently selected [ReceptionCalendarEntry].
    * Return [ReceptionCalendarEntry.empty] if nothing is selected.
    */
-  ReceptionCalendarEntry get selectedCalendarEntry {
+  ORModel.CalendarEntry get selectedCalendarEntry {
     final LIElement selected = _list.querySelector('.selected');
 
     if(selected != null) {
-      return new ReceptionCalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
+      return new ORModel.CalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
     } else {
-      return new ReceptionCalendarEntry.empty();
+      return new ORModel.CalendarEntry.empty();
     }
   }
 

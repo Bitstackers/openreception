@@ -17,9 +17,9 @@ part of controller;
  * Contains a bunch of notification streams for various events.
  */
 class Notification {
-  Bus<Model.UserStatus>            _agentStateChangeBus      = new Bus<Model.UserStatus>();
+  Bus<ORModel.UserStatus>          _agentStateChangeBus      = new Bus<ORModel.UserStatus>();
   Bus<OREvent.CalendarChange>      _calendarChangeBus        = new Bus<OREvent.CalendarChange>();
-  Bus<Model.Call>                  _callStateChangeBus       = new Bus<Model.Call>();
+  Bus<ORModel.Call>                _callStateChangeBus       = new Bus<ORModel.Call>();
   Bus<Model.ClientConnectionState> _clientConnectionStateBus = new Bus<Model.ClientConnectionState>();
   final Logger                     _log                      = new Logger('$libraryName.Notification');
   ORService.NotificationSocket     _socket                   = null;
@@ -42,12 +42,11 @@ class Notification {
    * Handle the [OREvent.CallEvent] [event].
    */
   void _callEvent(OREvent.CallEvent event) {
-    _callStateChangeBus.fire(new Model.Call.fromORModel(event.call));
+    _callStateChangeBus.fire(event.call);
 
     /// If my call was hung up, update the model.
-    if (event is OREvent.CallHangup &&
-        Model.Call.activeCall == new Model.Call.fromORModel(event.call)) {
-      Model.Call.activeCall = Model.Call.noCall;
+    if (event is OREvent.CallHangup && ORModel.Call.activeCall == event.call) {
+      ORModel.Call.activeCall = ORModel.Call.noCall;
     }
   }
 
@@ -87,12 +86,12 @@ class Notification {
   /**
    * Agent state change stream.
    */
-  Stream<Model.UserStatus> get onAgentStateChange => _agentStateChangeBus.stream;
+  Stream<ORModel.UserStatus> get onAgentStateChange => _agentStateChangeBus.stream;
 
   /**
    * Call state change stream.
    */
-  Stream<Model.Call> get onAnyCallStateChange => _callStateChangeBus.stream;
+  Stream<ORModel.Call> get onAnyCallStateChange => _callStateChangeBus.stream;
 
   /**
    * Calendar Event changes stream.
@@ -116,6 +115,6 @@ class Notification {
    * Handle the [OREvent.UserState] [event].
    */
   void _userState(OREvent.UserState event) {
-    _agentStateChangeBus.fire(new Model.UserStatus.fromMap(event.asMap));
+    _agentStateChangeBus.fire(new ORModel.UserStatus.fromMap(event.asMap));
   }
 }

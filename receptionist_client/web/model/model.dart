@@ -28,20 +28,7 @@ import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:openreception_framework/util.dart' as ORUtil;
 
 part 'model-app-state.dart';
-part 'model-call.dart';
-//part 'model-call-list.dart';
 part 'model-client-connection-state.dart';
-part 'model-contact.dart';
-part 'model-contact-calendar.dart';
-part 'model-calendar-entry.dart';
-part 'model-message.dart';
-part 'model-message-endpoint.dart';
-part 'model-phone-number.dart';
-part 'model-reception.dart';
-part 'model-reception-calendar.dart';
-part 'model-user.dart';
-part 'model-peer.dart';
-part 'model-user-status.dart';
 
 part 'model-ui-agent-info.dart';
 part 'model-ui-calendar-editor.dart';

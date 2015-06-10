@@ -42,22 +42,22 @@ class WelcomeMessage extends ViewWidget {
   void _observers() {
     _receptionSelector.onSelect.listen(_render);
 
-    Model.Call.activeCallChanged.listen((Model.Call newCall) {
-      _ui.inActiveCall = newCall != Model.Call.noCall;
+    ORModel.Call.activeCallChanged.listen((ORModel.Call newCall) {
+      _ui.inActiveCall = newCall != ORModel.Call.noCall;
     });
   }
 
   /**
    * Render the widget with [reception].
    */
-  void _render(Model.Reception reception) {
+  void _render(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
-      if(Model.Call.activeCall != Model.Call.noCall) {
+      if(ORModel.Call.activeCall != ORModel.Call.noCall) {
         _ui.greeting =
-            Model.Call.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
+            ORModel.Call.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
       } else {
         _ui.greeting = reception.greeting;
       }

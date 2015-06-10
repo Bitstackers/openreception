@@ -25,40 +25,8 @@ class Reception {
   Reception (this._store);
 
   /**
-   *
+   * List [ORModel.Reception]'s
    */
-  Future<Iterable<Model.ReceptionCalendarEntry>> calendar(Model.Reception reception) =>
-      _store.calendarMap(reception.ID).then((Iterable<Map> maps) =>
-          maps.map((Map map) => new Model.ReceptionCalendarEntry.fromMap(map)));
+  Future<Iterable<ORModel.Reception>> list() => _store.list();
 
-  /**
-   * Return the latest entry change information for the [entryId] calendar entry.
-   */
-  Future<ORModel.CalendarEntryChange> calendarEntryLatestChange(int entryId) =>
-      _store.calendarEntryLatestChange(entryId);
-
-  /**
-   *
-   */
-  Future createCalendarEvent(Model.ReceptionCalendarEntry entry) =>
-      _store.calendarEventCreate(entry);
-
-  /**
-   *
-   */
-  Future deleteCalendarEvent(Model.ReceptionCalendarEntry entry) =>
-      _store.calendarEventRemove(entry);
-
-  /**
-   *
-   */
-  Future<Iterable<Model.Reception>> list() =>
-      _store.listMap().then((Iterable<Map> receptionMaps) =>
-          receptionMaps.map((Map map) => new Model.Reception.fromMap(map)));
-
-  /**
-   *
-   */
-  Future saveCalendarEvent(Model.ReceptionCalendarEntry entry) =>
-      _store.calendarEventUpdate(entry);
 }

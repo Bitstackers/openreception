@@ -63,14 +63,14 @@ class ContactSelector extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(Model.Reception reception) {
+  void _render(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
       _contactController.list(reception)
-          .then((Iterable<Model.Contact> contacts) {
-            List<Model.Contact> sortedContacts = contacts.toList()
-                ..sort((Model.Contact x , Model.Contact y) => x.fullName.compareTo(y.fullName));
+          .then((Iterable<ORModel.Contact> contacts) {
+            List<ORModel.Contact> sortedContacts = contacts.toList()
+                ..sort((ORModel.Contact x , ORModel.Contact y) => x.fullName.compareTo(y.fullName));
 
             _ui.contacts = sortedContacts;
             _ui.selectFirstContact();

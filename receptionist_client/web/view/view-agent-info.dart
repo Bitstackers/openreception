@@ -35,14 +35,14 @@ class AgentInfo extends ViewWidget {
     _ui.alertState = Model.AlertState.OFF;
     _ui.portrait = 'images/face.png';
 
-    Map userMap = Model.User.currentUser.toJson();
+    Map userMap = ORModel.User.currentUser.toJson();
     if (userMap.containsKey('remote_attributes')) {
       if ((userMap['remote_attributes'] as Map).containsKey('picture')) {
         _ui.portrait = userMap['remote_attributes']['picture'];
       }
     }
 
-    _userController.getState(Model.User.currentUser).then(_updateUserState);
+    _userController.getState(ORModel.User.currentUser).then(_updateUserState);
 
     _updateCounters();
 
@@ -59,20 +59,20 @@ class AgentInfo extends ViewWidget {
    * Set the users state to [AgentState.IDLE].
    */
   void _setIdle(_) {
-    _userController.setIdle(Model.User.currentUser).then(_updateUserState);
+    _userController.setIdle(ORModel.User.currentUser).then(_updateUserState);
   }
 
   /**
    * Set the users state to [AgentState.PAUSED].
    */
   void _setPaused(_) {
-    _userController.setPaused(Model.User.currentUser).then(_updateUserState);
+    _userController.setPaused(ORModel.User.currentUser).then(_updateUserState);
   }
 
   /**
    * Update the users state in the UI.
    */
-  void _updateUserState(Model.UserStatus userStatus) {
+  void _updateUserState(ORModel.UserStatus userStatus) {
     switch(userStatus.state) {
       case 'busy':
         _ui.agentState = Model.AgentState.BUSY;
@@ -96,8 +96,8 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltEnter.listen(_setIdle);
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
-    _notification.onAgentStateChange.listen((Model.UserStatus userStatus) {
-      if(userStatus.userID == Model.User.currentUser.ID) {
+    _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
+      if(userStatus.userID == ORModel.User.currentUser.ID) {
         _updateUserState(userStatus);
       }
       _updateCounters();
@@ -117,20 +117,20 @@ class AgentInfo extends ViewWidget {
    */
   void _updateCounters({Model.ClientConnectionState connectionState}) {
     _userController.userStateList()
-        .then((Iterable<Model.UserStatus> userStates) {
+        .then((Iterable<ORModel.UserStatus> userStates) {
           if(connectionState != null && connectionState.connectionCount == 0) {
-            _ui.activeCount = userStates.where((Model.UserStatus user) =>
+            _ui.activeCount = userStates.where((ORModel.UserStatus user) =>
                 user.userID != connectionState.userID &&
                 user.state == ORModel.UserState.Idle).length;
 
-            _ui.pausedCount = userStates.where((Model.UserStatus user)=>
+            _ui.pausedCount = userStates.where((ORModel.UserStatus user)=>
                 user.userID != connectionState.userID &&
                 user.state == ORModel.UserState.Paused).length;
           } else {
-            _ui.activeCount = userStates.where((Model.UserStatus user) =>
+            _ui.activeCount = userStates.where((ORModel.UserStatus user) =>
                 user.state == ORModel.UserState.Idle).length;
 
-            _ui.pausedCount = userStates.where((Model.UserStatus user)=>
+            _ui.pausedCount = userStates.where((ORModel.UserStatus user)=>
                 user.state == ORModel.UserState.Paused).length;
           }
         })

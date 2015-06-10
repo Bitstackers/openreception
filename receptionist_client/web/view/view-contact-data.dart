@@ -68,7 +68,7 @@ class ContactData extends ViewWidget {
   /**
    * Clear the widget on null [Reception].
    */
-  void _clear(Model.Reception reception) {
+  void _clear(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     }
@@ -96,7 +96,7 @@ class ContactData extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void _render(Model.Contact contact) {
+  void _render(ORModel.Contact contact) {
     if(contact.isEmpty) {
       _ui.clear();
     } else {

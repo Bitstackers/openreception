@@ -53,7 +53,7 @@ class GlobalCallQueue extends ViewWidget {
   /**
    * Add, remove, update the queue list, depending on the [call] state.
    */
-  void _handleCallStateChanges(Model.Call call) {
+  void _handleCallStateChanges(ORModel.Call call) {
     switch(call.state) {
       case ORModel.CallState.Created:
         _ui.appendCall(call);
@@ -77,9 +77,9 @@ class GlobalCallQueue extends ViewWidget {
    * Load the list of calls not currently assigned to anybody.
    */
   void _loadCallList() {
-    bool unassigned(Model.Call call) => call.assignedTo == Model.User.noID;
+    bool unassigned(ORModel.Call call) => call.assignedTo == ORModel.User.noID;
 
-    _callController.listCalls().then((Iterable<Model.Call> calls) {
+    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(unassigned).toList(growable: false);
     });
   }
@@ -96,9 +96,9 @@ class GlobalCallQueue extends ViewWidget {
 
     _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
 
-    _hotKeys.onNumDiv.listen((_) => _callController.hangup(Model.Call.activeCall));
+    _hotKeys.onNumDiv.listen((_) => _callController.hangup(ORModel.Call.activeCall));
 
-    _hotKeys.onF7.listen((_) => _callController.park(Model.Call.activeCall));
+    _hotKeys.onF7.listen((_) => _callController.park(ORModel.Call.activeCall));
 
     _hotKeys.onF8.listen((_) => _callController.pickupFirstParkedCall());
   }

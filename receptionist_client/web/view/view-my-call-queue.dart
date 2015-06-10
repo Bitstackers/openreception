@@ -53,8 +53,8 @@ class MyCallQueue extends ViewWidget {
   /**
    * Add, remove, update the queue list, depending on the [call] state.
    */
-  void _handleCallStateChanges(Model.Call call) {
-    if (call.assignedTo != Model.User.currentUser.ID) {
+  void _handleCallStateChanges(ORModel.Call call) {
+    if (call.assignedTo != ORModel.User.currentUser.ID) {
       return;
     }
 
@@ -81,11 +81,11 @@ class MyCallQueue extends ViewWidget {
    * Load the list of calls assigned to current user and not being transferred.
    */
   void _loadCallList() {
-    bool isMine(Model.Call call) =>
-        call.assignedTo == Model.User.currentUser.ID &&
+    bool isMine(ORModel.Call call) =>
+        call.assignedTo == ORModel.User.currentUser.ID &&
         call.state != ORModel.CallState.Transferred;
 
-    _callController.listCalls().then((Iterable<Model.Call> calls) {
+    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(isMine).toList(growable: false);
     });
   }
@@ -99,7 +99,7 @@ class MyCallQueue extends ViewWidget {
     _ui.onClick.listen(_activateMe);
 
     _hotKeys.onCtrlNumMinus.listen((_) =>
-        _callController.transferToFirstParkedCall(Model.Call.activeCall));
+        _callController.transferToFirstParkedCall(ORModel.Call.activeCall));
 
     _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
   }

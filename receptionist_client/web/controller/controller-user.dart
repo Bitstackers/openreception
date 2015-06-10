@@ -28,46 +28,30 @@ class User {
   /**
    * Get the [Model.UserStatus] for the current user.
    */
-  Future<Model.UserStatus> getState(Model.User user) =>
-    this._service.userStatusMap(user.ID)
-      .then((Map map) => new Model.UserStatus.fromMap(map));
+  Future<ORModel.UserStatus> getState(ORModel.User user) =>
+    _service.userStatus(user.ID);
 
   /**
    * Set the user idle.
-   *
-   * TODO (TL): Proper error handling. We're not doing anything with errors from
-   * the Service.Call.markUserStateIdle Future.
    */
-  Future<Model.UserStatus> setIdle(Model.User user) =>
-    this._service.userStateIdleMap(user.ID)
-      .then((Map map) => new Model.UserStatus.fromMap(map));
+  Future<ORModel.UserStatus> setIdle(ORModel.User user) =>
+    _service.userStateIdle(user.ID);
 
   /**
    * Set the user logged out.
-   *
-   * TODO (TL): Proper error handling. We're not doing anything with errors from
-   * the Service.Call.markUserStateIdle Future.
    */
-  Future<Model.UserStatus> setLoggedOut(Model.User user) =>
-    this._service.userStateLoggedOut(user.ID)
-      .then((Model.UserStatus status) => status);
+  Future<ORModel.UserStatus> setLoggedOut(ORModel.User user) =>
+    _service.userStateLoggedOut(user.ID);
 
   /**
    * Set the user paused.
-   *
-   * TODO (TL): Proper error handling. We're not doing anyting with errors from
-   * the Service.Call.markUserStatePaused Future.
    */
-  Future<Model.UserStatus> setPaused(Model.User user) =>
-    this._service.userStatePausedMap(user.ID)
-      .then((Map map) => new Model.UserStatus.fromMap(map));
+  Future<ORModel.UserStatus> setPaused(ORModel.User user) =>
+    _service.userStatePaused(user.ID);
 
   /**
    * Fetches a userStates of all users
    */
-  Future<Iterable<Model.UserStatus>> userStateList() =>
-    _service.userStatusListMaps()
-      .then((Iterable<Map> maps) =>
-        maps.map((Map map) =>
-          new Model.UserStatus.fromMap(map)));
+  Future<Iterable<ORModel.UserStatus>> userStateList() =>
+    _service.userStatusList();
 }

@@ -86,7 +86,7 @@ main() async {
     });
 
     if(token != null) {
-      Model.User.currentUser = await getUser(clientConfig.authServerUri, token);
+      ORModel.User.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient = new ORTransport.WebSocketClient();
       notification = new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
@@ -118,7 +118,7 @@ main() async {
                                        language,
                                        token);
         Future lCS = loadCallState(callFlowControl);
-        Future sP = controllerUser.setPaused(Model.User.currentUser);
+        Future sP = controllerUser.setPaused(ORModel.User.currentUser);
 
         Future.wait([rRV, lCS, sP]).then((_) {
           appState.changeState(Model.AppState.READY);
@@ -188,9 +188,7 @@ Future<ORModel.User> getUser(Uri authServerUri, String token) {
   ORService.Authentication authService =
       new ORService.Authentication(authServerUri, token, new ORTransport.Client());
 
-  return authService.userOf(token).then((ORModel.User user) {
-    return new Model.User.fromORModel(user);
-  });
+  return authService.userOf(token);
 }
 
 /**
@@ -200,11 +198,11 @@ Future loadCallState(ORService.CallFlowControl callFlowControl) {
   return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
     ORModel.Call myActiveCall =
       calls.firstWhere((ORModel.Call call) =>
-          call.assignedTo == Model.User.currentUser.ID &&
+          call.assignedTo == ORModel.User.currentUser.ID &&
           call.state      == ORModel.CallState.Speaking, orElse: () => null);
 
     if(myActiveCall != null) {
-      Model.Call.activeCall = new Model.Call.fromORModel(myActiveCall);
+      ORModel.Call.activeCall = myActiveCall;
     }
   });
 }
@@ -222,7 +220,7 @@ void observers(Controller.User controllerUser) {
   });
 
   windowOnUnload = window.onUnload.listen((_) {
-    controllerUser.setLoggedOut(Model.User.currentUser);
+    controllerUser.setLoggedOut(ORModel.User.currentUser);
   });
 }
 
@@ -263,18 +261,21 @@ Future registerReadyView(Model.AppClientState appState,
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
+  Controller.Calendar calendarController = new Controller.Calendar(contactStore, receptionStore);
+
   View.Popup popup  = new View.Popup(new Uri.file('/images/popup_error.png'),
                                      new Uri.file('/images/popup_info.png'),
                                      new Uri.file('/images/popup_success.png'));
 
   return receptionController.list()
-      .then((Iterable<Model.Reception> receptions) {
-        Iterable<Model.Reception> sortedReceptions = receptions.toList()
+      .then((Iterable<ORModel.Reception> receptions) {
+        Iterable<ORModel.Reception> sortedReceptions = receptions.toList()
             ..sort((x,y) => x.name.compareTo(y.name));
 
         appReady = new View.ReceptionistclientReady
             (appState,
              uiReady,
+             calendarController,
              new Controller.Contact(contactStore),
              receptionController,
              sortedReceptions,

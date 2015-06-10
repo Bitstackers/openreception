@@ -58,7 +58,7 @@ class ReceptionType extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(Model.Reception reception) {
+  void _render(ORModel.Reception reception) {
     if(reception.isEmpty) {
       _ui.clear();
     } else {
