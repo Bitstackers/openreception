@@ -60,10 +60,7 @@ class ReceptionStub {
     this.fullName = map[ReceptionJSONKey.FULL_NAME];
   }
 
-  ReceptionStub.none() : this._null();
-
-  ReceptionStub._null();
-
+  ReceptionStub.empty();
 }
 
 
@@ -106,8 +103,21 @@ class Reception extends ReceptionStub {
 
   Map attributes = {};
 
+  static final Reception noReception = new Reception.empty();
+
+  static Reception _selectedReception = noReception;
+
+  static Bus<Reception> _receptionChange = new Bus<Reception>();
+  static Stream<Reception> get onReceptionChange => _receptionChange.stream;
+
+  static Reception get selectedReception                       =>  _selectedReception;
+  static           set selectedReception (Reception reception) {
+    _selectedReception = reception;
+    _receptionChange.fire(_selectedReception);
+  }
+
   /// Default initializing contructor
-  Reception() : super._null();
+  Reception.empty() : super.empty();
 
   Reception.fromMap(Map receptionMap) : super.fromMap(receptionMap) {
 
@@ -226,10 +236,6 @@ class Reception extends ReceptionStub {
   @override
   operator == (Reception other) => this.ID == other.ID;
 
-
-  /**
-   * [Reception] null constructor.
-   */
-  Reception.none() : super._null();
-
+  bool get isNotEmpty => !this.isEmpty;
+  bool get isEmpty    => this.ID == noReception.ID;
 }

@@ -34,7 +34,7 @@ abstract class UserStatusJSONKey {
 }
 
 class UserStatus {
-  int          userID       = User.nullID;
+  int          userID       = User.noID;
   String       _state       = UserState.Unknown;
   String       lastState    = UserState.Unknown;
   DateTime     lastActivity = null;

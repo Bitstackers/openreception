@@ -37,8 +37,35 @@ class Call {
   static final Logger log        = new Logger (Call.className);
 
   static final String nullCallID = null;
-  static final int    noUser     = User.nullID;
+  static final int    noUser     = User.noID;
   static const int    nullReceptionID = 0;
+  static final Call noCall = new Call.empty();
+
+  Bus<CallState> _callState = new Bus<CallState>();
+  Stream<CallState> get callState => _callState.stream;
+
+  static Call _activeCall = new Call.empty();
+  static Call get activeCall => _activeCall;
+
+  static Bus<Call> _activeCallChanged = new Bus<Call>();
+  static Stream<Call> get activeCallChanged => _activeCallChanged.stream;
+
+  static set activeCall(Call newCall) {
+    _activeCall = newCall;
+    _activeCallChanged.fire(_activeCall);
+    log.finest('Changing active call to ${_activeCall.ID}:');
+  }
+
+ bool get isActive => this != noCall;
+
+  String _currentState = CallState.Unknown;
+  String get currentState  => _currentState;
+
+  set currentState (String newState) {
+    this._currentState = newState;
+    this._callState.fire(newState);
+  }
+
 
   final StreamController<Event.Event> _streamController = new StreamController.broadcast();
 
@@ -51,7 +78,6 @@ class Call {
   String   destination     = null;
   String   callerID        = null;
   bool     _isCall         = null;
-  bool     isStub          = false;
   bool     greetingPlayed  = false;
   bool     _locked         = false;
   bool     inbound         = null;
@@ -75,12 +101,12 @@ class Call {
     }
   }
 
-  Call ();
+  /**
+   * TODO: Remove when no longer needed in ServerStack.
+   */
+  Call();
 
-  Call.stub (Map map) {
-    this.ID = map[CallJsonKey.ID];
-    isStub = true;
-  }
+  Call.empty ();
 
   Call.fromMap (map) {
     this.ID = map[CallJsonKey.ID];
@@ -126,8 +152,14 @@ class Call {
     other.b_Leg = this.ID;
   }
 
-   @override
-  String toString () => '${this.ID} ${this.isStub ? '(stub)' : ''}';
+  /**
+   * [Call] as String, for debug/log purposes.
+   */
+  @override
+  String toString() => this == noCall
+                       ? 'no Call'
+                       : 'Call ID:${this.ID}, state:${this.state}, '
+                         'destination:${this.destination}';
 
    Map toJson () => {
      CallJsonKey.ID             : this.ID,

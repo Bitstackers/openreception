@@ -23,6 +23,12 @@ class CallFlowControl {
       .then((String response) => JSON.decode(response));
 
   /**
+   * Returns the [Model.UserStatus] object associated with [userID].
+   */
+  Future<Model.UserStatus> userStatus(int userID) => this.userStatusMap(userID)
+    .then((Map map) => new Model.UserStatus.fromMap(map));
+
+  /**
    * Returns an Iterable representation of the all the [Model.UserStatus]
    * objects currently known to the CallFlowControl server as maps.
    */
@@ -105,6 +111,16 @@ class CallFlowControl {
 
   /**
    * Updates the [Model.UserStatus] object associated
+   * with [userID] to state paused.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
+  Future<Model.UserStatus> userStatePaused(int userID) =>
+      userStatePausedMap(userID)
+          .then((Map map) => new Model.UserStatus.fromMap(map));
+
+  /**
+   * Updates the [Model.UserStatus] object associated
    * with [userID] to state idle.
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
@@ -159,20 +175,20 @@ class CallFlowControl {
       String extension, int contactID, int receptionID) => this._backend
       .post(appendToken(Resource.CallFlowControl.originate(
           this._host, extension, contactID, receptionID), this._token), '')
-      .then((String response) {
-    Map map = JSON.decode(response);
-    if (map.containsKey('call')) {
-      return new Model.Call.stub(map['call']);
-    } else {
-      return new Model.Call.fromMap(map);
-    }
-  });
+      .then((String response) =>
+          new Model.Call.fromMap(JSON.decode(response)));
 
   /**
    * Parks the call identified by [callID].
    */
-  Future park(String callID) => this._backend.post(appendToken(
-      Resource.CallFlowControl.park(this._host, callID), this._token), '');
+  Future<Model.Call> park(String callID) {
+    Uri uri = Resource.CallFlowControl.park(this._host, callID);
+        uri = appendToken(uri, this._token);
+
+    return _backend.post(uri, '')
+      .then(JSON.decode).then((Map map) =>
+        new Model.Call.fromMap(map));
+  }
 
   /**
    * Hangs up the call identified by [callID].

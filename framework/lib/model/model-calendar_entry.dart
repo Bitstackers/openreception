@@ -16,20 +16,26 @@ class CalendarEntry {
   DateTime         _start;
   DateTime         _stop;
 
+  bool get isOwnedByContact => _contactID != Contact.noID;
+
   /**
    * Constructor.
    */
-  CalendarEntry();
+  CalendarEntry.empty();
 
   /**
    * Constructor for [Contact] calendar entries.
    */
+  @deprecated
   CalendarEntry.forContact(this._contactID, this._receptionID);
+  CalendarEntry.contact(this._contactID, this._receptionID);
 
   /**
    * Constructor for [Reception] calendar entries.
    */
+  @deprecated
   CalendarEntry.forReception(this._receptionID);
+  CalendarEntry.reception(this._receptionID);
 
   /**
    * [CalendarEntry] constructor. Expects a map in the following format:

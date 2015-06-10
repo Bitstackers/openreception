@@ -110,7 +110,7 @@ abstract class ModelContact {
     final List workhours = ['Quite frankly; never'];
     final List messagePrerequisites = ['[fishcode]'];
 
-    Model.Contact builtObject = new Model.Contact.none()
+    Model.Contact builtObject = new Model.Contact.empty()
       ..receptionID = receptionID
       ..ID = contactID
       ..wantsMessage = wantsMessages

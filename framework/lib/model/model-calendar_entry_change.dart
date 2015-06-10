@@ -11,7 +11,7 @@ abstract class CalendarEntryChangeKey {
  */
 class CalendarEntryChange {
 
-  int userID = User.nullID;
+  int userID = User.noID;
   DateTime changedAt;
   String username;
 

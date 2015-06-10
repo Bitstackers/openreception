@@ -37,7 +37,7 @@ abstract class ContactDefault {
 class Contact {
 
   static const int     noID        = 0;
-  static final Contact nullContact = new Contact.none();
+  static final Contact noContact = new Contact.empty();
   static const String  className   = '${libraryName}.Contact';
   static final Logger  log         = new Logger(Contact.className);
 
@@ -45,14 +45,25 @@ class Contact {
 
   Stream get event => this._streamController.stream;
 
+  static Contact _selectedContact = Contact.noContact;
+
+  static Bus<Contact> _contactChange = new Bus<Contact>();
+  static Stream<Contact> get onContactChange => _contactChange.stream;
+
+  static Contact get selectedContact => _selectedContact;
+  static set selectedContact(Contact contact) {
+    _selectedContact = contact;
+    _contactChange.fire(_selectedContact);
+  }
+
   int ID            = noID;
   int receptionID   = Reception.noID;
 
   bool wantsMessage = true;
   bool enabled      = true;
 
-  String  fullName = '';
-  String  contactType = '';
+  String fullName = '';
+  String contactType = '';
 
   List<PhoneNumber> phones = [];
   List<String> backupContacts = [];
@@ -75,8 +86,6 @@ class Contact {
   void set distributionList (MessageRecipientList newList) {
     this._distributionList = newList;
   }
-
-  static final Contact noContact = nullContact;
 
   Map toJson() => this.asMap;
 
@@ -149,10 +158,15 @@ class Contact {
   }
 
   /**
+   * [Contact] as String, for debug/log purposes.
+   */
+  String toString() => '${this.fullName}-${this.ID}-${this.contactType}';
+
+  /**
    * [Contact] null constructor.
    */
-  Contact.none() {
-    ID          = noID;
-    contactType = null;
-  }
+  Contact.empty();
+
+  bool get isEmpty    => this.ID == noContact.ID;
+  bool get isNotEmpty => this.ID != noContact.ID;
 }

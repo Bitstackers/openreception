@@ -26,7 +26,7 @@ abstract class ModelReception {
       expect(() => new Model.Reception.fromMap(Test_Data.testReception), returnsNormally);
 
   static void buildObject () {
-    Model.Reception testReception = new Model.Reception()
+    Model.Reception testReception = new Model.Reception.empty()
       ..addresses = []
       ..alternateNames = []
       ..attributes = {}

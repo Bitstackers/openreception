@@ -5,6 +5,7 @@ import 'dart:collection';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
+import 'bus.dart';
 import 'event.dart'   as Event;
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
