@@ -18,11 +18,10 @@ dependencies:
   logging: any
   oauth2: any
   openreception_framework:
-    path: /home/krc/Projects/OpenReceptionFramework
-#    git:
-#      ref: master
-#      url: https://github.com/BitStackers/OpenReceptionFramework.git
-#    version: '> 0.0.23'
+    git:
+      ref: master
+      url: https://github.com/BitStackers/OpenReceptionFramework.git
+    version: '> 0.0.24'
   path: any
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
