@@ -15,6 +15,7 @@ import 'package:junitconfiguration/junitconfiguration.dart';
 import 'package:unittest/unittest.dart';
 
 part 'src/bus.dart';
+part 'src/model-base_contact.dart';
 part 'src/model-calendar_entry.dart';
 part 'src/model-calendar_entry_change.dart';
 part 'src/model-call.dart';
@@ -66,6 +67,7 @@ void main() {
   testEventMessageChange();
   testEventCalendarChange();
 
+  testModelBaseContact();
   testModelContact();
   testModelReception();
   testModelMessage();
