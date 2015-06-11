@@ -126,7 +126,7 @@ abstract class Reception_Store {
     int receptionID = 1;
 
     Model.CalendarEntry entry =
-        new Model.CalendarEntry.forReception(receptionID)
+        new Model.CalendarEntry.reception(receptionID)
          ..beginsAt    = new DateTime.now()
          ..until       = new DateTime.now().add(new Duration(hours: 2))
          ..content     = Randomizer.randomEvent();
@@ -271,7 +271,7 @@ abstract class Reception_Store {
     int receptionID = 1;
 
     Model.CalendarEntry event =
-        new Model.CalendarEntry.forReception(receptionID)
+        new Model.CalendarEntry.reception(receptionID)
          ..beginsAt    = new DateTime.now()
          ..until       = new DateTime.now().add(new Duration(hours: 2))
          ..content     = Randomizer.randomEvent();
