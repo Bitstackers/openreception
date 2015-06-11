@@ -37,11 +37,8 @@ class AgentInfo extends ViewWidget {
     _ui.alertState = Model.AlertState.OFF;
     _ui.portrait = 'images/face.png';
 
-    Map userMap = _appState.currentUser.toJson();
-    if (userMap.containsKey('remote_attributes')) {
-      if ((userMap['remote_attributes'] as Map).containsKey('picture')) {
-        _ui.portrait = userMap['remote_attributes']['picture'];
-      }
+    if(_appState.currentUser.portrait.isNotEmpty) {
+      _ui.portrait = _appState.currentUser.portrait;
     }
 
     _userController.getState(_appState.currentUser).then(_updateUserState);
