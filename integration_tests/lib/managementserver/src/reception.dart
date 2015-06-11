@@ -55,7 +55,7 @@ class _reception {
     const String greeting = 'cash';
     const int organization_id = 1;
 
-    Model.Reception reception = new Model.Reception()
+    Model.Reception reception = new Model.Reception.empty()
       ..organizationId = organization_id
       ..fullName = full_name
       ..shortGreeting = shortGreeting

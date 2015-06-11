@@ -50,6 +50,6 @@ abstract class Hangup {
    * Tests the hangup interface using an invalid call id.
    */
   static Future interfaceCallNotFound(Service.CallFlowControl callflow) {
-    return callflow.hangup(Model.Call.nullCallID);
+    return callflow.hangup(Model.Call.noID);
   }
 }

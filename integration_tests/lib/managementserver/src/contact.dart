@@ -7,15 +7,15 @@ class Contact {
   static Future getContact() {
     const int contactId = 1;
 
-    return contactStore.get(contactId).then((Model.Contact contact) {
-      expect(contact.ID, equals(contactId));
+    return contactStore.get(contactId).then((Model.BaseContact contact) {
+      expect(contact.id, equals(contactId));
       expect(contact.fullName, isNotEmpty);
     });
   }
 
   static Future getNonExistingContact() {
     const int organizationId = 999999999;
-    return contactStore.get(organizationId).then((Model.Contact contact) {
+    return contactStore.get(organizationId).then((Model.BaseContact contact) {
       fail('This should have returned a NOT FOUND');
     }).catchError((error) {
       expect(error, new isInstanceOf<Storage.NotFound>());
@@ -23,9 +23,9 @@ class Contact {
   }
 
   static Future getContactList() {
-    return contactStore.list().then((List<Model.Contact> contacts) {
+    return contactStore.list().then((Iterable<Model.BaseContact> contacts) {
       expect(contacts, isNotNull);
-      contacts.forEach((c) => expect(c.ID, greaterThanOrEqualTo(1)));
+      contacts.forEach((c) => expect(c.id, greaterThanOrEqualTo(1)));
     });
   }
 
@@ -33,18 +33,18 @@ class Contact {
     const String full_name = '..Test-Create Mandela A/S';
     const String contactType = 'human';
 
-    Model.Contact contact = new Model.Contact.empty()
+    Model.BaseContact contact = new Model.BaseContact.empty()
       ..fullName = full_name
       ..contactType = contactType
       ..enabled = false;
 
-    return contactStore.create(contact).then((Model.Contact newContact) {
+    return contactStore.create(contact).then((Model.BaseContact newContact) {
       expect(newContact, isNotNull);
       String originale_full_name = newContact.fullName;
       String new_full_name = 'Test-Update ${originale_full_name}';
       newContact.fullName = new_full_name;
 
-      return contactStore.update(newContact).then((Model.Contact updatedContact) {
+      return contactStore.update(newContact).then((Model.BaseContact updatedContact) {
         expect(updatedContact.fullName, equals(new_full_name));
         return contactStore.remove(updatedContact);
       });
@@ -55,18 +55,18 @@ class Contact {
     const String full_name = '..Test-Create Mandela A/S';
     const String contactType = 'human';
 
-    Model.Contact contact = new Model.Contact.empty()
+    Model.BaseContact contact = new Model.BaseContact.empty()
       ..fullName = full_name
       ..contactType = contactType
       ..enabled = false;
 
-    return contactStore.create(contact).then((Model.Contact newContact) {
-      expect(newContact.ID, greaterThanOrEqualTo(1));
+    return contactStore.create(contact).then((Model.BaseContact newContact) {
+      expect(newContact.id, greaterThanOrEqualTo(1));
       expect(newContact.fullName, equals(full_name));
 
       //Clean up.
-      return contactStore.remove(newContact).then((Model.Contact removeContact) {
-        expect(removeContact.ID, greaterThanOrEqualTo(1));
+      return contactStore.remove(newContact).then((Model.BaseContact removeContact) {
+        expect(removeContact.id, greaterThanOrEqualTo(1));
         expect(removeContact.fullName, equals(full_name));
       });
     });
