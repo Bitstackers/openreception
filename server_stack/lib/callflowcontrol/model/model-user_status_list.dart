@@ -16,9 +16,9 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
 
   bool has (int userID) => this._userStatus.containsKey(userID);
 
-  Iterable<Call> activeCallsAt (int userID) =>
+  Iterable<ORModel.Call> activeCallsAt (int userID) =>
       CallList.instance.callsOf (userID).where
-         ((Call call) => call.state == CallState.Speaking);
+         ((ORModel.Call call) => call.state == ORModel.CallState.Speaking);
 
   void update (int userID, String newState) {
     ORModel.UserStatus status = this.getOrCreate(userID);

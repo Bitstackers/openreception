@@ -2,17 +2,17 @@ part of callflowcontrol.router;
 
 
 /// Reply templates.
-Map hangupCallIDOK(callID) => {
+Map _hangupCallIDOK(callID) => {
   'status': 'ok',
   'description': 'Request to hang up ${callID} sent.'
 };
 
-Map hangupCommandOK(peerID) => {
+Map _hangupCommandOK(peerID) => {
   'status': 'ok',
   'description': 'Request for ${peerID} to hang up sent.'
 };
 
-Map orignateOK(channelUUID) => {
+Map _orignateOK(channelUUID) => {
   'status': 'ok',
   'call': {
     'id': channelUUID
@@ -20,19 +20,19 @@ Map orignateOK(channelUUID) => {
   'description': 'Connecting...'
 };
 
-Map parkOK(Model.Call call) => {
+Map _parkOK(ORModel.Call call) => {
   'status': 'ok',
   'message': 'call parked',
   'call': call
 };
 
 
-Map pickupOK(Model.Call call) => call.toJson();
+Map pickupOK(ORModel.Call call) => call.toJson();
 
 Map<int, ORModel.UserState> userMap = {};
 
 void _validateID (String callID) {
-  if (callID == null || callID == ORModel.Call.nullCallID || callID.isEmpty) {
+  if (callID == null || callID == ORModel.Call.noID || callID.isEmpty) {
     throw new FormatException('Invalid Call ID: ${callID}');
   }
 }
@@ -45,7 +45,7 @@ abstract class Call {
     String callID = shelf_route.getPathParameter(request, 'callid');
 
     try {
-      Model.Call call = Model.CallList.instance.get(callID);
+      ORModel.Call call = Model.CallList.instance.get(callID);
       return new shelf.Response.ok(JSON.encode(call));
     } catch (error, stackTrace) {
       if (error is Model.NotFound) {
@@ -74,7 +74,7 @@ abstract class Call {
           Model.UserStatusList.instance.update
             (user.ID, ORModel.UserState.HandlingOffHook);
 
-          return new shelf.Response.ok(JSON.encode(hangupCommandOK(peer.ID)));
+          return new shelf.Response.ok(JSON.encode(_hangupCommandOK(peer.ID)));
 
         })
         .catchError((error, stackTrace) {
@@ -119,7 +119,7 @@ abstract class Call {
         }
 
         /// Verify existence of call targeted for hangup.
-        Model.Call targetCall = null;
+        ORModel.Call targetCall = null;
         try {
           targetCall = Model.CallList.instance.get(callID);
         } on Model.NotFound catch (_) {
@@ -131,19 +131,18 @@ abstract class Call {
         Model.UserStatusList.instance.update
           (user.ID, ORModel.UserState.HangingUp);
 
-        Completer<Model.Call> completer = new Completer<Model.Call>();
+        Completer<ORModel.Call> completer = new Completer<ORModel.Call>();
 
-        Model.CallList.instance.onCallStateChange.listen
-              ((Model.Call call) {
-                if (call.state == Model.CallState.Hungup && call.ID == callID) {
-                  completer.complete(call);
-                }
-              });
+        Model.CallList.instance.onEvent.
+          firstWhere((OREvent.CallEvent event) =>
+              event is OREvent.CallHangup && event.call.ID == callID)
+            .then ((OREvent.CallHangup hangupEvent) =>
+                  completer.complete(hangupEvent.call));
 
         return Controller.PBX.hangup(targetCall)
           .then((_) {
 
-            return completer.future.then((Model.Call hungupCall) {
+            return completer.future.then((ORModel.Call hungupCall) {
               /// Update user state.
               Model.UserStatusList.instance.update
                 (user.ID, ORModel.UserState.WrappingUp);
@@ -224,9 +223,9 @@ abstract class Call {
 
       /// Park all the users calls.
       return Future.forEach
-        (Model.CallList.instance.callsOf(user.ID).where((Model.Call call) =>
-          call.state == Model.CallState.Speaking), (Model.Call call) =>
-            call.park(user))
+        (Model.CallList.instance.callsOf(user.ID).where((ORModel.Call call) =>
+          call.state == ORModel.CallState.Speaking), (ORModel.Call call) =>
+            Controller.PBX.park(call, user))
         .then((_) {
 
           /// Update the user state
@@ -241,7 +240,7 @@ abstract class Call {
               Model.UserStatusList.instance.update
                 (user.ID, ORModel.UserState.Speaking);
 
-              return new shelf.Response.ok(JSON.encode(orignateOK(channelUUID)));
+              return new shelf.Response.ok(JSON.encode(_orignateOK(channelUUID)));
 
             })
             .catchError((error, stackTrace) {
@@ -318,10 +317,10 @@ abstract class Call {
       Model.UserStatusList.instance.update
         (user.ID, ORModel.UserState.Dialing);
 
-      bool isSpeaking (Model.Call call) =>
-          call.state == Model.CallState.Speaking;
+      bool isSpeaking (ORModel.Call call) =>
+          call.state == ORModel.CallState.Speaking;
 
-      Future parkIt (Model.Call call) => call.park(user);
+      Future parkIt (ORModel.Call call) => Controller.PBX.park(call, user);
 
       /// Park all the users calls.
       return Future.forEach
@@ -330,7 +329,7 @@ abstract class Call {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
-        Future<Model.Call> outboundCall;
+        Future<ORModel.Call> outboundCall;
 
         return Controller.PBX.createAgentChannel(user)
           .then((String uuid) {
@@ -354,12 +353,12 @@ abstract class Call {
                 ORModel.UserState.Speaking);
 
               return outboundCall
-                .then((Model.Call call) {
+                .then((ORModel.Call call) {
                 call.assignedTo = user.ID;
                 call.receptionID = receptionID;
                 call.contactID = contactID;
 
-                call.changeState(Model.CallState.Ringing);
+                call.changeState(ORModel.CallState.Ringing);
 
                 return new shelf.Response.ok(JSON.encode(call));
               })
@@ -429,7 +428,7 @@ abstract class Call {
             new shelf.Response(400, body : 'Empty call_id in path.'));
       }
 
-      Model.Call call = Model.CallList.instance.get(callID);
+      ORModel.Call call = Model.CallList.instance.get(callID);
 
       if (!aclCheck(user)) {
         return new Future.value(
@@ -444,7 +443,7 @@ abstract class Call {
             ORModel.UserState.HandlingOffHook);
 
 
-        String reply = JSON.encode(parkOK(call));
+        String reply = JSON.encode(_parkOK(call));
 
         log.finest('Parked call ${reply}');
 
@@ -516,10 +515,10 @@ abstract class Call {
       /// Park all the users calls.
       return Future.forEach(
           Model.UserStatusList.instance.activeCallsAt(user.ID),
-          (Model.Call call) => call.park(user)).then((_) {
+          (ORModel.Call call) => Controller.PBX.park(call, user)).then((_) {
 
         /// Request the specified call.
-        Model.Call assignedCall =
+        ORModel.Call assignedCall =
             Model.CallList.instance.requestSpecificCall(callID, user);
         assignedCall.assignedTo = user.ID;
 
@@ -628,10 +627,10 @@ abstract class Call {
       /// Park all the users calls.
       return Future.forEach(
           Model.UserStatusList.instance.activeCallsAt(user.ID),
-          (Model.Call call) => call.park(user)).then((_) {
+          (ORModel.Call call) => Controller.PBX.park(call, user)).then((_) {
 
         /// Request the specified call.
-        Model.Call assignedCall =
+        ORModel.Call assignedCall =
             Model.CallList.instance.requestSpecificCall(callID, user);
         assignedCall.assignedTo = user.ID;
 
@@ -747,8 +746,8 @@ abstract class Call {
       /// Park all the users calls.
       return Future.forEach(
           Model.CallList.instance.callsOf(
-              user.ID).where((Model.Call call) => call.state == Model.CallState.Speaking),
-          (Model.Call call) => call.park(user)).then((_) {
+              user.ID).where((ORModel.Call call) => call.state == ORModel.CallState.Speaking),
+          (ORModel.Call call) => Controller.PBX.park(call, user)).then((_) {
 
         /// Check user state. If the user is currently performing an action - or
         /// has an active channel - deny the request.
@@ -779,7 +778,7 @@ abstract class Call {
               user.ID,
               ORModel.UserState.Speaking);
 
-          return new shelf.Response.ok(JSON.encode(orignateOK(channelUUID)));
+          return new shelf.Response.ok(JSON.encode(_orignateOK(channelUUID)));
 
         }).catchError((error, stackTrace) {
           Model.UserStatusList.instance.update(
@@ -814,8 +813,8 @@ abstract class Call {
 
     String sourceCallID = shelf_route.getPathParameter(request, "aleg");
     String destinationCallID = shelf_route.getPathParameter(request, 'bleg');
-    Model.Call sourceCall = null;
-    Model.Call destinationCall = null;
+    ORModel.Call sourceCall = null;
+    ORModel.Call destinationCall = null;
 
     if (sourceCallID == null || sourceCallID == "") {
       return new Future.value
@@ -846,7 +845,7 @@ abstract class Call {
     if ([
         sourceCall,
         destinationCall].every(
-            (Model.Call call) => call.state != Model.CallState.Parked)) {
+            (ORModel.Call call) => call.state != ORModel.CallState.Parked)) {
       log.warning(
           'Potential invalid state detected; trying to bridge a '
               'non-parked call in an attended transfer. uuids:'

@@ -50,6 +50,8 @@ class Call extends ORModel.Call {
     }
   }
 
+  Call(String ID) : super.empty(ID);
+
   @override
   operator == (Call other) => this.ID == other.ID;
 
@@ -100,7 +102,7 @@ class Call extends ORModel.Call {
   void changeState (String newState) {
 
     final String lastState = this.state;
-    this.state = newState;
+    super.changeState(newState);
 
     log.finest('UUID: ${this.ID}: uid:${this.assignedTo} ${lastState} => ${newState}');
 

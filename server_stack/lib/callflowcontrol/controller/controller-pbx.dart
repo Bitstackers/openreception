@@ -30,7 +30,7 @@ abstract class PBX {
   static final Logger log             = new Logger('${libraryName}.PBX');
   static const String callerID        = '39990141';
   static const int    timeOutSeconds  = 10;
-  static const String dialplan        = 'xml default';
+  static const String dialplan        = 'xml receptions';
   static const String originationChan = 'or_origination_channel';
 
   /**
@@ -40,7 +40,7 @@ abstract class PBX {
    *
    * Returns the UUID of the call.
    */
-  static Future<String> originate (String extension, int contactID, int receptionID, SharedModel.User user) {
+  static Future<String> originate (String extension, int contactID, int receptionID, ORModel.User user) {
     /// Tag the A-leg as a primitive origination channel.
     List<String> a_legvariables = ['${originationChan}=true'];
 
@@ -68,7 +68,7 @@ abstract class PBX {
    *
    * Returns the UUID of the new channel.
    */
-  static Future<String> createAgentChannel (SharedModel.User user) {
+  static Future<String> createAgentChannel (ORModel.User user) {
     return Model.PBXClient.api('create_uuid').then((ESL.Response response) {
       final String new_call_uuid = response.rawBody;
       final String destination = 'user/${user.peer}';
@@ -115,14 +115,15 @@ abstract class PBX {
   }
 
   static Future transferUUIDToExtension
-    (String uuid, String extension, SharedModel.User user) {
+    (String uuid, String extension, ORModel.User user) {
     return
       Model.PBXClient.api
         ('uuid_setvar $uuid effective_caller_id_number test')
         .then((_) => Model.PBXClient.api
           ('uuid_setvar $uuid effective_caller_id_name testname'))
         .then((_) => Model.PBXClient.bgapi
-          ('uuid_transfer $uuid $extension ${dialplan}'));
+          ('uuid_transfer $uuid $extension ${dialplan}'))
+        .then((ESL.Reply reply) => print(reply.replyRaw));
   }
 
   /**
@@ -130,7 +131,7 @@ abstract class PBX {
    *
    * By first dialing the agent and then the recordingsmenu.
    */
-  static Future originateRecording (int receptionID, String recordExtension, String soundFilePath, SharedModel.User user) {
+  static Future originateRecording (int receptionID, String recordExtension, String soundFilePath, ORModel.User user) {
     List<String> variables = ['reception_id=${receptionID}',
                               'owner=${user.ID}',
                               'recordpath=${soundFilePath}'];
@@ -153,7 +154,7 @@ abstract class PBX {
    * This method is cleaner than the [originate] method, because this will return the future A-leg as call-id, but
    * will break the protocol as per 2014-06-24.
    */
-  static Future<String> originateOutboundFirst (String extension, int contactID, int receptionID, SharedModel.User user) {
+  static Future<String> originateOutboundFirst (String extension, int contactID, int receptionID, ORModel.User user) {
     List<String> variables = ['reception_id=${receptionID}',
                               'owner=${user.ID}',
                               'contact_id=${contactID}',
@@ -177,9 +178,7 @@ abstract class PBX {
   /**
    * Bridges two active calls.
    */
-  static Future bridge (Model.Call source, Model.Call destination) {
-    Model.TransferRequest.create (source.ID, destination.ID);
-
+  static Future bridge (ORModel.Call source, ORModel.Call destination) {
     return Model.PBXClient.api ('uuid_bridge ${source.ID} ${destination.ID}')
         .then((ESL.Response response) {
 
@@ -194,8 +193,7 @@ abstract class PBX {
   /**
    * Bridges two active calls.
    */
-  static Future bridgeChannel (String uuid, Model.Call destination) {
-    Model.TransferRequest.create (uuid, destination.ID);
+  static Future bridgeChannel (String uuid, ORModel.Call destination) {
 
     ESL.Response bridgeResponse;
 
@@ -213,7 +211,7 @@ abstract class PBX {
   /**
    * Transfers an active call to a user.
    */
-  static Future transfer (Model.Call source, String extension) {
+  static Future transfer (ORModel.Call source, String extension) {
 
     ESL.Response transferResponse;
 
@@ -225,7 +223,7 @@ abstract class PBX {
   /**
    * Kills the active channel for a call.
    */
-  static Future hangup (Model.Call call) {
+  static Future hangup (ORModel.Call call) {
     return Model.PBXClient.api('uuid_kill ${call.channel}')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
@@ -254,7 +252,7 @@ abstract class PBX {
    * Parks a call in the parking lot for the user.
    * TODO: Log NO_ANSWER events and figure out why they are coming.
    */
-  static Future park (Model.Call call, SharedModel.User user) {
+  static Future park (ORModel.Call call, ORModel.User user) {
     return transfer(call, 'park');
   }
 }

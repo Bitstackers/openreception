@@ -24,16 +24,16 @@ class Busy implements Exception {
   String toString() => "Forbidden: $message";
 }
 
-class CallList extends IterableBase<Call> {
+class CallList extends IterableBase<ORModel.Call> {
 
   static final Logger log = new Logger('${libraryName}.CallList');
 
-  Map<String, Call> _map = new Map<String, Call>();
+  Map<String, ORModel.Call> _map = new Map<String, ORModel.Call>();
 
   Iterator get iterator => this._map.values.iterator;
 
-  Bus<Call> _callStateChange = new Bus<Call>();
-  Stream<Call> get onCallStateChange => this._callStateChange.stream;
+  Bus<OREvent.CallEvent> _callEvent = new Bus<OREvent.CallEvent>();
+  Stream<OREvent.CallEvent> get onEvent => this._callEvent.stream;
 
   static CallList instance = new CallList();
 
@@ -90,11 +90,11 @@ class CallList extends IterableBase<Call> {
     }
   }
 
-  List<Call> callsOf(int userID) =>
-      this.where((Call call) => call.assignedTo == userID).toList();
+  List<ORModel.Call> callsOf(int userID) =>
+      this.where((ORModel.Call call) => call.assignedTo == userID).toList();
 
 
-  Call get(String callID) {
+  ORModel.Call get(String callID) {
     if (this._map.containsKey(callID)) {
       return this._map[callID];
     } else {
@@ -110,14 +110,14 @@ class CallList extends IterableBase<Call> {
     }
   }
 
-  Call requestCall(user) =>
+  ORModel.Call requestCall(user) =>
     //TODO: Implement a real algorithm for selecting calls.
-    this.firstWhere((Call call) => call.assignedTo == ORModel.User.noID &&
+    this.firstWhere((ORModel.Call call) => call.assignedTo == ORModel.User.noID &&
       !call.locked, orElse: () => throw new NotFound ("No calls available"));
 
-  Call requestSpecificCall(String callID, ORModel.User user )  {
+  ORModel.Call requestSpecificCall(String callID, ORModel.User user )  {
 
-    Call call = this.get(callID);
+    ORModel.Call call = this.get(callID);
 
     if (![user.ID, ORModel.User.noID].contains(call.assignedTo)) {
       log.warning('Call ${callID} already assigned to uid: ${call.assignedTo}');
@@ -142,16 +142,16 @@ class CallList extends IterableBase<Call> {
     log.finest('Bridging channel ${aLeg} and channel ${bLeg}');
 
     if (isCall(aLeg) && isCall(bLeg)) {
-      CallList.instance.get(aLeg.UUID).changeState (CallState.Transferred);
-      CallList.instance.get(bLeg.UUID).changeState (CallState.Transferred);
+      CallList.instance.get(aLeg.UUID).changeState (ORModel.CallState.Transferred);
+      CallList.instance.get(bLeg.UUID).changeState (ORModel.CallState.Transferred);
     }
 
     else if (isCall(aLeg)) {
-      CallList.instance.get(aLeg.UUID).changeState (CallState.Speaking);
+      CallList.instance.get(aLeg.UUID).changeState (ORModel.CallState.Speaking);
     }
 
     else if (isCall(bLeg)) {
-      CallList.instance.get(bLeg.UUID).changeState (CallState.Speaking);
+      CallList.instance.get(bLeg.UUID).changeState (ORModel.CallState.Speaking);
     }
 
     // Local calls??
@@ -162,9 +162,8 @@ class CallList extends IterableBase<Call> {
 
   void _handleChannelDestroy (ESL.Event event) {
     if (this.containsID(event.uniqueID)) {
-      this.get(event.uniqueID).changeState(CallState.Hungup);
+      this.get(event.uniqueID).changeState(ORModel.CallState.Hungup);
       log.finest('Hanging up ${event.uniqueID}');
-      this._callStateChange.fire(this.get(event.uniqueID));
       this.remove(event.uniqueID);
     }
   }
@@ -180,7 +179,7 @@ class CallList extends IterableBase<Call> {
               event.contentAsMap.containsKey('variable_reception_id')
                         ? int.parse(event.field('variable_reception_id'))
                         : 0
-            ..changeState(CallState.Created);
+            ..changeState(ORModel.CallState.Created);
 
         break;
 
@@ -193,7 +192,7 @@ class CallList extends IterableBase<Call> {
       case ('AdaHeads::pre-queue-leave'):
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
-          ..changeState (CallState.Transferring)
+          ..changeState (ORModel.CallState.Transferring)
           ..locked = true;
         break;
 
@@ -202,17 +201,17 @@ class CallList extends IterableBase<Call> {
         CallList.instance.get (event.uniqueID)
           ..locked = false
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
-          ..changeState (CallState.Queued);
+          ..changeState (ORModel.CallState.Queued);
         break;
 
       case ('AdaHeads::parking-lot-enter'):
         CallList.instance.get (event.uniqueID)
-          ..changeState (CallState.Parked);
+          ..changeState (ORModel.CallState.Parked);
         break;
 
       case ('AdaHeads::parking-lot-leave'):
         CallList.instance.get (event.uniqueID)
-          ..changeState (CallState.Transferring);
+          ..changeState (ORModel.CallState.Transferring);
         break;
     }
   }
@@ -290,7 +289,6 @@ class CallList extends IterableBase<Call> {
 
     log.finest('Creating new call ${event.uniqueID}');
 
-
     int contactID = event.contentAsMap.containsKey('variable_contact_id')
                      ? int.parse(event.field('variable_contact_id'))
                      : ORModel.Contact.noID;
@@ -303,17 +301,15 @@ class CallList extends IterableBase<Call> {
                    ? int.parse(event.field('variable_owner'))
                    : ORModel.User.noID;
 
-    Call createdCall = new Call()
-        ..ID = event.uniqueID
+    ORModel.Call createdCall = new ORModel.Call.empty(event.uniqueID)
         ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
         ..callerID = event.field('Caller-Caller-ID-Number')
         ..destination = event.field('Caller-Destination-Number')
         ..receptionID = receptionID
         ..contactID   = contactID
-        ..assignedTo  = userID;
+        ..assignedTo  = userID
+        ..event.listen(this._callEvent.fire);
 
       this._map[event.uniqueID] = createdCall;
     }
-
-  }
-
+}

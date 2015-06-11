@@ -13,14 +13,11 @@ import 'package:openreception_framework/util.dart' as Util;
 import '../controller/controller.dart' as Controller;
 import '../router.dart';
 
-part 'model-call.dart';
 part 'model-call_list.dart';
 part 'model-pbx_client.dart';
 part 'model-channel_list.dart';
-part 'model-origination_request.dart';
 part 'model-peer.dart';
 part 'model-peer_list.dart';
-part 'model-transfer_request.dart';
 part 'model-user_status_list.dart';
 
 const String libraryName = 'callflowcontrol.model';

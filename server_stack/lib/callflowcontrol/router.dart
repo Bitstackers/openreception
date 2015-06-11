@@ -13,6 +13,7 @@ import 'package:openreception_framework/storage.dart'  as ORStorage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/event.dart' as OREvent;
 
 import 'package:logging/logging.dart';
 import 'package:esl/esl.dart' as ESL;
@@ -78,7 +79,12 @@ void _accessLogger(String msg, bool isError) {
   }
 }
 
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
+void startNotifier() {
+  log.info('Starting client notifier');
+  Model.CallList.instance.onEvent.listen(Notification.broadcastEvent);
+}
+
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
 
   var router = shelf_route.router()
     ..get('/peer/list', Peer.list)

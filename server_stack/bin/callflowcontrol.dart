@@ -33,6 +33,7 @@ void main(List<String> args) {
       json.config.whenLoaded()
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
+        .then((_) => router.startNotifier())
         .then((_) => connectESLClient())
         .then((_) => router.start(port : json.config.httpport))
         .catchError(log.shout);
