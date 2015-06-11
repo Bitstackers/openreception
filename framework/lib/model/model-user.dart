@@ -1,5 +1,14 @@
 part of openreception.model;
 
+abstract class UserKey {
+  static const String address = 'address';
+  static const String groups = 'groups';
+  static const String id = 'id';
+  static const String identites = 'identites';
+  static const String name = 'name';
+  static const String extension = 'extension';
+}
+
 /**
  *
  */
@@ -22,12 +31,12 @@ class User {
    * Constructor.
    */
   User.fromMap(Map userMap) {
-    address    = userMap['address'];
-    groups     = userMap['groups'];
-    ID         = userMap['id'];
-    identities = userMap['identites'];
-    name       = userMap['name'];
-    peer       = userMap['extension'];
+    address    = userMap[UserKey.address];
+    groups     = userMap[UserKey.groups];
+    ID         = userMap[UserKey.id];
+    identities = userMap[UserKey.identites];
+    name       = userMap[UserKey.name];
+    peer       = userMap[UserKey.extension];
 
     if(userMap.containsKey('remote_attributes')) {
       if((userMap['remote_attributes'] as Map).containsKey('picture')) {
@@ -42,6 +51,21 @@ class User {
   Map get asSender => {'name'   : name,
                        'id'     : ID,
                        'address': address};
+
+  /**
+   *
+   */
+  Map get asMap => {
+    UserKey.id        : ID,
+    UserKey.name      : name,
+    UserKey.address   : address,
+    UserKey.groups    : groups,
+    UserKey.identites : identities,
+    UserKey.extension : peer
+
+  };
+
+  Map toJson() => this.asMap;
 
   /**
    *

@@ -39,59 +39,56 @@ abstract class CallState {
  *
  */
 class Call {
-  DateTime               arrived        = new DateTime.now();
-  int                    assignedTo     = User.noID;
-  String                 bLeg           = null;
-  String                 callerID       = null;
-  final Bus<String>      _callState     = new Bus<String>();
-  int                    contactID      = null;
-  String                 _currentState  = CallState.Unknown;
-  String                 destination    = null;
-  final Bus<Event.Event> _eventBus      = new Bus<Event.Event>();
-  bool                   greetingPlayed = false;
-  String                 ID             = null;
-  bool                   inbound        = null;
-  bool                   isCall         = null;
-  bool                   _locked        = false;
-  final Logger           _log           = new Logger('${libraryName}.Call');
-  static final Call      noCall         = new Call.empty();
-  int                    receptionID    = null;
-  String                 state          = CallState.Unknown;
 
-  /**
-   * Constructor.
-   * TODO (KRC): Remove when no longer needed in ServerStack.
-   */
-  Call();
+  static const String    className       = '${libraryName}.Call';
+  static final Logger    _log            = new Logger (Call.className);
+
+  static final Call      noCall          = new Call.empty(noID);
+  static final String    noID            = '';
+
+  final Bus<String>          _callState  = new Bus<String>();
+  final Bus<Event.CallEvent> _eventBus   = new Bus<Event.CallEvent>();
+
+  DateTime               arrived         = new DateTime.now();
+  int                    assignedTo      = User.noID;
+  String                 b_Leg           = null;
+  String                 callerID        = null;
+  int                    contactID       = null;
+  String                 destination     = null;
+  bool                   greetingPlayed  = false;
+  String                 _ID             = noID;
+  bool                   inbound         = null;
+  bool                   _locked         = false;
+  int                    receptionID     = Reception.noID;
+  String                 _state          = CallState.Unknown;
 
   /**
    * Constructor.
    */
-  Call.empty();
+  Call.empty(this._ID);
 
   /**
    * Constructor.
    */
   Call.fromMap(map) {
-    ID             = map[CallJsonKey.ID];
-    state          = map[CallJsonKey.state];
-    bLeg           = map[CallJsonKey.bLeg];
-    _locked        = map[CallJsonKey.locked];
-    inbound        = map[CallJsonKey.inbound];
-    isCall         = map[CallJsonKey.isCall];
-    destination    = map[CallJsonKey.destination];
-    callerID       = map[CallJsonKey.callerID];
-    greetingPlayed = map[CallJsonKey.greetingPlayed];
-    receptionID    = map[CallJsonKey.receptionID];
-    assignedTo     = map[CallJsonKey.assignedTo];
-    arrived        = Util.unixTimestampToDateTime (map[CallJsonKey.arrivalTime]);
+    _ID                 = map[CallJsonKey.ID];
+    _state              = map[CallJsonKey.state];
+    this.b_Leg          = map[CallJsonKey.bLeg];
+    this._locked        = map[CallJsonKey.locked];
+    this.inbound        = map[CallJsonKey.inbound];
+    this.destination    = map[CallJsonKey.destination];
+    this.callerID       = map[CallJsonKey.callerID];
+    this.greetingPlayed = map[CallJsonKey.greetingPlayed];
+    this.receptionID    = map[CallJsonKey.receptionID];
+    this.assignedTo     = map[CallJsonKey.assignedTo];
+    this.arrived        = Util.unixTimestampToDateTime (map[CallJsonKey.arrivalTime]);
   }
 
   /**
    *
    */
   @override
-  operator == (Call other) => ID == other.ID;
+  operator == (Call other) => _ID == other._ID;
 
   /**
    *
@@ -109,11 +106,11 @@ class Call {
    *
    */
   void changeState(String newState) {
-    final String lastState = state;
+    final String lastState = _state;
 
-    state = newState;
+    _state = newState;
 
-    _log.finest('UUID: ${ID}: ${lastState} => ${newState}');
+    _log.finest('UUID: ${_ID}: ${lastState} => ${newState}');
 
     if(lastState == CallState.Queued) {
       notifyEvent(new Event.QueueLeave(this));
@@ -164,33 +161,39 @@ class Call {
   }
 
   /**
-   *
+   * Note: The channel is a unique identifier.
+   *   Remember to change, if ID changes.
    */
-  String get channel => ID; //The channel is a unique identifier. Remember to change, if ID changes.
+  String get channel => _ID;
+
+  /**
+   * The Unique identification of the call
+   */
+  String get ID => _ID;
 
   /**
    *
    */
-  String get currentState  => _currentState;
+  String get state  => _state;
 
   /**
    *
    */
-  set currentState(String newState) {
-    _currentState = newState;
+  set state(String newState) {
+    _state = newState;
     _callState.fire(newState);
   }
 
   /**
    *
    */
-  Stream<Event.Event> get event => _eventBus.stream;
+  Stream<Event.CallEvent> get event => _eventBus.stream;
 
   /**
    *
    */
   @override
-  int get hashCode => ID.hashCode;
+  int get hashCode => _ID.hashCode;
 
   /**
    *
@@ -201,10 +204,10 @@ class Call {
    *
    */
   void link(Call other) {
-    locked = false;
+    if(locked) locked = false;
 
-    bLeg  = other.ID;
-    other.bLeg = ID;
+    b_Leg  = other._ID;
+    other.b_Leg = _ID;
   }
 
   /**
@@ -244,17 +247,16 @@ class Call {
   String toString() =>
       this == noCall
       ? 'no Call'
-      : 'Call ID: ${ID}, state: ${state}, destination: ${destination}';
+      : 'Call ID: ${_ID}, state: ${_state}, destination: ${destination}';
 
   /**
    *
    */
-  Map toJson() => {CallJsonKey.ID             : ID,
-                   CallJsonKey.state          : state,
-                   CallJsonKey.bLeg           : bLeg,
+  Map toJson() => {CallJsonKey.ID             : _ID,
+                   CallJsonKey.state          : _state,
+                   CallJsonKey.bLeg           : b_Leg,
                    CallJsonKey.locked         : locked,
                    CallJsonKey.inbound        : inbound,
-                   CallJsonKey.isCall         : isCall,
                    CallJsonKey.destination    : destination,
                    CallJsonKey.callerID       : callerID,
                    CallJsonKey.greetingPlayed : greetingPlayed,
