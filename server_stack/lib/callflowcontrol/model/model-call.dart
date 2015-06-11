@@ -71,8 +71,8 @@ class Call extends ORModel.Call {
   void link (Call other) {
     this.locked = false;
 
-    this.b_Leg  = other.ID;
-    other.b_Leg = this.ID;
+    this.bLeg  = other.ID;
+    other.bLeg = this.ID;
   }
 
    @override
@@ -81,7 +81,7 @@ class Call extends ORModel.Call {
    Map toJson () => {
      'id'              : this.ID,
      "state"           : this.state,
-     "b_leg"           : (this.b_Leg != null ? this.b_Leg : null),
+     "b_leg"           : (this.bLeg != null ? this.bLeg : null),
      "locked"          : this.locked,
      "inbound"         : this.inbound,
      "is_call"         : true,
