@@ -4,6 +4,61 @@ abstract class Contact {
 
   static final Logger log = new Logger('$libraryName.Contact');
 
+  static Future<Model.BaseContact> baseContact(int contactID) {
+    String sql = '''
+    SELECT id, full_name, contact_type, enabled
+    FROM contacts
+    WHERE id = @contactID ''';
+
+    Map parameters = {'contactID': contactID};
+
+    return connection.query(sql, parameters).then((Iterable rows) {
+      if (rows.isEmpty) {
+        throw new Storage.NotFound('No contact found with ID $contactID');
+      }
+
+      return _rowToBaseContact(rows.first);
+    });
+  }
+
+  static Future<List<Model.BaseContact>> baseContactList() {
+    String sql = '''
+    SELECT id, full_name, contact_type, enabled
+    FROM contacts
+  ''';
+
+    return connection.query(sql).then((Iterable rows) =>
+      rows.map(_rowToBaseContact));
+  }
+
+  /**
+   * Create a new [Model.BaseContact].
+   */
+  static Future<Model.BaseContact> create(Model.BaseContact contact) {
+    String sql = '''
+    INSERT INTO contacts (full_name, contact_type, enabled)
+    VALUES (@full_name, @contact_type, @enabled)
+    RETURNING id;
+  ''';
+
+    Map parameters =
+      {'full_name'    : contact.fullName,
+       'contact_type' : contact.contactType,
+       'enabled'      : contact.enabled};
+
+    return connection.query(sql, parameters)
+      .then((Iterable rows) =>
+          rows.length > 0
+            ? (contact..id = rows.first.id)
+            : new Future.error(new StateError('No contact was created!')))
+      .catchError((error, stackTrace) {
+        log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+
+        return new Future.error(error, stackTrace);
+      });
+  }
+
+
   static Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
     String sql = '''
         SELECT phonenumbers
@@ -221,6 +276,82 @@ abstract class Contact {
       });
   }
 
+  /**
+   * Retrieve all contacts from an organization.
+   */
+  static Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId) {
+    String sql = '''
+    SELECT DISTINCT c.id, c.full_name, c.enabled, c.contact_type
+    FROM receptions r
+      JOIN reception_contacts rc on r.id = rc.reception_id
+      JOIN contacts c on rc.contact_id = c.id
+    WHERE r.organization_id = @organization_id
+    ORDER BY c.id
+  ''';
+
+    Map parameters = {'organization_id': organizationId};
+
+    return connection.query(sql, parameters)
+      .then((Iterable rows) => rows.map(_rowToBaseContact));
+  }
+
+  /**
+   * Retrieve all reception id's of a contact.
+   */
+  static Future<Iterable<int>> receptions (int contactID) {
+    String sql = '''
+
+    SELECT reception_id
+        FROM reception_contacts 
+      WHERE 
+      contact_id  =@contactID''';
+
+    Map parameters = {'contactID': contactID};
+
+    return connection.query(sql, parameters).then((rows) =>
+      (rows as Iterable).map((var row) => row.reception_id));
+  }
+
+  /**
+   * Removes a contact from the database.
+   */
+  static Future<int> remove (int contactID) {
+    String sql = '''
+      DELETE FROM contacts
+      WHERE id=@id;
+    ''';
+
+    Map parameters = {'id': contactID};
+    return connection.execute(sql, parameters)
+      .then((int rowsAffected) =>
+        rowsAffected > 0
+          ? null
+          : new Future.error(new Storage.NotFound('$contactID')));
+  }
+
+  static Future<int> update(Model.BaseContact contact) {
+    String sql = '''
+    UPDATE contacts
+    SET full_name=@full_name, contact_type=@contact_type, enabled=@enabled
+    WHERE id=@id;
+  ''';
+
+    Map parameters =
+      {'full_name'    : contact.fullName,
+       'contact_type' : contact.contactType,
+       'enabled'      : contact.enabled,
+       'id'           : contact.id};
+
+    return connection.execute(sql, parameters)
+      .then((int rowsAffected) =>
+        rowsAffected > 0
+          ? contact
+          : new Future.error(new Storage.NotFound('en')));
+  }
+
+  /**
+   * Converts a database row into a [Model.Contact] object.
+   */
   static Model.Contact _rowToContact (var row) {
     var distributionList = new Model.MessageRecipientList.empty();
 
@@ -327,8 +458,6 @@ abstract class Contact {
 
     }
 
-
-
     Model.Contact contact = new Model.Contact.empty()
       ..receptionID = row.reception_id
       ..ID = row.contact_id
@@ -368,4 +497,12 @@ abstract class Contact {
 
     return p;
   }
+
+  static Model.BaseContact _rowToBaseContact (var row) =>
+    new Model.BaseContact.empty()
+      ..id = row.id
+      ..fullName = row.full_name
+      ..contactType = row.contact_type
+      ..enabled = row.enabled;
+
 }

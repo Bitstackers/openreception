@@ -156,15 +156,8 @@ abstract class ContactCalendar {
     int contactID   = int.parse(shelf_route.getPathParameter(request, 'cid'));
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return Contact.exists (contactID : contactID, receptionID : receptionID).then((bool exists) {
-      if(exists) {
-        return db.ContactCalendar.list(receptionID, contactID).then((Iterable<Model.CalendarEntry> entries) {
-
-          return new shelf.Response.ok(JSON.encode(entries.toList()));
-        });
-      } else {
-        return new shelf.Response.notFound(JSON.encode({'description' : 'no such contact ${contactID}@${receptionID}'}));
-      }
+    return db.ContactCalendar.list(receptionID, contactID).then((Iterable<Model.CalendarEntry> entries) {
+      return new shelf.Response.ok(JSON.encode(entries.toList()));
     }).catchError((error, stackTrace) {
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError(body : error.toString());
