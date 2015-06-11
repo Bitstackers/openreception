@@ -100,20 +100,12 @@ Router setupRoutes(HttpServer server, Configuration config) =>
     ..serve(receptionIdUrl, method: HttpMethod.PUT)  .listen(reception.updateReception)
     ..serve(receptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
 
-    ..serve(organizationContactUrl, method: HttpMethod.GET).listen(organization.getOrganizationContactList)
-
     ..serve(ContactReceptionUrl, method: HttpMethod.GET).listen(contact.getReceptionList)
 
     ..serve(contactTypesUrl, method: HttpMethod.GET).listen(contact.getContactTypeList)
     ..serve(addressTypestUrl, method: HttpMethod.GET).listen(contact.getAddressTypestList)
 
     ..serve(ContactOrganizationUrl, method: HttpMethod.GET).listen(contact.getAContactsOrganizationList)
-
-    ..serve(contactUrl, method: HttpMethod.GET).listen(contact.getContactList)
-    ..serve(contactUrl, method: HttpMethod.PUT).listen(contact.createContact)
-    ..serve(contactIdUrl, method: HttpMethod.GET)   .listen(contact.getContact)
-    ..serve(contactIdUrl, method: HttpMethod.POST)  .listen(contact.updateContact)
-    ..serve(contactIdUrl, method: HttpMethod.DELETE).listen(contact.deleteContact)
 
     ..serve(receptionContactUrl, method: HttpMethod.GET)  .listen(receptionContact.getReceptionContactList)
     ..serve(receptionContactIdUrl, method: HttpMethod.PUT).listen(receptionContact.createReceptionContact)

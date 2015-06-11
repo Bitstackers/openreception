@@ -73,25 +73,11 @@ class Database {
      ****************** Contact ********************
   */
 
-  Future<int> createContact(String fullName, String contact_type, bool enabled) =>
-      _createContact(_connection, fullName, contact_type, enabled);
-
-  Future<int> deleteContact(int contactId) => _deleteContact(_connection, contactId);
-
   Future<List<model.ReceptionColleague>> getContactColleagues(int contactId) => _getContactColleagues(_connection, contactId);
-
-  Future<model.Contact> getContact(int contactId) => _getContact(_connection, contactId);
-
-  Future<List<model.Contact>> getContactList() => _getContactList(_connection);
 
   Future<List<String>> getContactTypeList() => _getContactTypeList(_connection);
   Future<List<String>> getAddressTypeList() => _getAddressTypeList(_connection);
 
-  Future<List<model.Contact>> getOrganizationContactList(int organizationId) =>
-      _getOrganizationContactList(_connection, organizationId);
-
-  Future<int> updateContact(int contactId, String fullName, String contact_type, bool enabled) =>
-      _updateContact(_connection, contactId, fullName, contact_type, enabled);
 
   /* ***********************************************
      ************ Reception Contacts ***************

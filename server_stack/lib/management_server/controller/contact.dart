@@ -24,43 +24,6 @@ class ContactController {
 
   ContactController(Database this.db, Configuration this.config);
 
-  void createContact(HttpRequest request) {
-    const String context = '${libraryName}.createContact';
-
-    orf_http.extractContent(request)
-      .then(JSON.decode)
-      .then((Map data) => db.createContact(data['full_name'], data['contact_type'], data['enabled']))
-      .then((int id) =>
-          orf_http.writeAndClose(request, contactIdAsJson(id)).then((_) {
-            Notification.broadcastEvent(new orf_event.ContactChange (id, orf_event.ContactState.CREATED))
-              .catchError((error) {
-                orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-              });
-          }))
-      .catchError((error) {
-        orf.logger.errorContext(error, context);
-        orf_http.serverError(request, error.toString());
-      });
-  }
-
-  void deleteContact(HttpRequest request) {
-    const String context = '${libraryName}.deleteContact';
-    final int contactId =  orf_http.pathParameter(request.uri, 'contact');
-
-    db.deleteContact(contactId)
-      .then((_) => orf_http.allOk(request))
-      .then((_) {
-        Notification.broadcastEvent(new orf_event.ContactChange (contactId, orf_event.ContactState.DELETED))
-         .catchError((error) {
-            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-          });
-      })
-      .catchError((error) {
-        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        orf_http.serverError(request, error.toString());
-      });
-  }
-
   void getAContactsOrganizationList(HttpRequest request) {
     const String context = '${libraryName}.getAContactsOrganizationList';
     final int contactId = orf_http.pathParameter(request.uri, 'contact');
@@ -85,32 +48,6 @@ class ContactController {
     });
   }
 
-  void getContact(HttpRequest request) {
-    const String context = '${libraryName}.getContact';
-    final int contactId = orf_http.pathParameter(request.uri, 'contact');
-
-    db.getContact(contactId).then((model.Contact contact) {
-      if(contact == null) {
-        return orf_http.notFound(request, {});
-      } else {
-        return orf_http.writeAndClose(request, contactAsJson(contact));
-      }
-    }).catchError((error) {
-      orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-      orf_http.allOk(request);
-    });
-  }
-
-  void getContactList(HttpRequest request) {
-    const String context = '${libraryName}.getContactList';
-
-    db.getContactList().then((List<model.Contact> list) {
-      return orf_http.writeAndClose(request, listContactAsJson(list));
-    }).catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
-  }
 
   void getContactTypeList(HttpRequest request) {
     const String context = '${libraryName}.getContactTypeList';
@@ -144,25 +81,5 @@ class ContactController {
       orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
       orf_http.serverError(request, error.toString());
     });
-  }
-
-  void updateContact(HttpRequest request) {
-    const String context = '${libraryName}.updateContact';
-    final int contactId = orf_http.pathParameter(request.uri, 'contact');
-
-    orf_http.extractContent(request)
-      .then(JSON.decode)
-      .then((Map data) => db.updateContact(contactId, data['full_name'], data['contact_type'], data['enabled']))
-      .then((int id) => orf_http.writeAndClose(request, contactIdAsJson(id)))
-      .then((_) {
-        Notification.broadcastEvent(new orf_event.ContactChange (contactId, orf_event.ContactState.UPDATED))
-          .catchError((error) {
-            orf.logger.errorContext('Sending notification. NotificationServer: ${config.notificationServer} token: ${config.serverToken} url: "${request.uri}" gave error "${error}"', context);
-          });
-      })
-      .catchError((error) {
-        orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
-        orf_http.serverError(request, error.toString());
-      });
   }
 }
