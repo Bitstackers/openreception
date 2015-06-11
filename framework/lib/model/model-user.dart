@@ -1,52 +1,50 @@
 part of openreception.model;
 
 /**
- * TODO (KRC): Change this to use fields instead of a map.
+ *
  */
 class User {
-  static final String className = '${libraryName}.User';
-  final        Bus    _idle     = new Bus();
-  static const int    noID      = 0;
-  final        Bus    _pause    = new Bus();
-
-  Map _map = {};
-  String       get peer      => this._map['extension'];
-  String       get name      => this._map['name'];
-  String       get address   => this._map['address'];
-  int          get ID        => this._map['id'];
-  List<String> get groups    => this._map['groups'];
-  List<String> get identites => this._map['identites'];
-
-  static Future<User> load (String identity, Storage.User userStore) => userStore.get (identity);
+  String           address;
+  List<String>     groups;
+  int              ID;
+  List<String>     identities;
+  String           name;
+  static const int noID      = 0;
+  String           peer;
+  String           portrait = '';
 
   /**
    * Constructor for creating an empty object.
    */
   User.empty();
 
-  Map get asSender =>
-      { 'name'    : this.name,
-        'id'      : this.ID,
-        'address' : this.address
-      };
+  /**
+   * Constructor.
+   */
+  User.fromMap(Map userMap) {
+    address    = userMap['address'];
+    groups     = userMap['groups'];
+    ID         = userMap['id'];
+    identities = userMap['identites'];
+    name       = userMap['name'];
+    peer       = userMap['extension'];
 
-  User.fromMap (Map userMap) {
-    this._map = userMap;
-  }
-
-  Map toJson() {
-    return this._map;
+    if(userMap.containsKey('remote_attributes')) {
+      if((userMap['remote_attributes'] as Map).containsKey('picture')) {
+        portrait = userMap['remote_attributes']['picture'];
+      }
+    }
   }
 
   /**
-   * Fires when [currentUser] goes idle.
+   *
    */
-  Stream get onIdle => this._idle.stream;
+  Map get asSender => {'name'   : name,
+                       'id'     : ID,
+                       'address': address};
 
   /**
-   * Fires when [currentUser] pauses.
+   *
    */
-  Stream get onPause => this._pause.stream;
-
-  bool inAnyGroups(List<String> groupNames) => groupNames.any((g) => groups.contains(g));
+  bool inAnyGroups(List<String> groupNames) => groupNames.any(groups.contains);
 }
