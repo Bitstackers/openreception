@@ -18,6 +18,7 @@ part of controller;
  */
 class Notification {
   Bus<ORModel.UserStatus>          _agentStateChangeBus      = new Bus<ORModel.UserStatus>();
+  final Model.AppClientState       _appState;
   Bus<OREvent.CalendarChange>      _calendarChangeBus        = new Bus<OREvent.CalendarChange>();
   Bus<ORModel.Call>                _callStateChangeBus       = new Bus<ORModel.Call>();
   Bus<Model.ClientConnectionState> _clientConnectionStateBus = new Bus<Model.ClientConnectionState>();
@@ -27,7 +28,7 @@ class Notification {
   /**
    * Constructor.
    */
-  Notification (this._socket) {
+  Notification (ORService.NotificationSocket this._socket, Model.AppClientState this._appState) {
     _observers();
   }
 
@@ -45,8 +46,8 @@ class Notification {
     _callStateChangeBus.fire(event.call);
 
     /// If my call was hung up, update the model.
-    if (event is OREvent.CallHangup && ORModel.Call.activeCall == event.call) {
-      ORModel.Call.activeCall = ORModel.Call.noCall;
+    if (event is OREvent.CallHangup && _appState.activeCall == event.call) {
+      _appState.activeCall = ORModel.Call.noCall;
     }
   }
 

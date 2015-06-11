@@ -45,9 +45,9 @@ class Call {
     return _service.originate(phoneNumber.value, contact.ID, reception.ID)
       .then((ORModel.Call call) {
         _command.fire(CallCommand.DIALSUCCESS);
-        ORModel.Call.activeCall = call;
+        _appState.activeCall = call;
 
-        return ORModel.Call.activeCall;
+        return _appState.activeCall;
       })
       .catchError((error, stackTrace) {
         _log.severe(error, stackTrace);
@@ -111,7 +111,7 @@ class Call {
       .then((ORModel.Call parkedCall) {
         _command.fire(CallCommand.PARKSUCCESS);
 
-        ORModel.Call.activeCall = ORModel.Call.noCall;
+        _appState.activeCall = ORModel.Call.noCall;
         return parkedCall;
       })
       .catchError((error, stackTrace) {
@@ -143,9 +143,9 @@ class Call {
     return _service.pickup(call.ID)
       .then((ORModel.Call call) {
         _command.fire(CallCommand.PICKUPSUCCESS);
-        ORModel.Call.activeCall = call;
+        _appState.activeCall = call;
 
-        return ORModel.Call.activeCall;
+        return _appState.activeCall;
       })
       .catchError((error, stackTrace) {
         _log.severe(error, stackTrace);
@@ -217,7 +217,7 @@ class Call {
       if (parkedCall != null) {
         return _transfer(source, parkedCall)
           .then((_) {
-            ORModel.Call.activeCall = ORModel.Call.noCall;
+            _appState.activeCall = ORModel.Call.noCall;
         });
       }
 

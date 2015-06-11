@@ -19,15 +19,17 @@ part of view;
  * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class GlobalCallQueue extends ViewWidget {
-  final Controller.Destination  _myDestination;
-  final Model.UIGlobalCallQueue _uiModel;
+  final Model.AppClientState    _appState;
   final Controller.Call         _callController;
+  final Controller.Destination  _myDestination;
   final Controller.Notification _notifications;
+  final Model.UIGlobalCallQueue _uiModel;
 
   /**
    * Constructor.
    */
   GlobalCallQueue(Model.UIGlobalCallQueue this._uiModel,
+                  Model.AppClientState this._appState,
                   Controller.Destination this._myDestination,
                   Controller.Notification this._notifications,
                   Controller.Call this._callController) {
@@ -96,9 +98,9 @@ class GlobalCallQueue extends ViewWidget {
 
     _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
 
-    _hotKeys.onNumDiv.listen((_) => _callController.hangup(ORModel.Call.activeCall));
+    _hotKeys.onNumDiv.listen((_) => _callController.hangup(_appState.activeCall));
 
-    _hotKeys.onF7.listen((_) => _callController.park(ORModel.Call.activeCall));
+    _hotKeys.onF7.listen((_) => _callController.park(_appState.activeCall));
 
     _hotKeys.onF8.listen((_) => _callController.pickupFirstParkedCall());
   }

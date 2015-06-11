@@ -20,8 +20,11 @@ enum AppState {
 }
 
 class AppClientState {
-  ORModel.User        _currentUser = new ORModel.User.empty();
-  final Bus<AppState> _stateChange = new Bus<AppState>();
+  ORModel.Call            _activeCall          = new ORModel.Call.empty();
+  final Bus<ORModel.Call> _activeCallChangeBus = new Bus<ORModel.Call>();
+  ORModel.User            _currentUser         = new ORModel.User.empty();
+  final Logger            _log                 = new Logger('${libraryName}.AppClientState');
+  final Bus<AppState>     _stateChange         = new Bus<AppState>();
 
   /**
    * Constructor.
@@ -29,10 +32,26 @@ class AppClientState {
   AppClientState();
 
   /**
+   *
+   */
+  Stream<ORModel.Call> get activeCallChanged => _activeCallChangeBus.stream;
+
+  /**
    * Change the application to [newState]
    */
   void changeState(AppState newState) {
     _stateChange.fire(newState);
+  }
+
+  /**
+   *
+   */
+  ORModel.Call get activeCall => _activeCall;
+
+  set activeCall(ORModel.Call newCall) {
+    _activeCall = newCall;
+    _activeCallChangeBus.fire(_activeCall);
+    _log.finest('Changing active call to ${_activeCall.ID}:');
   }
 
   /**

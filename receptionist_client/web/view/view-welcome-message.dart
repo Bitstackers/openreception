@@ -17,6 +17,7 @@ part of view;
  * The reception greeting widget.
  */
 class WelcomeMessage extends ViewWidget {
+  final Model.AppClientState      _appState;
   final Map<String, String>       _langMap;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIWelcomeMessage    _uiModel;
@@ -25,6 +26,7 @@ class WelcomeMessage extends ViewWidget {
    * Constructor.
    */
   WelcomeMessage(Model.UIWelcomeMessage this._uiModel,
+                 Model.AppClientState this._appState,
                  Model.UIReceptionSelector this._receptionSelector,
                  Map<String, String> this._langMap) {
     _observers();
@@ -42,7 +44,7 @@ class WelcomeMessage extends ViewWidget {
   void _observers() {
     _receptionSelector.onSelect.listen(_render);
 
-    ORModel.Call.activeCallChanged.listen((ORModel.Call newCall) {
+    _appState.activeCallChanged.listen((ORModel.Call newCall) {
       _ui.inActiveCall = newCall != ORModel.Call.noCall;
     });
   }
@@ -55,9 +57,9 @@ class WelcomeMessage extends ViewWidget {
       _ui.clear();
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
-      if(ORModel.Call.activeCall != ORModel.Call.noCall) {
+      if(_appState.activeCall != ORModel.Call.noCall) {
         _ui.greeting =
-            ORModel.Call.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
+            _appState.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
       } else {
         _ui.greeting = reception.greeting;
       }

@@ -178,6 +178,7 @@ class ReceptionistclientReady {
 
     _globalCallQueue = new GlobalCallQueue
         (new Model.UIGlobalCallQueue(querySelector('#global-call-queue'), _langMap),
+         _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.GlobalCallQueue),
          _notification,
         _callController);
@@ -257,6 +258,7 @@ class ReceptionistclientReady {
 
     _receptionSelector = new ReceptionSelector
         (uiReceptionSelector,
+         _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionSelector),
          _sortedReceptions);
 
@@ -282,6 +284,7 @@ class ReceptionistclientReady {
 
     _welcomeMessage = new WelcomeMessage
         (new Model.UIWelcomeMessage(querySelector('#welcome-message')),
+         _appState,
          uiReceptionSelector,
          _langMap);
 

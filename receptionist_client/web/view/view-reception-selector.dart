@@ -17,14 +17,16 @@ part of view;
  * The reception selector widget.
  */
 class ReceptionSelector extends ViewWidget {
+  final Model.AppClientState      _appState;
   final Controller.Destination    _myDestination;
+  final List<ORModel.Reception>   _receptions;
   final Model.UIReceptionSelector _uiModel;
-  final List<ORModel.Reception>     _receptions;
 
   /**
    * Constructor.
    */
   ReceptionSelector(Model.UIReceptionSelector this._uiModel,
+                    Model.AppClientState this._appState,
                     Controller.Destination this._myDestination,
                     List<ORModel.Reception> this._receptions) {
     _ui.setHint('alt+v');
@@ -57,7 +59,7 @@ class ReceptionSelector extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    ORModel.Call.activeCallChanged.listen((ORModel.Call newCall) {
+    _appState.activeCallChanged.listen((ORModel.Call newCall) {
       if (newCall != ORModel.Call.noCall) {
         _ui.changeActiveReception(newCall.receptionID);
       }

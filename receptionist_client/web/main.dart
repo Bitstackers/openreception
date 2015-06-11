@@ -89,7 +89,7 @@ main() async {
       appState.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient = new ORTransport.WebSocketClient();
-      notification = new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
+      notification = new Controller.Notification(new ORService.NotificationSocket(webSocketClient), appState);
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
@@ -202,7 +202,7 @@ Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientS
           call.state      == ORModel.CallState.Speaking, orElse: () => null);
 
     if(myActiveCall != null) {
-      ORModel.Call.activeCall = myActiveCall;
+      appState.activeCall = myActiveCall;
     }
   });
 }

@@ -20,10 +20,10 @@ part of view;
  */
 class MyCallQueue extends ViewWidget {
   final Model.AppClientState    _appState;
-  final Controller.Destination  _myDestination;
-  final Model.UIMyCallQueue     _uiModel;
   final Controller.Call         _callController;
+  final Controller.Destination  _myDestination;
   final Controller.Notification _notifications;
+  final Model.UIMyCallQueue     _uiModel;
 
   /**
    * Constructor.
@@ -101,7 +101,7 @@ class MyCallQueue extends ViewWidget {
     _ui.onClick.listen(_activateMe);
 
     _hotKeys.onCtrlNumMinus.listen((_) =>
-        _callController.transferToFirstParkedCall(ORModel.Call.activeCall));
+        _callController.transferToFirstParkedCall(_appState.activeCall));
 
     _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
   }
