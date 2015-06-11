@@ -33,6 +33,15 @@ runContactTests () {
       transport.client.close(force : true);
     });
 
+    test ('BaseContact create',
+        () => ContactStore.baseContactCreate(contactStore));
+
+    test ('BaseContact update',
+        () => ContactStore.baseContactUpdate(contactStore));
+
+    test ('BaseContact remove',
+        () => ContactStore.baseContactRemove(contactStore));
+
     test ('Non-existing contact',
         () => ContactStore.nonExistingContact(contactStore));
     test ('List contacts by reception',

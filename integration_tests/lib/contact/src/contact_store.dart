@@ -156,6 +156,92 @@ abstract class ContactStore {
   }
 
   /**
+   * Test server behaviour when trying to create a new base contact object is
+   * created.
+   * The expected behaviour is that the server should return the created
+   * BaseContact object.
+   */
+  static Future baseContactCreate (Storage.Contact contactStore) {
+    Model.BaseContact contact =
+        new Model.BaseContact.empty()
+         ..contactType = Model.ContactType.human
+         ..fullName    = 'That guy'
+         ..enabled     = false;
+
+    log.info('Creating a new base contact.');
+
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdContact) {
+        expect(createdContact.id, isNot(Model.Contact.noID));
+        expect(createdContact.id, isNotNull);
+
+        expect(contact.contactType, equals(createdContact.contactType));
+        expect(contact.fullName, equals(createdContact.fullName));
+        expect(contact.enabled, equals(createdContact.enabled));
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to delete a base contact object that
+   * exists.
+   *
+   * The expected behaviour is that the server should succeed.
+   */
+  static Future baseContactRemove (Storage.Contact contactStore) {
+    return contactStore.list()
+      .then((Iterable <Model.BaseContact> contacts) {
+
+      // Update the last event in list.
+
+      Model.BaseContact contact = contacts.last;
+
+      log.info ('Got event ${contact.asMap}. Deleting it.');
+
+      return contactStore.remove(contact)
+        .then((_) =>
+          expect(contactStore.get(contact.id),
+                throwsA(new isInstanceOf<Storage.NotFound>())));
+
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to update an existingbase contact.
+   * The expected behaviour is that the server should return the updated
+   * BaseContact object.
+   */
+  static Future baseContactUpdate (Storage.Contact contactStore) {
+    return contactStore.list()
+      .then((Iterable <Model.BaseContact> contacts) {
+
+      // Update the last event in list.
+
+      Model.BaseContact contact = contacts.last;
+
+      log.info ('Got event ${contact.asMap}. Updating local info');
+
+      contact..fullName = 'John Arbuckle Machine'
+             ..enabled = !contact.enabled
+             ..contactType = Model.ContactType.function;
+
+      log.info ('Updating local info to ${contact.asMap}');
+
+
+      return contactStore.update(contact)
+          .then((Model.BaseContact updatedContact) {
+        expect(updatedContact.id, isNot(Model.Contact.noID));
+        expect(updatedContact.id, isNotNull);
+
+        expect(contact.contactType, equals(updatedContact.contactType));
+        expect(contact.fullName, equals(updatedContact.fullName));
+        expect(contact.enabled, equals(updatedContact.enabled));
+
+      });
+    });
+  }
+
+
+  /**
    * Test server behaviour when trying to create a new calendar event object.
    *
    * The expected behaviour is that the server should return the created
