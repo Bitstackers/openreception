@@ -1,8 +1,11 @@
 part of openreception.model;
 
-/**
- * TODO: Figure out whether to use phone or endpoints.
- */
+abstract class ContactType {
+  static const String human = 'human';
+  static const String function = 'function';
+}
+
+const availableContactTypes = const [ContactType.human, ContactType.function];
 
 abstract class ContactJSONKey {
   static const receptionID   = 'reception_id';
