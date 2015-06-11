@@ -13,11 +13,14 @@ abstract class ModelBaseContact {
 
   static void serializationDeserialization() {
     Model.BaseContact builtObject = _buildObject();
-    Model.Contact deserializedObject =
-        new Model.Contact.fromMap(JSON.decode(JSON.encode(builtObject)));
+    Model.BaseContact deserializedObject =
+        new Model.BaseContact.fromMap(JSON.decode(JSON.encode(builtObject)));
 
-    expect(builtObject.receptionID, equals(deserializedObject.receptionID));
-    expect(builtObject.ID, equals(deserializedObject.ID));
+    expect(builtObject.id, equals(deserializedObject.id));
+    expect(builtObject.enabled, equals(deserializedObject.enabled));
+    expect(builtObject.fullName, equals(deserializedObject.fullName));
+    expect(builtObject.contactType, equals(deserializedObject.contactType));
+
 
   }
 
