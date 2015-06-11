@@ -23,6 +23,12 @@ abstract class Contact {
   static Uri listByReception(Uri host, int receptionID)
     => Uri.parse('${root(host)}/list/reception/${receptionID}');
 
+  static Uri receptions(Uri host, int contactID)
+    => Uri.parse('${root(host)}/${contactID}/reception');
+
+  static Uri managementServerList(Uri host, int receptionID)
+    => Uri.parse('$host/reception/${receptionID}/contact');
+
   static Uri calendar(Uri host, int contactID, int receptionID) =>
     Uri.parse('${singleByReception(host, contactID, receptionID)}/calendar');
 
