@@ -49,7 +49,7 @@ class Call {
   String                 destination    = null;
   final Bus<Event.Event> _eventBus      = new Bus<Event.Event>();
   bool                   greetingPlayed = false;
-  String                 _ID            = null;
+  String                 ID             = null;
   bool                   inbound        = null;
   bool                   isCall         = null;
   bool                   _locked        = false;
@@ -73,7 +73,7 @@ class Call {
    * Constructor.
    */
   Call.fromMap(map) {
-    _ID            = map[CallJsonKey.ID];
+    ID             = map[CallJsonKey.ID];
     state          = map[CallJsonKey.state];
     bLeg           = map[CallJsonKey.bLeg];
     _locked        = map[CallJsonKey.locked];
@@ -91,7 +91,7 @@ class Call {
    *
    */
   @override
-  operator == (Call other) => _ID == other.ID;
+  operator == (Call other) => ID == other.ID;
 
   /**
    *
@@ -113,7 +113,7 @@ class Call {
 
     state = newState;
 
-    _log.finest('UUID: ${_ID}: ${lastState} => ${newState}');
+    _log.finest('UUID: ${ID}: ${lastState} => ${newState}');
 
     if(lastState == CallState.Queued) {
       notifyEvent(new Event.QueueLeave(this));
@@ -190,12 +190,7 @@ class Call {
    *
    */
   @override
-  int get hashCode => _ID.hashCode;
-
-  /**
-   *
-   */
-  String get ID => _ID;
+  int get hashCode => ID.hashCode;
 
   /**
    *
@@ -209,7 +204,7 @@ class Call {
     locked = false;
 
     bLeg  = other.ID;
-    other.bLeg = _ID;
+    other.bLeg = ID;
   }
 
   /**
@@ -249,12 +244,12 @@ class Call {
   String toString() =>
       this == noCall
       ? 'no Call'
-      : 'Call ID: ${_ID}, state: ${state}, destination: ${destination}';
+      : 'Call ID: ${ID}, state: ${state}, destination: ${destination}';
 
   /**
    *
    */
-  Map toJson() => {CallJsonKey.ID             : _ID,
+  Map toJson() => {CallJsonKey.ID             : ID,
                    CallJsonKey.state          : state,
                    CallJsonKey.bLeg           : bLeg,
                    CallJsonKey.locked         : locked,
