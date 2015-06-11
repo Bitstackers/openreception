@@ -10,6 +10,7 @@ import 'event.dart'   as Event;
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
+part 'model/model-base_contact.dart';
 part 'model/model-calendar_entry.dart';
 part 'model/model-calendar_entry_change.dart';
 part 'model/model-call.dart';
