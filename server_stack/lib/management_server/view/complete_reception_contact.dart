@@ -13,3 +13,5 @@ String listReceptionContactAsJson(List<model.ReceptionContact> contacts) =>
 List _listReceptionContactAsJsonMap(List<model.ReceptionContact> contacts) =>
     contacts.map(_receptionContactAsJsonMap).toList();
 
+///FIXME: Dummy implementation to trick analyzer.
+Map _receptionContactAsJsonMap (model.ReceptionContact contact) => {};

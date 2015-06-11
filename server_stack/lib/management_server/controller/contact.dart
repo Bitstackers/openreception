@@ -1,19 +1,15 @@
 library contactController;
 
 import 'dart:io';
-import 'dart:convert';
 
 import '../view/colleague.dart';
 import '../configuration.dart';
 import '../view/contact.dart';
 import '../database.dart';
 import '../model.dart' as model;
-import '../router.dart';
 import '../view/organization.dart';
 import '../view/reception_contact_reduced_reception.dart';
 import 'package:openreception_framework/common.dart' as orf;
-import 'package:openreception_framework/event.dart' as orf_event;
-import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'contactController';

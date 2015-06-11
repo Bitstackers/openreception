@@ -8,12 +8,10 @@ import '../database.dart';
 import '../model.dart';
 import '../router.dart';
 import '../view/calendar_event.dart';
-import '../view/complete_reception_contact.dart';
 import '../view/endpoint.dart';
 import '../view/distribution_list.dart';
 import 'package:openreception_framework/common.dart' as orf;
 import 'package:openreception_framework/event.dart' as orf_event;
-import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'receptionContactController';
@@ -23,35 +21,6 @@ class ReceptionContactController {
   final Configuration config;
 
   ReceptionContactController(Database this.db, Configuration this.config);
-
-  void getReceptionContact(HttpRequest request) {
-    const String context = '${libraryName}.getReceptionContact';
-    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    final int contactId = orf_http.pathParameter(request.uri, 'contact');
-
-    db.getReceptionContact(receptionId, contactId).then((ReceptionContact contact) {
-      if(contact == null) {
-        return orf_http.notFound(request, {});
-      } else {
-        return orf_http.writeAndClose(request, receptionContactAsJson(contact));
-      }
-    }).catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
-  }
-
-  void getReceptionContactList(HttpRequest request) {
-    const String context = '${libraryName}.getReceptionContactList';
-    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-
-    db.getReceptionContactList(receptionId).then((List<ReceptionContact> list) {
-      return orf_http.writeAndClose(request, listReceptionContactAsJson(list));
-    }).catchError((error) {
-      orf.logger.errorContext('Error: "$error"', context);
-      orf_http.serverError(request, error.toString());
-    });
-  }
 
   void createReceptionContact(HttpRequest request) {
     const String context = '${libraryName}.createReceptionContact';

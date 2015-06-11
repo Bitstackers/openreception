@@ -107,9 +107,7 @@ Router setupRoutes(HttpServer server, Configuration config) =>
 
     ..serve(ContactOrganizationUrl, method: HttpMethod.GET).listen(contact.getAContactsOrganizationList)
 
-    ..serve(receptionContactUrl, method: HttpMethod.GET)  .listen(receptionContact.getReceptionContactList)
     ..serve(receptionContactIdUrl, method: HttpMethod.PUT).listen(receptionContact.createReceptionContact)
-    ..serve(receptionContactIdUrl, method: HttpMethod.GET)   .listen(receptionContact.getReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.POST)  .listen(receptionContact.updateReceptionContact)
     ..serve(receptionContactIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteReceptionContact)
 

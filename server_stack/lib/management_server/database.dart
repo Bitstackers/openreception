@@ -4,9 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:openreception_framework/database.dart' as ORDatabase;
-import 'package:openreception_framework/model.dart' as Model;
-import 'package:openreception_framework/storage.dart' as Storage;
-import 'package:logging/logging.dart';
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 
@@ -15,7 +12,6 @@ import 'configuration.dart';
 
 part 'database/calendar.dart';
 part 'database/contact.dart';
-part 'database/contact_orig.dart';
 part 'database/dialplan.dart';
 part 'database/distribution_list.dart';
 part 'database/endpoint.dart';
@@ -94,12 +90,6 @@ class Database {
 
   Future<List<model.ReceptionContact_ReducedReception>> getAContactsReceptionContactList(int contactId) =>
       _getAContactsReceptionContactList(_connection, contactId);
-
-  Future<model.ReceptionContact> getReceptionContact(int receptionId, int contactId) =>
-    Contact.get(receptionId, contactId);
-
-  Future<List<model.ReceptionContact>> getReceptionContactList(int receptionId) =>
-    Contact.list(receptionId);
 
   Future<int> updateReceptionContact(int receptionId, int contactId, bool wantMessages, List phonenumbers, Map attributes, bool enabled) =>
       _updateReceptionContact(_connection, receptionId, contactId, wantMessages, phonenumbers, attributes, enabled);

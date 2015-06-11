@@ -7,7 +7,6 @@ import '../configuration.dart';
 import '../database.dart';
 import '../model.dart' as model;
 import '../view/organization.dart';
-import '../view/contact.dart';
 import '../router.dart';
 import 'package:openreception_framework/common.dart' as orf;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
