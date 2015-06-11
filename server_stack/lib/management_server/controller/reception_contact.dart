@@ -13,6 +13,7 @@ import '../view/endpoint.dart';
 import '../view/distribution_list.dart';
 import 'package:openreception_framework/common.dart' as orf;
 import 'package:openreception_framework/event.dart' as orf_event;
+import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/httpserver.dart' as orf_http;
 
 const libraryName = 'receptionContactController';
