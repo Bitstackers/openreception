@@ -78,7 +78,7 @@ class RecordView {
   }
 
   Future refreshList() {
-    return request.getReceptionList().then((List<ORModel.Reception> receptions) {
+    return request.receptionController.list().then((List<ORModel.Reception> receptions) {
       receptions.sort();
       this.receptions = receptions;
       performSearch();

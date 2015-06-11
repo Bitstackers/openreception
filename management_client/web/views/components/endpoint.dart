@@ -5,7 +5,7 @@ class EndpointsComponent {
 
   Element _element;
   Function _onChange;
-  List<Endpoint> _persistenceEndpoint = new List<Endpoint>();
+  List<ORModel.MessageEndpoint> _persistenceEndpoint = [];
   UListElement _ul = new UListElement();
   LabelElement _header = new LabelElement()
     ..text = 'Kontaktpunkter';
@@ -17,24 +17,28 @@ class EndpointsComponent {
     _element.children.add(_ul);
   }
 
-  static Future loadAddressTypes() {
-    return request.getAddressTypeList().then((List<String> types) {
-      EndpointsComponent._addressTypes = types;
-    });
+  static loadAddressTypes() {
+    //FIXME: Move to framework.
+    EndpointsComponent._addressTypes = ['sms', 'email'];
   }
 
   Future load(int receptionId, int contactId) {
-    _persistenceEndpoint = new List<Endpoint>();
-    return request.getEndpointsList(receptionId, contactId).then((List<Endpoint> list) {
-      _populateUL(list);
+    _persistenceEndpoint = new List<ORModel.MessageEndpoint>();
+    return request.contactController.endpoints(receptionId, contactId)
+      .then((Iterable<ORModel.MessageEndpoint> endpoints) {
+      _populateUL(endpoints);
     });
   }
 
-  void _populateUL(List<Endpoint> list) {
-    _persistenceEndpoint = list;
-    list.sort();
+  void _populateUL(Iterable<ORModel.MessageEndpoint> endpoints) {
+    _persistenceEndpoint = endpoints.toList();
 
-    List<LIElement> items = list.map(_makeEndpointRow).toList();
+    int compareTo (ORModel.MessageEndpoint m1, ORModel.MessageEndpoint m2) => m1.address.compareTo(m2.address);
+
+    _persistenceEndpoint.sort(compareTo);
+
+    List<LIElement> items =
+      _persistenceEndpoint.map(_makeEndpointRow).toList();
 
     _ul.children
       ..clear()
@@ -54,7 +58,7 @@ class EndpointsComponent {
     ButtonElement createButton = new ButtonElement()
       ..text = 'Ny'
       ..onClick.listen((_) {
-        Endpoint endpoint = new Endpoint()
+        ORModel.MessageEndpoint endpoint = new ORModel.MessageEndpoint.empty()
           ..address = 'mig@eksempel.dk'
           ..enabled = true;
         LIElement row = _makeEndpointRow(endpoint);
@@ -68,7 +72,7 @@ class EndpointsComponent {
     return li;
   }
 
-  LIElement _makeEndpointRow(Endpoint endpoint) {
+  LIElement _makeEndpointRow(ORModel.MessageEndpoint endpoint) {
     LIElement li = new LIElement();
 
     SpanElement address = new SpanElement()
@@ -79,7 +83,7 @@ class EndpointsComponent {
 
     SelectElement typePicker = new SelectElement()
       ..classes.add('contact-endpoint-addresstype')
-      ..children.addAll(_addressTypes.map((String type) => new OptionElement(data: type, value: type, selected: type == endpoint.addressType)))
+      ..children.addAll(_addressTypes.map((String type) => new OptionElement(data: type, value: type, selected: type == endpoint.type)))
       ..onChange.listen((_) {
       _notifyChange();
     });

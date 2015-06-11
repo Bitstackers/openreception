@@ -4,8 +4,8 @@ class DistributionsListComponent {
   final Element _parent;
   final Function _onChange;
 
-  List<Reception> _colleagues = new List<Reception>();
-  DistributionList _persistentList;
+  List<ORModel.Reception> _colleagues = new List<ORModel.Reception>();
+  ORModel.MessageRecipientList _persistentList = new ORModel.MessageRecipientList.empty();
 
   UListElement _ulTo = new UListElement()
     ..classes.add('zebra-even')
@@ -67,39 +67,36 @@ class DistributionsListComponent {
 
   /**
    * Fetchs a contacts distribution list, and displays it.
+   * TODO: Fetch the associated contacts.
    */
-  Future load(int receptionId, int contactId) {
-    return request.getColleagues(contactId).then((List<Reception> list) {
-      this._colleagues = list;
-    }).then((_) {
-      return request.getDistributionList(receptionId, contactId).then((DistributionList list) {
-        _populateUL(list);
-      });
-    }).catchError((error, stack) {
-      log.error('Tried to load contact ${contactId} in reception: ${receptionId} distributionList but got: ${error} ${stack}');
-    });
-  }
+  void load(ORModel.Contact contact) {
+//    return request.getColleagues(contactId).then((List<ORModel.Reception> list) {
+//      this._colleagues = list;
+//    }).then((_) {
+        _populateUL(contact.distributionList);
 
-  LIElement _createEntryRow(DistributionListEntry entry) {
+ }
+
+  LIElement _createEntryRow(ORModel.MessageRecipient recipient) {
     LIElement li = new LIElement()
-      ..dataset['reception_id'] = entry.receptionId.toString()
-      ..dataset['contact_id'] = entry.contactId.toString();
+      ..dataset['reception_id'] = recipient.receptionID.toString()
+      ..dataset['contact_id'] = recipient.contactID.toString();
 
-    if(entry.id != null) {
-      li.dataset['id'] = entry.id.toString();
-    }
+//    if(recipient.id != null) {
+//      li.dataset['id'] = recipient.id.toString();
+//    }
 
     SpanElement element = new SpanElement();
 
     bool found = false;
-    Reception reception = _colleagues.firstWhere((Reception r) => r.id == entry.receptionId, orElse: () => null);
-    if(reception != null) {
-      Contact colleague = reception.contacts.firstWhere((Contact c) => c.id == entry.contactId, orElse: () => null);
-      if(colleague != null) {
-        found = true;
-        element.text = '${colleague.fullName} (${reception.fullName})';
-      }
-    }
+//    ORModel.Reception reception = _colleagues.firstWhere((ORModel.Reception r) => r.ID == recipient.receptionId, orElse: () => null);
+//    if(reception != null) {
+//      ORModel.Contact colleague = reception.contacts.firstWhere((ORModel.Contact c) => c.ID == recipient.contactId, orElse: () => null);
+//      if(colleague != null) {
+//        found = true;
+//        element.text = '${colleague.fullName} (${reception.fullName})';
+//      }
+//    }
 
     ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
       ..alt = 'Slet'
@@ -142,29 +139,29 @@ class DistributionsListComponent {
     }
   }
 
-  void _populateUL(DistributionList list) {
+  void _populateUL(ORModel.MessageRecipientList list) {
     this._persistentList = list;
     _ulTo.children
       ..clear()
-      ..addAll(list.to.map(_createEntryRow))
+      ..addAll(list.recipients[ORModel.Role.TO].map(_createEntryRow))
       ..add(_createNewPickerRow(_toPicker, _ulTo));
 
     _ulCc.children
       ..clear()
-      ..addAll(list.cc.map(_createEntryRow))
+      ..addAll(list.recipients[ORModel.Role.CC].map(_createEntryRow))
       ..add(_createNewPickerRow(_ccPicker, _ulCc));
 
     _ulBcc.children
       ..clear()
-      ..addAll(list.bcc.map(_createEntryRow))
+      ..addAll(list.recipients[ORModel.Role.BCC].map(_createEntryRow))
       ..add(_createNewPickerRow(_bccPicker, _ulBcc));
   }
 
   void _populatePicker(SelectElement picker, List<DistributionListEntry> allReadyInTheList) {
     picker.children.clear();
     picker.children.add(new OptionElement(data: 'Vælg'));
-    for(Reception reception in _colleagues) {
-      for(Contact contact in reception.contacts) {
+    for(ORModel.Reception reception in _colleagues) {
+      for(ORModel.Contact contact in reception.contacts) {
         if(!allReadyInTheList.any((DistributionListEntry entry) => entry.contactId == contact.id && entry.receptionId == reception.id)) {
           String displayedText = '${contact.fullName} (${reception.fullName})';
           picker.children.add(new OptionElement(data: displayedText)

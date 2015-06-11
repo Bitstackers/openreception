@@ -17,26 +17,36 @@ import 'package:logging/logging.dart';
 
 part 'requests/calendar.dart';
 part 'requests/cdr.dart';
-part 'requests/contact.dart';
 part 'requests/dialplan.dart';
-//part 'requests/organization.dart';
-part 'requests/reception.dart';
-part 'requests/reception_contact.dart';
 part 'requests/user.dart';
 
 Logger log = new Logger('request');
 
+Transport.Client client = new Transport.Client();
+
+ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
+    Uri.parse('http://localhost:4000'), config.token, client);
+
+ORService.RESTReceptionStore _managementReceptionStore =
+    new ORService.RESTReceptionStore(
+        Uri.parse(config.serverUrl), config.token, client);
+
 Controller.Reception receptionController =
-  new Controller.Reception(new ORService.RESTReceptionStore
-    (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
+    new Controller.Reception(_receptionStore, _managementReceptionStore);
+
+ORService.RESTManagementStore _managementStore =
+    new ORService.RESTManagementStore(
+        Uri.parse(config.serverUrl), config.token, client);
+
+ORService.RESTContactStore _contactStore = new ORService.RESTContactStore(
+    Uri.parse('http://localhost:4010'), config.token, client);
 
 Controller.Contact contactController =
-  new Controller.Contact(new ORService.RESTContactStore
-    (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
+    new Controller.Contact(_contactStore, _managementStore);
 
-Controller.Organization organizationController =
-  new Controller.Organization(new ORService.RESTOrganizationStore
-    (Uri.parse(config.serverUrl), config.token, new Transport.Client()));
+Controller.Organization organizationController = new Controller.Organization(
+    new ORService.RESTOrganizationStore(
+        Uri.parse(config.serverUrl), config.token, new Transport.Client()));
 
 class HttpMethod {
   static const String GET = 'GET';
@@ -72,7 +82,8 @@ class UnknowStatusCode implements Exception {
   String statusText;
   String message;
 
-  UnknowStatusCode(int this.statusCode, String this.statusText, String this.message);
+  UnknowStatusCode(
+      int this.statusCode, String this.statusText, String this.message);
 
   String toString() {
     if (statusCode == null || statusText == null) return "UnknowStatusCode";

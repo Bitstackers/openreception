@@ -325,9 +325,12 @@ class ReceptionView {
   }
 
   Future refreshList() {
-    return getReceptionList().then((List<ORModel.Reception> receptions) {
-      receptions.sort();
-      this.receptions = receptions;
+    return receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+
+      int compareTo (ORModel.Reception r1, ORModel.Reception r2) => r1.fullName.compareTo(r2.fullName);
+
+      List list = receptions.toList()..sort(compareTo);
+      this.receptions = list;
       performSearch();
     }).catchError((error) {
       log.error(
@@ -364,7 +367,7 @@ class ReceptionView {
     });
 
     if (receptionId > 0) {
-      getReception(selectedReceptionId).then((ORModel.Reception response) {
+      receptionController.get(selectedReceptionId).then((ORModel.Reception response) {
         buttonDialplan.disabled = false;
 
         highlightContactInList(receptionId);
@@ -375,7 +378,7 @@ class ReceptionView {
         //inputReceptionNumber.value = response.receptionNumber;
 
         //TODO: Listify
-        inputCostumerstype.value = response.customerTypes.first;
+        inputCostumerstype.value = response.customerTypes.isNotEmpty ? response.customerTypes.first : '';
         inputShortGreeting.value = response.shortGreeting;
         inputGreeting.value = response.greeting;
         inputOther.value = response.otherData;
@@ -402,13 +405,15 @@ class ReceptionView {
   }
 
   void updateContactList(int receptionId) {
-    getReceptionContactList(receptionId).then((List<ORModel.Contact> contacts) {
-      contacts.sort();
+    contactController.list(receptionId).then((Iterable<ORModel.Contact> contacts) {
+
+      int compareTo(ORModel.Contact c1, ORModel.Contact c2) => c1.fullName.compareTo(c2.fullName);
+
+
+      List list = contacts.toList()..sort(compareTo);
       ulContactList.children
           ..clear()
           ..addAll(contacts.map((ORModel.Contact contact) => makeContactNode(contact, receptionId)));
-    }).catchError((error) {
-      log.error('Tried to fetch the contactlist from an reception Error: $error');
     });
   }
 

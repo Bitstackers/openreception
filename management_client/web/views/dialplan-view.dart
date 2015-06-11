@@ -193,7 +193,7 @@ class DialplanView {
   }
 
   void fillSearchComponent() {
-    request.getReceptionList().then((Iterable<ORModel.Reception> rs) {
+    request.receptionController.list().then((Iterable<ORModel.Reception> rs) {
 
       int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
 

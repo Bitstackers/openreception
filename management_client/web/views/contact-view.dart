@@ -21,7 +21,7 @@ part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
 part 'components/endpoint.dart';
 
-typedef Future HandleReceptionContact(ContactAttribute receptionContact);
+typedef Future HandleReceptionContact(ORModel.Contact receptionContact);
 typedef Future LazyFuture();
 
 class ContactView {
@@ -31,7 +31,7 @@ class ContactView {
   UListElement ulReceptionContacts;
   UListElement ulReceptionList;
   UListElement ulOrganizationList;
-  List<Contact> contactList = new List<Contact>();
+  List<ORModel.BaseContact> contactList = new List<ORModel.BaseContact>();
   SearchInputElement searchBox;
 
   TextAreaElement inputName;
@@ -78,10 +78,9 @@ class ContactView {
 
     refreshList();
 
-    request.getContacttypeList().then((List<String> typesList) {
-      inputType.children.addAll(typesList.map((type) => new OptionElement(data:
+   inputType.children.addAll(ORModel.availableContactTypes.map((type) => new OptionElement(data:
           type, value: type)));
-    });
+
 
     EndpointsComponent.loadAddressTypes();
   }
@@ -118,9 +117,13 @@ class ContactView {
   }
 
   void refreshList() {
-    request.getEveryContact().then((List<Contact> contacts) {
-      contacts.sort();
-      this.contactList = contacts;
+    request.contactController.listAll().then((Iterable<ORModel.BaseContact> contacts) {
+
+      int compareTo (ORModel.BaseContact c1, ORModel.BaseContact c2) =>
+          c1.fullName.compareTo(c2.fullName);
+
+      List<ORModel.BaseContact> list = contacts.toList()..sort(compareTo);
+      this.contactList = list;
       performSearch();
     }).catchError((error) {
       log.error('Tried to fetch organization but got error: $error');
@@ -132,11 +135,11 @@ class ContactView {
     ulContactList.children
         ..clear()
         ..addAll(contactList
-                  .where((Contact contact) => contact.fullName.toLowerCase().contains(searchTerm.toLowerCase()))
+                  .where((ORModel.BaseContact contact) => contact.fullName.toLowerCase().contains(searchTerm.toLowerCase()))
                   .map(makeContactNode));
   }
 
-  LIElement makeContactNode(Contact contact) {
+  LIElement makeContactNode(ORModel.BaseContact contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${contact.fullName}'
@@ -150,7 +153,7 @@ class ContactView {
   }
 
   void activateContact(int id, [int reception_id]) {
-    request.getContact(id).then((Contact contact) {
+    request.contactController.get(id).then((ORModel.BaseContact contact) {
       buttonSave.text = 'Gem';
       buttonSave.disabled = false;
       buttonDelete.disabled = false;
@@ -158,22 +161,23 @@ class ContactView {
       createNew = false;
 
       inputName.value = contact.fullName;
-      inputType.options.forEach((OptionElement option) => option.selected = option.value == contact.type);
+      inputType.options.forEach((OptionElement option) => option.selected = option.value == contact.contactType);
       inputEnabled.checked = contact.enabled;
       spanContactId.text = '${contact.id}';
       selectedContactId = contact.id;
 
       highlightContactInList(id);
 
-      return request.getContactWithAttributes(id).then(
-          (List<ContactAttribute> attributes) {
-        if (attributes != null) {
-          saveList.clear();
-          attributes.sort();
-          ulReceptionContacts.children
-              ..clear()
-              ..addAll(attributes.map((ContactAttribute contactAttribute) =>
-                  receptionContactBox(contact.id, contactAttribute, receptionContactUpdate, selected: contactAttribute.receptionId == reception_id)));
+      return request.contactController.receptions(id).then((Iterable<int> receptionIDs) {
+        Future.forEach(receptionIDs, (int receptionID) {
+          request.contactController.getByReception(id, receptionID)
+            .then((ORModel.Contact contact) {
+              saveList.clear();
+              ulReceptionContacts.children.add (receptionContactBox(contact));
+
+          });
+        });
+
 
         //Rightbar
         request.getContactsOrganizationList(id).then((List<ORModel.Organization> organizations) {
@@ -185,16 +189,14 @@ class ContactView {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
-        return request.getColleagues(id).then((List<ORModel.Reception> Receptions) {
+        return request.getColleagues(id).then((Iterable<ORModel.Reception> receptions) {
           ulReceptionList.children.clear();
 
-          if(Receptions.isNotEmpty) {
-            Receptions.sort();
+          if(receptions.isNotEmpty) {
             ulReceptionList.children
-                ..addAll(Receptions.map(createReceptionNode));
+                ..addAll(receptions.map(createReceptionNode));
           }
-          });
-        }
+        });
       });
     }).catchError((error, stack) {
       log.error('Tried to activate contact "${id}" but gave "${error}" \n${stack}');
@@ -202,7 +204,7 @@ class ContactView {
   }
 
   void fillSearchComponent() {
-    request.getReceptionList().then((Iterable<ORModel.Reception> receptions) {
+    request.receptionController.list().then((Iterable<ORModel.Reception> receptions) {
       int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
 
       List list = receptions.toList()..sort(compareTo);
@@ -236,29 +238,21 @@ class ContactView {
    * If any of the fields changes, save to [saveList] a function that calls [receptionContactHandler] with the changed [ReceptionContact]
    * If you want there to always be this function in [saveList] set alwaysAddToSaveList to true.
    */
-  LIElement receptionContactBox(int contactId, ContactAttribute attribute, HandleReceptionContact receptionContactHandler,
-                                {bool selected: false, bool alwaysAddToSaveList: false}) {
+  LIElement receptionContactBox(ORModel.Contact contact) {
     DivElement div = new DivElement()..classes.add('contact-reception');
     LIElement li = new LIElement()
         ..tabIndex = -1;
     SpanElement header = new SpanElement()
-        ..text = attribute.receptionName
+        //TODO: insert name.
+        ..text = contact.receptionID.toString()
         ..classes.add('reception-contact-header');
     div.children.add(header);
 
     ButtonElement delete = new ButtonElement()
         ..text = 'fjern'
-        ..onClick.listen((_) {
-          saveList[attribute.receptionId] = () {
-            return request.deleteReceptionContact(attribute.receptionId,
-                contactId).then((_) {
-              bus.fire(new ReceptionContactRemovedEvent(attribute.receptionId, contactId));
-            }).catchError((error) {
-              log.error('deleteReceptionContact error: "error"');
-            });
-          };
-          li.parent.children.remove(li);
-        });
+        ..onClick.listen((_) =>
+          _contactController.remove(contact.ID)
+          .then((_) => li.parent.children.remove(li)));
 
     div.children.add(delete);
 
@@ -271,9 +265,9 @@ class ContactView {
       ..onClick.listen((_) {
       try {
         int newContactId = int.parse(newContactIdInput.value);
-        request.moveReceptionContact(attribute.receptionId, contactId, newContactId).then((_) {
+        request.moveReceptionContact(contact.receptionID, contact.ID, newContactId).then((_) {
           notify.info('Oplysningerne er nu flyttet til ${newContactId}');
-          activateContact(contactId);
+          activateContact(contact.ID);
         }).catchError((error) {
           notify.info('Oplysningerne blev ikke flyttet. Fejl: ${error}');
         });
@@ -285,7 +279,7 @@ class ContactView {
     div.children.addAll([newContactIdInput, moveContact]);
     //FIXME end of migrate from Frontdesk to OpenReception code
 
-    TextAreaElement department, info, position, relations, responsibility;
+    UListElement department, info, position, relations, responsibility;
     InputElement wantMessage, enabled;
     UListElement backupList, emailList, handlingList, phoneNumbersList,
         workhoursList, tagsList;
@@ -294,11 +288,11 @@ class ContactView {
     ContactCalendarComponent calendarComponent;
 
     Function onChange = () {
-      if (!saveList.containsKey(attribute.receptionId)) {
-        saveList[attribute.receptionId] = () {
+      if (!saveList.containsKey(contact.receptionId)) {
+        saveList[contact.receptionId] = () {
           ContactAttribute CA = new ContactAttribute()
               ..contactId = contactId
-              ..receptionId = attribute.receptionId
+              ..receptionId = contact.receptionId
               ..enabled = enabled.checked
               ..wantsMessages = wantMessage.checked
               ..phoneNumbers = getPhoneNumbersFromDOM(phoneNumbersList)
@@ -336,66 +330,54 @@ class ContactView {
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    wantMessage = createCheckBox(leftCell, 'Vil have beskeder', attribute.wantsMessages, onChange: onChange);
-    enabled = createCheckBox(rightCell, 'Aktiv', attribute.enabled, onChange: onChange);
+    wantMessage = createCheckBox(leftCell, 'Vil have beskeder', contact.wantsMessage, onChange: onChange);
+    enabled = createCheckBox(rightCell, 'Aktiv', contact.enabled, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    department = createTextBox(leftCell, 'Afdelling', attribute.department, onChange: onChange);
-    info = createTextBox(rightCell, 'Andet', attribute.info, onChange: onChange);
+    department = createListBox(leftCell, 'Afdeling', contact.departments, onChange: onChange);
+    info = createListBox(rightCell, 'Andet', contact.infos, onChange: onChange);
 
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    position = createTextBox(leftCell, 'Stilling', attribute.position, onChange: onChange);
-    relations = createTextBox(rightCell, 'Relationer', attribute.relations, onChange: onChange);
+    position = createListBox(leftCell, 'Stilling', contact.titles, onChange: onChange);
+    relations = createListBox(rightCell, 'Relationer', contact.relations, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row)
         ..colSpan = 2; //Because of w3 validation
-    responsibility = createTextBox(leftCell, 'Ansvar', attribute.responsibility, onChange: onChange);
+    responsibility = createListBox(leftCell, 'Ansvar', contact.responsibilities, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    backupList = createListBox(leftCell, 'Backup', attribute.backup, onChange: onChange);
+    backupList = createListBox(leftCell, 'Backup', contact.backupContacts, onChange: onChange);
     endpointsContainer = new EndpointsComponent(rightCell, onChange);
     //Saving the future, so we are able to wait on it later.
-    loadingJobs.add(endpointsContainer.load(attribute.receptionId, contactId));
+    loadingJobs.add(endpointsContainer.load(contact.receptionID, contact.ID));
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    handlingList = createListBox(leftCell, 'Håndtering', attribute.handling, onChange: onChange);
-    phoneNumbersList = createPhoneNumbersList(rightCell, attribute.phoneNumbers, onChange: onChange);
+    handlingList = createListBox(leftCell, 'Håndtering', contact.handling, onChange: onChange);
+    phoneNumbersList = createPhoneNumbersList(rightCell, contact.phones, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    workhoursList = createListBox(leftCell, 'Arbejdstid', attribute.workhours, onChange: onChange);
-    tagsList = createListBox(rightCell, 'Stikord', attribute.tags, onChange: onChange);
+    workhoursList = createListBox(leftCell, 'Arbejdstid', contact.workhours, onChange: onChange);
+    tagsList = createListBox(rightCell, 'Stikord', contact.tags, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
     distributionsListContainer = new DistributionsListComponent(leftCell, onChange);
-    loadingJobs.add(distributionsListContainer.load(attribute.receptionId, contactId));
+    distributionsListContainer.load(contact);
     calendarComponent = new ContactCalendarComponent(rightCell, onChange);
-    loadingJobs.add(calendarComponent.load(attribute.receptionId, contactId));
-
-
-    //In case of creating. You always want it in saveList.
-    if (alwaysAddToSaveList) {
-      onChange();
-    }
-
-    if(selected) {
-      Future.wait(loadingJobs).then((_) {
-        li.focus();
-      });
-    }
+    loadingJobs.add(calendarComponent.load(contact.receptionID, contact.ID));
 
     li.children.add(div);
     return li;
@@ -413,7 +395,7 @@ class ContactView {
     return row;
   }
 
-  UListElement createPhoneNumbersList(Element container, List<Phone> phonenumbers, {Function onChange}) {
+  UListElement createPhoneNumbersList(Element container, List<ORModel.PhoneNumber> phonenumbers, {Function onChange}) {
     LabelElement label = new LabelElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 

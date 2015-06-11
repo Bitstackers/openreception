@@ -72,7 +72,8 @@ Future createCheckpoint(String data) {
         ..onLoad.listen((_) {
           String body = request.responseText;
           if (request.status == 200) {
-            completer.complete(new Contact.fromJson(JSON.decode(body)));
+            //TODO: Isn't this wrong?
+            completer.complete(new ORModel.Contact.fromMap(JSON.decode(body)));
           } else if (request.status == 403) {
             completer.completeError(new ForbiddenException(body));
           } else {
