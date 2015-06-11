@@ -39,7 +39,6 @@ part 'model/model-user_status.dart';
 
 const String libraryName = "openreception.model";
 
-
 abstract class _Key {
   static const String userID = 'userID';
   static const String connectionCount = 'connectionCount';
