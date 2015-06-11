@@ -9,19 +9,8 @@ abstract class Reception {
       FROM receptions
     ''';
 
-  Model.Reception rowToReception(var row) =>
-    new Model.Reception.fromMap(
-   {'id'           : row.id,
-    'full_name'    : row.full_name,
-    'enabled'      : row.enabled,
-    'extradatauri' : row.extradatauri,
-    'reception_telephonenumber': row.reception_telephonenumber,
-    'last_check'   : row.last_check.toString(),
-    'attributes'   : row.attributes});
-
-
     return connection.query(sql).then((rows) =>
-      (rows as Iterable).map(rowToReception));
+      (rows as Iterable).map(_rowToReception));
   }
 
   static Future<Model.Reception> get(int id) {
@@ -39,19 +28,17 @@ abstract class Reception {
         throw new Storage.NotFound('No reception with ID $id');
       }
 
-      var row = rows.first;
-      Map data =
-          {'id'           : row.id,
-           'full_name'    : row.full_name,
-           'enabled'      : row.enabled,
-           'extradatauri' : row.extradatauri,
-           'reception_telephonenumber': row.reception_telephonenumber,
-           'last_check'   : row.last_check.toString(),
-           'attributes'   : row.attributes};
-
-
-      return new Model.Reception.fromMap(data);
+      return _rowToReception(rows.first);
     });
   }
 
+  static Model.Reception _rowToReception(var row) =>
+    new Model.Reception.fromMap(
+   {'id'           : row.id,
+    'full_name'    : row.full_name,
+    'enabled'      : row.enabled,
+    'extradatauri' : row.extradatauri,
+    'reception_telephonenumber': row.reception_telephonenumber,
+    'last_check'   : row.last_check.toString(),
+    'attributes'   : row.attributes});
 }
