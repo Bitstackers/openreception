@@ -1,15 +1,13 @@
 part of openreception.model;
 
 /**
- * TODO: Change this to use fields instead of a map.
+ * TODO (KRC): Change this to use fields instead of a map.
  */
 class User {
-
-  static const int noID = 0;
-  static final String className    = '${libraryName}.User';
-  static       User   _currentUser = new User.empty(); // Singleton User
-  final        Bus    _idle        = new Bus();
-  final        Bus    _pause       = new Bus();
+  static final String className = '${libraryName}.User';
+  final        Bus    _idle     = new Bus();
+  static const int    noID      = 0;
+  final        Bus    _pause    = new Bus();
 
   Map _map = {};
   String       get peer      => this._map['extension'];
@@ -39,16 +37,6 @@ class User {
   Map toJson() {
     return this._map;
   }
-
-  /**
-   * Get the current user.
-   */
-  static User get currentUser => _currentUser;
-
-  /**
-   * Set the current user.
-   */
-  static set currentUser (User newUser) => _currentUser = newUser;
 
   /**
    * Fires when [currentUser] goes idle.
