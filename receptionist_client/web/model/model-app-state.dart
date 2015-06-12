@@ -20,7 +20,7 @@ enum AppState {
 }
 
 class AppClientState {
-  ORModel.Call            _activeCall          = new ORModel.Call.empty();
+  ORModel.Call            _activeCall          = ORModel.Call.noCall;
   final Bus<ORModel.Call> _activeCallChangeBus = new Bus<ORModel.Call>();
   ORModel.User            _currentUser         = new ORModel.User.empty();
   final Logger            _log                 = new Logger('${libraryName}.AppClientState');
