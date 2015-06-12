@@ -146,7 +146,9 @@ class Customer {
     log.finest (c.toJson());
     log.finest ('Current usage: ${_availableCount} available of ${_totalCount}');
 
-    return c.initialize().then((_) => new shelf.Response.ok (JSON.encode(c)));
+    return c.initialize()
+        .then((_) => c.autoAnswer(false))
+        .then((_) => new shelf.Response.ok (JSON.encode(c)));
   }
 
   /**
@@ -222,6 +224,31 @@ class Customer {
     return c.dial(extension).then((_) =>
         new shelf.Response.ok (JSON.encode({'status' : 'ok'})));
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> pickup (shelf.Request request) {
+    int customerHandle = _cidParameter(request);
+    String extension = _extensionParameter(request);
+
+    test_fw.Customer c;
+
+    try {
+      c = _customerPool.busy.firstWhere((test_fw.Customer cu) =>
+        cu.hashCode == customerHandle);
+    }
+    catch (error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new Future.value
+        (new shelf.Response.internalServerError(body : error.toString()));
+    }
+
+    return c.pickupCall().then((_) =>
+        new shelf.Response.ok (JSON.encode({'status' : 'ok'})));
+  }
+
+
   /**
    *
    */

@@ -53,6 +53,7 @@ Future<IO.HttpServer> start(
     ..get('/resource/receptionist/{rid}', receptionistHandler.get)
     ..post('/resource/customer/aquire', customerHandler.aquire)
     ..post('/resource/customer/{cid}/release', customerHandler.release)
+    ..post('/resource/customer/{cid}/pickup', customerHandler.pickup)
     ..post('/resource/customer/{cid}/dial/{extension}', customerHandler.dial)
     ..post('/resource/customer/{cid}/hangupAll', customerHandler.hangupAll)
     ..get('/resource/customer/{cid}', customerHandler.get);
