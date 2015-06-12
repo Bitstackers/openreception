@@ -252,7 +252,7 @@ class ReceptionView {
 
   void deleteCurrentReception() {
     if (selectedReceptionId > 0) {
-      deleteReception(selectedReceptionId).then((_) {
+      receptionController.remove(selectedReceptionId).then((_) {
         notify.info('Sletning af receptionen gik godt.');
         bus.fire(new ReceptionRemovedEvent(currentOrganizationId, selectedReceptionId));
         selectedReceptionId = 0;
@@ -269,7 +269,7 @@ class ReceptionView {
     if (selectedReceptionId > 0) {
       ORModel.Reception updatedReception = extractValues();
 
-      updateReception(updatedReception).then((_) {
+      receptionController.update(updatedReception).then((_) {
         //Show a message that tells the user, that the changes went threw.
         notify.info('Receptionens ændringer er gemt.');
         refreshList();
@@ -281,7 +281,7 @@ class ReceptionView {
       ORModel.Reception newReception = extractValues();
       if (SC.currentElement != null) {
         newReception.organizationId = SC.currentElement.id;
-        createReception(newReception).then((ORModel.Reception createdReception) {
+        receptionController.create(newReception).then((ORModel.Reception createdReception) {
 
           notify.info('Receptionen blev oprettet.');
 

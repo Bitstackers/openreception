@@ -180,7 +180,7 @@ class ContactView {
 
 
         //Rightbar
-        request.getContactsOrganizationList(id).then((List<ORModel.Organization> organizations) {
+        request.contactController.contactOrganizations(id).then((List<ORModel.Organization> organizations) {
           organizations.sort();
           ulOrganizationList.children
               ..clear()
@@ -189,7 +189,7 @@ class ContactView {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
-        return request.getColleagues(id).then((Iterable<ORModel.Reception> receptions) {
+        return request.contactController.colleagues(id).then((Iterable<ORModel.Reception> receptions) {
           ulReceptionList.children.clear();
 
           if(receptions.isNotEmpty) {
@@ -214,8 +214,8 @@ class ContactView {
     });
   }
 
-  Future receptionContactUpdate(ContactAttribute ca) {
-    return request.updateReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
+  Future receptionContactUpdate(ORModel.Contact ca) {
+    return request.contactController.updateReceptionContact(ca).then((_) {
       notify.info('Oplysningerne blev gemt.');
     }).catchError((error, stack) {
       notify.error('Ændringerne blev ikke gemt.');
@@ -223,10 +223,10 @@ class ContactView {
     });
   }
 
-  Future receptionContactCreate(ContactAttribute ca) {
-    return request.createReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
+  Future receptionContactCreate(ORModel.Contact contact) {
+    return request.contactController.createReception(contact).then((_) {
       notify.info('Lageringen gik godt.');
-      bus.fire(new ReceptionContactAddedEvent(ca.receptionId, ca.contactId));
+      bus.fire(new ReceptionContactAddedEvent(contact.receptionID, contact.ID));
     }).catchError((error, stack) {
       notify.error('Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
       log.error('Tried to update a Reception Contact, but failed with "$error" ${stack}');
@@ -251,7 +251,7 @@ class ContactView {
     ButtonElement delete = new ButtonElement()
         ..text = 'fjern'
         ..onClick.listen((_) =>
-          _contactController.remove(contact.ID)
+          request.contactController.removeReception(contact.ID)
           .then((_) => li.parent.children.remove(li)));
 
     div.children.add(delete);
@@ -288,30 +288,30 @@ class ContactView {
     ContactCalendarComponent calendarComponent;
 
     Function onChange = () {
-      if (!saveList.containsKey(contact.receptionId)) {
-        saveList[contact.receptionId] = () {
-          ContactAttribute CA = new ContactAttribute()
-              ..contactId = contactId
-              ..receptionId = contact.receptionId
+      if (!saveList.containsKey(contact.receptionID)) {
+        saveList[contact.receptionID] = () {
+          ORModel.Contact CA = new ORModel.Contact.empty()
+              ..ID = contact.ID
+              ..receptionID = contact.receptionID
               ..enabled = enabled.checked
-              ..wantsMessages = wantMessage.checked
-              ..phoneNumbers = getPhoneNumbersFromDOM(phoneNumbersList)
+              ..wantsMessage = wantMessage.checked
+              ..phones = getPhoneNumbersFromDOM(phoneNumbersList)
 
-              ..backup = getListValues(backupList)
+              ..backupContacts = getListValues(backupList)
               ..handling = getListValues(handlingList)
               ..workhours = getListValues(workhoursList)
               ..tags = getListValues(tagsList)
 
-              ..department = department.value
-              ..info = info.value
-              ..position = position.value
-              ..relations = relations.value
-              ..responsibility = responsibility.value;
+              ..departments = getListValues(department)
+              ..infos = getListValues(info)
+              ..titles = getListValues(position)
+              ..relations = getListValues(relations)
+              ..responsibilities = getListValues(responsibility);
 
           return receptionContactHandler(CA)
-              .then((_) => endpointsContainer.save(CA.receptionId, CA.contactId))
-              .then((_) => distributionsListContainer.save(CA.receptionId, CA.contactId))
-              .then((_) => calendarComponent.save(CA.receptionId, CA.contactId));
+              .then((_) => endpointsContainer.save(CA.receptionID, CA.ID))
+              .then((_) => distributionsListContainer.save(CA.receptionID, CA.ID))
+              .then((_) => calendarComponent.save(CA.receptionID, CA.ID));
         };
       }
     };
@@ -593,13 +593,13 @@ class ContactView {
       });
 
     } else if (createNew) {
-      Contact newContact = new Contact()
+      ORModel.BaseContact newContact = new ORModel.BaseContact.empty()
           ..fullName = inputName.value
-          ..type = inputType.selectedOptions.first != null ?
+          ..contactType = inputType.selectedOptions.first != null ?
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      request.createContact(JSON.encode(newContact)).then((Contact responseContact) {
+      request.contactController.create(newContact).then((ORModel.BaseContact responseContact) {
         bus.fire(new ContactAddedEvent(responseContact.id));
         refreshList();
         activateContact(responseContact.id);
@@ -633,24 +633,9 @@ class ContactView {
     if (SC.currentElement != null && selectedContactId > 0) {
       ORModel.Reception reception = SC.currentElement;
 
-      ContactAttribute template =
-          new ContactAttribute()
-          ..receptionId = reception.ID
-          ..receptionName = reception.fullName
-          ..receptionEnabled = reception.enabled
-          ..wantsMessages = true
-          ..enabled = true
-
-          ..department = ''
-          ..info = ''
-          ..position = ''
-          ..relations = ''
-          ..responsibility = ''
-
-          ..backup = new List<String>()
-          ..handling = new List<String>()
-          ..workhours = new List<String>()
-          ..tags = new List<String>();
+      ORModel.Contact template =
+          new ORModel.Contact.empty()
+          ..receptionID = reception.ID;
 
       ulReceptionContacts.children..add(receptionContactBox(selectedContactId, template,
           receptionContactCreate, alwaysAddToSaveList: true));

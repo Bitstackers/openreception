@@ -80,7 +80,7 @@ class OrganizationView {
 
     buttonDelete.onClick.listen((_) {
       if (!createNew && selectedOrganizationId != null) {
-        deleteOrganization(selectedOrganizationId).then((_) {
+        organizationController.remove(selectedOrganizationId).then((_) {
           notify.info('Organisation blev slettet.');
 
           currentContactList.clear();

@@ -2,9 +2,8 @@ part of openreception.managementclient.controller;
 
 class Reception {
   final ORService.RESTReceptionStore _service;
-  final ORService.RESTReceptionStore _management;
 
-  Reception(this._service, this._management);
+  Reception(this._service);
 
   Future<ORModel.Reception> create(ORModel.Reception reception) =>
       _service.create(reception);
