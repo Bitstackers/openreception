@@ -44,6 +44,31 @@ class UIReceptionSelector extends UIModel {
   OListElement get _list   => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
 
+  /**
+   * Add [reception] to the reception list, sorted alphabetically by reception
+   * name.
+   */
+  void addReception(ORModel.Reception reception) {
+    LIElement newLi = new LIElement()
+                        ..dataset['id'] = reception.ID.toString()
+                        ..dataset['name'] = reception.name.toLowerCase()
+                        ..dataset['object'] = JSON.encode(reception)
+                        ..text = reception.name;
+
+    LIElement firstBiggerName =
+        _list.querySelectorAll('li').firstWhere((Element element) =>
+            newLi.dataset['name'].compareTo(element.dataset['name']) < 0, orElse: () => null);
+
+    if(firstBiggerName == null) {
+      _list.append(newLi);
+    } else {
+      _list.insertBefore(newLi, firstBiggerName);
+    }
+  }
+
+  /**
+   *
+   */
   void changeActiveReception(int receptionID) {
     this._markSelected(_list.querySelector('[data-id="$receptionID"]'));
   }
@@ -135,6 +160,17 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
+   * Remove [receptionID] from the reception selector.
+   */
+  void removeReception(int receptionID) {
+    LIElement li = _list.querySelector('[data-id="${receptionID.toString()}"]');
+
+    if(li != null) {
+      li.remove();
+    }
+  }
+
+  /**
    * Remove selections, scroll to top, empty filter input and fire a null
    * [Reception].
    */
@@ -184,6 +220,20 @@ class UIReceptionSelector extends UIModel {
       return new ORModel.Reception.fromMap(JSON.decode(li.dataset['object']));
     } else {
       return new ORModel.Reception.empty();
+    }
+  }
+
+  /**
+   * If [reception] exists in the reception selector list, then update it.
+   */
+  void updateReception(ORModel.Reception reception) {
+    LIElement li = _list.querySelector('[data-id="${reception.ID.toString()}"]');
+
+    if(li != null) {
+      li.dataset['id'] = reception.ID.toString();
+      li.dataset['name'] = reception.name.toLowerCase();
+      li.dataset['object'] = JSON.encode(reception);
+      li.text = reception.name;
     }
   }
 }
