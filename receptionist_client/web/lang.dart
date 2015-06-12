@@ -52,8 +52,10 @@ abstract class Key {
   static const String contactDataDepartment           = 'contact-data-department';
   static const String contactDataEmailAddresses       = 'contact-data-email-addresses';
   static const String contactDataHeader               = 'contact-data-header';
+  static const String contactDataPSTN                 = 'contact-data-pstn';
   static const String contactDataRelations            = 'contact-data-relations';
   static const String contactDataResponsibility       = 'contact-data-responsibility';
+  static const String contactDataShowPSTN             = 'contact-data-show-pstn';
   static const String contactDataShowTags             = 'contact-data-show-tags';
   static const String contactDataTelephoneNumbers     = 'contact-data-telephone-numbers';
   static const String contactDataTitle                = 'contact-data-title';
@@ -78,6 +80,7 @@ abstract class Key {
   static const String globalCallQueueHeader           = 'global-call-queue-header';
 
   static const String messageArchiveEditHeader        = 'message-archive-edit-header';
+  static const String messageArchiveFilter            = 'message-archive-filter';
   static const String messageArchiveFilterHeader      = 'message-archive-filter-header';
   static const String messageArchiveHeader            = 'message-archive-header';
 
@@ -168,8 +171,10 @@ Map<String, String> da =
    Key.contactDataDepartment          : 'Afdeling',
    Key.contactDataEmailAddresses      : 'Emailadresser',
    Key.contactDataHeader              : 'Kontakt datablad',
+   Key.contactDataPSTN                : 'nummer',
    Key.contactDataRelations           : 'Relationer',
    Key.contactDataResponsibility      : 'Ansvarsområde',
+   Key.contactDataShowPSTN            : 'PSTN',
    Key.contactDataShowTags            : 'Tags',
    Key.contactDataTelephoneNumbers    : 'Telefonnumre',
    Key.contactDataTitle               : 'Titel',
@@ -194,6 +199,7 @@ Map<String, String> da =
    Key.globalCallQueueHeader          : 'Kø',
 
    Key.messageArchiveEditHeader       : 'Besked',
+   Key.messageArchiveFilter           : 'Filter...',
    Key.messageArchiveFilterHeader     : 'Besked arkiv filter',
    Key.messageArchiveHeader           : 'Besked arkiv',
 
@@ -283,8 +289,10 @@ Map<String, String> en =
    Key.contactDataDepartment          : 'Department',
    Key.contactDataEmailAddresses      : 'Email addresses',
    Key.contactDataHeader              : 'Contact data',
+   Key.contactDataPSTN                : 'number',
    Key.contactDataRelations           : 'Relations',
    Key.contactDataResponsibility      : 'Responsibility',
+   Key.contactDataShowPSTN            : 'PSTN',
    Key.contactDataShowTags            : 'Tags',
    Key.contactDataTelephoneNumbers    : 'Telephone numbers',
    Key.contactDataTitle               : 'Title',
@@ -309,6 +317,7 @@ Map<String, String> en =
    Key.globalCallQueueHeader          : 'Queue',
 
    Key.messageArchiveEditHeader       : 'Message',
+   Key.messageArchiveFilter           : 'Filter...',
    Key.messageArchiveFilterHeader     : 'Message archive filter',
    Key.messageArchiveHeader           : 'Message archive',
 

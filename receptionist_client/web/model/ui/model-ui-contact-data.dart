@@ -39,11 +39,13 @@ class UIContactData extends UIModel {
   OListElement get _commandsList       => _root.querySelector('.commands');
   OListElement get _departmentList     => _root.querySelector('.department');
   OListElement get _emailAddressesList => _root.querySelector('.email-addresses');
+  DivElement   get _popupDiv           => _root.querySelector('.popup');
+  InputElement get _pstnInput          => _root.querySelector('.popup .pstn');
   OListElement get _relationsList      => _root.querySelector('.relations');
   OListElement get _responsibilityList => _root.querySelector('.responsibility');
+  SpanElement  get _showPSTNSpan       => _root.querySelector('.show-pstn');
   SpanElement  get _showTagsSpan       => _root.querySelector('.show-tags');
-  DivElement   get _tagsDiv            => _root.querySelector('.tags');
-  OListElement get _tagsList           => _root.querySelector('.tags .generic-widget-list');
+  OListElement get _tagsList           => _root.querySelector('.popup .generic-widget-list');
   OListElement get _phoneNumberList    => _root.querySelector('.telephone-number');
   OListElement get _titleList          => _root.querySelector('.title');
   OListElement get _workHoursList      => _root.querySelector('.work-hours');
@@ -71,6 +73,7 @@ class UIContactData extends UIModel {
     _relationsList.children.clear();
     _responsibilityList.children.clear();
     _tagsList.children.clear();
+    _pstnInput.value = '';
     _phoneNumberList.children.clear();
     _titleList.children.clear();
     _workHoursList.children.clear();
@@ -104,6 +107,12 @@ class UIContactData extends UIModel {
     telephoneNumbers = contact.phones;
     titles = contact.titles;
     workHours = contact.workhours;
+
+    if(_showPSTNSpan.classes.contains('active')) {
+      _showPSTNSpan.classes.toggle('active', false);
+      _popupDiv.classes.toggle('popup-hidden', true);
+      _focusElement.focus();
+    }
   }
 
   /**
@@ -140,7 +149,8 @@ class UIContactData extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen(_selectFromClick);
 
-    _showTagsSpan.onClick.listen(_toggleTags);
+    _showPSTNSpan.onClick.listen((MouseEvent event) => _togglePopup(event.target));
+    _showTagsSpan.onClick.listen((MouseEvent event) => _togglePopup(event.target));
   }
 
   /**
@@ -153,7 +163,6 @@ class UIContactData extends UIModel {
    */
   void _populateList(OListElement parent, List<String> list) {
     list.forEach((String item) {
-
       parent.append(new LIElement()..text = item);
     });
   }
@@ -170,11 +179,11 @@ class UIContactData extends UIModel {
    * Removing the effect is delayed by 200ms for usability reasons.
    */
   void removeRinging() {
-    LIElement li = _phoneNumberList.querySelector('.ringing');
+    HtmlElement element = _root.querySelector('.ringing');
 
-    if(li != null) {
+    if(element != null) {
       new Future.delayed(new Duration(milliseconds: 200), () {
-        li.classes.toggle('ringing', false);
+        element.classes.toggle('ringing', false);
       });
     }
   }
@@ -186,16 +195,23 @@ class UIContactData extends UIModel {
 
   /**
    * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing.
+   * If the PSTN input field is active and contains something, then call that.
    *
    * This fires a [ORModel.PhoneNumber] object on the [onMarkedRinging] stream.
    */
   void ring() {
-    LIElement li = _phoneNumberList.querySelector('.selected');
+    if(_showPSTNSpan.classes.contains('active') && _pstnInput.value.trim().isNotEmpty) {
+      ORModel.PhoneNumber phoneNumber = new ORModel.PhoneNumber.empty()..value = _pstnInput.value.trim();
+      _pstnInput.classes.toggle('ringing', true);
+      _busRinging.fire(phoneNumber);
+    } else {
+      LIElement li = _phoneNumberList.querySelector('.selected');
 
-    if(li != null) {
-      if(noRinging) {
-        li.classes.toggle('ringing');
-        _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
+      if(li != null) {
+        if(noRinging) {
+          li.classes.toggle('ringing');
+          _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
+        }
       }
     }
   }
@@ -238,7 +254,7 @@ class UIContactData extends UIModel {
          'Alt+2'      : (_) => selectFromIndex(1),
          'Alt+3'      : (_) => selectFromIndex(2),
          'Alt+4'      : (_) => selectFromIndex(3),
-         'Ctrl+Space' : _toggleTags};
+         'Ctrl+Space' : (_) => _togglePopup(_showTagsSpan)};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
@@ -265,7 +281,6 @@ class UIContactData extends UIModel {
       spanLabel.classes.add('label');
       spanLabel.text = item.description;
 
-
       list.add(new LIElement()
                 ..children.addAll([spanNumber, spanLabel])
                 ..dataset['object'] = JSON.encode(item));
@@ -280,11 +295,53 @@ class UIContactData extends UIModel {
   set titles(List<String> items) => _populateList(_titleList, items);
 
   /**
-   * Show/hide the tags.
+   * Show/hide the popup.
+   *
+   * Venture forth at your own peril!
    */
-  void _toggleTags(_) {
-    _tagsDiv.classes.toggle('tags-hidden');
-    _showTagsSpan.classes.toggle('active');
+  void _togglePopup(HtmlElement target) {
+    if(_popupDiv.classes.contains('popup-hidden')) {
+      _popupDiv.classes.toggle('popup-hidden', false);
+
+      if(target == _showPSTNSpan) {
+        _showPSTNSpan.classes.toggle('active', true);
+        _tagsList.style.display = 'none';
+        _pstnInput.style.display = 'inline';
+        new Future.delayed(new Duration(milliseconds: 1)).then((_) => _pstnInput.focus());
+      } else {
+        _showTagsSpan.classes.toggle('active', true);
+        _pstnInput.style.display = 'none';
+        _tagsList.style.display = 'block';
+        _focusElement.focus();
+      }
+    } else {
+      if(target == _showPSTNSpan && _showPSTNSpan.classes.contains('active')) {
+        _showPSTNSpan.classes.toggle('active', false);
+        _popupDiv.classes.toggle('popup-hidden', true);
+        _focusElement.focus();
+      } else if(target == _showTagsSpan && _showTagsSpan.classes.contains('active')) {
+        _showTagsSpan.classes.toggle('active', false);
+        _popupDiv.classes.toggle('popup-hidden', true);
+      } else if(target == _showPSTNSpan && _showTagsSpan.classes.contains('active')) {
+        _tagsList.style.display = 'none';
+        _pstnInput.style.display = 'inline';
+        _showTagsSpan.classes.toggle('active', false);
+        _showPSTNSpan.classes.toggle('active', true);
+        new Future.delayed(new Duration(milliseconds: 1)).then((_) => _pstnInput.focus());
+      } else if(target == _showTagsSpan && _showPSTNSpan.classes.contains('active')) {
+        _pstnInput.style.display = 'none';
+        _tagsList.style.display = 'block';
+        _showPSTNSpan.classes.toggle('active', false);
+        _showTagsSpan.classes.toggle('active', true);
+        _focusElement.focus();
+      } else {
+        // This is bonkers! Why are we here!! Hide the popup and remove .active
+        _showPSTNSpan.classes.toggle('active', false);
+        _showTagsSpan.classes.toggle('active', false);
+        _popupDiv.classes.toggle('popup-hidden', true);
+        _focusElement.focus();
+      }
+    }
   }
 
   /**

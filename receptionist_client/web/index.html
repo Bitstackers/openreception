@@ -596,7 +596,7 @@
             <span class="extra-header"></span>
           </h4>
           <div class="generic-widget-body" tabindex="-1">
-            message-archive table
+            <input type="text" class="archive-filter" placeholder="::message-archive-filter::" tabindex="-1" data-lang-placeholder="message-archive-filter">
           </div>
         </div>
 
@@ -1340,6 +1340,7 @@
                     TODO (TL): Remove the -webkit- specific selectors
                     when Chrome gets rid of them.
                   */
+                  #contact-data .popup .ringing,
                   #contact-data .cell .ringing {
                     animation-name: flash;
                     animation-duration: 2s;
@@ -1361,21 +1362,32 @@
                     25%, 75% {opacity: 0.1}
                   }
 
+                  #contact-data .generic-widget-headline .show-pstn {
+                    float: left;
+                    text-decoration: underline;
+                  }
+
                   #contact-data .generic-widget-headline .show-tags {
                     float: right;
                     text-decoration: underline;
                   }
 
+                  #contact-data .generic-widget-headline .show-pstn:active,
+                  #contact-data .generic-widget-headline .show-pstn.active,
                   #contact-data .generic-widget-headline .show-tags:active,
                   #contact-data .generic-widget-headline .show-tags.active {
                     font-weight: normal;
                   }
 
+                  #contact-data .generic-widget-headline .show-pstn:hover,
                   #contact-data .generic-widget-headline .show-tags:hover {
                     cursor: pointer;
                   }
 
-                  #contact-data .tags {
+                  #contact-data .popup {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     position: absolute;
                     top: 1.5%;
                     left: 49%;
@@ -1389,11 +1401,24 @@
                     overflow: auto;
                   }
 
-                  #contact-data .tags-hidden {
+                  #contact-data .popup-hidden {
                     z-index: -1;
                   }
 
-                  #contact-data .tags ol li {
+                  #contact-data .popup .pstn {
+                    width: calc(100% - 1em);
+                    height: 2em;
+                    font-size: 1.2em;
+                    padding: 0 0.3em;
+                    display: none;
+                  }
+
+                  #contact-data .popup .generic-widget-list {
+                    width: 100%;
+                    display: none;
+                  }
+
+                  #contact-data .popup .tags ol li {
                     padding: 0.1em;
                   }
                 </style>
@@ -1404,11 +1429,15 @@
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="contact-data-header">::contact data::</span>
                   <span class="extra-header"></span>
-                  <span class="show-tags" data-lang-text="contact-data-show-tags">::show tags::</span>
+                  <div style="float: right; width: 80px;">
+                    <span class="show-tags" data-lang-text="contact-data-show-tags">::show tags::</span>
+                    <span class="show-pstn" data-lang-text="contact-data-show-pstn">::show pstn::</span>
+                  </div>
                 </h4>
                 <div class="generic-widget-body display-flex-row">
-                  <div class="tags padding03 tags-hidden">
+                  <div class="popup padding03 popup-hidden">
                     <ol class="generic-widget-list"></ol>
+                    <input type="text" class="pstn" placeholder="::pstn::" tabindex="-1" data-lang-placeholder="contact-data-pstn">
                   </div>
                   <div class="column">
                     <div class="cell">
