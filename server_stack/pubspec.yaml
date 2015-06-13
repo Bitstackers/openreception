@@ -1,5 +1,5 @@
 name: ServerStack
-version: 0.1.9+beta
+version: 0.1.10+beta
 description: Server stack for the OpenReception application.
 dependencies:
   args: any
@@ -21,7 +21,7 @@ dependencies:
     git:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
-    version: '> 0.0.24'
+    version: '> 0.0.24+5'
   path: any
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
