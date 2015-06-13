@@ -34,12 +34,17 @@ class RESTMessageStore implements Storage.Message {
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
-  Future<Model.Message> save(Model.Message message) =>
+  Future<Model.Message> update(Model.Message message) =>
       this._backend.put
         (appendToken
            (Resource.Message.single(this._host, message.ID), this._token), JSON.encode (message.asMap))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
+
+  Future<Model.Message> save(Model.Message message) =>
+      message.ID == Model.Message.noID
+      ? create (message)
+      : update (message);
 
   Future<Iterable<Model.Message>> list({Model.MessageFilter filter}) =>
       this._backend.get
