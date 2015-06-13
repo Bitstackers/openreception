@@ -2,7 +2,6 @@ library or_test_fw;
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show Random;
 
@@ -16,7 +15,6 @@ import 'package:openreception_framework/resource.dart' as Resource;
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'config.dart';
-import 'data/testdata.dart' as Test_Data;
 
 part 'support/customer.dart';
 part 'support/customer_pool.dart';
