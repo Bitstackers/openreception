@@ -246,7 +246,7 @@ abstract class Reception_Store {
       Model.CalendarEntry event = events.last;
 
       log.info
-        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+        ('Got event ${event.asMap} - ${event.receptionID}');
 
       log.info
         ('Deleting last calendar event for reception $receptionID.');
