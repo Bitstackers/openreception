@@ -9,10 +9,11 @@ import 'configuration.dart';
 import 'database.dart' as db;
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart'   as Model;
-import 'package:openreception_framework/event.dart'   as Event;
-import 'package:openreception_framework/storage.dart'  as Storage;
-import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/database.dart'   as Database;
+import 'package:openreception_framework/model.dart'      as Model;
+import 'package:openreception_framework/event.dart'      as Event;
+import 'package:openreception_framework/storage.dart'    as Storage;
+import 'package:openreception_framework/service.dart'    as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
 import 'package:shelf/shelf.dart' as shelf;
@@ -20,14 +21,17 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
+part 'router/organization.dart';
 part 'router/reception-calendar.dart';
 part 'router/reception.dart';
 
 const String libraryName = 'receptionserver.router';
 final Logger log = new Logger (libraryName);
 
+Database.Connection _connection = null;
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
+Database.Organization _organizationDB = new Database.Organization (_connection);
 
 void connectAuthService() {
   AuthService = new Service.Authentication
@@ -38,6 +42,10 @@ void connectNotificationService() {
   Notification = new Service.NotificationService
       (config.notificationServer, config.serverToken, new Service_IO.Client());
 }
+
+Future startDatabase() =>
+  Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')
+    .then((Database.Connection newConnection) => _connection = newConnection);
 
 shelf.Middleware checkAuthentication =
   shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
@@ -76,6 +84,13 @@ void _accessLogger(String msg, bool isError) {
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
+    ..get('/organization', Organization.list)
+    ..post('/organization', Organization.create)
+    ..get('/organization/{oid}', Organization.get)
+    ..put('/organization/{oid}', Organization.update)
+    ..delete('/organization/{oid}', Organization.remove)
+    ..get('/organization/{oid}/contact', Organization.contacts)
+    ..get('/organization/{oid}/reception', Organization.receptions)
     ..get('/reception', Reception.list)
     ..get('/reception/{rid}', Reception.get)
     ..get('/reception/{rid}/calendar', ReceptionCalendar.list)

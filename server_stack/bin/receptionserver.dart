@@ -28,6 +28,7 @@ void main(List<String> args) {
     } else {
       json.config = new json.Configuration(parsedArgs);
       json.config.whenLoaded()
+        .then((_) => router.startDatabase())
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
         .then((_) => log.fine(json.config))
