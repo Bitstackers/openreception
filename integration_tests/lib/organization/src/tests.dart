@@ -91,7 +91,7 @@ abstract class Organization {
    * The expected behaviour is that the server should return a list of
    * Organization objects.
    */
-  static Future listOrganization(Storage.Organization organizationStore) {
+  static Future list(Storage.Organization organizationStore) {
     log.info('Checking server behaviour on list of organizations.');
 
     return organizationStore
@@ -99,6 +99,7 @@ abstract class Organization {
         .then((Iterable<Model.Organization> organizations) {
       expect(organizations, isNotNull);
       expect(organizations, isNotEmpty);
+      expect(organizations.every((org) => org.id != Model.Organization.noID), isTrue);
     });
   }
 

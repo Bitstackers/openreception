@@ -40,7 +40,7 @@ runOrganizationTests () {
         () => Organization.existingOrganization(organizationStore));
 
     test ('Listing',
-        () => Organization.listOrganization(organizationStore));
+        () => Organization.list(organizationStore));
 
     test ('Contact listing',
         () => Organization.existingOrganizationContacts(organizationStore));
