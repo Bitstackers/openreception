@@ -105,6 +105,11 @@ abstract class Config {
       Uri.parse('http://localhost:4200');
 
   /**
+   * Uri of the Organization server. Currently located at the ReceptionServer.
+   */
+  static Uri organizationStoreUri = receptionStoreUri;
+  
+  /**
    * Pool of SIP account used for testing. Must mirror accounts present on
    * local FreeSwitch server configured in [pbxHost] and be mapped to a User on
    * the server stack.
