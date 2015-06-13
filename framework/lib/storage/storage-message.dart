@@ -8,7 +8,10 @@ abstract class Message {
 
   Future<Iterable<Model.Message>> list ({Model.MessageFilter filter});
 
-  Future<Model.Message> save (Model.Message message);
+  Future<Model.Message> create (Model.Message message);
 
+  Future<Model.Message> update (Model.Message message);
+
+  Future<Model.Message> save (Model.Message message);
 
 }
