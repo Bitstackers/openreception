@@ -15,9 +15,6 @@ void runAllTests() {
 
     test('Get Non-Existing organization', organization.getNonExistingOrganization);
     test('Get organization', organization.getOrganization);
-    test('List organizations', organization.getOrganizationList);
-    test('Update organization', organization.updateOrganization);
-    test('Create organization', organization.createOrganization);
   });
 
   group('Management.Reception', () {

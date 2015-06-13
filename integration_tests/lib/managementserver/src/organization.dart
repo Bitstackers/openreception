@@ -29,44 +29,4 @@ class organization {
       expect(organizations.any((org) => org.id == 1), isTrue);
     });
   }
-
-  static Future updateOrganization() {
-    const int organizationId = 1;
-
-    return organizationStore.get(organizationId).then((Model.Organization organization) {
-      expect(organization, isNotNull);
-      String originale_full_name = organization.fullName;
-      String new_full_name = 'Test-Update ${originale_full_name}';
-      organization.fullName = new_full_name;
-
-      return organizationStore.update(organization).then((Model.Organization updatedOrganization) {
-        expect(updatedOrganization.fullName, equals(new_full_name));
-
-        //Roll-back
-        updatedOrganization.fullName = originale_full_name;
-        return organizationStore.update(updatedOrganization);
-      });
-    });
-  }
-
-  static Future createOrganization() {
-    const String full_name = '..Test-Create Mandela A/S';
-    const String flag = 'TEST';
-    const String billingType = 'cash';
-
-    Model.Organization organization = new Model.Organization.empty()
-      ..fullName = full_name
-      ..flag = flag
-      ..billingType = billingType;
-
-    return organizationStore.create(organization).then((Model.Organization organization) {
-      expect(organization.id, greaterThanOrEqualTo(1));
-      expect(organization.fullName, equals(full_name));
-      expect(organization.flag, equals(flag));
-      expect(organization.billingType, equals(billingType));
-
-      //Clean up.
-      return organizationStore.remove(organization.id);
-    });
-  }
 }
