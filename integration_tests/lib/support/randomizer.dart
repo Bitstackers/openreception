@@ -267,6 +267,16 @@ abstract class Randomizer {
 
   static String randomLocalExtension() => rand.nextInt(501).toString();
 
+  /**
+   * Constructs and returns a [Organization] object with random content.
+   *
+   * The returned object is does not have a valid ID.
+   */
+  static Model.Organization randomOrganization() =>
+    new Model.Organization.empty()
+      ..billingType = 'Invoice'
+      ..flag = 'VIP'
+      ..fullName = randomCompany();
 
   /**
    * Constructs and returns a [Message] object with random content.
