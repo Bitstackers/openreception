@@ -185,13 +185,12 @@ abstract class Organization {
   }
 
   /**
-   * Test server behaviour when trying to create a new calendar event object.
+   * Test server behaviour when trying to create a new organization.
    *
    * The expected behaviour is that the server should return the created
-   * CalendarEvent object.
+   * Organization object.
    */
   static Future create(Storage.Organization organizationStore) {
-    int organizationID = 1;
 
     Model.Organization organization = Randomizer.randomOrganization();
 
@@ -209,11 +208,11 @@ abstract class Organization {
   }
 
   /**
-   * Test server behaviour when trying to update a calendar event object that
+   * Test server behaviour when trying to update a organization event object that
    * exists.
    *
    * The expected behaviour is that the server should return the updated
-   * CalendarEvent object.
+   * Organization object.
    */
   static Future update(Storage.Organization organizationStore) {
     return organizationStore.list().then((Iterable<Model.Organization> orgs) {
@@ -286,7 +285,7 @@ abstract class Organization {
           .waitFor(eventType: Event.Key.organizationChange)
           .then((Event.OrganizationChange event) {
         expect(event.orgID, equals(createdOrganization.id));
-        expect(event.state, equals(Event.CalendarEntryState.CREATED));
+        expect(event.state, equals(Event.OrganizationState.CREATED));
       });
     });
   }
@@ -326,7 +325,7 @@ abstract class Organization {
             .waitFor(eventType: Event.Key.organizationChange)
             .then((Event.OrganizationChange event) {
           expect(event.orgID, equals(updatedOrganization.id));
-          expect(event.state, equals(Event.CalendarEntryState.UPDATED));
+          expect(event.state, equals(Event.OrganizationState.UPDATED));
         });
       });
     });
@@ -352,7 +351,7 @@ abstract class Organization {
             .waitFor(eventType: Event.Key.organizationChange)
             .then((Event.OrganizationChange event) {
           expect(event.orgID, equals(org.id));
-          expect(event.state, equals(Event.CalendarEntryState.DELETED));
+          expect(event.state, equals(Event.OrganizationState.DELETED));
         });
       });
     });
