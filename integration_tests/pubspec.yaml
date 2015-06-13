@@ -9,7 +9,7 @@ dependencies:
     git:
       ref: master
       url: https://github.com/BitStackers/OpenReceptionFramework.git
-    version: '>= 0.0.21+0'
+    version: '> 0.0.24+5'
   phonio:
     git: https://github.com/Bitstackers/Phonio.git
   route: any
