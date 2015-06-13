@@ -11,20 +11,22 @@ abstract class Hangup {
    * Test for the presence of hangup events when a call is hung up.
    */
   static Future eventPresence(Receptionist receptionist,
-                              Customer     customer) {
+                              Customer     caller) {
 
     String       reception = "12340003";
     return
       Future.wait([])
-      .then((_) => log.info ('Customer ${customer.name} dials ${reception}'))
-      .then((_) => customer.dial (reception))
+      .then((_) => log.info ('Customer ${caller.name} dials ${reception}'))
+      .then((_) => caller.dial (reception))
       .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
       .then((_) => receptionist.waitForCall())
       .then((_) => new Future.delayed(new Duration(seconds: 1)))
-      .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
-      .then((_) => customer.hangupAll())
+      .then((_) => log.info ('Customer ${caller.name} hangs up all current calls.'))
+      .then((_) => caller.hangupAll())
       .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
-      .then((_) => receptionist.waitFor(eventType:"call_hangup"));
+      .then((_) => receptionist.waitFor(eventType:"call_hangup"))
+      .then((_) => log.info ('Caller ${caller} awaits phone hangup.'))
+      .then((_) => caller.waitForHangup());
   }
 
   /**
