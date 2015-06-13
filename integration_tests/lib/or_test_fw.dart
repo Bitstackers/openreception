@@ -76,5 +76,9 @@ part 'use_case/src/uc-send_message.dart';
 part 'notificationserver/src/notificationserver.dart';
 part 'notificationserver/tests.dart';
 
+/// Organization service tests
+part 'organization/src/tests.dart';
+part 'organization/all_tests.dart';
+
 const String libraryName = 'Test';
 

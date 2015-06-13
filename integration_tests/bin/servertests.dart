@@ -40,6 +40,7 @@ void main() {
   runCallFlowTests();
   runMessageTests();
   runNotificationTests();
+  runOrganizationTests();
 
   runAllTests();
   runReceptionTests();
