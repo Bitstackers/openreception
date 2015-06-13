@@ -141,7 +141,7 @@ abstract class Contact {
 
     return db.Contact.remove(contactID).then((_) {
       Event.ContactChange changeEvent =
-          new Event.ContactChange(contactID, Event.ContactState.UPDATED);
+          new Event.ContactChange(contactID, Event.ContactState.DELETED);
 
       Notification.broadcastEvent(changeEvent);
 
