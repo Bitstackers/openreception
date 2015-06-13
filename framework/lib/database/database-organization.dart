@@ -1,117 +1,186 @@
 part of openreception.database;
 
 class Organization implements Storage.Organization {
-
   static const String className = '${libraryName}.Organization';
 
   static final Logger log = new Logger(className);
 
   Connection _connection = null;
 
+  /**
+   * Constructor.
+   */
   Organization(Connection this._connection);
 
+  /**
+   *
+   */
+  Future<Iterable<Model.BaseContact>> contacts(int organizationID) {
+    String sql = '''
+SELECT DISTINCT
+  contacts.id AS id, 
+  contacts.full_name as full_name,
+  contacts.contact_type as contact_type,
+  contacts.enabled AS enabled
+FROM 
+  receptions
+JOIN 
+  reception_contacts
+ON 
+  reception_contacts.reception_id = receptions.id
+JOIN 
+  contacts 
+ON 
+  reception_contacts.contact_id = contacts.id
+WHERE 
+  organization_id=@organization_id
+  ''';
+
+    Map parameters = {'organization_id': organizationID};
+
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.map(_rowToReception))
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
+    });
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Reception>> receptions(int organizationID) {
+    String sql = '''
+    SELECT id, organization_id, full_name, 
+           attributes, extradatauri, 
+           enabled, reception_telephonenumber
+    FROM receptions
+    WHERE organization_id=@organization_id
+  ''';
+
+    Map parameters = {'organization_id': organizationID};
+
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.map(_rowToReception))
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
+    });
+  }
+
+  /**
+   * Retrieve a single organization identified by [organizationID] from
+   * database.
+   */
   Future<Model.Organization> get(int organizationID) {
     String sql = '''
     SELECT id, full_name, billing_type, flag
     FROM organizations
-    WHERE id = @id''';
+    WHERE id = @id
+  ''';
 
     Map parameters = {'id': organizationID};
 
-    return this._connection.query(sql, parameters).then((rows) {
-      if(rows.length != 1) {
-        return null;
-      } else {
-        var row = rows.first;
-        return new Model.Organization()
-          ..id = row.id
-          ..fullName = row.full_name
-          ..billingType = row.billing_type
-          ..flag = row.flag;
-      }
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.length == 1
+            ? _rowToOrganization(rows.first)
+            : new Future.error(new Storage.NotFound('oid:$organizationID')))
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
     });
   }
 
-  Future<List<Model.Organization>> list() {
+  /**
+   * Retrieve the current list of organizations from database.
+   */
+  Future<Iterable<Model.Organization>> list() {
     String sql = '''
-      SELECT id, full_name, billing_type, flag
-      FROM organizations
-    ''';
+    SELECT id, full_name, billing_type, flag
+    FROM organizations
+  ''';
 
-    return this._connection.query(sql).then((rows) {
-      List<Model.Organization> organizations = new List<Model.Organization>();
-      for(var row in rows) {
-        organizations.add(new Model.Organization()
-          ..id = row.id
-          ..fullName = row.full_name
-          ..billingType = row.billing_type
-          ..flag = row.flag);
-      }
-
-      return organizations;
+    return _connection
+        .query(sql)
+        .then((Iterable rows) => rows.map(_rowToOrganization))
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql');
+      return new Future.error(error, stackTrace);
     });
   }
 
-  Future<Model.Organization> remove(Model.Organization organization) {
+  /**
+   * Create a new organization in the database.
+   */
+  Future<Model.Organization> create(Model.Organization organization) {
     String sql = '''
-      DELETE FROM organizations
-      WHERE id=@id;
-    ''';
+    INSERT INTO organizations (full_name, billing_type, flag)
+    VALUES (@full_name, @billing_type, @flag)
+    RETURNING id;
+  ''';
 
-    Map parameters = {'id': organization};
-    return this._connection.execute(sql, parameters).then((_) => organization);
+    Map parameters = {
+      'full_name': organization.fullName,
+      'billing_type': organization.billingType,
+      'flag': organization.flag
+    };
+
+    return _connection.query(sql, parameters).then(
+        (Iterable rows) => rows.length == 1
+            ? (organization
+      ..id = rows.first.id)
+        : new Future.error(
+                new Storage.ServerError('Failed to create new organization'))
+            .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
+    }));
   }
 
+  /**
+   * Update an existing organization in the database.
+   */
   Future<Model.Organization> update(Model.Organization organization) {
     String sql = '''
     UPDATE organizations
     SET full_name=@full_name,
-        billing_type=@billing_type, 
+        billing_type=@billing_type,
         flag=@flag
     WHERE id=@id;
   ''';
 
-    Map parameters =
-      {'full_name': organization.fullName,
-       'billing_type': organization.billingType,
-       'flag'     : organization.flag,
-       'id'       : organization.id};
+    Map parameters = {
+      'full_name': organization.fullName,
+      'billing_type': organization.billingType,
+      'flag': organization.flag,
+      'id': organization.id
+    };
 
-    return this._connection.execute(sql, parameters).then((_) => organization);
+    return _connection.execute(sql, parameters);
   }
 
-  Future<Model.Organization> create(Model.Organization organization) {
+  /**
+   * Delete an existing organization in the database.
+   */
+  Future remove(int organizationID) {
     String sql = '''
-      INSERT INTO organizations (full_name, billing_type, flag)
-      VALUES (@full_name, @billing_type, @flag)
-      RETURNING id, full_name, billing_type, flag;
-    ''';
+    DELETE FROM organizations
+    WHERE id=@id;
+  ''';
 
-    Map parameters =
-      {'full_name' : organization.fullName,
-       'billing_type': organization.billingType,
-       'flag': organization.flag};
-
-    return this._connection.query(sql, parameters).then((rows) {
-      if(rows.length != 1) {
-        return null;
-      } else {
-        var row = rows.first;
-        return new Model.Organization()
-          ..id = row.id
-          ..fullName = row.full_name
-          ..billingType = row.billing_type
-          ..flag = row.flag;
-      }
+    Map parameters = {'id': organizationID};
+    return _connection
+        .execute(sql, parameters)
+        .then((int rowsAffected) => rowsAffected != 1
+            ? new Future.error(
+                new Storage.NotFound('Failed to create new organization'))
+            : null)
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
     });
-  }
-
-  @override
-  Future<Model.Organization> save(Model.Organization organization) {
-    if (organization.id == null || organization.id == Model.Organization.noID) {
-      return this.create(organization);
-    } else {
-      return this.update(organization);
-    }
   }
 }

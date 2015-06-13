@@ -15,6 +15,7 @@ part 'database/database-message.dart';
 part 'database/database-message_queue.dart';
 part 'database/database-organization.dart';
 part 'database/database-user.dart';
+part 'database/conversion_functions.dart';
 
 const String libraryName = 'openreception.database';
 
