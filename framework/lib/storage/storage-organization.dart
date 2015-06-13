@@ -14,5 +14,5 @@ abstract class Organization {
 
   Future<Model.Organization> update(Model.Organization organization);
 
-  Future<Iterable<Model.Reception>> receptions(int organizationID);
+  Future<Iterable<int>> receptions(int organizationID);
 }

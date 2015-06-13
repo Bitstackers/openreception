@@ -40,7 +40,7 @@ WHERE
 
     return _connection
         .query(sql, parameters)
-        .then((Iterable rows) => rows.map(_rowToReception))
+        .then((Iterable rows) => rows.map(_rowToBaseContact))
         .catchError((error, stackTrace) {
       log.severe('sql:$sql :: parameters:$parameters');
       return new Future.error(error, stackTrace);
@@ -50,11 +50,9 @@ WHERE
   /**
    *
    */
-  Future<Iterable<Model.Reception>> receptions(int organizationID) {
+  Future<Iterable<int>> receptions(int organizationID) {
     String sql = '''
-    SELECT id, organization_id, full_name, 
-           attributes, extradatauri, 
-           enabled, reception_telephonenumber
+    SELECT id
     FROM receptions
     WHERE organization_id=@organization_id
   ''';
@@ -63,7 +61,7 @@ WHERE
 
     return _connection
         .query(sql, parameters)
-        .then((Iterable rows) => rows.map(_rowToReception))
+        .then((Iterable rows) => rows.map((var row) => row.id))
         .catchError((error, stackTrace) {
       log.severe('sql:$sql :: parameters:$parameters');
       return new Future.error(error, stackTrace);
@@ -89,7 +87,10 @@ WHERE
             ? _rowToOrganization(rows.first)
             : new Future.error(new Storage.NotFound('oid:$organizationID')))
         .catchError((error, stackTrace) {
-      log.severe('sql:$sql :: parameters:$parameters');
+      if (error is! Storage.NotFound) {
+        log.severe('sql:$sql :: parameters:$parameters');
+      }
+
       return new Future.error(error, stackTrace);
     });
   }

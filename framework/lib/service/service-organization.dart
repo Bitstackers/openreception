@@ -15,17 +15,16 @@ class RESTOrganizationStore implements Storage.Organization {
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-      (JSON.decode(response)['contacts'] as Iterable).map((Map map) =>
+      (JSON.decode(response) as Iterable).map((Map map) =>
         new Model.BaseContact.fromMap (map)));
   }
 
-  Future<Iterable<Model.Reception>> receptions(int organizationID) {
+  Future<Iterable<int>> receptions(int organizationID) {
     Uri url = Resource.Organization.receptions(_host, organizationID);
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-      (JSON.decode(response) as Iterable).map((Map map) =>
-        new Model.Reception.fromMap (map)));
+      (JSON.decode(response)));
   }
 
   Future<Model.Organization> get(int organizationID) {
@@ -41,7 +40,7 @@ class RESTOrganizationStore implements Storage.Organization {
         url = appendToken(url, this._token);
 
     String data = JSON.encode(organization.asMap);
-    return this._backend.put(url, data).then((String response) =>
+    return this._backend.post(url, data).then((String response) =>
         new Model.Organization.fromMap (JSON.decode(response)));
   }
 
@@ -50,7 +49,7 @@ class RESTOrganizationStore implements Storage.Organization {
         url = appendToken(url, this._token);
 
     String data = JSON.encode(organization.asMap);
-    return this._backend.post(url, data).then((String response) =>
+    return this._backend.put(url, data).then((String response) =>
         new Model.Organization.fromMap (JSON.decode(response)));
   }
 
@@ -67,8 +66,7 @@ class RESTOrganizationStore implements Storage.Organization {
         url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Map)
-          [Model.OrganizationJSONKey.ORGANIZATION_LIST]
+        (JSON.decode(response) as Iterable)
           .map((Map map) => new Model.Organization.fromMap(map)));
   }
 }
