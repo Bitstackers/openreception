@@ -39,12 +39,12 @@ class organization {
       String new_full_name = 'Test-Update ${originale_full_name}';
       organization.fullName = new_full_name;
 
-      return organizationStore.save(organization).then((Model.Organization updatedOrganization) {
+      return organizationStore.update(organization).then((Model.Organization updatedOrganization) {
         expect(updatedOrganization.fullName, equals(new_full_name));
 
         //Roll-back
         updatedOrganization.fullName = originale_full_name;
-        return organizationStore.save(updatedOrganization);
+        return organizationStore.update(updatedOrganization);
       });
     });
   }
@@ -54,19 +54,19 @@ class organization {
     const String flag = 'TEST';
     const String billingType = 'cash';
 
-    Model.Organization organization = new Model.Organization()
+    Model.Organization organization = new Model.Organization.empty()
       ..fullName = full_name
       ..flag = flag
       ..billingType = billingType;
 
-    return organizationStore.save(organization).then((Model.Organization organization) {
+    return organizationStore.create(organization).then((Model.Organization organization) {
       expect(organization.id, greaterThanOrEqualTo(1));
       expect(organization.fullName, equals(full_name));
       expect(organization.flag, equals(flag));
       expect(organization.billingType, equals(billingType));
 
       //Clean up.
-      return organizationStore.remove(organization);
+      return organizationStore.remove(organization.id);
     });
   }
 }
