@@ -54,20 +54,12 @@ class RESTOrganizationStore implements Storage.Organization {
         new Model.Organization.fromMap (JSON.decode(response)));
   }
 
-  Future<Model.Organization> remove(Model.Organization organization) {
-    Uri url = Resource.Organization.single(this._host, organization.id);
+  Future remove(int organizationID) {
+    Uri url = Resource.Organization.single(this._host, organizationID);
         url = appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
         new Model.Organization.fromMap (JSON.decode(response)));
-  }
-
-  Future<Model.Organization> save(Model.Organization organization) {
-    if (organization.id != null && organization.id != Model.Organization.noID) {
-      return this.update(organization);
-    } else {
-      return this.create(organization);
-    }
   }
 
   Future<Iterable<Model.Organization>> list() {
