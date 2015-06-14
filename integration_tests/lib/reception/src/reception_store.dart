@@ -491,6 +491,8 @@ abstract class Reception {
    *
    * The expected behaviour is that the server should return the created
    * Reception object.
+   *
+   * TODO: Cleanup and check creation time is after now().
    */
   static Future create(Storage.Reception receptionStore) {
     Model.Reception reception = Randomizer.randomReception();
@@ -571,7 +573,8 @@ abstract class Reception {
         expect(reception.handlingInstructions,
             updatedReception.handlingInstructions);
         //TODO: Update this one to greaterThan when the resolution of timestamps in the system has increased.
-        expect(updatedReception.lastChecked.millisecondsSinceEpoch, greaterThanOrEqualTo(reception.lastChecked.millisecondsSinceEpoch));
+        expect(updatedReception.lastChecked.millisecondsSinceEpoch,
+            greaterThanOrEqualTo(reception.lastChecked.millisecondsSinceEpoch));
         expect(reception.openingHours, updatedReception.openingHours);
         expect(reception.otherData, updatedReception.otherData);
         expect(reception.product, updatedReception.product);
@@ -592,18 +595,18 @@ abstract class Reception {
    * The expected behaviour is that the server should succeed.
    */
   static Future remove(Storage.Reception receptionStore) {
-    return receptionStore.list().then((Iterable<Model.Reception> receptions) {
+    Model.Reception reception = Randomizer.randomReception()
+      ..organizationId = 1;
 
-      // Update the last event in list.
-      Model.Reception reception = receptions.last;
+    log.info('Creating a new reception ${reception.asMap}');
 
-      log.info('Targeting reception for removal: ${reception.asMap}');
-
-      return receptionStore.remove(reception.ID).then((_) {
-        return expect(receptionStore.get(reception.ID),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
-      });
-    });
+    return receptionStore.create(reception).then(
+        (Model.Reception createdReception) => receptionStore
+            .remove(createdReception.ID)
+            .then((_) {
+      return expect(receptionStore.get(reception.ID),
+          throwsA(new isInstanceOf<Storage.NotFound>()));
+    }));
   }
 
   /**
@@ -619,14 +622,13 @@ abstract class Reception {
 
     log.info('Creating a new reception ${reception.asMap}');
 
-    return receptionStore
-        .create(reception)
-        .then((Model.Reception createdReception) => receptionist
-          .waitFor(eventType: Event.Key.receptionChange)
-          .then((Event.ReceptionChange event) {
-        expect(event.receptionID, equals(createdReception.ID));
-        expect(event.state, equals(Event.ReceptionState.CREATED));
-      }));
+    return receptionStore.create(reception).then(
+        (Model.Reception createdReception) => receptionist
+            .waitFor(eventType: Event.Key.receptionChange)
+            .then((Event.ReceptionChange event) {
+      expect(event.receptionID, equals(createdReception.ID));
+      expect(event.state, equals(Event.ReceptionState.CREATED));
+    }));
   }
 
   /**
@@ -644,15 +646,14 @@ abstract class Reception {
 
       log.info('Got reception ${reception.asMap}');
 
-      return receptionStore
-          .update(reception)
-          .then((Model.Reception updatedReception)=> receptionist
-            .waitFor(eventType: Event.Key.receptionChange)
-            .then((Event.ReceptionChange event) {
-          expect(event.receptionID, equals(updatedReception.ID));
-          expect(event.state, equals(Event.ReceptionState.UPDATED));
-        }));
-      });
+      return receptionStore.update(reception).then(
+          (Model.Reception updatedReception) => receptionist
+              .waitFor(eventType: Event.Key.receptionChange)
+              .then((Event.ReceptionChange event) {
+        expect(event.receptionID, equals(updatedReception.ID));
+        expect(event.state, equals(Event.ReceptionState.UPDATED));
+      }));
+    });
   }
 
   /**
@@ -663,21 +664,22 @@ abstract class Reception {
    */
   static Future deleteEvent(
       Storage.Reception receptionStore, Receptionist receptionist) {
-    return receptionStore.list().then((Iterable<Model.Reception> receptions) {
+    Model.Reception reception = Randomizer.randomReception()
+      ..organizationId = 1;
 
-      // Update the last event in list.
-      Model.Reception reception = receptions.last;
+    log.info('Creating a new reception ${reception.asMap}');
 
-      log.info('Targeting reception for removal: ${reception.asMap}');
-
-      return receptionStore.remove(reception.ID).then((_) {
-        return receptionist
-            .waitFor(eventType: Event.Key.receptionChange)
-            .then((Event.ReceptionChange event) {
-          expect(event.receptionID, equals(reception.ID));
-          expect(event.state, equals(Event.ReceptionState.DELETED));
-        });
+    return receptionStore.create(reception).then(
+        (Model.Reception createdReception) => receptionStore
+            .remove(createdReception.ID)
+            .then((_) {
+      receptionist.eventStack.clear();
+      return receptionist
+          .waitFor(eventType: Event.Key.receptionChange)
+          .then((Event.ReceptionChange event) {
+        expect(event.receptionID, equals(createdReception.ID));
+        expect(event.state, equals(Event.ReceptionState.DELETED));
       });
-    });
+    }));
   }
 }
