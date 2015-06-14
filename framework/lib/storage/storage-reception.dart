@@ -1,34 +1,19 @@
 part of openreception.storage;
 
+/**
+ * TODO: Deprecate the calendar*event methods and rename them to calendar*entry.
+ */
 abstract class Reception {
 
-  // Map versions of the retriever functions.
-  Future<Map> getMap (int receptionID);
+  Future<Model.Reception> create (Model.Reception reception);
 
-  Future<Iterable<Map>> listMap ();
-
-  Future<Map> removeMap(int receptionID);
-
-  Future<Map> saveMap (Map receptionMap);
-
-  Future<Iterable<Map>> calendarMap (int receptionID);
-
-  Future<Map> calendarEventMap (int receptionID, int eventID);
-
-  Future<Map> calendarEventCreateMap (Map eventMap);
-
-  Future<Map> calendarEventUpdateMap (Map eventMap);
-
-  Future calendarEventRemoveMap (Map eventMap);
-
-  // Autocasting versions of the retriever functions.
   Future<Model.Reception> get (int receptionID);
 
   Future<Iterable<Model.Reception>> list ();
 
   Future<Model.Reception> remove(int receptionID);
 
-  Future<Model.Reception> save (Model.Reception reception);
+  Future<Model.Reception> update (Model.Reception reception);
 
   Future<Iterable<Model.CalendarEntry>> calendar (int receptionID);
 

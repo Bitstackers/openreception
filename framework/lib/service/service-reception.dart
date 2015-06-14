@@ -1,117 +1,151 @@
 part of openreception.service;
 
 class RESTReceptionStore implements Storage.Reception {
-
   static final String className = '${libraryName}.RESTReceptionStore';
 
   WebService _backend = null;
-  Uri        _host;
-  String     _token = '';
+  Uri _host;
+  String _token = '';
 
-  RESTReceptionStore (Uri this._host, String this._token, this._backend);
+  RESTReceptionStore(Uri this._host, String this._token, this._backend);
+
+  /**
+   * Retrieves and autocasts a calendar list from the store.
+   */
+  Future<Iterable<Model.CalendarEntry>> calendar(int receptionID) {
+    Uri url = Resource.Reception.calendar(this._host, receptionID);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) {
+      Iterable decodedData = JSON.decode(response);
+
+      return decodedData.map(
+          (Map calendarMap) => new Model.CalendarEntry.fromMap(calendarMap));
+    });
+  }
+
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> calendarEvent(int receptionID, int eventID) {
+    Uri url =
+        Resource.Reception.calendarEvent(this._host, receptionID, eventID);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) =>
+        new Model.CalendarEntry.fromMap(JSON.decode(response)));
+  }
+
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> calendarEventCreate(Model.CalendarEntry event) {
+    Uri url = Resource.Reception.calendar(this._host, event.receptionID);
+    url = appendToken(url, this._token);
+
+    String data = JSON.encode(event);
+
+    return this._backend.post(url, data).then((String response) =>
+        new Model.CalendarEntry.fromMap(JSON.decode(response)));
+  }
+
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> calendarEventUpdate(Model.CalendarEntry event) {
+    Uri url = Resource.Reception.calendarEvent(
+        this._host, event.receptionID, event.ID);
+    url = appendToken(url, this._token);
+
+    String data = JSON.encode(event);
+    return this._backend.put(url, data).then((String response) =>
+        new Model.CalendarEntry.fromMap(JSON.decode(response)));
+  }
+
+  /**
+   *
+   */
+  Future calendarEventRemove(Model.CalendarEntry event) {
+    Uri url = Resource.Reception.calendarEvent(
+        this._host, event.receptionID, event.ID);
+    url = appendToken(url, this._token);
+
+    return this._backend.delete(url);
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID) {
+    Uri url = Resource.Reception.calendarEventChanges(this._host, entryID);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(JSON.decode).then((Iterable<Map> maps) =>
+        maps.map((Map map) => new Model.CalendarEntryChange.fromMap(map)));
+  }
+
+  /**
+   *
+   */
+  Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID) {
+    Uri url = Resource.Reception.calendarEventLatestChange(this._host, entryID);
+    url = appendToken(url, this._token);
+
+    return this._backend
+        .get(url)
+        .then(JSON.decode)
+        .then((Map map) => new Model.CalendarEntryChange.fromMap(map));
+  }
 
   /**
    * Returns a reception as a pure map.
    */
-  Future<Map> getMap(int receptionID) {
-    Uri url = Resource.Reception.single(this._host, receptionID);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url).then((String response)
-        => JSON.decode(response));
-  }
-
-  /**
-   * Returns a reception list as a list of maps.
-   */
-  Future<Iterable<Map>> listMap () {
-    Uri url = Resource.Reception.list(this._host);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url)
-      .then((String response) => (JSON.decode(response)));
-  }
-
-  Future<Map> removeMap(int receptionID) {
-    Uri url = Resource.Reception.single(this._host, receptionID);
-        url = appendToken(url, this._token);
-
-    return this._backend.delete(url).then((String response) =>
-        JSON.decode(response));
-  }
-
-
-  Future<Map> saveMap (Map receptionMap) {
-    return new Future.error(new UnimplementedError());
-  }
-
-  Future<Iterable<Map>> calendarMap (int receptionID) {
-    Uri url = Resource.Reception.calendar(this._host, receptionID);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url).then((String response) {
-      var decodedData = JSON.decode(response);
-
-      if (decodedData is Map) {
-        return  (JSON.decode(response)
-            ['CalendarEvents'] as Iterable);
-
-      } else {
-        return (JSON.decode(response) as Iterable);
-      }
-    });
-  }
-
-  Future<Map> calendarEventMap (int receptionID, int eventID) {
-    return new Future.error(new UnimplementedError());
-  }
-
-  Future<Map> calendarEventCreateMap (Map eventMap) {
-    return new Future.error(new UnimplementedError());
-  }
-
-  Future<Map> calendarEventUpdateMap (Map eventMap) {
-    return new Future.error(new UnimplementedError());
-  }
-
-  Future calendarEventRemoveMap (Map eventMap) {
-    return new Future.error(new UnimplementedError());
-  }
-
-
-  Future<Model.Reception> get(int receptionID) =>
-      this.getMap(receptionID).then((Map map) =>
-          new Model.Reception.fromMap (map));
-
-
   Future<Model.Reception> create(Model.Reception reception) {
     Uri url = Resource.Reception.root(this._host);
-        url = appendToken(url, this._token);
+    url = appendToken(url, this._token);
 
     String data = JSON.encode(reception.asMap);
 
     return this._backend.post(url, data).then((String response) =>
-        new Model.Reception.fromMap (JSON.decode(response)));
+        new Model.Reception.fromMap(JSON.decode(response)));
   }
 
-  Future<Model.Reception> update(Model.Reception reception) {
-    Uri url = Resource.Reception.single(this._host, reception.ID);
-        url = appendToken(url, this._token);
-
-    String data = JSON.encode(reception.asMap);
-
-    return this._backend.put(url, data).then((String response) =>
-        new Model.Reception.fromMap (JSON.decode(response)));
-  }
-
-  Future<Model.Reception> remove(int receptionID) {
+  /**
+   *
+   */
+  Future<Model.Reception> get(int receptionID) {
     Uri url = Resource.Reception.single(this._host, receptionID);
-        url = appendToken(url, this._token);
+    url = appendToken(url, this._token);
 
-    return this._backend.delete(url).then((String response) =>
-        new Model.Reception.fromMap (JSON.decode(response)));
+    return this._backend.get(url).then((String response) =>
+        new Model.Reception.fromMap(JSON.decode(response)));
   }
 
+  /**
+   * Returns a reception list.
+   */
+  Future<Iterable<Model.Reception>> list() {
+    Uri url = Resource.Reception.list(this._host);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(
+        (String response) => (JSON.decode(response) as Iterable)
+            .map((Map map) => new Model.Reception.fromMap(map)));
+  }
+
+  /**
+   *
+   */
+  Future remove(int receptionID) {
+    Uri url = Resource.Reception.single(this._host, receptionID);
+    url = appendToken(url, this._token);
+
+    return this._backend.delete(url).then(JSON.decode);
+  }
+
+  /**
+   *
+   */
   Future<Model.Reception> save(Model.Reception reception) {
     if (reception.ID != null && reception.ID != Model.Reception.noID) {
       return this.update(reception);
@@ -120,76 +154,16 @@ class RESTReceptionStore implements Storage.Reception {
     }
   }
 
-  Future<Iterable<Model.Reception>> list() {
-    Uri url = Resource.Reception.list(this._host);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-          .map((Map map) => new Model.Reception.fromMap(map)));
-  }
-
   /**
-   * Retrieves and autocasts a calendar list from the store.
+   *
    */
-  Future<Iterable<Model.CalendarEntry>> calendar (int receptionID) =>
-      this.calendarMap(receptionID).then((Iterable<Map> calendarMaps) =>
-          calendarMaps.map((Map calendarMap) =>
-              new Model.CalendarEntry.fromMap(calendarMap)));
+  Future<Model.Reception> update(Model.Reception reception) {
+    Uri url = Resource.Reception.single(this._host, reception.ID);
+    url = appendToken(url, this._token);
 
-  Future<Model.CalendarEntry> calendarEvent (int receptionID, int eventID) {
-    Uri url = Resource.Reception.calendarEvent(this._host, receptionID, eventID);
-        url = appendToken(url, this._token);
+    String data = JSON.encode(reception.asMap);
 
-    return this._backend.get(url).then((String response) =>
-        new Model.CalendarEntry.fromMap (JSON.decode(response)));
-  }
-
-  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event) {
-    Uri url = Resource.Reception.calendar (this._host, event.receptionID);
-        url = appendToken(url, this._token);
-
-    String data = JSON.encode(event);
-
-    return this._backend.post(url, data).then((String response) =>
-        new Model.CalendarEntry.fromMap (JSON.decode(response)));
-  }
-
-  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event) {
-    Uri url = Resource.Reception.calendarEvent (this._host, event.receptionID, event.ID);
-        url = appendToken(url, this._token);
-
-    String data = JSON.encode(event);
     return this._backend.put(url, data).then((String response) =>
-        new Model.CalendarEntry.fromMap (JSON.decode(response)));
-  }
-
-  Future calendarEventRemove (Model.CalendarEntry event) {
-    Uri url = Resource.Reception.calendarEvent(this._host, event.receptionID, event.ID);
-        url = appendToken(url, this._token);
-
-    return this._backend.delete(url);
-  }
-
-  Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID) {
-    Uri url = Resource.Reception.calendarEventChanges(this._host, entryID);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url)
-      .then(JSON.decode)
-      .then((Iterable<Map> maps) =>
-        maps.map((Map map) =>
-          new Model.CalendarEntryChange.fromMap(map)));
-
-  }
-
-  Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID) {
-    Uri url = Resource.Reception.calendarEventLatestChange(this._host, entryID);
-        url = appendToken(url, this._token);
-
-    return this._backend.get(url)
-      .then(JSON.decode)
-      .then((Map map) =>
-        new Model.CalendarEntryChange.fromMap(map));
+        new Model.Reception.fromMap(JSON.decode(response)));
   }
 }
