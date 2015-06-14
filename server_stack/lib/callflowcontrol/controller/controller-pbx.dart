@@ -123,7 +123,10 @@ abstract class PBX {
           ('uuid_setvar $uuid effective_caller_id_name testname'))
         .then((_) => Model.PBXClient.bgapi
           ('uuid_transfer $uuid $extension ${dialplan}'))
-        .then((ESL.Reply reply) => print(reply.replyRaw));
+        .then((ESL.Reply reply) =>
+            reply.status != ESL.Reply.OK
+              ? new Future.error(new PBXException(reply.replyRaw))
+              : null);
   }
 
   /**
