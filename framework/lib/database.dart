@@ -11,11 +11,12 @@ import 'model.dart'   as Model;
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
+part 'database/conversion_functions.dart';
 part 'database/database-message.dart';
 part 'database/database-message_queue.dart';
 part 'database/database-organization.dart';
+part 'database/database-reception.dart';
 part 'database/database-user.dart';
-part 'database/conversion_functions.dart';
 
 const String libraryName = 'openreception.database';
 
