@@ -1,14 +1,15 @@
 part of openreception.database;
 
 Model.Reception _rowToReception(var row) =>
-  new Model.Reception.fromMap(
- {'id'           : row.id,
-  'full_name'    : row.full_name,
-  'enabled'      : row.enabled,
-  'extradatauri' : row.extradatauri,
-  'reception_telephonenumber': row.reception_telephonenumber,
-  'last_check'   : row.last_check.toString(),
-  'attributes'   : row.attributes});
+  new Model.Reception.empty()
+    ..ID = row.id
+    ..fullName = row.full_name
+    ..organizationId = row.organization_id
+    ..enabled = row.enabled
+    ..extraData = row.extradatauri != null ? Uri.parse(row.extradatauri) : null
+    ..extension = row.reception_telephonenumber
+    ..lastChecked = row.last_check
+    ..attributes = row.attributes;
 
 Model.BaseContact _rowToBaseContact (var row) =>
     new Model.BaseContact.empty()
