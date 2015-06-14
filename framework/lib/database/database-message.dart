@@ -259,7 +259,7 @@ class Message implements Storage.Message {
   /**
    *
    */
-  Future<Model.Message> save (Model.Message message) {
+  Future<Model.Message> create (Model.Message message) {
     if (message.ID != Model.Message.noID) {
       return this.update(message);
     }
@@ -426,4 +426,8 @@ class Message implements Storage.Message {
     });
   }
 
+  Future<Model.Message> save (Model.Message message) =>
+      message.ID == Model.Message.noID
+      ? create(message)
+      : update(message);
 }
