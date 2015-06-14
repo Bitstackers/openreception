@@ -568,8 +568,6 @@ abstract class Reception {
         expect(reception.extraData, updatedReception.extraData);
         expect(reception.fullName, updatedReception.fullName);
         expect(reception.greeting, updatedReception.greeting);
-        print(updatedReception.lastChecked);
-        print(reception.lastChecked);
         expect(reception.handlingInstructions,
             updatedReception.handlingInstructions);
         //TODO: Update this one to greaterThan when the resolution of timestamps in the system has increased.
