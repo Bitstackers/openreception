@@ -1,35 +1,34 @@
 part of or_test_fw;
 
-abstract class Reception_Store {
-
+abstract class Reception {
   static Logger log = new Logger('Test.Reception_Store');
 
   /**
    * Test for the presence of CORS headers.
    */
   static Future isCORSHeadersPresent(HttpClient client) {
-
-    Uri uri = Uri.parse ('${Config.receptionStoreUri}/nonexistingpath');
+    Uri uri = Uri.parse('${Config.receptionStoreUri}/nonexistingpath');
 
     log.info('Checking CORS headers on a non-existing URL.');
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) => request.close()
-      .then((HttpClientResponse response) {
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) => request
+            .close()
+            .then((HttpClientResponse response) {
+      if (response.headers['access-control-allow-origin'] == null &&
+          response.headers['Access-Control-Allow-Origin'] == null) {
+        fail('No CORS headers on path $uri');
+      }
+    })).then((_) {
+      log.info('Checking CORS headers on an existing URL.');
+      uri = Resource.Reception.single(Config.receptionStoreUri, 1);
+      return client.getUrl(uri).then((HttpClientRequest request) => request
+          .close()
+          .then((HttpClientResponse response) {
         if (response.headers['access-control-allow-origin'] == null &&
             response.headers['Access-Control-Allow-Origin'] == null) {
-          fail ('No CORS headers on path $uri');
+          fail('No CORS headers on path $uri');
         }
-      }))
-      .then ((_) {
-        log.info('Checking CORS headers on an existing URL.');
-        uri = Resource.Reception.single (Config.receptionStoreUri, 1);
-        return client.getUrl(uri)
-          .then((HttpClientRequest request) => request.close()
-          .then((HttpClientResponse response) {
-          if (response.headers['access-control-allow-origin'] == null &&
-              response.headers['Access-Control-Allow-Origin'] == null) {
-            fail ('No CORS headers on path $uri');
-          }
       }));
     });
   }
@@ -40,21 +39,23 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static Future nonExistingPath (HttpClient client) {
-
-    Uri uri = Uri.parse ('${Config.receptionStoreUri}/nonexistingpath?token=${Config.serverToken}');
+  static Future nonExistingPath(HttpClient client) {
+    Uri uri = Uri.parse(
+        '${Config.receptionStoreUri}/nonexistingpath?token=${Config.serverToken}');
 
     log.info('Checking server behaviour on a non-existing path.');
 
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) => request.close()
-      .then((HttpClientResponse response) {
-        if (response.statusCode != 404) {
-          fail ('Expected to received a 404 on path $uri');
-        }
-      }))
-      .then((_) => log.info('Got expected status code 404.'))
-      .whenComplete(() => client.close(force : true));
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) => request
+            .close()
+            .then((HttpClientResponse response) {
+      if (response.statusCode != 404) {
+        fail('Expected to received a 404 on path $uri');
+      }
+    }))
+        .then((_) => log.info('Got expected status code 404.'))
+        .whenComplete(() => client.close(force: true));
   }
 
   /**
@@ -63,12 +64,11 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static void nonExistingReception (Storage.Reception receptionStore) {
-
+  static void nonExistingReception(Storage.Reception receptionStore) {
     log.info('Checking server behaviour on a non-existing reception.');
 
-    return expect(receptionStore.get(-1),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+    return expect(
+        receptionStore.get(-1), throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**
@@ -78,7 +78,7 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the
    * Reception object.
    */
-  static void existingReception (Storage.Reception receptionStore) {
+  static void existingReception(Storage.Reception receptionStore) {
     const int receptionID = 1;
     log.info('Checking server behaviour on an existing reception.');
 
@@ -91,7 +91,7 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return a list of
    * Reception objects.
    */
-  static Future listReceptions (Storage.Reception receptionStore) {
+  static Future listReceptions(Storage.Reception receptionStore) {
     log.info('Checking server behaviour on list of receptions.');
 
     return receptionStore.list().then((Iterable<Model.Reception> receptions) {
@@ -107,12 +107,12 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return a list of
    * CalendarEvent objects.
    */
-  static void existingReceptionCalendar (Storage.Reception receptionStore) {
+  static void existingReceptionCalendar(Storage.Reception receptionStore) {
     int receptionID = 1;
 
     log.info('Looking up calendar list for reception $receptionID.');
 
-    return expect(receptionStore.calendar (receptionID), isNotNull);
+    return expect(receptionStore.calendar(receptionID), isNotNull);
   }
 
   /**
@@ -121,29 +121,28 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the created
    * CalendarEvent object.
    */
-  static Future calendarEventCreate (Storage.Reception receptionStore) {
-
+  static Future calendarEventCreate(Storage.Reception receptionStore) {
     int receptionID = 1;
 
-    Model.CalendarEntry entry =
-        new Model.CalendarEntry.reception(receptionID)
-         ..beginsAt    = new DateTime.now()
-         ..until       = new DateTime.now().add(new Duration(hours: 2))
-         ..content     = Randomizer.randomEvent();
+    Model.CalendarEntry entry = new Model.CalendarEntry.reception(receptionID)
+      ..beginsAt = new DateTime.now()
+      ..until = new DateTime.now().add(new Duration(hours: 2))
+      ..content = Randomizer.randomEvent();
 
     log.info('Creating a calendar event for reception $receptionID.');
 
-    return receptionStore.calendarEventCreate (entry)
+    return receptionStore
+        .calendarEventCreate(entry)
         .then((Model.CalendarEntry createdEvent) {
-          expect(entry.content, equals(createdEvent.content));
+      expect(entry.content, equals(createdEvent.content));
 
-          // We round to the nearest second, and have to compensate for skew.
-          expect(entry.start.difference(createdEvent.start),
-              lessThan(new Duration(seconds : 1)));
-          expect(entry.stop.difference(createdEvent.stop),
-              lessThan(new Duration(seconds : 1)));
-          expect(entry.receptionID, equals(createdEvent.receptionID));
-          expect(createdEvent.ID, greaterThan(Model.CalendarEntry.noID));
+      // We round to the nearest second, and have to compensate for skew.
+      expect(entry.start.difference(createdEvent.start),
+          lessThan(new Duration(seconds: 1)));
+      expect(entry.stop.difference(createdEvent.stop),
+          lessThan(new Duration(seconds: 1)));
+      expect(entry.receptionID, equals(createdEvent.receptionID));
+      expect(createdEvent.ID, greaterThan(Model.CalendarEntry.noID));
     });
   }
 
@@ -154,33 +153,33 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the updated
    * CalendarEvent object.
    */
-  static Future calendarEventUpdate (Storage.Reception receptionStore) {
-
+  static Future calendarEventUpdate(Storage.Reception receptionStore) {
     int receptionID = 1;
 
-    return receptionStore.calendar(receptionID)
-      .then((Iterable <Model.CalendarEntry> entries) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> entries) {
 
       // Update the last event in list.
       Model.CalendarEntry event = entries.last
-          ..beginsAt    = new DateTime.now()
-          ..until       = new DateTime.now().add(new Duration(hours: 2))
-          ..content     = Randomizer.randomEvent();
+        ..beginsAt = new DateTime.now()
+        ..until = new DateTime.now().add(new Duration(hours: 2))
+        ..content = Randomizer.randomEvent();
 
       log.info('Updating a calendar event for reception $receptionID.');
 
-      return receptionStore.calendarEventUpdate (event)
+      return receptionStore
+          .calendarEventUpdate(event)
           .then((Model.CalendarEntry updatedEvent) {
-            expect(event.content, equals(updatedEvent.content));
-            expect(event.ID, equals(updatedEvent.ID));
+        expect(event.content, equals(updatedEvent.content));
+        expect(event.ID, equals(updatedEvent.ID));
 
-            // We round to the nearest second, and have to compensate for skew.
-            expect(event.start.difference(updatedEvent.start),
-                lessThan(new Duration(seconds : 1)));
-            expect(event.stop.difference(updatedEvent.stop),
-                lessThan(new Duration(seconds : 1)));
-            expect(event.receptionID, equals(updatedEvent.receptionID));
-
+        // We round to the nearest second, and have to compensate for skew.
+        expect(event.start.difference(updatedEvent.start),
+            lessThan(new Duration(seconds: 1)));
+        expect(event.stop.difference(updatedEvent.stop),
+            lessThan(new Duration(seconds: 1)));
+        expect(event.receptionID, equals(updatedEvent.receptionID));
       });
     });
   }
@@ -192,22 +191,23 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the
    * CalendarEvent object.
    */
-  static Future calendarEventExisting (Storage.Reception receptionStore) {
-
+  static Future calendarEventExisting(Storage.Reception receptionStore) {
     int receptionID = 1;
 
     log.info('Checking server behaviour on an existing calendar event.');
 
     log.info('Listing all events');
-    return receptionStore.calendar(receptionID)
-        .then ((Iterable<Model.CalendarEntry> events) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> events) {
       log.info('Selecting last event in list');
       int eventID = events.last.ID;
 
       log.info('Fetching last event in list.');
-      return receptionStore.calendarEvent(receptionID, eventID)
-        .then((Model.CalendarEntry receivedEvent) {
-          expect (receivedEvent.ID, equals(eventID));
+      return receptionStore
+          .calendarEvent(receptionID, eventID)
+          .then((Model.CalendarEntry receivedEvent) {
+        expect(receivedEvent.ID, equals(eventID));
       });
     });
   }
@@ -218,15 +218,14 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static void calendarEventNonExisting (Storage.Reception receptionStore) {
-
+  static void calendarEventNonExisting(Storage.Reception receptionStore) {
     int receptionID = 1;
     int eventID = 0;
 
     log.info('Checking server behaviour on a non-existing calendar event.');
 
     return expect(receptionStore.calendarEvent(receptionID, eventID),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+        throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**
@@ -235,27 +234,24 @@ abstract class Reception_Store {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future calendarEventDelete (Storage.Reception receptionStore) {
-
+  static Future calendarEventDelete(Storage.Reception receptionStore) {
     int receptionID = 1;
 
-    return receptionStore.calendar(receptionID)
-      .then((Iterable <Model.CalendarEntry> events) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last;
 
-      log.info
-        ('Got event ${event.asMap} - ${event.receptionID}');
+      log.info('Got event ${event.asMap} - ${event.receptionID}');
 
-      log.info
-        ('Deleting last calendar event for reception $receptionID.');
+      log.info('Deleting last calendar event for reception $receptionID.');
 
-      return receptionStore.calendarEventRemove(event)
-        .then((_) {
-          return expect(receptionStore.calendarEvent(receptionID, event.ID),
-                  throwsA(new isInstanceOf<Storage.NotFound>()));
-        });
+      return receptionStore.calendarEventRemove(event).then((_) {
+        return expect(receptionStore.calendarEvent(receptionID, event.ID),
+            throwsA(new isInstanceOf<Storage.NotFound>()));
+      });
     });
   }
 
@@ -265,38 +261,38 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the created
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future calendarEntryCreateEvent (Storage.Reception receptionStore,
-                                          Receptionist receptionist) {
-
+  static Future calendarEntryCreateEvent(
+      Storage.Reception receptionStore, Receptionist receptionist) {
     int receptionID = 1;
 
-    Model.CalendarEntry event =
-        new Model.CalendarEntry.reception(receptionID)
-         ..beginsAt    = new DateTime.now()
-         ..until       = new DateTime.now().add(new Duration(hours: 2))
-         ..content     = Randomizer.randomEvent();
+    Model.CalendarEntry event = new Model.CalendarEntry.reception(receptionID)
+      ..beginsAt = new DateTime.now()
+      ..until = new DateTime.now().add(new Duration(hours: 2))
+      ..content = Randomizer.randomEvent();
 
     log.info('Creating a calendar event for reception $receptionID.');
 
-    return receptionStore.calendarEventCreate(event)
+    return receptionStore
+        .calendarEventCreate(event)
         .then((Model.CalendarEntry createdEvent) {
-          expect(event.content, equals(createdEvent.content));
+      expect(event.content, equals(createdEvent.content));
 
-          // We round to the nearest second, and have to compensate for skew.
-          expect(event.start.difference(createdEvent.start),
-              lessThan(new Duration(seconds : 1)));
-          expect(event.stop.difference(createdEvent.stop),
-              lessThan(new Duration(seconds : 1)));
-          expect(event.receptionID, equals(createdEvent.receptionID));
-          expect(event.contactID, equals(createdEvent.contactID));
+      // We round to the nearest second, and have to compensate for skew.
+      expect(event.start.difference(createdEvent.start),
+          lessThan(new Duration(seconds: 1)));
+      expect(event.stop.difference(createdEvent.stop),
+          lessThan(new Duration(seconds: 1)));
+      expect(event.receptionID, equals(createdEvent.receptionID));
+      expect(event.contactID, equals(createdEvent.contactID));
 
-          return receptionist.waitFor(eventType: Event.Key.calendarChange)
-            .then((Event.CalendarChange event) {
-              expect (event.contactID, equals(Model.Contact.noID));
-              expect (event.receptionID, equals(receptionID));
-              expect (event.entryID, greaterThan(Model.CalendarEntry.noID));
-              expect (event.state, equals(Event.CalendarEntryState.CREATED));
-           });
+      return receptionist
+          .waitFor(eventType: Event.Key.calendarChange)
+          .then((Event.CalendarChange event) {
+        expect(event.contactID, equals(Model.Contact.noID));
+        expect(event.receptionID, equals(receptionID));
+        expect(event.entryID, greaterThan(Model.CalendarEntry.noID));
+        expect(event.state, equals(Event.CalendarEntryState.CREATED));
+      });
     });
   }
 
@@ -307,47 +303,46 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should return the updated
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future calendarEntryUpdateEvent (Storage.Reception receptionStore,
-                                          Receptionist receptionist) {
-
+  static Future calendarEntryUpdateEvent(
+      Storage.Reception receptionStore, Receptionist receptionist) {
     int receptionID = 1;
 
-    return receptionStore.calendar(receptionID)
-      .then((Iterable <Model.CalendarEntry> events) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last
-          ..beginsAt    = new DateTime.now()
-          ..until       = new DateTime.now().add(new Duration(hours: 2))
-          ..content     = Randomizer.randomEvent();
+        ..beginsAt = new DateTime.now()
+        ..until = new DateTime.now().add(new Duration(hours: 2))
+        ..content = Randomizer.randomEvent();
 
-      log.info
-        ('Got event ${event.asMap} - ${event.receptionID}');
+      log.info('Got event ${event.asMap} - ${event.receptionID}');
 
-      log.info
-        ('Updating a calendar event for reception $receptionID.');
+      log.info('Updating a calendar event for reception $receptionID.');
 
-      return receptionStore.calendarEventUpdate(event)
+      return receptionStore
+          .calendarEventUpdate(event)
           .then((Model.CalendarEntry updatedEvent) {
-            expect(event.content, equals(updatedEvent.content));
-            expect(event.ID, equals(updatedEvent.ID));
+        expect(event.content, equals(updatedEvent.content));
+        expect(event.ID, equals(updatedEvent.ID));
 
-            // We round to the nearest second, and have to compensate for skew.
-            expect(event.start.difference(updatedEvent.start),
-                lessThan(new Duration(seconds : 1)));
-            expect(event.stop.difference(updatedEvent.stop),
-                lessThan(new Duration(seconds : 1)));
-            expect(event.receptionID, equals(updatedEvent.receptionID));
-            expect(event.contactID, equals(updatedEvent.contactID));
+        // We round to the nearest second, and have to compensate for skew.
+        expect(event.start.difference(updatedEvent.start),
+            lessThan(new Duration(seconds: 1)));
+        expect(event.stop.difference(updatedEvent.stop),
+            lessThan(new Duration(seconds: 1)));
+        expect(event.receptionID, equals(updatedEvent.receptionID));
+        expect(event.contactID, equals(updatedEvent.contactID));
 
-            return receptionist.waitFor(eventType: Event.Key.calendarChange)
-              .then((Event.CalendarChange event) {
-                expect (event.contactID, equals(Model.Contact.noID));
-                expect (event.receptionID, equals(receptionID));
-                expect (event.entryID, greaterThan(Model.CalendarEntry.noID));
-                expect (event.state, equals(Event.CalendarEntryState.UPDATED));
-             });
-
+        return receptionist
+            .waitFor(eventType: Event.Key.calendarChange)
+            .then((Event.CalendarChange event) {
+          expect(event.contactID, equals(Model.Contact.noID));
+          expect(event.receptionID, equals(receptionID));
+          expect(event.entryID, greaterThan(Model.CalendarEntry.noID));
+          expect(event.state, equals(Event.CalendarEntryState.UPDATED));
+        });
       });
     });
   }
@@ -359,31 +354,30 @@ abstract class Reception_Store {
    * The expected behaviour is that the server should succeed and send out a
    * CalendarChange Notification.
    */
-  static Future calendarEntryDeleteEvent (Storage.Reception receptionStore,
-                                          Receptionist receptionist) {
-
+  static Future calendarEntryDeleteEvent(
+      Storage.Reception receptionStore, Receptionist receptionist) {
     int receptionID = 1;
 
-    return receptionStore.calendar(receptionID)
-      .then((Iterable <Model.CalendarEntry> events) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last;
 
-      log.info
-        ('Got event ${event.asMap} - ${event.receptionID}');
+      log.info('Got event ${event.asMap} - ${event.receptionID}');
 
-      log.info
-        ('Deleting last calendar entry for reception $receptionID.');
+      log.info('Deleting last calendar entry for reception $receptionID.');
 
       return receptionStore.calendarEventRemove(event).then((_) {
-        return receptionist.waitFor(eventType: Event.Key.calendarChange)
-          .then((Event.CalendarChange event) {
-            expect (event.contactID, equals(Model.Contact.noID));
-            expect (event.receptionID, equals(receptionID));
-            expect (event.entryID, greaterThan(Model.CalendarEntry.noID));
-            expect (event.state, equals(Event.CalendarEntryState.DELETED));
-         });
+        return receptionist
+            .waitFor(eventType: Event.Key.calendarChange)
+            .then((Event.CalendarChange event) {
+          expect(event.contactID, equals(Model.Contact.noID));
+          expect(event.receptionID, equals(receptionID));
+          expect(event.entryID, greaterThan(Model.CalendarEntry.noID));
+          expect(event.state, equals(Event.CalendarEntryState.DELETED));
+        });
       });
     });
   }
@@ -392,28 +386,28 @@ abstract class Reception_Store {
    * Test server behaviour with regards to calendar changes.
    * This function creates an entry and asserts that a change is also present.
    */
-  static Future calendarEntryChangeCreate
-    (Service.RESTReceptionStore receptionStore) {
-
+  static Future calendarEntryChangeCreate(
+      Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
-    Model.CalendarEntry entry =
-        new Model.CalendarEntry.reception(receptionID)
-         ..beginsAt    = new DateTime.now()
-         ..until       = new DateTime.now().add(new Duration(hours: 2))
-         ..content     = Randomizer.randomEvent();
+    Model.CalendarEntry entry = new Model.CalendarEntry.reception(receptionID)
+      ..beginsAt = new DateTime.now()
+      ..until = new DateTime.now().add(new Duration(hours: 2))
+      ..content = Randomizer.randomEvent();
 
     log.info('Creating a calendar event for reception $receptionID.');
 
-    return receptionStore.calendarEventCreate (entry)
-      .then((Model.CalendarEntry createdEvent) {
-        return receptionStore.calendarEntryChanges(createdEvent.ID)
+    return receptionStore
+        .calendarEventCreate(entry)
+        .then((Model.CalendarEntry createdEvent) {
+      return receptionStore
+          .calendarEntryChanges(createdEvent.ID)
           .then((Iterable<Model.CalendarEntryChange> changes) {
-            expect (changes.length, equals(1));
-            expect (changes.first.changedAt.millisecondsSinceEpoch,
-                    lessThan(new DateTime.now().millisecondsSinceEpoch));
-            expect (changes.first.userID, isNot(Model.User.noID));
-        });
+        expect(changes.length, equals(1));
+        expect(changes.first.changedAt.millisecondsSinceEpoch,
+            lessThan(new DateTime.now().millisecondsSinceEpoch));
+        expect(changes.first.userID, isNot(Model.User.noID));
+      });
     });
   }
 
@@ -421,39 +415,39 @@ abstract class Reception_Store {
    * Test server behaviour with regards to calendar changes.
    * This function update an entry and asserts that another change is present.
    */
-  static Future calendarEntryChangeUpdate
-    (Service.RESTReceptionStore receptionStore) {
-
+  static Future calendarEntryChangeUpdate(
+      Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
-    return receptionStore.calendar(receptionID)
-      .then((Iterable <Model.CalendarEntry> entries) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> entries) {
 
       // Update the last event in list.
       Model.CalendarEntry entry = entries.last
-          ..beginsAt    = new DateTime.now()
-          ..until       = new DateTime.now().add(new Duration(hours: 2))
-          ..content     = Randomizer.randomEvent();
+        ..beginsAt = new DateTime.now()
+        ..until = new DateTime.now().add(new Duration(hours: 2))
+        ..content = Randomizer.randomEvent();
 
       int updateCount = -1;
 
-
-
       log.info('Updating a calendar event for reception $receptionID.');
 
-      return receptionStore.calendarEntryChanges(entry.ID)
-        .then((Iterable<Model.CalendarEntryChange> changes) =>
-          updateCount = changes.length)
-        .then((_) => receptionStore.calendarEventUpdate (entry)
-        .then((Model.CalendarEntry updatedEvent) {
-          return receptionStore.calendarEntryChanges(updatedEvent.ID)
+      return receptionStore
+          .calendarEntryChanges(entry.ID)
+          .then((Iterable<Model.CalendarEntryChange> changes) =>
+              updateCount = changes.length)
+          .then((_) => receptionStore
+              .calendarEventUpdate(entry)
+              .then((Model.CalendarEntry updatedEvent) {
+        return receptionStore
+            .calendarEntryChanges(updatedEvent.ID)
             .then((Iterable<Model.CalendarEntryChange> changes) {
-              expect (changes.length, equals(updateCount+1));
-              expect (changes.first.changedAt.millisecondsSinceEpoch,
-                      lessThan(new DateTime.now().millisecondsSinceEpoch));
-              expect (changes.first.userID, isNot(Model.User.noID));
-          });
-
+          expect(changes.length, equals(updateCount + 1));
+          expect(changes.first.changedAt.millisecondsSinceEpoch,
+              lessThan(new DateTime.now().millisecondsSinceEpoch));
+          expect(changes.first.userID, isNot(Model.User.noID));
+        });
       }));
     });
   }
@@ -462,33 +456,230 @@ abstract class Reception_Store {
    * Test server behaviour with regards to calendar changes.
    * This function removes an entry and asserts that no changes are present.
    */
-  static Future calendarEntryChangeDelete
-    (Service.RESTReceptionStore receptionStore) {
-
+  static Future calendarEntryChangeDelete(
+      Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
-    return receptionStore.calendar(receptionID)
-      .then((Iterable <Model.CalendarEntry> events) {
+    return receptionStore
+        .calendar(receptionID)
+        .then((Iterable<Model.CalendarEntry> events) {
 
       // Update the last event in list.
       Model.CalendarEntry event = events.last;
 
-      log.info
-        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+      log.info(
+          'Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
 
-      log.info
-        ('Deleting last (in list) calendar event for reception $receptionID.');
+      log.info(
+          'Deleting last (in list) calendar event for reception $receptionID.');
 
-      return receptionStore.calendarEventRemove(event)
-        .then((_) {
-        return receptionStore.calendarEntryChanges(event.ID)
-          .then((Iterable<Model.CalendarEntryChange> changes) {
-            expect (changes.length, equals(0));
+      return receptionStore.calendarEventRemove(event).then((_) {
+        return receptionStore
+            .calendarEntryChanges(event.ID)
+            .then((Iterable<Model.CalendarEntryChange> changes) {
+          expect(changes.length, equals(0));
 
-            return expect(receptionStore.calendarEntryLatestChange(event.ID),
-                throwsA(new isInstanceOf<Storage.NotFound>()));
-          });
+          return expect(receptionStore.calendarEntryLatestChange(event.ID),
+              throwsA(new isInstanceOf<Storage.NotFound>()));
         });
+      });
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to create a new reception.
+   *
+   * The expected behaviour is that the server should return the created
+   * Reception object.
+   */
+  static Future create(Storage.Reception receptionStore) {
+    Model.Reception reception = Randomizer.randomReception();
+
+    reception.organizationId = 1;
+    final DateTime creationTime = new DateTime.now();
+
+    log.info('Creating a new reception ${reception.asMap}');
+
+    return receptionStore
+        .create(reception)
+        .then((Model.Reception createdReception) {
+      expect(createdReception.ID, greaterThan(Model.Reception.noID));
+      expect(reception.addresses, createdReception.addresses);
+      expect(reception.alternateNames, createdReception.alternateNames);
+      expect(reception.attributes, createdReception.attributes);
+      expect(reception.bankingInformation, createdReception.bankingInformation);
+      expect(reception.customerTypes, createdReception.customerTypes);
+      expect(reception.emailAddresses, createdReception.emailAddresses);
+      expect(reception.extension, createdReception.extension);
+      expect(reception.extraData, createdReception.extraData);
+      expect(reception.fullName, createdReception.fullName);
+      expect(reception.greeting, createdReception.greeting);
+      expect(reception.handlingInstructions,
+          createdReception.handlingInstructions);
+      expect(reception.openingHours, createdReception.openingHours);
+      expect(reception.otherData, createdReception.otherData);
+      expect(reception.product, createdReception.product);
+      expect(reception.salesMarketingHandling,
+          createdReception.salesMarketingHandling);
+      expect(reception.shortGreeting, createdReception.shortGreeting);
+      expect(reception.telephoneNumbers, createdReception.telephoneNumbers);
+      expect(reception.vatNumbers, createdReception.vatNumbers);
+      expect(reception.websites, createdReception.websites);
+      expect(reception.fullName, createdReception.fullName);
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to update a reception event object that
+   * exists.
+   *
+   * The expected behaviour is that the server should return the updated
+   * Reception object.
+   */
+  static Future update(Storage.Reception receptionStore) {
+    return receptionStore.list().then((Iterable<Model.Reception> orgs) {
+
+      // Update the last event in list.
+      Model.Reception reception = orgs.last;
+
+      log.info('Got reception ${reception.asMap}');
+      {
+        Model.Reception randOrg = Randomizer.randomReception();
+        log.info('Updating with info ${randOrg.asMap}');
+
+        randOrg.ID = reception.ID;
+        randOrg.organizationId = reception.organizationId;
+        randOrg.lastChecked = reception.lastChecked;
+        reception = randOrg;
+      }
+      return receptionStore
+          .update(reception)
+          .then((Model.Reception updatedReception) {
+        expect(updatedReception.ID, greaterThan(Model.Reception.noID));
+        expect(updatedReception.ID, equals(reception.ID));
+        expect(reception.addresses, updatedReception.addresses);
+        expect(reception.alternateNames, updatedReception.alternateNames);
+        expect(reception.attributes, updatedReception.attributes);
+        expect(
+            reception.bankingInformation, updatedReception.bankingInformation);
+        expect(reception.customerTypes, updatedReception.customerTypes);
+        expect(reception.emailAddresses, updatedReception.emailAddresses);
+        expect(reception.extension, updatedReception.extension);
+        expect(reception.extraData, updatedReception.extraData);
+        expect(reception.fullName, updatedReception.fullName);
+        expect(reception.greeting, updatedReception.greeting);
+        print(updatedReception.lastChecked);
+        print(reception.lastChecked);
+        expect(reception.handlingInstructions,
+            updatedReception.handlingInstructions);
+        //TODO: Update this one to greaterThan when the resolution of timestamps in the system has increased.
+        expect(updatedReception.lastChecked.millisecondsSinceEpoch, greaterThanOrEqualTo(reception.lastChecked.millisecondsSinceEpoch));
+        expect(reception.openingHours, updatedReception.openingHours);
+        expect(reception.otherData, updatedReception.otherData);
+        expect(reception.product, updatedReception.product);
+        expect(reception.salesMarketingHandling,
+            updatedReception.salesMarketingHandling);
+        expect(reception.shortGreeting, updatedReception.shortGreeting);
+        expect(reception.telephoneNumbers, updatedReception.telephoneNumbers);
+        expect(reception.vatNumbers, updatedReception.vatNumbers);
+        expect(reception.websites, updatedReception.websites);
+        expect(reception.fullName, updatedReception.fullName);
+      });
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to delete an reception that exists.
+   *
+   * The expected behaviour is that the server should succeed.
+   */
+  static Future remove(Storage.Reception receptionStore) {
+    return receptionStore.list().then((Iterable<Model.Reception> receptions) {
+
+      // Update the last event in list.
+      Model.Reception reception = receptions.last;
+
+      log.info('Targeting reception for removal: ${reception.asMap}');
+
+      return receptionStore.remove(reception.ID).then((_) {
+        return expect(receptionStore.get(reception.ID),
+            throwsA(new isInstanceOf<Storage.NotFound>()));
+      });
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to create a new reception.
+   *
+   * The expected behaviour is that the server should return the created
+   * Reception object and send out a ReceptionChange notification.
+   */
+  static Future createEvent(
+      Storage.Reception receptionStore, Receptionist receptionist) {
+    Model.Reception reception = Randomizer.randomReception();
+    reception.organizationId = 1;
+
+    log.info('Creating a new reception ${reception.asMap}');
+
+    return receptionStore
+        .create(reception)
+        .then((Model.Reception createdReception) => receptionist
+          .waitFor(eventType: Event.Key.receptionChange)
+          .then((Event.ReceptionChange event) {
+        expect(event.receptionID, equals(createdReception.ID));
+        expect(event.state, equals(Event.ReceptionState.CREATED));
+      }));
+  }
+
+  /**
+   * Test server behaviour when trying to update an reception.
+   *
+   * The expected behaviour is that the server should return the created
+   * Reception object and send out a ReceptionChange notification.
+   */
+  static Future updateEvent(
+      Storage.Reception receptionStore, Receptionist receptionist) {
+    return receptionStore.list().then((Iterable<Model.Reception> orgs) {
+
+      // Update the last event in list.
+      Model.Reception reception = orgs.last;
+
+      log.info('Got reception ${reception.asMap}');
+
+      return receptionStore
+          .update(reception)
+          .then((Model.Reception updatedReception)=> receptionist
+            .waitFor(eventType: Event.Key.receptionChange)
+            .then((Event.ReceptionChange event) {
+          expect(event.receptionID, equals(updatedReception.ID));
+          expect(event.state, equals(Event.ReceptionState.UPDATED));
+        }));
+      });
+  }
+
+  /**
+   * Test server behaviour when trying to delete an reception.
+   *
+   * The expected behaviour is that the server should return the created
+   * Reception object and send out a ReceptionChange notification.
+   */
+  static Future deleteEvent(
+      Storage.Reception receptionStore, Receptionist receptionist) {
+    return receptionStore.list().then((Iterable<Model.Reception> receptions) {
+
+      // Update the last event in list.
+      Model.Reception reception = receptions.last;
+
+      log.info('Targeting reception for removal: ${reception.asMap}');
+
+      return receptionStore.remove(reception.ID).then((_) {
+        return receptionist
+            .waitFor(eventType: Event.Key.receptionChange)
+            .then((Event.ReceptionChange event) {
+          expect(event.receptionID, equals(reception.ID));
+          expect(event.state, equals(Event.ReceptionState.DELETED));
+        });
+      });
     });
   }
 }

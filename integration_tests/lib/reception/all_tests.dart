@@ -16,10 +16,10 @@ runReceptionTests () {
     });
 
     test ('CORS headers present',
-        () => Reception_Store.isCORSHeadersPresent(transport.client));
+        () => Reception.isCORSHeadersPresent(transport.client));
 
     test ('Non-existing path',
-        () => Reception_Store.nonExistingPath(transport.client));
+        () => Reception.nonExistingPath(transport.client));
 
     setUp (() {
       transport = new Transport.Client();
@@ -34,34 +34,49 @@ runReceptionTests () {
     });
 
     test ('Non-existing reception',
-        () => Reception_Store.nonExistingReception(receptionStore));
+        () => Reception.nonExistingReception(receptionStore));
+
     test ('Existing reception',
-        () => Reception_Store.existingReception(receptionStore));
+        () => Reception.existingReception(receptionStore));
+
     test ('List receptions',
-        () => Reception_Store.listReceptions(receptionStore));
+        () => Reception.listReceptions(receptionStore));
 
     test ('Calendar event listing',
-        () => Reception_Store.existingReceptionCalendar(receptionStore));
+        () => Reception.existingReceptionCalendar(receptionStore));
+
     test ('Calendar event creation',
-        () => Reception_Store.calendarEventCreate(receptionStore));
+        () => Reception.calendarEventCreate(receptionStore));
+
     test ('Calendar event update',
-        () => Reception_Store.calendarEventUpdate(receptionStore));
+        () => Reception.calendarEventUpdate(receptionStore));
+
     test ('Calendar event',
-        () => Reception_Store.calendarEventExisting(receptionStore));
+        () => Reception.calendarEventExisting(receptionStore));
+
     test ('Calendar event (non-existing)',
-        () => Reception_Store.calendarEventNonExisting(receptionStore));
+        () => Reception.calendarEventNonExisting(receptionStore));
+
     test ('Calendar event removal',
-        () => Reception_Store.calendarEventDelete(receptionStore));
+        () => Reception.calendarEventDelete(receptionStore));
 
     test ('Calendar event changes (create)',
-        () => Reception_Store.calendarEntryChangeCreate(receptionStore));
+        () => Reception.calendarEntryChangeCreate(receptionStore));
 
     test ('Calendar event changes (update)',
-        () => Reception_Store.calendarEntryChangeUpdate(receptionStore));
+        () => Reception.calendarEntryChangeUpdate(receptionStore));
 
     test ('Calendar event changes (delete)',
-        () => Reception_Store.calendarEntryChangeDelete(receptionStore));
+        () => Reception.calendarEntryChangeDelete(receptionStore));
 
+    test ('Reception creation',
+        () => Reception.create(receptionStore));
+
+    test ('Reception update',
+        () => Reception.update(receptionStore));
+
+    test ('Reception removal',
+        () => Reception.remove(receptionStore));
 
     setUp (() {
       transport = new Transport.Client();
@@ -81,12 +96,21 @@ runReceptionTests () {
     });
 
     test ('CalendarEntry creation (event presence)',
-        () => Reception_Store.calendarEntryCreateEvent(receptionStore, r));
+        () => Reception.calendarEntryCreateEvent(receptionStore, r));
 
     test ('CalendarEntry update (event presence)',
-        () => Reception_Store.calendarEntryUpdateEvent(receptionStore, r));
+        () => Reception.calendarEntryUpdateEvent(receptionStore, r));
 
     test ('CalendarEntry creation (event presence)',
-        () => Reception_Store.calendarEntryDeleteEvent(receptionStore, r));
+        () => Reception.calendarEntryDeleteEvent(receptionStore, r));
+
+    test ('Reception creation (event presence)',
+        () => Reception.createEvent(receptionStore, r));
+
+    test ('Reception update (event presence)',
+        () => Reception.updateEvent(receptionStore, r));
+
+    test ('Reception removal (event presence)',
+        () => Reception.deleteEvent(receptionStore, r));
   });
 }
