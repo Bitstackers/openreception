@@ -39,12 +39,12 @@ class _reception {
       String new_full_name = 'Test-Update ${originale_full_name}';
       reception.fullName = new_full_name;
 
-      return receptionStore.save(reception).then((Model.Reception updatedReception) {
+      return receptionStore.update(reception).then((Model.Reception updatedReception) {
         expect(updatedReception.fullName, equals(new_full_name));
 
         //Roll-back
         updatedReception.fullName = originale_full_name;
-        return receptionStore.save(updatedReception);
+        return receptionStore.update(updatedReception);
       });
     });
   }
@@ -62,7 +62,7 @@ class _reception {
       ..greeting = greeting
       ..enabled = false;
 
-    return receptionStore.save(reception).then((Model.Reception newReception) {
+    return receptionStore.create(reception).then((Model.Reception newReception) {
       expect(newReception.organizationId, equals(organization_id));
       expect(newReception.ID, greaterThanOrEqualTo(1));
       expect(newReception.fullName, equals(full_name));
@@ -70,12 +70,7 @@ class _reception {
       expect(newReception.greeting, equals(greeting));
 
       //Clean up.
-      return receptionStore.remove(newReception.ID).then((Model.Reception removeReception) {
-        expect(removeReception.ID, greaterThanOrEqualTo(1));
-        expect(removeReception.fullName, equals(full_name));
-        expect(removeReception.shortGreeting, equals(shortGreeting));
-        expect(removeReception.greeting, equals(greeting));
-      });
+      return receptionStore.remove(newReception.ID);
     });
   }
 }
