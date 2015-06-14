@@ -271,7 +271,6 @@ abstract class Organization {
   static Future createEvent(
       Storage.Organization organizationStore, Receptionist receptionist) {
     Model.Organization organization = Randomizer.randomOrganization();
-
     log.info('Creating a new organization ${organization.asMap}');
 
     return organizationStore

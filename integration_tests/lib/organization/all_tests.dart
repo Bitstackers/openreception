@@ -80,13 +80,13 @@ runOrganizationTests () {
       return r.teardown();
     });
 
-    test ('CalendarEntry creation (event presence)',
+    test ('Organization creation (event presence)',
         () => Organization.createEvent(organizationStore, r));
 
-    test ('CalendarEntry update (event presence)',
+    test ('Organization update (event presence)',
         () => Organization.updateEvent(organizationStore, r));
 
-    test ('CalendarEntry creation (event presence)',
+    test ('Organization removal (event presence)',
         () => Organization.deleteEvent(organizationStore, r));
   });
 }
