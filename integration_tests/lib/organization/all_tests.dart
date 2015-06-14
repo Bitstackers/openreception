@@ -76,6 +76,7 @@ runOrganizationTests () {
     tearDown (() {
       organizationStore = null;
       transport.client.close(force : true);
+      ReceptionistPool.instance.release(r);
 
       return r.teardown();
     });
