@@ -279,6 +279,37 @@ abstract class Randomizer {
       ..fullName = randomCompany();
 
   /**
+   * Constructs and returns a [Reception] object with random content.
+   *
+   * The returned object is does not have a valid ID, nor organizationID.
+   */
+  static Model.Reception randomReception() =>
+    new Model.Reception.empty()
+      ..addresses = []
+      ..alternateNames = []
+      ..attributes = {}
+      ..bankingInformation = []
+      ..customerTypes = ['Not defined']
+      ..emailAddresses = []
+      ..enabled = true
+      ..extension = randomPhoneNumber()
+      ..extraData = Uri.parse ('http://localhost/test')
+      ..fullName = 'Test test'
+      ..greeting = 'Go away'
+      ..handlingInstructions = ['Hang up']
+      ..lastChecked = new DateTime.now()
+      ..openingHours = []
+      ..otherData = 'Nope'
+      ..product = 'Butter'
+      ..salesMarketingHandling = []
+      ..shortGreeting = 'Please go'
+      ..telephoneNumbers = [new Model.PhoneNumber.empty()
+                              ..value = '56 33 21 44']
+      ..vatNumbers = []
+      ..websites = [];
+
+
+  /**
    * Constructs and returns a [Message] object with random content.
    *
    * The returned object still needs to have its context, user and
