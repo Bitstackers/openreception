@@ -10,7 +10,7 @@ import 'package:openreception_framework/storage.dart'  as Storage;
 import 'package:openreception_framework/util.dart'     as Util;
 
 part 'db/reception-calendar.dart';
-part 'db/reception.dart';
+//part 'db/reception.dart';
 
 const String libraryName = 'receptionserver.database';
 

@@ -32,6 +32,8 @@ Database.Connection _connection = null;
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
 Database.Organization _organizationDB = new Database.Organization (_connection);
+Database.Reception _receptionDB = new Database.Reception (_connection);
+
 
 void connectAuthService() {
   AuthService = new Service.Authentication
