@@ -1,5 +1,6 @@
 library organization.view;
 
+import 'dart:async';
 import 'dart:html';
 import 'dart:convert';
 
@@ -190,8 +191,8 @@ class OrganizationView {
         'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
-      String newOrganization = JSON.encode(organization);
-      organizationController.update(newOrganization).then((_) {
+
+      organizationController.update(new ORModel.Organization.fromMap(organization)).then((_) {
         notify.info('Ændringerne blev gemt.');
         refreshList();
       }).catchError((error) {
@@ -204,10 +205,10 @@ class OrganizationView {
         'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
-      String newOrganization = JSON.encode(organization);
-      organizationController.create(newOrganization).then((Map response) {
+      organizationController.create(new ORModel.Organization.fromMap(organization))
+      .then((ORModel.Organization org) {
         notify.info('Organisationen blev oprettet.');
-        int organizationId = response['id'];
+        int organizationId = org.id;
         refreshList();
         activateOrganization(organizationId);
         bus.fire(new OrganizationAddedEvent());
@@ -273,15 +274,22 @@ class OrganizationView {
   }
 
   void updateReceptionList(int organizationId) {
-    organizationController.receptions(organizationId).then((Iterable<ORModel.Reception> receptions) {
+    organizationController.receptions(organizationId)
+    .then((Iterable<int> receptionIDs) {
 
-      int compareTo (ORModel.Reception r1, ORModel.Reception r2) => r1.fullName.compareTo(r2.fullName);
+      List list = [];
+      Future.forEach(receptionIDs, (int id) =>
+          receptionController.get(id).then(list.add))
+          .then((_) {
+        list.sort(_compareReception);
+        currentReceptionList = list;
+        ulReceptionList.children
+            ..clear()
+            ..addAll(list.map(makeReceptionNode));
 
-      List list = receptions.toList()..sort(compareTo);
-      currentReceptionList = list;
-      ulReceptionList.children
-          ..clear()
-          ..addAll(receptions.map(makeReceptionNode));
+      });
+
+
     });
   }
 
@@ -328,3 +336,6 @@ class OrganizationView {
     return li;
   }
 }
+
+int _compareReception (ORModel.Reception r1, ORModel.Reception r2) => r1.fullName.compareTo(r2.fullName);
+

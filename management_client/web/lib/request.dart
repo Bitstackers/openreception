@@ -24,29 +24,26 @@ Logger log = new Logger('request');
 
 Transport.Client client = new Transport.Client();
 
-ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
-    Uri.parse('http://localhost:4000'), config.token, client);
+Uri _receptionURI = Uri.parse('http://localhost:4000');
 
-ORService.RESTReceptionStore _managementReceptionStore =
-    new ORService.RESTReceptionStore(
-        Uri.parse(config.serverUrl), config.token, client);
+ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
+    _receptionURI, config.token, client);
+
+ORService.RESTOrganizationStore _organizationStore =
+    new ORService.RESTOrganizationStore(
+        _receptionURI, config.token, client);
 
 Controller.Reception receptionController =
-    new Controller.Reception(_receptionStore, _managementReceptionStore);
+    new Controller.Reception(_receptionStore);
 
-ORService.RESTManagementStore _managementStore =
-    new ORService.RESTManagementStore(
-        Uri.parse(config.serverUrl), config.token, client);
+Controller.Organization organizationController =
+    new Controller.Organization(_organizationStore);
 
 ORService.RESTContactStore _contactStore = new ORService.RESTContactStore(
     Uri.parse('http://localhost:4010'), config.token, client);
 
 Controller.Contact contactController =
-    new Controller.Contact(_contactStore, _managementStore);
-
-Controller.Organization organizationController = new Controller.Organization(
-    new ORService.RESTOrganizationStore(
-        Uri.parse(config.serverUrl), config.token, new Transport.Client()));
+    new Controller.Contact(_contactStore);
 
 class HttpMethod {
   static const String GET = 'GET';

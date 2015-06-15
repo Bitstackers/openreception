@@ -11,6 +11,11 @@ class Organization {
 
   Future<Iterable<ORModel.BaseContact>> contacts(int organizationID) => _service.contacts(organizationID);
 
-  Future<Iterable<ORModel.Reception>> receptions(int organizationID) => _service.receptions(organizationID);
+  Future<Iterable<int>> receptions(int organizationID) => _service.receptions(organizationID);
 
+  Future remove (int organizationID) => _service.remove(organizationID);
+
+  Future<ORModel.Organization> create(ORModel.Organization org) => _service.create(org);
+
+  Future<ORModel.Organization> update(ORModel.Organization org) => _service.update(org);
 }
