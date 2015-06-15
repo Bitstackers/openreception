@@ -222,15 +222,18 @@ abstract class UIModel {
   HtmlElement get _listTarget => null;
 
   /**
-   * Mark [li] selected, scroll it into view and call [selectCallback].
+   * Mark [li] selected, scroll it into view andif [callSelectCallback] is true
+   * then call [selectCallback].
    * Does nothing if [li] is null or [li] is already selected.
    */
-  void _markSelected(LIElement li) {
+  void _markSelected(LIElement li, {bool callSelectCallback: true}) {
     if(li != null && !li.classes.contains('selected')) {
       _listTarget.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
-      _selectCallback(li);
+      if(callSelectCallback) {
+        _selectCallback(li);
+      }
     }
   }
 
