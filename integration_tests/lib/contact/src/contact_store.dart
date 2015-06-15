@@ -559,7 +559,8 @@ abstract class ContactStore {
             expect (changes.first.changedAt.millisecondsSinceEpoch,
                     lessThan(new DateTime.now().millisecondsSinceEpoch));
             expect (changes.first.userID, isNot(Model.User.noID));
-        });
+        })
+        .then((_) => contactStore.calendarEventRemove(createdEvent));
     });
   }
 
@@ -573,25 +574,31 @@ abstract class ContactStore {
     int receptionID = 1;
     int contactID = 4;
 
-    return contactStore.calendar(contactID, receptionID)
-      .then((Iterable <Model.CalendarEntry> entries) {
+    Model.CalendarEntry newEntry =
+        new Model.CalendarEntry.contact(contactID, receptionID)
+         ..beginsAt    = new DateTime.now()
+         ..until       = new DateTime.now().add(new Duration(hours: 2))
+         ..content     = Randomizer.randomEvent();
 
-      // Update the last event in list.
-      Model.CalendarEntry entry = entries.last
-          ..beginsAt    = new DateTime.now()
-          ..until       = new DateTime.now().add(new Duration(hours: 2))
+    log.info('Creating a calendar event for $contactID@$receptionID.');
+
+    return contactStore.calendarEventCreate (newEntry)
+       .then((Model.CalendarEntry createdEntry) {
+
+      // Update the event.
+      createdEntry
+          ..beginsAt    = createdEntry.start.add(new Duration(hours: 1))
+          ..until       = createdEntry.stop.add(new Duration(hours: 1))
           ..content     = Randomizer.randomEvent();
 
       int updateCount = -1;
 
-
-
       log.info('Updating a calendar event for reception $receptionID.');
 
-      return contactStore.calendarEntryChanges(entry.ID)
+      return contactStore.calendarEntryChanges(createdEntry.ID)
         .then((Iterable<Model.CalendarEntryChange> changes) =>
           updateCount = changes.length)
-        .then((_) => contactStore.calendarEventUpdate (entry)
+        .then((_) => contactStore.calendarEventUpdate (createdEntry)
         .then((Model.CalendarEntry updatedEvent) {
           return contactStore.calendarEntryChanges(updatedEvent.ID)
             .then((Iterable<Model.CalendarEntryChange> changes) {
@@ -599,8 +606,8 @@ abstract class ContactStore {
               expect (changes.first.changedAt.millisecondsSinceEpoch,
                       lessThan(new DateTime.now().millisecondsSinceEpoch));
               expect (changes.first.userID, isNot(Model.User.noID));
-          });
-
+          })
+          .then((_) => contactStore.calendarEventRemove(createdEntry));
       }));
     });
   }
@@ -614,26 +621,29 @@ abstract class ContactStore {
 
     int receptionID = 1;
     int contactID = 4;
+    Model.CalendarEntry entry =
+        new Model.CalendarEntry.contact(contactID, receptionID)
+         ..beginsAt    = new DateTime.now()
+         ..until       = new DateTime.now().add(new Duration(hours: 2))
+         ..content     = Randomizer.randomEvent();
 
-    return contactStore.calendar(contactID, receptionID)
-      .then((Iterable <Model.CalendarEntry> events) {
+    log.info('Creating a calendar event for $contactID@$receptionID.');
 
-      // Update the last event in list.
-      Model.CalendarEntry event = events.last;
+    return contactStore.calendarEventCreate (entry)
+        .then((Model.CalendarEntry createdEvent) {
 
       log.info
-        ('Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
-
+        ('Created event ${createdEvent.asMap} - ${createdEvent.contactID}@${createdEvent.receptionID}');
       log.info
-        ('Deleting last (in list) calendar event for reception $receptionID.');
+        ('Deleting.');
 
-      return contactStore.calendarEventRemove(event)
+      return contactStore.calendarEventRemove(createdEvent)
         .then((_) {
-        return contactStore.calendarEntryChanges(event.ID)
+        return contactStore.calendarEntryChanges(createdEvent.ID)
           .then((Iterable<Model.CalendarEntryChange> changes) {
             expect (changes.length, equals(0));
 
-            return expect(contactStore.calendarEntryLatestChange(event.ID),
+            return expect(contactStore.calendarEntryLatestChange(createdEvent.ID),
                 throwsA(new isInstanceOf<Storage.NotFound>()));
           });
         });
