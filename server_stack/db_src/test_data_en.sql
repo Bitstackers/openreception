@@ -75,7 +75,7 @@ VALUES (1,  'Thomas Løcke', 'human'),
 
 
 INSERT INTO organizations (id, full_name, billing_type, flag)
-VALUES 	    (1, 'BitStackers Ltd.', 'Bank', 'VIP'),
+VALUES 	    (1, 'BitStackers K/S', 'Bank', 'VIP'),
 	    (2, 'Friends Corp.', 'Other', 'Non-VIP'),
 	    (3, 'Responsum K/S', 'Cool cash', 'Non-VIP'),
 	    (4, 'Hanson Plumbing', 'Wire transfer', 'Non-VIP'),
