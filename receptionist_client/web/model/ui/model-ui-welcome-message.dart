@@ -24,10 +24,10 @@ class UIWelcomeMessage extends UIModel {
    */
   UIWelcomeMessage(DivElement this._myRoot);
 
-  @override HtmlElement        get _firstTabElement => null;
-  @override HtmlElement        get _focusElement    => null;
-  @override HtmlElement        get _lastTabElement  => null;
-  @override HtmlElement        get _root            => _myRoot;
+  @override HtmlElement get _firstTabElement => null;
+  @override HtmlElement get _focusElement    => null;
+  @override HtmlElement get _lastTabElement  => null;
+  @override HtmlElement get _root            => _myRoot;
 
   SpanElement get _greeting => _root.querySelector('.greeting');
 
@@ -48,5 +48,5 @@ class UIWelcomeMessage extends UIModel {
   /**
    * Set the [Reception] greeting.
    */
-  set greeting (String value) => _greeting.text = value;
+  set greeting(String value) => _greeting.text = value;
 }
