@@ -125,6 +125,9 @@ abstract class Key {
   static const String receptionVATNumbersHeader       = 'reception-vat-numbers-header';
   static const String receptionWebsitesHeader         = 'reception-websites-header';
 
+  static const String selectedReceptionRemoved        = 'selected-reception-removed';
+  static const String selectedReceptionUpdated        = 'selected-reception-updated';
+
   static const String standardGreeting                = 'standard-greeting';
 
   static const String stateDisasterHeader             = 'state-disaster-header';
@@ -244,6 +247,9 @@ Map<String, String> da =
    Key.receptionVATNumbersHeader      : 'CVR-numre',
    Key.receptionWebsitesHeader        : 'WWW',
 
+   Key.selectedReceptionRemoved       : 'Den valgte reception er fjernet',
+   Key.selectedReceptionUpdated       : 'Den valgte reception er opdateret',
+
    Key.standardGreeting               : 'Velkommen til....',
 
    Key.stateDisasterHeader            : 'Vi har problemer - prøver at genstarte hvert 10 sekund',
@@ -361,6 +367,9 @@ Map<String, String> en =
    Key.receptionTypeHeader            : 'Reception type',
    Key.receptionVATNumbersHeader      : 'VAT numbers',
    Key.receptionWebsitesHeader        : 'WWW',
+
+   Key.selectedReceptionRemoved       : 'The selected reception has been removed',
+   Key.selectedReceptionUpdated       : 'The selected reception has been updated',
 
    Key.standardGreeting               : 'You\'ve called....',
 
