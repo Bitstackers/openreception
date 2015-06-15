@@ -1,24 +1,9 @@
 library utilities.common;
 
-//import 'dart:io';
-
-import 'package:syslog/syslog.dart';
-
-//import 'package:http/http.dart' as http;
-import 'dart:async';
-//import 'dart:convert';
-
 void access(String message) => logger.access(message);
 void log(String message) => logger.debug(message);
 
 BasicLogger logger = new BasicLogger();
-
-Future activateSyslog(String hostname) {
-  return _SysLogger.open(hostname).then((BasicLogger value) {
-    logger = value;
-    return logger;
-  });
-}
 
 class BasicLogger {
 
@@ -37,18 +22,6 @@ class BasicLogger {
   void debug(message) => print('[DEBUG] $message');
   void error(message) => print('[ERROR] $message');
   void critical(message) => print('[CRITICAL] $message');
-}
-
-class _SysLogger extends BasicLogger {
-  Syslog _syslog;
-
-  _SysLogger(Syslog this._syslog);
-
-  static Future open(String hostname) => Syslog.open(hostname).then((Syslog syslog) => new _SysLogger(syslog));
-
-  void debug(message) => _syslog.log(Facility.user, Severity.Debug, message);
-  void error(message) => _syslog.log(Facility.user, Severity.Error, message);
-  void critical(message) => _syslog.log(Facility.user, Severity.Critical, message);
 }
 
 int dateTimeToUnixTimestamp(DateTime time) {
