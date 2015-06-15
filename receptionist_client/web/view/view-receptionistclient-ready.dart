@@ -260,7 +260,9 @@ class ReceptionistclientReady {
         (uiReceptionSelector,
          _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionSelector),
-         _sortedReceptions);
+         _sortedReceptions,
+         _popup,
+         _langMap);
 
     _receptionTelephoneNumbers = new ReceptionTelephoneNumbers
         (new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),

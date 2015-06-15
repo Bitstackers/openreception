@@ -18,7 +18,9 @@ part of view;
  */
 class ReceptionSelector extends ViewWidget {
   final Model.AppClientState      _appState;
+  final Map<String, String>       _langMap;
   final Controller.Destination    _myDestination;
+  final Popup                     _popup;
   final List<ORModel.Reception>   _receptions;
   final Model.UIReceptionSelector _uiModel;
 
@@ -28,7 +30,9 @@ class ReceptionSelector extends ViewWidget {
   ReceptionSelector(Model.UIReceptionSelector this._uiModel,
                     Model.AppClientState this._appState,
                     Controller.Destination this._myDestination,
-                    List<ORModel.Reception> this._receptions) {
+                    List<ORModel.Reception> this._receptions,
+                    Popup this._popup,
+                    Map<String, String> this._langMap) {
     _ui.setHint('alt+v');
 
     _ui.receptions = _receptions;
@@ -58,6 +62,14 @@ class ReceptionSelector extends ViewWidget {
     _hotKeys.onAltV.listen(_activateMe);
 
     _ui.onClick.listen(_activateMe);
+
+    _ui.onSelectedRemoved.listen((ORModel.Reception reception) {
+      _popup.info(_langMap[Key.selectedReceptionRemoved], '${reception.name} (${reception.ID.toString()})', closeAfter: new Duration(seconds: 5));
+    });
+
+    _ui.onSelectedUpdated.listen((ORModel.Reception reception) {
+      _popup.info(_langMap[Key.selectedReceptionUpdated], '${reception.name} (${reception.ID.toString()})', closeAfter: new Duration(seconds: 5));
+    });
 
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
       if (newCall != ORModel.Call.noCall) {

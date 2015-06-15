@@ -18,7 +18,9 @@ part of model;
  */
 class UIReceptionSelector extends UIModel {
   final Bus<ORModel.Reception> _bus = new Bus<ORModel.Reception>();
-  final DivElement     _myRoot;
+  final DivElement             _myRoot;
+  final Bus<ORModel.Reception> _selectedRemovedBus = new Bus<ORModel.Reception>();
+  final Bus<ORModel.Reception> _selectedUpdatedBus = new Bus<ORModel.Reception>();
 
   /**
    * Constructor.
@@ -47,8 +49,11 @@ class UIReceptionSelector extends UIModel {
   /**
    * Add [reception] to the reception list, sorted alphabetically by reception
    * name.
+   * If [selected] is true, then mark the [reception] selected, but do not fire
+   * the reception anew. If [selected] is false, then search for the currently
+   * selected reception, and make sure it is scrolled into view.
    */
-  void addReception(ORModel.Reception reception) {
+  void addReception(ORModel.Reception reception, {bool selected: false}) {
     LIElement newLi = new LIElement()
                         ..dataset['id'] = reception.ID.toString()
                         ..dataset['name'] = reception.name.toLowerCase()
@@ -64,13 +69,22 @@ class UIReceptionSelector extends UIModel {
     } else {
       _list.insertBefore(newLi, firstBiggerName);
     }
+
+    if(selected) {
+      _markSelected(newLi, callSelectCallback: false);
+    } else {
+      LIElement selectedLi = _list.querySelector('.selected');
+      if(selectedLi != null) {
+        selectedLi.scrollIntoView();
+      }
+    }
   }
 
   /**
    *
    */
   void changeActiveReception(int receptionID) {
-    this._markSelected(_list.querySelector('[data-id="$receptionID"]'));
+    _markSelected(_list.querySelector('[data-id="$receptionID"]'));
   }
 
   /**
@@ -135,6 +149,16 @@ class UIReceptionSelector extends UIModel {
   Stream<ORModel.Reception> get onSelect => _bus.stream;
 
   /**
+   * Fires when the selected reception is removed.
+   */
+  Stream<ORModel.Reception> get onSelectedRemoved => _selectedRemovedBus.stream;
+
+  /**
+   * Fires when the selected reception is updated.
+   */
+  Stream<ORModel.Reception> get onSelectedUpdated => _selectedUpdatedBus.stream;
+
+  /**
    * Add [items] to the receptions list.
    */
   set receptions(List<ORModel.Reception> items) {
@@ -162,11 +186,15 @@ class UIReceptionSelector extends UIModel {
   /**
    * Remove [receptionID] from the reception selector.
    */
-  void removeReception(int receptionID) {
-    LIElement li = _list.querySelector('[data-id="${receptionID.toString()}"]');
+  void removeReception(ORModel.Reception reception, {bool fire: true}) {
+    LIElement newLi = _list.querySelector('[data-id="${reception.ID.toString()}"]');
 
-    if(li != null) {
-      li.remove();
+    if(newLi != null) {
+      ORModel.Reception selected = selectedReception;
+      newLi.remove();
+      if(fire && reception.ID == selected.ID) {
+        _selectedRemovedBus.fire(selected);
+      }
     }
   }
 
@@ -227,13 +255,12 @@ class UIReceptionSelector extends UIModel {
    * If [reception] exists in the reception selector list, then update it.
    */
   void updateReception(ORModel.Reception reception) {
-    LIElement li = _list.querySelector('[data-id="${reception.ID.toString()}"]');
+    bool selected = selectedReception.ID == reception.ID;
+    removeReception(reception, fire: false);
+    addReception(reception, selected: selected);
 
-    if(li != null) {
-      li.dataset['id'] = reception.ID.toString();
-      li.dataset['name'] = reception.name.toLowerCase();
-      li.dataset['object'] = JSON.encode(reception);
-      li.text = reception.name;
+    if(selected) {
+      _selectedUpdatedBus.fire(reception);
     }
   }
 }
