@@ -25,8 +25,6 @@ enum Widget {AgentInfo,
              ContactSelector,
              GlobalCallQueue,
              MessageArchive,
-             MessageArchiveEdit,
-             MessageArchiveFilter,
              MessageCompose,
              MyCallQueue,
              ReceptionAddresses,
@@ -67,9 +65,7 @@ final Map<String, Destination> _destinations =
    '${Context.Homeplus}-${Widget.ReceptionType}'            : new Destination(Context.Homeplus, Widget.ReceptionType),
    '${Context.Homeplus}-${Widget.ReceptionVATNumbers}'      : new Destination(Context.Homeplus, Widget.ReceptionVATNumbers),
    '${Context.Homeplus}-${Widget.ReceptionWebsites}'        : new Destination(Context.Homeplus, Widget.ReceptionWebsites),
-   '${Context.Messages}-${Widget.MessageArchive}'           : new Destination(Context.Messages, Widget.MessageArchive),
-   '${Context.Messages}-${Widget.MessageArchiveEdit}'       : new Destination(Context.Messages, Widget.MessageArchiveEdit),
-   '${Context.Messages}-${Widget.MessageArchiveFilter}'     : new Destination(Context.Messages, Widget.MessageArchiveFilter)};
+   '${Context.Messages}-${Widget.MessageArchive}'           : new Destination(Context.Messages, Widget.MessageArchive)};
 
 /**
  * A [Destination] points to a location in the application. It does this by
@@ -118,7 +114,7 @@ class Navigate {
     {Context.CalendarEdit: Widget.CalendarEditor,
      Context.Home        : Widget.ReceptionSelector,
      Context.Homeplus    : Widget.ReceptionMiniWiki,
-     Context.Messages    : Widget.MessageArchiveFilter};
+     Context.Messages    : Widget.MessageArchive};
   final Map<Context, Widget> _widgetHistory = {};
 
   /**
