@@ -77,6 +77,10 @@ class UIContactData extends UIModel {
     _phoneNumberList.children.clear();
     _titleList.children.clear();
     _workHoursList.children.clear();
+
+    _showPSTNSpan.classes.toggle('active', false);
+    _showTagsSpan.classes.toggle('active', false);
+    _popupDiv.classes.toggle('popup-hidden', true);
   }
 
   /**
