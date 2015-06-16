@@ -17,13 +17,13 @@ part of model;
  * The calendar editor UI model.
  */
 class UICalendarEditor extends UIModel {
-  ORUtil.WeekDays        _weekDays;
   HumanReadableTimestamp _humanReadableTimestamp;
   ORModel.CalendarEntry  _loadedEntry;
   HtmlElement            _myFirstTabElement;
   HtmlElement            _myFocusElement;
   HtmlElement            _myLastTabElement;
   final DivElement       _myRoot;
+  final ORUtil.WeekDays  _weekDays;
 
   /**
    * Constructor.
@@ -104,7 +104,7 @@ class UICalendarEditor extends UIModel {
   }
 
   /**
-   *
+   * Harvest a [ORModel.CalendarEntry] from the form.
    */
   ORModel.CalendarEntry get harvestedEntry =>
       _loadedEntry
@@ -113,7 +113,7 @@ class UICalendarEditor extends UIModel {
         ..content  = _textArea.value;
 
   /**
-   *
+   * Harvest the start [DateTime] from the form.
    */
   DateTime get _harvestStartDateTime =>
       new DateTime(_startYearInput.valueAsNumber.toInt(),
@@ -123,7 +123,7 @@ class UICalendarEditor extends UIModel {
                    _startMinuteInput.valueAsNumber.toInt());
 
   /**
-   *
+   * Harvest the stop [DateTime] from the form.
    */
   DateTime get _harvestStopDateTime =>
       new DateTime(_stopYearInput.valueAsNumber.toInt(),
@@ -133,7 +133,7 @@ class UICalendarEditor extends UIModel {
                    _stopMinuteInput.valueAsNumber.toInt());
 
   /**
-   *
+   * Get the currently loaded [ORModel.CalendarEntry].
    */
   ORModel.CalendarEntry get loadedEntry => _loadedEntry;
 
