@@ -10,7 +10,7 @@ abstract class User {
 
   Future<Model.User> update(Model.User user);
 
-  Future delete(Model.User user);
+  Future remove(Model.User user);
 
   Future<Iterable<Model.UserGroup>> userGroups(int userId);
 
@@ -22,8 +22,7 @@ abstract class User {
 
   Future<Iterable<Model.UserIdentity>> identities(int userId);
 
-  Future addIdentity(int userId, Model.UserIdentity identity);
+  Future<Model.UserIdentity> addIdentity(Model.UserIdentity identity);
 
-  Future removeIdentity(int userId, Model.UserIdentity identity);
-
+  Future removeIdentity(Model.UserIdentity identity);
 }

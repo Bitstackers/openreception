@@ -6,6 +6,10 @@ class User implements Storage.User {
 
   static final Logger log = new Logger(className);
 
+  final Connection _connection;
+
+  User(this._connection);
+
   static const String SQLMacros = '''
     WITH groups_of_user AS (
     SELECT
@@ -31,9 +35,185 @@ class User implements Storage.User {
       users.id
     )''';
 
-  Connection _database;
+  Future<Model.User> create(Model.User user) {
+    String sql = '''
+    INSERT INTO users (name, extension, send_from)
+    VALUES (@name, @extension, @sendfrom)
+    RETURNING id;
+  ''';
 
-  User (this._database);
+    Map parameters =
+      {'name'      : user.name,
+       'extension' : user.peer,
+       'sendfrom'  : user.address};
+
+    return _connection.query( sql, parameters)
+        .then((rows) =>
+            user..ID = rows.first.id);
+  }
+
+  Future remove(Model.User user) {
+    String sql = '''
+      DELETE FROM users
+      WHERE id=@id;
+    ''';
+
+    Map parameters = {'id': user.ID};
+    return _connection.execute(sql, parameters);
+  }
+
+  Future<Model.User> getByID(int userId) {
+    String sql = '''
+    SELECT id, name, extension, send_from
+    FROM users
+    WHERE id = @id
+  ''';
+
+    Map parameters = {'id': userId};
+
+    return _connection.query(sql, parameters).then((rows) {
+      if(rows.length != 1) {
+        return null;
+      } else {
+        var row = rows.first;
+        return new Model.User.empty()
+          ..ID = row.id
+          ..name = row.name
+          ..peer = row.extension
+          ..address = row.send_from;
+      }
+    });
+  }
+
+  Future<Model.User> update(Model.User user) {
+    String sql = '''
+    UPDATE users
+    SET name=@name, extension=@extension, send_from=@sendfrom
+    WHERE id=@id;
+  ''';
+
+    Map parameters =
+      {'name'      : user.name,
+       'extension' : user.peer,
+       'sendfrom'  : user.address,
+       'id'        : user.ID};
+
+    return _connection.execute(sql, parameters).then((_) => user);
+  }
+
+  Future<Iterable<Model.UserGroup>> userGroups(int userId) {
+    String sql = '''
+    SELECT id, name
+    FROM user_groups 
+     JOIN groups on user_groups.group_id = groups.id
+    WHERE user_groups.user_id = @userid
+  ''';
+
+    Map parameters = {'userid': userId};
+
+    return _connection.query(sql, parameters).then((Iterable rows) {
+        List<Model.UserGroup> userGroups = [];
+        for(var row in rows) {
+          userGroups.add(new Model.UserGroup.empty()
+           ..id = row.id
+           ..name = row.name);
+        }
+        return userGroups;
+      });
+  }
+
+  Future<Iterable<Model.UserGroup>> groups() {
+    String sql = '''
+    SELECT id, name
+    FROM groups
+  ''';
+
+    return _connection.query(sql).then((List rows) {
+      List<Model.UserGroup> userGroups = new List<Model.UserGroup>();
+      for(var row in rows) {
+        userGroups.add(new Model.UserGroup.empty()
+         ..id = row.id
+         ..name = row.name);
+      }
+      return userGroups;
+    });
+  }
+
+  Future joinGroup(int userId, int groupId) {
+    String sql = '''
+    INSERT INTO user_groups (user_id, group_id)
+    VALUES (@userid, @groupid);
+  ''';
+
+    Map parameters =
+      {'userid'  : userId,
+       'groupid' : groupId};
+
+    return _connection.execute(sql, parameters);
+  }
+
+  Future leaveGroup(int userId, int groupId) {
+    String sql = '''
+    DELETE FROM user_groups
+    WHERE user_id = @userid AND group_id = @groupid;
+  ''';
+
+    Map parameters =
+      {'userid'  : userId,
+       'groupid' : groupId};
+
+    return _connection.execute(sql, parameters);
+  }
+
+  Future<Iterable<Model.UserIdentity>> identities(int userId) {
+    String sql = '''
+    SELECT identity, user_id
+    FROM auth_identities
+    WHERE user_id = @userid
+  ''';
+
+    Map parameters = {'userid': userId};
+
+    return _connection.query(sql, parameters).then((List rows) {
+      List<Model.UserIdentity> userIdentities = new List<Model.UserIdentity>();
+      for(var row in rows) {
+        userIdentities.add(new Model.UserIdentity.empty()
+          ..identity = row.identity
+          ..userId = row.user_id);
+      }
+      return userIdentities;
+    });
+  }
+
+  Future<Model.UserIdentity> addIdentity(Model.UserIdentity identity) {
+    String sql = '''
+    INSERT INTO auth_identities (identity, user_id)
+    VALUES (@identity, @userid)
+    RETURNING identity;
+  ''';
+
+    Map parameters =
+      {'identity' : identity.identity,
+       'userid'   : identity.userId};
+
+    return _connection.query(sql, parameters).then((rows) =>
+        new Model.UserIdentity.empty()
+        ..identity = rows.first.identity
+        ..userId = identity.userId);
+  }
+
+  Future removeIdentity(Model.UserIdentity identity) {
+    String sql = '''
+      DELETE FROM auth_identities
+      WHERE user_id=@userid AND identity=@identity;
+    ''';
+
+    Map parameters =
+      {'userid': identity.userId,
+       'identity': identity.identity};
+
+    return _connection.execute(sql, parameters);
+  }
 
   Future<Model.User> get(String identity) {
     String sql = '''
@@ -49,7 +229,7 @@ class User implements Storage.User {
 
     Map parameters = {'email' : identity};
 
-    return this._database.query(sql, parameters).then((rows) {
+    return this._connection.query(sql, parameters).then((rows) {
       Map data = {};
       if(rows.length == 1) {
         var row = rows.first;
@@ -79,7 +259,7 @@ class User implements Storage.User {
 
       Map parameters = {'userid' : userId};
 
-      return this._database.query(sql, parameters).then((rows) {
+      return _connection.query(sql, parameters).then((rows) {
         Map data = {};
         if(rows.length == 1) {
           var row = rows.first;
@@ -95,7 +275,7 @@ class User implements Storage.User {
       });
     }
 
-  Future<List<Map>> userList() {
+  Future<Iterable<Model.User>> list() {
     const String sql =
 '''${SQLMacros}
 SELECT
@@ -113,8 +293,8 @@ JOIN
 ''';
 
 
-    return this._database.query(sql).then((rows) {
-      List users = [];
+    return _connection.query(sql).then((rows) {
+      List<Model.User> users = [];
 
       for (var row in rows) {
 
@@ -135,12 +315,13 @@ JOIN
         }
 
         users.add(
-        {'id'     : row.id,
-        'name'       : row.name,
-        'send_from'  : row.send_from,
-        'extension'  : row.extension,
-        'groups'     : groups,
-        'identities' : identities});
+            new Model.User.empty()
+              ..ID = row.id
+              ..name = row.name
+              ..address = row.send_from
+              ..peer = row.extension
+              ..groups = groups
+              ..identities = identities);
       };
 
       return users;

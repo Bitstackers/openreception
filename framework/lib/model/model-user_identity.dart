@@ -10,7 +10,7 @@ class UserIdentity {
   /**
    *
    */
-  UserIdentity();
+  UserIdentity.empty();
 
   /**
    *
