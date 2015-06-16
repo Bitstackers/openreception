@@ -35,6 +35,13 @@ class RESTContactStore implements Storage.Contact {
     return this._backend.get(url).then(JSON.decode);
   }
 
+  Future<Iterable<int>> organizations(int contactID) {
+    Uri url = Resource.Contact.organizations(this._host, contactID);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(JSON.decode);
+  }
+
   Future<Iterable<Model.Contact>> managementServerList(int receptionID) {
     Uri url = Resource.Contact.managementServerList(this._host, receptionID);
     url = appendToken(url, this._token);
