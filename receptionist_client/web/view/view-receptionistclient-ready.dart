@@ -184,8 +184,9 @@ class ReceptionistclientReady {
         _callController);
 
     _messageArchive = new MessageArchive
-        (new Model.UIMessageArchive(querySelector('#message-archive')),
-         new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchive));
+        (new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays),
+         new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchive),
+         _messageController);
 
     _messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),

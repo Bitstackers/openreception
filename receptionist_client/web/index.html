@@ -586,6 +586,53 @@
             #message-archive .generic-widget-body {
               outline: 0;
             }
+
+            #message-archive table {
+              width: calc(100% - 2em);
+              margin: 1em;
+              border-collapse: collapse;
+            }
+
+            #message-archive td {
+              padding: 0.5em;
+            }
+
+            #message-archive table thead {
+              font-weight: bold;
+              text-align: center;
+            }
+
+            #message-archive table thead tr td,
+            #message-archive table tbody tr:last-child td {
+              border-bottom: solid 2px #ddd;
+            }
+
+            #message-archive table tbody td {
+              border-left: solid 2px #ddd;
+              border-right: solid 2px #ddd;
+            }
+
+            #message-archive table tbody td.message-cell {
+              width: 25%;
+            }
+
+            #message-archive table tbody td.message-cell div.slim {
+              height: 1.2em;
+              overflow: auto;
+              border: solid 1px blue;
+            }
+
+            #message-archive table tbody td button {
+              margin-left: 1em;
+            }
+
+            #message-archive table tbody td.button-cell {
+              width: 250px;
+            }
+
+            #message-archive .td-center {
+              text-align: center;
+            }
           </style>
 
           <div class="spinning-focus-box"></div>
@@ -597,6 +644,66 @@
           </h4>
           <div class="generic-widget-body" tabindex="-1">
             <input type="text" class="archive-filter" placeholder="::message-archive-filter::" tabindex="-1" data-lang-placeholder="message-archive-filter">
+            <table class="saved-messages-table">
+              <thead>
+                <tr>
+                  <td>Dato</td>
+                  <td>Reception</td>
+                  <td>Kontakt</td>
+                  <td>Agent</td>
+                  <td>Besked</td>
+                  <td>Status</td>
+                  <td>Handlinger</td>
+                </tr>
+              </thead>
+              <tbody class="saved-messages-tbody zebra"></tbody>
+            </table>
+            <table>
+              <thead>
+                <tr>
+                  <td>Dato</td>
+                  <td>Reception</td>
+                  <td>Kontakt</td>
+                  <td>Agent</td>
+                  <td>Besked</td>
+                  <td>Status</td>
+                  <td>Handlinger</td>
+                </tr>
+              </thead>
+              <tbody class="sent-message-list zebra">
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                  <td class="td-right">
+                    <button>send</button>
+                    <button>slet</button>
+                    <button>kopier</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td class="message-cell">
+                    <div class="slim">
+                      Til Thomas Løcke,<br>
+                      Her har vi en besked med alt muligt meget lang tekst.. Kan vi ombryde den på en fornuftig måde?<br>foo
+                    </div>
+                  </td>
+                  <td>5</td>
+                  <td class="td-right">
+                    <button>send</button>
+                    <button>slet</button>
+                    <button>kopier</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 

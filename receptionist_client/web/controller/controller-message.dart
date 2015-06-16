@@ -35,7 +35,7 @@ class Message {
   /**
    *
    */
-  Future<Iterable<ORModel.Message>> list() => _store.list();
+  Future<Iterable<ORModel.Message>> list(ORModel.MessageFilter filter) => _store.list(filter: filter);
 
   /**
    *

@@ -185,3 +185,7 @@ textarea:focus {
 .zebra li:nth-of-type(even) {
   background-color: #f0f0f0;
 }
+
+.zebra tr:nth-of-type(even) {
+  background-color: #f0f0f0;
+}

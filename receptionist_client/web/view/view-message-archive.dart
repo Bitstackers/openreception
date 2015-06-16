@@ -17,6 +17,7 @@ part of view;
  * The message archive list.
  */
 class MessageArchive extends ViewWidget {
+  final Controller.Message     _message;
   final Controller.Destination _myDestination;
   final Model.UIMessageArchive _uiModel;
 
@@ -24,7 +25,8 @@ class MessageArchive extends ViewWidget {
    * Constructor.
    */
   MessageArchive(Model.UIMessageArchive this._uiModel,
-                 Controller.Destination this._myDestination) {
+                 Controller.Destination this._myDestination,
+                 Controller.Message this._message) {
     _observers();
   }
 
@@ -32,7 +34,10 @@ class MessageArchive extends ViewWidget {
   @override Model.UIMessageArchive get _ui          => _uiModel;
 
   @override void _onBlur(_) {}
-  @override void _onFocus(_) {}
+  @override void _onFocus(_) {
+    final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty();
+    _message.list(filter).then((Iterable<ORModel.Message> list) => _ui.messages = list);
+  }
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is already
