@@ -204,6 +204,9 @@ abstract class IncomingCall {
     });
   }
 
+  /**
+   * FIXME. Take the actual call into account.
+   */
   static Future<Model.Call> Offer_To_Pick_Up_Call(Receptionist receptionist,
       Model.Call call) {
     step("Client offers to answer call...");
@@ -302,6 +305,7 @@ abstract class IncomingCall {
 
   /**
    * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i1ai-1
+   * TODO: Change the wait-time with the "huntCall" macro.
    */
   static Future incomingCall_I_1_a_i() {
 
@@ -316,7 +320,7 @@ abstract class IncomingCall {
       .then((_) => Call_Announced ())
       .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
       .then((_) => Request_Information (inboundCall.receptionID))
-      .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
+      .then((_) => receptionist.huntNextCall())
       .then((_) => Call_Allocation_Acknowledgement ())
       .then((_) => step ("Client-N->Receptionist-N: Information on <reception name> (with full greeting)."))
       .then((_) => step ("Call-Flow-Control->FreeSWITCH: connect call to phone-N"))
