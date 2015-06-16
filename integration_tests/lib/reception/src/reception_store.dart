@@ -669,11 +669,14 @@ abstract class Reception {
 
     log.info('Creating a new reception ${reception.asMap}');
 
-    return receptionStore.create(reception).then(
+    return receptionStore.create(reception)
+        .then((_) => receptionist.waitFor(eventType: Event.Key.receptionChange)
+        .then((_) => receptionist.eventStack.clear())
+        .then(
         (Model.Reception createdReception) => receptionStore
             .remove(createdReception.ID)
             .then((_) {
-      receptionist.eventStack.clear();
+
       return receptionist
           .waitFor(eventType: Event.Key.receptionChange)
           .then((Event.ReceptionChange event) {
