@@ -3,6 +3,7 @@ library openreception.storage;
 import 'dart:async';
 import 'model.dart' as Model;
 
+part 'storage/storage-cdr.dart';
 part 'storage/storage-contact.dart';
 part 'storage/storage-message.dart';
 part 'storage/storage-message_queue.dart';
