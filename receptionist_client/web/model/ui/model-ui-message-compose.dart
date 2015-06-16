@@ -136,9 +136,7 @@ class UIMessageCompose extends UIModel {
    * Set the message prerequisites for the current contact.
    */
   void set messagePrerequisites(List<String> prerequisites) {
-    final String pre = prerequisites.join(", ");
-
-    if(pre != null && pre.isNotEmpty) {
+    if(prerequisites != null && prerequisites.isNotEmpty) {
       _prerequisites.style.display = '';
       _prerequisites.text = prerequisites.join(", ");
     } else {
@@ -206,6 +204,7 @@ class UIMessageCompose extends UIModel {
     _haveCalledInput.checked = true;
     _landlineInput.value = '';
     _messageTextarea.value = '';
+    messagePrerequisites = null;
     _pleaseCallInput.checked = false;
     _urgentInput.checked = false;
 
