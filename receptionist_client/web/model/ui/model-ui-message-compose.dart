@@ -195,7 +195,7 @@ class UIMessageCompose extends UIModel {
    * message body field. By default shis maintains the recipient list of the
    * currently selected contact.
    *
-   * If [pristine] is true, then also clear the recipient list.
+   * If [pristine] is true, then also clear and close the recipient list.
    */
   void reset({pristine: false}) {
     _callerNameInput.value = '';
@@ -217,6 +217,9 @@ class UIMessageCompose extends UIModel {
 
     if(pristine) {
       _recipientsList.dataset['recipients-list'] = '';
+      _recipientsList.children = [];
+      _recipientsDiv.classes.toggle('recipients-hidden', true);
+      _showRecipientsSpan.classes.toggle('active', false);
     }
   }
 
