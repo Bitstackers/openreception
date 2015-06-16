@@ -217,7 +217,7 @@ class UIMessageCompose extends UIModel {
 
     if(pristine) {
       _recipientsList.dataset['recipients-list'] = '';
-      _recipientsList.children = [];
+      _recipientsList.children.clear();
       _recipientsDiv.classes.toggle('recipients-hidden', true);
       _showRecipientsSpan.classes.toggle('active', false);
     }
