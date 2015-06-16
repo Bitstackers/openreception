@@ -1,3 +1,6 @@
+# Local stuff in bin/
+bin/local_*
+
 # Local config.
 lib/config.dart
 
@@ -7,7 +10,6 @@ build/
 packages
 pubspec.lock
 
-
 # Support tools.
 bin/basic_agent
 support_tools/deps_install
@@ -16,3 +18,6 @@ support_tools/pjproject-2.1
 support_tools/pjproject-2.1.0/
 support_tools/pjproject-2.1.tar.bz2
 
+# emacs
+\#*#
+*~
