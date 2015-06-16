@@ -14,6 +14,8 @@ part 'model/model-base_contact.dart';
 part 'model/model-calendar_entry.dart';
 part 'model/model-calendar_entry_change.dart';
 part 'model/model-call.dart';
+part 'model/model-cdr_checkpoint.dart';
+part 'model/model-cdr_entry.dart';
 part 'model/model-channel.dart';
 part 'model/model-client_configuration.dart';
 part 'model/model-client_connection.dart';
@@ -35,6 +37,8 @@ part 'model/model-reception_filter.dart';
 part 'model/model-template.dart';
 part 'model/model-template_email.dart';
 part 'model/model-user.dart';
+part 'model/model-user_group.dart';
+part 'model/model-user_identity.dart';
 part 'model/model-user_status.dart';
 
 const String libraryName = "openreception.model";
