@@ -670,10 +670,12 @@ abstract class Reception {
     log.info('Creating a new reception ${reception.asMap}');
 
     return receptionStore.create(reception)
-        .then((_) => receptionist.waitFor(eventType: Event.Key.receptionChange))
-        .then((_) => receptionist.eventStack.clear())
-        .then(
-        (Model.Reception createdReception) => receptionStore
+        .then((Model.Reception createdReception) {
+      return receptionist.waitFor(eventType: Event.Key.receptionChange)
+        .then((_) =>receptionist.eventStack.clear())
+        .then((_) =>
+
+      receptionStore
             .remove(createdReception.ID)
             .then((_) {
 
@@ -684,5 +686,6 @@ abstract class Reception {
         expect(event.state, equals(Event.ReceptionState.DELETED));
       });
     }));
+   });
   }
 }
