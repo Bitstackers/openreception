@@ -178,10 +178,10 @@
               <span class="readable-start"></span>-<span class="readable-stop"></span>
             </div>
             <div class="entry-duration-container">
-              <span data-lang-text="calendar-editor-entry-duration">::entry-duration::</span><span class="entry-duration">::entry duration::</span>
+              <span data-lang-text="duration">::entry-duration::</span><span class="entry-duration"></span>
             </div>
             <div class="entry-start-container">
-              <span data-lang-text="calendar-editor-start">::start::</span>
+              <span data-lang-text="start">::start::</span>
               <input input-field class="start-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input input-field class="start-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
               <input input-field class="start-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
@@ -189,7 +189,7 @@
               <input input-field class="start-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
             </div>
             <div class="entry-stop-container">
-              <span data-lang-text="calendar-editor-stop">::stop::</span>
+              <span data-lang-text="stop">::stop::</span>
               <input input-field class="stop-day" type="number" placeholder="DD" min="1" max="31" tabindex="-1"> /
               <input input-field class="stop-month" type="number" placeholder="MM" min="1" max="12" tabindex="-1"> /
               <input input-field class="stop-year" type="number" placeholder="YYYY" min="2014" max="2024" tabindex="-1">
@@ -197,9 +197,9 @@
               <input input-field class="stop-minute" type="number" placeholder="mm" min="0" max="59" tabindex="-1">
             </div>
             <div class="entry-buttons-container">
-              <button class="cancel" tabindex="-1" data-lang-text="calendar-editor-cancel">::cancel::</button>
-              <button class="delete" disabled tabindex="-1" data-lang-text="calendar-editor-delete">::delete::</button>
-              <button class="save" disabled tabindex="-1" data-lang-text="calendar-editor-save">::save::</button>
+              <button class="cancel" tabindex="-1" data-lang-text="cancel">::cancel::</button>
+              <button class="delete" disabled tabindex="-1" data-lang-text="delete">::delete::</button>
+              <button class="save" disabled tabindex="-1" data-lang-text="save">::save::</button>
             </div>
           </div>
         </div>
@@ -647,17 +647,17 @@
             <span class="extra-header"></span>
           </h4>
           <div class="generic-widget-body" tabindex="-1">
-            <input type="text" class="archive-filter" placeholder="::message-archive-filter::" tabindex="-1" data-lang-placeholder="message-archive-filter">
+            <input type="text" class="archive-filter" placeholder="::message-archive-filter::" tabindex="-1" data-lang-placeholder="filter">
             <table class="saved-messages-table">
               <thead>
                 <tr>
-                  <td>Dato</td>
-                  <td>Reception</td>
-                  <td>Kontakt</td>
-                  <td>Agent</td>
-                  <td>Besked</td>
-                  <td>Status</td>
-                  <td>Handlinger</td>
+                  <td data-lang-text="date">::date::</td>
+                  <td data-lang-text="reception">::reception::</td>
+                  <td data-lang-text="contact">::contact::</td>
+                  <td data-lang-text="agent">::agent::</td>
+                  <td data-lang-text="message">::message::</td>
+                  <td data-lang-text="status">::status::</td>
+                  <td data-lang-text="actions">::actions::</td>
                 </tr>
               </thead>
               <tbody class="saved-messages-tbody zebra"></tbody>
@@ -665,13 +665,13 @@
             <table class="sent-messages-table">
               <thead>
                 <tr>
-                  <td>Dato</td>
-                  <td>Reception</td>
-                  <td>Kontakt</td>
-                  <td>Agent</td>
-                  <td>Besked</td>
-                  <td>Status</td>
-                  <td>Handlinger</td>
+                  <td data-lang-text="date">::date::</td>
+                  <td data-lang-text="reception">::reception::</td>
+                  <td data-lang-text="contact">::contact::</td>
+                  <td data-lang-text="agent">::agent::</td>
+                  <td data-lang-text="message">::message::</td>
+                  <td data-lang-text="status">::status::</td>
+                  <td data-lang-text="actions">::actions::</td>
                 </tr>
               </thead>
               <tbody class="sent-messages-tbody zebra"></tbody>
@@ -1168,8 +1168,8 @@
                     </div>
 
                     <div class="buttons display-flex-row">
-                      <button class="save" disabled tabindex="-1" data-lang-text="message-compose-save">::save::</button>
-                      <button class="send" disabled tabindex="-1" data-lang-text="message-compose-send">::send::</button>
+                      <button class="save" disabled tabindex="-1" data-lang-text="save">::save::</button>
+                      <button class="send" disabled tabindex="-1" data-lang-text="send">::send::</button>
                     </div>
                   </div>
                 </div>
@@ -1656,11 +1656,11 @@
               <div class="stats">
                 <table>
                   <tr>
-                    <td data-lang-text="agent-info-active">::active::</td>
+                    <td data-lang-text="active">::active::</td>
                     <td class="active-count"></td>
                   </tr>
                   <tr>
-                    <td data-lang-text="agent-info-paused">::paused::</td>
+                    <td data-lang-text="paused">::paused::</td>
                     <td class="paused-count"></td>
                   </tr>
                 </table>

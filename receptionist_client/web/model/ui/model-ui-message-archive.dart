@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides access to the MessageArchive UX components.
  */
 class UIMessageArchive extends UIModel {
   final DivElement      _myRoot;
@@ -34,11 +34,9 @@ class UIMessageArchive extends UIModel {
   @override HtmlElement get _lastTabElement  => _body;
   @override HtmlElement get _root            => _myRoot;
 
-  DivElement get _body                => _root.querySelector('.generic-widget-body');
-  TableElement get _savedTable        => _root.querySelector('table.saved-messages-table');
+  DivElement          get _body       => _root.querySelector('.generic-widget-body');
   TableSectionElement get _savedTbody => _root.querySelector('table tbody.saved-messages-tbody');
-  TableElement get _sentTable        => _root.querySelector('table.sent-messages-table');
-  TableSectionElement get _sentTbody => _root.querySelector('table tbody.sent-messages-tbody');
+  TableSectionElement get _sentTbody  => _root.querySelector('table tbody.sent-messages-tbody');
 
   /**
    *

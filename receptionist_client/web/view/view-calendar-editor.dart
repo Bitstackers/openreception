@@ -164,7 +164,7 @@ class CalendarEditor extends ViewWidget {
         if(cmd == Controller.Cmd.EDIT) {
           entry = _contactCalendar.selectedCalendarEntry;
 
-          _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
+          _ui.headerExtra = '(${_langMap[Key.editDelete]})';
           _setAuthorStamp(entry);
 
           _render(entry);
@@ -186,7 +186,7 @@ class CalendarEditor extends ViewWidget {
         if(cmd == Controller.Cmd.EDIT) {
           entry = _receptionCalendar.selectedCalendarEntry;
 
-          _ui.headerExtra = '(${_langMap[Key.editorEditDelete]})';
+          _ui.headerExtra = '(${_langMap[Key.editDelete]})';
           _setAuthorStamp(entry);
 
           _render(entry);

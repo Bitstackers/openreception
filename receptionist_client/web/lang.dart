@@ -16,21 +16,18 @@ library lang;
 const String libraryName = 'lang';
 
 abstract class Key {
-  static const String agentInfoActive                 = 'agent-info-active';
-  static const String agentInfoPaused                 = 'agent-info-paused';
+  static const String actions                         = 'actions';
+  static const String active                          = 'active';
+  static const String agent                           = 'agent';
 
-  static const String calendarEditorCancel            = 'calendar-editor-cancel';
   static const String calendarEditorDelErrorTitle     = 'calendar-editor-del-error';
   static const String calendarEditorDelSuccessTitle   = 'calendar-editor-del-success';
-  static const String calendarEditorDelete            = 'calendar-editor-delete';
-  static const String calendarEditorEntryDuration     = 'calendar-editor-entry-duration';
   static const String calendarEditorHeader            = 'calendar-editor-header';
-  static const String calendarEditorSave              = 'calendar-editor-save';
   static const String calendarEditorSaveErrorTitle    = 'calendar-editor-save-error';
   static const String calendarEditorSaveSuccessTitle  = 'calendar-editor-save-success';
-  static const String calendarEditorStart             = 'calendar-editor-start';
-  static const String calendarEditorStop              = 'calendar-editor-stop';
 
+  /// NOTE: The callState... strings are special in that their usage cannot be
+  /// grep'ed in the source. They are used in the call queue widgets.
   static const String callStateCreated                = 'callstate-created';
   static const String callStateHungup                 = 'callstate-hungup';
   static const String callStateInbound                = 'callstate-inbound';
@@ -44,8 +41,9 @@ abstract class Key {
   static const String callStateUnknown                = 'callstate-unknown';
   static const String callStateUnparked               = 'callstate-unparked';
 
+  static const String cancel                          = 'cancel';
+  static const String contact                         = 'contact';
   static const String contactCalendarHeader           = 'contact-calendar-header';
-
   static const String contactDataAddInfo              = 'contact-data-add-info';
   static const String contactDataBackup               = 'contact-data-backup';
   static const String contactDataCommands             = 'contact-data-commands';
@@ -62,6 +60,7 @@ abstract class Key {
   static const String contactDataWorkHours            = 'contact-data-work-hours';
   static const String contactSelectorHeader           = 'contact-selector-header';
 
+  static const String date                            = 'date';
   static const String dayMonday                       = 'day-monday';
   static const String dayTuesday                      = 'day-tuesday';
   static const String dayWednesday                    = 'day-wednesday';
@@ -69,27 +68,23 @@ abstract class Key {
   static const String dayFriday                       = 'day-friday';
   static const String daySaturday                     = 'day-saturday';
   static const String daySunday                       = 'day-sunday';
+  static const String delete                          = 'delete';
+  static const String duration                        = 'duration';
 
+  static const String editDelete                      = 'edit-delete';
   static const String editorNew                       = 'editor-new';
-  static const String editorEditDelete                = 'editor-edit-delete';
-
   static const String error                           = 'error';
 
   static const String filter                          = 'filter';
 
   static const String globalCallQueueHeader           = 'global-call-queue-header';
 
-  static const String messageArchiveEditHeader        = 'message-archive-edit-header';
-  static const String messageArchiveFilter            = 'message-archive-filter';
-  static const String messageArchiveFilterHeader      = 'message-archive-filter-header';
+  static const String message                         = 'message';
   static const String messageArchiveHeader            = 'message-archive-header';
-
   static const String messageComposeCallerName        = 'message-compose-caller-name';
   static const String messageComposeCallsBack         = 'message-compose-calls-back';
-  static const String messageComposeCancel            = 'message-compose-cancel';
   static const String messageComposeCellPhone         = 'message-compose-cell-phone';
   static const String messageComposeCompanyName       = 'message-compose-company-name';
-  static const String messageComposeDraft             = 'message-compose-draft';
   static const String messageComposeHaveCalled        = 'message-compose-have-called';
   static const String messageComposeHeader            = 'message-compose-header';
   static const String messageComposeLocalExt          = 'message-compose-local-ext';
@@ -97,18 +92,17 @@ abstract class Key {
   static const String messageComposeNameHint          = 'message-compose-name-hint';
   static const String messageComposePleaseCall        = 'message-compose-please-call';
   static const String messageComposePhone             = 'message-compose-phone';
-  static const String messageComposeSave              = 'message-compose-save';
-  static const String messageComposeSend              = 'message-compose-send';
   static const String messageComposeShowRecipients    = 'message-compose-show-recipients';
   static const String messageComposeUrgent            = 'message-compose-urgent';
-
   static const String messageSaveErrorTitle           = 'message-save-error';
   static const String messageSendErrorTitle           = 'message-send-error';
   static const String messageSaveSuccessTitle         = 'message-save-success';
   static const String messageSendSuccessTitle         = 'message-send-success';
-
   static const String myQueuedCallsHeader             = 'my-queued-calls-header';
 
+  static const String paused                          = 'paused';
+
+  static const String reception                       = 'reception';
   static const String receptionAddressesHeader        = 'reception-addresses-header';
   static const String receptionAltNamesHeader         = 'reception-alt-names-header';
   static const String receptionBankInfoHeader         = 'reception-bank-info-header';
@@ -125,34 +119,34 @@ abstract class Key {
   static const String receptionVATNumbersHeader       = 'reception-vat-numbers-header';
   static const String receptionWebsitesHeader         = 'reception-websites-header';
 
+  static const String save                            = 'save';
   static const String selectedReceptionRemoved        = 'selected-reception-removed';
   static const String selectedReceptionUpdated        = 'selected-reception-updated';
-
+  static const String send                            = 'send';
   static const String standardGreeting                = 'standard-greeting';
-
+  static const String start                           = 'start';
   static const String stateDisasterHeader             = 'state-disaster-header';
   static const String stateLoadingHeader              = 'state-loading-header';
+  static const String status                          = 'status';
+  static const String stop                            = 'stop';
 }
 
 /**
  * Danish translation map.
  */
 Map<String, String> da =
-  {Key.agentInfoActive                : 'Aktive',
-   Key.agentInfoPaused                : 'Pause',
+  {Key.actions                        : 'Handlinger',
+   Key.active                         : 'Aktive',
+   Key.agent                          : 'Agent',
 
-   Key.calendarEditorCancel           : 'Annuller',
    Key.calendarEditorDelErrorTitle    : 'Kalenderaftalen blev ikke slettet',
    Key.calendarEditorDelSuccessTitle  : 'Kalenderaftalen blev slettet',
-   Key.calendarEditorDelete           : 'Slet',
-   Key.calendarEditorEntryDuration    : 'Varighed',
    Key.calendarEditorHeader           : 'Kalenderaftale',
-   Key.calendarEditorSave             : 'Gem',
    Key.calendarEditorSaveErrorTitle   : 'Kalenderaftalen blev ikke gemt',
    Key.calendarEditorSaveSuccessTitle : 'Kalenderaftalen blev gemt',
-   Key.calendarEditorStart            : 'Start',
-   Key.calendarEditorStop             : 'Stop',
 
+   /// NOTE: The callState... strings are special in that their usage cannot be
+   /// grep'ed in the source. They are used in the call queue widgets.
    Key.callStateCreated               : 'Oprettet',
    Key.callStateHungup                : 'Lagt på',
    Key.callStateInbound               : 'Indgående',
@@ -166,8 +160,9 @@ Map<String, String> da =
    Key.callStateUnknown               : 'Ukendt',
    Key.callStateUnparked              : 'Ikke parkeret',
 
+   Key.cancel                         : 'Annuller',
+   Key.contact                        : 'Kontakt',
    Key.contactCalendarHeader          : 'Kontakt kalender',
-
    Key.contactDataAddInfo             : 'Diverse',
    Key.contactDataBackup              : 'Backup',
    Key.contactDataCommands            : 'Kommandoer',
@@ -184,6 +179,7 @@ Map<String, String> da =
    Key.contactDataWorkHours           : 'Arbejdstider',
    Key.contactSelectorHeader          : 'Kontakter',
 
+   Key.date                           : 'Dato',
    Key.dayMonday                      : 'Mandag',
    Key.dayTuesday                     : 'Tirsdag',
    Key.dayWednesday                   : 'Onsdag',
@@ -191,27 +187,23 @@ Map<String, String> da =
    Key.dayFriday                      : 'Fredag',
    Key.daySaturday                    : 'Lørdag',
    Key.daySunday                      : 'Søndag',
+   Key.delete                         : 'Slet',
+   Key.duration                       : 'Varighed',
 
-   Key.editorEditDelete               : 'ret/slet',
+   Key.editDelete                     : 'ret/slet',
    Key.editorNew                      : 'ny',
-
    Key.error                          : 'fejl',
 
-   Key.filter                         : 'Søg....',
+   Key.filter                         : 'filter...',
 
    Key.globalCallQueueHeader          : 'Kø',
 
-   Key.messageArchiveEditHeader       : 'Besked',
-   Key.messageArchiveFilter           : 'Filter...',
-   Key.messageArchiveFilterHeader     : 'Besked arkiv filter',
+   Key.message                        : 'Besked',
    Key.messageArchiveHeader           : 'Besked arkiv',
-
    Key.messageComposeCallerName       : 'Fuldt navn',
    Key.messageComposeCallsBack        : 'Ringer selv tilbage',
-   Key.messageComposeCancel           : 'Annuller',
    Key.messageComposeCellPhone        : 'Mobilnummer',
    Key.messageComposeCompanyName      : 'Virksomhed',
-   Key.messageComposeDraft            : 'Kladde',
    Key.messageComposeHaveCalled       : 'Har ringet',
    Key.messageComposeHeader           : 'Besked',
    Key.messageComposeLocalExt         : 'Lokalnummer',
@@ -219,18 +211,17 @@ Map<String, String> da =
    Key.messageComposeNameHint         : 'Information om opkalder',
    Key.messageComposePleaseCall       : 'Ring venligst',
    Key.messageComposePhone            : 'Telefon',
-   Key.messageComposeSave             : 'Gem',
-   Key.messageComposeSend             : 'Send',
    Key.messageComposeShowRecipients   : 'Vis modtagere',
    Key.messageComposeUrgent           : 'Haster',
-
    Key.messageSaveErrorTitle          : 'Beskeden blev ikke gemt',
    Key.messageSendErrorTitle          : 'Beskeden blev ikke sendt',
    Key.messageSaveSuccessTitle        : 'Beskeden blev gemt',
    Key.messageSendSuccessTitle        : 'Beskeden blev sendt',
-
    Key.myQueuedCallsHeader            : 'Mine kald',
 
+   Key.paused                         : 'Pause',
+
+   Key.reception                      : 'Reception',
    Key.receptionAddressesHeader       : 'Adresser',
    Key.receptionAltNamesHeader        : 'Alternative navne',
    Key.receptionBankInfoHeader        : 'Bank',
@@ -247,33 +238,33 @@ Map<String, String> da =
    Key.receptionVATNumbersHeader      : 'CVR-numre',
    Key.receptionWebsitesHeader        : 'WWW',
 
+   Key.save                           : 'Gem',
    Key.selectedReceptionRemoved       : 'Den valgte reception er fjernet',
    Key.selectedReceptionUpdated       : 'Den valgte reception er opdateret',
-
+   Key.send                           : 'Send',
    Key.standardGreeting               : 'Velkommen til....',
-
+   Key.start                          : 'Start',
    Key.stateDisasterHeader            : 'Vi har problemer - prøver at genstarte hvert 10 sekund',
-   Key.stateLoadingHeader             : 'Hold på bits og bytes mens vi starter programmet'};
+   Key.stateLoadingHeader             : 'Hold på bits og bytes mens vi starter programmet',
+   Key.status                         : 'Status',
+   Key.stop                           : 'Stop'};
 
 /**
  * English translation map.
  */
 Map<String, String> en =
-  {Key.agentInfoActive                : 'Active',
-   Key.agentInfoPaused                : 'Paused',
+  {Key.actions                        : 'Actions',
+   Key.active                         : 'Active',
+   Key.agent                          : 'Agent',
 
-   Key.calendarEditorCancel           : 'Cancel',
-   Key.calendarEditorDelete           : 'Delete',
    Key.calendarEditorDelErrorTitle    : 'Calendar entry not deleted',
    Key.calendarEditorDelSuccessTitle  : 'Calendar entry deleted',
-   Key.calendarEditorEntryDuration    : 'Duration',
    Key.calendarEditorHeader           : 'Calendar event',
-   Key.calendarEditorSave             : 'Save',
    Key.calendarEditorSaveErrorTitle   : 'Calendar entry not saved',
    Key.calendarEditorSaveSuccessTitle : 'Calendar entry saved',
-   Key.calendarEditorStart            : 'Start',
-   Key.calendarEditorStop             : 'Stop',
 
+   /// NOTE: The callState... strings are special in that their usage cannot be
+   /// grep'ed in the source. They are used in the call queue widgets.
    Key.callStateCreated               : 'Created',
    Key.callStateHungup                : 'Hungup',
    Key.callStateInbound               : 'Inbound',
@@ -287,8 +278,9 @@ Map<String, String> en =
    Key.callStateUnknown               : 'Unknown',
    Key.callStateUnparked              : 'Unparked',
 
+   Key.cancel                         : 'Cancel',
+   Key.contact                        : 'Contact',
    Key.contactCalendarHeader          : 'Contact calendar',
-
    Key.contactDataAddInfo             : 'Miscellaneous',
    Key.contactDataBackup              : 'Backup',
    Key.contactDataCommands            : 'Commands',
@@ -305,6 +297,7 @@ Map<String, String> en =
    Key.contactDataWorkHours           : 'Work hours',
    Key.contactSelectorHeader          : 'Contacts',
 
+   Key.date                           : 'Date',
    Key.dayMonday                      : 'Monday',
    Key.dayTuesday                     : 'Tuesday',
    Key.dayWednesday                   : 'Wednesday',
@@ -312,27 +305,23 @@ Map<String, String> en =
    Key.dayFriday                      : 'Friday',
    Key.daySaturday                    : 'Saturday',
    Key.daySunday                      : 'Sunday',
+   Key.delete                         : 'Delete',
+   Key.duration                       : 'Duration',
 
-   Key.editorEditDelete               : 'edit/delete',
+   Key.editDelete                     : 'edit/delete',
    Key.editorNew                      : 'new',
-
    Key.error                          : 'error',
 
-   Key.filter                         : 'search....',
+   Key.filter                         : 'filter...',
 
    Key.globalCallQueueHeader          : 'Queue',
 
-   Key.messageArchiveEditHeader       : 'Message',
-   Key.messageArchiveFilter           : 'Filter...',
-   Key.messageArchiveFilterHeader     : 'Message archive filter',
+   Key.message                        : 'Message',
    Key.messageArchiveHeader           : 'Message archive',
-
    Key.messageComposeCallerName       : 'Full name',
    Key.messageComposeCallsBack        : 'Will call back later',
-   Key.messageComposeCancel           : 'Cancel',
    Key.messageComposeCellPhone        : 'Cell phone',
    Key.messageComposeCompanyName      : 'Company',
-   Key.messageComposeDraft            : 'Draft',
    Key.messageComposeHaveCalled       : 'Have called',
    Key.messageComposeHeader           : 'Message',
    Key.messageComposeLocalExt         : 'Extension',
@@ -340,18 +329,17 @@ Map<String, String> en =
    Key.messageComposeNameHint         : 'Information about caller',
    Key.messageComposePleaseCall       : 'Please call',
    Key.messageComposePhone            : 'Phone',
-   Key.messageComposeSave             : 'Save',
-   Key.messageComposeSend             : 'Send',
    Key.messageComposeShowRecipients   : 'Show recipients',
    Key.messageComposeUrgent           : 'Urgent',
-
    Key.messageSaveErrorTitle          : 'Message not saved',
    Key.messageSendErrorTitle          : 'Message not sent',
    Key.messageSaveSuccessTitle        : 'Message saved',
    Key.messageSendSuccessTitle        : 'Message sent',
-
    Key.myQueuedCallsHeader            : 'My calls',
 
+   Key.paused                         : 'Paused',
+
+   Key.reception                      : 'Reception',
    Key.receptionAddressesHeader       : 'Addresses',
    Key.receptionAltNamesHeader        : 'Alternative names',
    Key.receptionBankInfoHeader        : 'Bank',
@@ -368,10 +356,13 @@ Map<String, String> en =
    Key.receptionVATNumbersHeader      : 'VAT numbers',
    Key.receptionWebsitesHeader        : 'WWW',
 
+   Key.save                           : 'Save',
    Key.selectedReceptionRemoved       : 'The selected reception has been removed',
    Key.selectedReceptionUpdated       : 'The selected reception has been updated',
-
+   Key.send                           : 'Send',
    Key.standardGreeting               : 'You\'ve called....',
-
+   Key.start                          : 'Start',
    Key.stateDisasterHeader            : 'Problems discovered. Trying to recover every 10 seconds',
-   Key.stateLoadingHeader             : 'Hold on to your bits while we\'re loading the application'};
+   Key.stateLoadingHeader             : 'Hold on to your bits while we\'re loading the application',
+   Key.status                         : 'Status',
+   Key.stop                           : 'Stop'};
