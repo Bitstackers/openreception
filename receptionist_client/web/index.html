@@ -584,6 +584,7 @@
             }
 
             #message-archive .generic-widget-body {
+              overflow: auto;
               outline: 0;
             }
 
@@ -619,7 +620,10 @@
             #message-archive table tbody td.message-cell div.slim {
               height: 1.2em;
               overflow: auto;
-              border: solid 1px blue;
+            }
+
+            #message-archive table tbody td.message-cell div:hover {
+              cursor: pointer;
             }
 
             #message-archive table tbody td button {
@@ -658,7 +662,7 @@
               </thead>
               <tbody class="saved-messages-tbody zebra"></tbody>
             </table>
-            <table>
+            <table class="sent-messages-table">
               <thead>
                 <tr>
                   <td>Dato</td>
@@ -670,39 +674,7 @@
                   <td>Handlinger</td>
                 </tr>
               </thead>
-              <tbody class="sent-message-list zebra">
-                <tr>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>3</td>
-                  <td>4</td>
-                  <td>5</td>
-                  <td>6</td>
-                  <td class="td-right">
-                    <button>send</button>
-                    <button>slet</button>
-                    <button>kopier</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>3</td>
-                  <td>4</td>
-                  <td class="message-cell">
-                    <div class="slim">
-                      Til Thomas Løcke,<br>
-                      Her har vi en besked med alt muligt meget lang tekst.. Kan vi ombryde den på en fornuftig måde?<br>foo
-                    </div>
-                  </td>
-                  <td>5</td>
-                  <td class="td-right">
-                    <button>send</button>
-                    <button>slet</button>
-                    <button>kopier</button>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody class="sent-messages-tbody zebra"></tbody>
             </table>
           </div>
         </div>

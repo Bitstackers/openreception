@@ -37,12 +37,14 @@ class UIMessageArchive extends UIModel {
   DivElement get _body                => _root.querySelector('.generic-widget-body');
   TableElement get _savedTable        => _root.querySelector('table.saved-messages-table');
   TableSectionElement get _savedTbody => _root.querySelector('table tbody.saved-messages-tbody');
+  TableElement get _sentTable        => _root.querySelector('table.sent-messages-table');
+  TableSectionElement get _sentTbody => _root.querySelector('table tbody.sent-messages-tbody');
 
   /**
    *
    */
   TableCellElement _buildAgentCell(ORModel.Message msg) =>
-      new TableCellElement();
+      new TableCellElement()..text = msg.sender.name;
 
   /**
    *
@@ -56,6 +58,12 @@ class UIMessageArchive extends UIModel {
                 ..classes.addAll(['td-center',  'button-cell'])
                 ..children.addAll([buttonSend, buttonDelete, buttonCopy]);
     }
+
+  /**
+   *
+   */
+  TableCellElement _buildContactCell(ORModel.Message msg) =>
+      new TableCellElement()..text = msg.context.contactName;
 
   /**
    *
@@ -74,6 +82,12 @@ class UIMessageArchive extends UIModel {
   /**
    *
    */
+  TableCellElement _buildReceptionCell(ORModel.Message msg) =>
+      new TableCellElement()..text = msg.context.receptionName;
+
+  /**
+   *
+   */
   TableRowElement _buildRow(ORModel.Message msg) {
     final TableRowElement row = new TableRowElement();
 
@@ -84,9 +98,9 @@ class UIMessageArchive extends UIModel {
     final TableCellElement agentCell = new TableCellElement();
 
     row.children.addAll([dateCell,
-                         receptionCell,
-                         contactCell,
-                         agentCell,
+                         _buildReceptionCell(msg),
+                         _buildContactCell(msg),
+                         _buildAgentCell(msg),
                          _buildMessageCell(msg),
                          _buildStatusCell(msg),
                          _buildButtonCell(msg)]);
@@ -133,13 +147,15 @@ class UIMessageArchive extends UIModel {
    *
    */
   set messages(Iterable<ORModel.Message> list) {
+    _savedTbody.children.clear();
+    _sentTbody.children.clear();
+
     list.where((ORModel.Message msg) => !msg.sent && !msg.enqueued).forEach((ORModel.Message msg) {
       _savedTbody.children.add(_buildRow(msg));
     });
 
-    print('!!!!!!!!!!!! Other Messages !!!!!!!!!!!!!!');
     list.where((ORModel.Message msg) => msg.sent || msg.enqueued).forEach((ORModel.Message msg) {
-      print('${ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays)} - ${msg.ID}');
+      _sentTbody.children.add(_buildRow(msg));
     });
   }
 
@@ -149,10 +165,6 @@ class UIMessageArchive extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _body.focus());
-
-//    _messageBody.onClick.listen((MouseEvent event) {
-//      _messageBody.classes.toggle('slim');
-//    });
   }
 
   /**
