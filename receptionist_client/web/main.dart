@@ -104,7 +104,11 @@ main() async {
 
         ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
             (clientConfig.callFlowServerUri, token, new ORTransport.Client());
-        Controller.User controllerUser = new Controller.User(callFlowControl);
+
+        ORService.NotificationService notificationService = new ORService.NotificationService
+            (clientConfig.notificationServerUri, token, new ORTransport.Client());
+
+        Controller.User controllerUser = new Controller.User(callFlowControl, notificationService);
 
 
 

@@ -19,11 +19,24 @@ part of controller;
 class User {
 
   final ORService.CallFlowControl _service;
+  final ORService.NotificationService _connectionService;
 
   /**
    * Constructor.
    */
-  User(this._service);
+  User(this._service, this._connectionService);
+
+  /**
+   * Fetches the last known connection state of users.
+   */
+  Future<Iterable<ORModel.ClientConnection>> connections() =>
+    _connectionService.clientConnections();
+
+  /**
+   * Fetches the connection state of a single user.
+   */
+  Future<ORModel.ClientConnection> connection(ORModel.User user) =>
+    _connectionService.clientConnection(user.ID);
 
   /**
    * Get the [Model.UserStatus] for the current user.
