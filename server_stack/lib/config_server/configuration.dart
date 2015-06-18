@@ -23,6 +23,7 @@ class Configuration {
   Uri        _logServerUri = Uri.parse('http://localhost:4000/');
   Uri        _authServerUri = Uri.parse('http://localhost:4000/');
   Uri        _notificationSocketUri = Uri.parse('ws://localhost:4200/notifications');
+  Uri        _notificationServerUri = Uri.parse('http://localhost:4200');
   String     _systemLanguage = 'en';
 
   String get systemLanguage => _systemLanguage;
@@ -35,6 +36,7 @@ class Configuration {
   Uri    get logServerUri => _logServerUri;
   Uri    get authServerUri => _authServerUri;
   Uri    get notificationSocketUri => _notificationSocketUri;
+  Uri    get notificationServerUri => _notificationServerUri;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -65,8 +67,13 @@ class Configuration {
     return file.readAsString().then((String data) {
       Map config = JSON.decode(data);
 
+
       if(config.containsKey('config_server_http_port')) {
         _httpport = config['config_server_http_port'];
+      }
+
+      if(config.containsKey('notificationServer')) {
+        _notificationServerUri = Uri.parse(config['notificationServer']);
       }
 
       if(config.containsKey('callflowserver')) {
@@ -92,7 +99,7 @@ class Configuration {
       if(config.containsKey('authServerUri')) {
         _authServerUri = Uri.parse(config['authServerUri']);
       }
-      
+
       if(config.containsKey('systemLanguage')) {
         _systemLanguage = config['systemLanguage'];
       }

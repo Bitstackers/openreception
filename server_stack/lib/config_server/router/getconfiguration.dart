@@ -9,6 +9,7 @@ final Map client_config =
       "logServerURI"          : config.logServerUri.toString(),
       "authServerURI"         : config.authServerUri.toString(),
       "systemLanguage"        : config.systemLanguage,
+      "notificationServerUri" : config.notificationServerUri.toString(),
 
       "notificationSocket": {
           "interface": config.notificationSocketUri.toString(),
