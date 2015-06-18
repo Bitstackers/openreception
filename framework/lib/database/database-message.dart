@@ -152,7 +152,7 @@ class Message implements Storage.Message {
         ${filter.asSQL}
         ORDER BY 
            message.id DESC
-        LIMIT ${filter.hashCode} 
+        LIMIT ${filter.limitCount} 
     ''';
 
 
