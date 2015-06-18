@@ -123,7 +123,7 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
 
     /// Skip adding duplicated recipients.
     if (this.recipients[contact.role].contains(contact)) {
-      log.fine('Skipping duplicated contact $contact');
+      log.fine('Skipping duplicated contact $contact (${contact.role}) ');
       return;
     }
 
@@ -141,6 +141,8 @@ class MessageRecipientList extends IterableBase<MessageRecipient>{
       } else {
         this.recipients[contact.role].add(contact);
       }
+    } else if (contact.role.toLowerCase() == Role.BCC) {
+      this.recipients[contact.role].add(contact);
     }
   }
 
