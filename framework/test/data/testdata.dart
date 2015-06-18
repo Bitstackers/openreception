@@ -189,6 +189,8 @@ Map configMap = {
   "messageServerURI": "http://localhost:4040",
   "logServerURI": "http://localhost:4020",
   "authServerURI": "http://localhost:4050",
+  "notificationServerUri" : "http://localhost:4200",
+
   "notificationSocket": {
     "interface": "ws://localhost:4200/notifications",
     "reconnectInterval": 2000

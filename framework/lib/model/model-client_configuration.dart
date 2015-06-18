@@ -9,6 +9,7 @@ abstract class ClientConfigJSONKey {
   static final AuthServerURI = 'authServerURI';
   static final Interface = 'interface';
   static const SystemLanguage = 'systemLanguage';
+  static const notificationServerUri = 'notificationServerUri';
 }
 
 class ClientConfiguration {
@@ -21,6 +22,7 @@ class ClientConfiguration {
   Uri logServerUri;
   Uri authServerUri;
   Uri notificationSocketUri;
+  Uri notificationServerUri;
 
   Map get asMap =>
     {ClientConfigJSONKey.CallFlowServerURI : this.callFlowServerUri.toString(),
@@ -30,6 +32,7 @@ class ClientConfiguration {
      ClientConfigJSONKey.LogServerURI : this.logServerUri.toString(),
      ClientConfigJSONKey.AuthServerURI  : this.authServerUri.toString(),
      ClientConfigJSONKey.SystemLanguage : this.systemLanguage,
+     ClientConfigJSONKey.notificationServerUri : this.notificationServerUri.toString(),
 
       "notificationSocket": {
         ClientConfigJSONKey.Interface: this.notificationSocketUri.toString(),
@@ -62,9 +65,10 @@ class ClientConfiguration {
         Uri.parse(map [ClientConfigJSONKey.LogServerURI]);
     this.authServerUri =
         Uri.parse(map[ClientConfigJSONKey.AuthServerURI]);
+    this.notificationServerUri =
+        Uri.parse(map [ClientConfigJSONKey.notificationServerUri]);
     this.notificationSocketUri =
-        Uri.parse(map ['notificationSocket'][ClientConfigJSONKey.Interface]);
-  }
+        Uri.parse(map ['notificationSocket'][ClientConfigJSONKey.Interface]);  }
 
 
 }
