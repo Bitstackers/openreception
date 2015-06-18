@@ -81,8 +81,7 @@ void _accessLogger(String msg, bool isError) {
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
-    ..get('/message/list/{mid}/limit/{limit}', Message.list)
-    ..get('/message/list', Message.listNewest)
+    ..get('/message/list{?filter}', Message.list)
     ..get('/message/{mid}', Message.get)
     ..put('/message/{mid}', Message.update)
     ..post('/message/{mid}/send', Message.send)

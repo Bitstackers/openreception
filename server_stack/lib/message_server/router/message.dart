@@ -82,46 +82,29 @@ abstract class Message {
   }
 
   /**
-   * Lists the most recently stored messages. Limits on number of fetched messages
-   * are enforced by the persistant storage layer.
-   */
-  static Future<shelf.Response> listNewest (shelf.Request request) {
-    return _messageStore.list()
-      .then ((Iterable<Model.Message> messages) =>
-        new shelf.Response.ok(JSON.encode(messages.toList())))
-      .catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError
-          (body : error.toString());
-    });
-  }
-
-  /**
    * Builds a list of previously stored messages, filtering by the
    * parameters passed in the [queryParameters] of the request.
    */
   static Future<shelf.Response> list (shelf.Request request) {
     Model.MessageFilter filter = new Model.MessageFilter.empty();
-    int messageID  = int.parse(shelf_route.getPathParameter(request, 'mid'));
-
-
-    filter.upperMessageID = messageID;
 
     if (shelf_route.getPathParameters(request).containsKey('filter')) {
       try {
         Map map = JSON.decode(shelf_route.getPathParameter(request, 'filter'));
-
         filter..messageState   = map ['state']
               ..contactID      = map ['contact_id']
               ..receptionID    = map ['reception_id']
               ..userID         = map ['user_id']
               ..limitCount     = map ['limit']
               ..upperMessageID = map ['upper_message_id'];
+
       } catch (error, stackTrace) {
         log.warning(error, stackTrace);
         return new Future.value(new shelf.Response(400, body : 'Bad filter'));
       }
     }
+
+
 
     return _messageStore.list(filter : filter)
       .then ((Iterable<Model.Message> messages) =>
