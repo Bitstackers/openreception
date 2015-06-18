@@ -174,16 +174,6 @@ class Reception extends ReceptionStub {
   Reception.empty() : super.empty();
 
   Reception.fromMap(Map receptionMap) : super.fromMap(receptionMap) {
-    List<String> extractValues(List list) {
-      if (list == null) return [];
-      if (list.isEmpty) return [];
-      if (list.first is Map) return throw new ArgumentError(
-          'Maps are no longer supported. Please upgrade data model.');
-      if (list.first is String) return list;
-
-      throw new ArgumentError('Bad list type: ${list.runtimeType}');
-    }
-
     try {
       this
         ..ID = receptionMap[ReceptionJSONKey.ID]
