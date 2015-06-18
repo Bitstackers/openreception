@@ -88,9 +88,9 @@ abstract class Message {
   static Future<shelf.Response> list (shelf.Request request) {
     Model.MessageFilter filter = new Model.MessageFilter.empty();
 
-    if (shelf_route.getPathParameters(request).containsKey('filter')) {
+    if (_filterFrom(request) != null) {
       try {
-        Map map = JSON.decode(shelf_route.getPathParameter(request, 'filter'));
+        Map map = JSON.decode(_filterFrom(request));
         filter..messageState   = map ['state']
               ..contactID      = map ['contact_id']
               ..receptionID    = map ['reception_id']
