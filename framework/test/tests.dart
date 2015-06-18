@@ -31,7 +31,7 @@ part 'src/model-message.dart';
 //part 'src/model-message_filter.dart';
 //part 'src/model-message_queue_item.dart';
 //part 'src/model-message_recipient.dart';
-//part 'src/model-message_recipient_list.dart';
+part 'src/model-message_recipient_list.dart';
 //part 'src/model-organization.dart';
 //part 'src/model-peer.dart';
 part 'src/model-phone_number.dart';
@@ -67,6 +67,7 @@ void main() {
   testEventMessageChange();
   testEventCalendarChange();
 
+  testModelMessageRecipientList();
   testModelBaseContact();
   testModelContact();
   testModelReception();
