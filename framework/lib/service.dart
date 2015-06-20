@@ -19,6 +19,7 @@ part 'service/service-message.dart';
 part 'service/service-notification.dart';
 part 'service/service-organization.dart';
 part 'service/service-reception.dart';
+part 'service/service-user.dart';
 part 'service/service-webservice.dart';
 part 'service/service-websocket.dart';
 
