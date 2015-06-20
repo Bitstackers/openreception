@@ -44,6 +44,7 @@ part 'src/model/model-reception.dart';
 
 part 'src/resource/resource-authentication.dart';
 part 'src/resource/resource-call_flow_control.dart';
+part 'src/resource/resource-cdr.dart';
 part 'src/resource/resource-config.dart';
 part 'src/resource/resource-contact.dart';
 part 'src/resource/resource-message.dart';
@@ -79,6 +80,7 @@ void main() {
 
   testResourceAuthentication();
   testResourceCallFlowControl();
+  testResourceCDR();
   testResourceConfig();
   testResourceContact();
   testResourceMessage();
