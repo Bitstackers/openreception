@@ -62,7 +62,7 @@ class User implements Storage.User {
     return _connection.execute(sql, parameters);
   }
 
-  Future<Model.User> getByID(int userId) {
+  Future<Model.User> get(int userId) {
     String sql = '''
     SELECT id, name, extension, send_from
     FROM users
@@ -215,7 +215,7 @@ class User implements Storage.User {
     return _connection.execute(sql, parameters);
   }
 
-  Future<Model.User> get(String identity) {
+  Future<Model.User> getByIdentity(String identity) {
     String sql = '''
     SELECT id, name, extension, 
      (SELECT array_to_json(array_agg(name)) 
