@@ -16,10 +16,10 @@ class CDRCheckpoint {
   /**
    *
    */
-  CDRCheckpoint.fromJson(Map json) {
-    start = Util.unixTimestampToDateTime(json['start']);
-    end   = Util.unixTimestampToDateTime(json['end']);
-    name  = json['name'];
+  CDRCheckpoint.fromMap(Map map) {
+    start = Util.unixTimestampToDateTime(map['start']);
+    end   = Util.unixTimestampToDateTime(map['end']);
+    name  = map['name'];
   }
 
   /**

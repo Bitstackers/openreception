@@ -15,9 +15,9 @@ class UserGroup {
   /**
    *
    */
-  UserGroup.fromJson(Map json) {
-    id   = json['id'];
-    name = json['name'];
+  UserGroup.fromMap(Map map) {
+    id   = map['id'];
+    name = map['name'];
   }
 
   /**

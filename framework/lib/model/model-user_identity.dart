@@ -15,7 +15,7 @@ class UserIdentity {
   /**
    *
    */
-  UserIdentity.fromJson(Map json) {
+  UserIdentity.fromMap(Map json) {
     identity = json['identity'];
     userId   = json['user_id'];
   }
