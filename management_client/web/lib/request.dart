@@ -11,12 +11,12 @@ import 'package:openreception_framework/service-html.dart' as Transport;
 import 'package:openreception_framework/model.dart' as ORModel;
 
 import 'configuration.dart';
-import 'model/controller.dart' as Controller;
+import 'controller.dart' as Controller;
 import 'model.dart';
 import 'package:logging/logging.dart';
 
 part 'requests/calendar.dart';
-part 'requests/cdr.dart';
+part 'requests/archive/cdr.dart';
 part 'requests/dialplan.dart';
 part 'requests/user.dart';
 
@@ -25,6 +25,10 @@ Logger log = new Logger('request');
 Transport.Client client = new Transport.Client();
 
 Uri _receptionURI = Uri.parse('http://localhost:4000');
+Uri _cdrURI = Uri.parse('http://localhost:4090');
+
+ORService.RESTCDRService _cdrStore = new ORService.RESTCDRService (
+    _cdrURI, config.token, client);
 
 ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
     _receptionURI, config.token, client);
@@ -44,6 +48,13 @@ ORService.RESTContactStore _contactStore = new ORService.RESTContactStore(
 
 Controller.Contact contactController =
     new Controller.Contact(_contactStore);
+
+Controller.Contact calendarController =
+    new Controller.Calendar(_contactStore);
+
+Controller.CDR cdrController =
+    new Controller.CDR(_cdrStore);
+
 
 class HttpMethod {
   static const String GET = 'GET';

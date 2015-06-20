@@ -180,11 +180,18 @@ class ContactView {
 
 
         //Rightbar
-        request.contactController.contactOrganizations(id).then((List<ORModel.Organization> organizations) {
-          organizations.sort();
+        request.contactController.contactOrganizations(id).then((Iterable<int> organizationsIDs) {
           ulOrganizationList.children
-              ..clear()
-              ..addAll(organizations.map(createOrganizationNode));
+                        ..clear();
+
+          Future.forEach(organizationsIDs, (int organizationID) {
+            request.organizationController.get(organizationID)
+              .then((ORModel.Organization org) {
+                saveList.clear();
+                ulOrganizationList.children.add (createOrganizationNode(org));
+
+            });
+          });
         }).catchError((error, stack) {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
