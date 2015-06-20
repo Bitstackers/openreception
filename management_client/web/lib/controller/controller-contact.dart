@@ -8,6 +8,9 @@ class Contact {
   Future<Iterable<ORModel.Contact>> list(int receptionID) =>
       _service.listByReception(receptionID);
 
+  Future<Iterable<int>> contactOrganizations(int contactID) =>
+      _service.organizations(contactID);
+
   Future<ORModel.Contact> getByReception(int contactID, int receptionID) =>
       _service.getByReception(contactID, receptionID);
 
