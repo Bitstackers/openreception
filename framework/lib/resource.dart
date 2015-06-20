@@ -15,3 +15,4 @@ part 'resource/resource-message.dart';
 part 'resource/resource-notification.dart';
 part 'resource/resource-organization.dart';
 part 'resource/resource-reception.dart';
+part 'resource/resource-user.dart';
