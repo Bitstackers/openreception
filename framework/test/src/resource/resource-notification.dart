@@ -6,25 +6,33 @@ void testResourceNotification() {
     test('socket (bad schema)', ResourceNotification.notificationsBadSchema);
     test('send', ResourceNotification.send);
     test('broadcast', ResourceNotification.broadcast);
+    test('clientConnection', ResourceNotification.clientConnection);
+    test('clientConnections', ResourceNotification.clientConnections);
   });
 }
 
 abstract class ResourceNotification {
-  static final Uri notificationServer = Uri.parse('http://localhost:4242');
-  static final Uri notificationSocket = Uri.parse('ws://localhost:4242');
+  static final Uri _notificationService = Uri.parse('http://localhost:4242');
+  static final Uri _notificationSocket = Uri.parse('ws://localhost:4242');
 
   static void notifications() => expect(
-      Resource.Notification.notifications(notificationSocket),
-      equals(Uri.parse('${notificationSocket}/notifications')));
+      Resource.Notification.notifications(_notificationSocket),
+      equals(Uri.parse('${_notificationSocket}/notifications')));
 
   static void notificationsBadSchema() => expect(
-      () => Resource.Notification.notifications(notificationServer),
+      () => Resource.Notification.notifications(_notificationService),
       throwsA(new isInstanceOf<ArgumentError>()));
 
-  static void send() => expect(Resource.Notification.send(notificationServer),
-      equals(Uri.parse('${notificationServer}/send')));
+  static void send() => expect(Resource.Notification.send(_notificationService),
+      equals(Uri.parse('${_notificationService}/send')));
+
+  static void clientConnection() => expect(Resource.Notification.clientConnection(_notificationService, 123),
+      equals(Uri.parse('${_notificationService}/connection/123')));
+
+  static void clientConnections() => expect(Resource.Notification.clientConnections(_notificationService),
+      equals(Uri.parse('${_notificationService}/connection')));
 
   static void broadcast() => expect(
-      Resource.Notification.broadcast(notificationServer),
-      equals(Uri.parse('${notificationServer}/broadcast')));
+      Resource.Notification.broadcast(_notificationService),
+      equals(Uri.parse('${_notificationService}/broadcast')));
 }
