@@ -12,44 +12,57 @@ void testResourceContact() {
     test('calendarEntryChanges', ResourceReception.calendarEntryChanges);
     test('calendarEntryLatestChange',
         ResourceReception.calendarEntryLatestChange);
+    test('receptions', ResourceContact.receptions);
+    test('organizations', ResourceContact.organizations);
+    test('managementServerList', ResourceContact.managementServerList);
+
   });
 }
 
 abstract class ResourceContact {
-  static final Uri contactServer = Uri.parse('http://localhost:4010');
+  static final Uri _host = Uri.parse('http://localhost:4010');
 
-  static void single() => expect(Resource.Contact.single(contactServer, 999),
-      equals(Uri.parse('${contactServer}/contact/999')));
+  static void receptions() => expect(Resource.Contact.receptions(_host, 999),
+      equals(Uri.parse('${_host}/contact/999/reception')));
 
-  static void list() => expect(Resource.Contact.list(contactServer),
-      equals(Uri.parse('${contactServer}/contact')));
+  static void organizations() => expect(Resource.Contact.organizations(_host, 999),
+      equals(Uri.parse('${_host}/contact/999/organization')));
+
+  static void managementServerList() => expect(Resource.Contact.managementServerList(_host, 999),
+      equals(Uri.parse('${_host}/reception/999/contact')));
+
+  static void single() => expect(Resource.Contact.single(_host, 999),
+      equals(Uri.parse('${_host}/contact/999')));
+
+  static void list() => expect(Resource.Contact.list(_host),
+      equals(Uri.parse('${_host}/contact')));
 
   static void singleByReception() => expect(
-      Resource.Contact.singleByReception(contactServer, 999, 456),
-      equals(Uri.parse('${contactServer}/contact/999/reception/456')));
+      Resource.Contact.singleByReception(_host, 999, 456),
+      equals(Uri.parse('${_host}/contact/999/reception/456')));
 
   static void calendar() => expect(
-      Resource.Contact.calendar(contactServer, 999, 888),
-      equals(Uri.parse('${contactServer}/contact/999/reception/888/calendar')));
+      Resource.Contact.calendar(_host, 999, 888),
+      equals(Uri.parse('${_host}/contact/999/reception/888/calendar')));
 
   static void calendarEvent() => expect(
-      Resource.Contact.calendarEvent(contactServer, 999, 777, 123),
+      Resource.Contact.calendarEvent(_host, 999, 777, 123),
       equals(Uri.parse(
-          '${contactServer}/contact/999/reception/777/calendar/event/123')));
+          '${_host}/contact/999/reception/777/calendar/event/123')));
 
   static void endpoints() => expect(
-      Resource.Contact.endpoints(contactServer, 123, 456), equals(
-          Uri.parse('${contactServer}/contact/123/reception/456/endpoints')));
+      Resource.Contact.endpoints(_host, 123, 456), equals(
+          Uri.parse('${_host}/contact/123/reception/456/endpoints')));
 
   static void phones() => expect(
-      Resource.Contact.phones(contactServer, 123, 456),
-      equals(Uri.parse('${contactServer}/contact/123/reception/456/phones')));
+      Resource.Contact.phones(_host, 123, 456),
+      equals(Uri.parse('${_host}/contact/123/reception/456/phones')));
 
   static void calendarEntryChanges() => expect(
-      Resource.Contact.calendarEventChanges(contactServer, 123),
-      equals(Uri.parse('${contactServer}/calendarentry/change/123')));
+      Resource.Contact.calendarEventChanges(_host, 123),
+      equals(Uri.parse('${_host}/calendarentry/change/123')));
 
   static void calendarEntryLatestChange() => expect(
-      Resource.Contact.calendarEventLatestChange(contactServer, 123),
-      equals(Uri.parse('${contactServer}/calendarentry/123/change/latest')));
+      Resource.Contact.calendarEventLatestChange(_host, 123),
+      equals(Uri.parse('${_host}/calendarentry/123/change/latest')));
 }
