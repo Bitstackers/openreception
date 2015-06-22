@@ -25,34 +25,12 @@ CREATE TABLE auth_identities (
    user_id   INTEGER NOT NULL REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
--- CREATE TABLE openids (
---    user_id  INTEGER NOT NULL REFERENCES users (id),
---    openid   TEXT    NOT NULL PRIMARY KEY,
---    priority INTEGER NOT NULL
--- );
-
 -------------------------------------------------------------------------------
 --  Dial-plans:
 
 CREATE TABLE dialplan_templates (
    id       INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    template JSON    NOT NULL
-);
-
--------------------------------------------------------------------------------
---  Calendar of special days:
-
-CREATE TABLE kinds (
-   id          TEXT NOT NULL PRIMARY KEY,
-   description TEXT
-);
-
-CREATE TABLE special_days (
-   kind TEXT NOT NULL REFERENCES kinds (id) ON UPDATE CASCADE ON DELETE CASCADE,
-   day  DATE NOT NULL,
-
-   PRIMARY KEY (kind, day)
 );
 
 -------------------------------------------------------------------------------
@@ -78,7 +56,6 @@ CREATE TABLE receptions (
    id                INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    organization_id   INTEGER NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
    full_name         TEXT    NOT NULL,
---   uri             TEXT    NOT NULL UNIQUE,
    attributes        JSON    NOT NULL,
    extradatauri      TEXT,
    reception_telephonenumber TEXT UNIQUE,
@@ -88,8 +65,6 @@ CREATE TABLE receptions (
    last_check        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
    enabled           BOOLEAN NOT NULL DEFAULT TRUE
 );
-
---CREATE INDEX reception_uri_index ON receptions (uri);
 
 CREATE TABLE reception_contacts (
    reception_id         INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -197,21 +172,6 @@ CREATE TABLE message_queue_history (
 );
 
 -------------------------------------------------------------------------------
---  Message drafts:
-
---  Message drafts are weak document stores, given the fact that we do not want
---  to constrain the fields or format of a work-in-progress message for the
---  client. When the message is done, however, the client must encode it to a
---  more basic format (see Messages table).
-
-CREATE TABLE message_draft (
-   id     INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   owner  INTEGER   NOT NULL REFERENCES users (id),
-   json   JSON      NOT NULL
-);
-
-
--------------------------------------------------------------------------------
 --  Calendar events:
 
 CREATE TABLE calendar_events (
@@ -277,6 +237,7 @@ CREATE TABLE distribution_list (
       REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
+
 -------------------------------------------------------------------------------
 --  Phones
 -- TODO These are now in the contact as JSON and are therefore deprecated
@@ -413,15 +374,6 @@ CREATE SEQUENCE message_queue_history_id_sequence
 ALTER SEQUENCE message_queue_history_id_sequence OWNED BY message_queue_history.id;
 ALTER TABLE ONLY message_queue_history ALTER COLUMN id SET DEFAULT nextval ('message_queue_history_id_sequence'::regclass);
 
-CREATE SEQUENCE message_draft_id_sequence
-  START WITH 1
-  INCREMENT BY 1
-  NO MINVALUE
-  NO MAXVALUE
-  CACHE 1;
-ALTER SEQUENCE message_draft_id_sequence OWNED BY message_draft.id;
-ALTER TABLE ONLY message_draft ALTER COLUMN id SET DEFAULT nextval ('message_draft_id_sequence'::regclass);
-
 CREATE SEQUENCE calendar_events_id_sequence
   START WITH 1
   INCREMENT BY 1
@@ -475,8 +427,6 @@ ALTER TABLE groups OWNER TO openreception;
 ALTER TABLE user_groups OWNER TO openreception;
 ALTER TABLE auth_identities OWNER TO openreception;
 ALTER TABLE dialplan_templates OWNER TO openreception;
-ALTER TABLE kinds OWNER TO openreception;
-ALTER TABLE special_days OWNER TO openreception;
 ALTER TABLE contact_types OWNER TO openreception;
 ALTER TABLE contacts OWNER TO openreception;
 ALTER TABLE organizations OWNER TO openreception;
@@ -489,7 +439,6 @@ ALTER TABLE messages OWNER TO openreception;
 ALTER TABLE message_recipients OWNER TO openreception;
 ALTER TABLE message_queue OWNER TO openreception;
 ALTER TABLE message_queue_history OWNER TO openreception;
-ALTER TABLE message_draft OWNER TO openreception;
 ALTER TABLE calendar_events OWNER TO openreception;
 ALTER TABLE contact_calendar OWNER TO openreception;
 ALTER TABLE reception_calendar OWNER TO openreception;
@@ -510,7 +459,6 @@ ALTER SEQUENCE receptions_id_sequence OWNER TO openreception;
 ALTER SEQUENCE messages_id_sequence OWNER TO openreception;
 ALTER SEQUENCE message_queue_id_sequence OWNER TO openreception;
 ALTER SEQUENCE message_queue_history_id_sequence OWNER TO openreception;
-ALTER SEQUENCE message_draft_id_sequence OWNER TO openreception;
 ALTER SEQUENCE calendar_events_id_sequence OWNER TO openreception;
 ALTER SEQUENCE distribution_list_id_sequence OWNER TO openreception;
 ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO openreception;

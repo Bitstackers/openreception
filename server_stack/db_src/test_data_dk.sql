@@ -1181,9 +1181,6 @@ INSERT INTO message_recipients (contact_id, reception_id, message_id, recipient_
 VALUES (4, 1, 1, 'to', 'Kim Rostgaard Chrisensen', 'BitStackers'),
        (4, 2, 1, 'cc', 'Kim Rostgaard Chrisensen', 'Gir');
 
-INSERT INTO message_draft (id, owner, json)
-VALUES (1, 1 , '{"subject": "Vil gerne have du ringer tilbage.","From" : "Karen Karetkrejler", "body": "Det handler om den sølvgrå Fiat Punto."}');
-
 INSERT INTO message_queue (id, message_id, enqueued_at, last_try, tries)
 VALUES (1000000, 1, NOW(), NULL, 0);
 
@@ -1279,7 +1276,6 @@ SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALS
 --  SELECT setval('message_queue_id_sequence', (SELECT max(id)+1 FROM message_queue), FALSE);
 --  SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
 SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);
-SELECT setval('message_draft_id_sequence', (SELECT max(id)+1 FROM message_draft), FALSE);
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
 SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 SELECT setval('calendar_entry_changes_id_sequence', (SELECT max(id)+1 FROM calendar_entry_changes), FALSE);
