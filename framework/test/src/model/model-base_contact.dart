@@ -5,7 +5,7 @@ testModelBaseContact() {
     test('serializationDeserialization',
         ModelContact.serializationDeserialization);
 
-    test('Model.Contact buildObject', ModelContact.buildObject);
+    test('buildObject', ModelContact.buildObject);
   });
 }
 
