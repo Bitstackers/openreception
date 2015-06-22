@@ -5,7 +5,9 @@ CREATE TABLE users (
    id               INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    name             TEXT    NOT NULL,
    send_from        TEXT    NULL,
-   extension        TEXT    NULL
+   extension        TEXT    NULL,
+   google_username  TEXT    NOT NULL DEFAULT '',
+   google_appcode   TEXT    NOT NULL DEFAULT ''
 );
 
 CREATE TABLE groups (
