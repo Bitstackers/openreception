@@ -38,7 +38,7 @@ class RESTCDRService implements Storage.CDR {
     url = appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        new Model.CalendarEntry.fromMap(JSON.decode(response)));
+        new Model.CDRCheckpoint.fromMap(JSON.decode(response)));
   }
 
   /**
@@ -51,6 +51,6 @@ class RESTCDRService implements Storage.CDR {
 
     return this._backend.post(url, JSON.encode(checkpoint))
       .then((String response) =>
-        new Model.CalendarEntry.fromMap(JSON.decode(response)));
+        new Model.CDRCheckpoint.fromMap(JSON.decode(response)));
   }
 }

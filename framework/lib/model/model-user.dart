@@ -42,7 +42,7 @@ class User {
     name       = userMap[UserKey.name];
     peer       = userMap[UserKey.extension];
 
-    /// Google egmila sending credentials.
+    /// Google gmail sending credentials.
     if (userMap.containsKey(UserKey.googleUsername)) {
       googleUsername = userMap[UserKey.googleUsername];
     }
