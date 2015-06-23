@@ -12,11 +12,12 @@ part 'event/event-contact.dart';
 part 'event/event-endpoint.dart';
 part 'event/event-message.dart';
 part 'event/event-organization.dart';
-part 'event/event-user_state.dart';
 part 'event/event-peer_state.dart';
 part 'event/event-reception.dart';
 part 'event/event-reception_contact.dart';
 part 'event/event-template.dart';
+part 'event/event-user.dart';
+part 'event/event-user_state.dart';
 
 /// Keys for the map.
 
@@ -32,6 +33,7 @@ abstract class Key {
   static const contactChange = 'contactChange';
   static const receptionContactChange = 'receptionContactChange';
   static const receptionChange = 'receptionChange';
+  static const userChange = 'userChange';
   static const organizationChange = 'organizationChange';
   static const receptionID = 'rid';
   static const contactID = 'cid';
