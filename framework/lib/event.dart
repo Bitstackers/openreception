@@ -158,6 +158,10 @@ abstract class Event {
 
         case Key.messageChange:
           return new MessageChange.fromMap(map);
+
+        case Key.userChange:
+          return new UserChange.fromMap(map);
+
         default:
           log.severe('Unsupported event type: ${map['event']}');
       }
