@@ -9,6 +9,7 @@ void testEvent() {
     test('receptionContactChangeState', EventTests.receptionContactChangeState);
     test('messageChangeState', EventTests.messageChangeState);
     test('calendarEntryState', EventTests.calendarEntryState);
+    test('userChange', EventTests.userChange);
   });
 }
 
@@ -109,4 +110,27 @@ abstract class EventTests {
     expect (builtEvent.entryID, equals(id));
     expect (builtEvent.state, equals(state));
   }
+
+  static void userChange() {
+    final int userID = 1234;
+
+    Event.UserChange createEvent = new Event.UserChange.created(userID);
+    Event.UserChange updateEvent = new Event.UserChange.updated(userID);
+    Event.UserChange removeEvent = new Event.UserChange.deleted(userID);
+
+    Event.UserChange builtEvent = new Event.Event.parse(createEvent.asMap);
+
+    expect (builtEvent.userID, equals(userID));
+    expect (builtEvent.state, equals(Event.UserObjectState.CREATED));
+
+    builtEvent = new Event.Event.parse(updateEvent.asMap);
+
+    expect (builtEvent.userID, equals(userID));
+    expect (builtEvent.state, equals(Event.UserObjectState.UPDATED));
+
+    builtEvent = new Event.Event.parse(removeEvent.asMap);
+
+    expect (builtEvent.userID, equals(userID));
+    expect (builtEvent.state, equals(Event.UserObjectState.DELETED));
+}
 }
