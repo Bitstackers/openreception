@@ -14,7 +14,7 @@ abstract class User {
     => Uri.parse('${root(host)}/${userID}');
 
   static Uri root(Uri host)
-    => Uri.parse('$host/$_user}');
+    => Uri.parse('$host/$_user');
 
   static Uri list(Uri host)
     => Uri.parse('${root(host)}');
