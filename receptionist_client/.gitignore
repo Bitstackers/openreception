@@ -18,10 +18,6 @@ packages
 # Don't track docs, generate them.
 web/classes/docs
 
-# Don't track the auto generated javascript files.
-web/bob.dart.js*
-web/bob.dart.*.js
-
 # Don't track deploy and build files
 deploy
 lib/dart-sdk
