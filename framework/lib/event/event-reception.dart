@@ -1,5 +1,8 @@
 part of openreception.event;
 
+/**
+ * 'Enum' representing different outcomes of a [Reception] change.
+ */
 abstract class ReceptionState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';

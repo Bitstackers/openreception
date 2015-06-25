@@ -1,5 +1,8 @@
 part of openreception.event;
 
+/**
+ * Event that spawns every time a client opens or closes a connection.
+ */
 class ClientConnectionState implements Event {
 
   final DateTime timestamp;

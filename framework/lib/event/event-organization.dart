@@ -1,5 +1,8 @@
 part of openreception.event;
 
+/**
+ * 'Enum' representing different outcomes of an [Organization] change.
+ */
 abstract class OrganizationState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';
