@@ -8,6 +8,7 @@ import 'model.dart';
 part 'event/event-calendar.dart';
 part 'event/event-call.dart';
 part 'event/event-channel.dart';
+part 'event/event-client_connection.dart';
 part 'event/event-contact.dart';
 part 'event/event-endpoint.dart';
 part 'event/event-message.dart';
