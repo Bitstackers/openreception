@@ -532,6 +532,42 @@ abstract class Reception {
   }
 
   /**
+   * Test server behaviour when trying to update a reception object that
+   * do not exists.
+   *
+   * The expected behaviour is that the server should return Not Found error
+   */
+  static Future updateNonExisting(Storage.Reception receptionStore) {
+    return receptionStore.list().then((Iterable<Model.Reception> orgs) {
+
+      // Update the last event in list.
+      Model.Reception reception = orgs.last;
+      reception.ID = -1;
+
+      return expect(receptionStore.update(reception),
+          throwsA(new isInstanceOf<Storage.NotFound>()));
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to update a reception object that
+   * exists but with invalid data.
+   *
+   * The expected behaviour is that the server should return Server Error
+   */
+  static Future updateInvalid(Storage.Reception receptionStore) {
+    return receptionStore.list().then((Iterable<Model.Reception> orgs) {
+
+      // Update the last event in list.
+      Model.Reception reception = orgs.last;
+      reception.fullName = null;
+
+      return expect(receptionStore.update(reception),
+          throwsA(new isInstanceOf<Storage.ServerError>()));
+    });
+  }
+
+  /**
    * Test server behaviour when trying to update a reception event object that
    * exists.
    *
@@ -669,23 +705,20 @@ abstract class Reception {
 
     log.info('Creating a new reception ${reception.asMap}');
 
-    return receptionStore.create(reception)
+    return receptionStore
+        .create(reception)
         .then((Model.Reception createdReception) {
-      return receptionist.waitFor(eventType: Event.Key.receptionChange)
-        .then((_) =>receptionist.eventStack.clear())
-        .then((_) =>
-
-      receptionStore
-            .remove(createdReception.ID)
-            .then((_) {
-
       return receptionist
           .waitFor(eventType: Event.Key.receptionChange)
-          .then((Event.ReceptionChange event) {
-        expect(event.receptionID, equals(createdReception.ID));
-        expect(event.state, equals(Event.ReceptionState.DELETED));
-      });
-    }));
-   });
+          .then((_) => receptionist.eventStack.clear())
+          .then((_) => receptionStore.remove(createdReception.ID).then((_) {
+        return receptionist
+            .waitFor(eventType: Event.Key.receptionChange)
+            .then((Event.ReceptionChange event) {
+          expect(event.receptionID, equals(createdReception.ID));
+          expect(event.state, equals(Event.ReceptionState.DELETED));
+        });
+      }));
+    });
   }
 }

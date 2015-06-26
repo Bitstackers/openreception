@@ -72,6 +72,12 @@ runReceptionTests () {
     test ('Reception creation',
         () => Reception.create(receptionStore));
 
+    test ('Non-existing Reception update',
+        () => Reception.updateNonExisting(receptionStore));
+
+    test ('Reception invalid update',
+        () => Reception.updateInvalid(receptionStore));
+
     test ('Reception update',
         () => Reception.update(receptionStore));
 
