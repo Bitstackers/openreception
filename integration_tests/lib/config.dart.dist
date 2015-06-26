@@ -55,6 +55,11 @@ abstract class Config {
    * REST interface listen port.
    */
   static int listenRESTport = 4224;
+
+  /**
+   * The URI of the authentication server.
+   */
+  static Uri authenticationServerUri = Uri.parse('http://auth.example.com');
   
   /**
    * The URI of the config server.
@@ -62,29 +67,34 @@ abstract class Config {
   static Uri configServerUri = Uri.parse('http://localhost:4080');
 
   /**
-   * The URI of the data management server.
-   */
-  static Uri managementServerUri = Uri.parse('http://management.example.com');
-
-  /**
-   * The URI of the authentication server.
-   */
-  static Uri authenticationServerUri = Uri.parse('http://auth.example.com');
-    
-  /**
-   * The URI of the reception store server.
-   */
-  static Uri receptionStoreUri = Uri.parse('http://reception.example.com');
-
-  /**
    * The URI of the contact store server.
    */
   static Uri contactStoreUri = Uri.parse('http://contact.example.com');
 
   /**
+   * The URI of the data management server.
+   */
+  static Uri managementServerUri = Uri.parse('http://management.example.com');
+
+  /**
+   * The URI of the notification server.
+   */
+  static Uri notificationServiceUri = Uri.parse('http://notification.example.com');
+
+  /**
    * The URI of the message store server.
    */
   static Uri messageStoreUri = Uri.parse('http://message.example.com');
+    
+  /**
+   * The URI of the reception store server.
+   */
+  static Uri receptionStoreUri = Uri.parse('http://reception.example.com');
+  
+  /**
+   * The URI of the organization store server.
+   */
+  static Uri organizationStoreUri = Uri.parse('http://organization.example.com');
 
   /**
    * The URI of the callFlowControl server, which is also bound to [pbxHost].
