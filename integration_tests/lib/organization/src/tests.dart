@@ -186,6 +186,22 @@ abstract class Organization {
   }
 
   /**
+   * Test server behaviour when trying to create a new empty organization
+   * which is invalid.
+   *
+   * The expected behaviour is that the server should return an error.
+   */
+  static void createEmpty(Storage.Organization organizationStore) {
+
+    Model.Organization organization = new Model.Organization.empty();
+
+    log.info('Creating a new empty/invalid organization ${organization.asMap}');
+
+    return expect(organizationStore.create(organization),
+        throwsA(new isInstanceOf<Storage.ServerError>()));
+  }
+
+  /**
    * Test server behaviour when trying to create a new organization.
    *
    * The expected behaviour is that the server should return the created

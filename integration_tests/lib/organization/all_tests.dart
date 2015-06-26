@@ -54,6 +54,9 @@ runOrganizationTests () {
     test ('Reception listing Non-existing organization',
         () => Organization.nonExistingOrganizationReceptions(organizationStore));
 
+    test ('Empty/Invalid Organization creation',
+        () => Organization.createEmpty(organizationStore));
+
     test ('Organization creation',
         () => Organization.create(organizationStore));
 
