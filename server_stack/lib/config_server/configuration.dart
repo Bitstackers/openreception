@@ -80,8 +80,8 @@ class Configuration {
         _callFlowServerUri = Uri.parse(config['callflowserver']);
       }
 
-      if(config.containsKey('notificationSocketUri')) {
-        _notificationSocketUri = Uri.parse(config['notificationSocketUri']);
+      if(config.containsKey('notificationSocket')) {
+        _notificationSocketUri = Uri.parse(config['notificationSocket']);
       }
 
       if(config.containsKey('receptionServerUri')) {
