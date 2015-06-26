@@ -259,6 +259,25 @@ abstract class Organization {
   }
 
   /**
+   * Test server behaviour when trying to update a organization object that
+   * exists but with invalid data.
+   *
+   * The expected behaviour is that the server should return an error,
+   */
+  static Future updateInvalid(Storage.Organization organizationStore) {
+    return organizationStore.list().then((Iterable<Model.Organization> orgs) {
+
+      // Update the last event in list.
+      Model.Organization organization = orgs.last;
+
+      log.info('Got organization ${organization.asMap}');
+      organization.fullName = null;
+      return expect(organizationStore.update(organization),
+              throwsA(new isInstanceOf<Storage.ServerError>()));
+    });
+  }
+
+  /**
    * Test server behaviour when trying to delete an organization that exists.
    *
    * The expected behaviour is that the server should succeed.

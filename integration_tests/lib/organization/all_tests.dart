@@ -60,6 +60,9 @@ runOrganizationTests () {
     test ('Organization creation',
         () => Organization.create(organizationStore));
 
+    test ('Organization Invalid update',
+        () => Organization.updateInvalid(organizationStore));
+
     test ('Organization update',
         () => Organization.update(organizationStore));
 
