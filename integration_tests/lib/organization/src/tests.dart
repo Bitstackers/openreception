@@ -298,6 +298,21 @@ abstract class Organization {
   }
 
   /**
+   * Test server behaviour when trying to delete an organization that
+   * do not exists.
+   *
+   * The expected behaviour is that the server should return Not Found error.
+   */
+  static void removeNonExisting(Storage.Organization organizationStore) {
+      const int NonExistingOrganizationId = -1;
+
+      log.info('Targeting organization for removal. Id: ${NonExistingOrganizationId}');
+
+      return expect(organizationStore.remove(NonExistingOrganizationId),
+          throwsA(new isInstanceOf<Storage.NotFound>()));
+  }
+
+  /**
    * Test server behaviour when trying to create a new organization.
    *
    * The expected behaviour is that the server should return the created

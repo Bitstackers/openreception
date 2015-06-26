@@ -69,6 +69,9 @@ runOrganizationTests () {
     test ('Organization removal',
         () => Organization.remove(organizationStore));
 
+    test ('Non-existing organization removal',
+        () => Organization.removeNonExisting(organizationStore));
+
 
     setUp (() {
       transport = new Transport.Client();
