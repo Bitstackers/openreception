@@ -50,6 +50,10 @@ class ClientConfiguration {
       }
   };
 
+  /**
+   * Build an uninitialized object
+   */
+  ClientConfiguration.empty();
 
   ClientConfiguration.fromMap (Map map) {
     this.systemLanguage =
