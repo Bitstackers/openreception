@@ -19,6 +19,7 @@ class ClientConfiguration {
   Uri receptionServerUri;
   Uri contactServerUri;
   Uri messageServerUri;
+  @deprecated
   Uri logServerUri;
   Uri authServerUri;
   Uri notificationSocketUri;
