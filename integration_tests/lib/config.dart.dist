@@ -171,4 +171,8 @@ abstract class Config {
    */
   static List authTokens = ['secret1', 'secret2', 'secret3'];
 
+  /**
+   * Database DSN. Used for testing database storage layer.
+   */
+  static String dbDSN = 'postgres://user:password@host:port/database';
 }
