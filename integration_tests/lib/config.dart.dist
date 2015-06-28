@@ -64,7 +64,7 @@ abstract class Config {
   /**
    * The URI of the config server.
    */
-  static Uri configServerUri = Uri.parse('http://localhost:4080');
+  static Uri configServerUri = Uri.parse('http://config.example.com');
 
   /**
    * The URI of the contact store server.
@@ -95,6 +95,11 @@ abstract class Config {
    * The URI of the organization store server.
    */
   static Uri organizationStoreUri = Uri.parse('http://organization.example.com');
+
+  /**
+   * The URI of the user store server.
+   */
+  static Uri userStoreUri = Uri.parse('http://user.example.com');
 
   /**
    * The URI of the callFlowControl server, which is also bound to [pbxHost].
