@@ -66,6 +66,11 @@ class Connection {
   Future _testConnection() => this._pool.connect().then((PG.Connection conn) => conn.close());
 
   /**
+   * Close the connection
+   */
+  Future close() => _pool.stop();
+
+  /**
    * Database query wrapper.
    */
   Future query(String sql, [Map parameters = null]) => this._pool.connect()
