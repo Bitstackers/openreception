@@ -78,11 +78,20 @@ abstract class Organization {
    * The expected behaviour is that the server should return the
    * Organization object.
    */
-  static void existingOrganization(Storage.Organization organizationStore) {
+  static Future existingOrganization(Storage.Organization organizationStore) {
     const int organizationID = 1;
     log.info('Checking server behaviour on an existing organization.');
 
-    return expect(organizationStore.get(organizationID), isNotNull);
+
+    return organizationStore.get(organizationID)
+        .then((Model.Organization org) {
+      expect (org, isNotNull);
+      expect (org.id, isNotNull);
+      expect (org.id, greaterThan(Model.Organization.noID));
+      expect (org.billingType, isNotNull);
+      expect (org.fullName, isNotNull);
+      expect (org.flag, isNotNull);
+    });
   }
 
   /**
@@ -221,6 +230,9 @@ abstract class Organization {
       expect(organization.billingType, createdOrganization.billingType);
       expect(organization.flag, createdOrganization.flag);
       expect(organization.fullName, createdOrganization.fullName);
+
+      log.info('Test succceeded, removing the created organization.');
+      return organizationStore.remove(createdOrganization.id);
     });
   }
 
@@ -232,28 +244,33 @@ abstract class Organization {
    * Organization object.
    */
   static Future update(Storage.Organization organizationStore) {
-    return organizationStore.list().then((Iterable<Model.Organization> orgs) {
 
-      // Update the last event in list.
-      Model.Organization organization = orgs.last;
+    Model.Organization organization = Randomizer.randomOrganization();
 
-      log.info('Got organization ${organization.asMap}');
+    log.info('Creating a new organization ${organization.asMap}');
+
+    return organizationStore
+        .create(organization)
+        .then((Model.Organization createdOrganization) {
       {
         Model.Organization randOrg = Randomizer.randomOrganization();
         log.info('Updating with info ${randOrg.asMap}');
 
-        organization.flag = randOrg.flag;
-        organization.fullName = randOrg.fullName;
-        organization.billingType = randOrg.billingType;
+        createdOrganization.flag = randOrg.flag;
+        createdOrganization.fullName = randOrg.fullName;
+        createdOrganization.billingType = randOrg.billingType;
       }
       return organizationStore
-          .update(organization)
+          .update(createdOrganization)
           .then((Model.Organization updatedOrganization) {
         expect(updatedOrganization.id, greaterThan(Model.Organization.noID));
+        expect(updatedOrganization.id, equals(createdOrganization.id));
 
-        expect(organization.billingType, updatedOrganization.billingType);
-        expect(organization.flag, updatedOrganization.flag);
-        expect(organization.fullName, updatedOrganization.fullName);
+        expect(createdOrganization.billingType, equals(updatedOrganization.billingType));
+        expect(createdOrganization.flag, equals(updatedOrganization.flag));
+        expect(createdOrganization.fullName, equals(updatedOrganization.fullName));
+
+        return organizationStore.remove(createdOrganization.id);
       });
     });
   }
@@ -283,15 +300,17 @@ abstract class Organization {
    * The expected behaviour is that the server should succeed.
    */
   static Future remove(Storage.Organization organizationStore) {
-    return organizationStore.list().then((Iterable<Model.Organization> orgs) {
 
-      // Update the last event in list.
-      Model.Organization org = orgs.last;
+    Model.Organization organization = Randomizer.randomOrganization();
 
-      log.info('Targeting organization for removal: ${org.asMap}');
+    log.info('Creating a new organization ${organization.asMap}');
 
-      return organizationStore.remove(org.id).then((_) {
-        return expect(organizationStore.get(org.id),
+    return organizationStore
+        .create(organization)
+        .then((Model.Organization createdOrganization) {
+
+      return organizationStore.remove(createdOrganization.id).then((_) {
+        return expect(organizationStore.get(createdOrganization.id),
             throwsA(new isInstanceOf<Storage.NotFound>()));
       });
     });
@@ -336,6 +355,8 @@ abstract class Organization {
           .then((Event.OrganizationChange event) {
         expect(event.orgID, equals(createdOrganization.id));
         expect(event.state, equals(Event.OrganizationState.CREATED));
+
+        return organizationStore.remove(createdOrganization.id);
       });
     });
   }
@@ -348,37 +369,56 @@ abstract class Organization {
    */
   static Future updateEvent(
       Storage.Organization organizationStore, Receptionist receptionist) {
-    return organizationStore.list().then((Iterable<Model.Organization> orgs) {
+    Model.Organization organization = Randomizer.randomOrganization();
+    log.info('Creating a new organization ${organization.asMap}');
 
-      // Update the last event in list.
-      Model.Organization organization = orgs.last;
+    return organizationStore
+        .create(organization)
+        .then((Model.Organization createdOrganization) {
+      expect(createdOrganization.id, greaterThan(Model.Organization.noID));
 
-      log.info('Got organization ${organization.asMap}');
-      {
-        Model.Organization randOrg = Randomizer.randomOrganization();
-        log.info('Updating with info ${randOrg.asMap}');
+      expect(organization.billingType, createdOrganization.billingType);
+      expect(organization.flag, createdOrganization.flag);
+      expect(organization.fullName, createdOrganization.fullName);
+      return receptionist
+          .waitFor(eventType: Event.Key.organizationChange)
+          .then((Event.OrganizationChange event) {
+        expect(event.orgID, equals(createdOrganization.id));
+        expect(event.state, equals(Event.OrganizationState.CREATED));
 
-        organization.flag = randOrg.flag;
-        organization.fullName = randOrg.fullName;
-        organization.billingType = randOrg.billingType;
-      }
-      return organizationStore
-          .update(organization)
+        receptionist.eventStack.clear();
+        {
+          Model.Organization randOrg = Randomizer.randomOrganization();
+          log.info('Updating with info ${randOrg.asMap}');
+
+          createdOrganization.flag = randOrg.flag;
+          createdOrganization.fullName = randOrg.fullName;
+          createdOrganization.billingType = randOrg.billingType;
+        }
+
+        return organizationStore.update(createdOrganization)
           .then((Model.Organization updatedOrganization) {
-        expect(updatedOrganization.id, greaterThan(Model.Organization.noID));
+          expect(updatedOrganization.id, greaterThan(Model.Organization.noID));
+          expect(updatedOrganization.id, equals(createdOrganization.id));
 
-        expect(organization.billingType, updatedOrganization.billingType);
-        expect(organization.flag, updatedOrganization.flag);
-        expect(organization.fullName, updatedOrganization.fullName);
+          expect(createdOrganization.billingType, equals(updatedOrganization.billingType));
+          expect(createdOrganization.flag, equals(updatedOrganization.flag));
+          expect(createdOrganization.fullName, equals(updatedOrganization.fullName));
 
-        return receptionist
-            .waitFor(eventType: Event.Key.organizationChange)
-            .then((Event.OrganizationChange event) {
-          expect(event.orgID, equals(updatedOrganization.id));
-          expect(event.state, equals(Event.OrganizationState.UPDATED));
+
+          return receptionist
+                    .waitFor(eventType: Event.Key.organizationChange)
+                    .then((Event.OrganizationChange event) {
+                  expect(event.orgID, equals(createdOrganization.id));
+                  expect(event.state, equals(Event.OrganizationState.UPDATED));
+          return organizationStore.remove(createdOrganization.id);
+          });
+
         });
+
       });
     });
+
   }
 
   /**
@@ -389,19 +429,41 @@ abstract class Organization {
    */
   static Future deleteEvent(
       Storage.Organization organizationStore, Receptionist receptionist) {
-    return organizationStore.list().then((Iterable<Model.Organization> orgs) {
+    Model.Organization organization = Randomizer.randomOrganization();
+    log.info('Creating a new organization ${organization.asMap}');
 
-      // Update the last event in list.
-      Model.Organization org = orgs.last;
+    return organizationStore
+        .create(organization)
+        .then((Model.Organization createdOrganization) {
+      expect(createdOrganization.id, greaterThan(Model.Organization.noID));
 
-      log.info('Targeting organization for removal: ${org.asMap}');
+      expect(organization.billingType, createdOrganization.billingType);
+      expect(organization.flag, createdOrganization.flag);
+      expect(organization.fullName, createdOrganization.fullName);
+      return receptionist
+          .waitFor(eventType: Event.Key.organizationChange)
+          .then((Event.OrganizationChange event) {
+        expect(event.orgID, equals(createdOrganization.id));
+        expect(event.state, equals(Event.OrganizationState.CREATED));
 
-      return organizationStore.remove(org.id).then((_) {
-        return receptionist
-            .waitFor(eventType: Event.Key.organizationChange)
-            .then((Event.OrganizationChange event) {
-          expect(event.orgID, equals(org.id));
-          expect(event.state, equals(Event.OrganizationState.DELETED));
+        receptionist.eventStack.clear();
+        {
+          Model.Organization randOrg = Randomizer.randomOrganization();
+          log.info('Updating with info ${randOrg.asMap}');
+
+          createdOrganization.flag = randOrg.flag;
+          createdOrganization.fullName = randOrg.fullName;
+          createdOrganization.billingType = randOrg.billingType;
+        }
+
+        return organizationStore.remove(createdOrganization.id)
+          .then((_) {
+          return receptionist
+                    .waitFor(eventType: Event.Key.organizationChange)
+                    .then((Event.OrganizationChange event) {
+                  expect(event.orgID, equals(createdOrganization.id));
+                  expect(event.state, equals(Event.OrganizationState.DELETED));
+          });
         });
       });
     });
