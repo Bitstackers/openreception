@@ -7,6 +7,7 @@ import 'dart:math' show Random;
 
 import 'package:phonio/phonio.dart' as Phonio;
 import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/service-io.dart' as Transport;
 import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;

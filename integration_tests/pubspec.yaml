@@ -16,5 +16,6 @@ dependencies:
   shelf: any
   shelf_cors: any
   shelf_route: any
+  postgresql: any
 dev_dependencies:
   unittest: '>=0.11.5 <0.12.0'

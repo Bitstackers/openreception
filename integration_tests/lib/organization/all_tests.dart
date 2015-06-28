@@ -1,6 +1,38 @@
 part of or_test_fw;
 
 runOrganizationTests () {
+  group ('Database.Contact', () {
+    Database.Organization organizationDB;
+    Database.Connection connection;
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        organizationDB = new Database.Organization(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('Organization creation',
+        () => Organization.create(organizationDB));
+
+    test ('Organization update',
+        () => Organization.update(organizationDB));
+
+    test ('Organization remove',
+        () => Organization.remove(organizationDB));
+
+    test ('Organization get',
+        () => Organization.existingOrganization(organizationDB));
+
+    test ('Organization list',
+        () => Organization.list(organizationDB));
+  });
 
   group ('service.Organization', () {
     Transport.Client transport = null;
