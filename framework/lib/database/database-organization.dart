@@ -164,7 +164,7 @@ WHERE
         .execute(sql, parameters)
         .then((int rowsAffected) =>
           rowsAffected == 1
-            ? Organization
+            ? organization
             : new Future.error(new StateError('Expected exactly one row to '
                 'update, but counted $rowsAffected updates')))
         .catchError((error, stackTrace) {
