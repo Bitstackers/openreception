@@ -51,7 +51,7 @@ void main(List<String> arguments) {
       'args': ['--servertoken', tokens[index++]]
     },
     'MessageDispatcher': {
-      'path': 'bin/messagedispacher.dart',
+      'path': 'bin/messagedispatcher.dart',
       'args': []
     },
     'MiscServer': {
