@@ -1,5 +1,8 @@
 part of openreception.event;
 
+/**
+ * Event that spawns whenever a user changes its call-handling state.
+ */
 class UserState implements Event {
 
   final DateTime timestamp;

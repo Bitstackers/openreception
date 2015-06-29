@@ -1,5 +1,9 @@
 part of openreception.event;
 
+/**
+ * 'Enum' representing different outcomes of a
+ * [Contact] or [BaseContact] change.
+ */
 abstract class ContactState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';

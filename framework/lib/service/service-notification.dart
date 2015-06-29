@@ -126,8 +126,8 @@ class NotificationService {
     }
 
     return this._backend.post (request.resource, JSON.encode(request.body))
-           .whenComplete(dispatchNext);
-           //.catchError((error, StackTrace) => print('${error} : ${StackTrace}'))
+      .catchError((error, StackTrace) => print('${error} : ${StackTrace}'))
+      .whenComplete(dispatchNext);
     }
 
 

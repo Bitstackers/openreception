@@ -12,6 +12,11 @@ abstract class ClientConfigJSONKey {
   static const notificationServerUri = 'notificationServerUri';
 }
 
+/**
+ * Configuration for clients. Is provided by the config server and contains
+ * information about where to locate the various services provided by the
+ * server stack.
+ */
 class ClientConfiguration {
 
   String systemLanguage;
@@ -19,11 +24,15 @@ class ClientConfiguration {
   Uri receptionServerUri;
   Uri contactServerUri;
   Uri messageServerUri;
+  @deprecated
   Uri logServerUri;
   Uri authServerUri;
   Uri notificationSocketUri;
   Uri notificationServerUri;
 
+  /**
+   * Returns a map reflection of the object suitable for data transfer.
+   */
   Map get asMap =>
     {ClientConfigJSONKey.CallFlowServerURI : this.callFlowServerUri.toString(),
      ClientConfigJSONKey.ReceptionServerURI : this.receptionServerUri.toString(),
@@ -49,7 +58,14 @@ class ClientConfiguration {
       }
   };
 
+  /**
+   * Build an uninitialized object
+   */
+  ClientConfiguration.empty();
 
+  /**
+   * Build an object from a serialized map.
+   */
   ClientConfiguration.fromMap (Map map) {
     this.systemLanguage =
         map [ClientConfigJSONKey.SystemLanguage];

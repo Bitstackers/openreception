@@ -1,5 +1,8 @@
 part of openreception.event;
 
+/**
+ * 'Enum' representing different outcomes of a [CalendarEntry] change.
+ */
 abstract class CalendarEntryState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';

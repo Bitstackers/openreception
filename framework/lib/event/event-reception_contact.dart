@@ -1,5 +1,10 @@
 part of openreception.event;
 
+/**
+ * 'Enum' representing different outcomes of an [ReceptionContact] change.
+ *
+ * TODO (krc): Figure out if this is still needed in to ManagementServer.
+ */
 abstract class ReceptionContactState {
   static const String CREATED = 'created';
   static const String UPDATED = 'updated';

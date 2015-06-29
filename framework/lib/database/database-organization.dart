@@ -160,7 +160,18 @@ WHERE
       'id': organization.id
     };
 
-    return _connection.execute(sql, parameters);
+    return _connection
+        .execute(sql, parameters)
+        .then((int rowsAffected) =>
+          rowsAffected == 1
+            ? organization
+            : new Future.error(new StateError('Expected exactly one row to '
+                'update, but counted $rowsAffected updates')))
+        .catchError((error, stackTrace) {
+      /// Log and forward.
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
