@@ -22,7 +22,10 @@ dependencies:
   logging: any
   oauth2: any
   openreception_framework:
-    path: ../OpenReceptionFramework
+    git:
+      ref: master
+      url: https://github.com/BitStackers/OpenReceptionFramework.git
+    version: '>0.0.24+6'
   path: any
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
