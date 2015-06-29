@@ -4,6 +4,10 @@ description: Server stack for the OpenReception application.
 dependencies:
   args: any
   crypto: any
+  emailer:
+    git:
+      ref: master
+      url: https://github.com/Bitstackers/emailer.git
   esl:
     git:
       ref: master
@@ -18,10 +22,7 @@ dependencies:
   logging: any
   oauth2: any
   openreception_framework:
-    git:
-      ref: master
-      url: https://github.com/BitStackers/OpenReceptionFramework.git
-    version: '> 0.0.24+9'
+    path: ../OpenReceptionFramework
   path: any
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
