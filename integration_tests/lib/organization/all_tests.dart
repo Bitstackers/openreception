@@ -1,7 +1,7 @@
 part of or_test_fw;
 
 runOrganizationTests () {
-  group ('Database.Contact', () {
+  group ('Database.Organization', () {
     Database.Organization organizationDB;
     Database.Connection connection;
     setUp(() {
@@ -18,20 +18,36 @@ runOrganizationTests () {
       return connection.close();
     });
 
-    test ('Organization creation',
+    test ('create',
         () => Organization.create(organizationDB));
 
-    test ('Organization update',
+    test ('update',
         () => Organization.update(organizationDB));
 
-    test ('Organization remove',
+    test ('remove',
         () => Organization.remove(organizationDB));
 
-    test ('Organization get',
+    test ('get',
         () => Organization.existingOrganization(organizationDB));
 
-    test ('Organization list',
+    test ('get (non-existing)',
+        () => Organization.nonExistingOrganization(organizationDB));
+
+    test ('list',
         () => Organization.list(organizationDB));
+
+    test ('Contact list',
+        () => Organization.existingOrganizationContacts(organizationDB));
+
+    test ('Contact list (non-existing organization)',
+        () => Organization.nonExistingOrganizationContacts(organizationDB));
+
+    test ('Reception listing',
+        () => Organization.existingOrganizationReceptions(organizationDB));
+
+    test ('Reception listing Non-existing organization',
+        () => Organization.nonExistingOrganizationReceptions(organizationDB));
+
   });
 
   group ('service.Organization', () {
