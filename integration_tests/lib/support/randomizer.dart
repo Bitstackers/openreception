@@ -306,7 +306,8 @@ abstract class Randomizer {
       ..telephoneNumbers = [new Model.PhoneNumber.empty()
                               ..value = '56 33 21 44']
       ..vatNumbers = []
-      ..websites = [];
+      ..websites = []
+      ..organizationId = 1;
 
 
   /**
