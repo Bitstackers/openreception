@@ -528,6 +528,8 @@ abstract class Reception {
       expect(reception.vatNumbers, createdReception.vatNumbers);
       expect(reception.websites, createdReception.websites);
       expect(reception.fullName, createdReception.fullName);
+
+      return receptionStore.remove(createdReception.ID);
     });
   }
 
@@ -575,52 +577,54 @@ abstract class Reception {
    * Reception object.
    */
   static Future update(Storage.Reception receptionStore) {
-    return receptionStore.list().then((Iterable<Model.Reception> orgs) {
 
-      // Update the last event in list.
-      Model.Reception reception = orgs.last;
+    return receptionStore
+            .create(Randomizer.randomReception())
+            .then((Model.Reception createdReception) {
 
-      log.info('Got reception ${reception.asMap}');
+      log.info('Created reception ${createdReception.asMap}');
       {
         Model.Reception randOrg = Randomizer.randomReception();
         log.info('Updating with info ${randOrg.asMap}');
 
-        randOrg.ID = reception.ID;
-        randOrg.organizationId = reception.organizationId;
-        randOrg.lastChecked = reception.lastChecked;
-        reception = randOrg;
+        randOrg.ID = createdReception.ID;
+        randOrg.organizationId = createdReception.organizationId;
+        randOrg.lastChecked = createdReception.lastChecked;
+        createdReception = randOrg;
       }
       return receptionStore
-          .update(reception)
+          .update(createdReception)
           .then((Model.Reception updatedReception) {
         expect(updatedReception.ID, greaterThan(Model.Reception.noID));
-        expect(updatedReception.ID, equals(reception.ID));
-        expect(reception.addresses, updatedReception.addresses);
-        expect(reception.alternateNames, updatedReception.alternateNames);
-        expect(reception.attributes, updatedReception.attributes);
+        expect(updatedReception.ID, equals(createdReception.ID));
+        expect(createdReception.addresses, updatedReception.addresses);
+        expect(createdReception.alternateNames, updatedReception.alternateNames);
+        expect(createdReception.attributes, updatedReception.attributes);
         expect(
-            reception.bankingInformation, updatedReception.bankingInformation);
-        expect(reception.customerTypes, updatedReception.customerTypes);
-        expect(reception.emailAddresses, updatedReception.emailAddresses);
-        expect(reception.extension, updatedReception.extension);
-        expect(reception.extraData, updatedReception.extraData);
-        expect(reception.fullName, updatedReception.fullName);
-        expect(reception.greeting, updatedReception.greeting);
-        expect(reception.handlingInstructions,
+createdReception.bankingInformation, updatedReception.bankingInformation);
+        expect(createdReception.customerTypes, updatedReception.customerTypes);
+        expect(createdReception.emailAddresses, updatedReception.emailAddresses);
+        expect(createdReception.extension, updatedReception.extension);
+        expect(createdReception.extraData, updatedReception.extraData);
+        expect(createdReception.fullName, updatedReception.fullName);
+        expect(createdReception.greeting, updatedReception.greeting);
+        expect(createdReception.handlingInstructions,
             updatedReception.handlingInstructions);
         //TODO: Update this one to greaterThan when the resolution of timestamps in the system has increased.
         expect(updatedReception.lastChecked.millisecondsSinceEpoch,
-            greaterThanOrEqualTo(reception.lastChecked.millisecondsSinceEpoch));
-        expect(reception.openingHours, updatedReception.openingHours);
-        expect(reception.otherData, updatedReception.otherData);
-        expect(reception.product, updatedReception.product);
-        expect(reception.salesMarketingHandling,
+            greaterThanOrEqualTo(createdReception.lastChecked.millisecondsSinceEpoch));
+        expect(createdReception.openingHours, updatedReception.openingHours);
+        expect(createdReception.otherData, updatedReception.otherData);
+        expect(createdReception.product, updatedReception.product);
+        expect(createdReception.salesMarketingHandling,
             updatedReception.salesMarketingHandling);
-        expect(reception.shortGreeting, updatedReception.shortGreeting);
-        expect(reception.telephoneNumbers, updatedReception.telephoneNumbers);
-        expect(reception.vatNumbers, updatedReception.vatNumbers);
-        expect(reception.websites, updatedReception.websites);
-        expect(reception.fullName, updatedReception.fullName);
+        expect(createdReception.shortGreeting, updatedReception.shortGreeting);
+        expect(createdReception.telephoneNumbers, updatedReception.telephoneNumbers);
+        expect(createdReception.vatNumbers, updatedReception.vatNumbers);
+        expect(createdReception.websites, updatedReception.websites);
+        expect(createdReception.fullName, updatedReception.fullName);
+
+        return receptionStore.remove(createdReception.ID);
       });
     });
   }
