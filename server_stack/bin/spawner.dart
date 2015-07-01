@@ -6,8 +6,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 
-const bool CHECKED = true;
-const bool USE_OBSERVATORY = true;
+const bool CHECKED = false;
+const bool USE_OBSERVATORY = false;
 
 Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
