@@ -23,20 +23,31 @@ class BasicLogger {
   void error(message) => print('[ERROR] $message');
   void critical(message) => print('[CRITICAL] $message');
 }
-
+/**
+ * Time serialization function.
+ */
 int dateTimeToUnixTimestamp(DateTime time) {
   return time.toUtc().millisecondsSinceEpoch~/1000;
 }
 
+/**
+ * Time serialization function.
+ */
 DateTime unixTimestampToDateTime(int secondsSinceEpoch) {
   return new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch*1000, isUtc: true);
 }
 
-String dateTimeToJson(DateTime time) {
-  //TODO We should find a format.
-  return time.toString();
-}
+/**
+ * Time serialization function.
+ *
+ * TODO: Figure out a format, or migrate to the unix timestamp version above.
+ */
+String dateTimeToJson(DateTime time) => time.toString();
 
-DateTime JsonToDateTime(String json) {
-  return DateTime.parse(json);
-}
+/**
+ * Time de-serialization function.
+ *
+ * TODO: Figure out a format, or migrate to the unix timestamp version above.
+ */
+
+DateTime JsonToDateTime(String timeString) => DateTime.parse(timeString);
