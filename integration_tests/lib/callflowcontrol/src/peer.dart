@@ -15,8 +15,12 @@ abstract class Peer {
       Future.wait([])
       .then((_) => log.info ('Unregistering peer $peerName to assert state'))
       .then((_) => receptionist._phone.unregister())
-      .then((_) => log.info ('Flushing event stack'))
-      .then((_) => receptionist.eventStack.clear())
+      .then((_) =>
+          receptionist.waitFor(eventType: Event.Key.peerState)
+          .then((_) {
+            log.info ('Flushing event stack');
+            receptionist.eventStack.clear();
+          }))
       .then((_) => log.info ('Registering peer $peerName'))
       .then((_) => receptionist._phone.register())
       .then((_) => log.info ('Waiting for peer state event'))
