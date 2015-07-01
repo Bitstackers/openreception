@@ -176,8 +176,8 @@ class CallFlowControl {
         _host, extension, contactID, receptionID);
     uri = appendToken(uri, _token);
 
-    return this._backend.post(uri, '').then(JSON.decode).then(
-        (String response) => new Model.Call.fromMap(JSON.decode(response)));
+    return _backend.post(uri, '').then(JSON.decode).then(
+        (Map callMap) => new Model.Call.fromMap(callMap));
   }
 
   /**
