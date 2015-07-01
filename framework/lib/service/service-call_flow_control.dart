@@ -25,8 +25,9 @@ class CallFlowControl {
   /**
    * Returns the [Model.UserStatus] object associated with [userID].
    */
-  Future<Model.UserStatus> userStatus(int userID) => this.userStatusMap(userID)
-    .then((Map map) => new Model.UserStatus.fromMap(map));
+  Future<Model.UserStatus> userStatus(int userID) => this
+      .userStatusMap(userID)
+      .then((Map map) => new Model.UserStatus.fromMap(map));
 
   /**
    * Returns an Iterable representation of the all the [Model.UserStatus]
@@ -168,26 +169,28 @@ class CallFlowControl {
 
   /**
    * Originate a new call via the server.
-   *
-   * TODO: Remove the if/else branch, once the protocol has converged.
    */
   Future<Model.Call> originate(
-      String extension, int contactID, int receptionID) => this._backend
-      .post(appendToken(Resource.CallFlowControl.originate(
-          this._host, extension, contactID, receptionID), this._token), '')
-      .then((String response) =>
-          new Model.Call.fromMap(JSON.decode(response)));
+      String extension, int contactID, int receptionID) {
+    Uri uri = Resource.CallFlowControl.originate(
+        _host, extension, contactID, receptionID);
+    uri = appendToken(uri, _token);
+
+    return this._backend.post(uri, '').then(JSON.decode).then(
+        (String response) => new Model.Call.fromMap(JSON.decode(response)));
+  }
 
   /**
    * Parks the call identified by [callID].
    */
   Future<Model.Call> park(String callID) {
     Uri uri = Resource.CallFlowControl.park(this._host, callID);
-        uri = appendToken(uri, this._token);
+    uri = appendToken(uri, this._token);
 
-    return _backend.post(uri, '')
-      .then(JSON.decode).then((Map map) =>
-        new Model.Call.fromMap(map));
+    return _backend
+        .post(uri, '')
+        .then(JSON.decode)
+        .then((Map map) => new Model.Call.fromMap(map));
   }
 
   /**
