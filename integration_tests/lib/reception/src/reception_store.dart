@@ -107,7 +107,7 @@ abstract class Reception {
    * The expected behaviour is that the server should return a list of
    * CalendarEvent objects.
    */
-  static void existingReceptionCalendar(Storage.Reception receptionStore) {
+  static void existingReceptionCalendar(Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
     log.info('Looking up calendar list for reception $receptionID.');
@@ -121,7 +121,7 @@ abstract class Reception {
    * The expected behaviour is that the server should return the created
    * CalendarEvent object.
    */
-  static Future calendarEventCreate(Storage.Reception receptionStore) {
+  static Future calendarEventCreate(Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
     Model.CalendarEntry entry = new Model.CalendarEntry.reception(receptionID)
@@ -153,7 +153,7 @@ abstract class Reception {
    * The expected behaviour is that the server should return the updated
    * CalendarEvent object.
    */
-  static Future calendarEventUpdate(Storage.Reception receptionStore) {
+  static Future calendarEventUpdate(Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
     return receptionStore
@@ -191,7 +191,7 @@ abstract class Reception {
    * The expected behaviour is that the server should return the
    * CalendarEvent object.
    */
-  static Future calendarEventExisting(Storage.Reception receptionStore) {
+  static Future calendarEventExisting(Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
     log.info('Checking server behaviour on an existing calendar event.');
@@ -218,7 +218,7 @@ abstract class Reception {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static void calendarEventNonExisting(Storage.Reception receptionStore) {
+  static void calendarEventNonExisting(Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
     int eventID = 0;
 
@@ -234,7 +234,7 @@ abstract class Reception {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future calendarEventDelete(Storage.Reception receptionStore) {
+  static Future calendarEventDelete(Service.RESTReceptionStore receptionStore) {
     int receptionID = 1;
 
     return receptionStore
@@ -262,7 +262,7 @@ abstract class Reception {
    * CalendarEntry object and send out a CalendarEvent notification.
    */
   static Future calendarEntryCreateEvent(
-      Storage.Reception receptionStore, Receptionist receptionist) {
+      Service.RESTReceptionStore receptionStore, Receptionist receptionist) {
     int receptionID = 1;
 
     Model.CalendarEntry event = new Model.CalendarEntry.reception(receptionID)
@@ -304,7 +304,7 @@ abstract class Reception {
    * CalendarEntry object and send out a CalendarEvent notification.
    */
   static Future calendarEntryUpdateEvent(
-      Storage.Reception receptionStore, Receptionist receptionist) {
+      Service.RESTReceptionStore receptionStore, Receptionist receptionist) {
     int receptionID = 1;
 
     return receptionStore
@@ -355,7 +355,7 @@ abstract class Reception {
    * CalendarChange Notification.
    */
   static Future calendarEntryDeleteEvent(
-      Storage.Reception receptionStore, Receptionist receptionist) {
+      Service.RESTReceptionStore receptionStore, Receptionist receptionist) {
     int receptionID = 1;
 
     return receptionStore

@@ -112,7 +112,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return a list of
    * CalendarEntry objects.
    */
-  static void existingContactCalendar (Storage.Contact contactStore) {
+  static void existingContactCalendar (Service.RESTContactStore contactStore) {
     int receptionID = 1;
     int contactID = 4;
 
@@ -127,7 +127,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the created
    * CalendarEntry object.
    */
-  static Future calendarEntryCreate (Storage.Contact contactStore) {
+  static Future calendarEntryCreate (Service.RESTContactStore contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -247,7 +247,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the created
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future calendarEntryCreateEvent (Storage.Contact contactStore,
+  static Future calendarEntryCreateEvent (Service.RESTContactStore contactStore,
                                           Receptionist receptionist) {
 
     int receptionID = 1;
@@ -291,7 +291,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the updated
    * CalendarEntry object.
    */
-  static Future calendarEntryUpdate (Storage.Contact contactStore) {
+  static Future calendarEntryUpdate (Service.RESTContactStore contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -335,7 +335,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the updated
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future calendarEntryUpdateEvent (Storage.Contact contactStore,
+  static Future calendarEntryUpdateEvent (Service.RESTContactStore contactStore,
                                           Receptionist receptionist) {
 
     int receptionID = 1;
@@ -388,7 +388,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the
    * CalendarEntry object.
    */
-  static Future calendarEntryExisting (Storage.Contact contactStore) {
+  static Future calendarEntryExisting (Service.RESTContactStore contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -417,7 +417,7 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static void calendarEntryNonExisting (Storage.Contact contactStore) {
+  static void calendarEntryNonExisting (Service.RESTContactStore contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -435,7 +435,7 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future calendarEntryDelete (Storage.Contact contactStore) {
+  static Future calendarEntryDelete (Service.RESTContactStore contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -468,7 +468,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should succeed and send out a
    * CalendarChange Notification.
    */
-  static Future calendarEntryDeleteEvent (Storage.Contact contactStore,
+  static Future calendarEntryDeleteEvent (Service.RESTContactStore contactStore,
                                           Receptionist receptionist) {
 
     int receptionID = 1;
