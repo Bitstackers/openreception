@@ -54,6 +54,8 @@ abstract class CallList {
        .then((_) => receptionist.waitForCall()
          .then((Model.Call call) =>
              _validateListContains(receptionist.callFlowControl, [call])))
+         .then((_) => log.info ('Call is present in call list, asserting call list.'))
+         .then((_) => _validateListLength(receptionist.callFlowControl, 1))
        .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
        .then((_) => customer.hangupAll())
        .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
