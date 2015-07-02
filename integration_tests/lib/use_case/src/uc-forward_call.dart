@@ -323,7 +323,11 @@ abstract class ForwardCall {
 
     return setup()
       .then((_) => Preconditions('12340003')
-        .then((Model.Call call) => inboundCall = call))
+        .then((Model.Call call) {
+          inboundCall = call;
+          expect(inboundCall, isNotNull);
+          expect(inboundCall.ID, isNot(Model.Call.noID));
+        }))
       .then((_) => step("Receptionist-N ->> Klient-N [genvej: ring-til-primaert-nummer]"))
       .then((_) => Receptionist_Places_Call(callee.extension)
         .then((Model.Call placedCall) => outboundCall = placedCall))
@@ -369,8 +373,12 @@ abstract class ForwardCall {
 
     return setup()
       .then((_) => Preconditions('12340003')
-        .then((Model.Call call) => inboundCall = call))
-      .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
+          .then((Model.Call call) {
+            inboundCall = call;
+            expect(inboundCall, isNotNull);
+            expect(inboundCall.ID, isNot(Model.Call.noID));
+          }))
+       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-til-primaert-nummer]"))
       .then((_) => Receptionist_Places_Call (callee.extension))
       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [ring-op: telefon-N, nummer]"))
       .then((_) => Callee_Receives_Call ())
@@ -403,7 +411,11 @@ abstract class ForwardCall {
 
      return setup()
        .then((_) => Preconditions('12340003')
-         .then((Model.Call call) => inboundCall = call))
+           .then((Model.Call call) {
+             inboundCall = call;
+             expect(inboundCall, isNotNull);
+             expect(inboundCall.ID, isNot(Model.Call.noID));
+           }))
        .then((_) => Preconditions('12340003'))
        .then((_) => Receptionist_Places_Call (callee.extension)
          .then((Model.Call placedCall) => outboundCall = placedCall))
@@ -478,7 +490,11 @@ abstract class ForwardCall {
 
       return setup()
         .then((_) => Preconditions('12340003')
-          .then((Model.Call call) => inboundCall = call))
+            .then((Model.Call call) {
+              inboundCall = call;
+              expect(inboundCall, isNotNull);
+              expect(inboundCall.ID, isNot(Model.Call.noID));
+            }))
         .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: liste-med-sekundaere-numre]"))
         .then((_) => step ("Receptionist-N     ->> Klient-N          [pil op/ned - nogle gange]"))
         .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: ring-markeret-nummer-op]"))
@@ -513,7 +529,11 @@ abstract class ForwardCall {
 
     return setup()
       .then((_) => Preconditions('12340003')
-        .then((Model.Call call) => inboundCall = call))
+          .then((Model.Call call) {
+            inboundCall = call;
+            expect(inboundCall, isNotNull);
+            expect(inboundCall.ID, isNot(Model.Call.noID));
+          }))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
       .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
@@ -557,7 +577,11 @@ abstract class ForwardCall {
 
     return setup()
       .then((_) => Preconditions('12340003')
-        .then((Model.Call call) => inboundCall = call))
+          .then((Model.Call call) {
+            inboundCall = call;
+            expect(inboundCall, isNotNull);
+            expect(inboundCall.ID, isNot(Model.Call.noID));
+          }))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
       .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))
@@ -607,7 +631,11 @@ abstract class ForwardCall {
 
     return setup()
       .then((_) => Preconditions('12340003')
-        .then((Model.Call call) => inboundCall = call))
+          .then((Model.Call call) {
+            inboundCall = call;
+            expect(inboundCall, isNotNull);
+            expect(inboundCall.ID, isNot(Model.Call.noID));
+          }))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [genvej: viderestil-til-nummer]"))
       .then((_) => step ("Klient-N           ->> Receptionist-N    [indtastningsfelt: telefonnummer]"))
       .then((_) => step ("Receptionist-N     ->> Klient-N          [indtaster/indkopierer nummer]"))

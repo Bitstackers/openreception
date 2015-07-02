@@ -55,7 +55,6 @@ abstract class Pickup {
   }
 
   static Future pickupRace(Receptionist receptionist, Receptionist receptionist2, Customer customer) {
-    int receptionID = 4;
     String receptionNumber = '12340004';
 
     Completer c1 = new Completer();

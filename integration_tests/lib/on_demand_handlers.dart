@@ -230,7 +230,6 @@ class Customer {
    */
   Future<shelf.Response> pickup (shelf.Request request) {
     int customerHandle = _cidParameter(request);
-    String extension = _extensionParameter(request);
 
     test_fw.Customer c;
 

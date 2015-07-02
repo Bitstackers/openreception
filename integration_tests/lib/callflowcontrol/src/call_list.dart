@@ -36,13 +36,6 @@ abstract class CallList {
     });
   }
 
-  static Future _validateQueueNotEmpty(Service.CallFlowControl callFlow) {
-    log.info('Checking if the call queue is non-empty');
-
-    return callFlow.callList().then((Iterable<Model.Call> calls) =>
-        expect(calls, isNotEmpty));
-  }
-
   static Future callPresence(Receptionist receptionist, Customer customer) {
      String       reception = "12340004";
 

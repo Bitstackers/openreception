@@ -92,7 +92,7 @@ class Customer {
    */
   Future<Phonio.Call> waitForOutboundCall () {
     log.finest('$this waits for outbound call');
-    //TODO: Assert that the call is not and is acutally outbound.
+    //TODO: Assert that the call is not answered and is acutally outbound.
     if (this.currentCall != null) {
       log.finest('$this already has call, returning it.');
       return new Future (() => this.currentCall);

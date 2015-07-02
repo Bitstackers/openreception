@@ -111,12 +111,6 @@ abstract class IncomingCall {
 
   }
 
-  static void _dumpState(error, stackTrace) {
-    log.severe(error, stackTrace);
-
-    throw new StateError('Test failed');
-  }
-
   static void _validateReception(Model.Reception reception) {
     log.finest('FIXME: make _validateReception more elaborate');
 

@@ -498,7 +498,6 @@ abstract class Reception {
     Model.Reception reception = Randomizer.randomReception();
 
     reception.organizationId = 1;
-    final DateTime creationTime = new DateTime.now();
 
     log.info('Creating a new reception ${reception.asMap}');
 
