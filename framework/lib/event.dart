@@ -20,8 +20,9 @@ part 'event/event-template.dart';
 part 'event/event-user.dart';
 part 'event/event-user_state.dart';
 
-/// Keys for the map.
-
+/**
+ * Keys for the serialization and deserialization.
+ */
 abstract class Key {
   static const call = 'call';
   static const peer = 'peer';
@@ -79,6 +80,10 @@ abstract class Key {
   static const receptionCalendarEntryDelete = 'receptionCalendarEntryDelete';
 }
 
+/**
+ * Superclass for events. It's only real purpose is to provide a common
+ * interface for [Event] objects, and a parsing factory constructor.
+ */
 abstract class Event {
 
   static final Logger log = new Logger('$libraryName.Event');
@@ -87,10 +92,14 @@ abstract class Event {
   String   get eventName;
   Map      get asMap;
 
+  /**
+   * Every specialized class needs a toJson function.
+   */
   Map toJson() => this.asMap;
 
-  Event.fromMap(Map map);
-
+  /**
+   * Parse an an event that has already been deserialized from JSON string.
+   */
   factory Event.parse (Map map) {
     try {
       switch (map[Key.event]) {

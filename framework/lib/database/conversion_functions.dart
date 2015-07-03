@@ -1,3 +1,6 @@
+/**
+ * Conversion functions for transforming database rows into model classes.
+ */
 part of openreception.database;
 
 /**
