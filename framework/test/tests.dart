@@ -70,6 +70,7 @@ void main() {
 
   testModelMessageRecipientList();
   testModelBaseContact();
+  testModelCall();
   testModelContact();
   testModelReception();
   testModelMessage();
