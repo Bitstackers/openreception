@@ -5,6 +5,7 @@ void testModelCall() {
     test('serialization', ModelCall.serialization);
     test('deserialization', ModelCall.serialization);
     test('buildObject', ModelCall.buildObject);
+    test('callStateStream', ModelCall.callStateStream);
   });
 }
 
@@ -17,6 +18,24 @@ abstract class ModelCall {
     Model.Call builtObject = buildObject();
 
     expect(() => JSON.encode(builtObject), returnsNormally);
+  }
+
+  /**
+   * Asserts that the stream spawns events.
+   */
+  static Future callStateStream() {
+    List<String> stateChanges = [];
+
+    Model.Call builtObject = buildObject()
+        ..callState.listen(stateChanges.add);
+
+    int initialStateChangeCount = stateChanges.length;
+
+    builtObject.state = Model.CallState.Transferring;
+
+    return new Future.delayed(new Duration(milliseconds : 20), () {
+      expect (stateChanges.length, equals (initialStateChangeCount+1));
+    });
   }
 
   /**
