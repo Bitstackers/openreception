@@ -88,7 +88,7 @@ abstract class ModelCall {
       ..inbound = inbound
       ..locked = locked
       ..receptionID = receptionId
-      ..state = state;
+      ..state = Model.CallState.Created;
 
     expect(builtCall.ID, equals(testId));
     expect(builtCall.arrived, equals(arrived));
