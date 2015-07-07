@@ -7,6 +7,7 @@ void testModelCall() {
     test('buildObject', ModelCall.buildObject);
     test('callStateStream', ModelCall.callStateStream);
     test('callStateUnknownToCreated', ModelCall.callStateUnknownToCreated);
+    test('callStateCreatedToRinging', ModelCall.callStateCreatedToRinging);
   });
 }
 
@@ -40,13 +41,12 @@ abstract class ModelCall {
   }
 
   /**
-   * Asserts that the stream spawns events.
+   * Asserts that the stream spawns the correct event.
    */
   static Future callStateUnknownToCreated() {
     List<String> stateChanges = [];
 
     Model.Call builtObject = buildObject()
-        ..state = Model.CallState.Unknown
         ..callState.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
@@ -57,6 +57,26 @@ abstract class ModelCall {
     return new Future.delayed(new Duration(milliseconds : 20), () {
       expect (stateChanges.length, equals (initialStateChangeCount+2));
       expect (stateChanges.last, equals(Model.CallState.Created));
+    });
+  }
+
+  /**
+   * Asserts that the stream spawns the correct event.
+   */
+  static Future callStateCreatedToRinging() {
+    List<String> stateChanges = [];
+
+    Model.Call builtObject = buildObject()
+        ..callState.listen(stateChanges.add);
+
+    int initialStateChangeCount = stateChanges.length;
+
+    builtObject.state = Model.CallState.Created;
+    builtObject.state = Model.CallState.Ringing;
+
+    return new Future.delayed(new Duration(milliseconds : 20), () {
+      expect (stateChanges.length, equals (initialStateChangeCount+2));
+      expect (stateChanges.last, equals(Model.CallState.Ringing));
     });
   }
 
