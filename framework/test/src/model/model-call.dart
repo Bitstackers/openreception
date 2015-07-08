@@ -9,6 +9,7 @@ void testModelCall() {
     test('callStateUnknownToCreated', ModelCall.callStateUnknownToCreated);
     test('callStateCreatedToRinging', ModelCall.callStateCreatedToRinging);
     test('callStateParkToHangup', ModelCall.callStateParkToHangup);
+    test('callEventStream', ModelCall.callEventStream);
 
   });
 }
@@ -23,6 +24,25 @@ abstract class ModelCall {
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
+  /**
+   * Asserts that the event stream spawns events.
+   */
+  static Future callEventStream() {
+    List<Event.Event> stateChanges = [];
+
+    Model.Call builtObject = buildObject()
+      ..event.listen(stateChanges.add);
+
+    int initialStateChangeCount = stateChanges.length;
+
+    builtObject.changeState(Model.CallState.Created);
+
+    return new Future.delayed(new Duration(milliseconds : 20), () {
+      expect (stateChanges.length, equals (initialStateChangeCount+1));
+      expect (stateChanges.last, new isInstanceOf<Event.Event>());
+    });
+  }
+
 
   /**
    * Asserts that the stream spawns events.
@@ -82,6 +102,7 @@ abstract class ModelCall {
       expect (stateChanges.last, equals(Model.CallState.Hungup));
     });
   }
+
   /**
    * Asserts that the stream spawns the correct event.
    */
