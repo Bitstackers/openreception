@@ -11,6 +11,7 @@ void testModelCall() {
     test('callStateParkToHangup', ModelCall.callStateParkToHangup);
     test('callEventStream', ModelCall.callEventStream);
     test('callEventStreamUnparkFromHangup', ModelCall.callEventStreamUnparkFromHangup);
+    test('callEventStreamQueueLeaveFromHangup', ModelCall.callEventStreamQueueLeaveFromHangup);
 
   });
 }
@@ -61,6 +62,28 @@ abstract class ModelCall {
     return new Future.delayed(new Duration(milliseconds : 20), () {
       expect (stateChanges.length, equals (initialStateChangeCount+2));
       expect (stateChanges[stateChanges.length-2], new isInstanceOf<Event.CallUnpark>());
+      expect (stateChanges.last, new isInstanceOf<Event.CallHangup>());
+    });
+  }
+
+  /**
+   * Asserts that the event stream spawns extra event on queue-> hangup
+   * transition.
+   */
+  static Future callEventStreamQueueLeaveFromHangup() {
+    List<Event.Event> stateChanges = [];
+
+    Model.Call builtObject = buildObject()
+      ..state = Model.CallState.Queued
+      ..event.listen(stateChanges.add);
+
+    int initialStateChangeCount = stateChanges.length;
+    expect (builtObject.state, equals(Model.CallState.Queued));
+    builtObject.changeState(Model.CallState.Hungup);
+
+    return new Future.delayed(new Duration(milliseconds : 20), () {
+      expect (stateChanges.length, equals (initialStateChangeCount+2));
+      expect (stateChanges[stateChanges.length-2], new isInstanceOf<Event.QueueLeave>());
       expect (stateChanges.last, new isInstanceOf<Event.CallHangup>());
     });
   }
