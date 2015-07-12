@@ -21,7 +21,7 @@ part 'src/model/model-calendar_entry_change.dart';
 part 'src/model/model-call.dart';
 //part 'src/model-channel.dart';
 part 'src/model/model-client_configuration.dart';
-//part 'src/model-client_connection.dart';
+part 'src/model/model-client_connection.dart';
 part 'src/model/model-contact.dart';
 //part 'src/model-contact_filter.dart';
 part 'src/model/model-message.dart';
@@ -71,6 +71,7 @@ void main() {
   testModelMessageRecipientList();
   testModelBaseContact();
   testModelCall();
+  testModelClientConnection();
   testModelContact();
   testModelReception();
   testModelMessage();
