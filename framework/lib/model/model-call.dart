@@ -14,6 +14,7 @@ abstract class CallJsonKey {
   static const String callerID       = 'caller_id';
   static const String greetingPlayed = 'greeting_played';
   static const String receptionID    = 'reception_id';
+  static const String contactID      = 'contact_id';
   static const String assignedTo     = 'assigned_to';
   static const String channel        = 'channel';
   static const String arrivalTime    = 'arrival_time';
@@ -80,6 +81,7 @@ class Call {
     this.callerID       = map[CallJsonKey.callerID];
     this.greetingPlayed = map[CallJsonKey.greetingPlayed];
     this.receptionID    = map[CallJsonKey.receptionID];
+    this.contactID      = map[CallJsonKey.contactID];
     this.assignedTo     = map[CallJsonKey.assignedTo];
     this.arrived        = Util.unixTimestampToDateTime (map[CallJsonKey.arrivalTime]);
   }
@@ -261,6 +263,7 @@ class Call {
                    CallJsonKey.callerID       : callerID,
                    CallJsonKey.greetingPlayed : greetingPlayed,
                    CallJsonKey.receptionID    : receptionID,
+                   CallJsonKey.contactID      : contactID,
                    CallJsonKey.assignedTo     : assignedTo,
                    CallJsonKey.channel        : channel,
                    CallJsonKey.arrivalTime    : Util.dateTimeToUnixTimestamp(arrived)};
