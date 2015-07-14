@@ -3,7 +3,7 @@ part of openreception.test;
 void testModelCall() {
   group('Model.Call', () {
     test('serialization', ModelCall.serialization);
-    test('deserialization', ModelCall.serialization);
+    test('deserialization', ModelCall.deserialization);
     test('buildObject', ModelCall.buildObject);
     test('callStateStream', ModelCall.callStateStream);
     test('callStateUnknownToCreated', ModelCall.callStateUnknownToCreated);
@@ -173,10 +173,12 @@ abstract class ModelCall {
   static void deserialization() {
     Model.Call builtCall = buildObject();
     String serializedObject = JSON.encode(builtCall);
-    Model.Call decodedCall = JSON.decode(serializedObject);
+    Model.Call decodedCall =
+        new Model.Call.fromMap(JSON.decode(serializedObject));
 
     expect(builtCall.ID, equals(decodedCall.ID));
-    expect(builtCall.arrived, equals(decodedCall.arrived));
+    expect(builtCall.arrived.difference(decodedCall.arrived).abs(),
+           lessThan(new Duration(seconds : 1)));
     expect(builtCall.assignedTo, equals(decodedCall.assignedTo));
     expect(builtCall.b_Leg, equals(decodedCall.b_Leg));
     expect(builtCall.callerID, equals(decodedCall.callerID));
