@@ -32,7 +32,7 @@ part 'src/model/model-message.dart';
 //part 'src/model-message_queue_item.dart';
 //part 'src/model-message_recipient.dart';
 part 'src/model/model-message_recipient_list.dart';
-//part 'src/model-organization.dart';
+part 'src/model/model-organization.dart';
 //part 'src/model-peer.dart';
 part 'src/model/model-phone_number.dart';
 part 'src/model/model-reception.dart';
@@ -73,6 +73,7 @@ void main() {
   testModelCall();
   testModelClientConnection();
   testModelContact();
+  testModelOrganization();
   testModelReception();
   testModelMessage();
   testModelCalendarEntry();
