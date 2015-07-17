@@ -3,11 +3,21 @@ part of openreception.test;
 void testModelOrganization() {
   group('Model.Organization', () {
     test('buildObject', ModelOrganization.buildObject);
+    test('serialization', ModelOrganization.serialization);
   });
 }
 abstract class ModelOrganization{
 
-  static void buildObject () {
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void serialization() {
+    Model.Organization builtObject = buildObject();
+
+    expect(() => JSON.encode(builtObject), returnsNormally);
+  }
+
+  static Model.Organization buildObject () {
     final String billingType = 'GOOOOLD';
     final String flag = 'Goldmember';
     final int id = 4;
@@ -22,6 +32,8 @@ abstract class ModelOrganization{
     expect(testOrganization.flag, equals(flag));
     expect(testOrganization.id, equals(id));
     expect(testOrganization.fullName, equals(fullName));
+
+    return testOrganization;
   }
 }
 
