@@ -40,7 +40,7 @@ part 'src/model/model-reception.dart';
 //part 'src/model-template.dart';
 //part 'src/model-template_email.dart';
 part 'src/model/model-user.dart';
-//part 'src/model-user_status.dart';
+part 'src/model/model-user_status.dart';
 
 part 'src/resource/resource-authentication.dart';
 part 'src/resource/resource-call_flow_control.dart';
@@ -80,6 +80,7 @@ void main() {
   testModelCalendarEntryChange();
   testModelClientConfiguration();
   testModelPhoneNumber();
+  testModelUserStatus();
   testModelUser();
 
   testResourceAuthentication();
