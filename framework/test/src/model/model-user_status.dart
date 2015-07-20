@@ -2,12 +2,20 @@ part of openreception.test;
 
 testModelUserStatus() {
   group('Model.Status', () {
-
+    test('serialization', ModelUserStatus.serialization);
     test('buildObject', ModelUserStatus.buildObject);
   });
 }
 
 abstract class ModelUserStatus {
+
+  static void serialization () {
+    Model.UserStatus builtObject = buildObject();
+    String serializedString = JSON.encode(builtObject);
+
+    expect(serializedString, isNotEmpty);
+    expect(serializedString, isNotNull);
+  }
 
   static Model.UserStatus buildObject () {
     final int callsHandled = 1;
