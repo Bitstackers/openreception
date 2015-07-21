@@ -2,12 +2,34 @@ part of openreception.test;
 
 testModelUserStatus() {
   group('Model.Status', () {
+    test('deserialization', ModelUserStatus.deserialization);
     test('serialization', ModelUserStatus.serialization);
     test('buildObject', ModelUserStatus.buildObject);
   });
 }
 
 abstract class ModelUserStatus {
+
+
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void deserialization() {
+    Model.UserStatus built = buildObject();
+    String serializedObject = JSON.encode(built);
+    Model.UserStatus decoded =
+        new Model.UserStatus.fromMap(JSON.decode(serializedObject));
+
+    expect(built.callsHandled, equals(decoded.callsHandled));
+    expect(built.lastActivity.difference(decoded.lastActivity).abs(),
+           lessThan(new Duration(seconds : 1)));
+    expect(built.lastState, equals(Model.UserState.Unknown));
+    expect(built.state, equals(decoded.state));
+    expect(built.userID, equals(decoded.userID));
+
+    expect(built.toJson(), equals(decoded.toJson()));
+
+  }
 
   static void serialization () {
     Model.UserStatus builtObject = buildObject();
