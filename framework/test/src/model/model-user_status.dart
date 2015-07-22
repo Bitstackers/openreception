@@ -5,11 +5,23 @@ testModelUserStatus() {
     test('deserialization', ModelUserStatus.deserialization);
     test('serialization', ModelUserStatus.serialization);
     test('buildObject', ModelUserStatus.buildObject);
+    test('stateChange', ModelUserStatus.stateChange);
   });
 }
 
 abstract class ModelUserStatus {
 
+  static void stateChange() {
+    Model.UserStatus built = buildObject();
+    String lastState = built.state;
+    String newState = Model.UserState.Idle;
+
+    built.state = newState;
+
+    expect (built.state, equals(newState));
+    expect (built.lastState, equals(lastState));
+
+  }
 
   /**
    * Merely asserts that no exceptions arise.
