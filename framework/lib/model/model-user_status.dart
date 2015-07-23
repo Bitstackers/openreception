@@ -1,6 +1,13 @@
 part of openreception.model;
 
-
+/**
+ * 'Enum' type representing the different states of a user, in the context of
+ * being able to pickup calls. As an example; a user in the the 'idle' state
+ * may pick up a call, while a user that is 'paused' may not.
+ * UserState does not imply connectivity, so other states such as [PeerState]
+ * or [ClientConnection] should always also be checked before detemining wheter
+ * a user is connectable or not.
+ */
 abstract class UserState {
   static const Unknown         = 'unknown';
   static const Idle            = 'idle';
@@ -16,13 +23,21 @@ abstract class UserState {
   static const WrappingUp      = 'wrappingUp';
   static const HandlingOffHook = 'handlingOffHook';
 
-  static final List<String> PhoneReadyStates = [Idle, WrappingUp, HandlingOffHook];
-  static final Iterable<String> TransitionStates = [Receiving, HangingUp, Transferring, Dialing, Parking, Unparking];
+  /// Valid states for a user to accept a new call.
+  static final List<String> PhoneReadyStates =
+      [Idle, WrappingUp, HandlingOffHook];
 
+  /// Invalid states for a user to accept a new call.
+  static final Iterable<String> TransitionStates =
+      [Receiving, HangingUp, Transferring, Dialing, Parking, Unparking];
+
+  /// Convenience method for checking if a phone is ready.
   static phoneIsReady (String state) => PhoneReadyStates.contains(state);
 }
 
-
+/**
+ * Serialization and de-serialization keys.
+ */
 abstract class UserStatusJSONKey {
   static const String UserID        = 'userID';
   static const String State         = 'state';
