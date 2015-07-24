@@ -3,16 +3,16 @@ part of openreception.test;
 testModelBaseContact() {
   group('Model.BaseContact', () {
     test('serializationDeserialization',
-        ModelContact.serializationDeserialization);
+        ModelBaseContact.serializationDeserialization);
 
-    test('buildObject', ModelContact.buildObject);
+    test('buildObject', ModelBaseContact.buildObject);
   });
 }
 
 abstract class ModelBaseContact {
 
   static void serializationDeserialization() {
-    Model.BaseContact builtObject = _buildObject();
+    Model.BaseContact builtObject = buildObject();
     Model.BaseContact deserializedObject =
         new Model.BaseContact.fromMap(JSON.decode(JSON.encode(builtObject)));
 
@@ -24,7 +24,7 @@ abstract class ModelBaseContact {
 
   }
 
-  static Model.BaseContact _buildObject() {
+  static Model.BaseContact buildObject() {
     final int contactID = 2;
     final bool enabled = true;
     final String fullName = 'Biff, the goldfish';
