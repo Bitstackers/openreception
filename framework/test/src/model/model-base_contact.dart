@@ -5,11 +5,21 @@ testModelBaseContact() {
     test('serializationDeserialization',
         ModelBaseContact.serializationDeserialization);
 
+    test('serialization', ModelBaseContact.serialization);
+
     test('buildObject', ModelBaseContact.buildObject);
   });
 }
 
 abstract class ModelBaseContact {
+
+  static void serialization() {
+    Model.BaseContact builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
 
   static void serializationDeserialization() {
     Model.BaseContact builtObject = buildObject();
