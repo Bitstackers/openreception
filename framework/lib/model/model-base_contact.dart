@@ -7,14 +7,23 @@ abstract class Key {
   static const String enabled = 'enabled';
 }
 
+/**
+ * A base contact represents a contact outside the context of a reception.
+ */
 class BaseContact {
   int id = Contact.noID;
   String fullName = '';
   String contactType = '';
   bool enabled = true;
 
+  /**
+   * Default empty constructor.
+   */
   BaseContact.empty();
 
+  /**
+   * Deserializing constructor.
+   */
   BaseContact.fromMap(Map map) {
     id = map[Key.contactID];
     fullName = map[Key.fullName];
