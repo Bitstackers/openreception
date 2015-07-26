@@ -37,7 +37,8 @@ abstract class CallState {
 }
 
 /**
- *
+ * Class representing a call in the system. Every call is identified by a
+ * unique id (uuid) that may be used as a handle for REST service method calls.
  */
 class Call {
 
