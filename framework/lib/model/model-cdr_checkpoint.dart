@@ -1,7 +1,8 @@
 part of openreception.model;
 
 /**
- *
+ * A CDR checkpoint is a timespan which is used to delimit which CDR entries
+ * should be included in a queried set.
  */
 class CDRCheckpoint {
   DateTime start;
@@ -9,12 +10,12 @@ class CDRCheckpoint {
   String name;
 
   /**
-   *
+   * Default empty constructor.
    */
   CDRCheckpoint.empty();
 
   /**
-   *
+   * Deserializing constructor.
    */
   CDRCheckpoint.fromMap(Map map) {
     start = Util.unixTimestampToDateTime(map['start']);
@@ -23,7 +24,7 @@ class CDRCheckpoint {
   }
 
   /**
-   *
+   * JSON representation of the model class.
    */
   Map toJson() => {
     'start': Util.dateTimeToUnixTimestamp(start),
@@ -33,7 +34,7 @@ class CDRCheckpoint {
 }
 
 /**
- *
+ * Comparator function.
  */
 int compareCheckpoint(CDRCheckpoint c1, CDRCheckpoint c2) =>
   c1.end.compareTo(c2.end);
