@@ -3,15 +3,24 @@ part of openreception.test;
 void testModelMessageContext() {
   group('Model.MessageContext', () {
     test('buildObject', ModelMessageContext.buildObject);
+    test('serialization', ModelMessageContext.serialization);
   });
 }
 
 abstract class ModelMessageContext {
 
+  static void serialization() {
+    Model.MessageContext builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
   /**
    * Build an object manually.
    */
-  static void buildObject() {
+  static Model.MessageContext buildObject() {
     final int contactId = 1;
     final String contactName = 'John Arbuckle';
     final int receptionId = 2;
@@ -28,5 +37,7 @@ abstract class ModelMessageContext {
 
     expect(obj.receptionID, equals(receptionId));
     expect(obj.receptionName, equals(receptionName));
+
+    return obj;
   }
 }
