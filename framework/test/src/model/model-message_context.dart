@@ -3,11 +3,26 @@ part of openreception.test;
 void testModelMessageContext() {
   group('Model.MessageContext', () {
     test('buildObject', ModelMessageContext.buildObject);
+    test('deserialization', ModelMessageContext.deserialization);
     test('serialization', ModelMessageContext.serialization);
   });
 }
 
 abstract class ModelMessageContext {
+
+  static void deserialization() {
+    Model.MessageContext obj = buildObject();
+    Model.MessageContext deserializedObj =
+        new Model.MessageContext.fromMap(JSON.decode(JSON.encode(obj)));
+
+    expect(obj.contactID, equals(deserializedObj.contactID));
+    expect(obj.contactName, equals(deserializedObj.contactName));
+
+    expect(obj.receptionID, equals(deserializedObj.receptionID));
+    expect(obj.receptionName, equals(deserializedObj.receptionName));
+
+    expect(obj.asMap, equals(deserializedObj.asMap));
+  }
 
   static void serialization() {
     Model.MessageContext builtObject = buildObject();
