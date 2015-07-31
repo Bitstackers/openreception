@@ -8,7 +8,6 @@ abstract class ClientConfigJSONKey {
   static final ReceptionServerURI = 'receptionServerURI';
   static final ContactServerURI = 'contactServerURI';
   static final MessageServerURI = 'messageServerURI';
-  static final LogServerURI = 'logServerURI';
   static final AuthServerURI = 'authServerURI';
   static final Interface = 'interface';
   static const SystemLanguage = 'systemLanguage';
