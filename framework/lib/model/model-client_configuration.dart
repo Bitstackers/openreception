@@ -1,5 +1,8 @@
 part of openreception.model;
 
+/**
+ * Serialization/deserialization keys.
+ */
 abstract class ClientConfigJSONKey {
   static final CallFlowServerURI = 'callFlowServerURI';
   static final ReceptionServerURI = 'receptionServerURI';
@@ -19,13 +22,12 @@ abstract class ClientConfigJSONKey {
  */
 class ClientConfiguration {
 
+  /// Global system language.
   String systemLanguage;
   Uri callFlowServerUri;
   Uri receptionServerUri;
   Uri contactServerUri;
   Uri messageServerUri;
-  @deprecated
-  Uri logServerUri;
   Uri authServerUri;
   Uri notificationSocketUri;
   Uri notificationServerUri;
@@ -38,7 +40,6 @@ class ClientConfiguration {
      ClientConfigJSONKey.ReceptionServerURI : this.receptionServerUri.toString(),
      ClientConfigJSONKey.ContactServerURI : this.contactServerUri.toString(),
      ClientConfigJSONKey.MessageServerURI  : this.messageServerUri.toString(),
-     ClientConfigJSONKey.LogServerURI : this.logServerUri.toString(),
      ClientConfigJSONKey.AuthServerURI  : this.authServerUri.toString(),
      ClientConfigJSONKey.SystemLanguage : this.systemLanguage,
      ClientConfigJSONKey.notificationServerUri : this.notificationServerUri.toString(),
@@ -77,14 +78,11 @@ class ClientConfiguration {
         Uri.parse(map [ClientConfigJSONKey.ContactServerURI]);
     this.messageServerUri =
         Uri.parse(map [ClientConfigJSONKey.MessageServerURI]);
-    this.logServerUri =
-        Uri.parse(map [ClientConfigJSONKey.LogServerURI]);
     this.authServerUri =
         Uri.parse(map[ClientConfigJSONKey.AuthServerURI]);
     this.notificationServerUri =
         Uri.parse(map [ClientConfigJSONKey.notificationServerUri]);
     this.notificationSocketUri =
         Uri.parse(map ['notificationSocket'][ClientConfigJSONKey.Interface]);  }
-
 
 }
