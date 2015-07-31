@@ -187,7 +187,6 @@ Map configMap = {
   "receptionServerURI": "http://localhost:4000",
   "contactServerURI": "http://localhost:4010",
   "messageServerURI": "http://localhost:4040",
-  "logServerURI": "http://localhost:4020",
   "authServerURI": "http://localhost:4050",
   "notificationServerUri" : "http://localhost:4200",
 
