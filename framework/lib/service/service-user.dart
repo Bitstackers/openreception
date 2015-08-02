@@ -68,8 +68,8 @@ class RESTUserStore implements Storage.User {
   /**
    *
    */
-  Future remove(Model.User user) {
-    Uri url = Resource.User.single(_host, user.ID);
+  Future remove(int userId) {
+    Uri url = Resource.User.single(_host, userId);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
