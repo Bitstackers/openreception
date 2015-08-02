@@ -23,7 +23,7 @@ abstract class Notification {
       ORhttp.writeAndClose(request, JSON.encode(result));
     });
   }
-  
+
   static Map _broadcast(Map content) {
     int success = 0;
     int failure = 0;
@@ -32,10 +32,10 @@ abstract class Notification {
       return clientRegistry[uid].map((WebSocket ws) {
         try {
           String contentString = JSON.encode(content);
-          
+
           ws.add(contentString);
           success++;
-          
+
           return true;
         } catch (error, stackTrace) {
           failure++;
@@ -45,7 +45,7 @@ abstract class Notification {
         }
       }).toList();
     }).toList();
-    
+
     return {
             "status": {
               "success": success,
@@ -87,13 +87,13 @@ abstract class Notification {
     }, onDone: () {
       log.info('Disconnected WebSocket connection from uid $uid', "handleWebsocket");
       clientRegistry[uid].remove(webSocket);
-      
-      
-      Model.ClientConnection conn = new Model.ClientConnection()
+
+
+      Model.ClientConnection conn = new Model.ClientConnection.empty()
         ..userID = uid
         ..connectionCount = clientRegistry[uid].length;
       Event.ClientConnectionState event = new Event.ClientConnectionState(conn);
-      
+
       _broadcast (event.asMap);
     });
   }
@@ -109,7 +109,7 @@ abstract class Notification {
         return WebSocketTransformer.upgrade(request).then((WebSocket webSocket) {
           return Notification._register(webSocket, user.ID);
         }).then((_) {
-          Model.ClientConnection conn = new Model.ClientConnection()
+          Model.ClientConnection conn = new Model.ClientConnection.empty()
             ..userID = user.ID
             ..connectionCount = clientRegistry[user.ID].length;
           Event.ClientConnectionState event = new Event.ClientConnectionState(conn);
@@ -172,22 +172,22 @@ abstract class Notification {
   }
 
   static void connectionList (HttpRequest request) {
-    Iterable<Model.ClientConnection> connections = 
-      clientRegistry.keys.map((int uid) => 
-        new Model.ClientConnection ()
+    Iterable<Model.ClientConnection> connections =
+      clientRegistry.keys.map((int uid) =>
+        new Model.ClientConnection.empty()
           ..userID = uid
-          ..connectionCount = clientRegistry[uid].length); 
-    
+          ..connectionCount = clientRegistry[uid].length);
+
     ORhttp.writeAndClose(request, JSON.encode(connections.toList(growable: false)));
   }
-  
+
   static void connection (HttpRequest request) {
     int uid  = ORhttp.pathParameter(request.uri, 'connection');
     if (clientRegistry.containsKey(uid)) {
-      Model.ClientConnection conn = new Model.ClientConnection ()
+      Model.ClientConnection conn = new Model.ClientConnection.empty()
         ..userID = uid
-        ..connectionCount = clientRegistry[uid].length; 
-      
+        ..connectionCount = clientRegistry[uid].length;
+
       ORhttp.writeAndClose(request, JSON.encode(conn));
     }
     else {
