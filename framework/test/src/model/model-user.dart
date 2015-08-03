@@ -45,8 +45,21 @@ abstract class ModelUser {
     final String peer = 'Hidden underneath';
     final String picture = 'too_revealing.png';
 
-    final List<String> groups = ['Sea-dweller', 'Fish'];
-    final List<String> identies = ['biff@sharkbait', address];
+    final List<Model.UserGroup> groups =
+        [new Model.UserGroup.empty()
+          ..id = 4
+          ..name = 'Sea-dweller',
+         new Model.UserGroup.empty()
+          ..id = 3
+          ..name = 'Fish'];
+
+    final List<Model.UserIdentity> identities =
+        [new Model.UserIdentity.empty()
+          ..userId = userID
+          ..identity = 'biff@sharkbait',
+         new Model.UserIdentity.empty()
+          ..userId = userID
+          ..identity = address];
 
     Model.User builtObject = new Model.User.empty()
       ..ID = userID
@@ -54,7 +67,7 @@ abstract class ModelUser {
       ..googleUsername = gmail
       ..googleAppcode = appcode
       ..groups = groups
-      ..identities = identies
+      ..identities = identities
       ..name = name
       ..peer = peer
       ..portrait = picture;
@@ -63,7 +76,7 @@ abstract class ModelUser {
     expect(builtObject.address, equals(address));
     expect(builtObject.googleAppcode, equals(appcode));
     expect(builtObject.googleUsername, equals(gmail));
-    expect(builtObject.identities, equals(identies));
+    expect(builtObject.identities, equals(identities));
     expect(builtObject.groups, equals(groups));
     expect(builtObject.name, equals(name));
     expect(builtObject.peer, equals(peer));
