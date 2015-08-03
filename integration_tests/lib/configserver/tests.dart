@@ -37,7 +37,6 @@ void runConfigServerTests() {
       expect(configuration.authServerUri, new isInstanceOf<Uri>());
       expect(configuration.callFlowServerUri, new isInstanceOf<Uri>());
       expect(configuration.contactServerUri, new isInstanceOf<Uri>());
-      expect(configuration.logServerUri, new isInstanceOf<Uri>());
       expect(configuration.messageServerUri, new isInstanceOf<Uri>());
       expect(configuration.notificationSocketUri, new isInstanceOf<Uri>());
       expect(configuration.receptionServerUri, new isInstanceOf<Uri>());
