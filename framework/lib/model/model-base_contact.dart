@@ -1,5 +1,8 @@
 part of openreception.model;
 
+/**
+ * JSON serialization keys.
+ */
 abstract class Key {
   static const String contactID = 'contact_id';
   static const String fullName = 'full_name';

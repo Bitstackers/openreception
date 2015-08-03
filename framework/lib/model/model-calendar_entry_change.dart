@@ -1,5 +1,8 @@
 part of openreception.model;
 
+/**
+ * JSON serialization keys.
+ */
 abstract class CalendarEntryChangeKey {
   static const String userID = 'uid';
   static const String updatedAt = 'updated';

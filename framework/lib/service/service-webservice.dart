@@ -4,9 +4,8 @@ part of openreception.service;
  * Superclass for abstracting away the griddy details of
  * client/server-specific web-clients.
  *
- * TODO:
- *   -Add reason for the exception. Should be carried in 'message'
- *    or 'error' field from the server.
+ * TODO: Add reason for the exception. Should be carried in 'message'
+ *   or 'error' field from the server.
  */
 abstract class WebService {
 
@@ -37,11 +36,11 @@ abstract class WebService {
       case 403:
         throw new Storage.Forbidden ('$method $path - $response');
         break;
-      
+
       case 409:
         throw new Storage.Conflict ('$method $path - $response');
         break;
-        
+
       case 404:
        throw new Storage.NotFound('$method  $path - $response');
        break;

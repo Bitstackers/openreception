@@ -1,7 +1,8 @@
 part of openreception.model;
 
 /**
- *
+ * A CDR entry is a single Call Detail Record entry representing the flow and
+ * information of a termniated call.
  */
 class CDREntry {
   double avgDuration;
@@ -15,12 +16,12 @@ class CDREntry {
   int    totalWait;
 
   /**
-   *
+   * Default empty constructor.
    */
   CDREntry.empty();
 
   /**
-   *
+   * Deserializing constructor.
    */
   CDREntry.fromJson(Map json) {
     orgId       = json['org_id'];
