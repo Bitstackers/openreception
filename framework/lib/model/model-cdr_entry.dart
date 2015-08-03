@@ -34,6 +34,6 @@ class CDREntry {
     avgDuration = json['avg_duration'];
 
     //TODO Extract Data when the interface is updated.
-    smsCount = 0;
+    smsCount = -1;
   }
 }
