@@ -65,6 +65,10 @@ void main(List<String> arguments) {
     'ReceptionServer': {
       'path': 'bin/receptionserver.dart',
       'args': ['--servertoken', tokens[index++]]
+    },
+    'UserServer': {
+      'path': 'bin/userserver.dart',
+      'args' : []
     }
   };
 

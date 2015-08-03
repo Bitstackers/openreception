@@ -30,6 +30,7 @@ class ConfigServer extends StandardConfig {
 class ContactServer extends StandardConfig {}
 class CDRServer extends StandardConfig {}
 class MessageDispatcher extends StandardConfig {}
+class UserServer extends StandardConfig {}
 class ManagementServer extends StandardConfig {}
 class MessageServer extends StandardConfig {}
 class NotificationServer extends StandardConfig {}
@@ -55,5 +56,6 @@ abstract class Configuration {
   static final MessageServer messageServer= new MessageServer();
   static final NotificationServer notificationServer= new NotificationServer();
   static final ReceptionServer receptionServer= new ReceptionServer();
+  static final UserServer userServer= new UserServer();
 
 }
