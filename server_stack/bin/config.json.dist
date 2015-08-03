@@ -13,6 +13,7 @@
     "callflow_http_port": 4242,
     "reception_http_port" : 4000,
     "contact_http_port" : 4010,
+    "user_server_http_port" : 4030,
     "management_http_port" : 4100,
     "message_dispatcher_http_port" : 4070,
     "message_server_http_port" : 4040,
@@ -33,7 +34,7 @@
     "contactServerUri" : "http://localhost:4010",
     "messageServerUri" : "http://localhost:4040",
     "authServerUri" : "http://localhost:4050",
-    "notificationSocket": "ws://localhost:4200/notifications",
+    "notificationSocket": "ws://localhost:4201/notifications",
     
     "authurl": "http://localhost:4050/",
     "callflowserver": "http://localhost:4242",
