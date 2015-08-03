@@ -2,7 +2,13 @@ part of authenticationserver.database;
 
 Future<Map> getUser(String userEmail) {
   String sql = '''
-SELECT u.id, u.name, u.extension, u.send_from as address, 
+SELECT 
+  u.id, 
+  u.name, 
+  u.extension,
+  u.google_username,
+  u.google_appcode,
+  u.send_from AS address, 
   coalesce (
     (SELECT array_to_json(array_agg(name)) 
      FROM user_groups JOIN groups ON user_groups.group_id = groups.id
@@ -21,12 +27,14 @@ WHERE identity = @email;''';
     if(rows.length == 1) {
       var row = rows.first;
       data =
-        {'id'        : row.id,
-         'name'      : row.name,
-         'address'   : row.address,
-         'extension' : row.extension,
-         'groups'    : row.groups,
-         'identities': row.identities};
+        {'id'              : row.id,
+         'name'            : row.name,
+         'address'         : row.address,
+         'extension'       : row.extension,
+         'groups'          : row.groups,
+         'google_username' : row.google_username,
+         'google_appcode'  : row.google_appcode,
+         'identities'      : row.identities};
     }
 
     return data;
