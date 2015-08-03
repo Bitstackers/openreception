@@ -15,16 +15,16 @@ abstract class UserKey {
  *
  */
 class User {
-  String           address;
-  List<String>     groups;
-  int              ID;
-  List<String>     identities;
-  String           name;
-  static const int noID      = 0;
-  String           peer;
-  String           portrait = '';
-  String           googleUsername = '';
-  String           googleAppcode = '';
+  String             address;
+  List<UserGroup>    groups = [];
+  int                ID;
+  List<UserIdentity> identities = [];
+  String             name;
+  static const int   noID      = 0;
+  String             peer;
+  String             portrait = '';
+  String             googleUsername = '';
+  String             googleAppcode = '';
 
   /**
    * Constructor for creating an empty object.
@@ -35,10 +35,21 @@ class User {
    * Constructor.
    */
   User.fromMap(Map userMap) {
+    Iterable<Map> groupMaps =
+        userMap.containsKey(UserKey.groups)
+        ? userMap[UserKey.groups]
+        : [];
+
+    Iterable<Map> identityMaps =
+        userMap.containsKey(UserKey.identites)
+        ? userMap[UserKey.identites]
+        : [];
+
+    groups.addAll(groupMaps.map(UserGroup.decode));
+    identities.addAll(identityMaps.map(UserIdentity.decode));
+
     address    = userMap[UserKey.address];
-    groups     = userMap[UserKey.groups];
     ID         = userMap[UserKey.id];
-    identities = userMap[UserKey.identites];
     name       = userMap[UserKey.name];
     peer       = userMap[UserKey.extension];
 

@@ -15,10 +15,12 @@ class UserIdentity {
   /**
    *
    */
-  UserIdentity.fromMap(Map json) {
-    identity = json['identity'];
-    userId   = json['user_id'];
+  UserIdentity.fromMap(Map map) {
+    identity = map['identity'];
+    userId   = map['user_id'];
   }
+
+  static UserIdentity decode (Map map) => new UserIdentity.fromMap(map);
 
   /**
    *
@@ -27,4 +29,12 @@ class UserIdentity {
     'user_id': userId,
     'identity': identity
   };
+
+  /**
+   *
+   */
+  @override
+  operator == (UserIdentity other) =>
+     this.identity == other.identity && this.userId == other.userId;
+
 }
