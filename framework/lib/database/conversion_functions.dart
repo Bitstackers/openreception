@@ -57,5 +57,5 @@ Model.User _rowToUser(var row) => new Model.User.empty()
   ..name = row.name
   ..address = row.send_from
   ..peer = row.extension
-  ..groups = row.groups
-  ..identities = row.identities;
+  ..groups = row.groups != null ? row.groups : []
+  ..identities = row.identities != null ? row.identities : [];
