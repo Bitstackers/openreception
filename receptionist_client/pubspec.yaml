@@ -1,6 +1,6 @@
-name: ReceptionistClientFlex
-version: 0.0.2
-description: An absolute bare-bones web app.
+name: ReceptionistClient
+version: 0.5.0
+description: A receptionist web-app.
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:

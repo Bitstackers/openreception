@@ -17,7 +17,6 @@ part of model;
  * The calendar editor UI model.
  */
 class UICalendarEditor extends UIModel {
-  HumanReadableTimestamp _humanReadableTimestamp;
   ORModel.CalendarEntry  _loadedEntry;
   HtmlElement            _myFirstTabElement;
   HtmlElement            _myFocusElement;

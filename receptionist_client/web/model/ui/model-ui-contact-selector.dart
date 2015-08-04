@@ -61,8 +61,12 @@ class UIContactSelector extends UIModel {
     final List<LIElement> list = new List<LIElement>();
 
     contacts.forEach((ORModel.Contact item) {
-      //TODO: TL, handle folks without 'dem fancy surnames.
-      String initials = item.fullName.trim().split(' ').fold('', (acc, value) => '${acc}${value.substring(0,1).toLowerCase()}');
+      String initials = item.fullName
+                              .split(' ')
+                              .where((value) => value.trim().isNotEmpty)
+                              .map((value) => value.substring(0,1))
+                              .join()
+                              .toLowerCase();
 
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
