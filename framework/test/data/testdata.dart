@@ -4,6 +4,25 @@ Map calendarEntryChange = {
   "username": "Viggo"
 };
 
+Map userMap = const {
+  "id": 2,
+  "name": "Kim Rostgaard Christensen",
+  "address": "krc@bitstack.dk",
+  "groups": const [
+    const {"id": 1, "name": "Service agent"},
+    const {"id": 2, "name": "Administrator"},
+    const {"id": 3, "name": "Receptionist"}
+  ],
+  "identites": const [
+    const {"id": 2, "identity": "kim.rostgaard@gmail.com"},
+    const {"id": 2, "identity": "devicesnull@gmail.com"},
+    const {"id": 2, "identity": "krc@bitstack.dk"}
+  ],
+  "extension": "1002",
+  "google_username": "",
+  "google_appcode": ""
+};
+
 Map testReceptionCalendarEntry = {
   "id": 134,
   "contact_id": null,
@@ -188,8 +207,7 @@ Map configMap = {
   "contactServerURI": "http://localhost:4010",
   "messageServerURI": "http://localhost:4040",
   "authServerURI": "http://localhost:4050",
-  "notificationServerUri" : "http://localhost:4200",
-
+  "notificationServerUri": "http://localhost:4200",
   "notificationSocket": {
     "interface": "ws://localhost:4200/notifications",
     "reconnectInterval": 2000
@@ -276,7 +294,7 @@ Map testContact_4_1 = {
   "titles": ["Software engineer"],
   "relations": ["Kids with Sidsel Schomacker"],
   "responsibilities": ["Server", "client", "FreeSWITCH", "SNOM phones"],
-  "messagePrerequisites" : []
+  "messagePrerequisites": []
 };
 
 Map testMessage_1_Map = {
@@ -316,4 +334,4 @@ Map testMessage_1_Map = {
       }
     ]
   }
-} ;
+};
