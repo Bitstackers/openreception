@@ -30,34 +30,6 @@ class User implements Storage.User {
   User(this._connection);
 
   /**
-   * Various SQL macros that is used by several queries.
-   */
-  static const String SQLMacros = '''
-    WITH groups_of_user AS (
-    SELECT
-      users.id as uid,
-      array_agg(groups.name) as groups
-    FROM
-      users 
-    LEFT JOIN
-      user_groups ON user_groups.user_id = users.id
-    LEFT JOIN groups ON user_groups.group_id = groups.id
-    GROUP BY 
-      users.id
-    ),
-    identities_of_user AS (
-    SELECT
-      users.id as uid,
-      array_agg(auth_identities.identity) as identities
-    FROM
-      users 
-    LEFT JOIN
-      auth_identities ON auth_identities.user_id = users.id
-    GROUP BY 
-      users.id
-    )''';
-
-  /**
    * Create a single user in the database.
    */
   Future<Model.User> create(Model.User user) {
@@ -95,20 +67,34 @@ class User implements Storage.User {
    * Retrive a single user from the database.
    */
   Future<Model.User> get(int userID) {
-    String sql = '''${SQLMacros}
+    String sql = '''
 SELECT
   users.id,
   users.name,
   users.send_from,
   users.extension,
-  array_to_json(groups_of_user.groups) AS groups,
-  array_to_json(identities_of_user.identities) AS identities
+  (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
+                            FROM (SELECT 
+                                    groups.id, groups.name
+    FROM
+      users 
+    LEFT JOIN
+      user_groups ON user_groups.user_id = users.id
+    LEFT JOIN groups ON user_groups.group_id = groups.id
+                                 ) tmp_groups
+                           ) AS groups,
+
+   (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
+                            FROM (SELECT 
+                                    users.id as user_id, auth_identities.identity
+    FROM
+      users 
+    LEFT JOIN
+      auth_identities ON auth_identities.user_id = users.id
+                                 ) tmp_iden
+                           ) AS identities
 FROM
   users
-JOIN
-  groups_of_user ON users.id = groups_of_user.uid
-JOIN
-  identities_of_user ON users.id = identities_of_user.uid
 WHERE 
   id = @id''';
 
@@ -347,19 +333,34 @@ WHERE
    * List every user in the database.
    */
   Future<Iterable<Model.User>> list() {
-    const String sql = '''${SQLMacros}
+    const String sql = '''
 SELECT
-  users.id, 
+  users.id,
   users.name,
   users.send_from,
   users.extension,
-  array_to_json(groups_of_user.groups) AS groups,
-  array_to_json(identities_of_user.identities) AS identities FROM
+  (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
+                            FROM (SELECT 
+                                    groups.id, groups.name
+    FROM
+      users 
+    LEFT JOIN
+      user_groups ON user_groups.user_id = users.id
+    LEFT JOIN groups ON user_groups.group_id = groups.id
+                                 ) tmp_groups
+                           ) AS groups,
+
+   (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
+                            FROM (SELECT 
+                                    users.id as user_id, auth_identities.identity
+    FROM
+      users 
+    LEFT JOIN
+      auth_identities ON auth_identities.user_id = users.id
+                                 ) tmp_iden
+                           ) AS identities
+FROM
   users
-JOIN 
-  groups_of_user     ON users.id = groups_of_user.uid
-JOIN 
-  identities_of_user ON users.id = identities_of_user.uid
 ''';
 
     return _connection.query(sql).then((rows) {
