@@ -20,6 +20,7 @@ import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
 import 'view/view.dart' as View;
+//import 'simulation.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -38,6 +39,7 @@ StreamSubscription<Event>       windowOnBeforeUnload;
 StreamSubscription<Event>       windowOnUnload;
 
 main() async {
+
   final Model.AppClientState   appState = new Model.AppClientState();
   Uri                          appUri;
   ORModel.ClientConfiguration  clientConfig;
@@ -266,6 +268,7 @@ Future registerReadyView(Model.AppClientState appState,
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
   Controller.Calendar calendarController = new Controller.Calendar(contactStore, receptionStore);
+  Controller.Call callController = new Controller.Call(callFlowControl, appState);
 
   View.Popup popup  = new View.Popup(new Uri.file('/images/popup_error.png'),
                                      new Uri.file('/images/popup_info.png'),
@@ -284,11 +287,13 @@ Future registerReadyView(Model.AppClientState appState,
              receptionController,
              sortedReceptions,
              controllerUser,
-             new Controller.Call(callFlowControl, appState),
+             callController,
              notification,
              messageController,
              popup,
              langMap);
+
+        //simulation.start(callController);
       });
 }
 
