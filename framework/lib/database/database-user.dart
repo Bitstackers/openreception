@@ -69,32 +69,37 @@ class User implements Storage.User {
   Future<Model.User> get(int userID) {
     String sql = '''
 SELECT
-  users.id,
-  users.name,
-  users.send_from,
-  users.extension,
+  outer_user.id,
+  outer_user.name,
+  outer_user.send_from,
+  outer_user.extension,
   (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
-                            FROM (SELECT 
-                                    groups.id, groups.name
+   FROM 
+   (SELECT 
+     groups.id, groups.name
     FROM
-      users 
-    LEFT JOIN
-      user_groups ON user_groups.user_id = users.id
-    LEFT JOIN groups ON user_groups.group_id = groups.id
-                                 ) tmp_groups
-                           ) AS groups,
+     users 
+    JOIN
+     user_groups ON user_groups.user_id = users.id
+    JOIN groups ON user_groups.group_id = groups.id
+    WHERE user_groups.user_id = outer_user.id
+   ) tmp_groups
+  ) AS groups,
 
-   (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
-                            FROM (SELECT 
-                                    users.id as user_id, auth_identities.identity
+  (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
+   FROM 
+   (SELECT 
+     users.id as user_id, 
+     auth_identities.identity
     FROM
-      users 
-    LEFT JOIN
+     users 
+    JOIN
       auth_identities ON auth_identities.user_id = users.id
-                                 ) tmp_iden
-                           ) AS identities
+    WHERE auth_identities.user_id = outer_user.id
+   ) tmp_iden
+  ) AS identities
 FROM
-  users
+  users as outer_user
 WHERE 
   id = @id''';
 
@@ -335,58 +340,40 @@ WHERE
   Future<Iterable<Model.User>> list() {
     const String sql = '''
 SELECT
-  users.id,
-  users.name,
-  users.send_from,
-  users.extension,
+  outer_user.id,
+  outer_user.name,
+  outer_user.send_from,
+  outer_user.extension,
   (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
-                            FROM (SELECT 
-                                    groups.id, groups.name
+   FROM 
+   (SELECT 
+     groups.id, groups.name
     FROM
-      users 
-    LEFT JOIN
-      user_groups ON user_groups.user_id = users.id
-    LEFT JOIN groups ON user_groups.group_id = groups.id
-                                 ) tmp_groups
-                           ) AS groups,
+     users 
+    JOIN
+     user_groups ON user_groups.user_id = users.id
+    JOIN groups ON user_groups.group_id = groups.id
+    WHERE user_groups.user_id = outer_user.id
+   ) tmp_groups
+  ) AS groups,
 
-   (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
-                            FROM (SELECT 
-                                    users.id as user_id, auth_identities.identity
+  (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
+   FROM 
+   (SELECT 
+     users.id as user_id, 
+     auth_identities.identity
     FROM
-      users 
+     users 
     LEFT JOIN
       auth_identities ON auth_identities.user_id = users.id
-                                 ) tmp_iden
-                           ) AS identities
+    WHERE auth_identities.user_id = outer_user.id
+   ) tmp_iden
+  ) AS identities
 FROM
-  users
+  users as outer_user
 ''';
 
-    return _connection.query(sql).then((rows) {
-      List<Model.User> users = [];
-
-      for (var row in rows) {
-        List<String> groups = row.groups;
-        List<String> identities = row.identities;
-
-        /// Hotfixing Postgres returning a list containg null instead
-        /// of an empty list.
-        if (groups.isNotEmpty) {
-          if (groups.first == null) {
-            groups = [];
-          }
-        }
-        if (identities.isNotEmpty) {
-          if (identities.first == null) {
-            identities = [];
-          }
-        }
-
-        users.add(_rowToUser(row));
-      }
-
-      return users;
-    });
+    return _connection.query(sql).then((Iterable rows) =>
+      rows.map(_rowToUser));
   }
 }
