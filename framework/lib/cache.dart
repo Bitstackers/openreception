@@ -16,8 +16,10 @@ library utilities.cache;
 import 'dart:async';
 import 'dart:io';
 
+@deprecated
 Future<String> load(String path) => new File(path).readAsString();
 
+@deprecated
 Future<List<FileSystemEntity>> list(String path) {
   Directory dir = new Directory(path);
   return dir.list().toList().then((List<FileSystemEntity> values) {
@@ -25,15 +27,19 @@ Future<List<FileSystemEntity>> list(String path) {
   });
 }
 
+@deprecated
 Future remove(String path) =>  new File(path).delete();
 
+@deprecated
 Future rename(String path, String newPath) => new File(path).rename(newPath);
 
+@deprecated
 Future save(String path, String text) => new File(path).writeAsString(text);
 
+@deprecated
 Future createCacheFolder(String path) {
   Directory dir = new Directory(path);
-    
+
   //First clear cache, then make the folder again.
   return dir.delete(recursive: true).catchError((_) => null).whenComplete(dir.create);
 }
