@@ -131,7 +131,7 @@ Map testReception2 = {
         "kind": "pstn",
         "description": "Farum Gydevej 87",
         "billing_type": "landline",
-        "tag": [],
+        "tags": [],
         "confidential": false
       },
       {
@@ -139,7 +139,7 @@ Map testReception2 = {
         "kind": "pstn",
         "description": "Old main number",
         "billing_type": "landline",
-        "tag": [],
+        "tags": [],
         "confidential": false
       }
     ],
@@ -197,7 +197,7 @@ Map testReception = {
         'kind': 'pstn',
         'description': 'Official main number',
         'billing_type': 'landline',
-        'tag': [],
+        'tags': [],
         'confidential': false
       },
       {
@@ -205,7 +205,7 @@ Map testReception = {
         'kind': 'pstn',
         'description': 'Swindon branch',
         'billing_type': 'landline',
-        'tag': [],
+        'tags': [],
         'confidential': false
       }
     ],
@@ -277,7 +277,7 @@ Map testContact_4_1 = {
       "kind": "PSTN",
       "description": "Cellphone - work",
       "billing_type": "cell",
-      "tag": [],
+      "tags": [],
       "confidential": false
     },
     {
@@ -285,7 +285,7 @@ Map testContact_4_1 = {
       "kind": "PSTN",
       "description": "Cellphone - private",
       "billing_type": "cell",
-      "tag": [],
+      "tags": [],
       "confidential": true
     }
   ],
