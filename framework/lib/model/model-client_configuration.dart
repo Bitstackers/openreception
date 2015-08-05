@@ -14,20 +14,6 @@
 part of openreception.model;
 
 /**
- * Serialization/deserialization keys.
- */
-abstract class ClientConfigJSONKey {
-  static final CallFlowServerURI = 'callFlowServerURI';
-  static final ReceptionServerURI = 'receptionServerURI';
-  static final ContactServerURI = 'contactServerURI';
-  static final MessageServerURI = 'messageServerURI';
-  static final AuthServerURI = 'authServerURI';
-  static final Interface = 'interface';
-  static const SystemLanguage = 'systemLanguage';
-  static const notificationServerUri = 'notificationServerUri';
-}
-
-/**
  * Configuration for clients. Is provided by the config server and contains
  * information about where to locate the various services provided by the
  * server stack.
@@ -48,16 +34,16 @@ class ClientConfiguration {
    * Returns a map reflection of the object suitable for data transfer.
    */
   Map get asMap =>
-    {ClientConfigJSONKey.CallFlowServerURI : this.callFlowServerUri.toString(),
-     ClientConfigJSONKey.ReceptionServerURI : this.receptionServerUri.toString(),
-     ClientConfigJSONKey.ContactServerURI : this.contactServerUri.toString(),
-     ClientConfigJSONKey.MessageServerURI  : this.messageServerUri.toString(),
-     ClientConfigJSONKey.AuthServerURI  : this.authServerUri.toString(),
-     ClientConfigJSONKey.SystemLanguage : this.systemLanguage,
-     ClientConfigJSONKey.notificationServerUri : this.notificationServerUri.toString(),
+    {Key.callFlowServerURI : this.callFlowServerUri.toString(),
+     Key.receptionServerURI : this.receptionServerUri.toString(),
+     Key.contactServerURI : this.contactServerUri.toString(),
+     Key.messageServerURI  : this.messageServerUri.toString(),
+     Key.authServerURI  : this.authServerUri.toString(),
+     Key.systemLanguage : this.systemLanguage,
+     Key.notificationServerUri : this.notificationServerUri.toString(),
 
       "notificationSocket": {
-        ClientConfigJSONKey.Interface: this.notificationSocketUri.toString(),
+        Key.interface: this.notificationSocketUri.toString(),
         "reconnectInterval": 2000
       },
 
@@ -81,20 +67,20 @@ class ClientConfiguration {
    */
   ClientConfiguration.fromMap (Map map) {
     this.systemLanguage =
-        map [ClientConfigJSONKey.SystemLanguage];
+        map [Key.systemLanguage];
     this.callFlowServerUri =
-        Uri.parse(map [ClientConfigJSONKey.CallFlowServerURI]);
+        Uri.parse(map [Key.callFlowServerURI]);
     this.receptionServerUri =
-        Uri.parse(map [ClientConfigJSONKey.ReceptionServerURI]);
+        Uri.parse(map [Key.receptionServerURI]);
     this.contactServerUri =
-        Uri.parse(map [ClientConfigJSONKey.ContactServerURI]);
+        Uri.parse(map [Key.contactServerURI]);
     this.messageServerUri =
-        Uri.parse(map [ClientConfigJSONKey.MessageServerURI]);
+        Uri.parse(map [Key.messageServerURI]);
     this.authServerUri =
-        Uri.parse(map[ClientConfigJSONKey.AuthServerURI]);
+        Uri.parse(map[Key.authServerURI]);
     this.notificationServerUri =
-        Uri.parse(map [ClientConfigJSONKey.notificationServerUri]);
+        Uri.parse(map [Key.notificationServerUri]);
     this.notificationSocketUri =
-        Uri.parse(map ['notificationSocket'][ClientConfigJSONKey.Interface]);  }
+        Uri.parse(map ['notificationSocket'][Key.interface]);  }
 
 }

@@ -16,6 +16,8 @@ part of openreception.model;
 /**
  * CalendarEntry class representing a single entry in a calendar. Can be owned
  * by either a contact or a reception.
+ *
+ * TODO: Move keys to keys package.
  */
 class CalendarEntry {
   static final String className = '${libraryName}.CalendarEntry';

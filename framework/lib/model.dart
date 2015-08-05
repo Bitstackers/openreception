@@ -20,6 +20,7 @@ import 'package:logging/logging.dart';
 
 import 'bus.dart';
 import 'event.dart'   as Event;
+import 'keys.dart'    as Key;
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
@@ -55,8 +56,3 @@ part 'model/model-user_identity.dart';
 part 'model/model-user_status.dart';
 
 const String libraryName = "openreception.model";
-
-abstract class _Key {
-  static const String userID = 'userID';
-  static const String connectionCount = 'connectionCount';
-}

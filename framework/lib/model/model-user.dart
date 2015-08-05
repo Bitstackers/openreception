@@ -13,16 +13,6 @@
 
 part of openreception.model;
 
-abstract class UserKey {
-  static const String address = 'address';
-  static const String groups = 'groups';
-  static const String id = 'id';
-  static const String identites = 'identites';
-  static const String name = 'name';
-  static const String extension = 'extension';
-  static const String googleUsername = 'google_username';
-  static const String googleAppcode ='google_appcode';
-}
 
 /**
  *
@@ -49,29 +39,29 @@ class User {
    */
   User.fromMap(Map userMap) {
     Iterable<Map> groupMaps =
-        userMap.containsKey(UserKey.groups)
-        ? userMap[UserKey.groups]
+        userMap.containsKey(Key.groups)
+        ? userMap[Key.groups]
         : [];
 
     Iterable<Map> identityMaps =
-        userMap.containsKey(UserKey.identites)
-        ? userMap[UserKey.identites]
+        userMap.containsKey(Key.identites)
+        ? userMap[Key.identites]
         : [];
 
     groups.addAll(groupMaps.map(UserGroup.decode));
     identities.addAll(identityMaps.map(UserIdentity.decode));
 
-    address    = userMap[UserKey.address];
-    ID         = userMap[UserKey.id];
-    name       = userMap[UserKey.name];
-    peer       = userMap[UserKey.extension];
+    address    = userMap[Key.address];
+    ID         = userMap[Key.id];
+    name       = userMap[Key.name];
+    peer       = userMap[Key.extension];
 
     /// Google gmail sending credentials.
-    if (userMap.containsKey(UserKey.googleUsername)) {
-      googleUsername = userMap[UserKey.googleUsername];
+    if (userMap.containsKey(Key.googleUsername)) {
+      googleUsername = userMap[Key.googleUsername];
     }
-    if (userMap.containsKey(UserKey.googleAppcode)) {
-      googleAppcode  = userMap[UserKey.googleAppcode];
+    if (userMap.containsKey(Key.googleAppcode)) {
+      googleAppcode  = userMap[Key.googleAppcode];
     }
 
     /// Remote attributes from Google account.
@@ -93,14 +83,14 @@ class User {
    *
    */
   Map get asMap => {
-    UserKey.id             : ID,
-    UserKey.name           : name,
-    UserKey.address        : address,
-    UserKey.groups         : groups,
-    UserKey.identites      : identities,
-    UserKey.extension      : peer,
-    UserKey.googleUsername : googleUsername,
-    UserKey.googleAppcode  : googleAppcode
+    Key.id             : ID,
+    Key.name           : name,
+    Key.address        : address,
+    Key.groups         : groups,
+    Key.identites      : identities,
+    Key.extension      : peer,
+    Key.googleUsername : googleUsername,
+    Key.googleAppcode  : googleAppcode
   };
 
   Map toJson() => this.asMap;

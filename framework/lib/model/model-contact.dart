@@ -20,31 +20,6 @@ abstract class ContactType {
 
 const availableContactTypes = const [ContactType.human, ContactType.function];
 
-abstract class ContactJSONKey {
-  static const receptionID   = 'reception_id';
-  static const contactID     = 'contact_id';
-  static const departments    = 'departments';
-  static const wantsMessages = 'wants_messages';
-  static const enabled       = 'enabled';
-  static const fullName      = 'full_name';
-
-  static const distributionList = 'distribution_list';
-  static const contactType = 'contact_type';
-  static const phones = 'phones';
-  static const endpoints = 'endpoints';
-  static const backup = 'backup';
-  static const emailaddresses = 'emailaddresses';
-  static const handling = 'handling';
-  static const workhours = 'workhours';
-  static const tags = 'tags';
-  static const infos = 'infos';
-  static const titles = 'titles';
-  static const relations = 'relations';
-  static const responsibilities = 'responsibilities';
-
-  static const Contact_LIST = 'contacts';
-  static const messagePrerequisites = 'messagePrerequisites';
-}
 
 abstract class ContactDefault {
   static get phones => new List<String>();
@@ -107,60 +82,60 @@ class Contact {
 
   Map get asMap =>
       {
-        ContactJSONKey.contactID        : this.ID,
-        ContactJSONKey.receptionID      : this.receptionID,
-        ContactJSONKey.departments      : this.departments,
-        ContactJSONKey.wantsMessages    : this.wantsMessage,
-        ContactJSONKey.enabled          : this.enabled,
-        ContactJSONKey.fullName         : this.fullName,
-        ContactJSONKey.distributionList : this.distributionList.asMap,
-        ContactJSONKey.contactType      : this.contactType,
-        ContactJSONKey.phones           : this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
-        ContactJSONKey.endpoints        : this.endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
-        ContactJSONKey.backup           : this.backupContacts,
-        ContactJSONKey.emailaddresses   : this.emailaddresses,
-        ContactJSONKey.handling         : this.handling,
-        ContactJSONKey.workhours        : this.workhours,
-        ContactJSONKey.tags             : this.tags,
-        ContactJSONKey.infos            : this.infos,
-        ContactJSONKey.titles           : this.titles,
-        ContactJSONKey.relations        : this.relations,
-        ContactJSONKey.responsibilities : this.responsibilities,
-        ContactJSONKey.messagePrerequisites : messagePrerequisites
+        Key.contactID        : this.ID,
+        Key.receptionID      : this.receptionID,
+        Key.departments      : this.departments,
+        Key.wantsMessages    : this.wantsMessage,
+        Key.enabled          : this.enabled,
+        Key.fullName         : this.fullName,
+        Key.distributionList : this.distributionList.asMap,
+        Key.contactType      : this.contactType,
+        Key.phones           : this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
+        Key.endpoints        : this.endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
+        Key.backup           : this.backupContacts,
+        Key.emailaddresses   : this.emailaddresses,
+        Key.handling         : this.handling,
+        Key.workhours        : this.workhours,
+        Key.tags             : this.tags,
+        Key.infos            : this.infos,
+        Key.titles           : this.titles,
+        Key.relations        : this.relations,
+        Key.responsibilities : this.responsibilities,
+        Key.messagePrerequisites : messagePrerequisites
       };
 
   Contact.fromMap(Map map) {
     /// PhoneNumber deserializing.
-    Iterable<Map> phoneMaps = map[ContactJSONKey.phones];
+    Iterable<Map> phoneMaps = map[Key.phones];
     Iterable<PhoneNumber> phones = phoneMaps.map((Map phoneMap) {
       return new PhoneNumber.fromMap(phoneMap);});
 
     this.phones.addAll(phones.toList());
 
-    this.ID                = mapValue(ContactJSONKey.contactID, map);
-    this.receptionID       = mapValue(ContactJSONKey.receptionID, map);
-    this.departments       = mapValue(ContactJSONKey.departments, map);
-    this.wantsMessage      = mapValue(ContactJSONKey.wantsMessages, map);
-    this.enabled           = mapValue(ContactJSONKey.enabled, map);
-    this.fullName          = mapValue(ContactJSONKey.fullName, map);
-    this._distributionList = new MessageRecipientList.fromMap(mapValue(ContactJSONKey.distributionList, map));
-    this.contactType       = mapValue(ContactJSONKey.contactType, map);
+    this.ID                = mapValue(Key.contactID, map);
+    this.receptionID       = mapValue(Key.receptionID, map);
+    this.departments       = mapValue(Key.departments, map);
+    this.wantsMessage      = mapValue(Key.wantsMessages, map);
+    this.enabled           = mapValue(Key.enabled, map);
+    this.fullName          = mapValue(Key.fullName, map);
+    this._distributionList = new MessageRecipientList.fromMap(mapValue(Key.distributionList, map));
+    this.contactType       = mapValue(Key.contactType, map);
 
     this.messagePrerequisites =
-      mapValue(ContactJSONKey.messagePrerequisites, map, defaultValue : []);
+      mapValue(Key.messagePrerequisites, map, defaultValue : []);
 
-    this.backupContacts    = mapValue(ContactJSONKey.backup, map);
-    this.emailaddresses    = mapValue(ContactJSONKey.emailaddresses, map);
-    this.handling          = mapValue(ContactJSONKey.handling, map);
-    this.workhours         = mapValue(ContactJSONKey.workhours, map);
-    this.handling          = mapValue(ContactJSONKey.handling, map);
-    this.tags              = mapValue(ContactJSONKey.tags, map);
-    this.infos             = mapValue(ContactJSONKey.infos, map);
-    this.titles            = mapValue(ContactJSONKey.titles, map);
-    this.relations         = mapValue(ContactJSONKey.relations, map);
-    this.responsibilities  = mapValue(ContactJSONKey.responsibilities, map);
+    this.backupContacts    = mapValue(Key.backup, map);
+    this.emailaddresses    = mapValue(Key.emailaddresses, map);
+    this.handling          = mapValue(Key.handling, map);
+    this.workhours         = mapValue(Key.workhours, map);
+    this.handling          = mapValue(Key.handling, map);
+    this.tags              = mapValue(Key.tags, map);
+    this.infos             = mapValue(Key.infos, map);
+    this.titles            = mapValue(Key.titles, map);
+    this.relations         = mapValue(Key.relations, map);
+    this.responsibilities  = mapValue(Key.responsibilities, map);
 
-    Iterable ep = mapValue(ContactJSONKey.endpoints, map);
+    Iterable ep = mapValue(Key.endpoints, map);
     this.endpoints = ep.map((Map map) =>
       new MessageEndpoint.fromMap(map)).toList();
   }

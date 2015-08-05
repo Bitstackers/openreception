@@ -13,40 +13,6 @@
 
 part of openreception.model;
 
-/**
- * Serialization values.
- */
-abstract class ReceptionJSONKey {
-  static const String ID = 'id';
-  static const String FIXME_ALT_ID = 'reception_id';
-  static const String ORGANIZATION_ID = 'organization_id';
-  static const String FULL_NAME = 'full_name';
-  static const String ENABLED = 'enabled';
-  static const String EXTRADATA_URI = 'extradatauri';
-  static const String EXTENSION = 'reception_telephonenumber';
-  static const String LAST_CHECK = 'last_check';
-  static const String SHORT_GREETING = 'short_greeting';
-  static const String GREETING = 'greeting';
-  static const String ADDRESSES = 'addresses';
-  static const String ATTRIBUTES = 'attributes';
-
-  static const String ALT_NAMES = 'alternatenames';
-  static const String CUSTOMER_TYPES = 'customertypes';
-  static const String PRODUCT = 'product';
-  static const String BANKING_INFO = 'bankinginformation';
-  static const String SALES_MARKET_HANDLING = 'salescalls';
-  static const String EMAIL_ADDRESSES = 'emailaddresses';
-  static const String HANDLING_INSTRUCTIONS = 'handlings';
-  static const String OPENING_HOURS = 'openinghours';
-  static const String VAT_NUMBERS = 'registrationnumbers';
-  static const String OTHER = 'other';
-  static const String PHONE_NUMBERS = 'telephonenumbers';
-  static const String WEBSITES = 'websites';
-  static const String MINI_WIKI = 'miniwiki';
-
-  static const String RECEPTION_LIST = 'receptions';
-}
-
 class ReceptionStub {
   int ID = Reception.noID;
   String fullName = null;
@@ -61,13 +27,9 @@ class ReceptionStub {
   ReceptionStub.fromMap(Map map) {
     if (map == null) throw new ArgumentError.notNull('Null map');
 
-    if (map.containsKey(ReceptionJSONKey.FIXME_ALT_ID)) {
-      this.ID = map[ReceptionJSONKey.FIXME_ALT_ID];
-    } else {
-      this.ID = map[ReceptionJSONKey.ID];
-    }
+    this.ID = map[Key.ID];
 
-    this.fullName = map[ReceptionJSONKey.FULL_NAME];
+    this.fullName = map[Key.fullName];
   }
 
   ReceptionStub.empty();
@@ -130,11 +92,11 @@ class Reception extends ReceptionStub {
   };
 
   void set attributes(Map attributes) {
-    this.customerTypes = attributes[ReceptionJSONKey.CUSTOMER_TYPES];
+    this.customerTypes = attributes[Key.customerTypes];
 
     //Temporary workaround for telephonenumbers to telephoneNumbers transition.
-    if (attributes.containsKey(ReceptionJSONKey.PHONE_NUMBERS)) {
-      Iterable values = attributes[ReceptionJSONKey.PHONE_NUMBERS];
+    if (attributes.containsKey(Key.phoneNumbers)) {
+      Iterable values = attributes[Key.phoneNumbers];
       List<PhoneNumber> pns = [];
 
       try {
@@ -150,24 +112,24 @@ class Reception extends ReceptionStub {
     }
 
     this
-      ..addresses = attributes[ReceptionJSONKey.ADDRESSES]
-      ..alternateNames = attributes[ReceptionJSONKey.ALT_NAMES]
-      ..bankingInformation = attributes[ReceptionJSONKey.BANKING_INFO]
-      ..emailAddresses = attributes[ReceptionJSONKey.EMAIL_ADDRESSES]
-      ..greeting = attributes[ReceptionJSONKey.GREETING]
+      ..addresses = attributes[Key.addresses]
+      ..alternateNames = attributes[Key.alternateNames]
+      ..bankingInformation = attributes[Key.bankingInfo]
+      ..emailAddresses = attributes[Key.emailAdresses]
+      ..greeting = attributes[Key.greeting]
       ..handlingInstructions =
-      attributes[ReceptionJSONKey.HANDLING_INSTRUCTIONS]
-      ..openingHours = attributes[ReceptionJSONKey.OPENING_HOURS]
-      ..otherData = attributes[ReceptionJSONKey.OTHER]
-      ..product = attributes[ReceptionJSONKey.PRODUCT]
+      attributes[Key.handlingInstructions]
+      ..openingHours = attributes[Key.openingHours]
+      ..otherData = attributes[Key.other]
+      ..product = attributes[Key.product]
       ..salesMarketingHandling =
-      attributes[ReceptionJSONKey.SALES_MARKET_HANDLING]
-      .._shortGreeting = attributes[ReceptionJSONKey.SHORT_GREETING] != null
-          ? attributes[ReceptionJSONKey.SHORT_GREETING]
+      attributes[Key.salesMarketingHandling]
+      .._shortGreeting = attributes[Key.shortGreeting] != null
+          ? attributes[Key.shortGreeting]
           : ''
-      ..vatNumbers = attributes[ReceptionJSONKey.VAT_NUMBERS]
-      ..websites = attributes[ReceptionJSONKey.WEBSITES]
-      ..miniWiki = attributes[ReceptionJSONKey.MINI_WIKI];
+      ..vatNumbers = attributes[Key.vatNumbers]
+      ..websites = attributes[Key.websites]
+      ..miniWiki = attributes[Key.miniWiki];
   }
 
   static final Reception noReception = new Reception.empty();
@@ -189,19 +151,19 @@ class Reception extends ReceptionStub {
   Reception.fromMap(Map receptionMap) : super.fromMap(receptionMap) {
     try {
       this
-        ..ID = receptionMap[ReceptionJSONKey.ID]
-        ..organizationId = receptionMap[ReceptionJSONKey.ORGANIZATION_ID]
-        ..fullName = receptionMap[ReceptionJSONKey.FULL_NAME]
-        ..enabled = receptionMap[ReceptionJSONKey.ENABLED]
-        ..extension = receptionMap[ReceptionJSONKey.EXTENSION]
-        ..extraData = receptionMap[ReceptionJSONKey.EXTRADATA_URI] != null
-            ? Uri.parse(receptionMap[ReceptionJSONKey.EXTRADATA_URI])
+        ..ID = receptionMap[Key.ID]
+        ..organizationId = receptionMap[Key.organizationId]
+        ..fullName = receptionMap[Key.fullName]
+        ..enabled = receptionMap[Key.enabled]
+        ..extension = receptionMap[Key.receptionTelephonenumber]
+        ..extraData = receptionMap[Key.extradataUri] != null
+            ? Uri.parse(receptionMap[Key.extradataUri])
             : null
         ..lastChecked =
-        Util.unixTimestampToDateTime(receptionMap[ReceptionJSONKey.LAST_CHECK]);
+        Util.unixTimestampToDateTime(receptionMap[Key.lastCheck]);
 
-      if (receptionMap[ReceptionJSONKey.ATTRIBUTES] != null) {
-        attributes = receptionMap[ReceptionJSONKey.ATTRIBUTES];
+      if (receptionMap[Key.attributes] != null) {
+        attributes = receptionMap[Key.attributes];
       }
     } catch (error, stacktrace) {
       log.severe('Parsing of reception failed.', error, stacktrace);
@@ -217,15 +179,15 @@ class Reception extends ReceptionStub {
    * Returns a Map representation of the Reception.
    */
   Map get asMap => {
-      ReceptionJSONKey.ID: this.ID,
-      ReceptionJSONKey.ORGANIZATION_ID: this.organizationId,
-      ReceptionJSONKey.FULL_NAME: this.fullName,
-      ReceptionJSONKey.ENABLED: this.enabled,
-      ReceptionJSONKey.EXTRADATA_URI:
+      Key.ID: this.ID,
+      Key.organizationId: this.organizationId,
+      Key.fullName: this.fullName,
+      Key.enabled : this.enabled,
+      Key.extradataUri:
           this.extraData == null ? null : this.extraData.toString(),
-      ReceptionJSONKey.EXTENSION: this.extension,
-      ReceptionJSONKey.LAST_CHECK: Util.dateTimeToUnixTimestamp (lastChecked),
-      ReceptionJSONKey.ATTRIBUTES: attributes
+      Key.receptionTelephonenumber: this.extension,
+      Key.lastCheck: Util.dateTimeToUnixTimestamp (lastChecked),
+      Key.attributes: attributes
     };
 
   void validate() {

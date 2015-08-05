@@ -13,16 +13,6 @@
 
 part of openreception.model;
 
-/**
- * Map keys for organization maps.
- */
-abstract class OrganizationJSONKey {
-  static const String ORGANIZATION_LIST = 'organizations';
-  static const String BILLING_TYPE = 'billing_type';
-  static const String FLAG = 'flag';
-  static const String FULL_NAME = 'full_name';
-  static const String ID = 'id';
-}
 
 /**
  * Class representing an organization.
@@ -50,10 +40,10 @@ class Organization {
 
     try {
       this
-        ..id = organizationMap[OrganizationJSONKey.ID]
-        ..billingType = organizationMap[OrganizationJSONKey.BILLING_TYPE]
-        ..flag = organizationMap[OrganizationJSONKey.FLAG]
-        ..fullName = organizationMap[OrganizationJSONKey.FULL_NAME];
+        ..id = organizationMap[Key.ID]
+        ..billingType = organizationMap[Key.billingType]
+        ..flag = organizationMap[Key.flag]
+        ..fullName = organizationMap[Key.fullName];
     } catch (error, stacktrace) {
       log.severe('Parsing of organization failed.', error, stacktrace);
       throw new ArgumentError('Invalid data in map');
@@ -66,10 +56,10 @@ class Organization {
    * Returns a Map representation of the Organization.
    */
   Map get asMap => {
-    OrganizationJSONKey.ID: this.id,
-    OrganizationJSONKey.BILLING_TYPE: this.billingType,
-    OrganizationJSONKey.FLAG: this.flag,
-    OrganizationJSONKey.FULL_NAME: this.fullName
+    Key.ID: this.id,
+    Key.billingType: this.billingType,
+    Key.flag: this.flag,
+    Key.fullName: this.fullName
   };
 
   /**

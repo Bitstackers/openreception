@@ -16,6 +16,8 @@ part of openreception.model;
 /**
  * A CDR checkpoint is a timespan which is used to delimit which CDR entries
  * should be included in a queried set.
+ *
+ * TODO: Move keys to keys package.
  */
 class CDRCheckpoint {
   DateTime start;

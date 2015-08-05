@@ -14,26 +14,6 @@
 part of openreception.model;
 
 /**
- * Enumeration type for call related JSON keys.
- */
-abstract class CallJsonKey {
-  static const String ID             = 'id';
-  static const String state          = 'state';
-  static const String bLeg           = 'b_leg';
-  static const String locked         = 'locked';
-  static const String inbound        = 'inbound';
-  static const String isCall         = 'is_call';
-  static const String destination    = 'destination';
-  static const String callerID       = 'caller_id';
-  static const String greetingPlayed = 'greeting_played';
-  static const String receptionID    = 'reception_id';
-  static const String contactID      = 'contact_id';
-  static const String assignedTo     = 'assigned_to';
-  static const String channel        = 'channel';
-  static const String arrivalTime    = 'arrival_time';
-}
-
-/**
  * Enumeration type for call states.
  */
 abstract class CallState {
@@ -86,18 +66,18 @@ class Call {
    * Constructor.
    */
   Call.fromMap(map) {
-    _ID                 = map[CallJsonKey.ID];
-    _state              = map[CallJsonKey.state];
-    this.b_Leg          = map[CallJsonKey.bLeg];
-    this._locked        = map[CallJsonKey.locked];
-    this.inbound        = map[CallJsonKey.inbound];
-    this.destination    = map[CallJsonKey.destination];
-    this.callerID       = map[CallJsonKey.callerID];
-    this.greetingPlayed = map[CallJsonKey.greetingPlayed];
-    this.receptionID    = map[CallJsonKey.receptionID];
-    this.contactID      = map[CallJsonKey.contactID];
-    this.assignedTo     = map[CallJsonKey.assignedTo];
-    this.arrived        = Util.unixTimestampToDateTime (map[CallJsonKey.arrivalTime]);
+    _ID                 = map[Key.ID];
+    _state              = map[Key.state];
+    this.b_Leg          = map[Key.bLeg];
+    this._locked        = map[Key.locked];
+    this.inbound        = map[Key.inbound];
+    this.destination    = map[Key.destination];
+    this.callerID       = map[Key.callerID];
+    this.greetingPlayed = map[Key.greetingPlayed];
+    this.receptionID    = map[Key.receptionID];
+    this.contactID      = map[Key.contactID];
+    this.assignedTo     = map[Key.assignedTo];
+    this.arrived        = Util.unixTimestampToDateTime (map[Key.arrivalTime]);
   }
 
   /**
@@ -268,19 +248,19 @@ class Call {
   /**
    *
    */
-  Map toJson() => {CallJsonKey.ID             : _ID,
-                   CallJsonKey.state          : _state,
-                   CallJsonKey.bLeg           : b_Leg,
-                   CallJsonKey.locked         : locked,
-                   CallJsonKey.inbound        : inbound,
-                   CallJsonKey.destination    : destination,
-                   CallJsonKey.callerID       : callerID,
-                   CallJsonKey.greetingPlayed : greetingPlayed,
-                   CallJsonKey.receptionID    : receptionID,
-                   CallJsonKey.contactID      : contactID,
-                   CallJsonKey.assignedTo     : assignedTo,
-                   CallJsonKey.channel        : channel,
-                   CallJsonKey.arrivalTime    : Util.dateTimeToUnixTimestamp(arrived)};
+  Map toJson() => {Key.ID             : _ID,
+                   Key.state          : _state,
+                   Key.bLeg           : b_Leg,
+                   Key.locked         : locked,
+                   Key.inbound        : inbound,
+                   Key.destination    : destination,
+                   Key.callerID       : callerID,
+                   Key.greetingPlayed : greetingPlayed,
+                   Key.receptionID    : receptionID,
+                   Key.contactID      : contactID,
+                   Key.assignedTo     : assignedTo,
+                   Key.channel        : channel,
+                   Key.arrivalTime    : Util.dateTimeToUnixTimestamp(arrived)};
 
   /**
    *

@@ -16,6 +16,8 @@ part of openreception.model;
 /**
  * A CDR entry is a single Call Detail Record entry representing the flow and
  * information of a termniated call.
+ *
+ * TODO: Move keys to keys package.
  */
 class CDREntry {
   double avgDuration;

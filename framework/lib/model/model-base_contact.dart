@@ -14,16 +14,6 @@
 part of openreception.model;
 
 /**
- * JSON serialization keys.
- */
-abstract class Key {
-  static const String contactID = 'contact_id';
-  static const String fullName = 'full_name';
-  static const String contactType = 'contact_type';
-  static const String enabled = 'enabled';
-}
-
-/**
  * A base contact represents a contact outside the context of a reception.
  */
 class BaseContact {

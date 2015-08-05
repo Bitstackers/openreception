@@ -35,8 +35,8 @@ class ClientConnection {
    * Deserializing constructor.
    */
   ClientConnection.fromMap(Map map) {
-    userID = map[_Key.userID];
-    connectionCount = map[_Key.connectionCount];
+    userID = map[Key.userID];
+    connectionCount = map[Key.connectionCount];
   }
 
   /**
@@ -48,7 +48,7 @@ class ClientConnection {
    * Returns a map representation of this object.
    */
   Map get asMap => {
-    _Key.userID : userID,
-    _Key.connectionCount : connectionCount
+    Key.userID : userID,
+    Key.connectionCount : connectionCount
   };
 }

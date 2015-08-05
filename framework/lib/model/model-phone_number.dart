@@ -13,16 +13,6 @@
 
 part of openreception.model;
 
-abstract class PhoneNumberJSONKey {
-  static const String Description = 'description';
-  static const String Value = 'value';
-  static const String Confidential = 'confidential';
-  static const String Type = 'kind';
-  static const String Billing_type = 'billing_type';
-  static const String Tag = 'tag';
-
-}
-
 class PhoneNumber {
   String description = '';
   String value = '';
@@ -32,13 +22,13 @@ class PhoneNumber {
   List<String> tags = [];
 
   PhoneNumber.fromMap(Map map) {
-    description = map[PhoneNumberJSONKey.Description];
-    value = map[PhoneNumberJSONKey.Value];
-    confidential = map[PhoneNumberJSONKey.Confidential];
-    type = map[PhoneNumberJSONKey.Type];
-    billing_type = map[PhoneNumberJSONKey.Billing_type];
+    description = map[Key.description];
+    value = map[Key.value];
+    confidential = map[Key.confidential];
+    type = map[Key.type];
+    billing_type = map[Key.billingType];
 
-    var newTags = map[PhoneNumberJSONKey.Tag];
+    var newTags = map[Key.tag];
 
     if (newTags is Iterable<String>) {
       tags.addAll(newTags);
@@ -62,11 +52,11 @@ class PhoneNumber {
   Map toJson () => this.asMap;
 
   Map get asMap => {
-    PhoneNumberJSONKey.Value: value,
-    PhoneNumberJSONKey.Type: type,
-    PhoneNumberJSONKey.Description: description,
-    PhoneNumberJSONKey.Billing_type: billing_type,
-    PhoneNumberJSONKey.Tag: tags,
-    PhoneNumberJSONKey.Confidential: confidential
+    Key.value: value,
+    Key.type: type,
+    Key.description: description,
+    Key.billingType: billing_type,
+    Key.tag: tags,
+    Key.confidential: confidential
   };
 }

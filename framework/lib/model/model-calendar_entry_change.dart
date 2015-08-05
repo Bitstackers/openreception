@@ -14,15 +14,6 @@
 part of openreception.model;
 
 /**
- * JSON serialization keys.
- */
-abstract class CalendarEntryChangeKey {
-  static const String userID = 'uid';
-  static const String updatedAt = 'updated';
-  static const String username = 'username';
-}
-
-/**
  * Class representing a historic change, by a [User] in a [CalendarEntry].
  */
 class CalendarEntryChange {
@@ -40,9 +31,9 @@ class CalendarEntryChange {
    * Deserializing constructor.
    */
   CalendarEntryChange.fromMap(Map map) {
-    this.userID = map[CalendarEntryChangeKey.userID];
-    this.changedAt = Util.unixTimestampToDateTime(map[CalendarEntryChangeKey.updatedAt]);
-    this.username = map[CalendarEntryChangeKey.username];
+    this.userID = map[Key.userID];
+    this.changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]);
+    this.username = map[Key.username];
   }
 
   /**
@@ -50,9 +41,9 @@ class CalendarEntryChange {
    * Suitable for serialization.
    */
   Map get asMap => {
-    CalendarEntryChangeKey.userID : this.userID,
-    CalendarEntryChangeKey.updatedAt : Util.dateTimeToUnixTimestamp(changedAt),
-    CalendarEntryChangeKey.username : this.username
+    Key.userID : this.userID,
+    Key.updatedAt : Util.dateTimeToUnixTimestamp(changedAt),
+    Key.username : this.username
   };
 
   /**

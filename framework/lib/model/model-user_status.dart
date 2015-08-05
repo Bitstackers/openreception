@@ -48,19 +48,6 @@ abstract class UserState {
   static phoneIsReady (String state) => PhoneReadyStates.contains(state);
 }
 
-/**
- * Serialization and de-serialization keys.
- */
-abstract class UserStatusJSONKey {
-  static const String UserID        = 'userID';
-  static const String State         = 'state';
-  static const String lastState     = 'lastState';
-  static const String LastActivity  = 'lastActivity';
-  static const String CallsHandled  = 'callsHandled';
-  static const String AssignedCalls = 'assignedCalls';
-
-}
-
 class UserStatus {
   int          userID       = User.noID;
   String       _state       = UserState.Unknown;
@@ -80,22 +67,22 @@ class UserStatus {
   UserStatus();
 
   UserStatus.fromMap (Map map) {
-    this.userID       = map[UserStatusJSONKey.UserID];
-    this.state        = map[UserStatusJSONKey.State];
-    this.lastActivity = map[UserStatusJSONKey.LastActivity] != null
-                         ? Util.unixTimestampToDateTime(map[UserStatusJSONKey.LastActivity])
+    this.userID       = map[Key.UserID];
+    this.state        = map[Key.state];
+    this.lastActivity = map[Key.lastActivity] != null
+                         ? Util.unixTimestampToDateTime(map[Key.lastActivity])
                          : null;
-    this.callsHandled = map[UserStatusJSONKey.CallsHandled];
+    this.callsHandled = map[Key.callsHandled];
   }
 
   Map get asMap =>
       {
-          UserStatusJSONKey.UserID       : this.userID,
-          UserStatusJSONKey.State        : this._state,
-          UserStatusJSONKey.lastState    : this.lastState,
-          UserStatusJSONKey.LastActivity : this.lastActivity != null
+          Key.UserID       : this.userID,
+          Key.state        : this._state,
+          Key.lastState    : this.lastState,
+          Key.lastActivity : this.lastActivity != null
             ? Util.dateTimeToUnixTimestamp(this.lastActivity)
             : null,
-          UserStatusJSONKey.CallsHandled : this.callsHandled
+          Key.callsHandled : this.callsHandled
       };
 }

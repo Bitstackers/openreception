@@ -13,12 +13,6 @@
 
 part of openreception.model;
 
-abstract class MessageContextJSONKey {
-  static const Reception = 'reception';
-  static const Contact = 'contact';
-  static const ID = 'id';
-  static const Name = 'name';
-}
 
 class MessageContext {
 
@@ -50,13 +44,13 @@ class MessageContext {
    */
   MessageContext.fromMap(Map map) {
     this..contactID =
-          map[MessageContextJSONKey.Contact][MessageContextJSONKey.ID]
+          map[Key.contact][Key.ID]
         ..contactName =
-          map[MessageContextJSONKey.Contact][MessageContextJSONKey.Name]
+          map[Key.contact][Key.name]
         ..receptionID =
-          map[MessageContextJSONKey.Reception][MessageContextJSONKey.ID]
+          map[Key.reception][Key.ID]
         ..receptionName =
-          map[MessageContextJSONKey.Reception][MessageContextJSONKey.Name];
+          map[Key.reception][Key.name];
   }
 
   /**

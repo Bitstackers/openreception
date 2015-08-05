@@ -13,12 +13,6 @@
 
 part of openreception.model;
 
-abstract class PeerJSONKey {
-  static const ID         = 'id';
-  static const REGISTERED = 'registered';
-  static const CHAN_COUNT = 'activeChannels';
-}
-
 class Peer {
   final String ID;
   final int    channelCount;
@@ -28,15 +22,15 @@ class Peer {
   Peer (this.ID, this.channelCount);
 
   Map get asMap => {
-    PeerJSONKey.ID         : this.ID,
-    PeerJSONKey.REGISTERED : this.registered,
-    PeerJSONKey.CHAN_COUNT : this.channelCount
+    Key.ID         : this.ID,
+    Key.registered : this.registered,
+    Key.activeChannels : this.channelCount
   };
 
   Peer.fromMap (Map map) :
-    this.ID           = map[PeerJSONKey.ID],
-    this.registered   = map[PeerJSONKey.REGISTERED],
-    this.channelCount = map[PeerJSONKey.CHAN_COUNT];
+    this.ID           = map[Key.ID],
+    this.registered   = map[Key.registered],
+    this.channelCount = map[Key.activeChannels];
 
   Map toJson() => this.asMap;
 
