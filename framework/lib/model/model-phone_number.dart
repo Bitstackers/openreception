@@ -28,7 +28,7 @@ class PhoneNumber {
     type = map[Key.type];
     billing_type = map[Key.billingType];
 
-    var newTags = map[Key.tag];
+    var newTags = map[Key.tags];
 
     if (newTags is Iterable<String>) {
       tags.addAll(newTags);
@@ -45,8 +45,6 @@ class PhoneNumber {
     this.type== other.type
     ;
 
-
-
   PhoneNumber.empty();
 
   Map toJson () => this.asMap;
@@ -56,7 +54,7 @@ class PhoneNumber {
     Key.type: type,
     Key.description: description,
     Key.billingType: billing_type,
-    Key.tag: tags,
+    Key.tags: tags,
     Key.confidential: confidential
   };
 }
