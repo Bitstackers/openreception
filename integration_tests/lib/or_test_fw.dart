@@ -66,6 +66,10 @@ part 'managementserver/src/reception.dart';
 part 'reception/all_tests.dart';
 part 'reception/src/reception_store.dart';
 
+/// User store tests
+part 'user/all_tests.dart';
+part 'user/src/user_store.dart';
+
 /// Use case tests
 part 'use_case/all_tests.dart';
 part 'use_case/src/uc-find_contact.dart';
