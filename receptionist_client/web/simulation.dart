@@ -16,44 +16,161 @@ library openreception.client.simulation;
 import 'dart:async';
 import 'dart:html';
 import 'dart:convert';
+import 'dart:math' show Random;
+
 import 'controller/controller.dart' as Controller;
+import 'model/model.dart' as Model;
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
 _Simulation simulation = new _Simulation();
 
-enum ReceptionistState { IDLE, HUNTING, ACTIVE_CALL, PARKED_CALL }
+enum ReceptionistState {
+  IDLE,
+  HUNTING,
+  ACTIVE_CALL,
+  PARKED_CALL,
+  RECEIVING_CALL
+}
 
+/**
+ * Automated simulation of the UI.
+ */
 class _Simulation {
+  static int seed = new DateTime.now().millisecondsSinceEpoch;
+  static Random rand = new Random(seed);
+  Model.AppClientState    _appState;
+
   final Logger log = new Logger('_Simulation');
-  ReceptionistState state = ReceptionistState.IDLE;
+  ReceptionistState _state = ReceptionistState.IDLE;
   Controller.Call _callController;
 
+
+  ReceptionistState get state => _state;
+  set state(ReceptionistState newState) {
+    _state = newState;
+    refreshInfo();
+  }
+
   OListElement get callQueue =>
-      querySelector('#global-call-queue').querySelector('ol');
+      querySelector('#global-call-queue ol');
+
+  OListElement get localCalls =>
+      querySelector('#my-call-queue ol');
+
+
+  ParagraphElement get _infoBox => querySelector('p#simulation-info');
+
+  ParagraphElement get _stateBox => querySelector('p#simulation-state');
+
+  bool get isInCall => querySelector('.greeting').classes.contains('incall');
+  bool get hasParkedCalls => querySelector('.greeting').classes.contains('incall');
 
   bool get callsInCallQueue => callQueue.children.length > 0;
 
-  void checkForCall(Timer timer) {
+  bool get hasLocalCalls => localCalls.children.length > 0;
+
+  int get randomResponseTime => rand.nextInt(900) + 100;
+
+  void refreshInfo() {
+    _stateBox.text = '${_state} (in call:$isInCall)';
+  }
+
+  /**
+   *
+   */
+  void checkState(Timer timer) {
     if (state != ReceptionistState.IDLE) {
       return;
     }
 
     if (callsInCallQueue) {
       state = ReceptionistState.HUNTING;
-//      ORModel.Call huntedCall = new ORModel.Call.fromMap(
-//          JSON.decode(callQueue.children.first.dataset['object']));
-    _callController.pickupNext();
+
+      new Future.delayed(
+          new Duration(milliseconds: randomResponseTime), tryPickup);
     }
   }
 
+  /**
+   *
+   */
   void observers() {
-    new Timer.periodic(new Duration(milliseconds: 1000), checkForCall);
+    new Timer.periodic(new Duration(milliseconds: 1000), checkState);
   }
 
-  void start(Controller.Call cc) {
+  /**
+   *
+   */
+  void tryPickup() {
+    _callController.pickupNext().then((ORModel.Call call) {
+      // No call were available, just retutn to idle state again.
+      if (call == ORModel.Call.noCall) {
+        state = ReceptionistState.IDLE;
+      }
+
+      state = ReceptionistState.RECEIVING_CALL;
+
+      new Future.delayed(new Duration(milliseconds: 100), expectCall);
+    }).catchError((_) {
+      state = ReceptionistState.IDLE;
+    });
+  }
+
+  /**
+   *
+   */
+  void start(Controller.Call cc, Model.AppClientState as) {
     _callController = cc;
+    _appState = as;
+    setup();
     observers();
-    print('Started simulation mode. DO NOT USE the interface manully!');
+    log.info('Started simulation mode. DO NOT USE the interface manully!');
+  }
+
+  /**
+   * Expect a call to be received.
+   *
+   * TODO: Handle condition where hangup happens before it is transferred to
+   *   the agent
+   */
+  void expectCall() {
+    refreshInfo();
+
+    if (isInCall) {
+      state = ReceptionistState.ACTIVE_CALL;
+      new Future.delayed(new Duration(milliseconds: 100), hangupCall);
+    }
+  }
+
+  /**
+   *
+   */
+  void hangupCall () {
+    _callController.hangup(_appState.activeCall).then((_) {
+
+      _state = ReceptionistState.IDLE;
+
+    });
+  }
+
+  /**
+   *
+   */
+  void setup() {
+    DivElement root = new DivElement()
+      ..id = 'simulation-overlay'
+      ..style.marginLeft = '30%'
+      ..style.position = 'absolute'
+      ..style.width = '400px'
+      ..style.zIndex = '999'
+      ..style.backgroundColor = 'white'
+      ..children = [
+        new HeadingElement.h1()..text = 'Simulation mode. DO NOT USE INTERFACE',
+        new ParagraphElement()..id = 'simulation-state',
+        new ParagraphElement()..id = 'simulation-info'
+        ];
+
+    querySelector('body').insertBefore(root, querySelector('#receptionistclient-ready'));
   }
 }
