@@ -4,7 +4,6 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/auth_server/cache.dart' as cache;
 import '../lib/auth_server/configuration.dart' as auth;
 import '../lib/configuration.dart';
 import '../lib/auth_server/database.dart';
@@ -35,7 +34,6 @@ void main(List<String> args) {
       auth.config = new auth.Configuration(parsedArgs);
       auth.config.whenLoaded()
         .then((_) => log.fine(auth.config.toString()))
-        .then((_) => cache.setup())
         .then((_) => startDatabase())
         .then((_) => watcher.setup())
         .then((_) => vault.loadFromDirectory(auth.config.serverTokenDir))

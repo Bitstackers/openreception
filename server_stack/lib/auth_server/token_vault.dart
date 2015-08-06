@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/cache.dart' as IO;
+//import 'package:openreception_framework/cache.dart' as IO;
 
 TokenVault vault = new TokenVault();
 
@@ -67,11 +67,11 @@ class TokenVault {
 
   Future loadFromDirectory(String directory) {
     if(directory != null) {
-      return IO.list(directory).then((List<FileSystemEntity> list) {
+      return list(directory).then((List<FileSystemEntity> list) {
 
         return Future.forEach(list, (FileSystemEntity item) {
           if(item is File) {
-            IO.load(item.path).then((String text) {
+            load(item.path).then((String text) {
               //TODO handle systems that do not seperate folders with "/"
               String token = item.path.split('/').last.split('.').first;
               Map data = JSON.decode(text);
@@ -88,4 +88,14 @@ class TokenVault {
       return new Future.value();
     }
   }
+
+  Future<List<FileSystemEntity>> list(String path) {
+    Directory dir = new Directory(path);
+    return dir.list().toList().then((List<FileSystemEntity> values) {
+      return values;
+    });
+  }
+
+  Future<String> load(String path) => new File(path).readAsString();
+
 }
