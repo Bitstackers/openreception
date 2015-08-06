@@ -2,7 +2,6 @@ library adaheads.server.view.reception;
 
 import 'dart:convert';
 
-import 'package:openreception_framework/model.dart' as ORF;
 import 'package:openreception_framework/keys.dart'  as Key;
 
 import '../model.dart';
