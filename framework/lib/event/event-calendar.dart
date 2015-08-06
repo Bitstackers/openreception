@@ -22,6 +22,10 @@ abstract class CalendarEntryState {
   static const String DELETED = 'deleted';
 }
 
+/**
+ * Model class representing a change in a [CalendarEntry]. May be serialized
+ * and sent via a notification socket.
+ */
 class CalendarChange implements Event {
 
   final DateTime timestamp;
