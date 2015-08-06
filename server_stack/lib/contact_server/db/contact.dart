@@ -394,52 +394,52 @@ abstract class Contact {
     List messagePrerequisites = [];
 
     if(row.attributes != null) {
-      if (row.attributes.containsKey (Model.ContactJSONKey.backup)) {
-        backupContacts = row.attributes[Model.ContactJSONKey.backup];
+      if (row.attributes.containsKey (Key.backup)) {
+        backupContacts = row.attributes[Key.backup];
       }
 
-      if (row.attributes.containsKey (Model.ContactJSONKey.emailaddresses)) {
-        emailaddresses = row.attributes[Model.ContactJSONKey.emailaddresses];
+      if (row.attributes.containsKey (Key.emailaddresses)) {
+        emailaddresses = row.attributes[Key.emailaddresses];
       }
 
-      if(row.attributes.containsKey (Model.ContactJSONKey.handling)) {
-        handling = row.attributes[Model.ContactJSONKey.handling];
+      if(row.attributes.containsKey (Key.handling)) {
+        handling = row.attributes[Key.handling];
       }
 
       // Tags
-      if (row.attributes.containsKey (Model.ContactJSONKey.tags)) {
-        tags = row.attributes[Model.ContactJSONKey.tags];
+      if (row.attributes.containsKey (Key.tags)) {
+        tags = row.attributes[Key.tags];
       }
 
       // Work hours
-      if (row.attributes.containsKey (Model.ContactJSONKey.workhours)) {
-        workhours = row.attributes[Model.ContactJSONKey.workhours];
+      if (row.attributes.containsKey (Key.workhours)) {
+        workhours = row.attributes[Key.workhours];
       }
 
       // Department
-      if (row.attributes.containsKey (Model.ContactJSONKey.departments)) {
-        departments = row.attributes[Model.ContactJSONKey.departments];
+      if (row.attributes.containsKey (Key.departments)) {
+        departments = row.attributes[Key.departments];
       }
 
       // Info's
-      if (row.attributes.containsKey (Model.ContactJSONKey.infos)) {
-        infos = row.attributes[Model.ContactJSONKey.infos];
+      if (row.attributes.containsKey (Key.infos)) {
+        infos = row.attributes[Key.infos];
       }
 
       // Titles
-      if (row.attributes.containsKey (Model.ContactJSONKey.titles)) {
-        titles = row.attributes[Model.ContactJSONKey.titles];
+      if (row.attributes.containsKey (Key.titles)) {
+        titles = row.attributes[Key.titles];
       }
 
       // Relations
-      if (row.attributes.containsKey (Model.ContactJSONKey.relations)) {
-        var relationValue = row.attributes[Model.ContactJSONKey.relations];
+      if (row.attributes.containsKey (Key.relations)) {
+        var relationValue = row.attributes[Key.relations];
 
         if (relationValue is String) {
-          relations = [row.attributes[Model.ContactJSONKey.relations]];
+          relations = [row.attributes[Key.relations]];
         }
         else if (relationValue is Iterable) {
-          relations = row.attributes[Model.ContactJSONKey.relations];
+          relations = row.attributes[Key.relations];
         }
         else {
           log.severe ('Bad relations value: $relationValue');
@@ -447,13 +447,13 @@ abstract class Contact {
       }
 
       // Responsiblities
-      if(row.attributes.containsKey (Model.ContactJSONKey.responsibilities)) {
-        responsibilities = row.attributes[Model.ContactJSONKey.responsibilities];
+      if(row.attributes.containsKey (Key.responsibilities)) {
+        responsibilities = row.attributes[Key.responsibilities];
       }
 
       // messagePrerequisites
-      if (row.attributes.containsKey (Model.ContactJSONKey.messagePrerequisites)) {
-        messagePrerequisites = row.attributes[Model.ContactJSONKey.messagePrerequisites];
+      if (row.attributes.containsKey (Key.messagePrerequisites)) {
+        messagePrerequisites = row.attributes[Key.messagePrerequisites];
       }
 
     }

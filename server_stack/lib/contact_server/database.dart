@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/model.dart'    as Model;
+import 'package:openreception_framework/keys.dart'     as Key;
 import 'package:openreception_framework/storage.dart'  as Storage;
 import 'package:openreception_framework/util.dart'     as Util;
 import 'configuration.dart';
