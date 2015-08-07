@@ -21,9 +21,9 @@ part 'model/endpoint.dart';
 //part 'model/organization.dart';
 //part 'model/phone.dart';
 part 'model/playlist.dart';
-part 'model/user.dart';
-part 'model/user_group.dart';
-part 'model/user_identity.dart';
+//part 'model/user.dart';
+//part 'model/user_group.dart';
+//part 'model/user_identity.dart';
 
 String stringFromJson(Map json, String key) {
   if (json.containsKey(key)) {

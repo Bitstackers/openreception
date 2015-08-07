@@ -15,7 +15,7 @@ final DateFormat inputDateFormat = new DateFormat('yyyy-MM-dd');
 class BillingView {
   static const String viewName = 'billing';
 
-  List<ORModel.CDRCheckpoint> checkpoints;
+  Iterable<ORModel.CDRCheckpoint> checkpoints;
 
   DivElement element;
   TableSectionElement dataTable;
@@ -62,7 +62,7 @@ class BillingView {
 
     checkpointSelector.onChange.listen((_) {
       if(checkpointSelector.selectedIndex > 0) {
-        loadCheckpoint(checkpoints[checkpointSelector.selectedIndex-1]);
+        loadCheckpoint(checkpoints.toList()[checkpointSelector.selectedIndex-1]);
       }
     });
   }
@@ -99,9 +99,9 @@ class BillingView {
   }
 
   void reloadCheckpoints() {
-    cdrController.checkpoints().then((List<ORModel.CDRCheckpoint> checkpoints) {
+    cdrController.checkpoints().then((Iterable<ORModel.CDRCheckpoint> checkpoints) {
       this.checkpoints = checkpoints;
-      this.checkpoints.sort();
+      //this.checkpoints.sort();
 
       checkpointSelector.children.clear();
       checkpointSelector.children.add(new OptionElement(data: 'Ingen valgt'));

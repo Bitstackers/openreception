@@ -9,7 +9,6 @@ import 'package:intl/intl.dart' show DateFormat;
 
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
 import '../notification.dart' as notify;
 import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
@@ -410,11 +409,11 @@ class ContactView {
 
     List<LIElement> children = new List<LIElement>();
     if (phonenumbers != null) {
-      for (Phone number in phonenumbers) {
+      for (ORModel.PhoneNumber number in phonenumbers) {
         LIElement li = simpleListElement(number.value, onChange: onChange);
-        li.value = number.id != null ? number.id : -1;
+        li.value = number.value != null ? number.value : -1;
         SelectElement kindpicker = new SelectElement()
-          ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind, selected: kind == number.kind)))
+          ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind, selected: kind == number.type)))
           ..onChange.listen((_) => onChange());
 
         SpanElement descriptionContent = new SpanElement()
@@ -424,7 +423,7 @@ class ContactView {
         editableSpan(descriptionContent, descriptionEditBox, onChange);
 
         SpanElement billingTypeContent = new SpanElement()
-          ..text = number.billingType
+          ..text = number.billing_type
           ..classes.add('phonenumberbillingtype');
         InputElement billingTypeEditBox = new InputElement(type: 'text');
         editableSpan(billingTypeContent, billingTypeEditBox, onChange);
@@ -500,8 +499,8 @@ class ContactView {
     return ul;
   }
 
-  List<Phone> getPhoneNumbersFromDOM(UListElement element) {
-    List<Phone> phonenumbers = new List<Phone>();
+  List<ORModel.PhoneNumber> getPhoneNumbersFromDOM(UListElement element) {
+    List<ORModel.PhoneNumber> phonenumbers = new List<ORModel.PhoneNumber>();
 
     for (LIElement li in element.children) {
       if (!li.classes.contains(addNewLiClass)) {
@@ -511,12 +510,11 @@ class ContactView {
         SpanElement billingType  = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberbillingtype'), orElse: () => null);
 
         if (content != null && kindpicker != null) {
-          phonenumbers.add(new Phone()
-            ..id = li.value
-            ..kind = kindpicker.options[kindpicker.selectedIndex].value
+          phonenumbers.add(new ORModel.PhoneNumber.empty()
+            ..type = kindpicker.options[kindpicker.selectedIndex].value
             ..value = content.text
             ..description = description.text
-            ..billingType = billingType.text);
+            ..billing_type = billingType.text);
         }
       }
     }
@@ -576,10 +574,10 @@ class ContactView {
     int contactId = selectedContactId;
     if (contactId != null && contactId > 0 && createNew == false) {
       List<Future> work = new List<Future>();
-      Contact updatedContact = new Contact()
-          ..id = contactId
+      ORModel.Contact updatedContact = new ORModel.Contact.empty()
+          ..ID = contactId
           ..fullName = inputName.value
-          ..type = inputType.selectedOptions.first != null ?
+          ..contactType = inputType.selectedOptions.first != null ?
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
@@ -666,13 +664,13 @@ class ContactView {
 
     UListElement contacts = new UListElement()
       ..classes.add('zebra-odd')
-      ..children = reception.contacts.map((Contact collegue) => createColleagueNode(collegue, reception.id)).toList();
+      ..children = reception.contacts.map((ORModel.Contact collegue) => createColleagueNode(collegue, reception.id)).toList();
 
     rootNode.children.addAll([receptionNode, contacts]);
     return rootNode;
   }
 
-  LIElement createColleagueNode(Contact collegue, int receptionId) {
+  LIElement createColleagueNode(ORModel.Contact collegue, int receptionId) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')

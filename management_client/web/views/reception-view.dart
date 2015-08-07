@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
 import '../lib/request.dart';
 import '../lib/eventbus.dart';
 import '../lib/view_utilities.dart';
@@ -106,6 +105,7 @@ class ReceptionView {
   }
 
   void selectedElementChanged(ORModel.Organization organization) {
+    currentOrganizationId = organization.id;
     OnContentChange();
   }
 
@@ -299,6 +299,7 @@ class ReceptionView {
 
   ORModel.Reception extractValues() {
     return new ORModel.Reception.empty()
+      ..ID = selectedReceptionId
       ..organizationId = currentOrganizationId
       ..fullName = inputFullName.value
       ..enabled = inputEnabled.checked
@@ -332,9 +333,6 @@ class ReceptionView {
       List list = receptions.toList()..sort(compareTo);
       this.receptions = list;
       performSearch();
-    }).catchError((error) {
-      log.error(
-          'Failed to refreshing the list of receptions in reception window.');
     });
   }
 

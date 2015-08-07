@@ -18,7 +18,7 @@ import 'package:logging/logging.dart';
 part 'requests/calendar.dart';
 part 'requests/archive/cdr.dart';
 part 'requests/dialplan.dart';
-part 'requests/user.dart';
+//part 'requests/user.dart';
 
 Logger log = new Logger('request');
 

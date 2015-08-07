@@ -78,12 +78,10 @@ class RecordView {
   }
 
   Future refreshList() {
-    return request.receptionController.list().then((List<ORModel.Reception> receptions) {
-      receptions.sort();
-      this.receptions = receptions;
+    return request.receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+
+      this.receptions = receptions.toList();
       performSearch();
-    }).catchError((error) {
-      log.error( 'Failed to refreshing the list of receptions in reception window.');
     });
   }
 

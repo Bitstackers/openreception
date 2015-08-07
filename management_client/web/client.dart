@@ -15,7 +15,6 @@ import 'notification.dart' as notify;
 
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/service-html.dart' as Transport;
-import 'package:openreception_framework/model.dart' as ORModel;
 
 void main() {
   if(handleToken()) {
