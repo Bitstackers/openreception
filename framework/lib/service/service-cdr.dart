@@ -50,8 +50,11 @@ class RESTCDRService implements Storage.CDR {
     Uri url = Resource.CDR.checkpoint(this._host);
     url = appendToken(url, this._token);
 
-    return this._backend.get(url).then((String response) =>
-        new Model.CDRCheckpoint.fromMap(JSON.decode(response)));
+    return this._backend.get(url).then((String response) {
+      Iterable decodedData = JSON.decode(response)['checkpoints'];
+
+      return decodedData.map((r) => new Model.CDRCheckpoint.fromMap(r));
+    });
   }
 
   /**
