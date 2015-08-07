@@ -98,5 +98,6 @@ class User {
   /**
    *
    */
-  bool inAnyGroups(List<String> groupNames) => groupNames.any(groups.contains);
+  bool inAnyGroups(List<String> groupNames) =>
+    groupNames.any(groups.map((UserGroup group) => group.name).contains);
 }
