@@ -2,6 +2,7 @@ part of contact.view;
 
 class EndpointsComponent {
   static List<String> _addressTypes = new List<String>();
+  final Controller.Contact _contactController;
 
   Element _element;
   Function _onChange;
@@ -12,7 +13,7 @@ class EndpointsComponent {
 
   SortableGroup _sortGroup;
 
-  EndpointsComponent(Element this._element, Function this._onChange) {
+  EndpointsComponent(Element this._element, Function this._onChange, Controller.Contact this._contactController) {
     _element.children.add(_header);
     _element.children.add(_ul);
   }
@@ -24,7 +25,7 @@ class EndpointsComponent {
 
   Future load(int receptionId, int contactId) {
     _persistenceEndpoint = new List<ORModel.MessageEndpoint>();
-    return request.contactController.endpoints(receptionId, contactId)
+    return _contactController.endpoints(receptionId, contactId)
       .then((Iterable<ORModel.MessageEndpoint> endpoints) {
       _populateUL(endpoints);
     });
@@ -137,7 +138,7 @@ class EndpointsComponent {
   }
 
   Future save(int receptionId, int contactId) {
-    List<Endpoint> foundEndpoints = new List<Endpoint>();
+    List<ORModel.MessageEndpoint> foundEndpoints = new List<ORModel.MessageEndpoint>();
 
     int index = 1;
     for(LIElement item in _ul.children) {
@@ -148,7 +149,7 @@ class EndpointsComponent {
       TextInputElement descriptionBox = item.querySelector('.contact-endpoint-description');
 
       if(addressSpan != null && addressTypePicker != null && confidentialBox != null && enabledBox != null) {
-        Endpoint endpoint = new Endpoint()
+        ORModel.MessageEndpoint endpoint = new ORModel.MessageEndpoint.empty()
           ..receptionId = receptionId
           ..contactId = contactId
           ..address = addressSpan.text
@@ -164,8 +165,8 @@ class EndpointsComponent {
     List<Future> worklist = new List<Future>();
 
     //Inserts
-    for(Endpoint endpoint in foundEndpoints) {
-      if(!_persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+    for(ORModel.MessageEndpoint endpoint in foundEndpoints) {
+      if(!_persistenceEndpoint.any((ORModel.MessageEndpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Insert Endpoint
         worklist.add(request.createEndpoint(receptionId, contactId, JSON.encode(endpoint))
             .catchError((error, stack) {
