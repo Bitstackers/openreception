@@ -93,3 +93,6 @@ const String lastState = 'lastState';
 const String lastActivity = 'lastActivity';
 const String callsHandled = 'callsHandled';
 const String assignedCalls = 'assignedCalls';
+
+const String start = 'start';
+const String end = 'end';

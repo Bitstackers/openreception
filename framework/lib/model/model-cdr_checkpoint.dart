@@ -16,10 +16,9 @@ part of openreception.model;
 /**
  * A CDR checkpoint is a timespan which is used to delimit which CDR entries
  * should be included in a queried set.
- *
- * TODO: Move keys to keys package.
  */
 class CDRCheckpoint {
+  int id;
   DateTime start;
   DateTime end;
   String name;
@@ -33,18 +32,20 @@ class CDRCheckpoint {
    * Deserializing constructor.
    */
   CDRCheckpoint.fromMap(Map map) {
-    start = Util.unixTimestampToDateTime(map['start']);
-    end   = Util.unixTimestampToDateTime(map['end']);
-    name  = map['name'];
+    id = map[Key.id];
+    start = Util.unixTimestampToDateTime(map[Key.start]);
+    end = Util.unixTimestampToDateTime(map[Key.end]);
+    name = map[Key.name];
   }
 
   /**
    * JSON representation of the model class.
    */
   Map toJson() => {
-    'start': Util.dateTimeToUnixTimestamp(start),
-    'end'  : Util.dateTimeToUnixTimestamp(end),
-    'name' : name
+    Key.id: id,
+    Key.start: Util.dateTimeToUnixTimestamp(start),
+    Key.end: Util.dateTimeToUnixTimestamp(end),
+    Key.name: name
   };
 }
 
@@ -52,5 +53,4 @@ class CDRCheckpoint {
  * Comparator function.
  */
 int compareCheckpoint(CDRCheckpoint c1, CDRCheckpoint c2) =>
-  c1.end.compareTo(c2.end);
-
+    c1.end.compareTo(c2.end);
