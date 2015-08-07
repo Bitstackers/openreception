@@ -10,11 +10,11 @@ import 'package:intl/intl.dart' show DateFormat;
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
-import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 import '../menu.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
@@ -26,6 +26,11 @@ typedef Future LazyFuture();
 class ContactView {
   static const String viewName = 'contact';
   DivElement element;
+
+  final Controller.Contact _contactController;
+  final Controller.Organization _organizationController;
+  final Controller.Reception _receptionController;
+
   UListElement ulContactList;
   UListElement ulReceptionContacts;
   UListElement ulReceptionList;
@@ -48,7 +53,9 @@ class ContactView {
   Map<int, LazyFuture> saveList = new Map<int, LazyFuture>();
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
-  ContactView(DivElement this.element) {
+  ContactView(DivElement this.element, Controller.Contact this._contactController,
+      Controller.Organization this._organizationController,
+          Controller.Reception this._receptionController) {
     ulContactList = element.querySelector('#contact-list');
 
     inputName = element.querySelector('#contact-input-name');
@@ -116,7 +123,7 @@ class ContactView {
   }
 
   void refreshList() {
-    request.contactController.listAll().then((Iterable<ORModel.BaseContact> contacts) {
+    _contactController.listAll().then((Iterable<ORModel.BaseContact> contacts) {
 
       int compareTo (ORModel.BaseContact c1, ORModel.BaseContact c2) =>
           c1.fullName.compareTo(c2.fullName);
@@ -152,7 +159,7 @@ class ContactView {
   }
 
   void activateContact(int id, [int reception_id]) {
-    request.contactController.get(id).then((ORModel.BaseContact contact) {
+    _contactController.get(id).then((ORModel.BaseContact contact) {
       buttonSave.text = 'Gem';
       buttonSave.disabled = false;
       buttonDelete.disabled = false;
@@ -167,9 +174,9 @@ class ContactView {
 
       highlightContactInList(id);
 
-      return request.contactController.receptions(id).then((Iterable<int> receptionIDs) {
+      return _contactController.receptions(id).then((Iterable<int> receptionIDs) {
         Future.forEach(receptionIDs, (int receptionID) {
-          request.contactController.getByReception(id, receptionID)
+          _contactController.getByReception(id, receptionID)
             .then((ORModel.Contact contact) {
               saveList.clear();
               ulReceptionContacts.children.add (receptionContactBox(contact));
@@ -179,12 +186,12 @@ class ContactView {
 
 
         //Rightbar
-        request.contactController.contactOrganizations(id).then((Iterable<int> organizationsIDs) {
+        _contactController.contactOrganizations(id).then((Iterable<int> organizationsIDs) {
           ulOrganizationList.children
                         ..clear();
 
           Future.forEach(organizationsIDs, (int organizationID) {
-            request.organizationController.get(organizationID)
+            _organizationController.get(organizationID)
               .then((ORModel.Organization org) {
                 saveList.clear();
                 ulOrganizationList.children.add (createOrganizationNode(org));
@@ -195,7 +202,7 @@ class ContactView {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
-        return request.contactController.colleagues(id).then((Iterable<ORModel.Reception> receptions) {
+        return _contactController.colleagues(id).then((Iterable<ORModel.Reception> receptions) {
           ulReceptionList.children.clear();
 
           if(receptions.isNotEmpty) {
@@ -210,7 +217,7 @@ class ContactView {
   }
 
   void fillSearchComponent() {
-    request.receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+    _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
       int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
 
       List list = receptions.toList()..sort(compareTo);
@@ -221,7 +228,7 @@ class ContactView {
   }
 
   Future receptionContactUpdate(ORModel.Contact ca) {
-    return request.contactController.updateReceptionContact(ca).then((_) {
+    return _contactController.updateReceptionContact(ca).then((_) {
       notify.info('Oplysningerne blev gemt.');
     }).catchError((error, stack) {
       notify.error('Ændringerne blev ikke gemt.');
@@ -230,7 +237,7 @@ class ContactView {
   }
 
   Future receptionContactCreate(ORModel.Contact contact) {
-    return request.contactController.createReception(contact).then((_) {
+    return _contactController.createReception(contact).then((_) {
       notify.info('Lageringen gik godt.');
       bus.fire(new ReceptionContactAddedEvent(contact.receptionID, contact.ID));
     }).catchError((error, stack) {
@@ -257,7 +264,7 @@ class ContactView {
     ButtonElement delete = new ButtonElement()
         ..text = 'fjern'
         ..onClick.listen((_) =>
-          request.contactController.removeReception(contact.ID)
+          _contactController.removeReception(contact.ID)
           .then((_) => li.parent.children.remove(li)));
 
     div.children.add(delete);
@@ -271,7 +278,7 @@ class ContactView {
       ..onClick.listen((_) {
       try {
         int newContactId = int.parse(newContactIdInput.value);
-        request.moveReceptionContact(contact.receptionID, contact.ID, newContactId).then((_) {
+        _moveReceptionContact(contact.receptionID, contact.ID, newContactId).then((_) {
           notify.info('Oplysningerne er nu flyttet til ${newContactId}');
           activateContact(contact.ID);
         }).catchError((error) {
@@ -581,7 +588,7 @@ class ContactView {
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      work.add(request.updateContact(contactId, JSON.encode(updatedContact)).then((_) {
+      work.add(_updateContact(contactId, JSON.encode(updatedContact)).then((_) {
         //Show a message that tells the user, that the changes went through.
         refreshList();
       }).catchError((error) {
@@ -604,7 +611,7 @@ class ContactView {
               inputType.selectedOptions.first.value : inputType.options.first.value
           ..enabled = inputEnabled.checked;
 
-      request.contactController.create(newContact).then((ORModel.BaseContact responseContact) {
+      _contactController.create(newContact).then((ORModel.BaseContact responseContact) {
         bus.fire(new ContactAddedEvent(responseContact.id));
         refreshList();
         activateContact(responseContact.id);
@@ -699,7 +706,7 @@ class ContactView {
 
   void deleteSelectedContact() {
     if (!createNew && selectedContactId > 0) {
-      request.deleteContact(selectedContactId).then((_) {
+      _deleteContact(selectedContactId).then((_) {
         bus.fire(new ContactRemovedEvent(selectedContactId));
         refreshList();
         clearContent();

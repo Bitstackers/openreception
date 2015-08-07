@@ -17,6 +17,7 @@ import '../notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class _ControlLookUp {
   static const int TIME_CONTROL    = 0;
@@ -41,6 +42,9 @@ class _ControlImage {
 
 class DialplanView {
   static const String viewName = 'dialplan';
+
+  final Controller.Reception _receptionController;
+
   int selectedReceptionId;
 
   DivElement element;
@@ -69,7 +73,7 @@ class DialplanView {
   ButtonElement showIvrView;
   IvrView ivrView;
 
-  DialplanView(DivElement this.element) {
+  DialplanView(DivElement this.element, Controller.Reception this._receptionController) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
     controlListAction    = element.querySelector('#dialplan-control-action-list');
     itemsList            = element.querySelector('#dialplan-items-body');
@@ -193,7 +197,7 @@ class DialplanView {
   }
 
   void fillSearchComponent() {
-    request.receptionController.list().then((Iterable<ORModel.Reception> rs) {
+    _receptionController.list().then((Iterable<ORModel.Reception> rs) {
 
       int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
 

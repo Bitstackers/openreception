@@ -4,15 +4,17 @@ import 'dart:async';
 import 'dart:html';
 
 import '../lib/eventbus.dart';
-import '../lib/logger.dart' as log;
 import '../lib/model.dart';
 import '../lib/request.dart' as request;
 import '../notification.dart' as notify;
 import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class RecordView {
   static const String viewName = 'record';
   DivElement element;
+
+  final Controller.Reception _receptionController;
 
   List<ORModel.Reception> receptions = new List<ORModel.Reception>();
   UListElement receptionListUL;
@@ -24,7 +26,8 @@ class RecordView {
   int selectedReceptionId;
   UListElement fileListUL;
 
-  RecordView(DivElement this.element) {
+  RecordView(DivElement this.element,
+                     Controller.Reception this._receptionController) {
     receptionListUL = element.querySelector('#record-reception-list');
     receptionSearchBox = element.querySelector('#record-reception-search-box');
     newRecording = element.querySelector('#record-new-file-button');
@@ -78,7 +81,7 @@ class RecordView {
   }
 
   Future refreshList() {
-    return request.receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+    return _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
 
       this.receptions = receptions.toList();
       performSearch();

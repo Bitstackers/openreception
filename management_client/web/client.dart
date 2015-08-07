@@ -12,6 +12,8 @@ import 'menu.dart';
 import 'lib/controller.dart' as Controller;
 import 'lib/auth.dart';
 import 'notification.dart' as notify;
+import 'lib/configuration.dart';
+
 
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/service-html.dart' as Transport;
@@ -21,21 +23,49 @@ void main() {
 
     final Transport.Client client = new Transport.Client();
     final ORService.RESTUserStore _userStore = new ORService.RESTUserStore(
-        Uri.parse('http://localhost:4030'), 'feedabbadeadbeef0', client);
+        config.userURI, 'feedabbadeadbeef0', client);
 
 
     final Controller.User userController = new Controller.User(_userStore);
 
 
+    ORService.RESTCDRService _cdrStore = new ORService.RESTCDRService (
+        config.cdrURI, config.token, client);
+
+    ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
+        config.receptionURI, config.token, client);
+
+    ORService.RESTOrganizationStore _organizationStore =
+        new ORService.RESTOrganizationStore(
+            config.receptionURI, config.token, client);
+
+    Controller.Reception receptionController =
+        new Controller.Reception(_receptionStore);
+
+    Controller.Organization organizationController =
+        new Controller.Organization(_organizationStore);
+
+    ORService.RESTContactStore _contactStore = new ORService.RESTContactStore(
+        Uri.parse('http://localhost:4010'), config.token, client);
+
+    Controller.Contact contactController =
+        new Controller.Contact(_contactStore);
+
+    Controller.Calendar calendarController =
+        new Controller.Calendar(_contactStore, _receptionStore);
+
+    Controller.CDR cdrController =
+        new Controller.CDR(_cdrStore);
+
     //Initializes the notification system.
     notify.initialize();
-    new orgView.OrganizationView(querySelector('#organization-page'));
-    new recepView.ReceptionView(querySelector('#reception-page'));
-    new conView.ContactView(querySelector('#contact-page'));
-    new diaView.DialplanView(querySelector('#dialplan-page'));
-    new recordView.RecordView(querySelector('#record-page'));
+    new orgView.OrganizationView(querySelector('#organization-page'), organizationController, receptionController);
+    new recepView.ReceptionView(querySelector('#reception-page'), contactController, organizationController, receptionController);
+    new conView.ContactView(querySelector('#contact-page'), contactController, organizationController, receptionController);
+    new diaView.DialplanView(querySelector('#dialplan-page'), receptionController);
+    new recordView.RecordView(querySelector('#record-page'), receptionController);
     new userView.UserView(querySelector('#user-page'), userController);
-    new billView.BillingView(querySelector('#billing-page'));
+    new billView.BillingView(querySelector('#billing-page'), cdrController);
     new musicView.MusicView(querySelector('#music-page'));
     new Menu(querySelector('nav#navigation'));
   }

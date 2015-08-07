@@ -2,18 +2,20 @@ library organization.view;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:convert';
 
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
-import '../lib/request.dart';
 import '../notification.dart' as notify;
 import '../menu.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class OrganizationView {
   static const String viewName = 'organization';
+
+  final Controller.Organization _organizationController;
+  final Controller.Reception _receptionController;
+
   DivElement element;
   UListElement uiList;
   TextAreaElement inputName, inputBillingtype, inputFlag;
@@ -30,7 +32,9 @@ class OrganizationView {
   List<ORModel.Contact> currentContactList = new List<ORModel.Contact>();
   List<ORModel.Reception> currentReceptionList = new List<ORModel.Reception>();
 
-  OrganizationView(DivElement this.element) {
+  OrganizationView(DivElement this.element,
+                       Controller.Organization this._organizationController,
+                           Controller.Reception this._receptionController) {
     searchBox = element.querySelector('#organization-search-box');
     uiList = element.querySelector('#organization-list');
     inputName = element.querySelector('#organization-input-name');
@@ -81,7 +85,7 @@ class OrganizationView {
 
     buttonDelete.onClick.listen((_) {
       if (!createNew && selectedOrganizationId != null) {
-        organizationController.remove(selectedOrganizationId).then((_) {
+        _organizationController.remove(selectedOrganizationId).then((_) {
           notify.info('Organisation blev slettet.');
 
           currentContactList.clear();
@@ -192,7 +196,7 @@ class OrganizationView {
         'flag': inputFlag.value
       };
 
-      organizationController.update(new ORModel.Organization.fromMap(organization)).then((_) {
+      _organizationController.update(new ORModel.Organization.fromMap(organization)).then((_) {
         notify.info('Ændringerne blev gemt.');
         refreshList();
       }).catchError((error) {
@@ -205,7 +209,7 @@ class OrganizationView {
         'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
-      organizationController.create(new ORModel.Organization.fromMap(organization))
+      _organizationController.create(new ORModel.Organization.fromMap(organization))
       .then((ORModel.Organization org) {
         notify.info('Organisationen blev oprettet.');
         int organizationId = org.id;
@@ -220,7 +224,7 @@ class OrganizationView {
   }
 
   void refreshList() {
-    organizationController.list().then((Iterable<ORModel.Organization> organizations) {
+    _organizationController.list().then((Iterable<ORModel.Organization> organizations) {
 
       int compareTo (ORModel.Organization org1, ORModel.Organization org2) => org1.fullName.compareTo(org2.fullName);
 
@@ -254,7 +258,7 @@ class OrganizationView {
   }
 
   void activateOrganization(int organizationId) {
-    organizationController.get(organizationId).then((ORModel.Organization organization) {
+    _organizationController.get(organizationId).then((ORModel.Organization organization) {
       highlightOrganizationInList(organizationId);
       selectedOrganizationId = organizationId;
       createNew = false;
@@ -274,12 +278,12 @@ class OrganizationView {
   }
 
   void updateReceptionList(int organizationId) {
-    organizationController.receptions(organizationId)
+    _organizationController.receptions(organizationId)
     .then((Iterable<int> receptionIDs) {
 
       List list = [];
       Future.forEach(receptionIDs, (int id) =>
-          receptionController.get(id).then(list.add))
+          _receptionController.get(id).then(list.add))
           .then((_) {
         list.sort(_compareReception);
         currentReceptionList = list;
@@ -308,7 +312,7 @@ class OrganizationView {
   }
 
   void updateContactList(int organizationId) {
-    organizationController.contacts(organizationId).then((Iterable<ORModel.BaseContact> contacts) {
+    _organizationController.contacts(organizationId).then((Iterable<ORModel.BaseContact> contacts) {
       int compareTo (ORModel.BaseContact c1, ORModel.BaseContact c2) => c1.fullName.compareTo(c2.fullName);
 
       List list = contacts.toList()..sort(compareTo);

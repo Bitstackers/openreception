@@ -22,40 +22,6 @@ part 'requests/dialplan.dart';
 
 Logger log = new Logger('request');
 
-Transport.Client client = new Transport.Client();
-
-Uri _receptionURI = Uri.parse('http://localhost:4000');
-Uri _cdrURI = Uri.parse('http://localhost:4090');
-
-ORService.RESTCDRService _cdrStore = new ORService.RESTCDRService (
-    _cdrURI, config.token, client);
-
-ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
-    _receptionURI, config.token, client);
-
-ORService.RESTOrganizationStore _organizationStore =
-    new ORService.RESTOrganizationStore(
-        _receptionURI, config.token, client);
-
-Controller.Reception receptionController =
-    new Controller.Reception(_receptionStore);
-
-Controller.Organization organizationController =
-    new Controller.Organization(_organizationStore);
-
-ORService.RESTContactStore _contactStore = new ORService.RESTContactStore(
-    Uri.parse('http://localhost:4010'), config.token, client);
-
-Controller.Contact contactController =
-    new Controller.Contact(_contactStore);
-
-Controller.Contact calendarController =
-    new Controller.Calendar(_contactStore);
-
-Controller.CDR cdrController =
-    new Controller.CDR(_cdrStore);
-
-
 class HttpMethod {
   static const String GET = 'GET';
   static const String POST = 'POST';

@@ -1,21 +1,25 @@
 library reception.view;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html';
 
 import '../lib/logger.dart' as log;
-import '../lib/request.dart';
 import '../lib/eventbus.dart';
 import '../lib/view_utilities.dart';
 import '../lib/searchcomponent.dart';
 import '../notification.dart' as notify;
 import '../menu.dart';
+import '../lib/controller.dart' as Controller;
 
 import 'package:openreception_framework/model.dart' as ORModel;
 
 class ReceptionView {
   static const String viewName = 'reception';
+
+  final Controller.Contact _contactController;
+  final Controller.Organization _organizationController;
+  final Controller.Reception _receptionController;
+
   DivElement element;
   TextAreaElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,
       inputCostumerstype, inputReceptionNumber, extradataUrl;
@@ -37,7 +41,9 @@ class ReceptionView {
       currentOrganizationId = 0;
   bool createNew = false;
 
-  ReceptionView(DivElement this.element) {
+  ReceptionView(DivElement this.element, Controller.Contact this._contactController,
+                    Controller.Organization this._organizationController,
+                        Controller.Reception this._receptionController) {
     searchBox       = element.querySelector('#reception-search-box');
     uiReceptionList = element.querySelector('#reception-list');
     ulContactList   = element.querySelector('#reception-contact-list');
@@ -87,7 +93,7 @@ class ReceptionView {
   }
 
   void fillSearchComponent() {
-    organizationController.list().then((Iterable<ORModel.Organization> orgs) {
+    _organizationController.list().then((Iterable<ORModel.Organization> orgs) {
 
       int compareTo (ORModel.Organization org1, ORModel.Organization org2) => org1.fullName.compareTo(org2.fullName);
 
@@ -252,7 +258,7 @@ class ReceptionView {
 
   void deleteCurrentReception() {
     if (selectedReceptionId > 0) {
-      receptionController.remove(selectedReceptionId).then((_) {
+      _receptionController.remove(selectedReceptionId).then((_) {
         notify.info('Sletning af receptionen gik godt.');
         bus.fire(new ReceptionRemovedEvent(currentOrganizationId, selectedReceptionId));
         selectedReceptionId = 0;
@@ -269,7 +275,7 @@ class ReceptionView {
     if (selectedReceptionId > 0) {
       ORModel.Reception updatedReception = extractValues();
 
-      receptionController.update(updatedReception).then((_) {
+      _receptionController.update(updatedReception).then((_) {
         //Show a message that tells the user, that the changes went threw.
         notify.info('Receptionens ændringer er gemt.');
         refreshList();
@@ -281,7 +287,7 @@ class ReceptionView {
       ORModel.Reception newReception = extractValues();
       if (SC.currentElement != null) {
         newReception.organizationId = SC.currentElement.id;
-        receptionController.create(newReception).then((ORModel.Reception createdReception) {
+        _receptionController.create(newReception).then((ORModel.Reception createdReception) {
 
           notify.info('Receptionen blev oprettet.');
 
@@ -303,8 +309,7 @@ class ReceptionView {
       ..organizationId = currentOrganizationId
       ..fullName = inputFullName.value
       ..enabled = inputEnabled.checked
-      //TODO: Add this to framework.
-      //..receptionNumber = inputReceptionNumber.value
+      ..extension = inputReceptionNumber.value
 
       ..customerTypes = [inputCostumerstype.value]
       ..shortGreeting = inputShortGreeting.value
@@ -326,7 +331,7 @@ class ReceptionView {
   }
 
   Future refreshList() {
-    return receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+    return _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
 
       int compareTo (ORModel.Reception r1, ORModel.Reception r2) => r1.fullName.compareTo(r2.fullName);
 
@@ -365,15 +370,14 @@ class ReceptionView {
     });
 
     if (receptionId > 0) {
-      receptionController.get(selectedReceptionId).then((ORModel.Reception response) {
+      _receptionController.get(selectedReceptionId).then((ORModel.Reception response) {
         buttonDialplan.disabled = false;
 
         highlightContactInList(receptionId);
 
         inputFullName.value = response.fullName;
         inputEnabled.checked = response.enabled;
-        //TODO: ADD
-        //inputReceptionNumber.value = response.receptionNumber;
+        inputReceptionNumber.value = response.extension;
 
         //TODO: Listify
         inputCostumerstype.value = response.customerTypes.isNotEmpty ? response.customerTypes.first : '';
@@ -403,7 +407,7 @@ class ReceptionView {
   }
 
   void updateContactList(int receptionId) {
-    contactController.list(receptionId).then((Iterable<ORModel.Contact> contacts) {
+    _contactController.list(receptionId).then((Iterable<ORModel.Contact> contacts) {
 
       int compareTo(ORModel.Contact c1, ORModel.Contact c2) => c1.fullName.compareTo(c2.fullName);
 
