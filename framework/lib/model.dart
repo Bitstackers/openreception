@@ -35,6 +35,7 @@ part 'model/model-client_configuration.dart';
 part 'model/model-client_connection.dart';
 part 'model/model-contact.dart';
 part 'model/model-contact_filter.dart';
+part 'model/model-freeswitch_cdr_entry.dart';
 part 'model/model-message.dart';
 part 'model/model-message_context.dart';
 part 'model/model-message_header.dart';
