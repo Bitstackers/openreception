@@ -151,8 +151,13 @@ class User {
   /**
    *
    */
-  Future<shelf.Response> userIdentities(shelf.Request request) =>
-      new Future.error(new UnimplementedError());
+  Future<shelf.Response> userIdentities(shelf.Request request) {
+    int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
+
+    return _userStore.identities(userID).then((Iterable<Model.UserIdentity> identities) =>
+        new shelf.Response.ok(JSON.encode(identities.toList(growable: false))));
+  }
+
 
 
   /**
