@@ -24,4 +24,7 @@ class Contact {
 
   Future<Iterable<int>> receptions(int contactID) =>
       _service.receptions(contactID);
+
+  Future<Iterable<ORModel.BaseContact>> colleagues(int contactId) =>
+      _service.colleagues(contactId);
 }
