@@ -80,6 +80,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/contact/{cid}/reception/{rid}/phones', Contact.phones)
     ..get('/contact/{cid}/reception/{rid}', Contact.get)
     ..get('/contact/{cid}/reception', Contact.receptions)
+    ..get('/contact/{cid}/organization', Contact.organizations)
     ..get('/contact/{cid}', Contact.base)
     ..put('/contact/{cid}', Contact.update)
     ..delete('/contact/{cid}', Contact.remove)

@@ -296,6 +296,28 @@ abstract class Contact {
   }
 
   /**
+   * Retrieve all organizations id's of a contact.
+   */
+  static Future<Iterable<int>> organizations (int contactID) {
+    String sql = '''
+SELECT DISTINCT
+  organization_id
+FROM 
+  reception_contacts 
+JOIN
+  receptions
+ON
+  receptions.id = reception_contacts.reception_id
+WHERE 
+  reception_contacts.contact_id =@contactID''';
+
+    Map parameters = {'contactID': contactID};
+
+    return connection.query(sql, parameters).then((rows) =>
+      (rows as Iterable).map((var row) => row.organization_id));
+  }
+
+  /**
    * Retrieve all reception id's of a contact.
    */
   static Future<Iterable<int>> receptions (int contactID) {

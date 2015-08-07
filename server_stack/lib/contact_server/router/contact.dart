@@ -119,6 +119,21 @@ abstract class Contact {
   }
 
   /**
+   * Returns the id's of all organizations that a contact is associated to.
+   */
+  static Future<int> organizations(shelf.Request request) {
+    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+
+    return db.Contact.organizations(contactID).then((Iterable<int> organizationsIds) {
+      return new shelf.Response.ok(JSON.encode(organizationsIds.toList()));
+    }).catchError((error, stacktrace) {
+      log.severe(error, stacktrace);
+      new shelf.Response.internalServerError(
+          body: 'contactserver.router._fetchAndCacheContact() ${error}');
+    });
+  }
+
+  /**
    * Returns the id's of all receptions that a contact is associated to.
    */
   static Future<int> receptions(shelf.Request request) {
