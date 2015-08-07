@@ -1,12 +1,13 @@
 part of user.view;
 
 class IdentityContainer {
-  List<UserIdentity> _identities;
+  List<ORModel.UserIdentity> _identities;
   UListElement _ul;
+  final Controller.User _userController;
 
-  IdentityContainer(UListElement this._ul);
+  IdentityContainer(UListElement this._ul, Controller.User this._userController);
 
-  LIElement _makeIdentityNode(UserIdentity identity) {
+  LIElement _makeIdentityNode(ORModel.UserIdentity identity) {
     LIElement li = new LIElement();
 
     ImageElement deleteButton = new ImageElement(src: '/image/tp/red_plus.svg')
@@ -35,7 +36,7 @@ class IdentityContainer {
           String item = newItem.value;
           newItem.value = '';
 
-          LIElement li = _makeIdentityNode(new UserIdentity()..identity = item);
+          LIElement li = _makeIdentityNode(new ORModel.UserIdentity.empty()..identity = item);
           int index = _ul.children.length - 1;
           _ul.children.insert(index, li);
         } else if (key.keyCode == Keys.ESCAPE) {
@@ -45,7 +46,7 @@ class IdentityContainer {
     return newItem;
   }
 
-  void _populateUL(List<UserIdentity> identities) {
+  void _populateUL(List<ORModel.UserIdentity> identities) {
     InputElement newItem = _makeInputForNewItem();
 
     this._identities = identities;
@@ -70,11 +71,14 @@ class IdentityContainer {
 
     //Inserts
     for(String identity in foundIdentities) {
-      if(!_identities.any((UserIdentity i) => i.identity == identity)) {
+      if(!_identities.any((ORModel.UserIdentity i) => i.identity == identity)) {
+        ORModel.UserIdentity newIdentity = new ORModel.UserIdentity.empty()
+          ..identity = identity
+          ..userId = userId;
+
         //Insert Identity
-        Map data = {'identity': identity};
-        worklist.add(request.createUserIdentity(userId, JSON.encode(data)).catchError((error, stack) {
-          log.error('Tried to create a user identity. UserId: "${userId}". Identity: "${JSON.encode(data)}" but got: ${error} ${stack}');
+        worklist.add(_userController.addIdentity(newIdentity).catchError((error, stack) {
+          log.error('Tried to create a user identity. UserId: "${userId}". Identity: "$identity" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
         }));
@@ -82,10 +86,11 @@ class IdentityContainer {
     }
 
     //Deletes
-    for(UserIdentity identity in _identities) {
+    for(ORModel.UserIdentity identity in _identities) {
       if(!foundIdentities.any((String i) => i == identity.identity)) {
+
         //Delete Identity
-        worklist.add(request.deleteUserIdentity(userId, identity.identity)
+        worklist.add(_userController.removeIdentity(identity)
             .catchError((error, stack) {
           log.error('Tried to delete user identity. UserId: "${userId}". Identity: "${JSON.encode(identity.identity)}" but got: ${error} ${stack}');
           // Rethrow.
@@ -97,12 +102,12 @@ class IdentityContainer {
   }
 
   Future showIdentities(int userId) {
-    return request.getUserIdentities(userId).then((List<UserIdentity> identities) {
-      _populateUL(identities);
+    return _userController.identities(userId).then((Iterable<ORModel.UserIdentity> identities) {
+      _populateUL(identities.toList());
     });
   }
 
   void showNewUsersIdentities() {
-    _populateUL(new List<UserIdentity>());
+    _populateUL(new List<ORModel.UserIdentity>());
   }
 }
