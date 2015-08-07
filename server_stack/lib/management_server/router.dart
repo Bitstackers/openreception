@@ -16,173 +16,125 @@ import 'package:openreception_framework/httpserver.dart' as orf_http;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
+final Pattern _anyThing = new UrlPattern(r'/(.*)');
 
-final Pattern anyThing = new UrlPattern(r'/(.*)');
+/// Dialplan handling.
+final Pattern _dialplanUrl = new UrlPattern(r'/reception/(\d+)/dialplan');
+final Pattern _dialplanCompileUrl =
+    new UrlPattern(r'/reception/(\d+)/dialplan/compile');
+final Pattern _ivrUrl = new UrlPattern(r'/reception/(\d+)/ivr');
+final Pattern _audiofilesUrl = new UrlPattern(r'/reception/(\d+)/audiofiles');
+final Pattern _receptionRecordUrl = new UrlPattern(r'/reception/(\d+)/record');
+final Pattern _playlistUrl = new UrlPattern(r'/playlist');
+final Pattern _playlistIdUrl = new UrlPattern(r'/playlist/(\d+)');
 
-final Pattern organizationIdUrl          = new UrlPattern(r'/organization/(\d+)');
-final Pattern organizationUrl            = new UrlPattern(r'/organization(/?)');
-final Pattern organizationContactUrl     = new UrlPattern(r'/organization/(\d+)/contact(/?)');
-final Pattern organizationReceptionUrl   = new UrlPattern(r'/organization/(\d+)/reception(/?)');
+final Pattern _dialplanTemplateUrl = new UrlPattern(r'/dialplantemplate');
 
-final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
-final Pattern receptionIdUrl         = new UrlPattern(r'/reception/(\d+)');
-final Pattern receptionContactIdUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)');
-final Pattern receptionContactUrl    = new UrlPattern(r'/reception/(\d+)/contact(/?)');
-final Pattern receptionContactIdEnpointUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint');
-final Pattern receptionContactIdEnpointIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/endpoint/(.+)/type/(.+)');
-final Pattern receptionContactIdDistributionListUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist');
-final Pattern receptionContactIdDistributionListEntryUrl  = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/distributionlist/(\d+)');
-final Pattern receptionContactIdCalendarUrl   = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar');
-final Pattern receptionContactIdCalendarIdUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/calendar/(\d+)');
-final Pattern dialplanUrl            = new UrlPattern(r'/reception/(\d+)/dialplan');
-final Pattern dialplanCompileUrl     = new UrlPattern(r'/reception/(\d+)/dialplan/compile');
-final Pattern ivrUrl                 = new UrlPattern(r'/reception/(\d+)/ivr');
-final Pattern audiofilesUrl          = new UrlPattern(r'/reception/(\d+)/audiofiles');
-final Pattern receptionRecordUrl     = new UrlPattern(r'/reception/(\d+)/record');
-final Pattern playlistUrl            = new UrlPattern(r'/playlist');
-final Pattern playlistIdUrl          = new UrlPattern(r'/playlist/(\d+)');
+final Pattern _contactTypesUrl = new UrlPattern(r'/contacttypes(/?)');
+final Pattern _addressTypestUrl = new UrlPattern(r'/addresstypes(/?)');
 
-final Pattern contactIdUrl           = new UrlPattern(r'/contact/(\d+)');
-final Pattern contactUrl             = new UrlPattern(r'/contact(/?)');
-final Pattern ContactColleaguesUrl   = new UrlPattern(r'/contact/(\d+)/colleagues(/?)');
-final Pattern ContactOrganizationUrl = new UrlPattern(r'/contact/(\d+)/organization(/?)');
-final Pattern ContactReceptionUrl    = new UrlPattern(r'/contact/(\d+)/reception(/?)');
+final Pattern _userUrl = new UrlPattern(r'/user(/?)');
+final Pattern _userIdUrl = new UrlPattern(r'/user/(\d+)');
+final Pattern _userIdGroupUrl = new UrlPattern(r'/user/(\d+)/group');
+final Pattern _userIdGroupIdUrl = new UrlPattern(r'/user/(\d+)/group/(\d+)');
+final Pattern _userIdIdentityUrl = new UrlPattern(r'/user/(\d+)/identity');
+final Pattern _userIdIdentityIdUrl =
+    new UrlPattern(r'/user/(\d+)/identity/(.+)');
 
-final Pattern DialplanTemplateUrl = new UrlPattern(r'/dialplantemplate');
-
-final Pattern contactTypesUrl  = new UrlPattern(r'/contacttypes(/?)');
-final Pattern addressTypestUrl = new UrlPattern(r'/addresstypes(/?)');
-
-final Pattern UserUrl             = new UrlPattern(r'/user(/?)');
-final Pattern UserIdUrl           = new UrlPattern(r'/user/(\d+)');
-final Pattern UserIdGroupUrl      = new UrlPattern(r'/user/(\d+)/group');
-final Pattern UserIdGroupIdUrl    = new UrlPattern(r'/user/(\d+)/group/(\d+)');
-final Pattern UserIdIdentityUrl   = new UrlPattern(r'/user/(\d+)/identity');
-final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)');
-
-final Pattern GroupUrl = new UrlPattern(r'/group');
+final Pattern _groupUrl = new UrlPattern(r'/group');
 
 //This resource is only meant to be used, in the time where data is being migrated over.
-final Pattern receptionContactIdMoveUrl = new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
+final Pattern _receptionContactIdMoveUrl =
+    new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
 
-final List<Pattern> Serviceagents =
-[organizationIdUrl, organizationUrl, organizationReceptionUrl, receptionUrl, receptionIdUrl, contactIdUrl, contactUrl,
- receptionContactIdUrl, receptionContactUrl, dialplanUrl, dialplanCompileUrl, organizationContactUrl, ContactReceptionUrl, ContactOrganizationUrl,
- UserUrl, UserIdUrl, UserIdGroupUrl, UserIdGroupIdUrl, GroupUrl, UserIdIdentityUrl, UserIdIdentityIdUrl,
- ivrUrl, audiofilesUrl, playlistUrl, playlistIdUrl, receptionContactIdDistributionListUrl,
+final List<Pattern> Serviceagents = [
+  _dialplanUrl,
+  _dialplanCompileUrl,
+  _userUrl,
+  _userIdUrl,
+  _userIdGroupUrl,
+  _userIdGroupIdUrl,
+  _groupUrl,
+  _userIdIdentityUrl,
+  _userIdIdentityIdUrl,
+  _ivrUrl,
+  _audiofilesUrl,
+  _playlistUrl,
+  _playlistIdUrl,
+  _receptionContactIdMoveUrl
+];
 
- receptionContactIdMoveUrl];
-
-ContactController contact;
-DialplanController dialplan;
-OrganizationController organization;
-ReceptionController reception;
-ReceptionContactController receptionContact;
-UserController user;
+ContactController _contact;
+DialplanController _dialplan;
+OrganizationController _organization;
+ReceptionController _reception;
+ReceptionContactController _receptionContact;
+UserController _user;
 
 Service.NotificationService Notification = null;
 
 void connectNotificationService() {
-  Notification = new Service.NotificationService
-      (config.notificationServer, config.serverToken, new Service_IO.Client());
+  Notification = new Service.NotificationService(
+      config.notificationServer, config.serverToken, new Service_IO.Client());
 }
 
-
 Router setupRoutes(HttpServer server, Configuration config) =>
-  new Router(server)
-    ..filter(matchAny(Serviceagents), (HttpRequest req) => authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
-
-    ..serve(organizationReceptionUrl, method: HttpMethod.GET).listen(reception.getOrganizationReceptionList)
-
-    ..serve(receptionUrl, method: HttpMethod.GET).listen(reception.getReceptionList)
-    ..serve(receptionUrl, method: HttpMethod.POST).listen(reception.createReception)
-    ..serve(receptionIdUrl, method: HttpMethod.GET)   .listen(reception.getReception)
-    ..serve(receptionIdUrl, method: HttpMethod.PUT)  .listen(reception.updateReception)
-    ..serve(receptionIdUrl, method: HttpMethod.DELETE).listen(reception.deleteReception)
-
-    ..serve(ContactReceptionUrl, method: HttpMethod.GET).listen(contact.getReceptionList)
-
-    ..serve(contactTypesUrl, method: HttpMethod.GET).listen(contact.getContactTypeList)
-    ..serve(addressTypestUrl, method: HttpMethod.GET).listen(contact.getAddressTypestList)
-
-    ..serve(ContactOrganizationUrl, method: HttpMethod.GET).listen(contact.getAContactsOrganizationList)
-
-    ..serve(receptionContactIdUrl, method: HttpMethod.PUT).listen(receptionContact.createReceptionContact)
-    ..serve(receptionContactIdUrl, method: HttpMethod.POST)  .listen(receptionContact.updateReceptionContact)
-    ..serve(receptionContactIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteReceptionContact)
-
-    ..serve(receptionRecordUrl, method: HttpMethod.POST).listen(dialplan.recordSound)
-    ..serve(receptionRecordUrl, method: HttpMethod.DELETE).listen(dialplan.deleteSoundFile)
-
-    ..serve(receptionContactIdEnpointUrl, method: HttpMethod.GET).listen(receptionContact.getEndpointList)
-    ..serve(receptionContactIdEnpointUrl, method: HttpMethod.PUT).listen(receptionContact.createEndpoint)
-    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.GET).listen(receptionContact.getEndpoint)
-    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.POST).listen(receptionContact.updateEndpoint)
-    ..serve(receptionContactIdEnpointIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteEndpoint)
-
-    ..serve(receptionContactIdCalendarUrl, method: HttpMethod.GET).listen(receptionContact.getCalendarEvents)
-    ..serve(receptionContactIdCalendarUrl, method: HttpMethod.PUT).listen(receptionContact.createCalendarEvent)
-    ..serve(receptionContactIdCalendarIdUrl, method: HttpMethod.POST).listen(receptionContact.updateCalendarEvent)
-    ..serve(receptionContactIdCalendarIdUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteCalendarEvent)
-
-    ..serve(ContactColleaguesUrl, method: HttpMethod.GET).listen(contact.getColleagues)
-
-    ..serve(organizationUrl, method: HttpMethod.GET).listen(organization.getOrganizationList)
-    ..serve(organizationUrl, method: HttpMethod.PUT).listen(organization.createOrganization)
-    ..serve(organizationIdUrl, method: HttpMethod.GET)   .listen(organization.getOrganization)
-    ..serve(organizationIdUrl, method: HttpMethod.POST)  .listen(organization.updateOrganization)
-    ..serve(organizationIdUrl, method: HttpMethod.DELETE).listen(organization.deleteOrganization)
-
-    ..serve(dialplanUrl, method: HttpMethod.GET).listen(dialplan.getDialplan)
-    ..serve(dialplanUrl, method: HttpMethod.POST).listen(dialplan.updateDialplan)
-    ..serve(dialplanCompileUrl, method: HttpMethod.POST).listen(dialplan.compileDialplan)
-
-    ..serve(DialplanTemplateUrl, method: HttpMethod.GET).listen(dialplan.getTemplates)
-
-    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.GET).listen(receptionContact.getDistributionList)
-    ..serve(receptionContactIdDistributionListUrl, method: HttpMethod.PUT).listen(receptionContact.createDistributionListEntry)
-    ..serve(receptionContactIdDistributionListEntryUrl, method: HttpMethod.DELETE).listen(receptionContact.deleteDistributionListEntry)
-    //..serve(receptionContactIdDistributionListEntryUrl, method: HttpMethod.POST).listen(receptionContact.updateDistributionList)
-
-    ..serve(ivrUrl, method: HttpMethod.GET).listen(dialplan.getIvr)
-    ..serve(ivrUrl, method: HttpMethod.POST).listen(dialplan.updateIvr)
-
-    ..serve(playlistUrl, method: HttpMethod.GET).listen(dialplan.getPlaylists)
-    ..serve(playlistUrl, method: HttpMethod.PUT).listen(dialplan.createPlaylist)
-    ..serve(playlistIdUrl, method: HttpMethod.GET)   .listen(dialplan.getPlaylist)
-    ..serve(playlistIdUrl, method: HttpMethod.POST)  .listen(dialplan.updatePlaylist)
-    ..serve(playlistIdUrl, method: HttpMethod.DELETE).listen(dialplan.deletePlaylist)
-
-    ..serve(UserUrl, method: HttpMethod.GET).listen(user.getUserList)
-    ..serve(UserUrl, method: HttpMethod.PUT).listen(user.createUser)
-    ..serve(UserIdUrl, method: HttpMethod.GET).listen(user.getUser)
-    ..serve(UserIdUrl, method: HttpMethod.POST)  .listen(user.updateUser)
-    ..serve(UserIdUrl, method: HttpMethod.DELETE).listen(user.deleteUser)
-
-    ..serve(UserIdGroupUrl, method: HttpMethod.GET).listen(user.getUserGroups)
-    ..serve(UserIdGroupIdUrl, method: HttpMethod.PUT).listen(user.joinUserGroups)
-    ..serve(UserIdGroupIdUrl, method: HttpMethod.DELETE).listen(user.leaveUserGroups)
-
-    ..serve(UserIdIdentityUrl, method: HttpMethod.GET).listen(user.getUserIdentityList)
-    ..serve(UserIdIdentityUrl, method: HttpMethod.PUT).listen(user.createUserIdentity)
-    ..serve(UserIdIdentityIdUrl, method: HttpMethod.POST)  .listen(user.updateUserIdentity)
-    ..serve(UserIdIdentityIdUrl, method: HttpMethod.DELETE).listen(user.deleteUserIdentity)
-
-    ..serve(GroupUrl, method: HttpMethod.GET).listen(user.getGroupList)
-
-    ..serve(audiofilesUrl, method: HttpMethod.GET).listen(dialplan.getAudiofileList)
-
-    ..serve(receptionContactIdMoveUrl, method: HttpMethod.POST).listen(receptionContact.moveContact)
-
-    ..serve(anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
-
-    ..defaultStream.listen(orf_http.page404);
+    new Router(server)
+  ..filter(matchAny(Serviceagents), (HttpRequest req) =>
+      authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
+  ..serve(_contactTypesUrl, method: HttpMethod.GET)
+      .listen(_contact.getContactTypeList)
+  ..serve(_addressTypestUrl, method: HttpMethod.GET)
+      .listen(_contact.getAddressTypestList)
+  ..serve(_receptionRecordUrl, method: HttpMethod.POST)
+      .listen(_dialplan.recordSound)
+  ..serve(_receptionRecordUrl, method: HttpMethod.DELETE)
+      .listen(_dialplan.deleteSoundFile)
+  ..serve(_dialplanUrl, method: HttpMethod.GET).listen(_dialplan.getDialplan)
+  ..serve(_dialplanUrl, method: HttpMethod.POST).listen(_dialplan.updateDialplan)
+  ..serve(_dialplanCompileUrl, method: HttpMethod.POST)
+      .listen(_dialplan.compileDialplan)
+  ..serve(_dialplanTemplateUrl, method: HttpMethod.GET)
+      .listen(_dialplan.getTemplates)
+  ..serve(_ivrUrl, method: HttpMethod.GET).listen(_dialplan.getIvr)
+  ..serve(_ivrUrl, method: HttpMethod.POST).listen(_dialplan.updateIvr)
+  ..serve(_playlistUrl, method: HttpMethod.GET).listen(_dialplan.getPlaylists)
+  ..serve(_playlistUrl, method: HttpMethod.PUT).listen(_dialplan.createPlaylist)
+  ..serve(_playlistIdUrl, method: HttpMethod.GET).listen(_dialplan.getPlaylist)
+  ..serve(_playlistIdUrl, method: HttpMethod.POST)
+      .listen(_dialplan.updatePlaylist)
+  ..serve(_playlistIdUrl, method: HttpMethod.DELETE)
+      .listen(_dialplan.deletePlaylist)
+  ..serve(_userUrl, method: HttpMethod.GET).listen(_user.getUserList)
+  ..serve(_userUrl, method: HttpMethod.PUT).listen(_user.createUser)
+  ..serve(_userIdUrl, method: HttpMethod.GET).listen(_user.getUser)
+  ..serve(_userIdUrl, method: HttpMethod.POST).listen(_user.updateUser)
+  ..serve(_userIdUrl, method: HttpMethod.DELETE).listen(_user.deleteUser)
+  ..serve(_userIdGroupUrl, method: HttpMethod.GET).listen(_user.getUserGroups)
+  ..serve(_userIdGroupIdUrl, method: HttpMethod.PUT).listen(_user.joinUserGroups)
+  ..serve(_userIdGroupIdUrl, method: HttpMethod.DELETE)
+      .listen(_user.leaveUserGroups)
+  ..serve(_userIdIdentityUrl, method: HttpMethod.GET)
+      .listen(_user.getUserIdentityList)
+  ..serve(_userIdIdentityUrl, method: HttpMethod.PUT)
+      .listen(_user.createUserIdentity)
+  ..serve(_userIdIdentityIdUrl, method: HttpMethod.POST)
+      .listen(_user.updateUserIdentity)
+  ..serve(_userIdIdentityIdUrl, method: HttpMethod.DELETE)
+      .listen(_user.deleteUserIdentity)
+  ..serve(_groupUrl, method: HttpMethod.GET).listen(_user.getGroupList)
+  ..serve(_audiofilesUrl, method: HttpMethod.GET)
+      .listen(_dialplan.getAudiofileList)
+  ..serve(_receptionContactIdMoveUrl, method: HttpMethod.POST)
+      .listen(_receptionContact.moveContact)
+  ..serve(_anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
+  ..defaultStream.listen(orf_http.page404);
 
 void setupControllers(Database db, Configuration config) {
-  contact = new ContactController(db, config);
-  dialplan = new DialplanController(db, config);
-  organization = new OrganizationController(db, config);
-  reception = new ReceptionController(db, config);
-  receptionContact = new ReceptionContactController(db, config);
-  user = new UserController(db);
+  _contact = new ContactController(db, config);
+  _dialplan = new DialplanController(db, config);
+  _organization = new OrganizationController(db, config);
+  _reception = new ReceptionController(db, config);
+  _receptionContact = new ReceptionContactController(db, config);
+  _user = new UserController(db);
 }
