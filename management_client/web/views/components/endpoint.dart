@@ -166,7 +166,7 @@ class EndpointsComponent {
 
     //Inserts
     for(ORModel.MessageEndpoint endpoint in foundEndpoints) {
-      if(!_persistenceEndpoint.any((ORModel.MessageEndpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+      if(!_persistenceEndpoint.any((ORModel.MessageEndpoint e) => e.address == endpoint.address && e.type == endpoint.type)) {
         //Insert Endpoint
         worklist.add(request.createEndpoint(receptionId, contactId, JSON.encode(endpoint))
             .catchError((error, stack) {
@@ -178,8 +178,8 @@ class EndpointsComponent {
     }
 
     //Deletes
-    for(Endpoint endpoint in _persistenceEndpoint) {
-      if(!foundEndpoints.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+    for(ORModel.MessageEndpoint endpoint in _persistenceEndpoint) {
+      if(!foundEndpoints.any((ORModel.MessageEndpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
         //Delete Endpoint
         worklist.add(request.deleteEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType)
             .catchError((error, stack) {
@@ -191,10 +191,10 @@ class EndpointsComponent {
     }
 
     //Update
-    for(Endpoint endpoint in foundEndpoints) {
-      if(_persistenceEndpoint.any((Endpoint e) => e.address == endpoint.address && e.addressType == endpoint.addressType)) {
+    for(ORModel.MessageEndpoint endpoint in foundEndpoints) {
+      if(_persistenceEndpoint.any((ORModel.MessageEndpoint e) => e.address == endpoint.address && e.type == endpoint.type)) {
         //Update Endpoint
-        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.addressType, JSON.encode(endpoint))
+        worklist.add(request.updateEndpoint(receptionId, contactId, endpoint.address, endpoint.type, JSON.encode(endpoint))
             .catchError((error, stack) {
           log.error('Request to update an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
           // Rethrow.
