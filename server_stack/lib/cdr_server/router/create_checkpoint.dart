@@ -10,9 +10,9 @@ void createCheckpoint(HttpRequest request) {
       return new Future.value();
     }
 
-    Checkpoint checkpoint;
+    Model.CDRCheckpoint checkpoint;
     try {
-      checkpoint = new Checkpoint.fromJson(json);
+      checkpoint = new Model.CDRCheckpoint.fromMap(json);
     } catch(error) {
       clientError(request, 'Missing document field. ${error}');
       return new Future.value();

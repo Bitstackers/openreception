@@ -1,7 +1,7 @@
 part of cdrserver.database;
 
 //TODO "owner" and "contact_id" is not part of the database tuppel.
-Future newcdrEntry(CdrEntry entry) {
+Future newcdrEntry(Model.FreeSWITCHCDREntry entry) {
 
   String sql = '''
     INSERT INTO cdr_entries (uuid, inbound, reception_id, extension, duration, wait_time, started_at, json)
@@ -11,11 +11,11 @@ Future newcdrEntry(CdrEntry entry) {
   Map parameters = {
     'uuid': entry.uuid,
     'inbound': entry.inbound,
-    'reception_id': entry.reception_id,
+    'reception_id': entry.receptionId,
     'extension': entry.extension,
     'duration': entry.duration,
     'wait_time': entry.waitTime,
-    'started_at': entry.started_at,
+    'started_at': entry.startedAt,
     'json': entry.json
   };
 

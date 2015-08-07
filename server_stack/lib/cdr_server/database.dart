@@ -3,7 +3,7 @@ library cdrserver.database;
 import 'dart:async';
 
 import 'configuration.dart';
-import 'model.dart';
+import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/common.dart';
 import 'package:openreception_framework/database.dart' as Database;
 

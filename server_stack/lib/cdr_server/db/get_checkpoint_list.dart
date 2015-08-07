@@ -1,6 +1,6 @@
 part of cdrserver.database;
 
-Future<List<Checkpoint>> getCheckpointList() {
+Future<List<Model.CDRCheckpoint>> getCheckpointList() {
   final context = libraryName + ".checkpointList";
 
   String sql = '''
@@ -11,11 +11,11 @@ Future<List<Checkpoint>> getCheckpointList() {
   return connection.query(sql).then((rows) {
     logger.debugContext("Returned ${rows.length} checkpoints.", context);
 
-    List<Checkpoint> checkpointList = new List<Checkpoint>();
+    List<Model.CDRCheckpoint> checkpointList = new List<Model.CDRCheckpoint>();
 
     for(var row in rows) {
       checkpointList.add(
-          new Checkpoint()
+          new Model.CDRCheckpoint.empty()
             ..id = row.id
             ..start = row.startdate
             ..end = row.enddate

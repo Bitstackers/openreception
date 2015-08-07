@@ -9,7 +9,7 @@ import 'package:route/server.dart';
 
 import 'configuration.dart';
 import 'database.dart' as db;
-import 'model.dart';
+import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/httpserver.dart';
 
 part 'router/cdr.dart';
@@ -30,7 +30,7 @@ Router setup(HttpServer server) =>
     ..serve(cdrResource,    method: 'GET').listen(cdrHandler)
     ..serve(newcdrResource, method: 'POST').listen(insertCdrData)
     ..serve(checkpointResource, method: 'GET').listen(getCheckpoints)
-    ..serve(checkpointResource, method: 'PUT').listen(createCheckpoint)
+    ..serve(checkpointResource, method: 'POST').listen(createCheckpoint)
     ..serve(anything,       method: 'OPTIONS').listen(preFlight)
     ..defaultStream.listen(page404);
 

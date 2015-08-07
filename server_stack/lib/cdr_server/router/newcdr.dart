@@ -13,9 +13,9 @@ void insertCdrData(HttpRequest request) {
       return new Future.value();
     }
 
-    CdrEntry entry;
+    Model.FreeSWITCHCDREntry entry;
     try {
-      entry = new CdrEntry.fromJson(json);
+      entry = new Model.FreeSWITCHCDREntry.fromJson(json);
     } catch(error) {
       clientError(request, 'Missing document field. ${error}');
       return new Future.value();

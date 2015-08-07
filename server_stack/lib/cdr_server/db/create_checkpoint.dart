@@ -1,6 +1,6 @@
 part of cdrserver.database;
 
-Future createCheckpoint(Checkpoint checkpoint) {
+Future createCheckpoint(Model.CDRCheckpoint checkpoint) {
 
   String sql = '''
     INSERT INTO cdr_checkpoints (startDate, endDate, name)
