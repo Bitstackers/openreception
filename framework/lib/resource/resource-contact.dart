@@ -62,4 +62,8 @@ abstract class Contact {
 
   static Uri phones(Uri host, int contactID, int receptionID) =>
     Uri.parse('${singleByReception(host, contactID, receptionID)}/phones');
+
+  static Uri colleagues(Uri host, int contactID)
+    => Uri.parse('${root(host)}/${contactID}/colleagues');
+
 }

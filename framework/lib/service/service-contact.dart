@@ -218,4 +218,13 @@ class RESTContactStore implements Storage.Contact {
         .then(JSON.decode)
         .then((Map map) => new Model.CalendarEntryChange.fromMap(map));
   }
+
+  Future<Iterable<Model.BaseContact>> colleagues(int contactId) {
+    Uri url = Resource.Contact.colleagues(this._host, contactId);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(
+        (String response) => (JSON.decode(response) as Iterable)
+            .map((Map map) => new Model.BaseContact.fromMap(map)));
+  }
 }
