@@ -202,13 +202,12 @@ class ContactView {
           log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
-        return _contactController.colleagues(id).then((Iterable<ORModel.Reception> receptions) {
-          ulReceptionList.children.clear();
+        //FIXME: Figure out how this should look.
+        return _contactController.colleagues(id).then((Iterable<ORModel.BaseContact> contacts) {
+//          ulReceptionList.children =
+//
+//          contacts.map(createColleagueNode).toList();
 
-          if(receptions.isNotEmpty) {
-            ulReceptionList.children
-                ..addAll(receptions.map(createReceptionNode));
-          }
         });
       });
     }).catchError((error, stack) {
@@ -671,13 +670,14 @@ class ContactView {
 
     UListElement contacts = new UListElement()
       ..classes.add('zebra-odd')
-      ..children = reception.contacts.map((ORModel.Contact collegue) => createColleagueNode(collegue, reception.id)).toList();
+      ..children = reception.contacts.map((ORModel.Contact collegue) =>
+          createColleagueNode(collegue, reception.id)).toList();
 
     rootNode.children.addAll([receptionNode, contacts]);
     return rootNode;
   }
 
-  LIElement createColleagueNode(ORModel.Contact collegue, int receptionId) {
+  LIElement createColleagueNode(ORModel.BaseContact collegue, int receptionId) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')

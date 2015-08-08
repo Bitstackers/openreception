@@ -150,7 +150,7 @@ class EndpointsComponent {
 
       if(addressSpan != null && addressTypePicker != null && confidentialBox != null && enabledBox != null) {
         ORModel.MessageEndpoint endpoint = new ORModel.MessageEndpoint.empty()
-          ..receptionId = receptionId
+          ..receptionID = receptionId
           ..contactId = contactId
           ..address = addressSpan.text
           ..addressType = addressTypePicker.selectedOptions.first.value
