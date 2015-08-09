@@ -13,51 +13,79 @@
 
 part of openreception.model;
 
+/**
+ * 'Enum' type representing the different types of messaging endpoints.
+ */
 abstract class MessageEndpointType {
   static const String SMS   = 'sms';
   static const String EMAIL = 'email';
 }
 
+/**
+ * Model class for a messaging endpoint. A messaging endpoint is any
+ * destination idenfier that supports message delivery. The known types of
+ * endpoints are identified by [MessageEndpointType].
+ */
 class MessageEndpoint {
 
+  /// Type of endpoint. Must be one of [MessageEndpointType].
   String type;
   String address;
   String description;
   bool   confidential;
   bool   enabled;
+  int    contactId;
+  int    receptionId;
 
-  //TODO: Check if this is still needed.
+  @deprecated
   MessageRecipient recipient = null;
 
+  /**
+   * Default empty constructor.
+   */
   MessageEndpoint.empty();
 
+  /**
+   * Deserializing constructor.
+   */
   MessageEndpoint.fromMap(Map map) {
-    /// Map validation.
-    assert(['type','address'].every((String key) => map.containsKey(key)));
-    this.type    = map['type'];
+    type    = map[Key.type];
 
-    this.address = map['address'];
-    this.confidential = map['confidential'];
-    this.description = map['description'];
+    address = map[Key.address];
+    confidential = map[Key.confidential];
+    description = map[Key.description];
+    contactId = map[Key.contactID];
+    receptionId = map[Key.receptionID];
 
-    this.enabled = map['enabled'];
+    enabled = map[Key.enabled];
     if (map.containsKey('recipient')) {
-      this.recipient = new MessageRecipient.fromMap(map['recipient']);
+      recipient = new MessageRecipient.fromMap(map['recipient']);
     }
 
   }
 
+  /**
+   * JSON encoding function.
+   */
   Map toJson() => this.asMap;
 
+  /**
+   * Map representation of the object.
+   */
   Map get asMap => {
-        'type' : this.type,
-        'address' : this.address,
-        'confidential' : this.confidential,
-        'enabled' : this.enabled,
-        'description' : this.description
+        Key.type : type,
+        Key.address : address,
+        Key.confidential : confidential,
+        Key.enabled : enabled,
+        Key.description : description,
+        Key.contactID : contactId,
+        Key.receptionID : receptionId
         };
 
+  /**
+   * Stringify the object.
+   */
   @override
-  String toString() => '${this.type}:${this.address}';
+  String toString() => '$type:$address';
 
 }
