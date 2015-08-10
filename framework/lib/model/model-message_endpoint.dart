@@ -32,10 +32,8 @@ class MessageEndpoint {
   String type;
   String address;
   String description;
-  bool   confidential;
-  bool   enabled;
-  int    contactId;
-  int    receptionId;
+  bool confidential;
+  bool enabled;
 
   @deprecated
   MessageRecipient recipient = null;
@@ -54,8 +52,6 @@ class MessageEndpoint {
     address = map[Key.address];
     confidential = map[Key.confidential];
     description = map[Key.description];
-    contactId = map[Key.contactID];
-    receptionId = map[Key.receptionID];
 
     enabled = map[Key.enabled];
     if (map.containsKey('recipient')) {
@@ -73,19 +69,16 @@ class MessageEndpoint {
    * Map representation of the object.
    */
   Map get asMap => {
-        Key.type : type,
-        Key.address : address,
-        Key.confidential : confidential,
-        Key.enabled : enabled,
-        Key.description : description,
-        Key.contactID : contactId,
-        Key.receptionID : receptionId
-        };
+    Key.type: type,
+    Key.address: address,
+    Key.confidential: confidential,
+    Key.enabled: enabled,
+    Key.description: description,
+  };
 
   /**
    * Stringify the object.
    */
   @override
   String toString() => '$type:$address';
-
 }
