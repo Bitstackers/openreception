@@ -17,7 +17,7 @@ part of openreception.model;
  * 'Enum' type representing the different types of messaging endpoints.
  */
 abstract class MessageEndpointType {
-  static const String SMS   = 'sms';
+  static const String SMS = 'sms';
   static const String EMAIL = 'email';
 
   static const List<String> types = const [SMS, EMAIL];
@@ -49,7 +49,7 @@ class MessageEndpoint {
    * Deserializing constructor.
    */
   MessageEndpoint.fromMap(Map map) {
-    type    = map[Key.type];
+    type = map[Key.type];
 
     address = map[Key.address];
     confidential = map[Key.confidential];
@@ -59,7 +59,6 @@ class MessageEndpoint {
     if (map.containsKey('recipient')) {
       recipient = new MessageRecipient.fromMap(map['recipient']);
     }
-
   }
 
   /**
