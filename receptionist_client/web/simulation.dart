@@ -59,7 +59,7 @@ class _Simulation {
       querySelector('#my-call-queue ol');
 
 
-  ParagraphElement get _infoBox => querySelector('p#simulation-info');
+  UListElement get _infoBox => querySelector('ul#simulation-info');
 
   ParagraphElement get _stateBox => querySelector('p#simulation-state');
 
@@ -86,6 +86,7 @@ class _Simulation {
 
     if (callsInCallQueue) {
       state = ReceptionistState.HUNTING;
+      log.info('Calls detected in call list, hunting one.');
 
       new Future.delayed(
           new Duration(milliseconds: randomResponseTime), tryPickup);
@@ -96,6 +97,14 @@ class _Simulation {
    *
    */
   void observers() {
+    log.onRecord.listen((LogRecord rec) {
+      if (_infoBox.children.length > 9) {
+        _infoBox.children.first.remove();
+      }
+
+      _infoBox.append(new LIElement()..text = '$rec');
+    });
+
     new Timer.periodic(new Duration(milliseconds: 1000), checkState);
   }
 
@@ -104,15 +113,20 @@ class _Simulation {
    */
   void tryPickup() {
     _callController.pickupNext().then((ORModel.Call call) {
+      log.info('Trying to pickup');
       // No call were available, just retutn to idle state again.
       if (call == ORModel.Call.noCall) {
         state = ReceptionistState.IDLE;
+        log.info('No call awailable.');
+      }
+      else {
+        log.info('Got a call, expecting the UI to update.');
+        state = ReceptionistState.RECEIVING_CALL;
       }
 
-      state = ReceptionistState.RECEIVING_CALL;
-
-      new Future.delayed(new Duration(milliseconds: 100), expectCall);
+      new Future.delayed(new Duration(milliseconds: 10), expectCall);
     }).catchError((_) {
+      log.info('No call awailable.');
       state = ReceptionistState.IDLE;
     });
   }
@@ -138,6 +152,7 @@ class _Simulation {
     refreshInfo();
 
     if (isInCall) {
+      log.info('Recieved a call, hanging it up immidiately.');
       state = ReceptionistState.ACTIVE_CALL;
       new Future.delayed(new Duration(milliseconds: 100), hangupCall);
     }
@@ -148,7 +163,7 @@ class _Simulation {
    */
   void hangupCall () {
     _callController.hangup(_appState.activeCall).then((_) {
-
+      log.info('Hun up call, returning to idle.');
       _state = ReceptionistState.IDLE;
 
     });
@@ -158,17 +173,19 @@ class _Simulation {
    *
    */
   void setup() {
+    hierarchicalLoggingEnabled = true;
+
     DivElement root = new DivElement()
       ..id = 'simulation-overlay'
-      ..style.marginLeft = '30%'
+      ..style.margin = '5%'
       ..style.position = 'absolute'
-      ..style.width = '400px'
+      ..style.width = '90%'
       ..style.zIndex = '999'
-      ..style.backgroundColor = 'white'
+      ..style.backgroundColor = 'rgba(255,255,255,0.65)'
       ..children = [
         new HeadingElement.h1()..text = 'Simulation mode. DO NOT USE INTERFACE',
         new ParagraphElement()..id = 'simulation-state',
-        new ParagraphElement()..id = 'simulation-info'
+        new UListElement()..id = 'simulation-info'
         ];
 
     querySelector('body').insertBefore(root, querySelector('#receptionistclient-ready'));
