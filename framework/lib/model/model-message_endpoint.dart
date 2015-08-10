@@ -19,6 +19,8 @@ part of openreception.model;
 abstract class MessageEndpointType {
   static const String SMS   = 'sms';
   static const String EMAIL = 'email';
+
+  static const List<String> types = const [SMS, EMAIL];
 }
 
 /**
