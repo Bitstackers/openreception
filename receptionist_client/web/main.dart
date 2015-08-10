@@ -293,7 +293,7 @@ Future registerReadyView(Model.AppClientState appState,
              popup,
              langMap);
 
-        //simulation.start(callController);
+        //simulation.start(callController, appState);
       });
 }
 
