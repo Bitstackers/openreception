@@ -52,6 +52,9 @@ class SupportTools {
 
   Future setupReceptionists() =>
     Future.doWhile(() {
+      if (Config.authTokens.isEmpty) {
+        return false;
+      }
 
       Phonio.SIPAccount account = ConfigPool.requestLocalSipAccount();
       String token = peerMap[account.username];
