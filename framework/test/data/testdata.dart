@@ -128,7 +128,7 @@ Map testReception2 = {
     "telephonenumbers": [
       {
         "value": "+45 88329100",
-        "kind": "pstn",
+        "type": "pstn",
         "description": "Farum Gydevej 87",
         "billing_type": "landline",
         "tags": [],
@@ -136,7 +136,7 @@ Map testReception2 = {
       },
       {
         "value": "+45 33488241",
-        "kind": "pstn",
+        "type": "pstn",
         "description": "Old main number",
         "billing_type": "landline",
         "tags": [],
@@ -194,7 +194,7 @@ Map testReception = {
     "telephonenumbers": [
       {
         'value': '+4511223344',
-        'kind': 'pstn',
+        'type': 'pstn',
         'description': 'Official main number',
         'billing_type': 'landline',
         'tags': [],
@@ -202,7 +202,7 @@ Map testReception = {
       },
       {
         'value': '+4521324355',
-        'kind': 'pstn',
+        'type': 'pstn',
         'description': 'Swindon branch',
         'billing_type': 'landline',
         'tags': [],
@@ -274,7 +274,7 @@ Map testContact_4_1 = {
   "phones": [
     {
       "value": "30481150",
-      "kind": "PSTN",
+      "type": "PSTN",
       "description": "Cellphone - work",
       "billing_type": "cell",
       "tags": [],
@@ -282,7 +282,7 @@ Map testContact_4_1 = {
     },
     {
       "value": "40966024",
-      "kind": "PSTN",
+      "type": "PSTN",
       "description": "Cellphone - private",
       "billing_type": "cell",
       "tags": [],
