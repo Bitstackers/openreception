@@ -1,7 +1,6 @@
 part of or_test_fw;
 
 abstract class Benchmark {
-
   static final Logger log = new Logger('$libraryName.Benchmark');
 
   /**
@@ -57,8 +56,7 @@ abstract class Benchmark {
     // Each customer spawns a call
     return Future.forEach(customers, (Customer customer) {
       return customer.dial('12340003');
-    })
-    .then((_) {
+    }).then((_) {
       log.info('Waiting for call list to fill');
       return Future.doWhile((() => new Future.delayed(
           new Duration(milliseconds: 10), () => callWaiter.callFlowControl
@@ -74,6 +72,10 @@ abstract class Benchmark {
         return _receptionistRequestsCall(r);
       });
     })
-    .then((_) => log.info('Test done'));
+        .then((_) => receptionists.first.callFlowControl
+            .callList()
+            .then((Iterable<Model.Call> calls) {
+      expect(calls, isEmpty);
+    })).then((_) => log.info('Test done'));
   }
 }
