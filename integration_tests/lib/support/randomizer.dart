@@ -251,6 +251,7 @@ abstract class Randomizer {
   static String randomEvent() => randomChoice(events);
 
   static String randomCompany() => randomChoice(companyNames);
+  static String randomUsername() => randomChoice(userNames);
   static String randomTitle() => randomChoice(titles);
   static String randomCallerName() => randomChoice(callerNames);
   static String randomMessageBody() => randomChoice(messageBodies);
@@ -264,6 +265,48 @@ abstract class Randomizer {
 
     return digits.join('');
   }
+
+  /**
+   *
+   */
+  static String randomUserEmail() =>
+    'employee${rand.nextInt(100)}@us.com';
+
+  /**
+   *
+   */
+  static String randomPeer() =>
+    '11${rand.nextInt(10)}${rand.nextInt(10)}';
+
+  /**
+   *
+   */
+  static String randomString (int length) =>
+    new String.fromCharCodes
+      (new List.generate(length, (index) => rand.nextInt(33)+89));
+
+  /**
+   *
+   */
+  static String randomGmail() =>
+    'employee${rand.nextInt(10)}${rand.nextInt(10)}@gmail.com';
+
+  /**
+   *
+   */
+  static String randomPortait() =>
+    'employee${rand.nextInt(10)}${rand.nextInt(10)}.png';
+
+  /**
+   *
+   */
+  static Model.User randomUser() =>
+    new Model.User.empty()
+      ..address = randomUserEmail()
+      ..googleAppcode = randomString(20)
+      ..googleUsername = randomGmail()
+      ..name = randomUsername()
+      ..peer = randomPeer();
 
   static String randomLocalExtension() => rand.nextInt(501).toString();
 
