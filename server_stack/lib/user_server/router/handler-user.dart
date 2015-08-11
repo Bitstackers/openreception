@@ -97,7 +97,7 @@ class User {
       Model.User user = new Model.User.fromMap(JSON.decode(content));
 
       return _userStore.update(user).then((Model.User user) {
-        Event.UserChange event =  new Event.UserChange.created(user.ID);
+        Event.UserChange event =  new Event.UserChange.updated(user.ID);
 
         _notification.broadcastEvent(event);
 
