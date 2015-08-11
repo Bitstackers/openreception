@@ -38,6 +38,7 @@ void main() {
   runConfigServerTests();
   runContactTests();
   runCallFlowTests();
+  runUserTests();
   runMessageTests();
   runNotificationTests();
   runOrganizationTests();
