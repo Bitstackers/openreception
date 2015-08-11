@@ -14,7 +14,6 @@ void runAllTests() {
     });
 
     test('Get Non-Existing organization', organization.getNonExistingOrganization);
-    test('Get organization', organization.getOrganization);
   });
 
   group('Management.Reception', () {
@@ -26,11 +25,8 @@ void runAllTests() {
       _reception.client.client.close(force: true);
     });
 
-    test('Get Reception', _reception.getReception);
     test('Get Non-Existing Reception', _reception.getNonExistingReception);
-    test('Get Reception List', _reception.getReceptionList);
-    test('Update Reception', _reception.updateReception);
-    test('Create Reception', _reception.createReception);
+
   });
 
   group('Management.Contact', () {
@@ -42,10 +38,6 @@ void runAllTests() {
       _reception.client.client.close(force: true);
     });
 
-//    test('Get Contact', Contact.getContact);
     test('Get Non-Existing Contact', Contact.getNonExistingContact);
-//    test('Get Contact List', Contact.getContactList);
-//    test('Update Contact', Contact.updateContact);
-//    test('Create Contact', Contact.createContact);
   });
 }

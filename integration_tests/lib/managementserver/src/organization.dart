@@ -13,16 +13,6 @@ class organization {
     });
   }
 
-  static Future getOrganization() {
-    const int organizationId = 1;
-
-    return organizationStore.get(organizationId).then((Model.Organization organization) {
-      expect(organization, isNotNull);
-      expect(organization.id, equals(organizationId));
-      expect(organization.fullName, equals('BitStackers K/S'));
-    });
-  }
-
   static Future getOrganizationList() {
     return organizationStore.list().then((List<Model.Organization> organizations) {
       expect(organizations, isNotNull);
