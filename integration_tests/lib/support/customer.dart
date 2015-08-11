@@ -16,6 +16,7 @@ class Customer {
   Duration    answerLatency = new Duration(seconds: 0);
 
   Phonio.SIPPhone _phone = null;
+  Stream<Phonio.Event> get phoneEvents => _phone.eventStream;
   String get name => this._phone.defaultAccount.username;
 
   Customer (this._phone);
