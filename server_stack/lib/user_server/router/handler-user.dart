@@ -44,6 +44,10 @@ class User {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
     return _userStore.remove(userID).then((_) {
+      Event.UserChange event = new Event.UserChange.deleted(userID);
+
+      _notification.broadcastEvent(event);
+
       return new shelf.Response.ok('{}');
     }).catchError((error, stackTrace) {
       if (error is Storage.NotFound) {
