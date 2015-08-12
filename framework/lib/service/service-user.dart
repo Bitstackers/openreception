@@ -123,7 +123,7 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.userGroupByID(_host, userID, groupID);
     url = appendToken(url, this._token);
 
-    return this._backend.put(url,'');
+    return this._backend.post(url,'');
   }
 
   /**
@@ -158,7 +158,7 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.userIndentities(_host, identity.userId);
     url = appendToken(url, this._token);
 
-    return this._backend.put(url, JSON.encode (identity))
+    return this._backend.post(url, JSON.encode (identity))
       .then((String reponse) => JSON.decode (reponse))
       .then((Map identityMap) =>
          new Model.UserIdentity.fromMap(identityMap));
@@ -172,6 +172,5 @@ class RESTUserStore implements Storage.User {
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
-
   }
 }
