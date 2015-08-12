@@ -131,32 +131,40 @@ class User {
   }
 
   /**
-   *
+   * Response handler for joining a user in a group.
    */
-  Future<shelf.Response> joinGroup(shelf.Request request) =>
-      new Future.error(new UnimplementedError());
+  Future<shelf.Response> joinGroup(shelf.Request request) {
+    int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
+    int groupID = int.parse(shelf_route.getPathParameter(request, 'gid'));
 
+    return _userStore.joinGroup(userID, groupID).then((_) =>
+      new shelf.Response.ok(JSON.encode(const {})));
+  }
 
   /**
-   *
+   * Response handler for leaving a user from a group.
    */
-  Future<shelf.Response> leaveGroup(shelf.Request request) =>
-      new Future.error(new UnimplementedError());
+  Future<shelf.Response> leaveGroup(shelf.Request request) {
+    int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
+    int groupID = int.parse(shelf_route.getPathParameter(request, 'gid'));
 
+    return _userStore.leaveGroup(userID, groupID).then((_) =>
+        new shelf.Response.ok(JSON.encode(const {})));
+  }
 
   /**
-   *
+   * Response handler for retrieving groups of a user.
    */
   Future<shelf.Response> userGroup(shelf.Request request) {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-    return _userStore.userGroups(userID).then((Iterable<Model.UserGroup> groups) =>
-        new shelf.Response.ok(JSON.encode(groups.toList(growable: false))));
+    return _userStore.userGroups(userID).then(
+        (Iterable<Model.UserGroup> groups) =>
+            new shelf.Response.ok(JSON.encode(groups.toList(growable: false))));
   }
 
-
   /**
-   *
+   * Response handler for retrieving identities of a user.
    */
   Future<shelf.Response> userIdentities(shelf.Request request) {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
@@ -167,24 +175,40 @@ class User {
   }
 
   /**
-   *
+   * Response handler for adding an identity to a user.
    */
-  Future<shelf.Response> addIdentity(shelf.Request request) =>
-      new Future.error(new UnimplementedError());
+  Future<shelf.Response> addIdentity(shelf.Request request) {
+    int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
+    return request
+        .readAsString()
+        .then(JSON.decode)
+        .then(Model.UserIdentity.decode)
+        .then((Model.UserIdentity identity) {
+          identity.userId = userID;
+          _userStore
+            .addIdentity(identity)
+            .then((_) => new shelf.Response.ok(JSON.encode(const {})));
+    });
+  }
 
   /**
-   *
+   * Response handler for removing an identity from a user.
    */
-  Future<shelf.Response> removeIdentity(shelf.Request request) =>
-      new Future.error(new UnimplementedError());
+  Future<shelf.Response> removeIdentity(shelf.Request request) {
+    int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-
-  /**
-   *
-   */
-  Future<shelf.Response> userIndentity(shelf.Request request) =>
-      new Future.error(new UnimplementedError());
+    return request
+        .readAsString()
+        .then(JSON.decode)
+        .then(Model.UserIdentity.decode)
+        .then((Model.UserIdentity identity) {
+          identity.userId = userID;
+          _userStore
+            .removeIdentity(identity)
+            .then((_) => new shelf.Response.ok(JSON.encode(const {})));
+    });
+  }
 
   /**
    * List every available group in the store.
