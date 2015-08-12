@@ -33,8 +33,9 @@ class User {
   /**
    * HTTP Request handler for returning a all user resources.
    */
-  Future<shelf.Response> list(shelf.Request request)  =>
-      _userStore.list().then((Iterable<Model.User> users) =>
+  Future<shelf.Response> list(shelf.Request request) => _userStore
+      .list()
+      .then((Iterable<Model.User> users) =>
           new shelf.Response.ok(JSON.encode(users.toList(growable: false))));
 
   /**
@@ -70,7 +71,7 @@ class User {
       Model.User user = new Model.User.fromMap(JSON.decode(content));
 
       return _userStore.create(user).then((Model.User user) {
-        Event.UserChange event =  new Event.UserChange.created(user.ID);
+        Event.UserChange event = new Event.UserChange.created(user.ID);
 
         _notification.broadcastEvent(event);
 
@@ -97,7 +98,7 @@ class User {
       Model.User user = new Model.User.fromMap(JSON.decode(content));
 
       return _userStore.update(user).then((Model.User user) {
-        Event.UserChange event =  new Event.UserChange.updated(user.ID);
+        Event.UserChange event = new Event.UserChange.updated(user.ID);
 
         _notification.broadcastEvent(event);
 
@@ -122,9 +123,11 @@ class User {
   Future<shelf.Response> userGroups(shelf.Request request) {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-    return _userStore.userGroups(userID).then((Iterable<Model.UserGroup> groups) {
+    return _userStore
+        .userGroups(userID)
+        .then((Iterable<Model.UserGroup> groups) {
       return new shelf.Response.ok(JSON.encode(groups.toList(growable: false)));
-   });
+    });
   }
 
   /**
@@ -158,11 +161,10 @@ class User {
   Future<shelf.Response> userIdentities(shelf.Request request) {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-    return _userStore.identities(userID).then((Iterable<Model.UserIdentity> identities) =>
-        new shelf.Response.ok(JSON.encode(identities.toList(growable: false))));
+    return _userStore.identities(userID).then(
+        (Iterable<Model.UserIdentity> identities) => new shelf.Response.ok(
+            JSON.encode(identities.toList(growable: false))));
   }
-
-
 
   /**
    *
@@ -187,8 +189,8 @@ class User {
   /**
    * List every available group in the store.
    */
-  Future<shelf.Response> groups(shelf.Request request) =>
-    _userStore.groups().then((Iterable<Model.UserGroup> groups) =>
-        new shelf.Response.ok(JSON.encode(groups.toList(growable: false))));
-
+  Future<shelf.Response> groups(shelf.Request request) => _userStore
+      .groups()
+      .then((Iterable<Model.UserGroup> groups) =>
+          new shelf.Response.ok(JSON.encode(groups.toList(growable: false))));
 }
