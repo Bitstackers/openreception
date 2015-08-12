@@ -248,6 +248,12 @@ abstract class Randomizer {
         'Ove Overlæbe',
         'Misse Mundvand'];
 
+  static List<String> organizationFlags =
+    ['VIP', '', 'Charity', 'Pro bono', 'Bad credit'];
+
+  static List<String> billingTypes =
+    ['Cash', 'Invoice', 'Account', 'Labor', 'Up front'];
+
   static String randomEvent() => randomChoice(events);
 
   static String randomCompany() => randomChoice(companyNames);
@@ -311,14 +317,26 @@ abstract class Randomizer {
   static String randomLocalExtension() => rand.nextInt(501).toString();
 
   /**
+   *
+   */
+  static String randomOrganizationFlag() =>
+    randomChoice(organizationFlags);
+
+  /**
+   *
+   */
+  static String randomBillingType() =>
+    randomChoice(billingTypes);
+
+  /**
    * Constructs and returns a [Organization] object with random content.
    *
    * The returned object is does not have a valid ID.
    */
   static Model.Organization randomOrganization() =>
     new Model.Organization.empty()
-      ..billingType = 'Invoice'
-      ..flag = 'VIP'
+      ..billingType = randomBillingType()
+      ..flag = randomOrganizationFlag()
       ..fullName = randomCompany();
 
   /**
