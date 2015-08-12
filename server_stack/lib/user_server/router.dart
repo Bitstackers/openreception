@@ -91,13 +91,12 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4030}) {
     ..post('/user', userHandler.create)
 
     ..get('/user/{uid}/group', userHandler.userGroups)
-    ..post('/user/{uid}/group', userHandler.joinGroup)
+    ..post('/user/{uid}/group/{gid}', userHandler.joinGroup)
     ..delete('/user/{uid}/group/{gid}', userHandler.leaveGroup)
     ..get('/user/{uid}/group/{gid}', userHandler.userGroup)
     ..get('/user/{uid}/identity', userHandler.userIdentities)
     ..post('/user/{uid}/identity', userHandler.addIdentity)
     ..delete('/user/{uid}/identity/{iden}', userHandler.removeIdentity)
-    ..get('/user/{uid}/identity/{iden}', userHandler.userIndentity)
     ..get('/group', userHandler.groups) ;
 
   var handler = const shelf.Pipeline()
