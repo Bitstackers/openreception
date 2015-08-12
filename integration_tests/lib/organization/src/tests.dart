@@ -350,8 +350,17 @@ abstract class Organization {
       expect(organization.billingType, createdOrganization.billingType);
       expect(organization.flag, createdOrganization.flag);
       expect(organization.fullName, createdOrganization.fullName);
-      return receptionist
-          .waitFor(eventType: Event.Key.organizationChange)
+
+      bool idMatches (Event.Event event) {
+
+        if (event is Event.OrganizationChange) {
+          return event.orgID == createdOrganization.id;
+        }
+
+        return false;
+      }
+
+      return receptionist.notificationSocket.eventStream.firstWhere(idMatches)
           .then((Event.OrganizationChange event) {
         expect(event.orgID, equals(createdOrganization.id));
         expect(event.state, equals(Event.OrganizationState.CREATED));
@@ -380,8 +389,17 @@ abstract class Organization {
       expect(organization.billingType, createdOrganization.billingType);
       expect(organization.flag, createdOrganization.flag);
       expect(organization.fullName, createdOrganization.fullName);
-      return receptionist
-          .waitFor(eventType: Event.Key.organizationChange)
+
+      bool idMatches (Event.Event event) {
+
+        if (event is Event.OrganizationChange) {
+          return event.orgID == createdOrganization.id;
+        }
+
+        return false;
+      }
+
+      return receptionist.notificationSocket.eventStream.firstWhere(idMatches)
           .then((Event.OrganizationChange event) {
         expect(event.orgID, equals(createdOrganization.id));
         expect(event.state, equals(Event.OrganizationState.CREATED));
@@ -406,8 +424,7 @@ abstract class Organization {
           expect(createdOrganization.fullName, equals(updatedOrganization.fullName));
 
 
-          return receptionist
-                    .waitFor(eventType: Event.Key.organizationChange)
+          return receptionist.notificationSocket.eventStream.firstWhere(idMatches)
                     .then((Event.OrganizationChange event) {
                   expect(event.orgID, equals(createdOrganization.id));
                   expect(event.state, equals(Event.OrganizationState.UPDATED));
@@ -432,6 +449,8 @@ abstract class Organization {
     Model.Organization organization = Randomizer.randomOrganization();
     log.info('Creating a new organization ${organization.asMap}');
 
+
+
     return organizationStore
         .create(organization)
         .then((Model.Organization createdOrganization) {
@@ -440,8 +459,17 @@ abstract class Organization {
       expect(organization.billingType, createdOrganization.billingType);
       expect(organization.flag, createdOrganization.flag);
       expect(organization.fullName, createdOrganization.fullName);
-      return receptionist
-          .waitFor(eventType: Event.Key.organizationChange)
+
+      bool idMatches (Event.Event event) {
+
+        if (event is Event.OrganizationChange) {
+          return event.orgID == createdOrganization.id;
+        }
+
+        return false;
+      }
+
+      return receptionist.notificationSocket.eventStream.firstWhere(idMatches)
           .then((Event.OrganizationChange event) {
         expect(event.orgID, equals(createdOrganization.id));
         expect(event.state, equals(Event.OrganizationState.CREATED));
@@ -458,8 +486,7 @@ abstract class Organization {
 
         return organizationStore.remove(createdOrganization.id)
           .then((_) {
-          return receptionist
-                    .waitFor(eventType: Event.Key.organizationChange)
+          return receptionist.notificationSocket.eventStream.firstWhere(idMatches)
                     .then((Event.OrganizationChange event) {
                   expect(event.orgID, equals(createdOrganization.id));
                   expect(event.state, equals(Event.OrganizationState.DELETED));
