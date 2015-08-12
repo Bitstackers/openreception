@@ -294,4 +294,33 @@ abstract class User {
       expect(groups, isEmpty);
     });
   }
+
+  /**
+   * Add a user to a group.
+   */
+
+  static Future joinGroup(Storage.User userStore) {
+    Model.User newUser = Randomizer.randomUser();
+
+    newUser.groups = [];
+
+    return userStore.create(newUser).then((Model.User createdUser) {
+
+      expect (createdUser.groups, isEmpty);
+
+      return userStore.groups().then((Iterable<Model.UserGroup> groups) {
+        Model.UserGroup addedGroup = groups.first;
+
+        return userStore.joinGroup(createdUser.ID, addedGroup.id)
+          .then((_) {
+            return userStore.get(createdUser.ID).then((Model.User fetchedUser) {
+              expect (fetchedUser.groups, isNotEmpty);
+              expect (fetchedUser.groups, contains(addedGroup));
+            });
+        });
+      })
+      /// Finalization - cleanup.
+      .then((_) => userStore.remove(createdUser.ID));
+    });
+  }
 }

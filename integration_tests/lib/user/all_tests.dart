@@ -60,6 +60,8 @@ runUserTests () {
     test ('groups (non-existing user)',
         () => User.listGroupsOfNonExistingUser(userStore));
 
+    test ('group join',
+        () => User.joinGroup(userStore));
 
     setUp (() {
       transport = new Transport.Client();
