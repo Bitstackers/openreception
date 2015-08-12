@@ -18,12 +18,14 @@ part of openreception.model;
  *
  */
 class User {
+
+  static const int   noID      = 0;
+
   String             address;
   List<UserGroup>    groups = [];
   int                ID;
   List<UserIdentity> identities = [];
   String             name;
-  static const int   noID      = 0;
   String             peer;
   String             portrait = '';
   String             googleUsername = '';
