@@ -97,6 +97,7 @@ abstract class User {
       expect (createdUser.address, equals (newUser.address));
       expect (createdUser.googleAppcode, equals (newUser.googleAppcode));
       expect (createdUser.googleUsername, equals (newUser.googleUsername));
+      expect (createdUser.ID, isNotNull);
       expect (createdUser.ID, greaterThan(Model.User.noID));
       expect (createdUser.name, equals (newUser.name));
       expect (createdUser.peer, equals (newUser.peer));
