@@ -39,7 +39,7 @@ abstract class User {
     => Uri.parse('$host/$_group');
 
   static Uri userGroupByID(Uri host, int userID, int groupID)
-      => Uri.parse('$host/$userID/$_group/$groupID');
+      => Uri.parse('$host/user/$userID/$_group/$groupID');
 
   static Uri userIndentities(Uri host, int userID)
   => Uri.parse('$host/$_user/$userID/$_identity');
