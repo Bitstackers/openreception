@@ -186,7 +186,8 @@ class User {
         .then(Model.UserIdentity.decode)
         .then((Model.UserIdentity identity) {
           identity.userId = userID;
-          _userStore
+
+          return _userStore
             .addIdentity(identity)
             .then((_) => new shelf.Response.ok(JSON.encode(const {})));
     });
@@ -204,7 +205,7 @@ class User {
         .then(Model.UserIdentity.decode)
         .then((Model.UserIdentity identity) {
           identity.userId = userID;
-          _userStore
+          return _userStore
             .removeIdentity(identity)
             .then((_) => new shelf.Response.ok(JSON.encode(const {})));
     });
