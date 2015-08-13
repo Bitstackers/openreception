@@ -381,4 +381,31 @@ abstract class User {
       .then((_) => userStore.remove(createdUser.ID));
     });
   }
+
+  /**
+   * Remove an identity from a user.
+   */
+
+  static Future removeUserIdentity(Storage.User userStore) {
+    Model.User newUser = Randomizer.randomUser();
+
+    newUser.identities = [];
+
+    return userStore.create(newUser).then((Model.User createdUser) {
+
+      expect (createdUser.identities, isEmpty);
+      Model.UserIdentity identity = new Model.UserIdentity.empty()
+        ..identity =Randomizer.randomUserEmail()
+        ..userId = createdUser.ID;
+
+        return userStore.addIdentity(identity)
+          .then((_) => userStore.removeIdentity(identity))
+          .then((_) => userStore.get(createdUser.ID)
+            .then((Model.User fetchedUser) {
+              expect (fetchedUser.identities, isEmpty);
+            }))
+      /// Finalization - cleanup.
+      .then((_) => userStore.remove(createdUser.ID));
+    });
+  }
 }

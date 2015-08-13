@@ -69,6 +69,9 @@ runUserTests () {
     test ('identity add',
         () => User.addUserIdentity(userStore));
 
+    test ('identity remove',
+        () => User.addUserIdentity(userStore));
+
     setUp (() {
       transport = new Transport.Client();
       userStore = new Service.RESTUserStore
