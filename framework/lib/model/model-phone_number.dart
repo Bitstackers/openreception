@@ -13,6 +13,10 @@
 
 part of openreception.model;
 
+/**
+ * A model class repsenting a phone number that can be associated with a
+ * contact.
+ */
 class PhoneNumber {
   String description = '';
   String value = '';
@@ -21,6 +25,9 @@ class PhoneNumber {
   String billing_type = '';
   List<String> tags = [];
 
+  /**
+   * Deserializing constructor.
+   */
   PhoneNumber.fromMap(Map map) {
     description = map[Key.description];
     value = map[Key.value];
@@ -39,16 +46,29 @@ class PhoneNumber {
 
   }
 
+  /**
+   * A phone number is, by this definition, equal to another phone number, if
+   * both their value and type is the same.
+   */
   @override
   operator == (PhoneNumber other) =>
     this.value == other.value &&
     this.type== other.type
     ;
 
+  /**
+   * Default empty constructor.
+   */
   PhoneNumber.empty();
 
+  /**
+   * Serialization function.
+   */
   Map toJson () => this.asMap;
 
+  /**
+   * Map representation of the object,
+   */
   Map get asMap => {
     Key.value: value,
     Key.type: type,
