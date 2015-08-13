@@ -66,6 +66,9 @@ runUserTests () {
     test ('group leave',
         () => User.leaveGroup(userStore));
 
+    test ('identity add',
+        () => User.addUserIdentity(userStore));
+
     setUp (() {
       transport = new Transport.Client();
       userStore = new Service.RESTUserStore
