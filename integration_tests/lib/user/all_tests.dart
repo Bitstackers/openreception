@@ -63,6 +63,9 @@ runUserTests () {
     test ('group join',
         () => User.joinGroup(userStore));
 
+    test ('group leave',
+        () => User.leaveGroup(userStore));
+
     setUp (() {
       transport = new Transport.Client();
       userStore = new Service.RESTUserStore
@@ -72,22 +75,22 @@ runUserTests () {
       return r.initialize();
     });
 
-    tearDown (() {
-      userStore = null;
-      transport.client.close(force : true);
-
-      ReceptionistPool.instance.release(r);
-
-      return r.teardown();
-    });
-
-    test ('Create (event presence)',
-        () => User.createUserEvent(userStore, r));
-
-    test ('Update (event presence)',
-        () => User.updateUserEvent(userStore, r));
-
-    test ('Remove (event presence)',
-        () => User.removeUserEvent(userStore, r));
+//    tearDown (() {
+//      userStore = null;
+//      transport.client.close(force : true);
+//
+//      ReceptionistPool.instance.release(r);
+//
+//      return r.teardown();
+//    });
+//
+//    test ('Create (event presence)',
+//        () => User.createUserEvent(userStore, r));
+//
+//    test ('Update (event presence)',
+//        () => User.updateUserEvent(userStore, r));
+//
+//    test ('Remove (event presence)',
+//        () => User.removeUserEvent(userStore, r));
   });
 }

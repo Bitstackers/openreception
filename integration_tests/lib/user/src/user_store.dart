@@ -324,4 +324,34 @@ abstract class User {
       .then((_) => userStore.remove(createdUser.ID));
     });
   }
+
+  /**
+   * Remove a user from a group.
+   */
+
+  static Future leaveGroup(Storage.User userStore) {
+    Model.User newUser = Randomizer.randomUser();
+
+    newUser.groups = [];
+
+    return userStore.create(newUser).then((Model.User createdUser) {
+
+      expect (createdUser.groups, isEmpty);
+
+      return userStore.groups().then((Iterable<Model.UserGroup> groups) {
+        Model.UserGroup addedGroup = groups.first;
+
+        return userStore.joinGroup(createdUser.ID, addedGroup.id)
+          .then((_) => userStore.get(createdUser.ID)
+           .then((Model.User fetchedUser) =>
+               userStore.leaveGroup(createdUser.ID, addedGroup.id)
+             .then((_) => userStore.get(createdUser.ID)
+                .then((Model.User fetchedUser) {
+                  expect (fetchedUser.groups, isEmpty);
+            }))));
+        })
+      /// Finalization - cleanup.
+      .then((_) => userStore.remove(createdUser.ID));
+    });
+  }
 }
