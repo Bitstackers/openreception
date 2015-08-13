@@ -237,8 +237,6 @@ abstract class IncomingCall {
       .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [event: call-offer; destination: Reception]"))
       .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
       .then((_) => Call_Announced ())
-      .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [wait 0.200 s]"))
-      .then((_) => Wait(200))
       .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
       .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [no responses to call-offer]"))
       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [force-end-pause: <call_ID>]"))
@@ -275,8 +273,6 @@ abstract class IncomingCall {
       .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [event: call-offer; destination: Reception]"))
       .then((_) => step ("FreeSWITCH: pauses dial-plan processing for # seconds"))
       .then((_) => Call_Announced ())
-      .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [wait 0.200 s]"))
-      .then((_) => Wait(200))
       .then((_) => step ("Call-Flow-Control  ->  Call-Flow-Control [no responses to call-offer]"))
       .then((_) => step ("Call-Flow-Control  ->> FreeSWITCH        [force-end-pause: <call_ID>]"))
       .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control [queued-unavailable: <call_ID>]"))
@@ -299,7 +295,6 @@ abstract class IncomingCall {
 
   /**
    * https://github.com/AdaHeads/Hosted-Telephone-Reception-System/wiki/Use-case%3A-Indg%C3%A5ende-opkald#variant-i1ai-1
-   * TODO: Change the wait-time with the "huntCall" macro.
    */
   static Future incomingCall_I_1_a_i() {
 
@@ -341,7 +336,7 @@ abstract class IncomingCall {
       .then((_) => step ("Receptionist 2 offers to pick up call."))
       .then((_) => Offer_To_Pick_Up_Call (receptionist2, inboundCall))
       .then((_) => step ("Receptionist 1 wait 210 ms to assure that client-N will miss the 200 ms time-window for responding."))
-      .then((_) => Wait(200))
+      .then((_) => Wait(210))
       .then((_) => Offer_To_Pick_Up_Call (receptionist, inboundCall))
       .then((_) => Call_Allocation_Acknowledgement ())
       .then((_) => step ("Client-N->Receptionist-N: Un-queue: <reception name>."))
@@ -392,7 +387,6 @@ abstract class IncomingCall {
       .then((_) => Call_Announced ())
       .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
       .then((_) => step ("Receptionist-N: Busy doing other things (allowing FreeSWITCH to time out)."))
-      .then((_) => Wait(8000))
       .then((_) => step ("FreeSWITCH: pause timed out"))
       .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control: queued-unavailable: <call ID>"))
       .then((_) => step ("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«"))
@@ -453,7 +447,6 @@ abstract class IncomingCall {
       .then((_) => Call_Announced ())
       .then((_) => step ("Client-N->Receptionist-N: shows call (with dial-tone)"))
       .then((_) => step ("Receptionist-N: Busy doing other things (allowing FreeSWITCH to time out)."))
-      .then((_) => Wait(8000))
       .then((_) => step ("FreeSWITCH: pause timed out"))
       .then((_) => step ("FreeSWITCH         ->> Call-Flow-Control: queued-unavailable: <call ID>"))
       .then((_) => step ("FreeSWITCH         ->> Opkalder          »De har ringet til <reception name>. Vent venligst.«"))
