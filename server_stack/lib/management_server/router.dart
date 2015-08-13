@@ -31,7 +31,6 @@ final Pattern _playlistIdUrl = new UrlPattern(r'/playlist/(\d+)');
 final Pattern _dialplanTemplateUrl = new UrlPattern(r'/dialplantemplate');
 
 final Pattern _contactTypesUrl = new UrlPattern(r'/contacttypes(/?)');
-final Pattern _addressTypestUrl = new UrlPattern(r'/addresstypes(/?)');
 
 final Pattern _userUrl = new UrlPattern(r'/user(/?)');
 final Pattern _userIdUrl = new UrlPattern(r'/user/(\d+)');
