@@ -83,8 +83,6 @@ Router setupRoutes(HttpServer server, Configuration config) =>
       authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
   ..serve(_contactTypesUrl, method: HttpMethod.GET)
       .listen(_contact.getContactTypeList)
-  ..serve(_addressTypestUrl, method: HttpMethod.GET)
-      .listen(_contact.getAddressTypestList)
   ..serve(_receptionRecordUrl, method: HttpMethod.POST)
       .listen(_dialplan.recordSound)
   ..serve(_receptionRecordUrl, method: HttpMethod.DELETE)
