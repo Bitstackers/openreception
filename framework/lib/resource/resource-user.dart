@@ -45,6 +45,6 @@ abstract class User {
   => Uri.parse('$host/$_user/$userID/$_identity');
 
   static Uri userIndentity(Uri host, int userID, String identity)
-  => Uri.parse('$host/$_user/$userID/$_identity/identity');
+  => Uri.parse('$host/$_user/$userID/$_identity/${identity}');
 
 }
