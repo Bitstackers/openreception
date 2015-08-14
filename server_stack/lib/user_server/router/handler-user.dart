@@ -198,17 +198,21 @@ class User {
    */
   Future<shelf.Response> removeIdentity(shelf.Request request) {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
+    String value = shelf_route.getPathParameter(request, 'identity');
+    String domain = shelf_route.getPathParameter(request, 'domain');
 
-    return request
-        .readAsString()
-        .then(JSON.decode)
-        .then(Model.UserIdentity.decode)
-        .then((Model.UserIdentity identity) {
-          identity.userId = userID;
-          return _userStore
-            .removeIdentity(identity)
-            .then((_) => new shelf.Response.ok(JSON.encode(const {})));
-    });
+    if (domain != null) {
+
+      value = domain.isEmpty ? value : '$value@$domain';
+    }
+
+    Model.UserIdentity identity = new Model.UserIdentity.empty()
+     ..userId = userID
+     ..identity =value;
+
+    return _userStore
+      .removeIdentity(identity)
+      .then((_) => new shelf.Response.ok(JSON.encode(const {})));
   }
 
   /**
