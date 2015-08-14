@@ -41,7 +41,7 @@ part 'src/model/model-message.dart';
 part 'src/model/model-message_context.dart';
 //part 'src/model-message_header.dart';
 //part 'src/model-message_endpoint.dart';
-//part 'src/model-message_filter.dart';
+part 'src/model/model-message_filter.dart';
 //part 'src/model-message_queue_item.dart';
 //part 'src/model-message_recipient.dart';
 part 'src/model/model-message_recipient_list.dart';
@@ -90,6 +90,7 @@ void main() {
   testModelReception();
   testModelMessage();
   testModelMessageContext();
+  testModelMessageFilter();
   testModelCalendarEntry();
   testModelCalendarEntryChange();
   testModelClientConfiguration();
