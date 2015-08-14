@@ -96,7 +96,8 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4030}) {
     ..get('/user/{uid}/group/{gid}', userHandler.userGroup)
     ..get('/user/{uid}/identity', userHandler.userIdentities)
     ..post('/user/{uid}/identity', userHandler.addIdentity)
-    ..delete('/user/{uid}/identity/{iden}', userHandler.removeIdentity)
+    ..delete('/user/{uid}/identity/{identity}', userHandler.removeIdentity)
+    ..delete('/user/{uid}/identity/{identity}@{domain}', userHandler.removeIdentity)
     ..get('/group', userHandler.groups) ;
 
   var handler = const shelf.Pipeline()
