@@ -58,6 +58,21 @@ class MessageFilter {
    */
   MessageFilter.empty();
 
+  /**
+   * Deserializing constructor.
+   */
+  MessageFilter.fromMap(Map map) {
+    userID = map['user_id'];
+    messageState = map['state'];
+    receptionID = map['reception_id'];
+    contactID = map['contact_id'];
+    upperMessageID = map['upper_message_id'];
+    limitCount = map['limit'];
+  }
+
+  /**
+   * Current message state.
+   */
   String get messageState  => this._messageState;
   void   set messageState (String newState) {
 
