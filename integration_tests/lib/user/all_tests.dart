@@ -70,7 +70,7 @@ runUserTests () {
         () => User.addUserIdentity(userStore));
 
     test ('identity remove',
-        () => User.addUserIdentity(userStore));
+        () => User.removeUserIdentity(userStore));
 
     setUp (() {
       transport = new Transport.Client();
