@@ -13,6 +13,9 @@
 
 part of openreception.service;
 
+/**
+ * Client class providing REST access to an organization store.
+ */
 class RESTOrganizationStore implements Storage.Organization {
 
   static final String className = '${libraryName}.RESTOrganizationStore';
