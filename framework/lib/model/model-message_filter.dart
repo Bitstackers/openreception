@@ -85,7 +85,10 @@ class MessageFilter {
                                       [message._sender.ID, null].contains(this.userID) &&
                                       [MessageState.ofMessage(message), null].contains(this.contactID);
 
-  List<Message> filter (List<Message> messages) => messages.where((Message message) => this.appliesTo (message));
+  /**
+   * Filters [messages] using this filter.
+   */
+  Iterable<Message> filter (Iterable<Message> messages) => messages.where((Message message) => this.appliesTo (message));
 
   @override
   operator == (MessageFilter other) =>
