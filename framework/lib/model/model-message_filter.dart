@@ -40,6 +40,10 @@ abstract class MessageState {
   }
 }
 
+/**
+ * Message filter model class. Meant for transmitting a filter 'function' from
+ * a client to a server.
+ */
 class MessageFilter {
   String    _messageState  = null;
 
@@ -49,6 +53,9 @@ class MessageFilter {
   int    contactID      = null;
   int    limitCount     = 100;
 
+  /**
+   * Default empty constructor.
+   */
   MessageFilter.empty();
 
   String get messageState  => this._messageState;
@@ -70,6 +77,9 @@ class MessageFilter {
                       || messageState != null;
 
 
+  /**
+   * Check if the filter applies to [message].
+   */
   bool appliesTo (Message message) => [message.context.contactID, null].contains(this.contactID) &&
                                       [message.context.receptionID, null].contains(this.receptionID) &&
                                       [message._sender.ID, null].contains(this.userID) &&
