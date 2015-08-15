@@ -51,7 +51,7 @@ class User implements Storage.User {
   }
 
   /**
-   *
+   * Remove the user with id [userId] from the database
    */
   Future remove(int userId) {
     String sql = '''
