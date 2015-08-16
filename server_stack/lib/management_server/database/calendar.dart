@@ -1,26 +1,5 @@
 part of adaheads.server.database;
 
-Future<List<model.Event>> _getReceptionContactCalendarEvents(ORDatabase.Connection connection, int receptionId, int contactId) {
-  String sql = '''
-    SELECT id, start, stop, message 
-    FROM contact_calendar cc
-      JOIN calendar_events ce on cc.event_id = ce.id
-    WHERE cc.reception_id = @reception_id AND
-          cc.contact_id = @contact_id
-  ''';
-
-  Map parameters = {'reception_id': receptionId,
-                    'contact_id': contactId};
-
-  return connection.query(sql, parameters).then((List rows) {
-    List<model.Event> events = new List<model.Event>();
-    for(var row in rows) {
-      events.add(new model.Event(row.id, row.start, row.stop, row.message));
-    }
-    return events;
-  });
-}
-
 Future<int> _createReceptionContactCalendarEvent(ORDatabase.Connection connection, int receptioinId, int contactId, String message, DateTime start, DateTime stop, [Map distributionList]) {
   return connection.runInTransaction(() {
       //Make the Calendar Event

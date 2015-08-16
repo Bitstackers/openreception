@@ -144,9 +144,6 @@ class Database {
      ****************** Calendar *******************
    */
 
-  Future<List<model.Event>> getReceptionContactCalendarEvents(int receptionId, int contactId) =>
-      _getReceptionContactCalendarEvents(_connection, receptionId, contactId);
-
   Future<int> createReceptionContactCalendarEvent(int receptioinId, int contactId, String message, DateTime start, DateTime stop) =>
       _createReceptionContactCalendarEvent(_connection, receptioinId, contactId, message, start, stop);
 

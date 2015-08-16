@@ -4,12 +4,8 @@ import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import 'configuration.dart';
-import 'controller/contact.dart';
 import 'controller/dialplan.dart';
-import 'controller/organization.dart';
-import 'controller/reception.dart';
 import 'controller/reception_contact.dart';
-import 'controller/user.dart';
 import 'utilities/http.dart';
 import 'database.dart';
 import 'package:openreception_framework/httpserver.dart' as orf_http;
@@ -44,12 +40,8 @@ final List<Pattern> Serviceagents = [
   _receptionContactIdMoveUrl
 ];
 
-ContactController _contact;
 DialplanController _dialplan;
-OrganizationController _organization;
-ReceptionController _reception;
 ReceptionContactController _receptionContact;
-UserController _user;
 
 Service.NotificationService Notification = null;
 
@@ -89,10 +81,6 @@ Router setupRoutes(HttpServer server, Configuration config) =>
   ..defaultStream.listen(orf_http.page404);
 
 void setupControllers(Database db, Configuration config) {
-  _contact = new ContactController(db, config);
   _dialplan = new DialplanController(db, config);
-  _organization = new OrganizationController(db, config);
-  _reception = new ReceptionController(db, config);
   _receptionContact = new ReceptionContactController(db, config);
-  _user = new UserController(db);
 }

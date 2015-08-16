@@ -7,7 +7,6 @@ import '../configuration.dart';
 import '../database.dart';
 import '../model.dart';
 import '../router.dart';
-import '../view/calendar_event.dart';
 import '../view/endpoint.dart';
 import '../view/distribution_list.dart';
 import 'package:openreception_framework/common.dart' as orf;
@@ -261,19 +260,6 @@ class ReceptionContactController {
 
     db.moveReceptionContact(receptionId, contactId, newContactId)
       .then((_) => orf_http.writeAndClose(request, JSON.encode({})))
-      .catchError((error, stack) {
-        orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
-        orf_http.serverError(request, error.toString());
-    });
-  }
-
-  void getCalendarEvents(HttpRequest request) {
-    const String context = '${libraryName}.getCalendarEvents';
-    final int receptionId = orf_http.pathParameter(request.uri, 'reception');
-    final int contactId = orf_http.pathParameter(request.uri, 'contact');
-
-    db.getReceptionContactCalendarEvents(receptionId, contactId)
-      .then((List<Event> events) => orf_http.allOk(request, listEventsAsJson(events)))
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
         orf_http.serverError(request, error.toString());

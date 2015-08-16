@@ -5,8 +5,6 @@ import 'package:openreception_framework/common.dart' as orf;
 part 'model/audiofile.dart';
 part 'model/colleague.dart';
 part 'model/reception_contact.dart';
-part 'model/contact.dart';
-part 'model/calendar_event.dart';
 part 'model/dialplan_template.dart';
 part 'model/distribution_list.dart';
 part 'model/endpoint.dart';
