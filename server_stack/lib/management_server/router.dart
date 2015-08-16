@@ -30,18 +30,6 @@ final Pattern _playlistIdUrl = new UrlPattern(r'/playlist/(\d+)');
 
 final Pattern _dialplanTemplateUrl = new UrlPattern(r'/dialplantemplate');
 
-final Pattern _contactTypesUrl = new UrlPattern(r'/contacttypes(/?)');
-
-final Pattern _userUrl = new UrlPattern(r'/user(/?)');
-final Pattern _userIdUrl = new UrlPattern(r'/user/(\d+)');
-final Pattern _userIdGroupUrl = new UrlPattern(r'/user/(\d+)/group');
-final Pattern _userIdGroupIdUrl = new UrlPattern(r'/user/(\d+)/group/(\d+)');
-final Pattern _userIdIdentityUrl = new UrlPattern(r'/user/(\d+)/identity');
-final Pattern _userIdIdentityIdUrl =
-    new UrlPattern(r'/user/(\d+)/identity/(.+)');
-
-final Pattern _groupUrl = new UrlPattern(r'/group');
-
 //This resource is only meant to be used, in the time where data is being migrated over.
 final Pattern _receptionContactIdMoveUrl =
     new UrlPattern(r'/reception/(\d+)/contact/(\d+)/newContactId/(\d+)');
@@ -49,13 +37,6 @@ final Pattern _receptionContactIdMoveUrl =
 final List<Pattern> Serviceagents = [
   _dialplanUrl,
   _dialplanCompileUrl,
-  _userUrl,
-  _userIdUrl,
-  _userIdGroupUrl,
-  _userIdGroupIdUrl,
-  _groupUrl,
-  _userIdIdentityUrl,
-  _userIdIdentityIdUrl,
   _ivrUrl,
   _audiofilesUrl,
   _playlistUrl,
@@ -81,8 +62,6 @@ Router setupRoutes(HttpServer server, Configuration config) =>
     new Router(server)
   ..filter(matchAny(Serviceagents), (HttpRequest req) =>
       authorizedRole(req, config.authUrl, ['Service agent', 'Administrator']))
-  ..serve(_contactTypesUrl, method: HttpMethod.GET)
-      .listen(_contact.getContactTypeList)
   ..serve(_receptionRecordUrl, method: HttpMethod.POST)
       .listen(_dialplan.recordSound)
   ..serve(_receptionRecordUrl, method: HttpMethod.DELETE)
@@ -102,24 +81,6 @@ Router setupRoutes(HttpServer server, Configuration config) =>
       .listen(_dialplan.updatePlaylist)
   ..serve(_playlistIdUrl, method: HttpMethod.DELETE)
       .listen(_dialplan.deletePlaylist)
-  ..serve(_userUrl, method: HttpMethod.GET).listen(_user.getUserList)
-  ..serve(_userUrl, method: HttpMethod.PUT).listen(_user.createUser)
-  ..serve(_userIdUrl, method: HttpMethod.GET).listen(_user.getUser)
-  ..serve(_userIdUrl, method: HttpMethod.POST).listen(_user.updateUser)
-  ..serve(_userIdUrl, method: HttpMethod.DELETE).listen(_user.deleteUser)
-  ..serve(_userIdGroupUrl, method: HttpMethod.GET).listen(_user.getUserGroups)
-  ..serve(_userIdGroupIdUrl, method: HttpMethod.PUT).listen(_user.joinUserGroups)
-  ..serve(_userIdGroupIdUrl, method: HttpMethod.DELETE)
-      .listen(_user.leaveUserGroups)
-  ..serve(_userIdIdentityUrl, method: HttpMethod.GET)
-      .listen(_user.getUserIdentityList)
-  ..serve(_userIdIdentityUrl, method: HttpMethod.PUT)
-      .listen(_user.createUserIdentity)
-  ..serve(_userIdIdentityIdUrl, method: HttpMethod.POST)
-      .listen(_user.updateUserIdentity)
-  ..serve(_userIdIdentityIdUrl, method: HttpMethod.DELETE)
-      .listen(_user.deleteUserIdentity)
-  ..serve(_groupUrl, method: HttpMethod.GET).listen(_user.getGroupList)
   ..serve(_audiofilesUrl, method: HttpMethod.GET)
       .listen(_dialplan.getAudiofileList)
   ..serve(_receptionContactIdMoveUrl, method: HttpMethod.POST)
