@@ -96,15 +96,13 @@ abstract class Contact {
 
       return connection.query(sql, parameters).then((rows) =>
         (rows as Iterable).map((row) =>
-          new Model.MessageEndpoint.fromMap(
-            {'address'      : row.address,
-             'type'         : row.address_type,
-             'confidential' : row.confidential,
-             'enabled'      : row.enabled,
-             'priority'     : row.priority,
-             'description'  : row.description,
-             })
-          ));
+          new Model.MessageEndpoint.empty()
+           ..address = row.address
+           ..type = row.address_type
+           ..confidential =  row.confidential
+           ..enabled =  row.enabled
+           //..priority = row.priority,
+           ..description = row.description));
 
   }
 
