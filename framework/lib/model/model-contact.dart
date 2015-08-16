@@ -13,14 +13,6 @@
 
 part of openreception.model;
 
-abstract class ContactType {
-  static const String human = 'human';
-  static const String function = 'function';
-}
-
-const availableContactTypes = const [ContactType.human, ContactType.function];
-
-
 abstract class ContactDefault {
   static get phones => new List<String>();
 }
