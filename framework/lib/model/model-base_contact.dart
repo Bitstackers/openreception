@@ -14,6 +14,18 @@
 part of openreception.model;
 
 /**
+ * Available types for [BaseContact] objects.
+ */
+abstract class ContactType {
+ static const String human = 'human';
+ static const String function = 'function';
+ static const String invisible = 'invisible';
+
+ /// Iterable enumerating the different contact types.
+ static const Iterable types = const [human, function, invisible];
+}
+
+/**
  * A base contact represents a contact outside the context of a reception.
  */
 class BaseContact {
