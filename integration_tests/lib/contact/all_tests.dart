@@ -2,8 +2,71 @@ part of or_test_fw;
 
 runContactTests () {
 
+  group ('Database.Endpoint', () {
+    Database.Endpoint endpointDB;
+    Database.Connection connection;
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        endpointDB = new Database.Endpoint(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('list',
+        () => ContactStore.endpoints(endpointDB));
+
+    test ('create',
+        () => ContactStore.endpointCreate(endpointDB));
+
+    test ('remove',
+        () => ContactStore.endpointRemove(endpointDB));
+
+    test ('update',
+        () => ContactStore.endpointUpdate(endpointDB));
+
+  });
+
+  group ('Service.RESTEndpointStore', () {
+    Transport.Client transport = null;
+    Service.RESTEndpointStore endpointStore;
+
+    setUp (() {
+      transport = new Transport.Client();
+      endpointStore = new Service.RESTEndpointStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+    });
+
+    tearDown (() {
+      endpointStore = null;
+      transport.client.close(force : true);
+    });
+
+
+    test ('list',
+        () => ContactStore.endpoints(endpointStore));
+
+    test ('create',
+        () => ContactStore.endpointCreate(endpointStore));
+
+    test ('remove',
+        () => ContactStore.endpointRemove(endpointStore));
+
+    test ('update',
+        () => ContactStore.endpointUpdate(endpointStore));
+
+  });
+
   group ('RESTContactStore', () {
     Transport.Client transport = null;
+    Service.RESTEndpointStore endpointStore;
+
     Service.RESTContactStore contactStore = null;
     Receptionist r;
 
@@ -26,10 +89,14 @@ runContactTests () {
       contactStore = new Service.RESTContactStore
          (Config.contactStoreUri, Config.serverToken, transport);
 
+      endpointStore = new Service.RESTEndpointStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+
     });
 
     tearDown (() {
       contactStore = null;
+      endpointStore = null;
       transport.client.close(force : true);
     });
 
@@ -73,7 +140,7 @@ runContactTests () {
 
 
     test ('Endpoint listing',
-        () => ContactStore.endpoints(contactStore));
+        () => ContactStore.endpoints(endpointStore));
 
     test ('Phone listing',
         () => ContactStore.phones(contactStore));

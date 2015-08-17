@@ -505,15 +505,97 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future endpoints (Service.RESTContactStore contactStore) {
+  static Future endpoints (Storage.Endpoint endpointStore) {
 
     int receptionID = 1;
     int contactID = 4;
 
-    return contactStore.endpoints(contactID, receptionID)
+    return endpointStore.list(receptionID, contactID)
       .then((Iterable <Model.MessageEndpoint> endpoints) {
         expect(endpoints, isNotNull);
+
+        expect (endpoints.every(
+            (Model.MessageEndpoint ep) => ep is Model.MessageEndpoint), isTrue);
     });
+  }
+
+  /**
+   *
+   */
+  static Future endpointCreate (Storage.Endpoint endpointStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.MessageEndpoint ep = Randomizer.randomMessageEndpoint();
+
+    return endpointStore.create(receptionID, contactID, ep)
+      .then((Model.MessageEndpoint createdEndpoint) {
+        expect(createdEndpoint.address, equals(ep.address));
+        expect(createdEndpoint.confidential, equals(ep.confidential));
+        expect(createdEndpoint.description, equals(ep.description));
+        expect(createdEndpoint.enabled, equals(ep.enabled));
+        expect(createdEndpoint.type, equals(ep.type));
+
+        return endpointStore.remove(createdEndpoint.id);
+    });
+  }
+
+  /**
+   *
+   */
+  static Future endpointRemove (Storage.Endpoint endpointStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.MessageEndpoint ep = Randomizer.randomMessageEndpoint();
+
+    return endpointStore.create(receptionID, contactID, ep)
+      .then((Model.MessageEndpoint createdEndpoint) {
+        return endpointStore.remove(createdEndpoint.id)
+          .then((_) =>
+          endpointStore.list(receptionID, contactID)
+            .then((Iterable<Model.MessageEndpoint> endpoints) {
+
+            if (endpoints.contains(ep)) {
+              fail('endpoint $ep not removed.');
+            }
+
+          }));
+
+        });
+  }
+
+  /**
+   *
+   */
+  static Future endpointUpdate (Storage.Endpoint endpointStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.MessageEndpoint ep = Randomizer.randomMessageEndpoint();
+
+    return endpointStore.create(receptionID, contactID, ep)
+      .then((Model.MessageEndpoint createdEndpoint) {
+
+      Model.MessageEndpoint newEp = Randomizer.randomMessageEndpoint();
+      newEp.id = createdEndpoint.id;
+
+      log.info(newEp.asMap);
+
+      return endpointStore.update(newEp)
+        .then((_) =>
+          endpointStore.list(receptionID, contactID)
+            .then((Iterable<Model.MessageEndpoint> endpoints) {
+
+           log.info(endpoints);
+           log.info(endpoints);
+            expect (endpoints.contains(newEp), isTrue);
+          }))
+          .then((_) => endpointStore.remove(createdEndpoint.id));
+        });
   }
 
   /**
