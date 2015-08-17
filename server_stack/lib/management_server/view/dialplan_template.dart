@@ -2,7 +2,7 @@ library adaheads.server.view.dialplantemplate;
 
 import 'dart:convert';
 
-import '../model.dart';
+import 'package:openreception_framework/model.dart';
 
 String dialplanTemplateListAsJson(List<DialplanTemplate> list) =>
     JSON.encode({'templates': _dialplanTemplateListAsJsonList(list)});

@@ -2,7 +2,7 @@ library adaheads.server.view.playlist;
 
 import 'dart:convert';
 
-import '../model.dart';
+import 'package:openreception_framework/model.dart';
 
 String playlistListAsJson(List<Playlist> playlists) =>
     JSON.encode({'playlist':_listPlaylistAsJsonList(playlists)});

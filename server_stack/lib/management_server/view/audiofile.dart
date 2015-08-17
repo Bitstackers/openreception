@@ -2,7 +2,7 @@ library adaheads.server.view.contact;
 
 import 'dart:convert';
 
-import '../model.dart';
+import 'package:openreception_framework/model.dart';
 
 String listAudiofileAsJson(List<Audiofile> files) =>
     JSON.encode({'audiofiles':_listAudiofileAsJsonList(files)});

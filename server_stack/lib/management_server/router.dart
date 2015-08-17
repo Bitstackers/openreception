@@ -41,7 +41,6 @@ final List<Pattern> Serviceagents = [
 ];
 
 DialplanController _dialplan;
-ReceptionContactController _receptionContact;
 
 Service.NotificationService Notification = null;
 
@@ -75,12 +74,9 @@ Router setupRoutes(HttpServer server, Configuration config) =>
       .listen(_dialplan.deletePlaylist)
   ..serve(_audiofilesUrl, method: HttpMethod.GET)
       .listen(_dialplan.getAudiofileList)
-  ..serve(_receptionContactIdMoveUrl, method: HttpMethod.POST)
-      .listen(_receptionContact.moveContact)
   ..serve(_anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
   ..defaultStream.listen(orf_http.page404);
 
 void setupControllers(Database db, Configuration config) {
   _dialplan = new DialplanController(db, config);
-  _receptionContact = new ReceptionContactController(db, config);
 }

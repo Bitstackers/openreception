@@ -10,7 +10,7 @@ import 'package:path/path.dart' as path;
 
 import '../configuration.dart';
 import '../database.dart';
-import '../model.dart';
+import 'package:openreception_framework/model.dart';
 import '../view/audiofile.dart';
 import '../view/dialplan.dart';
 import '../view/dialplan_template.dart';
