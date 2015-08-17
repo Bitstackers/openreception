@@ -216,41 +216,6 @@ abstract class Contact {
   }
 
   /**
-   *
-   */
-  static Future endpoints(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
-    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
-
-    return db.Contact
-        .endpoints(contactID, receptionID)
-        .then((Iterable<Model.MessageEndpoint> endpoints) {
-      return new shelf.Response.ok(JSON.encode(endpoints.toList()));
-    }).catchError((error, stacktrace) {
-      log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
-  }
-
-  /**
-   *
-   */
-  static Future phones(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
-    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
-
-    return db.Contact
-        .phones(contactID, receptionID)
-        .then((Iterable<Model.PhoneNumber> phones) {
-      return new shelf.Response.ok(JSON.encode(phones.toList()));
-    }).catchError((error, stacktrace) {
-      log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(body: '${error}');
-    });
-  }
-
-  /**
    * Gives a lists of every contact in an reception.
    */
   static Future list(shelf.Request request) {

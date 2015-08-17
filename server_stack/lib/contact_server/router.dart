@@ -8,6 +8,7 @@ import 'configuration.dart';
 import 'database.dart' as db;
 
 import 'package:logging/logging.dart';
+import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/model.dart'   as Model;
 import 'package:openreception_framework/event.dart'   as Event;
 import 'package:openreception_framework/storage.dart'  as Storage;
@@ -21,12 +22,16 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 part 'router/contact-calendar.dart';
 part 'router/contact.dart';
+part 'router/endpoint.dart';
+part 'router/phone.dart';
 
 const String libraryName = 'contactserver.router';
 final Logger log = new Logger (libraryName);
 
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
+Database.Endpoint _endpointDB = new Database.Endpoint (db.connection);
+//Database.Phone _phoneDB = new Database.Phone (db.connection);
 
 const Map corsHeaders = const
   {'Access-Control-Allow-Origin': '*',
@@ -73,11 +78,29 @@ void _accessLogger(String msg, bool isError) {
   }
 }
 
+/**
+ * TODO: Add Contact (not just BaseContact) updates.
+ */
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
+    ..get('/contact/{cid}/reception/{rid}/endpoints', Endpoint.ofContact)
+
+    ..get('/contact/{cid}/reception/{rid}/endpoint', Endpoint.ofContact)
+    ..post('/contact/{cid}/reception/{rid}/endpoint', Endpoint.create)
+    ..put('/endpoint/{eid}', Endpoint.update)
+    ..delete('/endpoint/{eid}', Endpoint.remove)
+
+    ..get('/contact/{cid}/reception/{rid}/phones', Phone.ofContact)
+    ..post('/contact/{cid}/reception/{rid}/phones', Phone.add)
+    ..put('/contact/{cid}/reception/{rid}/phones/{eid}', Phone.update)
+    ..delete('/contact/{cid}/reception/{rid}/phones/{eid}', Phone.remove)
+
+//    ..get('/contact/{cid}/reception/{rid}/dlist', Contact.distributionList)
+//    ..post('/contact/{cid}/reception/{rid}/dlist', Contact.addDistributionList)
+//    ..put('/contact/{cid}/reception/{rid}/dlist/{did}', Contact.updateDistributionList)
+//    ..delete('/contact/{cid}/reception/{rid}/dlist/{did}', Contact.removeDistributionList)
+
     ..get('/contact/list/reception/{rid}', Contact.list)
-    ..get('/contact/{cid}/reception/{rid}/endpoints', Contact.endpoints)
-    ..get('/contact/{cid}/reception/{rid}/phones', Contact.phones)
     ..get('/contact/{cid}/reception/{rid}', Contact.get)
     ..get('/contact/{cid}/reception', Contact.receptions)
     ..get('/contact/{cid}/organization', Contact.organizations)
