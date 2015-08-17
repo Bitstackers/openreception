@@ -13,15 +13,14 @@
 
 part of openreception.database;
 
-class Endpoint //implements Storage.Endpoint
-{
+class Endpoint implements Storage.Endpoint {
   static const String className = '${libraryName}.Endpoint';
 
   static final Logger log = new Logger(className);
 
-  Connection _database;
+  Connection _connection;
 
-  Endpoint(this._database);
+  Endpoint(this._connection);
 
   Future<Model.MessageEndpoint> create(
       int receptionid, int contactid, Model.MessageEndpoint ep) {
@@ -32,7 +31,8 @@ INSERT INTO
      confidential, enabled, priority, description)
 VALUES 
   (@contactid, @receptionid,  @address, @addresstype, 
-   @confidential, @enabled, @priority, @description);''';
+   @confidential, @enabled, @priority, @description)
+RETURNING id;''';
 
     Map parameters = {
       'receptionid': receptionid,
@@ -41,31 +41,30 @@ VALUES
       'addresstype': ep.type,
       'confidential': ep.confidential,
       'enabled': ep.enabled,
-      //'priority': ep.priority,
+      'priority': ep.priority,
       'description': ep.description
     };
 
-    return _database.execute(sql, parameters).then((_) => ep);
+    return _connection.query(sql, parameters).then(
+        (Iterable rows) => rows.length == 1
+            ? (ep..id = rows.first.id)
+        : new Future.error(new Storage.ServerError())
+            .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+
+      return new Future.error(error, stackTrace);
+    }));
   }
 
-  Future<int> remove(int receptionid, int contactid, Model.MessageEndpoint ep) {
+  Future<int> remove(int endpointId) {
     String sql = '''
 DELETE FROM 
   messaging_end_points
-WHERE 
-  reception_id=@receptionid 
-AND contact_id=@contactid 
-AND address=@address 
-AND address_type=@addresstype;''';
+WHERE id = @endpointId''';
 
-    Map parameters = {
-      'receptionid': receptionid,
-      'contactid': contactid,
-      'address': ep.address,
-      'addresstype': ep.type
-    };
+    Map parameters = {'endpointId': endpointId};
 
-    return _database.execute(sql, parameters).then((_) => ep);
+    return _connection.execute(sql, parameters);
   }
 
   Future<Iterable<Model.MessageEndpoint>> list(int receptionid, int contactid) {
@@ -77,7 +76,7 @@ AND address_type=@addresstype;''';
 
     Map parameters = {'receptionid': receptionid, 'contactid': contactid};
 
-    return _database.query(sql, parameters).then((List rows) {
+    return _connection.query(sql, parameters).then((List rows) {
       List<Model.MessageEndpoint> endpoints = [];
       for (var row in rows) {
         endpoints.add(new Model.MessageEndpoint.empty()
@@ -91,39 +90,30 @@ AND address_type=@addresstype;''';
     });
   }
 
-  Future<Model.MessageEndpoint> update(
-      int rid, int cid, Model.MessageEndpoint ep) {
+  Future<Model.MessageEndpoint> update(Model.MessageEndpoint ep) {
     String sql = '''
     UPDATE messaging_end_points
-    SET reception_id=@receptionid,
-        contact_id=@contactid, 
-        address=@address, 
+    SET address=@address, 
         address_type=@addresstype, 
         confidential=@confidential, 
         enabled=@enabled, 
         priority=@priority,
         description=@description
-    WHERE reception_id=@fromreceptionid AND
-          contact_id=@fromcontactid AND
-          address=@fromaddress AND
-          address_type=@fromaddresstype;
+    WHERE id = @ep_id;
   ''';
 
     Map parameters = {
-      'fromreceptionid': rid,
-      'fromcontactid': cid,
+      'ep_id': ep.id,
       'fromaddress': ep.address,
       'fromaddresstype': ep.type,
-      'receptionid': rid,
-      'contactid': cid,
       'address': ep.address,
       'addresstype': ep.type,
       'confidential': ep.confidential,
       'enabled': ep.enabled,
-      //'priority': ep.priority,
+      'priority': ep.priority,
       'description': ep.description
     };
 
-    return _database.execute(sql, parameters).then((_) => ep);
+    return _connection.execute(sql, parameters).then((_) => ep);
   }
 }

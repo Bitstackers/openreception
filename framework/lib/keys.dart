@@ -65,6 +65,7 @@ const String shortGreeting = 'short_greeting';
 const String greeting = 'greeting';
 const String addresses = 'addresses';
 const String attributes = 'attributes';
+const String priority = 'priority';
 
 const String alternateNames = 'alternatenames';
 const String customerTypes = 'customertypes';
