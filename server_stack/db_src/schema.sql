@@ -90,6 +90,7 @@ CREATE TABLE messaging_address_types (value TEXT NOT NULL PRIMARY KEY);
 INSERT INTO messaging_address_types VALUES ('email'), ('sms');
 
 CREATE TABLE messaging_end_points (
+   id           INTEGER NOT NULL,
    contact_id   INTEGER NOT NULL,
    reception_id INTEGER NOT NULL,
    address      TEXT    NOT NULL,
@@ -99,7 +100,8 @@ CREATE TABLE messaging_end_points (
    priority     INTEGER NOT NULL DEFAULT 0,
    description  TEXT    NOT NULL DEFAULT '',
 
-   PRIMARY KEY (contact_id, reception_id, address, address_type),
+   PRIMARY KEY (id),
+   UNIQUE (contact_id, reception_id, address, address_type),
 
    FOREIGN KEY (contact_id, reception_id)
       REFERENCES reception_contacts (contact_id, reception_id)
@@ -420,6 +422,16 @@ CREATE SEQUENCE calendar_entry_changes_id_sequence
   CACHE 1;
 ALTER SEQUENCE calendar_entry_changes_id_sequence OWNED BY calendar_entry_changes.id;
 ALTER TABLE ONLY calendar_entry_changes ALTER COLUMN id SET DEFAULT nextval ('calendar_entry_changes_id_sequence'::regclass);
+
+CREATE SEQUENCE messaging_end_points_id_sequence
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+ALTER SEQUENCE messaging_end_points_id_sequence OWNED BY messaging_end_points.id;
+ALTER TABLE ONLY messaging_end_points ALTER COLUMN id SET DEFAULT nextval ('messaging_end_points_id_sequence'::regclass);
+
 
 -------------------------------------------------------------------------------
 --  Set ownership:
