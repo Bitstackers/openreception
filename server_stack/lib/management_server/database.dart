@@ -1,7 +1,6 @@
 library adaheads.server.database;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:openreception_framework/database.dart' as ORDatabase;
 import 'package:libdialplan/libdialplan.dart';
@@ -11,15 +10,7 @@ import 'package:openreception_framework/model.dart' as model;
 
 import 'configuration.dart';
 
-part 'database/calendar.dart';
-part 'database/contact.dart';
 part 'database/dialplan.dart';
-part 'database/distribution_list.dart';
-part 'database/endpoint.dart';
-part 'database/organization.dart';
-part 'database/reception.dart';
-part 'database/reception_contact.dart';
-part 'database/user.dart';
 
 ORDatabase.Connection _connection;
 const String libraryName = 'adaheads.server.database';
