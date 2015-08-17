@@ -90,4 +90,12 @@ class MessageEndpoint {
    */
   @override
   String toString() => '$type:$address';
+
+  /**
+   *
+   */
+  @override
+  operator == (MessageEndpoint other) =>
+    this.type == other.type &&
+    this.address == other.address;
 }
