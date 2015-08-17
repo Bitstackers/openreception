@@ -262,6 +262,7 @@ abstract class Randomizer {
   static String randomCallerName() => randomChoice(callerNames);
   static String randomMessageBody() => randomChoice(messageBodies);
   static List<String> randomMessageFlags() => randomChoice(flagsLists);
+  static String randomEndpointType() => randomChoice(Model.MessageEndpointType.types);
 
 
   static String randomPhoneNumber() {
@@ -386,6 +387,17 @@ abstract class Randomizer {
 
     return message;
   }
+
+  /**
+   * Creates a random MessageEndpoint.
+   */
+  static Model.MessageEndpoint randomMessageEndpoint() =>
+    new Model.MessageEndpoint.empty()
+      ..address = randomGmail()
+      ..confidential = rand.nextBool()
+      ..description = randomString(22)
+      ..enabled = rand.nextBool()
+      ..type = randomEndpointType();
 
   /**
    * Construct a random MessageCaller object.
