@@ -21,6 +21,7 @@ class Client extends Service.WebService {
   static final String className = '${libraryName}.Client';
   static final Logger log = new Logger(className);
   static final IO.ContentType contentTypeJson = new IO.ContentType("application", "json", charset: "utf-8");
+  static final IO.ContentType contentTypeApplicationForm = new IO.ContentType("application", "x-www-form-urlencoded");
 
   final IO.HttpClient client = new IO.HttpClient();
 
@@ -66,6 +67,23 @@ class Client extends Service.WebService {
     .then((IO.HttpClientResponse response) => _handleResponse(response, 'POST', resource));
   }
 
+
+  /**
+   * Retrives [resource] using HTTP POST, sending [payload] as a from.
+   * Throws subclasses of [StorageException] upon failure.
+   */
+  Future<String> postForm(Uri resource, Map payload) {
+    log.finest('POST $resource');
+
+    return client.postUrl(resource).then((IO.HttpClientRequest request) {
+      request.headers.contentType = contentTypeApplicationForm;
+      request.write(mapToUrlFormEncodedPostBody(payload));
+      return request.close();
+    })
+    .then((IO.HttpClientResponse response) => _handleResponse(response, 'POST', resource));
+  }
+
+
   /**
    * Retrives [resource] using HTTP DELETE.
    * Throws subclasses of [StorageException] upon failure.
@@ -79,3 +97,6 @@ class Client extends Service.WebService {
   }
 
 }
+
+String mapToUrlFormEncodedPostBody(Map body) =>
+  body.keys.map((key) =>'$key=${Uri.encodeQueryComponent(body[key])}').join('&');
