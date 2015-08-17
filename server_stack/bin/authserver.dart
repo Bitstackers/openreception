@@ -7,7 +7,6 @@ import 'package:logging/logging.dart';
 import '../lib/auth_server/configuration.dart' as auth;
 import '../lib/configuration.dart';
 import '../lib/auth_server/database.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/auth_server/router.dart' as router;
 import '../lib/auth_server/token_vault.dart';
 import '../lib/auth_server/token_watcher.dart' as watcher;
@@ -37,7 +36,7 @@ void main(List<String> args) {
         .then((_) => startDatabase())
         .then((_) => watcher.setup())
         .then((_) => vault.loadFromDirectory(auth.config.serverTokenDir))
-        .then((_) => http.start(auth.config.httpport, router.setup))
+        .then((_) => router.start())
         .catchError(log.shout);
     }
   } on ArgumentError catch(e) {

@@ -1,7 +1,8 @@
 part of authenticationserver.router;
 
-void refresher(HttpRequest request) {
-  String token = request.uri.pathSegments.elementAt(1);
+Future<shelf.Response> refresher(shelf.Request request) {
+  final String token = shelf_route.getPathParameters(request).containsKey(
+      'token') ? shelf_route.getPathParameter(request, 'token') : '';
 
   try {
     Map content = vault.getToken(token);
@@ -9,17 +10,21 @@ void refresher(HttpRequest request) {
     String refreshToken = content['refresh_token'];
 
     Uri url = Uri.parse('https://www.googleapis.com/oauth2/v3/token');
-    Map body = {'refresh_token': refreshToken,
-                'client_id': config.clientId,
-                'client_secret': config.clientSecret,
-                'grant_type': 'refresh_token'};
-    http.post(url, body: body).then((http.Response response) {
-      writeAndClose(request, 'BODY \n ==== \n${JSON.encode(body)} \n\n RESPONSE \n ======== \n ${response.body}');
-    });
+    Map body = {
+      'refresh_token': refreshToken,
+      'client_id': config.clientId,
+      'client_secret': config.clientSecret,
+      'grant_type': 'refresh_token'
+    };
 
-  } catch(error) {
-    request.response.statusCode = 500;
-    writeAndClose(request, JSON.encode({'Status': 'Error'}));
-    log('authenticationserver.router.refresher() Tried to load token URL ${request.uri} Error: ${error}');
+    return httpClient.post(url, JSON.encode(body)).then(
+        (String response) => new shelf.Response.ok(
+            'BODY \n ==== \n${JSON.encode(body)} \n\n RESPONSE '
+            '\n ======== \n ${response}'));
+  } catch (error, stackTrace) {
+    log.severe(error, stackTrace);
+
+    return new Future.value(
+        new shelf.Response.internalServerError(body: '$error'));
   }
 }

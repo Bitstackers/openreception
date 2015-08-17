@@ -1,22 +1,23 @@
 part of authenticationserver.router;
 
-void validateToken(HttpRequest request) {
-  String token = request.uri.pathSegments.elementAt(1);
+shelf.Response validateToken(shelf.Request request) {
+  final String token = shelf_route.getPathParameters(request).containsKey(
+      'token') ? shelf_route.getPathParameter(request, 'token') : '';
 
-  if(token != null && token.isNotEmpty) {
+  if (token.isNotEmpty) {
     bool exists = vault.containsToken(token);
     if (exists) {
       try {
         watcher.seen(token);
-      } catch(error) {
-        log('authenticationserver.router.validateToken() watcher threw "${error}" for token "${token}" on uri "${request.uri}"');
+      } catch (error, stacktrace) {
+        log.severe(error, stacktrace);
       }
 
-      request.response.statusCode = 200;
-      writeAndClose(request, '{}');
+      return new shelf.Response.ok(JSON.encode(const {}));
     } else {
-      request.response.statusCode = 404;
-      writeAndClose(request, '{}');
+      return new shelf.Response.notFound(JSON.encode(const {}));
     }
   }
+
+  return new shelf.Response(400, body: 'Invalid or missing token passed.');
 }
