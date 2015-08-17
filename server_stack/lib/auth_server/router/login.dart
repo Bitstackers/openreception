@@ -1,6 +1,14 @@
 part of authenticationserver.router;
 
-void login(HttpRequest request) {
+shelf.Response login(shelf.Request request) {
+  final String returnUrlString =
+      request.url.queryParameters
+          .containsKey('returnurl')
+      ? request.url.queryParameters['returnurl']
+      : '';
+
+  log.finest('returnUrlString:$returnUrlString');
+
   try {
     //Because the library does not allow to set custom query parameters
     Map googleParameters = {
@@ -8,19 +16,30 @@ void login(HttpRequest request) {
       'state': config.clientURL
     };
 
-    if(request.uri.queryParameters.containsKey('returnurl')) {
+    if (returnUrlString.isNotEmpty) {
       //validating the url by parsing it.
-      Uri returnUrl = Uri.parse(request.uri.queryParameters['returnurl']);
+      Uri returnUrl = Uri.parse(returnUrlString);
       googleParameters['state'] = returnUrl.toString();
     }
 
-    Uri authUrl = googleAuthUrl(config.clientId, config.clientSecret, config.redirectUri);
+    Uri authUrl =
+        googleAuthUrl(config.clientId, config.clientSecret, config.redirectUri);
 
     googleParameters.addAll(authUrl.queryParameters);
-    Uri googleOauthRequestUrl = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: authUrl.path, queryParameters: googleParameters, fragment: authUrl.fragment);
-    request.response.redirect(googleOauthRequestUrl);
+    Uri googleOauthRequestUrl = new Uri(
+        scheme: authUrl.scheme,
+        host: authUrl.host,
+        port: authUrl.port,
+        path: authUrl.path,
+        queryParameters: googleParameters,
+        fragment: authUrl.fragment);
 
-  } catch(error) {
-    serverError(request, 'authenticationserver.router.login: $error');
+    log.finest('Redirecting to $googleOauthRequestUrl');
+
+    return new shelf.Response.found(googleOauthRequestUrl);
+  } catch (error, stacktrace) {
+    log.severe(error, stacktrace);
+    return new shelf.Response.internalServerError(
+        body: 'Failed log in error:$error');
   }
 }

@@ -1,17 +1,21 @@
 part of authenticationserver.router;
 
-void invalidateToken(HttpRequest request) {
-  String token = request.uri.pathSegments.elementAt(1);
+shelf.Response invalidateToken(shelf.Request request) {
+  final String token = shelf_route.getPathParameter(request, 'token');
 
-  if(token != null && token.isNotEmpty) {
+  if (token != null && token.isNotEmpty) {
     try {
       vault.removeToken(token);
-      writeAndClose(request, '{}');
-    } catch(error) {
-      serverError(request, 'authenticationserver.router.invalidateToken: Failed to remove token "$token" $error');
+      return new shelf.Response.ok(JSON.encode(const {}));
+    } catch (error, stacktrace) {
+      log.severe(error, stacktrace);
+      return new shelf.Response.internalServerError(
+          body: 'authenticationserver.router.invalidateToken: '
+          'Failed to remove token "$token" $error');
     }
   } else {
-    serverError(request, 'authenticationserver.router.invalidateToken: No token parameter was specified');
+    return new shelf.Response.internalServerError(
+        body: 'authenticationserver.router.invalidateToken: '
+        'No token parameter was specified');
   }
-
 }
