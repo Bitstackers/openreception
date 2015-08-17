@@ -68,6 +68,11 @@ class MessageEndpoint {
   }
 
   /**
+   * Deserializing factory
+   */
+  static MessageEndpoint decode (Map map) => new MessageEndpoint.fromMap(map);
+
+  /**
    * JSON encoding function.
    */
   Map toJson() => this.asMap;
