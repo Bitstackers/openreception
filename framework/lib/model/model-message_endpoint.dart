@@ -30,7 +30,11 @@ abstract class MessageEndpointType {
  */
 class MessageEndpoint {
 
+  static const int noId = 0;
+
   /// Type of endpoint. Must be one of [MessageEndpointType].
+  int id = noId;
+  int priority = 0;
   String type;
   String address;
   String description;
@@ -49,7 +53,9 @@ class MessageEndpoint {
    * Deserializing constructor.
    */
   MessageEndpoint.fromMap(Map map) {
+    id = map[Key.ID];
     type = map[Key.type];
+    priority = map[Key.priority];
 
     address = map[Key.address];
     confidential = map[Key.confidential];
@@ -70,11 +76,13 @@ class MessageEndpoint {
    * Map representation of the object.
    */
   Map get asMap => {
+    Key.ID : id,
     Key.type: type,
     Key.address: address,
     Key.confidential: confidential,
     Key.enabled: enabled,
     Key.description: description,
+    Key.priority : priority
   };
 
   /**
