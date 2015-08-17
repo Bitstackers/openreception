@@ -2,6 +2,7 @@ part of openreception.storage;
 
 abstract class Contact {
 
+  @deprecated
   Future<Iterable<Map>> calendarMap (int contactID, int receptionID);
 
   Future<Model.BaseContact> get(int contactID);
