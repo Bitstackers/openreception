@@ -49,8 +49,6 @@ class RESTEndpointStore implements Storage.Endpoint {
     Iterable<Model.MessageEndpoint> castMaps (Iterable maps) =>
         maps.map(Model.MessageEndpoint.decode);
 
-    print(url);
-
     return this._backend.get(url)
         .then(JSON.decode)
         .then(castMaps);
