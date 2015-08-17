@@ -291,6 +291,8 @@ Map testContact_4_1 = {
   ],
   "endpoints": [
     {
+      "id" : 3,
+      "priority" : 2,
       "address": "krc@bitstack.dk",
       "type": "email",
       "confidential": false,
