@@ -11,23 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.resource;
+part of openreception.resource;
 
-import 'dart:convert';
+/**
+ * Protocol wrapper class for building homogenic REST
+ * resources across servers and clients.
+ */
+abstract class DistributionList {
 
-import 'model.dart' as Model;
-import 'util.dart' as Util;
+  static Uri ofContact(Uri host, int rid, int cid) =>
+      Uri.parse('${host}/contact/${cid}/reception/${rid}/dlist');
 
-part 'resource/resource-authentication.dart';
-part 'resource/resource-call_flow_control.dart';
-part 'resource/resource-cdr.dart';
-part 'resource/resource-config.dart';
-part 'resource/resource-contact.dart';
-part 'resource/resource-distribution_list.dart';
-part 'resource/resource-endpoint.dart';
-part 'resource/resource-management.dart';
-part 'resource/resource-message.dart';
-part 'resource/resource-notification.dart';
-part 'resource/resource-organization.dart';
-part 'resource/resource-reception.dart';
-part 'resource/resource-user.dart';
+  static Uri single(Uri host, int did) =>
+      Uri.parse('${host}/dlist/${did}');
+}
