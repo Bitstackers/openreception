@@ -22,6 +22,7 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 part 'router/contact-calendar.dart';
 part 'router/contact.dart';
+part 'router/distribution_list.dart';
 part 'router/endpoint.dart';
 part 'router/phone.dart';
 
@@ -31,6 +32,7 @@ final Logger log = new Logger (libraryName);
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
 Database.Endpoint _endpointDB = new Database.Endpoint (db.connection);
+Database.DistributionList _dlistDB = new Database.DistributionList (db.connection);
 //Database.Phone _phoneDB = new Database.Phone (db.connection);
 
 const Map corsHeaders = const
@@ -95,10 +97,9 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..put('/contact/{cid}/reception/{rid}/phones/{eid}', Phone.update)
     ..delete('/contact/{cid}/reception/{rid}/phones/{eid}', Phone.remove)
 
-//    ..get('/contact/{cid}/reception/{rid}/dlist', Contact.distributionList)
-//    ..post('/contact/{cid}/reception/{rid}/dlist', Contact.addDistributionList)
-//    ..put('/contact/{cid}/reception/{rid}/dlist/{did}', Contact.updateDistributionList)
-//    ..delete('/contact/{cid}/reception/{rid}/dlist/{did}', Contact.removeDistributionList)
+    ..get('/contact/{cid}/reception/{rid}/dlist', DistributionList.ofContact)
+    ..post('/contact/{cid}/reception/{rid}/dlist', DistributionList.addRecipient)
+    ..delete('/dlist/{did}', DistributionList.removeRecipient)
 
     ..get('/contact/list/reception/{rid}', Contact.list)
     ..get('/contact/{cid}/reception/{rid}', Contact.get)
