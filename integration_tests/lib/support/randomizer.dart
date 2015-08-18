@@ -263,6 +263,7 @@ abstract class Randomizer {
   static String randomMessageBody() => randomChoice(messageBodies);
   static List<String> randomMessageFlags() => randomChoice(flagsLists);
   static String randomEndpointType() => randomChoice(Model.MessageEndpointType.types);
+  static String randomRecipientRole() => randomChoice(Model.Role.RECIPIENT_ROLES);
 
 
   static String randomPhoneNumber() {
@@ -370,6 +371,17 @@ abstract class Randomizer {
       ..vatNumbers = []
       ..websites = []
       ..organizationId = 1;
+
+  /**
+   *
+   */
+  static Model.MessageRecipient randomMessageRecipient() =>
+    new Model.MessageRecipient()
+      ..contactID = rand.nextInt(4)
+      ..contactName = randomCallerName()
+      ..receptionID = rand.nextInt(4)
+      ..receptionName = randomCompany()
+      ..role = randomRecipientRole();
 
 
   /**
