@@ -2,6 +2,60 @@ part of or_test_fw;
 
 runContactTests () {
 
+  group ('Database.DistributionList', () {
+    Database.DistributionList distributionListDB;
+    Database.Connection connection;
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        distributionListDB = new Database.DistributionList(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('list',
+        () => ContactStore.distributionList(distributionListDB));
+
+    test ('create',
+        () => ContactStore.distributionRecipientAdd(distributionListDB));
+
+    test ('remove',
+        () => ContactStore.distributionRecipientRemove(distributionListDB));
+
+  });
+
+  group ('Service.RESTDistributionList', () {
+    Transport.Client transport = null;
+    Service.RESTDistributionListStore dlistStore;
+
+    setUp (() {
+      transport = new Transport.Client();
+      dlistStore = new Service.RESTDistributionListStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+    });
+
+    tearDown (() {
+      dlistStore = null;
+      transport.client.close(force : true);
+    });
+
+
+    test ('list',
+        () => ContactStore.distributionList(dlistStore));
+
+    test ('create',
+        () => ContactStore.distributionRecipientAdd(dlistStore));
+
+    test ('remove',
+        () => ContactStore.distributionRecipientRemove(dlistStore));
+  });
+
   group ('Database.Endpoint', () {
     Database.Endpoint endpointDB;
     Database.Connection connection;

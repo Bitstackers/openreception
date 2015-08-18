@@ -731,4 +731,79 @@ abstract class ContactStore {
         });
     });
   }
+
+  /**
+   *
+   */
+  static Future distributionList (Storage.DistributionList dlistStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    return dlistStore.list(receptionID, contactID)
+      .then((Iterable <Model.MessageRecipient> endpoints) {
+        expect(endpoints, isNotNull);
+        log.fine(endpoints);
+
+        expect (endpoints.every(
+            (Model.MessageRecipient mr) =>
+                mr is Model.MessageRecipient), isTrue);
+    });
+  }
+
+  /**
+   *
+   */
+  static Future distributionRecipientAdd (Storage.DistributionList dlistStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.MessageRecipient rcp = Randomizer.randomMessageRecipient()
+        ..contactID = 1
+        ..receptionID = 1;
+
+    return dlistStore.addRecipient(receptionID, contactID, rcp)
+      .then((Model.MessageRecipient createdRecipient) {
+        expect(createdRecipient.contactID, equals(rcp.contactID));
+        expect(createdRecipient.contactName, equals(rcp.contactName));
+        expect(createdRecipient.receptionID, equals(rcp.receptionID));
+        expect(createdRecipient.receptionName, equals(rcp.receptionName));
+        expect(createdRecipient.id, greaterThan(Model.MessageRecipient.noId));
+
+        return dlistStore.list(receptionID, contactID)
+          .then((Model.DistributionList dlist) {
+          expect (dlist.allRecipients.contains(createdRecipient), isTrue);
+        })
+        .then((_) => dlistStore.removeRecipient(createdRecipient.id));
+    });
+  }
+
+  /**
+   *
+   */
+  static Future distributionRecipientRemove (Storage.DistributionList dlistStore) {
+
+    int receptionID = 1;
+    int contactID = 4;
+
+    Model.MessageRecipient rcp = Randomizer.randomMessageRecipient()
+        ..contactID = 1
+        ..receptionID = 1;
+
+    return dlistStore.addRecipient(receptionID, contactID, rcp)
+      .then((Model.MessageRecipient createdRecipient) {
+        return dlistStore.removeRecipient(createdRecipient.id)
+          .then((_) =>
+              dlistStore.list(receptionID, contactID)
+            .then((Model.DistributionList dlist) {
+
+            if (dlist.allRecipients.contains(rcp)) {
+              fail('endpoint $rcp not removed.');
+            }
+
+          }));
+
+        });
+  }
 }
