@@ -25,6 +25,7 @@ import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
 
 part 'database/conversion_functions.dart';
+part 'database/database-distribution_list.dart';
 part 'database/database-endpoint.dart';
 part 'database/database-message.dart';
 part 'database/database-message_queue.dart';
