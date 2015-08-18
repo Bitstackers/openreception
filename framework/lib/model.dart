@@ -37,6 +37,7 @@ part 'model/model-client_connection.dart';
 part 'model/model-contact.dart';
 part 'model/model-contact_filter.dart';
 part 'model/model-dialplan_template.dart';
+part 'model/model-distribution_list.dart';
 part 'model/model-freeswitch_cdr_entry.dart';
 part 'model/model-message.dart';
 part 'model/model-message_context.dart';
