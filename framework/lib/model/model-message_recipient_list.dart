@@ -14,7 +14,7 @@
 part of openreception.model;
 
 /**
- *
+ * TODO: Phase out in favour of DistributionList class.
  */
 
 class MessageRecipientList extends IterableBase<MessageRecipient>{
