@@ -15,9 +15,10 @@ part of openreception.model;
 
 class MessageRecipient extends MessageContext {
 
-  final String className = libraryName + "MessageRecipient";
+  static const int noId = 0;
 
-  String                role      = null;
+  int id = noId;
+  String                role      = '';
   List<MessageEndpoint> endpoints = [];
 
   /**
@@ -28,10 +29,16 @@ class MessageRecipient extends MessageContext {
   /**
    * Parsing constructor. Takes in an object similar to MessageContext, with the
    * exception of having an extra 'role' field.
+   * TODO: Check if role is ever passed to this constructor, and eliminate it
+   * otherwise.
    */
   MessageRecipient.fromMap(Map map, {String role : Role.TO}) : super.fromMap(map) {
-    assert(Role.RECIPIENT_ROLES.contains(role));
-    this.role = role;
+
+    id = map[Key.ID];
+
+    if (map.containsKey(Key.role)) {
+      this.role = map[Key.role];
+    }
 
     if (map.containsKey('endpoints')) {
       this.endpoints = (map['endpoints'] as List).map ((Map endpointMap) =>
@@ -39,5 +46,26 @@ class MessageRecipient extends MessageContext {
     }
   }
 
+  /**
+   * Map representation
+   */
+  Map get asMap => super.asMap..addAll({Key.ID : id, Key.role : role});
+
+  /**
+   * Deserializing factory constructor.
+   */
+  static MessageRecipient decode (Map map) =>
+    new MessageRecipient.fromMap(map);
+
+  /**
+   * String representation of object.
+   */
   String toString() => '${this.role}: ${super.toString()}, endpoints: ${this.endpoints}';
+
+  /**
+   *
+   */
+  @override
+  bool operator ==(MessageRecipient other) => this.contactID   == other.contactID &&
+                                              this.receptionID == other.receptionID;
 }
