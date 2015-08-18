@@ -50,7 +50,7 @@ abstract class ModelClientConnection {
     final int connectionCount = 1;
 
     Model.ClientConnection builtObject =
-      new Model.ClientConnection()..connectionCount = connectionCount
+      new Model.ClientConnection.empty()..connectionCount = connectionCount
       ..userID = userId;
 
     expect (builtObject.connectionCount, equals(connectionCount));
