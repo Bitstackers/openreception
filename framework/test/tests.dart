@@ -43,7 +43,7 @@ part 'src/model/model-message_context.dart';
 //part 'src/model-message_endpoint.dart';
 part 'src/model/model-message_filter.dart';
 //part 'src/model-message_queue_item.dart';
-//part 'src/model-message_recipient.dart';
+part 'src/model/model-message_recipient.dart';
 part 'src/model/model-message_recipient_list.dart';
 part 'src/model/model-organization.dart';
 //part 'src/model-peer.dart';
@@ -82,9 +82,11 @@ void main() {
   testEventMessageChange();
   testEventCalendarChange();
 
-  testModelMessageRecipientList();
   testModelBaseContact();
+  testModelCalendarEntry();
+  testModelCalendarEntryChange();
   testModelCall();
+  testModelClientConfiguration();
   testModelClientConnection();
   testModelContact();
   testModelOrganization();
@@ -92,9 +94,8 @@ void main() {
   testModelMessage();
   testModelMessageContext();
   testModelMessageFilter();
-  testModelCalendarEntry();
-  testModelCalendarEntryChange();
-  testModelClientConfiguration();
+  testModelMessageRecipient();
+  testModelMessageRecipientList();
   testModelPhoneNumber();
   testModelUserStatus();
   testModelUser();

@@ -258,12 +258,16 @@ Map testContact_4_1 = {
   "distribution_list": {
     "to": [
       {
+        "id": 1,
+        "role": "to",
         "contact": {"id": 4, "name": "Kim Rostgaard Christensen"},
         "reception": {"id": 1, "name": "BitStackers"}
       }
     ],
     "cc": [
       {
+        "id": 2,
+        "role": "cc",
         "contact": {"id": 2, "name": null},
         "reception": {"id": 1, "name": "BitStackers"}
       }
@@ -291,8 +295,8 @@ Map testContact_4_1 = {
   ],
   "endpoints": [
     {
-      "id" : 3,
-      "priority" : 2,
+      "id": 3,
+      "priority": 2,
       "address": "krc@bitstack.dk",
       "type": "email",
       "confidential": false,
@@ -338,12 +342,16 @@ Map testMessage_1_Map = {
     "bcc": [],
     "cc": [
       {
+        "id": 1,
+        "role": "cc",
         "contact": {"id": 4, "name": "Kim Rostgaard Chrisensen"},
         "reception": {"id": 2, "name": "Gir"}
       }
     ],
     "to": [
       {
+        "id": 2,
+        "role": "to",
         "contact": {"id": 4, "name": "Kim Rostgaard Chrisensen"},
         "reception": {"id": 1, "name": "BitStackers"}
       }
