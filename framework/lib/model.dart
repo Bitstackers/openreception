@@ -29,6 +29,7 @@ part 'model/model-base_contact.dart';
 part 'model/model-calendar_entry.dart';
 part 'model/model-calendar_entry_change.dart';
 part 'model/model-call.dart';
+part 'model/model-caller_info.dart';
 part 'model/model-cdr_checkpoint.dart';
 part 'model/model-cdr_entry.dart';
 part 'model/model-channel.dart';
