@@ -32,6 +32,7 @@ part 'src/model/model-base_contact.dart';
 part 'src/model/model-calendar_entry.dart';
 part 'src/model/model-calendar_entry_change.dart';
 part 'src/model/model-call.dart';
+part 'src/model/model-caller_info.dart';
 //part 'src/model-channel.dart';
 part 'src/model/model-client_configuration.dart';
 part 'src/model/model-client_connection.dart';
@@ -92,6 +93,7 @@ void main() {
   testModelOrganization();
   testModelReception();
   testModelMessage();
+  testModelCallerInfo();
   testModelMessageContext();
   testModelMessageFilter();
   testModelMessageRecipient();
