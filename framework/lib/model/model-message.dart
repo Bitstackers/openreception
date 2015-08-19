@@ -84,9 +84,4 @@ class Message {
     'recipients':
         recipients.map((MessageRecipient r) => r.asMap).toList(growable: false)
   };
-
-  String sqlRecipients() => recipients
-      .map((DistributionListEntry contact) =>
-          "(${contact.contactID}, '${contact.contactName}', ${contact.receptionID}, '${contact.receptionName}', ${this.ID},'${contact.role}')")
-      .join(',');
 }
