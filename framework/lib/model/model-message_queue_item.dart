@@ -14,10 +14,9 @@
 part of openreception.model;
 
 class MessageQueueItem {
-
-  int                   ID;
-  int                   tries              = 0;
-  int                   messageID          = Message.noID;
+  int ID;
+  int tries = 0;
+  int messageID = Message.noID;
   List<MessageEndpoint> unhandledEndpoints = [];
 
   /**
@@ -35,35 +34,30 @@ class MessageQueueItem {
    *       List<Map> unhandledEndpoints
    *     }
    */
-  MessageQueueItem.fromMap (Map map) {
-
+  MessageQueueItem.fromMap(Map map) {
     this.ID = map['id'];
-    this.messageID= map['message_id'];
+    this.messageID = map['message_id'];
     this.tries = map['tries'];
     if (tries > 0) {
-      this.unhandledEndpoints.addAll
-           (map['unhandled_endpoints'].map((Map endpointMap)
-                => new MessageEndpoint.fromMap(endpointMap)));
+      this.unhandledEndpoints.addAll(map['unhandled_endpoints']
+          .map((Map endpointMap) => new MessageEndpoint.fromMap(endpointMap)));
     }
   }
 
   /**
    * Serialization function
    */
-  Map toJson() => {
-    'id' : ID,
-    'message_id' : messageID,
-    'tries' : tries
-  };
+  Map toJson() => {'id': ID, 'message_id': messageID, 'tries': tries};
 
   /**
    * Persistenly stores the message in the [messageStore] passed.
    */
-  Future save (Storage.MessageQueue messageQeueStore) => messageQeueStore.save (this);
+  Future save(Storage.MessageQueue messageQeueStore) =>
+      messageQeueStore.save(this);
 
   /**
    * Persistenly archives the message from the [messageStore] passed.
    */
-  Future archive (Storage.MessageQueue messageQeueStore) => messageQeueStore.archive (this);
-
+  Future archive(Storage.MessageQueue messageQeueStore) =>
+      messageQeueStore.archive(this);
 }
