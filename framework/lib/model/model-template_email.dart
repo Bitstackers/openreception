@@ -21,11 +21,12 @@ class TemplateEmail extends Template {
   final DateFormat      _dateFormat = new DateFormat("dd-MM-yyyy' kl. 'HH:mm:ss");
   List<MessageEndpoint> _endpoints;
   final Message         _message;
+  final User _sender;
 
   /**
    * Constructor.
    */
-  TemplateEmail(Message this._message, List<MessageEndpoint> this._endpoints);
+  TemplateEmail(Message this._message, List<MessageEndpoint> this._endpoints, final User this._sender);
 
   /**
    *
@@ -47,11 +48,13 @@ class TemplateEmail extends Template {
    * TODO: Add caller number and company.
    */
   String _renderSubject() =>
-      '${this._message.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} Besked fra ${this._message.caller.name}, ${this._message.caller.company} ${this._message.caller.phone}';
+      '${this._message.flag.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} '
+      'Besked fra ${this._message.callerInfo.name}, '
+      '${this._message.callerInfo.company} ${this._message.callerInfo.phone}';
 
 
   String _renderBooleanFields() =>
-      '${this._message.urgent ? '(X) ${Label.URGENT}' : ''}';
+      '${this._message.flag.urgent ? '(X) ${Label.URGENT}' : ''}';
 
 
   String _renderTime(DateTime time) => _dateFormat.format(time);
@@ -63,29 +66,29 @@ class TemplateEmail extends Template {
   String get _renderedBody =>
 '''Til ${_message.context.contactName}.
 
-Der er besked fra ${_message.caller.name}, ${this._message.caller.company}.
+Der er besked fra ${_message.callerInfo.name}, ${this._message.callerInfo.company}.
 
-Tlf. ${this._message.caller.phone}
-Mob. ${this._message.caller.cellphone}
+Tlf. ${this._message.callerInfo.phone}
+Mob. ${this._message.callerInfo.cellPhone}
 
 ${this._renderBooleanFields()}
 
 Vedr.:
-${this._message.body}
+${_message.body}
 
 Modtaget den ${this._renderTime(this._message.createdAt)}
 
 Med venlig hilsen
-${this._message.sender.name}
+${_sender.name}
 Responsum K/S
 ''';
 
-  Map toJson() => {Role.TO        : this.toRecipients,
-                   Role.CC        : this.ccRecipients,
-                   Role.BCC       : this.bccRecipients,
-                   'message_body' : this._renderedBody,
-                   'from'         : this._message.sender.address,
-                   'subject'      : this._renderSubject()};
+  Map toJson() => {Role.TO        :toRecipients,
+                   Role.CC        : ccRecipients,
+                   Role.BCC       : bccRecipients,
+                   'message_body' : _renderedBody,
+                   'from'         : _sender.address,
+                   'subject'      : _renderSubject()};
 
   /**
    * Renders the email for Dart:mailer. TODO!

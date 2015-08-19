@@ -37,7 +37,13 @@ class MessageContext {
   /**
    * Default constructor.
    */
+  @deprecated
   MessageContext();
+
+  /**
+   * Default empty constructor.
+   */
+  MessageContext.empty();
 
   /**
    * Constructor. Deserializes the object from Map representation.
@@ -96,7 +102,7 @@ class MessageContext {
   }
 
   @override
-  bool operator ==(MessageRecipient other) => this.contactID   == other.contactID &&
+  bool operator ==(DistributionListEntry other) => this.contactID   == other.contactID &&
                                               this.receptionID == other.receptionID;
 
   String get contactString => contactID.toString() + "@" + receptionID.toString();
