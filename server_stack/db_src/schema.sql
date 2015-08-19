@@ -127,7 +127,8 @@ INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 CREATE TABLE messages (
    id                        INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message                   TEXT      NOT NULL,
-   context_contact_id        INTEGER       NULL REFERENCES contacts   (id),
+   recipients                JSON      NOT NULL DEFAULT '[]',
+   context_contact_id        INTEGER  NOT NULL REFERENCES contacts   (id),
    context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),
    context_contact_name      TEXT          NULL DEFAULT NULL, --  Dereferenced contact name.
    context_reception_name    TEXT      NOT NULL,              --  Dereferenced reception name.
