@@ -19,8 +19,6 @@ class MessageQueueItem {
   int                   tries              = 0;
   int                   messageID          = Message.noID;
   List<MessageEndpoint> unhandledEndpoints = [];
-  Message                _cachedMessage    = null;
-
 
   /**
    * Default constructor.
@@ -57,29 +55,6 @@ class MessageQueueItem {
     'message_id' : messageID,
     'tries' : tries
   };
-
-
- /**
-  * Asyncronously fetches the message associated with the queue entry.
-  * The message will be cached, and thus, only fetched once.
-  */
-  Future<Message> message (Storage.Message messageStore) {
-    if (this._cachedMessage == null)
-      return messageStore.get(this.messageID).then((Message fetchedMessage) {
-        this._cachedMessage = fetchedMessage;
-
-        if (this.tries == 0) {
-          fetchedMessage.recipients.asSet.forEach((MessageRecipient recipient) {
-            this.unhandledEndpoints.addAll(recipient.endpoints);
-          });
-        }
-        return this._cachedMessage;
-      });
-
-    else {
-      return new Future(() => this._cachedMessage);
-    }
-  }
 
   /**
    * Persistenly stores the message in the [messageStore] passed.
