@@ -28,15 +28,11 @@ abstract class ModelMessageRecipient {
     Model.MessageRecipient deserializedObj =
         new Model.MessageRecipient.fromMap(JSON.decode(JSON.encode(obj)));
 
-    expect(obj.id, equals(deserializedObj.id));
     expect(obj.role, equals(deserializedObj.role));
-    expect(obj.contactID, equals(deserializedObj.contactID));
-    expect(obj.contactName, equals(deserializedObj.contactName));
+    expect(obj.address, equals(deserializedObj.address));
+    expect(obj.name, equals(deserializedObj.name));
+    expect(obj.type, equals(deserializedObj.type));
 
-    expect(obj.receptionID, equals(deserializedObj.receptionID));
-    expect(obj.receptionName, equals(deserializedObj.receptionName));
-
-    expect(obj.asMap, equals(deserializedObj.asMap));
   }
 
   static void serialization() {
@@ -51,29 +47,21 @@ abstract class ModelMessageRecipient {
    * Build an object manually.
    */
   static Model.MessageRecipient buildObject() {
-    final int id = 99;
-    final int contactId = 1;
     final String role = Model.Role.RECIPIENT_ROLES.first;
-    final String contactName = 'John Arbuckle';
-    final int receptionId = 2;
-    final String receptionName = 'Lasagna-makers inc.';
+    final String name = 'John Arbuckle';
+    final String address = 'Test address';
+    final String type = Model.MessageEndpointType.types.first;
 
-    Model.MessageRecipient obj = new Model.MessageRecipient()
-      ..id = id
+    Model.MessageRecipient obj = new Model.MessageRecipient.empty()
       ..role = role
-      ..contactID = contactId
-      ..contactName = contactName
-      ..receptionID = receptionId
-      ..receptionName = receptionName;
+      ..address = address
+      ..name = name
+      ..type = type;
 
-    expect(obj.id, equals(id));
     expect(obj.role, equals(role));
-
-    expect(obj.contactID, equals(contactId));
-    expect(obj.contactName, equals(contactName));
-
-    expect(obj.receptionID, equals(receptionId));
-    expect(obj.receptionName, equals(receptionName));
+    expect(obj.address, equals(address));
+    expect(obj.name, equals(name));
+    expect(obj.type, equals(type));
 
     return obj;
   }

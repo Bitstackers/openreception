@@ -75,7 +75,7 @@ void main() {
   Logger.root.level = Level.FINEST;
   Logger.root.onRecord.listen((LogRecord record) =>
       logMessage(record.toString()));
-  JUnitConfiguration.install();
+  //JUnitConfiguration.install();
 
   testBus();
 
@@ -90,6 +90,8 @@ void main() {
   testModelClientConfiguration();
   testModelClientConnection();
   testModelContact();
+  testModelDistributionList();
+
   testModelOrganization();
   testModelReception();
   testModelMessage();
@@ -97,7 +99,7 @@ void main() {
   testModelMessageContext();
   testModelMessageFilter();
   testModelMessageRecipient();
-  testModelMessageRecipientList();
+
   testModelPhoneNumber();
   testModelUserStatus();
   testModelUser();
