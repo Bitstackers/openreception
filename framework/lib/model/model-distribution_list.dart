@@ -46,25 +46,8 @@ class DistributionList extends IterableBase<DistributionListEntry> {
     _recipients.addAll(recipients);
   }
 
-  /**
-   * Initializes a new object using a map of the form :
-   *
-   *  { List<Recipients> toRecipients,
-   *    List<Recipients> ccRecipients,
-   *    List<Recipients> bccRecipients}
-   */
-  DistributionList.fromMap(Map map) {
-    // Harvest each field for recipients.
-    [Role.BCC, Role.CC, Role.TO].forEach((String role) {
-      if (map[role] is List && map[role] != null) {
-        map[role].forEach((Map contact) =>
-            this.add(new DistributionListEntry.fromMap(contact, role: role)));
-      }
-    });
-  }
-
-  static DistributionList decode(Map map) =>
-    new DistributionList.fromMap(map);
+  static DistributionList decode(Iterable maps) =>
+      new DistributionList(maps.map(DistributionListEntry.decode));
 
   /**
    * Adds a new recipient to the distribution list.

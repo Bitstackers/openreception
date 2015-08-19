@@ -110,7 +110,7 @@ class Contact {
     this.wantsMessage      = mapValue(Key.wantsMessages, map);
     this.enabled           = mapValue(Key.enabled, map);
     this.fullName          = mapValue(Key.fullName, map);
-    this._distributionList = new DistributionList.fromMap(mapValue(Key.distributionList, map));
+    this._distributionList = DistributionList.decode(mapValue(Key.distributionList, map));
     this.contactType       = mapValue(Key.contactType, map);
 
     this.messagePrerequisites =
