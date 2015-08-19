@@ -142,17 +142,6 @@ CREATE TABLE messages (
    created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE message_recipients (
-   contact_id     INTEGER NOT NULL,
-   reception_id   INTEGER NOT NULL,
-   message_id     INTEGER NOT NULL,
-   recipient_role TEXT    NOT NULL,
-   contact_name   TEXT    NOT NULL, --  Dereferenced contact name.
-   reception_name TEXT    NOT NULL, --  Dereferenced reception name.
-
-   PRIMARY KEY (contact_id, reception_id, message_id)
-);
-
 --  The message_queue is a simple job-stack that, when a item is present in the
 --  table, indicates that is has not been delived to a transport agent.
 --  'unhandled_endpoints' stores a list of recipient endpoints, still waiting
@@ -451,7 +440,6 @@ ALTER TABLE messaging_address_types OWNER TO openreception;
 ALTER TABLE messaging_end_points OWNER TO openreception;
 ALTER TABLE recipient_visibilities OWNER TO openreception;
 ALTER TABLE messages OWNER TO openreception;
-ALTER TABLE message_recipients OWNER TO openreception;
 ALTER TABLE message_queue OWNER TO openreception;
 ALTER TABLE message_queue_history OWNER TO openreception;
 ALTER TABLE calendar_events OWNER TO openreception;
