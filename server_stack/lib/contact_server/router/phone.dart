@@ -30,7 +30,7 @@ abstract class Phone {
     int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return db.Contact
+    return _contactDB
         .phones(contactID, receptionID)
         .then((Iterable<Model.PhoneNumber> phones) {
       return new shelf.Response.ok(JSON.encode(phones.toList()));

@@ -10,8 +10,8 @@ abstract class Contact {
   static Future base(shelf.Request request) {
     int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return db.Contact
-        .baseContact(contactID)
+    return _contactDB
+        .get(contactID)
         .then((Model.BaseContact contact) =>
             new shelf.Response.ok(JSON.encode(contact)))
         .catchError((error, stacktrace) {
@@ -47,7 +47,7 @@ abstract class Contact {
         return new shelf.Response(400, body: JSON.encode(response));
       }
 
-      return db.Contact.create(contact).then((Model.BaseContact createdContact) {
+      return _contactDB.create(contact).then((Model.BaseContact createdContact) {
         Event.ContactChange changeEvent =
             new Event.ContactChange(createdContact.id, Event.ContactState.CREATED);
 
@@ -67,8 +67,8 @@ abstract class Contact {
    * Retrives a single base contact based on contactID.
    */
   static Future listBase(shelf.Request request) {
-    return db.Contact
-        .baseContactList()
+    return _contactDB
+        .list()
         .then((Iterable<Model.BaseContact> contacts) => new shelf.Response.ok(
             JSON.encode(contacts.toList(growable: false))))
         .catchError((error, stacktrace) {
@@ -84,9 +84,9 @@ abstract class Contact {
    */
   static Future listByOrganization(shelf.Request request) {
     int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'cid'));
+        int.parse(shelf_route.getPathParameter(request, 'oid'));
 
-    return db.Contact
+    return _contactDB
         .organizationContacts(organizationID)
         .then((Iterable<Model.BaseContact> contacts) => new shelf.Response.ok(
             JSON.encode(contacts.toList(growable: false))))
@@ -104,7 +104,7 @@ abstract class Contact {
     int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return db.Contact.get(receptionID, contactID).then((Model.Contact contact) {
+    return _contactDB.getByReception(receptionID, contactID).then((Model.Contact contact) {
       if (contact == Model.Contact.noContact) {
         return new shelf.Response.notFound(
             {'description': 'no contact $contactID@$receptionID'});
@@ -124,7 +124,7 @@ abstract class Contact {
   static Future<int> organizations(shelf.Request request) {
     int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return db.Contact.organizations(contactID).then((Iterable<int> organizationsIds) {
+    return _contactDB.organizations(contactID).then((Iterable<int> organizationsIds) {
       return new shelf.Response.ok(JSON.encode(organizationsIds.toList()));
     }).catchError((error, stacktrace) {
       log.severe(error, stacktrace);
@@ -139,7 +139,7 @@ abstract class Contact {
   static Future<int> receptions(shelf.Request request) {
     int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return db.Contact.receptions(contactID).then((Iterable<int> receptionIDs) {
+    return _contactDB.receptions(contactID).then((Iterable<int> receptionIDs) {
       return new shelf.Response.ok(JSON.encode(receptionIDs.toList()));
     }).catchError((error, stacktrace) {
       log.severe(error, stacktrace);
@@ -154,7 +154,7 @@ abstract class Contact {
   static Future remove(shelf.Request request) {
     int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return db.Contact.remove(contactID).then((_) {
+    return _contactDB.remove(contactID).then((_) {
       Event.ContactChange changeEvent =
           new Event.ContactChange(contactID, Event.ContactState.DELETED);
 
@@ -195,7 +195,7 @@ abstract class Contact {
         return new shelf.Response(400, body: JSON.encode(response));
       }
 
-      return db.Contact.update(contact).then((_) {
+      return _contactDB.update(contact).then((_) {
         Event.ContactChange changeEvent =
             new Event.ContactChange(contactID, Event.ContactState.UPDATED);
 
@@ -218,12 +218,12 @@ abstract class Contact {
   /**
    * Gives a lists of every contact in an reception.
    */
-  static Future list(shelf.Request request) {
+  static Future listByReception(shelf.Request request) {
     var rid = shelf_route.getPathParameter(request, 'rid');
     int receptionID = int.parse(rid);
 
-    return db.Contact
-        .list(receptionID)
+    return _contactDB
+        .listByReception(receptionID)
         .then((Iterable<Model.Contact> contacts) {
       return new shelf.Response.ok(JSON.encode(contacts.toList()));
     }).catchError((error) {}).catchError((error, stacktrace) {

@@ -10,7 +10,6 @@ import 'package:openreception_framework/storage.dart'  as Storage;
 import 'package:openreception_framework/util.dart'     as Util;
 import 'configuration.dart';
 
-part 'db/contact.dart';
 part 'db/contact-calendar.dart';
 
 const String libraryName = 'contactserver.database';
