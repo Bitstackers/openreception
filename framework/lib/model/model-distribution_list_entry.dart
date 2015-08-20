@@ -66,6 +66,11 @@ class DistributionListEntry {
       new DistributionListEntry.fromMap(map);
 
   /**
+   * Serialization function
+   */
+  Map toJson() => this.asMap;
+
+  /**
    * String representation of object.
    */
   String toString() => 'id:${id}, role:$role, '
