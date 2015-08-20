@@ -27,6 +27,65 @@ runContactTests () {
 
     test ('remove',
         () => ContactStore.distributionRecipientRemove(distributionListDB));
+  });
+
+  group ('Database.Contact', () {
+    Database.Contact contactDB;
+    Database.Connection connection;
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        contactDB = new Database.Contact(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+///TODO Add tests for these interfaces.
+// Future<Model.Contact> updateInReception(Model.Contact contact, int receptionID);
+// Future<Model.Contact> addToReception(Model.Contact contact, int receptionID);
+// Future<Model.Contact> removeFromReception(Model.Contact contact, int receptionID);
+
+    test ('phones',
+        () => ContactStore.phones(contactDB));
+
+    test ('listByReception',
+        () => ContactStore.listByReception(contactDB));
+
+    test ('getByReception',
+        () => ContactStore.getByReception(contactDB));
+
+    test ('organizationContacts',
+        () => ContactStore.organizationContacts(contactDB));
+
+    test ('organizations',
+        () => ContactStore.organizations(contactDB));
+
+    test ('organizations',
+        () => ContactStore.organizations(contactDB));
+
+    test ('receptions',
+        () => ContactStore.receptions(contactDB));
+
+    test ('list',
+        () => ContactStore.list(contactDB));
+
+    test ('get',
+        () => ContactStore.get(contactDB));
+
+    test ('create',
+        () => ContactStore.create(contactDB));
+
+    test ('update',
+        () => ContactStore.update(contactDB));
+
+    test ('remove',
+        () => ContactStore.remove(contactDB));
 
   });
 
@@ -153,20 +212,40 @@ runContactTests () {
       endpointStore = null;
       transport.client.close(force : true);
     });
+    test ('getByReception',
+        () => ContactStore.getByReception(contactStore));
+
+    test ('organizationContacts',
+        () => ContactStore.organizationContacts(contactStore));
+
+    test ('organizations',
+        () => ContactStore.organizations(contactStore));
+
+    test ('organizations',
+        () => ContactStore.organizations(contactStore));
+
+    test ('receptions',
+        () => ContactStore.receptions(contactStore));
+
+    test ('list',
+        () => ContactStore.list(contactStore));
+
+    test ('get',
+        () => ContactStore.get(contactStore));
 
     test ('BaseContact create',
-        () => ContactStore.baseContactCreate(contactStore));
+        () => ContactStore.create(contactStore));
 
     test ('BaseContact update',
-        () => ContactStore.baseContactUpdate(contactStore));
+        () => ContactStore.update(contactStore));
 
     test ('BaseContact remove',
-        () => ContactStore.baseContactRemove(contactStore));
+        () => ContactStore.remove(contactStore));
 
     test ('Non-existing contact',
         () => ContactStore.nonExistingContact(contactStore));
     test ('List contacts by reception',
-        () => ContactStore.listContactsByExistingReception(contactStore));
+        () => ContactStore.listByReception(contactStore));
     test ('List contacts by Non-existing reception',
         () => ContactStore.listContactsByNonExistingReception(contactStore));
 

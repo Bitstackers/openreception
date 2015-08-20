@@ -78,7 +78,7 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return a list of
    * contact objects.
    */
-  static Future listContactsByExistingReception (Storage.Contact contactStore) {
+  static Future listByReception (Storage.Contact contactStore) {
     const int receptionID = 1;
     log.info('Checking server behaviour on list of contacts in reception $receptionID.');
 
@@ -87,6 +87,85 @@ abstract class ContactStore {
       expect(contacts, isNotNull);
       expect(contacts, isNotEmpty);
     });
+  }
+
+  /**
+   * Test server behaviour when trying to aquire a list of base contact objects.
+   *
+   * The expected behaviour is that the server should return a list of
+   * base contact objects.
+   */
+  static Future list (Storage.Contact contactStore) {
+    log.info('Checking server behaviour on list of base contacts.');
+
+    return contactStore.list()
+        .then((Iterable<Model.BaseContact> contacts) {
+      expect(contacts, isNotNull);
+      expect(contacts, isNotEmpty);
+    });
+  }
+
+  /**
+   *
+   */
+  static Future receptions (Storage.Contact contactStore) {
+    return contactStore.receptions(1)
+        .then((Iterable<int> receptions) {
+      expect(receptions, isNotNull);
+    });
+  }
+
+  /**
+   *
+   */
+  static Future organizations (Storage.Contact contactStore) {
+    return contactStore.organizations(1)
+        .then((Iterable<int> organizations) {
+      expect(organizations, isNotNull);
+    });
+  }
+
+  /**
+   *
+   */
+  static Future organizationContacts (Storage.Contact contactStore) {
+    return contactStore.organizationContacts(1)
+        .then((Iterable<Model.BaseContact> contacts) {
+      expect(contacts, isNotNull);
+      expect(contacts, isNotEmpty);
+    });
+  }
+
+  /**
+   *
+   */
+  static Future getByReception (Storage.Contact contactStore) {
+    return contactStore.getByReception(1, 1)
+        .then((Model.Contact contact) {
+      expect(contact, isNotNull);
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to aquire a list of base contact objects.
+   *
+   * The expected behaviour is that the server should return a list of
+   * base contact objects.
+   */
+  static Future get (Storage.Contact contactStore) {
+    log.info('Checking server behaviour on list of base contacts.');
+
+    Model.BaseContact contact = Randomizer.randomBaseContact();
+
+    log.info('Creating a new base contact.');
+
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdContact) =>
+          contactStore.get(createdContact.id)
+        .then((Model.BaseContact contact) {
+      expect(contact, isNotNull);
+    })
+    .then((_) => contactStore.remove (createdContact.id)));
   }
 
   /**
@@ -161,12 +240,8 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the created
    * BaseContact object.
    */
-  static Future baseContactCreate (Storage.Contact contactStore) {
-    Model.BaseContact contact =
-        new Model.BaseContact.empty()
-         ..contactType = Model.ContactType.human
-         ..fullName    = 'That guy'
-         ..enabled     = false;
+  static Future create (Storage.Contact contactStore) {
+    Model.BaseContact contact = Randomizer.randomBaseContact();
 
     log.info('Creating a new base contact.');
 
@@ -178,6 +253,8 @@ abstract class ContactStore {
         expect(contact.contactType, equals(createdContact.contactType));
         expect(contact.fullName, equals(createdContact.fullName));
         expect(contact.enabled, equals(createdContact.enabled));
+
+        return contactStore.remove(createdContact.id);
     });
   }
 
@@ -187,17 +264,16 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future baseContactRemove (Storage.Contact contactStore) {
-    return contactStore.list()
-      .then((Iterable <Model.BaseContact> contacts) {
+  static Future remove (Storage.Contact contactStore) {
 
-      // Update the last event in list.
+    Model.BaseContact contact = Randomizer.randomBaseContact();
 
-      Model.BaseContact contact = contacts.last;
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdContact) {
 
-      log.info ('Got event ${contact.asMap}. Deleting it.');
+      log.info ('Got contact ${createdContact.asMap}. Deleting it.');
 
-      return contactStore.remove(contact)
+      return contactStore.remove(createdContact.id)
         .then((_) =>
           expect(contactStore.get(contact.id),
                 throwsA(new isInstanceOf<Storage.NotFound>())));
@@ -210,32 +286,33 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the updated
    * BaseContact object.
    */
-  static Future baseContactUpdate (Storage.Contact contactStore) {
-    return contactStore.list()
-      .then((Iterable <Model.BaseContact> contacts) {
+  static Future update (Storage.Contact contactStore) {
+    Model.BaseContact contact = Randomizer.randomBaseContact();
 
-      // Update the last event in list.
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdContact) {
 
-      Model.BaseContact contact = contacts.last;
+      log.info ('Got event ${createdContact.asMap}. Updating local info');
 
-      log.info ('Got event ${contact.asMap}. Updating local info');
+      {
+        Model.BaseContact randBC = Randomizer.randomBaseContact();
+        randBC.id = createdContact.id;
+        createdContact = randBC;
+      }
 
-      contact..fullName = 'John Arbuckle Machine'
-             ..enabled = !contact.enabled
-             ..contactType = Model.ContactType.function;
-
-      log.info ('Updating local info to ${contact.asMap}');
+      log.info ('Updating local info to ${createdContact.asMap}');
 
 
-      return contactStore.update(contact)
+      return contactStore.update(createdContact)
           .then((Model.BaseContact updatedContact) {
         expect(updatedContact.id, isNot(Model.Contact.noID));
         expect(updatedContact.id, isNotNull);
 
-        expect(contact.contactType, equals(updatedContact.contactType));
-        expect(contact.fullName, equals(updatedContact.fullName));
-        expect(contact.enabled, equals(updatedContact.enabled));
+        expect(createdContact.contactType, equals(updatedContact.contactType));
+        expect(createdContact.fullName, equals(updatedContact.fullName));
+        expect(createdContact.enabled, equals(updatedContact.enabled));
 
+        return contactStore.remove(createdContact.id);
       });
     });
   }
@@ -525,19 +602,19 @@ abstract class ContactStore {
   static Future endpointCreate (Storage.Endpoint endpointStore) {
 
     int receptionID = 1;
-    int contactID = 4;
+    int contactID = 1;
 
     Model.MessageEndpoint ep = Randomizer.randomMessageEndpoint();
 
     return endpointStore.create(receptionID, contactID, ep)
-      .then((Model.MessageEndpoint createdEndpoint) {
-        expect(createdEndpoint.address, equals(ep.address));
-        expect(createdEndpoint.confidential, equals(ep.confidential));
-        expect(createdEndpoint.description, equals(ep.description));
-        expect(createdEndpoint.enabled, equals(ep.enabled));
-        expect(createdEndpoint.type, equals(ep.type));
+      .then((Model.MessageEndpoint createdEntry) {
+        expect(createdEntry.address, equals(ep.address));
+        expect(createdEntry.confidential, equals(ep.confidential));
+        expect(createdEntry.description, equals(ep.description));
+        expect(createdEntry.enabled, equals(ep.enabled));
+        expect(createdEntry.type, equals(ep.type));
 
-        return endpointStore.remove(createdEndpoint.id);
+        return endpointStore.remove(createdEntry.id);
     });
   }
 
@@ -604,7 +681,7 @@ abstract class ContactStore {
    *
    * The expected behaviour is that the server should succeed.
    */
-  static Future phones (Service.RESTContactStore contactStore) {
+  static Future phones (Storage.Contact contactStore) {
 
     int receptionID = 1;
     int contactID = 4;
@@ -741,13 +818,13 @@ abstract class ContactStore {
     int contactID = 4;
 
     return dlistStore.list(receptionID, contactID)
-      .then((Iterable <Model.MessageRecipient> endpoints) {
+      .then((Iterable <Model.DistributionListEntry> endpoints) {
         expect(endpoints, isNotNull);
         log.fine(endpoints);
 
         expect (endpoints.every(
-            (Model.MessageRecipient mr) =>
-                mr is Model.MessageRecipient), isTrue);
+            (Model.DistributionListEntry mr) =>
+                mr is Model.DistributionListEntry), isTrue);
     });
   }
 
@@ -757,23 +834,25 @@ abstract class ContactStore {
   static Future distributionRecipientAdd (Storage.DistributionList dlistStore) {
 
     int receptionID = 1;
-    int contactID = 4;
+    int contactID = 1;
 
-    Model.MessageRecipient rcp = Randomizer.randomMessageRecipient()
+    Model.DistributionListEntry rcp = Randomizer.randomDistributionListEntry()
         ..contactID = 1
-        ..receptionID = 1;
+        ..receptionID = 3;
+
+    print(rcp);
 
     return dlistStore.addRecipient(receptionID, contactID, rcp)
-      .then((Model.MessageRecipient createdRecipient) {
+      .then((Model.DistributionListEntry createdRecipient) {
         expect(createdRecipient.contactID, equals(rcp.contactID));
         expect(createdRecipient.contactName, equals(rcp.contactName));
         expect(createdRecipient.receptionID, equals(rcp.receptionID));
         expect(createdRecipient.receptionName, equals(rcp.receptionName));
-        expect(createdRecipient.id, greaterThan(Model.MessageRecipient.noId));
+        expect(createdRecipient.id, greaterThan(Model.DistributionListEntry.noId));
 
         return dlistStore.list(receptionID, contactID)
           .then((Model.DistributionList dlist) {
-          expect (dlist.allRecipients.contains(createdRecipient), isTrue);
+          expect (dlist.contains(createdRecipient), isTrue);
         })
         .then((_) => dlistStore.removeRecipient(createdRecipient.id));
     });
@@ -785,20 +864,20 @@ abstract class ContactStore {
   static Future distributionRecipientRemove (Storage.DistributionList dlistStore) {
 
     int receptionID = 1;
-    int contactID = 4;
+    int contactID = 1;
 
-    Model.MessageRecipient rcp = Randomizer.randomMessageRecipient()
+    Model.DistributionListEntry rcp = Randomizer.randomDistributionListEntry()
         ..contactID = 1
-        ..receptionID = 1;
+        ..receptionID = 3;
 
     return dlistStore.addRecipient(receptionID, contactID, rcp)
-      .then((Model.MessageRecipient createdRecipient) {
+      .then((Model.DistributionListEntry createdRecipient) {
         return dlistStore.removeRecipient(createdRecipient.id)
           .then((_) =>
               dlistStore.list(receptionID, contactID)
             .then((Model.DistributionList dlist) {
 
-            if (dlist.allRecipients.contains(rcp)) {
+            if (dlist.contains(rcp)) {
               fail('endpoint $rcp not removed.');
             }
 
