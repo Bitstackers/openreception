@@ -22,7 +22,6 @@ import 'package:postgresql/postgresql.dart' as PG;
 
 import 'model.dart'   as Model;
 import 'storage.dart' as Storage;
-import 'util.dart'    as Util;
 import 'keys.dart'    as Key;
 
 part 'database/conversion_functions.dart';
