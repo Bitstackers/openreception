@@ -87,3 +87,155 @@ Model.Message _rowToMessage(var row) {
     ..createdAt = row.created_at
     ..sent = row.sent;
 }
+
+/**
+ * Converts a database row into a [Model.Contact] object.
+ *
+ * FIXME: Fix the format of the distribution list. It is utterly broken, and
+ * the SQL query is hell.
+ */
+Model.Contact _rowToContact (var row) {
+  var distributionList = new Model.DistributionList.empty();
+
+  Model.Role.RECIPIENT_ROLES.forEach((String role) {
+     Iterable nextVal = row.distribution_list[role] == null
+       ? []
+       : row.distribution_list[role];
+
+     nextVal.forEach((Map dlistMap) {
+                      distributionList.add(new Model.DistributionListEntry.fromMap({'reception' :
+                      {'id'   : dlistMap['reception_id'],
+                       'name' : dlistMap['reception_name']},
+                     'contact'   :
+                      {'id'   : dlistMap['contact_id'],
+                       'name' : dlistMap['contact_name']}},
+                       role : role));
+                  });
+    });
+
+  Iterable<Model.MessageEndpoint> endpointIterable =
+    row.endpoints.map((Map map) =>
+      new Model.MessageEndpoint.fromMap(map));
+
+  Iterable<Model.PhoneNumber> phoneIterable = row.phone == null
+     ? []
+     : row.phone.map ((Map map) =>
+         new Model.PhoneNumber.fromMap(map));
+
+  List backupContacts = [];
+  List emailaddresses = [];
+  List handling = [];
+  List tags = [];
+  List workhours = [];
+
+  List departments = [];
+  List infos = [];
+  List titles = [];
+  List relations = [];
+  List responsibilities = [];
+  List messagePrerequisites = [];
+
+  if(row.attributes != null) {
+    if (row.attributes.containsKey (Key.backup)) {
+      backupContacts = row.attributes[Key.backup];
+    }
+
+    if (row.attributes.containsKey (Key.emailaddresses)) {
+      emailaddresses = row.attributes[Key.emailaddresses];
+    }
+
+    if(row.attributes.containsKey (Key.handling)) {
+      handling = row.attributes[Key.handling];
+    }
+
+    // Tags
+    if (row.attributes.containsKey (Key.tags)) {
+      tags = row.attributes[Key.tags];
+    }
+
+    // Work hours
+    if (row.attributes.containsKey (Key.workhours)) {
+      workhours = row.attributes[Key.workhours];
+    }
+
+    // Department
+    if (row.attributes.containsKey (Key.departments)) {
+      departments = row.attributes[Key.departments];
+    }
+
+    // Info's
+    if (row.attributes.containsKey (Key.infos)) {
+      infos = row.attributes[Key.infos];
+    }
+
+    // Titles
+    if (row.attributes.containsKey (Key.titles)) {
+      titles = row.attributes[Key.titles];
+    }
+
+    // Relations
+    if (row.attributes.containsKey (Key.relations)) {
+      var relationValue = row.attributes[Key.relations];
+
+      if (relationValue is String) {
+        relations = [row.attributes[Key.relations]];
+      }
+      else if (relationValue is Iterable) {
+        relations = row.attributes[Key.relations];
+      }
+      else {
+        throw new StateError ('Bad relations value: $relationValue');
+      }
+    }
+
+    // Responsiblities
+    if(row.attributes.containsKey (Key.responsibilities)) {
+      responsibilities = row.attributes[Key.responsibilities];
+    }
+
+    // messagePrerequisites
+    if (row.attributes.containsKey (Key.messagePrerequisites)) {
+      messagePrerequisites = row.attributes[Key.messagePrerequisites];
+    }
+
+  }
+
+  Model.Contact contact = new Model.Contact.empty()
+    ..receptionID = row.reception_id
+    ..ID = row.contact_id
+    ..wantsMessage = row.wants_messages
+    ..enabled = row.rcpenabled && row.conenabled
+    ..fullName = row.full_name
+    ..contactType = row.contact_type
+    ..phones.addAll(phoneIterable)
+    ..endpoints.addAll(endpointIterable)
+    ..distributionList = distributionList
+    ..backupContacts = backupContacts
+    ..departments = departments
+    ..emailaddresses = emailaddresses
+    ..handling = handling
+    ..infos = infos
+    ..titles = titles
+    ..relations.addAll(relations)
+    ..responsibilities = responsibilities
+    ..tags = tags
+    ..workhours = workhours
+    ..messagePrerequisites = messagePrerequisites;
+
+  return contact;
+}
+
+Model.PhoneNumber _mapToPhone (Map map) {
+
+  Model.PhoneNumber p =
+    new Model.PhoneNumber.empty()
+      ..billing_type = map['billing_type']
+      ..description = map['description']
+      ..value = map['value']
+      ..type = map['kind'];
+  if(map['tag'] != null) {
+    p.tags.add(map['tag']);
+  }
+
+  return p;
+}
