@@ -6,7 +6,7 @@ abstract class Contact {
 
   Future<Iterable<Model.BaseContact>> list();
 
-  Future<Iterable<Model.Contact>> listByReception(int receptionID, {Model.ContactFilter filter});
+  Future<Iterable<Model.Contact>> listByReception(int receptionID);
 
   Future<Model.Contact> getByReception(int contactID, int receptionID);
 
@@ -15,16 +15,5 @@ abstract class Contact {
   Future<Model.BaseContact> create(Model.BaseContact contact);
 
   Future<Model.BaseContact> update(Model.BaseContact contact);
-
-  Future<Iterable<Model.CalendarEntry>> calendar (int receptionID, int contactID);
-
-  Future<Model.CalendarEntry> calendarEvent
-    (int receptionID, int contactID, int eventID);
-
-  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event);
-
-  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event);
-
-  Future calendarEventRemove (Model.CalendarEntry event);
 
 }
