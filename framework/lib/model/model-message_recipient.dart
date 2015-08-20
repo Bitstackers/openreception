@@ -75,6 +75,6 @@ class MessageRecipient {
       this.type == other.type && this.address == other.address;
 
   @override
-  int get hashcode => '$type:$address'.hashCode;
+  int get hashCode => '$type:$address'.hashCode;
 
 }
