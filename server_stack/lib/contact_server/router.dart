@@ -31,6 +31,7 @@ final Logger log = new Logger (libraryName);
 
 Service.Authentication      AuthService  = null;
 Service.NotificationService Notification = null;
+Database.Contact _contactDB = new Database.Contact (db.connection);
 Database.Endpoint _endpointDB = new Database.Endpoint (db.connection);
 Database.DistributionList _dlistDB = new Database.DistributionList (db.connection);
 //Database.Phone _phoneDB = new Database.Phone (db.connection);
@@ -101,7 +102,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..post('/contact/{cid}/reception/{rid}/dlist', DistributionList.addRecipient)
     ..delete('/dlist/{did}', DistributionList.removeRecipient)
 
-    ..get('/contact/list/reception/{rid}', Contact.list)
+    ..get('/contact/list/reception/{rid}', Contact.listByReception)
     ..get('/contact/{cid}/reception/{rid}', Contact.get)
     ..get('/contact/{cid}/reception', Contact.receptions)
     ..get('/contact/{cid}/organization', Contact.organizations)
@@ -111,7 +112,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/contact', Contact.listBase)
     ..post('/contact', Contact.create)
     ..get('/contact/organization/{oid}', Contact.listByOrganization)
-    ..get('/contact/reception/{rid}', Contact.list)
+    ..get('/contact/reception/{rid}', Contact.listByReception)
     ..get('/contact/{cid}/reception/{rid}/calendar', ContactCalendar.list)
     ..get('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.get)
     ..put('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.update)

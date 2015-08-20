@@ -127,7 +127,8 @@ INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 CREATE TABLE messages (
    id                        INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message                   TEXT      NOT NULL,
-   context_contact_id        INTEGER       NULL REFERENCES contacts   (id),
+   recipients                JSON      NOT NULL DEFAULT '[]',
+   context_contact_id        INTEGER  NOT NULL REFERENCES contacts   (id),
    context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),
    context_contact_name      TEXT          NULL DEFAULT NULL, --  Dereferenced contact name.
    context_reception_name    TEXT      NOT NULL,              --  Dereferenced reception name.
@@ -139,17 +140,6 @@ CREATE TABLE messages (
    taken_by_agent            INTEGER   NOT NULL REFERENCES users (id),
    flags                     JSON      NOT NULL DEFAULT '[]',
    created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE message_recipients (
-   contact_id     INTEGER NOT NULL,
-   reception_id   INTEGER NOT NULL,
-   message_id     INTEGER NOT NULL,
-   recipient_role TEXT    NOT NULL,
-   contact_name   TEXT    NOT NULL, --  Dereferenced contact name.
-   reception_name TEXT    NOT NULL, --  Dereferenced reception name.
-
-   PRIMARY KEY (contact_id, reception_id, message_id)
 );
 
 --  The message_queue is a simple job-stack that, when a item is present in the
@@ -450,7 +440,6 @@ ALTER TABLE messaging_address_types OWNER TO openreception;
 ALTER TABLE messaging_end_points OWNER TO openreception;
 ALTER TABLE recipient_visibilities OWNER TO openreception;
 ALTER TABLE messages OWNER TO openreception;
-ALTER TABLE message_recipients OWNER TO openreception;
 ALTER TABLE message_queue OWNER TO openreception;
 ALTER TABLE message_queue_history OWNER TO openreception;
 ALTER TABLE calendar_events OWNER TO openreception;

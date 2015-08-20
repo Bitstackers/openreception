@@ -85,7 +85,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/message/{mid}', Message.get)
     ..put('/message/{mid}', Message.update)
     ..post('/message/{mid}/send', Message.send)
-    ..post('/message', Message.save);
+    ..post('/message', Message.create);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))

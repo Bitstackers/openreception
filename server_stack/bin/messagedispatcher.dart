@@ -51,20 +51,15 @@ void main(List<String> args) {
     log.shout(error, stackTrace);
   }
 }
+//
+///**
+// *
+// */
+//List<Model.MessageEndpoint> emailEndpoints(List<Model.MessageEndpoint> endpoints) =>
+//    endpoints.where((Model.MessageEndpoint endpoint) =>
+//        endpoint.type == Model.MessageEndpointType.EMAIL).toList();
+//
 
-/**
- *
- */
-List<Model.MessageEndpoint> emailEndpoints(List<Model.MessageEndpoint> endpoints) =>
-    endpoints.where((Model.MessageEndpoint endpoint) =>
-        endpoint.type == Model.MessageEndpointType.EMAIL).toList();
-
-/**
- *
- */
-List<Model.MessageRecipient> emailRecipients(Model.Message message) =>
-    message.recipients.where((Model.MessageRecipient recipient) =>
-        recipient.endpoints.contains(Model.MessageEndpointType.EMAIL)).toList();
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -76,7 +71,7 @@ void periodicEmailSend() {
   Router.messageQueueStore.list(maxTries : msgdisp.config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       log.info('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${msgdisp.config.mailerPeriod} seconds');
-      reSchedule();
+      //reSchedule();
     });
   }).catchError((error, stackTrace) {
     /// TODO (KRC, TL): We need to figure out what to do here. As it stands we
@@ -112,31 +107,35 @@ Timer reSchedule() =>
  *
  */
 bool showHelp() => parsedArgs['help'];
-
-/**
- *
- */
-List<Model.MessageRecipient> smsRecipients(Model.Message message) =>
-    message.recipients.where((Model.MessageRecipient recipient) =>
-        recipient.endpoints.contains(Model.MessageEndpointType.SMS)).toList();
+//
+///**
+// *
+// */
+//List<Model.DistributionListEntry> smsRecipients(Model.Message message) =>
+//    message.recipients.where((Model.DistributionListEntry recipient) =>
+//        recipient.endpoints.contains(Model.MessageEndpointType.SMS)).toList();
 
 /**
  *
  */
 Future tryDispatch(Model.MessageQueueItem queueItem) {
-  return queueItem.message(Router.messageStore).then((Model.Message message) {
+  return new Future(() {
+    log.severe('MessageDispatcher is currently disable due to heavy refactoring');
+  });
 
-    if (!message.recipients.hasRecipients) {
-      log.severe ("No recipients detected on message with ID ${message.ID}!");
-      queueItem.tries++;
-      queueItem.save(Router.messageQueueStore);
-
-    } else {
-
-      return new Future(() {
-        log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
-        Model.Template email = new Model.TemplateEmail(message, emailEndpoints(queueItem.unhandledEndpoints));
-        log.fine(email.toString());
+//  return queueItem.message(Router.messageStore).then((Model.Message message) {
+//
+//    if (!message.recipients.hasRecipients) {
+//      log.severe ("No recipients detected on message with ID ${message.ID}!");
+//      queueItem.tries++;
+//      queueItem.create(Router.messageQueueStore);
+//
+//    } else {
+//
+//      return new Future(() {
+//        log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
+//        Model.Template email = new Model.TemplateEmail(message, emailEndpoints(queueItem.unhandledRecipients));
+//        log.fine(email.toString());
 
 //        process.exitCode.then((int exitCode) {
 //          if (exitCode != 0) {
@@ -162,8 +161,8 @@ Future tryDispatch(Model.MessageQueueItem queueItem) {
 //            queueItem.save(Router.messageQueueStore);
 //          }
 //        });
-
-      });
-    }
-  });
+//
+//      });
+//    }
+// });
 }

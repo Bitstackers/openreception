@@ -11,8 +11,8 @@ abstract class DistributionList {
 
     return request.readAsString()
       .then(JSON.decode)
-      .then(Model.MessageRecipient.decode)
-      .then((Model.MessageRecipient rcp) =>
+      .then(Model.DistributionListEntry.decode)
+      .then((Model.DistributionListEntry rcp) =>
           _dlistDB.addRecipient(rid, cid, rcp)
           .then(JSON.encode)
           .then((String encodedString) =>
