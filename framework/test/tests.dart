@@ -75,7 +75,7 @@ void main() {
   Logger.root.level = Level.FINEST;
   Logger.root.onRecord.listen((LogRecord record) =>
       logMessage(record.toString()));
-  //JUnitConfiguration.install();
+  JUnitConfiguration.install();
 
   testBus();
 
