@@ -52,7 +52,7 @@ AND
     return _connection.query(sql, parameters).then((rows) {
       Model.DistributionList list = new Model.DistributionList.empty();
       for (var row in rows) {
-        Model.MessageRecipient recipient = new Model.MessageRecipient()
+        Model.DistributionListEntry recipient = new Model.DistributionListEntry()
           ..receptionID = row.recipient_reception_id
           ..receptionName = row.recipient_reception_name
           ..contactID = row.recipient_contact_id
@@ -66,8 +66,8 @@ AND
     });
   }
 
-  Future<Model.MessageRecipient> addRecipient(int ownerReceptionId, int ownerContactId,
-      Model.MessageRecipient recipient) {
+  Future<Model.DistributionListEntry> addRecipient(int ownerReceptionId, int ownerContactId,
+      Model.DistributionListEntry recipient) {
     String sql = '''
 INSERT INTO 
   distribution_list 

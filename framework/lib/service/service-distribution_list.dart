@@ -35,14 +35,14 @@ class RESTDistributionListStore implements Storage.DistributionList {
         .then(Model.DistributionList.decode);
   }
 
-  Future<Model.MessageRecipient> addRecipient(int receptionId, int contactId,
-      Model.MessageRecipient recipient) {
+  Future<Model.DistributionListEntry> addRecipient(int receptionId, int contactId,
+      Model.DistributionListEntry recipient) {
     Uri url = Resource.DistributionList.ofContact(this._host, receptionId, contactId);
     url = appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(recipient))
         .then(JSON.decode)
-        .then(Model.MessageRecipient.decode);
+        .then(Model.DistributionListEntry.decode);
   }
 
   Future removeRecipient(int entryId) {
