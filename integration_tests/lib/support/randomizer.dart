@@ -260,10 +260,13 @@ abstract class Randomizer {
   static String randomUsername() => randomChoice(userNames);
   static String randomTitle() => randomChoice(titles);
   static String randomCallerName() => randomChoice(callerNames);
+  static String randomContactName() => randomChoice(contacts);
   static String randomMessageBody() => randomChoice(messageBodies);
   static List<String> randomMessageFlags() => randomChoice(flagsLists);
   static String randomEndpointType() => randomChoice(Model.MessageEndpointType.types);
   static String randomRecipientRole() => randomChoice(Model.Role.RECIPIENT_ROLES);
+  static String randomContactType() => randomChoice(Model.ContactType.types);
+
 
 
   static String randomPhoneNumber() {
@@ -341,6 +344,12 @@ abstract class Randomizer {
       ..flag = randomOrganizationFlag()
       ..fullName = randomCompany();
 
+  static Model.BaseContact randomBaseContact() =>
+      new Model.BaseContact.empty()
+       ..contactType = randomContactType()
+       ..fullName    = randomContactName()
+       ..enabled     = rand.nextBool();
+
   /**
    * Constructs and returns a [Reception] object with random content.
    *
@@ -375,8 +384,8 @@ abstract class Randomizer {
   /**
    *
    */
-  static Model.MessageRecipient randomMessageRecipient() =>
-    new Model.MessageRecipient()
+  static Model.DistributionListEntry randomDistributionListEntry() =>
+    new Model.DistributionListEntry()
       ..contactID = rand.nextInt(4)
       ..contactName = randomCallerName()
       ..receptionID = rand.nextInt(4)
@@ -391,11 +400,11 @@ abstract class Randomizer {
    * recipients set before it is a valid parameter to a messageStore.
    */
   static Model.Message randomMessage() {
-    Model.Message message = new Model.Message();
+    Model.Message message = new Model.Message.empty();
     message..body = randomMessageBody()
-        ..caller = randomCaller()
+        ..callerInfo = randomCaller()
         ..createdAt = new DateTime.now()
-        ..flags = randomMessageFlags();
+        ..flag = new Model.MessageFlag(randomMessageFlags());
 
     return message;
   }
@@ -414,9 +423,9 @@ abstract class Randomizer {
   /**
    * Construct a random MessageCaller object.
    */
-  static Model.MessageCaller randomCaller() =>
-    new Model.MessageCaller()
-      ..cellphone = randomPhoneNumber()
+  static Model.CallerInfo randomCaller() =>
+    new Model.CallerInfo.empty()
+      ..cellPhone = randomPhoneNumber()
       ..company = randomCompany()
       ..localExtension = randomLocalExtension()
       ..name = '${randomTitle()} ${randomCallerName()}'

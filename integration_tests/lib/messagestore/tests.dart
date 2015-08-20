@@ -2,6 +2,72 @@ part of or_test_fw;
 
 
 void runMessageTests() {
+
+  group ('Database.Message', () {
+    Storage.Reception receptionStore;
+    Storage.Contact contactStore;
+    Transport.Client transport;
+    Receptionist r;
+
+
+    Database.Message messageDB;
+    Database.Connection connection;
+
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        messageDB = new Database.Message(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('list',
+        () => MessageStore.list(messageDB));
+
+    test ('get',
+        () => MessageStore.get(messageDB));
+
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        messageDB = new Database.Message(connection);
+
+        transport = new Transport.Client();
+        receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
+              Config.serverToken, transport);
+        contactStore = new Service.RESTContactStore(Config.contactStoreUri,
+              Config.serverToken, transport);
+        r = ReceptionistPool.instance.aquire();
+
+        return r.initialize();
+      });
+    });
+
+
+   tearDown (() {
+     receptionStore = null;
+     contactStore = null;
+     transport.client.close(force : true);
+     return connection.close().then((_) => r.teardown());
+
+   });
+
+    test ('create',
+        () => MessageStore.create(messageDB, contactStore, receptionStore, r));
+
+    test ('update',
+        () => MessageStore.update(messageDB, contactStore, receptionStore, r));
+  });
+
   group('RESTMessageStore', () {
     Transport.Client transport = null;
     Storage.Message messageStore = null;
@@ -35,16 +101,16 @@ void runMessageTests() {
     });
 
    test('message listing (non-filtered)',
-     () => RESTMessageStore.messageList(messageStore));
+     () => MessageStore.list(messageStore));
 
    test('message (non-existing ID)',
      () => RESTMessageStore.nonExistingMessage(messageStore));
 
-   test('message (existing ID)',
-     () => RESTMessageStore.existingMessage(messageStore));
+   test('get',
+     () => MessageStore.get(messageStore));
 
-   test('message update',
-     () => RESTMessageStore.messageUpdate (messageStore));
+   test('list',
+     () => MessageStore.list (messageStore));
 
    tearDown (() {
      messageStore = null;
@@ -70,23 +136,21 @@ void runMessageTests() {
      return r.initialize();
    });
 
-   test('message create',
-     () => RESTMessageStore.messageCreate
-             (messageStore, contactStore, receptionStore, r));
+    test ('create',
+        () => MessageStore.create(messageStore, contactStore, receptionStore, r));
 
-   test('message send',
-     () => RESTMessageStore.messageSend
-             (messageStore, contactStore, receptionStore, r));
+    test ('update',
+        () => MessageStore.update(messageStore, contactStore, receptionStore, r));
 
-   test('message enqueue (event presence)',
-     () => RESTMessageStore.messageEnqueueEvent
-             (messageStore, contactStore, receptionStore, r));
-
-   test('message update (event presence)',
-     () => RESTMessageStore.messageUpdateEvent (messageStore, r));
-
-   test('message create (event presence)',
-     () => RESTMessageStore.messageCreateEvent
-             (messageStore, contactStore, receptionStore, r));
+//   test('message enqueue (event presence)',
+//     () => RESTMessageStore.messageEnqueueEvent
+//             (messageStore, contactStore, receptionStore, r));
+//
+//   test('message update (event presence)',
+//     () => RESTMessageStore.messageUpdateEvent (messageStore, r));
+//
+//   test('message create (event presence)',
+//     () => RESTMessageStore.messageCreateEvent
+//             (messageStore, contactStore, receptionStore, r));
   });
 }

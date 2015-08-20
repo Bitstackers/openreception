@@ -55,6 +55,7 @@ part 'contact/all_tests.dart';
 /// Message store service tests
 part 'messagestore/tests.dart';
 part 'messagestore/src/rest_message_store.dart';
+part 'messagestore/src/message_store.dart';
 
 /// Data management service tests
 part 'managementserver/all_tests.dart';
