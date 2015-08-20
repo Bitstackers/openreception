@@ -12,11 +12,4 @@ class organization {
       expect(error, new isInstanceOf<Storage.NotFound>());
     });
   }
-
-  static Future getOrganizationList() {
-    return organizationStore.list().then((List<Model.Organization> organizations) {
-      expect(organizations, isNotNull);
-      expect(organizations.any((org) => org.id == 1), isTrue);
-    });
-  }
 }
