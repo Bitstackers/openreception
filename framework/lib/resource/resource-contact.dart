@@ -66,4 +66,7 @@ abstract class Contact {
   static Uri colleagues(Uri host, int contactID)
     => Uri.parse('${root(host)}/${contactID}/colleagues');
 
+  static Uri organizationContacts(Uri host, int oid)
+    => Uri.parse('$host/contact/organization/${oid}');
+
 }

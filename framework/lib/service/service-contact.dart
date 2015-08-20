@@ -90,8 +90,8 @@ class RESTContactStore implements Storage.Contact {
         new Model.BaseContact.fromMap(JSON.decode(response)));
   }
 
-  Future remove(Model.BaseContact contact) {
-    Uri url = Resource.Contact.single(this._host, contact.id);
+  Future remove(contactId) {
+    Uri url = Resource.Contact.single(this._host, contactId);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -226,5 +226,27 @@ class RESTContactStore implements Storage.Contact {
     return this._backend.get(url).then(
         (String response) => (JSON.decode(response) as Iterable)
             .map((Map map) => new Model.BaseContact.fromMap(map)));
+  }
+
+  Future<Model.Contact> addToReception(Model.Contact contact, int receptionID){
+    throw new UnimplementedError();
+  }
+
+
+  Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId) {
+    Uri url = Resource.Contact.organizationContacts(this._host, organizationId);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then(
+        (String response) => (JSON.decode(response) as Iterable)
+            .map((Map map) => new Model.BaseContact.fromMap(map)));
+  }
+
+  Future<Model.Contact> removeFromReception(Model.Contact contact, int receptionID) {
+    throw new UnimplementedError();
+  }
+
+  Future<Model.Contact> updateInReception(Model.Contact contact, int receptionID) {
+    throw new UnimplementedError();
   }
 }
