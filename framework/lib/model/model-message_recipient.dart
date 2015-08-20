@@ -13,59 +13,68 @@
 
 part of openreception.model;
 
-class MessageRecipient extends MessageContext {
+class MessageRecipient {
 
-  static const int noId = 0;
-
-  int id = noId;
-  String                role      = '';
-  List<MessageEndpoint> endpoints = [];
+  String role = '';
+  String name;
+  String type;
+  String address;
 
   /**
    * Default constructor.
    */
-  MessageRecipient();
+  MessageRecipient(MessageEndpoint ep, DistributionListEntry de) {
+    role = de.role;
+    name = '${de.contactName} (${de.receptionName})';
+    type = ep.type;
+    address = ep.address;
+  }
+
 
   /**
-   * Parsing constructor. Takes in an object similar to MessageContext, with the
-   * exception of having an extra 'role' field.
-   * TODO: Check if role is ever passed to this constructor, and eliminate it
-   * otherwise.
+   * Default empty constructor.
    */
-  MessageRecipient.fromMap(Map map, {String role : Role.TO}) : super.fromMap(map) {
+  MessageRecipient.empty();
 
-    id = map[Key.ID];
-
-    if (map.containsKey(Key.role)) {
-      this.role = map[Key.role];
-    }
-
-    if (map.containsKey('endpoints')) {
-      this.endpoints = (map['endpoints'] as List).map ((Map endpointMap) =>
-          new MessageEndpoint.fromMap(endpointMap)..recipient = this).toList();
-    }
+  /**
+   * Parsing constructor.
+   */
+  MessageRecipient.fromMap(Map map) {
+    role = map[Key.role];
+    name = map[Key.name];
+    type = map[Key.type];
+    address = map[Key.address];
   }
 
   /**
-   * Map representation
+   * Returns a map representation of the object. Suitable for serialization.
    */
-  Map get asMap => super.asMap..addAll({Key.ID : id, Key.role : role});
+  Map get asMap =>
+      {Key.role: role, Key.name: name, Key.type: type, Key.address: address};
 
   /**
    * Deserializing factory constructor.
    */
-  static MessageRecipient decode (Map map) =>
-    new MessageRecipient.fromMap(map);
+  static MessageRecipient decode(Map map) => new MessageRecipient.fromMap(map);
 
   /**
    * String representation of object.
    */
-  String toString() => '${this.role}: ${super.toString()}, endpoints: ${this.endpoints}';
+  String toString() => '${role}: <${name}>$type:$address';
+
+  /**
+   * JSON serialization function
+   */
+  Map toJson() => this.asMap;
 
   /**
    *
    */
   @override
-  bool operator ==(MessageRecipient other) => this.contactID   == other.contactID &&
-                                              this.receptionID == other.receptionID;
+  bool operator ==(MessageRecipient other) =>
+      this.type == other.type && this.address == other.address;
+
+  @override
+  int get hashcode => '$type:$address'.hashCode;
+
 }

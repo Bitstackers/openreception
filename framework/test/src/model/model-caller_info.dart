@@ -47,6 +47,7 @@ abstract class ModelCallerInfo {
     expect(serializedObject, isNotNull);
     expect(serializedObject, isNotEmpty);
   }
+
   /**
    * Build an object, and check that the expected values are present.
    */

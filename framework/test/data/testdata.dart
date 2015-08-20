@@ -255,25 +255,20 @@ Map testContact_4_1 = {
   "wants_messages": true,
   "enabled": true,
   "full_name": "Kim Rostgaard Christensen",
-  "distribution_list": {
-    "to": [
-      {
-        "id": 1,
-        "role": "to",
-        "contact": {"id": 4, "name": "Kim Rostgaard Christensen"},
-        "reception": {"id": 1, "name": "BitStackers"}
-      }
-    ],
-    "cc": [
-      {
-        "id": 2,
-        "role": "cc",
-        "contact": {"id": 2, "name": null},
-        "reception": {"id": 1, "name": "BitStackers"}
-      }
-    ],
-    "bcc": []
-  },
+  "distribution_list": [
+    {
+      "id": 1,
+      "role": "to",
+      "contact": {"id": 4, "name": "Kim Rostgaard Christensen"},
+      "reception": {"id": 1, "name": "BitStackers"}
+    },
+    {
+      "id": 2,
+      "role": "cc",
+      "contact": {"id": 2, "name": null},
+      "reception": {"id": 1, "name": "BitStackers"}
+    }
+  ],
   "contact_type": "human",
   "phones": [
     {
@@ -332,29 +327,31 @@ Map testMessage_1_Map = {
     "name": "Jens Olsen",
     "company": "Blik A/S",
     "phone": "22114411",
-    "cellphone": "33551122"
+    "cellPhone": "33551122",
+    "localExtension": "22"
   },
-  "flags": ["urgent"],
+  "flags": {
+    "pleaseCall": true,
+    "willCallBack": true,
+    "called": true,
+    "urgent": true,
+    "manuallyClosed": true
+  },
   "sent": false,
   "enqueued": true,
   "created_at": 1411987105,
-  "recipients": {
-    "bcc": [],
-    "cc": [
-      {
-        "id": 1,
-        "role": "cc",
-        "contact": {"id": 4, "name": "Kim Rostgaard Chrisensen"},
-        "reception": {"id": 2, "name": "Gir"}
-      }
-    ],
-    "to": [
-      {
-        "id": 2,
-        "role": "to",
-        "contact": {"id": 4, "name": "Kim Rostgaard Chrisensen"},
-        "reception": {"id": 1, "name": "BitStackers"}
-      }
-    ]
-  }
+  "recipients": [
+    {
+      "id": 1,
+      "role": "cc",
+      "contact": {"id": 4, "name": "Kim Rostgaard Chrisensen"},
+      "reception": {"id": 2, "name": "Gir"}
+    },
+    {
+      "id": 2,
+      "role": "to",
+      "contact": {"id": 4, "name": "Kim Rostgaard Chrisensen"},
+      "reception": {"id": 1, "name": "BitStackers"}
+    }
+  ]
 };

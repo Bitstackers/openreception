@@ -90,6 +90,8 @@ void main() {
   testModelClientConfiguration();
   testModelClientConnection();
   testModelContact();
+  testModelDistributionList();
+
   testModelOrganization();
   testModelReception();
   testModelMessage();
@@ -97,7 +99,7 @@ void main() {
   testModelMessageContext();
   testModelMessageFilter();
   testModelMessageRecipient();
-  testModelMessageRecipientList();
+
   testModelPhoneNumber();
   testModelUserStatus();
   testModelUser();

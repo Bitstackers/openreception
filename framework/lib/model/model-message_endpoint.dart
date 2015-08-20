@@ -42,7 +42,7 @@ class MessageEndpoint {
   bool enabled;
 
   @deprecated
-  MessageRecipient recipient = null;
+  DistributionListEntry recipient = null;
 
   /**
    * Default empty constructor.
@@ -63,7 +63,7 @@ class MessageEndpoint {
 
     enabled = map[Key.enabled];
     if (map.containsKey('recipient')) {
-      recipient = new MessageRecipient.fromMap(map['recipient']);
+      recipient = new DistributionListEntry.fromMap(map['recipient']);
     }
   }
 

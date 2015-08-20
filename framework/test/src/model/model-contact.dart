@@ -17,19 +17,23 @@ testModelContact() {
   group('Model.Contact', () {
     test('deserialization', ModelContact.deserialization);
 
-    test('serializationDeserialization',
-        ModelContact.serializationDeserialization);
+    test('serialization', ModelContact.serialization);
 
     test('Model.Contact buildObject', ModelContact.buildObject);
   });
 }
 
 abstract class ModelContact {
-  static void deserialization() => expect(
-      new Model.Contact.fromMap(Test_Data.testContact_4_1).asMap,
-      equals(Test_Data.testContact_4_1));
 
-  static void serializationDeserialization() {
+  static void serialization() {
+    Model.Contact builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+  static void deserialization() {
     Model.Contact builtObject = buildObject();
     Model.Contact deserializedObject =
         new Model.Contact.fromMap(JSON.decode(JSON.encode(builtObject)));
@@ -103,8 +107,8 @@ abstract class ModelContact {
         ..enabled = true
         ..type = 'fishmail'
     ];
-    final Model.MessageRecipientList dl = new Model.MessageRecipientList.empty()
-      ..add(new Model.MessageRecipient()
+    final Model.DistributionList dl = new Model.DistributionList.empty()
+      ..add(new Model.DistributionListEntry()
         ..role = Model.Role.TO
         ..contactID = contactID
         ..contactName = fullName

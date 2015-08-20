@@ -64,9 +64,9 @@ class Contact {
   List<String> infos = [];
 
 
-  MessageRecipientList _distributionList    = new MessageRecipientList.empty();
-  MessageRecipientList get distributionList => this._distributionList;
-  void set distributionList (MessageRecipientList newList) {
+  DistributionList _distributionList    = new DistributionList.empty();
+  DistributionList get distributionList => this._distributionList;
+  void set distributionList (DistributionList newList) {
     this._distributionList = newList;
   }
 
@@ -80,7 +80,7 @@ class Contact {
         Key.wantsMessages    : this.wantsMessage,
         Key.enabled          : this.enabled,
         Key.fullName         : this.fullName,
-        Key.distributionList : this.distributionList.asMap,
+        Key.distributionList : this.distributionList.toJson(),
         Key.contactType      : this.contactType,
         Key.phones           : this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
         Key.endpoints        : this.endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
@@ -110,7 +110,7 @@ class Contact {
     this.wantsMessage      = mapValue(Key.wantsMessages, map);
     this.enabled           = mapValue(Key.enabled, map);
     this.fullName          = mapValue(Key.fullName, map);
-    this._distributionList = new MessageRecipientList.fromMap(mapValue(Key.distributionList, map));
+    this._distributionList = DistributionList.decode(mapValue(Key.distributionList, map));
     this.contactType       = mapValue(Key.contactType, map);
 
     this.messagePrerequisites =

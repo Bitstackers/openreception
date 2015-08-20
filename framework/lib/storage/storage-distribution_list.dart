@@ -17,8 +17,8 @@ abstract class DistributionList {
 
   Future<Model.DistributionList> list(int receptionId, int contactId);
 
-  Future<Model.MessageRecipient> addRecipient(int ownerReceptionId,
-      int ownerContactId, Model.MessageRecipient recipient);
+  Future<Model.DistributionListEntry> addRecipient(int ownerReceptionId,
+      int ownerContactId, Model.DistributionListEntry recipient);
 
   Future removeRecipient(int entryId);
 }

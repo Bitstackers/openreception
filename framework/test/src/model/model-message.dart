@@ -15,21 +15,107 @@ part of openreception.test;
 
 void testModelMessage() {
   group('Model.Message', () {
-    test('serializationDeserialization',
-         ModelMessage.serializationDeserialization);
+    test('deserialization', ModelMessage.deserialization);
     test('serialization', ModelMessage.serialization);
+    test('buildObject', ModelMessage.buildObject);
   });
 }
 
 abstract class ModelMessage {
-  static void serializationDeserialization() => expect(
-      new Model.Message.fromMap(Test_Data.testMessage_1_Map).asMap,
-      equals(Test_Data.testMessage_1_Map));
+  static void deserialization() {
+    Model.Message obj = buildObject();
+    Model.Message deserializedObj =
+        new Model.Message.fromMap(JSON.decode(JSON.encode(obj)));
 
+    expect(obj.body, equals(deserializedObj.body));
+    expect(obj.callerInfo.asMap, equals(deserializedObj.callerInfo.asMap));
+
+    expect(obj.createdAt.difference(deserializedObj.createdAt).abs(),
+           lessThan(new Duration(seconds : 1)));
+
+    expect(obj.flag.called, equals(deserializedObj.flag.called));
+    expect(
+        obj.flag.manuallyClosed, equals(deserializedObj.flag.manuallyClosed));
+    expect(obj.flag.pleaseCall, equals(deserializedObj.flag.pleaseCall));
+    expect(obj.flag.urgent, equals(deserializedObj.flag.urgent));
+    expect(obj.flag.willCallBack, equals(deserializedObj.flag.willCallBack));
+    expect(obj.ID, equals(deserializedObj.ID));
+    expect(
+        obj.context.asMap, equals(deserializedObj.context.asMap));
+    expect(obj.recipients.toList(), equals(deserializedObj.recipients.toList()));
+    expect(obj.senderId, equals(deserializedObj.senderId));
+
+    expect(obj.asMap, equals(deserializedObj.asMap));
+  }
+
+  static void serialization() {
+
+    Model.Message builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
   /**
-   * Merely asserts that no exceptions arise.
+   * Build an object, and check that the expected values are present.
    */
-  static void serialization() => expect(
-      () => new Model.Message.fromMap(Test_Data.testMessage_1_Map),
-      returnsNormally);
+  static Model.Message buildObject() {
+    final Model.CallerInfo info = new Model.CallerInfo.empty()
+      ..cellPhone = 'Drowned'
+      ..company = 'Shifty eyes inc.'
+      ..localExtension = 'Just ask for Bob'
+      ..name = 'Ian Malcom'
+      ..phone = 'Out of order';
+
+    final int senderId = ModelUser.buildObject().ID;
+
+    Set rlist = new Set()
+      ..addAll([
+        new Model.MessageRecipient.empty()
+          ..address = 'somewhere'
+          ..name = 'someone'
+          ..role = Model.Role.TO
+          ..type = Model.MessageEndpointType.types.first
+        ]);
+
+    final messageBody = 'You should really clean up.';
+    final createdAt = new DateTime.now();
+    final id = 42;
+
+    final Model.MessageContext context = new Model.MessageContext.empty()
+      ..contactID = 2
+      ..contactName = 'John Doe'
+      ..receptionID = 4
+      ..receptionName = 'Nowhere';
+
+    final Model.Message obj = new Model.Message.empty()
+      ..body = messageBody
+      ..callerInfo = info
+      ..createdAt = createdAt
+      ..flag.called = true
+      ..flag.manuallyClosed = true
+      ..flag.pleaseCall = true
+      ..flag.urgent = true
+      ..flag.willCallBack = true
+      ..ID = id
+      ..context = context
+      ..recipients = rlist
+      ..senderId = senderId;
+
+    expect(obj.body, equals(messageBody));
+    expect(obj.callerInfo.asMap, equals(info.asMap));
+    expect(obj.createdAt, equals(createdAt));
+    expect(obj.flag.called, isTrue);
+    expect(obj.flag.manuallyClosed, isTrue);
+    expect(obj.flag.pleaseCall, isTrue);
+    expect(obj.flag.urgent, isTrue);
+    expect(obj.flag.willCallBack, isTrue);
+    expect(obj.ID, equals(id));
+    expect(obj.context.asMap, equals(context.asMap));
+    expect(obj.recipients.toList(), equals(rlist.toList()));
+    expect(obj.senderId, equals(senderId));
+
+    return obj;
+  }
+
 }

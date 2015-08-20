@@ -97,7 +97,7 @@ class MessageFilter {
    */
   bool appliesTo (Message message) => [message.context.contactID, null].contains(this.contactID) &&
                                       [message.context.receptionID, null].contains(this.receptionID) &&
-                                      [message._sender.ID, null].contains(this.userID) &&
+                                      [message.senderId, null].contains(this.userID) &&
                                       [MessageState.ofMessage(message), null].contains(this.contactID);
 
   /**

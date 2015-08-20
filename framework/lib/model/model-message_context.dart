@@ -18,26 +18,21 @@ class MessageContext {
 
   final String className = libraryName + "MessageContext";
 
-  /* Private fields */
-  int _contactID;
-  int _receptionID;
-  String _contactName;
-  String _receptionName;
-
-  /* Getters and setters, chunk-o-boilerplate code. */
-  int    get contactID                      => this._contactID;
-         set contactID (int newID)          => this._contactID = newID;
-  String get contactName                    => this._contactName;
-         set contactName (String newName)   => this._contactName = newName;
-  int    get receptionID                    => this._receptionID;
-         set receptionID (int newID)        => this._receptionID = newID;
-  String get receptionName                  => this._receptionName;
-         set receptionName (String newName) => this._receptionName = newName;
+  int contactID = 0;
+  int receptionID = 0;
+  String contactName = '';
+  String receptionName = '';
 
   /**
    * Default constructor.
    */
+  @deprecated
   MessageContext();
+
+  /**
+   * Default empty constructor.
+   */
+  MessageContext.empty();
 
   /**
    * Constructor. Deserializes the object from Map representation.
@@ -57,10 +52,10 @@ class MessageContext {
    * Creates a messagContext from a [Contact] object
    */
   MessageContext.fromContact(Contact contact, Reception reception) {
-    this.contactID = contact.ID;
-    this.contactName = contact.fullName;
-    this.receptionID = reception.ID;
-    this.receptionName = reception.name;
+    contactID = contact.ID;
+    contactName = contact.fullName;
+    receptionID = reception.ID;
+    receptionName = reception.name;
   }
 
   /**
@@ -68,25 +63,14 @@ class MessageContext {
    */
   Map get asMap => {
     'contact'   : {
-      'id'  : this.contactID,
-      'name': this.contactName
+      'id'  : contactID,
+      'name': contactName
     },
     'reception' : {
-      'id'  : this.receptionID,
-      'name': this.receptionName
+      'id'  : receptionID,
+      'name': receptionName
     }
   };
-
-  /**
-   * TODO: Change contactID and receptionID to use the constants from shared model classes.
-   */
-  void validate() {
-    if (this.contactID   == null || this.contactID   == 0 ||
-        this.receptionID == null || this.receptionID == 0) {
-      throw new ArgumentError.value
-        (this.asMap, 'validate', 'Failed to validate');
-    }
-  }
 
   Map toJson () => this.asMap;
 
@@ -96,7 +80,7 @@ class MessageContext {
   }
 
   @override
-  bool operator ==(MessageRecipient other) => this.contactID   == other.contactID &&
+  bool operator ==(DistributionListEntry other) => this.contactID   == other.contactID &&
                                               this.receptionID == other.receptionID;
 
   String get contactString => contactID.toString() + "@" + receptionID.toString();
