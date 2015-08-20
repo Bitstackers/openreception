@@ -3,34 +3,34 @@ part of or_test_fw;
 abstract class RESTMessageStore {
   static const int invalidMessageID = -1;
 
-  static final Logger log = new Logger ('$libraryName.RESTMessageStore');
+  static final Logger log = new Logger('$libraryName.RESTMessageStore');
 
   /**
    * Test for the presence of CORS headers.
    */
   static Future isCORSHeadersPresent(HttpClient client) {
-
-    Uri uri = Uri.parse ('${Config.messageStoreUri}/nonexistingpath');
+    Uri uri = Uri.parse('${Config.messageStoreUri}/nonexistingpath');
 
     log.info('Checking CORS headers on a non-existing URL.');
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) => request.close()
-      .then((HttpClientResponse response) {
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) => request
+            .close()
+            .then((HttpClientResponse response) {
+      if (response.headers['access-control-allow-origin'] == null &&
+          response.headers['Access-Control-Allow-Origin'] == null) {
+        fail('No CORS headers on path $uri');
+      }
+    })).then((_) {
+      log.info('Checking CORS headers on an existing URL.');
+      uri = Resource.Reception.single(Config.messageStoreUri, 1);
+      return client.getUrl(uri).then((HttpClientRequest request) => request
+          .close()
+          .then((HttpClientResponse response) {
         if (response.headers['access-control-allow-origin'] == null &&
             response.headers['Access-Control-Allow-Origin'] == null) {
-          fail ('No CORS headers on path $uri');
+          fail('No CORS headers on path $uri');
         }
-      }))
-      .then ((_) {
-        log.info('Checking CORS headers on an existing URL.');
-        uri = Resource.Reception.single (Config.messageStoreUri, 1);
-        return client.getUrl(uri)
-          .then((HttpClientRequest request) => request.close()
-          .then((HttpClientResponse response) {
-          if (response.headers['access-control-allow-origin'] == null &&
-              response.headers['Access-Control-Allow-Origin'] == null) {
-            fail ('No CORS headers on path $uri');
-          }
       }));
     });
   }
@@ -41,20 +41,23 @@ abstract class RESTMessageStore {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static Future nonExistingPath (HttpClient client) {
-    Uri uri = Uri.parse ('${Config.messageStoreUri}/nonexistingpath?token=${Config.serverToken}');
+  static Future nonExistingPath(HttpClient client) {
+    Uri uri = Uri.parse(
+        '${Config.messageStoreUri}/nonexistingpath?token=${Config.serverToken}');
 
     log.info('Checking server behaviour on a non-existing path.');
 
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) => request.close()
-      .then((HttpClientResponse response) {
-        if (response.statusCode != 404) {
-          fail ('Expected to received a 404 on path $uri');
-        }
-      }))
-      .then((_) => log.info('Got expected status code 404.'))
-      .whenComplete(() => client.close(force : true));
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) => request
+            .close()
+            .then((HttpClientResponse response) {
+      if (response.statusCode != 404) {
+        fail('Expected to received a 404 on path $uri');
+      }
+    }))
+        .then((_) => log.info('Got expected status code 404.'))
+        .whenComplete(() => client.close(force: true));
   }
 
   /**
@@ -63,145 +66,103 @@ abstract class RESTMessageStore {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static void nonExistingMessage (Storage.Message messageStore) {
-
+  static void nonExistingMessage(Storage.Message messageStore) {
     log.info('Checking server behaviour on a non-existing message.');
 
     return expect(messageStore.get(invalidMessageID),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+        throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
-  static Future messageSend(Storage.Message messageStore,
-                              Storage.Contact contactStore,
-                              Storage.Reception receptionStore,
-                              Receptionist sender) {
-
-    int receptionID = 1;
-    int contactID = 4;
-
-    return contactStore.getByReception(contactID, receptionID)
-      .then((Model.Contact contact) =>
-        receptionStore.get(receptionID)
-          .then((Model.Reception reception) {
-            Model.Message newMessage = Randomizer.randomMessage()
-              ..context = new Model.MessageContext.fromContact
-                            (contact, reception)
-              ..recipients = contact.distributionList
-              ..senderId = sender.user.ID;
-
-            return messageStore.save(newMessage)
-              .then((Model.Message savedMessage) =>
-                messageStore.enqueue(savedMessage));
-    }));
-  }
-
+  /**
+   *
+   */
   static Future messageFilter(Storage.Message messageStore) {
     Model.MessageFilter filter = new Model.MessageFilter.empty();
 
-
-    return messageStore.list(filter : filter)
-      .then((Iterable<Model.Message> messages) {
-        expect (messages.length, greaterThan(0));
+    return messageStore
+        .list(filter: filter)
+        .then((Iterable<Model.Message> messages) {
+      expect(messages.length, greaterThan(0));
 
       /// Update the filter
       filter.receptionID = messages.first.context.receptionID;
-    })
-    .then ((_) => messageStore.list(filter : filter)
+    }).then((_) => messageStore
+        .list(filter: filter)
         .then((Iterable<Model.Message> messages) {
-
       bool matchesFilter(Model.Message message) =>
           message.context.receptionID == filter.receptionID;
 
-      expect (messages.every(matchesFilter), isTrue);
-
+      expect(messages.every(matchesFilter), isTrue);
     }));
   }
 
-  static Future messageCreateEvent(Storage.Message messageStore,
-                                   Storage.Contact contactStore,
-                                   Storage.Reception receptionStore,
-                                   Receptionist sender) {
-
+  static Future messageCreateEvent(Service.RESTMessageStore messageStore,
+      Storage.Contact contactStore, Storage.Reception receptionStore,
+      Receptionist sender) {
     log.info('Started messageCreateEvent test');
 
-    int receptionID = 1;
-    int contactID = 4;
-    Model.Reception reception;
-    Model.Contact contact;
-
-    return MessageStore._createMessage(messageStore, contactStore, receptionStore, sender)
-        .then((Model.Message message) =>
-            sender.waitFor(eventType : Event.Key.messageChange)
-        .then((Event.MessageChange changeEvent) {
-          expect (changeEvent.messageID, isNotNull);
-          expect (changeEvent.messageID, equals(message.ID));
-    }))
-    .whenComplete(() => log.info('Finished messageCreateEvent test'));
+    return MessageStore
+        ._createMessage(messageStore, contactStore, receptionStore, sender)
+        .then((Model.Message message) => sender
+            .waitFor(eventType: Event.Key.messageChange)
+            .then((Event.MessageChange changeEvent) {
+      expect(changeEvent.messageID, isNotNull);
+      expect(changeEvent.messageID, equals(message.ID));
+    })).whenComplete(() => log.info('Finished messageCreateEvent test'));
   }
 
   static Future messageEnqueueEvent(Storage.Message messageStore,
-                                   Storage.Contact contactStore,
-                                   Storage.Reception receptionStore,
-                                   Receptionist sender) {
-    int receptionID = 1;
-    int contactID = 4;
-    int messageID;
-    Model.Reception reception;
-    Model.Contact contact;
+      Storage.Contact contactStore, Storage.Reception receptionStore,
+      Receptionist sender) {
+    return MessageStore
+        ._createMessage(messageStore, contactStore, receptionStore, sender)
+        .then((Model.Message createdMessage) {
+      {
+        Model.Message randMsg = Randomizer.randomMessage();
+        randMsg.ID = createdMessage.ID;
+        randMsg.context = createdMessage.context;
+        randMsg.senderId = createdMessage.senderId;
+        createdMessage = randMsg;
+      }
 
-    log.info('Starting messageEnqueueEvent test');
+      return messageStore.enqueue(createdMessage).then((_) {
+        bool idAndStateMatches(Event.Event event) {
+          if (event is Event.MessageChange) {
+            return event.messageID == createdMessage.ID &&
+                event.state == Event.MessageChangeState.UPDATED;
+          }
 
-    return contactStore.getByReception(contactID, receptionID)
-        .then((Model.Contact c) =>
-          contact = c)
-      .then((_) => receptionStore.get(receptionID)
-        .then((Model.Reception r) =>
-            reception = r)
-      .then((_) {
-         Model.Message newMessage = Randomizer.randomMessage()
-           ..context = new Model.MessageContext.fromContact
-                       (contact, reception)
-           ..recipients = contact.distributionList
-           ..senderId = sender.user.ID;
-         return messageStore.save(newMessage)
-           .then((Model.Message savedMessage) =>
-             sender.waitFor(eventType: Event.Key.messageChange)
-             .then((Event.MessageChange event) {
+          return false;
+        }
 
-                newMessage.ID = savedMessage.ID;
-                messageID = savedMessage.ID;
-                log.finest(savedMessage.asMap);
-                log.finest(newMessage.asMap);
-                sender.eventStack.clear();
-         }))
-           .then((_) => messageStore.save(newMessage)
-               .then((Model.Message savedMessage) =>
-                 messageStore.enqueue(savedMessage)
-               .then((_) => sender.waitFor(eventType: Event.Key.messageChange)
-                 .then((Event.MessageChange event) {
-                    expect (event.messageID, equals(messageID));
-           }))));
-     }))
-     .whenComplete(() => log.info('Finished messageEnqueueEvent test'));
+        return sender.notificationSocket.eventStream
+            .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 100));
+      });
+    });
   }
-  static Future messageUpdateEvent(Storage.Message messageStore,
-                                   Receptionist sender) {
 
+  /**
+   *
+   */
+  static Future messageUpdateEvent(Storage.Message messageStore,
+      Storage.Contact contactStore, Storage.Reception receptionStore,
+      Receptionist sender) {
     log.info('Started messageUpdateEvent test');
 
-    return messageStore.list()
-        .then((Iterable<Model.Message> messages) {
-      Model.Message message = messages.last;
+    return MessageStore
+        ._createMessage(messageStore, contactStore, receptionStore, sender)
+        .then((Model.Message createdMessage) {
+      bool idAndStateMatches(Event.Event event) {
+        if (event is Event.MessageChange) {
+          return event.messageID == createdMessage.ID &&
+              event.state == Event.MessageChangeState.UPDATED;
+        }
 
-      message..body = Randomizer.randomMessageBody()
-             ..callerInfo = Randomizer.randomCaller();
+        return false;
+      }
 
-      return messageStore.save(message)
-        .then((_) => sender.waitFor(eventType: Event.Key.messageChange)
-          .then((Event.MessageChange event) {
-            expect(event.messageID, equals(message.ID));
-      }));
-    })
-    .whenComplete(() => log.info('Finished messageUpdateEvent test'));
+      return sender.notificationSocket.eventStream
+          .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 100));
+    }).whenComplete(() => log.info('Finished messageUpdateEvent test'));
   }
 }

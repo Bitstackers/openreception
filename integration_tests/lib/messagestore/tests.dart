@@ -145,12 +145,12 @@ void runMessageTests() {
 //   test('message enqueue (event presence)',
 //     () => RESTMessageStore.messageEnqueueEvent
 //             (messageStore, contactStore, receptionStore, r));
-//
-//   test('message update (event presence)',
-//     () => RESTMessageStore.messageUpdateEvent (messageStore, r));
-//
-//   test('message create (event presence)',
-//     () => RESTMessageStore.messageCreateEvent
-//             (messageStore, contactStore, receptionStore, r));
+
+   test('message update (event presence)',
+     () => RESTMessageStore.messageUpdateEvent  (messageStore, contactStore, receptionStore, r));
+
+   test('message create (event presence)',
+     () => RESTMessageStore.messageCreateEvent
+             (messageStore, contactStore, receptionStore, r));
   });
 }
