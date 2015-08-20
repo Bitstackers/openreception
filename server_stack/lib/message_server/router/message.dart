@@ -40,9 +40,10 @@ abstract class Message {
       return request.readAsString().then((String content) {
         try {
           Model.Message parameterMessage =
-              new Model.Message.fromMap(JSON.decode(content))..sender = user;
+              new Model.Message.fromMap(JSON.decode(content))
+              ..senderId = user.ID;
 
-          return _messageStore.save(parameterMessage)
+          return _messageStore.update(parameterMessage)
               .then((Model.Message message) {
             if (parameterMessage.ID == Model.Message.noID) {
               Event.MessageChange event =
@@ -129,7 +130,7 @@ abstract class Message {
 
         try {
           message = new Model.Message.fromMap(JSON.decode(content))
-            ..sender = user;
+            ..senderId = user.ID;
 
           if ([Model.Message.noID, null].contains(message.ID)) {
             return new shelf.Response(400, body : 'Invalid message ID');
@@ -174,14 +175,15 @@ abstract class Message {
    * Persistently stores a messages. If the message already exists, the
    * message - and the it's contents - are replaced by the one passed by the client.
    */
-  static Future<shelf.Response> save (shelf.Request request) {
+  static Future<shelf.Response> create (shelf.Request request) {
 
     return _authService.userOf(_tokenFrom (request)).then((Model.User user) {
       return request.readAsString().then((String content) {
 
         try {
           Model.Message message =
-              new Model.Message.fromMap(JSON.decode(content))..sender = user;
+              new Model.Message.fromMap(JSON.decode(content))
+              ..senderId = user.ID;
 
           if (message.ID != Model.Message.noID) {
             return new shelf.Response(400, body :
@@ -190,7 +192,7 @@ abstract class Message {
           }
 
 
-          return _messageStore.save(message)
+          return _messageStore.create(message)
             .then((Model.Message message) {
               Event.MessageChange event = new Event.MessageChange
                   (message.ID, Event.MessageChangeState.UPDATED);
