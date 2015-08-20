@@ -78,7 +78,7 @@ class Message implements Storage.Message {
       log.finest('Enqueued message with ID ${message.ID} for sending. '
           'Queue id ${rows.first.id}');
 
-      Model.MessageQueueItem queueItem = new Model.MessageQueueItem()
+      Model.MessageQueueItem queueItem = new Model.MessageQueueItem.empty()
         ..ID = rows.first.id
         ..messageID = message.ID;
 
