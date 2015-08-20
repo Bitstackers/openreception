@@ -33,6 +33,10 @@ const String departments = 'departments';
 const String wantsMessages = 'wants_messages';
 const String reception = 'reception';
 const String contact = 'contact';
+const String company = 'company';
+const String phone = 'phone';
+const String cellPhone = 'cellPhone';
+const String localExtension = 'localExtension';
 
 const String distributionList = 'distribution_list';
 const String phones = 'phones';
@@ -98,3 +102,10 @@ const String assignedCalls = 'assignedCalls';
 
 const String start = 'start';
 const String end = 'end';
+
+///Message flags
+const String pleaseCall = 'pleaseCall';
+const String willCallBack = 'willCallBack';
+const String called = 'called';
+const String urgent = 'urgent';
+const String manuallyClosed = 'manuallyClosed';

@@ -23,8 +23,10 @@ import 'package:postgresql/postgresql.dart' as PG;
 import 'model.dart'   as Model;
 import 'storage.dart' as Storage;
 import 'util.dart'    as Util;
+import 'keys.dart'    as Key;
 
 part 'database/conversion_functions.dart';
+part 'database/database-contact.dart';
 part 'database/database-distribution_list.dart';
 part 'database/database-endpoint.dart';
 part 'database/database-message.dart';
