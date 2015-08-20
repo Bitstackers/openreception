@@ -14,15 +14,14 @@
 part of openreception.database;
 
 class Message implements Storage.Message {
-
   static const String className = '${libraryName}.Message';
 
   static final Logger log = new Logger(className);
 
   /// WITH expressions used for harvesting various message
   /// status information and dereferencing recipient endpoints.
-  static const String SQL_MACROS = '''
-  WITH queue_status AS (
+  static const String sqlQueueStatus = '''
+  queue_status AS (
      SELECT 
         message.id AS message_id, count(mq.id) > 0 AS enqueued
      FROM 
@@ -31,7 +30,10 @@ class Message implements Storage.Message {
         messages message ON message.id = mq.message_id
      GROUP BY 
        message.id
-     ),
+     )
+  ''';
+
+  static const String sqlSentStatus = '''
   sent_status AS (
      SELECT 
         message.id AS message_id, count(mqh.id) > 0 AS sent
@@ -41,50 +43,13 @@ class Message implements Storage.Message {
         messages message ON message.id = mqh.message_id
      GROUP BY 
        message.id
-  ),
-  recipients_json_list AS (
-  SELECT
-   messages.id AS message_id,
-  (SELECT array_agg(row_to_json(tmp))
-   FROM (
-    SELECT contact_id, reception_id, contact_name, reception_name, recipient_role
-    FROM message_recipients
-    WHERE messages.id = message_recipients.message_id
-   ) tmp
-  ) AS recipients
-  FROM 
-    messages
-  GROUP BY messages.id),
-  
-  recipients_with_endpoints_json_list AS (
-  SELECT
-   messages.id AS message_id,
-  (SELECT array_to_json (array_agg(row_to_json(recpient_row)))
-   FROM (
-    SELECT contact_id, reception_id, contact_name, reception_name, recipient_role,
-      (SELECT array_to_json (array_agg(row_to_json(endpoint_row)))
-       FROM (
-       SELECT address_type AS type, address
-       FROM messaging_end_points
-       WHERE messaging_end_points.contact_id = message_recipients.contact_id AND 
-             messaging_end_points.reception_id = message_recipients.reception_id
-       ) endpoint_row
-      ) AS endpoints
-      FROM message_recipients
-      WHERE messages.id = message_recipients.message_id
-     ) recpient_row
-    ) AS recipients
-  FROM 
-    messages
-  GROUP BY messages.id
-  )
-''';
+  )''';
 
-  Connection _database;
+  Connection _connection;
 
-  Message (this._database);
+  Message(this._connection);
 
-   /*
+  /*
    /**
    *
    */
@@ -95,32 +60,29 @@ class Message implements Storage.Message {
   /**
    *
    */
-  Future<Model.MessageQueueItem> enqueue (Model.Message message) {
-
+  Future<Model.MessageQueueItem> enqueue(Model.Message message) {
     if (message.ID == Model.Message.noID) {
-      return new Future.error(new ArgumentError.value(message.ID, 'message.ID', 'Message.ID cannot be noID'));
+      return new Future.error(new ArgumentError.value(
+          message.ID, 'message.ID', 'Message.ID cannot be noID'));
     }
 
-    String sql = '''INSERT INTO message_queue (message_id) VALUES (${message.ID}) RETURNING id''';
+    String sql =
+        '''INSERT INTO message_queue (message_id) VALUES (${message.ID}) RETURNING id''';
 
-
-    return this._database.query(sql).then((Iterable rows) {
+    return this._connection.query(sql).then((Iterable rows) {
       if (rows.length < 1) {
-        return new Future.value
-          (new Storage.SaveFailed('Enqueue failed on id ${message.ID}'));
+        return new Future.value(
+            new Storage.SaveFailed('Enqueue failed on id ${message.ID}'));
       }
 
       log.finest('Enqueued message with ID ${message.ID} for sending. '
-                 'Queue id ${rows.first.id}');
+          'Queue id ${rows.first.id}');
 
-      Model.MessageQueueItem queueItem =
-        new Model.MessageQueueItem()
-          ..ID = rows.first.id
-          ..messageID = message.ID;
+      Model.MessageQueueItem queueItem = new Model.MessageQueueItem()
+        ..ID = rows.first.id
+        ..messageID = message.ID;
 
       return queueItem;
-
-
     }).catchError((error, stackTrace) {
       log.severe(sql, error, stackTrace);
       throw error;
@@ -130,17 +92,19 @@ class Message implements Storage.Message {
   /**
    *
    */
-  Future<List<Model.Message>> list ({Model.MessageFilter filter : null}){
+  Future<List<Model.Message>> list({Model.MessageFilter filter: null}) {
     if (filter == null) {
       filter = new Model.MessageFilter.empty();
     }
 
+    final sqlMacro = 'WITH $sqlQueueStatus,$sqlSentStatus';
+
     String sql = '''
-        ${SQL_MACROS}
+        $sqlMacro
         SELECT
              message.id,
              message, 
-             recipients_with_endpoints_json_list.recipients as json_recipients,
+             recipients,
              context_contact_id,
              context_reception_id,
              context_contact_name,
@@ -161,81 +125,28 @@ class Message implements Storage.Message {
         JOIN users        ON taken_by_agent = users.id
         JOIN queue_status ON queue_status.message_id = message.id
         JOIN sent_status  ON sent_status.message_id = message.id
-        JOIN recipients_with_endpoints_json_list ON recipients_with_endpoints_json_list.message_id = message.id
         ${filter.asSQL}
         ORDER BY 
            message.id DESC
         LIMIT ${filter.limitCount} 
     ''';
 
-
-    Model.Message rowToMessage (var row) =>
-      new Model.Message.fromMap(
-        {'id'                    : row.id,
-                   'message'               : row.message,
-                   'recipients'            : row.json_recipients != null ?row.json_recipients : [],
-                   'context'               : {'contact'   :
-                                               {'id'   : row.context_contact_id,
-                                                'name' : row.context_contact_name},
-                                              'reception' :
-                                               {'id'   : row.context_reception_id,
-                                                'name' : row.context_reception_name}},
-                   'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
-                                              'id'      : row.taken_by_agent_id,
-                                              'address' : row.agent_address},
-                   'caller'                : {'name'           : row.taken_from_name,
-                                              'company'        : row.taken_from_company,
-                                              'phone'          : row.taken_from_phone,
-                                              'cellphone'      : row.taken_from_cellphone,
-                                              'localExtension' : row.taken_from_localexten},
-                   'flags'                 : row.flags,
-                   'enqueued'              : row.enqueued,
-                   'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
-                   'sent'                  : row.sent}
-  );
-
-    return this._database.query(sql).then((Iterable rows) =>
-      rows.map(rowToMessage));
-  }
-
-  /**
-   * Fetches the recipients for a message from the database.
-   */
-  static Future<Model.MessageRecipientList> recipients(int messageID, Connection database) {
-    String sql = '''
-       SELECT 
-          contact_id, 
-          contact_name, 
-          reception_id, 
-          reception_name, 
-          recipient_role 
-       FROM 
-          message_recipients 
-       WHERE 
-          message_id = ${messageID};''';
-
-    return database.query(sql).then((rows) {
-      Model.MessageRecipientList recipientList = new Model.MessageRecipientList.empty();
-
-      for(var row in rows) {
-        recipientList.add(new Model.MessageRecipient.fromMap(
-            {'contact'   : { 'id'   : row.contact_id,
-                             'name' : row.contact_name},
-             'reception' : { 'id'   : row.reception_id,
-                             'name' : row.reception_name}
-          }, role : row.recipient_role));
-      }
-      return recipientList;
+    return _connection
+        .query(sql)
+        .then((rows) => (rows as Iterable).map(_rowToMessage))
+        .catchError((error, stackTrace) {
+      return new Future.error(error, stackTrace);
     });
   }
 
-  Future<Model.Message> update (Model.Message message) {
+  Future<Model.Message> update(Model.Message message) {
     log.finest('Updating message with ID ${message.ID}.');
 
     String sql = '''
     UPDATE messages
        SET 
          message                 = @message,
+         recipients              = @recipients,
          context_contact_id      = @context_contact_id,
          context_reception_id    = @context_reception_id,
          context_contact_name    = @context_contact_name,
@@ -248,41 +159,49 @@ class Message implements Storage.Message {
          flags                   = @flags
     WHERE id=${message.ID};''';
 
-    Map parameters = {'message'                : message.body,
-                      'context_contact_id'     : message.context.contactID,
-                      'context_reception_id'   : message.context.receptionID,
-                      'context_contact_name'   : message.context.contactName,
-                      'context_reception_name' : message.context.receptionName,
-                      'taken_from_name'        : message.caller.name,
-                      'taken_from_company'     : message.caller.company,
-                      'taken_from_phone'       : message.caller.phone,
-                      'taken_from_cellphone'   : message.caller.cellphone,
-                      'taken_from_localexten'  : message.caller.localExtension,
-                      'flags'                  : JSON.encode(message.flags)
-                      };
+    Map parameters = {
+      'message': message.body,
+      'context_contact_id': message.context.contactID,
+      'context_reception_id': message.context.receptionID,
+      'context_contact_name': message.context.contactName,
+      'context_reception_name': message.context.receptionName,
+      'recipients': JSON.encode(message.recipients.toList(growable: false)),
+      'taken_from_name': message.callerInfo.name,
+      'taken_from_company': message.callerInfo.company,
+      'taken_from_phone': message.callerInfo.phone,
+      'taken_from_cellphone': message.callerInfo.cellPhone,
+      'taken_from_localexten': message.callerInfo.localExtension,
+      'flags': JSON.encode(message.flag)
+    };
 
-    return this._database.query(sql, parameters).then((rows) {
-      if (rows.length == 1) {
-        message.ID = rows.first.id;
-      }
-      return message;
+    return _connection
+        .execute(sql, parameters)
+        .then((int rowsAffected) =>
+          rowsAffected == 1
+            ? message
+            : new Future.error(new StateError('Expected exactly one row to '
+                'update, but counted $rowsAffected updates')))
+        .catchError((error, stackTrace) {
+      /// Log and forward.
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
     });
   }
 
   /**
    *
    */
-  Future<Model.Message> create (Model.Message message) {
+  Future<Model.Message> create(Model.Message message) {
     if (message.ID != Model.Message.noID) {
       return this.update(message);
     }
 
     log.finest('Creating new message.');
 
-
     String sql = '''
       INSERT INTO messages 
            (message, 
+            recipients,
             context_contact_id,
             context_reception_id,
             context_contact_name,
@@ -296,6 +215,7 @@ class Message implements Storage.Message {
             flags)
       VALUES 
            (@message, 
+            @recipients,
             @context_contact_id,
             @context_reception_id,
             @context_contact_name,
@@ -307,43 +227,49 @@ class Message implements Storage.Message {
             @taken_from_localexten, 
             @taken_by_agent, 
             @flags)
-      RETURNING id;
-      '''; //@created_at
+      RETURNING id, created_at;''';
 
-    Map parameters = {'message'                : message.body,
-                      'context_contact_id'     : message.context.contactID,
-                      'context_reception_id'   : message.context.receptionID,
-                      'context_contact_name'   : message.context.contactName,
-                      'context_reception_name' : message.context.receptionName,
-                      'taken_from_name'        : message.caller.name,
-                      'taken_from_company'     : message.caller.company,
-                      'taken_from_phone'       : message.caller.phone,
-                      'taken_from_cellphone'   : message.caller.cellphone,
-                      'taken_from_localexten'  : message.caller.localExtension,
-                      'taken_by_agent'         : message.sender.ID,
-                      'flags'                  : JSON.encode(message.flags)
-                      };
+    Map parameters = {
+      'message': message.body,
+      'recipients' : JSON.encode(message.recipients.toList(growable: false)),
+      'context_contact_id': message.context.contactID,
+      'context_reception_id': message.context.receptionID,
+      'context_contact_name': message.context.contactName,
+      'context_reception_name': message.context.receptionName,
+      'taken_from_name': message.callerInfo.name,
+      'taken_from_company': message.callerInfo.company,
+      'taken_from_phone': message.callerInfo.phone,
+      'taken_from_cellphone': message.callerInfo.cellPhone,
+      'taken_from_localexten': message.callerInfo.localExtension,
+      'taken_by_agent': message.senderId,
+      'flags': JSON.encode(message.flag)
+    };
 
-    return this._database.query(sql, parameters).then((rows) {
-      if (rows.length == 1) {
-        message.ID = rows.first.id;
-      }
-
-      return this.addRecipientsToSendMessage(message).then((_) => message);
-    });
+    return _connection.query(sql, parameters).then(
+        (Iterable rows) => rows.length == 1
+            ? (message
+      ..ID = rows.first.id
+      ..createdAt = rows.first.created_at)
+        : new Future.error(
+                new Storage.ServerError('Failed to create new organization'))
+            .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
+    }));
   }
-
 
   /**
    * Retrieves a single message from the database.
    */
-  Future<Model.Message> get (int messageID) {
+  Future<Model.Message> get(int messageID) {
+    final sqlMacro = 'WITH $sqlQueueStatus,$sqlSentStatus';
+
     String sql = '''
-        ${SQL_MACROS}
+        $sqlMacro
         SELECT
              message.id,
              message, 
-             recipients_with_endpoints_json_list.recipients as json_recipients,
+             recipients,
              context_contact_id,
              context_reception_id,
              context_contact_name,
@@ -364,83 +290,25 @@ class Message implements Storage.Message {
         JOIN users        ON taken_by_agent = users.id
         JOIN queue_status ON queue_status.message_id = message.id
         JOIN sent_status  ON sent_status.message_id = message.id
-        JOIN recipients_with_endpoints_json_list ON recipients_with_endpoints_json_list.message_id = message.id
         WHERE    message.id = @messageID;''';
 
-    Map parameters = {'messageID' : messageID};
+    Map parameters = {'messageID': messageID};
 
-    return this._database.query(sql, parameters).then((rows) {
-      if (rows.isEmpty) {
-        throw new Storage.NotFound('No message in database with ID $messageID');
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.isEmpty
+            ? new Future.error(
+                new Storage.NotFound('No message with ID $messageID'))
+            : _rowToMessage(rows.first))
+        .catchError((error, stackTrace) {
+      if (error is! Storage.NotFound) {
+        log.severe('sql:$sql :: parameters:$parameters');
       }
 
-        var row = rows.first;
-
-        return new Model.Message.fromMap(
-          {'id'                    : row.id,
-           'message'               : row.message,
-           'recipients'            : row.json_recipients != null ?row.json_recipients : [],
-           'context'               : {'contact'   :
-                                       {'id'   : row.context_contact_id,
-                                        'name' : row.context_contact_name},
-                                      'reception' :
-                                       {'id'   : row.context_reception_id,
-                                        'name' : row.context_reception_name}},
-           'taken_by_agent'        : {'name'    : row.taken_by_agent_name,
-                                      'id'      : row.taken_by_agent_id,
-                                      'address' : row.agent_address},
-           'caller'                : {'name'           : row.taken_from_name,
-                                      'company'        : row.taken_from_company,
-                                      'phone'          : row.taken_from_phone,
-                                      'cellphone'      : row.taken_from_cellphone,
-                                      'localExtension' : row.taken_from_localexten},
-           'flags'                 : row.flags,
-           'enqueued'              : row.enqueued,
-           'created_at'            : Util.dateTimeToUnixTimestamp(row.created_at),
-           'sent'                  : row.sent});
-
+      return new Future.error(error, stackTrace);
     });
   }
 
-  /**
-   * [sqlRecipients] is expected to be a string in SQL row format e.g. ('name'), ('othername).
-   * an empty list is denoted by ()
-   *
-   */
-  Future<Map> addRecipientsToSendMessage(Model.Message message) {
-    assert (message.sqlRecipients != "");
-
-    String sql = '''
-    WITH existing_rows AS (
-      DELETE 
-        FROM 
-          message_recipients 
-        WHERE 
-          message_id = ${message.ID} 
-        RETURNING
-          contact_id, 
-          contact_name, 
-          reception_id, 
-          reception_name, 
-          message_id, 
-          recipient_role
-    )
-    INSERT 
-       INTO 
-          message_recipients 
-             (contact_id, contact_name, reception_id, reception_name, message_id, recipient_role)
-          SELECT * 
-          FROM 
-             existing_rows 
-            INTERSECT VALUES ${message.sqlRecipients()} UNION VALUES ${message.sqlRecipients()};''';
-
-    return this._database.execute(sql).then((int rowsAffected) {
-      return {'rowsAffected': rowsAffected};
-    });
-  }
-
-  Future<Model.Message> save (Model.Message message) =>
-      message.ID == Model.Message.noID
-      ? create(message)
-      : update(message);
+  Future<Model.Message> save(Model.Message message) =>
+      message.ID == Model.Message.noID ? create(message) : update(message);
 }

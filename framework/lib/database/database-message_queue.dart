@@ -147,13 +147,19 @@ class MessageQueue implements Storage.MessageQueue {
     /// to avoid losing the name of the endpoint.
 
     List<Map> unhandled_endpoints =
-        queueItem.unhandledEndpoints.map((Model.MessageEndpoint endpoint) =>
-            endpoint.toJson()).toList();
+        queueItem.unhandledRecipients.map((Model.MessageRecipient r) =>
+            r.asMap).toList();
+
+    List<Map> handled_endpoints =
+        queueItem.handledRecipients.map((Model.MessageRecipient r) =>
+            r.asMap).toList();
 
     final String sql = '''
     UPDATE message_queue
-       SET last_try=NOW(), unhandled_endpoints='${unhandled_endpoints}', 
-         tries=${queueItem.tries}
+       SET last_try=NOW(), 
+       unhandled_endpoints='${unhandled_endpoints}',
+       handled_endpoints='${handled_endpoints}',
+       tries=${queueItem.tries}
     WHERE id=${queueItem.ID};''';
 
     return this._connection.execute(sql).then((_) => queueItem);
