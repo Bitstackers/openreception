@@ -840,8 +840,6 @@ abstract class ContactStore {
         ..contactID = 1
         ..receptionID = 3;
 
-    print(rcp);
-
     return dlistStore.addRecipient(receptionID, contactID, rcp)
       .then((Model.DistributionListEntry createdRecipient) {
         expect(createdRecipient.contactID, equals(rcp.contactID));
