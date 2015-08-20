@@ -30,7 +30,7 @@ class Message {
   Set<MessageRecipient> recipients = new Set();
 
   int ID = noID;
-  MessageContext context;
+  MessageContext context = new MessageContext.empty();
   MessageFlag flag = new MessageFlag.empty();
   CallerInfo callerInfo;
   DateTime createdAt;
