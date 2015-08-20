@@ -59,3 +59,31 @@ Model.User _rowToUser(var row) => new Model.User.empty()
   ..peer = row.extension
   ..groups = row.groups != null ? row.groups : []
   ..identities = row.identities != null ? row.identities : [];
+
+
+/**
+ * Convert a database row into an [Message].
+ */
+Model.Message _rowToMessage(var row) {
+  return new Model.Message.empty()
+    ..ID = row.id
+    ..body = row.message
+    ..recipients.addAll(
+        (row.recipients as Iterable).map(Model.MessageRecipient.decode))
+    ..context = (new Model.MessageContext.empty()
+      ..contactID = row.context_contact_id
+      ..contactName = row.context_contact_name
+      ..receptionID = row.context_reception_id
+      ..receptionName = row.context_reception_name)
+    ..senderId = row.taken_by_agent_id
+    ..callerInfo = (new Model.CallerInfo.empty()
+      ..name = row.taken_from_name
+      ..company = row.taken_from_company
+      ..phone = row.taken_from_phone
+      ..cellPhone = row.taken_from_cellphone
+      ..localExtension = row.taken_from_localexten)
+    ..flag = (new Model.MessageFlag(row.flags))
+    ..enqueued = row.enqueued
+    ..createdAt = row.created_at
+    ..sent = row.sent;
+}
