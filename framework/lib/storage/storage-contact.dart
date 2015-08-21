@@ -25,9 +25,9 @@ abstract class Contact {
 
   Future remove(int contactId);
 
-  Future<Model.Contact> removeFromReception(Model.Contact contact, int receptionID);
+  Future<Model.Contact> removeFromReception(int contactId, int receptionID);
 
   Future<Model.BaseContact> update(Model.BaseContact contact);
 
-  Future<Model.Contact> updateInReception(Model.Contact contact, int receptionID);
+  Future<Model.Contact> updateInReception(Model.Contact contact);
 }

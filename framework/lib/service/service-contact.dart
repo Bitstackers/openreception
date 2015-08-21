@@ -242,11 +242,11 @@ class RESTContactStore implements Storage.Contact {
             .map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
-  Future<Model.Contact> removeFromReception(Model.Contact contact, int receptionID) {
+  Future<Model.Contact> removeFromReception(int contactId, int receptionID) {
     throw new UnimplementedError();
   }
 
-  Future<Model.Contact> updateInReception(Model.Contact contact, int receptionID) {
+  Future<Model.Contact> updateInReception(Model.Contact contact) {
     throw new UnimplementedError();
   }
 }
