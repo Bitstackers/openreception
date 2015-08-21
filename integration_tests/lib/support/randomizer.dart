@@ -350,6 +350,14 @@ abstract class Randomizer {
        ..fullName    = randomContactName()
        ..enabled     = rand.nextBool();
 
+
+  static Model.Contact randomContact() =>
+      new Model.Contact.empty()
+       ..contactType = randomContactType()
+       ..fullName    = randomContactName()
+       ..enabled     = rand.nextBool()
+       ..contactType = randomChoice(Model.ContactType.types);
+
   /**
    * Constructs and returns a [Reception] object with random content.
    *
