@@ -43,7 +43,7 @@ class Contact implements Storage.Contact {
     return _connection.execute(sql, parameters)
       .then((int affectedRows) =>
           affectedRows == 1
-          ? contact
+          ? (contact..receptionID = receptionID)
           : new Future.error(new StateError('No association was created!')))
           .catchError((error, stackTrace) {
         log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
