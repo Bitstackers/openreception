@@ -101,8 +101,12 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/contact/{cid}/reception/{rid}/dlist', DistributionList.ofContact)
     ..post('/contact/{cid}/reception/{rid}/dlist', DistributionList.addRecipient)
     ..delete('/dlist/{did}', DistributionList.removeRecipient)
-
     ..get('/contact/list/reception/{rid}', Contact.listByReception)
+
+    //TODO Find a suitable format for this.
+    ..post('/contact/{cid}/reception/{rid}', Contact.addToReception)
+    ..put('/contact/{cid}/reception/{rid}', Contact.updateInReception)
+    ..delete('/contact/{cid}/reception/{rid}', Contact.removeFromReception)
     ..get('/contact/{cid}/reception/{rid}', Contact.get)
     ..get('/contact/{cid}/reception', Contact.receptions)
     ..get('/contact/{cid}/organization', Contact.organizations)

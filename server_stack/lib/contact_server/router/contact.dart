@@ -231,4 +231,102 @@ abstract class Contact {
       new shelf.Response.internalServerError(body: '${error}');
     });
   }
+
+  /**
+   *
+   */
+  static Future addToReception(shelf.Request request) {
+    int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+
+    return request.readAsString().then((String content) {
+      Model.Contact contact;
+
+      try {
+        Map data = JSON.decode(content);
+        contact = new Model.Contact.fromMap(data);
+      } catch (error) {
+        Map response = {
+          'status': 'bad request',
+          'description': 'passed contact argument '
+              'is too long, missing or invalid',
+          'error': error.toString()
+        };
+        return new shelf.Response(400, body: JSON.encode(response));
+      }
+
+      return _contactDB.addToReception(contact, rid)
+        .then((Model.Contact createdContact) {
+        Event.ContactChange changeEvent =
+            new Event.ContactChange(createdContact.ID, Event.ContactState.UPDATED);
+
+        Notification.broadcastEvent(changeEvent);
+
+        return new shelf.Response.ok(JSON.encode(contact));
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError(
+            body: 'Failed to update event in database');
+      });
+    });
+  }
+
+  /**
+   *
+   */
+  static Future updateInReception(shelf.Request request) {
+    int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+
+    return request.readAsString().then((String content) {
+      Model.Contact contact;
+
+      try {
+        Map data = JSON.decode(content);
+        contact = new Model.Contact.fromMap(data);
+        contact.receptionID = rid;
+      } catch (error) {
+        Map response = {
+          'status': 'bad request',
+          'description': 'passed contact argument '
+              'is too long, missing or invalid',
+          'error': error.toString()
+        };
+        return new shelf.Response(400, body: JSON.encode(response));
+      }
+
+      return _contactDB.updateInReception(contact).then((Model.Contact createdContact) {
+        Event.ContactChange changeEvent =
+            new Event.ContactChange(contact.ID, Event.ContactState.UPDATED);
+
+        Notification.broadcastEvent(changeEvent);
+
+        return new shelf.Response.ok(JSON.encode(contact));
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError(
+            body: 'Failed to update event in database');
+      });
+    });
+  }
+
+  /**
+   *
+   */
+  static Future removeFromReception(shelf.Request request) {
+    int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+
+    return _contactDB.removeFromReception(cid, rid)
+      .then((_) {
+        Event.ContactChange changeEvent =
+            new Event.ContactChange(cid, Event.ContactState.UPDATED);
+
+        Notification.broadcastEvent(changeEvent);
+
+        return new shelf.Response.ok(JSON.encode(const {}));
+      }).catchError((error, stackTrace) {
+        log.severe(error, stackTrace);
+        return new shelf.Response.internalServerError(
+            body: 'Failed to update event in database');
+      });
+   }
 }
