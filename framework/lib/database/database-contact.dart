@@ -108,8 +108,9 @@ class Contact implements Storage.Contact {
     FROM contacts
   ''';
 
-    return _connection.query(sql).then((Iterable rows) =>
-      rows.map(_rowToBaseContact));
+    return _connection
+        .query(sql)
+        .then((Iterable rows) => rows.map(_rowToBaseContact));
   }
 
   /**
@@ -122,23 +123,23 @@ class Contact implements Storage.Contact {
     RETURNING id;
   ''';
 
-    Map parameters =
-      {'full_name'    : contact.fullName,
-       'contact_type' : contact.contactType,
-       'enabled'      : contact.enabled};
+    Map parameters = {
+      'full_name': contact.fullName,
+      'contact_type': contact.contactType,
+      'enabled': contact.enabled
+    };
 
-    return _connection.query(sql, parameters)
-      .then((Iterable rows) =>
-          rows.length > 0
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.length > 0
             ? (contact..id = rows.first.id)
             : new Future.error(new StateError('No contact was created!')))
-      .catchError((error, stackTrace) {
-        log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+        .catchError((error, stackTrace) {
+      log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
 
-        return new Future.error(error, stackTrace);
-      });
+      return new Future.error(error, stackTrace);
+    });
   }
-
 
   Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
     String sql = '''
@@ -146,45 +147,38 @@ class Contact implements Storage.Contact {
         FROM reception_contacts
         WHERE contact_id = @contactID AND reception_id = @receptionID''';
 
-    Map parameters =
-      {'contactID': contactID,
-       'receptionID': receptionID};
+    Map parameters = {'contactID': contactID, 'receptionID': receptionID};
 
     return _connection.query(sql, parameters).then((rows) {
       if ((rows as Iterable).isEmpty) {
         throw new Storage.NotFound('No contact found with ID $contactID'
-                                   ' in reception with ID $receptionID');
+            ' in reception with ID $receptionID');
       }
 
       Iterable<Map> phonesMap = (rows as Iterable).first.phonenumbers;
-
 
       return phonesMap.map(_mapToPhone);
     });
   }
 
-
-  Future<Iterable<Model.MessageEndpoint>> endpoints(int contactID, int receptionID) {
-      String sql = '''
+  Future<Iterable<Model.MessageEndpoint>> endpoints(
+      int contactID, int receptionID) {
+    String sql = '''
         SELECT address, address_type, confidential, enabled, priority, 
               description
         FROM messaging_end_points 
         WHERE contact_id = @contactID AND reception_id = @receptionID''';
 
-      Map parameters =
-        {'contactID': contactID,
-         'receptionID': receptionID};
+    Map parameters = {'contactID': contactID, 'receptionID': receptionID};
 
-      return _connection.query(sql, parameters).then((rows) =>
-        (rows as Iterable).map((row) =>
-          new Model.MessageEndpoint.empty()
-           ..address = row.address
-           ..type = row.address_type
-           ..confidential =  row.confidential
-           ..enabled =  row.enabled
-           //..priority = row.priority,
-           ..description = row.description));
-
+    return _connection.query(sql, parameters).then((rows) => (rows as Iterable)
+        .map((row) => new Model.MessageEndpoint.empty()
+      ..address = row.address
+      ..type = row.address_type
+      ..confidential = row.confidential
+      ..enabled = row.enabled
+      //..priority = row.priority,
+      ..description = row.description));
   }
 
   Future<Iterable<Model.Contact>> listByReception(int receptionId) {
@@ -259,14 +253,15 @@ class Contact implements Storage.Contact {
       JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
     WHERE rcpcon.reception_id = @receptionid''';
 
-    Map parameters = {'receptionid' : receptionId};
+    Map parameters = {'receptionid': receptionId};
 
-    return _connection.query(sql, parameters).then((rows) =>
-      (rows as Iterable).map(_rowToContact));
+    return _connection
+        .query(sql, parameters)
+        .then((rows) => (rows as Iterable).map(_rowToContact));
   }
 
   Future<Model.Contact> getByReception(int receptionId, int contactId) {
-      String sql = '''
+    String sql = '''
       SELECT rcpcon.reception_id, 
              rcpcon.contact_id, 
              rcpcon.wants_messages, 
@@ -338,21 +333,19 @@ class Contact implements Storage.Contact {
           WHERE  rcpcon.reception_id = @receptionid
              AND rcpcon.contact_id = @contactid ;''';
 
-      Map parameters = {'receptionid' : receptionId,
-                        'contactid': contactId};
+    Map parameters = {'receptionid': receptionId, 'contactid': contactId};
 
-      return _connection.query(sql, parameters).then((rows) {
-
-        if(rows != null && rows.length == 1) {
-          return (_rowToContact(rows.first));
-        } else {
-          throw new Storage.NotFound
-            ('ContactID: $contactId, ReceptionID: $receptionId');
-        }
-      }).catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        return new Future.error(error, stackTrace);
-      });
+    return _connection.query(sql, parameters).then((rows) {
+      if (rows != null && rows.length == 1) {
+        return (_rowToContact(rows.first));
+      } else {
+        throw new Storage.NotFound(
+            'ContactID: $contactId, ReceptionID: $receptionId');
+      }
+    }).catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -370,14 +363,15 @@ class Contact implements Storage.Contact {
 
     Map parameters = {'organization_id': organizationId};
 
-    return _connection.query(sql, parameters)
-      .then((Iterable rows) => rows.map(_rowToBaseContact));
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.map(_rowToBaseContact));
   }
 
   /**
    * Retrieve all organizations id's of a contact.
    */
-  Future<Iterable<int>> organizations (int contactID) {
+  Future<Iterable<int>> organizations(int contactID) {
     String sql = '''
 SELECT DISTINCT
   organization_id
@@ -392,14 +386,14 @@ WHERE
 
     Map parameters = {'contactID': contactID};
 
-    return _connection.query(sql, parameters).then((rows) =>
-      (rows as Iterable).map((var row) => row.organization_id));
+    return _connection.query(sql, parameters).then(
+        (rows) => (rows as Iterable).map((var row) => row.organization_id));
   }
 
   /**
    * Retrieve all reception id's of a contact.
    */
-  Future<Iterable<int>> receptions (int contactID) {
+  Future<Iterable<int>> receptions(int contactID) {
     String sql = '''
 
     SELECT reception_id
@@ -409,25 +403,25 @@ WHERE
 
     Map parameters = {'contactID': contactID};
 
-    return _connection.query(sql, parameters).then((rows) =>
-      (rows as Iterable).map((var row) => row.reception_id));
+    return _connection
+        .query(sql, parameters)
+        .then((rows) => (rows as Iterable).map((var row) => row.reception_id));
   }
 
   /**
    * Removes a contact from the database.
    */
-  Future remove (int contactID) {
+  Future remove(int contactID) {
     String sql = '''
       DELETE FROM contacts
       WHERE id=@id;
     ''';
 
     Map parameters = {'id': contactID};
-    return _connection.execute(sql, parameters)
-      .then((int rowsAffected) =>
-        rowsAffected > 0
-          ? null
-          : new Future.error(new Storage.NotFound('$contactID')));
+    return _connection.execute(sql, parameters).then(
+        (int rowsAffected) => rowsAffected > 0
+            ? null
+            : new Future.error(new Storage.NotFound('$contactID')));
   }
 
   Future<Model.BaseContact> update(Model.BaseContact contact) {
@@ -437,16 +431,16 @@ WHERE
     WHERE id=@id;
   ''';
 
-    Map parameters =
-      {'full_name'    : contact.fullName,
-       'contact_type' : contact.contactType,
-       'enabled'      : contact.enabled,
-       'id'           : contact.id};
+    Map parameters = {
+      'full_name': contact.fullName,
+      'contact_type': contact.contactType,
+      'enabled': contact.enabled,
+      'id': contact.id
+    };
 
-    return _connection.execute(sql, parameters)
-      .then((int rowsAffected) =>
-        rowsAffected > 0
-          ? contact
-          : new Future.error(new Storage.NotFound('en')));
+    return _connection.execute(sql, parameters).then(
+        (int rowsAffected) => rowsAffected > 0
+            ? contact
+            : new Future.error(new Storage.NotFound('en')));
   }
 }
