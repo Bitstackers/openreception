@@ -283,6 +283,15 @@ runContactTests () {
     test ('Phone listing',
         () => ContactStore.phones(contactStore));
 
+    test ('addToReception',
+        () => ContactStore.addToReception(contactStore));
+
+    test ('updateInReception',
+        () => ContactStore.updateInReception(contactStore));
+
+    test ('deleteFromReception',
+        () => ContactStore.deleteFromReception(contactStore));
+
 
     setUp (() {
       transport = new Transport.Client();
