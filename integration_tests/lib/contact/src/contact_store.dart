@@ -883,4 +883,64 @@ abstract class ContactStore {
 
         });
   }
+
+  /**
+   *
+   */
+  static Future addToReception (Storage.Contact contactStore) {
+    Model.BaseContact contact = Randomizer.randomBaseContact();
+
+    log.info('Creating a new base contact.');
+
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdBaseContact) {
+
+      Model.Contact contact = Randomizer.randomContact()
+        ..ID = createdBaseContact.id;
+
+      return contactStore.addToReception(contact, 1)
+      .then((_) => contactStore.removeFromReception(contact.ID, 1));
+    });
+  }
+
+  /**
+   *
+   */
+  static Future updateInReception (Storage.Contact contactStore) {
+    Model.BaseContact contact = Randomizer.randomBaseContact();
+
+    log.info('Creating a new base contact.');
+
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdBaseContact) {
+
+      Model.Contact contact = Randomizer.randomContact()
+        ..ID = createdBaseContact.id;
+
+      return contactStore.addToReception(contact, 1)
+      .then((Model.Contact updatedContact) =>
+          contactStore.updateInReception(updatedContact))
+      .then((_) => contactStore.removeFromReception(contact.ID, 1));
+    });
+  }
+
+  /**
+   *
+   */
+  static Future deleteFromReception (Storage.Contact contactStore) {
+    Model.BaseContact contact = Randomizer.randomBaseContact();
+
+    log.info('Creating a new base contact.');
+
+    return contactStore.create(contact)
+      .then((Model.BaseContact createdBaseContact) {
+
+      Model.Contact contact = Randomizer.randomContact()
+        ..ID = createdBaseContact.id;
+
+      return contactStore.addToReception(contact, 1)
+      .then((_) => contactStore.removeFromReception(contact.ID, 1));
+    });
+  }
 }
+
