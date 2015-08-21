@@ -63,6 +63,21 @@ class Contact {
   List<String> departments = [];
   List<String> infos = [];
 
+  Map get attributes => {
+    Key.departments      : departments,
+    Key.endpoints        : endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
+    Key.backup           : backupContacts,
+    Key.emailaddresses   : emailaddresses,
+    Key.handling         : handling,
+    Key.workhours        : workhours,
+    Key.tags             : tags,
+    Key.infos            : infos,
+    Key.titles           : titles,
+    Key.relations        : relations,
+    Key.responsibilities : responsibilities,
+    Key.messagePrerequisites : messagePrerequisites
+  };
+
 
   DistributionList _distributionList    = new DistributionList.empty();
   DistributionList get distributionList => this._distributionList;
