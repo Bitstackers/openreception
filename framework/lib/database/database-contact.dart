@@ -13,28 +13,76 @@
 
 part of openreception.database;
 
-
 class Contact implements Storage.Contact {
-
   static final Logger log = new Logger('$libraryName.Contact');
 
-
   final Connection _connection;
-
 
   Contact(this._connection);
 
   Future<Model.Contact> addToReception(Model.Contact contact, int receptionID) {
-    throw new UnimplementedError();
+    String sql = '''
+    INSERT INTO 
+      reception_contacts 
+        (reception_id, contact_id, wants_messages, 
+         phonenumbers, attributes, enabled)
+    VALUES 
+        (@reception_id, @contact_id, @wants_messages, 
+         @phonenumbers, @attributes, @enabled);
+  ''';
+
+    Map parameters = {
+      'reception_id': receptionID,
+      'contact_id': contact.ID,
+      'wants_messages': contact.wantsMessage,
+      'phonenumbers': JSON.encode(contact.phones),
+      'attributes': JSON.encode(contact.attributes),
+      'enabled': contact.enabled
+    };
+
+    return _connection.execute(sql, parameters)
+      .then((int affectedRows) =>
+          affectedRows == 1
+          ? contact
+          : new Future.error(new StateError('No association was created!')))
+          .catchError((error, stackTrace) {
+        log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+
+        return new Future.error(error, stackTrace);
+      });
   }
 
+  Future<Model.Contact> removeFromReception(
+      int contactId, int receptionId) {
+    String sql = '''
+    DELETE FROM reception_contacts
+    WHERE reception_id=@reception_id AND contact_id=@contact_id;
+  ''';
 
-  Future<Model.Contact> removeFromReception(Model.Contact contact, int receptionID) {
-    throw new UnimplementedError();
+    Map parameters = {'reception_id': receptionId, 'contact_id': contactId};
+    return _connection.execute(sql, parameters);
   }
 
-  Future<Model.Contact> updateInReception(Model.Contact contact, int receptionID) {
-    throw new UnimplementedError();
+  Future<Model.Contact> updateInReception(Model.Contact contact) {
+    String sql = '''
+    UPDATE reception_contacts
+    SET wants_messages=@wants_messages,
+        attributes=@attributes,
+        enabled=@enabled,
+        phonenumbers=@phonenumbers
+    WHERE reception_id=@reception_id AND contact_id=@contact_id;
+  ''';
+
+    Map parameters = {
+      'reception_id': contact.receptionID,
+      'contact_id': contact.ID,
+      'wants_messages': contact.wantsMessage,
+      'phonenumbers': JSON.encode(contact.phones),
+      'attributes': JSON.encode(contact.attributes),
+      'enabled': contact.enabled
+    };
+
+    return _connection.execute(sql, parameters);
   }
 
   Future<Model.BaseContact> get(int contactID) {
