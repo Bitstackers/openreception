@@ -46,11 +46,6 @@ runContactTests () {
       return connection.close();
     });
 
-///TODO Add tests for these interfaces.
-// Future<Model.Contact> updateInReception(Model.Contact contact, int receptionID);
-// Future<Model.Contact> addToReception(Model.Contact contact, int receptionID);
-// Future<Model.Contact> removeFromReception(Model.Contact contact, int receptionID);
-
     test ('phones',
         () => ContactStore.phones(contactDB));
 
@@ -86,6 +81,16 @@ runContactTests () {
 
     test ('remove',
         () => ContactStore.remove(contactDB));
+
+
+    test ('addToReception',
+        () => ContactStore.addToReception(contactDB));
+
+    test ('updateInReception',
+        () => ContactStore.updateInReception(contactDB));
+
+    test ('deleteFromReception',
+        () => ContactStore.deleteFromReception(contactDB));
 
   });
 
