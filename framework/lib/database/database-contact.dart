@@ -82,7 +82,16 @@ class Contact implements Storage.Contact {
       'enabled': contact.enabled
     };
 
-    return _connection.execute(sql, parameters);
+    return _connection.execute(sql, parameters)
+        .then((int affectedRows) =>
+            affectedRows == 1
+            ? contact
+            : new Future.error(new StateError('No association was updated!')))
+            .catchError((error, stackTrace) {
+          log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+
+          return new Future.error(error, stackTrace);
+        });
   }
 
   Future<Model.BaseContact> get(int contactID) {
