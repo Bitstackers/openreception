@@ -28,6 +28,16 @@ void testResourceContact() {
     test('receptions', ResourceContact.receptions);
     test('organizations', ResourceContact.organizations);
     test('managementServerList', ResourceContact.managementServerList);
+    test('listByReception', ResourceContact.listByReception);
+
+    test('calendarEventChanges', ResourceContact.calendarEventChanges);
+    test('calendarEventLatestChange', ResourceContact.calendarEventLatestChange);
+    test('colleagues', ResourceContact.colleagues);
+    test('organizationContacts', ResourceContact.organizationContacts);
+
+
+
+
 
   });
 }
@@ -78,4 +88,26 @@ abstract class ResourceContact {
   static void calendarEntryLatestChange() => expect(
       Resource.Contact.calendarEventLatestChange(_host, 123),
       equals(Uri.parse('${_host}/calendarentry/123/change/latest')));
+
+  static void listByReception()
+    => expect(Resource.Contact.listByReception(_host, 99),
+        equals(Uri.parse('$_host/contact/list/reception/99')));
+
+  static void calendarEventChanges()
+    => expect(Resource.Contact.calendarEventChanges(_host, 99),
+      equals(Uri.parse('$_host/calendarentry/99/change')));
+
+
+  static void calendarEventLatestChange()
+  => expect(Resource.Contact.calendarEventLatestChange(_host, 99),
+      equals(Uri.parse('$_host/calendarentry/99/change/latest')));
+
+  static void colleagues()
+  => expect(Resource.Contact.colleagues(_host, 99),
+      equals(Uri.parse('$_host/contact/99/colleagues')));
+
+
+  static void organizationContacts()
+  => expect(Resource.Contact.organizationContacts(_host, 99),
+      equals(Uri.parse('$_host/contact/organization/99')));
 }
