@@ -117,12 +117,16 @@ abstract class User {
     Model.User newUser = Randomizer.randomUser();
 
     return userStore.create(newUser).then((Model.User createdUser) {
-      return receptionist.waitFor(eventType: Event.Key.userChange)
-        .then((Event.UserChange userChange) {
-          expect (userChange.state, equals(Event.UserObjectState.CREATED));
-          expect (userChange.userID, equals(createdUser.ID));
-          return userStore.remove(createdUser.ID);
-      });
+
+      bool eventMatches(Event.Event event) {
+        if (event is Event.UserChange) {
+          return event.state == Event.UserObjectState.CREATED &&
+              event.userID == createdUser.ID;
+        }
+      }
+
+      receptionist.notificationSocket.eventStream.firstWhere(eventMatches).timeout(new Duration(seconds : 10))
+      .then ((_) => userStore.remove(createdUser.ID));
     });
   }
 
