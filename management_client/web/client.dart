@@ -14,26 +14,32 @@ import 'lib/auth.dart';
 import 'notification.dart' as notify;
 import 'lib/configuration.dart';
 
-
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/service-html.dart' as Transport;
 
 void main() {
-  if(handleToken()) {
-
+  if (handleToken()) {
     final Transport.Client client = new Transport.Client();
-    final ORService.RESTUserStore _userStore = new ORService.RESTUserStore(
-        config.userURI, 'feedabbadeadbeef0', client);
 
+    final ORService.RESTUserStore _userStore =
+        new ORService.RESTUserStore(config.userURI, config.token, client);
 
     final Controller.User userController = new Controller.User(_userStore);
 
+    final Controller.DistributionList dlistController =
+        new Controller.DistributionList(new ORService.RESTDistributionListStore(
+            Uri.parse('http://localhost:4010'), config.token, client));
 
-    ORService.RESTCDRService _cdrStore = new ORService.RESTCDRService (
-        config.cdrURI, config.token, client);
+    final Controller.Endpoint epController =
+        new Controller.Endpoint(new ORService.RESTEndpointStore(
+            Uri.parse('http://localhost:4010'), config.token, client));
 
-    ORService.RESTReceptionStore _receptionStore = new ORService.RESTReceptionStore(
-        config.receptionURI, config.token, client);
+    ORService.RESTCDRService _cdrStore =
+        new ORService.RESTCDRService(config.cdrURI, config.token, client);
+
+    ORService.RESTReceptionStore _receptionStore =
+        new ORService.RESTReceptionStore(
+            config.receptionURI, config.token, client);
 
     ORService.RESTOrganizationStore _organizationStore =
         new ORService.RESTOrganizationStore(
@@ -54,8 +60,7 @@ void main() {
     Controller.Calendar calendarController =
         new Controller.Calendar(_contactStore, _receptionStore);
 
-    Controller.CDR cdrController =
-        new Controller.CDR(_cdrStore);
+    Controller.CDR cdrController = new Controller.CDR(_cdrStore);
 
     //Initializes the notification system.
     notify.initialize();
