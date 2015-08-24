@@ -1,17 +1,21 @@
 library organization.view;
 
+import 'dart:async';
 import 'dart:html';
-import 'dart:convert';
 
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
-import '../lib/request.dart';
 import '../notification.dart' as notify;
 import '../menu.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class OrganizationView {
   static const String viewName = 'organization';
+
+  final Controller.Organization _organizationController;
+  final Controller.Reception _receptionController;
+
   DivElement element;
   UListElement uiList;
   TextAreaElement inputName, inputBillingtype, inputFlag;
@@ -22,13 +26,15 @@ class OrganizationView {
 
   bool createNew = false;
 
-  List<Organization> organizations = new List<Organization>();
+  List<ORModel.Organization> organizations = new List<ORModel.Organization>();
   int selectedOrganizationId;
 
-  List<Contact> currentContactList = new List<Contact>();
-  List<Reception> currentReceptionList = new List<Reception>();
+  List<ORModel.Contact> currentContactList = new List<ORModel.Contact>();
+  List<ORModel.Reception> currentReceptionList = new List<ORModel.Reception>();
 
-  OrganizationView(DivElement this.element) {
+  OrganizationView(DivElement this.element,
+                       Controller.Organization this._organizationController,
+                           Controller.Reception this._receptionController) {
     searchBox = element.querySelector('#organization-search-box');
     uiList = element.querySelector('#organization-list');
     inputName = element.querySelector('#organization-input-name');
@@ -79,7 +85,7 @@ class OrganizationView {
 
     buttonDelete.onClick.listen((_) {
       if (!createNew && selectedOrganizationId != null) {
-        deleteOrganization(selectedOrganizationId).then((_) {
+        _organizationController.remove(selectedOrganizationId).then((_) {
           notify.info('Organisation blev slettet.');
 
           currentContactList.clear();
@@ -176,7 +182,7 @@ class OrganizationView {
 
   void performSearch() {
     String searchText = searchBox.value;
-    List<Organization> filteredList = organizations.where((Organization org) =>
+    List<ORModel.Organization> filteredList = organizations.where((ORModel.Organization org) =>
         org.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderOrganizationList(filteredList);
   }
@@ -189,8 +195,8 @@ class OrganizationView {
         'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
-      String newOrganization = JSON.encode(organization);
-      updateOrganization(selectedOrganizationId, newOrganization).then((_) {
+
+      _organizationController.update(new ORModel.Organization.fromMap(organization)).then((_) {
         notify.info('Ændringerne blev gemt.');
         refreshList();
       }).catchError((error) {
@@ -203,10 +209,10 @@ class OrganizationView {
         'billing_type': inputBillingtype.value,
         'flag': inputFlag.value
       };
-      String newOrganization = JSON.encode(organization);
-      createOrganization(newOrganization).then((Map response) {
+      _organizationController.create(new ORModel.Organization.fromMap(organization))
+      .then((ORModel.Organization org) {
         notify.info('Organisationen blev oprettet.');
-        int organizationId = response['id'];
+        int organizationId = org.id;
         refreshList();
         activateOrganization(organizationId);
         bus.fire(new OrganizationAddedEvent());
@@ -218,23 +224,26 @@ class OrganizationView {
   }
 
   void refreshList() {
-    getOrganizationList().then((List<Organization> organizations) {
-      organizations.sort();
-      this.organizations = organizations;
-      renderOrganizationList(organizations);
+    _organizationController.list().then((Iterable<ORModel.Organization> organizations) {
+
+      int compareTo (ORModel.Organization org1, ORModel.Organization org2) => org1.fullName.compareTo(org2.fullName);
+
+      List list = organizations.toList()..sort(compareTo);
+      this.organizations = list;
+      renderOrganizationList(list);
     }).catchError((error) {
       notify.error('Organisationerne blev ikke hentet da der er sket en fejl.');
       log.error('Tried to fetch organization list, got error: $error');
     });
   }
 
-  void renderOrganizationList(List<Organization> organizations) {
+  void renderOrganizationList(List<ORModel.Organization> organizations) {
     uiList.children
       ..clear()
       ..addAll(organizations.map(makeOrganizationNode));
   }
 
-  LIElement makeOrganizationNode(Organization organization) {
+  LIElement makeOrganizationNode(ORModel.Organization organization) {
     return new LIElement()
       ..classes.add('clickable')
       ..dataset['organizationid'] = '${organization.id}'
@@ -249,7 +258,7 @@ class OrganizationView {
   }
 
   void activateOrganization(int organizationId) {
-    getOrganization(organizationId).then((Organization organization) {
+    _organizationController.get(organizationId).then((ORModel.Organization organization) {
       highlightOrganizationInList(organizationId);
       selectedOrganizationId = organizationId;
       createNew = false;
@@ -269,25 +278,33 @@ class OrganizationView {
   }
 
   void updateReceptionList(int organizationId) {
-    getAnOrganizationsReceptionList(organizationId).then((List<Reception> receptions) {
-      receptions.sort();
-      currentReceptionList = receptions;
-      ulReceptionList.children
-          ..clear()
-          ..addAll(receptions.map(makeReceptionNode));
-    }).catchError((error) {
-      log.error('Tried to fetch the receptionlist Error: $error');
+    _organizationController.receptions(organizationId)
+    .then((Iterable<int> receptionIDs) {
+
+      List list = [];
+      Future.forEach(receptionIDs, (int id) =>
+          _receptionController.get(id).then(list.add))
+          .then((_) {
+        list.sort(_compareReception);
+        currentReceptionList = list;
+        ulReceptionList.children
+            ..clear()
+            ..addAll(list.map(makeReceptionNode));
+
+      });
+
+
     });
   }
 
-  LIElement makeReceptionNode(Reception reception) {
+  LIElement makeReceptionNode(ORModel.Reception reception) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${reception.fullName}'
       ..onClick.listen((_) {
         Map data = {
           'organization_id': reception.organizationId,
-          'reception_id': reception.id
+          'reception_id': reception.ID
         };
         bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
@@ -295,19 +312,22 @@ class OrganizationView {
   }
 
   void updateContactList(int organizationId) {
-    getOrganizationContactList(organizationId).then((List<Contact> contacts) {
-      contacts.sort();
-      currentContactList = contacts;
+    _organizationController.contacts(organizationId).then((Iterable<ORModel.BaseContact> contacts) {
+      int compareTo (ORModel.BaseContact c1, ORModel.BaseContact c2) => c1.fullName.compareTo(c2.fullName);
+
+      List list = contacts.toList()..sort(compareTo);
+
+      currentContactList = list;
       ulContactList.children
           ..clear()
-          ..addAll(contacts.map(makeContactNode));
+          ..addAll(list.map(makeContactNode));
     }).catchError((error) {
       notify.error('Der skete en fejl i forbindelse med at hente kontakterne tilknyttet organisationen.');
       log.error('Tried to fetch the contactlist from an organization Error: $error');
     });
   }
 
-  LIElement makeContactNode(Contact contact) {
+  LIElement makeContactNode(ORModel.BaseContact contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${contact.fullName}'
@@ -320,3 +340,6 @@ class OrganizationView {
     return li;
   }
 }
+
+int _compareReception (ORModel.Reception r1, ORModel.Reception r2) => r1.fullName.compareTo(r2.fullName);
+

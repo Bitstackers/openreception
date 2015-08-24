@@ -1,21 +1,22 @@
 library billing.view;
 
-import 'dart:convert';
 import 'dart:html';
 
 import 'package:intl/intl.dart';
 
+import '../lib/controller.dart' as Controller;
 import '../lib/eventbus.dart';
-import '../lib/model.dart';
 import '../notification.dart' as notify;
-import '../lib/request.dart' as request;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 final DateFormat inputDateFormat = new DateFormat('yyyy-MM-dd');
 
 class BillingView {
   static const String viewName = 'billing';
 
-  List<Checkpoint> checkpoints;
+  final Controller.CDR _cdrController;
+
+  Iterable<ORModel.CDRCheckpoint> checkpoints;
 
   DivElement element;
   TableSectionElement dataTable;
@@ -24,7 +25,7 @@ class BillingView {
   ButtonElement saveCheckpointButton;
   TextInputElement checkpointName;
 
-  BillingView(DivElement this.element) {
+  BillingView(DivElement this.element, Controller.CDR this._cdrController) {
     dataTable = element.querySelector('#billing-data-body');
     fromInput = element.querySelector('#billing-from-input');
     toInput = element.querySelector('#billing-to-input');
@@ -62,7 +63,7 @@ class BillingView {
 
     checkpointSelector.onChange.listen((_) {
       if(checkpointSelector.selectedIndex > 0) {
-        loadCheckpoint(checkpoints[checkpointSelector.selectedIndex-1]);
+        loadCheckpoint(checkpoints.toList()[checkpointSelector.selectedIndex-1]);
       }
     });
   }
@@ -79,10 +80,10 @@ class BillingView {
   }
 
   void renderList(DateTime from, DateTime to) {
-    request.getCdrEntries(from, to).then((List<Cdr_Entry> entries) {
+    _cdrController.listEntries (from, to).then((Iterable<ORModel.CDREntry> entries) {
           dataTable.children
             ..clear()
-            ..addAll(entries.map((Cdr_Entry entry) {
+            ..addAll(entries.map((ORModel.CDREntry entry) {
                 return new TableRowElement()
                   ..children.addAll(
                       [new TableCellElement()..text = '${entry.orgId}',
@@ -99,14 +100,14 @@ class BillingView {
   }
 
   void reloadCheckpoints() {
-    request.getCheckpointList().then((List<Checkpoint> checkpoints) {
+    _cdrController.checkpoints().then((Iterable<ORModel.CDRCheckpoint> checkpoints) {
       this.checkpoints = checkpoints;
-      this.checkpoints.sort();
+      //this.checkpoints.sort();
 
       checkpointSelector.children.clear();
       checkpointSelector.children.add(new OptionElement(data: 'Ingen valgt'));
       checkpointSelector.children.addAll(this.checkpoints.map(
-              (Checkpoint point) => new OptionElement(data: '${point.name}', value: '${point.name}')));
+              (ORModel.CDRCheckpoint point) => new OptionElement(data: '${point.name}', value: '${point.name}')));
     });
   }
 
@@ -115,16 +116,16 @@ class BillingView {
     DateTime end   = DateTime.parse(toInput.value);
     String name    = checkpointName.value;
 
-    Checkpoint newCheckpoint = new Checkpoint()
+    ORModel.CDRCheckpoint newCheckpoint = new ORModel.CDRCheckpoint.empty()
       ..start = start
       ..end = end
       ..name = name;
-    request.createCheckpoint(JSON.encode(newCheckpoint)).then((_) {
+    _cdrController.createCheckpoint(newCheckpoint).then((_) {
       reloadCheckpoints();
     });
   }
 
-  void loadCheckpoint(Checkpoint checkpoint) {
+  void loadCheckpoint(ORModel.CDRCheckpoint checkpoint) {
     fromInput.value = inputDateFormat.format(checkpoint.start);
     toInput.value = inputDateFormat.format(checkpoint.end);
     refreshCdrList();

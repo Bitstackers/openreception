@@ -9,13 +9,13 @@ import 'package:html5_dnd/html5_dnd.dart';
 import '../lib/eventbus.dart';
 import 'ivr-view.dart';
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
-import '../lib/request.dart' as request;
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 import '../notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class _ControlLookUp {
   static const int TIME_CONTROL    = 0;
@@ -40,6 +40,10 @@ class _ControlImage {
 
 class DialplanView {
   static const String viewName = 'dialplan';
+
+  final Controller.Reception _receptionController;
+  final Controller.Dialplan _dialplanController;
+
   int selectedReceptionId;
 
   DivElement element;
@@ -55,20 +59,20 @@ class DialplanView {
   ButtonElement compileButton;
   SpanElement extensionListHeader;
 
-  SearchComponent<Reception> receptionPicker;
+  SearchComponent<ORModel.Reception> receptionPicker;
   Dialplan dialplan;
   Extension selectedExtension;
-  List<Playlist> playlists;
+  List<ORModel.Playlist> playlists;
   IvrList ivrMenus;
 
-  List<DialplanTemplate> dialplanTemplates;
+  List<ORModel.DialplanTemplate> dialplanTemplates;
   SelectElement templatePicker;
   ButtonElement loadDialplanTemplate;
 
   ButtonElement showIvrView;
   IvrView ivrView;
 
-  DialplanView(DivElement this.element) {
+  DialplanView(DivElement this.element, Controller.Reception this._receptionController, this._dialplanController) {
     controlListCondition = element.querySelector('#dialplan-control-condition-list');
     controlListAction    = element.querySelector('#dialplan-control-action-list');
     itemsList            = element.querySelector('#dialplan-items-body');
@@ -85,12 +89,12 @@ class DialplanView {
 
     receptionOuterSelector = element.querySelector('#dialplan-receptionbar');
 
-    receptionPicker = new SearchComponent<Reception>(receptionOuterSelector, 'dialplan-reception-searchbox')
+    receptionPicker = new SearchComponent<ORModel.Reception>(receptionOuterSelector, 'dialplan-reception-searchbox')
         ..listElementToString = receptionToSearchboxString
         ..searchFilter = receptionSearchHandler
         ..searchPlaceholder = 'Søg...';
 
-    ivrView = new IvrView(element.querySelector('#ivr-page'));
+    ivrView = new IvrView(element.querySelector('#ivr-page'), _dialplanController);
 
     fillSearchComponent();
     fillDialplanTempalte();
@@ -155,11 +159,11 @@ class DialplanView {
     loadDialplanTemplate.onClick.listen((_) {
       if(selectedReceptionId != null && dialplan != null) {
         OptionElement selectTempalte = templatePicker.selectedOptions.first;
-        DialplanTemplate template = dialplanTemplates.firstWhere((t) => t.id == int.parse(selectTempalte.value), orElse: () => null);
+        ORModel.DialplanTemplate template = dialplanTemplates.firstWhere((t) => t.id == int.parse(selectTempalte.value), orElse: () => null);
         if(template != null) {
-          String groupName = '${template.template.name}${new DateTime.now().millisecondsSinceEpoch}';
-          dialplan.extensionGroups.add(template.template
-              ..name = groupName);
+          String groupName = '${template.template['name']}${new DateTime.now().millisecondsSinceEpoch}';
+          template.template['name'] = groupName;
+          dialplan.extensionGroups.add(new ExtensionGroup.fromJson(template.template));
           if(dialplan.startExtensionGroup == null || dialplan.startExtensionGroup.trim().isEmpty) {
             dialplan.startExtensionGroup = groupName;
           }
@@ -179,34 +183,37 @@ class DialplanView {
     });
   }
 
-  void SearchComponentChanged(Reception reception) {
-    activateDialplan(reception.id);
+  void SearchComponentChanged(ORModel.Reception reception) {
+    activateDialplan(reception.ID);
   }
 
-  String receptionToSearchboxString(Reception reception, String searchterm) {
+  String receptionToSearchboxString(ORModel.Reception reception, String searchterm) {
     return '${reception.fullName}';
   }
 
-  bool receptionSearchHandler(Reception reception, String searchTerm) {
+  bool receptionSearchHandler(ORModel.Reception reception, String searchTerm) {
     return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
   void fillSearchComponent() {
-    request.getReceptionList().then((List<Reception> list) {
-      list.sort();
+    _receptionController.list().then((Iterable<ORModel.Reception> rs) {
+
+      int compareTo (ORModel.Reception rs1, ORModel.Reception rs2) => rs1.fullName.compareTo(rs2.fullName);
+
+      List list = rs.toList()..sort(compareTo);
       receptionPicker.updateSourceList(list);
     });
   }
 
   Future fillDialplanTempalte() {
-    return request.getDialplanTemplates().then((List<DialplanTemplate> templates) {
+    return _dialplanController.getTemplates().then((Iterable<ORModel.DialplanTemplate> templates) {
       dialplanTemplates = templates;
       templatePicker.children.addAll(templates.map(templatePickerOption));
     });
   }
 
-  OptionElement templatePickerOption(DialplanTemplate template) {
-    return new OptionElement(data: template.template.name, value: template.id.toString());
+  OptionElement templatePickerOption(ORModel.DialplanTemplate template) {
+    return new OptionElement(data: template.template['name'], value: template.id.toString());
   }
 
   void enableTemplateLoadButton() {
@@ -235,9 +242,9 @@ class DialplanView {
   }
 
   void activateDialplan(int receptionId) {
-    receptionPicker.selectElement(null, (Reception a, _) => a.id == receptionId);
+    receptionPicker.selectElement(null, (ORModel.Reception a, _) => a.ID == receptionId);
 
-    request.getDialplan(receptionId).then((Dialplan value) {
+    _dialplanController.getDialplan(receptionId).then((Dialplan value) {
       enableTemplateLoadButton();
       disableSaveButton();
       enabledCompile();
@@ -249,15 +256,14 @@ class DialplanView {
 
       showIvrView.disabled = false;
 
-      request.getPlaylistList().then((List<Playlist> list) {
-            list.sort();
-            playlists = list;
+      _dialplanController.getPlaylistList().then((Iterable<ORModel.Playlist> iter) {
+            playlists = iter.toList()..sort();
       }).catchError((error, stack) {
         log.error('activateDialplan() failed at fetching playlists. "${error}" \n"${stack}"');
         notify.error('Der skete en fejl i forbindelse med hentningen af ventemusik-afspilningslisterne. "${error}"');
       });
 
-      request.getIvr(receptionId).then((IvrList list) {
+      _dialplanController.getIvr(receptionId).then((IvrList list) {
         ivrMenus = list;
       }).catchError((error, stack) {
         log.error('activateDialplan() failed at fetching ivr menus. "${error}" \n"${stack}"');
@@ -329,7 +335,7 @@ class DialplanView {
 
   Future compileDialplan() {
     if (selectedReceptionId != null && selectedReceptionId > 0) {
-      return request.markDialplanAsCompiled(selectedReceptionId).then((_) {
+      return _dialplanController.markDialplanAsCompiled(selectedReceptionId).then((_) {
         dialplan.isCompiled = true;
         markAsCompiled(dialplan.isCompiled);
       });
@@ -340,7 +346,7 @@ class DialplanView {
 
   Future saveDialplan() {
     if (selectedReceptionId != null && selectedReceptionId > 0) {
-      return request.updateDialplan(selectedReceptionId, JSON.encode(dialplan))
+      return _dialplanController.updateDialplan(selectedReceptionId, dialplan)
         .then((_) {
         notify.info('Dialplan er blevet opdateret.');
         bus.fire(new DialplanChangedEvent(selectedReceptionId));
@@ -348,7 +354,7 @@ class DialplanView {
         dialplan.isCompiled = false;
         markAsCompiled(dialplan.isCompiled);
       }).then((_) {
-        return request.updateIvr(selectedReceptionId, JSON.encode(ivrMenus));
+        return _dialplanController.updateIvr(selectedReceptionId, ivrMenus);
       }).catchError((error) {
         notify.error('Der skete en fejl i forbindelse med opdateringen af dialplanen.');
         log.error('Update Dialplan gave ${error}');
@@ -858,12 +864,12 @@ class DialplanView {
       enabledSaveButton();
       renderContentList();
     });
-    request.getAudiofileList(selectedReceptionId).then((List<Audiofile> files) {
+    _dialplanController.getAudiofileList(selectedReceptionId).then((Iterable<ORModel.Audiofile> files) {
       //Give it the first as default.
       if((action.filename == null || action.filename.isEmpty) && files.isNotEmpty) {
         action.filename = files.first.filepath;
       }
-      for(Audiofile file in files) {
+      for(ORModel.Audiofile file in files) {
         OptionElement option = new OptionElement()
           ..value = file.filepath
           ..text = file.shortname;
@@ -1067,7 +1073,7 @@ class DialplanView {
     if(playlists != null) {
       playlistPicker.children
         ..clear()
-        ..addAll(playlists.map((Playlist p) => new OptionElement(data: p.name, value: p.name.toString(), selected: action.music == p.name)));
+        ..addAll(playlists.map((ORModel.Playlist p) => new OptionElement(data: p.name, value: p.name.toString(), selected: action.music == p.name)));
     }
 
     SelectElement welcomeFilePicker = settingPanel.querySelector('#dialplan-setting-welcome');
@@ -1078,9 +1084,9 @@ class DialplanView {
       renderContentList();
     });
 
-    request.getAudiofileList(selectedReceptionId).then((List<Audiofile> files) {
+    _dialplanController.getAudiofileList(selectedReceptionId).then((List<ORModel.Audiofile> files) {
       bool found = false;
-      for(Audiofile file in files) {
+      for(ORModel.Audiofile file in files) {
         OptionElement option = new OptionElement()
           ..value = file.filepath
           ..text = file.shortname;

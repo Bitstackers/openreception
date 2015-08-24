@@ -6,10 +6,10 @@ import 'dart:html';
 
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
-import '../lib/request.dart' as request;
+import '../lib/controller.dart' as Controller;
 import '../lib/view_utilities.dart';
 import '../notification.dart' as notify;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'components/user_groups.dart';
 part 'components/user_identity.dart';
@@ -17,6 +17,7 @@ part 'components/user_identity.dart';
 class UserView {
   static const String viewName = 'user';
   DivElement element;
+  final Controller.User _userController;
 
   ButtonElement newUserButton, saveUserButton, removeUserButton;
 
@@ -29,14 +30,14 @@ class UserView {
   int selectedUserId;
   bool isNewUser = false;
 
-  UserView(DivElement this.element) {
+  UserView(DivElement this.element, Controller.User this._userController) {
     newUserButton = element.querySelector('#user-create');
     userList = element.querySelector('#user-list');
 
     saveUserButton = element.querySelector('#user-save');
     removeUserButton = element.querySelector('#user-delete');
-    groupContainer = new UserGroupContainer(element.querySelector('#groups-table'));
-    identityContainer = new IdentityContainer(element.querySelector('#user-identities'));
+    groupContainer = new UserGroupContainer(element.querySelector('#groups-table'), _userController);
+    identityContainer = new IdentityContainer(element.querySelector('#user-identities'), _userController);
 
     userName = element.querySelector('#user-name');
     userExtension = element.querySelector('#user-extension');
@@ -65,42 +66,38 @@ class UserView {
   }
 
   Future refreshList() {
-    return request.getUserList().then((List<User> users) {
-      users.sort();
+    return _userController.list().then((Iterable<ORModel.User> users) {
+      //users.sort();
       renderUserList(users);
-    }).catchError((error) {
-      log.error('Failed to refreshing the list of receptions in reception window.');
     });
   }
 
-  void renderUserList(List<User> users) {
+  void renderUserList(Iterable<ORModel.User> users) {
     userList.children
       ..clear()
       ..addAll(users.map(makeUserNode));
   }
 
-  LIElement makeUserNode(User user) {
+  LIElement makeUserNode(ORModel.User user) {
     return new LIElement()
       ..text = user.name
       ..classes.add('clickable')
-      ..dataset['userid'] = '${user.id}'
-      ..onClick.listen((_) => activateUser(user.id));
+      ..dataset['userid'] = '${user.ID}'
+      ..onClick.listen((_) => activateUser(user.ID));
   }
 
   void activateUser(int userId) {
-    request.getUser(userId).then((User user) {
+    _userController.get(userId).then((ORModel.User user) {
       isNewUser = false;
       selectedUserId = userId;
 
       userName.value = user.name;
-      userExtension.value = user.extension;
-      userSendFrom.value = user.sendFrom;
+      userExtension.value = user.peer;
+      userSendFrom.value = user.address;
 
       highlightUserInList(userId);
       identityContainer.showIdentities(userId);
       return groupContainer.showUsersGroups(userId);
-    }).catchError((error) {
-      log.error('Failed to fetch user ${userId} got: "${error}"');
     });
   }
 
@@ -120,26 +117,25 @@ class UserView {
   }
 
   void saveChanges() {
-    User user = new User()
-      ..extension = userExtension.value
+    ORModel.User user = new ORModel.User.empty()
+      ..peer = userExtension.value
       ..name = userName.value
-      ..sendFrom = userSendFrom.value;
+      ..address = userSendFrom.value;
 
     Future basicInformationRequest;
     if(isNewUser) {
-      basicInformationRequest = request.createUser(JSON.encode(user))
-        .then((Map user) {
-          int userId = user['id'];
-          selectedUserId = userId;
+      basicInformationRequest = _userController.create(user)
+        .then((ORModel.User user) {
+          selectedUserId = user.ID;
           isNewUser = false;
-          bus.fire(new UserAddedEvent(userId));
+          bus.fire(new UserAddedEvent(user.ID));
           notify.info('Brugeren blev oprettet');
       }).catchError((error, stack) {
         log.error('Tried to create a new user from data: "${JSON.encode(user)}" but got: ${error} ${stack}');
         notify.error('Der skete en fejl i forbindelse med oprettelsen af brugeren. Fejl: ${error}');
       });
     } else {
-      basicInformationRequest = request.updateUser(selectedUserId, JSON.encode(user))
+      basicInformationRequest = _userController.update(user)
           .then((_) {
         notify.info('Brugeren blev opdateret');
       }).catchError((error, stack) {
@@ -163,7 +159,7 @@ class UserView {
 
   void deleteUser() {
     if(!isNewUser && selectedUserId != null) {
-      request.deleteUser(selectedUserId)
+      _userController.remove(selectedUserId)
         .then((_) {
           bus.fire(new UserRemovedEvent(selectedUserId));
           selectedUserId = null;

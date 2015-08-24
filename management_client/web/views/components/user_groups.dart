@@ -1,16 +1,18 @@
 part of user.view;
 
 class UserGroupContainer {
+  final Controller.User _userController;
+
   List<CheckboxInputElement> _checkboxs = new List<CheckboxInputElement>();
   TableElement _table;
-  List<UserGroup> _groupList     = new List<UserGroup>();
-  List<UserGroup> _userGroupList = new List<UserGroup>();
+  List<ORModel.UserGroup> _groupList     = new List<ORModel.UserGroup>();
+  List<ORModel.UserGroup> _userGroupList = new List<ORModel.UserGroup>();
 
-  UserGroupContainer(TableElement this._table) {
+  UserGroupContainer(TableElement this._table, Controller.User this._userController) {
     refreshGroupList();
   }
 
-  TableRowElement _makeGroupRow(UserGroup group) {
+  TableRowElement _makeGroupRow(ORModel.UserGroup group) {
     TableRowElement row = new TableRowElement();
 
     CheckboxInputElement checkbox = new CheckboxInputElement()
@@ -39,9 +41,8 @@ class UserGroupContainer {
   }
 
   void refreshGroupList() {
-    request.getGroupList().then((List<UserGroup> groups) {
-      groups.sort();
-      _groupList = groups;
+    _userController.groups().then((Iterable<ORModel.UserGroup> groups) {
+      _groupList = groups.toList();
       _renderBaseList();
     });
   }
@@ -56,10 +57,10 @@ class UserGroupContainer {
 
     for(CheckboxInputElement item in _checkboxs) {
       int groupId = int.parse(item.dataset['id']);
-      bool userIsAMember = _userGroupList.any((UserGroup group) => group.id == groupId);
+      bool userIsAMember = _userGroupList.any((ORModel.UserGroup group) => group.id == groupId);
 
       if(item.checked && !userIsAMember) {
-        worklist.add(request.joinUserGroup(userId, groupId)
+        worklist.add(_userController.joinGroup(userId, groupId)
             .catchError((error, stack) {
           log.error('Request for user to join a group failed. UserId: "${userId}". GroupId: "${groupId}" but got: ${error} ${stack}');
           // Rethrow.
@@ -67,7 +68,7 @@ class UserGroupContainer {
         }));
 
       } else if(!item.checked && userIsAMember) {
-        worklist.add(request.leaveUserGroup(userId, groupId)
+        worklist.add(_userController.leaveGroup(userId, groupId)
             .catchError((error, stack) {
           log.error('Request for user to leave a group failed. UserId: "${userId}". GroupId: "${groupId}" but got: ${error} ${stack}');
           // Rethrow.
@@ -79,19 +80,19 @@ class UserGroupContainer {
   }
 
   void showNewUsersGroups() {
-    _updateCheckBoxesWithUserGroup(new List<UserGroup>());
+    _updateCheckBoxesWithUserGroup(new List<ORModel.UserGroup>());
   }
 
   Future showUsersGroups(int userId) {
-    return request.getUsersGroup(userId).then((List<UserGroup> groups) {
+    return _userController.userGroups(userId).then((Iterable<ORModel.UserGroup> groups) {
       _updateCheckBoxesWithUserGroup(groups);
     });
   }
 
-  void _updateCheckBoxesWithUserGroup(List<UserGroup> groups) {
-    _userGroupList = groups;
+  void _updateCheckBoxesWithUserGroup(Iterable<ORModel.UserGroup> groups) {
+    _userGroupList = groups.toList();
     for(CheckboxInputElement checkbox in _checkboxs) {
-      checkbox.checked = groups.any((UserGroup userGroup) => userGroup.id == int.parse(checkbox.dataset['id']));
+      checkbox.checked = groups.any((ORModel.UserGroup userGroup) => userGroup.id == int.parse(checkbox.dataset['id']));
     }
   }
 }

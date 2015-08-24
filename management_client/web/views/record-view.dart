@@ -4,16 +4,20 @@ import 'dart:async';
 import 'dart:html';
 
 import '../lib/eventbus.dart';
-import '../lib/logger.dart' as log;
-import '../lib/model.dart';
-import '../lib/request.dart' as request;
 import '../notification.dart' as notify;
+
+import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class RecordView {
   static const String viewName = 'record';
   DivElement element;
 
-  List<Reception> receptions = new List<Reception>();
+  final Controller.Reception _receptionController;
+  final Controller.Dialplan _dialplanController;
+
+
+  List<ORModel.Reception> receptions = new List<ORModel.Reception>();
   UListElement receptionListUL;
   InputElement receptionSearchBox;
   LIElement highlightedReceptionLI;
@@ -23,7 +27,8 @@ class RecordView {
   int selectedReceptionId;
   UListElement fileListUL;
 
-  RecordView(DivElement this.element) {
+  RecordView(DivElement this.element,
+                     Controller.Reception this._receptionController, this._dialplanController) {
     receptionListUL = element.querySelector('#record-reception-list');
     receptionSearchBox = element.querySelector('#record-reception-search-box');
     newRecording = element.querySelector('#record-new-file-button');
@@ -46,7 +51,7 @@ class RecordView {
       String fileName = newFileName.value;
       if(fileName != null && fileName.trim().isNotEmpty) {
         if(selectedReceptionId != null && selectedReceptionId > 0) {
-          request.recordSoundFile(selectedReceptionId, '${fileName}.wav').catchError((error) {
+          _dialplanController.recordSoundFile(selectedReceptionId, '${fileName}.wav').catchError((error) {
             notify.error('Der er skete en fejl med opringen.');
           });
         } else {
@@ -58,35 +63,33 @@ class RecordView {
     });
   }
 
-  LIElement makeReceptionNode(Reception reception) {
+  LIElement makeReceptionNode(ORModel.Reception reception) {
     LIElement li = new LIElement();
     return li
       ..classes.add('clickable')
-      ..dataset['receptionid'] = '${reception.id}'
+      ..dataset['receptionid'] = '${reception.ID}'
       ..text = '${reception.fullName}'
       ..onClick.listen((_) {
-        activateReception(reception.organizationId, reception.id);
+        activateReception(reception.organizationId, reception.ID);
       });
   }
 
   void performSearch() {
     String searchText = receptionSearchBox.value;
-    List<Reception> filteredList = receptions.where((Reception recep) =>
+    List<ORModel.Reception> filteredList = receptions.where((ORModel.Reception recep) =>
         recep.fullName.toLowerCase().contains(searchText.toLowerCase())).toList();
     renderReceptionList(filteredList);
   }
 
   Future refreshList() {
-    return request.getReceptionList().then((List<Reception> receptions) {
-      receptions.sort();
-      this.receptions = receptions;
+    return _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+
+      this.receptions = receptions.toList();
       performSearch();
-    }).catchError((error) {
-      log.error( 'Failed to refreshing the list of receptions in reception window.');
     });
   }
 
-  void renderReceptionList(List<Reception> receptions) {
+  void renderReceptionList(List<ORModel.Reception> receptions) {
     receptionListUL.children
         ..clear()
         ..addAll(receptions.map(makeReceptionNode));
@@ -102,7 +105,7 @@ class RecordView {
 
     highlightContactInList(receptionId);
 
-    request.getAudiofileList(receptionId).then((List<Audiofile> files) {
+    _dialplanController.getAudiofileList(receptionId).then((Iterable<ORModel.Audiofile> files) {
       fileListUL.children.clear();
       fileListUL.children.addAll(files.map(makeAudioFileNode));
     }).catchError((error) {
@@ -110,7 +113,7 @@ class RecordView {
     });
   }
 
-  LIElement makeAudioFileNode(Audiofile file) {
+  LIElement makeAudioFileNode(ORModel.Audiofile file) {
     LIElement li = new LIElement();
 
     SpanElement content = new SpanElement()
@@ -125,7 +128,7 @@ class RecordView {
     ButtonElement play = new ButtonElement()
       ..text = 'Afspil'
       ..onClick.listen((_) {
-      request.recordSoundFile(selectedReceptionId, file.shortname).catchError((error) {
+      _dialplanController.recordSoundFile(selectedReceptionId, file.shortname).catchError((error) {
         notify.error('Det skete en fejl i forbindelse med oprettelsen af opkaldet. ${error}');
       });
     });
@@ -133,7 +136,7 @@ class RecordView {
     ButtonElement delete = new ButtonElement()
       ..text = 'Slet'
       ..onClick.listen((_) {
-      request.deleteSoundFile(selectedReceptionId, file.shortname).then((_) {
+      _dialplanController.deleteSoundFile(selectedReceptionId, file.shortname).then((_) {
         return activateReception(selectedOrganizationId, selectedReceptionId);
       }).catchError((error) {
         notify.error('Det skete en fejl, i forbindelse med sletningen af filen ${error}');

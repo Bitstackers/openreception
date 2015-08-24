@@ -5,6 +5,7 @@ dependencies:
   event_bus: any
   html5_dnd: any
   intl: any
+  logging: any
   libdialplan:
     git:
       ref: master

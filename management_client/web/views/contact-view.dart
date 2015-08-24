@@ -9,28 +9,37 @@ import 'package:intl/intl.dart' show DateFormat;
 
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
-import '../lib/model.dart';
 import '../notification.dart' as notify;
-import '../lib/request.dart' as request;
 import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 import '../menu.dart';
+import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
 part 'components/endpoint.dart';
 
-typedef Future HandleReceptionContact(ContactAttribute receptionContact);
+typedef Future HandleReceptionContact(ORModel.Contact receptionContact);
 typedef Future LazyFuture();
 
 class ContactView {
   static const String viewName = 'contact';
   DivElement element;
+
+  final Controller.Contact _contactController;
+  final Controller.Calendar _calendarController;
+  final Controller.Organization _organizationController;
+  final Controller.Reception _receptionController;
+  final Controller.DistributionList _dlistController;
+  final Controller.Endpoint _endpointController;
+
+
   UListElement ulContactList;
   UListElement ulReceptionContacts;
   UListElement ulReceptionList;
   UListElement ulOrganizationList;
-  List<Contact> contactList = new List<Contact>();
+  List<ORModel.BaseContact> contactList = new List<ORModel.BaseContact>();
   SearchInputElement searchBox;
 
   TextAreaElement inputName;
@@ -41,14 +50,16 @@ class ContactView {
   ButtonElement buttonSave, buttonCreate, buttonDelete, buttonJoinReception;
   DivElement receptionOuterSelector;
 
-  SearchComponent<Reception> SC;
+  SearchComponent<ORModel.Reception> SC;
   int selectedContactId;
   bool createNew = false;
 
   Map<int, LazyFuture> saveList = new Map<int, LazyFuture>();
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
-  ContactView(DivElement this.element) {
+  ContactView(DivElement this.element, this._contactController,
+      this._organizationController, this._receptionController,
+      this._calendarController, this._dlistController, this._endpointController) {
     ulContactList = element.querySelector('#contact-list');
 
     inputName = element.querySelector('#contact-input-name');
@@ -64,12 +75,14 @@ class ContactView {
     buttonDelete = element.querySelector('#contact-delete');
     buttonJoinReception = element.querySelector('#contact-add');
     searchBox = element.querySelector('#contact-search-box');
-    receptionOuterSelector = element.querySelector('#contact-reception-selector');
+    receptionOuterSelector =
+        element.querySelector('#contact-reception-selector');
 
-    SC = new SearchComponent<Reception>(receptionOuterSelector, 'contact-reception-searchbox')
-        ..listElementToString = receptionToSearchboxString
-        ..searchFilter = receptionSearchHandler
-        ..searchPlaceholder = 'Søg...';
+    SC = new SearchComponent<ORModel.Reception>(
+        receptionOuterSelector, 'contact-reception-searchbox')
+      ..listElementToString = receptionToSearchboxString
+      ..searchFilter = receptionSearchHandler
+      ..searchPlaceholder = 'Søg...';
 
     fillSearchComponent();
 
@@ -77,19 +90,16 @@ class ContactView {
 
     refreshList();
 
-    request.getContacttypeList().then((List<String> typesList) {
-      inputType.children.addAll(typesList.map((type) => new OptionElement(data:
-          type, value: type)));
-    });
-
-    EndpointsComponent.loadAddressTypes();
+    inputType.children.addAll(ORModel.ContactType.types
+        .map((type) => new OptionElement(data: type, value: type)));
   }
 
-  String receptionToSearchboxString(Reception reception, String searchterm) {
+  String receptionToSearchboxString(
+      ORModel.Reception reception, String searchterm) {
     return '${reception.fullName}';
   }
 
-  bool receptionSearchHandler(Reception reception, String searchTerm) {
+  bool receptionSearchHandler(ORModel.Reception reception, String searchTerm) {
     return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
@@ -117,9 +127,12 @@ class ContactView {
   }
 
   void refreshList() {
-    request.getEveryContact().then((List<Contact> contacts) {
-      contacts.sort();
-      this.contactList = contacts;
+    _contactController.listAll().then((Iterable<ORModel.BaseContact> contacts) {
+      int compareTo(ORModel.BaseContact c1, ORModel.BaseContact c2) =>
+          c1.fullName.compareTo(c2.fullName);
+
+      List<ORModel.BaseContact> list = contacts.toList()..sort(compareTo);
+      this.contactList = list;
       performSearch();
     }).catchError((error) {
       log.error('Tried to fetch organization but got error: $error');
@@ -129,13 +142,14 @@ class ContactView {
   void performSearch() {
     String searchTerm = searchBox.value;
     ulContactList.children
-        ..clear()
-        ..addAll(contactList
-                  .where((Contact contact) => contact.fullName.toLowerCase().contains(searchTerm.toLowerCase()))
-                  .map(makeContactNode));
+      ..clear()
+      ..addAll(contactList
+          .where((ORModel.BaseContact contact) =>
+              contact.fullName.toLowerCase().contains(searchTerm.toLowerCase()))
+          .map(makeContactNode));
   }
 
-  LIElement makeContactNode(Contact contact) {
+  LIElement makeContactNode(ORModel.BaseContact contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${contact.fullName}'
@@ -145,11 +159,12 @@ class ContactView {
   }
 
   void highlightContactInList(int id) {
-    ulContactList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['contactid'] == '$id'));
+    ulContactList.children.forEach((LIElement li) => li.classes.toggle(
+        'highlightListItem', li.dataset['contactid'] == '$id'));
   }
 
   void activateContact(int id, [int reception_id]) {
-    request.getContact(id).then((Contact contact) {
+    _contactController.get(id).then((ORModel.BaseContact contact) {
       buttonSave.text = 'Gem';
       buttonSave.disabled = false;
       buttonDelete.disabled = false;
@@ -157,72 +172,92 @@ class ContactView {
       createNew = false;
 
       inputName.value = contact.fullName;
-      inputType.options.forEach((OptionElement option) => option.selected = option.value == contact.type);
+      inputType.options.forEach((OptionElement option) =>
+          option.selected = option.value == contact.contactType);
       inputEnabled.checked = contact.enabled;
       spanContactId.text = '${contact.id}';
       selectedContactId = contact.id;
 
       highlightContactInList(id);
 
-      return request.getContactWithAttributes(id).then(
-          (List<ContactAttribute> attributes) {
-        if (attributes != null) {
-          saveList.clear();
-          attributes.sort();
-          ulReceptionContacts.children
-              ..clear()
-              ..addAll(attributes.map((ContactAttribute contactAttribute) =>
-                  receptionContactBox(contact.id, contactAttribute, receptionContactUpdate, selected: contactAttribute.receptionId == reception_id)));
-
-        //Rightbar
-        request.getContactsOrganizationList(id).then((List<Organization> organizations) {
-          organizations.sort();
-          ulOrganizationList.children
-              ..clear()
-              ..addAll(organizations.map(createOrganizationNode));
-        }).catchError((error, stack) {
-          log.error('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
+      return _contactController
+          .receptions(id)
+          .then((Iterable<int> receptionIDs) {
+        ulReceptionContacts.children = [];
+        Future.forEach(receptionIDs, (int receptionID) {
+          _contactController
+              .getByReception(id, receptionID)
+              .then((ORModel.Contact contact) {
+            saveList.clear();
+            ulReceptionContacts.children.add(receptionContactBox(contact));
+          });
         });
 
-        return request.getColleagues(id).then((List<Reception> Receptions) {
-          ulReceptionList.children.clear();
+        //Rightbar
+        _contactController
+            .contactOrganizations(id)
+            .then((Iterable<int> organizationsIDs) {
+          ulOrganizationList.children..clear();
 
-          if(Receptions.isNotEmpty) {
-            Receptions.sort();
-            ulReceptionList.children
-                ..addAll(Receptions.map(createReceptionNode));
-          }
+          Future.forEach(organizationsIDs, (int organizationID) {
+            _organizationController
+                .get(organizationID)
+                .then((ORModel.Organization org) {
+              saveList.clear();
+              ulOrganizationList.children.add(createOrganizationNode(org));
+            });
           });
-        }
+        }).catchError((error, stack) {
+          log.error(
+              'Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
+        });
+
+        //FIXME: Figure out how this should look.
+        return _contactController.colleagues(id).then((Iterable<ORModel.Contact> contacts) {
+          ulReceptionList.children =
+
+          contacts.map(createColleagueNode).toList();
+
+        });
       });
     }).catchError((error, stack) {
-      log.error('Tried to activate contact "${id}" but gave "${error}" \n${stack}');
+      log.error(
+          'Tried to activate contact "${id}" but gave "${error}" \n${stack}');
     });
   }
 
   void fillSearchComponent() {
-    request.getReceptionList().then((List<Reception> receptions) {
-      receptions.sort();
-      SC.updateSourceList(receptions);
+    _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+      int compareTo(ORModel.Reception rs1, ORModel.Reception rs2) =>
+          rs1.fullName.compareTo(rs2.fullName);
+
+      List list = receptions.toList()..sort(compareTo);
+
+      SC.updateSourceList(list);
     });
   }
 
-  Future receptionContactUpdate(ContactAttribute ca) {
-    return request.updateReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
+  Future receptionContactUpdate(ORModel.Contact ca) {
+    return _contactController.updateInReception(ca).then((_) {
       notify.info('Oplysningerne blev gemt.');
     }).catchError((error, stack) {
       notify.error('Ændringerne blev ikke gemt.');
-      log.error('Tried to update a Reception Contact, but failed with "${error}", ${stack}');
+      log.error(
+          'Tried to update a Reception Contact, but failed with "${error}", ${stack}');
     });
   }
 
-  Future receptionContactCreate(ContactAttribute ca) {
-    return request.createReceptionContact(ca.receptionId, ca.contactId, JSON.encode(ca)).then((_) {
+  Future receptionContactCreate(ORModel.Contact contact) {
+    return _contactController
+        .addToReception(contact, contact.receptionID)
+        .then((_) {
       notify.info('Lageringen gik godt.');
-      bus.fire(new ReceptionContactAddedEvent(ca.receptionId, ca.contactId));
+      bus.fire(new ReceptionContactAddedEvent(contact.receptionID, contact.ID));
     }).catchError((error, stack) {
-      notify.error('Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
-      log.error('Tried to update a Reception Contact, but failed with "$error" ${stack}');
+      notify.error(
+          'Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
+      log.error(
+          'Tried to update a Reception Contact, but failed with "$error" ${stack}');
     });
   }
 
@@ -231,29 +266,21 @@ class ContactView {
    * If any of the fields changes, save to [saveList] a function that calls [receptionContactHandler] with the changed [ReceptionContact]
    * If you want there to always be this function in [saveList] set alwaysAddToSaveList to true.
    */
-  LIElement receptionContactBox(int contactId, ContactAttribute attribute, HandleReceptionContact receptionContactHandler,
-                                {bool selected: false, bool alwaysAddToSaveList: false}) {
+  LIElement receptionContactBox(ORModel.Contact contact,
+      {bool alwaysAddToSaveList: false}) {
     DivElement div = new DivElement()..classes.add('contact-reception');
-    LIElement li = new LIElement()
-        ..tabIndex = -1;
+    LIElement li = new LIElement()..tabIndex = -1;
     SpanElement header = new SpanElement()
-        ..text = attribute.receptionName
-        ..classes.add('reception-contact-header');
+      //TODO: insert name.
+      ..text = contact.receptionID.toString()
+      ..classes.add('reception-contact-header');
     div.children.add(header);
 
     ButtonElement delete = new ButtonElement()
-        ..text = 'fjern'
-        ..onClick.listen((_) {
-          saveList[attribute.receptionId] = () {
-            return request.deleteReceptionContact(attribute.receptionId,
-                contactId).then((_) {
-              bus.fire(new ReceptionContactRemovedEvent(attribute.receptionId, contactId));
-            }).catchError((error) {
-              log.error('deleteReceptionContact error: "error"');
-            });
-          };
-          li.parent.children.remove(li);
-        });
+      ..text = 'fjern'
+      ..onClick.listen((_) => _contactController
+          .removeFromReception(contact.ID, contact.receptionID)
+          .then((_) => li.parent.children.remove(li)));
 
     div.children.add(delete);
 
@@ -264,55 +291,60 @@ class ContactView {
     ButtonElement moveContact = new ButtonElement()
       ..text = 'Flyt'
       ..onClick.listen((_) {
-      try {
-        int newContactId = int.parse(newContactIdInput.value);
-        request.moveReceptionContact(attribute.receptionId, contactId, newContactId).then((_) {
-          notify.info('Oplysningerne er nu flyttet til ${newContactId}');
-          activateContact(contactId);
-        }).catchError((error) {
-          notify.info('Oplysningerne blev ikke flyttet. Fejl: ${error}');
-        });
-      } catch(error) {
-        notify.info('Det er kontaktens ID der skal skrive i tal. ${error}');
-      }
-    });
+        try {
+          int newContactId = int.parse(newContactIdInput.value);
+          _contactController.moveReception(contact.receptionID, contact.ID, newContactId)
+              .then((_) {
+            notify.info('Oplysningerne er nu flyttet til ${newContactId}');
+            activateContact(contact.ID);
+          }).catchError((error) {
+            notify.info('Oplysningerne blev ikke flyttet. Fejl: ${error}');
+          });
+        } catch (error) {
+          notify.info('Det er kontaktens ID der skal skrive i tal. ${error}');
+        }
+      });
 
     div.children.addAll([newContactIdInput, moveContact]);
     //FIXME end of migrate from Frontdesk to OpenReception code
 
-    TextAreaElement department, info, position, relations, responsibility;
+    UListElement department, info, position, relations, responsibility;
     InputElement wantMessage, enabled;
-    UListElement backupList, emailList, handlingList, phoneNumbersList,
-        workhoursList, tagsList;
+    UListElement backupList,
+        emailList,
+        handlingList,
+        phoneNumbersList,
+        workhoursList,
+        tagsList;
     EndpointsComponent endpointsContainer;
     DistributionsListComponent distributionsListContainer;
     ContactCalendarComponent calendarComponent;
 
     Function onChange = () {
-      if (!saveList.containsKey(attribute.receptionId)) {
-        saveList[attribute.receptionId] = () {
-          ContactAttribute CA = new ContactAttribute()
-              ..contactId = contactId
-              ..receptionId = attribute.receptionId
-              ..enabled = enabled.checked
-              ..wantsMessages = wantMessage.checked
-              ..phoneNumbers = getPhoneNumbersFromDOM(phoneNumbersList)
+      if (!saveList.containsKey(contact.receptionID)) {
+        saveList[contact.receptionID] = () {
+          ORModel.Contact CA = new ORModel.Contact.empty()
+            ..ID = contact.ID
+            ..receptionID = contact.receptionID
+            ..enabled = enabled.checked
+            ..wantsMessage = wantMessage.checked
+            ..phones = getPhoneNumbersFromDOM(phoneNumbersList)
+            ..backupContacts = getListValues(backupList)
+            ..handling = getListValues(handlingList)
+            ..workhours = getListValues(workhoursList)
+            ..tags = getListValues(tagsList)
+            ..departments = getListValues(department)
+            ..infos = getListValues(info)
+            ..titles = getListValues(position)
+            ..relations = getListValues(relations)
+            ..responsibilities = getListValues(responsibility);
 
-              ..backup = getListValues(backupList)
-              ..handling = getListValues(handlingList)
-              ..workhours = getListValues(workhoursList)
-              ..tags = getListValues(tagsList)
-
-              ..department = department.value
-              ..info = info.value
-              ..position = position.value
-              ..relations = relations.value
-              ..responsibility = responsibility.value;
-
-          return receptionContactHandler(CA)
-              .then((_) => endpointsContainer.save(CA.receptionId, CA.contactId))
-              .then((_) => distributionsListContainer.save(CA.receptionId, CA.contactId))
-              .then((_) => calendarComponent.save(CA.receptionId, CA.contactId));
+          return _contactController
+              .updateInReception(CA)
+              .then((_) => endpointsContainer.save(CA.receptionID, CA.ID))
+              .then(
+                  (_) => distributionsListContainer.save(CA.receptionID, CA.ID))
+              .then((_) => calendarComponent.save(CA.receptionID, CA.ID));
         };
       }
     };
@@ -327,70 +359,71 @@ class ContactView {
     TableRowElement row;
     TableCellElement leftCell, rightCell;
 
+    row = createTableRowInsertInTable(tableBody);
+    leftCell = createTableCellInsertInRow(row);
+    rightCell = createTableCellInsertInRow(row);
+    wantMessage = createCheckBox(
+        leftCell, 'Vil have beskeder', contact.wantsMessage,
+        onChange: onChange);
+    enabled =
+        createCheckBox(rightCell, 'Aktiv', contact.enabled, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    wantMessage = createCheckBox(leftCell, 'Vil have beskeder', attribute.wantsMessages, onChange: onChange);
-    enabled = createCheckBox(rightCell, 'Aktiv', attribute.enabled, onChange: onChange);
+    department = createListBox(leftCell, 'Afdeling', contact.departments,
+        onChange: onChange);
+    info = createListBox(rightCell, 'Andet', contact.infos, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    department = createTextBox(leftCell, 'Afdelling', attribute.department, onChange: onChange);
-    info = createTextBox(rightCell, 'Andet', attribute.info, onChange: onChange);
-
-
-    row = createTableRowInsertInTable(tableBody);
-    leftCell = createTableCellInsertInRow(row);
-    rightCell = createTableCellInsertInRow(row);
-    position = createTextBox(leftCell, 'Stilling', attribute.position, onChange: onChange);
-    relations = createTextBox(rightCell, 'Relationer', attribute.relations, onChange: onChange);
+    position =
+        createListBox(leftCell, 'Stilling', contact.titles, onChange: onChange);
+    relations = createListBox(rightCell, 'Relationer', contact.relations,
+        onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row)
-        ..colSpan = 2; //Because of w3 validation
-    responsibility = createTextBox(leftCell, 'Ansvar', attribute.responsibility, onChange: onChange);
+      ..colSpan = 2; //Because of w3 validation
+    responsibility = createListBox(leftCell, 'Ansvar', contact.responsibilities,
+        onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    backupList = createListBox(leftCell, 'Backup', attribute.backup, onChange: onChange);
-    endpointsContainer = new EndpointsComponent(rightCell, onChange);
+    backupList = createListBox(leftCell, 'Backup', contact.backupContacts,
+        onChange: onChange);
+    endpointsContainer =
+        new EndpointsComponent(rightCell, onChange, _contactController, _endpointController);
     //Saving the future, so we are able to wait on it later.
-    loadingJobs.add(endpointsContainer.load(attribute.receptionId, contactId));
+    loadingJobs.add(endpointsContainer.load(contact.receptionID, contact.ID));
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    handlingList = createListBox(leftCell, 'Håndtering', attribute.handling, onChange: onChange);
-    phoneNumbersList = createPhoneNumbersList(rightCell, attribute.phoneNumbers, onChange: onChange);
+    handlingList = createListBox(leftCell, 'Håndtering', contact.handling,
+        onChange: onChange);
+    phoneNumbersList =
+        createPhoneNumbersList(rightCell, contact.phones, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    workhoursList = createListBox(leftCell, 'Arbejdstid', attribute.workhours, onChange: onChange);
-    tagsList = createListBox(rightCell, 'Stikord', attribute.tags, onChange: onChange);
+    workhoursList = createListBox(leftCell, 'Arbejdstid', contact.workhours,
+        onChange: onChange);
+    tagsList =
+        createListBox(rightCell, 'Stikord', contact.tags, onChange: onChange);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    distributionsListContainer = new DistributionsListComponent(leftCell, onChange);
-    loadingJobs.add(distributionsListContainer.load(attribute.receptionId, contactId));
-    calendarComponent = new ContactCalendarComponent(rightCell, onChange);
-    loadingJobs.add(calendarComponent.load(attribute.receptionId, contactId));
-
-
-    //In case of creating. You always want it in saveList.
-    if (alwaysAddToSaveList) {
-      onChange();
-    }
-
-    if(selected) {
-      Future.wait(loadingJobs).then((_) {
-        li.focus();
-      });
-    }
+    distributionsListContainer = new DistributionsListComponent(
+        leftCell, onChange, _contactController, _dlistController, _receptionController);
+    distributionsListContainer.load(contact);
+    calendarComponent =
+        new ContactCalendarComponent(rightCell, onChange, _calendarController);
+    loadingJobs.add(calendarComponent.load(contact.receptionID, contact.ID));
 
     li.children.add(div);
     return li;
@@ -408,7 +441,9 @@ class ContactView {
     return row;
   }
 
-  UListElement createPhoneNumbersList(Element container, List<Phone> phonenumbers, {Function onChange}) {
+  UListElement createPhoneNumbersList(
+      Element container, List<ORModel.PhoneNumber> phonenumbers,
+      {Function onChange}) {
     LabelElement label = new LabelElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 
@@ -416,11 +451,14 @@ class ContactView {
 
     List<LIElement> children = new List<LIElement>();
     if (phonenumbers != null) {
-      for (Phone number in phonenumbers) {
+      for (ORModel.PhoneNumber number in phonenumbers) {
         LIElement li = simpleListElement(number.value, onChange: onChange);
-        li.value = number.id != null ? number.id : -1;
+        //TODO: Figure out what value is used for.
+        //li.value = number.value != null ? number.value : -1;
         SelectElement kindpicker = new SelectElement()
-          ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind, selected: kind == number.kind)))
+          ..children.addAll(phonenumberTypes.map(
+              (String kind) => new OptionElement(
+                  data: kind, value: kind, selected: kind == number.type)))
           ..onChange.listen((_) => onChange());
 
         SpanElement descriptionContent = new SpanElement()
@@ -430,18 +468,23 @@ class ContactView {
         editableSpan(descriptionContent, descriptionEditBox, onChange);
 
         SpanElement billingTypeContent = new SpanElement()
-          ..text = number.billingType
+          ..text = number.billing_type
           ..classes.add('phonenumberbillingtype');
         InputElement billingTypeEditBox = new InputElement(type: 'text');
         editableSpan(billingTypeContent, billingTypeEditBox, onChange);
 
-        li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
+        li.children.addAll([
+          kindpicker,
+          descriptionContent,
+          descriptionEditBox,
+          billingTypeContent,
+          billingTypeEditBox
+        ]);
         children.add(li);
       }
     }
 
-    SortableGroup sortGroup = new SortableGroup()
-      ..installAll(children);
+    SortableGroup sortGroup = new SortableGroup()..installAll(children);
 
     if (onChange != null) {
       sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
@@ -464,7 +507,8 @@ class ContactView {
           //A bit of a hack to get a unique id.
           li.value = item.hashCode;
           SelectElement kindpicker = new SelectElement()
-            ..children.addAll(phonenumberTypes.map((String kind) => new OptionElement(data: kind, value: kind)))
+            ..children.addAll(phonenumberTypes.map(
+                (String kind) => new OptionElement(data: kind, value: kind)))
             ..onChange.listen((_) => onChange());
 
           SpanElement descriptionContent = new SpanElement()
@@ -481,7 +525,13 @@ class ContactView {
             ..placeholder = 'taksttype';
           editableSpan(billingTypeContent, billingTypeEditBox, onChange);
 
-          li.children.addAll([kindpicker, descriptionContent, descriptionEditBox, billingTypeContent, billingTypeEditBox]);
+          li.children.addAll([
+            kindpicker,
+            descriptionContent,
+            descriptionEditBox,
+            billingTypeContent,
+            billingTypeEditBox
+          ]);
 
           int index = ul.children.length - 1;
           sortGroup.install(li);
@@ -498,38 +548,49 @@ class ContactView {
     children.add(new LIElement()..children.add(inputNewItem));
 
     ul.children
-        ..clear()
-        ..addAll(children);
+      ..clear()
+      ..addAll(children);
 
     container.children.addAll([label, ul]);
 
     return ul;
   }
 
-  List<Phone> getPhoneNumbersFromDOM(UListElement element) {
-    List<Phone> phonenumbers = new List<Phone>();
+  List<ORModel.PhoneNumber> getPhoneNumbersFromDOM(UListElement element) {
+    List<ORModel.PhoneNumber> phonenumbers = new List<ORModel.PhoneNumber>();
 
     for (LIElement li in element.children) {
       if (!li.classes.contains(addNewLiClass)) {
-        SpanElement content      = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('contactgenericcontent'), orElse: () => null);
-        SelectElement kindpicker = li.children.firstWhere((elem) => elem is SelectElement, orElse: () => null);
-        SpanElement description  = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberdescription'), orElse: () => null);
-        SpanElement billingType  = li.children.firstWhere((elem) => elem is SpanElement && elem.classes.contains('phonenumberbillingtype'), orElse: () => null);
+        SpanElement content = li.children.firstWhere(
+            (elem) => elem is SpanElement &&
+                elem.classes.contains('contactgenericcontent'),
+            orElse: () => null);
+        SelectElement kindpicker = li.children.firstWhere(
+            (elem) => elem is SelectElement, orElse: () => null);
+        SpanElement description = li.children.firstWhere(
+            (elem) => elem is SpanElement &&
+                elem.classes.contains('phonenumberdescription'),
+            orElse: () => null);
+        SpanElement billingType = li.children.firstWhere(
+            (elem) => elem is SpanElement &&
+                elem.classes.contains('phonenumberbillingtype'),
+            orElse: () => null);
 
         if (content != null && kindpicker != null) {
-          phonenumbers.add(new Phone()
-            ..id = li.value
-            ..kind = kindpicker.options[kindpicker.selectedIndex].value
+          phonenumbers.add(new ORModel.PhoneNumber.empty()
+            ..type = kindpicker.options[kindpicker.selectedIndex].value
             ..value = content.text
             ..description = description.text
-            ..billingType = billingType.text);
+            ..billing_type = billingType.text);
         }
       }
     }
     return phonenumbers;
   }
 
-  UListElement createListBox(Element container, String labelText, List<String> dataList, {Function onChange}) {
+  UListElement createListBox(
+      Element container, String labelText, List<String> dataList,
+      {Function onChange}) {
     LabelElement label = new LabelElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 
@@ -541,10 +602,10 @@ class ContactView {
     return ul;
   }
 
-  TextAreaElement createTextBox(Element container, String labelText, String data, {Function onChange}) {
+  TextAreaElement createTextBox(
+      Element container, String labelText, String data, {Function onChange}) {
     LabelElement label = new LabelElement();
-    TextAreaElement inputText = new TextAreaElement()
-      ..rows = 1;
+    TextAreaElement inputText = new TextAreaElement()..rows = 1;
 
     label.text = labelText;
     inputText.value = data;
@@ -560,8 +621,8 @@ class ContactView {
     return inputText;
   }
 
-  InputElement createCheckBox(Element container, String labelText, bool
-      data, {Function onChange}) {
+  InputElement createCheckBox(Element container, String labelText, bool data,
+      {Function onChange}) {
     LabelElement label = new LabelElement();
     CheckboxInputElement inputCheckbox = new CheckboxInputElement();
 
@@ -582,18 +643,20 @@ class ContactView {
     int contactId = selectedContactId;
     if (contactId != null && contactId > 0 && createNew == false) {
       List<Future> work = new List<Future>();
-      Contact updatedContact = new Contact()
-          ..id = contactId
-          ..fullName = inputName.value
-          ..type = inputType.selectedOptions.first != null ?
-              inputType.selectedOptions.first.value : inputType.options.first.value
-          ..enabled = inputEnabled.checked;
+      ORModel.BaseContact updatedContact = new ORModel.BaseContact.empty()
+        ..id = contactId
+        ..fullName = inputName.value
+        ..contactType = inputType.selectedOptions.first != null
+            ? inputType.selectedOptions.first.value
+            : inputType.options.first.value
+        ..enabled = inputEnabled.checked;
 
-      work.add(request.updateContact(contactId, JSON.encode(updatedContact)).then((_) {
-        //Show a message that tells the user, that the changes went through.
+      work.add(_contactController.update(updatedContact).then((_) {
+        //TODO: Show a message that tells the user, that the changes went through.
         refreshList();
       }).catchError((error) {
-        log.error('Tried to update a contact but failed with error "${error}" from body: "${JSON.encode(updatedContact)}"');
+        log.error(
+            'Tried to update a contact but failed with error "${error}" from body: "${JSON.encode(updatedContact)}"');
       }));
 
       work.addAll(saveList.values.map((f) => f()));
@@ -602,24 +665,29 @@ class ContactView {
       Future.wait(work).then((_) {
         return activateContact(contactId);
       }).catchError((error, stack) {
-        log.error('Contact was appling update for ${contactId} when "$error", ${stack}');
+        log.error(
+            'Contact was appling update for ${contactId} when "$error", ${stack}');
       });
-
     } else if (createNew) {
-      Contact newContact = new Contact()
-          ..fullName = inputName.value
-          ..type = inputType.selectedOptions.first != null ?
-              inputType.selectedOptions.first.value : inputType.options.first.value
-          ..enabled = inputEnabled.checked;
+      ORModel.BaseContact newContact = new ORModel.BaseContact.empty()
+        ..fullName = inputName.value
+        ..contactType = inputType.selectedOptions.first != null
+            ? inputType.selectedOptions.first.value
+            : inputType.options.first.value
+        ..enabled = inputEnabled.checked;
 
-      request.createContact(JSON.encode(newContact)).then((Contact responseContact) {
+      _contactController
+          .create(newContact)
+          .then((ORModel.BaseContact responseContact) {
         bus.fire(new ContactAddedEvent(responseContact.id));
         refreshList();
         activateContact(responseContact.id);
         notify.info('Kontaktpersonen blev oprettet.');
       }).catchError((error) {
-        notify.info('Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
-        log.error('Tried to make a new contact but failed with error "${error}" from body: "${JSON.encode(newContact)}"');
+        notify.info(
+            'Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
+        log.error(
+            'Tried to make a new contact but failed with error "${error}" from body: "${JSON.encode(newContact)}"');
       });
     }
   }
@@ -644,33 +712,21 @@ class ContactView {
 
   void addReceptionToContact() {
     if (SC.currentElement != null && selectedContactId > 0) {
-      Reception reception = SC.currentElement;
+      ORModel.Reception reception = SC.currentElement;
 
-      ContactAttribute template =
-          new ContactAttribute()
-          ..receptionId = reception.id
-          ..receptionName = reception.fullName
-          ..receptionEnabled = reception.enabled
-          ..wantsMessages = true
-          ..enabled = true
+      ORModel.Contact template = new ORModel.Contact.empty()
+        ..receptionID = reception.ID
+        ..ID = selectedContactId;
 
-          ..department = ''
-          ..info = ''
-          ..position = ''
-          ..relations = ''
-          ..responsibility = ''
-
-          ..backup = new List<String>()
-          ..handling = new List<String>()
-          ..workhours = new List<String>()
-          ..tags = new List<String>();
-
-      ulReceptionContacts.children..add(receptionContactBox(selectedContactId, template,
-          receptionContactCreate, alwaysAddToSaveList: true));
+      _contactController
+          .addToReception(template, reception.ID)
+          .then((ORModel.Contact createdContact) {
+        ulReceptionContacts.children..add(receptionContactBox(createdContact));
+      });
     }
   }
 
-  LIElement createReceptionNode(Reception reception) {
+  LIElement createReceptionNode(ORModel.Reception reception) {
     // First node is the receptionname. Clickable to the reception
     //   Second node is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
     LIElement rootNode = new LIElement();
@@ -680,41 +736,48 @@ class ContactView {
       ..onClick.listen((_) {
         Map data = {
           'organization_id': reception.organizationId,
-          'reception_id': reception.id
+          'reception_id': reception.ID
         };
         bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
 
-    UListElement contacts = new UListElement()
-      ..classes.add('zebra-odd')
-      ..children = reception.contacts.map((Contact collegue) => createColleagueNode(collegue, reception.id)).toList();
+    UListElement contactsUl = new UListElement()
+      ..classes.add('zebra-odd');
 
-    rootNode.children.addAll([receptionNode, contacts]);
+    _contactController.list(reception.ID)
+      .then((Iterable<ORModel.Contact> contacts) {
+        contactsUl.children = contacts
+              .map((ORModel.Contact collegue) =>
+                  createColleagueNode(collegue))
+              .toList();
+
+    });
+
+
+    rootNode.children.addAll([receptionNode, contactsUl]);
     return rootNode;
   }
 
-  LIElement createColleagueNode(Contact collegue, int receptionId) {
+  /**
+   * TODO: Add reception Name.
+   */
+  LIElement createColleagueNode(ORModel.Contact collegue) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text = collegue.fullName
+      ..text = '${collegue.fullName} (${collegue.receptionID})'
       ..onClick.listen((_) {
-        Map data = {
-          'contact_id': collegue.id,
-          'reception_id': receptionId
-        };
+        Map data = {'contact_id': collegue.ID, 'reception_id': collegue.receptionID};
         bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
   }
 
-  LIElement createOrganizationNode(Organization organization) {
+  LIElement createOrganizationNode(ORModel.Organization organization) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${organization.fullName}'
       ..onClick.listen((_) {
-        Map data = {
-          'organization_id': organization.id,
-        };
+        Map data = {'organization_id': organization.id,};
         bus.fire(new WindowChanged(Menu.ORGANIZATION_WINDOW, data));
       });
     return li;
@@ -722,7 +785,7 @@ class ContactView {
 
   void deleteSelectedContact() {
     if (!createNew && selectedContactId > 0) {
-      request.deleteContact(selectedContactId).then((_) {
+      _contactController.remove(selectedContactId).then((_) {
         bus.fire(new ContactRemovedEvent(selectedContactId));
         refreshList();
         clearContent();
@@ -731,10 +794,12 @@ class ContactView {
         buttonJoinReception.disabled = true;
         selectedContactId = 0;
       }).catchError((error) {
-        log.error('Failed to delete contact "${selectedContactId}" got "$error"');
+        log.error(
+            'Failed to delete contact "${selectedContactId}" got "$error"');
       });
     } else {
-      log.error('Failed to delete. createNew: ${createNew} id: ${selectedContactId}');
+      log.error(
+          'Failed to delete. createNew: ${createNew} id: ${selectedContactId}');
     }
   }
 }
