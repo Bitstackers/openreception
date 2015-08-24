@@ -78,6 +78,7 @@ class Receptionist {
    * After teardown is completed, the object may be initialized again.
    */
   Future teardown() {
+    log.info('Clearing state of $this');
     if (this._transport != null) {
       this._transport.client.close(force : true);
     }
