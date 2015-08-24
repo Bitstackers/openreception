@@ -247,7 +247,7 @@ class Receptionist {
    */
   Future<Event.Event> waitFor({String eventType: null, String callID: null,
                                String extension: null, int receptionID: null,
-                               int timeoutSeconds: 10}) {
+                               int timeoutSeconds: 3}) {
     if (eventType == null && callID == null && extension == null &&
         receptionID == null) {
       return new Future.error
