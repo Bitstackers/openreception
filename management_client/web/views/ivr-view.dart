@@ -6,17 +6,18 @@ import 'dart:html';
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart' as libIvr;
 
-import '../lib/model.dart';
+import '../lib/controller.dart' as Controller;
 import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
-import '../lib/request.dart' as request;
 import '../lib/view_utilities.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
 class IvrView {
   Dialplan _dialplan;
   libIvr.IvrList _ivrList;
-  List<Audiofile> _receptionSounds = new List<Audiofile>();
+  List<ORModel.Audiofile> _receptionSounds = new List<ORModel.Audiofile>();
+  final Controller.Dialplan _dialplanController;
+
 
   DivElement _element;
   UListElement _menuList;
@@ -29,7 +30,7 @@ class IvrView {
   Completer _returnFuture;
   bool _madeChange = false;
 
-  IvrView(DivElement this._element) {
+  IvrView(DivElement this._element, this._dialplanController) {
     _menuList    = _element.querySelector('#ivr-menu-list');
     _newButton   = _element.querySelector('#ivr-new-menu');
     _closeButton = _element.querySelector('#ivr-close');
@@ -79,7 +80,7 @@ class IvrView {
   Future<bool> loadReception(int receptionId, Dialplan dialplan, libIvr.IvrList ivrList) {
     this._dialplan = dialplan;
     this._ivrList = ivrList;
-    request.getAudiofileList(receptionId).then((List<Audiofile> sounds) {
+    _dialplanController.getAudiofileList(receptionId).then((List<ORModel.Audiofile> sounds) {
       this._receptionSounds = sounds;
     }).catchError((error, stack) {
       log.error('IVR.loadReception "${error}" "${stack}"');
@@ -178,25 +179,25 @@ class IvrView {
     _greetLongPicker.children
       ..clear()
       ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingLong == null || ivr.greetingLong.trim().isEmpty))
-      ..addAll(_receptionSounds.map((Audiofile file) =>
+      ..addAll(_receptionSounds.map((ORModel.Audiofile file) =>
         new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingLong)));
 
     _greetShortPicker.children
       ..clear()
       ..add(new OptionElement(data:'ingen', value: '', selected: ivr.greetingShort == null || ivr.greetingShort.trim().isEmpty))
-      ..addAll(_receptionSounds.map((Audiofile file) =>
+      ..addAll(_receptionSounds.map((ORModel.Audiofile file) =>
         new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.greetingShort)));
 
     _invalidSoundPicker.children
       ..clear()
       ..add(new OptionElement(data:'ingen', value: '', selected: ivr.invalidSound == null || ivr.invalidSound.trim().isEmpty))
-      ..addAll(_receptionSounds.map((Audiofile file) =>
+      ..addAll(_receptionSounds.map((ORModel.Audiofile file) =>
         new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.invalidSound)));
 
     _exitSoundPicker.children
       ..clear()
       ..add(new OptionElement(data:'ingen', value: '', selected: ivr.exitSound == null || ivr.exitSound.trim().isEmpty))
-      ..addAll(_receptionSounds.map((Audiofile file) =>
+      ..addAll(_receptionSounds.map((ORModel.Audiofile file) =>
         new OptionElement(data: file.shortname, value: file.filepath, selected: file.filepath == ivr.exitSound)));
 
     _greetLongPicker.onChange.listen((_) => _madeChange = true);

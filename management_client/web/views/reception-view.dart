@@ -272,6 +272,7 @@ class ReceptionView {
   }
 
   void saveChanges() {
+
     if (selectedReceptionId > 0) {
       ORModel.Reception updatedReception = extractValues();
 
@@ -283,8 +284,9 @@ class ReceptionView {
         notify.error('Der skete en fejl da receptionen skulle gemmes. ${error}');
         log.error('Tried to update reception ${selectedReceptionId} but got "${error}" "${stack}"');
       });
-    } else if (createNew && selectedReceptionId == 0 && currentOrganizationId == 0) {
+    } else if (createNew && selectedReceptionId == 0) {
       ORModel.Reception newReception = extractValues();
+      print(SC.currentElement);
       if (SC.currentElement != null) {
         newReception.organizationId = SC.currentElement.id;
         _receptionController.create(newReception).then((ORModel.Reception createdReception) {

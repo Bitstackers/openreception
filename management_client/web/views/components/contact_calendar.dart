@@ -65,15 +65,12 @@ class ContactCalendarComponent {
 
   Future load(int receptionId, int contactId) {
     return _calendarController.listContact(receptionId, contactId)
-        .then((List<ORModel.CalendarEntry> events) {
-      events.sort();
-      _originalEvents = events;
+        .then((Iterable<ORModel.CalendarEntry> events) {
+      //TODO: Sort.
+      _originalEvents = events.toList();
       _ul.children
         ..clear()
         ..addAll(events.map(_makeEventRow));
-    }).catchError((error) {
-      log.error('Tried to fetch contact ${contactId} in reception ${receptionId} calendar events but got: ${error}');
-      notify.error('Der skete en fejl i forbindelse med heningen af Calender beginvenheder. Fejl ${error}');
     });
   }
 

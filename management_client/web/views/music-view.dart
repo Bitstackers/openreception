@@ -6,13 +6,14 @@ import 'dart:html';
 
 import '../lib/logger.dart' as log;
 import '../lib/eventbus.dart';
-import '../lib/model.dart';
 import '../notification.dart' as notify;
-import '../lib/request.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
+import '../lib/controller.dart' as Controller;
 
 class MusicView {
   static const String viewName = 'music';
+  final Controller.Dialplan _dialplanController;
+
   DivElement element;
   ButtonElement buttonNew, buttonSave, ButtonDelete;
   UListElement UlPlaylist;
@@ -24,7 +25,7 @@ class MusicView {
   bool isCreatingNewPlaylist = false;
   int selectedPlaylistId;
 
-  MusicView(DivElement this.element) {
+  MusicView(DivElement this.element, this._dialplanController) {
     buttonNew = element.querySelector('#music-new');
     buttonSave = element.querySelector('#music-save');
     ButtonDelete = element.querySelector('#music-delete');
@@ -41,7 +42,7 @@ class MusicView {
   }
 
   Future activatePlaylist(int id) {
-    return getPlaylist(id).then((Playlist playlist) {
+    return _dialplanController.getPlaylist(id).then((ORModel.Playlist playlist) {
       isCreatingNewPlaylist = false;
       selectedPlaylistId = id;
 
@@ -98,19 +99,19 @@ class MusicView {
   }
 
   Future refresh() {
-    return getPlaylistList().then((List<Playlist> list) {
+    return _dialplanController.getPlaylistList().then((List<ORModel.Playlist> list) {
       list.sort();
       renderList(list);
     });
   }
 
-  void renderList(List<Playlist> list) {
+  void renderList(List<ORModel.Playlist> list) {
     UlPlaylist.children
       ..clear()
       ..addAll(list.map(makePlaylistItem));
   }
 
-  LIElement makePlaylistItem(Playlist item) {
+  LIElement makePlaylistItem(ORModel.Playlist item) {
     LIElement node = new LIElement();
     node
       ..text = item.name
@@ -135,17 +136,15 @@ class MusicView {
   }
 
   void saveHandler() {
-    Playlist playlist = new Playlist()
+    ORModel.Playlist playlist = new ORModel.Playlist.empty()
       ..name = name.value
       ..path = path.value
       ..shuffle = shuffle.checked
       ..channels = channels.checked ? 2 : 1
       ..interval = interval.valueAsNumber.toInt();
 
-    String data = JSON.encode(playlist);
-
     if(isCreatingNewPlaylist) {
-      createPlaylist(data).then((Map response) {
+      _dialplanController.createPlaylist(playlist).then((Map response) {
         int id = response['id'];
         bus.fire(new PlaylistAddedEvent(id));
         notify.info('Afspilningslisten blev oprettet');
@@ -155,7 +154,7 @@ class MusicView {
         notify.error('Der skete en fejl i forbindelse med oprettelsen af afspilningslisten. ${error}');
       });
     } else {
-      updatePlaylist(selectedPlaylistId, data).then((_) {
+      _dialplanController.updatePlaylist(playlist).then((_) {
         bus.fire(new PlaylistChangedEvent(selectedPlaylistId));
         notify.info('Afspilningslisten blev opdateret');
       })
@@ -168,7 +167,7 @@ class MusicView {
 
   void deleteHandler() {
     if(!isCreatingNewPlaylist && selectedPlaylistId != null) {
-      deletePlaylist(selectedPlaylistId).then((_) {
+      _dialplanController.deletePlaylist(selectedPlaylistId).then((_) {
         bus.fire(new PlaylistRemovedEvent(selectedPlaylistId));
         notify.info('Afspilningslisten blev slettet');
       }).catchError((error, stack) {
