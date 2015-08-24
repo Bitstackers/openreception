@@ -121,7 +121,7 @@ class Receptionist {
     log.finest('$this changes state from $_state to $newState');
     this._state = newState;
   }
-  
+
   /**
    * Dumps the current event stack of the Receptionist to log stream.
    */
@@ -247,7 +247,7 @@ class Receptionist {
    */
   Future<Event.Event> waitFor({String eventType: null, String callID: null,
                                String extension: null, int receptionID: null,
-                               int timeoutSeconds: 3}) {
+                               int timeoutSeconds: 10}) {
     if (eventType == null && callID == null && extension == null &&
         receptionID == null) {
       return new Future.error
@@ -358,9 +358,9 @@ class Receptionist {
           .catchError((error, stackTrace) {
             if (error is Storage.Conflict) { // Call is locked.
               return pickupAfterCallUnlock ();
-            } 
+            }
             else if (error is Storage.NotFound) { // Call is hungup
-             
+
               callEventsOnSelecteCall (Event.Event event) {
                 if (event is Event.CallEvent)
                   return event.call.ID == selectedCall.ID;
@@ -368,19 +368,19 @@ class Receptionist {
 
               log.info('$this waits for $selectedCall to hangup');
               this.waitFor(eventType : Event.Key.callHangup,
-                           callID    : selectedCall.ID, 
+                           callID    : selectedCall.ID,
                            timeoutSeconds: 2)
                 .then((Event.CallHangup hangupEvent) {
                 this.eventStack.removeWhere(callEventsOnSelecteCall);
-                
+
                 // Reschedule the hunting.
                 return this.huntNextCall();
               });
-              
-              
+
+
               this.dumpEventStack();
               throw new StateError('Expected call to hung up, but no hangup event was received.');
-              
+
             }
             else {
               log.severe('huntNextCall experienced an unexpected error.');
@@ -408,11 +408,11 @@ class Receptionist {
       log.warning ('Null event received!');
       return;
     }
-    
+
     if (event is Event.UserState) {
       this.state = event.status.state;
     }
-    
+
     this.eventStack.add(event);
   }
 
