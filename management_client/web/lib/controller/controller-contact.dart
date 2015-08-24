@@ -24,8 +24,7 @@ class Contact {
   Future<ORModel.BaseContact> create(ORModel.BaseContact contact) =>
       _service.create(contact);
 
-  Future remove(int contactId) =>
-      _service.remove(contactId);
+  Future remove(int contactId) => _service.remove(contactId);
 
   Future<Iterable<ORModel.MessageEndpoint>> endpoints(
           int contactID, int receptionID) =>
@@ -34,7 +33,8 @@ class Contact {
   Future<Iterable<int>> receptions(int contactID) =>
       _service.receptions(contactID);
 
-  Future<ORModel.Contact> addToReception(ORModel.Contact contact, int receptionId) =>
+  Future<ORModel.Contact> addToReception(
+          ORModel.Contact contact, int receptionId) =>
       _service.addToReception(contact, receptionId);
 
   Future removeFromReception(int contactId, int receptionId) =>
@@ -43,13 +43,19 @@ class Contact {
   Future<ORModel.Contact> updateInReception(ORModel.Contact contact) =>
       _service.updateInReception(contact);
 
+  Future<ORModel.Contact> moveReception(
+          int receptionId, int oldContactId, int newContactId) =>
+      throw new UnimplementedError();
+
   Future<Iterable<ORModel.Contact>> colleagues(int contactId) {
     List<ORModel.Contact> foundColleagues = [];
 
-    return _service.receptions(contactId)
-       .then((Iterable<int> receptionIds) =>
-        Future.forEach(receptionIds, (int receptionId) =>
-          _service.listByReception(receptionId)
-            .then(foundColleagues.addAll))).then((_) => foundColleagues);
+    return _service
+        .receptions(contactId)
+        .then((Iterable<int> receptionIds) => Future.forEach(receptionIds,
+            (int receptionId) => _service
+                .listByReception(receptionId)
+                .then(foundColleagues.addAll)))
+        .then((_) => foundColleagues);
   }
 }
