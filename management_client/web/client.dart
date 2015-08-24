@@ -59,14 +59,20 @@ void main() {
 
     //Initializes the notification system.
     notify.initialize();
-    new orgView.OrganizationView(querySelector('#organization-page'), organizationController, receptionController);
-    new recepView.ReceptionView(querySelector('#reception-page'), contactController, organizationController, receptionController);
-    new conView.ContactView(querySelector('#contact-page'), contactController, organizationController, receptionController);
-    new diaView.DialplanView(querySelector('#dialplan-page'), receptionController);
-    new recordView.RecordView(querySelector('#record-page'), receptionController);
+    new orgView.OrganizationView(querySelector('#organization-page'),
+        organizationController, receptionController);
+    new recepView.ReceptionView(querySelector('#reception-page'),
+        contactController, organizationController, receptionController);
+    new conView.ContactView(querySelector('#contact-page'), contactController,
+        organizationController, receptionController, calendarController,
+        dlistController, epController);
+//    new diaView.DialplanView(
+//        querySelector('#dialplan-page'), receptionController);
+//    new recordView.RecordView(
+//        querySelector('#record-page'), receptionController);
     new userView.UserView(querySelector('#user-page'), userController);
     new billView.BillingView(querySelector('#billing-page'), cdrController);
-    new musicView.MusicView(querySelector('#music-page'));
+//    new musicView.MusicView(querySelector('#music-page'));
     new Menu(querySelector('nav#navigation'));
   }
 }
