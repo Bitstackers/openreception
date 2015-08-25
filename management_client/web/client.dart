@@ -14,10 +14,15 @@ import 'lib/auth.dart';
 import 'notification.dart' as notify;
 import 'lib/configuration.dart';
 
+import 'package:logging/logging.dart';
+
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/service-html.dart' as Transport;
 
 void main() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen(print);
+
   if (handleToken()) {
     final Transport.Client client = new Transport.Client();
 
