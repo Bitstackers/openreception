@@ -20,7 +20,7 @@ import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
 import 'view/view.dart' as View;
-//import 'simulation.dart';
+import 'simulation.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -261,12 +261,15 @@ Future registerReadyView(Model.AppClientState appState,
       new Model.UIReceptionistclientReady('receptionistclient-ready');
   ORService.RESTContactStore contactStore = new ORService.RESTContactStore
       (clientConfig.contactServerUri, token, new ORTransport.Client());
+  ORService.RESTEndpointStore endpointStore = new ORService.RESTEndpointStore
+      (clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTMessageStore messageStore = new ORService.RESTMessageStore
         (clientConfig.messageServerUri, token, new ORTransport.Client());
   Controller.Message messageController = new Controller.Message(messageStore);
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
+  Controller.Endpoint endpointController = new Controller.Endpoint(endpointStore);
   Controller.Calendar calendarController = new Controller.Calendar(contactStore, receptionStore);
   Controller.Call callController = new Controller.Call(callFlowControl, appState);
 
@@ -290,6 +293,7 @@ Future registerReadyView(Model.AppClientState appState,
              callController,
              notification,
              messageController,
+             endpointController,
              popup,
              langMap);
 

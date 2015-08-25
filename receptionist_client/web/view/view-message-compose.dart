@@ -22,6 +22,7 @@ class MessageCompose extends ViewWidget {
   final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.MessageCompose');
   final Controller.Message        _messageController;
+  final Controller.Endpoint       _endpointController;
   final Controller.Destination    _myDestination;
   final Popup                     _popup;
   final Model.UIReceptionSelector _receptionSelector;
@@ -36,6 +37,7 @@ class MessageCompose extends ViewWidget {
                  Model.UIContactSelector this._contactSelector,
                  Model.UIReceptionSelector this._receptionSelector,
                  Controller.Message this._messageController,
+                 Controller.Endpoint this._endpointController,
                  Popup this._popup,
                  Map<String, String> this._langMap) {
     _ui.setHint('alt+b | ctrl+space | ctrl+s | ctrl+enter');
@@ -69,19 +71,22 @@ class MessageCompose extends ViewWidget {
     final ORModel.MessageContext messageContext =
       new ORModel.MessageContext.fromContact(contact, reception);
 
-    final ORModel.MessageCaller callerInfo =
-      new ORModel.MessageCaller.fromMap(messageMap['caller']);
+    final ORModel.CallerInfo callerInfo =
+      new ORModel.CallerInfo.fromMap(messageMap['caller']);
 
-    final ORModel.MessageRecipientList recipients = _ui.recipients;
+    final Set<ORModel.MessageRecipient> recipients = _ui.recipients;
 
-    return new ORModel.Message()
+    return new ORModel.Message.empty()
       ..recipients = recipients
       ..context    = messageContext
       ..body       = messageMap['message']
-      ..flags      = messageMap['flags']
+      ..flag       = messageMap['flags']
       ..createdAt  = new DateTime.now()
-      ..caller     = callerInfo
-      ..sender     = _appState.currentUser;
+      ..callerInfo = callerInfo;
+
+      // This is tagged by the server, and is not the responsibility of the
+      // client to add. Any values set, will be discarded by the server.
+      //..senderId   = _appState.currentUser.ID;
   }
 
   /**
@@ -108,7 +113,20 @@ class MessageCompose extends ViewWidget {
     if(contact.isEmpty) {
       _log.info('Got an empty contact - undecided on what to do');
     } else {
-      _ui.recipients = contact.distributionList;
+
+      Set<ORModel.MessageRecipient> recipients = new Set();
+      Future.forEach(contact.distributionList, (ORModel.DistributionListEntry dle) {
+
+        print(dle.asMap);
+
+        return _endpointController.list(dle.receptionID, dle.contactID)
+          .then((Iterable<ORModel.MessageEndpoint> meps) {
+          recipients.addAll(meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle)));
+        });
+      }).whenComplete(() {
+        _ui.recipients = recipients;
+      });
+
       _ui.messagePrerequisites = contact.messagePrerequisites;
     }
   }

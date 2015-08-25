@@ -40,9 +40,10 @@ class UIMessageArchive extends UIModel {
 
   /**
    *
+   * TODO(krc,tl): Figure out how to fetch the usernames.
    */
   TableCellElement _buildAgentCell(ORModel.Message msg) =>
-      new TableCellElement()..text = msg.sender.name;
+      new TableCellElement()..text = msg.senderId.toString();
 
   /**
    *

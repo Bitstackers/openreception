@@ -96,10 +96,10 @@ class UIMessageCompose extends UIModel {
                      },
        'context'   : null,
        'flags'     : [
-                      _pleaseCallInput.checked ? ORModel.MessageFlag.PleaseCall  : null,
-                      _callsBackInput.checked  ? ORModel.MessageFlag.willCallBack: null,
-                      _haveCalledInput.checked ? ORModel.MessageFlag.Called      : null,
-                      _urgentInput.checked     ? ORModel.MessageFlag.Urgent      : null
+                      _pleaseCallInput.checked ? ORKey.pleaseCall  : null,
+                      _callsBackInput.checked  ? ORKey.willCallBack: null,
+                      _haveCalledInput.checked ? ORKey.called      : null,
+                      _urgentInput.checked     ? ORKey.urgent      : null
                      ].where((element) => element != null).toList(growable: false),
        'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
 
@@ -145,42 +145,54 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Return the [ORModel.MessageRecipientList]. May return an empty list object.
+   * Return the Set of [ORModel.MessageRecipient]. May return the empty set.
    */
-  ORModel.MessageRecipientList get recipients {
+  Set<ORModel.MessageRecipient> get recipients {
     final String recipientsList = _recipientsList.dataset['recipients-list'];
 
     if(recipientsList != null && recipientsList.isNotEmpty) {
-      return new ORModel.MessageRecipientList.fromMap(JSON.decode(recipientsList));
+
+      return JSON.decode(recipientsList)
+          .map(ORModel.MessageRecipient.decode).toSet();
     } else {
-      return new ORModel.MessageRecipientList.empty();
+      return new Set<ORModel.MessageRecipient>();
     }
   }
 
   /**
    * Add [recipients] to the recipients list.
    */
-  void set recipients(ORModel.MessageRecipientList recipientList) {
+  void set recipients(Set<ORModel.MessageRecipient> recipients) {
+
+    Iterable<ORModel.MessageRecipient> toRecipients () =>
+      recipients.where((ORModel.MessageRecipient r) =>
+          r.role == ORModel.Role.TO);
+
+    Iterable<ORModel.MessageRecipient> ccRecipients () =>
+      recipients.where((ORModel.MessageRecipient r) =>
+          r.role == ORModel.Role.CC);
+
+    Iterable<ORModel.MessageRecipient> bccRecipients () =>
+      recipients.where((ORModel.MessageRecipient r) =>
+          r.role == ORModel.Role.BCC);
+
     List<LIElement> list = new List<LIElement>();
 
-    Map<String, List> map = recipientList.asMap;
-    _recipientsList.dataset['recipients-list'] = JSON.encode(map);
+    Iterable maps = recipients.map((ORModel.MessageRecipient r) => r.toJson());
+    _recipientsList.dataset['recipients-list'] = JSON.encode(maps.toList());
 
-    map[ORModel.Role.TO].forEach((Map recipient) {
-      list.add(new LIElement()..text = '${recipient['contact']['name']} (${recipient['reception']['name']})');
+    toRecipients().forEach((ORModel.MessageRecipient recipient) {
+      list.add(new LIElement()..text = '${recipient.name} (${recipient.address})');
     });
 
-    map[ORModel.Role.CC].forEach((Map recipient) {
-      list.add(new LIElement()
-                    ..text = '${recipient['contact']['name']} (${recipient['reception']['name']})'
-                    ..classes.add('cc'));
-
+    ccRecipients().forEach((ORModel.MessageRecipient recipient) {
+      list.add(new LIElement()..text = '${recipient.name} (${recipient.address})'
+                        ..classes.add('cc'));
     });
 
-    map[ORModel.Role.BCC].forEach((Map recipient) {
-      list.add(new LIElement()
-                    ..text = '${recipient['contact']['name']} (${recipient['reception']['name']})'
-                    ..classes.add('bcc'));
+    bccRecipients().forEach((ORModel.MessageRecipient recipient) {
+      list.add(new LIElement()..text = '${recipient.name} (${recipient.address})'
+                        ..classes.add('bcc'));
     });
 
     _recipientsList.children = list;

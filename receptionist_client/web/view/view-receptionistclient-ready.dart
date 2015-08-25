@@ -23,6 +23,7 @@ class ReceptionistclientReady {
   CalendarEditor                        _calendarEditor;
   ContactCalendar                       _contactCalendar;
   final Controller.Calendar             _calendarController;
+  final Controller.Endpoint             _endpointController;
   final Controller.Call                 _callController;
   final Controller.Contact              _contactController;
   ContactData                           _contactData;
@@ -72,6 +73,7 @@ class ReceptionistclientReady {
                                   Controller.Call callController,
                                   Controller.Notification notification,
                                   Controller.Message message,
+                                  Controller.Endpoint endpointController,
                                   Popup popup,
                                   Map<String, String> langMap) {
     if(_singleton == null) {
@@ -85,6 +87,7 @@ class ReceptionistclientReady {
                                                          callController,
                                                          notification,
                                                          message,
+                                                         endpointController,
                                                          popup,
                                                          langMap);
     } else {
@@ -105,6 +108,7 @@ class ReceptionistclientReady {
                                     this._callController,
                                     this._notification,
                                     this._messageController,
+                                    this._endpointController,
                                     this._popup,
                                     this._langMap) {
     _observers();
@@ -195,6 +199,7 @@ class ReceptionistclientReady {
          uiContactSelector,
          uiReceptionSelector,
          _messageController,
+         _endpointController,
          _popup,
          _langMap);
 
