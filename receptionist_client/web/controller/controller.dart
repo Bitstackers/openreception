@@ -29,6 +29,7 @@ import 'package:openreception_framework/model.dart' as ORModel;
 part 'controller-calendar.dart';
 part 'controller-call.dart';
 part 'controller-contact.dart';
+part 'controller-endpoint.dart';
 part 'controller-hotkeys.dart';
 part 'controller-message.dart';
 part 'controller-navigation.dart';
