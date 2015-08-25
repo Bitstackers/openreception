@@ -24,6 +24,15 @@ class Playlist {
   int chimefreq;
   int chimemax;
 
+  /**
+   * Default empty constructor.
+   */
+  Playlist.empty();
+
+  /**
+   * TODO: Use the empty constructor instead and set the fields manually.
+   */
+  @deprecated
   Playlist(int          this.id,
            String       this.name,
            String       this.path,
