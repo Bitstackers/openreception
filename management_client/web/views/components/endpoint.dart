@@ -29,12 +29,12 @@ class EndpointsComponent {
   }
 
   Future load(int receptionId, int contactId) {
+    log.finest('̈́Loading endpoints for $contactId@$receptionId');
     _persistenceEndpoint = new List<ORModel.MessageEndpoint>();
-    return _contactController
-        .endpoints(receptionId, contactId)
+    return _endpointController
+        .list(receptionId, contactId)
         .then((Iterable<ORModel.MessageEndpoint> endpoints) {
-      print(endpoints);
-
+      endpoints.forEach((ep) => print(ep.asMap));
       _populateUL(endpoints);
     });
   }
@@ -58,7 +58,7 @@ class EndpointsComponent {
 
     // Only accept elements from the same section.
     _sortGroup.accept.add(_sortGroup);
-  }
+    }
 
   LIElement _makeNewEndpointRow() {
     LIElement li = new LIElement();
