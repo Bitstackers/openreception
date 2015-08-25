@@ -26,10 +26,6 @@ class Contact {
 
   Future remove(int contactId) => _service.remove(contactId);
 
-  Future<Iterable<ORModel.MessageEndpoint>> endpoints(
-          int contactID, int receptionID) =>
-      _service.endpoints(contactID, receptionID);
-
   Future<Iterable<int>> receptions(int contactID) =>
       _service.receptions(contactID);
 
