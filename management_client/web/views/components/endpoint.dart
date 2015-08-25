@@ -8,6 +8,8 @@ part of contact.view;
 class EndpointsComponent {
   List<String> get _addressTypes => ORModel.MessageEndpointType.types;
 
+  Logger log = new Logger('$_libraryName.EndpointsComponent');
+
   final Controller.Contact _contactController;
   final Controller.Endpoint _endpointController;
 
@@ -186,7 +188,7 @@ class EndpointsComponent {
         //Insert Endpoint
         worklist.add(_endpointController.create(receptionId, contactId, endpoint)
             .catchError((error, stack) {
-          log.error(
+          log.severe(
               'Request to create an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
@@ -202,7 +204,7 @@ class EndpointsComponent {
         //Delete Endpoint
         worklist.add(_endpointController.remove(endpoint.id)
             .catchError((error, stack) {
-          log.error(
+          log.severe(
               'Request to delete an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
@@ -217,7 +219,7 @@ class EndpointsComponent {
         //Update Endpoint
         worklist.add(_endpointController.update(endpoint)
             .catchError((error, stack) {
-          log.error(
+          log.severe(
               'Request to update an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;

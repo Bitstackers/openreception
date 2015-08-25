@@ -15,6 +15,7 @@ import '../lib/view_utilities.dart';
 import '../menu.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 import '../lib/controller.dart' as Controller;
+import 'package:logging/logging.dart';
 
 part 'components/contact_calendar.dart';
 part 'components/distributionlist.dart';
@@ -22,6 +23,8 @@ part 'components/endpoint.dart';
 
 typedef Future HandleReceptionContact(ORModel.Contact receptionContact);
 typedef Future LazyFuture();
+
+const String _libraryName = 'contact.view';
 
 class ContactView {
   static const String viewName = 'contact';
