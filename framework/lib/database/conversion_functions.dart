@@ -103,13 +103,15 @@ Model.Contact _rowToContact (var row) {
        : row.distribution_list[role];
 
      nextVal.forEach((Map dlistMap) {
-                      distributionList.add(new Model.DistributionListEntry.fromMap({'reception' :
-                      {'id'   : dlistMap['reception_id'],
-                       'name' : dlistMap['reception_name']},
-                     'contact'   :
-                      {'id'   : dlistMap['contact_id'],
-                       'name' : dlistMap['contact_name']}},
-                       role : role));
+                      distributionList.add(
+
+                          new Model.DistributionListEntry.empty()
+                      ..contactID = dlistMap['contact_id']
+                      ..contactName = dlistMap['contact_name']
+                      ..receptionID = dlistMap['reception_id']
+                      ..receptionName = dlistMap['reception_name']
+                      ..role = role);
+
                   });
     });
 
