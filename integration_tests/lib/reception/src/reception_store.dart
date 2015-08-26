@@ -78,11 +78,12 @@ abstract class Reception {
    * The expected behaviour is that the server should return the
    * Reception object.
    */
-  static void existingReception(Storage.Reception receptionStore) {
+  static Future existingReception(Storage.Reception receptionStore) {
     const int receptionID = 1;
     log.info('Checking server behaviour on an existing reception.');
 
-    return expect(receptionStore.get(receptionID), isNotNull);
+    return receptionStore.get(receptionID).then((Model.Reception reception) =>
+        expect(reception, isNotNull));
   }
 
   /**
