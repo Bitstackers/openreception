@@ -15,14 +15,4 @@ abstract class Reception {
 
   Future<Model.Reception> update (Model.Reception reception);
 
-  Future<Iterable<Model.CalendarEntry>> calendar (int receptionID);
-
-  Future<Model.CalendarEntry> calendarEvent (int receptionID, eventID);
-
-  Future<Model.CalendarEntry> calendarEventCreate (Model.CalendarEntry event);
-
-  Future<Model.CalendarEntry> calendarEventUpdate (Model.CalendarEntry event);
-
-  Future calendarEventRemove (Model.CalendarEntry event);
-
 }
