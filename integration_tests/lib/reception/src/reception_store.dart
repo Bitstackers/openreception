@@ -558,10 +558,10 @@ abstract class Reception {
    * The expected behaviour is that the server should return Server Error
    */
   static Future updateInvalid(Storage.Reception receptionStore) {
-    return receptionStore.list().then((Iterable<Model.Reception> orgs) {
+    return receptionStore.list().then((Iterable<Model.Reception> receptions) {
 
       // Update the last event in list.
-      Model.Reception reception = orgs.last;
+      Model.Reception reception = receptions.last;
       reception.fullName = null;
 
       return expect(receptionStore.update(reception),
