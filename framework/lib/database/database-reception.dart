@@ -162,11 +162,13 @@ class Reception implements Storage.Reception {
             ? new Future.error(new Storage.NotFound('rid:$reception.ID'))
             : (reception..lastChecked = new DateTime.now()))
         .catchError((error, stackTrace) {
-      if (error is! Storage.NotFound) {
-        log.severe('sql:$sql :: parameters:$parameters');
+      if (error is Storage.NotFound) {
+        return new Future.error(error);
       }
 
-      return new Future.error(error, stackTrace);
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(new Storage.ServerError(error.toString()));
     });
   }
 }
