@@ -2,6 +2,50 @@ part of or_test_fw;
 
 runReceptionTests () {
 
+  group ('Database.Reception', () {
+    Transport.Client transport = null;
+    Database.Reception receptionStore = null;
+
+    Database.Connection connection;
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        receptionStore = new Database.Reception(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('Non-existing reception',
+        () => Reception.nonExistingReception(receptionStore));
+
+    test ('Existing reception',
+        () => Reception.existingReception(receptionStore));
+
+    test ('List receptions',
+        () => Reception.listReceptions(receptionStore));
+
+    test ('Reception creation',
+        () => Reception.create(receptionStore));
+
+    test ('Non-existing Reception update',
+        () => Reception.updateNonExisting(receptionStore));
+
+    test ('Reception invalid update',
+        () => Reception.updateInvalid(receptionStore));
+
+    test ('Reception update',
+        () => Reception.update(receptionStore));
+
+    test ('Reception removal',
+        () => Reception.remove(receptionStore));
+  });
+
   group ('service.Reception', () {
     Transport.Client transport = null;
     Service.RESTReceptionStore receptionStore = null;
