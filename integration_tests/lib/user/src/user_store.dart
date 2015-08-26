@@ -123,9 +123,12 @@ abstract class User {
           return event.state == Event.UserObjectState.CREATED &&
               event.userID == createdUser.ID;
         }
+
+        return false;
       }
 
-      receptionist.notificationSocket.eventStream.firstWhere(eventMatches).timeout(new Duration(seconds : 10))
+      return receptionist.notificationSocket.eventStream.firstWhere(eventMatches)
+          .timeout(new Duration(seconds : 10))
       .then ((_) => userStore.remove(createdUser.ID));
     });
   }
