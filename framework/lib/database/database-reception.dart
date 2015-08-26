@@ -13,7 +13,7 @@
 
 part of openreception.database;
 
-class Reception {
+class Reception implements Storage.Reception {
   static const String className = '${libraryName}.Organization';
 
   static final Logger log = new Logger(className);
