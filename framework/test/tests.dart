@@ -38,6 +38,8 @@ part 'src/model/model-client_configuration.dart';
 part 'src/model/model-client_connection.dart';
 part 'src/model/model-contact.dart';
 //part 'src/model-contact_filter.dart';
+part 'src/model/model-distribution_list.dart';
+part 'src/model/model-distribution_list_entry.dart';
 part 'src/model/model-message.dart';
 part 'src/model/model-message_context.dart';
 //part 'src/model-message_header.dart';
@@ -45,7 +47,6 @@ part 'src/model/model-message_context.dart';
 part 'src/model/model-message_filter.dart';
 //part 'src/model-message_queue_item.dart';
 part 'src/model/model-message_recipient.dart';
-part 'src/model/model-message_recipient_list.dart';
 part 'src/model/model-organization.dart';
 //part 'src/model-peer.dart';
 part 'src/model/model-phone_number.dart';
@@ -91,6 +92,7 @@ void main() {
   testModelClientConnection();
   testModelContact();
   testModelDistributionList();
+  testModelDistributionListEntry();
 
   testModelOrganization();
   testModelReception();
