@@ -116,9 +116,6 @@ class MessageCompose extends ViewWidget {
 
       Set<ORModel.MessageRecipient> recipients = new Set();
       Future.forEach(contact.distributionList, (ORModel.DistributionListEntry dle) {
-
-        print(dle.asMap);
-
         return _endpointController.list(dle.receptionID, dle.contactID)
           .then((Iterable<ORModel.MessageEndpoint> meps) {
           recipients.addAll(meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle)));
