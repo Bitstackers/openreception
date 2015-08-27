@@ -115,7 +115,7 @@ class QueueJoin extends CallEvent {
 
 class QueueLeave extends CallEvent {
 
-  final String   eventName = Key.queueJoin;
+  final String   eventName = Key.queueLeave;
 
   QueueLeave (Call call) : super(call);
   QueueLeave.fromMap (Map map) : super.fromMap(map);
