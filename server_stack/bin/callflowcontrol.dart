@@ -68,7 +68,10 @@ void connectESLClient() {
       case (ESL.ContentType.Auth_Request):
         log.info('Connected to ${json.config.eslHostname}:${json.config.eslPort}');
         Model.PBXClient.instance.authenticate(json.config.eslPassword)
-          .then((_) => Model.PBXClient.instance.event(['all'], format : ESL.EventFormat.Json))
+          .then((_) => Model.PBXClient.instance.event
+             (Model.PBXEvent.requiredSubscriptions,
+                format : ESL.EventFormat.Json)
+            ..catchError(log.shout))
           .then((_) => Model.PBXClient.instance.api('list_users')
             .then(loadPeerListFromPacket));
       break;
