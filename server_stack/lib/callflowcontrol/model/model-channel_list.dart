@@ -75,8 +75,8 @@ abstract class PBXEvent {
   static const String CHANNEL_CREATE = 'CHANNEL_CREATE';
   static const String CHANNEL_DESTROY = 'CHANNEL_DESTROY';
 
-  List<String> requiredSubscriptions = [CUSTOM, CHANNEL_BRIDGE,
-    CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE];
+  static const List<String> requiredSubscriptions = const
+      [CUSTOM, CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE];
 }
 
 class ChannelEvent {
