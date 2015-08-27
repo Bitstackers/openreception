@@ -43,11 +43,11 @@ abstract class PeerList implements IterableBase<Peer> {
     switch (event.eventName) {
       case (PBXEvent.CUSTOM):
         switch (event.eventSubclass) {
-          case ("sofia::register"):
+          case (PBXEvent.SOFIA_REGISTER):
             registerPeer (event.field('username'), event.field('contact'));
             break;
 
-          case ("sofia::unregister"):
+          case (PBXEvent.SOFIA_UNREGISTER):
             unRegisterPeer (event.field('username'));
             break;
         }

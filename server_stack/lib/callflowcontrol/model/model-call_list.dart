@@ -171,7 +171,7 @@ class CallList extends IterableBase<ORModel.Call> {
 
   void _handleCustom (ESL.Event event) {
     switch (event.eventSubclass) {
-      case ("AdaHeads::pre-queue-enter"):
+      case (PBXEvent.OR_PRE_QUEUE_ENTER):
         this._createCall(event);
 
         this.get(event.uniqueID)
@@ -189,14 +189,14 @@ class CallList extends IterableBase<ORModel.Call> {
 //
 //         break;
 
-      case ('AdaHeads::pre-queue-leave'):
+      case (PBXEvent.OR_PRE_QUEUE_LEAVE):
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring)
           ..locked = true;
         break;
 
-      case ('AdaHeads::wait-queue-enter'):
+      case (PBXEvent.OR_WAIT_QUEUE_ENTER):
         log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..locked = false
@@ -204,12 +204,12 @@ class CallList extends IterableBase<ORModel.Call> {
           ..changeState (ORModel.CallState.Queued);
         break;
 
-      case ('AdaHeads::parking-lot-enter'):
+      case (PBXEvent.OR_PARKING_LOT_ENTER):
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Parked);
         break;
 
-      case ('AdaHeads::parking-lot-leave'):
+      case (PBXEvent.OR_PARKING_LOT_LEAVE):
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring);
         break;
@@ -222,7 +222,7 @@ class CallList extends IterableBase<ORModel.Call> {
     void dispatch () {
       switch (event.eventName) {
 
-        case ('CHANNEL_BRIDGE'):
+        case (PBXEvent.CHANNEL_BRIDGE):
           this._handleBridge(event);
           break;
 
@@ -231,15 +231,15 @@ class CallList extends IterableBase<ORModel.Call> {
 //          break;
 
         /// OUtbound calls
-        case ('CHANNEL_ORIGINATE'):
+        case (PBXEvent.CHANNEL_ORIGINATE):
           this._createCall(event);
           break;
 
-        case ('CHANNEL_DESTROY'):
+        case (PBXEvent.CHANNEL_DESTROY):
           this._handleChannelDestroy(event);
           break;
 
-        case ("CUSTOM"):
+        case (PBXEvent.CUSTOM):
           this._handleCustom(event);
           break;
       }

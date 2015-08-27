@@ -74,9 +74,23 @@ abstract class PBXEvent {
   static const String CHANNEL_STATE = 'CHANNEL_STATE';
   static const String CHANNEL_CREATE = 'CHANNEL_CREATE';
   static const String CHANNEL_DESTROY = 'CHANNEL_DESTROY';
+  static const String CHANNEL_ORIGINATE = 'CHANNEL_ORIGINATE';
+
+  static const String SOFIA_REGISTER = 'sofia::register';
+  static const String SOFIA_UNREGISTER = 'sofia::unregister';
+
+  static const String OR_PRE_QUEUE_ENTER = 'AdaHeads::pre-queue-enter';
+  static const String OR_PRE_QUEUE_LEAVE = 'AdaHeads::pre-queue-leave';
+
+  static const String OR_WAIT_QUEUE_ENTER = 'AdaHeads::wait-queue-enter';
+  static const String OR_PARKING_LOT_ENTER = 'AdaHeads::parking-lot-enter';
+  static const String OR_PARKING_LOT_LEAVE = 'AdaHeads::parking-lot-leave';
 
   static const List<String> requiredSubscriptions = const
-      [CUSTOM, CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE];
+      [CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE,
+        CHANNEL_ORIGINATE, CUSTOM, SOFIA_REGISTER, SOFIA_UNREGISTER,
+        OR_PARKING_LOT_ENTER, OR_PARKING_LOT_LEAVE,
+        OR_PRE_QUEUE_ENTER, OR_PRE_QUEUE_LEAVE, OR_WAIT_QUEUE_ENTER];
 }
 
 class ChannelEvent {
