@@ -46,7 +46,7 @@ class CallList extends IterableBase<ORModel.Call> {
   }
 
   void subscribeChannelEvents(Stream<ChannelEvent> eventStream) {
-    eventStream.listen(_handleChannelsEvent);
+    //eventStream.listen(_handleChannelsEvent);
   }
 
   void _handleChannelsEvent(ChannelEvent channelEvent) {
