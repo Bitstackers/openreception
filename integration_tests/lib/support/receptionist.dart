@@ -286,15 +286,6 @@ class Receptionist {
     return notificationSocket.eventStream.firstWhere(matches)
         .timeout(new Duration(seconds: timeoutSeconds))
         .catchError((error, stackTrace) {
-
-          //Re-lookup to make sure the event isn't there.
-          Event.Event lookup = (this.eventStack.firstWhere(matches,
-             orElse: () => null));
-
-          if (lookup != null) {
-            return new Future(() => lookup);
-           }
-
           log.severe(error, stackTrace);
           log.severe('Parameters: eventType:$eventType, '
                                  'callID:$callID, '
