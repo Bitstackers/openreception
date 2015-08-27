@@ -66,7 +66,17 @@ class ChannelEventName {
   static const String CREATE  = 'chan_create';
   static const String UPDATE  = 'chan_update';
   static const String DESTROY = 'chan_destroy';
-  static const String UNKNOWN = 'unknown';
+}
+
+abstract class PBXEvent {
+  static const String CUSTOM = 'CUSTOM';
+  static const String CHANNEL_BRIDGE = 'CHANNEL_BRIDGE';
+  static const String CHANNEL_STATE = 'CHANNEL_STATE';
+  static const String CHANNEL_CREATE = 'CHANNEL_CREATE';
+  static const String CHANNEL_DESTROY = 'CHANNEL_DESTROY';
+
+  List<String> requiredSubscriptions = [CUSTOM, CHANNEL_BRIDGE,
+    CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE];
 }
 
 class ChannelEvent {
@@ -89,7 +99,6 @@ class ChannelEvent {
      'ownerPeer' : this.ownerPeer,
      'external'  : this.isExternalChannel
   };
-
 }
 
 
@@ -152,19 +161,19 @@ class ChannelList extends ESL.ChannelList {
     void dispatch() {
       switch (packet.eventName) {
 
-        case ('CHANNEL_BRIDGE'):
+        case (PBXEvent.CHANNEL_BRIDGE):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
 
-        case ('CHANNEL_STATE'):
+        case (PBXEvent.CHANNEL_STATE):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
 
-        case ('CHANNEL_CREATE'):
+        case (PBXEvent.CHANNEL_CREATE):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
 
-        case ('CHANNEL_DESTROY'):
+        case (PBXEvent.CHANNEL_DESTROY):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
       }
