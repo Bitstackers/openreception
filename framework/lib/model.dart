@@ -49,6 +49,7 @@ part 'model/model-message_filter.dart';
 part 'model/model-message_queue_item.dart';
 part 'model/model-message_recipient.dart';
 part 'model/model-organization.dart';
+part 'model/model-owner.dart';
 part 'model/model-peer.dart';
 part 'model/model-phone_number.dart';
 part 'model/model-playlist.dart';
