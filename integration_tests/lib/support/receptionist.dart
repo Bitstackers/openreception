@@ -233,7 +233,12 @@ class Receptionist {
   /**
    * Hangup [call]  via the [CallFlowControl] service.
    */
-  Future hangUp(Model.Call call) => this.callFlowControl.hangup(call.ID);
+  Future hangUp(Model.Call call) =>
+    this.callFlowControl.hangup(call.ID)
+    .catchError((error, stackTrace) {
+    log.severe('Tried to hang up call with info ${call.toJson()}. Receptionist info ${toJson()}', error, stackTrace);
+
+  });
 
   /**
    * Hangup all active calls currently connected to the phone.
