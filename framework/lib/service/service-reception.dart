@@ -25,6 +25,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    * Retrieves and autocasts a calendar list from the store.
    */
+  @deprecated
   Future<Iterable<Model.CalendarEntry>> calendar(int receptionID) {
     Uri url = Resource.Reception.calendar(this._host, receptionID);
     url = appendToken(url, this._token);
@@ -40,6 +41,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
+  @deprecated
   Future<Model.CalendarEntry> calendarEvent(int receptionID, int eventID) {
     Uri url =
         Resource.Reception.calendarEvent(this._host, receptionID, eventID);
@@ -52,6 +54,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
+  @deprecated
   Future<Model.CalendarEntry> calendarEventCreate(Model.CalendarEntry event) {
     Uri url = Resource.Reception.calendar(this._host, event.receptionID);
     url = appendToken(url, this._token);
@@ -65,6 +68,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
+  @deprecated
   Future<Model.CalendarEntry> calendarEventUpdate(Model.CalendarEntry event) {
     Uri url = Resource.Reception.calendarEvent(
         this._host, event.receptionID, event.ID);
@@ -78,6 +82,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
+  @deprecated
   Future calendarEventRemove(Model.CalendarEntry event) {
     Uri url = Resource.Reception.calendarEvent(
         this._host, event.receptionID, event.ID);
@@ -89,6 +94,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
+  @deprecated
   Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID) {
     Uri url = Resource.Reception.calendarEventChanges(this._host, entryID);
     url = appendToken(url, this._token);
@@ -100,6 +106,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
+  @deprecated
   Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID) {
     Uri url = Resource.Reception.calendarEventLatestChange(this._host, entryID);
     url = appendToken(url, this._token);

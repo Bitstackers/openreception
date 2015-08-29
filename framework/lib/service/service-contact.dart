@@ -125,6 +125,7 @@ class RESTContactStore implements Storage.Contact {
             .map((Map map) => new Model.Contact.fromMap(map)));
   }
 
+  @deprecated
   Future<Iterable<Model.CalendarEntry>> calendar(
       int contactID, int receptionID) => calendarMap(contactID, receptionID)
       .then((Iterable<Map> maps) =>
@@ -149,6 +150,7 @@ class RESTContactStore implements Storage.Contact {
     });
   }
 
+  @deprecated
   Future<Model.CalendarEntry> calendarEventCreate(Model.CalendarEntry event) {
     Uri url = Resource.Contact.calendar(
         this._host, event.contactID, event.receptionID);
@@ -159,6 +161,7 @@ class RESTContactStore implements Storage.Contact {
         new Model.CalendarEntry.fromMap(JSON.decode(response)));
   }
 
+  @deprecated
   Future<Model.CalendarEntry> calendarEventUpdate(Model.CalendarEntry event) {
     Uri url = Resource.Contact.calendarEvent(
         this._host, event.contactID, event.receptionID, event.ID);
@@ -169,6 +172,7 @@ class RESTContactStore implements Storage.Contact {
         new Model.CalendarEntry.fromMap(JSON.decode(response)));
   }
 
+  @deprecated
   Future calendarEventRemove(Model.CalendarEntry event) {
     Uri url = Resource.Contact.calendarEvent(
         this._host, event.contactID, event.receptionID, event.ID);
