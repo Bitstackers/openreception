@@ -37,6 +37,12 @@ class CalendarEntryChange {
   }
 
   /**
+   * Decoding factory.
+   */
+  static CalendarEntryChange decode (Map map) =>
+      new CalendarEntryChange.fromMap(map);
+
+  /**
    * Returns a map representation of the object.
    * Suitable for serialization.
    */
